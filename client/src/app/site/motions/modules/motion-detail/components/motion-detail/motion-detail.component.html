@@ -73,11 +73,11 @@
             ></os-projector-button>
             <!-- Add/remove to/from agenda -->
             <div *osPerms="'agenda.can_manage'">
-                <button mat-menu-item (click)="addToAgenda()" *ngIf="motion && !motion.agendaItem">
+                <button mat-menu-item (click)="addToAgenda()" *ngIf="motion && !motion.item">
                     <mat-icon>add</mat-icon>
                     <span translate>Add to agenda</span>
                 </button>
-                <button mat-menu-item (click)="removeFromAgenda()" *ngIf="motion && motion.agendaItem">
+                <button mat-menu-item (click)="removeFromAgenda()" *ngIf="motion && motion.item">
                     <mat-icon>remove</mat-icon>
                     <span translate>Remove from agenda</span>
                 </button>
@@ -614,7 +614,6 @@
                         autofocus
                         placeholder="{{ 'Identifier' | translate }}"
                         formControlName="identifier"
-                        [value]="motionCopy.identifier || ''"
                     />
                 </mat-form-field>
             </div>
@@ -626,7 +625,6 @@
                         matInput
                         placeholder="{{ 'Title' | translate }}"
                         formControlName="title"
-                        [value]="motionCopy.title"
                         required
                     />
                     <mat-error>{{ 'The title is required' | translate }}</mat-error>
@@ -844,7 +842,6 @@
                             matInput
                             placeholder="{{ 'Origin' | translate }}"
                             formControlName="origin"
-                            [value]="motionCopy.origin"
                         />
                     </mat-form-field>
                 </div>

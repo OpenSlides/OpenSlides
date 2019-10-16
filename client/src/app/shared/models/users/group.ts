@@ -11,11 +11,7 @@ export class Group extends BaseModel<Group> {
     public name: string;
     public permissions: string[];
 
-    public constructor(input?: any) {
+    public constructor(input?: Partial<Group>) {
         super(Group.COLLECTIONSTRING, input);
-        if (!input) {
-            // permissions are required for new groups
-            this.permissions = [];
-        }
     }
 }

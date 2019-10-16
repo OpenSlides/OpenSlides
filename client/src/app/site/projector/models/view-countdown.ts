@@ -16,26 +16,6 @@ export class ViewCountdown extends BaseProjectableViewModel<Countdown> implement
         return this._model;
     }
 
-    public get running(): boolean {
-        return this.countdown.running;
-    }
-
-    public get default_time(): number {
-        return this.countdown.default_time;
-    }
-
-    public get countdown_time(): number {
-        return this.countdown.countdown_time;
-    }
-
-    public get description(): string {
-        return this.countdown.description || '';
-    }
-
-    public get title(): string {
-        return this.countdown.title;
-    }
-
     public getSlide(): ProjectorElementBuildDeskriptor {
         return {
             getBasicProjectorElement: options => ({
@@ -66,3 +46,4 @@ export class ViewCountdown extends BaseProjectableViewModel<Countdown> implement
         };
     }
 }
+export interface ViewCountdown extends Countdown {}

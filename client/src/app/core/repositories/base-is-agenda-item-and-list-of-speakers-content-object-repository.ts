@@ -3,10 +3,10 @@ import { ViewItem } from 'app/site/agenda/models/view-item';
 import { ViewListOfSpeakers } from 'app/site/agenda/models/view-list-of-speakers';
 import { BaseProjectableViewModel } from 'app/site/base/base-projectable-view-model';
 import {
-    IBaseViewModelWithAgendaItem,
+    BaseViewModelWithAgendaItem,
     TitleInformationWithAgendaItem
 } from 'app/site/base/base-view-model-with-agenda-item';
-import { IBaseViewModelWithListOfSpeakers } from 'app/site/base/base-view-model-with-list-of-speakers';
+import { BaseViewModelWithListOfSpeakers } from 'app/site/base/base-view-model-with-list-of-speakers';
 import {
     IBaseIsAgendaItemContentObjectRepository,
     isBaseIsAgendaItemContentObjectRepository
@@ -30,14 +30,14 @@ export function isBaseIsAgendaItemAndListOfSpeakersContentObjectRepository(
  * multi-inheritance by implementing both inherit classes again...
  */
 export abstract class BaseIsAgendaItemAndListOfSpeakersContentObjectRepository<
-    V extends BaseProjectableViewModel & IBaseViewModelWithAgendaItem & IBaseViewModelWithListOfSpeakers & T,
+    V extends BaseProjectableViewModel & BaseViewModelWithAgendaItem & BaseViewModelWithListOfSpeakers & T,
     M extends BaseModel,
     T extends TitleInformationWithAgendaItem
 > extends BaseRepository<V, M, T>
     implements
         IBaseIsAgendaItemContentObjectRepository<V, M, T>,
         IBaseIsListOfSpeakersContentObjectRepository<V, M, T> {
-    protected groupRelationsByCollections(): void {
+    protected extendRelations(): void {
         this.relationDefinitions.push({
             type: 'M2O',
             ownIdKey: 'agenda_item_id',
@@ -47,10 +47,9 @@ export abstract class BaseIsAgendaItemAndListOfSpeakersContentObjectRepository<
         this.relationDefinitions.push({
             type: 'M2O',
             ownIdKey: 'list_of_speakers_id',
-            ownKey: 'list_of_speakers',
+            ownKey: 'listOfSpeakers',
             foreignViewModel: ViewListOfSpeakers
         });
-        super.groupRelationsByCollections();
     }
 
     public getAgendaListTitle(titleInformation: T): string {
@@ -87,8 +86,8 @@ export abstract class BaseIsAgendaItemAndListOfSpeakersContentObjectRepository<
         return this.getAgendaSlideTitle(titleInformation);
     };
 
-    protected createViewModelWithTitles(model: M, initialLoading: boolean): V {
-        const viewModel = super.createViewModelWithTitles(model, initialLoading);
+    protected createViewModelWithTitles(model: M): V {
+        const viewModel = super.createViewModelWithTitles(model);
         viewModel.getAgendaListTitle = () => this.getAgendaListTitle(viewModel);
         viewModel.getAgendaListTitleWithoutItemNumber = () => this.getAgendaListTitleWithoutItemNumber(viewModel);
         viewModel.getAgendaSlideTitle = () => this.getAgendaSlideTitle(viewModel);

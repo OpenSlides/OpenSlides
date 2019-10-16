@@ -24,6 +24,7 @@ import { ViewTopic } from 'app/site/topics/models/view-topic';
 import { ViewUser } from 'app/site/users/models/view-user';
 import { BaseHasContentObjectRepository } from '../base-has-content-object-repository';
 import { BaseIsListOfSpeakersContentObjectRepository } from '../base-is-list-of-speakers-content-object-repository';
+import { NestedModelDescriptors } from '../base-repository';
 import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
 import { DataStoreService } from '../../core-services/data-store.service';
 import { ItemRepositoryService } from './item-repository.service';
@@ -36,23 +37,30 @@ const ListOfSpeakersRelations: RelationDefinition[] = [
         VForeignVerbose: 'BaseViewModelWithListOfSpeakers',
         ownContentObjectDataKey: 'contentObjectData',
         ownKey: 'contentObject'
-    },
-    {
-        type: 'nested',
-        ownKey: 'speakers',
-        foreignViewModel: ViewSpeaker,
-        foreignModel: Speaker,
-        order: 'weight',
-        relationDefinition: [
-            {
-                type: 'M2O',
-                ownIdKey: 'user_id',
-                ownKey: 'user',
-                foreignViewModel: ViewUser
-            }
-        ]
     }
 ];
+
+const ListOfSpeakersNestedModelDescriptors: NestedModelDescriptors = {
+    'agenda/list-of-speakers': [
+        {
+            ownKey: 'speakers',
+            foreignViewModel: ViewSpeaker,
+            foreignModel: Speaker,
+            order: 'weight',
+            relationDefinitionsByKey: {
+                user: {
+                    type: 'M2O',
+                    ownIdKey: 'user_id',
+                    ownKey: 'user',
+                    foreignViewModel: ViewUser
+                }
+            },
+            titles: {
+                getTitle: (viewSpeaker: ViewSpeaker) => viewSpeaker.name
+            }
+        }
+    ]
+};
 
 /**
  * Repository service for lists of speakers
@@ -96,7 +104,8 @@ export class ListOfSpeakersRepositoryService extends BaseHasContentObjectReposit
             translate,
             relationManager,
             ListOfSpeakers,
-            ListOfSpeakersRelations
+            ListOfSpeakersRelations,
+            ListOfSpeakersNestedModelDescriptors
         );
     }
 
@@ -116,7 +125,7 @@ export class ListOfSpeakersRepositoryService extends BaseHasContentObjectReposit
             // TODO: This can be resolved with #4738
             const item = this.itemRepo.findByContentObject(titleInformation.contentObjectData);
             if (item) {
-                (<any>titleInformation.title_information).agenda_item_number = item.itemNumber;
+                (<any>titleInformation.title_information).agenda_item_number = item.item_number;
             }
 
             return repo.getListOfSpeakersTitle(titleInformation.title_information);

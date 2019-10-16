@@ -14,10 +14,6 @@ export class ViewProjectorMessage extends BaseProjectableViewModel<ProjectorMess
         return this._model;
     }
 
-    public get message(): string {
-        return this.projectormessage.message;
-    }
-
     public getSlide(): ProjectorElementBuildDeskriptor {
         return {
             getBasicProjectorElement: options => ({
@@ -41,3 +37,4 @@ export class ViewProjectorMessage extends BaseProjectableViewModel<ProjectorMess
         }
     }
 }
+export interface ViewProjectorMessage extends ProjectorMessage {}

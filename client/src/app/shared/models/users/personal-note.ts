@@ -55,7 +55,7 @@ export class PersonalNote extends BaseModel<PersonalNote> implements PersonalNot
     public user_id: number;
     public notes: PersonalNotesFormat;
 
-    public constructor(input: any) {
+    public constructor(input: Partial<PersonalNote>) {
         super(PersonalNote.COLLECTIONSTRING, input);
     }
 }

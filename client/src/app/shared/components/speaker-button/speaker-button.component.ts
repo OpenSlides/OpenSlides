@@ -35,7 +35,7 @@ export class SpeakerButtonComponent implements OnDestroy {
 
         this.cleanLosSub();
 
-        if (!!listOfSpeakers) {
+        if (listOfSpeakers) {
             this.losSub = this.listOfSpeakersRepo
                 .getViewModelObservable(listOfSpeakers.id)
                 .pipe(distinctUntilChanged())

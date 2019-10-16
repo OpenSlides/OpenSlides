@@ -154,8 +154,8 @@ export class ConfigRepositoryService extends BaseRepository<ViewConfig, Config, 
         throw new Error('Config variables cannot be created');
     }
 
-    public changedModels(ids: number[], initialLoading: boolean): void {
-        super.changedModels(ids, initialLoading);
+    public changedModels(ids: number[]): void {
+        super.changedModels(ids);
 
         ids.forEach(id => {
             this.updateConfigStructure(false, this.viewModelStore[id]);
@@ -246,10 +246,7 @@ export class ConfigRepositoryService extends BaseRepository<ViewConfig, Config, 
      * Saves a config value.
      */
     public async update(config: Partial<Config>, viewConfig: ViewConfig): Promise<void> {
-        const updatedConfig = new Config();
-        updatedConfig.patchValues(viewConfig.config);
-        updatedConfig.patchValues(config);
-        // TODO: Use datasendService, if it can switch correctly between put, post and patch
+        const updatedConfig = viewConfig.getUpdatedModel(config);
         await this.http.put(`/rest/${updatedConfig.collectionString}/${updatedConfig.key}/`, updatedConfig);
     }
 

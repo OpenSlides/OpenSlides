@@ -2,6 +2,12 @@ import { BaseModelWithContentObject } from '../base/base-model-with-content-obje
 import { ContentObject } from '../base/content-object';
 import { Speaker } from './speaker';
 
+export interface ListOfSpeakersWithoutNestedModels extends BaseModelWithContentObject<ListOfSpeakers> {
+    id: number;
+    title_information: object;
+    closed: boolean;
+}
+
 /**
  * Representations of agenda Item
  * @ignore
@@ -19,3 +25,5 @@ export class ListOfSpeakers extends BaseModelWithContentObject<ListOfSpeakers> {
         super(ListOfSpeakers.COLLECTIONSTRING, input);
     }
 }
+
+export interface ListOfSpeakers extends ListOfSpeakersWithoutNestedModels {}

@@ -177,7 +177,7 @@ export class MotionExportDialogComponent implements OnInit {
      * @param nextState The next state the button will assume.
      */
     private changeStateOfButton(button: MatButtonToggle, nextState: boolean): void {
-        if (!!button) {
+        if (button) {
             button.disabled = nextState;
         }
     }
@@ -245,7 +245,7 @@ export class MotionExportDialogComponent implements OnInit {
 
         // restore selection or set default
         this.store.get<MotionExportInfo>('motion_export_selection').then(restored => {
-            if (!!restored) {
+            if (restored) {
                 this.exportForm.patchValue(restored);
             } else {
                 this.exportForm.patchValue(this.defaults);

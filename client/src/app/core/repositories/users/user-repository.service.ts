@@ -147,8 +147,8 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User, UserTi
     /**
      * Adds teh short and full name to the view user.
      */
-    protected createViewModelWithTitles(model: User, initialLoading: boolean): ViewUser {
-        const viewModel = super.createViewModelWithTitles(model, initialLoading);
+    protected createViewModelWithTitles(model: User): ViewUser {
+        const viewModel = super.createViewModelWithTitles(model);
         viewModel.getFullName = () => this.getFullName(viewModel);
         viewModel.getShortName = () => this.getShortName(viewModel);
         return viewModel;
@@ -163,23 +163,19 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User, UserTi
      * @param viewUser
      */
     public async update(update: Partial<User>, viewUser: ViewUser): Promise<void> {
-        const updateUser = new User();
-        updateUser.patchValues(viewUser.user);
-        updateUser.patchValues(update);
-
         // if the user deletes the username, reset
         // prevents the server of generating '<firstname> <lastname> +1' as username
-        if (updateUser.username === '') {
-            updateUser.username = viewUser.username;
+        if (update.username === '') {
+            update.username = viewUser.username;
         }
 
         // if the update user does not have a gender-field, send gender as empty string.
         // This allow to delete a previously selected gender
-        if (!updateUser.gender) {
-            updateUser.gender = '';
+        if (!update.gender) {
+            update.gender = '';
         }
 
-        return await this.dataSend.updateModel(updateUser);
+        return super.update(update, viewUser);
     }
 
     /**

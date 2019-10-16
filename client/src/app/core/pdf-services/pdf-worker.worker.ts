@@ -35,7 +35,7 @@ function applyLayout(content: any): void {
         if (Array.isArray(section)) {
             applyLayout(section);
         } else {
-            if (!!section.layout) {
+            if (section.layout) {
                 let layout: object;
                 switch (section.layout) {
                     case 'switchColorTableLayout': {
@@ -48,7 +48,7 @@ function applyLayout(content: any): void {
                     }
                 }
 
-                if (!!layout) {
+                if (layout) {
                     section.layout = layout;
                 }
             }
@@ -94,7 +94,7 @@ addEventListener('message', ({ data }) => {
 
     applyLayout(data.doc.content);
 
-    if (!!data.doc.tmpfooter) {
+    if (data.doc.tmpfooter) {
         addPageNumbers(data);
     }
 

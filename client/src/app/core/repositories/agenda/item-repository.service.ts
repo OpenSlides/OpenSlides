@@ -15,7 +15,6 @@ import { ItemTitleInformation, ViewItem } from 'app/site/agenda/models/view-item
 import { ViewAssignment } from 'app/site/assignments/models/view-assignment';
 import {
     BaseViewModelWithAgendaItem,
-    IBaseViewModelWithAgendaItem,
     isBaseViewModelWithAgendaItem
 } from 'app/site/base/base-view-model-with-agenda-item';
 import { ViewMotion } from 'app/site/motions/models/view-motion';
@@ -129,8 +128,8 @@ export class ItemRepositoryService extends BaseHasContentObjectRepository<
      *
      * @returns {ViewItem} The modified item extended with the `getSubtitle()`-function.
      */
-    protected createViewModelWithTitles(model: Item, initialLoading: boolean): ViewItem {
-        const viewModel = super.createViewModelWithTitles(model, initialLoading);
+    protected createViewModelWithTitles(model: Item): ViewItem {
+        const viewModel = super.createViewModelWithTitles(model);
         viewModel.getSubtitle = () => this.getSubtitle(viewModel);
         return viewModel;
     }
@@ -153,17 +152,13 @@ export class ItemRepositoryService extends BaseHasContentObjectRepository<
      * @param viewModel the view model that the update is based on
      */
     public async update(update: Partial<Item>, viewModel: ViewItem): Promise<void> {
-        const sendUpdate = new this.baseModelCtor();
-        sendUpdate.patchValues(viewModel.getModel());
-        sendUpdate.patchValues(update);
-
+        const sendUpdate = viewModel.getUpdatedModel(update);
         const clone = JSON.parse(JSON.stringify(sendUpdate));
         clone.item_number = clone._itemNumber;
-        const restPath = `/rest/${sendUpdate.collectionString}/${sendUpdate.id}/`;
-        return await this.httpService.put(restPath, clone);
+        return await this.dataSend.updateModel(clone);
     }
 
-    public async addItemToAgenda(contentObject: IBaseViewModelWithAgendaItem<any>): Promise<Identifiable> {
+    public async addItemToAgenda(contentObject: BaseViewModelWithAgendaItem<any>): Promise<Identifiable> {
         return await this.httpService.post('/rest/agenda/item/', {
             collection: contentObject.collectionString,
             id: contentObject.id

@@ -125,7 +125,7 @@ export class ProjectorDetailComponent extends BaseViewComponent implements OnIni
      * @param step (optional) The amount of steps to make.
      */
     public scroll(direction: ScrollScaleDirection, step: number = 1): void {
-        this.repo.scroll(this.projector, direction, step).then(null, this.raiseError);
+        this.repo.scroll(this.projector, direction, step).catch(this.raiseError);
     }
 
     /**
@@ -135,29 +135,29 @@ export class ProjectorDetailComponent extends BaseViewComponent implements OnIni
      * @param step (optional) The amount of steps to make.
      */
     public scale(direction: ScrollScaleDirection, step: number = 1): void {
-        this.repo.scale(this.projector, direction, step).then(null, this.raiseError);
+        this.repo.scale(this.projector, direction, step).catch(this.raiseError);
     }
 
     public projectNextSlide(): void {
-        this.projectorService.projectNextSlide(this.projector.projector).then(null, this.raiseError);
+        this.projectorService.projectNextSlide(this.projector.projector).catch(this.raiseError);
     }
 
     public projectPreviousSlide(): void {
-        this.projectorService.projectPreviousSlide(this.projector.projector).then(null, this.raiseError);
+        this.projectorService.projectPreviousSlide(this.projector.projector).catch(this.raiseError);
     }
 
     public onSortingChange(event: CdkDragDrop<ProjectorElement>): void {
         moveItemInArray(this.projector.elements_preview, event.previousIndex, event.currentIndex);
-        this.projectorService.savePreview(this.projector.projector).then(null, this.raiseError);
+        this.projectorService.savePreview(this.projector.projector).catch(this.raiseError);
     }
 
     public removePreviewElement(elementIndex: number): void {
         this.projector.elements_preview.splice(elementIndex, 1);
-        this.projectorService.savePreview(this.projector.projector).then(null, this.raiseError);
+        this.projectorService.savePreview(this.projector.projector).catch(this.raiseError);
     }
 
     public projectNow(elementIndex: number): void {
-        this.projectorService.projectPreviewSlide(this.projector.projector, elementIndex).then(null, this.raiseError);
+        this.projectorService.projectPreviewSlide(this.projector.projector, elementIndex).catch(this.raiseError);
     }
 
     public getSlideTitle(element: ProjectorElement): string {
@@ -182,7 +182,7 @@ export class ProjectorDetailComponent extends BaseViewComponent implements OnIni
 
     public unprojectCurrent(element: ProjectorElement): void {
         const idElement = this.slideManager.getIdentifialbeProjectorElement(element);
-        this.projectorService.removeFrom(this.projector.projector, idElement).then(null, this.raiseError);
+        this.projectorService.removeFrom(this.projector.projector, idElement).catch(this.raiseError);
     }
 
     public isClosProjected(stable: boolean): boolean {

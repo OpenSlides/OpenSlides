@@ -156,7 +156,7 @@ export class ExtensionFieldComponent implements OnInit, OnDestroy {
             this.searchValueSubscription = this.extensionFieldForm
                 .get('list')
                 .valueChanges.subscribe((value: number) => {
-                    if (!!value) {
+                    if (value) {
                         if (this.listSubmitOnChange) {
                             this.listChange.emit(value);
                         }

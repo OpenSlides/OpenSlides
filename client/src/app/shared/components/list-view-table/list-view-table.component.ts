@@ -531,7 +531,7 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
                             propertyAsString = '' + item[prop];
                         }
 
-                        if (!!propertyAsString) {
+                        if (propertyAsString) {
                             const foundProp =
                                 propertyAsString
                                     .trim()
@@ -635,8 +635,10 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
      * does not work, tying the tables to the same hight.
      */
     public async scrollToPreviousPosition(): Promise<void> {
-        const scrollIndex = await this.getScrollIndex(this.listStorageKey);
-        this.ngrid.viewport.scrollToIndex(scrollIndex);
+        if (this.ngrid) {
+            const scrollIndex = await this.getScrollIndex(this.listStorageKey);
+            this.ngrid.viewport.scrollToIndex(scrollIndex);
+        }
     }
 
     /**

@@ -282,7 +282,7 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
      * @param {boolean} internal
      */
     public setInternal(change: ViewMotionChangeRecommendation, internal: boolean): void {
-        this.recoRepo.setInternal(change, internal).then(null, this.raiseError);
+        this.recoRepo.setInternal(change, internal).catch(this.raiseError);
     }
 
     /**
@@ -297,7 +297,7 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
         $event.preventDefault();
         const title = this.translate.instant('Are you sure you want to delete this change recommendation?');
         if (await this.promptService.open(title)) {
-            this.recoRepo.delete(reco).then(null, this.raiseError);
+            this.recoRepo.delete(reco).catch(this.raiseError);
         }
     }
 

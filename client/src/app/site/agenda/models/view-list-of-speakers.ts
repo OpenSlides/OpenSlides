@@ -1,4 +1,4 @@
-import { ListOfSpeakers } from 'app/shared/models/agenda/list-of-speakers';
+import { ListOfSpeakers, ListOfSpeakersWithoutNestedModels } from 'app/shared/models/agenda/list-of-speakers';
 import { ContentObject } from 'app/shared/models/base/content-object';
 import { BaseViewModelWithContentObject } from 'app/site/base/base-view-model-with-content-object';
 import { BaseViewModelWithListOfSpeakers } from 'app/site/base/base-view-model-with-list-of-speakers';
@@ -19,18 +19,8 @@ export class ViewListOfSpeakers extends BaseViewModelWithContentObject<ListOfSpe
     public static COLLECTIONSTRING = ListOfSpeakers.COLLECTIONSTRING;
     protected _collectionString = ListOfSpeakers.COLLECTIONSTRING;
 
-    private _speakers?: ViewSpeaker[];
-
     public get listOfSpeakers(): ListOfSpeakers {
         return this._model;
-    }
-
-    public get speakers(): ViewSpeaker[] {
-        return this._speakers || [];
-    }
-
-    public get title_information(): object {
-        return this.listOfSpeakers.title_information;
     }
 
     /**
@@ -38,10 +28,6 @@ export class ViewListOfSpeakers extends BaseViewModelWithContentObject<ListOfSpe
      */
     public get waitingSpeakerAmount(): number {
         return this.speakers.filter(speaker => speaker.state === SpeakerState.WAITING).length;
-    }
-
-    public get closed(): boolean {
-        return this.listOfSpeakers.closed;
     }
 
     public get listOfSpeakersUrl(): string {
@@ -65,3 +51,7 @@ export class ViewListOfSpeakers extends BaseViewModelWithContentObject<ListOfSpe
         };
     }
 }
+interface IListOfSpeakersRelations {
+    speakers: ViewSpeaker[];
+}
+export interface ViewListOfSpeakers extends ListOfSpeakersWithoutNestedModels, IListOfSpeakersRelations {}

@@ -204,11 +204,6 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
     public amendmentsEnabled: boolean;
 
     /**
-     * Copy of the motion that the user might edit
-     */
-    public motionCopy: ViewMotion;
-
-    /**
      * All change recommendations to this motion
      */
     public changeRecommendations: ViewMotionChangeRecommendation[];
@@ -645,12 +640,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
             // new motion
             this.newMotion = true;
             this.editMotion = true;
-            // prevent 'undefined' to appear in the ui
-            const defaultMotion: Partial<CreateMotion> = {
-                title: '',
-                origin: '',
-                identifier: ''
-            };
+            const defaultMotion: Partial<CreateMotion> = {};
             if (this.route.snapshot.queryParams.parent) {
                 this.amendmentEdit = true;
                 const parentMotion = this.repo.getViewModel(this.route.snapshot.queryParams.parent);
@@ -676,7 +666,6 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
                 }
             }
             this.motion = new ViewCreateMotion(new CreateMotion(defaultMotion));
-            this.motionCopy = new ViewCreateMotion(new CreateMotion(defaultMotion));
         }
     }
 
@@ -836,7 +825,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      */
     private updateMotionFromForm(): void {
         const newMotionValues = { ...this.contentForm.value };
-        this.updateMotion(newMotionValues, this.motionCopy).then(() => {
+        this.updateMotion(newMotionValues, this.motion).then(() => {
             this.editMotion = false;
             this.amendmentEdit = false;
         }, this.raiseError);
@@ -1155,8 +1144,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
     public setEditMode(mode: boolean): void {
         this.editMotion = mode;
         if (mode) {
-            this.motionCopy = this.motion.copy();
-            this.patchForm(this.motionCopy);
+            this.patchForm(this.motion);
             this.editNotificationSubscription = this.listenToEditNotification();
             this.sendEditNotification(MotionEditNotificationType.TYPE_BEGIN_EDITING_MOTION);
         }
@@ -1247,14 +1235,14 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      * Supports the motion (as requested user)
      */
     public support(): void {
-        this.repo.support(this.motion).then(null, this.raiseError);
+        this.repo.support(this.motion).catch(this.raiseError);
     }
 
     /**
      * Unsupports the motion
      */
     public unsupport(): void {
-        this.repo.unsupport(this.motion).then(null, this.raiseError);
+        this.repo.unsupport(this.motion).catch(this.raiseError);
     }
 
     /**
@@ -1271,7 +1259,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      * @param id Motion state id
      */
     public setState(id: number): void {
-        this.repo.setState(this.motion, id).then(null, this.raiseError);
+        this.repo.setState(this.motion, id).catch(this.raiseError);
     }
 
     /**
@@ -1489,7 +1477,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      * @param unsubscriptionReason The reason for the unsubscription.
      */
     private unsubscribeEditNotifications(unsubscriptionReason: MotionEditNotificationType): void {
-        if (!!this.editNotificationSubscription && !this.editNotificationSubscription.closed) {
+        if (this.editNotificationSubscription && !this.editNotificationSubscription.closed) {
             this.sendEditNotification(unsubscriptionReason);
             this.closeSnackBar();
             this.editNotificationSubscription.unsubscribe();
@@ -1529,7 +1517,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         } else {
             this.motion.personalNote.star = !this.motion.personalNote.star;
         }
-        this.personalNoteService.savePersonalNote(this.motion, this.motion.personalNote).then(null, this.raiseError);
+        this.personalNoteService.savePersonalNote(this.motion, this.motion.personalNote).catch(this.raiseError);
     }
 
     /**
@@ -1616,10 +1604,10 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
     }
 
     public addToAgenda(): void {
-        this.itemRepo.addItemToAgenda(this.motion).then(null, this.raiseError);
+        this.itemRepo.addItemToAgenda(this.motion).catch(this.raiseError);
     }
 
     public removeFromAgenda(): void {
-        this.itemRepo.removeFromAgenda(this.motion.agendaItem).then(null, this.raiseError);
+        this.itemRepo.removeFromAgenda(this.motion.item).catch(this.raiseError);
     }
 }

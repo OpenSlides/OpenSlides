@@ -95,7 +95,7 @@ export abstract class BaseSortService<T extends Identifiable & Displayable> {
                 case 'number':
                     return firstProperty > secondProperty ? 1 : -1;
                 case 'string':
-                    if (!!firstProperty && !secondProperty) {
+                    if (firstProperty && !secondProperty) {
                         return -1;
                     } else if (!firstProperty && !!secondProperty) {
                         return 1;

@@ -19,6 +19,7 @@ import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
 import { ViewTag } from 'app/site/tags/models/view-tag';
 import { ViewUser } from 'app/site/users/models/view-user';
 import { BaseIsAgendaItemAndListOfSpeakersContentObjectRepository } from '../base-is-agenda-item-and-list-of-speakers-content-object-repository';
+import { NestedModelDescriptors } from '../base-repository';
 import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
 import { DataStoreService } from '../../core-services/data-store.service';
 
@@ -34,46 +35,53 @@ const AssignmentRelations: RelationDefinition[] = [
         ownIdKey: 'attachments_id',
         ownKey: 'attachments',
         foreignViewModel: ViewMediafile
-    },
-    {
-        type: 'nested',
-        ownKey: 'assignment_related_users',
-        foreignViewModel: ViewAssignmentRelatedUser,
-        foreignModel: AssignmentRelatedUser,
-        order: 'weight',
-        relationDefinition: [
-            {
-                type: 'M2O',
-                ownIdKey: 'user_id',
-                ownKey: 'user',
-                foreignViewModel: ViewUser
-            }
-        ]
-    },
-    {
-        type: 'nested',
-        ownKey: 'polls',
-        foreignViewModel: ViewAssignmentPoll,
-        foreignModel: AssignmentPoll,
-        relationDefinition: [
-            {
-                type: 'nested',
-                ownKey: 'options',
-                foreignViewModel: ViewAssignmentPollOption,
-                foreignModel: AssignmentPollOption,
-                order: 'weight',
-                relationDefinition: [
-                    {
-                        type: 'M2O',
-                        ownIdKey: 'user_id',
-                        ownKey: 'user',
-                        foreignViewModel: ViewUser
-                    }
-                ]
-            }
-        ]
     }
 ];
+
+const AssignmentNestedModelDescriptors: NestedModelDescriptors = {
+    'assignments/assignment': [
+        {
+            ownKey: 'assignment_related_users',
+            foreignViewModel: ViewAssignmentRelatedUser,
+            foreignModel: AssignmentRelatedUser,
+            order: 'weight',
+            relationDefinitionsByKey: {
+                user: {
+                    type: 'M2O',
+                    ownIdKey: 'user_id',
+                    ownKey: 'user',
+                    foreignViewModel: ViewUser
+                }
+            },
+            titles: {
+                getTitle: (viewAssignmentRelatedUser: ViewAssignmentRelatedUser) =>
+                    viewAssignmentRelatedUser.user ? viewAssignmentRelatedUser.user.getFullName() : ''
+            }
+        },
+        {
+            ownKey: 'polls',
+            foreignViewModel: ViewAssignmentPoll,
+            foreignModel: AssignmentPoll,
+            relationDefinitionsByKey: {}
+        }
+    ],
+    'assignments/assignment-poll': [
+        {
+            ownKey: 'options',
+            foreignViewModel: ViewAssignmentPollOption,
+            foreignModel: AssignmentPollOption,
+            order: 'weight',
+            relationDefinitionsByKey: {
+                user: {
+                    type: 'M2O',
+                    ownIdKey: 'candidate_id',
+                    ownKey: 'user',
+                    foreignViewModel: ViewUser
+                }
+            }
+        }
+    ]
+};
 
 /**
  * Repository Service for Assignments.
@@ -122,7 +130,8 @@ export class AssignmentRepositoryService extends BaseIsAgendaItemAndListOfSpeake
             translate,
             relationManager,
             Assignment,
-            AssignmentRelations
+            AssignmentRelations,
+            AssignmentNestedModelDescriptors
         );
     }
 

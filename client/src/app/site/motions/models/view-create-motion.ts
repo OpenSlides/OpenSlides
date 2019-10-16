@@ -33,11 +33,4 @@ export class ViewCreateMotion extends ViewMotion {
     public getVerboseName = () => {
         throw new Error('This should not be used');
     };
-
-    /**
-     * Duplicate this motion into a copy of itself
-     */
-    public copy(): ViewCreateMotion {
-        return new ViewCreateMotion(this._model);
-    }
 }

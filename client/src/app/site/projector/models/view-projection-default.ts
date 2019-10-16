@@ -13,16 +13,5 @@ export class ViewProjectionDefault extends BaseViewModel<ProjectionDefault>
     public get projectionDefault(): ProjectionDefault {
         return this._model;
     }
-
-    public get id(): number {
-        return this.projectionDefault.id;
-    }
-
-    public get name(): string {
-        return this.projectionDefault.name;
-    }
-
-    public get display_name(): string {
-        return this.projectionDefault.display_name;
-    }
 }
+export interface ViewProjectionDefault extends ProjectionDefault {}

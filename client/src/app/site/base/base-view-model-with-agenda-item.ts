@@ -13,9 +13,11 @@ export function isBaseViewModelWithAgendaItem(obj: any): obj is BaseViewModelWit
         isSearchable(model) &&
         model.getAgendaSlideTitle !== undefined &&
         model.getAgendaListTitle !== undefined &&
+        model.getAgendaSubtitle !== undefined &&
         model.getCSVExportText !== undefined &&
-        model.agendaItem !== undefined &&
-        model.agenda_item_id !== undefined
+        model.item !== undefined &&
+        model.getModel !== undefined &&
+        model.getModel().agenda_item_id !== undefined
     );
 }
 
@@ -26,15 +28,11 @@ export interface TitleInformationWithAgendaItem extends TitleInformation {
 /**
  * Describes a base class for view models.
  */
-export interface IBaseViewModelWithAgendaItem<M extends BaseModelWithAgendaItem = any>
+export interface BaseViewModelWithAgendaItem<M extends BaseModelWithAgendaItem = any>
     extends BaseProjectableViewModel<M>,
         DetailNavigable,
         Searchable {
-    agendaItem: any | null;
-
-    agenda_item_id: number;
-
-    agenda_item_number: string | null;
+    item: any | null;
 
     /**
      * @returns the agenda title
@@ -47,20 +45,9 @@ export interface IBaseViewModelWithAgendaItem<M extends BaseModelWithAgendaItem 
     getAgendaListTitle: () => string;
 
     /**
-     * @return an optional subtitle for the agenda.
-     */
-    getAgendaSubtitle: () => string | null;
-
-    /**
      * @return the agenda title with the verbose name of the content object
      */
     getAgendaListTitleWithoutItemNumber: () => string;
-
-    /**
-     * @returns the (optional) descriptive text to be exported in the CSV.
-     * May be overridden by inheriting classes
-     */
-    getCSVExportText(): string;
 }
 
 /**
@@ -68,41 +55,11 @@ export interface IBaseViewModelWithAgendaItem<M extends BaseModelWithAgendaItem 
  *
  * TODO: Resolve circular dependencies with `ViewItem` to avoid `any`.
  */
-export abstract class BaseViewModelWithAgendaItem<M extends BaseModelWithAgendaItem = any>
-    extends BaseProjectableViewModel<M>
-    implements IBaseViewModelWithAgendaItem<M> {
-    protected _item?: any;
-
-    public get agendaItem(): any | null {
-        return this._item;
-    }
-
-    public get agenda_item_id(): number {
-        return this._model.agenda_item_id;
-    }
-
+export abstract class BaseViewModelWithAgendaItem<
+    M extends BaseModelWithAgendaItem = any
+> extends BaseProjectableViewModel<M> {
     public get agenda_item_number(): string | null {
-        return this.agendaItem && this.agendaItem.itemNumber ? this.agendaItem.itemNumber : null;
-    }
-
-    /**
-     * @returns the agenda title for the item slides
-     */
-    public getAgendaSlideTitle: () => string;
-
-    /**
-     * @return the agenda title for the list view
-     */
-    public getAgendaListTitle: () => string;
-
-    /**
-     * @return the agenda title without any item number.
-     */
-    public getAgendaListTitleWithoutItemNumber: () => string;
-
-    public constructor(model: M, item?: any) {
-        super(model);
-        this._item = item || null; // Explicit set to null instead of undefined, if not given
+        return this.item && this.item.item_number ? this.item.item_number : null;
     }
 
     /**

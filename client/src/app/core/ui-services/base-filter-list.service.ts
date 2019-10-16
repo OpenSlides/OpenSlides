@@ -309,7 +309,7 @@ export abstract class BaseFilterListService<V extends BaseViewModel> {
                     };
                 });
 
-                if (!!noneOptionLabel) {
+                if (noneOptionLabel) {
                     filterProperties.push('-');
                     filterProperties.push({
                         condition: null,

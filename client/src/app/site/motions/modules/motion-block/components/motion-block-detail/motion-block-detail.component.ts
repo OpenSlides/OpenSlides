@@ -254,10 +254,10 @@ export class MotionBlockDetailComponent extends BaseListViewComponent<ViewMotion
     }
 
     public addToAgenda(): void {
-        this.itemRepo.addItemToAgenda(this.block).then(null, this.raiseError);
+        this.itemRepo.addItemToAgenda(this.block).catch(this.raiseError);
     }
 
     public removeFromAgenda(): void {
-        this.itemRepo.removeFromAgenda(this.block.agendaItem).then(null, this.raiseError);
+        this.itemRepo.removeFromAgenda(this.block.item).catch(this.raiseError);
     }
 }

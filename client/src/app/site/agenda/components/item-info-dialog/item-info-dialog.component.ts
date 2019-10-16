@@ -51,7 +51,7 @@ export class ItemInfoDialogComponent {
         // load current values
         this.agendaInfoForm.get('type').setValue(item.type);
         this.agendaInfoForm.get('durationText').setValue(this.durationService.durationToString(item.duration, 'h'));
-        this.agendaInfoForm.get('item_number').setValue(item.itemNumber);
+        this.agendaInfoForm.get('item_number').setValue(item.item_number);
         this.agendaInfoForm.get('comment').setValue(item.comment);
     }
 

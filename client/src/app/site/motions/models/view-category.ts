@@ -20,16 +20,8 @@ export class ViewCategory extends BaseViewModel<Category> implements CategoryTit
     public static COLLECTIONSTRING = Category.COLLECTIONSTRING;
     protected _collectionString = Category.COLLECTIONSTRING;
 
-    private _parent?: ViewCategory;
-    private _children?: ViewCategory[];
-    private _motions?: ViewMotion[];
-
     public get category(): Category {
         return this._model;
-    }
-
-    public get parent(): ViewCategory | null {
-        return this._parent;
     }
 
     public get oldestParent(): ViewCategory {
@@ -38,34 +30,6 @@ export class ViewCategory extends BaseViewModel<Category> implements CategoryTit
         } else {
             return this.parent.oldestParent;
         }
-    }
-
-    public get children(): ViewCategory[] {
-        return this._children || [];
-    }
-
-    public get motions(): ViewMotion[] {
-        return this._motions || [];
-    }
-
-    public get name(): string {
-        return this.category.name;
-    }
-
-    public get prefix(): string {
-        return this.category.prefix;
-    }
-
-    public get weight(): number {
-        return this.category.weight;
-    }
-
-    public get parent_id(): number {
-        return this.category.parent_id;
-    }
-
-    public get level(): number {
-        return this.category.level;
     }
 
     public get prefixedName(): string {
@@ -132,3 +96,9 @@ export class ViewCategory extends BaseViewModel<Category> implements CategoryTit
         }
     }
 }
+interface ICategoryRelations {
+    parent?: ViewCategory;
+    children?: ViewCategory[];
+    motions?: ViewMotion[];
+}
+export interface ViewCategory extends Category, ICategoryRelations {}

@@ -18,34 +18,6 @@ export class ViewItem extends BaseViewModelWithContentObject<Item, BaseViewModel
         return this._model;
     }
 
-    public get itemNumber(): string {
-        return this.item.item_number;
-    }
-
-    public get title_information(): object {
-        return this.item.title_information;
-    }
-
-    public get duration(): number {
-        return this.item.duration;
-    }
-
-    public get type(): number {
-        return this.item.type;
-    }
-
-    public get closed(): boolean {
-        return this.item.closed;
-    }
-
-    public get comment(): string {
-        return this.item.comment;
-    }
-
-    public get level(): number {
-        return this.item.level;
-    }
-
     public getSubtitle: () => string | null;
 
     /**
@@ -71,19 +43,5 @@ export class ViewItem extends BaseViewModelWithContentObject<Item, BaseViewModel
         const type = ItemVisibilityChoices.find(choice => choice.key === this.type);
         return type ? type.csvName : '';
     }
-
-    /**
-     * @returns the weight the server assigns to that item. Mostly useful for sorting within
-     * it's own hierarchy level (items sharing a parent)
-     */
-    public get weight(): number {
-        return this.item.weight;
-    }
-
-    /**
-     * @returns the parent's id of that item (0 if no parent is set).
-     */
-    public get parent_id(): number {
-        return this.item.parent_id;
-    }
 }
+export interface ViewItem extends Item {}

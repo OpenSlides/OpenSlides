@@ -161,7 +161,7 @@ export class AssignmentPollComponent extends BaseViewComponent implements OnInit
     public async onDeletePoll(): Promise<void> {
         const title = this.translate.instant('Are you sure you want to delete this ballot?');
         if (await this.promptService.open(title)) {
-            await this.assignmentRepo.deletePoll(this.poll).then(null, this.raiseError);
+            await this.assignmentRepo.deletePoll(this.poll).catch(this.raiseError);
         }
     }
 
@@ -197,13 +197,12 @@ export class AssignmentPollComponent extends BaseViewComponent implements OnInit
      */
     public enterVotes(): void {
         const dialogRef = this.dialog.open(AssignmentPollDialogComponent, {
-            // TODO deep copy of this.poll (JSON parse is ugly workaround) or sending just copy of the options
             data: this.poll.copy(),
             ...mediumDialogSettings
         });
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
-                this.assignmentRepo.updateVotes(result, this.poll).then(null, this.raiseError);
+                this.assignmentRepo.updateVotes(result, this.poll).catch(this.raiseError);
             }
         });
     }
@@ -236,7 +235,7 @@ export class AssignmentPollComponent extends BaseViewComponent implements OnInit
 
         // TODO additional conditions: assignment not finished?
         const viewAssignmentRelatedUser = this.assignment.assignment_related_users.find(
-            user => user.user_id === option.user_id
+            user => user.user_id === option.candidate_id
         );
         if (viewAssignmentRelatedUser) {
             this.assignmentRepo.markElected(viewAssignmentRelatedUser, this.assignment, !option.is_elected);
@@ -249,7 +248,7 @@ export class AssignmentPollComponent extends BaseViewComponent implements OnInit
      */
     public async onEditDescriptionButton(): Promise<void> {
         const desc: string = this.descriptionForm.get('description').value;
-        await this.assignmentRepo.updatePoll({ description: desc }, this.poll).then(null, this.raiseError);
+        await this.assignmentRepo.updatePoll({ description: desc }, this.poll).catch(this.raiseError);
     }
 
     /**

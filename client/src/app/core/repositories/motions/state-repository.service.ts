@@ -25,6 +25,12 @@ const StateRelations: RelationDefinition[] = [
         ownIdKey: 'next_states_id',
         ownKey: 'next_states',
         foreignViewModel: ViewState
+    },
+    {
+        type: 'M2M',
+        foreignIdKey: 'next_states_id',
+        ownKey: 'previous_states',
+        foreignViewModel: ViewState
     }
 ];
 

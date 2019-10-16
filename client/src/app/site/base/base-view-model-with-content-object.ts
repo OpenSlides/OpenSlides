@@ -13,13 +13,14 @@ export abstract class BaseViewModelWithContentObject<
     M extends BaseModelWithContentObject = any,
     C extends BaseViewModel = any
 > extends BaseViewModel<M> {
-    protected _contentObject?: C;
-
     public get contentObjectData(): ContentObject {
         return this.getModel().content_object;
     }
+}
 
-    public get contentObject(): C | null {
-        return this._contentObject;
-    }
+export interface BaseViewModelWithContentObject<
+    M extends BaseModelWithContentObject = any,
+    C extends BaseViewModel = any
+> {
+    contentObject: C | null;
 }

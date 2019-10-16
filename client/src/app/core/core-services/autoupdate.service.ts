@@ -97,9 +97,9 @@ export class AutoupdateService {
             elements = elements.concat(this.mapObjectsToBaseModels(collection, autoupdate.changed[collection]));
         });
 
-        const updateSlot = await this.DSUpdateManager.getNewUpdateSlot(this.DS, true);
+        const updateSlot = await this.DSUpdateManager.getNewUpdateSlot(this.DS);
         await this.DS.set(elements, autoupdate.to_change_id);
-        this.DSUpdateManager.commit(updateSlot);
+        this.DSUpdateManager.commit(updateSlot, autoupdate.to_change_id, true);
     }
 
     /**
@@ -130,7 +130,7 @@ export class AutoupdateService {
 
             await this.DS.flushToStorage(autoupdate.to_change_id);
 
-            this.DSUpdateManager.commit(updateSlot);
+            this.DSUpdateManager.commit(updateSlot, autoupdate.to_change_id);
         } else {
             // autoupdate fully in the future. we are missing something!
             this.requestChanges();
@@ -172,7 +172,7 @@ export class AutoupdateService {
         const oldChangeId = this.DS.maxChangeId;
         const response = await this.websocketService.sendAndGetResponse<{}, AutoupdateFormat>('getElements', {});
 
-        const updateSlot = await this.DSUpdateManager.getNewUpdateSlot(this.DS, true);
+        const updateSlot = await this.DSUpdateManager.getNewUpdateSlot(this.DS);
         let allModels: BaseModel[] = [];
         for (const collection of Object.keys(response.changed)) {
             if (this.modelMapper.isCollectionRegistered(collection)) {
@@ -183,7 +183,7 @@ export class AutoupdateService {
         }
 
         await this.DS.set(allModels, response.to_change_id);
-        this.DSUpdateManager.commit(updateSlot);
+        this.DSUpdateManager.commit(updateSlot, response.to_change_id, true);
 
         console.log(`Full update done from ${oldChangeId} to ${response.to_change_id}`);
     }

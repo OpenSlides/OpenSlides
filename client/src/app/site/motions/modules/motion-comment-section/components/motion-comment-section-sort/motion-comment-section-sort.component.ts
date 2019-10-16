@@ -53,6 +53,6 @@ export class MotionCommentSectionSortComponent extends BaseViewComponent impleme
      * @param commentsInOrder
      */
     public onSortingChange(commentsInOrder: ViewMotionCommentSection[]): void {
-        this.repo.sortCommentSections(commentsInOrder).then(null, this.raiseError);
+        this.repo.sortCommentSections(commentsInOrder).catch(this.raiseError);
     }
 }

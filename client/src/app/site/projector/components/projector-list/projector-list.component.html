@@ -5,7 +5,7 @@
     </div>
 </os-head-bar>
 
-<mat-card *ngIf="!projectorToCreate && projectors && projectors.length > 1">
+<mat-card *ngIf="!showCreateForm && projectors && projectors.length > 1">
     <span translate> Reference projector for current list of speakers: </span>&nbsp;
     <mat-form-field>
         <mat-select
@@ -20,7 +20,7 @@
     </mat-form-field>
 </mat-card>
 
-<mat-card *ngIf="projectorToCreate">
+<mat-card *ngIf="showCreateForm">
     <mat-card-title translate>New Projector</mat-card-title>
     <mat-card-content>
         <form [formGroup]="createForm" (keydown)="keyDownFunction($event)">
@@ -38,7 +38,7 @@
         <button mat-button (click)="create()">
             <span translate>Create</span>
         </button>
-        <button mat-button (click)="projectorToCreate = null">
+        <button mat-button (click)="showCreateForm = false">
             <span translate>Cancel</span>
         </button>
     </mat-card-actions>

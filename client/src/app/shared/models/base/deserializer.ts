@@ -11,28 +11,16 @@ export abstract class Deserializer implements Deserializable {
      */
     protected constructor(input?: any) {
         if (input) {
-            this.changeNullValuesToUndef(input);
             this.deserialize(input);
         }
     }
 
     /**
-     * should be used to assign JSON values to the object itself.
-     * @param input
+     * Most simple and most commonly used deserialize function.
+     * Inherited to children, can be overwritten for special use cases
+     * @param input JSON data for deserialization.
      */
     public deserialize(input: any): void {
         Object.assign(this, input);
-    }
-
-    /**
-     * Prevent to send literally "null" if should be send
-     * @param input object to deserialize
-     */
-    public changeNullValuesToUndef(input: any): void {
-        Object.keys(input).forEach(key => {
-            if (input[key] === null) {
-                input[key] = undefined;
-            }
-        });
     }
 }

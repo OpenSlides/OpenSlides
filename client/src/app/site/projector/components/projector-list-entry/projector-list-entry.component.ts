@@ -244,7 +244,7 @@ export class ProjectorListEntryComponent extends BaseViewComponent implements On
     public async onDeleteButton(): Promise<void> {
         const title = this.translate.instant('Are you sure you want to delete this projector?');
         if (await this.promptService.open(title, this.projector.name)) {
-            this.repo.delete(this.projector).then(null, this.raiseError);
+            this.repo.delete(this.projector).catch(this.raiseError);
         }
     }
 
@@ -262,7 +262,7 @@ export class ProjectorListEntryComponent extends BaseViewComponent implements On
             width: width
         };
         updateProjector.height = Math.round(width / aspectRatios[aspectRatioKey]);
-        this.repo.update(updateProjector, this.projector).then(null, this.raiseError);
+        this.repo.update(updateProjector, this.projector).catch(this.raiseError);
     }
 
     /**

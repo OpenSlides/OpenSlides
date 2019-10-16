@@ -201,7 +201,7 @@ export class MotionMultiselectService {
             let requestData = null;
             if (selectedChoice.action === choices[0]) {
                 requestData = motions.map(motion => {
-                    let submitterIds = [...motion.sorted_submitters_id, ...(selectedChoice.items as number[])];
+                    let submitterIds = [...motion.sorted_submitter_ids, ...(selectedChoice.items as number[])];
                     submitterIds = submitterIds.filter((id, index, self) => self.indexOf(id) === index); // remove duplicates
                     return {
                         id: motion.id,
@@ -211,7 +211,7 @@ export class MotionMultiselectService {
             } else if (selectedChoice.action === choices[1]) {
                 requestData = motions.map(motion => {
                     const submitterIdsToRemove = selectedChoice.items as number[];
-                    const submitterIds = motion.sorted_submitters_id.filter(id => !submitterIdsToRemove.includes(id));
+                    const submitterIds = motion.sorted_submitter_ids.filter(id => !submitterIdsToRemove.includes(id));
                     return {
                         id: motion.id,
                         submitters: submitterIds

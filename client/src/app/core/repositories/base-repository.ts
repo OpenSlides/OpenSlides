@@ -7,17 +7,27 @@ import { BaseModel, ModelConstructor } from '../../shared/models/base/base-model
 import { BaseViewModel, TitleInformation, ViewModelConstructor } from '../../site/base/base-view-model';
 import { CollectionStringMapperService } from '../core-services/collection-string-mapper.service';
 import { DataSendService } from '../core-services/data-send.service';
-import { CollectionIds, DataStoreService } from '../core-services/data-store.service';
+import { DataStoreService } from '../core-services/data-store.service';
 import { Identifiable } from '../../shared/models/base/identifiable';
 import { OnAfterAppsLoaded } from '../definitions/on-after-apps-loaded';
 import { RelationManagerService } from '../core-services/relation-manager.service';
-import {
-    isNormalRelationDefinition,
-    isReverseRelationDefinition,
-    RelationDefinition,
-    ReverseRelationDefinition
-} from '../definitions/relations';
+import { RelationDefinition, ReverseRelationDefinition } from '../definitions/relations';
 import { ViewModelStoreService } from '../core-services/view-model-store.service';
+
+export interface ModelDescriptor<M extends BaseModel, V extends BaseViewModel> {
+    relationDefinitionsByKey: { [key: string]: RelationDefinition };
+    ownKey: string;
+    foreignViewModel: ViewModelConstructor<V>;
+    foreignModel: ModelConstructor<M>;
+    order?: string;
+    titles?: {
+        [key: string]: (viewModel: V) => string;
+    };
+}
+
+export interface NestedModelDescriptors {
+    [collection: string]: ModelDescriptor<BaseModel, BaseViewModel>[];
+}
 
 export abstract class BaseRepository<V extends BaseViewModel & T, M extends BaseModel, T extends TitleInformation>
     implements OnAfterAppsLoaded, Collection {
@@ -89,6 +99,8 @@ export abstract class BaseRepository<V extends BaseViewModel & T, M extends Base
 
     protected reverseRelationsByCollection: { [collection: string]: ReverseRelationDefinition<BaseViewModel>[] } = {};
 
+    protected relationsByKey: { [key: string]: RelationDefinition<BaseViewModel> } = {};
+
     /**
      * The view model ctor of the encapsulated view model.
      */
@@ -111,12 +123,16 @@ export abstract class BaseRepository<V extends BaseViewModel & T, M extends Base
         protected translate: TranslateService,
         protected relationManager: RelationManagerService,
         protected baseModelCtor: ModelConstructor<M>,
-        protected relationDefinitions: RelationDefinition<BaseViewModel>[] = []
+        protected relationDefinitions: RelationDefinition<BaseViewModel>[] = [],
+        protected nestedModelDescriptors: NestedModelDescriptors = {}
     ) {
         this._collectionString = baseModelCtor.COLLECTIONSTRING;
 
-        this.groupRelationsByCollections();
-        this.buildReverseRelationsGrouping();
+        this.extendRelations();
+
+        this.relationDefinitions.forEach(relation => {
+            this.relationsByKey[relation.ownKey] = relation;
+        });
 
         // All data is piped through an auditTime of 1ms. This is to prevent massive
         // updates, if e.g. an autoupdate with a lot motions come in. The result is just one
@@ -130,55 +146,7 @@ export abstract class BaseRepository<V extends BaseViewModel & T, M extends Base
         this.languageCollator = new Intl.Collator(this.translate.currentLang);
     }
 
-    /**
-     * Reorders the relations to provide faster access.
-     */
-    protected groupRelationsByCollections(): void {
-        this.relationDefinitions.forEach(relation => {
-            this._groupRelationsByCollections(relation, relation);
-        });
-    }
-
-    /**
-     * Recursive function for reorderung the relations.
-     */
-    protected _groupRelationsByCollections(relation: RelationDefinition, baseRelation: RelationDefinition): void {
-        if (relation.type === 'nested') {
-            (relation.relationDefinition || []).forEach(nestedRelation => {
-                this._groupRelationsByCollections(nestedRelation, baseRelation);
-            });
-        } else if (
-            relation.type === 'M2O' ||
-            relation.type === 'M2M' ||
-            relation.type === 'O2M' ||
-            relation.type === 'custom'
-        ) {
-            const collection = relation.foreignViewModel.COLLECTIONSTRING;
-            if (!this.relationsByCollection[collection]) {
-                this.relationsByCollection[collection] = [];
-            }
-            this.relationsByCollection[collection].push(baseRelation);
-        } else if (relation.type === 'generic') {
-            relation.possibleModels.forEach(ctor => {
-                const collection = ctor.COLLECTIONSTRING;
-                if (!this.relationsByCollection[collection]) {
-                    this.relationsByCollection[collection] = [];
-                }
-                this.relationsByCollection[collection].push(baseRelation);
-            });
-        }
-    }
-
-    protected buildReverseRelationsGrouping(): void {
-        Object.keys(this.relationsByCollection).forEach(collection => {
-            const reverseRelations = this.relationsByCollection[collection].filter(relation =>
-                isReverseRelationDefinition(relation)
-            ) as ReverseRelationDefinition<BaseViewModel>[];
-            if (reverseRelations.length) {
-                this.reverseRelationsByCollection[collection] = reverseRelations;
-            }
-        });
-    }
+    protected extendRelations(): void {}
 
     public onAfterAppsLoaded(): void {
         this.baseViewModelCtor = this.collectionStringMapperService.getViewModelConstructor(this.collectionString);
@@ -214,12 +182,9 @@ export abstract class BaseRepository<V extends BaseViewModel & T, M extends Base
      *
      * @param ids All model ids.
      */
-    public changedModels(ids: number[], initialLoading: boolean): void {
+    public changedModels(ids: number[]): void {
         ids.forEach(id => {
-            this.viewModelStore[id] = this.createViewModelWithTitles(
-                this.DS.get(this.collectionString, id),
-                initialLoading
-            );
+            this.viewModelStore[id] = this.createViewModelWithTitles(this.DS.get(this.collectionString, id));
             this.updateViewModelObservable(id);
         });
     }
@@ -228,113 +193,18 @@ export abstract class BaseRepository<V extends BaseViewModel & T, M extends Base
      * After creating a view model, all functions for models form the repo
      * are assigned to the new view model.
      */
-    protected createViewModelWithTitles(model: M, initialLoading: boolean): V {
+    protected createViewModelWithTitles(model: M): V {
         const viewModel = this.relationManager.createViewModel(
             model,
             this.baseViewModelCtor,
-            this.relationDefinitions,
-            initialLoading
+            this.relationsByKey,
+            this.nestedModelDescriptors
         );
+
         viewModel.getTitle = () => this.getTitle(viewModel);
         viewModel.getListTitle = () => this.getListTitle(viewModel);
         viewModel.getVerboseName = this.getVerboseName;
         return viewModel;
-    }
-
-    /**
-     * Updates all models in this repository with all changed models.
-     *
-     * @param changedModels A mapping of collections to ids of all changed models.
-     * @returns if at least one model was affected.
-     */
-    public updateDependenciesForChangedModels(changedModels: CollectionIds): boolean {
-        if (!this.relationDefinitions.length) {
-            return false;
-        }
-
-        // Get all viewModels from this repo once.
-        const ownViewModels = this.getViewModelList();
-        const updatedIds = [];
-        Object.keys(changedModels).forEach(collection => {
-            const dependencyChanged: boolean = Object.keys(this.relationsByCollection).includes(collection);
-            if (!dependencyChanged) {
-                return;
-            }
-
-            // Ok, we are affected by this collection. Update all viewModels from this repo.
-            const relations = this.relationsByCollection[collection];
-            ownViewModels.forEach(ownViewModel => {
-                relations.forEach(relation => {
-                    changedModels[collection].forEach(id => {
-                        if (
-                            this.relationManager.updateSingleDependencyForChangedModel(
-                                ownViewModel,
-                                relation,
-                                collection,
-                                id
-                            )
-                        ) {
-                            updatedIds.push(ownViewModel.id);
-                        }
-                    });
-                });
-            });
-            // Order all relations, if neeed.
-            if (updatedIds.length) {
-                relations.forEach(relation => {
-                    if (
-                        (isNormalRelationDefinition(relation) || isReverseRelationDefinition(relation)) &&
-                        (relation.type === 'M2M' || relation.type === 'O2M') &&
-                        relation.order
-                    ) {
-                        ownViewModels.forEach(ownViewModel => {
-                            if (ownViewModel['_' + relation.ownKey]) {
-                                this.relationManager.sortByRelation(relation, ownViewModel);
-                            }
-                        });
-                    }
-                });
-            }
-
-            // Inform about changes. (List updates is done in `commitUpdate` via `DataStoreUpdateManagerService`)
-            updatedIds.forEach(id => {
-                this.updateViewModelObservable(id);
-            });
-        });
-        return !!updatedIds.length;
-    }
-
-    public updateDependenciesForDeletedModels(deletedModels: CollectionIds): boolean {
-        if (!Object.keys(this.reverseRelationsByCollection).length) {
-            return false;
-        }
-
-        // Get all viewModels from this repo once.
-        const ownViewModels = this.getViewModelList();
-        let somethingChanged = false;
-        Object.keys(deletedModels).forEach(collection => {
-            const dependencyChanged: boolean = Object.keys(this.reverseRelationsByCollection).includes(collection);
-            if (!dependencyChanged) {
-                return;
-            }
-
-            // Ok, we are affected by this collection. Update all viewModels from this repo.
-            const relations = this.reverseRelationsByCollection[collection];
-            ownViewModels.forEach(ownViewModel => {
-                relations.forEach(relation => {
-                    deletedModels[collection].forEach(id => {
-                        if (this.relationManager.updateSingleDependencyForDeletedModel(ownViewModel, relation, id)) {
-                            // Inform about changes. (List updates is done in `commitUpdate` via `DataStoreUpdateManagerService`)
-                            this.updateViewModelObservable(id);
-                            somethingChanged = true;
-                        }
-                    });
-                });
-            });
-            // Ordering all relations is not needed, because just deleting things out of arrays
-            // will not unorder them.
-        });
-        return somethingChanged;
     }
 
     /**
@@ -345,10 +215,8 @@ export abstract class BaseRepository<V extends BaseViewModel & T, M extends Base
      * @param viewModel the view model that the update is based on
      */
     public async update(update: Partial<M>, viewModel: V): Promise<void> {
-        const sendUpdate = new this.baseModelCtor();
-        sendUpdate.patchValues(viewModel.getModel());
-        sendUpdate.patchValues(update);
-        return await this.dataSend.updateModel(sendUpdate);
+        const data = viewModel.getUpdatedModel(update);
+        return await this.dataSend.updateModel(data);
     }
 
     /**
@@ -359,9 +227,8 @@ export abstract class BaseRepository<V extends BaseViewModel & T, M extends Base
      * @param viewModel the motion to update
      */
     public async patch(update: Partial<M>, viewModel: V): Promise<void> {
-        const patch = new this.baseModelCtor();
+        const patch = new this.baseModelCtor(update);
         patch.id = viewModel.id;
-        patch.patchValues(update);
         return await this.dataSend.partialUpdateModel(patch);
     }
 
@@ -384,8 +251,7 @@ export abstract class BaseRepository<V extends BaseViewModel & T, M extends Base
     public async create(model: M): Promise<Identifiable> {
         // this ensures we get a valid base model, even if the view was just
         // sending an object with "as MyModelClass"
-        const sendModel = new this.baseModelCtor();
-        sendModel.patchValues(model);
+        const sendModel = new this.baseModelCtor(model);
 
         // Strips empty fields from the sending mode data (except false)
         // required for i.e. users, since group list is mandatory

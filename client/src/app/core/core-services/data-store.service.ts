@@ -3,9 +3,9 @@ import { EventEmitter, Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 
 import { BaseModel, ModelConstructor } from '../../shared/models/base/base-model';
-import { BaseRepository } from '../repositories/base-repository';
 import { CollectionStringMapperService } from './collection-string-mapper.service';
 import { Deferred } from '../promises/deferred';
+import { RelationCacheService } from './relation-cache.service';
 import { StorageService } from './storage.service';
 
 /**
@@ -49,7 +49,7 @@ export class UpdateSlot {
     /**
      * @param DS Carries the DataStore: TODO (see below `DataStoreUpdateManagerService.getNewUpdateSlot`)
      */
-    public constructor(public readonly DS: DataStoreService, public readonly initialLoading: boolean) {
+    public constructor(public readonly DS: DataStoreService) {
         this._id = UpdateSlot.ID_COUTNER++;
     }
 
@@ -169,7 +169,10 @@ export class DataStoreUpdateManagerService {
     /**
      * @param mapperService
      */
-    public constructor(private mapperService: CollectionStringMapperService) {}
+    public constructor(
+        private mapperService: CollectionStringMapperService,
+        private relationCacheService: RelationCacheService
+    ) {}
 
     /**
      * Retrieve the current update slot.
@@ -185,13 +188,13 @@ export class DataStoreUpdateManagerService {
      * @param DS The DataStore. This is a hack, becuase we cannot use the DataStore
      * here, because these are cyclic dependencies... --> TODO
      */
-    public async getNewUpdateSlot(DS: DataStoreService, initialLoading: boolean = false): Promise<UpdateSlot> {
+    public async getNewUpdateSlot(DS: DataStoreService): Promise<UpdateSlot> {
         if (this.currentUpdateSlot) {
             const request = new Deferred();
             this.updateSlotRequests.push(request);
             await request;
         }
-        this.currentUpdateSlot = new UpdateSlot(DS, initialLoading);
+        this.currentUpdateSlot = new UpdateSlot(DS);
         return this.currentUpdateSlot;
     }
 
@@ -204,7 +207,7 @@ export class DataStoreUpdateManagerService {
      *
      * @param slot The slot to commit
      */
-    public commit(slot: UpdateSlot): void {
+    public commit(slot: UpdateSlot, changeId: number, resetCache: boolean = false): void {
         if (!this.currentUpdateSlot || !this.currentUpdateSlot.equal(slot)) {
             throw new Error('No or wrong update slot to be finished!');
         }
@@ -212,35 +215,25 @@ export class DataStoreUpdateManagerService {
 
         // notify repositories in two phases
         const repositories = this.mapperService.getAllRepositories();
-        // just commit the update in a repository, if something was changed. Save
-        // this information in this mapping. the boolean is not evaluated; if there is an
-        const affectedRepos: { [collection: string]: BaseRepository<any, any, any> } = {};
+
+        if (resetCache) {
+            this.relationCacheService.reset();
+        }
 
         // Phase 1: deleting and creating of view models (in this order)
         repositories.forEach(repo => {
             const deletedModelIds = slot.getDeletedModelIdsForCollection(repo.collectionString);
             repo.deleteModels(deletedModelIds);
+            this.relationCacheService.registerDeletedModels(repo.collectionString, deletedModelIds);
             const changedModelIds = slot.getChangedModelIdsForCollection(repo.collectionString);
-            repo.changedModels(changedModelIds, slot.initialLoading);
-
-            if (deletedModelIds.length || changedModelIds.length) {
-                affectedRepos[repo.collectionString] = repo;
-            }
+            repo.changedModels(changedModelIds);
+            this.relationCacheService.registerChangedModels(repo.collectionString, changedModelIds, changeId);
         });
 
-        // Phase 2: updating dependencies (deleting ad changing in this order)
+        // Phase 2: updating all repositories
         repositories.forEach(repo => {
-            if (repo.updateDependenciesForDeletedModels(slot.getDeletedModels())) {
-                affectedRepos[repo.collectionString] = repo;
-            }
-            if (repo.updateDependenciesForChangedModels(slot.getChangedModels())) {
-                affectedRepos[repo.collectionString] = repo;
-            }
+            repo.commitUpdate();
         });
-
-        // Phase 3: committing the update to all affected repos. This will trigger all
-        // list observables/subjects to emit the new list.
-        Object.values(affectedRepos).forEach(repo => repo.commitUpdate());
 
         slot.DS.triggerModifiedObservable();
 
@@ -350,7 +343,7 @@ export class DataStoreService {
         // This promise will be resolved with cached datastore.
         const store = await this.storageService.get<JsonStorage>(DataStoreService.cachePrefix + 'DS');
         if (store) {
-            const updateSlot = await this.DSUpdateManager.getNewUpdateSlot(this, true);
+            const updateSlot = await this.DSUpdateManager.getNewUpdateSlot(this);
 
             // There is a store. Deserialize it
             this.jsonStore = store;
@@ -370,7 +363,7 @@ export class DataStoreService {
                 });
             });
 
-            this.DSUpdateManager.commit(updateSlot);
+            this.DSUpdateManager.commit(updateSlot, maxChangeId, true);
         } else {
             await this.clear();
         }

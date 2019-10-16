@@ -47,7 +47,7 @@ export class RoundedInputComponent implements OnInit, OnDestroy {
      */
     @Input()
     public set model(value: string) {
-        if (!!value) {
+        if (value) {
             this.modelForm.setValue(value);
         }
     }

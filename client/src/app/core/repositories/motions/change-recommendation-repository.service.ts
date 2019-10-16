@@ -112,41 +112,29 @@ export class ChangeRecommendationRepositoryService extends BaseRepository<
     /**
      * Sets a change recommendation to accepted.
      *
-     * @param {ViewMotionChangeRecommendation} change
+     * @param {ViewMotionChangeRecommendation} changeRecommendation
      */
-    public async setAccepted(change: ViewMotionChangeRecommendation): Promise<void> {
-        const changeReco = change.changeRecommendation;
-        changeReco.patchValues({
-            rejected: false
-        });
-        await this.dataSend.partialUpdateModel(changeReco);
+    public async setAccepted(changeRecommendation: ViewMotionChangeRecommendation): Promise<void> {
+        await this.patch({ rejected: false }, changeRecommendation);
     }
 
     /**
      * Sets a change recommendation to rejected.
      *
-     * @param {ViewMotionChangeRecommendation} change
+     * @param {ViewMotionChangeRecommendation} changeRecommendation
      */
-    public async setRejected(change: ViewMotionChangeRecommendation): Promise<void> {
-        const changeReco = change.changeRecommendation;
-        changeReco.patchValues({
-            rejected: true
-        });
-        await this.dataSend.partialUpdateModel(changeReco);
+    public async setRejected(changeRecommendation: ViewMotionChangeRecommendation): Promise<void> {
+        await this.patch({ rejected: true }, changeRecommendation);
     }
 
     /**
      * Sets if a change recommendation is internal (for the administrators) or not.
      *
-     * @param {ViewMotionChangeRecommendation} change
+     * @param {ViewMotionChangeRecommendation} changeRecommendation
      * @param {boolean} internal
      */
-    public async setInternal(change: ViewMotionChangeRecommendation, internal: boolean): Promise<void> {
-        const changeReco = change.changeRecommendation;
-        changeReco.patchValues({
-            internal: internal
-        });
-        await this.dataSend.partialUpdateModel(changeReco);
+    public async setInternal(changeRecommendation: ViewMotionChangeRecommendation, internal: boolean): Promise<void> {
+        await this.patch({ internal: internal }, changeRecommendation);
     }
 
     public getTitleWithChanges = (originalTitle: string, change: ViewUnifiedChange, crMode: ChangeRecoMode): string => {

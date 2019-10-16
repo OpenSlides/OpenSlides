@@ -35,7 +35,7 @@ export class ProjectorListComponent extends BaseViewComponent implements OnInit,
     /**
      * This member is set, if the user is creating a new projector.
      */
-    public projectorToCreate: Projector | null;
+    public showCreateForm = false;
 
     /**
      * The create form.
@@ -126,8 +126,8 @@ export class ProjectorListComponent extends BaseViewComponent implements OnInit,
      * Opens the create form.
      */
     public onPlusButton(): void {
-        if (!this.projectorToCreate) {
-            this.projectorToCreate = new Projector();
+        if (!this.showCreateForm) {
+            this.showCreateForm = true;
             this.createForm.setValue({ name: '' });
         }
     }
@@ -136,13 +136,13 @@ export class ProjectorListComponent extends BaseViewComponent implements OnInit,
      * Creates the comment section from the create form.
      */
     public create(): void {
-        if (this.createForm.valid && this.projectorToCreate) {
-            this.projectorToCreate.patchValues(this.createForm.value as Projector);
-            this.projectorToCreate.patchValues({
+        if (this.createForm.valid && this.showCreateForm) {
+            const projector: Partial<Projector> = {
+                name: this.createForm.value.name,
                 reference_projector_id: this.projectors[0].reference_projector_id
-            });
-            this.repo.create(this.projectorToCreate).then(() => {
-                this.projectorToCreate = null;
+            };
+            this.repo.create(projector).then(() => {
+                this.showCreateForm = false;
                 this.cd.detectChanges();
             }, this.raiseError);
         }
@@ -158,7 +158,7 @@ export class ProjectorListComponent extends BaseViewComponent implements OnInit,
             this.create();
         }
         if (event.key === 'Escape') {
-            this.projectorToCreate = null;
+            this.showCreateForm = null;
         }
     }
 
@@ -169,6 +169,6 @@ export class ProjectorListComponent extends BaseViewComponent implements OnInit,
         const promises = this.projectors.map(projector => {
             return this.repo.update(update, projector);
         });
-        Promise.all(promises).then(null, this.raiseError);
+        Promise.all(promises).catch(this.raiseError);
     }
 }

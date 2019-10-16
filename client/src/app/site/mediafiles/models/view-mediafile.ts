@@ -1,5 +1,5 @@
 import { SearchRepresentation } from 'app/core/ui-services/search.service';
-import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
+import { Mediafile, MediafileWithoutNestedModels } from 'app/shared/models/mediafiles/mediafile';
 import { BaseViewModelWithListOfSpeakers } from 'app/site/base/base-view-model-with-list-of-speakers';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 import { Searchable } from 'app/site/base/searchable';
@@ -18,72 +18,12 @@ export class ViewMediafile extends BaseViewModelWithListOfSpeakers<Mediafile>
     public static COLLECTIONSTRING = Mediafile.COLLECTIONSTRING;
     protected _collectionString = Mediafile.COLLECTIONSTRING;
 
-    private _parent?: ViewMediafile;
-    private _access_groups?: ViewGroup[];
-    private _inherited_access_groups?: ViewGroup[];
-
     public get mediafile(): Mediafile {
         return this._model;
     }
 
-    public get parent(): ViewMediafile | null {
-        return this._parent;
-    }
-
-    public get access_groups(): ViewGroup[] {
-        return this._access_groups || [];
-    }
-
-    public get access_groups_id(): number[] {
-        return this.mediafile.access_groups_id;
-    }
-
-    public get inherited_access_groups(): ViewGroup[] | null {
-        return this._inherited_access_groups;
-    }
-
-    public get inherited_access_groups_id(): boolean | number[] {
-        return this.mediafile.inherited_access_groups_id;
-    }
-
-    public get has_inherited_access_groups(): boolean {
-        return this.mediafile.has_inherited_access_groups;
-    }
-
-    public get title(): string {
-        return this.filename;
-    }
-
     public get filename(): string {
-        return this.mediafile.title;
-    }
-
-    public get path(): string {
-        return this.mediafile.path;
-    }
-
-    public get parent_id(): number {
-        return this.mediafile.parent_id;
-    }
-
-    public get is_directory(): boolean {
-        return this.mediafile.is_directory;
-    }
-
-    public get is_file(): boolean {
-        return !this.is_directory;
-    }
-
-    public get size(): string | null {
-        return this.mediafile.filesize;
-    }
-
-    public get prefix(): string {
-        return this.mediafile.media_url_prefix;
-    }
-
-    public get url(): string {
-        return this.mediafile.url;
+        return this.title;
     }
 
     public get type(): string | null {
@@ -105,13 +45,17 @@ export class ViewMediafile extends BaseViewModelWithListOfSpeakers<Mediafile>
             { key: 'Path', value: this.path },
             { key: 'Type', value: type },
             { key: 'Timestamp', value: this.timestamp },
-            { key: 'Size', value: this.size ? this.size : '0' }
+            { key: 'Size', value: this.filesize ? this.filesize : '0' }
         ];
         return {
             properties,
             searchValue: properties.map(property => property.value),
             type: type
         };
+    }
+
+    public get url(): string {
+        return this.mediafile.url;
     }
 
     public getDetailStateURL(): string {
@@ -205,3 +149,9 @@ export class ViewMediafile extends BaseViewModelWithListOfSpeakers<Mediafile>
         }
     }
 }
+interface IMediafileRelations {
+    parent?: ViewMediafile;
+    access_groups?: ViewGroup[];
+    inherited_access_groups?: ViewGroup[];
+}
+export interface ViewMediafile extends MediafileWithoutNestedModels, IMediafileRelations {}

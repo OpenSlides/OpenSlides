@@ -110,7 +110,7 @@ export class AmendmentListComponent extends BaseListViewComponent<ViewMotion> im
 
     public ngOnInit(): void {
         // determine if a paramter exists.
-        if (!!this.route.snapshot.paramMap.get('id')) {
+        if (this.route.snapshot.paramMap.get('id')) {
             // set the parentMotion observable. This will "only" fire
             // if there is a subscription to the parent motion
             this.parentMotion = this.route.paramMap.pipe(
@@ -133,7 +133,7 @@ export class AmendmentListComponent extends BaseListViewComponent<ViewMotion> im
      */
     public getAmendmentSummary(amendment: ViewMotion): string {
         const diffLines = amendment.diffLines;
-        if (!!diffLines) {
+        if (diffLines) {
             return diffLines
                 .map(diffLine => {
                     return this.linenumberingService.stripLineNumbers(diffLine.text);

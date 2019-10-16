@@ -376,7 +376,7 @@ export class SuperSearchComponent implements OnInit {
             event.preventDefault();
             event.stopPropagation();
         }
-        if (!!this.selectedModel) {
+        if (this.selectedModel) {
             if (event.key === 'Enter') {
                 this.viewResult(this.selectedModel);
             }

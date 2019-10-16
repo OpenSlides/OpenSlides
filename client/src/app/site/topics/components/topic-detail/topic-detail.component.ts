@@ -203,7 +203,7 @@ export class TopicDetailComponent extends BaseViewComponent {
         const title = this.translate.instant('Are you sure you want to delete this entry?');
         const content = this.topic.title;
         if (await this.promptService.open(title, content)) {
-            await this.repo.delete(this.topic).then(null, this.raiseError);
+            await this.repo.delete(this.topic).catch(this.raiseError);
             this.router.navigate(['/agenda']);
         }
     }
