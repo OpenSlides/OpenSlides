@@ -256,7 +256,7 @@ class RedisCacheProvider:
         """
         Returns True, when there is data in the cache.
         """
-        async with get_connection() as redis:
+        async with get_connection(read_only=True) as redis:
             return await redis.exists(self.full_data_cache_key) and bool(
                 await redis.zrangebyscore(
                     self.change_id_cache_key, withscores=True, count=1, offset=0
@@ -269,7 +269,7 @@ class RedisCacheProvider:
         Returns all data from the full_data_cache in a mapping from element_id to the element.
         """
         return await aioredis.util.wait_make_dict(
-            self.eval("get_all_data", [self.full_data_cache_key])
+            self.eval("get_all_data", [self.full_data_cache_key], read_only=True)
         )
 
     @ensure_cache_wrapper()
@@ -279,7 +279,10 @@ class RedisCacheProvider:
         from element_id to the element.
         """
         response = await self.eval(
-            "get_collection_data", [self.full_data_cache_key], [f"{collection}:*"]
+            "get_collection_data",
+            [self.full_data_cache_key],
+            [f"{collection}:*"],
+            read_only=True,
         )
 
         collection_data = {}
@@ -295,7 +298,7 @@ class RedisCacheProvider:
         Returns one element from the cache. Returns None, when the element does not exist.
         """
         return await self.eval(
-            "get_element_data", [self.full_data_cache_key], [element_id]
+            "get_element_data", [self.full_data_cache_key], [element_id], read_only=True
         )
 
     @ensure_cache_wrapper()
@@ -346,6 +349,7 @@ class RedisCacheProvider:
                 "get_data_since",
                 keys=[self.full_data_cache_key, self.change_id_cache_key],
                 args=[change_id, redis_max_change_id],
+                read_only=True,
             )
         )
 
@@ -366,7 +370,7 @@ class RedisCacheProvider:
         """
         Get the highest change_id from redis.
         """
-        async with get_connection() as redis:
+        async with get_connection(read_only=True) as redis:
             value = await redis.zrevrangebyscore(
                 self.change_id_cache_key, withscores=True, count=1, offset=0
             )
@@ -380,7 +384,7 @@ class RedisCacheProvider:
         """
         Get the lowest change_id from redis.
         """
-        async with get_connection() as redis:
+        async with get_connection(read_only=True) as redis:
             value = await redis.zscore(
                 self.change_id_cache_key, "_config:lowest_change_id"
             )
@@ -390,7 +394,7 @@ class RedisCacheProvider:
 
     async def get_schema_version(self) -> Optional[SchemaVersion]:
         """ Retrieves the schema version of the cache or None, if not existent """
-        async with get_connection() as redis:
+        async with get_connection(read_only=True) as redis:
             schema_version = await redis.hgetall(self.schema_cache_key)
         if not schema_version:
             return None
@@ -407,7 +411,11 @@ class RedisCacheProvider:
             await redis.hmset_dict(self.schema_cache_key, schema_version)
 
     async def eval(
-        self, script_name: str, keys: List[str] = [], args: List[Any] = []
+        self,
+        script_name: str,
+        keys: List[str] = [],
+        args: List[Any] = [],
+        read_only: bool = False,
     ) -> Any:
         """
         Runs a lua script in redis. This wrapper around redis.eval tries to make
@@ -425,7 +433,7 @@ class RedisCacheProvider:
                 "A script with a ensure_cache prefix must have the full_data cache key as its first key"
             )
 
-        async with get_connection() as redis:
+        async with get_connection(read_only=read_only) as redis:
             try:
                 return await redis.evalsha(hash, keys, args)
             except aioredis.errors.ReplyError as e:

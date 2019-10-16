@@ -37,6 +37,8 @@ class RedisLockProvider:
         """
         Returns True, when the lock is set. Else False.
         """
+        # Execute the lookup on the main redis server (no readonly) to avoid
+        # eventual consistency between the master and replicas
         async with get_connection() as redis:
             return await redis.get(f"{self.lock_prefix}{lock_name}")
 
