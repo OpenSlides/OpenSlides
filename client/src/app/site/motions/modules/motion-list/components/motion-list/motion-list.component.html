@@ -357,7 +357,7 @@
     <div class="os-form-card-mobile" mat-dialog-content>
         <!-- Category -->
         <mat-form-field *ngIf="isCategoryAvailable()">
-            <mat-select placeholder="{{ 'Category' | translate }}" [(ngModel)]="infoDialog.category">
+            <mat-select placeholder="{{ 'Category' | translate }}" [(ngModel)]="infoDialog.category_id">
                 <mat-option [value]="null">-</mat-option>
                 <mat-option *ngFor="let category of categories" [value]="category.id">
                     {{ category.getTitle() | translate }}
@@ -366,7 +366,7 @@
         </mat-form-field>
         <!-- Motion block -->
         <mat-form-field *ngIf="isMotionBlockAvailable()">
-            <mat-select placeholder="{{ 'Motion block' | translate }}" [(ngModel)]="infoDialog.motionBlock">
+            <mat-select placeholder="{{ 'Motion block' | translate }}" [(ngModel)]="infoDialog.motion_block_id">
                 <mat-option [value]="null">-</mat-option>
                 <mat-option *ngFor="let block of motionBlocks" [value]="block.id">
                     {{ block.getTitle() | translate }}
@@ -375,9 +375,27 @@
         </mat-form-field>
         <!-- Tag -->
         <mat-form-field *ngIf="isTagAvailable()">
-            <mat-select multiple placeholder="{{ 'Tags' | translate }}" [(ngModel)]="infoDialog.tags">
+            <mat-select multiple placeholder="{{ 'Tags' | translate }}" [(ngModel)]="infoDialog.tags_id">
                 <mat-option *ngFor="let tag of tags" [value]="tag.id">
                     {{ tag.getTitle() | translate }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <!-- State -->
+        <mat-form-field *ngIf="perms.isAllowed('change_state', selectedMotion)">
+            <mat-select placeholder="{{ 'State' | translate }}" [(ngModel)]="infoDialog.state_id">
+                <mat-option *ngFor="let state of selectedMotion.state.next_states" [value]="state.id">
+                    {{ state.getTitle() | translate }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <!-- Recommendation -->
+        <mat-form-field *ngIf="perms.isAllowed('change_state', selectedMotion)">
+            <mat-select placeholder="{{ 'Recommendation' | translate }}" [(ngModel)]="infoDialog.recommendation_id">
+                <mat-option *ngFor="let state of selectedMotion.possibleRecommendations" [value]="state.id">
+                    {{ state.recommendation_label | translate }}
                 </mat-option>
             </mat-select>
         </mat-form-field>

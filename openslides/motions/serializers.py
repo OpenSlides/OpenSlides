@@ -425,7 +425,9 @@ class MotionSerializer(ModelSerializer):
     text = CharField(allow_blank=True, required=False)  # This will be checked
     # during validation
     title = CharField(max_length=255)
-    amendment_paragraphs = AmendmentParagraphsJSONSerializerField(required=False)
+    amendment_paragraphs = AmendmentParagraphsJSONSerializerField(
+        required=False, allow_null=True
+    )
     workflow_id = IntegerField(
         min_value=1, required=False, validators=[validate_workflow_field]
     )
@@ -496,7 +498,7 @@ class MotionSerializer(ModelSerializer):
             data["reason"] = validate_html(data["reason"])
 
         # The motion text is only needed, if it is not a paragraph based amendment.
-        if "amendment_paragraphs" in data:
+        if data.get("amendment_paragraphs") is not None:
             data["amendment_paragraphs"] = list(
                 map(
                     lambda entry: validate_html(entry)
