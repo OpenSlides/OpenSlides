@@ -75,6 +75,7 @@ client/typings
 client/yarn.lock
 package-lock.json
 client/package-lock.json
+cypress.json
 
 # System Files
 client/.DS_Store
