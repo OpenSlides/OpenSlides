@@ -1,18 +1,20 @@
-from django.db import transaction
-
-from openslides.poll.serializers import default_votes_validator
+from openslides.poll.serializers import (
+    BASE_OPTION_FIELDS,
+    BASE_POLL_FIELDS,
+    BASE_VOTE_FIELDS,
+)
 from openslides.utils.rest_api import (
     BooleanField,
+    CharField,
     DecimalField,
-    DictField,
+    IdPrimaryKeyRelatedField,
     IntegerField,
-    ListField,
     ModelSerializer,
     SerializerMethodField,
     ValidationError,
 )
 
-from ..utils.auth import has_perm
+from ..utils.auth import get_group_model, has_perm
 from ..utils.autoupdate import inform_changed_data
 from ..utils.validate import validate_html
 from .models import (
@@ -42,13 +44,7 @@ class AssignmentRelatedUserSerializer(ModelSerializer):
 
     class Meta:
         model = AssignmentRelatedUser
-        fields = (
-            "id",
-            "user",
-            "elected",
-            "assignment",
-            "weight",
-        )  # js-data needs the assignment-id in the nested object to define relations.
+        fields = ("id", "user", "elected", "weight")
 
 
 class AssignmentVoteSerializer(ModelSerializer):
@@ -56,9 +52,15 @@ class AssignmentVoteSerializer(ModelSerializer):
     Serializer for assignment.models.AssignmentVote objects.
     """
 
+    pollstate = SerializerMethodField()
+
     class Meta:
         model = AssignmentVote
-        fields = ("weight", "value")
+        fields = ("pollstate",) + BASE_VOTE_FIELDS
+        read_only_fields = BASE_VOTE_FIELDS
+
+    def get_pollstate(self, vote):
+        return vote.option.poll.state
 
 
 class AssignmentOptionSerializer(ModelSerializer):
@@ -66,24 +68,21 @@ class AssignmentOptionSerializer(ModelSerializer):
     Serializer for assignment.models.AssignmentOption objects.
     """
 
-    votes = AssignmentVoteSerializer(many=True, read_only=True)
-    is_elected = SerializerMethodField()
+    yes = DecimalField(max_digits=15, decimal_places=6, min_value=-2, read_only=True)
+    no = DecimalField(max_digits=15, decimal_places=6, min_value=-2, read_only=True)
+    abstain = DecimalField(
+        max_digits=15, decimal_places=6, min_value=-2, read_only=True
+    )
+
+    votes = IdPrimaryKeyRelatedField(many=True, read_only=True)
 
     class Meta:
         model = AssignmentOption
-        fields = ("id", "candidate", "is_elected", "votes", "poll", "weight")
-
-    def get_is_elected(self, obj):
-        """
-        Returns the election status of the candidate of this option.
-        If the candidate is None (e.g. deleted) the result is False.
-        """
-        if not obj.candidate:
-            return False
-        return obj.poll.assignment.is_elected(obj.candidate)
+        fields = ("user",) + BASE_OPTION_FIELDS
+        read_only_fields = ("user",) + BASE_OPTION_FIELDS
 
 
-class AssignmentAllPollSerializer(ModelSerializer):
+class AssignmentPollSerializer(ModelSerializer):
     """
     Serializer for assignment.models.AssignmentPoll objects.
 
@@ -91,103 +90,42 @@ class AssignmentAllPollSerializer(ModelSerializer):
     """
 
     options = AssignmentOptionSerializer(many=True, read_only=True)
-    votes = ListField(
-        child=DictField(
-            child=DecimalField(max_digits=15, decimal_places=6, min_value=-2)
-        ),
-        write_only=True,
-        required=False,
+
+    title = CharField(allow_blank=False, required=True)
+    groups = IdPrimaryKeyRelatedField(
+        many=True, required=False, queryset=get_group_model().objects.all()
     )
-    has_votes = SerializerMethodField()
+    voted = IdPrimaryKeyRelatedField(many=True, read_only=True)
+
+    votesvalid = DecimalField(
+        max_digits=15, decimal_places=6, min_value=-2, read_only=True
+    )
+    votesinvalid = DecimalField(
+        max_digits=15, decimal_places=6, min_value=-2, read_only=True
+    )
+    votescast = DecimalField(
+        max_digits=15, decimal_places=6, min_value=-2, read_only=True
+    )
 
     class Meta:
         model = AssignmentPoll
         fields = (
-            "id",
-            "pollmethod",
-            "description",
-            "published",
-            "options",
-            "votesabstain",
-            "votesno",
-            "votesvalid",
-            "votesinvalid",
-            "votescast",
-            "votes",
-            "has_votes",
             "assignment",
-        )  # js-data needs the assignment-id in the nested object to define relations.
-        read_only_fields = ("pollmethod",)
-        validators = (default_votes_validator,)
+            "pollmethod",
+            "votes_amount",
+            "allow_multiple_votes_per_candidate",
+            "global_no",
+            "global_abstain",
+        ) + BASE_POLL_FIELDS
+        read_only_fields = ("state",)
 
-    def get_has_votes(self, obj):
-        """
-        Returns True if this poll has some votes.
-        """
-        return obj.has_votes()
-
-    @transaction.atomic
     def update(self, instance, validated_data):
-        """
-        Customized update method for polls. To update votes use the write
-        only field 'votes'.
-
-        Example data for a 'pollmethod'='yna' poll with two candidates:
-
-            "votes": [{"Yes": 10, "No": 4, "Abstain": -2},
-                      {"Yes": -1, "No": 0, "Abstain": -2}]
-
-        Example data for a 'pollmethod' ='yn' poll with two candidates:
-            "votes": [{"Votes": 10}, {"Votes": 0}]
-        """
-        # Update votes.
-        votes = validated_data.get("votes")
-        if votes:
-            options = list(instance.get_options())
-            if len(votes) != len(options):
-                raise ValidationError(
-                    {
-                        "detail": "You have to submit data for {0} candidates.",
-                        "args": [len(options)],
-                    }
-                )
-            for index, option in enumerate(options):
-                if len(votes[index]) != len(instance.get_vote_values()):
-                    raise ValidationError(
-                        {
-                            "detail": "You have to submit data for {0} vote values",
-                            "args": [len(instance.get_vote_values())],
-                        }
-                    )
-                for vote_value, __ in votes[index].items():
-                    if vote_value not in instance.get_vote_values():
-                        raise ValidationError(
-                            {
-                                "detail": "Vote value {0} is invalid.",
-                                "args": [vote_value],
-                            }
-                        )
-                instance.set_vote_objects_with_values(
-                    option, votes[index], skip_autoupdate=True
-                )
-
-        # Update remaining writeable fields.
-        instance.description = validated_data.get("description", instance.description)
-        instance.published = validated_data.get("published", instance.published)
-        instance.votesabstain = validated_data.get(
-            "votesabstain", instance.votesabstain
-        )
-        instance.votesno = validated_data.get("votesno", instance.votesno)
-        instance.votesvalid = validated_data.get("votesvalid", instance.votesvalid)
-        instance.votesinvalid = validated_data.get(
-            "votesinvalid", instance.votesinvalid
-        )
-        instance.votescast = validated_data.get("votescast", instance.votescast)
-        instance.save()
-        return instance
+        """ Prevent from updating the assignment """
+        validated_data.pop("assignment", None)
+        return super().update(instance, validated_data)
 
 
-class AssignmentFullSerializer(ModelSerializer):
+class AssignmentSerializer(ModelSerializer):
     """
     Serializer for assignment.models.Assignment objects. With all polls.
     """
@@ -195,7 +133,7 @@ class AssignmentFullSerializer(ModelSerializer):
     assignment_related_users = AssignmentRelatedUserSerializer(
         many=True, read_only=True
     )
-    polls = AssignmentAllPollSerializer(many=True, read_only=True)
+    polls = IdPrimaryKeyRelatedField(many=True, read_only=True)
     agenda_create = BooleanField(write_only=True, required=False, allow_null=True)
     agenda_type = IntegerField(
         write_only=True, required=False, min_value=1, max_value=3, allow_null=True

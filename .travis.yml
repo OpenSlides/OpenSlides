@@ -85,7 +85,11 @@ matrix:
         - "3.6"
       script:
         - mypy openslides/ tests/
+<<<<<<< HEAD
         - pytest --cov --cov-fail-under=72
+=======
+        - pytest --cov --cov-fail-under=74
+>>>>>>> Initial work for supporting voting
 
     - name: "Server: Tests Python 3.7"
       language: python
@@ -96,7 +100,11 @@ matrix:
         - isort --check-only --diff --recursive openslides tests
         - black --check --diff --target-version py36 openslides tests
         - mypy openslides/ tests/
+<<<<<<< HEAD
         - pytest --cov --cov-fail-under=72
+=======
+        - pytest --cov --cov-fail-under=74
+>>>>>>> Initial work for supporting voting
 
     - name: "Server: Tests Python 3.8"
       language: python

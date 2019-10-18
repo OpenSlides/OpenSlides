@@ -2,7 +2,7 @@ from openslides.core.config import config
 from openslides.motions.exceptions import WorkflowError
 from openslides.motions.models import Motion, State, Workflow
 from openslides.users.models import User
-from openslides.utils.test import TestCase
+from tests.test_case import TestCase
 
 
 class ModelTest(TestCase):
@@ -25,8 +25,6 @@ class ModelTest(TestCase):
 
         self.motion.state = State.objects.get(pk=5)
         self.assertEqual(self.motion.state.name, "in progress")
-        with self.assertRaises(WorkflowError):
-            self.motion.create_poll()
 
         self.motion.state = State.objects.get(pk=6)
         self.assertEqual(self.motion.state.name, "submitted")

@@ -1,17 +1,19 @@
-from typing import Dict, Optional
-
 import jsonschema
 from django.db import transaction
 
+from openslides.poll.serializers import (
+    BASE_OPTION_FIELDS,
+    BASE_POLL_FIELDS,
+    BASE_VOTE_FIELDS,
+)
+
 from ..core.config import config
-from ..poll.serializers import default_votes_validator
 from ..utils.auth import get_group_model, has_perm
 from ..utils.autoupdate import inform_changed_data
 from ..utils.rest_api import (
     BooleanField,
     CharField,
     DecimalField,
-    DictField,
     Field,
     IdPrimaryKeyRelatedField,
     IntegerField,
@@ -28,7 +30,9 @@ from .models import (
     MotionChangeRecommendation,
     MotionComment,
     MotionCommentSection,
+    MotionOption,
     MotionPoll,
+    MotionVote,
     State,
     StatuteParagraph,
     Submitter,
@@ -220,116 +224,65 @@ class AmendmentParagraphsJSONSerializerField(Field):
         return data
 
 
+class MotionVoteSerializer(ModelSerializer):
+    pollstate = SerializerMethodField()
+
+    class Meta:
+        model = MotionVote
+        fields = ("pollstate",) + BASE_VOTE_FIELDS
+        read_only_fields = BASE_VOTE_FIELDS
+
+    def get_pollstate(self, vote):
+        return vote.option.poll.state
+
+
+class MotionOptionSerializer(ModelSerializer):
+    yes = DecimalField(max_digits=15, decimal_places=6, min_value=-2, read_only=True)
+    no = DecimalField(max_digits=15, decimal_places=6, min_value=-2, read_only=True)
+    abstain = DecimalField(
+        max_digits=15, decimal_places=6, min_value=-2, read_only=True
+    )
+
+    votes = IdPrimaryKeyRelatedField(many=True, read_only=True)
+
+    class Meta:
+        model = MotionOption
+        fields = BASE_OPTION_FIELDS
+        read_only_fields = BASE_OPTION_FIELDS
+
+
 class MotionPollSerializer(ModelSerializer):
     """
     Serializer for motion.models.MotionPoll objects.
     """
 
-    yes = SerializerMethodField()
-    no = SerializerMethodField()
-    abstain = SerializerMethodField()
-    votes = DictField(
-        child=DecimalField(
-            max_digits=15, decimal_places=6, min_value=-2, allow_null=True
-        ),
-        write_only=True,
+    options = MotionOptionSerializer(many=True, read_only=True)
+
+    title = CharField(allow_blank=False, required=True)
+    groups = IdPrimaryKeyRelatedField(
+        many=True, required=False, queryset=get_group_model().objects.all()
     )
-    has_votes = SerializerMethodField()
+    voted = IdPrimaryKeyRelatedField(many=True, read_only=True)
+
+    votesvalid = DecimalField(
+        max_digits=15, decimal_places=6, min_value=-2, read_only=True
+    )
+    votesinvalid = DecimalField(
+        max_digits=15, decimal_places=6, min_value=-2, read_only=True
+    )
+    votescast = DecimalField(
+        max_digits=15, decimal_places=6, min_value=-2, read_only=True
+    )
 
     class Meta:
         model = MotionPoll
-        fields = (
-            "id",
-            "motion",
-            "yes",
-            "no",
-            "abstain",
-            "votesvalid",
-            "votesinvalid",
-            "votescast",
-            "votes",
-            "has_votes",
-        )
-        validators = (default_votes_validator,)
+        fields = ("motion", "pollmethod") + BASE_POLL_FIELDS
+        read_only_fields = ("state",)
 
-    def __init__(self, *args, **kwargs):
-        # The following dictionary is just a cache for several votes.
-        self._votes_dicts: Dict[int, Dict[int, int]] = {}
-        super().__init__(*args, **kwargs)
-
-    def get_yes(self, obj):
-        try:
-            result: Optional[str] = str(self.get_votes_dict(obj)["Yes"])
-        except KeyError:
-            result = None
-        return result
-
-    def get_no(self, obj):
-        try:
-            result: Optional[str] = str(self.get_votes_dict(obj)["No"])
-        except KeyError:
-            result = None
-        return result
-
-    def get_abstain(self, obj):
-        try:
-            result: Optional[str] = str(self.get_votes_dict(obj)["Abstain"])
-        except KeyError:
-            result = None
-        return result
-
-    def get_votes_dict(self, obj):
-        try:
-            votes_dict = self._votes_dicts[obj.pk]
-        except KeyError:
-            votes_dict = self._votes_dicts[obj.pk] = {}
-            for vote in obj.get_votes():
-                votes_dict[vote.value] = vote.weight
-        return votes_dict
-
-    def get_has_votes(self, obj):
-        """
-        Returns True if this poll has some votes.
-        """
-        return obj.has_votes()
-
-    @transaction.atomic
     def update(self, instance, validated_data):
-        """
-        Customized update method for polls. To update votes use the write
-        only field 'votes'.
-
-        Example data:
-
-            "votes": {"Yes": 10, "No": 4, "Abstain": -2}
-        """
-        # Update votes.
-        votes = validated_data.get("votes")
-        if votes:
-            if len(votes) != len(instance.get_vote_values()):
-                raise ValidationError(
-                    {
-                        "detail": "You have to submit data for {0} vote values.",
-                        "args": [len(instance.get_vote_values())],
-                    }
-                )
-            for vote_value in votes.keys():
-                if vote_value not in instance.get_vote_values():
-                    raise ValidationError(
-                        {"detail": "Vote value {0} is invalid.", "args": [vote_value]}
-                    )
-            instance.set_vote_objects_with_values(
-                instance.get_options().get(), votes, skip_autoupdate=True
-            )
-
-        # Update remaining writeable fields.
-        instance.votesvalid = validated_data.get("votesvalid", instance.votesvalid)
-        instance.votesinvalid = validated_data.get(
-            "votesinvalid", instance.votesinvalid
-        )
-        instance.votescast = validated_data.get("votescast", instance.votescast)
-        instance.save()
-        return instance
+        """ Prevent from updating the motion """
+        validated_data.pop("motion", None)
+        return super().update(instance, validated_data)
 
 
 class MotionChangeRecommendationSerializer(ModelSerializer):
@@ -418,7 +371,7 @@ class MotionSerializer(ModelSerializer):
     """
 
     comments = MotionCommentSerializer(many=True, read_only=True)
-    polls = MotionPollSerializer(many=True, read_only=True)
+    polls = IdPrimaryKeyRelatedField(many=True, read_only=True)
     modified_final_version = CharField(allow_blank=True, required=False)
     reason = CharField(allow_blank=True, required=False)
     state_restriction = SerializerMethodField()

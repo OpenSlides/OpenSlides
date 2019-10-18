@@ -7,7 +7,6 @@ export const MediafileAppConfig: AppConfig = {
     name: 'mediafiles',
     models: [
         {
-            collectionString: 'mediafiles/mediafile',
             model: Mediafile,
             viewModel: ViewMediafile,
             searchOrder: 5,

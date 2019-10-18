@@ -45,9 +45,6 @@ export class ViewAssignment extends BaseViewModelWithAgendaItemAndListOfSpeakers
         return this._model;
     }
 
-    /**
-     * TODO: Fix assignment creation: DO NOT create a ViewUser there...
-     */
     public get candidates(): ViewUser[] {
         if (!this.assignment_related_users) {
             return [];
