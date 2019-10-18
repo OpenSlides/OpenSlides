@@ -1,18 +1,18 @@
-import { AssignmentPollMethod } from 'app/site/assignments/services/assignment-poll.service';
-import { AssignmentPollOption } from './assignment-poll-option';
-import { BaseModel } from '../base/base-model';
+import { AssignmentOption } from './assignment-option';
+import { BasePoll, BasePollWithoutNestedModels } from '../poll/base-poll';
 
-export interface AssignmentPollWithoutNestedModels extends BaseModel<AssignmentPoll> {
-    id: number;
-    pollmethod: AssignmentPollMethod;
-    description: string;
-    published: boolean;
-    votesvalid: number;
-    votesno: number;
-    votesabstain: number;
-    votesinvalid: number;
-    votescast: number;
-    has_votes: boolean;
+export enum AssignmentPollmethods {
+    'yn' = 'yn',
+    'yna' = 'yna',
+    'votes' = 'votes'
+}
+
+export interface AssignmentPollWithoutNestedModels extends BasePollWithoutNestedModels {
+    pollmethod: AssignmentPollmethods;
+    votes_amount: number;
+    allow_multiple_votes_per_candidate: boolean;
+    global_no: boolean;
+    global_abstain: boolean;
     assignment_id: number;
 }
 
@@ -20,22 +20,12 @@ export interface AssignmentPollWithoutNestedModels extends BaseModel<AssignmentP
  * Content of the 'polls' property of assignments
  * @ignore
  */
-export class AssignmentPoll extends BaseModel<AssignmentPoll> {
+export class AssignmentPoll extends BasePoll<AssignmentPoll, AssignmentOption> {
     public static COLLECTIONSTRING = 'assignments/assignment-poll';
-    private static DECIMAL_FIELDS = ['votesvalid', 'votesinvalid', 'votescast', 'votesno', 'votesabstain'];
 
     public id: number;
-    public options: AssignmentPollOption[];
 
     public constructor(input?: any) {
-        // cast stringify numbers
-        if (input) {
-            AssignmentPoll.DECIMAL_FIELDS.forEach(field => {
-                if (input[field] && typeof input[field] === 'string') {
-                    input[field] = parseFloat(input[field]);
-                }
-            });
-        }
         super(AssignmentPoll.COLLECTIONSTRING, input);
     }
 }

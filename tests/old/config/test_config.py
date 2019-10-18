@@ -1,6 +1,6 @@
 from openslides.core.config import ConfigVariable, config
 from openslides.core.exceptions import ConfigError
-from openslides.utils.test import TestCase
+from tests.test_case import TestCase
 
 
 class TTestConfigException(Exception):

@@ -204,7 +204,11 @@ class ElementCache:
         all_data: Dict[str, List[Dict[str, Any]]] = defaultdict(list)
         for element_id, data in (await self.cache_provider.get_all_data()).items():
             collection_string, _ = split_element_id(element_id)
-            all_data[collection_string].append(json.loads(data.decode()))
+            element = json.loads(data.decode())
+            element.pop(
+                "_no_delete_on_restriction", False
+            )  # remove special field for get_data_since
+            all_data[collection_string].append(element)
 
         if user_id is not None:
             for collection_string in all_data.keys():
@@ -226,7 +230,11 @@ class ElementCache:
         all_data: Dict[str, Dict[int, Dict[str, Any]]] = defaultdict(dict)
         for element_id, data in (await self.cache_provider.get_all_data()).items():
             collection_string, id = split_element_id(element_id)
-            all_data[collection_string][id] = json.loads(data.decode())
+            element = json.loads(data.decode())
+            element.pop(
+                "_no_delete_on_restriction", False
+            )  # remove special field for get_data_since
+            all_data[collection_string][id] = element
         return dict(all_data)
 
     async def get_collection_data(
@@ -241,6 +249,9 @@ class ElementCache:
         collection_data = {}
         for id in encoded_collection_data.keys():
             collection_data[id] = json.loads(encoded_collection_data[id].decode())
+            collection_data[id].pop(
+                "_no_delete_on_restriction", False
+            )  # remove special field for get_data_since
         return collection_data
 
     async def get_element_data(
@@ -257,6 +268,9 @@ class ElementCache:
         if encoded_element is None:
             return None
         element = json.loads(encoded_element.decode())  # type: ignore
+        element.pop(
+            "_no_delete_on_restriction", False
+        )  # remove special field for get_data_since
 
         if user_id is not None:
             element = await self.restrict_element_data(
@@ -319,6 +333,16 @@ class ElementCache:
             # the list(...) is important, because `changed_elements` will be
             # altered during iteration and restricting data
             for collection_string, elements in list(changed_elements.items()):
+                # Remove the _no_delete_on_restriction from each element. Collect all ids, where
+                # this field is absent or False.
+                unrestricted_ids = set()
+                for element in elements:
+                    no_delete_on_restriction = element.pop(
+                        "_no_delete_on_restriction", False
+                    )
+                    if not no_delete_on_restriction:
+                        unrestricted_ids.add(element["id"])
+
                 cacheable = self.cachables[collection_string]
                 restricted_elements = await cacheable.restrict_elements(
                     user_id, elements
@@ -327,11 +351,12 @@ class ElementCache:
                 # If the model is personalized, it must not be deleted for other users
                 if not cacheable.personalized_model:
                     # Add removed objects (through restricter) to deleted elements.
-                    element_ids = set([element["id"] for element in elements])
                     restricted_element_ids = set(
                         [element["id"] for element in restricted_elements]
                     )
-                    for id in element_ids - restricted_element_ids:
+                    # Delete all ids, that are allowed to be deleted (see unrestricted_ids) and are
+                    # not present after restricting the data.
+                    for id in unrestricted_ids - restricted_element_ids:
                         deleted_elements.append(get_element_id(collection_string, id))
 
                 if not restricted_elements:

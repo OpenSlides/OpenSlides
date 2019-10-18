@@ -1,8 +1,5 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
-
-import { TranslateService } from '@ngx-translate/core';
 
 import { CalculablePollKey } from 'app/core/ui-services/poll.service';
 import { MotionPoll } from 'app/shared/models/motions/motion-poll';
@@ -35,8 +32,6 @@ export class MotionPollDialogComponent {
     public constructor(
         public dialogRef: MatDialogRef<MotionPollDialogComponent>,
         @Inject(MAT_DIALOG_DATA) public data: MotionPoll,
-        private matSnackBar: MatSnackBar,
-        private translate: TranslateService,
         private pollService: MotionPollService
     ) {
         this.pollKeys = this.pollService.pollValues;
@@ -57,7 +52,7 @@ export class MotionPollDialogComponent {
      * TODO better validation
      */
     public submit(): void {
-        if (this.data.yes === undefined || this.data.no === undefined || this.data.abstain === undefined) {
+        /*if (this.data.yes === undefined || this.data.no === undefined || this.data.abstain === undefined) {
             this.matSnackBar.open(
                 this.translate.instant('Please fill in all required values'),
                 this.translate.instant('OK'),
@@ -67,7 +62,7 @@ export class MotionPollDialogComponent {
             );
         } else {
             this.dialogRef.close(this.data);
-        }
+        }*/
     }
 
     /**

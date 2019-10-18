@@ -13,25 +13,6 @@ def get_config_variables():
     """
     # Ballot and ballot papers
     yield ConfigVariable(
-        name="assignments_poll_vote_values",
-        default_value="auto",
-        input_type="choice",
-        label="Election method",
-        choices=(
-            {"value": "auto", "display_name": "Automatic assign of method"},
-            {"value": "votes", "display_name": "Always one option per candidate"},
-            {
-                "value": "yesnoabstain",
-                "display_name": "Always Yes-No-Abstain per candidate",
-            },
-            {"value": "yesno", "display_name": "Always Yes/No per candidate"},
-        ),
-        weight=410,
-        group="Elections",
-        subgroup="Ballot and ballot papers",
-    )
-
-    yield ConfigVariable(
         name="assignments_poll_100_percent_base",
         default_value="YES_NO_ABSTAIN",
         input_type="choice",

@@ -68,15 +68,10 @@ export class AppLoadService {
                     let repository: BaseRepository<any, any, any> = null;
                     repository = this.injector.get(entry.repository);
                     repositories.push(repository);
-                    this.modelMapper.registerCollectionElement(
-                        entry.collectionString,
-                        entry.model,
-                        entry.viewModel,
-                        repository
-                    );
+                    this.modelMapper.registerCollectionElement(entry.model, entry.viewModel, repository);
                     if (this.isSearchableModelEntry(entry)) {
                         this.searchService.registerModel(
-                            entry.collectionString,
+                            entry.model.COLLECTIONSTRING,
                             repository,
                             entry.searchOrder,
                             entry.openInNewTab
@@ -108,7 +103,7 @@ export class AppLoadService {
             // to check if the result of the contructor (the model instance) is really a searchable.
             if (!isSearchable(new entry.viewModel())) {
                 throw Error(
-                    `Wrong configuration for ${entry.collectionString}: you gave a searchOrder, but the model is not searchable.`
+                    `Wrong configuration for ${entry.model.COLLECTIONSTRING}: you gave a searchOrder, but the model is not searchable.`
                 );
             }
             return true;

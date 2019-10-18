@@ -147,7 +147,7 @@
         <!-- TODO avoid animation/switching on update -->
         <mat-tab
             *ngFor="let poll of assignment.polls; let i = index; trackBy: trackByIndex"
-            [label]="getPollLabel(poll, i)"
+            [label]="poll.title"
         >
             <os-assignment-poll [assignment]="assignment" [poll]="poll"> </os-assignment-poll>
         </mat-tab>

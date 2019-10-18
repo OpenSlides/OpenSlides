@@ -10,11 +10,9 @@ import { MotionRepositoryService } from 'app/core/repositories/motions/motion-re
 import { StatuteParagraphRepositoryService } from 'app/core/repositories/motions/statute-paragraph-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { LinenumberingService } from 'app/core/ui-services/linenumbering.service';
-import { CalculablePollKey } from 'app/core/ui-services/poll.service';
 import { ViewUnifiedChange, ViewUnifiedChangeType } from 'app/shared/models/motions/view-unified-change';
 import { getRecommendationTypeName } from 'app/shared/utils/recommendation-type-names';
 import { MotionExportInfo } from './motion-export.service';
-import { MotionPollService } from './motion-poll.service';
 import { ChangeRecoMode, InfoToExport, LineNumberingMode, PERSONAL_NOTE_ID } from '../motions.constants';
 import { ViewMotion } from '../models/view-motion';
 import { ViewMotionAmendedParagraph } from '../models/view-motion-amended-paragraph';
@@ -62,7 +60,6 @@ export class MotionPdfService {
         private configService: ConfigService,
         private pdfDocumentService: PdfDocumentService,
         private htmlToPdfService: HtmlToPdfService,
-        private pollService: MotionPollService,
         private linenumberingService: LinenumberingService,
         private commentRepo: MotionCommentSectionRepositoryService
     ) {}
@@ -366,7 +363,7 @@ export class MotionPdfService {
             const column2 = [];
             const column3 = [];
             motion.motion.polls.map((poll, index) => {
-                if (poll.has_votes) {
+                /*if (poll.has_votes) {
                     if (motion.motion.polls.length > 1) {
                         column1.push(index + 1 + '. ' + this.translate.instant('Vote'));
                         column2.push('');
@@ -389,7 +386,7 @@ export class MotionPdfService {
                             ? column3.push('')
                             : column3.push(`(${this.pollService.calculatePercentage(poll, value)} %)`);
                     });
-                }
+                }*/
             });
             metaTableBody.push([
                 {

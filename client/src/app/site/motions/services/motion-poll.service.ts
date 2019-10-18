@@ -73,7 +73,7 @@ export class MotionPollService extends PollService {
      * the base cannot be calculated
      */
     public getBaseAmount(poll: MotionPoll): number {
-        if (!poll) {
+        /*if (!poll) {
             return 0;
         }
         switch (this.percentBase) {
@@ -102,7 +102,8 @@ export class MotionPollService extends PollService {
                     return 0;
                 }
                 return poll.yes + poll.no;
-        }
+        }*/
+        return 0;
     }
 
     /**

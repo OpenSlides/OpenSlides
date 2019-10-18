@@ -7,7 +7,6 @@ export const TopicsAppConfig: AppConfig = {
     name: 'topics',
     models: [
         {
-            collectionString: 'topics/topic',
             model: Topic,
             viewModel: ViewTopic,
             searchOrder: 1,
