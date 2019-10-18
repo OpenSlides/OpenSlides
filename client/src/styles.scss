@@ -486,6 +486,10 @@ mat-expansion-panel {
     padding-right: 30px;
 }*/
 
+.mat-menu-panel {
+    max-width: initial !important;
+}
+
 .hidden-cell {
     flex: 0;
     width: 0;
