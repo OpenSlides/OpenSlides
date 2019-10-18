@@ -28,13 +28,18 @@ class Element(ElementBase, total=False):
     if full_data is None, it means, that the element was deleted. If reload is
     True, full_data is ignored and reloaded from the database later in the
     process.
+
+    no_delete_on_restriction is a flag, which is saved into the models in the cache
+    as the _no_delete_on_restriction key. If this is true, there should neither be an
+    entry for one specific model in the changed *nor the deleted* part of the
+    autoupdate, if the model was restricted.
     """
 
     information: List[str]
-    restricted: bool
     user_id: Optional[int]
     disable_history: bool
     reload: bool
+    no_delete_on_restriction: bool
 
 
 AutoupdateFormat = TypedDict(
@@ -53,7 +58,7 @@ def inform_changed_data(
     instances: Union[Iterable[Model], Model],
     information: List[str] = None,
     user_id: Optional[int] = None,
-    restricted: bool = False,
+    no_delete_on_restriction: bool = False,
 ) -> None:
     """
     Informs the autoupdate system and the caching system about the creation or
@@ -84,8 +89,8 @@ def inform_changed_data(
             collection_string=root_instance.get_collection_string(),
             full_data=root_instance.get_full_data(),
             information=information,
-            restricted=restricted,
             user_id=user_id,
+            no_delete_on_restriction=no_delete_on_restriction,
         )
 
     bundle = autoupdate_bundle.get(threading.get_ident())
@@ -101,7 +106,6 @@ def inform_deleted_data(
     deleted_elements: Iterable[Tuple[str, int]],
     information: List[str] = None,
     user_id: Optional[int] = None,
-    restricted: bool = False,
 ) -> None:
     """
     Informs the autoupdate system and the caching system about the deletion of
@@ -119,7 +123,6 @@ def inform_deleted_data(
             collection_string=deleted_element[0],
             full_data=None,
             information=information,
-            restricted=restricted,
             user_id=user_id,
         )
 
@@ -197,7 +200,12 @@ def handle_changed_elements(elements: Iterable[Element]) -> None:
         cache_elements: Dict[str, Optional[Dict[str, Any]]] = {}
         for element in elements:
             element_id = get_element_id(element["collection_string"], element["id"])
-            cache_elements[element_id] = element["full_data"]
+            full_data = element["full_data"]
+            if full_data:
+                full_data["_no_delete_on_restriction"] = element.get(
+                    "no_delete_on_restriction", False
+                )
+            cache_elements[element_id] = full_data
         return await element_cache.change_elements(cache_elements)
 
     async def async_handle_collection_elements(elements: Iterable[Element]) -> None:

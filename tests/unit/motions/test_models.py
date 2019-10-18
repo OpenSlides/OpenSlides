@@ -3,6 +3,9 @@ from unittest import TestCase
 from openslides.motions.models import Motion, MotionChangeRecommendation
 
 
+# TODO: test for MotionPoll.set_options()
+
+
 class MotionChangeRecommendationTest(TestCase):
     def test_overlapping_line_numbers(self):
         """

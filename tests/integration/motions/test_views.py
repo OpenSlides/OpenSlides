@@ -2,7 +2,7 @@ from django.test.client import Client
 
 from openslides.core.config import config
 from openslides.motions.models import Motion
-from openslides.utils.test import TestCase
+from tests.test_case import TestCase
 
 
 class AnonymousRequests(TestCase):

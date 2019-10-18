@@ -8,12 +8,7 @@ from openslides.agenda.mixins import AgendaItemWithListOfSpeakersMixin
 from openslides.core.config import config
 from openslides.core.models import Tag
 from openslides.mediafiles.models import Mediafile
-from openslides.poll.models import (
-    BaseOption,
-    BasePoll,
-    BaseVote,
-    CollectDefaultVotesMixin,
-)
+from openslides.poll.models import BaseOption, BasePoll, BaseVote
 from openslides.utils.autoupdate import inform_changed_data
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.models import RESTModelMixin
@@ -26,6 +21,8 @@ from .access_permissions import (
     MotionBlockAccessPermissions,
     MotionChangeRecommendationAccessPermissions,
     MotionCommentSectionAccessPermissions,
+    MotionPollAccessPermissions,
+    MotionVoteAccessPermissions,
     StateAccessPermissions,
     StatuteParagraphAccessPermissions,
     WorkflowAccessPermissions,
@@ -80,6 +77,11 @@ class MotionManager(models.Manager):
                 "agenda_items",
                 "lists_of_speakers",
                 "polls",
+                "polls__groups",
+                "polls__voted",
+                "polls__options",
+                "polls__options__votes",
+                "polls__options__votes__user",
                 "attachments",
                 "tags",
                 "submitters",
@@ -269,6 +271,7 @@ class Motion(RESTModelMixin, AgendaItemWithListOfSpeakersMixin, models.Model):
             ("can_support", "Can support motions"),
             ("can_manage_metadata", "Can manage motion metadata"),
             ("can_manage", "Can manage motions"),
+            ("can_manage_polls", "Can manage motion polls"),
         )
         ordering = ("identifier",)
         verbose_name = "Motion"
@@ -420,22 +423,6 @@ class Motion(RESTModelMixin, AgendaItemWithListOfSpeakersMixin, models.Model):
         Returns True if user is a supporter of this motion, else False.
         """
         return user in self.supporters.all()
-
-    def create_poll(self, skip_autoupdate=False):
-        """
-        Create a new poll for this motion.
-
-        Return the new poll object.
-        """
-        if self.state.allow_create_poll:
-            poll = MotionPoll(motion=self)
-            poll.save(skip_autoupdate=skip_autoupdate)
-            poll.set_options(skip_autoupdate=skip_autoupdate)
-            return poll
-        else:
-            raise WorkflowError(
-                f"You can not create a poll in state {self.state.name}."
-            )
 
     @property
     def workflow_id(self):
@@ -878,82 +865,48 @@ class MotionBlock(RESTModelMixin, AgendaItemWithListOfSpeakersMixin, models.Mode
 
 
 class MotionVote(RESTModelMixin, BaseVote):
-    """Saves the votes for a MotionPoll.
-
-    There should allways be three MotionVote objects for each poll,
-    one for 'yes', 'no', and 'abstain'."""
-
-    option = models.ForeignKey("MotionOption", on_delete=models.CASCADE)
-    """The option object, to witch the vote belongs."""
+    access_permissions = MotionVoteAccessPermissions()
+    option = models.ForeignKey(
+        "MotionOption", on_delete=models.CASCADE, related_name="votes"
+    )
 
     class Meta:
         default_permissions = ()
-
-    def get_root_rest_element(self):
-        """
-        Returns the motion to this instance which is the root REST element.
-        """
-        return self.option.poll.motion
 
 
 class MotionOption(RESTModelMixin, BaseOption):
-    """Links between the MotionPollClass and the MotionVoteClass.
-
-    There should be one MotionOption object for each poll."""
-
-    poll = models.ForeignKey("MotionPoll", on_delete=models.CASCADE)
-    """The poll object, to witch the object belongs."""
-
     vote_class = MotionVote
-    """The VoteClass, to witch this Class links."""
+
+    poll = models.ForeignKey(
+        "MotionPoll", related_name="options", on_delete=models.CASCADE
+    )
 
     class Meta:
         default_permissions = ()
 
     def get_root_rest_element(self):
-        """
-        Returns the motion to this instance which is the root REST element.
-        """
-        return self.poll.motion
+        return self.poll
 
 
+# Meta-TODO: Is this todo resolved?
 # TODO: remove the type-ignoring in the next line, after this is solved:
 #       https://github.com/python/mypy/issues/3855
-class MotionPoll(RESTModelMixin, CollectDefaultVotesMixin, BasePoll):  # type: ignore
-    """The Class to saves the vote result for a motion poll."""
+class MotionPoll(RESTModelMixin, BasePoll):
+    access_permissions = MotionPollAccessPermissions()
+    option_class = MotionOption
 
     motion = models.ForeignKey(Motion, on_delete=models.CASCADE, related_name="polls")
-    """The motion to witch the object belongs."""
 
-    option_class = MotionOption
-    """The option class, witch links between this object the the votes."""
-
-    vote_values = ["Yes", "No", "Abstain"]
-    """The possible anwers for the poll. 'Yes, 'No' and 'Abstain'."""
+    POLLMETHOD_YN = "YN"
+    POLLMETHOD_YNA = "YNA"
+    POLLMETHODS = (("YN", "YN"), ("YNA", "YNA"))
+    pollmethod = models.CharField(max_length=3, choices=POLLMETHODS)
 
     class Meta:
         default_permissions = ()
 
-    def __str__(self):
-        """
-        Representation method only for debugging purposes.
-        """
-        return f"MotionPoll for motion {self.motion}"
-
-    def set_options(self, skip_autoupdate=False):
-        """Create the option class for this poll."""
-        # TODO: maybe it is possible with .create() to call this without poll=self
-        #       or call this in save()
-        self.get_option_class()(poll=self).save(skip_autoupdate=skip_autoupdate)
-
-    def get_percent_base_choice(self):
-        return config["motions_poll_100_percent_base"]
-
-    def get_root_rest_element(self):
-        """
-        Returns the motion to this instance which is the root REST element.
-        """
-        return self.motion
+    def create_options(self):
+        MotionOption.objects.create(poll=self)
 
 
 class State(RESTModelMixin, models.Model):

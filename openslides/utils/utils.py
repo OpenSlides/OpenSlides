@@ -1,7 +1,7 @@
 import random
 import re
 import string
-from typing import Dict, Generator, Optional, Tuple, Type, Union
+from typing import Any, Dict, Generator, Optional, Tuple, Type, Union
 
 import roman
 from django.apps import apps
@@ -62,6 +62,14 @@ def str_dict_to_bytes(str_dict: Dict[str, str]) -> Dict[bytes, bytes]:
     for key, value in str_dict.items():
         out[key.encode()] = value.encode()
     return out
+
+
+def is_int(obj: Any) -> bool:
+    try:
+        int(obj)
+        return True
+    except (ValueError, TypeError):
+        return False
 
 
 _models_to_collection_string: Dict[str, Type[Model]] = {}

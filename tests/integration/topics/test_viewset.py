@@ -4,7 +4,7 @@ from rest_framework import status
 
 from openslides.agenda.models import Item
 from openslides.topics.models import Topic
-from openslides.utils.test import TestCase
+from tests.test_case import TestCase
 
 from ..helpers import count_queries
 

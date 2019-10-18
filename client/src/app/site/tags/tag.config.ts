@@ -7,7 +7,6 @@ export const TagAppConfig: AppConfig = {
     name: 'tag',
     models: [
         {
-            collectionString: 'core/tag',
             model: Tag,
             viewModel: ViewTag,
             searchOrder: 8,
