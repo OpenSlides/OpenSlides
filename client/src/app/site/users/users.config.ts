@@ -13,15 +13,13 @@ export const UsersAppConfig: AppConfig = {
     name: 'users',
     models: [
         {
-            collectionString: 'users/user',
             model: User,
             viewModel: ViewUser,
             searchOrder: 4,
             repository: UserRepositoryService
         },
-        { collectionString: 'users/group', model: Group, viewModel: ViewGroup, repository: GroupRepositoryService },
+        { model: Group, viewModel: ViewGroup, repository: GroupRepositoryService },
         {
-            collectionString: 'users/personal-note',
             model: PersonalNote,
             viewModel: ViewPersonalNote,
             repository: PersonalNoteRepositoryService

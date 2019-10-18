@@ -21,15 +21,21 @@ class AgendaItemMixin(models.Model):
     class Meta(Unsafe):
         abstract = True
 
-    """
-    Container for runtime information for agenda app (on create or update of this instance).
-    Can be an attribute of an item, e.g. "type", "parent_id", "comment", "duration", "weight",
-    or "create", which determinates, if the items should be created. If not given, the
-    config value is used.
-    """
-    agenda_item_update_information: Dict[str, Any] = {}
-
     agenda_item_skip_autoupdate = False
+
+    def __init__(self, *args, **kwargs):
+        self.agenda_item_update_information: Dict[str, Any] = {}
+        """
+        Container for runtime information for agenda app (on create or update of this instance).
+        Can be an attribute of an item, e.g. "type", "parent_id", "comment", "duration", "weight",
+        or "create", which determinates, if the items should be created. If not given, the
+        config value is used.
+
+        Important: Do not just write this into the class definition, becuase the object would become
+        shared within all instances inherited from this class!
+        """
+
+        super().__init__(*args, **kwargs)
 
     @property
     def agenda_item(self):

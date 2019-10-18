@@ -9,7 +9,7 @@ from openslides.assignments.models import Assignment
 from openslides.core.models import Tag
 from openslides.mediafiles.models import Mediafile
 from openslides.utils.autoupdate import inform_changed_data
-from openslides.utils.test import TestCase
+from tests.test_case import TestCase
 
 from ..helpers import count_queries
 
@@ -75,7 +75,7 @@ class CreateAssignment(TestCase):
         self.assertTrue(assignment.attachments.exists())
 
 
-class CanidatureSelf(TestCase):
+class CandidatureSelf(TestCase):
     """
     Tests self candidation view.
     """
@@ -99,7 +99,7 @@ class CanidatureSelf(TestCase):
         )
 
     def test_nominate_self_twice(self):
-        self.assignment.set_candidate(get_user_model().objects.get(username="admin"))
+        self.assignment.add_candidate(get_user_model().objects.get(username="admin"))
 
         response = self.client.post(
             reverse("assignment-candidature-self", args=[self.assignment.pk])
@@ -152,7 +152,7 @@ class CanidatureSelf(TestCase):
         self.assertEqual(response.status_code, 403)
 
     def test_withdraw_self(self):
-        self.assignment.set_candidate(get_user_model().objects.get(username="admin"))
+        self.assignment.add_candidate(get_user_model().objects.get(username="admin"))
 
         response = self.client.delete(
             reverse("assignment-candidature-self", args=[self.assignment.pk])
@@ -173,7 +173,7 @@ class CanidatureSelf(TestCase):
         self.assertEqual(response.status_code, 400)
 
     def test_withdraw_self_when_finished(self):
-        self.assignment.set_candidate(get_user_model().objects.get(username="admin"))
+        self.assignment.add_candidate(get_user_model().objects.get(username="admin"))
         self.assignment.set_phase(Assignment.PHASE_FINISHED)
         self.assignment.save()
 
@@ -184,7 +184,7 @@ class CanidatureSelf(TestCase):
         self.assertEqual(response.status_code, 400)
 
     def test_withdraw_self_during_voting(self):
-        self.assignment.set_candidate(get_user_model().objects.get(username="admin"))
+        self.assignment.add_candidate(get_user_model().objects.get(username="admin"))
         self.assignment.set_phase(Assignment.PHASE_VOTING)
         self.assignment.save()
 
@@ -198,7 +198,7 @@ class CanidatureSelf(TestCase):
         )
 
     def test_withdraw_self_during_voting_non_admin(self):
-        self.assignment.set_candidate(get_user_model().objects.get(username="admin"))
+        self.assignment.add_candidate(get_user_model().objects.get(username="admin"))
         self.assignment.set_phase(Assignment.PHASE_VOTING)
         self.assignment.save()
         admin = get_user_model().objects.get(username="admin")
@@ -267,7 +267,7 @@ class CandidatureOther(TestCase):
         )
 
     def test_nominate_other_twice(self):
-        self.assignment.set_candidate(
+        self.assignment.add_candidate(
             get_user_model().objects.get(username="test_user_eeheekai4Phue6cahtho")
         )
         response = self.client.post(
@@ -321,7 +321,7 @@ class CandidatureOther(TestCase):
         self.assertEqual(response.status_code, 403)
 
     def test_delete_other(self):
-        self.assignment.set_candidate(self.user)
+        self.assignment.add_candidate(self.user)
         response = self.client.delete(
             reverse("assignment-candidature-other", args=[self.assignment.pk]),
             {"user": self.user.pk},
@@ -343,7 +343,7 @@ class CandidatureOther(TestCase):
         self.assertEqual(response.status_code, 400)
 
     def test_delete_other_when_finished(self):
-        self.assignment.set_candidate(self.user)
+        self.assignment.add_candidate(self.user)
         self.assignment.set_phase(Assignment.PHASE_FINISHED)
         self.assignment.save()
 
@@ -355,7 +355,7 @@ class CandidatureOther(TestCase):
         self.assertEqual(response.status_code, 400)
 
     def test_delete_other_during_voting(self):
-        self.assignment.set_candidate(self.user)
+        self.assignment.add_candidate(self.user)
         self.assignment.set_phase(Assignment.PHASE_VOTING)
         self.assignment.save()
 
@@ -372,7 +372,7 @@ class CandidatureOther(TestCase):
         )
 
     def test_delete_other_during_voting_non_admin(self):
-        self.assignment.set_candidate(self.user)
+        self.assignment.add_candidate(self.user)
         self.assignment.set_phase(Assignment.PHASE_VOTING)
         self.assignment.save()
         admin = get_user_model().objects.get(username="admin")
@@ -408,7 +408,7 @@ class MarkElectedOtherUser(TestCase):
         )
 
     def test_mark_elected(self):
-        self.assignment.set_candidate(
+        self.assignment.add_candidate(
             get_user_model().objects.get(username="test_user_Oonei3rahji5jugh1eev")
         )
         response = self.client.post(
@@ -437,46 +437,3 @@ class MarkElectedOtherUser(TestCase):
             .elected.filter(username="test_user_Oonei3rahji5jugh1eev")
             .exists()
         )
-
-
-class UpdateAssignmentPoll(TestCase):
-    """
-    Tests updating polls of assignments.
-    """
-
-    def setUp(self):
-        self.client = APIClient()
-        self.client.login(username="admin", password="admin")
-        self.assignment = Assignment.objects.create(
-            title="test_assignment_ohneivoh9caiB8Yiungo", open_posts=1
-        )
-        self.assignment.set_candidate(get_user_model().objects.get(username="admin"))
-        self.poll = self.assignment.create_poll()
-
-    def test_invalid_votesvalid_value(self):
-        response = self.client.put(
-            reverse("assignmentpoll-detail", args=[self.poll.pk]),
-            {"assignment_id": self.assignment.pk, "votesvalid": "-3"},
-        )
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-    def test_invalid_votesinvalid_value(self):
-        response = self.client.put(
-            reverse("assignmentpoll-detail", args=[self.poll.pk]),
-            {"assignment_id": self.assignment.pk, "votesinvalid": "-3"},
-        )
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-    def test_invalid_votescast_value(self):
-        response = self.client.put(
-            reverse("assignmentpoll-detail", args=[self.poll.pk]),
-            {"assignment_id": self.assignment.pk, "votescast": "-3"},
-        )
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-    def test_empty_value_for_votesvalid(self):
-        response = self.client.put(
-            reverse("assignmentpoll-detail", args=[self.poll.pk]),
-            {"assignment_id": self.assignment.pk, "votesvalid": ""},
-        )
-        self.assertEqual(response.status_code, status.HTTP_200_OK)

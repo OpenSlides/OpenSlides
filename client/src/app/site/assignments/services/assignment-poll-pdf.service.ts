@@ -7,7 +7,6 @@ import { PdfDocumentService } from 'app/core/pdf-services/pdf-document.service';
 import { AssignmentRepositoryService } from 'app/core/repositories/assignments/assignment-repository.service';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
-import { AssignmentPollMethod } from './assignment-poll.service';
 import { ViewAssignmentPoll } from '../models/view-assignment-poll';
 
 /**
@@ -113,6 +112,7 @@ export class AssignmentPollPdfService extends PollPdfService {
      * @param title The identifier of the motion
      * @param subtitle The actual motion title
      */
+    // TODO: typing of result
     protected createBallot(data: AbstractPollData): object {
         return {
             columns: [
@@ -136,8 +136,9 @@ export class AssignmentPollPdfService extends PollPdfService {
         };
     }
 
+    // TODO: typing of result
     private createCandidateFields(poll: ViewAssignmentPoll): object {
-        const candidates = poll.options.sort((a, b) => {
+        /*const candidates = poll.options.sort((a, b) => {
             return a.weight - b.weight;
         });
         const resultObject = candidates.map(cand => {
@@ -150,10 +151,12 @@ export class AssignmentPollPdfService extends PollPdfService {
             noEntry.margin[1] = 25;
             resultObject.push(noEntry);
         }
-        return resultObject;
+        return resultObject;*/
+        throw new Error('TODO');
     }
 
-    private createYNBallotEntry(option: string, method: AssignmentPollMethod): object {
+    // TODO: typing of result
+    /*private createYNBallotEntry(option: string, method: AssignmentPollmethods): object {
         const choices = method === 'yna' ? ['Yes', 'No', 'Abstain'] : ['Yes', 'No'];
         const columnstack = choices.map(choice => {
             return {
@@ -171,7 +174,7 @@ export class AssignmentPollPdfService extends PollPdfService {
                 columns: columnstack
             }
         ];
-    }
+    }*/
 
     /**
      * Generates the poll description
@@ -179,10 +182,12 @@ export class AssignmentPollPdfService extends PollPdfService {
      * @param poll
      * @returns pdfMake definitions
      */
+    // TODO: typing of result
     private createPollHint(poll: ViewAssignmentPoll): object {
-        return {
+        /*return {
             text: poll.description || '',
             style: 'description'
-        };
+        };*/
+        throw new Error('TODO');
     }
 }

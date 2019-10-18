@@ -1,5 +1,4 @@
 from collections import OrderedDict
-from decimal import Decimal
 from typing import Any, Dict, List
 
 from django.conf import settings
@@ -11,19 +10,16 @@ from openslides.agenda.models import Speaker
 from openslides.core.config import config
 from openslides.core.models import Tag
 from openslides.mediafiles.models import Mediafile
-from openslides.poll.models import (
-    BaseOption,
-    BasePoll,
-    BaseVote,
-    CollectDefaultVotesMixin,
-    PublishPollMixin,
-)
+from openslides.poll.models import BaseOption, BasePoll, BaseVote
 from openslides.utils.autoupdate import inform_changed_data
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.models import RESTModelMixin
 
 from ..utils.models import CASCADE_AND_AUTOUPDATE, SET_NULL_AND_AUTOUPDATE
-from .access_permissions import AssignmentAccessPermissions
+from .access_permissions import (
+    AssignmentAccessPermissions,
+    AssignmentPollAccessPermissions,
+)
 
 
 class AssignmentRelatedUser(RESTModelMixin, models.Model):
@@ -196,7 +192,7 @@ class Assignment(RESTModelMixin, AgendaItemWithListOfSpeakersMixin, models.Model
         """
         return self.elected.filter(pk=user.pk).exists()
 
-    def set_candidate(self, user):
+    def add_candidate(self, user):
         """
         Adds the user as candidate.
         """
@@ -215,7 +211,7 @@ class Assignment(RESTModelMixin, AgendaItemWithListOfSpeakersMixin, models.Model
             user=user, defaults={"elected": True}
         )
 
-    def delete_related_user(self, user):
+    def remove_candidate(self, user):
         """
         Delete the connection from the assignment to the user.
         """
@@ -232,59 +228,6 @@ class Assignment(RESTModelMixin, AgendaItemWithListOfSpeakersMixin, models.Model
             raise ValueError(f"Invalid phase {phase}")
 
         self.phase = phase
-
-    def create_poll(self):
-        """
-        Creates a new poll for the assignment and adds all candidates to all
-        lists of speakers of related agenda items.
-        """
-        candidates = self.candidates.all()
-
-        # Find out the method of the election
-        if config["assignments_poll_vote_values"] == "votes":
-            pollmethod = "votes"
-        elif config["assignments_poll_vote_values"] == "yesnoabstain":
-            pollmethod = "yna"
-        elif config["assignments_poll_vote_values"] == "yesno":
-            pollmethod = "yn"
-        else:
-            # config['assignments_poll_vote_values'] == 'auto'
-            # candidates <= available posts -> yes/no/abstain
-            if len(candidates) <= (self.open_posts - self.elected.count()):
-                pollmethod = "yna"
-            else:
-                pollmethod = "votes"
-
-        # Create the poll with the candidates.
-        poll = self.polls.create(
-            description=self.poll_description_default, pollmethod=pollmethod
-        )
-        options = []
-        related_users = AssignmentRelatedUser.objects.filter(
-            assignment__id=self.id
-        ).exclude(elected=True)
-        for related_user in related_users:
-            options.append(
-                {"candidate": related_user.user, "weight": related_user.weight}
-            )
-        poll.set_options(options, skip_autoupdate=True)
-        inform_changed_data(self)
-
-        # Add all candidates to list of speakers of related agenda item
-        # TODO: Try to do this in a bulk create
-        if config["assignments_add_candidates_to_list_of_speakers"]:
-            for candidate in self.candidates:
-                try:
-                    Speaker.objects.add(
-                        candidate, self.list_of_speakers, skip_autoupdate=True
-                    )
-                except OpenSlidesError:
-                    # The Speaker is already on the list. Do nothing.
-                    # TODO: Find a smart way not to catch the error concerning AnonymousUser.
-                    pass
-            inform_changed_data(self.list_of_speakers)
-
-        return poll
 
     def vote_results(self, only_published):
         """
@@ -332,88 +275,76 @@ class AssignmentVote(RESTModelMixin, BaseVote):
     class Meta:
         default_permissions = ()
 
-    def get_root_rest_element(self):
-        """
-        Returns the assignment to this instance which is the root REST element.
-        """
-        return self.option.poll.assignment
-
 
 class AssignmentOption(RESTModelMixin, BaseOption):
+    vote_class = AssignmentVote
+
     poll = models.ForeignKey(
         "AssignmentPoll", on_delete=models.CASCADE, related_name="options"
     )
-    candidate = models.ForeignKey(
+    user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=SET_NULL_AND_AUTOUPDATE, null=True
     )
     weight = models.IntegerField(default=0)
 
-    vote_class = AssignmentVote
-
     class Meta:
         default_permissions = ()
 
-    def __str__(self):
-        return str(self.candidate)
-
     def get_root_rest_element(self):
-        """
-        Returns the assignment to this instance which is the root REST element.
-        """
-        return self.poll.assignment
+        return self.poll
 
 
+# Meta-TODO: Is this todo resolved?
 # TODO: remove the type-ignoring in the next line, after this is solved:
 #       https://github.com/python/mypy/issues/3855
-class AssignmentPoll(  # type: ignore
-    RESTModelMixin, CollectDefaultVotesMixin, PublishPollMixin, BasePoll
-):
+class AssignmentPoll(RESTModelMixin, BasePoll):
+    access_permissions = AssignmentPollAccessPermissions()
     option_class = AssignmentOption
 
     assignment = models.ForeignKey(
         Assignment, on_delete=models.CASCADE, related_name="polls"
     )
-    pollmethod = models.CharField(max_length=5, default="yna")
-    description = models.CharField(max_length=79, blank=True)
 
-    votesabstain = models.DecimalField(
-        null=True,
-        blank=True,
-        validators=[MinValueValidator(Decimal("-2"))],
-        max_digits=15,
-        decimal_places=6,
-    )
-    """ General abstain votes, used for pollmethod 'votes' """
-    votesno = models.DecimalField(
-        null=True,
-        blank=True,
-        validators=[MinValueValidator(Decimal("-2"))],
-        max_digits=15,
-        decimal_places=6,
-    )
-    """ General no votes, used for pollmethod 'votes' """
+    POLLMETHOD_YN = "YN"
+    POLLMETHOD_YNA = "YNA"
+    POLLMETHOD_VOTES = "votes"
+    POLLMETHODS = (("YN", "YN"), ("YNA", "YNA"), ("votes", "votes"))
+    pollmethod = models.CharField(max_length=5, choices=POLLMETHODS)
+
+    global_abstain = models.BooleanField(default=True)
+    global_no = models.BooleanField(default=True)
+
+    votes_amount = models.IntegerField(default=1, validators=[MinValueValidator(1)])
+    """ For "votes" mode: The amount of votes a voter can give. """
+
+    allow_multiple_votes_per_candidate = models.BooleanField(default=False)
 
     class Meta:
         default_permissions = ()
 
-    def get_assignment(self):
-        return self.assignment
+    def create_options(self):
+        related_users = AssignmentRelatedUser.objects.filter(
+            assignment__id=self.assignment.id
+        ).exclude(elected=True)
+        options = [
+            AssignmentOption(
+                user=related_user.user, weight=related_user.weight, poll=self
+            )
+            for related_user in related_users
+        ]
+        AssignmentOption.objects.bulk_create(options)
+        inform_changed_data(self)
 
-    def get_vote_values(self):
-        if self.pollmethod == "yna":
-            return ["Yes", "No", "Abstain"]
-        if self.pollmethod == "yn":
-            return ["Yes", "No"]
-        return ["Votes"]
-
-    def get_ballot(self):
-        return self.assignment.polls.filter(id__lte=self.pk).count()
-
-    def get_percent_base_choice(self):
-        return config["assignments_poll_100_percent_base"]
-
-    def get_root_rest_element(self):
-        """
-        Returns the assignment to this instance which is the root REST element.
-        """
-        return self.assignment
+        # Add all candidates to list of speakers of related agenda item
+        if config["assignments_add_candidates_to_list_of_speakers"]:
+            for related_user in related_users:
+                try:
+                    Speaker.objects.add(
+                        related_user.user,
+                        self.assignment.list_of_speakers,
+                        skip_autoupdate=True,
+                    )
+                except OpenSlidesError:
+                    # The Speaker is already on the list. Do nothing.
+                    pass
+            inform_changed_data(self.assignment.list_of_speakers)

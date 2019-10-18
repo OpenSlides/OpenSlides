@@ -8,7 +8,7 @@ from . import logging
 from .access_permissions import BaseAccessPermissions
 from .autoupdate import Element, inform_changed_data, inform_changed_elements
 from .rest_api import model_serializer_classes
-from .utils import convert_camel_case_to_pseudo_snake_case
+from .utils import convert_camel_case_to_pseudo_snake_case, get_element_id
 
 
 logger = logging.getLogger(__name__)
@@ -90,7 +90,16 @@ class RESTModelMixin:
         """
         return self.pk  # type: ignore
 
-    def save(self, skip_autoupdate: bool = False, *args: Any, **kwargs: Any) -> Any:
+    def get_element_id(self) -> str:
+        return get_element_id(self.get_collection_string(), self.get_rest_pk())
+
+    def save(
+        self,
+        skip_autoupdate: bool = False,
+        no_delete_on_restriction: bool = False,
+        *args: Any,
+        **kwargs: Any,
+    ) -> Any:
         """
         Calls Django's save() method and afterwards hits the autoupdate system.
 
@@ -104,7 +113,10 @@ class RESTModelMixin:
 
         return_value = super().save(*args, **kwargs)  # type: ignore
         if not skip_autoupdate:
-            inform_changed_data(self.get_root_rest_element())
+            inform_changed_data(
+                self.get_root_rest_element(),
+                no_delete_on_restriction=no_delete_on_restriction,
+            )
         return return_value
 
     def delete(self, skip_autoupdate: bool = False, *args: Any, **kwargs: Any) -> Any:

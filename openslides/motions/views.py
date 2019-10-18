@@ -1,3 +1,4 @@
+from decimal import Decimal
 from typing import List, Set
 
 import jsonschema
@@ -8,17 +9,16 @@ from django.db.models.deletion import ProtectedError
 from django.http.request import QueryDict
 from rest_framework import status
 
+from openslides.poll.views import BasePollViewSet, BaseVoteViewSet
+
 from ..core.config import config
 from ..core.models import Tag
 from ..utils.auth import has_perm, in_some_groups
 from ..utils.autoupdate import inform_changed_data, inform_deleted_data
 from ..utils.rest_api import (
-    DestroyModelMixin,
-    GenericViewSet,
     ModelViewSet,
     Response,
     ReturnDict,
-    UpdateModelMixin,
     ValidationError,
     detail_route,
     list_route,
@@ -34,7 +34,6 @@ from .access_permissions import (
     StatuteParagraphAccessPermissions,
     WorkflowAccessPermissions,
 )
-from .exceptions import WorkflowError
 from .models import (
     Category,
     Motion,
@@ -43,13 +42,13 @@ from .models import (
     MotionComment,
     MotionCommentSection,
     MotionPoll,
+    MotionVote,
     State,
     StatuteParagraph,
     Submitter,
     Workflow,
 )
 from .numbering import numbering
-from .serializers import MotionPollSerializer
 
 
 # Viewsets for the REST API
@@ -87,7 +86,6 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
             "follow_recommendation",
             "manage_multiple_submitters",
             "manage_multiple_tags",
-            "create_poll",
         ):
             result = has_perm(self.request.user, "motions.can_see") and has_perm(
                 self.request.user, "motions.can_manage_metadata"
@@ -400,9 +398,7 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
             message = ["Comment {arg1} deleted", section.name]
 
         # Fire autoupdate again to save information to OpenSlides history.
-        inform_changed_data(
-            motion, information=message, user_id=request.user.pk, restricted=True
-        )
+        inform_changed_data(motion, information=message, user_id=request.user.pk)
 
         return Response({"detail": message})
 
@@ -1042,31 +1038,6 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
 
         return Response({"detail": "Recommendation followed successfully."})
 
-    @detail_route(methods=["post"])
-    def create_poll(self, request, pk=None):
-        """
-        View to create a poll. It is a POST request without any data.
-        """
-        motion = self.get_object()
-        if not motion.state.allow_create_poll:
-            raise ValidationError(
-                {"detail": "You can not create a poll in this motion state."}
-            )
-        try:
-            with transaction.atomic():
-                poll = motion.create_poll(skip_autoupdate=True)
-        except WorkflowError as err:
-            raise ValidationError({"detail": err})
-
-        # Fire autoupdate again to save information to OpenSlides history.
-        inform_changed_data(
-            motion, information=["Vote created"], user_id=request.user.pk
-        )
-
-        return Response(
-            {"detail": "Vote created successfully.", "createdPollId": poll.pk}
-        )
-
     @list_route(methods=["post"])
     @transaction.atomic
     def manage_multiple_tags(self, request):
@@ -1137,7 +1108,7 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
         )
 
 
-class MotionPollViewSet(UpdateModelMixin, DestroyModelMixin, GenericViewSet):
+class MotionPollViewSet(BasePollViewSet):
     """
     API endpoint for motion polls.
 
@@ -1145,9 +1116,8 @@ class MotionPollViewSet(UpdateModelMixin, DestroyModelMixin, GenericViewSet):
     """
 
     queryset = MotionPoll.objects.all()
-    serializer_class = MotionPollSerializer
 
-    def check_view_permissions(self):
+    def has_manage_permissions(self):
         """
         Returns True if the user has required permissions.
         """
@@ -1155,16 +1125,30 @@ class MotionPollViewSet(UpdateModelMixin, DestroyModelMixin, GenericViewSet):
             self.request.user, "motions.can_manage_metadata"
         )
 
+    def perform_create(self, serializer):
+        motion = serializer.validated_data["motion"]
+        if not motion.state.allow_create_poll:
+            raise ValidationError(
+                {"detail": "You can not create a poll in this motion state."}
+            )
+
+        super().perform_create(serializer)
+
+        # Fire autoupdate again to save information to OpenSlides history.
+        inform_changed_data(
+            motion, information=["Poll created"], user_id=self.request.user.pk
+        )
+
     def update(self, *args, **kwargs):
         """
         Customized view endpoint to update a motion poll.
         """
         response = super().update(*args, **kwargs)
-        poll = self.get_object()
 
         # Fire autoupdate again to save information to OpenSlides history.
+        poll = self.get_object()
         inform_changed_data(
-            poll.motion, information=["Vote updated"], user_id=self.request.user.pk
+            poll.motion, information=["Poll updated"], user_id=self.request.user.pk
         )
 
         return response
@@ -1178,10 +1162,74 @@ class MotionPollViewSet(UpdateModelMixin, DestroyModelMixin, GenericViewSet):
 
         # Fire autoupdate again to save information to OpenSlides history.
         inform_changed_data(
-            poll.motion, information=["Vote deleted"], user_id=self.request.user.pk
+            poll.motion, information=["Poll deleted"], user_id=self.request.user.pk
         )
 
         return result
+
+    def handle_analog_vote(self, data, poll, user):
+        """
+        Request data:
+        { "Y": <amount>, "N": <amount>, ["A": <amount>],
+          ["votesvalid": <amount>], ["votesinvalid": <amount>], ["votescast": <amount>]}
+        All amounts are decimals as strings
+        """
+        if not isinstance(data, dict):
+            raise ValidationError({"detail": "Data must be a dict"})
+        Y = self.parse_decimal_value(data.get("Y"), min_value=-2)
+        N = self.parse_decimal_value(data.get("N"), min_value=-2)
+        if poll.pollmethod == MotionPoll.POLLMETHOD_YNA:
+            A = self.parse_decimal_value(data.get("A"), min_value=-2)
+
+        option = poll.options.get()
+        MotionVote.objects.create(option=option, value="Y", weight=Y)
+        MotionVote.objects.create(option=option, value="N", weight=N)
+        if poll.pollmethod == MotionPoll.POLLMETHOD_YNA:
+            MotionVote.objects.create(option=option, value="A", weight=A)
+
+        if "votesvalid" in data:
+            poll.votesvalid = self.parse_decimal_value(data["votesvalid"], min_value=-2)
+        if "votesinvalid" in data:
+            poll.votesinvalid = self.parse_decimal_value(
+                data["votesinvalid"], min_value=-2
+            )
+        if "votescast" in data:
+            poll.votescast = self.parse_decimal_value(data["votescast"], min_value=-2)
+
+        poll.state = MotionPoll.STATE_FINISHED  # directly stop the poll
+        poll.save()
+
+    def validate_vote_data(self, data, poll):
+        if poll.pollmethod == MotionPoll.POLLMETHOD_YNA and data not in ("Y", "N", "A"):
+            raise ValidationError("Data must be Y, N or A")
+        elif poll.pollmethod == MotionPoll.POLLMETHOD_YN and data not in ("Y", "N"):
+            raise ValidationError("Data must be Y or N")
+
+    def handle_named_vote(self, data, poll, user):
+        self.validate_vote_data(data, poll)
+
+        option = poll.options.get()
+        vote, _ = MotionVote.objects.get_or_create(user=user, option=option)
+        self.set_vote_data(data, vote, poll)
+
+    def handle_pseudoanonymous_vote(self, data, poll):
+        self.validate_vote_data(data, poll)
+
+        option = poll.options.get()
+        vote = MotionVote.objects.create(option=option)
+        self.set_vote_data(data, vote, poll)
+
+    def set_vote_data(self, data, vote, poll):
+        vote.value = data
+        vote.weight = Decimal("1")
+        vote.save(no_delete_on_restriction=True)
+
+
+class MotionVoteViewSet(BaseVoteViewSet):
+    queryset = MotionVote.objects.all()
+
+    def check_view_permissions(self):
+        return has_perm(self.request.user, "motions.can_see")
 
 
 class MotionChangeRecommendationViewSet(ModelViewSet):
@@ -1620,7 +1668,6 @@ class StateViewSet(ModelViewSet, ProtectedErrorMessageMixin):
     """
 
     queryset = State.objects.all()
-    # serializer_class = StateSerializer
     access_permissions = StateAccessPermissions()
 
     def check_view_permissions(self):
