@@ -1,6 +1,6 @@
 import time
 from collections import defaultdict
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, cast
 from urllib.parse import parse_qs
 
 from channels.generic.websocket import AsyncWebsocketConsumer
@@ -55,7 +55,9 @@ class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
             logger.debug(f"connect: denied ({self._id})")
             return
 
-        query_string = parse_qs(self.scope["query_string"])
+        query_string = cast(
+            Dict[bytes, List[bytes]], parse_qs(self.scope["query_string"])
+        )
         if b"change_id" in query_string:
             try:
                 change_id = int(query_string[b"change_id"][0])
