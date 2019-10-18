@@ -1,14 +1,8 @@
 import { Component, Input } from '@angular/core';
 
-import { TranslateService } from '@ngx-translate/core';
 
 import { SlideData } from 'app/core/core-services/projector-data.service';
 import { CalculablePollKey, PollVoteValue } from 'app/core/ui-services/poll.service';
-import {
-    AssignmentPollService,
-    CalculationData,
-    SummaryPollKey
-} from 'app/site/assignments/services/assignment-poll.service';
 import { BaseSlideComponent } from 'app/slides/base-slide-component';
 import { PollSlideData, PollSlideOption } from './poll-slide-data';
 
@@ -20,20 +14,19 @@ import { PollSlideData, PollSlideOption } from './poll-slide-data';
 export class PollSlideComponent extends BaseSlideComponent<PollSlideData> {
     private _data: SlideData<PollSlideData>;
 
-    private calculationData: CalculationData;
-
-    public get pollValues(): SummaryPollKey[] {
+    public get pollValues(): any {
+        // SummaryPollKey[] {
         if (!this.data) {
             return [];
         }
-        const values: SummaryPollKey[] = ['votesno', 'votesabstain', 'votesvalid', 'votesinvalid', 'votescast'];
+        const values: any /*SummaryPollKey[]*/ = ['votesno', 'votesabstain', 'votesvalid', 'votesinvalid', 'votescast'];
         return values.filter(val => this.data.data.poll[val] !== null);
     }
 
     @Input()
     public set data(data: SlideData<PollSlideData>) {
         this._data = data;
-        this.calculationData = {
+        /*this.calculationData = {
             pollMethod: data.data.poll.pollmethod,
             votesno: parseFloat(data.data.poll.votesno),
             votesabstain: parseFloat(data.data.poll.votesabstain),
@@ -51,15 +44,11 @@ export class PollSlideComponent extends BaseSlideComponent<PollSlideData> {
                 };
             }),
             percentBase: data.data.assignments_poll_100_percent_base
-        };
+        };*/
     }
 
     public get data(): SlideData<PollSlideData> {
         return this._data;
-    }
-
-    public constructor(private pollService: AssignmentPollService, private translate: TranslateService) {
-        super();
     }
 
     /**
@@ -70,7 +59,7 @@ export class PollSlideComponent extends BaseSlideComponent<PollSlideData> {
      * @param option
      */
     public getVotePercent(key: PollVoteValue, option: PollSlideOption): string {
-        const calcOption = {
+        /*const calcOption = {
             votes: option.votes.map(vote => {
                 return { weight: parseFloat(vote.weight), value: vote.value };
             })
@@ -79,19 +68,22 @@ export class PollSlideComponent extends BaseSlideComponent<PollSlideData> {
         const number = this.translate.instant(
             this.pollService.getSpecialLabel(parseFloat(option.votes.find(v => v.value === key).weight))
         );
-        return percent === null ? number : `${number} (${percent}%)`;
+        return percent === null ? number : `${number} (${percent}%)`;*/
+        throw new Error('TODO');
     }
 
     public getPollPercent(key: CalculablePollKey): string {
-        const percent = this.pollService.getValuePercent(this.calculationData, key);
+        /*const percent = this.pollService.getValuePercent(this.calculationData, key);
         const number = this.translate.instant(this.pollService.getSpecialLabel(this.calculationData[key]));
-        return percent === null ? number : `${number} (${percent}%)`;
+        return percent === null ? number : `${number} (${percent}%)`;*/
+        throw new Error('TODO');
     }
 
     /**
      * @returns a translated label for a key
      */
     public getLabel(key: CalculablePollKey): string {
-        return this.translate.instant(this.pollService.getLabel(key));
+        // return this.translate.instant(this.pollService.getLabel(key));
+        throw new Error('TODO');
     }
 }

@@ -35,7 +35,6 @@ def listen_to_related_object_post_save(sender, instance, created, **kwargs):
 
     if is_agenda_item_content_object:
         if created:
-
             if instance.get_collection_string() == "topics/topic":
                 should_create_item = True
             elif config["agenda_item_creation"] == "always":

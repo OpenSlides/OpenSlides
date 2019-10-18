@@ -9,7 +9,7 @@ from openslides import __license__ as license, __url__ as url, __version__ as ve
 from openslides.core.config import ConfigVariable, config
 from openslides.core.models import Projector
 from openslides.utils.rest_api import ValidationError
-from openslides.utils.test import TestCase
+from tests.test_case import TestCase
 
 
 @pytest.mark.django_db(transaction=False)

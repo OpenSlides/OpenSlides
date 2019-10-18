@@ -2,7 +2,7 @@ from openslides.agenda.models import ListOfSpeakers, Speaker
 from openslides.topics.models import Topic
 from openslides.users.models import User
 from openslides.utils.exceptions import OpenSlidesError
-from openslides.utils.test import TestCase
+from tests.test_case import TestCase
 
 
 class ListOfSpeakerModelTests(TestCase):

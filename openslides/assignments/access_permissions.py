@@ -42,3 +42,12 @@ class AssignmentAccessPermissions(BaseAccessPermissions):
             data = []
 
         return data
+
+
+class AssignmentPollAccessPermissions(BaseAccessPermissions):
+    base_permission = "assignments.can_see"
+
+    async def get_restricted_data(
+        self, full_data: List[Dict[str, Any]], user_id: int
+    ) -> List[Dict[str, Any]]:
+        return full_data

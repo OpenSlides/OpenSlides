@@ -3,11 +3,7 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
 import { HtmlToPdfService } from 'app/core/pdf-services/html-to-pdf.service';
-import { PollVoteValue } from 'app/core/ui-services/poll.service';
-import { AssignmentPollService } from './assignment-poll.service';
 import { ViewAssignment } from '../models/view-assignment';
-import { ViewAssignmentPoll } from '../models/view-assignment-poll';
-import { ViewAssignmentPollOption } from '../models/view-assignment-poll-option';
 
 /**
  * Creates a PDF document from a single assignment
@@ -17,12 +13,6 @@ import { ViewAssignmentPollOption } from '../models/view-assignment-poll-option'
 })
 export class AssignmentPdfService {
     /**
-     * Will be set to `true` of a person was elected.
-     * Determines that in indicator is shown under the table
-     */
-    private showIsElected = false;
-
-    /**
      * Constructor
      *
      * @param translate Translate
@@ -30,11 +20,7 @@ export class AssignmentPdfService {
      * @param pdfDocumentService PDF functions
      * @param htmlToPdfService Convert the assignment detail html text to pdf
      */
-    public constructor(
-        private translate: TranslateService,
-        private pollService: AssignmentPollService,
-        private htmlToPdfService: HtmlToPdfService
-    ) {}
+    public constructor(private translate: TranslateService, private htmlToPdfService: HtmlToPdfService) {}
 
     /**
      * Main function to control the pdf generation.
@@ -161,7 +147,8 @@ export class AssignmentPdfService {
      * @param pollOption the poll options (yes, no, maybe [...])
      * @returns a line in the table
      */
-    private electedCandidateLine(candidateName: string, pollOption: ViewAssignmentPollOption): object {
+    // TODO: type the result.
+    /*private electedCandidateLine(candidateName: string, pollOption: ViewAssignmentOption): object {
         if (pollOption.is_elected) {
             this.showIsElected = true;
             return {
@@ -172,8 +159,8 @@ export class AssignmentPdfService {
             return {
                 text: candidateName
             };
-        }
-    }
+        }*
+    }*/
 
     /**
      * Creates the poll result table for all published polls
@@ -181,8 +168,9 @@ export class AssignmentPdfService {
      * @param assignment the ViewAssignment to create the document for
      * @returns the table as pdfmake object
      */
+    // TODO: type the result
     private createPollResultTable(assignment: ViewAssignment): object {
-        const resultBody = [];
+        /*const resultBody = [];
         for (let pollIndex = 0; pollIndex < assignment.polls.length; pollIndex++) {
             const poll = assignment.polls[pollIndex];
             if (poll.published) {
@@ -277,7 +265,8 @@ export class AssignmentPdfService {
             });
         }
 
-        return resultBody;
+        return resultBody;*/
+        throw new Error('TODO');
     }
 
     /**
@@ -287,32 +276,32 @@ export class AssignmentPdfService {
      * @param optionLabel Usually Yes or No
      * @param value the amount of votes
      * @param poll the specific poll
-     * @param pollOption the corresponding poll option
+     * @param option the corresponding poll option
      * @returns a string a nicer number representation: "Yes 25 (22,2%)" or just "10"
      */
-    private parseVoteValue(
+    /*private parseVoteValue(
         optionLabel: PollVoteValue,
         value: number,
         poll: ViewAssignmentPoll,
-        pollOption: ViewAssignmentPollOption
+        option: ViewAssignmentOption
     ): string {
         let resultString = '';
         const label = this.translate.instant(this.pollService.getLabel(optionLabel));
         const valueString = this.pollService.getSpecialLabel(value);
         const percentNr = this.pollService.getPercent(
             this.pollService.calculationDataFromPoll(poll),
-            pollOption,
+            option,
             optionLabel
         );
 
         resultString += `${label} ${valueString}`;
         if (
             percentNr &&
-            !this.pollService.isAbstractOption(this.pollService.calculationDataFromPoll(poll), pollOption, optionLabel)
+            !this.pollService.isAbstractOption(this.pollService.calculationDataFromPoll(poll), option, optionLabel)
         ) {
             resultString += ` (${percentNr}%)`;
         }
 
         return `${resultString}\n`;
-    }
+    }*/
 }

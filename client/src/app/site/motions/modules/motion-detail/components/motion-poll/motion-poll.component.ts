@@ -1,21 +1,16 @@
 import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
-import { MatDialog } from '@angular/material/dialog';
 import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
 import { ConstantsService } from 'app/core/core-services/constants.service';
-import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { CalculablePollKey } from 'app/core/ui-services/poll.service';
-import { PromptService } from 'app/core/ui-services/prompt.service';
 import { MotionPoll } from 'app/shared/models/motions/motion-poll';
-import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { LocalPermissionsService } from 'app/site/motions/services/local-permissions.service';
 import { MotionPollPdfService } from 'app/site/motions/services/motion-poll-pdf.service';
 import { MotionPollService } from 'app/site/motions/services/motion-poll.service';
-import { MotionPollDialogComponent } from './motion-poll-dialog.component';
 
 /**
  * A component used to display and edit polls of a motion.
@@ -97,9 +92,7 @@ export class MotionPollComponent extends BaseViewComponent implements OnInit {
         matSnackBar: MatSnackBar,
         public dialog: MatDialog,
         public pollService: MotionPollService,
-        private motionRepo: MotionRepositoryService,
         private constants: ConstantsService,
-        private promptService: PromptService,
         public perms: LocalPermissionsService,
         private pdfService: MotionPollPdfService
     ) {
@@ -113,7 +106,7 @@ export class MotionPollComponent extends BaseViewComponent implements OnInit {
      * Subscribes to updates of itself
      */
     public ngOnInit(): void {
-        this.poll = new MotionPoll(this.rawPoll);
+        /*this.poll = new MotionPoll(this.rawPoll);
         this.motionRepo.getViewModelObservable(this.poll.motion_id).subscribe(viewmotion => {
             if (viewmotion) {
                 const updatePoll = viewmotion.motion.polls.find(poll => poll.id === this.poll.id);
@@ -121,17 +114,18 @@ export class MotionPollComponent extends BaseViewComponent implements OnInit {
                     this.poll = new MotionPoll(updatePoll);
                 }
             }
-        });
+        });*/
     }
 
     /**
      * Sends a delete request for this poll after a confirmation dialog has been accepted.
      */
     public async deletePoll(): Promise<void> {
-        const title = this.translate.instant('Are you sure you want to delete this vote?');
+        /*const title = this.translate.instant('Are you sure you want to delete this vote?');
         if (await this.promptService.open(title)) {
             this.motionRepo.deletePoll(this.poll).catch(this.raiseError);
-        }
+        }*/
+        throw new Error('TODO');
     }
 
     /**
@@ -192,7 +186,7 @@ export class MotionPollComponent extends BaseViewComponent implements OnInit {
      * Triggers the 'edit poll' dialog'
      */
     public editPoll(): void {
-        const dialogRef = this.dialog.open(MotionPollDialogComponent, {
+        /*const dialogRef = this.dialog.open(MotionPollDialogComponent, {
             data: { ...this.poll },
             ...infoDialogSettings
         });
@@ -200,7 +194,8 @@ export class MotionPollComponent extends BaseViewComponent implements OnInit {
             if (result) {
                 this.motionRepo.updatePoll(result).catch(this.raiseError);
             }
-        });
+        });*/
+        throw new Error('TODO');
     }
 
     /**
@@ -209,7 +204,8 @@ export class MotionPollComponent extends BaseViewComponent implements OnInit {
      * @returns true if the quorum is reached
      */
     public get quorumYesReached(): boolean {
-        return this.poll.yes >= this.yesQuorum;
+        // return this.poll.yes >= this.yesQuorum;
+        return false;
     }
 
     /**

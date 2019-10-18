@@ -179,3 +179,64 @@ class StateAccessPermissions(BaseAccessPermissions):
     """
 
     base_permission = "motions.can_see"
+
+
+class MotionPollAccessPermissions(BaseAccessPermissions):
+    base_permission = "motions.can_see"
+    STATE_PUBLISHED = 4
+
+    async def get_restricted_data(
+        self, full_data: List[Dict[str, Any]], user_id: int
+    ) -> List[Dict[str, Any]]:
+        """
+        Poll-managers have full access, even during an active poll.
+        Non-published polls will be restricted:
+         - Remove votes* values from the poll
+         - Remove yes/no/abstain fields from options
+         - Remove voted_id field from the poll
+        """
+
+        if await async_has_perm(user_id, "motions.can_manage_polls"):
+            data = full_data
+        else:
+            data = []
+            for poll in full_data:
+                if poll["state"] != self.STATE_PUBLISHED:
+                    poll = json.loads(
+                        json.dumps(poll)
+                    )  # copy, so we can remove some fields.
+                    del poll["votesvalid"]
+                    del poll["votesinvalid"]
+                    del poll["votescast"]
+                    del poll["voted_id"]
+                    for option in poll["options"]:
+                        del option["yes"]
+                        del option["no"]
+                        del option["abstain"]
+                data.append(poll)
+        return data
+
+
+class MotionVoteAccessPermissions(BaseAccessPermissions):
+    base_permission = "motions.can_see"
+    STATE_PUBLISHED = 4
+
+    async def get_restricted_data(
+        self, full_data: List[Dict[str, Any]], user_id: int
+    ) -> List[Dict[str, Any]]:
+        """
+        Poll-managers have full access, even during an active poll.
+        Every user can see it's own votes.
+        If the pollstate is published, everyone can see the votes.
+        """
+
+        if await async_has_perm(user_id, "motions.can_manage_polls"):
+            data = full_data
+        else:
+            data = [
+                vote
+                for vote in full_data
+                if vote["pollstate"] == self.STATE_PUBLISHED
+                or vote["user_id"] == user_id
+            ]
+        return data

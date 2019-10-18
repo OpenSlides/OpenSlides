@@ -3,7 +3,7 @@ import sys
 from unittest.mock import MagicMock, patch
 
 from openslides.utils import main
-from openslides.utils.test import TestCase
+from tests.test_case import TestCase
 
 
 class TestFunctions(TestCase):

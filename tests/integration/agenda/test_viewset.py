@@ -16,7 +16,7 @@ from openslides.motions.models import Motion
 from openslides.topics.models import Topic
 from openslides.users.models import Group
 from openslides.utils.autoupdate import inform_changed_data
-from openslides.utils.test import TestCase
+from tests.test_case import TestCase
 
 from ...common_groups import GROUP_DEFAULT_PK
 from ..helpers import count_queries
@@ -284,25 +284,11 @@ class ManageSpeaker(TestCase):
     Tests managing speakers.
     """
 
-    def setUp(self):
-        self.client = APIClient()
-        self.client.login(username="admin", password="admin")
-
+    def advancedSetUp(self):
         self.list_of_speakers = Topic.objects.create(
             title="test_title_aZaedij4gohn5eeQu8fe"
         ).list_of_speakers
-        self.user = get_user_model().objects.create_user(
-            username="test_user_jooSaex1bo5ooPhuphae",
-            password="test_password_e6paev4zeeh9n",
-        )
-
-    def revoke_admin_rights(self):
-        admin = get_user_model().objects.get(username="admin")
-        group_admin = admin.groups.get(name="Admin")
-        group_delegates = type(group_admin).objects.get(name="Delegates")
-        admin.groups.add(group_delegates)
-        admin.groups.remove(group_admin)
-        inform_changed_data(admin)
+        self.user, _ = self.create_user()
 
     def test_add_oneself_once(self):
         response = self.client.post(
@@ -383,7 +369,7 @@ class ManageSpeaker(TestCase):
         self.assertEqual(response.status_code, 400)
 
     def test_add_someone_else_non_admin(self):
-        self.revoke_admin_rights()
+        self.make_admin_delegate()
 
         response = self.client.post(
             reverse("listofspeakers-manage-speaker", args=[self.list_of_speakers.pk]),
@@ -392,6 +378,7 @@ class ManageSpeaker(TestCase):
         self.assertEqual(response.status_code, 403)
 
     def test_remove_someone_else(self):
+        print(self.user)
         speaker = Speaker.objects.add(self.user, self.list_of_speakers)
         response = self.client.delete(
             reverse("listofspeakers-manage-speaker", args=[self.list_of_speakers.pk]),
@@ -419,7 +406,7 @@ class ManageSpeaker(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_remove_someone_else_non_admin(self):
-        self.revoke_admin_rights()
+        self.make_admin_delegate()
         speaker = Speaker.objects.add(self.user, self.list_of_speakers)
 
         response = self.client.delete(
@@ -433,14 +420,13 @@ class ManageSpeaker(TestCase):
         response = self.client.patch(
             reverse("listofspeakers-manage-speaker", args=[self.list_of_speakers.pk]),
             {"user": self.user.pk, "marked": True},
-            format="json",
         )
 
         self.assertEqual(response.status_code, 200)
         self.assertTrue(Speaker.objects.get().marked)
 
     def test_mark_speaker_non_admin(self):
-        self.revoke_admin_rights()
+        self.make_admin_delegate()
         Speaker.objects.add(self.user, self.list_of_speakers)
 
         response = self.client.patch(
@@ -515,7 +501,7 @@ class ManageSpeaker(TestCase):
 
     def test_readd_last_speaker_no_admin(self):
         self.util_add_user_as_last_speaker()
-        self.revoke_admin_rights()
+        self.make_admin_delegate()
 
         response = self.client.post(
             reverse(

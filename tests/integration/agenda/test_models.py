@@ -1,6 +1,6 @@
 from openslides.agenda.models import Item
 from openslides.topics.models import Topic
-from openslides.utils.test import TestCase
+from tests.test_case import TestCase
 
 
 class TestItemManager(TestCase):
