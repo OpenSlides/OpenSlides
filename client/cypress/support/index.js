@@ -13,8 +13,44 @@
 // https://on.cypress.io/configuration
 // ***********************************************************
 
-// Import commands.js using ES2015 syntax:
 import './commands';
 
-// Alternatively you can use CommonJS syntax:
-// require('./commands')
+// import { WebSocket as MockSocket, Server } from 'mock-socket';
+
+// let sockets = []
+// Cypress.on("window:before:load", win => {
+//     // if comment this out, it magically works
+//     var res = win.indexedDB.deleteDatabase("ngStorage")
+//     res.onsuccess = function(event) {
+//         console.log("db cleaned")
+//     }
+
+//     for (const socket in sockets) {
+//         socket.close()
+//     }
+//     sockets = [];
+
+//     const mockServer = new Server("ws://localhost:4200/ws/")
+//     mockServer.on("connection", socket => {
+//         console.log("connected")
+//         sockets.push(socket);
+//         socket.send(JSON.stringify({
+//             type: "autoupdate",
+//             content: {
+//                 all_data: false,
+//                 changed: {},
+//                 deleted: {},
+//                 from_change_id: 0,
+//                 to_change_id: 1
+//             }
+//         }));
+//         socket.on("message", data => {
+//             console.log(data)
+//         })
+//     })
+//     cy.stub(win, "WebSocket", url => new MockSocket(url))
+//     console.log("onbeforeload finish", win.WebSocket);
+// });
+
+Cypress.on("window:load", win => {
+})

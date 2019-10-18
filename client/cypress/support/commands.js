@@ -28,10 +28,10 @@
 Cypress.Commands.add('login', () => {
     cy.clearCookies();
     cy.visit('');
-    cy.get('.login-container input[formcontrolname=username')
+    cy.get('.login-container input[formcontrolname=username]')
         .clear()
         .type('admin');
-    cy.get('.login-container input[formcontrolname=password')
+    cy.get('.login-container input[formcontrolname=password]')
         .clear()
         .type('admin');
     cy.get('.login-button').click();
@@ -39,6 +39,11 @@ Cypress.Commands.add('login', () => {
     cy.get('os-overlay').should('not.be.visible');
 });
 
-Cypress.Commands.add('stayLoggedIn', () => {
-    Cypress.Cookies.preserveOnce('OpenSlidesCsrfToken', 'OpenSlidesSessionID');
-});
+const user = {"user_id":1,"guest_enabled":false,"user":{"is_present":false,"last_email_send":null,"default_password":"admin","groups_id":[2],"username":"admin","email":"admin@admin.admin","number":"","first_name":"","is_committee":false,"comment":"","gender":"","last_name":"Administrator","structure_level":"","id":1,"is_active":true,"title":"","about_me":""},"permissions":[]};
+
+Cypress.Commands.add("startServer", () => {
+    cy.server({ force404: true });
+    cy.route("/assets/i18n/*.json", {})
+    cy.route("/apps/core/servertime/", () => Date.now())
+    cy.route("/apps/users/whoami/", user)
+})

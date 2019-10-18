@@ -245,6 +245,7 @@ export class WebsocketService {
         socketPath += '/ws/';
         socketPath += formatQueryParams(queryParams);
 
+        // console.log(WebSocket, window, (<any>window).WebSocket);
         this.websocket = new WebSocket(socketPath);
         this.websocket.binaryType = 'arraybuffer';
 
