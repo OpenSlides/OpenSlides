@@ -11,6 +11,8 @@
     $foreground: map-get($theme, foreground);
     $background: map-get($theme, background);
 
+    $is-dark-theme: map-get($theme, is-dark);
+
     h1,
     h3.accent {
         color: mat-color($primary);
@@ -37,6 +39,14 @@
     .custom-table-header,
     .background--default {
         background: mat-color($background, background);
+    }
+
+    .underline {
+        border-bottom: 1px solid mat-color($foreground, divider, if($is-dark-theme, 0.7, 0.42));
+    }
+
+    .hint {
+        color: mat-color($foreground, secondary-text);
     }
 
     /* Custom hint and error classes. Same values as .mat-hint and -mat-error */
