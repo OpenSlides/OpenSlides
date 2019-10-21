@@ -8,8 +8,8 @@ import { MotionRepositoryService } from 'app/core/repositories/motions/motion-re
 import { CellFillingDefinition, XlsxExportServiceService } from 'app/core/ui-services/xlsx-export-service.service';
 import { reconvertChars } from 'app/shared/utils/reconvert-chars';
 import { stripHtmlTags } from 'app/shared/utils/strip-html-tags';
-import { sortMotionPropertyList } from '../motion-import-export-order';
-import { InfoToExport } from './motion-pdf.service';
+import { sortMotionPropertyList } from '../motions.constants';
+import { InfoToExport } from '../motions.constants';
 import { ViewMotion } from '../models/view-motion';
 
 /**

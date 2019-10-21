@@ -35,7 +35,7 @@ function applyLayout(content: any): void {
         if (Array.isArray(section)) {
             applyLayout(section);
         } else {
-            if (section.layout) {
+            if (section && section.layout) {
                 let layout: object;
                 switch (section.layout) {
                     case 'switchColorTableLayout': {

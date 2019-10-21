@@ -15,9 +15,10 @@ import {
     MotionChangeRecommendationTitleInformation,
     ViewMotionChangeRecommendation
 } from 'app/site/motions/models/view-motion-change-recommendation';
+import { ChangeRecoMode } from 'app/site/motions/motions.constants';
 import { BaseRepository } from '../base-repository';
 import { DiffService, LineRange, ModificationType } from '../../ui-services/diff.service';
-import { ChangeRecoMode, ViewMotion } from '../../../site/motions/models/view-motion';
+import { ViewMotion } from '../../../site/motions/models/view-motion';
 import { ViewUnifiedChange } from '../../../shared/models/motions/view-unified-change';
 
 /**

@@ -8,7 +8,8 @@ import { MotionRepositoryService } from 'app/core/repositories/motions/motion-re
 import { DiffLinesInParagraph, DiffService, LineRange } from 'app/core/ui-services/diff.service';
 import { LinenumberingService } from 'app/core/ui-services/linenumbering.service';
 import { ViewUnifiedChange, ViewUnifiedChangeType } from 'app/shared/models/motions/view-unified-change';
-import { ChangeRecoMode, LineNumberingMode, MotionTitleInformation } from 'app/site/motions/models/view-motion';
+import { MotionTitleInformation } from 'app/site/motions/models/view-motion';
+import { ChangeRecoMode, LineNumberingMode } from 'app/site/motions/motions.constants';
 import { IBaseScaleScrollSlideComponent } from 'app/slides/base-scale-scroll-slide-component';
 import { BaseMotionSlideComponent } from '../base/base-motion-slide';
 import { MotionSlideData, MotionSlideDataAmendment } from './motion-slide-data';

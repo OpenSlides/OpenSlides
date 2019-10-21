@@ -15,8 +15,8 @@ import { LinenumberingService } from 'app/core/ui-services/linenumbering.service
 import { ViewUnifiedChange } from 'app/shared/models/motions/view-unified-change';
 import { reconvertChars } from 'app/shared/utils/reconvert-chars';
 import { stripHtmlTags } from 'app/shared/utils/strip-html-tags';
-import { sortMotionPropertyList } from '../motion-import-export-order';
-import { ChangeRecoMode, ViewMotion } from '../models/view-motion';
+import { ChangeRecoMode, sortMotionPropertyList } from '../motions.constants';
+import { ViewMotion } from '../models/view-motion';
 
 /**
  * Exports CSVs for motions. Collect all CSV types here to have them in one place.

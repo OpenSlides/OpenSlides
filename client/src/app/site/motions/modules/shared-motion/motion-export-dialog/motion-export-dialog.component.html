@@ -66,9 +66,12 @@
             </mat-button-toggle-group>
         </div>
 
-        <div *ngIf="commentsToExport.length">
+        <div>
             <p class="toggle-group-head" translate>Comments</p>
             <mat-button-toggle-group class="smaller-buttons" multiple formControlName="comments">
+                <mat-button-toggle [value]="PERSONAL_NOTE_ID">
+                    <span translate>Personal note</span>
+                </mat-button-toggle>
                 <mat-button-toggle *ngFor="let comment of commentsToExport" [value]="comment.id">
                     <span>{{ comment.name }}</span>
                 </mat-button-toggle>

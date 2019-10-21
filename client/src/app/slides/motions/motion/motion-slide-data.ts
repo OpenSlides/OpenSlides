@@ -1,4 +1,5 @@
-import { ChangeRecoMode, LineNumberingMode, MotionTitleInformation } from 'app/site/motions/models/view-motion';
+import { MotionTitleInformation } from 'app/site/motions/models/view-motion';
+import { ChangeRecoMode, LineNumberingMode } from 'app/site/motions/motions.constants';
 import { ReferencedMotions } from '../base/base-motion-slide';
 
 /**

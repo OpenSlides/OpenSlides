@@ -14,7 +14,7 @@ import { Tag } from 'app/shared/models/core/tag';
 import { Category } from 'app/shared/models/motions/category';
 import { MotionBlock } from 'app/shared/models/motions/motion-block';
 import { CreateMotion } from '../models/create-motion';
-import { motionExportOnly, motionImportExportHeaderOrder } from '../motion-import-export-order';
+import { motionExportOnly, motionImportExportHeaderOrder } from '../motions.constants';
 import { CsvMapping, ViewCsvCreateMotion } from '../models/view-csv-create-motion';
 import { ViewMotion } from '../models/view-motion';
 

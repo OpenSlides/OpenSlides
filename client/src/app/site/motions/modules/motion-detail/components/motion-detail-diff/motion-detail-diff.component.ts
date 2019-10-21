@@ -13,8 +13,9 @@ import { ViewUnifiedChange, ViewUnifiedChangeType } from 'app/shared/models/moti
 import { mediumDialogSettings } from 'app/shared/utils/dialog-settings';
 import { getRecommendationTypeName } from 'app/shared/utils/recommendation-type-names';
 import { BaseViewComponent } from 'app/site/base/base-view';
-import { LineNumberingMode, ViewMotion } from 'app/site/motions/models/view-motion';
+import { ViewMotion } from 'app/site/motions/models/view-motion';
 import { ViewMotionChangeRecommendation } from 'app/site/motions/models/view-motion-change-recommendation';
+import { LineNumberingMode } from 'app/site/motions/motions.constants';
 import {
     MotionChangeRecommendationDialogComponent,
     MotionChangeRecommendationDialogComponentData
