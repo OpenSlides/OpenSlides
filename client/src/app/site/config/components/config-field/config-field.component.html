@@ -15,7 +15,7 @@
                 <!-- required for all kinds of input -->
                 <mat-label>{{ configItem.label | translate }}</mat-label>
                 <span matSuffix>
-                    <mat-icon pull="right" class="text-success" *ngIf="updateSuccessIcon">check_circle</mat-icon>
+                    <mat-icon pull="right" class="red-warning-text" *ngIf="error">error</mat-icon>
                 </span>
                 <mat-error *ngIf="error"> {{ error }} </mat-error>
 
@@ -57,7 +57,7 @@
                             [value]="translatedValue"
                         ></textarea>
                         <span matSuffix>
-                            <mat-icon pull="right" class="text-success" *ngIf="updateSuccessIcon">
+                            <mat-icon pull="right" class="red-warning-text" *ngIf="updateSuccessIcon">
                                 check_circle
                             </mat-icon>
                         </span>
@@ -77,7 +77,7 @@
                             />
                             <mat-hint *ngIf="configItem.helpText">{{ configItem.helpText | translate }}</mat-hint>
                             <div class="suffix-wrapper" matSuffix>
-                                <mat-icon class="text-success" *ngIf="updateSuccessIcon">check_circle</mat-icon>
+                                <mat-icon class="red-warning-text" *ngIf="updateSuccessIcon">check_circle</mat-icon>
                                 <mat-datepicker-toggle
                                     [for]="datepicker"
                                     (click)="$event.preventDefault()"
@@ -89,7 +89,7 @@
                         <mat-form-field>
                             <input matInput [format]="24" formControlName="time" [ngxTimepicker]="timepicker" />
                             <div class="suffix-wrapper" matSuffix>
-                                <mat-icon class="text-success" *ngIf="updateSuccessIcon">check_circle</mat-icon>
+                                <mat-icon class="red-warning-text" *ngIf="updateSuccessIcon">error</mat-icon>
                                 <ngx-material-timepicker-toggle [for]="timepicker"></ngx-material-timepicker-toggle>
                             </div>
                             <mat-error *ngIf="error"> {{ error }} </mat-error>
@@ -103,16 +103,13 @@
                     <h4>{{ configItem.label | translate }}</h4>
                     <editor formControlName="value" [init]="getTinyMceSettings()"></editor>
                     <span matSuffix>
-                        <mat-icon pull="right" class="text-success" *ngIf="updateSuccessIcon">check_circle</mat-icon>
+                        <mat-icon pull="right" class="red-warning-text" *ngIf="updateSuccessIcon">error</mat-icon>
                     </span>
                 </div>
 
                 <!-- Custom Translations -->
                 <div *ngIf="configItem.inputType === 'translations'">
                     <os-custom-translation formControlName="value"></os-custom-translation>
-                    <span matSuffix>
-                        <mat-icon pull="right" class="text-success" *ngIf="updateSuccessIcon">check_circle</mat-icon>
-                    </span>
                 </div>
             </div>
         </form>
@@ -120,11 +117,6 @@
     <div class="reset-button">
         <button mat-icon-button *ngIf="configItem.helpText" matTooltip="{{ configItem.helpText | translate }}">
             <mat-icon>help_outline</mat-icon>
-        </button>
-    </div>
-    <div class="reset-button">
-        <button mat-icon-button *ngIf="hasDefault()" matTooltip="{{ 'Reset' | translate }}" (click)="onResetButton()">
-            <mat-icon>replay</mat-icon>
         </button>
     </div>
 </div>

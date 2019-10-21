@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { WatchSortingTreeGuard } from 'app/shared/utils/watch-sorting-tree.guard';
+import { WatchForChangesGuard } from 'app/shared/utils/watch-for-changes.guard';
 import { CategoriesSortComponent } from './components/categories-sort/categories-sort.component';
 import { CategoryDetailComponent } from './components/category-detail/category-detail.component';
 import { CategoryListComponent } from './components/category-list/category-list.component';
@@ -9,8 +9,8 @@ import { CategoryMotionsSortComponent } from './components/category-motions-sort
 
 const routes: Routes = [
     { path: '', component: CategoryListComponent, pathMatch: 'full' },
-    { path: ':id/sort', component: CategoryMotionsSortComponent, canDeactivate: [WatchSortingTreeGuard] },
-    { path: 'sort', component: CategoriesSortComponent, canDeactivate: [WatchSortingTreeGuard] },
+    { path: ':id/sort', component: CategoryMotionsSortComponent, canDeactivate: [WatchForChangesGuard] },
+    { path: 'sort', component: CategoriesSortComponent, canDeactivate: [WatchForChangesGuard] },
     { path: ':id', component: CategoryDetailComponent }
 ];
 

@@ -34,7 +34,8 @@
     }
 
     //custom table header for search button, filtering and more. Used in ListViews
-    .custom-table-header {
+    .custom-table-header,
+    .background--default {
         background: mat-color($background, background);
     }
 

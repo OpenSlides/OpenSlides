@@ -21,7 +21,7 @@ import { ViewportService } from 'app/core/ui-services/viewport.service';
  *   saveText="Create"
  *   [nav]="false"
  *   [goBack]="true"
- *   [mainButton]="opCanEdit()"
+ *   [hasMainButton]="opCanEdit()"
  *   [mainButtonIcon]="edit"
  *   [backButtonIcon]="arrow_back"
  *   [editMode]="editMotion"
@@ -83,6 +83,12 @@ export class HeadBarComponent implements OnInit {
     public editMode = false;
 
     /**
+     * Determine, if the search should not be available.
+     */
+    @Input()
+    public isSearchEnabled = true;
+
+    /**
      * The save button can manually be disabled.
      */
     @Input()
@@ -98,7 +104,13 @@ export class HeadBarComponent implements OnInit {
      * Determine if there should be the main action button
      */
     @Input()
-    public mainButton = false;
+    public hasMainButton = false;
+
+    /**
+     * Determine if the main action button should be enabled or not.
+     */
+    @Input()
+    public isMainButtonEnabled = true;
 
     /**
      * Set to true if the component should use location.back instead

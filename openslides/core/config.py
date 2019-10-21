@@ -24,6 +24,8 @@ INPUT_TYPE_MAPPING = {
     "translations": list,
 }
 
+ALLOWED_NONE = ("datetimepicker",)
+
 build_key_to_id_lock = asyncio.Lock()
 
 
@@ -119,12 +121,15 @@ class ConfigHandler:
         expected_type = INPUT_TYPE_MAPPING[config_variable.input_type]
 
         # Try to convert value into the expected datatype
-        try:
-            value = expected_type(value)
-        except ValueError:
-            raise ConfigError(
-                f"Wrong datatype. Expected {expected_type}, got {type(value)}."
-            )
+        if value is None and config_variable.input_type not in ALLOWED_NONE:
+            raise ConfigError(f"Got None for {key}")
+        elif value is not None:
+            try:
+                value = expected_type(value)
+            except (ValueError, TypeError):
+                raise ConfigError(
+                    f"Wrong datatype. Expected {expected_type}, got {type(value)}."
+                )
 
         if config_variable.input_type == "choice":
             # Choices can be a callable. In this case call it at this place
@@ -267,12 +272,14 @@ OnChangeType = Callable[[], None]
 ConfigVariableDict = TypedDict(
     "ConfigVariableDict",
     {
-        "key": str,
-        "default_value": Any,
-        "input_type": str,
+        "defaultValue": Any,
+        "inputType": str,
         "label": str,
-        "help_text": str,
+        "helpText": str,
         "choices": ChoiceType,
+        "weight": int,
+        "group": str,
+        "subgroup": Optional[str],
     },
 )
 
@@ -314,8 +321,8 @@ class ConfigVariable:
         choices: ChoiceCallableType = None,
         hidden: bool = False,
         weight: int = 0,
-        group: str = None,
-        subgroup: str = None,
+        group: str = "General",
+        subgroup: str = "General",
         validators: ValidatorsType = None,
         on_change: OnChangeType = None,
     ) -> None:
@@ -339,28 +346,26 @@ class ConfigVariable:
         self.choices = choices
         self.hidden = hidden
         self.weight = weight
-        self.group = group or "General"
+        self.group = group
         self.subgroup = subgroup
         self.validators = validators or ()
         self.on_change = on_change
 
     @property
-    def data(self) -> ConfigVariableDict:
+    def data(self) -> Optional[ConfigVariableDict]:
         """
-        Property with all data for AngularJS variable on startup.
+        Property with all data for Angular variable on startup.
         """
-        return ConfigVariableDict(
-            key=self.name,
-            default_value=self.default_value,
-            input_type=self.input_type,
-            label=self.label,
-            help_text=self.help_text,
-            choices=self.choices() if callable(self.choices) else self.choices,
-        )
+        if self.hidden:
+            return None
 
-    def is_hidden(self) -> bool:
-        """
-        Returns True if the config variable is hidden so it can be removed
-        from response of OPTIONS request.
-        """
-        return self.hidden
+        return ConfigVariableDict(
+            defaultValue=self.default_value,
+            inputType=self.input_type,
+            label=self.label,
+            helpText=self.help_text,
+            choices=self.choices() if callable(self.choices) else self.choices,
+            weight=self.weight,
+            group=self.group,
+            subgroup=self.subgroup,
+        )

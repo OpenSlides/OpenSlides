@@ -1,15 +1,15 @@
 import { inject, TestBed } from '@angular/core/testing';
 
-import { WatchSortingTreeGuard } from './watch-sorting-tree.guard';
+import { WatchForChangesGuard } from './watch-for-changes.guard';
 
 describe('WatchSortingTreeGuard', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [WatchSortingTreeGuard]
+            providers: [WatchForChangesGuard]
         });
     });
 
-    it('should ...', inject([WatchSortingTreeGuard], (guard: WatchSortingTreeGuard) => {
+    it('should ...', inject([WatchForChangesGuard], (guard: WatchForChangesGuard) => {
         expect(guard).toBeTruthy();
     }));
 });

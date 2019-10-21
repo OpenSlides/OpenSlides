@@ -1,7 +1,5 @@
-import { Component, forwardRef } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-
-import { CustomTranslation, CustomTranslations } from 'app/core/translate/translation-parser';
+import { Component, forwardRef, OnInit } from '@angular/core';
+import { ControlValueAccessor, FormArray, FormBuilder, FormGroup, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
 
 /**
  * Custom translations as custom form component
@@ -23,16 +21,39 @@ import { CustomTranslation, CustomTranslations } from 'app/core/translate/transl
         }
     ]
 })
-export class CustomTranslationComponent implements ControlValueAccessor {
+export class CustomTranslationComponent implements ControlValueAccessor, OnInit {
     /**
-     * Holds the custom translations in a list
+     * The parent form-group.
      */
-    public translations: CustomTranslations = [];
+    public translationForm: FormGroup;
 
     /**
-     * Empty constructor
+     * Reference to the form-control within the `translationForm`.
      */
-    public constructor() {}
+    public translationBoxes: FormArray;
+
+    /**
+     * Default constructor.
+     *
+     * @param fb FormBuilder
+     */
+    public constructor(private fb: FormBuilder) {}
+
+    /**
+     * Initializes the form-controls.
+     */
+    public ngOnInit(): void {
+        this.translationForm = this.fb.group({
+            translationBoxes: this.fb.array([])
+        });
+
+        this.translationBoxes = this.translationForm.get('translationBoxes') as FormArray;
+        this.translationBoxes.valueChanges.subscribe(value => {
+            if (this.translationBoxes.valid) {
+                this.propagateChange(value);
+            }
+        });
+    }
 
     /**
      * Helper function to determine which information to give to the parent form
@@ -46,7 +67,9 @@ export class CustomTranslationComponent implements ControlValueAccessor {
      */
     public writeValue(obj: any): void {
         if (obj) {
-            this.translations = obj;
+            for (const item of obj) {
+                this.addNewTranslation(item.original, item.translation);
+            }
         }
     }
 
@@ -74,45 +97,27 @@ export class CustomTranslationComponent implements ControlValueAccessor {
     public setDisabledState?(isDisabled: boolean): void {}
 
     /**
-     * Detects changes to the "original" word
-     *
-     * @param value the value that was typed
-     * @param index the index of the change
-     */
-    public onChangeOriginal(value: string, index: number): void {
-        this.translations[index].original = value;
-        this.propagateChange(this.translations);
-    }
-
-    /**
-     * Detects changes to the translation
-     * @param value the value that was typed
-     * @param index the index of the change
-     */
-    public onChangeTranslation(value: string, index: number): void {
-        this.translations[index].translation = value;
-        this.propagateChange(this.translations);
-    }
-
-    /**
      * Removes a custom translation
+     *
      * @param index the translation to remove
      */
     public onRemoveTranslation(index: number): void {
-        this.translations.splice(index, 1);
-        this.propagateChange(this.translations);
+        this.translationBoxes.removeAt(index);
     }
 
     /**
-     * Adds a new custom translation to the list and to the server
+     * Function to add a new translation-field to the form-array.
+     * If strings are passed, they are passed as the fields' value.
+     *
+     * @param original The original string to translate.
+     * @param translation The translation for the given string.
      */
-    public onAddNewTranslation(): void {
-        const newCustomTranslation: CustomTranslation = {
-            original: 'New',
-            translation: 'New'
-        };
-
-        this.translations.push(newCustomTranslation);
-        this.propagateChange(this.translations);
+    public addNewTranslation(original: string = '', translation: string = ''): void {
+        this.translationBoxes.push(
+            this.fb.group({
+                original: [original, Validators.required],
+                translation: [translation, Validators.required]
+            })
+        );
     }
 }

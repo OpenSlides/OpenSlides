@@ -1,5 +1,5 @@
 <os-head-bar
-    [mainButton]="perms.isAllowed('can_create_amendments', motion)"
+    [hasMainButton]="perms.isAllowed('can_create_amendments', motion)"
     mainActionTooltip="New amendment"
     [prevUrl]="getPrevUrl()"
     [nav]="false"

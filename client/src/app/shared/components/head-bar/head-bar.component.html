@@ -29,7 +29,7 @@
     <div class="spacer"></div>
 
     <!-- Button to open the global search -->
-    <button *ngIf="!editMode" mat-icon-button (click)="openSearch()">
+    <button *ngIf="!editMode && isSearchEnabled" mat-icon-button (click)="openSearch()">
         <mat-icon>search</mat-icon>
     </button>
 
@@ -40,7 +40,8 @@
         <!-- Main action button - desktop -->
         <button
             mat-icon-button
-            *ngIf="mainButton && !editMode && !vp.isMobile && !multiSelectMode"
+            *ngIf="hasMainButton && !editMode && !vp.isMobile && !multiSelectMode"
+            [disabled]="!isMainButtonEnabled"
             (click)="sendMainEvent()"
             matTooltip="{{ mainActionTooltip | translate }}"
         >
@@ -62,7 +63,8 @@
 <button
     mat-fab
     class="head-button"
-    *ngIf="mainButton && !editMode && vp.isMobile && !multiSelectMode"
+    *ngIf="hasMainButton && !editMode && vp.isMobile && !multiSelectMode"
+    [disabled]="!isMainButtonEnabled"
     (click)="sendMainEvent()"
     matTooltip="{{ mainActionTooltip | translate }}"
 >

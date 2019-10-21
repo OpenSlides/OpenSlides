@@ -1,7 +1,8 @@
+from typing import cast
 from unittest import TestCase
 from unittest.mock import patch
 
-from openslides.core.config import ConfigVariable, config
+from openslides.core.config import ConfigVariable, ConfigVariableDict, config
 from openslides.core.exceptions import ConfigNotFound
 
 
@@ -14,15 +15,15 @@ class TestConfigVariable(TestCase):
         """
         config_variable = ConfigVariable("test_variable", "test_default_value")
 
-        self.assertIn(
-            "default_value",
-            config_variable.data,
-            "Config_varialbe.data should have a key 'default_value'",
+        self.assertTrue(
+            "defaultValue" in cast(ConfigVariableDict, config_variable.data)
         )
+        data = config_variable.data
+        self.assertTrue(data)
         self.assertEqual(
-            config_variable.data["default_value"],
+            cast(ConfigVariableDict, config_variable.data)["defaultValue"],
             "test_default_value",
-            "The value of config_variable.data['default_value'] should be the same "
+            "The value of config_variable.data['defaultValue'] should be the same "
             "as set as second argument of ConfigVariable()",
         )
 

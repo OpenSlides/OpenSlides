@@ -1,36 +1,5 @@
-import { Config } from 'app/shared/models/core/config';
+import { Config, ConfigChoice, ConfigData, ConfigInputType } from 'app/shared/models/core/config';
 import { BaseViewModel } from '../../base/base-view-model';
-
-interface ConfigChoice {
-    value: string;
-    displayName: string;
-}
-
-/**
- * All valid input types for config variables.
- */
-type ConfigInputType =
-    | 'text'
-    | 'string'
-    | 'boolean'
-    | 'markupText'
-    | 'integer'
-    | 'choice'
-    | 'datetimepicker'
-    | 'colorpicker'
-    | 'translations';
-
-/**
- * Represents all information that is given in the constant.
- */
-interface ConfigConstant {
-    default_value?: string;
-    help_text?: string;
-    input_type: ConfigInputType;
-    key: string;
-    label: string;
-    choices?: ConfigChoice[];
-}
 
 export interface ConfigTitleInformation {
     key: string;
@@ -43,22 +12,6 @@ export class ViewConfig extends BaseViewModel<Config> implements ConfigTitleInfo
     public static COLLECTIONSTRING = Config.COLLECTIONSTRING;
     protected _collectionString = Config.COLLECTIONSTRING;
 
-    /* This private members are set by setConstantsInfo. */
-    private _helpText: string;
-    private _inputType: ConfigInputType;
-    private _label: string;
-    private _choices: ConfigChoice[];
-    private _defaultValue: any;
-
-    /**
-     * Saves, if this config already got constants information.
-     */
-    private _hasConstantsInfo = false;
-
-    public get hasConstantsInfo(): boolean {
-        return this._hasConstantsInfo;
-    }
-
     public get config(): Config {
         return this._model;
     }
@@ -67,28 +20,48 @@ export class ViewConfig extends BaseViewModel<Config> implements ConfigTitleInfo
         return this.config.key;
     }
 
-    public get value(): Object {
+    public get value(): any {
         return this.config.value;
     }
 
+    public get data(): ConfigData | null {
+        return this.config.data;
+    }
+
+    public get hidden(): boolean {
+        return !this.data;
+    }
+
     public get label(): string {
-        return this._label;
+        return this.data.label;
     }
 
-    public get inputType(): ConfigInputType {
-        return this._inputType;
+    public get inputType(): ConfigInputType | null {
+        return this.data.inputType;
     }
 
-    public get helpText(): string {
-        return this._helpText;
+    public get helpText(): string | null {
+        return this.data.helpText;
     }
 
-    public get choices(): Object {
-        return this._choices;
+    public get choices(): ConfigChoice[] | null {
+        return this.data.choices;
     }
 
     public get defaultValue(): any {
-        return this._defaultValue;
+        return this.data.defaultValue;
+    }
+
+    public get weight(): number {
+        return this.hidden ? 0 : this.data.weight;
+    }
+
+    public get group(): string {
+        return this.data.group;
+    }
+
+    public get subgroup(): string | null {
+        return this.data.subgroup;
     }
 
     /**
@@ -104,20 +77,5 @@ export class ViewConfig extends BaseViewModel<Config> implements ConfigTitleInfo
         } else {
             return 100;
         }
-    }
-
-    /**
-     * This should be called, if the constants are loaded, so all extra info can be updated.
-     * @param constant The constant info
-     */
-    public setConstantsInfo(constant: ConfigConstant): void {
-        this._label = constant.label;
-        this._helpText = constant.help_text;
-        this._inputType = constant.input_type;
-        this._choices = constant.choices;
-        if (constant.default_value !== undefined) {
-            this._defaultValue = constant.default_value;
-        }
-        this._hasConstantsInfo = true;
     }
 }

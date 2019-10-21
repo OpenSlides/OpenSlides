@@ -223,7 +223,7 @@ class ConfigViewSet(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(
-            response.data, {"detail": "Invalid input. Config value is missing."}
+            response.data, {"detail": "Got None for test_var_Xeiizi7ooH8Thuk5aida"}
         )
 
 

@@ -1,5 +1,5 @@
 <os-head-bar
-    [mainButton]="operator.hasPerms('assignments.can_manage')"
+    [hasMainButton]="operator.hasPerms('assignments.can_manage')"
     (mainEvent)="onPlusButton()"
     [multiSelectMode]="isMultiSelect"
 >
@@ -90,6 +90,12 @@
         <button mat-menu-item (click)="downloadAssignmentButton()">
             <mat-icon>archive</mat-icon>
             <span translate>Export ...</span>
+        </button>
+        <mat-divider></mat-divider>
+        <!-- Settings -->
+        <button mat-menu-item *osPerms="'core.can_manage_config'" routerLink="/settings/elections">
+            <mat-icon>settings</mat-icon>
+            <span translate>Settings</span>
         </button>
     </div>
 

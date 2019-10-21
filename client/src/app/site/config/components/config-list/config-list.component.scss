@@ -1,8 +1,12 @@
-mat-expansion-panel {
-    max-width: 770px;
-    margin: auto;
+#wrapper {
+    font-size: 14px;
 }
 h3.accent {
-    margin-top: 30px;
     margin-bottom: 20px;
+    &:first-child {
+        margin-top: 0;
+    }
+    &:not(:first-child) {
+        margin-top: 30px;
+    }
 }

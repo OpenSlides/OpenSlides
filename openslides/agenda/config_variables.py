@@ -20,7 +20,6 @@ def get_config_variables():
         help_text="Input format: DD.MM.YYYY HH:MM",
         weight=200,
         group="Agenda",
-        subgroup="General",
     )
 
     yield ConfigVariable(
@@ -30,7 +29,6 @@ def get_config_variables():
         label="Show subtitles in the agenda",
         weight=201,
         group="Agenda",
-        subgroup="General",
     )
 
     # Numbering
