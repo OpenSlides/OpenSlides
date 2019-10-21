@@ -355,7 +355,7 @@ export class UserListComponent extends BaseListViewComponent<ViewUser> implement
      * @returns a string representation about the last time an email was sent to a user
      */
     public getEmailSentTime(user: ViewUser): string {
-        if (!user.is_last_email_send) {
+        if (!user.isLastEmailSend) {
             return this.translate.instant('No email sent');
         }
         return this.repo.lastSentEmailTimeString(user);

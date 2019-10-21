@@ -9,10 +9,10 @@ from django.utils.crypto import get_random_string
 
 from openslides.agenda.models import Item, ListOfSpeakers
 from openslides.assignments.models import Assignment
-from openslides.core.apps import startup
 from openslides.motions.models import Motion
 from openslides.topics.models import Topic
 from openslides.users.models import Group, User
+from openslides.utils.startup import run_startup_hooks
 
 
 MOTION_NUMBER_OF_PARAGRAPHS = 4
@@ -118,7 +118,7 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        startup()
+        run_startup_hooks()
         self.create_topics(options)
         self.create_motions(options)
         self.create_assignments(options)

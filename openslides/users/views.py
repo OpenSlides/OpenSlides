@@ -21,6 +21,8 @@ from django.http.request import QueryDict
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 
+from openslides.saml import SAML_ENABLED
+
 from ..core.config import config
 from ..core.signals import permission_change
 from ..utils.auth import (
@@ -48,6 +50,7 @@ from .access_permissions import (
 )
 from .models import Group, PersonalNote, User
 from .serializers import GroupSerializer, PermissionRelatedField
+from .user_backend import user_backend_manager
 
 
 # Viewsets for the REST API
@@ -126,8 +129,24 @@ class UserViewSet(ModelViewSet):
             # Remove fields that the user is not allowed to change.
             # The list() is required because we want to use del inside the loop.
             for key in list(request.data.keys()):
-                if key not in ("username", "about_me"):
+                if key not in ("username", "about_me", "email"):
                     del request.data[key]
+
+        user_backend = user_backend_manager.get_backend(user.auth_type)
+        if user_backend:
+            disallowed_keys = user_backend.get_disallowed_update_keys()
+            for key in list(request.data.keys()):
+                if key in disallowed_keys:
+                    del request.data[key]
+
+        # Hack to make the serializers validation work again if no username, last- or firstname is given:
+        if (
+            "username" not in request.data
+            and "first_name" not in request.data
+            and "last_name" not in request.data
+        ):
+            request.data["username"] = user.username
+
         response = super().update(request, *args, **kwargs)
         return response
 
@@ -150,6 +169,13 @@ class UserViewSet(ModelViewSet):
         Expected data: { pasword: <the new password> }
         """
         user = self.get_object()
+        if user.auth_type != "default":
+            raise ValidationError(
+                {
+                    "detail": "The user does not have the login information stored in OpenSlides"
+                }
+            )
+
         password = request.data.get("password")
         if not isinstance(password, str):
             raise ValidationError({"detail": "Password has to be a string."})
@@ -173,7 +199,7 @@ class UserViewSet(ModelViewSet):
         self.assert_list_of_ints(ids)
 
         # Exclude the request user
-        users = User.objects.exclude(pk=request.user.id).filter(pk__in=ids)
+        users = self.bulk_get_users(request, ids)
         for user in users:
             password = User.objects.make_random_password()
             user.set_password(password)
@@ -192,7 +218,7 @@ class UserViewSet(ModelViewSet):
         self.assert_list_of_ints(ids)
 
         # Exclude the request user
-        users = User.objects.exclude(pk=request.user.id).filter(pk__in=ids)
+        users = self.bulk_get_users(request, ids)
         # Validate all default passwords
         for user in users:
             try:
@@ -236,7 +262,7 @@ class UserViewSet(ModelViewSet):
         if not isinstance(value, bool):
             raise ValidationError({"detail": "value must be true or false"})
 
-        users = User.objects.filter(pk__in=ids)
+        users = User.objects.filter(auth_type="default").filter(pk__in=ids)
         if field == "is_active":
             users = users.exclude(pk=request.user.id)
         for user in users:
@@ -265,7 +291,7 @@ class UserViewSet(ModelViewSet):
         if action not in ("add", "remove"):
             raise ValidationError({"detail": "The action must be add or remove"})
 
-        users = User.objects.exclude(pk=request.user.id).filter(pk__in=user_ids)
+        users = self.bulk_get_users(request, user_ids)
         groups = list(Group.objects.filter(pk__in=group_ids))
 
         for user in users:
@@ -287,11 +313,22 @@ class UserViewSet(ModelViewSet):
         self.assert_list_of_ints(ids)
 
         # Exclude the request user
-        users = User.objects.exclude(pk=request.user.id).filter(pk__in=ids)
+        users = self.bulk_get_users(request, ids)
         for user in list(users):
             user.delete()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def bulk_get_users(self, request, ids):
+        """
+        Get all users for the given ids. Exludes the request user and all
+        users with a non-default auth_type.
+        """
+        return (
+            User.objects.filter(auth_type="default")
+            .exclude(pk=request.user.id)
+            .filter(pk__in=ids)
+        )
 
     @list_route(methods=["post"])
     @transaction.atomic
@@ -673,14 +710,19 @@ class WhoAmIDataView(APIView):
         """
         Appends the user id to the context. Uses None for the anonymous
         user. Appends also a flag if guest users are enabled in the config.
-        Appends also the serialized user if available.
+        Appends also the serialized user if available and auth_type.
         """
         user_id = self.request.user.pk or 0
         guest_enabled = anonymous_is_enabled()
 
+        auth_type = "default"
         if user_id:
-            user_data = async_to_sync(element_cache.get_element_data)(
-                self.request.user.get_collection_string(), user_id, user_id
+            user_full_data = async_to_sync(element_cache.get_element_data)(
+                self.request.user.get_collection_string(), user_id
+            )
+            auth_type = user_full_data["auth_type"]
+            user_data = async_to_sync(element_cache.restrict_element_data)(
+                user_full_data, self.request.user.get_collection_string(), user_id
             )
             group_ids = user_data["groups_id"] or [GROUP_DEFAULT_PK]
         else:
@@ -697,6 +739,7 @@ class WhoAmIDataView(APIView):
             "user_id": user_id or None,
             "guest_enabled": guest_enabled,
             "user": user_data,
+            "auth_type": auth_type,
             "permissions": list(permissions),
         }
 
@@ -722,6 +765,8 @@ class UserLoginView(WhoAmIDataView):
         if not form.is_valid():
             raise ValidationError({"detail": "Username or password is not correct."})
         self.user = form.get_user()
+        if self.user.auth_type != "default":
+            raise ValidationError({"detail": "Please login via your identity provider"})
         auth_login(self.request, self.user)
         return super().post(*args, **kwargs)
 
@@ -755,6 +800,11 @@ class UserLoginView(WhoAmIDataView):
             # Add the theme, so the loginpage is themed correctly
             context["theme"] = config["openslides_theme"]
             context["logo_web_header"] = config["logo_web_header"]
+
+            if SAML_ENABLED:
+                from openslides.saml.settings import get_saml_settings
+
+                context["saml_settings"] = get_saml_settings().general_settings
         else:
             # self.request.method == 'POST'
             context.update(self.get_whoami_data())
@@ -795,6 +845,7 @@ class SetPasswordView(APIView):
         if not (
             has_perm(user, "users.can_change_password")
             or has_perm(user, "users.can_manage")
+            or user.auth_type != "default"
         ):
             self.permission_denied(request)
         if user.check_password(request.data["old_password"]):
@@ -900,7 +951,7 @@ class PasswordResetView(APIView):
         resetting their password.
         """
         active_users = User.objects.filter(
-            **{"email__iexact": email, "is_active": True}
+            **{"email__iexact": email, "is_active": True, "auth_type": "default"}
         )
         return [u for u in active_users if u.has_usable_password()]
 

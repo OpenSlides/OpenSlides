@@ -122,6 +122,8 @@ class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
 
     username = models.CharField(max_length=255, unique=True, blank=True)
 
+    auth_type = models.CharField(max_length=64, default="default")
+
     first_name = models.CharField(max_length=255, blank=True)
 
     last_name = models.CharField(max_length=255, blank=True)

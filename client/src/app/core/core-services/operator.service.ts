@@ -14,7 +14,7 @@ import { OfflineService } from './offline.service';
 import { OnAfterAppsLoaded } from '../definitions/on-after-apps-loaded';
 import { OpenSlidesStatusService } from './openslides-status.service';
 import { StorageService } from './storage.service';
-import { User } from '../../shared/models/users/user';
+import { DEFAULT_AUTH_TYPE, User, UserAuthType } from '../../shared/models/users/user';
 import { UserRepositoryService } from '../repositories/users/user-repository.service';
 
 /**
@@ -30,6 +30,7 @@ export interface WhoAmI {
     user_id: number;
     guest_enabled: boolean;
     user: User;
+    auth_type: UserAuthType;
     permissions: Permission[];
 }
 
@@ -42,7 +43,8 @@ function isWhoAmI(obj: any): obj is WhoAmI {
         whoAmI.guest_enabled !== undefined &&
         whoAmI.user !== undefined &&
         whoAmI.user_id !== undefined &&
-        whoAmI.permissions !== undefined
+        whoAmI.permissions !== undefined &&
+        whoAmI.auth_type !== undefined
     );
 }
 
@@ -89,6 +91,8 @@ export class OperatorService implements OnAfterAppsLoaded {
         return this.isInGroupIdsNonAdminCheck(2);
     }
 
+    public readonly authType: BehaviorSubject<UserAuthType> = new BehaviorSubject(DEFAULT_AUTH_TYPE);
+
     /**
      * Save, if guests are enabled.
      */
@@ -117,10 +121,11 @@ export class OperatorService implements OnAfterAppsLoaded {
     private userRepository: UserRepositoryService | null;
 
     private _currentWhoAmI: WhoAmI | null = null;
-    private _defaultWhoAMI: WhoAmI = {
+    private _defaultWhoAmI: WhoAmI = {
         user_id: null,
         guest_enabled: false,
         user: null,
+        auth_type: DEFAULT_AUTH_TYPE,
         permissions: []
     };
 
@@ -128,7 +133,7 @@ export class OperatorService implements OnAfterAppsLoaded {
      * The current WhoAmI response to extract the user (the operator) from.
      */
     private get currentWhoAmI(): WhoAmI {
-        return this._currentWhoAmI || this._defaultWhoAMI;
+        return this._currentWhoAmI || this._defaultWhoAmI;
     }
 
     private set currentWhoAmI(value: WhoAmI | null) {
@@ -137,7 +142,7 @@ export class OperatorService implements OnAfterAppsLoaded {
         // Resetting the default whoami, when the current whoami isn't there. This
         // is for a fresh restart and do not have (old) changed values in this.defaultWhoAmI
         if (!value) {
-            this._defaultWhoAMI = this.getDefaultWhoAmIResponse();
+            this._defaultWhoAmI = this.getDefaultWhoAmIResponse();
         }
     }
 
@@ -304,6 +309,7 @@ export class OperatorService implements OnAfterAppsLoaded {
         }
 
         this._user = whoami ? whoami.user : null;
+        this.authType.next(whoami ? whoami.auth_type : DEFAULT_AUTH_TYPE);
         await this.updatePermissions();
         this._loaded.resolve();
     }
@@ -418,6 +424,7 @@ export class OperatorService implements OnAfterAppsLoaded {
             user_id: null,
             guest_enabled: false,
             user: null,
+            auth_type: DEFAULT_AUTH_TYPE,
             permissions: []
         };
     }

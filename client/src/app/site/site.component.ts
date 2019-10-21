@@ -11,8 +11,10 @@ import { filter } from 'rxjs/operators';
 
 import { navItemAnim } from '../shared/animations';
 import { OfflineService } from 'app/core/core-services/offline.service';
+import { LoginDataService } from 'app/core/ui-services/login-data.service';
 import { OverlayService } from 'app/core/ui-services/overlay.service';
 import { UpdateService } from 'app/core/ui-services/update.service';
+import { DEFAULT_AUTH_TYPE } from 'app/shared/models/users/user';
 import { langToLocale } from 'app/shared/utils/lang-to-locale';
 import { AuthService } from '../core/core-services/auth.service';
 import { BaseComponent } from '../base.component';
@@ -46,7 +48,9 @@ export class SiteComponent extends BaseComponent implements OnInit {
     /**
      * Get the username from the operator (should be known already)
      */
-    public username: string;
+    public username = '';
+
+    public authType = DEFAULT_AUTH_TYPE;
 
     /**
      * is the user logged in, or the anonymous is active.
@@ -72,6 +76,8 @@ export class SiteComponent extends BaseComponent implements OnInit {
      * Set to true if an update was suppressed
      */
     private delayedUpdateAvailable = false;
+
+    public samlChangePasswordUrl: string | null = null;
 
     /**
      * Constructor
@@ -100,7 +106,8 @@ export class SiteComponent extends BaseComponent implements OnInit {
         public OSStatus: OpenSlidesStatusService,
         public timeTravel: TimeTravelService,
         private matSnackBar: MatSnackBar,
-        private overlayService: OverlayService
+        private overlayService: OverlayService,
+        private loginDataService: LoginDataService
     ) {
         super(title, translate);
         overlayService.showSpinner(translate.instant('Loading data. Please wait...'));
@@ -114,10 +121,15 @@ export class SiteComponent extends BaseComponent implements OnInit {
                 this.isLoggedIn = false;
             }
         });
+        this.operator.authType.subscribe(authType => (this.authType = authType));
 
         offlineService.isOffline().subscribe(offline => {
             this.isOffline = offline;
         });
+
+        this.loginDataService.samlSettings.subscribe(
+            samlSettings => (this.samlChangePasswordUrl = samlSettings ? samlSettings.changePasswordUrl : null)
+        );
 
         this.searchform = new FormGroup({ query: new FormControl([]) });
 

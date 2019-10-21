@@ -38,3 +38,7 @@ def set_constants(value: Dict[str, Any]) -> None:
     """
     global constants
     constants = value
+
+
+def set_constants_from_apps() -> None:
+    set_constants(get_constants_from_apps())

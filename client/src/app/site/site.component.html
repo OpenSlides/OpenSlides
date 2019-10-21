@@ -29,7 +29,7 @@
         <mat-expansion-panel class="user-menu mat-elevation-z0">
             <mat-expansion-panel-header class="username">
                 <!-- Get the username from operator -->
-                <span *ngIf="username">{{ username }}</span>
+                {{ username }}
             </mat-expansion-panel-header>
             <mat-nav-list>
                 <a mat-list-item [matMenuTriggerFor]="languageMenu">
@@ -45,16 +45,29 @@
                         <mat-icon>person</mat-icon>
                         <span translate>Show profile</span>
                     </a>
-                    <a
-                        *osPerms="'users.can_change_password'"
-                        routerLink="/users/password"
-                        (click)="mobileAutoCloseNav()"
-                        mat-list-item
-                    >
-                        <mat-icon>vpn_key</mat-icon>
-                        <span translate>Change password</span>
-                    </a>
-                    <a *ngIf="isLoggedIn" (click)="logout()" mat-list-item>
+                    <ng-container *ngIf="authType === 'default'">
+                        <a
+                            *osPerms="'users.can_change_password'"
+                            routerLink="/users/password"
+                            (click)="mobileAutoCloseNav()"
+                            mat-list-item
+                        >
+                            <mat-icon>vpn_key</mat-icon>
+                            <span translate>Change password</span>
+                        </a>
+
+                    </ng-container>
+                    <ng-container *ngIf="authType === 'saml'">
+                        <a
+                            *osPerms="'users.can_change_password'"
+                            [href]="samlChangePasswordUrl"
+                            mat-list-item
+                        >
+                            <mat-icon>vpn_key</mat-icon>
+                            <span translate>Change password</span>
+                        </a>
+                    </ng-container>
+                    <a (click)="logout()" mat-list-item>
                         <mat-icon>exit_to_app</mat-icon>
                         <span translate>Logout</span>
                     </a>

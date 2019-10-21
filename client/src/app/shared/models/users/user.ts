@@ -6,6 +6,9 @@ import { BaseModel } from '../base/base-model';
  */
 export const genders = [_('female'), _('male'), _('diverse')];
 
+export const DEFAULT_AUTH_TYPE = 'default';
+export type UserAuthType = 'default' | 'saml';
+
 /**
  * Representation of a user in contrast to the operator.
  * @ignore
@@ -30,6 +33,7 @@ export class User extends BaseModel<User> {
     public comment?: string;
     public is_active?: boolean;
     public default_password?: string;
+    public auth_type?: UserAuthType;
 
     public constructor(input?: Partial<User>) {
         super(User.COLLECTIONSTRING, input);

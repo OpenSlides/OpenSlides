@@ -79,7 +79,7 @@ export class UserFilterListService extends BaseFilterListService<ViewUser> {
                 ]
             },
             {
-                property: 'is_last_email_send',
+                property: 'isLastEmailSend',
                 label: this.translate.instant('Last email send'),
                 options: [
                     { condition: true, label: this.translate.instant('Got an email') },

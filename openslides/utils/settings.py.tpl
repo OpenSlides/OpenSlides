@@ -118,6 +118,14 @@ if use_redis:
         'socket_timeout': 2
     }
 
+# SAML integration
+# Please read https://github.com/OpenSlides/OpenSlides/blob/master/openslides/saml/README.md
+# for additional requirements.
+
+ENABLE_SAML = False
+if ENABLE_SAML:
+    INSTALLED_APPS += ['openslides.saml']
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
@@ -174,3 +182,5 @@ LOGGING = {
         }
     },
 }
+
+SETTINGS_FILEPATH = __file__

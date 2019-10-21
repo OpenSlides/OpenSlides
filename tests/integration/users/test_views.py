@@ -15,7 +15,13 @@ class TestWhoAmIView(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             json.loads(response.content.decode()),
-            {"user_id": None, "user": None, "permissions": [], "guest_enabled": False},
+            {
+                "auth_type": "default",
+                "user_id": None,
+                "user": None,
+                "permissions": [],
+                "guest_enabled": False,
+            },
         )
 
     def test_get_authenticated_user(self):
@@ -58,7 +64,13 @@ class TestUserLogoutView(TestCase):
         self.assertFalse(hasattr(self.client.session, "test_key"))
         self.assertEqual(
             json.loads(response.content.decode()),
-            {"user_id": None, "user": None, "permissions": [], "guest_enabled": False},
+            {
+                "auth_type": "default",
+                "user_id": None,
+                "user": None,
+                "permissions": [],
+                "guest_enabled": False,
+            },
         )
 
 
@@ -72,7 +84,12 @@ class TestUserLoginView(TestCase):
         response = self.client.get(self.url)
 
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(json.loads(response.content.decode()).get("login_info_text"))
+        content = json.loads(response.content.decode())
+        self.assertTrue("login_info_text" in content)
+        self.assertTrue("privacy_policy" in content)
+        self.assertTrue("legal_notice" in content)
+        self.assertTrue("theme" in content)
+        self.assertTrue("logo_web_header" in content)
 
     def test_post_no_data(self):
         response = self.client.post(self.url)
@@ -85,7 +102,12 @@ class TestUserLoginView(TestCase):
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(json.loads(response.content.decode()).get("user_id"), 1)
+        content = json.loads(response.content.decode())
+        self.assertEqual(content.get("user_id"), 1)
+        self.assertTrue(isinstance(content.get("user"), dict))
+        self.assertTrue(isinstance(content.get("permissions"), list))
+        self.assertFalse(content.get("guest_enabled", True))
+        self.assertEqual(content.get("auth_type"), "default")
 
     def test_post_incorrect_data(self):
         response = self.client.post(

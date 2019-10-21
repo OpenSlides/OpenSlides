@@ -2,10 +2,13 @@ from django.apps import AppConfig
 from django.conf import settings
 from django.contrib.auth.signals import user_logged_in
 
+from .user_backend import DefaultUserBackend, user_backend_manager
+
 
 class UsersAppConfig(AppConfig):
     name = "openslides.users"
     verbose_name = "OpenSlides Users"
+    user_backend_class = DefaultUserBackend
 
     def ready(self):
         # Import all required stuff.
@@ -39,6 +42,9 @@ class UsersAppConfig(AppConfig):
             self.get_model("PersonalNote").get_collection_string(), PersonalNoteViewSet
         )
 
+    def get_startup_hooks(self):
+        return {30: user_backend_manager.collect_backends_from_apps}
+
     def get_config_variables(self):
         from .config_variables import get_config_variables
 
@@ -55,6 +61,7 @@ class UsersAppConfig(AppConfig):
     def get_angular_constants(self):
         from django.contrib.auth.models import Permission
 
+        # Permissions
         permissions = []
         for permission in Permission.objects.all():
             permissions.append(
@@ -65,4 +72,8 @@ class UsersAppConfig(AppConfig):
                     ),
                 }
             )
-        return {"permissions": permissions}
+
+        # Backends
+        backends = user_backend_manager.get_backends_for_client()
+
+        return {"Permissions": permissions, "UserBackends": backends}

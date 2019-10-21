@@ -258,10 +258,17 @@ class ElementCache:
         element = json.loads(encoded_element.decode())  # type: ignore
 
         if user_id is not None:
-            restricter = self.cachables[collection_string].restrict_elements
-            restricted_elements = await restricter(user_id, [element])
-            element = restricted_elements[0] if restricted_elements else None
+            element = await self.restrict_element_data(
+                element, collection_string, user_id
+            )
         return element
+
+    async def restrict_element_data(
+        self, element: Dict[str, Any], collection_string: str, user_id: int
+    ) -> Optional[Dict[str, Any]]:
+        restricter = self.cachables[collection_string].restrict_elements
+        restricted_elements = await restricter(user_id, [element])
+        return restricted_elements[0] if restricted_elements else None
 
     async def get_data_since(
         self, user_id: Optional[int] = None, change_id: int = 0, max_change_id: int = -1
