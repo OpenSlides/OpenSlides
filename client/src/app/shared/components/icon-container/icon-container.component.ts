@@ -57,15 +57,14 @@ export class IconContainerComponent {
     public noWrap = false;
 
     /**
+     * Boolean, whether space for the icon should be reserved.
+     */
+    @Input()
+    public iconCanBeEmpty = true;
+
+    /**
      * Optional action for clicking on the icon.
      */
     @Output()
     public iconAction: EventEmitter<any> = new EventEmitter();
-
-    /**
-     * Function executed, when the icon is clicked.
-     */
-    public iconClick(): void {
-        this.iconAction.emit();
-    }
 }

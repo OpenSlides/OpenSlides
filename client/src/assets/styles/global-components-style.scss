@@ -125,6 +125,10 @@
         right: 0;
     }
 
+    .secondary-text {
+        color: mat-color($foreground, secondary-text);
+    }
+
     /** Custom themes for NGrid. Could be an own file if it gets more */
     .pbl-ngrid-container {
         background: mat-color($background, card);

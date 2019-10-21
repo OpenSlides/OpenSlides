@@ -165,11 +165,8 @@
             <ng-container *ngTemplateOutlet="contentTemplate"></ng-container>
         </mat-card>
 
-        <!-- Comments -->
-        <os-motion-comments *ngIf="!editMotion" [motion]="motion"></os-motion-comments>
-
-        <!-- Personal note -->
-        <os-personal-note *ngIf="!editMotion && !operator.isAnonymous" [motion]="motion"></os-personal-note>
+        <!-- Comments and personal note -->
+        <ng-container [ngTemplateOutlet]="commentsAndNote" *ngIf="!editMotion"></ng-container>
     </div>
 </ng-template>
 
@@ -179,8 +176,8 @@
             <!-- Meta Info -->
             <div><ng-container *ngTemplateOutlet="metaInfoTemplate"></ng-container></div>
 
-            <os-motion-comments *ngIf="!editMotion" [motion]="motion"></os-motion-comments>
-            <os-personal-note *ngIf="!editMotion && !operator.isAnonymous" [motion]="motion"></os-personal-note>
+            <!-- Comments and personal note -->
+            <ng-container [ngTemplateOutlet]="commentsAndNote" *ngIf="!editMotion"></ng-container>
         </div>
         <div class="desktop-right">
             <!-- Content -->
@@ -461,6 +458,52 @@
     </div>
 </ng-template>
 
+<!-- Template for comments and personal note -->
+<ng-template #commentsAndNote>
+    <ng-container *ngFor="let section of commentObserver.value">
+        <os-meta-text-block
+            *ngIf="
+                canEditComment(section) ||
+                (motion.getCommentForSection(section) && motion.getCommentForSection(section).comment)
+            "
+            [title]="section.getTitle()"
+            [text]="motion.getCommentForSection(section) ? motion.getCommentForSection(section).comment : ''"
+            [placeholder]="'No comment'"
+            [canEdit]="canEditComment(section)"
+            (textChange)="commentRepository.saveComment(motion, section, $event)"
+        >
+            <ng-container actionsOnNotEdit>
+                <button
+                    *ngIf="motion.getCommentForSection(section)"
+                    (click)="pdfExport.exportComment(section, motion)"
+                    matTooltip="{{ 'Export comment' | translate }}"
+                    mat-icon-button
+                >
+                    <mat-icon>picture_as_pdf</mat-icon>
+                </button>
+            </ng-container>
+        </os-meta-text-block>
+    </ng-container>
+    <os-meta-text-block
+        *ngIf="!operator.isAnonymous"
+        title="{{ 'Personal note' | translate }}"
+        [text]="motion.personalNote ? motion.personalNoteText : ''"
+        [disableExpandControl]="true"
+        placeholder="{{ 'No personal note' | translate }}"
+    >
+        <ng-container actionsOnNotEdit>
+            <button
+                *ngIf="motion.personalNote && motion.personalNote.note"
+                (click)="pdfExport.exportPersonalNote(motion.personalNote, motion)"
+                matTooltip="{{ 'Export personal note only' | translate }}"
+                mat-icon-button
+            >
+                <mat-icon>picture_as_pdf</mat-icon>
+            </button>
+        </ng-container>
+    </os-meta-text-block>
+</ng-template>
+
 <ng-template #contentTemplate>
     <form class="motion-content" [formGroup]="contentForm" (keydown)="onKeyDown($event)">
         <!-- Toolbar with text controls and buttonf for managing the (modified) final version-->
@@ -621,12 +664,7 @@
             <!-- Title -->
             <div *ngIf="editMotion" class="content-field form-title">
                 <mat-form-field *ngIf="editMotion">
-                    <input
-                        matInput
-                        placeholder="{{ 'Title' | translate }}"
-                        formControlName="title"
-                        required
-                    />
+                    <input matInput placeholder="{{ 'Title' | translate }}" formControlName="title" required />
                     <mat-error>{{ 'The title is required' | translate }}</mat-error>
                 </mat-form-field>
             </div>
@@ -838,11 +876,7 @@
             <div class="content-field" *ngIf="editMotion">
                 <div *ngIf="perms.isAllowed('change_metadata', motion)">
                     <mat-form-field>
-                        <input
-                            matInput
-                            placeholder="{{ 'Origin' | translate }}"
-                            formControlName="origin"
-                        />
+                        <input matInput placeholder="{{ 'Origin' | translate }}" formControlName="origin" />
                     </mat-form-field>
                 </div>
             </div>

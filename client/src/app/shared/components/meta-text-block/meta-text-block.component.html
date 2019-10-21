@@ -1,18 +1,34 @@
 <div>
-    <mat-card class="meta-text-block">
-        <mat-card-header>
-            <mat-card-title>
-                <div class="title-container">
-                    <div class="ellipsis-overflow">
-                        <ng-container *ngTemplateOutlet="title"></ng-container>
-                    </div>
-                    <div class="action-row" *ngIf="showActionRow">
-                        <ng-container *ngTemplateOutlet="actionRow"></ng-container>
-                    </div>
-                </div>
-            </mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
+    <mat-card class="meta-container-wrapper">
+        <!-- Header -->
+        <div class="meta-container-header" [ngClass]="{ hasDivider: hasDivider }">
+            <div class="header-heading one-line">
+                <div *ngIf="title" class="header-title one-line">{{ title }}</div>
+                <div *ngIf="subtitle" class="header-subtitle secondary-text">{{ subtitle }}</div>
+            </div>
+            <div *ngIf="hasActions" class="header-action-row" #actionRow>
+                <ng-container *ngIf="(text || text === '') && canEdit">
+                    <button *ngIf="editMode" mat-icon-button (click)="save()" matTooltip="{{ 'Save' | translate }}">
+                        <mat-icon>save</mat-icon>
+                    </button>
+                    <button
+                        mat-icon-button
+                        (click)="changeEditMode()"
+                        matTooltip="{{ editMode ? 'Cancel edit' : ('Edit' | translate) }}"
+                    >
+                        <mat-icon *ngIf="editMode">close</mat-icon>
+                        <mat-icon *ngIf="!editMode">edit</mat-icon>
+                    </button>
+                </ng-container>
+                <!-- Default actions always visible -->
+                <ng-content select="[actionRow]"></ng-content>
+                <!-- Actions only visible in editing mode -->
+                <ng-content *ngIf="editMode" select="[actionsOnEdit]"></ng-content>
+                <!-- Actions only visible when not editing content -->
+                <ng-content *ngIf="!editMode" select="[actionsOnNotEdit]"></ng-content>
+            </div>
+        </div>
+        <mat-card-content *ngIf="hasContent">
             <!-- Content -->
             <div
                 #contentBox
@@ -20,22 +36,32 @@
                 class="content"
                 [ngClass]="!isExpanded && !disableExpandControl ? 'collapsed' : ''"
             >
-                <ng-container *ngTemplateOutlet="content"></ng-container>
+                <ng-container *ngIf="text || text === ''">
+                    <ng-container *ngIf="!editMode">
+                        <div [innerHTML]="text | trust: 'html'" (dblclick)="enterInlineMode()"></div>
+                        <div *ngIf="text === ''" class="content-text--placeholder">{{ placeholder | translate }}</div>
+                    </ng-container>
+                    <form [formGroup]="contentForm" *ngIf="editMode">
+                        <editor
+                            formControlName="editor"
+                            [init]="getTinyMceSettings()"
+                            (onInit)="onInitTinyMce($event)"
+                            (onRemove)="onLeaveTinyMce($event)"
+                        ></editor>
+                    </form>
+                </ng-container>
+                <ng-content></ng-content>
             </div>
             <!-- Expanding control -->
             <div class="small show-entire-text" *ngIf="canExpand && !disableExpandControl">
-                <a (click)="isExpanded = !isExpanded">{{ isExpanded ? ('Hide more text' | translate) : ('Show full text' | translate) }}</a>
+                <a (click)="isExpanded = !isExpanded">{{
+                    isExpanded ? ('Hide more text' | translate) : ('Show full text' | translate)
+                }}</a>
             </div>
         </mat-card-content>
+        <!-- Footer -->
+        <mat-card-footer #footer *ngIf="hasFooter">
+            <ng-content select="[footer]"></ng-content>
+        </mat-card-footer>
     </mat-card>
 </div>
-
-<ng-template #title>
-    <ng-content select=".meta-text-block-title"></ng-content>
-</ng-template>
-<ng-template #content>
-    <ng-content select=".meta-text-block-content"></ng-content>
-</ng-template>
-<ng-template #actionRow>
-    <ng-content select=".meta-text-block-action-row"></ng-content>
-</ng-template>

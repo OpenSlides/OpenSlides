@@ -1,5 +1,14 @@
 @import './font-variables.scss';
 
+/* Light */
+@font-face {
+    font-family: $font;
+    font-style: normal;
+    font-display: swap;
+    font-weight: $font-weight-light;
+    src: $font-light;
+}
+
 /** Regular */
 @font-face {
     font-family: $font;
@@ -43,4 +52,13 @@
     font-display: swap;
     font-weight: $font-weight-condensed-regular;
     src: $font-condensed-regular;
+}
+
+/* Developer font */
+@font-face {
+    font-family: $font-developer;
+    font-style: normal;
+    font-display: swap;
+    font-weight: $font-weight-developer-regular;
+    src: $font-developer-regular;
 }

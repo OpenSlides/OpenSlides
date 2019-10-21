@@ -110,7 +110,7 @@ $narrow-spacing: (
     @include pbl-ngrid-theme(map-merge($ngrid-material-theme, $narrow-spacing));
 
     * {
-        font-family: monospace !important;
+        font-family: OSFont Monospace, Fira Code, monospace;
         color: mat-color(map-get($openslides-developer-theme, accent));
     }
 

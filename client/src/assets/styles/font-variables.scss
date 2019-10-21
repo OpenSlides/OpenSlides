@@ -3,6 +3,9 @@
 /** Default Font */
 $font: 'OSFont';
 
+$font-light: url('assets/fonts/fira-sans-latin-300.ttf') format('ttf');
+$font-weight-light: 300;
+
 $font-regular: url('assets/fonts/fira-sans-latin-400.woff') format('woff');
 $font-weight-regular: 400;
 
@@ -20,3 +23,9 @@ $font-condensed: 'OSFont Condensed';
 
 $font-condensed-regular: url('assets/fonts/fira-sans-condensed-latin-400.woff') format('woff');
 $font-weight-condensed-regular: 400;
+
+/** Developer font */
+$font-developer: 'OSFont Developer';
+
+$font-developer-regular: url('assets/fonts/fira-code-400.ttf') format('ttf');
+$font-weight-developer-regular: 400;

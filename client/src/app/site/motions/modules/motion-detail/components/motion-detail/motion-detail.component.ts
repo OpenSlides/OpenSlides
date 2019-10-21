@@ -25,6 +25,7 @@ import { ItemRepositoryService } from 'app/core/repositories/agenda/item-reposit
 import { CategoryRepositoryService } from 'app/core/repositories/motions/category-repository.service';
 import { ChangeRecommendationRepositoryService } from 'app/core/repositories/motions/change-recommendation-repository.service';
 import { MotionBlockRepositoryService } from 'app/core/repositories/motions/motion-block-repository.service';
+import { MotionCommentSectionRepositoryService } from 'app/core/repositories/motions/motion-comment-section-repository.service';
 import { MotionRepositoryService, ParagraphToChoose } from 'app/core/repositories/motions/motion-repository.service';
 import { StatuteParagraphRepositoryService } from 'app/core/repositories/motions/statute-paragraph-repository.service';
 import { WorkflowRepositoryService } from 'app/core/repositories/motions/workflow-repository.service';
@@ -38,8 +39,9 @@ import { PromptService } from 'app/core/ui-services/prompt.service';
 import { RoutingStateService } from 'app/core/ui-services/routing-state.service';
 import { ViewportService } from 'app/core/ui-services/viewport.service';
 import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
-import { Motion } from 'app/shared/models/motions/motion';
+import { Motion, MotionComment } from 'app/shared/models/motions/motion';
 import { ViewUnifiedChange } from 'app/shared/models/motions/view-unified-change';
+import { PersonalNoteContent } from 'app/shared/models/users/personal-note';
 import { infoDialogSettings, mediumDialogSettings } from 'app/shared/utils/dialog-settings';
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { CreateMotion } from 'app/site/motions/models/create-motion';
@@ -48,6 +50,7 @@ import { ViewCreateMotion } from 'app/site/motions/models/view-create-motion';
 import { ViewMotion } from 'app/site/motions/models/view-motion';
 import { ViewMotionBlock } from 'app/site/motions/models/view-motion-block';
 import { ViewMotionChangeRecommendation } from 'app/site/motions/models/view-motion-change-recommendation';
+import { ViewMotionCommentSection } from 'app/site/motions/models/view-motion-comment-section';
 import { ViewStatuteParagraph } from 'app/site/motions/models/view-statute-paragraph';
 import { ViewWorkflow } from 'app/site/motions/models/view-workflow';
 import { MotionEditNotification } from 'app/site/motions/motion-edit-notification';
@@ -271,6 +274,11 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
     public motionObserver: BehaviorSubject<ViewMotion[]>;
 
     /**
+     * Subject for the comment-sections.
+     */
+    public commentObserver: BehaviorSubject<ViewMotionCommentSection[]>;
+
+    /**
      * List of presorted motions. Filles by sort service
      * and filter service.
      * To navigate back and forth
@@ -385,6 +393,8 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
 
     public recommendationReferencingMotions: ViewMotion[] = [];
 
+    public comments: MotionComment[] = [];
+
     /**
      * Constructs the detail view.
      *
@@ -439,7 +449,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         private statuteRepo: StatuteParagraphRepositoryService,
         private configService: ConfigService,
         private promptService: PromptService,
-        private pdfExport: MotionPdfExportService,
+        public pdfExport: MotionPdfExportService,
         private personalNoteService: PersonalNoteService,
         private linenumberingService: LinenumberingService,
         private categoryRepo: CategoryRepositoryService,
@@ -452,7 +462,8 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         private motionSortService: MotionSortListService,
         private motionFilterService: MotionFilterListService,
         private routingStateService: RoutingStateService,
-        private cd: ChangeDetectorRef
+        private cd: ChangeDetectorRef,
+        public commentRepository: MotionCommentSectionRepositoryService
     ) {
         super(title, translate, matSnackBar);
     }
@@ -470,6 +481,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         this.submitterObserver = this.userRepo.getViewModelListBehaviorSubject();
         this.supporterObserver = this.userRepo.getViewModelListBehaviorSubject();
         this.categoryObserver = this.categoryRepo.getViewModelListBehaviorSubject();
+        this.commentObserver = this.commentRepository.getViewModelListBehaviorSubject();
 
         this.createForm();
         this.observeRoute();
@@ -520,6 +532,11 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
                 if (motions) {
                     this.sortedMotions = motions;
                     this.setSurroundingMotions();
+                }
+            }),
+            this.commentObserver.subscribe(sections => {
+                for (const section of sections) {
+                    this.comments.push(this.motion.getCommentForSection(section));
                 }
             })
         );
@@ -1523,6 +1540,18 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
     }
 
     /**
+     * Updates the personal note text.
+     *
+     * @param note The changed note.
+     */
+    public savePersonalNote(note: string): void {
+        const content: PersonalNoteContent = this.motion.personalNote
+            ? { star: this.motion.personalNote.star, note }
+            : { star: false, note };
+        this.personalNoteService.savePersonalNote(this.motion.motion, content).catch(this.raiseError);
+    }
+
+    /**
      * Handler for upload errors
      *
      * @param error the error message passed by the upload component
@@ -1603,6 +1632,17 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      */
     public editModifiedFinal(): void {
         this.finalEditMode = true;
+    }
+
+    /**
+     * Gets the permission to edit a comment.
+     *
+     * @param section The section containing the comment.
+     *
+     * @returns If the comment can be edited.
+     */
+    public canEditComment(section: ViewMotionCommentSection): boolean {
+        return this.operator.isInGroupIds(...section.write_groups_id);
     }
 
     public addToAgenda(): void {

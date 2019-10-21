@@ -3,43 +3,56 @@
 @mixin os-meta-text-block-style($theme) {
     $foreground: map-get($theme, foreground);
 
-    .meta-text-block {
-        padding: 0px;
+    .meta-container-wrapper {
+        padding: 0;
         margin: 20px 0;
-        min-width: 200px;
 
-        .mat-icon-button mat-icon {
-            color: mat-color($foreground, icon);
-            font-size: 18px;
-        }
-
-        mat-card-header {
-            display: inherit;
-            margin: 0;
-
-            .mat-card-header-text {
-                margin: 0 10px;
+        .meta-container-header {
+            display: flex;
+            width: calc(100% - 32px);
+            padding: 16px 16px 0;
+            line-height: 1.4;
+            .header-heading {
+                flex: 2;
+                .header-title {
+                    font-weight: 300;
+                    font-size: 24px;
+                }
+                .header-subtitle {
+                    font-size: 14px;
+                }
             }
-            mat-card-title {
-                margin: 0;
-                font-size: 16px;
-                font-weight: 400;
-
-                .title-container {
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-
-                    .action-row {
-                        display: flex;
+            .header-action-row {
+                flex: 1;
+                display: flex;
+                align-items: flex-start;
+                justify-content: flex-end;
+                button {
+                    $size: 30px;
+                    height: $size;
+                    width: $size;
+                    line-height: $size;
+                    mat-icon {
+                        color: mat-color($foreground, icon);
+                        font-size: 18px;
                     }
                 }
             }
+
+            &.has-divider {
+                border-bottom: 1px solid rgba(0, 0, 0, 0.54);
+            }
         }
 
-        mat-card-content {
-            padding: 15px;
+        .mat-card-content {
+            margin: 0;
+            padding: 16px;
             word-wrap: break-word;
+
+            .content-text--placeholder {
+                color: gray;
+                text-align: center;
+            }
 
             .content {
                 &.collapsed {
@@ -57,7 +70,6 @@
                     }
                 }
             }
-
             .show-entire-text {
                 text-align: end;
                 margin-top: 4px;
@@ -65,6 +77,15 @@
                     cursor: pointer;
                 }
             }
+        }
+
+        .mat-card-footer {
+            margin: 0;
+            padding: 16px;
+        }
+
+        & > *:last-child {
+            padding-bottom: 24px;
         }
     }
 }
