@@ -1,9 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { MatSnackBar } from '@angular/material';
+import { Title } from '@angular/platform-browser';
 
+import { TranslateService } from '@ngx-translate/core';
 import { environment } from 'environments/environment';
 
 import { HttpService } from 'app/core/core-services/http.service';
 import { LoginDataService } from 'app/core/ui-services/login-data.service';
+import { BaseViewComponent } from 'app/site/base/base-view';
 
 /**
  * Characterize a plugin. This data is retrieved from the server
@@ -64,7 +69,50 @@ interface VersionResponse {
     templateUrl: './legal-notice-content.component.html',
     styleUrls: ['./legal-notice-content.component.scss']
 })
-export class LegalNoticeContentComponent implements OnInit {
+export class LegalNoticeContentComponent extends BaseViewComponent implements OnInit {
+    /**
+     * Decides, whether the component can be edited at all.
+     * Defaults to `false`.
+     */
+    @Input()
+    public canBeEdited = false;
+
+    /**
+     * Sets the editing-state and updates the FormGroup with the current value.
+     *
+     * @param isEditing whether the component is currently in editing-mode.
+     */
+    @Input()
+    public set isEditing(isEditing: boolean) {
+        this.formGroup.patchValue({ legalNotice: this.legalNotice });
+        this._isEditing = isEditing;
+    }
+
+    /**
+     * Gets the editing-state.
+     *
+     * @returns `isEditing`.
+     */
+    public get isEditing(): boolean {
+        return this._isEditing;
+    }
+
+    /**
+     * Emitter to send updated value to the parent-component.
+     */
+    @Output()
+    public update = new EventEmitter<string>();
+
+    /**
+     * FormGroup for editing value.
+     */
+    public formGroup: FormGroup;
+
+    /**
+     * State, whether this is in editing-mode.
+     */
+    private _isEditing = false;
+
     /**
      * The legal notive text for the ui.
      */
@@ -81,7 +129,19 @@ export class LegalNoticeContentComponent implements OnInit {
      * @param translate
      * @param http
      */
-    public constructor(private loginDataService: LoginDataService, private http: HttpService) {}
+    public constructor(
+        title: Title,
+        translate: TranslateService,
+        matSnackbar: MatSnackBar,
+        private loginDataService: LoginDataService,
+        private http: HttpService,
+        fb: FormBuilder
+    ) {
+        super(title, translate, matSnackbar);
+        this.formGroup = fb.group({
+            legalNotice: ''
+        });
+    }
 
     /**
      * Subscribes for the legal notice text.
@@ -100,5 +160,11 @@ export class LegalNoticeContentComponent implements OnInit {
                 // TODO: error handling if the version info could not be loaded
             }
         );
+
+        if (this.canBeEdited) {
+            this.subscriptions.push(
+                this.formGroup.get('legalNotice').valueChanges.subscribe(value => this.update.emit(value))
+            );
+        }
     }
 }
