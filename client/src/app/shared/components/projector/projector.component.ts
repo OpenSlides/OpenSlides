@@ -9,6 +9,7 @@ import { OfflineService } from 'app/core/core-services/offline.service';
 import { ProjectorDataService, SlideData } from 'app/core/core-services/projector-data.service';
 import { ProjectorRepositoryService } from 'app/core/repositories/projector/projector-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
+import { Projector } from 'app/shared/models/core/projector';
 import { ViewProjector } from 'app/site/projector/models/view-projector';
 import { Size } from 'app/site/projector/size';
 
@@ -27,40 +28,13 @@ export class ProjectorComponent extends BaseComponent implements OnDestroy {
      */
     private projectorId: number | null = null;
 
-    /**
-     * The projector. Accessors are below.
-     */
-    private _projector: ViewProjector;
-
     @Input()
     public set projector(projector: ViewProjector) {
         this._projector = projector;
-        // check, if ID changed:
-        const newId = projector ? projector.id : null;
-        if (this.projectorId !== newId) {
-            this.projectorIdChanged(this.projectorId, newId);
-            this.projectorId = newId;
-        }
-
-        // Update scaling, if projector is set.
-        if (projector) {
-            const oldSize: Size = { ...this.currentProjectorSize };
-            this.currentProjectorSize.height = projector.height;
-            this.currentProjectorSize.width = projector.width;
-            if (
-                oldSize.height !== this.currentProjectorSize.height ||
-                oldSize.width !== this.currentProjectorSize.width
-            ) {
-                this.updateScaling();
-            }
-            this.css.projector.color = projector.color;
-            this.css.projector.backgroundColor = projector.background_color;
-            this.css.projector.H1Color = this.projector.header_h1_color;
-            this.css.headerFooter.color = projector.header_font_color;
-            this.css.headerFooter.backgroundColor = projector.header_background_color;
-            this.updateCSS();
-        }
+        this.setProjector(projector.projector);
     }
+
+    private _projector: ViewProjector;
 
     public get projector(): ViewProjector {
         return this._projector;
@@ -238,6 +212,39 @@ export class ProjectorComponent extends BaseComponent implements OnDestroy {
         });
 
         this.offlineSubscription = this.offlineService.isOffline().subscribe(isOffline => (this.isOffline = isOffline));
+    }
+
+    /**
+     * Regular routine to set a projector
+     *
+     * @param projector
+     */
+    public setProjector(projector: Projector): void {
+        // check, if ID changed:
+        const newId = projector ? projector.id : null;
+        if (this.projectorId !== newId) {
+            this.projectorIdChanged(this.projectorId, newId);
+            this.projectorId = newId;
+        }
+
+        // Update scaling, if projector is set.
+        if (projector) {
+            const oldSize: Size = { ...this.currentProjectorSize };
+            this.currentProjectorSize.height = projector.height;
+            this.currentProjectorSize.width = projector.width;
+            if (
+                oldSize.height !== this.currentProjectorSize.height ||
+                oldSize.width !== this.currentProjectorSize.width
+            ) {
+                this.updateScaling();
+            }
+            this.css.projector.color = projector.color;
+            this.css.projector.backgroundColor = projector.background_color;
+            this.css.projector.H1Color = projector.header_h1_color;
+            this.css.headerFooter.color = projector.header_font_color;
+            this.css.headerFooter.backgroundColor = projector.header_background_color;
+            this.updateCSS();
+        }
     }
 
     /**

@@ -1,18 +1,20 @@
-<os-meta-text-block showActionRow="false" *ngIf="projector" [disableExpandControl]="true">
+<os-meta-text-block class="projector-tile" showActionRow="false" *ngIf="projector" [disableExpandControl]="true">
     <ng-container class="meta-text-block-title">
         {{ projector.getTitle() | translate }}
     </ng-container>
-    <ng-container class="meta-text-block-action-row" *ngIf="canManage">
-        <button mat-icon-button *ngIf="!isEditing" (click)="onEditButton()">
+    <ng-container class="meta-text-block-action-row" *osPerms="'core.can_manage_projector'">
+        <button
+            mat-icon-button
+            (click)="onSetAsClosRef()"
+            matTooltip="{{ 'Sets this projector as the reference for the current list of speakers' | translate }}"
+        >
+            <mat-icon *ngIf="this.projector.isReferenceProjector">star</mat-icon>
+            <mat-icon *ngIf="!this.projector.isReferenceProjector">star_border</mat-icon>
+        </button>
+        <button mat-icon-button (click)="editProjector()" matTooltip="{{ 'Edit this projector' | translate }}">
             <mat-icon>edit</mat-icon>
         </button>
-        <button mat-icon-button *ngIf="isEditing" (click)="onCancelButton()">
-            <mat-icon>close</mat-icon>
-        </button>
-        <button mat-icon-button *ngIf="isEditing" (click)="onSaveButton()">
-            <mat-icon>save</mat-icon>
-        </button>
-        <button mat-icon-button color="warn" (click)="onDeleteButton()">
+        <button mat-icon-button color="warn" (click)="onDeleteButton()" matTooltip="{{ 'Deletes this projector' | translate }}">
             <mat-icon>delete</mat-icon>
         </button>
     </ng-container>
@@ -22,221 +24,5 @@
                 <os-projector [projector]="projector"></os-projector>
             </div>
         </a>
-        <ng-container *ngIf="isEditing">
-            <form [formGroup]="updateForm" (keydown)="keyDownFunction($event, projector)">
-                <!-- Name field -->
-                <mat-form-field>
-                    <input formControlName="name" matInput placeholder="{{ 'Name' | translate }}" required />
-                    <mat-hint *ngIf="!updateForm.controls.name.valid">
-                        <span translate>Required</span>
-                    </mat-hint>
-                </mat-form-field>
-
-                <h3 translate>Resolution and size</h3>
-                <!-- Aspect ratio field -->
-                <mat-radio-group formControlName="aspectRatio" [name]="projector.id">
-                    <mat-radio-button
-                        *ngFor="let ratio of aspectRatiosKeys"
-                        [value]="ratio"
-                        (change)="aspectRatioChanged($event)"
-                    >
-                        {{ ratio }}
-                    </mat-radio-button>
-                </mat-radio-group>
-                <div class="spacer-top-20">
-                    <mat-slider
-                        [thumbLabel]="true"
-                        [min]="getMinWidth()"
-                        max="2000"
-                        step="10"
-                        value="{{ updateForm.value.width }}"
-                        (change)="widthSliderValueChanged($event)"
-                    ></mat-slider>
-                    {{ updateForm.value.width }}
-                </div>
-
-                <!-- projection defaults -->
-                <h3 translate>Projection defaults</h3>
-                <mat-select
-                    formControlName="projectiondefaults_id"
-                    placeholder="{{ 'Projection defaults' | translate }}"
-                    [multiple]="true"
-                >
-                    <mat-option *ngFor="let pd of projectionDefaults" [value]="pd.id">
-                        {{ pd.getTitle() | translate }}
-                    </mat-option>
-                </mat-select>
-
-                <!-- colors -->
-                <div class="color-field-wrapper">
-                    <div class="form">
-                        <mat-form-field>
-                            <span translate>Foreground color</span>
-                            <input matInput formControlName="color" type="color" />
-                            <mat-hint *ngIf="!updateForm.controls.color.valid">
-                                <span translate>Required</span>
-                            </mat-hint>
-                        </mat-form-field>
-                    </div>
-                    <div class="reset-button">
-                        <button
-                            mat-icon-button
-                            matTooltip="{{ 'Reset' | translate }}"
-                            (click)="resetField('color', '#000000')"
-                        >
-                            <mat-icon>replay</mat-icon>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="color-field-wrapper">
-                    <div class="form">
-                        <mat-form-field>
-                            <span translate>Background color</span>
-                            <input matInput formControlName="background_color" type="color" />
-                            <mat-hint *ngIf="!updateForm.controls.background_color.valid">
-                                <span translate>Required</span>
-                            </mat-hint>
-                        </mat-form-field>
-                    </div>
-                    <div class="reset-button">
-                        <button
-                            mat-icon-button
-                            matTooltip="{{ 'Reset' | translate }}"
-                            (click)="resetField('background_color', '#ffffff')"
-                        >
-                            <mat-icon>replay</mat-icon>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="color-field-wrapper">
-                    <div class="form">
-                        <mat-form-field>
-                            <span translate>Header background color</span>
-                            <input matInput formControlName="header_background_color" type="color" />
-                            <mat-hint *ngIf="!updateForm.controls.header_background_color.valid">
-                                <span translate>Required</span>
-                            </mat-hint>
-                        </mat-form-field>
-                    </div>
-                    <div class="reset-button">
-                        <button
-                            mat-icon-button
-                            matTooltip="{{ 'Reset' | translate }}"
-                            (click)="resetField('header_background_color', '#317796')"
-                        >
-                            <mat-icon>replay</mat-icon>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="color-field-wrapper">
-                    <div class="form">
-                        <mat-form-field>
-                            <span translate>Header font color</span>
-                            <input matInput formControlName="header_font_color" type="color" />
-                            <mat-hint *ngIf="!updateForm.controls.header_font_color.valid">
-                                <span translate>Required</span>
-                            </mat-hint>
-                        </mat-form-field>
-                    </div>
-                    <div class="reset-button">
-                        <button
-                            mat-icon-button
-                            matTooltip="{{ 'Reset' | translate }}"
-                            (click)="resetField('header_font_color', '#f5f5f5')"
-                        >
-                            <mat-icon>replay</mat-icon>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="color-field-wrapper">
-                    <div class="form">
-                        <mat-form-field>
-                            <span translate>Headline color</span>
-                            <input matInput formControlName="header_h1_color" type="color" />
-                            <mat-hint *ngIf="!updateForm.controls.header_h1_color.valid">
-                                <span translate>Required</span>
-                            </mat-hint>
-                        </mat-form-field>
-                    </div>
-                    <div class="reset-button">
-                        <button
-                            mat-icon-button
-                            matTooltip="{{ 'Reset' | translate }}"
-                            (click)="resetField('header_h1_color', '#317796')"
-                        >
-                            <mat-icon>replay</mat-icon>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="color-field-wrapper">
-                    <div class="form">
-                        <mat-form-field>
-                            <span translate>Chyron background color</span>
-                            <input matInput formControlName="chyron_background_color" type="color" />
-                            <mat-hint *ngIf="!updateForm.controls.chyron_background_color.valid">
-                                <span translate>Required</span>
-                            </mat-hint>
-                        </mat-form-field>
-                    </div>
-                    <div class="reset-button">
-                        <button
-                            mat-icon-button
-                            matTooltip="{{ 'Reset' | translate }}"
-                            (click)="resetField('chyron_background_color', '#317796')"
-                        >
-                            <mat-icon>replay</mat-icon>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="color-field-wrapper">
-                    <div class="form">
-                        <mat-form-field>
-                            <span translate>Chyron font color</span>
-                            <input matInput formControlName="chyron_font_color" type="color" />
-                            <mat-hint *ngIf="!updateForm.controls.chyron_font_color.valid">
-                                <span translate>Required</span>
-                            </mat-hint>
-                        </mat-form-field>
-                    </div>
-                    <div class="reset-button">
-                        <button
-                            mat-icon-button
-                            matTooltip="{{ 'Reset' | translate }}"
-                            (click)="resetField('chyron_font_color', '#ffffff')"
-                        >
-                            <mat-icon>replay</mat-icon>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- checkboxes -->
-                <div>
-                    <mat-checkbox formControlName="show_header_footer">
-                        <span translate>Show header and footer</span>
-                    </mat-checkbox>
-                </div>
-                <div>
-                    <mat-checkbox formControlName="show_title">
-                        <span translate>Show title</span>
-                    </mat-checkbox>
-                </div>
-                <div>
-                    <mat-checkbox formControlName="show_logo">
-                        <span translate>Show logo</span>
-                    </mat-checkbox>
-                </div>
-                <div>
-                    <mat-checkbox formControlName="clock">
-                        <span translate>Show clock</span>
-                    </mat-checkbox>
-                </div>
-            </form>
-        </ng-container>
     </ng-container>
 </os-meta-text-block>

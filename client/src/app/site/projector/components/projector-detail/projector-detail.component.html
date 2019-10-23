@@ -1,4 +1,4 @@
-<os-head-bar [nav]="false" [goBack]="true">
+<os-head-bar [nav]="false" [hasMainButton]="true" mainButtonIcon="edit" [goBack]="true" (mainEvent)="editProjector()">
     <!-- Title -->
     <div class="title-slot">
         <h2>{{ projector?.name | translate }}</h2>
