@@ -214,25 +214,23 @@ export class CategoryMotionsSortComponent extends BaseViewComponent implements O
 
     public async moveToPosition(): Promise<void> {
         if (this.sortSelector.multiSelectedIndex.length) {
-        }
-        const content = this.translate.instant('Move selected items ...');
-        const choices = this.sortSelector.sortedItems
-            .map((item, index) => {
-                return { id: index, label: item.getTitle() };
-            })
-            .filter(f => !this.sortSelector.multiSelectedIndex.includes(f.id));
-        const actions = [this.translate.instant('Insert before'), this.translate.instant('Insert behind')];
-        const selectedChoice = await this.choiceService.open(content, choices, false, actions);
-        if (selectedChoice) {
-            const newIndex = selectedChoice.items as number;
-
-            this.sortSelector.drop(
-                {
-                    currentIndex: newIndex,
-                    previousIndex: null
-                },
-                selectedChoice.action === actions[1] // true if 'insert behind'
+            const content = this.translate.instant('Move selected items ...');
+            const choices = this.sortSelector.sortedItems.filter(
+                f => !this.sortSelector.multiSelectedIndex.includes(f.id)
             );
+            const actions = [this.translate.instant('Insert before'), this.translate.instant('Insert behind')];
+            const selectedChoice = await this.choiceService.open(content, choices, false, actions);
+            if (selectedChoice) {
+                const newIndex = selectedChoice.items as number;
+
+                this.sortSelector.drop(
+                    {
+                        currentIndex: newIndex,
+                        previousIndex: null
+                    },
+                    selectedChoice.action === actions[1] // true if 'insert behind'
+                );
+            }
         }
     }
 }

@@ -1,56 +1,52 @@
 <!-- Title -->
 <h2 mat-dialog-title>{{ data.title | translate }}</h2>
 
-<!-- Content -->
-<mat-dialog-content>
-    <mat-radio-group
-        #radio
-        name="choice"
-        *ngIf="!data.multiSelect && data.choices"
-        class="choice-radio-group"
-        [(ngModel)]="selectedChoice"
-    >
-        <mat-radio-button class="choice-button" *ngFor="let choice of data.choices" [value]="choice.id">
-            {{ getChoiceTitle(choice) | translate }}
-        </mat-radio-button>
-
-        <mat-divider *ngIf="data.clearChoice"></mat-divider>
-
-        <mat-radio-button *ngIf="data.clearChoice" [value]="null">
-            {{ data.clearChoice | translate }}
-        </mat-radio-button>
-    </mat-radio-group>
-
-    <mat-list *ngIf="data.multiSelect && data.choices">
-        <mat-list-item *ngFor="let choice of data.choices">
-            <mat-checkbox [checked]="isChosen(choice)" (change)="toggleChoice(choice)">
-                {{ getChoiceTitle(choice) | translate }}
-            </mat-checkbox>
-        </mat-list-item>
-    </mat-list>
-</mat-dialog-content>
-
-<!-- Actions -->
-<mat-dialog-actions>
-    <div *ngIf="data.actionButtons">
-        <button
-            *ngFor="let button of data.actionButtons"
-            mat-button
-            (click)="closeDialog(true, button)"
-            [disabled]="isSelectionEmpty"
+<form [formGroup]="selectForm">
+    <!-- Content -->
+    <div mat-dialog-content *ngIf="data.choices">
+        <os-search-value-selector
+            ngDefaultControl
+            [multiple]="data.multiSelect"
+            [formControl]="selectForm.get('select')"
+            [inputListValues]="data.choices"
         >
-            <span>{{ button | translate }}</span>
+        </os-search-value-selector>
+    </div>
+
+    <!-- Actions -->
+    <div mat-dialog-actions>
+        <!-- Custom Actions -->
+        <div *ngIf="data.actionButtons">
+            <button
+                *ngFor="let button of data.actionButtons"
+                mat-button
+                (click)="closeDialog(true, button)"
+                [disabled]="!hasSelection"
+            >
+                <span>{{ button | translate }}</span>
+            </button>
+        </div>
+
+        <!-- Normal okay button -->
+        <div *ngIf="!data.actionButtons">
+            <button
+                *ngIf="!data.multiSelect || data.choices"
+                mat-button
+                (click)="closeDialog(true)"
+                [disabled]="!hasSelection"
+            >
+                <span>OK</span>
+            </button>
+        </div>
+
+        <!-- Clear choice button -->
+        <button mat-button *ngIf="data.clearChoice" (click)="closeDialog(true, data.clearChoice)">
+            <span>{{ data.clearChoice }}</span>
+        </button>
+
+        <!-- Cancel -->
+        <button mat-button (click)="closeDialog(false)">
+            <span translate>Cancel</span>
         </button>
     </div>
-    <div *ngIf="!data.actionButtons">
-        <button
-            *ngIf="!data.multiSelect || data.choices.length"
-            mat-button
-            (click)="closeDialog(true)"
-            [disabled]="isSelectionEmpty"
-        >
-            <span>OK</span>
-        </button>
-    </div>
-    <button mat-button (click)="closeDialog(false)"><span translate>Cancel</span></button>
-</mat-dialog-actions>
+</form>
