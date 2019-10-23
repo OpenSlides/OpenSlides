@@ -11,6 +11,7 @@ import { Searchable } from 'app/site/base/searchable';
 import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
 import { ViewTag } from 'app/site/tags/models/view-tag';
 import { ViewUser } from 'app/site/users/models/view-user';
+import { AmendmentType } from '../motions.constants';
 import { ViewCategory } from './view-category';
 import { ViewMotionBlock } from './view-motion-block';
 import { ViewMotionChangeRecommendation } from './view-motion-change-recommendation';
@@ -159,6 +160,20 @@ export class ViewMotion extends BaseViewModelWithAgendaItemAndListOfSpeakers<Mot
      */
     public get hasAmendments(): boolean {
         return !!this.amendments && !!this.amendments.length;
+    }
+
+    /**
+     * Determine if the motion has parents, is a parent or neither
+     */
+    public get amendmentType(): number {
+        if (this.hasAmendments) {
+            return AmendmentType.Parent;
+        } else if (this.hasParent) {
+            return AmendmentType.Amendment;
+        } else {
+            // not any amendment
+            return 0;
+        }
     }
 
     /**
