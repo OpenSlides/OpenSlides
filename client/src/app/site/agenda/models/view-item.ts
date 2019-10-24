@@ -43,5 +43,14 @@ export class ViewItem extends BaseViewModelWithContentObject<Item, BaseViewModel
         const type = ItemVisibilityChoices.find(choice => choice.key === this.type);
         return type ? type.csvName : '';
     }
+
+    /**
+     * Returns the collection of the underlying content-object.
+     *
+     * @returns The collection as string.
+     */
+    public get collection(): string {
+        return this.contentObjectData.collection;
+    }
 }
 export interface ViewItem extends Item {}

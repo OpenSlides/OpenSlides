@@ -47,6 +47,16 @@ export class AgendaFilterListService extends BaseFilterListService<ViewItem> {
                     { label: this.translate.instant('Open items'), condition: false },
                     { label: this.translate.instant('Closed items'), condition: true }
                 ]
+            },
+            {
+                label: 'Type',
+                property: 'collection',
+                options: [
+                    { label: this.translate.instant('Motions'), condition: 'motions/motion' },
+                    { label: this.translate.instant('Topics'), condition: 'topics/topic' },
+                    { label: this.translate.instant('Motion blocks'), condition: 'motions/motion-block' },
+                    { label: this.translate.instant('Elections'), condition: 'assignments/assignment' }
+                ]
             }
         ];
     }
