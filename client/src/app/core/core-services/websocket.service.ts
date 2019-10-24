@@ -5,7 +5,6 @@ import { Router } from '@angular/router';
 import { compress, decompress } from 'lz4js';
 import { Observable, Subject } from 'rxjs';
 import { take } from 'rxjs/operators';
-import { TextDecoder, TextEncoder } from 'text-encoding';
 
 import { OfflineService } from './offline.service';
 import { OpenSlidesStatusService } from './openslides-status.service';
@@ -320,8 +319,7 @@ export class WebsocketService {
                 `Recieved ${compressedSize / 1024} KB (${decompressedBuffer.byteLength /
                     1024} KB uncompressed), ratio ${decompressedBuffer.byteLength / compressedSize}`
             );
-            const textDecoder = new TextDecoder();
-            data = textDecoder.decode(decompressedBuffer) as string;
+            data = this.arrayBufferToString(decompressedBuffer);
         }
 
         const message: IncommingWebsocketMessage = JSON.parse(data);
@@ -499,11 +497,9 @@ export class WebsocketService {
             this.responseCallbacks[message.id] = [success, error];
         }
 
-        // Either send directly or add to queue, if not connected.
         const jsonMessage = JSON.stringify(message);
+        const bytesMessage = this.stringToBuffer(jsonMessage);
 
-        const textEncoder = new TextEncoder();
-        const bytesMessage = textEncoder.encode(jsonMessage);
         const compressedMessage: ArrayBuffer = compress(bytesMessage);
         const ratio = bytesMessage.byteLength / compressedMessage.byteLength;
 
@@ -541,5 +537,29 @@ export class WebsocketService {
                 id
             );
         });
+    }
+
+    /**
+     * Converts an ArrayBuffer to a String.
+     *
+     * @param buffer - Buffer to convert
+     * @returns String
+     */
+    private arrayBufferToString(buffer: ArrayBuffer): string {
+        return String.fromCharCode.apply(null, Array.from(new Uint16Array(buffer)));
+    }
+
+    /**
+     * Converts a String to an ArrayBuffer.
+     *
+     * @param str - String to convert.
+     * @returns bufferView.
+     */
+    private stringToBuffer(str: string): Uint8Array {
+        const bufferView = new Uint8Array();
+        for (let i = 0; i < str.length; i++) {
+            bufferView[i] = str.charCodeAt(i);
+        }
+        return bufferView;
     }
 }
