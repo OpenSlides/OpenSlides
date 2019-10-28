@@ -5,9 +5,7 @@ import { ViewConfig } from './models/view-config';
 
 export const ConfigAppConfig: AppConfig = {
     name: 'settings',
-    models: [
-        { collectionString: 'core/config', model: Config, viewModel: ViewConfig, repository: ConfigRepositoryService }
-    ],
+    models: [{ model: Config, viewModel: ViewConfig, repository: ConfigRepositoryService }],
     mainMenuEntries: [
         {
             route: '/settings',

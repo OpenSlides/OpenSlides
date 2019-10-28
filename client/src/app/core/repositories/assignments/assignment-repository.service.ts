@@ -8,12 +8,12 @@ import { RelationManagerService } from 'app/core/core-services/relation-manager.
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { RelationDefinition } from 'app/core/definitions/relations';
 import { Assignment } from 'app/shared/models/assignments/assignment';
+import { AssignmentOption } from 'app/shared/models/assignments/assignment-option';
 import { AssignmentPoll } from 'app/shared/models/assignments/assignment-poll';
-import { AssignmentPollOption } from 'app/shared/models/assignments/assignment-poll-option';
 import { AssignmentRelatedUser } from 'app/shared/models/assignments/assignment-related-user';
 import { AssignmentTitleInformation, ViewAssignment } from 'app/site/assignments/models/view-assignment';
+import { ViewAssignmentOption } from 'app/site/assignments/models/view-assignment-option';
 import { ViewAssignmentPoll } from 'app/site/assignments/models/view-assignment-poll';
-import { ViewAssignmentPollOption } from 'app/site/assignments/models/view-assignment-poll-option';
 import { ViewAssignmentRelatedUser } from 'app/site/assignments/models/view-assignment-related-user';
 import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
 import { ViewTag } from 'app/site/tags/models/view-tag';
@@ -68,8 +68,8 @@ const AssignmentNestedModelDescriptors: NestedModelDescriptors = {
     'assignments/assignment-poll': [
         {
             ownKey: 'options',
-            foreignViewModel: ViewAssignmentPollOption,
-            foreignModel: AssignmentPollOption,
+            foreignViewModel: ViewAssignmentOption,
+            foreignModel: AssignmentOption,
             order: 'weight',
             relationDefinitionsByKey: {
                 user: {
@@ -97,10 +97,8 @@ export class AssignmentRepositoryService extends BaseIsAgendaItemAndListOfSpeake
     AssignmentTitleInformation
 > {
     private readonly restPath = '/rest/assignments/assignment/';
-    private readonly restPollPath = '/rest/assignments/poll/';
     private readonly candidatureOtherPath = '/candidature_other/';
     private readonly candidatureSelfPath = '/candidature_self/';
-    private readonly createPollPath = '/create_poll/';
     private readonly markElectedPath = '/mark_elected/';
 
     /**
@@ -177,76 +175,6 @@ export class AssignmentRepositoryService extends BaseIsAgendaItemAndListOfSpeake
      */
     public async deleteSelf(assignment: ViewAssignment): Promise<void> {
         await this.httpService.delete(this.restPath + assignment.id + this.candidatureSelfPath);
-    }
-
-    /**
-     * Creates a new Poll to a given assignment
-     *
-     * @param assignment The assignment to add the poll to
-     */
-    public async addPoll(assignment: ViewAssignment): Promise<void> {
-        await this.httpService.post(this.restPath + assignment.id + this.createPollPath);
-        // TODO: change current tab to new poll
-    }
-
-    /**
-     * Deletes a poll
-     *
-     * @param id id of the poll to delete
-     */
-    public async deletePoll(poll: ViewAssignmentPoll): Promise<void> {
-        await this.httpService.delete(`${this.restPollPath}${poll.id}/`);
-    }
-
-    /**
-     * update data (metadata etc) for a poll
-     *
-     * @param poll the (partial) data to update
-     * @param originalPoll the poll to update
-     *
-     * TODO: check if votes is untouched
-     */
-    public async updatePoll(poll: Partial<AssignmentPoll>, originalPoll: ViewAssignmentPoll): Promise<void> {
-        const data: AssignmentPoll = Object.assign(originalPoll.poll, poll);
-        await this.httpService.patch(`${this.restPollPath}${originalPoll.id}/`, data);
-    }
-
-    /**
-     * TODO: temporary (?) update votes method. Needed because server needs
-     * different input than it's output in case of votes ?
-     *
-     * @param poll the updated Poll
-     * @param originalPoll the original poll
-     */
-    public async updateVotes(poll: Partial<AssignmentPoll>, originalPoll: ViewAssignmentPoll): Promise<void> {
-        poll.options.sort((a, b) => a.weight - b.weight);
-        const votes = poll.options.map(option => {
-            switch (poll.pollmethod) {
-                case 'votes':
-                    return { Votes: option.votes.find(v => v.value === 'Votes').weight };
-                case 'yn':
-                    return {
-                        Yes: option.votes.find(v => v.value === 'Yes').weight,
-                        No: option.votes.find(v => v.value === 'No').weight
-                    };
-                case 'yna':
-                    return {
-                        Yes: option.votes.find(v => v.value === 'Yes').weight,
-                        No: option.votes.find(v => v.value === 'No').weight,
-                        Abstain: option.votes.find(v => v.value === 'Abstain').weight
-                    };
-            }
-        });
-        const data = {
-            assignment_id: originalPoll.assignment_id,
-            votes: votes,
-            votesabstain: poll.votesabstain || null,
-            votescast: poll.votescast || null,
-            votesinvalid: poll.votesinvalid || null,
-            votesno: poll.votesno || null,
-            votesvalid: poll.votesvalid || null
-        };
-        await this.httpService.put(`${this.restPollPath}${originalPoll.id}/`, data);
     }
 
     /**

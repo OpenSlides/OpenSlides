@@ -15,7 +15,11 @@ class AssignmentsAppConfig(AppConfig):
         from . import serializers  # noqa
         from .projector import register_projector_slides
         from .signals import get_permission_change_data
-        from .views import AssignmentViewSet, AssignmentPollViewSet
+        from .views import (
+            AssignmentViewSet,
+            AssignmentPollViewSet,
+            AssignmentVoteViewSet,
+        )
 
         # Define projector elements.
         register_projector_slides()
@@ -30,7 +34,14 @@ class AssignmentsAppConfig(AppConfig):
         router.register(
             self.get_model("Assignment").get_collection_string(), AssignmentViewSet
         )
-        router.register("assignments/poll", AssignmentPollViewSet)
+        router.register(
+            self.get_model("AssignmentPoll").get_collection_string(),
+            AssignmentPollViewSet,
+        )
+        router.register(
+            self.get_model("AssignmentVote").get_collection_string(),
+            AssignmentVoteViewSet,
+        )
 
         # Register required_users
         required_user.add_collection_string(
@@ -47,13 +58,16 @@ class AssignmentsAppConfig(AppConfig):
         Yields all Cachables required on startup i. e. opening the websocket
         connection.
         """
-        yield self.get_model("Assignment")
+        for model_name in ("Assignment", "AssignmentPoll", "AssignmentVote"):
+            yield self.get_model(model_name)
 
 
 def required_users(element: Dict[str, Any]) -> Set[int]:
     """
     Returns all user ids that are displayed as candidates (including poll
     options) in the assignment element.
+
+    TODO: Adapt this method for new poll structure!!
     """
     candidates = set(
         related_user["user_id"] for related_user in element["assignment_related_users"]

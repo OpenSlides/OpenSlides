@@ -85,7 +85,7 @@ matrix:
         - "3.6"
       script:
         - mypy openslides/ tests/
-        - pytest --cov --cov-fail-under=73
+        - pytest --cov --cov-fail-under=74
 
     - name: "Server: Tests Python 3.7"
       language: python
@@ -96,7 +96,7 @@ matrix:
         - isort --check-only --diff --recursive openslides tests
         - black --check --diff --target-version py36 openslides tests
         - mypy openslides/ tests/
-        - pytest --cov --cov-fail-under=73
+        - pytest --cov --cov-fail-under=74
 
     - name: "Client: Linting"
       language: node_js

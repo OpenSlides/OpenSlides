@@ -16,25 +16,21 @@ export const ProjectorAppConfig: AppConfig = {
     name: 'projector',
     models: [
         {
-            collectionString: 'core/projector',
             model: Projector,
             viewModel: ViewProjector,
             repository: ProjectorRepositoryService
         },
         {
-            collectionString: 'core/projection-default',
             model: ProjectionDefault,
             viewModel: ViewProjectionDefault,
             repository: ProjectionDefaultRepositoryService
         },
         {
-            collectionString: 'core/countdown',
             model: Countdown,
             viewModel: ViewCountdown,
             repository: CountdownRepositoryService
         },
         {
-            collectionString: 'core/projector-message',
             model: ProjectorMessage,
             viewModel: ViewProjectorMessage,
             repository: ProjectorMessageRepositoryService

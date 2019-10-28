@@ -5,7 +5,7 @@
     </ng-container>
     <ng-container class="meta-text-block-content">
         <div class="motion-poll-wrapper">
-            <div *ngIf="poll.has_votes" class="poll-result">
+            <!--<div *ngIf="poll.has_votes" class="poll-result">--><div>
                 <div *ngFor="let key of pollValues">
                     <div class="poll-progress" *ngIf="poll[key] !== undefined">
                         <mat-icon class="main-nav-color" matTooltip="{{ getLabel(key) | translate }}">

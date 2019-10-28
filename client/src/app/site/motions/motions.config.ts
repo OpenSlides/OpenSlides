@@ -28,52 +28,44 @@ export const MotionsAppConfig: AppConfig = {
     name: 'motions',
     models: [
         {
-            collectionString: 'motions/motion',
             model: Motion,
             viewModel: ViewMotion,
             searchOrder: 2,
             repository: MotionRepositoryService
         },
         {
-            collectionString: 'motions/category',
             model: Category,
             viewModel: ViewCategory,
             searchOrder: 6,
             repository: CategoryRepositoryService
         },
         {
-            collectionString: 'motions/workflow',
             model: Workflow,
             viewModel: ViewWorkflow,
             repository: WorkflowRepositoryService
         },
         {
-            collectionString: 'motions/state',
             model: State,
             viewModel: ViewState,
             repository: StateRepositoryService
         },
         {
-            collectionString: 'motions/motion-comment-section',
             model: MotionCommentSection,
             viewModel: ViewMotionCommentSection,
             repository: MotionCommentSectionRepositoryService
         },
         {
-            collectionString: 'motions/motion-change-recommendation',
             model: MotionChangeRecommendation,
             viewModel: ViewMotionChangeRecommendation,
             repository: ChangeRecommendationRepositoryService
         },
         {
-            collectionString: 'motions/motion-block',
             model: MotionBlock,
             viewModel: ViewMotionBlock,
             searchOrder: 7,
             repository: MotionBlockRepositoryService
         },
         {
-            collectionString: 'motions/statute-paragraph',
             model: StatuteParagraph,
             viewModel: ViewStatuteParagraph,
             searchOrder: 9,

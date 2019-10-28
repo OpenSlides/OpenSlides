@@ -5,7 +5,7 @@ from rest_framework import status
 from rest_framework.test import APIClient
 
 from openslides.mediafiles.models import Mediafile
-from openslides.utils.test import TestCase
+from tests.test_case import TestCase
 
 from ..helpers import count_queries
 
@@ -38,6 +38,7 @@ class TestCreation(TestCase):
         response = self.client.post(
             reverse("mediafile-list"),
             {"title": "test_title_ahyo1uifoo9Aiph2av5a", "mediafile": self.file},
+            format="multipart",
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         mediafile = Mediafile.objects.get()
@@ -139,8 +140,7 @@ class TestCreation(TestCase):
             {
                 "title": "test_title_dggjwevBnUngelkdviom",
                 "is_directory": True,
-                # This is the format, if it would be provided by JS `FormData`.
-                "access_groups_id": "2, 4",
+                "access_groups_id": [2, 4],
             },
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -206,7 +206,6 @@ class TestUpdate(TestCase):
         response = self.client.put(
             reverse("mediafile-detail", args=[self.mediafileA.pk]),
             {"title": self.mediafileA.title, "parent_id": None},
-            format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         mediafile = Mediafile.objects.get(pk=self.mediafileA.pk)
