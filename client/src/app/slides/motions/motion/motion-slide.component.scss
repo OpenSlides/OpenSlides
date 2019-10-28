@@ -33,6 +33,23 @@
     }
 }
 
+.metatable {
+    background-color: #ddd;
+    width: 100%;
+    font-size: 120%;
+
+    td {
+        border-bottom: 2px solid white;
+    }
+    td.min {
+        width: 1%;
+        white-space: nowrap;
+        font-weight: 500;
+        padding: 0 10px 0 7px;
+        vertical-align: top;
+    }
+}
+
 .spacer {
     min-width: 1px;
 }
@@ -50,8 +67,8 @@
     &.line-numbers-outside {
         .os-line-number {
             &:after {
-                top: 19px;
-                font-size: 15px;
+                top: 17px;
+                font-size: 16px;
             }
         }
     }

@@ -6,7 +6,7 @@
     >
         <!-- Submitters -->
         <h3 translate>Submitters</h3>
-        <span *ngFor="let submitter of data.data.submitter; let last = last">
+        <span *ngFor="let submitter of data.data.submitters; let last = last">
             {{ submitter }}<span *ngIf="!last">, </span>
         </span>
 
@@ -20,19 +20,54 @@
     <div [ngStyle]="{ width: data.data.show_meta_box ? 'calc(100% - 250px)' : '100%' }">
         <!-- Title -->
         <div class="spacer" [ngStyle]="{ height: projector.show_header_footer ? '50px' : '0' }"></div>
-        <div class="slidetitle">
+        <div [ngClass]="{ 'slidetitle': data.data.show_meta_box }">
             <h1>
                 <span *ngIf="data.data.identifier">{{ data.data.identifier }}:</span>
                 {{ getTitleWithChanges() }}
             </h1>
-
             <!-- recommendation referencing motions -->
-            <h2 *ngIf="data.data.recommendation_referencing_motions">
+            <h2 *ngIf="data.data.show_meta_box && data.data.recommendation_referencing_motions">
                 <span translate>Referring motions</span>:
                 <span *ngFor="let titleInformation of referencingMotions; let last = last">
                     {{ getIdentifierOrTitle(titleInformation) }}<span *ngIf="!last">,</span>
                 </span>
             </h2>
+
+            <div *ngIf="!data.data.show_meta_box">
+                <table class="metatable spacer-top-20" cellpadding="0" cellspacing="0">
+                    <!-- Submitters -->
+                    <tr>
+                        <td class="min">
+                            <b>{{ 'Submitters' | translate }}:</b>
+                        </td>
+                        <td>
+                            <span *ngFor="let submitter of data.data.submitters; let last = last">
+                                {{ submitter }}<span *ngIf="!last">, </span>
+                            </span>
+                        </td>
+                    </tr>
+                    <!-- Recommendation -->
+                    <tr *ngIf="data.data.recommendation && data.data.recommender">
+                        <td class="min">
+                            <b>{{ data.data.recommender }}:</b>
+                        </td>
+                        <td>
+                            {{ getRecommendationLabel() }}
+                        </td>
+                    </tr>
+                    <!-- recommendation referencing motions -->
+                    <tr *ngIf="data.data.recommendation_referencing_motions">
+                        <td class="min">
+                            <b>{{ 'Referring motions' | translate }}:</b>
+                        </td>
+                        <td>
+                            <span *ngFor="let titleInformation of referencingMotions; let last = last">
+                                {{ getIdentifierOrTitle(titleInformation) }}<span *ngIf="!last">,</span>
+                            </span>
+                        </td>
+                    </tr>
+                </table>
+            </div>
         </div>
     </div>
 
