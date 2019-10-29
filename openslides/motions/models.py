@@ -923,9 +923,6 @@ class MotionPollManager(models.Manager):
         )
 
 
-# Meta-TODO: Is this todo resolved?
-# TODO: remove the type-ignoring in the next line, after this is solved:
-#       https://github.com/python/mypy/issues/3855
 class MotionPoll(RESTModelMixin, BasePoll):
     access_permissions = MotionPollAccessPermissions()
     option_class = MotionOption

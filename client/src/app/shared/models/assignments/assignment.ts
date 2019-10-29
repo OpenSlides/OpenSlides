@@ -7,7 +7,7 @@ export interface AssignmentWithoutNestedModels extends BaseModelWithAgendaItemAn
     description: string;
     open_posts: number;
     phase: number; // see Openslides constants
-    poll_description_default: number;
+    default_poll_description: string;
     tags_id: number[];
     attachments_id: number[];
 }

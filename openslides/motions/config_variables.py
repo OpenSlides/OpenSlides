@@ -1,7 +1,7 @@
 from django.core.validators import MinValueValidator
 
 from openslides.core.config import ConfigVariable
-from openslides.poll.majority import majorityMethods
+from openslides.motions.models import MotionPoll
 
 from .models import Workflow
 
@@ -348,51 +348,6 @@ def get_config_variables():
         subgroup="Voting and ballot papers",
     )
 
-    # TODO: Add server side validation of the choices.
-    yield ConfigVariable(
-        name="motions_poll_default_majority_method",
-        default_value=majorityMethods[0]["value"],
-        input_type="choice",
-        choices=majorityMethods,
-        label="Required majority",
-        help_text="Default method to check whether a motion has reached the required majority.",
-        weight=372,
-        group="Motions",
-        subgroup="Voting and ballot papers",
-    )
-
-    yield ConfigVariable(
-        name="motions_pdf_ballot_papers_selection",
-        default_value="CUSTOM_NUMBER",
-        input_type="choice",
-        label="Number of ballot papers (selection)",
-        choices=(
-            {"value": "NUMBER_OF_DELEGATES", "display_name": "Number of all delegates"},
-            {
-                "value": "NUMBER_OF_ALL_PARTICIPANTS",
-                "display_name": "Number of all participants",
-            },
-            {
-                "value": "CUSTOM_NUMBER",
-                "display_name": "Use the following custom number",
-            },
-        ),
-        weight=374,
-        group="Motions",
-        subgroup="Voting and ballot papers",
-    )
-
-    yield ConfigVariable(
-        name="motions_pdf_ballot_papers_number",
-        default_value=8,
-        input_type="integer",
-        label="Custom number of ballot papers",
-        weight=376,
-        group="Motions",
-        subgroup="Voting and ballot papers",
-        validators=(MinValueValidator(1),),
-    )
-
     # PDF export
 
     yield ConfigVariable(
@@ -431,4 +386,34 @@ def get_config_variables():
         weight=386,
         group="Motions",
         subgroup="PDF export",
+    )
+
+    # Polls
+    yield ConfigVariable(
+        name="motion_poll_default_100_percent_base",
+        default_value="YNA",
+        input_type="choice",
+        label="The 100-%-base of an election result consists of",
+        choices=tuple(
+            {"value": base[0], "display_name": base[1]}
+            for base in MotionPoll.PERCENT_BASES
+        ),
+        weight=420,
+        group="Polls",
+        subgroup="Motions",
+    )
+
+    yield ConfigVariable(
+        name="motion_poll_default_majority_method",
+        default_value="simple",
+        input_type="choice",
+        choices=tuple(
+            {"value": method[0], "display_name": method[1]}
+            for method in MotionPoll.MAJORITY_METHODS
+        ),
+        label="Required majority",
+        help_text="Default method to check whether a candidate has reached the required majority.",
+        weight=425,
+        group="Polls",
+        subgroup="Motions",
     )
