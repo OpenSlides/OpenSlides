@@ -33,7 +33,7 @@ def register_projector_slide(name: str, slide: ProjectorSlide) -> None:
 
 
 async def get_projector_data(
-    projector_ids: List[int] = None
+    projector_ids: List[int] = None,
 ) -> Dict[int, List[Dict[str, Any]]]:
     """
     Calculates and returns the data for one or all projectors.

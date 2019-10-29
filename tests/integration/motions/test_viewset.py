@@ -519,7 +519,7 @@ class RetrieveMotion(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_user_without_can_see_user_permission_to_see_motion_and_submitter_data(
-        self
+        self,
     ):
         admin = get_user_model().objects.get(username="admin")
         Submitter.objects.add(admin, self.motion)

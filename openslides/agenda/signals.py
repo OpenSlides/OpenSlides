@@ -22,8 +22,8 @@ def listen_to_related_object_post_save(sender, instance, created, **kwargs):
     skip_autoupdate in the agenda_item_update_information container.
     """
     instance_inform_changed_data = (
-        False
-    )  # evaluates, if the related_object has to be send again.
+        False  # evaluates, if the related_object has to be send again.
+    )
     # This is the case, if it was newly created and the autoupdate is not skipped with
     # agenda_item_skip_autoupdate or List_of_speakers_skip_autoupdate. If the related_object is
     # related to agenda items and list of speakers, the autoupdate is skipped, if one of the given

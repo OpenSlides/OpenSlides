@@ -303,7 +303,10 @@ class ElementCache:
                 f"change_id {change_id} is lower then the lowest change_id in redis {lowest_change_id}."
             )
 
-        raw_changed_elements, deleted_elements = await self.cache_provider.get_data_since(
+        (
+            raw_changed_elements,
+            deleted_elements,
+        ) = await self.cache_provider.get_data_since(
             change_id, max_change_id=max_change_id
         )
         changed_elements = {
