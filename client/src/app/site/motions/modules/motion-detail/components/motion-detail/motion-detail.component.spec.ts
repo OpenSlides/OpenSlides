@@ -7,6 +7,7 @@ import { MotionCommentsComponent } from '../motion-comments/motion-comments.comp
 import { MotionDetailDiffComponent } from '../motion-detail-diff/motion-detail-diff.component';
 import { MotionDetailOriginalChangeRecommendationsComponent } from '../motion-detail-original-change-recommendations/motion-detail-original-change-recommendations.component';
 import { MotionDetailComponent } from './motion-detail.component';
+import { MotionPollPreviewComponent } from '../motion-poll/motion-poll-preview/motion-poll-preview.component';
 import { MotionPollComponent } from '../motion-poll/motion-poll.component';
 import { PersonalNoteComponent } from '../personal-note/personal-note.component';
 
@@ -24,7 +25,8 @@ describe('MotionDetailComponent', () => {
                 ManageSubmittersComponent,
                 MotionPollComponent,
                 MotionDetailOriginalChangeRecommendationsComponent,
-                MotionDetailDiffComponent
+                MotionDetailDiffComponent,
+                MotionPollPreviewComponent
             ]
         }).compileComponents();
     }));

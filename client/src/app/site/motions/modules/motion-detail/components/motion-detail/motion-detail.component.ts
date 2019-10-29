@@ -1382,9 +1382,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      * Handler for creating a poll
      */
     public createPoll(): void {
-        // TODO
-        // this.repo.createPoll(<any>{}).catch(this.raiseError);
-        throw new Error('TODO');
+        this.router.navigate(['motions', 'polls', 'new'], { queryParams: { parent: this.motion.id || null } });
     }
 
     /**

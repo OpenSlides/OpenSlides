@@ -1,0 +1,92 @@
+<os-head-bar
+    [goBack]="true"
+    [nav]="false"
+    [hasMainButton]="true"
+    [editMode]="isEditingPoll"
+    [mainButtonIcon]="'edit'"
+    [mainActionTooltip]="'Edit' | translate"
+    [isSaveButtonEnabled]="contentForm.valid"
+    (mainEvent)="editPoll()"
+    (saveEvent)="savePoll()"
+    (cancelEditEvent)="backToView()"
+>
+    <div class="title-slot">
+        <h2 *ngIf="isNewPoll" translate>New vote</h2>
+        <h2 *ngIf="!isNewPoll && !!poll">{{ poll.title }}</h2>
+    </div>
+</os-head-bar>
+
+<mat-card [ngClass]="isEditingPoll ? 'os-form-card' : 'os-card'">
+    <ng-container *ngIf="!isEditingPoll" [ngTemplateOutlet]="viewTemplate"></ng-container>
+    <ng-container *ngIf="isEditingPoll" [ngTemplateOutlet]="formTemplate"></ng-container>
+</mat-card>
+
+<ng-template #viewTemplate>
+    <ng-container *ngIf="poll">
+        <h1>{{ poll.title }}</h1>
+        <mat-divider></mat-divider>
+        <div class="poll-content">
+            <div>{{ 'Current state' | translate }}: {{ poll.stateVerbose | translate }}</div>
+            <div *ngIf="poll.groups">
+                {{ 'Groups' | translate }}:
+                <span *ngFor="let group of poll.groups">{{ group.getTitle() | translate }}</span>
+            </div>
+            <div>{{ 'Poll type' | translate }}: {{ poll.typeVerbose | translate }}</div>
+            <div>{{ 'Poll method' | translate }}: {{ poll.pollmethodVerbose | translate }}</div>
+            <div>{{ 'Majority method' | translate }}: {{ poll.majorityMethodVerbose | translate }}</div>
+            <div>{{ '100% base' | translate }}: {{ poll.percentBaseVerbose | translate }}</div>
+        </div>
+    </ng-container>
+</ng-template>
+
+<ng-template #formTemplate>
+    <form [formGroup]="contentForm">
+        <mat-form-field>
+            <input matInput formControlName="title" [placeholder]="'Title' | translate" required />
+            <mat-error translate>A title is required</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-select [placeholder]="'Poll type' | translate" formControlName="type" required>
+                <mat-option *ngFor="let option of pollTypes | keyvalue" [value]="option.key">{{
+                    option.value | translate
+                }}</mat-option>
+            </mat-select>
+            <mat-error translate>This field is required</mat-error>
+        </mat-form-field>
+        <mat-form-field *ngIf="contentForm.controls.type.value && contentForm.controls.type.value != 'analog'">
+            <os-search-value-selector
+                formControlName="groups_id"
+                [multiple]="true"
+                [includeNone]="false"
+                [placeholder]="'Entitled to vote' | translate"
+                [inputListValues]="groupObservable"
+            ></os-search-value-selector>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-select [placeholder]="'Poll method' | translate" formControlName="pollmethod" required>
+                <mat-option *ngFor="let option of pollMethods | keyvalue" [value]="option.key">{{
+                    option.value
+                }}</mat-option>
+            </mat-select>
+            <mat-error translate>This field is required</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-select
+                placeholder="{{ '100% base' | translate }}"
+                formControlName="onehundred_percent_base"
+                required
+            >
+                <mat-option *ngFor="let option of percentBases | keyvalue" [value]="option.key">{{
+                    option.value | translate
+                }}</mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-select placeholder="{{ 'Majority' | translate }}" formControlName="majority_method" required>
+                <mat-option *ngFor="let option of majorityMethods | keyvalue" [value]="option.key">{{
+                    option.value | translate
+                }}</mat-option>
+            </mat-select>
+        </mat-form-field>
+    </form>
+</ng-template>

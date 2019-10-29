@@ -87,22 +87,24 @@
                 </mat-form-field>
             </p>
             <p>
-                <os-search-value-selector
-                    ngDefaultControl
-                    [formControl]="commentFieldForm.get('read_groups_id')"
-                    [multiple]="true"
-                    listname="Groups with read permissions"
-                    [inputListValues]="groups"
-                ></os-search-value-selector>
+                <mat-form-field>
+                    <os-search-value-selector
+                        formControlName="read_groups_id"
+                        [multiple]="true"
+                        placeholder="Groups with read permissions"
+                        [inputListValues]="groups"
+                    ></os-search-value-selector>
+                </mat-form-field>
             </p>
             <p>
-                <os-search-value-selector
-                    ngDefaultControl
-                    [formControl]="commentFieldForm.get('write_groups_id')"
-                    [multiple]="true"
-                    listname="Groups with write permissions"
-                    [inputListValues]="groups"
-                ></os-search-value-selector>
+                <mat-form-field>
+                    <os-search-value-selector
+                        formControlName="write_groups_id"
+                        [multiple]="true"
+                        placeholder="Groups with write permissions"
+                        [inputListValues]="groups"
+                    ></os-search-value-selector>
+                </mat-form-field>
             </p>
         </form>
     </div>

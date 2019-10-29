@@ -1,0 +1,56 @@
+<mat-expansion-panel>
+    <mat-expansion-panel-header *ngIf="poll">{{ poll.title }}</mat-expansion-panel-header>
+    <ng-template matExpansionPanelContent>
+        <div class="poll-content">
+            <div>{{ 'Current state' | translate }}: {{ poll.stateVerbose }}</div>
+            <div *ngIf="poll.groups">{{ 'Groups' | translate }}: {{ poll.groups }}</div>
+            <div>{{ 'Method' | translate }}: {{ poll.pollmethodVerbose }}</div>
+            <div>{{ 'Type' | translate }}:  {{ poll.typeVerbose }}</div>
+        </div>
+        <mat-divider></mat-divider>
+        <div class="poll-footer">
+            <button *ngIf="poll.type === pollTypes.Analog" mat-icon-button (click)="enterAnalogVotes()">
+                <mat-icon class="small-icon" matTooltip="{{ 'Enter votes' | translate }}">check</mat-icon><!-- TODO: other icon-->
+            </button>
+            <button mat-icon-button (click)="openPoll()">
+                <mat-icon class="small-icon" matTooltip="{{ 'View' | translate }}">pageview</mat-icon>
+            </button>
+            <button mat-icon-button (click)="editPoll()">
+                <mat-icon class="small-icon" matTooltip="{{ 'Edit' | translate }}">edit</mat-icon>
+            </button>
+            <button mat-icon-button (click)="deletePoll()">
+                <mat-icon class="small-icon" matTooltip="{{ 'Delete' | translate }}">delete</mat-icon>
+            </button>
+        </div>
+    </ng-template>
+</mat-expansion-panel>
+
+<!-- Template for dialog for entering votes -->
+<ng-template #enterVotesDialog>
+    <h1 mat-dialog-title translate>Enter votes</h1>
+    <div class="os-form-card-mobile" mat-dialog-content>
+        <form [formGroup]="statuteParagraphForm" (keydown)="onKeyDown($event)">
+            <p>
+                <mat-form-field>
+                    <input formControlName="title" matInput placeholder="{{ 'Title' | translate }}" required />
+                    <mat-hint *ngIf="!statuteParagraphForm.controls.title.valid">
+                        <span translate>Required</span>
+                    </mat-hint>
+                </mat-form-field>
+            </p>
+            <span>
+                <!-- The HTML Editor -->
+                <h4 translate>Statute paragraph</h4>
+                <editor formControlName="text" [init]="tinyMceSettings"></editor>
+            </span>
+        </form>
+    </div>
+    <div mat-dialog-actions>
+        <button mat-button [mat-dialog-close]="true" [disabled]="!statuteParagraphForm.valid">
+            <span translate>Save</span>
+        </button>
+        <button mat-button [mat-dialog-close]="false">
+            <span translate>Cancel</span>
+        </button>
+    </div>
+</ng-template>
