@@ -1,5 +1,8 @@
+import json
 from typing import Any, Dict, List
 
+from ..poll.access_permissions import BaseVoteAccessPermissions
+from ..poll.views import BasePoll
 from ..utils.access_permissions import BaseAccessPermissions
 from ..utils.auth import async_has_perm
 
@@ -50,13 +53,35 @@ class AssignmentPollAccessPermissions(BaseAccessPermissions):
     async def get_restricted_data(
         self, full_data: List[Dict[str, Any]], user_id: int
     ) -> List[Dict[str, Any]]:
-        return full_data
+        """
+        Poll-managers have full access, even during an active poll.
+        Non-published polls will be restricted:
+         - Remove votes* values from the poll
+         - Remove yes/no/abstain fields from options
+         - Remove voted_id field from the poll
+        """
+
+        if await async_has_perm(user_id, "assignments.can_manage_polls"):
+            data = full_data
+        else:
+            data = []
+            for poll in full_data:
+                if poll["state"] != BasePoll.STATE_PUBLISHED:
+                    poll = json.loads(
+                        json.dumps(poll)
+                    )  # copy, so we can remove some fields.
+                    del poll["votesvalid"]
+                    del poll["votesinvalid"]
+                    del poll["votescast"]
+                    del poll["voted_id"]
+                    for option in poll["options"]:
+                        del option["yes"]
+                        del option["no"]
+                        del option["abstain"]
+                data.append(poll)
+        return data
 
 
-class AssignmentVoteAccessPermissions(BaseAccessPermissions):
+class AssignmentVoteAccessPermissions(BaseVoteAccessPermissions):
     base_permission = "assignments.can_see"
-
-    async def get_restricted_data(
-        self, full_data: List[Dict[str, Any]], user_id: int
-    ) -> List[Dict[str, Any]]:
-        return full_data
+    manage_permission = "assignments.can_manage"

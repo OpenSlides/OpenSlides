@@ -1,6 +1,8 @@
 import json
 from typing import Any, Dict, List
 
+from ..poll.access_permissions import BaseVoteAccessPermissions
+from ..poll.views import BasePoll
 from ..utils.access_permissions import BaseAccessPermissions
 from ..utils.auth import async_has_perm, async_in_some_groups
 
@@ -183,7 +185,6 @@ class StateAccessPermissions(BaseAccessPermissions):
 
 class MotionPollAccessPermissions(BaseAccessPermissions):
     base_permission = "motions.can_see"
-    STATE_PUBLISHED = 4
 
     async def get_restricted_data(
         self, full_data: List[Dict[str, Any]], user_id: int
@@ -201,7 +202,7 @@ class MotionPollAccessPermissions(BaseAccessPermissions):
         else:
             data = []
             for poll in full_data:
-                if poll["state"] != self.STATE_PUBLISHED:
+                if poll["state"] != BasePoll.STATE_PUBLISHED:
                     poll = json.loads(
                         json.dumps(poll)
                     )  # copy, so we can remove some fields.
@@ -217,26 +218,6 @@ class MotionPollAccessPermissions(BaseAccessPermissions):
         return data
 
 
-class MotionVoteAccessPermissions(BaseAccessPermissions):
+class MotionVoteAccessPermissions(BaseVoteAccessPermissions):
     base_permission = "motions.can_see"
-    STATE_PUBLISHED = 4
-
-    async def get_restricted_data(
-        self, full_data: List[Dict[str, Any]], user_id: int
-    ) -> List[Dict[str, Any]]:
-        """
-        Poll-managers have full access, even during an active poll.
-        Every user can see it's own votes.
-        If the pollstate is published, everyone can see the votes.
-        """
-
-        if await async_has_perm(user_id, "motions.can_manage_polls"):
-            data = full_data
-        else:
-            data = [
-                vote
-                for vote in full_data
-                if vote["pollstate"] == self.STATE_PUBLISHED
-                or vote["user_id"] == user_id
-            ]
-        return data
+    manage_permission = "motions.can_manage_polls"
