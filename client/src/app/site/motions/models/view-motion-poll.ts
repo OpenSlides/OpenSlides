@@ -18,17 +18,16 @@ export class ViewMotionPoll extends BaseProjectableViewModel<MotionPoll> impleme
     }
 
     public getSlide(): ProjectorElementBuildDeskriptor {
-        /*return {
+        return {
             getBasicProjectorElement: options => ({
-                name: Motion.COLLECTIONSTRING,
+                name: MotionPoll.COLLECTIONSTRING,
                 id: this.id,
                 getIdentifiers: () => ['name', 'id']
             }),
             slideOptions: [],
-            projectionDefaultName: 'motions',
+            projectionDefaultName: 'motion-poll',
             getDialogTitle: this.getTitle
-        };*/
-        throw new Error('TODO');
+        };
     }
 }
 

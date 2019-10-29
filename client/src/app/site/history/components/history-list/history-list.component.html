@@ -13,15 +13,16 @@
 
 <div class="custom-table-header">
     <div>
-        <span>
-            <os-search-value-selector
-                ngDefaultControl
-                [formControl]="modelSelectForm.get('model')"
-                [multiple]="false"
-                [includeNone]="false"
-                listname="{{ 'Motion' | translate }}"
-                [inputListValues]="collectionObserver"
-            ></os-search-value-selector>
+        <span [formGroup]="modelSelectForm">
+            <mat-form-field>
+                <os-search-value-selector
+                    formControlName="model"
+                    [multiple]="false"
+                    [includeNone]="false"
+                    placeholder="{{ 'Motion' | translate }}"
+                    [inputListValues]="collectionObserver"
+                ></os-search-value-selector>
+            </mat-form-field>
         </span>
         <span class="spacer-left-20">
             <button mat-button (click)="refresh()" *ngIf="currentModelId">

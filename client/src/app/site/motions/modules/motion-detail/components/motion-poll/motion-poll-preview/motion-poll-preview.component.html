@@ -1,0 +1,22 @@
+<mat-expansion-panel>
+    <mat-expansion-panel-header *ngIf="poll">{{ poll.title }}</mat-expansion-panel-header>
+    <ng-template matExpansionPanelContent>
+        <div class="poll-content">
+            <div>{{ 'Current state' | translate }}: {{ poll.state }}</div>
+            <div>{{ 'Groups' | translate }}: {{ poll.groups }}</div>
+            <div>{{ 'Method' | translate }}: {{ poll.pollmethod }}</div>
+        </div>
+        <mat-divider></mat-divider>
+        <div class="poll-footer">
+            <button mat-icon-button (click)="openPoll()">
+                <mat-icon class="small-icon" matTooltip="{{ 'View' | translate }}">pageview</mat-icon>
+            </button>
+            <button mat-icon-button (click)="editPoll()">
+                <mat-icon class="small-icon" matTooltip="{{ 'Edit' | translate }}">edit</mat-icon>
+            </button>
+            <button mat-icon-button (click)="deletePoll()">
+                <mat-icon class="small-icon" matTooltip="{{ 'Delete' | translate }}">delete</mat-icon>
+            </button>
+        </div>
+    </ng-template>
+</mat-expansion-panel>
