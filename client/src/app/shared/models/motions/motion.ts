@@ -1,5 +1,4 @@
 import { BaseModelWithAgendaItemAndListOfSpeakers } from '../base/base-model-with-agenda-item-and-list-of-speakers';
-import { MotionPoll } from './motion-poll';
 import { Submitter } from './submitter';
 
 export interface MotionComment {
@@ -33,7 +32,6 @@ export interface MotionWithoutNestedModels extends BaseModelWithAgendaItemAndLis
     recommendation_extension: string;
     tags_id: number[];
     attachments_id: number[];
-    polls: MotionPoll[];
     weight: number;
     sort_parent_id: number;
     created: string;

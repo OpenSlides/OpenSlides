@@ -3,10 +3,14 @@ import { CategoryRepositoryService } from 'app/core/repositories/motions/categor
 import { ChangeRecommendationRepositoryService } from 'app/core/repositories/motions/change-recommendation-repository.service';
 import { MotionBlockRepositoryService } from 'app/core/repositories/motions/motion-block-repository.service';
 import { MotionCommentSectionRepositoryService } from 'app/core/repositories/motions/motion-comment-section-repository.service';
+import { MotionPollRepositoryService } from 'app/core/repositories/motions/motion-poll-repository.service';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
+import { MotionVoteRepositoryService } from 'app/core/repositories/motions/motion-vote-repository.service';
 import { StateRepositoryService } from 'app/core/repositories/motions/state-repository.service';
 import { StatuteParagraphRepositoryService } from 'app/core/repositories/motions/statute-paragraph-repository.service';
 import { WorkflowRepositoryService } from 'app/core/repositories/motions/workflow-repository.service';
+import { MotionPoll } from 'app/shared/models/motions/motion-poll';
+import { MotionVote } from 'app/shared/models/motions/motion-vote';
 import { State } from 'app/shared/models/motions/state';
 import { Category } from '../../shared/models/motions/category';
 import { Motion } from '../../shared/models/motions/motion';
@@ -19,6 +23,8 @@ import { ViewMotion } from './models/view-motion';
 import { ViewMotionBlock } from './models/view-motion-block';
 import { ViewMotionChangeRecommendation } from './models/view-motion-change-recommendation';
 import { ViewMotionCommentSection } from './models/view-motion-comment-section';
+import { ViewMotionPoll } from './models/view-motion-poll';
+import { ViewMotionVote } from './models/view-motion-vote';
 import { ViewState } from './models/view-state';
 import { ViewStatuteParagraph } from './models/view-statute-paragraph';
 import { ViewWorkflow } from './models/view-workflow';
@@ -70,7 +76,9 @@ export const MotionsAppConfig: AppConfig = {
             viewModel: ViewStatuteParagraph,
             searchOrder: 9,
             repository: StatuteParagraphRepositoryService
-        }
+        },
+        { model: MotionPoll, viewModel: ViewMotionPoll, repository: MotionPollRepositoryService },
+        { model: MotionVote, viewModel: ViewMotionVote, repository: MotionVoteRepositoryService }
     ],
     mainMenuEntries: [
         {

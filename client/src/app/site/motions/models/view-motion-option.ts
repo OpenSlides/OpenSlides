@@ -1,5 +1,6 @@
 import { MotionOption } from 'app/shared/models/motions/motion-option';
 import { BaseViewModel } from '../../base/base-view-model';
+import { ViewMotionVote } from './view-motion-vote';
 
 export class ViewMotionOption extends BaseViewModel<MotionOption> {
     public get option(): MotionOption {
@@ -9,4 +10,8 @@ export class ViewMotionOption extends BaseViewModel<MotionOption> {
     protected _collectionString = MotionOption.COLLECTIONSTRING;
 }
 
-export interface ViewMotionPoll extends MotionOption {}
+interface TIMotionOptionRelations {
+    votes: ViewMotionVote[];
+}
+
+export interface ViewMotionOption extends MotionOption, TIMotionOptionRelations {}
