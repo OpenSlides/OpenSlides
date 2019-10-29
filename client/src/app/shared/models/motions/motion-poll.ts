@@ -9,6 +9,8 @@ export enum MotionPollmethods {
 export interface MotionPollWithoutNestedModels extends BasePollWithoutNestedModels {
     motion_id: number;
     pollmethod: MotionPollmethods;
+    majority_method: string;
+    onehundred_percent_base: string;
 }
 
 /**

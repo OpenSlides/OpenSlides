@@ -1,4 +1,10 @@
-<os-head-bar [nav]="false" [goBack]="true" [editMode]="isSortMode" (cancelEditEvent)="onCancelSorting()" (saveEvent)="onSaveSorting()">
+<os-head-bar
+    [nav]="false"
+    [goBack]="true"
+    [editMode]="isSortMode"
+    (cancelEditEvent)="onCancelSorting()"
+    (saveEvent)="onSaveSorting()"
+>
     <!-- Title -->
     <div class="title-slot">
         <h2>
@@ -8,7 +14,15 @@
         </h2>
     </div>
     <div class="menu-slot" *osPerms="['agenda.can_manage_list_of_speakers', 'core.can_manage_projector']">
-        <button type="button" mat-icon-button matTooltip="{{ 'Re-add last speaker' | translate }}" (click)="readdLastSpeaker()" [disabled]="!finishedSpeakers || !finishedSpeakers.length"><mat-icon>undo</mat-icon></button>
+        <button
+            type="button"
+            mat-icon-button
+            matTooltip="{{ 'Re-add last speaker' | translate }}"
+            (click)="readdLastSpeaker()"
+            [disabled]="!finishedSpeakers || !finishedSpeakers.length"
+        >
+            <mat-icon>undo</mat-icon>
+        </button>
         <button type="button" mat-icon-button [matMenuTriggerFor]="speakerMenu"><mat-icon>more_vert</mat-icon></button>
     </div>
 </os-head-bar>
@@ -77,12 +91,7 @@
 
     <!-- Waiting speakers -->
     <div class="waiting-list" *ngIf="speakers && speakers.length > 0">
-        <os-sorting-list
-            [input]="speakers"
-            [live]="!isSortMode"
-            [count]="true"
-            [enable]="opCanManage() && isSortMode"
-        >
+        <os-sorting-list [input]="speakers" [live]="!isSortMode" [count]="true" [enable]="opCanManage() && isSortMode">
             <!-- implicit speaker references into the component using ng-template slot -->
             <ng-template let-speaker>
                 <span *osPerms="'agenda.can_manage_list_of_speakers'">
@@ -124,13 +133,14 @@
     <!-- Search for speakers -->
     <div *osPerms="'agenda.can_manage_list_of_speakers'">
         <form *ngIf="filteredUsers && filteredUsers.value.length > 0" [formGroup]="addSpeakerForm">
-            <os-search-value-selector
-                class="search-users"
-                ngDefaultControl
-                [formControl]="addSpeakerForm.get('user_id')"
-                listname="{{ 'Select or search new speaker ...' | translate }}"
-                [inputListValues]="filteredUsers"
-            ></os-search-value-selector>
+            <mat-form-field>
+                <os-search-value-selector
+                    class="search-users"
+                    formControlName="user_id"
+                    placeholder="{{ 'Select or search new speaker ...' | translate }}"
+                    [inputListValues]="filteredUsers"
+                ></os-search-value-selector>
+            </mat-form-field>
         </form>
     </div>
 

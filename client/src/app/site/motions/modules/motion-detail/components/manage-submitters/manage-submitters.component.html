@@ -34,13 +34,14 @@
     </os-sorting-list>
 
     <form *ngIf="users && users.value.length > 0" [formGroup]="addSubmitterForm">
-        <os-search-value-selector
-            class="search-users"
-            ngDefaultControl
-            [formControl]="addSubmitterForm.get('userId')"
-            listname="{{ 'Select or search new submitter ...' | translate }}"
-            [inputListValues]="users"
-        ></os-search-value-selector>
+        <mat-form-field>
+            <os-search-value-selector
+                class="search-users"
+                formControlName="userId"
+                placeholder="{{ 'Select or search new submitter ...' | translate }}"
+                [inputListValues]="users"
+            ></os-search-value-selector>
+        </mat-form-field>
     </form>
 
     <p>

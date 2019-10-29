@@ -145,10 +145,7 @@
         *ngIf="assignment && assignment.polls && assignment.polls.length"
     >
         <!-- TODO avoid animation/switching on update -->
-        <mat-tab
-            *ngFor="let poll of assignment.polls; let i = index; trackBy: trackByIndex"
-            [label]="poll.title"
-        >
+        <mat-tab *ngFor="let poll of assignment.polls; let i = index; trackBy: trackByIndex" [label]="poll.title">
             <os-assignment-poll [assignment]="assignment" [poll]="poll"> </os-assignment-poll>
         </mat-tab>
     </mat-tab-group>
@@ -193,14 +190,15 @@
                     *ngIf="hasPerms('addOthers') && filteredCandidates && filteredCandidates.value.length > 0"
                     [formGroup]="candidatesForm"
                 >
-                    <os-search-value-selector
-                        class="search-bar"
-                        ngDefaultControl
-                        [formControl]="candidatesForm.get('userId')"
-                        [multiple]="false"
-                        listname="{{ 'Select a new candidate' | translate }}"
-                        [inputListValues]="filteredCandidates"
-                    ></os-search-value-selector>
+                    <mat-form-field>
+                        <os-search-value-selector
+                            class="search-bar"
+                            formControlName="userId"
+                            [multiple]="false"
+                            placeholder="{{ 'Select a new candidate' | translate }}"
+                            [inputListValues]="filteredCandidates"
+                        ></os-search-value-selector>
+                    </mat-form-field>
                 </form>
             </div>
 
@@ -237,11 +235,7 @@
             <div>
                 <!-- title -->
                 <mat-form-field class="full-width">
-                    <input
-                        matInput
-                        placeholder="{{ 'Title' | translate }}"
-                        formControlName="title"
-                    />
+                    <input matInput placeholder="{{ 'Title' | translate }}" formControlName="title" />
                     <mat-error>{{ 'The title is required' | translate }}</mat-error>
                 </mat-form-field>
             </div>
@@ -255,22 +249,20 @@
             ></editor>
 
             <!-- searchValueSelector: tags -->
-            <div class="content-field" *ngIf="tagsAvailable">
-                <os-search-value-selector
-                    ngDefaultControl
-                    [formControl]="assignmentForm.get('tags_id')"
-                    [multiple]="true"
-                    [includeNone]="true"
-                    listname="{{ 'Tags' | translate }}"
-                    [inputListValues]="tagsObserver"
-                ></os-search-value-selector>
-            </div>
+            <div class="content-field" *ngIf="tagsAvailable" [formGroup]="assignmentForm">
+                <mat-form-field>
+                    <os-search-value-selector
+                        formControlName="tags_id"
+                        [multiple]="true"
+                        [includeNone]="true"
+                        placeholder="{{ 'Tags' | translate }}"
+                        [inputListValues]="tagsObserver"
+                    ></os-search-value-selector>
+                </mat-form-field>
 
-            <!-- Attachments -->
-            <div class="content-field">
                 <os-attachment-control
+                    formControlName="attachments_id"
                     (errorHandler)="raiseError($event)"
-                    [controlName]="assignmentForm.get('attachments_id')"
                 ></os-attachment-control>
             </div>
 
