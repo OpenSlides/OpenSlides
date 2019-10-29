@@ -54,8 +54,8 @@ TEMPLATES = [
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_TIMEOUT = (
-    5
-)  # Timeout in seconds for blocking operations like the connection attempt
+    5  # Timeout in seconds for blocking operations like the connection attempt
+)
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/

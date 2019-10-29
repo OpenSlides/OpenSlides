@@ -104,7 +104,7 @@ export class ViewAssignment extends BaseViewModelWithAgendaItemAndListOfSpeakers
 }
 interface IAssignmentRelations {
     assignment_related_users: ViewAssignmentRelatedUser[];
-    polls?: ViewAssignmentPoll[];
+    polls: ViewAssignmentPoll[];
     tags?: ViewTag[];
     attachments?: ViewMediafile[];
 }
