@@ -330,8 +330,8 @@ class AssignmentPollViewSet(BasePollViewSet):
 
         required fields per pollmethod:
         - votes: Y
-        - YN: YN
-        - YNA: YNA
+        - YN:    YN
+        - YNA:   YNA
         """
         if not isinstance(data, dict):
             raise ValidationError({"detail": "Data must be a dict"})
@@ -428,8 +428,13 @@ class AssignmentPollViewSet(BasePollViewSet):
                     if not is_int(amount):
                         raise ValidationError({"detail": "Each amounts must be int"})
                     amount = int(amount)
-                    if amount < 1:
-                        raise ValidationError({"detail": "At least 1 vote per option"})
+                    if amount < 0:
+                        raise ValidationError(
+                            {"detail": "Negative votes are not allowed"}
+                        )
+                    # skip empty votes
+                    if amount == 0:
+                        continue
                     if not poll.allow_multiple_votes_per_candidate and amount != 1:
                         raise ValidationError(
                             {"detail": "Multiple votes are not allowed"}
@@ -485,27 +490,41 @@ class AssignmentPollViewSet(BasePollViewSet):
                 )
 
     def create_votes(self, data, poll, user=None):
+        """
+        Helper function for handle_(named|pseudoanonymous)_vote
+        Assumes data is already validated
+        """
         options = poll.get_options()
         if poll.pollmethod == AssignmentPoll.POLLMETHOD_VOTES:
             if isinstance(data, dict):
                 for option_id, amount in data.items():
+                    # skip empty votes
+                    if amount == 0:
+                        continue
                     option = options.get(pk=option_id)
                     vote = AssignmentVote.objects.create(
                         option=option, user=user, weight=Decimal(amount), value="Y"
                     )
                     inform_changed_data(vote, no_delete_on_restriction=True)
-            else:
+            else:  # global_no or global_abstain
                 option = options.first()
                 vote = AssignmentVote.objects.create(
-                    option=option, user=user, weight=Decimal(1), value=data
+                    option=option,
+                    user=user,
+                    weight=Decimal(poll.votes_amount),
+                    value=data,
                 )
                 inform_changed_data(vote, no_delete_on_restriction=True)
         elif poll.pollmethod in (
             AssignmentPoll.POLLMETHOD_YN,
             AssignmentPoll.POLLMETHOD_YNA,
         ):
-            pass
-            # TODO
+            for option_id, result in data.items():
+                option = options.get(pk=option_id)
+                vote = AssignmentVote.objects.create(
+                    option=option, user=user, value=result
+                )
+                inform_changed_data(vote, no_delete_on_restriction=True)
 
     def handle_named_vote(self, data, poll, user):
         """
@@ -514,9 +533,9 @@ class AssignmentPollViewSet(BasePollViewSet):
          - Exactly one of the three options must be given
          - 'N' is only valid if poll.global_no==True
          - 'A' is only valid if poll.global_abstain==True
-         - amonts must be integer numbers >= 1.
+         - amounts must be integer numbers >= 1.
          - ids should be integers of valid option ids for this poll
-         - amounts must be one ("1"), if poll.allow_multiple_votes_per_candidate if False
+         - amounts must be 0 or 1, if poll.allow_multiple_votes_per_candidate is False
          - The sum of all amounts must be poll.votes_amount votes
 
          Request data for YN/YNA pollmethod:

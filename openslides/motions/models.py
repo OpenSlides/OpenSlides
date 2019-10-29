@@ -867,11 +867,26 @@ class MotionBlock(RESTModelMixin, AgendaItemWithListOfSpeakersMixin, models.Mode
         return {"title": self.title}
 
 
+class MotionVoteManager(models.Manager):
+    """
+    Customized model manager to support our get_full_queryset method.
+    """
+
+    def get_full_queryset(self):
+        """
+        Returns the normal queryset with all motion votes. In the background we
+        join and prefetch all related models.
+        """
+        return self.get_queryset().select_related("user", "option", "option__poll")
+
+
 class MotionVote(RESTModelMixin, BaseVote):
     access_permissions = MotionVoteAccessPermissions()
     option = models.ForeignKey(
         "MotionOption", on_delete=models.CASCADE, related_name="votes"
     )
+
+    objects = MotionVoteManager()
 
     class Meta:
         default_permissions = ()
@@ -891,12 +906,31 @@ class MotionOption(RESTModelMixin, BaseOption):
         return self.poll
 
 
+class MotionPollManager(models.Manager):
+    """
+    Customized model manager to support our get_full_queryset method.
+    """
+
+    def get_full_queryset(self):
+        """
+        Returns the normal queryset with all motion polls. In the background we
+        join and prefetch all related models.
+        """
+        return (
+            self.get_queryset()
+            .select_related("motion")
+            .prefetch_related("options", "options__votes", "groups", "voted")
+        )
+
+
 # Meta-TODO: Is this todo resolved?
 # TODO: remove the type-ignoring in the next line, after this is solved:
 #       https://github.com/python/mypy/issues/3855
 class MotionPoll(RESTModelMixin, BasePoll):
     access_permissions = MotionPollAccessPermissions()
     option_class = MotionOption
+
+    objects = MotionPollManager()
 
     motion = models.ForeignKey(Motion, on_delete=models.CASCADE, related_name="polls")
 

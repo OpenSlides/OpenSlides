@@ -1,17 +1,76 @@
 from decimal import Decimal
 
+import pytest
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
 
 from openslides.core.config import config
-from openslides.motions.models import Motion, MotionPoll, MotionVote
+from openslides.motions.models import Motion, MotionOption, MotionPoll, MotionVote
 from openslides.poll.models import BasePoll
 from openslides.utils.auth import get_group_model
 from openslides.utils.autoupdate import inform_changed_data
 from tests.common_groups import GROUP_ADMIN_PK, GROUP_DEFAULT_PK, GROUP_DELEGATE_PK
 from tests.test_case import TestCase
+
+from ..helpers import count_queries
+
+
+@pytest.mark.django_db(transaction=False)
+def test_motion_poll_db_queries():
+    """
+    Tests that only the following db queries are done:
+    * 1 request to get the polls,
+    * 1 request to get all options for all polls,
+    * 1 request to get all votes for all options,
+    * 1 request to get all users for all votes,
+    * 1 request to get all poll groups,
+    = 5 queries
+    """
+    create_motion_polls()
+    assert count_queries(MotionPoll.get_elements) == 5
+
+
+@pytest.mark.django_db(transaction=False)
+def test_motion_vote_db_queries():
+    """
+    Tests that only 1 query is done when fetching MotionVotes
+    """
+    create_motion_polls()
+    assert count_queries(MotionVote.get_elements) == 1
+
+
+def create_motion_polls():
+    """
+    Creates 1 Motion with 5 polls with 5 options each which have 2 votes each
+    """
+    motion = Motion.objects.create(title="test_motion_wfLrsjEHXBmPplbvQ65N")
+    group1 = get_group_model().objects.get(pk=1)
+    group2 = get_group_model().objects.get(pk=2)
+
+    for index in range(5):
+        poll = MotionPoll.objects.create(
+            motion=motion, title=f"test_title_{index}", pollmethod="YN", type="named"
+        )
+        poll.groups.add(group1)
+        poll.groups.add(group2)
+
+        for j in range(5):
+            option = MotionOption.objects.create(poll=poll)
+
+            for k in range(2):
+                user = get_user_model().objects.create_user(
+                    username=f"test_username_{index}{j}{k}",
+                    password="test_password_kbzj5L8ZtVxBllZzoW6D",
+                )
+                MotionVote.objects.create(
+                    user=user,
+                    option=option,
+                    value=("Y" if k == 0 else "N"),
+                    weight=Decimal(1),
+                )
+                poll.voted.add(user)
 
 
 class CreateMotionPoll(TestCase):
@@ -816,7 +875,7 @@ class VoteMotionPollPseudoanonymous(TestCase):
         response = self.client.post(
             reverse("motionpoll-vote", args=[self.poll.pk]), "A", format="json"
         )
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         option = MotionPoll.objects.get().options.get()
         self.assertEqual(option.yes, Decimal("0"))
         self.assertEqual(option.no, Decimal("1"))
