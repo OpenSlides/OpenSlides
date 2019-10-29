@@ -1,5 +1,5 @@
 from decimal import Decimal
-from typing import Optional, Type
+from typing import Iterable, Optional, Tuple, Type
 
 from django.conf import settings
 from django.core.validators import MinValueValidator
@@ -131,6 +131,36 @@ class BasePoll(models.Model):
         decimal_places=6,
     )
 
+    PERCENT_BASE_YN = "YN"
+    PERCENT_BASE_YNA = "YNA"
+    PERCENT_BASE_VALID = "valid"
+    PERCENT_BASE_CAST = "cast"
+    PERCENT_BASE_DISABLED = "disabled"
+    PERCENT_BASES: Iterable[Tuple[str, str]] = (
+        (PERCENT_BASE_YN, "Yes/No per candidate"),
+        (PERCENT_BASE_YNA, "Yes/No/Abstain per candidate"),
+        (PERCENT_BASE_VALID, "All valid ballots"),
+        (PERCENT_BASE_CAST, "All casted ballots"),
+        (PERCENT_BASE_DISABLED, "Disabled (no percents)"),
+    )  # type: ignore
+    onehundred_percent_base = models.CharField(
+        max_length=8, blank=False, null=False, choices=PERCENT_BASES
+    )
+
+    MAJORITY_SIMPLE = "simple"
+    MAJORITY_TWO_THIRDS = "two_thirds"
+    MAJORITY_THREE_QUARTERS = "three_quarters"
+    MAJORITY_DISABLED = "disabled"
+    MAJORITY_METHODS = (
+        (MAJORITY_SIMPLE, "Simple majority"),
+        (MAJORITY_TWO_THIRDS, "Two-thirds majority"),
+        (MAJORITY_THREE_QUARTERS, "Three-quarters majority"),
+        (MAJORITY_DISABLED, "Disabled"),
+    )
+    majority_method = models.CharField(
+        max_length=14, blank=False, null=False, choices=MAJORITY_METHODS
+    )
+
     class Meta:
         abstract = True
 
@@ -201,8 +231,6 @@ class BasePoll(models.Model):
     def get_votes(self):
         """
         Return a QuerySet with all vote objects related to this poll.
-
-        TODO: This might be a performance issue when used in properties that are serialized.
         """
         return self.get_vote_class().objects.filter(option__poll__id=self.id)
 

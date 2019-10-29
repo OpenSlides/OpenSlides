@@ -21,8 +21,6 @@ class Migration(migrations.Migration):
         migrations.RenameField(
             model_name="assignmentoption", old_name="candidate", new_name="user"
         ),
-        migrations.RemoveField(model_name="assignmentpoll", name="description"),
-        migrations.RemoveField(model_name="assignmentpoll", name="published"),
         migrations.AddField(
             model_name="assignmentpoll",
             name="global_abstain",
@@ -99,18 +97,58 @@ class Migration(migrations.Migration):
             name="allow_multiple_votes_per_candidate",
             field=models.BooleanField(default=False),
         ),
+        migrations.AddField(
+            model_name="assignmentpoll",
+            name="majority_method",
+            field=models.CharField(
+                choices=[
+                    ("simple", "Simple majority"),
+                    ("two_thirds", "Two-thirds majority"),
+                    ("three_quarters", "Three-quarters majority"),
+                    ("disabled", "Disabled"),
+                ],
+                default="",
+                max_length=14,
+            ),
+            preserve_default=False,
+        ),
+        migrations.AddField(
+            model_name="assignmentpoll",
+            name="onehundred_percent_base",
+            field=models.CharField(
+                choices=[
+                    ("YN", "Yes/No per candidate"),
+                    ("YNA", "Yes/No/Abstain per candidate"),
+                    ("votes", "Sum of votes inclusive global ones"),
+                    ("valid", "All valid ballots"),
+                    ("cast", "All casted ballots"),
+                    ("disabled", "Disabled (no percents)"),
+                ],
+                default="",
+                max_length=8,
+            ),
+            preserve_default=False,
+        ),
+        migrations.AlterField(
+            model_name="assignment",
+            name="poll_description_default",
+            field=models.CharField(blank=True, max_length=255),
+        ),
+        migrations.RenameField(
+            model_name="assignment",
+            old_name="poll_description_default",
+            new_name="default_poll_description",
+        ),
+        migrations.AlterField(
+            model_name="assignmentpoll",
+            name="description",
+            field=models.CharField(blank=True, max_length=255),
+        ),
         migrations.AlterField(
             model_name="assignmentpoll",
             name="pollmethod",
             field=models.CharField(
                 choices=[("YN", "YN"), ("YNA", "YNA"), ("votes", "votes")], max_length=5
-            ),
-        ),
-        migrations.AlterField(
-            model_name="assignmentvote",
-            name="value",
-            field=models.CharField(
-                choices=[("Y", "Y"), ("N", "N"), ("A", "A")], max_length=1
             ),
         ),
         migrations.AlterField(
@@ -134,6 +172,4 @@ class Migration(migrations.Migration):
         migrations.RenameField(
             model_name="assignmentpoll", old_name="votesvalid", new_name="db_votesvalid"
         ),
-        migrations.RemoveField(model_name="assignmentpoll", name="votesabstain"),
-        migrations.RemoveField(model_name="assignmentpoll", name="votesno"),
     ]
