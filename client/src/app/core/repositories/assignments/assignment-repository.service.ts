@@ -8,11 +8,8 @@ import { RelationManagerService } from 'app/core/core-services/relation-manager.
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { RelationDefinition } from 'app/core/definitions/relations';
 import { Assignment } from 'app/shared/models/assignments/assignment';
-import { AssignmentOption } from 'app/shared/models/assignments/assignment-option';
-import { AssignmentPoll } from 'app/shared/models/assignments/assignment-poll';
 import { AssignmentRelatedUser } from 'app/shared/models/assignments/assignment-related-user';
 import { AssignmentTitleInformation, ViewAssignment } from 'app/site/assignments/models/view-assignment';
-import { ViewAssignmentOption } from 'app/site/assignments/models/view-assignment-option';
 import { ViewAssignmentPoll } from 'app/site/assignments/models/view-assignment-poll';
 import { ViewAssignmentRelatedUser } from 'app/site/assignments/models/view-assignment-related-user';
 import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
@@ -35,6 +32,12 @@ const AssignmentRelations: RelationDefinition[] = [
         ownIdKey: 'attachments_id',
         ownKey: 'attachments',
         foreignViewModel: ViewMediafile
+    },
+    {
+        type: 'O2M',
+        ownKey: 'polls',
+        foreignIdKey: 'assignment_id',
+        foreignViewModel: ViewAssignmentPoll
     }
 ];
 
@@ -56,28 +59,6 @@ const AssignmentNestedModelDescriptors: NestedModelDescriptors = {
             titles: {
                 getTitle: (viewAssignmentRelatedUser: ViewAssignmentRelatedUser) =>
                     viewAssignmentRelatedUser.user ? viewAssignmentRelatedUser.user.getFullName() : ''
-            }
-        },
-        {
-            ownKey: 'polls',
-            foreignViewModel: ViewAssignmentPoll,
-            foreignModel: AssignmentPoll,
-            relationDefinitionsByKey: {}
-        }
-    ],
-    'assignments/assignment-poll': [
-        {
-            ownKey: 'options',
-            foreignViewModel: ViewAssignmentOption,
-            foreignModel: AssignmentOption,
-            order: 'weight',
-            relationDefinitionsByKey: {
-                user: {
-                    type: 'M2O',
-                    ownIdKey: 'candidate_id',
-                    ownKey: 'user',
-                    foreignViewModel: ViewUser
-                }
             }
         }
     ]

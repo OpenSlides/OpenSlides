@@ -1,4 +1,3 @@
-import { AssignmentPoll } from './assignment-poll';
 import { AssignmentRelatedUser } from './assignment-related-user';
 import { BaseModelWithAgendaItemAndListOfSpeakers } from '../base/base-model-with-agenda-item-and-list-of-speakers';
 
@@ -22,18 +21,9 @@ export class Assignment extends BaseModelWithAgendaItemAndListOfSpeakers<Assignm
 
     public id: number;
     public assignment_related_users: AssignmentRelatedUser[];
-    public polls: AssignmentPoll[];
 
     public constructor(input?: any) {
         super(Assignment.COLLECTIONSTRING, input);
-    }
-
-    public get candidates_id(): number[] {
-        return this.assignment_related_users
-            .sort((a: AssignmentRelatedUser, b: AssignmentRelatedUser) => {
-                return a.weight - b.weight;
-            })
-            .map((candidate: AssignmentRelatedUser) => candidate.user_id);
     }
 }
 export interface Assignment extends AssignmentWithoutNestedModels {}

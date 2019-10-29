@@ -71,8 +71,8 @@ export class MotionPollPdfService extends PollPdfService {
         )}`;
         if (!title) {
             title = `${this.translate.instant('Motion')} - ${motion.identifier}`;
-            if (motion.motion.polls.length > 1) {
-                title += ` (${this.translate.instant('Vote')} ${motion.motion.polls.length})`;
+            if (motion.polls.length > 1) {
+                title += ` (${this.translate.instant('Vote')} ${motion.polls.length})`;
             }
         }
         if (!subtitle) {

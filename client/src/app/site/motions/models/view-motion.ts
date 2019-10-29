@@ -15,6 +15,7 @@ import { ViewCategory } from './view-category';
 import { ViewMotionBlock } from './view-motion-block';
 import { ViewMotionChangeRecommendation } from './view-motion-change-recommendation';
 import { ViewMotionCommentSection } from './view-motion-comment-section';
+import { ViewMotionPoll } from './view-motion-poll';
 import { ViewState } from './view-state';
 import { ViewSubmitter } from './view-submitter';
 import { ViewWorkflow } from './view-workflow';
@@ -345,6 +346,7 @@ interface TIMotionRelations {
     amendments?: ViewMotion[];
     changeRecommendations?: ViewMotionChangeRecommendation[];
     diffLines?: DiffLinesInParagraph[];
+    polls: ViewMotionPoll[];
 }
 
 export interface ViewMotion extends MotionWithoutNestedModels, TIMotionRelations {}

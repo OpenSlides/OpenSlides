@@ -5,11 +5,22 @@ import { TranslateService } from '@ngx-translate/core';
 import { DataSendService } from 'app/core/core-services/data-send.service';
 import { RelationManagerService } from 'app/core/core-services/relation-manager.service';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
+import { RelationDefinition } from 'app/core/definitions/relations';
 import { AssignmentVote } from 'app/shared/models/assignments/assignment-vote';
 import { ViewAssignmentVote } from 'app/site/assignments/models/view-assignment-vote';
+import { ViewUser } from 'app/site/users/models/view-user';
 import { BaseRepository } from '../base-repository';
 import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
 import { DataStoreService } from '../../core-services/data-store.service';
+
+const AssignmentVoteRelations: RelationDefinition[] = [
+    {
+        type: 'M2O',
+        ownIdKey: 'user_id',
+        ownKey: 'user',
+        foreignViewModel: ViewUser
+    }
+];
 
 /**
  * Repository Service for Assignments.
@@ -43,8 +54,8 @@ export class AssignmentVoteRepositoryService extends BaseRepository<ViewAssignme
             viewModelStoreService,
             translate,
             relationManager,
-            AssignmentVote
-            // TODO: relations
+            AssignmentVote,
+            AssignmentVoteRelations
         );
     }
 

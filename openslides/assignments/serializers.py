@@ -74,12 +74,10 @@ class AssignmentOptionSerializer(ModelSerializer):
         max_digits=15, decimal_places=6, min_value=-2, read_only=True
     )
 
-    votes = IdPrimaryKeyRelatedField(many=True, read_only=True)
-
     class Meta:
         model = AssignmentOption
-        fields = ("user",) + BASE_OPTION_FIELDS
-        read_only_fields = ("user",) + BASE_OPTION_FIELDS
+        fields = ("user", "weight") + BASE_OPTION_FIELDS
+        read_only_fields = ("user", "weight") + BASE_OPTION_FIELDS
 
 
 class AssignmentPollSerializer(ModelSerializer):
@@ -133,7 +131,6 @@ class AssignmentSerializer(ModelSerializer):
     assignment_related_users = AssignmentRelatedUserSerializer(
         many=True, read_only=True
     )
-    polls = IdPrimaryKeyRelatedField(many=True, read_only=True)
     agenda_create = BooleanField(write_only=True, required=False, allow_null=True)
     agenda_type = IntegerField(
         write_only=True, required=False, min_value=1, max_value=3, allow_null=True
@@ -150,7 +147,6 @@ class AssignmentSerializer(ModelSerializer):
             "phase",
             "assignment_related_users",
             "poll_description_default",
-            "polls",
             "agenda_item_id",
             "list_of_speakers_id",
             "agenda_create",
