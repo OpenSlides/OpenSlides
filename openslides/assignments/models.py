@@ -1,5 +1,4 @@
-from collections import OrderedDict
-from typing import Any, Dict, List
+from decimal import Decimal
 
 from django.conf import settings
 from django.core.validators import MinValueValidator
@@ -120,7 +119,7 @@ class Assignment(RESTModelMixin, AgendaItemWithListOfSpeakersMixin, models.Model
     The number of members to be elected.
     """
 
-    poll_description_default = models.CharField(max_length=79, blank=True)
+    default_poll_description = models.CharField(max_length=255, blank=True)
     """
     Default text for the poll description.
     """
@@ -230,40 +229,6 @@ class Assignment(RESTModelMixin, AgendaItemWithListOfSpeakersMixin, models.Model
 
         self.phase = phase
 
-    def vote_results(self, only_published):
-        """
-        Returns a table represented as a list with all candidates from all
-        related polls and their vote results.
-        """
-        vote_results_dict: Dict[Any, List[AssignmentVote]] = OrderedDict()
-
-        polls = self.polls.all()
-        if only_published:
-            polls = polls.filter(published=True)
-
-        # All PollOption-Objects related to this assignment
-        options: List[AssignmentOption] = []
-        for poll in polls:
-            options += poll.get_options()
-
-        for option in options:
-            candidate = option.candidate
-            if candidate in vote_results_dict:
-                continue
-            vote_results_dict[candidate] = []
-            for poll in polls:
-                votes: Any = {}
-                try:
-                    # candidate related to this poll
-                    poll_option = poll.get_options().get(candidate=candidate)
-                    for vote in poll_option.get_votes():
-                        votes[vote.value] = vote.print_weight()
-                except AssignmentOption.DoesNotExist:
-                    # candidate not in related to this poll
-                    votes = None
-                vote_results_dict[candidate].append(votes)
-        return vote_results_dict
-
     def get_title_information(self):
         return {"title": self.title}
 
@@ -330,9 +295,6 @@ class AssignmentPollManager(models.Manager):
         )
 
 
-# Meta-TODO: Is this todo resolved?
-# TODO: remove the type-ignoring in the next line, after this is solved:
-#       https://github.com/python/mypy/issues/3855
 class AssignmentPoll(RESTModelMixin, BasePoll):
     access_permissions = AssignmentPollAccessPermissions()
     objects = AssignmentPollManager()
@@ -343,11 +305,31 @@ class AssignmentPoll(RESTModelMixin, BasePoll):
         Assignment, on_delete=models.CASCADE, related_name="polls"
     )
 
+    description = models.CharField(max_length=255, blank=True)
+
     POLLMETHOD_YN = "YN"
     POLLMETHOD_YNA = "YNA"
     POLLMETHOD_VOTES = "votes"
     POLLMETHODS = (("YN", "YN"), ("YNA", "YNA"), ("votes", "votes"))
     pollmethod = models.CharField(max_length=5, choices=POLLMETHODS)
+
+    PERCENT_BASE_YN = "YN"
+    PERCENT_BASE_YNA = "YNA"
+    PERCENT_BASE_VOTES = "votes"
+    PERCENT_BASE_VALID = "valid"
+    PERCENT_BASE_CAST = "cast"
+    PERCENT_BASE_DISABLED = "disabled"
+    PERCENT_BASES = (
+        (PERCENT_BASE_YN, "Yes/No per candidate"),
+        (PERCENT_BASE_YNA, "Yes/No/Abstain per candidate"),
+        (PERCENT_BASE_VOTES, "Sum of votes inclusive global ones"),
+        (PERCENT_BASE_VALID, "All valid ballots"),
+        (PERCENT_BASE_CAST, "All casted ballots"),
+        (PERCENT_BASE_DISABLED, "Disabled (no percents)"),
+    )
+    onehundred_percent_base = models.CharField(
+        max_length=8, blank=False, null=False, choices=PERCENT_BASES
+    )
 
     global_abstain = models.BooleanField(default=True)
     global_no = models.BooleanField(default=True)
@@ -359,6 +341,27 @@ class AssignmentPoll(RESTModelMixin, BasePoll):
 
     class Meta:
         default_permissions = ()
+
+    @property
+    def amount_global_no(self):
+        if self.pollmethod != AssignmentPoll.POLLMETHOD_VOTES or not self.global_no:
+            return None
+        no_sum = Decimal(0)
+        for option in self.options.all():
+            no_sum += option.no
+        return no_sum
+
+    @property
+    def amount_global_abstain(self):
+        if (
+            self.pollmethod != AssignmentPoll.POLLMETHOD_VOTES
+            or not self.global_abstain
+        ):
+            return None
+        abstain_sum = Decimal(0)
+        for option in self.options.all():
+            abstain_sum += option.abstain
+        return abstain_sum
 
     def create_options(self):
         related_users = AssignmentRelatedUser.objects.filter(
@@ -374,7 +377,7 @@ class AssignmentPoll(RESTModelMixin, BasePoll):
         inform_changed_data(self)
 
         # Add all candidates to list of speakers of related agenda item
-        if config["assignments_add_candidates_to_list_of_speakers"]:
+        if config["assignment_poll_add_candidates_to_list_of_speakers"]:
             for related_user in related_users:
                 try:
                     Speaker.objects.add(

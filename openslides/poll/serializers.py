@@ -1,3 +1,34 @@
+from ..utils.auth import get_group_model
+from ..utils.rest_api import (
+    CharField,
+    DecimalField,
+    IdPrimaryKeyRelatedField,
+    ModelSerializer,
+    SerializerMethodField,
+)
+
+
+BASE_VOTE_FIELDS = ("id", "weight", "value", "user", "option", "pollstate")
+
+
+class BaseVoteSerializer(ModelSerializer):
+    pollstate = SerializerMethodField()
+
+    def get_pollstate(self, vote):
+        return vote.option.poll.state
+
+
+BASE_OPTION_FIELDS = ("id", "yes", "no", "abstain")
+
+
+class BaseOptionSerializer(ModelSerializer):
+    yes = DecimalField(max_digits=15, decimal_places=6, min_value=-2, read_only=True)
+    no = DecimalField(max_digits=15, decimal_places=6, min_value=-2, read_only=True)
+    abstain = DecimalField(
+        max_digits=15, decimal_places=6, min_value=-2, read_only=True
+    )
+
+
 BASE_POLL_FIELDS = (
     "state",
     "type",
@@ -9,8 +40,62 @@ BASE_POLL_FIELDS = (
     "options",
     "voted",
     "id",
+    "onehundred_percent_base",
+    "majority_method",
 )
 
-BASE_OPTION_FIELDS = ("id", "yes", "no", "abstain")
 
-BASE_VOTE_FIELDS = ("id", "weight", "value", "user", "option")
+class BasePollSerializer(ModelSerializer):
+    title = CharField(allow_blank=False, required=True)
+    groups = IdPrimaryKeyRelatedField(
+        many=True, required=False, queryset=get_group_model().objects.all()
+    )
+    voted = IdPrimaryKeyRelatedField(many=True, read_only=True)
+
+    votesvalid = DecimalField(
+        max_digits=15, decimal_places=6, min_value=-2, read_only=True
+    )
+    votesinvalid = DecimalField(
+        max_digits=15, decimal_places=6, min_value=-2, read_only=True
+    )
+    votescast = DecimalField(
+        max_digits=15, decimal_places=6, min_value=-2, read_only=True
+    )
+
+    def create(self, validated_data):
+        """
+        Match the 100 percent base to the pollmethod. Change the base, if it does not
+        fit to the pollmethod
+        """
+        new_100_percent_base = self.norm_100_percent_base_to_pollmethod(
+            validated_data["onehundred_percent_base"], validated_data["pollmethod"]
+        )
+        if new_100_percent_base is not None:
+            validated_data["onehundred_percent_base"] = new_100_percent_base
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        """
+        Adjusts the 100%-base to the pollmethod. This might be needed,
+        if at least one of them was changed. Wrong comobinations should be
+        also handled by the client, but here we make it sure aswell!
+
+        E.g. the pollmethod is YN, but the 100%-base is YNA, this micht noght be
+        possible (see implementing serializers to see forbidden combinations)
+        """
+        old_100_percent_base = instance.onehundred_percent_base
+        instance = super().update(instance, validated_data)
+
+        new_100_percent_base = self.norm_100_percent_base_to_pollmethod(
+            instance.onehundred_percent_base, instance.pollmethod, old_100_percent_base
+        )
+        if new_100_percent_base is not None:
+            instance.onehundred_percent_base = new_100_percent_base
+            instance.save()
+
+        return instance
+
+    def norm_100_percent_base_to_pollmethod(
+        self, onehundred_percent_base, pollmethod, old_100_percent_base=None
+    ):
+        raise NotImplementedError()
