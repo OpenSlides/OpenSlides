@@ -19,6 +19,7 @@ from ..utils.models import CASCADE_AND_AUTOUPDATE, SET_NULL_AND_AUTOUPDATE
 from .access_permissions import (
     AssignmentAccessPermissions,
     AssignmentPollAccessPermissions,
+    AssignmentVoteAccessPermissions,
 )
 
 
@@ -268,6 +269,7 @@ class Assignment(RESTModelMixin, AgendaItemWithListOfSpeakersMixin, models.Model
 
 
 class AssignmentVote(RESTModelMixin, BaseVote):
+    access_permissions = AssignmentVoteAccessPermissions()
     option = models.ForeignKey(
         "AssignmentOption", on_delete=models.CASCADE, related_name="votes"
     )

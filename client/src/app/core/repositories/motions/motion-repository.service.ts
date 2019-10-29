@@ -23,6 +23,7 @@ import { MotionTitleInformation, ViewMotion } from 'app/site/motions/models/view
 import { ViewMotionAmendedParagraph } from 'app/site/motions/models/view-motion-amended-paragraph';
 import { ViewMotionBlock } from 'app/site/motions/models/view-motion-block';
 import { ViewMotionChangeRecommendation } from 'app/site/motions/models/view-motion-change-recommendation';
+import { ViewMotionPoll } from 'app/site/motions/models/view-motion-poll';
 import { ViewState } from 'app/site/motions/models/view-state';
 import { ViewStatuteParagraph } from 'app/site/motions/models/view-statute-paragraph';
 import { ViewSubmitter } from 'app/site/motions/models/view-submitter';
@@ -125,12 +126,17 @@ const MotionRelations: RelationDefinition[] = [
         ownKey: 'amendments',
         foreignViewModel: ViewMotion
     },
-    // TMP:
     {
         type: 'M2O',
         ownIdKey: 'parent_id',
         ownKey: 'parent',
         foreignViewModel: ViewMotion
+    },
+    {
+        type: 'O2M',
+        foreignIdKey: 'motion_id',
+        ownKey: 'polls',
+        foreignViewModel: ViewMotionPoll
     }
     // Personal notes are dynamically added in the repo.
 ];

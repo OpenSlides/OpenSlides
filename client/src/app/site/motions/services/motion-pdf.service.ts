@@ -358,11 +358,11 @@ export class MotionPdfService {
         }
 
         // voting results
-        if (motion.motion.polls.length && (!infoToExport || infoToExport.includes('polls'))) {
+        if (motion.polls.length && (!infoToExport || infoToExport.includes('polls'))) {
             const column1 = [];
             const column2 = [];
             const column3 = [];
-            motion.motion.polls.map((poll, index) => {
+            motion.polls.map((poll, index) => {
                 /*if (poll.has_votes) {
                     if (motion.motion.polls.length > 1) {
                         column1.push(index + 1 + '. ' + this.translate.instant('Vote'));

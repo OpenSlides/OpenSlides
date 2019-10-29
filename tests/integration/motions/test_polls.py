@@ -582,7 +582,6 @@ class VoteMotionPollNamedAutoupdates(TestCase):
                             "yes": "0.000000",
                             "no": "0.000000",
                             "abstain": "1.000000",
-                            "votes_id": [vote.id],
                         }
                     ],
                     "voted_id": [self.user1.id],
@@ -594,6 +593,7 @@ class VoteMotionPollNamedAutoupdates(TestCase):
                     "weight": "1.000000",
                     "value": "A",
                     "user_id": self.user1.id,
+                    "option_id": 1,
                 },
             },
         )
@@ -605,6 +605,7 @@ class VoteMotionPollNamedAutoupdates(TestCase):
             autoupdate[0]["motions/motion-vote:1"],
             {
                 "pollstate": 2,
+                "option_id": 1,
                 "id": 1,
                 "weight": "1.000000",
                 "value": "A",
@@ -626,7 +627,7 @@ class VoteMotionPollNamedAutoupdates(TestCase):
                     "type": "named",
                     "title": "test_title_tho8PhiePh8upaex6phi",
                     "groups_id": [GROUP_DELEGATE_PK],
-                    "options": [{"id": 1, "votes_id": [vote.id]}],
+                    "options": [{"id": 1}],
                     "id": 1,
                 },
             )
@@ -653,12 +654,12 @@ class VoteMotionPollPseudoanonymousAutoupdates(TestCase):
         self.other_user, _ = self.create_user()
         inform_changed_data(self.other_user)
 
-        self.user, user1_password = self.create_user()
+        self.user, user_password = self.create_user()
         self.user.groups.add(self.delegate_group)
         self.user.is_present = True
         self.user.save()
         self.user_client = APIClient()
-        self.user_client.login(username=self.user.username, password=user1_password)
+        self.user_client.login(username=self.user.username, password=user_password)
 
         self.poll = MotionPoll.objects.create(
             motion=self.motion,
@@ -699,7 +700,6 @@ class VoteMotionPollPseudoanonymousAutoupdates(TestCase):
                             "yes": "0.000000",
                             "no": "0.000000",
                             "abstain": "1.000000",
-                            "votes_id": [vote.id],
                         }
                     ],
                     "voted_id": [self.user.id],
@@ -707,6 +707,7 @@ class VoteMotionPollPseudoanonymousAutoupdates(TestCase):
                 },
                 "motions/motion-vote:1": {
                     "pollstate": 2,
+                    "option_id": 1,
                     "id": 1,
                     "weight": "1.000000",
                     "value": "A",
@@ -730,7 +731,7 @@ class VoteMotionPollPseudoanonymousAutoupdates(TestCase):
                     "type": "pseudoanonymous",
                     "title": "test_title_cahP1umooteehah2jeey",
                     "groups_id": [GROUP_DELEGATE_PK],
-                    "options": [{"id": 1, "votes_id": [vote.id]}],
+                    "options": [{"id": 1}],
                     "id": 1,
                 },
             )
@@ -953,7 +954,6 @@ class PublishMotionPoll(TestCase):
                                 "yes": "0.000000",
                                 "no": "2.000000",
                                 "abstain": "0.000000",
-                                "votes_id": [1],
                             }
                         ],
                         "voted_id": [],
@@ -961,6 +961,7 @@ class PublishMotionPoll(TestCase):
                     },
                     "motions/motion-vote:1": {
                         "pollstate": 4,
+                        "option_id": 1,
                         "id": 1,
                         "weight": "2.000000",
                         "value": "N",

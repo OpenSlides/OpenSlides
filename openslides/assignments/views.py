@@ -247,22 +247,6 @@ class AssignmentViewSet(ModelViewSet):
         return Response({"detail": message, "args": [str(user)]})
 
     @detail_route(methods=["post"])
-    def create_poll(self, request, pk=None):
-        """
-        View to create a poll. It is a POST request without any data.
-        """
-        assignment = self.get_object()
-        if not assignment.candidates.exists():
-            raise ValidationError(
-                {"detail": "Can not create ballot because there are no candidates."}
-            )
-        with transaction.atomic():
-            poll = assignment.create_poll()
-        return Response(
-            {"detail": "Ballot created successfully.", "createdPollId": poll.pk}
-        )
-
-    @detail_route(methods=["post"])
     def sort_related_users(self, request, pk=None):
         """
         Special view endpoint to sort the assignment related users.
