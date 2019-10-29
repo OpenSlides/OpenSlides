@@ -90,7 +90,8 @@ export class MediaUploadContentComponent implements OnInit {
 
     public get selectedDirectoryId(): number | null {
         if (this.showDirectorySelector) {
-            return this.directorySelectionForm.controls.parent_id.value;
+            const parent = this.directorySelectionForm.controls.parent_id;
+            return !parent.value || typeof parent.value !== 'number' ? null : parent.value;
         } else {
             return this.directoryId;
         }
@@ -110,7 +111,7 @@ export class MediaUploadContentComponent implements OnInit {
         this.directoryBehaviorSubject = this.repo.getDirectoryBehaviorSubject();
         this.groupsBehaviorSubject = this.groupRepo.getViewModelListBehaviorSubject();
         this.directorySelectionForm = this.formBuilder.group({
-            parent_id: []
+            parent_id: null
         });
     }
 

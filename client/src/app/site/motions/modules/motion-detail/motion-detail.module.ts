@@ -11,6 +11,7 @@ import { MotionDetailOriginalChangeRecommendationsComponent } from './components
 import { MotionDetailRoutingModule } from './motion-detail-routing.module';
 import { MotionDetailComponent } from './components/motion-detail/motion-detail.component';
 import { MotionPollDialogComponent } from './components/motion-poll/motion-poll-dialog.component';
+import { MotionPollPreviewComponent } from './components/motion-poll/motion-poll-preview/motion-poll-preview.component';
 import { MotionPollComponent } from './components/motion-poll/motion-poll.component';
 import { MotionTitleChangeRecommendationDialogComponent } from './components/motion-title-change-recommendation-dialog/motion-title-change-recommendation-dialog.component';
 import { PersonalNoteComponent } from './components/personal-note/personal-note.component';
@@ -24,6 +25,7 @@ import { PersonalNoteComponent } from './components/personal-note/personal-note.
         PersonalNoteComponent,
         ManageSubmittersComponent,
         MotionPollComponent,
+        MotionPollPreviewComponent,
         MotionPollDialogComponent,
         MotionDetailDiffComponent,
         MotionDetailOriginalChangeRecommendationsComponent,

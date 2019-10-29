@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormBuilder, FormControl } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 
 import { BehaviorSubject } from 'rxjs';
 
@@ -43,10 +43,8 @@ describe('SearchValueSelectorComponent', () => {
         hostComponent.searchValueSelectorComponent.inputListValues = subject;
 
         const formBuilder: FormBuilder = TestBed.get(FormBuilder);
-        const formGroup = formBuilder.group({
-            testArray: []
-        });
-        hostComponent.searchValueSelectorComponent.formControl = <FormControl>formGroup.get('testArray');
+        const formControl = formBuilder.control([]);
+        hostComponent.searchValueSelectorComponent.contentForm = formControl;
 
         hostFixture.detectChanges();
         expect(hostComponent.searchValueSelectorComponent).toBeTruthy();

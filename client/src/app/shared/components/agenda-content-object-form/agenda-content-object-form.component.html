@@ -21,15 +21,16 @@
             </div>
 
             <!-- Parent item -->
-            <div *ngIf="itemObserver.value.length > 0">
-                <os-search-value-selector
-                    ngDefaultControl
-                    [formControl]="form.get('agenda_parent_id')"
-                    [multiple]="false"
-                    [includeNone]="true"
-                    listname="{{ 'Parent agenda item' | translate }}"
-                    [inputListValues]="itemObserver"
-                ></os-search-value-selector>
+            <div *ngIf="itemObserver.value.length > 0" [formGroup]="form">
+                <mat-form-field>
+                    <os-search-value-selector
+                        formControlName="agenda_parent_id"
+                        [multiple]="false"
+                        [includeNone]="true"
+                        placeholder="{{ 'Parent agenda item' | translate }}"
+                        [inputListValues]="itemObserver"
+                    ></os-search-value-selector>
+                </mat-form-field>
             </div>
         </ng-container>
     </ng-container>

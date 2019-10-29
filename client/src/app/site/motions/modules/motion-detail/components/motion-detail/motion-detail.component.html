@@ -459,14 +459,15 @@
 
         <!-- motion polls -->
         <div *ngIf="!editMotion" class="spacer-top-20 spacer-bottom-20">
-            <os-motion-poll *ngFor="let poll of motion.motion.polls; let i = index" [rawPoll]="poll" [pollIndex]="i">
-            </os-motion-poll>
             <div class="create-poll-button" *ngIf="perms.isAllowed('createpoll', motion)">
                 <button mat-button (click)="createPoll()">
                     <mat-icon class="main-nav-color">poll</mat-icon>
                     <span translate>New vote</span>
                 </button>
             </div>
+            <mat-accordion>
+                <os-motion-poll-preview *ngFor="let poll of motion.polls" [poll]="poll"></os-motion-poll-preview>
+            </mat-accordion>
         </div>
     </div>
 </ng-template>
@@ -601,15 +602,16 @@
 
         <!-- Submitter -->
         <div *ngIf="newMotion" class="content-field">
-            <div *ngIf="perms.isAllowed('change_metadata', motion)">
-                <os-search-value-selector
-                    ngDefaultControl
-                    [formControl]="contentForm.get('submitters_id')"
-                    [multiple]="true"
-                    listname="{{ 'Submitters' | translate }}"
-                    [inputListValues]="submitterObserver"
-                ></os-search-value-selector>
-            </div>
+            <ng-container *ngIf="perms.isAllowed('change_metadata', motion)">
+                <mat-form-field>
+                    <os-search-value-selector
+                        formControlName="submitters_id"
+                        [multiple]="true"
+                        placeholder="{{ 'Submitters' | translate }}"
+                        [inputListValues]="submitterObserver"
+                    ></os-search-value-selector>
+                </mat-form-field>
+            </ng-container>
         </div>
 
         <div class="form-id-title">
@@ -783,13 +785,14 @@
 
         <!-- Category form -->
         <div class="content-field" *ngIf="newMotion && categoryObserver.value.length > 0">
-            <os-search-value-selector
-                ngDefaultControl
-                [formControl]="contentForm.get('category_id')"
-                [includeNone]="true"
-                listname="{{ 'Category' | translate }}"
-                [inputListValues]="categoryObserver"
-            ></os-search-value-selector>
+            <mat-form-field>
+                <os-search-value-selector
+                    formControlName="category_id"
+                    [includeNone]="true"
+                    placeholder="{{ 'Category' | translate }}"
+                    [inputListValues]="categoryObserver"
+                ></os-search-value-selector>
+            </mat-form-field>
         </div>
 
         <div class="extra-data">
@@ -805,8 +808,8 @@
                 </div>
                 <div *osPerms="'motions.can_manage'; and: editMotion">
                     <os-attachment-control
+                        formControlName="attachments_id"
                         (errorHandler)="showUploadError($event)"
-                        [controlName]="contentForm.get('attachments_id')"
                     ></os-attachment-control>
                 </div>
             </div>
@@ -818,25 +821,27 @@
             <!-- Supporter form -->
             <div class="content-field" *ngIf="editMotion && minSupporters">
                 <div *ngIf="perms.isAllowed('change_metadata', motion)">
-                    <os-search-value-selector
-                        ngDefaultControl
-                        [formControl]="contentForm.get('supporters_id')"
-                        [multiple]="true"
-                        listname="{{ 'Supporters' | translate }}"
-                        [inputListValues]="supporterObserver"
-                    ></os-search-value-selector>
+                    <mat-form-field>
+                        <os-search-value-selector
+                            formControlName="supporters_id"
+                            [multiple]="true"
+                            placeholder="{{ 'Supporters' | translate }}"
+                            [inputListValues]="supporterObserver"
+                        ></os-search-value-selector>
+                    </mat-form-field>
                 </div>
             </div>
 
             <!-- Workflow -->
             <div class="content-field" *ngIf="editMotion && workflowObserver.value.length > 1">
                 <div *ngIf="perms.isAllowed('change_metadata', motion)">
-                    <os-search-value-selector
-                        ngDefaultControl
-                        [formControl]="contentForm.get('workflow_id')"
-                        listname="{{ 'Workflow' | translate }}"
-                        [inputListValues]="workflowObserver"
-                    ></os-search-value-selector>
+                    <mat-form-field>
+                        <os-search-value-selector
+                            formControlName="workflow_id"
+                            placeholder="{{ 'Workflow' | translate }}"
+                            [inputListValues]="workflowObserver"
+                        ></os-search-value-selector>
+                    </mat-form-field>
                 </div>
             </div>
 

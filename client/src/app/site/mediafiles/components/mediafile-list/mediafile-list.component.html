@@ -269,13 +269,14 @@
                 <mat-error *ngIf="fileEditForm.invalid" translate>Required</mat-error>
             </mat-form-field>
 
-            <os-search-value-selector
-                ngDefaultControl
-                [formControl]="fileEditForm.get('access_groups_id')"
-                [multiple]="true"
-                listname="{{ 'Access groups' | translate }}"
-                [inputListValues]="groupsBehaviorSubject"
-            ></os-search-value-selector>
+            <mat-form-field>
+                <os-search-value-selector
+                    formControlName="access_groups_id"
+                    [multiple]="true"
+                    placeholder="{{ 'Access groups' | translate }}"
+                    [inputListValues]="groupsBehaviorSubject"
+                ></os-search-value-selector>
+            </mat-form-field>
         </form>
     </div>
     <div mat-dialog-actions>
@@ -301,16 +302,17 @@
         <form class="edit-file-form" [formGroup]="newDirectoryForm">
             <p translate>Please enter a name for the new directory:</p>
             <mat-form-field>
-                <input matInput osAutofocus formControlName="title" required />
+                <input matInput osAutofocus formControlName="title" placeholder="{{ 'Title' | translate }}" required />
             </mat-form-field>
 
-            <os-search-value-selector
-                ngDefaultControl
-                [formControl]="newDirectoryForm.get('access_groups_id')"
-                [multiple]="true"
-                listname="{{ 'Access groups' | translate }}"
-                [inputListValues]="groupsBehaviorSubject"
-            ></os-search-value-selector>
+            <mat-form-field>
+                <os-search-value-selector
+                    formControlName="access_groups_id"
+                    [multiple]="true"
+                    placeholder="{{ 'Access groups' | translate }}"
+                    [inputListValues]="groupsBehaviorSubject"
+                ></os-search-value-selector>
+            </mat-form-field>
         </form>
     </div>
     <div mat-dialog-actions>
@@ -328,16 +330,17 @@
     <h1 mat-dialog-title>
         <span translate>Move into directory</span>
     </h1>
-    <div class="os-form-card-mobile" mat-dialog-content>
+    <div class="os-form-card-mobile" [formGroup]="moveForm" mat-dialog-content>
         <p translate>Please select the directory:</p>
-        <os-search-value-selector
-            ngDefaultControl
-            [formControl]="moveForm.get('directory_id')"
-            [includeNone]="true"
-            [noneTitle]="'Base folder'"
-            listname="{{ 'Parent directory' | translate }}"
-            [inputListValues]="filteredDirectoryBehaviorSubject"
-        ></os-search-value-selector>
+        <mat-form-field>
+            <os-search-value-selector
+                formControlName="directory_id"
+                [includeNone]="true"
+                [noneTitle]="'Base folder'"
+                placeholder="{{ 'Parent directory' | translate }}"
+                [inputListValues]="filteredDirectoryBehaviorSubject"
+            ></os-search-value-selector>
+        </mat-form-field>
     </div>
     <div mat-dialog-actions>
         <button type="submit" mat-button color="primary" [mat-dialog-close]="true">
