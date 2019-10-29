@@ -202,7 +202,7 @@ Saves all websocket client message object ordered by there identifier.
 
 
 def register_client_message(
-    websocket_client_message: BaseWebsocketClientMessage
+    websocket_client_message: BaseWebsocketClientMessage,
 ) -> None:
     """
     Registers one websocket client message class.

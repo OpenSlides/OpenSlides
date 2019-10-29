@@ -308,7 +308,10 @@ class Motion(RESTModelMixin, AgendaItemWithListOfSpeakersMixin, models.Model):
                 # Identifier is already used.
                 if hasattr(self, "_identifier_prefix"):
                     # Calculate a new one and try again.
-                    self.identifier_number, self.identifier = self.increment_identifier_number(
+                    (
+                        self.identifier_number,
+                        self.identifier,
+                    ) = self.increment_identifier_number(
                         self.identifier_number, self._identifier_prefix
                     )
                 else:
