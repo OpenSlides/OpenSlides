@@ -11,6 +11,6 @@ BASE_POLL_FIELDS = (
     "id",
 )
 
-BASE_OPTION_FIELDS = ("id", "yes", "no", "abstain", "votes")
+BASE_OPTION_FIELDS = ("id", "yes", "no", "abstain")
 
-BASE_VOTE_FIELDS = ("id", "weight", "value", "user")
+BASE_VOTE_FIELDS = ("id", "weight", "value", "user", "option")

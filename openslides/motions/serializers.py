@@ -243,8 +243,6 @@ class MotionOptionSerializer(ModelSerializer):
         max_digits=15, decimal_places=6, min_value=-2, read_only=True
     )
 
-    votes = IdPrimaryKeyRelatedField(many=True, read_only=True)
-
     class Meta:
         model = MotionOption
         fields = BASE_OPTION_FIELDS
@@ -371,7 +369,6 @@ class MotionSerializer(ModelSerializer):
     """
 
     comments = MotionCommentSerializer(many=True, read_only=True)
-    polls = IdPrimaryKeyRelatedField(many=True, read_only=True)
     modified_final_version = CharField(allow_blank=True, required=False)
     reason = CharField(allow_blank=True, required=False)
     state_restriction = SerializerMethodField()
@@ -419,7 +416,6 @@ class MotionSerializer(ModelSerializer):
             "recommendation_extension",
             "tags",
             "attachments",
-            "polls",
             "agenda_item_id",
             "list_of_speakers_id",
             "agenda_create",

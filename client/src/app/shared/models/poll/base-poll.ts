@@ -28,6 +28,8 @@ export interface BasePollWithoutNestedModels {
 export abstract class BasePoll<T, O extends BaseOption<any>> extends BaseDecimalModel<T> {
     public options: O[];
 
-    protected decimalFields: (keyof BasePoll<T, O>)[] = ['votesvalid', 'votesinvalid', 'votescast'];
+    protected getDecimalFields(): (keyof BasePoll<T, O>)[] {
+        return ['votesvalid', 'votesinvalid', 'votescast'];
+    }
 }
 export interface BasePoll<T, O extends BaseOption<any>> extends BasePollWithoutNestedModels {}

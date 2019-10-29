@@ -5,11 +5,60 @@ import { TranslateService } from '@ngx-translate/core';
 import { DataSendService } from 'app/core/core-services/data-send.service';
 import { RelationManagerService } from 'app/core/core-services/relation-manager.service';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
+import { RelationDefinition } from 'app/core/definitions/relations';
+import { AssignmentOption } from 'app/shared/models/assignments/assignment-option';
 import { AssignmentPoll } from 'app/shared/models/assignments/assignment-poll';
+import { ViewAssignmentOption } from 'app/site/assignments/models/view-assignment-option';
 import { AssignmentPollTitleInformation, ViewAssignmentPoll } from 'app/site/assignments/models/view-assignment-poll';
-import { BaseRepository } from '../base-repository';
+import { ViewAssignmentVote } from 'app/site/assignments/models/view-assignment-vote';
+import { ViewGroup } from 'app/site/users/models/view-group';
+import { ViewUser } from 'app/site/users/models/view-user';
+import { BaseRepository, NestedModelDescriptors } from '../base-repository';
 import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
 import { DataStoreService } from '../../core-services/data-store.service';
+
+const AssignmentPollRelations: RelationDefinition[] = [
+    {
+        type: 'M2M',
+        ownIdKey: 'groups_id',
+        ownKey: 'groups',
+        foreignViewModel: ViewGroup
+    },
+    {
+        type: 'M2M',
+        ownIdKey: 'voted_id',
+        ownKey: 'voted',
+        foreignViewModel: ViewUser
+    }
+];
+
+const AssignmentPollNestedModelDescriptors: NestedModelDescriptors = {
+    'assignments/assignment-poll': [
+        {
+            ownKey: 'options',
+            foreignViewModel: ViewAssignmentOption,
+            foreignModel: AssignmentOption,
+            order: 'weight',
+            relationDefinitionsByKey: {
+                user: {
+                    type: 'M2O',
+                    ownIdKey: 'user_id',
+                    ownKey: 'user',
+                    foreignViewModel: ViewUser
+                },
+                votes: {
+                    type: 'O2M',
+                    foreignIdKey: 'option_id',
+                    ownKey: 'votes',
+                    foreignViewModel: ViewAssignmentVote
+                }
+            },
+            titles: {
+                getTitle: (viewOption: ViewAssignmentOption) => (viewOption.user ? viewOption.user.getTitle() : '')
+            }
+        }
+    ]
+};
 
 /**
  * Repository Service for Assignments.
@@ -49,8 +98,9 @@ export class AssignmentPollRepositoryService extends BaseRepository<
             viewModelStoreService,
             translate,
             relationManager,
-            AssignmentPoll
-            // TODO: relations
+            AssignmentPoll,
+            AssignmentPollRelations,
+            AssignmentPollNestedModelDescriptors
         );
     }
 
