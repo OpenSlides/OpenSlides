@@ -95,8 +95,9 @@ class CreateMotionPoll(TestCase):
                 "pollmethod": "YNA",
                 "type": "named",
                 "motion_id": self.motion.id,
+                "onehundred_percent_base": "YN",
+                "majority_method": "simple",
             },
-            format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertTrue(MotionPoll.objects.exists())
@@ -107,53 +108,24 @@ class CreateMotionPoll(TestCase):
         self.assertEqual(poll.motion.id, self.motion.id)
         self.assertTrue(poll.options.exists())
 
-    def test_missing_title(self):
-        response = self.client.post(
-            reverse("motionpoll-list"),
-            {"pollmethod": "YNA", "type": "named", "motion_id": self.motion.id},
-            format="json",
-        )
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertFalse(MotionPoll.objects.exists())
-
-    def test_missing_pollmethod(self):
-        response = self.client.post(
-            reverse("motionpoll-list"),
-            {
-                "title": "test_title_OoCh9aitaeyaeth8nom1",
-                "type": "named",
-                "motion_id": self.motion.id,
-            },
-            format="json",
-        )
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertFalse(MotionPoll.objects.exists())
-
-    def test_missing_type(self):
-        response = self.client.post(
-            reverse("motionpoll-list"),
-            {
-                "title": "test_title_Ail9Eizohshim0fora6o",
-                "pollmethod": "YNA",
-                "motion_id": self.motion.id,
-            },
-            format="json",
-        )
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertFalse(MotionPoll.objects.exists())
-
-    def test_missing_assignment_id(self):
-        response = self.client.post(
-            reverse("motionpoll-list"),
-            {
-                "title": "test_title_eic7ooxaht5mee3quohK",
-                "pollmethod": "YNA",
-                "type": "named",
-            },
-            format="json",
-        )
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertFalse(MotionPoll.objects.exists())
+    def test_missing_keys(self):
+        complete_request_data = {
+            "title": "test_title_OoCh9aitaeyaeth8nom1",
+            "type": "named",
+            "pollmethod": "YNA",
+            "motion_id": self.motion.id,
+            "onehundred_percent_base": "YN",
+            "majority_method": "simple",
+        }
+        for key in complete_request_data.keys():
+            request_data = {
+                _key: value
+                for _key, value in complete_request_data.items()
+                if _key != key
+            }
+            response = self.client.post(reverse("motionpoll-list"), request_data)
+            self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+            self.assertFalse(MotionPoll.objects.exists())
 
     def test_with_groups(self):
         group1 = get_group_model().objects.get(pk=1)
@@ -165,9 +137,10 @@ class CreateMotionPoll(TestCase):
                 "pollmethod": "YNA",
                 "type": "named",
                 "motion_id": self.motion.id,
+                "onehundred_percent_base": "YN",
+                "majority_method": "simple",
                 "groups_id": [1, 2],
             },
-            format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         poll = MotionPoll.objects.get()
@@ -182,9 +155,10 @@ class CreateMotionPoll(TestCase):
                 "pollmethod": "YNA",
                 "type": "named",
                 "motion_id": self.motion.id,
+                "onehundred_percent_base": "YN",
+                "majority_method": "simple",
                 "groups_id": [],
             },
-            format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         poll = MotionPoll.objects.get()
@@ -199,7 +173,6 @@ class CreateMotionPoll(TestCase):
                 "type": "not_existing",
                 "motion_id": self.motion.id,
             },
-            format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertFalse(MotionPoll.objects.exists())
@@ -213,7 +186,6 @@ class CreateMotionPoll(TestCase):
                 "type": "named",
                 "motion_id": self.motion.id,
             },
-            format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertFalse(MotionPoll.objects.exists())
@@ -236,8 +208,10 @@ class UpdateMotionPoll(TestCase):
         self.poll = MotionPoll.objects.create(
             motion=self.motion,
             title="test_title_beeFaihuNae1vej2ai8m",
-            pollmethod="YN",
+            pollmethod="YNA",
             type="named",
+            onehundred_percent_base="YN",
+            majority_method="simple",
         )
         self.poll.create_options()
         self.poll.groups.add(self.group)
@@ -266,11 +240,12 @@ class UpdateMotionPoll(TestCase):
 
     def test_patch_pollmethod(self):
         response = self.client.patch(
-            reverse("motionpoll-detail", args=[self.poll.pk]), {"pollmethod": "YNA"}
+            reverse("motionpoll-detail", args=[self.poll.pk]), {"pollmethod": "YN"}
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         poll = MotionPoll.objects.get()
-        self.assertEqual(poll.pollmethod, "YNA")
+        self.assertEqual(poll.pollmethod, "YN")
+        self.assertEqual(poll.onehundred_percent_base, "YN")
 
     def test_patch_invalid_pollmethod(self):
         response = self.client.patch(
@@ -278,7 +253,7 @@ class UpdateMotionPoll(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         poll = MotionPoll.objects.get()
-        self.assertEqual(poll.pollmethod, "YN")
+        self.assertEqual(poll.pollmethod, "YNA")
 
     def test_patch_type(self):
         response = self.client.patch(
@@ -296,11 +271,45 @@ class UpdateMotionPoll(TestCase):
         poll = MotionPoll.objects.get()
         self.assertEqual(poll.type, "named")
 
-    def test_patch_groups_to_empty(self):
+    def test_patch_100_percent_base(self):
         response = self.client.patch(
             reverse("motionpoll-detail", args=[self.poll.pk]),
-            {"groups_id": []},
-            format="json",
+            {"onehundred_percent_base": "cast"},
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        poll = MotionPoll.objects.get()
+        self.assertEqual(poll.onehundred_percent_base, "cast")
+
+    def test_patch_wrong_100_percent_base(self):
+        response = self.client.patch(
+            reverse("motionpoll-detail", args=[self.poll.pk]),
+            {"onehundred_percent_base": "invalid"},
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        poll = MotionPoll.objects.get()
+        self.assertEqual(poll.onehundred_percent_base, "YN")
+
+    def test_patch_majority_method(self):
+        response = self.client.patch(
+            reverse("motionpoll-detail", args=[self.poll.pk]),
+            {"majority_method": "two_thirds"},
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        poll = MotionPoll.objects.get()
+        self.assertEqual(poll.majority_method, "two_thirds")
+
+    def test_patch_wrong_majority_method(self):
+        response = self.client.patch(
+            reverse("motionpoll-detail", args=[self.poll.pk]),
+            {"majority_method": "invalid majority method"},
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        poll = MotionPoll.objects.get()
+        self.assertEqual(poll.majority_method, "simple")
+
+    def test_patch_groups_to_empty(self):
+        response = self.client.patch(
+            reverse("motionpoll-detail", args=[self.poll.pk]), {"groups_id": []},
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         poll = MotionPoll.objects.get()
@@ -311,7 +320,6 @@ class UpdateMotionPoll(TestCase):
         response = self.client.patch(
             reverse("motionpoll-detail", args=[self.poll.pk]),
             {"groups_id": [group2.id]},
-            format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         poll = MotionPoll.objects.get()
@@ -378,7 +386,6 @@ class VoteMotionPollAnalog(TestCase):
                 "votesvalid": "4.64",
                 "votesinvalid": "-2",
             },
-            format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         poll = MotionPoll.objects.get()
@@ -403,9 +410,7 @@ class VoteMotionPollAnalog(TestCase):
     def test_vote_missing_data(self):
         self.start_poll()
         response = self.client.post(
-            reverse("motionpoll-vote", args=[self.poll.pk]),
-            {"Y": "4", "N": "22.6"},
-            format="json",
+            reverse("motionpoll-vote", args=[self.poll.pk]), {"Y": "4", "N": "22.6"},
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertFalse(MotionPoll.objects.get().get_votes().exists())
@@ -413,7 +418,7 @@ class VoteMotionPollAnalog(TestCase):
     def test_vote_wrong_data_format(self):
         self.start_poll()
         response = self.client.post(
-            reverse("motionpoll-vote", args=[self.poll.pk]), [1, 2, 5], format="json"
+            reverse("motionpoll-vote", args=[self.poll.pk]), [1, 2, 5]
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertFalse(MotionPoll.objects.get().get_votes().exists())
@@ -423,7 +428,6 @@ class VoteMotionPollAnalog(TestCase):
         response = self.client.post(
             reverse("motionpoll-vote", args=[self.poll.pk]),
             {"Y": "some string", "N": "-2", "A": "3"},
-            format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertFalse(MotionPoll.objects.get().get_votes().exists())
@@ -477,7 +481,7 @@ class VoteMotionPollNamed(TestCase):
         self.make_admin_delegate()
         self.make_admin_present()
         response = self.client.post(
-            reverse("motionpoll-vote", args=[self.poll.pk]), "N", format="json"
+            reverse("motionpoll-vote", args=[self.poll.pk]), "N"
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         poll = MotionPoll.objects.get()
@@ -498,11 +502,11 @@ class VoteMotionPollNamed(TestCase):
         self.make_admin_delegate()
         self.make_admin_present()
         response = self.client.post(
-            reverse("motionpoll-vote", args=[self.poll.pk]), "N", format="json"
+            reverse("motionpoll-vote", args=[self.poll.pk]), "N"
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         response = self.client.post(
-            reverse("motionpoll-vote", args=[self.poll.pk]), "A", format="json"
+            reverse("motionpoll-vote", args=[self.poll.pk]), "A"
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         poll = MotionPoll.objects.get()
@@ -524,7 +528,7 @@ class VoteMotionPollNamed(TestCase):
         config["general_system_enable_anonymous"] = True
         guest_client = APIClient()
         response = guest_client.post(
-            reverse("motionpoll-vote", args=[self.poll.pk]), "Y", format="json"
+            reverse("motionpoll-vote", args=[self.poll.pk]), "Y"
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertFalse(MotionPoll.objects.get().get_votes().exists())
@@ -572,7 +576,7 @@ class VoteMotionPollNamed(TestCase):
         self.make_admin_delegate()
         self.make_admin_present()
         response = self.client.post(
-            reverse("motionpoll-vote", args=[self.poll.pk]), [1, 2, 5], format="json"
+            reverse("motionpoll-vote", args=[self.poll.pk]), [1, 2, 5]
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertFalse(MotionPoll.objects.get().get_votes().exists())
@@ -608,6 +612,8 @@ class VoteMotionPollNamedAutoupdates(TestCase):
             pollmethod="YNA",
             type=BasePoll.TYPE_NAMED,
             state=MotionPoll.STATE_STARTED,
+            onehundred_percent_base="YN",
+            majority_method="simple",
         )
         self.poll.create_options()
         self.poll.groups.add(self.delegate_group)
@@ -631,6 +637,8 @@ class VoteMotionPollNamedAutoupdates(TestCase):
                     "state": 2,
                     "type": "named",
                     "title": "test_title_tho8PhiePh8upaex6phi",
+                    "onehundred_percent_base": "YN",
+                    "majority_method": "simple",
                     "groups_id": [GROUP_DELEGATE_PK],
                     "votesvalid": "1.000000",
                     "votesinvalid": "0.000000",
@@ -685,6 +693,8 @@ class VoteMotionPollNamedAutoupdates(TestCase):
                     "state": 2,
                     "type": "named",
                     "title": "test_title_tho8PhiePh8upaex6phi",
+                    "onehundred_percent_base": "YN",
+                    "majority_method": "simple",
                     "groups_id": [GROUP_DELEGATE_PK],
                     "options": [{"id": 1}],
                     "id": 1,
@@ -726,6 +736,8 @@ class VoteMotionPollPseudoanonymousAutoupdates(TestCase):
             pollmethod="YNA",
             type=BasePoll.TYPE_PSEUDOANONYMOUS,
             state=MotionPoll.STATE_STARTED,
+            onehundred_percent_base="YN",
+            majority_method="simple",
         )
         self.poll.create_options()
         self.poll.groups.add(self.delegate_group)
@@ -749,6 +761,8 @@ class VoteMotionPollPseudoanonymousAutoupdates(TestCase):
                     "state": 2,
                     "type": "pseudoanonymous",
                     "title": "test_title_cahP1umooteehah2jeey",
+                    "onehundred_percent_base": "YN",
+                    "majority_method": "simple",
                     "groups_id": [GROUP_DELEGATE_PK],
                     "votesvalid": "1.000000",
                     "votesinvalid": "0.000000",
@@ -789,6 +803,8 @@ class VoteMotionPollPseudoanonymousAutoupdates(TestCase):
                     "state": 2,
                     "type": "pseudoanonymous",
                     "title": "test_title_cahP1umooteehah2jeey",
+                    "onehundred_percent_base": "YN",
+                    "majority_method": "simple",
                     "groups_id": [GROUP_DELEGATE_PK],
                     "options": [{"id": 1}],
                     "id": 1,
@@ -847,7 +863,7 @@ class VoteMotionPollPseudoanonymous(TestCase):
         self.make_admin_delegate()
         self.make_admin_present()
         response = self.client.post(
-            reverse("motionpoll-vote", args=[self.poll.pk]), "N", format="json"
+            reverse("motionpoll-vote", args=[self.poll.pk]), "N"
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         poll = MotionPoll.objects.get()
@@ -869,11 +885,11 @@ class VoteMotionPollPseudoanonymous(TestCase):
         self.make_admin_delegate()
         self.make_admin_present()
         response = self.client.post(
-            reverse("motionpoll-vote", args=[self.poll.pk]), "N", format="json"
+            reverse("motionpoll-vote", args=[self.poll.pk]), "N"
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         response = self.client.post(
-            reverse("motionpoll-vote", args=[self.poll.pk]), "A", format="json"
+            reverse("motionpoll-vote", args=[self.poll.pk]), "A"
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         option = MotionPoll.objects.get().options.get()
@@ -889,7 +905,7 @@ class VoteMotionPollPseudoanonymous(TestCase):
         config["general_system_enable_anonymous"] = True
         guest_client = APIClient()
         response = guest_client.post(
-            reverse("motionpoll-vote", args=[self.poll.pk]), "Y", format="json"
+            reverse("motionpoll-vote", args=[self.poll.pk]), "Y"
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertFalse(MotionPoll.objects.get().get_votes().exists())
@@ -928,7 +944,7 @@ class VoteMotionPollPseudoanonymous(TestCase):
         self.make_admin_delegate()
         self.make_admin_present()
         response = self.client.post(
-            reverse("motionpoll-vote", args=[self.poll.pk]), [1, 2, 5], format="json"
+            reverse("motionpoll-vote", args=[self.poll.pk]), [1, 2, 5]
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertFalse(MotionPoll.objects.get().get_votes().exists())
@@ -976,6 +992,8 @@ class PublishMotionPoll(TestCase):
             title="test_title_Nufae0iew7Iorox2thoo",
             pollmethod="YNA",
             type=BasePoll.TYPE_PSEUDOANONYMOUS,
+            onehundred_percent_base="YN",
+            majority_method="simple",
         )
         self.poll.create_options()
         option = self.poll.options.get()
@@ -1003,6 +1021,8 @@ class PublishMotionPoll(TestCase):
                         "state": 4,
                         "type": "pseudoanonymous",
                         "title": "test_title_Nufae0iew7Iorox2thoo",
+                        "onehundred_percent_base": "YN",
+                        "majority_method": "simple",
                         "groups_id": [],
                         "votesvalid": "0.000000",
                         "votesinvalid": "0.000000",

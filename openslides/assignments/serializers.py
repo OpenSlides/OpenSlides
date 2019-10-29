@@ -2,19 +2,19 @@ from openslides.poll.serializers import (
     BASE_OPTION_FIELDS,
     BASE_POLL_FIELDS,
     BASE_VOTE_FIELDS,
+    BaseOptionSerializer,
+    BasePollSerializer,
+    BaseVoteSerializer,
 )
 from openslides.utils.rest_api import (
     BooleanField,
-    CharField,
     DecimalField,
-    IdPrimaryKeyRelatedField,
     IntegerField,
     ModelSerializer,
-    SerializerMethodField,
     ValidationError,
 )
 
-from ..utils.auth import get_group_model, has_perm
+from ..utils.auth import has_perm
 from ..utils.autoupdate import inform_changed_data
 from ..utils.validate import validate_html
 from .models import (
@@ -47,32 +47,21 @@ class AssignmentRelatedUserSerializer(ModelSerializer):
         fields = ("id", "user", "elected", "weight")
 
 
-class AssignmentVoteSerializer(ModelSerializer):
+class AssignmentVoteSerializer(BaseVoteSerializer):
     """
     Serializer for assignment.models.AssignmentVote objects.
     """
 
-    pollstate = SerializerMethodField()
-
     class Meta:
         model = AssignmentVote
-        fields = ("pollstate",) + BASE_VOTE_FIELDS
+        fields = BASE_VOTE_FIELDS
         read_only_fields = BASE_VOTE_FIELDS
 
-    def get_pollstate(self, vote):
-        return vote.option.poll.state
 
-
-class AssignmentOptionSerializer(ModelSerializer):
+class AssignmentOptionSerializer(BaseOptionSerializer):
     """
     Serializer for assignment.models.AssignmentOption objects.
     """
-
-    yes = DecimalField(max_digits=15, decimal_places=6, min_value=-2, read_only=True)
-    no = DecimalField(max_digits=15, decimal_places=6, min_value=-2, read_only=True)
-    abstain = DecimalField(
-        max_digits=15, decimal_places=6, min_value=-2, read_only=True
-    )
 
     class Meta:
         model = AssignmentOption
@@ -80,7 +69,7 @@ class AssignmentOptionSerializer(ModelSerializer):
         read_only_fields = ("user", "weight") + BASE_OPTION_FIELDS
 
 
-class AssignmentPollSerializer(ModelSerializer):
+class AssignmentPollSerializer(BasePollSerializer):
     """
     Serializer for assignment.models.AssignmentPoll objects.
 
@@ -88,20 +77,10 @@ class AssignmentPollSerializer(ModelSerializer):
     """
 
     options = AssignmentOptionSerializer(many=True, read_only=True)
-
-    title = CharField(allow_blank=False, required=True)
-    groups = IdPrimaryKeyRelatedField(
-        many=True, required=False, queryset=get_group_model().objects.all()
-    )
-    voted = IdPrimaryKeyRelatedField(many=True, read_only=True)
-
-    votesvalid = DecimalField(
+    amount_global_no = DecimalField(
         max_digits=15, decimal_places=6, min_value=-2, read_only=True
     )
-    votesinvalid = DecimalField(
-        max_digits=15, decimal_places=6, min_value=-2, read_only=True
-    )
-    votescast = DecimalField(
+    amount_global_abstain = DecimalField(
         max_digits=15, decimal_places=6, min_value=-2, read_only=True
     )
 
@@ -109,18 +88,54 @@ class AssignmentPollSerializer(ModelSerializer):
         model = AssignmentPoll
         fields = (
             "assignment",
+            "description",
             "pollmethod",
             "votes_amount",
             "allow_multiple_votes_per_candidate",
             "global_no",
+            "amount_global_no",
             "global_abstain",
+            "amount_global_abstain",
         ) + BASE_POLL_FIELDS
         read_only_fields = ("state",)
 
     def update(self, instance, validated_data):
-        """ Prevent from updating the assignment """
+        """ Prevent updating the assignment """
         validated_data.pop("assignment", None)
         return super().update(instance, validated_data)
+
+    def norm_100_percent_base_to_pollmethod(
+        self, onehundred_percent_base, pollmethod, old_100_percent_base=None
+    ):
+        """
+        Returns None, if the 100-%-base must not be changed, otherwise the correct 100-%-base.
+        """
+        if pollmethod == AssignmentPoll.POLLMETHOD_YN and onehundred_percent_base in (
+            AssignmentPoll.PERCENT_BASE_VOTES,
+            AssignmentPoll.PERCENT_BASE_YNA,
+        ):
+            return AssignmentPoll.PERCENT_BASE_YN
+        if (
+            pollmethod == AssignmentPoll.POLLMETHOD_YNA
+            and onehundred_percent_base == AssignmentPoll.PERCENT_BASE_VOTES
+        ):
+            if old_100_percent_base is None:
+                return AssignmentPoll.PERCENT_BASE_YNA
+            else:
+                if old_100_percent_base in (
+                    AssignmentPoll.PERCENT_BASE_YN,
+                    AssignmentPoll.PERCENT_BASE_YNA,
+                ):
+                    return old_100_percent_base
+                else:
+                    return pollmethod
+        if (
+            pollmethod == AssignmentPoll.POLLMETHOD_VOTES
+            and onehundred_percent_base
+            in (AssignmentPoll.PERCENT_BASE_YN, AssignmentPoll.PERCENT_BASE_YNA)
+        ):
+            return AssignmentPoll.PERCENT_BASE_VOTES
+        return None
 
 
 class AssignmentSerializer(ModelSerializer):
@@ -146,7 +161,7 @@ class AssignmentSerializer(ModelSerializer):
             "open_posts",
             "phase",
             "assignment_related_users",
-            "poll_description_default",
+            "default_poll_description",
             "agenda_item_id",
             "list_of_speakers_id",
             "agenda_create",
