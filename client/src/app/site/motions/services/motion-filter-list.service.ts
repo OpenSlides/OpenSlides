@@ -55,13 +55,14 @@ export class MotionFilterListService extends BaseFilterListService<ViewMotion> {
      * getFilterOptions (as the workflows available may change)
      */
     public stateFilterOptions: OsFilter = {
-        property: 'state',
+        property: 'state_id',
         label: 'State',
         options: []
     };
 
     public categoryFilterOptions: OsFilter = {
-        property: 'category',
+        property: 'category_id',
+        label: 'Category',
         options: []
     };
 
@@ -78,13 +79,13 @@ export class MotionFilterListService extends BaseFilterListService<ViewMotion> {
     };
 
     public recommendationFilterOptions: OsFilter = {
-        property: 'recommendation',
+        property: 'recommendation_id',
         label: 'Recommendation',
         options: []
     };
 
     public tagFilterOptions: OsFilter = {
-        property: 'tags',
+        property: 'tags_id',
         label: 'Tags',
         options: []
     };
