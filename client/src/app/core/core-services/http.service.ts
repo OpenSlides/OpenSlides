@@ -171,7 +171,9 @@ export class HttpService {
      */
     private processDetailResponse(response: DetailResponse): string {
         let message: string;
-        if (response.detail instanceof Array) {
+        if (response instanceof Array) {
+            message = response.join(' ');
+        } else if (response.detail instanceof Array) {
             message = response.detail.join(' ');
         } else {
             message = response.detail;
