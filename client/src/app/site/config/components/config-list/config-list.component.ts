@@ -106,8 +106,13 @@ export class ConfigListComponent extends BaseComponent implements CanComponentDe
     /**
      * This resets all values to their defaults.
      */
-    public resetAll(): void {
-        this.repo.resetGroups([this.configGroup.name]);
+    public async resetAll(): Promise<void> {
+        const title = this.translate.instant(
+            'Are you sure you want to reset this group? All custom changes will be lost.'
+        );
+        if (await this.promptDialog.open(title)) {
+            await this.repo.resetGroups([this.configGroup.name]);
+        }
     }
 
     /**
