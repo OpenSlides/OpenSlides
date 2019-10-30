@@ -1,6 +1,9 @@
+import random
 from decimal import Decimal
 from typing import Any
 
+import pytest
+from django.contrib.auth import get_user_model
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
@@ -16,6 +19,73 @@ from openslides.utils.auth import get_group_model
 from openslides.utils.autoupdate import inform_changed_data
 from tests.common_groups import GROUP_ADMIN_PK, GROUP_DELEGATE_PK
 from tests.test_case import TestCase
+
+from ..helpers import count_queries
+
+
+@pytest.mark.django_db(transaction=False)
+def test_assignment_poll_db_queries():
+    """
+    Tests that only the following db queries are done:
+    * 1 request to get the polls,
+    * 1 request to get all options for all polls,
+    * 1 request to get all users for all options (candidates),
+    * 1 request to get all votes for all options,
+    * 1 request to get all users for all votes,
+    * 1 request to get all poll groups,
+    = 6 queries
+    """
+    create_assignment_polls()
+    assert count_queries(AssignmentPoll.get_elements) == 6
+
+
+@pytest.mark.django_db(transaction=False)
+def test_assignment_vote_db_queries():
+    """
+    Tests that only 1 query is done when fetching AssignmentVotes
+    """
+    create_assignment_polls()
+    assert count_queries(AssignmentVote.get_elements) == 1
+
+
+def create_assignment_polls():
+    """
+    Creates 1 assignment with 3 candidates which has 5 polls in which each candidate got a random amount of votes between 0 and 10 from 3 users
+    """
+    assignment = Assignment.objects.create(
+        title="test_assignment_ohneivoh9caiB8Yiungo", open_posts=1
+    )
+    group1 = get_group_model().objects.get(pk=1)
+    group2 = get_group_model().objects.get(pk=2)
+    for i in range(3):
+        user = get_user_model().objects.create_user(
+            username=f"test_username_{i}", password="test_password_UOrnlCZMD0lmxFGwEj54"
+        )
+        assignment.add_candidate(user)
+
+    for i in range(5):
+        poll = AssignmentPoll.objects.create(
+            assignment=assignment,
+            title="test_title_UnMiGzEHmwqplmVBPNEZ",
+            pollmethod=AssignmentPoll.POLLMETHOD_YN,
+            type=AssignmentPoll.TYPE_NAMED,
+        )
+        poll.create_options()
+        poll.groups.add(group1)
+        poll.groups.add(group2)
+
+        for j in range(3):
+            user = get_user_model().objects.create_user(
+                username=f"test_username_{i}{j}",
+                password="test_password_kbzj5L8ZtVxBllZzoW6D",
+            )
+            for option in poll.options.all():
+                weight = random.randint(0, 10)
+                if weight > 0:
+                    AssignmentVote.objects.create(
+                        user=user, option=option, value="Y", weight=Decimal(weight)
+                    )
+            poll.voted.add(user)
 
 
 class CreateAssignmentPoll(TestCase):
