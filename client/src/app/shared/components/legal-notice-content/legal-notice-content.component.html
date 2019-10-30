@@ -1,9 +1,18 @@
 <mat-card class="os-card">
     <div>
-        <div *ngIf="legalNotice" class="legal-notice-text" [innerHtml]="legalNotice | trust: 'html'"></div>
-        <div *ngIf="!legalNotice" translate>
-            The event manager hasn't set up a legal notice yet.
-        </div>
+        <ng-container *ngIf="!isEditing">
+            <div *ngIf="legalNotice" class="legal-notice-text" [innerHtml]="legalNotice | trust: 'html'"></div>
+            <div *ngIf="!legalNotice" translate>
+                The event manager hasn't set up a legal notice yet.
+            </div>
+        </ng-container>
+        <ng-container *ngIf="isEditing">
+            <div>
+                <form [formGroup]="formGroup">
+                    <editor formControlName="legalNotice" [init]="tinyMceSettings"></editor>
+                </form>
+            </div>
+        </ng-container>
         <mat-divider></mat-divider>
         <div *ngIf="versionInfo" class="version-text">
             <a [attr.href]="versionInfo.openslides_url" target="_blank">

@@ -1,7 +1,21 @@
-<os-head-bar [nav]=false [goBack]=true>
+<os-head-bar
+    [nav]="false"
+    [goBack]="true"
+    [editMode]="isEditing"
+    [hasMainButton]="canManage()"
+    [mainButtonIcon]="'edit'"
+    [mainActionTooltip]="'Edit' | translate"
+    (cancelEditEvent)="isEditing = !isEditing"
+    (mainEvent)="isEditing = !isEditing"
+    (saveEvent)="saveChanges()"
+>
     <div class="title-slot">
         <h2 translate>Privacy Policy</h2>
     </div>
 </os-head-bar>
 
-<os-privacy-policy-content></os-privacy-policy-content>
+<os-privacy-policy-content
+    [canBeEdited]="true"
+    [isEditing]="isEditing"
+    (update)="privacyProlicy = $event"
+></os-privacy-policy-content>

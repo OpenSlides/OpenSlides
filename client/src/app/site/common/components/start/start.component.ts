@@ -1,10 +1,22 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material';
 import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core'; // showcase
 
-import { BaseComponent } from 'app/base.component';
+import { OperatorService } from 'app/core/core-services/operator.service';
+import { ConfigRepositoryService } from 'app/core/repositories/config/config-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
+import { BaseViewComponent } from 'app/site/base/base-view';
+
+/**
+ * Interface describes the keys for the fields at start-component.
+ */
+interface IStartContent {
+    general_event_welcome_title: string;
+    general_event_welcome_text: string;
+}
 
 /**
  * The start component. Greeting page for OpenSlides
@@ -14,9 +26,24 @@ import { ConfigService } from 'app/core/ui-services/config.service';
     templateUrl: './start.component.html',
     styleUrls: ['./start.component.scss']
 })
-export class StartComponent extends BaseComponent implements OnInit {
-    public welcomeTitle: string;
-    public welcomeText: string;
+export class StartComponent extends BaseViewComponent implements OnInit {
+    /**
+     * Whether the user is editing the content.
+     */
+    public isEditing = false;
+
+    /**
+     * Formular for the content.
+     */
+    public startForm: FormGroup;
+
+    /**
+     * Holding the values for the content.
+     */
+    public startContent: IStartContent = {
+        general_event_welcome_title: '',
+        general_event_welcome_text: ''
+    };
 
     /**
      * Constructor of the StartComponent
@@ -25,8 +52,20 @@ export class StartComponent extends BaseComponent implements OnInit {
      * @param translate to translation module
      * @param configService read out config values
      */
-    public constructor(titleService: Title, translate: TranslateService, private configService: ConfigService) {
-        super(titleService, translate);
+    public constructor(
+        titleService: Title,
+        translate: TranslateService,
+        matSnackbar: MatSnackBar,
+        private configService: ConfigService,
+        private configRepo: ConfigRepositoryService,
+        private fb: FormBuilder,
+        private operator: OperatorService
+    ) {
+        super(titleService, translate, matSnackbar);
+        this.startForm = this.fb.group({
+            general_event_welcome_title: ['', Validators.required],
+            general_event_welcome_text: ''
+        });
     }
 
     /**
@@ -40,11 +79,42 @@ export class StartComponent extends BaseComponent implements OnInit {
         // set the welcome title
         this.configService
             .get<string>('general_event_welcome_title')
-            .subscribe(welcomeTitle => (this.welcomeTitle = welcomeTitle));
+            .subscribe(welcomeTitle => (this.startContent.general_event_welcome_title = welcomeTitle));
 
         // set the welcome text
         this.configService.get<string>('general_event_welcome_text').subscribe(welcomeText => {
-            this.welcomeText = this.translate.instant(welcomeText);
+            this.startContent.general_event_welcome_text = this.translate.instant(welcomeText);
         });
+    }
+
+    /**
+     * Changes to editing mode.
+     */
+    public editStartPage(): void {
+        Object.keys(this.startForm.controls).forEach(control => {
+            this.startForm.patchValue({ [control]: this.startContent[control] });
+        });
+        this.isEditing = true;
+    }
+
+    /**
+     * Saves changes and updates the content.
+     */
+    public saveChanges(): void {
+        this.configRepo
+            .bulkUpdate(
+                Object.keys(this.startForm.controls).map(control => ({
+                    key: control,
+                    value: this.startForm.value[control]
+                }))
+            )
+            .then(() => (this.isEditing = !this.isEditing), this.raiseError);
+    }
+
+    /**
+     * Returns, if the current user has the necessary permissions.
+     */
+    public canManage(): boolean {
+        return this.operator.hasPerms('core.can_manage_config');
     }
 }
