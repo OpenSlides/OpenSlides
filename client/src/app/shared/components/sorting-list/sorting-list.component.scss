@@ -4,6 +4,8 @@
     display: table;
     width: 100%;
     font-size: 14px;
+    // required since firefox has issues if this view is not in edit mode
+    height: 1px;
     min-height: 50px;
     margin-bottom: 5px;
 
