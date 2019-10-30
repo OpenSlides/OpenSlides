@@ -151,6 +151,7 @@ async def motion_slide(
     * identifier
     * title
     * text
+    * submitters
     * amendment_paragraphs
     * is_child
     * show_meta_box
@@ -161,7 +162,6 @@ async def motion_slide(
     * recommendation_extension
     * recommender
     * change_recommendations
-    * submitter
     """
     # Get motion
     mode = element.get(
@@ -176,6 +176,14 @@ async def motion_slide(
         motion = all_data["motions/motion"][motion_id]
     except KeyError:
         raise ProjectorElementException(f"motion with id {motion_id} does not exist")
+
+    # Add submitters
+    submitters = [
+        await get_user_name(all_data, submitter["user_id"])
+        for submitter in sorted(
+            motion["submitters"], key=lambda submitter: submitter["weight"]
+        )
+    ]
 
     # Get some needed config values
     show_meta_box = not await get_config(
@@ -210,6 +218,7 @@ async def motion_slide(
     return_value = {
         "identifier": motion["identifier"],
         "title": motion["title"],
+        "submitters": submitters,
         "preamble": motions_preamble,
         "amendment_paragraphs": motion["amendment_paragraphs"],
         "base_motion": base_motion,
@@ -232,41 +241,30 @@ async def motion_slide(
     if mode == "final":
         return_value["modified_final_version"] = motion["modified_final_version"]
 
-    if show_meta_box:
-        # Add recommendation, if enabled in config (and the motion has one)
-        if (
-            not await get_config(
-                all_data, "motions_disable_recommendation_on_projector"
+    # Add recommendation, if enabled in config (and the motion has one)
+    if (
+        not await get_config(all_data, "motions_disable_recommendation_on_projector")
+        and motion["recommendation_id"]
+    ):
+        recommendation_state = await get_state(all_data, motion, "recommendation_id")
+        return_value["recommendation"] = recommendation_state["recommendation_label"]
+        if recommendation_state["show_recommendation_extension_field"]:
+            recommendation_extension = motion["recommendation_extension"]
+            # All title information for referenced motions in the recommendation
+            referenced_motions: Dict[int, Dict[str, str]] = {}
+            await extend_reference_motion_dict(
+                all_data, recommendation_extension, referenced_motions
             )
-            and motion["recommendation_id"]
-        ):
-            recommendation_state = await get_state(
-                all_data, motion, "recommendation_id"
+            return_value["recommendation_extension"] = recommendation_extension
+            return_value["referenced_motions"] = referenced_motions
+        if motion["statute_paragraph_id"]:
+            return_value["recommender"] = await get_config(
+                all_data, "motions_statute_recommendations_by"
             )
-            return_value["recommendation"] = recommendation_state[
-                "recommendation_label"
-            ]
-            if recommendation_state["show_recommendation_extension_field"]:
-                recommendation_extension = motion["recommendation_extension"]
-                # All title information for referenced motions in the recommendation
-                referenced_motions: Dict[int, Dict[str, str]] = {}
-                await extend_reference_motion_dict(
-                    all_data, recommendation_extension, referenced_motions
-                )
-                return_value["recommendation_extension"] = recommendation_extension
-                return_value["referenced_motions"] = referenced_motions
-
+        else:
             return_value["recommender"] = await get_config(
                 all_data, "motions_recommendations_by"
             )
-
-        # Add submitters
-        return_value["submitter"] = [
-            await get_user_name(all_data, submitter["user_id"])
-            for submitter in sorted(
-                motion["submitters"], key=lambda submitter: submitter["weight"]
-            )
-        ]
 
     if show_referring_motions:
         # Add recommendation-referencing motions
