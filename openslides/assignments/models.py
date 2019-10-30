@@ -268,8 +268,23 @@ class Assignment(RESTModelMixin, AgendaItemWithListOfSpeakersMixin, models.Model
         return {"title": self.title}
 
 
+class AssignmentVoteManager(models.Manager):
+    """
+    Customized model manager to support our get_full_queryset method.
+    """
+
+    def get_full_queryset(self):
+        """
+        Returns the normal queryset with all assignment votes. In the background we
+        join and prefetch all related models.
+        """
+        return self.get_queryset().select_related("user", "option", "option__poll")
+
+
 class AssignmentVote(RESTModelMixin, BaseVote):
     access_permissions = AssignmentVoteAccessPermissions()
+    objects = AssignmentVoteManager()
+
     option = models.ForeignKey(
         "AssignmentOption", on_delete=models.CASCADE, related_name="votes"
     )
@@ -296,11 +311,32 @@ class AssignmentOption(RESTModelMixin, BaseOption):
         return self.poll
 
 
+class AssignmentPollManager(models.Manager):
+    """
+    Customized model manager to support our get_full_queryset method.
+    """
+
+    def get_full_queryset(self):
+        """
+        Returns the normal queryset with all assignment polls. In the background we
+        join and prefetch all related models.
+        """
+        return (
+            self.get_queryset()
+            .select_related("assignment")
+            .prefetch_related(
+                "options", "options__user", "options__votes", "groups", "voted"
+            )
+        )
+
+
 # Meta-TODO: Is this todo resolved?
 # TODO: remove the type-ignoring in the next line, after this is solved:
 #       https://github.com/python/mypy/issues/3855
 class AssignmentPoll(RESTModelMixin, BasePoll):
     access_permissions = AssignmentPollAccessPermissions()
+    objects = AssignmentPollManager()
+
     option_class = AssignmentOption
 
     assignment = models.ForeignKey(
