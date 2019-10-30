@@ -136,9 +136,7 @@ class BasePollViewSet(ModelViewSet):
             self.assert_can_vote(poll, request)
 
             if request.user in poll.voted.all():
-                raise ValidationError(
-                    {"detail": "You have already voted for this poll."}
-                )
+                self.permission_denied(request)
             self.handle_pseudoanonymous_vote(request.data, poll)
             poll.voted.add(request.user)
 

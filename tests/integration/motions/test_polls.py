@@ -816,7 +816,7 @@ class VoteMotionPollPseudoanonymous(TestCase):
         response = self.client.post(
             reverse("motionpoll-vote", args=[self.poll.pk]), "A", format="json"
         )
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         option = MotionPoll.objects.get().options.get()
         self.assertEqual(option.yes, Decimal("0"))
         self.assertEqual(option.no, Decimal("1"))
