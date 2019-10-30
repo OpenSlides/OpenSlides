@@ -1,47 +1,3 @@
-/* Full width form fields */
-.mat-form-field {
-    width: 100%;
-}
-
-.datetimepicker-container {
-    margin-left: -20px;
-
-    .mat-form-field {
-        width: 50%;
-        box-sizing: border-box;
-        padding-left: 20px;
-
-        .suffix-wrapper {
-            display: flex;
-            align-items: center;
-
-            .mat-datepicker-toggle {
-                padding-left: 4px;
-                padding-right: 4px;
-
-                .mat-datepicker-toggle-default-icon {
-                    width: 20px;
-                    margin-bottom: 10px;
-                }
-            }
-
-            .ngx-material-timepicker-toggle {
-                width: 28px;
-            }
-        }
-    }
-}
-
-/* limit the color bar of color inputs */
-input[type='color'] {
-    max-width: 100px;
-}
-
-/* Spacing between config entries */
-.config-form-group {
-    margin-bottom: 15px;
-}
-
 .config-field-wrapper {
     width: 100%;
     display: flex;
@@ -49,9 +5,58 @@ input[type='color'] {
     .form-item {
         flex: 2;
     }
-    .reset-button {
-        max-width: 30px;
-        width: 30px;
-        flex: 1;
+
+    .mat-form-field {
+        .mat-form-field-subscript-wrapper {
+            position: static;
+        }
+        .mat-form-field-underline {
+            display: none;
+        }
+    }
+
+    /* Full width form fields */
+    .mat-form-field {
+        width: 100%;
+    }
+
+    .datetimepicker-container {
+        margin-left: -20px;
+        display: flex;
+
+        .mat-form-field {
+            flex: 1;
+            box-sizing: border-box;
+            padding-left: 20px;
+
+            .suffix-wrapper {
+                display: flex;
+                align-items: center;
+
+                .mat-datepicker-toggle {
+                    padding-left: 4px;
+                    padding-right: 4px;
+
+                    .mat-datepicker-toggle-default-icon {
+                        width: 20px;
+                        margin-bottom: 10px;
+                    }
+                }
+
+                .ngx-material-timepicker-toggle {
+                    width: 28px;
+                }
+            }
+        }
+    }
+
+    /* limit the color bar of color inputs */
+    input[type='color'] {
+        max-width: 100px;
+    }
+
+    /* Spacing between config entries */
+    .config-form-group {
+        margin-bottom: 15px;
     }
 }

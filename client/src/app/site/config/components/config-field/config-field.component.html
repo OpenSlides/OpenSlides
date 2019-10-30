@@ -38,11 +38,14 @@
                         [type]="formType(configItem.inputType)"
                     />
                 </ng-template>
+
+                <mat-hint *ngIf="configItem.helpText">{{ configItem.helpText | translate }}</mat-hint>
             </mat-form-field>
 
             <div class="config-form-group" *ngIf="isExcludedType(configItem.inputType)">
                 <div *ngIf="configItem.inputType === 'boolean'">
                     <mat-checkbox formControlName="value">{{ configItem.label | translate }}</mat-checkbox>
+                    <div class="hint" *ngIf="configItem.helpText">{{ configItem.helpText | translate }}</div>
                     <div class="error" *ngIf="error">{{ error }}</div>
                 </div>
 
@@ -90,7 +93,9 @@
                             <input matInput [format]="24" formControlName="time" [ngxTimepicker]="timepicker" />
                             <div class="suffix-wrapper" matSuffix>
                                 <mat-icon class="red-warning-text" *ngIf="updateSuccessIcon">error</mat-icon>
-                                <ngx-material-timepicker-toggle [for]="timepicker"></ngx-material-timepicker-toggle>
+                                <ngx-material-timepicker-toggle [for]="timepicker">
+                                    <mat-icon ngxMaterialTimepickerToggleIcon>access_time</mat-icon>
+                                </ngx-material-timepicker-toggle>
                             </div>
                             <mat-error *ngIf="error"> {{ error }} </mat-error>
                             <ngx-material-timepicker #timepicker></ngx-material-timepicker>
@@ -113,10 +118,5 @@
                 </div>
             </div>
         </form>
-    </div>
-    <div class="reset-button">
-        <button mat-icon-button *ngIf="configItem.helpText" matTooltip="{{ configItem.helpText | translate }}">
-            <mat-icon>help_outline</mat-icon>
-        </button>
     </div>
 </div>
