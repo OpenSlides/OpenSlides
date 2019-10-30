@@ -35,14 +35,14 @@
             [routerLink]="getDetailUrl(item)"
             *ngIf="!isMultiSelect"
         ></a>
-        <div [ngStyle]="{ 'margin-left': item.level * 25 + 'px' }" class="innerTable ellipsis-overflow">
+        <div [ngStyle]="{ 'margin-left': item.level * 25 + 'px' }" class="innerTable">
             <os-icon-container [noWrap]="true" [icon]="item.closed ? 'check' : null" size="large">
-                <span>
+                <div class="ellipsis-overflow">
                     {{ item.getListTitle() }}
-                </span>
-                <span *ngIf="showSubtitle" class="subtitle ">
+                </div>
+                <div *ngIf="showSubtitle" class="subtitle ellipsis-overflow">
                     {{ item.getSubtitle() }}
-                </span>
+                </div>
             </os-icon-container>
         </div>
     </div>
