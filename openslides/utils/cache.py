@@ -329,7 +329,11 @@ class ElementCache:
             for collection_string, value_list in raw_changed_elements.items()
         }
 
-        if user_id is not None:
+        if user_id is None:
+            for elements in changed_elements.values():
+                for element in elements:
+                    element.pop("_no_delete_on_restriction", False)
+        else:
             # the list(...) is important, because `changed_elements` will be
             # altered during iteration and restricting data
             for collection_string, elements in list(changed_elements.items()):

@@ -12,9 +12,8 @@ from openslides.poll.models import BasePoll
 from openslides.utils.auth import get_group_model
 from openslides.utils.autoupdate import inform_changed_data
 from tests.common_groups import GROUP_ADMIN_PK, GROUP_DEFAULT_PK, GROUP_DELEGATE_PK
+from tests.count_queries import count_queries
 from tests.test_case import TestCase
-
-from ..helpers import count_queries
 
 
 @pytest.mark.django_db(transaction=False)
