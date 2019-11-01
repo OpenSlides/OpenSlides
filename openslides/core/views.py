@@ -132,7 +132,7 @@ class ProjectorViewSet(ModelViewSet):
             "destroy",
             "control_view",
             "set_scroll",
-            "set_projectiondefault",
+            "set_default_projector",
             "project",
         ):
             result = has_perm(self.request.user, "core.can_see_projector") and has_perm(
@@ -328,6 +328,18 @@ class ProjectorViewSet(ModelViewSet):
         return Response(
             {"detail": "Setting scroll to {0} was successful.", "args": [request.data]}
         )
+
+    @detail_route(methods=["post"])
+    def set_default_projector(self, request, pk):
+        """
+        REST API operation to set the projector with the given pk as the new default.
+        """
+        reference_projector = self.get_object()
+        for projector in self.queryset.all():
+            projector.reference_projector = reference_projector
+            projector.save()
+
+        return Response()
 
 
 class ProjectionDefaultViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):

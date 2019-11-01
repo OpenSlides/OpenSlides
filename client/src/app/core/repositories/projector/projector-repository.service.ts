@@ -127,4 +127,12 @@ export class ProjectorRepositoryService extends BaseRepository<ViewProjector, Pr
             step: step
         });
     }
+
+    /**
+     * Sets the given projector as the new reference projector for all projectors
+     * @param projector the new default projector id
+     */
+    public async setDefaultProjector(projector_id: number): Promise<void> {
+        await this.http.post<void>(`/rest/core/projector/${projector_id}/set_default_projector/`);
+    }
 }
