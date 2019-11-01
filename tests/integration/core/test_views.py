@@ -106,6 +106,23 @@ def test_project_view(client):
 
 
 @pytest.mark.django_db(transaction=False)
+def test_set_default_projector(client):
+    client.login(username="admin", password="admin")
+    Projector.objects.create(name="test_name_rePaODETymV4eFM3aOBD")
+    reference_projector = Projector.objects.create(
+        name="test_name_S2vXmumTMKyT4yjgEoyF"
+    )
+
+    response = client.post(
+        reverse("projector-set-default-projector", args=[reference_projector.pk])
+    )
+    assert response.status_code == 200
+
+    for projector in Projector.objects.all():
+        assert projector.reference_projector_id == reference_projector.id
+
+
+@pytest.mark.django_db(transaction=False)
 def test_get(client):
     client.login(username="admin", password="admin")
     response = client.get(reverse("core_version"))

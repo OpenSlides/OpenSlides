@@ -162,13 +162,11 @@ export class ProjectorListComponent extends BaseViewComponent implements OnInit,
         }
     }
 
+    /**
+     * Event handler when the reference projector is changed
+     * @param change the change event that contains the new id
+     */
     public onSelectReferenceProjector(change: MatSelectChange): void {
-        const update: Partial<Projector> = {
-            reference_projector_id: change.value
-        };
-        const promises = this.projectors.map(projector => {
-            return this.repo.update(update, projector);
-        });
-        Promise.all(promises).catch(this.raiseError);
+        this.repo.setDefaultProjector(change.value).catch(this.raiseError);
     }
 }
