@@ -87,8 +87,6 @@ class UserCreate(TestCase):
     """
 
     def test_simple_creation(self):
-        self.client.login(username="admin", password="admin")
-
         response = self.client.post(
             reverse("user-list"), {"last_name": "Test name keimeiShieX4Aekoe3do"}
         )
@@ -98,7 +96,6 @@ class UserCreate(TestCase):
         self.assertEqual(response.data["id"], new_user.id)
 
     def test_creation_with_group(self):
-        self.client.login(username="admin", password="admin")
         group_pks = (GROUP_DELEGATE_PK, GROUP_STAFF_PK)
 
         self.client.post(
@@ -111,7 +108,6 @@ class UserCreate(TestCase):
         self.assertTrue(user.groups.filter(pk=group_pks[1]).exists())
 
     def test_creation_with_default_group(self):
-        self.client.login(username="admin", password="admin")
         group_pk = (GROUP_DEFAULT_PK,)
 
         response = self.client.post(
@@ -138,6 +134,12 @@ class UserCreate(TestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         user = User.objects.get(username="test_name_Thimoo2ho7ahreighio3")
         self.assertEqual(user.about_me, "<p>&lt;foo&gt;bar&lt;/foo&gt;</p>")
+        
+    def test_double_username(self):
+        for field in ("last_name", "username"):
+            response = self.client.post(reverse("user-list"), {"username": "admin"})
+            self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+            self.assertEqual(User.objects.count(), 1)
 
 
 class UserUpdate(TestCase):
@@ -586,26 +588,49 @@ class UserMassImport(TestCase):
     Tests mass import of users.
     """
 
-    def setUp(self):
-        self.client = APIClient()
-        self.client.login(username="admin", password="admin")
-
     def test_mass_import(self):
-        user_1 = {
-            "first_name": "first_name_kafaith3woh3thie7Ciy",
-            "last_name": "last_name_phah0jaeph9ThoongaeL",
-            "groups_id": [],
-        }
-        user_2 = {
-            "first_name": "first_name_kohdao7Eibouwee8ma2O",
-            "last_name": "last_name_kafaith3woh3thie7Ciy",
-            "groups_id": [],
-        }
-        response = self.client.post(
-            reverse("user-mass-import"), {"users": [user_1, user_2]}
-        )
+        data = [
+            {
+                "first_name": "first_name_kafaith3woh3thie7Ciy",
+                "last_name": "last_name_phah0jaeph9ThoongaeL",
+                "groups_id": [],
+            },
+            {
+                "first_name": "first_name_kohdao7Eibouwee8ma2O",
+                "last_name": "last_name_4en5ANFoz2nQmoUkTfYe",
+                "groups_id": [],
+            },
+            {
+                "first_name": "first_name_JbCpGkpcYCaQtDNA4pDW",
+                "last_name": "last_name_z0MMAIwbieKtpzW3dDJY",
+                "groups_id": [],
+            },
+        ]
+        response = self.client.post(reverse("user-mass-import"), {"users": data})
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(User.objects.count(), 3)
+        self.assertEqual(User.objects.count(), 4)
+
+    def test_mass_import_double_username(self):
+        data = [
+            {"username": "double_name", "groups_id": []},
+            {"username": "double_name", "groups_id": []},
+        ]
+        response = self.client.post(reverse("user-mass-import"), {"users": data})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            User.objects.count(), 2
+        )  # second user is skipped because the username already exists
+
+    def test_mass_import_double_name(self):
+        data = [
+            {"first_name": "double_name", "groups_id": []},
+            {"last_name": "double_name", "groups_id": []},
+        ]
+        response = self.client.post(reverse("user-mass-import"), {"users": data})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            User.objects.count(), 3
+        )  # if username is generated, the api appends a number behind it and thus generates both users
 
 
 class UserSendIntivationEmail(TestCase):
