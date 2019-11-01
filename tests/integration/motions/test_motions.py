@@ -24,9 +24,8 @@ from openslides.poll.models import BasePoll
 from openslides.utils.auth import get_group_model
 from openslides.utils.autoupdate import inform_changed_data
 from tests.common_groups import GROUP_ADMIN_PK, GROUP_DEFAULT_PK, GROUP_DELEGATE_PK
+from tests.count_queries import assert_query_count, count_queries
 from tests.test_case import TestCase
-
-from ..helpers import count_queries
 
 
 @pytest.mark.django_db(transaction=False)
@@ -126,10 +125,13 @@ class CreateMotion(TestCase):
     Tests motion creation.
     """
 
+    maxDiff = None
+
     def setUp(self):
         self.client = APIClient()
         self.client.login(username="admin", password="admin")
 
+    @assert_query_count(85, True)
     def test_simple(self):
         """
         Tests that a motion is created with a specific title and text.
@@ -146,6 +148,76 @@ class CreateMotion(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         motion = Motion.objects.get()
+        changed_autoupdate, deleted_autoupdate = self.get_last_autoupdate()
+        del changed_autoupdate["motions/motion:1"]["created"]
+        del changed_autoupdate["motions/motion:1"]["last_modified"]
+        self.assertEqual(
+            changed_autoupdate,
+            {
+                "agenda/list-of-speakers:1": {
+                    "id": 1,
+                    "title_information": {
+                        "title": "test_title_OoCoo3MeiT9li5Iengu9",
+                        "identifier": "1",
+                    },
+                    "speakers": [],
+                    "closed": False,
+                    "content_object": {"collection": "motions/motion", "id": 1},
+                },
+                "motions/motion:1": {
+                    "id": 1,
+                    "identifier": "1",
+                    "title": "test_title_OoCoo3MeiT9li5Iengu9",
+                    "text": "test_text_thuoz0iecheiheereiCi",
+                    "amendment_paragraphs": None,
+                    "modified_final_version": "",
+                    "reason": "",
+                    "parent_id": None,
+                    "category_id": None,
+                    "category_weight": 10000,
+                    "comments": [],
+                    "motion_block_id": None,
+                    "origin": "",
+                    "submitters": [
+                        {"id": 1, "user_id": 1, "motion_id": 1, "weight": 1}
+                    ],
+                    "supporters_id": [],
+                    "state_id": 1,
+                    "state_extension": None,
+                    "state_restriction": [],
+                    "statute_paragraph_id": None,
+                    "workflow_id": 1,
+                    "recommendation_id": None,
+                    "recommendation_extension": None,
+                    "tags_id": [],
+                    "attachments_id": [],
+                    "agenda_item_id": 1,
+                    "list_of_speakers_id": 1,
+                    "sort_parent_id": None,
+                    "weight": 10000,
+                    "change_recommendations_id": [],
+                },
+                "agenda/item:1": {
+                    "id": 1,
+                    "item_number": "",
+                    "title_information": {
+                        "title": "test_title_OoCoo3MeiT9li5Iengu9",
+                        "identifier": "1",
+                    },
+                    "comment": None,
+                    "closed": False,
+                    "type": 3,
+                    "is_internal": False,
+                    "is_hidden": True,
+                    "duration": None,
+                    "content_object": {"collection": "motions/motion", "id": 1},
+                    "weight": 10000,
+                    "parent_id": None,
+                    "level": 0,
+                },
+            },
+        )
+        self.assertEqual(deleted_autoupdate, [])
         self.assertEqual(motion.title, "test_title_OoCoo3MeiT9li5Iengu9")
         self.assertEqual(motion.identifier, "1")
         self.assertTrue(motion.submitters.exists())

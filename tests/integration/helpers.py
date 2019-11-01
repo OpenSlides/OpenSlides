@@ -1,8 +1,5 @@
 from typing import Any, Dict, List
 
-from django.db import DEFAULT_DB_ALIAS, connections
-from django.test.utils import CaptureQueriesContext
-
 from openslides.core.config import config
 from openslides.core.models import Projector
 from openslides.users.models import User
@@ -116,20 +113,6 @@ async def slide2(
 
 register_projector_slide("test/slide1", slide1)
 register_projector_slide("test/slide2", slide2)
-
-
-def count_queries(func, *args, **kwargs) -> int:
-    context = CaptureQueriesContext(connections[DEFAULT_DB_ALIAS])
-    with context:
-        func(*args, **kwargs)
-
-    queries = "\n".join(
-        f"{i}. {query['sql']}"
-        for i, query in enumerate(context.captured_queries, start=1)
-    )
-
-    print(f"{len(context)} queries executed\nCaptured queries were:\n{queries}")
-    return len(context)
 
 
 def all_data_config() -> AllData:
