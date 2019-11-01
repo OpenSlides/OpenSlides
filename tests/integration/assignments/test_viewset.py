@@ -9,9 +9,8 @@ from openslides.assignments.models import Assignment
 from openslides.core.models import Tag
 from openslides.mediafiles.models import Mediafile
 from openslides.utils.autoupdate import inform_changed_data
+from tests.count_queries import count_queries
 from tests.test_case import TestCase
-
-from ..helpers import count_queries
 
 
 @pytest.mark.django_db(transaction=False)

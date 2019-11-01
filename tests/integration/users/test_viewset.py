@@ -8,6 +8,7 @@ from rest_framework.test import APIClient
 from openslides.core.config import config
 from openslides.users.models import Group, PersonalNote, User
 from openslides.utils.autoupdate import inform_changed_data
+from tests.count_queries import count_queries
 from tests.test_case import TestCase
 
 from ...common_groups import (
@@ -16,7 +17,6 @@ from ...common_groups import (
     GROUP_DELEGATE_PK,
     GROUP_STAFF_PK,
 )
-from ..helpers import count_queries
 
 
 @pytest.mark.django_db(transaction=False)
