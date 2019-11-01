@@ -352,6 +352,7 @@ class UserViewSet(ModelViewSet):
                 serializer.is_valid(raise_exception=True)
             except ValidationError:
                 # Skip invalid users.
+
                 continue
             data = serializer.prepare_password(serializer.data)
             groups = data["groups_id"]
@@ -364,7 +365,7 @@ class UserViewSet(ModelViewSet):
             if "importTrackId" in user:
                 imported_track_ids.append(user["importTrackId"])
 
-        # Now infom all clients and send a response
+        # Now inform all clients and send a response
         inform_changed_data(created_users)
         return Response(
             {

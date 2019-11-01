@@ -12,11 +12,11 @@ import { UserRepositoryService } from 'app/core/repositories/users/user-reposito
 import { BaseImportService, NewEntry } from 'app/core/ui-services/base-import.service';
 import { Tag } from 'app/shared/models/core/tag';
 import { Category } from 'app/shared/models/motions/category';
+import { Motion } from 'app/shared/models/motions/motion';
 import { MotionBlock } from 'app/shared/models/motions/motion-block';
 import { CreateMotion } from '../models/create-motion';
+import { CsvMapping, ImportCreateMotion } from '../models/import-create-motion';
 import { motionExportOnly, motionImportExportHeaderOrder } from '../motions.constants';
-import { CsvMapping, ViewCsvCreateMotion } from '../models/view-csv-create-motion';
-import { ViewMotion } from '../models/view-motion';
 
 /**
  * Service for motion imports
@@ -24,7 +24,7 @@ import { ViewMotion } from '../models/view-motion';
 @Injectable({
     providedIn: 'root'
 })
-export class MotionImportService extends BaseImportService<ViewMotion> {
+export class MotionImportService extends BaseImportService<Motion> {
     /**
      * List of possible errors and their verbose explanation
      */
@@ -104,8 +104,8 @@ export class MotionImportService extends BaseImportService<ViewMotion> {
      * @param line
      * @returns a new Entry representing a Motion
      */
-    public mapData(line: string): NewEntry<ViewMotion> {
-        const newEntry = new ViewCsvCreateMotion(new CreateMotion());
+    public mapData(line: string): NewEntry<Motion> {
+        const newEntry = new ImportCreateMotion(new CreateMotion());
         const headerLength = Math.min(this.expectedHeader.length, line.length);
         for (let idx = 0; idx < headerLength; idx++) {
             switch (this.expectedHeader[idx]) {
@@ -122,11 +122,11 @@ export class MotionImportService extends BaseImportService<ViewMotion> {
                     newEntry.csvTags = this.getTags(line[idx]);
                     break;
                 default:
-                    newEntry.motion[this.expectedHeader[idx]] = line[idx];
+                    newEntry[this.expectedHeader[idx]] = line[idx];
             }
         }
         const hasDuplicates = this.repo.getViewModelList().some(motion => motion.identifier === newEntry.identifier);
-        const entry: NewEntry<ViewMotion> = {
+        const entry: NewEntry<Motion> = {
             newEntry: newEntry,
             hasDuplicates: hasDuplicates,
             status: hasDuplicates ? 'error' : 'new',
@@ -157,31 +157,31 @@ export class MotionImportService extends BaseImportService<ViewMotion> {
             if (entry.status !== 'new') {
                 continue;
             }
-            const openBlocks = (entry.newEntry as ViewCsvCreateMotion).solveMotionBlocks(this.newMotionBlocks);
+            const openBlocks = (entry.newEntry as ImportCreateMotion).solveMotionBlocks(this.newMotionBlocks);
             if (openBlocks) {
                 this.setError(entry, 'MotionBlock');
                 this.updatePreview();
                 continue;
             }
-            const openCategories = (entry.newEntry as ViewCsvCreateMotion).solveCategory(this.newCategories);
+            const openCategories = (entry.newEntry as ImportCreateMotion).solveCategory(this.newCategories);
             if (openCategories) {
                 this.setError(entry, 'Category');
                 this.updatePreview();
                 continue;
             }
-            const openUsers = (entry.newEntry as ViewCsvCreateMotion).solveSubmitters(this.newSubmitters);
+            const openUsers = (entry.newEntry as ImportCreateMotion).solveSubmitters(this.newSubmitters);
             if (openUsers) {
                 this.setError(entry, 'Submitters');
                 this.updatePreview();
                 continue;
             }
-            const openTags = (entry.newEntry as ViewCsvCreateMotion).solveTags(this.newTags);
+            const openTags = (entry.newEntry as ImportCreateMotion).solveTags(this.newTags);
             if (openTags) {
                 this.setError(entry, 'Tags');
                 this.updatePreview();
                 continue;
             }
-            await this.repo.create((entry.newEntry as ViewCsvCreateMotion).motion);
+            await this.repo.create(entry.newEntry as ImportCreateMotion);
             entry.status = 'done';
         }
         this.updatePreview();

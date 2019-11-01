@@ -14,4 +14,13 @@ export class CreateTopic extends Topic {
     public constructor(input?: any) {
         super(input);
     }
+
+    /**
+     * Checks if the CreateTopic is valid. Currently only requires an existing title
+     *
+     * @returns true if it is a valid Topic
+     */
+    public get isValid(): boolean {
+        return this.title ? true : false;
+    }
 }

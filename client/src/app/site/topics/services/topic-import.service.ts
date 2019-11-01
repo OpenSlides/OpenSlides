@@ -8,18 +8,17 @@ import { TopicRepositoryService } from 'app/core/repositories/topics/topic-repos
 import { BaseImportService, NewEntry } from 'app/core/ui-services/base-import.service';
 import { DurationService } from 'app/core/ui-services/duration.service';
 import { ItemVisibilityChoices } from 'app/shared/models/agenda/item';
-import { ViewCreateTopic } from 'app/site/topics/models/view-create-topic';
-import { CreateTopic } from '../../topics/models/create-topic';
+import { CreateTopic } from '../models/create-topic';
 
 @Injectable({
     providedIn: 'root'
 })
-export class AgendaImportService extends BaseImportService<ViewCreateTopic> {
+export class TopicImportService extends BaseImportService<CreateTopic> {
     /**
      * Helper for mapping the expected header in a typesafe way. Values will be passed to
      * {@link expectedHeader}
      */
-    public headerMap: (keyof ViewCreateTopic)[] = ['title', 'text', 'duration', 'comment', 'type'];
+    public headerMap: (keyof CreateTopic)[] = ['title', 'text', 'agenda_duration', 'agenda_comment', 'agenda_type'];
 
     /**
      * The minimimal number of header entries needed to successfully create an entry
@@ -31,7 +30,7 @@ export class AgendaImportService extends BaseImportService<ViewCreateTopic> {
      */
     public errorList = {
         NoTitle: 'A Topic needs a title',
-        Duplicates: 'A topic tiwh this title already exists',
+        Duplicates: 'A topic with this title already exists',
         ParsingErrors: 'Some csv values could not be read correctly.'
     };
 
@@ -67,17 +66,17 @@ export class AgendaImportService extends BaseImportService<ViewCreateTopic> {
      * @param line a line extracted by the CSV (without the header)
      * @returns a new entry for a Topic
      */
-    public mapData(line: string): NewEntry<ViewCreateTopic> {
-        const newEntry = new ViewCreateTopic(new CreateTopic());
+    public mapData(line: string): NewEntry<CreateTopic> {
+        const newEntry = new CreateTopic();
         const headerLength = Math.min(this.expectedHeader.length, line.length);
         let hasErrors = false;
         for (let idx = 0; idx < headerLength; idx++) {
             switch (this.expectedHeader[idx]) {
-                case 'duration':
+                case 'agenda_duration':
                     try {
                         const duration = this.parseDuration(line[idx]);
                         if (duration > 0) {
-                            newEntry.duration = duration;
+                            newEntry.agenda_duration = duration;
                         }
                     } catch (e) {
                         if (e instanceof TypeError) {
@@ -86,9 +85,9 @@ export class AgendaImportService extends BaseImportService<ViewCreateTopic> {
                         }
                     }
                     break;
-                case 'type':
+                case 'agenda_type':
                     try {
-                        newEntry.type = this.parseType(line[idx]);
+                        newEntry.agenda_type = this.parseType(line[idx]);
                     } catch (e) {
                         if (e instanceof TypeError) {
                             hasErrors = true;
@@ -103,10 +102,10 @@ export class AgendaImportService extends BaseImportService<ViewCreateTopic> {
         const hasDuplicates = this.repo.getViewModelList().some(topic => topic.title === newEntry.title);
 
         // set type to 'public' if none is given in import
-        if (!newEntry.type) {
-            newEntry.type = 1;
+        if (!newEntry.agenda_type) {
+            newEntry.agenda_type = 1;
         }
-        const mappedEntry: NewEntry<ViewCreateTopic> = {
+        const mappedEntry: NewEntry<CreateTopic> = {
             newEntry: newEntry,
             hasDuplicates: hasDuplicates,
             status: 'new',
@@ -133,7 +132,7 @@ export class AgendaImportService extends BaseImportService<ViewCreateTopic> {
             if (entry.status !== 'new') {
                 continue;
             }
-            await this.repo.create(entry.newEntry.topic);
+            await this.repo.create(entry.newEntry);
             entry.status = 'done';
         }
         this.updatePreview();
@@ -183,7 +182,7 @@ export class AgendaImportService extends BaseImportService<ViewCreateTopic> {
      * @param data a string as produced by textArea input
      */
     public parseTextArea(data: string): void {
-        const newEntries: NewEntry<ViewCreateTopic>[] = [];
+        const newEntries: NewEntry<CreateTopic>[] = [];
         this.clearData();
         this.clearPreview();
         const lines = data.split('\n');
@@ -191,14 +190,14 @@ export class AgendaImportService extends BaseImportService<ViewCreateTopic> {
             if (!line.length) {
                 return;
             }
-            const newTopic = new ViewCreateTopic(
+            const newTopic = new CreateTopic(
                 new CreateTopic({
                     title: line,
                     agenda_type: 1 // set type to 'public item' by default
                 })
             );
             const hasDuplicates = this.repo.getViewModelList().some(topic => topic.title === newTopic.title);
-            const newEntry: NewEntry<ViewCreateTopic> = {
+            const newEntry: NewEntry<CreateTopic> = {
                 newEntry: newTopic,
                 hasDuplicates: hasDuplicates,
                 status: 'new',

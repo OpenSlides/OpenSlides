@@ -209,9 +209,9 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User, UserTi
      *
      * @param newEntries
      */
-    public async bulkCreate(newEntries: NewEntry<ViewUser>[]): Promise<number[]> {
+    public async bulkCreate(newEntries: NewEntry<User>[]): Promise<number[]> {
         const data = newEntries.map(entry => {
-            return { ...entry.newEntry.user, importTrackId: entry.importTrackId };
+            return { ...entry.newEntry, importTrackId: entry.importTrackId };
         });
         const response = (await this.httpService.post(`/rest/users/user/mass_import/`, { users: data })) as {
             detail: string;

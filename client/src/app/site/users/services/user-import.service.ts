@@ -9,18 +9,17 @@ import { UserRepositoryService } from 'app/core/repositories/users/user-reposito
 import { BaseImportService, NewEntry } from 'app/core/ui-services/base-import.service';
 import { Group } from 'app/shared/models/users/group';
 import { User } from 'app/shared/models/users/user';
-import { CsvMapping, ViewCsvCreateUser } from '../models/view-csv-create-user';
-import { ViewUser } from '../models/view-user';
+import { CsvMapping, ImportCreateUser } from '../models/import-create-user';
 
 @Injectable({
     providedIn: 'root'
 })
-export class UserImportService extends BaseImportService<ViewUser> {
+export class UserImportService extends BaseImportService<User> {
     /**
      * Helper for mapping the expected header in a typesafe way. Values and order
      * will be passed to {@link expectedHeader}
      */
-    public headerMap: (keyof ViewCsvCreateUser)[] = [
+    public headerMap: (keyof ImportCreateUser)[] = [
         'title',
         'first_name',
         'last_name',
@@ -32,7 +31,9 @@ export class UserImportService extends BaseImportService<ViewUser> {
         'is_present',
         'is_committee',
         'default_password',
-        'email'
+        'email',
+        'username',
+        'gender'
     ];
 
     /**
@@ -91,8 +92,8 @@ export class UserImportService extends BaseImportService<ViewUser> {
      * @param line
      * @returns a new entry representing an User
      */
-    public mapData(line: string): NewEntry<ViewUser> {
-        const newViewUser = new ViewCsvCreateUser(new User());
+    public mapData(line: string): NewEntry<User> {
+        const newViewUser = new ImportCreateUser();
         const headerLength = Math.min(this.expectedHeader.length, line.length);
         let hasErrors = false;
         for (let idx = 0; idx < headerLength; idx++) {
@@ -104,7 +105,7 @@ export class UserImportService extends BaseImportService<ViewUser> {
                 case 'is_committee':
                 case 'is_present':
                     try {
-                        newViewUser.user[this.expectedHeader[idx]] = this.toBoolean(line[idx]);
+                        newViewUser[this.expectedHeader[idx]] = this.toBoolean(line[idx]);
                     } catch (e) {
                         if (e instanceof TypeError) {
                             console.log(e);
@@ -114,10 +115,10 @@ export class UserImportService extends BaseImportService<ViewUser> {
                     }
                     break;
                 case 'number':
-                    newViewUser.user.number = line[idx];
+                    newViewUser.number = line[idx];
                     break;
                 default:
-                    newViewUser.user[this.expectedHeader[idx]] = line[idx];
+                    newViewUser[this.expectedHeader[idx]] = line[idx];
                     break;
             }
         }
@@ -136,13 +137,13 @@ export class UserImportService extends BaseImportService<ViewUser> {
      */
     public async doImport(): Promise<void> {
         this.newGroups = await this.createNewGroups();
-        const importUsers: NewEntry<ViewUser>[] = [];
+        const importUsers: NewEntry<User>[] = [];
         let trackId = 1;
         for (const entry of this.entries) {
             if (entry.status !== 'new') {
                 continue;
             }
-            const openBlocks = (entry.newEntry as ViewCsvCreateUser).solveGroups(this.newGroups);
+            const openBlocks = (entry.newEntry as ImportCreateUser).solveGroups(this.newGroups);
             if (openBlocks) {
                 this.setError(entry, 'Group');
                 this.updatePreview();
@@ -245,7 +246,7 @@ export class UserImportService extends BaseImportService<ViewUser> {
      * @param data a string as produced by textArea input
      */
     public parseTextArea(data: string): void {
-        const newEntries: NewEntry<ViewUser>[] = [];
+        const newEntries: NewEntry<User>[] = [];
         this.clearData();
         this.clearPreview();
         const lines = data.split('\n');
@@ -254,7 +255,7 @@ export class UserImportService extends BaseImportService<ViewUser> {
                 return;
             }
             const nameSchema = line.includes(',') ? 'lastCommaFirst' : 'firstSpaceLast';
-            const newUser = new ViewCsvCreateUser(this.repo.parseUserString(line, nameSchema));
+            const newUser = new ImportCreateUser(this.repo.parseUserString(line, nameSchema));
             const newEntry = this.userToEntry(newUser);
             newEntries.push(newEntry);
         });
@@ -267,15 +268,17 @@ export class UserImportService extends BaseImportService<ViewUser> {
      * @param newUser
      * @returns a NewEntry with duplicate/error information
      */
-    private userToEntry(newUser: ViewCsvCreateUser): NewEntry<ViewUser> {
-        const newEntry: NewEntry<ViewUser> = {
+    private userToEntry(newUser: ImportCreateUser): NewEntry<User> {
+        const newEntry: NewEntry<User> = {
             newEntry: newUser,
             hasDuplicates: false,
             status: 'new',
             errors: []
         };
         if (newUser.isValid) {
-            newEntry.hasDuplicates = this.repo.getViewModelList().some(user => user.full_name === newUser.full_name);
+            newEntry.hasDuplicates = this.repo
+                .getViewModelList()
+                .some(user => user.full_name === this.repo.getFullName(newUser));
             if (newEntry.hasDuplicates) {
                 this.setError(newEntry, 'Duplicates');
             }

@@ -8,15 +8,15 @@ import { TranslateService } from '@ngx-translate/core';
 import { auditTime } from 'rxjs/operators';
 
 import { BaseImportService, NewEntry, ValueLabelCombination } from 'app/core/ui-services/base-import.service';
+import { BaseModel } from 'app/shared/models/base/base-model';
 import { getLongPreview, getShortPreview } from 'app/shared/utils/previewStrings';
 import { BaseViewComponent } from './base-view';
-import { BaseViewModel } from './base-view-model';
 
-export abstract class BaseImportListComponent<V extends BaseViewModel> extends BaseViewComponent implements OnInit {
+export abstract class BaseImportListComponent<M extends BaseModel> extends BaseViewComponent implements OnInit {
     /**
      * The data source for a table. Requires to be initialised with a BaseViewModel
      */
-    public dataSource: MatTableDataSource<NewEntry<V>>;
+    public dataSource: MatTableDataSource<NewEntry<M>>;
 
     /**
      * Helper function for previews
@@ -48,7 +48,7 @@ export abstract class BaseImportListComponent<V extends BaseViewModel> extends B
      * The table itself
      */
     @ViewChild(MatTable, { static: false })
-    protected table: MatTable<NewEntry<V>>;
+    protected table: MatTable<NewEntry<M>>;
 
     /**
      * @returns the amount of total item successfully parsed
@@ -112,7 +112,7 @@ export abstract class BaseImportListComponent<V extends BaseViewModel> extends B
      */
 
     public constructor(
-        protected importer: BaseImportService<V>,
+        protected importer: BaseImportService<M>,
         titleService: Title,
         translate: TranslateService,
         matSnackBar: MatSnackBar
@@ -204,7 +204,7 @@ export abstract class BaseImportListComponent<V extends BaseViewModel> extends B
      * @param row a newEntry object with a current status
      * @returns a css class name
      */
-    public getStateClass(row: NewEntry<V>): string {
+    public getStateClass(row: NewEntry<M>): string {
         switch (row.status) {
             case 'done':
                 return 'import-done import-decided';
@@ -220,7 +220,7 @@ export abstract class BaseImportListComponent<V extends BaseViewModel> extends B
      * @param entry a newEntry object with a current status
      * @eturn the icon for the action of the item
      */
-    public getActionIcon(entry: NewEntry<V>): string {
+    public getActionIcon(entry: NewEntry<M>): string {
         switch (entry.status) {
             case 'error': // no import possible
                 return 'block';
@@ -286,7 +286,7 @@ export abstract class BaseImportListComponent<V extends BaseViewModel> extends B
      * @param error An error as defined as key of {@link errorList}
      * @returns true if the error is present in the entry described in the row
      */
-    public hasError(row: NewEntry<V>, error: string): boolean {
+    public hasError(row: NewEntry<M>, error: string): boolean {
         return this.importer.hasError(row, error);
     }
 }

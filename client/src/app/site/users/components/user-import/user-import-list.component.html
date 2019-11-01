@@ -12,6 +12,7 @@
     <mat-tab-group (selectedTabChange)="onTabChange()">
         <!-- textarea import tab -->
         <mat-tab label="{{ 'Text import' | translate }}">
+            <br>
             <div [formGroup]="textAreaForm">
                 <div>
                     <span translate> Copy and paste your participant names in this textbox.</span>
@@ -36,19 +37,20 @@
         </mat-tab>
         <!-- CSV import tab -->
         <mat-tab label="{{ 'CSV import' | translate }}">
+            <br>
             <span translate
                 >Required comma or semicolon separated values with these column header names in the first row:</span
-            >: <br />
+            ><br />
             <div class="code red-warning-text">
-                <span translate>Title</span>, <span translate>Given name</span>, <span translate>Surname</span> ,
+                <span translate>Title</span>, <span translate>Given name</span>, <span translate>Surname</span>,
                 <span translate>Structure level</span>, <span translate>Participant number</span>,
-                <span translate>Groups</span> , <span translate>Comment</span>, <span translate>Is active</span>,
-                <span translate>Is present</span> , <span translate>Is committee</span>,
-                <span translate>Initial password</span>, <span translate>Email</span>
+                <span translate>Groups</span>, <span translate>Comment</span>, <span translate>Is active</span>,
+                <span translate>Is present</span>, <span translate>Is committee</span>, <span translate>Initial password</span>,
+                <span translate>Email</span>, <span translate>Username</span>, <span translate>Gender</span>
             </div>
             <ul>
                 <li translate>
-                    At least given name or surname have to be filled in. All other fields are optional and may be empty.
+                    One of given name, surname and username has to be filled in. All other fields are optional and may be empty.
                 </li>
                 <li translate>
                     Additional columns after the required ones may be present and won't affect the import.
@@ -224,7 +226,7 @@
 
             <ng-container matColumnDef="number">
                 <mat-header-cell *matHeaderCellDef translate>Participant number</mat-header-cell>
-                <mat-cell *matCellDef="let entry"> {{ entry.newEntry.user.number }} </mat-cell>
+                <mat-cell *matCellDef="let entry"> {{ entry.newEntry.number }} </mat-cell>
             </ng-container>
 
             <!-- groups column -->
@@ -276,6 +278,14 @@
             <ng-container matColumnDef="email">
                 <mat-header-cell *matHeaderCellDef translate>Email</mat-header-cell>
                 <mat-cell *matCellDef="let entry"> {{ entry.newEntry.email }} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="username">
+                <mat-header-cell *matHeaderCellDef translate>Username</mat-header-cell>
+                <mat-cell *matCellDef="let entry"> {{ entry.newEntry.username }} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="gender">
+                <mat-header-cell *matHeaderCellDef translate>Gender</mat-header-cell>
+                <mat-cell *matCellDef="let entry"> {{ entry.newEntry.gender }} </mat-cell>
             </ng-container>
 
             <mat-header-row *matHeaderRowDef="getColumnDefinition()"></mat-header-row>

@@ -5,7 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Papa, ParseConfig } from 'ngx-papaparse';
 import { BehaviorSubject, Observable } from 'rxjs';
 
-import { BaseViewModel } from 'app/site/base/base-view-model';
+import { BaseModel } from 'app/shared/models/base/base-model';
 
 /**
  * Interface for value- Label combinations.
@@ -53,7 +53,7 @@ type CsvImportStatus = 'new' | 'error' | 'done';
 @Injectable({
     providedIn: 'root'
 })
-export abstract class BaseImportService<V extends BaseViewModel> {
+export abstract class BaseImportService<M extends BaseModel> {
     /**
      * List of possible errors and their verbose explanation
      */
@@ -127,12 +127,12 @@ export abstract class BaseImportService<V extends BaseViewModel> {
     /**
      * the list of parsed models that have been extracted from the opened file
      */
-    private _entries: NewEntry<V>[] = [];
+    private _entries: NewEntry<M>[] = [];
 
     /**
      * BehaviorSubject for displaying a preview for the currently selected entries
      */
-    public newEntries = new BehaviorSubject<NewEntry<V>[]>([]);
+    public newEntries = new BehaviorSubject<NewEntry<M>[]>([]);
 
     /**
      * Emits an error string to display if a file import cannot be done
@@ -159,7 +159,7 @@ export abstract class BaseImportService<V extends BaseViewModel> {
      * Returns the current entries. For internal use in extending classes, as it
      * might not be filled with data at all times (see {@link newEntries} for a BehaviorSubject)
      */
-    protected get entries(): NewEntry<V>[] {
+    protected get entries(): NewEntry<M>[] {
         return this._entries;
     }
 
@@ -220,7 +220,7 @@ export abstract class BaseImportService<V extends BaseViewModel> {
      *
      * @param entries: an array of prepared newEntry objects
      */
-    public setParsedEntries(entries: NewEntry<V>[]): void {
+    public setParsedEntries(entries: NewEntry<M>[]): void {
         this.clearData();
         this.clearPreview();
         if (!entries) {
@@ -236,7 +236,7 @@ export abstract class BaseImportService<V extends BaseViewModel> {
      * returning a new entry object
      * @param line a line extracted by the CSV (not including the header)
      */
-    public abstract mapData(line: string): NewEntry<V>;
+    public abstract mapData(line: string): NewEntry<M>;
 
     /**
      * Trigger for executing the import.
@@ -279,7 +279,7 @@ export abstract class BaseImportService<V extends BaseViewModel> {
      *
      * @returns an observable BehaviorSubject
      */
-    public getNewEntries(): Observable<NewEntry<V>[]> {
+    public getNewEntries(): Observable<NewEntry<M>[]> {
         return this.newEntries.asObservable();
     }
 
@@ -357,7 +357,7 @@ export abstract class BaseImportService<V extends BaseViewModel> {
     /**
      * set a list of short names for error, indicating which column failed
      */
-    public setError(entry: NewEntry<V>, error: string): void {
+    public setError(entry: NewEntry<M>, error: string): void {
         if (this.errorList.hasOwnProperty(error)) {
             if (!entry.errors) {
                 entry.errors = [error];
@@ -385,7 +385,7 @@ export abstract class BaseImportService<V extends BaseViewModel> {
      * @param error The error to check for
      * @returns true if the error is present
      */
-    public hasError(entry: NewEntry<V>, error: string): boolean {
+    public hasError(entry: NewEntry<M>, error: string): boolean {
         return entry.errors.includes(error);
     }
 }
