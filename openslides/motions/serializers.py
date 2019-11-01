@@ -5,6 +5,9 @@ from openslides.poll.serializers import (
     BASE_OPTION_FIELDS,
     BASE_POLL_FIELDS,
     BASE_VOTE_FIELDS,
+    BaseOptionSerializer,
+    BasePollSerializer,
+    BaseVoteSerializer,
 )
 
 from ..core.config import config
@@ -13,7 +16,6 @@ from ..utils.autoupdate import inform_changed_data
 from ..utils.rest_api import (
     BooleanField,
     CharField,
-    DecimalField,
     Field,
     IdPrimaryKeyRelatedField,
     IntegerField,
@@ -224,53 +226,26 @@ class AmendmentParagraphsJSONSerializerField(Field):
         return data
 
 
-class MotionVoteSerializer(ModelSerializer):
-    pollstate = SerializerMethodField()
-
+class MotionVoteSerializer(BaseVoteSerializer):
     class Meta:
         model = MotionVote
-        fields = ("pollstate",) + BASE_VOTE_FIELDS
+        fields = BASE_VOTE_FIELDS
         read_only_fields = BASE_VOTE_FIELDS
 
-    def get_pollstate(self, vote):
-        return vote.option.poll.state
 
-
-class MotionOptionSerializer(ModelSerializer):
-    yes = DecimalField(max_digits=15, decimal_places=6, min_value=-2, read_only=True)
-    no = DecimalField(max_digits=15, decimal_places=6, min_value=-2, read_only=True)
-    abstain = DecimalField(
-        max_digits=15, decimal_places=6, min_value=-2, read_only=True
-    )
-
+class MotionOptionSerializer(BaseOptionSerializer):
     class Meta:
         model = MotionOption
         fields = BASE_OPTION_FIELDS
         read_only_fields = BASE_OPTION_FIELDS
 
 
-class MotionPollSerializer(ModelSerializer):
+class MotionPollSerializer(BasePollSerializer):
     """
     Serializer for motion.models.MotionPoll objects.
     """
 
     options = MotionOptionSerializer(many=True, read_only=True)
-
-    title = CharField(allow_blank=False, required=True)
-    groups = IdPrimaryKeyRelatedField(
-        many=True, required=False, queryset=get_group_model().objects.all()
-    )
-    voted = IdPrimaryKeyRelatedField(many=True, read_only=True)
-
-    votesvalid = DecimalField(
-        max_digits=15, decimal_places=6, min_value=-2, read_only=True
-    )
-    votesinvalid = DecimalField(
-        max_digits=15, decimal_places=6, min_value=-2, read_only=True
-    )
-    votescast = DecimalField(
-        max_digits=15, decimal_places=6, min_value=-2, read_only=True
-    )
 
     class Meta:
         model = MotionPoll
@@ -278,9 +253,19 @@ class MotionPollSerializer(ModelSerializer):
         read_only_fields = ("state",)
 
     def update(self, instance, validated_data):
-        """ Prevent from updating the motion """
+        """ Prevent updating the motion """
         validated_data.pop("motion", None)
         return super().update(instance, validated_data)
+
+    def norm_100_percent_base_to_pollmethod(
+        self, onehundred_percent_base, pollmethod, old_100_percent_base=None
+    ):
+        if (
+            pollmethod == MotionPoll.POLLMETHOD_YN
+            and onehundred_percent_base == MotionPoll.PERCENT_BASE_YNA
+        ):
+            return MotionPoll.PERCENT_BASE_YN
+        return None
 
 
 class MotionChangeRecommendationSerializer(ModelSerializer):

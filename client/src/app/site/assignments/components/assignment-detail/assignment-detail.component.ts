@@ -189,7 +189,7 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
             attachments_id: [],
             title: ['', Validators.required],
             description: [''],
-            poll_description_default: [''],
+            default_poll_description: [''],
             open_posts: [1, [Validators.required, Validators.min(1)]],
             agenda_create: [''],
             agenda_parent_id: [],

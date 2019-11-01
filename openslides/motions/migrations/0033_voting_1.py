@@ -81,6 +81,37 @@ class Migration(migrations.Migration):
             name="voted",
             field=models.ManyToManyField(blank=True, to=settings.AUTH_USER_MODEL),
         ),
+        migrations.AddField(
+            model_name="motionpoll",
+            name="majority_method",
+            field=models.CharField(
+                choices=[
+                    ("simple", "Simple majority"),
+                    ("two_thirds", "Two-thirds majority"),
+                    ("three_quarters", "Three-quarters majority"),
+                    ("disabled", "Disabled"),
+                ],
+                default="",
+                max_length=14,
+            ),
+            preserve_default=False,
+        ),
+        migrations.AddField(
+            model_name="motionpoll",
+            name="onehundred_percent_base",
+            field=models.CharField(
+                choices=[
+                    ("YN", "Yes/No per candidate"),
+                    ("YNA", "Yes/No/Abstain per candidate"),
+                    ("valid", "All valid ballots"),
+                    ("cast", "All casted ballots"),
+                    ("disabled", "Disabled (no percents)"),
+                ],
+                default="",
+                max_length=8,
+            ),
+            preserve_default=False,
+        ),
         migrations.AlterField(
             model_name="motionvote",
             name="option",
