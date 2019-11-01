@@ -16,10 +16,10 @@ from openslides.motions.models import Motion
 from openslides.topics.models import Topic
 from openslides.users.models import Group
 from openslides.utils.autoupdate import inform_changed_data
+from tests.count_queries import count_queries
 from tests.test_case import TestCase
 
 from ...common_groups import GROUP_DEFAULT_PK
-from ..helpers import count_queries
 
 
 class ContentObjects(TestCase):

@@ -5,9 +5,8 @@ from rest_framework import status
 from rest_framework.test import APIClient
 
 from openslides.mediafiles.models import Mediafile
+from tests.count_queries import count_queries
 from tests.test_case import TestCase
-
-from ..helpers import count_queries
 
 
 @pytest.mark.django_db(transaction=False)

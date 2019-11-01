@@ -4,9 +4,8 @@ from rest_framework import status
 
 from openslides.agenda.models import Item
 from openslides.topics.models import Topic
+from tests.count_queries import count_queries
 from tests.test_case import TestCase
-
-from ..helpers import count_queries
 
 
 @pytest.mark.django_db(transaction=False)
