@@ -11,10 +11,10 @@
             <mat-icon *ngIf="this.projector.isReferenceProjector">star</mat-icon>
             <mat-icon *ngIf="!this.projector.isReferenceProjector">star_border</mat-icon>
         </button>
-        <button mat-icon-button (click)="editProjector()" matTooltip="{{ 'Edit this projector' | translate }}">
+        <button mat-icon-button (click)="editProjector()" matTooltip="{{ 'Edit projector' | translate }}">
             <mat-icon>edit</mat-icon>
         </button>
-        <button mat-icon-button color="warn" (click)="onDeleteButton()" matTooltip="{{ 'Deletes this projector' | translate }}">
+        <button mat-icon-button color="warn" (click)="onDeleteButton()" matTooltip="{{ 'Delete projector' | translate }}">
             <mat-icon>delete</mat-icon>
         </button>
     </ng-container>

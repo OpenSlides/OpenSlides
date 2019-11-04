@@ -203,6 +203,9 @@ msgstr "Es wurde eine E-Mail mit Link zum Passwort-Zurücksetzen gesendet."
 msgid "An unknown error occurred."
 msgstr "Ein unbekannter Fehler ist aufgetreten."
 
+msgid "Apply"
+msgstr "Übernehmen"
+
 msgid "Arabic"
 msgstr "Arabisch"
 
@@ -268,6 +271,10 @@ msgstr "Soll diese/r Teilnehmende wirklich gelöscht werden?"
 msgid "Are you sure you want to delete this projector?"
 msgstr "Soll dieser Projektor wirklich gelöscht werden?"
 
+msgid ""
+"Are you sure you want to delete this speaker from this list of speakers?"
+msgstr "Soll diese/r Redner/in von der Redeliste wirklich entfernt werden?"
+
 msgid "Are you sure you want to delete this statute paragraph?"
 msgstr "Soll dieser Satzungsabschnitt wirklich gelöscht werden?"
 
@@ -315,6 +322,20 @@ msgid "Are you sure you want to renumber all motions of this category?"
 msgstr ""
 "Sollen alle Anträge dieses Sachgebiets wirklich neu nummeriert werden?"
 
+msgid ""
+"Are you sure you want to reset all options to factory defaults? All changes "
+"of this settings group will be lost!"
+msgstr ""
+"Wollen Sie wirklich alle Werte auf Werkseinstellungen zurücksetzen? Alle "
+"Änderungen auf dieser Einstellungsseite gehen verloren!"
+
+msgid ""
+"Are you sure you want to reset all options to factory defaults? Changes of "
+"all settings group will be lost!"
+msgstr ""
+"Wollen Sie wirklich alle Werte auf Werkseinstellungen zurücksetzen? "
+"Änderungen in allen Einstellungsrubriken gehen verloren!"
+
 msgid "Are you sure you want to reset all passwords to the default ones?"
 msgstr ""
 "Sollen wirklich alle Passwörter auf die initialen Passwörter zurückgesetzt "
@@ -357,9 +378,6 @@ msgstr "Zurück"
 
 msgid "Back to login"
 msgstr "Zurück zur Anmeldung"
-
-msgid "Background color"
-msgstr "Hintergrundfarbe"
 
 msgid "Ballot"
 msgstr "Wahlgang"
@@ -562,12 +580,6 @@ msgstr "Zum Deaktivieren des Unterstützersystems '0' eingeben."
 msgid "Chyron"
 msgstr "Bauchbinde"
 
-msgid "Chyron background color"
-msgstr "Hintergrundfarbe Bauchbinde"
-
-msgid "Chyron font color"
-msgstr "Schriftfarbe Bauchbinde"
-
 msgid "Clear all"
 msgstr "Alle löschen"
 
@@ -713,6 +725,9 @@ msgstr "Voreingestellter Hinweis auf Stimmzettel"
 msgid "Default encoding for all csv exports"
 msgstr "Voreingestelltes Encoding für alle CSV-Exporte"
 
+msgid "Default group"
+msgstr "Vorgegebene Gruppen"
+
 msgid "Default line numbering"
 msgstr "Voreingestellte Zeilennummerierung"
 
@@ -750,6 +765,9 @@ msgstr "Beschluss-Druckvorlage löschen"
 
 msgid "Delete message"
 msgstr "Mitteilung löschen"
+
+msgid "Delete projector"
+msgstr "Projektor löschen"
 
 msgid "Delete recommendation"
 msgstr "Empfehlung löschen"
@@ -845,6 +863,9 @@ msgstr "Details bearbeiten"
 
 msgid "Edit details for"
 msgstr "Details bearbeiten für"
+
+msgid "Edit projector"
+msgstr "Projektor bearbeiten"
 
 msgid "Edit statute paragraph"
 msgstr "Satzungsabschnitt bearbeiten"
@@ -1045,9 +1066,6 @@ msgstr ""
 "gibt, ist 100% die Summe aller Stimmen von allen Kandidaten. Andernfalls ist"
 " 100% die Summe aller Stimmen pro Kandidat."
 
-msgid "Foreground color"
-msgstr "Vordergrundfarbe"
-
 msgid "Forgot Password?"
 msgstr "Passwort vergessen?"
 
@@ -1107,15 +1125,6 @@ msgstr "Hat Notizen"
 
 msgid "Has speakers"
 msgstr "Wortmeldungen vorhanden"
-
-msgid "Header background color"
-msgstr "Hintergrundfarbe Kopfbereich"
-
-msgid "Header font color"
-msgstr "Schriftfarbe Kopfbereich"
-
-msgid "Headline color"
-msgstr "Überschriftenfarbe"
 
 msgid "Help text for access data and welcome PDF"
 msgstr "Hilfetext für das Zugangsdaten- und Willkommens-PDF"
@@ -1242,6 +1251,9 @@ msgstr "Ungültige Zeilennummer"
 msgid "Invalid votes"
 msgstr "Ungültige Stimmen"
 
+msgid "Is SAML user"
+msgstr "Ist SAML-Nutzer"
+
 msgid "Is a committee"
 msgstr "Ist ein Gremium"
 
@@ -1343,6 +1355,9 @@ msgstr "Als Gast anmelden"
 
 msgid "Logout"
 msgstr "Abmelden"
+
+msgid "Main motion and line number"
+msgstr "Hauptantrag und Zeilennummer"
 
 msgid "Mark as elected"
 msgstr "Als gewählt markieren"
@@ -1702,6 +1717,9 @@ msgstr "OpenSlides ist vorübergehend auf folgenden Zeitpunkt zurückgesetzt:"
 msgid "Origin"
 msgstr "Herkunft"
 
+msgid "Original"
+msgstr "Original"
+
 msgid "Original version"
 msgstr "Originalfassung"
 
@@ -1919,6 +1937,9 @@ msgstr "Warteliste"
 msgid "Quorum"
 msgstr "Quorum"
 
+msgid "Re-add last speaker"
+msgstr "Letzte/n Redner/in zurückholen"
+
 msgid "Reason"
 msgstr "Begründung"
 
@@ -1936,9 +1957,6 @@ msgstr "Empfehlung gesetzt auf {arg1}"
 
 msgid "Refer to committee"
 msgstr "In Ausschuss verweisen"
-
-msgid "Reference projector for current list of speakers:"
-msgstr "Referenzprojektor für die aktuelle Redeliste:"
 
 msgid "Referral to committee"
 msgstr "Verweisung in Ausschuss"
@@ -2026,6 +2044,9 @@ msgstr "Empfehlung zurücksetzen"
 msgid "Reset state"
 msgstr "Status zurücksetzen"
 
+msgid "Reset to factory defaults"
+msgstr "Auf Werkseinstellung zurücksetzen"
+
 msgid "Resolution and size"
 msgstr "Auflösung und Größe"
 
@@ -2040,6 +2061,9 @@ msgstr "Römisch"
 
 msgid "Save"
 msgstr "Speichern"
+
+msgid "Save all changes"
+msgstr "Alle Änderungen speichern"
 
 msgid "Scan this QR code to connect to WLAN."
 msgstr "QR-Code scannen um sich mit dem WLAN zu verbinden."
@@ -2146,6 +2170,9 @@ msgstr "Empfehlung setzen"
 msgid "Set status"
 msgstr "Status setzen"
 
+msgid "Sets this projector as the reference for the current list of speakers"
+msgstr "Diesen Projektor als Referenz für die aktuelle Redeliste setzen."
+
 msgid "Settings"
 msgstr "Einstellungen"
 
@@ -2210,6 +2237,9 @@ msgid "Show submitters and recommendation in table of contents"
 msgstr ""
 "Antragsteller/in und Beschlussempfehlung im PDF-Inhaltsverzeichnis anzeigen"
 
+msgid "Show subtitles in the agenda"
+msgstr "Untertitel in der Tagesordnungsübersicht anzeigen"
+
 msgid "Show the sequential number for a motion"
 msgstr "Laufende Nummer von Anträgen anzeigen"
 
@@ -2242,6 +2272,9 @@ msgstr "Sachgebiete sortieren"
 
 msgid "Sort comments"
 msgstr "Kommentare sortieren"
+
+msgid "Sort list of speakers"
+msgstr "Redeliste sortieren"
 
 msgid "Sort motions"
 msgstr "Anträge sortieren"
@@ -2572,6 +2605,9 @@ msgstr "Abgegebene Stimmen"
 msgid "Touch the book icon to enter text"
 msgstr "Tippen Sie auf das Buch-Icon, um den Text zu bearbeiten."
 
+msgid "Translation"
+msgstr "Übersetzung"
+
 msgid "Two-thirds majority"
 msgstr "Zweidrittelmehrheit"
 
@@ -2761,6 +2797,9 @@ msgstr ""
 msgid "You do not have the required permission to see that page!"
 msgstr "Sie haben leider keine Berechtigung diese Seite zu sehen."
 
+msgid "You have to fill this field."
+msgstr "Sie müssen diese Feld ausfüllen."
+
 msgid "You made changes."
 msgstr "Sie haben Änderungen vorgenommen."
 
@@ -2769,6 +2808,12 @@ msgstr "Sie überschreiben hiermit das persönlich gesetzte Passwort!"
 
 msgid "Your password was resetted successfully!"
 msgstr "Ihr Passwort wurde erfolgreich zurückgesetzt!"
+
+msgid "Zoom in"
+msgstr "Vergrößern"
+
+msgid "Zoom out"
+msgstr "Verkleinern"
 
 msgid "[Begin speech] starts the countdown, [End speech] stops the countdown."
 msgstr ""
