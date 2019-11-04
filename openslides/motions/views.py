@@ -192,9 +192,7 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
         if isinstance(request.data, QueryDict):
             submitters_id = request.data.getlist("submitters_id")
         else:
-            submitters_id = request.data.get("submitters_id")
-            if submitters_id is None:
-                submitters_id = []
+            submitters_id = request.data.get("submitters_id", [])
         if not isinstance(submitters_id, list):
             raise ValidationError(
                 {"detail": "If submitters_id is given, it has to be a list."}
