@@ -16,6 +16,10 @@ export class ViewProjector extends BaseViewModel<Projector> {
     public get non_stable_elements(): ProjectorElements {
         return this.projector.elements.filter(element => !element.stable);
     }
+
+    public get isReferenceProjector(): boolean {
+        return this.id === this.reference_projector_id;
+    }
 }
 interface IProjectorRelations {
     referenceProjector: ViewProjector;

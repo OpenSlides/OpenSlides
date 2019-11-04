@@ -1,34 +1,36 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 
 import { E2EImportsModule } from 'e2e-imports.module';
 
-import { MessageDialogComponent } from './message-dialog.component';
+import { ProjectorEditDialogComponent } from './projector-edit-dialog.component';
 
-describe('MessageDialogComponent', () => {
-    let component: MessageDialogComponent;
-    let fixture: ComponentFixture<MessageDialogComponent>;
+describe('ProjectorEditDialogComponent', () => {
+    let component: ProjectorEditDialogComponent;
+    let fixture: ComponentFixture<ProjectorEditDialogComponent>;
 
-    // const dialogData: MessageData = {
-    //     text: ''
-    // };
+    /**
+     * A view model has to be injected here, hence it's currently not possbile (anymore)
+     * to mock the creation of view models
+     */
+    const dialogData = null;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [MessageDialogComponent],
+            declarations: [ProjectorEditDialogComponent],
             imports: [E2EImportsModule],
             providers: [
                 { provide: MatDialogRef, useValue: {} },
                 {
                     provide: MAT_DIALOG_DATA,
-                    useValue: {}
+                    useValue: dialogData
                 }
             ]
         }).compileComponents();
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(MessageDialogComponent);
+        fixture = TestBed.createComponent(ProjectorEditDialogComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });

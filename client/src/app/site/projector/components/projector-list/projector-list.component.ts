@@ -5,19 +5,21 @@ import {
     Component,
     OnDestroy,
     OnInit,
+    TemplateRef,
     ViewEncapsulation
 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatSelectChange } from '@angular/material/select';
+import { MatDialog } from '@angular/material';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
-import { timer } from 'rxjs';
+import { BehaviorSubject, timer } from 'rxjs';
 
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { ProjectorRepositoryService } from 'app/core/repositories/projector/projector-repository.service';
 import { Projector } from 'app/shared/models/core/projector';
+import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { ViewProjector } from '../../models/view-projector';
 
@@ -33,11 +35,6 @@ import { ViewProjector } from '../../models/view-projector';
 })
 export class ProjectorListComponent extends BaseViewComponent implements OnInit, AfterViewInit, OnDestroy {
     /**
-     * This member is set, if the user is creating a new projector.
-     */
-    public showCreateForm = false;
-
-    /**
      * The create form.
      */
     public createForm: FormGroup;
@@ -50,7 +47,7 @@ export class ProjectorListComponent extends BaseViewComponent implements OnInit,
     /**
      * All projectors.
      */
-    public projectors: ViewProjector[];
+    public projectors: BehaviorSubject<ViewProjector[]>;
 
     /**
      * Helper to check manage permissions
@@ -80,6 +77,7 @@ export class ProjectorListComponent extends BaseViewComponent implements OnInit,
         private repo: ProjectorRepositoryService,
         private formBuilder: FormBuilder,
         private operator: OperatorService,
+        private dialogService: MatDialog,
         private cd: ChangeDetectorRef
     ) {
         super(titleService, translate, matSnackBar);
@@ -103,8 +101,26 @@ export class ProjectorListComponent extends BaseViewComponent implements OnInit,
      */
     public ngOnInit(): void {
         super.setTitle('Projectors');
-        this.projectors = this.repo.getViewModelList();
-        this.repo.getViewModelListObservable().subscribe(projectors => (this.projectors = projectors));
+        this.projectors = this.repo.getViewModelListBehaviorSubject();
+    }
+
+    /**
+     * @param dialog
+     */
+    public createNewProjector(dialog: TemplateRef<string>): void {
+        this.createForm.reset();
+        const dialogRef = this.dialogService.open(dialog, { ...infoDialogSettings, disableClose: true });
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                const projectorToCreate: Partial<Projector> = {
+                    name: this.createForm.value.name
+                };
+
+                this.repo.create(projectorToCreate).then(() => {
+                    this.cd.detectChanges();
+                }, this.raiseError);
+            }
+        });
     }
 
     /**
@@ -120,53 +136,5 @@ export class ProjectorListComponent extends BaseViewComponent implements OnInit,
     public ngOnDestroy(): void {
         super.ngOnDestroy();
         this.cd.detach();
-    }
-
-    /**
-     * Opens the create form.
-     */
-    public onPlusButton(): void {
-        if (!this.showCreateForm) {
-            this.showCreateForm = true;
-            this.createForm.setValue({ name: '' });
-        }
-    }
-
-    /**
-     * Creates the comment section from the create form.
-     */
-    public create(): void {
-        if (this.createForm.valid && this.showCreateForm) {
-            const projector: Partial<Projector> = {
-                name: this.createForm.value.name,
-                reference_projector_id: this.projectors[0].reference_projector_id
-            };
-            this.repo.create(projector).then(() => {
-                this.showCreateForm = false;
-                this.cd.detectChanges();
-            }, this.raiseError);
-        }
-    }
-
-    /**
-     * Event on Key Down in update or create form.
-     *
-     * @param event the keyboard event
-     */
-    public keyDownFunction(event: KeyboardEvent): void {
-        if (event.key === 'Enter') {
-            this.create();
-        }
-        if (event.key === 'Escape') {
-            this.showCreateForm = null;
-        }
-    }
-
-    /**
-     * Event handler when the reference projector is changed
-     * @param change the change event that contains the new id
-     */
-    public onSelectReferenceProjector(change: MatSelectChange): void {
-        this.repo.setDefaultProjector(change.value).catch(this.raiseError);
     }
 }

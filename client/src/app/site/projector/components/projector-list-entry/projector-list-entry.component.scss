@@ -1,31 +1,21 @@
+.projector-tile {
+    height: 100%;
+    display: block;
+
+    > div {
+        height: 100%;
+
+        .meta-text-block {
+            margin: 0 !important;
+            height: 100%;
+        }
+    }
+}
+
+.no-markup > div {
+    border: 1px solid lightgray;
+}
+
 .projector {
-    width: 320px;
     color: black;
-    border: 1px solid lightgrey;
-}
-
-form {
-    margin-top: 10px;
-}
-
-.no-markup {
-    /* Do not let the a tag ruin the projector */
-    color: inherit;
-    text-decoration: inherit;
-}
-
-.color-field-wrapper {
-    width: 100%;
-    display: grid;
-    grid-template-columns: auto 30px;
-
-    .form {
-        grid-column-start: 1;
-        grid-column-end: 1;
-    }
-    .reset-button {
-        grid-column-start: 2;
-        grid-column-end: 2;
-        margin-top: 30px;
-    }
 }

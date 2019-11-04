@@ -20,7 +20,7 @@ import { SizeObject } from 'app/shared/components/tile/tile.component';
 import { Countdown } from 'app/shared/models/core/countdown';
 import { ProjectorElement } from 'app/shared/models/core/projector';
 import { ProjectorMessage } from 'app/shared/models/core/projector-message';
-import { infoDialogSettings, mediumDialogSettings } from 'app/shared/utils/dialog-settings';
+import { infoDialogSettings, largeDialogSettings } from 'app/shared/utils/dialog-settings';
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { Projectable } from 'app/site/base/projectable';
 import { ViewCountdown } from 'app/site/projector/models/view-countdown';
@@ -30,6 +30,7 @@ import { CountdownData, CountdownDialogComponent } from '../countdown-dialog/cou
 import { CurrentListOfSpeakersSlideService } from '../../services/current-list-of-of-speakers-slide.service';
 import { CurrentSpeakerChyronSlideService } from '../../services/current-speaker-chyron-slide.service';
 import { MessageData, MessageDialogComponent } from '../message-dialog/message-dialog.component';
+import { ProjectorEditDialogComponent } from '../projector-edit-dialog/projector-edit-dialog.component';
 import { ViewProjector } from '../../models/view-projector';
 
 /**
@@ -106,16 +107,32 @@ export class ProjectorDetailComponent extends BaseViewComponent implements OnIni
     public ngOnInit(): void {
         this.route.params.subscribe(params => {
             const projectorId = parseInt(params.id, 10) || 1;
-            this.repo.getViewModelObservable(projectorId).subscribe(projector => {
-                if (projector) {
-                    const title = projector.name;
-                    super.setTitle(title);
-                    this.projector = projector;
-                }
-            });
+
+            this.subscriptions.push(
+                this.repo.getViewModelObservable(projectorId).subscribe(projector => {
+                    if (projector) {
+                        const title = projector.name;
+                        super.setTitle(title);
+                        this.projector = projector;
+                    }
+                })
+            );
         });
 
         this.subscriptions.push(timer(0, 500).subscribe(() => this.cd.detectChanges()));
+    }
+
+    public editProjector(): void {
+        const dialogRef = this.dialog.open(ProjectorEditDialogComponent, {
+            data: this.projector,
+            ...largeDialogSettings
+        });
+
+        dialogRef.afterClosed().subscribe(event => {
+            if (event) {
+                this.cd.detectChanges();
+            }
+        });
     }
 
     /**
@@ -252,7 +269,7 @@ export class ProjectorDetailComponent extends BaseViewComponent implements OnIni
 
         const dialogRef = this.dialog.open(MessageDialogComponent, {
             data: messageData,
-            ...mediumDialogSettings
+            ...largeDialogSettings
         });
 
         dialogRef.afterClosed().subscribe(result => {
