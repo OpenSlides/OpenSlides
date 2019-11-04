@@ -11,9 +11,9 @@ from django.contrib.auth import BACKEND_SESSION_KEY, HASH_SESSION_KEY, SESSION_K
 from openslides.asgi import application
 from openslides.core.config import config
 from openslides.utils.autoupdate import (
-    Element,
-    inform_changed_elements,
+    AutoupdateElement,
     inform_deleted_data,
+    inform_elements,
 )
 from openslides.utils.cache import element_cache
 from openslides.utils.websocket import (
@@ -93,9 +93,9 @@ async def set_config():
             collection_string = config.get_collection_string()
             config_id = config.key_to_id[key]  # type: ignore
             full_data = {"id": config_id, "key": key, "value": value}
-            await sync_to_async(inform_changed_elements)(
+            await sync_to_async(inform_elements)(
                 [
-                    Element(
+                    AutoupdateElement(
                         id=config_id,
                         collection_string=collection_string,
                         full_data=full_data,
@@ -227,9 +227,9 @@ async def test_skipping_autoupdate(set_config, get_communicator):
     await communicator.connect()
 
     with patch("openslides.utils.autoupdate.save_history"):
-        await sync_to_async(inform_changed_elements)(
+        await sync_to_async(inform_elements)(
             [
-                Element(
+                AutoupdateElement(
                     id=2,
                     collection_string=PersonalizedCollection().get_collection_string(),
                     full_data={"id": 2, "value": "new value 1", "user_id": 2},
@@ -237,9 +237,9 @@ async def test_skipping_autoupdate(set_config, get_communicator):
                 )
             ]
         )
-        await sync_to_async(inform_changed_elements)(
+        await sync_to_async(inform_elements)(
             [
-                Element(
+                AutoupdateElement(
                     id=2,
                     collection_string=PersonalizedCollection().get_collection_string(),
                     full_data={"id": 2, "value": "new value 2", "user_id": 2},

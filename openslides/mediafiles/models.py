@@ -5,6 +5,8 @@ from typing import List, cast
 from django.conf import settings
 from django.db import models
 
+from openslides.utils.manager import BaseManager
+
 from ..agenda.mixins import ListOfSpeakersMixin
 from ..core.config import config
 from ..utils.models import RESTModelMixin
@@ -12,18 +14,20 @@ from ..utils.rest_api import ValidationError
 from .access_permissions import MediafileAccessPermissions
 
 
-class MediafileManager(models.Manager):
+class MediafileManager(BaseManager):
     """
     Customized model manager to support our get_full_queryset method.
     """
 
-    def get_full_queryset(self):
+    def get_prefetched_queryset(self, *args, **kwargs):
         """
         Returns the normal queryset with all mediafiles. In the background
         all related list of speakers are prefetched from the database.
         """
-        return self.get_queryset().prefetch_related(
-            "lists_of_speakers", "parent", "access_groups"
+        return (
+            super()
+            .get_prefetched_queryset(*args, **kwargs)
+            .prefetch_related("lists_of_speakers", "parent", "access_groups")
         )
 
     def delete(self, *args, **kwargs):
