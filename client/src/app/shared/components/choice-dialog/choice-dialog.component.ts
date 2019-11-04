@@ -1,19 +1,10 @@
 import { Component, Inject, ViewEncapsulation } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
-import { Identifiable } from 'app/shared/models/base/identifiable';
+import { Observable } from 'rxjs';
+
 import { Displayable } from 'app/site/base/displayable';
-
-/**
- * An option needs to be identifiable and should have a strnig to display. Either uses Displayble or
- * a label property.
- */
-type ChoiceDialogOption = (Identifiable & Displayable) | (Identifiable & { label: string });
-
-/**
- * All choices in the array should have the same type.
- */
-export type ChoiceDialogOptions = (Identifiable & Displayable)[] | (Identifiable & { label: string })[];
 
 /**
  * All data needed for this dialog
@@ -25,14 +16,14 @@ interface ChoiceDialogData {
     title: string;
 
     /**
-     * The choices to display
-     */
-    choices: ChoiceDialogOptions;
-
-    /**
      * Select if this should be a multiselect choice
      */
     multiSelect: boolean;
+
+    /**
+     * The choices to display
+     */
+    choices?: Observable<Displayable[]> | Displayable[];
 
     /**
      * Additional action buttons which will add their value to the
@@ -72,18 +63,24 @@ export class ChoiceDialogComponent {
     public selectedChoice: number;
 
     /**
-     * Checks if there is nothing selected
-     *
-     * @returns true if there is no selection chosen (and the dialog should not
-     * be closed 'successfully')
+     * Form to hold the selection
      */
-    public get isSelectionEmpty(): boolean {
-        if (this.data.multiSelect) {
-            return this.selectedMultiChoices.length === 0;
-        } else if (!this.data.choices) {
-            return false;
+    public selectForm: FormGroup;
+
+    /**
+     * Checks if there is something selected
+     *
+     * @returns true if there is a selection chosen
+     */
+    public get hasSelection(): boolean {
+        if (this.data.choices) {
+            if (this.selectForm.get('select').value) {
+                return !!this.selectForm.get('select').value || !!this.selectForm.get('select').value.length;
+            } else {
+                return false;
+            }
         } else {
-            return this.selectedChoice === undefined;
+            return true;
         }
     }
 
@@ -94,21 +91,12 @@ export class ChoiceDialogComponent {
 
     public constructor(
         public dialogRef: MatDialogRef<ChoiceDialogComponent>,
+        private formBuilder: FormBuilder,
         @Inject(MAT_DIALOG_DATA) public data: ChoiceDialogData
-    ) {}
-
-    /**
-     * Get the title from a choice. Maybe saved in a label property or using getTitle().
-     *
-     * @param choice The choice
-     * @return the title
-     */
-    public getChoiceTitle(choice: ChoiceDialogOption): string {
-        if ('label' in choice) {
-            return choice.label;
-        } else {
-            return choice.getTitle();
-        }
+    ) {
+        this.selectForm = this.formBuilder.group({
+            select: []
+        });
     }
 
     /**
@@ -121,31 +109,10 @@ export class ChoiceDialogComponent {
         if (ok) {
             this.dialogRef.close({
                 action: action ? action : null,
-                items: this.data.multiSelect ? this.selectedMultiChoices : this.selectedChoice
+                items: this.selectForm.get('select').value
             });
         } else {
             this.dialogRef.close();
-        }
-    }
-
-    /**
-     * For multiSelect: Determines whether a choice has been activated
-     * @param choice
-     */
-    public isChosen(choice: Identifiable): boolean {
-        return this.selectedMultiChoices.indexOf(choice.id) >= 0;
-    }
-
-    /**
-     * For multiSelect: Activates/deactivates a multi-Choice option
-     * @param choice
-     */
-    public toggleChoice(choice: Identifiable): void {
-        const idx = this.selectedMultiChoices.indexOf(choice.id);
-        if (idx < 0) {
-            this.selectedMultiChoices.push(choice.id);
-        } else {
-            this.selectedMultiChoices.splice(idx, 1);
         }
     }
 }

@@ -79,23 +79,27 @@ export class SearchValueSelectorComponent implements OnDestroy {
      * changes its values.
      */
     @Input()
-    public set inputListValues(value: Observable<Selectable[]>) {
+    public set inputListValues(value: Selectable[] | Observable<Selectable[]>) {
         if (!value) {
             return;
         }
-        // unsubscribe to old subscription.
-        if (this._inputListSubscription) {
-            this._inputListSubscription.unsubscribe();
-        }
-        // this.inputSubject = value;
-        this._inputListSubscription = value.pipe(auditTime(10)).subscribe(items => {
-            this.selectableItems = items;
-            if (this.formControl) {
-                !!items && items.length > 0
-                    ? this.formControl.enable({ emitEvent: false })
-                    : this.formControl.disable({ emitEvent: false });
+
+        if (Array.isArray(value)) {
+            this.selectableItems = value;
+        } else {
+            // unsubscribe to old subscription.
+            if (this._inputListSubscription) {
+                this._inputListSubscription.unsubscribe();
             }
-        });
+            this._inputListSubscription = value.pipe(auditTime(10)).subscribe(items => {
+                this.selectableItems = items;
+                if (this.formControl) {
+                    !!items && items.length > 0
+                        ? this.formControl.enable({ emitEvent: false })
+                        : this.formControl.disable({ emitEvent: false });
+                }
+            });
+        }
     }
 
     /**

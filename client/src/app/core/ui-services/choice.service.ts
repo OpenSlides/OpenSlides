@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
-import { mediumDialogSettings } from 'app/shared/utils/dialog-settings';
-import {
-    ChoiceAnswer,
-    ChoiceDialogComponent,
-    ChoiceDialogOptions
-} from '../../shared/components/choice-dialog/choice-dialog.component';
+import { Observable } from 'rxjs';
+
+import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
+import { Displayable } from 'app/site/base/displayable';
+import { ChoiceAnswer, ChoiceDialogComponent } from '../../shared/components/choice-dialog/choice-dialog.component';
 
 /**
  * A service for prompting the user to select a choice.
@@ -37,13 +36,13 @@ export class ChoiceService {
      */
     public async open(
         title: string,
-        choices: ChoiceDialogOptions,
+        choices?: Observable<Displayable[]> | Displayable[],
         multiSelect: boolean = false,
         actions?: string[],
         clearChoice?: string
     ): Promise<ChoiceAnswer> {
         const dialogRef = this.dialog.open(ChoiceDialogComponent, {
-            ...mediumDialogSettings,
+            ...infoDialogSettings,
             data: {
                 title: title,
                 choices: choices,
