@@ -283,7 +283,7 @@ export class MotionListComponent extends BaseListViewComponent<ViewMotion> imple
             .sort((a, b) => a.weight - b.weight)
             .map(category => {
                 return {
-                    filter: 'category',
+                    filter: 'category_id',
                     name: category.name,
                     condition: category.id,
                     amountOfMotions: category.totalAmountOfMotions,
@@ -315,7 +315,7 @@ export class MotionListComponent extends BaseListViewComponent<ViewMotion> imple
 
         this.addToTileInfo('Favorites', 'star', true, favoriteMotions);
         this.addToTileInfo('Personal notes', 'hasNotes', true, motionsWithNotes);
-        this.addToTileInfo('No category', 'category', null, motionsWithoutCategory);
+        this.addToTileInfo('No category', 'category_id', null, motionsWithoutCategory);
 
         this.createCategoryTiles(Array.from(localCategories));
 
