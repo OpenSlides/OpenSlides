@@ -5,7 +5,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from openslides.assignments.models import Assignment
+from openslides.assignments.models import Assignment, AssignmentPoll
 from openslides.core.models import Tag
 from openslides.mediafiles.models import Mediafile
 from openslides.utils.autoupdate import inform_changed_data
@@ -21,18 +21,20 @@ def test_assignment_db_queries():
     * 1 request to get all related users,
     * 1 request to get the agenda item,
     * 1 request to get the list of speakers,
-    * 1 request to get the polls,
     * 1 request to get the tags,
     * 1 request to get the attachments and
-
-    * 10 request to fetch each related user again.
-
-    TODO: The last requests are a bug.
     """
     for index in range(10):
-        Assignment.objects.create(title=f"assignment{index}", open_posts=1)
+        assignment = Assignment.objects.create(title=f"assignment{index}", open_posts=1)
+        for i in range(2):
+            AssignmentPoll.objects.create(
+                assignment=assignment,
+                title="test_title_nah5Ahh6IkeeM8rah3ai",
+                pollmethod=AssignmentPoll.POLLMETHOD_YN,
+                type=AssignmentPoll.TYPE_NAMED,
+            )
 
-    assert count_queries(Assignment.get_elements) == 17
+    assert count_queries(Assignment.get_elements)() == 6
 
 
 class CreateAssignment(TestCase):

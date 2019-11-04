@@ -17,6 +17,8 @@ from django.db.models import Prefetch
 from django.utils import timezone
 from jsonfield import JSONField
 
+from openslides.utils.manager import BaseManager
+
 from ..core.config import config
 from ..utils.auth import GROUP_ADMIN_PK
 from ..utils.models import CASCADE_AND_AUTOUPDATE, RESTModelMixin
@@ -30,16 +32,19 @@ from .access_permissions import (
 class UserManager(BaseUserManager):
     """
     Customized manager that creates new users only with a password and a
-    username. It also supports our get_full_queryset method.
+    username. It also supports our get_prefetched_queryset method.
     """
 
-    def get_full_queryset(self):
+    def get_prefetched_queryset(self, ids=None):
         """
         Returns the normal queryset with all users. In the background all
         groups are prefetched from the database together with all permissions
         and content types.
         """
-        return self.get_queryset().prefetch_related(
+        queryset = self.get_queryset()
+        if ids:
+            queryset = queryset.filter(pk__in=ids)
+        return queryset.prefetch_related(
             Prefetch(
                 "groups",
                 queryset=Group.objects.select_related("group_ptr").prefetch_related(
@@ -293,22 +298,21 @@ class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
 
 class GroupManager(_GroupManager):
     """
-    Customized manager that supports our get_full_queryset method.
+    Customized manager that supports our get_prefetched_queryset method.
     """
 
-    def get_full_queryset(self):
+    def get_prefetched_queryset(self, ids=None):
         """
         Returns the normal queryset with all groups. In the background all
         permissions with the content types are prefetched from the database.
         """
-        return (
-            self.get_queryset()
-            .select_related("group_ptr")
-            .prefetch_related(
-                Prefetch(
-                    "permissions",
-                    queryset=Permission.objects.select_related("content_type"),
-                )
+        queryset = self.get_queryset()
+        if ids:
+            queryset = queryset.filter(pk__in=ids)
+        return queryset.select_related("group_ptr").prefetch_related(
+            Prefetch(
+                "permissions",
+                queryset=Permission.objects.select_related("content_type"),
             )
         )
 
@@ -325,17 +329,17 @@ class Group(RESTModelMixin, DjangoGroup):
         default_permissions = ()
 
 
-class PersonalNoteManager(models.Manager):
+class PersonalNoteManager(BaseManager):
     """
-    Customized model manager to support our get_full_queryset method.
+    Customized model manager to support our get_prefetched_queryset method.
     """
 
-    def get_full_queryset(self):
+    def get_prefetched_queryset(self, *args, **kwargs):
         """
         Returns the normal queryset with all personal notes. In the background all
         users are prefetched from the database.
         """
-        return self.get_queryset().select_related("user")
+        return super().get_prefetched_queryset(*args, **kwargs).select_related("user")
 
 
 class PersonalNote(RESTModelMixin, models.Model):

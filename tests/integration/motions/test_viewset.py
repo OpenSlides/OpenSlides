@@ -32,7 +32,7 @@ def test_category_db_queries():
     for index in range(10):
         Category.objects.create(name=f"category{index}")
 
-    assert count_queries(Category.get_elements) == 1
+    assert count_queries(Category.get_elements)() == 1
 
 
 @pytest.mark.django_db(transaction=False)
@@ -46,19 +46,18 @@ def test_statute_paragraph_db_queries():
             title=f"statute_paragraph{index}", text=f"text{index}"
         )
 
-    assert count_queries(StatuteParagraph.get_elements) == 1
+    assert count_queries(StatuteParagraph.get_elements)() == 1
 
 
 @pytest.mark.django_db(transaction=False)
 def test_workflow_db_queries():
     """
     Tests that only the following db queries are done:
-    * 1 requests to get the list of all workflows,
-    * 1 request to get all states and
-    * 1 request to get the next states of all states.
+    * 1 requests to get the list of all workflows and
+    * 1 request to get all states.
     """
 
-    assert count_queries(Workflow.get_elements) == 3
+    assert count_queries(Workflow.get_elements)() == 2
 
 
 class TestStatuteParagraphs(TestCase):

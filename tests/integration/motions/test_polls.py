@@ -28,7 +28,7 @@ def test_motion_poll_db_queries():
     = 5 queries
     """
     create_motion_polls()
-    assert count_queries(MotionPoll.get_elements) == 5
+    assert count_queries(MotionPoll.get_elements)() == 5
 
 
 @pytest.mark.django_db(transaction=False)
@@ -37,7 +37,7 @@ def test_motion_vote_db_queries():
     Tests that only 1 query is done when fetching MotionVotes
     """
     create_motion_polls()
-    assert count_queries(MotionVote.get_elements) == 1
+    assert count_queries(MotionVote.get_elements)() == 1
 
 
 def create_motion_polls():

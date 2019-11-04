@@ -12,20 +12,24 @@ from openslides.core.config import config
 from openslides.core.models import Countdown
 from openslides.utils.autoupdate import inform_changed_data
 from openslides.utils.exceptions import OpenSlidesError
-from openslides.utils.models import RESTModelMixin
+from openslides.utils.manager import BaseManager
+from openslides.utils.models import (
+    CASCADE_AND_AUTOUPDATE,
+    SET_NULL_AND_AUTOUPDATE,
+    RESTModelMixin,
+)
 from openslides.utils.utils import to_roman
 
-from ..utils.models import CASCADE_AND_AUTOUPDATE, SET_NULL_AND_AUTOUPDATE
 from .access_permissions import ItemAccessPermissions, ListOfSpeakersAccessPermissions
 
 
-class ItemManager(models.Manager):
+class ItemManager(BaseManager):
     """
     Customized model manager with special methods for agenda tree and
     numbering.
     """
 
-    def get_full_queryset(self):
+    def get_prefetched_queryset(self, *args, **kwargs):
         """
         Returns the normal queryset with all items. In the background all
         related items (topics, motions, assignments) are prefetched from the database.
@@ -34,7 +38,11 @@ class ItemManager(models.Manager):
         # because this is some kind of cyclic lookup. The _prefetched_objects_cache of every
         # content object will hold wrong values for the agenda item.
         # See issue #4738
-        return self.get_queryset().prefetch_related("content_object")
+        return (
+            super()
+            .get_prefetched_queryset(*args, **kwargs)
+            .prefetch_related("content_object", "parent")
+        )
 
     def get_only_non_public_items(self):
         """
@@ -331,17 +339,18 @@ class Item(RESTModelMixin, models.Model):
             return self.parent.level + 1
 
 
-class ListOfSpeakersManager(models.Manager):
-    """
-    """
-
-    def get_full_queryset(self):
+class ListOfSpeakersManager(BaseManager):
+    def get_prefetched_queryset(self, *args, **kwargs):
         """
         Returns the normal queryset with all items. In the background all
         speakers and related items (topics, motions, assignments) are
         prefetched from the database.
         """
-        return self.get_queryset().prefetch_related("speakers", "content_object")
+        return (
+            super()
+            .get_prefetched_queryset(*args, **kwargs)
+            .prefetch_related("speakers", "content_object")
+        )
 
 
 class ListOfSpeakers(RESTModelMixin, models.Model):
