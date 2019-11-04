@@ -4,7 +4,7 @@
         <h2>
             <span *ngIf="!isCurrentListOfSpeakers && !isSortMode" translate>List of speakers</span>
             <span *ngIf="isCurrentListOfSpeakers && !isSortMode" translate>Current list of speakers</span>
-            <span *ngIf="isSortMode" translate>Sort mode</span>
+            <span *ngIf="isSortMode" translate>Sort list of speakers</span>
         </h2>
     </div>
     <div class="menu-slot" *osPerms="['agenda.can_manage_list_of_speakers', 'core.can_manage_projector']">
@@ -157,7 +157,7 @@
 <mat-menu #speakerMenu="matMenu">
     <button mat-menu-item (click)="isSortMode = true">
         <mat-icon>sort</mat-icon>
-        <span translate>Enable sorting</span>
+        <span translate>Sort</span>
     </button>
 
     <os-projector-button
