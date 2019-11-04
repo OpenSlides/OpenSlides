@@ -1,13 +1,16 @@
+from typing import Iterable
+
 from asgiref.sync import async_to_sync
 from django.conf import settings
 from django.db import models, transaction
 from django.utils.timezone import now
 from jsonfield import JSONField
 
-from ..utils.autoupdate import Element
-from ..utils.cache import element_cache, get_element_id
-from ..utils.locking import locking
-from ..utils.models import SET_NULL_AND_AUTOUPDATE, RESTModelMixin
+from openslides.utils.autoupdate import AutoupdateElement
+from openslides.utils.cache import element_cache, get_element_id
+from openslides.utils.manager import BaseManager
+from openslides.utils.models import SET_NULL_AND_AUTOUPDATE, RESTModelMixin
+
 from .access_permissions import (
     ConfigAccessPermissions,
     CountdownAccessPermissions,
@@ -18,17 +21,21 @@ from .access_permissions import (
 )
 
 
-class ProjectorManager(models.Manager):
+class ProjectorManager(BaseManager):
     """
-    Customized model manager to support our get_full_queryset method.
+    Customized model manager to support our get_prefetched_queryset method.
     """
 
-    def get_full_queryset(self):
+    def get_prefetched_queryset(self, *args, **kwargs):
         """
         Returns the normal queryset with all projectors. In the background
         projector defaults are prefetched from the database.
         """
-        return self.get_queryset().prefetch_related("projectiondefaults")
+        return (
+            super()
+            .get_prefetched_queryset(*args, **kwargs)
+            .prefetch_related("projectiondefaults")
+        )
 
 
 class Projector(RESTModelMixin, models.Model):
@@ -249,12 +256,12 @@ class HistoryData(models.Model):
         default_permissions = ()
 
 
-class HistoryManager(models.Manager):
+class HistoryManager(BaseManager):
     """
     Customized model manager for the history model.
     """
 
-    def add_elements(self, elements):
+    def add_elements(self, elements: Iterable[AutoupdateElement]):
         """
         Method to add elements to the history. This does not trigger autoupdate.
         """
@@ -266,7 +273,7 @@ class HistoryManager(models.Manager):
                     # Do not update history if history is disabled.
                     continue
                 # HistoryData is not a root rest element so there is no autoupdate and not history saving here.
-                data = HistoryData.objects.create(full_data=element["full_data"])
+                data = HistoryData.objects.create(full_data=element.get("full_data"))
                 instance = self.model(
                     element_id=get_element_id(
                         element["collection_string"], element["id"]
@@ -296,7 +303,7 @@ class HistoryManager(models.Manager):
                     for collection_string, data in all_full_data.items():
                         for full_data in data:
                             elements.append(
-                                Element(
+                                AutoupdateElement(
                                     id=full_data["id"],
                                     collection_string=collection_string,
                                     full_data=full_data,

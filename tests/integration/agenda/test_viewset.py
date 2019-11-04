@@ -12,7 +12,7 @@ from openslides.assignments.models import Assignment
 from openslides.core.config import config
 from openslides.core.models import Countdown
 from openslides.mediafiles.models import Mediafile
-from openslides.motions.models import Motion
+from openslides.motions.models import Motion, MotionBlock
 from openslides.topics.models import Topic
 from openslides.users.models import Group
 from openslides.utils.autoupdate import inform_changed_data
@@ -20,6 +20,56 @@ from tests.count_queries import count_queries
 from tests.test_case import TestCase
 
 from ...common_groups import GROUP_DEFAULT_PK
+
+
+@pytest.mark.django_db(transaction=False)
+def test_agenda_item_db_queries():
+    """
+    Tests that only the following db queries are done:
+    * 1 request to get the list of all agenda items,
+    * 1 request to get all assignments,
+    * 1 request to get all motions,
+    * 1 request to get all topics,
+    * 1 request to get all motion blocks and
+    * 1 request to get all parents
+    """
+    parent = Topic.objects.create(title="parent").agenda_item
+    for index in range(10):
+        item = Topic.objects.create(title=f"topic{index}").agenda_item
+        item.parent = parent
+        item.save()
+    Motion.objects.create(title="motion1")
+    Motion.objects.create(title="motion2")
+    Assignment.objects.create(title="assignment1", open_posts=5)
+    Assignment.objects.create(title="assignment2", open_posts=5)
+    MotionBlock.objects.create(title="block1")
+    MotionBlock.objects.create(title="block1")
+
+    assert count_queries(Item.get_elements)() == 6
+
+
+@pytest.mark.django_db(transaction=False)
+def test_list_of_speakers_db_queries():
+    """
+    Tests that only the following db queries are done:
+    * 1 requests to get the list of all lists of speakers
+    * 1 request to get all speakers
+    * 4 requests to get the assignments, motions, topics and mediafiles and
+    """
+    for index in range(10):
+        Topic.objects.create(title=f"topic{index}")
+    parent = Topic.objects.create(title="parent").agenda_item
+    child = Topic.objects.create(title="child").agenda_item
+    child.parent = parent
+    child.save()
+    Motion.objects.create(title="motion1")
+    Motion.objects.create(title="motion2")
+    Assignment.objects.create(title="assignment", open_posts=5)
+    Mediafile.objects.create(
+        title=f"mediafile", mediafile=SimpleUploadedFile(f"some_file", b"some content.")
+    )
+
+    assert count_queries(ListOfSpeakers.get_elements)() == 6
 
 
 class ContentObjects(TestCase):
@@ -231,52 +281,6 @@ class RetrieveListOfSpeakers(TestCase):
             reverse("listofspeakers-detail", args=[self.list_of_speakers.pk])
         )
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-
-
-@pytest.mark.django_db(transaction=False)
-def test_agenda_item_db_queries():
-    """
-    Tests that only the following db queries are done:
-    * 1 requests to get the list of all agenda items,
-    * 3 requests to get the assignments, motions and topics and
-    * 1 request to get an agenda item (why?)
-    TODO: The last three request are a bug.
-    """
-    for index in range(10):
-        Topic.objects.create(title=f"topic{index}")
-    parent = Topic.objects.create(title="parent").agenda_item
-    child = Topic.objects.create(title="child").agenda_item
-    child.parent = parent
-    child.save()
-    Motion.objects.create(title="motion1")
-    Motion.objects.create(title="motion2")
-    Assignment.objects.create(title="assignment", open_posts=5)
-
-    assert count_queries(Item.get_elements) == 5
-
-
-@pytest.mark.django_db(transaction=False)
-def test_list_of_speakers_db_queries():
-    """
-    Tests that only the following db queries are done:
-    * 1 requests to get the list of all lists of speakers
-    * 1 request to get all speakers
-    * 4 requests to get the assignments, motions, topics and mediafiles and
-    """
-    for index in range(10):
-        Topic.objects.create(title=f"topic{index}")
-    parent = Topic.objects.create(title="parent").agenda_item
-    child = Topic.objects.create(title="child").agenda_item
-    child.parent = parent
-    child.save()
-    Motion.objects.create(title="motion1")
-    Motion.objects.create(title="motion2")
-    Assignment.objects.create(title="assignment", open_posts=5)
-    Mediafile.objects.create(
-        title=f"mediafile", mediafile=SimpleUploadedFile(f"some_file", b"some content.")
-    )
-
-    assert count_queries(ListOfSpeakers.get_elements) == 6
 
 
 class ManageSpeaker(TestCase):

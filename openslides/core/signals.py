@@ -9,7 +9,7 @@ from django.db.models import Q
 from django.dispatch import Signal
 
 from ..utils import logging
-from ..utils.autoupdate import Element, inform_changed_elements
+from ..utils.autoupdate import AutoupdateElement, inform_elements
 
 
 # This signal is send when the migrate command is done. That means it is sent
@@ -100,18 +100,16 @@ def autoupdate_for_many_to_many_relations(sender, instance, **kwargs):
     )
     for field in m2m_fields:
         queryset = getattr(instance, field.get_accessor_name()).all()
+        elements = []
         for related_instance in queryset:
             if hasattr(related_instance, "get_root_rest_element"):
                 # The related instance is or has a root rest element.
                 # So lets send it via autoupdate.
                 root_rest_element = related_instance.get_root_rest_element()
-                inform_changed_elements(
-                    [
-                        Element(
-                            collection_string=root_rest_element.get_collection_string(),
-                            id=root_rest_element.pk,
-                            full_data=None,
-                            reload=True,
-                        )
-                    ]
+                elements.append(
+                    AutoupdateElement(
+                        collection_string=root_rest_element.get_collection_string(),
+                        id=root_rest_element.pk,
+                    )
                 )
+        inform_elements(elements)

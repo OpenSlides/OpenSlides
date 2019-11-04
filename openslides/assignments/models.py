@@ -12,6 +12,7 @@ from openslides.mediafiles.models import Mediafile
 from openslides.poll.models import BaseOption, BasePoll, BaseVote
 from openslides.utils.autoupdate import inform_changed_data
 from openslides.utils.exceptions import OpenSlidesError
+from openslides.utils.manager import BaseManager
 from openslides.utils.models import RESTModelMixin
 
 from ..utils.models import CASCADE_AND_AUTOUPDATE, SET_NULL_AND_AUTOUPDATE
@@ -63,24 +64,28 @@ class AssignmentRelatedUser(RESTModelMixin, models.Model):
         return self.assignment
 
 
-class AssignmentManager(models.Manager):
+class AssignmentManager(BaseManager):
     """
-    Customized model manager to support our get_full_queryset method.
+    Customized model manager to support our get_prefetched_queryset method.
     """
 
-    def get_full_queryset(self):
+    def get_prefetched_queryset(self, *args, **kwargs):
         """
         Returns the normal queryset with all assignments. In the background
         all related users (candidates), the related agenda item and all
         polls are prefetched from the database.
         """
-        return self.get_queryset().prefetch_related(
-            "related_users",
-            "agenda_items",
-            "lists_of_speakers",
-            "polls",
-            "tags",
-            "attachments",
+
+        return (
+            super()
+            .get_prefetched_queryset(*args, **kwargs)
+            .prefetch_related(
+                "assignment_related_users",
+                "agenda_items",
+                "lists_of_speakers",
+                "tags",
+                "attachments",
+            )
         )
 
 
@@ -233,17 +238,21 @@ class Assignment(RESTModelMixin, AgendaItemWithListOfSpeakersMixin, models.Model
         return {"title": self.title}
 
 
-class AssignmentVoteManager(models.Manager):
+class AssignmentVoteManager(BaseManager):
     """
-    Customized model manager to support our get_full_queryset method.
+    Customized model manager to support our get_prefetched_queryset method.
     """
 
-    def get_full_queryset(self):
+    def get_prefetched_queryset(self, *args, **kwargs):
         """
         Returns the normal queryset with all assignment votes. In the background we
         join and prefetch all related models.
         """
-        return self.get_queryset().select_related("user", "option", "option__poll")
+        return (
+            super()
+            .get_prefetched_queryset(*args, **kwargs)
+            .select_related("user", "option", "option__poll")
+        )
 
 
 class AssignmentVote(RESTModelMixin, BaseVote):
@@ -276,18 +285,19 @@ class AssignmentOption(RESTModelMixin, BaseOption):
         return self.poll
 
 
-class AssignmentPollManager(models.Manager):
+class AssignmentPollManager(BaseManager):
     """
-    Customized model manager to support our get_full_queryset method.
+    Customized model manager to support our get_prefetched_queryset method.
     """
 
-    def get_full_queryset(self):
+    def get_prefetched_queryset(self, *args, **kwargs):
         """
         Returns the normal queryset with all assignment polls. In the background we
         join and prefetch all related models.
         """
         return (
-            self.get_queryset()
+            super()
+            .get_prefetched_queryset(*args, **kwargs)
             .select_related("assignment")
             .prefetch_related(
                 "options", "options__user", "options__votes", "groups", "voted"

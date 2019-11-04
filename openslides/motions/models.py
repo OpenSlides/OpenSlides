@@ -11,6 +11,7 @@ from openslides.mediafiles.models import Mediafile
 from openslides.poll.models import BaseOption, BasePoll, BaseVote
 from openslides.utils.autoupdate import inform_changed_data
 from openslides.utils.exceptions import OpenSlidesError
+from openslides.utils.manager import BaseManager
 from openslides.utils.models import RESTModelMixin
 from openslides.utils.rest_api import ValidationError
 
@@ -56,18 +57,19 @@ class StatuteParagraph(RESTModelMixin, models.Model):
         return self.title
 
 
-class MotionManager(models.Manager):
+class MotionManager(BaseManager):
     """
-    Customized model manager to support our get_full_queryset method.
+    Customized model manager to support our get_prefetched_queryset method.
     """
 
-    def get_full_queryset(self):
+    def get_prefetched_queryset(self, *args, **kwargs):
         """
         Returns the normal queryset with all motions. In the background we
         join and prefetch all related models.
         """
         return (
-            self.get_queryset()
+            super()
+            .get_prefetched_queryset(*args, **kwargs)
             .select_related("state")
             .prefetch_related(
                 "state__workflow",
@@ -76,12 +78,6 @@ class MotionManager(models.Manager):
                 "comments__section__read_groups",
                 "agenda_items",
                 "lists_of_speakers",
-                "polls",
-                "polls__groups",
-                "polls__voted",
-                "polls__options",
-                "polls__options__votes",
-                "polls__options__votes__user",
                 "attachments",
                 "tags",
                 "submitters",
@@ -669,27 +665,12 @@ class Submitter(RESTModelMixin, models.Model):
         return self.motion
 
 
-class MotionChangeRecommendationManager(models.Manager):
-    """
-    Customized model manager to support our get_full_queryset method.
-    """
-
-    def get_full_queryset(self):
-        """
-        Returns the normal queryset with all change recommendations. In the background we
-        join and prefetch all related models.
-        """
-        return self.get_queryset()
-
-
 class MotionChangeRecommendation(RESTModelMixin, models.Model):
     """
     A MotionChangeRecommendation object saves change recommendations for a specific Motion
     """
 
     access_permissions = MotionChangeRecommendationAccessPermissions()
-
-    objects = MotionChangeRecommendationManager()
 
     motion = models.ForeignKey(
         Motion, on_delete=CASCADE_AND_AUTOUPDATE, related_name="change_recommendations"
@@ -826,17 +807,21 @@ class Category(RESTModelMixin, models.Model):
             return self.parent.level + 1
 
 
-class MotionBlockManager(models.Manager):
+class MotionBlockManager(BaseManager):
     """
-    Customized model manager to support our get_full_queryset method.
+    Customized model manager to support our get_prefetched_queryset method.
     """
 
-    def get_full_queryset(self):
+    def get_prefetched_queryset(self, *args, **kwargs):
         """
         Returns the normal queryset with all motion blocks. In the
         background the related agenda item is prefetched from the database.
         """
-        return self.get_queryset().prefetch_related("agenda_items", "lists_of_speakers")
+        return (
+            super()
+            .get_prefetched_queryset(*args, **kwargs)
+            .prefetch_related("agenda_items", "lists_of_speakers")
+        )
 
 
 class MotionBlock(RESTModelMixin, AgendaItemWithListOfSpeakersMixin, models.Model):
@@ -867,17 +852,21 @@ class MotionBlock(RESTModelMixin, AgendaItemWithListOfSpeakersMixin, models.Mode
         return {"title": self.title}
 
 
-class MotionVoteManager(models.Manager):
+class MotionVoteManager(BaseManager):
     """
-    Customized model manager to support our get_full_queryset method.
+    Customized model manager to support our get_prefetched_queryset method.
     """
 
-    def get_full_queryset(self):
+    def get_prefetched_queryset(self, *args, **kwargs):
         """
         Returns the normal queryset with all motion votes. In the background we
         join and prefetch all related models.
         """
-        return self.get_queryset().select_related("user", "option", "option__poll")
+        return (
+            super()
+            .get_prefetched_queryset(*args, **kwargs)
+            .select_related("user", "option", "option__poll")
+        )
 
 
 class MotionVote(RESTModelMixin, BaseVote):
@@ -906,18 +895,19 @@ class MotionOption(RESTModelMixin, BaseOption):
         return self.poll
 
 
-class MotionPollManager(models.Manager):
+class MotionPollManager(BaseManager):
     """
-    Customized model manager to support our get_full_queryset method.
+    Customized model manager to support our get_prefetched_queryset method.
     """
 
-    def get_full_queryset(self):
+    def get_prefetched_queryset(self, *args, **kwargs):
         """
         Returns the normal queryset with all motion polls. In the background we
         join and prefetch all related models.
         """
         return (
-            self.get_queryset()
+            super()
+            .get_prefetched_queryset(*args, **kwargs)
             .select_related("motion")
             .prefetch_related("options", "options__votes", "groups", "voted")
         )
@@ -1084,21 +1074,18 @@ class State(RESTModelMixin, models.Model):
         return state_id in next_state_ids or state_id in previous_state_ids
 
 
-class WorkflowManager(models.Manager):
+class WorkflowManager(BaseManager):
     """
-    Customized model manager to support our get_full_queryset method.
+    Customized model manager to support our get_prefetched_queryset method.
     """
 
-    def get_full_queryset(self):
+    def get_prefetched_queryset(self, *args, **kwargs):
         """
         Returns the normal queryset with all workflows. In the background
-        the first state is joined and all states and next states are
-        prefetched from the database.
+        all states are prefetched from the database.
         """
         return (
-            self.get_queryset()
-            .select_related("first_state")
-            .prefetch_related("states", "states__next_states")
+            super().get_prefetched_queryset(*args, **kwargs).prefetch_related("states")
         )
 
 
