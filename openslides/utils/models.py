@@ -6,7 +6,7 @@ from django.db import models
 
 from . import logging
 from .access_permissions import BaseAccessPermissions
-from .autoupdate import Element, inform_changed_data, inform_changed_elements
+from .autoupdate import AutoupdateElement, inform_changed_data, inform_elements
 from .rest_api import model_serializer_classes
 from .utils import convert_camel_case_to_pseudo_snake_case, get_element_id
 
@@ -142,18 +142,20 @@ class RESTModelMixin:
         return return_value
 
     @classmethod
-    def get_elements(cls) -> List[Dict[str, Any]]:
+    def get_elements(cls, ids: Optional[List[int]] = None) -> List[Dict[str, Any]]:
         """
         Returns all elements as full_data.
         """
         logger.info(f"Loading {cls.get_collection_string()}")
         # Get the query to receive all data from the database.
         try:
-            query = cls.objects.get_full_queryset()  # type: ignore
+            query = cls.objects.get_prefetched_queryset(ids=ids)  # type: ignore
         except AttributeError:
-            # If the model des not have to method get_full_queryset(), then use
+            # If the model des not have to method get_prefetched_queryset(), then use
             # the default queryset from django.
             query = cls.objects  # type: ignore
+            if ids:
+                query = query.filter(pk__in=ids)
 
         # Build a dict from the instance id to the full_data
         instances = query.all()
@@ -223,12 +225,10 @@ def CASCADE_AND_AUTOUPDATE(
     for sub_obj in sub_objs:
         root_rest_element = sub_obj.get_root_rest_element()
         elements.append(
-            Element(
+            AutoupdateElement(
                 collection_string=root_rest_element.get_collection_string(),
-                id=root_rest_element.pk,
-                full_data=None,
-                reload=True,
+                id=root_rest_element.get_rest_pk(),
             )
         )
-    inform_changed_elements(elements)
+    inform_elements(elements)
     models.CASCADE(collector, field, sub_objs, using)

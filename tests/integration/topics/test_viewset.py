@@ -20,7 +20,7 @@ def test_topic_item_db_queries():
     for index in range(10):
         Topic.objects.create(title=f"topic-{index}")
 
-    assert count_queries(Topic.get_elements) == 4
+    assert count_queries(Topic.get_elements)() == 4
 
 
 class TopicCreate(TestCase):

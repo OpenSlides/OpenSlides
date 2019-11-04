@@ -31,7 +31,7 @@ from ..utils.auth import (
     anonymous_is_enabled,
     has_perm,
 )
-from ..utils.autoupdate import Element, inform_changed_data, inform_changed_elements
+from ..utils.autoupdate import AutoupdateElement, inform_changed_data, inform_elements
 from ..utils.cache import element_cache
 from ..utils.rest_api import (
     ModelViewSet,
@@ -599,8 +599,7 @@ class GroupViewSet(ModelViewSet):
         """
         Updates every users, if some permission changes. For this, every affected collection
         is fetched via the permission_change signal and every object of the collection passed
-        into the cache/autoupdate system. Also the personal (restrcited) cache of every affected
-        user (all users of the group) will be deleted, so it is rebuild after this permission change.
+        into the cache/autoupdate system.
         """
         if isinstance(changed_permissions, Permission):
             changed_permissions = [changed_permissions]
@@ -608,7 +607,7 @@ class GroupViewSet(ModelViewSet):
         if not changed_permissions:
             return  # either None or empty list.
 
-        elements: List[Element] = []
+        elements: List[AutoupdateElement] = []
         signal_results = permission_change.send(None, permissions=changed_permissions)
         all_full_data = async_to_sync(element_cache.get_all_data_list)()
         for _, signal_collections in signal_results:
@@ -617,14 +616,14 @@ class GroupViewSet(ModelViewSet):
                     cachable.get_collection_string(), {}
                 ):
                     elements.append(
-                        Element(
+                        AutoupdateElement(
                             id=full_data["id"],
                             collection_string=cachable.get_collection_string(),
                             full_data=full_data,
                             disable_history=True,
                         )
                     )
-        inform_changed_elements(elements)
+        inform_elements(elements)
 
 
 class PersonalNoteViewSet(ModelViewSet):

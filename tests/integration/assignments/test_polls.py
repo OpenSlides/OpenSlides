@@ -18,7 +18,7 @@ from openslides.poll.models import BasePoll
 from openslides.utils.auth import get_group_model
 from openslides.utils.autoupdate import inform_changed_data
 from tests.common_groups import GROUP_ADMIN_PK, GROUP_DELEGATE_PK
-from tests.count_queries import assert_query_count, count_queries
+from tests.count_queries import count_queries
 from tests.test_case import TestCase
 
 
@@ -35,7 +35,7 @@ def test_assignment_poll_db_queries():
     = 6 queries
     """
     create_assignment_polls()
-    assert count_queries(AssignmentPoll.get_elements) == 6
+    assert count_queries(AssignmentPoll.get_elements)() == 6
 
 
 @pytest.mark.django_db(transaction=False)
@@ -44,7 +44,7 @@ def test_assignment_vote_db_queries():
     Tests that only 1 query is done when fetching AssignmentVotes
     """
     create_assignment_polls()
-    assert count_queries(AssignmentVote.get_elements) == 1
+    assert count_queries(AssignmentVote.get_elements)() == 1
 
 
 def create_assignment_polls():
@@ -94,20 +94,19 @@ class CreateAssignmentPoll(TestCase):
         )
         self.assignment.add_candidate(self.admin)
 
-    # TODO lower query count
-    @assert_query_count(47, True)
     def test_simple(self):
-        response = self.client.post(
-            reverse("assignmentpoll-list"),
-            {
-                "title": "test_title_ailai4toogh3eefaa2Vo",
-                "pollmethod": AssignmentPoll.POLLMETHOD_YNA,
-                "type": "named",
-                "assignment_id": self.assignment.id,
-                "onehundred_percent_base": AssignmentPoll.PERCENT_BASE_YN,
-                "majority_method": AssignmentPoll.MAJORITY_SIMPLE,
-            },
-        )
+        with self.assertNumQueries(35):
+            response = self.client.post(
+                reverse("assignmentpoll-list"),
+                {
+                    "title": "test_title_ailai4toogh3eefaa2Vo",
+                    "pollmethod": AssignmentPoll.POLLMETHOD_YNA,
+                    "type": "named",
+                    "assignment_id": self.assignment.id,
+                    "onehundred_percent_base": AssignmentPoll.PERCENT_BASE_YN,
+                    "majority_method": AssignmentPoll.MAJORITY_SIMPLE,
+                },
+            )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertTrue(AssignmentPoll.objects.exists())
         poll = AssignmentPoll.objects.get()

@@ -24,7 +24,7 @@ def test_mediafiles_db_queries():
             mediafile=SimpleUploadedFile(f"some_file{index}", b"some content."),
         )
 
-    assert count_queries(Mediafile.get_elements) == 4
+    assert count_queries(Mediafile.get_elements)() == 4
 
 
 class TestCreation(TestCase):
