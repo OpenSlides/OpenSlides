@@ -106,7 +106,7 @@ def test_project_view(client):
 
 
 @pytest.mark.django_db(transaction=False)
-def test_set_default_projector(client):
+def test_set_reference_projector(client):
     client.login(username="admin", password="admin")
     Projector.objects.create(name="test_name_rePaODETymV4eFM3aOBD")
     reference_projector = Projector.objects.create(
@@ -114,7 +114,7 @@ def test_set_default_projector(client):
     )
 
     response = client.post(
-        reverse("projector-set-default-projector", args=[reference_projector.pk])
+        reverse("projector-set-reference-projector", args=[reference_projector.pk])
     )
     assert response.status_code == 200
 

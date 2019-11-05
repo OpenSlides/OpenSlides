@@ -132,7 +132,7 @@ class ProjectorViewSet(ModelViewSet):
             "destroy",
             "control_view",
             "set_scroll",
-            "set_default_projector",
+            "set_reference_projector",
             "project",
         ):
             result = has_perm(self.request.user, "core.can_see_projector") and has_perm(
@@ -330,9 +330,9 @@ class ProjectorViewSet(ModelViewSet):
         )
 
     @detail_route(methods=["post"])
-    def set_default_projector(self, request, pk):
+    def set_reference_projector(self, request, pk):
         """
-        REST API operation to set the projector with the given pk as the new default.
+        REST API operation to set the projector with the given pk as the new reference projector for all projectors.
         """
         reference_projector = self.get_object()
         for projector in self.queryset.all():
