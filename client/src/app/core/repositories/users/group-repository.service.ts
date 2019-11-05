@@ -108,6 +108,7 @@ export class GroupRepositoryService extends BaseRepository<ViewGroup, Group, Gro
      */
     private sortPermsPerApp(): void {
         this.constantsService.get<any>('Permissions').subscribe(perms => {
+            this.appPermissions = [];
             let pluginCounter = 0;
             for (const perm of perms) {
                 // extract the apps name
