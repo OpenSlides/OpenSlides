@@ -75,7 +75,7 @@ export class ProjectorListEntryComponent extends BaseViewComponent implements On
      * Handler to set the selected projector as CLOS reference
      */
     public onSetAsClosRef(): void {
-        this.repo.setDefaultProjector(this.projector.id);
+        this.repo.setReferenceProjector(this.projector.id);
     }
 
     /**
