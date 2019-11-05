@@ -356,8 +356,7 @@ class ListOfSpeakersViewSet(
 
             # Send new speaker via autoupdate because users without permission
             # to see users may not have it but can get it now.
-            inform_changed_data([user])
-            # TODO: inform_changed_data(user) should work. But isinstance(user, Iterable) is true...
+            inform_changed_data(user, disable_history=True)
 
         # Toggle 'marked' for the speaker
         elif request.method == "PATCH":
