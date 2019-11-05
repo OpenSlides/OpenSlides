@@ -44,12 +44,12 @@ export class SuperSearchComponent implements OnInit {
     /**
      * Holds the input text the user entered to search for a specific id.
      */
-    public searchStringForID: string = null;
+    public searchStringForId: string = null;
 
     /**
      * The specific id the user searches for.
      */
-    private specificID: number = null;
+    private specificId: number = null;
 
     /**
      * The results for the given query.
@@ -147,12 +147,12 @@ export class SuperSearchComponent implements OnInit {
      * The main function to search through all collections.
      */
     private search(): void {
-        if (this.searchString !== '') {
+        if (this.searchString !== '' || this.specificCollectionString) {
             this.searchResults = this.searchService.search(
                 this.searchString,
                 this.specificCollectionString ? [this.specificCollectionString] : this.collectionStrings,
-                this.specificID,
-                !!this.searchStringForID
+                this.specificId,
+                !!this.searchStringForId
             );
             this.selectFirstResult();
         } else {
@@ -176,23 +176,48 @@ export class SuperSearchComponent implements OnInit {
      * @param query The user's input, he searches for.
      */
     private prepareForSearch(query: string): void {
-        // The query is splitted by the first whitespace or the first ':'.
-        const splittedQuery = query.split(/\s*(?::|\s+)\s*/);
+        // The query is splitted by the first ':' - max. two hits.
+        const splittedQuery = this.splitQuery(query);
 
         this.specificCollectionString = this.searchSpecificCollection(splittedQuery[0]);
         if (this.specificCollectionString) {
             this.searchCollection = splittedQuery.shift();
         }
 
-        this.searchStringForID = this.searchSpecificId(splittedQuery[0]) ? splittedQuery.shift() : null;
+        this.searchStringForId = this.searchSpecificId(splittedQuery[0]) ? splittedQuery.shift() : null;
 
-        // This test, whether the query includes an number --> Then get this number.
+        // This test, whether the query includes a number --> Then get this number.
         if (/\b\d+\b/g.test(splittedQuery[0])) {
-            this.specificID = +query.match(/\d+/g);
+            this.specificId = +query.match(/\d+/g);
         }
 
         // The rest will be joined to one string.
         this.searchString = splittedQuery.join(' ');
+    }
+
+    /**
+     * Method to check, if the query contains a ':'.
+     * If so, this is the separator - otherwise the query will be splitted by any whitespace.
+     *
+     * @param query The query as string.
+     *
+     * @returns An array of strings - the query splitted into single words.
+     */
+    private splitQuery(query: string): string[] {
+        let splittedQuery: string[] = [];
+        if (query.includes(':')) {
+            splittedQuery = query.split(':', 2);
+            splittedQuery.push(
+                // Get the second part of the query and split it into single words.
+                ...splittedQuery
+                    .pop()
+                    .trim()
+                    .split(/\s/g)
+            );
+        } else {
+            splittedQuery = query.split(/\s/g);
+        }
+        return splittedQuery;
     }
 
     /**
@@ -204,14 +229,12 @@ export class SuperSearchComponent implements OnInit {
      * or null, if there exists none.
      */
     private searchSpecificCollection(query: string): string | null {
-        // The query is splitted by the first whitespace or the first ':'.
         const nextCollection = this.translatedCollectionStrings.find(item =>
             // The value of the item should match the query plus any further
             // characters (useful for splitted words in the query).
             // This will look, if the user searches in a specific collection.
             // Flag 'i' tells, that cases are ignored.
-            // new RegExp(item.value, 'i').test(splittedQuery[0])
-            new RegExp(item.value, 'i').test(query)
+            new RegExp(`\\b${query}\\b`, 'i').test(item.value)
         );
         return !!nextCollection ? nextCollection.collection : null;
     }
@@ -283,8 +306,8 @@ export class SuperSearchComponent implements OnInit {
     /**
      * This function sets the string for id or clears the variable, if already existing.
      */
-    public setSearchStringForID(): void {
-        this.searchStringForID = !!this.searchStringForID ? null : 'id';
+    public setSearchStringForId(): void {
+        this.searchStringForId = !!this.searchStringForId ? null : 'id';
         this.setSearch();
     }
 
@@ -293,7 +316,7 @@ export class SuperSearchComponent implements OnInit {
      */
     private setSearch(): void {
         this.searchForm.setValue(
-            [this.searchCollection, this.searchStringForID].map(value => (value ? value + ': ' : '')).join('') +
+            [this.searchCollection, this.searchStringForId].map(value => (value ? value + ': ' : '')).join('') +
                 this.searchString
         );
     }
@@ -340,8 +363,10 @@ export class SuperSearchComponent implements OnInit {
         this.searchResults = [];
         this.selectedModel = null;
         this.searchCollection = '';
+        this.specificCollectionString = null;
         this.searchString = '';
-        this.searchStringForID = null;
+        this.searchStringForId = null;
+        this.specificId = null;
         this.saveQueryToStorage(null);
     }
 
