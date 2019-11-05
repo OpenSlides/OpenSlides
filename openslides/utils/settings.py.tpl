@@ -127,6 +127,10 @@ if ENABLE_SAML:
     INSTALLED_APPS += ['openslides.saml']
 
 
+# Controls if electronic voting (means non-analog polls) are enabled.
+ENABLE_ELECTRONIC_VOTING = False
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
 
