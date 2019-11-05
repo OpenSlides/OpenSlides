@@ -3,6 +3,7 @@ from decimal import Decimal
 from typing import Any
 
 import pytest
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from rest_framework import status
@@ -242,6 +243,23 @@ class CreateAssignmentPoll(TestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertFalse(AssignmentPoll.objects.exists())
 
+    def test_not_allowed_type(self):
+        setattr(settings, "ENABLE_ELECTRONIC_VOTING", False)
+        response = self.client.post(
+            reverse("assignmentpoll-list"),
+            {
+                "title": "test_title_yaiyeighoh0Iraet3Ahc",
+                "pollmethod": AssignmentPoll.POLLMETHOD_YNA,
+                "type": AssignmentPoll.TYPE_NAMED,
+                "assignment_id": self.assignment.id,
+                "onehundred_percent_base": AssignmentPoll.PERCENT_BASE_YN,
+                "majority_method": AssignmentPoll.MAJORITY_SIMPLE,
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertFalse(AssignmentPoll.objects.exists())
+        setattr(settings, "ENABLE_ELECTRONIC_VOTING", True)
+
     def test_not_supported_pollmethod(self):
         response = self.client.post(
             reverse("assignmentpoll-list"),
@@ -414,6 +432,17 @@ class UpdateAssignmentPoll(TestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         poll = AssignmentPoll.objects.get()
         self.assertEqual(poll.type, "named")
+
+    def test_patch_not_allowed_type(self):
+        setattr(settings, "ENABLE_ELECTRONIC_VOTING", False)
+        response = self.client.patch(
+            reverse("assignmentpoll-detail", args=[self.poll.pk]),
+            {"type": BasePoll.TYPE_NAMED},
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        poll = AssignmentPoll.objects.get()
+        self.assertEqual(poll.type, BasePoll.TYPE_NAMED)
+        setattr(settings, "ENABLE_ELECTRONIC_VOTING", False)
 
     def test_patch_groups_to_empty(self):
         response = self.client.patch(
