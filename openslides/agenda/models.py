@@ -426,12 +426,12 @@ class SpeakerManager(models.Manager):
         list of speakers and that someone is twice on one list (off coming
         speakers). Cares also initial sorting of the coming speakers.
         """
+        if isinstance(user, AnonymousUser):
+            raise OpenSlidesError("An anonymous user can not be on lists of speakers.")
         if self.filter(
             user=user, list_of_speakers=list_of_speakers, begin_time=None
         ).exists():
             raise OpenSlidesError(f"{user} is already on the list of speakers.")
-        if isinstance(user, AnonymousUser):
-            raise OpenSlidesError("An anonymous user can not be on lists of speakers.")
         if config["agenda_present_speakers_only"] and not user.is_present:
             raise OpenSlidesError("Only present users can be on the lists of speakers.")
         weight = (
@@ -443,7 +443,11 @@ class SpeakerManager(models.Manager):
         speaker = self.model(
             list_of_speakers=list_of_speakers, user=user, weight=weight + 1
         )
-        speaker.save(force_insert=True, skip_autoupdate=skip_autoupdate)
+        speaker.save(
+            force_insert=True,
+            skip_autoupdate=skip_autoupdate,
+            no_delete_on_restriction=True,
+        )
         return speaker
 
 
