@@ -10,7 +10,13 @@ import { Observable } from 'rxjs';
 
 import { MotionPollRepositoryService } from 'app/core/repositories/motions/motion-poll-repository.service';
 import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
-import { MotionPoll } from 'app/shared/models/motions/motion-poll';
+import { MotionPoll, MotionPollMethodsVerbose } from 'app/shared/models/motions/motion-poll';
+import {
+    MajorityMethodVerbose,
+    PercentBaseVerbose,
+    PollStateVerbose,
+    PollTypeVerbose
+} from 'app/shared/models/poll/base-poll';
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { ViewMotionPoll } from 'app/site/motions/models/view-motion-poll';
 import { ViewGroup } from 'app/site/users/models/view-group';
@@ -23,31 +29,11 @@ import { ViewGroup } from 'app/site/users/models/view-group';
 export class MotionPollDetailComponent extends BaseViewComponent implements OnInit {
     private pollId: number;
 
-    public pollTypes: object = { analog: 'Analog', named: 'Named', pseudonymous: 'Pseudonymous' };
-
-    public pollMethods: object = { YN: 'Yes/No', YNA: 'Yes/No/Abstain' };
-
-    public percentBase: object = {
-        YN: 'Yes/No per candidate',
-        YNA: 'Yes/No/Abstain per candidate',
-        valid: 'All valid ballots',
-        cast: 'All casted ballots',
-        disabled: 'Disabled (no percents)'
-    };
-
-    public majority: object = {
-        simple: 'Simple majority',
-        two_thirds: 'Two-thirds majority',
-        three_quarters: 'Three-quarters majority',
-        disabled: 'Disabled'
-    };
-
-    public stateType: object = {
-        1: 'Created',
-        2: 'Started',
-        3: 'Finished',
-        4: 'Published'
-    };
+    public pollStates = PollStateVerbose;
+    public pollMethods = MotionPollMethodsVerbose;
+    public pollTypes = PollTypeVerbose;
+    public percentBases = PercentBaseVerbose;
+    public majorityMethods = MajorityMethodVerbose;
 
     public userGroups: ViewGroup[] = [];
 
@@ -147,9 +133,9 @@ export class MotionPollDetailComponent extends BaseViewComponent implements OnIn
             title: ['', Validators.required],
             type: ['', Validators.required],
             pollmethod: ['', Validators.required],
-            groups_id: [[], Validators.required],
             onehundred_percent_base: ['', Validators.required],
-            majority_method: ['', Validators.required]
+            majority_method: ['', Validators.required],
+            groups_id: [[]]
         });
         if (this.poll) {
             this.updateForm();

@@ -14,10 +14,16 @@
     [listStorageKey]="'motion-polls'"
 >
     <div *pblNgridCellDef="'title'; row as poll; rowContext as context" class="cell-slot fill">
+        <a
+            class="detail-link"
+            (click)="saveScrollIndex('motion-polls', rowContext.identity)"
+            [routerLink]="poll.id"
+            *ngIf="!isMultiSelect"
+        ></a>
         <span>{{ poll.title }}</span>
     </div>
     <div *pblNgridCellDef="'state'; row as poll; rowContext as context" class="cell-slot fill">
-        <span>{{ poll.state }}</span>
+        <span>{{ poll.stateVerbose }}</span>
     </div>
 </os-list-view-table>
 

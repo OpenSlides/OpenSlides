@@ -1,16 +1,18 @@
 import { BasePoll, BasePollWithoutNestedModels } from '../poll/base-poll';
 import { MotionOption } from './motion-option';
 
-export enum MotionPollmethods {
-    'YN' = 'YN',
-    'YNA' = 'YNA'
+export enum MotionPollMethods {
+    YN = 'YN',
+    YNA = 'YNA'
 }
+export const MotionPollMethodsVerbose = {
+    YN: 'Yes/No',
+    YNA: 'Yes/No/Abstain'
+};
 
 export interface MotionPollWithoutNestedModels extends BasePollWithoutNestedModels {
     motion_id: number;
-    pollmethod: MotionPollmethods;
-    majority_method: string;
-    onehundred_percent_base: string;
+    pollmethod: MotionPollMethods;
 }
 
 /**
@@ -23,6 +25,10 @@ export class MotionPoll extends BasePoll<MotionPoll, MotionOption> {
 
     public constructor(input?: any) {
         super(MotionPoll.COLLECTIONSTRING, input);
+    }
+
+    public get pollmethodVerbose(): string {
+        return MotionPollMethodsVerbose[this.pollmethod];
     }
 }
 export interface MotionPoll extends MotionPollWithoutNestedModels {}
