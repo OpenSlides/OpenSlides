@@ -28,7 +28,7 @@ def test_user_db_queries():
     for index in range(10):
         User.objects.create(username=f"user{index}")
 
-    assert count_queries(User.get_elements) == 3
+    assert count_queries(User.get_elements)() == 3
 
 
 @pytest.mark.django_db(transaction=False)
@@ -41,7 +41,7 @@ def test_group_db_queries():
     for index in range(10):
         Group.objects.create(name=f"group{index}")
 
-    assert count_queries(Group.get_elements) == 2
+    assert count_queries(Group.get_elements)() == 2
 
 
 class UserGetTest(TestCase):

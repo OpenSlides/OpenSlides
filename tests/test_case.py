@@ -11,6 +11,7 @@ from openslides.utils.autoupdate import inform_changed_data
 from openslides.utils.cache import element_cache
 from openslides.utils.utils import get_element_id
 from tests.common_groups import GROUP_ADMIN_PK, GROUP_DELEGATE_PK
+from tests.count_queries import AssertNumQueriesContext
 
 
 class TestCase(_TestCase):
@@ -69,6 +70,14 @@ class TestCase(_TestCase):
         self.assertFalse(
             model.get_element_id() in self.get_last_autoupdate(user=user)[1]
         )
+
+    def assertNumQueries(self, num, func=None, *args, verbose=False, **kwargs):
+        context = AssertNumQueriesContext(self, num, verbose)
+        if func is None:
+            return context
+
+        with context:
+            func(*args, **kwargs)
 
     """
     Create Helper functions

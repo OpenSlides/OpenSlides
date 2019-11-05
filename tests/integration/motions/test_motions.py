@@ -1,5 +1,4 @@
 import json
-from decimal import Decimal
 
 import pytest
 from django.contrib.auth import get_user_model
@@ -12,11 +11,11 @@ from openslides.core.models import Tag
 from openslides.motions.models import (
     Category,
     Motion,
+    MotionBlock,
     MotionChangeRecommendation,
     MotionComment,
     MotionCommentSection,
     MotionPoll,
-    MotionVote,
     Submitter,
     Workflow,
 )
@@ -24,7 +23,7 @@ from openslides.poll.models import BasePoll
 from openslides.utils.auth import get_group_model
 from openslides.utils.autoupdate import inform_changed_data
 from tests.common_groups import GROUP_ADMIN_PK, GROUP_DEFAULT_PK, GROUP_DELEGATE_PK
-from tests.count_queries import assert_query_count, count_queries
+from tests.count_queries import count_queries
 from tests.test_case import TestCase
 
 
@@ -39,12 +38,6 @@ def test_motion_db_queries():
     * 1 request for all users required for the read_groups of the sections
     * 1 request to get the agenda item,
     * 1 request to get the list of speakers,
-    * 1 request to get the polls,
-    * 1 request to get all poll groups,
-    * 1 request to get all poll voted users,
-    * 1 request to get all options for all polls,
-    * 1 request to get all votes for all options,
-    * 1 request to get all users for all votes,
     * 1 request to get the attachments,
     * 1 request to get the tags,
     * 2 requests to get the submitters and supporters,
@@ -71,6 +64,10 @@ def test_motion_db_queries():
     for index in range(10):
         motion = Motion.objects.create(title=f"motion{index}")
 
+        motion.supporters.add(user1, user2)
+        Submitter.objects.add(user2, motion)
+        Submitter.objects.add(user3, motion)
+
         MotionComment.objects.create(
             comment="test_comment", motion=motion, section=section1
         )
@@ -78,46 +75,22 @@ def test_motion_db_queries():
             comment="test_comment2", motion=motion, section=section2
         )
 
-        get_user_model().objects.create_user(
-            username=f"user_{index}", password="password"
-        )
+        block = MotionBlock.objects.create(title=f"block_{index}")
+        motion.motion_block = block
+        category = Category.objects.create(name=f"category_{index}")
+        motion.category = category
+        motion.save()
 
-        # Create some fully populated polls:
-        poll1 = MotionPoll.objects.create(
+        # Create a poll:
+        poll = MotionPoll.objects.create(
             motion=motion,
             title="test_title_XeejaeFez3chahpei9qu",
             pollmethod="YNA",
             type=BasePoll.TYPE_NAMED,
         )
-        poll1.create_options()
-        option = poll1.options.get()
-        MotionVote.objects.create(
-            user=user1, option=option, value="Y", weight=Decimal(1)
-        )
-        poll1.voted.add(user1)
-        MotionVote.objects.create(
-            user=user2, option=option, value="N", weight=Decimal(1)
-        )
-        poll1.voted.add(user2)
+        poll.create_options()
 
-        poll2 = MotionPoll.objects.create(
-            motion=motion,
-            title="test_title_iecuW7eekeGh4uunow1e",
-            pollmethod="YNA",
-            type=BasePoll.TYPE_NAMED,
-        )
-        poll2.create_options()
-        option = poll2.options.get()
-        MotionVote.objects.create(
-            user=user2, option=option, value="Y", weight=Decimal(1)
-        )
-        poll2.voted.add(user2)
-        MotionVote.objects.create(
-            user=user3, option=option, value="N", weight=Decimal(1)
-        )
-        poll2.voted.add(user3)
-
-    assert count_queries(Motion.get_elements) == 18
+    assert count_queries(Motion.get_elements)() == 12
 
 
 class CreateMotion(TestCase):
@@ -125,13 +98,10 @@ class CreateMotion(TestCase):
     Tests motion creation.
     """
 
-    maxDiff = None
-
     def setUp(self):
         self.client = APIClient()
         self.client.login(username="admin", password="admin")
 
-    @assert_query_count(85, True)
     def test_simple(self):
         """
         Tests that a motion is created with a specific title and text.
@@ -139,13 +109,14 @@ class CreateMotion(TestCase):
         The created motion should have an identifier and the admin user should
         be the submitter.
         """
-        response = self.client.post(
-            reverse("motion-list"),
-            {
-                "title": "test_title_OoCoo3MeiT9li5Iengu9",
-                "text": "test_text_thuoz0iecheiheereiCi",
-            },
-        )
+        with self.assertNumQueries(51, verbose=True):
+            response = self.client.post(
+                reverse("motion-list"),
+                {
+                    "title": "test_title_OoCoo3MeiT9li5Iengu9",
+                    "text": "test_text_thuoz0iecheiheereiCi",
+                },
+            )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         motion = Motion.objects.get()
         changed_autoupdate, deleted_autoupdate = self.get_last_autoupdate()

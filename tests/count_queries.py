@@ -1,32 +1,46 @@
+from typing import Callable
+
 from django.db import DEFAULT_DB_ALIAS, connections
 from django.test.utils import CaptureQueriesContext
 
 
-def count_queries(func, verbose=False, *args, **kwargs) -> int:
-    context = CaptureQueriesContext(connections[DEFAULT_DB_ALIAS])
-    with context:
-        func(*args, **kwargs)
+def count_queries(func, verbose=False) -> Callable[..., int]:
+    def wrapper(*args, **kwargs) -> int:
+        context = CaptureQueriesContext(connections[DEFAULT_DB_ALIAS])
+        with context:
+            func(*args, **kwargs)
 
-    if verbose:
-        queries = "\n".join(
-            f"{i}. {query['sql']}"
-            for i, query in enumerate(context.captured_queries, start=1)
-        )
-        print(f"{len(context)} queries executed\nCaptured queries were:\n{queries}")
+        if verbose:
+            print(get_verbose_queries(context))
 
-    return len(context)
+        return len(context)
+
+    return wrapper
 
 
-def assert_query_count(should_be, verbose=False):
-    """
-    Decorator to easily count queries on any test you want.
-    should_be defines how many queries are to be expected
-    """
+class AssertNumQueriesContext(CaptureQueriesContext):
+    def __init__(self, test_case, num, verbose):
+        self.test_case = test_case
+        self.num = num
+        self.verbose = verbose
+        super().__init__(connections[DEFAULT_DB_ALIAS])
 
-    def outer(func):
-        def inner(*args, **kwargs):
-            assert count_queries(func, verbose, *args, **kwargs) == should_be
+    def __exit__(self, exc_type, exc_value, traceback):
+        super().__exit__(exc_type, exc_value, traceback)
+        if exc_type is not None:
+            return
+        executed = len(self)
+        verbose_queries = get_verbose_queries(self)
+        if self.verbose:
+            print(verbose_queries)
+            self.test_case.assertEqual(executed, self.num)
+        else:
+            self.test_case.assertEqual(executed, self.num, verbose_queries)
 
-        return inner
 
-    return outer
+def get_verbose_queries(context):
+    queries = "\n".join(
+        f"{i}. {query['sql']}"
+        for i, query in enumerate(context.captured_queries, start=1)
+    )
+    return f"{len(context)} queries executed\nCaptured queries were:\n{queries}"

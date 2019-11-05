@@ -12,12 +12,12 @@ def watch_and_update_configs():
     are updated.
     """
     # 1) map logo and font config keys to mediafile ids
-    mediafiles = Mediafile.objects.get_full_queryset().all()
+    mediafiles = Mediafile.objects.get_prefetched_queryset().all()
     logos = build_mapping("logos_available", mediafiles)
     fonts = build_mapping("fonts_available", mediafiles)
     yield
     # 2) update changed paths/urls
-    mediafiles = Mediafile.objects.get_full_queryset().all()
+    mediafiles = Mediafile.objects.get_prefetched_queryset().all()
     update_mapping(logos, mediafiles)
     update_mapping(fonts, mediafiles)
 

@@ -28,7 +28,7 @@ def test_projector_db_queries():
     for index in range(10):
         Projector.objects.create(name=f"Projector{index}")
 
-    assert count_queries(Projector.get_elements) == 2
+    assert count_queries(Projector.get_elements)() == 2
 
 
 @pytest.mark.django_db(transaction=False)
@@ -40,7 +40,7 @@ def test_tag_db_queries():
     for index in range(10):
         Tag.objects.create(name=f"tag{index}")
 
-    assert count_queries(Tag.get_elements) == 1
+    assert count_queries(Tag.get_elements)() == 1
 
 
 @pytest.mark.django_db(transaction=False)
@@ -51,7 +51,7 @@ def test_config_db_queries():
     """
     config.save_default_values()
 
-    assert count_queries(Tag.get_elements) == 1
+    assert count_queries(Tag.get_elements)() == 1
 
 
 class ProjectorViewSet(TestCase):
