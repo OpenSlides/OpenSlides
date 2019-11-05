@@ -70,3 +70,5 @@ PASSWORD_HASHERS = ["django.contrib.auth.hashers.MD5PasswordHasher"]
 RESTRICTED_DATA_CACHE = False
 
 REST_FRAMEWORK = {"TEST_REQUEST_DEFAULT_FORMAT": "json"}
+
+ENABLE_ELECTRONIC_VOTING = True

@@ -1,6 +1,7 @@
 from decimal import Decimal
 
 import pytest
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from rest_framework import status
@@ -151,11 +152,11 @@ class CreateMotionPoll(TestCase):
             reverse("motionpoll-list"),
             {
                 "title": "test_title_Thoo2eiphohhi1eeXoow",
-                "pollmethod": "YNA",
-                "type": "named",
+                "pollmethod": MotionPoll.POLLMETHOD_YNA,
+                "type": MotionPoll.TYPE_NAMED,
                 "motion_id": self.motion.id,
-                "onehundred_percent_base": "YN",
-                "majority_method": "simple",
+                "onehundred_percent_base": MotionPoll.PERCENT_BASE_YN,
+                "majority_method": MotionPoll.MAJORITY_SIMPLE,
                 "groups_id": [],
             },
         )
@@ -168,13 +169,32 @@ class CreateMotionPoll(TestCase):
             reverse("motionpoll-list"),
             {
                 "title": "test_title_yaiyeighoh0Iraet3Ahc",
-                "pollmethod": "YNA",
+                "pollmethod": MotionPoll.POLLMETHOD_YNA,
                 "type": "not_existing",
                 "motion_id": self.motion.id,
+                "onehundred_percent_base": MotionPoll.PERCENT_BASE_YN,
+                "majority_method": MotionPoll.MAJORITY_SIMPLE,
             },
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertFalse(MotionPoll.objects.exists())
+
+    def test_not_allowed_type(self):
+        setattr(settings, "ENABLE_ELECTRONIC_VOTING", False)
+        response = self.client.post(
+            reverse("motionpoll-list"),
+            {
+                "title": "test_title_3jdWIXbKBa7ZXutf3RYf",
+                "pollmethod": MotionPoll.POLLMETHOD_YN,
+                "type": MotionPoll.TYPE_NAMED,
+                "motion_id": self.motion.id,
+                "onehundred_percent_base": MotionPoll.PERCENT_BASE_YN,
+                "majority_method": MotionPoll.MAJORITY_SIMPLE,
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertFalse(MotionPoll.objects.exists())
+        setattr(settings, "ENABLE_ELECTRONIC_VOTING", True)
 
     def test_not_supported_pollmethod(self):
         response = self.client.post(
@@ -184,6 +204,8 @@ class CreateMotionPoll(TestCase):
                 "pollmethod": "not_existing",
                 "type": "named",
                 "motion_id": self.motion.id,
+                "onehundred_percent_base": MotionPoll.PERCENT_BASE_YN,
+                "majority_method": MotionPoll.MAJORITY_SIMPLE,
             },
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -269,6 +291,17 @@ class UpdateMotionPoll(TestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         poll = MotionPoll.objects.get()
         self.assertEqual(poll.type, "named")
+
+    def test_patch_not_allowed_type(self):
+        setattr(settings, "ENABLE_ELECTRONIC_VOTING", False)
+        response = self.client.patch(
+            reverse("motionpoll-detail", args=[self.poll.pk]),
+            {"type": BasePoll.TYPE_NAMED},
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        poll = MotionPoll.objects.get()
+        self.assertEqual(poll.type, BasePoll.TYPE_NAMED)
+        setattr(settings, "ENABLE_ELECTRONIC_VOTING", True)
 
     def test_patch_100_percent_base(self):
         response = self.client.patch(
