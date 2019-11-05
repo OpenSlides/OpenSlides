@@ -1,3 +1,5 @@
+from django.conf import settings
+
 from ..utils.auth import get_group_model
 from ..utils.rest_api import (
     CharField,
@@ -5,7 +7,9 @@ from ..utils.rest_api import (
     IdPrimaryKeyRelatedField,
     ModelSerializer,
     SerializerMethodField,
+    ValidationError,
 )
+from .models import BasePoll
 
 
 BASE_VOTE_FIELDS = ("id", "weight", "value", "user", "option", "pollstate")
@@ -77,10 +81,10 @@ class BasePollSerializer(ModelSerializer):
     def update(self, instance, validated_data):
         """
         Adjusts the 100%-base to the pollmethod. This might be needed,
-        if at least one of them was changed. Wrong comobinations should be
+        if at least one of them was changed. Wrong combinations should be
         also handled by the client, but here we make it sure aswell!
 
-        E.g. the pollmethod is YN, but the 100%-base is YNA, this micht noght be
+        E.g. the pollmethod is YN, but the 100%-base is YNA, this might not be
         possible (see implementing serializers to see forbidden combinations)
         """
         old_100_percent_base = instance.onehundred_percent_base
@@ -94,6 +98,24 @@ class BasePollSerializer(ModelSerializer):
             instance.save()
 
         return instance
+
+    def validate(self, data):
+        """
+        Check that the given polltype is allowed.
+        """
+        # has to be called in function instead of globally to enable tests to change the setting
+        ENABLE_ELECTRONIC_VOTING = getattr(settings, "ENABLE_ELECTRONIC_VOTING", False)
+        if (
+            "type" in data
+            and data["type"] != BasePoll.TYPE_ANALOG
+            and not ENABLE_ELECTRONIC_VOTING
+        ):
+            raise ValidationError(
+                {
+                    "detail": "Electronic voting is disabled. Only analog polls are allowed"
+                }
+            )
+        return data
 
     def norm_100_percent_base_to_pollmethod(
         self, onehundred_percent_base, pollmethod, old_100_percent_base=None
