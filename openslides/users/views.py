@@ -17,6 +17,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.core import mail
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db import transaction
+from django.db.utils import IntegrityError
 from django.http.request import QueryDict
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
@@ -97,6 +98,13 @@ class UserViewSet(ModelViewSet):
         else:
             result = False
         return result
+
+    # catch IntegrityError, probably being caused by a race condition
+    def perform_create(self, serializer):
+        try:
+            super().perform_create(serializer)
+        except IntegrityError as e:
+            raise ValidationError({"detail": str(e)})
 
     def update(self, request, *args, **kwargs):
         """

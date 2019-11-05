@@ -96,7 +96,7 @@ class UserManager(BaseUserManager):
             base_name = first_name or last_name
             if not base_name:
                 raise ValueError(
-                    "Either 'first_name' or 'last_name' must not be " "empty."
+                    "Either 'first_name' or 'last_name' must not be empty."
                 )
 
         if not self.filter(username=base_name).exists():
