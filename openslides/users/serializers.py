@@ -9,6 +9,7 @@ from ..utils.rest_api import (
     RelatedField,
     ValidationError,
 )
+from ..utils.validate import validate_html
 from .models import Group, PersonalNote, User
 
 
@@ -90,6 +91,11 @@ class UserFullSerializer(ModelSerializer):
             data["username"] = User.objects.generate_username(
                 data.get("first_name", ""), data.get("last_name", "")
             )
+
+        # check the about_me html
+        if "about_me" in data:
+            data["about_me"] = validate_html(data["about_me"])
+
         return data
 
     def prepare_password(self, validated_data):

@@ -42,6 +42,7 @@ from ..utils.rest_api import (
     list_route,
     status,
 )
+from ..utils.validate import validate_json
 from ..utils.views import APIView
 from .access_permissions import (
     GroupAccessPermissions,
@@ -688,7 +689,8 @@ class PersonalNoteViewSet(ModelViewSet):
         for data in request.data:
             if data["collection"] not in personal_note.notes:
                 personal_note.notes[data["collection"]] = {}
-            personal_note.notes[data["collection"]][data["id"]] = data["content"]
+            content = validate_json(data["content"], 2)
+            personal_note.notes[data["collection"]][data["id"]] = content
 
         personal_note.save()
         return Response()
