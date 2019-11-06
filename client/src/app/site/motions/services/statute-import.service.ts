@@ -7,7 +7,6 @@ import { Papa } from 'ngx-papaparse';
 import { StatuteParagraphRepositoryService } from 'app/core/repositories/motions/statute-paragraph-repository.service';
 import { BaseImportService, NewEntry } from 'app/core/ui-services/base-import.service';
 import { StatuteParagraph } from 'app/shared/models/motions/statute-paragraph';
-import { ViewStatuteParagraph } from '../models/view-statute-paragraph';
 
 /**
  * Service for motion imports
@@ -15,7 +14,7 @@ import { ViewStatuteParagraph } from '../models/view-statute-paragraph';
 @Injectable({
     providedIn: 'root'
 })
-export class StatuteImportService extends BaseImportService<ViewStatuteParagraph> {
+export class StatuteImportService extends BaseImportService<StatuteParagraph> {
     /**
      * List of possible errors and their verbose explanation
      */
@@ -60,16 +59,16 @@ export class StatuteImportService extends BaseImportService<ViewStatuteParagraph
      * @param line
      * @returns a new Entry representing a Motion
      */
-    public mapData(line: string): NewEntry<ViewStatuteParagraph> {
-        const newEntry = new ViewStatuteParagraph(new StatuteParagraph());
+    public mapData(line: string): NewEntry<StatuteParagraph> {
+        const newEntry = new StatuteParagraph(new StatuteParagraph());
         const headerLength = Math.min(this.expectedHeader.length, line.length);
         for (let idx = 0; idx < headerLength; idx++) {
             switch (this.expectedHeader[idx]) {
                 case 'title':
-                    newEntry.statuteParagraph.title = line[idx];
+                    newEntry.title = line[idx];
                     break;
                 case 'text':
-                    newEntry.statuteParagraph.text = line[idx];
+                    newEntry.text = line[idx];
                     break;
             }
         }
@@ -91,7 +90,7 @@ export class StatuteImportService extends BaseImportService<ViewStatuteParagraph
             if (entry.status !== 'new') {
                 continue;
             }
-            await this.repo.create(entry.newEntry.statuteParagraph);
+            await this.repo.create(entry.newEntry);
             entry.status = 'done';
         }
         this.updatePreview();

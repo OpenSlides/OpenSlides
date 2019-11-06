@@ -4,8 +4,8 @@ import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import { StatuteParagraph } from 'app/shared/models/motions/statute-paragraph';
 import { BaseImportListComponent } from 'app/site/base/base-import-list';
-import { ViewStatuteParagraph } from 'app/site/motions/models/view-statute-paragraph';
 import { StatuteCsvExportService } from 'app/site/motions/services/statute-csv-export.service';
 import { StatuteImportService } from 'app/site/motions/services/statute-import.service';
 
@@ -16,7 +16,7 @@ import { StatuteImportService } from 'app/site/motions/services/statute-import.s
     selector: 'os-statute-import-list',
     templateUrl: './statute-import-list.component.html'
 })
-export class StatuteImportListComponent extends BaseImportListComponent<ViewStatuteParagraph> {
+export class StatuteImportListComponent extends BaseImportListComponent<StatuteParagraph> {
     /**
      * Constructor for list view bases
      *

@@ -1,5 +1,4 @@
 import { CreateMotion } from './create-motion';
-import { ViewCreateMotion } from './view-create-motion';
 
 /**
  * Interface for correlating between strings representing BaseModels and existing
@@ -17,9 +16,7 @@ export interface CsvMapping {
  *
  * @ignore
  */
-export class ViewCsvCreateMotion extends ViewCreateMotion {
-    protected _motion: CreateMotion;
-
+export class ImportCreateMotion extends CreateMotion {
     /**
      * Mapping for a new/existing category.
      */
@@ -40,10 +37,6 @@ export class ViewCsvCreateMotion extends ViewCreateMotion {
      */
     public csvTags: CsvMapping[];
 
-    public constructor(motion?: CreateMotion) {
-        super(motion);
-    }
-
     /**
      * takes a list of motion block mappings to update the current csvMotionblock.
      * Returns the amount of entries that remain unmatched
@@ -54,13 +47,13 @@ export class ViewCsvCreateMotion extends ViewCreateMotion {
         if (!this.csvMotionblock) {
             return 0;
         } else if (this.csvMotionblock.id) {
-            this.motion.motion_block_id = this.csvMotionblock.id;
+            this.motion_block_id = this.csvMotionblock.id;
             return 0;
         } else {
             const newBlock = motionBlocks.find(newMotionBlock => newMotionBlock.name === this.csvMotionblock.name);
             if (newBlock) {
                 this.csvMotionblock = newBlock;
-                this.motion.motion_block_id = newBlock.id;
+                this.motion_block_id = newBlock.id;
                 return 0;
             } else {
                 return 1;
@@ -78,13 +71,13 @@ export class ViewCsvCreateMotion extends ViewCreateMotion {
         if (!this.csvCategory) {
             return 0;
         } else if (this.csvCategory.id) {
-            this.motion.category_id = this.csvCategory.id;
+            this.category_id = this.csvCategory.id;
             return 0;
         } else {
             const newCat = categories.find(newCategory => newCategory.name === this.csvCategory.name);
             if (newCat) {
                 this.csvCategory = newCat;
-                this.motion.category_id = newCat.id;
+                this.category_id = newCat.id;
                 return 0;
             } else {
                 return 1;
@@ -118,7 +111,7 @@ export class ViewCsvCreateMotion extends ViewCreateMotion {
                 open += 1;
             }
         });
-        this.motion.submitters_id = ids;
+        this.submitters_id = ids;
         return open;
     }
 
@@ -149,7 +142,7 @@ export class ViewCsvCreateMotion extends ViewCreateMotion {
                 ++open;
             }
         }
-        this.motion.tags_id = ids;
+        this.tags_id = ids;
         return open;
     }
 }

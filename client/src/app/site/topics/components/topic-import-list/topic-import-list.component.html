@@ -197,21 +197,21 @@
             </ng-container>
 
             <!-- duration column -->
-            <ng-container matColumnDef="duration">
+            <ng-container matColumnDef="agenda_duration">
                 <mat-header-cell *matHeaderCellDef translate>Duration</mat-header-cell>
-                <mat-cell *matCellDef="let entry"> {{ getDuration(entry.newEntry.duration) }} </mat-cell>
+                <mat-cell *matCellDef="let entry"> {{ getDuration(entry.newEntry.agenda_duration) }} </mat-cell>
             </ng-container>
 
             <!-- comment column-->
-            <ng-container matColumnDef="comment">
+            <ng-container matColumnDef="agenda_comment">
                 <mat-header-cell *matHeaderCellDef translate>Comment</mat-header-cell>
-                <mat-cell *matCellDef="let entry"> {{ entry.newEntry.comment }} </mat-cell>
+                <mat-cell *matCellDef="let entry"> {{ entry.newEntry.agenda_comment }} </mat-cell>
             </ng-container>
 
             <!-- type column -->
-            <ng-container matColumnDef="type">
+            <ng-container matColumnDef="agenda_type">
                 <mat-header-cell *matHeaderCellDef translate>Type</mat-header-cell>
-                <mat-cell *matCellDef="let entry"> {{ getTypeString(entry.newEntry.type) | translate }} </mat-cell>
+                <mat-cell *matCellDef="let entry"> {{ getTypeString(entry.newEntry.agenda_type) | translate }} </mat-cell>
             </ng-container>
 
             <mat-header-row *matHeaderRowDef="getColumnDefinition()"></mat-header-row>

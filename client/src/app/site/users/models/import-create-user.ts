@@ -1,5 +1,4 @@
 import { User } from 'app/shared/models/users/user';
-import { ViewUser } from './view-user';
 
 /**
  * Interface for correlating between strings representing BaseModels and existing
@@ -17,7 +16,7 @@ export interface CsvMapping {
  *
  * @ignore
  */
-export class ViewCsvCreateUser extends ViewUser {
+export class ImportCreateUser extends User {
     /**
      * Mapping for a new/existing groups.
      */
@@ -28,17 +27,10 @@ export class ViewCsvCreateUser extends ViewUser {
     /**
      * Getter if the minimum requrements for a user are met: A name
      *
-     * @returns false if the user has neither first nor last name
+     * @returns false if the user has neither first nor last name nor username
      */
     public get isValid(): boolean {
-        if (this.user && (this.first_name || this.last_name)) {
-            return true;
-        }
-        return false;
-    }
-
-    public constructor(user?: User) {
-        super(user);
+        return !!(this.first_name || this.last_name || this.username);
     }
 
     /**
@@ -67,7 +59,7 @@ export class ViewCsvCreateUser extends ViewUser {
                 open += 1;
             }
         });
-        this.user.groups_id = ids;
+        this.groups_id = ids;
         return open;
     }
 }

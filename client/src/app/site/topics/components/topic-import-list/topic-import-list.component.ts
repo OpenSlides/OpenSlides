@@ -5,21 +5,21 @@ import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { AgendaImportService } from '../../services/agenda-import.service';
 import { CsvExportService } from 'app/core/ui-services/csv-export.service';
 import { DurationService } from 'app/core/ui-services/duration.service';
 import { ItemVisibilityChoices } from 'app/shared/models/agenda/item';
 import { BaseImportListComponent } from 'app/site/base/base-import-list';
-import { ViewCreateTopic } from 'app/site/topics/models/view-create-topic';
+import { CreateTopic } from 'app/site/topics/models/create-topic';
+import { TopicImportService } from '../../../topics/services/topic-import.service';
 
 /**
  * Component for the agenda import list view.
  */
 @Component({
-    selector: 'os-agenda-import-list',
-    templateUrl: './agenda-import-list.component.html'
+    selector: 'os-topic-import-list',
+    templateUrl: './topic-import-list.component.html'
 })
-export class AgendaImportListComponent extends BaseImportListComponent<ViewCreateTopic> {
+export class TopicImportListComponent extends BaseImportListComponent<CreateTopic> {
     /**
      * A form for text input
      */
@@ -40,7 +40,7 @@ export class AgendaImportListComponent extends BaseImportListComponent<ViewCreat
         titleService: Title,
         matSnackBar: MatSnackBar,
         translate: TranslateService,
-        importer: AgendaImportService,
+        importer: TopicImportService,
         formBuilder: FormBuilder,
         private exporter: CsvExportService,
         private durationService: DurationService
@@ -81,7 +81,7 @@ export class AgendaImportListComponent extends BaseImportListComponent<ViewCreat
      * Sends the data in the text field input area to the importer
      */
     public parseTextArea(): void {
-        (this.importer as AgendaImportService).parseTextArea(this.textAreaForm.get('inputtext').value);
+        (this.importer as TopicImportService).parseTextArea(this.textAreaForm.get('inputtext').value);
     }
 
     /**

@@ -7,9 +7,9 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { NewEntry } from 'app/core/ui-services/base-import.service';
 import { CsvExportService } from 'app/core/ui-services/csv-export.service';
+import { User } from 'app/shared/models/users/user';
 import { BaseImportListComponent } from 'app/site/base/base-import-list';
 import { UserImportService } from '../../services/user-import.service';
-import { ViewUser } from '../../models/view-user';
 
 /**
  * Component for the user import list view.
@@ -18,7 +18,7 @@ import { ViewUser } from '../../models/view-user';
     selector: 'os-user-import-list',
     templateUrl: './user-import-list.component.html'
 })
-export class UserImportListComponent extends BaseImportListComponent<ViewUser> {
+export class UserImportListComponent extends BaseImportListComponent<User> {
     public textAreaForm: FormGroup;
 
     /**
@@ -59,7 +59,9 @@ export class UserImportListComponent extends BaseImportListComponent<ViewUser> {
             'Is present',
             'Is a committee',
             'Initial password',
-            'Email'
+            'Email',
+            'Username',
+            'Gender'
         ];
         const rows = [
             [
@@ -74,7 +76,9 @@ export class UserImportListComponent extends BaseImportListComponent<ViewUser> {
                 1,
                 ,
                 'initialPassword',
-                null
+                null,
+                'mmustermann',
+                'm'
             ],
             [
                 null,
@@ -88,10 +92,12 @@ export class UserImportListComponent extends BaseImportListComponent<ViewUser> {
                 1,
                 null,
                 null,
-                'john.doe@email.com'
+                'john.doe@email.com',
+                'jdoe',
+                'diverse'
             ],
-            [null, 'Fred', 'Bloggs', 'London', null, null, null, null, null, null, null, null],
-            [null, null, 'Executive Board', null, null, null, null, null, null, 1, null, null]
+            [null, 'Julia', 'Bloggs', 'London', null, null, null, null, null, null, null, null, 'jbloggs', 'f'],
+            [null, null, 'Executive Board', null, null, null, null, null, null, 1, null, null, 'executive', null]
         ];
         this.exporter.dummyCSVExport(headerRow, rows, `${this.translate.instant('participants-example')}.csv`);
     }
@@ -102,7 +108,7 @@ export class UserImportListComponent extends BaseImportListComponent<ViewUser> {
      * @param row
      * @returns an error string similar to getVerboseError
      */
-    public nameErrors(row: NewEntry<ViewUser>): string {
+    public nameErrors(row: NewEntry<User>): string {
         for (const name of ['NoName', 'Duplicates', 'DuplicateImport']) {
             if (this.importer.hasError(row, name)) {
                 return this.importer.verbose(name);

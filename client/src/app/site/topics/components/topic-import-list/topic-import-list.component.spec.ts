@@ -2,21 +2,21 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { E2EImportsModule } from 'e2e-imports.module';
 
-import { AgendaImportListComponent } from './agenda-import-list.component';
+import { TopicImportListComponent } from './topic-import-list.component';
 
-describe('AgendaImportListComponent', () => {
-    let component: AgendaImportListComponent;
-    let fixture: ComponentFixture<AgendaImportListComponent>;
+describe('TopicImportListComponent', () => {
+    let component: TopicImportListComponent;
+    let fixture: ComponentFixture<TopicImportListComponent>;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [AgendaImportListComponent],
+            declarations: [TopicImportListComponent],
             imports: [E2EImportsModule]
         }).compileComponents();
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(AgendaImportListComponent);
+        fixture = TestBed.createComponent(TopicImportListComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });
