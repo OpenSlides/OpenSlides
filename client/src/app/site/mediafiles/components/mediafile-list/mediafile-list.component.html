@@ -93,7 +93,7 @@
 >
     <!-- Icon column -->
     <div *pblNgridCellDef="'icon'; row as mediafile" class="fill clickable">
-        <a class="detail-link" target="_blank" [routerLink]="mediafile.url" *ngIf="mediafile.is_file && !isMultiSelect">
+        <a class="detail-link" target="_blank" [routerLink]="mediafile.url" *ngIf="!mediafile.is_directory && !isMultiSelect">
         </a>
         <a class="detail-link" (click)="changeDirectory(mediafile.id)" *ngIf="mediafile.is_directory && !isMultiSelect">
         </a>
@@ -102,7 +102,7 @@
 
     <!-- Title column -->
     <div *pblNgridCellDef="'title'; row as mediafile" class="fill clickable">
-        <a class="detail-link" target="_blank" [routerLink]="mediafile.url" *ngIf="mediafile.is_file && !isMultiSelect">
+        <a class="detail-link" target="_blank" [routerLink]="mediafile.url" *ngIf="!mediafile.is_directory && !isMultiSelect">
         </a>
         <a class="detail-link" (click)="changeDirectory(mediafile.id)" *ngIf="mediafile.is_directory && !isMultiSelect">
         </a>
@@ -110,7 +110,7 @@
             <div class="file-title ellipsis-overflow">
                 {{ mediafile.filename }}
             </div>
-            <div class="info-text" *ngIf="mediafile.is_file">
+            <div class="info-text" *ngIf="!mediafile.is_directory">
                 <span> {{ getDateFromTimestamp(mediafile.timestamp) }} · {{ mediafile.size }} </span>
             </div>
         </div>
