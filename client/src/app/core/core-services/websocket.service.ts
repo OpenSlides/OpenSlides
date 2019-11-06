@@ -545,8 +545,10 @@ export class WebsocketService {
      * @param buffer - Buffer to convert
      * @returns String
      */
-    private arrayBufferToString(buffer: ArrayBuffer): string {
-        return String.fromCharCode.apply(null, Array.from(new Uint16Array(buffer)));
+    private arrayBufferToString(buffer: Uint8Array): string {
+        return Array.from(buffer)
+            .map(code => String.fromCharCode(code))
+            .join('');
     }
 
     /**

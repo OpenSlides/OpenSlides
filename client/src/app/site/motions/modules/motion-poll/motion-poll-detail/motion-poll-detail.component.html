@@ -1,0 +1,93 @@
+<os-head-bar
+    [goBack]="false"
+    [nav]="false"
+    [hasMainButton]="true"
+    [editMode]="isEditingPoll"
+    [mainButtonIcon]="'edit'"
+    [mainActionTooltip]="'Edit' | translate"
+    [isSaveButtonEnabled]="contentForm.valid"
+    (mainEvent)="editPoll()"
+    (saveEvent)="savePoll()"
+    (cancelEditEvent)="backToView()"
+>
+    <div class="title-slot">
+        <h2 *ngIf="isNewPoll" translate>New vote</h2>
+        <h2 *ngIf="!isNewPoll && !!poll">{{ poll.title }}</h2>
+    </div>
+</os-head-bar>
+
+<mat-card [ngClass]="isEditingPoll ? 'os-form-card' : 'os-card'">
+    <ng-container *ngIf="!isEditingPoll" [ngTemplateOutlet]="viewTemplate"></ng-container>
+    <ng-container *ngIf="isEditingPoll" [ngTemplateOutlet]="formTemplate"></ng-container>
+</mat-card>
+
+<ng-template #viewTemplate>
+    <ng-container *ngIf="poll">
+        <h1>{{ poll.title }}</h1>
+        <mat-divider></mat-divider>
+        <div class="poll-content">
+            <div>{{ 'Current state' | translate }}: {{ stateType[poll.state] | translate }}</div>
+            <div>
+                {{ 'Groups' | translate }}:
+                <span *ngFor="let group of poll.groups">{{ group.getTitle() | translate }}</span>
+            </div>
+            <div>{{ 'Poll method' | translate }}: {{ pollMethods[poll.pollmethod] | translate }}</div>
+            <div>{{ 'Majority method' | translate }}: {{ majority[poll.majority_method] | translate }}</div>
+            <div>{{ 'Percent base' | translate }}: {{ percentBase[poll.onehundred_percent_base] | translate }}</div>
+        </div>
+    </ng-container>
+</ng-template>
+
+<ng-template #formTemplate>
+    <form [formGroup]="contentForm">
+        <mat-form-field>
+            <input matInput formControlName="title" [placeholder]="'Title' | translate" required />
+            <mat-error translate>A title is required</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-select [placeholder]="'Poll type' | translate" formControlName="type" required>
+                <mat-option *ngFor="let option of pollTypes | keyvalue" [value]="option.key">{{
+                    option.value | translate
+                }}</mat-option>
+            </mat-select>
+            <mat-error translate>This field is required</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-select [placeholder]="'Poll method' | translate" formControlName="pollmethod" required>
+                <mat-option *ngFor="let option of pollMethods | keyvalue" [value]="option.key">{{
+                    option.value
+                }}</mat-option>
+            </mat-select>
+            <mat-error translate>This field is required</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+            <os-search-value-selector
+                formControlName="groups_id"
+                required
+                [multiple]="true"
+                [includeNone]="false"
+                [placeholder]="'Entitled to vote' | translate"
+                [inputListValues]="groupObservable"
+            ></os-search-value-selector>
+            <mat-error translate>This field is required</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-select
+                placeholder="{{ 'Percent base' | translate }}"
+                formControlName="onehundred_percent_base"
+                required
+            >
+                <mat-option *ngFor="let option of percentBase | keyvalue" [value]="option.key">{{
+                    option.value | translate
+                }}</mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-select placeholder="{{ 'Majority' | translate }}" formControlName="majority_method" required>
+                <mat-option *ngFor="let option of majority | keyvalue" [value]="option.key">{{
+                    option.value | translate
+                }}</mat-option>
+            </mat-select>
+        </mat-form-field>
+    </form>
+</ng-template>

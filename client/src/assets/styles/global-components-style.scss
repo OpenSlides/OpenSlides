@@ -126,6 +126,15 @@
         right: 0;
     }
 
+    .icon {
+        color: mat-color($foreground, icon);
+    }
+
+    .small-icon {
+        @extend .icon;
+        font-size: 18px;
+    }
+
     /** Custom themes for NGrid. Could be an own file if it gets more */
     .pbl-ngrid-container {
         background: mat-color($background, card);

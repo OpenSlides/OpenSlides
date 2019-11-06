@@ -1,12 +1,13 @@
-<div class="attachment-container" *ngIf="controlName">
-    <os-search-value-selector
-        class="selector"
-        ngDefaultControl
-        [multiple]="true"
-        listname="{{ 'Attachments' | translate }}"
-        [formControl]="controlName"
-        [inputListValues]="mediaFileList"
-    ></os-search-value-selector>
+<div class="attachment-container" *ngIf="contentForm">
+    <mat-form-field>
+        <os-search-value-selector
+            class="selector"
+            [multiple]="true"
+            placeholder="{{ 'Attachments' | translate }}"
+            [formControl]="contentForm"
+            [inputListValues]="mediaFileList"
+        ></os-search-value-selector>
+    </mat-form-field>
     <button type="button" mat-icon-button (click)="openUploadDialog(uploadDialog)" *osPerms="'mediafiles.can_manage'">
         <mat-icon>cloud_upload</mat-icon>
     </button>

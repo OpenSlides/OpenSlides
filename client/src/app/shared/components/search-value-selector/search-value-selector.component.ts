@@ -1,31 +1,38 @@
-import { ChangeDetectionStrategy, Component, Input, OnDestroy, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { MatSelect } from '@angular/material';
+import { FocusMonitor } from '@angular/cdk/a11y';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    ElementRef,
+    Input,
+    Optional,
+    Self
+} from '@angular/core';
+import { FormBuilder, FormControl, NgControl } from '@angular/forms';
+import { MatFormFieldControl } from '@angular/material';
 
 import { TranslateService } from '@ngx-translate/core';
-import { Observable, Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
 import { auditTime } from 'rxjs/operators';
 
+import { BaseFormControlComponent } from 'app/shared/models/base/base-form-control';
 import { Selectable } from '../selectable';
 
 /**
- * Reusable Searchable Value Selector
+ * Searchable Value Selector
  *
- * Use `multiple="true"`, `[InputListValues]=myValues`,`[formControl]="myformcontrol"` and `placeholder={{listname}}` to pass the Values and Listname
+ * Use `multiple="true"`, `[inputListValues]=myValues`,`formControlName="myformcontrol"` and `placeholder={{listname}}` to pass the Values and Listname
  *
  * ## Examples:
  *
  * ### Usage of the selector:
  *
- * ngDefaultControl: https://stackoverflow.com/a/39053470
- *
  * ```html
  * <os-search-value-selector
- *   ngDefaultControl
  *   [multiple]="true"
  *   placeholder="Placeholder"
- *   [InputListValues]="myListValues"
- *   [formControl]="myformcontrol">
+ *   [inputListValues]="myListValues"
+ *   formControlName="myformcontrol">
  * </os-search-value-selector>
  * ```
  *
@@ -35,24 +42,10 @@ import { Selectable } from '../selectable';
     selector: 'os-search-value-selector',
     templateUrl: './search-value-selector.component.html',
     styleUrls: ['./search-value-selector.component.scss'],
+    providers: [{ provide: MatFormFieldControl, useExisting: SearchValueSelectorComponent }],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SearchValueSelectorComponent implements OnDestroy {
-    /**
-     * Saves the current subscription to _inputListSubject.
-     */
-    private _inputListSubscription: Subscription = null;
-
-    /**
-     * Value of the search input
-     */
-    private searchValue = '';
-
-    /**
-     * All items
-     */
-    private selectableItems: Selectable[];
-
+export class SearchValueSelectorComponent extends BaseFormControlComponent<Selectable[]> {
     /**
      * Decide if this should be a single or multi-select-field
      */
@@ -83,51 +76,41 @@ export class SearchValueSelectorComponent implements OnDestroy {
         if (!value) {
             return;
         }
-        // unsubscribe to old subscription.
-        if (this._inputListSubscription) {
-            this._inputListSubscription.unsubscribe();
-        }
-        // this.inputSubject = value;
-        this._inputListSubscription = value.pipe(auditTime(10)).subscribe(items => {
-            this.selectableItems = items;
-            if (this.formControl) {
-                !!items && items.length > 0
-                    ? this.formControl.enable({ emitEvent: false })
-                    : this.formControl.disable({ emitEvent: false });
-            }
-        });
+        this.subscriptions.push(
+            value.pipe(auditTime(10)).subscribe(items => {
+                this.selectableItems = items;
+                if (this.contentForm) {
+                    this.disabled = !items || (!!items && !items.length);
+                }
+            })
+        );
     }
 
-    /**
-     * Placeholder of the List
-     */
-    @Input()
-    public listname: string;
+    public searchValue: FormControl;
+
+    public get empty(): boolean {
+        return Array.isArray(this.contentForm.value) ? !this.contentForm.value.length : !this.contentForm.value;
+    }
+
+    public controlType = 'search-value-selector';
 
     /**
-     * Name of the Form
+     * All items
      */
-    @Input()
-    public formControl: FormControl;
-
-    /**
-     * The MultiSelect Component
-     */
-    @ViewChild('thisSelector', { static: true })
-    public thisSelector: MatSelect;
+    private selectableItems: Selectable[];
 
     /**
      * Empty constructor
      */
-    public constructor(protected translate: TranslateService) {}
-
-    /**
-     * Unsubscribe on destroing.
-     */
-    public ngOnDestroy(): void {
-        if (this._inputListSubscription) {
-            this._inputListSubscription.unsubscribe();
-        }
+    public constructor(
+        protected translate: TranslateService,
+        cd: ChangeDetectorRef,
+        fb: FormBuilder,
+        @Optional() @Self() public ngControl: NgControl,
+        fm: FocusMonitor,
+        element: ElementRef<HTMLElement>
+    ) {
+        super(fb, fm, element, ngControl);
     }
 
     /**
@@ -137,13 +120,14 @@ export class SearchValueSelectorComponent implements OnDestroy {
      */
     public getFilteredItems(): Selectable[] {
         if (this.selectableItems) {
+            const searchValue: string = this.searchValue.value.toLowerCase();
             return this.selectableItems.filter(item => {
                 const idString = '' + item.id;
                 const foundId =
                     idString
                         .trim()
                         .toLowerCase()
-                        .indexOf(this.searchValue) !== -1;
+                        .indexOf(searchValue) !== -1;
 
                 if (foundId) {
                     return true;
@@ -153,18 +137,25 @@ export class SearchValueSelectorComponent implements OnDestroy {
                     item
                         .toString()
                         .toLowerCase()
-                        .indexOf(this.searchValue) > -1
+                        .indexOf(searchValue) > -1
                 );
             });
         }
     }
 
-    /**
-     * Function to set the search value.
-     *
-     * @param searchValue the new value the user is searching for.
-     */
-    public onSearch(searchValue: string): void {
-        this.searchValue = searchValue.toLowerCase();
+    public onContainerClick(event: MouseEvent): void {
+        if ((event.target as Element).tagName.toLowerCase() !== 'select') {
+            // this.element.nativeElement.querySelector('select').focus();
+        }
+    }
+
+    protected initializeForm(): void {
+        this.contentForm = this.fb.control([]);
+        this.searchValue = this.fb.control('');
+    }
+
+    protected updateForm(value: Selectable[] | null): void {
+        const nextValue = value;
+        this.contentForm.setValue(nextValue);
     }
 }
