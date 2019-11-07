@@ -220,23 +220,15 @@ export class AssignmentRepositoryService extends BaseIsAgendaItemAndListOfSpeake
      */
     public async updateVotes(poll: Partial<AssignmentPoll>, originalPoll: ViewAssignmentPoll): Promise<void> {
         poll.options.sort((a, b) => a.weight - b.weight);
+
         const votes = poll.options.map(option => {
-            switch (poll.pollmethod) {
-                case 'votes':
-                    return { Votes: option.votes.find(v => v.value === 'Votes').weight };
-                case 'yn':
-                    return {
-                        Yes: option.votes.find(v => v.value === 'Yes').weight,
-                        No: option.votes.find(v => v.value === 'No').weight
-                    };
-                case 'yna':
-                    return {
-                        Yes: option.votes.find(v => v.value === 'Yes').weight,
-                        No: option.votes.find(v => v.value === 'No').weight,
-                        Abstain: option.votes.find(v => v.value === 'Abstain').weight
-                    };
+            const voteObject = {};
+            for (const vote of option.votes) {
+                voteObject[vote.value] = vote.weight;
             }
+            return voteObject;
         });
+
         const data = {
             assignment_id: originalPoll.assignment_id,
             votes: votes,
@@ -246,6 +238,7 @@ export class AssignmentRepositoryService extends BaseIsAgendaItemAndListOfSpeake
             votesno: poll.votesno || null,
             votesvalid: poll.votesvalid || null
         };
+
         await this.httpService.put(`${this.restPollPath}${originalPoll.id}/`, data);
     }
 
