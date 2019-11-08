@@ -158,14 +158,27 @@ export class MediaUploadContentComponent implements OnInit {
     }
 
     /**
-     * Converts a file size in bit into human readable format
+     * Returns the filetype from the file or a generic "File", if the type could
+     * not be determinated.
      *
-     * @param bits file size in bits
+     * @param file The file to get the type from.
+     */
+    public getFiletype(file: File): string {
+        return file.type || 'File';
+    }
+
+    /**
+     * Converts a file size in byte into human readable format
+     *
+     * @param bytes file size in bytes
      * @returns a readable file size representation
      */
-    public getReadableSize(bits: number): string {
-        const unitLevel = Math.floor(Math.log(bits) / Math.log(1024));
-        const bytes = +(bits / Math.pow(1024, unitLevel)).toFixed(2);
+    public getReadableSize(bytes: number): string {
+        if (bytes === 0) {
+            return '0 B';
+        }
+        const unitLevel = Math.floor(Math.log(bytes) / Math.log(1024));
+        bytes = +(bytes / Math.pow(1024, unitLevel)).toFixed(2);
         return `${bytes} ${['B', 'kB', 'MB', 'GB', 'TB'][unitLevel]}`;
     }
 

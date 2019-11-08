@@ -70,7 +70,35 @@ class TestCreation(TestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertFalse(Mediafile.objects.exists())
 
-    def test_mediafile_twice(self):
+    def test_no_extension(self):
+        file = SimpleUploadedFile("no_extension", b"some content.")
+        response = self.client.post(
+            reverse("mediafile-list"),
+            {"title": "test_title_vai8oDogohheideedie4", "mediafile": file},
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        mediafile = Mediafile.objects.get()
+        self.assertEqual(mediafile.title, "test_title_vai8oDogohheideedie4")
+
+    def test_mediafile_twice_different_title(self):
+        file1 = SimpleUploadedFile("file.ext", b"some content.")
+        file2 = SimpleUploadedFile("file.ext", b"some content.")
+        response = self.client.post(
+            reverse("mediafile-list"),
+            {"title": "test_title_Zeicheipeequie3ohfid", "mediafile": file1},
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        mediafile = Mediafile.objects.get()
+        self.assertEqual(mediafile.title, "test_title_Zeicheipeequie3ohfid")
+
+        response = self.client.post(
+            reverse("mediafile-list"),
+            {"title": "test_title_aiChaetohs0quicee9eb", "mediafile": file2},
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(Mediafile.objects.count(), 1)
+
+    def test_directory_twice(self):
         title = "test_title_kFJq83fjmqo2babfqk3f"
         Mediafile.objects.create(is_directory=True, title=title)
         response = self.client.post(
