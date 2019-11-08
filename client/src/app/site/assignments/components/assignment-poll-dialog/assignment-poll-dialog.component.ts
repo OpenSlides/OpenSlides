@@ -6,6 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 import { CalculablePollKey, PollVoteValue } from 'app/core/ui-services/poll.service';
+import { AssignmentPoll } from 'app/shared/models/assignments/assignment-poll';
 import { AssignmentPollOption } from 'app/shared/models/assignments/assignment-poll-option';
 import { AssignmentPollService, SummaryPollKey } from '../../services/assignment-poll.service';
 import { ViewAssignmentPoll } from '../../models/view-assignment-poll';
@@ -25,6 +26,11 @@ type summaryPollKey = 'votescast' | 'votesvalid' | 'votesinvalid' | 'votesno' | 
     styleUrls: ['./assignment-poll-dialog.component.scss']
 })
 export class AssignmentPollDialogComponent {
+    /**
+     * The actual poll data to work on
+     */
+    public poll: AssignmentPoll;
+
     /**
      * The summary values that will have fields in the dialog
      */
@@ -62,7 +68,9 @@ export class AssignmentPollDialogComponent {
         private userRepo: UserRepositoryService
     ) {
         this.specialValues = this.pollService.specialPollVotes;
-        switch (this.data.pollmethod) {
+        this.poll = this.data.poll;
+
+        switch (this.poll.pollmethod) {
             case 'votes':
                 this.optionPollKeys = ['Votes'];
                 break;
@@ -104,7 +112,7 @@ export class AssignmentPollDialogComponent {
                 }
             );
         } else {
-            this.dialogRef.close(this.data);
+            this.dialogRef.close(this.poll);
         }
     }
 
@@ -166,7 +174,7 @@ export class AssignmentPollDialogComponent {
      * @param weight
      */
     public setSumValue(value: SummaryPollKey, weight: string): void {
-        this.data[value] = parseFloat(weight);
+        this.poll[value] = parseFloat(weight);
     }
 
     public getGridClass(): string {

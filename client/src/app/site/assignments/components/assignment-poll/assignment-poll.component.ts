@@ -197,7 +197,7 @@ export class AssignmentPollComponent extends BaseViewComponent implements OnInit
      */
     public enterVotes(): void {
         const dialogRef = this.dialog.open(AssignmentPollDialogComponent, {
-            data: this.poll.copy(),
+            data: this.poll,
             ...mediumDialogSettings
         });
         dialogRef.afterClosed().subscribe(result => {

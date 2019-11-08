@@ -157,7 +157,7 @@
                         <span>{{ pollService.getLabel(key) | translate }}</span
                         >:
                     </div>
-                    <div>
+                    <div *ngIf="poll[key]">
                         {{ pollService.getSpecialLabel(poll[key]) | translate }}
                         <span *ngIf="!pollService.isAbstractValue(poll, key)">
                             ({{ pollService.getValuePercent(poll, key) }} %)
