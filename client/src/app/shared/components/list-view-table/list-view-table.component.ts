@@ -295,7 +295,7 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
             {
                 prop: 'speaker',
                 label: '',
-                width: this.columnMinWidth
+                width: '45px'
             },
             {
                 prop: 'menu',

@@ -14,6 +14,7 @@
 
 <os-list-view-table
     [repo]="repo"
+    [vScrollFixed]="64"
     [allowProjector]="false"
     [showListOfSpeakers]="false"
     [columns]="tableColumnDefinition"
@@ -34,7 +35,7 @@
 
     <!-- Amount -->
     <div *pblNgridCellDef="'amount'; row as category" class="cell-slot fill">
-        <span class="os-amount-chip">{{ category.motions.length }}</span>
+        <span class="os-amount-chip" matTooltip="{{ 'Motions' | translate }}">{{ category.motions.length }}</span>
     </div>
 </os-list-view-table>
 

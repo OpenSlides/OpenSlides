@@ -26,23 +26,6 @@ $text-margin-top: 10px;
 
 .column-title {
     margin-top: $text-margin-top;
-
-    .title-line {
-        .attached-files {
-            .mat-icon {
-                display: inline-flex;
-                vertical-align: middle;
-                $icon-size: 16px;
-                font-size: $icon-size;
-                height: $icon-size;
-                width: $icon-size;
-            }
-        }
-
-        .favorite-star {
-            padding-right: 3px;
-        }
-    }
 }
 
 .column-state {

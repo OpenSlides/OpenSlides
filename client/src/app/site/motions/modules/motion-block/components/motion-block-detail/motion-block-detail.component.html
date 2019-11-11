@@ -39,17 +39,52 @@
     (dataSourceChange)="onDataSourceChange($event)"
 >
     <!-- Title column -->
-    <div *pblNgridCellDef="'title'; row as motion; rowContext as rowContext" class="cell-slot fill motion-block-title">
+    <div *pblNgridCellDef="'title'; row as motion; rowContext as rowContext" class="cell-slot fill">
         <a class="detail-link" [routerLink]="motion.getDetailStateURL()" *ngIf="!isMultiSelect"></a>
-        <span>{{ motion.getTitle() }}</span>
-    </div>
+        <div class="column-title innerTable">
+            <div class="title-line ellipsis-overflow">
+                <!-- Is Favorite -->
+                <span *ngIf="motion.star" class="favorite-star">
+                    <mat-icon inline>star</mat-icon>
+                </span>
 
-    <!-- State column -->
-    <div *pblNgridCellDef="'state'; row as motion" class="cell-slot fill">
-        <div class="chip-container">
-            <mat-basic-chip disableRipple [ngClass]="motion.stateCssColor">
-                {{ getStateLabel(motion) }}
-            </mat-basic-chip>
+                <!-- Has File -->
+                <span class="attached-files" *ngIf="motion.hasAttachments()">
+                    <mat-icon>attach_file</mat-icon>
+                </span>
+
+                <!-- The title -->
+                <span>
+                    <span *ngIf="motion.identifier">
+                        {{ motion.identifier }}
+                        <span>&middot;</span>
+                    </span>
+                    {{ motion.title }}
+                </span>
+            </div>
+
+            <!-- Submitters -->
+            <div class="submitters-line ellipsis-overflow">
+                <span *ngIf="motion.submitters.length">
+                    <span translate>by</span>
+                    {{ motion.submitters }}
+                </span>
+
+                <span *ngIf="showSequential">
+                    <span *ngIf="motion.submitters.length">
+                        &middot;
+                    </span>
+                    <span translate>Sequential number</span>
+                    {{ motion.id }}
+                </span>
+            </div>
+
+            <!-- Workflow state -->
+            <div class="ellipsis-overflow white">
+                <mat-basic-chip *ngIf="motion.state" [ngClass]="motion.stateCssColor" [disabled]="true">
+                    {{ getStateLabel(motion) }}
+                </mat-basic-chip>
+            </div>
         </div>
     </div>
 
