@@ -1,56 +1,61 @@
-<mat-expansion-panel>
-    <mat-expansion-panel-header *ngIf="poll">{{ poll.title }}</mat-expansion-panel-header>
-    <ng-template matExpansionPanelContent>
-        <div class="poll-content">
-            <div>{{ 'Current state' | translate }}: {{ poll.stateVerbose }}</div>
-            <div *ngIf="poll.groups">{{ 'Groups' | translate }}: {{ poll.groups }}</div>
-            <div>{{ 'Method' | translate }}: {{ poll.pollmethodVerbose }}</div>
-            <div>{{ 'Type' | translate }}:  {{ poll.typeVerbose }}</div>
+<div class="poll-preview-wrapper">
+    <div class="poll-title-wrapper" *ngIf="poll">
+        <div class="poll-title">{{ poll.title }}</div>
+        <span class="poll-title-actions">
+            <button mat-icon-button (click)="edit.emit()">
+                <mat-icon class="small-icon">edit</mat-icon>
+            </button>
+        </span>
+        <div class="poll-properties">
+            <mat-chip *ngIf="pollService.isElectronicVotingEnabled">{{ getMotionPollType() }}</mat-chip>
+            <mat-chip
+                class="poll-state active"
+                *ngIf="poll.state !== 2"
+                [matMenuTriggerFor]="triggerMenu"
+                [ngClass]="getMotionPollState().toLowerCase()"
+            >
+                {{ getMotionPollState() }}
+            </mat-chip>
+            <mat-chip class="poll-state" *ngIf="poll.state === 2" [ngClass]="getMotionPollState().toLowerCase()">
+                {{ getMotionPollState() }}
+            </mat-chip>
         </div>
-        <mat-divider></mat-divider>
-        <div class="poll-footer">
-            <button *ngIf="poll.type === pollTypes.Analog" mat-icon-button (click)="enterAnalogVotes()">
-                <mat-icon class="small-icon" matTooltip="{{ 'Enter votes' | translate }}">check</mat-icon><!-- TODO: other icon-->
-            </button>
-            <button mat-icon-button (click)="openPoll()">
-                <mat-icon class="small-icon" matTooltip="{{ 'View' | translate }}">pageview</mat-icon>
-            </button>
-            <button mat-icon-button (click)="editPoll()">
-                <mat-icon class="small-icon" matTooltip="{{ 'Edit' | translate }}">edit</mat-icon>
-            </button>
-            <button mat-icon-button (click)="deletePoll()">
-                <mat-icon class="small-icon" matTooltip="{{ 'Delete' | translate }}">delete</mat-icon>
-            </button>
-        </div>
-    </ng-template>
-</mat-expansion-panel>
-
-<!-- Template for dialog for entering votes -->
-<ng-template #enterVotesDialog>
-    <h1 mat-dialog-title translate>Enter votes</h1>
-    <div class="os-form-card-mobile" mat-dialog-content>
-        <form [formGroup]="statuteParagraphForm" (keydown)="onKeyDown($event)">
-            <p>
-                <mat-form-field>
-                    <input formControlName="title" matInput placeholder="{{ 'Title' | translate }}" required />
-                    <mat-hint *ngIf="!statuteParagraphForm.controls.title.valid">
-                        <span translate>Required</span>
-                    </mat-hint>
-                </mat-form-field>
-            </p>
-            <span>
-                <!-- The HTML Editor -->
-                <h4 translate>Statute paragraph</h4>
-                <editor formControlName="text" [init]="tinyMceSettings"></editor>
-            </span>
-        </form>
     </div>
-    <div mat-dialog-actions>
-        <button mat-button [mat-dialog-close]="true" [disabled]="!statuteParagraphForm.valid">
-            <span translate>Save</span>
-        </button>
-        <button mat-button [mat-dialog-close]="false">
-            <span translate>Cancel</span>
-        </button>
+    <div class="poll-chart-wrapper" *ngIf="poll" (click)="openPoll()">
+        <ng-container *ngIf="poll.state === 3 || poll.state === 4" [ngTemplateOutlet]="viewTemplate"></ng-container>
+        <ng-container *ngIf="poll.state === 1 || poll.state === 2" [ngTemplateOutlet]="emptyTemplate"></ng-container>
+    </div>
+    <div class="poll-preview-result-wrapper"></div>
+</div>
+
+<ng-template #viewTemplate>
+    <div class="chart-wrapper-left">
+        <mat-icon>close</mat-icon>
+        : {{ voteNo }}
+    </div>
+    <div class="doughnut-chart">
+        <os-charts [type]="'doughnut'" [data]="chartDataSubject" [showLegend]="false"> </os-charts>
+    </div>
+    <div class="chart-wrapper-right">
+        <mat-icon>check</mat-icon>
+        : {{ voteYes }}
     </div>
 </ng-template>
+
+<ng-template #emptyTemplate>
+    <div>
+        An empty poll - you have to enter votes.
+    </div>
+</ng-template>
+
+<mat-menu #triggerMenu="matMenu">
+    <ng-container *ngIf="poll">
+        <button
+            mat-menu-item
+            (click)="state === 'Reset' ? pollRepo.resetPoll(poll) : pollRepo.changePollState(poll)"
+            *ngFor="let state of poll.nextStates"
+        >
+            <span translate>{{ state }}</span>
+        </button>
+    </ng-container>
+</mat-menu>

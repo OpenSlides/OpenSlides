@@ -1,3 +1,85 @@
+.poll-preview-wrapper {
+    padding: 8px;
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+
+    .poll-title {
+        display: inline-block;
+    }
+
+    .poll-title-actions {
+        float: right;
+    }
+
+    .poll-properties {
+        margin: 4px 0;
+
+        .mat-chip {
+            margin: 0 4px;
+
+            &.active {
+                cursor: pointer;
+            }
+        }
+
+        .poll-state {
+            &.created {
+                background-color: #2196f3;
+                color: white;
+            }
+            &.started {
+                background-color: #4caf50;
+                color: white;
+            }
+            &.finished {
+                background-color: #ff5252;
+                color: white;
+            }
+            &.published {
+                background-color: #ffd800;
+                color: black;
+            }
+        }
+    }
+
+    .poll-chart-wrapper {
+        cursor: pointer;
+        margin: 4px auto;
+        display: flex;
+        justify-content: center;
+
+        div {
+            flex: 1;
+        }
+
+        .chart-wrapper-left,
+        .chart-wrapper-right {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .chart-wrapper-left {
+            color: #cc6c5b;
+        }
+
+        .chart-wrapper-right {
+            color: #9fc773;
+        }
+
+        .doughnut-chart {
+            max-width: 35%;
+        }
+    }
+}
+
+.poll-preview-meta-info {
+    span {
+        padding: 0 5px;
+    }
+}
+
 .poll-content {
     padding-bottom: 8px;
 }

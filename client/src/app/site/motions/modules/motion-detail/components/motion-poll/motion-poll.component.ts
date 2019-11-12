@@ -132,14 +132,16 @@ export class MotionPollComponent extends BaseViewComponent implements OnInit {
      * @returns the label for a poll option
      */
     public getLabel(key: CalculablePollKey): string {
-        return this.pollService.getLabel(key);
+        // return this.pollService.getLabel(key);
+        return '';
     }
 
     /**
      * @returns the icon's name for the icon of a poll option
      */
     public getIcon(key: CalculablePollKey): string {
-        return this.pollService.getIcon(key);
+        // return this.pollService.getIcon(key);
+        return '';
     }
 
     /**

@@ -21,6 +21,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSliderModule } from '@angular/material/slider';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSortModule } from '@angular/material/sort';
 import { MatStepperModule } from '@angular/material/stepper';
@@ -64,6 +65,7 @@ import { PblNgridTargetEventsModule } from '@pebula/ngrid/target-events';
 
 // time picker because angular still doesnt offer one!!
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
+import { ChartsModule } from 'ng2-charts';
 
 // components
 import { HeadBarComponent } from './components/head-bar/head-bar.component';
@@ -109,6 +111,9 @@ import { GlobalSpinnerComponent } from 'app/site/common/components/global-spinne
 import { HeightResizingDirective } from './directives/height-resizing.directive';
 import { TrustPipe } from './pipes/trust.pipe';
 import { LocalizedDatePipe } from './pipes/localized-date.pipe';
+import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.component';
+import { ChartsComponent } from './components/charts/charts.component';
+import { CheckInputComponent } from './components/check-input/check-input.component';
 
 /**
  * Share Module for all "dumb" components and pipes.
@@ -158,6 +163,7 @@ import { LocalizedDatePipe } from './pipes/localized-date.pipe';
         MatStepperModule,
         MatTabsModule,
         MatSliderModule,
+        MatSlideToggleModule,
         MatDividerModule,
         DragDropModule,
         OpenSlidesTranslateModule.forChild(),
@@ -171,7 +177,8 @@ import { LocalizedDatePipe } from './pipes/localized-date.pipe';
         PblNgridMaterialModule,
         PblNgridTargetEventsModule,
         PdfViewerModule,
-        NgxMaterialTimepickerModule
+        NgxMaterialTimepickerModule,
+        ChartsModule
     ],
     exports: [
         FormsModule,
@@ -205,6 +212,7 @@ import { LocalizedDatePipe } from './pipes/localized-date.pipe';
         MatButtonToggleModule,
         MatStepperModule,
         MatSliderModule,
+        MatSlideToggleModule,
         MatDividerModule,
         DragDropModule,
         NgxMatSelectSearchModule,
@@ -257,8 +265,12 @@ import { LocalizedDatePipe } from './pipes/localized-date.pipe';
         OverlayComponent,
         PreviewComponent,
         NgxMaterialTimepickerModule,
+        ChartsModule,
         TrustPipe,
-        LocalizedDatePipe
+        LocalizedDatePipe,
+        BreadcrumbComponent,
+        ChartsComponent,
+        CheckInputComponent
     ],
     declarations: [
         PermsDirective,
@@ -305,7 +317,10 @@ import { LocalizedDatePipe } from './pipes/localized-date.pipe';
         PreviewComponent,
         HeightResizingDirective,
         TrustPipe,
-        LocalizedDatePipe
+        LocalizedDatePipe,
+        BreadcrumbComponent,
+        ChartsComponent,
+        CheckInputComponent
     ],
     providers: [
         {

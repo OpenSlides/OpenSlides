@@ -10,14 +10,16 @@ import { MotionDetailDiffComponent } from './components/motion-detail-diff/motio
 import { MotionDetailOriginalChangeRecommendationsComponent } from './components/motion-detail-original-change-recommendations/motion-detail-original-change-recommendations.component';
 import { MotionDetailRoutingModule } from './motion-detail-routing.module';
 import { MotionDetailComponent } from './components/motion-detail/motion-detail.component';
-import { MotionPollDialogComponent } from './components/motion-poll/motion-poll-dialog.component';
+import { MotionPollDialogComponent } from '../motion-poll/motion-poll-dialog/motion-poll-dialog.component';
+import { MotionPollDialogModule } from '../motion-poll/motion-poll-dialog/motion-poll-dialog.module';
+import { MotionPollManagerComponent } from './components/motion-poll/motion-poll-manager/motion-poll-manager.component';
 import { MotionPollPreviewComponent } from './components/motion-poll/motion-poll-preview/motion-poll-preview.component';
 import { MotionPollComponent } from './components/motion-poll/motion-poll.component';
 import { MotionTitleChangeRecommendationDialogComponent } from './components/motion-title-change-recommendation-dialog/motion-title-change-recommendation-dialog.component';
 import { PersonalNoteComponent } from './components/personal-note/personal-note.component';
 
 @NgModule({
-    imports: [CommonModule, MotionDetailRoutingModule, SharedModule],
+    imports: [CommonModule, MotionDetailRoutingModule, SharedModule, MotionPollDialogModule],
     declarations: [
         MotionDetailComponent,
         AmendmentCreateWizardComponent,
@@ -26,11 +28,11 @@ import { PersonalNoteComponent } from './components/personal-note/personal-note.
         ManageSubmittersComponent,
         MotionPollComponent,
         MotionPollPreviewComponent,
-        MotionPollDialogComponent,
         MotionDetailDiffComponent,
         MotionDetailOriginalChangeRecommendationsComponent,
         MotionChangeRecommendationDialogComponent,
-        MotionTitleChangeRecommendationDialogComponent
+        MotionTitleChangeRecommendationDialogComponent,
+        MotionPollManagerComponent
     ],
     entryComponents: [
         MotionCommentsComponent,
