@@ -1366,13 +1366,6 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
     }
 
     /**
-     * Handler for creating a poll
-     */
-    public createPoll(): void {
-        this.router.navigate(['motions', 'polls', 'new'], { queryParams: { parent: this.motion.id || null } });
-    }
-
-    /**
      * Check if a recommendation can be followed. Checks for permissions and additionally if a recommentadion is present
      */
     public canFollowRecommendation(): boolean {
@@ -1540,12 +1533,12 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      * Function to prevent automatically closing the window/tab,
      * if the user is editing a motion.
      *
-     * @param $event The event object from 'onUnbeforeUnload'.
+     * @param event The event object from 'onUnbeforeUnload'.
      */
     @HostListener('window:beforeunload', ['$event'])
-    public stopClosing($event: Event): void {
+    public stopClosing(event: Event): void {
         if (this.editMotion) {
-            $event.returnValue = null;
+            event.returnValue = null;
         }
     }
 

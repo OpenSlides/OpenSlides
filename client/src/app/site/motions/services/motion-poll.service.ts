@@ -1,8 +1,25 @@
 import { Injectable } from '@angular/core';
 
+import { TranslateService } from '@ngx-translate/core';
+
+import { ConstantsService } from 'app/core/core-services/constants.service';
+import { MotionPollRepositoryService } from 'app/core/repositories/motions/motion-poll-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { CalculablePollKey, PollMajorityMethod, PollService } from 'app/core/ui-services/poll.service';
-import { MotionPoll } from 'app/shared/models/motions/motion-poll';
+import { MotionPoll, MotionPollMethods, MotionPollMethodsVerbose } from 'app/shared/models/motions/motion-poll';
+import {
+    MajorityMethod,
+    MajorityMethodVerbose,
+    PercentBase,
+    PercentBaseVerbose,
+    PollPropertyVerbose,
+    PollType,
+    PollTypeVerbose
+} from 'app/shared/models/poll/base-poll';
+
+interface KeyValue {
+    [key: string]: string;
+}
 
 /**
  * Service class for motion polls.
@@ -20,11 +37,16 @@ export class MotionPollService extends PollService {
      * Constructor. Subscribes to the configuration values needed
      * @param config ConfigService
      */
-    public constructor(config: ConfigService) {
-        super();
-        config.get<string>('motions_poll_100_percent_base').subscribe(base => (this.percentBase = base));
+    public constructor(
+        config: ConfigService,
+        constants: ConstantsService,
+        private translate: TranslateService,
+        private pollRepo: MotionPollRepositoryService
+    ) {
+        super(constants);
+        config.get<string>('motion_poll_default_100_percent_base').subscribe(base => (this.percentBase = base));
         config
-            .get<string>('motions_poll_default_majority_method')
+            .get<string>('motion_poll_default_majority_method')
             .subscribe(method => (this.defaultMajorityMethod = method));
     }
 
@@ -160,5 +182,66 @@ export class MotionPollService extends PollService {
             return true;
         }
         return false;
+    }
+
+    public getPollType(): typeof PollType {
+        return PollType;
+    }
+
+    public getPollTypeVerbose(): KeyValue {
+        return PollTypeVerbose;
+    }
+
+    public getMajorityMethod(): typeof MajorityMethod {
+        return MajorityMethod;
+    }
+
+    public getMajorityMethodVerbose(): KeyValue {
+        return MajorityMethodVerbose;
+    }
+
+    public getPercentBase(): typeof PercentBase {
+        return PercentBase;
+    }
+
+    public getPercentBaseVerbose(): KeyValue {
+        return PercentBaseVerbose;
+    }
+
+    public getMotionPollMethods(): typeof MotionPollMethods {
+        return MotionPollMethods;
+    }
+
+    public getMotionPollMethodsVerbose(): KeyValue {
+        return MotionPollMethodsVerbose;
+    }
+
+    public getDefaultPollData(motionId: number): object {
+        const length = this.pollRepo.getViewModelList().length;
+        return {
+            title: !length ? this.translate.instant('Vote') : `${this.translate.instant('Vote')} (${length + 1})`,
+            onehundred_percent_base: this.percentBase,
+            majority_method: this.defaultMajorityMethod,
+            type: PollType.Analog,
+            pollmethod: this.percentBase,
+            motion_id: motionId
+        };
+    }
+
+    public getVerboseNameForValue(key: string, value: string): string {
+        switch (key) {
+            case 'majority_method':
+                return MajorityMethodVerbose[value];
+            case 'onehundred_percent_base':
+                return PercentBaseVerbose[value];
+            case 'pollmethod':
+                return MotionPollMethodsVerbose[value];
+            case 'type':
+                return PollTypeVerbose[value];
+        }
+    }
+
+    public getVerboseNameForKey(key: string): string {
+        return PollPropertyVerbose[key];
     }
 }
