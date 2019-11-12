@@ -193,7 +193,8 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
             open_posts: [1, [Validators.required, Validators.min(1)]],
             agenda_create: [''],
             agenda_parent_id: [],
-            agenda_type: ['']
+            agenda_type: [''],
+            number_poll_candidates: [false]
         });
         this.candidatesForm = formBuilder.group({
             userId: null
