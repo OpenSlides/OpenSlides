@@ -129,6 +129,11 @@ class Migration(migrations.Migration):
             ),
             preserve_default=False,
         ),
+        migrations.AddField(
+            model_name="assignment",
+            name="number_poll_candidates",
+            field=models.BooleanField(default=False),
+        ),
         migrations.AlterField(
             model_name="assignment",
             name="poll_description_default",
