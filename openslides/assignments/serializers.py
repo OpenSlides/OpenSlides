@@ -169,6 +169,7 @@ class AssignmentSerializer(ModelSerializer):
             "agenda_parent_id",
             "tags",
             "attachments",
+            "number_poll_candidates",
         )
         validators = (posts_validator,)
 
