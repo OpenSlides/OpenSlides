@@ -72,6 +72,13 @@ export class GroupRepositoryService extends BaseRepository<ViewGroup, Group, Gro
         return this.translate.instant(plural ? 'Groups' : 'Group');
     };
 
+    public getNameForIds(...ids: number[]): string {
+        return this.getSortedViewModelList()
+            .filter(group => ids.includes(group.id))
+            .map(group => this.translate.instant(group.getTitle()))
+            .join(', ');
+    }
+
     /**
      * Toggles the given permisson.
      *

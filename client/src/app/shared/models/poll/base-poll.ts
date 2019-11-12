@@ -1,6 +1,15 @@
 import { BaseDecimalModel } from '../base/base-decimal-model';
 import { BaseOption } from './base-option';
 
+export enum PollColors {
+    yes = '#9fd773',
+    no = '#cc6c5b',
+    abstain = '#a6a6a6',
+    votesvalid = '#e2e2e2',
+    votesinvalid = '#e2e2e2',
+    votescast = '#e2e2e2'
+}
+
 export enum PollState {
     Created = 1,
     Started,
@@ -57,6 +66,15 @@ export const MajorityMethodVerbose = {
     disabled: 'Disabled'
 };
 
+export const PollPropertyVerbose = {
+    majority_method: 'Majority method',
+    onehundred_percent_base: '100%-base',
+    type: 'Poll type',
+    pollmethod: 'Poll method',
+    pollState: 'Poll state',
+    groups: 'Entitled to vote'
+};
+
 export interface BasePollWithoutNestedModels {
     state: PollState;
     type: PollType;
@@ -68,6 +86,12 @@ export interface BasePollWithoutNestedModels {
     voted_id: number[];
     majority_method: MajorityMethod;
     onehundred_percent_base: PercentBase;
+
+    // getters from `BasePoll`
+    readonly stateVerbose: string;
+    readonly typeVerbose: string;
+    readonly majorityMethodVerbose: string;
+    readonly percentBaseVerbose: string;
 }
 
 export abstract class BasePoll<T, O extends BaseOption<any>> extends BaseDecimalModel<T> {
