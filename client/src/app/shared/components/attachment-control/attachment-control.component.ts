@@ -108,7 +108,7 @@ export class AttachmentControlComponent extends BaseFormControlComponent<ViewMed
     protected initializeForm(): void {
         this.contentForm = this.fb.control([]);
     }
-    protected updateForm(value: ViewMediafile[]): void {
-        this.contentForm.setValue(value);
+    protected updateForm(value: ViewMediafile[] | null): void {
+        this.contentForm.setValue(value || []);
     }
 }

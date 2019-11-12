@@ -76,7 +76,6 @@ class AssignmentPollSerializer(BasePollSerializer):
     Serializes all polls.
     """
 
-    options = AssignmentOptionSerializer(many=True, read_only=True)
     amount_global_no = DecimalField(
         max_digits=15, decimal_places=6, min_value=-2, read_only=True
     )

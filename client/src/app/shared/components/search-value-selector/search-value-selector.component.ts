@@ -1,12 +1,13 @@
 import { FocusMonitor } from '@angular/cdk/a11y';
 import {
     ChangeDetectionStrategy,
-    ChangeDetectorRef,
     Component,
     ElementRef,
     Input,
     Optional,
-    Self
+    Self,
+    ViewChild,
+    ViewEncapsulation
 } from '@angular/core';
 import { FormBuilder, FormControl, NgControl } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material';
@@ -43,9 +44,13 @@ import { Selectable } from '../selectable';
     templateUrl: './search-value-selector.component.html',
     styleUrls: ['./search-value-selector.component.scss'],
     providers: [{ provide: MatFormFieldControl, useExisting: SearchValueSelectorComponent }],
+    encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SearchValueSelectorComponent extends BaseFormControlComponent<Selectable[]> {
+    @ViewChild('chipPlaceholder', { static: false })
+    public chipPlaceholder: ElementRef<HTMLElement>;
+
     /**
      * Decide if this should be a single or multi-select-field
      */
@@ -59,13 +64,10 @@ export class SearchValueSelectorComponent extends BaseFormControlComponent<Selec
     public includeNone = false;
 
     @Input()
-    public noneTitle = '–';
+    public showChips = true;
 
-    /**
-     * Boolean, whether the component should be rendered with full width.
-     */
     @Input()
-    public fullWidth = false;
+    public noneTitle = '–';
 
     /**
      * The inputlist subject. Subscribes to it and updates the selector, if the subject
@@ -92,7 +94,17 @@ export class SearchValueSelectorComponent extends BaseFormControlComponent<Selec
         return Array.isArray(this.contentForm.value) ? !this.contentForm.value.length : !this.contentForm.value;
     }
 
+    public get selectedItems(): Selectable[] {
+        return this.selectableItems && this.contentForm.value
+            ? this.selectableItems.filter(item => this.contentForm.value.includes(item.id))
+            : [];
+    }
+
     public controlType = 'search-value-selector';
+
+    public get width(): string {
+        return this.chipPlaceholder ? `${this.chipPlaceholder.nativeElement.clientWidth - 16}px` : '100%';
+    }
 
     /**
      * All items
@@ -104,7 +116,6 @@ export class SearchValueSelectorComponent extends BaseFormControlComponent<Selec
      */
     public constructor(
         protected translate: TranslateService,
-        cd: ChangeDetectorRef,
         fb: FormBuilder,
         @Optional() @Self() public ngControl: NgControl,
         fm: FocusMonitor,
@@ -143,6 +154,15 @@ export class SearchValueSelectorComponent extends BaseFormControlComponent<Selec
         }
     }
 
+    public removeItem(itemId: number): void {
+        const items = <number[]>this.contentForm.value;
+        items.splice(
+            items.findIndex(item => item === itemId),
+            1
+        );
+        this.contentForm.setValue(items);
+    }
+
     public onContainerClick(event: MouseEvent): void {
         if ((event.target as Element).tagName.toLowerCase() !== 'select') {
             // this.element.nativeElement.querySelector('select').focus();
@@ -155,7 +175,6 @@ export class SearchValueSelectorComponent extends BaseFormControlComponent<Selec
     }
 
     protected updateForm(value: Selectable[] | null): void {
-        const nextValue = value;
-        this.contentForm.setValue(nextValue);
+        this.contentForm.setValue(value);
     }
 }

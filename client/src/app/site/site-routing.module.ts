@@ -68,6 +68,11 @@ const routes: Routes = [
                 path: 'projectors',
                 loadChildren: () => import('./projector/projector.module').then(m => m.ProjectorModule),
                 data: { basePerm: 'core.can_see_projector' }
+            },
+            {
+                path: 'polls',
+                loadChildren: () => import('./polls/polls.module').then(m => m.PollsModule),
+                data: { basePerm: ['motions.can_see', 'assignments.can_see'] } // one of them is sufficient
             }
         ],
         canActivateChild: [AuthGuard]

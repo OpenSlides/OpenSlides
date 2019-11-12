@@ -1,3 +1,13 @@
 .poll-content {
     padding-top: 10px;
 }
+
+.chart-wrapper {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    * {
+        flex: 1;
+        max-width: 200px;
+    }
+}

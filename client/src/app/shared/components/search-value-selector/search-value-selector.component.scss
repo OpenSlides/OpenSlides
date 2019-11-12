@@ -1,0 +1,21 @@
+.os-search-value-selector {
+    max-height: 312px !important ;
+}
+
+.os-search-value-selector-chip-container {
+    position: absolute;
+    padding: 8px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+    top: 52px;
+    width: 100%;
+    background: white;
+    z-index: 100;
+    min-height: 41px;
+}
+
+.os-search-value-selector-chip-placeholder {
+    padding: 8px;
+    width: 100%;
+    background: white;
+    min-height: 39px;
+}

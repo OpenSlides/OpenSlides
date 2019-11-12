@@ -13,8 +13,8 @@
 </os-head-bar>
 
 <os-list-view-table
-    [repo]="repo"
     [vScrollFixed]="64"
+    [listObservableProvider]="repo"
     [allowProjector]="false"
     [showListOfSpeakers]="false"
     [columns]="tableColumnDefinition"

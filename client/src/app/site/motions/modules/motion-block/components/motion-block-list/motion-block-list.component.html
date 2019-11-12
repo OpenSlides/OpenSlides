@@ -5,8 +5,8 @@
 
 <os-list-view-table
     class="block-list"
-    [repo]="repo"
     [vScrollFixed]="64"
+    [listObservableProvider]="repo"
     [showFilterBar]="true"
     [columns]="tableColumnDefinition"
     [sortService]="sortService"

@@ -9,7 +9,7 @@ from django.db.models.deletion import ProtectedError
 from django.http.request import QueryDict
 from rest_framework import status
 
-from openslides.poll.views import BasePollViewSet, BaseVoteViewSet
+from openslides.poll.views import BaseOptionViewSet, BasePollViewSet, BaseVoteViewSet
 
 from ..core.config import config
 from ..core.models import Tag
@@ -41,6 +41,7 @@ from .models import (
     MotionChangeRecommendation,
     MotionComment,
     MotionCommentSection,
+    MotionOption,
     MotionPoll,
     MotionVote,
     State,
@@ -1115,6 +1116,8 @@ class MotionPollViewSet(BasePollViewSet):
 
     queryset = MotionPoll.objects.all()
 
+    required_analog_fields = ["Y", "N", "votescast", "votesvalid", "votesinvalid"]
+
     def has_manage_permissions(self):
         """
         Returns True if the user has required permissions.
@@ -1166,67 +1169,74 @@ class MotionPollViewSet(BasePollViewSet):
         return result
 
     def handle_analog_vote(self, data, poll, user):
-        """
-        Request data:
-        { "Y": <amount>, "N": <amount>, ["A": <amount>],
-          ["votesvalid": <amount>], ["votesinvalid": <amount>], ["votescast": <amount>]}
-        All amounts are decimals as strings
-        """
-        if not isinstance(data, dict):
-            raise ValidationError({"detail": "Data must be a dict"})
-        Y = self.parse_decimal_value(data.get("Y"), min_value=-2)
-        N = self.parse_decimal_value(data.get("N"), min_value=-2)
-        if poll.pollmethod == MotionPoll.POLLMETHOD_YNA:
-            A = self.parse_decimal_value(data.get("A"), min_value=-2)
-
         option = poll.options.get()
         vote, _ = MotionVote.objects.get_or_create(option=option, value="Y")
-        vote.weight = Y
+        vote.weight = data["Y"]
         vote.save()
         vote, _ = MotionVote.objects.get_or_create(option=option, value="N")
-        vote.weight = N
+        vote.weight = data["N"]
         vote.save()
         if poll.pollmethod == MotionPoll.POLLMETHOD_YNA:
             vote, _ = MotionVote.objects.get_or_create(option=option, value="A")
-            vote.weight = A
+            vote.weight = data["A"]
             vote.save()
+        inform_changed_data(option)
 
-        if "votesvalid" in data:
-            poll.votesvalid = self.parse_decimal_value(data["votesvalid"], min_value=-2)
-        if "votesinvalid" in data:
-            poll.votesinvalid = self.parse_decimal_value(
-                data["votesinvalid"], min_value=-2
-            )
-        if "votescast" in data:
-            poll.votescast = self.parse_decimal_value(data["votescast"], min_value=-2)
+        for field in ["votesvalid", "votesinvalid", "votescast"]:
+            setattr(poll, field, data.get(field))
 
-        poll.state = MotionPoll.STATE_FINISHED  # directly stop the poll
         poll.save()
 
     def validate_vote_data(self, data, poll):
-        if poll.pollmethod == MotionPoll.POLLMETHOD_YNA and data not in ("Y", "N", "A"):
-            raise ValidationError("Data must be Y, N or A")
-        elif poll.pollmethod == MotionPoll.POLLMETHOD_YN and data not in ("Y", "N"):
-            raise ValidationError("Data must be Y or N")
+        """
+        Request data for analog:
+        { "Y": <amount>, "N": <amount>, ["A": <amount>],
+          ["votesvalid": <amount>], ["votesinvalid": <amount>], ["votescast": <amount>]}
+        All amounts are decimals as strings
+        Request data for named/pseudoanonymous is just "Y" | "N" [| "A"]
+        """
+        if poll.type == MotionPoll.TYPE_ANALOG:
+            if not isinstance(data, dict):
+                raise ValidationError({"detail": "Data must be a dict"})
+
+            for field in ["Y", "N", "votesvalid", "votesinvalid", "votescast"]:
+                data[field] = self.parse_vote_value(data, field)
+            if poll.pollmethod == MotionPoll.POLLMETHOD_YNA:
+                data["A"] = self.parse_vote_value(data, "A")
+
+        else:
+            if poll.pollmethod == MotionPoll.POLLMETHOD_YNA and data not in (
+                "Y",
+                "N",
+                "A",
+            ):
+                raise ValidationError("Data must be Y, N or A")
+            elif poll.pollmethod == MotionPoll.POLLMETHOD_YN and data not in ("Y", "N"):
+                raise ValidationError("Data must be Y or N")
 
     def handle_named_vote(self, data, poll, user):
-        self.validate_vote_data(data, poll)
-
         option = poll.options.get()
         vote, _ = MotionVote.objects.get_or_create(user=user, option=option)
         self.set_vote_data(data, vote, poll)
+        inform_changed_data(option)
 
     def handle_pseudoanonymous_vote(self, data, poll):
-        self.validate_vote_data(data, poll)
-
         option = poll.options.get()
         vote = MotionVote.objects.create(option=option)
         self.set_vote_data(data, vote, poll)
+        inform_changed_data(option)
 
     def set_vote_data(self, data, vote, poll):
         vote.value = data
         vote.weight = Decimal("1")
         vote.save(no_delete_on_restriction=True)
+
+
+class MotionOptionViewSet(BaseOptionViewSet):
+    queryset = MotionOption.objects.all()
+
+    def check_view_permissions(self):
+        return has_perm(self.request.user, "motions.can_see")
 
 
 class MotionVoteViewSet(BaseVoteViewSet):

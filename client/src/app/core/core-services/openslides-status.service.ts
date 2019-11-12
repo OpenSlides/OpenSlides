@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { History } from 'app/shared/models/core/history';
+import { BannerDefinition, BannerService } from '../ui-services/banner.service';
 
 /**
  * Holds information about OpenSlides. This is not included into other services to
@@ -14,6 +15,9 @@ export class OpenSlidesStatusService {
      * in History mode, saves the history point.
      */
     private history: History = null;
+    private bannerDefinition: BannerDefinition = {
+        type: 'history'
+    };
 
     /**
      * Returns, if OpenSlides is in the history mode.
@@ -27,7 +31,7 @@ export class OpenSlidesStatusService {
     /**
      * Ctor, does nothing.
      */
-    public constructor() {}
+    public constructor(private banner: BannerService) {}
 
     /**
      * Calls the getLocaleString function of the history object, if present.
@@ -44,6 +48,7 @@ export class OpenSlidesStatusService {
      */
     public enterHistoryMode(history: History): void {
         this.history = history;
+        this.banner.addBanner(this.bannerDefinition);
     }
 
     /**
@@ -51,5 +56,6 @@ export class OpenSlidesStatusService {
      */
     public leaveHistoryMode(): void {
         this.history = null;
+        this.banner.removeBanner(this.bannerDefinition);
     }
 }

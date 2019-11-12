@@ -245,8 +245,6 @@ class MotionPollSerializer(BasePollSerializer):
     Serializer for motion.models.MotionPoll objects.
     """
 
-    options = MotionOptionSerializer(many=True, read_only=True)
-
     class Meta:
         model = MotionPoll
         fields = ("motion", "pollmethod") + BASE_POLL_FIELDS

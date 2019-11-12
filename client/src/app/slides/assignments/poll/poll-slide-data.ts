@@ -1,4 +1,4 @@
-import { PollVoteValue } from 'app/core/ui-services/poll.service';
+import { PollVoteValue } from 'app/site/polls/services/poll.service';
 
 export interface PollSlideOption {
     user: string;

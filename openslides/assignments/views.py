@@ -3,7 +3,7 @@ from decimal import Decimal
 from django.contrib.auth import get_user_model
 from django.db import transaction
 
-from openslides.poll.views import BasePollViewSet, BaseVoteViewSet
+from openslides.poll.views import BaseOptionViewSet, BasePollViewSet, BaseVoteViewSet
 from openslides.utils.auth import has_perm
 from openslides.utils.autoupdate import inform_changed_data
 from openslides.utils.rest_api import (
@@ -15,7 +15,13 @@ from openslides.utils.rest_api import (
 from openslides.utils.utils import is_int
 
 from .access_permissions import AssignmentAccessPermissions
-from .models import Assignment, AssignmentPoll, AssignmentRelatedUser, AssignmentVote
+from .models import (
+    Assignment,
+    AssignmentOption,
+    AssignmentPoll,
+    AssignmentRelatedUser,
+    AssignmentVote,
+)
 
 
 # Viewsets for the REST API
@@ -313,56 +319,14 @@ class AssignmentPollViewSet(BasePollViewSet):
         assignment = serializer.validated_data["assignment"]
         if not assignment.candidates.exists():
             raise ValidationError(
-                {"detail": "Can not create poll because there are no candidates."}
+                {"detail": "Cannot create poll because there are no candidates."}
             )
 
         super().perform_create(serializer)
 
     def handle_analog_vote(self, data, poll, user):
-        """
-        Request data:
-        {
-            "options": {<option_id>: {"Y": <amount>, ["N": <amount>], ["A": <amount>] }},
-            ["votesvalid": <amount>], ["votesinvalid": <amount>], ["votescast": <amount>],
-            ["global_no": <amount>], ["global_abstain": <amount>]
-        }
-        All amounts are decimals as strings
-
-        required fields per pollmethod:
-        - votes: Y
-        - YN:    YN
-        - YNA:   YNA
-        """
-        if not isinstance(data, dict):
-            raise ValidationError({"detail": "Data must be a dict"})
-
-        options_data = data.get("options")
-        if not isinstance(options_data, dict):
-            raise ValidationError({"detail": "You must provide options"})
-
-        for key, value in options_data.items():
-            if not is_int(key):
-                raise ValidationError({"detail": "Keys must be int"})
-            if not isinstance(value, dict):
-                raise ValidationError({"detail": "A dict per option is required"})
-            self.parse_decimal_value(value.get("Y"), min_value=-2)
-            if poll.pollmethod in (
-                AssignmentPoll.POLLMETHOD_YN,
-                AssignmentPoll.POLLMETHOD_YNA,
-            ):
-                self.parse_decimal_value(value.get("N"), min_value=-2)
-            if poll.pollmethod == AssignmentPoll.POLLMETHOD_YNA:
-                self.parse_decimal_value(value.get("A"), min_value=-2)
-
-        # Check and set votes* values here, because this might raise errors.
-        if "votesvalid" in data:
-            poll.votesvalid = self.parse_decimal_value(data["votesvalid"], min_value=-2)
-        if "votesinvalid" in data:
-            poll.votesinvalid = self.parse_decimal_value(
-                data["votesinvalid"], min_value=-2
-            )
-        if "votescast" in data:
-            poll.votescast = self.parse_decimal_value(data["votescast"], min_value=-2)
+        for field in ["votesvalid", "votesinvalid", "votescast"]:
+            setattr(poll, field, data[field])
 
         global_no_enabled = (
             poll.global_no and poll.pollmethod == AssignmentPoll.POLLMETHOD_VOTES
@@ -370,134 +334,189 @@ class AssignmentPollViewSet(BasePollViewSet):
         global_abstain_enabled = (
             poll.global_abstain and poll.pollmethod == AssignmentPoll.POLLMETHOD_VOTES
         )
-        if "global_no" in data and global_no_enabled:
-            self.parse_decimal_value(data["votescast"], min_value=-2)
-        if "global_abstain" in data and global_abstain_enabled:
-            self.parse_decimal_value(data["votescast"], min_value=-2)
 
         options = poll.get_options()
+        options_data = data.get("options")
 
-        # Check, if all options were given
-        db_option_ids = set(option.id for option in options)
+        with transaction.atomic():
+            for option_id, vote in options_data.items():
+                option = options.get(pk=int(option_id))
+                vote_obj, _ = AssignmentVote.objects.get_or_create(
+                    option=option, value="Y"
+                )
+                vote_obj.weight = vote["Y"]
+                vote_obj.save()
+
+                if poll.pollmethod in (
+                    AssignmentPoll.POLLMETHOD_YN,
+                    AssignmentPoll.POLLMETHOD_YNA,
+                ):
+                    vote_obj, _ = AssignmentVote.objects.get_or_create(
+                        option=option, value="N"
+                    )
+                    vote_obj.weight = vote["N"]
+                    vote_obj.save()
+
+                if poll.pollmethod == AssignmentPoll.POLLMETHOD_YNA:
+                    vote_obj, _ = AssignmentVote.objects.get_or_create(
+                        option=option, value="A"
+                    )
+                    vote_obj.weight = vote["A"]
+                    vote_obj.save()
+
+            # Create votes for global no and global abstain
+            first_option = options.first()
+            if "global_no" in data and global_no_enabled:
+                vote_obj, _ = AssignmentVote.objects.get_or_create(
+                    option=first_option, value="N"
+                )
+                vote_obj.weight = data["votescast"]
+                vote_obj.save()
+            if "global_abstain" in data and global_abstain_enabled:
+                vote_obj, _ = AssignmentVote.objects.get_or_create(
+                    option=first_option, value="A"
+                )
+                vote_obj.weight = data["votescast"]
+                vote_obj.save()
+            poll.save()
+
+    def validate_vote_data(self, data, poll):
+        """
+        Request data:
+        analog:
+            {
+                "options": {<option_id>: {"Y": <amount>, ["N": <amount>], ["A": <amount>] }},
+                ["votesvalid": <amount>], ["votesinvalid": <amount>], ["votescast": <amount>],
+                ["global_no": <amount>], ["global_abstain": <amount>]
+            }
+            All amounts are decimals as strings
+            required fields per pollmethod:
+            - votes: Y
+            - YN:    YN
+            - YNA:   YNA
+        named|pseudoanonymous:
+            votes:
+                {<option_id>: <amount>} | 'N' | 'A'
+                - Exactly one of the three options must be given
+                - 'N' is only valid if poll.global_no==True
+                - 'A' is only valid if poll.global_abstain==True
+                - amounts must be integer numbers >= 0.
+                - ids should be integers of valid option ids for this poll
+                - amounts must be 0 or 1, if poll.allow_multiple_votes_per_candidate is False
+                - The sum of all amounts must be poll.votes_amount votes
+
+            YN/YNA:
+                {<option_id>: 'Y' | 'N' [|'A']}
+                - all option_ids must be given
+                - 'A' is only allowed in YNA pollmethod
+
+        Votes for all options have to be given
+        """
+        if poll.type == AssignmentPoll.TYPE_ANALOG:
+            if not isinstance(data, dict):
+                raise ValidationError({"detail": "Data must be a dict"})
+
+            options_data = data.get("options")
+            if not isinstance(options_data, dict):
+                raise ValidationError({"detail": "You must provide options"})
+
+            for key, value in options_data.items():
+                if not is_int(key):
+                    raise ValidationError({"detail": "Keys must be int"})
+                if not isinstance(value, dict):
+                    raise ValidationError({"detail": "A dict per option is required"})
+                value["Y"] = self.parse_vote_value(value, "Y")
+                if poll.pollmethod in (
+                    AssignmentPoll.POLLMETHOD_YN,
+                    AssignmentPoll.POLLMETHOD_YNA,
+                ):
+                    value["N"] = self.parse_vote_value(value, "N")
+                if poll.pollmethod == AssignmentPoll.POLLMETHOD_YNA:
+                    value["A"] = self.parse_vote_value(value, "A")
+
+            for field in ["votesvalid", "votesinvalid", "votescast"]:
+                data[field] = self.parse_vote_value(data, field)
+
+            global_no_enabled = (
+                poll.global_no and poll.pollmethod == AssignmentPoll.POLLMETHOD_VOTES
+            )
+            global_abstain_enabled = (
+                poll.global_abstain
+                and poll.pollmethod == AssignmentPoll.POLLMETHOD_VOTES
+            )
+            if ("global_no" in data and global_no_enabled) or (
+                "global_abstain" in data and global_abstain_enabled
+            ):
+                data["votescast"] = self.parse_vote_value(data, "votescast")
+
+        else:
+            if poll.pollmethod == AssignmentPoll.POLLMETHOD_VOTES:
+                if isinstance(data, dict):
+                    amount_sum = 0
+                    for option_id, amount in data.items():
+                        if not is_int(option_id):
+                            raise ValidationError({"detail": "Each id must be an int."})
+                        if not is_int(amount):
+                            raise ValidationError(
+                                {"detail": "Each amounts must be int"}
+                            )
+                        amount = int(amount)
+                        if amount < 0:
+                            raise ValidationError(
+                                {"detail": "Negative votes are not allowed"}
+                            )
+                        # skip empty votes
+                        if amount == 0:
+                            continue
+                        if not poll.allow_multiple_votes_per_candidate and amount != 1:
+                            raise ValidationError(
+                                {"detail": "Multiple votes are not allowed"}
+                            )
+                        amount_sum += amount
+
+                    if amount_sum != poll.votes_amount:
+                        raise ValidationError(
+                            {
+                                "detail": "You have to give exactly {0} votes",
+                                "args": [poll.votes_amount],
+                            }
+                        )
+                elif data == "N" and poll.global_no:
+                    return  # return because we dont have to check option presence
+                elif data == "A" and poll.global_abstain:
+                    return  # return because we dont have to check option presence
+                else:
+                    raise ValidationError({"detail": "invalid data."})
+
+            elif poll.pollmethod in (
+                AssignmentPoll.POLLMETHOD_YN,
+                AssignmentPoll.POLLMETHOD_YNA,
+            ):
+                if not isinstance(data, dict):
+                    raise ValidationError({"detail": "Data must be a dict."})
+                for option_id, value in data.items():
+                    if not is_int(option_id):
+                        raise ValidationError({"detail": "Keys must be int"})
+                    if (
+                        poll.pollmethod == AssignmentPoll.POLLMETHOD_YNA
+                        and value not in ("Y", "N", "A",)
+                    ):
+                        raise ValidationError("Every value must be Y, N or A")
+                    elif (
+                        poll.pollmethod == AssignmentPoll.POLLMETHOD_YN
+                        and value not in ("Y", "N",)
+                    ):
+                        raise ValidationError("Every value must be Y or N")
+
+            options_data = data
+
+        # Check if all options were given
+        db_option_ids = set(option.id for option in poll.get_options())
         data_option_ids = set(int(option_id) for option_id in options_data.keys())
         if data_option_ids != db_option_ids:
             raise ValidationError(
                 {"error": "You have to provide values for all options"}
             )
-
-        # TODO: make this atomic
-        for option_id, vote in options_data.items():
-            option = options.get(pk=int(option_id))
-            Y = self.parse_decimal_value(vote["Y"], min_value=-2)
-            vote_obj, _ = AssignmentVote.objects.get_or_create(option=option, value="Y")
-            vote_obj.weight = Y
-            vote_obj.save()
-
-            if poll.pollmethod in (
-                AssignmentPoll.POLLMETHOD_YN,
-                AssignmentPoll.POLLMETHOD_YNA,
-            ):
-                N = self.parse_decimal_value(vote["N"], min_value=-2)
-                vote_obj, _ = AssignmentVote.objects.get_or_create(
-                    option=option, value="N"
-                )
-                vote_obj.weight = N
-                vote_obj.save()
-
-            if poll.pollmethod == AssignmentPoll.POLLMETHOD_YNA:
-                A = self.parse_decimal_value(vote["A"], min_value=-2)
-                vote_obj, _ = AssignmentVote.objects.get_or_create(
-                    option=option, value="A"
-                )
-                vote_obj.weight = A
-                vote_obj.save()
-
-        # Create votes for global no and global abstain
-        first_option = options.first()
-        if "global_no" in data and global_no_enabled:
-            global_no = self.parse_decimal_value(data["votescast"], min_value=-2)
-            AssignmentVote.objects.create(
-                option=first_option, value="N", weight=global_no
-            )
-        if "global_abstain" in data and global_abstain_enabled:
-            global_abstain = self.parse_decimal_value(data["votescast"], min_value=-2)
-            AssignmentVote.objects.create(
-                option=first_option, value="A", weight=global_abstain
-            )
-
-        poll.state = AssignmentPoll.STATE_FINISHED  # directly stop the poll
-        poll.save()
-
-    def validate_vote_data(self, data, poll):
-        if poll.pollmethod == AssignmentPoll.POLLMETHOD_VOTES:
-            if isinstance(data, dict):
-                amount_sum = 0
-                for option_id, amount in data.items():
-                    if not is_int(option_id):
-                        raise ValidationError({"detail": "Each id must be an int."})
-                    if not is_int(amount):
-                        raise ValidationError({"detail": "Each amounts must be int"})
-                    amount = int(amount)
-                    if amount < 0:
-                        raise ValidationError(
-                            {"detail": "Negative votes are not allowed"}
-                        )
-                    # skip empty votes
-                    if amount == 0:
-                        continue
-                    if not poll.allow_multiple_votes_per_candidate and amount != 1:
-                        raise ValidationError(
-                            {"detail": "Multiple votes are not allowed"}
-                        )
-                    amount_sum += amount
-
-                if amount_sum != poll.votes_amount:
-                    raise ValidationError(
-                        {
-                            "detail": "You have to give exactly {0} votes",
-                            "args": [poll.votes_amount],
-                        }
-                    )
-                # Check, if all options are valid
-                db_option_ids = set(option.id for option in poll.get_options())
-                data_option_ids = set(int(option_id) for option_id in data.keys())
-                if len(data_option_ids - db_option_ids):
-                    raise ValidationError({"error": "There are invalid option ids."})
-            elif data == "N" and poll.global_no:
-                pass
-            elif data == "A" and poll.global_abstain:
-                pass
-            else:
-                raise ValidationError({"detail": "invalid data."})
-
-        elif poll.pollmethod in (
-            AssignmentPoll.POLLMETHOD_YN,
-            AssignmentPoll.POLLMETHOD_YNA,
-        ):
-            if not isinstance(data, dict):
-                raise ValidationError({"detail": "Data must be a dict."})
-            for option_id, value in data.items():
-                if not is_int(option_id):
-                    raise ValidationError({"detail": "Keys must be int"})
-                if poll.pollmethod == AssignmentPoll.POLLMETHOD_YNA and value not in (
-                    "Y",
-                    "N",
-                    "A",
-                ):
-                    raise ValidationError("Every value must be Y, N or A")
-                elif poll.pollmethod == AssignmentPoll.POLLMETHOD_YN and value not in (
-                    "Y",
-                    "N",
-                ):
-                    raise ValidationError("Every value must be Y or N")
-
-            # Check, if all options were given
-            db_option_ids = set(option.id for option in poll.get_options())
-            data_option_ids = set(int(option_id) for option_id in data.keys())
-            if data_option_ids != db_option_ids:
-                raise ValidationError(
-                    {"error": "You have to provide values for all options"}
-                )
 
     def create_votes(self, data, poll, user=None):
         """
@@ -537,34 +556,35 @@ class AssignmentPollViewSet(BasePollViewSet):
                 inform_changed_data(vote, no_delete_on_restriction=True)
 
     def handle_named_vote(self, data, poll, user):
-        """
-        Request data for votes pollmethod:
-        {<option_id>: <amount>} | 'N' | 'A'
-         - Exactly one of the three options must be given
-         - 'N' is only valid if poll.global_no==True
-         - 'A' is only valid if poll.global_abstain==True
-         - amounts must be integer numbers >= 1.
-         - ids should be integers of valid option ids for this poll
-         - amounts must be 0 or 1, if poll.allow_multiple_votes_per_candidate is False
-         - The sum of all amounts must be poll.votes_amount votes
-
-         Request data for YN/YNA pollmethod:
-         {<option_id>: 'Y' | 'N' [|'A']}
-          - all option_ids must be given
-          - 'A' is only allowed in YNA pollmethod
-        """
-        self.validate_vote_data(data, poll)
         # Instead of reusing all existing votes for the user, delete all previous votes
         for vote in poll.get_votes().filter(user=user):
             vote.delete()
         self.create_votes(data, poll, user)
 
     def handle_pseudoanonymous_vote(self, data, poll):
-        """
-        For request data see handle_named_vote
-        """
-        self.validate_vote_data(data, poll)
         self.create_votes(data, poll)
+
+    def convert_option_data(self, poll, data):
+        poll_options = poll.get_options()
+        new_option_data = {}
+        option_data = data.get("options")
+        if option_data is None:
+            raise ValidationError({"detail": "You must provide options"})
+        for id, val in option_data.items():
+            option = poll_options.filter(user_id=id).first()
+            if option is None:
+                raise ValidationError(
+                    {"detail": f"Assignment related user with id {id} not found"}
+                )
+            new_option_data[option.id] = val
+        data["options"] = new_option_data
+
+
+class AssignmentOptionViewSet(BaseOptionViewSet):
+    queryset = AssignmentOption.objects.all()
+
+    def check_view_permissions(self):
+        return has_perm(self.request.user, "assignments.can_see")
 
 
 class AssignmentVoteViewSet(BaseVoteViewSet):

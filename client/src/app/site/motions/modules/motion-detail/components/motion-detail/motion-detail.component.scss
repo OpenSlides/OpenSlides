@@ -4,6 +4,15 @@ span {
     margin: 0;
 }
 
+.create-poll-button {
+    margin-top: 10px;
+    padding: 0px !important;
+    button {
+        display: block;
+        width: 100%;
+    }
+}
+
 .extra-controls-slot {
     div {
         padding: 0px;
@@ -204,13 +213,6 @@ span {
             top: 5px;
             cursor: pointer;
         }
-    }
-}
-
-.create-poll-button {
-    margin-top: 10px;
-    button {
-        padding: 0px;
     }
 }
 

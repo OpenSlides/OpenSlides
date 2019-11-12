@@ -15,6 +15,8 @@ from tests.count_queries import AssertNumQueriesContext
 
 
 class TestCase(_TestCase):
+    maxDiff = None
+
     def setUp(self):
         self.admin = get_user_model().objects.get(username="admin")
         self.client = APIClient()
@@ -78,6 +80,11 @@ class TestCase(_TestCase):
 
         with context:
             func(*args, **kwargs)
+
+    def assertHttpStatusVerbose(self, response, status):
+        if response.status_code != status:
+            print(response.data)
+        self.assertEqual(response.status_code, status)
 
     """
     Create Helper functions

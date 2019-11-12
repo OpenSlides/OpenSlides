@@ -144,6 +144,7 @@ class CoreAppConfig(AppConfig):
             "PRIORITIZED_GROUP_IDS",
             "PING_INTERVAL",
             "PING_TIMEOUT",
+            "ENABLE_ELECTRONIC_VOTING",
         ]
         client_settings_dict = {}
         for key in client_settings_keys:

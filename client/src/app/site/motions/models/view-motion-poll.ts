@@ -1,20 +1,45 @@
-import { MotionPoll, MotionPollWithoutNestedModels } from 'app/shared/models/motions/motion-poll';
-import { BaseProjectableViewModel } from 'app/site/base/base-projectable-view-model';
+import { ChartData } from 'app/shared/components/charts/charts.component';
+import { MotionPoll, MotionPollMethods } from 'app/shared/models/motions/motion-poll';
+import { PollColor } from 'app/shared/models/poll/base-poll';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 import { ViewMotionOption } from 'app/site/motions/models/view-motion-option';
-import { ViewGroup } from 'app/site/users/models/view-group';
-import { ViewUser } from 'app/site/users/models/view-user';
+import { ViewBasePoll } from 'app/site/polls/models/view-base-poll';
 
 export interface MotionPollTitleInformation {
     title: string;
 }
 
-export class ViewMotionPoll extends BaseProjectableViewModel<MotionPoll> implements MotionPollTitleInformation {
+export const MotionPollMethodsVerbose = {
+    YN: 'Yes/No',
+    YNA: 'Yes/No/Abstain'
+};
+
+export class ViewMotionPoll extends ViewBasePoll<MotionPoll> implements MotionPollTitleInformation {
     public static COLLECTIONSTRING = MotionPoll.COLLECTIONSTRING;
     protected _collectionString = MotionPoll.COLLECTIONSTRING;
 
-    public get poll(): MotionPoll {
-        return this._model;
+    public readonly pollClassType: 'assignment' | 'motion' = 'motion';
+
+    public generateChartData(): ChartData {
+        const fields = ['yes', 'no'];
+        if (this.pollmethod === MotionPollMethods.YNA) {
+            fields.push('abstain');
+        }
+        const data: ChartData = fields.map(key => ({
+            label: key.toUpperCase(),
+            data: [this.options[0][key]],
+            backgroundColor: PollColor[key],
+            hoverBackgroundColor: PollColor[key]
+        }));
+
+        data.push({
+            label: 'Votes invalid',
+            data: [this.votesinvalid],
+            backgroundColor: PollColor.votesinvalid,
+            hoverBackgroundColor: PollColor.votesinvalid
+        });
+
+        return data;
     }
 
     public getSlide(): ProjectorElementBuildDeskriptor {
@@ -29,12 +54,12 @@ export class ViewMotionPoll extends BaseProjectableViewModel<MotionPoll> impleme
             getDialogTitle: this.getTitle
         };
     }
+
+    public get pollmethodVerbose(): string {
+        return MotionPollMethodsVerbose[this.pollmethod];
+    }
 }
 
-interface TIMotionPollRelations {
+export interface ViewMotionPoll extends MotionPoll {
     options: ViewMotionOption[];
-    voted: ViewUser[];
-    groups: ViewGroup[];
 }
-
-export interface ViewMotionPoll extends MotionPollWithoutNestedModels, TIMotionPollRelations {}

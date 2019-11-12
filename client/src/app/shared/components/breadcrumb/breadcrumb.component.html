@@ -1,0 +1,17 @@
+<ol class="breadcrumb-list">
+    <li *ngFor="let breadcrumb of breadcrumbList" class="breadcrumb" [ngClass]="{ active: breadcrumb.active }">
+        <ng-container *ngIf="breadcrumb.active">
+            <span>
+                {{ breadcrumb.label }}
+            </span>
+        </ng-container>
+        <ng-container *ngIf="!breadcrumb.active">
+            <span
+                (click)="breadcrumb.action ? breadcrumb.action() : null"
+                [ngClass]="{ 'accent-foreground has-action': breadcrumb.action }"
+            >
+                {{ breadcrumb.label }}
+            </span>
+        </ng-container>
+    </li>
+</ol>

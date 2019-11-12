@@ -1,33 +1,35 @@
 <os-head-bar
     [goBack]="true"
     [nav]="false"
-    [hasMainButton]="true"
-    [editMode]="isEditingPoll"
+    [hasMainButton]="poll && (poll.state === 2 || poll.state === 3)"
     [mainButtonIcon]="'edit'"
     [mainActionTooltip]="'Edit' | translate"
-    [isSaveButtonEnabled]="contentForm.valid"
-    (mainEvent)="editPoll()"
-    (saveEvent)="savePoll()"
-    (cancelEditEvent)="backToView()"
+    (mainEvent)="openDialog()"
 >
     <div class="title-slot">
-        <h2 *ngIf="isNewPoll" translate>New vote</h2>
-        <h2 *ngIf="!isNewPoll && !!poll">{{ poll.title }}</h2>
+        <h2 *ngIf="!!poll">{{ poll.title }}</h2>
+    </div>
+
+    <div class="menu-slot" *osPerms="'agenda.can_manage'; or: 'agenda.can_see_list_of_speakers'">
+        <button type="button" mat-icon-button [matMenuTriggerFor]="pollDetailMenu">
+            <mat-icon>more_vert</mat-icon>
+        </button>
     </div>
 </os-head-bar>
 
-<mat-card [ngClass]="isEditingPoll ? 'os-form-card' : 'os-card'">
-    <ng-container *ngIf="!isEditingPoll" [ngTemplateOutlet]="viewTemplate"></ng-container>
-    <ng-container *ngIf="isEditingPoll" [ngTemplateOutlet]="formTemplate"></ng-container>
+<mat-card class="os-card">
+    <ng-container [ngTemplateOutlet]="viewTemplate"></ng-container>
 </mat-card>
 
+<!-- Detailview for poll -->
 <ng-template #viewTemplate>
     <ng-container *ngIf="poll">
         <h1>{{ poll.title }}</h1>
         <mat-divider></mat-divider>
+        <os-breadcrumb [breadcrumbs]="breadcrumbs" [breadcrumbStyle]="'>'"></os-breadcrumb>
         <div class="poll-content">
             <div>{{ 'Current state' | translate }}: {{ poll.stateVerbose | translate }}</div>
-            <div *ngIf="poll.groups">
+            <div *ngIf="poll.groups && poll.type && poll.type !== 'analog'">
                 {{ 'Groups' | translate }}:
                 <span *ngFor="let group of poll.groups">{{ group.getTitle() | translate }}</span>
             </div>
@@ -36,57 +38,40 @@
             <div>{{ 'Majority method' | translate }}: {{ poll.majorityMethodVerbose | translate }}</div>
             <div>{{ '100% base' | translate }}: {{ poll.percentBaseVerbose | translate }}</div>
         </div>
+
+        <div *ngIf="poll.state === 3 || poll.state === 4">
+            <h2 translate>Result</h2>
+            <!-- <div class="chart-wrapper">
+                <mat-form-field>
+                    <mat-select [(ngModel)]="chartType" [placeholder]="'Display as' | translate">
+                        <mat-option [value]="'horizontalBar'">{{ 'Bar' | translate }}</mat-option>
+                        <mat-option [value]="'doughnut'">{{ 'Circle' | translate }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <os-charts [type]="chartType" [labels]="labels" [showLegend]="true" [data]="chartDataSubject"></os-charts> -->
+
+            <div *ngIf="poll.type === 'named'" style="display: grid; grid-template-columns: max-content auto;grid-column-gap: 20px;">
+                <ng-container *ngFor="let vote of poll.options[0].votes">
+                    <div *ngIf="vote.user">{{ vote.user.full_name }}</div>
+                    <div *ngIf="!vote.user">{{ "Unknown user" | translate}}</div>
+                    <div>{{ vote.valueVerbose }}</div>
+                </ng-container>
+            </div>
+        </div>
     </ng-container>
 </ng-template>
 
-<ng-template #formTemplate>
-    <form [formGroup]="contentForm">
-        <mat-form-field>
-            <input matInput formControlName="title" [placeholder]="'Title' | translate" required />
-            <mat-error translate>A title is required</mat-error>
-        </mat-form-field>
-        <mat-form-field>
-            <mat-select [placeholder]="'Poll type' | translate" formControlName="type" required>
-                <mat-option *ngFor="let option of pollTypes | keyvalue" [value]="option.key">{{
-                    option.value | translate
-                }}</mat-option>
-            </mat-select>
-            <mat-error translate>This field is required</mat-error>
-        </mat-form-field>
-        <mat-form-field *ngIf="contentForm.controls.type.value && contentForm.controls.type.value != 'analog'">
-            <os-search-value-selector
-                formControlName="groups_id"
-                [multiple]="true"
-                [includeNone]="false"
-                [placeholder]="'Entitled to vote' | translate"
-                [inputListValues]="groupObservable"
-            ></os-search-value-selector>
-        </mat-form-field>
-        <mat-form-field>
-            <mat-select [placeholder]="'Poll method' | translate" formControlName="pollmethod" required>
-                <mat-option *ngFor="let option of pollMethods | keyvalue" [value]="option.key">{{
-                    option.value
-                }}</mat-option>
-            </mat-select>
-            <mat-error translate>This field is required</mat-error>
-        </mat-form-field>
-        <mat-form-field>
-            <mat-select
-                placeholder="{{ '100% base' | translate }}"
-                formControlName="onehundred_percent_base"
-                required
-            >
-                <mat-option *ngFor="let option of percentBases | keyvalue" [value]="option.key">{{
-                    option.value | translate
-                }}</mat-option>
-            </mat-select>
-        </mat-form-field>
-        <mat-form-field>
-            <mat-select placeholder="{{ 'Majority' | translate }}" formControlName="majority_method" required>
-                <mat-option *ngFor="let option of majorityMethods | keyvalue" [value]="option.key">{{
-                    option.value | translate
-                }}</mat-option>
-            </mat-select>
-        </mat-form-field>
-    </form>
-</ng-template>
+<!-- More Menu -->
+<mat-menu #pollDetailMenu="matMenu">
+    <os-projector-button [menuItem]="true" [object]="poll" *osPerms="'core.can_manage_projector'"></os-projector-button>
+    <button mat-menu-item *ngIf="poll && poll.type === 'named'" (click)="pseudoanonymizePoll()">
+        <mat-icon>questionmark</mat-icon>
+        <span translate>Pseudoanonymize</span>
+    </button>
+    <mat-divider></mat-divider>
+    <button mat-menu-item (click)="deletePoll()">
+        <mat-icon>delete</mat-icon>
+        <span translate>Delete</span>
+    </button>
+</mat-menu>

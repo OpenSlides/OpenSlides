@@ -1,30 +1,52 @@
-<h2 translate>Voting result</h2>
-<div class="meta-text">
-    <span translate>Special values</span>:<br />
-    <mat-chip>-1</mat-chip>&nbsp;=&nbsp; <span translate>majority</span>&nbsp;
-    <mat-chip color="accent">-2</mat-chip>&nbsp;=&nbsp;
-    <span translate>undocumented</span>
-</div>
-<div class="spacer-top-10"></div>
-<div class="width-600">
+<os-poll-form [data]="pollData" [pollMethods]="assignmentPollMethods" #pollForm></os-poll-form>
+<ng-container *ngIf="pollForm.contentForm.get('type').value === 'analog'">
     <!-- Candidate values -->
-    <div [ngClass]="getGridClass()" *ngFor="let candidate of data.options">
-        <div class="candidate-name">
-            {{ candidate.user.full_name }}
+    <form [formGroup]="dialogVoteForm">
+        <div formGroupName="options">
+            <div *ngFor="let option of options" class="votes-grid">
+                <div>
+                    <span *ngIf="option.user">{{ option.user.getFullName() }}</span>
+                    <span *ngIf="!option.user">No user {{ option.candidate_id }}</span>
+                </div>
+                
+                <div>
+                    <div *ngFor="let value of analogPollValues" [formGroupName]="option.user_id">
+                        <os-check-input
+                            [placeholder]="voteValueVerbose[value] | translate"
+                            [checkboxValue]="-1"
+                            inputType="number"
+                            [checkboxLabel]="'Majority' | translate"
+                            [formControlName]="value"
+                        ></os-check-input>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div *ngFor="let key of optionPollKeys" class="votes">
-            <mat-form-field>
-                <input type="number"
-                            matInput
-                            [value]="getValue(key, candidate)"
-                            (change)="setValue(key, candidate, $event.target.value)"
-                        />
-                        <mat-label> {{ key | translate }}</mat-label>
-            </mat-form-field>
+        <div *ngFor="let value of sumValues" class="votes-grid">
+            <div></div>
+            <os-check-input
+                [placeholder]="generalValueVerbose[value] | translate"
+                [checkboxValue]="-1"
+                inputType="number"
+                [checkboxLabel]="'Majority' | translate"
+                [formControlName]="value"
+            ></os-check-input>
         </div>
+    </form>
+    <mat-divider></mat-divider>
+    <div class="spacer-top-20">
+        <mat-checkbox
+            [(ngModel)]="publishImmediately"
+            (change)="publishStateChanged($event.checked)"
+        >
+            <span translate>Publish immediately</span>
+        </mat-checkbox>
+        <mat-error *ngIf="!dialogVoteForm.valid" translate>
+            If you want to publish after creating, you have to fill at least one of the fields.
+        </mat-error>
     </div>
     <!-- Summary values -->
-    <div *ngFor="let sumValue of sumValues" class="sum-value">
+    <!-- <div *ngFor="let sumValue of sumValues" class="sum-value">
         <mat-form-field>
             <input
                 type="number"
@@ -34,9 +56,14 @@
             />
             <mat-label>{{ pollService.getLabel(sumValue) | translate }}</mat-label>
         </mat-form-field>
-    </div>
-</div>
-<div class="submit-buttons">
-    <button mat-button (click)="submit()">{{ 'Save' | translate }}</button>
-    <button mat-button (click)="cancel()">{{ 'Cancel' | translate }}</button>
+    </div> -->
+</ng-container>
+<mat-divider></mat-divider>
+<div mat-dialog-actions>
+    <button mat-button (click)="submitPoll()" [disabled]="!pollForm.contentForm || pollForm.contentForm.invalid || dialogVoteForm.invalid">
+        <span translate>Save</span>
+    </button>
+    <button mat-button [mat-dialog-close]="false">
+        <span translate>Cancel</span>
+    </button>
 </div>
