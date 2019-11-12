@@ -42,10 +42,6 @@ class CreateAssignment(TestCase):
     Tests basic creation of assignments.
     """
 
-    def setUp(self):
-        self.client = APIClient()
-        self.client.login(username="admin", password="admin")
-
     def test_simple(self):
         response = self.client.post(
             reverse("assignment-list"),
@@ -54,6 +50,7 @@ class CreateAssignment(TestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         assignment = Assignment.objects.get()
         self.assertEqual(assignment.title, "test_title_ef3jpF)M329f30m)f82")
+        self.assertEqual(assignment.number_poll_candidates, False)
 
     def test_with_tags_and_mediafiles(self):
         Tag.objects.create(name="test_tag")
@@ -74,6 +71,19 @@ class CreateAssignment(TestCase):
         self.assertEqual(assignment.title, "test_title_ef3jpF)M329f30m)f82")
         self.assertTrue(assignment.tags.exists())
         self.assertTrue(assignment.attachments.exists())
+
+    def test_number_poll_candidates(self):
+        response = self.client.post(
+            reverse("assignment-list"),
+            {
+                "title": "test_title_EFBhGQkQciwZtjSc7BVy",
+                "open_posts": 1,
+                "number_poll_candidates": True,
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        assignment = Assignment.objects.get()
+        self.assertEqual(assignment.number_poll_candidates, True)
 
 
 class CandidatureSelf(TestCase):
