@@ -843,9 +843,9 @@ class SetPasswordView(APIView):
 
     def post(self, request, *args, **kwargs):
         user = request.user
-        if not (
-            has_perm(user, "users.can_change_password")
-            or has_perm(user, "users.can_manage")
+        if (
+            not user.is_authenticated
+            or not has_perm(user, "users.can_change_password")
             or user.auth_type != "default"
         ):
             self.permission_denied(request)

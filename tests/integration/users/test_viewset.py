@@ -1,4 +1,5 @@
 import pytest
+from django.contrib.auth.models import Permission
 from django.core import mail
 from django.urls import reverse
 from rest_framework import status
@@ -290,6 +291,84 @@ class UserPassword(TestCase):
                 "new_password_Yuuh8OoQueePahngohy3_new"
             )
         )
+
+    def test_set(self):
+        response = self.admin_client.post(
+            reverse("user_setpassword"),
+            {
+                "old_password": "admin",
+                "new_password": "new_password_eiki5eiCoozethahhief",
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        admin = User.objects.get()
+        self.assertTrue(admin.check_password("new_password_eiki5eiCoozethahhief"))
+
+    def test_set_no_manage_perms(self):
+        admin = User.objects.get()
+        admin.groups.add(GROUP_DELEGATE_PK)
+        admin.groups.remove(GROUP_ADMIN_PK)
+        inform_changed_data(admin)
+        response = self.admin_client.post(
+            reverse("user_setpassword"),
+            {
+                "old_password": "admin",
+                "new_password": "new_password_ou0wei3tae5ahr7oa1Fu",
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        admin = User.objects.get()
+        self.assertTrue(admin.check_password("new_password_ou0wei3tae5ahr7oa1Fu"))
+
+    def test_set_no_can_change_password(self):
+        admin = User.objects.get()
+        admin.groups.add(GROUP_DELEGATE_PK)
+        admin.groups.remove(GROUP_ADMIN_PK)
+        can_change_password_permission = Permission.objects.get(
+            content_type__app_label="users", codename="can_change_password"
+        )
+        delegate_group = Group.objects.get(pk=GROUP_DELEGATE_PK)
+        delegate_group.permissions.remove(can_change_password_permission)
+        inform_changed_data(delegate_group)
+        inform_changed_data(admin)
+
+        response = self.admin_client.post(
+            reverse("user_setpassword"),
+            {
+                "old_password": "admin",
+                "new_password": "new_password_Xeereehahzie3Oochere",
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        admin = User.objects.get()
+        self.assertTrue(admin.check_password("admin"))
+
+    def test_set_wrong_auth_type(self):
+        admin = User.objects.get()
+        admin.auth_type = "something_else"
+        admin.save()
+        response = self.admin_client.post(
+            reverse("user_setpassword"),
+            {
+                "old_password": "admin",
+                "new_password": "new_password_dau2ahng3Ahgha7yee8o",
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        admin = User.objects.get()
+        self.assertTrue(admin.check_password("admin"))
+
+    def test_set_anonymous_user(self):
+        config["general_system_enable_anonymous"] = True
+        guest_client = APIClient()
+        response = guest_client.post(
+            reverse("user_setpassword"),
+            {
+                "old_password": "admin",
+                "new_password": "new_password_SeeRieThahlaaf6cu8Oz",
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_set_random_initial_password(self):
         """
