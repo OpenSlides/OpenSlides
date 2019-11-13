@@ -8,6 +8,7 @@ import { BaseViewModel, TitleInformation, ViewModelConstructor } from '../../sit
 import { CollectionStringMapperService } from '../core-services/collection-string-mapper.service';
 import { DataSendService } from '../core-services/data-send.service';
 import { DataStoreService } from '../core-services/data-store.service';
+import { HasViewModelListObservable } from '../definitions/has-view-model-list-observable';
 import { Identifiable } from '../../shared/models/base/identifiable';
 import { OnAfterAppsLoaded } from '../definitions/on-after-apps-loaded';
 import { RelationManagerService } from '../core-services/relation-manager.service';
@@ -30,7 +31,7 @@ export interface NestedModelDescriptors {
 }
 
 export abstract class BaseRepository<V extends BaseViewModel & T, M extends BaseModel, T extends TitleInformation>
-    implements OnAfterAppsLoaded, Collection {
+    implements OnAfterAppsLoaded, Collection, HasViewModelListObservable<V> {
     /**
      * Stores all the viewModel in an object
      */
@@ -42,8 +43,8 @@ export abstract class BaseRepository<V extends BaseViewModel & T, M extends Base
     protected viewModelSubjects: { [modelId: number]: BehaviorSubject<V> } = {};
 
     /**
-     * Observable subject for the whole list. These entries are unsorted an not piped through
-     * autodTime. Just use this internally.
+     * Observable subject for the whole list. These entries are unsorted and not piped through
+     * auditTime. Just use this internally.
      *
      * It's used to debounce messages on the sortedViewModelListSubject
      */
@@ -188,7 +189,7 @@ export abstract class BaseRepository<V extends BaseViewModel & T, M extends Base
     }
 
     /**
-     * After creating a view model, all functions for models form the repo
+     * After creating a view model, all functions for models from the repo
      * are assigned to the new view model.
      */
     protected createViewModelWithTitles(model: M): V {
@@ -269,7 +270,7 @@ export abstract class BaseRepository<V extends BaseViewModel & T, M extends Base
         this.viewModelStore = {};
     }
     /**
-     * The function used for sorting the data of this repository. The defualt sorts by ID.
+     * The function used for sorting the data of this repository. The default sorts by ID.
      */
     protected viewModelSortFn: (a: V, b: V) => number = (a: V, b: V) => a.id - b.id;
 

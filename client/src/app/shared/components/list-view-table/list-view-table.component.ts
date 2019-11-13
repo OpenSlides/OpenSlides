@@ -20,7 +20,7 @@ import { distinctUntilChanged, filter } from 'rxjs/operators';
 
 import { OperatorService, Permission } from 'app/core/core-services/operator.service';
 import { StorageService } from 'app/core/core-services/storage.service';
-import { BaseRepository } from 'app/core/repositories/base-repository';
+import { HasViewModelListObservable } from 'app/core/definitions/has-view-model-list-observable';
 import { BaseFilterListService } from 'app/core/ui-services/base-filter-list.service';
 import { BaseSortListService } from 'app/core/ui-services/base-sort-list.service';
 import { ViewportService } from 'app/core/ui-services/viewport.service';
@@ -63,7 +63,7 @@ export interface ColumnRestriction {
  * @example
  * ```html
  * <os-list-view-table
- *     [repo]="motionRepo"
+ *     [listObservableProvider]="motionRepo"
  *     [filterService]="filterService"
  *     [sortService]="sortService"
  *     [columns]="motionColumnDefinition"
@@ -99,7 +99,7 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
      * The required repository
      */
     @Input()
-    public repo: BaseRepository<V, M, any>;
+    public listObservableProvider: HasViewModelListObservable<V>;
 
     /**
      * The currently active sorting service for the list view
@@ -109,7 +109,7 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
 
     /**
      * The currently active filter service for the list view. It is supposed to
-     * be a FilterListService extendingFilterListService.
+     * be a FilterListService extending FilterListService.
      */
     @Input()
     public filterService: BaseFilterListService<V>;
@@ -323,15 +323,6 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
     }
 
     /**
-     * @returns the repositories `viewModelListObservable`
-     */
-    private get viewModelListObservable(): Observable<V[]> {
-        if (this.repo) {
-            return this.repo.getViewModelListObservable();
-        }
-    }
-
-    /**
      * Define which columns to hide. Uses the input-property
      * "hide" to hide individual columns
      */
@@ -477,23 +468,24 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
      * to the used search and filter services
      */
     private getListObservable(): void {
-        if (this.repo && this.viewModelListObservable) {
+        if (this.listObservableProvider) {
+            const listObservable = this.listObservableProvider.getViewModelListObservable();
             if (this.filterService && this.sortService) {
                 // filtering and sorting
-                this.filterService.initFilters(this.viewModelListObservable);
+                this.filterService.initFilters(listObservable);
                 this.sortService.initSorting(this.filterService.outputObservable);
                 this.dataListObservable = this.sortService.outputObservable;
             } else if (this.filterService) {
                 // only filter service
-                this.filterService.initFilters(this.viewModelListObservable);
+                this.filterService.initFilters(listObservable);
                 this.dataListObservable = this.filterService.outputObservable;
             } else if (this.sortService) {
                 // only sorting
-                this.sortService.initSorting(this.viewModelListObservable);
+                this.sortService.initSorting(listObservable);
                 this.dataListObservable = this.sortService.outputObservable;
             } else {
                 // none of both
-                this.dataListObservable = this.viewModelListObservable;
+                this.dataListObservable = listObservable;
             }
         }
     }

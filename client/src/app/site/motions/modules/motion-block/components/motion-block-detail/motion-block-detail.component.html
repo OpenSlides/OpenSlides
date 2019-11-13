@@ -30,7 +30,7 @@
 </os-head-bar>
 
 <os-list-view-table
-    [repo]="motionRepo"
+    [listObservableProvider]="motionRepo"
     [filterService]="filterService"
     [columns]="tableColumnDefinition"
     [restricted]="restrictedColumns"

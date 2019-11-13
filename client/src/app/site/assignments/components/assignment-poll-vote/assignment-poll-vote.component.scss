@@ -1,0 +1,12 @@
+.current-vote {
+    color: #777;
+    margin-right: 10px;
+}
+
+.voting-grid {
+    display: grid;
+    grid-gap: 5px;
+    padding: 5px;
+    align-items: baseline;
+    grid-template-columns: auto max-content max-content;
+}
