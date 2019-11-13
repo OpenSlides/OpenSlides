@@ -407,6 +407,12 @@ class VoteMotionPollAnalog(TestCase):
         self.assertEqual(poll.votescast, None)
         self.assertFalse(poll.get_votes().exists())
 
+    def test_stop_poll(self):
+        self.start_poll()
+        response = self.client.post(reverse("motionpoll-stop", args=[self.poll.pk]))
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(self.poll.state, MotionPoll.STATE_STARTED)
+
     def test_vote(self):
         self.start_poll()
         response = self.client.post(
@@ -995,7 +1001,7 @@ class StopMotionPoll(TestCase):
             motion=self.motion,
             title="test_title_Hu9Miebopaighee3EDie",
             pollmethod="YNA",
-            type=BasePoll.TYPE_ANALOG,
+            type=BasePoll.TYPE_NAMED,
         )
         self.poll.create_options()
 
