@@ -1,137 +1,68 @@
-<div #enterVotesDialog>
-    <div class="os-form-card-mobile">
-        <form [formGroup]="contentForm">
-            <mat-form-field>
-                <h2 class="poll-preview--title">
-                    <input matInput required formControlName="title" [placeholder]="'Title' | translate" />
-                </h2>
-            </mat-form-field>
-        </form>
-        <div *ngIf="data.state > 1" class="poll-preview-meta-info">
-            <span class="short-description" *ngFor="let value of pollValues">
-                <span class="short-description--label subtitle" translate>
-                    {{ value[0] }}
-                </span>
-                <span class="short-description--value" translate>
-                    {{ value[1] }}
-                </span>
-            </span>
-        </div>
-        <form [formGroup]="contentForm" class="poll-preview--meta-info-form">
-            <ng-container *ngIf="!data.state || data.state === 1">
-                <mat-form-field *ngIf="pollService.isElectronicVotingEnabled">
-                    <mat-select [placeholder]="'Poll type' | translate" formControlName="type" required>
-                        <mat-option *ngFor="let option of pollTypes | keyvalue" [value]="option.key">
-                            {{ option.value | translate }}
-                        </mat-option>
-                    </mat-select>
-                    <mat-error translate>This field is required</mat-error>
-                </mat-form-field>
-                <mat-form-field *ngIf="contentForm.get('type').value && contentForm.get('type').value != 'analog'">
-                    <os-search-value-selector
-                        formControlName="groups_id"
-                        [multiple]="true"
-                        [showChips]="false"
-                        [includeNone]="false"
-                        [placeholder]="'Entitled to vote' | translate"
-                        [inputListValues]="groupObservable"
-                    ></os-search-value-selector>
-                </mat-form-field>
-                <mat-form-field>
-                    <mat-select [placeholder]="'Poll method' | translate" formControlName="pollmethod" required>
-                        <mat-option *ngFor="let option of pollMethods | keyvalue" [value]="option.key">
-                            {{ option.value }}
-                        </mat-option>
-                    </mat-select>
-                    <mat-error translate>This field is required</mat-error>
-                </mat-form-field>
-            </ng-container>
-
-            <mat-form-field>
-                <mat-select
-                    placeholder="{{ '100% base' | translate }}"
-                    formControlName="onehundred_percent_base"
-                    required
-                >
-                    <mat-option *ngFor="let option of percentBases | keyvalue" [value]="option.key">
-                        {{ option.value | translate }}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-            <mat-form-field>
-                <mat-select placeholder="{{ 'Majority' | translate }}" formControlName="majority_method" required>
-                    <mat-option *ngFor="let option of majorityMethods | keyvalue" [value]="option.key">
-                        {{ option.value | translate }}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
+<os-poll-form [data]="pollData" [pollMethods]="motionPollMethods" #pollForm></os-poll-form>
+<ng-container *ngIf="pollForm.contentForm.get('type').value === 'analog'">
+    <mat-divider></mat-divider>
+    <div class="os-form-card-mobile" mat-dialog-content>
+        <form [formGroup]="dialogVoteForm">
+            <os-check-input
+                [placeholder]="'Yes' | translate"
+                [checkboxValue]="-1"
+                inputType="number"
+                [checkboxLabel]="'Majority' | translate"
+                formControlName="Y"
+            ></os-check-input>
+            <os-check-input
+                [placeholder]="'No' | translate"
+                [checkboxValue]="-1"
+                inputType="number"
+                [checkboxLabel]="'Majority' | translate"
+                formControlName="N"
+            ></os-check-input>
+            <os-check-input
+                *ngIf="pollForm.contentForm.get('pollmethod').value === motionPollMethods.YNA"
+                [placeholder]="'Abstain' | translate"
+                [checkboxValue]="-1"
+                inputType="number"
+                [checkboxLabel]="'Majority' | translate"
+                formControlName="A"
+            ></os-check-input>
+            <os-check-input
+                [placeholder]="'Votes valid' | translate"
+                inputType="number"
+                formControlName="votesvalid"
+            ></os-check-input>
+            <os-check-input
+                [placeholder]="'Votes invalid' | translate"
+                [checkboxValue]="-1"
+                inputType="number"
+                [checkboxLabel]="'Majority' | translate"
+                formControlName="votesinvalid"
+            ></os-check-input>
+            <os-check-input
+                [placeholder]="'Votes cast' | translate"
+                inputType="number"
+                formControlName="votescast"
+            ></os-check-input>
         </form>
     </div>
-    <ng-container *ngIf="contentForm.get('type').value === 'analog'">
-        <mat-divider></mat-divider>
-        <div class="os-form-card-mobile" mat-dialog-content>
-            <form [formGroup]="dialogVoteForm">
-                <os-check-input
-                    [placeholder]="'Yes' | translate"
-                    [checkboxValue]="-1"
-                    [inputType]="'number'"
-                    [checkboxLabel]="'Majority' | translate"
-                    formControlName="Y"
-                ></os-check-input>
-                <os-check-input
-                    [placeholder]="'No' | translate"
-                    [checkboxValue]="-1"
-                    [inputType]="'number'"
-                    [checkboxLabel]="'Majority' | translate"
-                    formControlName="N"
-                ></os-check-input>
-                <os-check-input
-                    *ngIf="data.pollmethod === 'YNA'"
-                    [placeholder]="'Abstain' | translate"
-                    [checkboxValue]="-1"
-                    [inputType]="'number'"
-                    [checkboxLabel]="'Majority' | translate"
-                    formControlName="A"
-                ></os-check-input>
-                <os-check-input
-                    [placeholder]="'Votes valid' | translate"
-                    [inputType]="'number'"
-                    formControlName="votesvalid"
-                ></os-check-input>
-                <os-check-input
-                    [placeholder]="'Votes invalid' | translate"
-                    [checkboxValue]="-1"
-                    [inputType]="'number'"
-                    [checkboxLabel]="'Majority' | translate"
-                    formControlName="votesinvalid"
-                ></os-check-input>
-                <os-check-input
-                    [placeholder]="'Votes cast' | translate"
-                    [inputType]="'number'"
-                    formControlName="votescast"
-                ></os-check-input>
-            </form>
-        </div>
-    </ng-container>
     <mat-divider></mat-divider>
     <div class="spacer-top-20">
         <mat-checkbox
-            *ngIf="contentForm.get('type').value === 'analog'"
-            [ngModel]="publishImmediately"
+            [(ngModel)]="publishImmediately"
             (change)="publishStateChanged($event.checked)"
-            translate
-            >Publish immediately</mat-checkbox
         >
-        <mat-error *ngIf="!dialogVoteForm.valid" translate
-            >If you want to publish after creating, you have to fill at least one of the fields.</mat-error
-        >
+            <span translate>Publish immediately</span>
+        </mat-checkbox>
+        <mat-error *ngIf="!dialogVoteForm.valid" translate>
+            If you want to publish after creating, you have to fill at least one of the fields.
+        </mat-error>
     </div>
-    <div mat-dialog-actions>
-        <button mat-button (click)="submitPoll()" [disabled]="!dialogVoteForm.valid">
-            <span translate>Save</span>
-        </button>
-        <button mat-button [mat-dialog-close]="false">
-            <span translate>Cancel</span>
-        </button>
-    </div>
+</ng-container>
+<mat-divider></mat-divider>
+<div mat-dialog-actions>
+    <button mat-button (click)="submitPoll()" [disabled]="pollForm.contentForm.invalid || dialogVoteForm.invalid">
+        <span translate>Save</span>
+    </button>
+    <button mat-button [mat-dialog-close]="false">
+        <span translate>Cancel</span>
+    </button>
 </div>

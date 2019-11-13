@@ -4,6 +4,15 @@ span {
     margin: 0;
 }
 
+.create-poll-button {
+    margin-top: 10px;
+    padding: 0px !important;
+    button {
+        display: block;
+        width: 100%;
+    }
+}
+
 .extra-controls-slot {
     div {
         padding: 0px;

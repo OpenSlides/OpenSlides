@@ -7,6 +7,7 @@ import { RelationManagerService } from 'app/core/core-services/relation-manager.
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { RelationDefinition } from 'app/core/definitions/relations';
 import { AssignmentVote } from 'app/shared/models/assignments/assignment-vote';
+import { ViewAssignmentOption } from 'app/site/assignments/models/view-assignment-option';
 import { ViewAssignmentVote } from 'app/site/assignments/models/view-assignment-vote';
 import { ViewUser } from 'app/site/users/models/view-user';
 import { BaseRepository } from '../base-repository';
@@ -19,6 +20,12 @@ const AssignmentVoteRelations: RelationDefinition[] = [
         ownIdKey: 'user_id',
         ownKey: 'user',
         foreignViewModel: ViewUser
+    },
+    {
+        type: 'M2O',
+        ownIdKey: 'option_id',
+        ownKey: 'option',
+        foreignViewModel: ViewAssignmentOption
     }
 ];
 
@@ -66,4 +73,8 @@ export class AssignmentVoteRepositoryService extends BaseRepository<ViewAssignme
     public getVerboseName = (plural: boolean = false) => {
         return this.translate.instant(plural ? 'Votes' : 'Vote');
     };
+
+    public getVotesForUser(pollId: number, userId: number): ViewAssignmentVote[] {
+        return this.getViewModelList().filter(vote => vote.option.poll_id === pollId && vote.user_id === userId);
+    }
 }

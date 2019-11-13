@@ -1,0 +1,78 @@
+<os-head-bar
+    [goBack]="true"
+    [nav]="false"
+    [hasMainButton]="poll ? poll.type === 'analog' && (poll.state === 2 || poll.state === 3) : false"
+    [mainButtonIcon]="'bar_chart'"
+    [mainActionTooltip]="'Enter votes' | translate"
+    (mainEvent)="enterVote()"
+>
+    <div class="title-slot">
+        <h2 *ngIf="!!poll">{{ poll.title }}</h2>
+    </div>
+
+    <div class="menu-slot" *osPerms="'agenda.can_manage'; or: 'agenda.can_see_list_of_speakers'">
+        <button type="button" mat-icon-button [matMenuTriggerFor]="pollDetailMenu">
+            <mat-icon>more_vert</mat-icon>
+        </button>
+    </div>
+</os-head-bar>
+
+<mat-card class="os-card">
+    <ng-container [ngTemplateOutlet]="viewTemplate"></ng-container>
+</mat-card>
+
+<!-- Detailview for poll -->
+<ng-template #viewTemplate>
+    <ng-container *ngIf="poll">
+        <h1>{{ poll.title }}</h1>
+        <mat-divider></mat-divider>
+        <os-breadcrumb [breadcrumbs]="breadcrumbs" [breadcrumbStyle]="'>'"></os-breadcrumb>
+        <div class="poll-content">
+            <div>{{ 'Current state' | translate }}: {{ poll.stateVerbose | translate }}</div>
+            <div *ngIf="poll.groups && poll.type && poll.type !== 'analog'">
+                {{ 'Groups' | translate }}:
+                <span *ngFor="let group of poll.groups">{{ group.getTitle() | translate }}</span>
+            </div>
+            <div>{{ 'Poll type' | translate }}: {{ poll.typeVerbose | translate }}</div>
+            <div>{{ 'Poll method' | translate }}: {{ poll.pollmethodVerbose | translate }}</div>
+            <div>{{ 'Majority method' | translate }}: {{ poll.majorityMethodVerbose | translate }}</div>
+            <div>{{ '100% base' | translate }}: {{ poll.percentBaseVerbose | translate }}</div>
+        </div>
+
+        <div *ngIf="poll.state === 3 || poll.state === 4">
+            <h2 translate>Result</h2>
+
+            <div *ngIf="poll.type === 'named'" style="display: grid; grid-template-columns: auto repeat({{ poll.options.length }}, max-content);">
+                <!-- top left cell is empty -->
+                <div></div>
+                <!-- header (the assignment related users) -->
+                <ng-container *ngFor="let option of poll.options">
+                    <div *ngIf="option.user">{{ option.user.full_name }}</div>
+                    <div *ngIf="!option.user">{{ "Unknown user" | translate}}</div>
+                </ng-container>
+                <!-- rows -->
+                <ng-container *ngFor="let obj of votesByUser | keyvalue">
+                    <div *ngIf="obj.value.user">{{ obj.value.user.full_name }}</div>
+                    <div *ngIf="!obj.value.user">{{ "Unknown user" | translate}}</div>
+                    <ng-container *ngFor="let option of poll.options">
+                        <div>{{ obj.value.votes[option.user_id]}}</div>
+                    </ng-container>
+                </ng-container>
+            </div>
+        </div>
+    </ng-container>
+</ng-template>
+
+<!-- More Menu -->
+<mat-menu #pollDetailMenu="matMenu">
+    <os-projector-button [menuItem]="true" [object]="poll" *osPerms="'core.can_manage_projector'"></os-projector-button>
+    <button mat-menu-item *ngIf="poll && poll.type === 'named'" (click)="pseudoanonymizePoll()">
+        <mat-icon>questionmark</mat-icon>
+        <span translate>Pseudoanonymize</span>
+    </button>
+    <mat-divider></mat-divider>
+    <button mat-menu-item (click)="deletePoll()">
+        <mat-icon>delete</mat-icon>
+        <span translate>Delete</span>
+    </button>
+</mat-menu>

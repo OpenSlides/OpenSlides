@@ -114,6 +114,11 @@ import { LocalizedDatePipe } from './pipes/localized-date.pipe';
 import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.component';
 import { ChartsComponent } from './components/charts/charts.component';
 import { CheckInputComponent } from './components/check-input/check-input.component';
+import { BannerComponent } from './components/banner/banner.component';
+import { BasePollDialogComponent } from 'app/site/polls/components/base-poll-dialog.component';
+import { PollFormComponent } from 'app/site/polls/components/poll-form/poll-form.component';
+import { MotionPollDialogComponent } from 'app/site/motions/modules/motion-poll/motion-poll-dialog/motion-poll-dialog.component';
+import { AssignmentPollDialogComponent } from 'app/site/assignments/components/assignment-poll-dialog/assignment-poll-dialog.component';
 
 /**
  * Share Module for all "dumb" components and pipes.
@@ -270,7 +275,11 @@ import { CheckInputComponent } from './components/check-input/check-input.compon
         LocalizedDatePipe,
         BreadcrumbComponent,
         ChartsComponent,
-        CheckInputComponent
+        CheckInputComponent,
+        BannerComponent,
+        PollFormComponent,
+        MotionPollDialogComponent,
+        AssignmentPollDialogComponent
     ],
     declarations: [
         PermsDirective,
@@ -320,7 +329,11 @@ import { CheckInputComponent } from './components/check-input/check-input.compon
         LocalizedDatePipe,
         BreadcrumbComponent,
         ChartsComponent,
-        CheckInputComponent
+        CheckInputComponent,
+        BannerComponent,
+        PollFormComponent,
+        MotionPollDialogComponent,
+        AssignmentPollDialogComponent
     ],
     providers: [
         {
@@ -345,7 +358,9 @@ import { CheckInputComponent } from './components/check-input/check-input.compon
         ChoiceDialogComponent,
         ProjectionDialogComponent,
         ProgressSnackBarComponent,
-        SuperSearchComponent
+        SuperSearchComponent,
+        MotionPollDialogComponent,
+        AssignmentPollDialogComponent
     ]
 })
 export class SharedModule {}
