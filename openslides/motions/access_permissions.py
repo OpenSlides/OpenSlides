@@ -2,6 +2,7 @@ import json
 from typing import Any, Dict, List
 
 from ..poll.access_permissions import (
+    BaseOptionAccessPermissions,
     BasePollAccessPermissions,
     BaseVoteAccessPermissions,
 )
@@ -186,6 +187,11 @@ class StateAccessPermissions(BaseAccessPermissions):
 
 
 class MotionPollAccessPermissions(BasePollAccessPermissions):
+    base_permission = "motions.can_see"
+    manage_permission = "motions.can_manage_polls"
+
+
+class MotionOptionAccessPermissions(BaseOptionAccessPermissions):
     base_permission = "motions.can_see"
     manage_permission = "motions.can_manage_polls"
 

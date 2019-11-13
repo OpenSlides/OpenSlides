@@ -1,19 +1,10 @@
 import { AssignmentOption } from './assignment-option';
-import { BasePoll, BasePollWithoutNestedModels } from '../poll/base-poll';
+import { BasePoll } from '../poll/base-poll';
 
-export enum AssignmentPollmethods {
-    'yn' = 'yn',
-    'yna' = 'yna',
-    'votes' = 'votes'
-}
-
-export interface AssignmentPollWithoutNestedModels extends BasePollWithoutNestedModels {
-    pollmethod: AssignmentPollmethods;
-    votes_amount: number;
-    allow_multiple_votes_per_candidate: boolean;
-    global_no: boolean;
-    global_abstain: boolean;
-    assignment_id: number;
+export enum AssignmentPollMethods {
+    YN = 'YN',
+    YNA = 'YNA',
+    Votes = 'votes'
 }
 
 /**
@@ -24,9 +15,15 @@ export class AssignmentPoll extends BasePoll<AssignmentPoll, AssignmentOption> {
     public static COLLECTIONSTRING = 'assignments/assignment-poll';
 
     public id: number;
+    public assignment_id: number;
+    public pollmethod: AssignmentPollMethods;
+    public votes_amount: number;
+    public allow_multiple_votes_per_candidate: boolean;
+    public global_no: boolean;
+    public global_abstain: boolean;
+    public description: string;
 
     public constructor(input?: any) {
         super(AssignmentPoll.COLLECTIONSTRING, input);
     }
 }
-export interface AssignmentPoll extends AssignmentPollWithoutNestedModels {}

@@ -72,7 +72,10 @@ export class ViewCategory extends BaseViewModel<Category> implements CategoryTit
 
     public formatForSearch(): SearchRepresentation {
         return {
-            properties: [{ key: 'Name', value: this.name }, { key: 'Prefix', value: this.prefix }],
+            properties: [
+                { key: 'Name', value: this.name },
+                { key: 'Prefix', value: this.prefix }
+            ],
             searchValue: [this.name, this.prefix]
         };
     }

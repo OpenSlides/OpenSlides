@@ -18,6 +18,7 @@ class AssignmentsAppConfig(AppConfig):
         from .views import (
             AssignmentViewSet,
             AssignmentPollViewSet,
+            AssignmentOptionViewSet,
             AssignmentVoteViewSet,
         )
 
@@ -39,6 +40,10 @@ class AssignmentsAppConfig(AppConfig):
             AssignmentPollViewSet,
         )
         router.register(
+            self.get_model("AssignmentOption").get_collection_string(),
+            AssignmentOptionViewSet,
+        )
+        router.register(
             self.get_model("AssignmentVote").get_collection_string(),
             AssignmentVoteViewSet,
         )
@@ -58,7 +63,12 @@ class AssignmentsAppConfig(AppConfig):
         Yields all Cachables required on startup i. e. opening the websocket
         connection.
         """
-        for model_name in ("Assignment", "AssignmentPoll", "AssignmentVote"):
+        for model_name in (
+            "Assignment",
+            "AssignmentPoll",
+            "AssignmentVote",
+            "AssignmentOption",
+        ):
             yield self.get_model(model_name)
 
 

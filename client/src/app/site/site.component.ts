@@ -15,7 +15,6 @@ import { LoginDataService } from 'app/core/ui-services/login-data.service';
 import { OverlayService } from 'app/core/ui-services/overlay.service';
 import { UpdateService } from 'app/core/ui-services/update.service';
 import { DEFAULT_AUTH_TYPE } from 'app/shared/models/users/user';
-import { langToLocale } from 'app/shared/utils/lang-to-locale';
 import { AuthService } from '../core/core-services/auth.service';
 import { BaseComponent } from '../base.component';
 import { MainMenuService } from '../core/core-services/main-menu.service';
@@ -310,16 +309,6 @@ export class SiteComponent extends BaseComponent implements OnInit {
                 }
             }
         }
-    }
-
-    /**
-     * Get the timestamp for the current point in history mode.
-     * Tries to detect the ideal timestamp format using the translation service
-     *
-     * @returns the timestamp as string
-     */
-    public getHistoryTimestamp(): string {
-        return this.OSStatus.getHistoryTimeStamp(langToLocale(this.translate.currentLang));
     }
 
     /**

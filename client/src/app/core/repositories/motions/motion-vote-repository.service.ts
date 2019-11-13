@@ -7,6 +7,7 @@ import { RelationManagerService } from 'app/core/core-services/relation-manager.
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { RelationDefinition } from 'app/core/definitions/relations';
 import { MotionVote } from 'app/shared/models/motions/motion-vote';
+import { ViewMotionOption } from 'app/site/motions/models/view-motion-option';
 import { ViewMotionVote } from 'app/site/motions/models/view-motion-vote';
 import { ViewUser } from 'app/site/users/models/view-user';
 import { BaseRepository } from '../base-repository';
@@ -19,6 +20,12 @@ const MotionVoteRelations: RelationDefinition[] = [
         ownIdKey: 'user_id',
         ownKey: 'user',
         foreignViewModel: ViewUser
+    },
+    {
+        type: 'M2O',
+        ownIdKey: 'option_id',
+        ownKey: 'option',
+        foreignViewModel: ViewMotionOption
     }
 ];
 

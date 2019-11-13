@@ -534,6 +534,8 @@ export abstract class BaseFilterListService<V extends BaseViewModel> {
             if (item[filter.property].id === option.condition) {
                 return true;
             }
+        } else if (typeof item[filter.property] === 'function') {
+            return item[filter.property]() === option.condition;
         } else if (item[filter.property] === option.condition) {
             return true;
         } else if (item[filter.property].toString() === option.condition) {

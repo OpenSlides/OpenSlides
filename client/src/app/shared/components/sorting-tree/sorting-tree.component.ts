@@ -69,7 +69,10 @@ export class SortingTreeComponent<T extends Identifiable & Displayable> implemen
     /**
      * The tree control
      */
-    public treeControl = new FlatTreeControl<FlatNode<T>>(node => node.level, node => node.expandable);
+    public treeControl = new FlatTreeControl<FlatNode<T>>(
+        node => node.level,
+        node => node.expandable
+    );
 
     /**
      * Source for the tree

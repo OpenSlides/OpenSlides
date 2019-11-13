@@ -209,7 +209,7 @@ export class SearchService {
             .map(searchModel => {
                 const results = this.viewModelStore
                     .getAll(searchModel.collectionString)
-                    .map(x => x as (BaseViewModel & Searchable))
+                    .map(x => x as BaseViewModel & Searchable)
                     .filter(model =>
                         !searchOnlyById
                             ? model.id === dedicatedId ||

@@ -312,7 +312,10 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
         if (this.isSortMode) {
             this.isSortMode = false;
             this.listOfSpeakersRepo
-                .sortSpeakers(this.viewListOfSpeakers, this.listElement.sortedItems.map(el => el.id))
+                .sortSpeakers(
+                    this.viewListOfSpeakers,
+                    this.listElement.sortedItems.map(el => el.id)
+                )
                 .catch(this.raiseError);
         }
     }

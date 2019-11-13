@@ -19,36 +19,12 @@
     border-bottom: 1px solid grey;
 }
 
-.votes-grid-1 {
+.votes-grid {
     display: grid;
     grid-gap: 5px;
     margin-bottom: 10px;
-    grid-template-columns: auto 60px;
-    align-items: center;
-    .mat-form-field {
-        width: 100%;
-    }
-}
-
-// TODO: more elegant way. Only grid-template-columns is different
-.votes-grid-2 {
-    display: grid;
-    grid-gap: 5px;
-    margin-bottom: 10px;
-    align-items: center;
-    grid-template-columns: auto 60px 60px;
-    .mat-form-field {
-        width: 100%;
-    }
-}
-
-// TODO: more elegant way. Only grid-template-columns is different
-.votes-grid-3 {
-    display: grid;
-    grid-gap: 5px;
-    margin-bottom: 10px;
-    align-items: center;
-    grid-template-columns: auto 60px 60px 60px;
+    align-items: baseline;
+    grid-template-columns: auto max-content;
     .mat-form-field {
         width: 100%;
     }
