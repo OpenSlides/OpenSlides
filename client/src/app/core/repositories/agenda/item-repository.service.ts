@@ -143,7 +143,7 @@ export class ItemRepositoryService extends BaseHasContentObjectRepository<
 
     /**
      * TODO: Copied from BaseRepository and added the cloned model to write back the
-     * item_number correctly. This must be reversed with #4738 (indroduced with #4639)
+     * item_number correctly. This must be reverted with #4738 (indroduced with #4639)
      *
      * Saves the (full) update to an existing model. So called "update"-function
      * Provides a default procedure, but can be overwritten if required
@@ -152,6 +152,7 @@ export class ItemRepositoryService extends BaseHasContentObjectRepository<
      * @param viewModel the view model that the update is based on
      */
     public async update(update: Partial<Item>, viewModel: ViewItem): Promise<void> {
+        (<any>update)._itemNumber = update.item_number;
         const sendUpdate = viewModel.getUpdatedModel(update);
         const clone = JSON.parse(JSON.stringify(sendUpdate));
         clone.item_number = clone._itemNumber;

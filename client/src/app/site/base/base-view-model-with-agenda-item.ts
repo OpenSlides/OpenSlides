@@ -22,7 +22,7 @@ export function isBaseViewModelWithAgendaItem(obj: any): obj is BaseViewModelWit
 }
 
 export interface TitleInformationWithAgendaItem extends TitleInformation {
-    agenda_item_number?: string;
+    agenda_item_number?: () => string;
 }
 
 /**
@@ -58,7 +58,7 @@ export interface BaseViewModelWithAgendaItem<M extends BaseModelWithAgendaItem =
 export abstract class BaseViewModelWithAgendaItem<
     M extends BaseModelWithAgendaItem = any
 > extends BaseProjectableViewModel<M> {
-    public get agenda_item_number(): string | null {
+    public agenda_item_number(): string | null {
         return this.item && this.item.item_number ? this.item.item_number : null;
     }
 

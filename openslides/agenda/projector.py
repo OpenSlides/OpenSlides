@@ -49,7 +49,7 @@ async def get_flat_tree(all_data: AllData, parent_id: int = 0) -> List[Dict[str,
         for item_id in item_ids:
             item = all_data["agenda/item"][item_id]
             title_information = item["title_information"]
-            title_information["agenda_item_number"] = item["item_number"]
+            title_information["_agenda_item_number"] = item["item_number"]
             tree.append(
                 {
                     "title_information": title_information,
@@ -78,7 +78,7 @@ async def item_list_slide(
         for item in await get_sorted_agenda_items(all_data):
             if item["parent_id"] is None and item["type"] == 1:
                 title_information = item["title_information"]
-                title_information["agenda_item_number"] = item["item_number"]
+                title_information["_agenda_item_number"] = item["item_number"]
                 agenda_items.append(
                     {
                         "title_information": title_information,

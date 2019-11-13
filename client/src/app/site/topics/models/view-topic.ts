@@ -7,7 +7,7 @@ import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
 
 export interface TopicTitleInformation extends TitleInformationWithAgendaItem {
     title: string;
-    agenda_item_number?: string;
+    agenda_item_number?: () => string;
 }
 
 /**

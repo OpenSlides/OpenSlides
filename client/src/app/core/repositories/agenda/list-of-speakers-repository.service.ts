@@ -125,7 +125,7 @@ export class ListOfSpeakersRepositoryService extends BaseHasContentObjectReposit
             // TODO: This can be resolved with #4738
             const item = this.itemRepo.findByContentObject(titleInformation.contentObjectData);
             if (item) {
-                (<any>titleInformation.title_information).agenda_item_number = item.item_number;
+                (<any>titleInformation.title_information).agenda_item_number = () => item.item_number;
             }
 
             return repo.getListOfSpeakersTitle(titleInformation.title_information);

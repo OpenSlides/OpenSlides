@@ -95,11 +95,11 @@ async def test_main_items(all_data):
         "items": [
             {
                 "collection": "topics/topic",
-                "title_information": {"title": "item1", "agenda_item_number": ""},
+                "title_information": {"title": "item1", "_agenda_item_number": ""},
             },
             {
                 "collection": "topics/topic",
-                "title_information": {"title": "item2", "agenda_item_number": ""},
+                "title_information": {"title": "item2", "_agenda_item_number": ""},
             },
         ]
     }
@@ -116,17 +116,17 @@ async def test_all_items(all_data):
             {
                 "collection": "topics/topic",
                 "depth": 0,
-                "title_information": {"title": "item1", "agenda_item_number": ""},
+                "title_information": {"title": "item1", "_agenda_item_number": ""},
             },
             {
                 "collection": "topics/topic",
                 "depth": 1,
-                "title_information": {"title": "item4", "agenda_item_number": ""},
+                "title_information": {"title": "item4", "_agenda_item_number": ""},
             },
             {
                 "collection": "topics/topic",
                 "depth": 0,
-                "title_information": {"title": "item2", "agenda_item_number": ""},
+                "title_information": {"title": "item2", "_agenda_item_number": ""},
             },
         ]
     }
