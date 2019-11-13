@@ -219,8 +219,6 @@ export class AssignmentRepositoryService extends BaseIsAgendaItemAndListOfSpeake
      * @param originalPoll the original poll
      */
     public async updateVotes(poll: Partial<AssignmentPoll>, originalPoll: ViewAssignmentPoll): Promise<void> {
-        poll.options.sort((a, b) => a.weight - b.weight);
-
         const votes = poll.options.map(option => {
             const voteObject = {};
             for (const vote of option.votes) {
