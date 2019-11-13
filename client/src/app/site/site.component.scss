@@ -1,6 +1,12 @@
+:host {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
 /* Main navigation */
 mat-sidenav-container {
-    height: 100vh;
+    height: 100%;
     width: 100%;
 
     mat-sidenav.side-panel {
@@ -134,31 +140,5 @@ mat-sidenav-container {
             flex: 1;
             display: block;
         }
-    }
-}
-
-/* History mode top bar*/
-.history-mode-indicator {
-    position: relative; // was fixed before to prevent the overflow
-    min-height: 20px;
-    line-height: 20px;
-    width: 100%;
-    // z-index: 10;
-    background: repeating-linear-gradient(45deg, #ffee00, #ffee00 10px, #070600 10px, #000000 20px);
-    text-align: center;
-
-    span {
-        padding: 2px;
-        color: #000000;
-        background: #ffee00;
-    }
-
-    a {
-        padding: 2px;
-        cursor: pointer;
-        font-weight: bold;
-        text-decoration: none;
-        background: #ffee00;
-        color: #000000;
     }
 }

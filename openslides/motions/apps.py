@@ -23,6 +23,7 @@ class MotionsAppConfig(AppConfig):
             MotionVoteViewSet,
             MotionBlockViewSet,
             MotionPollViewSet,
+            MotionOptionViewSet,
             MotionChangeRecommendationViewSet,
             StateViewSet,
             WorkflowViewSet,
@@ -68,6 +69,9 @@ class MotionsAppConfig(AppConfig):
             self.get_model("MotionPoll").get_collection_string(), MotionPollViewSet
         )
         router.register(
+            self.get_model("MotionOption").get_collection_string(), MotionOptionViewSet
+        )
+        router.register(
             self.get_model("MotionVote").get_collection_string(), MotionVoteViewSet
         )
         router.register(self.get_model("State").get_collection_string(), StateViewSet)
@@ -97,6 +101,7 @@ class MotionsAppConfig(AppConfig):
             "MotionChangeRecommendation",
             "MotionCommentSection",
             "MotionPoll",
+            "MotionOption",
             "MotionVote",
         ):
             yield self.get_model(model_name)

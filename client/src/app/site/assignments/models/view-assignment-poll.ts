@@ -1,25 +1,29 @@
-import { AssignmentPoll, AssignmentPollWithoutNestedModels } from 'app/shared/models/assignments/assignment-poll';
-import { BaseProjectableViewModel } from 'app/site/base/base-projectable-view-model';
+import { ChartData } from 'app/shared/components/charts/charts.component';
+import { AssignmentPoll } from 'app/shared/models/assignments/assignment-poll';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
-import { ViewGroup } from 'app/site/users/models/view-group';
-import { ViewUser } from 'app/site/users/models/view-user';
+import { ViewBasePoll } from 'app/site/polls/models/view-base-poll';
+import { ViewAssignment } from './view-assignment';
 import { ViewAssignmentOption } from './view-assignment-option';
 
 export interface AssignmentPollTitleInformation {
     title: string;
 }
 
-export class ViewAssignmentPoll extends BaseProjectableViewModel<AssignmentPoll>
-    implements AssignmentPollTitleInformation {
+export const AssignmentPollMethodsVerbose = {
+    votes: 'Fixed Amount of votes for all candidates',
+    YN: 'Yes/No per candidate',
+    YNA: 'Yes/No/Abstain per candidate'
+};
+
+export class ViewAssignmentPoll extends ViewBasePoll<AssignmentPoll> implements AssignmentPollTitleInformation {
     public static COLLECTIONSTRING = AssignmentPoll.COLLECTIONSTRING;
     protected _collectionString = AssignmentPoll.COLLECTIONSTRING;
 
-    public get poll(): AssignmentPoll {
-        return this._model;
-    }
+    public readonly pollClassType: 'assignment' | 'motion' = 'assignment';
 
     public getSlide(): ProjectorElementBuildDeskriptor {
-        /*return {
+        // TODO: update to new voting system?
+        return {
             getBasicProjectorElement: options => ({
                 name: 'assignments/assignment-poll',
                 assignment_id: this.assignment_id,
@@ -27,17 +31,22 @@ export class ViewAssignmentPoll extends BaseProjectableViewModel<AssignmentPoll>
                 getIdentifiers: () => ['name', 'assignment_id', 'poll_id']
             }),
             slideOptions: [],
-            projectionDefaultName: 'assignments',
+            projectionDefaultName: 'assignment-poll',
             getDialogTitle: () => 'TODO'
-        };*/
-        throw new Error('TODO');
+        };
+    }
+
+    public get pollmethodVerbose(): string {
+        return AssignmentPollMethodsVerbose[this.pollmethod];
+    }
+
+    // TODO
+    public generateChartData(): ChartData {
+        return [];
     }
 }
 
-interface TIAssignmentPollRelations {
+export interface ViewAssignmentPoll extends AssignmentPoll {
     options: ViewAssignmentOption[];
-    voted: ViewUser[];
-    groups: ViewGroup[];
+    assignment: ViewAssignment;
 }
-
-export interface ViewAssignmentPoll extends AssignmentPollWithoutNestedModels, TIAssignmentPollRelations {}

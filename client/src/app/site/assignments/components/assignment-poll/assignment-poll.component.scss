@@ -17,6 +17,52 @@
         }
     }
 
+    .right-align {
+        text-align: right;
+    }
+
+    .vote-input {
+        .mat-form-field-wrapper {
+            // padding-bottom: 0;
+
+            .mat-form-field-infix {
+                width: 60px;
+                border-top: 0;
+            }
+        }
+    }
+
+    .poll-properties {
+        margin: 4px 0;
+
+        .mat-chip {
+            margin: 0 4px;
+
+            &.active {
+                cursor: pointer;
+            }
+        }
+
+        .poll-state {
+            &.created {
+                background-color: #2196f3;
+                color: white;
+            }
+            &.started {
+                background-color: #4caf50;
+                color: white;
+            }
+            &.finished {
+                background-color: #ff5252;
+                color: white;
+            }
+            &.published {
+                background-color: #ffd800;
+                color: black;
+            }
+        }
+    }
+
     .poll-menu {
         position: absolute;
         top: 0;

@@ -22,6 +22,7 @@ from .access_permissions import (
     MotionBlockAccessPermissions,
     MotionChangeRecommendationAccessPermissions,
     MotionCommentSectionAccessPermissions,
+    MotionOptionAccessPermissions,
     MotionPollAccessPermissions,
     MotionVoteAccessPermissions,
     StateAccessPermissions,
@@ -882,6 +883,7 @@ class MotionVote(RESTModelMixin, BaseVote):
 
 
 class MotionOption(RESTModelMixin, BaseOption):
+    access_permissions = MotionOptionAccessPermissions()
     vote_class = MotionVote
 
     poll = models.ForeignKey(
@@ -890,9 +892,6 @@ class MotionOption(RESTModelMixin, BaseOption):
 
     class Meta:
         default_permissions = ()
-
-    def get_root_rest_element(self):
-        return self.poll
 
 
 class MotionPollManager(BaseManager):

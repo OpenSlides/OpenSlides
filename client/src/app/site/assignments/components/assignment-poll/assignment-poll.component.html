@@ -3,7 +3,7 @@
         <!-- Buttons -->
         <button
             mat-icon-button
-            *osPerms="'assignments.can_manage'; &quot;core.can_manage_projector&quot;"
+            *osPerms="'assignments.can_manage'; 'core.can_manage_projector'"
             [matMenuTriggerFor]="pollItemMenu"
             (click)="$event.stopPropagation()"
         >
@@ -11,13 +11,13 @@
         </button>
         <mat-menu #pollItemMenu="matMenu">
             <div *osPerms="'assignments.can_manage'">
-                <button mat-menu-item (click)="printBallot()">
+                <button mat-menu-item (click)="openDialog()">
+                    <mat-icon>edit</mat-icon>
+                    <span translate>Edit</span>
+                </button>
+                <!-- <button mat-menu-item (click)="printBallot()">
                     <mat-icon>local_printshop</mat-icon>
                     <span translate>Print ballot paper</span>
-                </button>
-                <button mat-menu-item *ngIf="!assignment.isFinished" (click)="enterVotes()">
-                    <mat-icon>edit</mat-icon>
-                    <span translate>Enter votes</span>
                 </button>
                 <button mat-menu-item (click)="togglePublished()">
                     <mat-icon>
@@ -25,7 +25,7 @@
                     </mat-icon>
                     <span *ngIf="!poll.published" translate>Publish</span>
                     <span *ngIf="poll.published" translate>Unpublish</span>
-                </button>
+                </button> -->
             </div>
             <div *osPerms="'core.can_manage_projector'">
                 <os-projector-button menuItem="true" [object]="poll"></os-projector-button>
@@ -40,8 +40,38 @@
         </mat-menu>
     </div>
 
-    <div class="poll-main-content" *ngIf="poll.options">
-        <div *ngIf="pollData">
+    <div class="poll-properties">
+        <!-- <mat-chip *ngIf="pollService.isElectronicVotingEnabled">{{ poll.typeVerbose }}</mat-chip> -->
+        <mat-chip
+            class="poll-state active"
+            [matMenuTriggerFor]="triggerMenu"
+            [ngClass]="poll.stateVerbose.toLowerCase()"
+        >
+            {{ poll.stateVerbose }}
+        </mat-chip>
+        <!-- <mat-chip
+            class="poll-state active"
+            *ngIf="poll.state !== 2"
+            [matMenuTriggerFor]="triggerMenu"
+            [ngClass]="poll.stateVerbose.toLowerCase()"
+        >
+            {{ poll.stateVerbose }}
+        </mat-chip> -->
+        <!-- <mat-chip class="poll-state" *ngIf="poll.state === 2" [ngClass]="poll.stateVerbose.toLowerCase()">
+            {{ poll.stateVerbose }}
+        </mat-chip> -->
+    </div>
+
+    <h3>
+        <a routerLink="/assignments/polls/{{ poll.id }}">
+            {{ poll.title }}
+        </a>
+    </h3>
+    <os-assignment-poll-vote *ngIf="poll.canBeVotedFor" [poll]="poll"></os-assignment-poll-vote>
+    <!-- <ng-container *ngIf="poll.state === pollStates.STATE_PUBLISHED" [ngTemplateOutlet]="resultsTemplate"></ng-container> -->
+
+    <div class="poll-main-content" *ngIf="false && poll.options">
+        <div *ngIf="canSee">
             <div class="poll-grid">
                 <div></div>
                 <div><span class="table-view-list-title" translate>Candidates</span></div>
@@ -78,7 +108,7 @@
                             type="button"
                             mat-icon-button
                             (click)="toggleElected(option)"
-                            [disabled]="!canManage || assignment.isFinished"
+                            [disabled]="!canManage || poll.assignment.isFinished"
                             disableRipple
                         >
                             <mat-icon
@@ -88,7 +118,7 @@
                                 >check_box</mat-icon
                             >
                             <mat-icon
-                                *ngIf="!option.is_elected && canManage && !assignment.isFinished"
+                                *ngIf="!option.is_elected && canManage && !poll.assignment.isFinished"
                                 class="top-aligned primary"
                                 matTooltip="{{ 'Mark as elected' | translate }}"
                             >
@@ -176,13 +206,13 @@
     </div>
 
     <!-- Election Method -->
-    <div *ngIf="canManage" class="spacer-bottom-10">
+    <!-- <div *ngIf="canManage" class="spacer-bottom-10">
         <h4 translate>Election method</h4>
         <span>{{ pollMethodName | translate }}</span>
-    </div>
+    </div> -->
 
     <!-- Poll paper hint -->
-    <div *ngIf="canManage" class="hint-form" [formGroup]="descriptionForm">
+    <!-- <div *ngIf="canManage" class="hint-form" [formGroup]="descriptionForm">
         <mat-form-field class="wide">
             <mat-label translate>Hint for ballot paper</mat-label>
             <input matInput formControlName="description" />
@@ -190,5 +220,21 @@
         <button mat-icon-button [disabled]="!dirtyDescription" (click)="onEditDescriptionButton()">
             <mat-icon inline>check</mat-icon>
         </button>
-    </div>
+    </div> -->
 </div>
+
+<ng-template #resultsTemplate>
+
+</ng-template>
+
+<mat-menu #triggerMenu="matMenu">
+    <ng-container *ngIf="poll">
+        <button
+            mat-menu-item
+            (click)="changeState(state.value)"
+            *ngFor="let state of poll.nextStates | keyvalue"
+        >
+            <span translate>{{ state.key }}</span>
+        </button>
+    </ng-container>
+</mat-menu>
