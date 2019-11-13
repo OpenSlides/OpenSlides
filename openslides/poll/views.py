@@ -58,6 +58,13 @@ class BasePollViewSet(ModelViewSet):
     @detail_route(methods=["POST"])
     def stop(self, request, pk):
         poll = self.get_object()
+        # Analog polls could not be stopped; they are stopped when
+        # the results are entered.
+        if poll.type == BasePoll.TYPE_ANALOG:
+            raise ValidationError(
+                {"detail": "Analog polls can not be stopped. Please enter votes."}
+            )
+
         if poll.state != BasePoll.STATE_STARTED:
             raise ValidationError({"detail": "Wrong poll state"})
 

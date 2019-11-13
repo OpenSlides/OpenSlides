@@ -582,6 +582,12 @@ class VoteAssignmentPollAnalogYNA(VoteAssignmentPollBaseTestClass):
         self.assertEqual(poll.votescast, None)
         self.assertFalse(poll.get_votes().exists())
 
+    def test_stop_poll(self):
+        self.start_poll()
+        response = self.client.post(reverse("assignmentpoll-stop", args=[self.poll.pk]))
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(self.poll.state, AssignmentPoll.STATE_STARTED)
+
     def test_vote(self):
         self.add_candidate()
         self.start_poll()
