@@ -1,4 +1,8 @@
+from typing import Any
+
 import bleach
+
+from .rest_api import ValidationError
 
 
 allowed_tags = [
@@ -63,3 +67,25 @@ def validate_html(html: str) -> str:
     return bleach.clean(
         html, tags=allowed_tags, attributes=allowed_attributes, styles=allowed_styles
     )
+
+
+def validate_json(json: Any, max_depth: int) -> Any:
+    """
+    Traverses through the JSON structure (dicts and lists) and runs
+    validate_html on every found string.
+
+    Give max-depth to protect against stack-overflows. This should be the
+    maximum nested depth of the object expected.
+    """
+
+    if max_depth == 0:
+        raise ValidationError({"detail": "The JSON is too nested."})
+
+    if isinstance(json, dict):
+        return {key: validate_json(value, max_depth - 1) for key, value in json.items()}
+    if isinstance(json, list):
+        return [validate_json(item, max_depth - 1) for item in json]
+    if isinstance(json, str):
+        return validate_html(json)
+
+    return json

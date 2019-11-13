@@ -125,6 +125,20 @@ class UserCreate(TestCase):
             {"groups_id": ['Invalid pk "%d" - object does not exist.' % group_pk]},
         )
 
+    def test_clean_html(self):
+        self.client.login(username="admin", password="admin")
+        response = self.client.post(
+            reverse("user-list"),
+            {
+                "username": "test_name_Thimoo2ho7ahreighio3",
+                "about_me": "<p><foo>bar</foo></p>",
+            },
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        user = User.objects.get(username="test_name_Thimoo2ho7ahreighio3")
+        self.assertEqual(user.about_me, "<p>&lt;foo&gt;bar&lt;/foo&gt;</p>")
+
 
 class UserUpdate(TestCase):
     """
@@ -991,6 +1005,44 @@ class PersonalNoteTest(TestCase):
             personal_note.notes["test_collection"]["2"],
             "test_note_do2ncoi7ci2fm93LjwlO",
         )
+
+    def test_clean_html(self):
+        admin_client = APIClient()
+        admin_client.login(username="admin", password="admin")
+        response = admin_client.post(
+            reverse("personalnote-create-or-update"),
+            [
+                {
+                    "collection": "test_collection",
+                    "id": 1,
+                    "content": {"note": "<p><foo>bar</foo></p>", "star": False},
+                }
+            ],
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        personal_note = PersonalNote.objects.get()
+        self.assertEqual(
+            personal_note.notes["test_collection"]["1"],
+            {"note": "<p>&lt;foo&gt;bar&lt;/foo&gt;</p>", "star": False},
+        )
+
+    def test_clean_html_content_too_nested(self):
+        admin_client = APIClient()
+        admin_client.login(username="admin", password="admin")
+        response = admin_client.post(
+            reverse("personalnote-create-or-update"),
+            [
+                {
+                    "collection": "test_collection",
+                    "id": 1,
+                    "content": [{"some:key": ["<p><foo>bar</foo></p>"]}, 3],
+                }
+            ],
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertFalse(PersonalNote.objects.exists())
 
     def test_delete_other_user(self):
         user = User.objects.create(username="user")
