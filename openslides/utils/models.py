@@ -146,7 +146,10 @@ class RESTModelMixin:
         """
         Returns all elements as full_data.
         """
-        logger.info(f"Loading {cls.get_collection_string()}")
+        do_logging = not bool(ids)
+
+        if do_logging:
+            logger.info(f"Loading {cls.get_collection_string()}")
         # Get the query to receive all data from the database.
         try:
             query = cls.objects.get_prefetched_queryset(ids=ids)  # type: ignore
@@ -167,11 +170,12 @@ class RESTModelMixin:
         for i, instance in enumerate(instances):
             # Append full data from this instance
             full_data.append(instance.get_full_data())
-            # log progress every 5 seconds
-            current_time = time.time()
-            if current_time > last_time + 5:
-                last_time = current_time
-                logger.info(f"\t{i+1}/{instances_length}...")
+            if do_logging:
+                # log progress every 5 seconds
+                current_time = time.time()
+                if current_time > last_time + 5:
+                    last_time = current_time
+                    logger.info(f"\t{i+1}/{instances_length}...")
         return full_data
 
     @classmethod
