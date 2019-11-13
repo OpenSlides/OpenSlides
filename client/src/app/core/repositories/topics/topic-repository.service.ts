@@ -52,8 +52,8 @@ export class TopicRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCon
     }
 
     public getTitle = (titleInformation: TopicTitleInformation) => {
-        if (titleInformation.agenda_item_number) {
-            return titleInformation.agenda_item_number + ' · ' + titleInformation.title;
+        if (titleInformation.agenda_item_number()) {
+            return titleInformation.agenda_item_number() + ' · ' + titleInformation.title;
         } else {
             return titleInformation.title;
         }

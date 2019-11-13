@@ -1,5 +1,10 @@
 export interface SlideItem {
-    title_information: object;
+    title_information: {
+        collection: string;
+        depth: number;
+        _agenda_item_number: string;
+        agenda_item_number: () => string;
+    };
     collection: string;
     depth: number;
 }

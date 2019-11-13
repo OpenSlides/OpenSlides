@@ -30,7 +30,7 @@ export class Item extends BaseModelWithContentObject<Item> {
     public set item_number(val: string) {
         this._itemNumber = val;
         if (this._titleInformation) {
-            this._titleInformation.agenda_item_number = this.item_number;
+            this._titleInformation.agenda_item_number = () => this.item_number;
         }
     }
     public get title_information(): object {
@@ -38,7 +38,7 @@ export class Item extends BaseModelWithContentObject<Item> {
     }
     public set title_information(val: object) {
         this._titleInformation = val;
-        this._titleInformation.agenda_item_number = this.item_number;
+        this._titleInformation.agenda_item_number = () => this.item_number;
     }
     public comment: string;
     public closed: boolean;

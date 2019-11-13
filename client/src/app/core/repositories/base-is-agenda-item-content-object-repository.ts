@@ -79,7 +79,7 @@ export abstract class BaseIsAgendaItemContentObjectRepository<
      */
     public getAgendaListTitle(titleInformation: T): string {
         // Return the agenda title with the model's verbose name appended
-        const numberPrefix = titleInformation.agenda_item_number ? `${titleInformation.agenda_item_number} · ` : '';
+        const numberPrefix = titleInformation.agenda_item_number() ? `${titleInformation.agenda_item_number()} · ` : '';
         return numberPrefix + this.getTitle(titleInformation) + ' (' + this.getVerboseName() + ')';
     }
 

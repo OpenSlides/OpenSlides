@@ -252,7 +252,7 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
     };
 
     public getAgendaSlideTitle = (titleInformation: MotionTitleInformation) => {
-        const numberPrefix = titleInformation.agenda_item_number ? `${titleInformation.agenda_item_number} · ` : '';
+        const numberPrefix = titleInformation.agenda_item_number() ? `${titleInformation.agenda_item_number()} · ` : '';
         // if the identifier is set, the title will be 'Motion <identifier>'.
         if (titleInformation.identifier) {
             return numberPrefix + this.translate.instant('Motion') + ' ' + titleInformation.identifier;
@@ -262,7 +262,7 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
     };
 
     public getAgendaListTitle = (titleInformation: MotionTitleInformation) => {
-        const numberPrefix = titleInformation.agenda_item_number ? `${titleInformation.agenda_item_number} · ` : '';
+        const numberPrefix = titleInformation.agenda_item_number() ? `${titleInformation.agenda_item_number()} · ` : '';
         // Append the verbose name only, if not the special format 'Motion <identifier>' is used.
         if (titleInformation.identifier) {
             return `${numberPrefix}${this.translate.instant('Motion')} ${titleInformation.identifier} · ${
