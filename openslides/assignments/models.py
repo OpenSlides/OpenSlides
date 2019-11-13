@@ -153,6 +153,11 @@ class Assignment(RESTModelMixin, AgendaItemWithListOfSpeakersMixin, models.Model
     Mediafiles as attachments for this assignment.
     """
 
+    number_poll_candidates = models.BooleanField(default=False)
+    """
+    Controls whether the candidates in polls for this assignment should be numbered or listed with bullet points.
+    """
+
     class Meta:
         default_permissions = ()
         permissions = (

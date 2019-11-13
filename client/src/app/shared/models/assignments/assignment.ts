@@ -10,6 +10,7 @@ export interface AssignmentWithoutNestedModels extends BaseModelWithAgendaItemAn
     default_poll_description: string;
     tags_id: number[];
     attachments_id: number[];
+    number_poll_candidates: boolean;
 }
 
 /**
