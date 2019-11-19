@@ -9,7 +9,7 @@ from mypy_extensions import TypedDict
 
 from .cache import element_cache, get_element_id
 from .projector import get_projector_data
-from .utils import get_model_from_collection_string
+from .utils import get_model_from_collection_string, is_iterable
 
 
 class AutoupdateElementBase(TypedDict):
@@ -150,6 +150,7 @@ def inform_changed_data(
     instances: Union[Iterable[Model], Model],
     information: List[str] = None,
     user_id: Optional[int] = None,
+    disable_history: bool = False,
     no_delete_on_restriction: bool = False,
 ) -> None:
     """
@@ -162,7 +163,7 @@ def inform_changed_data(
     """
     if information is None:
         information = []
-    if not isinstance(instances, Iterable):
+    if not is_iterable(instances):
         instances = (instances,)
 
     root_instances = set(instance.get_root_rest_element() for instance in instances)
@@ -170,6 +171,7 @@ def inform_changed_data(
         AutoupdateElement(
             id=root_instance.get_rest_pk(),
             collection_string=root_instance.get_collection_string(),
+            disable_history=disable_history,
             information=information,
             user_id=user_id,
             no_delete_on_restriction=no_delete_on_restriction,

@@ -72,6 +72,20 @@ def is_int(obj: Any) -> bool:
         return False
 
 
+def is_iterable(obj: Any) -> bool:
+    """
+    Do not rely on `isinstance(obj, Iterable` with `Iterable` being imperted
+    from typing. This breaks at proxyobjects, like SimpleLazyObjects from Django.
+    Instead try to get the iterable from the object. THis fails on non-iterable
+    proxyobjects.
+    """
+    try:
+        iter(obj)
+        return True
+    except TypeError:
+        return False
+
+
 _models_to_collection_string: Dict[str, Type[Model]] = {}
 
 
