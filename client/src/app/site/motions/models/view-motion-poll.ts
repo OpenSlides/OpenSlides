@@ -62,7 +62,7 @@ export class ViewMotionPoll extends ViewBasePoll<MotionPoll> implements MotionPo
                 getIdentifiers: () => ['name', 'id']
             }),
             slideOptions: [],
-            projectionDefaultName: 'motion-poll',
+            projectionDefaultName: 'motion_poll',
             getDialogTitle: this.getTitle
         };
     }

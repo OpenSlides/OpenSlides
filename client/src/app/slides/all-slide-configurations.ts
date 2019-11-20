@@ -26,6 +26,11 @@ export const allSlidesDynamicConfiguration: (SlideDynamicConfiguration & Slide)[
         scrollable: true
     },
     {
+        slide: 'motions/motion-poll',
+        scaleable: true,
+        scrollable: true
+    },
+    {
         slide: 'users/user',
         scaleable: true,
         scrollable: true
@@ -83,7 +88,7 @@ export const allSlidesDynamicConfiguration: (SlideDynamicConfiguration & Slide)[
         scrollable: true
     },
     {
-        slide: 'assignments/poll',
+        slide: 'assignments/assignment-poll',
         scaleable: true,
         scrollable: true
     },
