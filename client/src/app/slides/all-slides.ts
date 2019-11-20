@@ -42,6 +42,14 @@ export const allSlides: SlideManifest[] = [
         canBeMappedToModel: true
     },
     {
+        slide: 'motions/motion-poll',
+        path: 'motions/motion-poll',
+        loadChildren: './slides/motions/motion-poll/motion-poll-slide.module#MotionPollSlideModule',
+        verboseName: 'Motion Poll',
+        elementIdentifiers: ['name', 'id'],
+        canBeMappedToModel: true
+    },
+    {
         slide: 'users/user',
         path: 'users/user',
         loadChildren: () => import('./users/user/user-slide.module').then(m => m.UserSlideModule),
@@ -126,12 +134,12 @@ export const allSlides: SlideManifest[] = [
         canBeMappedToModel: true
     },
     {
-        slide: 'assignments/poll',
-        path: 'assignments/poll',
+        slide: 'assignments/assignment-poll',
+        path: 'assignments/assignment-poll',
         loadChildren: () => import('./assignments/poll/poll-slide.module').then(m => m.PollSlideModule),
-        verboseName: 'Poll',
-        elementIdentifiers: ['name', 'assignment_id', 'poll_id'],
-        canBeMappedToModel: false
+        verboseName: 'Assignment Poll',
+        elementIdentifiers: ['name', 'id'],
+        canBeMappedToModel: true
     },
     {
         slide: 'mediafiles/mediafile',

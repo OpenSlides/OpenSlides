@@ -33,14 +33,13 @@ export class ViewAssignmentPoll extends ViewBasePoll<AssignmentPoll> implements 
         // TODO: update to new voting system?
         return {
             getBasicProjectorElement: options => ({
-                name: 'assignments/assignment-poll',
-                assignment_id: this.assignment_id,
-                poll_id: this.id,
-                getIdentifiers: () => ['name', 'assignment_id', 'poll_id']
+                name: AssignmentPoll.COLLECTIONSTRING,
+                id: this.id,
+                getIdentifiers: () => ['name', 'id']
             }),
             slideOptions: [],
-            projectionDefaultName: 'assignment-poll',
-            getDialogTitle: () => 'TODO'
+            projectionDefaultName: 'assignment_poll',
+            getDialogTitle: this.getTitle
         };
     }
 

@@ -1,21 +1,21 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { AssignmentPollSlideComponent } from './assignment-poll-slide.component';
 import { E2EImportsModule } from '../../../../e2e-imports.module';
-import { PollSlideComponent } from './poll-slide.component';
 
-describe('PollSlideComponent', () => {
-    let component: PollSlideComponent;
-    let fixture: ComponentFixture<PollSlideComponent>;
+describe('AssignmentPollSlideComponent', () => {
+    let component: AssignmentPollSlideComponent;
+    let fixture: ComponentFixture<AssignmentPollSlideComponent>;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             imports: [E2EImportsModule],
-            declarations: [PollSlideComponent]
+            declarations: [AssignmentPollSlideComponent]
         }).compileComponents();
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(PollSlideComponent);
+        fixture = TestBed.createComponent(AssignmentPollSlideComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });
