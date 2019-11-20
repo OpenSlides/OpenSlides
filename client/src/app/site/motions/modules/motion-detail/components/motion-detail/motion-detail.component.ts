@@ -523,6 +523,13 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
                 }
             })
         );
+
+        /**
+         * Check for changes of the viewport subject changes
+         */
+        this.vp.isMobileSubject.subscribe(() => {
+            this.cd.markForCheck();
+        });
     }
 
     /**
@@ -1611,5 +1618,12 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
 
     public removeFromAgenda(): void {
         this.itemRepo.removeFromAgenda(this.motion.item).catch(this.raiseError);
+    }
+
+    /**
+     * Helper function so UI elements can call to detect changes
+     */
+    public detectChanges(): void {
+        this.cd.markForCheck();
     }
 }
