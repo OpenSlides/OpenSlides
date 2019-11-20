@@ -25,7 +25,7 @@ export class ViewMotionPoll extends BaseProjectableViewModel<MotionPoll> impleme
                 getIdentifiers: () => ['name', 'id']
             }),
             slideOptions: [],
-            projectionDefaultName: 'motion-poll',
+            projectionDefaultName: 'motion_poll',
             getDialogTitle: this.getTitle
         };
     }

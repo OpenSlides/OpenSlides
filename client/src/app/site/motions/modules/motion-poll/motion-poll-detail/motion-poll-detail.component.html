@@ -36,6 +36,8 @@
             <div>{{ 'Majority method' | translate }}: {{ poll.majorityMethodVerbose | translate }}</div>
             <div>{{ '100% base' | translate }}: {{ poll.percentBaseVerbose | translate }}</div>
         </div>
+
+        <os-projector-button [object]="poll"></os-projector-button>
     </ng-container>
 </ng-template>
 

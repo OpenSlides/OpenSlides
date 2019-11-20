@@ -19,18 +19,16 @@ export class ViewAssignmentPoll extends BaseProjectableViewModel<AssignmentPoll>
     }
 
     public getSlide(): ProjectorElementBuildDeskriptor {
-        /*return {
+        return {
             getBasicProjectorElement: options => ({
-                name: 'assignments/assignment-poll',
-                assignment_id: this.assignment_id,
-                poll_id: this.id,
-                getIdentifiers: () => ['name', 'assignment_id', 'poll_id']
+                name: AssignmentPoll.COLLECTIONSTRING,
+                id: this.id,
+                getIdentifiers: () => ['name', 'id']
             }),
             slideOptions: [],
-            projectionDefaultName: 'assignments',
-            getDialogTitle: () => 'TODO'
-        };*/
-        throw new Error('TODO');
+            projectionDefaultName: 'assignment_poll',
+            getDialogTitle: this.getTitle
+        };
     }
 }
 
