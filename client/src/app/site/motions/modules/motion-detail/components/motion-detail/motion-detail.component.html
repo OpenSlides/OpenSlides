@@ -672,6 +672,7 @@
                     formControlName="modified_final_version"
                     [init]="tinyMceSettings"
                     required
+                    (onChange)="detectChanges()"
                 ></editor>
                 <div
                     *ngIf="
@@ -696,7 +697,7 @@
 
         <!-- The HTML Editor for motions and traditional amendments -->
         <ng-container *ngIf="motion && editMotion && !motion.isParagraphBasedAmendment()">
-            <editor formControlName="text" [init]="tinyMceSettings" required></editor>
+            <editor formControlName="text" [init]="tinyMceSettings" (onChange)="detectChanges()" required></editor>
             <div
                 *ngIf="
                     contentForm.get('text').invalid &&
