@@ -15,22 +15,40 @@
 
             <h3 translate>Resolution and size</h3>
             <!-- Aspect ratio field -->
-            <mat-radio-group formControlName="aspectRatio" name="aspectRatio">
-                <mat-radio-button
-                    *ngFor="let ratio of aspectRatiosKeys"
-                    [value]="ratio"
-                    (change)="aspectRatioChanged($event)"
-                >
-                    {{ ratio }}
-                </mat-radio-button>
-            </mat-radio-group>
+            <div>
+                <mat-radio-group formControlName="aspectRatio" name="aspectRatio">
+                    <mat-radio-button
+                        *ngFor="let ratio of defaultAspectRatio"
+                        [value]="ratio"
+                        (change)="onCustomAspectRatio(false)"
+                    >
+                        {{ ratio }}
+                    </mat-radio-button>
+
+                    <!-- Custom aspect ratio -->
+                    <mat-radio-button (change)="onCustomAspectRatio(true)">
+                        {{ 'custom' | translate }}
+                    </mat-radio-button>
+
+                    <mat-form-field *ngIf="customAspectRatio">
+                        <input
+                            matInput
+                            type="text"
+                            formControlName="aspectRatio"
+                            [value]="previewProjector.aspectRatio"
+                            (change)="setCustomAspectRatio()"
+                            placeholder="{{ 'Custom aspect ratio' | translate }}"
+                        />
+                    </mat-form-field>
+                </mat-radio-group>
+            </div>
 
             <div class="spacer-top-20 grid-form">
                 <mat-slider
                     class="grid-start"
                     formControlName="width"
                     [thumbLabel]="true"
-                    [min]="getMinWidth()"
+                    [min]="minWidth"
                     [max]="maxResolution"
                     [step]="resolutionChangeStep"
                     [value]="updateForm.value.width"
@@ -41,7 +59,7 @@
                             matInput
                             type="number"
                             formControlName="width"
-                            [min]="getMinWidth()"
+                            [min]="minWidth"
                             [max]="maxResolution"
                             [step]="resolutionChangeStep"
                             [value]="updateForm.value.width"
@@ -170,7 +188,7 @@
     </form>
     <div>
         <h3 translate>Preview</h3>
-        <div>
+        <div class="preview-container">
             <os-projector #preview *ngIf="previewProjector" [projector]="previewProjector"></os-projector>
         </div>
     </div>

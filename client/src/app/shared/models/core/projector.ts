@@ -65,7 +65,8 @@ export class Projector extends BaseModel<Projector> {
     public scroll: number;
     public name: string;
     public width: number;
-    public height: number;
+    public aspect_ratio_numerator: number;
+    public aspect_ratio_denominator: number;
     public reference_projector_id: number;
     public projectiondefaults_id: number[];
     public color: string;
@@ -78,6 +79,34 @@ export class Projector extends BaseModel<Projector> {
     public show_header_footer: boolean;
     public show_title: boolean;
     public show_logo: boolean;
+
+    /**
+     * @returns Calculate the height of the projector
+     */
+    public get height(): number {
+        const ratio = this.aspect_ratio_numerator / this.aspect_ratio_denominator;
+        return this.width / ratio;
+    }
+
+    /**
+     * get the aspect ratio as string
+     */
+    public get aspectRatio(): string {
+        return [this.aspect_ratio_numerator, this.aspect_ratio_denominator].join(':');
+    }
+
+    /**
+     * Set the aspect ratio
+     */
+    public set aspectRatio(ratioString: string) {
+        const ratio = ratioString.split(':').map(x => +x);
+        if (ratio.length === 2) {
+            this.aspect_ratio_numerator = ratio[0];
+            this.aspect_ratio_denominator = ratio[1];
+        } else {
+            throw new Error('Projector received unexpected aspect ratio! ' + ratio.toString());
+        }
+    }
 
     public constructor(input?: any) {
         super(Projector.COLLECTIONSTRING, input);
