@@ -74,7 +74,7 @@ class NotifyWebsocketClientMessage(BaseWebsocketClientMessage):
             if users is True:
                 users = "all"
             else:
-                users = ", ".join(users)
+                users = ", ".join(str(user) for user in users)
             reply_channels = ", ".join(content.get("replyChannels", []))
             logger.info(
                 f"Got notify '{name}' from {consumer.channel_name} users={users} reply_channels={reply_channels}"
