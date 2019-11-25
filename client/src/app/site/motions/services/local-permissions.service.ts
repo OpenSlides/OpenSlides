@@ -26,6 +26,14 @@ export class LocalPermissionsService {
     }
 
     /**
+     * Determine if the operator is allowed to access the per line dot-menu
+     * in mobile mode
+     */
+    public canAccessMobileDotMenu(): boolean {
+        return this.operator.hasPerms('agenda.can_see_list_of_speakers', 'core.can_manage_projector');
+    }
+
+    /**
      * Determine if the user (Operator) has the correct permission to perform the given action.
      *
      * actions might be:

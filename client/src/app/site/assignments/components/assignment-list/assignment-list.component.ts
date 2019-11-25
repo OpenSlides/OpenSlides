@@ -10,6 +10,7 @@ import { OperatorService } from 'app/core/core-services/operator.service';
 import { StorageService } from 'app/core/core-services/storage.service';
 import { AssignmentRepositoryService } from 'app/core/repositories/assignments/assignment-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
+import { ViewportService } from 'app/core/ui-services/viewport.service';
 import { BaseListViewComponent } from 'app/site/base/base-list-view';
 import { AssignmentFilterListService } from '../../services/assignment-filter.service';
 import { AssignmentPdfExportService } from '../../services/assignment-pdf-export.service';
@@ -81,7 +82,8 @@ export class AssignmentListComponent extends BaseListViewComponent<ViewAssignmen
         private pdfService: AssignmentPdfExportService,
         protected route: ActivatedRoute,
         private router: Router,
-        public operator: OperatorService
+        public operator: OperatorService,
+        public vp: ViewportService
     ) {
         super(titleService, translate, matSnackBar, storage);
         this.canMultiSelect = true;
@@ -101,6 +103,19 @@ export class AssignmentListComponent extends BaseListViewComponent<ViewAssignmen
      */
     public onPlusButton(): void {
         this.router.navigate(['./new'], { relativeTo: this.route });
+    }
+
+    /**
+     * @returns all the identifier of the columns that should be hidden in mobile
+     */
+    public getColumnsHiddenInMobile(): string[] {
+        const hiddenInMobile = ['phase', 'candidates'];
+
+        if (!this.operator.hasPerms('agenda.can_see_list_of_speakers', 'core.can_manage_projector')) {
+            hiddenInMobile.push('menu');
+        }
+
+        return hiddenInMobile;
     }
 
     /**
