@@ -20,7 +20,7 @@
     <div [ngStyle]="{ width: data.data.show_meta_box ? 'calc(100% - 250px)' : '100%' }">
         <!-- Title -->
         <div class="spacer" [ngStyle]="{ height: projector.show_header_footer ? '50px' : '0' }"></div>
-        <div [ngClass]="{ 'slidetitle': data.data.show_meta_box }">
+        <div [ngClass]="{ slidetitle: data.data.show_meta_box }">
             <h1>
                 <span *ngIf="data.data.identifier">{{ data.data.identifier }}:</span>
                 {{ getTitleWithChanges() }}
@@ -121,10 +121,7 @@
                     <h3 *ngIf="paragraph.diffLineTo !== paragraph.diffLineFrom + 1" class="amendment-line-header">
                         <span translate>Line</span> {{ paragraph.diffLineFrom }} - {{ paragraph.diffLineTo - 1 }}:
                     </h3>
-
-                    <div class="paragraph-context" [innerHtml]="paragraph.textPre | trust: 'html'"></div>
                     <div [innerHtml]="paragraph.text | trust: 'html'"></div>
-                    <div class="paragraph-context" [innerHtml]="paragraph.textPost | trust: 'html'"></div>
                 </div>
             </section>
 
