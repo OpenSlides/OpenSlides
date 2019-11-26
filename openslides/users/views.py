@@ -17,6 +17,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.core import mail
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db import transaction
+from django.db.utils import IntegrityError
 from django.http.request import QueryDict
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
@@ -98,6 +99,13 @@ class UserViewSet(ModelViewSet):
         else:
             result = False
         return result
+
+    # catch IntegrityError, probably being caused by a race condition
+    def perform_create(self, serializer):
+        try:
+            super().perform_create(serializer)
+        except IntegrityError as e:
+            raise ValidationError({"detail": str(e)})
 
     def update(self, request, *args, **kwargs):
         """
@@ -360,7 +368,11 @@ class UserViewSet(ModelViewSet):
             del data["groups_id"]
 
             db_user = User(**data)
-            db_user.save(skip_autoupdate=True)
+            try:
+                db_user.save(skip_autoupdate=True)
+            except IntegrityError:
+                # race condition may happen, so skip double users here again
+                continue
             db_user.groups.add(*groups)
             created_users.append(db_user)
             if "importTrackId" in user:
