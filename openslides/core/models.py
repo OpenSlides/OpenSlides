@@ -75,7 +75,8 @@ class Projector(RESTModelMixin, models.Model):
     scroll = models.IntegerField(default=0)
 
     width = models.PositiveIntegerField(default=1024)
-    height = models.PositiveIntegerField(default=768)
+    aspect_ratio_numerator = models.PositiveIntegerField(default=16)
+    aspect_ratio_denominator = models.PositiveIntegerField(default=9)
 
     color = models.CharField(max_length=7, default="#000000")
     background_color = models.CharField(max_length=7, default="#ffffff")

@@ -25,6 +25,7 @@ form {
     .grid-start {
         grid-column-start: 1;
         grid-column-end: 1;
+        margin: auto 0;
         width: 100%;
     }
 
@@ -43,6 +44,10 @@ form {
     .mat-form-field-underline {
         display: none;
     }
+}
+
+.preview-container {
+    border: 1px solid lightgray;
 }
 
 .no-markup {

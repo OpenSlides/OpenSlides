@@ -8,7 +8,7 @@ import {
     ViewEncapsulation
 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogRef, MatRadioChange, MatSnackBar } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material';
 import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
@@ -22,18 +22,6 @@ import { BaseViewComponent } from 'app/site/base/base-view';
 import { ClockSlideService } from '../../services/clock-slide.service';
 import { ViewProjectionDefault } from '../../models/view-projection-default';
 import { ViewProjector } from '../../models/view-projector';
-
-/**
- * All supported aspect rations for projectors.
- */
-const aspectRatios: { [ratio: string]: number } = {
-    '4:3': 4 / 3,
-    '16:9': 16 / 9,
-    '16:10': 16 / 10,
-    '30:9': 30 / 9
-};
-
-const aspectRatio_30_9_MinWidth = 1150;
 
 /**
  * Dialog to edit the given projector
@@ -55,15 +43,15 @@ export class ProjectorEditDialogComponent extends BaseViewComponent implements O
     public preview: ProjectorComponent;
 
     /**
+     * aspect ratios
+     */
+    public defaultAspectRatio: string[] = ['4:3', '16:9', '16:10'];
+
+    /**
      * The update form. Will be refreahed for each projector. Just one update
      * form can be shown per time.
      */
     public updateForm: FormGroup;
-
-    /**
-     * All aspect ratio keys/strings for the UI.
-     */
-    public aspectRatiosKeys: string[];
 
     /**
      * All ProjectionDefaults to select from.
@@ -81,9 +69,24 @@ export class ProjectorEditDialogComponent extends BaseViewComponent implements O
     public maxResolution = 2000;
 
     /**
+     * define the minWidth
+     */
+    public minWidth = 800;
+
+    /**
      * Define the step of resolution changes
      */
     public resolutionChangeStep = 10;
+
+    /**
+     * Determine to use custom aspect ratios
+     */
+    public customAspectRatio: boolean;
+
+    /**
+     * regular expression to check for aspect ratio strings
+     */
+    private aspectRatioRe = RegExp('[1-9]+[0-9]*:[1-9]+[0-9]*');
 
     public constructor(
         title: Title,
@@ -98,15 +101,18 @@ export class ProjectorEditDialogComponent extends BaseViewComponent implements O
         private cd: ChangeDetectorRef
     ) {
         super(title, translate, matSnackBar);
-        this.aspectRatiosKeys = Object.keys(aspectRatios);
 
         if (projector) {
             this.previewProjector = new Projector(projector.getModel());
+
+            if (!this.defaultAspectRatio.some(ratio => ratio === this.previewProjector.aspectRatio)) {
+                this.customAspectRatio = true;
+            }
         }
 
         this.updateForm = formBuilder.group({
             name: ['', Validators.required],
-            aspectRatio: ['', Validators.required],
+            aspectRatio: ['', [Validators.required, Validators.pattern(this.aspectRatioRe)]],
             width: [0, Validators.required],
             projectiondefaults_id: [[]],
             clock: [true],
@@ -143,7 +149,6 @@ export class ProjectorEditDialogComponent extends BaseViewComponent implements O
             this.updateForm.patchValue(this.projector.projector);
             this.updateForm.patchValue({
                 name: this.translate.instant(this.projector.name),
-                aspectRatio: this.getAspectRatioKey(),
                 clock: this.clockSlideService.isProjectedOn(this.projector)
             });
 
@@ -174,8 +179,8 @@ export class ProjectorEditDialogComponent extends BaseViewComponent implements O
      * Saves the current changes on the projector
      */
     public async applyChanges(): Promise<void> {
-        const updateProjector: Partial<Projector> = this.updateForm.value;
-        updateProjector.height = this.calcHeight(this.updateForm.value.width, this.updateForm.value.aspectRatio);
+        const updateProjector: Projector = new Projector();
+        Object.assign(updateProjector, this.updateForm.value);
         try {
             await this.clockSlideService.setProjectedOn(this.projector, this.updateForm.value.clock);
             await this.repo.update(updateProjector, this.projector);
@@ -189,24 +194,11 @@ export class ProjectorEditDialogComponent extends BaseViewComponent implements O
      * @param previewUpdate
      */
     public onChangeForm(): void {
-        if (this.previewProjector && this.projector) {
+        if (this.previewProjector && this.projector && this.updateForm.valid) {
             Object.assign(this.previewProjector, this.updateForm.value);
-            this.previewProjector.height = this.calcHeight(
-                this.updateForm.value.width,
-                this.updateForm.value.aspectRatio
-            );
             this.preview.setProjector(this.previewProjector);
             this.cd.markForCheck();
         }
-    }
-
-    /**
-     * Helper to calc height
-     * @param width
-     * @param aspectRatio
-     */
-    private calcHeight(width: number, aspectRatio: string): number {
-        return Math.round(width / aspectRatios[aspectRatio]);
     }
 
     /**
@@ -218,41 +210,23 @@ export class ProjectorEditDialogComponent extends BaseViewComponent implements O
         this.updateForm.patchValue(patchValue);
     }
 
-    public aspectRatioChanged(event: MatRadioChange): void {
-        let width: number;
-        if (event.value === '30:9' && this.updateForm.value.width < aspectRatio_30_9_MinWidth) {
-            width = aspectRatio_30_9_MinWidth;
-        } else {
-            width = this.updateForm.value.width;
-        }
+    /**
+     * Sets the aspect Ratio to custom
+     * @param event
+     */
+    public onCustomAspectRatio(event: boolean): void {
+        this.customAspectRatio = event;
     }
 
     /**
-     * Calculates the aspect ratio of the given projector.
-     * If no matching ratio is found, the first ratio is returned.
-     *
-     * @param projector The projector to check
-     * @returns the found ratio key.
+     * Sets and validates custom aspect ratio values
      */
-    public getAspectRatioKey(): string {
-        const ratio = this.projector.width / this.projector.height;
-        const RATIO_ENVIRONMENT = 0.05;
-        const foundRatioKey = Object.keys(aspectRatios).find(key => {
-            const value = aspectRatios[key];
-            return value >= ratio - RATIO_ENVIRONMENT && value <= ratio + RATIO_ENVIRONMENT;
-        });
-        if (!foundRatioKey) {
-            return Object.keys(aspectRatios)[0];
-        } else {
-            return foundRatioKey;
-        }
-    }
-
-    public getMinWidth(): number {
-        if (this.updateForm.value.aspectRatio === '30:9') {
-            return aspectRatio_30_9_MinWidth;
-        } else {
-            return 800;
+    public setCustomAspectRatio(): void {
+        const formRatio = this.updateForm.get('aspectRatio').value;
+        const validatedRatio = formRatio.match(this.aspectRatioRe);
+        if (validatedRatio && validatedRatio[0]) {
+            const ratio = validatedRatio[0];
+            this.updateForm.get('aspectRatio').setValue(ratio);
         }
     }
 }

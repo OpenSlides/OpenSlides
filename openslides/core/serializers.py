@@ -88,7 +88,8 @@ class ProjectorSerializer(ModelSerializer):
     elements_history = JSONSerializerField(read_only=True)
 
     width = IntegerField(min_value=800, max_value=3840, required=False)
-    height = IntegerField(min_value=340, max_value=2880, required=False)
+    aspect_ratio_numerator = IntegerField(min_value=1, required=False)
+    aspect_ratio_denominator = IntegerField(min_value=1, required=False)
 
     projectiondefaults = IdPrimaryKeyRelatedField(
         many=True, required=False, queryset=ProjectionDefault.objects.all()
@@ -105,7 +106,8 @@ class ProjectorSerializer(ModelSerializer):
             "scroll",
             "name",
             "width",
-            "height",
+            "aspect_ratio_numerator",
+            "aspect_ratio_denominator",
             "reference_projector",
             "projectiondefaults",
             "color",
