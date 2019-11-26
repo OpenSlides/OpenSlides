@@ -26,6 +26,7 @@
     [columns]="tableColumnDefinition"
     [filterProps]="filterProps"
     [multiSelect]="isMultiSelect"
+    [hiddenInMobile]="getColumnsHiddenInMobile()"
     listStorageKey="assignments"
     [(selectedRows)]="selectedRows"
     (dataSourceChange)="onDataSourceChange($event)"
@@ -39,14 +40,23 @@
             *ngIf="!isMultiSelect"
         ></a>
         <div>
-            {{ assignment.getListTitle() }}
+            <div class="title-line ellipsis-overflow">
+                {{ assignment.getListTitle() }}
+            </div>
+            <mat-chip-list *ngIf="vp.isMobile">
+                <mat-chip color="primary" selected>
+                    {{ assignment.phaseString | translate }}
+                </mat-chip>
+            </mat-chip-list>
         </div>
     </div>
 
     <!-- Phase -->
     <div *pblNgridCellDef="'phase'; row as assignment" class="cell-slot fill mat-chip-wrapper">
         <mat-chip-list>
-            <mat-chip color="primary" selected>{{ assignment.phaseString | translate }}</mat-chip>
+            <mat-chip color="primary" selected>
+                {{ assignment.phaseString | translate }}
+            </mat-chip>
         </mat-chip-list>
     </div>
 

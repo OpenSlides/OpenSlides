@@ -273,6 +273,20 @@ export class MotionListComponent extends BaseListViewComponent<ViewMotion> imple
     }
 
     /**
+     * @returns the columns hidden in mobile mode according to the
+     * current permissions
+     */
+    public getColumnsHiddenInMobile(): string[] {
+        const hiddenColumns = ['identifier', 'state'];
+
+        if (!this.perms.canAccessMobileDotMenu()) {
+            hiddenColumns.push('menu');
+        }
+
+        return hiddenColumns;
+    }
+
+    /**
      * Creates the tiles for categories.
      * Filters thous without parent, sorts them by theit weight, maps them to TileInfo and publishes
      * the result

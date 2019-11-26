@@ -48,7 +48,7 @@
         [columns]="tableColumnDefinition"
         [multiSelect]="isMultiSelect"
         [filterProps]="filterProps"
-        [hiddenInMobile]="['identifier', 'state']"
+        [hiddenInMobile]="getColumnsHiddenInMobile()"
         listStorageKey="motion"
         [(selectedRows)]="selectedRows"
         (dataSourceChange)="onDataSourceChange($event)"
