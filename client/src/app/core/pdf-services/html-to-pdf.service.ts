@@ -129,7 +129,7 @@ export class HtmlToPdfService {
                 return this.P_MARGIN_BOTTOM;
             }
             case 'li': {
-                return this.LI_MARGIN_BOTTOM;
+                return this.P_MARGIN_BOTTOM;
             }
             default: {
                 return this.P_MARGIN_BOTTOM;
@@ -234,12 +234,7 @@ export class HtmlToPdfService {
             case 'div': {
                 const children = this.parseChildren(element, styles);
 
-                // this introduces a bug with rendering sub-lists in PDF
-                if (
-                    this.lineNumberingMode === LineNumberingMode.Outside &&
-                    !this.isInsideAList(element) &&
-                    !classes.includes('insert')
-                ) {
+                if (this.lineNumberingMode === LineNumberingMode.Outside && !classes.includes('insert')) {
                     newParagraph = this.create('stack');
                     newParagraph.stack = children;
                 } else {
@@ -268,7 +263,7 @@ export class HtmlToPdfService {
                 }
 
                 // if the list ends (usually due to a new insert cr) prevent margins
-                if (classes.includes('os-split-after')) {
+                if (classes.includes('os-split-after') || this.withSublist(element)) {
                     newParagraph.margin[3] = 0;
                 }
 
@@ -324,7 +319,10 @@ export class HtmlToPdfService {
                 break;
             }
             case 'br': {
-                if (this.lineNumberingMode === LineNumberingMode.None && classes.includes('os-line-break')) {
+                if (
+                    (this.lineNumberingMode === LineNumberingMode.None && classes.includes('os-line-break')) ||
+                    (this.lineNumberingMode === LineNumberingMode.Outside && this.isInsideAList(element))
+                ) {
                     break;
                 } else {
                     newParagraph = this.create('text');
@@ -347,7 +345,7 @@ export class HtmlToPdfService {
                 }
 
                 // in case of line numbers and only of the list is not nested in another list.
-                if (this.lineNumberingMode === LineNumberingMode.Outside && !this.isInsideAList(element)) {
+                if (this.lineNumberingMode === LineNumberingMode.Outside) {
                     const lines = this.extractLineNumbers(element);
 
                     const cleanedChildDom = this.cleanLineNumbers(element);
@@ -475,6 +473,17 @@ export class HtmlToPdfService {
     }
 
     /**
+     * Checks if a given LI has a sublist
+     */
+    private withSublist(element: Element): boolean {
+        if (element.nodeName.toLowerCase() === 'li') {
+            const hasUl = Array.from(element.children).some(child => child.nodeName.toLowerCase() === 'ul');
+            return hasUl;
+        }
+        return false;
+    }
+
+    /**
      * Cleans the elements children from line-number spans
      *
      * @param element a html dom tree
@@ -534,6 +543,8 @@ export class HtmlToPdfService {
             // If this is an list item, add some space to the lineNumbers:
             if (childrenLineNumbers.length && element.nodeName === 'LI') {
                 childrenLineNumbers[childrenLineNumbers.length - 1].marginBottom = this.LI_MARGIN_BOTTOM;
+            } else if (childrenLineNumbers.length && element.parentNode.nodeName === 'LI') {
+                childrenLineNumbers[childrenLineNumbers.length - 1].marginBottom = this.P_MARGIN_BOTTOM;
             }
 
             foundLineNumbers = foundLineNumbers.concat(childrenLineNumbers);
