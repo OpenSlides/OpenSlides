@@ -103,14 +103,27 @@ class Mediafile(RESTModelMixin, ListOfSpeakersMixin, models.Model):
         """
         `unique_together` is not working with foreign keys with possible `null` values.
         So we do need to check this here.
+
+        self.original_filename is not yet set, but if is_file is True, the actual
+        filename is self.mediafile.file
         """
+        title_or_original_filename = models.Q(title=self.title)
+        if self.is_file:
+            title_or_original_filename = title_or_original_filename | models.Q(
+                original_filename=self.mediafile.name
+            )
+
         if (
-            Mediafile.objects.exclude(pk=self.pk)
-            .filter(title=self.title, parent=self.parent)
+            Mediafile.objects.exclude(
+                pk=self.pk
+            )  # self.pk is None on creation, but this does not invalidate the exclude statement.
+            .filter(title_or_original_filename, parent=self.parent)
             .exists()
         ):
             raise ValidationError(
-                {"detail": "A mediafile with this title already exists in this folder."}
+                {
+                    "detail": "A mediafile with this title or filename already exists in this folder."
+                }
             )
 
     def __str__(self):

@@ -111,7 +111,7 @@
                 {{ mediafile.filename }}
             </div>
             <div class="info-text" *ngIf="!mediafile.is_directory">
-                <span> {{ getDateFromTimestamp(mediafile.timestamp) }} · {{ mediafile.size }} </span>
+                <span> {{ getDateFromTimestamp(mediafile.timestamp) }} · {{ mediafile.filesize }} </span>
             </div>
         </div>
     </div>
