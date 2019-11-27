@@ -389,18 +389,28 @@ class AssignmentPollViewSet(BasePollViewSet):
         for option_id, vote in options_data.items():
             option = options.get(pk=int(option_id))
             Y = self.parse_decimal_value(vote["Y"], min_value=-2)
-            AssignmentVote.objects.create(option=option, value="Y", weight=Y)
+            vote_obj, _ = AssignmentVote.objects.get_or_create(option=option, value="Y")
+            vote_obj.weight = Y
+            vote_obj.save()
 
             if poll.pollmethod in (
                 AssignmentPoll.POLLMETHOD_YN,
                 AssignmentPoll.POLLMETHOD_YNA,
             ):
                 N = self.parse_decimal_value(vote["N"], min_value=-2)
-                AssignmentVote.objects.create(option=option, value="N", weight=N)
+                vote_obj, _ = AssignmentVote.objects.get_or_create(
+                    option=option, value="N"
+                )
+                vote_obj.weight = N
+                vote_obj.save()
 
             if poll.pollmethod == AssignmentPoll.POLLMETHOD_YNA:
                 A = self.parse_decimal_value(vote["A"], min_value=-2)
-                AssignmentVote.objects.create(option=option, value="A", weight=A)
+                vote_obj, _ = AssignmentVote.objects.get_or_create(
+                    option=option, value="A"
+                )
+                vote_obj.weight = A
+                vote_obj.save()
 
         # Create votes for global no and global abstain
         first_option = options.first()

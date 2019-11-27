@@ -369,6 +369,40 @@ class UpdateMotionPoll(TestCase):
         poll = MotionPoll.objects.get()
         self.assertEqual(poll.title, "test_title_beeFaihuNae1vej2ai8m")
 
+    def test_patch_majority_method_state_not_created(self):
+        self.poll.state = 2
+        self.poll.save()
+        response = self.client.patch(
+            reverse("motionpoll-detail", args=[self.poll.pk]),
+            {"majority_method": "two_thirds"},
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        poll = MotionPoll.objects.get()
+        self.assertEqual(poll.majority_method, "two_thirds")
+
+    def test_patch_100_percent_base_state_not_created(self):
+        self.poll.state = 2
+        self.poll.save()
+        response = self.client.patch(
+            reverse("motionpoll-detail", args=[self.poll.pk]),
+            {"onehundred_percent_base": "cast"},
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        poll = MotionPoll.objects.get()
+        self.assertEqual(poll.onehundred_percent_base, "cast")
+
+    def test_patch_wrong_100_percent_base_state_not_created(self):
+        self.poll.state = 2
+        self.poll.pollmethod = MotionPoll.POLLMETHOD_YN
+        self.poll.save()
+        response = self.client.patch(
+            reverse("motionpoll-detail", args=[self.poll.pk]),
+            {"onehundred_percent_base": MotionPoll.PERCENT_BASE_YNA},
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        poll = MotionPoll.objects.get()
+        self.assertEqual(poll.onehundred_percent_base, "YN")
+
 
 class VoteMotionPollAnalog(TestCase):
     def setUp(self):
@@ -469,6 +503,43 @@ class VoteMotionPollAnalog(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertFalse(MotionPoll.objects.get().get_votes().exists())
+
+    def test_vote_state_finished(self):
+        self.start_poll()
+        self.client.post(
+            reverse("motionpoll-vote", args=[self.poll.pk]),
+            {
+                "Y": "3",
+                "N": "1",
+                "A": "5",
+                "votesvalid": "-2",
+                "votesinvalid": "1",
+                "votescast": "-1",
+            },
+        )
+        self.poll.state = 3
+        self.poll.save()
+        response = self.client.post(
+            reverse("motionpoll-vote", args=[self.poll.pk]),
+            {
+                "Y": "1",
+                "N": "2.35",
+                "A": "-1",
+                "votesvalid": "4.64",
+                "votesinvalid": "-2",
+                "votescast": "3",
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        poll = MotionPoll.objects.get()
+        self.assertEqual(poll.votesvalid, Decimal("4.64"))
+        self.assertEqual(poll.votesinvalid, Decimal("-2"))
+        self.assertEqual(poll.votescast, Decimal("3"))
+        self.assertEqual(poll.get_votes().count(), 3)
+        option = poll.options.get()
+        self.assertEqual(option.yes, Decimal("1"))
+        self.assertEqual(option.no, Decimal("2.35"))
+        self.assertEqual(option.abstain, Decimal("-1"))
 
 
 class VoteMotionPollNamed(TestCase):
