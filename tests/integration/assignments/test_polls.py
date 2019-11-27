@@ -535,6 +535,40 @@ class UpdateAssignmentPoll(TestCase):
         self.assertTrue(poll.allow_multiple_votes_per_candidate)
         self.assertEqual(poll.votes_amount, 42)
 
+    def test_patch_majority_method_state_not_created(self):
+        self.poll.state = 2
+        self.poll.save()
+        response = self.client.patch(
+            reverse("assignmentpoll-detail", args=[self.poll.pk]),
+            {"majority_method": "two_thirds"},
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        poll = AssignmentPoll.objects.get()
+        self.assertEqual(poll.majority_method, "two_thirds")
+
+    def test_patch_100_percent_base_state_not_created(self):
+        self.poll.state = 2
+        self.poll.save()
+        response = self.client.patch(
+            reverse("assignmentpoll-detail", args=[self.poll.pk]),
+            {"onehundred_percent_base": "cast"},
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        poll = AssignmentPoll.objects.get()
+        self.assertEqual(poll.onehundred_percent_base, "cast")
+
+    def test_patch_wrong_100_percent_base_state_not_created(self):
+        self.poll.state = 2
+        self.poll.pollmethod = AssignmentPoll.POLLMETHOD_YN
+        self.poll.save()
+        response = self.client.patch(
+            reverse("assignmentpoll-detail", args=[self.poll.pk]),
+            {"onehundred_percent_base": AssignmentPoll.PERCENT_BASE_YNA},
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        poll = AssignmentPoll.objects.get()
+        self.assertEqual(poll.onehundred_percent_base, "YN")
+
 
 class VoteAssignmentPollBaseTestClass(TestCase):
     def advancedSetUp(self):
@@ -720,6 +754,39 @@ class VoteAssignmentPollAnalogYNA(VoteAssignmentPollBaseTestClass):
             )
             self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
             self.assertFalse(AssignmentVote.objects.exists())
+
+    def test_vote_state_finished(self):
+        self.start_poll()
+        self.client.post(
+            reverse("assignmentpoll-vote", args=[self.poll.pk]),
+            {
+                "options": {"1": {"Y": 5, "N": 0, "A": 1}},
+                "votesvalid": "-2",
+                "votesinvalid": "1",
+                "votescast": "-1",
+            },
+        )
+        self.poll.state = 3
+        self.poll.save()
+        response = self.client.post(
+            reverse("assignmentpoll-vote", args=[self.poll.pk]),
+            {
+                "options": {"1": {"Y": 2, "N": 2, "A": 2}},
+                "votesvalid": "4.64",
+                "votesinvalid": "-2",
+                "votescast": "3",
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        poll = AssignmentPoll.objects.get()
+        self.assertEqual(poll.votesvalid, Decimal("4.64"))
+        self.assertEqual(poll.votesinvalid, Decimal("-2"))
+        self.assertEqual(poll.votescast, Decimal("3"))
+        self.assertEqual(poll.get_votes().count(), 3)
+        option = poll.options.get()
+        self.assertEqual(option.yes, Decimal("2"))
+        self.assertEqual(option.no, Decimal("2"))
+        self.assertEqual(option.abstain, Decimal("2"))
 
 
 class VoteAssignmentPollNamedYNA(VoteAssignmentPollBaseTestClass):
