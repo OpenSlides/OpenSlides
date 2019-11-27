@@ -16,7 +16,7 @@ import { DataStoreService } from '../../core-services/data-store.service';
 
 const WorkflowRelations: RelationDefinition[] = [
     {
-        type: 'M2M',
+        type: 'O2M',
         ownIdKey: 'states_id',
         ownKey: 'states',
         foreignViewModel: ViewState

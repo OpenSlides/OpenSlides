@@ -110,6 +110,16 @@ export class UpdateSlot {
     }
 
     /**
+     * @returns all changed and deleted model ids in one array. If an id was
+     * changed and deleted, it will be there twice! But this should not be the case.
+     */
+    public getAllModelsIdsForCollection(collection: string): number[] {
+        return this.getDeletedModelIdsForCollection(collection).concat(
+            this.getChangedModelIdsForCollection(collection)
+        );
+    }
+
+    /**
      * Compares this object to another update slot.
      */
     public equal(other: UpdateSlot): boolean {
@@ -232,7 +242,7 @@ export class DataStoreUpdateManagerService {
 
         // Phase 2: updating all repositories
         repositories.forEach(repo => {
-            repo.commitUpdate();
+            repo.commitUpdate(slot.getAllModelsIdsForCollection(repo.collectionString));
         });
 
         slot.DS.triggerModifiedObservable();
