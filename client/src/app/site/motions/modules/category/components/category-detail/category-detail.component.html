@@ -55,7 +55,7 @@
             <ng-container matColumnDef="anchor">
                 <mat-header-cell *matHeaderCellDef></mat-header-cell>
                 <mat-cell *matCellDef="let motion">
-                    <a [routerLink]="motion.getDetailStateURL()"></a>
+                    <a [routerLink]="motion.getDetailStateURL()" [state]="{ back: 'true' }"></a>
                 </mat-cell>
             </ng-container>
 

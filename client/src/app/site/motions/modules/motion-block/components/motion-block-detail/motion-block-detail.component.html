@@ -40,7 +40,12 @@
 >
     <!-- Title column -->
     <div *pblNgridCellDef="'title'; row as motion; rowContext as rowContext" class="cell-slot fill">
-        <a class="detail-link" [routerLink]="motion.getDetailStateURL()" *ngIf="!isMultiSelect"></a>
+        <a
+            class="detail-link"
+            [routerLink]="motion.getDetailStateURL()"
+            [state]="{ back: 'true' }"
+            *ngIf="!isMultiSelect"
+        ></a>
         <div class="column-title innerTable">
             <div class="title-line ellipsis-overflow">
                 <!-- Is Favorite -->

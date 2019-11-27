@@ -222,6 +222,8 @@ export class HeadBarComponent implements OnInit {
     public onBackButton(): void {
         if (this.goBack) {
             this.routingState.goBack();
+        } else if (this.routingState.customOrigin && this.routingState.customOrigin !== this.router.url) {
+            this.router.navigate([this.routingState.customOrigin], { relativeTo: this.route });
         } else {
             this.router.navigate([this.prevUrl], { relativeTo: this.route });
         }

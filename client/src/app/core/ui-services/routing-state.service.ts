@@ -18,6 +18,11 @@ export class RoutingStateService {
     private _previousUrl: string;
 
     /**
+     * Stores the routing state
+     */
+    private _customOrigin: string;
+
+    /**
      * Unsafe paths that the user should not go "back" to
      * TODO: Might also work using Routing parameters
      */
@@ -39,6 +44,10 @@ export class RoutingStateService {
         return this._previousUrl;
     }
 
+    public get customOrigin(): string {
+        return this._customOrigin;
+    }
+
     /**
      * Watch routing changes and save the last visited URL
      *
@@ -52,10 +61,33 @@ export class RoutingStateService {
             )
             .subscribe((event: any[]) => {
                 this._previousUrl = event[0].urlAfterRedirects;
+                if (
+                    this.router.getCurrentNavigation().extras &&
+                    this.router.getCurrentNavigation().extras.state &&
+                    this.router.getCurrentNavigation().extras.state.back
+                ) {
+                    this._customOrigin = this._previousUrl;
+                } else if (
+                    this._customOrigin &&
+                    !this.isSameComponent(event[0].urlAfterRedirects, event[1].urlAfterRedirects)
+                ) {
+                    this._customOrigin = null;
+                }
             });
     }
 
     public goBack(): void {
         this.location.back();
+    }
+
+    /**
+     * Analyse the URL to check if you were navigating using the same components
+     */
+    private isSameComponent(urlA: string, urlB: string): boolean {
+        const pathA = urlA.slice(0, urlA.lastIndexOf('/'));
+        const pathB = urlB.slice(0, urlB.lastIndexOf('/'));
+        const paramA = urlA.slice(urlA.lastIndexOf('/') + 1);
+        const paramB = urlB.slice(urlA.lastIndexOf('/') + 1);
+        return pathA === pathB && !isNaN(+paramA) && !isNaN(+paramB);
     }
 }
