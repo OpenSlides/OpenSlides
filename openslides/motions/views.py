@@ -1180,10 +1180,16 @@ class MotionPollViewSet(BasePollViewSet):
             A = self.parse_decimal_value(data.get("A"), min_value=-2)
 
         option = poll.options.get()
-        MotionVote.objects.create(option=option, value="Y", weight=Y)
-        MotionVote.objects.create(option=option, value="N", weight=N)
+        vote, _ = MotionVote.objects.get_or_create(option=option, value="Y")
+        vote.weight = Y
+        vote.save()
+        vote, _ = MotionVote.objects.get_or_create(option=option, value="N")
+        vote.weight = N
+        vote.save()
         if poll.pollmethod == MotionPoll.POLLMETHOD_YNA:
-            MotionVote.objects.create(option=option, value="A", weight=A)
+            vote, _ = MotionVote.objects.get_or_create(option=option, value="A")
+            vote.weight = A
+            vote.save()
 
         if "votesvalid" in data:
             poll.votesvalid = self.parse_decimal_value(data["votesvalid"], min_value=-2)
