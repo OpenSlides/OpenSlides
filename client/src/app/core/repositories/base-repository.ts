@@ -172,7 +172,6 @@ export abstract class BaseRepository<V extends BaseViewModel & T, M extends Base
     public deleteModels(ids: number[]): void {
         ids.forEach(id => {
             delete this.viewModelStore[id];
-            this.updateViewModelObservable(id);
         });
     }
 
@@ -185,7 +184,6 @@ export abstract class BaseRepository<V extends BaseViewModel & T, M extends Base
     public changedModels(ids: number[]): void {
         ids.forEach(id => {
             this.viewModelStore[id] = this.createViewModelWithTitles(this.DS.get(this.collectionString, id));
-            this.updateViewModelObservable(id);
         });
     }
 
@@ -282,7 +280,7 @@ export abstract class BaseRepository<V extends BaseViewModel & T, M extends Base
      */
     public setSortFunction(fn: (a: V, b: V) => number): void {
         this.viewModelSortFn = fn;
-        this.commitUpdate();
+        this.commitUpdate(Object.keys(this.viewModelSubjects).map(x => +x));
     }
 
     /**
@@ -356,7 +354,10 @@ export abstract class BaseRepository<V extends BaseViewModel & T, M extends Base
     /**
      * update the observable of the list. Also updates the sorting of the view model list.
      */
-    public commitUpdate(): void {
+    public commitUpdate(modelIds: number[]): void {
         this.unsafeViewModelListSubject.next(this.getViewModelList());
+        modelIds.forEach(id => {
+            this.updateViewModelObservable(id);
+        });
     }
 }
