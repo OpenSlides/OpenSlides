@@ -35,7 +35,6 @@ import { DiffLinesInParagraph, LineRange } from 'app/core/ui-services/diff.servi
 import { LinenumberingService } from 'app/core/ui-services/linenumbering.service';
 import { PersonalNoteService } from 'app/core/ui-services/personal-note.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
-import { RoutingStateService } from 'app/core/ui-services/routing-state.service';
 import { ViewportService } from 'app/core/ui-services/viewport.service';
 import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
 import { Motion } from 'app/shared/models/motions/motion';
@@ -451,7 +450,6 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         private itemRepo: ItemRepositoryService,
         private motionSortService: MotionSortListService,
         private motionFilterService: MotionFilterListService,
-        private routingStateService: RoutingStateService,
         private cd: ChangeDetectorRef
     ) {
         super(title, translate, matSnackBar);
@@ -1536,30 +1534,6 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      */
     public showUploadError(error: string): void {
         this.raiseError(error);
-    }
-
-    /**
-     * Tries to determine the previous URL if it's considered unsafe
-     *
-     * @returns the target to navigate to
-     */
-    public getPrevUrl(): string {
-        if (this.motion && this.motion.parent_id) {
-            if (this.routingStateService.previousUrl && this.routingStateService.isSafePrevUrl) {
-                if (
-                    (this.previousMotion &&
-                        this.routingStateService.previousUrl === this.previousMotion.getDetailStateURL()) ||
-                    (this.nextMotion && this.routingStateService.previousUrl === this.nextMotion.getDetailStateURL())
-                ) {
-                    return '../..';
-                } else {
-                    return this.routingStateService.previousUrl;
-                }
-            } else {
-                return this.motion.parent.getDetailStateURL();
-            }
-        }
-        return '../..';
     }
 
     /**

@@ -1,4 +1,4 @@
-<os-head-bar [nav]="false" [multiSelectMode]="isMultiSelect" goBack="true">
+<os-head-bar prevUrl="../.." [nav]="false" [multiSelectMode]="isMultiSelect">
     <!-- Title -->
     <div class="title-slot" *ngIf="!parentMotion"><h2 translate>Amendments</h2></div>
 
@@ -38,7 +38,7 @@
 >
     <!-- Meta -->
     <div *pblNgridCellDef="'meta'; row as motion" class="cell-slot fill">
-        <a class="detail-link" [routerLink]="motion.getDetailStateURL()"></a>
+        <a class="detail-link" [routerLink]="motion.getDetailStateURL()" [state]="{ back: 'true' }"></a>
         <div class="innerTable">
             <!-- Identifier and line -->
             <div class="title-line one-line">
