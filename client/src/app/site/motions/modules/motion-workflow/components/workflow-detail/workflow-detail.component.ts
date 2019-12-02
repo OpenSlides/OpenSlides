@@ -1,4 +1,4 @@
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -8,6 +8,7 @@ import { ActivatedRoute } from '@angular/router';
 
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { StateRepositoryService } from 'app/core/repositories/motions/state-repository.service';
 import { WorkflowRepositoryService } from 'app/core/repositories/motions/workflow-repository.service';
@@ -68,7 +69,8 @@ interface Restriction {
 @Component({
     selector: 'os-workflow-detail',
     templateUrl: './workflow-detail.component.html',
-    styleUrls: ['./workflow-detail.component.scss']
+    styleUrls: ['./workflow-detail.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WorkflowDetailComponent extends BaseViewComponent implements OnInit {
     /**
@@ -157,7 +159,8 @@ export class WorkflowDetailComponent extends BaseViewComponent implements OnInit
         private dialog: MatDialog,
         private workflowRepo: WorkflowRepositoryService,
         private stateRepo: StateRepositoryService,
-        private route: ActivatedRoute
+        private route: ActivatedRoute,
+        private cd: ChangeDetectorRef
     ) {
         super(title, translate, matSnackBar);
     }
@@ -168,14 +171,26 @@ export class WorkflowDetailComponent extends BaseViewComponent implements OnInit
      * Observe the parameters of the URL and loads the specified workflow
      */
     public ngOnInit(): void {
-        this.route.params.subscribe(params => {
-            if (params) {
-                this.workflowRepo.getViewModelObservable(params.id).subscribe(newWorkflow => {
+        const paramsId = parseInt(this.route.snapshot.paramMap.get('id'), 10);
+
+        this.subscriptions.push(
+            this.workflowRepo.getViewModelObservable(paramsId).subscribe(newWorkflow => {
+                if (newWorkflow) {
                     this.workflow = newWorkflow;
                     this.updateRowDef();
-                });
-            }
-        });
+                    this.cd.markForCheck();
+                }
+            }),
+
+            this.stateRepo
+                .getViewModelListObservable()
+                .pipe(map(states => states.filter(state => this.workflow.states_id.includes(state.id))))
+                .subscribe(states => {
+                    if (states) {
+                        this.cd.markForCheck();
+                    }
+                })
+        );
     }
 
     /**
@@ -187,6 +202,7 @@ export class WorkflowDetailComponent extends BaseViewComponent implements OnInit
     public onClickStateName(state: ViewState): void {
         this.openEditDialog(state.name, 'Rename state', '', true).subscribe(result => {
             if (result) {
+                this.cd.detectChanges();
                 if (result.action === 'update') {
                     this.stateRepo.update({ name: result.value }, state).then(() => {}, this.raiseError);
                 } else if (result.action === 'delete') {
