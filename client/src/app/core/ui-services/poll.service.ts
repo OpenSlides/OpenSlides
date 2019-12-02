@@ -100,7 +100,10 @@ export abstract class PollService {
      * TODO: Should be given by the server, and editable. For now they are hard
      * coded
      */
-    private _specialPollVotes: [number, string][] = [[-1, 'majority'], [-2, 'undocumented']];
+    private _specialPollVotes: [number, string][] = [
+        [-1, 'majority'],
+        [-2, 'undocumented']
+    ];
 
     /**
      * getter for the special vote values

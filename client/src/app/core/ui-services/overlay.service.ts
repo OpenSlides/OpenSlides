@@ -2,10 +2,12 @@ import { Injectable } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material';
 
 import { Observable, Subject } from 'rxjs';
+import { distinctUntilChanged } from 'rxjs/operators';
 
 import { largeDialogSettings } from 'app/shared/utils/dialog-settings';
 import { SuperSearchComponent } from 'app/site/common/components/super-search/super-search.component';
 import { DataStoreUpgradeService } from '../core-services/data-store-upgrade.service';
+import { OfflineService } from '../core-services/offline.service';
 import { OpenSlidesService } from '../core-services/openslides.service';
 import { OperatorService } from '../core-services/operator.service';
 
@@ -44,6 +46,11 @@ export class OverlayService {
     private hasBooted = false;
 
     /**
+     * Flag, whether the client is offline or not
+     */
+    private isOffline = false;
+
+    /**
      *
      * @param dialogService Injects the `MatDialog` to show the `super-search.component`
      */
@@ -51,7 +58,8 @@ export class OverlayService {
         private dialogService: MatDialog,
         private operator: OperatorService,
         OpenSlides: OpenSlidesService,
-        upgradeService: DataStoreUpgradeService
+        upgradeService: DataStoreUpgradeService,
+        offlineService: OfflineService
     ) {
         // Subscribe to the current user.
         operator.getViewUserObservable().subscribe(user => {
@@ -70,6 +78,14 @@ export class OverlayService {
             this.upgradeChecked = upgradeDone;
             this.checkConnection();
         });
+        // Subscribe to check if we are offline
+        offlineService
+            .isOffline()
+            .pipe(distinctUntilChanged())
+            .subscribe(offline => {
+                this.isOffline = offline;
+                this.checkConnection();
+            });
     }
 
     /**
@@ -126,7 +142,7 @@ export class OverlayService {
      * @returns True, if the three booleans are all true.
      */
     public isConnectionStable(): boolean {
-        return this.upgradeChecked && this.hasBooted && (!!this.user || this.operator.isAnonymous);
+        return (this.upgradeChecked || this.isOffline) && this.hasBooted && (!!this.user || this.operator.isAnonymous);
     }
 
     /**
