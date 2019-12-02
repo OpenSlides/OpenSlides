@@ -1350,7 +1350,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      */
     public onDownloadPdf(): void {
         this.pdfExport.exportSingleMotion(this.motion, {
-            lnMode: this.lnMode,
+            lnMode: this.lnMode === this.LineNumberingMode.Inside ? this.LineNumberingMode.Outside : this.lnMode,
             crMode: this.crMode,
             comments: this.motion.commentSectionIds.concat([PERSONAL_NOTE_ID]) // export all comment fields as well as personal note
         });
