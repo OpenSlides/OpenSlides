@@ -625,7 +625,7 @@ export class LinenumberingService {
                         };
                     }
                 }
-                if (lineBreakAt !== null && (node.nodeValue[i] !== ' ' && node.nodeValue[i] !== '\n')) {
+                if (lineBreakAt !== null && node.nodeValue[i] !== ' ' && node.nodeValue[i] !== '\n') {
                     if (lineBreakAt.node === node) {
                         // The last possible breaking point is in this text node
                         const currLine = node.nodeValue.substring(currLineStart, lineBreakAt.offset + 1);

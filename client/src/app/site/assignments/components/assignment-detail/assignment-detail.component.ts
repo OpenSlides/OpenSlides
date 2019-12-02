@@ -494,7 +494,10 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
      */
     public onSortingChange(listInNewOrder: ViewAssignmentRelatedUser[]): void {
         this.repo
-            .sortCandidates(listInNewOrder.map(relatedUser => relatedUser.id), this.assignment)
+            .sortCandidates(
+                listInNewOrder.map(relatedUser => relatedUser.id),
+                this.assignment
+            )
             .catch(this.raiseError);
     }
 

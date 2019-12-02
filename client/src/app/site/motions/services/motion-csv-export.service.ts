@@ -100,7 +100,8 @@ export class MotionCsvExportService {
         const properties = sortMotionPropertyList(['identifier', 'title'].concat(contentToExport));
         const exportProperties: (
             | CsvColumnDefinitionProperty<ViewMotion>
-            | CsvColumnDefinitionMap<ViewMotion>)[] = properties.map(option => {
+            | CsvColumnDefinitionMap<ViewMotion>
+        )[] = properties.map(option => {
             if (option === 'recommendation') {
                 return {
                     label: 'recommendation',
