@@ -14,6 +14,7 @@ from .cache_providers import (
     MemoryCacheProvider,
     RedisCacheProvider,
 )
+from .locking import locking
 from .redis import use_redis
 from .schema_version import SchemaVersion, schema_version_handler
 from .utils import get_element_id, split_element_id
@@ -128,7 +129,7 @@ class ElementCache:
     ) -> None:
         lock_name = "build_cache"
         # Set a lock so only one process builds the cache
-        if await self.cache_provider.set_lock(lock_name):
+        if await locking.set(lock_name):
             logger.info("Building up the cache data...")
             try:
                 mapping = {}
@@ -157,10 +158,10 @@ class ElementCache:
                     await self.cache_provider.set_schema_version(schema_version)
                 logger.info("Done saving the cache data.")
             finally:
-                await self.cache_provider.del_lock(lock_name)
+                await locking.delete(lock_name)
         else:
             logger.info("Wait for another process to build up the cache...")
-            while await self.cache_provider.get_lock(lock_name):
+            while await locking.get(lock_name):
                 sleep(0.01)
             logger.info("Cache is ready (built by another process).")
 

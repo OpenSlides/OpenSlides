@@ -66,15 +66,6 @@ class ElementCacheProvider(Protocol):
     ) -> Tuple[Dict[str, List[bytes]], List[str]]:
         ...
 
-    async def set_lock(self, lock_name: str) -> bool:
-        ...
-
-    async def get_lock(self, lock_name: str) -> bool:
-        ...
-
-    async def del_lock(self, lock_name: str) -> None:
-        ...
-
     async def get_current_change_id(self) -> int:
         ...
 
@@ -250,7 +241,6 @@ class RedisCacheProvider:
     ) -> None:
         """
         Deletes the full_data_cache and write new data in it. Clears the change id key.
-        Does not clear locks.
         """
         async with get_connection() as redis:
             tr = redis.multi_exec()
@@ -370,30 +360,6 @@ class RedisCacheProvider:
                 collection_string, id = split_element_id(element_id)
                 changed_elements[collection_string].append(element_json)
         return changed_elements, deleted_elements
-
-    async def set_lock(self, lock_name: str) -> bool:
-        """
-        Tries to sets a lock.
-
-        Returns True when the lock could be set and False, if it was already set.
-        """
-        # TODO: Improve lock. See: https://redis.io/topics/distlock
-        async with get_connection() as redis:
-            return await redis.setnx(f"lock_{lock_name}", 1)
-
-    async def get_lock(self, lock_name: str) -> bool:
-        """
-        Returns True, when the lock is set. Else False.
-        """
-        async with get_connection() as redis:
-            return await redis.get(f"lock_{lock_name}")
-
-    async def del_lock(self, lock_name: str) -> None:
-        """
-        Deletes the lock. Does nothing when the lock is not set.
-        """
-        async with get_connection() as redis:
-            await redis.delete(f"lock_{lock_name}")
 
     @ensure_cache_wrapper()
     async def get_current_change_id(self) -> int:
@@ -584,21 +550,6 @@ class MemoryCacheProvider:
                 collection_string, id = split_element_id(element_id)
                 changed_elements[collection_string].append(element_json.encode())
         return changed_elements, deleted_elements
-
-    async def set_lock(self, lock_name: str) -> bool:
-        if lock_name in self.locks:
-            return False
-        self.locks[lock_name] = "1"
-        return True
-
-    async def get_lock(self, lock_name: str) -> bool:
-        return lock_name in self.locks
-
-    async def del_lock(self, lock_name: str) -> None:
-        try:
-            del self.locks[lock_name]
-        except KeyError:
-            pass
 
     async def get_current_change_id(self) -> int:
         if self.change_id_data:

@@ -6,6 +6,7 @@ from jsonfield import JSONField
 
 from ..utils.autoupdate import Element
 from ..utils.cache import element_cache, get_element_id
+from ..utils.locking import locking
 from ..utils.models import SET_NULL_AND_AUTOUPDATE, RESTModelMixin
 from .access_permissions import (
     ConfigAccessPermissions,
@@ -284,22 +285,27 @@ class HistoryManager(models.Manager):
         """
         Method to add all cachables to the history.
         """
-        # TODO: Add lock to prevent multiple history builds at once. See #4039.
-        instances = None
-        if self.all().count() == 0:
-            elements = []
-            all_full_data = async_to_sync(element_cache.get_all_data_list)()
-            for collection_string, data in all_full_data.items():
-                for full_data in data:
-                    elements.append(
-                        Element(
-                            id=full_data["id"],
-                            collection_string=collection_string,
-                            full_data=full_data,
-                        )
-                    )
-            instances = self.add_elements(elements)
-        return instances
+        async_to_sync(self.async_build_history)()
+
+    async def async_build_history(self):
+        lock_name = "build_cache"
+        if await locking.set(lock_name):
+            try:
+                if self.all().count() == 0:
+                    elements = []
+                    all_full_data = await element_cache.get_all_data_list()
+                    for collection_string, data in all_full_data.items():
+                        for full_data in data:
+                            elements.append(
+                                Element(
+                                    id=full_data["id"],
+                                    collection_string=collection_string,
+                                    full_data=full_data,
+                                )
+                            )
+                    self.add_elements(elements)
+            finally:
+                await locking.delete(lock_name)
 
 
 class History(models.Model):
