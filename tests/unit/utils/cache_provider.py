@@ -1,4 +1,3 @@
-import asyncio
 from typing import Any, Callable, Dict, List
 
 from openslides.utils.cache_providers import Cachable, MemoryCacheProvider
@@ -92,12 +91,8 @@ class TTestCacheProvider(MemoryCacheProvider):
     """
     CacheProvider simular to the MemoryCacheProvider with special methods for
     testing.
+
+    Currently just a dummy for future extensions.
     """
 
-    async def del_lock_after_wait(
-        self, lock_name: str, future: asyncio.Future = None
-    ) -> None:
-        async def set_future() -> None:
-            await self.del_lock(lock_name)
-
-        asyncio.ensure_future(set_future())
+    pass
