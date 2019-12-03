@@ -17,6 +17,8 @@ from .models import BasePoll
 
 
 class BasePollViewSet(ModelViewSet):
+    valid_update_keys = ["majority_method", "onehundred_percent_base"]
+
     def check_view_permissions(self):
         """
         the vote view is checked seperately. For all other views manage permissions
@@ -31,18 +33,28 @@ class BasePollViewSet(ModelViewSet):
         poll = serializer.save()
         poll.create_options()
 
-    def update(self, *args, **kwargs):
+    def update(self, request, *args, **kwargs):
         """
         Customized view endpoint to update a motion poll.
         """
         poll = self.get_object()
 
-        if poll.state != BasePoll.STATE_CREATED:
-            raise ValidationError(
-                {"detail": "You can just edit a poll if it was not started."}
-            )
+        partial = kwargs.get("partial", False)
+        serializer = self.get_serializer(poll, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=False)
 
-        return super().update(*args, **kwargs)
+        if poll.state != BasePoll.STATE_CREATED:
+            invalid_keys = set(serializer.validated_data.keys()) - set(
+                self.valid_update_keys
+            )
+            if len(invalid_keys):
+                raise ValidationError(
+                    {
+                        "detail": f"The poll is not in the created state. You can only edit: {', '.join(self.valid_update_keys)}"
+                    }
+                )
+
+        return super().update(request, *args, **kwargs)
 
     @detail_route(methods=["POST"])
     def start(self, request, pk):
@@ -118,8 +130,6 @@ class BasePollViewSet(ModelViewSet):
         For motion polls: Just "Y", "N" or "A" (if pollmethod is "YNA")
         """
         poll = self.get_object()
-        if poll.state != BasePoll.STATE_STARTED:
-            raise ValidationError({"detail": "You cannot vote for an unstarted poll"})
 
         if isinstance(request.user, AnonymousUser):
             self.permission_denied(request)
@@ -129,23 +139,37 @@ class BasePollViewSet(ModelViewSet):
             if not self.has_manage_permissions():
                 self.permission_denied(request)
 
+            if (
+                poll.state != BasePoll.STATE_STARTED
+                and poll.state != BasePoll.STATE_FINISHED
+            ):
+                raise ValidationError(
+                    {"detail": "You cannot vote for a poll in this state"}
+                )
+
             self.handle_analog_vote(request.data, poll, request.user)
             # special: change the poll state to finished.
             poll.state = BasePoll.STATE_FINISHED
             poll.save()
 
-        elif poll.type == BasePoll.TYPE_NAMED:
-            self.assert_can_vote(poll, request)
-            self.handle_named_vote(request.data, poll, request.user)
-            poll.voted.add(request.user)
+        else:
+            if poll.state != BasePoll.STATE_STARTED:
+                raise ValidationError(
+                    {"detail": "You cannot vote for an unstarted poll"}
+                )
 
-        elif poll.type == BasePoll.TYPE_PSEUDOANONYMOUS:
-            self.assert_can_vote(poll, request)
+            if poll.type == BasePoll.TYPE_NAMED:
+                self.assert_can_vote(poll, request)
+                self.handle_named_vote(request.data, poll, request.user)
+                poll.voted.add(request.user)
 
-            if request.user in poll.voted.all():
-                self.permission_denied(request)
-            self.handle_pseudoanonymous_vote(request.data, poll)
-            poll.voted.add(request.user)
+            elif poll.type == BasePoll.TYPE_PSEUDOANONYMOUS:
+                self.assert_can_vote(poll, request)
+
+                if request.user in poll.voted.all():
+                    self.permission_denied(request)
+                self.handle_pseudoanonymous_vote(request.data, poll)
+                poll.voted.add(request.user)
 
         inform_changed_data(poll)  # needed for the changed voted relation
         return Response()
