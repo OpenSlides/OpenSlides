@@ -13,6 +13,8 @@ export const MotionPollMethodsVerbose = {
 export interface MotionPollWithoutNestedModels extends BasePollWithoutNestedModels {
     motion_id: number;
     pollmethod: MotionPollMethods;
+
+    readonly pollmethodVerbose: string;
 }
 
 /**

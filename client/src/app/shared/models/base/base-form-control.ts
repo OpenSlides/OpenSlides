@@ -109,7 +109,7 @@ export abstract class BaseFormControlComponent<T> extends MatFormFieldControl<T>
 
         this.subscriptions.push(
             fm.monitor(element.nativeElement, true).subscribe(origin => {
-                this.focused = !!origin;
+                this.focused = origin === 'mouse' || origin === 'touch';
                 this.stateChanges.next();
             }),
             this.contentForm.valueChanges.subscribe(nextValue => this.push(nextValue))

@@ -68,6 +68,8 @@ export class AttachmentControlComponent extends BaseFormControlComponent<ViewMed
      * On init method
      */
     public ngOnInit(): void {
+        console.log('contentForm', this.contentForm);
+        this.contentForm.valueChanges.subscribe(value => console.log('value', value));
         this.mediaFileList = this.mediaService
             .getViewModelListObservable()
             .pipe(map(files => files.filter(file => !file.is_directory)));
@@ -108,7 +110,7 @@ export class AttachmentControlComponent extends BaseFormControlComponent<ViewMed
     protected initializeForm(): void {
         this.contentForm = this.fb.control([]);
     }
-    protected updateForm(value: ViewMediafile[]): void {
-        this.contentForm.setValue(value);
+    protected updateForm(value: ViewMediafile[] | null): void {
+        this.contentForm.setValue(value || []);
     }
 }

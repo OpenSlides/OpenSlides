@@ -151,4 +151,12 @@
     .mat-progress-bar-buffer {
         background-color: mat-color($background, card) !important;
     }
+
+    .primary-foreground {
+        color: mat-color($primary);
+    }
+
+    .accent-foreground {
+        color: mat-color($accent);
+    }
 }

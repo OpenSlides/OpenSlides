@@ -449,15 +449,7 @@
 
         <!-- motion polls -->
         <div *ngIf="!editMotion" class="spacer-top-20 spacer-bottom-20">
-            <div class="create-poll-button" *ngIf="perms.isAllowed('createpoll', motion)">
-                <button mat-button (click)="createPoll()">
-                    <mat-icon class="main-nav-color">poll</mat-icon>
-                    <span translate>New vote</span>
-                </button>
-            </div>
-            <mat-accordion>
-                <os-motion-poll-preview *ngFor="let poll of motion.polls" [poll]="poll"></os-motion-poll-preview>
-            </mat-accordion>
+            <os-motion-poll-manager [motion]="motion"></os-motion-poll-manager>
         </div>
     </div>
 </ng-template>
