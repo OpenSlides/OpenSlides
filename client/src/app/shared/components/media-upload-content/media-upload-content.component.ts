@@ -138,7 +138,7 @@ export class MediaUploadContentComponent implements OnInit {
         input.set('title', fileData.title);
         const access_groups_id = fileData.form.value.access_groups_id || [];
         if (access_groups_id.length > 0) {
-            input.set('access_groups_id', '' + access_groups_id);
+            input.set('access_groups_id', JSON.stringify(access_groups_id));
         }
         if (this.selectedDirectoryId) {
             input.set('parent_id', '' + this.selectedDirectoryId);

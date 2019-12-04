@@ -1,52 +1,15 @@
-import mimetypes
-
 from django.conf import settings
-from django.db import models as dbmodels
-from PyPDF2 import PdfFileReader
-from PyPDF2.utils import PdfReadError
 
 from ..utils.auth import get_group_model
 from ..utils.rest_api import (
-    FileField,
+    CharField,
     IdPrimaryKeyRelatedField,
+    JSONField,
     ModelSerializer,
     SerializerMethodField,
     ValidationError,
 )
 from .models import Mediafile
-
-
-class AngularCompatibleFileField(FileField):
-    def to_internal_value(self, data):
-        if data == "":
-            return None
-        return super(AngularCompatibleFileField, self).to_internal_value(data)
-
-    def to_representation(self, value):
-        if value is None or value.name is None:
-            return None
-        filetype = mimetypes.guess_type(value.name)[0]
-        result = {"name": value.name, "type": filetype}
-        if filetype == "application/pdf":
-            try:
-                if (
-                    settings.DEFAULT_FILE_STORAGE
-                    == "storages.backends.sftpstorage.SFTPStorage"
-                ):
-                    remote_path = value.storage._remote_path(value.name)
-                    file_handle = value.storage.sftp.open(remote_path, mode="rb")
-                else:
-                    file_handle = open(value.path, "rb")
-
-                result["pages"] = PdfFileReader(file_handle).getNumPages()
-            except FileNotFoundError:
-                # File was deleted from server. Set 'pages' to 0.
-                result["pages"] = 0
-            except PdfReadError:
-                # File could be encrypted but not be detected by PyPDF.
-                result["pages"] = 0
-                result["encrypted"] = True
-        return result
 
 
 class MediafileSerializer(ModelSerializer):
@@ -55,31 +18,22 @@ class MediafileSerializer(ModelSerializer):
     """
 
     media_url_prefix = SerializerMethodField()
-    filesize = SerializerMethodField()
+    pdf_information = JSONField(required=False)
     access_groups = IdPrimaryKeyRelatedField(
         many=True, required=False, queryset=get_group_model().objects.all()
     )
-
-    def __init__(self, *args, **kwargs):
-        """
-        This constructor overwrites the FileField field serializer to return the file meta data in a way that the
-        angualarjs upload module likes
-        """
-        super(MediafileSerializer, self).__init__(*args, **kwargs)
-        self.serializer_field_mapping[dbmodels.FileField] = AngularCompatibleFileField
-
-        # Make some fields read-oinly for updates (not creation)
-        if self.instance is not None:
-            self.fields["mediafile"].read_only = True
+    original_filename = CharField(write_only=True, required=False, allow_null=True)
 
     class Meta:
         model = Mediafile
         fields = (
             "id",
             "title",
-            "mediafile",
+            "original_filename",
             "media_url_prefix",
             "filesize",
+            "mimetype",
+            "pdf_information",
             "access_groups",
             "create_timestamp",
             "is_directory",
@@ -89,7 +43,7 @@ class MediafileSerializer(ModelSerializer):
             "inherited_access_groups_id",
         )
 
-        read_only_fields = ("path",)
+        read_only_fields = ("path", "filesize", "mimetype", "pdf_information")
 
     def validate(self, data):
         title = data.get("title")
@@ -121,9 +75,6 @@ class MediafileSerializer(ModelSerializer):
         validated_data.pop("create_timestamp", None)
         validated_data.pop("parent", None)
         return super().update(instance, validated_data)
-
-    def get_filesize(self, mediafile):
-        return mediafile.get_filesize()
 
     def get_media_url_prefix(self, mediafile):
         return settings.MEDIA_URL

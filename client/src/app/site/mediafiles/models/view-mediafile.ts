@@ -8,6 +8,19 @@ import { ViewGroup } from 'app/site/users/models/view-group';
 export const IMAGE_MIMETYPES = ['image/png', 'image/jpeg', 'image/gif'];
 export const FONT_MIMETYPES = ['font/ttf', 'font/woff', 'application/font-woff', 'application/font-sfnt'];
 export const PDF_MIMETYPES = ['application/pdf'];
+export const VIDEO_MIMETYPES = [
+    'video/quicktime',
+    'video/mp4',
+    'video/webm',
+    'video/ogg',
+    'video/x-flv',
+    'application/x-mpegURL',
+    'video/MP2T',
+    'video/3gpp',
+    'video/x-msvideo',
+    'video/x-ms-wmv',
+    'video/x-matroska'
+];
 
 export interface MediafileTitleInformation {
     title: string;
@@ -26,12 +39,8 @@ export class ViewMediafile extends BaseViewModelWithListOfSpeakers<Mediafile>
         return this.title;
     }
 
-    public get type(): string | null {
-        return this.mediafile.mediafile ? this.mediafile.mediafile.type : '';
-    }
-
     public get pages(): number | null {
-        return this.mediafile.mediafile ? this.mediafile.mediafile.pages : null;
+        return this.mediafile.pdf_information.pages || null;
     }
 
     public get timestamp(): string {
@@ -39,7 +48,7 @@ export class ViewMediafile extends BaseViewModelWithListOfSpeakers<Mediafile>
     }
 
     public formatForSearch(): SearchRepresentation {
-        const type = this.is_directory ? 'directory' : this.type;
+        const type = this.is_directory ? 'directory' : this.mimetype;
         const properties = [
             { key: 'Title', value: this.getTitle() },
             { key: 'Path', value: this.path },
@@ -91,7 +100,7 @@ export class ViewMediafile extends BaseViewModelWithListOfSpeakers<Mediafile>
      * @returns true or false
      */
     public isImage(): boolean {
-        return IMAGE_MIMETYPES.includes(this.type);
+        return IMAGE_MIMETYPES.includes(this.mimetype);
     }
 
     /**
@@ -100,7 +109,7 @@ export class ViewMediafile extends BaseViewModelWithListOfSpeakers<Mediafile>
      * @returns true or false
      */
     public isFont(): boolean {
-        return FONT_MIMETYPES.includes(this.type);
+        return FONT_MIMETYPES.includes(this.mimetype);
     }
 
     /**
@@ -109,7 +118,7 @@ export class ViewMediafile extends BaseViewModelWithListOfSpeakers<Mediafile>
      * @returns true or false
      */
     public isPdf(): boolean {
-        return PDF_MIMETYPES.includes(this.type);
+        return PDF_MIMETYPES.includes(this.mimetype);
     }
 
     /**
@@ -118,19 +127,7 @@ export class ViewMediafile extends BaseViewModelWithListOfSpeakers<Mediafile>
      * @returns true or false
      */
     public isVideo(): boolean {
-        return [
-            'video/quicktime',
-            'video/mp4',
-            'video/webm',
-            'video/ogg',
-            'video/x-flv',
-            'application/x-mpegURL',
-            'video/MP2T',
-            'video/3gpp',
-            'video/x-msvideo',
-            'video/x-ms-wmv',
-            'video/x-matroska'
-        ].includes(this.type);
+        return VIDEO_MIMETYPES.includes(this.mimetype);
     }
 
     public getIcon(): string {

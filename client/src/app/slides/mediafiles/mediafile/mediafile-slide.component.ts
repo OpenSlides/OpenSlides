@@ -20,11 +20,11 @@ export class MediafileSlideComponent extends BaseSlideComponent<MediafileSlideDa
     }
 
     public get isImage(): boolean {
-        return IMAGE_MIMETYPES.includes(this.data.data.type);
+        return IMAGE_MIMETYPES.includes(this.data.data.mimetype);
     }
 
     public get isPdf(): boolean {
-        return PDF_MIMETYPES.includes(this.data.data.type);
+        return PDF_MIMETYPES.includes(this.data.data.mimetype);
     }
 
     public constructor() {
