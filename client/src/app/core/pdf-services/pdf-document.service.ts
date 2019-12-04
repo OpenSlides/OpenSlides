@@ -257,7 +257,7 @@ export class PdfDocumentService {
             text = '';
         } else {
             const general_event_name = this.configService.instant<string>('general_event_name');
-            const general_event_description = this.configService.instant<string>('general_event_name');
+            const general_event_description = this.configService.instant<string>('general_event_description');
             const line1 = [
                 this.translate.instant(general_event_name),
                 this.translate.instant(general_event_description)
