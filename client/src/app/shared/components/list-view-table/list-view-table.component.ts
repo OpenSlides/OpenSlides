@@ -10,12 +10,13 @@ import {
     ViewChild,
     ViewEncapsulation
 } from '@angular/core';
+import { NavigationStart, Router } from '@angular/router';
 
 import { columnFactory, createDS, DataSourcePredicate, PblDataSource, PblNgridComponent } from '@pebula/ngrid';
 import { PblColumnDefinition, PblColumnFactory, PblNgridColumnSet } from '@pebula/ngrid/lib/table';
 import { PblNgridDataMatrixRow } from '@pebula/ngrid/target-events';
 import { Observable, Subscription } from 'rxjs';
-import { distinctUntilChanged } from 'rxjs/operators';
+import { distinctUntilChanged, filter } from 'rxjs/operators';
 
 import { OperatorService, Permission } from 'app/core/core-services/operator.service';
 import { StorageService } from 'app/core/core-services/storage.service';
@@ -384,6 +385,7 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
     public constructor(
         private operator: OperatorService,
         vp: ViewportService,
+        router: Router,
         private store: StorageService,
         private cd: ChangeDetectorRef
     ) {
@@ -393,6 +395,12 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
             }
             this.isMobile = mobile;
         });
+
+        this.subs.push(
+            router.events.pipe(filter(event => event instanceof NavigationStart)).subscribe(() => {
+                this.saveScrollOffset();
+            })
+        );
     }
 
     public async ngOnInit(): Promise<void> {
@@ -400,8 +408,9 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
         await this.restoreSearchQuery();
         this.createDataSource();
         this.changeRowHeight();
-        this.scrollToPreviousPosition();
         this.cd.detectChanges();
+        // ngrid exists after the first change detection
+        this.scrollToPreviousPosition();
     }
 
     /**
@@ -600,9 +609,17 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
      * @param key the key of the scroll index
      * @returns the scroll index or 0 if not found
      */
-    public async getScrollIndex(key: string): Promise<number> {
-        const scrollIndex = await this.store.get<number>(`scroll_${key}`);
-        return scrollIndex ? scrollIndex : 0;
+    private async getScrollOffset(key: string): Promise<number> {
+        const scrollOffset = await this.store.get<number>(`scroll_${key}`);
+        return scrollOffset ? scrollOffset : 0;
+    }
+
+    /**
+     * Store the scroll offset
+     */
+    private saveScrollOffset(): void {
+        const offset = this.ngrid.viewport.measureScrollOffset();
+        this.store.set(`scroll_${this.listStorageKey}`, offset);
     }
 
     /**
@@ -626,18 +643,11 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
 
     /**
      * Automatically scrolls to a stored scroll position
-     *
-     * TODO: Only the position will be stored, not the item.
-     *       Changing the filtering and sorting will confuse the order
-     *
-     * TODO: getScrollIndex is not supported by virtual scrolling with the `vScrollAuto` directive.
-     * Furthermore, dynamic assigning the amount of pixels in vScrollFixed
-     * does not work, tying the tables to the same hight.
      */
-    public async scrollToPreviousPosition(): Promise<void> {
+    private async scrollToPreviousPosition(): Promise<void> {
         if (this.ngrid) {
-            const scrollIndex = await this.getScrollIndex(this.listStorageKey);
-            this.ngrid.viewport.scrollToIndex(scrollIndex);
+            const scrollIndex = await this.getScrollOffset(this.listStorageKey);
+            this.ngrid.viewport.scrollToOffset(scrollIndex);
         }
     }
 

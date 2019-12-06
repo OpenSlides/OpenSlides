@@ -29,12 +29,7 @@
 >
     <!-- Title column -->
     <div *pblNgridCellDef="'title'; row as item; rowContext as rowContext" class="cell-slot fill">
-        <a
-            class="detail-link"
-            (click)="saveScrollIndex('agenda', rowContext.identity)"
-            [routerLink]="getDetailUrl(item)"
-            *ngIf="!isMultiSelect"
-        ></a>
+        <a class="detail-link" [routerLink]="getDetailUrl(item)" *ngIf="!isMultiSelect"></a>
         <div [ngStyle]="{ 'margin-left': item.level * 25 + 'px' }" class="innerTable">
             <os-icon-container [noWrap]="true" [icon]="item.closed ? 'check' : null" size="large">
                 <div class="ellipsis-overflow">

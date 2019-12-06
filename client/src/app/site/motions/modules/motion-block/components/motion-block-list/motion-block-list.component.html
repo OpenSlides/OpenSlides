@@ -18,14 +18,14 @@
 >
     <!-- Title column -->
     <div *pblNgridCellDef="'title'; value as title; row as block; rowContext as rowContext" class="cell-slot fill">
-        <a
-            class="detail-link"
-            (click)="saveScrollIndex('motionBlock', rowContext.identity)"
-            [routerLink]="block.id"
-            *ngIf="!isMultiSelect"
-        ></a>
+        <a class="detail-link" [routerLink]="block.id" *ngIf="!isMultiSelect"></a>
         <div class="innerTable">
-            <os-icon-container [noWrap]="true" [icon]="block.internal ? 'lock' : null" size="large" [matTooltip]="Internal">
+            <os-icon-container
+                [noWrap]="true"
+                [icon]="block.internal ? 'lock' : null"
+                size="large"
+                [matTooltip]="Internal"
+            >
                 <div class="ellipsis-overflow">
                     {{ title }}
                 </div>
