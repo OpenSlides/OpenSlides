@@ -108,20 +108,11 @@ def get_config_variables():
     )
 
     yield ConfigVariable(
-        name="motions_disable_sidebox_on_projector",
-        default_value=False,
-        input_type="boolean",
-        label="Hide meta information box on projector",
-        weight=327,
-        group="Motions",
-    )
-
-    yield ConfigVariable(
         name="motions_disable_recommendation_on_projector",
         default_value=False,
         input_type="boolean",
         label="Hide recommendation on projector",
-        weight=328,
+        weight=327,
         group="Motions",
     )
 
@@ -130,6 +121,15 @@ def get_config_variables():
         default_value=False,
         input_type="boolean",
         label="Hide referring motions",
+        weight=328,
+        group="Motions",
+    )
+
+    yield ConfigVariable(
+        name="motions_disable_sidebox_on_projector",
+        default_value=True,
+        input_type="boolean",
+        label="Show meta information box below the title on projector",
         weight=329,
         group="Motions",
     )

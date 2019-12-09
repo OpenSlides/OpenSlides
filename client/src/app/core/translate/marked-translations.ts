@@ -113,9 +113,9 @@ _('The maximum number of characters per line. Relevant when line numbering is en
 _('Reason required for creating new motion');
 _('Hide motion text on projector');
 _('Hide reason on projector');
-_('Hide meta information box on projector');
 _('Hide recommendation on projector');
 _('Hide referring motions');
+_('Show meta information box below the title on projector');
 _('Show the sequential number for a motion');
 _('In motion list, motion detail and PDF.');
 _('Stop submitting new motions by non-staff users');
