@@ -1,23 +1,29 @@
 <h2 mat-dialog-title>
     <span translate>Project selection?</span>
 </h2>
-<div class="element-name">{{ projectorElementBuildDescriptor.getDialogTitle() }}</div>
+<div class="element-name" *ngIf="projectorElementBuildDescriptor">
+    {{ projectorElementBuildDescriptor.getDialogTitle() }}
+</div>
 
 <mat-dialog-content>
-    <div class="projectors"
+    <div
+        class="projectors"
         *ngFor="let projector of projectors"
-        [ngClass]="isProjectedOn(projector) ? 'projected' : ''">
+        [ngClass]="isProjectedOn(projector) ? 'projected' : ''"
+    >
         <mat-checkbox [checked]="isProjectorSelected(projector)" (change)="toggleProjector(projector)">
             {{ projector.name | translate }}
         </mat-checkbox>
         <span *ngIf="isProjectedOn(projector)" class="right">
-            <mat-icon matTooltip="{{ 'Is already projected' | translate }}" matTooltipPosition="above">videocam</mat-icon>
+            <mat-icon matTooltip="{{ 'Is already projected' | translate }}" matTooltipPosition="above"
+                >videocam</mat-icon
+            >
         </span>
     </div>
 
     <mat-divider></mat-divider>
 
-    <div *ngIf="options.length > 0">
+    <div *ngIf="options && options.length">
         <div *ngFor="let option of options">
             <div *ngIf="isDecisionOption(option)" class="spacer-top-10 spacer-left-10">
                 <mat-checkbox

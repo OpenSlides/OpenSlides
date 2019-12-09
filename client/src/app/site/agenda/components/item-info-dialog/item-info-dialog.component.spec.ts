@@ -1,26 +1,35 @@
-import { async, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 
-// import { ItemInfoDialogComponent } from './item-info-dialog.component';
 import { E2EImportsModule } from 'e2e-imports.module';
 
+import { ItemInfoDialogComponent } from './item-info-dialog.component';
+
 describe('ItemInfoDialogComponent', () => {
-    // let component: ItemInfoDialogComponent;
-    // let fixture: ComponentFixture<ItemInfoDialogComponent>;
+    let component: ItemInfoDialogComponent;
+    let fixture: ComponentFixture<ItemInfoDialogComponent>;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            imports: [E2EImportsModule]
+            imports: [E2EImportsModule],
+            declarations: [ItemInfoDialogComponent],
+            providers: [
+                { provide: MatDialogRef, useValue: {} },
+                {
+                    provide: MAT_DIALOG_DATA,
+                    useValue: null
+                }
+            ]
         }).compileComponents();
     }));
 
-    // TODO: You cannot create this component in the standard way. Needs different testing.
     beforeEach(() => {
-        /*fixture = TestBed.createComponent(ItemInfoDialogComponent);
+        fixture = TestBed.createComponent(ItemInfoDialogComponent);
         component = fixture.componentInstance;
-        fixture.detectChanges();*/
+        fixture.detectChanges();
     });
 
-    /*it('should create', () => {
+    it('should create', () => {
         expect(component).toBeTruthy();
-    });*/
+    });
 });

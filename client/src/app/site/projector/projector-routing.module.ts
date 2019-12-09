@@ -13,7 +13,7 @@ const routes: Routes = [
     {
         path: 'detail/:id',
         component: ProjectorDetailComponent,
-        data: { basePerm: 'core.can_see_projector' }
+        data: { basePerm: 'core.can_can_manage_projector' }
     }
 ];
 

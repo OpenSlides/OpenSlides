@@ -73,7 +73,7 @@ export class ChoiceDialogComponent {
      * @returns true if there is a selection chosen
      */
     public get hasSelection(): boolean {
-        if (this.data.choices) {
+        if (this.data && this.data.choices) {
             if (this.selectForm.get('select').value) {
                 return !!this.selectForm.get('select').value || !!this.selectForm.get('select').value.length;
             } else {

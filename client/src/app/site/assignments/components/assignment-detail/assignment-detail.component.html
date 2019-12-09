@@ -168,7 +168,7 @@
                 [input]="assignment.assignment_related_users"
                 [live]="true"
                 [count]="true"
-                [enable]="hasPerms('addOthers')"
+                [enable]="hasPerms('manage')"
                 (sortEvent)="onSortingChange($event)"
             >
                 <!-- implicit item references into the component using ng-template slot -->
@@ -177,6 +177,7 @@
                         <button
                             mat-icon-button
                             matTooltip="{{ 'Remove candidate' | translate }}"
+                            *osPerms="'assignments.can_manage'"
                             (click)="removeUser(item)"
                         >
                             <mat-icon>clear</mat-icon>

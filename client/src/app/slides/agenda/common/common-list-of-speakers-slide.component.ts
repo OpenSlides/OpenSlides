@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 import { CollectionStringMapperService } from 'app/core/core-services/collection-string-mapper.service';
+import { SlideData } from 'app/core/core-services/projector-data.service';
 import { isBaseIsAgendaItemContentObjectRepository } from 'app/core/repositories/base-is-agenda-item-content-object-repository';
 import { ConfigService } from 'app/core/ui-services/config.service';
+import { ProjectorElement } from 'app/shared/models/core/projector';
 import { BaseSlideComponent } from 'app/slides/base-slide-component';
 import { CommonListOfSpeakersSlideData } from './common-list-of-speakers-slide-data';
 
@@ -13,6 +15,21 @@ import { CommonListOfSpeakersSlideData } from './common-list-of-speakers-slide-d
 })
 export class CommonListOfSpeakersSlideComponent extends BaseSlideComponent<CommonListOfSpeakersSlideData>
     implements OnInit {
+    @Input()
+    public set data(value: SlideData<CommonListOfSpeakersSlideData, ProjectorElement>) {
+        // In the case of projected references without ListOfSpeakers Slide
+        if (Object.entries(value.data).length) {
+            value.data.title_information.agenda_item_number = () => value.data.title_information._agenda_item_number;
+            this._data = value;
+        }
+    }
+
+    public get data(): SlideData<CommonListOfSpeakersSlideData, ProjectorElement> {
+        return this._data;
+    }
+
+    private _data: SlideData<CommonListOfSpeakersSlideData, ProjectorElement>;
+
     /**
      * Boolean, whether the amount of speakers should be shown.
      */

@@ -9,10 +9,6 @@ describe('MessageDialogComponent', () => {
     let component: MessageDialogComponent;
     let fixture: ComponentFixture<MessageDialogComponent>;
 
-    // const dialogData: MessageData = {
-    //     text: ''
-    // };
-
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             declarations: [MessageDialogComponent],

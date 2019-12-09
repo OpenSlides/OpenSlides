@@ -38,26 +38,28 @@ export class ProjectionDialogComponent {
         this.projectors = this.DS.getAll<Projector>('core/projector');
         // TODO: Maybe watch. But this may not be necessary for the short living time of this dialog.
 
-        this.selectedProjectors = this.projectorService.getProjectorsWhichAreProjecting(
-            this.projectorElementBuildDescriptor
-        );
-
-        // Add default projector, if the projectable is not projected on it.
-        if (this.projectorElementBuildDescriptor.projectionDefaultName) {
-            const defaultProjector: Projector = this.projectorService.getProjectorForDefault(
-                this.projectorElementBuildDescriptor.projectionDefaultName
+        if (projectorElementBuildDescriptor) {
+            this.selectedProjectors = this.projectorService.getProjectorsWhichAreProjecting(
+                this.projectorElementBuildDescriptor
             );
-            if (defaultProjector && !this.selectedProjectors.includes(defaultProjector)) {
-                this.selectedProjectors.push(defaultProjector);
+
+            // Add default projector, if the projectable is not projected on it.
+            if (this.projectorElementBuildDescriptor.projectionDefaultName) {
+                const defaultProjector: Projector = this.projectorService.getProjectorForDefault(
+                    this.projectorElementBuildDescriptor.projectionDefaultName
+                );
+                if (defaultProjector && !this.selectedProjectors.includes(defaultProjector)) {
+                    this.selectedProjectors.push(defaultProjector);
+                }
             }
+
+            // Set option defaults
+            this.projectorElementBuildDescriptor.slideOptions.forEach(option => {
+                this.optionValues[option.key] = option.default;
+            });
+
+            this.options = this.projectorElementBuildDescriptor.slideOptions;
         }
-
-        // Set option defaults
-        this.projectorElementBuildDescriptor.slideOptions.forEach(option => {
-            this.optionValues[option.key] = option.default;
-        });
-
-        this.options = this.projectorElementBuildDescriptor.slideOptions;
     }
 
     public toggleProjector(projector: Projector): void {

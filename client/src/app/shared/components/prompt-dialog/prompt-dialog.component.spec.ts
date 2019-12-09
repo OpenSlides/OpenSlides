@@ -1,26 +1,34 @@
-import { async, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 
-// import { PromptDialogComponent } from './prompt-dialog.component';
 import { E2EImportsModule } from 'e2e-imports.module';
 
+import { PromptDialogComponent } from './prompt-dialog.component';
+
 describe('PromptDialogComponent', () => {
-    // let component: PromptDialogComponent;
-    // let fixture: ComponentFixture<PromptDialogComponent>;
+    let component: PromptDialogComponent;
+    let fixture: ComponentFixture<PromptDialogComponent>;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            imports: [E2EImportsModule]
+            imports: [E2EImportsModule],
+            providers: [
+                { provide: MatDialogRef, useValue: {} },
+                {
+                    provide: MAT_DIALOG_DATA,
+                    useValue: null
+                }
+            ]
         }).compileComponents();
     }));
 
-    // TODO: You cannot create this component in the standard way. Needs different testing.
     beforeEach(() => {
-        /*fixture = TestBed.createComponent(PromptDialogComponent);
+        fixture = TestBed.createComponent(PromptDialogComponent);
         component = fixture.componentInstance;
-        fixture.detectChanges();*/
+        fixture.detectChanges();
     });
 
-    /*it('should create', () => {
+    it('should create', () => {
         expect(component).toBeTruthy();
-    });*/
+    });
 });
