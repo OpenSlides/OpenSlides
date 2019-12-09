@@ -178,7 +178,7 @@ msgid "Amendment"
 msgstr "Pozměňovací návrh"
 
 msgid "Amendment list (PDF)"
-msgstr ""
+msgstr "Seznam pozměňovacích návrhů (PDF)"
 
 msgid "Amendment text"
 msgstr "Text pozměňovacího návrhu"
@@ -193,13 +193,16 @@ msgid "Amendments can change multiple paragraphs"
 msgstr "Pozměňovací návrhy mohou změnit více odstavců"
 
 msgid "Amendments to"
-msgstr ""
+msgstr "Pozměňovací návrhy k"
 
 msgid "An email with a password reset link was send!"
 msgstr "Byl poslán elektronický dopis s odkazem na obnovení hesla!"
 
 msgid "An unknown error occurred."
 msgstr "Vyskytla se neznámá chyba."
+
+msgid "Apply"
+msgstr ""
 
 msgid "Arabic"
 msgstr "Arabský"
@@ -263,6 +266,10 @@ msgstr "Opravdu má být smazán tento účastník?"
 msgid "Are you sure you want to delete this projector?"
 msgstr "Opravdu má být smazán tento promítací stroj?"
 
+msgid ""
+"Are you sure you want to delete this speaker from this list of speakers?"
+msgstr ""
+
 msgid "Are you sure you want to delete this statute paragraph?"
 msgstr "Opravdu má být smazán tento odstavec předpisu?"
 
@@ -303,6 +310,16 @@ msgstr "Opravdu má být odstraněn tento návrh z návrhového bloku?"
 msgid "Are you sure you want to renumber all motions of this category?"
 msgstr "Opravdu mají být přečíslovány všechny návrhy v tomto oboru činnosti?"
 
+msgid ""
+"Are you sure you want to reset all options to factory defaults? All changes "
+"of this settings group will be lost!"
+msgstr ""
+
+msgid ""
+"Are you sure you want to reset all options to factory defaults? Changes of "
+"all settings group will be lost!"
+msgstr ""
+
 msgid "Are you sure you want to reset all passwords to the default ones?"
 msgstr "Opravdu mají být obnovena všechna hesla na výchozí?"
 
@@ -325,13 +342,6 @@ msgstr "Zeptat se, výchozí je ne"
 msgid "Ask, default yes"
 msgstr "Zeptat se, výchozí je ano"
 
-msgid ""
-"At least given name or surname have to be filled in. All other fields are "
-"optional and may be empty."
-msgstr ""
-"Musí být vyplněny alespoň křestní jméno nebo příjmení. Všechna zbývající "
-"pole jsou nepovinná a smějí být prázdná."
-
 msgid "Attachments"
 msgstr "Přílohy"
 
@@ -343,9 +353,6 @@ msgstr "Zpět"
 
 msgid "Back to login"
 msgstr "Zpět na přihlášení"
-
-msgid "Background color"
-msgstr "Barva pozadí"
 
 msgid "Ballot"
 msgstr "Hlasování"
@@ -531,7 +538,7 @@ msgid "Changed version in line"
 msgstr "Změněná verze v řádku"
 
 msgid "Changes"
-msgstr ""
+msgstr "Změny"
 
 msgid "Check for updates"
 msgstr "Zkontrolovat aktualizace"
@@ -544,12 +551,6 @@ msgstr "Zadejte 0 pro vypnutí podpůrného systému."
 
 msgid "Chyron"
 msgstr "Dolní třetina"
-
-msgid "Chyron background color"
-msgstr "Barva pozadí v dolní třetině"
-
-msgid "Chyron font color"
-msgstr "Barva písma v dolní třetině"
 
 msgid "Clear all"
 msgstr "Vyprázdnit vše"
@@ -618,7 +619,7 @@ msgid "Countdown"
 msgstr "Odpočítávání"
 
 msgid "Countdown and traffic light"
-msgstr ""
+msgstr "Odpočítávání a dopravní světlo"
 
 msgid "Countdown description"
 msgstr "Popis odpočítávání"
@@ -655,6 +656,9 @@ msgstr "Nynější datum"
 
 msgid "Current list of speakers"
 msgstr "Nynější seznam řečníků"
+
+msgid "Custom aspect ratio"
+msgstr ""
 
 msgid "Custom number of ballot papers"
 msgstr "Uživatelsky stanovený počet hlasovacích lístků"
@@ -694,6 +698,9 @@ msgstr "Výchozí poznámka na hlasovacím lístku"
 msgid "Default encoding for all csv exports"
 msgstr "Výchozí kódování pro všechna vyvedení do CSV"
 
+msgid "Default group"
+msgstr ""
+
 msgid "Default line numbering"
 msgstr "Výchozí číslování řádků"
 
@@ -727,6 +734,9 @@ msgstr "Smazat předlohu pro konečný tisk"
 
 msgid "Delete message"
 msgstr "Smazat oznámení"
+
+msgid "Delete projector"
+msgstr ""
 
 msgid "Delete recommendation"
 msgstr "Smazat doporučení"
@@ -769,7 +779,7 @@ msgid "Disabled (no percents)"
 msgstr "Vypnuto (žádná procenta)"
 
 msgid "Display type"
-msgstr ""
+msgstr "Typ zobrazení"
 
 msgid "Divergent:"
 msgstr "Rozdílný"
@@ -783,11 +793,14 @@ msgstr "Nerozhodovat"
 msgid "Do not forget to save your changes!"
 msgstr "Nezapoměňte uložit své změny!"
 
+msgid "Do not set identifier"
+msgstr "Nenastavovat identifikátor"
+
 msgid "Do you really want to exit this page?"
 msgstr "Opravdu chcete opustit tuto stránku?"
 
 msgid "Do you really want to go ahead?"
-msgstr ""
+msgstr "Opravdu chcete pokračovat?"
 
 msgid "Do you really want to save your changes?"
 msgstr "Opravdu chcete uložit své změny?"
@@ -818,6 +831,9 @@ msgstr "Upravit podrobnosti"
 
 msgid "Edit details for"
 msgstr "Upravit podrobnosti pro"
+
+msgid "Edit projector"
+msgstr ""
 
 msgid "Edit statute paragraph"
 msgstr "Upravit odstavec předpisu"
@@ -1015,9 +1031,6 @@ msgstr ""
 "hlasů všech uchazečů 100 %. Jinak je pro každého uchazeče součet všech hlasů"
 " 100 %"
 
-msgid "Foreground color"
-msgstr "Barva popředí"
-
 msgid "Forgot Password?"
 msgstr "Zapomněl jste heslo?"
 
@@ -1031,7 +1044,7 @@ msgid "Front page title"
 msgstr "Název první strany"
 
 msgid "Fullscreen"
-msgstr ""
+msgstr "Celá obrazovka"
 
 msgid "Gender"
 msgstr "Pohlaví"
@@ -1066,6 +1079,9 @@ msgstr "Skupiny s oprávněním pro zápis"
 msgid "Guest"
 msgstr "Host"
 
+msgid "Has amendments"
+msgstr "Má pozměňovací návrhy"
+
 msgid "Has no speakers"
 msgstr "Nemá žádné řečníky"
 
@@ -1074,15 +1090,6 @@ msgstr "Má poznámky"
 
 msgid "Has speakers"
 msgstr "Má řečníky"
-
-msgid "Header background color"
-msgstr "Barva pozadí záhlaví"
-
-msgid "Header font color"
-msgstr "Barva písma záhlaví"
-
-msgid "Headline color"
-msgstr "Barva titulku"
 
 msgid "Help text for access data and welcome PDF"
 msgstr "Nápomocný text k přístupovým údajům a pozdravné PDF"
@@ -1093,14 +1100,11 @@ msgstr "Skrytý bod"
 msgid "Hide internal items when projecting subitems"
 msgstr "Skrýt vnitřní body při promítání podbodů"
 
-msgid "Hide meta information box on projector"
-msgstr "Skrýt okno s popisnými informacemi na promítacím přístroji"
-
 msgid "Hide more text"
 msgstr "Skrýt více textu"
 
 msgid "Hide motion text on projector"
-msgstr ""
+msgstr "Skrýt text návrhu na promítacím přístroji"
 
 msgid "Hide password"
 msgstr "Skrýt heslo"
@@ -1166,9 +1170,6 @@ msgstr "Počáteční heslo"
 msgid "Initiate update check for all clients"
 msgstr "Zahájit kontrolu aktualizací pro všechny klienty"
 
-msgid "Inline"
-msgstr "Uvnitř"
-
 msgid "Input format: DD.MM.YYYY HH:MM"
 msgstr "Zadávací formát: DD.MM.RRRR HH:MM"
 
@@ -1208,6 +1209,9 @@ msgstr "Neplatné číslo řádku"
 msgid "Invalid votes"
 msgstr "Neplatné hlasy"
 
+msgid "Is SAML user"
+msgstr ""
+
 msgid "Is a committee"
 msgstr "Je výbor"
 
@@ -1217,11 +1221,17 @@ msgstr "Je činná"
 msgid "Is already projected"
 msgstr "Již je promítáno"
 
+msgid "Is amendment"
+msgstr "Je pozměňovací návrh"
+
 msgid "Is committee"
 msgstr "Je výbor"
 
 msgid "Is favorite"
 msgstr "Je oblíbené"
+
+msgid "Is no amendment and has no amendments"
+msgstr ""
 
 msgid "Is not a committee"
 msgstr "Není výbor"
@@ -1306,6 +1316,9 @@ msgstr "Přihlásit se jako host"
 
 msgid "Logout"
 msgstr "Odhlásit se"
+
+msgid "Main motion and line number"
+msgstr ""
 
 msgid "Mark as elected"
 msgstr "Označit jako zvoleného"
@@ -1539,7 +1552,7 @@ msgid "No tags"
 msgstr "Žádné značky"
 
 msgid "No users with email {0} found."
-msgstr ""
+msgstr "Nenalezeni žádní uživatelé s adresou elektronické poštyl {0}."
 
 msgid "No."
 msgstr "Č."
@@ -1589,7 +1602,7 @@ msgid "Number of persons to be elected"
 msgstr "Počet osob ke zvolení"
 
 msgid "Number of the next speakers to be shown on the projector"
-msgstr ""
+msgstr "Počet dalších na promítacím přístroji zobrazených řečníků"
 
 msgid "Number set"
 msgstr "Číslo stanoveno"
@@ -1618,11 +1631,16 @@ msgstr "Staré heslo"
 msgid "One email was send sucessfully."
 msgstr "Byl úspěšně odeslán jeden elektronický dopis."
 
+msgid ""
+"One of given name, surname and username has to be filled in. All other "
+"fields are optional and may be empty."
+msgstr ""
+
 msgid "One vote per candidate"
 msgstr "Jeden hlas pro uchazeče"
 
 msgid "Only countdown"
-msgstr ""
+msgstr "Jen odpočítávání"
 
 msgid "Only for internal notes."
 msgstr "Jen pro vnitřní poznámky."
@@ -1634,7 +1652,7 @@ msgid "Only present participants can be added to the list of speakers"
 msgstr "Jen přítomní účastníci mohou být přidáni do seznamu řečníků"
 
 msgid "Only traffic light"
-msgstr ""
+msgstr "Jen dopravní světlo"
 
 msgid "Open"
 msgstr "Otevřít"
@@ -1649,7 +1667,7 @@ msgid "Open projection dialog"
 msgstr "Otevřít dialog pro promítání"
 
 msgid "Open requests to speak"
-msgstr ""
+msgstr "Otevřít žádosti o řečnění"
 
 msgid "OpenSlides Theme"
 msgstr "Vzhled OpenSlides"
@@ -1662,6 +1680,9 @@ msgstr "OpenSlides má dočasně obnoveno následující časové razítko times
 
 msgid "Origin"
 msgstr "Původ"
+
+msgid "Original"
+msgstr ""
 
 msgid "Original version"
 msgstr "Původní verze"
@@ -1879,6 +1900,9 @@ msgstr "Řada"
 msgid "Quorum"
 msgstr "Usnášeníschopný počet"
 
+msgid "Re-add last speaker"
+msgstr ""
+
 msgid "Reason"
 msgstr "Zdůvodnění"
 
@@ -1896,9 +1920,6 @@ msgstr "Doporučení nastaveno na {arg1}"
 
 msgid "Refer to committee"
 msgstr "Předat do výboru"
-
-msgid "Reference projector for current list of speakers:"
-msgstr "Srovnávací promítací přístroj pro nynější seznam řečníků:"
 
 msgid "Referral to committee"
 msgstr "Postoupení do výboru"
@@ -1986,6 +2007,9 @@ msgstr "Vynulovat doporučení"
 msgid "Reset state"
 msgstr "Vynulovat stav"
 
+msgid "Reset to factory defaults"
+msgstr ""
+
 msgid "Resolution and size"
 msgstr "Rozlišení a velikost"
 
@@ -2000,6 +2024,9 @@ msgstr "Římský"
 
 msgid "Save"
 msgstr "Uložit"
+
+msgid "Save all changes"
+msgstr ""
 
 msgid "Scan this QR code to connect to WLAN."
 msgstr "Snímat tento QRCode pro spojení s WLAN."
@@ -2073,6 +2100,9 @@ msgstr "Nastavit jako neoblíbené"
 msgid "Set as parent"
 msgstr "Nastavit jako rodiče"
 
+msgid "Set as reference projector"
+msgstr ""
+
 msgid "Set category"
 msgstr "Stanovit obor činnosti"
 
@@ -2084,9 +2114,6 @@ msgstr "Nastavit oblíbené"
 
 msgid "Set hidden"
 msgstr "Nastavit na skryto"
-
-msgid "Set identifier"
-msgstr "Nastavit identifikátor"
 
 msgid "Set internal"
 msgstr "Nastavit vnitřní"
@@ -2108,6 +2135,9 @@ msgstr "Stanovit doporučení"
 
 msgid "Set status"
 msgstr "Nastavit stav"
+
+msgid "Sets this projector as the reference for the current list of speakers"
+msgstr ""
 
 msgid "Settings"
 msgstr "Nastavení"
@@ -2151,6 +2181,9 @@ msgstr "Ukázat záhlaví a zápatí"
 msgid "Show logo"
 msgstr "Ukázat emblém"
 
+msgid "Show meta information box below the title on projector"
+msgstr ""
+
 msgid "Show orange countdown in the last x seconds of speaking time"
 msgstr ""
 "Ukázat odpočítávání v posledních x sekundách času mluvení v oranžové barvě"
@@ -2172,6 +2205,9 @@ msgstr "Ukázat rozšiřující pole stavu"
 
 msgid "Show submitters and recommendation in table of contents"
 msgstr "Ukázat navrhovatele a doporučení v obsahu"
+
+msgid "Show subtitles in the agenda"
+msgstr ""
 
 msgid "Show the sequential number for a motion"
 msgstr "Ukázat pořadové číslo pro návrh"
@@ -2198,13 +2234,16 @@ msgid "Sort agenda"
 msgstr "Řadit pořad jednání"
 
 msgid "Sort by identifier"
-msgstr ""
+msgstr "Řadit dle identifikátoru"
 
 msgid "Sort categories"
 msgstr "Řadit obory činnosti"
 
 msgid "Sort comments"
 msgstr "Řadit poznámky"
+
+msgid "Sort list of speakers"
+msgstr ""
 
 msgid "Sort motions"
 msgstr "Řadit návrhy"
@@ -2409,6 +2448,9 @@ msgstr ""
 msgid "There are no items left to chose from"
 msgstr "Nezbyly žádné položky, ze kterých vybrat"
 
+msgid "There is an error with this amendment. Please edit it manually."
+msgstr ""
+
 msgid "This change collides with another one."
 msgstr "Tato změna se střetává s jinou."
 
@@ -2519,6 +2561,9 @@ msgstr "Celkem odevzdáno hlasů"
 
 msgid "Touch the book icon to enter text"
 msgstr "Klepněte na ikonu knihy a zadejte text"
+
+msgid "Translation"
+msgstr ""
 
 msgid "Two-thirds majority"
 msgstr "Dvoutřetinová většina"
@@ -2705,6 +2750,9 @@ msgid "You do not have the required permission to see that page!"
 msgstr ""
 "Nemáte požadované oprávnění k tomu, abyste se mohl podívat na tu stránku."
 
+msgid "You have to fill this field."
+msgstr ""
+
 msgid "You made changes."
 msgstr "Provedl jste změny."
 
@@ -2713,6 +2761,12 @@ msgstr "Tímto přepíšete osobně nastavené heslo!"
 
 msgid "Your password was resetted successfully!"
 msgstr "Vaše heslo byla úspěšně obnoveno!"
+
+msgid "Zoom in"
+msgstr ""
+
+msgid "Zoom out"
+msgstr ""
 
 msgid "[Begin speech] starts the countdown, [End speech] stops the countdown."
 msgstr "[Začít řeč] spustí odpočítávání, [Ukončit řeč] zastaví odpočítávání."
@@ -2758,6 +2812,9 @@ msgstr "Spojení"
 
 msgid "contribution"
 msgstr "Hlášení slov"
+
+msgid "custom"
+msgstr ""
 
 msgid "disabled"
 msgstr "Vypnuto"
