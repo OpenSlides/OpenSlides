@@ -29,12 +29,7 @@
 >
     <!-- Name column -->
     <div *pblNgridCellDef="'short_name'; value as name; row as user; rowContext as rowContext" class="cell-slot fill">
-        <a
-            class="detail-link"
-            (click)="saveScrollIndex('user', rowContext.identity)"
-            [routerLink]="user.id"
-            *ngIf="!isMultiSelect"
-        ></a>
+        <a class="detail-link" [routerLink]="user.id" *ngIf="!isMultiSelect"></a>
         <div class="nameCell">
             <span>{{ name }}</span>
         </div>
@@ -89,7 +84,9 @@
                 comment
             </mat-icon>
 
-            <os-icon-container *ngIf="user.isSamlUser" icon="device_hub"><span translate>Is SAML user</span></os-icon-container>
+            <os-icon-container *ngIf="user.isSamlUser" icon="device_hub"
+                ><span translate>Is SAML user</span></os-icon-container
+            >
         </div>
     </div>
 

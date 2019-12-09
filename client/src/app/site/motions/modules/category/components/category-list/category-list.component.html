@@ -25,11 +25,7 @@
 >
     <!-- Title -->
     <div *pblNgridCellDef="'title'; row as category; rowContext as rowContext" class="cell-slot fill">
-        <a
-            class="detail-link"
-            [routerLink]="category.id"
-            (click)="saveScrollIndex('category', rowContext.identity)"
-        ></a>
+        <a class="detail-link" [routerLink]="category.id"></a>
         <div [style.margin-left]="getMargin(category)">{{ category.prefixedName }}</div>
     </div>
 

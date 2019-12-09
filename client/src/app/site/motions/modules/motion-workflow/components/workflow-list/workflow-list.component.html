@@ -15,12 +15,7 @@
 >
     <!-- Name column -->
     <div *pblNgridCellDef="'name'; value as name; row as workflow; rowContext as rowContext" class="cell-slot fill">
-        <a
-            class="detail-link"
-            (click)="saveScrollIndex('workflow', rowContext.identity)"
-            [routerLink]="workflow.id"
-            *ngIf="!isMultiSelect"
-        ></a>
+        <a class="detail-link" [routerLink]="workflow.id" *ngIf="!isMultiSelect"></a>
         <div>{{ name | translate }}</div>
     </div>
 

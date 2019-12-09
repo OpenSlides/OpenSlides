@@ -106,14 +106,4 @@ export abstract class BaseListViewComponent<V extends BaseViewModel> extends Bas
     public get isMultiSelect(): boolean {
         return this._multiSelectMode;
     }
-
-    /**
-     * Saves the scroll index in the storage
-     *
-     * @param key
-     * @param index
-     */
-    public saveScrollIndex(key: string, index: number): void {
-        this.storage.set(`scroll_${key}`, index);
-    }
 }

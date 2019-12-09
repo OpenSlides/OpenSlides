@@ -63,12 +63,7 @@
 
         <!-- Title -->
         <div *pblNgridCellDef="'title'; row as motion; rowContext as rowContext" class="cell-slot fill">
-            <a
-                class="detail-link"
-                (click)="saveScrollIndex('motion', rowContext.identity)"
-                [routerLink]="motion.id"
-                *ngIf="!isMultiSelect"
-            ></a>
+            <a class="detail-link" [routerLink]="motion.id" *ngIf="!isMultiSelect"></a>
             <div class="column-title innerTable">
                 <div class="title-line ellipsis-overflow">
                     <!-- Is Favorite -->
