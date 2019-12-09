@@ -38,8 +38,7 @@ export class ItemInfoDialogComponent {
         public formBuilder: FormBuilder,
         public durationService: DurationService,
         public dialogRef: MatDialogRef<ItemInfoDialogComponent>,
-        @Inject(MAT_DIALOG_DATA)
-        public item: ViewItem
+        @Inject(MAT_DIALOG_DATA) public item: ViewItem
     ) {
         this.agendaInfoForm = this.formBuilder.group({
             type: [''],
@@ -49,10 +48,12 @@ export class ItemInfoDialogComponent {
         });
 
         // load current values
-        this.agendaInfoForm.get('type').setValue(item.type);
-        this.agendaInfoForm.get('durationText').setValue(this.durationService.durationToString(item.duration, 'h'));
-        this.agendaInfoForm.get('item_number').setValue(item.item_number);
-        this.agendaInfoForm.get('comment').setValue(item.comment);
+        if (item) {
+            this.agendaInfoForm.get('type').setValue(item.type);
+            this.agendaInfoForm.get('durationText').setValue(this.durationService.durationToString(item.duration, 'h'));
+            this.agendaInfoForm.get('item_number').setValue(item.item_number);
+            this.agendaInfoForm.get('comment').setValue(item.comment);
+        }
     }
 
     /**

@@ -63,7 +63,8 @@ export abstract class BaseIsAgendaItemAndListOfSpeakersContentObjectRepository<
     }
 
     public getAgendaSlideTitle(titleInformation: T): string {
-        const numberPrefix = titleInformation.agenda_item_number() ? `${titleInformation.agenda_item_number()} · ` : '';
+        const itemNumber = titleInformation.agenda_item_number();
+        const numberPrefix = itemNumber ? `${itemNumber} · ` : '';
         return numberPrefix + this.getTitle(titleInformation);
     }
 

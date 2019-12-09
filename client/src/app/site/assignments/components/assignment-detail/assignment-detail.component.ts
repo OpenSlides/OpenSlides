@@ -244,7 +244,7 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
                 } else {
                     return (
                         this.assignment.isSearchingForCandidates &&
-                        this.operator.hasPerms('assignments.can_nominate_others') &&
+                        this.operator.hasPerms('assignments.can_nominate_other') &&
                         !this.assignment.isFinished
                     );
                 }

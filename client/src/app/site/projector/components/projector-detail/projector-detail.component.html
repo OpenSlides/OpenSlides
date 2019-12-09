@@ -1,13 +1,46 @@
-<os-head-bar [nav]="false" [hasMainButton]="true" mainButtonIcon="edit" [goBack]="true" (mainEvent)="editProjector()">
+<os-head-bar
+    [nav]="false"
+    [hasMainButton]="canManage()"
+    mainButtonIcon="edit"
+    [goBack]="true"
+    (mainEvent)="editProjector()"
+>
     <!-- Title -->
     <div class="title-slot">
         <h2>{{ projector?.name | translate }}</h2>
     </div>
+
+    <!-- Menu -->
+    <div class="menu-slot">
+        <button
+            *osPerms="'core.can_manage_projector'"
+            type="button"
+            mat-icon-button
+            [matMenuTriggerFor]="projectorExtraMenu"
+        >
+            <mat-icon>more_vert</mat-icon>
+        </button>
+    </div>
+
+    <mat-menu #projectorExtraMenu="matMenu">
+        <!-- Button for set reference projector -->
+        <button mat-menu-item (click)="onSetAsClosRef()" *ngIf="projector" [disabled]="projector.isReferenceProjector">
+            <mat-icon *ngIf="projector.isReferenceProjector">star</mat-icon>
+            <mat-icon *ngIf="!projector.isReferenceProjector">star_border</mat-icon>
+            <span>{{ 'Set as reference projector' | translate }}</span>
+        </button>
+
+        <!-- delete -->
+        <button mat-menu-item class="red-warning-text" (click)="onDeleteProjectorButton()">
+            <mat-icon>delete</mat-icon>
+            <span translate>Delete</span>
+        </button>
+    </mat-menu>
 </os-head-bar>
 
 <os-grid-layout *ngIf="projector">
     <os-tile [preferredSize]="projectorTileSizeLeft">
-        <div *ngIf="projector" class="column-left">
+        <div *ngIf="projector" class="projector-detail-wrapper column-left">
             <a [routerLink]="['/projector', projector.id]">
                 <div id="projector">
                     <os-projector [projector]="projector"></os-projector>
@@ -16,18 +49,30 @@
             <!-- Controls under the projector preview -->
             <div *osPerms="'core.can_manage_projector'" class="control-group projector-controls">
                 <!-- scale down -->
-                <button type="button" mat-icon-button (click)="scale(scrollScaleDirection.Down)"
-                    matTooltip="{{ 'Zoom out' | translate }}">
+                <button
+                    type="button"
+                    mat-icon-button
+                    (click)="scale(scrollScaleDirection.Down)"
+                    matTooltip="{{ 'Zoom out' | translate }}"
+                >
                     <mat-icon>zoom_out</mat-icon>
                 </button>
                 <!-- scale up -->
-                <button type="button" mat-icon-button (click)="scale(scrollScaleDirection.Up)"
-                    matTooltip="{{ 'Zoom in' | translate }}">
+                <button
+                    type="button"
+                    mat-icon-button
+                    (click)="scale(scrollScaleDirection.Up)"
+                    matTooltip="{{ 'Zoom in' | translate }}"
+                >
                     <mat-icon>zoom_in</mat-icon>
                 </button>
                 <!-- reset button -->
-                <button type="button" mat-icon-button (click)="scale(scrollScaleDirection.Reset)"
-                    matTooltip="{{ 'Reset' | translate }}">
+                <button
+                    type="button"
+                    mat-icon-button
+                    (click)="scale(scrollScaleDirection.Reset)"
+                    matTooltip="{{ 'Reset' | translate }}"
+                >
                     <mat-icon>refresh</mat-icon>
                 </button>
                 <!-- scaling indicator -->
@@ -73,8 +118,12 @@
                     <mat-icon>arrow_downward</mat-icon>
                 </button>
                 <!-- reset button -->
-                <button type="button" mat-icon-button (click)="scroll(scrollScaleDirection.Reset)"
-                    matTooltip="{{ 'Reset' | translate }}">
+                <button
+                    type="button"
+                    mat-icon-button
+                    (click)="scroll(scrollScaleDirection.Reset)"
+                    matTooltip="{{ 'Reset' | translate }}"
+                >
                     <mat-icon>refresh</mat-icon>
                 </button>
                 <!-- scroll indicator -->
@@ -113,18 +162,20 @@
                     <mat-list>
                         <mat-list-item
                             *ngFor="let element of projector.non_stable_elements"
-                            class="currentElement backgroundColorAccent"
+                            class="current-element backgroundColorAccent"
                         >
-                            <button type="button" mat-icon-button (click)="unprojectCurrent(element)">
-                                <mat-icon>videocam</mat-icon>
-                            </button>
-                            {{ getSlideTitle(element) }}
-                            <div class="button-right">
-                                <div>
-                                    <button type="button" mat-icon-button (click)="unprojectCurrent(element)">
-                                        <mat-icon>close</mat-icon>
-                                    </button>
-                                </div>
+                            <div class="emelent-grid">
+                                <button type="button" mat-icon-button (click)="unprojectCurrent(element)">
+                                    <mat-icon>videocam</mat-icon>
+                                </button>
+
+                                <span class="ellipsis-overflow current-element-text">
+                                    {{ getSlideTitle(element) }}
+                                </span>
+
+                                <button type="button" mat-icon-button (click)="unprojectCurrent(element)">
+                                    <mat-icon>close</mat-icon>
+                                </button>
                             </div>
                         </mat-list-item>
                     </mat-list>
@@ -176,16 +227,6 @@
                                 <mat-icon>close</mat-icon>
                             </button>
                         </mat-action-row>
-                    </mat-expansion-panel>
-
-                    <!-- Previous Slides -->
-                    <mat-expansion-panel *ngIf="projector.elements_history.length" class="previous-slides">
-                        <mat-expansion-panel-header>
-                            <span translate>Previous slides</span>
-                        </mat-expansion-panel-header>
-                        <p *ngFor="let elements of projector.elements_history; let i = index">
-                            {{ i + 1 }}. &nbsp; {{ getSlideTitle(elements[0]) }}
-                        </p>
                     </mat-expansion-panel>
 
                     <!-- countdowns -->
@@ -287,14 +328,16 @@
                         </mat-list>
                     </mat-expansion-panel>
 
-                    <!-- File display controls -->
-                    <!--<mat-expansion-panel>
+                    <mat-expansion-panel *ngIf="projector.elements_history.length">
                         <mat-expansion-panel-header>
-                                <span translate>Media controls</span>
+                            <span translate>Previous slides</span>
                         </mat-expansion-panel-header>
-                        <os-presentation-control [projector]="projector">
-                        </os-presentation-control>
-                    </mat-expansion-panel>-->
+                        <ol>
+                            <li *ngFor="let elements of projector.elements_history">
+                                {{ getSlideTitle(elements[0]) }}
+                            </li>
+                        </ol>
+                    </mat-expansion-panel>
 
                     <os-presentation-control [projector]="projector"> </os-presentation-control>
                 </mat-accordion>

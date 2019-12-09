@@ -8,6 +8,7 @@ import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { timer } from 'rxjs';
 
+import { OperatorService } from 'app/core/core-services/operator.service';
 import { ProjectorService } from 'app/core/core-services/projector.service';
 import { CountdownRepositoryService } from 'app/core/repositories/projector/countdown-repository.service';
 import { ProjectorMessageRepositoryService } from 'app/core/repositories/projector/projector-message-repository.service';
@@ -16,6 +17,7 @@ import {
     ScrollScaleDirection
 } from 'app/core/repositories/projector/projector-repository.service';
 import { DurationService } from 'app/core/ui-services/duration.service';
+import { PromptService } from 'app/core/ui-services/prompt.service';
 import { SizeObject } from 'app/shared/components/tile/tile.component';
 import { Countdown } from 'app/shared/models/core/countdown';
 import { ProjectorElement } from 'app/shared/models/core/projector';
@@ -92,7 +94,9 @@ export class ProjectorDetailComponent extends BaseViewComponent implements OnIni
         private currentListOfSpeakersSlideService: CurrentListOfSpeakersSlideService,
         private currentSpeakerChyronService: CurrentSpeakerChyronSlideService,
         private durationService: DurationService,
-        private cd: ChangeDetectorRef
+        private cd: ChangeDetectorRef,
+        private promptService: PromptService,
+        private opertator: OperatorService
     ) {
         super(titleService, translate, matSnackBar);
 
@@ -133,6 +137,32 @@ export class ProjectorDetailComponent extends BaseViewComponent implements OnIni
                 this.cd.detectChanges();
             }
         });
+    }
+
+    /**
+     * Handler to set the current reference projector
+     * TODO: same with projector list entry
+     */
+    public onSetAsClosRef(): void {
+        this.repo.setReferenceProjector(this.projector.id);
+    }
+
+    /**
+     * Handler for the delete Projector button
+     * TODO: same with projector list entry
+     */
+    public async onDeleteProjectorButton(): Promise<void> {
+        const title = this.translate.instant('Are you sure you want to delete this projector?');
+        if (await this.promptService.open(title, this.projector.name)) {
+            this.repo.delete(this.projector).catch(this.raiseError);
+        }
+    }
+
+    /**
+     * @returns true if the operator can manage
+     */
+    public canManage(): boolean {
+        return this.opertator.hasPerms('core.can_manage_projector');
     }
 
     /**

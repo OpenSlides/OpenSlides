@@ -123,7 +123,7 @@ async def get_list_of_speakers_slide_data(
         list_of_speakers["content_object"]["id"]
     ].get("agenda_item_id")
     if agenda_item_id:
-        title_information["agenda_item_number"] = all_data["agenda/item"][
+        title_information["_agenda_item_number"] = all_data["agenda/item"][
             agenda_item_id
         ]["item_number"]
 
@@ -169,6 +169,7 @@ async def get_list_of_speakers_slide_data(
         "finished": speakers_finished,
         "content_object_collection": list_of_speakers["content_object"]["collection"],
         "title_information": title_information,
+        "closed": list_of_speakers["closed"],
     }
 
 

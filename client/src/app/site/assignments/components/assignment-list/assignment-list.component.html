@@ -34,11 +34,11 @@
     <!-- Title -->
     <div *pblNgridCellDef="'title'; row as assignment; rowContext as rowContext" class="cell-slot fill">
         <a class="detail-link" [routerLink]="assignment.id" *ngIf="!isMultiSelect"></a>
-        <div>
+        <div class="innerTable">
             <div class="title-line ellipsis-overflow">
                 {{ assignment.getListTitle() }}
             </div>
-            <mat-chip-list *ngIf="vp.isMobile">
+            <mat-chip-list class="ellipsis-overflow" *ngIf="vp.isMobile">
                 <mat-chip color="primary" selected>
                     {{ assignment.phaseString | translate }}
                 </mat-chip>

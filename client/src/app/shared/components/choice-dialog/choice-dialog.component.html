@@ -1,7 +1,7 @@
 <!-- Title -->
-<h2 mat-dialog-title>{{ data.title | translate }}</h2>
+<h2 mat-dialog-title *ngIf="data">{{ data.title | translate }}</h2>
 
-<form [formGroup]="selectForm">
+<form [formGroup]="selectForm" *ngIf="data">
     <!-- Content -->
     <div mat-dialog-content *ngIf="data.choices">
         <os-search-value-selector

@@ -237,7 +237,7 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
 
     public getTitle = (titleInformation: MotionTitleInformation) => {
         if (titleInformation.identifier) {
-            return titleInformation.identifier + ': ' + titleInformation.title;
+            return `${titleInformation.identifier}: ${titleInformation.title}`;
         } else {
             return titleInformation.title;
         }
@@ -255,9 +255,9 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
         const numberPrefix = titleInformation.agenda_item_number() ? `${titleInformation.agenda_item_number()} · ` : '';
         // if the identifier is set, the title will be 'Motion <identifier>'.
         if (titleInformation.identifier) {
-            return numberPrefix + this.translate.instant('Motion') + ' ' + titleInformation.identifier;
+            return `${numberPrefix} ${this.translate.instant('Motion')} ${titleInformation.identifier}`;
         } else {
-            return numberPrefix + titleInformation.title;
+            return `${numberPrefix} ${titleInformation.title}`;
         }
     };
 

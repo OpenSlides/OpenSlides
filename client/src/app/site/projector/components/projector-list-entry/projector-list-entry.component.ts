@@ -5,6 +5,7 @@ import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import { OperatorService } from 'app/core/core-services/operator.service';
 import { ProjectorRepositoryService } from 'app/core/repositories/projector/projector-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { largeDialogSettings } from 'app/shared/utils/dialog-settings';
@@ -54,7 +55,8 @@ export class ProjectorListEntryComponent extends BaseViewComponent implements On
         matSnackBar: MatSnackBar,
         private repo: ProjectorRepositoryService,
         private promptService: PromptService,
-        private dialogService: MatDialog
+        private dialogService: MatDialog,
+        private operator: OperatorService
     ) {
         super(titleService, translate, matSnackBar);
     }
@@ -76,6 +78,19 @@ export class ProjectorListEntryComponent extends BaseViewComponent implements On
      */
     public onSetAsClosRef(): void {
         this.repo.setReferenceProjector(this.projector.id);
+    }
+
+    /**
+     * Determines the detail link by permission.
+     * Without manage permission, the user should see the full screen projector
+     * and not the detail view
+     */
+    public getDetailLink(): string {
+        if (this.operator.hasPerms('core.can_can_manage_projector')) {
+            return `/projectors/detail/${this.projector.id}`;
+        } else {
+            return `/projector/${this.projector.id}`;
+        }
     }
 
     /**

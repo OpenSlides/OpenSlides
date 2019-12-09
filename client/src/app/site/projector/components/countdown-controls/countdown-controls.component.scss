@@ -7,7 +7,7 @@
         'project title buttons'
         'project controls controls';
     grid-gap: 10px;
-    grid-template-columns: min-content auto auto;
+    grid-template-columns: min-content auto min-content;
 }
 
 // could be in a shared scss
@@ -28,6 +28,7 @@
 .action-buttons {
     grid-area: buttons;
     text-align: right;
+    display: flex;
 }
 
 .timer {
