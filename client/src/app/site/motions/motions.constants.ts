@@ -55,7 +55,8 @@ export enum ChangeRecoMode {
 
 export enum AmendmentType {
     Amendment = 1,
-    Parent
+    Parent,
+    Lead
 }
 
 export const verboseChangeRecoMode = {
