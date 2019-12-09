@@ -104,7 +104,8 @@ export class MotionFilterListService extends BaseFilterListService<ViewMotion> {
         label: 'Amendment',
         options: [
             { condition: AmendmentType.Amendment, label: this.translate.instant('Is amendment') },
-            { condition: AmendmentType.Parent, label: this.translate.instant('Has amendments') }
+            { condition: AmendmentType.Parent, label: this.translate.instant('Has amendments') },
+            { condition: AmendmentType.Lead, label: this.translate.instant('Is no amendment and has no amendments') }
         ]
     };
 

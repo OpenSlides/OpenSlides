@@ -165,14 +165,13 @@ export class ViewMotion extends BaseViewModelWithAgendaItemAndListOfSpeakers<Mot
     /**
      * Determine if the motion has parents, is a parent or neither
      */
-    public get amendmentType(): number {
-        if (this.hasAmendments) {
-            return AmendmentType.Parent;
-        } else if (this.hasParent) {
+    public get amendmentType(): AmendmentType {
+        if (this.hasParent) {
             return AmendmentType.Amendment;
+        } else if (this.hasAmendments) {
+            return AmendmentType.Parent;
         } else {
-            // not any amendment
-            return 0;
+            return AmendmentType.Lead;
         }
     }
 
