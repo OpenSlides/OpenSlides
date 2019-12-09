@@ -7,7 +7,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 
 from ..utils.websocket import WEBSOCKET_CHANGE_ID_TOO_HIGH
 from . import logging
-from .auth import async_anonymous_is_enabled
+from .auth import UserDoesNotExist, async_anonymous_is_enabled
 from .autoupdate import AutoupdateFormat
 from .cache import ChangeIdTooLowError, element_cache, split_element_id
 from .utils import get_worker_id
@@ -149,6 +149,11 @@ class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
             changed_elements = await element_cache.get_all_data_list(user_id)
             all_data = True
             deleted_elements: Dict[str, List[int]] = {}
+        except UserDoesNotExist:
+            # Maybe the user was deleted, but a websocket connection is still open to the user.
+            # So we can close this connection and return.
+            await self.close()
+            return
         else:
             all_data = False
             deleted_elements = defaultdict(list)

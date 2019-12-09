@@ -19,6 +19,14 @@ group_collection_string = "users/group"
 user_collection_string = "users/user"
 
 
+class UserDoesNotExist(Exception):
+    """
+    This is raised, if some permissions checks are done on not existing users.
+    """
+
+    pass
+
+
 def get_group_model() -> Model:
     """
     Return the Group model that is active in this project.
@@ -78,7 +86,7 @@ async def async_has_perm(user_id: int, perm: str) -> bool:
             user_collection_string, user_id
         )
         if user_data is None:
-            raise RuntimeError(f"User with id {user_id} does not exist.")
+            raise UserDoesNotExist()
         if GROUP_ADMIN_PK in user_data["groups_id"]:
             # User in admin group (pk 2) grants all permissions.
             has_perm = True
@@ -92,7 +100,7 @@ async def async_has_perm(user_id: int, perm: str) -> bool:
                 )
                 if group is None:
                     raise RuntimeError(
-                        f"User is in non existing group with id {group_id}."
+                        f"User {user_id} is in non existing group {group_id}."
                     )
 
                 if perm in group["permissions"]:
@@ -135,7 +143,7 @@ async def async_in_some_groups(user_id: int, groups: List[int]) -> bool:
             user_collection_string, user_id
         )
         if user_data is None:
-            raise RuntimeError(f"User with id {user_id} does not exist.")
+            raise UserDoesNotExist()
         if GROUP_ADMIN_PK in user_data["groups_id"]:
             # User in admin group (pk 2) grants all permissions.
             in_some_groups = True
