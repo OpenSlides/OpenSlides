@@ -14,6 +14,7 @@ import { ProjectorRepositoryService } from 'app/core/repositories/projector/proj
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { DurationService } from 'app/core/ui-services/duration.service';
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { SortingListComponent } from 'app/shared/components/sorting-list/sorting-list.component';
 import { BaseViewComponent } from 'app/site/base/base-view';
@@ -141,6 +142,7 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
         title: Title,
         protected translate: TranslateService, // protected required for ng-translate-extract
         snackBar: MatSnackBar,
+        errorService: ErrorService,
         private projectorRepo: ProjectorRepositoryService,
         private route: ActivatedRoute,
         private listOfSpeakersRepo: ListOfSpeakersRepositoryService,
@@ -153,7 +155,7 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
         private currentListOfSpeakersSlideService: CurrentListOfSpeakersSlideService,
         private config: ConfigService
     ) {
-        super(title, translate, snackBar);
+        super(title, translate, snackBar, errorService);
         this.addSpeakerForm = new FormGroup({ user_id: new FormControl([]) });
     }
 

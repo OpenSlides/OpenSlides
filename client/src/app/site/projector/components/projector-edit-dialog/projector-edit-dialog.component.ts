@@ -16,6 +16,7 @@ import { auditTime } from 'rxjs/operators';
 
 import { ProjectionDefaultRepositoryService } from 'app/core/repositories/projector/projection-default-repository.service';
 import { ProjectorRepositoryService } from 'app/core/repositories/projector/projector-repository.service';
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { ProjectorComponent } from 'app/shared/components/projector/projector.component';
 import { Projector } from 'app/shared/models/core/projector';
 import { BaseViewComponent } from 'app/site/base/base-view';
@@ -89,6 +90,7 @@ export class ProjectorEditDialogComponent extends BaseViewComponent implements O
         title: Title,
         translate: TranslateService,
         matSnackBar: MatSnackBar,
+        errorService: ErrorService,
         formBuilder: FormBuilder,
         @Inject(MAT_DIALOG_DATA) public projector: ViewProjector,
         private dialogRef: MatDialogRef<ProjectorEditDialogComponent>,
@@ -97,7 +99,7 @@ export class ProjectorEditDialogComponent extends BaseViewComponent implements O
         private clockSlideService: ClockSlideService,
         private cd: ChangeDetectorRef
     ) {
-        super(title, translate, matSnackBar);
+        super(title, translate, matSnackBar, errorService);
         this.aspectRatiosKeys = Object.keys(aspectRatios);
 
         if (projector) {

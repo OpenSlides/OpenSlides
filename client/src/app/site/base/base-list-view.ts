@@ -6,6 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { PblColumnDefinition, PblDataSource } from '@pebula/ngrid';
 
 import { StorageService } from 'app/core/core-services/storage.service';
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { BaseViewComponent } from './base-view';
 import { BaseViewModel } from './base-view-model';
 
@@ -57,9 +58,10 @@ export abstract class BaseListViewComponent<V extends BaseViewModel> extends Bas
         titleService: Title,
         translate: TranslateService,
         matSnackBar: MatSnackBar,
+        errorService: ErrorService,
         protected storage: StorageService
     ) {
-        super(titleService, translate, matSnackBar);
+        super(titleService, translate, matSnackBar, errorService);
         this.selectedRows = [];
     }
 

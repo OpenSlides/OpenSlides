@@ -13,6 +13,7 @@ import { ItemRepositoryService } from 'app/core/repositories/agenda/item-reposit
 import { MotionBlockRepositoryService } from 'app/core/repositories/motions/motion-block-repository.service';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ViewportService } from 'app/core/ui-services/viewport.service';
 import { ColumnRestriction } from 'app/shared/components/list-view-table/list-view-table.component';
@@ -112,6 +113,8 @@ export class MotionBlockDetailComponent extends BaseListViewComponent<ViewMotion
         titleService: Title,
         protected translate: TranslateService,
         matSnackBar: MatSnackBar,
+        errorService: ErrorService,
+        storage: StorageService,
         private configService: ConfigService,
         private route: ActivatedRoute,
         private router: Router,
@@ -121,11 +124,10 @@ export class MotionBlockDetailComponent extends BaseListViewComponent<ViewMotion
         private fb: FormBuilder,
         private dialog: MatDialog,
         private itemRepo: ItemRepositoryService,
-        storage: StorageService,
         public filterService: BlockDetailFilterListService,
         public vp: ViewportService
     ) {
-        super(titleService, translate, matSnackBar, storage);
+        super(titleService, translate, matSnackBar, errorService, storage);
         this.blockId = parseInt(this.route.snapshot.params.id, 10);
         this.filterService.blockId = this.blockId;
     }

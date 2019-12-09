@@ -8,6 +8,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { ViewUser } from '../../models/view-user';
 
@@ -73,13 +74,14 @@ export class PasswordComponent extends BaseViewComponent implements OnInit {
         title: Title,
         protected translate: TranslateService, // protected required for ng-translate-extract
         matSnackBar: MatSnackBar,
+        errorService: ErrorService,
         private route: ActivatedRoute,
         private router: Router,
         private repo: UserRepositoryService,
         private operator: OperatorService,
         private formBuilder: FormBuilder
     ) {
-        super(title, translate, matSnackBar);
+        super(title, translate, matSnackBar, errorService);
     }
 
     /**

@@ -11,6 +11,7 @@ import { ConstantsService } from 'app/core/core-services/constants.service';
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { genders } from 'app/shared/models/users/user';
 import { OneOfValidator } from 'app/shared/validators/one-of-validator';
@@ -95,6 +96,7 @@ export class UserDetailComponent extends BaseViewComponent implements OnInit {
         title: Title,
         protected translate: TranslateService, // protected required for ng-translate-extract
         matSnackBar: MatSnackBar,
+        errorService: ErrorService,
         private formBuilder: FormBuilder,
         private route: ActivatedRoute,
         private router: Router,
@@ -105,7 +107,7 @@ export class UserDetailComponent extends BaseViewComponent implements OnInit {
         private groupRepo: GroupRepositoryService,
         private constantsService: ConstantsService
     ) {
-        super(title, translate, matSnackBar);
+        super(title, translate, matSnackBar, errorService);
         this.createForm();
 
         this.constantsService.get<UserBackends>('UserBackends').subscribe(backends => (this.userBackends = backends));
@@ -291,7 +293,7 @@ export class UserDetailComponent extends BaseViewComponent implements OnInit {
                     }
                 }
             }
-            this.raiseError(this.translate.instant(hint));
+            this.raiseError(new Error(this.translate.instant(hint)));
             return;
         }
 
@@ -358,7 +360,7 @@ export class UserDetailComponent extends BaseViewComponent implements OnInit {
         const title = this.translate.instant('Sending an invitation email');
         const content = this.translate.instant('Are you sure you want to send an invitation email to the user?');
         if (await this.promptService.open(title, content)) {
-            this.repo.bulkSendInvitationEmail([this.user]).then(this.raiseError, this.raiseError);
+            this.repo.bulkSendInvitationEmail([this.user]).then(this.raiseMessage, this.raiseError);
         }
     }
 

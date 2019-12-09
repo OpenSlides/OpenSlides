@@ -10,6 +10,7 @@ import { PblColumnDefinition } from '@pebula/ngrid';
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { StorageService } from 'app/core/core-services/storage.service';
 import { CategoryRepositoryService } from 'app/core/repositories/motions/category-repository.service';
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
 import { BaseListViewComponent } from 'app/site/base/base-list-view';
 import { ViewCategory } from 'app/site/motions/models/view-category';
@@ -74,13 +75,14 @@ export class CategoryListComponent extends BaseListViewComponent<ViewCategory> i
         titleService: Title,
         translate: TranslateService,
         matSnackBar: MatSnackBar,
+        errorService: ErrorService,
         storage: StorageService,
         public repo: CategoryRepositoryService,
         private formBuilder: FormBuilder,
         private dialog: MatDialog,
         private operator: OperatorService
     ) {
-        super(titleService, translate, matSnackBar, storage);
+        super(titleService, translate, matSnackBar, errorService, storage);
 
         this.createForm = this.formBuilder.group({
             prefix: [''],

@@ -8,6 +8,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { DurationService } from 'app/core/ui-services/duration.service';
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { BaseViewComponent } from 'app/site/base/base-view';
 
 /**
@@ -52,14 +53,15 @@ export class CountdownDialogComponent extends BaseViewComponent implements OnIni
      */
     public constructor(
         title: Title,
-        matSnackBar: MatSnackBar,
-        configService: ConfigService,
         translate: TranslateService,
+        matSnackBar: MatSnackBar,
+        errorService: ErrorService,
+        configService: ConfigService,
         private formBuilder: FormBuilder,
         private durationService: DurationService,
         @Inject(MAT_DIALOG_DATA) public data: CountdownData
     ) {
-        super(title, translate, matSnackBar);
+        super(title, translate, matSnackBar, errorService);
         this.defaultTime = configService.instant<number>('projector_default_countdown');
     }
 

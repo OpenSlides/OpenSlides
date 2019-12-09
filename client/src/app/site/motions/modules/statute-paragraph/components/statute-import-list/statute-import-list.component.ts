@@ -4,6 +4,7 @@ import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { StatuteParagraph } from 'app/shared/models/motions/statute-paragraph';
 import { BaseImportListComponent } from 'app/site/base/base-import-list';
 import { StatuteCsvExportService } from 'app/site/motions/services/statute-csv-export.service';
@@ -30,10 +31,11 @@ export class StatuteImportListComponent extends BaseImportListComponent<StatuteP
         titleService: Title,
         matSnackBar: MatSnackBar,
         translate: TranslateService,
+        errorService: ErrorService,
         importer: StatuteImportService,
         private statuteCSVExport: StatuteCsvExportService
     ) {
-        super(importer, titleService, translate, matSnackBar);
+        super(titleService, translate, matSnackBar, errorService, importer);
     }
 
     /**

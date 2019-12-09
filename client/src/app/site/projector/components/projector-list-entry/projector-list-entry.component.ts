@@ -6,6 +6,7 @@ import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 
 import { ProjectorRepositoryService } from 'app/core/repositories/projector/projector-repository.service';
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { largeDialogSettings } from 'app/shared/utils/dialog-settings';
 import { BaseViewComponent } from 'app/site/base/base-view';
@@ -52,11 +53,12 @@ export class ProjectorListEntryComponent extends BaseViewComponent implements On
         titleService: Title,
         protected translate: TranslateService, // protected required for ng-translate-extract
         matSnackBar: MatSnackBar,
+        errorService: ErrorService,
         private repo: ProjectorRepositoryService,
         private promptService: PromptService,
         private dialogService: MatDialog
     ) {
-        super(titleService, translate, matSnackBar);
+        super(titleService, translate, matSnackBar, errorService);
     }
 
     public ngOnInit(): void {}

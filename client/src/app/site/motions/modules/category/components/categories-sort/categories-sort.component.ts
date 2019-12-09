@@ -6,6 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 
 import { CategoryRepositoryService } from 'app/core/repositories/motions/category-repository.service';
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { SortingTreeComponent } from 'app/shared/components/sorting-tree/sorting-tree.component';
 import { CanComponentDeactivate } from 'app/shared/utils/watch-for-changes.guard';
@@ -49,10 +50,11 @@ export class CategoriesSortComponent extends BaseViewComponent implements CanCom
         title: Title,
         translate: TranslateService,
         matSnackBar: MatSnackBar,
+        errorService: ErrorService,
         private categoryRepo: CategoryRepositoryService,
         private promptService: PromptService
     ) {
-        super(title, translate, matSnackBar);
+        super(title, translate, matSnackBar, errorService);
 
         this.categoriesObservable = this.categoryRepo.getViewModelListObservable();
     }

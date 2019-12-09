@@ -12,6 +12,7 @@ import { OperatorService } from 'app/core/core-services/operator.service';
 import { StorageService } from 'app/core/core-services/storage.service';
 import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
 import { MotionBlockRepositoryService } from 'app/core/repositories/motions/motion-block-repository.service';
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
 import { ViewItem } from 'app/site/agenda/models/view-item';
 import { BaseListViewComponent } from 'app/site/base/base-list-view';
@@ -95,6 +96,7 @@ export class MotionBlockListComponent extends BaseListViewComponent<ViewMotionBl
         titleService: Title,
         translate: TranslateService,
         matSnackBar: MatSnackBar,
+        errorService: ErrorService,
         storage: StorageService,
         public repo: MotionBlockRepositoryService,
         private formBuilder: FormBuilder,
@@ -103,7 +105,7 @@ export class MotionBlockListComponent extends BaseListViewComponent<ViewMotionBl
         private dialog: MatDialog,
         public sortService: MotionBlockSortService
     ) {
-        super(titleService, translate, matSnackBar, storage);
+        super(titleService, translate, matSnackBar, errorService, storage);
 
         this.createBlockForm = this.formBuilder.group({
             title: ['', Validators.required],

@@ -7,6 +7,7 @@ import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 
 import { StatuteParagraphRepositoryService } from 'app/core/repositories/motions/statute-paragraph-repository.service';
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { StatuteParagraph } from 'app/shared/models/motions/statute-paragraph';
 import { largeDialogSettings } from 'app/shared/utils/dialog-settings';
@@ -53,13 +54,14 @@ export class StatuteParagraphListComponent extends BaseViewComponent implements 
         titleService: Title,
         protected translate: TranslateService, // protected required for ng-translate-extract
         matSnackBar: MatSnackBar,
+        errorService: ErrorService,
         private repo: StatuteParagraphRepositoryService,
         private formBuilder: FormBuilder,
         private promptService: PromptService,
         private dialog: MatDialog,
         private csvExportService: StatuteCsvExportService
     ) {
-        super(titleService, translate, matSnackBar);
+        super(titleService, translate, matSnackBar, errorService);
 
         const form = {
             title: ['', Validators.required],

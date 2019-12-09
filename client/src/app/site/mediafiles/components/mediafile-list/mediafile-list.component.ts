@@ -23,6 +23,7 @@ import { OperatorService } from 'app/core/core-services/operator.service';
 import { StorageService } from 'app/core/core-services/storage.service';
 import { MediafileRepositoryService } from 'app/core/repositories/mediafiles/mediafile-repository.service';
 import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { MediaManageService } from 'app/core/ui-services/media-manage.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ViewportService } from 'app/core/ui-services/viewport.service';
@@ -187,6 +188,7 @@ export class MediafileListComponent extends BaseListViewComponent<ViewMediafile>
         titleService: Title,
         protected translate: TranslateService,
         matSnackBar: MatSnackBar,
+        errorService: ErrorService,
         storage: StorageService,
         private route: ActivatedRoute,
         private router: Router,
@@ -202,7 +204,7 @@ export class MediafileListComponent extends BaseListViewComponent<ViewMediafile>
         private groupRepo: GroupRepositoryService,
         private cd: ChangeDetectorRef
     ) {
-        super(titleService, translate, matSnackBar, storage);
+        super(titleService, translate, matSnackBar, errorService, storage);
         this.canMultiSelect = true;
 
         this.newDirectoryForm = this.formBuilder.group({

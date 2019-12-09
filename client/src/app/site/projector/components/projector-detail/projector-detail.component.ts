@@ -16,6 +16,7 @@ import {
     ScrollScaleDirection
 } from 'app/core/repositories/projector/projector-repository.service';
 import { DurationService } from 'app/core/ui-services/duration.service';
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { SizeObject } from 'app/shared/components/tile/tile.component';
 import { Countdown } from 'app/shared/models/core/countdown';
 import { ProjectorElement } from 'app/shared/models/core/projector';
@@ -82,6 +83,7 @@ export class ProjectorDetailComponent extends BaseViewComponent implements OnIni
         titleService: Title,
         translate: TranslateService,
         matSnackBar: MatSnackBar,
+        errorService: ErrorService,
         private dialog: MatDialog,
         private repo: ProjectorRepositoryService,
         private route: ActivatedRoute,
@@ -94,7 +96,7 @@ export class ProjectorDetailComponent extends BaseViewComponent implements OnIni
         private durationService: DurationService,
         private cd: ChangeDetectorRef
     ) {
-        super(titleService, translate, matSnackBar);
+        super(titleService, translate, matSnackBar, errorService);
 
         this.countdownRepo.getViewModelListObservable().subscribe(countdowns => (this.countdowns = countdowns));
         this.messageRepo.getViewModelListObservable().subscribe(messages => (this.messages = messages));

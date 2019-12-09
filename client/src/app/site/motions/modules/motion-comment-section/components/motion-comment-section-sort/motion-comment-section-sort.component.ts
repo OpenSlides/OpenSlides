@@ -5,6 +5,7 @@ import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 
 import { MotionCommentSectionRepositoryService } from 'app/core/repositories/motions/motion-comment-section-repository.service';
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { ViewMotionCommentSection } from 'app/site/motions/models/view-motion-comment-section';
 
@@ -34,9 +35,10 @@ export class MotionCommentSectionSortComponent extends BaseViewComponent impleme
         title: Title,
         translate: TranslateService, // protected required for ng-translate-extract
         snackBar: MatSnackBar,
+        errorService: ErrorService,
         private repo: MotionCommentSectionRepositoryService
     ) {
-        super(title, translate, snackBar);
+        super(title, translate, snackBar, errorService);
         super.setTitle('Sort comments');
     }
 

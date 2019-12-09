@@ -13,6 +13,7 @@ import { AssignmentRepositoryService } from 'app/core/repositories/assignments/a
 import { MediafileRepositoryService } from 'app/core/repositories/mediafiles/mediafile-repository.service';
 import { TagRepositoryService } from 'app/core/repositories/tags/tag-repository.service';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { Assignment } from 'app/shared/models/assignments/assignment';
 import { AssignmentPoll } from 'app/shared/models/assignments/assignment-poll';
@@ -164,6 +165,7 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
         title: Title,
         protected translate: TranslateService, // protected required for ng-translate-extract
         matSnackBar: MatSnackBar,
+        errorService: ErrorService,
         private operator: OperatorService,
         public perms: LocalPermissionsService,
         private router: Router,
@@ -178,7 +180,7 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
         private pdfService: AssignmentPdfExportService,
         private mediafileRepo: MediafileRepositoryService
     ) {
-        super(title, translate, matSnackBar);
+        super(title, translate, matSnackBar, errorService);
         this.subscriptions.push(
             /* List of eligible users */
             this.userRepo.getViewModelListObservable().subscribe(users => {

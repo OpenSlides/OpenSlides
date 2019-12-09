@@ -10,6 +10,7 @@ import { BehaviorSubject } from 'rxjs';
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
 import { TopicRepositoryService } from 'app/core/repositories/topics/topic-repository.service';
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ItemVisibilityChoices } from 'app/shared/models/agenda/item';
 import { Topic } from 'app/shared/models/topics/topic';
@@ -73,8 +74,9 @@ export class TopicDetailComponent extends BaseViewComponent {
      */
     public constructor(
         title: Title,
-        matSnackBar: MatSnackBar,
         protected translate: TranslateService,
+        matSnackBar: MatSnackBar,
+        errorService: ErrorService,
         private route: ActivatedRoute,
         private router: Router,
         private formBuilder: FormBuilder,
@@ -83,7 +85,7 @@ export class TopicDetailComponent extends BaseViewComponent {
         private operator: OperatorService,
         private itemRepo: ItemRepositoryService
     ) {
-        super(title, translate, matSnackBar);
+        super(title, translate, matSnackBar, errorService);
         this.getTopicByUrl();
         this.createForm();
 

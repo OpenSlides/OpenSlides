@@ -11,6 +11,7 @@ import { Observable } from 'rxjs';
 
 import { StateRepositoryService } from 'app/core/repositories/motions/state-repository.service';
 import { WorkflowRepositoryService } from 'app/core/repositories/motions/workflow-repository.service';
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { MergeAmendment, State } from 'app/shared/models/motions/state';
 import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
@@ -153,13 +154,14 @@ export class WorkflowDetailComponent extends BaseViewComponent implements OnInit
         title: Title,
         protected translate: TranslateService, // protected required for ng-translate-extract
         matSnackBar: MatSnackBar,
+        errorService: ErrorService,
         private promtService: PromptService,
         private dialog: MatDialog,
         private workflowRepo: WorkflowRepositoryService,
         private stateRepo: StateRepositoryService,
         private route: ActivatedRoute
     ) {
-        super(title, translate, matSnackBar);
+        super(title, translate, matSnackBar, errorService);
     }
 
     /**

@@ -9,6 +9,7 @@ import { PblColumnDefinition } from '@pebula/ngrid';
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { StorageService } from 'app/core/core-services/storage.service';
 import { AssignmentRepositoryService } from 'app/core/repositories/assignments/assignment-repository.service';
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { BaseListViewComponent } from 'app/site/base/base-list-view';
 import { AssignmentFilterListService } from '../../services/assignment-filter.service';
@@ -73,6 +74,7 @@ export class AssignmentListComponent extends BaseListViewComponent<ViewAssignmen
         titleService: Title,
         storage: StorageService,
         protected translate: TranslateService, // protected required for ng-translate-extract
+        errorService: ErrorService,
         matSnackBar: MatSnackBar,
         public repo: AssignmentRepositoryService,
         private promptService: PromptService,
@@ -83,7 +85,7 @@ export class AssignmentListComponent extends BaseListViewComponent<ViewAssignmen
         private router: Router,
         public operator: OperatorService
     ) {
-        super(titleService, translate, matSnackBar, storage);
+        super(titleService, translate, matSnackBar, errorService, storage);
         this.canMultiSelect = true;
     }
 

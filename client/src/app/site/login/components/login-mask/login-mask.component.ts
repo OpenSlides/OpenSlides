@@ -9,6 +9,7 @@ import { Subscription } from 'rxjs';
 
 import { AuthService } from 'app/core/core-services/auth.service';
 import { OperatorService } from 'app/core/core-services/operator.service';
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { LoginDataService } from 'app/core/ui-services/login-data.service';
 import { OverlayService } from 'app/core/ui-services/overlay.service';
 import { UserAuthType } from 'app/shared/models/users/user';
@@ -76,6 +77,7 @@ export class LoginMaskComponent extends BaseViewComponent implements OnInit, OnD
         title: Title,
         translate: TranslateService,
         matSnackBar: MatSnackBar,
+        errorService: ErrorService,
         private authService: AuthService,
         private operator: OperatorService,
         private router: Router,
@@ -84,7 +86,7 @@ export class LoginMaskComponent extends BaseViewComponent implements OnInit, OnD
         private loginDataService: LoginDataService,
         private overlayService: OverlayService
     ) {
-        super(title, translate, matSnackBar);
+        super(title, translate, matSnackBar, errorService);
         // Hide the spinner if the user is at `login-mask`
         this.createForm();
     }

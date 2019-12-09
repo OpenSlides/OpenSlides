@@ -5,6 +5,7 @@ import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { PersonalNoteService } from 'app/core/ui-services/personal-note.service';
 import { PersonalNoteContent } from 'app/shared/models/users/personal-note';
 import { BaseViewComponent } from 'app/site/base/base-view';
@@ -51,11 +52,12 @@ export class PersonalNoteComponent extends BaseViewComponent {
         title: Title,
         translate: TranslateService,
         matSnackBar: MatSnackBar,
+        errorService: ErrorService,
         private personalNoteService: PersonalNoteService,
         formBuilder: FormBuilder,
         private pdfService: MotionPdfExportService
     ) {
-        super(title, translate, matSnackBar);
+        super(title, translate, matSnackBar, errorService);
         this.personalNoteForm = formBuilder.group({
             note: ['']
         });

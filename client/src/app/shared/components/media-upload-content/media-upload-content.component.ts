@@ -5,7 +5,10 @@ import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { FileSystemFileEntry, NgxFileDropEntry } from 'ngx-file-drop';
 import { BehaviorSubject } from 'rxjs';
 
-import { MediafileRepositoryService } from 'app/core/repositories/mediafiles/mediafile-repository.service';
+import {
+    MediafileRepositoryService,
+    MediaUploadError
+} from 'app/core/repositories/mediafiles/mediafile-repository.service';
 import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
 import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
 import { ViewGroup } from 'app/site/users/models/view-group';
@@ -59,7 +62,7 @@ export class MediaUploadContentComponent implements OnInit {
     /**
      * Set if an error was detected to prevent automatic navigation
      */
-    public errorMessage: string;
+    public uploadError: MediaUploadError;
 
     /**
      * Hold the mat table to manually render new rows
@@ -77,7 +80,7 @@ export class MediaUploadContentComponent implements OnInit {
      * Emits an error event
      */
     @Output()
-    public errorEvent = new EventEmitter<string>();
+    public errorEvent = new EventEmitter<MediaUploadError>();
 
     public directoryBehaviorSubject: BehaviorSubject<ViewMediafile[]>;
     public groupsBehaviorSubject: BehaviorSubject<ViewGroup[]>;
@@ -152,7 +155,7 @@ export class MediaUploadContentComponent implements OnInit {
                 this.onRemoveButton(fileData);
             },
             error => {
-                this.errorMessage = error;
+                this.uploadError = new MediaUploadError(error);
             }
         );
     }
@@ -237,7 +240,7 @@ export class MediaUploadContentComponent implements OnInit {
      */
     public async onUploadButton(): Promise<void> {
         if (this.uploadList && this.uploadList.data.length > 0) {
-            this.errorMessage = '';
+            this.uploadError = undefined;
             this.showProgress = true;
 
             if (this.parallel) {
@@ -250,12 +253,12 @@ export class MediaUploadContentComponent implements OnInit {
             }
             this.showProgress = false;
 
-            if (this.errorMessage === '') {
+            if (!this.uploadError) {
                 this.uploadSuccessEvent.next(this.filesUploadedIds);
             } else {
                 this.table.renderRows();
-                const filenames = this.uploadList.data.map(file => file.filename);
-                this.errorEvent.next(`${this.errorMessage}\n${filenames}`);
+                this.uploadError.info = this.uploadList.data.map(file => file.filename).join(', ');
+                this.errorEvent.next(this.uploadError);
             }
         }
     }

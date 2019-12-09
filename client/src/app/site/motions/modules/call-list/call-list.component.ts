@@ -8,6 +8,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { CategoryRepositoryService } from 'app/core/repositories/motions/category-repository.service';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { TagRepositoryService } from 'app/core/repositories/tags/tag-repository.service';
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { FlatNode } from 'app/core/ui-services/tree.service';
 import { SortTreeFilterOption, SortTreeViewComponent } from 'app/site/base/sort-tree.component';
@@ -90,14 +91,15 @@ export class CallListComponent extends SortTreeViewComponent<ViewMotion> impleme
         title: Title,
         protected translate: TranslateService,
         matSnackBar: MatSnackBar,
+        errorService: ErrorService,
+        promptService: PromptService,
         private motionRepo: MotionRepositoryService,
         private motionCsvExport: MotionCsvExportService,
         private motionPdfExport: MotionPdfExportService,
         private tagRepo: TagRepositoryService,
-        private categoryRepo: CategoryRepositoryService,
-        promptService: PromptService
+        private categoryRepo: CategoryRepositoryService
     ) {
-        super(title, translate, matSnackBar, promptService);
+        super(title, translate, matSnackBar, errorService, promptService);
 
         this.motionsObservable = this.motionRepo.getViewModelListObservable();
         this.motionsObservable.subscribe(motions => {

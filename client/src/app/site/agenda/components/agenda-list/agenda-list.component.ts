@@ -19,6 +19,7 @@ import { TopicRepositoryService } from 'app/core/repositories/topics/topic-repos
 import { _ } from 'app/core/translate/translation-marker';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { DurationService } from 'app/core/ui-services/duration.service';
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ViewportService } from 'app/core/ui-services/viewport.service';
 import { ColumnRestriction } from 'app/shared/components/list-view-table/list-view-table.component';
@@ -122,6 +123,7 @@ export class AgendaListComponent extends BaseListViewComponent<ViewItem> impleme
         titleService: Title,
         protected translate: TranslateService, // protected required for ng-translate-extract
         matSnackBar: MatSnackBar,
+        errorService: ErrorService,
         storage: StorageService,
         private operator: OperatorService,
         private router: Router,
@@ -138,7 +140,7 @@ export class AgendaListComponent extends BaseListViewComponent<ViewItem> impleme
         private listOfSpeakersRepo: ListOfSpeakersRepositoryService,
         private topicRepo: TopicRepositoryService
     ) {
-        super(titleService, translate, matSnackBar, storage);
+        super(titleService, translate, matSnackBar, errorService, storage);
         this.canMultiSelect = true;
     }
 

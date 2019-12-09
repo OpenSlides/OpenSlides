@@ -6,6 +6,7 @@ import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { BaseViewComponent } from 'app/site/base/base-view';
 
 /**
@@ -42,10 +43,11 @@ export class MessageDialogComponent extends BaseViewComponent implements OnInit 
         title: Title,
         matSnackBar: MatSnackBar,
         translate: TranslateService,
+        errorService: ErrorService,
         private formBuilder: FormBuilder,
         @Inject(MAT_DIALOG_DATA) public data: MessageData
     ) {
-        super(title, translate, matSnackBar);
+        super(title, translate, matSnackBar, errorService);
     }
 
     /**

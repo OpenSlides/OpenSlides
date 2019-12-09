@@ -8,6 +8,7 @@ import { CategoryRepositoryService } from 'app/core/repositories/motions/categor
 import { MotionBlockRepositoryService } from 'app/core/repositories/motions/motion-block-repository.service';
 import { TagRepositoryService } from 'app/core/repositories/tags/tag-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { largeDialogSettings } from 'app/shared/utils/dialog-settings';
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { ViewCategory } from 'app/site/motions/models/view-category';
@@ -68,7 +69,8 @@ export class MotionMultiselectActionsComponent extends BaseViewComponent impleme
     public constructor(
         title: Title,
         protected translate: TranslateService,
-        matSnackbar: MatSnackBar,
+        matSnackBar: MatSnackBar,
+        errorService: ErrorService,
         public multiselectService: MotionMultiselectService,
         private categoryRepo: CategoryRepositoryService,
         private motionBlockRepo: MotionBlockRepositoryService,
@@ -77,7 +79,7 @@ export class MotionMultiselectActionsComponent extends BaseViewComponent impleme
         private dialog: MatDialog,
         private motionExport: MotionExportService
     ) {
-        super(title, translate, matSnackbar);
+        super(title, translate, matSnackBar, errorService);
     }
 
     /**

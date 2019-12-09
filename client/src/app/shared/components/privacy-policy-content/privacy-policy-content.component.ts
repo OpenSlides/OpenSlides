@@ -5,6 +5,7 @@ import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { LoginDataService } from 'app/core/ui-services/login-data.service';
 import { BaseViewComponent } from 'app/site/base/base-view';
 
@@ -78,11 +79,12 @@ export class PrivacyPolicyContentComponent extends BaseViewComponent implements 
     public constructor(
         title: Title,
         protected translate: TranslateService,
-        matSnackbar: MatSnackBar,
+        matSnackBar: MatSnackBar,
+        errorService: ErrorService,
         private loginDataService: LoginDataService,
         fb: FormBuilder
     ) {
-        super(title, translate, matSnackbar);
+        super(title, translate, matSnackBar, errorService);
         this.formGroup = fb.group({
             privacyPolicy: ''
         });

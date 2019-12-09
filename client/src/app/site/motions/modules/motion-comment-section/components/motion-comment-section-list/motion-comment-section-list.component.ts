@@ -9,6 +9,7 @@ import { BehaviorSubject } from 'rxjs';
 
 import { MotionCommentSectionRepositoryService } from 'app/core/repositories/motions/motion-comment-section-repository.service';
 import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { MotionCommentSection } from 'app/shared/models/motions/motion-comment-section';
 import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
@@ -56,13 +57,14 @@ export class MotionCommentSectionListComponent extends BaseViewComponent impleme
         titleService: Title,
         protected translate: TranslateService, // protected required for ng-translate-extract
         matSnackBar: MatSnackBar,
+        errorService: ErrorService,
         private repo: MotionCommentSectionRepositoryService,
         private formBuilder: FormBuilder,
         private promptService: PromptService,
         private dialog: MatDialog,
         private groupRepo: GroupRepositoryService
     ) {
-        super(titleService, translate, matSnackBar);
+        super(titleService, translate, matSnackBar, errorService);
 
         const form = {
             name: ['', Validators.required],

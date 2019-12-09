@@ -5,6 +5,7 @@ import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 
 import { SortDefinition } from 'app/core/ui-services/base-sort.service';
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { SortingTreeComponent } from 'app/shared/components/sorting-tree/sorting-tree.component';
 import { Identifiable } from 'app/shared/models/base/identifiable';
@@ -73,9 +74,10 @@ export abstract class SortTreeViewComponent<V extends BaseViewModel> extends Bas
         title: Title,
         protected translate: TranslateService,
         matSnackBar: MatSnackBar,
+        errorService: ErrorService,
         protected promptService: PromptService
     ) {
-        super(title, translate, matSnackBar);
+        super(title, translate, matSnackBar, errorService);
     }
 
     /**

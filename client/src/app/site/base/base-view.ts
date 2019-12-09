@@ -5,6 +5,7 @@ import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { BaseComponent } from '../../base.component';
 
 /**
@@ -30,7 +31,12 @@ export abstract class BaseViewComponent extends BaseComponent implements OnDestr
      * @param translate the translate service, passed to the base component
      * @param matSnackBar the snack bar service. Needed for showing errors.
      */
-    public constructor(titleService: Title, translate: TranslateService, protected matSnackBar: MatSnackBar) {
+    public constructor(
+        titleService: Title,
+        translate: TranslateService,
+        protected matSnackBar: MatSnackBar,
+        protected errorService: ErrorService
+    ) {
         super(titleService, translate);
         this.subscriptions = [];
     }
@@ -56,26 +62,24 @@ export abstract class BaseViewComponent extends BaseComponent implements OnDestr
     };
 
     /**
-     * Opens an error snack bar with the given error message.
+     * Logs the given error.
      * This is implemented as an arrow function to capture the called `this`. You can use this function
      * as callback (`.then(..., this.raiseError)`) instead of doing `this.raiseError.bind(this)`.
      *
-     * @param message The message to show or an "real" error, which will be passed to the console.
+     * @param error a real error
      */
-    protected raiseError = (message: string | Error): void => {
-        let errorNotification: string;
-        if (message instanceof Error) {
-            if (message.message) {
-                errorNotification = message.message;
-            } else {
-                errorNotification = this.translate.instant(
-                    'A client error occurred. Please contact your system administrator.'
-                );
-            }
-        } else {
-            errorNotification = message;
-        }
-        this.messageSnackBar = this.matSnackBar.open(errorNotification, this.translate.instant('OK'), {
+    protected raiseError = (error: Error): void => {
+        this.errorService.announceError(error);
+    };
+
+    /**
+     * like above, but simply shows the snackbar without logging it as an error.
+     * Should be use for general information or success messages
+     *
+     * @param message the message to show
+     */
+    protected raiseMessage = (message: string): void => {
+        this.matSnackBar.open(message, this.translate.instant('OK'), {
             duration: 0
         });
     };

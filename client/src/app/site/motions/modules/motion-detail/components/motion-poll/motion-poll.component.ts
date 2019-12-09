@@ -7,6 +7,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { ConstantsService } from 'app/core/core-services/constants.service';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { CalculablePollKey } from 'app/core/ui-services/poll.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { MotionPoll } from 'app/shared/models/motions/motion-poll';
@@ -95,6 +96,7 @@ export class MotionPollComponent extends BaseViewComponent implements OnInit {
         title: Title,
         translate: TranslateService,
         matSnackBar: MatSnackBar,
+        errorService: ErrorService,
         public dialog: MatDialog,
         public pollService: MotionPollService,
         private motionRepo: MotionRepositoryService,
@@ -103,7 +105,7 @@ export class MotionPollComponent extends BaseViewComponent implements OnInit {
         public perms: LocalPermissionsService,
         private pdfService: MotionPollPdfService
     ) {
-        super(title, translate, matSnackBar);
+        super(title, translate, matSnackBar, errorService);
         this.pollValues = this.pollService.pollValues;
         this.majorityChoice = this.pollService.defaultMajorityMethod;
         this.subscribeMajorityChoices();

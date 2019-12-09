@@ -11,6 +11,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { CategoryRepositoryService } from 'app/core/repositories/motions/category-repository.service';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
 import { BaseViewComponent } from 'app/site/base/base-view';
@@ -79,6 +80,7 @@ export class CategoryDetailComponent extends BaseViewComponent implements OnInit
         titleService: Title,
         protected translate: TranslateService,
         matSnackBar: MatSnackBar,
+        errorService: ErrorService,
         private route: ActivatedRoute,
         private operator: OperatorService,
         private router: Router,
@@ -88,7 +90,7 @@ export class CategoryDetailComponent extends BaseViewComponent implements OnInit
         private fb: FormBuilder,
         private dialog: MatDialog
     ) {
-        super(titleService, translate, matSnackBar);
+        super(titleService, translate, matSnackBar, errorService);
     }
 
     /**

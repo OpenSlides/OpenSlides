@@ -9,6 +9,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { CategoryRepositoryService } from 'app/core/repositories/motions/category-repository.service';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { ChoiceService } from 'app/core/ui-services/choice.service';
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { SortingListComponent } from 'app/shared/components/sorting-list/sorting-list.component';
 import { CanComponentDeactivate } from 'app/shared/utils/watch-for-changes.guard';
@@ -91,13 +92,14 @@ export class CategoryMotionsSortComponent extends BaseViewComponent implements O
         title: Title,
         protected translate: TranslateService, // protected required for ng-translate-extract
         matSnackBar: MatSnackBar,
+        errorService: ErrorService,
         private promptService: PromptService,
         private repo: CategoryRepositoryService,
         private route: ActivatedRoute,
         private motionRepo: MotionRepositoryService,
         private choiceService: ChoiceService
     ) {
-        super(title, translate, matSnackBar);
+        super(title, translate, matSnackBar, errorService);
     }
 
     /**

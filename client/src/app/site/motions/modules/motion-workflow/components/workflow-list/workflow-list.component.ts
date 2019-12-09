@@ -8,6 +8,7 @@ import { PblColumnDefinition } from '@pebula/ngrid';
 
 import { StorageService } from 'app/core/core-services/storage.service';
 import { WorkflowRepositoryService } from 'app/core/repositories/motions/workflow-repository.service';
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { Workflow } from 'app/shared/models/motions/workflow';
 import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
@@ -60,12 +61,13 @@ export class WorkflowListComponent extends BaseListViewComponent<ViewWorkflow> i
         titleService: Title,
         protected translate: TranslateService,
         matSnackBar: MatSnackBar,
+        errorService: ErrorService,
         storage: StorageService,
         private dialog: MatDialog,
         public workflowRepo: WorkflowRepositoryService,
         private promptService: PromptService
     ) {
-        super(titleService, translate, matSnackBar, storage);
+        super(titleService, translate, matSnackBar, errorService, storage);
     }
 
     /**

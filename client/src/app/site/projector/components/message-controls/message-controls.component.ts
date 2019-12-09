@@ -5,6 +5,7 @@ import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 
 import { ProjectorMessageRepositoryService } from 'app/core/repositories/projector/projector-message-repository.service';
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { ProjectionDialogService } from 'app/core/ui-services/projection-dialog.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { Projector } from 'app/shared/models/core/projector';
@@ -50,13 +51,14 @@ export class MessageControlsComponent extends BaseViewComponent implements OnIni
      */
     public constructor(
         titleService: Title,
-        matSnackBar: MatSnackBar,
         protected translate: TranslateService,
+        matSnackBar: MatSnackBar,
+        errorService: ErrorService,
         private repo: ProjectorMessageRepositoryService,
         private promptService: PromptService,
         private projectionDialogService: ProjectionDialogService
     ) {
-        super(titleService, translate, matSnackBar);
+        super(titleService, translate, matSnackBar, errorService);
     }
 
     /**

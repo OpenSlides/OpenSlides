@@ -8,6 +8,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { environment } from 'environments/environment';
 
 import { HttpService } from 'app/core/core-services/http.service';
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { BaseViewComponent } from 'app/site/base/base-view';
 
 /**
@@ -32,11 +33,12 @@ export class ResetPasswordComponent extends BaseViewComponent implements OnInit 
         titleService: Title,
         protected translate: TranslateService,
         matSnackBar: MatSnackBar,
+        errorService: ErrorService,
         private http: HttpService,
         formBuilder: FormBuilder,
         private router: Router
     ) {
-        super(titleService, translate, matSnackBar);
+        super(titleService, translate, matSnackBar, errorService);
         this.resetPasswordForm = formBuilder.group({
             email: ['', [Validators.required, Validators.email]]
         });

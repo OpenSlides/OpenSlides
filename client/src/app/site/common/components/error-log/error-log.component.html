@@ -1,0 +1,69 @@
+<os-head-bar>
+    <div class="title-slot">
+        <h2 translate>Error log</h2>
+    </div>
+
+    <!-- Menu -->
+    <div class="menu-slot">
+        <button type="button" mat-icon-button [matMenuTriggerFor]="errorLogListMenu">
+            <mat-icon>more_vert</mat-icon>
+        </button>
+    </div>
+</os-head-bar>
+
+<mat-menu #errorLogListMenu="matMenu">
+    <!-- Download log -->
+    <button mat-menu-item (click)="onDownloadLog()">
+        <mat-icon>save_alt</mat-icon>
+        <span translate>Download Log</span>
+    </button>
+
+    <!-- Clear log -->
+    <button mat-menu-item color="warn" (click)="onClearLogButton()">
+        <mat-icon>clear_all</mat-icon>
+        <span translate>Clear log</span>
+    </button>
+</mat-menu>
+
+<!-- Error List -->
+<mat-card>
+    <mat-list>
+        <h3 *ngIf="!errorLog.length" mat-subheader>{{ 'No logged errors' | translate }}</h3>
+        <div *ngIf="errorLog.length">
+            <mat-list-item
+                class="error-list-entry"
+                *ngFor="let log of errorLog; let i = index"
+                (click)="onLogListEntry(errorDetailDialog, log, i)"
+            >
+                <mat-icon mat-list-icon>error_outline</mat-icon>
+                <h4 mat-line>{{ log.error.name }}</h4>
+                <p mat-line *ngIf="log.error.message">{{ log.error.message }}</p>
+                <p mat-line>({{ log.date | localizedDate }})</p>
+            </mat-list-item>
+        </div>
+    </mat-list>
+</mat-card>
+
+<!-- Error dialog -->
+<ng-template #errorDetailDialog>
+    <h1 mat-dialog-title>
+        {{ openedError.error.name | translate }}
+    </h1>
+
+    <div mat-dialog-content>
+        <h4>{{ 'Message' | translate }}:</h4>
+        <span>{{ openedError.error.message }}</span>
+
+        <h4>{{ 'Stack' | translate }}:</h4>
+        <span>{{ openedError.error.stack }}</span>
+    </div>
+
+    <div mat-dialog-actions>
+        <button mat-button [mat-dialog-close]="null">
+            <span translate>OK</span>
+        </button>
+        <button color="warn" mat-button [mat-dialog-close]="true">
+            <span translate>Delete</span>
+        </button>
+    </div>
+</ng-template>

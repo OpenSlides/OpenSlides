@@ -8,6 +8,7 @@ import { TranslateService } from '@ngx-translate/core'; // showcase
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { ConfigRepositoryService } from 'app/core/repositories/config/config-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { BaseViewComponent } from 'app/site/base/base-view';
 
 /**
@@ -55,13 +56,14 @@ export class StartComponent extends BaseViewComponent implements OnInit {
     public constructor(
         titleService: Title,
         translate: TranslateService,
-        matSnackbar: MatSnackBar,
+        matSnackBar: MatSnackBar,
+        errorService: ErrorService,
         private configService: ConfigService,
         private configRepo: ConfigRepositoryService,
         private fb: FormBuilder,
         private operator: OperatorService
     ) {
-        super(titleService, translate, matSnackbar);
+        super(titleService, translate, matSnackBar, errorService);
         this.startForm = this.fb.group({
             general_event_welcome_title: ['', Validators.required],
             general_event_welcome_text: ''

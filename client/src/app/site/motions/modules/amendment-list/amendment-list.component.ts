@@ -12,6 +12,7 @@ import { AmendmentFilterListService } from '../../services/amendment-filter-list
 import { AmendmentSortListService } from '../../services/amendment-sort-list.service';
 import { StorageService } from 'app/core/core-services/storage.service';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { LinenumberingService } from 'app/core/ui-services/linenumbering.service';
 import { OverlayService } from 'app/core/ui-services/overlay.service';
 import { ItemVisibilityChoices } from 'app/shared/models/agenda/item';
@@ -90,6 +91,7 @@ export class AmendmentListComponent extends BaseListViewComponent<ViewMotion> im
         titleService: Title,
         translate: TranslateService,
         matSnackBar: MatSnackBar,
+        errorService: ErrorService,
         storage: StorageService,
         private route: ActivatedRoute,
         public motionRepo: MotionRepositoryService,
@@ -103,7 +105,7 @@ export class AmendmentListComponent extends BaseListViewComponent<ViewMotion> im
         private pdfExport: MotionPdfExportService,
         private overlayService: OverlayService
     ) {
-        super(titleService, translate, matSnackBar, storage);
+        super(titleService, translate, matSnackBar, errorService, storage);
         super.setTitle('Amendments');
         this.canMultiSelect = true;
     }

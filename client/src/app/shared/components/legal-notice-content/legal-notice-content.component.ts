@@ -7,6 +7,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { environment } from 'environments/environment';
 
 import { HttpService } from 'app/core/core-services/http.service';
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { LoginDataService } from 'app/core/ui-services/login-data.service';
 import { BaseViewComponent } from 'app/site/base/base-view';
 
@@ -132,12 +133,13 @@ export class LegalNoticeContentComponent extends BaseViewComponent implements On
     public constructor(
         title: Title,
         translate: TranslateService,
-        matSnackbar: MatSnackBar,
+        matSnackBar: MatSnackBar,
+        errorService: ErrorService,
         private loginDataService: LoginDataService,
         private http: HttpService,
         fb: FormBuilder
     ) {
-        super(title, translate, matSnackbar);
+        super(title, translate, matSnackBar, errorService);
         this.formGroup = fb.group({
             legalNotice: ''
         });

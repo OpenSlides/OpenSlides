@@ -15,6 +15,7 @@ import { OperatorService } from 'app/core/core-services/operator.service';
 import { TimeTravelService } from 'app/core/core-services/time-travel.service';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { isDetailNavigable } from 'app/shared/models/base/detail-navigable';
 import { History } from 'app/shared/models/core/history';
@@ -80,6 +81,7 @@ export class HistoryListComponent extends BaseViewComponent implements OnInit {
         titleService: Title,
         translate: TranslateService,
         matSnackBar: MatSnackBar,
+        errorService: ErrorService,
         private viewModelStore: ViewModelStoreService,
         private router: Router,
         private operator: OperatorService,
@@ -91,7 +93,7 @@ export class HistoryListComponent extends BaseViewComponent implements OnInit {
         private activatedRoute: ActivatedRoute,
         private collectionMapper: CollectionStringMapperService
     ) {
-        super(titleService, translate, matSnackBar);
+        super(titleService, translate, matSnackBar, errorService);
 
         this.modelSelectForm = this.formBuilder.group({
             model: []

@@ -8,6 +8,7 @@ import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 
 import { AppPermissions, GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { Group } from 'app/shared/models/users/group';
 import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
@@ -74,12 +75,13 @@ export class GroupListComponent extends BaseViewComponent implements OnInit {
         titleService: Title,
         protected translate: TranslateService, // protected required for ng-translate-extract
         matSnackBar: MatSnackBar,
+        errorService: ErrorService,
         private dialog: MatDialog,
         private repo: GroupRepositoryService,
         private promptService: PromptService,
         private fb: FormBuilder
     ) {
-        super(titleService, translate, matSnackBar);
+        super(titleService, translate, matSnackBar, errorService);
     }
 
     /**

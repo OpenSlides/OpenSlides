@@ -7,6 +7,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { NewEntry } from 'app/core/ui-services/base-import.service';
 import { CsvExportService } from 'app/core/ui-services/csv-export.service';
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { User } from 'app/shared/models/users/user';
 import { BaseImportListComponent } from 'app/site/base/base-import-list';
 import { UserImportService } from '../../services/user-import.service';
@@ -33,13 +34,14 @@ export class UserImportListComponent extends BaseImportListComponent<User> {
      */
     public constructor(
         titleService: Title,
-        matSnackBar: MatSnackBar,
-        formBuilder: FormBuilder,
         public translate: TranslateService,
-        private exporter: CsvExportService,
-        importer: UserImportService
+        matSnackBar: MatSnackBar,
+        errorService: ErrorService,
+        importer: UserImportService,
+        formBuilder: FormBuilder,
+        private exporter: CsvExportService
     ) {
-        super(importer, titleService, translate, matSnackBar);
+        super(titleService, translate, matSnackBar, errorService, importer);
         this.textAreaForm = formBuilder.group({ inputtext: [''] });
     }
 

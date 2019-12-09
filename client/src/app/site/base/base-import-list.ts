@@ -8,6 +8,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { auditTime } from 'rxjs/operators';
 
 import { BaseImportService, NewEntry, ValueLabelCombination } from 'app/core/ui-services/base-import.service';
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { BaseModel } from 'app/shared/models/base/base-model';
 import { getLongPreview, getShortPreview } from 'app/shared/utils/previewStrings';
 import { BaseViewComponent } from './base-view';
@@ -112,12 +113,13 @@ export abstract class BaseImportListComponent<M extends BaseModel> extends BaseV
      */
 
     public constructor(
-        protected importer: BaseImportService<M>,
         titleService: Title,
         translate: TranslateService,
-        matSnackBar: MatSnackBar
+        matSnackBar: MatSnackBar,
+        errorService: ErrorService,
+        protected importer: BaseImportService<M>
     ) {
-        super(titleService, translate, matSnackBar);
+        super(titleService, translate, matSnackBar, errorService);
         this.initTable();
         this.importer.errorEvent.subscribe(this.raiseError);
     }

@@ -17,6 +17,7 @@ import { ViewGroup } from 'app/site/users/models/view-group';
 import { BaseIsListOfSpeakersContentObjectRepository } from '../base-is-list-of-speakers-content-object-repository';
 import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
 import { DataStoreService } from '../../core-services/data-store.service';
+import { OpenSlidesError } from 'app/core/definitions/openslides-error';
 
 const MediafileRelations: RelationDefinition[] = [
     {
@@ -38,6 +39,18 @@ const MediafileRelations: RelationDefinition[] = [
         foreignViewModel: ViewGroup
     }
 ];
+
+/**
+ * Custom medaifile upload error
+ */
+export class MediaUploadError extends OpenSlidesError {
+    public info: string;
+
+    public constructor(public message: string) {
+        super(message, 'MediaUploadError');
+        Object.setPrototypeOf(this, MediaUploadError.prototype);
+    }
+}
 
 /**
  * Repository for MediaFiles

@@ -4,6 +4,7 @@ import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { Motion } from 'app/shared/models/motions/motion';
 import { BaseImportListComponent } from 'app/site/base/base-import-list';
 import { MotionCsvExportService } from 'app/site/motions/services/motion-csv-export.service';
@@ -46,10 +47,11 @@ export class MotionImportListComponent extends BaseImportListComponent<Motion> {
         titleService: Title,
         matSnackBar: MatSnackBar,
         translate: TranslateService,
+        errorService: ErrorService,
         importer: MotionImportService,
         private motionCSVExport: MotionCsvExportService
     ) {
-        super(importer, titleService, translate, matSnackBar);
+        super(titleService, translate, matSnackBar, errorService, importer);
     }
 
     /**

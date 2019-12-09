@@ -7,6 +7,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { CsvExportService } from 'app/core/ui-services/csv-export.service';
 import { DurationService } from 'app/core/ui-services/duration.service';
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { ItemVisibilityChoices } from 'app/shared/models/agenda/item';
 import { BaseImportListComponent } from 'app/site/base/base-import-list';
 import { CreateTopic } from 'app/site/topics/models/create-topic';
@@ -38,14 +39,15 @@ export class TopicImportListComponent extends BaseImportListComponent<CreateTopi
      */
     public constructor(
         titleService: Title,
-        matSnackBar: MatSnackBar,
         translate: TranslateService,
+        matSnackBar: MatSnackBar,
+        errorService: ErrorService,
         importer: TopicImportService,
         formBuilder: FormBuilder,
         private exporter: CsvExportService,
         private durationService: DurationService
     ) {
-        super(importer, titleService, translate, matSnackBar);
+        super(titleService, translate, matSnackBar, errorService, importer);
         this.textAreaForm = formBuilder.group({ inputtext: [''] });
     }
 

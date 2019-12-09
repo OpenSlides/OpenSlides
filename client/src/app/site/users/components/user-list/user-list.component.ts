@@ -15,6 +15,7 @@ import { _ } from 'app/core/translate/translation-marker';
 import { ChoiceService } from 'app/core/ui-services/choice.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { CsvExportService } from 'app/core/ui-services/csv-export.service';
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { genders } from 'app/shared/models/users/user';
 import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
@@ -156,8 +157,9 @@ export class UserListComponent extends BaseListViewComponent<ViewUser> implement
         titleService: Title,
         protected translate: TranslateService, // protected required for ng-translate-extract
         matSnackBar: MatSnackBar,
-        private route: ActivatedRoute,
+        errorService: ErrorService,
         storage: StorageService,
+        private route: ActivatedRoute,
         public repo: UserRepositoryService,
         private groupRepo: GroupRepositoryService,
         private choiceService: ChoiceService,
@@ -171,7 +173,7 @@ export class UserListComponent extends BaseListViewComponent<ViewUser> implement
         private userPdf: UserPdfExportService,
         private dialog: MatDialog
     ) {
-        super(titleService, translate, matSnackBar, storage);
+        super(titleService, translate, matSnackBar, errorService, storage);
 
         // enable multiSelect for this listView
         this.canMultiSelect = true;

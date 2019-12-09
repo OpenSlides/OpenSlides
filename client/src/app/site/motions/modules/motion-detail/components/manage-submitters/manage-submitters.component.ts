@@ -9,6 +9,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { User } from 'app/shared/models/users/user';
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { ViewMotion } from 'app/site/motions/models/view-motion';
@@ -70,12 +71,13 @@ export class ManageSubmittersComponent extends BaseViewComponent {
         title: Title,
         translate: TranslateService,
         matSnackBar: MatSnackBar,
+        errorService: ErrorService,
         private viewModelStore: ViewModelStoreService,
         private motionRepository: MotionRepositoryService,
         private userRepository: UserRepositoryService,
         public perms: LocalPermissionsService
     ) {
-        super(title, translate, matSnackBar);
+        super(title, translate, matSnackBar, errorService);
 
         this.addSubmitterForm = new FormGroup({ userId: new FormControl([]) });
         this.editSubmitterObservable = this.editSubmitterSubject.asObservable();

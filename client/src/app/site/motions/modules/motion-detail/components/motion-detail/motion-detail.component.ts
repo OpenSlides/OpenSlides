@@ -32,6 +32,7 @@ import { TagRepositoryService } from 'app/core/repositories/tags/tag-repository.
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { DiffLinesInParagraph, LineRange } from 'app/core/ui-services/diff.service';
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { LinenumberingService } from 'app/core/ui-services/linenumbering.service';
 import { PersonalNoteService } from 'app/core/ui-services/personal-note.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
@@ -426,6 +427,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         title: Title,
         protected translate: TranslateService, // protected required for ng-translate-extract
         matSnackBar: MatSnackBar,
+        errorService: ErrorService,
         public vp: ViewportService,
         public operator: OperatorService,
         public perms: LocalPermissionsService,
@@ -454,7 +456,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         private routingStateService: RoutingStateService,
         private cd: ChangeDetectorRef
     ) {
-        super(title, translate, matSnackBar);
+        super(title, translate, matSnackBar, errorService);
     }
 
     /**
@@ -818,7 +820,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
             const response = await this.repo.create(motion);
             this.router.navigate(['./motions/' + response.id]);
         } catch (e) {
-            this.raiseError(this.translate.instant(e));
+            this.raiseError(e);
         }
     }
 
@@ -1527,7 +1529,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      *
      * @param error the error message passed by the upload component
      */
-    public showUploadError(error: string): void {
+    public showUploadError(error: Error): void {
         this.raiseError(error);
     }
 

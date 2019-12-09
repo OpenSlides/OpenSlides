@@ -8,6 +8,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ChangeRecommendationRepositoryService } from 'app/core/repositories/motions/change-recommendation-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { DiffService, LineRange } from 'app/core/ui-services/diff.service';
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ViewUnifiedChange, ViewUnifiedChangeType } from 'app/shared/models/motions/view-unified-change';
 import { mediumDialogSettings } from 'app/shared/utils/dialog-settings';
@@ -93,6 +94,7 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
         title: Title,
         protected translate: TranslateService, // protected required for ng-translate-extract
         matSnackBar: MatSnackBar,
+        errorService: ErrorService,
         private diff: DiffService,
         private recoRepo: ChangeRecommendationRepositoryService,
         private dialogService: MatDialog,
@@ -100,7 +102,7 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
         private el: ElementRef,
         private promptService: PromptService
     ) {
-        super(title, translate, matSnackBar);
+        super(title, translate, matSnackBar, errorService);
         this.configService.get<number>('motions_line_length').subscribe(lineLength => (this.lineLength = lineLength));
         this.configService.get<string>('motions_preamble').subscribe(preamble => (this.preamble = preamble));
     }

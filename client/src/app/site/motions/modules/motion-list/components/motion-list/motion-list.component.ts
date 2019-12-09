@@ -15,6 +15,7 @@ import { WorkflowRepositoryService } from 'app/core/repositories/motions/workflo
 import { TagRepositoryService } from 'app/core/repositories/tags/tag-repository.service';
 import { OsFilterOptionCondition } from 'app/core/ui-services/base-filter-list.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { OverlayService } from 'app/core/ui-services/overlay.service';
 import { ViewportService } from 'app/core/ui-services/viewport.service';
 import { infoDialogSettings, largeDialogSettings } from 'app/shared/utils/dialog-settings';
@@ -200,8 +201,9 @@ export class MotionListComponent extends BaseListViewComponent<ViewMotion> imple
         titleService: Title,
         protected translate: TranslateService, // protected required for ng-translate-extract
         matSnackBar: MatSnackBar,
-        private route: ActivatedRoute,
+        errorService: ErrorService,
         storage: StorageService,
+        private route: ActivatedRoute,
         public filterService: MotionFilterListService,
         public sortService: MotionSortListService,
         private router: Router,
@@ -218,7 +220,7 @@ export class MotionListComponent extends BaseListViewComponent<ViewMotion> imple
         private overlayService: OverlayService,
         public vp: ViewportService
     ) {
-        super(titleService, translate, matSnackBar, storage);
+        super(titleService, translate, matSnackBar, errorService, storage);
         this.canMultiSelect = true;
     }
 

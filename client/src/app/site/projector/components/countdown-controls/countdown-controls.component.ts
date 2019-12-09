@@ -7,6 +7,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { StorageService } from 'app/core/core-services/storage.service';
 import { CountdownRepositoryService } from 'app/core/repositories/projector/countdown-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { ProjectionDialogService } from 'app/core/ui-services/projection-dialog.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { Projector } from 'app/shared/models/core/projector';
@@ -64,13 +65,14 @@ export class CountdownControlsComponent extends BaseViewComponent {
         titleService: Title,
         translate: TranslateService,
         matSnackBar: MatSnackBar,
+        errorService: ErrorService,
         private repo: CountdownRepositoryService,
         private configService: ConfigService,
         private promptService: PromptService,
         private projectionDialogService: ProjectionDialogService,
         private storage: StorageService
     ) {
-        super(titleService, translate, matSnackBar);
+        super(titleService, translate, matSnackBar, errorService);
 
         this.configService.get<number>('agenda_countdown_warning_time').subscribe(time => (this.warningTime = time));
     }

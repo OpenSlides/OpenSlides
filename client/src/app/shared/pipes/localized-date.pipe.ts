@@ -13,13 +13,20 @@ import * as moment from 'moment';
 export class LocalizedDatePipe implements PipeTransform {
     public constructor(private translate: TranslateService) {}
 
-    public transform(value: any, dateFormat: string = 'lll'): any {
+    public transform(date: Date | number, dateFormat: string = 'lll'): any {
+        let unixDate: number;
+        if (date instanceof Date) {
+            unixDate = date.getTime() / 1000;
+        } else if (typeof date === 'number') {
+            unixDate = date;
+        }
+
         const lang = this.translate.currentLang ? this.translate.currentLang : this.translate.defaultLang;
-        if (!value) {
+        if (!date) {
             return '';
         }
         moment.locale(lang);
-        const dateLocale = moment.unix(value).local();
+        const dateLocale = moment.unix(unixDate).local();
         return dateLocale.format(dateFormat);
     }
 }

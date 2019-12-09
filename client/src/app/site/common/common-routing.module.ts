@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
+import { ErrorLogComponent } from './components/error-log/error-log.component';
 import { ErrorComponent } from './components/error/error.component';
 import { LegalNoticeComponent } from './components/legal-notice/legal-notice.component';
 import { PrivacyPolicyComponent } from './components/privacy-policy/privacy-policy.component';
@@ -24,6 +25,10 @@ const routes: Routes = [
     {
         path: 'error',
         component: ErrorComponent
+    },
+    {
+        path: 'errorlog',
+        component: ErrorLogComponent
     }
 ];
 

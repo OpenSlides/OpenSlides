@@ -18,6 +18,7 @@ import { BehaviorSubject, timer } from 'rxjs';
 
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { ProjectorRepositoryService } from 'app/core/repositories/projector/projector-repository.service';
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { Projector } from 'app/shared/models/core/projector';
 import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
 import { BaseViewComponent } from 'app/site/base/base-view';
@@ -74,13 +75,14 @@ export class ProjectorListComponent extends BaseViewComponent implements OnInit,
         titleService: Title,
         protected translate: TranslateService, // protected required for ng-translate-extract
         matSnackBar: MatSnackBar,
+        errorService: ErrorService,
         private repo: ProjectorRepositoryService,
         private formBuilder: FormBuilder,
         private operator: OperatorService,
         private dialogService: MatDialog,
         private cd: ChangeDetectorRef
     ) {
-        super(titleService, translate, matSnackBar);
+        super(titleService, translate, matSnackBar, errorService);
 
         this.createForm = this.formBuilder.group({
             name: ['', Validators.required]

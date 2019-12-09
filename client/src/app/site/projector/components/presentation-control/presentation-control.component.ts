@@ -6,6 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { ProjectorService } from 'app/core/core-services/projector.service';
 import { MediafileRepositoryService } from 'app/core/repositories/mediafiles/mediafile-repository.service';
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { MediafileProjectorElement } from 'app/site/mediafiles/models/mediafile-projector-element';
@@ -54,11 +55,12 @@ export class PresentationControlComponent extends BaseViewComponent {
         titleService: Title,
         translate: TranslateService,
         matSnackBar: MatSnackBar,
+        errorService: ErrorService,
         private mediafileRepo: MediafileRepositoryService,
         private slideManager: SlideManager,
         private projectorService: ProjectorService
     ) {
-        super(titleService, translate, matSnackBar);
+        super(titleService, translate, matSnackBar, errorService);
     }
 
     /**

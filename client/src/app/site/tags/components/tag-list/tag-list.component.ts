@@ -9,6 +9,7 @@ import { PblColumnDefinition } from '@pebula/ngrid';
 
 import { StorageService } from 'app/core/core-services/storage.service';
 import { TagRepositoryService } from 'app/core/repositories/tags/tag-repository.service';
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { Tag } from 'app/shared/models/core/tag';
 import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
@@ -69,6 +70,7 @@ export class TagListComponent extends BaseListViewComponent<ViewTag> implements 
     public constructor(
         titleService: Title,
         matSnackBar: MatSnackBar,
+        errorService: ErrorService,
         storage: StorageService,
         public repo: TagRepositoryService,
         protected translate: TranslateService, // protected required for ng-translate-extract
@@ -76,7 +78,7 @@ export class TagListComponent extends BaseListViewComponent<ViewTag> implements 
         private dialog: MatDialog,
         private formBuilder: FormBuilder
     ) {
-        super(titleService, translate, matSnackBar, storage);
+        super(titleService, translate, matSnackBar, errorService, storage);
     }
 
     /**

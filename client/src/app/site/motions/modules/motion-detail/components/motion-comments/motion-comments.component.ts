@@ -7,6 +7,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { MotionCommentSectionRepositoryService } from 'app/core/repositories/motions/motion-comment-section-repository.service';
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { MotionComment } from 'app/shared/models/motions/motion';
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { ViewMotion } from 'app/site/motions/models/view-motion';
@@ -70,15 +71,16 @@ export class MotionCommentsComponent extends BaseViewComponent {
      * @param matSnackBar showing errors and information
      */
     public constructor(
+        titleService: Title,
+        translate: TranslateService,
+        matSnackBar: MatSnackBar,
+        errorService: ErrorService,
         private commentRepo: MotionCommentSectionRepositoryService,
         private formBuilder: FormBuilder,
         private operator: OperatorService,
-        private pdfService: MotionPdfExportService,
-        titleService: Title,
-        translate: TranslateService,
-        matSnackBar: MatSnackBar
+        private pdfService: MotionPdfExportService
     ) {
-        super(titleService, translate, matSnackBar);
+        super(titleService, translate, matSnackBar, errorService);
 
         this.commentRepo.getViewModelListObservable().subscribe(sections => this.setSections(sections));
         this.operator.getUserObservable().subscribe(() => this.setSections(this.commentRepo.getViewModelList()));
@@ -142,7 +144,8 @@ export class MotionCommentsComponent extends BaseViewComponent {
             },
             error => {
                 this.error = true;
-                this.raiseError(`${error} :"${section.name}"`);
+                // TODO: requires manual testing. Might require the injection of "section.name" somewhere
+                this.raiseError(error);
             }
         );
     }

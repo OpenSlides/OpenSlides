@@ -6,6 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { ConfigRepositoryService } from 'app/core/repositories/config/config-repository.service';
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { BaseViewComponent } from 'app/site/base/base-view';
 
 @Component({
@@ -34,11 +35,12 @@ export class PrivacyPolicyComponent extends BaseViewComponent implements OnInit 
     public constructor(
         title: Title,
         protected translate: TranslateService,
-        matSnackbar: MatSnackBar,
+        matSnackBar: MatSnackBar,
+        errorService: ErrorService,
         private configRepo: ConfigRepositoryService,
         private operator: OperatorService
     ) {
-        super(title, translate, matSnackbar);
+        super(title, translate, matSnackBar, errorService);
     }
 
     public ngOnInit(): void {

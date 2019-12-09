@@ -8,6 +8,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { AssignmentRepositoryService } from 'app/core/repositories/assignments/assignment-repository.service';
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { CalculablePollKey, MajorityMethod } from 'app/core/ui-services/poll.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { mediumDialogSettings } from 'app/shared/utils/dialog-settings';
@@ -128,17 +129,18 @@ export class AssignmentPollComponent extends BaseViewComponent implements OnInit
      */
     public constructor(
         titleService: Title,
+        public translate: TranslateService,
         matSnackBar: MatSnackBar,
+        errorService: ErrorService,
         public pollService: AssignmentPollService,
         private operator: OperatorService,
         private assignmentRepo: AssignmentRepositoryService,
-        public translate: TranslateService,
         public dialog: MatDialog,
         private promptService: PromptService,
         private formBuilder: FormBuilder,
         private pdfService: AssignmentPollPdfService
     ) {
-        super(titleService, translate, matSnackBar);
+        super(titleService, translate, matSnackBar, errorService);
     }
 
     /**

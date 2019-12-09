@@ -8,6 +8,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { MotionRepositoryService, ParagraphToChoose } from 'app/core/repositories/motions/motion-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { CreateMotion } from 'app/site/motions/models/create-motion';
@@ -69,15 +70,16 @@ export class AmendmentCreateWizardComponent extends BaseViewComponent {
     public constructor(
         titleService: Title,
         protected translate: TranslateService, // protected required for ng-translate-extract
+        matSnackBar: MatSnackBar,
+        errorService: ErrorService,
         private configService: ConfigService,
         private formBuilder: FormBuilder,
         private repo: MotionRepositoryService,
         private route: ActivatedRoute,
         private router: Router,
-        private promptService: PromptService,
-        matSnackBar: MatSnackBar
+        private promptService: PromptService
     ) {
-        super(titleService, translate, matSnackBar);
+        super(titleService, translate, matSnackBar, errorService);
         this.createForm();
 
         this.configService.get<number>('motions_line_length').subscribe(lineLength => {

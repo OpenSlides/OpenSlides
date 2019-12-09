@@ -1,0 +1,12 @@
+.error-list-entry {
+    height: auto !important;
+    cursor: pointer;
+
+    .mat-list-item-content > .mat-list-text > .mat-line {
+        // white-space: pre-line;
+    }
+}
+
+.error-list-entry + .error-list-entry {
+    margin-top: 20px;
+}

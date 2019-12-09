@@ -6,6 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
+import { ErrorService } from 'app/core/ui-services/error.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ItemVisibilityChoices } from 'app/shared/models/agenda/item';
 import { SortTreeFilterOption, SortTreeViewComponent } from 'app/site/base/sort-tree.component';
@@ -51,10 +52,11 @@ export class AgendaSortComponent extends SortTreeViewComponent<ViewItem> impleme
         title: Title,
         translate: TranslateService,
         matSnackBar: MatSnackBar,
+        errorService: ErrorService,
         private agendaRepo: ItemRepositoryService,
         promptService: PromptService
     ) {
-        super(title, translate, matSnackBar, promptService);
+        super(title, translate, matSnackBar, errorService, promptService);
         this.itemsObservable = this.agendaRepo.getViewModelListObservable();
     }
 
