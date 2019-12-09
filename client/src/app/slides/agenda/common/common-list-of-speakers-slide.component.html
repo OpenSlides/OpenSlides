@@ -1,7 +1,7 @@
 <div *ngIf="data">
     <div class="slidetitle">
-        <h1 translate>
-            List of speakers
+        <h1>
+            {{ 'List of speakers' | translate }}
             <mat-icon *ngIf="data.data.closed">lock</mat-icon>
         </h1>
         <h2>

@@ -360,13 +360,6 @@ msgstr "Nachfragen, voreingestellt nein"
 msgid "Ask, default yes"
 msgstr "Nachfragen, voreingestellt ja"
 
-msgid ""
-"At least given name or surname have to be filled in. All other fields are "
-"optional and may be empty."
-msgstr ""
-"Mindestens der Vorname oder der Nachname müssen angegeben sein. Alle übrigen"
-" Felder sind optional und dürfen leer sein."
-
 msgid "Attachments"
 msgstr "Anhänge"
 
@@ -685,6 +678,9 @@ msgstr "Aktuelles Datum"
 
 msgid "Current list of speakers"
 msgstr "Aktuelle Redeliste"
+
+msgid "Custom aspect ratio"
+msgstr "Eigenes Seitenverhältnis"
 
 msgid "Custom number of ballot papers"
 msgstr "Benutzerdefinierte Anzahl von Stimmzetteln"
@@ -1135,9 +1131,6 @@ msgstr "Versteckter Eintrag"
 msgid "Hide internal items when projecting subitems"
 msgstr "Interne Einträge ausblenden bei der Projektion von Untereinträgen"
 
-msgid "Hide meta information box on projector"
-msgstr "Meta-Informations-Box auf dem Projektor ausblenden"
-
 msgid "Hide more text"
 msgstr "weniger anzeigen"
 
@@ -1209,9 +1202,6 @@ msgstr "Initiales Passwort"
 msgid "Initiate update check for all clients"
 msgstr "Update-Prüfung für alle Clients starten"
 
-msgid "Inline"
-msgstr "innerhalb"
-
 msgid "Input format: DD.MM.YYYY HH:MM"
 msgstr "Eingabeformat: TT.MM.JJJJ HH:MM"
 
@@ -1271,6 +1261,9 @@ msgstr "Ist Gremium"
 
 msgid "Is favorite"
 msgstr "Ist Favorit"
+
+msgid "Is no amendment and has no amendments"
+msgstr "Ist kein Änderungsantrag und hat keine Änderungsanträge"
 
 msgid "Is not a committee"
 msgstr "Ist kein Gremium"
@@ -1671,6 +1664,13 @@ msgstr "Altes Passwort"
 
 msgid "One email was send sucessfully."
 msgstr "Eine E-Mail wurde erfolgreich versandt."
+
+msgid ""
+"One of given name, surname and username has to be filled in. All other "
+"fields are optional and may be empty."
+msgstr ""
+"Mindestens Vor- oder Nachname muss angegeben werden. Alle übrigen Felder "
+"sind optional und dürfen leer sein."
 
 msgid "One vote per candidate"
 msgstr "Eine Stimme pro Kandidat/in"
@@ -2137,6 +2137,9 @@ msgstr "Favorit löschen"
 msgid "Set as parent"
 msgstr "Als Eltern setzen"
 
+msgid "Set as reference projector"
+msgstr "Als Referenzprojektor setzen"
+
 msgid "Set category"
 msgstr "Sachgebiet setzen"
 
@@ -2214,6 +2217,10 @@ msgstr "Kopf- und Fußzeile anzeigen"
 
 msgid "Show logo"
 msgstr "Logo anzeigen"
+
+msgid "Show meta information box below the title on projector"
+msgstr ""
+"Meta-Informations-Box auf dem Projektor unterhalb des Antragstitels anzeigen"
 
 msgid "Show orange countdown in the last x seconds of speaking time"
 msgstr "Countdown in den letzten x Sekunden der Redezeit orange darstellen"
@@ -2860,6 +2867,9 @@ msgstr "Verbindungen"
 
 msgid "contribution"
 msgstr "Wortmeldung"
+
+msgid "custom"
+msgstr "benutzerdefiniert"
 
 msgid "disabled"
 msgstr "deaktiviert"

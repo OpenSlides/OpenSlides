@@ -326,11 +326,6 @@ msgstr ""
 msgid "Ask, default yes"
 msgstr ""
 
-msgid ""
-"At least given name or surname have to be filled in. All other fields are "
-"optional and may be empty."
-msgstr ""
-
 msgid "Attachments"
 msgstr ""
 
@@ -644,6 +639,9 @@ msgid "Current date"
 msgstr ""
 
 msgid "Current list of speakers"
+msgstr ""
+
+msgid "Custom aspect ratio"
 msgstr ""
 
 msgid "Custom number of ballot papers"
@@ -1067,9 +1065,6 @@ msgstr ""
 msgid "Hide internal items when projecting subitems"
 msgstr ""
 
-msgid "Hide meta information box on projector"
-msgstr ""
-
 msgid "Hide more text"
 msgstr ""
 
@@ -1138,9 +1133,6 @@ msgstr ""
 msgid "Initiate update check for all clients"
 msgstr ""
 
-msgid "Inline"
-msgstr ""
-
 msgid "Input format: DD.MM.YYYY HH:MM"
 msgstr ""
 
@@ -1199,6 +1191,9 @@ msgid "Is committee"
 msgstr ""
 
 msgid "Is favorite"
+msgstr ""
+
+msgid "Is no amendment and has no amendments"
 msgstr ""
 
 msgid "Is not a committee"
@@ -1594,6 +1589,11 @@ msgid "Old password"
 msgstr ""
 
 msgid "One email was send sucessfully."
+msgstr ""
+
+msgid ""
+"One of given name, surname and username has to be filled in. All other "
+"fields are optional and may be empty."
 msgstr ""
 
 msgid "One vote per candidate"
@@ -2056,6 +2056,9 @@ msgstr ""
 msgid "Set as parent"
 msgstr ""
 
+msgid "Set as reference projector"
+msgstr ""
+
 msgid "Set category"
 msgstr ""
 
@@ -2132,6 +2135,9 @@ msgid "Show header and footer"
 msgstr ""
 
 msgid "Show logo"
+msgstr ""
+
+msgid "Show meta information box below the title on projector"
 msgstr ""
 
 msgid "Show orange countdown in the last x seconds of speaking time"
@@ -2721,6 +2727,9 @@ msgid "connections"
 msgstr ""
 
 msgid "contribution"
+msgstr ""
+
+msgid "custom"
 msgstr ""
 
 msgid "disabled"

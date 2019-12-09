@@ -206,6 +206,9 @@ msgstr "Отправлено электронное письмо со ссылк
 msgid "An unknown error occurred."
 msgstr "Произошла неизвестная ошибка."
 
+msgid "Apply"
+msgstr ""
+
 msgid "Arabic"
 msgstr "Арабский"
 
@@ -268,6 +271,10 @@ msgstr "Вы уверены, что хотите удалить этого уч�
 msgid "Are you sure you want to delete this projector?"
 msgstr "Вы уверены, что хотите удалить этот проектор?"
 
+msgid ""
+"Are you sure you want to delete this speaker from this list of speakers?"
+msgstr ""
+
 msgid "Are you sure you want to delete this statute paragraph?"
 msgstr "Вы уверены, что хотите удалить этот пункт устава?"
 
@@ -312,6 +319,16 @@ msgid "Are you sure you want to renumber all motions of this category?"
 msgstr ""
 "Вы уверены, что хотите изменить нумерацию всех заявлений этой категории?"
 
+msgid ""
+"Are you sure you want to reset all options to factory defaults? All changes "
+"of this settings group will be lost!"
+msgstr ""
+
+msgid ""
+"Are you sure you want to reset all options to factory defaults? Changes of "
+"all settings group will be lost!"
+msgstr ""
+
 msgid "Are you sure you want to reset all passwords to the default ones?"
 msgstr "Вы уверены, что хотите сбросить все пароли на пароли по умолчанию?"
 
@@ -337,13 +354,6 @@ msgstr "Спросите, по умолчанию нет"
 msgid "Ask, default yes"
 msgstr "Спросите, по умолчанию да"
 
-msgid ""
-"At least given name or surname have to be filled in. All other fields are "
-"optional and may be empty."
-msgstr ""
-"Необходимо указать хотя бы имя или фамилию. Все остальные поля являются "
-"необязательными и могут быть пустыми."
-
 msgid "Attachments"
 msgstr "Вложения"
 
@@ -355,9 +365,6 @@ msgstr "Назад"
 
 msgid "Back to login"
 msgstr "Вернуться к логину"
-
-msgid "Background color"
-msgstr "Фоновый цвет"
 
 msgid "Ballot"
 msgstr "Голосование"
@@ -559,12 +566,6 @@ msgstr "Выберите 0, чтобы отключить систему под�
 msgid "Chyron"
 msgstr "Хирон"
 
-msgid "Chyron background color"
-msgstr "Фоновый цвет хирона"
-
-msgid "Chyron font color"
-msgstr "Цвет шрифта хирона"
-
 msgid "Clear all"
 msgstr "Очистить все"
 
@@ -633,7 +634,7 @@ msgid "Countdown"
 msgstr "Обратный отсчет"
 
 msgid "Countdown and traffic light"
-msgstr ""
+msgstr "Обратный отсчет и светофор"
 
 msgid "Countdown description"
 msgstr "Описание обратного отсчета"
@@ -670,6 +671,9 @@ msgstr "Текущая дата"
 
 msgid "Current list of speakers"
 msgstr "Текущий список спикеров"
+
+msgid "Custom aspect ratio"
+msgstr ""
 
 msgid "Custom number of ballot papers"
 msgstr "Индивидуальное количество избирательных бюллетеней"
@@ -710,6 +714,9 @@ msgstr "Комментарий по умолчанию на избиратель
 msgid "Default encoding for all csv exports"
 msgstr "Кодировка по умолчанию для всех экспортов CSV"
 
+msgid "Default group"
+msgstr ""
+
 msgid "Default line numbering"
 msgstr "Нумерация строк по умолчанию"
 
@@ -746,6 +753,9 @@ msgstr "Удалить окончательный шаблон печати"
 
 msgid "Delete message"
 msgstr "Удалить сообщение"
+
+msgid "Delete projector"
+msgstr ""
 
 msgid "Delete recommendation"
 msgstr "Удалить рекомендацию"
@@ -788,7 +798,7 @@ msgid "Disabled (no percents)"
 msgstr "Отключено (без процентов)"
 
 msgid "Display type"
-msgstr ""
+msgstr "Тип дисплея"
 
 msgid "Divergent:"
 msgstr "Отклоняющийся:"
@@ -802,11 +812,14 @@ msgstr "Не вздумайте"
 msgid "Do not forget to save your changes!"
 msgstr "Не забудьте сохранить свои изменения!"
 
+msgid "Do not set identifier"
+msgstr ""
+
 msgid "Do you really want to exit this page?"
 msgstr "Вы действительно хотите выйти из этой страницы?"
 
 msgid "Do you really want to go ahead?"
-msgstr ""
+msgstr "Вы действительно хотите продолжить?"
 
 msgid "Do you really want to save your changes?"
 msgstr "Вы действительно хотите сохранить свои изменения?"
@@ -837,6 +850,9 @@ msgstr "Редактировать детали"
 
 msgid "Edit details for"
 msgstr "Редактировать детали для"
+
+msgid "Edit projector"
+msgstr ""
 
 msgid "Edit statute paragraph"
 msgstr "Редактировать пункт параграфа"
@@ -1035,9 +1051,6 @@ msgstr ""
 " кандидата, сумма всех голосов всех кандидатов составляет 100%. В противном "
 "случае для каждого кандидата сумма всех голосов составляет 100%."
 
-msgid "Foreground color"
-msgstr "Фоновый цвет"
-
 msgid "Forgot Password?"
 msgstr "Забыли пароль?"
 
@@ -1051,7 +1064,7 @@ msgid "Front page title"
 msgstr "Название главной страницы"
 
 msgid "Fullscreen"
-msgstr ""
+msgstr "Полноэкранный"
 
 msgid "Gender"
 msgstr "Пол"
@@ -1086,6 +1099,9 @@ msgstr "Группы с разрешениями на запись"
 msgid "Guest"
 msgstr "Гость"
 
+msgid "Has amendments"
+msgstr ""
+
 msgid "Has no speakers"
 msgstr "Не имеет спикеров"
 
@@ -1095,15 +1111,6 @@ msgstr "Имеет заметки"
 msgid "Has speakers"
 msgstr "Имеет спикеров"
 
-msgid "Header background color"
-msgstr "Цвет фона заголовка"
-
-msgid "Header font color"
-msgstr "Цвет шрифта заголовка"
-
-msgid "Headline color"
-msgstr "Цвет заголовка"
-
 msgid "Help text for access data and welcome PDF"
 msgstr "Текст справки для доступа к данным и приветствия PDF"
 
@@ -1112,9 +1119,6 @@ msgstr "Скрытый элемент"
 
 msgid "Hide internal items when projecting subitems"
 msgstr "Скрыть внутренние элементы при проецировании подпунктов"
-
-msgid "Hide meta information box on projector"
-msgstr "Скрыть поле метаинформации на проекторе"
 
 msgid "Hide more text"
 msgstr "Скрыть больше текста"
@@ -1186,9 +1190,6 @@ msgstr "Первоначальный пароль"
 msgid "Initiate update check for all clients"
 msgstr "Начать проверку обновлений для всех клиентов"
 
-msgid "Inline"
-msgstr "В пределах"
-
 msgid "Input format: DD.MM.YYYY HH:MM"
 msgstr "Формат ввода: ДД.ММ.ГГГГ ЧЧ:ММ"
 
@@ -1228,6 +1229,9 @@ msgstr "Неверный номер строки"
 msgid "Invalid votes"
 msgstr "Недействительные голоса"
 
+msgid "Is SAML user"
+msgstr ""
+
 msgid "Is a committee"
 msgstr "Комитет"
 
@@ -1237,11 +1241,17 @@ msgstr "Является ли активным"
 msgid "Is already projected"
 msgstr "Уже прогнозируется"
 
+msgid "Is amendment"
+msgstr ""
+
 msgid "Is committee"
 msgstr "Является ли комитетом"
 
 msgid "Is favorite"
 msgstr "Является фаворитом"
+
+msgid "Is no amendment and has no amendments"
+msgstr ""
 
 msgid "Is not a committee"
 msgstr "Это не комитет"
@@ -1326,6 +1336,9 @@ msgstr "Войти как Гость"
 
 msgid "Logout"
 msgstr "Выйти"
+
+msgid "Main motion and line number"
+msgstr ""
 
 msgid "Mark as elected"
 msgstr "Отметить как избранный"
@@ -1641,11 +1654,16 @@ msgstr "Старый пароль"
 msgid "One email was send sucessfully."
 msgstr "Одно электронное письмо было отправлено успешно."
 
+msgid ""
+"One of given name, surname and username has to be filled in. All other "
+"fields are optional and may be empty."
+msgstr ""
+
 msgid "One vote per candidate"
 msgstr "Один голос за кандидата"
 
 msgid "Only countdown"
-msgstr ""
+msgstr "Только обратный отсчет"
 
 msgid "Only for internal notes."
 msgstr "Только для внутренних примечаний."
@@ -1658,7 +1676,7 @@ msgstr ""
 "Только присутствующие участники могут быть добавлены в список спикеров."
 
 msgid "Only traffic light"
-msgstr ""
+msgstr "Только светофор"
 
 msgid "Open"
 msgstr "Открыто"
@@ -1673,7 +1691,7 @@ msgid "Open projection dialog"
 msgstr "Открыть диалог проекции"
 
 msgid "Open requests to speak"
-msgstr ""
+msgstr "Открытые запросы на выступление"
 
 msgid "OpenSlides Theme"
 msgstr "Тема OpenSlides"
@@ -1686,6 +1704,9 @@ msgstr "OpenSlides временно сбрасывается на следующ
 
 msgid "Origin"
 msgstr "Происхождение"
+
+msgid "Original"
+msgstr ""
 
 msgid "Original version"
 msgstr "Исходная версия"
@@ -1903,6 +1924,9 @@ msgstr "Очередь"
 msgid "Quorum"
 msgstr "Кворум"
 
+msgid "Re-add last speaker"
+msgstr ""
+
 msgid "Reason"
 msgstr "Причина"
 
@@ -1920,9 +1944,6 @@ msgstr "Рекомендацию установить на {arg1}"
 
 msgid "Refer to committee"
 msgstr "Обратитесь в комитет"
-
-msgid "Reference projector for current list of speakers:"
-msgstr "Эталонный проектор для текущего списка ораторов:"
 
 msgid "Referral to committee"
 msgstr "Направление в комитет"
@@ -2010,6 +2031,9 @@ msgstr "Сброс рекомендации"
 msgid "Reset state"
 msgstr "Сброс состояния"
 
+msgid "Reset to factory defaults"
+msgstr ""
+
 msgid "Resolution and size"
 msgstr "Разрешение и размер"
 
@@ -2024,6 +2048,9 @@ msgstr "Римские "
 
 msgid "Save"
 msgstr "Сохранить"
+
+msgid "Save all changes"
+msgstr ""
 
 msgid "Scan this QR code to connect to WLAN."
 msgstr "Сканируйте этот QR-код для подключения к вай-фай."
@@ -2097,6 +2124,9 @@ msgstr "Убрать из фаворитов"
 msgid "Set as parent"
 msgstr "Установить в качестве родителя"
 
+msgid "Set as reference projector"
+msgstr ""
+
 msgid "Set category"
 msgstr "Установить категорию"
 
@@ -2108,9 +2138,6 @@ msgstr "Сделать фаворитом"
 
 msgid "Set hidden"
 msgstr "Скрыть"
-
-msgid "Set identifier"
-msgstr "Установить идентификатор"
 
 msgid "Set internal"
 msgstr "Установить как внутренний"
@@ -2132,6 +2159,9 @@ msgstr "Установить рекомендацию"
 
 msgid "Set status"
 msgstr "Установить статус"
+
+msgid "Sets this projector as the reference for the current list of speakers"
+msgstr ""
 
 msgid "Settings"
 msgstr "Настройки"
@@ -2175,6 +2205,9 @@ msgstr "Показать верхний и нижний колонтитулы"
 msgid "Show logo"
 msgstr "Показать логотип"
 
+msgid "Show meta information box below the title on projector"
+msgstr ""
+
 msgid "Show orange countdown in the last x seconds of speaking time"
 msgstr "Показать оранжевый отсчет в последние х секунд выступления"
 
@@ -2195,6 +2228,9 @@ msgstr "Показать поле расширения состояния"
 
 msgid "Show submitters and recommendation in table of contents"
 msgstr "Показать авторов и рекомендации в оглавлении"
+
+msgid "Show subtitles in the agenda"
+msgstr ""
 
 msgid "Show the sequential number for a motion"
 msgstr "Показать порядковый номер для заявления"
@@ -2221,13 +2257,16 @@ msgid "Sort agenda"
 msgstr "Сортировать повестку дня"
 
 msgid "Sort by identifier"
-msgstr ""
+msgstr "Сортировать по идентификатору"
 
 msgid "Sort categories"
 msgstr "Сортировать категории"
 
 msgid "Sort comments"
 msgstr "Сортировать комментарии"
+
+msgid "Sort list of speakers"
+msgstr ""
 
 msgid "Sort motions"
 msgstr "Сортировать заявления"
@@ -2437,6 +2476,9 @@ msgstr ""
 msgid "There are no items left to chose from"
 msgstr "Нет пунктов для выбора"
 
+msgid "There is an error with this amendment. Please edit it manually."
+msgstr ""
+
 msgid "This change collides with another one."
 msgstr "Это изменение сталкивается с другим."
 
@@ -2475,7 +2517,7 @@ msgstr ""
 "списке вызовов:"
 
 msgid "This will reset all made changes and sort the call list."
-msgstr ""
+msgstr "Это сбросит все внесенные изменения и отсортирует список вызовов."
 
 msgid "This will send an update notification to all active clients"
 msgstr "Это отправит уведомление об обновлении всем активным клиентам"
@@ -2544,6 +2586,9 @@ msgstr "Всего поданных голосов"
 
 msgid "Touch the book icon to enter text"
 msgstr "Нажмите на значок книги, чтобы ввести текст"
+
+msgid "Translation"
+msgstr ""
 
 msgid "Two-thirds majority"
 msgstr "Две трети большинства"
@@ -2734,6 +2779,9 @@ msgstr "Вы не можете изменить состояние заявле�
 msgid "You do not have the required permission to see that page!"
 msgstr "У вас нет необходимого разрешения для просмотра этой страницы!"
 
+msgid "You have to fill this field."
+msgstr ""
+
 msgid "You made changes."
 msgstr "Вы внесли изменения."
 
@@ -2742,6 +2790,12 @@ msgstr "Вы изменяете лично установленный парол
 
 msgid "Your password was resetted successfully!"
 msgstr "Ваш пароль был успешно восстановлен!"
+
+msgid "Zoom in"
+msgstr ""
+
+msgid "Zoom out"
+msgstr ""
 
 msgid "[Begin speech] starts the countdown, [End speech] stops the countdown."
 msgstr ""
@@ -2789,6 +2843,9 @@ msgstr "связи"
 
 msgid "contribution"
 msgstr "вклад"
+
+msgid "custom"
+msgstr ""
 
 msgid "disabled"
 msgstr "Отключено"
