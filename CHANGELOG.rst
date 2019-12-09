@@ -4,6 +4,82 @@
 
 https://openslides.com
 
+Version 3.1 (2019-XX-XX)
+========================
+`Milestone <https://github.com/OpenSlides/OpenSlides/milestones/3.0>`_
+
+General:
+ - Improved loading time of OpenSlides [#5061, 5087, #5110, #5146 - Breaks IE11].
+ - Improved Websocket reconnection - works now more reliable [#5060].
+ - Improved performance by replacing deprecated encode and decode library with faster manual approaches [#5085, #5092].
+ - Improved mobile views for small devices [#5106].
+ - Improved virtual scrolling behavior of tables: remember last scroll position [#5156].
+ - New SingleSignOn login method via SAML [#5000].
+ - New inline editing for start page, legal notice and privacy policy [#5086].
+ - Reordered settings in subpages for better overview [#4878, #5083, #5096].
+ - Added html meta noindex tag to prevent search engines finding instances of OpenSlides [#5061].
+ - Added server log entries for usage of notify feature [#5066].
+ - Added server-side HTML validation for personal notes (motions) and about me field (users) [#5121].
+ - Fixed an issue where projector button in lists was always not indicating the projected element [#5055].
+ - Fixed issues where search-filter, property-filter and property-sort in list views does not work correctly [#5065].
+ - Fixed an issues where list view entries using virtual scrolling become invisible [#5072].
+ - Fixed an error where loading spinner would not disappear while offline mode [#5151].
+ - Various cleanups and improvements to usability, performance and translation.
+
+Agenda:
+ - New config option to show motion submitters as subtitle in agenda list [#5002, #5094].
+ - New view to sort sepakers of a list - preventing unwanted changes esp. using mobile devices [#5069].
+ - New button to readd the last speaker to the top of the list [#5069, #5067].
+ - New agenda list filter 'item type' (topic, motion, motion block, election) [#5084].
+ - Changed window title for current list of speakers [#5037].
+ - Added motion title in agenda list [#5063].
+
+Motions:
+ - New option to export personal notes [#5075].
+ - New amendment filter for motion list [#5056, #5157].
+ - New possibility to change state and recommendation in motion list using quick edit [#5071].
+ - Added multi select actions to amendment list [#5041].
+ - Added search value selector in multi select action dialogs [#5058].
+ - Added support for nested lists with line numbers in PDF export [#5138].
+ - Improved scaling of motion tile view [#5038].
+ - Improved performance for large motions with dozens of amendments by implementing manual change detection in motion detail [#5074, #5139].
+ - Improved display of long names for states and recommendations in drop down menu in motion detail view [#5079].
+ - Improved amendment slide by showing only changed line(s)s without surrounding paragraph [#5144].
+ - Fixed line number errors during creation of amendments [#5023].
+ - Fixed an issue that ol/ul lists are not printed in amendment PDF [#5051].
+ - Fixed the amendment option "Show entire motion text" [#5052].
+ - Fixed a rare bug in final version where change recommendations or amendments would have been hidden [#5070].
+ - Fixed PDF export in final version: use modified final version if available [#5139].
+ - Fixes a bug where the event name was printed twice in the PDF header [#5155].
+
+Elections:
+ - Fixed errors by entering votes and sorting candidates [#5129, #5125].
+ - Fixed a permission issue that prevented nominating another participants for elections [#5154].
+
+Users:
+ - Fixed wrong permission check for set password [#5128].
+
+Mediafiles:
+ - Fixed mediafile upload path [#4710].
+ - Fixed double slash in mediafile URL [#5031].
+ - Original filename must now be unique for files [#5123].
+
+Projector:
+ - New projector edit dialog with preview [#5043].
+ - Added support for custom aspect ratios in projector edit dialog; database migration required [#5141].
+ - Added missing autoupdates for changed projection defaults [#5045].
+ - Added scaleable tile for projector list [#5043].
+ - Added a lock icon on the list of speaker slide if list has been closed [#5154].
+ - Improved autoupdates for projectors by using changeIDs [#5064].
+ - Improved performance by preventing high CPU usage on Firefox in projector detail view [#5022].
+ - Changed config option to show nice horizontal meta box on motion slide [#5088].
+ - Changed config option "Event date" back to string format [#5042].
+ - Saved countdown settings [#5053].
+
+Breaking Changes:
+ - Due to faster model handling (using the 'Proxy' function) Internet Explorer 11 cannot be supported anymore!
+
+
 Version 3.0 (2019-09-13)
 ========================
 `Milestone <https://github.com/OpenSlides/OpenSlides/milestones/3.0>`_
