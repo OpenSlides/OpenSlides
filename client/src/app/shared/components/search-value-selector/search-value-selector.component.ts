@@ -152,13 +152,8 @@ export class SearchValueSelectorComponent implements OnDestroy {
                 if (foundId) {
                     return true;
                 }
-
-                return (
-                    item
-                        .toString()
-                        .toLowerCase()
-                        .indexOf(this.searchValue) > -1
-                );
+                const searchableString = this.translate.instant(item.getTitle()).toLowerCase();
+                return searchableString.indexOf(this.searchValue) > -1;
             });
         }
     }
