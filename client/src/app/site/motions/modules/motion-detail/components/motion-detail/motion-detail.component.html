@@ -274,7 +274,14 @@
         </div>
 
         <!-- Recommendation -->
-        <div *ngIf="(perms.isAllowed('change_metadata') || motion.recommendation) && recommender && !editMotion">
+        <div
+            *ngIf="
+                (perms.isAllowed('change_metadata') || motion.recommendation) &&
+                recommender &&
+                motion.possibleRecommendations.length &&
+                !editMotion
+            "
+        >
             <os-extension-field
                 title="{{ recommender }}"
                 [inputValue]="recommendationStateExtension"

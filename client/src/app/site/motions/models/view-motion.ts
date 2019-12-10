@@ -47,7 +47,7 @@ export class ViewMotion extends BaseViewModelWithAgendaItemAndListOfSpeakers<Mot
     }
 
     public get possibleRecommendations(): ViewState[] {
-        return this.workflow ? this.workflow.states.filter(state => state.recommendation_label !== undefined) : null;
+        return this.workflow ? this.workflow.states.filter(state => state.recommendation_label) : [];
     }
 
     public get agenda_type(): number | null {
