@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
@@ -21,7 +21,7 @@ import { MotionPdfExportService } from 'app/site/motions/services/motion-pdf-exp
     templateUrl: './motion-comments.component.html',
     styleUrls: ['./motion-comments.component.scss']
 })
-export class MotionCommentsComponent extends BaseViewComponent {
+export class MotionCommentsComponent extends BaseViewComponent implements OnInit {
     /**
      * An array of all sections the operator can see.
      */
@@ -79,19 +79,27 @@ export class MotionCommentsComponent extends BaseViewComponent {
         matSnackBar: MatSnackBar
     ) {
         super(titleService, translate, matSnackBar);
+    }
 
-        this.commentRepo.getViewModelListObservable().subscribe(sections => this.setSections(sections));
-        this.operator.getUserObservable().subscribe(() => this.setSections(this.commentRepo.getViewModelList()));
+    public ngOnInit(): void {
+        this.subscriptions.push(
+            this.commentRepo.getViewModelListObservable().subscribe(sections => {
+                if (sections && sections.length) {
+                    this.sections = sections;
+                    this.filterSections();
+                }
+            })
+        );
     }
 
     /**
      * sets the `sections` member with sections, if the operator has reading permissions.
-     *
-     * @param allSections A list of all sections available
      */
-    private setSections(allSections: ViewMotionCommentSection[]): void {
-        this.sections = allSections.filter(section => this.operator.isInGroupIds(...section.read_groups_id));
-        this.updateComments();
+    private filterSections(): void {
+        if (this.sections && this.sections.length) {
+            this.sections = this.sections.filter(section => this.operator.isInGroupIds(...section.read_groups_id));
+            this.updateComments();
+        }
     }
 
     /**
