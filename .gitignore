@@ -30,6 +30,7 @@ debug/*
 # Unit test and coverage reports
 .coverage
 tests/file/*
+tests/db.sqlite3.test
 .pytest_cache
 
 # Plugin development

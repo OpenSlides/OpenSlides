@@ -38,7 +38,12 @@ DEBUG = False
 
 # Change this setting to use e. g. PostgreSQL or MySQL.
 
-DATABASES = {"default": {"ENGINE": "django.db.backends.sqlite3"}}
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "TEST": {"NAME": os.path.join(OPENSLIDES_USER_DATA_PATH, "db.sqlite3.test")},
+    }
+}
 
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 
