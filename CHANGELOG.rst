@@ -4,7 +4,7 @@
 
 https://openslides.com
 
-Version 3.1 (2019-XX-XX)
+Version 3.1 (2019-12-13)
 ========================
 `Milestone <https://github.com/OpenSlides/OpenSlides/milestones/3.0>`_
 
