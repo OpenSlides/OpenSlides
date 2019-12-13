@@ -202,7 +202,7 @@ msgid "An unknown error occurred."
 msgstr "Vyskytla se neznámá chyba."
 
 msgid "Apply"
-msgstr ""
+msgstr "Použít"
 
 msgid "Arabic"
 msgstr "Arabský"
@@ -268,7 +268,7 @@ msgstr "Opravdu má být smazán tento promítací stroj?"
 
 msgid ""
 "Are you sure you want to delete this speaker from this list of speakers?"
-msgstr ""
+msgstr "Opravdu má být odstraněn tento řečník ze seznamu řečníků?"
 
 msgid "Are you sure you want to delete this statute paragraph?"
 msgstr "Opravdu má být smazán tento odstavec předpisu?"
@@ -314,11 +314,15 @@ msgid ""
 "Are you sure you want to reset all options to factory defaults? All changes "
 "of this settings group will be lost!"
 msgstr ""
+"Opravdu mají být obnoveny všechny volby na výchozí? Všechna nastavení této "
+"skupiny nastavení budou ztracena!"
 
 msgid ""
 "Are you sure you want to reset all options to factory defaults? Changes of "
 "all settings group will be lost!"
 msgstr ""
+"Opravdu mají být obnoveny všechny volby na výchozí? Změny všech skupin "
+"nastavení budou ztracena!"
 
 msgid "Are you sure you want to reset all passwords to the default ones?"
 msgstr "Opravdu mají být obnovena všechna hesla na výchozí?"
@@ -658,7 +662,7 @@ msgid "Current list of speakers"
 msgstr "Nynější seznam řečníků"
 
 msgid "Custom aspect ratio"
-msgstr ""
+msgstr "Vlastní poměr stran"
 
 msgid "Custom number of ballot papers"
 msgstr "Uživatelsky stanovený počet hlasovacích lístků"
@@ -699,7 +703,7 @@ msgid "Default encoding for all csv exports"
 msgstr "Výchozí kódování pro všechna vyvedení do CSV"
 
 msgid "Default group"
-msgstr ""
+msgstr "Výchozí skupina"
 
 msgid "Default line numbering"
 msgstr "Výchozí číslování řádků"
@@ -736,7 +740,7 @@ msgid "Delete message"
 msgstr "Smazat oznámení"
 
 msgid "Delete projector"
-msgstr ""
+msgstr "Smazat promítací přístroj"
 
 msgid "Delete recommendation"
 msgstr "Smazat doporučení"
@@ -833,7 +837,7 @@ msgid "Edit details for"
 msgstr "Upravit podrobnosti pro"
 
 msgid "Edit projector"
-msgstr ""
+msgstr "Upravit promítací přístroj"
 
 msgid "Edit statute paragraph"
 msgstr "Upravit odstavec předpisu"
@@ -906,6 +910,8 @@ msgid ""
 "Enter number of the next shown speakers. Choose -1 to show all next "
 "speakers."
 msgstr ""
+"Zadejte počet dalších zobrazených řečníků. Vyberte -1 pro ukázání všech "
+"dalších řečníků."
 
 msgid "Enter participant number"
 msgstr "Zadat číslo účastníka"
@@ -1210,7 +1216,7 @@ msgid "Invalid votes"
 msgstr "Neplatné hlasy"
 
 msgid "Is SAML user"
-msgstr ""
+msgstr "Je uživatel SAML"
 
 msgid "Is a committee"
 msgstr "Je výbor"
@@ -1231,7 +1237,7 @@ msgid "Is favorite"
 msgstr "Je oblíbené"
 
 msgid "Is no amendment and has no amendments"
-msgstr ""
+msgstr "Není pozměňovací návrh a nemá řádné pozměňovací návrhy"
 
 msgid "Is not a committee"
 msgstr "Není výbor"
@@ -1318,7 +1324,7 @@ msgid "Logout"
 msgstr "Odhlásit se"
 
 msgid "Main motion and line number"
-msgstr ""
+msgstr "Hlavní návrh a číslo řádku"
 
 msgid "Mark as elected"
 msgstr "Označit jako zvoleného"
@@ -1635,6 +1641,8 @@ msgid ""
 "One of given name, surname and username has to be filled in. All other "
 "fields are optional and may be empty."
 msgstr ""
+"Alespoň musí být vyplněno křestní jméno, příjmení a uživatelské jméno. "
+"Všechna zbývající pole jsou nepovinná a smějí být prázdná."
 
 msgid "One vote per candidate"
 msgstr "Jeden hlas pro uchazeče"
@@ -1682,7 +1690,7 @@ msgid "Origin"
 msgstr "Původ"
 
 msgid "Original"
-msgstr ""
+msgstr "Původní"
 
 msgid "Original version"
 msgstr "Původní verze"
@@ -1901,7 +1909,7 @@ msgid "Quorum"
 msgstr "Usnášeníschopný počet"
 
 msgid "Re-add last speaker"
-msgstr ""
+msgstr "Přidat znovu posledního řečníka"
 
 msgid "Reason"
 msgstr "Zdůvodnění"
@@ -2008,7 +2016,7 @@ msgid "Reset state"
 msgstr "Vynulovat stav"
 
 msgid "Reset to factory defaults"
-msgstr ""
+msgstr "Obnovit výchozí nastavení"
 
 msgid "Resolution and size"
 msgstr "Rozlišení a velikost"
@@ -2026,7 +2034,7 @@ msgid "Save"
 msgstr "Uložit"
 
 msgid "Save all changes"
-msgstr ""
+msgstr "Uložit všechny změny"
 
 msgid "Scan this QR code to connect to WLAN."
 msgstr "Snímat tento QRCode pro spojení s WLAN."
@@ -2101,7 +2109,7 @@ msgid "Set as parent"
 msgstr "Nastavit jako rodiče"
 
 msgid "Set as reference projector"
-msgstr ""
+msgstr "Nastavit jako srovnávací promítací přístroj"
 
 msgid "Set category"
 msgstr "Stanovit obor činnosti"
@@ -2138,6 +2146,7 @@ msgstr "Nastavit stav"
 
 msgid "Sets this projector as the reference for the current list of speakers"
 msgstr ""
+"Nastavit tento promítací přístroj jako odkaz pro nynější seznam řečníků."
 
 msgid "Settings"
 msgstr "Nastavení"
@@ -2183,6 +2192,7 @@ msgstr "Ukázat emblém"
 
 msgid "Show meta information box below the title on projector"
 msgstr ""
+"Ukázat okno s popisnými informacemi na promítacím přístroji pod názvem"
 
 msgid "Show orange countdown in the last x seconds of speaking time"
 msgstr ""
@@ -2207,7 +2217,7 @@ msgid "Show submitters and recommendation in table of contents"
 msgstr "Ukázat navrhovatele a doporučení v obsahu"
 
 msgid "Show subtitles in the agenda"
-msgstr ""
+msgstr "Ukázat v pořadu jednání podnázvy"
 
 msgid "Show the sequential number for a motion"
 msgstr "Ukázat pořadové číslo pro návrh"
@@ -2243,7 +2253,7 @@ msgid "Sort comments"
 msgstr "Řadit poznámky"
 
 msgid "Sort list of speakers"
-msgstr ""
+msgstr "Řadit seznam řečníků"
 
 msgid "Sort motions"
 msgstr "Řadit návrhy"
@@ -2449,7 +2459,7 @@ msgid "There are no items left to chose from"
 msgstr "Nezbyly žádné položky, ze kterých vybrat"
 
 msgid "There is an error with this amendment. Please edit it manually."
-msgstr ""
+msgstr "V tomto pozměňovacím návrhu je chyba. Upravte jej, prosím, ručně."
 
 msgid "This change collides with another one."
 msgstr "Tato změna se střetává s jinou."
@@ -2492,7 +2502,7 @@ msgstr ""
 "vyvolávacím seznamu:"
 
 msgid "This will reset all made changes and sort the call list."
-msgstr ""
+msgstr "Toto vynuluje všechny provedené změny a setřídí vyvolávací seznam."
 
 msgid "This will send an update notification to all active clients"
 msgstr "Toto pošle oznámení o aktualizaci všem činným klientům"
@@ -2563,7 +2573,7 @@ msgid "Touch the book icon to enter text"
 msgstr "Klepněte na ikonu knihy a zadejte text"
 
 msgid "Translation"
-msgstr ""
+msgstr "Překlad"
 
 msgid "Two-thirds majority"
 msgstr "Dvoutřetinová většina"
@@ -2751,7 +2761,7 @@ msgstr ""
 "Nemáte požadované oprávnění k tomu, abyste se mohl podívat na tu stránku."
 
 msgid "You have to fill this field."
-msgstr ""
+msgstr "Musíte vyplnit toto pole."
 
 msgid "You made changes."
 msgstr "Provedl jste změny."
@@ -2763,10 +2773,10 @@ msgid "Your password was resetted successfully!"
 msgstr "Vaše heslo byla úspěšně obnoveno!"
 
 msgid "Zoom in"
-msgstr ""
+msgstr "Přiblížit"
 
 msgid "Zoom out"
-msgstr ""
+msgstr "Oddálit"
 
 msgid "[Begin speech] starts the countdown, [End speech] stops the countdown."
 msgstr "[Začít řeč] spustí odpočítávání, [Ukončit řeč] zastaví odpočítávání."
@@ -2814,7 +2824,7 @@ msgid "contribution"
 msgstr "Hlášení slov"
 
 msgid "custom"
-msgstr ""
+msgstr "vlastní"
 
 msgid "disabled"
 msgstr "Vypnuto"
