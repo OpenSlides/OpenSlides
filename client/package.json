@@ -1,6 +1,6 @@
 {
     "name": "OpenSlides3-Client",
-    "version": "3.0.0-alpha",
+    "version": "3.1.1",
     "repository": {
         "type": "git",
         "url": "git://github.com/OpenSlides/OpenSlides.git"

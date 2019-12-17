@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { ApplicationRef, Component } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { TranslateService } from '@ngx-translate/core';
+import { filter, take } from 'rxjs/operators';
 
 import { ConfigService } from './core/ui-services/config.service';
 import { ConstantsService } from './core/core-services/constants.service';
@@ -64,6 +65,7 @@ export class AppComponent {
      */
     public constructor(
         translate: TranslateService,
+        appRef: ApplicationRef,
         servertimeService: ServertimeService,
         router: Router,
         operator: OperatorService,
@@ -93,7 +95,15 @@ export class AppComponent {
         this.overloadFlatMap();
         this.overloadModulo();
 
-        servertimeService.startScheduler();
+        // Wait until the App reaches a stable state.
+        // Required for the Service Worker.
+        appRef.isStable
+            .pipe(
+                // take only the stable state
+                filter(s => s),
+                take(1)
+            )
+            .subscribe(() => servertimeService.startScheduler());
     }
 
     /**
