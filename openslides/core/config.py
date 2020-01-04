@@ -7,6 +7,7 @@ from django.core.exceptions import ValidationError as DjangoValidationError
 from mypy_extensions import TypedDict
 
 from ..utils.cache import element_cache
+from ..utils.validate import validate_html
 from .exceptions import ConfigError, ConfigNotFound
 from .models import ConfigStore
 
@@ -172,6 +173,9 @@ class ConfigHandler:
                         raise ConfigError(f"{required_entry} has to be given.")
                     if not isinstance(entry[required_entry], str):
                         raise ConfigError(f"{required_entry} has to be a string.")
+
+        if config_variable.input_type == "markupText":
+            value = validate_html(value)
 
         # Save the new value to the database.
         db_value = ConfigStore.objects.get(key=key)
