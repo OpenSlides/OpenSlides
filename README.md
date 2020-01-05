@@ -8,6 +8,10 @@ https://openslides.com for more information.
 
 __Note: OpenSlides 4 is currently under development.__
 
+### Architecture of OpenSlides 4
+
+![System architecture of OpenSlides 4](docs/OpenSlides4-systemarchitecture.png)
+
 
 ## Installation
 
