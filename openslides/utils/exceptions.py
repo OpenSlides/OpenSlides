@@ -1,2 +1,0 @@
-class OpenSlidesError(Exception):
-    pass
