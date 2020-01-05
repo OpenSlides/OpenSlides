@@ -1,9 +1,0 @@
-black
-coverage
-flake8
-isort
-mypy
-pytest
-pytest-django
-pytest-asyncio
-pytest-cov
