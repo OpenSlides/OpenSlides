@@ -13,6 +13,9 @@ __Note: OpenSlides 4 is currently under development.__
 ![System architecture of OpenSlides 4](docs/OpenSlides4-systemarchitecture.png)
 
 
+Read more about our [concept of OpenSlides 4.0](https://github.com/OpenSlides/OpenSlides/wiki/DE%3A-Konzept-OpenSlides-4).
+
+
 ## Installation
 
 __TODO (Installation with docker-compose)__
