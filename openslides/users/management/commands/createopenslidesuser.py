@@ -16,12 +16,14 @@ class Command(BaseCommand):
         parser.add_argument("username", help="The username of the new user.")
         parser.add_argument("password", help="The password of the new user.")
         parser.add_argument("groups_id", help="The group id of the new user.")
+        parser.add_argument("--email", help="The email address of the new user.")
 
     def handle(self, *args, **options):
         user_data = {
             "first_name": options["first_name"],
             "last_name": options["last_name"],
             "default_password": options["password"],
+            "email": options["email"] or "",
         }
         user = User.objects.create_user(
             options["username"], options["password"], skip_autoupdate=True, **user_data
