@@ -159,7 +159,9 @@ class GroupSerializer(ModelSerializer):
     Serializer for django.contrib.auth.models.Group objects.
     """
 
-    permissions = PermissionRelatedField(many=True, queryset=Permission.objects.all())
+    permissions = PermissionRelatedField(
+        many=True, queryset=Permission.objects.all(), required=False
+    )
 
     class Meta:
         model = Group

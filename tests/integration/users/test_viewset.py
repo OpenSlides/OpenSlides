@@ -705,6 +705,18 @@ class GroupCreate(TestCase):
     Tests creation of groups via REST API.
     """
 
+    def test_creation_simple(self):
+        self.client.login(username="admin", password="admin")
+
+        response = self.client.post(
+            reverse("group-list"), {"name": "Test name ldr59xq2mvt96rdayhju"},
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertTrue(
+            Group.objects.filter(name="Test name ldr59xq2mvt96rdayhju").exists()
+        )
+
     def test_creation(self):
         self.client.login(username="admin", password="admin")
         # This contains two valid permissions of the users app.
