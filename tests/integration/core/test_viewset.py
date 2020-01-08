@@ -206,6 +206,8 @@ class ConfigViewSet(TestCase):
     """
     logo_config_key = "logo_web_header"
 
+    html_config_key = "general_event_welcome_text"
+
     def random_string(self):
         return "".join(
             random.choice(string.ascii_letters + string.digits) for i in range(20)
@@ -243,6 +245,16 @@ class ConfigViewSet(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
             config[self.string_config_key], "test_name_39gw4cishcvev2acoqnw"
+        )
+
+    def test_validate_html(self):
+        response = self.client.put(
+            reverse("config-detail", args=[self.html_config_key]),
+            {"value": "<p><foo>bar</foo></p>"},
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(
+            config[self.html_config_key], "<p>&lt;foo&gt;bar&lt;/foo&gt;</p>"
         )
 
     def test_set_none(self):
