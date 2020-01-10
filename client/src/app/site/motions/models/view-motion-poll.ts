@@ -20,6 +20,12 @@ export class ViewMotionPoll extends ViewBasePoll<MotionPoll> implements MotionPo
 
     public readonly pollClassType: 'assignment' | 'motion' = 'motion';
 
+    public initChartLabels(): void {
+        if (!this.candidatesLabels.length) {
+            this.candidatesLabels = ['Votes'];
+        }
+    }
+
     public generateChartData(): ChartData {
         const fields = ['yes', 'no'];
         if (this.pollmethod === MotionPollMethods.YNA) {
@@ -27,7 +33,7 @@ export class ViewMotionPoll extends ViewBasePoll<MotionPoll> implements MotionPo
         }
         const data: ChartData = fields.map(key => ({
             label: key.toUpperCase(),
-            data: [this.options[0][key]],
+            data: this.options.map(option => option[key]),
             backgroundColor: PollColor[key],
             hoverBackgroundColor: PollColor[key]
         }));

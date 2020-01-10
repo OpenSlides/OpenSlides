@@ -4,7 +4,6 @@
     [hasMainButton]="poll ? poll.type === 'analog' && (poll.state === 2 || poll.state === 3) : false"
     [mainButtonIcon]="'bar_chart'"
     [mainActionTooltip]="'Enter votes' | translate"
-    (mainEvent)="enterVote()"
 >
     <div class="title-slot">
         <h2 *ngIf="!!poll">{{ poll.title }}</h2>
@@ -42,23 +41,63 @@
         <div *ngIf="poll.state === 3 || poll.state === 4">
             <h2 translate>Result</h2>
 
-            <div *ngIf="poll.type === 'named'" style="display: grid; grid-template-columns: auto repeat({{ poll.options.length }}, max-content);">
+            <div
+                *ngIf="poll.type === 'named'"
+                style="display: grid; grid-template-columns: auto repeat({{ poll.options.length }}, max-content);"
+            >
                 <!-- top left cell is empty -->
                 <div></div>
                 <!-- header (the assignment related users) -->
                 <ng-container *ngFor="let option of poll.options">
                     <div *ngIf="option.user">{{ option.user.full_name }}</div>
-                    <div *ngIf="!option.user">{{ "Unknown user" | translate}}</div>
+                    <div *ngIf="!option.user">{{ 'Unknown user' | translate }}</div>
                 </ng-container>
                 <!-- rows -->
                 <ng-container *ngFor="let obj of votesByUser | keyvalue">
                     <div *ngIf="obj.value.user">{{ obj.value.user.full_name }}</div>
-                    <div *ngIf="!obj.value.user">{{ "Unknown user" | translate}}</div>
+                    <div *ngIf="!obj.value.user">{{ 'Unknown user' | translate }}</div>
                     <ng-container *ngFor="let option of poll.options">
-                        <div>{{ obj.value.votes[option.user_id]}}</div>
+                        <div>{{ obj.value.votes[option.user_id] }}</div>
                     </ng-container>
                 </ng-container>
             </div>
+            <div class="chart-wrapper"></div>
+            <mat-table [dataSource]="poll.getTableData()">
+                <ng-container matColumnDef="user" sticky>
+                    <mat-header-cell *matHeaderCellDef>User</mat-header-cell>
+                    <mat-cell *matCellDef="let row">{{ row.user }}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="yes">
+                    <mat-header-cell *matHeaderCellDef>Yes</mat-header-cell>
+                    <mat-cell *matCellDef="let row">{{ row.yes }}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="no">
+                    <mat-header-cell *matHeaderCellDef>No</mat-header-cell>
+                    <mat-cell *matCellDef="let row">{{ row.no }}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="abstain">
+                    <mat-header-cell *matHeaderCellDef>Abstain</mat-header-cell>
+                    <mat-cell *matCellDef="let row">{{ row.abstain }}</mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="columnDefinition"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: columnDefinition"></mat-row>
+            </mat-table>
+            <mat-form-field>
+                <mat-select [(ngModel)]="chartType" [placeholder]="'Chart display as' | translate">
+                    <mat-option [value]="'horizontalBar'">{{ 'horizontal Bar' | translate }}</mat-option>
+                    <mat-option [value]="'bar'">{{ 'Bar' | translate }}</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <os-charts
+                *ngIf="chartDataSubject.value"
+                [type]="chartType"
+                [labels]="poll.labels"
+                [showLegend]="true"
+                [data]="chartDataSubject"
+            ></os-charts>
         </div>
     </ng-container>
 </ng-template>

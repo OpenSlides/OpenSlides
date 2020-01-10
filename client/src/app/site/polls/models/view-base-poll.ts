@@ -1,3 +1,4 @@
+
 import { ChartData } from 'app/shared/components/charts/charts.component';
 import { BasePoll, PollState } from 'app/shared/models/poll/base-poll';
 import { ViewAssignmentOption } from 'app/site/assignments/models/view-assignment-option';
@@ -53,6 +54,15 @@ export const PercentBaseVerbose = {
 };
 
 export abstract class ViewBasePoll<M extends BasePoll<M, any> = any> extends BaseProjectableViewModel<M> {
+    public candidatesLabels: string[] = [];
+
+    public get labels(): string[] {
+        if (!this.candidatesLabels.length) {
+            this.initChartLabels();
+        }
+        return this.candidatesLabels;
+    }
+
     public get poll(): M {
         return this._model;
     }
@@ -100,6 +110,11 @@ export abstract class ViewBasePoll<M extends BasePoll<M, any> = any> extends Bas
     public canBeVotedFor: () => boolean;
 
     public abstract getSlide(): ProjectorElementBuildDeskriptor;
+
+    /**
+     * Initializes labels for a chart.
+     */
+    public abstract initChartLabels(): void;
 
     public abstract generateChartData(): ChartData;
 }

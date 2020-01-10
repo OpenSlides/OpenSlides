@@ -4,7 +4,6 @@
     [hasMainButton]="poll ? poll.state === 2 || poll.state === 3 : false"
     [mainButtonIcon]="'bar_chart'"
     [mainActionTooltip]="'Enter votes' | translate"
-    (mainEvent)="enterVote()"
 >
     <div class="title-slot">
         <h2 *ngIf="!!poll">{{ poll.title }}</h2>
@@ -51,13 +50,23 @@
             </div>
             <os-charts [type]="chartType" [labels]="labels" [showLegend]="true" [data]="chartDataSubject"></os-charts> -->
 
-            <div *ngIf="poll.type === 'named'" style="display: grid; grid-template-columns: max-content auto;grid-column-gap: 20px;">
+            <div
+                *ngIf="poll.type === 'named'"
+                style="display: grid; grid-template-columns: max-content auto;grid-column-gap: 20px;"
+            >
                 <ng-container *ngFor="let vote of poll.options[0].votes">
                     <div *ngIf="vote.user">{{ vote.user.full_name }}</div>
-                    <div *ngIf="!vote.user">{{ "Unknown user" | translate}}</div>
+                    <div *ngIf="!vote.user">{{ 'Unknown user' | translate }}</div>
                     <div>{{ vote.valueVerbose }}</div>
                 </ng-container>
             </div>
+            <os-charts
+                *ngIf="chartDataSubject.value"
+                [type]="chartType"
+                [labels]="poll.labels"
+                [showLegend]="true"
+                [data]="chartDataSubject"
+            ></os-charts>
         </div>
     </ng-container>
 </ng-template>

@@ -17,7 +17,7 @@ import { ViewGroup } from 'app/site/users/models/view-group';
 import { BasePollRepositoryService } from '../services/base-poll-repository.service';
 import { ViewBasePoll } from '../models/view-base-poll';
 
-export class BasePollDetailComponent<V extends ViewBasePoll> extends BaseViewComponent implements OnInit {
+export abstract class BasePollDetailComponent<V extends ViewBasePoll> extends BaseViewComponent implements OnInit {
     /**
      * All the groups of users.
      */
@@ -124,7 +124,7 @@ export class BasePollDetailComponent<V extends ViewBasePoll> extends BaseViewCom
      */
     private checkData(): void {
         if (this.poll.state === 3 || this.poll.state === 4) {
-            // this.chartDataSubject.next(this.poll.generateChartData());
+            setTimeout(() => this.chartDataSubject.next(this.poll.generateChartData()));
         }
     }
 
@@ -140,7 +140,6 @@ export class BasePollDetailComponent<V extends ViewBasePoll> extends BaseViewCom
                         this.poll = poll;
                         this.updateBreadcrumbs();
                         this.checkData();
-                        this.labels = this.createChartLabels();
                         this.onPollLoaded();
                     }
                 })
@@ -176,15 +175,6 @@ export class BasePollDetailComponent<V extends ViewBasePoll> extends BaseViewCom
      */
     private actionWrapper(action: Promise<any>): any {
         action.then(() => this.checkData()).catch(this.raiseError);
-    }
-
-    /**
-     * Function to create the labels for the chart.
-     *
-     * @returns An array of `Label`.
-     */
-    private createChartLabels(): Label[] {
-        return ['Number of votes'];
     }
 
     /**

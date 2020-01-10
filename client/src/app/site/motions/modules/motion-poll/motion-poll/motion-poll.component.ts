@@ -81,10 +81,10 @@ export class MotionPollComponent extends BasePollComponent<ViewMotionPoll> {
         translate: TranslateService,
         dialog: MatDialog,
         promptService: PromptService,
-        public repo: MotionPollRepositoryService,
+        public pollRepo: MotionPollRepositoryService,
         pollDialog: MotionPollDialogService,
         public pollService: PollService
     ) {
-        super(titleService, matSnackBar, translate, dialog, promptService, repo, pollDialog);
+        super(titleService, matSnackBar, translate, dialog, promptService, pollRepo, pollDialog);
     }
 }

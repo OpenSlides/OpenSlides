@@ -1,5 +1,8 @@
+import { BehaviorSubject } from 'rxjs';
+
 import { ChartData } from 'app/shared/components/charts/charts.component';
-import { AssignmentPoll } from 'app/shared/models/assignments/assignment-poll';
+import { AssignmentPoll, AssignmentPollMethods } from 'app/shared/models/assignments/assignment-poll';
+import { PollColor } from 'app/shared/models/poll/base-poll';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 import { ViewBasePoll } from 'app/site/polls/models/view-base-poll';
 import { ViewAssignment } from './view-assignment';
@@ -19,7 +22,13 @@ export class ViewAssignmentPoll extends ViewBasePoll<AssignmentPoll> implements 
     public static COLLECTIONSTRING = AssignmentPoll.COLLECTIONSTRING;
     protected _collectionString = AssignmentPoll.COLLECTIONSTRING;
 
+    public tableData = [];
+    public readonly tableChartData: Map<string, BehaviorSubject<ChartData>> = new Map();
     public readonly pollClassType: 'assignment' | 'motion' = 'assignment';
+
+    public get pollmethodVerbose(): string {
+        return AssignmentPollMethodsVerbose[this.pollmethod];
+    }
 
     public getSlide(): ProjectorElementBuildDeskriptor {
         // TODO: update to new voting system?
@@ -36,13 +45,37 @@ export class ViewAssignmentPoll extends ViewBasePoll<AssignmentPoll> implements 
         };
     }
 
-    public get pollmethodVerbose(): string {
-        return AssignmentPollMethodsVerbose[this.pollmethod];
+    public initChartLabels(): void {
+        if (!this.candidatesLabels.length) {
+            this.candidatesLabels = this.options.map(candidate => candidate.user.full_name);
+        }
     }
 
-    // TODO
     public generateChartData(): ChartData {
-        return [];
+        const fields = ['yes', 'no'];
+        if (this.pollmethod === AssignmentPollMethods.YNA) {
+            fields.push('abstain');
+        }
+        const data: ChartData = fields.map(key => ({
+            label: key.toUpperCase(),
+            data: this.options.map(vote => vote[key]),
+            backgroundColor: PollColor[key],
+            hoverBackgroundColor: PollColor[key]
+        }));
+        return data;
+    }
+
+    public getTableData(): {}[] {
+        const data = this.options
+            .map(candidate => ({
+                yes: candidate.yes,
+                no: candidate.no,
+                abstain: candidate.abstain,
+                user: candidate.user.full_name
+            }))
+            .sort((a, b) => b.yes - a.yes);
+
+        return data;
     }
 }
 
