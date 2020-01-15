@@ -1,10 +1,12 @@
 import { Component, Input } from '@angular/core';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { Title } from '@angular/platform-browser';
+import { Router } from '@angular/router';
 
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject } from 'rxjs';
 
+import { OperatorService } from 'app/core/core-services/operator.service';
 import { MotionPollRepositoryService } from 'app/core/repositories/motions/motion-poll-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ChartData } from 'app/shared/components/charts/charts.component';
@@ -28,7 +30,7 @@ export class MotionPollComponent extends BasePollComponent<ViewMotionPoll> {
      */
     @Input()
     public set poll(value: ViewMotionPoll) {
-        this._poll = value;
+        this.initPoll(value);
 
         const chartData = this.poll.generateChartData();
         for (const data of chartData) {
@@ -54,17 +56,33 @@ export class MotionPollComponent extends BasePollComponent<ViewMotionPoll> {
     /**
      * Number of votes for `Yes`.
      */
-    public voteYes = 0;
+    // public voteYes = 0;
+    public set voteYes(n: number | string) {
+        this._voteYes = n;
+    }
+
+    public get voteYes(): number | string {
+        return this.verboseForNumber(this._voteYes as number);
+    }
 
     /**
      * Number of votes for `No`.
      */
-    public voteNo = 0;
+    public set voteNo(n: number | string) {
+        this._voteNo = n;
+    }
 
-    /**
-     * The motion-poll.
-     */
-    private _poll: ViewMotionPoll;
+    public get voteNo(): number | string {
+        return this.verboseForNumber(this._voteNo as number);
+    }
+
+    public get showChart(): boolean {
+        return this._voteYes >= 0 && this._voteNo >= 0;
+    }
+
+    private _voteNo: number | string = 0;
+
+    private _voteYes: number | string = 0;
 
     /**
      * Constructor.
@@ -81,10 +99,30 @@ export class MotionPollComponent extends BasePollComponent<ViewMotionPoll> {
         translate: TranslateService,
         dialog: MatDialog,
         promptService: PromptService,
-        public repo: MotionPollRepositoryService,
+        public pollRepo: MotionPollRepositoryService,
         pollDialog: MotionPollDialogService,
-        public pollService: PollService
+        public pollService: PollService,
+        private router: Router,
+        private operator: OperatorService
     ) {
-        super(titleService, matSnackBar, translate, dialog, promptService, repo, pollDialog);
+        super(titleService, matSnackBar, translate, dialog, promptService, pollRepo, pollDialog);
+    }
+
+    public openPoll(): void {
+        if (this.operator.hasPerms('motions.can_manage_polls')) {
+            this.router.navigate(['motions', 'polls', this.poll.id]);
+        }
+    }
+
+    private verboseForNumber(input: number): number | string {
+        input = Math.trunc(input);
+        switch (input) {
+            case -1:
+                return 'Majority';
+            case -2:
+                return 'Not documented';
+            default:
+                return input;
+        }
     }
 }

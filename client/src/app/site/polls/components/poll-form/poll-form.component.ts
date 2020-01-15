@@ -64,6 +64,12 @@ export class PollFormComponent extends BaseViewComponent implements OnInit {
     public pollValues: [string, unknown][] = [];
 
     /**
+     * Model for the checkbox.
+     * If true, the given poll will immediately be published.
+     */
+    public publishImmediately = true;
+
+    /**
      * Constructor. Retrieves necessary metadata from the pollService,
      * injects the poll itself
      */
@@ -73,18 +79,10 @@ export class PollFormComponent extends BaseViewComponent implements OnInit {
         snackbar: MatSnackBar,
         private fb: FormBuilder,
         private groupRepo: GroupRepositoryService,
-        private pollService: PollService
+        public pollService: PollService
     ) {
         super(title, translate, snackbar);
-
-        this.contentForm = this.fb.group({
-            title: ['', Validators.required],
-            type: ['', Validators.required],
-            pollmethod: ['', Validators.required],
-            onehundred_percent_base: ['', Validators.required],
-            majority_method: ['', Validators.required],
-            groups_id: [[]]
-        });
+        this.initContentForm();
     }
 
     /**
@@ -133,6 +131,10 @@ export class PollFormComponent extends BaseViewComponent implements OnInit {
         return { ...this.data, ...this.contentForm.value };
     }
 
+    public isValidPercentBaseWithMethod(base: PercentBase): boolean {
+        return !(base === PercentBase.YNA && this.contentForm.get('pollmethod').value === 'YN');
+    }
+
     /**
      * This updates the poll-values to get correct data in the view.
      *
@@ -151,5 +153,16 @@ export class PollFormComponent extends BaseViewComponent implements OnInit {
                 this.groupRepo.getNameForIds(...data.groups_id)
             ]);
         }
+    }
+
+    private initContentForm(): void {
+        this.contentForm = this.fb.group({
+            title: ['', Validators.required],
+            type: ['', Validators.required],
+            pollmethod: ['', Validators.required],
+            onehundred_percent_base: ['', Validators.required],
+            majority_method: ['', Validators.required],
+            groups_id: [[]]
+        });
     }
 }

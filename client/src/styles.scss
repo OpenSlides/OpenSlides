@@ -24,6 +24,7 @@
 @import './app/site/common/components/super-search/super-search.component.scss';
 @import './app/shared/components/rounded-input/rounded-input.component.scss';
 @import './app/shared/components/meta-text-block/meta-text-block.component.scss';
+@import './app/shared/components/banner/banner.component.scss-theme.scss';
 
 /** fonts */
 @import './assets/styles/fonts.scss';
@@ -48,6 +49,7 @@ $narrow-spacing: (
     @include os-super-search-style($theme);
     @include os-rounded-input-style($theme);
     @include os-meta-text-block-style($theme);
+    @include os-banner-style($theme);
 }
 
 /** Load projector specific SCSS values */

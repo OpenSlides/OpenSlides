@@ -11,14 +11,14 @@ import { GroupRepositoryService } from 'app/core/repositories/users/group-reposi
 import { BasePollDialogService } from 'app/core/ui-services/base-poll-dialog.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { Breadcrumb } from 'app/shared/components/breadcrumb/breadcrumb.component';
-import { ChartData } from 'app/shared/components/charts/charts.component';
-import { PollState } from 'app/shared/models/poll/base-poll';
+import { ChartData, ChartType } from 'app/shared/components/charts/charts.component';
+import { PollState, PollType } from 'app/shared/models/poll/base-poll';
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { ViewGroup } from 'app/site/users/models/view-group';
 import { BasePollRepositoryService } from '../services/base-poll-repository.service';
 import { ViewBasePoll } from '../models/view-base-poll';
 
-export class BasePollDetailComponent<V extends ViewBasePoll> extends BaseViewComponent implements OnInit {
+export abstract class BasePollDetailComponent<V extends ViewBasePoll> extends BaseViewComponent implements OnInit {
     /**
      * All the groups of users.
      */
@@ -42,7 +42,8 @@ export class BasePollDetailComponent<V extends ViewBasePoll> extends BaseViewCom
     /**
      * Sets the type of the shown chart, if votes are entered.
      */
-    public chartType = 'horizontalBar';
+    // public chartType = 'horizontalBar';
+    public abstract get chartType(): ChartType;
 
     /**
      * The different labels for the votes (used for chart).
@@ -99,7 +100,7 @@ export class BasePollDetailComponent<V extends ViewBasePoll> extends BaseViewCom
         const text = 'Do you really want to delete the selected poll?';
 
         if (await this.promptDialog.open(title, text)) {
-            await this.repo.delete(this.poll);
+            this.repo.delete(this.poll).then(() => this.onDeleted());
         }
     }
 
@@ -121,12 +122,23 @@ export class BasePollDetailComponent<V extends ViewBasePoll> extends BaseViewCom
         this.chartDataSubject.next(this.poll.generateChartData());
     }
 
+    protected onDeleted(): void {}
+
+    /**
+     * Called after the poll has been loaded. Meant to be overwritten by subclasses who need initial access to the poll
+     */
+    protected onPollLoaded(): void {}
+
+    protected onStateChanged(): void {}
+
+    protected abstract hasPerms(): boolean;
+
     /**
      * This checks, if the poll has votes.
      */
     private checkData(): void {
         if (this.poll.state === 3 || this.poll.state === 4) {
-            // this.chartDataSubject.next(this.poll.generateChartData());
+            setTimeout(() => this.chartDataSubject.next(this.poll.generateChartData()));
         }
     }
 
@@ -142,7 +154,6 @@ export class BasePollDetailComponent<V extends ViewBasePoll> extends BaseViewCom
                         this.poll = poll;
                         this.updateBreadcrumbs();
                         this.checkData();
-                        this.labels = this.createChartLabels();
                         this.onPollLoaded();
                     }
                 })
@@ -158,22 +169,17 @@ export class BasePollDetailComponent<V extends ViewBasePoll> extends BaseViewCom
     }
 
     /**
-     * Called after the poll has been loaded. Meant to be overwritten by subclasses who need initial access to the poll
-     */
-    public onPollLoaded(): void {}
-
-    /**
      * Action for the different breadcrumbs.
      */
     private async changeState(): Promise<void> {
-        this.actionWrapper(this.repo.changePollState(this.poll));
+        this.actionWrapper(this.repo.changePollState(this.poll), this.onStateChanged);
     }
 
     /**
      * Resets the state of a motion-poll.
      */
     private async resetState(): Promise<void> {
-        this.actionWrapper(this.repo.resetPoll(this.poll));
+        this.actionWrapper(this.repo.resetPoll(this.poll), this.onStateChanged);
     }
 
     /**
@@ -183,17 +189,15 @@ export class BasePollDetailComponent<V extends ViewBasePoll> extends BaseViewCom
      *
      * @returns Any promise-like.
      */
-    private actionWrapper(action: Promise<any>): any {
-        action.then(() => this.checkData()).catch(this.raiseError);
-    }
-
-    /**
-     * Function to create the labels for the chart.
-     *
-     * @returns An array of `Label`.
-     */
-    private createChartLabels(): Label[] {
-        return ['Number of votes'];
+    private actionWrapper(action: Promise<any>, callback?: () => any): any {
+        action
+            .then(() => {
+                this.checkData();
+                if (callback) {
+                    callback();
+                }
+            })
+            .catch(this.raiseError);
     }
 
     /**
@@ -220,11 +224,14 @@ export class BasePollDetailComponent<V extends ViewBasePoll> extends BaseViewCom
         if (!this.poll) {
             return null;
         }
+        if (!this.hasPerms()) {
+            return null;
+        }
         switch (this.poll.state) {
             case PollState.Created:
                 return state === 2 ? () => this.changeState() : null;
             case PollState.Started:
-                return null;
+                return this.poll.type !== PollType.Analog && state === 3 ? () => this.changeState() : null;
             case PollState.Finished:
                 if (state === 1) {
                     return () => this.resetState();
