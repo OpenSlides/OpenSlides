@@ -1,4 +1,5 @@
-<div *ngFor="let banner of banners"
+<div
+    *ngFor="let banner of banners"
     class="banner"
     [ngClass]="(banner.type === 'history' ? 'history-mode-indicator' : '') + ' ' + (banner.class ? banner.class : '')"
     [ngSwitch]="banner.type"

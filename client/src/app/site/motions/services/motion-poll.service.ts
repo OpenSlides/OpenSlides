@@ -52,7 +52,7 @@ export class MotionPollService extends PollService {
         const length = this.pollRepo.getViewModelList().filter(item => item.motion_id === poll.motion_id).length;
 
         poll.title = !length ? this.translate.instant('Vote') : `${this.translate.instant('Vote')} (${length + 1})`;
-        poll.pollmethod = MotionPollMethods.YN;
+        poll.pollmethod = MotionPollMethods.YNA;
         poll.motion_id = poll.motion_id;
     }
 }

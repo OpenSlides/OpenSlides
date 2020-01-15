@@ -20,6 +20,20 @@ export class ViewMotionPoll extends ViewBasePoll<MotionPoll> implements MotionPo
 
     public readonly pollClassType: 'assignment' | 'motion' = 'motion';
 
+    private tableKeys = ['yes', 'no', 'abstain'];
+    private voteKeys = ['votesvalid', 'votesinvalid', 'votescast'];
+
+    public initChartLabels(): string[] {
+        return ['Votes'];
+    }
+
+    public generateTableData(): {}[] {
+        let tableData = this.options.flatMap(vote => this.tableKeys.map(key => ({ key: key, value: vote[key] })));
+        tableData.push(...this.voteKeys.map(key => ({ key: key, value: this[key] })));
+        tableData = tableData.map(entry => (entry.value >= 0 ? entry : { key: entry.key, value: null }));
+        return tableData;
+    }
+
     public generateChartData(): ChartData {
         const fields = ['yes', 'no'];
         if (this.pollmethod === MotionPollMethods.YNA) {
@@ -27,17 +41,10 @@ export class ViewMotionPoll extends ViewBasePoll<MotionPoll> implements MotionPo
         }
         const data: ChartData = fields.map(key => ({
             label: key.toUpperCase(),
-            data: [this.options[0][key]],
+            data: this.options.map(option => option[key]),
             backgroundColor: PollColor[key],
             hoverBackgroundColor: PollColor[key]
         }));
-
-        data.push({
-            label: 'Votes invalid',
-            data: [this.votesinvalid],
-            backgroundColor: PollColor.votesinvalid,
-            hoverBackgroundColor: PollColor.votesinvalid
-        });
 
         return data;
     }

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -9,7 +9,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { AssignmentPollRepositoryService } from 'app/core/repositories/assignments/assignment-poll-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
+import { ChartType } from 'app/shared/components/charts/charts.component';
+import { AssignmentPollMethods } from 'app/shared/models/assignments/assignment-poll';
 import { BasePollComponent } from 'app/site/polls/components/base-poll.component';
+import { PollService } from 'app/site/polls/services/poll.service';
 import { AssignmentPollDialogService } from '../../services/assignment-poll-dialog.service';
 import { ViewAssignmentOption } from '../../models/view-assignment-option';
 import { ViewAssignmentPoll } from '../../models/view-assignment-poll';
@@ -24,6 +27,27 @@ import { ViewAssignmentPoll } from '../../models/view-assignment-poll';
     encapsulation: ViewEncapsulation.None
 })
 export class AssignmentPollComponent extends BasePollComponent<ViewAssignmentPoll> implements OnInit {
+    @Input()
+    public set poll(value: ViewAssignmentPoll) {
+        this.initPoll(value);
+        this.candidatesLabels = value.initChartLabels();
+        const chartData =
+            value.pollmethod === AssignmentPollMethods.Votes
+                ? value.generateCircleChartData()
+                : value.generateChartData();
+        this.chartDataSubject.next(chartData);
+    }
+
+    public get poll(): ViewAssignmentPoll {
+        return this._poll;
+    }
+
+    public get chartType(): ChartType {
+        return this.poll && this.poll.pollmethod === AssignmentPollMethods.Votes ? 'doughnut' : 'horizontalBar';
+    }
+
+    public candidatesLabels: string[] = [];
+
     /**
      * Form for updating the poll's description
      */
@@ -58,6 +82,7 @@ export class AssignmentPollComponent extends BasePollComponent<ViewAssignmentPol
         promptService: PromptService,
         repo: AssignmentPollRepositoryService,
         pollDialog: AssignmentPollDialogService,
+        public pollService: PollService,
         private operator: OperatorService,
         private formBuilder: FormBuilder
     ) {
