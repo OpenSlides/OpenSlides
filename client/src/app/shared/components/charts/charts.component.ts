@@ -165,8 +165,8 @@ export class ChartsComponent extends BaseViewComponent {
             labels: {}
         },
         scales: {
-            xAxes: [{ ticks: { beginAtZero: true }, gridLines: { offsetGridLines: true } }],
-            yAxes: [{ ticks: { beginAtZero: true }, gridLines: { offsetGridLines: true } }]
+            xAxes: [{ ticks: { beginAtZero: true } }],
+            yAxes: [{ ticks: { beginAtZero: true } }]
         },
         plugins: {
             datalabels: {
@@ -201,7 +201,7 @@ export class ChartsComponent extends BaseViewComponent {
     }
 
     /**
-     * Changes the chart-options, if the `horizontalBar` is used.
+     * Changes the chart-options, if the `stackedBar` is used.
      */
     private setupStackedBar(): void {
         this.chartOptions.scales = Object.assign(this.chartOptions.scales, {
@@ -212,11 +212,11 @@ export class ChartsComponent extends BaseViewComponent {
 
     private setupBar(): void {
         if (!this.chartData.every(date => date.barThickness && date.maxBarThickness)) {
-            // this.chartData = this.chartData.map(chartDate => ({
-            //     ...chartDate,
-            //     barThickness: 10,
-            //     maxBarThickness: 16
-            // }));
+            this.chartData = this.chartData.map(chartDate => ({
+                ...chartDate,
+                barThickness: 20,
+                maxBarThickness: 48
+            }));
         }
     }
 
@@ -242,11 +242,12 @@ export class ChartsComponent extends BaseViewComponent {
         let type = chartType || this._type;
         if (type === 'stackedBar') {
             this.setupStackedBar();
+            this.setupBar();
             type = 'horizontalBar';
         }
-        if (type === 'bar' || type === 'horizontalBar') {
-            this.setupBar();
-        }
+        // if (type === 'bar' || type === 'horizontalBar') {
+        //     this.setupBar();
+        // }
         this._type = type;
     }
 }

@@ -10,8 +10,8 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { Breadcrumb } from 'app/shared/components/breadcrumb/breadcrumb.component';
-import { ChartData } from 'app/shared/components/charts/charts.component';
-import { PollState } from 'app/shared/models/poll/base-poll';
+import { ChartData, ChartType } from 'app/shared/components/charts/charts.component';
+import { PollState, PollType } from 'app/shared/models/poll/base-poll';
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { ViewGroup } from 'app/site/users/models/view-group';
 import { BasePollRepositoryService } from '../services/base-poll-repository.service';
@@ -41,7 +41,8 @@ export abstract class BasePollDetailComponent<V extends ViewBasePoll> extends Ba
     /**
      * Sets the type of the shown chart, if votes are entered.
      */
-    public chartType = 'horizontalBar';
+    // public chartType = 'horizontalBar';
+    public abstract get chartType(): ChartType;
 
     /**
      * The different labels for the votes (used for chart).
@@ -120,6 +121,13 @@ export abstract class BasePollDetailComponent<V extends ViewBasePoll> extends Ba
     }
 
     /**
+     * Called after the poll has been loaded. Meant to be overwritten by subclasses who need initial access to the poll
+     */
+    protected onPollLoaded(): void {}
+
+    protected onStateChanged(): void {}
+
+    /**
      * This checks, if the poll has votes.
      */
     private checkData(): void {
@@ -146,11 +154,6 @@ export abstract class BasePollDetailComponent<V extends ViewBasePoll> extends Ba
             );
         }
     }
-
-    /**
-     * Called after the poll has been loaded. Meant to be overwritten by subclasses who need initial access to the poll
-     */
-    public onPollLoaded(): void {}
 
     /**
      * Action for the different breadcrumbs.
@@ -205,7 +208,7 @@ export abstract class BasePollDetailComponent<V extends ViewBasePoll> extends Ba
             case PollState.Created:
                 return state === 2 ? () => this.changeState() : null;
             case PollState.Started:
-                return null;
+                return this.poll.type !== PollType.Analog && state === 3 ? () => this.changeState() : null;
             case PollState.Finished:
                 if (state === 1) {
                     return () => this.resetState();

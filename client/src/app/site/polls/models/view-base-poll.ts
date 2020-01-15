@@ -1,4 +1,3 @@
-
 import { ChartData } from 'app/shared/components/charts/charts.component';
 import { BasePoll, PollState } from 'app/shared/models/poll/base-poll';
 import { ViewAssignmentOption } from 'app/site/assignments/models/view-assignment-option';
@@ -54,13 +53,21 @@ export const PercentBaseVerbose = {
 };
 
 export abstract class ViewBasePoll<M extends BasePoll<M, any> = any> extends BaseProjectableViewModel<M> {
-    public candidatesLabels: string[] = [];
+    private candidatesLabels: string[] = [];
+    private _tableData: {}[] = [];
 
     public get labels(): string[] {
         if (!this.candidatesLabels.length) {
-            this.initChartLabels();
+            this.candidatesLabels = this.initChartLabels();
         }
         return this.candidatesLabels;
+    }
+
+    public get tableData(): {}[] {
+        if (!this._tableData.length) {
+            this._tableData = this.generateTableData();
+        }
+        return this._tableData;
     }
 
     public get poll(): M {
@@ -111,12 +118,11 @@ export abstract class ViewBasePoll<M extends BasePoll<M, any> = any> extends Bas
 
     public abstract getSlide(): ProjectorElementBuildDeskriptor;
 
-    /**
-     * Initializes labels for a chart.
-     */
-    public abstract initChartLabels(): void;
+    public abstract initChartLabels(): string[];
 
     public abstract generateChartData(): ChartData;
+
+    public abstract generateTableData(): {}[];
 }
 
 export interface ViewBasePoll<M extends BasePoll<M, any> = any> extends BasePoll<M, any> {

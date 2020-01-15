@@ -7,7 +7,7 @@
         </ng-container>
         <ng-container *ngIf="!breadcrumb.active">
             <span
-                (click)="breadcrumb.action ? breadcrumb.action() : null"
+                (click)="breadcrumb.action && hasPermision(breadcrumb.permission) ? breadcrumb.action() : null"
                 [ngClass]="{ 'accent-foreground has-action': breadcrumb.action }"
             >
                 {{ breadcrumb.label }}

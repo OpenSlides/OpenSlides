@@ -22,7 +22,7 @@
 
 <!-- Detailview for poll -->
 <ng-template #viewTemplate>
-    <ng-container *ngIf="poll">
+    <ng-container *ngIf="isReady">
         <h1>{{ poll.title }}</h1>
         <mat-divider></mat-divider>
         <os-breadcrumb [breadcrumbs]="breadcrumbs" [breadcrumbStyle]="'>'"></os-breadcrumb>
@@ -62,35 +62,34 @@
                 </ng-container>
             </div>
             <div class="chart-wrapper"></div>
-            <mat-table [dataSource]="poll.getTableData()">
+            <mat-table [dataSource]="poll.tableData">
                 <ng-container matColumnDef="user" sticky>
-                    <mat-header-cell *matHeaderCellDef>User</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>{{ 'Candidates' | translate }}</mat-header-cell>
                     <mat-cell *matCellDef="let row">{{ row.user }}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="yes">
-                    <mat-header-cell *matHeaderCellDef>Yes</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>{{ 'Yes' | translate }}</mat-header-cell>
                     <mat-cell *matCellDef="let row">{{ row.yes }}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="no">
-                    <mat-header-cell *matHeaderCellDef>No</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>{{ 'No' | translate }}</mat-header-cell>
                     <mat-cell *matCellDef="let row">{{ row.no }}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="abstain">
-                    <mat-header-cell *matHeaderCellDef>Abstain</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>{{ 'Abstain' | translate }}</mat-header-cell>
                     <mat-cell *matCellDef="let row">{{ row.abstain }}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="quorum">
+                    <mat-header-cell *matHeaderCellDef>{{ 'Quorum' | translate }}</mat-header-cell>
+                    <mat-cell *matCellDef="let row"></mat-cell>
                 </ng-container>
 
                 <mat-header-row *matHeaderRowDef="columnDefinition"></mat-header-row>
                 <mat-row *matRowDef="let row; columns: columnDefinition"></mat-row>
             </mat-table>
-            <mat-form-field>
-                <mat-select [(ngModel)]="chartType" [placeholder]="'Chart display as' | translate">
-                    <mat-option [value]="'horizontalBar'">{{ 'horizontal Bar' | translate }}</mat-option>
-                    <mat-option [value]="'bar'">{{ 'Bar' | translate }}</mat-option>
-                </mat-select>
-            </mat-form-field>
             <os-charts
                 *ngIf="chartDataSubject.value"
                 [type]="chartType"

@@ -39,34 +39,48 @@
         </div>
 
         <div *ngIf="poll.state === 3 || poll.state === 4">
-            <h2 translate>Result</h2>
-            <!-- <div class="chart-wrapper">
-                <mat-form-field>
-                    <mat-select [(ngModel)]="chartType" [placeholder]="'Display as' | translate">
-                        <mat-option [value]="'horizontalBar'">{{ 'Bar' | translate }}</mat-option>
-                        <mat-option [value]="'doughnut'">{{ 'Circle' | translate }}</mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </div>
-            <os-charts [type]="chartType" [labels]="labels" [showLegend]="true" [data]="chartDataSubject"></os-charts> -->
+            <h2 class="result-title" translate>Result</h2>
+            <div class="poll-result-wrapper">
+                <mat-table [dataSource]="poll.tableData">
+                    <ng-container matColumnDef="key" sticky>
+                        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                        <mat-cell *matCellDef="let row">{{ row.key }}</mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="value" sticky>
+                        <mat-header-cell *matHeaderCellDef>Votes</mat-header-cell>
+                        <mat-cell *matCellDef="let row">{{ row.value }}</mat-cell>
+                    </ng-container>
 
-            <div
-                *ngIf="poll.type === 'named'"
-                style="display: grid; grid-template-columns: max-content auto;grid-column-gap: 20px;"
-            >
-                <ng-container *ngFor="let vote of poll.options[0].votes">
-                    <div *ngIf="vote.user">{{ vote.user.full_name }}</div>
-                    <div *ngIf="!vote.user">{{ 'Unknown user' | translate }}</div>
-                    <div>{{ vote.valueVerbose }}</div>
-                </ng-container>
+                    <mat-header-row *matHeaderRowDef="columnDefinition"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: columnDefinition"></mat-row>
+                </mat-table>
+
+                <div class="chart-wrapper">
+                    <mat-form-field>
+                        <mat-select [(ngModel)]="chartType" [placeholder]="'Display as' | translate">
+                            <mat-option [value]="'horizontalBar'">{{ 'Bar' | translate }}</mat-option>
+                            <mat-option [value]="'doughnut'">{{ 'Circle' | translate }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <div
+                        *ngIf="poll.type === 'named'"
+                        style="display: grid; grid-template-columns: max-content auto;grid-column-gap: 20px;"
+                    >
+                        <ng-container *ngFor="let vote of poll.options[0].votes">
+                            <div *ngIf="vote.user">{{ vote.user.full_name }}</div>
+                            <div *ngIf="!vote.user">{{ 'Unknown user' | translate }}</div>
+                            <div>{{ vote.valueVerbose }}</div>
+                        </ng-container>
+                    </div>
+                    <os-charts
+                        *ngIf="chartDataSubject.value"
+                        [type]="chartType"
+                        [labels]="poll.labels"
+                        [showLegend]="true"
+                        [data]="chartDataSubject"
+                    ></os-charts>
+                </div>
             </div>
-            <os-charts
-                *ngIf="chartDataSubject.value"
-                [type]="chartType"
-                [labels]="poll.labels"
-                [showLegend]="true"
-                [data]="chartDataSubject"
-            ></os-charts>
         </div>
     </ng-container>
 </ng-template>

@@ -13,6 +13,7 @@ import { BasePollDetailComponent } from 'app/site/polls/components/base-poll-det
 import { ViewUser } from 'app/site/users/models/view-user';
 import { ViewAssignmentPoll } from '../../models/view-assignment-poll';
 import { ViewAssignmentVote } from '../../models/view-assignment-vote';
+import { ChartType } from 'app/shared/components/charts/charts.component';
 
 @Component({
     selector: 'os-assignment-poll-detail',
@@ -20,11 +21,18 @@ import { ViewAssignmentVote } from '../../models/view-assignment-vote';
     styleUrls: ['./assignment-poll-detail.component.scss']
 })
 export class AssignmentPollDetailComponent extends BasePollDetailComponent<ViewAssignmentPoll> {
+    public isReady = false;
+
     public votesByUser: { [key: number]: { user: ViewUser; votes: { [key: number]: ViewAssignmentVote } } };
+
+    public get chartType(): ChartType {
+        return 'horizontalBar';
+    }
+
     public get columnDefinition(): string[] {
-        let columns = ['user', 'yes', 'no'];
+        const columns = ['user', 'yes', 'no', 'quorum'];
         if (this.poll.pollmethod === AssignmentPollMethods.YNA) {
-            columns = columns.concat('abstain');
+            columns.splice(3, 0, 'abstain');
         }
         return columns;
     }
@@ -59,6 +67,7 @@ export class AssignmentPollDetailComponent extends BasePollDetailComponent<ViewA
             }
             console.log(votes, this.poll, this.poll.options);
             this.votesByUser = votes;
-        }, 1000);
+            this.isReady = true;
+        });
     }
 }

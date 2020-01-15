@@ -8,6 +8,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { MotionPollRepositoryService } from 'app/core/repositories/motions/motion-poll-repository.service';
 import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
+import { ChartType } from 'app/shared/components/charts/charts.component';
 import { ViewMotionPoll } from 'app/site/motions/models/view-motion-poll';
 import { BasePollDetailComponent } from 'app/site/polls/components/base-poll-detail.component';
 
@@ -17,6 +18,18 @@ import { BasePollDetailComponent } from 'app/site/polls/components/base-poll-det
     styleUrls: ['./motion-poll-detail.component.scss']
 })
 export class MotionPollDetailComponent extends BasePollDetailComponent<ViewMotionPoll> {
+    public columnDefinition = ['key', 'value'];
+
+    public set chartType(type: ChartType) {
+        this._chartType = type;
+    }
+
+    public get chartType(): ChartType {
+        return this._chartType;
+    }
+
+    private _chartType: ChartType = 'doughnut';
+
     public constructor(
         title: Title,
         translate: TranslateService,

@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { OperatorService } from 'app/core/core-services/operator.service';
 
 /**
  * Describes, how one breadcrumb can look like.
@@ -7,6 +8,7 @@ export interface Breadcrumb {
     label: string;
     action: () => any;
     active?: boolean;
+    permission?: string;
 }
 
 @Component({
@@ -63,7 +65,7 @@ export class BreadcrumbComponent implements OnInit {
     /**
      * Default constructor.
      */
-    public constructor() {
+    public constructor(private operator: OperatorService) {
         this.breadcrumbStyle = '/';
     }
 
@@ -75,5 +77,12 @@ export class BreadcrumbComponent implements OnInit {
         if (this.breadcrumbList.length && !this.breadcrumbList.some(breadcrumb => breadcrumb.active)) {
             this.breadcrumbList[this.breadcrumbList.length - 1].active = true;
         }
+    }
+
+    public hasPermision(permission: string): boolean {
+        if (!permission) {
+            return true;
+        }
+        return this.operator.hasPerms(permission);
     }
 }

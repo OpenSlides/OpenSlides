@@ -22,7 +22,6 @@ export class ViewAssignmentPoll extends ViewBasePoll<AssignmentPoll> implements 
     public static COLLECTIONSTRING = AssignmentPoll.COLLECTIONSTRING;
     protected _collectionString = AssignmentPoll.COLLECTIONSTRING;
 
-    public tableData = [];
     public readonly tableChartData: Map<string, BehaviorSubject<ChartData>> = new Map();
     public readonly pollClassType: 'assignment' | 'motion' = 'assignment';
 
@@ -45,10 +44,8 @@ export class ViewAssignmentPoll extends ViewBasePoll<AssignmentPoll> implements 
         };
     }
 
-    public initChartLabels(): void {
-        if (!this.candidatesLabels.length) {
-            this.candidatesLabels = this.options.map(candidate => candidate.user.full_name);
-        }
+    public initChartLabels(): string[] {
+        return this.options.map(candidate => candidate.user.full_name);
     }
 
     public generateChartData(): ChartData {
@@ -65,7 +62,7 @@ export class ViewAssignmentPoll extends ViewBasePoll<AssignmentPoll> implements 
         return data;
     }
 
-    public getTableData(): {}[] {
+    public generateTableData(): {}[] {
         const data = this.options
             .map(candidate => ({
                 yes: candidate.yes,
