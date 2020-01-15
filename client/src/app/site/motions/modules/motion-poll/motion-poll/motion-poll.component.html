@@ -31,8 +31,13 @@
         </div>
     </div>
     <div class="poll-chart-wrapper" *ngIf="poll">
-        <ng-container *ngIf="poll.state === 3 || poll.state === 4" [ngTemplateOutlet]="viewTemplate"></ng-container>
-        <ng-container *ngIf="(poll.state === 1 || poll.state === 2) && poll.type === 'analog'" [ngTemplateOutlet]="emptyTemplate"></ng-container>
+        <div *ngIf="poll.type === 'analog' || poll.state === 3 || poll.state === 4" (click)="openPoll()">
+            <ng-container *ngIf="poll.state === 3 || poll.state === 4" [ngTemplateOutlet]="viewTemplate"></ng-container>
+            <ng-container
+                *ngIf="(poll.state === 1 || poll.state === 2) && poll.type === 'analog'"
+                [ngTemplateOutlet]="emptyTemplate"
+            ></ng-container>
+        </div>
         <ng-container *ngIf="(poll.state === 1 || poll.state === 2) && poll.type !== 'analog'">
             <os-motion-poll-vote [poll]="poll"></os-motion-poll-vote>
         </ng-container>
@@ -45,7 +50,7 @@
         <mat-icon>close</mat-icon>
         : {{ voteNo }}
     </div>
-    <div class="doughnut-chart">
+    <div *ngIf="showChart" class="doughnut-chart">
         <os-charts [type]="'doughnut'" [data]="chartDataSubject" [showLegend]="false"> </os-charts>
     </div>
     <div class="chart-wrapper-right">
@@ -62,11 +67,7 @@
 
 <mat-menu #triggerMenu="matMenu">
     <ng-container *ngIf="poll">
-        <button
-            mat-menu-item
-            (click)="changeState(state.value)"
-            *ngFor="let state of poll.nextStates | keyvalue"
-        >
+        <button mat-menu-item (click)="changeState(state.value)" *ngFor="let state of poll.nextStates | keyvalue">
             <span translate>{{ state.key }}</span>
         </button>
     </ng-container>

@@ -1,13 +1,13 @@
 <os-head-bar
     [goBack]="true"
     [nav]="false"
-    [hasMainButton]="poll && (poll.state === 2 || poll.state === 3)"
+    [hasMainButton]="poll ? poll.state === 2 || poll.state === 3 : false"
     [mainButtonIcon]="'edit'"
     [mainActionTooltip]="'Edit' | translate"
     (mainEvent)="openDialog()"
 >
     <div class="title-slot">
-        <h2 *ngIf="!!poll">{{ poll.title }}</h2>
+        <h2 *ngIf="!!poll">{{ motionTitle }}</h2>
     </div>
 
     <div class="menu-slot" *osPerms="'agenda.can_manage'; or: 'agenda.can_see_list_of_speakers'">
@@ -27,37 +27,54 @@
         <h1>{{ poll.title }}</h1>
         <mat-divider></mat-divider>
         <os-breadcrumb [breadcrumbs]="breadcrumbs" [breadcrumbStyle]="'>'"></os-breadcrumb>
+
+        <div *ngIf="poll.state === 3 || poll.state === 4">
+            <h2 translate>Result</h2>
+            <os-charts
+                *ngIf="chartDataSubject.value"
+                [type]="chartType"
+                [showLegend]="true"
+                [data]="chartDataSubject"
+            ></os-charts>
+            <div
+                *ngIf="poll.type === 'named'"
+                style="display: grid; grid-template-columns: max-content auto;grid-column-gap: 20px;"
+            >
+                <ng-container *ngFor="let vote of poll.options[0].votes">
+                    <div *ngIf="vote.user">{{ vote.user.full_name }}</div>
+                    <div *ngIf="!vote.user">{{ 'Unknown user' | translate }}</div>
+                    <div>{{ vote.valueVerbose }}</div>
+                </ng-container>
+            </div>
+
+            <mat-table [dataSource]="poll.tableData">
+                <ng-container matColumnDef="key" sticky>
+                    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                    <mat-cell *matCellDef="let row">{{ row.key }}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="value" sticky>
+                    <mat-header-cell *matHeaderCellDef>Votes</mat-header-cell>
+                    <mat-cell *matCellDef="let row">{{ row.value }}</mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="columnDefinition"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: columnDefinition"></mat-row>
+            </mat-table>
+        </div>
+
         <div class="poll-content">
             <div>{{ 'Current state' | translate }}: {{ poll.stateVerbose | translate }}</div>
             <div *ngIf="poll.groups && poll.type && poll.type !== 'analog'">
                 {{ 'Groups' | translate }}:
-                <span *ngFor="let group of poll.groups">{{ group.getTitle() | translate }}</span>
+                <span *ngFor="let group of poll.groups; let i = index">
+                    {{ group.getTitle() | translate }}
+                    <span *ngIf="i < poll.groups.length - 1">, </span>
+                </span>
             </div>
             <div>{{ 'Poll type' | translate }}: {{ poll.typeVerbose | translate }}</div>
             <div>{{ 'Poll method' | translate }}: {{ poll.pollmethodVerbose | translate }}</div>
             <div>{{ 'Majority method' | translate }}: {{ poll.majorityMethodVerbose | translate }}</div>
             <div>{{ '100% base' | translate }}: {{ poll.percentBaseVerbose | translate }}</div>
-        </div>
-
-        <div *ngIf="poll.state === 3 || poll.state === 4">
-            <h2 translate>Result</h2>
-            <!-- <div class="chart-wrapper">
-                <mat-form-field>
-                    <mat-select [(ngModel)]="chartType" [placeholder]="'Display as' | translate">
-                        <mat-option [value]="'horizontalBar'">{{ 'Bar' | translate }}</mat-option>
-                        <mat-option [value]="'doughnut'">{{ 'Circle' | translate }}</mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </div>
-            <os-charts [type]="chartType" [labels]="labels" [showLegend]="true" [data]="chartDataSubject"></os-charts> -->
-
-            <div *ngIf="poll.type === 'named'" style="display: grid; grid-template-columns: max-content auto;grid-column-gap: 20px;">
-                <ng-container *ngFor="let vote of poll.options[0].votes">
-                    <div *ngIf="vote.user">{{ vote.user.full_name }}</div>
-                    <div *ngIf="!vote.user">{{ "Unknown user" | translate}}</div>
-                    <div>{{ vote.valueVerbose }}</div>
-                </ng-container>
-            </div>
         </div>
     </ng-container>
 </ng-template>

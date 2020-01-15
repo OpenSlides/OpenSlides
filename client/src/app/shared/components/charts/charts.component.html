@@ -1,23 +1,25 @@
 <div class="charts-wrapper">
-    <canvas
-        *ngIf="type === 'bar' || type === 'line' || type === 'horizontalBar'"
-        baseChart
-        [datasets]="chartData"
-        [labels]="labels"
-        [legend]="showLegend"
-        [options]="chartOptions"
-        [chartType]="type"
-        (chartClick)="select.emit($event)"
-        (chartHover)="hover.emit($event)"
-    >
-    </canvas>
-    <canvas
-        *ngIf="type === 'pie' || type === 'doughnut'"
-        baseChart
-        [data]="circleData"
-        [labels]="circleLabels"
-        [colors]="circleColors"
-        [chartType]="type"
-        [legend]="showLegend"
-    ></canvas>
+    <ng-container *ngIf="chartData.length || circleData.length">
+        <canvas
+            *ngIf="type === 'bar' || type === 'stackedBar' || type === 'horizontalBar' || type === 'line'"
+            baseChart
+            [datasets]="chartData"
+            [labels]="labels"
+            [legend]="showLegend"
+            [options]="chartOptions"
+            [chartType]="type"
+            (chartClick)="select.emit($event)"
+            (chartHover)="hover.emit($event)"
+        >
+        </canvas>
+        <canvas
+            *ngIf="type === 'pie' || type === 'doughnut'"
+            baseChart
+            [data]="circleData"
+            [labels]="circleLabels"
+            [colors]="circleColors"
+            [chartType]="type"
+            [legend]="showLegend"
+        ></canvas>
+    </ng-container>
 </div>

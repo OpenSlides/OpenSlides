@@ -47,13 +47,9 @@
         </ng-container>
 
         <mat-form-field>
-            <mat-select
-                placeholder="{{ '100% base' | translate }}"
-                formControlName="onehundred_percent_base"
-                required
-            >
+            <mat-select placeholder="{{ '100% base' | translate }}" formControlName="onehundred_percent_base" required>
                 <ng-container *ngFor="let option of percentBases | keyvalue">
-                    <mat-option [value]="option.key">
+                    <mat-option *ngIf="isValidPercentBaseWithMethod(option.key)" [value]="option.key">
                         {{ option.value | translate }}
                     </mat-option>
                 </ng-container>
@@ -68,4 +64,3 @@
         </mat-form-field>
     </form>
 </div>
-    
