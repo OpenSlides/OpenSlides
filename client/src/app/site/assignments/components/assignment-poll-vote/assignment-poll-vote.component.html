@@ -1,16 +1,18 @@
 <ng-container *ngIf="poll">
     <ng-container *ngIf="vmanager.canVote(poll)">
-        <span *ngIf="poll.pollmethod === 'votes'">{{ "You can distribute" | translate }} {{ poll.votes_amount }} {{ "votes" | translate }}.</span>
+        <span *ngIf="poll.pollmethod === 'votes'"
+            >{{ 'You can distribute' | translate }} {{ poll.votes_amount }} {{ 'votes' | translate }}.</span
+        >
         <form *ngIf="voteForm" [formGroup]="voteForm" class="voting-grid">
             <ng-container *ngFor="let option of poll.options">
                 <div>
                     <span *ngIf="option.user">{{ option.user.getFullName() }}</span>
                     <span *ngIf="!option.user">No user {{ option.candidate_id }}</span>
                 </div>
-                
+
                 <div class="current-vote">
                     <ng-container *ngIf="currentVotes[option.user_id] !== null">
-                        ({{ "Current" | translate }}: {{ getCurrentVoteVerbose(option.user_id) | translate }})
+                        ({{ 'Current' | translate }}: {{ getCurrentVoteVerbose(option.user_id) | translate }})
                     </ng-container>
                 </div>
 
@@ -31,12 +33,17 @@
                 </mat-radio-group>
 
                 <mat-form-field *ngIf="poll.pollmethod === 'votes'" class="vote-input">
-                    <input matInput type="number" min="0" [formControlName]="option.id">
+                    <input matInput type="number" min="0" [formControlName]="option.id" />
                 </mat-form-field>
             </ng-container>
         </form>
         <div class="right-align">
-            <button mat-button mat-button-default (click)="saveVotes()" [disabled]="!voteForm || voteForm.invalid || voteForm.pristine">
+            <button
+                mat-button
+                mat-button-default
+                (click)="saveVotes()"
+                [disabled]="!voteForm || voteForm.invalid || voteForm.pristine"
+            >
                 <span translate>Save</span>
             </button>
         </div>

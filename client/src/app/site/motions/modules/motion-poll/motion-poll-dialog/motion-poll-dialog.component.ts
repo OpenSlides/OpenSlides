@@ -5,7 +5,6 @@ import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { MotionPollMethods } from 'app/shared/models/motions/motion-poll';
 import { ViewMotionPoll } from 'app/site/motions/models/view-motion-poll';
 import { MotionPollMethodsVerbose } from 'app/site/motions/models/view-motion-poll';
 import { BasePollDialogComponent } from 'app/site/polls/components/base-poll-dialog.component';
@@ -17,7 +16,7 @@ import { PollFormComponent } from 'app/site/polls/components/poll-form/poll-form
     styleUrls: ['./motion-poll-dialog.component.scss']
 })
 export class MotionPollDialogComponent extends BasePollDialogComponent {
-    public motionPollMethods = MotionPollMethodsVerbose;
+    public motionPollMethods = { YNA: MotionPollMethodsVerbose.YNA };
 
     @ViewChild('pollForm', { static: false })
     protected pollForm: PollFormComponent;
@@ -38,13 +37,14 @@ export class MotionPollDialogComponent extends BasePollDialogComponent {
         const update: any = {
             Y: data.options[0].yes,
             N: data.options[0].no,
+            A: data.options[0].abstain,
             votesvalid: data.votesvalid,
             votesinvalid: data.votesinvalid,
             votescast: data.votescast
         };
-        if (data.pollmethod === 'YNA') {
-            update.A = data.options[0].abstain;
-        }
+        // if (data.pollmethod === 'YNA') {
+        //     update.A = data.options[0].abstain;
+        // }
 
         if (this.dialogVoteForm) {
             const result = this.undoReplaceEmptyValues(update);
@@ -59,13 +59,14 @@ export class MotionPollDialogComponent extends BasePollDialogComponent {
         this.dialogVoteForm = this.fb.group({
             Y: ['', [Validators.min(-2)]],
             N: ['', [Validators.min(-2)]],
+            A: ['', [Validators.min(-2)]],
             votesvalid: ['', [Validators.min(-2)]],
             votesinvalid: ['', [Validators.min(-2)]],
             votescast: ['', [Validators.min(-2)]]
         });
-        if (this.pollData.pollmethod === MotionPollMethods.YNA) {
-            this.dialogVoteForm.addControl('A', this.fb.control('', [Validators.min(-2)]));
-        }
+        // if (this.pollData.pollmethod === MotionPollMethods.YNA) {
+        //     this.dialogVoteForm.addControl('A', this.fb.control('', [Validators.min(-2)]));
+        // }
         if (this.pollData.poll) {
             this.updateDialogVoteForm(this.pollData);
         }

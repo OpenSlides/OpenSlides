@@ -2,8 +2,13 @@
     padding-top: 10px;
 }
 
+.result-title {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+
 .chart-wrapper {
-    display: flex;
+    padding: 16px;
+    text-align: center;
     justify-content: space-around;
     align-items: center;
     * {
