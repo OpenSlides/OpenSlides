@@ -24,7 +24,10 @@ export class ViewTopic extends BaseViewModelWithAgendaItemAndListOfSpeakers<Topi
      */
     public formatForSearch(): SearchRepresentation {
         return {
-            properties: [{ key: 'Title', value: this.getTitle() }, { key: 'Text', value: this.text }],
+            properties: [
+                { key: 'Title', value: this.getTitle() },
+                { key: 'Text', value: this.text }
+            ],
             searchValue: [this.getTitle(), this.text]
         };
     }

@@ -42,7 +42,7 @@
 
 <ng-template #list>
     <os-list-view-table
-        [repo]="motionRepo"
+        [listObservableProvider]="motionRepo"
         [filterService]="filterService"
         [sortService]="sortService"
         [columns]="tableColumnDefinition"

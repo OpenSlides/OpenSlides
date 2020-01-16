@@ -22,7 +22,9 @@ import { LocalPermissionsService } from 'app/site/motions/services/local-permiss
 import { ViewTag } from 'app/site/tags/models/view-tag';
 import { ViewUser } from 'app/site/users/models/view-user';
 import { AssignmentPdfExportService } from '../../services/assignment-pdf-export.service';
+import { AssignmentPollDialogService } from '../../services/assignment-poll-dialog.service';
 import { AssignmentPhases, ViewAssignment } from '../../models/view-assignment';
+import { ViewAssignmentPoll } from '../../models/view-assignment-poll';
 import { ViewAssignmentRelatedUser } from '../../models/view-assignment-related-user';
 
 /**
@@ -173,7 +175,8 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
         private tagRepo: TagRepositoryService,
         private promptService: PromptService,
         private pdfService: AssignmentPdfExportService,
-        private mediafileRepo: MediafileRepositoryService
+        private mediafileRepo: MediafileRepositoryService,
+        private pollDialog: AssignmentPollDialogService
     ) {
         super(title, translate, matSnackBar);
         this.subscriptions.push(
@@ -302,8 +305,12 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
     /**
      * Creates a new Poll
      */
-    public async createPoll(): Promise<void> {
-        // await this.repo.createPoll(this.assignment).catch(this.raiseError);
+    public openDialog(): void {
+        this.pollDialog.openDialog({
+            collectionString: ViewAssignmentPoll.COLLECTIONSTRING,
+            assignment_id: this.assignment.id,
+            assignment: this.assignment
+        });
     }
 
     /**
@@ -473,7 +480,10 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
      */
     public onSortingChange(listInNewOrder: ViewAssignmentRelatedUser[]): void {
         this.repo
-            .sortCandidates(listInNewOrder.map(relatedUser => relatedUser.id), this.assignment)
+            .sortCandidates(
+                listInNewOrder.map(relatedUser => relatedUser.id),
+                this.assignment
+            )
             .catch(this.raiseError);
     }
 

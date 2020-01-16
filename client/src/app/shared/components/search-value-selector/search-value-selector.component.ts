@@ -156,7 +156,10 @@ export class SearchValueSelectorComponent extends BaseFormControlComponent<Selec
 
     public removeItem(itemId: number): void {
         const items = <number[]>this.contentForm.value;
-        items.splice(items.findIndex(item => item === itemId), 1);
+        items.splice(
+            items.findIndex(item => item === itemId),
+            1
+        );
         this.contentForm.setValue(items);
     }
 

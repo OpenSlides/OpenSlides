@@ -4,7 +4,7 @@
 </os-head-bar>
 
 <os-list-view-table
-    [repo]="workflowRepo"
+    [listObservableProvider]="workflowRepo"
     [columns]="tableColumnDefinition"
     listStorageKey="workflow"
     [allowProjector]="false"

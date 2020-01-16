@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 
 import { SlideData } from 'app/core/core-services/projector-data.service';
-import { CalculablePollKey, PollVoteValue } from 'app/core/ui-services/poll.service';
+import { CalculablePollKey, PollVoteValue } from 'app/site/polls/services/poll.service';
 import { BaseSlideComponent } from 'app/slides/base-slide-component';
 import { PollSlideData, PollSlideOption } from './poll-slide-data';
 

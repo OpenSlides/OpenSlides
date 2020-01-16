@@ -23,6 +23,9 @@ class BasePollAccessPermissions(BaseAccessPermissions):
          - Remove voted_id field from the poll
          - Remove fields given in self.assitional_fields from the poll
         """
+        # add hast_voted for all users to check whether op has voted
+        for poll in full_data:
+            poll["user_has_voted"] = user_id in poll["voted_id"]
 
         if await async_has_perm(user_id, self.manage_permission):
             data = full_data
@@ -39,10 +42,6 @@ class BasePollAccessPermissions(BaseAccessPermissions):
                     del poll["voted_id"]
                     for field in self.additional_fields:
                         del poll[field]
-                    for option in poll["options"]:
-                        del option["yes"]
-                        del option["no"]
-                        del option["abstain"]
                 data.append(poll)
         return data
 
@@ -68,4 +67,27 @@ class BaseVoteAccessPermissions(BaseAccessPermissions):
                 if vote["pollstate"] == BasePoll.STATE_PUBLISHED
                 or vote["user_id"] == user_id
             ]
+        return data
+
+
+class BaseOptionAccessPermissions(BaseAccessPermissions):
+    manage_permission = ""  # set by subclass
+
+    async def get_restricted_data(
+        self, full_data: List[Dict[str, Any]], user_id: int
+    ) -> List[Dict[str, Any]]:
+
+        if await async_has_perm(user_id, self.manage_permission):
+            data = full_data
+        else:
+            data = []
+            for option in full_data:
+                if option["pollstate"] != BasePoll.STATE_PUBLISHED:
+                    option = json.loads(
+                        json.dumps(option)
+                    )  # copy, so we can remove some fields.
+                    del option["yes"]
+                    del option["no"]
+                    del option["abstain"]
+                data.append(option)
         return data

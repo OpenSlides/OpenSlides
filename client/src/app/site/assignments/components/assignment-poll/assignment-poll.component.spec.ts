@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { E2EImportsModule } from 'e2e-imports.module';
 
+import { AssignmentPollVoteComponent } from '../assignment-poll-vote/assignment-poll-vote.component';
 import { AssignmentPollComponent } from './assignment-poll.component';
 
 describe('AssignmentPollComponent', () => {
@@ -10,7 +11,7 @@ describe('AssignmentPollComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [AssignmentPollComponent],
+            declarations: [AssignmentPollComponent, AssignmentPollVoteComponent],
             imports: [E2EImportsModule]
         }).compileComponents();
     }));

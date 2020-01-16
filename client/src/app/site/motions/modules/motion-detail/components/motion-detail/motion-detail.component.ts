@@ -48,6 +48,7 @@ import { ViewCreateMotion } from 'app/site/motions/models/view-create-motion';
 import { ViewMotion } from 'app/site/motions/models/view-motion';
 import { ViewMotionBlock } from 'app/site/motions/models/view-motion-block';
 import { ViewMotionChangeRecommendation } from 'app/site/motions/models/view-motion-change-recommendation';
+import { ViewMotionPoll } from 'app/site/motions/models/view-motion-poll';
 import { ViewStatuteParagraph } from 'app/site/motions/models/view-statute-paragraph';
 import { ViewWorkflow } from 'app/site/motions/models/view-workflow';
 import { MotionEditNotification } from 'app/site/motions/motion-edit-notification';
@@ -61,6 +62,7 @@ import {
 import { LocalPermissionsService } from 'app/site/motions/services/local-permissions.service';
 import { MotionFilterListService } from 'app/site/motions/services/motion-filter-list.service';
 import { MotionPdfExportService } from 'app/site/motions/services/motion-pdf-export.service';
+import { MotionPollDialogService } from 'app/site/motions/services/motion-poll-dialog.service';
 import { MotionSortListService } from 'app/site/motions/services/motion-sort-list.service';
 import { ViewTag } from 'app/site/tags/models/view-tag';
 import { ViewUser } from 'app/site/users/models/view-user';
@@ -452,7 +454,8 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         private motionSortService: MotionSortListService,
         private motionFilterService: MotionFilterListService,
         private routingStateService: RoutingStateService,
-        private cd: ChangeDetectorRef
+        private cd: ChangeDetectorRef,
+        private pollDialog: MotionPollDialogService
     ) {
         super(title, translate, matSnackBar);
     }
@@ -1604,5 +1607,11 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
 
     public removeFromAgenda(): void {
         this.itemRepo.removeFromAgenda(this.motion.item).catch(this.raiseError);
+    }
+
+    public openDialog(poll?: ViewMotionPoll): void {
+        this.pollDialog.openDialog(
+            poll ? poll : { collectionString: ViewMotionPoll.COLLECTIONSTRING, motion_id: this.motion.id }
+        );
     }
 }

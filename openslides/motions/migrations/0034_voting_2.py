@@ -77,8 +77,9 @@ def convert_votes(apps, schema_editor):
         "Abstain": "A",
     }
     for vote in MotionVote.objects.all():
-        vote.value = value_map[vote.value]
-        vote.save(skip_autoupdate=True)
+        if vote.value not in value_map.values():
+            vote.value = value_map[vote.value]
+            vote.save(skip_autoupdate=True)
 
 
 def set_correct_state(apps, schema_editor):
