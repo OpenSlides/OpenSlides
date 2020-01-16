@@ -38,30 +38,13 @@
             <div>{{ 'Majority method' | translate }}: {{ poll.majorityMethodVerbose | translate }}</div>
             <div>{{ '100% base' | translate }}: {{ poll.percentBaseVerbose | translate }}</div>
         </div>
+        <div *ngIf="poll.state === 2">
+            <os-poll-progress [poll]="poll"></os-poll-progress>
+        </div>
 
         <div *ngIf="poll.state === 3 || poll.state === 4">
             <h2 translate>Result</h2>
 
-            <div
-                *ngIf="poll.type === 'named'"
-                style="display: grid; grid-template-columns: auto repeat({{ poll.options.length }}, max-content);"
-            >
-                <!-- top left cell is empty -->
-                <div></div>
-                <!-- header (the assignment related users) -->
-                <ng-container *ngFor="let option of poll.options">
-                    <div *ngIf="option.user">{{ option.user.full_name }}</div>
-                    <div *ngIf="!option.user">{{ 'Unknown user' | translate }}</div>
-                </ng-container>
-                <!-- rows -->
-                <ng-container *ngFor="let obj of votesByUser | keyvalue">
-                    <div *ngIf="obj.value.user">{{ obj.value.user.full_name }}</div>
-                    <div *ngIf="!obj.value.user">{{ 'Unknown user' | translate }}</div>
-                    <ng-container *ngFor="let option of poll.options">
-                        <div>{{ obj.value.votes[option.user_id] }}</div>
-                    </ng-container>
-                </ng-container>
-            </div>
             <div class="chart-wrapper"></div>
             <mat-table [dataSource]="poll.tableData">
                 <ng-container matColumnDef="user" sticky>
@@ -88,9 +71,10 @@
                     <mat-cell *matCellDef="let row"></mat-cell>
                 </ng-container>
 
-                <mat-header-row *matHeaderRowDef="columnDefinition"></mat-header-row>
-                <mat-row *matRowDef="let row; columns: columnDefinition"></mat-row>
+                <mat-header-row *matHeaderRowDef="columnDefinitionOverview"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: columnDefinitionOverview"></mat-row>
             </mat-table>
+
             <os-charts
                 *ngIf="chartDataSubject.value"
                 [type]="chartType"
@@ -98,6 +82,31 @@
                 [showLegend]="true"
                 [data]="chartDataSubject"
             ></os-charts>
+
+            <ng-container *ngIf="poll.type === 'named' && votesDataSource.data">
+                <input matInput [(ngModel)]="votesDataSource.filter" placeholder="Filter"/>
+                <mat-table [dataSource]="votesDataSource">
+                    <ng-container matColumnDef="users" sticky>
+                        <mat-header-cell *matHeaderCellDef>{{ "User" | translate }}</mat-header-cell>
+                        <mat-cell *matCellDef="let row">
+                            <div *ngIf="row.user">{{ row.user.getFullName() }}</div>
+                            <div *ngIf="!row.user">{{ "Unknown user" | translate }}</div>
+                        </mat-cell>
+                    </ng-container>
+                    <ng-container [matColumnDef]="'votes-' + option.user_id" *ngFor="let option of poll.options" sticky>
+                        <mat-header-cell *matHeaderCellDef>
+                            <div *ngIf="option.user">{{ option.user.getFullName() }}</div>
+                            <div *ngIf="!option.user">{{ "Unknown user" | translate }}</div>
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let row">
+                            {{ row.votes[option.user_id] }}
+                        </mat-cell>
+                    </ng-container>
+
+                    <mat-header-row *matHeaderRowDef="columnDefinitionPerName"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: columnDefinitionPerName"></mat-row>
+                </mat-table>
+            </ng-container>
         </div>
     </ng-container>
 </ng-template>
@@ -106,7 +115,7 @@
 <mat-menu #pollDetailMenu="matMenu">
     <os-projector-button [menuItem]="true" [object]="poll" *osPerms="'core.can_manage_projector'"></os-projector-button>
     <button mat-menu-item *ngIf="poll && poll.type === 'named'" (click)="pseudoanonymizePoll()">
-        <mat-icon>questionmark</mat-icon>
+        <mat-icon>polymer</mat-icon>
         <span translate>Pseudoanonymize</span>
     </button>
     <mat-divider></mat-divider>

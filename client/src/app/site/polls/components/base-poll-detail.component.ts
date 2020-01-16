@@ -1,5 +1,5 @@
 import { OnInit } from '@angular/core';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar, MatTableDataSource } from '@angular/material';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 
@@ -15,8 +15,13 @@ import { ChartData, ChartType } from 'app/shared/components/charts/charts.compon
 import { PollState, PollType } from 'app/shared/models/poll/base-poll';
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { ViewGroup } from 'app/site/users/models/view-group';
+import { ViewUser } from 'app/site/users/models/view-user';
 import { BasePollRepositoryService } from '../services/base-poll-repository.service';
 import { ViewBasePoll } from '../models/view-base-poll';
+
+export interface BaseVoteData {
+    user?: ViewUser;
+}
 
 export abstract class BasePollDetailComponent<V extends ViewBasePoll> extends BaseViewComponent implements OnInit {
     /**
@@ -55,6 +60,9 @@ export abstract class BasePollDetailComponent<V extends ViewBasePoll> extends Ba
      */
     public chartDataSubject: BehaviorSubject<ChartData> = new BehaviorSubject(null);
 
+    // The datasource for the votes-per-user table
+    public votesDataSource: MatTableDataSource<BaseVoteData> = new MatTableDataSource();
+
     /**
      * Constructor
      *
@@ -81,6 +89,7 @@ export abstract class BasePollDetailComponent<V extends ViewBasePoll> extends Ba
         protected pollDialog: BasePollDialogService<V>
     ) {
         super(title, translate, matSnackbar);
+        this.votesDataSource.filterPredicate = this.dataSourceFilterPredicate;
     }
 
     /**
@@ -100,7 +109,7 @@ export abstract class BasePollDetailComponent<V extends ViewBasePoll> extends Ba
         const text = 'Do you really want to delete the selected poll?';
 
         if (await this.promptDialog.open(title, text)) {
-            this.repo.delete(this.poll).then(() => this.onDeleted());
+            this.repo.delete(this.poll).then(() => this.onDeleted(), this.raiseError);
         }
     }
 
@@ -109,7 +118,7 @@ export abstract class BasePollDetailComponent<V extends ViewBasePoll> extends Ba
         const text = 'Do you really want to pseudoanonymize the selected poll?';
 
         if (await this.promptDialog.open(title, text)) {
-            await this.repo.pseudoanonymize(this.poll);
+            this.repo.pseudoanonymize(this.poll).then(() => this.onPollLoaded(), this.raiseError); // votes have changed, but not the poll, so the components have to be informed about the update
         }
     }
 
@@ -129,9 +138,34 @@ export abstract class BasePollDetailComponent<V extends ViewBasePoll> extends Ba
      */
     protected onPollLoaded(): void {}
 
+    protected onPollWithOptionsLoaded(): void {}
+
     protected onStateChanged(): void {}
 
     protected abstract hasPerms(): boolean;
+
+    // custom filter for the data source: only search in usernames
+    protected dataSourceFilterPredicate(data: BaseVoteData, filter: string): boolean {
+        return (
+            data.user &&
+            data.user
+                .getFullName()
+                .trim()
+                .toLowerCase()
+                .indexOf(filter.trim().toLowerCase()) !== -1
+        );
+    }
+
+    /**
+     * sets the votes data only if the poll wasn't pseudoanonymized
+     */
+    protected setVotesData(data: BaseVoteData[]): void {
+        if (data.every(voteDate => !voteDate.user)) {
+            this.votesDataSource.data = null;
+        } else {
+            this.votesDataSource.data = data;
+        }
+    }
 
     /**
      * This checks, if the poll has votes.
@@ -155,6 +189,15 @@ export abstract class BasePollDetailComponent<V extends ViewBasePoll> extends Ba
                         this.updateBreadcrumbs();
                         this.checkData();
                         this.onPollLoaded();
+
+                        // wait for options to be loaded
+                        (function waitForOptions(): void {
+                            if (!this.poll.options || !this.poll.options.length) {
+                                setTimeout(waitForOptions.bind(this), 1);
+                            } else {
+                                this.onPollWithOptionsLoaded();
+                            }
+                        }.call(this));
                     }
                 })
             );

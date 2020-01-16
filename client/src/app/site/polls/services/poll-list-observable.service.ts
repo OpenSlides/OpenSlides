@@ -2,10 +2,12 @@ import { Injectable } from '@angular/core';
 
 import { BehaviorSubject, Observable } from 'rxjs';
 
+import { CollectionStringMapperService } from 'app/core/core-services/collection-string-mapper.service';
 import { HasViewModelListObservable } from 'app/core/definitions/has-view-model-list-observable';
 import { AssignmentPollRepositoryService } from 'app/core/repositories/assignments/assignment-poll-repository.service';
 import { MotionPollRepositoryService } from 'app/core/repositories/motions/motion-poll-repository.service';
 import { ViewAssignmentPoll } from 'app/site/assignments/models/view-assignment-poll';
+import { BaseViewModel } from 'app/site/base/base-view-model';
 import { ViewMotionPoll } from 'app/site/motions/models/view-motion-poll';
 import { ViewBasePoll } from '../models/view-base-poll';
 
@@ -21,7 +23,8 @@ export class PollListObservableService implements HasViewModelListObservable<Vie
 
     public constructor(
         motionPollRepo: MotionPollRepositoryService,
-        assignmentPollRepo: AssignmentPollRepositoryService
+        assignmentPollRepo: AssignmentPollRepositoryService,
+        private mapper: CollectionStringMapperService
     ) {
         motionPollRepo
             .getViewModelListObservable()
@@ -40,5 +43,9 @@ export class PollListObservableService implements HasViewModelListObservable<Vie
 
     public getViewModelListObservable(): Observable<ViewBasePoll[]> {
         return this.viewPollListSubject.asObservable();
+    }
+
+    public getObservableFromViewModel(poll: ViewBasePoll): Observable<BaseViewModel> {
+        return this.mapper.getRepository(poll.collectionString).getViewModelObservable(poll.id);
     }
 }
