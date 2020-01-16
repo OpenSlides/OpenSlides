@@ -35,7 +35,8 @@ export class VotingService {
      * checks whether the operator can vote on the given poll
      */
     public canVote(poll: ViewBasePoll): boolean {
-        return !this.getVotePermissionError(poll);
+        const error = this.getVotePermissionError(poll);
+        return !error;
     }
 
     /**

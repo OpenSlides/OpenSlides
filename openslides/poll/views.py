@@ -94,7 +94,6 @@ class BasePollViewSet(ModelViewSet):
         return super().update(request, *args, **kwargs)
 
     def handle_request_with_votes(self, request, poll):
-        print(poll, poll.type, BasePoll.TYPE_ANALOG)
         if poll.type != BasePoll.TYPE_ANALOG:
             raise ValidationError(
                 {"detail": "You cannot enter votes for a non-analog poll."}
@@ -142,6 +141,7 @@ class BasePollViewSet(ModelViewSet):
         poll.state = BasePoll.STATE_FINISHED
         poll.save()
         inform_changed_data(poll.get_votes())
+        inform_changed_data(poll.get_options())
         return Response()
 
     @detail_route(methods=["POST"])
@@ -233,7 +233,9 @@ class BasePollViewSet(ModelViewSet):
             if poll.state != BasePoll.STATE_STARTED:
                 raise ValidationError("You can only vote on a started poll.")
             if not request.user.is_present or not in_some_groups(
-                request.user.id, poll.groups.all(), exact=True
+                request.user.id,
+                list(poll.groups.values_list("pk", flat=True)),
+                exact=True,
             ):
                 self.permission_denied(request)
 

@@ -70,6 +70,7 @@ class TestCreation(TestCase):
                 "is_directory": True,
                 "mediafile": self.file,
             },
+            format="multipart",
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertFalse(Mediafile.objects.exists())
@@ -79,6 +80,7 @@ class TestCreation(TestCase):
         response = self.client.post(
             reverse("mediafile-list"),
             {"title": "test_title_vai8oDogohheideedie4", "mediafile": file},
+            format="multipart",
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         mediafile = Mediafile.objects.get()
@@ -90,6 +92,7 @@ class TestCreation(TestCase):
         response = self.client.post(
             reverse("mediafile-list"),
             {"title": "test_title_Zeicheipeequie3ohfid", "mediafile": file1},
+            format="multipart",
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         mediafile = Mediafile.objects.get()
@@ -98,6 +101,7 @@ class TestCreation(TestCase):
         response = self.client.post(
             reverse("mediafile-list"),
             {"title": "test_title_aiChaetohs0quicee9eb", "mediafile": file2},
+            format="multipart",
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(Mediafile.objects.count(), 1)
