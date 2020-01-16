@@ -12,10 +12,8 @@ import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ChartType } from 'app/shared/components/charts/charts.component';
 import { AssignmentPollMethods } from 'app/shared/models/assignments/assignment-poll';
 import { BasePollDetailComponent } from 'app/site/polls/components/base-poll-detail.component';
-import { ViewUser } from 'app/site/users/models/view-user';
 import { AssignmentPollDialogService } from '../../services/assignment-poll-dialog.service';
 import { ViewAssignmentPoll } from '../../models/view-assignment-poll';
-import { ViewAssignmentVote } from '../../models/view-assignment-vote';
 
 @Component({
     selector: 'os-assignment-poll-detail',
@@ -27,19 +25,19 @@ export class AssignmentPollDetailComponent extends BasePollDetailComponent<ViewA
 
     public candidatesLabels: string[] = [];
 
-    public votesByUser: { [key: number]: { user: ViewUser; votes: { [key: number]: ViewAssignmentVote } } };
-
     public get chartType(): ChartType {
         return 'horizontalBar';
     }
 
-    public get columnDefinition(): string[] {
+    public get columnDefinitionOverview(): string[] {
         const columns = ['user', 'yes', 'no', 'quorum'];
-        if ((<ViewAssignmentPoll>this.poll).pollmethod === AssignmentPollMethods.YNA) {
+        if (this.poll.pollmethod === AssignmentPollMethods.YNA) {
             columns.splice(3, 0, 'abstain');
         }
         return columns;
     }
+
+    public columnDefinitionPerName: string[];
 
     public constructor(
         title: Title,
@@ -55,27 +53,32 @@ export class AssignmentPollDetailComponent extends BasePollDetailComponent<ViewA
         super(title, translate, matSnackbar, repo, route, groupRepo, prompt, pollDialog);
     }
 
-    public onPollLoaded(): void {
-        const votes = {};
+    public onPollWithOptionsLoaded(): void {
+        this.columnDefinitionPerName = ['users'].concat(this.poll.options.map(option => 'votes-' + option.user_id));
 
-        setTimeout(() => {
-            for (const option of this.poll.options) {
-                for (const vote of option.votes) {
-                    if (!votes[vote.user_id]) {
-                        votes[vote.user_id] = {
-                            user: vote.user,
-                            votes: {}
-                        };
-                    }
-                    votes[vote.user_id].votes[option.user_id] =
-                        this.poll.pollmethod === AssignmentPollMethods.Votes ? vote.weight : vote.valueVerbose;
+        const votes = {};
+        let i = -1;
+        for (const option of this.poll.options) {
+            for (const vote of option.votes) {
+                // if poll was pseudoanonymized, use a negative index to not interfere with
+                // possible named votes (although this should never happen)
+                const userId = vote.user_id || i--;
+                if (!votes[userId]) {
+                    votes[userId] = {
+                        user: vote.user,
+                        votes: {}
+                    };
                 }
+                votes[userId].votes[option.user_id] =
+                    this.poll.pollmethod === AssignmentPollMethods.Votes ? vote.weight : vote.valueVerbose;
             }
-            console.log(votes, this.poll, this.poll.options);
-            this.votesByUser = votes;
-            this.candidatesLabels = this.poll.initChartLabels();
-            this.isReady = true;
-        });
+        }
+
+        this.setVotesData(Object.values(votes));
+
+        this.candidatesLabels = this.poll.initChartLabels();
+
+        this.isReady = true;
     }
 
     protected hasPerms(): boolean {

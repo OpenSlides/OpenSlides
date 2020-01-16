@@ -7,7 +7,6 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { MotionPollRepositoryService } from 'app/core/repositories/motions/motion-poll-repository.service';
-import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ChartType } from 'app/shared/components/charts/charts.component';
@@ -45,14 +44,13 @@ export class MotionPollDetailComponent extends BasePollDetailComponent<ViewMotio
         prompt: PromptService,
         pollDialog: MotionPollDialogService,
         private operator: OperatorService,
-        private router: Router,
-        private motionRepo: MotionRepositoryService
+        private router: Router
     ) {
         super(title, translate, matSnackbar, repo, route, groupRepo, prompt, pollDialog);
     }
 
-    protected onPollLoaded(): void {
-        this.motion = this.motionRepo.getViewModel((<ViewMotionPoll>this.poll).motion_id);
+    protected onPollWithOptionsLoaded(): void {
+        this.setVotesData(this.poll.options[0].votes);
     }
 
     public openDialog(): void {
@@ -61,7 +59,7 @@ export class MotionPollDetailComponent extends BasePollDetailComponent<ViewMotio
     }
 
     protected onDeleted(): void {
-        this.router.navigate(['motions', (<ViewMotionPoll>this.poll).motion_id]);
+        this.router.navigate(['motions', this.poll.motion_id]);
     }
 
     protected hasPerms(): boolean {

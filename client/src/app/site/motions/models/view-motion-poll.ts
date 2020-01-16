@@ -4,6 +4,7 @@ import { PollColor } from 'app/shared/models/poll/base-poll';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 import { ViewMotionOption } from 'app/site/motions/models/view-motion-option';
 import { ViewBasePoll } from 'app/site/polls/models/view-base-poll';
+import { ViewMotion } from './view-motion';
 
 export interface MotionPollTitleInformation {
     title: string;
@@ -72,5 +73,6 @@ export class ViewMotionPoll extends ViewBasePoll<MotionPoll> implements MotionPo
 }
 
 export interface ViewMotionPoll extends MotionPoll {
+    motion: ViewMotion;
     options: ViewMotionOption[];
 }
