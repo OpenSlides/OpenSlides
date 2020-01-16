@@ -9,6 +9,7 @@ import { ViewModelStoreService } from 'app/core/core-services/view-model-store.s
 import { RelationDefinition } from 'app/core/definitions/relations';
 import { VotingService } from 'app/core/ui-services/voting.service';
 import { MotionPoll } from 'app/shared/models/motions/motion-poll';
+import { ViewMotion } from 'app/site/motions/models/view-motion';
 import { ViewMotionOption } from 'app/site/motions/models/view-motion-option';
 import { MotionPollTitleInformation, ViewMotionPoll } from 'app/site/motions/models/view-motion-poll';
 import { BasePollRepositoryService } from 'app/site/polls/services/base-poll-repository.service';
@@ -35,6 +36,12 @@ const MotionPollRelations: RelationDefinition[] = [
         ownIdKey: 'options_id',
         ownKey: 'options',
         foreignViewModel: ViewMotionOption
+    },
+    {
+        type: 'M2O',
+        ownIdKey: 'motion_id',
+        ownKey: 'motion',
+        foreignViewModel: ViewMotion
     }
 ];
 

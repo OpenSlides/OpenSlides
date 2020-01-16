@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 
 import { PollListComponent } from './components/poll-list/poll-list.component';
+import { PollProgressComponent } from './components/poll-progress/poll-progress.component';
 import { PollsRoutingModule } from './polls-routing.module';
 import { SharedModule } from '../../shared/shared.module';
 
@@ -11,6 +12,7 @@ import { SharedModule } from '../../shared/shared.module';
  */
 @NgModule({
     imports: [CommonModule, PollsRoutingModule, SharedModule],
-    declarations: [PollListComponent]
+    exports: [PollProgressComponent],
+    declarations: [PollListComponent, PollProgressComponent]
 })
 export class PollsModule {}

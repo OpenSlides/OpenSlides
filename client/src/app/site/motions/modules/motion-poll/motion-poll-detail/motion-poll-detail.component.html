@@ -1,6 +1,6 @@
 <os-head-bar [goBack]="true" [nav]="false">
     <div class="title-slot">
-        <h2 *ngIf="motion">{{ 'Motion' | translate }} {{ motion.id }}</h2>
+        <h2 *ngIf="poll">{{ 'Motion' | translate }} {{ poll.motion.id }}</h2>
     </div>
 
     <div class="menu-slot" *osPerms="'agenda.can_manage'; or: 'agenda.can_see_list_of_speakers'">
@@ -51,17 +51,26 @@
                     <mat-row *matRowDef="let row; columns: columnDefinition"></mat-row>
                 </mat-table>
 
-                <!-- Named table -->
-                <!-- The table was created in another PR -->
-                <div class="named-result-table" *ngIf="poll.type === 'named'">
-                    <h3>{{ 'Singe votes' | translate }}</h3>
-
-                    <div *ngFor="let vote of poll.options[0].votes">
-                        <div *ngIf="vote.user">{{ vote.user.full_name }}</div>
-                        <div *ngIf="!vote.user">{{ 'Unknown user' | translate }}</div>
-                        <div>{{ vote.valueVerbose }}</div>
-                    </div>
-                </div>
+                <!-- Named table: only show if votes are present -->
+                <ng-container *ngIf="poll.type === 'named' && votesDataSource.data">
+                    <input matInput [(ngModel)]="votesDataSource.filter" placeholder="Filter"/>
+                    <mat-table [dataSource]="votesDataSource">
+                        <ng-container matColumnDef="key" sticky>
+                            <mat-header-cell *matHeaderCellDef>{{ "User" | translate }}</mat-header-cell>
+                            <mat-cell *matCellDef="let vote">
+                                <div *ngIf="vote.user">{{ vote.user.getFullName() }}</div>
+                                <div *ngIf="!vote.user">{{ 'Unknown user' | translate }}</div>
+                            </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="value" sticky>
+                            <mat-header-cell *matHeaderCellDef>{{ "Vote" | translate }}</mat-header-cell>
+                            <mat-cell *matCellDef="let vote">{{ vote.valueVerbose }}</mat-cell>
+                        </ng-container>
+            
+                        <mat-header-row *matHeaderRowDef="columnDefinition"></mat-header-row>
+                        <mat-row *matRowDef="let vote; columns: columnDefinition"></mat-row>
+                    </mat-table>
+                </ng-container>
             </div>
         </div>
 
@@ -76,6 +85,10 @@
             <div>{{ 'Majority method' | translate }}: {{ poll.majorityMethodVerbose | translate }}</div>
             <div>{{ '100% base' | translate }}: {{ poll.percentBaseVerbose | translate }}</div>
         </div>
+
+        <div *ngIf="poll.state === 2">
+            <os-poll-progress [poll]="poll"></os-poll-progress>
+        </div>
     </ng-container>
 </ng-template>
 
@@ -87,7 +100,7 @@
         <span translate>Edit</span>
     </button>
     <button mat-menu-item *ngIf="poll && poll.type === 'named'" (click)="pseudoanonymizePoll()">
-        <mat-icon>questionmark</mat-icon>
+        <mat-icon>polymer</mat-icon>
         <span translate>Pseudoanonymize</span>
     </button>
     <mat-divider></mat-divider>
