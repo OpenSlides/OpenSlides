@@ -1,0 +1,11 @@
+@import '~@angular/material/theming';
+
+/** Custom component theme. Only lives in a specific scope */
+@mixin os-banner-style($theme) {
+    $primary: map-get($theme, primary);
+
+    /** style for the offline-banner */
+    .banner {
+        background: mat-color($primary, 900);
+    }
+}

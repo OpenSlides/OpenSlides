@@ -449,17 +449,13 @@
 
         <!-- motion polls -->
         <div *ngIf="!editMotion" class="spacer-top-20 spacer-bottom-20">
+            <os-motion-poll *ngFor="let poll of motion.polls; trackBy: trackByIndex" [poll]="poll"></os-motion-poll>
             <div class="mat-card create-poll-button" *ngIf="perms.isAllowed('createpoll', motion)">
                 <button mat-button (click)="openDialog()">
                     <mat-icon class="main-nav-color">poll</mat-icon>
                     <span translate>New poll</span>
                 </button>
             </div>
-            <os-motion-poll
-                *ngFor="let poll of motion.polls; trackBy: trackByIndex"
-                [poll]="poll"
-            ></os-motion-poll>
-            <!-- <os-motion-poll-manager [motion]="motion"></os-motion-poll-manager> -->
         </div>
     </div>
 </ng-template>

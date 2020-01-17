@@ -53,6 +53,15 @@ export const PercentBaseVerbose = {
 };
 
 export abstract class ViewBasePoll<M extends BasePoll<M, any> = any> extends BaseProjectableViewModel<M> {
+    private _tableData: {}[] = [];
+
+    public get tableData(): {}[] {
+        if (!this._tableData.length) {
+            this._tableData = this.generateTableData();
+        }
+        return this._tableData;
+    }
+
     public get poll(): M {
         return this._model;
     }
@@ -101,7 +110,14 @@ export abstract class ViewBasePoll<M extends BasePoll<M, any> = any> extends Bas
 
     public abstract getSlide(): ProjectorElementBuildDeskriptor;
 
+    /**
+     * Initializes labels for a chart.
+     */
+    public abstract initChartLabels(): string[];
+
     public abstract generateChartData(): ChartData;
+
+    public abstract generateTableData(): {}[];
 }
 
 export interface ViewBasePoll<M extends BasePoll<M, any> = any> extends BasePoll<M, any> {

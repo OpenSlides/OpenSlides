@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
 import { Title } from '@angular/platform-browser';
 
@@ -12,7 +12,7 @@ import { BaseViewComponent } from 'app/site/base/base-view';
 /**
  * The different supported chart-types.
  */
-export type ChartType = 'line' | 'bar' | 'pie' | 'doughnut' | 'horizontalBar';
+export type ChartType = 'line' | 'bar' | 'pie' | 'doughnut' | 'horizontalBar' | 'stackedBar';
 
 /**
  * Describes the events the chart is fired, when hovering or clicking on it.
@@ -30,12 +30,16 @@ export interface ChartDate {
     label: string;
     backgroundColor?: string;
     hoverBackgroundColor?: string;
+    barThickness?: number;
+    maxBarThickness?: number;
 }
 
 /**
  * An alias for an array of `ChartDate`.
  */
 export type ChartData = ChartDate[];
+
+export type ChartLegendSize = 'small' | 'middle';
 
 /**
  * Wrapper for the chart-library.
@@ -45,7 +49,8 @@ export type ChartData = ChartDate[];
 @Component({
     selector: 'os-charts',
     templateUrl: './charts.component.html',
-    styleUrls: ['./charts.component.scss']
+    styleUrls: ['./charts.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ChartsComponent extends BaseViewComponent {
     /**
@@ -57,15 +62,22 @@ export class ChartsComponent extends BaseViewComponent {
     public set data(dataObservable: Observable<ChartData>) {
         this.subscriptions.push(
             dataObservable.subscribe(data => {
+                if (!data) {
+                    return;
+                }
+                data = data.flatMap((date: ChartDate) => ({ ...date, data: date.data.filter(value => value >= 0) }));
                 this.chartData = data;
                 this.circleData = data.flatMap((date: ChartDate) => date.data);
                 this.circleLabels = data.map(date => date.label);
-                this.circleColors = [
+                const circleColors = [
                     {
-                        backgroundColor: data.map(date => date.backgroundColor),
-                        hoverBackgroundColor: data.map(date => date.hoverBackgroundColor)
+                        backgroundColor: data.map(date => date.backgroundColor).filter(color => !!color),
+                        hoverBackgroundColor: data.map(date => date.hoverBackgroundColor).filter(color => !!color)
                     }
                 ];
+                this.circleColors = !!circleColors[0].backgroundColor.length ? circleColors : null;
+                this.checkChartType();
+                this.cd.detectChanges();
             })
         );
     }
@@ -75,14 +87,18 @@ export class ChartsComponent extends BaseViewComponent {
      */
     @Input()
     public set type(type: ChartType) {
-        if (type === 'horizontalBar') {
-            this.setupHorizontalBar();
-        }
-        this._type = type;
+        this.checkChartType(type);
+        this.cd.detectChanges();
     }
 
     public get type(): ChartType {
         return this._type;
+    }
+
+    @Input()
+    public set chartLegendSize(size: ChartLegendSize) {
+        this._chartLegendSize = size;
+        this.setupChartLegendSize();
     }
 
     /**
@@ -147,11 +163,12 @@ export class ChartsComponent extends BaseViewComponent {
         responsive: true,
         legend: {
             position: 'top',
-            labels: {
-                fontSize: 14
-            }
+            labels: {}
         },
-        scales: { xAxes: [{}], yAxes: [{ ticks: { beginAtZero: true } }] },
+        scales: {
+            xAxes: [{ ticks: { beginAtZero: true } }],
+            yAxes: [{ ticks: { beginAtZero: true } }]
+        },
         plugins: {
             datalabels: {
                 anchor: 'end',
@@ -165,6 +182,8 @@ export class ChartsComponent extends BaseViewComponent {
      */
     private _type: ChartType = 'bar';
 
+    private _chartLegendSize: ChartLegendSize = 'middle';
+
     /**
      * Constructor.
      *
@@ -173,17 +192,63 @@ export class ChartsComponent extends BaseViewComponent {
      * @param matSnackbar
      * @param cd
      */
-    public constructor(title: Title, protected translate: TranslateService, matSnackbar: MatSnackBar) {
+    public constructor(
+        title: Title,
+        protected translate: TranslateService,
+        matSnackbar: MatSnackBar,
+        private cd: ChangeDetectorRef
+    ) {
         super(title, translate, matSnackbar);
     }
 
     /**
-     * Changes the chart-options, if the `horizontalBar` is used.
+     * Changes the chart-options, if the `stackedBar` is used.
      */
-    private setupHorizontalBar(): void {
+    private setupStackedBar(): void {
         this.chartOptions.scales = Object.assign(this.chartOptions.scales, {
             xAxes: [{ stacked: true }],
             yAxes: [{ stacked: true }]
         });
+    }
+
+    private setupBar(): void {
+        if (!this.chartData.every(date => date.barThickness && date.maxBarThickness)) {
+            this.chartData = this.chartData.map(chartDate => ({
+                ...chartDate,
+                barThickness: 20,
+                maxBarThickness: 48
+            }));
+        }
+    }
+
+    private setupChartLegendSize(): void {
+        switch (this._chartLegendSize) {
+            case 'small':
+                this.chartOptions.legend.labels = Object.assign(this.chartOptions.legend.labels, {
+                    fontSize: 10,
+                    boxWidth: 20
+                });
+                break;
+            case 'middle':
+                this.chartOptions.legend.labels = {
+                    fontSize: 14,
+                    boxWidth: 40
+                };
+                break;
+        }
+        this.cd.detectChanges();
+    }
+
+    private checkChartType(chartType?: ChartType): void {
+        let type = chartType || this._type;
+        if (type === 'stackedBar') {
+            this.setupStackedBar();
+            this.setupBar();
+            type = 'horizontalBar';
+        }
+        // if (type === 'bar' || type === 'horizontalBar') {
+        //     this.setupBar();
+        // }
+        this._type = type;
     }
 }

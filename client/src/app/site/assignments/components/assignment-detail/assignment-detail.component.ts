@@ -374,6 +374,7 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
                     // resetting a form triggers a form.next(null) - check if data is present
                     if (formResult && formResult.userId) {
                         this.addUser(formResult.userId);
+                        this.candidatesForm.setValue({ userId: null });
                     }
                 })
             );
