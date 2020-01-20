@@ -1,0 +1,200 @@
+# Datastore Interface
+
+Enum EventType {
+    Create,
+    Update,
+    DeleteField,
+    Delete,
+    Restore,
+}
+
+Exception ModelDoesNotExist(model: Fqid);
+Exception ModelExist(model: Fqid);
+Exception ModelNotDeleted(model: Fqid);
+Exception ModelLocked(model: Fqid | CollectionField);
+Exception InvalidFormat();
+
+// TODO:
+Exception MeetingIdNotSpecified();
+
+## Writer
+
+/**
+ * Writes Events into the datastore
+ *
+ * @throws ModelDoesNotExist
+ * @throws ModelExists
+ * @throws ModelLocked
+ * @throws InvalidFormat
+ * @throws ModelNotDeleted
+ */
+write(request: WriteRequest): void publishes BulkMetadataUpdate
+
+Interface WriteRequest {
+    events: (CreateEvent | RestoreEvent | UpdateEvent | DeleteEvent)[];
+    information: {
+        <fqid>: Object
+    };
+    user_id: number;
+    locked_fields: {
+        <fqid>: Position;
+        <CollectionField>: Position;
+    }
+}
+
+Interface CreateEvent {
+    fqid: Fqid;
+    data: {
+        <field>: Value;
+    }
+}
+
+Interface UpdateEvent {
+    fqfields: {
+        <fqfield>: Value;
+    }
+}
+
+Interface RestoreEvent {
+    fqid: Fqid;
+}
+
+Interface DeleteEvent {
+    fqid: Fqid;
+}
+
+Event FieldUpdatedEvent on topic FieldUpdatedTopic {
+    created: Fqid[];
+    deleted: Fqid[];
+    updated: Fqfield[];
+}
+
+## Reader
+
+/** Common Parameters:
+ * - position: Optionsl, if given reads the data to this position.
+ * - mapped_fields: List of fields, that should onl be present in the response.
+ * TODO:
+ * - meeting_id:  Für Modelle außer Nutzer, Gremium, Veranstaltung und Config
+ *                Ist eine Angabe verpflichtend. Dies beschränkt die Nutzung
+ *                auf eine spezifische Veranstaltung.
+ *
+ * Alle Operationen fügen `meta:position` und `meta:deleted` an.
+ */
+
+/**
+ * Returns a model. Deleted models are not returned (and handled as a ModelDiesNotExit)
+ *
+ * @throws ModelDoesNotExist
+ */
+get(model: Fqid, position?: Position, mapped_fields?: fields[]): Partial<Model>;
+
+/**
+ * Analogous to `get`, but also finds deleted models (see `meta_deleted` in the model)
+ *
+ * @throws ModelDoesNotExist
+ */
+getWithDeleted(model: Fqid, position?: Position, mapped_fields?: Field[]): Partial<Model>;
+
+/**
+ * Gibt mehrere Modellinstanzen aus dem Eventstore zur aktuellen Position
+ * zurück. Gelöschte Instanzen werden nicht zurückgegeben.
+ *
+ * @throws ModelDoesNotExist
+ */
+getMany(collection: Collection, ids: Id[], position?: Position, mapped_fields?: Field[]): Partial<Model>[];
+
+/**
+ * Analog zu `getMany`, gibt jedoch auch gelöschte Instanzen zurück.
+ *
+ * @throws ModelDoesNotExist
+ */
+getManyWithDeleted(collection: Collection, ids: Id[], position?: Position, mapped_fields?: Field[]): Partial<Model>[];
+
+// Shortcuts for `filter*` without a filter
+/**
+ * Gibt alle Modelle einer Collection zurück. Die Veranstaltungsid ist zwingend (s.o.)
+ * für einige Collections. Gibt keine gelöscheten Elemente aus.
+ *
+ * @throws MeetingIdNotSpecified()
+ */
+getAll(collection: Collection, meeting_id?: Id, position?: Position, mapped_fields?: Field[]): Partial<Model>[];
+
+/**
+ * Wie `getAll`, gibt gelöschte und nicht-gelöschte Modelle wieder.
+ *
+ * @throws MeetingIdNotSpecified()
+ */
+getAllWithDeleted(collection: Collection, meeting_id?: Id, position?: Position, mapped_fields?: Field[]): Partial<Model>[];
+
+/**
+ * Wie `getAll`, gibt jedoch nur gelöschte Modelle wieder.
+ *
+ * @throws MeetingIdNotSpecified()
+ */
+getAllOnlyDeleted(collection: Collection, meeting_id?: Id, position?: Position, mapped_fields?: Field[]): Partial<Model>[];
+
+/**
+ * Gibt alle Modelle einer Collection (möglicherweise Veranstaltungsspezifisch)
+ * wieder, die dem filter-Ausdruck genügen. Für Filtermöglichkeiten: siehe unten.
+ *
+ * @throws MeetingIdNotSpecified()
+ */
+filter(collection: Collection, meeting_id?: Id, filter: Filter, position?: Position, mapped_fields?: Field[]): Partial<Model>[]
+
+/**
+ * Siehe `filter`. Gibt zurück, ob mindestens ein Modell gefunden wurde.
+ *
+ * @throws MeetingIdNotSpecified()
+ */
+exists(collection: Collection, meeting_id?: Id, filter: Filter, position?: Position): {exists: boolean; position: Position;}
+
+/**
+ * Siehe `filter`. Gibt die Anzahl an Modellen zurück.
+ *
+ * @throws MeetingIdNotSpecified()
+ */
+count(collection: Collection, meeting_id?: Id, filter: Filter, position?: Position): {count: number; position: Position;}
+
+/**
+ * Führt einfache Min-Max-Aggregation über numerische Felder aus.
+ *
+ * @throws MeetingIdNotSpecified()
+ * @throws AggregationOperationInvalid(operand, value)
+ */
+aggregate(collection: Collection, meeting_id?: Id, filter: Filter, aggregate: Aggregate, position?: Position): Value
+
+Type Filter = And | Or | Not | FilterOperator
+
+/**
+ * Das eigentliche Filter-predikat. M[field] ist der Wert des Feldes des
+ * betrachteten Modells. Für alle Operatoren ist das
+ * Prädikat wahr, wenn `M[field] <op> value` wahr ist.
+ */
+Interface FilterOperator {
+    field: Field;
+    value: Value | null;
+    operator: '==' | '!=' | '<' | '>' | '>=' | '<=';
+}
+
+Interface Not {
+    not: Filter;
+}
+
+Interface And {
+    and: Filter[];
+}
+
+Interface Or {
+    or: Filter[];
+}
+
+Interface Aggregate {
+    field: Field;
+    type: 'min' | 'max';
+}
+
+/**
+ * Gibt n sequentielle Ids für die gegebene Collection zurück.
+ */
+getId(collection: Collection, n: number): Id

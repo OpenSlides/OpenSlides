@@ -1,0 +1,27 @@
+# Action Service Interface
+
+// TODO: More Exceptions?
+Exception ActionNotFound(name: string);
+
+
+/**
+ * Executes multiple actions in the conext of the user given by the user_id.
+ *
+ * @throws ActionNotFound
+ */
+execute(actions: Action[], user_id: number): ExecuteResult;
+
+interface Action {
+    name: string;
+    data: object;
+}
+
+interface ActionError {
+    error: string;
+    argumens: string[];
+}
+
+// Gives a detailed error, for all failed actions. For some actions, success
+// data is returned (the object). If there is no success data, null is given
+// for the action. The results index matches to the action index in the request.
+Type ExecuteResult = (ActionError | object | null)[]

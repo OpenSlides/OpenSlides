@@ -5,3 +5,15 @@
 *~
 .DS_Store
 .idea
+
+# Old OS3 files and folders
+.coverage
+.mypy_cache
+Compodoc
+__pycache__
+bower_components
+client
+make
+openslides*
+personal_data
+tests
