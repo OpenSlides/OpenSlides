@@ -1123,8 +1123,17 @@ class MotionPollViewSet(BasePollViewSet):
         Returns True if the user has required permissions.
         """
         return has_perm(self.request.user, "motions.can_see") and has_perm(
-            self.request.user, "motions.can_manage_metadata"
+            self.request.user, "motions.can_manage"
         )
+
+    def create(self, request, *args, **kwargs):
+        # set default pollmethod to YNA
+        if "pollmethod" not in request.data:
+            # hack to make request.data mutable. Otherwise fields cannot be changed.
+            if isinstance(request.data, QueryDict):
+                request.data._mutable = True
+            request.data["pollmethod"] = MotionPoll.POLLMETHOD_YNA
+        return super().create(request, *args, **kwargs)
 
     def perform_create(self, serializer):
         motion = serializer.validated_data["motion"]
