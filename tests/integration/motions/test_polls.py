@@ -106,6 +106,22 @@ class CreateMotionPoll(TestCase):
         self.assertEqual(poll.motion.id, self.motion.id)
         self.assertTrue(poll.options.exists())
 
+    def test_default_method(self):
+        response = self.client.post(
+            reverse("motionpoll-list"),
+            {
+                "title": "test_title_ailai4toogh3eefaa2Vo",
+                "type": "named",
+                "motion_id": self.motion.id,
+                "onehundred_percent_base": "YN",
+                "majority_method": "simple",
+            },
+        )
+        self.assertHttpStatusVerbose(response, status.HTTP_201_CREATED)
+        self.assertTrue(MotionPoll.objects.exists())
+        poll = MotionPoll.objects.get()
+        self.assertEqual(poll.pollmethod, "YNA")
+
     def test_autoupdate(self):
         response = self.client.post(
             reverse("motionpoll-list"),
@@ -147,7 +163,6 @@ class CreateMotionPoll(TestCase):
         complete_request_data = {
             "title": "test_title_OoCh9aitaeyaeth8nom1",
             "type": "named",
-            "pollmethod": "YNA",
             "motion_id": self.motion.id,
             "onehundred_percent_base": "YN",
             "majority_method": "simple",
