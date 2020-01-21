@@ -28,11 +28,6 @@ type OptionsObject = { user_id: number; user: ViewUser }[];
 })
 export class AssignmentPollDialogComponent extends BasePollDialogComponent implements OnInit {
     /**
-     * The actual poll data to work on
-     */
-    public poll: AssignmentPoll;
-
-    /**
      * The summary values that will have fields in the dialog
      */
     public get sumValues(): string[] {

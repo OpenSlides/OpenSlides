@@ -9,7 +9,6 @@ from mypy_extensions import TypedDict
 from ..utils.websocket import WEBSOCKET_CHANGE_ID_TOO_HIGH
 from . import logging
 from .auth import UserDoesNotExist, async_anonymous_is_enabled
-from .autoupdate import AutoupdateFormat
 from .cache import ChangeIdTooLowError, element_cache, split_element_id
 from .utils import get_worker_id
 from .websocket import ProtocollAsyncJsonWebsocketConsumer
