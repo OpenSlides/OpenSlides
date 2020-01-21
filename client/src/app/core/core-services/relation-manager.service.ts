@@ -98,6 +98,17 @@ export class RelationManagerService {
         viewModel: BaseViewModel,
         relation: RelationDefinition
     ): any {
+        // No cache for reverse relations.
+        // The issue: we cannot invalidate the cache, if a new object is created (The
+        // following example is for a O2M foreign relation):
+        // There is no possibility to detect the create case: The target does not update,
+        // all related models does not update. The autoupdate does not provide the created-
+        // information. So we may check, if the relaten has changed in length every time. But
+        // this is the same as just resolving the relation every time it is requested. So no cache here.
+        if (isReverseRelationDefinition(relation)) {
+            return this.handleRelation(model, viewModel, relation) as BaseViewModel | BaseViewModel[];
+        }
+
         let result: any;
 
         const cacheProperty = '__' + property;
