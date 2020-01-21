@@ -1,27 +1,19 @@
 # Action Service Interface
 
-// TODO: More Exceptions?
-Exception ActionNotFound(name: string);
+Exception ActionException(message: string);
 
 
 /**
  * Executes multiple actions in the conext of the user given by the user_id.
+ * All actions are successful if no exception is thrown, else no action was
+ * processed.
  *
- * @throws ActionNotFound
+ *
+ * @throws ActionException
  */
-execute(actions: Action[], user_id: number): ExecuteResult;
+handle_request (payload: Action[], user_id: number): void
 
 interface Action {
-    name: string;
-    data: object;
+    action: string;
+    data: object[];
 }
-
-interface ActionError {
-    error: string;
-    argumens: string[];
-}
-
-// Gives a detailed error, for all failed actions. For some actions, success
-// data is returned (the object). If there is no success data, null is given
-// for the action. The results index matches to the action index in the request.
-Type ExecuteResult = (ActionError | object | null)[]
