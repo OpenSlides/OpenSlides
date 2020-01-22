@@ -3,7 +3,6 @@
 Enum EventType {
     Create,
     Update,
-    DeleteField,
     Delete,
     Restore,
 }
@@ -11,16 +10,49 @@ Enum EventType {
 Exception ModelDoesNotExist(model: Fqid);
 Exception ModelExist(model: Fqid);
 Exception ModelNotDeleted(model: Fqid);
-Exception ModelLocked(model: Fqid | CollectionField);
-Exception InvalidFormat();
+Exception ModelLocked(key: Fqid | Fqfield | CollectionField);
+Exception InvalidFormat(msg: string);
+Exception InvalidRequest(msg: string);
 
-// TODO:
-Exception MeetingIdNotSpecified();
+# Note: Error returns via HTTP 400:
+Interface ErrorResponse {
+    error: InvalidFormatData |
+        InvalidRequestData |
+        ModelDoesNotExistData |
+        ModelExistData |
+        ModelMotDeletedData |
+        ModelLockedData;
+}
+Interface InvalidFormatData {
+    type: 1;
+    msg: string;
+}
+Interface InvalidRequestData {
+    type: 2;
+    msg: string;
+Interface ModelDoesNotExistData {
+    type: 3;
+    fqid: string;
+}
+Interface ModelExistData {
+    type: 4;
+    fqid: string;
+}
+Interface ModelNotDeletedData {
+    type: 5;
+    fqid: string;
+}
+Interface ModelLockedData {
+    type: 6;
+    key: string;
+}
 
 ## Writer
+# Note: Different host and port than the reader!
 
 /**
- * Writes Events into the datastore
+ * Writes Events into the datastore.
+ * Url: POST to /datastore/writer/write
  *
  * @throws ModelDoesNotExist
  * @throws ModelExists
@@ -28,7 +60,7 @@ Exception MeetingIdNotSpecified();
  * @throws InvalidFormat
  * @throws ModelNotDeleted
  */
-write(request: WriteRequest): void publishes BulkMetadataUpdate
+write(request: WriteRequest): void publishes ModifiedFieldsEvent
 
 Interface WriteRequest {
     events: (CreateEvent | RestoreEvent | UpdateEvent | DeleteEvent)[];
@@ -38,54 +70,71 @@ Interface WriteRequest {
     user_id: number;
     locked_fields: {
         <fqid>: Position;
+        <fqfield>: Position;
         <CollectionField>: Position;
     }
 }
 
 Interface CreateEvent {
+    type: 'create';
     fqid: Fqid;
-    data: {
+    fields: {
         <field>: Value;
     }
 }
 
+// Note: For deleting keys, they must be set to `None`. These keys
+// will be removed from the model.
 Interface UpdateEvent {
-    fqfields: {
-        <fqfield>: Value;
+    type: 'update';
+    fqid: Fqid;
+    fields: {
+        <field>: Value;
     }
 }
 
 Interface RestoreEvent {
+    type: 'restore';
     fqid: Fqid;
 }
 
 Interface DeleteEvent {
+    type: 'delete';
     fqid: Fqid;
 }
 
-Event FieldUpdatedEvent on topic FieldUpdatedTopic {
-    created: Fqid[];
-    deleted: Fqid[];
-    updated: Fqfield[];
+// Note: The modified fqfields include:
+// - all updated fqfields
+// - all deleted fqfields
+// - all fqfields of all deleted models
+// - all fqfields of all created models
+// - all fqfields of all restored models (logically the same as created)
+Event ModifiedFieldsEvent on topic ModifiedFields {
+    modified: Fqfield[];
 }
 
-## Reader
+/**
+ * Gibt n sequentielle Ids für die gegebene Collection zurück.
+ * Url: POST to /datastore/writer/get_ids
+ */
+getIds(collection: Collection, n: number): Id[]
 
-/** Common Parameters:
- * - position: Optionsl, if given reads the data to this position.
- * - mapped_fields: List of fields, that should onl be present in the response.
- * TODO:
- * - meeting_id:  Für Modelle außer Nutzer, Gremium, Veranstaltung und Config
- *                Ist eine Angabe verpflichtend. Dies beschränkt die Nutzung
- *                auf eine spezifische Veranstaltung.
- *
- * Alle Operationen fügen `meta:position` und `meta:deleted` an.
+## Reader
+# Note: Different host and port than the writer!
+
+/** Common notes:
+ * - parameter `position`: Optional, if given reads the data to this position.
+ * - parameter `mapped_fields`: List of fields, that should onl be present in the response.
+ * - All operations adds the fields `meta_position` and `meta_deleted` to the models.
+ * - The InvalidFormat exception can always be thrown, if the requested formats are
+ *   wrong, including something like empty collections, ...
  */
 
 /**
- * Returns a model. Deleted models are not returned (and handled as a ModelDiesNotExit)
+ * Returns a model. Deleted models are not returned (and handled as a ModelDoesNotExit)
  *
  * @throws ModelDoesNotExist
+ * @throws InvalidFormat
  */
 get(model: Fqid, position?: Position, mapped_fields?: fields[]): Partial<Model>;
 
@@ -93,83 +142,90 @@ get(model: Fqid, position?: Position, mapped_fields?: fields[]): Partial<Model>;
  * Analogous to `get`, but also finds deleted models (see `meta_deleted` in the model)
  *
  * @throws ModelDoesNotExist
+ * @throws InvalidFormat
  */
 getWithDeleted(model: Fqid, position?: Position, mapped_fields?: Field[]): Partial<Model>;
 
 /**
- * Gibt mehrere Modellinstanzen aus dem Eventstore zur aktuellen Position
- * zurück. Gelöschte Instanzen werden nicht zurückgegeben.
- *
- * @throws ModelDoesNotExist
+ * Returns multiple (non-deleted) models of a collection. If one id is not found, it is
+ * not included in the response instead of throwing a ModelDoesNotExist.
  */
 getMany(collection: Collection, ids: Id[], position?: Position, mapped_fields?: Field[]): Partial<Model>[];
 
 /**
- * Analog zu `getMany`, gibt jedoch auch gelöschte Instanzen zurück.
+ * Analogous to `getMany`, but includes deleted instances.
  *
- * @throws ModelDoesNotExist
+ * @throws InvalidFormat
  */
 getManyWithDeleted(collection: Collection, ids: Id[], position?: Position, mapped_fields?: Field[]): Partial<Model>[];
 
-// Shortcuts for `filter*` without a filter
 /**
- * Gibt alle Modelle einer Collection zurück. Die Veranstaltungsid ist zwingend (s.o.)
- * für einige Collections. Gibt keine gelöscheten Elemente aus.
- *
- * @throws MeetingIdNotSpecified()
+ * Returns all (non-deleted) modells of one collection. It is not possible to specify
+ * an id, so this method can not be used, if the user browses the history. It should
+ * be noted, that it is highly disencouraged to use this method, becuase it might
+ * return a huge amount of data.
  */
-getAll(collection: Collection, meeting_id?: Id, position?: Position, mapped_fields?: Field[]): Partial<Model>[];
+getAll(collection: Collection, mapped_fields?: Field[]): Partial<Model>[];
 
 /**
- * Wie `getAll`, gibt gelöschte und nicht-gelöschte Modelle wieder.
+ * Like `getAll`, but with deleted models included.
  *
- * @throws MeetingIdNotSpecified()
+ * @throws InvalidFormat
  */
-getAllWithDeleted(collection: Collection, meeting_id?: Id, position?: Position, mapped_fields?: Field[]): Partial<Model>[];
+getAllWithDeleted(collection: Collection, meeting_id?: Id, mapped_fields?: Field[]): Partial<Model>[];
 
 /**
- * Wie `getAll`, gibt jedoch nur gelöschte Modelle wieder.
+ * Like `getAll`, but returns only all deleted models.
  *
- * @throws MeetingIdNotSpecified()
+ * @throws InvalidFormat
  */
-getAllOnlyDeleted(collection: Collection, meeting_id?: Id, position?: Position, mapped_fields?: Field[]): Partial<Model>[];
+getAllOnlyDeleted(collection: Collection, meeting_id?: Id, mapped_fields?: Field[]): Partial<Model>[];
 
 /**
- * Gibt alle Modelle einer Collection (möglicherweise Veranstaltungsspezifisch)
- * wieder, die dem filter-Ausdruck genügen. Für Filtermöglichkeiten: siehe unten.
+ * Returns all models of one collection, that satisifes the filter condition. This method
+ * does not take a position and can not be used when browsing the history.
  *
- * @throws MeetingIdNotSpecified()
+ * @throws InvalidFormat
  */
-filter(collection: Collection, meeting_id?: Id, filter: Filter, position?: Position, mapped_fields?: Field[]): Partial<Model>[]
+filter(collection: Collection, filter: Filter, mapped_fields?: Field[]): Partial<Model>[]
 
 /**
- * Siehe `filter`. Gibt zurück, ob mindestens ein Modell gefunden wurde.
+ * See `filter`, returns true, if at least one model was found. The returned position is
+ * the highest position in the complete datastore.
  *
- * @throws MeetingIdNotSpecified()
+ * @throws InvalidFormat
  */
-exists(collection: Collection, meeting_id?: Id, filter: Filter, position?: Position): {exists: boolean; position: Position;}
+exists(collection: Collection, filter: Filter): {exists: boolean; position: Position;}
 
 /**
- * Siehe `filter`. Gibt die Anzahl an Modellen zurück.
+ * See `filter`, returns the amount of found models. The returned position is
+ * the highest position in the complete datastore.
  *
- * @throws MeetingIdNotSpecified()
+ * @throws InvalidFormat
  */
-count(collection: Collection, meeting_id?: Id, filter: Filter, position?: Position): {count: number; position: Position;}
+count(collection: Collection, filter: Filter): {count: number; position: Position;}
 
 /**
- * Führt einfache Min-Max-Aggregation über numerische Felder aus.
+ * Executes a min aggregation about all models of one collection, that
+ * satisfy the filter condition.
  *
- * @throws MeetingIdNotSpecified()
- * @throws AggregationOperationInvalid(operand, value)
+ * @throws InvalidFormat
  */
-aggregate(collection: Collection, meeting_id?: Id, filter: Filter, aggregate: Aggregate, position?: Position): Value
+min(collection: Collection, filter: Filter): {min: Value; position: Position;}
+
+/**
+ * Executes a max aggregation about all models of one collection, that
+ * satisfy the filter condition.
+ *
+ * @throws InvalidFormat
+ */
+max(collection: Collection, filter: Filter): {min: Value; position: Position;}
 
 Type Filter = And | Or | Not | FilterOperator
 
 /**
- * Das eigentliche Filter-predikat. M[field] ist der Wert des Feldes des
- * betrachteten Modells. Für alle Operatoren ist das
- * Prädikat wahr, wenn `M[field] <op> value` wahr ist.
+ * The filter predicate. M[field] states the value of the field of a model M.
+ * For all operations the predicate if true, if `M[field] <op> value` is true.
  */
 Interface FilterOperator {
     field: Field;
@@ -188,13 +244,3 @@ Interface And {
 Interface Or {
     or: Filter[];
 }
-
-Interface Aggregate {
-    field: Field;
-    type: 'min' | 'max';
-}
-
-/**
- * Gibt n sequentielle Ids für die gegebene Collection zurück.
- */
-getId(collection: Collection, n: number): Id
