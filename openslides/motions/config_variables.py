@@ -388,18 +388,18 @@ def get_config_variables():
         subgroup="PDF export",
     )
 
-    # Polls
+    # Voting
     yield ConfigVariable(
         name="motion_poll_default_100_percent_base",
         default_value="YNA",
         input_type="choice",
-        label="The 100-%-base of an election result consists of",
+        label="The 100 % base of a voting result consists of",
         choices=tuple(
             {"value": base[0], "display_name": base[1]}
             for base in MotionPoll.PERCENT_BASES
         ),
         weight=420,
-        group="Polls",
+        group="Voting",
         subgroup="Motions",
     )
 
@@ -412,8 +412,8 @@ def get_config_variables():
             for method in MotionPoll.MAJORITY_METHODS
         ),
         label="Required majority",
-        help_text="Default method to check whether a candidate has reached the required majority.",
+        help_text="Default method to check whether a motion has reached the required majority.",
         weight=425,
-        group="Polls",
+        group="Voting",
         subgroup="Motions",
     )

@@ -33,16 +33,18 @@
                 {{ 'Groups' | translate }}:
                 <span *ngFor="let group of poll.groups">{{ group.getTitle() | translate }}</span>
             </div>
-            <div>{{ 'Poll type' | translate }}: {{ poll.typeVerbose | translate }}</div>
-            <div>{{ 'Poll method' | translate }}: {{ poll.pollmethodVerbose | translate }}</div>
-            <div>{{ 'Majority method' | translate }}: {{ poll.majorityMethodVerbose | translate }}</div>
+            <div>{{ 'Voting type' | translate }}: {{ poll.typeVerbose | translate }}</div>
+            <div>{{ 'Election method' | translate }}: {{ poll.pollmethodVerbose | translate }}</div>
+            <div>{{ 'Required majority' | translate }}: {{ poll.majorityMethodVerbose | translate }}</div>
             <div>{{ '100% base' | translate }}: {{ poll.percentBaseVerbose | translate }}</div>
         </div>
+
+        <!-- TODO Enum -->
         <div *ngIf="poll.state === 2">
             <os-poll-progress [poll]="poll"></os-poll-progress>
         </div>
 
-        <div *ngIf="poll.state === 3 || poll.state === 4">
+        <div *ngIf="poll.stateHasVotes">
             <h2 translate>Result</h2>
 
             <div class="chart-wrapper"></div>

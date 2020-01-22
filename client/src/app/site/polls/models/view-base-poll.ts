@@ -22,9 +22,9 @@ export const PollStateVerbose = {
 };
 
 export const PollTypeVerbose = {
-    analog: 'Analog',
-    named: 'Named',
-    pseudoanonymous: 'Pseudoanonymous'
+    analog: 'Analog voting',
+    named: 'Named voting',
+    pseudoanonymous: 'Pseudoanonymous voting'
 };
 
 export const PollPropertyVerbose = {
@@ -37,9 +37,9 @@ export const PollPropertyVerbose = {
 };
 
 export const MajorityMethodVerbose = {
-    simple: 'Simple',
-    two_thirds: 'Two Thirds',
-    three_quarters: 'Three Quarters',
+    simple: 'Simple majority',
+    two_thirds: 'Two-thirds majority',
+    three_quarters: 'Three-quarters majority',
     disabled: 'Disabled'
 };
 
@@ -48,7 +48,7 @@ export const PercentBaseVerbose = {
     YNA: 'Yes/No/Abstain',
     votes: 'All votes',
     valid: 'Valid votes',
-    cast: 'Cast votes',
+    cast: 'Total votes cast',
     disabled: 'Disabled'
 };
 
@@ -104,6 +104,7 @@ export abstract class ViewBasePoll<M extends BasePoll<M, any> = any> extends Bas
         }
         return states;
     }
+
     public abstract readonly pollClassType: 'motion' | 'assignment';
 
     public canBeVotedFor: () => boolean;

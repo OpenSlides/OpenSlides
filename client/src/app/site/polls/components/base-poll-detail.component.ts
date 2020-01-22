@@ -114,8 +114,8 @@ export abstract class BasePollDetailComponent<V extends ViewBasePoll> extends Ba
     }
 
     public async pseudoanonymizePoll(): Promise<void> {
-        const title = 'Pseudoanonymize poll';
-        const text = 'Do you really want to pseudoanonymize the selected poll?';
+        const title = 'Anonymize single votes';
+        const text = 'Do you really want to anonymize all votes? This cannot be undone.';
 
         if (await this.promptDialog.open(title, text)) {
             this.repo.pseudoanonymize(this.poll).then(() => this.onPollLoaded(), this.raiseError); // votes have changed, but not the poll, so the components have to be informed about the update

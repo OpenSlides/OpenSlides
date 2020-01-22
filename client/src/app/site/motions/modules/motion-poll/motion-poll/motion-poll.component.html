@@ -15,9 +15,9 @@
 
         <!-- State chip -->
         <div class="poll-properties" *osPerms="'motions.can_manage_polls'">
-            <span *ngIf="pollService.isElectronicVotingEnabled && poll.typeVerbose !== 'Analog'">
-                {{ 'Poll type' | translate }}: {{ poll.typeVerbose | translate }}
-            </span>
+            <div *ngIf="pollService.isElectronicVotingEnabled && poll.type !== 'analog'">
+                {{ poll.typeVerbose | translate }}
+            </div>
 
             <mat-chip
                 disableRipple
@@ -38,7 +38,9 @@
 
 <ng-template #votingResult>
     <div (click)="openPoll()">
-        <ng-container [ngTemplateOutlet]="poll.hasVotes && poll.stateHasVotes ? viewTemplate : emptyTemplate"></ng-container>
+        <ng-container
+            [ngTemplateOutlet]="poll.hasVotes && poll.stateHasVotes ? viewTemplate : emptyTemplate"
+        ></ng-container>
     </div>
 </ng-template>
 
