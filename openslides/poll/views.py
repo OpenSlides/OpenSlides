@@ -141,6 +141,7 @@ class BasePollViewSet(ModelViewSet):
         poll.state = BasePoll.STATE_FINISHED
         poll.save()
         inform_changed_data(poll.get_votes())
+        inform_changed_data(poll.get_options())
         return Response()
 
     @detail_route(methods=["POST"])
