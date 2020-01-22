@@ -9,7 +9,7 @@ def get_config_variables():
     They are grouped in 'Ballot and ballot papers' and 'PDF'. The generator has
     to be evaluated during app loading (see apps.py).
     """
-    # Polls
+    # Voting
     yield ConfigVariable(
         name="assignment_poll_default_100_percent_base",
         default_value="YNA",
@@ -20,7 +20,7 @@ def get_config_variables():
             for base in AssignmentPoll.PERCENT_BASES
         ),
         weight=400,
-        group="Polls",
+        group="Voting",
         subgroup="Elections",
     )
 
@@ -35,7 +35,8 @@ def get_config_variables():
         label="Required majority",
         help_text="Default method to check whether a candidate has reached the required majority.",
         weight=405,
-        group="Polls",
+        hidden=True,
+        group="Voting",
         subgroup="Elections",
     )
 
@@ -45,7 +46,7 @@ def get_config_variables():
         input_type="boolean",
         label="Put all candidates on the list of speakers",
         weight=410,
-        group="Polls",
+        group="Voting",
         subgroup="Elections",
     )
 

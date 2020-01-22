@@ -17,7 +17,7 @@ type BallotCountChoices = 'NUMBER_OF_DELEGATES' | 'NUMBER_OF_ALL_PARTICIPANTS' |
  *
  * @example
  * ```ts
- * this.MotionPollPdfService.printBallos(this.poll);
+ * this.MotionPollPdfService.printBallots(this.poll);
  * ```
  */
 @Injectable({

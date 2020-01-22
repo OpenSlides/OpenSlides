@@ -65,7 +65,7 @@ const routes: Routes = [
     {
         path: 'polls',
         loadChildren: () => import('./modules/motion-poll/motion-poll.module').then(m => m.MotionPollModule),
-        data: { basePerm: 'motions.can_manage_polls' }
+        data: { basePerm: 'motions.can_see' }
     },
     {
         path: ':id',

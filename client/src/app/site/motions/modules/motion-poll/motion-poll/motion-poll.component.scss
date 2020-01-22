@@ -1,3 +1,5 @@
+@import '~assets/styles/poll-colors.scss';
+
 .poll-preview-wrapper {
     padding: 8px;
     background: white;
@@ -6,6 +8,7 @@
     .poll-title {
         color: black;
         text-decoration: none;
+        font-weight: 500;
     }
 
     .poll-title-actions {
@@ -48,17 +51,38 @@
         display: grid;
         grid-template-columns: auto minmax(50px, 20%) auto;
 
-        .votes-no {
-            color: #cc6c5b;
-            margin: auto 0;
-            width: fit-content;
+        .doughnut-chart {
+            margin-top: auto;
+            margin-bottom: auto;
         }
 
-        .votes-yes {
-            color: #9fc773;
-            margin: auto 0 auto auto;
-            width: fit-content;
+        .vote-legend {
+            margin: auto 10px;
+
+            div + div {
+                margin-top: 10px;
+            }
+
+            .votes-yes {
+                color: $votes-yes-color;
+            }
+
+            .votes-no {
+                color: $votes-no-color;
+            }
+
+            .votes-abstain {
+                color: $votes-abstain-color;
+            }
         }
+    }
+}
+
+.poll-detail-button-wrapper {
+    display: flex;
+    margin: auto 0;
+    > button {
+        margin-left: auto;
     }
 }
 

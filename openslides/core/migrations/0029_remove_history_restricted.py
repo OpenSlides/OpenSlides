@@ -5,6 +5,6 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [("core", "0025_projector_color")]
+    dependencies = [("core", "0028_projector_size_3")]
 
     operations = [migrations.RemoveField(model_name="history", name="restricted")]

@@ -117,7 +117,7 @@ def set_correct_state(apps, schema_editor):
     AssignmentPoll = apps.get_model("assignments", "AssignmentPoll")
     AssignmentVote = apps.get_model("assignments", "AssignmentVote")
     for poll in AssignmentPoll.objects.all():
-        # Polls, that are published (old field) but have no votes, will be
+        # Voting, that are published (old field) but have no votes, will be
         # left at the created state...
         if AssignmentVote.objects.filter(option__poll__pk=poll.pk).exists():
             if poll.published:

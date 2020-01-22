@@ -1,7 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { Title } from '@angular/platform-browser';
-import { Router } from '@angular/router';
 
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject } from 'rxjs';
@@ -12,6 +11,7 @@ import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ChartData } from 'app/shared/components/charts/charts.component';
 import { ViewMotionPoll } from 'app/site/motions/models/view-motion-poll';
 import { MotionPollDialogService } from 'app/site/motions/services/motion-poll-dialog.service';
+import { MotionPollPdfService } from 'app/site/motions/services/motion-poll-pdf.service';
 import { BasePollComponent } from 'app/site/polls/components/base-poll.component';
 import { PollService } from 'app/site/polls/services/poll.service';
 
@@ -40,12 +40,19 @@ export class MotionPollComponent extends BasePollComponent<ViewMotionPoll> {
             if (data.label === 'NO') {
                 this.voteNo = data.data[0];
             }
+            if (data.label === 'ABSTAIN') {
+                this.voteAbstain = data.data[0];
+            }
         }
         this.chartDataSubject.next(chartData);
     }
 
     public get poll(): ViewMotionPoll {
         return this._poll;
+    }
+
+    public get pollLink(): string {
+        return `/motions/polls/${this.poll.id}`;
     }
 
     /**
@@ -56,32 +63,45 @@ export class MotionPollComponent extends BasePollComponent<ViewMotionPoll> {
     /**
      * Number of votes for `Yes`.
      */
-    public set voteYes(n: number | string) {
+    public set voteYes(n: number) {
         this._voteYes = n;
     }
 
-    public get voteYes(): number | string {
-        return this.verboseForNumber(this._voteYes as number);
+    public get voteYes(): number {
+        return this._voteYes;
     }
 
     /**
      * Number of votes for `No`.
      */
-    public set voteNo(n: number | string) {
+    public set voteNo(n: number) {
         this._voteNo = n;
     }
 
-    public get voteNo(): number | string {
-        return this.verboseForNumber(this._voteNo as number);
+    public get voteNo(): number {
+        return this._voteNo;
+    }
+
+    /**
+     * Number of votes for `Abstain`.
+     */
+    public set voteAbstain(n: number) {
+        this._voteAbstain = n;
+    }
+
+    public get voteAbstain(): number {
+        return this._voteAbstain;
     }
 
     public get showChart(): boolean {
         return this._voteYes >= 0 && this._voteNo >= 0;
     }
 
-    private _voteNo: number | string = 0;
+    private _voteNo: number;
 
-    private _voteYes: number | string = 0;
+    private _voteYes: number;
+
+    private _voteAbstain: number;
 
     /**
      * Constructor.
@@ -101,27 +121,35 @@ export class MotionPollComponent extends BasePollComponent<ViewMotionPoll> {
         public pollRepo: MotionPollRepositoryService,
         pollDialog: MotionPollDialogService,
         public pollService: PollService,
-        private router: Router,
-        private operator: OperatorService
+        private operator: OperatorService,
+        private pdfService: MotionPollPdfService
     ) {
         super(titleService, matSnackBar, translate, dialog, promptService, pollRepo, pollDialog);
     }
 
-    public openPoll(): void {
-        if (this.operator.hasPerms('motions.can_manage_polls')) {
-            this.router.navigate(['motions', 'polls', this.poll.id]);
+    public showPoll(): boolean {
+        return (
+            this.operator.hasPerms('motions.can_manage_polls') ||
+            this.poll.isStatePublished ||
+            (this.poll.type !== 'analog' && this.poll.isStateStarted)
+        );
+    }
+
+    public downloadPdf(): void {
+        console.log('picture_as_pdf');
+        this.pdfService.printBallots(this.poll);
+    }
+
+    public async deletePoll(): Promise<void> {
+        const title = 'Delete poll';
+        const text = 'Do you really want to delete the selected poll?';
+
+        if (await this.promptService.open(title, text)) {
+            this.repo.delete(this.poll).catch(this.raiseError);
         }
     }
 
-    private verboseForNumber(input: number): number | string {
-        input = Math.trunc(input);
-        switch (input) {
-            case -1:
-                return 'Majority';
-            case -2:
-                return 'Not documented';
-            default:
-                return input;
-        }
+    public isVoteDocumented(vote: number): boolean {
+        return vote !== null && vote !== undefined && vote !== -2;
     }
 }

@@ -1,6 +1,8 @@
 <ng-container *ngIf="poll">
+    <div *osPerms="'motions.can_manage_polls';and:poll.isStateStarted">
+        <os-poll-progress [poll]="poll"></os-poll-progress>
+    </div>
     <ng-container *ngIf="vmanager.canVote(poll)">
-
         <!-- Voting -->
         <p *ngFor="let option of voteOptions">
             <button

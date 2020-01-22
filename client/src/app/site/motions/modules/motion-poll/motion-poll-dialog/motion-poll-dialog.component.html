@@ -6,41 +6,43 @@
                 [placeholder]="'Yes' | translate"
                 [checkboxValue]="-1"
                 inputType="number"
-                [checkboxLabel]="'Majority' | translate"
+                [checkboxLabel]="'majority' | translate"
                 formControlName="Y"
             ></os-check-input>
             <os-check-input
                 [placeholder]="'No' | translate"
                 [checkboxValue]="-1"
                 inputType="number"
-                [checkboxLabel]="'Majority' | translate"
+                [checkboxLabel]="'majority' | translate"
                 formControlName="N"
             ></os-check-input>
             <os-check-input
                 [placeholder]="'Abstain' | translate"
                 [checkboxValue]="-1"
                 inputType="number"
-                [checkboxLabel]="'Majority' | translate"
+                [checkboxLabel]="'majority' | translate"
                 formControlName="A"
             ></os-check-input>
             <os-check-input
-                [placeholder]="'Votes valid' | translate"
+                [placeholder]="'Valid votes' | translate"
                 inputType="number"
                 formControlName="votesvalid"
             ></os-check-input>
             <os-check-input
-                [placeholder]="'Votes invalid' | translate"
+                [placeholder]="'Invalid votes' | translate"
                 inputType="number"
                 formControlName="votesinvalid"
             ></os-check-input>
             <os-check-input
-                [placeholder]="'Votes cast' | translate"
+                [placeholder]="'Total votes cast' | translate"
                 inputType="number"
                 formControlName="votescast"
             ></os-check-input>
         </form>
     </div>
-    <div>
+
+    <!-- Publish immediately button. Only show for new polls -->
+    <div *ngIf="!pollData.state">
         <mat-checkbox [(ngModel)]="publishImmediately" (change)="publishStateChanged($event.checked)">
             <span translate>Publish immediately</span>
         </mat-checkbox>

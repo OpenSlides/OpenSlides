@@ -1,23 +1,23 @@
-<div class="poll-preview-wrapper">
+<div class="poll-preview-wrapper" *ngIf="poll && showPoll()">
     <!-- Poll Infos -->
-    <div class="poll-title-wrapper" *ngIf="poll">
+    <div class="poll-title-wrapper">
         <!-- Title -->
-        <a class="poll-title" routerLink="/motions/polls/{{ poll.id }}">
+        <a class="poll-title" [routerLink]="pollLink">
             {{ poll.title }}
         </a>
 
-        <!-- Edit button -->
+        <!-- Dot Menu -->
         <span class="poll-title-actions" *osPerms="'motions.can_manage_polls'">
-            <button mat-icon-button (click)="openDialog()">
-                <mat-icon class="small-icon">edit</mat-icon>
+            <button mat-icon-button [matMenuTriggerFor]="pollDetailMenu">
+                <mat-icon class="small-icon">more_horiz</mat-icon>
             </button>
         </span>
 
         <!-- State chip -->
         <div class="poll-properties" *osPerms="'motions.can_manage_polls'">
-            <span *ngIf="pollService.isElectronicVotingEnabled && poll.typeVerbose !== 'Analog'">
-                {{ 'Poll type' | translate }}: {{ poll.typeVerbose | translate }}
-            </span>
+            <div *ngIf="pollService.isElectronicVotingEnabled && poll.type !== 'analog'">
+                {{ poll.typeVerbose | translate }}
+            </div>
 
             <mat-chip
                 disableRipple
@@ -37,35 +37,72 @@
 </div>
 
 <ng-template #votingResult>
-    <div (click)="openPoll()">
-        <ng-container [ngTemplateOutlet]="poll.hasVotes && poll.stateHasVotes ? viewTemplate : emptyTemplate"></ng-container>
+    <div [routerLink]="pollLink">
+        <ng-container
+            [ngTemplateOutlet]="poll.hasVotes && poll.stateHasVotes ? viewTemplate : emptyTemplate"
+        ></ng-container>
     </div>
 </ng-template>
 
 <ng-template #viewTemplate>
     <div class="poll-chart-wrapper">
-        <div class="votes-yes">
-            <os-icon-container icon="check" size="large">
-                {{ voteYes }}
-            </os-icon-container>
+        <!-- empty helper div to center the grid wrapper -->
+        <div></div>
+        <div class="doughnut-chart">
+            <os-charts *ngIf="showChart" [type]="'doughnut'" [data]="chartDataSubject" [showLegend]="false"> </os-charts>
         </div>
-        <div *ngIf="showChart" class="doughnut-chart">
-            <os-charts [type]="'doughnut'" [data]="chartDataSubject" [showLegend]="false"> </os-charts>
+        <div class="vote-legend">
+            <div class="votes-yes" *ngIf="isVoteDocumented(voteYes)">
+                <os-icon-container icon="thumb_up" size="large">
+                    {{ voteYes | parsePollNumber }}
+                </os-icon-container>
+            </div>
+            <div class="votes-no" *ngIf="isVoteDocumented(voteNo)">
+                <os-icon-container icon="thumb_down" size="large">
+                    {{ voteNo | parsePollNumber }}
+                </os-icon-container>
+            </div>
+            <div class="votes-abstain" *ngIf="isVoteDocumented(voteAbstain)">
+                <os-icon-container icon="trip_origin" size="large">
+                    {{ voteAbstain | parsePollNumber }}
+                </os-icon-container>
+            </div>
         </div>
-        <div class="votes-no">
-            <os-icon-container icon="close" size="large">
-                {{ voteNo }}
-            </os-icon-container>
-        </div>
+    </div>
+    <div class="poll-detail-button-wrapper" *ngIf="poll.type !== 'analog'">
+        <button mat-button [routerLink]="pollLink">
+            {{ 'Single Votes' | translate }}
+        </button>
     </div>
 </ng-template>
 
 <ng-template #emptyTemplate>
-    <div>
-        An empty poll - you have to enter votes.
+    <div *osPerms="'motions.can_manage_polls'">
+        {{ 'An empty poll - you have to enter votes.' | translate }}
     </div>
 </ng-template>
 
+<!-- More Menu -->
+<mat-menu #pollDetailMenu="matMenu">
+    <os-projector-button [menuItem]="true" [object]="poll" *osPerms="'core.can_manage_projector'"></os-projector-button>
+    <button *osPerms="'motions.can_manage_polls'" mat-menu-item (click)="openDialog()">
+        <mat-icon>edit</mat-icon>
+        <span translate>Edit</span>
+    </button>
+    <button mat-menu-item (click)="downloadPdf()">
+        <mat-icon>picture_as_pdf</mat-icon>
+        <span translate>PDF</span>
+    </button>
+    <div *osPerms="'motions.can_manage_polls'">
+        <mat-divider></mat-divider>
+        <button mat-menu-item (click)="deletePoll()">
+            <mat-icon color="warn">delete</mat-icon>
+            <span translate>Delete</span>
+        </button>
+    </div>
+</mat-menu>
+
+<!-- Select state menu -->
 <mat-menu #triggerMenu="matMenu">
     <ng-container *ngIf="poll">
         <button mat-menu-item (click)="changeState(state.value)" *ngFor="let state of poll.nextStates | keyvalue">

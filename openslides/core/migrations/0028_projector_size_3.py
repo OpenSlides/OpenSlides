@@ -6,7 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("core", "0028_projector_size_2"),
+        ("core", "0027_projector_size_2"),
     ]
 
     operations = [
