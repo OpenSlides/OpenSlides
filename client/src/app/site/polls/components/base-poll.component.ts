@@ -14,12 +14,6 @@ import { BasePollRepositoryService } from '../services/base-poll-repository.serv
 import { ViewBasePoll } from '../models/view-base-poll';
 
 export abstract class BasePollComponent<V extends ViewBasePoll> extends BaseViewComponent {
-    // /**
-    //  * The poll represented in this component
-    //  */
-    // @Input()
-    // public abstract set poll(model: V);
-
     public chartDataSubject: BehaviorSubject<ChartData> = new BehaviorSubject([]);
 
     protected _poll: V;

@@ -178,6 +178,13 @@ export class ChartsComponent extends BaseViewComponent {
     };
 
     /**
+     * Chart option for pie and doughnut
+     */
+    public pieChartOptions: ChartOptions = {
+        aspectRatio: 1
+    };
+
+    /**
      * Holds the type of the chart - defaults to `bar`.
      */
     private _type: ChartType = 'bar';

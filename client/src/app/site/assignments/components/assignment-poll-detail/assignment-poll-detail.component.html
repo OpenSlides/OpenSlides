@@ -26,7 +26,7 @@
     <ng-container *ngIf="isReady">
         <h1>{{ poll.title }}</h1>
         <mat-divider></mat-divider>
-        <os-breadcrumb [breadcrumbs]="breadcrumbs" [breadcrumbStyle]="'>'"></os-breadcrumb>
+        <os-breadcrumb [breadcrumbs]="breadcrumbs"></os-breadcrumb>
         <div class="poll-content">
             <div>{{ 'Current state' | translate }}: {{ poll.stateVerbose | translate }}</div>
             <div *ngIf="poll.groups && poll.type && poll.type !== 'analog'">
