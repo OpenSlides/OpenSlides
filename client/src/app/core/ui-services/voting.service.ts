@@ -13,6 +13,9 @@ export enum VotingError {
     USER_HAS_VOTED
 }
 
+/**
+ * TODO: It appears that the only message that makes sense for the user to see it the last one.
+ */
 export const VotingErrorVerbose = {
     1: "You can't vote on this poll right now because it's not in the 'Started' state.",
     2: "You can't vote on this poll because its type is set to analog voting.",

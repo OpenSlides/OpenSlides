@@ -23,6 +23,8 @@ export class BreadcrumbComponent implements OnInit {
     @Input()
     public set breadcrumbs(labels: string[] | Breadcrumb[]) {
         this.breadcrumbList = [];
+
+        // https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-3.html#caveats
         for (const breadcrumb of labels) {
             if (typeof breadcrumb === 'string') {
                 this.breadcrumbList.push({ label: breadcrumb, action: null });
@@ -46,16 +48,6 @@ export class BreadcrumbComponent implements OnInit {
     }
 
     /**
-     * Sets the separator for the breadcrumbs.
-     *
-     * @param style The new separator as string (character).
-     */
-    @Input()
-    public set breadcrumbStyle(style: string) {
-        document.documentElement.style.setProperty('--breadcrumb-content', `'${style}'`);
-    }
-
-    /**
      * The list of the breadcrumbs built by the input.
      */
     public breadcrumbList: Breadcrumb[] = [];
@@ -63,9 +55,7 @@ export class BreadcrumbComponent implements OnInit {
     /**
      * Default constructor.
      */
-    public constructor() {
-        this.breadcrumbStyle = '/';
-    }
+    public constructor() {}
 
     /**
      * OnInit.

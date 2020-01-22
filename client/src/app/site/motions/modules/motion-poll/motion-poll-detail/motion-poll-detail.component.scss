@@ -1,18 +1,38 @@
+@import '~assets/styles/variables.scss';
+
 .poll-content {
-    padding-top: 10px;
+    padding-top: 20px;
 }
 
-.result-title {
-    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+.result-wrapper {
+    display: grid;
+    grid-gap: 10px;
+    grid-template-areas:
+        'chart'
+        'results'
+        'names';
 }
 
-.chart-wrapper {
-    padding: 16px;
-    text-align: center;
-    justify-content: space-around;
-    align-items: center;
-    * {
-        flex: 1;
-        max-width: 200px;
+@include desktop {
+    .result-wrapper {
+        grid-template-areas:
+            'results chart'
+            'names names';
+        grid-template-columns: 2fr 1fr;
     }
+}
+
+.result-table {
+    grid-area: results;
+}
+
+.result-chart {
+    grid-area: chart;
+    max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.named-result-table {
+    grid-area: names;
 }

@@ -45,32 +45,19 @@
 
     .poll-chart-wrapper {
         cursor: pointer;
-        margin: 4px auto;
-        display: flex;
-        justify-content: center;
+        display: grid;
+        grid-template-columns: auto minmax(50px, 20%) auto;
 
-        div {
-            flex: 1;
-        }
-
-        .chart-wrapper-left,
-        .chart-wrapper-right {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-        }
-
-        .chart-wrapper-left {
+        .votes-no {
             color: #cc6c5b;
+            margin: auto 0;
+            width: fit-content;
         }
 
-        .chart-wrapper-right {
+        .votes-yes {
             color: #9fc773;
-        }
-
-        .doughnut-chart {
-            max-width: 35%;
+            margin: auto 0 auto auto;
+            width: fit-content;
         }
     }
 }
