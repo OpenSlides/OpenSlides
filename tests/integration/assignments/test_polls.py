@@ -708,6 +708,7 @@ class VoteAssignmentPollBaseTestClass(TestCase):
         self.admin.save()
         self.poll.groups.add(GROUP_ADMIN_PK)
         self.poll.create_options()
+        inform_changed_data(self.poll)
 
     def create_poll(self):
         # has to be implemented by subclasses

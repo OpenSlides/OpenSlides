@@ -7,7 +7,6 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import Model
-from django.db.models.query import QuerySet
 
 from .cache import element_cache
 
@@ -112,9 +111,8 @@ async def async_has_perm(user_id: int, perm: str) -> bool:
     return has_perm
 
 
-def in_some_groups(
-    user_id: int, groups: Union[List[int], QuerySet], exact: bool = False
-) -> bool:
+# async code doesn't work well with QuerySets, so we have to give a list of ints for groups
+def in_some_groups(user_id: int, groups: List[int], exact: bool = False) -> bool:
     """
     Checks that user is in at least one given group. Groups can be given as a list
     of ids or a QuerySet.
@@ -134,7 +132,7 @@ def in_some_groups(
 
 
 async def async_in_some_groups(
-    user_id: int, groups: Union[List[int], QuerySet], exact: bool = False
+    user_id: int, groups: List[int], exact: bool = False
 ) -> bool:
     """
     Checks that user is in at least one given group. Groups can be given as a list
@@ -143,9 +141,6 @@ async def async_in_some_groups(
 
     user_id 0 means anonymous user.
     """
-    if isinstance(groups, QuerySet):
-        groups = [group.pk for group in groups]
-
     if not user_id and not await async_anonymous_is_enabled():
         in_some_groups = False
     elif not user_id:

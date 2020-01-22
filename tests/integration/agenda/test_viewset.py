@@ -382,7 +382,6 @@ class ManageSpeaker(TestCase):
         self.assertEqual(response.status_code, 403)
 
     def test_remove_someone_else(self):
-        print(self.user)
         speaker = Speaker.objects.add(self.user, self.list_of_speakers)
         response = self.client.delete(
             reverse("listofspeakers-manage-speaker", args=[self.list_of_speakers.pk]),
