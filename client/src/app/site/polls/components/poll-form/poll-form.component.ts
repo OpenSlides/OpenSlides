@@ -8,10 +8,13 @@ import { Observable } from 'rxjs';
 
 import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
 import { PercentBase } from 'app/shared/models/poll/base-poll';
+import { PollType } from 'app/shared/models/poll/base-poll';
+import { ViewAssignmentPoll } from 'app/site/assignments/models/view-assignment-poll';
 import { BaseViewComponent } from 'app/site/base/base-view';
 import {
     MajorityMethodVerbose,
     PercentBaseVerbose,
+    PollPropertyVerbose,
     PollTypeVerbose,
     ViewBasePoll
 } from 'app/site/polls/models/view-base-poll';
@@ -28,6 +31,9 @@ export class PollFormComponent extends BaseViewComponent implements OnInit {
      * The form-group for the meta-info.
      */
     public contentForm: FormGroup;
+
+    public PollType = PollType;
+    public PollPropertyVerbose = PollPropertyVerbose;
 
     /**
      * The different methods for this poll.
@@ -92,6 +98,11 @@ export class PollFormComponent extends BaseViewComponent implements OnInit {
     public ngOnInit(): void {
         this.groupObservable = this.groupRepo.getViewModelListObservable();
 
+        const cast = <ViewAssignmentPoll>this.data;
+        if (cast.assignment && !cast.votes_amount) {
+            cast.votes_amount = cast.assignment.open_posts;
+        }
+
         if (this.data) {
             Object.keys(this.contentForm.controls).forEach(key => {
                 if (this.data[key]) {
@@ -118,21 +129,19 @@ export class PollFormComponent extends BaseViewComponent implements OnInit {
                 forbiddenBases = [PercentBase.YN, PercentBase.YNA];
             }
 
-            this.percentBases = {};
+            const percentBases = {};
             for (const [key, value] of Object.entries(PercentBaseVerbose)) {
                 if (!forbiddenBases.includes(key)) {
-                    this.percentBases[key] = value;
+                    percentBases[key] = value;
                 }
             }
+            this.percentBases = percentBases;
+            // TODO: update selected base
         });
     }
 
     public getValues<V extends ViewBasePoll>(): Partial<V> {
         return { ...this.data, ...this.contentForm.value };
-    }
-
-    public isValidPercentBaseWithMethod(base: PercentBase): boolean {
-        return !(base === PercentBase.YNA && this.contentForm.get('pollmethod').value === 'YN');
     }
 
     /**
@@ -147,11 +156,16 @@ export class PollFormComponent extends BaseViewComponent implements OnInit {
                 this.pollService.getVerboseNameForKey(key),
                 this.pollService.getVerboseNameForValue(key, value as string)
             ]);
-        if (data.type === 'named') {
+        if (data.type !== 'analog') {
             this.pollValues.push([
                 this.pollService.getVerboseNameForKey('groups'),
-                this.groupRepo.getNameForIds(...data.groups_id)
+                this.groupRepo.getNameForIds(...([] || (data && data.groups_id)))
             ]);
+        }
+        if (data.pollmethod === 'votes') {
+            this.pollValues.push([this.pollService.getVerboseNameForKey('votes_amount'), data.votes_amount]);
+            this.pollValues.push([this.pollService.getVerboseNameForKey('global_no'), data.global_no]);
+            this.pollValues.push([this.pollService.getVerboseNameForKey('global_abstain'), data.global_abstain]);
         }
     }
 
@@ -162,7 +176,10 @@ export class PollFormComponent extends BaseViewComponent implements OnInit {
             pollmethod: ['', Validators.required],
             onehundred_percent_base: ['', Validators.required],
             majority_method: ['', Validators.required],
-            groups_id: [[]]
+            votes_amount: [1, [Validators.required, Validators.min(1)]],
+            groups_id: [],
+            global_no: [],
+            global_abstain: []
         });
     }
 }

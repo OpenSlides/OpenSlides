@@ -474,10 +474,10 @@ class AssignmentPollViewSet(BasePollViewSet):
                             )
                         amount_sum += amount
 
-                    if amount_sum != poll.votes_amount:
+                    if amount_sum > poll.votes_amount:
                         raise ValidationError(
                             {
-                                "detail": "You have to give exactly {0} votes",
+                                "detail": "You can give a maximum of {0} votes",
                                 "args": [poll.votes_amount],
                             }
                         )

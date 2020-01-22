@@ -17,9 +17,9 @@
         </span>
     </div>
     <form [formGroup]="contentForm" class="poll-preview--meta-info-form">
-        <ng-container *ngIf="!data || !data.state || data.state === 1">
+        <ng-container *ngIf="!data || !data.state || data.isStateCreated">
             <mat-form-field *ngIf="pollService.isElectronicVotingEnabled">
-                <mat-select [placeholder]="'Voting type' | translate" formControlName="type" required>
+                <mat-select [placeholder]="PollPropertyVerbose.type | translate" formControlName="type" required>
                     <mat-option *ngFor="let option of pollTypes | keyvalue" [value]="option.key">
                         {{ option.value | translate }}
                     </mat-option>
@@ -32,12 +32,12 @@
                     [multiple]="true"
                     [showChips]="false"
                     [includeNone]="false"
-                    [placeholder]="'Entitled to vote' | translate"
+                    [placeholder]="PollPropertyVerbose.groups | translate"
                     [inputListValues]="groupObservable"
                 ></os-search-value-selector>
             </mat-form-field>
             <mat-form-field *ngIf="pollMethods">
-                <mat-select [placeholder]="'Poll method' | translate" formControlName="pollmethod" required>
+                <mat-select [placeholder]="PollPropertyVerbose.pollmethod | translate" formControlName="pollmethod" required>
                     <mat-option *ngFor="let option of pollMethods | keyvalue" [value]="option.key">
                         {{ option.value }}
                     </mat-option>
@@ -47,20 +47,28 @@
         </ng-container>
 
         <mat-form-field>
-            <mat-select placeholder="{{ '100% base' | translate }}" formControlName="onehundred_percent_base" required>
+            <mat-select placeholder="{{ PollPropertyVerbose.onehundred_percent_base | translate }}" formControlName="onehundred_percent_base" required>
                 <ng-container *ngFor="let option of percentBases | keyvalue">
-                    <mat-option *ngIf="isValidPercentBaseWithMethod(option.key)" [value]="option.key">
-                        {{ option.value | translate }}
-                    </mat-option>
+                    <mat-option [value]="option.key">{{ option.value | translate }}</mat-option>
                 </ng-container>
             </mat-select>
         </mat-form-field>
         <mat-form-field>
-            <mat-select placeholder="{{ 'Required majority' | translate }}" formControlName="majority_method" required>
+            <mat-select placeholder="{{ PollPropertyVerbose.majority_method | translate }}" formControlName="majority_method" required>
                 <mat-option *ngFor="let option of majorityMethods | keyvalue" [value]="option.key">
                     {{ option.value | translate }}
                 </mat-option>
             </mat-select>
         </mat-form-field>
+
+        <ng-container *ngIf="!data || !data.state || data.state === 1">
+            <ng-container *ngIf="contentForm.get('pollmethod').value === 'votes'">
+                <mat-form-field>
+                    <input type="number" matInput placeholder="{{ PollPropertyVerbose.votes_amount | translate }}" formControlName="votes_amount" min="1" required>
+                </mat-form-field>
+                <mat-checkbox formControlName="global_no">{{ PollPropertyVerbose.global_no | translate }}</mat-checkbox>
+                <mat-checkbox formControlName="global_abstain">{{ PollPropertyVerbose.global_abstain | translate }}</mat-checkbox>
+            </ng-container>
+        </ng-container>
     </form>
 </div>

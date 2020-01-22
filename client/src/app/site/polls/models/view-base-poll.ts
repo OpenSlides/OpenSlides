@@ -33,7 +33,10 @@ export const PollPropertyVerbose = {
     type: 'Poll type',
     pollmethod: 'Poll method',
     state: 'State',
-    groups: 'Entitled to vote'
+    groups: 'Entitled to vote',
+    votes_amount: 'Amount of votes',
+    global_no: 'Enable global no',
+    global_abstain: 'Enable global abstain'
 };
 
 export const MajorityMethodVerbose = {
