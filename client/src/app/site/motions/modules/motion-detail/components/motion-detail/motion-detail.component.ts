@@ -452,7 +452,6 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         private itemRepo: ItemRepositoryService,
         private motionSortService: MotionSortListService,
         private motionFilterService: MotionFilterListService,
-        private routingStateService: RoutingStateService,
         private cd: ChangeDetectorRef,
         private pollDialog: MotionPollDialogService
     ) {

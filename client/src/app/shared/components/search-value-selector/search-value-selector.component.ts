@@ -78,14 +78,18 @@ export class SearchValueSelectorComponent extends BaseFormControlComponent<Selec
         if (!value) {
             return;
         }
-        this.subscriptions.push(
-            value.pipe(auditTime(10)).subscribe(items => {
-                this.selectableItems = items;
-                if (this.contentForm) {
-                    this.disabled = !items || (!!items && !items.length);
-                }
-            })
-        );
+        if (Array.isArray(value)) {
+            this.selectableItems = value;
+        } else {
+            this.subscriptions.push(
+                value.pipe(auditTime(10)).subscribe(items => {
+                    this.selectableItems = items;
+                    if (this.contentForm) {
+                        this.disabled = !items || (!!items && !items.length);
+                    }
+                })
+            );
+        }
     }
 
     public searchValue: FormControl;
