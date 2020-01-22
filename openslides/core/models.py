@@ -8,6 +8,7 @@ from jsonfield import JSONField
 
 from openslides.utils.autoupdate import AutoupdateElement
 from openslides.utils.cache import element_cache, get_element_id
+from openslides.utils.locking import locking
 from openslides.utils.manager import BaseManager
 from openslides.utils.models import SET_NULL_AND_AUTOUPDATE, RESTModelMixin
 

@@ -134,7 +134,7 @@ class UserCreate(TestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         user = User.objects.get(username="test_name_Thimoo2ho7ahreighio3")
         self.assertEqual(user.about_me, "<p>&lt;foo&gt;bar&lt;/foo&gt;</p>")
-        
+
     def test_double_username(self):
         for field in ("last_name", "username"):
             response = self.client.post(reverse("user-list"), {"username": "admin"})
