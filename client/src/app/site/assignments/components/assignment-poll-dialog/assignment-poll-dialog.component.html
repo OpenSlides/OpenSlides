@@ -6,7 +6,7 @@
             <div *ngFor="let option of options" class="votes-grid">
                 <div>
                     <span *ngIf="option.user">{{ option.user.getFullName() }}</span>
-                    <span *ngIf="!option.user">No user {{ option.candidate_id }}</span>
+                    <span *ngIf="!option.user">{{ 'Unknown User' | translate }}</span>
                 </div>
 
                 <div>
