@@ -3,8 +3,8 @@
         <h2 *ngIf="poll">{{ 'Motion' | translate }} {{ poll.motion.id }}</h2>
     </div>
 
-    <div class="menu-slot" *osPerms="'agenda.can_manage'; or: 'agenda.can_see_list_of_speakers'">
-        <button type="button" mat-icon-button [matMenuTriggerFor]="pollDetailMenu">
+    <div class="menu-slot" *osPerms="'motions.can_manage_polls'">
+        <button type="button" mat-icon-button  [matMenuTriggerFor]="pollDetailMenu">
             <mat-icon>more_vert</mat-icon>
         </button>
     </div>
@@ -18,8 +18,8 @@
 <ng-template #viewTemplate>
     <ng-container *ngIf="poll">
         <h1>{{ poll.title }}</h1>
-        <span *ngIf="poll.type !== 'analog'">{{ 'Polly type' | translate }}: {{ poll.type | translate }}</span>
-        <os-breadcrumb [breadcrumbs]="breadcrumbs"></os-breadcrumb>
+        <span *ngIf="poll.type !== 'analog'">{{ poll.typeVerbose | translate }}</span>
+        <os-breadcrumb *osPerms="'motions.can_manage_polls'"[breadcrumbs]="breadcrumbs"></os-breadcrumb>
 
         <div *ngIf="poll.stateHasVotes">
             <h2 translate>Result</h2>
@@ -66,7 +66,7 @@
                             <mat-header-cell *matHeaderCellDef>{{ "Vote" | translate }}</mat-header-cell>
                             <mat-cell *matCellDef="let vote">{{ vote.valueVerbose }}</mat-cell>
                         </ng-container>
-            
+
                         <mat-header-row *matHeaderRowDef="columnDefinition"></mat-header-row>
                         <mat-row *matRowDef="let vote; columns: columnDefinition"></mat-row>
                     </mat-table>
@@ -82,11 +82,13 @@
                     {{ group.getTitle() | translate }}<span *ngIf="i < poll.groups.length - 1">, </span>
                 </span>
             </div>
-            <div>{{ 'Majority method' | translate }}: {{ poll.majorityMethodVerbose | translate }}</div>
+            <div>{{ 'Required majority' | translate }}: {{ poll.majorityMethodVerbose | translate }}</div>
             <div>{{ '100% base' | translate }}: {{ poll.percentBaseVerbose | translate }}</div>
         </div>
 
+        <!-- TODO -->
         <div *ngIf="poll.state === 2">
+        <!-- <div *ngIf="poll.state === PollState.started"> -->
             <os-poll-progress [poll]="poll"></os-poll-progress>
         </div>
     </ng-container>
@@ -95,16 +97,16 @@
 <!-- More Menu -->
 <mat-menu #pollDetailMenu="matMenu">
     <os-projector-button [menuItem]="true" [object]="poll" *osPerms="'core.can_manage_projector'"></os-projector-button>
-    <button mat-menu-item (click)="openDialog()">
+    <button *osPerms="'motions.can_manage_polls'" mat-menu-item (click)="openDialog()">
         <mat-icon>edit</mat-icon>
         <span translate>Edit</span>
     </button>
     <button mat-menu-item *ngIf="poll && poll.type === 'named'" (click)="pseudoanonymizePoll()">
-        <mat-icon>polymer</mat-icon>
-        <span translate>Pseudoanonymize</span>
+        <mat-icon>warning</mat-icon>
+        <span translate>Anonymize votes</span>
     </button>
     <mat-divider></mat-divider>
-    <button mat-menu-item (click)="deletePoll()">
+    <button *osPerms="'motions.can_manage_polls'" mat-menu-item (click)="deletePoll()">
         <mat-icon color="warn">delete</mat-icon>
         <span translate>Delete</span>
     </button>

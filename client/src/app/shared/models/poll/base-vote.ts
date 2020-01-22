@@ -9,9 +9,9 @@ export const VoteValueVerbose = {
 };
 
 export const GeneralValueVerbose = {
-    votesvalid: 'Votes valid',
-    votesinvalid: 'Votes invalid',
-    votescast: 'Votes cast',
+    votesvalid: 'Valid votes',
+    votesinvalid: 'Invalid votes',
+    votescast: 'Total votes cast',
     votesno: 'Votes No',
     votesabstain: 'Votes abstain'
 };

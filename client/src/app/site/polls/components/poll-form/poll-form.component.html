@@ -19,7 +19,7 @@
     <form [formGroup]="contentForm" class="poll-preview--meta-info-form">
         <ng-container *ngIf="!data || !data.state || data.state === 1">
             <mat-form-field *ngIf="pollService.isElectronicVotingEnabled">
-                <mat-select [placeholder]="'Poll type' | translate" formControlName="type" required>
+                <mat-select [placeholder]="'Voting type' | translate" formControlName="type" required>
                     <mat-option *ngFor="let option of pollTypes | keyvalue" [value]="option.key">
                         {{ option.value | translate }}
                     </mat-option>
@@ -56,7 +56,7 @@
             </mat-select>
         </mat-form-field>
         <mat-form-field>
-            <mat-select placeholder="{{ 'Majority' | translate }}" formControlName="majority_method" required>
+            <mat-select placeholder="{{ 'Required majority' | translate }}" formControlName="majority_method" required>
                 <mat-option *ngFor="let option of majorityMethods | keyvalue" [value]="option.key">
                     {{ option.value | translate }}
                 </mat-option>

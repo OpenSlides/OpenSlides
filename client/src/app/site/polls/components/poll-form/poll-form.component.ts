@@ -162,7 +162,7 @@ export class PollFormComponent extends BaseViewComponent implements OnInit {
             pollmethod: ['', Validators.required],
             onehundred_percent_base: ['', Validators.required],
             majority_method: ['', Validators.required],
-            groups_id: [[]]
+            groups_id: [[], Validators.required]
         });
     }
 }
