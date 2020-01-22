@@ -15,6 +15,7 @@
         <canvas
             *ngIf="type === 'pie' || type === 'doughnut'"
             baseChart
+            [options]="pieChartOptions"
             [data]="circleData"
             [labels]="circleLabels"
             [colors]="circleColors"

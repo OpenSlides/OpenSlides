@@ -36,7 +36,7 @@
                     [inputListValues]="groupObservable"
                 ></os-search-value-selector>
             </mat-form-field>
-            <mat-form-field>
+            <mat-form-field *ngIf="pollMethods">
                 <mat-select [placeholder]="'Poll method' | translate" formControlName="pollmethod" required>
                     <mat-option *ngFor="let option of pollMethods | keyvalue" [value]="option.key">
                         {{ option.value }}

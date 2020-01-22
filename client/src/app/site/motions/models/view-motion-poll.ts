@@ -23,6 +23,10 @@ export class ViewMotionPoll extends ViewBasePoll<MotionPoll> implements MotionPo
     private tableKeys = ['yes', 'no', 'abstain'];
     private voteKeys = ['votesvalid', 'votesinvalid', 'votescast'];
 
+    public get hasVotes(): boolean {
+        return !!this.options[0].votes.length;
+    }
+
     public initChartLabels(): string[] {
         return ['Votes'];
     }

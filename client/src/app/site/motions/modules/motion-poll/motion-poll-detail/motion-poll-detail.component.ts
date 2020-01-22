@@ -11,10 +11,10 @@ import { MotionRepositoryService } from 'app/core/repositories/motions/motion-re
 import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ChartType } from 'app/shared/components/charts/charts.component';
+import { ViewMotion } from 'app/site/motions/models/view-motion';
 import { ViewMotionPoll } from 'app/site/motions/models/view-motion-poll';
 import { MotionPollDialogService } from 'app/site/motions/services/motion-poll-dialog.service';
 import { BasePollDetailComponent } from 'app/site/polls/components/base-poll-detail.component';
-// import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 
 @Component({
     selector: 'os-motion-poll-detail',
@@ -22,7 +22,7 @@ import { BasePollDetailComponent } from 'app/site/polls/components/base-poll-det
     styleUrls: ['./motion-poll-detail.component.scss']
 })
 export class MotionPollDetailComponent extends BasePollDetailComponent<ViewMotionPoll> implements OnInit {
-    public motionTitle = '';
+    public motion: ViewMotion;
     public columnDefinition = ['key', 'value'];
 
     public set chartType(type: ChartType) {
@@ -52,11 +52,12 @@ export class MotionPollDetailComponent extends BasePollDetailComponent<ViewMotio
     }
 
     protected onPollLoaded(): void {
-        this.motionTitle = this.motionRepo.getViewModel((<ViewMotionPoll>this.poll).motion_id).getTitle();
+        this.motion = this.motionRepo.getViewModel((<ViewMotionPoll>this.poll).motion_id);
     }
 
     public openDialog(): void {
         this.pollDialog.openDialog(this.poll);
+        console.log('this.poll: ', this.poll.hasVotes);
     }
 
     protected onDeleted(): void {

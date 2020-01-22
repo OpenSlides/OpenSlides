@@ -1,13 +1,6 @@
-<os-head-bar
-    [goBack]="true"
-    [nav]="false"
-    [hasMainButton]="poll ? poll.state === 2 || poll.state === 3 : false"
-    [mainButtonIcon]="'edit'"
-    [mainActionTooltip]="'Edit' | translate"
-    (mainEvent)="openDialog()"
->
+<os-head-bar [goBack]="true" [nav]="false">
     <div class="title-slot">
-        <h2 *ngIf="!!poll">{{ motionTitle }}</h2>
+        <h2 *ngIf="motion">{{ 'Motion' | translate }} {{ motion.id }}</h2>
     </div>
 
     <div class="menu-slot" *osPerms="'agenda.can_manage'; or: 'agenda.can_see_list_of_speakers'">
@@ -25,54 +18,61 @@
 <ng-template #viewTemplate>
     <ng-container *ngIf="poll">
         <h1>{{ poll.title }}</h1>
-        <mat-divider></mat-divider>
-        <os-breadcrumb [breadcrumbs]="breadcrumbs" [breadcrumbStyle]="'>'"></os-breadcrumb>
+        <span *ngIf="poll.type !== 'analog'">{{ 'Polly type' | translate }}: {{ poll.type | translate }}</span>
+        <os-breadcrumb [breadcrumbs]="breadcrumbs"></os-breadcrumb>
 
-        <div *ngIf="poll.state === 3 || poll.state === 4">
+        <div *ngIf="poll.stateHasVotes">
             <h2 translate>Result</h2>
-            <os-charts
-                *ngIf="chartDataSubject.value"
-                [type]="chartType"
-                [showLegend]="true"
-                [data]="chartDataSubject"
-            ></os-charts>
-            <div
-                *ngIf="poll.type === 'named'"
-                style="display: grid; grid-template-columns: max-content auto;grid-column-gap: 20px;"
-            >
-                <ng-container *ngFor="let vote of poll.options[0].votes">
-                    <div *ngIf="vote.user">{{ vote.user.full_name }}</div>
-                    <div *ngIf="!vote.user">{{ 'Unknown user' | translate }}</div>
-                    <div>{{ vote.valueVerbose }}</div>
-                </ng-container>
+
+            <div *ngIf="!poll.hasVotes">{{ 'No results to show' | translate }}</div>
+
+            <div class="result-wrapper" *ngIf="poll.hasVotes">
+                <!-- Chart -->
+                <os-charts
+                    class="result-chart"
+                    *ngIf="chartDataSubject.value"
+                    [type]="chartType"
+                    [showLegend]="true"
+                    [data]="chartDataSubject"
+                ></os-charts>
+
+                <!-- result table -->
+                <mat-table class="result-table" [dataSource]="poll.tableData">
+                    <ng-container matColumnDef="key" sticky>
+                        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                        <mat-cell *matCellDef="let row">{{ row.key }}</mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="value" sticky>
+                        <mat-header-cell *matHeaderCellDef>Votes</mat-header-cell>
+                        <mat-cell *matCellDef="let row">{{ row.value }}</mat-cell>
+                    </ng-container>
+
+                    <mat-header-row *matHeaderRowDef="columnDefinition"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: columnDefinition"></mat-row>
+                </mat-table>
+
+                <!-- Named table -->
+                <!-- The table was created in another PR -->
+                <div class="named-result-table" *ngIf="poll.type === 'named'">
+                    <h3>{{ 'Singe votes' | translate }}</h3>
+
+                    <div *ngFor="let vote of poll.options[0].votes">
+                        <div *ngIf="vote.user">{{ vote.user.full_name }}</div>
+                        <div *ngIf="!vote.user">{{ 'Unknown user' | translate }}</div>
+                        <div>{{ vote.valueVerbose }}</div>
+                    </div>
+                </div>
             </div>
-
-            <mat-table [dataSource]="poll.tableData">
-                <ng-container matColumnDef="key" sticky>
-                    <mat-header-cell *matHeaderCellDef></mat-header-cell>
-                    <mat-cell *matCellDef="let row">{{ row.key }}</mat-cell>
-                </ng-container>
-                <ng-container matColumnDef="value" sticky>
-                    <mat-header-cell *matHeaderCellDef>Votes</mat-header-cell>
-                    <mat-cell *matCellDef="let row">{{ row.value }}</mat-cell>
-                </ng-container>
-
-                <mat-header-row *matHeaderRowDef="columnDefinition"></mat-header-row>
-                <mat-row *matRowDef="let row; columns: columnDefinition"></mat-row>
-            </mat-table>
         </div>
 
-        <div class="poll-content">
-            <div>{{ 'Current state' | translate }}: {{ poll.stateVerbose | translate }}</div>
+        <div class="poll-content small">
             <div *ngIf="poll.groups && poll.type && poll.type !== 'analog'">
                 {{ 'Groups' | translate }}:
+
                 <span *ngFor="let group of poll.groups; let i = index">
-                    {{ group.getTitle() | translate }}
-                    <span *ngIf="i < poll.groups.length - 1">, </span>
+                    {{ group.getTitle() | translate }}<span *ngIf="i < poll.groups.length - 1">, </span>
                 </span>
             </div>
-            <div>{{ 'Poll type' | translate }}: {{ poll.typeVerbose | translate }}</div>
-            <div>{{ 'Poll method' | translate }}: {{ poll.pollmethodVerbose | translate }}</div>
             <div>{{ 'Majority method' | translate }}: {{ poll.majorityMethodVerbose | translate }}</div>
             <div>{{ '100% base' | translate }}: {{ poll.percentBaseVerbose | translate }}</div>
         </div>
@@ -82,13 +82,17 @@
 <!-- More Menu -->
 <mat-menu #pollDetailMenu="matMenu">
     <os-projector-button [menuItem]="true" [object]="poll" *osPerms="'core.can_manage_projector'"></os-projector-button>
+    <button mat-menu-item (click)="openDialog()">
+        <mat-icon>edit</mat-icon>
+        <span translate>Edit</span>
+    </button>
     <button mat-menu-item *ngIf="poll && poll.type === 'named'" (click)="pseudoanonymizePoll()">
         <mat-icon>questionmark</mat-icon>
         <span translate>Pseudoanonymize</span>
     </button>
     <mat-divider></mat-divider>
     <button mat-menu-item (click)="deletePoll()">
-        <mat-icon>delete</mat-icon>
+        <mat-icon color="warn">delete</mat-icon>
         <span translate>Delete</span>
     </button>
 </mat-menu>

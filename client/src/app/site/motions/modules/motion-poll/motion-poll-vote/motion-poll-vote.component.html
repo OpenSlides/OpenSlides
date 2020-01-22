@@ -1,28 +1,21 @@
 <ng-container *ngIf="poll">
     <ng-container *ngIf="vmanager.canVote(poll)">
-        <div *ngIf="currentVote"><span translate>Your current vote is</span> '{{ currentVote.valueVerbose | translate }}'</div>
-        <div *ngIf="!currentVote" translate>You have not voted yet.</div>
+
         <!-- Voting -->
-        <mat-radio-group
-            name="votes-{{ poll.id }}"
-            [(ngModel)]="selectedVote"
-        >
-            <mat-radio-button value="Y">
-                <span translate>Yes</span>
-            </mat-radio-button>
-            <mat-radio-button value="N">
-                <span translate>No</span>
-            </mat-radio-button>
-            <mat-radio-button value="A" *ngIf="poll.pollmethod === pollMethods.YNA">
-                <span translate>Abstain</span>
-            </mat-radio-button>
-        </mat-radio-group>
-        <button mat-button (click)="saveVote()">
-            <span translate>Save</span>
-        </button>
+        <p *ngFor="let option of voteOptions">
+            <button
+                mat-raised-button
+                (click)="saveVote(option.vote)"
+                [ngClass]="currentVote && currentVote.value === option.vote ? option.css : ''"
+            >
+                <mat-icon> {{ option.icon }}</mat-icon>
+            </button>
+            <span class="vote-label"> {{ option.label | translate }} </span>
+        </p>
     </ng-container>
 
-    <ng-container *ngIf="!vmanager.canVote(poll)">
+    <!-- TODO most of the messages are not making sense -->
+    <!-- <ng-container *ngIf="!vmanager.canVote(poll)">
         <span>{{ vmanager.getVotePermissionErrorVerbose(poll) | translate }}</span>
-    </ng-container>
+    </ng-container> -->
 </ng-container>

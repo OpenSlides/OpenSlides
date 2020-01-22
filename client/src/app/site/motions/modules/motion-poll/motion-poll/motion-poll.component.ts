@@ -56,7 +56,6 @@ export class MotionPollComponent extends BasePollComponent<ViewMotionPoll> {
     /**
      * Number of votes for `Yes`.
      */
-    // public voteYes = 0;
     public set voteYes(n: number | string) {
         this._voteYes = n;
     }

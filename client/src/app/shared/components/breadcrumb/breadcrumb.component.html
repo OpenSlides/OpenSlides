@@ -1,17 +1,14 @@
-<ol class="breadcrumb-list">
-    <li *ngFor="let breadcrumb of breadcrumbList" class="breadcrumb" [ngClass]="{ active: breadcrumb.active }">
-        <ng-container *ngIf="breadcrumb.active">
+<div>
+    <mat-button-toggle-group>
+        <mat-button-toggle
+            *ngFor="let breadcrumb of breadcrumbList"
+            [disabled]="breadcrumb.action === null"
+            (click)="breadcrumb.action ? breadcrumb.action() : null"
+            [ngClass]="{ 'active-breadcrumb': breadcrumb.active }"
+        >
             <span>
                 {{ breadcrumb.label }}
             </span>
-        </ng-container>
-        <ng-container *ngIf="!breadcrumb.active">
-            <span
-                (click)="breadcrumb.action ? breadcrumb.action() : null"
-                [ngClass]="{ 'accent-foreground has-action': breadcrumb.action }"
-            >
-                {{ breadcrumb.label }}
-            </span>
-        </ng-container>
-    </li>
-</ol>
+        </mat-button-toggle>
+    </mat-button-toggle-group>
+</div>
