@@ -29,6 +29,10 @@ export class PollProgressComponent extends BaseViewComponent implements OnInit {
         super(title, translate, snackbar);
     }
 
+    public get valueInPercent(): number {
+        return (this.poll.voted_id.length / this.max) * 100;
+    }
+
     /**
      * OnInit.
      * Sets the observable for groups.

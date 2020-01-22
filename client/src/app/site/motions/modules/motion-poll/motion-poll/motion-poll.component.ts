@@ -117,9 +117,9 @@ export class MotionPollComponent extends BasePollComponent<ViewMotionPoll> {
         input = Math.trunc(input);
         switch (input) {
             case -1:
-                return 'Majority';
+                return this.translate.instant('majority');
             case -2:
-                return 'Not documented';
+                return this.translate.instant('undocumented');
             default:
                 return input;
         }

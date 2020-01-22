@@ -8,14 +8,14 @@
                     <span *ngIf="option.user">{{ option.user.getFullName() }}</span>
                     <span *ngIf="!option.user">No user {{ option.candidate_id }}</span>
                 </div>
-                
+
                 <div>
                     <div *ngFor="let value of analogPollValues" [formGroupName]="option.user_id">
                         <os-check-input
                             [placeholder]="voteValueVerbose[value] | translate"
                             [checkboxValue]="-1"
                             inputType="number"
-                            [checkboxLabel]="'Majority' | translate"
+                            [checkboxLabel]="'majority' | translate"
                             [formControlName]="value"
                         ></os-check-input>
                     </div>
@@ -28,7 +28,7 @@
                 [placeholder]="generalValueVerbose[value] | translate"
                 [checkboxValue]="-1"
                 inputType="number"
-                [checkboxLabel]="'Majority' | translate"
+                [checkboxLabel]="'majority' | translate"
                 [formControlName]="value"
             ></os-check-input>
         </div>

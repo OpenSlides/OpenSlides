@@ -49,7 +49,7 @@ export class AssignmentPollService extends PollService {
         const length = this.pollRepo.getViewModelList().filter(item => item.assignment_id === poll.assignment_id)
             .length;
 
-        poll.title = !length ? this.translate.instant('Vote') : `${this.translate.instant('Vote')} (${length + 1})`;
+        poll.title = !length ? this.translate.instant('Ballot') : `${this.translate.instant('Ballot')} (${length + 1})`;
         poll.pollmethod = AssignmentPollMethods.YN;
         poll.assignment_id = poll.assignment_id;
     }
