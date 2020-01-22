@@ -1,25 +1,4 @@
-$breadcrumb-content: var(--breadcrumb-content);
-
-.breadcrumb-list {
-    display: flex;
-    flex-wrap: wrap;
-    list-style: none;
-}
-
-.breadcrumb {
-    & + & {
-        padding-left: 8px;
-        &::before {
-            padding-right: 8px;
-            content: $breadcrumb-content;
-        }
-    }
-
-    span.has-action {
-        cursor: pointer;
-    }
-
-    &.active {
-        color: inherit;
-    }
+.active-breadcrumb {
+    // Theme
+    color: rgba($color: #317796, $alpha: 1);
 }

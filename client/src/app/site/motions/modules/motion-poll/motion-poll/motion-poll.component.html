@@ -1,61 +1,62 @@
 <div class="poll-preview-wrapper">
+    <!-- Poll Infos -->
     <div class="poll-title-wrapper" *ngIf="poll">
+        <!-- Title -->
         <a class="poll-title" routerLink="/motions/polls/{{ poll.id }}">
             {{ poll.title }}
         </a>
-        <span class="poll-title-actions">
+
+        <!-- Edit button -->
+        <span class="poll-title-actions" *osPerms="'motions.can_manage_polls'">
             <button mat-icon-button (click)="openDialog()">
                 <mat-icon class="small-icon">edit</mat-icon>
             </button>
         </span>
-        <div class="poll-properties">
-            <mat-chip *ngIf="pollService.isElectronicVotingEnabled">{{ poll.typeVerbose }}</mat-chip>
+
+        <!-- State chip -->
+        <div class="poll-properties" *osPerms="'motions.can_manage_polls'">
+            <span *ngIf="pollService.isElectronicVotingEnabled && poll.typeVerbose !== 'Analog'">
+                {{ 'Poll type' | translate }}: {{ poll.typeVerbose | translate }}
+            </span>
+
             <mat-chip
+                disableRipple
                 class="poll-state active"
                 [matMenuTriggerFor]="triggerMenu"
                 [ngClass]="poll.stateVerbose.toLowerCase()"
             >
                 {{ poll.stateVerbose }}
             </mat-chip>
-            <!-- <mat-chip
-                class="poll-state active"
-                *ngIf="poll.state !== 2"
-                [matMenuTriggerFor]="triggerMenu"
-                [ngClass]="poll.stateVerbose.toLowerCase()"
-            >
-                {{ poll.stateVerbose }}
-            </mat-chip> -->
-            <!-- <mat-chip class="poll-state" *ngIf="poll.state === 2" [ngClass]="poll.stateVerbose.toLowerCase()">
-                {{ poll.stateVerbose }}
-            </mat-chip> -->
         </div>
     </div>
-    <div class="poll-chart-wrapper" *ngIf="poll">
-        <div *ngIf="poll.type === 'analog' || poll.state === 3 || poll.state === 4" (click)="openPoll()">
-            <ng-container *ngIf="poll.state === 3 || poll.state === 4" [ngTemplateOutlet]="viewTemplate"></ng-container>
-            <ng-container
-                *ngIf="(poll.state === 1 || poll.state === 2) && poll.type === 'analog'"
-                [ngTemplateOutlet]="emptyTemplate"
-            ></ng-container>
-        </div>
-        <ng-container *ngIf="(poll.state === 1 || poll.state === 2) && poll.type !== 'analog'">
-            <os-motion-poll-vote [poll]="poll"></os-motion-poll-vote>
-        </ng-container>
-    </div>
-    <div class="poll-preview-result-wrapper"></div>
+
+    <!-- Results -->
+    <ng-container *ngIf="poll && !poll.stateHasVotes && poll.type !== 'analog'; else votingResult">
+        <os-motion-poll-vote [poll]="poll"></os-motion-poll-vote>
+    </ng-container>
 </div>
 
+<ng-template #votingResult>
+    <div (click)="openPoll()">
+        <ng-container [ngTemplateOutlet]="poll.hasVotes && poll.stateHasVotes ? viewTemplate : emptyTemplate"></ng-container>
+    </div>
+</ng-template>
+
 <ng-template #viewTemplate>
-    <div class="chart-wrapper-left">
-        <mat-icon>close</mat-icon>
-        : {{ voteNo }}
-    </div>
-    <div *ngIf="showChart" class="doughnut-chart">
-        <os-charts [type]="'doughnut'" [data]="chartDataSubject" [showLegend]="false"> </os-charts>
-    </div>
-    <div class="chart-wrapper-right">
-        <mat-icon>check</mat-icon>
-        : {{ voteYes }}
+    <div class="poll-chart-wrapper">
+        <div class="votes-yes">
+            <os-icon-container icon="check" size="large">
+                {{ voteYes }}
+            </os-icon-container>
+        </div>
+        <div *ngIf="showChart" class="doughnut-chart">
+            <os-charts [type]="'doughnut'" [data]="chartDataSubject" [showLegend]="false"> </os-charts>
+        </div>
+        <div class="votes-no">
+            <os-icon-container icon="close" size="large">
+                {{ voteNo }}
+            </os-icon-container>
+        </div>
     </div>
 </ng-template>
 

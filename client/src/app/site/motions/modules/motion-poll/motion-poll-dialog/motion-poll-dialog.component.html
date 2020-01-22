@@ -1,6 +1,5 @@
-<os-poll-form [data]="pollData" [pollMethods]="motionPollMethods" #pollForm></os-poll-form>
+<os-poll-form [data]="pollData" #pollForm></os-poll-form>
 <ng-container *ngIf="pollForm.contentForm.get('type').value === 'analog'">
-    <mat-divider></mat-divider>
     <div class="os-form-card-mobile" mat-dialog-content>
         <form [formGroup]="dialogVoteForm">
             <os-check-input
@@ -31,9 +30,7 @@
             ></os-check-input>
             <os-check-input
                 [placeholder]="'Votes invalid' | translate"
-                [checkboxValue]="-1"
                 inputType="number"
-                [checkboxLabel]="'Majority' | translate"
                 formControlName="votesinvalid"
             ></os-check-input>
             <os-check-input
@@ -43,8 +40,7 @@
             ></os-check-input>
         </form>
     </div>
-    <mat-divider></mat-divider>
-    <div class="spacer-top-20">
+    <div>
         <mat-checkbox [(ngModel)]="publishImmediately" (change)="publishStateChanged($event.checked)">
             <span translate>Publish immediately</span>
         </mat-checkbox>
@@ -53,7 +49,6 @@
         </mat-error>
     </div>
 </ng-container>
-<mat-divider></mat-divider>
 <div mat-dialog-actions>
     <button mat-button (click)="submitPoll()" [disabled]="pollForm.contentForm.invalid || dialogVoteForm.invalid">
         <span translate>Save</span>

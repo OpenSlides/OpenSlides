@@ -13,20 +13,51 @@ import { ViewMotionPoll } from 'app/site/motions/models/view-motion-poll';
 import { ViewMotionVote } from 'app/site/motions/models/view-motion-vote';
 import { BasePollVoteComponent } from 'app/site/polls/components/base-poll-vote.component';
 
+interface VoteOption {
+    vote: 'Y' | 'N' | 'A';
+    css: string;
+    icon: string;
+    label: string;
+}
+
 @Component({
     selector: 'os-motion-poll-vote',
     templateUrl: './motion-poll-vote.component.html',
     styleUrls: ['./motion-poll-vote.component.scss']
 })
 export class MotionPollVoteComponent extends BasePollVoteComponent<ViewMotionPoll> implements OnInit {
-    // holds the currently selected vote
-    public selectedVote: 'Y' | 'N' | 'A' = null;
-    // holds the last saved vote
+    /**
+     * holds the last saved vote
+     *
+     * TODO: There will be a bug. This has to be reset if the currently observed poll changes it's state back
+     * to started
+     */
     public currentVote: ViewMotionVote;
 
     public pollMethods = MotionPollMethods;
 
     private votes: ViewMotionVote[];
+
+    public voteOptions: VoteOption[] = [
+        {
+            vote: 'Y',
+            css: 'voted-yes',
+            icon: 'thumb_up',
+            label: 'Yes'
+        },
+        {
+            vote: 'N',
+            css: 'voted-no',
+            icon: 'thumb_down',
+            label: 'No'
+        },
+        {
+            vote: 'A',
+            css: 'voted-abstain',
+            icon: 'trip_origin',
+            label: 'Abstain'
+        }
+    ];
 
     public constructor(
         title: Title,
@@ -51,6 +82,7 @@ export class MotionPollVoteComponent extends BasePollVoteComponent<ViewMotionPol
 
     protected updateVotes(): void {
         if (this.user && this.votes && this.poll) {
+            this.currentVote = null;
             const filtered = this.votes.filter(
                 vote => vote.option.poll_id === this.poll.id && vote.user_id === this.user.id
             );
@@ -60,14 +92,14 @@ export class MotionPollVoteComponent extends BasePollVoteComponent<ViewMotionPol
                     console.error('A user should never have more than one vote on the same poll.');
                 }
                 this.currentVote = filtered[0];
-                this.selectedVote = filtered[0].value;
             }
         }
     }
 
-    public saveVote(): void {
-        if (this.selectedVote) {
-            this.pollRepo.vote(this.selectedVote, this.poll.id).catch(this.raiseError);
-        }
+    /**
+     * TODO: 'Y' | 'N' | 'A' should refer to some ENUM
+     */
+    public saveVote(vote: 'Y' | 'N' | 'A'): void {
+        this.pollRepo.vote(vote, this.poll.id).catch(this.raiseError);
     }
 }

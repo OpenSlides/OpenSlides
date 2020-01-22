@@ -52,6 +52,13 @@ export abstract class BasePoll<T = any, O extends BaseOption<any> = any> extends
     public onehundred_percent_base: PercentBase;
     public user_has_voted: boolean;
 
+    /**
+     * Determine if the state is finished or published
+     */
+    public get stateHasVotes(): boolean {
+        return this.state === PollState.Finished || this.state === PollState.Published;
+    }
+
     protected getDecimalFields(): (keyof BasePoll<T, O>)[] {
         return ['votesvalid', 'votesinvalid', 'votescast'];
     }
