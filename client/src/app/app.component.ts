@@ -95,7 +95,6 @@ export class AppComponent {
         translate.use(translate.getLangs().includes(browserLang) ? browserLang : 'en');
 
         // change default JS functions
-        this.overloadArrayToString();
         this.overloadArrayFunctions();
         this.overloadModulo();
 
@@ -118,7 +117,7 @@ export class AppComponent {
      *
      * TODO: Should be renamed
      */
-    private overloadArrayToString(): void {
+    private overloadArrayFunctions(): void {
         Object.defineProperty(Array.prototype, 'toString', {
             value: function(): string {
                 let string = '';
@@ -139,12 +138,7 @@ export class AppComponent {
             },
             enumerable: false
         });
-    }
 
-    /**
-     * Adds an implementation of flatMap and intersect.
-     */
-    private overloadFlatMap(): void {
         Object.defineProperty(Array.prototype, 'flatMap', {
             value: function(o: any): any[] {
                 const concatFunction = (x: any, y: any[]) => x.concat(y);
@@ -154,10 +148,11 @@ export class AppComponent {
             enumerable: false
         });
 
+        // intersect
         Object.defineProperty(Array.prototype, 'intersect', {
             value: function<T>(other: T[]): T[] {
-                let a = this,
-                    b = other;
+                let a = this;
+                let b = other;
                 // indexOf to loop over shorter
                 if (b.length > a.length) {
                     [a, b] = [b, a];
@@ -167,6 +162,7 @@ export class AppComponent {
             enumerable: false
         });
 
+        // mapToObject
         Object.defineProperty(Array.prototype, 'mapToObject', {
             value: function<T>(f: (item: T) => { [key: string]: any }): { [key: string]: any } {
                 return this.reduce((aggr, item) => {
