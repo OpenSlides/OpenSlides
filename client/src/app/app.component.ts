@@ -112,27 +112,29 @@ export class AppComponent {
      * Will add a whitespace after a comma and shorten the output to
      * three strings.
      *
-     * TODO: There might be a better place for overloading functions than app.component
-     * TODO: Overloading can be extended to more functions.
+     * TODO: Should be renamed
      */
     private overloadArrayToString(): void {
-        Array.prototype.toString = function(): string {
-            let string = '';
-            const iterations = Math.min(this.length, 3);
+        Object.defineProperty(Array.prototype, 'toString', {
+            value: function(): string {
+                let string = '';
+                const iterations = Math.min(this.length, 3);
 
-            for (let i = 0; i <= iterations; i++) {
-                if (i < iterations) {
-                    string += this[i];
-                }
+                for (let i = 0; i <= iterations; i++) {
+                    if (i < iterations) {
+                        string += this[i];
+                    }
 
-                if (i < iterations - 1) {
-                    string += ', ';
-                } else if (i === iterations && this.length > iterations) {
-                    string += ', ...';
+                    if (i < iterations - 1) {
+                        string += ', ';
+                    } else if (i === iterations && this.length > iterations) {
+                        string += ', ...';
+                    }
                 }
-            }
-            return string;
-        };
+                return string;
+            },
+            enumerable: false
+        });
     }
 
     /**
@@ -142,9 +144,11 @@ export class AppComponent {
     private overloadFlatMap(): void {
         const concat = (x: any, y: any) => x.concat(y);
         const flatMap = (f: any, xs: any) => xs.map(f).reduce(concat, []);
-        Array.prototype.flatMap = function(f: any): any[] {
-            return flatMap(f, this);
-        };
+
+        Object.defineProperty(Array.prototype, 'flatMap', {
+            value: flatMap,
+            enumerable: false
+        });
     }
 
     /**
@@ -152,8 +156,11 @@ export class AppComponent {
      * TODO: Remove this, if the remainder operation is changed to modulo.
      */
     private overloadModulo(): void {
-        Number.prototype.modulo = function(n: number): number {
-            return ((this % n) + n) % n;
-        };
+        Object.defineProperty(Number.prototype, 'modulo', {
+            value: function(n: number): number {
+                return ((this % n) + n) % n;
+            },
+            enumerable: false
+        });
     }
 }
