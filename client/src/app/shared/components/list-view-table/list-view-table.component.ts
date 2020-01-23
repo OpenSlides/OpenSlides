@@ -13,7 +13,7 @@ import {
 import { NavigationStart, Router } from '@angular/router';
 
 import { columnFactory, createDS, DataSourcePredicate, PblDataSource, PblNgridComponent } from '@pebula/ngrid';
-import { PblColumnDefinition, PblColumnFactory, PblNgridColumnSet } from '@pebula/ngrid/lib/table';
+import { PblColumnDefinition, PblColumnFactory, PblNgridColumnSet } from '@pebula/ngrid/lib/grid';
 import { PblNgridDataMatrixRow } from '@pebula/ngrid/target-events';
 import { Observable, Subscription } from 'rxjs';
 import { distinctUntilChanged, filter } from 'rxjs/operators';
