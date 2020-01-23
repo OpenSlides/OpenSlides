@@ -302,6 +302,11 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
     public showAmendmentContext = false;
 
     /**
+     * Sets the current amendment text mode from the settings
+     */
+    private amendmentTextMode: string;
+
+    /**
      * For using the enum constants from the template
      */
     public ChangeRecoMode = ChangeRecoMode;
@@ -503,6 +508,9 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         this.configService
             .get<boolean>('motions_show_sequential_numbers')
             .subscribe(shown => (this.showSequential = shown));
+        this.configService
+            .get<string>('motions_amendments_text_mode')
+            .subscribe(amendmentTextMode => (this.amendmentTextMode = amendmentTextMode));
 
         // Update statute paragraphs
         this.statuteRepo.getViewModelListObservable().subscribe(newViewStatuteParagraphs => {
@@ -652,24 +660,22 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
                 this.amendmentEdit = true;
                 const parentMotion = this.repo.getViewModel(this.route.snapshot.queryParams.parent);
                 const defaultTitle = `${this.translate.instant('Amendment to')} ${parentMotion.identifierOrTitle}`;
-                const mode = this.configService.instant<string>('motions_amendments_text_mode');
-                if (mode === 'freestyle' || mode === 'fulltext') {
-                    defaultMotion.title = defaultTitle;
-                    defaultMotion.parent_id = parentMotion.id;
-                    defaultMotion.category_id = parentMotion.category_id;
-                    defaultMotion.tags_id = parentMotion.tags_id;
-                    defaultMotion.motion_block_id = parentMotion.motion_block_id;
-                    this.contentForm.patchValue({
-                        title: defaultTitle,
-                        category_id: parentMotion.category_id,
-                        motion_block_id: parentMotion.motion_block_id,
-                        parent_id: parentMotion.id,
-                        tags_id: parentMotion.tags_id
-                    });
-                }
-                if (mode === 'fulltext') {
+                defaultMotion.title = defaultTitle;
+                defaultMotion.parent_id = parentMotion.id;
+                defaultMotion.category_id = parentMotion.category_id;
+                defaultMotion.tags_id = parentMotion.tags_id;
+                defaultMotion.motion_block_id = parentMotion.motion_block_id;
+                this.contentForm.patchValue({
+                    title: defaultTitle,
+                    category_id: parentMotion.category_id,
+                    motion_block_id: parentMotion.motion_block_id,
+                    parent_id: parentMotion.id,
+                    tags_id: parentMotion.tags_id
+                });
+
+                if (this.amendmentTextMode === 'fulltext') {
                     defaultMotion.text = parentMotion.text;
-                    this.contentForm.patchValue({ text: parentMotion.text });
+                    this.contentForm.patchValue({ text: defaultMotion.text });
                 }
             }
             this.motion = new ViewCreateMotion(new CreateMotion(defaultMotion));
@@ -1082,8 +1088,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      * Goes to the amendment creation wizard. Executed via click.
      */
     public createAmendment(): void {
-        const mode = this.configService.instant<string>('motions_amendments_text_mode');
-        if (mode === 'paragraph') {
+        if (this.amendmentTextMode === 'paragraph') {
             this.router.navigate(['./create-amendment'], { relativeTo: this.route });
         } else {
             this.router.navigate(['./motions/new-amendment'], {

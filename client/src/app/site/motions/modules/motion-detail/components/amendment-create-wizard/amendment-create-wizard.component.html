@@ -34,7 +34,7 @@
             <ng-template matStepLabel>{{ 'Select paragraphs' | translate }}</ng-template>
             <div class="amendment-create-wizard-wrapper">
                 <section
-                    *ngFor="let paragraph of paragraphs"
+                    *ngFor="let paragraph of paragraphs; let i = index"
                     class="paragraph-row"
                     [class.active]="isParagraphSelected(paragraph)"
                     (click)="onParagraphClicked(paragraph)"
@@ -52,7 +52,7 @@
                         [checked]="isParagraphSelected(paragraph)"
                     >
                     </mat-radio-button>
-                    <div class="paragraph-text motion-text" [innerHTML]="paragraph.html | trust: 'html'"></div>
+                    <div class="paragraph-text motion-text" [innerHTML]="getParagraphPreview(i) | trust: 'html'"></div>
                 </section>
             </div>
         </mat-step>

@@ -715,15 +715,48 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
      * @param {number} lineLength
      */
     public getParagraphsToChoose(motion: ViewMotion, lineLength: number): ParagraphToChoose[] {
-        return this.getTextParagraphs(motion, true, lineLength).map((paragraph: string, index: number) => {
-            const affected: LineNumberRange = this.lineNumbering.getLineNumberRange(paragraph);
-            return {
-                paragraphNo: index,
-                html: this.lineNumbering.stripLineNumbers(paragraph),
-                lineFrom: affected.from,
-                lineTo: affected.to
-            };
+        const parent = motion.hasParent ? motion.parent : motion;
+        return this.getTextParagraphs(parent, true, lineLength).map((paragraph: string, index: number) => {
+            let localParagraph;
+            if (motion.hasParent) {
+                localParagraph = motion.amendment_paragraphs[index] ? motion.amendment_paragraphs[index] : paragraph;
+            } else {
+                localParagraph = paragraph;
+            }
+            return this.extractAffectedParagraphs(localParagraph, index);
         });
+    }
+
+    /**
+     * To create paragraph based amendments for amendments, creates diffed paragraphs
+     * for selection
+     */
+    public getDiffedParagraphToChoose(amendment: ViewMotion, lineLength: number): ParagraphToChoose[] {
+        if (amendment.hasParent) {
+            const parent = amendment.parent;
+
+            return this.getTextParagraphs(parent, true, lineLength).map((paragraph: string, index: number) => {
+                const diffedParagraph = amendment.amendment_paragraphs[index]
+                    ? this.diff.diff(paragraph, amendment.amendment_paragraphs[index], lineLength)
+                    : paragraph;
+                return this.extractAffectedParagraphs(diffedParagraph, index);
+            });
+        } else {
+            throw new Error('getDiffedParagraphToChoose: given amendment has no parent');
+        }
+    }
+
+    /**
+     * Creates a selectable and editable paragraph
+     */
+    private extractAffectedParagraphs(paragraph: string, index: number): ParagraphToChoose {
+        const affected: LineNumberRange = this.lineNumbering.getLineNumberRange(paragraph);
+        return {
+            paragraphNo: index,
+            html: this.lineNumbering.stripLineNumbers(paragraph),
+            lineFrom: affected.from,
+            lineTo: affected.to
+        } as ParagraphToChoose;
     }
 
     /**
