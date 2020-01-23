@@ -151,28 +151,34 @@ export class AppComponent {
         };
 
         // intersect
-        Array.prototype.intersect = function<T>(other: T[]): T[] {
-            let a = this,
-                b = other;
-            // indexOf to loop over shorter
-            if (b.length > a.length) {
-                [a, b] = [b, a];
-            }
-            return a.filter(e => b.indexOf(e) > -1);
-        };
+        Object.defineProperty(Array.prototype, 'intersect', {
+            value: function<T>(other: T[]): T[] {
+                let a = this;
+                let b = other;
+                // indexOf to loop over shorter
+                if (b.length > a.length) {
+                    [a, b] = [b, a];
+                }
+                return a.filter(e => b.indexOf(e) > -1);
+            },
+            enumerable: false
+        });
 
         // mapToObject
-        Array.prototype.mapToObject = function<T>(f: (item: T) => { [key: string]: any }): { [key: string]: any } {
-            return this.reduce((aggr, item) => {
-                const res = f(item);
-                for (const key in res) {
-                    if (res.hasOwnProperty(key)) {
-                        aggr[key] = res[key];
+        Object.defineProperty(Array.prototype, 'mapToObject', {
+            value: function<T>(f: (item: T) => { [key: string]: any }): { [key: string]: any } {
+                return this.reduce((aggr, item) => {
+                    const res = f(item);
+                    for (const key in res) {
+                        if (res.hasOwnProperty(key)) {
+                            aggr[key] = res[key];
+                        }
                     }
-                }
-                return aggr;
-            }, {});
-        };
+                    return aggr;
+                }, {});
+            },
+            enumerable: false
+        });
     }
 
     /**
