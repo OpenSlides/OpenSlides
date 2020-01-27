@@ -10,6 +10,7 @@ export interface BannerDefinition {
     bgColor?: string;
     color?: string;
     link?: string;
+    largerOnMobileView?: boolean;
 }
 
 /**
@@ -20,8 +21,6 @@ export interface BannerDefinition {
     providedIn: 'root'
 })
 export class BannerService {
-    public readonly BANNER_HEIGHT = 20;
-
     public activeBanners: BehaviorSubject<BannerDefinition[]> = new BehaviorSubject<BannerDefinition[]>([]);
 
     /**
