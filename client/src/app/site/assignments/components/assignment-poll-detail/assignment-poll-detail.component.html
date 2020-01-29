@@ -47,58 +47,67 @@
         <div *ngIf="poll.stateHasVotes">
             <h2 translate>Result</h2>
 
-            <div class="chart-wrapper"></div>
-            <mat-table [dataSource]="poll.tableData">
-                <ng-container matColumnDef="user" sticky>
-                    <mat-header-cell *matHeaderCellDef>{{ 'Candidates' | translate }}</mat-header-cell>
-                    <mat-cell *matCellDef="let row">{{ row.user }}</mat-cell>
-                </ng-container>
-                <ng-container matColumnDef="yes">
-                    <mat-header-cell *matHeaderCellDef>{{ 'Yes' | translate }}</mat-header-cell>
-                    <mat-cell *matCellDef="let row">{{ row.yes }}</mat-cell>
-                </ng-container>
+            <div class="chart-wrapper" [ngClass]="{ flex: isVotedPoll }">
+                <mat-table [dataSource]="poll.tableData">
+                    <ng-container matColumnDef="user" sticky>
+                        <mat-header-cell *matHeaderCellDef>{{ 'Candidates' | translate }}</mat-header-cell>
+                        <mat-cell *matCellDef="let row">{{ row.user }}</mat-cell>
+                    </ng-container>
+                    <div *ngIf="!isVotedPoll">
+                        <ng-container matColumnDef="yes">
+                            <mat-header-cell *matHeaderCellDef>{{ 'Yes' | translate }}</mat-header-cell>
+                            <mat-cell *matCellDef="let row">{{ row.yes }}</mat-cell>
+                        </ng-container>
 
-                <ng-container matColumnDef="no">
-                    <mat-header-cell *matHeaderCellDef>{{ 'No' | translate }}</mat-header-cell>
-                    <mat-cell *matCellDef="let row">{{ row.no }}</mat-cell>
-                </ng-container>
+                        <ng-container matColumnDef="no">
+                            <mat-header-cell *matHeaderCellDef>{{ 'No' | translate }}</mat-header-cell>
+                            <mat-cell *matCellDef="let row">{{ row.no }}</mat-cell>
+                        </ng-container>
 
-                <ng-container matColumnDef="abstain">
-                    <mat-header-cell *matHeaderCellDef>{{ 'Abstain' | translate }}</mat-header-cell>
-                    <mat-cell *matCellDef="let row">{{ row.abstain }}</mat-cell>
-                </ng-container>
+                        <ng-container matColumnDef="abstain">
+                            <mat-header-cell *matHeaderCellDef>{{ 'Abstain' | translate }}</mat-header-cell>
+                            <mat-cell *matCellDef="let row">{{ row.abstain }}</mat-cell>
+                        </ng-container>
+                    </div>
 
-                <ng-container matColumnDef="quorum">
-                    <mat-header-cell *matHeaderCellDef>{{ 'Quorum' | translate }}</mat-header-cell>
-                    <mat-cell *matCellDef="let row"></mat-cell>
-                </ng-container>
+                    <div *ngIf="isVotedPoll">
+                        <ng-container matColumnDef="votes">
+                            <mat-header-cell *matHeaderCellDef>{{ 'Votes' | translate }}</mat-header-cell>
+                            <mat-cell *matCellDef="let row">{{ row.yes }}</mat-cell>
+                        </ng-container>
+                    </div>
 
-                <mat-header-row *matHeaderRowDef="columnDefinitionOverview"></mat-header-row>
-                <mat-row *matRowDef="let row; columns: columnDefinitionOverview"></mat-row>
-            </mat-table>
+                    <mat-header-row *matHeaderRowDef="columnDefinitionOverview"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: columnDefinitionOverview"></mat-row>
+                </mat-table>
 
-            <os-charts
-                *ngIf="chartDataSubject.value"
-                [type]="chartType"
-                [labels]="candidatesLabels"
-                [showLegend]="true"
-                [data]="chartDataSubject"
-            ></os-charts>
+                <div class="chart-inner-wrapper">
+                    <os-charts
+                        *ngIf="chartDataSubject.value"
+                        [type]="chartType"
+                        [labels]="candidatesLabels"
+                        [size]="isVotedPoll ? 70 : 100"
+                        [legendPosition]="isVotedPoll ? 'right' : 'top'"
+                        [showLegend]="true"
+                        [data]="chartDataSubject"
+                    ></os-charts>
+                </div>
+            </div>
 
             <ng-container *ngIf="poll.type === 'named' && votesDataSource.data">
-                <input matInput [(ngModel)]="votesDataSource.filter" placeholder="Filter"/>
+                <input matInput [(ngModel)]="votesDataSource.filter" placeholder="Filter" />
                 <mat-table [dataSource]="votesDataSource">
                     <ng-container matColumnDef="users" sticky>
-                        <mat-header-cell *matHeaderCellDef>{{ "User" | translate }}</mat-header-cell>
+                        <mat-header-cell *matHeaderCellDef>{{ 'User' | translate }}</mat-header-cell>
                         <mat-cell *matCellDef="let row">
                             <div *ngIf="row.user">{{ row.user.getFullName() }}</div>
-                            <div *ngIf="!row.user">{{ "Unknown user" | translate }}</div>
+                            <div *ngIf="!row.user">{{ 'Unknown user' | translate }}</div>
                         </mat-cell>
                     </ng-container>
                     <ng-container [matColumnDef]="'votes-' + option.user_id" *ngFor="let option of poll.options" sticky>
                         <mat-header-cell *matHeaderCellDef>
                             <div *ngIf="option.user">{{ option.user.getFullName() }}</div>
-                            <div *ngIf="!option.user">{{ "Unknown user" | translate }}</div>
+                            <div *ngIf="!option.user">{{ 'Unknown user' | translate }}</div>
                         </mat-header-cell>
                         <mat-cell *matCellDef="let row">
                             {{ row.votes[option.user_id] }}
