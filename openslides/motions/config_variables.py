@@ -414,6 +414,7 @@ def get_config_variables():
         label="Required majority",
         help_text="Default method to check whether a motion has reached the required majority.",
         weight=425,
+        hidden=True,
         group="Voting",
         subgroup="Motions",
     )

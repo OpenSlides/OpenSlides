@@ -40,7 +40,9 @@
             ></os-check-input>
         </form>
     </div>
-    <div>
+
+    <!-- Publish immediately button. Only show for new polls -->
+    <div *ngIf="!pollData.state">
         <mat-checkbox [(ngModel)]="publishImmediately" (change)="publishStateChanged($event.checked)">
             <span translate>Publish immediately</span>
         </mat-checkbox>

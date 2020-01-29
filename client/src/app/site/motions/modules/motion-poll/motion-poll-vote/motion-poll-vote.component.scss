@@ -1,16 +1,15 @@
-/**
- * These colors should be extracted from some global CSS Constants file
- */
+@import '~assets/styles/poll-colors.scss';
+
 .voted-yes {
-    background-color: #9fd773;
+    background-color: $votes-yes-color;
 }
 
 .voted-no {
-    background-color: #cc6c5b;
+    background-color: $votes-no-color;
 }
 
 .voted-abstain {
-    background-color: #a6a6a6;
+    background-color: $votes-abstain-color;
 }
 
 .vote-label {

@@ -35,4 +35,8 @@
 
 .named-result-table {
     grid-area: names;
+    .mat-form-field {
+        font-size: 14px;
+        width: 100%;
+    }
 }
