@@ -154,7 +154,7 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
         private config: ConfigService
     ) {
         super(title, translate, snackBar);
-        this.addSpeakerForm = new FormGroup({ user_id: new FormControl([]) });
+        this.addSpeakerForm = new FormGroup({ user_id: new FormControl() });
     }
 
     /**
@@ -201,6 +201,7 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
                 }
             })
         );
+
         this.subscriptions.push(
             this.config.get('agenda_present_speakers_only').subscribe(() => {
                 this.filterUsers();

@@ -86,6 +86,7 @@ class AssignmentManager(BaseManager):
                 "lists_of_speakers",
                 "tags",
                 "attachments",
+                "polls",
             )
         )
 

@@ -107,7 +107,7 @@ class MotionsAppConfig(AppConfig):
             yield self.get_model(model_name)
 
 
-def required_users(element: Dict[str, Any]) -> Set[int]:
+async def required_users(element: Dict[str, Any]) -> Set[int]:
     """
     Returns all user ids that are displayed as as submitter or supporter in
     any motion if request_user can see motions. This function may return an
