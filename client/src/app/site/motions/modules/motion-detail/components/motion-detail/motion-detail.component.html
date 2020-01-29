@@ -517,8 +517,7 @@
                     *ngIf="
                         motion &&
                         !motion.isParagraphBasedAmendment() &&
-                        allChangingObjects &&
-                        allChangingObjects.length > 0
+                        ((allChangingObjects && allChangingObjects.length) || motion.modified_final_version)
                     "
                 >
                     <mat-icon>rate_review</mat-icon>
@@ -527,17 +526,18 @@
             </div>
 
             <!-- Final edit buttons -->
-            <div *ngIf="isRecoMode(ChangeRecoMode.ModifiedFinal) || isRecoMode(ChangeRecoMode.Final)">
+            <div *osPerms="'motions.can_manage'">
                 <!-- create final version -->
                 <button
                     type="button"
                     mat-icon-button
                     matTooltip="{{ 'Create final print template' | translate }}"
-                    *osPerms="'motions.can_manage'; and: isRecoMode(ChangeRecoMode.Final)"
+                    *ngIf="motion.state.isFinalState"
                     (click)="createModifiedFinalVersion()"
                 >
                     <mat-icon>file_copy</mat-icon>
                 </button>
+
                 <!-- edit final version -->
                 <button
                     type="button"
@@ -570,9 +570,9 @@
                 <button
                     type="button"
                     class="red-warning-text"
+                    *ngIf="isRecoMode(ChangeRecoMode.ModifiedFinal) && !isFinalEdit"
                     mat-icon-button
                     matTooltip="{{ 'Delete final print template' | translate }}"
-                    *ngIf="isRecoMode(ChangeRecoMode.ModifiedFinal) && !isFinalEdit"
                     (click)="deleteModifiedFinalVersion()"
                 >
                     <mat-icon>delete</mat-icon>
@@ -956,6 +956,7 @@
         translate
         (click)="setChangeRecoMode(ChangeRecoMode.Changed)"
         [ngClass]="{ selected: crMode === ChangeRecoMode.Changed }"
+        *ngIf="allChangingObjects && allChangingObjects.length"
     >
         Changed version
     </button>
@@ -964,6 +965,7 @@
         translate
         (click)="setChangeRecoMode(ChangeRecoMode.Diff)"
         [ngClass]="{ selected: crMode === ChangeRecoMode.Diff }"
+        *ngIf="allChangingObjects && allChangingObjects.length"
     >
         Diff version
     </button>
@@ -972,6 +974,7 @@
         translate
         (click)="setChangeRecoMode(ChangeRecoMode.Final)"
         [ngClass]="{ selected: crMode === ChangeRecoMode.Final }"
+        *ngIf="allChangingObjects && allChangingObjects.length"
     >
         Final version
     </button>
