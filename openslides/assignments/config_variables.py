@@ -35,6 +35,7 @@ def get_config_variables():
         label="Required majority",
         help_text="Default method to check whether a candidate has reached the required majority.",
         weight=405,
+        hidden=True,
         group="Voting",
         subgroup="Elections",
     )

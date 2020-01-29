@@ -119,6 +119,8 @@ import { BasePollDialogComponent } from 'app/site/polls/components/base-poll-dia
 import { PollFormComponent } from 'app/site/polls/components/poll-form/poll-form.component';
 import { MotionPollDialogComponent } from 'app/site/motions/modules/motion-poll/motion-poll-dialog/motion-poll-dialog.component';
 import { AssignmentPollDialogComponent } from 'app/site/assignments/components/assignment-poll-dialog/assignment-poll-dialog.component';
+import { ParsePollNumberPipe } from './pipes/parse-poll-number.pipe';
+import { ReversePipe } from './pipes/reverse.pipe';
 
 /**
  * Share Module for all "dumb" components and pipes.
@@ -279,7 +281,9 @@ import { AssignmentPollDialogComponent } from 'app/site/assignments/components/a
         BannerComponent,
         PollFormComponent,
         MotionPollDialogComponent,
-        AssignmentPollDialogComponent
+        AssignmentPollDialogComponent,
+        ParsePollNumberPipe,
+        ReversePipe
     ],
     declarations: [
         PermsDirective,
@@ -333,7 +337,9 @@ import { AssignmentPollDialogComponent } from 'app/site/assignments/components/a
         BannerComponent,
         PollFormComponent,
         MotionPollDialogComponent,
-        AssignmentPollDialogComponent
+        AssignmentPollDialogComponent,
+        ParsePollNumberPipe,
+        ReversePipe
     ],
     providers: [
         {
@@ -349,7 +355,9 @@ import { AssignmentPollDialogComponent } from 'app/site/assignments/components/a
         DecimalPipe,
         ProgressSnackBarComponent,
         TrustPipe,
-        LocalizedDatePipe
+        LocalizedDatePipe,
+        ParsePollNumberPipe,
+        ReversePipe
     ],
     entryComponents: [
         SortBottomSheetComponent,

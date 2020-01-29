@@ -1,5 +1,5 @@
 <ng-container *ngIf="poll">
-    <div *osPerms="'motions.can_manage_polls;and:poll.state === PollState.started'">
+    <div *osPerms="'motions.can_manage_polls';and:poll.isStateStarted">
         <os-poll-progress [poll]="poll"></os-poll-progress>
     </div>
     <ng-container *ngIf="vmanager.canVote(poll)">

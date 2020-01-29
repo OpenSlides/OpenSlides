@@ -71,6 +71,7 @@ export abstract class PollPdfService {
      * @returns the amount of ballots, depending on the config settings
      */
     protected getBallotCount(): number {
+        // TODO: seems to be broken
         switch (this.ballotCountSelection) {
             case 'NUMBER_OF_ALL_PARTICIPANTS':
                 return this.userRepo.getViewModelList().length;
