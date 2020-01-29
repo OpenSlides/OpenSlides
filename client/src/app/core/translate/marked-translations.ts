@@ -176,7 +176,7 @@ _('Custom number of ballot papers');
 _('PDF export');
 _('Title for PDF documents of motions');
 _('Preamble text for PDF documents of motions');
-_('Show submitters and recommendation in table of contents');
+_('Show submitters and recommendation/state in table of contents');
 _('Show checkbox to record decision');
 // misc motion strings
 _('Amendment');

@@ -416,7 +416,7 @@ def get_config_variables():
     yield ConfigVariable(
         name="motions_export_submitter_recommendation",
         default_value=False,
-        label="Show submitters and recommendation in table of contents",
+        label="Show submitters and recommendation/state in table of contents",
         input_type="boolean",
         weight=384,
         group="Motions",
