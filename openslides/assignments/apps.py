@@ -72,16 +72,26 @@ class AssignmentsAppConfig(AppConfig):
             yield self.get_model(model_name)
 
 
-def required_users(element: Dict[str, Any]) -> Set[int]:
+async def required_users(element: Dict[str, Any]) -> Set[int]:
     """
     Returns all user ids that are displayed as candidates (including poll
     options) in the assignment element.
-
-    TODO: Adapt this method for new poll structure!!
     """
+    from openslides.assignments.models import AssignmentPoll, AssignmentOption
+    from openslides.utils.cache import element_cache
+
     candidates = set(
         related_user["user_id"] for related_user in element["assignment_related_users"]
     )
-    for poll in element["polls"]:
-        candidates.update(option["candidate_id"] for option in poll["options"])
+    for poll_id in element["polls_id"]:
+        poll = await element_cache.get_element_data(
+            AssignmentPoll.get_collection_string(), poll_id
+        )
+        if poll:
+            for option_id in poll["options_id"]:
+                option = await element_cache.get_element_data(
+                    AssignmentOption.get_collection_string(), option_id
+                )
+                if option:
+                    candidates.add(option["user_id"])
     return candidates
