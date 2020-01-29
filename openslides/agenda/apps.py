@@ -64,7 +64,7 @@ class AgendaAppConfig(AppConfig):
         yield self.get_model("ListOfSpeakers")
 
 
-def required_users(element: Dict[str, Any]) -> Set[int]:
+async def required_users(element: Dict[str, Any]) -> Set[int]:
     """
     Returns all user ids that are displayed as speaker in the given element.
     """
