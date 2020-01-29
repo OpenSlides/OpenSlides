@@ -75,7 +75,7 @@ export abstract class BasePollDetailComponent<V extends ViewBasePoll> extends Ba
      * @param fb
      * @param groupRepo
      * @param location
-     * @param promptDialog
+     * @param promptService
      * @param dialog
      */
     public constructor(
@@ -85,7 +85,7 @@ export abstract class BasePollDetailComponent<V extends ViewBasePoll> extends Ba
         protected repo: BasePollRepositoryService,
         protected route: ActivatedRoute,
         protected groupRepo: GroupRepositoryService,
-        protected promptDialog: PromptService,
+        protected promptService: PromptService,
         protected pollDialog: BasePollDialogService<V>
     ) {
         super(title, translate, matSnackbar);
@@ -108,7 +108,7 @@ export abstract class BasePollDetailComponent<V extends ViewBasePoll> extends Ba
         const title = 'Delete poll';
         const text = 'Do you really want to delete the selected poll?';
 
-        if (await this.promptDialog.open(title, text)) {
+        if (await this.promptService.open(title, text)) {
             this.repo.delete(this.poll).then(() => this.onDeleted(), this.raiseError);
         }
     }
@@ -117,7 +117,7 @@ export abstract class BasePollDetailComponent<V extends ViewBasePoll> extends Ba
         const title = 'Anonymize single votes';
         const text = 'Do you really want to anonymize all votes? This cannot be undone.';
 
-        if (await this.promptDialog.open(title, text)) {
+        if (await this.promptService.open(title, text)) {
             this.repo.pseudoanonymize(this.poll).then(() => this.onPollLoaded(), this.raiseError); // votes have changed, but not the poll, so the components have to be informed about the update
         }
     }

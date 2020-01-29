@@ -1,4 +1,10 @@
 <div class="assignment-poll-wrapper" *ngIf="poll">
+
+    <div class="">
+
+    </div>
+
+
     <div class="poll-menu">
         <!-- Buttons -->
         <button
@@ -9,30 +15,16 @@
         >
             <mat-icon>more_horiz</mat-icon>
         </button>
-        <mat-menu #pollItemMenu="matMenu">
-            <div *osPerms="'assignments.can_manage'">
-                <button mat-menu-item (click)="openDialog()">
-                    <mat-icon>edit</mat-icon>
-                    <span translate>Edit</span>
-                </button>
-            </div>
-            <div *osPerms="'core.can_manage_projector'">
-                <os-projector-button menuItem="true" [object]="poll"></os-projector-button>
-            </div>
-            <div *osPerms="'assignments.can_manage'">
-                <mat-divider></mat-divider>
-                <button mat-menu-item class="red-warning-text" (click)="onDeletePoll()">
-                    <mat-icon>delete</mat-icon>
-                    <span translate>Delete</span>
-                </button>
-            </div>
-        </mat-menu>
     </div>
 
     <div>
         <div>
+            <h3>
+                <a routerLink="/assignments/polls/{{ poll.id }}">
+                    {{ poll.title }}
+                </a>
+            </h3>
             <div class="poll-properties">
-                <!-- <mat-chip *ngIf="pollService.isElectronicVotingEnabled">{{ poll.typeVerbose }}</mat-chip> -->
                 <mat-chip
                     class="poll-state active"
                     [matMenuTriggerFor]="triggerMenu"
@@ -41,22 +33,13 @@
                     {{ poll.stateVerbose }}
                 </mat-chip>
             </div>
-
-            <h3>
-                <a routerLink="/assignments/polls/{{ poll.id }}">
-                    {{ poll.title }}
-                </a>
-            </h3>
         </div>
         <div *ngIf="poll.stateHasVotes">
             <os-charts [type]="chartType" [labels]="candidatesLabels" [data]="chartDataSubject"></os-charts>
         </div>
     </div>
     <os-assignment-poll-vote *ngIf="poll.canBeVotedFor" [poll]="poll"></os-assignment-poll-vote>
-    <!-- <ng-container *ngIf="poll.state === pollStates.STATE_PUBLISHED" [ngTemplateOutlet]="resultsTemplate"></ng-container> -->
 </div>
-
-<ng-template #resultsTemplate> </ng-template>
 
 <mat-menu #triggerMenu="matMenu">
     <ng-container *ngIf="poll">
@@ -64,4 +47,23 @@
             <span translate>{{ state.key }}</span>
         </button>
     </ng-container>
+</mat-menu>
+
+<mat-menu #pollItemMenu="matMenu">
+    <div *osPerms="'assignments.can_manage'">
+        <button mat-menu-item (click)="openDialog()">
+            <mat-icon>edit</mat-icon>
+            <span translate>Edit</span>
+        </button>
+    </div>
+    <div *osPerms="'core.can_manage_projector'">
+        <os-projector-button menuItem="true" [object]="poll"></os-projector-button>
+    </div>
+    <div *osPerms="'assignments.can_manage'">
+        <mat-divider></mat-divider>
+        <button mat-menu-item class="red-warning-text" (click)="onDeletePoll()">
+            <mat-icon>delete</mat-icon>
+            <span translate>Delete</span>
+        </button>
+    </div>
 </mat-menu>

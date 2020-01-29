@@ -42,9 +42,6 @@ export class MotionPollDialogComponent extends BasePollDialogComponent {
             votesinvalid: data.votesinvalid,
             votescast: data.votescast
         };
-        // if (data.pollmethod === 'YNA') {
-        //     update.A = data.options[0].abstain;
-        // }
 
         if (this.dialogVoteForm) {
             const result = this.undoReplaceEmptyValues(update);
@@ -64,9 +61,7 @@ export class MotionPollDialogComponent extends BasePollDialogComponent {
             votesinvalid: ['', [Validators.min(-2)]],
             votescast: ['', [Validators.min(-2)]]
         });
-        // if (this.pollData.pollmethod === MotionPollMethods.YNA) {
-        //     this.dialogVoteForm.addControl('A', this.fb.control('', [Validators.min(-2)]));
-        // }
+
         if (this.pollData.poll) {
             this.updateDialogVoteForm(this.pollData);
         }

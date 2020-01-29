@@ -1,10 +1,10 @@
 <os-head-bar [goBack]="true" [nav]="false">
     <div class="title-slot">
-        <h2 *ngIf="poll">{{ 'Motion' | translate }} {{ poll.motion.id }}</h2>
+        <h2 *ngIf="poll">{{ 'Motion' | translate }} {{ poll.motion.identifierOrTitle }}</h2>
     </div>
 
     <div class="menu-slot" *osPerms="'motions.can_manage_polls'">
-        <button type="button" mat-icon-button  [matMenuTriggerFor]="pollDetailMenu">
+        <button type="button" mat-icon-button [matMenuTriggerFor]="pollDetailMenu">
             <mat-icon>more_vert</mat-icon>
         </button>
     </div>
@@ -19,12 +19,11 @@
     <ng-container *ngIf="poll">
         <h1>{{ poll.title }}</h1>
         <span *ngIf="poll.type !== 'analog'">{{ poll.typeVerbose | translate }}</span>
-        <os-breadcrumb *osPerms="'motions.can_manage_polls'"[breadcrumbs]="breadcrumbs"></os-breadcrumb>
+
+        <div *ngIf="!poll.hasVotes || !poll.stateHasVotes">{{ 'No results to show' | translate }}</div>
 
         <div *ngIf="poll.stateHasVotes">
             <h2 translate>Result</h2>
-
-            <div *ngIf="!poll.hasVotes">{{ 'No results to show' | translate }}</div>
 
             <div class="result-wrapper" *ngIf="poll.hasVotes">
                 <!-- Chart -->
@@ -52,25 +51,28 @@
                 </mat-table>
 
                 <!-- Named table: only show if votes are present -->
-                <ng-container *ngIf="poll.type === 'named' && votesDataSource.data">
-                    <input matInput [(ngModel)]="votesDataSource.filter" placeholder="Filter"/>
+                <div class="named-result-table" *ngIf="poll.type === 'named' && votesDataSource.data">
+                    <h3>{{ 'Single votes' | translate }}</h3>
+                    <mat-form-field>
+                        <input matInput [(ngModel)]="votesDataSource.filter" placeholder="Filter" />
+                    </mat-form-field>
                     <mat-table [dataSource]="votesDataSource">
                         <ng-container matColumnDef="key" sticky>
-                            <mat-header-cell *matHeaderCellDef>{{ "User" | translate }}</mat-header-cell>
+                            <mat-header-cell *matHeaderCellDef>{{ 'User' | translate }}</mat-header-cell>
                             <mat-cell *matCellDef="let vote">
                                 <div *ngIf="vote.user">{{ vote.user.getFullName() }}</div>
                                 <div *ngIf="!vote.user">{{ 'Unknown user' | translate }}</div>
                             </mat-cell>
                         </ng-container>
                         <ng-container matColumnDef="value" sticky>
-                            <mat-header-cell *matHeaderCellDef>{{ "Vote" | translate }}</mat-header-cell>
+                            <mat-header-cell *matHeaderCellDef>{{ 'Vote' | translate }}</mat-header-cell>
                             <mat-cell *matCellDef="let vote">{{ vote.valueVerbose }}</mat-cell>
                         </ng-container>
 
                         <mat-header-row *matHeaderRowDef="columnDefinition"></mat-header-row>
                         <mat-row *matRowDef="let vote; columns: columnDefinition"></mat-row>
                     </mat-table>
-                </ng-container>
+                </div>
             </div>
         </div>
 
@@ -85,12 +87,6 @@
             <div>{{ 'Required majority' | translate }}: {{ poll.majorityMethodVerbose | translate }}</div>
             <div>{{ '100% base' | translate }}: {{ poll.percentBaseVerbose | translate }}</div>
         </div>
-
-        <!-- TODO -->
-        <div *ngIf="poll.state === 2">
-        <!-- <div *ngIf="poll.state === PollState.started"> -->
-            <os-poll-progress [poll]="poll"></os-poll-progress>
-        </div>
     </ng-container>
 </ng-template>
 
@@ -101,7 +97,11 @@
         <mat-icon>edit</mat-icon>
         <span translate>Edit</span>
     </button>
-    <button mat-menu-item *ngIf="poll && poll.type === 'named'" (click)="pseudoanonymizePoll()">
+    <button
+        mat-menu-item
+        *osPerms="'motions.can_manage_polls'; and: poll && poll.type === 'named'"
+        (click)="pseudoanonymizePoll()"
+    >
         <mat-icon>warning</mat-icon>
         <span translate>Anonymize votes</span>
     </button>

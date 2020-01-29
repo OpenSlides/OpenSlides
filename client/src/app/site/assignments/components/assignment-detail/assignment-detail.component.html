@@ -65,20 +65,12 @@
     <div *ngIf="!editAssignment">
         <!-- assignment meta infos-->
         <ng-container [ngTemplateOutlet]="metaInfoTemplate"></ng-container>
-        <!-- votable polls -->
-        <ng-container *ngIf="assignment">
-            <ng-container *ngFor="let poll of assignment.polls; trackBy: trackByIndex">
-                <mat-card class="os-card" *ngIf="poll.canBeVotedFor">
-                    <os-assignment-poll [poll]="poll"> </os-assignment-poll>
-                </mat-card>
-            </ng-container>
-        </ng-container>
         <!-- candidates list -->
         <ng-container [ngTemplateOutlet]="candidatesTemplate"></ng-container>
         <!-- closed polls -->
         <ng-container *ngIf="assignment">
-            <ng-container *ngFor="let poll of assignment.polls; trackBy: trackByIndex">
-                <mat-card class="os-card" *ngIf="!poll.canBeVotedFor">
+            <ng-container *ngFor="let poll of assignment.polls | reverse; trackBy: trackByIndex">
+                <mat-card class="os-card">
                     <os-assignment-poll [poll]="poll"> </os-assignment-poll>
                 </mat-card>
             </ng-container>
@@ -135,13 +127,17 @@
 </ng-template>
 
 <ng-template #candidatesTemplate>
-    <mat-card class="os-card">
-        <ng-container *ngIf="assignment && !assignment.isFinished">
+    <mat-card class="os-card" *ngIf="assignment && !assignment.isFinished">
+        <ng-container>
             <h3 translate>Candidates</h3>
             <div>
                 <div
                     class="candidates-list"
-                    *ngIf="assignment && assignment.assignment_related_users && assignment.assignment_related_users.length > 0"
+                    *ngIf="
+                        assignment &&
+                        assignment.assignment_related_users &&
+                        assignment.assignment_related_users.length > 0
+                    "
                 >
                     <os-sorting-list
                         [input]="assignment.assignment_related_users"
