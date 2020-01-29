@@ -142,11 +142,12 @@ export class AppComponent {
      * TODO: Remove once flatMap made its way into official JS/TS (ES 2019?)
      */
     private overloadFlatMap(): void {
-        const concat = (x: any, y: any) => x.concat(y);
-        const flatMap = (f: any, xs: any) => xs.map(f).reduce(concat, []);
-
         Object.defineProperty(Array.prototype, 'flatMap', {
-            value: flatMap,
+            value: function(o: any): any[] {
+                const concatFunction = (x: any, y: any[]) => x.concat(y);
+                const flatMapLogic = (f: any, xs: any) => xs.map(f).reduce(concatFunction, []);
+                return flatMapLogic(o, this);
+            },
             enumerable: false
         });
     }
