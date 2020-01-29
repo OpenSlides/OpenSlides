@@ -712,6 +712,13 @@ export class PdfDocumentService {
         };
     }
 
+    public getSpacer(): Object {
+        return {
+            text: '',
+            margin: [0, 10]
+        };
+    }
+
     /**
      * Generates the table definition for the TOC
      *
