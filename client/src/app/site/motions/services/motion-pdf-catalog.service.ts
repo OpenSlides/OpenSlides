@@ -59,6 +59,8 @@ export class MotionPdfCatalogService {
     public motionListToDocDef(motions: ViewMotion[], exportInfo: MotionExportInfo): object {
         let doc = [];
         const motionDocList = [];
+        const printToc = exportInfo.pdfOptions.includes('toc');
+        const enforcePageBreaks = exportInfo.pdfOptions.includes('addBreaks');
 
         for (let motionIndex = 0; motionIndex < motions.length; ++motionIndex) {
             try {
@@ -69,8 +71,10 @@ export class MotionPdfCatalogService {
 
                 motionDocList.push(motionDocDef);
 
-                if (motionIndex < motions.length - 1) {
+                if (motionIndex < motions.length - 1 && enforcePageBreaks) {
                     motionDocList.push(this.pdfService.getPageBreak());
+                } else if (motionIndex < motions.length - 1 && !enforcePageBreaks) {
+                    motionDocList.push(this.pdfService.getSpacer());
                 }
             } catch (err) {
                 const errorText = `${this.translate.instant('Error during PDF creation of motion:')} ${
@@ -82,7 +86,7 @@ export class MotionPdfCatalogService {
         }
 
         // print extra data (title, preamble, categories, toc) only if there are more than 1 motion
-        if (motions.length > 1 && (!exportInfo.pdfOptions || exportInfo.pdfOptions.includes('toc'))) {
+        if (motions.length > 1 && (!exportInfo.pdfOptions || printToc)) {
             doc.push(
                 this.pdfService.createTitle('motions_export_title'),
                 this.pdfService.createPreamble('motions_export_preamble'),
