@@ -124,6 +124,32 @@ export class ChartsComponent extends BaseViewComponent {
     }
 
     /**
+     * Determine, if the chart has some padding at the borders.
+     */
+    @Input()
+    public hasPadding = true;
+
+    /**
+     * Optional passing a number as percentage value for `max-width`.
+     * Range from 1 to 100.
+     * Defaults to `100`.
+     */
+    @Input()
+    public set size(size: number) {
+        if (size > 100) {
+            size = 100;
+        }
+        if (size < 1) {
+            size = 1;
+        }
+        this._size = size;
+    }
+
+    public get size(): number {
+        return this._size;
+    }
+
+    /**
      * Fires an event, when the user clicks on the chart.
      */
     @Output()
@@ -134,6 +160,13 @@ export class ChartsComponent extends BaseViewComponent {
      */
     @Output()
     public hover = new EventEmitter<ChartEvent>();
+
+    /**
+     * Returns a string to append to the `chart-wrapper's` classes.
+     */
+    public get classes(): string {
+        return 'os-charts os-charts--' + this.size;
+    }
 
     /**
      * The general data for the chart.
@@ -190,6 +223,11 @@ export class ChartsComponent extends BaseViewComponent {
     private _type: ChartType = 'bar';
 
     private _chartLegendSize: ChartLegendSize = 'middle';
+
+    /**
+     * Holds the value for `max-width`.
+     */
+    private _size = 100;
 
     /**
      * Constructor.

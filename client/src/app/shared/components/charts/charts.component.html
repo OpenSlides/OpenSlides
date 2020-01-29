@@ -1,4 +1,4 @@
-<div class="charts-wrapper">
+<div class="charts-wrapper" [ngClass]="[classes, hasPadding ? 'has-padding' : '']">
     <ng-container *ngIf="chartData.length || circleData.length">
         <canvas
             *ngIf="type === 'bar' || type === 'stackedBar' || type === 'horizontalBar' || type === 'line'"

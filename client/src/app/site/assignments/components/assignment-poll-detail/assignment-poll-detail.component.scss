@@ -1,0 +1,15 @@
+.chart-wrapper {
+    &.flex {
+        display: flex;
+
+        .mat-table {
+            flex: 2;
+            .mat-column-votes {
+                justify-content: center;
+            }
+        }
+        .chart-inner-wrapper {
+            flex: 3;
+        }
+    }
+}
