@@ -243,8 +243,13 @@ export class MotionPdfCatalogService {
      * @returns {Array<Object>} An array containing the `DocDefinitions` for `pdf-make`.
      */
     private appendSubmittersAndRecommendation(motion: ViewMotion, style: StyleType = StyleType.DEFAULT): Object[] {
-        const recommendation = this.motionRepo.getExtendedRecommendationLabel(motion);
         let submitterList = '';
+        let state = '';
+        if (motion.state.isFinalState) {
+            state = this.motionRepo.getExtendedStateLabel(motion);
+        } else {
+            state = this.motionRepo.getExtendedRecommendationLabel(motion);
+        }
         for (let i = 0; i < motion.submitters.length; ++i) {
             submitterList +=
                 i !== motion.submitters.length - 1
@@ -257,7 +262,7 @@ export class MotionPdfCatalogService {
             `${motion.id}`,
             style,
             this.pdfService.createTocLineInline(submitterList),
-            this.pdfService.createTocLineInline(recommendation, true)
+            this.pdfService.createTocLineInline(state, true)
         );
     }
 }
