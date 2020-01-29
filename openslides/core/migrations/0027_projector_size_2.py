@@ -37,7 +37,7 @@ def calculate_aspect_ratios(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("core", "0027_projector_size_1"),
+        ("core", "0026_projector_size_1"),
     ]
 
     operations = [
