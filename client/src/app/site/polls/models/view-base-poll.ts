@@ -1,11 +1,10 @@
 import { ChartData } from 'app/shared/components/charts/charts.component';
 import { BasePoll, PollState } from 'app/shared/models/poll/base-poll';
 import { ViewAssignmentOption } from 'app/site/assignments/models/view-assignment-option';
-import { ViewAssignmentPoll } from 'app/site/assignments/models/view-assignment-poll';
 import { BaseProjectableViewModel } from 'app/site/base/base-projectable-view-model';
+import { BaseViewModel } from 'app/site/base/base-view-model';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 import { ViewMotionOption } from 'app/site/motions/models/view-motion-option';
-import { ViewMotionPoll } from 'app/site/motions/models/view-motion-poll';
 import { ViewGroup } from 'app/site/users/models/view-group';
 import { ViewUser } from 'app/site/users/models/view-user';
 
@@ -71,9 +70,7 @@ export abstract class ViewBasePoll<M extends BasePoll<M, any> = any> extends Bas
     }
 
     public get parentLink(): string {
-        return this.pollClassType === 'motion'
-            ? `/motions/${(<ViewMotionPoll>(<any>this)).poll.motion_id}`
-            : `/assignments/${(<ViewAssignmentPoll>(<any>this)).poll.assignment_id}/`;
+        return `/${this.pollClassType}s/${this.getContentObject().id}`;
     }
 
     public get stateVerbose(): string {
@@ -110,6 +107,8 @@ export abstract class ViewBasePoll<M extends BasePoll<M, any> = any> extends Bas
     public canBeVotedFor: () => boolean;
 
     public abstract getSlide(): ProjectorElementBuildDeskriptor;
+
+    public abstract getContentObject(): BaseViewModel;
 
     /**
      * Initializes labels for a chart.
