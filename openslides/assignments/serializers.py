@@ -9,6 +9,7 @@ from openslides.poll.serializers import (
 from openslides.utils.rest_api import (
     BooleanField,
     DecimalField,
+    IdPrimaryKeyRelatedField,
     IntegerField,
     ModelSerializer,
     ValidationError,
@@ -150,6 +151,7 @@ class AssignmentSerializer(ModelSerializer):
         write_only=True, required=False, min_value=1, max_value=3, allow_null=True
     )
     agenda_parent_id = IntegerField(write_only=True, required=False, min_value=1)
+    polls = IdPrimaryKeyRelatedField(many=True, read_only=True)
 
     class Meta:
         model = Assignment
@@ -169,6 +171,7 @@ class AssignmentSerializer(ModelSerializer):
             "tags",
             "attachments",
             "number_poll_candidates",
+            "polls",
         )
         validators = (posts_validator,)
 
