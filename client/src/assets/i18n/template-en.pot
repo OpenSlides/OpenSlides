@@ -870,6 +870,9 @@ msgstr ""
 msgid "End speech"
 msgstr ""
 
+msgid "Enforce page breaks"
+msgstr ""
+
 msgid "Enter duration in seconds. Choose 0 to disable warning color."
 msgstr ""
 
@@ -2158,7 +2161,7 @@ msgstr ""
 msgid "Show state extension field"
 msgstr ""
 
-msgid "Show submitters and recommendation in table of contents"
+msgid "Show submitters and recommendation/state in table of contents"
 msgstr ""
 
 msgid "Show subtitles in the agenda"
