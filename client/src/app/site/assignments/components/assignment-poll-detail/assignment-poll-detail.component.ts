@@ -26,11 +26,15 @@ export class AssignmentPollDetailComponent extends BasePollDetailComponent<ViewA
     public candidatesLabels: string[] = [];
 
     public get chartType(): ChartType {
-        return 'horizontalBar';
+        return this._chartType;
+    }
+
+    public get isVotedPoll(): boolean {
+        return this.poll.pollmethod === AssignmentPollMethods.Votes;
     }
 
     public get columnDefinitionOverview(): string[] {
-        const columns = ['user', 'yes', 'no', 'quorum'];
+        const columns = this.isVotedPoll ? ['user', 'votes'] : ['user', 'yes', 'no'];
         if (this.poll.pollmethod === AssignmentPollMethods.YNA) {
             columns.splice(3, 0, 'abstain');
         }
@@ -38,6 +42,8 @@ export class AssignmentPollDetailComponent extends BasePollDetailComponent<ViewA
     }
 
     public columnDefinitionPerName: string[];
+
+    private _chartType: ChartType = 'horizontalBar';
 
     public constructor(
         title: Title,
@@ -62,7 +68,7 @@ export class AssignmentPollDetailComponent extends BasePollDetailComponent<ViewA
             for (const vote of option.votes) {
                 // if poll was pseudoanonymized, use a negative index to not interfere with
                 // possible named votes (although this should never happen)
-                const userId = vote.user_id || i--;
+                const userId = vote.user_id || --i;
                 if (!votes[userId]) {
                     votes[userId] = {
                         user: vote.user,
@@ -79,6 +85,13 @@ export class AssignmentPollDetailComponent extends BasePollDetailComponent<ViewA
         this.candidatesLabels = this.poll.initChartLabels();
 
         this.isReady = true;
+    }
+
+    protected initChartData(): void {
+        if (this.isVotedPoll) {
+            this._chartType = 'doughnut';
+            this.chartDataSubject.next(this.poll.generateCircleChartData());
+        }
     }
 
     protected hasPerms(): boolean {

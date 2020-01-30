@@ -47,7 +47,6 @@ export abstract class BasePollDetailComponent<V extends ViewBasePoll> extends Ba
     /**
      * Sets the type of the shown chart, if votes are entered.
      */
-    // public chartType = 'horizontalBar';
     public abstract get chartType(): ChartType;
 
     /**
@@ -123,12 +122,10 @@ export abstract class BasePollDetailComponent<V extends ViewBasePoll> extends Ba
     }
 
     /**
-     * This changes the data for the chart depending on the switch in the detail-view.
-     *
-     * @param isChecked boolean, if the chart should show the amount of entered votes.
+     * Opens dialog for editing the poll
      */
-    public changeChart(): void {
-        this.chartDataSubject.next(this.poll.generateChartData());
+    public openDialog(): void {
+        this.pollDialog.openDialog(this.poll);
     }
 
     protected onDeleted(): void {}
@@ -168,11 +165,19 @@ export abstract class BasePollDetailComponent<V extends ViewBasePoll> extends Ba
     }
 
     /**
+     * Initializes data for the shown chart.
+     * Could be overwritten to implement custom chart data.
+     */
+    protected initChartData(): void {
+        this.chartDataSubject.next(this.poll.generateChartData());
+    }
+
+    /**
      * This checks, if the poll has votes.
      */
     private checkData(): void {
         if (this.poll.state === 3 || this.poll.state === 4) {
-            setTimeout(() => this.chartDataSubject.next(this.poll.generateChartData()));
+            setTimeout(() => this.initChartData());
         }
     }
 
@@ -187,17 +192,9 @@ export abstract class BasePollDetailComponent<V extends ViewBasePoll> extends Ba
                     if (poll) {
                         this.poll = poll;
                         this.updateBreadcrumbs();
-                        this.checkData();
                         this.onPollLoaded();
-
-                        // wait for options to be loaded
-                        (function waitForOptions(): void {
-                            if (!this.poll.options || !this.poll.options.length) {
-                                setTimeout(waitForOptions.bind(this), 1);
-                            } else {
-                                this.onPollWithOptionsLoaded();
-                            }
-                        }.call(this));
+                        this.waitForOptions();
+                        this.checkData();
                     }
                 })
             );
@@ -205,10 +202,14 @@ export abstract class BasePollDetailComponent<V extends ViewBasePoll> extends Ba
     }
 
     /**
-     * Opens dialog for editing the poll
+     * Waits until poll's options are loaded.
      */
-    public openDialog(): void {
-        this.pollDialog.openDialog(this.poll);
+    private waitForOptions(): void {
+        if (!this.poll.options || !this.poll.options.length) {
+            setTimeout(() => this.waitForOptions(), 1);
+        } else {
+            this.onPollWithOptionsLoaded();
+        }
     }
 
     /**
