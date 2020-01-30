@@ -1,6 +1,7 @@
 import { ChartData } from 'app/shared/components/charts/charts.component';
 import { MotionPoll, MotionPollMethods } from 'app/shared/models/motions/motion-poll';
 import { PollColor } from 'app/shared/models/poll/base-poll';
+import { BaseViewModel } from 'app/site/base/base-view-model';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 import { ViewMotionOption } from 'app/site/motions/models/view-motion-option';
 import { ViewBasePoll } from 'app/site/polls/models/view-base-poll';
@@ -30,6 +31,10 @@ export class ViewMotionPoll extends ViewBasePoll<MotionPoll> implements MotionPo
 
     public initChartLabels(): string[] {
         return ['Votes'];
+    }
+
+    public getContentObject(): BaseViewModel {
+        return this.motion;
     }
 
     public generateTableData(): {}[] {

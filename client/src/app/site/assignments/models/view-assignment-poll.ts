@@ -3,6 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 import { ChartData } from 'app/shared/components/charts/charts.component';
 import { AssignmentPoll, AssignmentPollMethods } from 'app/shared/models/assignments/assignment-poll';
 import { PollColor } from 'app/shared/models/poll/base-poll';
+import { BaseViewModel } from 'app/site/base/base-view-model';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 import { ViewBasePoll } from 'app/site/polls/models/view-base-poll';
 import { ViewAssignment } from './view-assignment';
@@ -27,6 +28,10 @@ export class ViewAssignmentPoll extends ViewBasePoll<AssignmentPoll> implements 
 
     public get pollmethodVerbose(): string {
         return AssignmentPollMethodsVerbose[this.pollmethod];
+    }
+
+    public getContentObject(): BaseViewModel {
+        return this.assignment;
     }
 
     public getSlide(): ProjectorElementBuildDeskriptor {

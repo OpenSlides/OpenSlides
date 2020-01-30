@@ -11,28 +11,25 @@
     [listObservableProvider]="polls"
     [vScrollFixed]="64"
     [columns]="tableColumnDefinition"
-    [listStorageKey]="'polls'"
+    listStorageKey="polls"
     [filterProps]="filterProps"
     [filterService]="filterService"
 >
-    <div *pblNgridCellDef="'title'; row as poll; rowContext as context" class="cell-slot fill">
-        <a
-            class="detail-link"
-            (click)="saveScrollIndex('polls', rowContext?.identity)"
-            [routerLink]="poll.parentLink"
-            *ngIf="!isMultiSelect"
-        ></a>
+    <div *pblNgridCellDef="'title'; row as poll; rowContext as context;" class="cell-slot fill">
+        <a class="detail-link" [routerLink]="poll.parentLink" *ngIf="!isMultiSelect"></a>
         <span>{{ poll.title }}</span>
     </div>
-    <div *pblNgridCellDef="'classType'; row as poll" class="cell-slot fill">
-        <span>{{ poll.pollClassTypeVerbose }}</span>
+    <div *pblNgridCellDef="'classType'; row as poll;" class="cell-slot fill">
+        <a class="detail-link" [routerLink]="poll.parentLink" *ngIf="!isMultiSelect"></a>
+        <span>{{ poll.getContentObject().getListTitle() }}</span>
     </div>
-    <div *pblNgridCellDef="'state'; row as poll" class="cell-slot fill">
+    <div *pblNgridCellDef="'state'; row as poll;" class="cell-slot fill">
+        <a class="detail-link" [routerLink]="poll.parentLink" *ngIf="!isMultiSelect"></a>
         <span>{{ poll.stateVerbose }}</span>
     </div>
-    <div *pblNgridCellDef="'votability'; row as poll" class="cell-slot fill">
-        <mat-icon *ngIf="poll.user_has_voted" color="accent">check_circle</mat-icon>
-        <mat-icon *ngIf="!poll.user_has_voted && poll.canBeVotedFor" color="warn">warning</mat-icon>
+    <div *pblNgridCellDef="'votability'; row as poll;" class="cell-slot fill">
+        <mat-icon *ngIf="poll.user_has_voted" color="accent" matTooltip="{{ 'You have already voted on this poll. Good job!' | translate }}">check_circle</mat-icon>
+        <mat-icon *ngIf="!poll.user_has_voted && poll.canBeVotedFor" color="warn" matTooltip="{{ 'You still have to vote on this poll.' | translate }}">warning</mat-icon>
     </div>
 </os-list-view-table>
 
