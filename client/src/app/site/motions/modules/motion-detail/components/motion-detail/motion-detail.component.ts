@@ -504,7 +504,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
             .subscribe(mode => (this.lnMode = mode));
         this.configService
             .get<ChangeRecoMode>('motions_recommendation_text_mode')
-            .subscribe(mode => (this.crMode = mode));
+            .subscribe(mode => (this.crMode = this.determineCrMode(mode)));
         this.configService
             .get<boolean>('motions_show_sequential_numbers')
             .subscribe(shown => (this.showSequential = shown));
@@ -1416,6 +1416,21 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         } else {
             this.notifyService.sendToAllUsers<MotionEditNotification>(this.NOTIFICATION_EDIT_MOTION, content);
         }
+    }
+
+    /**
+     * Tries to determine the realistic CR-Mode from a given CR mode
+     */
+    private determineCrMode(mode: ChangeRecoMode): ChangeRecoMode {
+        if (this.motion) {
+            if (mode === ChangeRecoMode.Final && this.motion.modified_final_version) {
+                return ChangeRecoMode.ModifiedFinal;
+            }
+            if ((mode === ChangeRecoMode.Diff || mode === ChangeRecoMode.Changed) && !this.allChangingObjects.length) {
+                return ChangeRecoMode.Original;
+            }
+        }
+        return mode;
     }
 
     /**
