@@ -7,6 +7,9 @@
                     <ng-container *ngSwitchCase="'choice'">
                         <ng-container *ngTemplateOutlet="select"></ng-container>
                     </ng-container>
+                    <ng-container *ngSwitchCase="'groups'">
+                        <ng-container *ngTemplateOutlet="groups"></ng-container>
+                    </ng-container>
                     <ng-container *ngSwitchDefault>
                         <ng-container *ngTemplateOutlet="input"></ng-container>
                     </ng-container>
@@ -27,6 +30,17 @@
                             {{ choice.display_name | translate }}
                         </mat-option>
                     </mat-select>
+                </ng-template>
+
+                <ng-template #groups ngProjectAs="os-search-value-selector">
+                    <os-search-value-selector
+                        formControlName="value"
+                        [multiple]="true"
+                        [showChips]="false"
+                        [includeNone]="false"
+                        [errorStateMatcher]="matcher"
+                        [inputListValues]="groupObservable"
+                    ></os-search-value-selector>
                 </ng-template>
 
                 <ng-template #input ngProjectAs="[matInput]">

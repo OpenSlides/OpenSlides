@@ -20,9 +20,18 @@
             </div>
 
             <mat-chip
+                *ngIf="poll.getNextStates()"
                 disableRipple
                 class="poll-state active"
                 [matMenuTriggerFor]="triggerMenu"
+                [ngClass]="poll.stateVerbose.toLowerCase()"
+            >
+                {{ poll.stateVerbose }}
+            </mat-chip>
+            <mat-chip
+                *ngIf="!poll.getNextStates()"
+                disableRipple
+                class="poll-state active"
                 [ngClass]="poll.stateVerbose.toLowerCase()"
             >
                 {{ poll.stateVerbose }}
@@ -105,7 +114,7 @@
 <!-- Select state menu -->
 <mat-menu #triggerMenu="matMenu">
     <ng-container *ngIf="poll">
-        <button mat-menu-item (click)="changeState(state.value)" *ngFor="let state of poll.nextStates | keyvalue">
+        <button mat-menu-item (click)="changeState(state.value)" *ngFor="let state of poll.getNextStates() | keyvalue">
             <span translate>{{ state.key }}</span>
         </button>
     </ng-container>
