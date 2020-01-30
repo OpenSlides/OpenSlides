@@ -532,7 +532,7 @@
                     type="button"
                     mat-icon-button
                     matTooltip="{{ 'Create final print template' | translate }}"
-                    *ngIf="motion.state.isFinalState"
+                    *ngIf="motion.state.isFinalState && !motion.modified_final_version"
                     (click)="createModifiedFinalVersion()"
                 >
                     <mat-icon>file_copy</mat-icon>
