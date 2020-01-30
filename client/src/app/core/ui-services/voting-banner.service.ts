@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import { ViewMotionPoll } from 'app/site/motions/models/view-motion-poll';
 import { ViewBasePoll } from 'app/site/polls/models/view-base-poll';
 import { PollListObservableService } from 'app/site/polls/services/poll-list-observable.service';
 import { BannerDefinition, BannerService } from './banner.service';
@@ -29,37 +30,66 @@ export class VotingBannerService {
      * @param polls the updated poll list
      */
     private checkForVotablePolls(polls: ViewBasePoll[]): void {
-        // display no banner if in history mode
-        if (this.OSStatus.isInHistoryMode && this.currentBanner) {
-            this.banner.removeBanner(this.currentBanner);
-            this.currentBanner = null;
+        // display no banner if in history mode or there are no polls to vote
+        const pollsToVote = polls.filter(poll => this.votingService.canVote(poll) && !poll.user_has_voted);
+        if ((this.OSStatus.isInHistoryMode && this.currentBanner) || !pollsToVote.length) {
+            this.sliceBanner();
             return;
         }
 
-        const pollsToVote = polls.filter(poll => this.votingService.canVote(poll) && !poll.user_has_voted);
-        if (pollsToVote.length === 1) {
-            const poll = pollsToVote[0];
-            const banner = {
-                text: this.translate.instant('Click here to vote on the poll') + ` "${poll.title}"!`,
-                link: poll.parentLink,
-                bgColor: 'green'
-            };
-            this.banner.replaceBanner(this.currentBanner, banner);
-            this.currentBanner = banner;
-        } else if (pollsToVote.length > 1) {
-            const banner = {
-                text:
-                    this.translate.instant('You have') +
-                    ` ${pollsToVote.length} ` +
-                    this.translate.instant('polls to vote on!'),
-                link: '/polls/',
-                bgColor: 'green'
-            };
-            this.banner.replaceBanner(this.currentBanner, banner);
-            this.currentBanner = banner;
+        const banner =
+            pollsToVote.length === 1
+                ? this.createBanner(this.getTextForPoll(pollsToVote[0]), pollsToVote[0].parentLink)
+                : this.createBanner(
+                      `${this.translate.instant('You have polls to vote on')}: ${pollsToVote.length}`,
+                      '/polls/'
+                  );
+        this.sliceBanner(banner);
+    }
+
+    /**
+     * Creates a new `BannerDefinition` and returns it.
+     *
+     * @param text The text for the banner.
+     * @param link The link for the banner.
+     *
+     * @returns The created banner.
+     */
+    private createBanner(text: string, link: string): BannerDefinition {
+        return {
+            text: text,
+            link: link,
+            icon: 'how_to_vote',
+            largerOnMobileView: true
+        };
+    }
+
+    /**
+     * Returns for a given poll a title for the banner.
+     *
+     * @param poll The given poll.
+     *
+     * @returns The title.
+     */
+    private getTextForPoll(poll: ViewBasePoll): string {
+        return poll instanceof ViewMotionPoll
+            ? `${this.translate.instant('Motion') + ' ' + poll.motion.getIdentifierOrTitle()}: ${this.translate.instant(
+                  'Voting started'
+              )}!`
+            : `${poll.getTitle()}: ${this.translate.instant('Ballots opened')}!`;
+    }
+
+    /**
+     * Removes the current banner or replaces it, if a new one is given.
+     *
+     * @param nextBanner Optional the next banner to show.
+     */
+    private sliceBanner(nextBanner?: BannerDefinition): void {
+        if (nextBanner) {
+            this.banner.replaceBanner(this.currentBanner, nextBanner);
         } else {
             this.banner.removeBanner(this.currentBanner);
-            this.currentBanner = null;
         }
+        this.currentBanner = nextBanner || null;
     }
 }
