@@ -1116,19 +1116,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         // Update the motion
         try {
             // Just confirm this, if there is one modified final version the user would override.
-            if (this.motion.modified_final_version) {
-                const title = this.translate.instant(
-                    'Are you sure you want to copy the final version to the print template?'
-                );
-                if (await this.promptService.open(title)) {
-                    this.updateMotion({ modified_final_version: finalVersion }, this.motion).then(
-                        () => this.setChangeRecoMode(ChangeRecoMode.ModifiedFinal),
-                        this.raiseError
-                    );
-                }
-            } else {
-                await this.updateMotion({ modified_final_version: finalVersion }, this.motion);
-            }
+            await this.updateMotion({ modified_final_version: finalVersion }, this.motion);
         } catch (e) {
             this.raiseError(e);
         }
