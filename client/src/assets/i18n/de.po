@@ -1,9 +1,9 @@
 # Translators:
-# Emanuel Schütze <emanuel.schuetze@intevation.de>, 2019
+# Emanuel Schütze <emanuel.schuetze@intevation.de>, 2020
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Emanuel Schütze <emanuel.schuetze@intevation.de>, 2019\n"
+"Last-Translator: Emanuel Schütze <emanuel.schuetze@intevation.de>, 2020\n"
 "Language-Team: German (https://www.transifex.com/openslides/teams/14270/de/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -731,8 +731,8 @@ msgid ""
 "Default method to check whether a candidate has reached the required "
 "majority."
 msgstr ""
-"Voreingestellte Methode zur Überprüfung ob ein Kandidate die nötige Mehrheit"
-" erreicht hat."
+"Voreingestellte Methode zur Überprüfung ob ein Kandidat die nötige Mehrheit "
+"erreicht hat."
 
 msgid ""
 "Default method to check whether a motion has reached the required majority."
@@ -925,6 +925,9 @@ msgstr "Encoding der Datei"
 
 msgid "End speech"
 msgstr "Rede beenden"
+
+msgid "Enforce page breaks"
+msgstr "Seitenumbrüche erzwingen"
 
 msgid "Enter duration in seconds. Choose 0 to disable warning color."
 msgstr ""
@@ -2240,9 +2243,10 @@ msgstr "Ergänzungsfeld für Empfehlung anzeigen"
 msgid "Show state extension field"
 msgstr "Ergänzungsfeld für Status anzeigen"
 
-msgid "Show submitters and recommendation in table of contents"
+msgid "Show submitters and recommendation/state in table of contents"
 msgstr ""
-"Antragsteller/in und Beschlussempfehlung im PDF-Inhaltsverzeichnis anzeigen"
+"Antragsteller/in und Beschlussempfehlung/Beschluss im PDF-Inhaltsverzeichnis"
+" anzeigen"
 
 msgid "Show subtitles in the agenda"
 msgstr "Untertitel in der Tagesordnungsübersicht anzeigen"
