@@ -43,7 +43,7 @@
 
 <mat-menu #triggerMenu="matMenu">
     <ng-container *ngIf="poll">
-        <button mat-menu-item (click)="changeState(state.value)" *ngFor="let state of poll.nextStates | keyvalue">
+        <button mat-menu-item (click)="changeState(state.value)" *ngFor="let state of poll.getNextStates() | keyvalue">
             <span translate>{{ state.key }}</span>
         </button>
     </ng-container>

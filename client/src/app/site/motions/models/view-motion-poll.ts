@@ -1,6 +1,6 @@
 import { ChartData } from 'app/shared/components/charts/charts.component';
 import { MotionPoll, MotionPollMethods } from 'app/shared/models/motions/motion-poll';
-import { PollColor } from 'app/shared/models/poll/base-poll';
+import { PollColor, PollState } from 'app/shared/models/poll/base-poll';
 import { BaseViewModel } from 'app/site/base/base-view-model';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 import { ViewMotionOption } from 'app/site/motions/models/view-motion-option';
@@ -74,6 +74,16 @@ export class ViewMotionPoll extends ViewBasePoll<MotionPoll> implements MotionPo
 
     public get pollmethodVerbose(): string {
         return MotionPollMethodsVerbose[this.pollmethod];
+    }
+
+    /**
+     * Override from base poll to skip started state in analog poll type
+     */
+    public getNextStates(): { [key: number]: string } {
+        if (this.poll.type === 'analog' && this.state === PollState.Created) {
+            return null;
+        }
+        return super.getNextStates();
     }
 }
 

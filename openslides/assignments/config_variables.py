@@ -5,7 +5,6 @@ from openslides.core.config import ConfigVariable
 def get_config_variables():
     """
     Generator which yields all config variables of this app.
-
     They are grouped in 'Ballot and ballot papers' and 'PDF'. The generator has
     to be evaluated during app loading (see apps.py).
     """
@@ -46,6 +45,16 @@ def get_config_variables():
         input_type="boolean",
         label="Put all candidates on the list of speakers",
         weight=410,
+        group="Voting",
+        subgroup="Elections",
+    )
+
+    yield ConfigVariable(
+        name="assignment_poll_default_groups",
+        default_value=[],
+        input_type="groups",
+        label="Default groups for named and pseudoanonymous assignment polls",
+        weight=415,
         group="Voting",
         subgroup="Elections",
     )
