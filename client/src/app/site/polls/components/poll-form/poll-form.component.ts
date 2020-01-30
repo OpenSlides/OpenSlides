@@ -7,6 +7,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 
 import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
+import { ConfigService } from 'app/core/ui-services/config.service';
 import { PercentBase } from 'app/shared/models/poll/base-poll';
 import { PollType } from 'app/shared/models/poll/base-poll';
 import { ViewAssignmentPoll } from 'app/site/assignments/models/view-assignment-poll';
@@ -14,6 +15,7 @@ import { BaseViewComponent } from 'app/site/base/base-view';
 import {
     MajorityMethodVerbose,
     PercentBaseVerbose,
+    PollClassType,
     PollPropertyVerbose,
     PollTypeVerbose,
     ViewBasePoll
@@ -85,7 +87,8 @@ export class PollFormComponent extends BaseViewComponent implements OnInit {
         snackbar: MatSnackBar,
         private fb: FormBuilder,
         private groupRepo: GroupRepositoryService,
-        public pollService: PollService
+        public pollService: PollService,
+        private configService: ConfigService
     ) {
         super(title, translate, snackbar);
         this.initContentForm();
@@ -104,6 +107,13 @@ export class PollFormComponent extends BaseViewComponent implements OnInit {
         }
 
         if (this.data) {
+            if (!this.data.groups_id) {
+                if (this.data.collectionString === ViewAssignmentPoll.COLLECTIONSTRING) {
+                    this.data.groups_id = this.configService.instant('assignment_poll_default_groups');
+                } else {
+                    this.data.groups_id = this.configService.instant('motion_poll_default_groups');
+                }
+            }
             Object.keys(this.contentForm.controls).forEach(key => {
                 if (this.data[key]) {
                     this.contentForm.get(key).setValue(this.data[key]);
@@ -150,12 +160,16 @@ export class PollFormComponent extends BaseViewComponent implements OnInit {
      * @param data Passing the properties of the poll.
      */
     private updatePollValues(data: { [key: string]: any }): void {
-        this.pollValues = Object.entries(data)
-            .filter(([key, _]) => key === 'type' || key === 'pollmethod')
-            .map(([key, value]) => [
-                this.pollService.getVerboseNameForKey(key),
-                this.pollService.getVerboseNameForValue(key, value as string)
+        this.pollValues = [
+            [this.pollService.getVerboseNameForKey('type'), this.pollService.getVerboseNameForValue('type', data.type)]
+        ];
+        // show pollmethod only for assignment polls
+        if (this.data.pollClassType === PollClassType.Assignment) {
+            this.pollValues.push([
+                this.pollService.getVerboseNameForKey('pollmethod'),
+                this.pollService.getVerboseNameForValue('pollmethod', data.pollmethod)
             ]);
+        }
         if (data.type !== 'analog') {
             this.pollValues.push([
                 this.pollService.getVerboseNameForKey('groups'),

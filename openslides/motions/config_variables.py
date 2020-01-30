@@ -418,3 +418,13 @@ def get_config_variables():
         group="Voting",
         subgroup="Motions",
     )
+
+    yield ConfigVariable(
+        name="motion_poll_default_groups",
+        default_value=[],
+        input_type="groups",
+        label="Default groups for named and pseudoanonymous motion polls",
+        weight=430,
+        group="Voting",
+        subgroup="Motions",
+    )

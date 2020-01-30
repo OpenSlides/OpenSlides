@@ -17,6 +17,7 @@ import { Observable } from 'rxjs';
 import { auditTime } from 'rxjs/operators';
 
 import { BaseFormControlComponent } from 'app/shared/models/base/base-form-control';
+import { ParentErrorStateMatcher } from 'app/shared/parent-error-state-matcher';
 import { Selectable } from '../selectable';
 
 /**
@@ -68,6 +69,9 @@ export class SearchValueSelectorComponent extends BaseFormControlComponent<Selec
 
     @Input()
     public noneTitle = '–';
+
+    @Input()
+    public errorStateMatcher: ParentErrorStateMatcher;
 
     /**
      * The inputlist subject. Subscribes to it and updates the selector, if the subject

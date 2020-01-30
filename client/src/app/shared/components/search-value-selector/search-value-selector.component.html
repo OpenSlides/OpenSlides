@@ -1,4 +1,4 @@
-<mat-select [formControl]="contentForm" [multiple]="multiple" [panelClass]="{ 'os-search-value-selector': multiple }">
+<mat-select [formControl]="contentForm" [multiple]="multiple" [panelClass]="{ 'os-search-value-selector': multiple }" [errorStateMatcher]="errorStateMatcher">
     <ngx-mat-select-search [formControl]="searchValue"></ngx-mat-select-search>
     <ng-container *ngIf="multiple && showChips">
         <div #chipPlaceholder>
