@@ -4,7 +4,7 @@ import { PollColor, PollState } from 'app/shared/models/poll/base-poll';
 import { BaseViewModel } from 'app/site/base/base-view-model';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 import { ViewMotionOption } from 'app/site/motions/models/view-motion-option';
-import { ViewBasePoll } from 'app/site/polls/models/view-base-poll';
+import { PollData, ViewBasePoll } from 'app/site/polls/models/view-base-poll';
 import { ViewMotion } from './view-motion';
 
 export interface MotionPollTitleInformation {
@@ -37,7 +37,7 @@ export class ViewMotionPoll extends ViewBasePoll<MotionPoll> implements MotionPo
         return this.motion;
     }
 
-    public generateTableData(): {}[] {
+    public generateTableData(): PollData[] {
         let tableData = this.options.flatMap(vote => this.tableKeys.map(key => ({ key: key, value: vote[key] })));
         tableData.push(...this.voteKeys.map(key => ({ key: key, value: this[key] })));
         tableData = tableData.map(entry => (entry.value >= 0 ? entry : { key: entry.key, value: null }));
