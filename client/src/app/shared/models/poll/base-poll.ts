@@ -69,10 +69,24 @@ export abstract class BasePoll<T = any, O extends BaseOption<any> = any> extends
     }
 
     /**
+     * If the state is finished.
+     */
+    public get isFinished(): boolean {
+        return this.state === PollState.Finished;
+    }
+
+    /**
+     * If the state is published.
+     */
+    public get isPublished(): boolean {
+        return this.state === PollState.Published;
+    }
+
+    /**
      * Determine if the state is finished or published
      */
     public get stateHasVotes(): boolean {
-        return this.state === PollState.Finished || this.state === PollState.Published;
+        return this.isFinished || this.isPublished;
     }
 
     protected getDecimalFields(): (keyof BasePoll<T, O>)[] {
