@@ -8,6 +8,11 @@ import { ViewMotionOption } from 'app/site/motions/models/view-motion-option';
 import { ViewGroup } from 'app/site/users/models/view-group';
 import { ViewUser } from 'app/site/users/models/view-user';
 
+export enum PollClassType {
+    Motion = 'motion',
+    Assignment = 'assignment'
+}
+
 export const PollClassTypeVerbose = {
     motion: 'Motion poll',
     assignment: 'Assignment poll'
@@ -18,6 +23,13 @@ export const PollStateVerbose = {
     2: 'Started',
     3: 'Finished',
     4: 'Published'
+};
+
+export const PollStateChangeActionVerbose = {
+    1: 'Reset',
+    2: 'Start voting',
+    3: 'End voting',
+    4: 'Publish'
 };
 
 export const PollTypeVerbose = {
@@ -55,8 +67,6 @@ export const PercentBaseVerbose = {
 };
 
 export abstract class ViewBasePoll<M extends BasePoll<M, any> = any> extends BaseProjectableViewModel<M> {
-    private _tableData: {}[] = [];
-
     public get tableData(): {}[] {
         if (!this._tableData.length) {
             this._tableData = this.generateTableData();
@@ -91,23 +101,24 @@ export abstract class ViewBasePoll<M extends BasePoll<M, any> = any> extends Bas
     public get percentBaseVerbose(): string {
         return PercentBaseVerbose[this.onehundred_percent_base];
     }
-
-    /**
-     * returns a mapping "verbose_state" -> "state_id" for all valid next states
-     */
-    public get nextStates(): { [key: number]: string } {
-        const next_state = (this.state % Object.keys(PollStateVerbose).length) + 1;
-        const states = {};
-        states[PollStateVerbose[next_state]] = next_state;
-        if (this.state === PollState.Finished) {
-            states[PollStateVerbose[PollState.Created]] = PollState.Created;
-        }
-        return states;
-    }
+    private _tableData: {}[] = [];
 
     public abstract readonly pollClassType: 'motion' | 'assignment';
 
     public canBeVotedFor: () => boolean;
+
+    /**
+     * returns a mapping "verbose_state" -> "state_id" for all valid next states
+     */
+    public getNextStates(): { [key: number]: string } {
+        const next_state = (this.state % Object.keys(PollStateVerbose).length) + 1;
+        const states = {};
+        states[PollStateChangeActionVerbose[next_state]] = next_state;
+        if (this.state === PollState.Finished) {
+            states[PollStateChangeActionVerbose[PollState.Created]] = PollState.Created;
+        }
+        return states;
+    }
 
     public abstract getSlide(): ProjectorElementBuildDeskriptor;
 

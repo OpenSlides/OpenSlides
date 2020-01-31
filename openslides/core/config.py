@@ -23,6 +23,7 @@ INPUT_TYPE_MAPPING = {
     "datetimepicker": int,
     "static": dict,
     "translations": list,
+    "groups": list,
 }
 
 ALLOWED_NONE = ("datetimepicker",)
@@ -142,6 +143,13 @@ class ConfigHandler:
                 lambda choice: choice["value"], choices
             ):
                 raise ConfigError("Invalid input. Choice does not match.")
+
+        if config_variable.input_type == "groups":
+            from ..users.models import Group
+
+            groups = set(group.id for group in Group.objects.all())
+            if not groups.issuperset(set(value)):
+                raise ConfigError("Invalid input. Chosen group does not exist.")
 
         for validator in config_variable.validators:
             try:

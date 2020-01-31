@@ -30,8 +30,15 @@ export abstract class BasePollComponent<V extends ViewBasePoll> extends BaseView
         super(titleService, translate, matSnackBar);
     }
 
-    public changeState(key: PollState): void {
-        key === PollState.Created ? this.repo.resetPoll(this._poll) : this.repo.changePollState(this._poll);
+    public async changeState(key: PollState): Promise<void> {
+        if (key === PollState.Created) {
+            const title = this.translate.instant('Are you sure you want to reset this poll? All Votes will be lost.');
+            if (await this.promptService.open(title)) {
+                this.repo.resetPoll(this._poll).catch(this.raiseError);
+            }
+        } else {
+            this.repo.changePollState(this._poll).catch(this.raiseError);
+        }
     }
 
     /**

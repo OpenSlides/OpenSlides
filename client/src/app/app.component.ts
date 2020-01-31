@@ -30,6 +30,10 @@ declare global {
         mapToObject(f: (item: T) => { [key: string]: any }): { [key: string]: any };
     }
 
+    interface Set<T> {
+        equals(other: Set<T>): boolean;
+    }
+
     /**
      * Enhances the number object to calculate real modulo operations.
      * (not remainder)
@@ -97,6 +101,7 @@ export class AppComponent {
         // change default JS functions
         this.overloadArrayToString();
         this.overloadArrayFunctions();
+        this.overloadSetFunctions();
         this.overloadModulo();
 
         // Wait until the App reaches a stable state.
@@ -140,7 +145,7 @@ export class AppComponent {
     }
 
     /**
-     * Adds an implementation of flatMap and intersect.
+     * Adds some implementations.
      */
     private overloadArrayFunctions(): void {
         // TODO: Remove once flatMap made its way into official JS/TS (ES 2019?)
@@ -176,6 +181,27 @@ export class AppComponent {
                     }
                     return aggr;
                 }, {});
+            },
+            enumerable: false
+        });
+    }
+
+    /**
+     * Adds some functions to Set.
+     */
+    private overloadSetFunctions(): void {
+        // equals
+        Object.defineProperty(Set.prototype, 'equals', {
+            value: function<T>(other: Set<T>): boolean {
+                const _difference = new Set(this);
+                for (const elem of other) {
+                    if (_difference.has(elem)) {
+                        _difference.delete(elem);
+                    } else {
+                        return false;
+                    }
+                }
+                return !_difference.size;
             },
             enumerable: false
         });
