@@ -39,11 +39,8 @@
         padding: 15px 25px 0 25px;
         width: auto;
 
-        .search-bar {
-            display: grid;
-            .mat-form-field {
-                width: 100%;
-            }
+        .mat-form-field {
+            width: 100%;
         }
     }
 }
