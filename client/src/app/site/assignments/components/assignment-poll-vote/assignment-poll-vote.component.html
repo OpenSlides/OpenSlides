@@ -1,48 +1,74 @@
 <ng-container *ngIf="poll">
     <ng-container *ngIf="vmanager.canVote(poll)">
-        <span *ngIf="poll.pollmethod === 'votes'"
-            >{{ 'You can distribute' | translate }} {{ poll.votes_amount }} {{ 'votes' | translate }}.</span
-        >
         <form *ngIf="voteForm" [formGroup]="voteForm" class="voting-grid">
-            <ng-container *ngFor="let option of poll.options">
+            <!-- empty divs to fit the grid -->
+            <div></div><div></div>
+            <div>
+                <span *ngIf="poll.pollmethod === pollMethods.Votes">
+                    ({{ getVotesCount() }}/{{ poll.votes_amount }} {{ 'Votes' | translate }})
+                </span>
+            </div>
+
+            <!-- candidate votes -->
+            <ng-container *ngFor="let option of poll.options" formGroupName="votes">
                 <div>
                     <span *ngIf="option.user">{{ option.user.getFullName() }}</span>
-                    <span *ngIf="!option.user">No user {{ option.candidate_id }}</span>
+                    <span *ngIf="!option.user">{{ "Unknown user" | translate }}</span>
                 </div>
 
                 <div class="current-vote">
-                    <ng-container *ngIf="currentVotes[option.user_id] !== null">
-                        ({{ 'Current' | translate }}: {{ getCurrentVoteVerbose(option.user_id) | translate }})
+                    <ng-container *ngIf="poll.pollmethod !== pollMethods.Votes && currentVotes[option.user_id]">
+                        ({{ 'Current' | translate }}: {{ currentVotes[option.user_id] | translate }})
+                    </ng-container>
+                    <ng-container *ngIf="poll.pollmethod === pollMethods.Votes && currentVotes[option.user_id]">
+                        ({{ 'Current choice' | translate }})
                     </ng-container>
                 </div>
 
                 <mat-radio-group
                     name="votes-{{ poll.id }}-{{ option.id }}"
                     [formControlName]="option.id"
-                    *ngIf="poll.pollmethod !== 'votes'"
                 >
-                    <mat-radio-button value="Y">
+                    <mat-radio-button value="Y" (click)="yesButtonClicked($event, option.id.toString())">
                         <span translate>Yes</span>
                     </mat-radio-button>
-                    <mat-radio-button value="N">
+                    <mat-radio-button value="N" *ngIf="poll.pollmethod !== pollMethods.Votes">
                         <span translate>No</span>
                     </mat-radio-button>
-                    <mat-radio-button value="A" *ngIf="poll.pollmethod === 'YNA'">
+                    <mat-radio-button value="A" *ngIf="poll.pollmethod === pollMethods.YNA">
                         <span translate>Abstain</span>
                     </mat-radio-button>
                 </mat-radio-group>
+            </ng-container>
 
-                <mat-form-field *ngIf="poll.pollmethod === 'votes'" class="vote-input">
-                    <input matInput type="number" min="0" [formControlName]="option.id" />
-                </mat-form-field>
+            <!-- global no/abstain -->
+            <ng-container *ngIf="poll.pollmethod === pollMethods.Votes && (poll.global_no || poll.global_abstain)">
+                <!-- empty div to fit the grid -->
+                <div></div>
+                <div class="current-vote">
+                    <ng-container *ngIf="currentVotes.global">
+                        ({{ 'Current' | translate }}: {{ currentVotes.global | translate }})
+                    </ng-container>
+                </div>
+                <mat-radio-group
+                    name="votes-{{ poll.id }}-global"
+                    formControlName="global"
+                >
+                    <mat-radio-button value="N" *ngIf="poll.global_no">
+                        <span translate>Global no</span>
+                    </mat-radio-button>
+                    <mat-radio-button value="A" *ngIf="poll.global_abstain">
+                        <span translate>Global abstain</span>
+                    </mat-radio-button>
+                </mat-radio-group>
             </ng-container>
         </form>
-        <div class="right-align">
+        <div class="right-align" *ngIf="poll.type !== PollType.Named || poll.pollmethod !== pollMethods.Votes">
             <button
                 mat-button
                 mat-button-default
                 (click)="saveVotes()"
-                [disabled]="!voteForm || voteForm.invalid || voteForm.pristine"
+                [disabled]="isSaveButtonDisabled()"
             >
                 <span translate>Save</span>
             </button>
