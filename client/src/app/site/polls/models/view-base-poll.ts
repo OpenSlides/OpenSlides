@@ -13,6 +13,18 @@ export enum PollClassType {
     Assignment = 'assignment'
 }
 
+/**
+ * Interface describes the possible data for the result-table.
+ */
+export interface PollData {
+    key?: string;
+    value?: number;
+    yes?: number;
+    no?: number;
+    abstain: number;
+    user?: string;
+}
+
 export const PollClassTypeVerbose = {
     motion: 'Motion poll',
     assignment: 'Assignment poll'
@@ -67,7 +79,9 @@ export const PercentBaseVerbose = {
 };
 
 export abstract class ViewBasePoll<M extends BasePoll<M, any> = any> extends BaseProjectableViewModel<M> {
-    public get tableData(): {}[] {
+    private _tableData: PollData[] = [];
+
+    public get tableData(): PollData[] {
         if (!this._tableData.length) {
             this._tableData = this.generateTableData();
         }
@@ -101,7 +115,6 @@ export abstract class ViewBasePoll<M extends BasePoll<M, any> = any> extends Bas
     public get percentBaseVerbose(): string {
         return PercentBaseVerbose[this.onehundred_percent_base];
     }
-    private _tableData: {}[] = [];
 
     public abstract readonly pollClassType: 'motion' | 'assignment';
 
@@ -131,7 +144,7 @@ export abstract class ViewBasePoll<M extends BasePoll<M, any> = any> extends Bas
 
     public abstract generateChartData(): ChartData;
 
-    public abstract generateTableData(): {}[];
+    public abstract generateTableData(): PollData[];
 }
 
 export interface ViewBasePoll<M extends BasePoll<M, any> = any> extends BasePoll<M, any> {

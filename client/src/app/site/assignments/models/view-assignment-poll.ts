@@ -5,7 +5,7 @@ import { AssignmentPoll, AssignmentPollMethods } from 'app/shared/models/assignm
 import { PollColor } from 'app/shared/models/poll/base-poll';
 import { BaseViewModel } from 'app/site/base/base-view-model';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
-import { ViewBasePoll } from 'app/site/polls/models/view-base-poll';
+import { PollData, ViewBasePoll } from 'app/site/polls/models/view-base-poll';
 import { ViewAssignment } from './view-assignment';
 import { ViewAssignmentOption } from './view-assignment-option';
 
@@ -74,7 +74,7 @@ export class ViewAssignmentPoll extends ViewBasePoll<AssignmentPoll> implements 
         return data;
     }
 
-    public generateTableData(): {}[] {
+    public generateTableData(): PollData[] {
         const data = this.options
             .map(candidate => ({
                 yes: candidate.yes,

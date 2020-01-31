@@ -36,19 +36,18 @@
                 ></os-charts>
 
                 <!-- result table -->
-                <mat-table class="result-table" [dataSource]="poll.tableData">
-                    <ng-container matColumnDef="key" sticky>
-                        <mat-header-cell *matHeaderCellDef></mat-header-cell>
-                        <mat-cell *matCellDef="let row">{{ row.key }}</mat-cell>
-                    </ng-container>
-                    <ng-container matColumnDef="value" sticky>
-                        <mat-header-cell *matHeaderCellDef>Votes</mat-header-cell>
-                        <mat-cell *matCellDef="let row">{{ row.value }}</mat-cell>
-                    </ng-container>
-
-                    <mat-header-row *matHeaderRowDef="columnDefinition"></mat-header-row>
-                    <mat-row *matRowDef="let row; columns: columnDefinition"></mat-row>
-                </mat-table>
+                <table class="result-table">
+                    <tbody>
+                        <tr>
+                            <th></th>
+                            <th translate>Votes</th>
+                        </tr>
+                        <tr *ngFor="let row of poll.tableData">
+                            <td>{{ row.key | pollKeyVerbose | translate }}</td>
+                            <td class="result-cell-definition">{{ row.value }}</td>
+                        </tr>
+                    </tbody>
+                </table>
 
                 <!-- Named table: only show if votes are present -->
                 <div class="named-result-table" *ngIf="poll.type === 'named' && votesDataSource.data">
@@ -87,8 +86,6 @@
             <div>{{ 'Required majority' | translate }}: {{ poll.majorityMethodVerbose | translate }}</div>
             <div>{{ '100% base' | translate }}: {{ poll.percentBaseVerbose | translate }}</div>
         </div>
-
-        <os-projector-button [object]="poll"></os-projector-button>
     </ng-container>
 </ng-template>
 
