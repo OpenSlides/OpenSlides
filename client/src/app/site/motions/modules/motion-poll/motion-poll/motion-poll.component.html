@@ -46,7 +46,7 @@
 </div>
 
 <ng-template #votingResult>
-    <div [routerLink]="pollLink">
+    <div [routerLink]="pollLink" class="poll-link-wrapper">
         <ng-container
             [ngTemplateOutlet]="poll.hasVotes && poll.stateHasVotes ? viewTemplate : emptyTemplate"
         ></ng-container>
@@ -58,7 +58,8 @@
         <!-- empty helper div to center the grid wrapper -->
         <div></div>
         <div class="doughnut-chart">
-            <os-charts *ngIf="showChart" [type]="'doughnut'" [data]="chartDataSubject" [showLegend]="false"> </os-charts>
+            <os-charts *ngIf="showChart" [type]="'doughnut'" [data]="chartDataSubject" [showLegend]="false">
+            </os-charts>
         </div>
         <div class="vote-legend">
             <div class="votes-yes" *ngIf="isVoteDocumented(voteYes)">

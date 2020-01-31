@@ -1,12 +1,14 @@
 @import '~assets/styles/poll-colors.scss';
 
+.poll-link-wrapper {
+    outline: none;
+}
+
 .poll-preview-wrapper {
     padding: 8px;
-    background: white;
     border: 1px solid rgba(0, 0, 0, 0.12);
 
     .poll-title {
-        color: black;
         text-decoration: none;
         font-weight: 500;
     }

@@ -121,6 +121,7 @@ import { MotionPollDialogComponent } from 'app/site/motions/modules/motion-poll/
 import { AssignmentPollDialogComponent } from 'app/site/assignments/components/assignment-poll-dialog/assignment-poll-dialog.component';
 import { ParsePollNumberPipe } from './pipes/parse-poll-number.pipe';
 import { ReversePipe } from './pipes/reverse.pipe';
+import { PollKeyVerbosePipe } from './pipes/poll-key-verbose.pipe';
 
 /**
  * Share Module for all "dumb" components and pipes.
@@ -283,7 +284,8 @@ import { ReversePipe } from './pipes/reverse.pipe';
         MotionPollDialogComponent,
         AssignmentPollDialogComponent,
         ParsePollNumberPipe,
-        ReversePipe
+        ReversePipe,
+        PollKeyVerbosePipe
     ],
     declarations: [
         PermsDirective,
@@ -339,7 +341,8 @@ import { ReversePipe } from './pipes/reverse.pipe';
         MotionPollDialogComponent,
         AssignmentPollDialogComponent,
         ParsePollNumberPipe,
-        ReversePipe
+        ReversePipe,
+        PollKeyVerbosePipe
     ],
     providers: [
         {
@@ -357,7 +360,8 @@ import { ReversePipe } from './pipes/reverse.pipe';
         TrustPipe,
         LocalizedDatePipe,
         ParsePollNumberPipe,
-        ReversePipe
+        ReversePipe,
+        PollKeyVerbosePipe
     ],
     entryComponents: [
         SortBottomSheetComponent,
