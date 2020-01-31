@@ -70,9 +70,7 @@
         <!-- closed polls -->
         <ng-container *ngIf="assignment">
             <ng-container *ngFor="let poll of assignment.polls | reverse; trackBy: trackByIndex">
-                <mat-card class="os-card">
-                    <os-assignment-poll [poll]="poll"> </os-assignment-poll>
-                </mat-card>
+                <os-assignment-poll [poll]="poll"> </os-assignment-poll>
             </ng-container>
         </ng-container>
     </div>
@@ -143,12 +141,12 @@
                         [input]="assignment.assignment_related_users"
                         [live]="true"
                         [count]="assignment.number_poll_candidates"
-                        [enable]="hasPerms('addOthers')"
+                        [enable]="hasPerms('manage')"
                         (sortEvent)="onSortingChange($event)"
                     >
                         <!-- implicit item references into the component using ng-template slot -->
                         <ng-template let-item>
-                            <span *ngIf="hasPerms('addOthers')">
+                            <span *ngIf="hasPerms('manage')">
                                 <button
                                     mat-icon-button
                                     matTooltip="{{ 'Remove candidate' | translate }}"
@@ -170,7 +168,6 @@
                         >
                             <mat-form-field>
                                 <os-search-value-selector
-                                    class="search-bar"
                                     formControlName="userId"
                                     [multiple]="false"
                                     placeholder="{{ 'Select a new candidate' | translate }}"

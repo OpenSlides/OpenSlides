@@ -1,45 +1,49 @@
-<div class="assignment-poll-wrapper" *ngIf="poll">
-
-    <div class="">
-
-    </div>
-
-
-    <div class="poll-menu">
-        <!-- Buttons -->
-        <button
-            mat-icon-button
-            *osPerms="'assignments.can_manage'; &quot;core.can_manage_projector&quot;"
-            [matMenuTriggerFor]="pollItemMenu"
-            (click)="$event.stopPropagation()"
-        >
-            <mat-icon>more_horiz</mat-icon>
-        </button>
-    </div>
-
-    <div>
-        <div>
-            <h3>
+<mat-card class="os-card" *ngIf="poll">
+    <div class="assignment-poll-wrapper">
+        <div class="assignment-poll-title-header">
+            <mat-card-title>
                 <a routerLink="/assignments/polls/{{ poll.id }}">
                     {{ poll.title }}
                 </a>
-            </h3>
+            </mat-card-title>
             <div class="poll-properties">
                 <mat-chip
+                    *osPerms="'assignments.can_manage'"
                     class="poll-state active"
+                    [disableRipple]="true"
                     [matMenuTriggerFor]="triggerMenu"
                     [ngClass]="poll.stateVerbose.toLowerCase()"
                 >
-                    {{ poll.stateVerbose }}
+                    {{ poll.stateVerbose | translate }}
+                </mat-chip>
+                <mat-chip
+                    *ngIf="!canManage && poll.isPublished"
+                    [disableRipple]="true"
+                    class="poll-state active"
+                    [ngClass]="poll.stateVerbose.toLowerCase()"
+                >
+                    {{ poll.stateVerbose | translate }}
                 </mat-chip>
             </div>
+            <div class="poll-menu">
+                <!-- Buttons -->
+                <button
+                    mat-icon-button
+                    *osPerms="'assignments.can_manage'; &quot;core.can_manage_projector&quot;"
+                    [matMenuTriggerFor]="pollItemMenu"
+                    (click)="$event.stopPropagation()"
+                >
+                    <mat-icon>more_horiz</mat-icon>
+                </button>
+            </div>
         </div>
-        <div *ngIf="poll.stateHasVotes">
+
+        <div *ngIf="hasVotes">
             <os-charts [type]="chartType" [labels]="candidatesLabels" [data]="chartDataSubject"></os-charts>
         </div>
+        <os-assignment-poll-vote *ngIf="poll.canBeVotedFor" [poll]="poll"></os-assignment-poll-vote>
     </div>
-    <os-assignment-poll-vote *ngIf="poll.canBeVotedFor" [poll]="poll"></os-assignment-poll-vote>
-</div>
+</mat-card>
 
 <mat-menu #triggerMenu="matMenu">
     <ng-container *ngIf="poll">
