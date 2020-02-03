@@ -5,15 +5,21 @@ Exception ActionException(message: string);
 
 /**
  * Executes multiple actions in the conext of the user given by the user_id.
- * All actions are successful if no exception is thrown, else no action was
- * processed.
+ * All actions are processed independently.
+ *
+ * TODO: Check if we need an interface or flag to process actions all together.
  *
  *
  * @throws ActionException
  */
-handle_request (payload: Action[], user_id: number): void
+handle_request (payload: Action[], user_id: number): ActionResult[]
 
 interface Action {
     action: string;
-    data: object[];
+    data: object[]; # An array of action specific data. See JSON schema defintions.
+}
+
+interface ActionResult {
+    success: boolean;
+    message: string;
 }
