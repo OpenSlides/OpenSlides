@@ -42,7 +42,7 @@
     </div>
 
     <!-- Publish immediately button. Only show for new polls -->
-    <div *ngIf="!pollData.state">
+    <div *ngIf="!pollData.isStatePublished">
         <mat-checkbox [(ngModel)]="publishImmediately" (change)="publishStateChanged($event.checked)">
             <span translate>Publish immediately</span>
         </mat-checkbox>

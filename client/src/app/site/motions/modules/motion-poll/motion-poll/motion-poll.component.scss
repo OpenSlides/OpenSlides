@@ -51,15 +51,20 @@
     .poll-chart-wrapper {
         cursor: pointer;
         display: grid;
+        grid-gap: 10px;
+        grid-template-areas: 'placeholder chart legend';
         grid-template-columns: auto minmax(50px, 20%) auto;
 
         .doughnut-chart {
+            grid-area: chart;
             margin-top: auto;
             margin-bottom: auto;
         }
 
         .vote-legend {
-            margin: auto 10px;
+            grid-area: legend;
+            margin-top: auto;
+            margin-bottom: auto;
 
             div + div {
                 margin-top: 10px;

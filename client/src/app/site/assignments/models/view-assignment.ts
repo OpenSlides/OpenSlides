@@ -27,7 +27,7 @@ export const AssignmentPhases: { name: string; value: number; display_name: stri
     {
         name: 'PHASE_VOTING',
         value: 1,
-        display_name: 'Voting'
+        display_name: 'In the election process'
     },
     {
         name: 'PHASE_FINISHED',
