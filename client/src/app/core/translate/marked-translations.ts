@@ -172,6 +172,7 @@ _('Number of all delegates');
 _('Number of all participants');
 _('Use the following custom number');
 _('Custom number of ballot papers');
+_('Voting');
 // subgroup PDF export
 _('PDF export');
 _('Title for PDF documents of motions');
@@ -278,8 +279,8 @@ _('Next states');
 
 // other translations
 _('Searching for candidates');
-_('Voting');
 _('Finished');
+_('In the election process');
 
 // ** Users **
 // permission strings (see models.py of each Django app)

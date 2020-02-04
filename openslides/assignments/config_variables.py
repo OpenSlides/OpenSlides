@@ -1,3 +1,5 @@
+from django.core.validators import MinValueValidator
+
 from openslides.assignments.models import AssignmentPoll
 from openslides.core.config import ConfigVariable
 
@@ -19,8 +21,8 @@ def get_config_variables():
             for base in AssignmentPoll.PERCENT_BASES
         ),
         weight=400,
-        group="Voting",
-        subgroup="Elections",
+        group="Elections",
+        subgroup="Voting",
     )
 
     yield ConfigVariable(
@@ -35,18 +37,8 @@ def get_config_variables():
         help_text="Default method to check whether a candidate has reached the required majority.",
         weight=405,
         hidden=True,
-        group="Voting",
-        subgroup="Elections",
-    )
-
-    yield ConfigVariable(
-        name="assignment_poll_add_candidates_to_list_of_speakers",
-        default_value=True,
-        input_type="boolean",
-        label="Put all candidates on the list of speakers",
-        weight=410,
-        group="Voting",
-        subgroup="Elections",
+        group="Elections",
+        subgroup="Voting",
     )
 
     yield ConfigVariable(
@@ -54,9 +46,52 @@ def get_config_variables():
         default_value=[],
         input_type="groups",
         label="Default groups for named and pseudoanonymous assignment polls",
+        weight=410,
+        group="Elections",
+        subgroup="Voting",
+    )
+
+    yield ConfigVariable(
+        name="assignment_poll_add_candidates_to_list_of_speakers",
+        default_value=True,
+        input_type="boolean",
+        label="Put all candidates on the list of speakers",
         weight=415,
-        group="Voting",
-        subgroup="Elections",
+        group="Elections",
+        subgroup="Voting",
+    )
+
+    # Ballot Paper
+    yield ConfigVariable(
+        name="assignments_pdf_ballot_papers_selection",
+        default_value="CUSTOM_NUMBER",
+        input_type="choice",
+        label="Number of ballot papers (selection)",
+        choices=(
+            {"value": "NUMBER_OF_DELEGATES", "display_name": "Number of all delegates"},
+            {
+                "value": "NUMBER_OF_ALL_PARTICIPANTS",
+                "display_name": "Number of all participants",
+            },
+            {
+                "value": "CUSTOM_NUMBER",
+                "display_name": "Use the following custom number",
+            },
+        ),
+        weight=430,
+        group="Elections",
+        subgroup="Ballot papers",
+    )
+
+    yield ConfigVariable(
+        name="assignments_pdf_ballot_papers_number",
+        default_value=8,
+        input_type="integer",
+        label="Custom number of ballot papers",
+        weight=435,
+        group="Elections",
+        subgroup="Ballot papers",
+        validators=(MinValueValidator(1),),
     )
 
     # PDF

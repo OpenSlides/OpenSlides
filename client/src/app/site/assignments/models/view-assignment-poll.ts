@@ -86,6 +86,10 @@ export class ViewAssignmentPoll extends ViewBasePoll<AssignmentPoll> implements 
 
         return data;
     }
+
+    public getPercentBase(): number {
+        return 0;
+    }
 }
 
 export interface ViewAssignmentPoll extends AssignmentPoll {

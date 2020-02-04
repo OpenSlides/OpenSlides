@@ -40,7 +40,11 @@ export class PollProgressComponent extends BaseViewComponent implements OnInit {
     public ngOnInit(): void {
         this.userRepo
             .getViewModelListObservable()
-            .pipe(map(users => users.filter(user => this.poll.groups_id.intersect(user.groups_id).length)))
+            .pipe(
+                map(users =>
+                    users.filter(user => user.is_present && this.poll.groups_id.intersect(user.groups_id).length)
+                )
+            )
             .subscribe(users => {
                 this.max = users.length;
             });

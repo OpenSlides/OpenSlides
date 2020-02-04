@@ -1,4 +1,4 @@
-.poll-preview--title {
+.poll-preview-title {
     margin: 0;
 }
 
@@ -14,13 +14,13 @@
         span {
             display: block;
         }
-        &--label {
+        &-label {
             font-size: 75%;
         }
     }
 }
 
-.poll-preview--meta-info-form {
+.poll-preview-meta-info-form {
     display: flex;
     align-items: center;
     flex-wrap: wrap;

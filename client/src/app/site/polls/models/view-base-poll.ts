@@ -21,8 +21,11 @@ export interface PollData {
     value?: number;
     yes?: number;
     no?: number;
-    abstain: number;
+    abstain?: number;
     user?: string;
+    canHide?: boolean;
+    icon?: string;
+    showPercent?: boolean;
 }
 
 export const PollClassTypeVerbose = {
@@ -40,7 +43,7 @@ export const PollStateVerbose = {
 export const PollStateChangeActionVerbose = {
     1: 'Reset',
     2: 'Start voting',
-    3: 'End voting',
+    3: 'Stop voting',
     4: 'Publish'
 };
 
@@ -51,7 +54,7 @@ export const PollTypeVerbose = {
 };
 
 export const PollPropertyVerbose = {
-    majority_method: 'Majority method',
+    majority_method: 'Required majority',
     onehundred_percent_base: '100% base',
     type: 'Poll type',
     pollmethod: 'Poll method',
@@ -69,10 +72,12 @@ export const MajorityMethodVerbose = {
     disabled: 'Disabled'
 };
 
+/**
+ * TODO: These need to be in order
+ */
 export const PercentBaseVerbose = {
     YN: 'Yes/No',
     YNA: 'Yes/No/Abstain',
-    votes: 'All votes',
     valid: 'Valid votes',
     cast: 'Total votes cast',
     disabled: 'Disabled'
@@ -145,6 +150,8 @@ export abstract class ViewBasePoll<M extends BasePoll<M, any> = any> extends Bas
     public abstract generateChartData(): ChartData;
 
     public abstract generateTableData(): PollData[];
+
+    public abstract getPercentBase(): number;
 }
 
 export interface ViewBasePoll<M extends BasePoll<M, any> = any> extends BasePoll<M, any> {

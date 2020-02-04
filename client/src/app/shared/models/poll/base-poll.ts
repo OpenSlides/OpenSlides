@@ -27,7 +27,6 @@ export enum PercentBase {
     YN = 'YN',
     YNA = 'YNA',
     Valid = 'valid',
-    Votes = 'votes',
     Cast = 'cast',
     Disabled = 'disabled'
 }
@@ -66,6 +65,10 @@ export abstract class BasePoll<T = any, O extends BaseOption<any> = any> extends
 
     public get isStatePublished(): boolean {
         return this.state === PollState.Published;
+    }
+
+    public get isPercentBaseValidOrCast(): boolean {
+        return this.onehundred_percent_base === PercentBase.Valid || this.onehundred_percent_base === PercentBase.Cast;
     }
 
     /**
