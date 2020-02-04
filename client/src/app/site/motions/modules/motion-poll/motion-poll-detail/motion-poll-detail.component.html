@@ -43,34 +43,51 @@
                             <th translate>Votes</th>
                         </tr>
                         <tr *ngFor="let row of poll.tableData">
-                            <td>{{ row.key | pollKeyVerbose | translate }}</td>
-                            <td class="result-cell-definition">{{ row.value }}</td>
+                            <td>
+                                <os-icon-container *ngIf="row.icon" [icon]="row.icon">
+                                    {{ row.key | pollKeyVerbose | translate }}
+                                </os-icon-container>
+                                <span *ngIf="!row.icon">
+                                    {{ row.key | pollKeyVerbose | translate }}
+                                </span>
+                            </td>
+                            <td class="result-cell-definition">
+                                {{ row.value | parsePollNumber }}
+                                <span *ngIf="row.showPercent">
+                                    {{ row.value | pollPercentBase: poll }}
+                                </span>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
 
                 <!-- Named table: only show if votes are present -->
-                <div class="named-result-table" *ngIf="poll.type === 'named' && votesDataSource.data">
+                <div class="named-result-table" *ngIf="poll.type === 'named'">
                     <h3>{{ 'Single votes' | translate }}</h3>
-                    <mat-form-field>
-                        <input matInput [(ngModel)]="votesDataSource.filter" placeholder="Filter" />
-                    </mat-form-field>
-                    <mat-table [dataSource]="votesDataSource">
-                        <ng-container matColumnDef="key" sticky>
-                            <mat-header-cell *matHeaderCellDef>{{ 'User' | translate }}</mat-header-cell>
-                            <mat-cell *matCellDef="let vote">
-                                <div *ngIf="vote.user">{{ vote.user.getFullName() }}</div>
-                                <div *ngIf="!vote.user">{{ 'Unknown user' | translate }}</div>
-                            </mat-cell>
-                        </ng-container>
-                        <ng-container matColumnDef="value" sticky>
-                            <mat-header-cell *matHeaderCellDef>{{ 'Vote' | translate }}</mat-header-cell>
-                            <mat-cell *matCellDef="let vote">{{ vote.valueVerbose }}</mat-cell>
-                        </ng-container>
+                    <div *ngIf="votesDataSource.data">
+                        <mat-form-field>
+                            <input matInput [(ngModel)]="votesDataSource.filter" placeholder="Filter" />
+                        </mat-form-field>
+                        <mat-table [dataSource]="votesDataSource">
+                            <ng-container matColumnDef="key" sticky>
+                                <mat-header-cell *matHeaderCellDef>{{ 'Participant' | translate }}</mat-header-cell>
+                                <mat-cell *matCellDef="let vote">
+                                    <div *ngIf="vote.user">{{ vote.user.getFullName() }}</div>
+                                    <div *ngIf="!vote.user">{{ 'Anonymous' | translate }}</div>
+                                </mat-cell>
+                            </ng-container>
+                            <ng-container matColumnDef="value" sticky>
+                                <mat-header-cell *matHeaderCellDef>{{ 'Vote' | translate }}</mat-header-cell>
+                                <mat-cell *matCellDef="let vote">{{ vote.valueVerbose }}</mat-cell>
+                            </ng-container>
 
-                        <mat-header-row *matHeaderRowDef="columnDefinition"></mat-header-row>
-                        <mat-row *matRowDef="let vote; columns: columnDefinition"></mat-row>
-                    </mat-table>
+                            <mat-header-row *matHeaderRowDef="columnDefinition"></mat-header-row>
+                            <mat-row *matRowDef="let vote; columns: columnDefinition"></mat-row>
+                        </mat-table>
+                    </div>
+                    <div *ngIf="!votesDataSource.data">
+                        {{ 'The individual votes were made anonymous.' | translate }}
+                    </div>
                 </div>
             </div>
         </div>

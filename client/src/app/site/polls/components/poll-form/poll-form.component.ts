@@ -114,9 +114,10 @@ export class PollFormComponent extends BaseViewComponent implements OnInit {
                     this.data.groups_id = this.configService.instant('motion_poll_default_groups');
                 }
             }
+
             Object.keys(this.contentForm.controls).forEach(key => {
                 if (this.data[key]) {
-                    this.contentForm.get(key).setValue(this.data[key]);
+                    this.contentForm.get(key).patchValue(this.data[key]);
                 }
             });
         }
@@ -132,9 +133,9 @@ export class PollFormComponent extends BaseViewComponent implements OnInit {
         this.contentForm.get('pollmethod').valueChanges.subscribe(method => {
             let forbiddenBases: string[];
             if (method === 'YN') {
-                forbiddenBases = [PercentBase.YNA, PercentBase.Votes];
+                forbiddenBases = [PercentBase.YNA, PercentBase.Cast];
             } else if (method === 'YNA') {
-                forbiddenBases = [PercentBase.Votes];
+                forbiddenBases = [PercentBase.Cast];
             } else if (method === 'votes') {
                 forbiddenBases = [PercentBase.YN, PercentBase.YNA];
             }
