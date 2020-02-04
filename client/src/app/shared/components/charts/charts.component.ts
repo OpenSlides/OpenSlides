@@ -199,7 +199,7 @@ export class ChartsComponent extends BaseViewComponent {
             labels: {}
         },
         scales: {
-            xAxes: [{ ticks: { beginAtZero: true } }],
+            xAxes: [{ ticks: { beginAtZero: true, stepSize: 1 } }],
             yAxes: [{ ticks: { beginAtZero: true } }]
         },
         plugins: {
@@ -291,9 +291,6 @@ export class ChartsComponent extends BaseViewComponent {
             this.setupBar();
             type = 'horizontalBar';
         }
-        // if (type === 'bar' || type === 'horizontalBar') {
-        //     this.setupBar();
-        // }
         this._type = type;
     }
 }
