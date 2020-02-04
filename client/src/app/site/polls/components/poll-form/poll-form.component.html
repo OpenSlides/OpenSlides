@@ -1,23 +1,25 @@
 <div class="os-form-card-mobile">
+    <!-- Poll Title -->
     <form [formGroup]="contentForm">
         <mat-form-field>
-            <h2 class="poll-preview--title">
+            <h2 class="poll-preview-title">
                 <input matInput required formControlName="title" [placeholder]="'Title' | translate" />
             </h2>
         </mat-form-field>
     </form>
     <div *ngIf="data && data.state > 1" class="poll-preview-meta-info">
         <span class="short-description" *ngFor="let value of pollValues">
-            <span class="short-description--label subtitle" translate>
+            <span class="short-description-label subtitle" translate>
                 {{ value[0] }}
             </span>
-            <span class="short-description--value" translate>
+            <span class="short-description-value" translate>
                 {{ value[1] }}
             </span>
         </span>
     </div>
-    <form [formGroup]="contentForm" class="poll-preview--meta-info-form">
+    <form [formGroup]="contentForm" class="poll-preview-meta-info-form">
         <ng-container *ngIf="!data || !data.state || data.isStateCreated">
+            <!-- Poll Type -->
             <mat-form-field *ngIf="pollService.isElectronicVotingEnabled">
                 <mat-select [placeholder]="PollPropertyVerbose.type | translate" formControlName="type" required>
                     <mat-option *ngFor="let option of pollTypes | keyvalue" [value]="option.key">
@@ -26,7 +28,9 @@
                 </mat-select>
                 <mat-error translate>This field is required</mat-error>
             </mat-form-field>
-            <mat-form-field *ngIf="contentForm.get('type').value && contentForm.get('type').value != 'analog'">
+
+            <!-- Groups entitled to Vote -->
+            <mat-form-field *ngIf="contentForm.get('type').value && contentForm.get('type').value !== 'analog'">
                 <os-search-value-selector
                     formControlName="groups_id"
                     [multiple]="true"
@@ -36,8 +40,14 @@
                     [inputListValues]="groupObservable"
                 ></os-search-value-selector>
             </mat-form-field>
+
+            <!-- Poll Methods -->
             <mat-form-field *ngIf="pollMethods">
-                <mat-select [placeholder]="PollPropertyVerbose.pollmethod | translate" formControlName="pollmethod" required>
+                <mat-select
+                    [placeholder]="PollPropertyVerbose.pollmethod | translate"
+                    formControlName="pollmethod"
+                    required
+                >
                     <mat-option *ngFor="let option of pollMethods | keyvalue" [value]="option.key">
                         {{ option.value }}
                     </mat-option>
@@ -46,29 +56,37 @@
             </mat-form-field>
         </ng-container>
 
+        <!-- 100 Percent Base -->
         <mat-form-field>
-            <mat-select placeholder="{{ PollPropertyVerbose.onehundred_percent_base | translate }}" formControlName="onehundred_percent_base" required>
+            <mat-select
+                placeholder="{{ PollPropertyVerbose.onehundred_percent_base | translate }}"
+                formControlName="onehundred_percent_base"
+                required
+            >
                 <ng-container *ngFor="let option of percentBases | keyvalue">
                     <mat-option [value]="option.key">{{ option.value | translate }}</mat-option>
                 </ng-container>
             </mat-select>
         </mat-form-field>
-        <mat-form-field>
-            <mat-select placeholder="{{ PollPropertyVerbose.majority_method | translate }}" formControlName="majority_method" required>
-                <mat-option *ngFor="let option of majorityMethods | keyvalue" [value]="option.key">
-                    {{ option.value | translate }}
-                </mat-option>
-            </mat-select>
-        </mat-form-field>
 
-        <ng-container *ngIf="!data || !data.state || data.state === 1">
-            <ng-container *ngIf="contentForm.get('pollmethod').value === 'votes'">
-                <mat-form-field>
-                    <input type="number" matInput placeholder="{{ PollPropertyVerbose.votes_amount | translate }}" formControlName="votes_amount" min="1" required>
-                </mat-form-field>
-                <mat-checkbox formControlName="global_no">{{ PollPropertyVerbose.global_no | translate }}</mat-checkbox>
-                <mat-checkbox formControlName="global_abstain">{{ PollPropertyVerbose.global_abstain | translate }}</mat-checkbox>
-            </ng-container>
+        <!-- Amount of Votes -->
+        <ng-container
+            *ngIf="contentForm.get('pollmethod').value === 'votes' && (!data || !data.state || data.isStateCreated)"
+        >
+            <mat-form-field>
+                <input
+                    type="number"
+                    matInput
+                    placeholder="{{ PollPropertyVerbose.votes_amount | translate }}"
+                    formControlName="votes_amount"
+                    min="1"
+                    required
+                />
+            </mat-form-field>
+            <mat-checkbox formControlName="global_no">{{ PollPropertyVerbose.global_no | translate }}</mat-checkbox>
+            <mat-checkbox formControlName="global_abstain">{{
+                PollPropertyVerbose.global_abstain | translate
+            }}</mat-checkbox>
         </ng-container>
     </form>
 </div>

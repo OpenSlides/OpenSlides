@@ -74,9 +74,9 @@ export class VotingBannerService {
     private getTextForPoll(poll: ViewBasePoll): string {
         return poll instanceof ViewMotionPoll
             ? `${this.translate.instant('Motion') + ' ' + poll.motion.getIdentifierOrTitle()}: ${this.translate.instant(
-                  'Voting started'
-              )}!`
-            : `${poll.getTitle()}: ${this.translate.instant('Ballots opened')}!`;
+                  'Voting is open'
+              )}`
+            : `${poll.getTitle()}: ${this.translate.instant('Ballot is open')}`;
     }
 
     /**

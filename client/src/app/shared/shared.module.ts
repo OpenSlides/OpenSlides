@@ -122,6 +122,7 @@ import { AssignmentPollDialogComponent } from 'app/site/assignments/components/a
 import { ParsePollNumberPipe } from './pipes/parse-poll-number.pipe';
 import { ReversePipe } from './pipes/reverse.pipe';
 import { PollKeyVerbosePipe } from './pipes/poll-key-verbose.pipe';
+import { PollPercentBasePipe } from './pipes/poll-percent-base.pipe';
 
 /**
  * Share Module for all "dumb" components and pipes.
@@ -285,7 +286,8 @@ import { PollKeyVerbosePipe } from './pipes/poll-key-verbose.pipe';
         AssignmentPollDialogComponent,
         ParsePollNumberPipe,
         ReversePipe,
-        PollKeyVerbosePipe
+        PollKeyVerbosePipe,
+        PollPercentBasePipe
     ],
     declarations: [
         PermsDirective,
@@ -342,7 +344,8 @@ import { PollKeyVerbosePipe } from './pipes/poll-key-verbose.pipe';
         AssignmentPollDialogComponent,
         ParsePollNumberPipe,
         ReversePipe,
-        PollKeyVerbosePipe
+        PollKeyVerbosePipe,
+        PollPercentBasePipe
     ],
     providers: [
         {
@@ -361,7 +364,8 @@ import { PollKeyVerbosePipe } from './pipes/poll-key-verbose.pipe';
         LocalizedDatePipe,
         ParsePollNumberPipe,
         ReversePipe,
-        PollKeyVerbosePipe
+        PollKeyVerbosePipe,
+        PollPercentBasePipe
     ],
     entryComponents: [
         SortBottomSheetComponent,
