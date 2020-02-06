@@ -1,0 +1,19 @@
+# Presenter Service Interface
+
+Exception PresenterException(message: string);
+
+
+/**
+ * Presents some (restricted) data without autoupdate.
+ *
+ * @throws PresenterException
+ */
+handle_request (payload: Presenter[]): PresenterResult[]
+
+interface Presenter {
+    user_id: number;
+    presentation: TODO;
+}
+
+/* TODO */
+interface PresenterResult {}
