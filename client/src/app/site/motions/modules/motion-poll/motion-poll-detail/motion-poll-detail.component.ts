@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { TranslateService } from '@ngx-translate/core';
+import { PblColumnDefinition } from '@pebula/ngrid';
 
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { MotionPollRepositoryService } from 'app/core/repositories/motions/motion-poll-repository.service';
@@ -18,11 +19,24 @@ import { BasePollDetailComponent } from 'app/site/polls/components/base-poll-det
 @Component({
     selector: 'os-motion-poll-detail',
     templateUrl: './motion-poll-detail.component.html',
-    styleUrls: ['./motion-poll-detail.component.scss']
+    styleUrls: ['./motion-poll-detail.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class MotionPollDetailComponent extends BasePollDetailComponent<ViewMotionPoll> implements OnInit {
     public motion: ViewMotion;
-    public columnDefinition = ['key', 'value'];
+    public columnDefinition: PblColumnDefinition[] = [
+        {
+            prop: 'user',
+            width: 'auto',
+            label: 'Participant'
+        },
+        {
+            prop: 'vote',
+            width: 'auto',
+            label: 'Vote'
+        }
+    ];
+    public filterProps = ['user.getFullName', 'valueVerbose'];
 
     public set chartType(type: ChartType) {
         this._chartType = type;

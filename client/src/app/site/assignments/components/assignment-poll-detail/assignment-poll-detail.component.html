@@ -68,40 +68,58 @@
                     [hasPadding]="false"
                     [legendPosition]="isVotedPoll ? 'right' : 'top'"
                 ></os-charts>
-
-                <!-- Named Result -->
-                <div class="named-result-table" *ngIf="poll.type === 'named' && votesDataSource.data">
-                    <h3>{{ 'Single votes' | translate }}</h3>
-                    <mat-form-field>
-                        <input matInput [(ngModel)]="votesDataSource.filter" placeholder="Filter" />
-                    </mat-form-field>
-                    <mat-table [dataSource]="votesDataSource">
-                        <ng-container matColumnDef="users" sticky>
-                            <mat-header-cell *matHeaderCellDef>{{ 'User' | translate }}</mat-header-cell>
-                            <mat-cell *matCellDef="let row">
-                                <div *ngIf="row.user">{{ row.user.getFullName() }}</div>
-                                <div *ngIf="!row.user">{{ 'Unknown user' | translate }}</div>
-                            </mat-cell>
-                        </ng-container>
-                        <ng-container
-                            [matColumnDef]="'votes-' + option.user_id"
-                            *ngFor="let option of poll.options"
-                            sticky
-                        >
-                            <mat-header-cell *matHeaderCellDef>
-                                <div *ngIf="option.user">{{ option.user.getFullName() }}</div>
-                                <div *ngIf="!option.user">{{ 'Unknown user' | translate }}</div>
-                            </mat-header-cell>
-                            <mat-cell *matCellDef="let row">
-                                {{ row.votes[option.user_id] }}
-                            </mat-cell>
-                        </ng-container>
-
-                        <mat-header-row *matHeaderRowDef="columnDefinitionPerName"></mat-header-row>
-                        <mat-row *matRowDef="let row; columns: columnDefinitionPerName"></mat-row>
-                    </mat-table>
-                </div>
             </div>
+
+            <!-- Single Votes Table -->
+            <ng-container class="named-result-table" *ngIf="poll.type === 'named'">
+                <h3>{{ 'Single votes' | translate }}</h3>
+                <os-list-view-table
+                    *ngIf="votesDataObservable"
+                    [listObservable]="votesDataObservable"
+                    [columns]="columnDefinitionSingleVotes"
+                    [filterProps]="filterProps"
+                    [allowProjector]="false"
+                    [fullScreen]="false"
+                    [vScrollFixed]="isVotedPoll ? -1 : 60"
+                    listStorageKey="assignment-poll-vote"
+                    [cssClasses]="{ 'single-votes-table': true }"
+                >
+                    <!-- Header -->
+                    <div *pblNgridHeaderCellDef="'user'; col as col">
+                        {{ col.label | translate }}
+                    </div>
+                    <div *pblNgridHeaderCellDef="'*'; col as col">
+                        {{ col.label | translate }}
+                    </div>
+
+                    <!-- Content -->
+                    <div *pblNgridCellDef="'user'; row as vote">
+                        <b *ngIf="vote.user">{{ vote.user.getFullName() }}</b>
+                        <b *ngIf="!vote.user">{{ 'Anonymous' | translate }}</b>
+                    </div>
+                    <!-- Y/N/(A) -->
+                    <ng-container *ngIf="poll.pollmethod !== AssignmentPollMethods.Votes">
+                        <ng-container *ngFor="let option of poll.options">
+                            <div
+                                *pblNgridCellDef="'votes-' + option.user_id; row as vote"
+                                [ngClass]="voteOptionStyle[vote.votes[option.user_id].value].css"
+                                class="vote-field"
+                            >
+                                <mat-icon> {{ voteOptionStyle[vote.votes[option.user_id].value].icon }}</mat-icon> {{ vote.votes[option.user_id].valueVerbose | translate }}
+                            </div>
+                        </ng-container>
+                    </ng-container>
+                    <!-- Votes method -->
+                    <ng-container *ngIf="poll.pollmethod === AssignmentPollMethods.Votes">
+                        <div *pblNgridCellDef="'votes'; row as vote">
+                            <div *ngFor="let candidate of vote.votes">{{ candidate }}</div>
+                        </div>
+                    </ng-container>
+                </os-list-view-table>
+                <div *ngIf="!votesDataObservable">
+                    {{ 'The individual votes were anonymized.' | translate }}
+                </div>
+            </ng-container>
         </div>
 
         <!-- Meta Infos -->

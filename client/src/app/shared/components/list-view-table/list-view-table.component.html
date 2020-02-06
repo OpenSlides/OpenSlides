@@ -14,8 +14,9 @@
     <!-- vScrollAuto () -->
     <pbl-ngrid
         [ngClass]="cssClasses"
-        [vScrollFixed]="vScrollFixed"
-        [showHeader]="!showFilterBar"
+        [attr.vScrollFixed]="vScrollFixed !== -1 ? vScrollFixed : false"
+        [attr.vScrollAuto]="vScrollFixed === -1"
+        [showHeader]="!showFilterBar || !fullScreen"
         matCheckboxSelection="selection"
         [dataSource]="dataSource"
         [columns]="columnSet"

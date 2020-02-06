@@ -158,6 +158,10 @@
         background-color: rgba(0, 0, 0, 0.025);
     }
 
+    .pbl-ngrid-header-row, .pbl-ngrid-row {
+        align-items: stretch;
+    }
+
     .mat-progress-bar-buffer {
         background-color: mat-color($background, card) !important;
     }
