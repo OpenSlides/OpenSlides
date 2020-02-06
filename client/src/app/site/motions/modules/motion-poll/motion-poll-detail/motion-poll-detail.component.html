@@ -63,30 +63,38 @@
                 <!-- Named table: only show if votes are present -->
                 <div class="named-result-table" *ngIf="poll.type === 'named'">
                     <h3>{{ 'Single votes' | translate }}</h3>
-                    <div *ngIf="votesDataSource.data">
-                        <mat-form-field>
-                            <input matInput [(ngModel)]="votesDataSource.filter" placeholder="Filter" />
-                        </mat-form-field>
-                        <mat-table [dataSource]="votesDataSource">
-                            <ng-container matColumnDef="key" sticky>
-                                <mat-header-cell *matHeaderCellDef>{{ 'Participant' | translate }}</mat-header-cell>
-                                <mat-cell *matCellDef="let vote">
-                                    <div *ngIf="vote.user">{{ vote.user.getFullName() }}</div>
-                                    <div *ngIf="!vote.user">{{ 'Anonymous' | translate }}</div>
-                                </mat-cell>
-                            </ng-container>
-                            <ng-container matColumnDef="value" sticky>
-                                <mat-header-cell *matHeaderCellDef>{{ 'Vote' | translate }}</mat-header-cell>
-                                <mat-cell *matCellDef="let vote">{{ vote.valueVerbose }}</mat-cell>
-                            </ng-container>
+                    <os-list-view-table
+                        [listObservable]="votesDataObservable"
+                        [columns]="columnDefinition"
+                        [filterProps]="filterProps"
+                        [allowProjector]="false"
+                        [fullScreen]="false"
+                        [vScrollFixed]="60"
+                        listStorageKey="motion-poll-vote"
+                        [cssClasses]="{ 'single-votes-table': true }"
+                    >
+                        <!-- Header -->
+                        <div *pblNgridHeaderCellDef="'*'; col as col">
+                            {{ col.label | translate }}
+                        </div>
 
-                            <mat-header-row *matHeaderRowDef="columnDefinition"></mat-header-row>
-                            <mat-row *matRowDef="let vote; columns: columnDefinition"></mat-row>
-                        </mat-table>
-                    </div>
-                    <div *ngIf="!votesDataSource.data">
-                        {{ 'The individual votes were made anonymous.' | translate }}
-                    </div>
+                        <!-- Content -->
+                        <div *pblNgridCellDef="'user'; row as vote">
+                            <div *ngIf="vote.user">{{ vote.user.getFullName() }}</div>
+                            <div *ngIf="!vote.user">{{ 'Anonymous' | translate }}</div>
+                        </div>
+                        <div *pblNgridCellDef="'vote'; row as vote" class="vote-cell">
+                            <div class="vote-cell-icon-container" [ngClass]="voteOptionStyle[vote.value].css">
+                                <mat-icon>{{ voteOptionStyle[vote.value].icon }}</mat-icon>
+                            </div>
+                            <div>{{ vote.valueVerbose | translate }}</div>
+                        </div>
+
+                        <!-- No Results -->
+                        <div *pblNgridNoDataRef class="pbl-ngrid-no-data">
+                            {{ 'The individual votes were made anonymous.' | translate }}
+                        </div>
+                    </os-list-view-table>
                 </div>
             </div>
         </div>

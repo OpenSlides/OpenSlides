@@ -1,4 +1,5 @@
 @import '~assets/styles/variables.scss';
+@import '~assets/styles/poll-colors.scss';
 
 .poll-content {
     padding-top: 20px;
@@ -56,4 +57,42 @@
         font-size: 14px;
         width: 100%;
     }
+
+    .vote-cell {
+        display: flex;
+        align-items: center;
+
+        .vote-cell-icon-container {
+            display: flex;
+            align-items: center;
+            margin-right: 7px;
+        }
+    }
+}
+
+.single-votes-table {
+    height: 500px;
+}
+
+.openslides-theme os-list-view-table os-sort-filter-bar .custom-table-header {
+    &,
+    .action-buttons .input-container input {
+        background: white;
+    }
+}
+
+.voted-yes {
+    color: $votes-yes-color;
+}
+
+.voted-no {
+    color: $votes-no-color;
+}
+
+.voted-abstain {
+    color: $votes-abstain-color;
+}
+
+.openslides-theme .pbl-ngrid-no-data {
+    top: 10%;
 }
