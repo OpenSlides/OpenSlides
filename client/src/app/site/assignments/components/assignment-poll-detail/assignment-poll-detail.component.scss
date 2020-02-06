@@ -1,4 +1,5 @@
 @import '~assets/styles/variables.scss';
+@import '~assets/styles/poll-colors.scss';
 
 .result-wrapper {
     display: grid;
@@ -37,4 +38,75 @@
 
 .poll-content {
     padding-top: 20px;
+}
+
+.chart-wrapper {
+    &.flex {
+        display: flex;
+
+        .mat-table {
+            flex: 2;
+            .mat-column-votes {
+                justify-content: center;
+            }
+        }
+        .chart-inner-wrapper {
+            flex: 3;
+        }
+    }
+}
+
+.single-votes-table {
+    height: 500px;
+}
+
+.openslides-theme .pbl-ngrid-row:hover {
+    background-color: #f9f9f9;
+}
+
+.openslides-theme os-list-view-table os-sort-filter-bar .custom-table-header {
+    &,
+    .action-buttons .input-container input {
+        background: white;
+    }
+}
+
+.voted-yes {
+    color: $votes-yes-color;
+}
+
+.voted-no {
+    color: $votes-no-color;
+}
+
+.voted-abstain {
+    color: $votes-abstain-color;
+}
+
+.openslides-theme .pbl-ngrid-no-data {
+    top: 10%;
+}
+
+.openslides-theme .pbl-ngrid-header-cell:first-child {
+    & {
+        overflow: visible;
+    }
+
+    &::after {
+        content: '';
+        display: block;
+        position: absolute;
+        top: 0;
+        right: -1px;
+        height: 100%;
+        border-right: 1px solid #e0e0e0;
+    }
+}
+
+.vote-field {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding-right: 12px;
 }

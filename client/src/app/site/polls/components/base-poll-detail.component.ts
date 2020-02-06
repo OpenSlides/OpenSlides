@@ -1,11 +1,11 @@
 import { OnInit } from '@angular/core';
-import { MatSnackBar, MatTableDataSource } from '@angular/material';
+import { MatSnackBar } from '@angular/material';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 
 import { TranslateService } from '@ngx-translate/core';
 import { Label } from 'ng2-charts';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, from, Observable } from 'rxjs';
 
 import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
 import { BasePollDialogService } from 'app/core/ui-services/base-poll-dialog.service';
@@ -35,6 +35,24 @@ export abstract class BasePollDetailComponent<V extends ViewBasePoll> extends Ba
     public groupObservable: Observable<ViewGroup[]> = null;
 
     /**
+     * Details for the iconification of the votes
+     */
+    public voteOptionStyle = {
+        Y: {
+            css: 'voted-yes',
+            icon: 'thumb_up'
+        },
+        N: {
+            css: 'voted-no',
+            icon: 'thumb_down'
+        },
+        A: {
+            css: 'voted-abstain',
+            icon: 'trip_origin'
+        }
+    };
+
+    /**
      * The reference to the poll.
      */
     public poll: V = null;
@@ -59,8 +77,8 @@ export abstract class BasePollDetailComponent<V extends ViewBasePoll> extends Ba
      */
     public chartDataSubject: BehaviorSubject<ChartData> = new BehaviorSubject(null);
 
-    // The datasource for the votes-per-user table
-    public votesDataSource: MatTableDataSource<BaseVoteData> = new MatTableDataSource();
+    // The observable for the votes-per-user table
+    public votesDataObservable: Observable<BaseVoteData[]>;
 
     /**
      * Constructor
@@ -88,7 +106,6 @@ export abstract class BasePollDetailComponent<V extends ViewBasePoll> extends Ba
         protected pollDialog: BasePollDialogService<V>
     ) {
         super(title, translate, matSnackbar);
-        this.votesDataSource.filterPredicate = this.dataSourceFilterPredicate;
     }
 
     /**
@@ -141,26 +158,14 @@ export abstract class BasePollDetailComponent<V extends ViewBasePoll> extends Ba
 
     protected abstract hasPerms(): boolean;
 
-    // custom filter for the data source: only search in usernames
-    protected dataSourceFilterPredicate(data: BaseVoteData, filter: string): boolean {
-        return (
-            data.user &&
-            data.user
-                .getFullName()
-                .trim()
-                .toLowerCase()
-                .indexOf(filter.trim().toLowerCase()) !== -1
-        );
-    }
-
     /**
      * sets the votes data only if the poll wasn't pseudoanonymized
      */
     protected setVotesData(data: BaseVoteData[]): void {
         if (data.every(voteDate => !voteDate.user)) {
-            this.votesDataSource.data = null;
+            this.votesDataObservable = null;
         } else {
-            this.votesDataSource.data = data;
+            this.votesDataObservable = from([data]);
         }
     }
 
