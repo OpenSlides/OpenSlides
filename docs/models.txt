@@ -15,6 +15,10 @@ values for `<some_variable>` that fits into the format of a field. E.g.
 `amendment_paragraph_3`. Note that it might be possible that no kind of
 this field exists in a model.
 
+Note to so called back references: These fields are read only. The actual
+relation is provided by the related field. See models definition in backend
+service.
+
 Interface projector {
     id: number;
     scale: number;
@@ -42,6 +46,7 @@ Interface projector {
     projectiondefault_ids: projectiondefault[];
     meeting_id: meeting;
 }
+
 Interface projection {
     id: number;
     projector_id: projector;
@@ -50,6 +55,7 @@ Interface projection {
     element: Fqid;
     options: JSON;
 }
+
 Interface projectiondefault {
     id: number;
     name: string;
@@ -58,6 +64,7 @@ Interface projectiondefault {
     projector_id: projector;
     meeting_id: meeting;
 }
+
 Interface tag {
     id: number;
     name: string;
@@ -65,6 +72,7 @@ Interface tag {
     tagged_ids: Fqid[];
     meeting_id: meeting;
 }
+
 Interface projector_message {
     id: number;
     message: HTML;
@@ -72,6 +80,7 @@ Interface projector_message {
     projection_id: projection[];
     meeting_id: meeting;
 }
+
 Interface projector_countdown {
     id: number;
     title: string;
@@ -83,6 +92,7 @@ Interface projector_countdown {
     projection_id: projection[];
     meeting_id: meeting;
 }
+
 Interface agenda_item {
     id: number;
     item_number: string;
@@ -101,6 +111,7 @@ Interface agenda_item {
     projection_id: projection[];
     meeting_id: meeting;
 }
+
 Interface list_of_speakers {
     closed: boolean;
 
@@ -109,6 +120,7 @@ Interface list_of_speakers {
     projection_id: projection[];
     meeting_id: meeting;
 }
+
 Interface speaker {
     id: number;
     begin_time: datetime;
@@ -119,6 +131,7 @@ Interface speaker {
     list_of_speakers_id: list_of_speakers;
     user_id: user;
 }
+
 Interface topic {
     id: number;
     title: string;
@@ -128,6 +141,7 @@ Interface topic {
     agenda_item_id: agenda_item;
     meeting_id: meeting;
 }
+
 Interface user {
     id: number;
     username: string;
@@ -161,7 +175,7 @@ Interface user {
     guest_meeting_ids: meeting[]; // Links to meeting/guest_ids
 
     // All foreign keys are meeting-specific:
-    // - Keys are smaller (Space is in O(n^2) for n keys 
+    // - Keys are smaller (Space is in O(n^2) for n keys
     //   in the relation), so this saves storagespace
     // - This makes quering things like this possible:
     //   "Give me all groups for User X in Meeting Y" without
@@ -177,6 +191,7 @@ Interface user {
     motion_voted_poll_<meeting_id>_ids: motion_poll[];
     assignment_voted_poll_<meeting_id>_ids: assignment_poll[];
 }
+
 Interface group {
     id: number;
     name: string;
@@ -191,6 +206,7 @@ Interface group {
     motion_poll_ids: motion_poll[];
     meeting_id: meeting;
 }
+
 Interface personal_note {
     id: number;
     note: HTML;
@@ -200,9 +216,10 @@ Interface personal_note {
     element: Fqid;
     meeting_id: meeting;
 }
+
 // Mediafiles are delivered by the mediafile server with the URL
 // `<media-prefix>/media/<meeting_id>/path`
-Interface mediafile { 
+Interface mediafile {
     id: number;
     title: string;
     is_directory: boolean;
@@ -223,6 +240,7 @@ Interface mediafile {
     attachement_ids: Fqid[];
     meeting_id: meeting;
 }
+
 // New: Resource
 // Resources are meeting-specific or organsation wide.
 // For organisation-resources, no permission chacks are done (event the user
@@ -241,6 +259,7 @@ Interface Resource {
     meeting_id: meeting;
     organisation_id: organisation;
 }
+
 Interface motion {
     id: number;
     identifier: string;
@@ -278,6 +297,7 @@ Interface motion {
     attachment_ids: mediafile[];
     meeting_id: meeting;
 }
+
 Interface motion_poll {
     id: number;
     pollmethod: string;
@@ -296,6 +316,7 @@ Interface motion_poll {
     group_ids: group[];
     meeting_id: meeting;
 }
+
 Interface motion_option {
     id: number;
     yes: decimal(6);
@@ -304,6 +325,7 @@ Interface motion_option {
 
     vote_ids: motion_vote[];
 }
+
 Interface motion_vote {
     id: number;
     weight: decimal(6);
@@ -312,6 +334,7 @@ Interface motion_vote {
     option_id: motion_option;
     user_id: user;
 }
+
 Interface motion_submitter {
     id: number;
     weight: number;
@@ -319,6 +342,7 @@ Interface motion_submitter {
     user_id: user;
     motion_id: motion;
 }
+
 Interface motion_comment {
     id: number;
     comment: HTML;
@@ -326,6 +350,7 @@ Interface motion_comment {
     motion_id: motion;
     section_id: motion_comment_section;
 }
+
 Inteface motion_comment_section {
     id: number;
     name: string;
@@ -335,6 +360,7 @@ Inteface motion_comment_section {
     write_group_ids: group[];
     meeting_id: meeting;
 }
+
 Interface motion_category {
     id: number;
     name: string;
@@ -347,6 +373,7 @@ Interface motion_category {
     motion_ids: motion[];
     meeting_id: meeting;
 }
+
 Interface motion_block {
     id: number;
     title: string;
@@ -357,6 +384,7 @@ Interface motion_block {
     list_of_speakers_id: list_of_speakers;
     meeting_id: meeting;
 }
+
 Interface motion_change_recommendation {
     id: number;
     rejected: boolean;
@@ -370,6 +398,7 @@ Interface motion_change_recommendation {
 
     motion_id: motion;
 }
+
 Interface motion_state {
     id: number;
     name: string;
@@ -391,6 +420,7 @@ Interface motion_state {
     workflow_id: motion_workflow;
     first_state_of_workflow_id: motion_workflow;
 }
+
 Interface motion_workflow {
     id: number;
     name: string;
@@ -400,6 +430,7 @@ Interface motion_workflow {
     motion_ids: motion[];
     meeting_id: meeting;
 }
+
 Interface motion_statute_paragraph {
     id: number;
     title: string;
@@ -409,6 +440,7 @@ Interface motion_statute_paragraph {
     motion_ids: motion[];
     meeting_id: meeting;
 }
+
 Interface assignment {
     id: number;
     title: string;
@@ -425,7 +457,8 @@ Interface assignment {
     attachment_ids: mediafile[];
     meeting_id: meeting;
 }
-Inteface assignment_related_user {
+
+Interface assignment_related_user {
     id: number;
     elected: boolean;
     weight: number;
@@ -433,6 +466,7 @@ Inteface assignment_related_user {
     assignment_id: assignment;
     user_id: user;
 }
+
 Interface assignment_poll {
     id: number;
     allow_multiple_votes_per_candidate: boolean;
@@ -458,6 +492,7 @@ Interface assignment_poll {
     option_ids: assignment_option[];
     meeting_id: meeting;
 }
+
 Interface assignment_option {
     id: number;
     yes: decimal(6);
@@ -468,6 +503,7 @@ Interface assignment_option {
     poll_id: assignment_poll;
     user_id: user;
 }
+
 Interface assignment_vote {
     id: number;
     value: string;
@@ -480,6 +516,7 @@ Interface assignment_vote {
 // New models
 Interface meeting {
     id: number;
+    committee_id: committee; // Links to committee/meeting_ids
     identifier: string; // For unique urls.
     is_template: boolean; // Unique within a committee
     enable_anonymous: boolean;
@@ -547,27 +584,6 @@ Interface meeting {
     assignemnts_export_pdf_title: string;
     assignments_export_pdf_preamble: string;
 
-    projector_ids: projector[];
-    projectiondefault_ids: projectiondefault[];
-    projector_countdown_ids: projector_countdown[];
-    projector_message_ids: projector_message[];
-    tag_ids: tag[];
-    agenda_item_ids: agenda_item[];
-    list_of_speakers_ids: list_of_speakers[];
-    topic_ids: topic[];
-    group_ids: group[];
-    personal_note_ids: personal_note[];
-    mediafile_ids: mediafile[];
-    motion_ids: motion[];
-    motion_poll_ids: motion_poll[];
-    motion_comment_section_ids: motion_comment_section[];
-    motion_category_ids: motion_category[];
-    motion_block_ids: motion_block[];
-    motion_workflow_ids: motion_workflow[];
-    motion_statute_paragraph_ids: motion_statute_paragraph[];
-    assignment_ids: assignment[];
-    assignment_poll_ids: assignment_poll[];
-
     // No relations to a meeting:
     // user; OK, because not meeting-specific
     // projection
@@ -592,27 +608,50 @@ Interface meeting {
     // if a user is assigned to at least one group. This "query" must be checked,
     // if it can be performed.
 
-    // Other relations
-    resource_ids: resource[]; // Links to resource/meeting_id
-    committee_id: committee; // Links to committee/meeting_ids
+    // Back references
     default_meeting_for_committee_id: committee; // Links to committee/default_meeting_id
+    resource_ids: resource[]; // Links to resource/meeting_id
     present_user_ids: user[]; // Links to user/is_present_in_meeting_ids
     guest_ids: user[]; // Links to users/guest_meeting_ids
     temorary_user_ids: user[]; // Links to user/meeting_id
+
+    projector_ids: projector[];
+    projectiondefault_ids: projectiondefault[];
+    projector_countdown_ids: projector_countdown[];
+    projector_message_ids: projector_message[];
+    tag_ids: tag[];
+    agenda_item_ids: agenda_item[];
+    list_of_speakers_ids: list_of_speakers[];
+    topic_ids: topic[];
+    group_ids: group[];
+    personal_note_ids: personal_note[];
+    mediafile_ids: mediafile[];
+    motion_ids: motion[];
+    motion_poll_ids: motion_poll[];
+    motion_comment_section_ids: motion_comment_section[];
+    motion_category_ids: motion_category[];
+    motion_block_ids: motion_block[];
+    motion_workflow_ids: motion_workflow[];
+    motion_statute_paragraph_ids: motion_statute_paragraph[];
+    assignment_ids: assignment[];
+    assignment_poll_ids: assignment_poll[];
 }
+
 Interface committee {
     id: number;
+    organisation_id: organisation;
     name: string;
     description: string; // TODO: @emanuel Or HTML? Or not needed (-> UI decision)
-
-    meeting_ids: meeting[];
-    default_meting_id: meeting;
+    default_meeting_id: meeting;
     member_ids: user[];
     manager_ids: user[];
     forward_to_committee_ids: committee[];
+
+    // Back references
+    meeting_ids: meeting[];
     received_forwardings_from_committee_ids: committee[];
-    organisation_id: organisation;
 }
+
 Interface organisation {
     id: number;
     name: string;
@@ -626,15 +665,20 @@ Interface organisation {
 
     // TODO: OS3 user configs (export, email, ...)
 
+    // Back references
     committee_ids: committee[];
     role_ids: role[];
     resource_ids: resource[];
 }
+
 Interface role {
     id: number;
+    organisation_id: number;
     name: string;
+    description: HTML; // TODO: @emanuel Needed??
     permissions: string[]; // 'can_manage_committees', 'can_manage_users', TODO: more permissions
     is_superadmin_role: boolean;
-    orginasation_id: number;
+
+    // Back references
     user_ids: user[];
 }
