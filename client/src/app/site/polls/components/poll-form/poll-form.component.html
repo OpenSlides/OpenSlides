@@ -18,7 +18,7 @@
         </span>
     </div>
     <form [formGroup]="contentForm" class="poll-preview-meta-info-form">
-        <ng-container *ngIf="!data || !data.state || data.isStateCreated">
+        <ng-container *ngIf="!data || !data.state || data.isCreated">
             <!-- Poll Type -->
             <mat-form-field *ngIf="pollService.isElectronicVotingEnabled">
                 <mat-select [placeholder]="PollPropertyVerbose.type | translate" formControlName="type" required>
@@ -71,7 +71,7 @@
 
         <!-- Amount of Votes -->
         <ng-container
-            *ngIf="contentForm.get('pollmethod').value === 'votes' && (!data || !data.state || data.isStateCreated)"
+            *ngIf="contentForm.get('pollmethod').value === 'votes' && (!data || !data.state || data.isCreated)"
         >
             <mat-form-field>
                 <input

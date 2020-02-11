@@ -91,6 +91,8 @@ export class AssignmentPollDetailComponent extends BasePollDetailComponent<ViewA
         if (this.isVotedPoll) {
             this._chartType = 'doughnut';
             this.chartDataSubject.next(this.poll.generateCircleChartData());
+        } else {
+            super.initChartData();
         }
     }
 

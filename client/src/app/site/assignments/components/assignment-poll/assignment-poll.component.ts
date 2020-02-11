@@ -15,6 +15,7 @@ import { PollState } from 'app/shared/models/poll/base-poll';
 import { BasePollComponent } from 'app/site/polls/components/base-poll.component';
 import { PollService } from 'app/site/polls/services/poll.service';
 import { AssignmentPollDialogService } from '../../services/assignment-poll-dialog.service';
+import { AssignmentPollPdfService } from '../../services/assignment-poll-pdf.service';
 import { ViewAssignmentOption } from '../../models/view-assignment-option';
 import { ViewAssignmentPoll } from '../../models/view-assignment-poll';
 
@@ -89,7 +90,8 @@ export class AssignmentPollComponent extends BasePollComponent<ViewAssignmentPol
         pollDialog: AssignmentPollDialogService,
         public pollService: PollService,
         private operator: OperatorService,
-        private formBuilder: FormBuilder
+        private formBuilder: FormBuilder,
+        private pdfService: AssignmentPollPdfService
     ) {
         super(titleService, matSnackBar, translate, dialog, promptService, repo, pollDialog);
     }
@@ -105,11 +107,17 @@ export class AssignmentPollComponent extends BasePollComponent<ViewAssignmentPol
 
     /**
      * Print the PDF of this poll with the corresponding options and numbers
-     *
      */
     public printBallot(): void {
-        throw new Error('TODO');
-        // this.pdfService.printBallots(this.poll);
+        this.pdfService.printBallots(this.poll);
+    }
+
+    public showPoll(): boolean {
+        return (
+            this.operator.hasPerms('assignments.can_manage_polls') ||
+            this.poll.isPublished ||
+            (this.poll.type !== 'analog' && this.poll.isStarted)
+        );
     }
 
     /**

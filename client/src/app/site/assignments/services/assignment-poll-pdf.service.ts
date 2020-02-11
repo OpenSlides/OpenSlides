@@ -7,6 +7,7 @@ import { PdfDocumentService } from 'app/core/pdf-services/pdf-document.service';
 import { AssignmentRepositoryService } from 'app/core/repositories/assignments/assignment-repository.service';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
+import { AssignmentPollMethods } from 'app/shared/models/assignments/assignment-poll';
 import { ViewAssignmentPoll } from '../models/view-assignment-poll';
 
 /**
@@ -138,7 +139,7 @@ export class AssignmentPollPdfService extends PollPdfService {
 
     // TODO: typing of result
     private createCandidateFields(poll: ViewAssignmentPoll): object {
-        /*const candidates = poll.options.sort((a, b) => {
+        const candidates = poll.options.sort((a, b) => {
             return a.weight - b.weight;
         });
         const resultObject = candidates.map(cand => {
@@ -151,13 +152,12 @@ export class AssignmentPollPdfService extends PollPdfService {
             noEntry.margin[1] = 25;
             resultObject.push(noEntry);
         }
-        return resultObject;*/
-        throw new Error('TODO');
+        return resultObject;
     }
 
     // TODO: typing of result
-    /*private createYNBallotEntry(option: string, method: AssignmentPollmethods): object {
-        const choices = method === 'yna' ? ['Yes', 'No', 'Abstain'] : ['Yes', 'No'];
+    private createYNBallotEntry(option: string, method: AssignmentPollMethods): object {
+        const choices = method === 'YNA' ? ['Yes', 'No', 'Abstain'] : ['Yes', 'No'];
         const columnstack = choices.map(choice => {
             return {
                 width: 'auto',
@@ -174,7 +174,7 @@ export class AssignmentPollPdfService extends PollPdfService {
                 columns: columnstack
             }
         ];
-    }*/
+    }
 
     /**
      * Generates the poll description
@@ -184,10 +184,9 @@ export class AssignmentPollPdfService extends PollPdfService {
      */
     // TODO: typing of result
     private createPollHint(poll: ViewAssignmentPoll): object {
-        /*return {
+        return {
             text: poll.description || '',
             style: 'description'
-        };*/
-        throw new Error('TODO');
+        };
     }
 }
