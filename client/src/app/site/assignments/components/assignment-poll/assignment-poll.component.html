@@ -1,4 +1,4 @@
-<mat-card class="os-card" *ngIf="poll">
+<mat-card class="os-card" *ngIf="poll && showPoll()">
     <div class="assignment-poll-wrapper">
         <div class="assignment-poll-title-header">
             <mat-card-title>
@@ -8,28 +8,24 @@
             </mat-card-title>
             <div class="poll-properties">
                 <mat-chip
-                    *osPerms="'assignments.can_manage'"
+                    *osPerms="'assignments.can_manage_polls'"
                     class="poll-state active"
                     [disableRipple]="true"
                     [matMenuTriggerFor]="triggerMenu"
-                    [ngClass]="poll.stateVerbose.toLowerCase()"
+                    [class]="poll.stateVerbose.toLowerCase()"
+                    [ngClass]="{ disabled: !poll.getNextStates() }"
                 >
                     {{ poll.stateVerbose | translate }}
                 </mat-chip>
-                <mat-chip
-                    *ngIf="!canManage && poll.isPublished"
-                    [disableRipple]="true"
-                    class="poll-state active"
-                    [ngClass]="poll.stateVerbose.toLowerCase()"
-                >
-                    {{ poll.stateVerbose | translate }}
-                </mat-chip>
+                <span *ngIf="poll.type !== 'analog'">
+                    {{ poll.typeVerbose | translate }}
+                </span>
             </div>
             <div class="poll-menu">
                 <!-- Buttons -->
                 <button
                     mat-icon-button
-                    *osPerms="'assignments.can_manage'; &quot;core.can_manage_projector&quot;"
+                    *osPerms="'assignments.motions.can_manage_polls';or: 'core.can_manage_projector'"
                     [matMenuTriggerFor]="pollItemMenu"
                     (click)="$event.stopPropagation()"
                 >
@@ -39,9 +35,19 @@
         </div>
 
         <div *ngIf="hasVotes">
-            <os-charts [type]="chartType" [labels]="candidatesLabels" [data]="chartDataSubject"></os-charts>
+            <os-charts
+                [type]="chartType"
+                [labels]="candidatesLabels"
+                [data]="chartDataSubject"
+                [hasPadding]="false"
+            ></os-charts>
         </div>
         <os-assignment-poll-vote *ngIf="poll.canBeVotedFor" [poll]="poll"></os-assignment-poll-vote>
+        <div class="poll-detail-button-wrapper">
+            <a mat-button routerLink="/assignments/polls/{{ poll.id }}">
+                {{ 'More' | translate }}
+            </a>
+        </div>
     </div>
 </mat-card>
 
@@ -64,6 +70,10 @@
         <os-projector-button menuItem="true" [object]="poll"></os-projector-button>
     </div>
     <div *osPerms="'assignments.can_manage'">
+        <button mat-menu-item (click)="printBallot()">
+            <mat-icon>picture_as_pdf</mat-icon>
+            <span translate>Ballot paper</span>
+        </button>
         <mat-divider></mat-divider>
         <button mat-menu-item class="red-warning-text" (click)="onDeletePoll()">
             <mat-icon>delete</mat-icon>

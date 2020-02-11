@@ -2,7 +2,7 @@ import { BehaviorSubject } from 'rxjs';
 
 import { ChartData } from 'app/shared/components/charts/charts.component';
 import { AssignmentPoll, AssignmentPollMethods } from 'app/shared/models/assignments/assignment-poll';
-import { PollColor } from 'app/shared/models/poll/base-poll';
+import { PollColor, PollState } from 'app/shared/models/poll/base-poll';
 import { BaseViewModel } from 'app/site/base/base-view-model';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 import { PollData, ViewBasePoll } from 'app/site/polls/models/view-base-poll';
@@ -85,6 +85,16 @@ export class ViewAssignmentPoll extends ViewBasePoll<AssignmentPoll> implements 
             .sort((a, b) => b.yes - a.yes);
 
         return data;
+    }
+
+    /**
+     * Override from base poll to skip started state in analog poll type
+     */
+    public getNextStates(): { [key: number]: string } {
+        if (this.poll.type === 'analog' && this.state === PollState.Created) {
+            return null;
+        }
+        return super.getNextStates();
     }
 
     public getPercentBase(): number {

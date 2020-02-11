@@ -1,12 +1,61 @@
-.current-vote {
-    color: #777;
-    margin-right: 10px;
+@import '~assets/styles/poll-colors.scss';
+
+%vote-grid-base {
+    display: grid;
+    grid-gap: 10px;
+    margin: 20px 0;
 }
 
-.voting-grid {
-    display: grid;
-    grid-gap: 5px;
-    padding: 5px;
-    align-items: baseline;
-    grid-template-columns: auto max-content max-content;
+.yn-grid {
+    @extend %vote-grid-base;
+    grid-template-areas:
+        'name name'
+        'yes no';
+}
+
+.yna-grid {
+    @extend %vote-grid-base;
+    grid-template-areas:
+        'name name name'
+        'yes no abstain';
+}
+
+.single-vote-grid {
+    @extend %vote-grid-base;
+    grid-template-areas: 'yes name';
+    grid-template-columns: min-content auto;
+}
+
+.global-option-grid {
+    @extend %vote-grid-base;
+    grid-template-columns: auto auto;
+}
+
+.vote-candidate-name {
+    grid-area: name;
+    display: flex;
+    span {
+        margin-top: auto;
+        margin-bottom: auto;
+    }
+}
+
+.voted-yes {
+    background-color: $votes-yes-color;
+}
+
+.voted-no {
+    background-color: $votes-no-color;
+}
+
+.voted-abstain {
+    background-color: $votes-abstain-color;
+}
+
+.vote-label {
+    margin-left: 10px;
+}
+
+.mat-divider-horizontal {
+    position: initial;
 }

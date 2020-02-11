@@ -1,7 +1,7 @@
 .assignment-poll-wrapper {
     @import '~assets/styles/poll-common-styles.scss';
     position: relative;
-    padding: 0 15px;
+    margin: 0 15px;
 
     .poll-menu {
         position: absolute;
@@ -37,6 +37,14 @@
                 background-color: #ffd800;
                 color: black;
             }
+        }
+    }
+
+    .poll-detail-button-wrapper {
+        display: flex;
+        margin: auto 0;
+        > a {
+            margin-left: auto;
         }
     }
 }

@@ -1,15 +1,40 @@
-.chart-wrapper {
-    &.flex {
-        display: flex;
+@import '~assets/styles/variables.scss';
 
-        .mat-table {
-            flex: 2;
-            .mat-column-votes {
-                justify-content: center;
-            }
-        }
-        .chart-inner-wrapper {
-            flex: 3;
-        }
+.result-wrapper {
+    display: grid;
+    grid-gap: 10px;
+    grid-template-areas:
+        'chart'
+        'results'
+        'names';
+}
+
+@include desktop {
+    .result-wrapper {
+        grid-template-areas:
+            'results chart'
+            'names names';
+        grid-template-columns: 2fr 1fr;
     }
+}
+
+.result-table {
+    grid-area: results;
+}
+
+.result-chart {
+    grid-area: chart;
+    max-width: 300px;
+}
+
+.named-result-table {
+    grid-area: names;
+    .mat-form-field {
+        font-size: 14px;
+        width: 100%;
+    }
+}
+
+.poll-content {
+    padding-top: 20px;
 }
