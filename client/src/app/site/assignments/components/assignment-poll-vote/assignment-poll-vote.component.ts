@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material';
 import { Title } from '@angular/platform-browser';
 
@@ -15,6 +14,14 @@ import { BasePollVoteComponent } from 'app/site/polls/components/base-poll-vote.
 import { ViewAssignmentPoll } from '../../models/view-assignment-poll';
 import { ViewAssignmentVote } from '../../models/view-assignment-vote';
 
+// TODO: Duplicate
+interface VoteActions {
+    vote: 'Y' | 'N' | 'A';
+    css: string;
+    icon: string;
+    label: string;
+}
+
 @Component({
     selector: 'os-assignment-poll-vote',
     templateUrl: './assignment-poll-vote.component.html',
@@ -23,8 +30,7 @@ import { ViewAssignmentVote } from '../../models/view-assignment-vote';
 export class AssignmentPollVoteComponent extends BasePollVoteComponent<ViewAssignmentPoll> implements OnInit {
     public pollMethods = AssignmentPollMethods;
     public PollType = PollType;
-
-    public voteForm: FormGroup;
+    public voteActions: VoteActions[] = [];
 
     /** holds the currently saved votes */
     public currentVotes: { [key: number]: string | null; global?: string } = {};
@@ -38,13 +44,13 @@ export class AssignmentPollVoteComponent extends BasePollVoteComponent<ViewAssig
         vmanager: VotingService,
         operator: OperatorService,
         private voteRepo: AssignmentVoteRepositoryService,
-        private pollRepo: AssignmentPollRepositoryService,
-        private formBuilder: FormBuilder
+        private pollRepo: AssignmentPollRepositoryService
     ) {
         super(title, translate, matSnackbar, vmanager, operator);
     }
 
     public ngOnInit(): void {
+        this.defineVoteOptions();
         this.subscriptions.push(
             this.voteRepo.getViewModelListObservable().subscribe(votes => {
                 this.votes = votes;
@@ -53,119 +59,74 @@ export class AssignmentPollVoteComponent extends BasePollVoteComponent<ViewAssig
         );
     }
 
+    private defineVoteOptions(): void {
+        this.voteActions.push({
+            vote: 'Y',
+            css: 'voted-yes',
+            icon: 'thumb_up',
+            label: 'Yes'
+        });
+
+        if (this.poll.pollmethod !== AssignmentPollMethods.Votes) {
+            this.voteActions.push({
+                vote: 'N',
+                css: 'voted-no',
+                icon: 'thumb_down',
+                label: 'No'
+            });
+        }
+
+        if (this.poll.pollmethod === AssignmentPollMethods.YNA) {
+            this.voteActions.push({
+                vote: 'A',
+                css: 'voted-abstain',
+                icon: 'trip_origin',
+                label: 'Abstain'
+            });
+        }
+    }
+
     protected updateVotes(): void {
         if (this.user && this.votes && this.poll) {
             const filtered = this.votes.filter(
                 vote => vote.option.poll_id === this.poll.id && vote.user_id === this.user.id
             );
-            this.voteForm = this.formBuilder.group({
-                votes: this.formBuilder.group(
-                    this.poll.options.mapToObject(option => ({ [option.id]: ['', [Validators.required]] }))
-                )
-            });
-            if (
-                this.poll.pollmethod === AssignmentPollMethods.Votes &&
-                (this.poll.global_no || this.poll.global_abstain)
-            ) {
-                this.voteForm.addControl('global', new FormControl('', Validators.required));
-            }
 
             for (const option of this.poll.options) {
                 let curr_vote = filtered.find(vote => vote.option.id === option.id);
                 if (this.poll.pollmethod === AssignmentPollMethods.Votes && curr_vote) {
                     if (curr_vote.value !== 'Y') {
                         this.currentVotes.global = curr_vote.valueVerbose;
-                        this.voteForm.controls.global.setValue(curr_vote.value);
                         curr_vote = null;
                     } else {
                         this.currentVotes.global = null;
                     }
                 }
-                this.currentVotes[option.user_id] = curr_vote && curr_vote.valueVerbose;
-                this.voteForm.get(['votes', option.id]).setValue(curr_vote && curr_vote.value);
-            }
-
-            if (this.poll.pollmethod === AssignmentPollMethods.Votes) {
-                this.voteForm.controls.votes.valueChanges.subscribe(value => {
-                    if (Object.values(value).some(vote => vote)) {
-                        const ctrl = this.voteForm.controls.global;
-                        if (ctrl) {
-                            ctrl.reset();
-                        }
-                        this.saveVotesIfNamed();
-                    }
-                });
-
-                this.voteForm.controls.global.valueChanges.subscribe(value => {
-                    if (value) {
-                        this.voteForm.controls.votes.reset();
-                        this.saveVotesIfNamed();
-                    }
-                });
+                this.currentVotes[option.id] = curr_vote && curr_vote.valueVerbose;
             }
         }
     }
 
-    private saveVotesIfNamed(): void {
-        if (this.poll.type === PollType.Named && !this.isSaveButtonDisabled()) {
-            this.saveVotes();
-        }
+    private getPollOptionIds(): number[] {
+        return this.poll.options.map(option => option.id);
     }
 
-    public saveVotes(): void {
-        let values = this.voteForm.value.votes;
-        // convert Y to 1 and null to 0 for votes method
-        if (this.poll.pollmethod === this.pollMethods.Votes) {
-            if (this.voteForm.value.global) {
-                values = JSON.stringify(this.voteForm.value.global);
+    public saveSingleVote(optionId: number, vote: 'Y' | 'N' | 'A'): void {
+        const pollOptionIds = this.getPollOptionIds();
+        const requestMap = pollOptionIds.reduce((o, n) => {
+            if ((n === optionId && vote === 'Y') !== (this.currentVotes[n] === 'Yes')) {
+                o[n] = 1;
             } else {
-                this.poll.options.forEach(option => {
-                    values[option.id] = this.voteForm.value.votes[option.id] === 'Y' ? 1 : 0;
-                });
+                o[n] = 0;
             }
-        }
-        this.pollRepo.vote(values, this.poll.id).catch(this.raiseError);
+
+            return o;
+        }, {});
+
+        this.pollRepo.vote(JSON.stringify(requestMap), this.poll.id).catch(this.raiseError);
     }
 
-    public isSaveButtonDisabled(): boolean {
-        return (
-            !this.voteForm ||
-            this.voteForm.pristine ||
-            (this.poll.pollmethod === AssignmentPollMethods.Votes
-                ? !this.getAllFormControls().some(control => control.valid)
-                : this.voteForm.invalid)
-        );
-    }
-
-    public getVotesCount(): number {
-        return Object.values(this.voteForm.value.votes).filter(vote => vote).length;
-    }
-
-    private getAllFormControls(): AbstractControl[] {
-        if (this.voteForm) {
-            const votesFormGroup = this.voteForm.controls.votes as FormGroup;
-            return [...Object.values(votesFormGroup.controls), this.voteForm.controls.global];
-        } else {
-            return [];
-        }
-    }
-
-    public yesButtonClicked($event: MouseEvent, optionId: string): void {
-        if (this.poll.pollmethod === AssignmentPollMethods.Votes) {
-            // check current value (before click)
-            if (this.voteForm.value.votes[optionId] === 'Y') {
-                // this handler is executed before the mat-radio-button handler, so we have to set a timeout or else the other handler will just set the value again
-                setTimeout(() => {
-                    this.voteForm.get(['votes', optionId]).setValue(null);
-                    this.voteForm.markAsDirty();
-                    this.saveVotesIfNamed();
-                });
-            } else {
-                // check if by clicking this button, the amount of votes would succeed the permitted amount
-                if (this.getVotesCount() >= this.poll.votes_amount) {
-                    $event.preventDefault();
-                }
-            }
-        }
+    public saveGlobalVote(globalVote: 'N' | 'A'): void {
+        this.pollRepo.vote(`"${globalVote}"`, this.poll.id).catch(this.raiseError);
     }
 }

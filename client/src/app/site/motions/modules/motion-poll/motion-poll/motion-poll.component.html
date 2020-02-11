@@ -20,19 +20,11 @@
             </div>
 
             <mat-chip
-                *ngIf="poll.getNextStates()"
                 disableRipple
-                class="poll-state active"
                 [matMenuTriggerFor]="triggerMenu"
-                [ngClass]="poll.stateVerbose.toLowerCase()"
-            >
-                {{ poll.stateVerbose }}
-            </mat-chip>
-            <mat-chip
-                *ngIf="!poll.getNextStates()"
-                disableRipple
                 class="poll-state active"
-                [ngClass]="poll.stateVerbose.toLowerCase()"
+                [class]="poll.stateVerbose.toLowerCase()"
+                [ngClass]="{ 'disabled': !poll.getNextStates() }"
             >
                 {{ poll.stateVerbose }}
             </mat-chip>
@@ -87,9 +79,9 @@
         </div>
     </div>
     <div class="poll-detail-button-wrapper">
-        <button mat-button [routerLink]="pollLink">
+        <a mat-button [routerLink]="pollLink">
             {{ 'More' | translate }}
-        </button>
+        </a>
     </div>
 </ng-template>
 

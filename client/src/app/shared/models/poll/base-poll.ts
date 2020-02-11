@@ -51,38 +51,24 @@ export abstract class BasePoll<T = any, O extends BaseOption<any> = any> extends
     public onehundred_percent_base: PercentBase;
     public user_has_voted: boolean;
 
-    public get isStateCreated(): boolean {
+    public get isCreated(): boolean {
         return this.state === PollState.Created;
     }
 
-    public get isStateStarted(): boolean {
+    public get isStarted(): boolean {
         return this.state === PollState.Started;
     }
 
-    public get isStateFinished(): boolean {
+    public get isFinished(): boolean {
         return this.state === PollState.Finished;
     }
 
-    public get isStatePublished(): boolean {
+    public get isPublished(): boolean {
         return this.state === PollState.Published;
     }
 
     public get isPercentBaseValidOrCast(): boolean {
         return this.onehundred_percent_base === PercentBase.Valid || this.onehundred_percent_base === PercentBase.Cast;
-    }
-
-    /**
-     * If the state is finished.
-     */
-    public get isFinished(): boolean {
-        return this.state === PollState.Finished;
-    }
-
-    /**
-     * If the state is published.
-     */
-    public get isPublished(): boolean {
-        return this.state === PollState.Published;
     }
 
     /**

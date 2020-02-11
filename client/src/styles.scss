@@ -852,6 +852,13 @@ button.mat-menu-item.selected {
     }
 }
 
+/**
+ * Use to disable events on (i.e) matMenuTriggerFor
+ */
+.disabled {
+    pointer-events: none;
+}
+
 // custom horrizontal scroll-bar
 
 .h-scroller {
