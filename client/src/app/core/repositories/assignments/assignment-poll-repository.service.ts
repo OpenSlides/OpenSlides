@@ -116,6 +116,7 @@ export class AssignmentPollRepositoryService extends BasePollRepositoryService<
         return this.translate.instant(plural ? 'Polls' : 'Poll');
     };
 
+    // TODO: data must not be any
     public vote(data: any, poll_id: number): Promise<void> {
         return this.http.post(`/rest/assignments/assignment-poll/${poll_id}/vote/`, data);
     }

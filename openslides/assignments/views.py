@@ -407,7 +407,7 @@ class AssignmentPollViewSet(BasePollViewSet):
 
             YN/YNA:
                 {<option_id>: 'Y' | 'N' [|'A']}
-                - all option_ids must be given
+                - all option_ids must be given   TODO: No it must not be that way. Single Votes have to be accepted
                 - 'A' is only allowed in YNA pollmethod
 
         Votes for all options have to be given

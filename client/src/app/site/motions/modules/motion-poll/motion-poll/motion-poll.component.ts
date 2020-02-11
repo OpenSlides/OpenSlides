@@ -130,8 +130,8 @@ export class MotionPollComponent extends BasePollComponent<ViewMotionPoll> {
     public showPoll(): boolean {
         return (
             this.operator.hasPerms('motions.can_manage_polls') ||
-            this.poll.isStatePublished ||
-            (this.poll.type !== 'analog' && this.poll.isStateStarted)
+            this.poll.isPublished ||
+            (this.poll.type !== 'analog' && this.poll.isStarted)
         );
     }
 
