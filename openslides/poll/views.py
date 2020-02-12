@@ -210,13 +210,12 @@ class BasePollViewSet(ModelViewSet):
 
         elif poll.type == BasePoll.TYPE_NAMED:
             self.handle_named_vote(data, poll, request.user)
-            poll.voted.add(request.user)
 
         elif poll.type == BasePoll.TYPE_PSEUDOANONYMOUS:
-            self.handle_pseudoanonymous_vote(data, poll)
-            poll.voted.add(request.user)
+            self.handle_pseudoanonymous_vote(data, poll, request.user)
 
-        inform_changed_data(poll)  # needed for the changed voted relation
+        inform_changed_data(poll)
+
         return Response()
 
     def assert_can_vote(self, poll, request):
@@ -224,7 +223,7 @@ class BasePollViewSet(ModelViewSet):
         Raises a permission denied, if the user is not allowed to vote.
         Analog:                     has to have manage permissions
         Named & Pseudoanonymous:    has to be in a poll group and present
-        Only pseudoanonymous:       has to not have voted yet
+        Note: For pseudoanonymous it is *not* tested, if the user has already voted!
         """
         if poll.type == BasePoll.TYPE_ANALOG:
             if not self.has_manage_permissions():
@@ -238,10 +237,6 @@ class BasePollViewSet(ModelViewSet):
                 exact=True,
             ):
                 self.permission_denied(request)
-
-            if poll.type == BasePoll.TYPE_PSEUDOANONYMOUS:
-                if request.user in poll.voted.all():
-                    self.permission_denied(request)
 
     def parse_vote_value(self, obj, key):
         """ Raises a ValidationError on incorrect values, including None """
@@ -278,13 +273,16 @@ class BasePollViewSet(ModelViewSet):
 
     def handle_named_vote(self, data, poll, user):
         """
-        To be implemented by subclass. Handles the named vote. Assumes data is validated
+        To be implemented by subclass. Handles the named vote. Assumes data is validated.
+        Needs to manage the voted-array per option.
         """
         raise NotImplementedError()
 
-    def handle_pseudoanonymous_vote(self, data, poll):
+    def handle_pseudoanonymous_vote(self, data, poll, user):
         """
-        To be implemented by subclass. Handles the pseudoanonymous vote. Assumes data is validated
+        To be implemented by subclass. Handles the pseudoanonymous vote. Assumes data
+        is validated. Needs to check, if the vote is allowed by the voted-array per poll.
+        Needs to add the user to the voted-array.
         """
         raise NotImplementedError()
 

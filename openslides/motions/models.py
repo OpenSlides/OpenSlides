@@ -873,7 +873,7 @@ class MotionVoteManager(BaseManager):
 class MotionVote(RESTModelMixin, BaseVote):
     access_permissions = MotionVoteAccessPermissions()
     option = models.ForeignKey(
-        "MotionOption", on_delete=models.CASCADE, related_name="votes"
+        "MotionOption", on_delete=CASCADE_AND_AUTOUPDATE, related_name="votes"
     )
 
     objects = MotionVoteManager()
@@ -887,7 +887,10 @@ class MotionOption(RESTModelMixin, BaseOption):
     vote_class = MotionVote
 
     poll = models.ForeignKey(
-        "MotionPoll", related_name="options", on_delete=models.CASCADE
+        "MotionPoll", related_name="options", on_delete=CASCADE_AND_AUTOUPDATE
+    )
+    voted = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, blank=True, related_name="motionoption_voted"
     )
 
     class Meta:
@@ -908,7 +911,7 @@ class MotionPollManager(BaseManager):
             super()
             .get_prefetched_queryset(*args, **kwargs)
             .select_related("motion")
-            .prefetch_related("options", "options__votes", "groups", "voted")
+            .prefetch_related("options", "options__votes", "groups")
         )
 
 
@@ -918,7 +921,9 @@ class MotionPoll(RESTModelMixin, BasePoll):
 
     objects = MotionPollManager()
 
-    motion = models.ForeignKey(Motion, on_delete=models.CASCADE, related_name="polls")
+    motion = models.ForeignKey(
+        Motion, on_delete=CASCADE_AND_AUTOUPDATE, related_name="polls"
+    )
 
     POLLMETHOD_YN = "YN"
     POLLMETHOD_YNA = "YNA"

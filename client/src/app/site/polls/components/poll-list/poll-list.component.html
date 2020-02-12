@@ -28,8 +28,8 @@
         <span>{{ poll.stateVerbose }}</span>
     </div>
     <div *pblNgridCellDef="'votability'; row as poll;" class="cell-slot fill">
-        <mat-icon *ngIf="poll.user_has_voted" color="accent" matTooltip="{{ 'You have already voted on this poll. Good job!' | translate }}">check_circle</mat-icon>
-        <mat-icon *ngIf="!poll.user_has_voted && poll.canBeVotedFor" color="warn" matTooltip="{{ 'You still have to vote on this poll.' | translate }}">warning</mat-icon>
+        <mat-icon *ngIf="poll.user_has_voted_valid" color="accent" matTooltip="{{ 'You have already voted on this poll. Good job!' | translate }}">check_circle</mat-icon>
+        <mat-icon *ngIf="!poll.user_has_voted_valid && poll.canBeVotedFor" color="warn" matTooltip="{{ 'You still have to vote on this poll.' | translate }}">warning</mat-icon>
     </div>
 </os-list-view-table>
 

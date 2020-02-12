@@ -89,11 +89,6 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name="assignmentpoll",
-            name="voted",
-            field=models.ManyToManyField(blank=True, to=settings.AUTH_USER_MODEL),
-        ),
-        migrations.AddField(
-            model_name="assignmentpoll",
             name="allow_multiple_votes_per_candidate",
             field=models.BooleanField(default=False),
         ),
@@ -134,10 +129,37 @@ class Migration(migrations.Migration):
             name="number_poll_candidates",
             field=models.BooleanField(default=False),
         ),
+        migrations.AddField(
+            model_name="assignmentoption",
+            name="voted",
+            field=models.ManyToManyField(
+                blank=True,
+                to=settings.AUTH_USER_MODEL,
+                related_name="assignmentoption_voted",
+            ),
+        ),
         migrations.AlterField(
             model_name="assignment",
             name="poll_description_default",
             field=models.CharField(blank=True, max_length=255),
+        ),
+        migrations.AlterField(
+            model_name="assignmentoption",
+            name="poll",
+            field=models.ForeignKey(
+                on_delete=openslides.utils.models.CASCADE_AND_AUTOUPDATE,
+                related_name="options",
+                to="assignments.AssignmentPoll",
+            ),
+        ),
+        migrations.AlterField(
+            model_name="assignmentvote",
+            name="option",
+            field=models.ForeignKey(
+                on_delete=openslides.utils.models.CASCADE_AND_AUTOUPDATE,
+                related_name="votes",
+                to="assignments.AssignmentOption",
+            ),
         ),
         migrations.RenameField(
             model_name="assignment",
@@ -164,6 +186,15 @@ class Migration(migrations.Migration):
                 default=Decimal("1"),
                 max_digits=15,
                 validators=[django.core.validators.MinValueValidator(Decimal("-2"))],
+            ),
+        ),
+        migrations.AlterField(
+            model_name="assignmentpoll",
+            name="assignment",
+            field=models.ForeignKey(
+                on_delete=openslides.utils.models.CASCADE_AND_AUTOUPDATE,
+                related_name="polls",
+                to="assignments.Assignment",
             ),
         ),
         migrations.RenameField(

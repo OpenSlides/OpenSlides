@@ -30,7 +30,7 @@ export class PollProgressComponent extends BaseViewComponent implements OnInit {
     }
 
     public get valueInPercent(): number {
-        return (this.poll.voted_id.length / this.max) * 100;
+        return (this.poll.votesvalid / this.max) * 100;
     }
 
     /**

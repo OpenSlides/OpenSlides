@@ -1,3 +1,7 @@
-<span> {{ 'Cast votes' }}: {{ poll.voted_id.length }} / {{ max }} </span>
+<span>
+    {{ 'Casted votes' | translate }}: {{ poll.votescast }} / {{ max }},
+    {{ 'valid votes' | translate}}: {{ poll.votesvalid }} / {{ max }},
+    {{ 'invalid votes' | translate}}: {{ poll.votesinvalid }} / {{ max }}
+</span>
 
 <mat-progress-bar class="voting-progress-bar" [value]="valueInPercent"></mat-progress-bar>

@@ -22,7 +22,7 @@ class BaseVoteSerializer(ModelSerializer):
         return vote.option.poll.state
 
 
-BASE_OPTION_FIELDS = ("id", "yes", "no", "abstain", "poll_id", "pollstate")
+BASE_OPTION_FIELDS = ("id", "yes", "no", "abstain", "poll_id", "pollstate", "voted")
 
 
 class BaseOptionSerializer(ModelSerializer):
@@ -31,6 +31,7 @@ class BaseOptionSerializer(ModelSerializer):
     abstain = DecimalField(
         max_digits=15, decimal_places=6, min_value=-2, read_only=True
     )
+    voted = IdPrimaryKeyRelatedField(many=True, read_only=True)
 
     pollstate = SerializerMethodField()
 
@@ -47,7 +48,6 @@ BASE_POLL_FIELDS = (
     "votesinvalid",
     "votescast",
     "options",
-    "voted",
     "id",
     "onehundred_percent_base",
     "majority_method",
@@ -59,7 +59,6 @@ class BasePollSerializer(ModelSerializer):
     groups = IdPrimaryKeyRelatedField(
         many=True, required=False, queryset=get_group_model().objects.all()
     )
-    voted = IdPrimaryKeyRelatedField(many=True, read_only=True)
     options = IdPrimaryKeyRelatedField(many=True, read_only=True)
 
     votesvalid = DecimalField(
