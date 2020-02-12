@@ -68,8 +68,12 @@ export class ViewMotionPoll extends ViewBasePoll<MotionPoll> implements MotionPo
         }
     ];
 
+    public get result(): ViewMotionOption {
+        return this.options[0];
+    }
+
     public get hasVotes(): boolean {
-        return !!this.options[0].votes.length;
+        return !!this.result.votes.length;
     }
 
     public initChartLabels(): string[] {
@@ -130,7 +134,7 @@ export class ViewMotionPoll extends ViewBasePoll<MotionPoll> implements MotionPo
     }
 
     public anySpecialVotes(): boolean {
-        return this.options[0].yes < 0 || this.options[0].no < 0 || this.options[0].abstain < 0;
+        return this.result.yes < 0 || this.result.no < 0 || this.result.abstain < 0;
     }
 
     /**
@@ -145,23 +149,22 @@ export class ViewMotionPoll extends ViewBasePoll<MotionPoll> implements MotionPo
 
     public getPercentBase(): number {
         const base: PercentBase = this.poll.onehundred_percent_base;
-        const options = this.options[0];
 
         let totalByBase: number;
         switch (base) {
             case PercentBase.YN:
-                if (options.yes >= 0 && options.no >= 0) {
-                    totalByBase = options.sumYN();
+                if (this.result.yes >= 0 && this.result.no >= 0) {
+                    totalByBase = this.result.sumYN();
                 }
                 break;
             case PercentBase.YNA:
-                if (options.yes >= 0 && options.no >= 0 && options.abstain >= 0) {
-                    totalByBase = options.sumYNA();
+                if (this.result.yes >= 0 && this.result.no >= 0 && this.result.abstain >= 0) {
+                    totalByBase = this.result.sumYNA();
                 }
                 break;
             case PercentBase.Valid:
                 // auslagern
-                if (options.yes >= 0 && options.no >= 0 && options.abstain >= 0) {
+                if (this.result.yes >= 0 && this.result.no >= 0 && this.result.abstain >= 0) {
                     totalByBase = this.poll.votesvalid;
                 }
                 break;

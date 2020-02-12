@@ -11,6 +11,9 @@ import { StatuteParagraphRepositoryService } from 'app/core/repositories/motions
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { LinenumberingService } from 'app/core/ui-services/linenumbering.service';
 import { ViewUnifiedChange, ViewUnifiedChangeType } from 'app/shared/models/motions/view-unified-change';
+import { ParsePollNumberPipe } from 'app/shared/pipes/parse-poll-number.pipe';
+import { PollKeyVerbosePipe } from 'app/shared/pipes/poll-key-verbose.pipe';
+import { PollPercentBasePipe } from 'app/shared/pipes/poll-percent-base.pipe';
 import { getRecommendationTypeName } from 'app/shared/utils/recommendation-type-names';
 import { MotionExportInfo } from './motion-export.service';
 import { ChangeRecoMode, InfoToExport, LineNumberingMode, PERSONAL_NOTE_ID } from '../motions.constants';
@@ -61,7 +64,10 @@ export class MotionPdfService {
         private pdfDocumentService: PdfDocumentService,
         private htmlToPdfService: HtmlToPdfService,
         private linenumberingService: LinenumberingService,
-        private commentRepo: MotionCommentSectionRepositoryService
+        private commentRepo: MotionCommentSectionRepositoryService,
+        private pollKeyVerbose: PollKeyVerbosePipe,
+        private pollPercentBase: PollPercentBasePipe,
+        private parsePollNumber: ParsePollNumberPipe
     ) {}
 
     /**
@@ -362,31 +368,20 @@ export class MotionPdfService {
             const column1 = [];
             const column2 = [];
             const column3 = [];
-            motion.polls.map((poll, index) => {
-                /*if (poll.has_votes) {
-                    if (motion.motion.polls.length > 1) {
-                        column1.push(index + 1 + '. ' + this.translate.instant('Vote'));
-                        column2.push('');
-                        column3.push('');
-                    }
-                    const values: CalculablePollKey[] = ['yes', 'no', 'abstain'];
-                    if (poll.votesvalid) {
-                        values.push('votesvalid');
-                    }
-                    if (poll.votesinvalid) {
-                        values.push('votesinvalid');
-                    }
-                    if (poll.votescast) {
-                        values.push('votescast');
-                    }
-                    values.map(value => {
-                        column1.push(`${this.translate.instant(this.pollService.getLabel(value))}:`);
-                        column2.push(`${this.translate.instant(this.pollService.getSpecialLabel(poll[value]))}`);
-                        this.pollService.isAbstractValue(poll, value)
-                            ? column3.push('')
-                            : column3.push(`(${this.pollService.calculatePercentage(poll, value)} %)`);
+            motion.polls.forEach(poll => {
+                if (poll.hasVotes) {
+                    const tableData = poll.generateTableData();
+                    tableData.forEach(votingResult => {
+                        const resultKey = this.translate.instant(this.pollKeyVerbose.transform(votingResult.key));
+                        const resultValue = this.parsePollNumber.transform(votingResult.value);
+                        column1.push(`${resultKey}:`);
+                        column2.push(resultValue);
+                        if (votingResult.showPercent) {
+                            const resultInPercent = this.pollPercentBase.transform(votingResult.value, poll);
+                            column3.push(resultInPercent);
+                        }
                     });
-                }*/
+                }
             });
             metaTableBody.push([
                 {
@@ -652,15 +647,6 @@ export class MotionPdfService {
                 style: 'heading3',
                 margin: [0, 25, 0, 10]
             });
-
-            // determine the width of the reason depending on line numbering
-            // currently not used
-            // let columnWidth: string;
-            // if (lnMode === LineNumberingMode.Outside) {
-            //     columnWidth = '80%';
-            // } else {
-            //     columnWidth = '100%';
-            // }
 
             reason.push(this.htmlToPdfService.addPlainText(motion.reason));
 

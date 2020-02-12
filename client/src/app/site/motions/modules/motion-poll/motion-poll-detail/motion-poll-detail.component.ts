@@ -55,7 +55,6 @@ export class MotionPollDetailComponent extends BasePollDetailComponent<ViewMotio
 
     public openDialog(): void {
         this.pollDialog.openDialog(this.poll);
-        console.log('this.poll: ', this.poll.hasVotes);
     }
 
     protected onDeleted(): void {
