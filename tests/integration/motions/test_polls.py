@@ -41,6 +41,15 @@ def test_motion_vote_db_queries():
     assert count_queries(MotionVote.get_elements)() == 1
 
 
+@pytest.mark.django_db(transaction=False)
+def test_motion_option_db_queries():
+    """
+    Tests that only 1 query is done when fetching MotionOptions
+    """
+    create_motion_polls()
+    assert count_queries(MotionOption.get_elements)() == 1
+
+
 def create_motion_polls():
     """
     Creates 1 Motion with 5 polls with 5 options each which have 2 votes each

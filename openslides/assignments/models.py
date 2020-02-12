@@ -267,7 +267,7 @@ class AssignmentVote(RESTModelMixin, BaseVote):
     objects = AssignmentVoteManager()
 
     option = models.ForeignKey(
-        "AssignmentOption", on_delete=models.CASCADE, related_name="votes"
+        "AssignmentOption", on_delete=CASCADE_AND_AUTOUPDATE, related_name="votes"
     )
 
     class Meta:
@@ -279,10 +279,13 @@ class AssignmentOption(RESTModelMixin, BaseOption):
     vote_class = AssignmentVote
 
     poll = models.ForeignKey(
-        "AssignmentPoll", on_delete=models.CASCADE, related_name="options"
+        "AssignmentPoll", on_delete=CASCADE_AND_AUTOUPDATE, related_name="options"
     )
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=SET_NULL_AND_AUTOUPDATE, null=True
+    )
+    voted = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, blank=True, related_name="assignmentoption_voted"
     )
     weight = models.IntegerField(default=0)
 
@@ -304,9 +307,7 @@ class AssignmentPollManager(BaseManager):
             super()
             .get_prefetched_queryset(*args, **kwargs)
             .select_related("assignment")
-            .prefetch_related(
-                "options", "options__user", "options__votes", "groups", "voted"
-            )
+            .prefetch_related("options", "options__user", "options__votes", "groups")
         )
 
 
@@ -317,7 +318,7 @@ class AssignmentPoll(RESTModelMixin, BasePoll):
     option_class = AssignmentOption
 
     assignment = models.ForeignKey(
-        Assignment, on_delete=models.CASCADE, related_name="polls"
+        Assignment, on_delete=CASCADE_AND_AUTOUPDATE, related_name="polls"
     )
 
     description = models.CharField(max_length=255, blank=True)
