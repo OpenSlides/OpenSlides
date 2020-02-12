@@ -3,7 +3,12 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
 import { HtmlToPdfService } from 'app/core/pdf-services/html-to-pdf.service';
+import { ParsePollNumberPipe } from 'app/shared/pipes/parse-poll-number.pipe';
+import { PollKeyVerbosePipe } from 'app/shared/pipes/poll-key-verbose.pipe';
+import { PollPercentBasePipe } from 'app/shared/pipes/poll-percent-base.pipe';
+import { PollData } from 'app/site/polls/models/view-base-poll';
 import { ViewAssignment } from '../models/view-assignment';
+import { ViewAssignmentPoll } from '../models/view-assignment-poll';
 
 /**
  * Creates a PDF document from a single assignment
@@ -20,7 +25,13 @@ export class AssignmentPdfService {
      * @param pdfDocumentService PDF functions
      * @param htmlToPdfService Convert the assignment detail html text to pdf
      */
-    public constructor(private translate: TranslateService, private htmlToPdfService: HtmlToPdfService) {}
+    public constructor(
+        private translate: TranslateService,
+        private htmlToPdfService: HtmlToPdfService,
+        private pollKeyVerbose: PollKeyVerbosePipe,
+        private parsePollNumber: ParsePollNumberPipe,
+        private pollPercentBase: PollPercentBasePipe
+    ) {}
 
     /**
      * Main function to control the pdf generation.
@@ -141,43 +152,19 @@ export class AssignmentPdfService {
     }
 
     /**
-     * Creates a candidate line in the results table
-     *
-     * @param candidateName The name of the candidate
-     * @param pollOption the poll options (yes, no, maybe [...])
-     * @returns a line in the table
-     */
-    // TODO: type the result.
-    /*private electedCandidateLine(candidateName: string, pollOption: ViewAssignmentOption): object {
-        if (pollOption.is_elected) {
-            this.showIsElected = true;
-            return {
-                text: candidateName + '*',
-                bold: true
-            };
-        } else {
-            return {
-                text: candidateName
-            };
-        }*
-    }*/
-
-    /**
      * Creates the poll result table for all published polls
      *
      * @param assignment the ViewAssignment to create the document for
      * @returns the table as pdfmake object
      */
-    // TODO: type the result
     private createPollResultTable(assignment: ViewAssignment): object {
-        /*const resultBody = [];
-        for (let pollIndex = 0; pollIndex < assignment.polls.length; pollIndex++) {
-            const poll = assignment.polls[pollIndex];
-            if (poll.published) {
+        const resultBody = [];
+        for (const poll of assignment.polls) {
+            if (poll.isPublished) {
                 const pollTableBody = [];
 
                 resultBody.push({
-                    text: `${this.translate.instant('Ballot')} ${pollIndex + 1}`,
+                    text: poll.title,
                     bold: true,
                     style: 'textItem',
                     margin: [0, 15, 0, 0]
@@ -194,56 +181,22 @@ export class AssignmentPdfService {
                     }
                 ]);
 
-                for (let optionIndex = 0; optionIndex < poll.options.length; optionIndex++) {
-                    const pollOption = poll.options[optionIndex];
+                const tableData = poll.generateTableData();
 
-                    const candidateName = pollOption.user.full_name;
-                    const votes = pollOption.votes; // 0 = yes, 1 = no, 2 = abstain0 = yes, 1 = no, 2 = abstain
-                    const tableLine = [];
-                    tableLine.push(this.electedCandidateLine(candidateName, pollOption));
+                for (const pollResult of tableData) {
+                    const resultLine = this.getPollResult(pollResult, poll);
 
-                    if (poll.pollmethod === 'votes') {
-                        tableLine.push({
-                            text: this.parseVoteValue(votes[0].value, votes[0].weight, poll, pollOption)
-                        });
-                    } else {
-                        const resultBlock = votes.map(vote =>
-                            this.parseVoteValue(vote.value, vote.weight, poll, pollOption)
-                        );
-
-                        tableLine.push({
-                            text: resultBlock
-                        });
-                    }
-                    pollTableBody.push(tableLine);
-                }
-
-                // push the result lines
-                const summaryLine = this.pollService.getVoteOptionsByPoll(poll).map(key => {
-                    // TODO: Refractor into pollService to make this easier.
-                    //       Return an object with untranslated lable: string, specialLabel: string and (opt) percent: number
-                    const conclusionLabel = this.translate.instant(this.pollService.getLabel(key));
-                    const specialLabel = this.translate.instant(this.pollService.getSpecialLabel(poll[key]));
-                    let percentLabel = '';
-                    if (!this.pollService.isAbstractValue(this.pollService.calculationDataFromPoll(poll), key)) {
-                        percentLabel = ` (${this.pollService.getValuePercent(
-                            this.pollService.calculationDataFromPoll(poll),
-                            key
-                        )}%)`;
-                    }
-                    return [
+                    const tableLine = [
                         {
-                            text: conclusionLabel,
-                            style: 'tableConclude'
+                            text: pollResult.user
                         },
                         {
-                            text: specialLabel + percentLabel,
-                            style: 'tableConclude'
+                            text: resultLine
                         }
                     ];
-                });
 
-                pollTableBody.push(...summaryLine);
+                    pollTableBody.push(tableLine);
+                }
 
                 resultBody.push({
                     table: {
@@ -256,52 +209,19 @@ export class AssignmentPdfService {
             }
         }
 
-        // add the legend to the result body
-        // if (assignment.polls.length > 0 && isElectedSemaphore) {
-        if (assignment.polls.length > 0 && this.showIsElected) {
-            resultBody.push({
-                text: `* = ${this.translate.instant('is elected')}`,
-                margin: [0, 5, 0, 0]
-            });
-        }
-
-        return resultBody;*/
-        throw new Error('TODO');
+        return resultBody;
     }
 
     /**
-     * Creates a translated voting result with numbers and percent-value depending in the polloptions
-     * I.e: "Yes 25 (22,2%)" or just "10"
-     *
-     * @param optionLabel Usually Yes or No
-     * @param value the amount of votes
-     * @param poll the specific poll
-     * @param option the corresponding poll option
-     * @returns a string a nicer number representation: "Yes 25 (22,2%)" or just "10"
+     * Converts pollData to a printable string representation
      */
-    /*private parseVoteValue(
-        optionLabel: PollVoteValue,
-        value: number,
-        poll: ViewAssignmentPoll,
-        option: ViewAssignmentOption
-    ): string {
-        let resultString = '';
-        const label = this.translate.instant(this.pollService.getLabel(optionLabel));
-        const valueString = this.pollService.getSpecialLabel(value);
-        const percentNr = this.pollService.getPercent(
-            this.pollService.calculationDataFromPoll(poll),
-            option,
-            optionLabel
-        );
-
-        resultString += `${label} ${valueString}`;
-        if (
-            percentNr &&
-            !this.pollService.isAbstractOption(this.pollService.calculationDataFromPoll(poll), option, optionLabel)
-        ) {
-            resultString += ` (${percentNr}%)`;
-        }
-
-        return `${resultString}\n`;
-    }*/
+    private getPollResult(votingResult: PollData, poll: ViewAssignmentPoll): string {
+        const resultList = poll.pollmethodFields.map(field => {
+            const votingKey = this.translate.instant(this.pollKeyVerbose.transform(field));
+            const resultValue = this.parsePollNumber.transform(votingResult[field]);
+            const resultInPercent = this.pollPercentBase.transform(votingResult[field], poll);
+            return `${votingKey}: ${resultValue} ${resultInPercent ? resultInPercent : ''}`;
+        });
+        return resultList.join('\n');
+    }
 }
