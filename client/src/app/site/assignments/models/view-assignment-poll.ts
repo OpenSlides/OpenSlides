@@ -2,7 +2,7 @@ import { BehaviorSubject } from 'rxjs';
 
 import { ChartData } from 'app/shared/components/charts/charts.component';
 import { AssignmentPoll, AssignmentPollMethods } from 'app/shared/models/assignments/assignment-poll';
-import { PollColor, PollState } from 'app/shared/models/poll/base-poll';
+import { PercentBase, PollColor, PollState } from 'app/shared/models/poll/base-poll';
 import { BaseViewModel } from 'app/site/base/base-view-model';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 import { PollData, ViewBasePoll } from 'app/site/polls/models/view-base-poll';
@@ -80,7 +80,8 @@ export class ViewAssignmentPoll extends ViewBasePoll<AssignmentPoll> implements 
                 yes: candidate.yes,
                 no: candidate.no,
                 abstain: candidate.abstain,
-                user: candidate.user.full_name
+                user: candidate.user.full_name,
+                showPercent: true
             }))
             .sort((a, b) => b.yes - a.yes);
 
@@ -97,8 +98,41 @@ export class ViewAssignmentPoll extends ViewBasePoll<AssignmentPoll> implements 
         return super.getNextStates();
     }
 
+    private sumOptionsYN(): number {
+        return this.options.reduce((o, n) => {
+            o += n.yes > 0 ? n.yes : 0;
+            o += n.no > 0 ? n.no : 0;
+            return o;
+        }, 0);
+    }
+
+    private sumOptionsYNA(): number {
+        return this.options.reduce((o, n) => {
+            o += n.abstain > 0 ? n.abstain : 0;
+            return o;
+        }, this.sumOptionsYN());
+    }
+
     public getPercentBase(): number {
-        return 0;
+        const base: PercentBase = this.poll.onehundred_percent_base;
+        let totalByBase: number;
+        switch (base) {
+            case PercentBase.YN:
+                totalByBase = this.sumOptionsYN();
+                break;
+            case PercentBase.YNA:
+                totalByBase = this.sumOptionsYNA();
+                break;
+            case PercentBase.Valid:
+                totalByBase = this.poll.votesvalid;
+                break;
+            case PercentBase.Cast:
+                totalByBase = this.poll.votescast;
+                break;
+            default:
+                break;
+        }
+        return totalByBase;
     }
 }
 
