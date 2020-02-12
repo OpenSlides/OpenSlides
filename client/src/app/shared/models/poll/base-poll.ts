@@ -46,10 +46,8 @@ export abstract class BasePoll<T = any, O extends BaseOption<any> = any> extends
     public votesinvalid: number;
     public votescast: number;
     public groups_id: number[];
-    public voted_id: number[];
     public majority_method: MajorityMethod;
     public onehundred_percent_base: PercentBase;
-    public user_has_voted: boolean;
 
     public get isCreated(): boolean {
         return this.state === PollState.Created;

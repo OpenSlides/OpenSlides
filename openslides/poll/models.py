@@ -1,5 +1,5 @@
 from decimal import Decimal
-from typing import Iterable, Optional, Tuple, Type
+from typing import Iterable, Optional, Set, Tuple, Type
 
 from django.conf import settings
 from django.core.validators import MinValueValidator
@@ -35,7 +35,8 @@ class BaseVote(models.Model):
 
 class BaseOption(models.Model):
     """
-    All subclasses must have poll attribute with the related name "options"
+    All subclasses must have poll attribute with the related name "options". Also
+    they must have a "voted" relation to users.
     """
 
     vote_class: Optional[Type["BaseVote"]] = None
@@ -73,6 +74,30 @@ class BaseOption(models.Model):
             )
         return cls.vote_class
 
+    def get_votes(self):
+        """
+        Return a QuerySet with all vote objects related to this option.
+        """
+        return self.get_vote_class().objects.filter(option=self)
+
+    def pseudoanonymize(self):
+        for vote in self.get_votes():
+            vote.user = None
+            vote.save()
+
+    def reset(self):
+        self.voted.clear()
+
+        # Delete votes
+        votes = self.get_votes()
+        votes_id = [vote.id for vote in votes]
+        votes.delete()
+        collection = self.get_vote_class().get_collection_string()
+        inform_deleted_data((collection, id) for id in votes_id)
+
+        # update self because the changed voted relation
+        inform_changed_data(self)
+
 
 class BasePoll(models.Model):
     option_class: Optional[Type["BaseOption"]] = None
@@ -101,7 +126,6 @@ class BasePoll(models.Model):
 
     title = models.CharField(max_length=255, blank=True, null=False)
     groups = models.ManyToManyField(settings.AUTH_GROUP_MODEL, blank=True)
-    voted = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)
 
     db_votesvalid = models.DecimalField(
         null=True,
@@ -162,7 +186,7 @@ class BasePoll(models.Model):
         if self.type == self.TYPE_ANALOG:
             return self.db_votesvalid
         else:
-            return Decimal(self.count_users_voted())
+            return Decimal(self.amount_valid_votes())
 
     def set_votesvalid(self, value):
         if self.type != self.TYPE_ANALOG:
@@ -175,7 +199,7 @@ class BasePoll(models.Model):
         if self.type == self.TYPE_ANALOG:
             return self.db_votesinvalid
         else:
-            return Decimal(0)
+            return Decimal(self.amount_invalid_votes())
 
     def set_votesinvalid(self, value):
         if self.type != self.TYPE_ANALOG:
@@ -188,7 +212,7 @@ class BasePoll(models.Model):
         if self.type == self.TYPE_ANALOG:
             return self.db_votescast
         else:
-            return Decimal(self.count_users_voted())
+            return Decimal(self.amount_voted_users())
 
     def set_votescast(self, value):
         if self.type != self.TYPE_ANALOG:
@@ -197,14 +221,30 @@ class BasePoll(models.Model):
 
     votescast = property(get_votescast, set_votescast)
 
-    def count_users_voted(self):
-        return self.voted.all().count()
+    def get_user_ids_with_valid_votes(self):
+        initial_option = self.get_options().first()
+        user_ids = set(map(lambda u: u.id, initial_option.voted.all()))
+        for option in self.get_options():
+            user_ids = user_ids.intersection(
+                set(map(lambda u: u.id, option.voted.all()))
+            )
+        return list(user_ids)
 
-    def get_options(self):
-        """
-        Returns the option objects for the poll.
-        """
-        return self.get_option_class().objects.filter(poll=self)
+    def get_all_voted_user_ids(self):
+        # TODO: This might be faster with only one DB query using distinct.
+        user_ids: Set[int] = set()
+        for option in self.get_options():
+            user_ids.update(option.voted.all().values_list("pk", flat=True))
+        return list(user_ids)
+
+    def amount_valid_votes(self):
+        return len(self.get_user_ids_with_valid_votes())
+
+    def amount_invalid_votes(self):
+        return self.amount_voted_users() - self.amount_valid_votes()
+
+    def amount_voted_users(self):
+        return len(self.get_all_voted_user_ids())
 
     def create_options(self):
         """ Should be called after creation of this model. """
@@ -218,6 +258,12 @@ class BasePoll(models.Model):
             )
         return cls.option_class
 
+    def get_options(self):
+        """
+        Returns the option objects for the poll.
+        """
+        return self.get_option_class().objects.filter(poll=self)
+
     @classmethod
     def get_vote_class(cls):
         return cls.get_option_class().get_vote_class()
@@ -229,22 +275,12 @@ class BasePoll(models.Model):
         return self.get_vote_class().objects.filter(option__poll__id=self.id)
 
     def pseudoanonymize(self):
-        for vote in self.get_votes():
-            vote.user = None
-            vote.save()
+        for option in self.get_options():
+            option.pseudoanonymize()
 
     def reset(self):
-        self.voted.clear()
-
-        # Delete votes
-        votes = self.get_votes()
-        votes_id = [vote.id for vote in votes]
-        votes.delete()
-        collection = self.get_vote_class().get_collection_string()
-        inform_deleted_data((collection, id) for id in votes_id)
-
-        # update options
-        inform_changed_data(self.get_options())
+        for option in self.get_options():
+            option.reset()
 
         # Reset state
         self.state = BasePoll.STATE_CREATED

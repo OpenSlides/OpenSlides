@@ -138,6 +138,18 @@ export abstract class ViewBasePoll<M extends BasePoll<M, any> = any> extends Bas
         return states;
     }
 
+    public get user_has_voted_invalid(): boolean {
+        return this.options.some(option => option.user_has_voted) && !this.user_has_voted_valid;
+    }
+
+    public get user_has_voted_valid(): boolean {
+        return this.options.every(option => option.user_has_voted);
+    }
+
+    public get user_has_not_voted(): boolean {
+        return this.options.every(option => !option.user_has_voted);
+    }
+
     public abstract getSlide(): ProjectorElementBuildDeskriptor;
 
     public abstract getContentObject(): BaseViewModel;

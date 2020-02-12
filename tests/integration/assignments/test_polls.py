@@ -48,6 +48,15 @@ def test_assignment_vote_db_queries():
     assert count_queries(AssignmentVote.get_elements)() == 1
 
 
+@pytest.mark.django_db(transaction=False)
+def test_assignment_option_db_queries():
+    """
+    Tests that only 1 query is done when fetching AssignmentOptions
+    """
+    create_assignment_polls()
+    assert count_queries(AssignmentOption.get_elements)() == 1
+
+
 def create_assignment_polls():
     """
     Creates 1 assignment with 3 candidates which has 5 polls in which each candidate got a random amount of votes between 0 and 10 from 3 users

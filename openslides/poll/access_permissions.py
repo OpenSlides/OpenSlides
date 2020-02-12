@@ -20,13 +20,8 @@ class BasePollAccessPermissions(BaseAccessPermissions):
         Non-published polls will be restricted:
          - Remove votes* values from the poll
          - Remove yes/no/abstain fields from options
-         - Remove voted_id field from the poll
          - Remove fields given in self.assitional_fields from the poll
         """
-        # add hast_voted for all users to check whether op has voted
-        for poll in full_data:
-            poll["user_has_voted"] = user_id in poll["voted_id"]
-
         if await async_has_perm(user_id, self.manage_permission):
             data = full_data
         else:
@@ -39,7 +34,6 @@ class BasePollAccessPermissions(BaseAccessPermissions):
                     del poll["votesvalid"]
                     del poll["votesinvalid"]
                     del poll["votescast"]
-                    del poll["voted_id"]
                     for field in self.additional_fields:
                         del poll[field]
                 data.append(poll)
@@ -77,6 +71,10 @@ class BaseOptionAccessPermissions(BaseAccessPermissions):
         self, full_data: List[Dict[str, Any]], user_id: int
     ) -> List[Dict[str, Any]]:
 
+        # add has_voted for all users to check whether op has voted
+        for option in full_data:
+            option["user_has_voted"] = user_id in option["voted_id"]
+
         if await async_has_perm(user_id, self.manage_permission):
             data = full_data
         else:
@@ -89,5 +87,6 @@ class BaseOptionAccessPermissions(BaseAccessPermissions):
                     del option["yes"]
                     del option["no"]
                     del option["abstain"]
+                    del option["voted_id"]
                 data.append(option)
         return data

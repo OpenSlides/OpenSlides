@@ -78,11 +78,6 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name="motionpoll",
-            name="voted",
-            field=models.ManyToManyField(blank=True, to=settings.AUTH_USER_MODEL),
-        ),
-        migrations.AddField(
-            model_name="motionpoll",
             name="majority_method",
             field=models.CharField(
                 choices=[
@@ -112,11 +107,20 @@ class Migration(migrations.Migration):
             ),
             preserve_default=False,
         ),
+        migrations.AddField(
+            model_name="motionoption",
+            name="voted",
+            field=models.ManyToManyField(
+                blank=True,
+                to=settings.AUTH_USER_MODEL,
+                related_name="motionoption_voted",
+            ),
+        ),
         migrations.AlterField(
             model_name="motionvote",
             name="option",
             field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE,
+                on_delete=openslides.utils.models.CASCADE_AND_AUTOUPDATE,
                 related_name="votes",
                 to="motions.MotionOption",
             ),
@@ -142,9 +146,18 @@ class Migration(migrations.Migration):
             model_name="motionoption",
             name="poll",
             field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE,
+                on_delete=openslides.utils.models.CASCADE_AND_AUTOUPDATE,
                 related_name="options",
                 to="motions.MotionPoll",
+            ),
+        ),
+        migrations.AlterField(
+            model_name="motionpoll",
+            name="motion",
+            field=models.ForeignKey(
+                on_delete=openslides.utils.models.CASCADE_AND_AUTOUPDATE,
+                related_name="polls",
+                to="motions.Motion",
             ),
         ),
         migrations.RenameField(
