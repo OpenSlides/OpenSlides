@@ -222,19 +222,21 @@ class BasePoll(models.Model):
     votescast = property(get_votescast, set_votescast)
 
     def get_user_ids_with_valid_votes(self):
-        initial_option = self.get_options().first()
-        user_ids = set(map(lambda u: u.id, initial_option.voted.all()))
-        for option in self.get_options():
-            user_ids = user_ids.intersection(
-                set(map(lambda u: u.id, option.voted.all()))
-            )
-        return list(user_ids)
+        if self.get_options().count():
+            initial_option = self.get_options()[0]
+            user_ids = set(map(lambda u: u.id, initial_option.voted.all()))
+            for option in self.get_options():
+                user_ids = user_ids.intersection(
+                    set(map(lambda u: u.id, option.voted.all()))
+                )
+            return list(user_ids)
+        else:
+            return []
 
     def get_all_voted_user_ids(self):
-        # TODO: This might be faster with only one DB query using distinct.
         user_ids: Set[int] = set()
         for option in self.get_options():
-            user_ids.update(option.voted.all().values_list("pk", flat=True))
+            user_ids.update(map(lambda u: u.id, option.voted.all()))
         return list(user_ids)
 
     def amount_valid_votes(self):
@@ -262,7 +264,7 @@ class BasePoll(models.Model):
         """
         Returns the option objects for the poll.
         """
-        return self.get_option_class().objects.filter(poll=self)
+        return self.options.all()
 
     @classmethod
     def get_vote_class(cls):

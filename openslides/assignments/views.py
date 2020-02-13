@@ -380,7 +380,7 @@ class AssignmentPollViewSet(BasePollViewSet):
                 vote_obj.save()
             poll.save()
 
-    def validate_vote_data(self, data, poll):
+    def validate_vote_data(self, data, poll, user):
         """
         Request data:
         analog:
@@ -511,6 +511,9 @@ class AssignmentPollViewSet(BasePollViewSet):
 
             options_data = data
 
+        db_option_ids = set(option.id for option in poll.get_options())
+        data_option_ids = set(int(option_id) for option_id in options_data.keys())
+
         # Just for named/pseudoanonymous with YN/YNA skip the all-options-given check
         if poll.type not in (
             AssignmentPoll.TYPE_NAMED,
@@ -520,11 +523,19 @@ class AssignmentPollViewSet(BasePollViewSet):
             AssignmentPoll.POLLMETHOD_YNA,
         ):
             # Check if all options were given
-            db_option_ids = set(option.id for option in poll.get_options())
-            data_option_ids = set(int(option_id) for option_id in options_data.keys())
             if data_option_ids != db_option_ids:
                 raise ValidationError(
                     {"error": "You have to provide values for all options"}
+                )
+        else:
+            if not data_option_ids.issubset(db_option_ids):
+                raise ValidationError(
+                    {
+                        "error": "You gave the following invalid option ids: "
+                        + ", ".join(
+                            str(id) for id in data_option_ids.difference(db_option_ids)
+                        )
+                    }
                 )
 
     def create_votes_type_votes(self, data, poll, user):

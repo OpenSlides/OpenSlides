@@ -1196,7 +1196,7 @@ class MotionPollViewSet(BasePollViewSet):
 
         poll.save()
 
-    def validate_vote_data(self, data, poll):
+    def validate_vote_data(self, data, poll, user):
         """
         Request data for analog:
         { "Y": <amount>, "N": <amount>, ["A": <amount>],
@@ -1223,22 +1223,27 @@ class MotionPollViewSet(BasePollViewSet):
             elif poll.pollmethod == MotionPoll.POLLMETHOD_YN and data not in ("Y", "N"):
                 raise ValidationError("Data must be Y or N")
 
+            if poll.type == MotionPoll.TYPE_PSEUDOANONYMOUS:
+                if user in poll.options.get().voted.all():
+                    raise ValidationError("You already voted on this poll")
+
     def handle_named_vote(self, data, poll, user):
-        option = poll.options.get()
-        vote, _ = MotionVote.objects.get_or_create(user=user, option=option)
-        self.set_vote_data(data, vote, poll)
-        inform_changed_data(option)
+        self.handle_named_or_pseudoanonymous_vote(data, poll, user, False)
 
-    def handle_pseudoanonymous_vote(self, data, poll):
-        option = poll.options.get()
-        vote = MotionVote.objects.create(option=option)
-        self.set_vote_data(data, vote, poll)
-        inform_changed_data(option)
+    def handle_pseudoanonymous_vote(self, data, poll, user):
+        self.handle_named_or_pseudoanonymous_vote(data, poll, user, True)
 
-    def set_vote_data(self, data, vote, poll):
+    def handle_named_or_pseudoanonymous_vote(self, data, poll, user, pseudoanonymous):
+        option = poll.options.get()
+        vote, _ = MotionVote.objects.get_or_create(
+            user=None if pseudoanonymous else user, option=option
+        )
         vote.value = data
         vote.weight = Decimal("1")
         vote.save(no_delete_on_restriction=True)
+
+        option.voted.add(user)
+        option.save()
 
 
 class MotionOptionViewSet(BaseOptionViewSet):
