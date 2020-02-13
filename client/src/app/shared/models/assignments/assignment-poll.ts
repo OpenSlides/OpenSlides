@@ -1,3 +1,4 @@
+import { CalculablePollKey } from 'app/site/polls/services/poll.service';
 import { AssignmentOption } from './assignment-option';
 import { BasePoll } from '../poll/base-poll';
 
@@ -22,6 +23,16 @@ export class AssignmentPoll extends BasePoll<AssignmentPoll, AssignmentOption> {
     public global_no: boolean;
     public global_abstain: boolean;
     public description: string;
+
+    public get pollmethodFields(): CalculablePollKey[] {
+        if (this.pollmethod === AssignmentPollMethods.YN) {
+            return ['yes', 'no'];
+        } else if (this.pollmethod === AssignmentPollMethods.YNA) {
+            return ['yes', 'no', 'abstain'];
+        } else if (this.pollmethod === AssignmentPollMethods.Votes) {
+            return ['yes'];
+        }
+    }
 
     public constructor(input?: any) {
         super(AssignmentPoll.COLLECTIONSTRING, input);
