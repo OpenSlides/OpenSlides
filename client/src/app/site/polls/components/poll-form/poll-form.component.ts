@@ -77,6 +77,8 @@ export class PollFormComponent extends BaseViewComponent implements OnInit {
      */
     public publishImmediately = true;
 
+    public showSingleAmountHint = false;
+
     /**
      * Constructor. Retrieves necessary metadata from the pollService,
      * injects the poll itself
@@ -124,31 +126,61 @@ export class PollFormComponent extends BaseViewComponent implements OnInit {
         this.updatePollValues(this.contentForm.value);
 
         this.subscriptions.push(
+            // changes to whole form
             this.contentForm.valueChanges.subscribe(values => {
                 this.updatePollValues(values);
+            }),
+            // poll method changes
+            this.contentForm.get('pollmethod').valueChanges.subscribe(method => {
+                let forbiddenBases: string[];
+                if (method === 'YN') {
+                    forbiddenBases = [PercentBase.YNA, PercentBase.Cast];
+                } else if (method === 'YNA') {
+                    forbiddenBases = [PercentBase.Cast];
+                } else if (method === 'votes') {
+                    forbiddenBases = [PercentBase.YN, PercentBase.YNA];
+
+                    if (this.contentForm.get('type').value === PollType.Pseudoanonymous) {
+                        this.setVotesAmountCtrl();
+                    }
+                }
+
+                const percentBases = {};
+                for (const [key, value] of Object.entries(PercentBaseVerbose)) {
+                    if (!forbiddenBases.includes(key)) {
+                        percentBases[key] = value;
+                    }
+                }
+                this.percentBases = percentBases;
+                // TODO: update selected base
+                this.setVotesAmountCtrl();
+            }),
+            // poll type changes
+            this.contentForm.get('type').valueChanges.subscribe(() => {
+                this.setVotesAmountCtrl();
             })
         );
+    }
 
-        // update the percent bases when the poll method changes
-        this.contentForm.get('pollmethod').valueChanges.subscribe(method => {
-            let forbiddenBases: string[];
-            if (method === 'YN') {
-                forbiddenBases = [PercentBase.YNA, PercentBase.Cast];
-            } else if (method === 'YNA') {
-                forbiddenBases = [PercentBase.Cast];
-            } else if (method === 'votes') {
-                forbiddenBases = [PercentBase.YN, PercentBase.YNA];
-            }
-
-            const percentBases = {};
-            for (const [key, value] of Object.entries(PercentBaseVerbose)) {
-                if (!forbiddenBases.includes(key)) {
-                    percentBases[key] = value;
-                }
-            }
-            this.percentBases = percentBases;
-            // TODO: update selected base
-        });
+    /**
+     * Disable votes_amount form control if the poll type is anonymous
+     * and the poll method is votes.
+     * TODO: Enabling this requires at least another layout and some rework
+     */
+    private setVotesAmountCtrl(): void {
+        // Disable "Amounts of votes" if anonymous and yes-method
+        const votesAmountCtrl = this.contentForm.get('votes_amount');
+        if (
+            this.contentForm.get('type').value === PollType.Pseudoanonymous &&
+            this.contentForm.get('pollmethod').value === 'votes'
+        ) {
+            votesAmountCtrl.disable();
+            votesAmountCtrl.setValue(1);
+            this.showSingleAmountHint = true;
+        } else {
+            votesAmountCtrl.enable();
+            this.showSingleAmountHint = false;
+        }
     }
 
     public getValues<V extends ViewBasePoll>(): Partial<V> {
@@ -193,8 +225,8 @@ export class PollFormComponent extends BaseViewComponent implements OnInit {
             majority_method: ['', Validators.required],
             votes_amount: [1, [Validators.required, Validators.min(1)]],
             groups_id: [],
-            global_no: [],
-            global_abstain: []
+            global_no: [false],
+            global_abstain: [false]
         });
     }
 }

@@ -86,7 +86,13 @@ export class AssignmentPollVoteComponent extends BasePollVoteComponent<ViewAssig
         }
     }
 
+    public getVotesCount(): number {
+        return Object.keys(this.currentVotes).filter(key => this.currentVotes[key]).length;
+    }
+
     protected updateVotes(): void {
+        console.log('currentVotes: ', this.currentVotes);
+
         if (this.user && this.votes && this.poll) {
             const filtered = this.votes.filter(
                 vote => vote.option.poll_id === this.poll.id && vote.user_id === this.user.id

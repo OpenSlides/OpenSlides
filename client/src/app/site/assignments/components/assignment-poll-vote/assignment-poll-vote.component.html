@@ -5,49 +5,46 @@
     </div>
 
     <ng-container *ngIf="vmanager.canVote(poll)">
-
         <!-- TODO: Someone should make this pretty -->
         <span *ngIf="poll.user_has_voted_valid">Your vote is valid!</span>
         <span *ngIf="poll.user_has_voted_invalid">DANGER: Your vote is invalid!</span>
         <span *ngIf="poll.user_has_not_voted">You have not give any voting here!</span>
 
         <!-- Leftover votes -->
-        <h4 *ngIf="poll.pollmethod === pollMethods.Votes">
-            {{ 'Votes for this poll' | translate }}: {{ poll.votes_amount }}
-            <!-- ({{ getVotesCount() }}/{{ poll.votes_amount }} {{ 'Votes' | translate }}) -->
+        <h4 *ngIf="poll.pollmethod === pollMethods.Votes && poll.votes_amount > 1 && !currentVotes.global">
+            {{ 'Votes for this poll' | translate }}: {{ getVotesCount() }}/{{ poll.votes_amount }}
         </h4>
 
         <!-- Options and Actions -->
         <div *ngFor="let option of poll.options; let i = index">
-            <div *ngIf="option.user_has_voted">
-                TODO: DO not show buttons, becuase, the user has already voted for this one
-            </div>
-            <div
-                [ngClass]="{
-                    'yna-grid': poll.pollmethod === pollMethods.YNA,
-                    'yn-grid': poll.pollmethod === pollMethods.YN,
-                    'single-vote-grid': poll.pollmethod === pollMethods.Votes
-                }"
-            >
-                <div class="vote-candidate-name">
-                    <span *ngIf="option.user">{{ option.user.getFullName() }}</span>
-                    <span *ngIf="!option.user">{{ 'Unknown user' | translate }}</span>
-                </div>
+            <div *ngIf="poll.type !== PollType.Pseudoanonymous || !option.user_has_voted">
+                <div
+                    [ngClass]="{
+                        'yna-grid': poll.pollmethod === pollMethods.YNA,
+                        'yn-grid': poll.pollmethod === pollMethods.YN,
+                        'single-vote-grid': poll.pollmethod === pollMethods.Votes
+                    }"
+                >
+                    <div class="vote-candidate-name">
+                        <span *ngIf="option.user">{{ option.user.getFullName() }}</span>
+                        <span *ngIf="!option.user">{{ 'Unknown user' | translate }}</span>
+                    </div>
 
-                <div *ngFor="let action of voteActions">
-                    <button
-                        mat-raised-button
-                        (click)="saveSingleVote(option.id, action.vote)"
-                        [ngClass]="currentVotes[option.id] ? action.css : ''"
-                    >
-                        <mat-icon> {{ action.icon }}</mat-icon>
-                    </button>
-                    <span *ngIf="poll.pollmethod !== pollMethods.Votes" class="vote-label">
-                        {{ action.label | translate }}
-                    </span>
+                    <div *ngFor="let action of voteActions">
+                        <button
+                            mat-raised-button
+                            (click)="saveSingleVote(option.id, action.vote)"
+                            [ngClass]="currentVotes[option.id] === action.label ? action.css : ''"
+                        >
+                            <mat-icon> {{ action.icon }}</mat-icon>
+                        </button>
+                        <span *ngIf="poll.pollmethod !== pollMethods.Votes" class="vote-label">
+                            {{ action.label | translate }}
+                        </span>
+                    </div>
                 </div>
+                <mat-divider *ngIf="poll.options.length - 1 > i"></mat-divider>
             </div>
-            <mat-divider *ngIf="poll.options.length - 1 > i"></mat-divider>
         </div>
 
         <!-- global no/abstain -->
