@@ -81,7 +81,9 @@
                     formControlName="votes_amount"
                     min="1"
                     required
+
                 />
+                <mat-hint *ngIf="showSingleAmountHint"> {{ 'Multiple votes are disabled due to security reasons' | translate }}</mat-hint>
             </mat-form-field>
             <mat-checkbox formControlName="global_no">{{ PollPropertyVerbose.global_no | translate }}</mat-checkbox>
             <mat-checkbox formControlName="global_abstain">{{
