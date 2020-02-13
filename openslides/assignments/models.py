@@ -87,6 +87,7 @@ class AssignmentManager(BaseManager):
                 "tags",
                 "attachments",
                 "polls",
+                "polls__options",
             )
         )
 
@@ -274,8 +275,27 @@ class AssignmentVote(RESTModelMixin, BaseVote):
         default_permissions = ()
 
 
+class AssignmentOptionManager(BaseManager):
+    """
+    Customized model manager to support our get_prefetched_queryset method.
+    """
+
+    def get_prefetched_queryset(self, *args, **kwargs):
+        """
+        Returns the normal queryset with all voted users. In the background we
+        join and prefetch all related models.
+        """
+        return (
+            super()
+            .get_prefetched_queryset(*args, **kwargs)
+            .select_related("user", "poll")
+            .prefetch_related("voted", "votes")
+        )
+
+
 class AssignmentOption(RESTModelMixin, BaseOption):
     access_permissions = AssignmentOptionAccessPermissions()
+    objects = AssignmentOptionManager()
     vote_class = AssignmentVote
 
     poll = models.ForeignKey(
@@ -307,7 +327,9 @@ class AssignmentPollManager(BaseManager):
             super()
             .get_prefetched_queryset(*args, **kwargs)
             .select_related("assignment")
-            .prefetch_related("options", "options__user", "options__votes", "groups")
+            .prefetch_related(
+                "options", "options__user", "options__votes", "options__voted", "groups"
+            )
         )
 
 
@@ -379,15 +401,16 @@ class AssignmentPoll(RESTModelMixin, BasePoll):
             abstain_sum += option.abstain
         return abstain_sum
 
-    def create_options(self):
+    def create_options(self, skip_autoupdate=False):
         related_users = AssignmentRelatedUser.objects.filter(
             assignment__id=self.assignment.id
         ).exclude(elected=True)
 
         for related_user in related_users:
-            AssignmentOption.objects.create(
+            option = AssignmentOption(
                 user=related_user.user, weight=related_user.weight, poll=self
             )
+            option.save(skip_autoupdate=skip_autoupdate)
 
         # Add all candidates to list of speakers of related agenda item
         if config["assignment_poll_add_candidates_to_list_of_speakers"]:
@@ -401,4 +424,5 @@ class AssignmentPoll(RESTModelMixin, BasePoll):
                 except OpenSlidesError:
                     # The Speaker is already on the list. Do nothing.
                     pass
-            inform_changed_data(self.assignment.list_of_speakers)
+            if not skip_autoupdate:
+                inform_changed_data(self.assignment.list_of_speakers)

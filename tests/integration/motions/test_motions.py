@@ -109,7 +109,7 @@ class CreateMotion(TestCase):
         The created motion should have an identifier and the admin user should
         be the submitter.
         """
-        with self.assertNumQueries(51, verbose=True):
+        with self.assertNumQueries(51):
             response = self.client.post(
                 reverse("motion-list"),
                 {

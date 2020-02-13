@@ -24,6 +24,7 @@ def test_assignment_db_queries():
     * 1 request to get the tags,
     * 1 request to get the attachments and
     * 1 Request to get the polls of the assignment
+    * 1 Request to get the options of these polls
     """
     for index in range(10):
         assignment = Assignment.objects.create(title=f"assignment{index}", open_posts=1)
@@ -35,7 +36,7 @@ def test_assignment_db_queries():
                 type=AssignmentPoll.TYPE_NAMED,
             )
 
-    assert count_queries(Assignment.get_elements)() == 7
+    assert count_queries(Assignment.get_elements)() == 8
 
 
 class CreateAssignment(TestCase):
