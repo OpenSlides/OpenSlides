@@ -6,7 +6,7 @@ import { HtmlToPdfService } from 'app/core/pdf-services/html-to-pdf.service';
 import { ParsePollNumberPipe } from 'app/shared/pipes/parse-poll-number.pipe';
 import { PollKeyVerbosePipe } from 'app/shared/pipes/poll-key-verbose.pipe';
 import { PollPercentBasePipe } from 'app/shared/pipes/poll-percent-base.pipe';
-import { PollData } from 'app/site/polls/models/view-base-poll';
+import { PollTableData } from 'app/site/polls/models/view-base-poll';
 import { ViewAssignment } from '../models/view-assignment';
 import { ViewAssignmentPoll } from '../models/view-assignment-poll';
 
@@ -215,7 +215,7 @@ export class AssignmentPdfService {
     /**
      * Converts pollData to a printable string representation
      */
-    private getPollResult(votingResult: PollData, poll: ViewAssignmentPoll): string {
+    private getPollResult(votingResult: PollTableData, poll: ViewAssignmentPoll): string {
         const resultList = poll.pollmethodFields.map(field => {
             const votingKey = this.translate.instant(this.pollKeyVerbose.transform(field));
             const resultValue = this.parsePollNumber.transform(votingResult[field]);

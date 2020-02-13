@@ -14,6 +14,7 @@ import { ViewportService } from 'app/core/ui-services/viewport.service';
 import { ChartType } from 'app/shared/components/charts/charts.component';
 import { AssignmentPollMethods } from 'app/shared/models/assignments/assignment-poll';
 import { BasePollDetailComponent } from 'app/site/polls/components/base-poll-detail.component';
+import { PollService } from 'app/site/polls/services/poll.service';
 import { AssignmentPollDialogService } from '../../services/assignment-poll-dialog.service';
 import { ViewAssignmentPoll } from '../../models/view-assignment-poll';
 
@@ -60,10 +61,11 @@ export class AssignmentPollDetailComponent extends BasePollDetailComponent<ViewA
         groupRepo: GroupRepositoryService,
         prompt: PromptService,
         pollDialog: AssignmentPollDialogService,
+        pollService: PollService,
         private operator: OperatorService,
         private viewport: ViewportService
     ) {
-        super(title, translate, matSnackbar, repo, route, groupRepo, prompt, pollDialog);
+        super(title, translate, matSnackbar, repo, route, groupRepo, prompt, pollDialog, pollService);
     }
 
     public onPollWithOptionsLoaded(): void {
@@ -129,7 +131,7 @@ export class AssignmentPollDetailComponent extends BasePollDetailComponent<ViewA
 
         this.setVotesData(Object.values(votes));
 
-        this.candidatesLabels = this.poll.initChartLabels();
+        this.candidatesLabels = this.pollService.getChartLabels(this.poll);
 
         this.isReady = true;
     }
@@ -146,7 +148,7 @@ export class AssignmentPollDetailComponent extends BasePollDetailComponent<ViewA
     protected initChartData(): void {
         if (this.isVotedPoll) {
             this._chartType = 'doughnut';
-            this.chartDataSubject.next(this.poll.generateCircleChartData());
+            this.chartDataSubject.next(this.pollService.generateCircleChartData(this.poll));
         } else {
             super.initChartData();
         }

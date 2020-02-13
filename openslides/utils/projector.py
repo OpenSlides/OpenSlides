@@ -115,3 +115,12 @@ def get_model(all_data: AllData, collection: str, id: Any) -> Dict[str, Any]:
     except KeyError:
         raise ProjectorElementException(f"{collection} with id {id} does not exist")
     return model
+
+
+def get_models(
+    all_data: AllData, collection: str, ids: List[Any]
+) -> List[Dict[str, Any]]:
+    """
+    Tries to fetch all given models. Models are required to be all of the collection `collection`.
+    """
+    return [get_model(all_data, collection, id) for id in ids]

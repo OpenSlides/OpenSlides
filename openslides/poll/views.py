@@ -103,7 +103,7 @@ class BasePollViewSet(ModelViewSet):
         # convert user ids to option ids
         self.convert_option_data(poll, vote_data)
 
-        self.validate_vote_data(vote_data, poll)
+        self.validate_vote_data(vote_data, poll, request.user)
         self.handle_analog_vote(vote_data, poll, request.user)
 
         if request.data.get("publish_immediately"):
@@ -198,7 +198,7 @@ class BasePollViewSet(ModelViewSet):
         self.assert_can_vote(poll, request)
 
         data = request.data
-        self.validate_vote_data(data, poll)
+        self.validate_vote_data(data, poll, request.user)
 
         if poll.type == BasePoll.TYPE_ANALOG:
             self.handle_analog_vote(data, poll, request.user)
@@ -258,7 +258,7 @@ class BasePollViewSet(ModelViewSet):
         """
         pass
 
-    def validate_vote_data(self, data, poll):
+    def validate_vote_data(self, data, poll, user):
         """
         To be implemented by subclass. Validates the data according to poll type and method and fields by validated versions.
         Raises ValidationError on failure

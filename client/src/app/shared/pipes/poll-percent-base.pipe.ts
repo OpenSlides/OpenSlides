@@ -1,6 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
-import { ViewBasePoll } from 'app/site/polls/models/view-base-poll';
+import { AssignmentPollService } from 'app/site/assignments/services/assignment-poll.service';
+import { MotionPollService } from 'app/site/motions/services/motion-poll.service';
+import { PollData } from 'app/site/polls/services/poll.service';
 
 /**
  * Uses a number and a ViewPoll-object.
@@ -21,8 +23,18 @@ import { ViewBasePoll } from 'app/site/polls/models/view-base-poll';
 export class PollPercentBasePipe implements PipeTransform {
     private decimalPlaces = 3;
 
-    public transform(value: number, viewPoll: ViewBasePoll): string | null {
-        const totalByBase = viewPoll.getPercentBase();
+    public constructor(
+        private assignmentPollService: AssignmentPollService,
+        private motionPollService: MotionPollService
+    ) {}
+
+    public transform(value: number, poll: PollData): string | null {
+        let totalByBase: number;
+        if ((<any>poll).assignment) {
+            totalByBase = this.assignmentPollService.getPercentBase(poll);
+        } else {
+            totalByBase = this.motionPollService.getPercentBase(poll);
+        }
 
         if (totalByBase) {
             const percentNumber = (value / totalByBase) * 100;

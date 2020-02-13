@@ -3,12 +3,10 @@ import { MatDialog, MatSnackBar } from '@angular/material';
 import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
-import { BehaviorSubject } from 'rxjs';
 
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { MotionPollRepositoryService } from 'app/core/repositories/motions/motion-poll-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
-import { ChartData } from 'app/shared/components/charts/charts.component';
 import { ViewMotionPoll } from 'app/site/motions/models/view-motion-poll';
 import { MotionPollDialogService } from 'app/site/motions/services/motion-poll-dialog.service';
 import { MotionPollPdfService } from 'app/site/motions/services/motion-poll-pdf.service';
@@ -32,7 +30,7 @@ export class MotionPollComponent extends BasePollComponent<ViewMotionPoll> {
     public set poll(value: ViewMotionPoll) {
         this.initPoll(value);
 
-        const chartData = this.poll.generateChartData();
+        const chartData = this.pollService.generateChartData(value);
         for (const data of chartData) {
             if (data.label === 'YES') {
                 this.voteYes = data.data[0];
@@ -54,11 +52,6 @@ export class MotionPollComponent extends BasePollComponent<ViewMotionPoll> {
     public get pollLink(): string {
         return `/motions/polls/${this.poll.id}`;
     }
-
-    /**
-     * Subject to holding the data needed for the chart.
-     */
-    public chartDataSubject: BehaviorSubject<ChartData> = new BehaviorSubject([]);
 
     /**
      * Number of votes for `Yes`.
@@ -147,9 +140,5 @@ export class MotionPollComponent extends BasePollComponent<ViewMotionPoll> {
         if (await this.promptService.open(title, text)) {
             this.repo.delete(this.poll).catch(this.raiseError);
         }
-    }
-
-    public isVoteDocumented(vote: number): boolean {
-        return vote !== null && vote !== undefined && vote !== -2;
     }
 }

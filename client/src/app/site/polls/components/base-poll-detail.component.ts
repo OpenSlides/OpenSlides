@@ -17,6 +17,7 @@ import { BaseViewComponent } from 'app/site/base/base-view';
 import { ViewGroup } from 'app/site/users/models/view-group';
 import { ViewUser } from 'app/site/users/models/view-user';
 import { BasePollRepositoryService } from '../services/base-poll-repository.service';
+import { PollService } from '../services/poll.service';
 import { ViewBasePoll } from '../models/view-base-poll';
 
 export interface BaseVoteData {
@@ -103,7 +104,8 @@ export abstract class BasePollDetailComponent<V extends ViewBasePoll> extends Ba
         protected route: ActivatedRoute,
         protected groupRepo: GroupRepositoryService,
         protected promptService: PromptService,
-        protected pollDialog: BasePollDialogService<V>
+        protected pollDialog: BasePollDialogService<V>,
+        protected pollService: PollService
     ) {
         super(title, translate, matSnackbar);
     }
@@ -174,7 +176,7 @@ export abstract class BasePollDetailComponent<V extends ViewBasePoll> extends Ba
      * Could be overwritten to implement custom chart data.
      */
     protected initChartData(): void {
-        this.chartDataSubject.next(this.poll.generateChartData());
+        this.chartDataSubject.next(this.pollService.generateChartData(this.poll));
     }
 
     /**

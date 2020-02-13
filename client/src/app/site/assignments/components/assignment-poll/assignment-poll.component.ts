@@ -10,7 +10,6 @@ import { OperatorService } from 'app/core/core-services/operator.service';
 import { AssignmentPollRepositoryService } from 'app/core/repositories/assignments/assignment-poll-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ChartType } from 'app/shared/components/charts/charts.component';
-import { AssignmentPollMethods } from 'app/shared/models/assignments/assignment-poll';
 import { PollState } from 'app/shared/models/poll/base-poll';
 import { BasePollComponent } from 'app/site/polls/components/base-poll.component';
 import { PollService } from 'app/site/polls/services/poll.service';
@@ -32,11 +31,8 @@ export class AssignmentPollComponent extends BasePollComponent<ViewAssignmentPol
     @Input()
     public set poll(value: ViewAssignmentPoll) {
         this.initPoll(value);
-        this.candidatesLabels = value.initChartLabels();
-        const chartData =
-            value.pollmethod === AssignmentPollMethods.Votes
-                ? value.generateCircleChartData()
-                : value.generateChartData();
+        this.candidatesLabels = this.pollService.getChartLabels(value);
+        const chartData = this.pollService.generateChartData(value);
         this.chartDataSubject.next(chartData);
     }
 
@@ -45,7 +41,7 @@ export class AssignmentPollComponent extends BasePollComponent<ViewAssignmentPol
     }
 
     public get chartType(): ChartType {
-        return this.poll && this.poll.pollmethod === AssignmentPollMethods.Votes ? 'doughnut' : 'horizontalBar';
+        return this.pollService.getChartType(this.poll);
     }
 
     public candidatesLabels: string[] = [];

@@ -882,8 +882,27 @@ class MotionVote(RESTModelMixin, BaseVote):
         default_permissions = ()
 
 
+class MotionOptionManager(BaseManager):
+    """
+    Customized model manager to support our get_prefetched_queryset method.
+    """
+
+    def get_prefetched_queryset(self, *args, **kwargs):
+        """
+        Returns the normal queryset with all voted users. In the background we
+        join and prefetch all related models.
+        """
+        return (
+            super()
+            .get_prefetched_queryset(*args, **kwargs)
+            .select_related("poll")
+            .prefetch_related("voted", "votes")
+        )
+
+
 class MotionOption(RESTModelMixin, BaseOption):
     access_permissions = MotionOptionAccessPermissions()
+    objects = MotionOptionManager()
     vote_class = MotionVote
 
     poll = models.ForeignKey(
@@ -911,7 +930,7 @@ class MotionPollManager(BaseManager):
             super()
             .get_prefetched_queryset(*args, **kwargs)
             .select_related("motion")
-            .prefetch_related("options", "options__votes", "groups")
+            .prefetch_related("options", "options__votes", "options__voted", "groups")
         )
 
 

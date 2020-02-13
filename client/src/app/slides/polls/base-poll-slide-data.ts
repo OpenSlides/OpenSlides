@@ -1,17 +1,13 @@
-import { MotionPollMethods } from 'app/shared/models/motions/motion-poll';
 import { MajorityMethod, PercentBase, PollState, PollType } from 'app/shared/models/poll/base-poll';
-import { MotionTitleInformation } from 'app/site/motions/models/view-motion';
-import { BasePollSlideData } from 'app/slides/polls/base-poll-slide-data';
 
-export interface MotionPollSlideData extends BasePollSlideData {
-    motion: MotionTitleInformation;
+export interface BasePollSlideData {
     poll: {
         title: string;
         type: PollType;
-        pollmethod: MotionPollMethods;
         state: PollState;
         onehundred_percent_base: PercentBase;
         majority_method: MajorityMethod;
+        pollmethod: string;
 
         options: {
             yes?: number;
@@ -19,7 +15,6 @@ export interface MotionPollSlideData extends BasePollSlideData {
             abstain?: number;
         }[];
 
-        // optional for published polls:
         votesvalid: number;
         votesinvalid: number;
         votescast: number;

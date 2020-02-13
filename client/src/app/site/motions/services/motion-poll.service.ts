@@ -9,7 +9,13 @@ import { Collection } from 'app/shared/models/base/collection';
 import { MotionPollMethods } from 'app/shared/models/motions/motion-poll';
 import { MajorityMethod, PercentBase } from 'app/shared/models/poll/base-poll';
 import { ViewMotionPoll } from 'app/site/motions/models/view-motion-poll';
-import { PollService } from 'app/site/polls/services/poll.service';
+import { PollData, PollService } from 'app/site/polls/services/poll.service';
+
+interface PollResultData {
+    yes?: number;
+    no?: number;
+    abstain?: number;
+}
 
 /**
  * Service class for motion polls.
@@ -54,5 +60,52 @@ export class MotionPollService extends PollService {
         poll.title = !length ? this.translate.instant('Vote') : `${this.translate.instant('Vote')} (${length + 1})`;
         poll.pollmethod = MotionPollMethods.YNA;
         poll.motion_id = poll.motion_id;
+    }
+
+    public getPercentBase(poll: PollData): number {
+        const base: PercentBase = poll.onehundred_percent_base;
+
+        let totalByBase: number;
+        const result = poll.options[0];
+        switch (base) {
+            case PercentBase.YN:
+                if (result.yes >= 0 && result.no >= 0) {
+                    totalByBase = this.sumYN(result);
+                }
+                break;
+            case PercentBase.YNA:
+                if (result.yes >= 0 && result.no >= 0 && result.abstain >= 0) {
+                    totalByBase = this.sumYNA(result);
+                }
+                break;
+            case PercentBase.Valid:
+                // auslagern
+                if (result.yes >= 0 && result.no >= 0 && result.abstain >= 0) {
+                    totalByBase = poll.votesvalid;
+                }
+                break;
+            case PercentBase.Cast:
+                totalByBase = poll.votescast;
+                break;
+            case PercentBase.Disabled:
+                break;
+            default:
+                throw new Error('The given poll has no percent base: ' + this);
+        }
+
+        return totalByBase;
+    }
+
+    private sumYN(result: PollResultData): number {
+        let sum = 0;
+        sum += result.yes > 0 ? result.yes : 0;
+        sum += result.no > 0 ? result.no : 0;
+        return sum;
+    }
+
+    private sumYNA(result: PollResultData): number {
+        let sum = this.sumYN(result);
+        sum += result.abstain > 0 ? result.abstain : 0;
+        return sum;
     }
 }
