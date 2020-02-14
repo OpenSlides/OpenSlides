@@ -87,6 +87,7 @@ class AssignmentManager(BaseManager):
                 "tags",
                 "attachments",
                 "polls",
+                "polls__options",
             )
         )
 
@@ -267,22 +268,44 @@ class AssignmentVote(RESTModelMixin, BaseVote):
     objects = AssignmentVoteManager()
 
     option = models.ForeignKey(
-        "AssignmentOption", on_delete=models.CASCADE, related_name="votes"
+        "AssignmentOption", on_delete=CASCADE_AND_AUTOUPDATE, related_name="votes"
     )
 
     class Meta:
         default_permissions = ()
 
 
+class AssignmentOptionManager(BaseManager):
+    """
+    Customized model manager to support our get_prefetched_queryset method.
+    """
+
+    def get_prefetched_queryset(self, *args, **kwargs):
+        """
+        Returns the normal queryset with all voted users. In the background we
+        join and prefetch all related models.
+        """
+        return (
+            super()
+            .get_prefetched_queryset(*args, **kwargs)
+            .select_related("user", "poll")
+            .prefetch_related("voted", "votes")
+        )
+
+
 class AssignmentOption(RESTModelMixin, BaseOption):
     access_permissions = AssignmentOptionAccessPermissions()
+    objects = AssignmentOptionManager()
     vote_class = AssignmentVote
 
     poll = models.ForeignKey(
-        "AssignmentPoll", on_delete=models.CASCADE, related_name="options"
+        "AssignmentPoll", on_delete=CASCADE_AND_AUTOUPDATE, related_name="options"
     )
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=SET_NULL_AND_AUTOUPDATE, null=True
+    )
+    voted = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, blank=True, related_name="assignmentoption_voted"
     )
     weight = models.IntegerField(default=0)
 
@@ -305,7 +328,7 @@ class AssignmentPollManager(BaseManager):
             .get_prefetched_queryset(*args, **kwargs)
             .select_related("assignment")
             .prefetch_related(
-                "options", "options__user", "options__votes", "groups", "voted"
+                "options", "options__user", "options__votes", "options__voted", "groups"
             )
         )
 
@@ -317,7 +340,7 @@ class AssignmentPoll(RESTModelMixin, BasePoll):
     option_class = AssignmentOption
 
     assignment = models.ForeignKey(
-        Assignment, on_delete=models.CASCADE, related_name="polls"
+        Assignment, on_delete=CASCADE_AND_AUTOUPDATE, related_name="polls"
     )
 
     description = models.CharField(max_length=255, blank=True)
@@ -378,15 +401,16 @@ class AssignmentPoll(RESTModelMixin, BasePoll):
             abstain_sum += option.abstain
         return abstain_sum
 
-    def create_options(self):
+    def create_options(self, skip_autoupdate=False):
         related_users = AssignmentRelatedUser.objects.filter(
             assignment__id=self.assignment.id
         ).exclude(elected=True)
 
         for related_user in related_users:
-            AssignmentOption.objects.create(
+            option = AssignmentOption(
                 user=related_user.user, weight=related_user.weight, poll=self
             )
+            option.save(skip_autoupdate=skip_autoupdate)
 
         # Add all candidates to list of speakers of related agenda item
         if config["assignment_poll_add_candidates_to_list_of_speakers"]:
@@ -400,4 +424,5 @@ class AssignmentPoll(RESTModelMixin, BasePoll):
                 except OpenSlidesError:
                     # The Speaker is already on the list. Do nothing.
                     pass
-            inform_changed_data(self.assignment.list_of_speakers)
+            if not skip_autoupdate:
+                inform_changed_data(self.assignment.list_of_speakers)

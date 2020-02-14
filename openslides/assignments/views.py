@@ -380,7 +380,7 @@ class AssignmentPollViewSet(BasePollViewSet):
                 vote_obj.save()
             poll.save()
 
-    def validate_vote_data(self, data, poll):
+    def validate_vote_data(self, data, poll, user):
         """
         Request data:
         analog:
@@ -403,11 +403,10 @@ class AssignmentPollViewSet(BasePollViewSet):
                 - amounts must be integer numbers >= 0.
                 - ids should be integers of valid option ids for this poll
                 - amounts must be 0 or 1, if poll.allow_multiple_votes_per_candidate is False
-                - The sum of all amounts must be poll.votes_amount votes
+                - The sum of all amounts must be grater then 0 and <= poll.votes_amount
 
             YN/YNA:
                 {<option_id>: 'Y' | 'N' [|'A']}
-                - all option_ids must be given   TODO: No it must not be that way. Single Votes have to be accepted
                 - 'A' is only allowed in YNA pollmethod
 
         Votes for all options have to be given
@@ -501,68 +500,129 @@ class AssignmentPollViewSet(BasePollViewSet):
                         poll.pollmethod == AssignmentPoll.POLLMETHOD_YNA
                         and value not in ("Y", "N", "A",)
                     ):
-                        raise ValidationError("Every value must be Y, N or A")
+                        raise ValidationError(
+                            {"detail": "Every value must be Y, N or A"}
+                        )
                     elif (
                         poll.pollmethod == AssignmentPoll.POLLMETHOD_YN
                         and value not in ("Y", "N",)
                     ):
-                        raise ValidationError("Every value must be Y or N")
+                        raise ValidationError({"detail": "Every value must be Y or N"})
 
             options_data = data
 
-        # Check if all options were given
         db_option_ids = set(option.id for option in poll.get_options())
         data_option_ids = set(int(option_id) for option_id in options_data.keys())
-        if data_option_ids != db_option_ids:
-            raise ValidationError(
-                {"error": "You have to provide values for all options"}
-            )
 
-    def create_votes(self, data, poll, user=None):
+        # Just for named/pseudoanonymous with YN/YNA skip the all-options-given check
+        if poll.type not in (
+            AssignmentPoll.TYPE_NAMED,
+            AssignmentPoll.TYPE_PSEUDOANONYMOUS,
+        ) or poll.pollmethod not in (
+            AssignmentPoll.POLLMETHOD_YN,
+            AssignmentPoll.POLLMETHOD_YNA,
+        ):
+            # Check if all options were given
+            if data_option_ids != db_option_ids:
+                raise ValidationError(
+                    {"error": "You have to provide values for all options"}
+                )
+        else:
+            if not data_option_ids.issubset(db_option_ids):
+                raise ValidationError(
+                    {
+                        "error": "You gave the following invalid option ids: "
+                        + ", ".join(
+                            str(id) for id in data_option_ids.difference(db_option_ids)
+                        )
+                    }
+                )
+
+    def create_votes_type_votes(self, data, poll, user):
         """
         Helper function for handle_(named|pseudoanonymous)_vote
         Assumes data is already validated
         """
         options = poll.get_options()
-        if poll.pollmethod == AssignmentPoll.POLLMETHOD_VOTES:
-            if isinstance(data, dict):
-                for option_id, amount in data.items():
-                    # skip empty votes
-                    if amount == 0:
-                        continue
-                    option = options.get(pk=option_id)
-                    vote = AssignmentVote.objects.create(
-                        option=option, user=user, weight=Decimal(amount), value="Y"
-                    )
-                    inform_changed_data(vote, no_delete_on_restriction=True)
-            else:  # global_no or global_abstain
-                option = options.first()
+        if isinstance(data, dict):
+            for option_id, amount in data.items():
+                # Add user to the option's voted array
+                option = options.get(pk=option_id)
+                option.voted.add(user)
+                inform_changed_data(option)
+
+                # skip creating votes with empty weights
+                if amount == 0:
+                    continue
                 vote = AssignmentVote.objects.create(
-                    option=option,
-                    user=user,
-                    weight=Decimal(poll.votes_amount),
-                    value=data,
+                    option=option, user=user, weight=Decimal(amount), value="Y"
                 )
                 inform_changed_data(vote, no_delete_on_restriction=True)
+        else:  # global_no or global_abstain
+            option = options.order_by(
+                "pk"
+            ).first()  # order by is important to always get
+            # the correct "first" option
+            option.voted.add(user)
+            inform_changed_data(option)
+            vote = AssignmentVote.objects.create(
+                option=option, user=user, weight=Decimal(poll.votes_amount), value=data,
+            )
+            inform_changed_data(vote, no_delete_on_restriction=True)
+
+    def create_votes_type_named_pseudoanonymous(
+        self, data, poll, check_user, vote_user
+    ):
+        """ check_user is used for the voted-array, vote_user is the one put into the vote """
+        options = poll.get_options()
+        for option_id, result in data.items():
+            option = options.get(pk=option_id)
+            option.voted.add(check_user)
+            inform_changed_data(option)
+            vote = AssignmentVote.objects.create(
+                option=option, user=vote_user, value=result
+            )
+            inform_changed_data(vote, no_delete_on_restriction=True)
+
+    def handle_named_vote(self, data, poll, user):
+        if poll.pollmethod == AssignmentPoll.POLLMETHOD_VOTES:
+            # Instead of reusing all existing votes for the user, delete all previous votes
+            for vote in poll.get_votes().filter(user=user):
+                vote.delete()
+            self.create_votes_type_votes(data, poll, user)
         elif poll.pollmethod in (
             AssignmentPoll.POLLMETHOD_YN,
             AssignmentPoll.POLLMETHOD_YNA,
         ):
-            for option_id, result in data.items():
+            # Delete all votes for the given options
+            option_ids = list(data.keys())
+            for vote in AssignmentVote.objects.filter(
+                user=user, option_id__in=option_ids
+            ):
+                vote.delete()
+            self.create_votes_type_named_pseudoanonymous(data, poll, user, user)
+
+    def handle_pseudoanonymous_vote(self, data, poll, user):
+        if poll.pollmethod == AssignmentPoll.POLLMETHOD_VOTES:
+            # check if the user has already voted
+            for option in poll.get_options():
+                if user in option.voted.all():
+                    raise ValidationError({"detail": "You have already voted"})
+            self.create_votes_type_votes(data, poll, user)
+
+        elif poll.pollmethod in (
+            AssignmentPoll.POLLMETHOD_YN,
+            AssignmentPoll.POLLMETHOD_YNA,
+        ):
+            # Ensure, that the user has not voted any of the given options yet.
+            options = poll.get_options()
+            for option_id in data.keys():
                 option = options.get(pk=option_id)
-                vote = AssignmentVote.objects.create(
-                    option=option, user=user, value=result
-                )
-                inform_changed_data(vote, no_delete_on_restriction=True)
-
-    def handle_named_vote(self, data, poll, user):
-        # Instead of reusing all existing votes for the user, delete all previous votes
-        for vote in poll.get_votes().filter(user=user):
-            vote.delete()
-        self.create_votes(data, poll, user)
-
-    def handle_pseudoanonymous_vote(self, data, poll):
-        self.create_votes(data, poll)
+                if user in option.voted.all():
+                    raise ValidationError(
+                        {"detail": f"You have already voted for option {option.pk}"}
+                    )
+            self.create_votes_type_named_pseudoanonymous(data, poll, user, None)
 
     def convert_option_data(self, poll, data):
         poll_options = poll.get_options()

@@ -86,7 +86,13 @@ export class AssignmentPollVoteComponent extends BasePollVoteComponent<ViewAssig
         }
     }
 
+    public getVotesCount(): number {
+        return Object.keys(this.currentVotes).filter(key => this.currentVotes[key]).length;
+    }
+
     protected updateVotes(): void {
+        console.log('currentVotes: ', this.currentVotes);
+
         if (this.user && this.votes && this.poll) {
             const filtered = this.votes.filter(
                 vote => vote.option.poll_id === this.poll.id && vote.user_id === this.user.id
@@ -112,21 +118,28 @@ export class AssignmentPollVoteComponent extends BasePollVoteComponent<ViewAssig
     }
 
     public saveSingleVote(optionId: number, vote: 'Y' | 'N' | 'A'): void {
-        const pollOptionIds = this.getPollOptionIds();
-        const requestMap = pollOptionIds.reduce((o, n) => {
-            if ((n === optionId && vote === 'Y') !== (this.currentVotes[n] === 'Yes')) {
-                o[n] = 1;
-            } else {
-                o[n] = 0;
-            }
-
-            return o;
-        }, {});
-
-        this.pollRepo.vote(JSON.stringify(requestMap), this.poll.id).catch(this.raiseError);
+        let requestData;
+        if (this.poll.pollmethod === AssignmentPollMethods.Votes) {
+            const pollOptionIds = this.getPollOptionIds();
+            requestData = pollOptionIds.reduce((o, n) => {
+                if ((n === optionId && vote === 'Y') !== (this.currentVotes[n] === 'Yes')) {
+                    o[n] = 1; // TODO: allow multiple votes per candidate
+                } else {
+                    o[n] = 0;
+                }
+                return o;
+            }, {});
+        } else {
+            // YN/YNA
+            requestData = {};
+            requestData[optionId] = vote;
+        }
+        this.pollRepo.vote(requestData, this.poll.id).catch(this.raiseError);
     }
 
     public saveGlobalVote(globalVote: 'N' | 'A'): void {
+        // This may be a bug in angulars HTTP client: A string is not quoted to be valid json.
+        // Maybe they expect a string to be alrady a jsonified object.
         this.pollRepo.vote(`"${globalVote}"`, this.poll.id).catch(this.raiseError);
     }
 }
