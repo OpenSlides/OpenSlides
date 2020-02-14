@@ -58,19 +58,19 @@
             </os-charts>
         </div>
         <div class="vote-legend">
-            <div class="votes-yes" *ngIf="isVoteDocumented(voteYes)">
+            <div class="votes-yes" *ngIf="pollService.isVoteDocumented(voteYes)">
                 <os-icon-container icon="thumb_up" size="large">
                     {{ voteYes | parsePollNumber }}
                     {{ voteYes | pollPercentBase: poll }}
                 </os-icon-container>
             </div>
-            <div class="votes-no" *ngIf="isVoteDocumented(voteNo)">
+            <div class="votes-no" *ngIf="pollService.isVoteDocumented(voteNo)">
                 <os-icon-container icon="thumb_down" size="large">
                     {{ voteNo | parsePollNumber }}
                     {{ voteNo | pollPercentBase: poll }}
                 </os-icon-container>
             </div>
-            <div class="votes-abstain" *ngIf="isVoteDocumented(voteAbstain)">
+            <div class="votes-abstain" *ngIf="pollService.isVoteDocumented(voteAbstain)">
                 <os-icon-container icon="trip_origin" size="large">
                     {{ voteAbstain | parsePollNumber }}
                     {{ voteAbstain | pollPercentBase: poll }}

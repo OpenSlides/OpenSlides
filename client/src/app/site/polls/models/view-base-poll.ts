@@ -1,4 +1,3 @@
-import { ChartData } from 'app/shared/components/charts/charts.component';
 import { BasePoll, PollState } from 'app/shared/models/poll/base-poll';
 import { ViewAssignmentOption } from 'app/site/assignments/models/view-assignment-option';
 import { BaseProjectableViewModel } from 'app/site/base/base-projectable-view-model';
@@ -16,7 +15,7 @@ export enum PollClassType {
 /**
  * Interface describes the possible data for the result-table.
  */
-export interface PollData {
+export interface PollTableData {
     key?: string;
     value?: number;
     yes?: number;
@@ -84,9 +83,9 @@ export const PercentBaseVerbose = {
 };
 
 export abstract class ViewBasePoll<M extends BasePoll<M, any> = any> extends BaseProjectableViewModel<M> {
-    private _tableData: PollData[] = [];
+    private _tableData: PollTableData[] = [];
 
-    public get tableData(): PollData[] {
+    public get tableData(): PollTableData[] {
         if (!this._tableData.length) {
             this._tableData = this.generateTableData();
         }
@@ -154,20 +153,11 @@ export abstract class ViewBasePoll<M extends BasePoll<M, any> = any> extends Bas
 
     public abstract getContentObject(): BaseViewModel;
 
-    /**
-     * Initializes labels for a chart.
-     */
-    public abstract initChartLabels(): string[];
-
-    public abstract generateChartData(): ChartData;
-
-    public abstract generateTableData(): PollData[];
-
-    public abstract getPercentBase(): number;
+    public abstract generateTableData(): PollTableData[];
 }
 
 export interface ViewBasePoll<M extends BasePoll<M, any> = any> extends BasePoll<M, any> {
     voted: ViewUser[];
     groups: ViewGroup[];
-    options: ViewMotionOption[] | ViewAssignmentOption[]; // TODO find a better solution. but works for the moment
+    options: (ViewMotionOption | ViewAssignmentOption)[]; // TODO find a better solution. but works for the moment
 }

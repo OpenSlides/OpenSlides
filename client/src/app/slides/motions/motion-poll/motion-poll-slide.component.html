@@ -1,5 +1,45 @@
-<div *ngIf="data">
-
-    <pre>{{ verboseData }}</pre>
-
-</div>
+<ng-container *ngIf="data && data.data">
+    <div class="slidetitle">
+        <h1 class="motion-title">
+            <span *ngIf="data.data.motion.identifier">{{ data.data.motion.identifier }}:</span>
+            {{ data.data.motion.title }}
+        </h1>
+        <h2 class="poll-title">{{ data.data.poll.title }}</h2>
+    </div>
+    <div class="poll-chart-wrapper" *ngIf="data.data.poll.state === PollState.Published">
+        <div class="doughnut-chart">
+            <os-charts
+                [type]="'doughnut'"
+                [data]="chartDataSubject"
+                [pieChartOptions]="{ maintainAspectRatio: false, responsive: true }"
+                [showLegend]="false"
+                [hasPadding]="false"
+            >
+            </os-charts>
+        </div>
+        <div class="vote-legend">
+            <div class="votes-yes" *ngIf="pollService.isVoteDocumented(voteYes)">
+                <os-icon-container icon="thumb_up" size="large">
+                    {{ voteYes | parsePollNumber }}
+                    {{ voteYes | pollPercentBase: data.data.poll }}
+                </os-icon-container>
+            </div>
+            <div class="votes-no" *ngIf="pollService.isVoteDocumented(voteNo)">
+                <os-icon-container icon="thumb_down" size="large">
+                    {{ voteNo | parsePollNumber }}
+                    {{ voteNo | pollPercentBase: data.data.poll }}
+                </os-icon-container>
+            </div>
+            <div class="votes-abstain" *ngIf="pollService.isVoteDocumented(voteAbstain)">
+                <os-icon-container icon="trip_origin" size="large">
+                    {{ voteAbstain | parsePollNumber }}
+                    {{ voteAbstain | pollPercentBase: data.data.poll }}
+                </os-icon-container>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="data.data.poll.state !== PollState.Published">
+        <!-- TODO -->
+        {{ "Nothing to see here!" | translate }}
+    </div>
+</ng-container>
