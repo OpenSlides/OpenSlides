@@ -131,6 +131,7 @@ export class AssignmentPdfService {
                     margin: [0, 0, 0, 10]
                 };
             });
+            const listType = assignment.number_poll_candidates ? 'ol' : 'ul';
 
             return {
                 columns: [
@@ -141,7 +142,7 @@ export class AssignmentPdfService {
                         style: 'textItem'
                     },
                     {
-                        ul: userList,
+                        [listType]: userList,
                         style: 'textItem'
                     }
                 ]
