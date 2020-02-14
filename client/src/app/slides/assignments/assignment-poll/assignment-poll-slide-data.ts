@@ -1,8 +1,9 @@
 import { AssignmentPollMethods } from 'app/shared/models/assignments/assignment-poll';
 import { MajorityMethod, PercentBase, PollState, PollType } from 'app/shared/models/poll/base-poll';
 import { AssignmentTitleInformation } from 'app/site/assignments/models/view-assignment';
+import { BasePollSlideData } from 'app/slides/polls/base-poll-slide-data';
 
-export interface AssignmentPollSlideData {
+export interface AssignmentPollSlideData extends BasePollSlideData {
     assignment: AssignmentTitleInformation;
     poll: {
         title: string;
@@ -11,21 +12,23 @@ export interface AssignmentPollSlideData {
         votes_amount: number;
         description: string;
         state: PollState;
-        onehundered_percent_base: PercentBase;
+        onehundred_percent_base: PercentBase;
         majority_method: MajorityMethod;
 
         options: {
-            user: string;
-            yes?: string;
-            no?: string;
-            abstain?: string;
+            user: {
+                full_name: string;
+            };
+            yes?: number;
+            no?: number;
+            abstain?: number;
         }[];
 
         // optional for published polls:
-        amount_global_no?: string;
-        amount_global_abstain: string;
-        votesvalid: string;
-        votesinvalid: string;
-        votescast: string;
+        amount_global_no?: number;
+        amount_global_abstain?: number;
+        votesvalid: number;
+        votesinvalid: number;
+        votescast: number;
     };
 }

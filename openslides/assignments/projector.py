@@ -1,7 +1,7 @@
 from typing import Any, Dict, List
 
 from ..users.projector import get_user_name
-from ..utils.projector import AllData, get_model, register_projector_slide
+from ..utils.projector import AllData, get_model, get_models, register_projector_slide
 from .models import AssignmentPoll
 
 
@@ -62,20 +62,27 @@ async def assignment_poll_slide(
 
     # Add options:
     poll_data["options"] = []
-    for option in sorted(poll["options"], key=lambda option: option["weight"]):
-        option_data = {"user": await get_user_name(all_data, option["user_id"])}
+    options = get_models(all_data, "assignments/assignment-option", poll["options_id"])
+    for option in sorted(options, key=lambda option: option["weight"]):
+        option_data: Dict[str, Any] = {
+            "user": {"full_name": await get_user_name(all_data, option["user_id"])}
+        }
         if poll["state"] == AssignmentPoll.STATE_PUBLISHED:
-            option_data["yes"] = option["yes"]
-            option_data["no"] = option["no"]
-            option_data["abstain"] = option["abstain"]
+            option_data["yes"] = float(option["yes"])
+            option_data["no"] = float(option["no"])
+            option_data["abstain"] = float(option["abstain"])
         poll_data["options"].append(option_data)
 
     if poll["state"] == AssignmentPoll.STATE_PUBLISHED:
-        poll_data["amount_global_no"] = poll["amount_global_no"]
-        poll_data["amount_global_abstain"] = poll["amount_global_abstain"]
-        poll_data["votesvalid"] = poll["votesvalid"]
-        poll_data["votesinvalid"] = poll["votesinvalid"]
-        poll_data["votescast"] = poll["votescast"]
+        poll_data["amount_global_no"] = (
+            float(poll["amount_global_no"]) if poll["amount_global_no"] else None
+        )
+        poll_data["amount_global_abstain"] = (
+            float(poll["amount_global_abstain"]) if poll["amount_global_no"] else None
+        )
+        poll_data["votesvalid"] = float(poll["votesvalid"])
+        poll_data["votesinvalid"] = float(poll["votesinvalid"])
+        poll_data["votescast"] = float(poll["votescast"])
 
     return {
         "assignment": {"title": assignment["title"]},

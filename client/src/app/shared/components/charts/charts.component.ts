@@ -23,7 +23,7 @@ interface ChartEvent {
 }
 
 /**
- * One single collection in an arry.
+ * One single collection in an array.
  */
 export interface ChartDate {
     data: number[];
@@ -213,6 +213,7 @@ export class ChartsComponent extends BaseViewComponent {
     /**
      * Chart option for pie and doughnut
      */
+    @Input()
     public pieChartOptions: ChartOptions = {
         aspectRatio: 1
     };

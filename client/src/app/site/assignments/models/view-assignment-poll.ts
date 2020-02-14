@@ -1,11 +1,11 @@
 import { BehaviorSubject } from 'rxjs';
 
 import { ChartData } from 'app/shared/components/charts/charts.component';
-import { AssignmentPoll, AssignmentPollMethods } from 'app/shared/models/assignments/assignment-poll';
-import { PercentBase, PollColor, PollState } from 'app/shared/models/poll/base-poll';
+import { AssignmentPoll } from 'app/shared/models/assignments/assignment-poll';
+import { PollState } from 'app/shared/models/poll/base-poll';
 import { BaseViewModel } from 'app/site/base/base-view-model';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
-import { PollData, ViewBasePoll } from 'app/site/polls/models/view-base-poll';
+import { PollTableData, ViewBasePoll } from 'app/site/polls/models/view-base-poll';
 import { ViewAssignment } from './view-assignment';
 import { ViewAssignmentOption } from './view-assignment-option';
 
@@ -48,33 +48,7 @@ export class ViewAssignmentPoll extends ViewBasePoll<AssignmentPoll> implements 
         };
     }
 
-    public initChartLabels(): string[] {
-        return this.options.map(candidate => candidate.user.full_name);
-    }
-
-    public generateChartData(): ChartData {
-        const fields = ['yes', 'no'];
-        if (this.pollmethod === AssignmentPollMethods.YNA) {
-            fields.push('abstain');
-        }
-        const data: ChartData = fields.map(key => ({
-            label: key.toUpperCase(),
-            data: this.options.map(vote => vote[key]),
-            backgroundColor: PollColor[key],
-            hoverBackgroundColor: PollColor[key]
-        }));
-        return data;
-    }
-
-    public generateCircleChartData(): ChartData {
-        const data: ChartData = this.options.map(candidate => ({
-            label: candidate.user.getFullName(),
-            data: [candidate.yes]
-        }));
-        return data;
-    }
-
-    public generateTableData(): PollData[] {
+    public generateTableData(): PollTableData[] {
         const data = this.options
             .map(candidate => ({
                 yes: candidate.yes,
@@ -96,43 +70,6 @@ export class ViewAssignmentPoll extends ViewBasePoll<AssignmentPoll> implements 
             return null;
         }
         return super.getNextStates();
-    }
-
-    private sumOptionsYN(): number {
-        return this.options.reduce((o, n) => {
-            o += n.yes > 0 ? n.yes : 0;
-            o += n.no > 0 ? n.no : 0;
-            return o;
-        }, 0);
-    }
-
-    private sumOptionsYNA(): number {
-        return this.options.reduce((o, n) => {
-            o += n.abstain > 0 ? n.abstain : 0;
-            return o;
-        }, this.sumOptionsYN());
-    }
-
-    public getPercentBase(): number {
-        const base: PercentBase = this.poll.onehundred_percent_base;
-        let totalByBase: number;
-        switch (base) {
-            case PercentBase.YN:
-                totalByBase = this.sumOptionsYN();
-                break;
-            case PercentBase.YNA:
-                totalByBase = this.sumOptionsYNA();
-                break;
-            case PercentBase.Valid:
-                totalByBase = this.poll.votesvalid;
-                break;
-            case PercentBase.Cast:
-                totalByBase = this.poll.votescast;
-                break;
-            default:
-                break;
-        }
-        return totalByBase;
     }
 }
 
