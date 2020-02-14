@@ -363,7 +363,16 @@ async def motion_poll_slide(
     }
 
     if poll["state"] == MotionPoll.STATE_PUBLISHED:
-        poll_data["options"] = poll["options"]
+        option = get_model(
+            all_data, "motions/motion-option", poll["options_id"][0]
+        )  # there can only be exactly one option
+        poll_data["options"] = [
+            {
+                "yes": float(option["yes"]),
+                "no": float(option["no"]),
+                "abstain": float(option["abstain"]),
+            }
+        ]
         poll_data["votesvalid"] = poll["votesvalid"]
         poll_data["votesinvalid"] = poll["votesinvalid"]
         poll_data["votescast"] = poll["votescast"]

@@ -15,6 +15,7 @@ import { ViewMotion } from 'app/site/motions/models/view-motion';
 import { ViewMotionPoll } from 'app/site/motions/models/view-motion-poll';
 import { MotionPollDialogService } from 'app/site/motions/services/motion-poll-dialog.service';
 import { BasePollDetailComponent } from 'app/site/polls/components/base-poll-detail.component';
+import { PollService } from 'app/site/polls/services/poll.service';
 
 @Component({
     selector: 'os-motion-poll-detail',
@@ -57,10 +58,11 @@ export class MotionPollDetailComponent extends BasePollDetailComponent<ViewMotio
         groupRepo: GroupRepositoryService,
         prompt: PromptService,
         pollDialog: MotionPollDialogService,
+        pollService: PollService,
         private operator: OperatorService,
         private router: Router
     ) {
-        super(title, translate, matSnackbar, repo, route, groupRepo, prompt, pollDialog);
+        super(title, translate, matSnackbar, repo, route, groupRepo, prompt, pollDialog, pollService);
     }
 
     protected onPollWithOptionsLoaded(): void {

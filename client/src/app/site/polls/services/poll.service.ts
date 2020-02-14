@@ -1,8 +1,11 @@
 import { Injectable } from '@angular/core';
 
 import { _ } from 'app/core/translate/translation-marker';
+import { ChartData, ChartType } from 'app/shared/components/charts/charts.component';
+import { AssignmentPollMethods } from 'app/shared/models/assignments/assignment-poll';
 import { Collection } from 'app/shared/models/base/collection';
-import { MajorityMethod, PercentBase, PollType } from 'app/shared/models/poll/base-poll';
+import { MotionPollMethods } from 'app/shared/models/motions/motion-poll';
+import { MajorityMethod, PercentBase, PollColor, PollType } from 'app/shared/models/poll/base-poll';
 import { AssignmentPollMethodsVerbose } from 'app/site/assignments/models/view-assignment-poll';
 import {
     MajorityMethodVerbose,
@@ -88,6 +91,22 @@ export const PollMajorityMethod: CalculableMajorityMethod[] = [
     }
 ];
 
+export interface PollData {
+    pollmethod?: string;
+    onehundred_percent_base: PercentBase;
+    options: {
+        user?: {
+            full_name: string;
+        };
+        yes?: number;
+        no?: number;
+        abstain?: number;
+    }[];
+    votesvalid: number;
+    votesinvalid: number;
+    votescast: number;
+}
+
 interface OpenSlidesSettings {
     ENABLE_ELECTRONIC_VOTING: boolean;
 }
@@ -122,10 +141,6 @@ export abstract class PollService {
      */
     public pollValues: CalculablePollKey[] = ['yes', 'no', 'abstain', 'votesvalid', 'votesinvalid', 'votescast'];
 
-    /**
-     * empty constructor
-     *
-     */
     public constructor(constants: ConstantsService) {
         constants
             .get<OpenSlidesSettings>('Settings')
@@ -157,5 +172,53 @@ export abstract class PollService {
 
     public getVerboseNameForKey(key: string): string {
         return PollPropertyVerbose[key];
+    }
+
+    public generateChartData(poll: PollData): ChartData {
+        if (poll.pollmethod === AssignmentPollMethods.Votes) {
+            return this.generateCircleChartData(poll);
+        } else {
+            return this.generateBarChartData(poll);
+        }
+    }
+
+    public generateBarChartData(poll: PollData): ChartData {
+        const fields = ['yes', 'no'];
+        // cast is needed because ViewBasePoll doesn't have the field `pollmethod`, no easy fix :(
+        if ((<any>poll).pollmethod === MotionPollMethods.YNA) {
+            fields.push('abstain');
+        }
+        const data: ChartData = fields.map(key => ({
+            label: key.toUpperCase(),
+            data: poll.options.map(option => option[key]),
+            backgroundColor: PollColor[key],
+            hoverBackgroundColor: PollColor[key]
+        }));
+
+        return data;
+    }
+
+    public generateCircleChartData(poll: PollData): ChartData {
+        const data: ChartData = poll.options.map(candidate => ({
+            label: candidate.user.full_name,
+            data: [candidate.yes]
+        }));
+        return data;
+    }
+
+    public getChartType(poll: PollData): ChartType {
+        if ((<any>poll).pollmethod === AssignmentPollMethods.Votes) {
+            return 'doughnut';
+        } else {
+            return 'horizontalBar';
+        }
+    }
+
+    public getChartLabels(poll: PollData): string[] {
+        return poll.options.map(candidate => candidate.user.full_name);
+    }
+
+    public isVoteDocumented(vote: number): boolean {
+        return vote !== null && vote !== undefined && vote !== -2;
     }
 }
