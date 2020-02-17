@@ -1,4 +1,4 @@
-import { ComponentFactory, Inject, Injectable, Injector, NgModuleFactoryLoader, Type } from '@angular/core';
+import { Compiler, ComponentFactory, Inject, Injectable, Injector, NgModuleFactory, Type } from '@angular/core';
 
 import { allSlidesDynamicConfiguration } from '../all-slide-configurations';
 import { IdentifiableProjectorElement, ProjectorElement } from 'app/shared/models/core/projector';
@@ -17,7 +17,7 @@ export class SlideManager {
 
     public constructor(
         @Inject(SLIDE_MANIFESTS) private manifests: SlideManifest[],
-        private loader: NgModuleFactoryLoader,
+        private compiler: Compiler,
         private injector: Injector
     ) {
         this.manifests.forEach(slideManifest => {
@@ -88,23 +88,29 @@ export class SlideManager {
         const manifest = this.getManifest(slideName);
 
         // Load the module factory.
-        return this.loader.load(manifest.loadChildren).then(ngModuleFactory => {
-            // create the module
-            const moduleRef = ngModuleFactory.create(this.injector);
+        let ngModuleFactory: NgModuleFactory<any>;
+        const loadedModule = await manifest.loadChildren();
+        if (loadedModule instanceof NgModuleFactory) {
+            ngModuleFactory = loadedModule;
+        } else {
+            ngModuleFactory = await this.compiler.compileModuleAsync(loadedModule);
+        }
 
-            // Get the slide provided by the SLIDE-injectiontoken.
-            let dynamicComponentType: Type<T>;
-            try {
-                // Read from the moduleRef injector and locate the dynamic component type
-                dynamicComponentType = moduleRef.injector.get(SLIDE);
-            } catch (e) {
-                console.log(
-                    'The module for Slide "' + slideName + '" is not configured right: Make usage of makeSlideModule.'
-                );
-                throw e;
-            }
-            // Resolve this component factory
-            return moduleRef.componentFactoryResolver.resolveComponentFactory<T>(dynamicComponentType);
-        });
+        // create the module
+        const moduleRef = ngModuleFactory.create(this.injector);
+
+        // Get the slide provided by the SLIDE-injectiontoken.
+        let dynamicComponentType: Type<T>;
+        try {
+            // Read from the moduleRef injector and locate the dynamic component type
+            dynamicComponentType = moduleRef.injector.get(SLIDE);
+        } catch (e) {
+            console.log(
+                'The module for Slide "' + slideName + '" is not configured right: Make usage of makeSlideModule.'
+            );
+            throw e;
+        }
+        // Resolve this component factory
+        return moduleRef.componentFactoryResolver.resolveComponentFactory(dynamicComponentType);
     }
 }

@@ -1,5 +1,5 @@
 import { ModuleWithProviders } from '@angular/compiler/src/core';
-import { NgModule, NgModuleFactoryLoader, SystemJsNgModuleLoader } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { ROUTES } from '@angular/router';
 
 import { allSlides } from './all-slides';
@@ -15,7 +15,7 @@ import { SLIDE_MANIFESTS } from './slide-manifest';
  * found and put in sepearte chunks.
  */
 @NgModule({
-    providers: [SlideManager, { provide: NgModuleFactoryLoader, useClass: SystemJsNgModuleLoader }]
+    providers: [SlideManager]
 })
 export class SlidesModule {
     public static forRoot(): ModuleWithProviders {

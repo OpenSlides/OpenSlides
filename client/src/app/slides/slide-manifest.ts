@@ -1,4 +1,5 @@
 import { InjectionToken } from '@angular/core';
+import { LoadChildrenCallback } from '@angular/router';
 
 import { TranslateService } from '@ngx-translate/core';
 
@@ -38,7 +39,7 @@ export interface SlideDynamicConfiguration {
  */
 export interface SlideManifest extends Slide {
     path: string;
-    loadChildren: string;
+    loadChildren: LoadChildrenCallback;
     verboseName: string;
     elementIdentifiers: (keyof IdentifiableProjectorElement)[];
     canBeMappedToModel: boolean;
