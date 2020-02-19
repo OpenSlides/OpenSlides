@@ -5,15 +5,8 @@
         cursor: pointer;
         padding: 20px 0;
 
-        &:hover {
-            background-color: #eee;
-        }
         &.active {
             cursor: default;
-            background-color: #ccc;
-            &:hover {
-                background-color: #ccc;
-            }
         }
 
         .paragraph-select {
