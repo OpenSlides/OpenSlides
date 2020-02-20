@@ -7,4 +7,5 @@ export interface AssignmentSlideData {
         user: string;
         elected: boolean;
     }[];
+    number_poll_candidates: boolean;
 }

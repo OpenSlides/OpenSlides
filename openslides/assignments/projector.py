@@ -34,6 +34,7 @@ async def assignment_slide(
         "open_posts": assignment["open_posts"],
         "description": assignment["description"],
         "assignment_related_users": assignment_related_users,
+        "number_poll_candidates": assignment["number_poll_candidates"],
     }
 
 
