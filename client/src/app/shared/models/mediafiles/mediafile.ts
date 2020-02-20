@@ -1,11 +1,7 @@
 import { BaseModelWithListOfSpeakers } from '../base/base-model-with-list-of-speakers';
 
-interface FileMetadata {
-    name: string;
-    type: string;
-
-    // Only for PDFs
-    pages: number;
+interface PdfInformation {
+    pages?: number;
     encrypted?: boolean;
 }
 
@@ -13,7 +9,9 @@ export interface MediafileWithoutNestedModels extends BaseModelWithListOfSpeaker
     id: number;
     title: string;
     media_url_prefix: string;
+    pdf_information: PdfInformation;
     filesize?: string;
+    mimetype?: string;
     access_groups_id: number[];
     create_timestamp: string;
     parent_id: number | null;
@@ -31,7 +29,6 @@ export interface MediafileWithoutNestedModels extends BaseModelWithListOfSpeaker
 export class Mediafile extends BaseModelWithListOfSpeakers<Mediafile> {
     public static COLLECTIONSTRING = 'mediafiles/mediafile';
     public id: number;
-    public mediafile?: FileMetadata;
 
     public get has_inherited_access_groups(): boolean {
         return typeof this.inherited_access_groups_id !== 'boolean';

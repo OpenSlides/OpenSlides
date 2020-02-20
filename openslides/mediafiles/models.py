@@ -3,13 +3,24 @@ import uuid
 from typing import List, cast
 
 from django.conf import settings
-from django.db import models
+from django.db import connections, models
+from jsonfield import JSONField
+
+from openslides.utils import logging
 
 from ..agenda.mixins import ListOfSpeakersMixin
 from ..core.config import config
 from ..utils.models import RESTModelMixin
 from ..utils.rest_api import ValidationError
 from .access_permissions import MediafileAccessPermissions
+from .utils import bytes_to_human
+
+
+logger = logging.getLogger(__name__)
+
+if "mediafiles" in connections:
+    use_mediafile_database = True
+    logger.info("Using a standalone mediafile database")
 
 
 class MediafileManager(models.Manager):
@@ -33,7 +44,6 @@ class MediafileManager(models.Manager):
 
 
 def get_file_path(mediafile, filename):
-    mediafile.original_filename = filename
     ext = filename.split(".")[-1]
     filename = "%s.%s" % (uuid.uuid4(), ext)
     return os.path.join("file", filename)
@@ -42,6 +52,10 @@ def get_file_path(mediafile, filename):
 class Mediafile(RESTModelMixin, ListOfSpeakersMixin, models.Model):
     """
     Class for uploaded files which can be delivered under a certain url.
+
+    This model encapsulte directories and mediafiles. If is_directory is True, the `title` is
+    the directory name. Else, there might be a mediafile, except when using a mediafile DB. In
+    this case, also mediafile is None.
     """
 
     objects = MediafileManager()
@@ -53,6 +67,12 @@ class Mediafile(RESTModelMixin, ListOfSpeakersMixin, models.Model):
     See https://docs.djangoproject.com/en/dev/ref/models/fields/#filefield
     for more information.
     """
+
+    filesize = models.CharField(max_length=255, default="")
+
+    mimetype = models.CharField(max_length=255, default="")
+
+    pdf_information = JSONField(default=dict)
 
     title = models.CharField(max_length=255)
     """A string representing the title of the file."""
@@ -103,14 +123,11 @@ class Mediafile(RESTModelMixin, ListOfSpeakersMixin, models.Model):
         """
         `unique_together` is not working with foreign keys with possible `null` values.
         So we do need to check this here.
-
-        self.original_filename is not yet set, but if is_file is True, the actual
-        filename is self.mediafile.file
         """
         title_or_original_filename = models.Q(title=self.title)
         if self.is_file:
             title_or_original_filename = title_or_original_filename | models.Q(
-                original_filename=self.mediafile.name
+                original_filename=self.original_filename
             )
 
         if (
@@ -135,8 +152,11 @@ class Mediafile(RESTModelMixin, ListOfSpeakersMixin, models.Model):
     def delete(self, skip_autoupdate=False):
         mediafiles_to_delete = self.get_children_deep()
         mediafiles_to_delete.append(self)
+        deleted_ids = []
         for mediafile in mediafiles_to_delete:
-            if mediafile.is_file:
+            deleted_ids.append(mediafile.id)
+            # Do not check for is_file, this might be wrong to delete the actual mediafile
+            if mediafile.mediafile:
                 # To avoid Django calling save() and triggering autoupdate we do not
                 # use the builtin method mediafile.mediafile.delete() but call
                 # mediafile.mediafile.storage.delete(...) directly. This may have
@@ -144,6 +164,8 @@ class Mediafile(RESTModelMixin, ListOfSpeakersMixin, models.Model):
                 # on server via Django methods (file, open(), save(), ...).
                 mediafile.mediafile.storage.delete(mediafile.mediafile.name)
             mediafile._db_delete(skip_autoupdate=skip_autoupdate)
+
+        return deleted_ids
 
     def _db_delete(self, *args, **kwargs):
         """ Captures the original .delete() method. """
@@ -200,24 +222,15 @@ class Mediafile(RESTModelMixin, ListOfSpeakersMixin, models.Model):
         """
         Transforms bytes to kilobytes or megabytes. Returns the size as string.
         """
-        # TODO: Read http://stackoverflow.com/a/1094933 and think about it.
         try:
             size = self.mediafile.size
         except OSError:
-            size_string = "unknown"
+            return "unknown"
         except ValueError:
             # happens, if this is a directory and no file exists
             return None
         else:
-            if size < 1024:
-                size_string = "< 1 kB"
-            elif size >= 1024 * 1024:
-                mB = size / 1024 / 1024
-                size_string = "%d MB" % mB
-            else:
-                kB = size / 1024
-                size_string = "%d kB" % kB
-        return size_string
+            return bytes_to_human(size)
 
     @property
     def is_logo(self):
@@ -243,6 +256,7 @@ class Mediafile(RESTModelMixin, ListOfSpeakersMixin, models.Model):
 
     @property
     def is_file(self):
+        """ Do not check the self.mediafile, becuase this is not a valid indicator. """
         return not self.is_directory
 
     def get_list_of_speakers_title_information(self):

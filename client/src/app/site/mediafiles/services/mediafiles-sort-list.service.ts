@@ -23,7 +23,7 @@ export class MediafilesSortListService extends BaseSortListService<ViewMediafile
     private mediafilesSortOptions: OsSortingOption<ViewMediafile>[] = [
         { property: 'title' },
         {
-            property: 'type',
+            property: 'mimetype',
             label: this.translate.instant('Type')
         },
         {

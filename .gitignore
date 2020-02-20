@@ -13,6 +13,9 @@
 node_modules/*
 bower_components/*
 
+# OS4-Submodules
+openslides-*
+
 # Local user data (settings, database, media, search index, static files)
 personal_data/*
 openslides/static/*

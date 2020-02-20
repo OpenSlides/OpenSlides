@@ -1,3 +1,5 @@
+import json
+
 import pytest
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
@@ -22,6 +24,7 @@ def test_mediafiles_db_queries():
     for index in range(10):
         Mediafile.objects.create(
             title=f"some_file{index}",
+            original_filename=f"some_file{index}",
             mediafile=SimpleUploadedFile(f"some_file{index}", b"some content."),
         )
 
@@ -56,6 +59,7 @@ class TestCreation(TestCase):
         self.assertEqual(mediafile.title, "test_title_ahyo1uifoo9Aiph2av5a")
         self.assertTrue(mediafile.is_directory)
         self.assertEqual(mediafile.mediafile.name, "")
+        self.assertEqual(mediafile.original_filename, "")
         self.assertEqual(mediafile.path, mediafile.title + "/")
 
     def test_file_and_directory(self):
@@ -166,9 +170,8 @@ class TestCreation(TestCase):
             reverse("mediafile-list"),
             {
                 "title": "test_title_dggjwevBnUngelkdviom",
-                "is_directory": True,
-                # This is the format, if it would be provided by JS `FormData`.
-                "access_groups_id": "2, 4",
+                "mediafile": self.file,
+                "access_groups_id": json.dumps([2, 4]),
             },
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -177,6 +180,32 @@ class TestCreation(TestCase):
         self.assertEqual(
             sorted([group.id for group in mediafile.access_groups.all()]), [2, 4]
         )
+        self.assertTrue(mediafile.mediafile.name)
+        self.assertEqual(mediafile.path, mediafile.original_filename)
+
+    def test_with_access_groups_wrong_json(self):
+        response = self.client.post(
+            reverse("mediafile-list"),
+            {
+                "title": "test_title_dggjwevBnUngelkdviom",
+                "is_directory": True,
+                "access_groups_id": json.dumps({"a": 324}),
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertFalse(Mediafile.objects.exists())
+
+    def test_with_access_groups_wrong_json2(self):
+        response = self.client.post(
+            reverse("mediafile-list"),
+            {
+                "title": "test_title_dggjwevBnUngelkdviom",
+                "is_directory": True,
+                "access_groups_id": "_FWEpwwfkwk",
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertFalse(Mediafile.objects.exists())
 
 
 # TODO: List and retrieve
@@ -194,13 +223,18 @@ class TestUpdate(TestCase):
         self.client = APIClient()
         self.client.login(username="admin", password="admin")
         self.dir = Mediafile.objects.create(title="dir", is_directory=True)
-        self.fileA = SimpleUploadedFile("some_fileA.ext", b"some content.")
+        fileA_name = "some_fileA.ext"
+        self.fileA = SimpleUploadedFile(fileA_name, b"some content.")
         self.mediafileA = Mediafile.objects.create(
-            title="mediafileA", mediafile=self.fileA, parent=self.dir
+            title="mediafileA",
+            original_filename=fileA_name,
+            mediafile=self.fileA,
+            parent=self.dir,
         )
-        self.fileB = SimpleUploadedFile("some_fileB.ext", b"some content.")
+        fileB_name = "some_fileB.ext"
+        self.fileB = SimpleUploadedFile(fileB_name, b"some content.")
         self.mediafileB = Mediafile.objects.create(
-            title="mediafileB", mediafile=self.fileB
+            title="mediafileB", original_filename=fileB_name, mediafile=self.fileB
         )
 
     def test_update(self):

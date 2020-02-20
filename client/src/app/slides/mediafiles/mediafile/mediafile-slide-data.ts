@@ -1,5 +1,5 @@
 export interface MediafileSlideData {
     path: string;
-    type: string;
+    mimetype: string;
     media_url_prefix: string;
 }
