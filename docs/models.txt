@@ -222,23 +222,29 @@ Interface mediafile {
     projection_ids: projection[];
     attachement_ids: Fqid[];
     meeting_id: meeting;
+
+    // Backreferences for meetings, if a mediafile is used as a special resource
+    // TODO: The id here is not necessary. This would also work:
+    // used_as: string[];
+    // with a list of tokens with `logo_` and `font_` prefix. E.g.:
+    // used_as: ["logo_web_header", "font_italic", "logo_projector_footer"]
+    logo_<token>: meeting;
+    font_<token>: meeting;
 }
+
 // New: Resource
-// Resources are meeting-specific or organsation wide.
-// For organisation-resources, no permission chacks are done (event the user
-// must not be logged in). If a meeting-resource is requested, it is checked, if
-// the user can see the meeting (Anonymous, guest, member).
-// A resource has a token, e.g. `web_header` or `pdf_font_italic`, so the client
-// knowns, where to put the resource. They are delivered by the mediafile server
-// with the URL `<media-prefix>/resource/<id>`
+// Resources are organsation wide mediafiles. There should not be a file-manager
+// on this layer, but a way to customize fonts, logos and other organisation-wide
+// resources. There are no permission checks (so the user must not be logged in to
+// access the resources). A resource has a token, e.g.  `web_header` or
+// `pdf_font_italic`, so the client knowns, where to put the resource. They are
+// delivered by the media service with the URL `<media-prefix>/resource/<id>`.
 Interface Resource {
     id: number;
     token: string;
     filesize: number;
     mimetype: string;
 
-    // Either the meeting is set, or the organsation.
-    meeting_id: meeting;
     organisation_id: organisation;
 }
 Interface motion {
@@ -592,8 +598,18 @@ Interface meeting {
     // if a user is assigned to at least one group. This "query" must be checked,
     // if it can be performed.
 
+    // Logos and Fonts
+    logo_<token>: Mediafile;
+    font_<token>: Mediafile;
+    // Examples:
+    // logo_web_header: Mediafile;
+    // font_italic_pdf: Mediafile;
+    // The client can define these resources. There is no need
+    // to have whitelist/blacklist on the server. The tokens must
+    // be checked: They must match `[a-z]([a-z_]*[a-z])?` and must
+    // not be longer than 32 characters.
+
     // Other relations
-    resource_ids: resource[]; // Links to resource/meeting_id
     committee_id: committee; // Links to committee/meeting_ids
     default_meeting_for_committee_id: committee; // Links to committee/default_meeting_id
     present_user_ids: user[]; // Links to user/is_present_in_meeting_ids
