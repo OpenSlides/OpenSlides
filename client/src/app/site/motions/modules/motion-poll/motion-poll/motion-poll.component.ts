@@ -4,7 +4,6 @@ import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { OperatorService } from 'app/core/core-services/operator.service';
 import { MotionPollRepositoryService } from 'app/core/repositories/motions/motion-poll-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ViewMotionPoll } from 'app/site/motions/models/view-motion-poll';
@@ -114,22 +113,12 @@ export class MotionPollComponent extends BasePollComponent<ViewMotionPoll> {
         public pollRepo: MotionPollRepositoryService,
         pollDialog: MotionPollDialogService,
         public pollService: PollService,
-        private operator: OperatorService,
         private pdfService: MotionPollPdfService
     ) {
         super(titleService, matSnackBar, translate, dialog, promptService, pollRepo, pollDialog);
     }
 
-    public showPoll(): boolean {
-        return (
-            this.operator.hasPerms('motions.can_manage_polls') ||
-            this.poll.isPublished ||
-            (this.poll.type !== 'analog' && this.poll.isStarted)
-        );
-    }
-
     public downloadPdf(): void {
-        console.log('picture_as_pdf');
         this.pdfService.printBallots(this.poll);
     }
 

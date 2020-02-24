@@ -40,7 +40,7 @@ export class PollPercentBasePipe implements PipeTransform {
             const percentNumber = (value / totalByBase) * 100;
             if (percentNumber > 0) {
                 const result = percentNumber % 1 === 0 ? percentNumber : percentNumber.toFixed(this.decimalPlaces);
-                return `(${result}%)`;
+                return `(${result} %)`;
             }
         }
         return null;

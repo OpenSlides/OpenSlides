@@ -48,6 +48,7 @@ export class ViewUser extends BaseProjectableViewModel<User> implements UserTitl
     // Will be set by the repository
     public getFullName: () => string;
     public getShortName: () => string;
+    public getLevelAndNumber: () => string;
 
     /**
      * Formats the category for search

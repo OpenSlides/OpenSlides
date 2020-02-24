@@ -1,12 +1,4 @@
 @import '~@angular/material/theming';
 
 @mixin os-motion-poll-detail-style($theme) {
-    $background: map-get($theme, background);
-
-    .result-table {
-        border-collapse: collapse;
-        tr {
-            border-bottom: 1px solid mat-color($background, focused-button);
-        }
-    }
 }

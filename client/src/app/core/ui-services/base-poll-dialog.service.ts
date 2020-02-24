@@ -8,7 +8,6 @@ import { PollState, PollType } from 'app/shared/models/poll/base-poll';
 import { mediumDialogSettings } from 'app/shared/utils/dialog-settings';
 import { BasePollDialogComponent } from 'app/site/polls/components/base-poll-dialog.component';
 import { ViewBasePoll } from 'app/site/polls/models/view-base-poll';
-import { PollService } from '../../site/polls/services/poll.service';
 
 /**
  * Abstract class for showing a poll dialog. Has to be subclassed to provide the right `PollService`
@@ -17,42 +16,35 @@ import { PollService } from '../../site/polls/services/poll.service';
     providedIn: 'root'
 })
 export abstract class BasePollDialogService<V extends ViewBasePoll> {
-    protected dialogComponent: ComponentType<BasePollDialogComponent>;
+    protected dialogComponent: ComponentType<BasePollDialogComponent<V>>;
 
-    public constructor(
-        private dialog: MatDialog,
-        private mapper: CollectionStringMapperService,
-        private service: PollService
-    ) {}
+    public constructor(private dialog: MatDialog, private mapper: CollectionStringMapperService) {}
 
     /**
      * Opens the dialog to enter votes and edit the meta-info for a poll.
      *
      * @param data Passing the (existing or new) data for the poll
      */
-    public async openDialog(poll: Partial<V> & Collection): Promise<void> {
-        if (!poll.poll) {
-            this.service.fillDefaultPollData(poll);
-        }
+    public async openDialog(viewPoll: Partial<V> & Collection): Promise<void> {
         const dialogRef = this.dialog.open(this.dialogComponent, {
-            data: poll,
+            data: viewPoll,
             ...mediumDialogSettings
         });
         const result = await dialogRef.afterClosed().toPromise();
         if (result) {
-            const repo = this.mapper.getRepository(poll.collectionString);
-            if (!poll.poll) {
+            const repo = this.mapper.getRepository(viewPoll.collectionString);
+            if (!viewPoll.poll) {
                 await repo.create(result);
             } else {
                 let update = result;
-                if (poll.state !== PollState.Created) {
+                if (viewPoll.state !== PollState.Created) {
                     update = {
                         title: result.title,
                         onehundred_percent_base: result.onehundred_percent_base,
                         majority_method: result.majority_method,
                         description: result.description
                     };
-                    if (poll.type === PollType.Analog) {
+                    if (viewPoll.type === PollType.Analog) {
                         update = {
                             ...update,
                             votes: result.votes,
@@ -60,7 +52,7 @@ export abstract class BasePollDialogService<V extends ViewBasePoll> {
                         };
                     }
                 }
-                await repo.patch(update, <V>poll);
+                await repo.patch(update, <V>viewPoll);
             }
         }
     }

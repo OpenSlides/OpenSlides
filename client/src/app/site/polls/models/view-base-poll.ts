@@ -1,4 +1,4 @@
-import { BasePoll, PollState } from 'app/shared/models/poll/base-poll';
+import { BasePoll, PercentBase, PollType } from 'app/shared/models/poll/base-poll';
 import { ViewAssignmentOption } from 'app/site/assignments/models/view-assignment-option';
 import { BaseProjectableViewModel } from 'app/site/base/base-projectable-view-model';
 import { BaseViewModel } from 'app/site/base/base-view-model';
@@ -16,14 +16,16 @@ export enum PollClassType {
  * Interface describes the possible data for the result-table.
  */
 export interface PollTableData {
-    key?: string;
-    value?: number;
-    yes?: number;
-    no?: number;
-    abstain?: number;
-    user?: string;
-    canHide?: boolean;
+    votingOption: string;
+    votingOptionSubtitle?: string;
+    value: VotingResult[];
+}
+
+export interface VotingResult {
+    vote?: 'yes' | 'no' | 'abstain' | 'votesvalid' | 'votesinvalid' | 'votescast';
+    amount?: number;
     icon?: string;
+    hide?: boolean;
     showPercent?: boolean;
 }
 
@@ -35,7 +37,7 @@ export const PollClassTypeVerbose = {
 export const PollStateVerbose = {
     1: 'Created',
     2: 'Started',
-    3: 'Finished',
+    3: 'Finished (unpublished)',
     4: 'Published'
 };
 
@@ -85,6 +87,41 @@ export const PercentBaseVerbose = {
 export abstract class ViewBasePoll<M extends BasePoll<M, any> = any> extends BaseProjectableViewModel<M> {
     private _tableData: PollTableData[] = [];
 
+    protected voteTableKeys: VotingResult[] = [
+        {
+            vote: 'yes',
+            icon: 'thumb_up',
+            showPercent: true
+        },
+        {
+            vote: 'no',
+            icon: 'thumb_down',
+            showPercent: true
+        },
+        {
+            vote: 'abstain',
+            icon: 'trip_origin',
+            showPercent: this.showAbstainPercent
+        }
+    ];
+
+    protected sumTableKeys: VotingResult[] = [
+        {
+            vote: 'votesvalid',
+            showPercent: this.poll.isPercentBaseValidOrCast
+        },
+        {
+            vote: 'votesinvalid',
+            hide: this.poll.type !== PollType.Analog,
+            showPercent: this.poll.isPercentBaseValidOrCast
+        },
+        {
+            vote: 'votescast',
+            hide: this.poll.type !== PollType.Analog,
+            showPercent: this.poll.isPercentBaseValidOrCast
+        }
+    ];
+
     public get tableData(): PollTableData[] {
         if (!this._tableData.length) {
             this._tableData = this.generateTableData();
@@ -108,6 +145,10 @@ export abstract class ViewBasePoll<M extends BasePoll<M, any> = any> extends Bas
         return PollStateVerbose[this.state];
     }
 
+    public get nextStateActionVerbose(): string {
+        return PollStateChangeActionVerbose[this.nextState];
+    }
+
     public get typeVerbose(): string {
         return PollTypeVerbose[this.type];
     }
@@ -120,22 +161,13 @@ export abstract class ViewBasePoll<M extends BasePoll<M, any> = any> extends Bas
         return PercentBaseVerbose[this.onehundred_percent_base];
     }
 
+    public get showAbstainPercent(): boolean {
+        return this.onehundred_percent_base === PercentBase.YNA;
+    }
+
     public abstract readonly pollClassType: 'motion' | 'assignment';
 
     public canBeVotedFor: () => boolean;
-
-    /**
-     * returns a mapping "verbose_state" -> "state_id" for all valid next states
-     */
-    public getNextStates(): { [key: number]: string } {
-        const next_state = (this.state % Object.keys(PollStateVerbose).length) + 1;
-        const states = {};
-        states[PollStateChangeActionVerbose[next_state]] = next_state;
-        if (this.state === PollState.Finished) {
-            states[PollStateChangeActionVerbose[PollState.Created]] = PollState.Created;
-        }
-        return states;
-    }
 
     public get user_has_voted_invalid(): boolean {
         return this.options.some(option => option.user_has_voted) && !this.user_has_voted_valid;

@@ -1,17 +1,33 @@
 @import '~assets/styles/poll-colors.scss';
 
+.vote-button-grid {
+    display: grid;
+    grid-gap: 20px;
+    margin-top: 2em;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+}
+
+.vote-button {
+    display: inline-grid;
+    grid-gap: 1em;
+    margin: auto;
+
+    .vote-label {
+        text-align: center;
+    }
+}
+
 .voted-yes {
     background-color: $votes-yes-color;
+    color: $vote-active-color;
 }
 
 .voted-no {
     background-color: $votes-no-color;
+    color: $vote-active-color;
 }
 
 .voted-abstain {
     background-color: $votes-abstain-color;
-}
-
-.vote-label {
-    margin-left: 1em;
+    color: $vote-active-color;
 }

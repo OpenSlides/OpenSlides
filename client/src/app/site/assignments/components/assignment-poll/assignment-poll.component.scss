@@ -1,5 +1,6 @@
+@import '~assets/styles/poll-colors.scss';
+
 .assignment-poll-wrapper {
-    @import '~assets/styles/poll-common-styles.scss';
     position: relative;
     margin: 0 15px;
 
@@ -9,42 +10,30 @@
         right: 0;
     }
 
-    .poll-properties {
-        margin: 4px 0;
-
-        .mat-chip {
-            margin: 0 4px;
-
-            &.active {
-                cursor: pointer;
-            }
-        }
-
-        .poll-state {
-            &.created {
-                background-color: #2196f3;
-                color: white;
-            }
-            &.started {
-                background-color: #4caf50;
-                color: white;
-            }
-            &.finished {
-                background-color: #ff5252;
-                color: white;
-            }
-            &.published {
-                background-color: #ffd800;
-                color: black;
-            }
-        }
-    }
-
     .poll-detail-button-wrapper {
         display: flex;
         margin: auto 0;
         > a {
             margin-left: auto;
         }
+    }
+
+    .start-poll-button {
+        color: green !important;
+    }
+
+    .stop-poll-button {
+        color: $poll-stop-color;
+    }
+
+    .publish-poll-button {
+        color: $poll-publish-color;
+    }
+
+    .doughnut-chart {
+        display: block;
+        max-width: 300px;
+        margin-left: auto;
+        margin-right: auto;
     }
 }

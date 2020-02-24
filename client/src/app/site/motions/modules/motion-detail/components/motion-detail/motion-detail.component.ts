@@ -62,6 +62,7 @@ import { LocalPermissionsService } from 'app/site/motions/services/local-permiss
 import { MotionFilterListService } from 'app/site/motions/services/motion-filter-list.service';
 import { MotionPdfExportService } from 'app/site/motions/services/motion-pdf-export.service';
 import { MotionPollDialogService } from 'app/site/motions/services/motion-poll-dialog.service';
+import { MotionPollService } from 'app/site/motions/services/motion-poll.service';
 import { MotionSortListService } from 'app/site/motions/services/motion-sort-list.service';
 import { ViewTag } from 'app/site/tags/models/view-tag';
 import { ViewUser } from 'app/site/users/models/view-user';
@@ -453,7 +454,8 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         private motionSortService: MotionSortListService,
         private motionFilterService: MotionFilterListService,
         private cd: ChangeDetectorRef,
-        private pollDialog: MotionPollDialogService
+        private pollDialog: MotionPollDialogService,
+        private motionPollService: MotionPollService
     ) {
         super(title, translate, matSnackBar);
     }
@@ -1597,9 +1599,15 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         this.cd.markForCheck();
     }
 
-    public openDialog(poll?: ViewMotionPoll): void {
-        this.pollDialog.openDialog(
-            poll ? poll : { collectionString: ViewMotionPoll.COLLECTIONSTRING, motion_id: this.motion.id }
-        );
+    public openDialog(): void {
+        // TODO: Could be simpler, requires a lot of refactoring
+        const dialogData = {
+            collectionString: ViewMotionPoll.COLLECTIONSTRING,
+            motion_id: this.motion.id,
+            motion: this.motion,
+            ...this.motionPollService.getDefaultPollData()
+        };
+
+        this.pollDialog.openDialog(dialogData);
     }
 }

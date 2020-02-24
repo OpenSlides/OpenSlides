@@ -371,13 +371,17 @@ export class MotionPdfService {
             motion.polls.forEach(poll => {
                 if (poll.hasVotes) {
                     const tableData = poll.generateTableData();
+
                     tableData.forEach(votingResult => {
-                        const resultKey = this.translate.instant(this.pollKeyVerbose.transform(votingResult.key));
-                        const resultValue = this.parsePollNumber.transform(votingResult.value);
-                        column1.push(`${resultKey}:`);
+                        const votingOption = this.translate.instant(
+                            this.pollKeyVerbose.transform(votingResult.votingOption)
+                        );
+                        const value = votingResult.value[0];
+                        const resultValue = this.parsePollNumber.transform(value.amount);
+                        column1.push(`${votingOption}:`);
                         column2.push(resultValue);
-                        if (votingResult.showPercent) {
-                            const resultInPercent = this.pollPercentBase.transform(votingResult.value, poll);
+                        if (value.showPercent) {
+                            const resultInPercent = this.pollPercentBase.transform(value.amount, poll);
                             column3.push(resultInPercent);
                         }
                     });

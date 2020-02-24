@@ -15,18 +15,18 @@ import { PollFormComponent } from 'app/site/polls/components/poll-form/poll-form
     templateUrl: './motion-poll-dialog.component.html',
     styleUrls: ['./motion-poll-dialog.component.scss']
 })
-export class MotionPollDialogComponent extends BasePollDialogComponent {
+export class MotionPollDialogComponent extends BasePollDialogComponent<ViewMotionPoll> {
     public motionPollMethods = { YNA: MotionPollMethodsVerbose.YNA };
 
     @ViewChild('pollForm', { static: false })
-    protected pollForm: PollFormComponent;
+    protected pollForm: PollFormComponent<ViewMotionPoll>;
 
     public constructor(
         private fb: FormBuilder,
         title: Title,
         protected translate: TranslateService,
         matSnackbar: MatSnackBar,
-        public dialogRef: MatDialogRef<BasePollDialogComponent>,
+        public dialogRef: MatDialogRef<BasePollDialogComponent<ViewMotionPoll>>,
         @Inject(MAT_DIALOG_DATA) public pollData: Partial<ViewMotionPoll>
     ) {
         super(title, translate, matSnackbar, dialogRef);

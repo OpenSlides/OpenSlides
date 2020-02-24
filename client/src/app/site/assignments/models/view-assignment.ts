@@ -4,6 +4,7 @@ import { TitleInformationWithAgendaItem } from 'app/site/base/base-view-model-wi
 import { BaseViewModelWithAgendaItemAndListOfSpeakers } from 'app/site/base/base-view-model-with-agenda-item-and-list-of-speakers';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
+import { HasViewPolls } from 'app/site/polls/models/has-view-polls';
 import { ViewTag } from 'app/site/tags/models/view-tag';
 import { ViewUser } from 'app/site/users/models/view-user';
 import { ViewAssignmentPoll } from './view-assignment-poll';
@@ -102,9 +103,8 @@ export class ViewAssignment extends BaseViewModelWithAgendaItemAndListOfSpeakers
         };
     }
 }
-interface IAssignmentRelations {
+interface IAssignmentRelations extends HasViewPolls<ViewAssignmentPoll> {
     assignment_related_users: ViewAssignmentRelatedUser[];
-    polls: ViewAssignmentPoll[];
     tags?: ViewTag[];
     attachments?: ViewMediafile[];
 }

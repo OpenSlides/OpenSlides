@@ -50,7 +50,10 @@ export class AssignmentPollVoteComponent extends BasePollVoteComponent<ViewAssig
     }
 
     public ngOnInit(): void {
-        this.defineVoteOptions();
+        if (this.poll) {
+            this.defineVoteOptions();
+        }
+
         this.subscriptions.push(
             this.voteRepo.getViewModelListObservable().subscribe(votes => {
                 this.votes = votes;
@@ -91,8 +94,6 @@ export class AssignmentPollVoteComponent extends BasePollVoteComponent<ViewAssig
     }
 
     protected updateVotes(): void {
-        console.log('currentVotes: ', this.currentVotes);
-
         if (this.user && this.votes && this.poll) {
             const filtered = this.votes.filter(
                 vote => vote.option.poll_id === this.poll.id && vote.user_id === this.user.id

@@ -5,7 +5,7 @@ import { E2EImportsModule } from 'e2e-imports.module';
 
 import { MotionPollDialogComponent } from './motion-poll-dialog.component';
 
-fdescribe('MotionPollDialogComponent', () => {
+describe('MotionPollDialogComponent', () => {
     let component: MotionPollDialogComponent;
     let fixture: ComponentFixture<MotionPollDialogComponent>;
 
