@@ -8,7 +8,6 @@ export class AssignmentRelatedUser extends BaseModel<AssignmentRelatedUser> {
 
     public id: number;
     public user_id: number;
-    public elected: boolean;
     public assignment_id: number;
     public weight: number;
 

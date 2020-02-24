@@ -10,9 +10,7 @@ import { BehaviorSubject, from, Observable } from 'rxjs';
 import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
 import { BasePollDialogService } from 'app/core/ui-services/base-poll-dialog.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
-import { Breadcrumb } from 'app/shared/components/breadcrumb/breadcrumb.component';
 import { ChartData, ChartType } from 'app/shared/components/charts/charts.component';
-import { PollState, PollType } from 'app/shared/models/poll/base-poll';
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { ViewGroup } from 'app/site/users/models/view-group';
 import { ViewUser } from 'app/site/users/models/view-user';
@@ -57,11 +55,6 @@ export abstract class BasePollDetailComponent<V extends ViewBasePoll> extends Ba
      * The reference to the poll.
      */
     public poll: V = null;
-
-    /**
-     * The breadcrumbs for the poll-states.
-     */
-    public breadcrumbs: Breadcrumb[] = [];
 
     /**
      * Sets the type of the shown chart, if votes are entered.
@@ -143,8 +136,8 @@ export abstract class BasePollDetailComponent<V extends ViewBasePoll> extends Ba
     /**
      * Opens dialog for editing the poll
      */
-    public openDialog(): void {
-        this.pollDialog.openDialog(this.poll);
+    public openDialog(viewPoll: V): void {
+        this.pollDialog.openDialog(viewPoll);
     }
 
     protected onDeleted(): void {}
@@ -198,7 +191,6 @@ export abstract class BasePollDetailComponent<V extends ViewBasePoll> extends Ba
                 this.repo.getViewModelObservable(params.id).subscribe(poll => {
                     if (poll) {
                         this.poll = poll;
-                        this.updateBreadcrumbs();
                         this.onPollLoaded();
                         this.waitForOptions();
                         this.checkData();
@@ -216,83 +208,6 @@ export abstract class BasePollDetailComponent<V extends ViewBasePoll> extends Ba
             setTimeout(() => this.waitForOptions(), 1);
         } else {
             this.onPollWithOptionsLoaded();
-        }
-    }
-
-    /**
-     * Action for the different breadcrumbs.
-     */
-    private async changeState(): Promise<void> {
-        this.actionWrapper(this.repo.changePollState(this.poll), this.onStateChanged);
-    }
-
-    /**
-     * Resets the state of a motion-poll.
-     */
-    private async resetState(): Promise<void> {
-        this.actionWrapper(this.repo.resetPoll(this.poll), this.onStateChanged);
-    }
-
-    /**
-     * Used to execute same logic after fullfilling a promise.
-     *
-     * @param action Any promise to execute.
-     *
-     * @returns Any promise-like.
-     */
-    private actionWrapper(action: Promise<any>, callback?: () => any): any {
-        action
-            .then(() => {
-                this.checkData();
-                if (callback) {
-                    callback();
-                }
-            })
-            .catch(this.raiseError);
-    }
-
-    /**
-     * Used to change the breadcrumbs depending on the state of the given motion-poll.
-     */
-    private updateBreadcrumbs(): void {
-        this.breadcrumbs = Object.values(PollState)
-            .filter(state => typeof state === 'string')
-            .map((state: string) => ({
-                label: state,
-                action: this.getBreadcrumbAction(PollState[state]),
-                active: this.poll ? this.poll.state === PollState[state] : false
-            }));
-    }
-
-    /**
-     * Depending on the state of the motion-poll, the breadcrumb has another action and state.
-     *
-     * @param state The state of the motion-poll as number.
-     *
-     * @returns An action, that is executed, if the breadcrumb is clicked, or null.
-     */
-    private getBreadcrumbAction(state: number): () => any | null {
-        if (!this.poll) {
-            return null;
-        }
-        if (!this.hasPerms()) {
-            return null;
-        }
-        switch (this.poll.state) {
-            case PollState.Created:
-                return state === 2 ? () => this.changeState() : null;
-            case PollState.Started:
-                return this.poll.type !== PollType.Analog && state === 3 ? () => this.changeState() : null;
-            case PollState.Finished:
-                if (state === 1) {
-                    return () => this.resetState();
-                } else if (state === 4) {
-                    return () => this.changeState();
-                } else {
-                    return null;
-                }
-            case PollState.Published:
-                return state === 1 ? () => this.resetState() : null;
         }
     }
 }

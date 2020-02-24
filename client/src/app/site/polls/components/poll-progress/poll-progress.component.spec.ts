@@ -10,7 +10,8 @@ describe('PollProgressComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            imports: [E2EImportsModule]
+            imports: [E2EImportsModule],
+            declarations: [PollProgressComponent]
         }).compileComponents();
     }));
 

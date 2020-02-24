@@ -1,44 +1,68 @@
-<div class="poll-preview-wrapper" *ngIf="poll && showPoll()">
+<mat-card class="motion-poll-wrapper" *ngIf="poll">
     <!-- Poll Infos -->
     <div class="poll-title-wrapper">
-        <!-- Title -->
-        <a class="poll-title" [routerLink]="pollLink">
-            {{ poll.title }}
-        </a>
+        <!-- Title Area -->
+        <div class="poll-title-area">
+            <!-- Title -->
+            <span class="poll-title">
+                <a [routerLink]="pollLink">
+                    {{ poll.title }}
+                </a>
+            </span>
+
+            <div>
+                <!-- Subtitle -->
+                <span *ngIf="pollService.isElectronicVotingEnabled && poll.type !== 'analog'">
+                    {{ poll.typeVerbose | translate }} &middot;
+                </span>
+
+                <!-- State chip -->
+                <span>
+                    {{ poll.stateVerbose }}
+                </span>
+            </div>
+        </div>
 
         <!-- Dot Menu -->
-        <span class="poll-title-actions" *osPerms="'motions.can_manage_polls'">
+        <span class="poll-actions" *osPerms="'motions.can_manage_polls'">
             <button mat-icon-button [matMenuTriggerFor]="pollDetailMenu">
                 <mat-icon class="small-icon">more_horiz</mat-icon>
             </button>
         </span>
+    </div>
 
-        <!-- State chip -->
-        <div class="poll-properties" *osPerms="'motions.can_manage_polls'">
-            <div *ngIf="pollService.isElectronicVotingEnabled && poll.type !== 'analog'">
-                {{ poll.typeVerbose | translate }}
-            </div>
-
-            <mat-chip
-                disableRipple
-                [matMenuTriggerFor]="triggerMenu"
-                class="poll-state active"
-                [class]="poll.stateVerbose.toLowerCase()"
-                [ngClass]="{ 'disabled': !poll.getNextStates() }"
-            >
-                {{ poll.stateVerbose }}
-            </mat-chip>
-        </div>
+    <!-- Change state button -->
+    <div *osPerms="'motions.can_manage_polls'">
+        <button
+            mat-stroked-button
+            *ngIf="!poll.isPublished"
+            [ngClass]="pollStateActions[poll.state].css"
+            (click)="changeState(poll.nextState)"
+        >
+            <mat-icon> {{ pollStateActions[poll.state].icon }}</mat-icon>
+            <span class="next-state-label">
+                {{ poll.nextStateActionVerbose | translate }}
+            </span>
+        </button>
     </div>
 
     <!-- Results -->
     <ng-container *ngIf="poll && !poll.stateHasVotes && poll.type !== 'analog'; else votingResult">
         <os-motion-poll-vote [poll]="poll"></os-motion-poll-vote>
     </ng-container>
-</div>
+
+    <!-- Detail link -->
+    <div class="poll-detail-button-wrapper">
+        <a mat-icon-button [routerLink]="pollLink" matTooltip="{{ 'More' | translate }}">
+            <mat-icon class="small-icon">
+                visibility
+            </mat-icon>
+        </a>
+    </div>
+</mat-card>
 
 <ng-template #votingResult>
-    <div [routerLink]="pollLink" class="poll-link-wrapper">
+    <div class="poll-link-wrapper">
         <ng-container
             [ngTemplateOutlet]="poll.hasVotes && poll.stateHasVotes ? viewTemplate : emptyTemplate"
         ></ng-container>
@@ -46,7 +70,28 @@
 </ng-template>
 
 <ng-template #viewTemplate>
-    <div class="poll-chart-wrapper">
+    <!-- Result Chart and legend -->
+    <div class="poll-chart-wrapper" *osPerms="'motions.can_manage_polls'; or: poll.isPublished">
+        <div class="vote-legend" [routerLink]="pollLink">
+            <div class="votes-yes">
+                <os-icon-container icon="thumb_up" size="large">
+                    {{ voteYes | parsePollNumber }}
+                    {{ voteYes | pollPercentBase: poll }}
+                </os-icon-container>
+            </div>
+            <div class="votes-no">
+                <os-icon-container icon="thumb_down" size="large">
+                    {{ voteNo | parsePollNumber }}
+                    {{ voteNo | pollPercentBase: poll }}
+                </os-icon-container>
+            </div>
+            <div class="votes-abstain">
+                <os-icon-container icon="trip_origin" size="large">
+                    {{ voteAbstain | parsePollNumber }}
+                    {{ voteAbstain | pollPercentBase: poll }}
+                </os-icon-container>
+            </div>
+        </div>
         <div class="doughnut-chart">
             <os-charts
                 *ngIf="showChart"
@@ -57,31 +102,13 @@
             >
             </os-charts>
         </div>
-        <div class="vote-legend">
-            <div class="votes-yes" *ngIf="pollService.isVoteDocumented(voteYes)">
-                <os-icon-container icon="thumb_up" size="large">
-                    {{ voteYes | parsePollNumber }}
-                    {{ voteYes | pollPercentBase: poll }}
-                </os-icon-container>
-            </div>
-            <div class="votes-no" *ngIf="pollService.isVoteDocumented(voteNo)">
-                <os-icon-container icon="thumb_down" size="large">
-                    {{ voteNo | parsePollNumber }}
-                    {{ voteNo | pollPercentBase: poll }}
-                </os-icon-container>
-            </div>
-            <div class="votes-abstain" *ngIf="pollService.isVoteDocumented(voteAbstain)">
-                <os-icon-container icon="trip_origin" size="large">
-                    {{ voteAbstain | parsePollNumber }}
-                    {{ voteAbstain | pollPercentBase: poll }}
-                </os-icon-container>
-            </div>
-        </div>
     </div>
-    <div class="poll-detail-button-wrapper">
-        <a mat-button [routerLink]="pollLink">
-            {{ 'More' | translate }}
-        </a>
+
+    <!-- In Progress hint -->
+    <div class="motion-couting-in-progress-hint" *osPerms="'motions.can_manage_polls'; complement: true">
+        <span *ngIf="poll.isFinished">
+            {{ 'Counting is in progress' | translate }}
+        </span>
     </div>
 </ng-template>
 
@@ -104,18 +131,16 @@
     </button>
     <div *osPerms="'motions.can_manage_polls'">
         <mat-divider></mat-divider>
+        <!-- Reset Button -->
+        <button mat-menu-item (click)="resetState()">
+            <mat-icon color="warn">replay</mat-icon>
+            <span translate>Reset state</span>
+        </button>
+
+        <!-- Delete button -->
         <button mat-menu-item (click)="deletePoll()">
             <mat-icon color="warn">delete</mat-icon>
             <span translate>Delete</span>
         </button>
     </div>
-</mat-menu>
-
-<!-- Select state menu -->
-<mat-menu #triggerMenu="matMenu">
-    <ng-container *ngIf="poll">
-        <button mat-menu-item (click)="changeState(state.value)" *ngFor="let state of poll.getNextStates() | keyvalue">
-            <span translate>{{ state.key }}</span>
-        </button>
-    </ng-container>
 </mat-menu>

@@ -5,16 +5,22 @@
         'message action'
         'bar action';
     grid-template-columns: auto min-content;
-}
 
-.message {
-    grid-area: message;
-}
+    .mat-progress-bar-buffer {
+        // TODO theme
+        // background-color: mat-color($background, card) !important;
+        background-color: white !important;
+    }
 
-.bar {
-    grid-area: bar;
-}
+    .message {
+        grid-area: message;
+    }
 
-.action {
-    grid-area: action;
+    .bar {
+        grid-area: bar;
+    }
+
+    .action {
+        grid-area: action;
+    }
 }

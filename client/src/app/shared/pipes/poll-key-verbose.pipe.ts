@@ -19,6 +19,6 @@ const PollValues = {
 })
 export class PollKeyVerbosePipe implements PipeTransform {
     public transform(value: string): string {
-        return PollValues[value];
+        return PollValues[value] || value;
     }
 }

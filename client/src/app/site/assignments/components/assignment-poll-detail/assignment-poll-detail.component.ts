@@ -14,6 +14,7 @@ import { ViewportService } from 'app/core/ui-services/viewport.service';
 import { ChartType } from 'app/shared/components/charts/charts.component';
 import { AssignmentPollMethods } from 'app/shared/models/assignments/assignment-poll';
 import { BasePollDetailComponent } from 'app/site/polls/components/base-poll-detail.component';
+import { VotingResult } from 'app/site/polls/models/view-base-poll';
 import { PollService } from 'app/site/polls/services/poll.service';
 import { AssignmentPollDialogService } from '../../services/assignment-poll-dialog.service';
 import { ViewAssignmentPoll } from '../../models/view-assignment-poll';
@@ -43,13 +44,6 @@ export class AssignmentPollDetailComponent extends BasePollDetailComponent<ViewA
         return this.poll.pollmethod === AssignmentPollMethods.Votes;
     }
 
-    public get columnDefinitionOverview(): string[] {
-        const columns = this.isVotedPoll ? ['user', 'votes'] : ['user', 'yes', 'no'];
-        if (this.poll.pollmethod === AssignmentPollMethods.YNA) {
-            columns.splice(3, 0, 'abstain');
-        }
-        return columns;
-    }
     private _chartType: ChartType = 'horizontalBar';
 
     public constructor(
@@ -130,9 +124,7 @@ export class AssignmentPollDetailComponent extends BasePollDetailComponent<ViewA
         }
 
         this.setVotesData(Object.values(votes));
-
         this.candidatesLabels = this.pollService.getChartLabels(this.poll);
-
         this.isReady = true;
     }
 
@@ -156,5 +148,18 @@ export class AssignmentPollDetailComponent extends BasePollDetailComponent<ViewA
 
     protected hasPerms(): boolean {
         return this.operator.hasPerms('assignments.can_manage');
+    }
+
+    public voteFitsMethod(result: VotingResult): boolean {
+        if (this.poll.pollmethod === AssignmentPollMethods.Votes) {
+            if (result.vote === 'abstain' || result.vote === 'no') {
+                return false;
+            }
+        } else if (this.poll.pollmethod === AssignmentPollMethods.YN) {
+            if (result.vote === 'abstain') {
+                return false;
+            }
+        }
+        return true;
     }
 }

@@ -8,14 +8,15 @@ import { TranslateService } from '@ngx-translate/core';
 import { OneOfValidator } from 'app/shared/validators/one-of-validator';
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { PollFormComponent } from './poll-form/poll-form.component';
+import { ViewBasePoll } from '../models/view-base-poll';
 
 /**
  * A dialog for updating the values of a poll.
  */
-export abstract class BasePollDialogComponent extends BaseViewComponent {
+export abstract class BasePollDialogComponent<T extends ViewBasePoll> extends BaseViewComponent {
     public publishImmediately: boolean;
 
-    protected pollForm: PollFormComponent;
+    protected pollForm: PollFormComponent<T>;
 
     public dialogVoteForm: FormGroup;
 
@@ -23,7 +24,7 @@ export abstract class BasePollDialogComponent extends BaseViewComponent {
         title: Title,
         protected translate: TranslateService,
         matSnackbar: MatSnackBar,
-        public dialogRef: MatDialogRef<BasePollDialogComponent>
+        public dialogRef: MatDialogRef<BasePollDialogComponent<T>>
     ) {
         super(title, translate, matSnackbar);
     }

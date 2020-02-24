@@ -28,6 +28,7 @@
 @import './app/shared/components/banner/banner.component.scss-theme.scss';
 @import './app/site/motions/modules/motion-poll/motion-poll/motion-poll.component.scss-theme.scss';
 @import './app/site/motions/modules/motion-poll/motion-poll-detail/motion-poll-detail.component.scss-theme.scss';
+@import './app/site/assignments/components/assignment-poll-detail/assignment-poll-detail-component.scss-theme.scss';
 
 /** fonts */
 @import './assets/styles/fonts.scss';
@@ -56,6 +57,7 @@ $narrow-spacing: (
     @include os-banner-style($theme);
     @include os-motion-poll-style($theme);
     @include os-motion-poll-detail-style($theme);
+    @include os-assignment-poll-detail-style($theme);
 }
 
 /** Load projector specific SCSS values */

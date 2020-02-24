@@ -5,11 +5,9 @@ import { TranslateService } from '@ngx-translate/core';
 import { ConstantsService } from 'app/core/core-services/constants.service';
 import { AssignmentPollRepositoryService } from 'app/core/repositories/assignments/assignment-poll-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
-import { AssignmentPollMethods } from 'app/shared/models/assignments/assignment-poll';
-import { Collection } from 'app/shared/models/base/collection';
+import { AssignmentPoll, AssignmentPollMethods } from 'app/shared/models/assignments/assignment-poll';
 import { MajorityMethod, PercentBase } from 'app/shared/models/poll/base-poll';
 import { PollData, PollService } from 'app/site/polls/services/poll.service';
-import { ViewAssignmentPoll } from '../models/view-assignment-poll';
 
 @Injectable({
     providedIn: 'root'
@@ -24,6 +22,10 @@ export class AssignmentPollService extends PollService {
      * The default majority method
      */
     public defaultMajorityMethod: MajorityMethod;
+
+    public defaultGroupIds: number[];
+
+    public defaultPollMethod: AssignmentPollMethods;
 
     /**
      * Constructor. Subscribes to the configuration values needed
@@ -42,16 +44,21 @@ export class AssignmentPollService extends PollService {
         config
             .get<MajorityMethod>('motion_poll_default_majority_method')
             .subscribe(method => (this.defaultMajorityMethod = method));
+        config.get<number[]>(AssignmentPoll.defaultGroupsConfig).subscribe(ids => (this.defaultGroupIds = ids));
+        config
+            .get<AssignmentPollMethods>(AssignmentPoll.defaultPollMethodConfig)
+            .subscribe(method => (this.defaultPollMethod = method));
     }
 
-    public fillDefaultPollData(poll: Partial<ViewAssignmentPoll> & Collection): void {
-        super.fillDefaultPollData(poll);
+    public getDefaultPollData(): AssignmentPoll {
+        const poll = new AssignmentPoll(super.getDefaultPollData());
         const length = this.pollRepo.getViewModelList().filter(item => item.assignment_id === poll.assignment_id)
             .length;
 
         poll.title = !length ? this.translate.instant('Ballot') : `${this.translate.instant('Ballot')} (${length + 1})`;
-        poll.pollmethod = AssignmentPollMethods.YN;
-        poll.assignment_id = poll.assignment_id;
+        poll.pollmethod = this.defaultPollMethod;
+
+        return poll;
     }
 
     private sumOptionsYN(poll: PollData): number {

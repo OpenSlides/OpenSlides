@@ -23,6 +23,7 @@ import { ViewTag } from 'app/site/tags/models/view-tag';
 import { ViewUser } from 'app/site/users/models/view-user';
 import { AssignmentPdfExportService } from '../../services/assignment-pdf-export.service';
 import { AssignmentPollDialogService } from '../../services/assignment-poll-dialog.service';
+import { AssignmentPollService } from '../../services/assignment-poll.service';
 import { AssignmentPhases, ViewAssignment } from '../../models/view-assignment';
 import { ViewAssignmentPoll } from '../../models/view-assignment-poll';
 import { ViewAssignmentRelatedUser } from '../../models/view-assignment-related-user';
@@ -176,7 +177,8 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
         private promptService: PromptService,
         private pdfService: AssignmentPdfExportService,
         private mediafileRepo: MediafileRepositoryService,
-        private pollDialog: AssignmentPollDialogService
+        private pollDialog: AssignmentPollDialogService,
+        private assignmentPollService: AssignmentPollService
     ) {
         super(title, translate, matSnackBar);
         this.subscriptions.push(
@@ -306,11 +308,15 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
      * Creates a new Poll
      */
     public openDialog(): void {
-        this.pollDialog.openDialog({
+        // TODO: That is not really a ViewObject
+        const dialogData = {
             collectionString: ViewAssignmentPoll.COLLECTIONSTRING,
             assignment_id: this.assignment.id,
-            assignment: this.assignment
-        });
+            assignment: this.assignment,
+            ...this.assignmentPollService.getDefaultPollData()
+        };
+
+        this.pollDialog.openDialog(dialogData);
     }
 
     /**

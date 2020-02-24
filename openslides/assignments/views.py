@@ -32,8 +32,7 @@ class AssignmentViewSet(ModelViewSet):
     API endpoint for assignments.
 
     There are the following views: metadata, list, retrieve, create,
-    partial_update, update, destroy, candidature_self, candidature_other,
-    mark_elected and create_poll.
+    partial_update, update, destroy, candidature_self, candidature_other and create_poll.
     """
 
     access_permissions = AssignmentAccessPermissions()
@@ -53,7 +52,6 @@ class AssignmentViewSet(ModelViewSet):
             "partial_update",
             "update",
             "destroy",
-            "mark_elected",
             "sort_related_users",
         ):
             result = has_perm(self.request.user, "assignments.can_see") and has_perm(
@@ -81,8 +79,6 @@ class AssignmentViewSet(ModelViewSet):
         candidature (DELETE).
         """
         assignment = self.get_object()
-        if assignment.is_elected(request.user):
-            raise ValidationError({"detail": "You are already elected."})
         if request.method == "POST":
             message = self.nominate_self(request, assignment)
         else:
@@ -132,8 +128,7 @@ class AssignmentViewSet(ModelViewSet):
     def get_user_from_request_data(self, request):
         """
         Helper method to get a specific user from request data (not the
-        request.user) so that the views self.candidature_other or
-        self.mark_elected can play with it.
+        request.user) so that the view self.candidature_other can play with it.
         """
         if not isinstance(request.data, dict):
             raise ValidationError(
@@ -172,10 +167,6 @@ class AssignmentViewSet(ModelViewSet):
             return self.delete_other(request, user, assignment)
 
     def nominate_other(self, request, user, assignment):
-        if assignment.is_elected(user):
-            raise ValidationError(
-                {"detail": "User {0} is already elected.", "args": [str(user)]}
-            )
         if assignment.phase == assignment.PHASE_FINISHED:
             raise ValidationError(
                 {
@@ -209,7 +200,7 @@ class AssignmentViewSet(ModelViewSet):
                     "detail": "You can not delete someone's candidature to this election because it is finished."
                 }
             )
-        if not assignment.is_candidate(user) and not assignment.is_elected(user):
+        if not assignment.is_candidate(user):
             raise ValidationError(
                 {
                     "detail": "User {0} has no status in this election.",
@@ -220,37 +211,6 @@ class AssignmentViewSet(ModelViewSet):
         return Response(
             {"detail": "Candidate {0} was withdrawn successfully.", "args": [str(user)]}
         )
-
-    @detail_route(methods=["post", "delete"])
-    def mark_elected(self, request, pk=None):
-        """
-        View to mark other users as elected (POST) or undo this (DELETE).
-        The client has to send {'user': <id>}.
-        """
-        user = self.get_user_from_request_data(request)
-        assignment = self.get_object()
-        if request.method == "POST":
-            if not assignment.is_candidate(user):
-                raise ValidationError(
-                    {
-                        "detail": "User {0} is not a candidate of this election.",
-                        "args": [str(user)],
-                    }
-                )
-            assignment.set_elected(user)
-            message = "User {0} was successfully elected."
-        else:
-            # request.method == 'DELETE'
-            if not assignment.is_elected(user):
-                raise ValidationError(
-                    {
-                        "detail": "User {0} is not an elected candidate of this election.",
-                        "args": [str(user)],
-                    }
-                )
-            assignment.add_candidate(user)
-            message = "User {0} was successfully unelected."
-        return Response({"detail": message, "args": [str(user)]})
 
     @detail_route(methods=["post"])
     def sort_related_users(self, request, pk=None):

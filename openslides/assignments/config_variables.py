@@ -52,11 +52,25 @@ def get_config_variables():
     )
 
     yield ConfigVariable(
+        name="assignment_poll_method",
+        default_value="votes",
+        input_type="choice",
+        label="Preselected poll method",
+        choices=tuple(
+            {"value": method[0], "display_name": method[1]}
+            for method in AssignmentPoll.POLLMETHODS
+        ),
+        weight=415,
+        group="Elections",
+        subgroup="Voting",
+    )
+
+    yield ConfigVariable(
         name="assignment_poll_add_candidates_to_list_of_speakers",
         default_value=True,
         input_type="boolean",
         label="Put all candidates on the list of speakers",
-        weight=415,
+        weight=420,
         group="Elections",
         subgroup="Voting",
     )

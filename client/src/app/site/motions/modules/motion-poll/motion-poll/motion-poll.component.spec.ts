@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { E2EImportsModule } from 'e2e-imports.module';
 
+import { PollProgressComponent } from 'app/site/polls/components/poll-progress/poll-progress.component';
 import { MotionPollVoteComponent } from '../motion-poll-vote/motion-poll-vote.component';
 import { MotionPollComponent } from './motion-poll.component';
 
@@ -11,7 +12,7 @@ describe('MotionPollComponent', () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             imports: [E2EImportsModule],
-            declarations: [MotionPollComponent, MotionPollVoteComponent]
+            declarations: [MotionPollComponent, MotionPollVoteComponent, PollProgressComponent]
         }).compileComponents();
     }));
     beforeEach(() => {

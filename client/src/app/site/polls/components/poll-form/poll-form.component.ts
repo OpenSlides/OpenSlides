@@ -12,6 +12,7 @@ import { PercentBase } from 'app/shared/models/poll/base-poll';
 import { PollType } from 'app/shared/models/poll/base-poll';
 import { ViewAssignmentPoll } from 'app/site/assignments/models/view-assignment-poll';
 import { BaseViewComponent } from 'app/site/base/base-view';
+import { ViewMotionPoll } from 'app/site/motions/models/view-motion-poll';
 import {
     MajorityMethodVerbose,
     PercentBaseVerbose,
@@ -28,7 +29,7 @@ import { PollService } from '../../services/poll.service';
     templateUrl: './poll-form.component.html',
     styleUrls: ['./poll-form.component.scss']
 })
-export class PollFormComponent extends BaseViewComponent implements OnInit {
+export class PollFormComponent<T extends ViewBasePoll> extends BaseViewComponent implements OnInit {
     /**
      * The form-group for the meta-info.
      */
@@ -44,7 +45,7 @@ export class PollFormComponent extends BaseViewComponent implements OnInit {
     public pollMethods: { [key: string]: string };
 
     @Input()
-    public data: Partial<ViewBasePoll>;
+    public data: Partial<T>;
 
     /**
      * The different types the poll can accept.
@@ -103,18 +104,15 @@ export class PollFormComponent extends BaseViewComponent implements OnInit {
     public ngOnInit(): void {
         this.groupObservable = this.groupRepo.getViewModelListObservable();
 
-        const cast = <ViewAssignmentPoll>this.data;
-        if (cast.assignment && !cast.votes_amount) {
-            cast.votes_amount = cast.assignment.open_posts;
-        }
-
         if (this.data) {
-            if (!this.data.groups_id) {
-                if (this.data.collectionString === ViewAssignmentPoll.COLLECTIONSTRING) {
-                    this.data.groups_id = this.configService.instant('assignment_poll_default_groups');
-                } else {
-                    this.data.groups_id = this.configService.instant('motion_poll_default_groups');
+            if (this.data instanceof ViewAssignmentPoll) {
+                if (this.data.assignment && !this.data.votes_amount) {
+                    this.data.votes_amount = this.data.assignment.open_posts;
                 }
+                if (!this.data.pollmethod) {
+                    this.data.pollmethod = this.configService.instant('assignment_poll_method');
+                }
+            } else if (this.data instanceof ViewMotionPoll) {
             }
 
             Object.keys(this.contentForm.controls).forEach(key => {
@@ -193,26 +191,31 @@ export class PollFormComponent extends BaseViewComponent implements OnInit {
      * @param data Passing the properties of the poll.
      */
     private updatePollValues(data: { [key: string]: any }): void {
-        this.pollValues = [
-            [this.pollService.getVerboseNameForKey('type'), this.pollService.getVerboseNameForValue('type', data.type)]
-        ];
-        // show pollmethod only for assignment polls
-        if (this.data.pollClassType === PollClassType.Assignment) {
-            this.pollValues.push([
-                this.pollService.getVerboseNameForKey('pollmethod'),
-                this.pollService.getVerboseNameForValue('pollmethod', data.pollmethod)
-            ]);
-        }
-        if (data.type !== 'analog') {
-            this.pollValues.push([
-                this.pollService.getVerboseNameForKey('groups'),
-                this.groupRepo.getNameForIds(...([] || (data && data.groups_id)))
-            ]);
-        }
-        if (data.pollmethod === 'votes') {
-            this.pollValues.push([this.pollService.getVerboseNameForKey('votes_amount'), data.votes_amount]);
-            this.pollValues.push([this.pollService.getVerboseNameForKey('global_no'), data.global_no]);
-            this.pollValues.push([this.pollService.getVerboseNameForKey('global_abstain'), data.global_abstain]);
+        if (this.data) {
+            this.pollValues = [
+                [
+                    this.pollService.getVerboseNameForKey('type'),
+                    this.pollService.getVerboseNameForValue('type', data.type)
+                ]
+            ];
+            // show pollmethod only for assignment polls
+            if (this.data.pollClassType === PollClassType.Assignment) {
+                this.pollValues.push([
+                    this.pollService.getVerboseNameForKey('pollmethod'),
+                    this.pollService.getVerboseNameForValue('pollmethod', data.pollmethod)
+                ]);
+            }
+            if (data.type !== 'analog') {
+                this.pollValues.push([
+                    this.pollService.getVerboseNameForKey('groups'),
+                    this.groupRepo.getNameForIds(...([] || (data && data.groups_id)))
+                ]);
+            }
+            if (data.pollmethod === 'votes') {
+                this.pollValues.push([this.pollService.getVerboseNameForKey('votes_amount'), data.votes_amount]);
+                this.pollValues.push([this.pollService.getVerboseNameForKey('global_no'), data.global_no]);
+                this.pollValues.push([this.pollService.getVerboseNameForKey('global_abstain'), data.global_abstain]);
+            }
         }
     }
 

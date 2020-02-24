@@ -67,7 +67,7 @@
         <!-- candidates list -->
         <ng-container [ngTemplateOutlet]="candidatesTemplate"></ng-container>
         <!-- closed polls -->
-        <ng-container *ngIf="assignment">
+        <ng-container *ngIf="assignment && assignment.polls.length">
             <ng-container *ngFor="let poll of assignment.polls | reverse; trackBy: trackByIndex">
                 <os-assignment-poll [poll]="poll"> </os-assignment-poll>
             </ng-container>
@@ -162,7 +162,12 @@
                     <!-- Search for candidates -->
                     <div class="search-field" *ngIf="hasPerms('addOthers')">
                         <form
-                            *ngIf="hasPerms('addOthers') && filteredCandidates && filteredCandidates.value.length > 0"
+                            *ngIf="
+                                hasPerms('addOthers') &&
+                                filteredCandidates &&
+                                filteredCandidates.value &&
+                                filteredCandidates.value.length
+                            "
                             [formGroup]="candidatesForm"
                         >
                             <mat-form-field>
@@ -285,7 +290,6 @@
                     <span translate>Number poll candidates</span>
                 </mat-checkbox>
             </div>
-            <!-- TODO searchValueSelector: Parent -->
         </form>
     </mat-card>
 </ng-template>
