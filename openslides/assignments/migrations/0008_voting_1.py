@@ -175,7 +175,12 @@ class Migration(migrations.Migration):
             model_name="assignmentpoll",
             name="pollmethod",
             field=models.CharField(
-                choices=[("YN", "YN"), ("YNA", "YNA"), ("votes", "votes")], max_length=5
+                choices=[
+                    ("votes", "Yes per candidate"),
+                    ("YN", "Yes/No per candidate"),
+                    ("YNA", "Yes/No/Abstain per candidate"),
+                ],
+                max_length=5,
             ),
         ),
         migrations.AlterField(

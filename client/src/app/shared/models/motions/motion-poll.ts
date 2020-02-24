@@ -12,6 +12,7 @@ export enum MotionPollMethods {
  */
 export class MotionPoll extends BasePoll<MotionPoll, MotionOption> {
     public static COLLECTIONSTRING = 'motions/motion-poll';
+    public static defaultGroupsConfig = 'motion_poll_default_groups';
 
     public id: number;
     public motion_id: number;

@@ -2,7 +2,7 @@ import { BaseDecimalModel } from '../base/base-decimal-model';
 import { BaseOption } from './base-option';
 
 export enum PollColor {
-    yes = '#9fd773',
+    yes = '#4caf50',
     no = '#cc6c5b',
     abstain = '#a6a6a6',
     votesvalid = '#e2e2e2',
@@ -74,6 +74,10 @@ export abstract class BasePoll<T = any, O extends BaseOption<any> = any> extends
      */
     public get stateHasVotes(): boolean {
         return this.isFinished || this.isPublished;
+    }
+
+    public get nextState(): PollState {
+        return this.state + 1;
     }
 
     protected getDecimalFields(): (keyof BasePoll<T, O>)[] {

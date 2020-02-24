@@ -15,7 +15,6 @@ import { BasePollComponent } from 'app/site/polls/components/base-poll.component
 import { PollService } from 'app/site/polls/services/poll.service';
 import { AssignmentPollDialogService } from '../../services/assignment-poll-dialog.service';
 import { AssignmentPollPdfService } from '../../services/assignment-poll-pdf.service';
-import { ViewAssignmentOption } from '../../models/view-assignment-option';
 import { ViewAssignmentPoll } from '../../models/view-assignment-poll';
 
 /**
@@ -52,9 +51,6 @@ export class AssignmentPollComponent extends BasePollComponent<ViewAssignmentPol
     public descriptionForm: FormGroup;
 
     /**
-     * permission checks.
-     * TODO stub
-     *
      * @returns true if the user is permitted to do operations
      */
     public get canManage(): boolean {
@@ -93,9 +89,6 @@ export class AssignmentPollComponent extends BasePollComponent<ViewAssignmentPol
     }
 
     public ngOnInit(): void {
-        /*this.majorityChoice =
-            this.pollService.majorityMethods.find(method => method.value === this.pollService.defaultMajorityMethod) ||
-            null;*/
         this.descriptionForm = this.formBuilder.group({
             description: this.poll ? this.poll.description : ''
         });
@@ -114,71 +107,5 @@ export class AssignmentPollComponent extends BasePollComponent<ViewAssignmentPol
             this.poll.isPublished ||
             (this.poll.type !== 'analog' && this.poll.isStarted)
         );
-    }
-
-    /**
-     * Determines whether the candidate has reached the majority needed to pass
-     * the quorum
-     *
-     * @param option
-     * @returns true if the quorum is successfully met
-     */
-    public quorumReached(option: ViewAssignmentOption): boolean {
-        /*const yesValue = this.poll.pollmethod === 'votes' ? 'Votes' : 'Yes';
-        const amount = option.votes.find(v => v.value === yesValue).weight;
-        const yesQuorum = this.pollService.yesQuorum(
-            this.majorityChoice,
-            this.pollService.calculationDataFromPoll(this.poll),
-            option
-        );
-        return yesQuorum && amount >= yesQuorum;*/
-        throw new Error('TODO');
-    }
-
-    /**
-     * Mark/unmark an option as elected
-     *
-     * @param option
-     */
-    public toggleElected(option: ViewAssignmentOption): void {
-        /*if (!this.operator.hasPerms('assignments.can_manage')) {
-            return;
-        }
-
-        // TODO additional conditions: assignment not finished?
-        const viewAssignmentRelatedUser = this.assignment.assignment_related_users.find(
-            user => user.user_id === option.candidate_id
-        );
-        if (viewAssignmentRelatedUser) {
-            this.assignmentRepo.markElected(viewAssignmentRelatedUser, this.assignment, !option.is_elected);
-        }*/
-    }
-
-    /**
-     * Sends the edited poll description to the server
-     * TODO: Better feedback
-     */
-    public async onEditDescriptionButton(): Promise<void> {
-        /*const desc: string = this.descriptionForm.get('description').value;
-        await this.assignmentRepo.updatePoll({ description: desc }, this.poll).catch(this.raiseError);*/
-    }
-
-    /**
-     * Fetches a tooltip string about the quorum
-     * @param option
-     * @returns a translated
-     */
-    public getQuorumReachedString(option: ViewAssignmentOption): string {
-        /*const name = this.translate.instant(this.majorityChoice.display_name);
-        const quorum = this.pollService.yesQuorum(
-            this.majorityChoice,
-            this.pollService.calculationDataFromPoll(this.poll),
-            option
-        );
-        const isReached = this.quorumReached(option)
-            ? this.translate.instant('reached')
-            : this.translate.instant('not reached');
-        return `${name} (${quorum}) ${isReached}`;*/
-        throw new Error('TODO');
     }
 }

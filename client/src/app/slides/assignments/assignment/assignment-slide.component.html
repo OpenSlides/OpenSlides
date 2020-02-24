@@ -11,13 +11,11 @@
         <ol *ngIf="data.data.number_poll_candidates">
             <li *ngFor="let candidate of data.data.assignment_related_users">
                 {{ candidate.user }}
-                <mat-icon *ngIf="candidate.elected">star</mat-icon>
             </li>
         </ol>
         <ul *ngIf="!data.data.number_poll_candidates">
             <li *ngFor="let candidate of data.data.assignment_related_users">
                 {{ candidate.user }}
-                <mat-icon *ngIf="candidate.elected">star</mat-icon>
             </li>
         </ul>
     </ng-container>

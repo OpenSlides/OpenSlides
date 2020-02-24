@@ -45,7 +45,7 @@ class AssignmentRelatedUserSerializer(ModelSerializer):
 
     class Meta:
         model = AssignmentRelatedUser
-        fields = ("id", "user", "elected", "weight")
+        fields = ("id", "user", "weight")
 
 
 class AssignmentVoteSerializer(BaseVoteSerializer):

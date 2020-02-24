@@ -2,10 +2,9 @@ import { BehaviorSubject } from 'rxjs';
 
 import { ChartData } from 'app/shared/components/charts/charts.component';
 import { AssignmentPoll } from 'app/shared/models/assignments/assignment-poll';
-import { PollState } from 'app/shared/models/poll/base-poll';
 import { BaseViewModel } from 'app/site/base/base-view-model';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
-import { PollTableData, ViewBasePoll } from 'app/site/polls/models/view-base-poll';
+import { PollTableData, ViewBasePoll, VotingResult } from 'app/site/polls/models/view-base-poll';
 import { ViewAssignment } from './view-assignment';
 import { ViewAssignmentOption } from './view-assignment-option';
 
@@ -35,7 +34,6 @@ export class ViewAssignmentPoll extends ViewBasePoll<AssignmentPoll> implements 
     }
 
     public getSlide(): ProjectorElementBuildDeskriptor {
-        // TODO: update to new voting system?
         return {
             getBasicProjectorElement: options => ({
                 name: AssignmentPoll.COLLECTIONSTRING,
@@ -49,27 +47,36 @@ export class ViewAssignmentPoll extends ViewBasePoll<AssignmentPoll> implements 
     }
 
     public generateTableData(): PollTableData[] {
-        const data = this.options
-            .map(candidate => ({
-                yes: candidate.yes,
-                no: candidate.no,
-                abstain: candidate.abstain,
-                user: candidate.user.full_name,
-                showPercent: true
+        const tableData: PollTableData[] = this.options.map(candidate => ({
+            votingOption: candidate.user.short_name,
+            votingOptionSubtitle: candidate.user.getLevelAndNumber(),
+
+            value: this.voteTableKeys.map(
+                key =>
+                    ({
+                        vote: key.vote,
+                        amount: candidate[key.vote],
+                        icon: key.icon,
+                        hide: key.hide,
+                        showPercent: key.showPercent
+                    } as VotingResult)
+            )
+        }));
+
+        tableData.push(
+            ...this.sumTableKeys.map(key => ({
+                votingOption: key.vote,
+                value: [
+                    {
+                        amount: this[key.vote],
+                        hide: key.hide,
+                        showPercent: key.showPercent
+                    } as VotingResult
+                ]
             }))
-            .sort((a, b) => b.yes - a.yes);
+        );
 
-        return data;
-    }
-
-    /**
-     * Override from base poll to skip started state in analog poll type
-     */
-    public getNextStates(): { [key: number]: string } {
-        if (this.poll.type === 'analog' && this.state === PollState.Created) {
-            return null;
-        }
-        return super.getNextStates();
+        return tableData;
     }
 }
 

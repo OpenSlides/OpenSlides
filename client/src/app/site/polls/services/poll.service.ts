@@ -3,16 +3,14 @@ import { Injectable } from '@angular/core';
 import { _ } from 'app/core/translate/translation-marker';
 import { ChartData, ChartType } from 'app/shared/components/charts/charts.component';
 import { AssignmentPollMethods } from 'app/shared/models/assignments/assignment-poll';
-import { Collection } from 'app/shared/models/base/collection';
 import { MotionPollMethods } from 'app/shared/models/motions/motion-poll';
-import { MajorityMethod, PercentBase, PollColor, PollType } from 'app/shared/models/poll/base-poll';
+import { BasePoll, MajorityMethod, PercentBase, PollColor, PollType } from 'app/shared/models/poll/base-poll';
 import { AssignmentPollMethodsVerbose } from 'app/site/assignments/models/view-assignment-poll';
 import {
     MajorityMethodVerbose,
     PercentBaseVerbose,
     PollPropertyVerbose,
-    PollTypeVerbose,
-    ViewBasePoll
+    PollTypeVerbose
 } from 'app/site/polls/models/view-base-poll';
 import { ConstantsService } from '../../../core/core-services/constants.service';
 
@@ -130,6 +128,11 @@ export abstract class PollService {
     public abstract defaultMajorityMethod: MajorityMethod;
 
     /**
+     * Per default entitled to vote
+     */
+    public abstract defaultGroupIds: number[];
+
+    /**
      * The majority method currently in use
      */
     public majorityMethod: CalculableMajorityMethod;
@@ -151,10 +154,13 @@ export abstract class PollService {
      * Assigns the default poll data to the object. To be extended in subclasses
      * @param poll the poll/object to fill
      */
-    public fillDefaultPollData(poll: Partial<ViewBasePoll> & Collection): void {
-        poll.onehundred_percent_base = this.defaultPercentBase;
-        poll.majority_method = this.defaultMajorityMethod;
-        poll.type = PollType.Analog;
+    public getDefaultPollData(): Partial<BasePoll> {
+        return {
+            onehundred_percent_base: this.defaultPercentBase,
+            majority_method: this.defaultMajorityMethod,
+            groups_id: this.defaultGroupIds,
+            type: PollType.Analog
+        };
     }
 
     public getVerboseNameForValue(key: string, value: string): string {

@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { E2EImportsModule } from 'e2e-imports.module';
 
+import { PollProgressComponent } from 'app/site/polls/components/poll-progress/poll-progress.component';
 import { ManageSubmittersComponent } from '../manage-submitters/manage-submitters.component';
 import { MotionCommentsComponent } from '../motion-comments/motion-comments.component';
 import { MotionDetailDiffComponent } from '../motion-detail-diff/motion-detail-diff.component';
@@ -26,7 +27,8 @@ describe('MotionDetailComponent', () => {
                 MotionPollComponent,
                 MotionDetailOriginalChangeRecommendationsComponent,
                 MotionDetailDiffComponent,
-                MotionPollVoteComponent
+                MotionPollVoteComponent,
+                PollProgressComponent
             ]
         }).compileComponents();
     }));

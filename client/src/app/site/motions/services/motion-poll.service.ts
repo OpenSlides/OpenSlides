@@ -5,10 +5,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { ConstantsService } from 'app/core/core-services/constants.service';
 import { MotionPollRepositoryService } from 'app/core/repositories/motions/motion-poll-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
-import { Collection } from 'app/shared/models/base/collection';
-import { MotionPollMethods } from 'app/shared/models/motions/motion-poll';
+import { MotionPoll, MotionPollMethods } from 'app/shared/models/motions/motion-poll';
 import { MajorityMethod, PercentBase } from 'app/shared/models/poll/base-poll';
-import { ViewMotionPoll } from 'app/site/motions/models/view-motion-poll';
 import { PollData, PollService } from 'app/site/polls/services/poll.service';
 
 interface PollResultData {
@@ -34,6 +32,8 @@ export class MotionPollService extends PollService {
      */
     public defaultMajorityMethod: MajorityMethod;
 
+    public defaultGroupIds: number[];
+
     /**
      * Constructor. Subscribes to the configuration values needed
      * @param config ConfigService
@@ -51,15 +51,18 @@ export class MotionPollService extends PollService {
         config
             .get<MajorityMethod>('motion_poll_default_majority_method')
             .subscribe(method => (this.defaultMajorityMethod = method));
+
+        config.get<number[]>(MotionPoll.defaultGroupsConfig).subscribe(ids => (this.defaultGroupIds = ids));
     }
 
-    public fillDefaultPollData(poll: Partial<ViewMotionPoll> & Collection): void {
-        super.fillDefaultPollData(poll);
+    public getDefaultPollData(): MotionPoll {
+        const poll = new MotionPoll(super.getDefaultPollData());
         const length = this.pollRepo.getViewModelList().filter(item => item.motion_id === poll.motion_id).length;
 
         poll.title = !length ? this.translate.instant('Vote') : `${this.translate.instant('Vote')} (${length + 1})`;
         poll.pollmethod = MotionPollMethods.YNA;
-        poll.motion_id = poll.motion_id;
+
+        return poll;
     }
 
     public getPercentBase(poll: PollData): number {

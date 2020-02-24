@@ -1,9 +1,22 @@
 @import '~assets/styles/variables.scss';
 @import '~assets/styles/poll-colors.scss';
 
-.result-wrapper {
+%assignment-result-wrapper {
+    margin-top: 2em;
     display: grid;
     grid-gap: 10px;
+}
+
+.result-wrapper-bar-chart {
+    @extend %assignment-result-wrapper;
+    grid-template-areas:
+        'results'
+        'chart'
+        'names';
+}
+
+.result-wrapper-pie-chart {
+    @extend %assignment-result-wrapper;
     grid-template-areas:
         'chart'
         'results'
@@ -11,7 +24,7 @@
 }
 
 @include desktop {
-    .result-wrapper {
+    .result-wrapper-pie-chart {
         grid-template-areas:
             'results chart'
             'names names';
@@ -19,13 +32,34 @@
     }
 }
 
-.result-table {
+.assignment-result-table {
     grid-area: results;
+    th {
+        text-align: left;
+        font-weight: initial;
+    }
+
+    tr {
+        height: 48px;
+    }
+
+    tr:last-child {
+        border-bottom: none;
+    }
+
+    .single-result {
+        display: flex;
+    }
 }
 
-.result-chart {
+.assignment-result-chart {
     grid-area: chart;
+}
+
+.pie-chart {
     max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .named-result-table {
@@ -36,27 +70,14 @@
     }
 }
 
-.poll-content {
+.assignment-poll-meta {
+    display: grid;
+    text-align: right;
     padding-top: 20px;
 }
 
-.chart-wrapper {
-    &.flex {
-        display: flex;
-
-        .mat-table {
-            flex: 2;
-            .mat-column-votes {
-                justify-content: center;
-            }
-        }
-        .chart-inner-wrapper {
-            flex: 3;
-        }
-    }
-}
-
 .single-votes-table {
+    display: block;
     height: 500px;
 }
 

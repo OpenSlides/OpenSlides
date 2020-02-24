@@ -19,10 +19,7 @@ async def assignment_slide(
     assignment = get_model(all_data, "assignments/assignment", element.get("id"))
 
     assignment_related_users: List[Dict[str, Any]] = [
-        {
-            "user": await get_user_name(all_data, aru["user_id"]),
-            "elected": aru["elected"],
-        }
+        {"user": await get_user_name(all_data, aru["user_id"])}
         for aru in sorted(
             assignment["assignment_related_users"], key=lambda aru: aru["weight"]
         )
