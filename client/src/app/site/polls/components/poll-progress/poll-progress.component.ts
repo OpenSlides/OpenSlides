@@ -30,7 +30,11 @@ export class PollProgressComponent extends BaseViewComponent implements OnInit {
     }
 
     public get valueInPercent(): number {
-        return (this.poll.votesvalid / this.max) * 100;
+        if (this.poll) {
+            return (this.poll.votesvalid / this.max) * 100;
+        } else {
+            return 0;
+        }
     }
 
     /**
@@ -38,15 +42,17 @@ export class PollProgressComponent extends BaseViewComponent implements OnInit {
      * Sets the observable for groups.
      */
     public ngOnInit(): void {
-        this.userRepo
-            .getViewModelListObservable()
-            .pipe(
-                map(users =>
-                    users.filter(user => user.is_present && this.poll.groups_id.intersect(user.groups_id).length)
+        if (this.poll) {
+            this.userRepo
+                .getViewModelListObservable()
+                .pipe(
+                    map(users =>
+                        users.filter(user => user.is_present && this.poll.groups_id.intersect(user.groups_id).length)
+                    )
                 )
-            )
-            .subscribe(users => {
-                this.max = users.length;
-            });
+                .subscribe(users => {
+                    this.max = users.length;
+                });
+        }
     }
 }

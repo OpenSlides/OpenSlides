@@ -5,8 +5,8 @@ import { E2EImportsModule } from 'e2e-imports.module';
 import { PollFormComponent } from './poll-form.component';
 
 describe('PollFormComponent', () => {
-    let component: PollFormComponent;
-    let fixture: ComponentFixture<PollFormComponent>;
+    let component: PollFormComponent<any>;
+    let fixture: ComponentFixture<PollFormComponent<any>>;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({

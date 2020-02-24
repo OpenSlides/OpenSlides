@@ -21,46 +21,51 @@
         <span *ngIf="poll.type !== 'analog'">{{ poll.typeVerbose | translate }}</span>
 
         <div *ngIf="poll.stateHasVotes">
-            <h2 translate>Result</h2>
-
-            <div class="result-wrapper">
+            <div [class]="chartType === 'horizontalBar' ? 'result-wrapper-bar-chart' : 'result-wrapper-pie-chart'">
                 <!-- Result Table -->
-                <mat-table class="result-table" [dataSource]="poll.tableData">
-                    <ng-container matColumnDef="user" sticky>
-                        <mat-header-cell *matHeaderCellDef>{{ 'Candidates' | translate }}</mat-header-cell>
-                        <mat-cell *matCellDef="let row">{{ row.user }}</mat-cell>
-                    </ng-container>
-                    <div *ngIf="!isVotedPoll">
-                        <ng-container matColumnDef="yes">
-                            <mat-header-cell *matHeaderCellDef>{{ 'Yes' | translate }}</mat-header-cell>
-                            <mat-cell *matCellDef="let row">{{ row.yes }}</mat-cell>
-                        </ng-container>
+                <table class="assignment-result-table">
+                    <tbody>
+                        <tr>
+                            <th translate>Candidates</th>
+                            <th translate>Votes</th>
+                        </tr>
+                        <tr *ngFor="let row of poll.tableData">
+                            <td>
+                                <span>
+                                    {{ row.votingOption | pollKeyVerbose | translate }}
+                                </span>
+                                <span class="user-subtitle" *ngIf="row.votingOptionSubtitle">
+                                    <br />
+                                    {{ row.votingOptionSubtitle }}
+                                </span>
+                            </td>
+                            <td>
+                                <div *ngFor="let vote of row.value">
+                                    <div class="single-result" *ngIf="voteFitsMethod(vote)">
+                                        <os-icon-container *ngIf="vote.icon" [icon]="vote.icon">
+                                            {{ vote.vote | pollKeyVerbose | translate }}
+                                        </os-icon-container>
+                                        <span *ngIf="!vote.icon">
+                                            {{ vote.vote | pollKeyVerbose | translate }}
+                                        </span>
 
-                        <ng-container matColumnDef="no">
-                            <mat-header-cell *matHeaderCellDef>{{ 'No' | translate }}</mat-header-cell>
-                            <mat-cell *matCellDef="let row">{{ row.no }}</mat-cell>
-                        </ng-container>
-
-                        <ng-container matColumnDef="abstain">
-                            <mat-header-cell *matHeaderCellDef>{{ 'Abstain' | translate }}</mat-header-cell>
-                            <mat-cell *matCellDef="let row">{{ row.abstain }}</mat-cell>
-                        </ng-container>
-                    </div>
-
-                    <div *ngIf="isVotedPoll">
-                        <ng-container matColumnDef="votes">
-                            <mat-header-cell *matHeaderCellDef>{{ 'Votes' | translate }}</mat-header-cell>
-                            <mat-cell *matCellDef="let row">{{ row.yes }}</mat-cell>
-                        </ng-container>
-                    </div>
-
-                    <mat-header-row *matHeaderRowDef="columnDefinitionOverview"></mat-header-row>
-                    <mat-row *matRowDef="let row; columns: columnDefinitionOverview"></mat-row>
-                </mat-table>
+                                        <span>
+                                            {{ vote.amount | parsePollNumber }}
+                                            <span *ngIf="vote.showPercent">
+                                                {{ vote.amount | pollPercentBase: poll }}
+                                            </span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
 
                 <!-- Result Chart -->
                 <os-charts
-                    class="result-chart"
+                    class="assignment-result-chart"
+                    [ngClass]="chartType === 'doughnut' ? 'pie-chart' : ''"
                     *ngIf="chartDataSubject.value"
                     [type]="chartType"
                     [labels]="candidatesLabels"
@@ -105,7 +110,8 @@
                                 [ngClass]="voteOptionStyle[vote.votes[option.user_id].value].css"
                                 class="vote-field"
                             >
-                                <mat-icon> {{ voteOptionStyle[vote.votes[option.user_id].value].icon }}</mat-icon> {{ vote.votes[option.user_id].valueVerbose | translate }}
+                                <mat-icon> {{ voteOptionStyle[vote.votes[option.user_id].value].icon }}</mat-icon>
+                                {{ vote.votes[option.user_id].valueVerbose | translate }}
                             </div>
                         </ng-container>
                     </ng-container>
@@ -123,17 +129,18 @@
         </div>
 
         <!-- Meta Infos -->
-        <div class="poll-content small">
-            <div *ngIf="poll.groups && poll.type && poll.type !== 'analog'">
+        <div class="assignment-poll-meta">
+            <small *ngIf="poll.groups && poll.type && poll.type !== 'analog'">
                 {{ 'Groups' | translate }}:
 
                 <span *ngFor="let group of poll.groups; let i = index">
                     {{ group.getTitle() | translate }}<span *ngIf="i < poll.groups.length - 1">, </span>
                 </span>
-            </div>
+            </small>
 
-            <div>{{ 'Required majority' | translate }}: {{ poll.majorityMethodVerbose | translate }}</div>
-            <div>{{ '100% base' | translate }}: {{ poll.percentBaseVerbose | translate }}</div>
+            <small *ngIf="poll.onehundred_percent_base">
+                {{ '100% base' | translate }}: {{ poll.percentBaseVerbose | translate }}
+            </small>
         </div>
     </ng-container>
 </ng-template>
@@ -141,7 +148,7 @@
 <!-- More Menu -->
 <mat-menu #pollDetailMenu="matMenu">
     <os-projector-button [menuItem]="true" [object]="poll" *osPerms="'core.can_manage_projector'"></os-projector-button>
-    <button *osPerms="'assignments.can_manage_polls'" mat-menu-item (click)="openDialog()">
+    <button *osPerms="'assignments.can_manage_polls'" mat-menu-item (click)="openDialog(poll)">
         <mat-icon>edit</mat-icon>
         <span translate>Edit</span>
     </button>

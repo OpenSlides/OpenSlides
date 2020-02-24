@@ -1,9 +1,4 @@
 @import '~@angular/material/theming';
 
 @mixin os-motion-poll-style($theme) {
-    $background: map-get($theme, background);
-
-    .poll-preview-wrapper {
-        background-color: mat-color($background, card);
-    }
 }

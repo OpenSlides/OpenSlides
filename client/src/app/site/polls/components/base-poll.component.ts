@@ -18,6 +18,21 @@ export abstract class BasePollComponent<V extends ViewBasePoll> extends BaseView
 
     protected _poll: V;
 
+    public pollStateActions = {
+        [PollState.Created]: {
+            icon: 'play_arrow',
+            css: 'start-poll-button'
+        },
+        [PollState.Started]: {
+            icon: 'stop',
+            css: 'stop-poll-button'
+        },
+        [PollState.Finished]: {
+            icon: 'public',
+            css: 'publish-poll-button'
+        }
+    };
+
     public constructor(
         titleService: Title,
         matSnackBar: MatSnackBar,
@@ -39,6 +54,10 @@ export abstract class BasePollComponent<V extends ViewBasePoll> extends BaseView
         } else {
             this.repo.changePollState(this._poll).catch(this.raiseError);
         }
+    }
+
+    public resetState(): void {
+        this.changeState(PollState.Created);
     }
 
     /**

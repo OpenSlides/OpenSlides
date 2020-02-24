@@ -1,7 +1,9 @@
 <os-poll-form [data]="pollData" [pollMethods]="assignmentPollMethods" #pollForm></os-poll-form>
+
+<!-- Analog voting -->
 <ng-container *ngIf="pollForm.contentForm.get('type').value === 'analog'">
-    <!-- Candidate values -->
     <form [formGroup]="dialogVoteForm">
+        <!-- Candidates -->
         <div formGroupName="options">
             <div *ngFor="let option of options" class="votes-grid">
                 <div>
@@ -33,36 +35,30 @@
             ></os-check-input>
         </div>
     </form>
-    <mat-divider></mat-divider>
+
+    <!-- Publish Check -->
     <div class="spacer-top-20">
-        <mat-checkbox
-            [(ngModel)]="publishImmediately"
-            (change)="publishStateChanged($event.checked)"
-        >
+        <mat-checkbox [(ngModel)]="publishImmediately" (change)="publishStateChanged($event.checked)">
             <span translate>Publish immediately</span>
         </mat-checkbox>
         <mat-error *ngIf="!dialogVoteForm.valid" translate>
             If you want to publish after creating, you have to fill at least one of the fields.
         </mat-error>
     </div>
-    <!-- Summary values -->
-    <!-- <div *ngFor="let sumValue of sumValues" class="sum-value">
-        <mat-form-field>
-            <input
-                type="number"
-                matInput
-                [value]="getSumValue(sumValue)"
-                (change)="setSumValue(sumValue, $event.target.value)"
-            />
-            <mat-label>{{ pollService.getLabel(sumValue) | translate }}</mat-label>
-        </mat-form-field>
-    </div> -->
 </ng-container>
-<mat-divider></mat-divider>
+
+<!-- Actions -->
 <div mat-dialog-actions>
-    <button mat-button (click)="submitPoll()" [disabled]="!pollForm.contentForm || pollForm.contentForm.invalid || dialogVoteForm.invalid">
+    <!-- Save Button -->
+    <button
+        mat-button
+        (click)="submitPoll()"
+        [disabled]="!pollForm.contentForm || pollForm.contentForm.invalid || dialogVoteForm.invalid"
+    >
         <span translate>Save</span>
     </button>
+
+    <!-- Cancel Button -->
     <button mat-button [mat-dialog-close]="false">
         <span translate>Cancel</span>
     </button>

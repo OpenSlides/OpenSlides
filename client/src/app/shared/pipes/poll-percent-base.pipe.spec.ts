@@ -6,7 +6,7 @@ import { AssignmentPollService } from 'app/site/assignments/services/assignment-
 import { MotionPollService } from 'app/site/motions/services/motion-poll.service';
 import { PollPercentBasePipe } from './poll-percent-base.pipe';
 
-fdescribe('PollPercentBasePipe', () => {
+describe('PollPercentBasePipe', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [E2EImportsModule]

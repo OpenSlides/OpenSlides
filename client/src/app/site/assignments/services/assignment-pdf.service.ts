@@ -185,11 +185,11 @@ export class AssignmentPdfService {
                 const tableData = poll.generateTableData();
 
                 for (const pollResult of tableData) {
+                    const voteOption = this.translate.instant(this.pollKeyVerbose.transform(pollResult.votingOption));
                     const resultLine = this.getPollResult(pollResult, poll);
-
                     const tableLine = [
                         {
-                            text: pollResult.user
+                            text: voteOption
                         },
                         {
                             text: resultLine
@@ -217,11 +217,13 @@ export class AssignmentPdfService {
      * Converts pollData to a printable string representation
      */
     private getPollResult(votingResult: PollTableData, poll: ViewAssignmentPoll): string {
-        const resultList = poll.pollmethodFields.map(field => {
-            const votingKey = this.translate.instant(this.pollKeyVerbose.transform(field));
-            const resultValue = this.parsePollNumber.transform(votingResult[field]);
-            const resultInPercent = this.pollPercentBase.transform(votingResult[field], poll);
-            return `${votingKey}: ${resultValue} ${resultInPercent ? resultInPercent : ''}`;
+        const resultList = votingResult.value.map(singleResult => {
+            const votingKey = this.translate.instant(this.pollKeyVerbose.transform(singleResult.vote));
+            const resultValue = this.parsePollNumber.transform(singleResult.amount);
+            const resultInPercent = this.pollPercentBase.transform(singleResult.amount, poll);
+            return `${votingKey}${!!votingKey ? ': ' : ''}${resultValue} ${
+                singleResult.showPercent && resultInPercent ? resultInPercent : ''
+            }`;
         });
         return resultList.join('\n');
     }

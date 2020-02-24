@@ -113,7 +113,6 @@ export class AssignmentPollPdfService extends PollPdfService {
      * @param title The identifier of the motion
      * @param subtitle The actual motion title
      */
-    // TODO: typing of result
     protected createBallot(data: AbstractPollData): object {
         return {
             columns: [
@@ -137,7 +136,6 @@ export class AssignmentPollPdfService extends PollPdfService {
         };
     }
 
-    // TODO: typing of result
     private createCandidateFields(poll: ViewAssignmentPoll): object {
         const candidates = poll.options.sort((a, b) => {
             return a.weight - b.weight;
@@ -147,15 +145,23 @@ export class AssignmentPollPdfService extends PollPdfService {
                 ? this.createBallotOption(cand.user.full_name)
                 : this.createYNBallotEntry(cand.user.full_name, poll.pollmethod);
         });
+
         if (poll.pollmethod === 'votes') {
-            const noEntry = this.createBallotOption(this.translate.instant('No'));
-            noEntry.margin[1] = 25;
-            resultObject.push(noEntry);
+            if (poll.global_no) {
+                const noEntry = this.createBallotOption(this.translate.instant('No'));
+                noEntry.margin[1] = 25;
+                resultObject.push(noEntry);
+            }
+
+            if (poll.global_abstain) {
+                const abstainEntry = this.createBallotOption(this.translate.instant('Abstain'));
+                abstainEntry.margin[1] = 25;
+                resultObject.push(abstainEntry);
+            }
         }
         return resultObject;
     }
 
-    // TODO: typing of result
     private createYNBallotEntry(option: string, method: AssignmentPollMethods): object {
         const choices = method === 'YNA' ? ['Yes', 'No', 'Abstain'] : ['Yes', 'No'];
         const columnstack = choices.map(choice => {
@@ -182,7 +188,6 @@ export class AssignmentPollPdfService extends PollPdfService {
      * @param poll
      * @returns pdfMake definitions
      */
-    // TODO: typing of result
     private createPollHint(poll: ViewAssignmentPoll): object {
         return {
             text: poll.description || '',

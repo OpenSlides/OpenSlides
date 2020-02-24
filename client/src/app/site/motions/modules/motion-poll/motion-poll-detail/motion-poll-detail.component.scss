@@ -2,53 +2,51 @@
 @import '~assets/styles/poll-colors.scss';
 
 .poll-content {
+    text-align: right;
+    display: grid;
     padding-top: 20px;
 }
 
 .result-wrapper {
     display: grid;
-    grid-gap: 10px;
-    grid-template-areas:
-        'chart'
-        'results'
-        'names';
-}
+    grid-gap: 2em;
+    margin: 2em;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
 
-@include desktop {
-    .result-wrapper {
-        grid-template-areas:
-            'results chart'
-            'names names';
-        grid-template-columns: 2fr 1fr;
-    }
-}
-
-.result-table {
-    grid-area: results;
-
-    tr {
-        height: 48px;
-        min-height: 48px;
-        th:first-child,
-        td:first-child {
-            padding-left: 24px;
-        }
-        th:last-child,
-        td:last-child {
-            padding-right: 24px;
+    .result-table {
+        // display: block;
+        th {
+            text-align: right;
+            font-weight: initial;
         }
 
-        .result-cell-definition {
-            text-align: center;
+        tr {
+            height: 48px;
+            border-bottom: none !important;
+
+            .result-cell-definition {
+                text-align: right;
+            }
+        }
+
+        .yes {
+            color: $votes-yes-color;
+        }
+
+        .no {
+            color: $votes-no-color;
+        }
+
+        .abstain {
+            color: $votes-abstain-color;
         }
     }
-}
 
-.result-chart {
-    grid-area: chart;
-    max-width: 300px;
-    margin-left: auto;
-    margin-right: auto;
+    .doughnut-chart {
+        display: block;
+        margin-top: auto;
+        margin-bottom: auto;
+    }
 }
 
 .named-result-table {

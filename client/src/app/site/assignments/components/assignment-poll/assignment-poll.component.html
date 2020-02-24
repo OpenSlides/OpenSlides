@@ -1,63 +1,74 @@
 <mat-card class="os-card" *ngIf="poll && showPoll()">
     <div class="assignment-poll-wrapper">
-        <div class="assignment-poll-title-header">
+        <div>
+            <!-- Title -->
             <mat-card-title>
                 <a routerLink="/assignments/polls/{{ poll.id }}">
                     {{ poll.title }}
                 </a>
             </mat-card-title>
-            <div class="poll-properties">
-                <mat-chip
-                    *osPerms="'assignments.can_manage_polls'"
-                    class="poll-state active"
-                    [disableRipple]="true"
-                    [matMenuTriggerFor]="triggerMenu"
-                    [class]="poll.stateVerbose.toLowerCase()"
-                    [ngClass]="{ disabled: !poll.getNextStates() }"
-                >
+
+            <!-- Type and State -->
+            <div>
+                <span *ngIf="poll.type !== 'analog'"> {{ poll.typeVerbose | translate }} &middot; </span>
+                <span>
                     {{ poll.stateVerbose | translate }}
-                </mat-chip>
-                <span *ngIf="poll.type !== 'analog'">
-                    {{ poll.typeVerbose | translate }}
                 </span>
             </div>
+
+            <!-- Menu -->
             <div class="poll-menu">
                 <!-- Buttons -->
                 <button
                     mat-icon-button
-                    *osPerms="'assignments.motions.can_manage_polls';or: 'core.can_manage_projector'"
+                    *osPerms="'assignments.motions.can_manage_polls'; or: 'core.can_manage_projector'"
                     [matMenuTriggerFor]="pollItemMenu"
                     (click)="$event.stopPropagation()"
                 >
                     <mat-icon>more_horiz</mat-icon>
                 </button>
             </div>
+
+            <!-- Change state button -->
+            <div *osPerms="'assignments.can_manage_polls'">
+                <button
+                    mat-stroked-button
+                    *ngIf="!poll.isPublished"
+                    [ngClass]="pollStateActions[poll.state].css"
+                    (click)="changeState(poll.nextState)"
+                >
+                    <mat-icon> {{ pollStateActions[poll.state].icon }}</mat-icon>
+                    <span class="next-state-label">
+                        {{ poll.nextStateActionVerbose | translate }}
+                    </span>
+                </button>
+            </div>
         </div>
 
         <div *ngIf="hasVotes">
             <os-charts
+                [class]="chartType === 'doughnut' ? 'doughnut-chart' : 'bar-chart'"
                 [type]="chartType"
                 [labels]="candidatesLabels"
                 [data]="chartDataSubject"
                 [hasPadding]="false"
             ></os-charts>
         </div>
+
+        <!-- Poll progress bar -->
+        <div *osPerms="'assignments.can_manage_polls'; and: poll && poll.isStarted">
+            <os-poll-progress [poll]="poll"></os-poll-progress>
+        </div>
         <os-assignment-poll-vote *ngIf="poll.canBeVotedFor" [poll]="poll"></os-assignment-poll-vote>
         <div class="poll-detail-button-wrapper">
-            <a mat-button routerLink="/assignments/polls/{{ poll.id }}">
-                {{ 'More' | translate }}
+            <a mat-icon-button routerLink="/assignments/polls/{{ poll.id }}" matTooltip="{{ 'More' | translate }}">
+                <mat-icon class="small-icon">
+                    visibility
+                </mat-icon>
             </a>
         </div>
     </div>
 </mat-card>
-
-<mat-menu #triggerMenu="matMenu">
-    <ng-container *ngIf="poll">
-        <button mat-menu-item (click)="changeState(state.value)" *ngFor="let state of poll.getNextStates() | keyvalue">
-            <span translate>{{ state.key }}</span>
-        </button>
-    </ng-container>
-</mat-menu>
 
 <mat-menu #pollItemMenu="matMenu">
     <div *osPerms="'assignments.can_manage'">
@@ -75,6 +86,11 @@
             <span translate>Ballot paper</span>
         </button>
         <mat-divider></mat-divider>
+        <!-- Reset Button -->
+        <button mat-menu-item (click)="resetState()">
+            <mat-icon color="warn">replay</mat-icon>
+            <span translate>Reset state</span>
+        </button>
         <button mat-menu-item class="red-warning-text" (click)="onDeletePoll()">
             <mat-icon>delete</mat-icon>
             <span translate>Delete</span>

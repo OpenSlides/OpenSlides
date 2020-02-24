@@ -99,6 +99,10 @@
         font-weight: 400;
     }
 
+    .user-subtitle {
+        color: mat-color($foreground, secondary-text);
+    }
+
     mat-card-header {
         background-color: mat-color($background, app-bar);
     }
@@ -160,10 +164,6 @@
 
     .pbl-ngrid-header-row, .pbl-ngrid-row {
         align-items: stretch;
-    }
-
-    .mat-progress-bar-buffer {
-        background-color: mat-color($background, card) !important;
     }
 
     .primary-foreground {

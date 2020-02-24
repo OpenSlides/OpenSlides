@@ -4,70 +4,47 @@
     outline: none;
 }
 
-.poll-preview-wrapper {
-    padding: 8px;
-    border: 1px solid rgba(0, 0, 0, 0.12);
+.motion-poll-wrapper {
+    margin-bottom: 30px;
 
-    .poll-title {
-        text-decoration: none;
-        font-weight: 500;
-    }
+    .poll-title-wrapper {
+        display: grid;
+        grid-gap: 10px;
+        grid-template-areas: 'title actions';
+        grid-template-columns: auto min-content;
 
-    .poll-title-actions {
-        float: right;
-    }
+        .poll-title-area {
+            grid-area: title;
+            margin-top: 1em;
 
-    .poll-properties {
-        margin: 4px 0;
-
-        .mat-chip {
-            margin: 0 4px;
-
-            &.active {
-                cursor: pointer;
+            .poll-title {
+                font-size: 125%;
             }
         }
 
-        .poll-state {
-            &.created {
-                background-color: #2196f3;
-                color: white;
-            }
-            &.started {
-                background-color: #4caf50;
-                color: white;
-            }
-            &.finished {
-                background-color: #ff5252;
-                color: white;
-            }
-            &.published {
-                background-color: #ffd800;
-                color: black;
-            }
+        .poll-actions {
+            grid-area: actions;
         }
     }
 
     .poll-chart-wrapper {
         cursor: pointer;
         display: grid;
-        grid-gap: 10px;
-        grid-template-areas: 'placeholder chart legend';
-        grid-template-columns: auto minmax(50px, 20%) auto;
+        grid-gap: 20px;
+        margin: 2em;
+        // try to find max scale
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
 
         .doughnut-chart {
-            grid-area: chart;
+            display: block;
+            max-width: 200px;
             margin-top: auto;
             margin-bottom: auto;
         }
 
         .vote-legend {
-            grid-area: legend;
-            margin-top: auto;
-            margin-bottom: auto;
-
             div + div {
-                margin-top: 10px;
+                margin-top: 20px;
             }
 
             .votes-yes {
@@ -93,16 +70,24 @@
     }
 }
 
-.poll-preview-meta-info {
-    span {
-        padding: 0 5px;
-    }
+.next-state-label {
+    margin-top: auto;
+    margin-bottom: auto;
 }
 
-.poll-content {
-    padding-bottom: 8px;
+.start-poll-button {
+    color: green !important;
 }
 
-.poll-footer {
-    text-align: end;
+.stop-poll-button {
+    color: $poll-stop-color;
+}
+
+.publish-poll-button {
+    color: $poll-publish-color;
+}
+
+.motion-couting-in-progress-hint {
+    margin-top: 1em;
+    font-style: italic;
 }

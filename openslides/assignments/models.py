@@ -41,11 +41,6 @@ class AssignmentRelatedUser(RESTModelMixin, models.Model):
     ForeinKey to the user who is related to the assignment.
     """
 
-    elected = models.BooleanField(default=False)
-    """
-    Saves the election state of each user
-    """
-
     weight = models.IntegerField(default=0)
     """
     The sort order of the candidates.
@@ -141,7 +136,7 @@ class Assignment(RESTModelMixin, AgendaItemWithListOfSpeakersMixin, models.Model
         settings.AUTH_USER_MODEL, through="AssignmentRelatedUser"
     )
     """
-    Users that are candidates or elected.
+    Users that are candidates.
 
     See AssignmentRelatedUser for more information.
     """
@@ -180,14 +175,7 @@ class Assignment(RESTModelMixin, AgendaItemWithListOfSpeakersMixin, models.Model
         """
         Queryset that represents the candidates for the assignment.
         """
-        return self.related_users.filter(assignmentrelateduser__elected=False)
-
-    @property
-    def elected(self):
-        """
-        Queryset that represents all elected users for the assignment.
-        """
-        return self.related_users.filter(assignmentrelateduser__elected=True)
+        return self.related_users.all()
 
     def is_candidate(self, user):
         """
@@ -197,14 +185,6 @@ class Assignment(RESTModelMixin, AgendaItemWithListOfSpeakersMixin, models.Model
         """
         return self.candidates.filter(pk=user.pk).exists()
 
-    def is_elected(self, user):
-        """
-        Returns True if the user is elected for this assignment.
-
-        Costs one database query.
-        """
-        return self.elected.filter(pk=user.pk).exists()
-
     def add_candidate(self, user):
         """
         Adds the user as candidate.
@@ -213,16 +193,8 @@ class Assignment(RESTModelMixin, AgendaItemWithListOfSpeakersMixin, models.Model
             self.assignment_related_users.aggregate(models.Max("weight"))["weight__max"]
             or 0
         )
-        defaults = {"elected": False, "weight": weight + 1}
+        defaults = {"weight": weight + 1}
         self.assignment_related_users.update_or_create(user=user, defaults=defaults)
-
-    def set_elected(self, user):
-        """
-        Makes user an elected user for this assignment.
-        """
-        self.assignment_related_users.update_or_create(
-            user=user, defaults={"elected": True}
-        )
 
     def remove_candidate(self, user):
         """
@@ -348,7 +320,11 @@ class AssignmentPoll(RESTModelMixin, BasePoll):
     POLLMETHOD_YN = "YN"
     POLLMETHOD_YNA = "YNA"
     POLLMETHOD_VOTES = "votes"
-    POLLMETHODS = (("YN", "YN"), ("YNA", "YNA"), ("votes", "votes"))
+    POLLMETHODS = (
+        (POLLMETHOD_VOTES, "Yes per candidate"),
+        (POLLMETHOD_YN, "Yes/No per candidate"),
+        (POLLMETHOD_YNA, "Yes/No/Abstain per candidate"),
+    )
     pollmethod = models.CharField(max_length=5, choices=POLLMETHODS)
 
     PERCENT_BASE_YN = "YN"
@@ -404,7 +380,7 @@ class AssignmentPoll(RESTModelMixin, BasePoll):
     def create_options(self, skip_autoupdate=False):
         related_users = AssignmentRelatedUser.objects.filter(
             assignment__id=self.assignment.id
-        ).exclude(elected=True)
+        )
 
         for related_user in related_users:
             option = AssignmentOption(

@@ -14,6 +14,8 @@ export enum AssignmentPollMethods {
  */
 export class AssignmentPoll extends BasePoll<AssignmentPoll, AssignmentOption> {
     public static COLLECTIONSTRING = 'assignments/assignment-poll';
+    public static defaultGroupsConfig = 'assignment_poll_default_groups';
+    public static defaultPollMethodConfig = 'assignment_poll_method';
 
     public id: number;
     public assignment_id: number;

@@ -18,97 +18,113 @@
 <ng-template #viewTemplate>
     <ng-container *ngIf="poll">
         <h1>{{ poll.title }}</h1>
-        <span *ngIf="poll.type !== 'analog'">{{ poll.typeVerbose | translate }}</span>
+
+        <div>
+            <!-- Subtitle -->
+            <span *ngIf="poll.type !== 'analog'"> {{ poll.typeVerbose | translate }} &middot; </span>
+
+            <!-- State chip -->
+            <span>
+                {{ poll.stateVerbose }}
+            </span>
+        </div>
 
         <div *ngIf="!poll.hasVotes || !poll.stateHasVotes">{{ 'No results to show' | translate }}</div>
 
         <div *ngIf="poll.stateHasVotes">
-            <h2 translate>Result</h2>
-
             <div class="result-wrapper" *ngIf="poll.hasVotes">
-                <!-- Chart -->
-                <os-charts
-                    class="result-chart"
-                    *ngIf="chartDataSubject.value"
-                    [type]="chartType"
-                    [data]="chartDataSubject"
-                ></os-charts>
-
                 <!-- result table -->
                 <table class="result-table">
                     <tbody>
                         <tr>
                             <th></th>
-                            <th translate>Votes</th>
+                            <th colspan="2" translate>Votes</th>
                         </tr>
-                        <tr *ngFor="let row of poll.tableData">
+                        <tr *ngFor="let row of poll.tableData" [class]="row.votingOption">
+                            <!-- YNA/Valid etc -->
                             <td>
-                                <os-icon-container *ngIf="row.icon" [icon]="row.icon">
-                                    {{ row.key | pollKeyVerbose | translate }}
+                                <os-icon-container *ngIf="row.value[0].icon" [icon]="row.value[0].icon">
+                                    {{ row.votingOption | pollKeyVerbose | translate }}
                                 </os-icon-container>
-                                <span *ngIf="!row.icon">
-                                    {{ row.key | pollKeyVerbose | translate }}
+                                <span *ngIf="!row.value[0].icon">
+                                    {{ row.votingOption | pollKeyVerbose | translate }}
                                 </span>
                             </td>
+
+                            <!-- Percent numbers -->
                             <td class="result-cell-definition">
-                                {{ row.value | parsePollNumber }}
-                                <span *ngIf="row.showPercent">
-                                    {{ row.value | pollPercentBase: poll }}
+                                <span *ngIf="row.value[0].showPercent">
+                                    {{ row.value[0].amount | pollPercentBase: poll }}
                                 </span>
+                            </td>
+
+                            <!-- Voices -->
+                            <td class="result-cell-definition">
+                                {{ row.value[0].amount | parsePollNumber }}
                             </td>
                         </tr>
                     </tbody>
                 </table>
 
-                <!-- Named table: only show if votes are present -->
-                <div class="named-result-table" *ngIf="poll.type === 'named'">
-                    <h3>{{ 'Single votes' | translate }}</h3>
-                    <os-list-view-table
-                        [listObservable]="votesDataObservable"
-                        [columns]="columnDefinition"
-                        [filterProps]="filterProps"
-                        [allowProjector]="false"
-                        [fullScreen]="false"
-                        [vScrollFixed]="60"
-                        listStorageKey="motion-poll-vote"
-                        [cssClasses]="{ 'single-votes-table': true }"
-                    >
-                        <!-- Header -->
-                        <div *pblNgridHeaderCellDef="'*'; col as col">
-                            {{ col.label | translate }}
-                        </div>
-
-                        <!-- Content -->
-                        <div *pblNgridCellDef="'user'; row as vote">
-                            <div *ngIf="vote.user">{{ vote.user.getFullName() }}</div>
-                            <div *ngIf="!vote.user">{{ 'Anonymous' | translate }}</div>
-                        </div>
-                        <div *pblNgridCellDef="'vote'; row as vote" class="vote-cell">
-                            <div class="vote-cell-icon-container" [ngClass]="voteOptionStyle[vote.value].css">
-                                <mat-icon>{{ voteOptionStyle[vote.value].icon }}</mat-icon>
-                            </div>
-                            <div>{{ vote.valueVerbose | translate }}</div>
-                        </div>
-
-                        <!-- No Results -->
-                        <div *pblNgridNoDataRef class="pbl-ngrid-no-data">
-                            {{ 'The individual votes were made anonymous.' | translate }}
-                        </div>
-                    </os-list-view-table>
+                <!-- Chart -->
+                <div class="doughnut-chart">
+                    <os-charts
+                        *ngIf="chartDataSubject.value"
+                        [type]="chartType"
+                        [data]="chartDataSubject"
+                        [showLegend]="false"
+                        [hasPadding]="false"
+                    ></os-charts>
                 </div>
+            </div>
+
+            <!-- Named table: only show if votes are present -->
+            <div class="named-result-table" *ngIf="poll.type === 'named'">
+                <h2>{{ 'Single votes' | translate }}</h2>
+                <os-list-view-table
+                    [listObservable]="votesDataObservable"
+                    [columns]="columnDefinition"
+                    [filterProps]="filterProps"
+                    [allowProjector]="false"
+                    [fullScreen]="true"
+                    [vScrollFixed]="60"
+                    listStorageKey="motion-poll-vote"
+                    [cssClasses]="{ 'single-votes-table': true }"
+                >
+                    <!-- Header -->
+                    <div *pblNgridHeaderCellDef="'*'; col as col">
+                        {{ col.label | translate }}
+                    </div>
+
+                    <!-- Content -->
+                    <div *pblNgridCellDef="'user'; row as vote">
+                        <div *ngIf="vote.user">{{ vote.user.getFullName() }}</div>
+                        <div *ngIf="!vote.user">{{ 'Anonymous' | translate }}</div>
+                    </div>
+                    <div *pblNgridCellDef="'vote'; row as vote" class="vote-cell">
+                        <div class="vote-cell-icon-container" [ngClass]="voteOptionStyle[vote.value].css">
+                            <mat-icon>{{ voteOptionStyle[vote.value].icon }}</mat-icon>
+                        </div>
+                        <div>{{ vote.valueVerbose | translate }}</div>
+                    </div>
+
+                    <!-- No Results -->
+                    <div *pblNgridNoDataRef class="pbl-ngrid-no-data">
+                        {{ 'The individual votes were made anonymous.' | translate }}
+                    </div>
+                </os-list-view-table>
             </div>
         </div>
 
-        <div class="poll-content small">
-            <div *ngIf="poll.groups && poll.type && poll.type !== 'analog'">
+        <div class="poll-content">
+            <small *ngIf="poll.groups && poll.type && poll.type !== 'analog'">
                 {{ 'Groups' | translate }}:
 
                 <span *ngFor="let group of poll.groups; let i = index">
                     {{ group.getTitle() | translate }}<span *ngIf="i < poll.groups.length - 1">, </span>
                 </span>
-            </div>
-            <div>{{ 'Required majority' | translate }}: {{ poll.majorityMethodVerbose | translate }}</div>
-            <div>{{ '100% base' | translate }}: {{ poll.percentBaseVerbose | translate }}</div>
+            </small>
+            <small>{{ '100% base' | translate }}: {{ poll.percentBaseVerbose | translate }}</small>
         </div>
     </ng-container>
 </ng-template>
@@ -116,7 +132,7 @@
 <!-- More Menu -->
 <mat-menu #pollDetailMenu="matMenu">
     <os-projector-button [menuItem]="true" [object]="poll" *osPerms="'core.can_manage_projector'"></os-projector-button>
-    <button *osPerms="'motions.can_manage_polls'" mat-menu-item (click)="openDialog()">
+    <button *osPerms="'motions.can_manage_polls'" mat-menu-item (click)="openDialog(poll)">
         <mat-icon>edit</mat-icon>
         <span translate>Edit</span>
     </button>

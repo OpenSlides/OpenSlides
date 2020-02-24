@@ -1,8 +1,4 @@
 <ng-container *ngIf="poll">
-    <!-- Poll progress bar -->
-    <div *osPerms="'assignments.can_manage_polls'; and: poll.isStarted">
-        <os-poll-progress [poll]="poll"></os-poll-progress>
-    </div>
 
     <ng-container *ngIf="vmanager.canVote(poll)">
         <!-- TODO: Someone should make this pretty -->

@@ -7,6 +7,8 @@
             </h2>
         </mat-form-field>
     </form>
+
+    <!-- TODO: rather disable forms than duplicate them -->
     <div *ngIf="data && data.state > 1" class="poll-preview-meta-info">
         <span class="short-description" *ngFor="let value of pollValues">
             <span class="short-description-label subtitle" translate>

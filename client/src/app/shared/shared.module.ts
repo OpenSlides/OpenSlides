@@ -111,7 +111,6 @@ import { GlobalSpinnerComponent } from 'app/site/common/components/global-spinne
 import { HeightResizingDirective } from './directives/height-resizing.directive';
 import { TrustPipe } from './pipes/trust.pipe';
 import { LocalizedDatePipe } from './pipes/localized-date.pipe';
-import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.component';
 import { ChartsComponent } from './components/charts/charts.component';
 import { CheckInputComponent } from './components/check-input/check-input.component';
 import { BannerComponent } from './components/banner/banner.component';
@@ -277,7 +276,6 @@ import { PollPercentBasePipe } from './pipes/poll-percent-base.pipe';
         ChartsModule,
         TrustPipe,
         LocalizedDatePipe,
-        BreadcrumbComponent,
         ChartsComponent,
         CheckInputComponent,
         BannerComponent,
@@ -335,7 +333,6 @@ import { PollPercentBasePipe } from './pipes/poll-percent-base.pipe';
         HeightResizingDirective,
         TrustPipe,
         LocalizedDatePipe,
-        BreadcrumbComponent,
         ChartsComponent,
         CheckInputComponent,
         BannerComponent,

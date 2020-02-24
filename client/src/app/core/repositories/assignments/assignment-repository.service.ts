@@ -80,7 +80,6 @@ export class AssignmentRepositoryService extends BaseIsAgendaItemAndListOfSpeake
     private readonly restPath = '/rest/assignments/assignment/';
     private readonly candidatureOtherPath = '/candidature_other/';
     private readonly candidatureSelfPath = '/candidature_self/';
-    private readonly markElectedPath = '/mark_elected/';
 
     /**
      * Constructor for the Assignment Repository.
@@ -156,26 +155,6 @@ export class AssignmentRepositoryService extends BaseIsAgendaItemAndListOfSpeake
      */
     public async deleteSelf(assignment: ViewAssignment): Promise<void> {
         await this.httpService.delete(this.restPath + assignment.id + this.candidatureSelfPath);
-    }
-
-    /**
-     * change the 'elected' state of an election candidate
-     *
-     * @param assignmentRelatedUser
-     * @param assignment
-     * @param elected true if the candidate is to be elected, false if unelected
-     */
-    public async markElected(
-        assignmentRelatedUser: ViewAssignmentRelatedUser,
-        assignment: ViewAssignment,
-        elected: boolean
-    ): Promise<void> {
-        const data = { user: assignmentRelatedUser.user_id };
-        if (elected) {
-            await this.httpService.post(this.restPath + assignment.id + this.markElectedPath, data);
-        } else {
-            await this.httpService.delete(this.restPath + assignment.id + this.markElectedPath, data);
-        }
     }
 
     /**
