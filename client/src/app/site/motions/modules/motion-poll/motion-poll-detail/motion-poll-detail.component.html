@@ -82,6 +82,7 @@
             <div class="named-result-table" *ngIf="poll.type === 'named'">
                 <h2>{{ 'Single votes' | translate }}</h2>
                 <os-list-view-table
+                    *ngIf="votesDataObservable"
                     [listObservable]="votesDataObservable"
                     [columns]="columnDefinition"
                     [filterProps]="filterProps"
@@ -107,12 +108,10 @@
                         </div>
                         <div>{{ vote.valueVerbose | translate }}</div>
                     </div>
-
-                    <!-- No Results -->
-                    <div *pblNgridNoDataRef class="pbl-ngrid-no-data">
-                        {{ 'The individual votes were made anonymous.' | translate }}
-                    </div>
                 </os-list-view-table>
+                <div *ngIf="!votesDataObservable">
+                    {{ 'The individual votes were anonymized.' | translate }}
+                </div>
             </div>
         </div>
 

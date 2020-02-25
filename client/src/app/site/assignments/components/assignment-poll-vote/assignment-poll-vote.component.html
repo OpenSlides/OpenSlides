@@ -7,7 +7,7 @@
         <span *ngIf="poll.user_has_not_voted">You have not give any voting here!</span>
 
         <!-- Leftover votes -->
-        <h4 *ngIf="poll.pollmethod === pollMethods.Votes && poll.votes_amount > 1 && !currentVotes.global">
+        <h4 *ngIf="poll.pollmethod === AssignmentPollMethod.Votes && poll.votes_amount > 1 && !currentVotes.global">
             {{ 'Votes for this poll' | translate }}: {{ getVotesCount() }}/{{ poll.votes_amount }}
         </h4>
 
@@ -16,9 +16,9 @@
             <div *ngIf="poll.type !== PollType.Pseudoanonymous || !option.user_has_voted">
                 <div
                     [ngClass]="{
-                        'yna-grid': poll.pollmethod === pollMethods.YNA,
-                        'yn-grid': poll.pollmethod === pollMethods.YN,
-                        'single-vote-grid': poll.pollmethod === pollMethods.Votes
+                        'yna-grid': poll.pollmethod === AssignmentPollMethod.YNA,
+                        'yn-grid': poll.pollmethod === AssignmentPollMethod.YN,
+                        'single-vote-grid': poll.pollmethod === AssignmentPollMethod.Votes
                     }"
                 >
                     <div class="vote-candidate-name">
@@ -34,7 +34,7 @@
                         >
                             <mat-icon> {{ action.icon }}</mat-icon>
                         </button>
-                        <span *ngIf="poll.pollmethod !== pollMethods.Votes" class="vote-label">
+                        <span *ngIf="poll.pollmethod !== AssignmentPollMethod.Votes" class="vote-label">
                             {{ action.label | translate }}
                         </span>
                     </div>
@@ -44,7 +44,7 @@
         </div>
 
         <!-- global no/abstain -->
-        <ng-container *ngIf="poll.pollmethod === pollMethods.Votes && (poll.global_no || poll.global_abstain)">
+        <ng-container *ngIf="poll.pollmethod === AssignmentPollMethod.Votes && (poll.global_no || poll.global_abstain)">
             <mat-divider></mat-divider>
             <div class="global-option-grid">
                 <div *ngIf="poll.global_no">

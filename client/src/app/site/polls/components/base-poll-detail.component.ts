@@ -6,17 +6,21 @@ import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Label } from 'ng2-charts';
 import { BehaviorSubject, from, Observable } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 
+import { BaseRepository } from 'app/core/repositories/base-repository';
 import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
 import { BasePollDialogService } from 'app/core/ui-services/base-poll-dialog.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ChartData, ChartType } from 'app/shared/components/charts/charts.component';
+import { BaseVote } from 'app/shared/models/poll/base-vote';
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { ViewGroup } from 'app/site/users/models/view-group';
 import { ViewUser } from 'app/site/users/models/view-user';
 import { BasePollRepositoryService } from '../services/base-poll-repository.service';
 import { PollService } from '../services/poll.service';
 import { ViewBasePoll } from '../models/view-base-poll';
+import { ViewBaseVote } from '../models/view-base-vote';
 
 export interface BaseVoteData {
     user?: ViewUser;
@@ -74,6 +78,8 @@ export abstract class BasePollDetailComponent<V extends ViewBasePoll> extends Ba
     // The observable for the votes-per-user table
     public votesDataObservable: Observable<BaseVoteData[]>;
 
+    protected optionsLoaded = false;
+
     /**
      * Constructor
      *
@@ -98,9 +104,23 @@ export abstract class BasePollDetailComponent<V extends ViewBasePoll> extends Ba
         protected groupRepo: GroupRepositoryService,
         protected promptService: PromptService,
         protected pollDialog: BasePollDialogService<V>,
-        protected pollService: PollService
+        protected pollService: PollService,
+        protected votesRepo: BaseRepository<ViewBaseVote, BaseVote, object>
     ) {
         super(title, translate, matSnackbar);
+        votesRepo
+            .getViewModelListObservable()
+            .pipe(
+                filter(() => this.poll && this.canSeeVotes), // filter first for valid poll state to avoid unneccessary iteration of potentially thousands of votes
+                map(votes => votes.filter(vote => vote.option.poll_id === this.poll.id)),
+                filter(votes => !!votes.length)
+            )
+            .subscribe(() => {
+                // votes data can only be created when options are ready
+                if (this.optionsLoaded) {
+                    this.createVotesData();
+                }
+            });
     }
 
     /**
@@ -143,11 +163,17 @@ export abstract class BasePollDetailComponent<V extends ViewBasePoll> extends Ba
      */
     protected onPollLoaded(): void {}
 
-    protected onPollWithOptionsLoaded(): void {}
+    protected onPollWithOptionsLoaded(): void {
+        this.createVotesData();
+    }
 
     protected onStateChanged(): void {}
 
     protected abstract hasPerms(): boolean;
+
+    protected get canSeeVotes(): boolean {
+        return (this.hasPerms && this.poll.isFinished) || this.poll.isPublished;
+    }
 
     /**
      * sets the votes data only if the poll wasn't pseudoanonymized
@@ -161,6 +187,11 @@ export abstract class BasePollDetailComponent<V extends ViewBasePoll> extends Ba
     }
 
     /**
+     * Is called when the underlying vote data changes. Is supposed to call setVotesData
+     */
+    protected abstract createVotesData(): void;
+
+    /**
      * Initializes data for the shown chart.
      * Could be overwritten to implement custom chart data.
      */
@@ -169,10 +200,10 @@ export abstract class BasePollDetailComponent<V extends ViewBasePoll> extends Ba
     }
 
     /**
-     * This checks, if the poll has votes.
+     * This checks if the poll has votes.
      */
     private checkData(): void {
-        if (this.poll.state === 3 || this.poll.state === 4) {
+        if (this.poll.stateHasVotes) {
             setTimeout(() => this.initChartData());
         }
     }
@@ -203,6 +234,7 @@ export abstract class BasePollDetailComponent<V extends ViewBasePoll> extends Ba
         if (!this.poll.options || !this.poll.options.length) {
             setTimeout(() => this.waitForOptions(), 1);
         } else {
+            this.optionsLoaded = true;
             this.onPollWithOptionsLoaded();
         }
     }

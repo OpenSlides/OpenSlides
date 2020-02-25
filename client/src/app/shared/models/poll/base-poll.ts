@@ -23,6 +23,13 @@ export enum PollType {
     Pseudoanonymous = 'pseudoanonymous'
 }
 
+export enum MajorityMethod {
+    Simple = 'simple',
+    TwoThirds = 'two_thirds',
+    ThreeQuarters = 'three_quarters',
+    Disabled = 'disabled'
+}
+
 export enum PercentBase {
     YN = 'YN',
     YNA = 'YNA',
@@ -31,14 +38,12 @@ export enum PercentBase {
     Disabled = 'disabled'
 }
 
-export enum MajorityMethod {
-    Simple = 'simple',
-    TwoThirds = 'two_thirds',
-    ThreeQuarters = 'three_quarters',
-    Disabled = 'disabled'
-}
-
-export abstract class BasePoll<T = any, O extends BaseOption<any> = any> extends BaseDecimalModel<T> {
+export abstract class BasePoll<
+    T = any,
+    O extends BaseOption<any> = any,
+    PM extends string = string,
+    PB extends string = string
+> extends BaseDecimalModel<T> {
     public state: PollState;
     public type: PollType;
     public title: string;
@@ -47,7 +52,9 @@ export abstract class BasePoll<T = any, O extends BaseOption<any> = any> extends
     public votescast: number;
     public groups_id: number[];
     public majority_method: MajorityMethod;
-    public onehundred_percent_base: PercentBase;
+
+    public pollmethod: PM;
+    public onehundred_percent_base: PB;
 
     public get isCreated(): boolean {
         return this.state === PollState.Created;
