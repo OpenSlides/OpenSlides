@@ -36,7 +36,7 @@ export abstract class BasePollComponent<V extends ViewBasePoll> extends BaseView
     public constructor(
         titleService: Title,
         matSnackBar: MatSnackBar,
-        public translate: TranslateService,
+        protected translate: TranslateService,
         public dialog: MatDialog,
         protected promptService: PromptService,
         protected repo: BasePollRepositoryService,
@@ -47,8 +47,9 @@ export abstract class BasePollComponent<V extends ViewBasePoll> extends BaseView
 
     public async changeState(key: PollState): Promise<void> {
         if (key === PollState.Created) {
-            const title = this.translate.instant('Are you sure you want to reset this poll? All Votes will be lost.');
-            if (await this.promptService.open(title)) {
+            const title = this.translate.instant('Are you sure you want to reset this vote?');
+            const content = this.translate.instant('All votes will be lost.');
+            if (await this.promptService.open(title, content)) {
                 this.repo.resetPoll(this._poll).catch(this.raiseError);
             }
         } else {
@@ -64,7 +65,7 @@ export abstract class BasePollComponent<V extends ViewBasePoll> extends BaseView
      * Handler for the 'delete poll' button
      */
     public async onDeletePoll(): Promise<void> {
-        const title = this.translate.instant('Are you sure you want to delete this poll?');
+        const title = this.translate.instant('Are you sure you want to delete this vote?');
         if (await this.promptService.open(title)) {
             await this.repo.delete(this._poll).catch(this.raiseError);
         }

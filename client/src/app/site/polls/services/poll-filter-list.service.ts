@@ -30,10 +30,10 @@ export class PollFilterListService extends BaseFilterListService<ViewBasePoll> {
                 property: 'state',
                 label: this.translate.instant('State'),
                 options: [
-                    { condition: PollState.Created, label: this.translate.instant('Created') },
-                    { condition: PollState.Started, label: this.translate.instant('Started') },
-                    { condition: PollState.Finished, label: this.translate.instant('Finished') },
-                    { condition: PollState.Published, label: this.translate.instant('Published') }
+                    { condition: PollState.Created, label: this.translate.instant('created') },
+                    { condition: PollState.Started, label: this.translate.instant('started') },
+                    { condition: PollState.Finished, label: this.translate.instant('finished (unpublished)') },
+                    { condition: PollState.Published, label: this.translate.instant('published') }
                 ]
             },
             {

@@ -107,7 +107,7 @@ export class MotionPollComponent extends BasePollComponent<ViewMotionPoll> {
     public constructor(
         titleService: Title,
         matSnackBar: MatSnackBar,
-        translate: TranslateService,
+        protected translate: TranslateService,
         dialog: MatDialog,
         promptService: PromptService,
         public pollRepo: MotionPollRepositoryService,
@@ -123,10 +123,10 @@ export class MotionPollComponent extends BasePollComponent<ViewMotionPoll> {
     }
 
     public async deletePoll(): Promise<void> {
-        const title = 'Delete poll';
-        const text = 'Do you really want to delete the selected poll?';
+        const title = this.translate.instant('Are you sure you want to delete this vote?');
+        const content = this.poll.getTitle();
 
-        if (await this.promptService.open(title, text)) {
+        if (await this.promptService.open(title, content)) {
             this.repo.delete(this.poll).catch(this.raiseError);
         }
     }

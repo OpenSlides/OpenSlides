@@ -35,10 +35,10 @@ export const PollClassTypeVerbose = {
 };
 
 export const PollStateVerbose = {
-    1: 'Created',
-    2: 'Started',
-    3: 'Finished (unpublished)',
-    4: 'Published'
+    1: 'created',
+    2: 'started',
+    3: 'finished (unpublished)',
+    4: 'published'
 };
 
 export const PollStateChangeActionVerbose = {
@@ -49,21 +49,21 @@ export const PollStateChangeActionVerbose = {
 };
 
 export const PollTypeVerbose = {
-    analog: 'Analog voting',
-    named: 'Named voting',
-    pseudoanonymous: 'Pseudoanonymous voting'
+    analog: 'analog',
+    named: 'nominal',
+    pseudoanonymous: 'non-nominal'
 };
 
 export const PollPropertyVerbose = {
     majority_method: 'Required majority',
     onehundred_percent_base: '100% base',
-    type: 'Poll type',
-    pollmethod: 'Poll method',
+    type: 'Voting type',
+    pollmethod: 'Voting method',
     state: 'State',
     groups: 'Entitled to vote',
     votes_amount: 'Amount of votes',
-    global_no: 'Enable global no',
-    global_abstain: 'Enable global abstain'
+    global_no: 'general "No"',
+    global_abstain: 'general "Abstain"'
 };
 
 export const MajorityMethodVerbose = {
