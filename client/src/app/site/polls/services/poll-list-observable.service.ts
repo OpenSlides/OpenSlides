@@ -9,7 +9,7 @@ import { MotionPollRepositoryService } from 'app/core/repositories/motions/motio
 import { ViewAssignmentPoll } from 'app/site/assignments/models/view-assignment-poll';
 import { BaseViewModel } from 'app/site/base/base-view-model';
 import { ViewMotionPoll } from 'app/site/motions/models/view-motion-poll';
-import { ViewBasePoll } from '../models/view-base-poll';
+import { PollClassType, ViewBasePoll } from '../models/view-base-poll';
 
 @Injectable({
     providedIn: 'root'
@@ -28,13 +28,13 @@ export class PollListObservableService implements HasViewModelListObservable<Vie
     ) {
         motionPollRepo
             .getViewModelListObservable()
-            .subscribe(polls => this.adjustViewModelListObservable(polls, 'motion'));
+            .subscribe(polls => this.adjustViewModelListObservable(polls, PollClassType.Motion));
         assignmentPollRepo
             .getViewModelListObservable()
-            .subscribe(polls => this.adjustViewModelListObservable(polls, 'assignment'));
+            .subscribe(polls => this.adjustViewModelListObservable(polls, PollClassType.Assignment));
     }
 
-    private adjustViewModelListObservable(polls: ViewBasePoll[], mode: 'motion' | 'assignment'): void {
+    private adjustViewModelListObservable(polls: ViewBasePoll[], mode: PollClassType): void {
         this[mode + 'Polls'] = polls;
 
         const allPolls = (this.motionPolls as ViewBasePoll[]).concat(this.assignmentPolls);

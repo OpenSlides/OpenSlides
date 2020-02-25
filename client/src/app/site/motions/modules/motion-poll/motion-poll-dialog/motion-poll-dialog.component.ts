@@ -6,9 +6,9 @@ import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 
 import { ViewMotionPoll } from 'app/site/motions/models/view-motion-poll';
-import { MotionPollMethodsVerbose } from 'app/site/motions/models/view-motion-poll';
 import { BasePollDialogComponent } from 'app/site/polls/components/base-poll-dialog.component';
 import { PollFormComponent } from 'app/site/polls/components/poll-form/poll-form.component';
+import { PercentBaseVerbose } from 'app/site/polls/models/view-base-poll';
 
 @Component({
     selector: 'os-motion-poll-dialog',
@@ -16,7 +16,7 @@ import { PollFormComponent } from 'app/site/polls/components/poll-form/poll-form
     styleUrls: ['./motion-poll-dialog.component.scss']
 })
 export class MotionPollDialogComponent extends BasePollDialogComponent<ViewMotionPoll> {
-    public motionPollMethods = { YNA: MotionPollMethodsVerbose.YNA };
+    public PercentBaseVerbose = PercentBaseVerbose;
 
     @ViewChild('pollForm', { static: false })
     protected pollForm: PollFormComponent<ViewMotionPoll>;

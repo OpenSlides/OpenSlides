@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 
 import { _ } from 'app/core/translate/translation-marker';
 import { ChartData, ChartType } from 'app/shared/components/charts/charts.component';
-import { AssignmentPollMethods } from 'app/shared/models/assignments/assignment-poll';
-import { MotionPollMethods } from 'app/shared/models/motions/motion-poll';
-import { BasePoll, MajorityMethod, PercentBase, PollColor, PollType } from 'app/shared/models/poll/base-poll';
-import { AssignmentPollMethodsVerbose } from 'app/site/assignments/models/view-assignment-poll';
+import { AssignmentPollMethod } from 'app/shared/models/assignments/assignment-poll';
+import { MotionPollMethod } from 'app/shared/models/motions/motion-poll';
+import { BasePoll, MajorityMethod, PollColor, PollType } from 'app/shared/models/poll/base-poll';
+import { AssignmentPollMethodVerbose } from 'app/site/assignments/models/view-assignment-poll';
 import {
     MajorityMethodVerbose,
     PercentBaseVerbose,
@@ -90,8 +90,8 @@ export const PollMajorityMethod: CalculableMajorityMethod[] = [
 ];
 
 export interface PollData {
-    pollmethod?: string;
-    onehundred_percent_base: PercentBase;
+    pollmethod: string;
+    onehundred_percent_base: string;
     options: {
         user?: {
             full_name: string;
@@ -120,7 +120,7 @@ export abstract class PollService {
     /**
      * The default percentage base
      */
-    public abstract defaultPercentBase: PercentBase;
+    public abstract defaultPercentBase: string;
 
     /**
      * The default majority method
@@ -170,7 +170,7 @@ export abstract class PollService {
             case 'onehundred_percent_base':
                 return PercentBaseVerbose[value];
             case 'pollmethod':
-                return AssignmentPollMethodsVerbose[value];
+                return AssignmentPollMethodVerbose[value];
             case 'type':
                 return PollTypeVerbose[value];
         }
@@ -181,7 +181,7 @@ export abstract class PollService {
     }
 
     public generateChartData(poll: PollData): ChartData {
-        if (poll.pollmethod === AssignmentPollMethods.Votes) {
+        if (poll.pollmethod === AssignmentPollMethod.Votes) {
             return this.generateCircleChartData(poll);
         } else {
             return this.generateBarChartData(poll);
@@ -191,7 +191,7 @@ export abstract class PollService {
     public generateBarChartData(poll: PollData): ChartData {
         const fields = ['yes', 'no'];
         // cast is needed because ViewBasePoll doesn't have the field `pollmethod`, no easy fix :(
-        if ((<any>poll).pollmethod === MotionPollMethods.YNA) {
+        if ((<any>poll).pollmethod === MotionPollMethod.YNA) {
             fields.push('abstain');
         }
         const data: ChartData = fields.map(key => ({
@@ -213,7 +213,7 @@ export abstract class PollService {
     }
 
     public getChartType(poll: PollData): ChartType {
-        if ((<any>poll).pollmethod === AssignmentPollMethods.Votes) {
+        if ((<any>poll).pollmethod === AssignmentPollMethod.Votes) {
             return 'doughnut';
         } else {
             return 'horizontalBar';

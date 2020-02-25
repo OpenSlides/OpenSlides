@@ -5,8 +5,12 @@ import { TranslateService } from '@ngx-translate/core';
 import { ConstantsService } from 'app/core/core-services/constants.service';
 import { AssignmentPollRepositoryService } from 'app/core/repositories/assignments/assignment-poll-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
-import { AssignmentPoll, AssignmentPollMethods } from 'app/shared/models/assignments/assignment-poll';
-import { MajorityMethod, PercentBase } from 'app/shared/models/poll/base-poll';
+import {
+    AssignmentPoll,
+    AssignmentPollMethod,
+    AssignmentPollPercentBase
+} from 'app/shared/models/assignments/assignment-poll';
+import { MajorityMethod } from 'app/shared/models/poll/base-poll';
 import { PollData, PollService } from 'app/site/polls/services/poll.service';
 
 @Injectable({
@@ -16,7 +20,7 @@ export class AssignmentPollService extends PollService {
     /**
      * The default percentage base
      */
-    public defaultPercentBase: PercentBase;
+    public defaultPercentBase: AssignmentPollPercentBase;
 
     /**
      * The default majority method
@@ -25,7 +29,7 @@ export class AssignmentPollService extends PollService {
 
     public defaultGroupIds: number[];
 
-    public defaultPollMethod: AssignmentPollMethods;
+    public defaultPollMethod: AssignmentPollMethod;
 
     /**
      * Constructor. Subscribes to the configuration values needed
@@ -39,14 +43,14 @@ export class AssignmentPollService extends PollService {
     ) {
         super(constants);
         config
-            .get<PercentBase>('motion_poll_default_100_percent_base')
+            .get<AssignmentPollPercentBase>('assignment_poll_default_100_percent_base')
             .subscribe(base => (this.defaultPercentBase = base));
         config
-            .get<MajorityMethod>('motion_poll_default_majority_method')
+            .get<MajorityMethod>('assignment_poll_default_majority_method')
             .subscribe(method => (this.defaultMajorityMethod = method));
         config.get<number[]>(AssignmentPoll.defaultGroupsConfig).subscribe(ids => (this.defaultGroupIds = ids));
         config
-            .get<AssignmentPollMethods>(AssignmentPoll.defaultPollMethodConfig)
+            .get<AssignmentPollMethod>(AssignmentPoll.defaultPollMethodConfig)
             .subscribe(method => (this.defaultPollMethod = method));
     }
 
@@ -77,19 +81,22 @@ export class AssignmentPollService extends PollService {
     }
 
     public getPercentBase(poll: PollData): number {
-        const base: PercentBase = poll.onehundred_percent_base;
+        const base: AssignmentPollPercentBase = poll.onehundred_percent_base as AssignmentPollPercentBase;
         let totalByBase: number;
         switch (base) {
-            case PercentBase.YN:
+            case AssignmentPollPercentBase.YN:
                 totalByBase = this.sumOptionsYN(poll);
                 break;
-            case PercentBase.YNA:
+            case AssignmentPollPercentBase.YNA:
                 totalByBase = this.sumOptionsYNA(poll);
                 break;
-            case PercentBase.Valid:
+            case AssignmentPollPercentBase.Votes:
+                totalByBase = this.sumOptionsYNA(poll);
+                break;
+            case AssignmentPollPercentBase.Valid:
                 totalByBase = poll.votesvalid;
                 break;
-            case PercentBase.Cast:
+            case AssignmentPollPercentBase.Cast:
                 totalByBase = poll.votescast;
                 break;
             default:

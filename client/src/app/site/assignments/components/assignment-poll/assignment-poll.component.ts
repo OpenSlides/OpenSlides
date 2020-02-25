@@ -10,7 +10,6 @@ import { OperatorService } from 'app/core/core-services/operator.service';
 import { AssignmentPollRepositoryService } from 'app/core/repositories/assignments/assignment-poll-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ChartType } from 'app/shared/components/charts/charts.component';
-import { PollState } from 'app/shared/models/poll/base-poll';
 import { BasePollComponent } from 'app/site/polls/components/base-poll.component';
 import { PollService } from 'app/site/polls/services/poll.service';
 import { AssignmentPollDialogService } from '../../services/assignment-poll-dialog.service';
@@ -61,8 +60,8 @@ export class AssignmentPollComponent extends BasePollComponent<ViewAssignmentPol
         return this.operator.hasPerms('assignments.can_see');
     }
 
-    public get hasVotes(): boolean {
-        return (this.canManage && this.poll.state === PollState.Finished) || this.poll.state === PollState.Published;
+    public get canSeeVotes(): boolean {
+        return (this.canManage && this.poll.isFinished) || this.poll.isPublished;
     }
 
     /**

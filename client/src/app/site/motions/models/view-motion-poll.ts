@@ -1,31 +1,41 @@
-import { MotionPoll } from 'app/shared/models/motions/motion-poll';
+import { MotionPoll, MotionPollMethod } from 'app/shared/models/motions/motion-poll';
+import { PercentBase } from 'app/shared/models/poll/base-poll';
 import { BaseViewModel } from 'app/site/base/base-view-model';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 import { ViewMotionOption } from 'app/site/motions/models/view-motion-option';
-import { PollTableData, ViewBasePoll, VotingResult } from 'app/site/polls/models/view-base-poll';
+import { PollClassType, PollTableData, ViewBasePoll, VotingResult } from 'app/site/polls/models/view-base-poll';
 import { ViewMotion } from './view-motion';
 
 export interface MotionPollTitleInformation {
     title: string;
 }
 
-export const MotionPollMethodsVerbose = {
+export const MotionPollMethodVerbose = {
     YN: 'Yes/No',
     YNA: 'Yes/No/Abstain'
 };
 
-export class ViewMotionPoll extends ViewBasePoll<MotionPoll> implements MotionPollTitleInformation {
+export const MotionPollPercentBaseVerbose = {
+    YN: 'Yes/No',
+    YNA: 'Yes/No/Abstain',
+    valid: 'All valid ballots',
+    cast: 'All casted ballots',
+    disabled: 'Disabled (no percents)'
+};
+
+export class ViewMotionPoll extends ViewBasePoll<MotionPoll, MotionPollMethod, PercentBase>
+    implements MotionPollTitleInformation {
     public static COLLECTIONSTRING = MotionPoll.COLLECTIONSTRING;
     protected _collectionString = MotionPoll.COLLECTIONSTRING;
 
-    public readonly pollClassType: 'assignment' | 'motion' = 'motion';
+    public readonly pollClassType = PollClassType.Motion;
 
     public get result(): ViewMotionOption {
         return this.options[0];
     }
 
     public get hasVotes(): boolean {
-        return !!this.result.votes.length;
+        return this.result && !!this.result.votes.length;
     }
 
     public getContentObject(): BaseViewModel {
@@ -71,7 +81,11 @@ export class ViewMotionPoll extends ViewBasePoll<MotionPoll> implements MotionPo
     }
 
     public get pollmethodVerbose(): string {
-        return MotionPollMethodsVerbose[this.pollmethod];
+        return MotionPollMethodVerbose[this.pollmethod];
+    }
+
+    public get percentBaseVerbose(): string {
+        return MotionPollPercentBaseVerbose[this.onehundred_percent_base];
     }
 
     public anySpecialVotes(): boolean {

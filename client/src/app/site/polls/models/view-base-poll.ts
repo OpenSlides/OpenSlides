@@ -1,11 +1,10 @@
 import { BasePoll, PercentBase, PollType } from 'app/shared/models/poll/base-poll';
-import { ViewAssignmentOption } from 'app/site/assignments/models/view-assignment-option';
 import { BaseProjectableViewModel } from 'app/site/base/base-projectable-view-model';
 import { BaseViewModel } from 'app/site/base/base-view-model';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
-import { ViewMotionOption } from 'app/site/motions/models/view-motion-option';
 import { ViewGroup } from 'app/site/users/models/view-group';
 import { ViewUser } from 'app/site/users/models/view-user';
+import { ViewBaseOption } from './view-base-option';
 
 export enum PollClassType {
     Motion = 'motion',
@@ -73,9 +72,6 @@ export const MajorityMethodVerbose = {
     disabled: 'Disabled'
 };
 
-/**
- * TODO: These need to be in order
- */
 export const PercentBaseVerbose = {
     YN: 'Yes/No',
     YNA: 'Yes/No/Abstain',
@@ -84,7 +80,11 @@ export const PercentBaseVerbose = {
     disabled: 'Disabled'
 };
 
-export abstract class ViewBasePoll<M extends BasePoll<M, any> = any> extends BaseProjectableViewModel<M> {
+export abstract class ViewBasePoll<
+    M extends BasePoll<M, any, PM, PB> = any,
+    PM extends string = string,
+    PB extends string = string
+> extends BaseProjectableViewModel<M> {
     private _tableData: PollTableData[] = [];
 
     protected voteTableKeys: VotingResult[] = [
@@ -157,15 +157,15 @@ export abstract class ViewBasePoll<M extends BasePoll<M, any> = any> extends Bas
         return MajorityMethodVerbose[this.majority_method];
     }
 
-    public get percentBaseVerbose(): string {
-        return PercentBaseVerbose[this.onehundred_percent_base];
-    }
+    public abstract get pollmethodVerbose(): string;
+
+    public abstract get percentBaseVerbose(): string;
 
     public get showAbstainPercent(): boolean {
         return this.onehundred_percent_base === PercentBase.YNA;
     }
 
-    public abstract readonly pollClassType: 'motion' | 'assignment';
+    public abstract readonly pollClassType: PollClassType;
 
     public canBeVotedFor: () => boolean;
 
@@ -188,8 +188,12 @@ export abstract class ViewBasePoll<M extends BasePoll<M, any> = any> extends Bas
     public abstract generateTableData(): PollTableData[];
 }
 
-export interface ViewBasePoll<M extends BasePoll<M, any> = any> extends BasePoll<M, any> {
+export interface ViewBasePoll<
+    M extends BasePoll<M, any, PM, PB> = any,
+    PM extends string = string,
+    PB extends string = string
+> extends BasePoll<M, any, PM, PB> {
     voted: ViewUser[];
     groups: ViewGroup[];
-    options: (ViewMotionOption | ViewAssignmentOption)[]; // TODO find a better solution. but works for the moment
+    options: ViewBaseOption[];
 }

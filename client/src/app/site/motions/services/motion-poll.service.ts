@@ -5,7 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ConstantsService } from 'app/core/core-services/constants.service';
 import { MotionPollRepositoryService } from 'app/core/repositories/motions/motion-poll-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
-import { MotionPoll, MotionPollMethods } from 'app/shared/models/motions/motion-poll';
+import { MotionPoll, MotionPollMethod } from 'app/shared/models/motions/motion-poll';
 import { MajorityMethod, PercentBase } from 'app/shared/models/poll/base-poll';
 import { PollData, PollService } from 'app/site/polls/services/poll.service';
 
@@ -60,13 +60,13 @@ export class MotionPollService extends PollService {
         const length = this.pollRepo.getViewModelList().filter(item => item.motion_id === poll.motion_id).length;
 
         poll.title = !length ? this.translate.instant('Vote') : `${this.translate.instant('Vote')} (${length + 1})`;
-        poll.pollmethod = MotionPollMethods.YNA;
+        poll.pollmethod = MotionPollMethod.YNA;
 
         return poll;
     }
 
     public getPercentBase(poll: PollData): number {
-        const base: PercentBase = poll.onehundred_percent_base;
+        const base: PercentBase = poll.onehundred_percent_base as PercentBase;
 
         let totalByBase: number;
         const result = poll.options[0];
