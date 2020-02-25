@@ -365,7 +365,7 @@ def get_config_variables():
         name="motion_poll_default_groups",
         default_value=[],
         input_type="groups",
-        label="Default groups for named and pseudoanonymous motion polls",
+        label="Default groups with voting rights",
         weight=372,
         group="Motions",
         subgroup="Voting and ballot papers",
