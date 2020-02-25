@@ -116,19 +116,15 @@ export abstract class BasePollDetailComponent<V extends ViewBasePoll> extends Ba
     }
 
     public async deletePoll(): Promise<void> {
-        const title = 'Delete poll';
-        const text = 'Do you really want to delete the selected poll?';
-
-        if (await this.promptService.open(title, text)) {
+        const title = this.translate.instant('Are you sure you want to delete this vote?');
+        if (await this.promptService.open(title)) {
             this.repo.delete(this.poll).then(() => this.onDeleted(), this.raiseError);
         }
     }
 
     public async pseudoanonymizePoll(): Promise<void> {
-        const title = 'Anonymize single votes';
-        const text = 'Do you really want to anonymize all votes? This cannot be undone.';
-
-        if (await this.promptService.open(title, text)) {
+        const title = this.translate.instant('Are you sure you want to anonymize all votes? This cannot be undone.');
+        if (await this.promptService.open(title)) {
             this.repo.pseudoanonymize(this.poll).then(() => this.onPollLoaded(), this.raiseError); // votes have changed, but not the poll, so the components have to be informed about the update
         }
     }
