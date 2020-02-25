@@ -17,7 +17,7 @@
 <!-- Detailview for poll -->
 <ng-template #viewTemplate>
     <ng-container *ngIf="poll">
-        <h1>{{ poll.title }}</h1>
+        <h1>{{ poll.title | translate }}</h1>
 
         <div>
             <!-- Subtitle -->
@@ -25,7 +25,7 @@
 
             <!-- State chip -->
             <span>
-                {{ poll.stateVerbose }}
+                {{ poll.stateVerbose | translate }}
             </span>
         </div>
 

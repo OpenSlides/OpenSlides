@@ -13,7 +13,7 @@ export interface AssignmentPollTitleInformation {
 }
 
 export const AssignmentPollMethodsVerbose = {
-    votes: 'Fixed Amount of votes for all candidates',
+    votes: 'Yes per candidate',
     YN: 'Yes/No per candidate',
     YNA: 'Yes/No/Abstain per candidate'
 };
