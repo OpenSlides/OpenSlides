@@ -50,7 +50,12 @@ class AssignmentsAppConfig(AppConfig):
 
         # Register required_users
         required_user.add_collection_string(
-            self.get_model("Assignment").get_collection_string(), required_users
+            self.get_model("Assignment").get_collection_string(),
+            required_users_assignments,
+        )
+        required_user.add_collection_string(
+            self.get_model("AssignmentOption").get_collection_string(),
+            required_users_options,
         )
 
     def get_config_variables(self):
@@ -72,7 +77,7 @@ class AssignmentsAppConfig(AppConfig):
             yield self.get_model(model_name)
 
 
-async def required_users(element: Dict[str, Any]) -> Set[int]:
+async def required_users_assignments(element: Dict[str, Any]) -> Set[int]:
     """
     Returns all user ids that are displayed as candidates (including poll
     options) in the assignment element.
@@ -95,3 +100,10 @@ async def required_users(element: Dict[str, Any]) -> Set[int]:
                 if option:
                     candidates.add(option["user_id"])
     return candidates
+
+
+async def required_users_options(element: Dict[str, Any]) -> Set[int]:
+    """
+    Returns all user ids that have voted on an option and are therefore required for the single votes table.
+    """
+    return element["voted_id"]
