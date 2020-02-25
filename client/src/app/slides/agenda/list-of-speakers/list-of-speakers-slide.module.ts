@@ -1,10 +1,10 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 
-import { SLIDE } from '../../slide-token';
 import { SharedModule } from 'app/shared/shared.module';
-import { CommonListOfSpeakersSlideModule } from '../common/common-list-of-speakers-slide.module';
 import { CommonListOfSpeakersSlideComponent } from '../common/common-list-of-speakers-slide.component';
+import { CommonListOfSpeakersSlideModule } from '../common/common-list-of-speakers-slide.module';
+import { SLIDE } from '../../slide-token';
 
 @NgModule({
     imports: [CommonModule, SharedModule, CommonListOfSpeakersSlideModule],

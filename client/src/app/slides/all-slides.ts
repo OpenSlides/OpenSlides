@@ -11,7 +11,7 @@ export const allSlides: SlideManifest[] = [
     {
         slide: 'agenda/item-list',
         path: 'agenda/item-list',
-        loadChildren: './slides/agenda/item-list/item-list-slide.module#ItemListSlideModule',
+        loadChildren: () => import('./agenda/item-list/item-list-slide.module').then(m => m.ItemListSlideModule),
         verboseName: 'Agenda',
         elementIdentifiers: ['name'],
         canBeMappedToModel: false
@@ -19,7 +19,7 @@ export const allSlides: SlideManifest[] = [
     {
         slide: 'topics/topic',
         path: 'topics/topic',
-        loadChildren: './slides/topics/topic/topic-slide.module#TopicSlideModule',
+        loadChildren: () => import('./topics/topic/topic-slide.module').then(m => m.TopicSlideModule),
         verboseName: 'Topic',
         elementIdentifiers: ['name', 'id'],
         canBeMappedToModel: true
@@ -27,7 +27,7 @@ export const allSlides: SlideManifest[] = [
     {
         slide: 'motions/motion',
         path: 'motions/motion',
-        loadChildren: './slides/motions/motion/motion-slide.module#MotionSlideModule',
+        loadChildren: () => import('./motions/motion/motion-slide.module').then(m => m.MotionSlideModule),
         verboseName: 'Motion',
         elementIdentifiers: ['name', 'id'],
         canBeMappedToModel: true
@@ -35,7 +35,8 @@ export const allSlides: SlideManifest[] = [
     {
         slide: 'motions/motion-block',
         path: 'motions/motion-block',
-        loadChildren: './slides/motions/motion-block/motion-block-slide.module#MotionBlockSlideModule',
+        loadChildren: () =>
+            import('./motions/motion-block/motion-block-slide.module').then(m => m.MotionBlockSlideModule),
         verboseName: 'Motion block',
         elementIdentifiers: ['name', 'id'],
         canBeMappedToModel: true
@@ -43,7 +44,7 @@ export const allSlides: SlideManifest[] = [
     {
         slide: 'users/user',
         path: 'users/user',
-        loadChildren: './slides/users/user/user-slide.module#UserSlideModule',
+        loadChildren: () => import('./users/user/user-slide.module').then(m => m.UserSlideModule),
         verboseName: 'Participant',
         elementIdentifiers: ['name', 'id'],
         canBeMappedToModel: true
@@ -51,7 +52,7 @@ export const allSlides: SlideManifest[] = [
     {
         slide: 'core/clock',
         path: 'core/clock',
-        loadChildren: './slides/core/clock/clock-slide.module#ClockSlideModule',
+        loadChildren: () => import('./core/clock/clock-slide.module').then(m => m.ClockSlideModule),
         verboseName: 'Clock',
         elementIdentifiers: ['name'],
         canBeMappedToModel: false
@@ -59,7 +60,7 @@ export const allSlides: SlideManifest[] = [
     {
         slide: 'core/countdown',
         path: 'core/countdown',
-        loadChildren: './slides/core/countdown/countdown-slide.module#CountdownSlideModule',
+        loadChildren: () => import('./core/countdown/countdown-slide.module').then(m => m.CountdownSlideModule),
         verboseName: 'Countdown',
         elementIdentifiers: ['name', 'id'],
         canBeMappedToModel: true
@@ -67,7 +68,8 @@ export const allSlides: SlideManifest[] = [
     {
         slide: 'core/projector-message',
         path: 'core/projector-message',
-        loadChildren: './slides/core/projector-message/projector-message-slide.module#ProjectorMessageSlideModule',
+        loadChildren: () =>
+            import('./core/projector-message/projector-message-slide.module').then(m => m.ProjectorMessageSlideModule),
         verboseName: 'Message',
         elementIdentifiers: ['name', 'id'],
         canBeMappedToModel: true
@@ -75,8 +77,10 @@ export const allSlides: SlideManifest[] = [
     {
         slide: 'agenda/current-list-of-speakers',
         path: 'agenda/current-list-of-speakers',
-        loadChildren:
-            './slides/agenda/current-list-of-speakers/current-list-of-speakers-slide.module#CurrentListOfSpeakersSlideModule',
+        loadChildren: () =>
+            import('./agenda/current-list-of-speakers/current-list-of-speakers-slide.module').then(
+                m => m.CurrentListOfSpeakersSlideModule
+            ),
         verboseName: 'Current list of speakers',
         elementIdentifiers: ['name'],
         canBeMappedToModel: false
@@ -84,8 +88,10 @@ export const allSlides: SlideManifest[] = [
     {
         slide: 'agenda/current-list-of-speakers-overlay',
         path: 'agenda/current-list-of-speakers-overlay',
-        loadChildren:
-            './slides/agenda/current-list-of-speakers-overlay/current-list-of-speakers-overlay-slide.module#CurrentListOfSpeakersOverlaySlideModule',
+        loadChildren: () =>
+            import('./agenda/current-list-of-speakers-overlay/current-list-of-speakers-overlay-slide.module').then(
+                m => m.CurrentListOfSpeakersOverlaySlideModule
+            ),
         verboseName: 'Current list of speakers overlay',
         elementIdentifiers: ['name'],
         canBeMappedToModel: false
@@ -93,8 +99,10 @@ export const allSlides: SlideManifest[] = [
     {
         slide: 'agenda/current-speaker-chyron',
         path: 'agenda/current-speaker-chyron',
-        loadChildren:
-            './slides/agenda/current-speaker-chyron/current-speaker-chyron-slide.module#CurrentSpeakerChyronSlideModule',
+        loadChildren: () =>
+            import('./agenda/current-speaker-chyron/current-speaker-chyron-slide.module').then(
+                m => m.CurrentSpeakerChyronSlideModule
+            ),
         verboseName: 'Current speaker chyron',
         elementIdentifiers: ['name'],
         canBeMappedToModel: false
@@ -102,7 +110,8 @@ export const allSlides: SlideManifest[] = [
     {
         slide: 'agenda/list-of-speakers',
         path: 'agenda/list-of-speakers',
-        loadChildren: './slides/agenda/list-of-speakers/list-of-speakers-slide.module#ListOfSpeakersSlideModule',
+        loadChildren: () =>
+            import('./agenda/list-of-speakers/list-of-speakers-slide.module').then(m => m.ListOfSpeakersSlideModule),
         verboseName: 'List of speakers',
         elementIdentifiers: ['name', 'id'],
         canBeMappedToModel: false
@@ -110,7 +119,8 @@ export const allSlides: SlideManifest[] = [
     {
         slide: 'assignments/assignment',
         path: 'assignments/assignment',
-        loadChildren: './slides/assignments/assignment/assignment-slide.module#AssignmentSlideModule',
+        loadChildren: () =>
+            import('./assignments/assignment/assignment-slide.module').then(m => m.AssignmentSlideModule),
         verboseName: 'Election',
         elementIdentifiers: ['name', 'id'],
         canBeMappedToModel: true
@@ -118,7 +128,7 @@ export const allSlides: SlideManifest[] = [
     {
         slide: 'assignments/poll',
         path: 'assignments/poll',
-        loadChildren: './slides/assignments/poll/poll-slide.module#PollSlideModule',
+        loadChildren: () => import('./assignments/poll/poll-slide.module').then(m => m.PollSlideModule),
         verboseName: 'Poll',
         elementIdentifiers: ['name', 'assignment_id', 'poll_id'],
         canBeMappedToModel: false
@@ -126,7 +136,7 @@ export const allSlides: SlideManifest[] = [
     {
         slide: 'mediafiles/mediafile',
         path: 'mediafiles/mediafile',
-        loadChildren: './slides/mediafiles/mediafile/mediafile-slide.module#MediafileSlideModule',
+        loadChildren: () => import('./mediafiles/mediafile/mediafile-slide.module').then(m => m.MediafileSlideModule),
         verboseName: 'File',
         elementIdentifiers: ['name', 'id'],
         canBeMappedToModel: true
