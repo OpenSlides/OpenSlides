@@ -102,7 +102,8 @@ export class PollFormComponent<T extends ViewBasePoll> extends BaseViewComponent
      * Sets the observable for groups.
      */
     public ngOnInit(): void {
-        this.groupObservable = this.groupRepo.getViewModelListObservable();
+        // without default group since default cant ever vote
+        this.groupObservable = this.groupRepo.getViewModelListObservableWithoutDefaultGroup();
 
         if (this.data) {
             if (this.data instanceof ViewAssignmentPoll) {

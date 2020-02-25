@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { HttpService } from 'app/core/core-services/http.service';
 import { RelationManagerService } from 'app/core/core-services/relation-manager.service';
@@ -193,5 +195,13 @@ export class GroupRepositoryService extends BaseRepository<ViewGroup, Group, Gro
                 app.permissions = see.concat(manage.concat(others));
             }
         });
+    }
+
+    /**
+     * Returns an Observable for all groups except the default group.
+     */
+    public getViewModelListObservableWithoutDefaultGroup(): Observable<ViewGroup[]> {
+        // since groups are sorted by id, default is always the first entry
+        return this.getViewModelListObservable().pipe(map(groups => groups.slice(1)));
     }
 }
