@@ -78,7 +78,12 @@ class MotionsAppConfig(AppConfig):
 
         # Register required_users
         required_user.add_collection_string(
-            self.get_model("Motion").get_collection_string(), required_users
+            self.get_model("Motion").get_collection_string(), required_users_motions
+        )
+
+        required_user.add_collection_string(
+            self.get_model("MotionOption").get_collection_string(),
+            required_users_options,
         )
 
     def get_config_variables(self):
@@ -107,7 +112,7 @@ class MotionsAppConfig(AppConfig):
             yield self.get_model(model_name)
 
 
-async def required_users(element: Dict[str, Any]) -> Set[int]:
+async def required_users_motions(element: Dict[str, Any]) -> Set[int]:
     """
     Returns all user ids that are displayed as as submitter or supporter in
     any motion if request_user can see motions. This function may return an
@@ -118,3 +123,10 @@ async def required_users(element: Dict[str, Any]) -> Set[int]:
     )
     submitters_supporters.update(element["supporters_id"])
     return submitters_supporters
+
+
+async def required_users_options(element: Dict[str, Any]) -> Set[int]:
+    """
+    Returns all user ids that have voted on an option and are therefore required for the single votes table.
+    """
+    return element["voted_id"]
