@@ -96,8 +96,8 @@ class Migration(migrations.Migration):
             name="onehundred_percent_base",
             field=models.CharField(
                 choices=[
-                    ("YN", "Yes/No per candidate"),
-                    ("YNA", "Yes/No/Abstain per candidate"),
+                    ("YN", "Yes/No"),
+                    ("YNA", "Yes/No/Abstain"),
                     ("valid", "All valid ballots"),
                     ("cast", "All casted ballots"),
                     ("disabled", "Disabled (no percents)"),

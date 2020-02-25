@@ -8,7 +8,7 @@ import { OperatorService } from 'app/core/core-services/operator.service';
 import { AssignmentPollRepositoryService } from 'app/core/repositories/assignments/assignment-poll-repository.service';
 import { AssignmentVoteRepositoryService } from 'app/core/repositories/assignments/assignment-vote-repository.service';
 import { VotingService } from 'app/core/ui-services/voting.service';
-import { AssignmentPollMethods } from 'app/shared/models/assignments/assignment-poll';
+import { AssignmentPollMethod } from 'app/shared/models/assignments/assignment-poll';
 import { PollType } from 'app/shared/models/poll/base-poll';
 import { BasePollVoteComponent } from 'app/site/polls/components/base-poll-vote.component';
 import { ViewAssignmentPoll } from '../../models/view-assignment-poll';
@@ -28,7 +28,7 @@ interface VoteActions {
     styleUrls: ['./assignment-poll-vote.component.scss']
 })
 export class AssignmentPollVoteComponent extends BasePollVoteComponent<ViewAssignmentPoll> implements OnInit {
-    public pollMethods = AssignmentPollMethods;
+    public AssignmentPollMethod = AssignmentPollMethod;
     public PollType = PollType;
     public voteActions: VoteActions[] = [];
 
@@ -70,7 +70,7 @@ export class AssignmentPollVoteComponent extends BasePollVoteComponent<ViewAssig
             label: 'Yes'
         });
 
-        if (this.poll.pollmethod !== AssignmentPollMethods.Votes) {
+        if (this.poll.pollmethod !== AssignmentPollMethod.Votes) {
             this.voteActions.push({
                 vote: 'N',
                 css: 'voted-no',
@@ -79,7 +79,7 @@ export class AssignmentPollVoteComponent extends BasePollVoteComponent<ViewAssig
             });
         }
 
-        if (this.poll.pollmethod === AssignmentPollMethods.YNA) {
+        if (this.poll.pollmethod === AssignmentPollMethod.YNA) {
             this.voteActions.push({
                 vote: 'A',
                 css: 'voted-abstain',
@@ -101,7 +101,7 @@ export class AssignmentPollVoteComponent extends BasePollVoteComponent<ViewAssig
 
             for (const option of this.poll.options) {
                 let curr_vote = filtered.find(vote => vote.option.id === option.id);
-                if (this.poll.pollmethod === AssignmentPollMethods.Votes && curr_vote) {
+                if (this.poll.pollmethod === AssignmentPollMethod.Votes && curr_vote) {
                     if (curr_vote.value !== 'Y') {
                         this.currentVotes.global = curr_vote.valueVerbose;
                         curr_vote = null;
@@ -120,7 +120,7 @@ export class AssignmentPollVoteComponent extends BasePollVoteComponent<ViewAssig
 
     public saveSingleVote(optionId: number, vote: 'Y' | 'N' | 'A'): void {
         let requestData;
-        if (this.poll.pollmethod === AssignmentPollMethods.Votes) {
+        if (this.poll.pollmethod === AssignmentPollMethod.Votes) {
             const pollOptionIds = this.getPollOptionIds();
             requestData = pollOptionIds.reduce((o, n) => {
                 if ((n === optionId && vote === 'Y') !== (this.currentVotes[n] === 'Yes')) {

@@ -16,7 +16,7 @@ export const GeneralValueVerbose = {
     votesabstain: 'Votes abstain'
 };
 
-export abstract class BaseVote<T> extends BaseDecimalModel<T> {
+export abstract class BaseVote<T = any> extends BaseDecimalModel<T> {
     public weight: number;
     public value: VoteValue;
     public option_id: number;

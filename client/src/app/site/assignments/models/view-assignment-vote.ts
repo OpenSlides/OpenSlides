@@ -1,19 +1,9 @@
 import { AssignmentVote } from 'app/shared/models/assignments/assignment-vote';
-import { ViewUser } from 'app/site/users/models/view-user';
-import { BaseViewModel } from '../../base/base-view-model';
-import { ViewAssignmentOption } from './view-assignment-option';
+import { ViewBaseVote } from 'app/site/polls/models/view-base-vote';
 
-export class ViewAssignmentVote extends BaseViewModel<AssignmentVote> {
-    public get vote(): AssignmentVote {
-        return this._model;
-    }
+export class ViewAssignmentVote extends ViewBaseVote<AssignmentVote> {
     public static COLLECTIONSTRING = AssignmentVote.COLLECTIONSTRING;
     protected _collectionString = AssignmentVote.COLLECTIONSTRING;
 }
 
-interface TIAssignmentVoteRelations {
-    user: ViewUser;
-    option: ViewAssignmentOption;
-}
-
-export interface ViewAssignmentVote extends AssignmentVote, TIAssignmentVoteRelations {}
+export interface ViewAssignmentVote extends AssignmentVote {}

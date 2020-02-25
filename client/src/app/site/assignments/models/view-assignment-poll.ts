@@ -1,10 +1,14 @@
 import { BehaviorSubject } from 'rxjs';
 
 import { ChartData } from 'app/shared/components/charts/charts.component';
-import { AssignmentPoll } from 'app/shared/models/assignments/assignment-poll';
+import {
+    AssignmentPoll,
+    AssignmentPollMethod,
+    AssignmentPollPercentBase
+} from 'app/shared/models/assignments/assignment-poll';
 import { BaseViewModel } from 'app/site/base/base-view-model';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
-import { PollTableData, ViewBasePoll, VotingResult } from 'app/site/polls/models/view-base-poll';
+import { PollClassType, PollTableData, ViewBasePoll, VotingResult } from 'app/site/polls/models/view-base-poll';
 import { ViewAssignment } from './view-assignment';
 import { ViewAssignmentOption } from './view-assignment-option';
 
@@ -12,21 +16,35 @@ export interface AssignmentPollTitleInformation {
     title: string;
 }
 
-export const AssignmentPollMethodsVerbose = {
+export const AssignmentPollMethodVerbose = {
     votes: 'Yes per candidate',
     YN: 'Yes/No per candidate',
     YNA: 'Yes/No/Abstain per candidate'
 };
 
-export class ViewAssignmentPoll extends ViewBasePoll<AssignmentPoll> implements AssignmentPollTitleInformation {
+export const AssignmentPollPercentBaseVerbose = {
+    YN: 'Yes/No per candidate',
+    YNA: 'Yes/No/Abstain per candidate',
+    votes: 'Sum of votes inclusive global ones',
+    valid: 'All valid ballots',
+    cast: 'All casted ballots',
+    disabled: 'Disabled (no percents)'
+};
+
+export class ViewAssignmentPoll extends ViewBasePoll<AssignmentPoll, AssignmentPollMethod, AssignmentPollPercentBase>
+    implements AssignmentPollTitleInformation {
     public static COLLECTIONSTRING = AssignmentPoll.COLLECTIONSTRING;
     protected _collectionString = AssignmentPoll.COLLECTIONSTRING;
 
     public readonly tableChartData: Map<string, BehaviorSubject<ChartData>> = new Map();
-    public readonly pollClassType: 'assignment' | 'motion' = 'assignment';
+    public readonly pollClassType = PollClassType.Assignment;
 
     public get pollmethodVerbose(): string {
-        return AssignmentPollMethodsVerbose[this.pollmethod];
+        return AssignmentPollMethodVerbose[this.pollmethod];
+    }
+
+    public get percentBaseVerbose(): string {
+        return AssignmentPollPercentBaseVerbose[this.onehundred_percent_base];
     }
 
     public getContentObject(): BaseViewModel {

@@ -8,6 +8,7 @@ import { PblColumnDefinition } from '@pebula/ngrid';
 
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { MotionPollRepositoryService } from 'app/core/repositories/motions/motion-poll-repository.service';
+import { MotionVoteRepositoryService } from 'app/core/repositories/motions/motion-vote-repository.service';
 import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ChartType } from 'app/shared/components/charts/charts.component';
@@ -60,12 +61,13 @@ export class MotionPollDetailComponent extends BasePollDetailComponent<ViewMotio
         pollDialog: MotionPollDialogService,
         pollService: PollService,
         private operator: OperatorService,
-        private router: Router
+        private router: Router,
+        votesRepo: MotionVoteRepositoryService
     ) {
-        super(title, translate, matSnackbar, repo, route, groupRepo, prompt, pollDialog, pollService);
+        super(title, translate, matSnackbar, repo, route, groupRepo, prompt, pollDialog, pollService, votesRepo);
     }
 
-    protected onPollWithOptionsLoaded(): void {
+    protected createVotesData(): void {
         this.setVotesData(this.poll.options[0].votes);
     }
 

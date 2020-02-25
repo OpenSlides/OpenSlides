@@ -103,7 +103,7 @@
                         <b *ngIf="!vote.user">{{ 'Anonymous' | translate }}</b>
                     </div>
                     <!-- Y/N/(A) -->
-                    <ng-container *ngIf="poll.pollmethod !== AssignmentPollMethods.Votes">
+                    <ng-container *ngIf="poll.pollmethod !== AssignmentPollMethod.Votes">
                         <ng-container *ngFor="let option of poll.options">
                             <div
                                 *pblNgridCellDef="'votes-' + option.user_id; row as vote"
@@ -116,7 +116,7 @@
                         </ng-container>
                     </ng-container>
                     <!-- Votes method -->
-                    <ng-container *ngIf="poll.pollmethod === AssignmentPollMethods.Votes">
+                    <ng-container *ngIf="poll.pollmethod === AssignmentPollMethod.Votes">
                         <div *pblNgridCellDef="'votes'; row as vote">
                             <div *ngFor="let candidate of vote.votes">{{ candidate }}</div>
                         </div>

@@ -1,4 +1,4 @@
-<os-poll-form [data]="pollData" [pollMethods]="assignmentPollMethods" #pollForm></os-poll-form>
+<os-poll-form [data]="pollData" [pollMethods]="AssignmentPollMethodVerbose" [percentBases]="AssignmentPollPercentBaseVerbose" #pollForm></os-poll-form>
 
 <!-- Analog voting -->
 <ng-container *ngIf="pollForm.contentForm.get('type').value === 'analog'">

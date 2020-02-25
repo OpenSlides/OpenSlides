@@ -8,7 +8,7 @@ import { OperatorService } from 'app/core/core-services/operator.service';
 import { MotionPollRepositoryService } from 'app/core/repositories/motions/motion-poll-repository.service';
 import { MotionVoteRepositoryService } from 'app/core/repositories/motions/motion-vote-repository.service';
 import { VotingService } from 'app/core/ui-services/voting.service';
-import { MotionPollMethods } from 'app/shared/models/motions/motion-poll';
+import { MotionPollMethod } from 'app/shared/models/motions/motion-poll';
 import { ViewMotionPoll } from 'app/site/motions/models/view-motion-poll';
 import { ViewMotionVote } from 'app/site/motions/models/view-motion-vote';
 import { BasePollVoteComponent } from 'app/site/polls/components/base-poll-vote.component';
@@ -34,7 +34,7 @@ export class MotionPollVoteComponent extends BasePollVoteComponent<ViewMotionPol
      */
     public currentVote: ViewMotionVote;
 
-    public pollMethods = MotionPollMethods;
+    public MotionPollMethod = MotionPollMethod;
 
     private votes: ViewMotionVote[];
 
