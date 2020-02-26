@@ -267,6 +267,7 @@ class AssignmentOptionManager(BaseManager):
 
 class AssignmentOption(RESTModelMixin, BaseOption):
     access_permissions = AssignmentOptionAccessPermissions()
+    can_see_permission = "assignments.can_see"
     objects = AssignmentOptionManager()
     vote_class = AssignmentVote
 
@@ -307,6 +308,7 @@ class AssignmentPollManager(BaseManager):
 
 class AssignmentPoll(RESTModelMixin, BasePoll):
     access_permissions = AssignmentPollAccessPermissions()
+    can_see_permission = "assignments.can_see"
     objects = AssignmentPollManager()
 
     option_class = AssignmentOption

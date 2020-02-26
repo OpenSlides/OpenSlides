@@ -902,6 +902,7 @@ class MotionOptionManager(BaseManager):
 
 class MotionOption(RESTModelMixin, BaseOption):
     access_permissions = MotionOptionAccessPermissions()
+    can_see_permission = "motions.can_see"
     objects = MotionOptionManager()
     vote_class = MotionVote
 
