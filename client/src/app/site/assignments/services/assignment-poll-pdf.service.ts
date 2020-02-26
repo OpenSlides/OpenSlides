@@ -7,7 +7,7 @@ import { PdfDocumentService } from 'app/core/pdf-services/pdf-document.service';
 import { AssignmentRepositoryService } from 'app/core/repositories/assignments/assignment-repository.service';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
-import { AssignmentPollMethods } from 'app/shared/models/assignments/assignment-poll';
+import { AssignmentPollMethod } from 'app/shared/models/assignments/assignment-poll';
 import { ViewAssignmentPoll } from '../models/view-assignment-poll';
 
 /**
@@ -162,7 +162,7 @@ export class AssignmentPollPdfService extends PollPdfService {
         return resultObject;
     }
 
-    private createYNBallotEntry(option: string, method: AssignmentPollMethods): object {
+    private createYNBallotEntry(option: string, method: AssignmentPollMethod): object {
         const choices = method === 'YNA' ? ['Yes', 'No', 'Abstain'] : ['Yes', 'No'];
         const columnstack = choices.map(choice => {
             return {

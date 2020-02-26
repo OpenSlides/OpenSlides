@@ -8,11 +8,12 @@ import { PblColumnDefinition } from '@pebula/ngrid';
 
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { AssignmentPollRepositoryService } from 'app/core/repositories/assignments/assignment-poll-repository.service';
+import { AssignmentVoteRepositoryService } from 'app/core/repositories/assignments/assignment-vote-repository.service';
 import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ViewportService } from 'app/core/ui-services/viewport.service';
 import { ChartType } from 'app/shared/components/charts/charts.component';
-import { AssignmentPollMethods } from 'app/shared/models/assignments/assignment-poll';
+import { AssignmentPollMethod } from 'app/shared/models/assignments/assignment-poll';
 import { BasePollDetailComponent } from 'app/site/polls/components/base-poll-detail.component';
 import { VotingResult } from 'app/site/polls/models/view-base-poll';
 import { PollService } from 'app/site/polls/services/poll.service';
@@ -26,7 +27,7 @@ import { ViewAssignmentPoll } from '../../models/view-assignment-poll';
     encapsulation: ViewEncapsulation.None
 })
 export class AssignmentPollDetailComponent extends BasePollDetailComponent<ViewAssignmentPoll> {
-    public AssignmentPollMethods = AssignmentPollMethods;
+    public AssignmentPollMethod = AssignmentPollMethod;
 
     public columnDefinitionSingleVotes: PblColumnDefinition[];
 
@@ -41,7 +42,7 @@ export class AssignmentPollDetailComponent extends BasePollDetailComponent<ViewA
     }
 
     public get isVotedPoll(): boolean {
-        return this.poll.pollmethod === AssignmentPollMethods.Votes;
+        return this.poll.pollmethod === AssignmentPollMethod.Votes;
     }
 
     private _chartType: ChartType = 'horizontalBar';
@@ -56,17 +57,18 @@ export class AssignmentPollDetailComponent extends BasePollDetailComponent<ViewA
         prompt: PromptService,
         pollDialog: AssignmentPollDialogService,
         pollService: PollService,
+        votesRepo: AssignmentVoteRepositoryService,
         private operator: OperatorService,
         private viewport: ViewportService
     ) {
-        super(title, translate, matSnackbar, repo, route, groupRepo, prompt, pollDialog, pollService);
+        super(title, translate, matSnackbar, repo, route, groupRepo, prompt, pollDialog, pollService, votesRepo);
     }
 
-    public onPollWithOptionsLoaded(): void {
+    protected createVotesData(): void {
         const votes = {};
         let i = -1;
 
-        this.columnDefinitionSingleVotes = [
+        const definitions: PblColumnDefinition[] = [
             {
                 prop: 'user',
                 label: 'Participant',
@@ -75,7 +77,7 @@ export class AssignmentPollDetailComponent extends BasePollDetailComponent<ViewA
             }
         ];
         if (this.isVotedPoll) {
-            this.columnDefinitionSingleVotes.push(this.getVoteColumnDefinition('votes', 'Votes'));
+            definitions.push(this.getVoteColumnDefinition('votes', 'Votes'));
         }
 
         /**
@@ -90,9 +92,7 @@ export class AssignmentPollDetailComponent extends BasePollDetailComponent<ViewA
          */
         for (const option of this.poll.options) {
             if (!this.isVotedPoll) {
-                this.columnDefinitionSingleVotes.push(
-                    this.getVoteColumnDefinition('votes-' + option.user_id, option.user.getFullName())
-                );
+                definitions.push(this.getVoteColumnDefinition('votes-' + option.user_id, option.user.getFullName()));
             }
 
             for (const vote of option.votes) {
@@ -125,6 +125,7 @@ export class AssignmentPollDetailComponent extends BasePollDetailComponent<ViewA
 
         this.setVotesData(Object.values(votes));
         this.candidatesLabels = this.pollService.getChartLabels(this.poll);
+        this.columnDefinitionSingleVotes = definitions;
         this.isReady = true;
     }
 
@@ -151,11 +152,11 @@ export class AssignmentPollDetailComponent extends BasePollDetailComponent<ViewA
     }
 
     public voteFitsMethod(result: VotingResult): boolean {
-        if (this.poll.pollmethod === AssignmentPollMethods.Votes) {
+        if (this.poll.pollmethod === AssignmentPollMethod.Votes) {
             if (result.vote === 'abstain' || result.vote === 'no') {
                 return false;
             }
-        } else if (this.poll.pollmethod === AssignmentPollMethods.YN) {
+        } else if (this.poll.pollmethod === AssignmentPollMethod.YN) {
             if (result.vote === 'abstain') {
                 return false;
             }

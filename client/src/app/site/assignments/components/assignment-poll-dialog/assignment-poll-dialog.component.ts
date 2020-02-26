@@ -6,9 +6,12 @@ import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { AssignmentPollMethods } from 'app/shared/models/assignments/assignment-poll';
+import { AssignmentPollMethod } from 'app/shared/models/assignments/assignment-poll';
 import { GeneralValueVerbose, VoteValue, VoteValueVerbose } from 'app/shared/models/poll/base-vote';
-import { AssignmentPollMethodsVerbose } from 'app/site/assignments/models/view-assignment-poll';
+import {
+    AssignmentPollMethodVerbose,
+    AssignmentPollPercentBaseVerbose
+} from 'app/site/assignments/models/view-assignment-poll';
 import { BasePollDialogComponent } from 'app/site/polls/components/base-poll-dialog.component';
 import { PollFormComponent } from 'app/site/polls/components/poll-form/poll-form.component';
 import { ViewUser } from 'app/site/users/models/view-user';
@@ -50,7 +53,8 @@ export class AssignmentPollDialogComponent extends BasePollDialogComponent<ViewA
     public voteValueVerbose = VoteValueVerbose;
     public generalValueVerbose = GeneralValueVerbose;
 
-    public assignmentPollMethods = AssignmentPollMethodsVerbose;
+    public AssignmentPollMethodVerbose = AssignmentPollMethodVerbose;
+    public AssignmentPollPercentBaseVerbose = AssignmentPollPercentBaseVerbose;
 
     public options: OptionsObject;
 
@@ -92,10 +96,10 @@ export class AssignmentPollDialogComponent extends BasePollDialogComponent<ViewA
     private setAnalogPollValues(): void {
         const pollmethod = this.pollForm.contentForm.get('pollmethod').value;
         this.analogPollValues = ['Y'];
-        if (pollmethod !== AssignmentPollMethods.Votes) {
+        if (pollmethod !== AssignmentPollMethod.Votes) {
             this.analogPollValues.push('N');
         }
-        if (pollmethod === AssignmentPollMethods.YNA) {
+        if (pollmethod === AssignmentPollMethod.YNA) {
             this.analogPollValues.push('A');
         }
     }
@@ -110,10 +114,10 @@ export class AssignmentPollDialogComponent extends BasePollDialogComponent<ViewA
         for (const option of data.options) {
             const votes: any = {};
             votes.Y = option.yes;
-            if (data.pollmethod !== AssignmentPollMethods.Votes) {
+            if (data.pollmethod !== AssignmentPollMethod.Votes) {
                 votes.N = option.no;
             }
-            if (data.pollmethod === AssignmentPollMethods.YNA) {
+            if (data.pollmethod === AssignmentPollMethod.YNA) {
                 votes.A = option.abstain;
             }
             update.options[option.user_id] = votes;

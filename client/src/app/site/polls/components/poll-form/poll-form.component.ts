@@ -44,6 +44,12 @@ export class PollFormComponent<T extends ViewBasePoll> extends BaseViewComponent
     @Input()
     public pollMethods: { [key: string]: string };
 
+    /**
+     * The different percent bases for this poll.
+     */
+    @Input()
+    public percentBases: { [key: string]: string };
+
     @Input()
     public data: Partial<T>;
 
@@ -51,11 +57,6 @@ export class PollFormComponent<T extends ViewBasePoll> extends BaseViewComponent
      * The different types the poll can accept.
      */
     public pollTypes = PollTypeVerbose;
-
-    /**
-     * The percent base for the poll.
-     */
-    public percentBases: { [key: string]: string } = PercentBaseVerbose;
 
     /**
      * The majority methods for the poll.
@@ -232,5 +233,12 @@ export class PollFormComponent<T extends ViewBasePoll> extends BaseViewComponent
             global_no: [false],
             global_abstain: [false]
         });
+    }
+
+    /**
+     * compare function used with the KeyValuePipe to display the percent bases in original order
+     */
+    public keepEntryOrder(): number {
+        return 0;
     }
 }

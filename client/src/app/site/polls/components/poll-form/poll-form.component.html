@@ -65,7 +65,7 @@
                 formControlName="onehundred_percent_base"
                 required
             >
-                <ng-container *ngFor="let option of percentBases | keyvalue">
+                <ng-container *ngFor="let option of percentBases | keyvalue: keepEntryOrder">
                     <mat-option [value]="option.key">{{ option.value | translate }}</mat-option>
                 </ng-container>
             </mat-select>

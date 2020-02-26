@@ -155,8 +155,8 @@ class BasePoll(models.Model):
     PERCENT_BASE_CAST = "cast"
     PERCENT_BASE_DISABLED = "disabled"
     PERCENT_BASES: Iterable[Tuple[str, str]] = (
-        (PERCENT_BASE_YN, "Yes/No per candidate"),
-        (PERCENT_BASE_YNA, "Yes/No/Abstain per candidate"),
+        (PERCENT_BASE_YN, "Yes/No"),
+        (PERCENT_BASE_YNA, "Yes/No/Abstain"),
         (PERCENT_BASE_VALID, "All valid ballots"),
         (PERCENT_BASE_CAST, "All casted ballots"),
         (PERCENT_BASE_DISABLED, "Disabled (no percents)"),
