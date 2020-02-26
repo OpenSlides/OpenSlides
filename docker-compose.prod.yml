@@ -1,0 +1,11 @@
+version: '3'
+services:
+    datastore-writer:
+        build: https://github.com/OpenSlides/openslides-datastore-service.git#:writer
+        image: openslides-datastore-writer
+    client:
+        build: https://github.com/OpenSlides/openslides-client.git
+        image: openslides-client
+    haproxy:
+        build: ./haproxy
+        image: openslides-haproxy

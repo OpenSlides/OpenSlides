@@ -1,0 +1,14 @@
+version: '3'
+services:
+    datastore-writer:
+        image: openslides-datastore-writer-dev
+        volumes:
+            - ./openslides-datastore-service/writer/writer:/app/writer
+    haproxy:
+        image: openslides-haproxy-dev
+        volumes:
+            - ./haproxy/src:/usr/local/etc/haproxy
+    client:
+        image: openslides-client-dev
+        volumes:
+            - ./openslides-client/client/src:/app/src
