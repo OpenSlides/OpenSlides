@@ -195,6 +195,12 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
     public showListOfSpeakers = true;
 
     /**
+     * To optionally hide the menu slot
+     */
+    @Input()
+    public showMenu = true;
+
+    /**
      * Fix value for the height of the rows in the virtual-scroll-list.
      */
     @Input()
@@ -347,7 +353,7 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
             hidden.push('selection');
         }
 
-        if (!this.alwaysShowMenu && !this.isMobile) {
+        if ((!this.alwaysShowMenu && !this.isMobile) || !this.showMenu) {
             hidden.push('menu');
         }
 
