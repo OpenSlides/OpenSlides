@@ -1,16 +1,12 @@
 /* Diffbox */
 .diff-box {
     position: relative;
-    background-color: #f9f9f9;
-    border: solid 1px #eee;
     border-radius: 3px;
     margin-bottom: 0;
     padding-top: 0;
     padding-right: 40px;
 
     &:hover {
-        background-color: #f0f0f0;
-
         .action-row {
             opacity: 1;
         }
@@ -49,8 +45,6 @@
 }
 
 .change-recommendation-overview {
-    background-color: #eee;
-    border: solid 1px #ddd;
     border-radius: 3px;
     margin-bottom: 15px;
     padding: 5px 10px;

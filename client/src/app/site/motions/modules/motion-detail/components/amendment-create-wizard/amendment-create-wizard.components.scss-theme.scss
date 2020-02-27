@@ -1,0 +1,17 @@
+@import '~@angular/material/theming';
+
+@mixin os-amendment-create-wizard-style($theme) {
+    $background: map-get($theme, background);
+
+    .paragraph-row {
+        &:hover {
+            background-color: mat-color($background, background);
+        }
+        &.active {
+            background-color: mat-color($background, selected-button);
+            &:hover {
+                background-color: mat-color($background, selected-button);
+            }
+        }
+    }
+}

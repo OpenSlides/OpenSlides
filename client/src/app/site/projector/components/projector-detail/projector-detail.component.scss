@@ -7,8 +7,6 @@
 }
 
 .column-left {
-    color: black;
-
     /* Do not let the a tag ruin the projector */
     a {
         color: inherit;
@@ -17,8 +15,6 @@
 }
 
 .control-group {
-    color: rgba(0, 0, 0, 0.5);
-
     .button-size {
         padding-left: 5px;
         display: inline-block;

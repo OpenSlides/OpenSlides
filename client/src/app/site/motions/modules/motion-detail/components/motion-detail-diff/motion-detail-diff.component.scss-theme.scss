@@ -1,0 +1,15 @@
+@import '~@angular/material/theming';
+
+@mixin os-motion-detail-diff-style($theme) {
+    $background: map-get($theme, background);
+
+    .change-recommendation-overview,
+    .diff-box {
+        background-color: mat-color($background, background);
+        border: 1px solid mat-color($background, selected-button);
+    }
+
+    .diff-box:hover {
+        background-color: mat-color($background, selected-button);
+    }
+}
