@@ -17,6 +17,7 @@ export enum PollClassType {
 export interface PollTableData {
     votingOption: string;
     votingOptionSubtitle?: string;
+    class?: string;
     value: VotingResult[];
 }
 
@@ -162,10 +163,10 @@ export abstract class ViewBasePoll<
     public abstract get percentBaseVerbose(): string;
 
     public get showAbstainPercent(): boolean {
-        return this.onehundred_percent_base === PercentBase.YNA;
+        return this.poll.onehundred_percent_base === PercentBase.YNA;
     }
 
-    public abstract readonly pollClassType: PollClassType;
+    public abstract readonly pollClassType: 'motion' | 'assignment';
 
     public canBeVotedFor: () => boolean;
 

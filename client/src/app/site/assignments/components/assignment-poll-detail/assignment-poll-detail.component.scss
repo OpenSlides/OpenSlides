@@ -1,72 +1,68 @@
 @import '~assets/styles/variables.scss';
 @import '~assets/styles/poll-colors.scss';
 
-%assignment-result-wrapper {
+.assignment-result-wrapper {
     margin-top: 2em;
     display: grid;
     grid-gap: 10px;
-}
 
-.result-wrapper-bar-chart {
-    @extend %assignment-result-wrapper;
-    grid-template-areas:
-        'results'
-        'chart'
-        'names';
-}
+    .assignment-result-table {
+        border-collapse: collapse;
 
-.result-wrapper-pie-chart {
-    @extend %assignment-result-wrapper;
-    grid-template-areas:
-        'chart'
-        'results'
-        'names';
-}
+        th {
+            text-align: left;
+            font-weight: initial;
+        }
 
-@include desktop {
-    .result-wrapper-pie-chart {
-        grid-template-areas:
-            'results chart'
-            'names names';
-        grid-template-columns: 2fr 1fr;
+        tr {
+            height: 48px;
+        }
+
+        tr:last-child {
+            border-bottom: none;
+        }
+
+        tr.sums {
+            border-bottom: none;
+            td {
+                padding-top: 1em;
+                padding-bottom: 1em;
+            }
+        }
+
+        .user + .sums {
+            td {
+                padding-top: 4em;
+            }
+        }
+    }
+
+    .pie-chart {
+        margin-left: auto;
+        margin-right: auto;
+        width: 50%;
     }
 }
 
-.assignment-result-table {
-    grid-area: results;
-    th {
-        text-align: left;
-        font-weight: initial;
-    }
-
-    tr {
-        height: 48px;
-    }
-
-    tr:last-child {
-        border-bottom: none;
-    }
-
-    .single-result {
-        display: flex;
-    }
-}
-
-.assignment-result-chart {
-    grid-area: chart;
-}
-
-.pie-chart {
-    max-width: 300px;
-    margin-left: auto;
-    margin-right: auto;
+.single-vote-result + .single-vote-result {
+    margin-top: 1em;
 }
 
 .named-result-table {
-    grid-area: names;
     .mat-form-field {
         font-size: 14px;
         width: 100%;
+    }
+
+    .single-votes-table {
+        display: block;
+        height: 500px;
+    }
+
+    .vote-field {
+        text-align: center;
+        width: 100%;
+        padding-right: 12px;
     }
 }
 
@@ -74,22 +70,6 @@
     display: grid;
     text-align: right;
     padding-top: 20px;
-}
-
-.single-votes-table {
-    display: block;
-    height: 500px;
-}
-
-.openslides-theme .pbl-ngrid-row:hover {
-    background-color: #f9f9f9;
-}
-
-.openslides-theme os-list-view-table os-sort-filter-bar .custom-table-header {
-    &,
-    .action-buttons .input-container input {
-        background: white;
-    }
 }
 
 .voted-yes {
@@ -102,6 +82,18 @@
 
 .voted-abstain {
     color: $votes-abstain-color;
+}
+
+// theme
+.openslides-theme .pbl-ngrid-row:hover {
+    background-color: #f9f9f9;
+}
+
+.openslides-theme os-list-view-table os-sort-filter-bar .custom-table-header {
+    &,
+    .action-buttons .input-container input {
+        background: white;
+    }
 }
 
 .openslides-theme .pbl-ngrid-no-data {
@@ -122,12 +114,4 @@
         height: 100%;
         border-right: 1px solid #e0e0e0;
     }
-}
-
-.vote-field {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    padding-right: 12px;
 }
