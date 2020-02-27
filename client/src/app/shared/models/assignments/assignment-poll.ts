@@ -38,6 +38,18 @@ export class AssignmentPoll extends BasePoll<
     public global_abstain: boolean;
     public description: string;
 
+    public get isMethodY(): boolean {
+        return this.pollmethod === AssignmentPollMethod.Votes;
+    }
+
+    public get isMethodYN(): boolean {
+        return this.pollmethod === AssignmentPollMethod.YN;
+    }
+
+    public get isMethodYNA(): boolean {
+        return this.pollmethod === AssignmentPollMethod.YNA;
+    }
+
     public get pollmethodFields(): CalculablePollKey[] {
         if (this.pollmethod === AssignmentPollMethod.YN) {
             return ['yes', 'no'];

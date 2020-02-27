@@ -16,20 +16,29 @@
 
 <!-- Detailview for poll -->
 <ng-template #viewTemplate>
-    <ng-container *ngIf="isReady">
+    <div *ngIf="isReady">
         <h1>{{ poll.title }}</h1>
         <span *ngIf="poll.type !== 'analog'">{{ poll.typeVerbose | translate }}</span>
 
         <div *ngIf="poll.stateHasVotes">
-            <div [class]="chartType === 'horizontalBar' ? 'result-wrapper-bar-chart' : 'result-wrapper-pie-chart'">
+            <div class="assignment-result-wrapper">
                 <!-- Result Table -->
                 <table class="assignment-result-table">
                     <tbody>
                         <tr>
                             <th translate>Candidates</th>
-                            <th translate>Votes</th>
+                            <th>
+                                <span *ngIf="!poll.isMethodY" translate>
+                                    Yes
+                                </span>
+                                <span *ngIf="poll.isMethodY" translate>
+                                    Votes
+                                </span>
+                            </th>
+                            <th translate *ngIf="!poll.isMethodY">No</th>
+                            <th translate *ngIf="poll.isMethodYNA">Abstain</th>
                         </tr>
-                        <tr *ngFor="let row of poll.tableData">
+                        <tr *ngFor="let row of poll.tableData" [class]="row.class">
                             <td>
                                 <span>
                                     {{ row.votingOption | pollKeyVerbose | translate }}
@@ -39,23 +48,14 @@
                                     {{ row.votingOptionSubtitle }}
                                 </span>
                             </td>
-                            <td>
-                                <div *ngFor="let vote of row.value">
-                                    <div class="single-result" *ngIf="voteFitsMethod(vote)">
-                                        <os-icon-container *ngIf="vote.icon" [icon]="vote.icon">
-                                            {{ vote.vote | pollKeyVerbose | translate }}
-                                        </os-icon-container>
-                                        <span *ngIf="!vote.icon">
-                                            {{ vote.vote | pollKeyVerbose | translate }}
+                            <td *ngFor="let vote of row.value">
+                                <div class="single-result" *ngIf="vote && voteFitsMethod(vote)">
+                                    <span>
+                                        {{ vote.amount | parsePollNumber }}
+                                        <span *ngIf="vote.showPercent">
+                                            {{ vote.amount | pollPercentBase: poll }}
                                         </span>
-
-                                        <span>
-                                            {{ vote.amount | parsePollNumber }}
-                                            <span *ngIf="vote.showPercent">
-                                                {{ vote.amount | pollPercentBase: poll }}
-                                            </span>
-                                        </span>
-                                    </div>
+                                    </span>
                                 </div>
                             </td>
                         </tr>
@@ -71,12 +71,12 @@
                     [labels]="candidatesLabels"
                     [data]="chartDataSubject"
                     [hasPadding]="false"
-                    [legendPosition]="isVotedPoll ? 'right' : 'top'"
+                    legendPosition="right"
                 ></os-charts>
             </div>
 
             <!-- Single Votes Table -->
-            <ng-container class="named-result-table" *ngIf="poll.type === 'named'">
+            <div class="named-result-table" *ngIf="poll.type === 'named'">
                 <h3>{{ 'Single votes' | translate }}</h3>
                 <os-list-view-table
                     *ngIf="votesDataObservable"
@@ -85,47 +85,41 @@
                     [filterProps]="filterProps"
                     [allowProjector]="false"
                     [fullScreen]="false"
-                    [vScrollFixed]="isVotedPoll ? -1 : 60"
+                    [vScrollFixed]="-1"
                     listStorageKey="assignment-poll-vote"
+                    [showListOfSpeakers]="false"
+                    [showMenu]="false"
                     [cssClasses]="{ 'single-votes-table': true }"
                 >
                     <!-- Header -->
                     <div *pblNgridHeaderCellDef="'user'; col as col">
                         {{ col.label | translate }}
                     </div>
-                    <div *pblNgridHeaderCellDef="'*'; col as col">
+                    <div *pblNgridHeaderCellDef="'votes'; col as col">
                         {{ col.label | translate }}
                     </div>
 
                     <!-- Content -->
                     <div *pblNgridCellDef="'user'; row as vote">
-                        <b *ngIf="vote.user">{{ vote.user.getFullName() }}</b>
-                        <b *ngIf="!vote.user">{{ 'Anonymous' | translate }}</b>
-                    </div>
-                    <!-- Y/N/(A) -->
-                    <ng-container *ngIf="poll.pollmethod !== AssignmentPollMethod.Votes">
-                        <ng-container *ngFor="let option of poll.options">
-                            <div
-                                *pblNgridCellDef="'votes-' + option.user_id; row as vote"
-                                [ngClass]="voteOptionStyle[vote.votes[option.user_id].value].css"
-                                class="vote-field"
-                            >
-                                <mat-icon> {{ voteOptionStyle[vote.votes[option.user_id].value].icon }}</mat-icon>
-                                {{ vote.votes[option.user_id].valueVerbose | translate }}
+                        <div *ngIf="vote.user">
+                            {{ vote.user.getShortName() }}
+                            <div class="user-subtitle" *ngIf="vote.user.getLevelAndNumber()">
+                                {{ vote.user.getLevelAndNumber() }}
                             </div>
-                        </ng-container>
-                    </ng-container>
-                    <!-- Votes method -->
-                    <ng-container *ngIf="poll.pollmethod === AssignmentPollMethod.Votes">
-                        <div *pblNgridCellDef="'votes'; row as vote">
-                            <div *ngFor="let candidate of vote.votes">{{ candidate }}</div>
                         </div>
-                    </ng-container>
+                        <div *ngIf="!vote.user">
+                            {{ 'Anonymous' | translate }}
+                        </div>
+                    </div>
+
+                    <div *pblNgridCellDef="'votes'; row as vote" >
+                        <div class="single-vote-result" *ngFor="let candidate of vote.votes">{{ candidate }}</div>
+                    </div>
                 </os-list-view-table>
                 <div *ngIf="!votesDataObservable">
                     {{ 'The individual votes were anonymized.' | translate }}
                 </div>
-            </ng-container>
+            </div>
         </div>
 
         <!-- Meta Infos -->
@@ -142,7 +136,7 @@
                 {{ '100% base' | translate }}: {{ poll.percentBaseVerbose | translate }}
             </small>
         </div>
-    </ng-container>
+    </div>
 </ng-template>
 
 <!-- More Menu -->

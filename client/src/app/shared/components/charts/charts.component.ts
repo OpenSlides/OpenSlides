@@ -215,6 +215,10 @@ export class ChartsComponent extends BaseViewComponent {
      */
     @Input()
     public pieChartOptions: ChartOptions = {
+        responsive: true,
+        legend: {
+            position: 'left'
+        },
         aspectRatio: 1
     };
 

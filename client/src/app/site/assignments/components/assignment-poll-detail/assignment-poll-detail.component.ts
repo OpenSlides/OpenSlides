@@ -11,9 +11,7 @@ import { AssignmentPollRepositoryService } from 'app/core/repositories/assignmen
 import { AssignmentVoteRepositoryService } from 'app/core/repositories/assignments/assignment-vote-repository.service';
 import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
-import { ViewportService } from 'app/core/ui-services/viewport.service';
 import { ChartType } from 'app/shared/components/charts/charts.component';
-import { AssignmentPollMethod } from 'app/shared/models/assignments/assignment-poll';
 import { BasePollDetailComponent } from 'app/site/polls/components/base-poll-detail.component';
 import { VotingResult } from 'app/site/polls/models/view-base-poll';
 import { PollService } from 'app/site/polls/services/poll.service';
@@ -27,8 +25,6 @@ import { ViewAssignmentPoll } from '../../models/view-assignment-poll';
     encapsulation: ViewEncapsulation.None
 })
 export class AssignmentPollDetailComponent extends BasePollDetailComponent<ViewAssignmentPoll> {
-    public AssignmentPollMethod = AssignmentPollMethod;
-
     public columnDefinitionSingleVotes: PblColumnDefinition[];
 
     public filterProps = ['user.getFullName'];
@@ -39,10 +35,6 @@ export class AssignmentPollDetailComponent extends BasePollDetailComponent<ViewA
 
     public get chartType(): ChartType {
         return this._chartType;
-    }
-
-    public get isVotedPoll(): boolean {
-        return this.poll.pollmethod === AssignmentPollMethod.Votes;
     }
 
     private _chartType: ChartType = 'horizontalBar';
@@ -58,67 +50,48 @@ export class AssignmentPollDetailComponent extends BasePollDetailComponent<ViewA
         pollDialog: AssignmentPollDialogService,
         pollService: PollService,
         votesRepo: AssignmentVoteRepositoryService,
-        private operator: OperatorService,
-        private viewport: ViewportService
+        private operator: OperatorService
     ) {
         super(title, translate, matSnackbar, repo, route, groupRepo, prompt, pollDialog, pollService, votesRepo);
     }
 
     protected createVotesData(): void {
         const votes = {};
-        let i = -1;
-
         const definitions: PblColumnDefinition[] = [
             {
                 prop: 'user',
                 label: 'Participant',
-                width: '180px',
-                pin: this.viewport.isMobile ? undefined : 'start'
+                width: '40%',
+                minWidth: 300
+            },
+            {
+                prop: 'votes',
+                label: 'Votes',
+                width: '60%',
+                minWidth: 300
             }
         ];
-        if (this.isVotedPoll) {
-            definitions.push(this.getVoteColumnDefinition('votes', 'Votes'));
-        }
 
-        /**
-         * builds an object of the following form:
-         * {
-         *     userId: {
-         *         user: ViewUser,
-         *         votes: { candidateId: voteValue }    // for YN(A)
-         *              | candidate_name[]              // for Votes
-         *     }
-         * }
-         */
         for (const option of this.poll.options) {
-            if (!this.isVotedPoll) {
-                definitions.push(this.getVoteColumnDefinition('votes-' + option.user_id, option.user.getFullName()));
-            }
-
             for (const vote of option.votes) {
-                // if poll was pseudoanonymized, use a negative index to not interfere with
-                // possible named votes (although this should never happen)
-                const userId = vote.user_id || --i;
+                const userId = vote.user_id;
                 if (!votes[userId]) {
                     votes[userId] = {
                         user: vote.user,
-                        votes: this.isVotedPoll ? [] : {}
+                        votes: []
                     };
                 }
-                // on votes method, we fill an array with all chosen candidates
-                // on YN(A) we map candidate ids to the vote
-                if (this.isVotedPoll) {
-                    if (vote.weight > 0) {
+
+                if (vote.weight > 0) {
+                    if (this.poll.isMethodY) {
                         if (vote.value === 'Y') {
                             votes[userId].votes.push(option.user.getFullName());
-                        } else if (vote.value === 'N') {
-                            votes[userId].votes.push(this.translate.instant('No'));
-                        } else if (vote.value === 'A') {
-                            votes[userId].votes.push(this.translate.instant('Abstain'));
+                        } else {
+                            votes[userId].votes.push(this.voteValueToLabel(vote.value));
                         }
+                    } else {
+                        votes[userId].votes.push(`${option.user.getShortName()}: ${this.voteValueToLabel(vote.value)}`);
                     }
-                } else {
-                    votes[userId].votes[option.user_id] = vote;
                 }
             }
         }
@@ -129,17 +102,20 @@ export class AssignmentPollDetailComponent extends BasePollDetailComponent<ViewA
         this.isReady = true;
     }
 
-    private getVoteColumnDefinition(prop: string, label: string): PblColumnDefinition {
-        return {
-            prop: prop,
-            label: label,
-            minWidth: 80,
-            width: 'auto'
-        };
+    private voteValueToLabel(vote: 'Y' | 'N' | 'A'): string {
+        if (vote === 'Y') {
+            return this.translate.instant('Yes');
+        } else if (vote === 'N') {
+            return this.translate.instant('No');
+        } else if (vote === 'A') {
+            return this.translate.instant('Abstain');
+        } else {
+            throw new Error(`voteValueToLabel received illegal arguments: ${vote}`);
+        }
     }
 
     protected initChartData(): void {
-        if (this.isVotedPoll) {
+        if (this.poll.isMethodY) {
             this._chartType = 'doughnut';
             this.chartDataSubject.next(this.pollService.generateCircleChartData(this.poll));
         } else {
@@ -152,11 +128,11 @@ export class AssignmentPollDetailComponent extends BasePollDetailComponent<ViewA
     }
 
     public voteFitsMethod(result: VotingResult): boolean {
-        if (this.poll.pollmethod === AssignmentPollMethod.Votes) {
+        if (this.poll.isMethodY) {
             if (result.vote === 'abstain' || result.vote === 'no') {
                 return false;
             }
-        } else if (this.poll.pollmethod === AssignmentPollMethod.YN) {
+        } else if (this.poll.isMethodYN) {
             if (result.vote === 'abstain') {
                 return false;
             }

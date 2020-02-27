@@ -68,7 +68,7 @@ export class ViewAssignmentPoll extends ViewBasePoll<AssignmentPoll, AssignmentP
         const tableData: PollTableData[] = this.options.map(candidate => ({
             votingOption: candidate.user.short_name,
             votingOptionSubtitle: candidate.user.getLevelAndNumber(),
-
+            class: 'user',
             value: this.voteTableKeys.map(
                 key =>
                     ({
@@ -84,6 +84,7 @@ export class ViewAssignmentPoll extends ViewBasePoll<AssignmentPoll, AssignmentP
         tableData.push(
             ...this.sumTableKeys.map(key => ({
                 votingOption: key.vote,
+                class: 'sums',
                 value: [
                     {
                         amount: this[key.vote],
@@ -93,7 +94,6 @@ export class ViewAssignmentPoll extends ViewBasePoll<AssignmentPoll, AssignmentP
                 ]
             }))
         );
-
         return tableData;
     }
 }
