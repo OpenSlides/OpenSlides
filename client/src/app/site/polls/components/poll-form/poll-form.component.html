@@ -50,7 +50,7 @@
                     formControlName="pollmethod"
                     required
                 >
-                    <mat-option *ngFor="let option of pollMethods | keyvalue" [value]="option.key">
+                    <mat-option *ngFor="let option of pollMethods | keyvalue: keepEntryOrder" [value]="option.key">
                         {{ option.value }}
                     </mat-option>
                 </mat-select>
@@ -65,7 +65,7 @@
                 formControlName="onehundred_percent_base"
                 required
             >
-                <ng-container *ngFor="let option of percentBases | keyvalue: keepEntryOrder">
+                <ng-container *ngFor="let option of validPercentBases | keyvalue: keepEntryOrder">
                     <mat-option [value]="option.key">{{ option.value | translate }}</mat-option>
                 </ng-container>
             </mat-select>
