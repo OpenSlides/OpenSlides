@@ -1,7 +1,7 @@
 <os-poll-form [data]="pollData" [pollMethods]="AssignmentPollMethodVerbose" [percentBases]="AssignmentPollPercentBaseVerbose" #pollForm></os-poll-form>
 
 <!-- Analog voting -->
-<ng-container *ngIf="pollForm.contentForm.get('type').value === 'analog'">
+<ng-container *ngIf="isAnalogPoll">
     <form [formGroup]="dialogVoteForm">
         <!-- Candidates -->
         <div formGroupName="options">

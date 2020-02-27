@@ -7,6 +7,7 @@ import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 
 import { AssignmentPollMethod } from 'app/shared/models/assignments/assignment-poll';
+import { PollType } from 'app/shared/models/poll/base-poll';
 import { GeneralValueVerbose, VoteValue, VoteValueVerbose } from 'app/shared/models/poll/base-vote';
 import {
     AssignmentPollMethodVerbose,
@@ -58,6 +59,14 @@ export class AssignmentPollDialogComponent extends BasePollDialogComponent<ViewA
 
     public options: OptionsObject;
 
+    public get isAnalogPoll(): boolean {
+        return (
+            this.pollForm &&
+            this.pollForm.contentForm &&
+            this.pollForm.contentForm.get('type').value === PollType.Analog
+        );
+    }
+
     /**
      * Constructor. Retrieves necessary metadata from the pollService,
      * injects the poll itself
@@ -95,13 +104,14 @@ export class AssignmentPollDialogComponent extends BasePollDialogComponent<ViewA
 
     private setAnalogPollValues(): void {
         const pollmethod = this.pollForm.contentForm.get('pollmethod').value;
-        this.analogPollValues = ['Y'];
+        const analogPollValues: VoteValue[] = ['Y'];
         if (pollmethod !== AssignmentPollMethod.Votes) {
-            this.analogPollValues.push('N');
+            analogPollValues.push('N');
         }
         if (pollmethod === AssignmentPollMethod.YNA) {
-            this.analogPollValues.push('A');
+            analogPollValues.push('A');
         }
+        this.analogPollValues = analogPollValues;
     }
 
     private updateDialogVoteForm(data: Partial<ViewAssignmentPoll>): void {
@@ -125,7 +135,7 @@ export class AssignmentPollDialogComponent extends BasePollDialogComponent<ViewA
 
         if (this.dialogVoteForm) {
             const result = this.undoReplaceEmptyValues(update);
-            this.dialogVoteForm.setValue(result);
+            this.dialogVoteForm.patchValue(result);
         }
     }
 
@@ -152,7 +162,7 @@ export class AssignmentPollDialogComponent extends BasePollDialogComponent<ViewA
                 [sumValue]: ['', [Validators.min(-2)]]
             }))
         });
-        if (this.pollData.poll) {
+        if (this.isAnalogPoll && this.pollData.poll) {
             this.updateDialogVoteForm(this.pollData);
         }
     }

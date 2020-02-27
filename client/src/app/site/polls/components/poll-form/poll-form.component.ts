@@ -8,6 +8,7 @@ import { Observable } from 'rxjs';
 
 import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
+import { AssignmentPollMethod, AssignmentPollPercentBase } from 'app/shared/models/assignments/assignment-poll';
 import { PercentBase } from 'app/shared/models/poll/base-poll';
 import { PollType } from 'app/shared/models/poll/base-poll';
 import { ViewAssignmentPoll } from 'app/site/assignments/models/view-assignment-poll';
@@ -15,7 +16,6 @@ import { BaseViewComponent } from 'app/site/base/base-view';
 import { ViewMotionPoll } from 'app/site/motions/models/view-motion-poll';
 import {
     MajorityMethodVerbose,
-    PercentBaseVerbose,
     PollClassType,
     PollPropertyVerbose,
     PollTypeVerbose,
@@ -62,6 +62,11 @@ export class PollFormComponent<T extends ViewBasePoll> extends BaseViewComponent
      * The majority methods for the poll.
      */
     public majorityMethods = MajorityMethodVerbose;
+
+    /**
+     * the filtered `percentBases`.
+     */
+    public validPercentBases: { [key: string]: string };
 
     /**
      * Reference to the observable of the groups. Used by the `search-value-component`.
@@ -124,42 +129,76 @@ export class PollFormComponent<T extends ViewBasePoll> extends BaseViewComponent
             });
         }
         this.updatePollValues(this.contentForm.value);
+        this.updatePercentBases(this.contentForm.get('pollmethod').value);
 
         this.subscriptions.push(
             // changes to whole form
             this.contentForm.valueChanges.subscribe(values => {
-                this.updatePollValues(values);
+                if (values) {
+                    this.updatePollValues(values);
+                }
             }),
             // poll method changes
             this.contentForm.get('pollmethod').valueChanges.subscribe(method => {
-                let forbiddenBases: string[];
-                if (method === 'YN') {
-                    forbiddenBases = [PercentBase.YNA, PercentBase.Cast];
-                } else if (method === 'YNA') {
-                    forbiddenBases = [PercentBase.Cast];
-                } else if (method === 'votes') {
-                    forbiddenBases = [PercentBase.YN, PercentBase.YNA];
-
-                    if (this.contentForm.get('type').value === PollType.Pseudoanonymous) {
-                        this.setVotesAmountCtrl();
-                    }
+                if (method) {
+                    this.updatePercentBases(method);
+                    this.setVotesAmountCtrl();
                 }
-
-                const percentBases = {};
-                for (const [key, value] of Object.entries(PercentBaseVerbose)) {
-                    if (!forbiddenBases.includes(key)) {
-                        percentBases[key] = value;
-                    }
-                }
-                this.percentBases = percentBases;
-                // TODO: update selected base
-                this.setVotesAmountCtrl();
             }),
             // poll type changes
             this.contentForm.get('type').valueChanges.subscribe(() => {
                 this.setVotesAmountCtrl();
             })
         );
+    }
+
+    /**
+     * updates the available percent bases according to the pollmethod
+     * @param method the currently chosen pollmethod
+     */
+    private updatePercentBases(method: AssignmentPollMethod): void {
+        if (method) {
+            let forbiddenBases = [];
+            if (method === AssignmentPollMethod.YN) {
+                forbiddenBases = [PercentBase.YNA, AssignmentPollPercentBase.Votes];
+            } else if (method === AssignmentPollMethod.YNA) {
+                forbiddenBases = [AssignmentPollPercentBase.Votes];
+            } else if (method === AssignmentPollMethod.Votes) {
+                forbiddenBases = [PercentBase.YN, PercentBase.YNA];
+            }
+
+            const bases = {};
+            for (const [key, value] of Object.entries(this.percentBases)) {
+                if (!forbiddenBases.includes(key)) {
+                    bases[key] = value;
+                }
+            }
+            // update value in case that its no longer valid
+            const percentBaseControl = this.contentForm.get('onehundred_percent_base');
+            percentBaseControl.setValue(this.getNormedPercentBase(percentBaseControl.value, method));
+
+            this.validPercentBases = bases;
+        }
+    }
+
+    private getNormedPercentBase(
+        base: AssignmentPollPercentBase,
+        method: AssignmentPollMethod
+    ): AssignmentPollPercentBase {
+        if (
+            method === AssignmentPollMethod.YN &&
+            (base === AssignmentPollPercentBase.YNA || base === AssignmentPollPercentBase.Votes)
+        ) {
+            return AssignmentPollPercentBase.YN;
+        } else if (method === AssignmentPollMethod.YNA && base === AssignmentPollPercentBase.Votes) {
+            return AssignmentPollPercentBase.YNA;
+        } else if (
+            method === AssignmentPollMethod.Votes &&
+            (base === AssignmentPollPercentBase.YN || base === AssignmentPollPercentBase.YNA)
+        ) {
+            return AssignmentPollPercentBase.Votes;
+        }
+        return base;
     }
 
     /**
@@ -210,7 +249,9 @@ export class PollFormComponent<T extends ViewBasePoll> extends BaseViewComponent
             if (data.type !== 'analog') {
                 this.pollValues.push([
                     this.pollService.getVerboseNameForKey('groups'),
-                    this.groupRepo.getNameForIds(...([] || (data && data.groups_id)))
+                    data && data.groups_id && data.groups_id.length
+                        ? this.groupRepo.getNameForIds(...data.groups_id)
+                        : '---'
                 ]);
             }
             if (data.pollmethod === 'votes') {
