@@ -4,7 +4,7 @@ import { E2EImportsModule } from 'e2e-imports.module';
 
 import { PollFormComponent } from './poll-form.component';
 
-describe('PollFormComponent', () => {
+fdescribe('PollFormComponent', () => {
     let component: PollFormComponent<any>;
     let fixture: ComponentFixture<PollFormComponent<any>>;
 

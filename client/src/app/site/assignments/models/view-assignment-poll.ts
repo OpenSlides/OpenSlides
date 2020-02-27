@@ -27,7 +27,7 @@ export const AssignmentPollPercentBaseVerbose = {
     YNA: 'Yes/No/Abstain per candidate',
     votes: 'Sum of votes inclusive global ones',
     valid: 'All valid ballots',
-    cast: 'All casted ballots',
+    cast: 'All cast ballots',
     disabled: 'Disabled (no percents)'
 };
 
