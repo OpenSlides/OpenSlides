@@ -1228,16 +1228,16 @@ class MotionPollViewSet(BasePollViewSet):
                     raise ValidationError("You already voted on this poll")
 
     def handle_named_vote(self, data, poll, user):
-        self.handle_named_or_pseudoanonymous_vote(data, poll, user, False)
+        option = poll.options.get()
+        vote, _ = MotionVote.objects.get_or_create(user=user, option=option)
+        self.handle_named_and_pseudoanonymous_vote(vote, data, user, option)
 
     def handle_pseudoanonymous_vote(self, data, poll, user):
-        self.handle_named_or_pseudoanonymous_vote(data, poll, user, True)
-
-    def handle_named_or_pseudoanonymous_vote(self, data, poll, user, pseudoanonymous):
         option = poll.options.get()
-        vote, _ = MotionVote.objects.get_or_create(
-            user=None if pseudoanonymous else user, option=option
-        )
+        vote = MotionVote.objects.create(user=None, option=option)
+        self.handle_named_and_pseudoanonymous_vote(vote, data, user, option)
+
+    def handle_named_and_pseudoanonymous_vote(self, vote, data, user, option):
         vote.value = data
         vote.weight = Decimal("1")
         vote.save(no_delete_on_restriction=True)
