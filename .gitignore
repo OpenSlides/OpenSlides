@@ -5,6 +5,7 @@
 *~
 .DS_Store
 .idea
+.env
 
 # Old OS3 files and folders
 .coverage

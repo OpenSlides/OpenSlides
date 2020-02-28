@@ -56,6 +56,15 @@ required (phony) targets are:
 - `run-tests`: Execute all tests from the submodule
 - `build-dev`: Build an image with the tag `openslides-<service>-dev`
 
+### Build arguments in the Dockerfile
+
+These build arguments should be supported by every service:
+
+- `REPOSITORY_URL`: The git-url for the repository to use
+- `GIT_CHECKOUT`: A branch/tag/commit to check out during the build
+
+Note that meaningful defaults should be provided in the Dockerfile.
+
 ## Developing on a single service
 
 Go to the serivce and create a new branch (from master):

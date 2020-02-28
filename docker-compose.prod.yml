@@ -1,10 +1,16 @@
 version: '3'
 services:
     datastore-writer:
-        build: https://github.com/OpenSlides/openslides-datastore-service.git#:writer
+        build:
+            context: "https://github.com/OpenSlides/openslides-datastore-service.git#:writer"
+            args:
+                GIT_CHECKOUT: "${OPENSLIDES_DATASTORE_SERVICE_COMMIT_HASH}"
         image: openslides-datastore-writer
     client:
-        build: https://github.com/OpenSlides/openslides-client.git
+        build:
+            context: "https://github.com/OpenSlides/openslides-client.git"
+            args:
+                GIT_CHECKOUT: "${OPENSLIDES_CLIENT_COMMIT_HASH}"
         image: openslides-client
     haproxy:
         build: ./haproxy
