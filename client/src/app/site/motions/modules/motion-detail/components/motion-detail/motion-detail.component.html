@@ -133,7 +133,12 @@
 
                 {{ getTitleWithChanges() }}
             </h1>
-            <button mat-icon-button color="primary" (click)="toggleFavorite()">
+            <button
+                mat-icon-button
+                color="primary"
+                (click)="toggleFavorite()"
+                matTooltip="{{ 'Mark as personal favorite' | translate }}"
+            >
                 <mat-icon>{{ motion.star ? 'star' : 'star_border' }}</mat-icon>
             </button>
         </div>
@@ -460,12 +465,16 @@
         <!-- motion polls -->
         <div *ngIf="!editMotion" class="spacer-top-20 spacer-bottom-20">
             <os-motion-poll *ngFor="let poll of motion.polls; trackBy: trackByIndex" [poll]="poll"></os-motion-poll>
-            <div class="mat-card create-poll-button" *ngIf="perms.isAllowed('createpoll', motion)">
-                <button mat-button (click)="openDialog()">
-                    <mat-icon class="main-nav-color">poll</mat-icon>
-                    <span translate>New vote</span>
-                </button>
-            </div>
+            <button
+                class="create-poll-button"
+                create-poll-button
+                mat-stroked-button
+                (click)="openDialog()"
+                *ngIf="perms.isAllowed('createpoll', motion)"
+            >
+                <mat-icon class="main-nav-color">add</mat-icon>
+                <span translate>New vote</span>
+            </button>
         </div>
     </div>
 </ng-template>

@@ -2,6 +2,13 @@
     margin: 0;
 }
 
+.pollType {
+    .mat-hint {
+        color: red;
+        cursor: pointer;
+    }
+}
+
 .poll-preview-meta-info {
     display: flex;
     justify-content: space-between;

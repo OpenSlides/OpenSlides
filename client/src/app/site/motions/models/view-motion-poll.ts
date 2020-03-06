@@ -34,6 +34,10 @@ export class ViewMotionPoll extends ViewBasePoll<MotionPoll, MotionPollMethod, P
         return this.options[0];
     }
 
+    public get hasPresentableValues(): boolean {
+        return this.result.hasPresentableValues;
+    }
+
     public get hasVotes(): boolean {
         return this.result && !!this.result.votes.length;
     }

@@ -122,12 +122,17 @@ export class AssignmentPollVoteComponent extends BasePollVoteComponent<ViewAssig
         let requestData;
         if (this.poll.pollmethod === AssignmentPollMethod.Votes) {
             const pollOptionIds = this.getPollOptionIds();
+
             requestData = pollOptionIds.reduce((o, n) => {
-                if ((n === optionId && vote === 'Y') !== (this.currentVotes[n] === 'Yes')) {
-                    o[n] = 1; // TODO: allow multiple votes per candidate
-                } else {
-                    o[n] = 0;
+                o[n] = 0;
+                if (this.poll.votes_amount === 1) {
+                    if (n === optionId && this.currentVotes[n] !== 'Yes') {
+                        o[n] = 1;
+                    }
+                } else if ((n === optionId) !== (this.currentVotes[n] === 'Yes')) {
+                    o[n] = 1;
                 }
+
                 return o;
             }, {});
         } else {
@@ -135,6 +140,7 @@ export class AssignmentPollVoteComponent extends BasePollVoteComponent<ViewAssig
             requestData = {};
             requestData[optionId] = vote;
         }
+
         this.pollRepo.vote(requestData, this.poll.id).catch(this.raiseError);
     }
 

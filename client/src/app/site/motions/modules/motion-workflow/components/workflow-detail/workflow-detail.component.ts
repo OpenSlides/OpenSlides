@@ -146,7 +146,7 @@ export class WorkflowDetailComponent extends BaseViewComponent implements OnInit
      * @param title Set the page title
      * @param translate Handle translations
      * @param matSnackBar Showing error
-     * @param promtService Promts
+     * @param promptService Promts
      * @param dialog Opening dialogs
      * @param workflowRepo The repository for workflows
      * @param route Read out URL paramters
@@ -155,7 +155,7 @@ export class WorkflowDetailComponent extends BaseViewComponent implements OnInit
         title: Title,
         protected translate: TranslateService, // protected required for ng-translate-extract
         matSnackBar: MatSnackBar,
-        private promtService: PromptService,
+        private promptService: PromptService,
         private dialog: MatDialog,
         private workflowRepo: WorkflowRepositoryService,
         private stateRepo: StateRepositoryService,
@@ -208,7 +208,7 @@ export class WorkflowDetailComponent extends BaseViewComponent implements OnInit
                 } else if (result.action === 'delete') {
                     const content = this.translate.instant('Delete') + ` ${state.name}?`;
 
-                    this.promtService.open('Are you sure', content).then(promptResult => {
+                    this.promptService.open('Are you sure', content).then(promptResult => {
                         if (promptResult) {
                             this.stateRepo.delete(state).then(() => {}, this.raiseError);
                         }

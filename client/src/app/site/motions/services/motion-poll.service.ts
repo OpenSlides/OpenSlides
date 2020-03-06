@@ -55,12 +55,18 @@ export class MotionPollService extends PollService {
         config.get<number[]>(MotionPoll.defaultGroupsConfig).subscribe(ids => (this.defaultGroupIds = ids));
     }
 
-    public getDefaultPollData(): MotionPoll {
+    public getDefaultPollData(contextId?: number): MotionPoll {
         const poll = new MotionPoll(super.getDefaultPollData());
-        const length = this.pollRepo.getViewModelList().filter(item => item.motion_id === poll.motion_id).length;
 
-        poll.title = !length ? this.translate.instant('Vote') : `${this.translate.instant('Vote')} (${length + 1})`;
+        poll.title = this.translate.instant('Vote');
         poll.pollmethod = MotionPollMethod.YNA;
+
+        if (contextId) {
+            const length = this.pollRepo.getViewModelList().filter(item => item.motion_id === contextId).length;
+            if (length) {
+                poll.title += ` (${length + 1})`;
+            }
+        }
 
         return poll;
     }

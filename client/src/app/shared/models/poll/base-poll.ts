@@ -76,6 +76,10 @@ export abstract class BasePoll<
         return this.onehundred_percent_base === PercentBase.Valid || this.onehundred_percent_base === PercentBase.Cast;
     }
 
+    public get isPercentBaseCast(): boolean {
+        return this.onehundred_percent_base === PercentBase.Cast;
+    }
+
     /**
      * Determine if the state is finished or published
      */

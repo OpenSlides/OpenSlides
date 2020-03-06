@@ -27,7 +27,7 @@ def get_config_variables():
 
     yield ConfigVariable(
         name="assignment_poll_default_100_percent_base",
-        default_value="YNA",
+        default_value="valid",
         input_type="choice",
         label="The 100-%-base of an election result consists of",
         choices=tuple(

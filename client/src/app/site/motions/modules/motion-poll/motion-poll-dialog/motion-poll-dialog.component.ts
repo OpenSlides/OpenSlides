@@ -1,4 +1,4 @@
-import { Component, Inject, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material';
 import { Title } from '@angular/platform-browser';
@@ -15,7 +15,7 @@ import { PercentBaseVerbose } from 'app/site/polls/models/view-base-poll';
     templateUrl: './motion-poll-dialog.component.html',
     styleUrls: ['./motion-poll-dialog.component.scss']
 })
-export class MotionPollDialogComponent extends BasePollDialogComponent<ViewMotionPoll> {
+export class MotionPollDialogComponent extends BasePollDialogComponent<ViewMotionPoll> implements OnInit {
     public PercentBaseVerbose = PercentBaseVerbose;
 
     @ViewChild('pollForm', { static: false })
@@ -30,6 +30,9 @@ export class MotionPollDialogComponent extends BasePollDialogComponent<ViewMotio
         @Inject(MAT_DIALOG_DATA) public pollData: Partial<ViewMotionPoll>
     ) {
         super(title, translate, matSnackbar, dialogRef);
+    }
+
+    public ngOnInit(): void {
         this.createDialog();
     }
 
@@ -54,12 +57,12 @@ export class MotionPollDialogComponent extends BasePollDialogComponent<ViewMotio
      */
     private createDialog(): void {
         this.dialogVoteForm = this.fb.group({
-            Y: ['', [Validators.min(-2)]],
-            N: ['', [Validators.min(-2)]],
-            A: ['', [Validators.min(-2)]],
-            votesvalid: ['', [Validators.min(-2)]],
-            votesinvalid: ['', [Validators.min(-2)]],
-            votescast: ['', [Validators.min(-2)]]
+            Y: [0, [Validators.min(-2)]],
+            N: [0, [Validators.min(-2)]],
+            A: [0, [Validators.min(-2)]],
+            votesvalid: [0, [Validators.min(-2)]],
+            votesinvalid: [0, [Validators.min(-2)]],
+            votescast: [0, [Validators.min(-2)]]
         });
 
         if (this.pollData.poll) {

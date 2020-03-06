@@ -2,24 +2,22 @@
 @import '~assets/styles/poll-colors.scss';
 
 .assignment-result-wrapper {
-    margin-top: 2em;
-    display: grid;
-    grid-gap: 10px;
-
     .assignment-result-table {
+        margin-top: 2em;
+        display: block;
+        overflow-x: auto;
         border-collapse: collapse;
 
         th {
-            text-align: left;
             font-weight: initial;
         }
 
         tr {
             height: 48px;
-        }
 
-        tr:last-child {
-            border-bottom: none;
+            td:first-child {
+                padding-right: 1em;
+            }
         }
 
         tr.sums {
@@ -30,39 +28,57 @@
             }
         }
 
+        .result {
+            text-align: right;
+            padding-left: 1em;
+        }
+
+        .voting-option {
+            min-width: 200px;
+            width: 100%;
+            text-align: left;
+        }
+
         .user + .sums {
             td {
-                padding-top: 4em;
+                padding-top: 2em;
             }
+        }
+
+        .single-result {
+            white-space: pre;
         }
     }
 
-    .pie-chart {
-        margin-left: auto;
-        margin-right: auto;
-        width: 50%;
-    }
-}
-
-.single-vote-result + .single-vote-result {
-    margin-top: 1em;
-}
-
-.named-result-table {
-    .mat-form-field {
-        font-size: 14px;
-        width: 100%;
+    .chart-wrapper {
+        margin-top: 2em;
+        .pie-chart {
+            margin-left: auto;
+            margin-right: auto;
+            width: 50%;
+        }
     }
 
-    .single-votes-table {
-        display: block;
-        height: 500px;
-    }
+    .named-result-table {
+        .mat-form-field {
+            font-size: 14px;
+            width: 100%;
+        }
 
-    .vote-field {
-        text-align: center;
-        width: 100%;
-        padding-right: 12px;
+        .single-votes-table {
+            display: block;
+            height: 500px;
+
+            .single-vote-result + .single-vote-result {
+                margin-top: 1em;
+            }
+        }
+
+        .vote-field {
+            text-align: center;
+            width: 100%;
+            padding-right: 12px;
+        }
     }
 }
 
