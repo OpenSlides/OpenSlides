@@ -88,12 +88,10 @@ export class CheckInputComponent extends BaseViewComponent implements OnInit, Co
      * @param obj the value from the parent form. Type "any" is required by the interface
      */
     public writeValue(obj: string | number): void {
-        if (obj) {
-            if (obj === this.checkboxValue) {
-                this.checkboxStateChanged(true);
-            } else {
-                this.contentForm.patchValue(obj);
-            }
+        if (obj && obj === this.checkboxValue) {
+            this.checkboxStateChanged(true);
+        } else {
+            this.contentForm.patchValue(obj);
         }
     }
 

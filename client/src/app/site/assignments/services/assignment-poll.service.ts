@@ -54,13 +54,20 @@ export class AssignmentPollService extends PollService {
             .subscribe(method => (this.defaultPollMethod = method));
     }
 
-    public getDefaultPollData(): AssignmentPoll {
-        const poll = new AssignmentPoll(super.getDefaultPollData());
-        const length = this.pollRepo.getViewModelList().filter(item => item.assignment_id === poll.assignment_id)
-            .length;
+    public getDefaultPollData(contextId?: number): AssignmentPoll {
+        const poll = new AssignmentPoll({
+            ...super.getDefaultPollData()
+        });
 
-        poll.title = !length ? this.translate.instant('Ballot') : `${this.translate.instant('Ballot')} (${length + 1})`;
+        poll.title = this.translate.instant('Ballot');
         poll.pollmethod = this.defaultPollMethod;
+
+        if (contextId) {
+            const length = this.pollRepo.getViewModelList().filter(item => item.assignment_id === contextId).length;
+            if (length) {
+                poll.title += ` (${length + 1})`;
+            }
+        }
 
         return poll;
     }

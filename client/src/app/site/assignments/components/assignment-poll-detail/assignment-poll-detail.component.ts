@@ -34,10 +34,8 @@ export class AssignmentPollDetailComponent extends BasePollDetailComponent<ViewA
     public candidatesLabels: string[] = [];
 
     public get chartType(): ChartType {
-        return this._chartType;
+        return 'stackedBar';
     }
-
-    private _chartType: ChartType = 'horizontalBar';
 
     public constructor(
         title: Title,
@@ -114,17 +112,13 @@ export class AssignmentPollDetailComponent extends BasePollDetailComponent<ViewA
         }
     }
 
-    protected initChartData(): void {
-        if (this.poll.isMethodY) {
-            this._chartType = 'doughnut';
-            this.chartDataSubject.next(this.pollService.generateCircleChartData(this.poll));
-        } else {
-            super.initChartData();
-        }
-    }
-
     protected hasPerms(): boolean {
         return this.operator.hasPerms('assignments.can_manage');
+    }
+
+    public getVoteClass(votingResult: VotingResult): string {
+        const cssPrefix = 'voted-';
+        return `${cssPrefix}${votingResult.vote}`;
     }
 
     public voteFitsMethod(result: VotingResult): boolean {

@@ -109,17 +109,19 @@ export abstract class ViewBasePoll<
     protected sumTableKeys: VotingResult[] = [
         {
             vote: 'votesvalid',
+            hide: this.poll.votesvalid === -2,
             showPercent: this.poll.isPercentBaseValidOrCast
         },
         {
             vote: 'votesinvalid',
-            hide: this.poll.type !== PollType.Analog,
-            showPercent: this.poll.isPercentBaseValidOrCast
+            icon: 'not_interested',
+            hide: this.poll.type !== PollType.Analog || this.poll.votesinvalid === -2,
+            showPercent: this.poll.isPercentBaseCast
         },
         {
             vote: 'votescast',
-            hide: this.poll.type !== PollType.Analog,
-            showPercent: this.poll.isPercentBaseValidOrCast
+            hide: this.poll.type !== PollType.Analog || this.poll.votescast === -2,
+            showPercent: this.poll.isPercentBaseCast
         }
     ];
 
@@ -163,7 +165,11 @@ export abstract class ViewBasePoll<
     public abstract get percentBaseVerbose(): string;
 
     public get showAbstainPercent(): boolean {
-        return this.poll.onehundred_percent_base === PercentBase.YNA;
+        return (
+            this.poll.onehundred_percent_base === PercentBase.YNA ||
+            this.poll.onehundred_percent_base === PercentBase.Valid ||
+            this.poll.onehundred_percent_base === PercentBase.Cast
+        );
     }
 
     public abstract readonly pollClassType: 'motion' | 'assignment';

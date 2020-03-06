@@ -6,10 +6,14 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { MotionPollRepositoryService } from 'app/core/repositories/motions/motion-poll-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
+import { VotingPrivacyWarningComponent } from 'app/shared/components/voting-privacy-warning/voting-privacy-warning.component';
+import { PollType } from 'app/shared/models/poll/base-poll';
+import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
 import { ViewMotionPoll } from 'app/site/motions/models/view-motion-poll';
 import { MotionPollDialogService } from 'app/site/motions/services/motion-poll-dialog.service';
 import { MotionPollPdfService } from 'app/site/motions/services/motion-poll-pdf.service';
 import { BasePollComponent } from 'app/site/polls/components/base-poll.component';
+import { PollTableData } from 'app/site/polls/models/view-base-poll';
 import { PollService } from 'app/site/polls/services/poll.service';
 
 /**
@@ -28,19 +32,7 @@ export class MotionPollComponent extends BasePollComponent<ViewMotionPoll> {
     @Input()
     public set poll(value: ViewMotionPoll) {
         this.initPoll(value);
-
         const chartData = this.pollService.generateChartData(value);
-        for (const data of chartData) {
-            if (data.label === 'YES') {
-                this.voteYes = data.data[0];
-            }
-            if (data.label === 'NO') {
-                this.voteNo = data.data[0];
-            }
-            if (data.label === 'ABSTAIN') {
-                this.voteAbstain = data.data[0];
-            }
-        }
         this.chartDataSubject.next(chartData);
     }
 
@@ -52,48 +44,17 @@ export class MotionPollComponent extends BasePollComponent<ViewMotionPoll> {
         return `/motions/polls/${this.poll.id}`;
     }
 
-    /**
-     * Number of votes for `Yes`.
-     */
-    public set voteYes(n: number) {
-        this._voteYes = n;
-    }
-
-    public get voteYes(): number {
-        return this._voteYes;
-    }
-
-    /**
-     * Number of votes for `No`.
-     */
-    public set voteNo(n: number) {
-        this._voteNo = n;
-    }
-
-    public get voteNo(): number {
-        return this._voteNo;
-    }
-
-    /**
-     * Number of votes for `Abstain`.
-     */
-    public set voteAbstain(n: number) {
-        this._voteAbstain = n;
-    }
-
-    public get voteAbstain(): number {
-        return this._voteAbstain;
-    }
-
     public get showChart(): boolean {
-        return this._voteYes >= 0 && this._voteNo >= 0;
+        return this.poll.hasPresentableValues;
     }
 
-    private _voteNo: number;
+    public get hideChangeState(): boolean {
+        return this.poll.isPublished || (this.poll.isCreated && this.poll.type === PollType.Analog);
+    }
 
-    private _voteYes: number;
-
-    private _voteAbstain: number;
+    public get reducedPollTableData(): PollTableData[] {
+        return this.poll.tableData.filter(data => ['yes', 'no', 'abstain', 'votesinvalid'].includes(data.votingOption));
+    }
 
     /**
      * Constructor.
@@ -116,6 +77,10 @@ export class MotionPollComponent extends BasePollComponent<ViewMotionPoll> {
         private pdfService: MotionPollPdfService
     ) {
         super(titleService, matSnackBar, translate, dialog, promptService, pollRepo, pollDialog);
+    }
+
+    public openVotingWarning(): void {
+        this.dialog.open(VotingPrivacyWarningComponent, infoDialogSettings);
     }
 
     public downloadPdf(): void {

@@ -9,7 +9,7 @@
     </form>
 
     <!-- TODO: rather disable forms than duplicate them -->
-    <div *ngIf="data && data.state > 1" class="poll-preview-meta-info">
+    <div *ngIf="data && data.state" class="poll-preview-meta-info">
         <span class="short-description" *ngFor="let value of pollValues">
             <span class="short-description-label subtitle" translate>
                 {{ value[0] }}
@@ -22,13 +22,14 @@
     <form [formGroup]="contentForm" class="poll-preview-meta-info-form">
         <ng-container *ngIf="!data || !data.state || data.isCreated">
             <!-- Poll Type -->
-            <mat-form-field *ngIf="pollService.isElectronicVotingEnabled">
+            <mat-form-field class="pollType" *ngIf="pollService.isElectronicVotingEnabled">
                 <mat-select [placeholder]="PollPropertyVerbose.type | translate" formControlName="type" required>
                     <mat-option *ngFor="let option of pollTypes | keyvalue" [value]="option.key">
                         {{ option.value | translate }}
                     </mat-option>
                 </mat-select>
                 <mat-error translate>This field is required</mat-error>
+                <mat-hint (click)="openVotingWarning()" *ngIf="showNonNominalWarning"> {{ 'Not suitable for formal secret voting!' | translate }}</mat-hint>
             </mat-form-field>
 
             <!-- Groups entitled to Vote -->

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import { ViewAssignmentPoll } from 'app/site/assignments/models/view-assignment-poll';
 import { ViewMotionPoll } from 'app/site/motions/models/view-motion-poll';
 import { ViewBasePoll } from 'app/site/polls/models/view-base-poll';
 import { PollListObservableService } from 'app/site/polls/services/poll-list-observable.service';
@@ -14,6 +15,8 @@ import { VotingService } from './voting.service';
 })
 export class VotingBannerService {
     private currentBanner: BannerDefinition;
+
+    private subText = 'Click here to vote';
 
     public constructor(
         pollListObservableService: PollListObservableService,
@@ -58,6 +61,7 @@ export class VotingBannerService {
     private createBanner(text: string, link: string): BannerDefinition {
         return {
             text: text,
+            subText: this.subText,
             link: link,
             icon: 'how_to_vote',
             largerOnMobileView: true
@@ -72,11 +76,13 @@ export class VotingBannerService {
      * @returns The title.
      */
     private getTextForPoll(poll: ViewBasePoll): string {
-        return poll instanceof ViewMotionPoll
-            ? `${this.translate.instant('Motion') + ' ' + poll.motion.getIdentifierOrTitle()}: ${this.translate.instant(
-                  'Voting is open'
-              )}`
-            : `${poll.getTitle()}: ${this.translate.instant('Ballot is open')}`;
+        if (poll instanceof ViewMotionPoll) {
+            return `${this.translate.instant('Motion')} ${poll.motion.getIdentifierOrTitle()}: ${this.translate.instant(
+                'Voting opened'
+            )}`;
+        } else if (poll instanceof ViewAssignmentPoll) {
+            return `${poll.assignment.getTitle()}: ${this.translate.instant('Ballot openened!')}`;
+        }
     }
 
     /**

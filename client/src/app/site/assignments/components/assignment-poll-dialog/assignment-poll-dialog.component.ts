@@ -85,15 +85,23 @@ export class AssignmentPollDialogComponent extends BasePollDialogComponent<ViewA
     public ngOnInit(): void {
         // TODO: not solid.
         // on new poll creation, poll.options does not exist, so we have to build a substitute from the assignment candidates
-        this.options = this.pollData.options
-            ? this.pollData.options
-            : this.pollData.assignment.candidates.map(
-                  user => ({
-                      user_id: user.id,
-                      user: user
-                  }),
-                  {}
-              );
+        if (this.pollData) {
+            if (this.pollData.options) {
+                this.options = this.pollData.options;
+            } else if (
+                this.pollData.assignment &&
+                this.pollData.assignment.candidates &&
+                this.pollData.assignment.candidates.length
+            ) {
+                this.options = this.pollData.assignment.candidates.map(
+                    user => ({
+                        user_id: user.id,
+                        user: user
+                    }),
+                    {}
+                );
+            }
+        }
 
         this.subscriptions.push(
             this.pollForm.contentForm.get('pollmethod').valueChanges.subscribe(() => {

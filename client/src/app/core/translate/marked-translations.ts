@@ -173,6 +173,7 @@ _('Number of all participants');
 _('Use the following custom number');
 _('Custom number of ballot papers');
 _('Voting');
+_('Click here to vote');
 // subgroup PDF export
 _('PDF export');
 _('Title for PDF documents of motions');

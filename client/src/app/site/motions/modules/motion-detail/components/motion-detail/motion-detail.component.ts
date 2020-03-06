@@ -1605,7 +1605,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
             collectionString: ViewMotionPoll.COLLECTIONSTRING,
             motion_id: this.motion.id,
             motion: this.motion,
-            ...this.motionPollService.getDefaultPollData()
+            ...this.motionPollService.getDefaultPollData(this.motion.id)
         };
 
         this.pollDialog.openDialog(dialogData);
