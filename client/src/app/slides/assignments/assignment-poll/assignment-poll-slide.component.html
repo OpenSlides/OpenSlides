@@ -5,7 +5,7 @@
     </div>
     <div class="charts-wrapper" *ngIf="data.data.poll.state === PollState.Published">
         <os-charts
-            [type]="pollService.getChartType(data.data.poll)"
+            [type]="stackedBar"
             [labels]="pollService.getChartLabels(data.data.poll)"
             [data]="chartDataSubject"
             [hasPadding]="false"

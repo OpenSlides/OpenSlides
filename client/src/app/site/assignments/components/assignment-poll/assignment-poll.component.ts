@@ -6,7 +6,6 @@ import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { OperatorService } from 'app/core/core-services/operator.service';
 import { AssignmentPollRepositoryService } from 'app/core/repositories/assignments/assignment-poll-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ChartType } from 'app/shared/components/charts/charts.component';
@@ -39,7 +38,7 @@ export class AssignmentPollComponent extends BasePollComponent<ViewAssignmentPol
     }
 
     public get chartType(): ChartType {
-        return this.pollService.getChartType(this.poll);
+        return 'stackedBar';
     }
 
     public candidatesLabels: string[] = [];
@@ -48,21 +47,6 @@ export class AssignmentPollComponent extends BasePollComponent<ViewAssignmentPol
      * Form for updating the poll's description
      */
     public descriptionForm: FormGroup;
-
-    /**
-     * @returns true if the user is permitted to do operations
-     */
-    public get canManage(): boolean {
-        return this.operator.hasPerms('assignments.can_manage');
-    }
-
-    public get canSee(): boolean {
-        return this.operator.hasPerms('assignments.can_see');
-    }
-
-    public get canSeeVotes(): boolean {
-        return (this.canManage && this.poll.isFinished) || this.poll.isPublished;
-    }
 
     /**
      * @returns true if the description on the form differs from the poll's description
@@ -80,7 +64,6 @@ export class AssignmentPollComponent extends BasePollComponent<ViewAssignmentPol
         repo: AssignmentPollRepositoryService,
         pollDialog: AssignmentPollDialogService,
         public pollService: PollService,
-        private operator: OperatorService,
         private formBuilder: FormBuilder,
         private pdfService: AssignmentPollPdfService
     ) {
@@ -98,13 +81,5 @@ export class AssignmentPollComponent extends BasePollComponent<ViewAssignmentPol
      */
     public printBallot(): void {
         this.pdfService.printBallots(this.poll);
-    }
-
-    public showPoll(): boolean {
-        return (
-            this.operator.hasPerms('assignments.can_manage_polls') ||
-            this.poll.isPublished ||
-            (this.poll.type !== 'analog' && this.poll.isStarted)
-        );
     }
 }

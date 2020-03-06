@@ -1,12 +1,8 @@
 <div *ngIf="poll" class="poll-progress-wrapper">
-    <div class="motion-vote-number" *ngIf="poll.pollClassType === 'motion'">
+    <div class="vote-number">
         <span>{{ poll.votescast }} / {{ max }}</span>
     </div>
 
-    <div *ngIf="poll.pollClassType === 'assignment'">
-        <div>{{ 'Total' | translate }}: {{ poll.votescast }} / {{ max }},</div>
-        <div>{{ 'Valid' | translate }}: {{ poll.votesvalid }} / {{ max }},</div>
-        <div>{{ 'Invalid votes' | translate }}: {{ poll.votesinvalid }} / {{ max }}</div>
-    </div>
+    <span translate>Received votes</span>
     <mat-progress-bar class="voting-progress-bar" [value]="valueInPercent"></mat-progress-bar>
 </div>

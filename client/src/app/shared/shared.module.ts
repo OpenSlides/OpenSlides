@@ -114,7 +114,6 @@ import { LocalizedDatePipe } from './pipes/localized-date.pipe';
 import { ChartsComponent } from './components/charts/charts.component';
 import { CheckInputComponent } from './components/check-input/check-input.component';
 import { BannerComponent } from './components/banner/banner.component';
-import { BasePollDialogComponent } from 'app/site/polls/components/base-poll-dialog.component';
 import { PollFormComponent } from 'app/site/polls/components/poll-form/poll-form.component';
 import { MotionPollDialogComponent } from 'app/site/motions/modules/motion-poll/motion-poll-dialog/motion-poll-dialog.component';
 import { AssignmentPollDialogComponent } from 'app/site/assignments/components/assignment-poll-dialog/assignment-poll-dialog.component';
@@ -122,6 +121,7 @@ import { ParsePollNumberPipe } from './pipes/parse-poll-number.pipe';
 import { ReversePipe } from './pipes/reverse.pipe';
 import { PollKeyVerbosePipe } from './pipes/poll-key-verbose.pipe';
 import { PollPercentBasePipe } from './pipes/poll-percent-base.pipe';
+import { VotingPrivacyWarningComponent } from './components/voting-privacy-warning/voting-privacy-warning.component';
 
 /**
  * Share Module for all "dumb" components and pipes.
@@ -285,7 +285,8 @@ import { PollPercentBasePipe } from './pipes/poll-percent-base.pipe';
         ParsePollNumberPipe,
         ReversePipe,
         PollKeyVerbosePipe,
-        PollPercentBasePipe
+        PollPercentBasePipe,
+        VotingPrivacyWarningComponent
     ],
     declarations: [
         PermsDirective,
@@ -342,7 +343,8 @@ import { PollPercentBasePipe } from './pipes/poll-percent-base.pipe';
         ParsePollNumberPipe,
         ReversePipe,
         PollKeyVerbosePipe,
-        PollPercentBasePipe
+        PollPercentBasePipe,
+        VotingPrivacyWarningComponent
     ],
     providers: [
         {
@@ -373,7 +375,8 @@ import { PollPercentBasePipe } from './pipes/poll-percent-base.pipe';
         ProgressSnackBarComponent,
         SuperSearchComponent,
         MotionPollDialogComponent,
-        AssignmentPollDialogComponent
+        AssignmentPollDialogComponent,
+        VotingPrivacyWarningComponent
     ]
 })
 export class SharedModule {}

@@ -313,7 +313,7 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
             collectionString: ViewAssignmentPoll.COLLECTIONSTRING,
             assignment_id: this.assignment.id,
             assignment: this.assignment,
-            ...this.assignmentPollService.getDefaultPollData()
+            ...this.assignmentPollService.getDefaultPollData(this.assignment.id)
         };
 
         this.pollDialog.openDialog(dialogData);

@@ -1,4 +1,4 @@
-<mat-card class="os-card" *ngIf="poll && showPoll()">
+<mat-card class="os-card" *ngIf="poll">
     <div class="assignment-poll-wrapper">
         <div>
             <!-- Title -->
@@ -21,7 +21,7 @@
                 <!-- Buttons -->
                 <button
                     mat-icon-button
-                    *osPerms="'assignments.motions.can_manage_polls'; or: 'core.can_manage_projector'"
+                    *osPerms="['core.can_manage_projector', 'assignments.can_manage_polls']"
                     [matMenuTriggerFor]="pollItemMenu"
                     (click)="$event.stopPropagation()"
                 >
@@ -45,14 +45,25 @@
             </div>
         </div>
 
-        <div *ngIf="canSeeVotes">
-            <os-charts
-                [class]="chartType === 'doughnut' ? 'doughnut-chart' : 'bar-chart'"
-                [type]="chartType"
-                [labels]="candidatesLabels"
-                [data]="chartDataSubject"
-                [hasPadding]="false"
-            ></os-charts>
+        <!-- Chart -->
+        <div *ngIf="poll.stateHasVotes">
+            <div *osPerms="'assignments.can_manage'; or: poll.isPublished">
+                <os-charts
+                    [type]="chartType"
+                    [labels]="candidatesLabels"
+                    [data]="chartDataSubject"
+                    [hasPadding]="false"
+                    [showLegend]="!poll.isMethodY"
+                    legendPosition="right"
+                ></os-charts>
+            </div>
+
+            <!-- Cannot see unpublished -->
+            <div *osPerms="'assignments.can_manage'; complement: true">
+                <span *ngIf="poll.isFinished">
+                    {{ 'Counting is in progress' | translate }}
+                </span>
+            </div>
         </div>
 
         <!-- Poll progress bar -->

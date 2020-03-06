@@ -7,8 +7,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { MotionPollRepositoryService } from 'app/core/repositories/motions/motion-poll-repository.service';
 import { MotionVoteRepositoryService } from 'app/core/repositories/motions/motion-vote-repository.service';
+import { PromptService } from 'app/core/ui-services/prompt.service';
 import { VotingService } from 'app/core/ui-services/voting.service';
 import { MotionPollMethod } from 'app/shared/models/motions/motion-poll';
+import { PollType } from 'app/shared/models/poll/base-poll';
 import { ViewMotionPoll } from 'app/site/motions/models/view-motion-poll';
 import { ViewMotionVote } from 'app/site/motions/models/view-motion-vote';
 import { BasePollVoteComponent } from 'app/site/polls/components/base-poll-vote.component';
@@ -66,7 +68,8 @@ export class MotionPollVoteComponent extends BasePollVoteComponent<ViewMotionPol
         vmanager: VotingService,
         operator: OperatorService,
         private voteRepo: MotionVoteRepositoryService,
-        private pollRepo: MotionPollRepositoryService
+        private pollRepo: MotionPollRepositoryService,
+        private promptService: PromptService
     ) {
         super(title, translate, matSnackbar, vmanager, operator);
     }
@@ -100,6 +103,16 @@ export class MotionPollVoteComponent extends BasePollVoteComponent<ViewMotionPol
      * TODO: 'Y' | 'N' | 'A' should refer to some ENUM
      */
     public saveVote(vote: 'Y' | 'N' | 'A'): void {
-        this.pollRepo.vote(vote, this.poll.id).catch(this.raiseError);
+        if (this.poll.type === PollType.Pseudoanonymous) {
+            const title = this.translate.instant('Are you sure?');
+            const content = this.translate.instant('Your decision cannot be changed afterwards');
+            this.promptService.open(title, content).then(confirmed => {
+                if (confirmed) {
+                    this.pollRepo.vote(vote, this.poll.id).catch(this.raiseError);
+                }
+            });
+        } else {
+            this.pollRepo.vote(vote, this.poll.id).catch(this.raiseError);
+        }
     }
 }

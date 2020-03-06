@@ -17,7 +17,7 @@ export interface AssignmentPollSlideData extends BasePollSlideData {
 
         options: {
             user: {
-                full_name: string;
+                short_name: string;
             };
             yes?: number;
             no?: number;

@@ -67,9 +67,8 @@
                 </table>
 
                 <!-- Chart -->
-                <div class="doughnut-chart">
+                <div class="doughnut-chart" *ngIf="poll.hasPresentableValues && chartDataSubject.value">
                     <os-charts
-                        *ngIf="chartDataSubject.value"
                         [type]="chartType"
                         [data]="chartDataSubject"
                         [showLegend]="false"

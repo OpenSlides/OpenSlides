@@ -3,12 +3,12 @@
 .banner {
     &.larger-on-mobile {
         @include set-breakpoint-lower(sm) {
-            height: 40px;
+            min-height: 40px;
         }
     }
 
     position: relative; // was fixed before to prevent the overflow
-    height: 20px;
+    min-height: 20px;
     line-height: 20px;
     width: 100%;
     text-align: center;
@@ -18,7 +18,6 @@
     border-bottom: 1px solid white;
 
     a {
-        display: flex;
         align-items: center;
         justify-content: center;
         text-decoration: none;
