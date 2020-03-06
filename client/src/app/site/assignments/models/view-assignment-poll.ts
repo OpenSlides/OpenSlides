@@ -82,17 +82,21 @@ export class ViewAssignmentPoll extends ViewBasePoll<AssignmentPoll, AssignmentP
         }));
 
         tableData.push(
-            ...this.sumTableKeys.map(key => ({
-                votingOption: key.vote,
-                class: 'sums',
-                value: [
-                    {
-                        amount: this[key.vote],
-                        hide: key.hide,
-                        showPercent: key.showPercent
-                    } as VotingResult
-                ]
-            }))
+            ...this.sumTableKeys
+                .filter(key => {
+                    return !key.hide;
+                })
+                .map(key => ({
+                    votingOption: key.vote,
+                    class: 'sums',
+                    value: [
+                        {
+                            amount: this[key.vote],
+                            hide: key.hide,
+                            showPercent: key.showPercent
+                        } as VotingResult
+                    ]
+                }))
         );
         return tableData;
     }

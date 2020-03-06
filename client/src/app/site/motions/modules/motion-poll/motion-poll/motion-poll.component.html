@@ -6,11 +6,19 @@
             <!-- Title -->
             <span class="poll-title">
                 <a [routerLink]="pollLink">
-                    {{ poll.title }}
+                    {{ poll.title | translate }}
                 </a>
             </span>
 
             <div>
+                <span *osPerms="'motions.can_manage_polls'; and: poll.type === 'pseudoanonymous'">
+                    <button mat-icon-button color="warn" (click)="openVotingWarning()">
+                        <mat-icon>
+                            warning
+                        </mat-icon>
+                    </button>
+                </span>
+
                 <!-- Subtitle -->
                 <span *ngIf="pollService.isElectronicVotingEnabled && poll.type !== 'analog'">
                     {{ poll.typeVerbose | translate }} &middot;
@@ -18,7 +26,7 @@
 
                 <!-- State chip -->
                 <span>
-                    {{ poll.stateVerbose }}
+                    {{ poll.stateVerbose | translate }}
                 </span>
             </div>
         </div>
@@ -32,13 +40,8 @@
     </div>
 
     <!-- Change state button -->
-    <div *osPerms="'motions.can_manage_polls'">
-        <button
-            mat-stroked-button
-            *ngIf="!poll.isPublished"
-            [ngClass]="pollStateActions[poll.state].css"
-            (click)="changeState(poll.nextState)"
-        >
+    <div *osPerms="'motions.can_manage_polls'; and: !hideChangeState">
+        <button mat-stroked-button [ngClass]="pollStateActions[poll.state].css" (click)="changeState(poll.nextState)">
             <mat-icon> {{ pollStateActions[poll.state].icon }}</mat-icon>
             <span class="next-state-label">
                 {{ poll.nextStateActionVerbose | translate }}
@@ -73,22 +76,12 @@
     <!-- Result Chart and legend -->
     <div class="poll-chart-wrapper" *osPerms="'motions.can_manage_polls'; or: poll.isPublished">
         <div class="vote-legend" [routerLink]="pollLink">
-            <div class="votes-yes">
-                <os-icon-container icon="thumb_up" size="large">
-                    {{ voteYes | parsePollNumber }}
-                    {{ voteYes | pollPercentBase: poll }}
-                </os-icon-container>
-            </div>
-            <div class="votes-no">
-                <os-icon-container icon="thumb_down" size="large">
-                    {{ voteNo | parsePollNumber }}
-                    {{ voteNo | pollPercentBase: poll }}
-                </os-icon-container>
-            </div>
-            <div class="votes-abstain">
-                <os-icon-container icon="trip_origin" size="large">
-                    {{ voteAbstain | parsePollNumber }}
-                    {{ voteAbstain | pollPercentBase: poll }}
+            <div *ngFor="let row of reducedPollTableData" [class]="row.votingOption">
+                <os-icon-container [icon]="row.value[0].icon" size="large">
+                    {{ row.value[0].amount | parsePollNumber }}
+                    <span *ngIf="row.value[0].showPercent">
+                        {{ row.value[0].amount | pollPercentBase: poll }}
+                    </span>
                 </os-icon-container>
             </div>
         </div>
@@ -113,7 +106,7 @@
 </ng-template>
 
 <ng-template #emptyTemplate>
-    <div *osPerms="'motions.can_manage_polls'">
+    <div *osPerms="'motions.can_manage_polls'; and: poll.type === 'analog'">
         {{ 'Edit to enter votes.' | translate }}
     </div>
 </ng-template>

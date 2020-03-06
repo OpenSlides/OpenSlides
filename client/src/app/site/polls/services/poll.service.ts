@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 
 import { _ } from 'app/core/translate/translation-marker';
-import { ChartData, ChartType } from 'app/shared/components/charts/charts.component';
+import { ChartData, ChartDate } from 'app/shared/components/charts/charts.component';
 import { AssignmentPollMethod } from 'app/shared/models/assignments/assignment-poll';
-import { MotionPollMethod } from 'app/shared/models/motions/motion-poll';
-import { BasePoll, MajorityMethod, PollColor, PollType } from 'app/shared/models/poll/base-poll';
+import { BasePoll, MajorityMethod, PercentBase, PollColor, PollType } from 'app/shared/models/poll/base-poll';
 import { AssignmentPollMethodVerbose } from 'app/site/assignments/models/view-assignment-poll';
 import {
     MajorityMethodVerbose,
@@ -94,7 +93,7 @@ export interface PollData {
     onehundred_percent_base: string;
     options: {
         user?: {
-            full_name: string;
+            short_name: string;
         };
         yes?: number;
         no?: number;
@@ -181,47 +180,50 @@ export abstract class PollService {
     }
 
     public generateChartData(poll: PollData): ChartData {
-        if (poll.pollmethod === AssignmentPollMethod.Votes) {
-            return this.generateCircleChartData(poll);
-        } else {
-            return this.generateBarChartData(poll);
-        }
-    }
+        let fields: CalculablePollKey[];
 
-    public generateBarChartData(poll: PollData): ChartData {
-        const fields = ['yes', 'no'];
-        // cast is needed because ViewBasePoll doesn't have the field `pollmethod`, no easy fix :(
-        if ((<any>poll).pollmethod === MotionPollMethod.YNA) {
-            fields.push('abstain');
+        // TODO: PollData should either be `ViewBasePoll` or `BasePoll` to get SOLID
+        const isAssignment = Object.keys(poll.options[0]).includes('user');
+
+        if (isAssignment) {
+            if (poll.pollmethod === AssignmentPollMethod.YNA) {
+                fields = ['yes', 'no', 'abstain'];
+            } else if (poll.pollmethod === AssignmentPollMethod.YN) {
+                fields = ['yes', 'no'];
+            } else {
+                fields = ['yes'];
+            }
+        } else {
+            if (poll.onehundred_percent_base === PercentBase.YN) {
+                fields = ['yes', 'no'];
+            } else if (poll.onehundred_percent_base === PercentBase.Cast) {
+                fields = ['yes', 'no', 'abstain', 'votesinvalid'];
+            } else {
+                fields = ['yes', 'no', 'abstain'];
+            }
         }
-        const data: ChartData = fields.map(key => ({
-            label: key.toUpperCase(),
-            data: poll.options.map(option => option[key]),
-            backgroundColor: PollColor[key],
-            hoverBackgroundColor: PollColor[key]
-        }));
+
+        const data: ChartData = fields.map(key => {
+            return {
+                data: this.getResultFromPoll(poll, key),
+                label: key.toUpperCase(),
+                backgroundColor: PollColor[key],
+                hoverBackgroundColor: PollColor[key]
+            } as ChartDate;
+        });
 
         return data;
     }
 
-    public generateCircleChartData(poll: PollData): ChartData {
-        const data: ChartData = poll.options.map(candidate => ({
-            label: candidate.user.full_name,
-            data: [candidate.yes]
-        }));
-        return data;
-    }
-
-    public getChartType(poll: PollData): ChartType {
-        if ((<any>poll).pollmethod === AssignmentPollMethod.Votes) {
-            return 'doughnut';
-        } else {
-            return 'horizontalBar';
-        }
+    /**
+     * Extracts yes-no-abstain such as valid, invalids and totals from Poll and PollData-Objects
+     */
+    private getResultFromPoll(poll: PollData, key: CalculablePollKey): number[] {
+        return poll[key] ? [poll[key]] : poll.options.map(option => option[key]);
     }
 
     public getChartLabels(poll: PollData): string[] {
-        return poll.options.map(candidate => candidate.user.full_name);
+        return poll.options.map(candidate => candidate.user.short_name);
     }
 
     public isVoteDocumented(vote: number): boolean {

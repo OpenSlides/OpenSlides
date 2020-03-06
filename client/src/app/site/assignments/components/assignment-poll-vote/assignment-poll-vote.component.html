@@ -1,5 +1,4 @@
 <ng-container *ngIf="poll">
-
     <ng-container *ngIf="vmanager.canVote(poll)">
         <!-- TODO: Someone should make this pretty -->
         <span *ngIf="poll.user_has_voted_valid">Your vote is valid!</span>
@@ -22,7 +21,12 @@
                     }"
                 >
                     <div class="vote-candidate-name">
-                        <span *ngIf="option.user">{{ option.user.getFullName() }}</span>
+                        <span *ngIf="option.user">
+                            <span>{{ option.user.short_name }}</span>
+                            <div class="user-subtitle" *ngIf="option.user.getLevelAndNumber()">
+                                {{ option.user.getLevelAndNumber() }}
+                            </div>
+                        </span>
                         <span *ngIf="!option.user">{{ 'Unknown user' | translate }}</span>
                     </div>
 

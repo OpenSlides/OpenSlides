@@ -199,14 +199,24 @@ export class ChartsComponent extends BaseViewComponent {
             labels: {}
         },
         scales: {
-            xAxes: [{ ticks: { beginAtZero: true, stepSize: 1 } }],
-            yAxes: [{ ticks: { beginAtZero: true } }]
-        },
-        plugins: {
-            datalabels: {
-                anchor: 'end',
-                align: 'end'
-            }
+            xAxes: [
+                {
+                    gridLines: {
+                        drawOnChartArea: false
+                    },
+                    ticks: { beginAtZero: true, stepSize: 1 },
+                    stacked: true
+                }
+            ],
+            yAxes: [
+                {
+                    gridLines: {
+                        drawOnChartArea: false
+                    },
+                    ticks: { beginAtZero: true, mirror: true, labelOffset: -20 },
+                    stacked: true
+                }
+            ]
         }
     };
 
@@ -251,16 +261,6 @@ export class ChartsComponent extends BaseViewComponent {
         super(title, translate, matSnackbar);
     }
 
-    /**
-     * Changes the chart-options, if the `stackedBar` is used.
-     */
-    private setupStackedBar(): void {
-        this.chartOptions.scales = Object.assign(this.chartOptions.scales, {
-            xAxes: [{ stacked: true }],
-            yAxes: [{ stacked: true }]
-        });
-    }
-
     private setupBar(): void {
         if (!this.chartData.every(date => date.barThickness && date.maxBarThickness)) {
             this.chartData = this.chartData.map(chartDate => ({
@@ -284,7 +284,6 @@ export class ChartsComponent extends BaseViewComponent {
                     fontSize: 14,
                     boxWidth: 40
                 };
-                break;
         }
         this.cd.detectChanges();
     }
@@ -292,7 +291,6 @@ export class ChartsComponent extends BaseViewComponent {
     private checkChartType(chartType?: ChartType): void {
         let type = chartType || this._type;
         if (type === 'stackedBar') {
-            this.setupStackedBar();
             this.setupBar();
             type = 'horizontalBar';
         }

@@ -20,14 +20,14 @@
         <h1>{{ poll.title }}</h1>
         <span *ngIf="poll.type !== 'analog'">{{ poll.typeVerbose | translate }}</span>
 
-        <div *ngIf="poll.stateHasVotes">
-            <div class="assignment-result-wrapper">
-                <!-- Result Table -->
+        <div class="assignment-result-wrapper" *ngIf="poll.stateHasVotes">
+            <!-- Result Table -->
+            <div>
                 <table class="assignment-result-table">
                     <tbody>
                         <tr>
-                            <th translate>Candidates</th>
-                            <th>
+                            <th class="voting-option" translate>Candidates</th>
+                            <th class="result voted-yes">
                                 <span *ngIf="!poll.isMethodY" translate>
                                     Yes
                                 </span>
@@ -35,42 +35,50 @@
                                     Votes
                                 </span>
                             </th>
-                            <th translate *ngIf="!poll.isMethodY">No</th>
-                            <th translate *ngIf="poll.isMethodYNA">Abstain</th>
+                            <th class="result voted-no" translate *ngIf="!poll.isMethodY">No</th>
+                            <th class="result voted-abstain" translate *ngIf="poll.isMethodYNA">Abstain</th>
                         </tr>
                         <tr *ngFor="let row of poll.tableData" [class]="row.class">
-                            <td>
-                                <span>
-                                    {{ row.votingOption | pollKeyVerbose | translate }}
-                                </span>
-                                <span class="user-subtitle" *ngIf="row.votingOptionSubtitle">
-                                    <br />
-                                    {{ row.votingOptionSubtitle }}
-                                </span>
-                            </td>
-                            <td *ngFor="let vote of row.value">
-                                <div class="single-result" *ngIf="vote && voteFitsMethod(vote)">
+                            <td class="voting-option">
+                                <div>
                                     <span>
-                                        {{ vote.amount | parsePollNumber }}
+                                        {{ row.votingOption | pollKeyVerbose | translate }}
+                                    </span>
+                                    <span class="user-subtitle" *ngIf="row.votingOptionSubtitle">
+                                        <br />
+                                        {{ row.votingOptionSubtitle }}
+                                    </span>
+                                </div>
+                            </td>
+                            <td class="result" *ngFor="let vote of row.value">
+                                <div
+                                    class="single-result"
+                                    [ngClass]="getVoteClass(vote)"
+                                    *ngIf="vote && voteFitsMethod(vote)"
+                                >
+                                    <span>
                                         <span *ngIf="vote.showPercent">
                                             {{ vote.amount | pollPercentBase: poll }}
                                         </span>
+                                        {{ vote.amount | parsePollNumber }}
                                     </span>
                                 </div>
                             </td>
                         </tr>
                     </tbody>
                 </table>
+            </div>
 
-                <!-- Result Chart -->
+            <!-- Result Chart -->
+            <div class="chart-wrapper">
                 <os-charts
                     class="assignment-result-chart"
-                    [ngClass]="chartType === 'doughnut' ? 'pie-chart' : ''"
                     *ngIf="chartDataSubject.value"
                     [type]="chartType"
                     [labels]="candidatesLabels"
                     [data]="chartDataSubject"
                     [hasPadding]="false"
+                    [showLegend]="false"
                     legendPosition="right"
                 ></os-charts>
             </div>
@@ -112,7 +120,7 @@
                         </div>
                     </div>
 
-                    <div *pblNgridCellDef="'votes'; row as vote" >
+                    <div *pblNgridCellDef="'votes'; row as vote">
                         <div class="single-vote-result" *ngFor="let candidate of vote.votes">{{ candidate }}</div>
                     </div>
                 </os-list-view-table>
@@ -121,21 +129,21 @@
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Meta Infos -->
-        <div class="assignment-poll-meta">
-            <small *ngIf="poll.groups && poll.type && poll.type !== 'analog'">
-                {{ 'Groups' | translate }}:
+    <!-- Meta Infos -->
+    <div *ngIf="poll" class="assignment-poll-meta">
+        <small *ngIf="poll.groups && poll.type && poll.type !== 'analog'">
+            {{ 'Groups' | translate }}:
 
-                <span *ngFor="let group of poll.groups; let i = index">
-                    {{ group.getTitle() | translate }}<span *ngIf="i < poll.groups.length - 1">, </span>
-                </span>
-            </small>
+            <span *ngFor="let group of poll.groups; let i = index">
+                {{ group.getTitle() | translate }}<span *ngIf="i < poll.groups.length - 1">, </span>
+            </span>
+        </small>
 
-            <small *ngIf="poll.onehundred_percent_base">
-                {{ '100% base' | translate }}: {{ poll.percentBaseVerbose | translate }}
-            </small>
-        </div>
+        <small *ngIf="poll.onehundred_percent_base">
+            {{ '100% base' | translate }}: {{ poll.percentBaseVerbose | translate }}
+        </small>
     </div>
 </ng-template>
 

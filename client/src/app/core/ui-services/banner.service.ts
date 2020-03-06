@@ -7,8 +7,7 @@ export interface BannerDefinition {
     class?: string;
     icon?: string;
     text?: string;
-    bgColor?: string;
-    color?: string;
+    subText?: string;
     link?: string;
     largerOnMobileView?: boolean;
 }

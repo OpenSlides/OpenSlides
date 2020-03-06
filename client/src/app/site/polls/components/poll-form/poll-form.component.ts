@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatSnackBar } from '@angular/material';
+import { MatDialog, MatSnackBar } from '@angular/material';
 import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
@@ -8,12 +8,13 @@ import { Observable } from 'rxjs';
 
 import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
+import { VotingPrivacyWarningComponent } from 'app/shared/components/voting-privacy-warning/voting-privacy-warning.component';
 import { AssignmentPollMethod, AssignmentPollPercentBase } from 'app/shared/models/assignments/assignment-poll';
 import { PercentBase } from 'app/shared/models/poll/base-poll';
 import { PollType } from 'app/shared/models/poll/base-poll';
+import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
 import { ViewAssignmentPoll } from 'app/site/assignments/models/view-assignment-poll';
 import { BaseViewComponent } from 'app/site/base/base-view';
-import { ViewMotionPoll } from 'app/site/motions/models/view-motion-poll';
 import {
     MajorityMethodVerbose,
     PollClassType,
@@ -86,6 +87,8 @@ export class PollFormComponent<T extends ViewBasePoll> extends BaseViewComponent
 
     public showSingleAmountHint = false;
 
+    public showNonNominalWarning = false;
+
     /**
      * Constructor. Retrieves necessary metadata from the pollService,
      * injects the poll itself
@@ -97,7 +100,8 @@ export class PollFormComponent<T extends ViewBasePoll> extends BaseViewComponent
         private fb: FormBuilder,
         private groupRepo: GroupRepositoryService,
         public pollService: PollService,
-        private configService: ConfigService
+        private configService: ConfigService,
+        private dialog: MatDialog
     ) {
         super(title, translate, snackbar);
         this.initContentForm();
@@ -119,7 +123,6 @@ export class PollFormComponent<T extends ViewBasePoll> extends BaseViewComponent
                 if (!this.data.pollmethod) {
                     this.data.pollmethod = this.configService.instant('assignment_poll_method');
                 }
-            } else if (this.data instanceof ViewMotionPoll) {
             }
 
             Object.keys(this.contentForm.controls).forEach(key => {
@@ -209,6 +212,16 @@ export class PollFormComponent<T extends ViewBasePoll> extends BaseViewComponent
     private setVotesAmountCtrl(): void {
         // Disable "Amounts of votes" if anonymous and yes-method
         const votesAmountCtrl = this.contentForm.get('votes_amount');
+
+        if (this.contentForm.get('type').value === PollType.Pseudoanonymous) {
+            this.showNonNominalWarning = true;
+        } else {
+            this.showNonNominalWarning = false;
+        }
+
+        /**
+         * TODO: Not required when batch sending works again
+         */
         if (
             this.contentForm.get('type').value === PollType.Pseudoanonymous &&
             this.contentForm.get('pollmethod').value === 'votes'
@@ -274,6 +287,10 @@ export class PollFormComponent<T extends ViewBasePoll> extends BaseViewComponent
             global_no: [false],
             global_abstain: [false]
         });
+    }
+
+    public openVotingWarning(): void {
+        this.dialog.open(VotingPrivacyWarningComponent, infoDialogSettings);
     }
 
     /**
