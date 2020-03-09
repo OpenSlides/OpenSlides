@@ -5,22 +5,27 @@ import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 
 import { OperatorService } from 'app/core/core-services/operator.service';
-import { AssignmentPollRepositoryService } from 'app/core/repositories/assignments/assignment-poll-repository.service';
-import { AssignmentVoteRepositoryService } from 'app/core/repositories/assignments/assignment-vote-repository.service';
+import {
+    AssignmentPollRepositoryService,
+    GlobalVote,
+    VotingData
+} from 'app/core/repositories/assignments/assignment-poll-repository.service';
+import { PromptService } from 'app/core/ui-services/prompt.service';
 import { VotingService } from 'app/core/ui-services/voting.service';
 import { AssignmentPollMethod } from 'app/shared/models/assignments/assignment-poll';
 import { PollType } from 'app/shared/models/poll/base-poll';
 import { BasePollVoteComponent } from 'app/site/polls/components/base-poll-vote.component';
 import { ViewAssignmentPoll } from '../../models/view-assignment-poll';
-import { ViewAssignmentVote } from '../../models/view-assignment-vote';
 
 // TODO: Duplicate
 interface VoteActions {
-    vote: 'Y' | 'N' | 'A';
+    vote: Vote;
     css: string;
     icon: string;
     label: string;
 }
+
+type Vote = 'Y' | 'N' | 'A';
 
 @Component({
     selector: 'os-assignment-poll-vote',
@@ -31,11 +36,10 @@ export class AssignmentPollVoteComponent extends BasePollVoteComponent<ViewAssig
     public AssignmentPollMethod = AssignmentPollMethod;
     public PollType = PollType;
     public voteActions: VoteActions[] = [];
-
-    /** holds the currently saved votes */
-    public currentVotes: { [key: number]: string | null; global?: string } = {};
-
-    private votes: ViewAssignmentVote[];
+    public voteRequestData: VotingData = {
+        votes: {}
+    };
+    public alreadyVoted: boolean;
 
     public constructor(
         title: Title,
@@ -43,23 +47,19 @@ export class AssignmentPollVoteComponent extends BasePollVoteComponent<ViewAssig
         matSnackbar: MatSnackBar,
         vmanager: VotingService,
         operator: OperatorService,
-        private voteRepo: AssignmentVoteRepositoryService,
-        private pollRepo: AssignmentPollRepositoryService
+        private pollRepo: AssignmentPollRepositoryService,
+        private promptService: PromptService
     ) {
         super(title, translate, matSnackbar, vmanager, operator);
     }
 
     public ngOnInit(): void {
-        if (this.poll) {
+        if (this.poll && this.poll.user_has_not_voted) {
+            this.alreadyVoted = false;
             this.defineVoteOptions();
+        } else {
+            this.alreadyVoted = true;
         }
-
-        this.subscriptions.push(
-            this.voteRepo.getViewModelListObservable().subscribe(votes => {
-                this.votes = votes;
-                this.updateVotes();
-            })
-        );
     }
 
     private defineVoteOptions(): void {
@@ -90,63 +90,82 @@ export class AssignmentPollVoteComponent extends BasePollVoteComponent<ViewAssig
     }
 
     public getVotesCount(): number {
-        return Object.keys(this.currentVotes).filter(key => this.currentVotes[key]).length;
+        return Object.keys(this.voteRequestData.votes).filter(key => this.voteRequestData.votes[key]).length;
     }
 
-    protected updateVotes(): void {
-        if (this.user && this.votes && this.poll) {
-            const filtered = this.votes.filter(
-                vote => vote.option.poll_id === this.poll.id && vote.user_id === this.user.id
-            );
+    public isGlobalOptionSelected(): boolean {
+        return !!this.voteRequestData.global;
+    }
 
-            for (const option of this.poll.options) {
-                let curr_vote = filtered.find(vote => vote.option.id === option.id);
-                if (this.poll.pollmethod === AssignmentPollMethod.Votes && curr_vote) {
-                    if (curr_vote.value !== 'Y') {
-                        this.currentVotes.global = curr_vote.valueVerbose;
-                        curr_vote = null;
-                    } else {
-                        this.currentVotes.global = null;
+    public submitVote(): void {
+        const title = this.translate.instant('Are you sure?');
+        const content = this.translate.instant('Your decision cannot be changed afterwards');
+        this.promptService.open(title, content).then(confirmed => {
+            if (confirmed) {
+                this.pollRepo
+                    .vote(this.voteRequestData, this.poll.id)
+                    .then(() => {
+                        this.alreadyVoted = true;
+                    })
+                    .catch(this.raiseError);
+            }
+        });
+    }
+
+    public saveSingleVote(optionId: number, vote: Vote): void {
+        if (this.isGlobalOptionSelected()) {
+            delete this.voteRequestData.global;
+        }
+
+        if (this.poll.pollmethod === AssignmentPollMethod.Votes) {
+            const votesAmount = this.poll.votes_amount;
+            const tmpVoteRequest = this.poll.options
+                .map(option => option.id)
+                .reduce((o, n) => {
+                    o[n] = 0;
+                    if (votesAmount === 1) {
+                        if (n === optionId && this.voteRequestData.votes[n] !== 1) {
+                            o[n] = 1;
+                        }
+                    } else if ((n === optionId) !== (this.voteRequestData.votes[n] === 1)) {
+                        o[n] = 1;
                     }
+
+                    return o;
+                }, {});
+
+            // check if you can still vote
+            const countedVotes = Object.keys(tmpVoteRequest).filter(key => tmpVoteRequest[key]).length;
+            if (countedVotes <= votesAmount) {
+                this.voteRequestData.votes = tmpVoteRequest;
+
+                // if you have no options anymore, try to send
+                if (this.getVotesCount() === votesAmount) {
+                    this.submitVote();
                 }
-                this.currentVotes[option.id] = curr_vote && curr_vote.valueVerbose;
+            } else {
+                this.raiseError(
+                    this.translate.instant('You reached the maximum amount of votes. Deselect somebody first')
+                );
+            }
+        } else {
+            // YN/YNA
+            if (this.voteRequestData.votes[optionId] && this.voteRequestData.votes[optionId] === vote) {
+                delete this.voteRequestData.votes[optionId];
+            } else {
+                this.voteRequestData.votes[optionId] = vote;
+            }
+
+            // if you filled out every option, try to send
+            if (Object.keys(this.voteRequestData.votes).length === this.poll.options.length) {
+                this.submitVote();
             }
         }
     }
 
-    private getPollOptionIds(): number[] {
-        return this.poll.options.map(option => option.id);
-    }
-
-    public saveSingleVote(optionId: number, vote: 'Y' | 'N' | 'A'): void {
-        let requestData;
-        if (this.poll.pollmethod === AssignmentPollMethod.Votes) {
-            const pollOptionIds = this.getPollOptionIds();
-
-            requestData = pollOptionIds.reduce((o, n) => {
-                o[n] = 0;
-                if (this.poll.votes_amount === 1) {
-                    if (n === optionId && this.currentVotes[n] !== 'Yes') {
-                        o[n] = 1;
-                    }
-                } else if ((n === optionId) !== (this.currentVotes[n] === 'Yes')) {
-                    o[n] = 1;
-                }
-
-                return o;
-            }, {});
-        } else {
-            // YN/YNA
-            requestData = {};
-            requestData[optionId] = vote;
-        }
-
-        this.pollRepo.vote(requestData, this.poll.id).catch(this.raiseError);
-    }
-
-    public saveGlobalVote(globalVote: 'N' | 'A'): void {
-        // This may be a bug in angulars HTTP client: A string is not quoted to be valid json.
-        // Maybe they expect a string to be alrady a jsonified object.
-        this.pollRepo.vote(`"${globalVote}"`, this.poll.id).catch(this.raiseError);
+    public saveGlobalVote(globalVote: GlobalVote): void {
+        this.voteRequestData.votes = {};
+        this.voteRequestData.global = globalVote;
+        this.submitVote();
     }
 }

@@ -85,8 +85,6 @@ export class PollFormComponent<T extends ViewBasePoll> extends BaseViewComponent
      */
     public publishImmediately = true;
 
-    public showSingleAmountHint = false;
-
     public showNonNominalWarning = false;
 
     /**
@@ -210,28 +208,10 @@ export class PollFormComponent<T extends ViewBasePoll> extends BaseViewComponent
      * TODO: Enabling this requires at least another layout and some rework
      */
     private setVotesAmountCtrl(): void {
-        // Disable "Amounts of votes" if anonymous and yes-method
-        const votesAmountCtrl = this.contentForm.get('votes_amount');
-
         if (this.contentForm.get('type').value === PollType.Pseudoanonymous) {
             this.showNonNominalWarning = true;
         } else {
             this.showNonNominalWarning = false;
-        }
-
-        /**
-         * TODO: Not required when batch sending works again
-         */
-        if (
-            this.contentForm.get('type').value === PollType.Pseudoanonymous &&
-            this.contentForm.get('pollmethod').value === 'votes'
-        ) {
-            votesAmountCtrl.disable();
-            votesAmountCtrl.setValue(1);
-            this.showSingleAmountHint = true;
-        } else {
-            votesAmountCtrl.enable();
-            this.showSingleAmountHint = false;
         }
     }
 

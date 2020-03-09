@@ -1,12 +1,12 @@
 <ng-container *ngIf="poll">
-    <ng-container *ngIf="vmanager.canVote(poll)">
-        <!-- TODO: Someone should make this pretty -->
-        <span *ngIf="poll.user_has_voted_valid">Your vote is valid!</span>
-        <span *ngIf="poll.user_has_voted_invalid">DANGER: Your vote is invalid!</span>
-        <span *ngIf="poll.user_has_not_voted">You have not give any voting here!</span>
+    <ng-container *ngIf="vmanager.canVote(poll) && !alreadyVoted; else cannotVote">
+        <!-- Submit Vote -->
+        <ng-container [ngTemplateOutlet]="sendNow"></ng-container>
 
         <!-- Leftover votes -->
-        <h4 *ngIf="poll.pollmethod === AssignmentPollMethod.Votes && poll.votes_amount > 1 && !currentVotes.global">
+        <h4
+            *ngIf="poll.pollmethod === AssignmentPollMethod.Votes && poll.votes_amount > 1 && !isGlobalOptionSelected()"
+        >
             {{ 'Votes for this poll' | translate }}: {{ getVotesCount() }}/{{ poll.votes_amount }}
         </h4>
 
@@ -34,7 +34,11 @@
                         <button
                             mat-raised-button
                             (click)="saveSingleVote(option.id, action.vote)"
-                            [ngClass]="currentVotes[option.id] === action.label ? action.css : ''"
+                            [ngClass]="
+                                voteRequestData.votes[option.id] === action.vote || voteRequestData.votes[option.id] === 1
+                                    ? action.css
+                                    : ''
+                            "
                         >
                             <mat-icon> {{ action.icon }}</mat-icon>
                         </button>
@@ -55,7 +59,7 @@
                     <button
                         mat-raised-button
                         (click)="saveGlobalVote('N')"
-                        [ngClass]="currentVotes['global'] === 'No' ? 'voted-no' : ''"
+                        [ngClass]="voteRequestData.global === 'N' ? 'voted-no' : ''"
                     >
                         <mat-icon> thumb_down </mat-icon>
                     </button>
@@ -68,7 +72,7 @@
                     <button
                         mat-raised-button
                         (click)="saveGlobalVote('A')"
-                        [ngClass]="currentVotes['global'] === 'Abstain' ? 'voted-abstain' : ''"
+                        [ngClass]="voteRequestData.global === 'A' ? 'voted-abstain' : ''"
                     >
                         <mat-icon> trip_origin</mat-icon>
                     </button>
@@ -78,6 +82,9 @@
                 </div>
             </div>
         </ng-container>
+
+        <!-- Submit Vote -->
+        <ng-container [ngTemplateOutlet]="sendNow"></ng-container>
     </ng-container>
 
     <!-- Shows the permission error -->
@@ -85,3 +92,24 @@
         <span>{{ vmanager.getVotePermissionErrorVerbose(poll) | translate }}</span>
     </ng-container>
 </ng-container>
+
+<ng-template #cannotVote>
+    <div class="centered-button-wrapper">
+        <os-icon-container icon="check">
+            {{ 'You already voted on this poll' | translate}}
+        </os-icon-container>
+    </div>
+</ng-template>
+
+<ng-template #sendNow>
+    <div class="centered-button-wrapper">
+        <button mat-flat-button color="accent" (click)="submitVote()">
+            <mat-icon>
+                how_to_vote
+            </mat-icon>
+            <span>
+                {{ 'Submit vote now' | translate }}
+            </span>
+        </button>
+    </div>
+</ng-template>
