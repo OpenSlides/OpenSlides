@@ -1,0 +1,371 @@
+These are 5 examples for ModelRequests on a given dataset with the expected
+results. There are 6 models:
+- A, B, C, D: some models with a common `title` attribute and an attribute per
+  model (a, b, c, d).
+- G1, G2: Some models with generic relations.
+
+Relations:
+- A <-1---1-> B (B_id <-> A_id)
+- A <-1---n-> C (C_ids <-> A_id)
+- B <-n---m-> C (C_ids <-> B_ids)
+- B <-1---n-> B selfreference modeling a tree (B_children_ids <-> B_parent_id)
+- B <-n---m-> D with structured keys on D's side. The numbers are not related to
+  any ids. (D_ids <-> B_<number>_ids)
+- G1 <-n---m-> A,C (content_object_ids <-> G1_ids)
+- G2 <-1---1-> A,B (content_object_id <-> G2_id)
+
+Notes about the value `null`: If a field is not present, its value is implicit
+`null`. Fields with `null` as value are included in the ModelResponse but not
+the dataset. This means, that there might be references without a reverse part in
+the dataset, but this is fine, as the missing part is implicitly `null`. If a
+field is deleted in the dataset, there is an update with `null` as the value of
+the field.
+
+Dataset: {
+    A: [{
+        id: 1,
+        a: "a1",
+        title: "a1",
+        B_id: 1,
+        C_ids: [],
+        G1_ids: [1, 2],
+    }, {
+        id: 2,
+        a: "a2",
+        title: "a2",
+        C_ids: [1, 2],
+        G1_ids: [],
+    }],
+    B: [{
+        id: 1,
+        b: "b1",
+        title: "b1";
+        A_id: 1,
+        C_ids: [1],
+        G2_id: 1,
+        B_children_ids: [2],
+        D_ids: [1],
+    }, {
+        id: 2,
+        b: "b2",
+        title: "b2",
+        C_ids: [1, 2],
+        B_parent_id: 1,
+        B_children_ids: [],
+        D_ids: [1, 2],
+    }],
+    C: [{
+        id: 1,
+        c: "c1",
+        title: "c1",
+        A_id: 2,
+        B_ids: [1, 2],
+        G1_ids: [2, 3],
+    }, {
+        id: 2,
+        c: "c2",
+        title: "c2",
+        A_id: 2,
+        B_ids: [2],
+        G1_ids: [2, 3],
+    }],
+    D: [{
+        id: 1,
+        d: "d1",
+        B_1_ids: [1, 2],
+        B_2_ids: [1],
+        B_3_ids: [],
+    }, {
+        id: 2,
+        d: "d2",
+        B_1_ids: [],
+        B_4_ids: [2],
+    }],
+    G1: [{
+        id: 1,
+        g1: "g1.1",
+        content_object_ids: ["A/1"],
+    }, {
+        id: 2,
+        g1: "g1.2",
+        content_object_ids: ["A/1", "C/1", "C/2"],
+    }, {
+        id: 3,
+        g1: "g1.3",
+        content_object_ids: ["C/1", "C/2"],
+    }],
+    G2: [{
+        id: 1,
+        g2: "g2.1",
+        content_object_id: "B/1",
+    }]
+}
+
+I: Basic
+Note:
+    - The basic structure
+    - The empty model B/1 in the response
+    - The provided references, e.g. A/2/C_ids in the response
+
+ModelRequest: {
+    collection: "A",
+    ids: [1, 2],
+    fields: {
+        a: null,
+        C_ids: {
+            collection: "C",
+            fields: {
+                c: null,
+                G1_ids: {
+                    collection: "G1",
+                    fields: {
+                        g1: null,
+                    }
+                }
+            }
+        },
+        B_id: {
+            collection: "B",
+            fields: {},
+        },
+        G1_ids: {
+            collection: "G1"
+            fields: {
+                g1: null,
+            }
+        }
+    }
+}
+ModelData: {
+     A: {
+        1: {
+             a: "a1",
+             C_ids: [],
+             B_id: 1,
+        },
+        2: {
+             a: "a2",
+             C_ids: [1, 2],
+        }
+    },
+    B: {
+        1: {}
+    }
+    C: {
+        1: {
+            c: "c1",
+            G1_ids: [2, 3],
+        },
+        2: {
+            c: "c2",
+            G1_ids: [2, 3],
+        }
+    },
+    G1: {
+        1: {
+            g1: "g1.1",
+        },
+        2: {
+            g1: "g1.2",
+        },
+        3: {
+            g1: "g1.3",
+        }
+    }
+}
+
+II: Partial merged fields, generic lookup
+Note:
+    - different fields for B/1 and B/2 in the response
+    - different fields for C/1 and C/2 in the response
+    - The generic lookup from G2/1 to B/1
+
+ModelRequest: {
+    collection: "G2"
+    ids: [1],
+    fields: {
+        content_object_id: {
+            fields: {
+                B_children_ids: {
+                    collection: "B",
+                    fields: {
+                        C_ids: {
+                            collection: "C",
+                            fields: {
+                                c: null,
+                            }
+                        },
+                        B_parent_id: null,
+                    }
+                },
+                C_ids: {
+                    collection: "C",
+                    fields: {
+                        c: null,
+                        title: null,
+                    }
+                },
+                G2_id: null
+            }
+        }
+    }
+}
+ModelData: {
+    B: {
+        1: {
+            B_children: [2],
+            C_ids: [1],
+            G1_id: 1,
+        },
+        2: {
+            C_ids: [1, 2],
+            B_parent_id: 1,
+        }
+    G2: {
+        1: {
+            content_object_id: "B/1",
+        }
+    },
+    C: {
+        1: {
+            c: "c1",
+            title: "c1",
+        },
+        2: {
+            c: "c2",
+        }
+    }
+}
+
+
+III: non-existent ids, fields, fqids, references, generic relations and  felder ohne referenz
+Note:
+    - id 4 of G1 does not exist
+    - some fields does not exist
+    - some fields with indicated references does not exist (fine, until there is
+      no data. If there is data, this will cause an parsing-error at runtime)
+    - All these cases are fine
+
+ModelRequest: {
+    collection: "G1",
+    ids: [2, 4],  # 4 does not exists
+    fields: {
+        content_object_ids: {
+            fields: {
+                a: null,
+                b: null,
+                not_existent: {
+                    key: null,
+                },
+                title: null,
+                G1_ids: null,
+                A_id: null,
+            }
+        }
+    }
+}
+ModelData: {
+    G1: {
+        2: {
+            content_object_ids: ["A/1", "C/1", "C/2"],
+        }
+    },
+    A: {
+        1: {
+            a: "a1",
+            title: "a1",
+            G1_ids: [1, 2],
+        }
+    },
+    C: {
+        1: {
+            title: "c1",
+            A_id: 2,
+            G1_ids: [2, 3],
+        },
+        2: {
+            title: "c2",
+            A_id: 2,
+            G1_ids: [2, 3],
+        }
+    }
+}
+
+IV: structured fields without references
+Note:
+    - `B_` is handled as a prefix
+
+ModelRequest: {
+    collection: "D",
+    ids: [1, 2],
+    fields: {
+        d: null,
+        B_: null,
+    }
+}
+ModelData: {
+    D: {
+        1: {
+            d: "d1",
+            B_1_ids: [1, 2],
+            B_2_ids: [1],
+            B_3_ids: [],
+        },
+        2: {
+            d: "d2",
+            B_1_ids: [],
+            B_4_ids: [2],
+        }
+    }
+}
+
+
+V: structed references
+Note:
+    - `B_` and `B_4_ids` are handled as prefixes (`B_4_ids` has only one match)
+    - All references are followed
+    - The different fields for B/1 and B/2 in the response
+
+ModelRequest: {
+    collection: "D",
+    ids: [1, 2],
+    fields: {
+        B_: {
+            collection: "B",
+            fields: {
+                b: null,
+            }
+        },
+        B_4_ids: {
+            collection: "B",
+            fields: {
+                title: null,
+            }
+        }
+    }
+}
+ModelData: {
+    D: {
+        1: {
+            d: "d1",
+            B_1_ids: [1, 2],
+            B_2_ids: [1],
+            B_3_ids: [],
+        },
+        2: {
+            d: "d2",
+            B_1_ids: [],
+            B_4_ids: [2],
+        }
+    },
+    B: {
+        1: {
+            b: "b1",
+        },
+        2: {
+            b: "b2",
+            title: "b2",
+        }
+    }
+}
+

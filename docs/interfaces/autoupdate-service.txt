@@ -1,0 +1,102 @@
+/**
+ * This is a chatch-all exception for some invalid parameters
+ */
+Exception InvalidFormat(msg: string);
+
+/**
+ * This exception is thrown, when parsing model data. E.g. there is an indicated
+ * relation to a key, but the data are no foreign ids/fqids. The exception may
+ * happen, if the stream is used at runtime, because this cannot be detected
+ * when the caller makes the request.
+ */
+Exception ParsingError(msg: string);
+
+/**
+ * This methods subscribes to the given request. The response is a stream
+ * (language dependent) updating all models according to the ModelRequest if new
+ * data is available. On subscription, initial data must be pushed to the caller
+ * as soon as possible. The stream can be closed by closing the stream (e.g. the
+ * underlying network connection).
+ *
+ * @throws InvalidFormat
+ * @throws ParsingError
+ */
+subscribe(request: ModelRequest): stream<ModelData>;
+
+/**
+ * This is the main interface for requesting models in a structured, nested way.
+ * The initial request targets some models as the root models of one collection
+ * with all the same fields. This build a tree of dependencies, because the
+ * value of some fields may be a GenericModelDescriptor again.
+ *
+ * For a description of `fields` and `collection`, see GenericModelDescriptor
+ * and ModelDescriptor.
+ *
+ * `ids`: This is a list of ids for a collection, that should be provided. All
+ * models, that the user can see, must be included in the response. The model
+ * fields are handled according to `GenericModelDescriptor`.
+ */
+Interface ModelRequest {
+    ids: ID[];
+    collection: Collection;
+    fields: {
+        [field: Field]: GenericModelDecriptor | null;
+    }
+}
+
+/**
+ * For an overview, see `ModelRequest`.
+ *
+ * `fields`:
+ * All fields are handled as prefixes being aware of strutured fields. If a
+ * field is given, all fields with the given field as a prefix are included.
+ * E.g. if the field is `my_field`, the fields `my_field`, `my_field_3` and
+ * `my_fields` are included.
+ *
+ * Regardless of the value of a field, the restricted values are given in the
+ * response (multiple for structured fields). If the restricted value is null,
+ * the field must be included here.
+ *
+ * Note that the fields may be empty in the request or empty after restriction.
+ * The client gets an empty model, but *gets* a model. Only if the model does
+ * not exist or the user cannot see the model, there will be no model in the
+ * response.
+ *
+ * If the value is not null, it is indicated, that there is a reference to
+ * follow. There are two types of values:
+ * - GenericModelDescriptor: The reference is a generic one. This means, that
+ *   the actual value from the model is a fqid or an array of fqids.
+ * - ModelDescriptor: A collection is given, so it can be expected, that the
+ *   actual model value is an id or an array of ids.
+ */
+Interface GenericModelDecriptor {
+    fields: {
+        [field: Field]: GenericModelDecriptor | null;
+    }
+}
+
+/**
+ * For an overview, see `ModelRequest`.
+ *
+ * `collection`:
+ * This is the collection, the ids are associated to. The ids are provided with
+ * two different ways:
+ * - In a ModelRequest, the ids are given.
+ * - If this interface is used in a field indication a relation, the id(s) are
+ *   given by the actual model data.
+ */
+Interface ModelDescriptor extends GenericModelDescriptor {
+    collection: Collection;
+}
+
+/**
+ * This structure holds all data given by the called service structured by
+ * fqids. Each fqid contains the (partial, restricted) data for the fqid.
+ */
+Interface ModelData {
+    [collection: Collection]: {
+        [id: Id]: {
+            [field: Field]: Value;
+        };
+    };
+}
