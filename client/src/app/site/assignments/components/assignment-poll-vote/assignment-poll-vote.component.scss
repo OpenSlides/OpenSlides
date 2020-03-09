@@ -40,6 +40,15 @@
     }
 }
 
+.centered-button-wrapper {
+    display: flex;
+    > * {
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+// TODO: Could be some more general component
 .voted-yes {
     background-color: $votes-yes-color;
 }
