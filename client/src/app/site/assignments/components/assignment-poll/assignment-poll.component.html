@@ -21,7 +21,7 @@
                 <!-- Buttons -->
                 <button
                     mat-icon-button
-                    *osPerms="['core.can_manage_projector', 'assignments.can_manage_polls']"
+                    *osPerms="['core.can_manage_projector', 'assignments.can_manage']"
                     [matMenuTriggerFor]="pollItemMenu"
                     (click)="$event.stopPropagation()"
                 >
@@ -30,7 +30,7 @@
             </div>
 
             <!-- Change state button -->
-            <div *osPerms="'assignments.can_manage_polls'">
+            <div *osPerms="'assignments.can_manage'">
                 <button
                     mat-stroked-button
                     *ngIf="!poll.isPublished"
@@ -67,7 +67,7 @@
         </div>
 
         <!-- Poll progress bar -->
-        <div *osPerms="'assignments.can_manage_polls'; and: poll && poll.isStarted">
+        <div *osPerms="'assignments.can_manage'; and: poll && poll.isStarted">
             <os-poll-progress [poll]="poll"></os-poll-progress>
         </div>
         <os-assignment-poll-vote *ngIf="poll.canBeVotedFor" [poll]="poll"></os-assignment-poll-vote>

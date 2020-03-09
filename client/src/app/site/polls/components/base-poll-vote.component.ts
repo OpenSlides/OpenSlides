@@ -30,10 +30,10 @@ export abstract class BasePollVoteComponent<V extends ViewBasePoll> extends Base
         this.subscriptions.push(
             this.operator.getViewUserObservable().subscribe(user => {
                 this.user = user;
-                this.updateVotes();
+                // this.updateVotes();
             })
         );
     }
 
-    protected abstract updateVotes(): void;
+    // protected abstract updateVotes(): void;
 }
