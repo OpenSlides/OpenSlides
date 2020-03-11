@@ -29,6 +29,13 @@ export class AssignmentPoll extends BasePoll<
     public static COLLECTIONSTRING = 'assignments/assignment-poll';
     public static defaultGroupsConfig = 'assignment_poll_default_groups';
     public static defaultPollMethodConfig = 'assignment_poll_method';
+    public static DECIMAL_FIELDS = [
+        'votesvalid',
+        'votesinvalid',
+        'votescast',
+        'amount_global_abstain',
+        'amount_global_no'
+    ];
 
     public id: number;
     public assignment_id: number;
@@ -36,6 +43,8 @@ export class AssignmentPoll extends BasePoll<
     public allow_multiple_votes_per_candidate: boolean;
     public global_no: boolean;
     public global_abstain: boolean;
+    public amount_global_no: number;
+    public amount_global_abstain: number;
     public description: string;
 
     public get isMethodY(): boolean {
@@ -62,5 +71,9 @@ export class AssignmentPoll extends BasePoll<
 
     public constructor(input?: any) {
         super(AssignmentPoll.COLLECTIONSTRING, input);
+    }
+
+    protected getDecimalFields(): string[] {
+        return AssignmentPoll.DECIMAL_FIELDS;
     }
 }

@@ -9,8 +9,7 @@ export enum VotingError {
     POLL_WRONG_TYPE,
     USER_HAS_NO_PERMISSION,
     USER_IS_ANONYMOUS,
-    USER_NOT_PRESENT,
-    USER_HAS_VOTED_VALID
+    USER_NOT_PRESENT
 }
 
 /**
@@ -59,9 +58,6 @@ export class VotingService {
         }
         if (!user.is_present) {
             return VotingError.USER_NOT_PRESENT;
-        }
-        if (poll.type === PollType.Pseudoanonymous && poll.user_has_voted_valid) {
-            return VotingError.USER_HAS_VOTED_VALID;
         }
     }
 

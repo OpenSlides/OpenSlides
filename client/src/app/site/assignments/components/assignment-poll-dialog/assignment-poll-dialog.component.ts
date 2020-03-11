@@ -5,6 +5,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 import { AssignmentPollMethod } from 'app/shared/models/assignments/assignment-poll';
 import { PollType } from 'app/shared/models/poll/base-poll';
@@ -59,6 +60,9 @@ export class AssignmentPollDialogComponent extends BasePollDialogComponent<ViewA
 
     public options: OptionsObject;
 
+    public globalNoEnabled: boolean;
+    public globalAbstainEnabled: boolean;
+
     public get isAnalogPoll(): boolean {
         return (
             this.pollForm &&
@@ -104,7 +108,7 @@ export class AssignmentPollDialogComponent extends BasePollDialogComponent<ViewA
         }
 
         this.subscriptions.push(
-            this.pollForm.contentForm.get('pollmethod').valueChanges.subscribe(() => {
+            this.pollForm.contentForm.valueChanges.pipe(debounceTime(150), distinctUntilChanged()).subscribe(() => {
                 this.createDialog();
             })
         );
@@ -112,6 +116,8 @@ export class AssignmentPollDialogComponent extends BasePollDialogComponent<ViewA
 
     private setAnalogPollValues(): void {
         const pollmethod = this.pollForm.contentForm.get('pollmethod').value;
+        this.globalNoEnabled = this.pollForm.contentForm.get('global_no').value;
+        this.globalAbstainEnabled = this.pollForm.contentForm.get('global_abstain').value;
         const analogPollValues: VoteValue[] = ['Y'];
         if (pollmethod !== AssignmentPollMethod.Votes) {
             analogPollValues.push('N');
@@ -127,7 +133,9 @@ export class AssignmentPollDialogComponent extends BasePollDialogComponent<ViewA
             options: {},
             votesvalid: data.votesvalid,
             votesinvalid: data.votesinvalid,
-            votescast: data.votescast
+            votescast: data.votescast,
+            amount_global_no: data.amount_global_no,
+            amount_global_abstain: data.amount_global_abstain
         };
         for (const option of data.options) {
             const votes: any = {};
@@ -165,6 +173,8 @@ export class AssignmentPollDialogComponent extends BasePollDialogComponent<ViewA
                     )
                 }))
             ),
+            amount_global_no: ['', [Validators.min(-2)]],
+            amount_global_abstain: ['', [Validators.min(-2)]],
             // insert all used global fields
             ...this.sumValues.mapToObject(sumValue => ({
                 [sumValue]: ['', [Validators.min(-2)]]

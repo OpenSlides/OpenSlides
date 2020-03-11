@@ -1,9 +1,14 @@
-<os-poll-form [data]="pollData" [pollMethods]="AssignmentPollMethodVerbose" [percentBases]="AssignmentPollPercentBaseVerbose" #pollForm></os-poll-form>
+<os-poll-form
+    [data]="pollData"
+    [pollMethods]="AssignmentPollMethodVerbose"
+    [percentBases]="AssignmentPollPercentBaseVerbose"
+    #pollForm
+></os-poll-form>
 
 <!-- Analog voting -->
-<ng-container *ngIf="isAnalogPoll">
+<ng-container *ngIf="isAnalogPoll && dialogVoteForm">
     <form [formGroup]="dialogVoteForm">
-        <!-- Candidates -->
+        <!-- Candidates Values -->
         <div formGroupName="options">
             <div *ngFor="let option of options" class="votes-grid">
                 <div>
@@ -24,6 +29,8 @@
                 </div>
             </div>
         </div>
+
+        <!-- Sum Values -->
         <div *ngFor="let value of sumValues" class="votes-grid">
             <div></div>
             <os-check-input
@@ -32,6 +39,27 @@
                 inputType="number"
                 [checkboxLabel]="'majority' | translate"
                 [formControlName]="value"
+            ></os-check-input>
+        </div>
+
+        <!-- Global Values -->
+        <div>
+            <os-check-input
+                *ngIf="globalNoEnabled"
+                placeholder="{{ 'Global No' | translate }}"
+                [checkboxValue]="-1"
+                inputType="number"
+                [checkboxLabel]="'majority' | translate"
+                formControlName="amount_global_no"
+            ></os-check-input>
+
+            <os-check-input
+                *ngIf="globalAbstainEnabled"
+                placeholder="{{ 'Global Abstain' | translate }}"
+                [checkboxValue]="-1"
+                inputType="number"
+                [checkboxLabel]="'majority' | translate"
+                formControlName="amount_global_abstain"
             ></os-check-input>
         </div>
     </form>
@@ -53,7 +81,8 @@
     <button
         mat-button
         (click)="submitPoll()"
-        [disabled]="!pollForm.contentForm || pollForm.contentForm.invalid || dialogVoteForm.invalid"
+        *ngIf="pollForm && dialogVoteForm && pollForm.contentForm"
+        [disabled]="pollForm.contentForm.invalid || dialogVoteForm.invalid"
     >
         <span translate>Save</span>
     </button>

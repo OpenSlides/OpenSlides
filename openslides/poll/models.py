@@ -1,5 +1,5 @@
 from decimal import Decimal
-from typing import Iterable, Optional, Set, Tuple, Type
+from typing import Iterable, Optional, Tuple, Type
 
 from django.conf import settings
 from django.core.validators import MinValueValidator
@@ -35,8 +35,7 @@ class BaseVote(models.Model):
 
 class BaseOption(models.Model):
     """
-    All subclasses must have poll attribute with the related name "options". Also
-    they must have a "voted" relation to users.
+    All subclasses must have poll attribute with the related name "options"
     """
 
     vote_class: Optional[Type["BaseVote"]] = None
@@ -86,8 +85,6 @@ class BaseOption(models.Model):
             vote.save()
 
     def reset(self):
-        self.voted.clear()
-
         # Delete votes
         votes = self.get_votes()
         votes_id = [vote.id for vote in votes]
@@ -126,6 +123,7 @@ class BasePoll(models.Model):
 
     title = models.CharField(max_length=255, blank=True, null=False)
     groups = models.ManyToManyField(settings.AUTH_GROUP_MODEL, blank=True)
+    voted = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)
 
     db_votesvalid = models.DecimalField(
         null=True,
@@ -186,7 +184,7 @@ class BasePoll(models.Model):
         if self.type == self.TYPE_ANALOG:
             return self.db_votesvalid
         else:
-            return Decimal(self.amount_valid_votes())
+            return Decimal(self.amount_users_voted())
 
     def set_votesvalid(self, value):
         if self.type != self.TYPE_ANALOG:
@@ -199,7 +197,7 @@ class BasePoll(models.Model):
         if self.type == self.TYPE_ANALOG:
             return self.db_votesinvalid
         else:
-            return Decimal(self.amount_invalid_votes())
+            return Decimal(0)
 
     def set_votesinvalid(self, value):
         if self.type != self.TYPE_ANALOG:
@@ -212,7 +210,7 @@ class BasePoll(models.Model):
         if self.type == self.TYPE_ANALOG:
             return self.db_votescast
         else:
-            return Decimal(self.amount_voted_users())
+            return Decimal(self.amount_users_voted())
 
     def set_votescast(self, value):
         if self.type != self.TYPE_ANALOG:
@@ -221,32 +219,8 @@ class BasePoll(models.Model):
 
     votescast = property(get_votescast, set_votescast)
 
-    def get_user_ids_with_valid_votes(self):
-        if self.get_options().count():
-            initial_option = self.get_options()[0]
-            user_ids = set(map(lambda u: u.id, initial_option.voted.all()))
-            for option in self.get_options():
-                user_ids = user_ids.intersection(
-                    set(map(lambda u: u.id, option.voted.all()))
-                )
-            return list(user_ids)
-        else:
-            return []
-
-    def get_all_voted_user_ids(self):
-        user_ids: Set[int] = set()
-        for option in self.get_options():
-            user_ids.update(map(lambda u: u.id, option.voted.all()))
-        return list(user_ids)
-
-    def amount_valid_votes(self):
-        return len(self.get_user_ids_with_valid_votes())
-
-    def amount_invalid_votes(self):
-        return self.amount_voted_users() - self.amount_valid_votes()
-
-    def amount_voted_users(self):
-        return len(self.get_all_voted_user_ids())
+    def amount_users_voted(self):
+        return len(self.voted.all())
 
     def create_options(self):
         """ Should be called after creation of this model. """
@@ -283,6 +257,8 @@ class BasePoll(models.Model):
     def reset(self):
         for option in self.get_options():
             option.reset()
+
+        self.voted.clear()
 
         # Reset state
         self.state = BasePoll.STATE_CREATED

@@ -22,7 +22,15 @@ export interface PollTableData {
 }
 
 export interface VotingResult {
-    vote?: 'yes' | 'no' | 'abstain' | 'votesvalid' | 'votesinvalid' | 'votescast';
+    vote?:
+        | 'yes'
+        | 'no'
+        | 'abstain'
+        | 'votesvalid'
+        | 'votesinvalid'
+        | 'votescast'
+        | 'amount_global_no'
+        | 'amount_global_abstain';
     amount?: number;
     icon?: string;
     hide?: boolean;
@@ -175,18 +183,6 @@ export abstract class ViewBasePoll<
     public abstract readonly pollClassType: 'motion' | 'assignment';
 
     public canBeVotedFor: () => boolean;
-
-    public get user_has_voted_invalid(): boolean {
-        return this.options.some(option => option.user_has_voted) && !this.user_has_voted_valid;
-    }
-
-    public get user_has_voted_valid(): boolean {
-        return this.options.every(option => option.user_has_voted);
-    }
-
-    public get user_has_not_voted(): boolean {
-        return this.options.every(option => !option.user_has_voted);
-    }
 
     public abstract getSlide(): ProjectorElementBuildDeskriptor;
 

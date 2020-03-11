@@ -47,11 +47,10 @@ def test_motion_option_db_queries():
     Tests that only the following db queries are done:
     * 1 request to get the options,
     * 1 request to get all votes for all options,
-    * 1 request to get all users that voted on the options
-    = 5 queries
+    = 2 queries
     """
     create_motion_polls()
-    assert count_queries(MotionOption.get_elements)() == 3
+    assert count_queries(MotionOption.get_elements)() == 2
 
 
 def create_motion_polls():
@@ -83,7 +82,7 @@ def create_motion_polls():
                     value=("Y" if k == 0 else "N"),
                     weight=Decimal(1),
                 )
-                option.voted.add(user)
+            poll.voted.add(user)
 
 
 class CreateMotionPoll(TestCase):
@@ -166,6 +165,8 @@ class CreateMotionPoll(TestCase):
                 "votescast": "0.000000",
                 "options_id": [1],
                 "id": 1,
+                "voted_id": [],
+                "user_has_voted": False,
             },
         )
         self.assertEqual(autoupdate[1], [])
@@ -910,6 +911,8 @@ class VoteMotionPollNamedAutoupdates(TestCase):
                     "votescast": "1.000000",
                     "options_id": [1],
                     "id": 1,
+                    "user_has_voted": False,
+                    "voted_id": [self.user.id],
                 },
                 "motions/motion-vote:1": {
                     "pollstate": 2,
@@ -926,8 +929,6 @@ class VoteMotionPollNamedAutoupdates(TestCase):
                     "poll_id": 1,
                     "pollstate": 2,
                     "yes": "0.000000",
-                    "user_has_voted": False,
-                    "voted_id": [self.user.id],
                 },
             },
         )
@@ -948,7 +949,7 @@ class VoteMotionPollNamedAutoupdates(TestCase):
         )
         self.assertEqual(
             autoupdate[0]["motions/motion-option:1"],
-            {"id": 1, "poll_id": 1, "pollstate": 2, "user_has_voted": True},
+            {"id": 1, "poll_id": 1, "pollstate": 2},
         )
         self.assertEqual(autoupdate[1], [])
 
@@ -969,6 +970,7 @@ class VoteMotionPollNamedAutoupdates(TestCase):
                     "groups_id": [GROUP_DELEGATE_PK],
                     "options_id": [1],
                     "id": 1,
+                    "user_has_voted": user == self.user,
                 },
             )
             self.assertEqual(
@@ -977,8 +979,7 @@ class VoteMotionPollNamedAutoupdates(TestCase):
                     "id": 1,
                     "poll_id": 1,
                     "pollstate": 2,
-                    "user_has_voted": user == self.user,
-                },
+                },  # noqa black and flake are no friends :(
             )
 
         # Other users should not get a vote autoupdate
@@ -1049,6 +1050,8 @@ class VoteMotionPollPseudoanonymousAutoupdates(TestCase):
                     "votescast": "1.000000",
                     "options_id": [1],
                     "id": 1,
+                    "user_has_voted": False,
+                    "voted_id": [self.user.id],
                 },
                 "motions/motion-vote:1": {
                     "pollstate": 2,
@@ -1065,8 +1068,6 @@ class VoteMotionPollPseudoanonymousAutoupdates(TestCase):
                     "poll_id": 1,
                     "pollstate": 2,
                     "yes": "0.000000",
-                    "user_has_voted": False,
-                    "voted_id": [self.user.id],
                 },
             },
         )
@@ -1090,6 +1091,7 @@ class VoteMotionPollPseudoanonymousAutoupdates(TestCase):
                     "groups_id": [GROUP_DELEGATE_PK],
                     "options_id": [1],
                     "id": 1,
+                    "user_has_voted": user == self.user,
                 },
             )
 
@@ -1153,12 +1155,12 @@ class VoteMotionPollPseudoanonymous(TestCase):
         self.assertEqual(poll.votesinvalid, Decimal("0"))
         self.assertEqual(poll.votescast, Decimal("1"))
         self.assertEqual(poll.get_votes().count(), 1)
-        self.assertEqual(poll.amount_valid_votes(), 1)
+        self.assertEqual(poll.amount_users_voted(), 1)
         option = poll.options.get()
         self.assertEqual(option.yes, Decimal("0"))
         self.assertEqual(option.no, Decimal("1"))
         self.assertEqual(option.abstain, Decimal("0"))
-        self.assertTrue(self.admin in option.voted.all())
+        self.assertTrue(self.admin in poll.voted.all())
         vote = option.votes.get()
         self.assertEqual(vote.user, None)
 
@@ -1311,6 +1313,8 @@ class PublishMotionPoll(TestCase):
                         "votescast": "0.000000",
                         "options_id": [1],
                         "id": 1,
+                        "user_has_voted": False,
+                        "voted_id": [],
                     },
                     "motions/motion-vote:1": {
                         "pollstate": 4,
@@ -1327,8 +1331,6 @@ class PublishMotionPoll(TestCase):
                         "poll_id": 1,
                         "pollstate": 4,
                         "yes": "0.000000",
-                        "user_has_voted": False,
-                        "voted_id": [],
                     },
                 },
             )
@@ -1362,12 +1364,12 @@ class PseudoanonymizeMotionPoll(TestCase):
         self.vote1 = MotionVote.objects.create(
             user=self.user1, option=self.option, value="Y", weight=Decimal(1)
         )
-        self.option.voted.add(self.user1)
+        self.poll.voted.add(self.user1)
         self.user2, _ = self.create_user()
         self.vote2 = MotionVote.objects.create(
             user=self.user2, option=self.option, value="N", weight=Decimal(1)
         )
-        self.option.voted.add(self.user2)
+        self.poll.voted.add(self.user2)
 
     def test_pseudoanonymize_poll(self):
         response = self.client.post(
@@ -1376,7 +1378,7 @@ class PseudoanonymizeMotionPoll(TestCase):
         self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
         poll = MotionPoll.objects.get()
         self.assertEqual(poll.get_votes().count(), 2)
-        self.assertEqual(poll.amount_valid_votes(), 2)
+        self.assertEqual(poll.amount_users_voted(), 2)
         self.assertEqual(poll.votesvalid, Decimal("2"))
         self.assertEqual(poll.votesinvalid, Decimal("0"))
         self.assertEqual(poll.votescast, Decimal("2"))
@@ -1384,8 +1386,8 @@ class PseudoanonymizeMotionPoll(TestCase):
         self.assertEqual(option.yes, Decimal("1"))
         self.assertEqual(option.no, Decimal("1"))
         self.assertEqual(option.abstain, Decimal("0"))
-        self.assertTrue(self.user1 in option.voted.all())
-        self.assertTrue(self.user2 in option.voted.all())
+        self.assertTrue(self.user1 in poll.voted.all())
+        self.assertTrue(self.user2 in poll.voted.all())
         for vote in poll.get_votes().all():
             self.assertTrue(vote.user is None)
 
@@ -1432,19 +1434,19 @@ class ResetMotionPoll(TestCase):
         self.vote1 = MotionVote.objects.create(
             user=self.user1, option=self.option, value="Y", weight=Decimal(1)
         )
-        self.option.voted.add(self.user1)
+        self.poll.voted.add(self.user1)
         self.user2, _ = self.create_user()
         self.vote2 = MotionVote.objects.create(
             user=self.user2, option=self.option, value="N", weight=Decimal(1)
         )
-        self.option.voted.add(self.user2)
+        self.poll.voted.add(self.user2)
 
     def test_reset_poll(self):
         response = self.client.post(reverse("motionpoll-reset", args=[self.poll.pk]))
         self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
         poll = MotionPoll.objects.get()
         self.assertEqual(poll.get_votes().count(), 0)
-        self.assertEqual(poll.amount_valid_votes(), 0)
+        self.assertEqual(poll.amount_users_voted(), 0)
         self.assertEqual(poll.votesvalid, None)
         self.assertEqual(poll.votesinvalid, None)
         self.assertEqual(poll.votescast, None)
@@ -1463,12 +1465,3 @@ class ResetMotionPoll(TestCase):
         for user in (self.admin, self.user1, self.user2):
             self.assertDeletedAutoupdate(self.vote1, user=user)
             self.assertDeletedAutoupdate(self.vote2, user=user)
-
-    def test_reset_wrong_state(self):
-        self.poll.state = MotionPoll.STATE_STARTED
-        self.poll.save()
-        response = self.client.post(reverse("motionpoll-reset", args=[self.poll.pk]))
-        self.assertHttpStatusVerbose(response, status.HTTP_400_BAD_REQUEST)
-        poll = MotionPoll.objects.get()
-        self.assertTrue(poll.get_votes().exists())
-        self.assertEqual(poll.amount_valid_votes(), 2)

@@ -57,21 +57,31 @@
     </mat-menu>
 </os-head-bar>
 
-<div class="content-container">
+<div>
     <div *ngIf="editAssignment">
         <ng-container [ngTemplateOutlet]="assignmentFormTemplate"></ng-container>
     </div>
     <div *ngIf="!editAssignment">
         <!-- assignment meta infos-->
         <ng-container [ngTemplateOutlet]="metaInfoTemplate"></ng-container>
-        <!-- candidates list -->
-        <ng-container [ngTemplateOutlet]="candidatesTemplate"></ng-container>
-        <!-- closed polls -->
+
+        <!-- polls -->
         <ng-container *ngIf="assignment && assignment.polls.length">
             <ng-container *ngFor="let poll of assignment.polls | reverse; trackBy: trackByIndex">
                 <os-assignment-poll [poll]="poll"> </os-assignment-poll>
             </ng-container>
         </ng-container>
+
+        <!-- New Ballot button -->
+        <div class="new-ballot-button" *ngIf="assignment && hasPerms('createPoll')">
+            <button mat-stroked-button (click)="openDialog()">
+                <mat-icon color="primary">poll</mat-icon>
+                <span translate>New ballot</span>
+            </button>
+        </div>
+
+        <!-- candidates list -->
+        <ng-container [ngTemplateOutlet]="candidatesTemplate"></ng-container>
     </div>
 </div>
 
@@ -195,12 +205,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="ballot-button" *ngIf="assignment && hasPerms('createPoll')">
-                <button mat-button (click)="openDialog()">
-                    <mat-icon color="primary">poll</mat-icon>
-                    <span translate>New ballot</span>
-                </button>
             </div>
         </ng-container>
     </mat-card>
