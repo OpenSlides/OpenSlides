@@ -17,6 +17,15 @@
     }
 }
 
+.user-has-voted {
+    display: flex;
+    > * {
+        margin-top: 1em;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
 .voted-yes {
     background-color: $votes-yes-color;
     color: $vote-active-color;

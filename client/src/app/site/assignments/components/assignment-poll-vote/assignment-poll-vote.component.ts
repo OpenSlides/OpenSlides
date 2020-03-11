@@ -54,7 +54,7 @@ export class AssignmentPollVoteComponent extends BasePollVoteComponent<ViewAssig
     }
 
     public ngOnInit(): void {
-        if (this.poll && this.poll.user_has_not_voted) {
+        if (this.poll && !this.poll.user_has_voted) {
             this.alreadyVoted = false;
             this.defineVoteOptions();
         } else {
