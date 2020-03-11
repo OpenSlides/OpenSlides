@@ -254,14 +254,14 @@ class AssignmentOptionManager(BaseManager):
 
     def get_prefetched_queryset(self, *args, **kwargs):
         """
-        Returns the normal queryset with all voted users. In the background we
+        Returns the normal queryset. In the background we
         join and prefetch all related models.
         """
         return (
             super()
             .get_prefetched_queryset(*args, **kwargs)
             .select_related("user", "poll")
-            .prefetch_related("voted", "votes")
+            .prefetch_related("votes")
         )
 
 
@@ -276,9 +276,6 @@ class AssignmentOption(RESTModelMixin, BaseOption):
     )
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=SET_NULL_AND_AUTOUPDATE, null=True
-    )
-    voted = models.ManyToManyField(
-        settings.AUTH_USER_MODEL, blank=True, related_name="assignmentoption_voted"
     )
     weight = models.IntegerField(default=0)
 
@@ -301,7 +298,7 @@ class AssignmentPollManager(BaseManager):
             .get_prefetched_queryset(*args, **kwargs)
             .select_related("assignment")
             .prefetch_related(
-                "options", "options__user", "options__votes", "options__voted", "groups"
+                "options", "options__user", "options__votes", "voted", "groups"
             )
         )
 
@@ -348,7 +345,23 @@ class AssignmentPoll(RESTModelMixin, BasePoll):
     )
 
     global_abstain = models.BooleanField(default=True)
+    db_amount_global_abstain = models.DecimalField(
+        null=True,
+        blank=True,
+        default=Decimal("0"),
+        validators=[MinValueValidator(Decimal("-2"))],
+        max_digits=15,
+        decimal_places=6,
+    )
     global_no = models.BooleanField(default=True)
+    db_amount_global_no = models.DecimalField(
+        null=True,
+        blank=True,
+        default=Decimal("0"),
+        validators=[MinValueValidator(Decimal("-2"))],
+        max_digits=15,
+        decimal_places=6,
+    )
 
     votes_amount = models.IntegerField(default=1, validators=[MinValueValidator(1)])
     """ For "votes" mode: The amount of votes a voter can give. """
@@ -358,26 +371,49 @@ class AssignmentPoll(RESTModelMixin, BasePoll):
     class Meta:
         default_permissions = ()
 
-    @property
-    def amount_global_no(self):
-        if self.pollmethod != AssignmentPoll.POLLMETHOD_VOTES or not self.global_no:
+    def get_amount_global_abstain(self):
+        if not self.global_abstain:
             return None
-        no_sum = Decimal(0)
-        for option in self.options.all():
-            no_sum += option.no
-        return no_sum
-
-    @property
-    def amount_global_abstain(self):
-        if (
-            self.pollmethod != AssignmentPoll.POLLMETHOD_VOTES
-            or not self.global_abstain
+        elif (
+            self.type == self.TYPE_ANALOG
+            or self.pollmethod == AssignmentPoll.POLLMETHOD_VOTES
         ):
+            return self.db_amount_global_abstain
+        else:
             return None
-        abstain_sum = Decimal(0)
-        for option in self.options.all():
-            abstain_sum += option.abstain
-        return abstain_sum
+
+    def set_amount_global_abstain(self, value):
+        if (
+            self.type != self.TYPE_ANALOG
+            and self.pollmethod != AssignmentPoll.POLLMETHOD_VOTES
+        ):
+            raise ValueError("Do not set amount_global_abstain YN/YNA polls")
+        self.db_amount_global_abstain = value
+
+    amount_global_abstain = property(
+        get_amount_global_abstain, set_amount_global_abstain
+    )
+
+    def get_amount_global_no(self):
+        if not self.global_no:
+            return None
+        elif (
+            self.type == self.TYPE_ANALOG
+            or self.pollmethod == AssignmentPoll.POLLMETHOD_VOTES
+        ):
+            return self.db_amount_global_no
+        else:
+            return None
+
+    def set_amount_global_no(self, value):
+        if (
+            self.type != self.TYPE_ANALOG
+            and self.pollmethod != AssignmentPoll.POLLMETHOD_VOTES
+        ):
+            raise ValueError("Do not set amount_global_no YN/YNA polls")
+        self.db_amount_global_no = value
+
+    amount_global_no = property(get_amount_global_no, set_amount_global_no)
 
     def create_options(self, skip_autoupdate=False):
         related_users = AssignmentRelatedUser.objects.filter(
@@ -404,3 +440,8 @@ class AssignmentPoll(RESTModelMixin, BasePoll):
                     pass
             if not skip_autoupdate:
                 inform_changed_data(self.assignment.list_of_speakers)
+
+    def reset(self):
+        self.db_amount_global_abstain = Decimal(0)
+        self.db_amount_global_no = Decimal(0)
+        super().reset()

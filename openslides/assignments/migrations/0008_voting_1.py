@@ -33,6 +33,28 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name="assignmentpoll",
+            name="db_amount_global_abstain",
+            field=models.DecimalField(
+                blank=True,
+                decimal_places=6,
+                max_digits=15,
+                null=True,
+                validators=[django.core.validators.MinValueValidator(Decimal("-2"))],
+            ),
+        ),
+        migrations.AddField(
+            model_name="assignmentpoll",
+            name="db_amount_global_no",
+            field=models.DecimalField(
+                blank=True,
+                decimal_places=6,
+                max_digits=15,
+                null=True,
+                validators=[django.core.validators.MinValueValidator(Decimal("-2"))],
+            ),
+        ),
+        migrations.AddField(
+            model_name="assignmentpoll",
             name="groups",
             field=models.ManyToManyField(blank=True, to="users.Group"),
         ),
@@ -75,6 +97,11 @@ class Migration(migrations.Migration):
             field=models.IntegerField(
                 default=1, validators=[django.core.validators.MinValueValidator(1)]
             ),
+        ),
+        migrations.AddField(
+            model_name="assignmentpoll",
+            name="voted",
+            field=models.ManyToManyField(blank=True, to=settings.AUTH_USER_MODEL),
         ),
         migrations.AddField(
             model_name="assignmentvote",
@@ -128,15 +155,6 @@ class Migration(migrations.Migration):
             model_name="assignment",
             name="number_poll_candidates",
             field=models.BooleanField(default=False),
-        ),
-        migrations.AddField(
-            model_name="assignmentoption",
-            name="voted",
-            field=models.ManyToManyField(
-                blank=True,
-                to=settings.AUTH_USER_MODEL,
-                related_name="assignmentoption_voted",
-            ),
         ),
         migrations.AlterField(
             model_name="assignment",

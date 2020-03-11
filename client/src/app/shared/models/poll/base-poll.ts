@@ -52,6 +52,7 @@ export abstract class BasePoll<
     public votescast: number;
     public groups_id: number[];
     public majority_method: MajorityMethod;
+    public user_has_voted: boolean;
 
     public pollmethod: PM;
     public onehundred_percent_base: PB;
@@ -91,7 +92,7 @@ export abstract class BasePoll<
         return this.state + 1;
     }
 
-    protected getDecimalFields(): (keyof BasePoll<T, O>)[] {
+    protected getDecimalFields(): string[] {
         return ['votesvalid', 'votesinvalid', 'votescast'];
     }
 }

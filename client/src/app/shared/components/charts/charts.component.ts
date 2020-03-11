@@ -211,9 +211,11 @@ export class ChartsComponent extends BaseViewComponent {
             yAxes: [
                 {
                     gridLines: {
-                        drawOnChartArea: false
+                        drawBorder: false,
+                        drawOnChartArea: false,
+                        drawTicks: false
                     },
-                    ticks: { beginAtZero: true, mirror: true, labelOffset: -20 },
+                    ticks: { mirror: true, labelOffset: -20 },
                     stacked: true
                 }
             ]

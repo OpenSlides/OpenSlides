@@ -2,6 +2,7 @@ from decimal import Decimal
 
 from django.contrib.auth import get_user_model
 from django.db import transaction
+from django.db.models import F
 
 from openslides.poll.views import BaseOptionViewSet, BasePollViewSet, BaseVoteViewSet
 from openslides.utils.auth import has_perm
@@ -283,6 +284,10 @@ class AssignmentPollViewSet(BasePollViewSet):
             )
 
         super().perform_create(serializer)
+        poll = AssignmentPoll.objects.get(pk=serializer.data["id"])
+        poll.db_amount_global_abstain = Decimal(0)
+        poll.db_amount_global_no = Decimal(0)
+        poll.save()
 
     def handle_analog_vote(self, data, poll, user):
         for field in ["votesvalid", "votesinvalid", "votescast"]:
@@ -291,9 +296,13 @@ class AssignmentPollViewSet(BasePollViewSet):
         global_no_enabled = (
             poll.global_no and poll.pollmethod == AssignmentPoll.POLLMETHOD_VOTES
         )
+        if global_no_enabled:
+            poll.amount_global_no = data.get("amount_global_no", Decimal(0))
         global_abstain_enabled = (
             poll.global_abstain and poll.pollmethod == AssignmentPoll.POLLMETHOD_VOTES
         )
+        if global_abstain_enabled:
+            poll.amount_global_abstain = data.get("amount_global_abstain", Decimal(0))
 
         options = poll.get_options()
         options_data = data.get("options")
@@ -323,21 +332,8 @@ class AssignmentPollViewSet(BasePollViewSet):
                     )
                     vote_obj.weight = vote["A"]
                     vote_obj.save()
+                inform_changed_data(option)
 
-            # Create votes for global no and global abstain
-            first_option = options.first()
-            if "global_no" in data and global_no_enabled:
-                vote_obj, _ = AssignmentVote.objects.get_or_create(
-                    option=first_option, value="N"
-                )
-                vote_obj.weight = data["votescast"]
-                vote_obj.save()
-            if "global_abstain" in data and global_abstain_enabled:
-                vote_obj, _ = AssignmentVote.objects.get_or_create(
-                    option=first_option, value="A"
-                )
-                vote_obj.weight = data["votescast"]
-                vote_obj.save()
             poll.save()
 
     def validate_vote_data(self, data, poll, user):
@@ -347,7 +343,7 @@ class AssignmentPollViewSet(BasePollViewSet):
             {
                 "options": {<option_id>: {"Y": <amount>, ["N": <amount>], ["A": <amount>] }},
                 ["votesvalid": <amount>], ["votesinvalid": <amount>], ["votescast": <amount>],
-                ["global_no": <amount>], ["global_abstain": <amount>]
+                ["amount_global_no": <amount>], ["amount_global_abstain": <amount>]
             }
             All amounts are decimals as strings
             required fields per pollmethod:
@@ -363,13 +359,11 @@ class AssignmentPollViewSet(BasePollViewSet):
                 - amounts must be integer numbers >= 0.
                 - ids should be integers of valid option ids for this poll
                 - amounts must be 0 or 1, if poll.allow_multiple_votes_per_candidate is False
-                - The sum of all amounts must be grater then 0 and <= poll.votes_amount
+                - The sum of all amounts must be grater than 0 and <= poll.votes_amount
 
             YN/YNA:
                 {<option_id>: 'Y' | 'N' [|'A']}
                 - 'A' is only allowed in YNA pollmethod
-
-        Votes for all options have to be given
         """
         if poll.type == AssignmentPoll.TYPE_ANALOG:
             if not isinstance(data, dict):
@@ -403,10 +397,14 @@ class AssignmentPollViewSet(BasePollViewSet):
                 poll.global_abstain
                 and poll.pollmethod == AssignmentPoll.POLLMETHOD_VOTES
             )
-            if ("global_no" in data and global_no_enabled) or (
-                "global_abstain" in data and global_abstain_enabled
-            ):
-                data["votescast"] = self.parse_vote_value(data, "votescast")
+            if "amount_global_abstain" in data and global_abstain_enabled:
+                data["amount_global_abstain"] = self.parse_vote_value(
+                    data, "amount_global_abstain"
+                )
+            if "amount_global_no" in data and global_no_enabled:
+                data["amount_global_no"] = self.parse_vote_value(
+                    data, "amount_global_no"
+                )
 
         else:
             if poll.pollmethod == AssignmentPoll.POLLMETHOD_VOTES:
@@ -415,6 +413,10 @@ class AssignmentPollViewSet(BasePollViewSet):
                     for option_id, amount in data.items():
                         if not is_int(option_id):
                             raise ValidationError({"detail": "Each id must be an int."})
+                        if not AssignmentOption.objects.filter(id=option_id).exists():
+                            raise ValidationError(
+                                {"detail": f"Option {option_id} does not exist."}
+                            )
                         if not is_int(amount):
                             raise ValidationError(
                                 {"detail": "Each amounts must be int"}
@@ -456,6 +458,10 @@ class AssignmentPollViewSet(BasePollViewSet):
                 for option_id, value in data.items():
                     if not is_int(option_id):
                         raise ValidationError({"detail": "Keys must be int"})
+                    if not AssignmentOption.objects.filter(id=option_id).exists():
+                        raise ValidationError(
+                            {"detail": f"Option {option_id} does not exist."}
+                        )
                     if (
                         poll.pollmethod == AssignmentPoll.POLLMETHOD_YNA
                         and value not in ("Y", "N", "A",)
@@ -471,33 +477,6 @@ class AssignmentPollViewSet(BasePollViewSet):
 
             options_data = data
 
-        db_option_ids = set(option.id for option in poll.get_options())
-        data_option_ids = set(int(option_id) for option_id in options_data.keys())
-
-        # Just for named/pseudoanonymous with YN/YNA skip the all-options-given check
-        if poll.type not in (
-            AssignmentPoll.TYPE_NAMED,
-            AssignmentPoll.TYPE_PSEUDOANONYMOUS,
-        ) or poll.pollmethod not in (
-            AssignmentPoll.POLLMETHOD_YN,
-            AssignmentPoll.POLLMETHOD_YNA,
-        ):
-            # Check if all options were given
-            if data_option_ids != db_option_ids:
-                raise ValidationError(
-                    {"error": "You have to provide values for all options"}
-                )
-        else:
-            if not data_option_ids.issubset(db_option_ids):
-                raise ValidationError(
-                    {
-                        "error": "You gave the following invalid option ids: "
-                        + ", ".join(
-                            str(id) for id in data_option_ids.difference(db_option_ids)
-                        )
-                    }
-                )
-
     def create_votes_type_votes(self, data, poll, user):
         """
         Helper function for handle_(named|pseudoanonymous)_vote
@@ -508,9 +487,6 @@ class AssignmentPollViewSet(BasePollViewSet):
             for option_id, amount in data.items():
                 # Add user to the option's voted array
                 option = options.get(pk=option_id)
-                option.voted.add(user)
-                inform_changed_data(option)
-
                 # skip creating votes with empty weights
                 if amount == 0:
                     continue
@@ -519,16 +495,15 @@ class AssignmentPollViewSet(BasePollViewSet):
                 )
                 inform_changed_data(vote, no_delete_on_restriction=True)
         else:  # global_no or global_abstain
-            option = options.order_by(
-                "pk"
-            ).first()  # order by is important to always get
-            # the correct "first" option
-            option.voted.add(user)
-            inform_changed_data(option)
-            vote = AssignmentVote.objects.create(
-                option=option, user=user, weight=Decimal(poll.votes_amount), value=data,
-            )
-            inform_changed_data(vote, no_delete_on_restriction=True)
+            if data == "A":
+                poll.amount_global_abstain = F("db_amount_global_abstain") + 1
+            elif data == "N":
+                poll.amount_global_no = F("db_amount_global_no") + 1
+            else:
+                raise RuntimeError("This should not happen")
+            poll.save()
+
+        poll.voted.add(user)
 
     def create_votes_type_named_pseudoanonymous(
         self, data, poll, check_user, vote_user
@@ -537,51 +512,37 @@ class AssignmentPollViewSet(BasePollViewSet):
         options = poll.get_options()
         for option_id, result in data.items():
             option = options.get(pk=option_id)
-            option.voted.add(check_user)
-            inform_changed_data(option)
             vote = AssignmentVote.objects.create(
                 option=option, user=vote_user, value=result
             )
             inform_changed_data(vote, no_delete_on_restriction=True)
+            inform_changed_data(option, no_delete_on_restriction=True)
+
+        poll.voted.add(check_user)
 
     def handle_named_vote(self, data, poll, user):
+        if user in poll.voted.all():
+            raise ValidationError({"detail": "You have already voted"})
+
         if poll.pollmethod == AssignmentPoll.POLLMETHOD_VOTES:
-            # Instead of reusing all existing votes for the user, delete all previous votes
-            for vote in poll.get_votes().filter(user=user):
-                vote.delete()
             self.create_votes_type_votes(data, poll, user)
         elif poll.pollmethod in (
             AssignmentPoll.POLLMETHOD_YN,
             AssignmentPoll.POLLMETHOD_YNA,
         ):
-            # Delete all votes for the given options
-            option_ids = list(data.keys())
-            for vote in AssignmentVote.objects.filter(
-                user=user, option_id__in=option_ids
-            ):
-                vote.delete()
             self.create_votes_type_named_pseudoanonymous(data, poll, user, user)
 
     def handle_pseudoanonymous_vote(self, data, poll, user):
+        if user in poll.voted.all():
+            raise ValidationError({"detail": "You have already voted"})
+
         if poll.pollmethod == AssignmentPoll.POLLMETHOD_VOTES:
-            # check if the user has already voted
-            for option in poll.get_options():
-                if user in option.voted.all():
-                    raise ValidationError({"detail": "You have already voted"})
             self.create_votes_type_votes(data, poll, user)
 
         elif poll.pollmethod in (
             AssignmentPoll.POLLMETHOD_YN,
             AssignmentPoll.POLLMETHOD_YNA,
         ):
-            # Ensure, that the user has not voted any of the given options yet.
-            options = poll.get_options()
-            for option_id in data.keys():
-                option = options.get(pk=option_id)
-                if user in option.voted.all():
-                    raise ValidationError(
-                        {"detail": f"You have already voted for option {option.pk}"}
-                    )
             self.create_votes_type_named_pseudoanonymous(data, poll, user, None)
 
     def convert_option_data(self, poll, data):

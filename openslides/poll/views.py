@@ -175,12 +175,6 @@ class BasePollViewSet(ModelViewSet):
     @detail_route(methods=["POST"])
     def reset(self, request, pk):
         poll = self.get_object()
-
-        if poll.state not in (BasePoll.STATE_FINISHED, BasePoll.STATE_PUBLISHED):
-            raise ValidationError(
-                {"detail": "You can only reset this poll after it is finished"}
-            )
-
         poll.reset()
         return Response()
 

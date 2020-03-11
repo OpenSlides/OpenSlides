@@ -39,6 +39,19 @@ export class ViewAssignmentPoll extends ViewBasePoll<AssignmentPoll, AssignmentP
     public readonly tableChartData: Map<string, BehaviorSubject<ChartData>> = new Map();
     public readonly pollClassType = PollClassType.Assignment;
 
+    protected globalVoteKeys: VotingResult[] = [
+        {
+            vote: 'amount_global_no',
+            showPercent: false,
+            hide: this.poll.amount_global_no === -2 || this.poll.amount_global_no === 0
+        },
+        {
+            vote: 'amount_global_abstain',
+            showPercent: false,
+            hide: this.poll.amount_global_abstain === -2 || this.poll.amount_global_abstain === 0
+        }
+    ];
+
     public get pollmethodVerbose(): string {
         return AssignmentPollMethodVerbose[this.pollmethod];
     }
@@ -98,7 +111,30 @@ export class ViewAssignmentPoll extends ViewBasePoll<AssignmentPoll, AssignmentP
                     ]
                 }))
         );
+
+        tableData.push(
+            ...this.globalVoteKeys
+                .filter(key => {
+                    return !key.hide;
+                })
+                .map(key => ({
+                    votingOption: key.vote,
+                    class: 'sums',
+                    value: [
+                        {
+                            amount: this[key.vote],
+                            hide: key.hide,
+                            showPercent: key.showPercent
+                        } as VotingResult
+                    ]
+                }))
+        );
+
         return tableData;
+    }
+
+    protected getDecimalFields(): string[] {
+        return AssignmentPoll.DECIMAL_FIELDS;
     }
 }
 
