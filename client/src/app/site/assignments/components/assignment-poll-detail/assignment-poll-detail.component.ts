@@ -94,6 +94,14 @@ export class AssignmentPollDetailComponent extends BasePollDetailComponent<ViewA
                 }
             }
         }
+        for (const user of this.poll.voted) {
+            if (!votes[user.id]) {
+                votes[user.id] = {
+                    user: user,
+                    votes: [this.translate.instant('empty vote')]
+                };
+            }
+        }
 
         this.setVotesData(Object.values(votes));
         this.candidatesLabels = this.pollService.getChartLabels(this.poll);

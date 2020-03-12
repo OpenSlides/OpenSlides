@@ -10,7 +10,6 @@ import { MotionOption } from 'app/shared/models/motions/motion-option';
 import { ViewMotionOption } from 'app/site/motions/models/view-motion-option';
 import { ViewMotionPoll } from 'app/site/motions/models/view-motion-poll';
 import { ViewMotionVote } from 'app/site/motions/models/view-motion-vote';
-import { ViewUser } from 'app/site/users/models/view-user';
 import { BaseRepository } from '../base-repository';
 import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
 import { DataStoreService } from '../../core-services/data-store.service';
@@ -21,12 +20,6 @@ const MotionOptionRelations: RelationDefinition[] = [
         foreignIdKey: 'option_id',
         ownKey: 'votes',
         foreignViewModel: ViewMotionVote
-    },
-    {
-        type: 'M2M',
-        ownIdKey: 'voted_id',
-        ownKey: 'voted',
-        foreignViewModel: ViewUser
     },
     {
         type: 'M2O',
