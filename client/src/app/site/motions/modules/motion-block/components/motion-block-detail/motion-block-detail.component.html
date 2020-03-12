@@ -1,10 +1,24 @@
 <os-head-bar [nav]="false">
     <!-- Title -->
     <div class="title-slot">
-        <h2 *ngIf="block">
-            <mat-icon *ngIf="block.internal">lock</mat-icon>
-            {{ block.title }}
-        </h2>
+        <os-icon-container
+            *ngIf="block"
+            [noWrap]="true"
+            icon="check"
+            size="large"
+            [showIcon]="block.isFinished"
+            [iconTooltip]="'Finished' | translate"
+        >
+            <os-icon-container
+                [noWrap]="true"
+                icon="lock"
+                size="large"
+                [showIcon]="block.internal"
+                [iconTooltip]="'Internal' | translate"
+            >
+                <h2>{{ block.title }}</h2>
+            </os-icon-container>
+        </os-icon-container>
     </div>
 
     <!-- Menu -->
