@@ -2116,8 +2116,10 @@ export class DiffService {
         });
 
         changes.forEach((change: ViewUnifiedChange) => {
-            html = this.lineNumberingService.insertLineNumbers(html, lineLength, null, null, 1);
-            html = this.replaceLines(html, change.getChangeNewText(), change.getLineFrom(), change.getLineTo());
+            if (!change.isTitleChange()) {
+                html = this.lineNumberingService.insertLineNumbers(html, lineLength, null, null, 1);
+                html = this.replaceLines(html, change.getChangeNewText(), change.getLineFrom(), change.getLineTo());
+            }
         });
 
         html = this.lineNumberingService.insertLineNumbers(html, lineLength, highlightLine, null, 1);
