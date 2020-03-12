@@ -1,0 +1,43 @@
+@import '~assets/styles/poll-colors.scss';
+
+.result-wrapper {
+    display: grid;
+    grid-gap: 2em;
+    margin: 2em;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+
+    .result-table {
+        // display: block;
+        th {
+            text-align: right;
+            font-weight: initial;
+        }
+
+        tr {
+            height: 48px;
+            border-bottom: none !important;
+
+            .result-cell-definition {
+                text-align: right;
+            }
+        }
+
+        .yes {
+            color: $votes-yes-color;
+        }
+
+        .no {
+            color: $votes-no-color;
+        }
+
+        .abstain {
+            color: $votes-abstain-color;
+        }
+    }
+
+    .doughnut-chart {
+        display: block;
+        margin-top: auto;
+        margin-bottom: auto;
+    }
+}

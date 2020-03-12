@@ -3,38 +3,3 @@
 .motion-title {
     margin: 0 0 10px;
 }
-
-.poll-chart-wrapper {
-    display: grid;
-    grid-gap: 10px;
-    grid-template-areas: 'chart legend';
-    grid-template-columns: min-content auto;
-
-    .doughnut-chart {
-        grid-area: chart;
-        margin-top: auto;
-        margin-bottom: auto;
-    }
-
-    .vote-legend {
-        grid-area: legend;
-        margin-top: auto;
-        margin-bottom: auto;
-
-        div + div {
-            margin-top: 10px;
-        }
-
-        .votes-yes {
-            color: $votes-yes-color;
-        }
-
-        .votes-no {
-            color: $votes-no-color;
-        }
-
-        .votes-abstain {
-            color: $votes-abstain-color;
-        }
-    }
-}
