@@ -7,7 +7,9 @@ import { MotionPollRepositoryService } from 'app/core/repositories/motions/motio
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { MotionPoll, MotionPollMethod } from 'app/shared/models/motions/motion-poll';
 import { MajorityMethod, PercentBase } from 'app/shared/models/poll/base-poll';
-import { PollData, PollService } from 'app/site/polls/services/poll.service';
+import { PollData, PollService, PollTableData, VotingResult } from 'app/site/polls/services/poll.service';
+import { ViewMotionOption } from '../models/view-motion-option';
+import { ViewMotionPoll } from '../models/view-motion-poll';
 
 interface PollResultData {
     yes?: number;
@@ -69,6 +71,38 @@ export class MotionPollService extends PollService {
         }
 
         return poll;
+    }
+
+    public generateTableData(poll: PollData | ViewMotionPoll): PollTableData[] {
+        let tableData: PollTableData[] = poll.options.flatMap(vote =>
+            super.getVoteTableKeys(poll).map(key => this.createTableDataEntry(poll, key, vote))
+        );
+        tableData.push(...super.getSumTableKeys(poll).map(key => this.createTableDataEntry(poll, key)));
+
+        tableData = tableData.filter(localeTableData => !localeTableData.value.some(result => result.hide));
+        return tableData;
+    }
+
+    private createTableDataEntry(
+        poll: PollData | ViewMotionPoll,
+        result: VotingResult,
+        vote?: ViewMotionOption
+    ): PollTableData {
+        return {
+            votingOption: result.vote,
+            value: [
+                {
+                    amount: vote ? vote[result.vote] : poll[result.vote],
+                    hide: result.hide,
+                    icon: result.icon,
+                    showPercent: result.showPercent
+                }
+            ]
+        };
+    }
+
+    public showChart(poll: PollData): boolean {
+        return poll && poll.options && poll.options.some(option => option.yes >= 0 && option.no >= 0);
     }
 
     public getPercentBase(poll: PollData): number {

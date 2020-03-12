@@ -122,6 +122,7 @@ import { ReversePipe } from './pipes/reverse.pipe';
 import { PollKeyVerbosePipe } from './pipes/poll-key-verbose.pipe';
 import { PollPercentBasePipe } from './pipes/poll-percent-base.pipe';
 import { VotingPrivacyWarningComponent } from './components/voting-privacy-warning/voting-privacy-warning.component';
+import { MotionPollDetailContentComponent } from './components/motion-poll-detail-content/motion-poll-detail-content.component';
 
 /**
  * Share Module for all "dumb" components and pipes.
@@ -286,7 +287,8 @@ import { VotingPrivacyWarningComponent } from './components/voting-privacy-warni
         ReversePipe,
         PollKeyVerbosePipe,
         PollPercentBasePipe,
-        VotingPrivacyWarningComponent
+        VotingPrivacyWarningComponent,
+        MotionPollDetailContentComponent
     ],
     declarations: [
         PermsDirective,
@@ -344,7 +346,8 @@ import { VotingPrivacyWarningComponent } from './components/voting-privacy-warni
         ReversePipe,
         PollKeyVerbosePipe,
         PollPercentBasePipe,
-        VotingPrivacyWarningComponent
+        VotingPrivacyWarningComponent,
+        MotionPollDetailContentComponent
     ],
     providers: [
         {

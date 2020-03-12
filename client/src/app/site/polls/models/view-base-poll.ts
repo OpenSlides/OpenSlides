@@ -1,4 +1,4 @@
-import { BasePoll, PercentBase, PollType } from 'app/shared/models/poll/base-poll';
+import { BasePoll } from 'app/shared/models/poll/base-poll';
 import { BaseProjectableViewModel } from 'app/site/base/base-projectable-view-model';
 import { BaseViewModel } from 'app/site/base/base-view-model';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
@@ -9,32 +9,6 @@ import { ViewBaseOption } from './view-base-option';
 export enum PollClassType {
     Motion = 'motion',
     Assignment = 'assignment'
-}
-
-/**
- * Interface describes the possible data for the result-table.
- */
-export interface PollTableData {
-    votingOption: string;
-    votingOptionSubtitle?: string;
-    class?: string;
-    value: VotingResult[];
-}
-
-export interface VotingResult {
-    vote?:
-        | 'yes'
-        | 'no'
-        | 'abstain'
-        | 'votesvalid'
-        | 'votesinvalid'
-        | 'votescast'
-        | 'amount_global_no'
-        | 'amount_global_abstain';
-    amount?: number;
-    icon?: string;
-    hide?: boolean;
-    showPercent?: boolean;
 }
 
 export const PollClassTypeVerbose = {
@@ -94,52 +68,6 @@ export abstract class ViewBasePoll<
     PM extends string = string,
     PB extends string = string
 > extends BaseProjectableViewModel<M> {
-    private _tableData: PollTableData[] = [];
-
-    protected voteTableKeys: VotingResult[] = [
-        {
-            vote: 'yes',
-            icon: 'thumb_up',
-            showPercent: true
-        },
-        {
-            vote: 'no',
-            icon: 'thumb_down',
-            showPercent: true
-        },
-        {
-            vote: 'abstain',
-            icon: 'trip_origin',
-            showPercent: this.showAbstainPercent
-        }
-    ];
-
-    protected sumTableKeys: VotingResult[] = [
-        {
-            vote: 'votesvalid',
-            hide: this.poll.votesvalid === -2,
-            showPercent: this.poll.isPercentBaseValidOrCast
-        },
-        {
-            vote: 'votesinvalid',
-            icon: 'not_interested',
-            hide: this.poll.type !== PollType.Analog || this.poll.votesinvalid === -2,
-            showPercent: this.poll.isPercentBaseCast
-        },
-        {
-            vote: 'votescast',
-            hide: this.poll.type !== PollType.Analog || this.poll.votescast === -2,
-            showPercent: this.poll.isPercentBaseCast
-        }
-    ];
-
-    public get tableData(): PollTableData[] {
-        if (!this._tableData.length) {
-            this._tableData = this.generateTableData();
-        }
-        return this._tableData;
-    }
-
     public get poll(): M {
         return this._model;
     }
@@ -172,14 +100,6 @@ export abstract class ViewBasePoll<
 
     public abstract get percentBaseVerbose(): string;
 
-    public get showAbstainPercent(): boolean {
-        return (
-            this.poll.onehundred_percent_base === PercentBase.YNA ||
-            this.poll.onehundred_percent_base === PercentBase.Valid ||
-            this.poll.onehundred_percent_base === PercentBase.Cast
-        );
-    }
-
     public abstract readonly pollClassType: 'motion' | 'assignment';
 
     public canBeVotedFor: () => boolean;
@@ -187,8 +107,6 @@ export abstract class ViewBasePoll<
     public abstract getSlide(): ProjectorElementBuildDeskriptor;
 
     public abstract getContentObject(): BaseViewModel;
-
-    public abstract generateTableData(): PollTableData[];
 }
 
 export interface ViewBasePoll<

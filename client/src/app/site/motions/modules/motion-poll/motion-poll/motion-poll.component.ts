@@ -12,9 +12,9 @@ import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
 import { ViewMotionPoll } from 'app/site/motions/models/view-motion-poll';
 import { MotionPollDialogService } from 'app/site/motions/services/motion-poll-dialog.service';
 import { MotionPollPdfService } from 'app/site/motions/services/motion-poll-pdf.service';
+import { MotionPollService } from 'app/site/motions/services/motion-poll.service';
 import { BasePollComponent } from 'app/site/polls/components/base-poll.component';
-import { PollTableData } from 'app/site/polls/models/view-base-poll';
-import { PollService } from 'app/site/polls/services/poll.service';
+import { PollService, PollTableData } from 'app/site/polls/services/poll.service';
 
 /**
  * Component to show a motion-poll.
@@ -45,7 +45,7 @@ export class MotionPollComponent extends BasePollComponent<ViewMotionPoll> {
     }
 
     public get showChart(): boolean {
-        return this.poll.hasPresentableValues;
+        return this.motionPollService.showChart(this.poll);
     }
 
     public get hideChangeState(): boolean {
@@ -53,7 +53,9 @@ export class MotionPollComponent extends BasePollComponent<ViewMotionPoll> {
     }
 
     public get reducedPollTableData(): PollTableData[] {
-        return this.poll.tableData.filter(data => ['yes', 'no', 'abstain', 'votesinvalid'].includes(data.votingOption));
+        return this.motionPollService
+            .generateTableData(this.poll)
+            .filter(data => ['yes', 'no', 'abstain', 'votesinvalid'].includes(data.votingOption));
     }
 
     /**
@@ -74,7 +76,8 @@ export class MotionPollComponent extends BasePollComponent<ViewMotionPoll> {
         public pollRepo: MotionPollRepositoryService,
         pollDialog: MotionPollDialogService,
         public pollService: PollService,
-        private pdfService: MotionPollPdfService
+        private pdfService: MotionPollPdfService,
+        private motionPollService: MotionPollService
     ) {
         super(titleService, matSnackBar, translate, dialog, promptService, pollRepo, pollDialog);
     }

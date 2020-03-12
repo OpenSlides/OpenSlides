@@ -11,7 +11,6 @@ import { MotionPollRepositoryService } from 'app/core/repositories/motions/motio
 import { MotionVoteRepositoryService } from 'app/core/repositories/motions/motion-vote-repository.service';
 import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
-import { ChartType } from 'app/shared/components/charts/charts.component';
 import { ViewMotion } from 'app/site/motions/models/view-motion';
 import { ViewMotionPoll } from 'app/site/motions/models/view-motion-poll';
 import { MotionPollDialogService } from 'app/site/motions/services/motion-poll-dialog.service';
@@ -38,17 +37,8 @@ export class MotionPollDetailComponent extends BasePollDetailComponent<ViewMotio
             label: 'Vote'
         }
     ];
+
     public filterProps = ['user.getFullName', 'valueVerbose'];
-
-    public set chartType(type: ChartType) {
-        this._chartType = type;
-    }
-
-    public get chartType(): ChartType {
-        return this._chartType;
-    }
-
-    private _chartType: ChartType = 'doughnut';
 
     public constructor(
         title: Title,
@@ -60,9 +50,9 @@ export class MotionPollDetailComponent extends BasePollDetailComponent<ViewMotio
         prompt: PromptService,
         pollDialog: MotionPollDialogService,
         pollService: PollService,
+        votesRepo: MotionVoteRepositoryService,
         private operator: OperatorService,
-        private router: Router,
-        votesRepo: MotionVoteRepositoryService
+        private router: Router
     ) {
         super(title, translate, matSnackbar, repo, route, groupRepo, prompt, pollDialog, pollService, votesRepo);
     }

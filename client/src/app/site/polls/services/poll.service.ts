@@ -9,7 +9,8 @@ import {
     MajorityMethodVerbose,
     PercentBaseVerbose,
     PollPropertyVerbose,
-    PollTypeVerbose
+    PollTypeVerbose,
+    ViewBasePoll
 } from 'app/site/polls/models/view-base-poll';
 import { ConstantsService } from '../../../core/core-services/constants.service';
 
@@ -109,6 +110,32 @@ interface OpenSlidesSettings {
 }
 
 /**
+ * Interface describes the possible data for the result-table.
+ */
+export interface PollTableData {
+    votingOption: string;
+    votingOptionSubtitle?: string;
+    class?: string;
+    value: VotingResult[];
+}
+
+export interface VotingResult {
+    vote?:
+        | 'yes'
+        | 'no'
+        | 'abstain'
+        | 'votesvalid'
+        | 'votesinvalid'
+        | 'votescast'
+        | 'amount_global_no'
+        | 'amount_global_abstain';
+    amount?: number;
+    icon?: string;
+    hide?: boolean;
+    showPercent?: boolean;
+}
+
+/**
  * Shared service class for polls. Used by child classes {@link MotionPollService}
  * and {@link AssignmentPollService}
  */
@@ -179,7 +206,58 @@ export abstract class PollService {
         return PollPropertyVerbose[key];
     }
 
-    public generateChartData(poll: PollData): ChartData {
+    public getVoteTableKeys(poll: PollData | ViewBasePoll): VotingResult[] {
+        return [
+            {
+                vote: 'yes',
+                icon: 'thumb_up',
+                showPercent: true
+            },
+            {
+                vote: 'no',
+                icon: 'thumb_down',
+                showPercent: true
+            },
+            {
+                vote: 'abstain',
+                icon: 'trip_origin',
+                showPercent: this.showAbstainPercent(poll)
+            }
+        ];
+    }
+
+    private showAbstainPercent(poll: PollData | ViewBasePoll): boolean {
+        return (
+            poll.onehundred_percent_base === PercentBase.YNA ||
+            poll.onehundred_percent_base === PercentBase.Valid ||
+            poll.onehundred_percent_base === PercentBase.Cast
+        );
+    }
+
+    public getSumTableKeys(poll: PollData | ViewBasePoll): VotingResult[] {
+        return [
+            {
+                vote: 'votesvalid',
+                hide: poll.votesvalid === -2,
+                showPercent:
+                    poll.onehundred_percent_base === PercentBase.Valid ||
+                    poll.onehundred_percent_base === PercentBase.Cast
+            },
+            {
+                vote: 'votesinvalid',
+                icon: 'not_interested',
+                hide: poll.votesinvalid === -2,
+                showPercent: poll.onehundred_percent_base === PercentBase.Cast
+            },
+            {
+                vote: 'votescast',
+                hide: poll.votescast === -2,
+                showPercent: poll.onehundred_percent_base === PercentBase.Cast
+            }
+        ];
+    }
+
+    public generateChartData(poll: PollData | ViewBasePoll): ChartData {
         let fields: CalculablePollKey[];
 
         // TODO: PollData should either be `ViewBasePoll` or `BasePoll` to get SOLID
