@@ -1218,7 +1218,7 @@ class VoteAssignmentPollNamedVotes(VoteAssignmentPollBaseTestClass):
         poll = AssignmentPoll.objects.get()
         option = poll.options.get(pk=1)
         self.assertEqual(option.yes, Decimal("0"))
-        self.assertEqual(option.no, Decimal("0"))
+        self.assertEqual(option.no, Decimal("1"))
         self.assertEqual(option.abstain, Decimal("0"))
         self.assertEqual(poll.amount_global_no, Decimal("1"))
         self.assertEqual(poll.amount_global_abstain, Decimal("0"))
@@ -1246,7 +1246,7 @@ class VoteAssignmentPollNamedVotes(VoteAssignmentPollBaseTestClass):
         option = poll.options.get(pk=1)
         self.assertEqual(option.yes, Decimal("0"))
         self.assertEqual(option.no, Decimal("0"))
-        self.assertEqual(option.abstain, Decimal("0"))
+        self.assertEqual(option.abstain, Decimal("1"))
         self.assertEqual(poll.amount_global_no, Decimal("0"))
         self.assertEqual(poll.amount_global_abstain, Decimal("1"))
 
