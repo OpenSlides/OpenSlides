@@ -1,4 +1,4 @@
-<ng-container *ngIf="poll">
+<ng-container *ngIf="poll && !poll.user_has_voted; else userHasVotes">
     <div *osPerms="'motions.can_manage_polls'; and: poll && poll.isStarted">
         <os-poll-progress [poll]="poll"></os-poll-progress>
     </div>
@@ -16,3 +16,11 @@
         </div>
     </div>
 </ng-container>
+
+<ng-template #userHasVotes>
+    <div class="user-has-voted">
+        <os-icon-container icon="check">
+            {{ 'You already voted on this poll' | translate }}
+        </os-icon-container>
+    </div>
+</ng-template>

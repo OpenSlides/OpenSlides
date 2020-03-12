@@ -57,12 +57,12 @@ export class MotionPollDialogComponent extends BasePollDialogComponent<ViewMotio
      */
     private createDialog(): void {
         this.dialogVoteForm = this.fb.group({
-            Y: [0, [Validators.min(-2)]],
-            N: [0, [Validators.min(-2)]],
-            A: [0, [Validators.min(-2)]],
-            votesvalid: [0, [Validators.min(-2)]],
-            votesinvalid: [0, [Validators.min(-2)]],
-            votescast: [0, [Validators.min(-2)]]
+            Y: ['', [Validators.min(-2)]],
+            N: ['', [Validators.min(-2)]],
+            A: ['', [Validators.min(-2)]],
+            votesvalid: ['', [Validators.min(-2)]],
+            votesinvalid: ['', [Validators.min(-2)]],
+            votescast: ['', [Validators.min(-2)]]
         });
 
         if (this.pollData.poll) {

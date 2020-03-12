@@ -26,7 +26,7 @@ export abstract class BaseVote<T = any> extends BaseDecimalModel<T> {
         return VoteValueVerbose[this.value];
     }
 
-    protected getDecimalFields(): (keyof BaseVote<T>)[] {
+    protected getDecimalFields(): string[] {
         return ['weight'];
     }
 }

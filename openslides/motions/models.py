@@ -889,14 +889,14 @@ class MotionOptionManager(BaseManager):
 
     def get_prefetched_queryset(self, *args, **kwargs):
         """
-        Returns the normal queryset with all voted users. In the background we
+        Returns the normal queryset. In the background we
         join and prefetch all related models.
         """
         return (
             super()
             .get_prefetched_queryset(*args, **kwargs)
             .select_related("poll")
-            .prefetch_related("voted", "votes")
+            .prefetch_related("votes")
         )
 
 
@@ -908,9 +908,6 @@ class MotionOption(RESTModelMixin, BaseOption):
 
     poll = models.ForeignKey(
         "MotionPoll", related_name="options", on_delete=CASCADE_AND_AUTOUPDATE
-    )
-    voted = models.ManyToManyField(
-        settings.AUTH_USER_MODEL, blank=True, related_name="motionoption_voted"
     )
 
     class Meta:
@@ -931,7 +928,7 @@ class MotionPollManager(BaseManager):
             super()
             .get_prefetched_queryset(*args, **kwargs)
             .select_related("motion")
-            .prefetch_related("options", "options__votes", "options__voted", "groups")
+            .prefetch_related("options", "options__votes", "voted", "groups")
         )
 
 

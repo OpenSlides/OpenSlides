@@ -58,6 +58,11 @@ class Migration(migrations.Migration):
             preserve_default=False,
         ),
         migrations.AddField(
+            model_name="motionpoll",
+            name="voted",
+            field=models.ManyToManyField(blank=True, to=settings.AUTH_USER_MODEL),
+        ),
+        migrations.AddField(
             model_name="motionvote",
             name="user",
             field=models.ForeignKey(
@@ -106,15 +111,6 @@ class Migration(migrations.Migration):
                 max_length=8,
             ),
             preserve_default=False,
-        ),
-        migrations.AddField(
-            model_name="motionoption",
-            name="voted",
-            field=models.ManyToManyField(
-                blank=True,
-                to=settings.AUTH_USER_MODEL,
-                related_name="motionoption_voted",
-            ),
         ),
         migrations.AlterField(
             model_name="motionvote",

@@ -53,12 +53,11 @@ def test_assignment_option_db_queries():
     """
     Tests that only the following db queries are done:
     * 1 request to get the options,
-    * 1 request to get all users that voted on the options,
     * 1 request to get all votes for all options,
-    = 3 queries
+    = 2 queries
     """
     create_assignment_polls()
-    assert count_queries(AssignmentOption.get_elements)() == 3
+    assert count_queries(AssignmentOption.get_elements)() == 2
 
 
 def create_assignment_polls():
@@ -93,13 +92,13 @@ def create_assignment_polls():
                 username=f"test_username_{i}{j}",
                 password="test_password_kbzj5L8ZtVxBllZzoW6D",
             )
+            poll.voted.add(user)
             for option in poll.options.all():
                 weight = random.randint(0, 10)
                 if weight > 0:
                     AssignmentVote.objects.create(
                         user=user, option=option, value="Y", weight=Decimal(weight)
                     )
-                option.voted.add(user)
 
 
 class CreateAssignmentPoll(TestCase):
@@ -110,7 +109,7 @@ class CreateAssignmentPoll(TestCase):
         self.assignment.add_candidate(self.admin)
 
     def test_simple(self):
-        with self.assertNumQueries(50):
+        with self.assertNumQueries(40):
             response = self.client.post(
                 reverse("assignmentpoll-list"),
                 {
@@ -1008,10 +1007,10 @@ class VoteAssignmentPollNamedYNA(VoteAssignmentPollBaseTestClass):
             {"1": "N"},
             format="json",
         )
-        self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
+        self.assertHttpStatusVerbose(response, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(AssignmentVote.objects.count(), 1)
         vote = AssignmentVote.objects.get()
-        self.assertEqual(vote.value, "N")
+        self.assertEqual(vote.value, "Y")
 
     def test_too_many_options(self):
         self.start_poll()
@@ -1197,14 +1196,14 @@ class VoteAssignmentPollNamedVotes(VoteAssignmentPollBaseTestClass):
             {"1": 0, "2": 1},
             format="json",
         )
-        self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
+        self.assertHttpStatusVerbose(response, status.HTTP_400_BAD_REQUEST)
         poll = AssignmentPoll.objects.get()
         option1 = poll.options.get(pk=1)
         option2 = poll.options.get(pk=2)
-        self.assertEqual(option1.yes, Decimal("0"))
+        self.assertEqual(option1.yes, Decimal("1"))
         self.assertEqual(option1.no, Decimal("0"))
         self.assertEqual(option1.abstain, Decimal("0"))
-        self.assertEqual(option2.yes, Decimal("1"))
+        self.assertEqual(option2.yes, Decimal("0"))
         self.assertEqual(option2.no, Decimal("0"))
         self.assertEqual(option2.abstain, Decimal("0"))
 
@@ -1219,9 +1218,9 @@ class VoteAssignmentPollNamedVotes(VoteAssignmentPollBaseTestClass):
         poll = AssignmentPoll.objects.get()
         option = poll.options.get(pk=1)
         self.assertEqual(option.yes, Decimal("0"))
-        self.assertEqual(option.no, Decimal("2"))
+        self.assertEqual(option.no, Decimal("0"))
         self.assertEqual(option.abstain, Decimal("0"))
-        self.assertEqual(poll.amount_global_no, Decimal("2"))
+        self.assertEqual(poll.amount_global_no, Decimal("1"))
         self.assertEqual(poll.amount_global_abstain, Decimal("0"))
 
     def test_global_no_forbidden(self):
@@ -1247,9 +1246,9 @@ class VoteAssignmentPollNamedVotes(VoteAssignmentPollBaseTestClass):
         option = poll.options.get(pk=1)
         self.assertEqual(option.yes, Decimal("0"))
         self.assertEqual(option.no, Decimal("0"))
-        self.assertEqual(option.abstain, Decimal("2"))
+        self.assertEqual(option.abstain, Decimal("0"))
         self.assertEqual(poll.amount_global_no, Decimal("0"))
-        self.assertEqual(poll.amount_global_abstain, Decimal("2"))
+        self.assertEqual(poll.amount_global_abstain, Decimal("1"))
 
     def test_global_abstain_forbidden(self):
         self.poll.global_abstain = False
@@ -1297,17 +1296,6 @@ class VoteAssignmentPollNamedVotes(VoteAssignmentPollBaseTestClass):
         response = self.client.post(
             reverse("assignmentpoll-vote", args=[self.poll.pk]),
             {"1": 2, "2": 2},
-            format="json",
-        )
-        self.assertHttpStatusVerbose(response, status.HTTP_400_BAD_REQUEST)
-        self.assertFalse(AssignmentPoll.objects.get().get_votes().exists())
-
-    def test_missing_option(self):
-        self.add_candidate()
-        self.start_poll()
-        response = self.client.post(
-            reverse("assignmentpoll-vote", args=[self.poll.pk]),
-            {"1": 1},
             format="json",
         )
         self.assertHttpStatusVerbose(response, status.HTTP_400_BAD_REQUEST)
@@ -1370,7 +1358,7 @@ class VoteAssignmentPollNamedVotes(VoteAssignmentPollBaseTestClass):
     def test_missing_data(self):
         self.start_poll()
         response = self.client.post(reverse("assignmentpoll-vote", args=[self.poll.pk]))
-        self.assertHttpStatusVerbose(response, status.HTTP_400_BAD_REQUEST)
+        self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
         self.assertFalse(AssignmentVote.objects.exists())
 
     def test_wrong_data_format(self):
@@ -1557,9 +1545,7 @@ class VoteAssignmentPollPseudoanonymousYNA(VoteAssignmentPollBaseTestClass):
     def test_missing_data(self):
         self.start_poll()
         response = self.client.post(reverse("assignmentpoll-vote", args=[self.poll.pk]))
-        self.assertHttpStatusVerbose(
-            response, status.HTTP_200_OK
-        )  # new "feature" because of partial requests: empty requests work!
+        self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
         self.assertFalse(AssignmentVote.objects.exists())
 
     def test_wrong_data_format(self):
@@ -1718,17 +1704,6 @@ class VoteAssignmentPollPseudoanonymousVotes(VoteAssignmentPollBaseTestClass):
         self.assertHttpStatusVerbose(response, status.HTTP_400_BAD_REQUEST)
         self.assertFalse(AssignmentPoll.objects.get().get_votes().exists())
 
-    def test_missing_option(self):
-        self.add_candidate()
-        self.start_poll()
-        response = self.client.post(
-            reverse("assignmentpoll-vote", args=[self.poll.pk]),
-            {"1": 1},
-            format="json",
-        )
-        self.assertHttpStatusVerbose(response, status.HTTP_400_BAD_REQUEST)
-        self.assertFalse(AssignmentPoll.objects.get().get_votes().exists())
-
     def test_too_many_options(self):
         self.setup_for_multiple_votes()
         self.start_poll()
@@ -1786,7 +1761,7 @@ class VoteAssignmentPollPseudoanonymousVotes(VoteAssignmentPollBaseTestClass):
     def test_missing_data(self):
         self.start_poll()
         response = self.client.post(reverse("assignmentpoll-vote", args=[self.poll.pk]))
-        self.assertHttpStatusVerbose(response, status.HTTP_400_BAD_REQUEST)
+        self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
         self.assertFalse(AssignmentVote.objects.exists())
 
     def test_wrong_data_format(self):
@@ -1909,6 +1884,8 @@ class VoteAssignmentPollNamedAutoupdates(VoteAssignmentPollAutoupdatesBaseClass)
                     "votescast": "1.000000",
                     "votesinvalid": "0.000000",
                     "votesvalid": "1.000000",
+                    "user_has_voted": False,
+                    "voted_id": [self.user.id],
                 },
                 "assignments/assignment-option:1": {
                     "abstain": "1.000000",
@@ -1919,8 +1896,6 @@ class VoteAssignmentPollNamedAutoupdates(VoteAssignmentPollAutoupdatesBaseClass)
                     "yes": "0.000000",
                     "user_id": 1,
                     "weight": 1,
-                    "user_has_voted": False,
-                    "voted_id": [self.user.id],
                 },
                 "assignments/assignment-vote:1": {
                     "id": 1,
@@ -1971,6 +1946,7 @@ class VoteAssignmentPollNamedAutoupdates(VoteAssignmentPollAutoupdatesBaseClass)
                     "options_id": [1],
                     "id": 1,
                     "votes_amount": 1,
+                    "user_has_voted": user == self.user,
                 },
             )
 
@@ -1984,7 +1960,7 @@ class VoteAssignmentPollNamedAutoupdates(VoteAssignmentPollAutoupdatesBaseClass)
         vote.value = "A"
         vote.weight = Decimal("1")
         vote.save(no_delete_on_restriction=True, skip_autoupdate=True)
-        option.voted.add(self.user.id)
+        self.poll.voted.add(self.user.id)
         self.poll.state = AssignmentPoll.STATE_FINISHED
         self.poll.save(skip_autoupdate=True)
         response = self.client.post(
@@ -2026,6 +2002,8 @@ class VoteAssignmentPollNamedAutoupdates(VoteAssignmentPollAutoupdatesBaseClass)
                         "votescast": "1.000000",
                         "votesinvalid": "0.000000",
                         "votesvalid": "1.000000",
+                        "user_has_voted": user == self.user,
+                        "voted_id": [self.user.id],
                     },
                     "assignments/assignment-vote:1": {
                         "pollstate": AssignmentPoll.STATE_PUBLISHED,
@@ -2044,8 +2022,6 @@ class VoteAssignmentPollNamedAutoupdates(VoteAssignmentPollAutoupdatesBaseClass)
                         "yes": "0.000000",
                         "user_id": 1,
                         "weight": 1,
-                        "user_has_voted": user == self.user,
-                        "voted_id": [self.user.id],
                     },
                 },
             )
@@ -2083,6 +2059,8 @@ class VoteAssignmentPollPseudoanonymousAutoupdates(
                 "title": self.poll.title,
                 "description": self.description,
                 "type": AssignmentPoll.TYPE_PSEUDOANONYMOUS,
+                "user_has_voted": False,
+                "voted_id": [self.user.id],
                 "onehundred_percent_base": AssignmentPoll.PERCENT_BASE_CAST,
                 "majority_method": AssignmentPoll.MAJORITY_TWO_THIRDS,
                 "votes_amount": 1,
@@ -2099,8 +2077,6 @@ class VoteAssignmentPollPseudoanonymousAutoupdates(
                 "yes": "0.000000",
                 "user_id": 1,
                 "weight": 1,
-                "user_has_voted": False,
-                "voted_id": [self.user.id],
             },
             "assignments/assignment-vote:1": {
                 "id": 1,
@@ -2137,6 +2113,7 @@ class VoteAssignmentPollPseudoanonymousAutoupdates(
                     "options_id": [1],
                     "id": 1,
                     "votes_amount": 1,
+                    "user_has_voted": user == self.user,
                 },
             )
 
@@ -2149,7 +2126,7 @@ class VoteAssignmentPollPseudoanonymousAutoupdates(
         vote.value = "A"
         vote.weight = Decimal("1")
         vote.save(no_delete_on_restriction=True, skip_autoupdate=True)
-        option.voted.add(self.user.id)
+        self.poll.voted.add(self.user.id)
         self.poll.state = AssignmentPoll.STATE_FINISHED
         self.poll.save(skip_autoupdate=True)
         response = self.client.post(
@@ -2191,6 +2168,8 @@ class VoteAssignmentPollPseudoanonymousAutoupdates(
                         "votescast": "1.000000",
                         "votesinvalid": "0.000000",
                         "votesvalid": "1.000000",
+                        "user_has_voted": user == self.user,
+                        "voted_id": [self.user.id],
                     },
                     "assignments/assignment-vote:1": {
                         "pollstate": AssignmentPoll.STATE_PUBLISHED,
@@ -2209,8 +2188,6 @@ class VoteAssignmentPollPseudoanonymousAutoupdates(
                         "yes": "0.000000",
                         "user_id": 1,
                         "weight": 1,
-                        "user_has_voted": user == self.user,
-                        "voted_id": [self.user.id],
                     },
                 },
             )
