@@ -12,7 +12,7 @@ import { BaseRepository } from 'app/core/repositories/base-repository';
 import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
 import { BasePollDialogService } from 'app/core/ui-services/base-poll-dialog.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
-import { ChartData, ChartType } from 'app/shared/components/charts/charts.component';
+import { ChartData } from 'app/shared/components/charts/charts.component';
 import { BaseVote } from 'app/shared/models/poll/base-vote';
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { ViewGroup } from 'app/site/users/models/view-group';
@@ -59,11 +59,6 @@ export abstract class BasePollDetailComponent<V extends ViewBasePoll> extends Ba
      * The reference to the poll.
      */
     public poll: V = null;
-
-    /**
-     * Sets the type of the shown chart, if votes are entered.
-     */
-    public abstract get chartType(): ChartType;
 
     /**
      * The different labels for the votes (used for chart).

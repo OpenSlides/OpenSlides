@@ -6,7 +6,8 @@ import { HtmlToPdfService } from 'app/core/pdf-services/html-to-pdf.service';
 import { ParsePollNumberPipe } from 'app/shared/pipes/parse-poll-number.pipe';
 import { PollKeyVerbosePipe } from 'app/shared/pipes/poll-key-verbose.pipe';
 import { PollPercentBasePipe } from 'app/shared/pipes/poll-percent-base.pipe';
-import { PollTableData } from 'app/site/polls/models/view-base-poll';
+import { PollTableData } from 'app/site/polls/services/poll.service';
+import { AssignmentPollService } from './assignment-poll.service';
 import { ViewAssignment } from '../models/view-assignment';
 import { ViewAssignmentPoll } from '../models/view-assignment-poll';
 
@@ -30,7 +31,8 @@ export class AssignmentPdfService {
         private htmlToPdfService: HtmlToPdfService,
         private pollKeyVerbose: PollKeyVerbosePipe,
         private parsePollNumber: ParsePollNumberPipe,
-        private pollPercentBase: PollPercentBasePipe
+        private pollPercentBase: PollPercentBasePipe,
+        private assignmentPollService: AssignmentPollService
     ) {}
 
     /**
@@ -182,7 +184,7 @@ export class AssignmentPdfService {
                     }
                 ]);
 
-                const tableData = poll.generateTableData();
+                const tableData = this.assignmentPollService.generateTableData(poll);
 
                 for (const pollResult of tableData) {
                     const voteOption = this.translate.instant(this.pollKeyVerbose.transform(pollResult.votingOption));

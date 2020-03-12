@@ -11,7 +11,8 @@ import {
     AssignmentPollPercentBase
 } from 'app/shared/models/assignments/assignment-poll';
 import { MajorityMethod } from 'app/shared/models/poll/base-poll';
-import { PollData, PollService } from 'app/site/polls/services/poll.service';
+import { PollData, PollService, PollTableData, VotingResult } from 'app/site/polls/services/poll.service';
+import { ViewAssignmentPoll } from '../models/view-assignment-poll';
 
 @Injectable({
     providedIn: 'root'
@@ -70,6 +71,60 @@ export class AssignmentPollService extends PollService {
         }
 
         return poll;
+    }
+
+    private getGlobalVoteKeys(poll: ViewAssignmentPoll): VotingResult[] {
+        return [
+            {
+                vote: 'amount_global_no',
+                showPercent: false,
+                hide: poll.amount_global_no === -2 || poll.amount_global_no === 0
+            },
+            {
+                vote: 'amount_global_abstain',
+                showPercent: false,
+                hide: poll.amount_global_abstain === -2 || poll.amount_global_abstain === 0
+            }
+        ];
+    }
+
+    public generateTableData(poll: ViewAssignmentPoll): PollTableData[] {
+        const tableData: PollTableData[] = poll.options.map(candidate => ({
+            votingOption: candidate.user.short_name,
+            votingOptionSubtitle: candidate.user.getLevelAndNumber(),
+            class: 'user',
+            value: super.getVoteTableKeys(poll).map(
+                key =>
+                    ({
+                        vote: key.vote,
+                        amount: candidate[key.vote],
+                        icon: key.icon,
+                        hide: key.hide,
+                        showPercent: key.showPercent
+                    } as VotingResult)
+            )
+        }));
+        tableData.push(...this.formatVotingResultToTableData(super.getSumTableKeys(poll), poll));
+        tableData.push(...this.formatVotingResultToTableData(this.getGlobalVoteKeys(poll), poll));
+        return tableData;
+    }
+
+    private formatVotingResultToTableData(resultList: VotingResult[], poll: PollData): PollTableData[] {
+        return resultList
+            .filter(key => {
+                return !key.hide;
+            })
+            .map(key => ({
+                votingOption: key.vote,
+                class: 'sums',
+                value: [
+                    {
+                        amount: poll[key.vote],
+                        hide: key.hide,
+                        showPercent: key.showPercent
+                    } as VotingResult
+                ]
+            }));
     }
 
     private sumOptionsYN(poll: PollData): number {
