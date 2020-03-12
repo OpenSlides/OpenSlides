@@ -8,7 +8,7 @@ import {
 } from 'app/shared/models/assignments/assignment-poll';
 import { BaseViewModel } from 'app/site/base/base-view-model';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
-import { PollClassType, PollTableData, ViewBasePoll, VotingResult } from 'app/site/polls/models/view-base-poll';
+import { PollClassType, ViewBasePoll } from 'app/site/polls/models/view-base-poll';
 import { ViewAssignment } from './view-assignment';
 import { ViewAssignmentOption } from './view-assignment-option';
 
@@ -39,19 +39,6 @@ export class ViewAssignmentPoll extends ViewBasePoll<AssignmentPoll, AssignmentP
     public readonly tableChartData: Map<string, BehaviorSubject<ChartData>> = new Map();
     public readonly pollClassType = PollClassType.Assignment;
 
-    protected globalVoteKeys: VotingResult[] = [
-        {
-            vote: 'amount_global_no',
-            showPercent: false,
-            hide: this.poll.amount_global_no === -2 || this.poll.amount_global_no === 0
-        },
-        {
-            vote: 'amount_global_abstain',
-            showPercent: false,
-            hide: this.poll.amount_global_abstain === -2 || this.poll.amount_global_abstain === 0
-        }
-    ];
-
     public get pollmethodVerbose(): string {
         return AssignmentPollMethodVerbose[this.pollmethod];
     }
@@ -75,62 +62,6 @@ export class ViewAssignmentPoll extends ViewBasePoll<AssignmentPoll, AssignmentP
             projectionDefaultName: 'assignment_poll',
             getDialogTitle: this.getTitle
         };
-    }
-
-    public generateTableData(): PollTableData[] {
-        const tableData: PollTableData[] = this.options.map(candidate => ({
-            votingOption: candidate.user.short_name,
-            votingOptionSubtitle: candidate.user.getLevelAndNumber(),
-            class: 'user',
-            value: this.voteTableKeys.map(
-                key =>
-                    ({
-                        vote: key.vote,
-                        amount: candidate[key.vote],
-                        icon: key.icon,
-                        hide: key.hide,
-                        showPercent: key.showPercent
-                    } as VotingResult)
-            )
-        }));
-
-        tableData.push(
-            ...this.sumTableKeys
-                .filter(key => {
-                    return !key.hide;
-                })
-                .map(key => ({
-                    votingOption: key.vote,
-                    class: 'sums',
-                    value: [
-                        {
-                            amount: this[key.vote],
-                            hide: key.hide,
-                            showPercent: key.showPercent
-                        } as VotingResult
-                    ]
-                }))
-        );
-
-        tableData.push(
-            ...this.globalVoteKeys
-                .filter(key => {
-                    return !key.hide;
-                })
-                .map(key => ({
-                    votingOption: key.vote,
-                    class: 'sums',
-                    value: [
-                        {
-                            amount: this[key.vote],
-                            hide: key.hide,
-                            showPercent: key.showPercent
-                        } as VotingResult
-                    ]
-                }))
-        );
-
-        return tableData;
     }
 
     protected getDecimalFields(): string[] {

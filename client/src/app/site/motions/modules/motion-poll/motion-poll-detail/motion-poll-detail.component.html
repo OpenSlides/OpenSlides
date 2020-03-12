@@ -32,50 +32,7 @@
         <div *ngIf="!poll.hasVotes || !poll.stateHasVotes">{{ 'No results to show' | translate }}</div>
 
         <div *ngIf="poll.stateHasVotes">
-            <div class="result-wrapper" *ngIf="poll.hasVotes">
-                <!-- result table -->
-                <table class="result-table">
-                    <tbody>
-                        <tr>
-                            <th></th>
-                            <th colspan="2" translate>Votes</th>
-                        </tr>
-                        <tr *ngFor="let row of poll.tableData" [class]="row.votingOption">
-                            <!-- YNA/Valid etc -->
-                            <td>
-                                <os-icon-container *ngIf="row.value[0].icon" [icon]="row.value[0].icon">
-                                    {{ row.votingOption | pollKeyVerbose | translate }}
-                                </os-icon-container>
-                                <span *ngIf="!row.value[0].icon">
-                                    {{ row.votingOption | pollKeyVerbose | translate }}
-                                </span>
-                            </td>
-
-                            <!-- Percent numbers -->
-                            <td class="result-cell-definition">
-                                <span *ngIf="row.value[0].showPercent">
-                                    {{ row.value[0].amount | pollPercentBase: poll }}
-                                </span>
-                            </td>
-
-                            <!-- Voices -->
-                            <td class="result-cell-definition">
-                                {{ row.value[0].amount | parsePollNumber }}
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                <!-- Chart -->
-                <div class="doughnut-chart" *ngIf="poll.hasPresentableValues && chartDataSubject.value">
-                    <os-charts
-                        [type]="chartType"
-                        [data]="chartDataSubject"
-                        [showLegend]="false"
-                        [hasPadding]="false"
-                    ></os-charts>
-                </div>
-            </div>
+            <os-motion-poll-detail-content [poll]="poll" [chartData]="chartDataSubject"> </os-motion-poll-detail-content>
 
             <!-- Named table: only show if votes are present -->
             <div class="named-result-table" *ngIf="poll.type === 'named'">

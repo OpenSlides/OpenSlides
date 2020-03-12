@@ -7,48 +7,6 @@
     padding-top: 20px;
 }
 
-.result-wrapper {
-    display: grid;
-    grid-gap: 2em;
-    margin: 2em;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-
-    .result-table {
-        // display: block;
-        th {
-            text-align: right;
-            font-weight: initial;
-        }
-
-        tr {
-            height: 48px;
-            border-bottom: none !important;
-
-            .result-cell-definition {
-                text-align: right;
-            }
-        }
-
-        .yes {
-            color: $votes-yes-color;
-        }
-
-        .no {
-            color: $votes-no-color;
-        }
-
-        .abstain {
-            color: $votes-abstain-color;
-        }
-    }
-
-    .doughnut-chart {
-        display: block;
-        margin-top: auto;
-        margin-bottom: auto;
-    }
-}
-
 .named-result-table {
     grid-area: names;
     .mat-form-field {
@@ -70,13 +28,6 @@
 
 .single-votes-table {
     height: 500px;
-}
-
-.openslides-theme os-list-view-table os-sort-filter-bar .custom-table-header {
-    &,
-    .action-buttons .input-container input {
-        background: white;
-    }
 }
 
 .voted-yes {

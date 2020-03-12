@@ -38,7 +38,7 @@
                             <th class="result voted-no" translate *ngIf="!poll.isMethodY">No</th>
                             <th class="result voted-abstain" translate *ngIf="poll.isMethodYNA">Abstain</th>
                         </tr>
-                        <tr *ngFor="let row of poll.tableData" [class]="row.class">
+                        <tr *ngFor="let row of getTableData()" [class]="row.class">
                             <td class="voting-option">
                                 <div>
                                     <span>

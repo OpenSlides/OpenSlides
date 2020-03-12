@@ -1,0 +1,39 @@
+<div class="result-wrapper" *ngIf="hasVotes">
+    <!-- result table -->
+    <table class="result-table">
+        <tbody>
+            <tr>
+                <th></th>
+                <th colspan="2" translate>Votes</th>
+            </tr>
+            <tr *ngFor="let row of getTableData()" [class]="row.votingOption">
+                <!-- YNA/Valid etc -->
+                <td>
+                    <os-icon-container *ngIf="row.value[0].icon" [icon]="row.value[0].icon">
+                        {{ row.votingOption | pollKeyVerbose | translate }}
+                    </os-icon-container>
+                    <span *ngIf="!row.value[0].icon">
+                        {{ row.votingOption | pollKeyVerbose | translate }}
+                    </span>
+                </td>
+
+                <!-- Percent numbers -->
+                <td class="result-cell-definition">
+                    <span *ngIf="row.value[0].showPercent">
+                        {{ row.value[0].amount | pollPercentBase: poll }}
+                    </span>
+                </td>
+
+                <!-- Voices -->
+                <td class="result-cell-definition">
+                    {{ row.value[0].amount | parsePollNumber }}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Chart -->
+    <div class="doughnut-chart" *ngIf="showChart">
+        <os-charts type="doughnut" [data]="chartData" [showLegend]="false" [hasPadding]="false"></os-charts>
+    </div>
+</div>

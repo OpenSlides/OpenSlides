@@ -16,6 +16,7 @@ import { PollKeyVerbosePipe } from 'app/shared/pipes/poll-key-verbose.pipe';
 import { PollPercentBasePipe } from 'app/shared/pipes/poll-percent-base.pipe';
 import { getRecommendationTypeName } from 'app/shared/utils/recommendation-type-names';
 import { MotionExportInfo } from './motion-export.service';
+import { MotionPollService } from './motion-poll.service';
 import { ChangeRecoMode, InfoToExport, LineNumberingMode, PERSONAL_NOTE_ID } from '../motions.constants';
 import { ViewMotion } from '../models/view-motion';
 import { ViewMotionAmendedParagraph } from '../models/view-motion-amended-paragraph';
@@ -67,7 +68,8 @@ export class MotionPdfService {
         private commentRepo: MotionCommentSectionRepositoryService,
         private pollKeyVerbose: PollKeyVerbosePipe,
         private pollPercentBase: PollPercentBasePipe,
-        private parsePollNumber: ParsePollNumberPipe
+        private parsePollNumber: ParsePollNumberPipe,
+        private motionPollService: MotionPollService
     ) {}
 
     /**
@@ -370,7 +372,7 @@ export class MotionPdfService {
             const column3 = [];
             motion.polls.forEach(poll => {
                 if (poll.hasVotes) {
-                    const tableData = poll.generateTableData();
+                    const tableData = this.motionPollService.generateTableData(poll);
 
                     tableData.forEach(votingResult => {
                         const votingOption = this.translate.instant(

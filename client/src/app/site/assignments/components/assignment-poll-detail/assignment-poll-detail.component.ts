@@ -13,9 +13,9 @@ import { GroupRepositoryService } from 'app/core/repositories/users/group-reposi
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ChartType } from 'app/shared/components/charts/charts.component';
 import { BasePollDetailComponent } from 'app/site/polls/components/base-poll-detail.component';
-import { VotingResult } from 'app/site/polls/models/view-base-poll';
-import { PollService } from 'app/site/polls/services/poll.service';
+import { PollService, PollTableData, VotingResult } from 'app/site/polls/services/poll.service';
 import { AssignmentPollDialogService } from '../../services/assignment-poll-dialog.service';
+import { AssignmentPollService } from '../../services/assignment-poll.service';
 import { ViewAssignmentPoll } from '../../models/view-assignment-poll';
 
 @Component({
@@ -48,7 +48,8 @@ export class AssignmentPollDetailComponent extends BasePollDetailComponent<ViewA
         pollDialog: AssignmentPollDialogService,
         pollService: PollService,
         votesRepo: AssignmentVoteRepositoryService,
-        private operator: OperatorService
+        private operator: OperatorService,
+        private assignmentPollService: AssignmentPollService
     ) {
         super(title, translate, matSnackbar, repo, route, groupRepo, prompt, pollDialog, pollService, votesRepo);
     }
@@ -132,5 +133,9 @@ export class AssignmentPollDetailComponent extends BasePollDetailComponent<ViewA
             }
         }
         return true;
+    }
+
+    public getTableData(): PollTableData[] {
+        return this.assignmentPollService.generateTableData(this.poll);
     }
 }
