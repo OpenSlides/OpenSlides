@@ -374,20 +374,16 @@ class AssignmentPoll(RESTModelMixin, BasePoll):
     def get_amount_global_abstain(self):
         if not self.global_abstain:
             return None
-        elif (
-            self.type == self.TYPE_ANALOG
-            or self.pollmethod == AssignmentPoll.POLLMETHOD_VOTES
-        ):
+        elif self.type == self.TYPE_ANALOG:
             return self.db_amount_global_abstain
+        elif self.pollmethod == AssignmentPoll.POLLMETHOD_VOTES:
+            return sum(option.abstain for option in self.options.all())
         else:
             return None
 
     def set_amount_global_abstain(self, value):
-        if (
-            self.type != self.TYPE_ANALOG
-            and self.pollmethod != AssignmentPoll.POLLMETHOD_VOTES
-        ):
-            raise ValueError("Do not set amount_global_abstain YN/YNA polls")
+        if self.type != self.TYPE_ANALOG:
+            raise ValueError("Do not set amount_global_abstain for non analog polls")
         self.db_amount_global_abstain = value
 
     amount_global_abstain = property(
@@ -397,20 +393,16 @@ class AssignmentPoll(RESTModelMixin, BasePoll):
     def get_amount_global_no(self):
         if not self.global_no:
             return None
-        elif (
-            self.type == self.TYPE_ANALOG
-            or self.pollmethod == AssignmentPoll.POLLMETHOD_VOTES
-        ):
+        elif self.type == self.TYPE_ANALOG:
             return self.db_amount_global_no
+        elif self.pollmethod == AssignmentPoll.POLLMETHOD_VOTES:
+            return sum(option.no for option in self.options.all())
         else:
             return None
 
     def set_amount_global_no(self, value):
-        if (
-            self.type != self.TYPE_ANALOG
-            and self.pollmethod != AssignmentPoll.POLLMETHOD_VOTES
-        ):
-            raise ValueError("Do not set amount_global_no YN/YNA polls")
+        if self.type != self.TYPE_ANALOG:
+            raise ValueError("Do not set amount_global_no for non analog polls")
         self.db_amount_global_no = value
 
     amount_global_no = property(get_amount_global_no, set_amount_global_no)

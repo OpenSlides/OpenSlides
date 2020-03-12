@@ -259,9 +259,12 @@ export abstract class PollService {
 
     public generateChartData(poll: PollData | ViewBasePoll): ChartData {
         let fields: CalculablePollKey[];
-
-        // TODO: PollData should either be `ViewBasePoll` or `BasePoll` to get SOLID
-        const isAssignment = Object.keys(poll.options[0]).includes('user');
+        let isAssignment: boolean;
+        if (poll instanceof ViewBasePoll) {
+            isAssignment = poll.pollClassType === 'assignment';
+        } else {
+            isAssignment = Object.keys(poll.options[0]).includes('user');
+        }
 
         if (isAssignment) {
             if (poll.pollmethod === AssignmentPollMethod.YNA) {

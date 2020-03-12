@@ -23,12 +23,6 @@ const AssignmentOptionRelations: RelationDefinition[] = [
         foreignViewModel: ViewAssignmentVote
     },
     {
-        type: 'M2M',
-        ownIdKey: 'voted_id',
-        ownKey: 'voted',
-        foreignViewModel: ViewUser
-    },
-    {
         type: 'M2O',
         ownIdKey: 'poll_id',
         ownKey: 'poll',

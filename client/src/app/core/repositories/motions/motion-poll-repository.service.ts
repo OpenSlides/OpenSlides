@@ -14,6 +14,7 @@ import { ViewMotionOption } from 'app/site/motions/models/view-motion-option';
 import { MotionPollTitleInformation, ViewMotionPoll } from 'app/site/motions/models/view-motion-poll';
 import { BasePollRepositoryService } from 'app/site/polls/services/base-poll-repository.service';
 import { ViewGroup } from 'app/site/users/models/view-group';
+import { ViewUser } from 'app/site/users/models/view-user';
 import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
 import { DataStoreService } from '../../core-services/data-store.service';
 
@@ -35,6 +36,12 @@ const MotionPollRelations: RelationDefinition[] = [
         ownIdKey: 'motion_id',
         ownKey: 'motion',
         foreignViewModel: ViewMotion
+    },
+    {
+        type: 'M2M',
+        ownIdKey: 'voted_id',
+        ownKey: 'voted',
+        foreignViewModel: ViewUser
     }
 ];
 

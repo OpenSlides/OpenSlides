@@ -2,7 +2,6 @@ from decimal import Decimal
 
 from django.contrib.auth import get_user_model
 from django.db import transaction
-from django.db.models import F
 
 from openslides.poll.views import BaseOptionViewSet, BasePollViewSet, BaseVoteViewSet
 from openslides.utils.auth import has_perm
@@ -495,13 +494,13 @@ class AssignmentPollViewSet(BasePollViewSet):
                 )
                 inform_changed_data(vote, no_delete_on_restriction=True)
         else:  # global_no or global_abstain
-            if data == "A":
-                poll.amount_global_abstain = F("db_amount_global_abstain") + 1
-            elif data == "N":
-                poll.amount_global_no = F("db_amount_global_no") + 1
-            else:
-                raise RuntimeError("This should not happen")
-            poll.save()
+            option = options[0]
+            vote = AssignmentVote.objects.create(
+                option=option, user=user, weight=Decimal(1), value=data
+            )
+            inform_changed_data(vote, no_delete_on_restriction=True)
+            inform_changed_data(option)
+            inform_changed_data(poll)
 
         poll.voted.add(user)
 
