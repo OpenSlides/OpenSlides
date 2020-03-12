@@ -19,6 +19,17 @@ $text-margin-top: 10px;
     margin: auto;
 }
 
+.projector-readonly-wrapper {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    .projector-readonly {
+        cursor: default;
+    }
+}
+
 .column-identifier {
     margin-top: $text-margin-top;
     word-break: break-all;

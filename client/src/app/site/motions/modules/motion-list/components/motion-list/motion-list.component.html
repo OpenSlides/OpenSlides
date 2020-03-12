@@ -58,6 +58,20 @@
             <a class="detail-link" [routerLink]="motion.id" *ngIf="!isMultiSelect"></a>
             <div class="column-identifier innerTable">
                 {{ motion.identifier }}
+                <div
+                    *ngIf="!operator.hasPerms('core.can_manage_projector') && projectorService.isProjected(motion)"
+                    class="projector-readonly-wrapper"
+                >
+                    <button
+                        type="button"
+                        class="projector-readonly"
+                        mat-mini-fab
+                        disableRipple
+                        [matTooltip]="'Currently projected' | translate"
+                    >
+                        <mat-icon>videocam</mat-icon>
+                    </button>
+                </div>
             </div>
         </div>
 

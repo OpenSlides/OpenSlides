@@ -7,6 +7,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { PblColumnDefinition } from '@pebula/ngrid';
 
+import { OperatorService } from 'app/core/core-services/operator.service';
+import { ProjectorService } from 'app/core/core-services/projector.service';
 import { StorageService } from 'app/core/core-services/storage.service';
 import { CategoryRepositoryService } from 'app/core/repositories/motions/category-repository.service';
 import { MotionBlockRepositoryService } from 'app/core/repositories/motions/motion-block-repository.service';
@@ -216,7 +218,9 @@ export class MotionListComponent extends BaseListViewComponent<ViewMotion> imple
         public perms: LocalPermissionsService,
         private motionExport: MotionExportService,
         private overlayService: OverlayService,
-        public vp: ViewportService
+        public vp: ViewportService,
+        public operator: OperatorService,
+        public projectorService: ProjectorService
     ) {
         super(titleService, translate, matSnackBar, storage);
         this.canMultiSelect = true;
