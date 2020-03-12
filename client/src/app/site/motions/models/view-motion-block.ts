@@ -24,6 +24,13 @@ export class ViewMotionBlock extends BaseViewModelWithAgendaItemAndListOfSpeaker
     }
 
     /**
+     * A block is finished when all its motions are in a final state
+     */
+    public get isFinished(): boolean {
+        return this.motions && this.motions.length && this.motions.every(motion => motion.isInFinalState());
+    }
+
+    /**
      * Formats the category for search
      *
      * @override

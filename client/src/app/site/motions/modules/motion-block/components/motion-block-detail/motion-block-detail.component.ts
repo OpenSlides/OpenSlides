@@ -148,6 +148,7 @@ export class MotionBlockDetailComponent extends BaseListViewComponent<ViewMotion
         this.configService
             .get<boolean>('motions_show_sequential_numbers')
             .subscribe(show => (this.showSequential = show));
+        (<any>window).comp = this;
     }
 
     /**

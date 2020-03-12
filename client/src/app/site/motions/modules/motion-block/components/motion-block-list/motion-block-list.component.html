@@ -19,16 +19,28 @@
     <!-- Title column -->
     <div *pblNgridCellDef="'title'; value as title; row as block; rowContext as rowContext" class="cell-slot fill">
         <a class="detail-link" [routerLink]="block.id" *ngIf="!isMultiSelect"></a>
+        <!--
+        TODO: Tooltips do not work when hidden under the absolute link, but they can't be above it either,
+        because for some reason they don't delegate the click event. So no tooltips for now
+        -->
         <div class="innerTable">
             <os-icon-container
                 [noWrap]="true"
-                [icon]="block.internal ? 'lock' : null"
+                [icon]="block.isFinished ? 'check' : block.internal ? 'lock' : null"
                 size="large"
-                [matTooltip]="Internal"
+                [iconTooltip]="block.isFinished ? 'Finished' : block.internal ? 'Internal' : '' | translate"
             >
-                <div class="ellipsis-overflow">
-                    {{ title }}
-                </div>
+                <os-icon-container
+                    [noWrap]="true"
+                    icon="lock"
+                    size="large"
+                    [showIcon]="block.isFinished && block.internal"
+                    [iconTooltip]="'Internal' | translate"
+                >
+                    <div class="ellipsis-overflow">
+                        {{ title }}
+                    </div>
+                </os-icon-container>
             </os-icon-container>
         </div>
     </div>
