@@ -17,7 +17,7 @@ import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 
 import { TranslateService } from '@ngx-translate/core';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 
 import { NotifyService } from 'app/core/core-services/notify.service';
 import { OperatorService } from 'app/core/core-services/operator.service';
@@ -57,6 +57,8 @@ import {
     PERSONAL_NOTE_ID,
     verboseChangeRecoMode
 } from 'app/site/motions/motions.constants';
+import { AmendmentFilterListService } from 'app/site/motions/services/amendment-filter-list.service';
+import { AmendmentSortListService } from 'app/site/motions/services/amendment-sort-list.service';
 import { LocalPermissionsService } from 'app/site/motions/services/local-permissions.service';
 import { MotionFilterListService } from 'app/site/motions/services/motion-filter-list.service';
 import { MotionPdfExportService } from 'app/site/motions/services/motion-pdf-export.service';
@@ -277,6 +279,11 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
     private sortedMotions: ViewMotion[];
 
     /**
+     * The observable for the list of motions. Set in OnInit
+     */
+    private sortedMotionsObservable: Observable<ViewMotion[]>;
+
+    /**
      * Determine if the name of supporters are visible
      */
     public showSupporters = false;
@@ -454,7 +461,9 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         private blockRepo: MotionBlockRepositoryService,
         private itemRepo: ItemRepositoryService,
         private motionSortService: MotionSortListService,
+        private amendmentSortService: AmendmentSortListService,
         private motionFilterService: MotionFilterListService,
+        private amendmentFilterService: AmendmentFilterListService,
         private cd: ChangeDetectorRef
     ) {
         super(title, translate, matSnackBar);
@@ -518,17 +527,29 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         });
 
         // use the filter and the search service to get the current sorting
-        this.motionFilterService.initFilters(this.motionObserver);
-        this.motionSortService.initSorting(this.motionFilterService.outputObservable);
+        if (this.configService.instant<boolean>('motions_amendments_main_table')) {
+            this.motionFilterService.initFilters(this.motionObserver);
+            this.motionSortService.initSorting(this.motionFilterService.outputObservable);
+            this.sortedMotionsObservable = this.motionSortService.outputObservable;
+        } else if (this.motion.parent_id) {
+            // only use the amendments for this motion
+            this.amendmentFilterService.initFilters(this.repo.amendmentsTo(this.motion.parent_id));
+            this.amendmentSortService.initSorting(this.amendmentFilterService.outputObservable);
+            this.sortedMotionsObservable = this.amendmentSortService.outputObservable;
+        } else {
+            this.sortedMotions = [];
+        }
 
-        this.subscriptions.push(
-            this.motionSortService.outputObservable.subscribe(motions => {
-                if (motions) {
-                    this.sortedMotions = motions;
-                    this.setSurroundingMotions();
-                }
-            })
-        );
+        if (this.sortedMotionsObservable) {
+            this.subscriptions.push(
+                this.sortedMotionsObservable.subscribe(motions => {
+                    if (motions) {
+                        this.sortedMotions = motions;
+                        this.setSurroundingMotions();
+                    }
+                })
+            );
+        }
 
         /**
          * Check for changes of the viewport subject changes
@@ -1210,25 +1231,24 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
 
     /**
      * Sets the previous and next motion. Sorts by the current sorting as used
-     * in the {@link MotionSortListService}
+     * in the {@link MotionSortListService} or {@link AmendmentSortListService},
+     * respectively
      */
     public setSurroundingMotions(): void {
         const indexOfCurrent = this.sortedMotions.findIndex(motion => {
             return motion === this.motion;
         });
-        if (indexOfCurrent > -1) {
-            if (indexOfCurrent > 0) {
-                this.previousMotion = this.sortedMotions[indexOfCurrent - 1];
-            } else {
-                this.previousMotion = null;
-            }
-            if (indexOfCurrent < this.sortedMotions.length - 1) {
-                this.nextMotion = this.sortedMotions[indexOfCurrent + 1];
-            } else {
-                this.nextMotion = null;
-            }
-            this.cd.markForCheck();
+        if (indexOfCurrent > 0) {
+            this.previousMotion = this.sortedMotions[indexOfCurrent - 1];
+        } else {
+            this.previousMotion = null;
         }
+        if (indexOfCurrent > -1 && indexOfCurrent < this.sortedMotions.length - 1) {
+            this.nextMotion = this.sortedMotions[indexOfCurrent + 1];
+        } else {
+            this.nextMotion = null;
+        }
+        this.cd.markForCheck();
     }
 
     /**
