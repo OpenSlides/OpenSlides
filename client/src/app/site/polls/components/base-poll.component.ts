@@ -8,7 +8,7 @@ import { BehaviorSubject } from 'rxjs';
 import { BasePollDialogService } from 'app/core/ui-services/base-poll-dialog.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ChartData } from 'app/shared/components/charts/charts.component';
-import { PollState } from 'app/shared/models/poll/base-poll';
+import { PollState, PollType } from 'app/shared/models/poll/base-poll';
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { BasePollRepositoryService } from '../services/base-poll-repository.service';
 import { ViewBasePoll } from '../models/view-base-poll';
@@ -32,6 +32,10 @@ export abstract class BasePollComponent<V extends ViewBasePoll> extends BaseView
             css: 'publish-poll-button'
         }
     };
+
+    public get hideChangeState(): boolean {
+        return this._poll.isPublished || (this._poll.isCreated && this._poll.type === PollType.Analog);
+    }
 
     public constructor(
         titleService: Title,

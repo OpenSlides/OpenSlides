@@ -1,4 +1,5 @@
 @import '~assets/styles/poll-colors.scss';
+@import '~assets/styles/poll-styles-common.scss';
 
 .assignment-poll-wrapper {
     position: relative;
@@ -16,17 +17,5 @@
         > a {
             margin-left: auto;
         }
-    }
-
-    .start-poll-button {
-        color: green !important;
-    }
-
-    .stop-poll-button {
-        color: $poll-stop-color;
-    }
-
-    .publish-poll-button {
-        color: $poll-publish-color;
     }
 }

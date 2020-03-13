@@ -36,12 +36,10 @@ export class PollPercentBasePipe implements PipeTransform {
             totalByBase = this.motionPollService.getPercentBase(poll);
         }
 
-        if (totalByBase) {
+        if (totalByBase && totalByBase > 0) {
             const percentNumber = (value / totalByBase) * 100;
-            if (percentNumber > 0) {
-                const result = percentNumber % 1 === 0 ? percentNumber : percentNumber.toFixed(this.decimalPlaces);
-                return `(${result} %)`;
-            }
+            const result = percentNumber % 1 === 0 ? percentNumber : percentNumber.toFixed(this.decimalPlaces);
+            return `(${result} %)`;
         }
         return null;
     }

@@ -234,23 +234,27 @@ export abstract class PollService {
         );
     }
 
+    public showPercentOfValidOrCast(poll: PollData | ViewBasePoll): boolean {
+        return poll.onehundred_percent_base === PercentBase.Valid || poll.onehundred_percent_base === PercentBase.Cast;
+    }
+
     public getSumTableKeys(poll: PollData | ViewBasePoll): VotingResult[] {
         return [
             {
                 vote: 'votesvalid',
                 hide: poll.votesvalid === -2,
-                showPercent:
-                    poll.onehundred_percent_base === PercentBase.Valid ||
-                    poll.onehundred_percent_base === PercentBase.Cast
+                showPercent: this.showPercentOfValidOrCast(poll)
             },
             {
                 vote: 'votesinvalid',
                 icon: 'not_interested',
+                // TODO || PollType === analog
                 hide: poll.votesinvalid === -2,
                 showPercent: poll.onehundred_percent_base === PercentBase.Cast
             },
             {
                 vote: 'votescast',
+                // TODO || PollType === analog
                 hide: poll.votescast === -2,
                 showPercent: poll.onehundred_percent_base === PercentBase.Cast
             }

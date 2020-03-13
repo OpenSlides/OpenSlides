@@ -1,5 +1,5 @@
-@import '~assets/styles/variables.scss';
 @import '~assets/styles/poll-colors.scss';
+@import '~assets/styles/poll-styles-common.scss';
 
 .assignment-result-wrapper {
     .assignment-result-table {
@@ -88,30 +88,6 @@
     padding-top: 20px;
 }
 
-.voted-yes {
-    color: $votes-yes-color;
-}
-
-.voted-no {
-    color: $votes-no-color;
-}
-
-.voted-abstain {
-    color: $votes-abstain-color;
-}
-
-// theme
-.openslides-theme .pbl-ngrid-row:hover {
-    background-color: #f9f9f9;
-}
-
-.openslides-theme os-list-view-table os-sort-filter-bar .custom-table-header {
-    &,
-    .action-buttons .input-container input {
-        background: white;
-    }
-}
-
 .openslides-theme .pbl-ngrid-no-data {
     top: 10%;
 }
@@ -128,6 +104,5 @@
         top: 0;
         right: -1px;
         height: 100%;
-        border-right: 1px solid #e0e0e0;
     }
 }

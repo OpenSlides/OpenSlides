@@ -31,8 +31,9 @@
 
         <div *ngIf="!poll.hasVotes || !poll.stateHasVotes">{{ 'No results to show' | translate }}</div>
 
-        <div *ngIf="poll.stateHasVotes">
-            <os-motion-poll-detail-content [poll]="poll" [chartData]="chartDataSubject"> </os-motion-poll-detail-content>
+        <div *ngIf="poll.stateHasVotes && (hasPerms() || poll.isPublished)">
+            <os-motion-poll-detail-content [poll]="poll" [chartData]="chartDataSubject">
+            </os-motion-poll-detail-content>
 
             <!-- Named table: only show if votes are present -->
             <div class="named-result-table" *ngIf="poll.type === 'named'">

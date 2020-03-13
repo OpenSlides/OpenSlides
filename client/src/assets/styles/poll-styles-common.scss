@@ -1,0 +1,40 @@
+@import '~assets/styles/poll-colors.scss';
+
+.yes {
+    color: $votes-yes-color;
+}
+
+.no {
+    color: $votes-no-color;
+}
+
+.abstain {
+    color: $votes-abstain-color;
+}
+
+.voted-yes {
+    background-color: $votes-yes-color;
+    color: $vote-active-color;
+}
+
+.voted-no {
+    background-color: $votes-no-color;
+    color: $vote-active-color;
+}
+
+.voted-abstain {
+    background-color: $votes-abstain-color;
+    color: $vote-active-color;
+}
+
+.start-poll-button {
+    color: $poll-start-color;
+}
+
+.stop-poll-button {
+    color: $poll-stop-color;
+}
+
+.publish-poll-button {
+    color: $poll-publish-color;
+}

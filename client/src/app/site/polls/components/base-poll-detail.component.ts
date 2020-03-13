@@ -42,15 +42,15 @@ export abstract class BasePollDetailComponent<V extends ViewBasePoll> extends Ba
      */
     public voteOptionStyle = {
         Y: {
-            css: 'voted-yes',
+            css: 'yes',
             icon: 'thumb_up'
         },
         N: {
-            css: 'voted-no',
+            css: 'no',
             icon: 'thumb_down'
         },
         A: {
-            css: 'voted-abstain',
+            css: 'abstain',
             icon: 'trip_origin'
         }
     };
@@ -151,8 +151,6 @@ export abstract class BasePollDetailComponent<V extends ViewBasePoll> extends Ba
         this.pollDialog.openDialog(viewPoll);
     }
 
-    protected onDeleted(): void {}
-
     /**
      * Called after the poll has been loaded. Meant to be overwritten by subclasses who need initial access to the poll
      */
@@ -165,6 +163,8 @@ export abstract class BasePollDetailComponent<V extends ViewBasePoll> extends Ba
     protected onStateChanged(): void {}
 
     protected abstract hasPerms(): boolean;
+
+    protected abstract onDeleted(): void;
 
     protected get canSeeVotes(): boolean {
         return (this.hasPerms && this.poll.isFinished) || this.poll.isPublished;
