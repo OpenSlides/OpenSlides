@@ -54,7 +54,7 @@ class AssignmentsAppConfig(AppConfig):
             required_users_assignments,
         )
         required_user.add_collection_string(
-            self.get_model("AssignmentOption").get_collection_string(),
+            self.get_model("AssignmentPoll").get_collection_string(),
             required_users_options,
         )
 
