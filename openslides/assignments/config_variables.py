@@ -66,11 +66,21 @@ def get_config_variables():
     )
 
     yield ConfigVariable(
+        name="assignment_poll_sort_poll_result_by_votes",
+        default_value=True,
+        input_type="boolean",
+        label="Sort election results by amount of votes",
+        weight=420,
+        group="Elections",
+        subgroup="Ballot",
+    )
+
+    yield ConfigVariable(
         name="assignment_poll_add_candidates_to_list_of_speakers",
         default_value=True,
         input_type="boolean",
         label="Put all candidates on the list of speakers",
-        weight=420,
+        weight=425,
         group="Elections",
         subgroup="Ballot",
     )

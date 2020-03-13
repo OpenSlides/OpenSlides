@@ -1,4 +1,4 @@
-@import '~assets/styles/poll-colors.scss';
+@import '~assets/styles/poll-styles-common.scss';
 
 .result-wrapper {
     display: grid;
@@ -20,18 +20,6 @@
             .result-cell-definition {
                 text-align: right;
             }
-        }
-
-        .yes {
-            color: $votes-yes-color;
-        }
-
-        .no {
-            color: $votes-no-color;
-        }
-
-        .abstain {
-            color: $votes-abstain-color;
         }
     }
 

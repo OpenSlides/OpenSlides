@@ -1,11 +1,13 @@
 <ng-container *ngIf="poll">
     <ng-container *ngIf="vmanager.canVote(poll) && !alreadyVoted; else cannotVote">
-        <!-- Submit Vote -->
-        <ng-container [ngTemplateOutlet]="sendNow"></ng-container>
+        <!-- Poll hint -->
+        <p *ngIf="pollHint">
+            <i>{{ pollHint }}</i>
+        </p>
 
         <!-- Leftover votes -->
         <h4
-            *ngIf="poll.pollmethod === AssignmentPollMethod.Votes && poll.votes_amount > 1 && !isGlobalOptionSelected()"
+            *ngIf="poll.pollmethod === AssignmentPollMethod.Votes && poll.votes_amount > 1"
         >
             {{ 'Votes for this poll' | translate }}: {{ getVotesCount() }}/{{ poll.votes_amount }}
         </h4>
@@ -32,10 +34,12 @@
 
                     <div *ngFor="let action of voteActions">
                         <button
+                            class="vote-button"
                             mat-raised-button
                             (click)="saveSingleVote(option.id, action.vote)"
                             [ngClass]="
-                                voteRequestData.votes[option.id] === action.vote || voteRequestData.votes[option.id] === 1
+                                voteRequestData.votes[option.id] === action.vote ||
+                                voteRequestData.votes[option.id] === 1
                                     ? action.css
                                     : ''
                             "
@@ -57,6 +61,7 @@
             <div class="global-option-grid">
                 <div *ngIf="poll.global_no">
                     <button
+                        class="vote-button"
                         mat-raised-button
                         (click)="saveGlobalVote('N')"
                         [ngClass]="voteRequestData.global === 'N' ? 'voted-no' : ''"
@@ -95,9 +100,13 @@
 
 <ng-template #cannotVote>
     <div class="centered-button-wrapper">
-        <os-icon-container icon="check">
-            {{ 'You already voted on this poll' | translate}}
-        </os-icon-container>
+        <div>
+            <mat-icon class="vote-submitted">
+                check_circle
+            </mat-icon>
+            <br />
+            <span>{{ 'You already voted on this poll.' | translate }}</span>
+        </div>
     </div>
 </ng-template>
 

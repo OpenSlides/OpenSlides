@@ -30,10 +30,9 @@
             </div>
 
             <!-- Change state button -->
-            <div *osPerms="'assignments.can_manage'">
+            <div *osPerms="'assignments.can_manage'; and: !hideChangeState">
                 <button
                     mat-stroked-button
-                    *ngIf="!poll.isPublished"
                     [ngClass]="pollStateActions[poll.state].css"
                     (click)="changeState(poll.nextState)"
                 >
@@ -42,6 +41,11 @@
                         {{ poll.nextStateActionVerbose | translate }}
                     </span>
                 </button>
+            </div>
+
+            <!-- Enter Votes Hint -->
+            <div *osPerms="'assignments.can_manage'; and: poll.type === 'analog' && !poll.stateHasVotes">
+                {{ 'Edit to enter votes.' | translate }}
             </div>
         </div>
 
@@ -70,9 +74,18 @@
         <div *osPerms="'assignments.can_manage'; and: poll && poll.isStarted">
             <os-poll-progress [poll]="poll"></os-poll-progress>
         </div>
+
+        <!-- The Vote -->
         <os-assignment-poll-vote *ngIf="poll.canBeVotedFor" [poll]="poll"></os-assignment-poll-vote>
+
+        <!-- More-Button -->
         <div class="poll-detail-button-wrapper">
-            <a mat-icon-button routerLink="/assignments/polls/{{ poll.id }}" matTooltip="{{ 'More' | translate }}">
+            <a
+                mat-icon-button
+                routerLink="/assignments/polls/{{ poll.id }}"
+                matTooltip="{{ 'More' | translate }}"
+                *ngIf="poll.isPublished"
+            >
                 <mat-icon class="small-icon">
                     visibility
                 </mat-icon>

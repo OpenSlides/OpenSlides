@@ -1,5 +1,4 @@
-@import '~assets/styles/variables.scss';
-@import '~assets/styles/poll-colors.scss';
+@import '~assets/styles/poll-styles-common.scss';
 
 .poll-content {
     text-align: right;
@@ -28,18 +27,6 @@
 
 .single-votes-table {
     height: 500px;
-}
-
-.voted-yes {
-    color: $votes-yes-color;
-}
-
-.voted-no {
-    color: $votes-no-color;
-}
-
-.voted-abstain {
-    color: $votes-abstain-color;
 }
 
 .openslides-theme .pbl-ngrid-no-data {

@@ -7,7 +7,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { MotionPollRepositoryService } from 'app/core/repositories/motions/motion-poll-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { VotingPrivacyWarningComponent } from 'app/shared/components/voting-privacy-warning/voting-privacy-warning.component';
-import { PollType } from 'app/shared/models/poll/base-poll';
 import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
 import { ViewMotionPoll } from 'app/site/motions/models/view-motion-poll';
 import { MotionPollDialogService } from 'app/site/motions/services/motion-poll-dialog.service';
@@ -15,6 +14,7 @@ import { MotionPollPdfService } from 'app/site/motions/services/motion-poll-pdf.
 import { MotionPollService } from 'app/site/motions/services/motion-poll.service';
 import { BasePollComponent } from 'app/site/polls/components/base-poll.component';
 import { PollService, PollTableData } from 'app/site/polls/services/poll.service';
+import { OperatorService } from 'app/core/core-services/operator.service';
 
 /**
  * Component to show a motion-poll.
@@ -48,14 +48,23 @@ export class MotionPollComponent extends BasePollComponent<ViewMotionPoll> {
         return this.motionPollService.showChart(this.poll);
     }
 
-    public get hideChangeState(): boolean {
-        return this.poll.isPublished || (this.poll.isCreated && this.poll.type === PollType.Analog);
-    }
-
     public get reducedPollTableData(): PollTableData[] {
         return this.motionPollService
             .generateTableData(this.poll)
             .filter(data => ['yes', 'no', 'abstain', 'votesinvalid'].includes(data.votingOption));
+    }
+
+    public get showPoll(): boolean {
+        if (this.poll) {
+            if (
+                this.operator.hasPerms('motions.can_manage_polls') ||
+                this.poll.isPublished ||
+                (this.poll.isEVoting && !this.poll.isCreated)
+            ) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -77,7 +86,8 @@ export class MotionPollComponent extends BasePollComponent<ViewMotionPoll> {
         pollDialog: MotionPollDialogService,
         public pollService: PollService,
         private pdfService: MotionPollPdfService,
-        private motionPollService: MotionPollService
+        private motionPollService: MotionPollService,
+        private operator: OperatorService
     ) {
         super(titleService, matSnackBar, translate, dialog, promptService, pollRepo, pollDialog);
     }

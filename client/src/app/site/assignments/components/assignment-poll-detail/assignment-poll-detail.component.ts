@@ -1,7 +1,7 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
 import { Title } from '@angular/platform-browser';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { TranslateService } from '@ngx-translate/core';
 import { PblColumnDefinition } from '@pebula/ngrid';
@@ -49,7 +49,8 @@ export class AssignmentPollDetailComponent extends BasePollDetailComponent<ViewA
         pollService: PollService,
         votesRepo: AssignmentVoteRepositoryService,
         private operator: OperatorService,
-        private assignmentPollService: AssignmentPollService
+        private assignmentPollService: AssignmentPollService,
+        private router: Router
     ) {
         super(title, translate, matSnackbar, repo, route, groupRepo, prompt, pollDialog, pollService, votesRepo);
     }
@@ -126,8 +127,7 @@ export class AssignmentPollDetailComponent extends BasePollDetailComponent<ViewA
     }
 
     public getVoteClass(votingResult: VotingResult): string {
-        const cssPrefix = 'voted-';
-        return `${cssPrefix}${votingResult.vote}`;
+        return votingResult.vote;
     }
 
     public voteFitsMethod(result: VotingResult): boolean {
@@ -141,6 +141,10 @@ export class AssignmentPollDetailComponent extends BasePollDetailComponent<ViewA
             }
         }
         return true;
+    }
+
+    protected onDeleted(): void {
+        this.router.navigate(['assignments', this.poll.assignment_id]);
     }
 
     public getTableData(): PollTableData[] {

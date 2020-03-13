@@ -32,6 +32,8 @@ export class AssignmentPollService extends PollService {
 
     public defaultPollMethod: AssignmentPollMethod;
 
+    private sortByVote: boolean;
+
     /**
      * Constructor. Subscribes to the configuration values needed
      * @param config ConfigService
@@ -53,6 +55,7 @@ export class AssignmentPollService extends PollService {
         config
             .get<AssignmentPollMethod>(AssignmentPoll.defaultPollMethodConfig)
             .subscribe(method => (this.defaultPollMethod = method));
+        config.get<boolean>('assignment_poll_sort_poll_result_by_votes').subscribe(sort => (this.sortByVote = sort));
     }
 
     public getDefaultPollData(contextId?: number): AssignmentPoll {
@@ -74,38 +77,47 @@ export class AssignmentPollService extends PollService {
     }
 
     private getGlobalVoteKeys(poll: ViewAssignmentPoll): VotingResult[] {
+        // debugger;
         return [
             {
                 vote: 'amount_global_no',
-                showPercent: false,
-                hide: poll.amount_global_no === -2 || poll.amount_global_no === 0
+                showPercent: this.showPercentOfValidOrCast(poll),
+                hide: poll.amount_global_no === -2 || !poll.amount_global_no
             },
             {
                 vote: 'amount_global_abstain',
-                showPercent: false,
-                hide: poll.amount_global_abstain === -2 || poll.amount_global_abstain === 0
+                showPercent: this.showPercentOfValidOrCast(poll),
+                hide: poll.amount_global_abstain === -2 || !poll.amount_global_abstain
             }
         ];
     }
 
     public generateTableData(poll: ViewAssignmentPoll): PollTableData[] {
-        const tableData: PollTableData[] = poll.options.map(candidate => ({
-            votingOption: candidate.user.short_name,
-            votingOptionSubtitle: candidate.user.getLevelAndNumber(),
-            class: 'user',
-            value: super.getVoteTableKeys(poll).map(
-                key =>
-                    ({
-                        vote: key.vote,
-                        amount: candidate[key.vote],
-                        icon: key.icon,
-                        hide: key.hide,
-                        showPercent: key.showPercent
-                    } as VotingResult)
-            )
-        }));
-        tableData.push(...this.formatVotingResultToTableData(super.getSumTableKeys(poll), poll));
+        const tableData: PollTableData[] = poll.options
+            .sort((a, b) => {
+                if (this.sortByVote) {
+                    return b.yes - a.yes;
+                } else {
+                    return b.weight - a.weight;
+                }
+            })
+            .map(candidate => ({
+                votingOption: candidate.user.short_name,
+                votingOptionSubtitle: candidate.user.getLevelAndNumber(),
+                class: 'user',
+                value: super.getVoteTableKeys(poll).map(
+                    key =>
+                        ({
+                            vote: key.vote,
+                            amount: candidate[key.vote],
+                            icon: key.icon,
+                            hide: key.hide,
+                            showPercent: key.showPercent
+                        } as VotingResult)
+                )
+            }));
         tableData.push(...this.formatVotingResultToTableData(this.getGlobalVoteKeys(poll), poll));
+        tableData.push(...this.formatVotingResultToTableData(super.getSumTableKeys(poll), poll));
         return tableData;
     }
 
