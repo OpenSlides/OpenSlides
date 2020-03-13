@@ -82,7 +82,7 @@ class MotionsAppConfig(AppConfig):
         )
 
         required_user.add_collection_string(
-            self.get_model("MotionOption").get_collection_string(),
+            self.get_model("MotionPoll").get_collection_string(),
             required_users_options,
         )
 
