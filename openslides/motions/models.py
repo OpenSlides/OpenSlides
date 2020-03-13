@@ -934,6 +934,7 @@ class MotionPollManager(BaseManager):
 
 class MotionPoll(RESTModelMixin, BasePoll):
     access_permissions = MotionPollAccessPermissions()
+    can_see_permission = "motions.can_see"
     option_class = MotionOption
 
     objects = MotionPollManager()
