@@ -1,4 +1,5 @@
 @import '~assets/styles/poll-colors.scss';
+@import '~assets/styles/poll-styles-common.scss';
 
 %vote-grid-base {
     display: grid;
@@ -42,23 +43,21 @@
 
 .centered-button-wrapper {
     display: flex;
+    text-align: center;
     > * {
         margin-left: auto;
         margin-right: auto;
     }
+
+    .vote-submitted {
+        color: $votes-yes-color;
+        font-size: 200%;
+    }
 }
 
-// TODO: Could be some more general component
-.voted-yes {
-    background-color: $votes-yes-color;
-}
-
-.voted-no {
-    background-color: $votes-no-color;
-}
-
-.voted-abstain {
-    background-color: $votes-abstain-color;
+.vote-button {
+    min-width: 50px;
+    min-height: 50px;
 }
 
 .vote-label {

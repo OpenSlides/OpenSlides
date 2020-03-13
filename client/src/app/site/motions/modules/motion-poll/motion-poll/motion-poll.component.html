@@ -1,4 +1,4 @@
-<mat-card class="motion-poll-wrapper" *ngIf="poll">
+<mat-card class="motion-poll-wrapper" *ngIf="showPoll">
     <!-- Poll Infos -->
     <div class="poll-title-wrapper">
         <!-- Title Area -->
@@ -56,7 +56,7 @@
 
     <!-- Detail link -->
     <div class="poll-detail-button-wrapper">
-        <a mat-icon-button [routerLink]="pollLink" matTooltip="{{ 'More' | translate }}">
+        <a mat-icon-button [routerLink]="pollLink" matTooltip="{{ 'More' | translate }}" *ngIf="poll.isPublished">
             <mat-icon class="small-icon">
                 visibility
             </mat-icon>

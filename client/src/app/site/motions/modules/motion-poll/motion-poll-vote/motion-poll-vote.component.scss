@@ -1,4 +1,5 @@
 @import '~assets/styles/poll-colors.scss';
+@import '~assets/styles/poll-styles-common.scss';
 
 .vote-button-grid {
     display: grid;
@@ -19,24 +20,15 @@
 
 .user-has-voted {
     display: flex;
+    text-align: center;
     > * {
         margin-top: 1em;
         margin-left: auto;
         margin-right: auto;
     }
-}
 
-.voted-yes {
-    background-color: $votes-yes-color;
-    color: $vote-active-color;
-}
-
-.voted-no {
-    background-color: $votes-no-color;
-    color: $vote-active-color;
-}
-
-.voted-abstain {
-    background-color: $votes-abstain-color;
-    color: $vote-active-color;
+    .vote-submitted {
+        color: $votes-yes-color;
+        font-size: 200%;
+    }
 }

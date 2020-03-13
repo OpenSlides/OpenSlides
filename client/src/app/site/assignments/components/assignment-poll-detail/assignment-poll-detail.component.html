@@ -27,7 +27,7 @@
                     <tbody>
                         <tr>
                             <th class="voting-option" translate>Candidates</th>
-                            <th class="result voted-yes">
+                            <th class="result yes">
                                 <span *ngIf="!poll.isMethodY" translate>
                                     Yes
                                 </span>
@@ -35,8 +35,8 @@
                                     Votes
                                 </span>
                             </th>
-                            <th class="result voted-no" translate *ngIf="!poll.isMethodY">No</th>
-                            <th class="result voted-abstain" translate *ngIf="poll.isMethodYNA">Abstain</th>
+                            <th class="result no" translate *ngIf="!poll.isMethodY">No</th>
+                            <th class="result abstain" translate *ngIf="poll.isMethodYNA">Abstain</th>
                         </tr>
                         <tr *ngFor="let row of getTableData()" [class]="row.class">
                             <td class="voting-option">

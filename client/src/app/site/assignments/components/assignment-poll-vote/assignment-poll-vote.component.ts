@@ -62,6 +62,10 @@ export class AssignmentPollVoteComponent extends BasePollVoteComponent<ViewAssig
         }
     }
 
+    public get pollHint(): string {
+        return this.poll.assignment.default_poll_description;
+    }
+
     private defineVoteOptions(): void {
         this.voteActions.push({
             vote: 'Y',
@@ -93,7 +97,7 @@ export class AssignmentPollVoteComponent extends BasePollVoteComponent<ViewAssig
         return Object.keys(this.voteRequestData.votes).filter(key => this.voteRequestData.votes[key]).length;
     }
 
-    public isGlobalOptionSelected(): boolean {
+    private isGlobalOptionSelected(): boolean {
         return !!this.voteRequestData.global;
     }
 
@@ -145,7 +149,7 @@ export class AssignmentPollVoteComponent extends BasePollVoteComponent<ViewAssig
                 }
             } else {
                 this.raiseError(
-                    this.translate.instant('You reached the maximum amount of votes. Deselect somebody first')
+                    this.translate.instant('You reached the maximum amount of votes. Deselect somebody first.')
                 );
             }
         } else {
@@ -165,7 +169,11 @@ export class AssignmentPollVoteComponent extends BasePollVoteComponent<ViewAssig
 
     public saveGlobalVote(globalVote: GlobalVote): void {
         this.voteRequestData.votes = {};
-        this.voteRequestData.global = globalVote;
-        this.submitVote();
+        if (this.voteRequestData.global && this.voteRequestData.global === globalVote) {
+            delete this.voteRequestData.global;
+        } else {
+            this.voteRequestData.global = globalVote;
+            this.submitVote();
+        }
     }
 }

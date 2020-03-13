@@ -77,6 +77,22 @@ export abstract class BasePoll<
         return this.onehundred_percent_base === PercentBase.Cast;
     }
 
+    public get isAnalog(): boolean {
+        return this.type === PollType.Analog;
+    }
+
+    public get isNamed(): boolean {
+        return this.type === PollType.Named;
+    }
+
+    public get isAnon(): boolean {
+        return this.type === PollType.Pseudoanonymous;
+    }
+
+    public get isEVoting(): boolean {
+        return this.isNamed || this.isAnon;
+    }
+
     /**
      * Determine if the state is finished or published
      */

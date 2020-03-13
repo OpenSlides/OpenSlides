@@ -190,7 +190,7 @@ export class AssignmentPollPdfService extends PollPdfService {
      */
     private createPollHint(poll: ViewAssignmentPoll): object {
         return {
-            text: poll.description || '',
+            text: poll.assignment.default_poll_description || '',
             style: 'description'
         };
     }
