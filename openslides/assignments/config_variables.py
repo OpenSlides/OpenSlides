@@ -15,7 +15,7 @@ def get_config_variables():
         name="assignment_poll_method",
         default_value="votes",
         input_type="choice",
-        label="Preselected election method",
+        label="Default election method",
         choices=tuple(
             {"value": method[0], "display_name": method[1]}
             for method in AssignmentPoll.POLLMETHODS
@@ -29,7 +29,7 @@ def get_config_variables():
         name="assignment_poll_default_100_percent_base",
         default_value="valid",
         input_type="choice",
-        label="The 100-%-base of an election result consists of",
+        label="Default 100 % base of an election result",
         choices=tuple(
             {"value": base[0], "display_name": base[1]}
             for base in AssignmentPoll.PERCENT_BASES
@@ -90,7 +90,7 @@ def get_config_variables():
         name="assignments_pdf_ballot_papers_selection",
         default_value="CUSTOM_NUMBER",
         input_type="choice",
-        label="Number of ballot papers (selection)",
+        label="Number of ballot papers",
         choices=(
             {"value": "NUMBER_OF_DELEGATES", "display_name": "Number of all delegates"},
             {

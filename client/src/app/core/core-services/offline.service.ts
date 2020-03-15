@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 
+import { _ } from 'app/core/translate/translation-marker';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
@@ -20,7 +21,7 @@ export class OfflineService {
      */
     private offline = new BehaviorSubject<boolean>(false);
     private bannerDefinition: BannerDefinition = {
-        text: 'Offline mode',
+        text: _('Offline mode'),
         icon: 'cloud_off'
     };
 

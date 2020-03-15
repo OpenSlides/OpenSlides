@@ -1,10 +1,5 @@
 <os-head-bar>
-    <div class="title-slot" translate>Poll list</div>
-
-    <!-- Menu -->
-    <div class="menu-slot">
-        <button type="button" mat-icon-button [matMenuTriggerFor]="pollMenu"><mat-icon>more_vert</mat-icon></button>
-    </div>
+    <div class="title-slot" translate>List of votes</div>
 </os-head-bar>
 
 <os-list-view-table
@@ -25,18 +20,10 @@
     </div>
     <div *pblNgridCellDef="'state'; row as poll;" class="cell-slot fill">
         <a class="detail-link" [routerLink]="poll.parentLink" *ngIf="!isMultiSelect"></a>
-        <span>{{ poll.stateVerbose }}</span>
+        <span>{{ poll.stateVerbose | translate }}</span>
     </div>
     <div *pblNgridCellDef="'votability'; row as poll;" class="cell-slot fill">
-        <mat-icon *ngIf="poll.user_has_voted_valid" color="accent" matTooltip="{{ 'You have already voted on this poll. Good job!' | translate }}">check_circle</mat-icon>
-        <mat-icon *ngIf="!poll.user_has_voted_valid && poll.canBeVotedFor" color="warn" matTooltip="{{ 'You still have to vote on this poll.' | translate }}">warning</mat-icon>
+        <mat-icon *ngIf="poll.user_has_voted_valid" color="accent" matTooltip="{{ 'You have already voted.' | translate }}">check_circle</mat-icon>
+        <mat-icon *ngIf="!poll.user_has_voted_valid && poll.canBeVotedFor" color="warn" matTooltip="{{ 'Voting is currently in progress.' | translate }}">warning</mat-icon>
     </div>
 </os-list-view-table>
-
-<mat-menu #pollMenu="matMenu">
-    <!-- Settings -->
-    <button mat-menu-item *osPerms="'core.can_manage_config'" routerLink="/settings/polls">
-        <mat-icon>settings</mat-icon>
-        <span translate>Settings</span>
-    </button>
-</mat-menu>

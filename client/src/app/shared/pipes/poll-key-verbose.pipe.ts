@@ -9,8 +9,8 @@ const PollValues = {
     yes: 'Yes',
     no: 'No',
     abstain: 'Abstain',
-    amount_global_abstain: 'Global abstain',
-    amount_global_no: 'Global no'
+    amount_global_abstain: 'General abstain',
+    amount_global_no: 'General no'
 };
 
 /**

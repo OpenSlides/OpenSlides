@@ -9,7 +9,14 @@
             </mat-card-title>
 
             <!-- Type and State -->
-            <div>
+            <div class="italic spacer-bottom-20">
+                <span *osPerms="'assignments.can_manage'; and: poll.type === 'pseudoanonymous'">
+                    <button mat-icon-button color="warn" (click)="openVotingWarning()">
+                        <mat-icon>
+                            warning
+                        </mat-icon>
+                    </button>
+                </span>
                 <span *ngIf="poll.type !== 'analog'"> {{ poll.typeVerbose | translate }} &middot; </span>
                 <span>
                     {{ poll.stateVerbose | translate }}
@@ -65,7 +72,7 @@
             <!-- Cannot see unpublished -->
             <div *osPerms="'assignments.can_manage'; complement: true">
                 <span *ngIf="poll.isFinished">
-                    {{ 'Counting is in progress' | translate }}
+                    {{ 'Counting of votes is in progress ...' | translate }}
                 </span>
             </div>
         </div>
@@ -107,7 +114,7 @@
     <div *osPerms="'assignments.can_manage'">
         <button mat-menu-item (click)="printBallot()">
             <mat-icon>picture_as_pdf</mat-icon>
-            <span translate>Ballot paper</span>
+            <span translate>Ballot papers</span>
         </button>
         <mat-divider></mat-divider>
         <!-- Reset Button -->
