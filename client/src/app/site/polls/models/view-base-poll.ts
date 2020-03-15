@@ -44,8 +44,8 @@ export const PollPropertyVerbose = {
     state: 'State',
     groups: 'Entitled to vote',
     votes_amount: 'Amount of votes',
-    global_no: 'general "No"',
-    global_abstain: 'general "Abstain"'
+    global_no: 'General No',
+    global_abstain: 'General Abstain'
 };
 
 export const MajorityMethodVerbose = {

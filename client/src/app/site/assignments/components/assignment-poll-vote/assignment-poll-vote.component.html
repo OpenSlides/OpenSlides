@@ -9,7 +9,7 @@
         <h4
             *ngIf="poll.pollmethod === AssignmentPollMethod.Votes && poll.votes_amount > 1"
         >
-            {{ 'Votes for this poll' | translate }}: {{ getVotesCount() }}/{{ poll.votes_amount }}
+            {{ 'Available votes' | translate }}: {{ getVotesCount() }}/{{ poll.votes_amount }}
         </h4>
 
         <!-- Options and Actions -->
@@ -69,7 +69,7 @@
                         <mat-icon> thumb_down </mat-icon>
                     </button>
                     <span class="vote-label">
-                        {{ 'No to all' | translate }}
+                        {{ 'General No' | translate }}
                     </span>
                 </div>
 
@@ -82,7 +82,7 @@
                         <mat-icon> trip_origin</mat-icon>
                     </button>
                     <span class="vote-label">
-                        {{ 'Abstain' | translate }}
+                        {{ 'General Abstain' | translate }}
                     </span>
                 </div>
             </div>
@@ -105,7 +105,7 @@
                 check_circle
             </mat-icon>
             <br />
-            <span>{{ 'You already voted on this poll.' | translate }}</span>
+            <span>{{ 'Voting successful.' | translate }}</span>
         </div>
     </div>
 </ng-template>

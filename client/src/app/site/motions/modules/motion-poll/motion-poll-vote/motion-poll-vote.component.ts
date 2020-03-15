@@ -63,8 +63,8 @@ export class MotionPollVoteComponent extends BasePollVoteComponent<ViewMotionPol
      */
     public saveVote(vote: 'Y' | 'N' | 'A'): void {
         this.currentVote.vote = vote;
-        const title = this.translate.instant('Are you sure?');
-        const content = this.translate.instant('Your decision cannot be changed afterwards');
+        const title = this.translate.instant('Submit selection now?');
+        const content = this.translate.instant('Your decision cannot be changed afterwards.');
         this.promptService.open(title, content).then(confirmed => {
             if (confirmed) {
                 this.pollRepo.vote(vote, this.poll.id).catch(this.raiseError);

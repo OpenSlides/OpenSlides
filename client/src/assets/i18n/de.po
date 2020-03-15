@@ -14,6 +14,9 @@ msgstr ""
 msgid "%num% emails were send sucessfully."
 msgstr "%num% E-Mails wurden erfolgreich versandt."
 
+msgid "100% base"
+msgstr "100-%-Basis"
+
 msgid ""
 "<a href=\"http://www.openslides.org\">OpenSlides</a> is a free web based "
 "presentation and assembly system for visualizing and controlling agenda, "
@@ -140,6 +143,9 @@ msgstr "Alle Themen werden gelöscht und sind danach nicht mehr zugänglich."
 msgid "All valid ballots"
 msgstr "Alle gültigen Stimmzettel"
 
+msgid "All votes will be lost."
+msgstr "Alle Stimmen gehen verloren."
+
 msgid "All your changes are saved immediately."
 msgstr "Alle Änderungen werden sofort gespeichert."
 
@@ -167,15 +173,6 @@ msgstr "Zulässige Zugriffsgruppen für dieses Verzeichnis"
 msgid "Always"
 msgstr "Immer"
 
-msgid "Always Yes-No-Abstain per candidate"
-msgstr "Ja/Nein/Enthaltung pro Kandidat/in"
-
-msgid "Always Yes/No per candidate"
-msgstr "Ja/Nein pro Kandidat/in"
-
-msgid "Always one option per candidate"
-msgstr "Eine Stimme pro Kandidat/in"
-
 msgid "Amendment"
 msgstr "Änderungsantrag"
 
@@ -197,11 +194,20 @@ msgstr "Änderungsanträge können mehrere Absätze ändern"
 msgid "Amendments to"
 msgstr "Änderungsanträge zu"
 
+msgid "Amount of votes"
+msgstr "Anzahl der Stimmen"
+
 msgid "An email with a password reset link was send!"
 msgstr "Es wurde eine E-Mail mit Link zum Passwort-Zurücksetzen gesendet."
 
 msgid "An unknown error occurred."
 msgstr "Ein unbekannter Fehler ist aufgetreten."
+
+msgid "Anonymize votes"
+msgstr "Stimmen anonymisieren"
+
+msgid "Anonymous"
+msgstr "Anonym"
 
 msgid "Apply"
 msgstr "Übernehmen"
@@ -209,10 +215,10 @@ msgstr "Übernehmen"
 msgid "Arabic"
 msgstr "Arabisch"
 
-msgid "Are you sure you want to copy the final version to the print template?"
+msgid "Are you sure you want to anonymize all votes? This cannot be undone."
 msgstr ""
-"Soll die Beschlussfassung weiter bearbeitet und eine Beschluss-Druckvorlage "
-"erstellt werden?"
+"Sollen alle Stimmen wirklich anonymisiert werden? Dies kann nicht rückgängig"
+" gemacht werden."
 
 msgid "Are you sure you want to delete all selected elections?"
 msgstr "Sollen alle ausgewählten Wahlen wirklich gelöscht werden?"
@@ -233,9 +239,6 @@ msgstr "Sollen wirklich alle Redner/innen von dieser Liste entfernt werden?"
 
 msgid "Are you sure you want to delete the print template?"
 msgstr "Soll die Beschluss-Druckvorlage wirklich gelöscht werden?"
-
-msgid "Are you sure you want to delete this ballot?"
-msgstr "Soll dieser Wahlgang wirklich gelöscht werden?"
 
 msgid "Are you sure you want to delete this category and all subcategories?"
 msgstr ""
@@ -283,6 +286,9 @@ msgstr "Soll dieses Schlagwort wirklich gelöscht werden?"
 
 msgid "Are you sure you want to delete this topic?"
 msgstr "Soll dieses Thema wirklich gelöscht werden?"
+
+msgid "Are you sure you want to delete this vote?"
+msgstr "Soll diese Abstimmung wirklich gelöscht werden?"
 
 msgid "Are you sure you want to delete this workflow?"
 msgstr "Soll dieser Arbeitsablauf wirklich gelöscht werden?"
@@ -341,6 +347,9 @@ msgstr ""
 "Sollen wirklich alle Passwörter auf die initialen Passwörter zurückgesetzt "
 "werden?"
 
+msgid "Are you sure you want to reset this vote?"
+msgstr "Soll diese Abstimmung wirklich zurückgesetzt werden?"
+
 msgid "Are you sure you want to send an invitation email to the user?"
 msgstr "Soll wirklich eine E-Mail den diesen Nutzer gesendet werden?"
 
@@ -363,8 +372,8 @@ msgstr "Nachfragen, voreingestellt ja"
 msgid "Attachments"
 msgstr "Anhänge"
 
-msgid "Automatic assign of method"
-msgstr "Automatische Zuordnung der Methode"
+msgid "Available votes"
+msgstr "Verfügbare Stimmen"
 
 msgid "Back"
 msgstr "Zurück"
@@ -375,8 +384,11 @@ msgstr "Zurück zur Anmeldung"
 msgid "Ballot"
 msgstr "Wahlgang"
 
-msgid "Ballot and ballot papers"
-msgstr "Wahlgang und Stimmzettel"
+msgid "Ballot opened"
+msgstr "Wahlgang eröffnet"
+
+msgid "Ballot papers"
+msgstr "Stimmzettel"
 
 msgid "Base folder"
 msgstr "Basisverzeichnis"
@@ -588,6 +600,9 @@ msgstr "Antragsblock löschen"
 msgid "Clear tags"
 msgstr "Schlagwörter löschen"
 
+msgid "Click here to vote!"
+msgstr "Zur Stimmabgabe hier klicken!"
+
 msgid "Close"
 msgstr "Schließen"
 
@@ -655,6 +670,9 @@ msgstr "Countdown-Titel"
 msgid "Countdowns"
 msgstr "Countdowns"
 
+msgid "Counting of votes is in progress ..."
+msgstr "Die Auszählung der Stimmen läuft ..."
+
 msgid "Couple countdown with the list of speakers"
 msgstr "Countdown mit der Redeliste verkoppeln"
 
@@ -715,14 +733,23 @@ msgstr "Entscheidung"
 msgid "Default"
 msgstr "Standard"
 
-msgid "Default comment on the ballot paper"
-msgstr "Voreingestellter Hinweis auf Stimmzettel"
+msgid "Default 100 % base of a voting result"
+msgstr "Voreingestellte 100-%-Basis eines Abstimmungsergebnisses"
+
+msgid "Default 100 % base of an election result"
+msgstr "Voreingestellte 100-%-Basis eines Wahlergebnisses"
+
+msgid "Default election method"
+msgstr "Voreingestellte Wahlmethode"
 
 msgid "Default encoding for all csv exports"
 msgstr "Voreingestelltes Encoding für alle CSV-Exporte"
 
 msgid "Default group"
 msgstr "Vorgegebene Gruppen"
+
+msgid "Default groups with voting rights"
+msgstr "Voreingestellte Gruppen mit Stimmrecht"
 
 msgid "Default line numbering"
 msgstr "Voreingestellte Zeilennummerierung"
@@ -848,6 +875,13 @@ msgstr ""
 msgid "Duration"
 msgstr "Dauer"
 
+msgid ""
+"During voting, OpenSlides does not store the individual user ID of the voter. This in no way means that a\n"
+"        non-nominal vote is completely anonymous and secure. You cannot track the decisions of your voters after the\n"
+"        data has been submitted. The validity of the data cannot always be guaranteed, especially if you use OpenSlides\n"
+"        in a distributed online setup. You are responsible for your own actions."
+msgstr ""
+
 msgid "Edit"
 msgstr "Bearbeiten"
 
@@ -872,23 +906,17 @@ msgstr "Schlagwort bearbeiten"
 msgid "Edit the whole motion text"
 msgstr "Vollständigen Antragstext bearbeiten"
 
+msgid "Edit to enter votes."
+msgstr "Bearbeiten, um Stimmen einzugeben."
+
 msgid "Edit topic"
 msgstr "Thema bearbeiten"
-
-msgid "Elected"
-msgstr "Gewählt"
 
 msgid "Election"
 msgstr "Wahl"
 
 msgid "Election documents"
 msgstr "Wahlunterlagen"
-
-msgid "Election method"
-msgstr "Wahlmethode"
-
-msgid "Election result"
-msgstr "Wahlergebnis"
 
 msgid "Elections"
 msgstr "Wahlen"
@@ -944,13 +972,13 @@ msgstr ""
 msgid "Enter participant number"
 msgstr "Teilnehmernummer eingeben"
 
-msgid "Enter votes"
-msgstr "Stimmen eingeben"
-
 msgid "Enter your email to send the password reset link"
 msgstr ""
 "Geben Sie Ihre E-Mail-Adresse ein um eine Link zum Zurücksetzen des "
 "Passworts zu erhalten."
+
+msgid "Entitled to vote"
+msgstr "Stimmberechtigte"
 
 msgid "Error"
 msgstr "Fehler"
@@ -960,6 +988,9 @@ msgstr "Fehler bei der PDF-Erstellung der Wahl:"
 
 msgid "Error during PDF creation of motion:"
 msgstr "Fehler bei der PDF-Erstellung in Antrag"
+
+msgid "Error in form field."
+msgstr "Fehler im Formularfeld."
 
 msgid "Error: The new passwords do not match."
 msgstr "Fehler: Die neuen Passwörter stimmen nicht überein."
@@ -1054,17 +1085,6 @@ msgstr "Empfehlungen für alle Anträge folgen"
 msgid "Following users are currently editing this motion:"
 msgstr "Folgende Nutzer bearbeiten aktuell diesen Antrag:"
 
-msgid ""
-"For Yes/No/Abstain per candidate and Yes/No per candidate the 100-%-base "
-"depends on the election method: If there is only one option per candidate, "
-"the sum of all votes of all candidates is 100 %. Otherwise for each "
-"candidate the sum of all votes is 100 %."
-msgstr ""
-"Für Ja/Nein/Enthaltung pro Kandidat und Ja/Nein pro Kandidat hängt die "
-"100%-Basis von der Wahlmethode ab: Wenn es nur eine Option pro Kandidat "
-"gibt, ist 100% die Summe aller Stimmen von allen Kandidaten. Andernfalls ist"
-" 100% die Summe aller Stimmen pro Kandidat."
-
 msgid "Forgot Password?"
 msgstr "Passwort vergessen?"
 
@@ -1085,6 +1105,12 @@ msgstr "Geschlecht"
 
 msgid "General"
 msgstr "Allgemein"
+
+msgid "General Abstain"
+msgstr "Generelle Enthaltung"
+
+msgid "General No"
+msgstr "Generelles Nein"
 
 msgid "Generate new passwords"
 msgstr "Neue Passwörter generieren"
@@ -1116,8 +1142,14 @@ msgstr "Gast"
 msgid "Has amendments"
 msgstr "Hat Änderungsanträge"
 
+msgid "Has been voted for"
+msgstr ""
+
 msgid "Has no speakers"
 msgstr "Keine Wortmeldungen vorhanden"
+
+msgid "Has not been voted for"
+msgstr ""
 
 msgid "Has notes"
 msgstr "Hat Notizen"
@@ -1156,8 +1188,8 @@ msgid "Hide the amount of speakers in subtitle of list of speakers slide"
 msgstr ""
 "Anzahl der Redner/innen im Untertitel der Redelistenprojektion ausblenden"
 
-msgid "Hint for ballot paper"
-msgstr "Hinweis auf dem Stimmzettel"
+msgid "Hint on voting"
+msgstr "Hinweis zur Stimmabgabe"
 
 msgid "History"
 msgstr "Chronik"
@@ -1167,6 +1199,9 @@ msgstr "Startseite"
 
 msgid "How to create new amendments"
 msgstr "Erstellung von Änderungsanträgen"
+
+msgid "I know the risk"
+msgstr "Ich kenne das Risiko"
 
 msgid "Identifier"
 msgstr "Bezeichner"
@@ -1195,6 +1230,9 @@ msgstr "Themen importieren"
 
 msgid "In motion list, motion detail and PDF."
 msgstr "In Antragsliste, Detailansicht und PDF."
+
+msgid "In the election process"
+msgstr "Im Wahlvorgang"
 
 msgid "Inactive"
 msgstr "Inaktiv"
@@ -1337,6 +1375,9 @@ msgstr "Redeliste"
 msgid "List of speakers overlay"
 msgstr "Redelisten-Einblendung"
 
+msgid "List of votes"
+msgstr "Stimmabgaben"
+
 msgid "List view"
 msgstr "Listenansicht"
 
@@ -1355,8 +1396,8 @@ msgstr "Abmelden"
 msgid "Main motion and line number"
 msgstr "Hauptantrag und Zeilennummer"
 
-msgid "Mark as elected"
-msgstr "Als gewählt markieren"
+msgid "Mark as personal favorite"
+msgstr "Als persönlichen Favorit markieren"
 
 msgid "Mark speaker"
 msgstr "Redner/in markieren"
@@ -1372,6 +1413,9 @@ msgstr "Mitteilungen"
 
 msgid "Meta information"
 msgstr "Metainformationen"
+
+msgid "More"
+msgstr "Mehr"
 
 msgid "Motion"
 msgstr "Antrag"
@@ -1577,6 +1621,9 @@ msgstr "Keine persönliche Notiz"
 msgid "No recommendation"
 msgstr "keine Empfehlung gesetzt"
 
+msgid "No results yet."
+msgstr "Noch keine Ergebnisse."
+
 msgid "No search result found"
 msgstr "Keine Suchergebnisse gefunden"
 
@@ -1595,6 +1642,9 @@ msgstr "Nr."
 msgid "None"
 msgstr "aus"
 
+msgid "Not suitable for formal secret voting!"
+msgstr "Nicht geeignet für förmliche, geheime Stimmabgaben!"
+
 msgid ""
 "Note, that the default password will be changed to the new generated one."
 msgstr ""
@@ -1611,6 +1661,9 @@ msgstr ""
 msgid "Notes"
 msgstr "Notizen"
 
+msgid "Number candidates"
+msgstr "Kandidat/innen nummerieren"
+
 msgid "Number motions"
 msgstr "Anträge nummerieren"
 
@@ -1622,6 +1675,9 @@ msgstr "Anzahl aller Delegierten"
 
 msgid "Number of all participants"
 msgstr "Anzahl aller Teilnehmenden"
+
+msgid "Number of ballot papers"
+msgstr "Stimmzettelanzahl"
 
 msgid "Number of ballot papers (selection)"
 msgstr "Anzahl der Stimmzettel (Vorauswahl)"
@@ -1675,8 +1731,8 @@ msgstr ""
 "Mindestens Vor- oder Nachname muss angegeben werden. Alle übrigen Felder "
 "sind optional und dürfen leer sein."
 
-msgid "One vote per candidate"
-msgstr "Eine Stimme pro Kandidat/in"
+msgid "Online voting is impossible to secure"
+msgstr ""
 
 msgid "Only countdown"
 msgstr "Nur Countdown"
@@ -1844,12 +1900,6 @@ msgstr "Bitte geben Sie eine gültige E-Mail-Adresse ein!"
 msgid "Please enter your new password"
 msgstr "Bitte geben Sie Ihr neues Passwort ein"
 
-msgid "Please fill in all required values"
-msgstr "Bitte füllen Sie alle erforderlichen Felder aus."
-
-msgid "Please fill in the values for each candidate"
-msgstr "Bitte füllen Sie die Werte aller Kandidat/innen aus."
-
 msgid "Please select the directory:"
 msgstr "Bitte wählen Sie das Verzeichnis aus:"
 
@@ -1885,12 +1935,6 @@ msgstr "Zurück"
 
 msgid "Previous slides"
 msgstr "Letzte Folien"
-
-msgid "Print ballot paper"
-msgstr "Stimmzettel drucken"
-
-msgid "Print ballot papers"
-msgstr "Stimmzettel drucken"
 
 msgid "Privacy Policy"
 msgstr "Datenschutzerklärung"
@@ -1931,14 +1975,14 @@ msgstr "Öffentlicher Eintrag"
 msgid "Publish"
 msgstr "Veröffentlichen"
 
+msgid "Publish immediately"
+msgstr "Direkt veröffentlichen"
+
 msgid "Put all candidates on the list of speakers"
 msgstr "Alle Kandidaten auf die Redeliste setzen"
 
 msgid "Queue"
 msgstr "Warteliste"
-
-msgid "Quorum"
-msgstr "Quorum"
 
 msgid "Re-add last speaker"
 msgstr "Letzte/n Redner/in zurückholen"
@@ -1948,6 +1992,9 @@ msgstr "Begründung"
 
 msgid "Reason required for creating new motion"
 msgstr "Begründung erforderlich zur Erstellung neuer Anträge"
+
+msgid "Received votes"
+msgstr "Empfangene Stimmen"
 
 msgid "Recommendation"
 msgstr "Empfehlung"
@@ -2266,6 +2313,9 @@ msgstr "Einfacher Arbeitsablauf"
 msgid "Simple majority"
 msgstr "Einfache Mehrheit"
 
+msgid "Single votes"
+msgstr "Einzelstimmen"
+
 msgid "Slide"
 msgstr "Folie"
 
@@ -2284,6 +2334,9 @@ msgstr "Sachgebiete sortieren"
 msgid "Sort comments"
 msgstr "Kommentare sortieren"
 
+msgid "Sort election results by amount of votes"
+msgstr "Wahlergebnisse nach Stimmanzahl sortieren"
+
 msgid "Sort list of speakers"
 msgstr "Redeliste sortieren"
 
@@ -2299,9 +2352,6 @@ msgstr "Namen der Teilnehmenden sortieren nach"
 msgid "Speakers"
 msgstr "Redner/innen"
 
-msgid "Special values"
-msgstr "Spezielle Werte"
-
 msgid "Staff"
 msgstr "Mitarbeitende"
 
@@ -2313,6 +2363,9 @@ msgstr "Standard-PDF-Papierformat"
 
 msgid "Start time"
 msgstr "Startzeit"
+
+msgid "Start voting"
+msgstr "Stimmabgabe starten"
 
 msgid "State"
 msgstr "Status"
@@ -2348,17 +2401,29 @@ msgid "Stop submitting new motions by non-staff users"
 msgstr ""
 "Einreichen von neuen Anträgen stoppen für Nutzer ohne Verwaltungsrechte"
 
+msgid "Stop voting"
+msgstr "Stimmabgabe beenden"
+
 msgid "Structure level"
 msgstr "Gliederungsebene"
 
 msgid "Subcategory"
 msgstr "Untersachgebiet"
 
+msgid "Submit selection now?"
+msgstr "Auswahl jetzt senden?"
+
+msgid "Submit vote now"
+msgstr "Stimme(n) jetzt senden"
+
 msgid "Submitters"
 msgstr "Antragsteller/in"
 
 msgid "Submitters changed"
 msgstr "Antragsteller/in geändert"
+
+msgid "Sum of votes including general No/Abstain"
+msgstr "Summe der Stimmen einschließlich generelles Nein/Enthaltung"
 
 msgid "Summary of changes"
 msgstr "Zusammenfassung der Änderungen"
@@ -2402,12 +2467,6 @@ msgstr "Textimport"
 msgid "Text separator"
 msgstr "Texttrenner"
 
-msgid "The 100 % base of a voting result consists of"
-msgstr "Die 100%-Basis eines Abstimmungsergebnisses besteht aus"
-
-msgid "The 100-%-base of an election result consists of"
-msgstr "Die 100%-Basis eines Wahlergebnisses besteht aus"
-
 msgid "The assembly may decide:"
 msgstr "Die Versammlung möge beschließen:"
 
@@ -2429,6 +2488,9 @@ msgid ""
 msgstr ""
 "Die Datei scheint einige ausgelassene Spalten zu haben. Sie werden als leer "
 "betrachtet."
+
+msgid "The individual votes were anonymized."
+msgstr "Die individuellen Stimmen wurden anonymisiert."
 
 msgid "The link is broken. Please contact your system administrator."
 msgstr ""
@@ -2628,8 +2690,8 @@ msgstr "Typ"
 msgid "Undone"
 msgstr "unerledigt"
 
-msgid "Unpublish"
-msgstr "Nicht veröffentlichen"
+msgid "Unknown user"
+msgstr "Unbekannter Nutzer"
 
 msgid "Unsupport"
 msgstr "Unterstützung zurückziehen"
@@ -2692,8 +2754,17 @@ msgstr "Abstimmung"
 msgid "Vote created"
 msgstr "Abstimmung erstellt"
 
+msgid "Vote currently possible"
+msgstr "Stimmabgabe aktuell möglich"
+
 msgid "Vote deleted"
 msgstr "Abstimmung gelöscht"
+
+msgid "Vote finished"
+msgstr "Stimmabgabe abgeschlossen"
+
+msgid "Vote not possible"
+msgstr "Stimmabgabe nicht möglich"
 
 msgid "Vote updated"
 msgstr "Abstimmung aktualisiert"
@@ -2707,8 +2778,23 @@ msgstr "Im Wahlvorgang"
 msgid "Voting and ballot papers"
 msgstr "Abstimmung und Stimmzettel"
 
+msgid "Voting is currently in progress."
+msgstr "Stimmabgabe läuft aktuell "
+
+msgid "Voting method"
+msgstr "Wahlmethode"
+
+msgid "Voting opened"
+msgstr "Abstimmung eröffnet"
+
 msgid "Voting result"
 msgstr "Abstimmungsergebnis"
+
+msgid "Voting successful."
+msgstr "Stimmabgabe erfolgreich."
+
+msgid "Voting type"
+msgstr "Art der Stimmabgabe"
 
 msgid "WEP"
 msgstr "WEP"
@@ -2727,9 +2813,6 @@ msgstr "WLAN-Passwort"
 
 msgid "WPA/WPA2"
 msgstr "WPA/WPA2"
-
-msgid "Waiting for results"
-msgstr "Auf Ergebnisse wartend ..."
 
 msgid "Web interface header logo"
 msgstr "Web-Interface-Kopfzeilen-Logo"
@@ -2772,6 +2855,9 @@ msgstr "Arbeitsabläufe"
 msgid "Yes"
 msgstr "Ja"
 
+msgid "Yes per candidate"
+msgstr "Ja pro Kandidat"
+
 msgid "Yes/No"
 msgstr "Ja/Nein"
 
@@ -2808,6 +2894,9 @@ msgstr ""
 msgid "You do not have the required permission to see that page!"
 msgstr "Sie haben leider keine Berechtigung diese Seite zu sehen."
 
+msgid "You have already voted."
+msgstr "Sie haben bereits Ihre Stimme abgegeben."
+
 msgid "You have to fill this field."
 msgstr "Sie müssen diese Feld ausfüllen."
 
@@ -2816,6 +2905,14 @@ msgstr "Sie haben Änderungen vorgenommen."
 
 msgid "You override the personally set password!"
 msgstr "Sie überschreiben hiermit das persönlich gesetzte Passwort!"
+
+msgid "You reached the maximum amount of votes. Deselect somebody first."
+msgstr ""
+"Sie haben die maximale Anzahl von Stimmen erreicht. Deselektieren Sie zuerst"
+" eine Auswahl."
+
+msgid "Your decision cannot be changed afterwards."
+msgstr "Ihre Stimmabgabe kann anschließend nicht mehr geändert werden."
 
 msgid "Your password was resetted successfully!"
 msgstr "Ihr Passwort wurde erfolgreich zurückgesetzt!"
@@ -2854,6 +2951,9 @@ msgstr "Gruppe(n) hinzufügen"
 msgid "adjourned"
 msgstr "vertagt"
 
+msgid "analog"
+msgstr "analog"
+
 msgid "and"
 msgstr "und"
 
@@ -2871,6 +2971,9 @@ msgstr "Verbindungen"
 
 msgid "contribution"
 msgstr "Wortmeldung"
+
+msgid "created"
+msgstr "erstellt"
 
 msgid "custom"
 msgstr "benutzerdefiniert"
@@ -2896,6 +2999,9 @@ msgstr "Beispiel"
 msgid "female"
 msgstr "weiblich"
 
+msgid "finished (unpublished)"
+msgstr "abgeschlossen (unveröffentlicht)"
+
 msgid "fullscreen"
 msgstr "Vollbild"
 
@@ -2916,9 +3022,6 @@ msgstr "innerhalb"
 
 msgid "internal"
 msgstr "intern"
-
-msgid "is elected"
-msgstr "gewählt"
 
 msgid "is now"
 msgstr "ist jetzt"
@@ -2953,6 +3056,12 @@ msgstr "benötigt Überprüfung"
 msgid "no committee"
 msgstr "kein Gremium"
 
+msgid "nominal"
+msgstr "namentlich"
+
+msgid "non-nominal"
+msgstr "nicht-namentlich"
+
 msgid "none"
 msgstr "aus"
 
@@ -2962,14 +3071,11 @@ msgstr "nicht befasst"
 msgid "not decided"
 msgstr "nicht entschieden"
 
-msgid "not reached"
-msgstr "nicht erreicht"
-
-msgid "not reached."
-msgstr "nicht erreicht."
-
 msgid "of"
 msgstr "von"
+
+msgid "open votes"
+msgstr "offene Stimmabgaben"
 
 msgid "outside"
 msgstr "außerhalb"
@@ -2988,12 +3094,6 @@ msgstr "öffentlich"
 
 msgid "published"
 msgstr "veröffentlicht"
-
-msgid "reached"
-msgstr "erreicht"
-
-msgid "reached."
-msgstr "erreicht."
 
 msgid "refered to committee"
 msgstr "in Ausschuss verwiesen"
@@ -3016,6 +3116,9 @@ msgstr "Ergebnisse"
 msgid "selected"
 msgstr "ausgewählt"
 
+msgid "started"
+msgstr "gestartet"
+
 msgid "statute paragraphs have been imported."
 msgstr "Satzungsabschnitte wurden importiert."
 
@@ -3033,9 +3136,6 @@ msgstr "bis"
 
 msgid "undocumented"
 msgstr "nicht erfasst"
-
-msgid "unpublished"
-msgstr "unveröffentlicht"
 
 msgid "with filter"
 msgstr "mit Filter"

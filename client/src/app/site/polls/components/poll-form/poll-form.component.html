@@ -11,10 +11,10 @@
     <!-- TODO: rather disable forms than duplicate them -->
     <div *ngIf="data && data.state" class="poll-preview-meta-info">
         <span class="short-description" *ngFor="let value of pollValues">
-            <span class="short-description-label subtitle" translate>
+            <span class="short-description-label subtitle">
                 {{ value[0] }}
             </span>
-            <span class="short-description-value" translate>
+            <span class="short-description-value">
                 {{ value[1] }}
             </span>
         </span>
@@ -28,7 +28,7 @@
                         {{ option.value | translate }}
                     </mat-option>
                 </mat-select>
-                <mat-error translate>This field is required</mat-error>
+                <mat-error translate>This field is required.</mat-error>
                 <mat-hint (click)="openVotingWarning()" *ngIf="showNonNominalWarning"> {{ 'Not suitable for formal secret voting!' | translate }}</mat-hint>
             </mat-form-field>
 
@@ -52,10 +52,10 @@
                     required
                 >
                     <mat-option *ngFor="let option of pollMethods | keyvalue: keepEntryOrder" [value]="option.key">
-                        {{ option.value }}
+                        {{ option.value | translate }}
                     </mat-option>
                 </mat-select>
-                <mat-error translate>This field is required</mat-error>
+                <mat-error translate>This field is required.</mat-error>
             </mat-form-field>
         </ng-container>
 

@@ -2,7 +2,7 @@
     <!-- Poll Infos -->
     <div class="poll-title-wrapper">
         <!-- Title Area -->
-        <div class="poll-title-area">
+        <div class="poll-title-area spacer-bottom-20">
             <!-- Title -->
             <span class="poll-title">
                 <a [routerLink]="pollLink">
@@ -10,7 +10,7 @@
                 </a>
             </span>
 
-            <div>
+            <div class="italic">
                 <span *osPerms="'motions.can_manage_polls'; and: poll.type === 'pseudoanonymous'">
                     <button mat-icon-button color="warn" (click)="openVotingWarning()">
                         <mat-icon>
@@ -100,7 +100,7 @@
     <!-- In Progress hint -->
     <div class="motion-couting-in-progress-hint" *osPerms="'motions.can_manage_polls'; complement: true">
         <span *ngIf="poll.isFinished">
-            {{ 'Counting is in progress' | translate }}
+            {{ 'Counting of votes is in progress ...' | translate }}
         </span>
     </div>
 </ng-template>
@@ -120,7 +120,7 @@
     <os-projector-button [menuItem]="true" [object]="poll" *osPerms="'core.can_manage_projector'"></os-projector-button>
     <button mat-menu-item (click)="downloadPdf()">
         <mat-icon>picture_as_pdf</mat-icon>
-        <span translate>Ballot paper</span>
+        <span translate>Ballot papers</span>
     </button>
     <div *osPerms="'motions.can_manage_polls'">
         <mat-divider></mat-divider>

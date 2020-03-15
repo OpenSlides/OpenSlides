@@ -13,7 +13,7 @@
             <div *ngFor="let option of options" class="votes-grid">
                 <div>
                     <span *ngIf="option.user">{{ option.user.getFullName() }}</span>
-                    <span *ngIf="!option.user">{{ 'Unknown User' | translate }}</span>
+                    <span *ngIf="!option.user">{{ 'Unknown user' | translate }}</span>
                 </div>
 
                 <div>
@@ -46,7 +46,7 @@
         <div>
             <os-check-input
                 *ngIf="globalNoEnabled"
-                placeholder="{{ 'Global No' | translate }}"
+                placeholder="{{ 'General No' | translate }}"
                 [checkboxValue]="-1"
                 inputType="number"
                 [checkboxLabel]="'majority' | translate"
@@ -55,7 +55,7 @@
 
             <os-check-input
                 *ngIf="globalAbstainEnabled"
-                placeholder="{{ 'Global Abstain' | translate }}"
+                placeholder="{{ 'General Abstain' | translate }}"
                 [checkboxValue]="-1"
                 inputType="number"
                 [checkboxLabel]="'majority' | translate"
@@ -70,7 +70,7 @@
             <span translate>Publish immediately</span>
         </mat-checkbox>
         <mat-error *ngIf="!dialogVoteForm.valid" translate>
-            If you want to publish after creating, you have to fill at least one of the fields.
+            Error in form field.
         </mat-error>
     </div>
 </ng-container>

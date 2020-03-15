@@ -335,7 +335,7 @@ def get_config_variables():
         name="motion_poll_default_100_percent_base",
         default_value="YNA",
         input_type="choice",
-        label="The 100 % base of a voting result consists of",
+        label="Default 100 % base of a voting result",
         choices=tuple(
             {"value": base[0], "display_name": base[1]}
             for base in MotionPoll.PERCENT_BASES
@@ -375,7 +375,7 @@ def get_config_variables():
         name="motions_pdf_ballot_papers_selection",
         default_value="CUSTOM_NUMBER",
         input_type="choice",
-        label="Number of ballot papers (selection)",
+        label="Number of ballot papers",
         choices=(
             {"value": "NUMBER_OF_DELEGATES", "display_name": "Number of all delegates"},
             {
