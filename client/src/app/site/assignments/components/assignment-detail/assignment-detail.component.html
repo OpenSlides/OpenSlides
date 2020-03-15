@@ -279,19 +279,19 @@
                         type="number"
                         required
                     />
-                    <mat-error *ngIf="assignmentForm.get('open_posts').hasError('required')">{{
-                        'This field is required.' | translate
-                    }}</mat-error>
-                    <mat-error *ngIf="assignmentForm.get('open_posts').hasError('min')">{{
-                        'The number has to be greater than 0.' | translate
-                    }}</mat-error>
+                    <mat-error *ngIf="assignmentForm.get('open_posts').hasError('required')">
+                        {{ 'This field is required.' | translate }}
+                    </mat-error>
+                    <mat-error *ngIf="assignmentForm.get('open_posts').hasError('min')">
+                        {{ 'The number has to be greater than 0.' | translate }}
+                    </mat-error>
                 </mat-form-field>
             </div>
 
-            <!-- Number poll candidates -->
+            <!-- Number candidates -->
             <div>
                 <mat-checkbox formControlName="number_poll_candidates">
-                    <span translate>Number poll candidates</span>
+                    <span translate>Number candidates</span>
                 </mat-checkbox>
             </div>
         </form>

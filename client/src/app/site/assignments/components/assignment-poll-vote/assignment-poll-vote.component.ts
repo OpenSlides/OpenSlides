@@ -43,7 +43,7 @@ export class AssignmentPollVoteComponent extends BasePollVoteComponent<ViewAssig
 
     public constructor(
         title: Title,
-        translate: TranslateService,
+        protected translate: TranslateService,
         matSnackbar: MatSnackBar,
         vmanager: VotingService,
         operator: OperatorService,
@@ -102,8 +102,8 @@ export class AssignmentPollVoteComponent extends BasePollVoteComponent<ViewAssig
     }
 
     public submitVote(): void {
-        const title = this.translate.instant('Are you sure?');
-        const content = this.translate.instant('Your decision cannot be changed afterwards');
+        const title = this.translate.instant('Submit selection now?');
+        const content = this.translate.instant('Your decision cannot be changed afterwards.');
         this.promptService.open(title, content).then(confirmed => {
             if (confirmed) {
                 this.pollRepo

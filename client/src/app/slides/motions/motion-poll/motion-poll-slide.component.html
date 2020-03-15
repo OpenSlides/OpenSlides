@@ -9,8 +9,4 @@
     <div *ngIf="data.data.poll.state === PollState.Published">
         <os-motion-poll-detail-content [poll]="pollData" [chartData]="chartDataSubject"> </os-motion-poll-detail-content>
     </div>
-    <div *ngIf="data.data.poll.state !== PollState.Published">
-        <!-- TODO -->
-        {{ 'Nothing to see here!' | translate }}
-    </div>
 </ng-container>

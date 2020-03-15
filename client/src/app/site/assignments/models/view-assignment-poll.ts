@@ -1,5 +1,6 @@
 import { BehaviorSubject } from 'rxjs';
 
+import { _ } from 'app/core/translate/translation-marker';
 import { ChartData } from 'app/shared/components/charts/charts.component';
 import {
     AssignmentPoll,
@@ -17,18 +18,18 @@ export interface AssignmentPollTitleInformation {
 }
 
 export const AssignmentPollMethodVerbose = {
-    votes: 'Yes per candidate',
-    YN: 'Yes/No per candidate',
-    YNA: 'Yes/No/Abstain per candidate'
+    votes: _('Yes per candidate'),
+    YN: _('Yes/No per candidate'),
+    YNA: _('Yes/No/Abstain per candidate')
 };
 
 export const AssignmentPollPercentBaseVerbose = {
-    YN: 'Yes/No per candidate',
-    YNA: 'Yes/No/Abstain per candidate',
-    votes: 'Sum of votes inclusive global ones',
-    valid: 'All valid ballots',
-    cast: 'All cast ballots',
-    disabled: 'Disabled (no percents)'
+    YN: _('Yes/No per candidate'),
+    YNA: _('Yes/No/Abstain per candidate'),
+    votes: _('Sum of votes including general No/Abstain'),
+    valid: _('All valid ballots'),
+    cast: _('All casted ballots'),
+    disabled: _('Disabled (no percents)')
 };
 
 export class ViewAssignmentPoll extends ViewBasePoll<AssignmentPoll, AssignmentPollMethod, AssignmentPollPercentBase>

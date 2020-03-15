@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 
+import { _ } from 'app/core/translate/translation-marker';
 import { TranslateService } from '@ngx-translate/core';
 
 import { ViewAssignmentPoll } from 'app/site/assignments/models/view-assignment-poll';
@@ -16,7 +17,7 @@ import { VotingService } from './voting.service';
 export class VotingBannerService {
     private currentBanner: BannerDefinition;
 
-    private subText = 'Click here to vote';
+    private subText = _('Click here to vote!');
 
     public constructor(
         pollListObservableService: PollListObservableService,
@@ -44,7 +45,7 @@ export class VotingBannerService {
             pollsToVote.length === 1
                 ? this.createBanner(this.getTextForPoll(pollsToVote[0]), pollsToVote[0].parentLink)
                 : this.createBanner(
-                      `${this.translate.instant('You have polls to vote on')}: ${pollsToVote.length}`,
+                      `${pollsToVote.length} ${this.translate.instant('open votes')}`,
                       '/polls/'
                   );
         this.sliceBanner(banner);
@@ -81,7 +82,7 @@ export class VotingBannerService {
                 'Voting opened'
             )}`;
         } else if (poll instanceof ViewAssignmentPoll) {
-            return `${poll.assignment.getTitle()}: ${this.translate.instant('Ballot openened!')}`;
+            return `${poll.assignment.getTitle()}: ${this.translate.instant('Ballot opened')}`;
         }
     }
 

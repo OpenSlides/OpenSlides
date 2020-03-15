@@ -18,7 +18,15 @@
 <ng-template #viewTemplate>
     <div *ngIf="isReady">
         <h1>{{ poll.title }}</h1>
-        <span *ngIf="poll.type !== 'analog'">{{ poll.typeVerbose | translate }}</span>
+        <div>
+            <!-- Voting type -->
+            <span *ngIf="poll.type !== 'analog'"> {{ poll.typeVerbose | translate }} &middot; </span>
+
+            <!-- State -->
+            <span>
+                {{ poll.stateVerbose | translate }}
+            </span>
+        </div>
 
         <div class="assignment-result-wrapper" *ngIf="poll.stateHasVotes">
             <!-- Result Table -->

@@ -7,6 +7,9 @@ msgstr ""
 msgid "%num% emails were send sucessfully."
 msgstr ""
 
+msgid "100% base"
+msgstr ""
+
 msgid ""
 "<a href=\"http://www.openslides.org\">OpenSlides</a> is a free web based "
 "presentation and assembly system for visualizing and controlling agenda, "
@@ -126,6 +129,9 @@ msgstr ""
 msgid "All valid ballots"
 msgstr ""
 
+msgid "All votes will be lost."
+msgstr ""
+
 msgid "All your changes are saved immediately."
 msgstr ""
 
@@ -153,15 +159,6 @@ msgstr ""
 msgid "Always"
 msgstr ""
 
-msgid "Always Yes-No-Abstain per candidate"
-msgstr ""
-
-msgid "Always Yes/No per candidate"
-msgstr ""
-
-msgid "Always one option per candidate"
-msgstr ""
-
 msgid "Amendment"
 msgstr ""
 
@@ -183,10 +180,19 @@ msgstr ""
 msgid "Amendments to"
 msgstr ""
 
+msgid "Amount of votes"
+msgstr ""
+
 msgid "An email with a password reset link was send!"
 msgstr ""
 
 msgid "An unknown error occurred."
+msgstr ""
+
+msgid "Anonymize votes"
+msgstr ""
+
+msgid "Anonymous"
 msgstr ""
 
 msgid "Apply"
@@ -195,7 +201,7 @@ msgstr ""
 msgid "Arabic"
 msgstr ""
 
-msgid "Are you sure you want to copy the final version to the print template?"
+msgid "Are you sure you want to anonymize all votes? This cannot be undone."
 msgstr ""
 
 msgid "Are you sure you want to delete all selected elections?"
@@ -214,9 +220,6 @@ msgid "Are you sure you want to delete all speakers from this list of speakers?"
 msgstr ""
 
 msgid "Are you sure you want to delete the print template?"
-msgstr ""
-
-msgid "Are you sure you want to delete this ballot?"
 msgstr ""
 
 msgid "Are you sure you want to delete this category and all subcategories?"
@@ -264,6 +267,9 @@ msgstr ""
 msgid "Are you sure you want to delete this topic?"
 msgstr ""
 
+msgid "Are you sure you want to delete this vote?"
+msgstr ""
+
 msgid "Are you sure you want to delete this workflow?"
 msgstr ""
 
@@ -308,6 +314,9 @@ msgstr ""
 msgid "Are you sure you want to reset all passwords to the default ones?"
 msgstr ""
 
+msgid "Are you sure you want to reset this vote?"
+msgstr ""
+
 msgid "Are you sure you want to send an invitation email to the user?"
 msgstr ""
 
@@ -329,7 +338,7 @@ msgstr ""
 msgid "Attachments"
 msgstr ""
 
-msgid "Automatic assign of method"
+msgid "Available votes"
 msgstr ""
 
 msgid "Back"
@@ -341,7 +350,10 @@ msgstr ""
 msgid "Ballot"
 msgstr ""
 
-msgid "Ballot and ballot papers"
+msgid "Ballot opened"
+msgstr ""
+
+msgid "Ballot papers"
 msgstr ""
 
 msgid "Base folder"
@@ -551,6 +563,9 @@ msgstr ""
 msgid "Clear tags"
 msgstr ""
 
+msgid "Click here to vote!"
+msgstr ""
+
 msgid "Close"
 msgstr ""
 
@@ -617,6 +632,9 @@ msgstr ""
 msgid "Countdowns"
 msgstr ""
 
+msgid "Counting of votes is in progress ..."
+msgstr ""
+
 msgid "Couple countdown with the list of speakers"
 msgstr ""
 
@@ -668,13 +686,22 @@ msgstr ""
 msgid "Default"
 msgstr ""
 
-msgid "Default comment on the ballot paper"
+msgid "Default 100 % base of a voting result"
+msgstr ""
+
+msgid "Default 100 % base of an election result"
+msgstr ""
+
+msgid "Default election method"
 msgstr ""
 
 msgid "Default encoding for all csv exports"
 msgstr ""
 
 msgid "Default group"
+msgstr ""
+
+msgid "Default groups with voting rights"
 msgstr ""
 
 msgid "Default line numbering"
@@ -792,6 +819,17 @@ msgstr ""
 msgid "Duration"
 msgstr ""
 
+msgid ""
+"During voting, OpenSlides does not store the individual user ID of the "
+"voter. This in no way means that a\n"
+"        non-nominal vote is completely anonymous and secure. You cannot "
+"track the decisions of your voters after the\n"
+"        data has been submitted. The validity of the data cannot always be "
+"guaranteed, especially if you use OpenSlides\n"
+"        in a distributed online setup. You are responsible for your own "
+"actions."
+msgstr ""
+
 msgid "Edit"
 msgstr ""
 
@@ -816,22 +854,16 @@ msgstr ""
 msgid "Edit the whole motion text"
 msgstr ""
 
-msgid "Edit topic"
+msgid "Edit to enter votes."
 msgstr ""
 
-msgid "Elected"
+msgid "Edit topic"
 msgstr ""
 
 msgid "Election"
 msgstr ""
 
 msgid "Election documents"
-msgstr ""
-
-msgid "Election method"
-msgstr ""
-
-msgid "Election result"
 msgstr ""
 
 msgid "Elections"
@@ -884,10 +916,10 @@ msgstr ""
 msgid "Enter participant number"
 msgstr ""
 
-msgid "Enter votes"
+msgid "Enter your email to send the password reset link"
 msgstr ""
 
-msgid "Enter your email to send the password reset link"
+msgid "Entitled to vote"
 msgstr ""
 
 msgid "Error"
@@ -897,6 +929,9 @@ msgid "Error during PDF creation of election:"
 msgstr ""
 
 msgid "Error during PDF creation of motion:"
+msgstr ""
+
+msgid "Error in form field."
 msgstr ""
 
 msgid "Error: The new passwords do not match."
@@ -992,13 +1027,6 @@ msgstr ""
 msgid "Following users are currently editing this motion:"
 msgstr ""
 
-msgid ""
-"For Yes/No/Abstain per candidate and Yes/No per candidate the 100-%-base "
-"depends on the election method: If there is only one option per candidate, "
-"the sum of all votes of all candidates is 100 %. Otherwise for each "
-"candidate the sum of all votes is 100 %."
-msgstr ""
-
 msgid "Forgot Password?"
 msgstr ""
 
@@ -1018,6 +1046,12 @@ msgid "Gender"
 msgstr ""
 
 msgid "General"
+msgstr ""
+
+msgid "General Abstain"
+msgstr ""
+
+msgid "General No"
 msgstr ""
 
 msgid "Generate new passwords"
@@ -1050,7 +1084,13 @@ msgstr ""
 msgid "Has amendments"
 msgstr ""
 
+msgid "Has been voted for"
+msgstr ""
+
 msgid "Has no speakers"
+msgstr ""
+
+msgid "Has not been voted for"
 msgstr ""
 
 msgid "Has notes"
@@ -1089,7 +1129,7 @@ msgstr ""
 msgid "Hide the amount of speakers in subtitle of list of speakers slide"
 msgstr ""
 
-msgid "Hint for ballot paper"
+msgid "Hint on voting"
 msgstr ""
 
 msgid "History"
@@ -1099,6 +1139,9 @@ msgid "Home"
 msgstr ""
 
 msgid "How to create new amendments"
+msgstr ""
+
+msgid "I know the risk"
 msgstr ""
 
 msgid "Identifier"
@@ -1125,6 +1168,9 @@ msgid "Import topics"
 msgstr ""
 
 msgid "In motion list, motion detail and PDF."
+msgstr ""
+
+msgid "In the election process"
 msgstr ""
 
 msgid "Inactive"
@@ -1268,6 +1314,9 @@ msgstr ""
 msgid "List of speakers overlay"
 msgstr ""
 
+msgid "List of votes"
+msgstr ""
+
 msgid "List view"
 msgstr ""
 
@@ -1286,7 +1335,7 @@ msgstr ""
 msgid "Main motion and line number"
 msgstr ""
 
-msgid "Mark as elected"
+msgid "Mark as personal favorite"
 msgstr ""
 
 msgid "Mark speaker"
@@ -1302,6 +1351,9 @@ msgid "Messages"
 msgstr ""
 
 msgid "Meta information"
+msgstr ""
+
+msgid "More"
 msgstr ""
 
 msgid "Motion"
@@ -1508,6 +1560,9 @@ msgstr ""
 msgid "No recommendation"
 msgstr ""
 
+msgid "No results yet."
+msgstr ""
+
 msgid "No search result found"
 msgstr ""
 
@@ -1526,6 +1581,9 @@ msgstr ""
 msgid "None"
 msgstr ""
 
+msgid "Not suitable for formal secret voting!"
+msgstr ""
+
 msgid "Note, that the default password will be changed to the new generated one."
 msgstr ""
 
@@ -1535,6 +1593,9 @@ msgid ""
 msgstr ""
 
 msgid "Notes"
+msgstr ""
+
+msgid "Number candidates"
 msgstr ""
 
 msgid "Number motions"
@@ -1547,6 +1608,9 @@ msgid "Number of all delegates"
 msgstr ""
 
 msgid "Number of all participants"
+msgstr ""
+
+msgid "Number of ballot papers"
 msgstr ""
 
 msgid "Number of ballot papers (selection)"
@@ -1599,7 +1663,7 @@ msgid ""
 "fields are optional and may be empty."
 msgstr ""
 
-msgid "One vote per candidate"
+msgid "Online voting is impossible to secure"
 msgstr ""
 
 msgid "Only countdown"
@@ -1767,12 +1831,6 @@ msgstr ""
 msgid "Please enter your new password"
 msgstr ""
 
-msgid "Please fill in all required values"
-msgstr ""
-
-msgid "Please fill in the values for each candidate"
-msgstr ""
-
 msgid "Please select the directory:"
 msgstr ""
 
@@ -1807,12 +1865,6 @@ msgid "Previous"
 msgstr ""
 
 msgid "Previous slides"
-msgstr ""
-
-msgid "Print ballot paper"
-msgstr ""
-
-msgid "Print ballot papers"
 msgstr ""
 
 msgid "Privacy Policy"
@@ -1854,13 +1906,13 @@ msgstr ""
 msgid "Publish"
 msgstr ""
 
+msgid "Publish immediately"
+msgstr ""
+
 msgid "Put all candidates on the list of speakers"
 msgstr ""
 
 msgid "Queue"
-msgstr ""
-
-msgid "Quorum"
 msgstr ""
 
 msgid "Re-add last speaker"
@@ -1870,6 +1922,9 @@ msgid "Reason"
 msgstr ""
 
 msgid "Reason required for creating new motion"
+msgstr ""
+
+msgid "Received votes"
 msgstr ""
 
 msgid "Recommendation"
@@ -2182,6 +2237,9 @@ msgstr ""
 msgid "Simple majority"
 msgstr ""
 
+msgid "Single votes"
+msgstr ""
+
 msgid "Slide"
 msgstr ""
 
@@ -2200,6 +2258,9 @@ msgstr ""
 msgid "Sort comments"
 msgstr ""
 
+msgid "Sort election results by amount of votes"
+msgstr ""
+
 msgid "Sort list of speakers"
 msgstr ""
 
@@ -2215,9 +2276,6 @@ msgstr ""
 msgid "Speakers"
 msgstr ""
 
-msgid "Special values"
-msgstr ""
-
 msgid "Staff"
 msgstr ""
 
@@ -2228,6 +2286,9 @@ msgid "Standard page size in PDF"
 msgstr ""
 
 msgid "Start time"
+msgstr ""
+
+msgid "Start voting"
 msgstr ""
 
 msgid "State"
@@ -2263,16 +2324,28 @@ msgstr ""
 msgid "Stop submitting new motions by non-staff users"
 msgstr ""
 
+msgid "Stop voting"
+msgstr ""
+
 msgid "Structure level"
 msgstr ""
 
 msgid "Subcategory"
 msgstr ""
 
+msgid "Submit selection now?"
+msgstr ""
+
+msgid "Submit vote now"
+msgstr ""
+
 msgid "Submitters"
 msgstr ""
 
 msgid "Submitters changed"
+msgstr ""
+
+msgid "Sum of votes including general No/Abstain"
 msgstr ""
 
 msgid "Summary of changes"
@@ -2317,12 +2390,6 @@ msgstr ""
 msgid "Text separator"
 msgstr ""
 
-msgid "The 100 % base of a voting result consists of"
-msgstr ""
-
-msgid "The 100-%-base of an election result consists of"
-msgstr ""
-
 msgid "The assembly may decide:"
 msgstr ""
 
@@ -2339,6 +2406,9 @@ msgid "The file seems to have additional columns. They will be ignored."
 msgstr ""
 
 msgid "The file seems to have some ommitted columns. They will be considered empty."
+msgstr ""
+
+msgid "The individual votes were anonymized."
 msgstr ""
 
 msgid "The link is broken. Please contact your system administrator."
@@ -2505,7 +2575,7 @@ msgstr ""
 msgid "Undone"
 msgstr ""
 
-msgid "Unpublish"
+msgid "Unknown user"
 msgstr ""
 
 msgid "Unsupport"
@@ -2563,7 +2633,16 @@ msgstr ""
 msgid "Vote created"
 msgstr ""
 
+msgid "Vote currently possible"
+msgstr ""
+
 msgid "Vote deleted"
+msgstr ""
+
+msgid "Vote finished"
+msgstr ""
+
+msgid "Vote not possible"
 msgstr ""
 
 msgid "Vote updated"
@@ -2578,7 +2657,22 @@ msgstr ""
 msgid "Voting and ballot papers"
 msgstr ""
 
+msgid "Voting is currently in progress."
+msgstr ""
+
+msgid "Voting method"
+msgstr ""
+
+msgid "Voting opened"
+msgstr ""
+
 msgid "Voting result"
+msgstr ""
+
+msgid "Voting successful."
+msgstr ""
+
+msgid "Voting type"
 msgstr ""
 
 msgid "WEP"
@@ -2597,9 +2691,6 @@ msgid "WLAN password"
 msgstr ""
 
 msgid "WPA/WPA2"
-msgstr ""
-
-msgid "Waiting for results"
 msgstr ""
 
 msgid "Web interface header logo"
@@ -2639,6 +2730,9 @@ msgstr ""
 msgid "Yes"
 msgstr ""
 
+msgid "Yes per candidate"
+msgstr ""
+
 msgid "Yes/No"
 msgstr ""
 
@@ -2669,6 +2763,9 @@ msgstr ""
 msgid "You do not have the required permission to see that page!"
 msgstr ""
 
+msgid "You have already voted."
+msgstr ""
+
 msgid "You have to fill this field."
 msgstr ""
 
@@ -2676,6 +2773,12 @@ msgid "You made changes."
 msgstr ""
 
 msgid "You override the personally set password!"
+msgstr ""
+
+msgid "You reached the maximum amount of votes. Deselect somebody first."
+msgstr ""
+
+msgid "Your decision cannot be changed afterwards."
 msgstr ""
 
 msgid "Your password was resetted successfully!"
@@ -2714,6 +2817,9 @@ msgstr ""
 msgid "adjourned"
 msgstr ""
 
+msgid "analog"
+msgstr ""
+
 msgid "and"
 msgstr ""
 
@@ -2730,6 +2836,9 @@ msgid "connections"
 msgstr ""
 
 msgid "contribution"
+msgstr ""
+
+msgid "created"
 msgstr ""
 
 msgid "custom"
@@ -2756,6 +2865,9 @@ msgstr ""
 msgid "female"
 msgstr ""
 
+msgid "finished (unpublished)"
+msgstr ""
+
 msgid "fullscreen"
 msgstr ""
 
@@ -2775,9 +2887,6 @@ msgid "inline"
 msgstr ""
 
 msgid "internal"
-msgstr ""
-
-msgid "is elected"
 msgstr ""
 
 msgid "is now"
@@ -2813,6 +2922,12 @@ msgstr ""
 msgid "no committee"
 msgstr ""
 
+msgid "nominal"
+msgstr ""
+
+msgid "non-nominal"
+msgstr ""
+
 msgid "none"
 msgstr ""
 
@@ -2822,13 +2937,10 @@ msgstr ""
 msgid "not decided"
 msgstr ""
 
-msgid "not reached"
-msgstr ""
-
-msgid "not reached."
-msgstr ""
-
 msgid "of"
+msgstr ""
+
+msgid "open votes"
 msgstr ""
 
 msgid "outside"
@@ -2847,12 +2959,6 @@ msgid "public"
 msgstr ""
 
 msgid "published"
-msgstr ""
-
-msgid "reached"
-msgstr ""
-
-msgid "reached."
 msgstr ""
 
 msgid "refered to committee"
@@ -2876,6 +2982,9 @@ msgstr ""
 msgid "selected"
 msgstr ""
 
+msgid "started"
+msgstr ""
+
 msgid "statute paragraphs have been imported."
 msgstr ""
 
@@ -2892,9 +3001,6 @@ msgid "to"
 msgstr ""
 
 msgid "undocumented"
-msgstr ""
-
-msgid "unpublished"
 msgstr ""
 
 msgid "with filter"

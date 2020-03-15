@@ -141,7 +141,7 @@ class Migration(migrations.Migration):
                 choices=[
                     ("YN", "Yes/No per candidate"),
                     ("YNA", "Yes/No/Abstain per candidate"),
-                    ("votes", "Sum of votes inclusive global ones"),
+                    ("votes", "Sum of votes including general No/Abstain"),
                     ("valid", "All valid ballots"),
                     ("cast", "All casted ballots"),
                     ("disabled", "Disabled (no percents)"),
