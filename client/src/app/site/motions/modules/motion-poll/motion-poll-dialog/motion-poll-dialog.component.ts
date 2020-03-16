@@ -5,6 +5,7 @@ import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import { LOWEST_VOTE_VALUE } from 'app/shared/models/poll/base-poll';
 import { ViewMotionPoll } from 'app/site/motions/models/view-motion-poll';
 import { BasePollDialogComponent } from 'app/site/polls/components/base-poll-dialog.component';
 import { PollFormComponent } from 'app/site/polls/components/poll-form/poll-form.component';
@@ -22,11 +23,11 @@ export class MotionPollDialogComponent extends BasePollDialogComponent<ViewMotio
     protected pollForm: PollFormComponent<ViewMotionPoll>;
 
     public constructor(
-        private fb: FormBuilder,
         title: Title,
-        protected translate: TranslateService,
+        translate: TranslateService,
         matSnackbar: MatSnackBar,
         public dialogRef: MatDialogRef<BasePollDialogComponent<ViewMotionPoll>>,
+        private formBuilder: FormBuilder,
         @Inject(MAT_DIALOG_DATA) public pollData: Partial<ViewMotionPoll>
     ) {
         super(title, translate, matSnackbar, dialogRef);
@@ -56,13 +57,13 @@ export class MotionPollDialogComponent extends BasePollDialogComponent<ViewMotio
      * Pre-executed method to initialize the dialog-form depending on the poll-method.
      */
     private createDialog(): void {
-        this.dialogVoteForm = this.fb.group({
-            Y: ['', [Validators.min(-2)]],
-            N: ['', [Validators.min(-2)]],
-            A: ['', [Validators.min(-2)]],
-            votesvalid: ['', [Validators.min(-2)]],
-            votesinvalid: ['', [Validators.min(-2)]],
-            votescast: ['', [Validators.min(-2)]]
+        this.dialogVoteForm = this.formBuilder.group({
+            Y: ['', [Validators.min(LOWEST_VOTE_VALUE)]],
+            N: ['', [Validators.min(LOWEST_VOTE_VALUE)]],
+            A: ['', [Validators.min(LOWEST_VOTE_VALUE)]],
+            votesvalid: ['', [Validators.min(LOWEST_VOTE_VALUE)]],
+            votesinvalid: ['', [Validators.min(LOWEST_VOTE_VALUE)]],
+            votescast: ['', [Validators.min(LOWEST_VOTE_VALUE)]]
         });
 
         if (this.pollData.poll) {

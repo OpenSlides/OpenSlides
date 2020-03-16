@@ -38,6 +38,10 @@ export enum PercentBase {
     Disabled = 'disabled'
 }
 
+export const VOTE_MAJORITY = -1;
+export const VOTE_UNDOCUMENTED = -2;
+export const LOWEST_VOTE_VALUE = VOTE_UNDOCUMENTED;
+
 export abstract class BasePoll<
     T = any,
     O extends BaseOption<any> = any,

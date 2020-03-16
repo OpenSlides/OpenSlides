@@ -184,8 +184,9 @@ class TestCreation(TestCase):
         self.assertEqual(
             sorted([group.id for group in mediafile.access_groups.all()]), [2, 4]
         )
-        self.assertTrue(mediafile.mediafile.name)
-        self.assertEqual(mediafile.path, mediafile.original_filename)
+        self.assertEqual(mediafile.mediafile.name, "")
+        self.assertEqual(mediafile.original_filename, "")
+        self.assertEqual(mediafile.path, mediafile.title + "/")
 
     def test_with_access_groups_wrong_json(self):
         response = self.client.post(

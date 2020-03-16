@@ -3,7 +3,14 @@ import { Injectable } from '@angular/core';
 import { _ } from 'app/core/translate/translation-marker';
 import { ChartData, ChartDate } from 'app/shared/components/charts/charts.component';
 import { AssignmentPollMethod } from 'app/shared/models/assignments/assignment-poll';
-import { BasePoll, MajorityMethod, PercentBase, PollColor, PollType } from 'app/shared/models/poll/base-poll';
+import {
+    BasePoll,
+    MajorityMethod,
+    PercentBase,
+    PollColor,
+    PollType,
+    VOTE_UNDOCUMENTED
+} from 'app/shared/models/poll/base-poll';
 import { AssignmentPollMethodVerbose } from 'app/site/assignments/models/view-assignment-poll';
 import {
     MajorityMethodVerbose,
@@ -70,17 +77,17 @@ export const PollMajorityMethod: CalculableMajorityMethod[] = [
     {
         value: 'simple_majority',
         display_name: 'Simple majority',
-        calc: base => calcMajority(base * 0.5, true)
+        calc: base => calcMajority(base / 2, true)
     },
     {
         value: 'two-thirds_majority',
         display_name: 'Two-thirds majority',
-        calc: base => calcMajority((base / 3) * 2)
+        calc: base => calcMajority((base * 2) / 3)
     },
     {
         value: 'three-quarters_majority',
         display_name: 'Three-quarters majority',
-        calc: base => calcMajority((base / 4) * 3)
+        calc: base => calcMajority((base * 3) / 4)
     },
     {
         value: 'disabled',
@@ -91,6 +98,7 @@ export const PollMajorityMethod: CalculableMajorityMethod[] = [
 
 export interface PollData {
     pollmethod: string;
+    type: string;
     onehundred_percent_base: string;
     options: {
         user?: {
@@ -242,20 +250,18 @@ export abstract class PollService {
         return [
             {
                 vote: 'votesvalid',
-                hide: poll.votesvalid === -2,
+                hide: poll.votesvalid === VOTE_UNDOCUMENTED,
                 showPercent: this.showPercentOfValidOrCast(poll)
             },
             {
                 vote: 'votesinvalid',
                 icon: 'not_interested',
-                // TODO || PollType === analog
-                hide: poll.votesinvalid === -2,
+                hide: poll.votesinvalid === VOTE_UNDOCUMENTED || poll.type !== PollType.Analog,
                 showPercent: poll.onehundred_percent_base === PercentBase.Cast
             },
             {
                 vote: 'votescast',
-                // TODO || PollType === analog
-                hide: poll.votescast === -2,
+                hide: poll.votescast === VOTE_UNDOCUMENTED || poll.type !== PollType.Analog,
                 showPercent: poll.onehundred_percent_base === PercentBase.Cast
             }
         ];
@@ -312,6 +318,6 @@ export abstract class PollService {
     }
 
     public isVoteDocumented(vote: number): boolean {
-        return vote !== null && vote !== undefined && vote !== -2;
+        return vote !== null && vote !== undefined && vote !== VOTE_UNDOCUMENTED;
     }
 }

@@ -1,7 +1,6 @@
 import { BaseModel } from './base-model';
 
 export abstract class BaseDecimalModel<T = any> extends BaseModel<T> {
-    // TODO: no more elegant solution available in current Typescript
     protected abstract getDecimalFields(): string[];
 
     public deserialize(input: any): void {

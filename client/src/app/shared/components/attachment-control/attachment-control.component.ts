@@ -47,21 +47,15 @@ export class AttachmentControlComponent extends BaseFormControlComponent<ViewMed
         return 'attachment-control';
     }
 
-    /**
-     * Default constructor
-     *
-     * @param dialogService Reference to the `MatDialog`
-     * @param mediaService Reference for the `MediaFileRepositoryService`
-     */
     public constructor(
-        fb: FormBuilder,
-        fm: FocusMonitor,
+        formBuilder: FormBuilder,
+        focusMonitor: FocusMonitor,
         element: ElementRef<HTMLElement>,
         @Optional() @Self() public ngControl: NgControl,
         private dialogService: MatDialog,
         private mediaService: MediafileRepositoryService
     ) {
-        super(fb, fm, element, ngControl);
+        super(formBuilder, focusMonitor, element, ngControl);
     }
 
     /**
@@ -102,12 +96,15 @@ export class AttachmentControlComponent extends BaseFormControlComponent<ViewMed
         this.errorHandler.emit(error);
     }
 
-    public onContainerClick(event: MouseEvent): void {
-        // TODO: implement
-    }
+    /**
+     * Declared as abstract in MatFormFieldControl and not required for this component
+     */
+    public onContainerClick(event: MouseEvent): void {}
+
     protected initializeForm(): void {
         this.contentForm = this.fb.control([]);
     }
+
     protected updateForm(value: ViewMediafile[] | null): void {
         this.contentForm.setValue(value || []);
     }

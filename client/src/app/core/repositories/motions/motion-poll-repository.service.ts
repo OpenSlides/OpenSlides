@@ -9,6 +9,7 @@ import { ViewModelStoreService } from 'app/core/core-services/view-model-store.s
 import { RelationDefinition } from 'app/core/definitions/relations';
 import { VotingService } from 'app/core/ui-services/voting.service';
 import { MotionPoll } from 'app/shared/models/motions/motion-poll';
+import { VoteValue } from 'app/shared/models/poll/base-vote';
 import { ViewMotion } from 'app/site/motions/models/view-motion';
 import { ViewMotionOption } from 'app/site/motions/models/view-motion-option';
 import { MotionPollTitleInformation, ViewMotionPoll } from 'app/site/motions/models/view-motion-poll';
@@ -91,7 +92,7 @@ export class MotionPollRepositoryService extends BasePollRepositoryService<
         return this.translate.instant(plural ? 'Polls' : 'Poll');
     };
 
-    public vote(vote: 'Y' | 'N' | 'A', poll_id: number): Promise<void> {
+    public vote(vote: VoteValue, poll_id: number): Promise<void> {
         return this.http.post(`/rest/motions/motion-poll/${poll_id}/vote/`, JSON.stringify(vote));
     }
 }

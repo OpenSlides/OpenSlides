@@ -99,7 +99,6 @@ _('Only main agenda items');
 _('Topics');
 _('Open requests to speak');
 
-
 // ** Motions **
 // config strings
 // subgroup general
@@ -246,7 +245,6 @@ _('Motion block');
 _('The text field may not be blank.');
 _('The reason field may not be blank.');
 
-
 // ** Assignments **
 // Assignment config strings
 _('Elections');
@@ -257,7 +255,7 @@ _('All valid ballots');
 _('All casted ballots');
 _('Disabled (no percents)');
 _('Default groups with voting rights');
-_('Sort election results by amount of votes')
+_('Sort election results by amount of votes');
 _('Put all candidates on the list of speakers');
 // subgroup ballot papers
 _('Ballot papers');
@@ -290,7 +288,6 @@ _('Publish');
 _('Entitled to vote');
 _('Voting method');
 _('Amount of votes');
-
 
 // ** Users **
 // permission strings (see models.py of each Django app)

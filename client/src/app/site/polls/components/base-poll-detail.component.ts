@@ -8,6 +8,7 @@ import { Label } from 'ng2-charts';
 import { BehaviorSubject, from, Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 
+import { Deferred } from 'app/core/promises/deferred';
 import { BaseRepository } from 'app/core/repositories/base-repository';
 import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
 import { BasePollDialogService } from 'app/core/ui-services/base-poll-dialog.service';
@@ -73,7 +74,7 @@ export abstract class BasePollDetailComponent<V extends ViewBasePoll> extends Ba
     // The observable for the votes-per-user table
     public votesDataObservable: Observable<BaseVoteData[]>;
 
-    protected optionsLoaded = false;
+    protected optionsLoaded = new Deferred();
 
     /**
      * Constructor
@@ -103,7 +104,13 @@ export abstract class BasePollDetailComponent<V extends ViewBasePoll> extends Ba
         protected votesRepo: BaseRepository<ViewBaseVote, BaseVote, object>
     ) {
         super(title, translate, matSnackbar);
-        votesRepo
+        this.setup();
+    }
+
+    private async setup(): Promise<void> {
+        await this.optionsLoaded;
+
+        this.votesRepo
             .getViewModelListObservable()
             .pipe(
                 filter(() => this.poll && this.canSeeVotes), // filter first for valid poll state to avoid unneccessary iteration of potentially thousands of votes
@@ -111,10 +118,7 @@ export abstract class BasePollDetailComponent<V extends ViewBasePoll> extends Ba
                 filter(votes => !!votes.length)
             )
             .subscribe(() => {
-                // votes data can only be created when options are ready
-                if (this.optionsLoaded) {
-                    this.createVotesData();
-                }
+                this.createVotesData();
             });
     }
 
@@ -156,10 +160,6 @@ export abstract class BasePollDetailComponent<V extends ViewBasePoll> extends Ba
      */
     protected onPollLoaded(): void {}
 
-    protected onPollWithOptionsLoaded(): void {
-        this.createVotesData();
-    }
-
     protected onStateChanged(): void {}
 
     protected abstract hasPerms(): boolean;
@@ -195,15 +195,6 @@ export abstract class BasePollDetailComponent<V extends ViewBasePoll> extends Ba
     }
 
     /**
-     * This checks if the poll has votes.
-     */
-    private checkData(): void {
-        if (this.poll.stateHasVotes) {
-            setTimeout(() => this.initChartData());
-        }
-    }
-
-    /**
      * Helper-function to search for this poll and display data or create a new one.
      */
     private findComponentById(): void {
@@ -214,23 +205,12 @@ export abstract class BasePollDetailComponent<V extends ViewBasePoll> extends Ba
                     if (poll) {
                         this.poll = poll;
                         this.onPollLoaded();
-                        this.waitForOptions();
-                        this.checkData();
+                        this.createVotesData();
+                        this.initChartData();
+                        this.optionsLoaded.resolve();
                     }
                 })
             );
-        }
-    }
-
-    /**
-     * Waits until poll's options are loaded.
-     */
-    private waitForOptions(): void {
-        if (!this.poll.options || !this.poll.options.length) {
-            setTimeout(() => this.waitForOptions(), 1);
-        } else {
-            this.optionsLoaded = true;
-            this.onPollWithOptionsLoaded();
         }
     }
 }

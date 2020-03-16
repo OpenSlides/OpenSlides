@@ -6,12 +6,6 @@
         'bar action';
     grid-template-columns: auto min-content;
 
-    .mat-progress-bar-buffer {
-        // TODO theme
-        // background-color: mat-color($background, card) !important;
-        background-color: white !important;
-    }
-
     .message {
         grid-area: message;
     }

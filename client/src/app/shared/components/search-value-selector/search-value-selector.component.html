@@ -9,8 +9,10 @@
                         [removable]="true"
                         (removed)="removeItem(item.id)"
                         [disableRipple]="true"
-                        >{{ item.getTitle() }} <mat-icon matChipRemove>cancel</mat-icon></mat-chip
                     >
+                        {{ item.getTitle() }}
+                        <mat-icon matChipRemove>cancel</mat-icon>
+                    </mat-chip>
                 </mat-chip-list>
             </div>
             <div class="os-search-value-selector-chip-placeholder"></div>

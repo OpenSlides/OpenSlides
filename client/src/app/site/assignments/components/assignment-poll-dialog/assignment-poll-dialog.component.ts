@@ -8,7 +8,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 import { AssignmentPollMethod } from 'app/shared/models/assignments/assignment-poll';
-import { PollType } from 'app/shared/models/poll/base-poll';
+import { LOWEST_VOTE_VALUE, PollType } from 'app/shared/models/poll/base-poll';
 import { GeneralValueVerbose, VoteValue, VoteValueVerbose } from 'app/shared/models/poll/base-vote';
 import {
     AssignmentPollMethodVerbose,
@@ -168,30 +168,20 @@ export class AssignmentPollDialogComponent extends BasePollDialogComponent<ViewA
                     [option.user_id]: this.fb.group(
                         // for each user, create a form group with a control for each valid input (Y, N, A)
                         this.analogPollValues.mapToObject(value => ({
-                            [value]: ['', [Validators.min(-2)]]
+                            [value]: ['', [Validators.min(LOWEST_VOTE_VALUE)]]
                         }))
                     )
                 }))
             ),
-            amount_global_no: ['', [Validators.min(-2)]],
-            amount_global_abstain: ['', [Validators.min(-2)]],
+            amount_global_no: ['', [Validators.min(LOWEST_VOTE_VALUE)]],
+            amount_global_abstain: ['', [Validators.min(LOWEST_VOTE_VALUE)]],
             // insert all used global fields
             ...this.sumValues.mapToObject(sumValue => ({
-                [sumValue]: ['', [Validators.min(-2)]]
+                [sumValue]: ['', [Validators.min(LOWEST_VOTE_VALUE)]]
             }))
         });
         if (this.isAnalogPoll && this.pollData.poll) {
             this.updateDialogVoteForm(this.pollData);
         }
-    }
-
-    /**
-     * Sets a per-poll value
-     *
-     * @param value
-     * @param weight
-     */
-    public setSumValue(value: any /*SummaryPollKey*/, weight: string): void {
-        this.pollData[value] = parseFloat(weight);
     }
 }

@@ -31,6 +31,7 @@
 @import './app/site/motions/modules/motion-poll/motion-poll/motion-poll.component.scss-theme.scss';
 @import './app/site/motions/modules/motion-poll/motion-poll-detail/motion-poll-detail.component.scss-theme.scss';
 @import './app/site/assignments/components/assignment-poll-detail/assignment-poll-detail-component.scss-theme.scss';
+@import './app/shared/components/progress-snack-bar/progress-snack-bar.component.scss-theme.scss';
 
 /** fonts */
 @import './assets/styles/fonts.scss';
@@ -62,6 +63,7 @@ $narrow-spacing: (
     @include os-motion-poll-style($theme);
     @include os-motion-poll-detail-style($theme);
     @include os-assignment-poll-detail-style($theme);
+    @include os-progress-snack-bar-style($theme);
 }
 
 /** Load projector specific SCSS values */

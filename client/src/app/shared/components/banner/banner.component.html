@@ -15,7 +15,8 @@
     </ng-container>
     <ng-container *ngSwitchDefault>
         <a class="banner-link" [routerLink]="banner.link" [style.cursor]="banner.link ? 'pointer' : 'default'">
-            <mat-icon>{{ banner.icon }}</mat-icon> <span>{{ banner.text }}</span>
+            <mat-icon>{{ banner.icon }}</mat-icon>
+            <span>{{ banner.text }}</span>
             <div *ngIf="banner.subText">
                 {{ banner.subText | translate }}
             </div>

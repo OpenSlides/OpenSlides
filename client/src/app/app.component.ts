@@ -114,14 +114,6 @@ export class AppComponent {
             .subscribe(() => servertimeService.startScheduler());
     }
 
-    /**
-     * Function to alter the normal Array.toString - function
-     *
-     * Will add a whitespace after a comma and shorten the output to
-     * three strings.
-     *
-     * TODO: Should be renamed
-     */
     private overloadArrayFunctions(): void {
         Object.defineProperty(Array.prototype, 'toString', {
             value: function(): string {
@@ -153,7 +145,6 @@ export class AppComponent {
             enumerable: false
         });
 
-        // intersect
         Object.defineProperty(Array.prototype, 'intersect', {
             value: function<T>(other: T[]): T[] {
                 let a = this;
@@ -167,7 +158,6 @@ export class AppComponent {
             enumerable: false
         });
 
-        // mapToObject
         Object.defineProperty(Array.prototype, 'mapToObject', {
             value: function<T>(f: (item: T) => { [key: string]: any }): { [key: string]: any } {
                 return this.reduce((aggr, item) => {
@@ -188,18 +178,17 @@ export class AppComponent {
      * Adds some functions to Set.
      */
     private overloadSetFunctions(): void {
-        // equals
         Object.defineProperty(Set.prototype, 'equals', {
             value: function<T>(other: Set<T>): boolean {
-                const _difference = new Set(this);
+                const difference = new Set(this);
                 for (const elem of other) {
-                    if (_difference.has(elem)) {
-                        _difference.delete(elem);
+                    if (difference.has(elem)) {
+                        difference.delete(elem);
                     } else {
                         return false;
                     }
                 }
-                return !_difference.size;
+                return !difference.size;
             },
             enumerable: false
         });
