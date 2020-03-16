@@ -19,7 +19,7 @@ Example:
      * @throws ObjectNotFound
     do_it(data: MyRequest): void publishes MyEvent;
 
-    interface MyRequest {
+    Interface MyRequest {
         id: Id;
         text: string;
         some_other_value: number;
