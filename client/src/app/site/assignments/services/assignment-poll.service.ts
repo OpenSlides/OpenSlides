@@ -10,7 +10,7 @@ import {
     AssignmentPollMethod,
     AssignmentPollPercentBase
 } from 'app/shared/models/assignments/assignment-poll';
-import { MajorityMethod } from 'app/shared/models/poll/base-poll';
+import { MajorityMethod, VOTE_UNDOCUMENTED } from 'app/shared/models/poll/base-poll';
 import { PollData, PollService, PollTableData, VotingResult } from 'app/site/polls/services/poll.service';
 import { ViewAssignmentPoll } from '../models/view-assignment-poll';
 
@@ -77,17 +77,16 @@ export class AssignmentPollService extends PollService {
     }
 
     private getGlobalVoteKeys(poll: ViewAssignmentPoll): VotingResult[] {
-        // debugger;
         return [
             {
                 vote: 'amount_global_no',
                 showPercent: this.showPercentOfValidOrCast(poll),
-                hide: poll.amount_global_no === -2 || !poll.amount_global_no
+                hide: poll.amount_global_no === VOTE_UNDOCUMENTED || !poll.amount_global_no
             },
             {
                 vote: 'amount_global_abstain',
                 showPercent: this.showPercentOfValidOrCast(poll),
-                hide: poll.amount_global_abstain === -2 || !poll.amount_global_abstain
+                hide: poll.amount_global_abstain === VOTE_UNDOCUMENTED || !poll.amount_global_abstain
             }
         ];
     }

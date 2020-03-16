@@ -119,17 +119,14 @@ export class SearchValueSelectorComponent extends BaseFormControlComponent<Selec
      */
     private selectableItems: Selectable[];
 
-    /**
-     * Empty constructor
-     */
     public constructor(
         protected translate: TranslateService,
-        fb: FormBuilder,
+        formBuilder: FormBuilder,
         @Optional() @Self() public ngControl: NgControl,
-        fm: FocusMonitor,
+        focusMonitor: FocusMonitor,
         element: ElementRef<HTMLElement>
     ) {
-        super(fb, fm, element, ngControl);
+        super(formBuilder, focusMonitor, element, ngControl);
     }
 
     /**

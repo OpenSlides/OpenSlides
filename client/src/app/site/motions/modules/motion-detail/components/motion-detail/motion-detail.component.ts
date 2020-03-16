@@ -1628,7 +1628,6 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
     }
 
     public openDialog(): void {
-        // TODO: Could be simpler, requires a lot of refactoring
         const dialogData = {
             collectionString: ViewMotionPoll.COLLECTIONSTRING,
             motion_id: this.motion.id,

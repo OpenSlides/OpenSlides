@@ -14,18 +14,17 @@ import { PromptService } from 'app/core/ui-services/prompt.service';
 import { VotingService } from 'app/core/ui-services/voting.service';
 import { AssignmentPollMethod } from 'app/shared/models/assignments/assignment-poll';
 import { PollType } from 'app/shared/models/poll/base-poll';
+import { VoteValue } from 'app/shared/models/poll/base-vote';
 import { BasePollVoteComponent } from 'app/site/polls/components/base-poll-vote.component';
 import { ViewAssignmentPoll } from '../../models/view-assignment-poll';
 
 // TODO: Duplicate
 interface VoteActions {
-    vote: Vote;
+    vote: VoteValue;
     css: string;
     icon: string;
     label: string;
 }
-
-type Vote = 'Y' | 'N' | 'A';
 
 @Component({
     selector: 'os-assignment-poll-vote',
@@ -45,12 +44,12 @@ export class AssignmentPollVoteComponent extends BasePollVoteComponent<ViewAssig
         title: Title,
         protected translate: TranslateService,
         matSnackbar: MatSnackBar,
-        vmanager: VotingService,
         operator: OperatorService,
+        public vmanager: VotingService,
         private pollRepo: AssignmentPollRepositoryService,
         private promptService: PromptService
     ) {
-        super(title, translate, matSnackbar, vmanager, operator);
+        super(title, translate, matSnackbar, operator);
     }
 
     public ngOnInit(): void {
@@ -116,7 +115,7 @@ export class AssignmentPollVoteComponent extends BasePollVoteComponent<ViewAssig
         });
     }
 
-    public saveSingleVote(optionId: number, vote: Vote): void {
+    public saveSingleVote(optionId: number, vote: VoteValue): void {
         if (this.isGlobalOptionSelected()) {
             delete this.voteRequestData.global;
         }

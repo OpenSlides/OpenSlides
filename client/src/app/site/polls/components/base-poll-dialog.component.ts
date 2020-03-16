@@ -6,6 +6,7 @@ import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import { VOTE_UNDOCUMENTED } from 'app/shared/models/poll/base-poll';
 import { OneOfValidator } from 'app/shared/validators/one-of-validator';
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { PollFormComponent } from './poll-form/poll-form.component';
@@ -80,7 +81,9 @@ export abstract class BasePollDialogComponent<T extends ViewBasePoll> extends Ba
     }
 
     /**
-     * check recursively whether the given vote data object is empty, meaning all values would be '-2' when sent
+     * check recursively whether the given vote data object is empty, meaning all values would
+     * be VOTE_UNDOCUMENTED when sent
+     *
      * @param voteData the (partial) vote data
      */
     private isVoteDataEmpty(voteData: object): boolean {
@@ -91,7 +94,7 @@ export abstract class BasePollDialogComponent<T extends ViewBasePoll> extends Ba
 
     /**
      * iterates over the given data and returns a new object with all empty fields recursively
-     * replaced with '-2'
+     * replaced with VOTE_UNDOCUMENTED
      * @param voteData the (partial) data
      */
     private replaceEmptyValues(voteData: object, undo: boolean = false): object {
@@ -101,9 +104,9 @@ export abstract class BasePollDialogComponent<T extends ViewBasePoll> extends Ba
                 result[key] = this.replaceEmptyValues(voteData[key], undo);
             } else {
                 if (undo) {
-                    result[key] = voteData[key] === -2 ? null : voteData[key];
+                    result[key] = voteData[key] === VOTE_UNDOCUMENTED ? null : voteData[key];
                 } else {
-                    result[key] = !!voteData[key] ? voteData[key] : -2;
+                    result[key] = !!voteData[key] ? voteData[key] : VOTE_UNDOCUMENTED;
                 }
             }
         }
@@ -111,7 +114,9 @@ export abstract class BasePollDialogComponent<T extends ViewBasePoll> extends Ba
     }
 
     /**
-     * reverses the replacement of empty values by '-2'; replaces each '-2' with null
+     * reverses the replacement of empty values by VOTE_UNDOCUMENTED; replaces each
+     * VOTE_UNDOCUMENTED with null
+     *
      * @param voteData the vote data
      */
     protected undoReplaceEmptyValues(voteData: object): object {

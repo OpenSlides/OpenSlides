@@ -205,7 +205,6 @@ export class PollFormComponent<T extends ViewBasePoll> extends BaseViewComponent
     /**
      * Disable votes_amount form control if the poll type is anonymous
      * and the poll method is votes.
-     * TODO: Enabling this requires at least another layout and some rework
      */
     private setVotesAmountCtrl(): void {
         if (this.contentForm.get('type').value === PollType.Pseudoanonymous) {

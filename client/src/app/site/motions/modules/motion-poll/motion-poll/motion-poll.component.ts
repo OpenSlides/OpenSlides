@@ -4,6 +4,7 @@ import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import { OperatorService } from 'app/core/core-services/operator.service';
 import { MotionPollRepositoryService } from 'app/core/repositories/motions/motion-poll-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { VotingPrivacyWarningComponent } from 'app/shared/components/voting-privacy-warning/voting-privacy-warning.component';
@@ -14,7 +15,6 @@ import { MotionPollPdfService } from 'app/site/motions/services/motion-poll-pdf.
 import { MotionPollService } from 'app/site/motions/services/motion-poll.service';
 import { BasePollComponent } from 'app/site/polls/components/base-poll.component';
 import { PollService, PollTableData } from 'app/site/polls/services/poll.service';
-import { OperatorService } from 'app/core/core-services/operator.service';
 
 /**
  * Component to show a motion-poll.
@@ -25,10 +25,6 @@ import { OperatorService } from 'app/core/core-services/operator.service';
     styleUrls: ['./motion-poll.component.scss']
 })
 export class MotionPollComponent extends BasePollComponent<ViewMotionPoll> {
-    /**
-     * The dedicated `ViewMotionPoll`.
-     * TODO: shadows superclass `poll`. Maybe change when chart data is generated?
-     */
     @Input()
     public set poll(value: ViewMotionPoll) {
         this.initPoll(value);

@@ -18,7 +18,7 @@ export const AssignmentsAppConfig: AppConfig = {
         {
             model: Assignment,
             viewModel: ViewAssignment,
-            // searchOrder: 3, // TODO: enable, if there is a detail page and so on.
+            searchOrder: 3,
             repository: AssignmentRepositoryService
         },
         {

@@ -308,7 +308,6 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
      * Creates a new Poll
      */
     public openDialog(): void {
-        // TODO: That is not really a ViewObject
         const dialogData = {
             collectionString: ViewAssignmentPoll.COLLECTIONSTRING,
             assignment_id: this.assignment.id,

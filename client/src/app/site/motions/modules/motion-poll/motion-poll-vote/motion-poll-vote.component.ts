@@ -8,11 +8,12 @@ import { OperatorService } from 'app/core/core-services/operator.service';
 import { MotionPollRepositoryService } from 'app/core/repositories/motions/motion-poll-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { VotingService } from 'app/core/ui-services/voting.service';
+import { VoteValue } from 'app/shared/models/poll/base-vote';
 import { ViewMotionPoll } from 'app/site/motions/models/view-motion-poll';
 import { BasePollVoteComponent } from 'app/site/polls/components/base-poll-vote.component';
 
 interface VoteOption {
-    vote?: 'Y' | 'N' | 'A';
+    vote?: VoteValue;
     css?: string;
     icon?: string;
     label?: string;
@@ -50,18 +51,15 @@ export class MotionPollVoteComponent extends BasePollVoteComponent<ViewMotionPol
         title: Title,
         translate: TranslateService,
         matSnackbar: MatSnackBar,
-        vmanager: VotingService,
         operator: OperatorService,
+        public vmanager: VotingService,
         private pollRepo: MotionPollRepositoryService,
         private promptService: PromptService
     ) {
-        super(title, translate, matSnackbar, vmanager, operator);
+        super(title, translate, matSnackbar, operator);
     }
 
-    /**
-     * TODO: 'Y' | 'N' | 'A' should refer to some ENUM
-     */
-    public saveVote(vote: 'Y' | 'N' | 'A'): void {
+    public saveVote(vote: VoteValue): void {
         this.currentVote.vote = vote;
         const title = this.translate.instant('Submit selection now?');
         const content = this.translate.instant('Your decision cannot be changed afterwards.');
