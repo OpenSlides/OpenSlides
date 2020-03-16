@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -14,8 +14,8 @@ import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ViewMotion } from 'app/site/motions/models/view-motion';
 import { ViewMotionPoll } from 'app/site/motions/models/view-motion-poll';
 import { MotionPollDialogService } from 'app/site/motions/services/motion-poll-dialog.service';
+import { MotionPollService } from 'app/site/motions/services/motion-poll.service';
 import { BasePollDetailComponent } from 'app/site/polls/components/base-poll-detail.component';
-import { PollService } from 'app/site/polls/services/poll.service';
 
 @Component({
     selector: 'os-motion-poll-detail',
@@ -23,7 +23,7 @@ import { PollService } from 'app/site/polls/services/poll.service';
     styleUrls: ['./motion-poll-detail.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
-export class MotionPollDetailComponent extends BasePollDetailComponent<ViewMotionPoll> implements OnInit {
+export class MotionPollDetailComponent extends BasePollDetailComponent<ViewMotionPoll, MotionPollService> {
     public motion: ViewMotion;
     public columnDefinition: PblColumnDefinition[] = [
         {
@@ -49,7 +49,7 @@ export class MotionPollDetailComponent extends BasePollDetailComponent<ViewMotio
         groupRepo: GroupRepositoryService,
         prompt: PromptService,
         pollDialog: MotionPollDialogService,
-        pollService: PollService,
+        pollService: MotionPollService,
         votesRepo: MotionVoteRepositoryService,
         private operator: OperatorService,
         private router: Router

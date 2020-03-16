@@ -14,7 +14,7 @@ import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ChartType } from 'app/shared/components/charts/charts.component';
 import { VoteValue } from 'app/shared/models/poll/base-vote';
 import { BasePollDetailComponent } from 'app/site/polls/components/base-poll-detail.component';
-import { PollService, PollTableData, VotingResult } from 'app/site/polls/services/poll.service';
+import { PollTableData, VotingResult } from 'app/site/polls/services/poll.service';
 import { AssignmentPollDialogService } from '../../services/assignment-poll-dialog.service';
 import { AssignmentPollService } from '../../services/assignment-poll.service';
 import { ViewAssignmentPoll } from '../../models/view-assignment-poll';
@@ -25,7 +25,7 @@ import { ViewAssignmentPoll } from '../../models/view-assignment-poll';
     styleUrls: ['./assignment-poll-detail.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
-export class AssignmentPollDetailComponent extends BasePollDetailComponent<ViewAssignmentPoll> {
+export class AssignmentPollDetailComponent extends BasePollDetailComponent<ViewAssignmentPoll, AssignmentPollService> {
     public columnDefinitionSingleVotes: PblColumnDefinition[];
 
     public filterProps = ['user.getFullName'];
@@ -47,10 +47,9 @@ export class AssignmentPollDetailComponent extends BasePollDetailComponent<ViewA
         groupRepo: GroupRepositoryService,
         prompt: PromptService,
         pollDialog: AssignmentPollDialogService,
-        pollService: PollService,
+        protected pollService: AssignmentPollService,
         votesRepo: AssignmentVoteRepositoryService,
         private operator: OperatorService,
-        private assignmentPollService: AssignmentPollService,
         private router: Router
     ) {
         super(title, translate, matSnackbar, repo, route, groupRepo, prompt, pollDialog, pollService, votesRepo);
@@ -144,11 +143,11 @@ export class AssignmentPollDetailComponent extends BasePollDetailComponent<ViewA
         return true;
     }
 
-    protected onDeleted(): void {
-        this.router.navigate(['assignments', this.poll.assignment_id]);
+    public getTableData(): PollTableData[] {
+        return this.pollService.generateTableData(this.poll);
     }
 
-    public getTableData(): PollTableData[] {
-        return this.assignmentPollService.generateTableData(this.poll);
+    protected onDeleted(): void {
+        this.router.navigate(['assignments', this.poll.assignment_id]);
     }
 }

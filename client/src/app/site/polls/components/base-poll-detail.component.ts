@@ -27,7 +27,8 @@ export interface BaseVoteData {
     user?: ViewUser;
 }
 
-export abstract class BasePollDetailComponent<V extends ViewBasePoll> extends BaseViewComponent implements OnInit {
+export abstract class BasePollDetailComponent<V extends ViewBasePoll, S extends PollService> extends BaseViewComponent
+    implements OnInit {
     /**
      * All the groups of users.
      */
@@ -100,7 +101,7 @@ export abstract class BasePollDetailComponent<V extends ViewBasePoll> extends Ba
         protected groupRepo: GroupRepositoryService,
         protected promptService: PromptService,
         protected pollDialog: BasePollDialogService<V>,
-        protected pollService: PollService,
+        protected pollService: S,
         protected votesRepo: BaseRepository<ViewBaseVote, BaseVote, object>
     ) {
         super(title, translate, matSnackbar);

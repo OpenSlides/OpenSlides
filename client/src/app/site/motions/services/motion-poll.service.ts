@@ -7,6 +7,8 @@ import { MotionPollRepositoryService } from 'app/core/repositories/motions/motio
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { MotionPoll, MotionPollMethod } from 'app/shared/models/motions/motion-poll';
 import { MajorityMethod, PercentBase } from 'app/shared/models/poll/base-poll';
+import { ParsePollNumberPipe } from 'app/shared/pipes/parse-poll-number.pipe';
+import { PollKeyVerbosePipe } from 'app/shared/pipes/poll-key-verbose.pipe';
 import { PollData, PollService, PollTableData, VotingResult } from 'app/site/polls/services/poll.service';
 import { ViewMotionOption } from '../models/view-motion-option';
 import { ViewMotionPoll } from '../models/view-motion-poll';
@@ -43,10 +45,12 @@ export class MotionPollService extends PollService {
     public constructor(
         config: ConfigService,
         constants: ConstantsService,
-        private translate: TranslateService,
+        pollKeyVerbose: PollKeyVerbosePipe,
+        parsePollNumber: ParsePollNumberPipe,
+        protected translate: TranslateService,
         private pollRepo: MotionPollRepositoryService
     ) {
-        super(constants);
+        super(constants, translate, pollKeyVerbose, parsePollNumber);
         config
             .get<PercentBase>('motion_poll_default_100_percent_base')
             .subscribe(base => (this.defaultPercentBase = base));

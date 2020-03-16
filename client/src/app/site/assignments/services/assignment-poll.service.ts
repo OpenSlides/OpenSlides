@@ -11,6 +11,8 @@ import {
     AssignmentPollPercentBase
 } from 'app/shared/models/assignments/assignment-poll';
 import { MajorityMethod, VOTE_UNDOCUMENTED } from 'app/shared/models/poll/base-poll';
+import { ParsePollNumberPipe } from 'app/shared/pipes/parse-poll-number.pipe';
+import { PollKeyVerbosePipe } from 'app/shared/pipes/poll-key-verbose.pipe';
 import { PollData, PollService, PollTableData, VotingResult } from 'app/site/polls/services/poll.service';
 import { ViewAssignmentPoll } from '../models/view-assignment-poll';
 
@@ -41,10 +43,12 @@ export class AssignmentPollService extends PollService {
     public constructor(
         config: ConfigService,
         constants: ConstantsService,
-        private translate: TranslateService,
+        pollKeyVerbose: PollKeyVerbosePipe,
+        parsePollNumber: ParsePollNumberPipe,
+        protected translate: TranslateService,
         private pollRepo: AssignmentPollRepositoryService
     ) {
-        super(constants);
+        super(constants, translate, pollKeyVerbose, parsePollNumber);
         config
             .get<AssignmentPollPercentBase>('assignment_poll_default_100_percent_base')
             .subscribe(base => (this.defaultPercentBase = base));
