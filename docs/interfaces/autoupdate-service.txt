@@ -27,56 +27,52 @@ subscribe(request: ModelRequest): stream<ModelData>;
  * This is the main interface for requesting models in a structured, nested way.
  * The initial request targets some models as the root models of one collection
  * with all the same fields. This build a tree of dependencies, because the
- * value of some fields may be a GenericModelDescriptor again.
+ * value of some fields may be a GenericRelationFieldDescriptor again.
  *
- * For a description of `fields` and `collection`, see GenericModelDescriptor
- * and ModelDescriptor.
+ * For a description of `fields` and `collection`, see GenericRelationFieldDescriptor
+ * and RelationFieldDescriptor.
  *
  * `ids`: This is a list of ids for a collection, that should be provided. All
  * models, that the user can see, must be included in the response. The model
- * fields are handled according to `GenericModelDescriptor`.
+ * fields are handled according to `GenericRelationFieldDescriptor`.
  */
-Interface ModelRequest {
+Interface ModelRequest extends Fields {
     ids: ID[];
     collection: Collection;
+}
+
+Interface Fields {
     fields: {
-        [field: Field]: GenericModelDecriptor | null;
+        [field: Field]: GenericRelationFieldDescriptor
+            | RelationFieldDescriptor
+            | StructuredFieldDescriptor
+            | null;
     }
 }
 
 /**
  * For an overview, see `ModelRequest`.
  *
- * `fields`:
- * All fields are handled as prefixes being aware of strutured fields. If a
- * field is given, all fields with the given field as a prefix are included.
- * E.g. if the field is `my_field`, the fields `my_field`, `my_field_3` and
- * `my_fields` are included.
- *
+ * `fields` (inherited from `Fields`, see above):
  * Regardless of the value of a field, the restricted values are given in the
  * response (multiple for structured fields). If the restricted value is null,
  * the field must be included here.
  *
- * Note that the fields may be empty in the request or empty after restriction.
- * The client gets an empty model, but *gets* a model. Only if the model does
- * not exist or the user cannot see the model, there will be no model in the
- * response.
- *
  * If the value is not null, it is indicated, that there is a reference to
- * follow. There are two types of values:
- * - GenericModelDescriptor: The reference is a generic one. This means, that
+ * follow. There are three types of values:
+ * - GenericRelationFieldDescriptor: The reference is a generic one. This means, that
  *   the actual value from the model is a fqid or an array of fqids.
- * - ModelDescriptor: A collection is given, so it can be expected, that the
+ * - RelationFieldDescriptor: A collection is given, so it can be expected, that the
  *   actual model value is an id or an array of ids.
+ * - StructuredFieldDescriptor: The field is a template field and should be
+ *   handled in this way.
  */
-Interface GenericModelDecriptor {
-    fields: {
-        [field: Field]: GenericModelDecriptor | null;
-    }
+Interface GenericRelationFieldDecriptor extends Fields {
+    type: 'generic-relation' | 'generic-relation-list';
 }
 
 /**
- * For an overview, see `ModelRequest`.
+ * For an overview, see `ModelRequest`. For `fields`, see GenericRelationFieldDescriptor.
  *
  * `collection`:
  * This is the collection, the ids are associated to. The ids are provided with
@@ -85,9 +81,40 @@ Interface GenericModelDecriptor {
  * - If this interface is used in a field indication a relation, the id(s) are
  *   given by the actual model data.
  */
-Interface ModelDescriptor extends GenericModelDescriptor {
+Interface RelationFieldDescriptor extends Fields {
+    type: 'relation' | 'relation-list';
     collection: Collection;
 }
+
+/**
+ * Structured Fields: A field with `$` as a placeholder can be structured. The
+ * `$` is a template placeholder. The `template field` holds a list of strings
+ * with options to insert into `$`. All these fields are the `structured
+ * fields`. Example:
+ * B_$_ids is the template field. Its value may be `["1", "test"]`, so the
+ * structured fields are B_1_ids and B_test_ids.
+ *
+ * This interface indicates, that there are structured fields related to the
+ * given template field, that should be resolved. If one would give `B_$_ids:
+ * null` without using this interface, the response would be just the template
+ * field `B_$_ids` and no structured fields.
+ *
+ * For just resolving values, leav `values` out (hence the optional parameter).
+ *
+ * If the values of all structured fields are references, use the `values`
+ * parameter analog to the `fields` paramter as documented in
+ * `GenericRelationFieldDescriptor`.
+ */
+Interface StructuredFieldDecriptor extends fields {
+    type: 'template',
+    values?: {
+        [field: Field]: GenericRelationFieldDescriptor
+            | RelationFieldDescriptor
+            | StructuredFieldDescriptor
+            | null;
+    }
+}
+
 
 /**
  * This structure holds all data given by the called service structured by
