@@ -21,26 +21,24 @@ import { PollData } from 'app/site/polls/services/poll.service';
     name: 'pollPercentBase'
 })
 export class PollPercentBasePipe implements PipeTransform {
-    private decimalPlaces = 3;
-
     public constructor(
         private assignmentPollService: AssignmentPollService,
         private motionPollService: MotionPollService
     ) {}
 
     public transform(value: number, poll: PollData): string | null {
-        let totalByBase: number;
+        // logic handles over the pollService to avoid circular dependencies
+        let voteValueInPercent: string;
         if ((<any>poll).assignment) {
-            totalByBase = this.assignmentPollService.getPercentBase(poll);
+            voteValueInPercent = this.assignmentPollService.getVoteValueInPercent(value, poll);
         } else {
-            totalByBase = this.motionPollService.getPercentBase(poll);
+            voteValueInPercent = this.motionPollService.getVoteValueInPercent(value, poll);
         }
 
-        if (totalByBase && totalByBase > 0) {
-            const percentNumber = (value / totalByBase) * 100;
-            const result = percentNumber % 1 === 0 ? percentNumber : percentNumber.toFixed(this.decimalPlaces);
-            return `(${result} %)`;
+        if (voteValueInPercent) {
+            return `(${voteValueInPercent})`;
+        } else {
+            return null;
         }
-        return null;
     }
 }

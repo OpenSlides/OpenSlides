@@ -2,33 +2,13 @@
     <!-- Poll Infos -->
     <div class="poll-title-wrapper">
         <!-- Title Area -->
-        <div class="poll-title-area spacer-bottom-20">
+        <div class="poll-title-area">
             <!-- Title -->
             <span class="poll-title">
                 <a [routerLink]="pollLink">
                     {{ poll.title | translate }}
                 </a>
             </span>
-
-            <div class="italic">
-                <span *osPerms="'motions.can_manage_polls'; and: poll.type === 'pseudoanonymous'">
-                    <button mat-icon-button color="warn" (click)="openVotingWarning()">
-                        <mat-icon>
-                            warning
-                        </mat-icon>
-                    </button>
-                </span>
-
-                <!-- Subtitle -->
-                <span *ngIf="pollService.isElectronicVotingEnabled && poll.type !== 'analog'">
-                    {{ poll.typeVerbose | translate }} &middot;
-                </span>
-
-                <!-- State chip -->
-                <span>
-                    {{ poll.stateVerbose | translate }}
-                </span>
-            </div>
         </div>
 
         <!-- Dot Menu -->
@@ -36,6 +16,27 @@
             <button mat-icon-button [matMenuTriggerFor]="pollDetailMenu">
                 <mat-icon class="small-icon">more_horiz</mat-icon>
             </button>
+        </span>
+    </div>
+
+    <!-- Subtitle -->
+    <div class="italic spacer-bottom-20">
+        <span *osPerms="'motions.can_manage_polls'; and: poll.type === 'pseudoanonymous'">
+            <button mat-icon-button color="warn" (click)="openVotingWarning()">
+                <mat-icon>
+                    warning
+                </mat-icon>
+            </button>
+        </span>
+
+        <!-- Subtitle -->
+        <span *ngIf="pollService.isElectronicVotingEnabled && poll.type !== 'analog'">
+            {{ poll.typeVerbose | translate }} &middot;
+        </span>
+
+        <!-- State chip -->
+        <span>
+            {{ poll.stateVerbose | translate }}
         </span>
     </div>
 

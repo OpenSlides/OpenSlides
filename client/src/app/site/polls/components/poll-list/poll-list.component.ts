@@ -29,7 +29,7 @@ export class PollListComponent extends BaseListViewComponent<ViewBasePoll> {
         },
         {
             prop: 'state',
-            width: '70px'
+            width: 'auto'
         },
         {
             prop: 'votability',

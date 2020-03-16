@@ -9,10 +9,12 @@ import { TranslateService } from '@ngx-translate/core';
 import { AssignmentPollRepositoryService } from 'app/core/repositories/assignments/assignment-poll-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ChartType } from 'app/shared/components/charts/charts.component';
+import { VotingPrivacyWarningComponent } from 'app/shared/components/voting-privacy-warning/voting-privacy-warning.component';
+import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
 import { BasePollComponent } from 'app/site/polls/components/base-poll.component';
-import { PollService } from 'app/site/polls/services/poll.service';
 import { AssignmentPollDialogService } from '../../services/assignment-poll-dialog.service';
 import { AssignmentPollPdfService } from '../../services/assignment-poll-pdf.service';
+import { AssignmentPollService } from '../../services/assignment-poll.service';
 import { ViewAssignmentPoll } from '../../models/view-assignment-poll';
 
 /**
@@ -62,7 +64,7 @@ export class AssignmentPollComponent extends BasePollComponent<ViewAssignmentPol
         promptService: PromptService,
         repo: AssignmentPollRepositoryService,
         pollDialog: AssignmentPollDialogService,
-        public pollService: PollService,
+        private pollService: AssignmentPollService,
         private formBuilder: FormBuilder,
         private pdfService: AssignmentPollPdfService
     ) {
@@ -80,5 +82,9 @@ export class AssignmentPollComponent extends BasePollComponent<ViewAssignmentPol
      */
     public printBallot(): void {
         this.pdfService.printBallots(this.poll);
+    }
+
+    public openVotingWarning(): void {
+        this.dialog.open(VotingPrivacyWarningComponent, infoDialogSettings);
     }
 }

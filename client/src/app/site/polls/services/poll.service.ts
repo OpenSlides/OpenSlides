@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 
+import { TranslateService } from '@ngx-translate/core';
+
 import { _ } from 'app/core/translate/translation-marker';
 import { ChartData, ChartDate } from 'app/shared/components/charts/charts.component';
 import { AssignmentPollMethod } from 'app/shared/models/assignments/assignment-poll';
@@ -11,6 +13,8 @@ import {
     PollType,
     VOTE_UNDOCUMENTED
 } from 'app/shared/models/poll/base-poll';
+import { ParsePollNumberPipe } from 'app/shared/pipes/parse-poll-number.pipe';
+import { PollKeyVerbosePipe } from 'app/shared/pipes/poll-key-verbose.pipe';
 import { AssignmentPollMethodVerbose } from 'app/site/assignments/models/view-assignment-poll';
 import {
     MajorityMethodVerbose,
@@ -21,6 +25,7 @@ import {
 } from 'app/site/polls/models/view-base-poll';
 import { ConstantsService } from '../../../core/core-services/constants.service';
 
+const PERCENT_DECIMAL_PLACES = 3;
 /**
  * The possible keys of a poll object that represent numbers.
  * TODO Should be 'key of MotionPoll|AssinmentPoll if type of key is number'
@@ -178,10 +183,30 @@ export abstract class PollService {
      */
     public pollValues: CalculablePollKey[] = ['yes', 'no', 'abstain', 'votesvalid', 'votesinvalid', 'votescast'];
 
-    public constructor(constants: ConstantsService) {
+    public constructor(
+        constants: ConstantsService,
+        protected translate: TranslateService,
+        private pollKeyVerbose: PollKeyVerbosePipe,
+        private parsePollNumber: ParsePollNumberPipe
+    ) {
         constants
             .get<OpenSlidesSettings>('Settings')
             .subscribe(settings => (this.isElectronicVotingEnabled = settings.ENABLE_ELECTRONIC_VOTING));
+    }
+
+    /**
+     * return the total number of votes depending on the selected percent base
+     */
+    public abstract getPercentBase(poll: PollData): number;
+
+    public getVoteValueInPercent(value: number, poll: PollData): string | null {
+        const totalByBase = this.getPercentBase(poll);
+        if (totalByBase && totalByBase > 0) {
+            const percentNumber = (value / totalByBase) * 100;
+            const result = percentNumber % 1 === 0 ? percentNumber : percentNumber.toFixed(PERCENT_DECIMAL_PLACES);
+            return `${result} %`;
+        }
+        return null;
     }
 
     /**
@@ -268,8 +293,24 @@ export abstract class PollService {
     }
 
     public generateChartData(poll: PollData | ViewBasePoll): ChartData {
+        const fields = this.getPollDataFields(poll);
+
+        const data: ChartData = fields.map(key => {
+            return {
+                data: this.getResultFromPoll(poll, key),
+                label: key.toUpperCase(),
+                backgroundColor: PollColor[key],
+                hoverBackgroundColor: PollColor[key]
+            } as ChartDate;
+        });
+
+        return data;
+    }
+
+    private getPollDataFields(poll: PollData | ViewBasePoll): CalculablePollKey[] {
         let fields: CalculablePollKey[];
         let isAssignment: boolean;
+
         if (poll instanceof ViewBasePoll) {
             isAssignment = poll.pollClassType === 'assignment';
         } else {
@@ -294,16 +335,7 @@ export abstract class PollService {
             }
         }
 
-        const data: ChartData = fields.map(key => {
-            return {
-                data: this.getResultFromPoll(poll, key),
-                label: key.toUpperCase(),
-                backgroundColor: PollColor[key],
-                hoverBackgroundColor: PollColor[key]
-            } as ChartDate;
-        });
-
-        return data;
+        return fields;
     }
 
     /**
@@ -314,7 +346,17 @@ export abstract class PollService {
     }
 
     public getChartLabels(poll: PollData): string[] {
-        return poll.options.map(candidate => candidate.user.short_name);
+        const fields = this.getPollDataFields(poll);
+        return poll.options.map(option => {
+            const votingResults = fields.map(field => {
+                const votingKey = this.translate.instant(this.pollKeyVerbose.transform(field));
+                const resultValue = this.parsePollNumber.transform(option[field]);
+                const resultInPercent = this.getVoteValueInPercent(option[field], poll);
+                return `${votingKey} ${resultValue} (${resultInPercent})`;
+            });
+
+            return `${option.user.short_name} · ${votingResults.join(' · ')}`;
+        });
     }
 
     public isVoteDocumented(vote: number): boolean {
