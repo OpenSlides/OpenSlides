@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 
-import { _ } from 'app/core/translate/translation-marker';
 import { TranslateService } from '@ngx-translate/core';
 
+import { _ } from 'app/core/translate/translation-marker';
 import { ViewAssignmentPoll } from 'app/site/assignments/models/view-assignment-poll';
 import { ViewMotionPoll } from 'app/site/motions/models/view-motion-poll';
 import { ViewBasePoll } from 'app/site/polls/models/view-base-poll';
@@ -44,10 +44,7 @@ export class VotingBannerService {
         const banner =
             pollsToVote.length === 1
                 ? this.createBanner(this.getTextForPoll(pollsToVote[0]), pollsToVote[0].parentLink)
-                : this.createBanner(
-                      `${pollsToVote.length} ${this.translate.instant('open votes')}`,
-                      '/polls/'
-                  );
+                : this.createBanner(`${pollsToVote.length} ${this.translate.instant('open votes')}`, '/polls/');
         this.sliceBanner(banner);
     }
 

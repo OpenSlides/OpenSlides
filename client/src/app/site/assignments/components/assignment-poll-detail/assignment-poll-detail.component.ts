@@ -12,6 +12,7 @@ import { AssignmentVoteRepositoryService } from 'app/core/repositories/assignmen
 import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ChartType } from 'app/shared/components/charts/charts.component';
+import { VoteValue } from 'app/shared/models/poll/base-vote';
 import { BasePollDetailComponent } from 'app/site/polls/components/base-poll-detail.component';
 import { PollService, PollTableData, VotingResult } from 'app/site/polls/services/poll.service';
 import { AssignmentPollDialogService } from '../../services/assignment-poll-dialog.service';
@@ -110,7 +111,7 @@ export class AssignmentPollDetailComponent extends BasePollDetailComponent<ViewA
         this.isReady = true;
     }
 
-    private voteValueToLabel(vote: 'Y' | 'N' | 'A'): string {
+    private voteValueToLabel(vote: VoteValue): string {
         if (vote === 'Y') {
             return this.translate.instant('Yes');
         } else if (vote === 'N') {

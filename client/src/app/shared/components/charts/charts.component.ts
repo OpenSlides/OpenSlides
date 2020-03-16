@@ -76,7 +76,7 @@ export class ChartsComponent extends BaseViewComponent {
                     }
                 ];
                 this.circleColors = !!circleColors[0].backgroundColor.length ? circleColors : null;
-                this.checkChartType();
+                this.checkAndUpdateChartType();
                 this.cd.detectChanges();
             })
         );
@@ -87,7 +87,8 @@ export class ChartsComponent extends BaseViewComponent {
      */
     @Input()
     public set type(type: ChartType) {
-        this.checkChartType(type);
+        this._type = type;
+        this.checkAndUpdateChartType();
         this.cd.detectChanges();
     }
 
@@ -290,12 +291,10 @@ export class ChartsComponent extends BaseViewComponent {
         this.cd.detectChanges();
     }
 
-    private checkChartType(chartType?: ChartType): void {
-        let type = chartType || this._type;
-        if (type === 'stackedBar') {
+    private checkAndUpdateChartType(): void {
+        if (this._type === 'stackedBar') {
             this.setupBar();
-            type = 'horizontalBar';
+            this._type = 'horizontalBar';
         }
-        this._type = type;
     }
 }

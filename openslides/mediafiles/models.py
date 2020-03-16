@@ -7,7 +7,6 @@ from django.db import connections, models
 from jsonfield import JSONField
 
 from openslides.utils import logging
-
 from openslides.utils.manager import BaseManager
 
 from ..agenda.mixins import ListOfSpeakersMixin

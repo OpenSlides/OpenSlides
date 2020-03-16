@@ -5,7 +5,7 @@ import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 
 import { OperatorService } from 'app/core/core-services/operator.service';
-import { VotingError, VotingService } from 'app/core/ui-services/voting.service';
+import { VotingError } from 'app/core/ui-services/voting.service';
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { ViewUser } from 'app/site/users/models/view-user';
 import { ViewBasePoll } from '../models/view-base-poll';
@@ -20,9 +20,8 @@ export abstract class BasePollVoteComponent<V extends ViewBasePoll> extends Base
 
     public constructor(
         title: Title,
-        protected translate: TranslateService,
+        translate: TranslateService,
         matSnackbar: MatSnackBar,
-        public vmanager: VotingService,
         protected operator: OperatorService
     ) {
         super(title, translate, matSnackbar);
@@ -30,10 +29,7 @@ export abstract class BasePollVoteComponent<V extends ViewBasePoll> extends Base
         this.subscriptions.push(
             this.operator.getViewUserObservable().subscribe(user => {
                 this.user = user;
-                // this.updateVotes();
             })
         );
     }
-
-    // protected abstract updateVotes(): void;
 }
