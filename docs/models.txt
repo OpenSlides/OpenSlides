@@ -1,25 +1,700 @@
 Types:
-    Nativ: null, string, number, JSON
-    Fqid: Strukturierter string
-    HTML: string mit HTML Inhalt
-    <T>[]: Array von Typ T
-    <modellname>: number (ID) zu dem Modell
-    float: string mit iso-gemäßer Formatierung eines floats
-    decimal(X): Decimal values represented as a string with X decimal places
-    datetime: Datetime as a unix timestamp
-    // Why a number? This enables queries in the DB. And we do not
-    // need more precision than 1 second.
+    - nativ datatypes: string, number, boolean, JSON
+    - HTML: string with HTML content
+    - float: numbers that are expected to be non-integer. Formatted as in rfc7159.
+    - decimal(X): Decimal values represented as a string with X decimal places
+    - datetime: Datetime as a unix timestamp. Why a number? This enables queries
+      in the DB. And we do not need more precision than 1 second.
+Relations:
+    - <model>/<field>: This is reference to model. The reverse relation
+      field is <field>. E.g. `category_id: category/motion_ids` in a motion links
+      to one category. The reverse field is `motion_ids` which may be `motion_ids:
+      (motion/category_id)[]` indicating, that there are many motion ids.
+    - <T>[]: This indicated multiple ids. For an example see above.
+    - */<field>: This is a generic relation (analog: `(*/<field>)[]` a generic
+      list relation) with fqids as values.
+    - if no field is specified, there is no reverse relation.
+Structured Fields:
+    - There are template fields (See autoupdate service interface) with a `$` as
+      the placeholder. In this document, angle brackets are followed by the
+      dollar sign including the meaning of the template. E.g.
+      group_$<meeting_id>_ids: (group/user_ids)[];
+      says, that the template are meeting ids and each structured field is a
+      multi-relation to groups and the reverse relation field for groups is
+      user_ids.
 
-Note to structured fields: Fields with `some_field_<some_variable>` do have
-values for `<some_variable>` that fits into the format of a field. E.g.
-`amendment_paragraph_3`. Note that it might be possible that no kind of
-this field exists in a model.
+Interface organisation {
+    id: number;
+    name: string;
+    description: HTML;
+
+    // Configs:
+    legal_notice: string;
+    privacy_policy: string;
+    login_text: string;
+    theme: string;
+    custom_translations: JSON;
+
+    committee_ids: (committee/origansation_id)[];
+    role_ids: (role/organsiation_id)[];
+    resource_ids: (resource/organisation_id)[];
+}
+
+Interface user {
+    id: number;
+    username: string;
+    title: string;
+    first_name: string;
+    last_name: string;
+    is_active: boolean;
+    is_committee: boolean;
+    // TODO: auth
+    default_password: string;
+    about_me: HTML;
+    gender: string,
+    comment: HTML;
+    number: string;
+    structure_level: string;
+    email: string;
+    last_email_send: string;
+
+    role_id: role/user_ids; // Attention: prevent impelenting a "default-role" or let a
+    // user create such a role! This would cause the user_ids-array for this
+    // role to explode in size. If a user has no role, it should be handles as
+    // the user has no permission in the organisation and is a "normal" delegate
+    // there. Just a few users (expected <100) should even get a role and all
+    // other don't.
+
+    // meeting, committee, ...
+    is_present_in_meeting_ids: (meeting/present_user_ids)[];
+    meeting_id: meeting/temporary_user_ids;  // Temporary users
+    guest_meeting_ids: (meeting/guest_ids)[];  // guests in meetings
+    committee_as_member_ids: (committee/member_ids)[];
+    committee_as_manager_ids: (committee/manager_ids)[];
+
+    // Projection
+    projection_ids: (projection/element_id)[];
+    current_projector_ids: (projector/current_element_ids)[]
+
+    // All foreign keys are meeting-specific:
+    // - Keys are smaller (Space is in O(n^2) for n keys 
+    //   in the relation), so this saves storagespace
+    // - This makes quering things like this possible:
+    //   "Give me all groups for User X in Meeting Y" without
+    //   the need to get all groups and filter them for the meeting
+    group_$<meeting_id>_ids: (group/user_ids)[];
+    speaker_$<meeting_id>_ids: (speaker/user_id)[];
+    personal_note_$<meeting_id>_ids: (personal_note/user_id)[];
+    supported_motion_$<meeting_id>_ids: (motion/supporter_ids)[];
+    submitted_motion_$<meeting_id>_ids: (motion_submitter/user_id)[];
+    motion_poll_voted_$<meeting_id>_ids: (motion_poll/voted_ids)[];
+    motion_vote_$<meeting_id>_ids: (motion_vote/user_id)[];
+    assignment_candidate_$<meeting_id>_ids: (assignment_candidate/user_id)[];
+    assignment_poll_voted_$<meeting_id>_ids: (assignment_poll/voted_ids)[];
+    assignment_option_$<meeting_id>_ids: (assignment_option/user_ids)[];
+    assignment_vote_$<meeting_id>_ids: (assignment_vote/user_id)[];
+}
+
+Interface role {
+    id: number;
+    name: string;
+    permissions: string[];
+    is_superadmin_role: boolean;
+
+    organisation_id: organisation/role_ids;
+    user_ids: (user/role_id)[];
+}
+
+// New: Resource
+// Resources are meeting-specific or organsation wide.
+// For organisation-resources, no permission chacks are done (event the user
+// must not be logged in). If a meeting-resource is requested, it is checked, if
+// the user can see the meeting (Anonymous, guest, member).
+// A resource has a token, e.g. `web_header` or `pdf_font_italic`, so the client
+// knowns, where to put the resource. They are delivered by the mediafile server
+// with the URL `<media-prefix>/resource/<id>`
+Interface resource {
+    id: number;
+    token: string;
+    filesize: number;
+    mimetype: string;
+
+    organisation_id: organisation/resource_ids;
+}
+
+Interface committee {
+    id: number;
+    name: string;
+    description: HTML;
+
+    meeting_ids: (meeting/committee_id)[];
+    default_meting_id: meeting/default_meeting_for_committee_id;
+    member_ids: (user/committee_as_memeber_ids)[];
+    manager_ids: (user/committee_as_manager_ids)[];
+    forward_to_committee_ids: (committee/receive_forwardings_from_committee_ids)[];
+    receive_forwardings_from_committee_ids: (committee/forward_to_committee_ids)[];
+    organisation_id: organisation/committee_ids;
+}
+
+Interface meeting {
+    id: number;
+    url_name: string; // For unique urls.
+    is_template: boolean; // Unique within a committee
+    enable_anonymous: boolean;
+
+    // Old "general_*" configs
+    name: string;
+    description: string;
+    location: string;
+    start_time: datetime;
+    end_time: datetime;
+    welcome_title: string;
+    welcome_text: HTML;
+    custom_translations: JSON;
+
+    // Projector
+    projector_default_countdown_time: number;
+    projector_countdown_warning_time: number;
+
+    // Exports
+    export_csv_encoding: string;
+    export_csv_separator: string;
+    export_pdf_pagenumber_alignment: string;
+    export pdf_fontsize: number;
+    export_pdf_pagesize: string;
+
+    // Agenda
+    agenda_show_subtitles: boolean;
+    agenda_enable_numbering: boolean;
+    agenda_number_prefix: string;
+    agenda_numeral_system: string;
+    agenda_item_creation: string;
+    agenda_new_items_default_visibility: number;
+    agenda_show_internal_items_on_projector: boolean;
+
+    // List of speakers
+    list_of_speakers_amount_last_on_projector: number;
+    list_of_speakers_amount_next_on_projector: boolean;
+    list_of_speakers_couple_countdown: boolean;
+    list_of_speakers_show_amount_of_speakers_on_slide: boolean;
+    list_of_speakers_present_users_only: boolean;
+
+    // Motions
+    motions_default_workflow_id: workflow/default_workflow_meeting_id;
+    motions_default_statute_amendments_workflow_id: workflow/default_statute_amendments_meeting_id;
+    motions_preamble: string;
+    motions_default_line_numbering: string;
+    motions_line_length: number;
+    motions_reason_required: boolean;
+    motions_enable_text_on_projector: boolean;
+    motions_enable_reason_on_projector: boolean;
+    motions_enable_sidebox_on_projector: boolean;
+    motions_enable_recommendation_on_projector: boolean;
+    motions_show_referring_motions: boolean;
+    motions_show_sequential_number: boolean;
+    motions_recommendations_by: string;
+    motions_statute_recommendations_by: string;
+    motions_recommendation_text_mode: string;
+    motions_default_sorting: string;
+    motions_identifier_type: string;
+    motions_identifier_min_digits: number;
+    motions_identifier_with_blank: boolean;
+    motions_statutes_enabled: boolean;
+    motions_amendments_enabled: boolean;
+    motions_amendments_in_main_list: boolean;
+    motions_amendments_of_amendments: boolean;
+    motions_amendments_prefix: string;
+    motions_amendments_text_mode: string;
+    motions_amendments_multiple_paragraphs: boolean;
+    motions_supporters_min_amount: number;
+    motions_supporters_enable_autoremove: boolean;
+    motions_export_title: string;
+    motions_export_preamble: string;
+    motions_export_submitter_recommendation: boolean;
+    motions_export_follow_recommendation: boolean;
+
+    motion_poll_ballot_paper_selection: string;
+    motion_poll_ballot_paper_number: number,
+    motion_poll_default_100_percent_base: string;
+    motion_poll_default_majority_method:string;
+    motion_poll_default_groups: (group/used_as_motion_poll_default)[];
+
+    // Users
+    users_sort_by: string;
+    users_enable_presence_view: boolean;
+    users_pdf_welcometitle: string;
+    users_pdf_welcometext: string;
+    users_pdf_url: string;
+    users_pdf_wlan_ssid: string;
+    users_pdf_wlan_password: string;
+    users_pdf_wlan_encryption": string;
+    users_email_sender: string;
+    users_email_replyto: string;
+    users_email_subject: string;
+    users_email_body: string;
+
+    // Assignments
+    assignemnts_export_title: string;
+    assignments_export_preamble: string;
+    assignment_poll_add_candidates_to_list_of_speakers: boolean;
+    assignment_poll_sort_poll_result_by_votes: boolean;
+    assignment_poll_default_method: string;
+    assignment_poll_default_100_percent_base: string;
+    assignment_poll_default_majority_method: string;
+    assignment_poll_default_groups: (group/used_as_assignment_poll_default)[];
+
+    projector_ids: (projector/meeting_id)[];
+    projectiondefault_ids: (projectiondefault/meeting_id)[];
+    projector_message_ids: (projector_message/meeting_id)[];
+    projector_countdown_ids: (projector_countdown/meeting_id)[];
+    tag_ids: (tag/meeting_id)[];
+    agenda_item_ids: (agenda_item/meeting_id)[];
+    list_of_speakers_ids: (list_of_speakers/meeting_id)[];
+    topic_ids: (topic/meeting_id)[];
+    group_ids: (group/meeting_id)[];
+    mediafile_ids: (mediafile/meeting_id)[];
+    motion_ids: (motion/meeting_id)[];
+    motion_comment_section_ids: (motion_comment_section/meeting_id)[];
+    motion_category_ids: (motion_category/meeting_id)[];
+    motion_block_ids: (motion_block/meeting_id)[];
+    motion_workflow_ids: (motion_workflow/meeting_id)[];
+    motion_statute_paragraph_ids: (motion_statute_paragraph/meetin_id)[];
+    motion_poll_ids: (motion_poll/meeting_id)[];
+    assignment_ids: (assignment/meeting_id)[];
+    assignment_poll_ids: (assignment_poll/meeting_id)[];
+
+    // No relations to a meeting:
+    // user; OK, because not meeting-specific
+    // personal_note
+    // projection
+    // speaker
+    // motion_option
+    // motion_vote
+    // motion_comment
+    // motion_submitter
+    // motion_change_recommendation
+    // motion_state
+    // assignment_candidate
+    // assignment_option
+    // assignment_vote
+
+    // Logos and Fonts
+    logo_$<token>: mediafile/logo_$<token>;
+    font_$<token>: mediafile/font_$<token>;
+    // Examples:
+    // logo_web_header: Mediafile;
+    // font_italic_pdf: Mediafile;
+    // The client can define these resources. There is no need
+    // to have whitelist/blacklist on the server. The tokens must
+    // be checked: They must match `[a-z]([a-z_]*[a-z])?` and must
+    // not be longer than 32 characters.
+
+    // Other relations
+    committee_id: committee/meeting_ids;
+    default_meeting_for_committee_id: committee/default_meeting_id;
+    present_user_ids: (user/is_present_in_meeting_ids)[];
+    temorary_user_ids: (user/meeting_id)[];
+    guest_ids: (user/guest_meeting_ids)[];
+    reference_projector_id: projector/used_as_reference_projector_meeting_id;
+}
+
+Interface group {
+    id: number;
+    name: string;
+    is_superadmin_group: boolean;
+    is_default_group: boolean;
+    permissions: string[];
+
+    user_ids: (user/group_$<meeting_id>_ids)[];
+    mediafile_access_group_ids: (mediafile/access_group_ids)[];
+    read_comment_section_ids: (motion_comment_section/read_group_ids)[];
+    write_comment_section_ids: (motion_comment_section/write_group_ids)[];
+    motion_poll_ids: (motion_poll/entitled_group_ids)[];
+    assignment_poll_ids: (assignment_poll/entitled_group_ids)[];
+    used_as_motion_poll_default: meeting/motion_poll_default_groups;
+    used_as_assignment_poll_default: meeting/assignment_poll_default_groups;
+    meeting_id: meeting/group_ids;
+}
+
+Interface personal_note {
+    id: number;
+    note: HTML;
+    star: boolean;
+
+    user_id: user/personal_note_$<meeting_id>_ids;
+    content_object_id: */personal_note_ids;
+}
+
+Interface tag {
+    id: number;
+    name: string;
+
+    tagged_ids: (*/tag_ids)[];
+    meeting_id: meeting/tag_ids;
+}
+
+Interface agenda_item {
+    id: number;
+    item_number: string;
+    comment: string,
+    closed: boolean,
+    type: number,
+    is_internal: boolean;
+    is_hidden: boolean;
+    duration: number; // in seconds
+    weight: number;
+    level: number; // calculated.
+
+    content_object_id: */agenda_item_id;
+    parent_id: agenda_item/children_ids;
+    children_ids: (agenda_item/parent_id)[];
+    projection_ids: (projection/element_id)[];
+    current_projector_ids: (projector/current_element_ids)[]
+    meeting_id: meeting/agenda_item_ids;
+}
+
+Interface list_of_speakers {
+    id: number;
+    closed: boolean;
+
+    content_object_id: */list_of_speakers_id;
+    speaker_ids: (speaker/list_of_speakers_id)[];
+    projection_ids: (projection/element_id)[];
+    current_projector_ids: (projector/current_element_ids)[]
+    meeting_id: meeting/list_of_speakers_ids;
+}
+
+Interface speaker {
+    id: number;
+    begin_time: datetime;
+    end_time: datetime;
+    weight: number;
+    marked: boolean;
+
+    list_of_speakers_id: list_of_speakers/speaker_ids;
+    user_id: user/speaker_$<meeting_id>_ids;
+}
+
+Interface topic {
+    id: number;
+    title: string;
+    text: HTML;
+
+    attachments_id: (mediafile/attachement_ids)[];
+    agenda_item_id: agenda_item/content_object_id;
+    list_of_speakers_id: list_of_speakers/content_object_id;
+    tag_ids: (tag/tagged_ids)[];
+    meeting_id: meeting/topic_ids;
+}
+
+Interface motion {
+    id: number;
+    number: string;
+    sequential_number: number;
+    title: string;
+    text: HTML;
+    amendment_paragraph_$<paragraph_number>: HTML;
+    modified_final_version: HTML;
+    reason: HTML;
+    category_weight: number;
+    state_extension: string;
+    recommendation_extension: string;
+    sort_weight: number;
+    created: string;
+    last_modified: string;
+
+    parent_id: motion/children_ids;
+    children_ids: (motion/parent_id)[];
+    sort_parent_id: motion/sort_children_ids;
+    sort_children_ids: (motion/parent_id)[];
+    origin_id: motion/derived_motion_ids; // Note: The related motions may not be in the same meeting
+    derived_motion_ids: (motion/origin_id)[]; // Note: The related motions may not be in the same meeting
+    state_id: motion_state/motion_ids;
+    workflow_id: motion_workflow/motion_ids;
+    recommendation_id: motion_state/motion_recommendation_ids;
+    category_id: category/motion_ids;
+    motion_block_id: motion_block/motion_ids;
+    submitter_ids: (motion_submitter/motion_id)[];
+    supporter_ids: (user/supported_motion_$<meeting_id>_ids)[];
+    poll_ids: (motion_poll/motion_id)[];
+    change_recommendation_ids: (motion_change_recommendation/motion_id)[];
+    statute_paragraph_id: motion_statute_paragraph/motion_ids;
+    comment_ids: (motion_comment/motion_id)[];
+    agenda_item_id: agenda_item/content_object_id;
+    list_of_speakers_id: list_of_speakers/content_object_id;
+    tag_ids: (tag/tagged_ids)[];
+    attachment_ids: (mediafile/attachment_ids)[];
+    projection_ids: (projection/element_id)[];
+    current_projector_ids: (projector/current_element_ids)[]
+    personal_note_ids: (personal_note/content_object_id)[];
+    meeting_id: meeting/motion_ids;
+}
+
+Interface motion_submitter {
+    id: number;
+    weight: number;
+
+    user_id: (user/submitted_motion_$<meeting_id>_ids)[];
+    motion_id: motion/submitter_ids;
+}
+
+Interface motion_comment {
+    id: number;
+    comment: HTML;
+
+    motion_id: motion/comment_ids;
+    section_id: motion_comment_section/comment_ids;
+}
+
+Inteface motion_comment_section {
+    id: number;
+    name: string;
+    weight: number;
+
+    comment_ids: (motion_comment/section_id)[];
+    read_group_ids: (group/read_comment_section_ids)[];
+    write_group_ids: (group/write_comment_section_ids)[];
+    meeting_id: meeting/motion_comment_section_ids;
+}
+
+Interface motion_category {
+    id: number;
+    name: string;
+    prefix: string;
+    weight: number;
+    level: number;
+
+    parent_id: motion_category/children_ids;
+    children_ids: (motion_category/parent_id)[];
+    motion_ids: (motion/category_id)[];
+    meeting_id: meeting/category_ids;
+}
+
+Interface motion_block {
+    id: number;
+    title: string;
+    internal: boolean;
+
+    motion_ids: (motion/motion_block_id)[];
+    agenda_item_id: agenda_item/content_object_id;
+    list_of_speakers_id: list_of_speakers/content_object_id;
+    projection_ids: (projection/element_id)[];
+    current_projector_ids: (projector/current_element_ids)[]
+    meeting_id: meeting/motion_block_ids;
+}
+
+Interface motion_change_recommendation {
+    id: number;
+    rejected: boolean;
+    internal: boolean;
+    type: number;
+    other_description: string;
+    line_from: number;
+    line_to: number;
+    text: HTML;
+    creation_time: datetime;
+
+    motion_id: motion/change_recommendation_ids;
+}
+
+Interface motion_state {
+    id: number;
+    name: string;
+    recommendation_label: string;
+    css_class: string;
+    restrictions: string[],
+    allow_support: boolean;
+    allow_create_poll: boolean;
+    allow_submitter_edit: boolean;
+    set_number: boolean;
+    show_state_extension_field: boolean;
+    merge_amendment_into_final: number;
+    show_recommendation_extension_field: boolean;
+
+    next_state_ids: (motion_state/previous_state_ids)[];
+    previous_state_ids: (motion_state/next_state_ids)[];
+    motion_ids: (motion/state_id)[];
+    motion_recommendation_ids: (motion/recommendation_id)[];
+    workflow_id: motion_workflow/state_ids;
+    first_state_of_workflow_id: motion_workflow/first_state_id;
+}
+
+Interface motion_workflow {
+    id: number;
+    name: string;
+
+    state_ids: (motion_state/workflow_id)[];
+    first_state_id: motion_state/first_state_of_workflow_id;
+    motion_ids: (motion/workflow_id)[];
+    default_workflow_meeting_id: meeting/motions_default_workflow_id;
+    default_statute_amendments_meeting_id: meeting/motions_default_statute_amendments_workflow_id;
+    meeting_id: meeting/motion_workflow_ids;
+}
+
+Interface motion_statute_paragraph {
+    id: number;
+    title: string;
+    text: HTML;
+    weight: number;
+
+    motion_ids: (motion/statute_paragraph_id)[];
+    meeting_id: meeting/motion_statute_paragraph_ids;
+}
+
+Interface motion_poll {
+    id: number;
+    pollmethod: string;
+    state: number;
+    type: string;
+    title: string;
+    onehundred_percent_base: string;
+    majority_method: string;
+    votesvalid: decimal(6);
+    votesinvalid: decimal(6);
+    votescast: decimal(6);
+    user_has_voted: boolean; // This is user specific and set during restriction
+
+    motion_id: motion/poll_ids;
+    option_ids: (motion_option/poll_id)[];
+    voted_ids: (user/motion_poll_voted_$<meeting_id>_ids)[];
+    entitled_group_ids: (group/motion_poll_ids)[];
+    projection_ids: (projection/element_id)[];
+    current_projector_ids: (projector/current_element_ids)[]
+    meeting_id: meeting/motion_poll_ids;
+}
+
+Interface motion_option {
+    id: number;
+    yes: decimal(6);
+    no: decimal(6);
+    abstain: decimal(6);
+
+    poll_id: motion_poll/option_ids;
+    vote_ids: (motion_vote/option_id)[];
+}
+
+Interface motion_vote {
+    id: number;
+    weight: decimal(6);
+    value: string;
+
+    option_id: motion_option/vote_ids;
+    user_id: user/motion_vote_$<meeting_id>_ids;
+}
+
+Interface assignment {
+    id: number;
+    title: string;
+    description: HTML;
+    open_posts: number;
+    phase: number;
+    default_poll_description: string;
+    number_poll_candidates: boolean;
+
+    assignment_candidate_ids: (assignment_candidate/assignment_id)[];
+    poll_ids: (assignment_poll/assignment_id)[];
+    agenda_item_id: agenda_item/content_object_id;
+    list_of_speakers_id: list_of_speakers/content_object_id;
+    tag_ids: (tag/tagged_ids)[];
+    attachment_ids: (mediafile/attachment_ids)[];
+    projection_ids: (projection/element_id)[];
+    current_projector_ids: (projector/current_element_ids)[]
+    meeting_id: meeting/assignment_ids;
+}
+
+Inteface assignment_candidate {
+    id: number;
+    weight: number;
+
+    assignment_id: assignment/assignment_candidate_ids;
+    user_id: user/assignment_candidate_$<meeting_id>_ids;
+}
+
+Interface assignment_poll {
+    id: number;
+    description: string;
+    pollmethod: string;
+    votes_amount: number;
+    allow_multiple_votes_per_candidate: boolean;
+    global_abstain: boolean;
+    global_no: boolean;
+    amount_global_abstain: decimal(6);
+    amount_global_no: decimal(6);
+    state: number;
+    title: string;
+    type: string;
+    onehundred_percent_base: string;
+    majority_method: string;
+    votescast: decimal(6);
+    votesinvalid: decimal(6);
+    votesvalid: decimal(6);
+    user_has_voted: boolean; // This is user specific and set during restriction
+
+    assignment_id: assignment/poll_ids;
+    voted_ids: (user/assignment_poll_voted_$<meeting_id>_ids)[];
+    entitled_group_ids: (group/assignment_poll_ids)[];
+    option_ids: (assignment_option/poll_id)[];
+    projection_ids: (projection/element_id)[];
+    current_projector_ids: (projector/current_element_ids)[]
+    meeting_id: meeting/assignment_poll_ids;
+}
+
+Interface assignment_option {
+    id: number;
+    yes: decimal(6);
+    no: decimal(6);
+    abstain: decimal(6);
+    weight: number;
+
+    poll_id: assignment_poll/option_ids;
+    user_id: user/assignment_option_$<meeting_id>_ids;
+    vote_ids: (assignment_vote/option_id)[];
+}
+
+Interface assignment_vote {
+    id: number;
+    value: string;
+    weight: decimal(6);
+
+    option_id: assignment_option/vote_ids;
+    user_id: user/assignment_vote_$<meeting_id>_ids;
+}
+
+// Mediafiles are delivered by the mediafile server with the URL
+// `<media-prefix>/media/<meeting_id>/path`
+Interface mediafile { 
+    id: number;
+    title: string;
+    is_directory: boolean;
+    filesize: number; // Note: in bytes, not the human readable format anymore
+    filename: string; // Note: The uploaded filename. Filename and parent_id
+    // must be unique as well as title and parent_id must be unique.
+    mimetype: string;
+    pdf_information: JSON;
+    create_timestamp: datetime;
+    path: string; // Note: calcuated
+    inherited_access_group_ids: boolean | number[]; // Note: calculated and no
+    // reverse-relation for the group ids.
+
+    access_group_ids: (group/mediafile_access_group_ids)[];
+    parent_id: mediafile/children_ids;
+    children_ids: (mediafile/parent_id)[];
+    list_of_speakers_id: list_of_speakers/content_object_id;
+    projection_ids: (projection/element_id)[];
+    current_projector_ids: (projector/current_element_ids)[]
+    attachment_ids: (*/attachment_ids)[];
+    meeting_id: meeting/mediafile_ids;
+
+    // Backreferences for meetings, if a mediafile is used as a special resource
+    logo_$<token>: meeting/logo_$<token>;
+    font_$<token>: meeting/font_$<token>;
+}
 
 Interface projector {
     id: number;
+    name: string;
     scale: number;
     scroll: number;
-    name: string;
     width: number;
     aspect_ratio_numerator: number;
     aspect_ratio_denominator: number;
@@ -34,44 +709,49 @@ Interface projector {
     show_title: boolean;
     show_logo: boolean
 
-    element: projection;
-    element_fqid: Fqid;
-    elements_preview: projection[];
-    elements_history: projection[];
-    reference_projector_id: projector;
+    current_projection_ids: (projection/current_projector_ids)[];
+    // A relation to the currently projected elements to get a direct link, if
+    // the element is projected.
+    current_element_ids: (*/projector_ids)[];
+    elements_preview: (projection/projector_preview_ids)[];
+    elements_history: (projection/projector_history_ids)[];
+    used_as_reference_projector_meeting_id: meeting/reference_projector_id;
     projectiondefault_ids: projectiondefault[];
-    meeting_id: meeting;
+    meeting_id: meeting/projector_ids;
 }
+
+// A projection is a M2M model between an element that is assigned to a
+// projector. This element can either be the current one projected, in the
+// preview, or in the history, but not more than one once. A projection is
+// projector-specific, meaning that once a projection is created for a projector
+// and element, these references will not change.
 Interface projection {
     id: number;
-    projector_id: projector;
-    projector_history_ids: projector;
-    projector_preview_id: projector;
-    element: Fqid;
+    current_projector_id: projector/current_projection_ids;
+    projector_history_id: projector/elements_preview;
+    projector_preview_id: projector/elements_history;
+    element_id: */projection_ids;
     options: JSON;
 }
+
 Interface projectiondefault {
     id: number;
     name: string;
     display_name: string;
 
-    projector_id: projector;
-    meeting_id: meeting;
+    projector_id: projector/projectiondefault_ids;
+    meeting_id: meeting/projectiondefault_ids;
 }
-Interface tag {
-    id: number;
-    name: string;
 
-    tagged_ids: Fqid[];
-    meeting_id: meeting;
-}
 Interface projector_message {
     id: number;
     message: HTML;
 
-    projection_id: projection[];
-    meeting_id: meeting;
+    projection_ids: (projection/element_id)[];
+    current_projector_ids: (projector/current_element_ids)[]
+    meeting_id: meeting/projector_message_ids;
 }
+
 Interface projector_countdown {
     id: number;
     title: string;
@@ -80,577 +760,7 @@ Interface projector_countdown {
     countdown_time: number; // float?
     running: boolean;
 
-    projection_id: projection[];
-    meeting_id: meeting;
-}
-Interface agenda_item {
-    id: number;
-    item_number: string;
-    comment: string,
-    closed: boolean,
-    type: number,
-    is_internal: boolean;
-    is_hidden: boolean;
-    duration: number; // in seconds
-    weight: number;
-    level: number; //für client nicht unbedingt nötig.
-
-    content_object_id: Fqid;
-    parent_id: agenda_item;
-    children_ids: agenda_item[];
-    projection_id: projection[];
-    meeting_id: meeting;
-}
-Interface list_of_speakers {
-    closed: boolean;
-
-    content_object_id: Fqid;
-    speaker_ids: speaker[];
-    projection_id: projection[];
-    meeting_id: meeting;
-}
-Interface speaker {
-    id: number;
-    begin_time: datetime;
-    end_time: datetime;
-    weight: number;
-    marked: boolean;
-
-    list_of_speakers_id: list_of_speakers;
-    user_id: user;
-}
-Interface topic {
-    id: number;
-    title: string;
-    text: HTML;
-
-    attachments_id: mediafile[];
-    agenda_item_id: agenda_item;
-    meeting_id: meeting;
-}
-Interface user {
-    id: number;
-    username: string;
-    last_email_send: string;
-    is_active: boolean; // TODO @emanuel: Ist ein Nutzer systemweit (organisationsweit) aktiv/inaktiv?
-    default_password: string;
-    is_committee: boolean;
-    about_me: HTML;
-    gender: string,
-// TODO: auth
-//auth_type: string;
-// auth-spezifische felder?
-    title: string;
-    first_name: string;
-    last_name: string;
-    comment: HTML;
-    number: string;
-    email: string;
-    structure_level: string;
-
-    role_id: role; // Attention: prevent impelenting a "default-role" or let a
-    // user create such a role! This would cause the user_ids-array for this
-    // role to explode in size. If a user has no role, it should be handles as
-    // the user has no permission in the organisation and is a "normal" delegate
-    // there. Just a few users (expected <100) should even get a role and all
-    // other don't.
-
-
-    is_present_in_meeting_ids: meeting[];
-    meeting_id: meeting; // Temporary users
-    guest_meeting_ids: meeting[]; // Links to meeting/guest_ids
-
-    // All foreign keys are meeting-specific:
-    // - Keys are smaller (Space is in O(n^2) for n keys 
-    //   in the relation), so this saves storagespace
-    // - This makes quering things like this possible:
-    //   "Give me all groups for User X in Meeting Y" without
-    //   the need to get all groups and filter them for the meeting
-    group_<meeting_id>_ids: group[];
-    personal_note_<meeting_id>_ids: personal_note[];
-    projection_<meeting_id>_ids: projection[];
-    supported_motion_<meeting_id>_ids: motion[];
-    submitted_motion_<meeting_id>_ids: motion_submitter[];
-    assignment_related_user_<meeting_id>_ids: assignment_related_user[];
-    motion_vote_<meeting_id>_ids: motion_vote[];
-    assignment_vote_<meeting_id>_ids: assignment_vote[];
-    motion_voted_poll_<meeting_id>_ids: motion_poll[];
-    assignment_voted_poll_<meeting_id>_ids: assignment_poll[];
-}
-Interface group {
-    id: number;
-    name: string;
-    is_superadmin_group: boolean;
-    is_default_group: boolean;
-    permissions: string[];
-
-    user_ids: user[];
-    mediafile_access_group_ids: mediafile[];
-    read_comment_section_ids: motion_comment_section[];
-    write_comment_section_ids: motion_comment_section[];
-    motion_poll_ids: motion_poll[];
-    meeting_id: meeting;
-}
-Interface personal_note {
-    id: number;
-    note: HTML;
-    star: boolean;
-
-    user_id: user;
-    element: Fqid;
-    meeting_id: meeting;
-}
-// Mediafiles are delivered by the mediafile server with the URL
-// `<media-prefix>/media/<meeting_id>/path`
-Interface mediafile { 
-    id: number;
-    title: string;
-    is_directory: boolean;
-    filesize: number; // Note: in bytes, not the human readable format anymore
-    filename: string; // Note: The uploaded filename. Filename and parent_id
-    // must be unique as well as title and parent_id must be unique.
-    mimetype: string;
-    create_timestamp: datetime;
-    path: string; // Note: calcuated
-    inherited_access_group_ids: boolean | number[]; // Note: calculated and no
-    // reverse-relation for the gorup ids.
-
-    access_group_ids: group[];
-    parent_id: mediafile;
-    children_ids: mediafile[];
-    list_of_speakers_id: list_of_speakers;
-    projection_ids: projection[];
-    attachement_ids: Fqid[];
-    meeting_id: meeting;
-
-    // Backreferences for meetings, if a mediafile is used as a special resource
-    // TODO: The id here is not necessary. This would also work:
-    // used_as: string[];
-    // with a list of tokens with `logo_` and `font_` prefix. E.g.:
-    // used_as: ["logo_web_header", "font_italic", "logo_projector_footer"]
-    logo_<token>: meeting;
-    font_<token>: meeting;
-}
-
-// New: Resource
-// Resources are organsation wide mediafiles. There should not be a file-manager
-// on this layer, but a way to customize fonts, logos and other organisation-wide
-// resources. There are no permission checks (so the user must not be logged in to
-// access the resources). A resource has a token, e.g.  `web_header` or
-// `pdf_font_italic`, so the client knowns, where to put the resource. They are
-// delivered by the media service with the URL `<media-prefix>/resource/<id>`.
-Interface Resource {
-    id: number;
-    token: string;
-    filesize: number;
-    mimetype: string;
-
-    organisation_id: organisation;
-}
-Interface motion {
-    id: number;
-    identifier: string;
-    title: string;
-    text: HTML;
-    amendment_paragraph_<paragraph_number>: HTML;
-    modified_final_version: HTML;
-    reason: HTML;
-    category_weight: number;
-    state_extension: string;
-    recommendation_extension: string;
-    sort_parent_id: motion;
-    sort_weight: number;
-    created: string;
-    last_modified: string;
-
-    parent_id: motion;
-    children_ids: motion[];
-    origin_id: motion; // Note: The related motions may not be in the same meeting
-    derived_motion_ids: motion[]; // Note: The related motions may not be in the same meeting
-    state_id: motion_state;
-    workflow_id: motion_workflow;
-    recommendation_id: motion_state;
-    category_id: category;
-    motion_block_id: motion_block;
-    submitter_ids: motion_submitter[];
-    supporter_ids: user[];
-    poll_ids: motion_poll[];
-    change_recommendation_ids: motion_change_recommendation[];
-    statute_paragraph_id: motion_statute_paragraph;
-    comment_ids: motion_comment[];
-    agenda_item_id: agenda_item;
-    list_of_speakers_id: list_of_speakers;
-    tag_ids: tag[];
-    attachment_ids: mediafile[];
-    meeting_id: meeting;
-}
-Interface motion_poll {
-    id: number;
-    pollmethod: string;
-    state: number;
-    type: string;
-    title: string;
-    onehundred_percent_base: string;
-    majority_method: string;
-    votesvalid: decimal(6);
-    votesinvalid: decimal(6);
-    votescast: decimal(6);
-
-    option_ids: motion_option[];
-    motion_id: motion;
-    voted_ids: user[];
-    group_ids: group[];
-    meeting_id: meeting;
-}
-Interface motion_option {
-    id: number;
-    yes: decimal(6);
-    no: decimal(6);
-    abstain: decimal(6);
-
-    vote_ids: motion_vote[];
-}
-Interface motion_vote {
-    id: number;
-    weight: decimal(6);
-    value: string;
-
-    option_id: motion_option;
-    user_id: user;
-}
-Interface motion_submitter {
-    id: number;
-    weight: number;
-
-    user_id: user;
-    motion_id: motion;
-}
-Interface motion_comment {
-    id: number;
-    comment: HTML;
-
-    motion_id: motion;
-    section_id: motion_comment_section;
-}
-Inteface motion_comment_section {
-    id: number;
-    name: string;
-    weight: number;
-
-    read_group_ids: group[];
-    write_group_ids: group[];
-    meeting_id: meeting;
-}
-Interface motion_category {
-    id: number;
-    name: string;
-    prefix: string;
-    weight: number;
-    level: number;
-
-    parent_id: motion_category;
-    children_ids: motion_category[];
-    motion_ids: motion[];
-    meeting_id: meeting;
-}
-Interface motion_block {
-    id: number;
-    title: string;
-    internal: boolean;
-
-    motion_ids: motion[];
-    agenda_item_id: agenda_item;
-    list_of_speakers_id: list_of_speakers;
-    meeting_id: meeting;
-}
-Interface motion_change_recommendation {
-    id: number;
-    rejected: boolean;
-    internal: boolean;
-    type: number;
-    other_description: string;
-    line_from: number;
-    line_to: number;
-    text: HTML;
-    creation_time: datetime;
-
-    motion_id: motion;
-}
-Interface motion_state {
-    id: number;
-    name: string;
-    recommendation_label: string;
-    css_class: string;
-    restrictions: string[],
-    allow_support: boolean;
-    allow_create_poll: boolean;
-    allow_submitter_edit: boolean;
-    set_identifier: boolean;
-    show_state_extension_field: boolean;
-    merge_amendment_into_final: number;
-    show_recommendation_extension_field: boolean;
-
-    next_state_ids: motion_state[];
-    previous_state_ids: motion_state[];
-    motion_ids: motion[];
-    motion_recommendation_ids: motion[];
-    workflow_id: motion_workflow;
-    first_state_of_workflow_id: motion_workflow;
-}
-Interface motion_workflow {
-    id: number;
-    name: string;
-
-    state_ids: motion_state[];
-    first_state_id: motion_state;
-    motion_ids: motion[];
-    meeting_id: meeting;
-}
-Interface motion_statute_paragraph {
-    id: number;
-    title: string;
-    text: HTML;
-    weight: number;
-
-    motion_ids: motion[];
-    meeting_id: meeting;
-}
-Interface assignment {
-    id: number;
-    title: string;
-    description: HTML;
-    open_posts: number;
-    phase: number;
-    poll_description_default: string;
-
-    assignment_related_user_ids: assignment_related_user[];
-    poll_ids: assignment_poll[];
-    agenda_item_id: agenda_item;
-    list_of_speakers_id: list_of_speakers;
-    tag_ids: tag[];
-    attachment_ids: mediafile[];
-    meeting_id: meeting;
-}
-Inteface assignment_related_user {
-    id: number;
-    elected: boolean;
-    weight: number;
-
-    assignment_id: assignment;
-    user_id: user;
-}
-Interface assignment_poll {
-    id: number;
-    allow_multiple_votes_per_candidate: boolean;
-    global_abstain: boolean;
-    global_no: boolean;
-    amount_global_abstain: decimal(6);
-    amount_global_no: decimal(6);
-    pollmethod: string;
-    state: number;
-    title: string;
-    description: string;
-    type: string;
-    onehundred_percent_base: string;
-    majority_method: string;
-    votes_amount: number;
-    votescast: decimal(6);
-    votesinvalid: decimal(6);
-    votesvalid: decimal(6);
-
-    assignment_id: assignment;
-    voted_ids: user[];
-    group_ids: group[];
-    option_ids: assignment_option[];
-    meeting_id: meeting;
-}
-Interface assignment_option {
-    id: number;
-    yes: decimal(6);
-    no: decimal(6);
-    abstain: decimal(6);
-    weight: number;
-
-    poll_id: assignment_poll;
-    user_id: user;
-}
-Interface assignment_vote {
-    id: number;
-    value: string;
-    weight: decimal(6);
-
-    option_id: assignment_option;
-    user_id: user;
-}
-
-// New models
-Interface meeting {
-    id: number;
-    identifier: string; // For unique urls.
-    is_template: boolean; // Unique within a committee
-    enable_anonymous: boolean;
-
-    // Old "general_*" configs
-    name: string;
-    description: string;
-    location: string;
-    start_time: datetime;
-    end_time: datetime;
-    welcome_title: string;
-    welcome_text: HTML;
-
-    // Export section still needed?
-    // Or should this be moved into committee-scope or organisation-scope?
-    export_csv_encoding: string;
-    export_csv_separator: string;
-    export_pdf_pagenumber_alignment: string;
-    export pdf_fontsize: number;
-    export_pdf_pagesize: string;
-
-    // TODO: custom translations
-    // TODO: @emanuel: Are they meeting-specific, organsation-wide or should
-    // both have custom translation?
-
-    // TODO: @emanuel Is this right here in a meeting?
-    users_sort_by: string;
-    users_enable_presence_view: boolean;
-
-    // Motions
-    motions_default_workflow: workflow; // TODO: relation
-    motions_default_statute_amendments_workflow: workflow; // TODO: relation
-    motions_preamble: string;
-    motions_default_line_numbering: string;
-    motions_line_length: number;
-    motions_reason_required: boolean;
-    motions_enable_text_on_projector: boolean;
-    motions_enable_reason_on_projector: boolean;
-    motions_enable_sidebox_on_projector: boolean;
-    motions_enable_resommendation_on_projector: boolean;
-    motions_show_referring_motions: boolean;
-    motions_show_sequential_number: boolean;
-    motions_recommendations_by: string;
-    motions_statute_recommendations_by: string;
-    motions_recommendation_text_mode: string;
-    motions_default_sorting: string;
-    motions_identifier_type: string;
-    motions_identifier_min_digits: number;
-    motions_identifier_with_blank: boolean;
-    motions_statutes_enabled: boolean;
-    motions_amendments_enabled: boolean;
-    motions_amendments_in_main_list: boolean;
-    motions_amendments_prefix: string;
-    motions_amendments_text_mode: string;
-    motions_amendments_multiple_paragraphs: boolean;
-    motions_supporters_min_amount: number;
-    motions_supporters_enable_autoremove: boolean;
-    motions_export_title: string;
-    motions_export_preamble: string;
-    motions_export_submitter_recommendation: boolean;
-    motions_export follow_recommendation: boolean;
-
-    // Assignments
-    assignments_poll_add_candidates_to_list_of_spekaers: boolean;
-    assignemnts_export_pdf_title: string;
-    assignments_export_pdf_preamble: string;
-
-    projector_ids: projector[];
-    projectiondefault_ids: projectiondefault[];
-    projector_countdown_ids: projector_countdown[];
-    projector_message_ids: projector_message[];
-    tag_ids: tag[];
-    agenda_item_ids: agenda_item[];
-    list_of_speakers_ids: list_of_speakers[];
-    topic_ids: topic[];
-    group_ids: group[];
-    personal_note_ids: personal_note[];
-    mediafile_ids: mediafile[];
-    motion_ids: motion[];
-    motion_poll_ids: motion_poll[];
-    motion_comment_section_ids: motion_comment_section[];
-    motion_category_ids: motion_category[];
-    motion_block_ids: motion_block[];
-    motion_workflow_ids: motion_workflow[];
-    motion_statute_paragraph_ids: motion_statute_paragraph[];
-    assignment_ids: assignment[];
-    assignment_poll_ids: assignment_poll[];
-
-    // No relations to a meeting:
-    // user; OK, because not meeting-specific
-    // projection
-    // speaker
-    // motion_option
-    // motion_vote
-    // motion_comment
-    // motion_submitter
-    // motion_change_recommendation
-    // motion_state
-    // assignment_related_user
-    // assignment_option
-    // assignment_vote
-
-    // Why: These are mostly M2M models or ones, that will never have a list view.
-    // There would be no need to link them to the meeting, if they can be
-    // reached through a parent model. E.g. a motion_option can be reached through
-    // a motion_poll. There will never be the need to make something like "show all
-    // motion_options at once".
-    // TODO: Is this right for all above stated models?
-    // TODO: We might link user to a meeting. A member is defined by checking,
-    // if a user is assigned to at least one group. This "query" must be checked,
-    // if it can be performed.
-
-    // Logos and Fonts
-    logo_<token>: Mediafile;
-    font_<token>: Mediafile;
-    // Examples:
-    // logo_web_header: Mediafile;
-    // font_italic_pdf: Mediafile;
-    // The client can define these resources. There is no need
-    // to have whitelist/blacklist on the server. The tokens must
-    // be checked: They must match `[a-z]([a-z_]*[a-z])?` and must
-    // not be longer than 32 characters.
-
-    // Other relations
-    committee_id: committee; // Links to committee/meeting_ids
-    default_meeting_for_committee_id: committee; // Links to committee/default_meeting_id
-    present_user_ids: user[]; // Links to user/is_present_in_meeting_ids
-    guest_ids: user[]; // Links to users/guest_meeting_ids
-    temorary_user_ids: user[]; // Links to user/meeting_id
-}
-Interface committee {
-    id: number;
-    name: string;
-    description: string; // TODO: @emanuel Or HTML? Or not needed (-> UI decision)
-
-    meeting_ids: meeting[];
-    default_meting_id: meeting;
-    member_ids: user[];
-    manager_ids: user[];
-    forward_to_committee_ids: committee[];
-    received_forwardings_from_committee_ids: committee[];
-    organisation_id: organisation;
-}
-Interface organisation {
-    id: number;
-    name: string;
-    description: HTML; // TODO: @emanuel Needed??
-
-    // Configs:
-    legal_notice: string;
-    privacy_policy: string;
-    login_text: string;
-    theme: string;
-
-    // TODO: OS3 user configs (export, email, ...)
-
-    committee_ids: committee[];
-    role_ids: role[];
-    resource_ids: resource[];
-}
-Interface role {
-    id: number;
-    name: string;
-    permissions: string[]; // 'can_manage_committees', 'can_manage_users', TODO: more permissions
-    is_superadmin_role: boolean;
-    orginasation_id: number;
-    user_ids: user[];
+    projection_ids: (projection/element_id)[];
+    current_projector_ids: (projector/current_element_ids)[]
+    meeting_id: meeting/projector_countdown_ids;
 }
