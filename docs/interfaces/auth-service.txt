@@ -1,0 +1,104 @@
+Interface Token {
+    payload: {
+        // The lifetime of the Token. The date in unix seconds of the expiration.
+        expiresAt: date,
+        // The corresponding userId of the requesting client.
+        userId: number,
+        // The id of the current session.
+        sessionId: string
+    },
+    signature: string
+}
+
+Interface Cookie {
+    // The id for the session corresponding to the client, who has signed in.
+    sessionId: string,
+    // A signature created from the server.
+    signature: string
+}
+
+/**
+* The client has not the necessary permissions for the requesting action.
+*/
+Exception NoPermissions
+
+/**
+* The credentials for login/authentication are not valid.
+*/
+Exception InvalidCredentials
+
+/**
+* The client can login with its credentials for authentication.
+* If they are correct, the service answers with a signed Token and sets a cookie, containing the sessionId of the client.
+*
+* If they aren't correct, the service throws an error.
+*
+* @throws InvalidCredentials
+*/
+Login (username: string, password: string): (Token, Cookie);
+
+/**
+* An example for any protected route. If the client requests protected resources, it has to 
+* send the signed Token and the cookie, it receives from the service at login, to the server.
+*
+* This will be a library to act as part of the auth-service. The other services have not to 
+* request the auth-service for authentication. Instead, they use this library-function in their own
+* and receive knowledge about authentication without request.
+*
+* Throws an exception, if the token is not valid. E.g. if the signature is not valid.
+*
+* @throws InvalidCredentials
+*/
+Authenticate (token: Token, cookie: Cookie): {userId: number; sessionId: string;};
+
+/**
+* A request to get knowledge about themselves. This information is contained in the payload of 
+* a Token. So, this function handles the refreshing of a Token.
+*
+* Sends back a new Token.
+*
+* Throws an exception, if the cookie is empty or the transmitted sessionId is wrong.
+*
+* @throws InvalidCredentials
+*/
+WhoAmI(cookie: Cookie): Token;
+
+/**
+* Function to kill one specific session by its id.
+* 
+* An exception is thrown, if the client has not the necessary permissions to make this action.
+* Also, if there is no session with the given id, an exception is thrown.
+*
+* @throws NoPermissions: Only users themselves can clear their own session and (super-) admins
+* can do this, too.
+*/
+ClearSessionById (sessionId: string, cookie: Cookie, token: Token): void publishes LogoutSessionEvent;
+
+/**
+* Function to kill all current opened sessions except the one, which is requesting.
+*
+* An exception is thrown, if the client has not the necessary permissions to make this action.
+* 
+* @throws NoPermissions: Only (super-) admins has the necessary permissions to logout and clear
+* other user's session.
+*/ 
+ClearAllSessionsExceptThemselves (token: Token, cookie: Cookie): void publishes LogoutSessionEvent;
+
+Event LogoutSessionEvent on topic Logout {
+    sessionId: string;
+}
+
+/**
+* The service deletes the session depending on the given Token.
+*
+* @throws InvalidCredentials
+*/
+Logout (token: Token, cookie: Cookie): void publishes LogoutSessionEvent;
+
+/**
+* Returns all currently active sessions.
+*
+* @throws NoPermissions: The users can only see their own session. Only (super-) admins can see sessions
+* of other users.
+*/
+ListSessions (token: Token, cookie: Cookie): string[];
