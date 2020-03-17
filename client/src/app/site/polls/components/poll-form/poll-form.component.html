@@ -22,14 +22,16 @@
     <form [formGroup]="contentForm" class="poll-preview-meta-info-form">
         <ng-container *ngIf="!data || !data.state || data.isCreated">
             <!-- Poll Type -->
-            <mat-form-field class="pollType" *ngIf="pollService.isElectronicVotingEnabled">
+            <mat-form-field class="pollType" *ngIf="isEVotingEnabled">
                 <mat-select [placeholder]="PollPropertyVerbose.type | translate" formControlName="type" required>
                     <mat-option *ngFor="let option of pollTypes | keyvalue" [value]="option.key">
                         {{ option.value | translate }}
                     </mat-option>
                 </mat-select>
                 <mat-error translate>This field is required.</mat-error>
-                <mat-hint (click)="openVotingWarning()" *ngIf="showNonNominalWarning"> {{ 'Not suitable for formal secret voting!' | translate }}</mat-hint>
+                <mat-hint (click)="openVotingWarning()" *ngIf="showNonNominalWarning">
+                    {{ 'Not suitable for formal secret voting!' | translate }}</mat-hint
+                >
             </mat-form-field>
 
             <!-- Groups entitled to Vote -->
@@ -84,7 +86,6 @@
                     formControlName="votes_amount"
                     min="1"
                     required
-
                 />
             </mat-form-field>
             <mat-checkbox formControlName="global_no">{{ PollPropertyVerbose.global_no | translate }}</mat-checkbox>

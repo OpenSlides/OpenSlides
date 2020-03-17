@@ -100,7 +100,7 @@ export abstract class BasePollDetailComponent<V extends ViewBasePoll, S extends 
         protected route: ActivatedRoute,
         protected groupRepo: GroupRepositoryService,
         protected promptService: PromptService,
-        protected pollDialog: BasePollDialogService<V>,
+        protected pollDialog: BasePollDialogService<V, S>,
         protected pollService: S,
         protected votesRepo: BaseRepository<ViewBaseVote, BaseVote, object>
     ) {

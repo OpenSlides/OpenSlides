@@ -17,6 +17,7 @@ import {
 import { BasePollDialogComponent } from 'app/site/polls/components/base-poll-dialog.component';
 import { PollFormComponent } from 'app/site/polls/components/poll-form/poll-form.component';
 import { ViewUser } from 'app/site/users/models/view-user';
+import { AssignmentPollService } from '../../services/assignment-poll.service';
 import { ViewAssignmentPoll } from '../../models/view-assignment-poll';
 
 type OptionsObject = { user_id: number; user: ViewUser }[];
@@ -29,7 +30,8 @@ type OptionsObject = { user_id: number; user: ViewUser }[];
     templateUrl: './assignment-poll-dialog.component.html',
     styleUrls: ['./assignment-poll-dialog.component.scss']
 })
-export class AssignmentPollDialogComponent extends BasePollDialogComponent<ViewAssignmentPoll> implements OnInit {
+export class AssignmentPollDialogComponent extends BasePollDialogComponent<ViewAssignmentPoll, AssignmentPollService>
+    implements OnInit {
     /**
      * The summary values that will have fields in the dialog
      */
@@ -44,7 +46,7 @@ export class AssignmentPollDialogComponent extends BasePollDialogComponent<ViewA
     public specialValues: [number, string][];
 
     @ViewChild('pollForm', { static: true })
-    protected pollForm: PollFormComponent<ViewAssignmentPoll>;
+    protected pollForm: PollFormComponent<ViewAssignmentPoll, AssignmentPollService>;
 
     /**
      * vote entries for each option in this component. Is empty if method
@@ -80,7 +82,8 @@ export class AssignmentPollDialogComponent extends BasePollDialogComponent<ViewA
         title: Title,
         protected translate: TranslateService,
         matSnackbar: MatSnackBar,
-        public dialogRef: MatDialogRef<BasePollDialogComponent<ViewAssignmentPoll>>,
+        public dialogRef: MatDialogRef<BasePollDialogComponent<ViewAssignmentPoll, AssignmentPollService>>,
+        public assignmentPollService: AssignmentPollService,
         @Inject(MAT_DIALOG_DATA) public pollData: Partial<ViewAssignmentPoll>
     ) {
         super(title, translate, matSnackbar, dialogRef);

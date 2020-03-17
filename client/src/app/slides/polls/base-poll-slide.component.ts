@@ -9,7 +9,7 @@ import { PollService } from 'app/site/polls/services/poll.service';
 import { BasePollSlideData } from './base-poll-slide-data';
 import { BaseSlideComponent } from '../base-slide-component';
 
-export class BasePollSlideComponent<T extends BasePollSlideData> extends BaseSlideComponent<T> {
+export class BasePollSlideComponent<T extends BasePollSlideData, S extends PollService> extends BaseSlideComponent<T> {
     public chartDataSubject: BehaviorSubject<ChartData> = new BehaviorSubject([]);
 
     @Input()
@@ -29,7 +29,7 @@ export class BasePollSlideComponent<T extends BasePollSlideData> extends BaseSli
 
     public constructor(
         @Inject(forwardRef(() => PollService))
-        public pollService: PollService
+        public pollService: S
     ) {
         super();
     }

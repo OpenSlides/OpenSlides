@@ -8,6 +8,7 @@ import { PollState, PollType } from 'app/shared/models/poll/base-poll';
 import { mediumDialogSettings } from 'app/shared/utils/dialog-settings';
 import { BasePollDialogComponent } from 'app/site/polls/components/base-poll-dialog.component';
 import { ViewBasePoll } from 'app/site/polls/models/view-base-poll';
+import { PollService } from 'app/site/polls/services/poll.service';
 
 /**
  * Abstract class for showing a poll dialog. Has to be subclassed to provide the right `PollService`
@@ -15,8 +16,8 @@ import { ViewBasePoll } from 'app/site/polls/models/view-base-poll';
 @Injectable({
     providedIn: 'root'
 })
-export abstract class BasePollDialogService<V extends ViewBasePoll> {
-    protected dialogComponent: ComponentType<BasePollDialogComponent<V>>;
+export abstract class BasePollDialogService<V extends ViewBasePoll, S extends PollService> {
+    protected dialogComponent: ComponentType<BasePollDialogComponent<V, S>>;
 
     public constructor(private dialog: MatDialog, private mapper: CollectionStringMapperService) {}
 

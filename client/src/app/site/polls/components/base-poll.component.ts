@@ -11,9 +11,10 @@ import { ChartData } from 'app/shared/components/charts/charts.component';
 import { PollState, PollType } from 'app/shared/models/poll/base-poll';
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { BasePollRepositoryService } from '../services/base-poll-repository.service';
+import { PollService } from '../services/poll.service';
 import { ViewBasePoll } from '../models/view-base-poll';
 
-export abstract class BasePollComponent<V extends ViewBasePoll> extends BaseViewComponent {
+export abstract class BasePollComponent<V extends ViewBasePoll, S extends PollService> extends BaseViewComponent {
     public chartDataSubject: BehaviorSubject<ChartData> = new BehaviorSubject([]);
 
     protected _poll: V;
@@ -41,10 +42,10 @@ export abstract class BasePollComponent<V extends ViewBasePoll> extends BaseView
         titleService: Title,
         matSnackBar: MatSnackBar,
         protected translate: TranslateService,
-        public dialog: MatDialog,
+        protected dialog: MatDialog,
         protected promptService: PromptService,
         protected repo: BasePollRepositoryService,
-        protected pollDialog: BasePollDialogService<V>
+        protected pollDialog: BasePollDialogService<V, S>
     ) {
         super(titleService, translate, matSnackBar);
     }

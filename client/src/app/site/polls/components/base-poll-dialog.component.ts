@@ -10,15 +10,17 @@ import { VOTE_UNDOCUMENTED } from 'app/shared/models/poll/base-poll';
 import { OneOfValidator } from 'app/shared/validators/one-of-validator';
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { PollFormComponent } from './poll-form/poll-form.component';
+import { PollService } from '../services/poll.service';
 import { ViewBasePoll } from '../models/view-base-poll';
 
 /**
  * A dialog for updating the values of a poll.
  */
-export abstract class BasePollDialogComponent<T extends ViewBasePoll> extends BaseViewComponent implements OnInit {
+export abstract class BasePollDialogComponent<T extends ViewBasePoll, S extends PollService> extends BaseViewComponent
+    implements OnInit {
     public publishImmediately: boolean;
 
-    protected pollForm: PollFormComponent<T>;
+    protected pollForm: PollFormComponent<T, S>;
 
     public dialogVoteForm: FormGroup;
 
@@ -26,7 +28,7 @@ export abstract class BasePollDialogComponent<T extends ViewBasePoll> extends Ba
         title: Title,
         protected translate: TranslateService,
         matSnackbar: MatSnackBar,
-        public dialogRef: MatDialogRef<BasePollDialogComponent<T>>
+        public dialogRef: MatDialogRef<BasePollDialogComponent<T, S>>
     ) {
         super(title, translate, matSnackbar);
     }
