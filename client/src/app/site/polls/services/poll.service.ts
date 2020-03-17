@@ -203,8 +203,10 @@ export abstract class PollService {
         const totalByBase = this.getPercentBase(poll);
         if (totalByBase && totalByBase > 0) {
             const percentNumber = (value / totalByBase) * 100;
-            const result = percentNumber % 1 === 0 ? percentNumber : percentNumber.toFixed(PERCENT_DECIMAL_PLACES);
-            return `${result} %`;
+            if (percentNumber >= 0) {
+                const result = percentNumber % 1 === 0 ? percentNumber : percentNumber.toFixed(PERCENT_DECIMAL_PLACES);
+                return `${result} %`;
+            }
         }
         return null;
     }
@@ -349,10 +351,17 @@ export abstract class PollService {
         const fields = this.getPollDataFields(poll);
         return poll.options.map(option => {
             const votingResults = fields.map(field => {
+                const voteValue = option[field];
                 const votingKey = this.translate.instant(this.pollKeyVerbose.transform(field));
-                const resultValue = this.parsePollNumber.transform(option[field]);
-                const resultInPercent = this.getVoteValueInPercent(option[field], poll);
-                return `${votingKey} ${resultValue} (${resultInPercent})`;
+                const resultValue = this.parsePollNumber.transform(voteValue);
+                const resultInPercent = this.getVoteValueInPercent(voteValue, poll);
+                let resultLabel = `${votingKey}: ${resultValue}`;
+
+                // 0 is a valid number in this case
+                if (resultInPercent !== null) {
+                    resultLabel += ` (${resultInPercent})`;
+                }
+                return resultLabel;
             });
 
             return `${option.user.short_name} · ${votingResults.join(' · ')}`;

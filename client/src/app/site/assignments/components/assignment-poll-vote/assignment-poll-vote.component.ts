@@ -96,6 +96,10 @@ export class AssignmentPollVoteComponent extends BasePollVoteComponent<ViewAssig
         return Object.keys(this.voteRequestData.votes).filter(key => this.voteRequestData.votes[key]).length;
     }
 
+    public getVotesAvailable(): number {
+        return this.poll.votes_amount - this.getVotesCount();
+    }
+
     private isGlobalOptionSelected(): boolean {
         return !!this.voteRequestData.global;
     }
