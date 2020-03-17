@@ -30,7 +30,8 @@ import { PollService } from '../../services/poll.service';
     templateUrl: './poll-form.component.html',
     styleUrls: ['./poll-form.component.scss']
 })
-export class PollFormComponent<T extends ViewBasePoll> extends BaseViewComponent implements OnInit {
+export class PollFormComponent<T extends ViewBasePoll, S extends PollService> extends BaseViewComponent
+    implements OnInit {
     /**
      * The form-group for the meta-info.
      */
@@ -53,6 +54,9 @@ export class PollFormComponent<T extends ViewBasePoll> extends BaseViewComponent
 
     @Input()
     public data: Partial<T>;
+
+    @Input()
+    private pollService: S;
 
     /**
      * The different types the poll can accept.
@@ -87,6 +91,14 @@ export class PollFormComponent<T extends ViewBasePoll> extends BaseViewComponent
 
     public showNonNominalWarning = false;
 
+    public get isEVotingEnabled(): boolean {
+        if (this.pollService) {
+            return this.pollService.isElectronicVotingEnabled;
+        } else {
+            return false;
+        }
+    }
+
     /**
      * Constructor. Retrieves necessary metadata from the pollService,
      * injects the poll itself
@@ -97,7 +109,6 @@ export class PollFormComponent<T extends ViewBasePoll> extends BaseViewComponent
         snackbar: MatSnackBar,
         private fb: FormBuilder,
         private groupRepo: GroupRepositoryService,
-        public pollService: PollService,
         private configService: ConfigService,
         private dialog: MatDialog
     ) {

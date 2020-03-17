@@ -14,7 +14,7 @@ import { MotionPollDialogService } from 'app/site/motions/services/motion-poll-d
 import { MotionPollPdfService } from 'app/site/motions/services/motion-poll-pdf.service';
 import { MotionPollService } from 'app/site/motions/services/motion-poll.service';
 import { BasePollComponent } from 'app/site/polls/components/base-poll.component';
-import { PollService, PollTableData } from 'app/site/polls/services/poll.service';
+import { PollTableData } from 'app/site/polls/services/poll.service';
 
 /**
  * Component to show a motion-poll.
@@ -24,7 +24,7 @@ import { PollService, PollTableData } from 'app/site/polls/services/poll.service
     templateUrl: './motion-poll.component.html',
     styleUrls: ['./motion-poll.component.scss']
 })
-export class MotionPollComponent extends BasePollComponent<ViewMotionPoll> {
+export class MotionPollComponent extends BasePollComponent<ViewMotionPoll, MotionPollService> {
     @Input()
     public set poll(value: ViewMotionPoll) {
         this.initPoll(value);
@@ -41,11 +41,11 @@ export class MotionPollComponent extends BasePollComponent<ViewMotionPoll> {
     }
 
     public get showChart(): boolean {
-        return this.motionPollService.showChart(this.poll);
+        return this.pollService.showChart(this.poll);
     }
 
     public get reducedPollTableData(): PollTableData[] {
-        return this.motionPollService
+        return this.pollService
             .generateTableData(this.poll)
             .filter(data => ['yes', 'no', 'abstain', 'votesinvalid'].includes(data.votingOption));
     }
@@ -63,6 +63,10 @@ export class MotionPollComponent extends BasePollComponent<ViewMotionPoll> {
         return false;
     }
 
+    public get isEVotingEnabled(): boolean {
+        return this.pollService.isElectronicVotingEnabled;
+    }
+
     /**
      * Constructor.
      *
@@ -75,14 +79,13 @@ export class MotionPollComponent extends BasePollComponent<ViewMotionPoll> {
     public constructor(
         titleService: Title,
         matSnackBar: MatSnackBar,
-        protected translate: TranslateService,
-        dialog: MatDialog,
         promptService: PromptService,
-        public pollRepo: MotionPollRepositoryService,
         pollDialog: MotionPollDialogService,
-        public pollService: PollService,
+        protected dialog: MatDialog,
+        protected pollRepo: MotionPollRepositoryService,
+        protected translate: TranslateService,
+        private pollService: MotionPollService,
         private pdfService: MotionPollPdfService,
-        private motionPollService: MotionPollService,
         private operator: OperatorService
     ) {
         super(titleService, matSnackBar, translate, dialog, promptService, pollRepo, pollDialog);

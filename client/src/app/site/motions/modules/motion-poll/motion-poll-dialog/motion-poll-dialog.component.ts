@@ -7,6 +7,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { LOWEST_VOTE_VALUE } from 'app/shared/models/poll/base-poll';
 import { ViewMotionPoll } from 'app/site/motions/models/view-motion-poll';
+import { MotionPollService } from 'app/site/motions/services/motion-poll.service';
 import { BasePollDialogComponent } from 'app/site/polls/components/base-poll-dialog.component';
 import { PollFormComponent } from 'app/site/polls/components/poll-form/poll-form.component';
 import { PercentBaseVerbose } from 'app/site/polls/models/view-base-poll';
@@ -16,17 +17,19 @@ import { PercentBaseVerbose } from 'app/site/polls/models/view-base-poll';
     templateUrl: './motion-poll-dialog.component.html',
     styleUrls: ['./motion-poll-dialog.component.scss']
 })
-export class MotionPollDialogComponent extends BasePollDialogComponent<ViewMotionPoll> implements OnInit {
+export class MotionPollDialogComponent extends BasePollDialogComponent<ViewMotionPoll, MotionPollService>
+    implements OnInit {
     public PercentBaseVerbose = PercentBaseVerbose;
 
     @ViewChild('pollForm', { static: false })
-    protected pollForm: PollFormComponent<ViewMotionPoll>;
+    protected pollForm: PollFormComponent<ViewMotionPoll, MotionPollService>;
 
     public constructor(
         title: Title,
         translate: TranslateService,
         matSnackbar: MatSnackBar,
-        public dialogRef: MatDialogRef<BasePollDialogComponent<ViewMotionPoll>>,
+        public motionPollService: MotionPollService,
+        public dialogRef: MatDialogRef<BasePollDialogComponent<ViewMotionPoll, MotionPollService>>,
         private formBuilder: FormBuilder,
         @Inject(MAT_DIALOG_DATA) public pollData: Partial<ViewMotionPoll>
     ) {
