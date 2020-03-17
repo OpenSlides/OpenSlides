@@ -1,0 +1,34 @@
+@import '~assets/styles/poll-styles-common.scss';
+
+.poll-content {
+    text-align: right;
+    display: grid;
+    padding-top: 20px;
+}
+
+.named-result-table {
+    grid-area: names;
+    .mat-form-field {
+        font-size: 14px;
+        width: 100%;
+    }
+
+    .vote-cell {
+        display: flex;
+        align-items: center;
+
+        .vote-cell-icon-container {
+            display: flex;
+            align-items: center;
+            margin-right: 7px;
+        }
+    }
+}
+
+.single-votes-table {
+    height: 500px;
+}
+
+.openslides-theme .pbl-ngrid-no-data {
+    top: 10%;
+}

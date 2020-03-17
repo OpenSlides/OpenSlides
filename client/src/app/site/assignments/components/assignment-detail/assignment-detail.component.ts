@@ -15,7 +15,6 @@ import { TagRepositoryService } from 'app/core/repositories/tags/tag-repository.
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { Assignment } from 'app/shared/models/assignments/assignment';
-import { AssignmentPoll } from 'app/shared/models/assignments/assignment-poll';
 import { ViewItem } from 'app/site/agenda/models/view-item';
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
@@ -23,8 +22,10 @@ import { LocalPermissionsService } from 'app/site/motions/services/local-permiss
 import { ViewTag } from 'app/site/tags/models/view-tag';
 import { ViewUser } from 'app/site/users/models/view-user';
 import { AssignmentPdfExportService } from '../../services/assignment-pdf-export.service';
+import { AssignmentPollDialogService } from '../../services/assignment-poll-dialog.service';
 import { AssignmentPollService } from '../../services/assignment-poll.service';
 import { AssignmentPhases, ViewAssignment } from '../../models/view-assignment';
+import { ViewAssignmentPoll } from '../../models/view-assignment-poll';
 import { ViewAssignmentRelatedUser } from '../../models/view-assignment-related-user';
 
 /**
@@ -171,12 +172,13 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
         formBuilder: FormBuilder,
         public repo: AssignmentRepositoryService,
         private userRepo: UserRepositoryService,
-        public pollService: AssignmentPollService,
         private itemRepo: ItemRepositoryService,
         private tagRepo: TagRepositoryService,
         private promptService: PromptService,
         private pdfService: AssignmentPdfExportService,
-        private mediafileRepo: MediafileRepositoryService
+        private mediafileRepo: MediafileRepositoryService,
+        private pollDialog: AssignmentPollDialogService,
+        private assignmentPollService: AssignmentPollService
     ) {
         super(title, translate, matSnackBar);
         this.subscriptions.push(
@@ -192,11 +194,12 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
             attachments_id: [],
             title: ['', Validators.required],
             description: [''],
-            poll_description_default: [''],
+            default_poll_description: [''],
             open_posts: [1, [Validators.required, Validators.min(1)]],
             agenda_create: [''],
             agenda_parent_id: [],
-            agenda_type: ['']
+            agenda_type: [''],
+            number_poll_candidates: [false]
         });
         this.candidatesForm = formBuilder.group({
             userId: null
@@ -303,10 +306,16 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
 
     /**
      * Creates a new Poll
-     * TODO: directly open poll dialog?
      */
-    public async createPoll(): Promise<void> {
-        await this.repo.addPoll(this.assignment).catch(this.raiseError);
+    public openDialog(): void {
+        const dialogData = {
+            collectionString: ViewAssignmentPoll.COLLECTIONSTRING,
+            assignment_id: this.assignment.id,
+            assignment: this.assignment,
+            ...this.assignmentPollService.getDefaultPollData(this.assignment.id)
+        };
+
+        this.pollDialog.openDialog(dialogData);
     }
 
     /**
@@ -370,6 +379,7 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
                     // resetting a form triggers a form.next(null) - check if data is present
                     if (formResult && formResult.userId) {
                         this.addUser(formResult.userId);
+                        this.candidatesForm.setValue({ userId: null });
                     }
                 })
             );
@@ -452,24 +462,6 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
         }
         if (event.key === 'Escape') {
             this.setEditMode(false);
-        }
-    }
-
-    /**
-     * Assemble a meaningful label for the poll
-     * Published polls will look like 'Ballot 2'
-     * other polls will be named 'Ballot 2' for normal users, with the hint
-     * '(unpulished)' appended for manager users
-     *
-     * @param poll
-     * @param index the index of the poll relative to the assignment
-     */
-    public getPollLabel(poll: AssignmentPoll, index: number): string {
-        const title = `${this.translate.instant('Ballot')} ${index + 1}`;
-        if (!poll.published && this.hasPerms('manage')) {
-            return title + ` (${this.translate.instant('unpublished')})`;
-        } else {
-            return title;
         }
     }
 

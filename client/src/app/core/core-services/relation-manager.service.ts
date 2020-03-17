@@ -98,6 +98,17 @@ export class RelationManagerService {
         viewModel: BaseViewModel,
         relation: RelationDefinition
     ): any {
+        // No cache for reverse relations.
+        // The issue: we cannot invalidate the cache, if a new object is created (The
+        // following example is for a O2M foreign relation):
+        // There is no possibility to detect the create case: The target does not update,
+        // all related models does not update. The autoupdate does not provide the created-
+        // information. So we may check, if the relaten has changed in length every time. But
+        // this is the same as just resolving the relation every time it is requested. So no cache here.
+        if (isReverseRelationDefinition(relation)) {
+            return this.handleRelation(model, viewModel, relation) as BaseViewModel | BaseViewModel[];
+        }
+
         let result: any;
 
         const cacheProperty = '__' + property;
@@ -187,12 +198,24 @@ export class RelationManagerService {
                 const _model: M = target.getModel();
                 const relation = typeof property === 'string' ? relationsByKey[property] : null;
 
+                // try to find a getter for property
                 if (property in target) {
-                    const descriptor = Object.getOwnPropertyDescriptor(viewModelCtor.prototype, property);
+                    // iterate over prototype chain
+                    let prototypeFunc = viewModelCtor,
+                        descriptor = null;
+                    do {
+                        descriptor = Object.getOwnPropertyDescriptor(prototypeFunc.prototype, property);
+                        if (!descriptor || !descriptor.get) {
+                            prototypeFunc = Object.getPrototypeOf(prototypeFunc);
+                        }
+                    } while (!(descriptor && descriptor.get) && prototypeFunc && prototypeFunc.prototype);
+
                     if (descriptor && descriptor.get) {
+                        // if getter was found in prototype chain, bind it with this proxy for right `this` access
                         result = descriptor.get.bind(viewModel)();
                     } else {
                         result = target[property];
+                        // console.log(property, target);
                     }
                 } else if (property in _model) {
                     result = _model[property];

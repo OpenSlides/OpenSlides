@@ -7,9 +7,8 @@ from rest_framework import status
 from rest_framework.test import APIClient
 
 from openslides.mediafiles.models import Mediafile
-from openslides.utils.test import TestCase
-
-from ..helpers import count_queries
+from tests.count_queries import count_queries
+from tests.test_case import TestCase
 
 
 @pytest.mark.django_db(transaction=False)
@@ -28,7 +27,7 @@ def test_mediafiles_db_queries():
             mediafile=SimpleUploadedFile(f"some_file{index}", b"some content."),
         )
 
-    assert count_queries(Mediafile.get_elements) == 4
+    assert count_queries(Mediafile.get_elements)() == 4
 
 
 class TestCreation(TestCase):
@@ -41,6 +40,7 @@ class TestCreation(TestCase):
         response = self.client.post(
             reverse("mediafile-list"),
             {"title": "test_title_ahyo1uifoo9Aiph2av5a", "mediafile": self.file},
+            format="multipart",
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         mediafile = Mediafile.objects.get()
@@ -70,6 +70,7 @@ class TestCreation(TestCase):
                 "is_directory": True,
                 "mediafile": self.file,
             },
+            format="multipart",
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertFalse(Mediafile.objects.exists())
@@ -79,6 +80,7 @@ class TestCreation(TestCase):
         response = self.client.post(
             reverse("mediafile-list"),
             {"title": "test_title_vai8oDogohheideedie4", "mediafile": file},
+            format="multipart",
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         mediafile = Mediafile.objects.get()
@@ -90,6 +92,7 @@ class TestCreation(TestCase):
         response = self.client.post(
             reverse("mediafile-list"),
             {"title": "test_title_Zeicheipeequie3ohfid", "mediafile": file1},
+            format="multipart",
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         mediafile = Mediafile.objects.get()
@@ -98,6 +101,7 @@ class TestCreation(TestCase):
         response = self.client.post(
             reverse("mediafile-list"),
             {"title": "test_title_aiChaetohs0quicee9eb", "mediafile": file2},
+            format="multipart",
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(Mediafile.objects.count(), 1)
@@ -170,8 +174,8 @@ class TestCreation(TestCase):
             reverse("mediafile-list"),
             {
                 "title": "test_title_dggjwevBnUngelkdviom",
-                "mediafile": self.file,
-                "access_groups_id": json.dumps([2, 4]),
+                "is_directory": True,
+                "access_groups_id": [2, 4],
             },
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -180,8 +184,9 @@ class TestCreation(TestCase):
         self.assertEqual(
             sorted([group.id for group in mediafile.access_groups.all()]), [2, 4]
         )
-        self.assertTrue(mediafile.mediafile.name)
-        self.assertEqual(mediafile.path, mediafile.original_filename)
+        self.assertEqual(mediafile.mediafile.name, "")
+        self.assertEqual(mediafile.original_filename, "")
+        self.assertEqual(mediafile.path, mediafile.title + "/")
 
     def test_with_access_groups_wrong_json(self):
         response = self.client.post(
@@ -268,7 +273,6 @@ class TestUpdate(TestCase):
         response = self.client.put(
             reverse("mediafile-detail", args=[self.mediafileA.pk]),
             {"title": self.mediafileA.title, "parent_id": None},
-            format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         mediafile = Mediafile.objects.get(pk=self.mediafileA.pk)

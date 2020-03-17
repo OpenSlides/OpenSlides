@@ -6,8 +6,10 @@ from ..utils.projector import (
     AllData,
     ProjectorElementException,
     get_config,
+    get_model,
     register_projector_slide,
 )
+from .models import MotionPoll
 
 
 motion_placeholder_regex = re.compile(r"\[motion:(\d+)\]")
@@ -91,11 +93,7 @@ async def get_amendments_for_motion(motion, all_data):
 
 
 async def get_amendment_base_motion(amendment, all_data):
-    try:
-        motion = all_data["motions/motion"][amendment["parent_id"]]
-    except KeyError:
-        motion_id = amendment["parent_id"]
-        raise ProjectorElementException(f"motion with id {motion_id} does not exist")
+    motion = get_model(all_data, "motions/motion", amendment.get("parent_id"))
 
     return {
         "identifier": motion["identifier"],
@@ -105,14 +103,9 @@ async def get_amendment_base_motion(amendment, all_data):
 
 
 async def get_amendment_base_statute(amendment, all_data):
-    try:
-        statute = all_data["motions/statute-paragraph"][
-            amendment["statute_paragraph_id"]
-        ]
-    except KeyError:
-        statute_id = amendment["statute_paragraph_id"]
-        raise ProjectorElementException(f"statute with id {statute_id} does not exist")
-
+    statute = get_model(
+        all_data, "motions/statute-paragraph", amendment.get("statute_paragraph_id")
+    )
     return {"title": statute["title"], "text": statute["text"]}
 
 
@@ -167,15 +160,7 @@ async def motion_slide(
     mode = element.get(
         "mode", await get_config(all_data, "motions_recommendation_text_mode")
     )
-    motion_id = element.get("id")
-
-    if motion_id is None:
-        raise ProjectorElementException("id is required for motion slide")
-
-    try:
-        motion = all_data["motions/motion"][motion_id]
-    except KeyError:
-        raise ProjectorElementException(f"motion with id {motion_id} does not exist")
+    motion = get_model(all_data, "motions/motion", element.get("id"))
 
     # Add submitters
     submitters = [
@@ -270,7 +255,7 @@ async def motion_slide(
         # Add recommendation-referencing motions
         return_value[
             "recommendation_referencing_motions"
-        ] = await get_recommendation_referencing_motions(all_data, motion_id)
+        ] = await get_recommendation_referencing_motions(all_data, motion["id"])
 
     return return_value
 
@@ -317,17 +302,7 @@ async def motion_block_slide(
     """
     Motion block slide.
     """
-    motion_block_id = element.get("id")
-
-    if motion_block_id is None:
-        raise ProjectorElementException("id is required for motion block slide")
-
-    try:
-        motion_block = all_data["motions/motion-block"][motion_block_id]
-    except KeyError:
-        raise ProjectorElementException(
-            f"motion block with id {motion_block_id} does not exist"
-        )
+    motion_block = get_model(all_data, "motions/motion-block", element.get("id"))
 
     # All motions in this motion block
     motions = []
@@ -337,7 +312,7 @@ async def motion_block_slide(
 
     # Search motions.
     for motion in all_data["motions/motion"].values():
-        if motion["motion_block_id"] == motion_block_id:
+        if motion["motion_block_id"] == motion_block["id"]:
             motion_object = {
                 "title": motion["title"],
                 "identifier": motion["identifier"],
@@ -366,6 +341,49 @@ async def motion_block_slide(
     }
 
 
+async def motion_poll_slide(
+    all_data: AllData, element: Dict[str, Any], projector_id: int
+) -> Dict[str, Any]:
+    """
+    Poll slide.
+    """
+    poll = get_model(all_data, "motions/motion-poll", element.get("id"))
+    motion = get_model(all_data, "motions/motion", poll["motion_id"])
+
+    poll_data = {
+        key: poll[key]
+        for key in (
+            "title",
+            "type",
+            "pollmethod",
+            "state",
+            "onehundred_percent_base",
+            "majority_method",
+        )
+    }
+
+    if poll["state"] == MotionPoll.STATE_PUBLISHED:
+        option = get_model(
+            all_data, "motions/motion-option", poll["options_id"][0]
+        )  # there can only be exactly one option
+        poll_data["options"] = [
+            {
+                "yes": float(option["yes"]),
+                "no": float(option["no"]),
+                "abstain": float(option["abstain"]),
+            }
+        ]
+        poll_data["votesvalid"] = poll["votesvalid"]
+        poll_data["votesinvalid"] = poll["votesinvalid"]
+        poll_data["votescast"] = poll["votescast"]
+
+    return {
+        "motion": {"title": motion["title"], "identifier": motion["identifier"]},
+        "poll": poll_data,
+    }
+
+
 def register_projector_slides() -> None:
     register_projector_slide("motions/motion", motion_slide)
     register_projector_slide("motions/motion-block", motion_block_slide)
+    register_projector_slide("motions/motion-poll", motion_poll_slide)

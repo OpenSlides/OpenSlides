@@ -1,6 +1,11 @@
 import json
 from typing import Any, Dict, List
 
+from ..poll.access_permissions import (
+    BaseOptionAccessPermissions,
+    BasePollAccessPermissions,
+    BaseVoteAccessPermissions,
+)
 from ..utils.access_permissions import BaseAccessPermissions
 from ..utils.auth import async_has_perm, async_in_some_groups
 
@@ -179,3 +184,18 @@ class StateAccessPermissions(BaseAccessPermissions):
     """
 
     base_permission = "motions.can_see"
+
+
+class MotionPollAccessPermissions(BasePollAccessPermissions):
+    base_permission = "motions.can_see"
+    manage_permission = "motions.can_manage_polls"
+
+
+class MotionOptionAccessPermissions(BaseOptionAccessPermissions):
+    base_permission = "motions.can_see"
+    manage_permission = "motions.can_manage_polls"
+
+
+class MotionVoteAccessPermissions(BaseVoteAccessPermissions):
+    base_permission = "motions.can_see"
+    manage_permission = "motions.can_manage_polls"

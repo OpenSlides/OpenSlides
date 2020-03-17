@@ -13,16 +13,17 @@
     </div>
 
     <!-- Directory selector, if no external directory is provided -->
-    <div *ngIf="showDirectorySelector">
-        <os-search-value-selector
-            ngDefaultControl
-            [formControl]="directorySelectionForm.get('parent_id')"
-            [multiple]="false"
-            [includeNone]="true"
-            [noneTitle]="'Base folder'"
-            listname="{{ 'Parent directory' | translate }}"
-            [inputListValues]="directoryBehaviorSubject"
-        ></os-search-value-selector>
+    <div *ngIf="showDirectorySelector" [formGroup]="directorySelectionForm">
+        <mat-form-field>
+            <os-search-value-selector
+                formControlName="parent_id"
+                [multiple]="false"
+                [includeNone]="true"
+                [noneTitle]="'Base folder'"
+                placeholder="{{ 'Parent directory' | translate }}"
+                [inputListValues]="directoryBehaviorSubject"
+            ></os-search-value-selector>
+        </mat-form-field>
     </div>
 
     <div>
@@ -69,14 +70,15 @@
             <!-- Access groups -->
             <ng-container matColumnDef="access_groups">
                 <th mat-header-cell *matHeaderCellDef><span translate>Access groups</span></th>
-                <td mat-cell *matCellDef="let file">
-                    <os-search-value-selector
-                        ngDefaultControl
-                        [formControl]="file.form.get('access_groups_id')"
-                        [multiple]="true"
-                        listname="{{ 'Access groups' | translate }}"
-                        [inputListValues]="groupsBehaviorSubject"
-                    ></os-search-value-selector>
+                <td mat-cell *matCellDef="let file" [formGroup]="file.form">
+                    <mat-form-field>
+                        <os-search-value-selector
+                            formControlName="access_groups_id"
+                            [multiple]="true"
+                            placeholder="{{ 'Access groups' | translate }}"
+                            [inputListValues]="groupsBehaviorSubject"
+                        ></os-search-value-selector>
+                    </mat-form-field>
                 </td>
             </ng-container>
 

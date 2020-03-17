@@ -5,6 +5,6 @@ export interface AssignmentSlideData {
     open_posts: number;
     assignment_related_users: {
         user: string;
-        elected: boolean;
     }[];
+    number_poll_candidates: boolean;
 }

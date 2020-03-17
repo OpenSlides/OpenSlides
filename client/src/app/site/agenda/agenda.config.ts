@@ -9,9 +9,8 @@ import { ViewListOfSpeakers } from './models/view-list-of-speakers';
 export const AgendaAppConfig: AppConfig = {
     name: 'agenda',
     models: [
-        { collectionString: 'agenda/item', model: Item, viewModel: ViewItem, repository: ItemRepositoryService },
+        { model: Item, viewModel: ViewItem, repository: ItemRepositoryService },
         {
-            collectionString: 'agenda/list-of-speakers',
             model: ListOfSpeakers,
             viewModel: ViewListOfSpeakers,
             repository: ListOfSpeakersRepositoryService

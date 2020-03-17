@@ -1,0 +1,29 @@
+@import '~@angular/material/theming';
+
+@mixin os-assignment-poll-detail-style($theme) {
+    $background: map-get($theme, background);
+
+    .assignment-result-table {
+        border-collapse: collapse;
+        tr {
+            border-bottom: 1px solid mat-color($background, focused-button);
+        }
+    }
+
+    .openslides-theme .pbl-ngrid-row:hover {
+        background-color: mat-color($background, card);
+    }
+
+    .openslides-theme os-list-view-table os-sort-filter-bar .custom-table-header {
+        &,
+        .action-buttons .input-container input {
+            background: mat-color($background, card);
+        }
+    }
+
+    .openslides-theme .pbl-ngrid-header-cell:first-child {
+        &::after {
+            border-right: 1px solid mat-color($background, focused-button);
+        }
+    }
+}

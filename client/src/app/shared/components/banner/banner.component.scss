@@ -1,0 +1,57 @@
+@import '../../../../assets/styles/media-queries.scss';
+
+.banner {
+    &.larger-on-mobile {
+        @include set-breakpoint-lower(sm) {
+            min-height: 40px;
+        }
+    }
+
+    position: relative; // was fixed before to prevent the overflow
+    min-height: 20px;
+    line-height: 20px;
+    width: 100%;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid white;
+
+    a {
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        color: white;
+        &.banner-link {
+            width: 100%;
+            height: 100%;
+        }
+    }
+
+    mat-icon {
+        $font-size: 16px;
+        width: $font-size;
+        height: $font-size;
+        font-size: $font-size;
+
+        & + span {
+            margin-left: 10px;
+        }
+    }
+}
+
+.history-mode-indicator {
+    background: repeating-linear-gradient(45deg, #ffee00, #ffee00 10px, #070600 10px, #000000 20px);
+
+    span,
+    a {
+        padding: 2px;
+        color: #000000;
+        background: #ffee00;
+    }
+
+    a {
+        cursor: pointer;
+        font-weight: bold;
+    }
+}

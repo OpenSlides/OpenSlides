@@ -1,0 +1,22 @@
+<div class="check-input--container">
+    <mat-form-field>
+        <input
+            matInput
+            class="check-input--input"
+            [type]="inputType"
+            [formControl]="contentForm"
+            [placeholder]="placeholder"
+            [min]="0"
+        />
+    </mat-form-field>
+    <mat-checkbox
+        *ngIf="checkboxLabel"
+        [name]="'checkbox'"
+        [ngModel]="isChecked"
+        (change)="checkboxStateChanged($event.checked)"
+        tabindex="-1"
+    >
+        {{ checkboxLabel }}
+    </mat-checkbox>
+    <div *ngIf="!checkboxLabel" class="placeholder"></div>
+</div>

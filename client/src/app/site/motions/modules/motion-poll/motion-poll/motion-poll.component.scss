@@ -1,0 +1,70 @@
+@import '~assets/styles/poll-colors.scss';
+@import '~assets/styles/poll-styles-common.scss';
+
+.poll-link-wrapper {
+    outline: none;
+}
+
+.motion-poll-wrapper {
+    margin-bottom: 30px;
+
+    .poll-title-wrapper {
+        display: grid;
+        grid-gap: 10px;
+        grid-template-areas: 'title actions';
+        grid-template-columns: auto min-content;
+
+        .poll-title-area {
+            grid-area: title;
+            margin-top: 1em;
+
+            .poll-title {
+                font-size: 125%;
+            }
+        }
+
+        .poll-actions {
+            grid-area: actions;
+        }
+    }
+
+    .poll-chart-wrapper {
+        cursor: pointer;
+        display: grid;
+        grid-gap: 20px;
+        margin: 2em;
+        // try to find max scale
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+
+        .doughnut-chart {
+            display: block;
+            max-width: 200px;
+            margin-top: auto;
+            margin-bottom: auto;
+        }
+
+        .vote-legend {
+            div + div {
+                margin-top: 20px;
+            }
+        }
+    }
+}
+
+.poll-detail-button-wrapper {
+    display: flex;
+    margin: auto 0;
+    > a {
+        margin-left: auto;
+    }
+}
+
+.next-state-label {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.motion-couting-in-progress-hint {
+    margin-top: 1em;
+    font-style: italic;
+}

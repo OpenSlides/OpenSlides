@@ -38,14 +38,13 @@
             (keydown)="keyDownFunction($event)"
         />
     </mat-form-field>
-    <os-search-value-selector
-        *ngIf="searchList"
-        ngDefaultControl
-        [formControl]="extensionFieldForm.get('list')"
-        [fullWidth]="true"
-        [inputListValues]="searchList"
-        [listname]="searchListLabel"
-    ></os-search-value-selector>
+    <mat-form-field *ngIf="searchList">
+        <os-search-value-selector
+            formControlName="list"
+            [inputListValues]="searchList"
+            [placeholder]="searchListLabel"
+        ></os-search-value-selector>
+    </mat-form-field>
 
     <button mat-button (click)="changeEditMode(true)">{{ 'Save' | translate }}</button>
     <button mat-button (click)="changeEditMode()">{{ 'Cancel' | translate }}</button>

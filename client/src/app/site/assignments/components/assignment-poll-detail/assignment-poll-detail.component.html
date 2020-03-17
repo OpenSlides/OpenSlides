@@ -1,0 +1,178 @@
+<os-head-bar [goBack]="true" [nav]="false">
+    <div class="title-slot">
+        <h2 *ngIf="!!poll">{{ poll.title }}</h2>
+    </div>
+
+    <div class="menu-slot" *osPerms="'assignments.can_manage'">
+        <button type="button" mat-icon-button [matMenuTriggerFor]="pollDetailMenu">
+            <mat-icon>more_vert</mat-icon>
+        </button>
+    </div>
+</os-head-bar>
+
+<mat-card class="os-card">
+    <ng-container [ngTemplateOutlet]="viewTemplate"></ng-container>
+</mat-card>
+
+<!-- Detailview for poll -->
+<ng-template #viewTemplate>
+    <div *ngIf="isReady">
+        <h1>{{ poll.title }}</h1>
+        <div>
+            <!-- Voting type -->
+            <span *ngIf="poll.type !== 'analog'"> {{ poll.typeVerbose | translate }} &middot; </span>
+
+            <!-- State -->
+            <span>
+                {{ poll.stateVerbose | translate }}
+            </span>
+        </div>
+
+        <div class="assignment-result-wrapper" *ngIf="poll.stateHasVotes">
+            <!-- Result Table -->
+            <div>
+                <table class="assignment-result-table">
+                    <tbody>
+                        <tr>
+                            <th class="voting-option" translate>Candidates</th>
+                            <th class="result yes">
+                                <span *ngIf="!poll.isMethodY" translate>
+                                    Yes
+                                </span>
+                                <span *ngIf="poll.isMethodY" translate>
+                                    Votes
+                                </span>
+                            </th>
+                            <th class="result no" translate *ngIf="!poll.isMethodY">No</th>
+                            <th class="result abstain" translate *ngIf="poll.isMethodYNA">Abstain</th>
+                        </tr>
+                        <tr *ngFor="let row of getTableData()" [class]="row.class">
+                            <td class="voting-option">
+                                <div>
+                                    <span>
+                                        {{ row.votingOption | pollKeyVerbose | translate }}
+                                    </span>
+                                    <span class="user-subtitle" *ngIf="row.votingOptionSubtitle">
+                                        <br />
+                                        {{ row.votingOptionSubtitle }}
+                                    </span>
+                                </div>
+                            </td>
+                            <td class="result" *ngFor="let vote of row.value">
+                                <div
+                                    class="single-result"
+                                    [ngClass]="getVoteClass(vote)"
+                                    *ngIf="vote && voteFitsMethod(vote)"
+                                >
+                                    <span>
+                                        <span *ngIf="vote.showPercent">
+                                            {{ vote.amount | pollPercentBase: poll }}
+                                        </span>
+                                        {{ vote.amount | parsePollNumber }}
+                                    </span>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Result Chart -->
+            <div class="chart-wrapper">
+                <os-charts
+                    class="assignment-result-chart"
+                    *ngIf="chartDataSubject.value"
+                    [type]="chartType"
+                    [labels]="candidatesLabels"
+                    [data]="chartDataSubject"
+                    [hasPadding]="false"
+                    [showLegend]="false"
+                    legendPosition="right"
+                ></os-charts>
+            </div>
+
+            <!-- Single Votes Table -->
+            <div class="named-result-table" *ngIf="poll.type === 'named'">
+                <h3>{{ 'Single votes' | translate }}</h3>
+                <os-list-view-table
+                    *ngIf="votesDataObservable"
+                    [listObservable]="votesDataObservable"
+                    [columns]="columnDefinitionSingleVotes"
+                    [filterProps]="filterProps"
+                    [allowProjector]="false"
+                    [fullScreen]="false"
+                    [vScrollFixed]="-1"
+                    listStorageKey="assignment-poll-vote"
+                    [showListOfSpeakers]="false"
+                    [showMenu]="false"
+                    [cssClasses]="{ 'single-votes-table': true }"
+                >
+                    <!-- Header -->
+                    <div *pblNgridHeaderCellDef="'user'; col as col">
+                        {{ col.label | translate }}
+                    </div>
+                    <div *pblNgridHeaderCellDef="'votes'; col as col">
+                        {{ col.label | translate }}
+                    </div>
+
+                    <!-- Content -->
+                    <div *pblNgridCellDef="'user'; row as vote">
+                        <div *ngIf="vote.user">
+                            {{ vote.user.getShortName() }}
+                            <div class="user-subtitle" *ngIf="vote.user.getLevelAndNumber()">
+                                {{ vote.user.getLevelAndNumber() }}
+                            </div>
+                        </div>
+                        <div *ngIf="!vote.user">
+                            {{ 'Anonymous' | translate }}
+                        </div>
+                    </div>
+
+                    <div *pblNgridCellDef="'votes'; row as vote">
+                        <div class="single-vote-result" *ngFor="let candidate of vote.votes">{{ candidate }}</div>
+                    </div>
+                </os-list-view-table>
+                <div *ngIf="!votesDataObservable">
+                    {{ 'The individual votes were anonymized.' | translate }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Meta Infos -->
+    <div *ngIf="poll" class="assignment-poll-meta">
+        <small *ngIf="poll.groups && poll.type && poll.type !== 'analog'">
+            {{ 'Groups' | translate }}:
+
+            <span *ngFor="let group of poll.groups; let i = index">
+                {{ group.getTitle() | translate }}<span *ngIf="i < poll.groups.length - 1">, </span>
+            </span>
+        </small>
+
+        <small *ngIf="poll.onehundred_percent_base">
+            {{ '100% base' | translate }}: {{ poll.percentBaseVerbose | translate }}
+        </small>
+    </div>
+</ng-template>
+
+<!-- More Menu -->
+<mat-menu #pollDetailMenu="matMenu">
+    <os-projector-button [menuItem]="true" [object]="poll" *osPerms="'core.can_manage_projector'"></os-projector-button>
+    <button *osPerms="'assignments.can_manage'" mat-menu-item (click)="openDialog(poll)">
+        <mat-icon>edit</mat-icon>
+        <span translate>Edit</span>
+    </button>
+    <button
+        mat-menu-item
+        *osPerms="'assignments.can_manage'; and: poll && poll.type === 'named'"
+        (click)="pseudoanonymizePoll()"
+    >
+        <mat-icon>warning</mat-icon>
+        <span translate>Anonymize votes</span>
+    </button>
+    <mat-divider></mat-divider>
+    <button *osPerms="'assignments.can_manage'" mat-menu-item (click)="deletePoll()">
+        <mat-icon color="warn">delete</mat-icon>
+        <span translate>Delete</span>
+    </button>
+</mat-menu>

@@ -1,9 +1,4 @@
-<div class="offline-banner" *ngIf="isOffline"><mat-icon>cloud_off</mat-icon><span translate>Offline mode</span></div>
-<div class="history-mode-indicator" *ngIf="OSStatus.isInHistoryMode">
-    <span translate>You are using the history mode of OpenSlides. Changes will not be saved.</span>
-    <span>({{ getHistoryTimestamp() }})</span>
-    <a (click)="timeTravel.resumeTime()" translate>Exit</a>
-</div>
+<os-banner></os-banner>
 <mat-sidenav-container
     #siteContainer
     class="main-container"

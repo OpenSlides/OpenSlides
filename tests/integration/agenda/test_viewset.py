@@ -12,14 +12,64 @@ from openslides.assignments.models import Assignment
 from openslides.core.config import config
 from openslides.core.models import Countdown
 from openslides.mediafiles.models import Mediafile
-from openslides.motions.models import Motion
+from openslides.motions.models import Motion, MotionBlock
 from openslides.topics.models import Topic
 from openslides.users.models import Group
 from openslides.utils.autoupdate import inform_changed_data
-from openslides.utils.test import TestCase
+from tests.count_queries import count_queries
+from tests.test_case import TestCase
 
 from ...common_groups import GROUP_DEFAULT_PK
-from ..helpers import count_queries
+
+
+@pytest.mark.django_db(transaction=False)
+def test_agenda_item_db_queries():
+    """
+    Tests that only the following db queries are done:
+    * 1 request to get the list of all agenda items,
+    * 1 request to get all assignments,
+    * 1 request to get all motions,
+    * 1 request to get all topics,
+    * 1 request to get all motion blocks and
+    * 1 request to get all parents
+    """
+    parent = Topic.objects.create(title="parent").agenda_item
+    for index in range(10):
+        item = Topic.objects.create(title=f"topic{index}").agenda_item
+        item.parent = parent
+        item.save()
+    Motion.objects.create(title="motion1")
+    Motion.objects.create(title="motion2")
+    Assignment.objects.create(title="assignment1", open_posts=5)
+    Assignment.objects.create(title="assignment2", open_posts=5)
+    MotionBlock.objects.create(title="block1")
+    MotionBlock.objects.create(title="block1")
+
+    assert count_queries(Item.get_elements)() == 6
+
+
+@pytest.mark.django_db(transaction=False)
+def test_list_of_speakers_db_queries():
+    """
+    Tests that only the following db queries are done:
+    * 1 requests to get the list of all lists of speakers
+    * 1 request to get all speakers
+    * 4 requests to get the assignments, motions, topics and mediafiles and
+    """
+    for index in range(10):
+        Topic.objects.create(title=f"topic{index}")
+    parent = Topic.objects.create(title="parent").agenda_item
+    child = Topic.objects.create(title="child").agenda_item
+    child.parent = parent
+    child.save()
+    Motion.objects.create(title="motion1")
+    Motion.objects.create(title="motion2")
+    Assignment.objects.create(title="assignment", open_posts=5)
+    Mediafile.objects.create(
+        title=f"mediafile", mediafile=SimpleUploadedFile(f"some_file", b"some content.")
+    )
+
+    assert count_queries(ListOfSpeakers.get_elements)() == 6
 
 
 class ContentObjects(TestCase):
@@ -233,76 +283,16 @@ class RetrieveListOfSpeakers(TestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 
-@pytest.mark.django_db(transaction=False)
-def test_agenda_item_db_queries():
-    """
-    Tests that only the following db queries are done:
-    * 1 requests to get the list of all agenda items,
-    * 3 requests to get the assignments, motions and topics and
-    * 1 request to get an agenda item (why?)
-    TODO: The last three request are a bug.
-    """
-    for index in range(10):
-        Topic.objects.create(title=f"topic{index}")
-    parent = Topic.objects.create(title="parent").agenda_item
-    child = Topic.objects.create(title="child").agenda_item
-    child.parent = parent
-    child.save()
-    Motion.objects.create(title="motion1")
-    Motion.objects.create(title="motion2")
-    Assignment.objects.create(title="assignment", open_posts=5)
-
-    assert count_queries(Item.get_elements) == 5
-
-
-@pytest.mark.django_db(transaction=False)
-def test_list_of_speakers_db_queries():
-    """
-    Tests that only the following db queries are done:
-    * 1 requests to get the list of all lists of speakers
-    * 1 request to get all speakers
-    * 4 requests to get the assignments, motions, topics and mediafiles and
-    """
-    for index in range(10):
-        Topic.objects.create(title=f"topic{index}")
-    parent = Topic.objects.create(title="parent").agenda_item
-    child = Topic.objects.create(title="child").agenda_item
-    child.parent = parent
-    child.save()
-    Motion.objects.create(title="motion1")
-    Motion.objects.create(title="motion2")
-    Assignment.objects.create(title="assignment", open_posts=5)
-    Mediafile.objects.create(
-        title=f"mediafile", mediafile=SimpleUploadedFile(f"some_file", b"some content.")
-    )
-
-    assert count_queries(ListOfSpeakers.get_elements) == 6
-
-
 class ManageSpeaker(TestCase):
     """
     Tests managing speakers.
     """
 
-    def setUp(self):
-        self.client = APIClient()
-        self.client.login(username="admin", password="admin")
-
+    def advancedSetUp(self):
         self.list_of_speakers = Topic.objects.create(
             title="test_title_aZaedij4gohn5eeQu8fe"
         ).list_of_speakers
-        self.user = get_user_model().objects.create_user(
-            username="test_user_jooSaex1bo5ooPhuphae",
-            password="test_password_e6paev4zeeh9n",
-        )
-
-    def revoke_admin_rights(self):
-        admin = get_user_model().objects.get(username="admin")
-        group_admin = admin.groups.get(name="Admin")
-        group_delegates = type(group_admin).objects.get(name="Delegates")
-        admin.groups.add(group_delegates)
-        admin.groups.remove(group_admin)
-        inform_changed_data(admin)
+        self.user, _ = self.create_user()
 
     def test_add_oneself_once(self):
         response = self.client.post(
@@ -383,7 +373,7 @@ class ManageSpeaker(TestCase):
         self.assertEqual(response.status_code, 400)
 
     def test_add_someone_else_non_admin(self):
-        self.revoke_admin_rights()
+        self.make_admin_delegate()
 
         response = self.client.post(
             reverse("listofspeakers-manage-speaker", args=[self.list_of_speakers.pk]),
@@ -419,7 +409,7 @@ class ManageSpeaker(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_remove_someone_else_non_admin(self):
-        self.revoke_admin_rights()
+        self.make_admin_delegate()
         speaker = Speaker.objects.add(self.user, self.list_of_speakers)
 
         response = self.client.delete(
@@ -433,14 +423,13 @@ class ManageSpeaker(TestCase):
         response = self.client.patch(
             reverse("listofspeakers-manage-speaker", args=[self.list_of_speakers.pk]),
             {"user": self.user.pk, "marked": True},
-            format="json",
         )
 
         self.assertEqual(response.status_code, 200)
         self.assertTrue(Speaker.objects.get().marked)
 
     def test_mark_speaker_non_admin(self):
-        self.revoke_admin_rights()
+        self.make_admin_delegate()
         Speaker.objects.add(self.user, self.list_of_speakers)
 
         response = self.client.patch(
@@ -515,7 +504,7 @@ class ManageSpeaker(TestCase):
 
     def test_readd_last_speaker_no_admin(self):
         self.util_add_user_as_last_speaker()
-        self.revoke_admin_rights()
+        self.make_admin_delegate()
 
         response = self.client.post(
             reverse(

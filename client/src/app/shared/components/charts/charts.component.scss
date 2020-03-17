@@ -1,0 +1,15 @@
+.charts-wrapper {
+    position: relative;
+    display: block;
+    margin: auto;
+
+    &.has-padding {
+        padding: 16px;
+    }
+}
+
+@for $i from 1 through 100 {
+    .os-charts--#{$i} {
+        width: unquote($string: $i + '%');
+    }
+}

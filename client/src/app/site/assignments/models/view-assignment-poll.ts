@@ -1,39 +1,76 @@
-import { AssignmentPoll, AssignmentPollWithoutNestedModels } from 'app/shared/models/assignments/assignment-poll';
-import { BaseProjectableViewModel } from 'app/site/base/base-projectable-view-model';
-import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
-import { ViewAssignmentPollOption } from './view-assignment-poll-option';
+import { BehaviorSubject } from 'rxjs';
 
-export class ViewAssignmentPoll extends BaseProjectableViewModel<AssignmentPoll> {
+import { _ } from 'app/core/translate/translation-marker';
+import { ChartData } from 'app/shared/components/charts/charts.component';
+import {
+    AssignmentPoll,
+    AssignmentPollMethod,
+    AssignmentPollPercentBase
+} from 'app/shared/models/assignments/assignment-poll';
+import { BaseViewModel } from 'app/site/base/base-view-model';
+import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
+import { PollClassType, ViewBasePoll } from 'app/site/polls/models/view-base-poll';
+import { ViewAssignment } from './view-assignment';
+import { ViewAssignmentOption } from './view-assignment-option';
+
+export interface AssignmentPollTitleInformation {
+    title: string;
+}
+
+export const AssignmentPollMethodVerbose = {
+    votes: _('Yes per candidate'),
+    YN: _('Yes/No per candidate'),
+    YNA: _('Yes/No/Abstain per candidate')
+};
+
+export const AssignmentPollPercentBaseVerbose = {
+    YN: _('Yes/No per candidate'),
+    YNA: _('Yes/No/Abstain per candidate'),
+    votes: _('Sum of votes including general No/Abstain'),
+    valid: _('All valid ballots'),
+    cast: _('All casted ballots'),
+    disabled: _('Disabled (no percents)')
+};
+
+export class ViewAssignmentPoll extends ViewBasePoll<AssignmentPoll, AssignmentPollMethod, AssignmentPollPercentBase>
+    implements AssignmentPollTitleInformation {
     public static COLLECTIONSTRING = AssignmentPoll.COLLECTIONSTRING;
     protected _collectionString = AssignmentPoll.COLLECTIONSTRING;
 
-    public get poll(): AssignmentPoll {
-        return this._model;
+    public readonly tableChartData: Map<string, BehaviorSubject<ChartData>> = new Map();
+    public readonly pollClassType = PollClassType.Assignment;
+
+    public get pollmethodVerbose(): string {
+        return AssignmentPollMethodVerbose[this.pollmethod];
     }
 
-    public getListTitle = () => {
-        return this.getTitle();
-    };
+    public get percentBaseVerbose(): string {
+        return AssignmentPollPercentBaseVerbose[this.onehundred_percent_base];
+    }
 
-    public getProjectorTitle = () => {
-        return this.getTitle();
-    };
+    public getContentObject(): BaseViewModel {
+        return this.assignment;
+    }
 
     public getSlide(): ProjectorElementBuildDeskriptor {
         return {
             getBasicProjectorElement: options => ({
-                name: 'assignments/poll',
-                assignment_id: this.assignment_id,
-                poll_id: this.id,
-                getIdentifiers: () => ['name', 'assignment_id', 'poll_id']
+                name: AssignmentPoll.COLLECTIONSTRING,
+                id: this.id,
+                getIdentifiers: () => ['name', 'id']
             }),
             slideOptions: [],
-            projectionDefaultName: 'assignments',
-            getDialogTitle: () => 'TODO'
+            projectionDefaultName: 'assignment_poll',
+            getDialogTitle: this.getTitle
         };
+    }
+
+    protected getDecimalFields(): string[] {
+        return AssignmentPoll.DECIMAL_FIELDS;
     }
 }
 
-export interface ViewAssignmentPoll extends AssignmentPollWithoutNestedModels {
-    options: ViewAssignmentPollOption[];
+export interface ViewAssignmentPoll extends AssignmentPoll {
+    options: ViewAssignmentOption[];
+    assignment: ViewAssignment;
 }

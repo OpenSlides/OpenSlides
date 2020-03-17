@@ -70,7 +70,7 @@
 
         <!-- Attachments -->
         <os-attachment-control
-            [controlName]="topicForm.get('attachments_id')"
+            formControlName="attachments_id"
             (errorHandler)="raiseError($event)"
         ></os-attachment-control>
 
@@ -88,13 +88,14 @@
 
             <!-- Parent item -->
             <div>
-                <os-search-value-selector
-                    ngDefaultControl
-                    [formControl]="topicForm.get('agenda_parent_id')"
-                    [includeNone]="true"
-                    listname="{{ 'Parent agenda item' | translate }}"
-                    [inputListValues]="itemObserver"
-                ></os-search-value-selector>
+                <mat-form-field>
+                    <os-search-value-selector
+                        formControlName="agenda_parent_id"
+                        [includeNone]="true"
+                        placeholder="{{ 'Parent agenda item' | translate }}"
+                        [inputListValues]="itemObserver"
+                    ></os-search-value-selector>
+                </mat-form-field>
             </div>
         </div>
     </form>

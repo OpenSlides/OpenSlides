@@ -1,0 +1,30 @@
+<div *osPerms="'motions.can_manage_polls'; and: poll && poll.isStarted">
+    <os-poll-progress [poll]="poll"></os-poll-progress>
+</div>
+<ng-container *ngIf="poll && !poll.user_has_voted; else userHasVotes">
+    <div *ngIf="vmanager.canVote(poll)" class="vote-button-grid">
+        <!-- Voting -->
+        <div class="vote-button" *ngFor="let option of voteOptions">
+            <button
+                mat-raised-button
+                (click)="saveVote(option.vote)"
+                [ngClass]="currentVote && currentVote.vote === option.vote ? option.css : ''"
+            >
+                <mat-icon> {{ option.icon }}</mat-icon>
+            </button>
+            <span class="vote-label"> {{ option.label | translate }} </span>
+        </div>
+    </div>
+</ng-container>
+
+<ng-template #userHasVotes>
+    <div class="user-has-voted">
+        <div>
+            <mat-icon class="vote-submitted">
+                check_circle
+            </mat-icon>
+            <br />
+            <span>{{ 'Voting successful.' | translate }}</span>
+        </div>
+    </div>
+</ng-template>

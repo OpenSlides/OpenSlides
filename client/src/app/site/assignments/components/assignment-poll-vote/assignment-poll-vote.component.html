@@ -1,0 +1,124 @@
+<ng-container *ngIf="poll">
+    <ng-container *ngIf="vmanager.canVote(poll) && !alreadyVoted; else cannotVote">
+        <!-- Poll hint -->
+        <p *ngIf="pollHint">
+            <i>{{ pollHint }}</i>
+        </p>
+
+        <!-- Leftover votes -->
+        <h4
+            *ngIf="poll.pollmethod === AssignmentPollMethod.Votes && poll.votes_amount > 1"
+        >
+            {{ 'Available votes' | translate }}: {{ getVotesCount() }}/{{ poll.votes_amount }}
+        </h4>
+
+        <!-- Options and Actions -->
+        <div *ngFor="let option of poll.options; let i = index">
+            <div *ngIf="poll.type !== PollType.Pseudoanonymous || !option.user_has_voted">
+                <div
+                    [ngClass]="{
+                        'yna-grid': poll.pollmethod === AssignmentPollMethod.YNA,
+                        'yn-grid': poll.pollmethod === AssignmentPollMethod.YN,
+                        'single-vote-grid': poll.pollmethod === AssignmentPollMethod.Votes
+                    }"
+                >
+                    <div class="vote-candidate-name">
+                        <span *ngIf="option.user">
+                            <span>{{ option.user.short_name }}</span>
+                            <div class="user-subtitle" *ngIf="option.user.getLevelAndNumber()">
+                                {{ option.user.getLevelAndNumber() }}
+                            </div>
+                        </span>
+                        <span *ngIf="!option.user">{{ 'Unknown user' | translate }}</span>
+                    </div>
+
+                    <div *ngFor="let action of voteActions">
+                        <button
+                            class="vote-button"
+                            mat-raised-button
+                            (click)="saveSingleVote(option.id, action.vote)"
+                            [ngClass]="
+                                voteRequestData.votes[option.id] === action.vote ||
+                                voteRequestData.votes[option.id] === 1
+                                    ? action.css
+                                    : ''
+                            "
+                        >
+                            <mat-icon> {{ action.icon }}</mat-icon>
+                        </button>
+                        <span *ngIf="poll.pollmethod !== AssignmentPollMethod.Votes" class="vote-label">
+                            {{ action.label | translate }}
+                        </span>
+                    </div>
+                </div>
+                <mat-divider *ngIf="poll.options.length - 1 > i"></mat-divider>
+            </div>
+        </div>
+
+        <!-- global no/abstain -->
+        <ng-container *ngIf="poll.pollmethod === AssignmentPollMethod.Votes && (poll.global_no || poll.global_abstain)">
+            <mat-divider></mat-divider>
+            <div class="global-option-grid">
+                <div *ngIf="poll.global_no">
+                    <button
+                        class="vote-button"
+                        mat-raised-button
+                        (click)="saveGlobalVote('N')"
+                        [ngClass]="voteRequestData.global === 'N' ? 'voted-no' : ''"
+                    >
+                        <mat-icon> thumb_down </mat-icon>
+                    </button>
+                    <span class="vote-label">
+                        {{ 'General No' | translate }}
+                    </span>
+                </div>
+
+                <div *ngIf="poll.global_abstain">
+                    <button
+                        mat-raised-button
+                        (click)="saveGlobalVote('A')"
+                        [ngClass]="voteRequestData.global === 'A' ? 'voted-abstain' : ''"
+                    >
+                        <mat-icon> trip_origin</mat-icon>
+                    </button>
+                    <span class="vote-label">
+                        {{ 'General Abstain' | translate }}
+                    </span>
+                </div>
+            </div>
+        </ng-container>
+
+        <!-- Submit Vote -->
+        <ng-container [ngTemplateOutlet]="sendNow"></ng-container>
+    </ng-container>
+
+    <!-- Shows the permission error -->
+    <ng-container *ngIf="!vmanager.canVote(poll)">
+        <span>{{ vmanager.getVotePermissionErrorVerbose(poll) | translate }}</span>
+    </ng-container>
+</ng-container>
+
+<ng-template #cannotVote>
+    <div class="centered-button-wrapper">
+        <div>
+            <mat-icon class="vote-submitted">
+                check_circle
+            </mat-icon>
+            <br />
+            <span>{{ 'Voting successful.' | translate }}</span>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #sendNow>
+    <div class="centered-button-wrapper">
+        <button mat-flat-button color="accent" (click)="submitVote()">
+            <mat-icon>
+                how_to_vote
+            </mat-icon>
+            <span>
+                {{ 'Submit vote now' | translate }}
+            </span>
+        </button>
+    </div>
+</ng-template>

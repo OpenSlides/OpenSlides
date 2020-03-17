@@ -1,0 +1,12 @@
+@import '~@angular/material/theming';
+
+@mixin os-motion-poll-detail-style($theme) {
+    $background: map-get($theme, background);
+
+    os-list-view-table os-sort-filter-bar .custom-table-header {
+        &,
+        .action-buttons .input-container input {
+            background: mat-color($background, card);
+        }
+    }
+}

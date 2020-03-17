@@ -1,0 +1,108 @@
+@import '~assets/styles/poll-colors.scss';
+@import '~assets/styles/poll-styles-common.scss';
+
+.assignment-result-wrapper {
+    .assignment-result-table {
+        margin-top: 2em;
+        display: block;
+        overflow-x: auto;
+        border-collapse: collapse;
+
+        th {
+            font-weight: initial;
+        }
+
+        tr {
+            height: 48px;
+
+            td:first-child {
+                padding-right: 1em;
+            }
+        }
+
+        tr.sums {
+            border-bottom: none;
+            td {
+                padding-top: 1em;
+                padding-bottom: 1em;
+            }
+        }
+
+        .result {
+            text-align: right;
+            padding-left: 1em;
+        }
+
+        .voting-option {
+            min-width: 200px;
+            width: 100%;
+            text-align: left;
+        }
+
+        .user + .sums {
+            td {
+                padding-top: 2em;
+            }
+        }
+
+        .single-result {
+            white-space: pre;
+        }
+    }
+
+    .chart-wrapper {
+        margin-top: 2em;
+        .pie-chart {
+            margin-left: auto;
+            margin-right: auto;
+            width: 50%;
+        }
+    }
+
+    .named-result-table {
+        .mat-form-field {
+            font-size: 14px;
+            width: 100%;
+        }
+
+        .single-votes-table {
+            display: block;
+            height: 500px;
+
+            .single-vote-result + .single-vote-result {
+                margin-top: 1em;
+            }
+        }
+
+        .vote-field {
+            text-align: center;
+            width: 100%;
+            padding-right: 12px;
+        }
+    }
+}
+
+.assignment-poll-meta {
+    display: grid;
+    text-align: right;
+    padding-top: 20px;
+}
+
+.openslides-theme .pbl-ngrid-no-data {
+    top: 10%;
+}
+
+.openslides-theme .pbl-ngrid-header-cell:first-child {
+    & {
+        overflow: visible;
+    }
+
+    &::after {
+        content: '';
+        display: block;
+        position: absolute;
+        top: 0;
+        right: -1px;
+        height: 100%;
+    }
+}

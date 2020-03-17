@@ -27,6 +27,11 @@
 @import './app/site/config/components/config-field/config-field.component.scss-theme.scss';
 @import './app/site/motions/modules/motion-detail/components/amendment-create-wizard/amendment-create-wizard.components.scss-theme.scss';
 @import './app/site/motions/modules/motion-detail/components/motion-detail-diff/motion-detail-diff.component.scss-theme.scss';
+@import './app/shared/components/banner/banner.component.scss-theme.scss';
+@import './app/site/motions/modules/motion-poll/motion-poll/motion-poll.component.scss-theme.scss';
+@import './app/site/motions/modules/motion-poll/motion-poll-detail/motion-poll-detail.component.scss-theme.scss';
+@import './app/site/assignments/components/assignment-poll-detail/assignment-poll-detail-component.scss-theme.scss';
+@import './app/shared/components/progress-snack-bar/progress-snack-bar.component.scss-theme.scss';
 
 /** fonts */
 @import './assets/styles/fonts.scss';
@@ -54,6 +59,11 @@ $narrow-spacing: (
     @include os-config-field-style($theme);
     @include os-amendment-create-wizard-style($theme);
     @include os-motion-detail-diff-style($theme);
+    @include os-banner-style($theme);
+    @include os-motion-poll-style($theme);
+    @include os-motion-poll-detail-style($theme);
+    @include os-assignment-poll-detail-style($theme);
+    @include os-progress-snack-bar-style($theme);
 }
 
 /** Load projector specific SCSS values */
@@ -280,6 +290,10 @@ strong,
 b,
 .bold {
     font-weight: 500;
+}
+
+.italic {
+    font-style: italic;
 }
 
 .generic-mini-button {
@@ -848,6 +862,39 @@ button.mat-menu-item.selected {
     .mat-expansion-panel-body {
         padding: 0 !important;
     }
+}
+
+/**
+ * Fix to enable multi line mat hints. See:
+ * https://github.com/angular/components/issues/5227
+ */
+.mat-form-field {
+    .mat-form-field-wrapper {
+        padding-bottom: 0;
+
+        .mat-form-field-underline {
+            position: initial !important;
+            display: block;
+            margin-top: -1px;
+        }
+
+        .mat-form-field-subscript-wrapper,
+        .mat-form-field-ripple {
+            position: initial !important;
+            display: table;
+        }
+
+        .mat-form-field-subscript-wrapper {
+            min-height: calc(1em + 1px);
+        }
+    }
+}
+
+/**
+ * Use to disable events on (i.e) matMenuTriggerFor
+ */
+.disabled {
+    pointer-events: none;
 }
 
 // custom horrizontal scroll-bar

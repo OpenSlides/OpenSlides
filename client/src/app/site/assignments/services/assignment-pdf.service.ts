@@ -3,11 +3,13 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
 import { HtmlToPdfService } from 'app/core/pdf-services/html-to-pdf.service';
-import { PollVoteValue } from 'app/core/ui-services/poll.service';
+import { ParsePollNumberPipe } from 'app/shared/pipes/parse-poll-number.pipe';
+import { PollKeyVerbosePipe } from 'app/shared/pipes/poll-key-verbose.pipe';
+import { PollPercentBasePipe } from 'app/shared/pipes/poll-percent-base.pipe';
+import { PollTableData } from 'app/site/polls/services/poll.service';
 import { AssignmentPollService } from './assignment-poll.service';
 import { ViewAssignment } from '../models/view-assignment';
 import { ViewAssignmentPoll } from '../models/view-assignment-poll';
-import { ViewAssignmentPollOption } from '../models/view-assignment-poll-option';
 
 /**
  * Creates a PDF document from a single assignment
@@ -16,12 +18,6 @@ import { ViewAssignmentPollOption } from '../models/view-assignment-poll-option'
     providedIn: 'root'
 })
 export class AssignmentPdfService {
-    /**
-     * Will be set to `true` of a person was elected.
-     * Determines that in indicator is shown under the table
-     */
-    private showIsElected = false;
-
     /**
      * Constructor
      *
@@ -32,8 +28,11 @@ export class AssignmentPdfService {
      */
     public constructor(
         private translate: TranslateService,
-        private pollService: AssignmentPollService,
-        private htmlToPdfService: HtmlToPdfService
+        private htmlToPdfService: HtmlToPdfService,
+        private pollKeyVerbose: PollKeyVerbosePipe,
+        private parsePollNumber: ParsePollNumberPipe,
+        private pollPercentBase: PollPercentBasePipe,
+        private assignmentPollService: AssignmentPollService
     ) {}
 
     /**
@@ -134,6 +133,7 @@ export class AssignmentPdfService {
                     margin: [0, 0, 0, 10]
                 };
             });
+            const listType = assignment.number_poll_candidates ? 'ol' : 'ul';
 
             return {
                 columns: [
@@ -144,34 +144,13 @@ export class AssignmentPdfService {
                         style: 'textItem'
                     },
                     {
-                        ul: userList,
+                        [listType]: userList,
                         style: 'textItem'
                     }
                 ]
             };
         } else {
             return {};
-        }
-    }
-
-    /**
-     * Creates a candidate line in the results table
-     *
-     * @param candidateName The name of the candidate
-     * @param pollOption the poll options (yes, no, maybe [...])
-     * @returns a line in the table
-     */
-    private electedCandidateLine(candidateName: string, pollOption: ViewAssignmentPollOption): object {
-        if (pollOption.is_elected) {
-            this.showIsElected = true;
-            return {
-                text: candidateName + '*',
-                bold: true
-            };
-        } else {
-            return {
-                text: candidateName
-            };
         }
     }
 
@@ -183,13 +162,12 @@ export class AssignmentPdfService {
      */
     private createPollResultTable(assignment: ViewAssignment): object {
         const resultBody = [];
-        for (let pollIndex = 0; pollIndex < assignment.polls.length; pollIndex++) {
-            const poll = assignment.polls[pollIndex];
-            if (poll.published) {
+        for (const poll of assignment.polls) {
+            if (poll.isPublished) {
                 const pollTableBody = [];
 
                 resultBody.push({
-                    text: `${this.translate.instant('Ballot')} ${pollIndex + 1}`,
+                    text: poll.title,
                     bold: true,
                     style: 'textItem',
                     margin: [0, 15, 0, 0]
@@ -206,56 +184,22 @@ export class AssignmentPdfService {
                     }
                 ]);
 
-                for (let optionIndex = 0; optionIndex < poll.options.length; optionIndex++) {
-                    const pollOption = poll.options[optionIndex];
+                const tableData = this.assignmentPollService.generateTableData(poll);
 
-                    const candidateName = pollOption.user.full_name;
-                    const votes = pollOption.votes; // 0 = yes, 1 = no, 2 = abstain0 = yes, 1 = no, 2 = abstain
-                    const tableLine = [];
-                    tableLine.push(this.electedCandidateLine(candidateName, pollOption));
-
-                    if (poll.pollmethod === 'votes') {
-                        tableLine.push({
-                            text: this.parseVoteValue(votes[0].value, votes[0].weight, poll, pollOption)
-                        });
-                    } else {
-                        const resultBlock = votes.map(vote =>
-                            this.parseVoteValue(vote.value, vote.weight, poll, pollOption)
-                        );
-
-                        tableLine.push({
-                            text: resultBlock
-                        });
-                    }
-                    pollTableBody.push(tableLine);
-                }
-
-                // push the result lines
-                const summaryLine = this.pollService.getVoteOptionsByPoll(poll).map(key => {
-                    // TODO: Refractor into pollService to make this easier.
-                    //       Return an object with untranslated lable: string, specialLabel: string and (opt) percent: number
-                    const conclusionLabel = this.translate.instant(this.pollService.getLabel(key));
-                    const specialLabel = this.translate.instant(this.pollService.getSpecialLabel(poll[key]));
-                    let percentLabel = '';
-                    if (!this.pollService.isAbstractValue(this.pollService.calculationDataFromPoll(poll), key)) {
-                        percentLabel = ` (${this.pollService.getValuePercent(
-                            this.pollService.calculationDataFromPoll(poll),
-                            key
-                        )}%)`;
-                    }
-                    return [
+                for (const pollResult of tableData) {
+                    const voteOption = this.translate.instant(this.pollKeyVerbose.transform(pollResult.votingOption));
+                    const resultLine = this.getPollResult(pollResult, poll);
+                    const tableLine = [
                         {
-                            text: conclusionLabel,
-                            style: 'tableConclude'
+                            text: voteOption
                         },
                         {
-                            text: specialLabel + percentLabel,
-                            style: 'tableConclude'
+                            text: resultLine
                         }
                     ];
-                });
 
-                pollTableBody.push(...summaryLine);
+                    pollTableBody.push(tableLine);
+                }
 
                 resultBody.push({
                     table: {
@@ -268,51 +212,21 @@ export class AssignmentPdfService {
             }
         }
 
-        // add the legend to the result body
-        // if (assignment.polls.length > 0 && isElectedSemaphore) {
-        if (assignment.polls.length > 0 && this.showIsElected) {
-            resultBody.push({
-                text: `* = ${this.translate.instant('is elected')}`,
-                margin: [0, 5, 0, 0]
-            });
-        }
-
         return resultBody;
     }
 
     /**
-     * Creates a translated voting result with numbers and percent-value depending in the polloptions
-     * I.e: "Yes 25 (22,2%)" or just "10"
-     *
-     * @param optionLabel Usually Yes or No
-     * @param value the amount of votes
-     * @param poll the specific poll
-     * @param pollOption the corresponding poll option
-     * @returns a string a nicer number representation: "Yes 25 (22,2%)" or just "10"
+     * Converts pollData to a printable string representation
      */
-    private parseVoteValue(
-        optionLabel: PollVoteValue,
-        value: number,
-        poll: ViewAssignmentPoll,
-        pollOption: ViewAssignmentPollOption
-    ): string {
-        let resultString = '';
-        const label = this.translate.instant(this.pollService.getLabel(optionLabel));
-        const valueString = this.pollService.getSpecialLabel(value);
-        const percentNr = this.pollService.getPercent(
-            this.pollService.calculationDataFromPoll(poll),
-            pollOption,
-            optionLabel
-        );
-
-        resultString += `${label} ${valueString}`;
-        if (
-            percentNr &&
-            !this.pollService.isAbstractOption(this.pollService.calculationDataFromPoll(poll), pollOption, optionLabel)
-        ) {
-            resultString += ` (${percentNr}%)`;
-        }
-
-        return `${resultString}\n`;
+    private getPollResult(votingResult: PollTableData, poll: ViewAssignmentPoll): string {
+        const resultList = votingResult.value.map(singleResult => {
+            const votingKey = this.translate.instant(this.pollKeyVerbose.transform(singleResult.vote));
+            const resultValue = this.parsePollNumber.transform(singleResult.amount);
+            const resultInPercent = this.pollPercentBase.transform(singleResult.amount, poll);
+            return `${votingKey}${!!votingKey ? ': ' : ''}${resultValue} ${
+                singleResult.showPercent && resultInPercent ? resultInPercent : ''
+            }`;
+        });
+        return resultList.join('\n');
     }
 }

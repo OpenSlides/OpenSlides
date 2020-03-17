@@ -4,6 +4,7 @@ import { TitleInformationWithAgendaItem } from 'app/site/base/base-view-model-wi
 import { BaseViewModelWithAgendaItemAndListOfSpeakers } from 'app/site/base/base-view-model-with-agenda-item-and-list-of-speakers';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
+import { HasViewPolls } from 'app/site/polls/models/has-view-polls';
 import { ViewTag } from 'app/site/tags/models/view-tag';
 import { ViewUser } from 'app/site/users/models/view-user';
 import { ViewAssignmentPoll } from './view-assignment-poll';
@@ -27,7 +28,7 @@ export const AssignmentPhases: { name: string; value: number; display_name: stri
     {
         name: 'PHASE_VOTING',
         value: 1,
-        display_name: 'Voting'
+        display_name: 'In the election process'
     },
     {
         name: 'PHASE_FINISHED',
@@ -45,9 +46,6 @@ export class ViewAssignment extends BaseViewModelWithAgendaItemAndListOfSpeakers
         return this._model;
     }
 
-    /**
-     * TODO: Fix assignment creation: DO NOT create a ViewUser there...
-     */
     public get candidates(): ViewUser[] {
         if (!this.assignment_related_users) {
             return [];
@@ -105,9 +103,8 @@ export class ViewAssignment extends BaseViewModelWithAgendaItemAndListOfSpeakers
         };
     }
 }
-interface IAssignmentRelations {
+interface IAssignmentRelations extends HasViewPolls<ViewAssignmentPoll> {
     assignment_related_users: ViewAssignmentRelatedUser[];
-    polls?: ViewAssignmentPoll[];
     tags?: ViewTag[];
     attachments?: ViewMediafile[];
 }

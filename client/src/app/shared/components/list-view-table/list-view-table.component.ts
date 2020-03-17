@@ -20,7 +20,7 @@ import { distinctUntilChanged, filter } from 'rxjs/operators';
 
 import { OperatorService, Permission } from 'app/core/core-services/operator.service';
 import { StorageService } from 'app/core/core-services/storage.service';
-import { BaseRepository } from 'app/core/repositories/base-repository';
+import { HasViewModelListObservable } from 'app/core/definitions/has-view-model-list-observable';
 import { BaseFilterListService } from 'app/core/ui-services/base-filter-list.service';
 import { BaseSortListService } from 'app/core/ui-services/base-sort-list.service';
 import { ViewportService } from 'app/core/ui-services/viewport.service';
@@ -47,7 +47,7 @@ export interface ColumnRestriction {
  * Creates a sort-filter-bar and table with virtual scrolling, where projector and multi select is already
  * embedded
  *
- * Takes a repository-service, a sort-service and a filter-service as an input to display data
+ * Takes a repository-service (or simple Observable), a sort-service and a filter-service as an input to display data
  * Requires multi-select information
  * Double binds selected rows
  *
@@ -63,8 +63,9 @@ export interface ColumnRestriction {
  * @example
  * ```html
  * <os-list-view-table
- *     [repo]="motionRepo"
+ *     [listObservableProvider]="motionRepo"
  *     [filterService]="filterService"
+ *     [filterProps]="filterProps"
  *     [sortService]="sortService"
  *     [columns]="motionColumnDefinition"
  *     [restricted]="restrictedColumns"
@@ -96,10 +97,16 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
     private ngrid: PblNgridComponent;
 
     /**
-     * The required repository
+     * The required repository (prioritized over listObservable)
      */
     @Input()
-    public repo: BaseRepository<V, M, any>;
+    public listObservableProvider: HasViewModelListObservable<V>;
+
+    /**
+     * ...or the required observable
+     */
+    @Input()
+    public listObservable: Observable<V[]>;
 
     /**
      * The currently active sorting service for the list view
@@ -109,7 +116,7 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
 
     /**
      * The currently active filter service for the list view. It is supposed to
-     * be a FilterListService extendingFilterListService.
+     * be a FilterListService extending FilterListService.
      */
     @Input()
     public filterService: BaseFilterListService<V>;
@@ -188,10 +195,23 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
     public showListOfSpeakers = true;
 
     /**
+     * To optionally hide the menu slot
+     */
+    @Input()
+    public showMenu = true;
+
+    /**
      * Fix value for the height of the rows in the virtual-scroll-list.
      */
     @Input()
     public vScrollFixed = 110;
+
+    /**
+     * Determines whether the table should have a fixed 100vh height or not.
+     * If not, the height must be set by the component
+     */
+    @Input()
+    public fullScreen = true;
 
     /**
      * Option to apply additional classes to the virtual-scrolling-list.
@@ -211,8 +231,8 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
      */
     public get cssClasses(): CssClassDefinition {
         const defaultClasses = {
-            'virtual-scroll-with-head-bar ngrid-hide-head': this.showFilterBar,
-            'virtual-scroll-full-page': !this.showFilterBar,
+            'virtual-scroll-with-head-bar ngrid-hide-head': this.fullScreen && this.showFilterBar,
+            'virtual-scroll-full-page': this.fullScreen && !this.showFilterBar,
             multiselect: this.multiSelect
         };
         return Object.assign(this._cssClasses, defaultClasses);
@@ -323,15 +343,6 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
     }
 
     /**
-     * @returns the repositories `viewModelListObservable`
-     */
-    private get viewModelListObservable(): Observable<V[]> {
-        if (this.repo) {
-            return this.repo.getViewModelListObservable();
-        }
-    }
-
-    /**
      * Define which columns to hide. Uses the input-property
      * "hide" to hide individual columns
      */
@@ -342,7 +353,7 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
             hidden.push('selection');
         }
 
-        if (!this.alwaysShowMenu && !this.isMobile) {
+        if ((!this.alwaysShowMenu && !this.isMobile) || !this.showMenu) {
             hidden.push('menu');
         }
 
@@ -477,23 +488,26 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
      * to the used search and filter services
      */
     private getListObservable(): void {
-        if (this.repo && this.viewModelListObservable) {
+        if (this.listObservableProvider || this.listObservable) {
+            const listObservable = this.listObservableProvider
+                ? this.listObservableProvider.getViewModelListObservable()
+                : this.listObservable;
             if (this.filterService && this.sortService) {
                 // filtering and sorting
-                this.filterService.initFilters(this.viewModelListObservable);
+                this.filterService.initFilters(listObservable);
                 this.sortService.initSorting(this.filterService.outputObservable);
                 this.dataListObservable = this.sortService.outputObservable;
             } else if (this.filterService) {
                 // only filter service
-                this.filterService.initFilters(this.viewModelListObservable);
+                this.filterService.initFilters(listObservable);
                 this.dataListObservable = this.filterService.outputObservable;
             } else if (this.sortService) {
                 // only sorting
-                this.sortService.initSorting(this.viewModelListObservable);
+                this.sortService.initSorting(listObservable);
                 this.dataListObservable = this.sortService.outputObservable;
             } else {
                 // none of both
-                this.dataListObservable = this.viewModelListObservable;
+                this.dataListObservable = listObservable;
             }
         }
     }
@@ -529,15 +543,24 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
             // custom filter predicates
             if (this.filterProps && this.filterProps.length) {
                 for (const prop of this.filterProps) {
-                    if (item[prop]) {
+                    // find nested props
+                    const split = prop.split('.');
+                    let currValue: any = item;
+                    for (const subProp of split) {
+                        if (currValue) {
+                            currValue = currValue[subProp];
+                        }
+                    }
+
+                    if (currValue) {
                         let propertyAsString = '';
                         // If the property is a function, call it.
-                        if (typeof item[prop] === 'function') {
-                            propertyAsString = '' + item[prop]();
-                        } else if (item[prop].constructor === Array) {
-                            propertyAsString = item[prop].join('');
+                        if (typeof currValue === 'function') {
+                            propertyAsString = '' + currValue();
+                        } else if (currValue.constructor === Array) {
+                            propertyAsString = currValue.join('');
                         } else {
-                            propertyAsString = '' + item[prop];
+                            propertyAsString = '' + currValue;
                         }
 
                         if (propertyAsString) {
@@ -655,7 +678,9 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
      * This function changes the height of the row for virtual-scrolling in the relating `.scss`-file.
      */
     private changeRowHeight(): void {
-        document.documentElement.style.setProperty('--pbl-height', this.vScrollFixed + 'px');
+        if (this.vScrollFixed > 0) {
+            document.documentElement.style.setProperty('--pbl-height', this.vScrollFixed + 'px');
+        }
     }
 
     /**

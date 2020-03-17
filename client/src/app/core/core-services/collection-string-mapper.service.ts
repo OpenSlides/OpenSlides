@@ -47,12 +47,11 @@ export class CollectionStringMapperService {
      * @param model
      */
     public registerCollectionElement<V extends BaseViewModel<M>, M extends BaseModel>(
-        collectionString: string,
         model: ModelConstructor<M>,
         viewModel: ViewModelConstructor<V>,
         repository: BaseRepository<V, M, TitleInformation>
     ): void {
-        this.collectionStringMapping[collectionString] = [model, viewModel, repository];
+        this.collectionStringMapping[model.COLLECTIONSTRING] = [model, viewModel, repository];
     }
 
     /**

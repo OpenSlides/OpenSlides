@@ -1,0 +1,12 @@
+<ng-container *ngIf="data && data.data">
+    <div class="slidetitle">
+        <h1 class="motion-title">
+            <span *ngIf="data.data.motion.identifier">{{ data.data.motion.identifier }}:</span>
+            {{ data.data.motion.title }}
+        </h1>
+        <h2 class="poll-title">{{ data.data.poll.title }}</h2>
+    </div>
+    <div *ngIf="data.data.poll.state === PollState.Published">
+        <os-motion-poll-detail-content [poll]="pollData" [chartData]="chartDataSubject"> </os-motion-poll-detail-content>
+    </div>
+</ng-container>

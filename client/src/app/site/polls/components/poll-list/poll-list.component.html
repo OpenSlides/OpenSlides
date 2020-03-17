@@ -1,0 +1,44 @@
+<os-head-bar>
+    <div class="title-slot" translate>List of votes</div>
+</os-head-bar>
+
+<os-list-view-table
+    [listObservableProvider]="polls"
+    [vScrollFixed]="64"
+    [columns]="tableColumnDefinition"
+    listStorageKey="polls"
+    [filterProps]="filterProps"
+    [filterService]="filterService"
+>
+    <!-- Poll Title -->
+    <div *pblNgridCellDef="'title'; row as poll; rowContext as context" class="cell-slot fill">
+        <a class="detail-link" [routerLink]="poll.parentLink" *ngIf="!isMultiSelect"></a>
+        <span>{{ poll.title }}</span>
+    </div>
+
+    <!-- Motion Or Assigmnent Title Title -->
+    <div *pblNgridCellDef="'classType'; row as poll" class="cell-slot fill">
+        <a class="detail-link" [routerLink]="poll.parentLink" *ngIf="!isMultiSelect"></a>
+        <span>{{ poll.getContentObject().getListTitle() }}</span>
+    </div>
+
+    <!-- State -->
+    <div *pblNgridCellDef="'state'; row as poll" class="cell-slot fill">
+        <a class="detail-link" [routerLink]="poll.parentLink" *ngIf="!isMultiSelect"></a>
+        <span>{{ poll.stateVerbose | translate }}</span>
+    </div>
+
+    <!-- Voted Indicator -->
+    <div *pblNgridCellDef="'votability'; row as poll" class="cell-slot fill">
+        <mat-icon *ngIf="poll.user_has_voted" color="accent" matTooltip="{{ 'You have already voted.' | translate }}">
+            check_circle
+        </mat-icon>
+        <mat-icon
+            *ngIf="!poll.user_has_voted && poll.canBeVotedFor"
+            color="warn"
+            matTooltip="{{ 'Voting is currently in progress.' | translate }}"
+        >
+            warning
+        </mat-icon>
+    </div>
+</os-list-view-table>

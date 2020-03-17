@@ -15,7 +15,12 @@ class AssignmentsAppConfig(AppConfig):
         from . import serializers  # noqa
         from .projector import register_projector_slides
         from .signals import get_permission_change_data
-        from .views import AssignmentViewSet, AssignmentPollViewSet
+        from .views import (
+            AssignmentViewSet,
+            AssignmentPollViewSet,
+            AssignmentOptionViewSet,
+            AssignmentVoteViewSet,
+        )
 
         # Define projector elements.
         register_projector_slides()
@@ -30,11 +35,27 @@ class AssignmentsAppConfig(AppConfig):
         router.register(
             self.get_model("Assignment").get_collection_string(), AssignmentViewSet
         )
-        router.register("assignments/poll", AssignmentPollViewSet)
+        router.register(
+            self.get_model("AssignmentPoll").get_collection_string(),
+            AssignmentPollViewSet,
+        )
+        router.register(
+            self.get_model("AssignmentOption").get_collection_string(),
+            AssignmentOptionViewSet,
+        )
+        router.register(
+            self.get_model("AssignmentVote").get_collection_string(),
+            AssignmentVoteViewSet,
+        )
 
         # Register required_users
         required_user.add_collection_string(
-            self.get_model("Assignment").get_collection_string(), required_users
+            self.get_model("Assignment").get_collection_string(),
+            required_users_assignments,
+        )
+        required_user.add_collection_string(
+            self.get_model("AssignmentPoll").get_collection_string(),
+            required_users_options,
         )
 
     def get_config_variables(self):
@@ -47,17 +68,42 @@ class AssignmentsAppConfig(AppConfig):
         Yields all Cachables required on startup i. e. opening the websocket
         connection.
         """
-        yield self.get_model("Assignment")
+        for model_name in (
+            "Assignment",
+            "AssignmentPoll",
+            "AssignmentVote",
+            "AssignmentOption",
+        ):
+            yield self.get_model(model_name)
 
 
-def required_users(element: Dict[str, Any]) -> Set[int]:
+async def required_users_assignments(element: Dict[str, Any]) -> Set[int]:
     """
     Returns all user ids that are displayed as candidates (including poll
     options) in the assignment element.
     """
+    from openslides.assignments.models import AssignmentPoll, AssignmentOption
+    from openslides.utils.cache import element_cache
+
     candidates = set(
         related_user["user_id"] for related_user in element["assignment_related_users"]
     )
-    for poll in element["polls"]:
-        candidates.update(option["candidate_id"] for option in poll["options"])
+    for poll_id in element["polls_id"]:
+        poll = await element_cache.get_element_data(
+            AssignmentPoll.get_collection_string(), poll_id
+        )
+        if poll:
+            for option_id in poll["options_id"]:
+                option = await element_cache.get_element_data(
+                    AssignmentOption.get_collection_string(), option_id
+                )
+                if option:
+                    candidates.add(option["user_id"])
     return candidates
+
+
+async def required_users_options(element: Dict[str, Any]) -> Set[int]:
+    """
+    Returns all user ids that have voted on an option and are therefore required for the single votes table.
+    """
+    return element["voted_id"]

@@ -1,8 +1,23 @@
 import { Injectable } from '@angular/core';
 
+import { TranslateService } from '@ngx-translate/core';
+
+import { ConstantsService } from 'app/core/core-services/constants.service';
+import { MotionPollRepositoryService } from 'app/core/repositories/motions/motion-poll-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
-import { CalculablePollKey, PollMajorityMethod, PollService } from 'app/core/ui-services/poll.service';
-import { MotionPoll } from 'app/shared/models/motions/motion-poll';
+import { MotionPoll, MotionPollMethod } from 'app/shared/models/motions/motion-poll';
+import { MajorityMethod, PercentBase } from 'app/shared/models/poll/base-poll';
+import { ParsePollNumberPipe } from 'app/shared/pipes/parse-poll-number.pipe';
+import { PollKeyVerbosePipe } from 'app/shared/pipes/poll-key-verbose.pipe';
+import { PollData, PollService, PollTableData, VotingResult } from 'app/site/polls/services/poll.service';
+import { ViewMotionOption } from '../models/view-motion-option';
+import { ViewMotionPoll } from '../models/view-motion-poll';
+
+interface PollResultData {
+    yes?: number;
+    no?: number;
+    abstain?: number;
+}
 
 /**
  * Service class for motion polls.
@@ -12,152 +27,132 @@ import { MotionPoll } from 'app/shared/models/motions/motion-poll';
 })
 export class MotionPollService extends PollService {
     /**
-     * list of poll keys that are numbers and can be part of a quorum calculation
+     * The default percentage base
      */
-    public pollValues: CalculablePollKey[] = ['yes', 'no', 'abstain', 'votesvalid', 'votesinvalid', 'votescast'];
+    public defaultPercentBase: PercentBase;
+
+    /**
+     * The default majority method
+     */
+    public defaultMajorityMethod: MajorityMethod;
+
+    public defaultGroupIds: number[];
 
     /**
      * Constructor. Subscribes to the configuration values needed
      * @param config ConfigService
      */
-    public constructor(config: ConfigService) {
-        super();
-        config.get<string>('motions_poll_100_percent_base').subscribe(base => (this.percentBase = base));
+    public constructor(
+        config: ConfigService,
+        constants: ConstantsService,
+        pollKeyVerbose: PollKeyVerbosePipe,
+        parsePollNumber: ParsePollNumberPipe,
+        protected translate: TranslateService,
+        private pollRepo: MotionPollRepositoryService
+    ) {
+        super(constants, translate, pollKeyVerbose, parsePollNumber);
         config
-            .get<string>('motions_poll_default_majority_method')
+            .get<PercentBase>('motion_poll_default_100_percent_base')
+            .subscribe(base => (this.defaultPercentBase = base));
+        config
+            .get<MajorityMethod>('motion_poll_default_majority_method')
             .subscribe(method => (this.defaultMajorityMethod = method));
+
+        config.get<number[]>(MotionPoll.defaultGroupsConfig).subscribe(ids => (this.defaultGroupIds = ids));
     }
 
-    /**
-     * Calculates the percentage the given key reaches.
-     *
-     * @param poll
-     * @param key
-     * @returns a percentage number with two digits, null if the value cannot be calculated (consider 0 !== null)
-     */
-    public calculatePercentage(poll: MotionPoll, key: CalculablePollKey): number | null {
-        const baseNumber = this.getBaseAmount(poll);
-        if (!baseNumber) {
-            return null;
+    public getDefaultPollData(contextId?: number): MotionPoll {
+        const poll = new MotionPoll(super.getDefaultPollData());
+
+        poll.title = this.translate.instant('Vote');
+        poll.pollmethod = MotionPollMethod.YNA;
+
+        if (contextId) {
+            const length = this.pollRepo.getViewModelList().filter(item => item.motion_id === contextId).length;
+            if (length) {
+                poll.title += ` (${length + 1})`;
+            }
         }
-        switch (key) {
-            case 'abstain':
-                if (this.percentBase === 'YES_NO') {
-                    return null;
-                }
-                break;
-            case 'votesinvalid':
-                if (this.percentBase !== 'CAST') {
-                    return null;
-                }
-                break;
-            case 'votesvalid':
-                if (!['CAST', 'VALID'].includes(this.percentBase)) {
-                    return null;
-                }
-                break;
-            case 'votescast':
-                if (this.percentBase !== 'CAST') {
-                    return null;
-                }
-        }
-        return Math.round(((poll[key] * 100) / baseNumber) * 100) / 100;
+
+        return poll;
     }
 
-    /**
-     * Gets the number representing 100 percent for a given MotionPoll, depending
-     * on the configuration and the votes given.
-     *
-     * @param poll
-     * @returns the positive number representing 100 percent of the poll, 0 if
-     * the base cannot be calculated
-     */
-    public getBaseAmount(poll: MotionPoll): number {
-        if (!poll) {
-            return 0;
-        }
-        switch (this.percentBase) {
-            case 'CAST':
-                if (!poll.votescast) {
-                    return 0;
-                }
-                if (poll.votesinvalid < 0) {
-                    return 0;
-                }
-                return poll.votescast;
-            case 'VALID':
-                if (poll.yes < 0 || poll.no < 0 || poll.abstain < 0) {
-                    return 0;
-                }
-                return poll.votesvalid ? poll.votesvalid : 0;
-            case 'YES_NO_ABSTAIN':
-                if (poll.yes < 0 || poll.no < 0 || poll.abstain < 0) {
-                    return 0;
-                }
-                return poll.yes + poll.no + poll.abstain;
-            case 'YES_NO':
-                if (poll.yes < 0 || poll.no < 0 || poll.abstain === -1) {
-                    // It is not allowed to set 'Abstain' to 'majority' but exclude it from calculation.
-                    // Setting 'Abstain' to 'undocumented' is possible, of course.
-                    return 0;
-                }
-                return poll.yes + poll.no;
-        }
+    public generateTableData(poll: PollData | ViewMotionPoll): PollTableData[] {
+        let tableData: PollTableData[] = poll.options.flatMap(vote =>
+            super.getVoteTableKeys(poll).map(key => this.createTableDataEntry(poll, key, vote))
+        );
+        tableData.push(...super.getSumTableKeys(poll).map(key => this.createTableDataEntry(poll, key)));
+
+        tableData = tableData.filter(localeTableData => !localeTableData.value.some(result => result.hide));
+        return tableData;
     }
 
-    /**
-     * Calculates which number is needed for the quorum to be surpassed
-     * TODO: Methods still hard coded to mirror the server's.
-     *
-     * @param poll
-     * @param method (optional) majority calculation method. If none is given,
-     * the default as set in the config will be used.
-     * @returns the first integer number larger than the required majority,
-     * undefined if a quorum cannot be calculated.
-     */
-    public calculateQuorum(poll: MotionPoll, method?: string): number {
-        if (!method) {
-            method = this.defaultMajorityMethod;
-        }
-        const baseNumber = this.getBaseAmount(poll);
-        if (!baseNumber) {
-            return undefined;
-        }
-        const calc = PollMajorityMethod.find(m => m.value === method);
-        return calc && calc.calc ? calc.calc(baseNumber) : null;
+    private createTableDataEntry(
+        poll: PollData | ViewMotionPoll,
+        result: VotingResult,
+        vote?: ViewMotionOption
+    ): PollTableData {
+        return {
+            votingOption: result.vote,
+            value: [
+                {
+                    amount: vote ? vote[result.vote] : poll[result.vote],
+                    hide: result.hide,
+                    icon: result.icon,
+                    showPercent: result.showPercent
+                }
+            ]
+        };
     }
 
-    /**
-     * Determines if a value is abstract (percentages cannot be calculated)
-     *
-     * @param poll
-     * @param value
-     * @returns true if the percentages should not be calculated
-     */
-    public isAbstractValue(poll: MotionPoll, value: CalculablePollKey): boolean {
-        if (this.getBaseAmount(poll) === 0) {
-            return true;
-        }
-        switch (this.percentBase) {
-            case 'YES_NO':
-                if (['votescast', 'votesinvalid', 'votesvalid', 'abstain'].includes(value)) {
-                    return true;
+    public showChart(poll: PollData): boolean {
+        return poll && poll.options && poll.options.some(option => option.yes >= 0 && option.no >= 0);
+    }
+
+    public getPercentBase(poll: PollData): number {
+        const base: PercentBase = poll.onehundred_percent_base as PercentBase;
+
+        let totalByBase: number;
+        const result = poll.options[0];
+        switch (base) {
+            case PercentBase.YN:
+                if (result.yes >= 0 && result.no >= 0) {
+                    totalByBase = this.sumYN(result);
                 }
                 break;
-            case 'YES_NO_ABSTAIN':
-                if (['votescast', 'votesinvalid', 'votesvalid'].includes(value)) {
-                    return true;
+            case PercentBase.YNA:
+                if (result.yes >= 0 && result.no >= 0 && result.abstain >= 0) {
+                    totalByBase = this.sumYNA(result);
                 }
                 break;
-            case 'VALID':
-                if (['votesinvalid', 'votescast'].includes(value)) {
-                    return true;
+            case PercentBase.Valid:
+                // auslagern
+                if (result.yes >= 0 && result.no >= 0 && result.abstain >= 0) {
+                    totalByBase = poll.votesvalid;
                 }
                 break;
+            case PercentBase.Cast:
+                totalByBase = poll.votescast;
+                break;
+            case PercentBase.Disabled:
+                break;
+            default:
+                throw new Error('The given poll has no percent base: ' + this);
         }
-        if (poll[value] < 0) {
-            return true;
-        }
-        return false;
+
+        return totalByBase;
+    }
+
+    private sumYN(result: PollResultData): number {
+        let sum = 0;
+        sum += result.yes > 0 ? result.yes : 0;
+        sum += result.no > 0 ? result.no : 0;
+        return sum;
+    }
+
+    private sumYNA(result: PollResultData): number {
+        let sum = this.sumYN(result);
+        sum += result.abstain > 0 ? result.abstain : 0;
+        return sum;
     }
 }

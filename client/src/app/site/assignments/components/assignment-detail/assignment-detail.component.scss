@@ -26,6 +26,14 @@
     }
 }
 
+.new-ballot-button {
+    display: flex;
+    > * {
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
 .election-document-list mat-list-item {
     height: 20px;
 }
@@ -39,11 +47,8 @@
         padding: 15px 25px 0 25px;
         width: auto;
 
-        .search-bar {
-            display: grid;
-            .mat-form-field {
-                width: 100%;
-            }
+        .mat-form-field {
+            width: 100%;
         }
     }
 }
@@ -58,10 +63,6 @@
         h3 {
             margin: 0;
         }
-    }
-
-    .ballot-button {
-        grid-column: 2;
     }
 }
 

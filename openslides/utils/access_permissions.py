@@ -1,4 +1,4 @@
-from typing import Any, Callable, Dict, List, Set
+from typing import Any, Callable, Coroutine, Dict, List, Set
 
 from asgiref.sync import async_to_sync
 
@@ -59,7 +59,7 @@ class RequiredUsers:
     Helper class to find all users that are required by another element.
     """
 
-    callables: Dict[str, Callable[[Dict[str, Any]], Set[int]]] = {}
+    callables: Dict[str, Callable[[Dict[str, Any]], Coroutine[Any, Any, Set[int]]]] = {}
 
     def get_collection_strings(self) -> Set[str]:
         """
@@ -68,7 +68,9 @@ class RequiredUsers:
         return set(self.callables.keys())
 
     def add_collection_string(
-        self, collection_string: str, callable: Callable[[Dict[str, Any]], Set[int]]
+        self,
+        collection_string: str,
+        callable: Callable[[Dict[str, Any]], Coroutine[Any, Any, Set[int]]],
     ) -> None:
         """
         Add a callable for a collection_string to get the required users of the
@@ -94,7 +96,7 @@ class RequiredUsers:
                 continue
 
             for element in collection_data.values():
-                user_ids.update(get_user_ids(element))
+                user_ids.update(await get_user_ids(element))
 
         return user_ids
 

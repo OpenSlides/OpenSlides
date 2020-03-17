@@ -1,6 +1,4 @@
-from collections import OrderedDict
 from decimal import Decimal
-from typing import Any, Dict, List
 
 from django.conf import settings
 from django.core.validators import MinValueValidator
@@ -11,19 +9,19 @@ from openslides.agenda.models import Speaker
 from openslides.core.config import config
 from openslides.core.models import Tag
 from openslides.mediafiles.models import Mediafile
-from openslides.poll.models import (
-    BaseOption,
-    BasePoll,
-    BaseVote,
-    CollectDefaultVotesMixin,
-    PublishPollMixin,
-)
+from openslides.poll.models import BaseOption, BasePoll, BaseVote
 from openslides.utils.autoupdate import inform_changed_data
 from openslides.utils.exceptions import OpenSlidesError
+from openslides.utils.manager import BaseManager
 from openslides.utils.models import RESTModelMixin
 
 from ..utils.models import CASCADE_AND_AUTOUPDATE, SET_NULL_AND_AUTOUPDATE
-from .access_permissions import AssignmentAccessPermissions
+from .access_permissions import (
+    AssignmentAccessPermissions,
+    AssignmentOptionAccessPermissions,
+    AssignmentPollAccessPermissions,
+    AssignmentVoteAccessPermissions,
+)
 
 
 class AssignmentRelatedUser(RESTModelMixin, models.Model):
@@ -41,11 +39,6 @@ class AssignmentRelatedUser(RESTModelMixin, models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=CASCADE_AND_AUTOUPDATE)
     """
     ForeinKey to the user who is related to the assignment.
-    """
-
-    elected = models.BooleanField(default=False)
-    """
-    Saves the election state of each user
     """
 
     weight = models.IntegerField(default=0)
@@ -67,24 +60,30 @@ class AssignmentRelatedUser(RESTModelMixin, models.Model):
         return self.assignment
 
 
-class AssignmentManager(models.Manager):
+class AssignmentManager(BaseManager):
     """
-    Customized model manager to support our get_full_queryset method.
+    Customized model manager to support our get_prefetched_queryset method.
     """
 
-    def get_full_queryset(self):
+    def get_prefetched_queryset(self, *args, **kwargs):
         """
         Returns the normal queryset with all assignments. In the background
         all related users (candidates), the related agenda item and all
         polls are prefetched from the database.
         """
-        return self.get_queryset().prefetch_related(
-            "related_users",
-            "agenda_items",
-            "lists_of_speakers",
-            "polls",
-            "tags",
-            "attachments",
+
+        return (
+            super()
+            .get_prefetched_queryset(*args, **kwargs)
+            .prefetch_related(
+                "assignment_related_users",
+                "agenda_items",
+                "lists_of_speakers",
+                "tags",
+                "attachments",
+                "polls",
+                "polls__options",
+            )
         )
 
 
@@ -123,7 +122,7 @@ class Assignment(RESTModelMixin, AgendaItemWithListOfSpeakersMixin, models.Model
     The number of members to be elected.
     """
 
-    poll_description_default = models.CharField(max_length=79, blank=True)
+    default_poll_description = models.CharField(max_length=255, blank=True)
     """
     Default text for the poll description.
     """
@@ -137,7 +136,7 @@ class Assignment(RESTModelMixin, AgendaItemWithListOfSpeakersMixin, models.Model
         settings.AUTH_USER_MODEL, through="AssignmentRelatedUser"
     )
     """
-    Users that are candidates or elected.
+    Users that are candidates.
 
     See AssignmentRelatedUser for more information.
     """
@@ -150,6 +149,11 @@ class Assignment(RESTModelMixin, AgendaItemWithListOfSpeakersMixin, models.Model
     attachments = models.ManyToManyField(Mediafile, blank=True)
     """
     Mediafiles as attachments for this assignment.
+    """
+
+    number_poll_candidates = models.BooleanField(default=False)
+    """
+    Controls whether the candidates in polls for this assignment should be numbered or listed with bullet points.
     """
 
     class Meta:
@@ -171,14 +175,7 @@ class Assignment(RESTModelMixin, AgendaItemWithListOfSpeakersMixin, models.Model
         """
         Queryset that represents the candidates for the assignment.
         """
-        return self.related_users.filter(assignmentrelateduser__elected=False)
-
-    @property
-    def elected(self):
-        """
-        Queryset that represents all elected users for the assignment.
-        """
-        return self.related_users.filter(assignmentrelateduser__elected=True)
+        return self.related_users.all()
 
     def is_candidate(self, user):
         """
@@ -188,15 +185,7 @@ class Assignment(RESTModelMixin, AgendaItemWithListOfSpeakersMixin, models.Model
         """
         return self.candidates.filter(pk=user.pk).exists()
 
-    def is_elected(self, user):
-        """
-        Returns True if the user is elected for this assignment.
-
-        Costs one database query.
-        """
-        return self.elected.filter(pk=user.pk).exists()
-
-    def set_candidate(self, user):
+    def add_candidate(self, user):
         """
         Adds the user as candidate.
         """
@@ -204,18 +193,10 @@ class Assignment(RESTModelMixin, AgendaItemWithListOfSpeakersMixin, models.Model
             self.assignment_related_users.aggregate(models.Max("weight"))["weight__max"]
             or 0
         )
-        defaults = {"elected": False, "weight": weight + 1}
+        defaults = {"weight": weight + 1}
         self.assignment_related_users.update_or_create(user=user, defaults=defaults)
 
-    def set_elected(self, user):
-        """
-        Makes user an elected user for this assignment.
-        """
-        self.assignment_related_users.update_or_create(
-            user=user, defaults={"elected": True}
-        )
-
-    def delete_related_user(self, user):
+    def remove_candidate(self, user):
         """
         Delete the connection from the assignment to the user.
         """
@@ -233,187 +214,226 @@ class Assignment(RESTModelMixin, AgendaItemWithListOfSpeakersMixin, models.Model
 
         self.phase = phase
 
-    def create_poll(self):
-        """
-        Creates a new poll for the assignment and adds all candidates to all
-        lists of speakers of related agenda items.
-        """
-        candidates = self.candidates.all()
-
-        # Find out the method of the election
-        if config["assignments_poll_vote_values"] == "votes":
-            pollmethod = "votes"
-        elif config["assignments_poll_vote_values"] == "yesnoabstain":
-            pollmethod = "yna"
-        elif config["assignments_poll_vote_values"] == "yesno":
-            pollmethod = "yn"
-        else:
-            # config['assignments_poll_vote_values'] == 'auto'
-            # candidates <= available posts -> yes/no/abstain
-            if len(candidates) <= (self.open_posts - self.elected.count()):
-                pollmethod = "yna"
-            else:
-                pollmethod = "votes"
-
-        # Create the poll with the candidates.
-        poll = self.polls.create(
-            description=self.poll_description_default, pollmethod=pollmethod
-        )
-        options = []
-        related_users = AssignmentRelatedUser.objects.filter(
-            assignment__id=self.id
-        ).exclude(elected=True)
-        for related_user in related_users:
-            options.append(
-                {"candidate": related_user.user, "weight": related_user.weight}
-            )
-        poll.set_options(options, skip_autoupdate=True)
-        inform_changed_data(self)
-
-        # Add all candidates to list of speakers of related agenda item
-        # TODO: Try to do this in a bulk create
-        if config["assignments_add_candidates_to_list_of_speakers"]:
-            for candidate in self.candidates:
-                try:
-                    Speaker.objects.add(
-                        candidate, self.list_of_speakers, skip_autoupdate=True
-                    )
-                except OpenSlidesError:
-                    # The Speaker is already on the list. Do nothing.
-                    # TODO: Find a smart way not to catch the error concerning AnonymousUser.
-                    pass
-            inform_changed_data(self.list_of_speakers)
-
-        return poll
-
-    def vote_results(self, only_published):
-        """
-        Returns a table represented as a list with all candidates from all
-        related polls and their vote results.
-        """
-        vote_results_dict: Dict[Any, List[AssignmentVote]] = OrderedDict()
-
-        polls = self.polls.all()
-        if only_published:
-            polls = polls.filter(published=True)
-
-        # All PollOption-Objects related to this assignment
-        options: List[AssignmentOption] = []
-        for poll in polls:
-            options += poll.get_options()
-
-        for option in options:
-            candidate = option.candidate
-            if candidate in vote_results_dict:
-                continue
-            vote_results_dict[candidate] = []
-            for poll in polls:
-                votes: Any = {}
-                try:
-                    # candidate related to this poll
-                    poll_option = poll.get_options().get(candidate=candidate)
-                    for vote in poll_option.get_votes():
-                        votes[vote.value] = vote.print_weight()
-                except AssignmentOption.DoesNotExist:
-                    # candidate not in related to this poll
-                    votes = None
-                vote_results_dict[candidate].append(votes)
-        return vote_results_dict
-
     def get_title_information(self):
         return {"title": self.title}
 
 
+class AssignmentVoteManager(BaseManager):
+    """
+    Customized model manager to support our get_prefetched_queryset method.
+    """
+
+    def get_prefetched_queryset(self, *args, **kwargs):
+        """
+        Returns the normal queryset with all assignment votes. In the background we
+        join and prefetch all related models.
+        """
+        return (
+            super()
+            .get_prefetched_queryset(*args, **kwargs)
+            .select_related("user", "option", "option__poll")
+        )
+
+
 class AssignmentVote(RESTModelMixin, BaseVote):
+    access_permissions = AssignmentVoteAccessPermissions()
+    objects = AssignmentVoteManager()
+
     option = models.ForeignKey(
-        "AssignmentOption", on_delete=models.CASCADE, related_name="votes"
+        "AssignmentOption", on_delete=CASCADE_AND_AUTOUPDATE, related_name="votes"
     )
 
     class Meta:
         default_permissions = ()
 
-    def get_root_rest_element(self):
+
+class AssignmentOptionManager(BaseManager):
+    """
+    Customized model manager to support our get_prefetched_queryset method.
+    """
+
+    def get_prefetched_queryset(self, *args, **kwargs):
         """
-        Returns the assignment to this instance which is the root REST element.
+        Returns the normal queryset. In the background we
+        join and prefetch all related models.
         """
-        return self.option.poll.assignment
+        return (
+            super()
+            .get_prefetched_queryset(*args, **kwargs)
+            .select_related("user", "poll")
+            .prefetch_related("votes")
+        )
 
 
 class AssignmentOption(RESTModelMixin, BaseOption):
+    access_permissions = AssignmentOptionAccessPermissions()
+    can_see_permission = "assignments.can_see"
+    objects = AssignmentOptionManager()
+    vote_class = AssignmentVote
+
     poll = models.ForeignKey(
-        "AssignmentPoll", on_delete=models.CASCADE, related_name="options"
+        "AssignmentPoll", on_delete=CASCADE_AND_AUTOUPDATE, related_name="options"
     )
-    candidate = models.ForeignKey(
+    user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=SET_NULL_AND_AUTOUPDATE, null=True
     )
     weight = models.IntegerField(default=0)
 
-    vote_class = AssignmentVote
-
     class Meta:
         default_permissions = ()
 
-    def __str__(self):
-        return str(self.candidate)
 
-    def get_root_rest_element(self):
+class AssignmentPollManager(BaseManager):
+    """
+    Customized model manager to support our get_prefetched_queryset method.
+    """
+
+    def get_prefetched_queryset(self, *args, **kwargs):
         """
-        Returns the assignment to this instance which is the root REST element.
+        Returns the normal queryset with all assignment polls. In the background we
+        join and prefetch all related models.
         """
-        return self.poll.assignment
+        return (
+            super()
+            .get_prefetched_queryset(*args, **kwargs)
+            .select_related("assignment")
+            .prefetch_related(
+                "options", "options__user", "options__votes", "voted", "groups"
+            )
+        )
 
 
-# TODO: remove the type-ignoring in the next line, after this is solved:
-#       https://github.com/python/mypy/issues/3855
-class AssignmentPoll(  # type: ignore
-    RESTModelMixin, CollectDefaultVotesMixin, PublishPollMixin, BasePoll
-):
+class AssignmentPoll(RESTModelMixin, BasePoll):
+    access_permissions = AssignmentPollAccessPermissions()
+    can_see_permission = "assignments.can_see"
+    objects = AssignmentPollManager()
+
     option_class = AssignmentOption
 
     assignment = models.ForeignKey(
-        Assignment, on_delete=models.CASCADE, related_name="polls"
+        Assignment, on_delete=CASCADE_AND_AUTOUPDATE, related_name="polls"
     )
-    pollmethod = models.CharField(max_length=5, default="yna")
-    description = models.CharField(max_length=79, blank=True)
 
-    votesabstain = models.DecimalField(
+    description = models.CharField(max_length=255, blank=True)
+
+    POLLMETHOD_YN = "YN"
+    POLLMETHOD_YNA = "YNA"
+    POLLMETHOD_VOTES = "votes"
+    POLLMETHODS = (
+        (POLLMETHOD_VOTES, "Yes per candidate"),
+        (POLLMETHOD_YN, "Yes/No per candidate"),
+        (POLLMETHOD_YNA, "Yes/No/Abstain per candidate"),
+    )
+    pollmethod = models.CharField(max_length=5, choices=POLLMETHODS)
+
+    PERCENT_BASE_YN = "YN"
+    PERCENT_BASE_YNA = "YNA"
+    PERCENT_BASE_VOTES = "votes"
+    PERCENT_BASE_VALID = "valid"
+    PERCENT_BASE_CAST = "cast"
+    PERCENT_BASE_DISABLED = "disabled"
+    PERCENT_BASES = (
+        (PERCENT_BASE_YN, "Yes/No per candidate"),
+        (PERCENT_BASE_YNA, "Yes/No/Abstain per candidate"),
+        (PERCENT_BASE_VOTES, "Sum of votes including general No/Abstain"),
+        (PERCENT_BASE_VALID, "All valid ballots"),
+        (PERCENT_BASE_CAST, "All casted ballots"),
+        (PERCENT_BASE_DISABLED, "Disabled (no percents)"),
+    )
+    onehundred_percent_base = models.CharField(
+        max_length=8, blank=False, null=False, choices=PERCENT_BASES
+    )
+
+    global_abstain = models.BooleanField(default=True)
+    db_amount_global_abstain = models.DecimalField(
         null=True,
         blank=True,
+        default=Decimal("0"),
         validators=[MinValueValidator(Decimal("-2"))],
         max_digits=15,
         decimal_places=6,
     )
-    """ General abstain votes, used for pollmethod 'votes' """
-    votesno = models.DecimalField(
+    global_no = models.BooleanField(default=True)
+    db_amount_global_no = models.DecimalField(
         null=True,
         blank=True,
+        default=Decimal("0"),
         validators=[MinValueValidator(Decimal("-2"))],
         max_digits=15,
         decimal_places=6,
     )
-    """ General no votes, used for pollmethod 'votes' """
+
+    votes_amount = models.IntegerField(default=1, validators=[MinValueValidator(1)])
+    """ For "votes" mode: The amount of votes a voter can give. """
+
+    allow_multiple_votes_per_candidate = models.BooleanField(default=False)
 
     class Meta:
         default_permissions = ()
 
-    def get_assignment(self):
-        return self.assignment
+    def get_amount_global_abstain(self):
+        if not self.global_abstain:
+            return None
+        elif self.type == self.TYPE_ANALOG:
+            return self.db_amount_global_abstain
+        elif self.pollmethod == AssignmentPoll.POLLMETHOD_VOTES:
+            return sum(option.abstain for option in self.options.all())
+        else:
+            return None
 
-    def get_vote_values(self):
-        if self.pollmethod == "yna":
-            return ["Yes", "No", "Abstain"]
-        if self.pollmethod == "yn":
-            return ["Yes", "No"]
-        return ["Votes"]
+    def set_amount_global_abstain(self, value):
+        if self.type != self.TYPE_ANALOG:
+            raise ValueError("Do not set amount_global_abstain for non analog polls")
+        self.db_amount_global_abstain = value
 
-    def get_ballot(self):
-        return self.assignment.polls.filter(id__lte=self.pk).count()
+    amount_global_abstain = property(
+        get_amount_global_abstain, set_amount_global_abstain
+    )
 
-    def get_percent_base_choice(self):
-        return config["assignments_poll_100_percent_base"]
+    def get_amount_global_no(self):
+        if not self.global_no:
+            return None
+        elif self.type == self.TYPE_ANALOG:
+            return self.db_amount_global_no
+        elif self.pollmethod == AssignmentPoll.POLLMETHOD_VOTES:
+            return sum(option.no for option in self.options.all())
+        else:
+            return None
 
-    def get_root_rest_element(self):
-        """
-        Returns the assignment to this instance which is the root REST element.
-        """
-        return self.assignment
+    def set_amount_global_no(self, value):
+        if self.type != self.TYPE_ANALOG:
+            raise ValueError("Do not set amount_global_no for non analog polls")
+        self.db_amount_global_no = value
+
+    amount_global_no = property(get_amount_global_no, set_amount_global_no)
+
+    def create_options(self, skip_autoupdate=False):
+        related_users = AssignmentRelatedUser.objects.filter(
+            assignment__id=self.assignment.id
+        )
+
+        for related_user in related_users:
+            option = AssignmentOption(
+                user=related_user.user, weight=related_user.weight, poll=self
+            )
+            option.save(skip_autoupdate=skip_autoupdate)
+
+        # Add all candidates to list of speakers of related agenda item
+        if config["assignment_poll_add_candidates_to_list_of_speakers"]:
+            for related_user in related_users:
+                try:
+                    Speaker.objects.add(
+                        related_user.user,
+                        self.assignment.list_of_speakers,
+                        skip_autoupdate=True,
+                    )
+                except OpenSlidesError:
+                    # The Speaker is already on the list. Do nothing.
+                    pass
+            if not skip_autoupdate:
+                inform_changed_data(self.assignment.list_of_speakers)
+
+    def reset(self):
+        self.db_amount_global_abstain = Decimal(0)
+        self.db_amount_global_no = Decimal(0)
+        super().reset()

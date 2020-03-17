@@ -8,7 +8,8 @@ from rest_framework.test import APIClient
 from openslides.core.config import config
 from openslides.users.models import Group, PersonalNote, User
 from openslides.utils.autoupdate import inform_changed_data
-from openslides.utils.test import TestCase
+from tests.count_queries import count_queries
+from tests.test_case import TestCase
 
 from ...common_groups import (
     GROUP_ADMIN_PK,
@@ -16,7 +17,6 @@ from ...common_groups import (
     GROUP_DELEGATE_PK,
     GROUP_STAFF_PK,
 )
-from ..helpers import count_queries
 
 
 @pytest.mark.django_db(transaction=False)
@@ -29,7 +29,7 @@ def test_user_db_queries():
     for index in range(10):
         User.objects.create(username=f"user{index}")
 
-    assert count_queries(User.get_elements) == 3
+    assert count_queries(User.get_elements)() == 3
 
 
 @pytest.mark.django_db(transaction=False)
@@ -42,7 +42,7 @@ def test_group_db_queries():
     for index in range(10):
         Group.objects.create(name=f"group{index}")
 
-    assert count_queries(Group.get_elements) == 2
+    assert count_queries(Group.get_elements)() == 2
 
 
 class UserGetTest(TestCase):
@@ -87,8 +87,6 @@ class UserCreate(TestCase):
     """
 
     def test_simple_creation(self):
-        self.client.login(username="admin", password="admin")
-
         response = self.client.post(
             reverse("user-list"), {"last_name": "Test name keimeiShieX4Aekoe3do"}
         )
@@ -98,7 +96,6 @@ class UserCreate(TestCase):
         self.assertEqual(response.data["id"], new_user.id)
 
     def test_creation_with_group(self):
-        self.client.login(username="admin", password="admin")
         group_pks = (GROUP_DELEGATE_PK, GROUP_STAFF_PK)
 
         self.client.post(
@@ -111,7 +108,6 @@ class UserCreate(TestCase):
         self.assertTrue(user.groups.filter(pk=group_pks[1]).exists())
 
     def test_creation_with_default_group(self):
-        self.client.login(username="admin", password="admin")
         group_pk = (GROUP_DEFAULT_PK,)
 
         response = self.client.post(
@@ -138,6 +134,12 @@ class UserCreate(TestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         user = User.objects.get(username="test_name_Thimoo2ho7ahreighio3")
         self.assertEqual(user.about_me, "<p>&lt;foo&gt;bar&lt;/foo&gt;</p>")
+
+    def test_double_username(self):
+        for field in ("last_name", "username"):
+            response = self.client.post(reverse("user-list"), {"username": "admin"})
+            self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+            self.assertEqual(User.objects.count(), 1)
 
 
 class UserUpdate(TestCase):
@@ -196,7 +198,6 @@ class UserUpdate(TestCase):
         response = admin_client.patch(
             reverse("user-detail", args=[user_pk]),
             {"username": "admin", "is_active": False},
-            format="json",
         )
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -268,7 +269,7 @@ class UserDelete(TestCase):
             ids.append(user.id)
 
         response = self.admin_client.post(
-            reverse("user-bulk-delete"), {"user_ids": ids}, format="json"
+            reverse("user-bulk-delete"), {"user_ids": ids}
         )
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(User.objects.filter(pk__in=ids).exists())
@@ -276,7 +277,7 @@ class UserDelete(TestCase):
     def test_bulk_delete_self(self):
         """ The own id should be excluded, so nothing should happen. """
         response = self.admin_client.post(
-            reverse("user-bulk-delete"), {"user_ids": [1]}, format="json"
+            reverse("user-bulk-delete"), {"user_ids": [1]}
         )
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertTrue(User.objects.filter(pk=1).exists())
@@ -416,9 +417,7 @@ class UserPassword(TestCase):
         self.assertTrue(user2.check_password(default_password2))
 
         response = self.admin_client.post(
-            reverse("user-bulk-generate-passwords"),
-            {"user_ids": [user1.id, user2.id]},
-            format="json",
+            reverse("user-bulk-generate-passwords"), {"user_ids": [user1.id, user2.id]}
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -450,7 +449,6 @@ class UserPassword(TestCase):
         response = self.admin_client.post(
             reverse("user-bulk-reset-passwords-to-default"),
             {"user_ids": [user1.id, user2.id]},
-            format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -478,7 +476,6 @@ class UserBulkSetState(TestCase):
         response = self.client.post(
             reverse("user-bulk-set-state"),
             {"user_ids": [1], "field": "is_present", "value": False},
-            format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTrue(User.objects.get().is_active)
@@ -489,7 +486,6 @@ class UserBulkSetState(TestCase):
         response = self.client.post(
             reverse("user-bulk-set-state"),
             {"user_ids": [1], "field": "invalid", "value": False},
-            format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertTrue(User.objects.get().is_active)
@@ -500,7 +496,6 @@ class UserBulkSetState(TestCase):
         response = self.client.post(
             reverse("user-bulk-set-state"),
             {"user_ids": [1], "field": "is_active", "value": "invalid"},
-            format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertTrue(User.objects.get().is_active)
@@ -511,7 +506,6 @@ class UserBulkSetState(TestCase):
         response = self.client.post(
             reverse("user-bulk-set-state"),
             {"user_ids": [1], "field": "is_active", "value": False},
-            format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTrue(User.objects.get().is_active)
@@ -539,7 +533,6 @@ class UserBulkAlterGroups(TestCase):
                 "action": "add",
                 "group_ids": [GROUP_DELEGATE_PK, GROUP_STAFF_PK],
             },
-            format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(self.user.groups.count(), 2)
@@ -558,7 +551,6 @@ class UserBulkAlterGroups(TestCase):
                 "action": "remove",
                 "group_ids": [GROUP_DEFAULT_PK, GROUP_STAFF_PK],
             },
-            format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(self.user.groups.count(), 1)
@@ -574,7 +566,6 @@ class UserBulkAlterGroups(TestCase):
                 "action": "add",
                 "group_ids": [GROUP_DELEGATE_PK],
             },
-            format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(self.admin.groups.count(), 1)
@@ -588,7 +579,6 @@ class UserBulkAlterGroups(TestCase):
                 "action": "invalid",
                 "group_ids": [GROUP_DELEGATE_PK],
             },
-            format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
@@ -598,26 +588,49 @@ class UserMassImport(TestCase):
     Tests mass import of users.
     """
 
-    def setUp(self):
-        self.client = APIClient()
-        self.client.login(username="admin", password="admin")
-
     def test_mass_import(self):
-        user_1 = {
-            "first_name": "first_name_kafaith3woh3thie7Ciy",
-            "last_name": "last_name_phah0jaeph9ThoongaeL",
-            "groups_id": [],
-        }
-        user_2 = {
-            "first_name": "first_name_kohdao7Eibouwee8ma2O",
-            "last_name": "last_name_kafaith3woh3thie7Ciy",
-            "groups_id": [],
-        }
-        response = self.client.post(
-            reverse("user-mass-import"), {"users": [user_1, user_2]}, format="json"
-        )
+        data = [
+            {
+                "first_name": "first_name_kafaith3woh3thie7Ciy",
+                "last_name": "last_name_phah0jaeph9ThoongaeL",
+                "groups_id": [],
+            },
+            {
+                "first_name": "first_name_kohdao7Eibouwee8ma2O",
+                "last_name": "last_name_4en5ANFoz2nQmoUkTfYe",
+                "groups_id": [],
+            },
+            {
+                "first_name": "first_name_JbCpGkpcYCaQtDNA4pDW",
+                "last_name": "last_name_z0MMAIwbieKtpzW3dDJY",
+                "groups_id": [],
+            },
+        ]
+        response = self.client.post(reverse("user-mass-import"), {"users": data})
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(User.objects.count(), 3)
+        self.assertEqual(User.objects.count(), 4)
+
+    def test_mass_import_double_username(self):
+        data = [
+            {"username": "double_name", "groups_id": []},
+            {"username": "double_name", "groups_id": []},
+        ]
+        response = self.client.post(reverse("user-mass-import"), {"users": data})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            User.objects.count(), 2
+        )  # second user is skipped because the username already exists
+
+    def test_mass_import_double_name(self):
+        data = [
+            {"first_name": "double_name", "groups_id": []},
+            {"last_name": "double_name", "groups_id": []},
+        ]
+        response = self.client.post(reverse("user-mass-import"), {"users": data})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            User.objects.count(), 3
+        )  # if username is generated, the api appends a number behind it and thus generates both users
 
 
 class UserSendIntivationEmail(TestCase):
@@ -640,9 +653,7 @@ class UserSendIntivationEmail(TestCase):
             "subject": config["users_email_subject"],
             "message": config["users_email_body"],
         }
-        response = self.client.post(
-            reverse("user-mass-invite-email"), data, format="json"
-        )
+        response = self.client.post(reverse("user-mass-invite-email"), data)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["count"], 1)
         self.assertEqual(len(mail.outbox), 1)
@@ -666,6 +677,9 @@ class GroupMetadata(TestCase):
 
 
 class GroupReceive(TestCase):
+    def setUp(self):
+        pass
+
     def test_get_groups_as_anonymous_deactivated(self):
         """
         Test to get the groups with an anonymous user, when they are deactivated.
@@ -849,7 +863,6 @@ class GroupUpdate(TestCase):
         response = admin_client.put(
             reverse("group-detail", args=[group.pk]),
             {"name": "new_group_name_Chie6duwaepoo8aech7r", "permissions": permissions},
-            format="json",
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -869,7 +882,6 @@ class GroupUpdate(TestCase):
         response = admin_client.post(
             reverse("group-set-permission", args=[GROUP_DEFAULT_PK]),
             {"perm": "users.can_manage", "set": True},
-            format="json",
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -887,7 +899,6 @@ class GroupUpdate(TestCase):
         response = admin_client.post(
             reverse("group-set-permission", args=[GROUP_DEFAULT_PK]),
             {"perm": "not_existing.permission", "set": True},
-            format="json",
         )
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -899,7 +910,6 @@ class GroupUpdate(TestCase):
         response = admin_client.post(
             reverse("group-set-permission", args=[GROUP_DEFAULT_PK]),
             {"perm": "users.can_see_name", "set": False},
-            format="json",
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -972,7 +982,6 @@ class PersonalNoteTest(TestCase):
                 {"collection": "example-model", "id": 1, "content": content1},
                 {"collection": "example-model", "id": 2, "content": content2},
             ],
-            format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTrue(PersonalNote.objects.exists())
@@ -985,9 +994,7 @@ class PersonalNoteTest(TestCase):
 
     def test_anonymous_create(self):
         guest_client = APIClient()
-        response = guest_client.post(
-            reverse("personalnote-create-or-update"), [], format="json"
-        )
+        response = guest_client.post(reverse("personalnote-create-or-update"), [])
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertFalse(PersonalNote.objects.exists())
 
@@ -1007,7 +1014,6 @@ class PersonalNoteTest(TestCase):
                     "content": "test_note_do2ncoi7ci2fm93LjwlO",
                 }
             ],
-            format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         personal_note = PersonalNote.objects.get()

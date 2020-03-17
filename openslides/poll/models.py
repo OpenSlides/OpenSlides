@@ -1,20 +1,41 @@
-import locale
 from decimal import Decimal
-from typing import Optional, Type
+from typing import Iterable, Optional, Tuple, Type
 
-from django.core.exceptions import ObjectDoesNotExist
+from django.conf import settings
 from django.core.validators import MinValueValidator
 from django.db import models
+
+from ..utils.autoupdate import inform_changed_data, inform_deleted_data
+from ..utils.models import SET_NULL_AND_AUTOUPDATE
+
+
+class BaseVote(models.Model):
+    """
+    All subclasses must have option attribute with the related name "votes"
+    """
+
+    weight = models.DecimalField(
+        default=Decimal("1"),
+        validators=[MinValueValidator(Decimal("-2"))],
+        max_digits=15,
+        decimal_places=6,
+    )
+    value = models.CharField(max_length=1, choices=(("Y", "Y"), ("N", "N"), ("A", "A")))
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        default=None,
+        null=True,
+        blank=True,
+        on_delete=SET_NULL_AND_AUTOUPDATE,
+    )
+
+    class Meta:
+        abstract = True
 
 
 class BaseOption(models.Model):
     """
-    Base option class for a poll.
-
-    Subclasses have to define a poll field. This must be a ForeignKeyField
-    to a subclass of BasePoll. There must also be a vote_class attribute
-    which has to be a subclass of BaseVote. Otherwise you have to override the
-    get_vote_class method.
+    All subclasses must have poll attribute with the related name "options"
     """
 
     vote_class: Optional[Type["BaseVote"]] = None
@@ -22,170 +43,206 @@ class BaseOption(models.Model):
     class Meta:
         abstract = True
 
+    @property
+    def yes(self) -> Decimal:
+        return self.sum_weight("Y")
+
+    @property
+    def no(self) -> Decimal:
+        return self.sum_weight("N")
+
+    @property
+    def abstain(self) -> Decimal:
+        return self.sum_weight("A")
+
+    def sum_weight(self, value):
+        # We could do this in a nice .aggregate(Sum...) querystatement,
+        # but these might be expensive DB queries, because they are not preloaded.
+        # With this in-logic-counting, we operate inmemory.
+        weight_sum = Decimal(0)
+        for vote in self.votes.all():
+            if vote.value == value:
+                weight_sum += vote.weight
+        return weight_sum
+
+    @classmethod
+    def get_vote_class(cls):
+        if cls.vote_class is None:
+            raise NotImplementedError(
+                f"The option class {cls} has to have an attribute vote_class."
+            )
+        return cls.vote_class
+
     def get_votes(self):
+        """
+        Return a QuerySet with all vote objects related to this option.
+        """
         return self.get_vote_class().objects.filter(option=self)
 
-    def get_vote_class(self):
-        if self.vote_class is None:
-            raise NotImplementedError(
-                f"The option class {self} has to have an attribute vote_class."
-            )
-        return self.vote_class
+    def pseudoanonymize(self):
+        for vote in self.get_votes():
+            vote.user = None
+            vote.save()
 
-    def __getitem__(self, name):
-        try:
-            return self.get_votes().get(value=name)
-        except self.get_vote_class().DoesNotExist:
-            raise KeyError
+    def reset(self):
+        # Delete votes
+        votes = self.get_votes()
+        votes_id = [vote.id for vote in votes]
+        votes.delete()
+        collection = self.get_vote_class().get_collection_string()
+        inform_deleted_data((collection, id) for id in votes_id)
 
-
-class BaseVote(models.Model):
-    """
-    Base vote class for an option.
-
-    Subclasses have to define an option field. This must be a ForeignKeyField
-    to a subclass of BasePoll.
-    """
-
-    weight = models.DecimalField(
-        default=Decimal("1"),
-        null=True,
-        validators=[MinValueValidator(Decimal("-2"))],
-        max_digits=15,
-        decimal_places=6,
-    )
-    value = models.CharField(max_length=255, null=True)
-
-    class Meta:
-        abstract = True
-
-    def __str__(self):
-        return self.print_weight()
-
-    def get_value(self):
-        return self.value
-
-    def print_weight(self, raw=False):
-        if raw:
-            return self.weight
-        try:
-            percent_base = self.option.poll.get_percent_base()
-        except AttributeError:
-            # The poll class is no child of CollectVotesCast
-            percent_base = 0
-        return print_value(self.weight, percent_base)
-
-
-class CollectDefaultVotesMixin(models.Model):
-    """
-    Mixin for a poll to collect the default vote values for valid votes,
-    invalid votes and votes cast.
-    """
-
-    votesvalid = models.DecimalField(
-        null=True,
-        blank=True,
-        validators=[MinValueValidator(Decimal("-2"))],
-        max_digits=15,
-        decimal_places=6,
-    )
-    votesinvalid = models.DecimalField(
-        null=True,
-        blank=True,
-        validators=[MinValueValidator(Decimal("-2"))],
-        max_digits=15,
-        decimal_places=6,
-    )
-    votescast = models.DecimalField(
-        null=True,
-        blank=True,
-        validators=[MinValueValidator(Decimal("-2"))],
-        max_digits=15,
-        decimal_places=6,
-    )
-
-    class Meta:
-        abstract = True
-
-    def get_percent_base_choice(self):
-        """
-        Returns one of the strings of the percent base.
-        """
-        raise NotImplementedError(
-            "You have to provide a get_percent_base_choice() method."
-        )
-
-
-class PublishPollMixin(models.Model):
-    """
-    Mixin for a poll to add a flag whether the poll is published or not.
-    """
-
-    published = models.BooleanField(default=False)
-
-    class Meta:
-        abstract = True
-
-    def set_published(self, published):
-        self.published = published
-        self.save()
+        # update self because the changed voted relation
+        inform_changed_data(self)
 
 
 class BasePoll(models.Model):
-    """
-    Base poll class.
-    """
+    option_class: Optional[Type["BaseOption"]] = None
 
-    vote_values = ["Votes"]
+    STATE_CREATED = 1
+    STATE_STARTED = 2
+    STATE_FINISHED = 3
+    STATE_PUBLISHED = 4
+    STATES = (
+        (STATE_CREATED, "Created"),
+        (STATE_STARTED, "Started"),
+        (STATE_FINISHED, "Finished"),
+        (STATE_PUBLISHED, "Published"),
+    )
+    state = models.IntegerField(choices=STATES, default=STATE_CREATED)
+
+    TYPE_ANALOG = "analog"
+    TYPE_NAMED = "named"
+    TYPE_PSEUDOANONYMOUS = "pseudoanonymous"
+    TYPES = (
+        (TYPE_ANALOG, "Analog"),
+        (TYPE_NAMED, "Named"),
+        (TYPE_PSEUDOANONYMOUS, "Pseudoanonymous"),
+    )
+    type = models.CharField(max_length=64, blank=False, null=False, choices=TYPES)
+
+    title = models.CharField(max_length=255, blank=True, null=False)
+    groups = models.ManyToManyField(settings.AUTH_GROUP_MODEL, blank=True)
+    voted = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)
+
+    db_votesvalid = models.DecimalField(
+        null=True,
+        blank=True,
+        validators=[MinValueValidator(Decimal("-2"))],
+        max_digits=15,
+        decimal_places=6,
+    )
+    db_votesinvalid = models.DecimalField(
+        null=True,
+        blank=True,
+        validators=[MinValueValidator(Decimal("-2"))],
+        max_digits=15,
+        decimal_places=6,
+    )
+    db_votescast = models.DecimalField(
+        null=True,
+        blank=True,
+        validators=[MinValueValidator(Decimal("-2"))],
+        max_digits=15,
+        decimal_places=6,
+    )
+
+    PERCENT_BASE_YN = "YN"
+    PERCENT_BASE_YNA = "YNA"
+    PERCENT_BASE_VALID = "valid"
+    PERCENT_BASE_CAST = "cast"
+    PERCENT_BASE_DISABLED = "disabled"
+    PERCENT_BASES: Iterable[Tuple[str, str]] = (
+        (PERCENT_BASE_YN, "Yes/No"),
+        (PERCENT_BASE_YNA, "Yes/No/Abstain"),
+        (PERCENT_BASE_VALID, "All valid ballots"),
+        (PERCENT_BASE_CAST, "All casted ballots"),
+        (PERCENT_BASE_DISABLED, "Disabled (no percents)"),
+    )  # type: ignore
+    onehundred_percent_base = models.CharField(
+        max_length=8, blank=False, null=False, choices=PERCENT_BASES
+    )
+
+    MAJORITY_SIMPLE = "simple"
+    MAJORITY_TWO_THIRDS = "two_thirds"
+    MAJORITY_THREE_QUARTERS = "three_quarters"
+    MAJORITY_DISABLED = "disabled"
+    MAJORITY_METHODS = (
+        (MAJORITY_SIMPLE, "Simple majority"),
+        (MAJORITY_TWO_THIRDS, "Two-thirds majority"),
+        (MAJORITY_THREE_QUARTERS, "Three-quarters majority"),
+        (MAJORITY_DISABLED, "Disabled"),
+    )
+    majority_method = models.CharField(
+        max_length=14, blank=False, null=False, choices=MAJORITY_METHODS
+    )
 
     class Meta:
         abstract = True
 
-    def has_votes(self):
-        """
-        Returns True if there are votes in the poll.
-        """
-        if self.get_votes().exists():
-            return True
-        return False
+    def get_votesvalid(self):
+        if self.type == self.TYPE_ANALOG:
+            return self.db_votesvalid
+        else:
+            return Decimal(self.amount_users_voted())
 
-    def set_options(self, options_data=None, skip_autoupdate=False):
-        """
-        Adds new option objects to the poll.
+    def set_votesvalid(self, value):
+        if self.type != self.TYPE_ANALOG:
+            raise ValueError("Do not set votesvalid for non analog polls")
+        self.db_votesvalid = value
 
-        option_data: A list of arguments for the option.
-        """
-        if options_data is None:
-            options_data = []
+    votesvalid = property(get_votesvalid, set_votesvalid)
 
-        for option_data in options_data:
-            option = self.get_option_class()(**option_data)
-            option.poll = self
-            option.save(skip_autoupdate=skip_autoupdate)
+    def get_votesinvalid(self):
+        if self.type == self.TYPE_ANALOG:
+            return self.db_votesinvalid
+        else:
+            return Decimal(0)
+
+    def set_votesinvalid(self, value):
+        if self.type != self.TYPE_ANALOG:
+            raise ValueError("Do not set votesinvalid for non analog polls")
+        self.db_votesinvalid = value
+
+    votesinvalid = property(get_votesinvalid, set_votesinvalid)
+
+    def get_votescast(self):
+        if self.type == self.TYPE_ANALOG:
+            return self.db_votescast
+        else:
+            return Decimal(self.amount_users_voted())
+
+    def set_votescast(self, value):
+        if self.type != self.TYPE_ANALOG:
+            raise ValueError("Do not set votescast for non analog polls")
+        self.db_votescast = value
+
+    votescast = property(get_votescast, set_votescast)
+
+    def amount_users_voted(self):
+        return len(self.voted.all())
+
+    def create_options(self):
+        """ Should be called after creation of this model. """
+        raise NotImplementedError()
+
+    @classmethod
+    def get_option_class(cls):
+        if cls.option_class is None:
+            raise NotImplementedError(
+                f"The poll class {cls} has to have an attribute option_class."
+            )
+        return cls.option_class
 
     def get_options(self):
         """
         Returns the option objects for the poll.
         """
-        return self.get_option_class().objects.filter(poll=self)
+        return self.options.all()
 
-    def get_option_class(self):
-        """
-        Returns the option class for the poll. Default is self.option_class.
-        """
-        return self.option_class
-
-    def get_vote_values(self):
-        """
-        Returns the possible values for the poll. Default is as list.
-        """
-        return self.vote_values
-
-    def get_vote_class(self):
-        """
-        Returns the related vote class.
-        """
-        return self.get_option_class().vote_class
+    @classmethod
+    def get_vote_class(cls):
+        return cls.get_option_class().get_vote_class()
 
     def get_votes(self):
         """
@@ -193,51 +250,20 @@ class BasePoll(models.Model):
         """
         return self.get_vote_class().objects.filter(option__poll__id=self.id)
 
-    def set_vote_objects_with_values(self, option, data, skip_autoupdate=False):
-        """
-        Creates or updates the vote objects for the poll.
-        """
-        for value in self.get_vote_values():
-            try:
-                vote = self.get_votes().filter(option=option).get(value=value)
-            except ObjectDoesNotExist:
-                vote = self.get_vote_class()(option=option, value=value)
-            vote.weight = data[value]
-            vote.save(skip_autoupdate=skip_autoupdate)
+    def pseudoanonymize(self):
+        for option in self.get_options():
+            option.pseudoanonymize()
 
-    def get_vote_objects_with_values(self, option_id):
-        """
-        Returns the vote values and their weight as a list with two elements.
-        """
-        values = []
-        for value in self.get_vote_values():
-            try:
-                vote = self.get_votes().filter(option=option_id).get(value=value)
-            except ObjectDoesNotExist:
-                values.append(self.get_vote_class()(value=value, weight=""))
-            else:
-                values.append(vote)
-        return values
+    def reset(self):
+        for option in self.get_options():
+            option.reset()
 
+        self.voted.clear()
 
-def print_value(value, percent_base=0):
-    """
-    Returns a human readable string for the vote value. It is 'majority',
-    'undocumented' or the vote value with percent value if so.
-    """
-    if value == -1:
-        verbose_value = "majority"
-    elif value == -2:
-        verbose_value = "undocumented"
-    elif value is None:
-        verbose_value = "undocumented"
-    else:
-        if percent_base:
-            locale.setlocale(locale.LC_ALL, "")
-            verbose_value = "%d (%s %%)" % (
-                value,
-                locale.format("%.1f", value * percent_base),
-            )
-        else:
-            verbose_value = value
-    return verbose_value
+        # Reset state
+        self.state = BasePoll.STATE_CREATED
+        if self.type == self.TYPE_ANALOG:
+            self.votesvalid = None
+            self.votesinvalid = None
+            self.votescast = None
+        self.save()

@@ -99,6 +99,10 @@
         font-weight: 400;
     }
 
+    .user-subtitle {
+        color: mat-color($foreground, secondary-text);
+    }
+
     mat-card-header {
         background-color: mat-color($background, app-bar);
     }
@@ -136,6 +140,15 @@
         right: 0;
     }
 
+    .icon {
+        color: mat-color($foreground, icon);
+    }
+
+    .small-icon {
+        @extend .icon;
+        font-size: 18px;
+    }
+
     /** Custom themes for NGrid. Could be an own file if it gets more */
     .pbl-ngrid-container {
         background: mat-color($background, card);
@@ -149,7 +162,15 @@
         background-color: rgba(0, 0, 0, 0.025);
     }
 
-    .mat-progress-bar-buffer {
-        background-color: mat-color($background, card) !important;
+    .pbl-ngrid-header-row, .pbl-ngrid-row {
+        align-items: stretch;
+    }
+
+    .primary-foreground {
+        color: mat-color($primary);
+    }
+
+    .accent-foreground {
+        color: mat-color($accent);
     }
 }

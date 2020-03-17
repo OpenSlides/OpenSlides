@@ -110,9 +110,7 @@ export class UserDetailComponent extends BaseViewComponent implements OnInit {
 
         this.constantsService.get<UserBackends>('UserBackends').subscribe(backends => (this.userBackends = backends));
 
-        this.groupRepo
-            .getViewModelListObservable()
-            .subscribe(groups => this.groups.next(groups.filter(group => group.id !== 1)));
+        this.groupRepo.getViewModelListObservableWithoutDefaultGroup().subscribe(this.groups);
     }
 
     /**

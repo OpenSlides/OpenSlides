@@ -1,7 +1,7 @@
 from django.core.validators import MinValueValidator
 
 from openslides.core.config import ConfigVariable
-from openslides.poll.majority import majorityMethods
+from openslides.motions.models import MotionPoll
 
 from .models import Workflow
 
@@ -332,30 +332,40 @@ def get_config_variables():
     # Voting and ballot papers
 
     yield ConfigVariable(
-        name="motions_poll_100_percent_base",
-        default_value="YES_NO_ABSTAIN",
+        name="motion_poll_default_100_percent_base",
+        default_value="YNA",
         input_type="choice",
-        label="The 100 % base of a voting result consists of",
-        choices=(
-            {"value": "YES_NO_ABSTAIN", "display_name": "Yes/No/Abstain"},
-            {"value": "YES_NO", "display_name": "Yes/No"},
-            {"value": "VALID", "display_name": "All valid ballots"},
-            {"value": "CAST", "display_name": "All casted ballots"},
-            {"value": "DISABLED", "display_name": "Disabled (no percents)"},
+        label="Default 100 % base of a voting result",
+        choices=tuple(
+            {"value": base[0], "display_name": base[1]}
+            for base in MotionPoll.PERCENT_BASES
         ),
         weight=370,
         group="Motions",
         subgroup="Voting and ballot papers",
     )
 
-    # TODO: Add server side validation of the choices.
     yield ConfigVariable(
-        name="motions_poll_default_majority_method",
-        default_value=majorityMethods[0]["value"],
+        name="motion_poll_default_majority_method",
+        default_value="simple",
         input_type="choice",
-        choices=majorityMethods,
+        choices=tuple(
+            {"value": method[0], "display_name": method[1]}
+            for method in MotionPoll.MAJORITY_METHODS
+        ),
         label="Required majority",
         help_text="Default method to check whether a motion has reached the required majority.",
+        weight=371,
+        hidden=True,
+        group="Motions",
+        subgroup="Voting and ballot papers",
+    )
+
+    yield ConfigVariable(
+        name="motion_poll_default_groups",
+        default_value=[],
+        input_type="groups",
+        label="Default groups with voting rights",
         weight=372,
         group="Motions",
         subgroup="Voting and ballot papers",
@@ -365,7 +375,7 @@ def get_config_variables():
         name="motions_pdf_ballot_papers_selection",
         default_value="CUSTOM_NUMBER",
         input_type="choice",
-        label="Number of ballot papers (selection)",
+        label="Number of ballot papers",
         choices=(
             {"value": "NUMBER_OF_DELEGATES", "display_name": "Number of all delegates"},
             {
@@ -377,7 +387,7 @@ def get_config_variables():
                 "display_name": "Use the following custom number",
             },
         ),
-        weight=374,
+        weight=373,
         group="Motions",
         subgroup="Voting and ballot papers",
     )
@@ -387,7 +397,7 @@ def get_config_variables():
         default_value=8,
         input_type="integer",
         label="Custom number of ballot papers",
-        weight=376,
+        weight=374,
         group="Motions",
         subgroup="Voting and ballot papers",
         validators=(MinValueValidator(1),),

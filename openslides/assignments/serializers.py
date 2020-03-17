@@ -1,14 +1,17 @@
-from django.db import transaction
-
-from openslides.poll.serializers import default_votes_validator
+from openslides.poll.serializers import (
+    BASE_OPTION_FIELDS,
+    BASE_POLL_FIELDS,
+    BASE_VOTE_FIELDS,
+    BaseOptionSerializer,
+    BasePollSerializer,
+    BaseVoteSerializer,
+)
 from openslides.utils.rest_api import (
     BooleanField,
     DecimalField,
-    DictField,
+    IdPrimaryKeyRelatedField,
     IntegerField,
-    ListField,
     ModelSerializer,
-    SerializerMethodField,
     ValidationError,
 )
 
@@ -42,152 +45,100 @@ class AssignmentRelatedUserSerializer(ModelSerializer):
 
     class Meta:
         model = AssignmentRelatedUser
-        fields = (
-            "id",
-            "user",
-            "elected",
-            "assignment",
-            "weight",
-        )  # js-data needs the assignment-id in the nested object to define relations.
+        fields = ("id", "user", "weight")
 
 
-class AssignmentVoteSerializer(ModelSerializer):
+class AssignmentVoteSerializer(BaseVoteSerializer):
     """
     Serializer for assignment.models.AssignmentVote objects.
     """
 
     class Meta:
         model = AssignmentVote
-        fields = ("weight", "value")
+        fields = BASE_VOTE_FIELDS
+        read_only_fields = BASE_VOTE_FIELDS
 
 
-class AssignmentOptionSerializer(ModelSerializer):
+class AssignmentOptionSerializer(BaseOptionSerializer):
     """
     Serializer for assignment.models.AssignmentOption objects.
     """
 
-    votes = AssignmentVoteSerializer(many=True, read_only=True)
-    is_elected = SerializerMethodField()
-
     class Meta:
         model = AssignmentOption
-        fields = ("id", "candidate", "is_elected", "votes", "poll", "weight")
-
-    def get_is_elected(self, obj):
-        """
-        Returns the election status of the candidate of this option.
-        If the candidate is None (e.g. deleted) the result is False.
-        """
-        if not obj.candidate:
-            return False
-        return obj.poll.assignment.is_elected(obj.candidate)
+        fields = ("user", "weight") + BASE_OPTION_FIELDS
+        read_only_fields = ("user", "weight") + BASE_OPTION_FIELDS
 
 
-class AssignmentAllPollSerializer(ModelSerializer):
+class AssignmentPollSerializer(BasePollSerializer):
     """
     Serializer for assignment.models.AssignmentPoll objects.
 
     Serializes all polls.
     """
 
-    options = AssignmentOptionSerializer(many=True, read_only=True)
-    votes = ListField(
-        child=DictField(
-            child=DecimalField(max_digits=15, decimal_places=6, min_value=-2)
-        ),
-        write_only=True,
-        required=False,
+    amount_global_no = DecimalField(
+        max_digits=15, decimal_places=6, min_value=-2, read_only=True
     )
-    has_votes = SerializerMethodField()
+    amount_global_abstain = DecimalField(
+        max_digits=15, decimal_places=6, min_value=-2, read_only=True
+    )
 
     class Meta:
         model = AssignmentPoll
         fields = (
-            "id",
-            "pollmethod",
-            "description",
-            "published",
-            "options",
-            "votesabstain",
-            "votesno",
-            "votesvalid",
-            "votesinvalid",
-            "votescast",
-            "votes",
-            "has_votes",
             "assignment",
-        )  # js-data needs the assignment-id in the nested object to define relations.
-        read_only_fields = ("pollmethod",)
-        validators = (default_votes_validator,)
+            "description",
+            "pollmethod",
+            "votes_amount",
+            "allow_multiple_votes_per_candidate",
+            "global_no",
+            "amount_global_no",
+            "global_abstain",
+            "amount_global_abstain",
+        ) + BASE_POLL_FIELDS
+        read_only_fields = ("state",)
 
-    def get_has_votes(self, obj):
-        """
-        Returns True if this poll has some votes.
-        """
-        return obj.has_votes()
-
-    @transaction.atomic
     def update(self, instance, validated_data):
+        """ Prevent updating the assignment """
+        validated_data.pop("assignment", None)
+        return super().update(instance, validated_data)
+
+    def norm_100_percent_base_to_pollmethod(
+        self, onehundred_percent_base, pollmethod, old_100_percent_base=None
+    ):
         """
-        Customized update method for polls. To update votes use the write
-        only field 'votes'.
-
-        Example data for a 'pollmethod'='yna' poll with two candidates:
-
-            "votes": [{"Yes": 10, "No": 4, "Abstain": -2},
-                      {"Yes": -1, "No": 0, "Abstain": -2}]
-
-        Example data for a 'pollmethod' ='yn' poll with two candidates:
-            "votes": [{"Votes": 10}, {"Votes": 0}]
+        Returns None, if the 100-%-base must not be changed, otherwise the correct 100-%-base.
         """
-        # Update votes.
-        votes = validated_data.get("votes")
-        if votes:
-            options = list(instance.get_options())
-            if len(votes) != len(options):
-                raise ValidationError(
-                    {
-                        "detail": "You have to submit data for {0} candidates.",
-                        "args": [len(options)],
-                    }
-                )
-            for index, option in enumerate(options):
-                if len(votes[index]) != len(instance.get_vote_values()):
-                    raise ValidationError(
-                        {
-                            "detail": "You have to submit data for {0} vote values",
-                            "args": [len(instance.get_vote_values())],
-                        }
-                    )
-                for vote_value, __ in votes[index].items():
-                    if vote_value not in instance.get_vote_values():
-                        raise ValidationError(
-                            {
-                                "detail": "Vote value {0} is invalid.",
-                                "args": [vote_value],
-                            }
-                        )
-                instance.set_vote_objects_with_values(
-                    option, votes[index], skip_autoupdate=True
-                )
-
-        # Update remaining writeable fields.
-        instance.description = validated_data.get("description", instance.description)
-        instance.published = validated_data.get("published", instance.published)
-        instance.votesabstain = validated_data.get(
-            "votesabstain", instance.votesabstain
-        )
-        instance.votesno = validated_data.get("votesno", instance.votesno)
-        instance.votesvalid = validated_data.get("votesvalid", instance.votesvalid)
-        instance.votesinvalid = validated_data.get(
-            "votesinvalid", instance.votesinvalid
-        )
-        instance.votescast = validated_data.get("votescast", instance.votescast)
-        instance.save()
-        return instance
+        if pollmethod == AssignmentPoll.POLLMETHOD_YN and onehundred_percent_base in (
+            AssignmentPoll.PERCENT_BASE_VOTES,
+            AssignmentPoll.PERCENT_BASE_YNA,
+        ):
+            return AssignmentPoll.PERCENT_BASE_YN
+        if (
+            pollmethod == AssignmentPoll.POLLMETHOD_YNA
+            and onehundred_percent_base == AssignmentPoll.PERCENT_BASE_VOTES
+        ):
+            if old_100_percent_base is None:
+                return AssignmentPoll.PERCENT_BASE_YNA
+            else:
+                if old_100_percent_base in (
+                    AssignmentPoll.PERCENT_BASE_YN,
+                    AssignmentPoll.PERCENT_BASE_YNA,
+                ):
+                    return old_100_percent_base
+                else:
+                    return pollmethod
+        if (
+            pollmethod == AssignmentPoll.POLLMETHOD_VOTES
+            and onehundred_percent_base
+            in (AssignmentPoll.PERCENT_BASE_YN, AssignmentPoll.PERCENT_BASE_YNA)
+        ):
+            return AssignmentPoll.PERCENT_BASE_VOTES
+        return None
 
 
-class AssignmentFullSerializer(ModelSerializer):
+class AssignmentSerializer(ModelSerializer):
     """
     Serializer for assignment.models.Assignment objects. With all polls.
     """
@@ -195,12 +146,12 @@ class AssignmentFullSerializer(ModelSerializer):
     assignment_related_users = AssignmentRelatedUserSerializer(
         many=True, read_only=True
     )
-    polls = AssignmentAllPollSerializer(many=True, read_only=True)
     agenda_create = BooleanField(write_only=True, required=False, allow_null=True)
     agenda_type = IntegerField(
         write_only=True, required=False, min_value=1, max_value=3, allow_null=True
     )
     agenda_parent_id = IntegerField(write_only=True, required=False, min_value=1)
+    polls = IdPrimaryKeyRelatedField(many=True, read_only=True)
 
     class Meta:
         model = Assignment
@@ -211,8 +162,7 @@ class AssignmentFullSerializer(ModelSerializer):
             "open_posts",
             "phase",
             "assignment_related_users",
-            "poll_description_default",
-            "polls",
+            "default_poll_description",
             "agenda_item_id",
             "list_of_speakers_id",
             "agenda_create",
@@ -220,6 +170,8 @@ class AssignmentFullSerializer(ModelSerializer):
             "agenda_parent_id",
             "tags",
             "attachments",
+            "number_poll_candidates",
+            "polls",
         )
         validators = (posts_validator,)
 

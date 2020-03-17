@@ -12,7 +12,7 @@ import { AssignmentRepositoryService } from 'app/core/repositories/assignments/a
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ViewportService } from 'app/core/ui-services/viewport.service';
 import { BaseListViewComponent } from 'app/site/base/base-list-view';
-import { AssignmentFilterListService } from '../../services/assignment-filter.service';
+import { AssignmentFilterListService } from '../../services/assignment-filter-list.service';
 import { AssignmentPdfExportService } from '../../services/assignment-pdf-export.service';
 import { AssignmentSortListService } from '../../services/assignment-sort-list.service';
 import { AssignmentPhases, ViewAssignment } from '../../models/view-assignment';

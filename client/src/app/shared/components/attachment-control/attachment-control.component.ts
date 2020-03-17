@@ -1,20 +1,34 @@
-import { Component, EventEmitter, Input, OnInit, Output, TemplateRef } from '@angular/core';
-import { ControlValueAccessor, FormControl } from '@angular/forms';
-import { MatDialog } from '@angular/material';
+import { FocusMonitor } from '@angular/cdk/a11y';
+import {
+    ChangeDetectionStrategy,
+    Component,
+    ElementRef,
+    EventEmitter,
+    OnInit,
+    Optional,
+    Output,
+    Self,
+    TemplateRef
+} from '@angular/core';
+import { FormBuilder, NgControl } from '@angular/forms';
+import { MatDialog, MatFormFieldControl } from '@angular/material';
 
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { MediafileRepositoryService } from 'app/core/repositories/mediafiles/mediafile-repository.service';
+import { BaseFormControlComponent } from 'app/shared/models/base/base-form-control';
 import { mediumDialogSettings } from 'app/shared/utils/dialog-settings';
 import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
 
 @Component({
     selector: 'os-attachment-control',
     templateUrl: './attachment-control.component.html',
-    styleUrls: ['./attachment-control.component.scss']
+    styleUrls: ['./attachment-control.component.scss'],
+    providers: [{ provide: MatFormFieldControl, useExisting: AttachmentControlComponent }],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AttachmentControlComponent implements OnInit, ControlValueAccessor {
+export class AttachmentControlComponent extends BaseFormControlComponent<ViewMediafile[]> implements OnInit {
     /**
      * Output for an error handler
      */
@@ -22,23 +36,27 @@ export class AttachmentControlComponent implements OnInit, ControlValueAccessor 
     public errorHandler: EventEmitter<string> = new EventEmitter();
 
     /**
-     * The form-control name to access the value for the form-control
-     */
-    @Input()
-    public controlName: FormControl;
-
-    /**
      * The file list that is necessary for the `SearchValueSelector`
      */
     public mediaFileList: Observable<ViewMediafile[]>;
 
-    /**
-     * Default constructor
-     *
-     * @param dialogService Reference to the `MatDialog`
-     * @param mediaService Reference for the `MediaFileRepositoryService`
-     */
-    public constructor(private dialogService: MatDialog, private mediaService: MediafileRepositoryService) {}
+    public get empty(): boolean {
+        return !this.contentForm.value.length;
+    }
+    public get controlType(): string {
+        return 'attachment-control';
+    }
+
+    public constructor(
+        formBuilder: FormBuilder,
+        focusMonitor: FocusMonitor,
+        element: ElementRef<HTMLElement>,
+        @Optional() @Self() public ngControl: NgControl,
+        private dialogService: MatDialog,
+        private mediaService: MediafileRepositoryService
+    ) {
+        super(formBuilder, focusMonitor, element, ngControl);
+    }
 
     /**
      * On init method
@@ -64,11 +82,9 @@ export class AttachmentControlComponent implements OnInit, ControlValueAccessor 
      * @param fileIDs a list with the ids of the uploaded files
      */
     public uploadSuccess(fileIDs: number[]): void {
-        if (this.controlName) {
-            const newValues = [...this.controlName.value, ...fileIDs];
-            this.controlName.setValue(newValues);
-            this.dialogService.closeAll();
-        }
+        const newValues = [...this.contentForm.value, ...fileIDs];
+        this.updateForm(newValues);
+        this.dialogService.closeAll();
     }
 
     /**
@@ -81,28 +97,15 @@ export class AttachmentControlComponent implements OnInit, ControlValueAccessor 
     }
 
     /**
-     * Function to write a new value to the form.
-     * Satisfy the interface.
-     *
-     * @param value The new value for this form.
+     * Declared as abstract in MatFormFieldControl and not required for this component
      */
-    public writeValue(value: any): void {
-        if (value && this.controlName) {
-            this.controlName.setValue(value);
-        }
+    public onContainerClick(event: MouseEvent): void {}
+
+    protected initializeForm(): void {
+        this.contentForm = this.fb.control([]);
     }
 
-    /**
-     * Function executed when the control's value changed.
-     *
-     * @param fn the function that is executed.
-     */
-    public registerOnChange(fn: any): void {}
-
-    /**
-     * To satisfy the interface
-     *
-     * @param fn the registered callback function for onBlur-events.
-     */
-    public registerOnTouched(fn: any): void {}
+    protected updateForm(value: ViewMediafile[] | null): void {
+        this.contentForm.setValue(value || []);
+    }
 }

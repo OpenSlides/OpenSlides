@@ -14,7 +14,6 @@ import { ConfigService } from 'app/core/ui-services/config.service';
 import { DiffLinesInParagraph, DiffService } from 'app/core/ui-services/diff.service';
 import { TreeIdNode } from 'app/core/ui-services/tree.service';
 import { Motion } from 'app/shared/models/motions/motion';
-import { MotionPoll } from 'app/shared/models/motions/motion-poll';
 import { Submitter } from 'app/shared/models/motions/submitter';
 import { ViewUnifiedChange, ViewUnifiedChangeType } from 'app/shared/models/motions/view-unified-change';
 import { PersonalNoteContent } from 'app/shared/models/users/personal-note';
@@ -24,6 +23,7 @@ import { MotionTitleInformation, ViewMotion } from 'app/site/motions/models/view
 import { ViewMotionAmendedParagraph } from 'app/site/motions/models/view-motion-amended-paragraph';
 import { ViewMotionBlock } from 'app/site/motions/models/view-motion-block';
 import { ViewMotionChangeRecommendation } from 'app/site/motions/models/view-motion-change-recommendation';
+import { ViewMotionPoll } from 'app/site/motions/models/view-motion-poll';
 import { ViewState } from 'app/site/motions/models/view-state';
 import { ViewStatuteParagraph } from 'app/site/motions/models/view-statute-paragraph';
 import { ViewSubmitter } from 'app/site/motions/models/view-submitter';
@@ -126,12 +126,17 @@ const MotionRelations: RelationDefinition[] = [
         ownKey: 'amendments',
         foreignViewModel: ViewMotion
     },
-    // TMP:
     {
         type: 'M2O',
         ownIdKey: 'parent_id',
         ownKey: 'parent',
         foreignViewModel: ViewMotion
+    },
+    {
+        type: 'O2M',
+        foreignIdKey: 'motion_id',
+        ownKey: 'polls',
+        foreignViewModel: ViewMotionPoll
     }
     // Personal notes are dynamically added in the repo.
 ];
@@ -842,46 +847,6 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
                 }
             )
             .filter((para: ViewMotionAmendedParagraph) => para !== null);
-    }
-
-    /**
-     * Sends a request to the server, creating a new poll for the motion
-     */
-    public async createPoll(motion: ViewMotion): Promise<void> {
-        const url = '/rest/motions/motion/' + motion.id + '/create_poll/';
-        await this.httpService.post(url);
-    }
-
-    /**
-     * Sends an update request for a poll.
-     *
-     * @param poll
-     */
-    public async updatePoll(poll: MotionPoll): Promise<void> {
-        const url = '/rest/motions/motion-poll/' + poll.id + '/';
-        const data = {
-            motion_id: poll.motion_id,
-            id: poll.id,
-            votescast: poll.votescast,
-            votesvalid: poll.votesvalid,
-            votesinvalid: poll.votesinvalid,
-            votes: {
-                Yes: poll.yes,
-                No: poll.no,
-                Abstain: poll.abstain
-            }
-        };
-        await this.httpService.put(url, data);
-    }
-
-    /**
-     * Sends a http request to delete the given poll
-     *
-     * @param poll
-     */
-    public async deletePoll(poll: MotionPoll): Promise<void> {
-        const url = '/rest/motions/motion-poll/' + poll.id + '/';
-        await this.httpService.delete(url);
     }
 
     /**

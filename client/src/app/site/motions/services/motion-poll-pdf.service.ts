@@ -17,7 +17,7 @@ type BallotCountChoices = 'NUMBER_OF_DELEGATES' | 'NUMBER_OF_ALL_PARTICIPANTS' |
  *
  * @example
  * ```ts
- * this.MotionPollPdfService.printBallos(this.poll);
+ * this.MotionPollPdfService.printBallots(this.poll);
  * ```
  */
 @Injectable({
@@ -71,8 +71,8 @@ export class MotionPollPdfService extends PollPdfService {
         )}`;
         if (!title) {
             title = `${this.translate.instant('Motion')} - ${motion.identifier}`;
-            if (motion.motion.polls.length > 1) {
-                title += ` (${this.translate.instant('Vote')} ${motion.motion.polls.length})`;
+            if (motion.polls.length > 1) {
+                title += ` (${this.translate.instant('Vote')} ${motion.polls.length})`;
             }
         }
         if (!subtitle) {

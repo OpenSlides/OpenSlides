@@ -7,7 +7,7 @@ import { PdfDocumentService } from 'app/core/pdf-services/pdf-document.service';
 import { AssignmentRepositoryService } from 'app/core/repositories/assignments/assignment-repository.service';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
-import { AssignmentPollMethod } from './assignment-poll.service';
+import { AssignmentPollMethod } from 'app/shared/models/assignments/assignment-poll';
 import { ViewAssignmentPoll } from '../models/view-assignment-poll';
 
 /**
@@ -145,16 +145,25 @@ export class AssignmentPollPdfService extends PollPdfService {
                 ? this.createBallotOption(cand.user.full_name)
                 : this.createYNBallotEntry(cand.user.full_name, poll.pollmethod);
         });
+
         if (poll.pollmethod === 'votes') {
-            const noEntry = this.createBallotOption(this.translate.instant('No'));
-            noEntry.margin[1] = 25;
-            resultObject.push(noEntry);
+            if (poll.global_no) {
+                const noEntry = this.createBallotOption(this.translate.instant('No'));
+                noEntry.margin[1] = 25;
+                resultObject.push(noEntry);
+            }
+
+            if (poll.global_abstain) {
+                const abstainEntry = this.createBallotOption(this.translate.instant('Abstain'));
+                abstainEntry.margin[1] = 25;
+                resultObject.push(abstainEntry);
+            }
         }
         return resultObject;
     }
 
     private createYNBallotEntry(option: string, method: AssignmentPollMethod): object {
-        const choices = method === 'yna' ? ['Yes', 'No', 'Abstain'] : ['Yes', 'No'];
+        const choices = method === 'YNA' ? ['Yes', 'No', 'Abstain'] : ['Yes', 'No'];
         const columnstack = choices.map(choice => {
             return {
                 width: 'auto',
@@ -181,7 +190,7 @@ export class AssignmentPollPdfService extends PollPdfService {
      */
     private createPollHint(poll: ViewAssignmentPoll): object {
         return {
-            text: poll.description || '',
+            text: poll.assignment.default_poll_description || '',
             style: 'description'
         };
     }

@@ -5,16 +5,16 @@
         'message action'
         'bar action';
     grid-template-columns: auto min-content;
-}
 
-.message {
-    grid-area: message;
-}
+    .message {
+        grid-area: message;
+    }
 
-.bar {
-    grid-area: bar;
-}
+    .bar {
+        grid-area: bar;
+    }
 
-.action {
-    grid-area: action;
+    .action {
+        grid-area: action;
+    }
 }

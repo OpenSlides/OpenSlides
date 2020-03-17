@@ -1,0 +1,31 @@
+@import '~assets/styles/poll-styles-common.scss';
+
+.result-wrapper {
+    display: grid;
+    grid-gap: 2em;
+    margin: 2em;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+
+    .result-table {
+        // display: block;
+        th {
+            text-align: right;
+            font-weight: initial;
+        }
+
+        tr {
+            height: 48px;
+            border-bottom: none !important;
+
+            .result-cell-definition {
+                text-align: right;
+            }
+        }
+    }
+
+    .doughnut-chart {
+        display: block;
+        margin-top: auto;
+        margin-bottom: auto;
+    }
+}

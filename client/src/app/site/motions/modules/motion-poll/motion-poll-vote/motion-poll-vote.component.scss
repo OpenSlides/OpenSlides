@@ -1,0 +1,34 @@
+@import '~assets/styles/poll-colors.scss';
+@import '~assets/styles/poll-styles-common.scss';
+
+.vote-button-grid {
+    display: grid;
+    grid-gap: 20px;
+    margin-top: 2em;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+}
+
+.vote-button {
+    display: inline-grid;
+    grid-gap: 1em;
+    margin: auto;
+
+    .vote-label {
+        text-align: center;
+    }
+}
+
+.user-has-voted {
+    display: flex;
+    text-align: center;
+    > * {
+        margin-top: 1em;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .vote-submitted {
+        color: $votes-yes-color;
+        font-size: 200%;
+    }
+}

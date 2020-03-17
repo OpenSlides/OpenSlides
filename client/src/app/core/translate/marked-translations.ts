@@ -99,7 +99,8 @@ _('Only main agenda items');
 _('Topics');
 _('Open requests to speak');
 
-// Motions config strings
+// ** Motions **
+// config strings
 // subgroup general
 _('General');
 _('Workflow of new motions');
@@ -155,7 +156,7 @@ _('Choose 0 to disable the supporting system.');
 _('Remove all supporters of a motion if a submitter edits his motion in early state');
 // subgroup Voting and ballot papers
 _('Voting and ballot papers');
-_('The 100 % base of a voting result consists of');
+_('Default 100 % base of a voting result');
 _('Yes/No/Abstain');
 _('Yes/No');
 _('All valid ballots');
@@ -172,16 +173,13 @@ _('Number of all delegates');
 _('Number of all participants');
 _('Use the following custom number');
 _('Custom number of ballot papers');
+_('Voting');
 // subgroup PDF export
 _('PDF export');
 _('Title for PDF documents of motions');
 _('Preamble text for PDF documents of motions');
 _('Show submitters and recommendation/state in table of contents');
 _('Show checkbox to record decision');
-// misc motion strings
-_('Amendment');
-_('Statute amendment for');
-_('Statute paragraphs');
 
 // motion workflow 1
 _('Simple Workflow');
@@ -224,46 +222,7 @@ _('Needs review');
 _('rejected (not authorized)');
 _('Reject (not authorized)');
 _('Rejection (not authorized)');
-// misc for motions
-_('Called');
-_('Called with');
-_('Recommendation');
-_('Motion block');
-_('The text field may not be blank.');
-_('The reason field may not be blank.');
-
-// Assignment config strings
-_('Election method');
-_('Automatic assign of method');
-_('Always one option per candidate');
-_('Always Yes-No-Abstain per candidate');
-_('Always Yes/No per candidate');
-_('Elections');
-_('Ballot and ballot papers');
-_('The 100-%-base of an election result consists of');
-_(
-    'For Yes/No/Abstain per candidate and Yes/No per candidate the 100-%-base depends on the election method: If there is only one option per candidate, the sum of all votes of all candidates is 100 %. Otherwise for each candidate the sum of all votes is 100 %.'
-);
-_('Yes/No/Abstain per candidate');
-_('Yes/No per candidate');
-_('All valid ballots');
-_('All casted ballots');
-_('Disabled (no percents)');
-_('Number of ballot papers (selection)');
-_('Number of all delegates');
-_('Number of all participants');
-_('Use the following custom number');
-_('Custom number of ballot papers');
-_('Required majority');
-_('Default method to check whether a candidate has reached the required majority.');
-_('Simple majority');
-_('Two-thirds majority');
-_('Three-quarters majority');
-_('Disabled');
-_('Put all candidates on the list of speakers');
-_('Title for PDF document (all elections)');
-_('Preamble text for PDF document (all elections)');
-// motion workflow
+// motion workflow manager
 _('Recommendation label');
 _('Allow support');
 _('Allow create poll');
@@ -275,11 +234,60 @@ _('Show amendment in parent motion');
 _('Restrictions');
 _('Label color');
 _('Next states');
+// misc for motions
+_('Amendment');
+_('Statute amendment for');
+_('Statute paragraphs');
+_('Called');
+_('Called with');
+_('Recommendation');
+_('Motion block');
+_('The text field may not be blank.');
+_('The reason field may not be blank.');
 
-// other translations
+// ** Assignments **
+// Assignment config strings
+_('Elections');
+// subgroup ballot
+_('Default election method');
+_('Default 100 % base of an election result');
+_('All valid ballots');
+_('All casted ballots');
+_('Disabled (no percents)');
+_('Default groups with voting rights');
+_('Sort election results by amount of votes');
+_('Put all candidates on the list of speakers');
+// subgroup ballot papers
+_('Ballot papers');
+_('Number of ballot papers');
+_('Number of all delegates');
+_('Number of all participants');
+_('Use the following custom number');
+_('Custom number of ballot papers');
+_('Required majority');
+_('Default method to check whether a candidate has reached the required majority.');
+_('Simple majority');
+_('Two-thirds majority');
+_('Three-quarters majority');
+_('Disabled');
+_('Title for PDF document (all elections)');
+_('Preamble text for PDF document (all elections)');
+// misc for assignments
 _('Searching for candidates');
-_('Voting');
 _('Finished');
+_('In the election process');
+
+// Voting strings
+_('Voting type');
+_('analog');
+_('nominal');
+_('non-nominal');
+_('Start voting');
+_('Stop voting');
+_('Publish');
+_('Entitled to vote');
+_('Voting method');
+_('Amount of votes');
 
 // ** Users **
 // permission strings (see models.py of each Django app)

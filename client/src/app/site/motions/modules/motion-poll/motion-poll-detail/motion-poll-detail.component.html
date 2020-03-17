@@ -1,0 +1,108 @@
+<os-head-bar [goBack]="true" [nav]="false">
+    <div class="title-slot">
+        <h2 *ngIf="poll">{{ 'Motion' | translate }} {{ poll.motion.identifierOrTitle }}</h2>
+    </div>
+
+    <div class="menu-slot" *osPerms="'motions.can_manage_polls'">
+        <button type="button" mat-icon-button [matMenuTriggerFor]="pollDetailMenu">
+            <mat-icon>more_vert</mat-icon>
+        </button>
+    </div>
+</os-head-bar>
+
+<mat-card class="os-card">
+    <ng-container [ngTemplateOutlet]="viewTemplate"></ng-container>
+</mat-card>
+
+<!-- Detailview for poll -->
+<ng-template #viewTemplate>
+    <ng-container *ngIf="poll">
+        <h1>{{ poll.title | translate }}</h1>
+
+        <div>
+            <!-- Voting type -->
+            <span *ngIf="poll.type !== 'analog'"> {{ poll.typeVerbose | translate }} &middot; </span>
+
+            <!-- State -->
+            <span>
+                {{ poll.stateVerbose | translate }}
+            </span>
+        </div>
+
+        <p *ngIf="!poll.hasVotes || !poll.stateHasVotes">{{ 'No results yet.' | translate }}</p>
+
+        <div *ngIf="poll.stateHasVotes && (hasPerms() || poll.isPublished)">
+            <os-motion-poll-detail-content [poll]="poll" [chartData]="chartDataSubject">
+            </os-motion-poll-detail-content>
+
+            <!-- Named table: only show if votes are present -->
+            <div class="named-result-table" *ngIf="poll.type === 'named'">
+                <h2>{{ 'Single votes' | translate }}</h2>
+                <os-list-view-table
+                    *ngIf="votesDataObservable"
+                    [listObservable]="votesDataObservable"
+                    [columns]="columnDefinition"
+                    [filterProps]="filterProps"
+                    [allowProjector]="false"
+                    [fullScreen]="true"
+                    [vScrollFixed]="60"
+                    listStorageKey="motion-poll-vote"
+                    [cssClasses]="{ 'single-votes-table': true }"
+                >
+                    <!-- Header -->
+                    <div *pblNgridHeaderCellDef="'*'; col as col">
+                        {{ col.label | translate }}
+                    </div>
+
+                    <!-- Content -->
+                    <div *pblNgridCellDef="'user'; row as vote">
+                        <div *ngIf="vote.user">{{ vote.user.getFullName() }}</div>
+                        <div *ngIf="!vote.user">{{ 'Anonymous' | translate }}</div>
+                    </div>
+                    <div *pblNgridCellDef="'vote'; row as vote" class="vote-cell">
+                        <div class="vote-cell-icon-container" [ngClass]="voteOptionStyle[vote.value].css">
+                            <mat-icon>{{ voteOptionStyle[vote.value].icon }}</mat-icon>
+                        </div>
+                        <div>{{ vote.valueVerbose | translate }}</div>
+                    </div>
+                </os-list-view-table>
+                <div *ngIf="!votesDataObservable">
+                    {{ 'The individual votes were anonymized.' | translate }}
+                </div>
+            </div>
+        </div>
+
+        <div class="poll-content">
+            <small *ngIf="poll.groups && poll.type && poll.type !== 'analog'">
+                {{ 'Groups' | translate }}:
+
+                <span *ngFor="let group of poll.groups; let i = index">
+                    {{ group.getTitle() | translate }}<span *ngIf="i < poll.groups.length - 1">, </span>
+                </span>
+            </small>
+            <small>{{ '100% base' | translate }}: {{ poll.percentBaseVerbose | translate }}</small>
+        </div>
+    </ng-container>
+</ng-template>
+
+<!-- More Menu -->
+<mat-menu #pollDetailMenu="matMenu">
+    <os-projector-button [menuItem]="true" [object]="poll" *osPerms="'core.can_manage_projector'"></os-projector-button>
+    <button *osPerms="'motions.can_manage_polls'" mat-menu-item (click)="openDialog(poll)">
+        <mat-icon>edit</mat-icon>
+        <span translate>Edit</span>
+    </button>
+    <button
+        mat-menu-item
+        *osPerms="'motions.can_manage_polls'; and: poll && poll.type === 'named'"
+        (click)="pseudoanonymizePoll()"
+    >
+        <mat-icon>warning</mat-icon>
+        <span translate>Anonymize votes</span>
+    </button>
+    <mat-divider></mat-divider>
+    <button *osPerms="'motions.can_manage_polls'" mat-menu-item (click)="deletePoll()">
+        <mat-icon color="warn">delete</mat-icon>
+        <span translate>Delete</span>
+    </button>
+</mat-menu>

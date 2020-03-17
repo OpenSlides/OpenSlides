@@ -100,3 +100,27 @@ async def get_config(all_data: AllData, key: str) -> Any:
     config_id = (await config.async_get_key_to_id())[key]
 
     return all_data[config.get_collection_string()][config_id]["value"]
+
+
+def get_model(all_data: AllData, collection: str, id: Any) -> Dict[str, Any]:
+    """
+    Tries to get the model identified by the collection and id.
+    If the id is invalid or the model not found, ProjectorElementExceptions will be raised.
+    """
+    if id is None:
+        raise ProjectorElementException(f"id is required for {collection} slide")
+
+    try:
+        model = all_data[collection][id]
+    except KeyError:
+        raise ProjectorElementException(f"{collection} with id {id} does not exist")
+    return model
+
+
+def get_models(
+    all_data: AllData, collection: str, ids: List[Any]
+) -> List[Dict[str, Any]]:
+    """
+    Tries to fetch all given models. Models are required to be all of the collection `collection`.
+    """
+    return [get_model(all_data, collection, id) for id in ids]

@@ -1,0 +1,69 @@
+@import '~assets/styles/poll-colors.scss';
+@import '~assets/styles/poll-styles-common.scss';
+
+%vote-grid-base {
+    display: grid;
+    grid-gap: 10px;
+    margin: 20px 0;
+}
+
+.yn-grid {
+    @extend %vote-grid-base;
+    grid-template-areas:
+        'name name'
+        'yes no';
+}
+
+.yna-grid {
+    @extend %vote-grid-base;
+    grid-template-areas:
+        'name name name'
+        'yes no abstain';
+}
+
+.single-vote-grid {
+    @extend %vote-grid-base;
+    grid-template-areas: 'yes name';
+    grid-template-columns: min-content auto;
+}
+
+.global-option-grid {
+    @extend %vote-grid-base;
+    grid-template-columns: auto auto;
+}
+
+.vote-candidate-name {
+    grid-area: name;
+    display: flex;
+    span {
+        margin-top: auto;
+        margin-bottom: auto;
+    }
+}
+
+.centered-button-wrapper {
+    display: flex;
+    text-align: center;
+    > * {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .vote-submitted {
+        color: $votes-yes-color;
+        font-size: 200%;
+    }
+}
+
+.vote-button {
+    min-width: 50px;
+    min-height: 50px;
+}
+
+.vote-label {
+    margin-left: 10px;
+}
+
+.mat-divider-horizontal {
+    position: initial;
+}

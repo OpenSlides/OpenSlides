@@ -125,6 +125,18 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User, UserTi
         return name.trim();
     }
 
+    public getLevelAndNumber(titleInformation: UserTitleInformation): string {
+        if (titleInformation.structure_level && titleInformation.number) {
+            return `${titleInformation.structure_level} · ${this.translate.instant('No.')} ${titleInformation.number}`;
+        } else if (titleInformation.structure_level) {
+            return titleInformation.structure_level;
+        } else if (titleInformation.number) {
+            return `${this.translate.instant('No.')} ${titleInformation.number}`;
+        } else {
+            return '';
+        }
+    }
+
     public getVerboseName = (plural: boolean = false) => {
         return this.translate.instant(plural ? 'Participants' : 'Participant');
     };
@@ -145,12 +157,13 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User, UserTi
     }
 
     /**
-     * Adds teh short and full name to the view user.
+     * Adds the short and full name to the view user.
      */
     protected createViewModelWithTitles(model: User): ViewUser {
         const viewModel = super.createViewModelWithTitles(model);
         viewModel.getFullName = () => this.getFullName(viewModel);
         viewModel.getShortName = () => this.getShortName(viewModel);
+        viewModel.getLevelAndNumber = () => this.getLevelAndNumber(viewModel);
         return viewModel;
     }
 

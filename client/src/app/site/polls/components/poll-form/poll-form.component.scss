@@ -1,0 +1,39 @@
+.poll-preview-title {
+    margin: 0;
+}
+
+.pollType {
+    .mat-hint {
+        color: red;
+        cursor: pointer;
+    }
+}
+
+.poll-preview-meta-info {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0;
+
+    .short-description {
+        flex: 1;
+        padding: 0 5px;
+        display: inline-block;
+        span {
+            display: block;
+        }
+        &-label {
+            font-size: 75%;
+        }
+    }
+}
+
+.poll-preview-meta-info-form {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+
+    & > * {
+        flex: 1;
+        margin: 0 4px;
+    }
+}

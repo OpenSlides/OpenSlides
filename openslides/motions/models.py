@@ -8,14 +8,10 @@ from openslides.agenda.mixins import AgendaItemWithListOfSpeakersMixin
 from openslides.core.config import config
 from openslides.core.models import Tag
 from openslides.mediafiles.models import Mediafile
-from openslides.poll.models import (
-    BaseOption,
-    BasePoll,
-    BaseVote,
-    CollectDefaultVotesMixin,
-)
+from openslides.poll.models import BaseOption, BasePoll, BaseVote
 from openslides.utils.autoupdate import inform_changed_data
 from openslides.utils.exceptions import OpenSlidesError
+from openslides.utils.manager import BaseManager
 from openslides.utils.models import RESTModelMixin
 from openslides.utils.rest_api import ValidationError
 
@@ -26,6 +22,9 @@ from .access_permissions import (
     MotionBlockAccessPermissions,
     MotionChangeRecommendationAccessPermissions,
     MotionCommentSectionAccessPermissions,
+    MotionOptionAccessPermissions,
+    MotionPollAccessPermissions,
+    MotionVoteAccessPermissions,
     StateAccessPermissions,
     StatuteParagraphAccessPermissions,
     WorkflowAccessPermissions,
@@ -59,18 +58,19 @@ class StatuteParagraph(RESTModelMixin, models.Model):
         return self.title
 
 
-class MotionManager(models.Manager):
+class MotionManager(BaseManager):
     """
-    Customized model manager to support our get_full_queryset method.
+    Customized model manager to support our get_prefetched_queryset method.
     """
 
-    def get_full_queryset(self):
+    def get_prefetched_queryset(self, *args, **kwargs):
         """
         Returns the normal queryset with all motions. In the background we
         join and prefetch all related models.
         """
         return (
-            self.get_queryset()
+            super()
+            .get_prefetched_queryset(*args, **kwargs)
             .select_related("state")
             .prefetch_related(
                 "state__workflow",
@@ -79,7 +79,6 @@ class MotionManager(models.Manager):
                 "comments__section__read_groups",
                 "agenda_items",
                 "lists_of_speakers",
-                "polls",
                 "attachments",
                 "tags",
                 "submitters",
@@ -269,6 +268,7 @@ class Motion(RESTModelMixin, AgendaItemWithListOfSpeakersMixin, models.Model):
             ("can_support", "Can support motions"),
             ("can_manage_metadata", "Can manage motion metadata"),
             ("can_manage", "Can manage motions"),
+            ("can_manage_polls", "Can manage motion polls"),
         )
         ordering = ("identifier",)
         verbose_name = "Motion"
@@ -423,22 +423,6 @@ class Motion(RESTModelMixin, AgendaItemWithListOfSpeakersMixin, models.Model):
         Returns True if user is a supporter of this motion, else False.
         """
         return user in self.supporters.all()
-
-    def create_poll(self, skip_autoupdate=False):
-        """
-        Create a new poll for this motion.
-
-        Return the new poll object.
-        """
-        if self.state.allow_create_poll:
-            poll = MotionPoll(motion=self)
-            poll.save(skip_autoupdate=skip_autoupdate)
-            poll.set_options(skip_autoupdate=skip_autoupdate)
-            return poll
-        else:
-            raise WorkflowError(
-                f"You can not create a poll in state {self.state.name}."
-            )
 
     @property
     def workflow_id(self):
@@ -682,27 +666,12 @@ class Submitter(RESTModelMixin, models.Model):
         return self.motion
 
 
-class MotionChangeRecommendationManager(models.Manager):
-    """
-    Customized model manager to support our get_full_queryset method.
-    """
-
-    def get_full_queryset(self):
-        """
-        Returns the normal queryset with all change recommendations. In the background we
-        join and prefetch all related models.
-        """
-        return self.get_queryset()
-
-
 class MotionChangeRecommendation(RESTModelMixin, models.Model):
     """
     A MotionChangeRecommendation object saves change recommendations for a specific Motion
     """
 
     access_permissions = MotionChangeRecommendationAccessPermissions()
-
-    objects = MotionChangeRecommendationManager()
 
     motion = models.ForeignKey(
         Motion, on_delete=CASCADE_AND_AUTOUPDATE, related_name="change_recommendations"
@@ -839,17 +808,21 @@ class Category(RESTModelMixin, models.Model):
             return self.parent.level + 1
 
 
-class MotionBlockManager(models.Manager):
+class MotionBlockManager(BaseManager):
     """
-    Customized model manager to support our get_full_queryset method.
+    Customized model manager to support our get_prefetched_queryset method.
     """
 
-    def get_full_queryset(self):
+    def get_prefetched_queryset(self, *args, **kwargs):
         """
         Returns the normal queryset with all motion blocks. In the
         background the related agenda item is prefetched from the database.
         """
-        return self.get_queryset().prefetch_related("agenda_items", "lists_of_speakers")
+        return (
+            super()
+            .get_prefetched_queryset(*args, **kwargs)
+            .prefetch_related("agenda_items", "lists_of_speakers")
+        )
 
 
 class MotionBlock(RESTModelMixin, AgendaItemWithListOfSpeakersMixin, models.Model):
@@ -880,83 +853,106 @@ class MotionBlock(RESTModelMixin, AgendaItemWithListOfSpeakersMixin, models.Mode
         return {"title": self.title}
 
 
+class MotionVoteManager(BaseManager):
+    """
+    Customized model manager to support our get_prefetched_queryset method.
+    """
+
+    def get_prefetched_queryset(self, *args, **kwargs):
+        """
+        Returns the normal queryset with all motion votes. In the background we
+        join and prefetch all related models.
+        """
+        return (
+            super()
+            .get_prefetched_queryset(*args, **kwargs)
+            .select_related("user", "option", "option__poll")
+        )
+
+
 class MotionVote(RESTModelMixin, BaseVote):
-    """Saves the votes for a MotionPoll.
+    access_permissions = MotionVoteAccessPermissions()
+    option = models.ForeignKey(
+        "MotionOption", on_delete=CASCADE_AND_AUTOUPDATE, related_name="votes"
+    )
 
-    There should allways be three MotionVote objects for each poll,
-    one for 'yes', 'no', and 'abstain'."""
-
-    option = models.ForeignKey("MotionOption", on_delete=models.CASCADE)
-    """The option object, to witch the vote belongs."""
+    objects = MotionVoteManager()
 
     class Meta:
         default_permissions = ()
 
-    def get_root_rest_element(self):
+
+class MotionOptionManager(BaseManager):
+    """
+    Customized model manager to support our get_prefetched_queryset method.
+    """
+
+    def get_prefetched_queryset(self, *args, **kwargs):
         """
-        Returns the motion to this instance which is the root REST element.
+        Returns the normal queryset. In the background we
+        join and prefetch all related models.
         """
-        return self.option.poll.motion
+        return (
+            super()
+            .get_prefetched_queryset(*args, **kwargs)
+            .select_related("poll")
+            .prefetch_related("votes")
+        )
 
 
 class MotionOption(RESTModelMixin, BaseOption):
-    """Links between the MotionPollClass and the MotionVoteClass.
-
-    There should be one MotionOption object for each poll."""
-
-    poll = models.ForeignKey("MotionPoll", on_delete=models.CASCADE)
-    """The poll object, to witch the object belongs."""
-
+    access_permissions = MotionOptionAccessPermissions()
+    can_see_permission = "motions.can_see"
+    objects = MotionOptionManager()
     vote_class = MotionVote
-    """The VoteClass, to witch this Class links."""
+
+    poll = models.ForeignKey(
+        "MotionPoll", related_name="options", on_delete=CASCADE_AND_AUTOUPDATE
+    )
 
     class Meta:
         default_permissions = ()
 
-    def get_root_rest_element(self):
+
+class MotionPollManager(BaseManager):
+    """
+    Customized model manager to support our get_prefetched_queryset method.
+    """
+
+    def get_prefetched_queryset(self, *args, **kwargs):
         """
-        Returns the motion to this instance which is the root REST element.
+        Returns the normal queryset with all motion polls. In the background we
+        join and prefetch all related models.
         """
-        return self.poll.motion
+        return (
+            super()
+            .get_prefetched_queryset(*args, **kwargs)
+            .select_related("motion")
+            .prefetch_related("options", "options__votes", "voted", "groups")
+        )
 
 
-# TODO: remove the type-ignoring in the next line, after this is solved:
-#       https://github.com/python/mypy/issues/3855
-class MotionPoll(RESTModelMixin, CollectDefaultVotesMixin, BasePoll):  # type: ignore
-    """The Class to saves the vote result for a motion poll."""
-
-    motion = models.ForeignKey(Motion, on_delete=models.CASCADE, related_name="polls")
-    """The motion to witch the object belongs."""
-
+class MotionPoll(RESTModelMixin, BasePoll):
+    access_permissions = MotionPollAccessPermissions()
+    can_see_permission = "motions.can_see"
     option_class = MotionOption
-    """The option class, witch links between this object the the votes."""
 
-    vote_values = ["Yes", "No", "Abstain"]
-    """The possible anwers for the poll. 'Yes, 'No' and 'Abstain'."""
+    objects = MotionPollManager()
+
+    motion = models.ForeignKey(
+        Motion, on_delete=CASCADE_AND_AUTOUPDATE, related_name="polls"
+    )
+
+    POLLMETHOD_YN = "YN"
+    POLLMETHOD_YNA = "YNA"
+    POLLMETHODS = (("YN", "YN"), ("YNA", "YNA"))
+    pollmethod = models.CharField(max_length=3, choices=POLLMETHODS)
 
     class Meta:
         default_permissions = ()
 
-    def __str__(self):
-        """
-        Representation method only for debugging purposes.
-        """
-        return f"MotionPoll for motion {self.motion}"
-
-    def set_options(self, skip_autoupdate=False):
-        """Create the option class for this poll."""
-        # TODO: maybe it is possible with .create() to call this without poll=self
-        #       or call this in save()
-        self.get_option_class()(poll=self).save(skip_autoupdate=skip_autoupdate)
-
-    def get_percent_base_choice(self):
-        return config["motions_poll_100_percent_base"]
-
-    def get_root_rest_element(self):
-        """
-        Returns the motion to this instance which is the root REST element.
-        """
-        return self.motion
+    def create_options(self):
+        MotionOption.objects.create(poll=self)
 
 
 class State(RESTModelMixin, models.Model):
@@ -1100,21 +1096,18 @@ class State(RESTModelMixin, models.Model):
         return state_id in next_state_ids or state_id in previous_state_ids
 
 
-class WorkflowManager(models.Manager):
+class WorkflowManager(BaseManager):
     """
-    Customized model manager to support our get_full_queryset method.
+    Customized model manager to support our get_prefetched_queryset method.
     """
 
-    def get_full_queryset(self):
+    def get_prefetched_queryset(self, *args, **kwargs):
         """
         Returns the normal queryset with all workflows. In the background
-        the first state is joined and all states and next states are
-        prefetched from the database.
+        all states are prefetched from the database.
         """
         return (
-            self.get_queryset()
-            .select_related("first_state")
-            .prefetch_related("states", "states__next_states")
+            super().get_prefetched_queryset(*args, **kwargs).prefetch_related("states")
         )
 
 

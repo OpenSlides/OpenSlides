@@ -1,0 +1,25 @@
+<div
+    *ngFor="let banner of banners"
+    class="banner"
+    [ngClass]="[
+        banner.type === 'history' ? 'history-mode-indicator' : '',
+        banner.class ? banner.class : '',
+        banner.largerOnMobileView ? 'larger-on-mobile' : ''
+    ]"
+    [ngSwitch]="banner.type"
+>
+    <ng-container *ngSwitchCase="'history'">
+        <span translate>You are using the history mode of OpenSlides. Changes will not be saved.</span>
+        <span>({{ getHistoryTimestamp() }})</span>
+        <a (click)="timeTravel.resumeTime()" translate>Exit</a>
+    </ng-container>
+    <ng-container *ngSwitchDefault>
+        <a class="banner-link" [routerLink]="banner.link" [style.cursor]="banner.link ? 'pointer' : 'default'">
+            <mat-icon>{{ banner.icon }}</mat-icon>
+            <span>{{ banner.text }}</span>
+            <div *ngIf="banner.subText">
+                {{ banner.subText | translate }}
+            </div>
+        </a>
+    </ng-container>
+</div>

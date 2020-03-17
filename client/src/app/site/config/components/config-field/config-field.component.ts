@@ -15,11 +15,14 @@ import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 import * as moment from 'moment';
 import { Moment } from 'moment';
-import { distinctUntilChanged } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { distinctUntilChanged, filter } from 'rxjs/operators';
 
 import { BaseComponent } from 'app/base.component';
 import { ConfigRepositoryService } from 'app/core/repositories/config/config-repository.service';
+import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
 import { ParentErrorStateMatcher } from 'app/shared/parent-error-state-matcher';
+import { ViewGroup } from 'app/site/users/models/view-group';
 import { ConfigItem } from '../config-list/config-list.component';
 import { ViewConfig } from '../../models/view-config';
 
@@ -115,6 +118,9 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit, OnDes
     @Output()
     public update = new EventEmitter<ConfigItem>();
 
+    /** used by the groups config type */
+    public groupObservable: Observable<ViewGroup[]> = null;
+
     /**
      * The usual component constructor. datetime pickers will set their locale
      * to the current language chosen
@@ -130,7 +136,8 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit, OnDes
         protected translate: TranslateService,
         private formBuilder: FormBuilder,
         private cd: ChangeDetectorRef,
-        public repo: ConfigRepositoryService
+        public repo: ConfigRepositoryService,
+        private groupRepo: GroupRepositoryService
     ) {
         super(titleService, translate);
     }
@@ -139,6 +146,11 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit, OnDes
      * Sets up the form for this config field.
      */
     public ngOnInit(): void {
+        // filter out empty results in group observable. We never have no groups and it messes up the settings change detection
+        this.groupObservable = this.groupRepo
+            .getViewModelListObservableWithoutDefaultGroup()
+            .pipe(filter(groups => !!groups.length));
+
         this.form = this.formBuilder.group({
             value: [''],
             date: [''],
@@ -225,6 +237,14 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit, OnDes
             const date = this.form.get('date').value;
             const time = this.form.get('time').value;
             value = this.dateAndTimeToUnix(date, time);
+        }
+        if (this.configItem.inputType === 'groups') {
+            // we have to check here explicitly if nothing changed because of the search value selector
+            const newS = new Set(value);
+            const oldS = new Set(this.configItem.value);
+            if (newS.equals(oldS)) {
+                return;
+            }
         }
         this.sendUpdate(value);
         this.cd.detectChanges();

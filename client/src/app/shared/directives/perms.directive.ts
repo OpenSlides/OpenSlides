@@ -108,7 +108,7 @@ export class PermsDirective implements OnInit, OnDestroy {
     }
 
     /**
-     * COmes from the view.
+     * Comes from the view.
      */
     @Input('osPermsComplement')
     public set osPermsComplement(value: boolean) {

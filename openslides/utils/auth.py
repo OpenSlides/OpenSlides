@@ -111,24 +111,32 @@ async def async_has_perm(user_id: int, perm: str) -> bool:
     return has_perm
 
 
-def in_some_groups(user_id: int, groups: List[int]) -> bool:
+# async code doesn't work well with QuerySets, so we have to give a list of ints for groups
+def in_some_groups(user_id: int, groups: List[int], exact: bool = False) -> bool:
     """
     Checks that user is in at least one given group. Groups can be given as a list
-    of ids or group instances. If the user is in the admin group (pk = 2) the result
-    is always true, even if no groups are given.
+    of ids or a QuerySet.
+
+    If exact is false (default) and the user is in the admin group (pk = 2),
+    the result is always true, even if no groups are given.
+
+    If exact is true, the user must be in one of the groups, ignoring the possible
+    superadmin-status of the user.
 
     user_id 0 means anonymous user.
     """
     # Convert user to right type
     # TODO: Remove this and make use, that user has always the right type
     user_id = user_to_user_id(user_id)
-    return async_to_sync(async_in_some_groups)(user_id, groups)
+    return async_to_sync(async_in_some_groups)(user_id, groups, exact)
 
 
-async def async_in_some_groups(user_id: int, groups: List[int]) -> bool:
+async def async_in_some_groups(
+    user_id: int, groups: List[int], exact: bool = False
+) -> bool:
     """
     Checks that user is in at least one given group. Groups can be given as a list
-    of ids. If the user is in the admin group (pk = 2) the result
+    of ids or a QuerySet. If the user is in the admin group (pk = 2) the result
     is always true, even if no groups are given.
 
     user_id 0 means anonymous user.
@@ -144,7 +152,7 @@ async def async_in_some_groups(user_id: int, groups: List[int]) -> bool:
         )
         if user_data is None:
             raise UserDoesNotExist()
-        if GROUP_ADMIN_PK in user_data["groups_id"]:
+        if not exact and GROUP_ADMIN_PK in user_data["groups_id"]:
             # User in admin group (pk 2) grants all permissions.
             in_some_groups = True
         else:

@@ -4,9 +4,8 @@ from rest_framework import status
 
 from openslides.agenda.models import Item
 from openslides.topics.models import Topic
-from openslides.utils.test import TestCase
-
-from ..helpers import count_queries
+from tests.count_queries import count_queries
+from tests.test_case import TestCase
 
 
 @pytest.mark.django_db(transaction=False)
@@ -21,7 +20,7 @@ def test_topic_item_db_queries():
     for index in range(10):
         Topic.objects.create(title=f"topic-{index}")
 
-    assert count_queries(Topic.get_elements) == 4
+    assert count_queries(Topic.get_elements)() == 4
 
 
 class TopicCreate(TestCase):

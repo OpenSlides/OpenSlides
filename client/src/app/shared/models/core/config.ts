@@ -2,7 +2,7 @@ import { BaseModel } from '../base/base-model';
 
 export interface ConfigChoice {
     value: string;
-    displayName: string;
+    display_name: string;
 }
 
 /**
@@ -17,7 +17,8 @@ export type ConfigInputType =
     | 'choice'
     | 'datetimepicker'
     | 'colorpicker'
-    | 'translations';
+    | 'translations'
+    | 'groups';
 
 export interface ConfigData {
     defaultValue: any;

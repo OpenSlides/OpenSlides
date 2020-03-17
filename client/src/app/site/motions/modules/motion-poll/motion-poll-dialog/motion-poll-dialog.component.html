@@ -1,0 +1,61 @@
+<os-poll-form [data]="pollData" [percentBases]="PercentBaseVerbose" #pollForm></os-poll-form>
+<ng-container *ngIf="pollForm.contentForm.get('type').value === 'analog'">
+    <div class="os-form-card-mobile" mat-dialog-content>
+        <form [formGroup]="dialogVoteForm">
+            <os-check-input
+                [placeholder]="'Yes' | translate"
+                [checkboxValue]="-1"
+                inputType="number"
+                [checkboxLabel]="'majority' | translate"
+                formControlName="Y"
+            ></os-check-input>
+            <os-check-input
+                [placeholder]="'No' | translate"
+                [checkboxValue]="-1"
+                inputType="number"
+                [checkboxLabel]="'majority' | translate"
+                formControlName="N"
+            ></os-check-input>
+            <os-check-input
+                [placeholder]="'Abstain' | translate"
+                [checkboxValue]="-1"
+                inputType="number"
+                [checkboxLabel]="'majority' | translate"
+                formControlName="A"
+            ></os-check-input>
+            <os-check-input
+                [placeholder]="'Valid votes' | translate"
+                inputType="number"
+                formControlName="votesvalid"
+            ></os-check-input>
+            <os-check-input
+                [placeholder]="'Invalid votes' | translate"
+                inputType="number"
+                formControlName="votesinvalid"
+            ></os-check-input>
+            <os-check-input
+                [placeholder]="'Total votes cast' | translate"
+                inputType="number"
+                formControlName="votescast"
+            ></os-check-input>
+        </form>
+    </div>
+
+    <!-- Publish immediately button. Only show for new polls -->
+    <div *ngIf="!pollData.isPublished">
+        <mat-checkbox [(ngModel)]="publishImmediately" (change)="publishStateChanged($event.checked)">
+            <span translate>Publish immediately</span>
+        </mat-checkbox>
+        <mat-error *ngIf="!dialogVoteForm.valid" translate>
+            Error in form field.
+        </mat-error>
+    </div>
+</ng-container>
+<div mat-dialog-actions>
+    <button mat-button (click)="submitPoll()" [disabled]="pollForm.contentForm.invalid || dialogVoteForm.invalid">
+        <span translate>Save</span>
+    </button>
+    <button mat-button [mat-dialog-close]="false">
+        <span translate>Cancel</span>
+    </button>
+</div>

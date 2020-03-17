@@ -1,42 +1,79 @@
-import { AssignmentPollMethod } from 'app/site/assignments/services/assignment-poll.service';
-import { AssignmentPollOption } from './assignment-poll-option';
-import { BaseModel } from '../base/base-model';
+import { CalculablePollKey } from 'app/site/polls/services/poll.service';
+import { AssignmentOption } from './assignment-option';
+import { BasePoll } from '../poll/base-poll';
 
-export interface AssignmentPollWithoutNestedModels extends BaseModel<AssignmentPoll> {
-    id: number;
-    pollmethod: AssignmentPollMethod;
-    description: string;
-    published: boolean;
-    votesvalid: number;
-    votesno: number;
-    votesabstain: number;
-    votesinvalid: number;
-    votescast: number;
-    has_votes: boolean;
-    assignment_id: number;
+export enum AssignmentPollMethod {
+    YN = 'YN',
+    YNA = 'YNA',
+    Votes = 'votes'
+}
+
+export enum AssignmentPollPercentBase {
+    YN = 'YN',
+    YNA = 'YNA',
+    Votes = 'votes',
+    Valid = 'valid',
+    Cast = 'cast',
+    Disabled = 'disabled'
 }
 
 /**
- * Content of the 'polls' property of assignments
- * @ignore
+ * Class representing a poll for an assignment.
  */
-export class AssignmentPoll extends BaseModel<AssignmentPoll> {
+export class AssignmentPoll extends BasePoll<
+    AssignmentPoll,
+    AssignmentOption,
+    AssignmentPollMethod,
+    AssignmentPollPercentBase
+> {
     public static COLLECTIONSTRING = 'assignments/assignment-poll';
-    private static DECIMAL_FIELDS = ['votesvalid', 'votesinvalid', 'votescast', 'votesno', 'votesabstain'];
+    public static defaultGroupsConfig = 'assignment_poll_default_groups';
+    public static defaultPollMethodConfig = 'assignment_poll_method';
+    public static DECIMAL_FIELDS = [
+        'votesvalid',
+        'votesinvalid',
+        'votescast',
+        'amount_global_abstain',
+        'amount_global_no'
+    ];
 
     public id: number;
-    public options: AssignmentPollOption[];
+    public assignment_id: number;
+    public votes_amount: number;
+    public allow_multiple_votes_per_candidate: boolean;
+    public global_no: boolean;
+    public global_abstain: boolean;
+    public amount_global_no: number;
+    public amount_global_abstain: number;
+    public description: string;
+
+    public get isMethodY(): boolean {
+        return this.pollmethod === AssignmentPollMethod.Votes;
+    }
+
+    public get isMethodYN(): boolean {
+        return this.pollmethod === AssignmentPollMethod.YN;
+    }
+
+    public get isMethodYNA(): boolean {
+        return this.pollmethod === AssignmentPollMethod.YNA;
+    }
+
+    public get pollmethodFields(): CalculablePollKey[] {
+        if (this.pollmethod === AssignmentPollMethod.YN) {
+            return ['yes', 'no'];
+        } else if (this.pollmethod === AssignmentPollMethod.YNA) {
+            return ['yes', 'no', 'abstain'];
+        } else if (this.pollmethod === AssignmentPollMethod.Votes) {
+            return ['yes'];
+        }
+    }
 
     public constructor(input?: any) {
-        // cast stringify numbers
-        if (input) {
-            AssignmentPoll.DECIMAL_FIELDS.forEach(field => {
-                if (input[field] && typeof input[field] === 'string') {
-                    input[field] = parseFloat(input[field]);
-                }
-            });
-        }
         super(AssignmentPoll.COLLECTIONSTRING, input);
     }
+
+    protected getDecimalFields(): string[] {
+        return AssignmentPoll.DECIMAL_FIELDS;
+    }
 }
-export interface AssignmentPoll extends AssignmentPollWithoutNestedModels {}

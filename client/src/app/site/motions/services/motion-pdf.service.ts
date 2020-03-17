@@ -10,8 +10,10 @@ import { MotionRepositoryService } from 'app/core/repositories/motions/motion-re
 import { StatuteParagraphRepositoryService } from 'app/core/repositories/motions/statute-paragraph-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { LinenumberingService } from 'app/core/ui-services/linenumbering.service';
-import { CalculablePollKey } from 'app/core/ui-services/poll.service';
 import { ViewUnifiedChange, ViewUnifiedChangeType } from 'app/shared/models/motions/view-unified-change';
+import { ParsePollNumberPipe } from 'app/shared/pipes/parse-poll-number.pipe';
+import { PollKeyVerbosePipe } from 'app/shared/pipes/poll-key-verbose.pipe';
+import { PollPercentBasePipe } from 'app/shared/pipes/poll-percent-base.pipe';
 import { getRecommendationTypeName } from 'app/shared/utils/recommendation-type-names';
 import { MotionExportInfo } from './motion-export.service';
 import { MotionPollService } from './motion-poll.service';
@@ -62,9 +64,12 @@ export class MotionPdfService {
         private configService: ConfigService,
         private pdfDocumentService: PdfDocumentService,
         private htmlToPdfService: HtmlToPdfService,
-        private pollService: MotionPollService,
         private linenumberingService: LinenumberingService,
-        private commentRepo: MotionCommentSectionRepositoryService
+        private commentRepo: MotionCommentSectionRepositoryService,
+        private pollKeyVerbose: PollKeyVerbosePipe,
+        private pollPercentBase: PollPercentBasePipe,
+        private parsePollNumber: ParsePollNumberPipe,
+        private motionPollService: MotionPollService
     ) {}
 
     /**
@@ -361,33 +366,26 @@ export class MotionPdfService {
         }
 
         // voting results
-        if (motion.motion.polls.length && (!infoToExport || infoToExport.includes('polls'))) {
+        if (motion.polls.length && (!infoToExport || infoToExport.includes('polls'))) {
             const column1 = [];
             const column2 = [];
             const column3 = [];
-            motion.motion.polls.map((poll, index) => {
-                if (poll.has_votes) {
-                    if (motion.motion.polls.length > 1) {
-                        column1.push(index + 1 + '. ' + this.translate.instant('Vote'));
-                        column2.push('');
-                        column3.push('');
-                    }
-                    const values: CalculablePollKey[] = ['yes', 'no', 'abstain'];
-                    if (poll.votesvalid) {
-                        values.push('votesvalid');
-                    }
-                    if (poll.votesinvalid) {
-                        values.push('votesinvalid');
-                    }
-                    if (poll.votescast) {
-                        values.push('votescast');
-                    }
-                    values.map(value => {
-                        column1.push(`${this.translate.instant(this.pollService.getLabel(value))}:`);
-                        column2.push(`${this.translate.instant(this.pollService.getSpecialLabel(poll[value]))}`);
-                        this.pollService.isAbstractValue(poll, value)
-                            ? column3.push('')
-                            : column3.push(`(${this.pollService.calculatePercentage(poll, value)} %)`);
+            motion.polls.forEach(poll => {
+                if (poll.hasVotes) {
+                    const tableData = this.motionPollService.generateTableData(poll);
+
+                    tableData.forEach(votingResult => {
+                        const votingOption = this.translate.instant(
+                            this.pollKeyVerbose.transform(votingResult.votingOption)
+                        );
+                        const value = votingResult.value[0];
+                        const resultValue = this.parsePollNumber.transform(value.amount);
+                        column1.push(`${votingOption}:`);
+                        column2.push(resultValue);
+                        if (value.showPercent) {
+                            const resultInPercent = this.pollPercentBase.transform(value.amount, poll);
+                            column3.push(resultInPercent);
+                        }
                     });
                 }
             });
@@ -655,15 +653,6 @@ export class MotionPdfService {
                 style: 'heading3',
                 margin: [0, 25, 0, 10]
             });
-
-            // determine the width of the reason depending on line numbering
-            // currently not used
-            // let columnWidth: string;
-            // if (lnMode === LineNumberingMode.Outside) {
-            //     columnWidth = '80%';
-            // } else {
-            //     columnWidth = '100%';
-            // }
 
             reason.push(this.htmlToPdfService.addPlainText(motion.reason));
 

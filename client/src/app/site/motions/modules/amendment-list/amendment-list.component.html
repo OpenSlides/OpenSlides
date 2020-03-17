@@ -25,7 +25,7 @@
 </os-head-bar>
 
 <os-list-view-table
-    [repo]="motionRepo"
+    [listObservableProvider]="motionRepo"
     [sortService]="amendmentSortService"
     [filterService]="amendmentFilterService"
     [columns]="tableColumnDefinition"

@@ -13,10 +13,9 @@ from openslides.core.models import Projector, Tag
 from openslides.users.models import User
 from openslides.utils.auth import get_group_model
 from openslides.utils.autoupdate import inform_changed_data
-from openslides.utils.test import TestCase
 from tests.common_groups import GROUP_ADMIN_PK, GROUP_DELEGATE_PK
-
-from ..helpers import count_queries
+from tests.count_queries import count_queries
+from tests.test_case import TestCase
 
 
 @pytest.mark.django_db(transaction=False)
@@ -29,7 +28,7 @@ def test_projector_db_queries():
     for index in range(10):
         Projector.objects.create(name=f"Projector{index}")
 
-    assert count_queries(Projector.get_elements) == 2
+    assert count_queries(Projector.get_elements)() == 2
 
 
 @pytest.mark.django_db(transaction=False)
@@ -41,7 +40,7 @@ def test_tag_db_queries():
     for index in range(10):
         Tag.objects.create(name=f"tag{index}")
 
-    assert count_queries(Tag.get_elements) == 1
+    assert count_queries(Tag.get_elements)() == 1
 
 
 @pytest.mark.django_db(transaction=False)
@@ -52,7 +51,7 @@ def test_config_db_queries():
     """
     config.save_default_values()
 
-    assert count_queries(Tag.get_elements) == 1
+    assert count_queries(Tag.get_elements)() == 1
 
 
 class ProjectorViewSet(TestCase):
@@ -107,7 +106,6 @@ class Projection(TestCase):
         response = self.client.post(
             reverse("projector-project", args=[self.projector.pk]),
             {"elements": elements},
-            format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.projector = Projector.objects.get(pk=1)
@@ -117,9 +115,7 @@ class Projection(TestCase):
 
     def test_add_element_without_name(self):
         response = self.client.post(
-            reverse("projector-project", args=[self.projector.pk]),
-            {"elements": [{}]},
-            format="json",
+            reverse("projector-project", args=[self.projector.pk]), {"elements": [{}]}
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.projector = Projector.objects.get(pk=1)
@@ -134,7 +130,7 @@ class Projection(TestCase):
         inform_changed_data(admin)
 
         response = self.client.post(
-            reverse("projector-project", args=[self.projector.pk]), {}, format="json"
+            reverse("projector-project", args=[self.projector.pk]), {}
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
@@ -142,9 +138,7 @@ class Projection(TestCase):
         self.projector.elements = [{"name": "core/clock"}]
         self.projector.save()
         response = self.client.post(
-            reverse("projector-project", args=[self.projector.pk]),
-            {"elements": []},
-            format="json",
+            reverse("projector-project", args=[self.projector.pk]), {"elements": []}
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.projector = Projector.objects.get(pk=1)
@@ -157,7 +151,6 @@ class Projection(TestCase):
         response = self.client.post(
             reverse("projector-project", args=[self.projector.pk]),
             {"append_to_history": element},
-            format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.projector = Projector.objects.get(pk=1)
@@ -173,7 +166,6 @@ class Projection(TestCase):
         response = self.client.post(
             reverse("projector-project", args=[self.projector.pk]),
             {"delete_last_history_element": True},
-            format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.projector = Projector.objects.get(pk=1)
@@ -186,7 +178,6 @@ class Projection(TestCase):
         response = self.client.post(
             reverse("projector-project", args=[self.projector.pk]),
             {"preview": elements},
-            format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.projector = Projector.objects.get(pk=1)
@@ -265,7 +256,6 @@ class ConfigViewSet(TestCase):
         response = self.client.put(
             reverse("config-detail", args=["agenda_start_event_date_time"]),
             {"value": None},
-            format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(config["agenda_start_event_date_time"], None)
@@ -277,7 +267,6 @@ class ConfigViewSet(TestCase):
         response = self.client.put(
             reverse("config-detail", args=["motions_identifier_min_digits"]),
             {"value": None},
-            format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
@@ -316,9 +305,7 @@ class ConfigViewSet(TestCase):
         self.degrade_admin(can_manage_logos_and_fonts=True)
         value = self.get_static_config_value()
         response = self.client.put(
-            reverse("config-detail", args=[self.logo_config_key]),
-            {"value": value},
-            format="json",
+            reverse("config-detail", args=[self.logo_config_key]), {"value": value}
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(config[self.logo_config_key], value)
@@ -332,7 +319,6 @@ class ConfigViewSet(TestCase):
                 {"key": self.string_config_key, "value": string_value},
                 {"key": self.logo_config_key, "value": logo_value},
             ],
-            format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["errors"], {})
@@ -345,7 +331,6 @@ class ConfigViewSet(TestCase):
         response = self.client.post(
             reverse("config-bulk-update"),
             [{"key": self.string_config_key, "value": string_value}],
-            format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(config[self.string_config_key], "OpenSlides")
@@ -355,7 +340,6 @@ class ConfigViewSet(TestCase):
         response = self.client.post(
             reverse("config-bulk-update"),
             {"key": self.string_config_key, "value": string_value},
-            format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(config[self.string_config_key], "OpenSlides")
@@ -363,16 +347,14 @@ class ConfigViewSet(TestCase):
     def test_bulk_update_no_key(self):
         string_value = "test_value_glwe32qc&Lml2lclmqmc"
         response = self.client.post(
-            reverse("config-bulk-update"), [{"value": string_value}], format="json"
+            reverse("config-bulk-update"), [{"value": string_value}]
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(config[self.string_config_key], "OpenSlides")
 
     def test_bulk_update_no_value(self):
         response = self.client.post(
-            reverse("config-bulk-update"),
-            [{"key": self.string_config_key}],
-            format="json",
+            reverse("config-bulk-update"), [{"key": self.string_config_key}]
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(config[self.string_config_key], "OpenSlides")
@@ -384,7 +366,7 @@ class ConfigViewSet(TestCase):
             "motions_preamble"
         ] = "test_preamble_2390jvwohjwo1oigefoq"  # Group motions
         response = self.client.post(
-            reverse("config-reset-groups"), ["General", "Agenda"], format="json"
+            reverse("config-reset-groups"), ["General", "Agenda"]
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(config["general_event_name"], "OpenSlides")
@@ -394,15 +376,11 @@ class ConfigViewSet(TestCase):
         )
 
     def test_reset_group_wrong_format_1(self):
-        response = self.client.post(
-            reverse("config-reset-groups"), {"wrong": "format"}, format="json"
-        )
+        response = self.client.post(reverse("config-reset-groups"), {"wrong": "format"})
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_reset_group_wrong_format_2(self):
         response = self.client.post(
-            reverse("config-reset-groups"),
-            ["some_string", {"wrong": "format"}],
-            format="json",
+            reverse("config-reset-groups"), ["some_string", {"wrong": "format"}]
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

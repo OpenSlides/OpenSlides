@@ -6,9 +6,9 @@ from django.db import models
 
 from . import logging
 from .access_permissions import BaseAccessPermissions
-from .autoupdate import Element, inform_changed_data, inform_changed_elements
+from .autoupdate import AutoupdateElement, inform_changed_data, inform_elements
 from .rest_api import model_serializer_classes
-from .utils import convert_camel_case_to_pseudo_snake_case
+from .utils import convert_camel_case_to_pseudo_snake_case, get_element_id
 
 
 logger = logging.getLogger(__name__)
@@ -90,7 +90,16 @@ class RESTModelMixin:
         """
         return self.pk  # type: ignore
 
-    def save(self, skip_autoupdate: bool = False, *args: Any, **kwargs: Any) -> Any:
+    def get_element_id(self) -> str:
+        return get_element_id(self.get_collection_string(), self.get_rest_pk())
+
+    def save(
+        self,
+        skip_autoupdate: bool = False,
+        no_delete_on_restriction: bool = False,
+        *args: Any,
+        **kwargs: Any,
+    ) -> Any:
         """
         Calls Django's save() method and afterwards hits the autoupdate system.
 
@@ -104,7 +113,10 @@ class RESTModelMixin:
 
         return_value = super().save(*args, **kwargs)  # type: ignore
         if not skip_autoupdate:
-            inform_changed_data(self.get_root_rest_element())
+            inform_changed_data(
+                self.get_root_rest_element(),
+                no_delete_on_restriction=no_delete_on_restriction,
+            )
         return return_value
 
     def delete(self, skip_autoupdate: bool = False, *args: Any, **kwargs: Any) -> Any:
@@ -130,18 +142,23 @@ class RESTModelMixin:
         return return_value
 
     @classmethod
-    def get_elements(cls) -> List[Dict[str, Any]]:
+    def get_elements(cls, ids: Optional[List[int]] = None) -> List[Dict[str, Any]]:
         """
         Returns all elements as full_data.
         """
-        logger.info(f"Loading {cls.get_collection_string()}")
+        do_logging = not bool(ids)
+
+        if do_logging:
+            logger.info(f"Loading {cls.get_collection_string()}")
         # Get the query to receive all data from the database.
         try:
-            query = cls.objects.get_full_queryset()  # type: ignore
+            query = cls.objects.get_prefetched_queryset(ids=ids)  # type: ignore
         except AttributeError:
-            # If the model des not have to method get_full_queryset(), then use
+            # If the model des not have to method get_prefetched_queryset(), then use
             # the default queryset from django.
             query = cls.objects  # type: ignore
+            if ids:
+                query = query.filter(pk__in=ids)
 
         # Build a dict from the instance id to the full_data
         instances = query.all()
@@ -153,11 +170,12 @@ class RESTModelMixin:
         for i, instance in enumerate(instances):
             # Append full data from this instance
             full_data.append(instance.get_full_data())
-            # log progress every 5 seconds
-            current_time = time.time()
-            if current_time > last_time + 5:
-                last_time = current_time
-                logger.info(f"\t{i+1}/{instances_length}...")
+            if do_logging:
+                # log progress every 5 seconds
+                current_time = time.time()
+                if current_time > last_time + 5:
+                    last_time = current_time
+                    logger.info(f"\t{i+1}/{instances_length}...")
         return full_data
 
     @classmethod
@@ -211,12 +229,10 @@ def CASCADE_AND_AUTOUPDATE(
     for sub_obj in sub_objs:
         root_rest_element = sub_obj.get_root_rest_element()
         elements.append(
-            Element(
+            AutoupdateElement(
                 collection_string=root_rest_element.get_collection_string(),
-                id=root_rest_element.pk,
-                full_data=None,
-                reload=True,
+                id=root_rest_element.get_rest_pk(),
             )
         )
-    inform_changed_elements(elements)
+    inform_elements(elements)
     models.CASCADE(collector, field, sub_objs, using)

@@ -63,6 +63,11 @@ const routes: Routes = [
         data: { basePerm: 'motions.can_see' }
     },
     {
+        path: 'polls',
+        loadChildren: () => import('./modules/motion-poll/motion-poll.module').then(m => m.MotionPollModule),
+        data: { basePerm: 'motions.can_see' }
+    },
+    {
         path: ':id',
         loadChildren: () => import('./modules/motion-detail/motion-detail.module').then(m => m.MotionDetailModule),
         runGuardsAndResolvers: 'paramsChange',

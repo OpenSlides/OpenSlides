@@ -1,0 +1,8 @@
+<div *ngIf="poll" class="poll-progress-wrapper">
+    <div class="vote-number">
+        <span>{{ poll.votescast }} / {{ max }}</span>
+    </div>
+
+    <span translate>Received votes</span>
+    <mat-progress-bar class="voting-progress-bar" [value]="valueInPercent"></mat-progress-bar>
+</div>
