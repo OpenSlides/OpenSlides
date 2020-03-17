@@ -6,10 +6,12 @@
         </p>
 
         <!-- Leftover votes -->
-        <h4
-            *ngIf="poll.pollmethod === AssignmentPollMethod.Votes && poll.votes_amount > 1"
-        >
-            {{ 'Available votes' | translate }}: {{ getVotesCount() }}/{{ poll.votes_amount }}
+        <h4 *ngIf="poll.pollmethod === AssignmentPollMethod.Votes && poll.votes_amount > 1">
+            {{ 'Available votes' | translate }}:
+
+            <b>
+                {{ getVotesAvailable() }}/{{ poll.votes_amount }}
+            </b>
         </h4>
 
         <!-- Options and Actions -->
@@ -75,6 +77,7 @@
 
                 <div *ngIf="poll.global_abstain">
                     <button
+                        class="vote-button"
                         mat-raised-button
                         (click)="saveGlobalVote('A')"
                         [ngClass]="voteRequestData.global === 'A' ? 'voted-abstain' : ''"

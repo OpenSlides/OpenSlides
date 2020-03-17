@@ -13,7 +13,6 @@ import { LinenumberingService } from 'app/core/ui-services/linenumbering.service
 import { ViewUnifiedChange, ViewUnifiedChangeType } from 'app/shared/models/motions/view-unified-change';
 import { ParsePollNumberPipe } from 'app/shared/pipes/parse-poll-number.pipe';
 import { PollKeyVerbosePipe } from 'app/shared/pipes/poll-key-verbose.pipe';
-import { PollPercentBasePipe } from 'app/shared/pipes/poll-percent-base.pipe';
 import { getRecommendationTypeName } from 'app/shared/utils/recommendation-type-names';
 import { MotionExportInfo } from './motion-export.service';
 import { MotionPollService } from './motion-poll.service';
@@ -67,7 +66,6 @@ export class MotionPdfService {
         private linenumberingService: LinenumberingService,
         private commentRepo: MotionCommentSectionRepositoryService,
         private pollKeyVerbose: PollKeyVerbosePipe,
-        private pollPercentBase: PollPercentBasePipe,
         private parsePollNumber: ParsePollNumberPipe,
         private motionPollService: MotionPollService
     ) {}
@@ -381,11 +379,13 @@ export class MotionPdfService {
                         const value = votingResult.value[0];
                         const resultValue = this.parsePollNumber.transform(value.amount);
                         column1.push(`${votingOption}:`);
-                        column2.push(resultValue);
                         if (value.showPercent) {
-                            const resultInPercent = this.pollPercentBase.transform(value.amount, poll);
-                            column3.push(resultInPercent);
+                            const resultInPercent = this.motionPollService.getVoteValueInPercent(value.amount, poll);
+                            column2.push(`(${resultInPercent})`);
+                        } else {
+                            column2.push('');
                         }
+                        column3.push(resultValue);
                     });
                 }
             });
