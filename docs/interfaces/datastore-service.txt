@@ -30,6 +30,7 @@ Interface InvalidFormatData {
 Interface InvalidRequestData {
     type: 2;
     msg: string;
+}
 Interface ModelDoesNotExistData {
     type: 3;
     fqid: string;
@@ -119,70 +120,69 @@ Event ModifiedFieldsEvent on topic ModifiedFields {
  */
 getIds(collection: Collection, n: number): Id[]
 
+
 ## Reader
 # Note: Different host and port than the writer!
 
 /** Common notes:
  * - parameter `position`: Optional, if given reads the data to this position.
- * - parameter `mapped_fields`: List of fields, that should onl be present in the response.
+ * - parameter `mapped_fields`: List of fields that should only be present in the response.
+ * - parameter `get_deleted_models`: Optional, defines which models to return
+ *    - DeletedModelsBehaviour.NO_DELETED:   (Default) only non-deleted models are returned.
+ *                                           get throws a ModelDoesNotExist error if the given
+ *                                           model is deleted.
+ *    - DeletedModelsBehaviour.ONLY_DELETED: only deleted models are returned. get throws
+ *                                           a ModelNotDeleted if the given model is not deleted.
+ *    - DeletedModelsBehaviour.ALL_MODELS:   all models are returned
  * - All operations adds the fields `meta_position` and `meta_deleted` to the models.
  * - The InvalidFormat exception can always be thrown, if the requested formats are
  *   wrong, including something like empty collections, ...
  */
 
+Enum DeletedModelsBehaviour {
+    NO_DELETED = 1,
+    ONLY_DELETED = 2,
+    ALL_MODELS = 3
+}
+
 /**
- * Returns a model. Deleted models are not returned (and handled as a ModelDoesNotExit)
+ * Returns a model by fqid.
  *
  * @throws ModelDoesNotExist
  * @throws InvalidFormat
  */
-get(model: Fqid, position?: Position, mapped_fields?: fields[]): Partial<Model>;
+get(fqid: Fqid, mapped_fields?: Field[], position?: Position, get_deleted_models?: DeletedModelsBehaviour): Partial<Model>;
 
 /**
- * Analogous to `get`, but also finds deleted models (see `meta_deleted` in the model)
- *
- * @throws ModelDoesNotExist
- * @throws InvalidFormat
- */
-getWithDeleted(model: Fqid, position?: Position, mapped_fields?: Field[]): Partial<Model>;
-
-/**
- * Returns multiple (non-deleted) models of a collection. If one id is not found, it is
- * not included in the response instead of throwing a ModelDoesNotExist.
- */
-getMany(collection: Collection, ids: Id[], position?: Position, mapped_fields?: Field[]): Partial<Model>[];
-
-/**
- * Analogous to `getMany`, but includes deleted instances.
+ * Returns multiple models.
+ * Can either be called with a list of fqids (if all fields are needed/wanted or if the
+ * same fields of all objects are needed) or with a list of specific request objects
+ * that map a collection to the needed ids and fields. If both the lower and the higher
+ * level mapped_fields are given, the higher level one is merged into all lower level
+ * ones.
+ * If an id is not found, it is not included in the response instead of throwing a
+ * ModelDoesNotExist.
  *
  * @throws InvalidFormat
  */
-getManyWithDeleted(collection: Collection, ids: Id[], position?: Position, mapped_fields?: Field[]): Partial<Model>[];
+getMany(requests: GetManyRequest[], mapped_fields?: Field[], position?: Position, get_deleted_models?: DeletedModelsBehaviour): Partial<Model>[];
+
+Interface GetManyRequest {
+    collection: Collection;
+    ids: Id[];
+    mapped_fields?: Field[];
+}
 
 /**
- * Returns all (non-deleted) modells of one collection. It is not possible to specify
- * an id, so this method can not be used, if the user browses the history. It should
- * be noted, that it is highly disencouraged to use this method, becuase it might
- * return a huge amount of data.
+ * Returns all models of one collection. It is not possible to specify a position, so
+ * this method cannot be used if the user browses the history. It should be noted that
+ * it is highly disencouraged to use this method because it might return a huge amount
+ * of data.
  */
-getAll(collection: Collection, mapped_fields?: Field[]): Partial<Model>[];
+getAll(collection: Collection, mapped_fields?: Field[], get_deleted_models?: DeletedModelsBehaviour): Partial<Model>[];
 
 /**
- * Like `getAll`, but with deleted models included.
- *
- * @throws InvalidFormat
- */
-getAllWithDeleted(collection: Collection, meeting_id?: Id, mapped_fields?: Field[]): Partial<Model>[];
-
-/**
- * Like `getAll`, but returns only all deleted models.
- *
- * @throws InvalidFormat
- */
-getAllOnlyDeleted(collection: Collection, meeting_id?: Id, mapped_fields?: Field[]): Partial<Model>[];
-
-/**
- * Returns all models of one collection, that satisifes the filter condition. This method
+ * Returns all models of one collection that satisfy the filter condition. This method
  * does not take a position and can not be used when browsing the history.
  *
  * @throws InvalidFormat
@@ -206,20 +206,20 @@ exists(collection: Collection, filter: Filter): {exists: boolean; position: Posi
 count(collection: Collection, filter: Filter): {count: number; position: Position;}
 
 /**
- * Executes a min aggregation about all models of one collection, that
- * satisfy the filter condition.
+ * Executes a min aggregation on all models of one collection on
+ * the given field that satisfy the filter condition.
  *
  * @throws InvalidFormat
  */
-min(collection: Collection, filter: Filter): {min: Value; position: Position;}
+min(collection: Collection, filter: Filter, field: Field): {min: Value; position: Position;}
 
 /**
- * Executes a max aggregation about all models of one collection, that
- * satisfy the filter condition.
+ * Executes a max aggregation on all models of one collection on
+ * the given field that satisfy the filter condition.
  *
  * @throws InvalidFormat
  */
-max(collection: Collection, filter: Filter): {min: Value; position: Position;}
+max(collection: Collection, filter: Filter, field: Field): {max: Value; position: Position;}
 
 Type Filter = And | Or | Not | FilterOperator
 
@@ -234,13 +234,13 @@ Interface FilterOperator {
 }
 
 Interface Not {
-    not: Filter;
+    not_filter: Filter;
 }
 
 Interface And {
-    and: Filter[];
+    and_filter: Filter[];
 }
 
 Interface Or {
-    or: Filter[];
+    or_filter: Filter[];
 }

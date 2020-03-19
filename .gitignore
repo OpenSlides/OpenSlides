@@ -19,3 +19,8 @@ openslides_*
 openslides
 personal_data
 tests
+.launch/
+.venv/
+.vscode/
+package-lock.json
+
