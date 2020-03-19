@@ -247,7 +247,15 @@ export class DataStoreUpdateManagerService {
 
         slot.DS.triggerModifiedObservable();
 
-        // serve next slot request
+        this.serveNextSlot();
+    }
+
+    public dropUpdateSlot(): void {
+        this.currentUpdateSlot = null;
+        this.serveNextSlot();
+    }
+
+    private serveNextSlot(): void {
         if (this.updateSlotRequests.length > 0) {
             const request = this.updateSlotRequests.pop();
             request.resolve();
@@ -347,14 +355,21 @@ export class DataStoreService {
 
     /**
      * Gets the DataStore from cache and instantiate all models out of the serialized version.
+     * If something fails, the DS is cleared, so fresh data can be requrested from the server.
+     *
      * @returns The max change id.
      */
     public async initFromStorage(): Promise<number> {
         // This promise will be resolved with cached datastore.
         const store = await this.storageService.get<JsonStorage>(DataStoreService.cachePrefix + 'DS');
-        if (store) {
-            const updateSlot = await this.DSUpdateManager.getNewUpdateSlot(this);
+        if (!store) {
+            await this.clear();
+            return this.maxChangeId;
+        }
 
+        const updateSlot = await this.DSUpdateManager.getNewUpdateSlot(this);
+
+        try {
             // There is a store. Deserialize it
             this.jsonStore = store;
             this.modelStore = this.deserializeJsonStore(this.jsonStore);
@@ -374,7 +389,8 @@ export class DataStoreService {
             });
 
             this.DSUpdateManager.commit(updateSlot, maxChangeId, true);
-        } else {
+        } catch (e) {
+            this.DSUpdateManager.dropUpdateSlot();
             await this.clear();
         }
         return this.maxChangeId;
