@@ -1,0 +1,49 @@
+@import '~assets/styles/poll-styles-common.scss';
+
+.assignment-result-table {
+    margin-top: 2em;
+    display: block;
+    overflow-x: auto;
+    border-collapse: collapse;
+
+    th {
+        font-weight: initial;
+    }
+
+    tr {
+        height: 48px;
+
+        td:first-child {
+            padding-right: 1em;
+        }
+    }
+
+    tr.sums {
+        border-bottom: none;
+        td {
+            padding-top: 1em;
+            padding-bottom: 1em;
+        }
+    }
+
+    .result {
+        text-align: right;
+        padding-left: 1em;
+    }
+
+    .voting-option {
+        min-width: 200px;
+        width: 100%;
+        text-align: left;
+    }
+
+    .user + .sums {
+        td {
+            padding-top: 2em;
+        }
+    }
+
+    .single-result {
+        white-space: pre;
+    }
+}

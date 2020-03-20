@@ -63,7 +63,7 @@ async def assignment_poll_slide(
     options = get_models(all_data, "assignments/assignment-option", poll["options_id"])
     for option in sorted(options, key=lambda option: option["weight"]):
         option_data: Dict[str, Any] = {
-            "user": {"full_name": await get_user_name(all_data, option["user_id"])}
+            "user": {"short_name": await get_user_name(all_data, option["user_id"])}
         }
         if poll["state"] == AssignmentPoll.STATE_PUBLISHED:
             option_data["yes"] = float(option["yes"])
