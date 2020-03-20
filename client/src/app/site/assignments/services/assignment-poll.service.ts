@@ -181,4 +181,25 @@ export class AssignmentPollService extends PollService {
         }
         return totalByBase;
     }
+
+    public getChartLabels(poll: PollData): string[] {
+        const fields = this.getPollDataFields(poll);
+        return poll.options.map(option => {
+            const votingResults = fields.map(field => {
+                const voteValue = option[field];
+                const votingKey = this.translate.instant(this.pollKeyVerbose.transform(field));
+                const resultValue = this.parsePollNumber.transform(voteValue);
+                const resultInPercent = this.getVoteValueInPercent(voteValue, poll);
+                let resultLabel = `${votingKey}: ${resultValue}`;
+
+                // 0 is a valid number in this case
+                if (resultInPercent !== null) {
+                    resultLabel += ` (${resultInPercent})`;
+                }
+                return resultLabel;
+            });
+
+            return `${option.user.short_name} · ${votingResults.join(' · ')}`;
+        });
+    }
 }

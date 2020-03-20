@@ -8,7 +8,6 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { AssignmentPollRepositoryService } from 'app/core/repositories/assignments/assignment-poll-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
-import { ChartType } from 'app/shared/components/charts/charts.component';
 import { VotingPrivacyWarningComponent } from 'app/shared/components/voting-privacy-warning/voting-privacy-warning.component';
 import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
 import { BasePollComponent } from 'app/site/polls/components/base-poll.component';
@@ -37,10 +36,6 @@ export class AssignmentPollComponent extends BasePollComponent<ViewAssignmentPol
 
     public get poll(): ViewAssignmentPoll {
         return this._poll;
-    }
-
-    public get chartType(): ChartType {
-        return 'stackedBar';
     }
 
     public candidatesLabels: string[] = [];

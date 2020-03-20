@@ -82,12 +82,9 @@
                 <os-charts
                     class="assignment-result-chart"
                     *ngIf="chartDataSubject.value"
-                    [type]="chartType"
                     [labels]="candidatesLabels"
-                    [data]="chartDataSubject"
+                    [data]="chartDataSubject | async"
                     [hasPadding]="false"
-                    [showLegend]="false"
-                    legendPosition="right"
                 ></os-charts>
             </div>
 

@@ -11,7 +11,6 @@ import { AssignmentPollRepositoryService } from 'app/core/repositories/assignmen
 import { AssignmentVoteRepositoryService } from 'app/core/repositories/assignments/assignment-vote-repository.service';
 import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
-import { ChartType } from 'app/shared/components/charts/charts.component';
 import { VoteValue } from 'app/shared/models/poll/base-vote';
 import { BasePollDetailComponent } from 'app/site/polls/components/base-poll-detail.component';
 import { PollTableData, VotingResult } from 'app/site/polls/services/poll.service';
@@ -33,10 +32,6 @@ export class AssignmentPollDetailComponent extends BasePollDetailComponent<ViewA
     public isReady = false;
 
     public candidatesLabels: string[] = [];
-
-    public get chartType(): ChartType {
-        return 'stackedBar';
-    }
 
     public constructor(
         title: Title,

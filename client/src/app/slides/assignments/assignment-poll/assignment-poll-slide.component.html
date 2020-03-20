@@ -5,11 +5,9 @@
     </div>
     <div class="charts-wrapper" *ngIf="data.data.poll.state === PollState.Published">
         <os-charts
-            [type]="stackedBar"
             [labels]="pollService.getChartLabels(data.data.poll)"
-            [data]="chartDataSubject"
+            [data]="chartDataSubject | async"
             [hasPadding]="false"
-            [pieChartOptions]="options"
         ></os-charts>
     </div>
 </ng-container>
