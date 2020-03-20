@@ -381,6 +381,9 @@ msgstr "Zurück"
 msgid "Back to login"
 msgstr "Zurück zur Anmeldung"
 
+msgid "Background color"
+msgstr "Hintergrundfarbe"
+
 msgid "Ballot"
 msgstr "Wahlgang"
 
@@ -389,6 +392,9 @@ msgstr "Wahlgang eröffnet"
 
 msgid "Ballot papers"
 msgstr "Stimmzettel"
+
+msgid "Ballots"
+msgstr "Wahlgänge"
 
 msgid "Base folder"
 msgstr "Basisverzeichnis"
@@ -446,6 +452,9 @@ msgstr "Darf Logos und Schriften verwalten"
 
 msgid "Can manage motion metadata"
 msgstr "Darf Antragsmetadaten verwalten"
+
+msgid "Can manage motion polls"
+msgstr "Darf Antragsabstimmungen verwalten"
 
 msgid "Can manage motions"
 msgstr "Darf Anträge verwalten"
@@ -584,6 +593,12 @@ msgstr "Zum Deaktivieren des Unterstützersystems '0' eingeben."
 
 msgid "Chyron"
 msgstr "Bauchbinde"
+
+msgid "Chyron background color"
+msgstr "Hintergrundfarbe Bauchbinde"
+
+msgid "Chyron font color"
+msgstr "Schriftfarbe Bauchbinde"
 
 msgid "Clear all"
 msgstr "Alle löschen"
@@ -876,11 +891,18 @@ msgid "Duration"
 msgstr "Dauer"
 
 msgid ""
-"During voting, OpenSlides does not store the individual user ID of the voter. This in no way means that a\n"
-"        non-nominal vote is completely anonymous and secure. You cannot track the decisions of your voters after the\n"
-"        data has been submitted. The validity of the data cannot always be guaranteed, especially if you use OpenSlides\n"
-"        in a distributed online setup. You are responsible for your own actions."
+"During non-nominal voting OpenSlides does NOT store the individual user ID "
+"of the voter. This in no way means that a non-nominal vote is completely "
+"anonymous and secure. The votes cannot track their individual votes after "
+"the data has been submitted. The validity of the data cannot always be "
+"guaranteed."
 msgstr ""
+"Während der nicht-namentlichen Stimmabgabe speichert OpenSlides NICHT die "
+"individuelle Nutzerkennung des Stimmberechtigen. Dies bedeutet jedoch "
+"keineswegs, dass eine nicht-namentliche Stimmabgabe völlig anonym und sicher"
+" ist. Der Stimmberechtigte kann nach Übermittlung der Daten die eigene "
+"Stimme nicht mehr nachverfolgen oder überprüfen. Die Gültigkeit der Daten "
+"kann daher nicht garantiert werden."
 
 msgid "Edit"
 msgstr "Bearbeiten"
@@ -1085,6 +1107,9 @@ msgstr "Empfehlungen für alle Anträge folgen"
 msgid "Following users are currently editing this motion:"
 msgstr "Folgende Nutzer bearbeiten aktuell diesen Antrag:"
 
+msgid "Foreground color"
+msgstr "Vordergrundfarbe"
+
 msgid "Forgot Password?"
 msgstr "Passwort vergessen?"
 
@@ -1156,6 +1181,15 @@ msgstr "Hat Notizen"
 
 msgid "Has speakers"
 msgstr "Wortmeldungen vorhanden"
+
+msgid "Header background color"
+msgstr "Hintergrundfarbe Kopfbereich"
+
+msgid "Header font color"
+msgstr "Schriftfarbe Kopfbereich"
+
+msgid "Headline color"
+msgstr "Überschriftenfarbe"
 
 msgid "Help text for access data and welcome PDF"
 msgstr "Hilfetext für das Zugangsdaten- und Willkommens-PDF"
@@ -1453,6 +1487,9 @@ msgstr "Antragstext"
 msgid "Motion updated"
 msgstr "Antrag aktualisiert"
 
+msgid "Motion votes"
+msgstr "Antragsabstimmungen"
+
 msgid "Motion will be imported"
 msgstr "Antrag wird importiert"
 
@@ -1730,9 +1767,6 @@ msgid ""
 msgstr ""
 "Mindestens Vor- oder Nachname muss angegeben werden. Alle übrigen Felder "
 "sind optional und dürfen leer sein."
-
-msgid "Online voting is impossible to secure"
-msgstr ""
 
 msgid "Only countdown"
 msgstr "Nur Countdown"
@@ -2141,6 +2175,9 @@ msgstr "Spieler suchen"
 
 msgid "Searching for candidates"
 msgstr "Auf Kandidatensuche"
+
+msgid "Secret voting can not be guaranteed"
+msgstr "Geheime Stimmabgaben können nicht garantiert werden"
 
 msgid "Select a new candidate"
 msgstr "Kandidat/in auswählen ..."

@@ -45,7 +45,7 @@ export const allSlides: SlideManifest[] = [
         slide: 'motions/motion-poll',
         path: 'motions/motion-poll',
         loadChildren: () => import('./motions/motion-poll/motion-poll-slide.module').then(m => m.MotionPollSlideModule),
-        verboseName: 'Motion Poll',
+        verboseName: 'Vote',
         elementIdentifiers: ['name', 'id'],
         canBeMappedToModel: true
     },
@@ -138,7 +138,7 @@ export const allSlides: SlideManifest[] = [
         path: 'assignments/assignment-poll',
         loadChildren: () =>
             import('./assignments/assignment-poll/assignment-poll-slide.module').then(m => m.AssignmentPollSlideModule),
-        verboseName: 'Assignment Poll',
+        verboseName: 'Ballot',
         elementIdentifiers: ['name', 'id'],
         canBeMappedToModel: true
     },

@@ -347,6 +347,9 @@ msgstr ""
 msgid "Back to login"
 msgstr ""
 
+msgid "Background color"
+msgstr ""
+
 msgid "Ballot"
 msgstr ""
 
@@ -354,6 +357,9 @@ msgid "Ballot opened"
 msgstr ""
 
 msgid "Ballot papers"
+msgstr ""
+
+msgid "Ballots"
 msgstr ""
 
 msgid "Base folder"
@@ -411,6 +417,9 @@ msgid "Can manage logos and fonts"
 msgstr ""
 
 msgid "Can manage motion metadata"
+msgstr ""
+
+msgid "Can manage motion polls"
 msgstr ""
 
 msgid "Can manage motions"
@@ -546,6 +555,12 @@ msgid "Choose 0 to disable the supporting system."
 msgstr ""
 
 msgid "Chyron"
+msgstr ""
+
+msgid "Chyron background color"
+msgstr ""
+
+msgid "Chyron font color"
 msgstr ""
 
 msgid "Clear all"
@@ -820,14 +835,11 @@ msgid "Duration"
 msgstr ""
 
 msgid ""
-"During voting, OpenSlides does not store the individual user ID of the "
-"voter. This in no way means that a\n"
-"        non-nominal vote is completely anonymous and secure. You cannot "
-"track the decisions of your voters after the\n"
-"        data has been submitted. The validity of the data cannot always be "
-"guaranteed, especially if you use OpenSlides\n"
-"        in a distributed online setup. You are responsible for your own "
-"actions."
+"During non-nominal voting OpenSlides does NOT store the individual user ID "
+"of the voter. This in no way means that a non-nominal vote is completely "
+"anonymous and secure. The votes cannot track their individual votes after "
+"the data has been submitted. The validity of the data cannot always be "
+"guaranteed."
 msgstr ""
 
 msgid "Edit"
@@ -1027,6 +1039,9 @@ msgstr ""
 msgid "Following users are currently editing this motion:"
 msgstr ""
 
+msgid "Foreground color"
+msgstr ""
+
 msgid "Forgot Password?"
 msgstr ""
 
@@ -1097,6 +1112,15 @@ msgid "Has notes"
 msgstr ""
 
 msgid "Has speakers"
+msgstr ""
+
+msgid "Header background color"
+msgstr ""
+
+msgid "Header font color"
+msgstr ""
+
+msgid "Headline color"
 msgstr ""
 
 msgid "Help text for access data and welcome PDF"
@@ -1392,6 +1416,9 @@ msgstr ""
 msgid "Motion updated"
 msgstr ""
 
+msgid "Motion votes"
+msgstr ""
+
 msgid "Motion will be imported"
 msgstr ""
 
@@ -1661,9 +1688,6 @@ msgstr ""
 msgid ""
 "One of given name, surname and username has to be filled in. All other "
 "fields are optional and may be empty."
-msgstr ""
-
-msgid "Online voting is impossible to secure"
 msgstr ""
 
 msgid "Only countdown"
@@ -2067,6 +2091,9 @@ msgid "Search player"
 msgstr ""
 
 msgid "Searching for candidates"
+msgstr ""
+
+msgid "Secret voting can not be guaranteed"
 msgstr ""
 
 msgid "Select a new candidate"
