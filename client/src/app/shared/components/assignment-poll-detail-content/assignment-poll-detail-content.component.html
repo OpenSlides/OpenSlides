@@ -1,0 +1,42 @@
+<div *ngIf="poll">
+    <table class="assignment-result-table">
+        <tbody>
+            <tr>
+                <th class="voting-option" translate>Candidates</th>
+                <th class="result yes">
+                    <span *ngIf="!isMethodY" translate>
+                        Yes
+                    </span>
+                    <span *ngIf="isMethodY" translate>
+                        Votes
+                    </span>
+                </th>
+                <th class="result no" translate *ngIf="!isMethodY">No</th>
+                <th class="result abstain" translate *ngIf="isMethodYNA">Abstain</th>
+            </tr>
+            <tr *ngFor="let row of tableData" [class]="row.class">
+                <td class="voting-option">
+                    <div>
+                        <span>
+                            {{ row.votingOption | pollKeyVerbose | translate }}
+                        </span>
+                        <span class="user-subtitle" *ngIf="row.votingOptionSubtitle">
+                            <br />
+                            {{ row.votingOptionSubtitle }}
+                        </span>
+                    </div>
+                </td>
+                <td class="result" *ngFor="let vote of row.value">
+                    <div class="single-result" [ngClass]="getVoteClass(vote)" *ngIf="vote && voteFitsMethod(vote)">
+                        <span>
+                            <span *ngIf="vote.showPercent">
+                                {{ vote.amount | pollPercentBase: poll }}
+                            </span>
+                            {{ vote.amount | parsePollNumber }}
+                        </span>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

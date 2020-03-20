@@ -3,11 +3,7 @@
         <h1 class="assignment-title">{{ data.data.assignment.title }}</h1>
         <h2 class="poll-title">{{ data.data.poll.title }}</h2>
     </div>
-    <div class="charts-wrapper" *ngIf="data.data.poll.state === PollState.Published">
-        <os-charts
-            [labels]="pollService.getChartLabels(data.data.poll)"
-            [data]="chartDataSubject | async"
-            [hasPadding]="false"
-        ></os-charts>
+    <div *ngIf="data.data.poll.state === PollState.Published">
+        <os-assignment-poll-detail-content [poll]="data.data.poll"></os-assignment-poll-detail-content>
     </div>
 </ng-container>

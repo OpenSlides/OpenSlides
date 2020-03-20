@@ -13,7 +13,14 @@ import {
 import { MajorityMethod, VOTE_UNDOCUMENTED } from 'app/shared/models/poll/base-poll';
 import { ParsePollNumberPipe } from 'app/shared/pipes/parse-poll-number.pipe';
 import { PollKeyVerbosePipe } from 'app/shared/pipes/poll-key-verbose.pipe';
-import { PollData, PollService, PollTableData, VotingResult } from 'app/site/polls/services/poll.service';
+import {
+    PollData,
+    PollDataOption,
+    PollService,
+    PollTableData,
+    VotingResult
+} from 'app/site/polls/services/poll.service';
+import { ViewAssignmentOption } from '../models/view-assignment-option';
 import { ViewAssignmentPoll } from '../models/view-assignment-poll';
 
 @Injectable({
@@ -80,7 +87,7 @@ export class AssignmentPollService extends PollService {
         return poll;
     }
 
-    private getGlobalVoteKeys(poll: ViewAssignmentPoll): VotingResult[] {
+    private getGlobalVoteKeys(poll: ViewAssignmentPoll | PollData): VotingResult[] {
         return [
             {
                 vote: 'amount_global_no',
@@ -95,30 +102,45 @@ export class AssignmentPollService extends PollService {
         ];
     }
 
-    public generateTableData(poll: ViewAssignmentPoll): PollTableData[] {
+    public generateTableData(poll: ViewAssignmentPoll | PollData): PollTableData[] {
+        console.log('poll: ', poll);
+
         const tableData: PollTableData[] = poll.options
             .sort((a, b) => {
                 if (this.sortByVote) {
                     return b.yes - a.yes;
                 } else {
-                    return b.weight - a.weight;
+                    // PollData does not have weight, we need to rely on the order of things.
+                    if (a.weight && b.weight) {
+                        return b.weight - a.weight;
+                    }
                 }
             })
-            .map(candidate => ({
-                votingOption: candidate.user.short_name,
-                votingOptionSubtitle: candidate.user.getLevelAndNumber(),
-                class: 'user',
-                value: super.getVoteTableKeys(poll).map(
-                    key =>
-                        ({
-                            vote: key.vote,
-                            amount: candidate[key.vote],
-                            icon: key.icon,
-                            hide: key.hide,
-                            showPercent: key.showPercent
-                        } as VotingResult)
-                )
-            }));
+            .map((candidate: ViewAssignmentOption) => {
+                const pollTableEntry: PollTableData = {
+                    class: 'user',
+                    value: super.getVoteTableKeys(poll).map(
+                        key =>
+                            ({
+                                vote: key.vote,
+                                amount: candidate[key.vote],
+                                icon: key.icon,
+                                hide: key.hide,
+                                showPercent: key.showPercent
+                            } as VotingResult)
+                    )
+                };
+
+                // Since pollData does not have any subtitle option
+                if (candidate instanceof ViewAssignmentOption) {
+                    pollTableEntry.votingOption = candidate.user.short_name;
+                    pollTableEntry.votingOptionSubtitle = candidate.user.getLevelAndNumber();
+                } else {
+                    pollTableEntry.votingOption = (candidate as PollDataOption).user.short_name;
+                }
+
+                return pollTableEntry;
+            });
         tableData.push(...this.formatVotingResultToTableData(this.getGlobalVoteKeys(poll), poll));
         tableData.push(...this.formatVotingResultToTableData(super.getSumTableKeys(poll), poll));
         return tableData;

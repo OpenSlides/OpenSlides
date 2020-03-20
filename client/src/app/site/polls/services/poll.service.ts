@@ -105,17 +105,22 @@ export interface PollData {
     pollmethod: string;
     type: string;
     onehundred_percent_base: string;
-    options: {
-        user?: {
-            short_name: string;
-        };
-        yes?: number;
-        no?: number;
-        abstain?: number;
-    }[];
+    options: PollDataOption[];
     votesvalid: number;
     votesinvalid: number;
     votescast: number;
+    amount_global_no?: number;
+    amount_global_abstain?: number;
+}
+
+export interface PollDataOption {
+    user?: {
+        short_name?: string;
+    };
+    yes?: number;
+    no?: number;
+    abstain?: number;
+    weight?: number;
 }
 
 interface OpenSlidesSettings {
@@ -126,7 +131,7 @@ interface OpenSlidesSettings {
  * Interface describes the possible data for the result-table.
  */
 export interface PollTableData {
-    votingOption: string;
+    votingOption?: string;
     votingOptionSubtitle?: string;
     class?: string;
     value: VotingResult[];

@@ -13,7 +13,6 @@ import { GroupRepositoryService } from 'app/core/repositories/users/group-reposi
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { VoteValue } from 'app/shared/models/poll/base-vote';
 import { BasePollDetailComponent } from 'app/site/polls/components/base-poll-detail.component';
-import { PollTableData, VotingResult } from 'app/site/polls/services/poll.service';
 import { AssignmentPollDialogService } from '../../services/assignment-poll-dialog.service';
 import { AssignmentPollService } from '../../services/assignment-poll.service';
 import { ViewAssignmentPoll } from '../../models/view-assignment-poll';
@@ -119,27 +118,6 @@ export class AssignmentPollDetailComponent extends BasePollDetailComponent<ViewA
 
     protected hasPerms(): boolean {
         return this.operator.hasPerms('assignments.can_manage');
-    }
-
-    public getVoteClass(votingResult: VotingResult): string {
-        return votingResult.vote;
-    }
-
-    public voteFitsMethod(result: VotingResult): boolean {
-        if (this.poll.isMethodY) {
-            if (result.vote === 'abstain' || result.vote === 'no') {
-                return false;
-            }
-        } else if (this.poll.isMethodYN) {
-            if (result.vote === 'abstain') {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public getTableData(): PollTableData[] {
-        return this.pollService.generateTableData(this.poll);
     }
 
     protected onDeleted(): void {
