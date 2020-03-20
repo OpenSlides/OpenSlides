@@ -12,8 +12,8 @@ export enum PollClassType {
 }
 
 export const PollClassTypeVerbose = {
-    motion: 'Motion poll',
-    assignment: 'Assignment poll'
+    motion: 'Vote',
+    assignment: 'Ballot'
 };
 
 export const PollStateVerbose = {

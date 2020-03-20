@@ -288,6 +288,8 @@ _('Publish');
 _('Entitled to vote');
 _('Voting method');
 _('Amount of votes');
+_('Motion votes');
+_('Ballots');
 
 // ** Users **
 // permission strings (see models.py of each Django app)
@@ -326,6 +328,8 @@ _('Can see comments');
 _('Can manage comments');
 _('Can manage motion metadata');
 _('Can create amendments');
+_('Can manage motion polls');
+
 // users
 _('Can see names of users');
 _('Can see extra data of users (e.g. present and comment)');

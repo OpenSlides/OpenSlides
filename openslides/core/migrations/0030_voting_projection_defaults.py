@@ -14,14 +14,12 @@ def add_poll_projection_defaults(apps, schema_editor):
 
     projectiondefaults.append(
         ProjectionDefault(
-            name="assignment_poll",
-            display_name="Assignment poll",
-            projector=default_projector,
+            name="assignment_poll", display_name="Ballots", projector=default_projector,
         )
     )
     projectiondefaults.append(
         ProjectionDefault(
-            name="motion_poll", display_name="Motion Poll", projector=default_projector
+            name="motion_poll", display_name="Motion votes", projector=default_projector
         )
     )
 
