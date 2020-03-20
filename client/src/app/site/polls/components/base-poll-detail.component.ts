@@ -145,7 +145,7 @@ export abstract class BasePollDetailComponent<V extends ViewBasePoll, S extends 
     public async pseudoanonymizePoll(): Promise<void> {
         const title = this.translate.instant('Are you sure you want to anonymize all votes? This cannot be undone.');
         if (await this.promptService.open(title)) {
-            this.repo.pseudoanonymize(this.poll).then(() => this.onPollLoaded(), this.raiseError); // votes have changed, but not the poll, so the components have to be informed about the update
+            this.repo.pseudoanonymize(this.poll).catch(this.raiseError);
         }
     }
 
@@ -155,11 +155,6 @@ export abstract class BasePollDetailComponent<V extends ViewBasePoll, S extends 
     public openDialog(viewPoll: V): void {
         this.pollDialog.openDialog(viewPoll);
     }
-
-    /**
-     * Called after the poll has been loaded. Meant to be overwritten by subclasses who need initial access to the poll
-     */
-    protected onPollLoaded(): void {}
 
     protected onStateChanged(): void {}
 
@@ -205,7 +200,6 @@ export abstract class BasePollDetailComponent<V extends ViewBasePoll, S extends 
                 this.repo.getViewModelObservable(params.id).subscribe(poll => {
                     if (poll) {
                         this.poll = poll;
-                        this.onPollLoaded();
                         this.createVotesData();
                         this.initChartData();
                         this.optionsLoaded.resolve();

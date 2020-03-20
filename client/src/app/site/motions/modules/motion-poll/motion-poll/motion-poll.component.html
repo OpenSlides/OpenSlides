@@ -87,13 +87,7 @@
             </div>
         </div>
         <div class="doughnut-chart">
-            <os-charts
-                *ngIf="showChart"
-                [type]="'doughnut'"
-                [data]="chartDataSubject"
-                [showLegend]="false"
-                [hasPadding]="false"
-            >
+            <os-charts *ngIf="showChart" type="doughnut" [data]="chartDataSubject | async" [hasPadding]="false">
             </os-charts>
         </div>
     </div>

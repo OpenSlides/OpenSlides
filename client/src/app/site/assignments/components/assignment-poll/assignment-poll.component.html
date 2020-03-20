@@ -60,12 +60,9 @@
         <div *ngIf="poll.stateHasVotes">
             <div *osPerms="'assignments.can_manage'; or: poll.isPublished">
                 <os-charts
-                    [type]="chartType"
                     [labels]="candidatesLabels"
-                    [data]="chartDataSubject"
+                    [data]="chartDataSubject | async"
                     [hasPadding]="false"
-                    [showLegend]="!poll.isMethodY"
-                    legendPosition="right"
                 ></os-charts>
             </div>
 

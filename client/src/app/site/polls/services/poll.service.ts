@@ -148,6 +148,8 @@ export interface VotingResult {
     showPercent?: boolean;
 }
 
+const PollChartBarThickness = 20;
+
 /**
  * Shared service class for polls. Used by child classes {@link MotionPollService}
  * and {@link AssignmentPollService}
@@ -186,8 +188,8 @@ export abstract class PollService {
     public constructor(
         constants: ConstantsService,
         protected translate: TranslateService,
-        private pollKeyVerbose: PollKeyVerbosePipe,
-        private parsePollNumber: ParsePollNumberPipe
+        protected pollKeyVerbose: PollKeyVerbosePipe,
+        protected parsePollNumber: ParsePollNumberPipe
     ) {
         constants
             .get<OpenSlidesSettings>('Settings')
@@ -302,14 +304,16 @@ export abstract class PollService {
                 data: this.getResultFromPoll(poll, key),
                 label: key.toUpperCase(),
                 backgroundColor: PollColor[key],
-                hoverBackgroundColor: PollColor[key]
+                hoverBackgroundColor: PollColor[key],
+                barThickness: PollChartBarThickness,
+                maxBarThickness: PollChartBarThickness
             } as ChartDate;
         });
 
         return data;
     }
 
-    private getPollDataFields(poll: PollData | ViewBasePoll): CalculablePollKey[] {
+    protected getPollDataFields(poll: PollData | ViewBasePoll): CalculablePollKey[] {
         let fields: CalculablePollKey[];
         let isAssignment: boolean;
 
@@ -344,28 +348,13 @@ export abstract class PollService {
      * Extracts yes-no-abstain such as valid, invalids and totals from Poll and PollData-Objects
      */
     private getResultFromPoll(poll: PollData, key: CalculablePollKey): number[] {
-        return poll[key] ? [poll[key]] : poll.options.map(option => option[key]);
-    }
-
-    public getChartLabels(poll: PollData): string[] {
-        const fields = this.getPollDataFields(poll);
-        return poll.options.map(option => {
-            const votingResults = fields.map(field => {
-                const voteValue = option[field];
-                const votingKey = this.translate.instant(this.pollKeyVerbose.transform(field));
-                const resultValue = this.parsePollNumber.transform(voteValue);
-                const resultInPercent = this.getVoteValueInPercent(voteValue, poll);
-                let resultLabel = `${votingKey}: ${resultValue}`;
-
-                // 0 is a valid number in this case
-                if (resultInPercent !== null) {
-                    resultLabel += ` (${resultInPercent})`;
-                }
-                return resultLabel;
-            });
-
-            return `${option.user.short_name} · ${votingResults.join(' · ')}`;
-        });
+        let result: number[];
+        if (poll[key]) {
+            result = [poll[key]];
+        } else {
+            result = poll.options.map(option => option[key]);
+        }
+        return result;
     }
 
     public isVoteDocumented(vote: number): boolean {
