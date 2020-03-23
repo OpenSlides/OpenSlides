@@ -13,10 +13,10 @@ describe('AssignmentPollDialogComponent', () => {
         TestBed.configureTestingModule({
             imports: [E2EImportsModule],
             providers: [
-                { provide: MatDialogRef, useValue: {} },
+                { provide: MatDialogRef, useValue: null },
                 {
                     provide: MAT_DIALOG_DATA,
-                    useValue: {}
+                    useValue: null
                 }
             ]
         }).compileComponents();

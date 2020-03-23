@@ -57,7 +57,7 @@ export class MotionPollDialogComponent extends BasePollDialogComponent<ViewMotio
     }
 
     /**
-     * Pre-executed method to initialize the dialog-form depending on the poll-method.
+     * Initialize the dialog-form depending on the poll-method.
      */
     private createDialog(): void {
         this.dialogVoteForm = this.formBuilder.group({
@@ -69,7 +69,7 @@ export class MotionPollDialogComponent extends BasePollDialogComponent<ViewMotio
             votescast: ['', [Validators.min(LOWEST_VOTE_VALUE)]]
         });
 
-        if (this.pollData.poll) {
+        if (this.pollData && this.pollData.poll) {
             this.updateDialogVoteForm(this.pollData);
         }
     }
