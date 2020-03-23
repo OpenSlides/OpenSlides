@@ -133,7 +133,7 @@
     <!-- Search for speakers -->
     <div *osPerms="'agenda.can_manage_list_of_speakers'">
         <form *ngIf="filteredUsers && filteredUsers.value.length > 0" [formGroup]="addSpeakerForm">
-            <mat-form-field>
+            <mat-form-field class="search-users-field">
                 <os-search-value-selector
                     class="search-users"
                     formControlName="user_id"
