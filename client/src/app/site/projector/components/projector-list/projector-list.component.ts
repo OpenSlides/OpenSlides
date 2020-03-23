@@ -113,7 +113,8 @@ export class ProjectorListComponent extends BaseViewComponent implements OnInit,
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 const projectorToCreate: Partial<Projector> = {
-                    name: this.createForm.value.name
+                    name: this.createForm.value.name,
+                    reference_projector_id: this.repo.getReferenceProjectorId()
                 };
 
                 this.repo.create(projectorToCreate).then(() => {
