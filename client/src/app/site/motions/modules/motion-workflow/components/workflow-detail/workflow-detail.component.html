@@ -34,7 +34,10 @@
                 </td>
             </ng-container>
 
-            <ng-container [matColumnDef]="getColumnDef(state)" *ngFor="let state of workflow.states; trackBy: trackByIndex">
+            <ng-container
+                [matColumnDef]="getColumnDef(state)"
+                *ngFor="let state of workflow.states; trackBy: trackByIndex"
+            >
                 <th mat-header-cell *matHeaderCellDef (click)="onClickStateName(state)">
                     <div class="clickable-cell stretch-to-fill-parent">
                         <div class="inner-table">
@@ -49,16 +52,14 @@
                             (change)="onToggleStatePerm(state, perm.selector, $event)"
                         ></mat-checkbox>
                     </div>
-                    <div
-                        *ngIf="perm.type === 'input'"
-                    >
+                    <div *ngIf="perm.type === 'input'">
                         <div class="inner-table">
                             {{ (state[perm.selector] | translate) || '–' }}
                         </div>
                         <div
                             class="clickable-cell stretch-to-fill-parent"
                             (click)="onClickInputPerm(perm, state)"
-                            ></div>
+                        ></div>
                     </div>
                     <div class="inner-table" *ngIf="perm.type === 'color'">
                         <mat-basic-chip
@@ -104,8 +105,8 @@
                             </div>
                             <div *ngIf="state.restriction.length">
                                 <div *ngFor="let restriction of state.restriction; let last = last">
-                                    {{ getRestrictionLabel(restriction) | translate
-                                    }}<span *ngIf="!last">,&nbsp;</span>
+                                    {{ getRestrictionLabel(restriction) | translate }}
+                                    <span *ngIf="!last">,&nbsp;</span>
                                 </div>
                             </div>
                         </div>
@@ -138,7 +139,7 @@
     <div mat-dialog-actions>
         <button
             type="submit"
-            [disabled]="dialogData.value === ''"
+            [disabled]="dialogData.value === '' && !dialogData.allowEmpty"
             mat-button
             color="primary"
             [mat-dialog-close]="{ action: 'update', value: dialogData.value }"
