@@ -135,4 +135,11 @@ export class ProjectorRepositoryService extends BaseRepository<ViewProjector, Pr
     public async setReferenceProjector(projector_id: number): Promise<void> {
         await this.http.post<void>(`/rest/core/projector/${projector_id}/set_reference_projector/`);
     }
+
+    /**
+     * return the id of the current reference projector
+     */
+    public getReferenceProjectorId(): number {
+        return this.getViewModelList().find(projector => projector.isReferenceProjector).id;
+    }
 }
