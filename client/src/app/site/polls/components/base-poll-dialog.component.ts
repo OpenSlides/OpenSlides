@@ -1,4 +1,3 @@
-import { OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material';
 import { MatDialogRef } from '@angular/material/dialog';
@@ -16,8 +15,7 @@ import { ViewBasePoll } from '../models/view-base-poll';
 /**
  * A dialog for updating the values of a poll.
  */
-export abstract class BasePollDialogComponent<T extends ViewBasePoll, S extends PollService> extends BaseViewComponent
-    implements OnInit {
+export abstract class BasePollDialogComponent<T extends ViewBasePoll, S extends PollService> extends BaseViewComponent {
     public publishImmediately: boolean;
 
     protected pollForm: PollFormComponent<T, S>;
@@ -31,11 +29,11 @@ export abstract class BasePollDialogComponent<T extends ViewBasePoll, S extends 
         public dialogRef: MatDialogRef<BasePollDialogComponent<T, S>>
     ) {
         super(title, translate, matSnackbar);
+        this.addKeyListener();
     }
 
-    public ngOnInit(): void {
+    private addKeyListener(): void {
         if (this.dialogRef) {
-            // Jasmin/Karma fails here. TODO:
             this.dialogRef.keydownEvents().subscribe((event: KeyboardEvent) => {
                 if (event.key === 'Enter' && event.shiftKey) {
                     this.submitPoll();

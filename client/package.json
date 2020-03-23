@@ -82,6 +82,7 @@
         "@angular/compiler-cli": "^8.2.14",
         "@angular/language-service": "^8.2.14",
         "@biesbjerg/ngx-translate-extract": "^3.0.5",
+        "@babel/compat-data": "~7.8.0",
         "@compodoc/compodoc": "^1.1.11",
         "@types/jasmine": "^3.5.0",
         "@types/jasminewd2": "^2.0.8",
