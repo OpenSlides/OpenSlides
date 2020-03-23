@@ -105,10 +105,13 @@ form {
     padding: 15px 25px 10px 25px;
     width: auto;
 
-    .search-users {
-        display: grid;
-        .mat-form-field {
-            width: 100%;
+    .search-users-field {
+        width: 100%;
+        .search-users {
+            display: grid;
+            .mat-form-field {
+                width: 100%;
+            }
         }
     }
 }
