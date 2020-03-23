@@ -1,27 +1,46 @@
 /**
- * This is a chatch-all exception for some invalid parameters
+ * SyntaxError is returned, when the syntax of the request body is wrong.
+ * This error is returned on the beginning of a request with http-status-code
+ * 400.
  */
-Exception InvalidFormat(msg: string);
+Exception SyntaxError(msg: string);
 
 /**
- * This exception is thrown, when parsing model data. E.g. there is an indicated
- * relation to a key, but the data are no foreign ids/fqids. The exception may
- * happen, if the stream is used at runtime, because this cannot be detected
- * when the caller makes the request.
+ * JsonError is returned, when the body does not contain valid json. This error
+ * is returned on the beginning of a request with http-status-code 400.
  */
-Exception ParsingError(msg: string);
+Exception JsonError(msg: string);
 
 /**
- * This methods subscribes to the given request. The response is a stream
+ * ValueError is returned, when the value of a field does not have the expected
+ * format. E.g. there is an indicated relation to a key, but the data are no
+ * foreign ids/fqids. The exception may happen, if the stream is used at
+ * runtime, because this cannot be detected when the caller makes the request.
+ */
+Exception ValueError(msg: string);
+
+/**
+ * InternalError is an unexpected error on the server side. When it happens at
+ * the beginning of a request, an http-status-code 500 is used. But it can also
+ * happen after the first data have been streamed to the client. The error does
+ * not contain any useful information. More information can be found in the
+ * server log. This is the only error that generates a server log message.
+ */
+ Expection InternalError(msg: string);
+
+/**
+ * This methods subscribes to a list of given request. The response is a stream
  * (language dependent) updating all models according to the ModelRequest if new
  * data is available. On subscription, initial data must be pushed to the caller
  * as soon as possible. The stream can be closed by closing the stream (e.g. the
  * underlying network connection).
  *
- * @throws InvalidFormat
- * @throws ParsingError
+ * @throws SyntaxError
+ * @throws JsonError
+ * @throws ValueError
+ * @throws InternalError
  */
-subscribe(request: ModelRequest): stream<ModelData>;
+subscribe(request: ModelRequest[]): stream<ModelData>;
 
 /**
  * This is the main interface for requesting models in a structured, nested way.
@@ -29,8 +48,8 @@ subscribe(request: ModelRequest): stream<ModelData>;
  * with all the same fields. This build a tree of dependencies, because the
  * value of some fields may be a GenericRelationFieldDescriptor again.
  *
- * For a description of `fields` and `collection`, see GenericRelationFieldDescriptor
- * and RelationFieldDescriptor.
+ * For a description of `fields` and `collection`, see
+* GenericRelationFieldDescriptor and RelationFieldDescriptor.
  *
  * `ids`: This is a list of ids for a collection, that should be provided. All
  * models, that the user can see, must be included in the response. The model
@@ -60,10 +79,10 @@ Interface Fields {
  *
  * If the value is not null, it is indicated, that there is a reference to
  * follow. There are three types of values:
- * - GenericRelationFieldDescriptor: The reference is a generic one. This means, that
- *   the actual value from the model is a fqid or an array of fqids.
- * - RelationFieldDescriptor: A collection is given, so it can be expected, that the
- *   actual model value is an id or an array of ids.
+ * - GenericRelationFieldDescriptor: The reference is a generic one. This means,
+ *   that the actual value from the model is a fqid or an array of fqids.
+ * - RelationFieldDescriptor: A collection is given, so it can be expected, that
+ *  the actual model value is an id or an array of ids.
  * - StructuredFieldDescriptor: The field is a template field and should be
  *   handled in this way.
  */
@@ -72,7 +91,8 @@ Interface GenericRelationFieldDecriptor extends Fields {
 }
 
 /**
- * For an overview, see `ModelRequest`. For `fields`, see GenericRelationFieldDescriptor.
+ * For an overview, see `ModelRequest`. For `fields`, see
+ * GenericRelationFieldDescriptor.
  *
  * `collection`:
  * This is the collection, the ids are associated to. The ids are provided with
@@ -117,13 +137,9 @@ Interface StructuredFieldDecriptor {
 
 
 /**
- * This structure holds all data given by the called service structured by
- * fqids. Each fqid contains the (partial, restricted) data for the fqid.
+ * This structure holds all data given by the called service as a map of
+ * fqfields to the fields values.
  */
 Interface ModelData {
-    [collection: Collection]: {
-        [id: Id]: {
-            [field: Field]: Value;
-        };
-    };
+    [fqfield: Fqfield]: Value;
 }
