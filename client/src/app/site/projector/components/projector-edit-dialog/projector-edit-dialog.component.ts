@@ -115,7 +115,7 @@ export class ProjectorEditDialogComponent extends BaseViewComponent implements O
             aspectRatio: ['', [Validators.required, Validators.pattern(this.aspectRatioRe)]],
             width: [0, Validators.required],
             projectiondefaults_id: [[]],
-            clock: [true],
+            clock: [],
             color: ['', Validators.required],
             background_color: ['', Validators.required],
             header_background_color: ['', Validators.required],
@@ -149,21 +149,9 @@ export class ProjectorEditDialogComponent extends BaseViewComponent implements O
             this.updateForm.patchValue(this.projector.projector);
             this.updateForm.patchValue({
                 name: this.translate.instant(this.projector.name),
-                clock: this.clockSlideService.isProjectedOn(this.projector)
+                clock: this.clockSlideService.isProjectedOn(this.projector),
+                aspectRatio: this.projector.aspectRatio
             });
-
-            this.subscriptions.push(
-                this.repo.getViewModelObservable(this.projector.id).subscribe(update => {
-                    // patches the projector with updated values
-                    const projectorPatch = {};
-                    Object.keys(this.updateForm.controls).forEach(ctrl => {
-                        if (update[ctrl]) {
-                            projectorPatch[ctrl] = update[ctrl];
-                        }
-                    });
-                    this.updateForm.patchValue(projectorPatch);
-                })
-            );
         }
     }
 
