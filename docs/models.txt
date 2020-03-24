@@ -6,16 +6,16 @@ Types:
     - datetime: Datetime as a unix timestamp. Why a number? This enables queries
       in the DB. And we do not need more precision than 1 second.
 Relations:
-    - <model>/<field>: This is reference to model. The reverse relation
+    - <collection>/<field>: This is a reference to a collection. The reverse relation
       field is <field>. E.g. `category_id: category/motion_ids` in a motion links
       to one category. The reverse field is `motion_ids` which may be `motion_ids:
       (motion/category_id)[]` indicating, that there are many motion ids.
     - <T>[]: This indicated multiple ids. For an example see above.
     - */<field>: This is a generic relation (analog: `(*/<field>)[]` a generic
       list relation) with fqids as values.
-    - if no field is specified, there is no reverse relation.
+    - If no field is specified, there is no reverse relation.
 Structured Fields:
-    - There are template fields (See autoupdate service interface) with a `$` as
+    - There are template fields (see autoupdate service interface) with a `$` as
       the placeholder. In this document, angle brackets are followed by the
       dollar sign including the meaning of the template. E.g.
       group_$<meeting_id>_ids: (group/user_ids)[];
@@ -28,15 +28,15 @@ Interface organisation {
     name: string;
     description: HTML;
 
-    // Configs:
+    // Configs
     legal_notice: string;
     privacy_policy: string;
     login_text: string;
     theme: string;
     custom_translations: JSON;
 
-    committee_ids: (committee/origansation_id)[];
-    role_ids: (role/organsiation_id)[];
+    committee_ids: (committee/organisation_id)[];
+    role_ids: (role/organisation_id)[];
     resource_ids: (resource/organisation_id)[];
 }
 
@@ -65,10 +65,10 @@ Interface user {
     // there. Just a few users (expected <100) should even get a role and all
     // other don't.
 
-    // meeting, committee, ...
+    // Meeting and committee
     is_present_in_meeting_ids: (meeting/present_user_ids)[];
     meeting_id: meeting/temporary_user_ids;  // Temporary users
-    guest_meeting_ids: (meeting/guest_ids)[];  // guests in meetings
+    guest_meeting_ids: (meeting/guest_ids)[];  // Guests in meetings
     committee_as_member_ids: (committee/member_ids)[];
     committee_as_manager_ids: (committee/manager_ids)[];
 
@@ -77,7 +77,7 @@ Interface user {
     current_projector_ids: (projector/current_element_ids)[]
 
     // All foreign keys are meeting-specific:
-    // - Keys are smaller (Space is in O(n^2) for n keys 
+    // - Keys are smaller (Space is in O(n^2) for n keys
     //   in the relation), so this saves storagespace
     // - This makes quering things like this possible:
     //   "Give me all groups for User X in Meeting Y" without
@@ -662,7 +662,7 @@ Interface assignment_vote {
 
 // Mediafiles are delivered by the mediafile server with the URL
 // `<media-prefix>/media/<meeting_id>/path`
-Interface mediafile { 
+Interface mediafile {
     id: number;
     title: string;
     is_directory: boolean;
@@ -685,7 +685,7 @@ Interface mediafile {
     attachment_ids: (*/attachment_ids)[];
     meeting_id: meeting/mediafile_ids;
 
-    // Backreferences for meetings, if a mediafile is used as a special resource
+    // Reverse relations for meetings, if a mediafile is used as a special resource
     logo_$<token>: meeting/logo_$<token>;
     font_$<token>: meeting/font_$<token>;
 }
