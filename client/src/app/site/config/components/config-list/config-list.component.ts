@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 
@@ -31,7 +31,8 @@ export interface ConfigItem {
 @Component({
     selector: 'os-config-list',
     templateUrl: './config-list.component.html',
-    styleUrls: ['./config-list.component.scss']
+    styleUrls: ['./config-list.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ConfigListComponent extends BaseComponent implements CanComponentDeactivate, OnInit, OnDestroy {
     public configGroup: ConfigGroup;
@@ -51,6 +52,7 @@ export class ConfigListComponent extends BaseComponent implements CanComponentDe
     public constructor(
         protected titleService: Title,
         protected translate: TranslateService,
+        private cd: ChangeDetectorRef,
         private repo: ConfigRepositoryService,
         private route: ActivatedRoute,
         private promptDialog: PromptService
@@ -70,6 +72,7 @@ export class ConfigListComponent extends BaseComponent implements CanComponentDe
                     const groupName = this.translate.instant(configGroup.name);
                     super.setTitle(`${settings} - ${groupName}`);
                     this.configGroup = configGroup;
+                    this.cd.markForCheck();
                 }
             });
         });
@@ -89,16 +92,20 @@ export class ConfigListComponent extends BaseComponent implements CanComponentDe
         } else {
             this.configItems[index] = { key, value };
         }
+        this.cd.markForCheck();
     }
 
     /**
      * Saves every field in this config-group.
      */
     public saveAll(): void {
+        this.cd.detach();
         this.repo.bulkUpdate(this.configItems).then(result => {
             this.errors = result.errors;
             if (Object.keys(result.errors).length === 0) {
                 this.configItems = [];
+                this.cd.reattach();
+                this.cd.markForCheck();
             }
         });
     }
