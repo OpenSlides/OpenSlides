@@ -27,6 +27,7 @@ interface DialogData {
     description: string;
     value: string;
     deletable?: boolean;
+    allowEmpty?: boolean;
 }
 
 /**
@@ -256,7 +257,10 @@ export class WorkflowDetailComponent extends BaseViewComponent implements OnInit
      * @param state The selected workflow state
      */
     public onClickInputPerm(perm: StatePerm, state: ViewState): void {
-        this.openEditDialog(state[perm.selector], 'Edit', perm.name).subscribe(result => {
+        this.openEditDialog(state[perm.selector], 'Edit', perm.name, false, true).subscribe(result => {
+            if (result.value === '') {
+                result.value = null;
+            }
             if (result && result.action === 'update') {
                 this.stateRepo.update({ [perm.selector]: result.value }, state).then(() => {}, this.raiseError);
             }
@@ -347,18 +351,21 @@ export class WorkflowDetailComponent extends BaseViewComponent implements OnInit
      * @param title The title of the dialog
      * @param description The description of the dialog
      * @param deletable determine if a delete button should be offered
+     * @param allowEmpty to allow empty values
      */
     private openEditDialog(
         value: string,
         title?: string,
         description?: string,
-        deletable?: boolean
+        deletable?: boolean,
+        allowEmpty?: boolean
     ): Observable<DialogResult> {
         this.dialogData = {
             title: title || '',
             description: description || '',
             value: value,
-            deletable: deletable
+            deletable: deletable,
+            allowEmpty: allowEmpty
         };
 
         const dialogRef = this.dialog.open(this.workflowDialog, infoDialogSettings);
