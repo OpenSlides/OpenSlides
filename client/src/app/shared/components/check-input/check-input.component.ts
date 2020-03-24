@@ -66,7 +66,13 @@ export class CheckInputComponent extends BaseViewComponent implements OnInit, Co
      * Subscribes to value-changes of the form-control.
      */
     public ngOnInit(): void {
-        this.subscriptions.push(this.contentForm.valueChanges.subscribe(value => this.sendValue(value)));
+        this.subscriptions.push(
+            this.contentForm.valueChanges.subscribe(value => {
+                if (value) {
+                    this.sendValue(value);
+                }
+            })
+        );
     }
 
     /**
