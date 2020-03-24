@@ -52,10 +52,6 @@ export class LegalNoticeComponent extends BaseViewComponent implements OnInit {
         this.update.checkForUpdate();
     }
 
-    public initiateUpdateCheckForAllClients(): void {
-        this.update.initiateUpdateCheckForAllClients();
-    }
-
     /**
      * Saves changes.
      */

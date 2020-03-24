@@ -32,18 +32,6 @@
             <span translate>Check for updates</span>
         </button>
     </div>
-
-    <div *osIsSuperAdmin>
-        <button
-            type="button"
-            mat-button
-            (click)="initiateUpdateCheckForAllClients()"
-            matTooltip="{{ 'This will send an update notification to all active clients' | translate }}"
-        >
-            <span translate>Initiate update check for all clients</span>
-            <mat-icon class="warning spacer-left-10">warning</mat-icon>
-        </button>
-    </div>
 </mat-card>
 
 <os-count-users></os-count-users>
