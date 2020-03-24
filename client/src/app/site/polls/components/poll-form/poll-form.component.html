@@ -8,17 +8,6 @@
         </mat-form-field>
     </form>
 
-    <!-- TODO: rather disable forms than duplicate them -->
-    <div *ngIf="data && data.state" class="poll-preview-meta-info">
-        <span class="short-description" *ngFor="let value of pollValues">
-            <span class="short-description-label subtitle">
-                {{ value[0] }}
-            </span>
-            <span class="short-description-value">
-                {{ value[1] }}
-            </span>
-        </span>
-    </div>
     <form [formGroup]="contentForm" class="poll-preview-meta-info-form">
         <ng-container *ngIf="!data || !data.state || data.isCreated">
             <!-- Poll Type -->

@@ -125,6 +125,10 @@ export class PollFormComponent<T extends ViewBasePoll, S extends PollService> ex
         this.groupObservable = this.groupRepo.getViewModelListObservableWithoutDefaultGroup();
 
         if (this.data) {
+            if (this.data.state) {
+                this.disablePollType();
+            }
+
             if (this.data instanceof ViewAssignmentPoll) {
                 if (this.data.assignment && !this.data.votes_amount) {
                     this.data.votes_amount = this.data.assignment.open_posts;
@@ -162,6 +166,10 @@ export class PollFormComponent<T extends ViewBasePoll, S extends PollService> ex
                 this.setVotesAmountCtrl();
             })
         );
+    }
+
+    private disablePollType(): void {
+        this.contentForm.get('type').disable();
     }
 
     /**
