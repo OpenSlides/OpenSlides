@@ -10,7 +10,6 @@ import { CountUserData, CountUsersService } from 'app/core/ui-services/count-use
  */
 export interface CountUserStatistics {
     activeUserHandles: number;
-    usesIndexedDB: number;
     activeUsers: {
         [id: number]: number;
     };
@@ -52,7 +51,6 @@ export class CountUsersStatisticsService {
         [token, userDataObservable] = this.countUserService.countUsers();
         this.runningCounts[token] = new BehaviorSubject<CountUserStatistics>({
             activeUserHandles: 0,
-            usesIndexedDB: 0,
             activeUsers: {},
             groups: {}
         });
@@ -66,9 +64,6 @@ export class CountUsersStatisticsService {
 
             // Add to user stats
             stats.activeUserHandles++;
-            if (data.usesIndexedDB) {
-                stats.usesIndexedDB++;
-            }
             if (!stats.activeUsers[userId]) {
                 stats.activeUsers[userId] = 0;
             }

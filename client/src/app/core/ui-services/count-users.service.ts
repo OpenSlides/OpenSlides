@@ -11,7 +11,6 @@ interface CountUserRequest {
 
 export interface CountUserData {
     userId: number;
-    usesIndexedDB: boolean;
 }
 
 interface CountUserResponse extends CountUserRequest {
@@ -49,8 +48,7 @@ export class CountUsersService {
                     {
                         token: request.content.token,
                         data: {
-                            userId: this.currentUserId,
-                            usesIndexedDB: true
+                            userId: this.currentUserId
                         }
                     },
                     request.senderChannelName
