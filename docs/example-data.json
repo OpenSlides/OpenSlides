@@ -1,0 +1,2380 @@
+{
+"organisation": [
+    {
+        "id": 1,
+        "legal_notice": "<a href=\"http://www.openslides.org\">OpenSlides</a> is a free web based presentation and assembly system for visualizing and controlling agenda, motions and elections of an assembly.",
+        "privacy_policy": "",
+        "login_info_text": "Guten Morgen!",
+        "openslides_theme": "openslides-theme",
+        "custom_translations": [],
+
+        "committee_ids": [1],
+        "role_ids": [1],
+        "resource_ids": []
+    }],
+"user": [
+    {
+        "id": 1,
+        "username": "admin",
+        "title": "",
+        "first_name": "",
+        "last_name": "Administrator",
+        "is_active": true,
+        "is_committee": false,
+        "default_password": "admin",
+        "about_me": "",
+        "gender": "",
+        "comment": "",
+        "number": "",
+        "structure_level": "",
+        "email": "",
+        "last_email_send": null,
+
+        "role_id": 1,
+
+        "is_present_in_meeting_ids": [1],
+        "meeting_id": null,
+        "guest_meeting_id": null,
+        "committee_as_member_ids": [],
+        "committee_as_manager_ids": [],
+
+        "projection_ids": [],
+        "current_projector_ids": [],
+
+        "group_$_ids": ["1"],
+        "group_1_ids": [2],
+        "speaker_$_ids": ["1"],
+        "speaker_1_ids": [1, 5, 6, 12],
+        "personal_note_$_ids": ["1"],
+        "personal_note_1_ids": [1],
+        "supported_motion_$_ids": [],
+        "submitted_motion_$_ids": ["1"],
+        "submitted_motion_1_ids": [1, 2, 3, 4],
+        "motion_poll_voted_$_ids": [],
+        "motion_vote_$_ids": [],
+        "assignment_candidate_$_ids": ["1"],
+        "assignment_candidate_1_ids": [1],
+        "assignment_poll_voted_$_ids": ["1"],
+        "assignment_poll_voted_1_ids": [3],
+        "assignment_option_$_ids": ["1"],
+        "assignment_option_1_ids": [1, 2],
+        "assignment_vote_$_ids": ["1"],
+        "assignment_vote_1_ids": [4]
+    },
+    {
+        "id": 2,
+        "username": "a",
+        "title": "",
+        "first_name": "a",
+        "last_name": "",
+        "is_active": true,
+        "is_committee": false,
+        "default_password": "a",
+        "about_me": "",
+        "gender": "",
+        "comment": "",
+        "number": "",
+        "structure_level": "",
+        "email": "",
+        "last_email_send": null,
+
+        "role_id": null,
+
+        "is_present_in_meeting_ids": [],
+        "meeting_id": null,
+        "guest_meeting_id": null,
+        "committee_as_member_ids": [],
+        "committee_as_manager_ids": [],
+
+        "projection_ids": [],
+        "current_projector_ids": [],
+
+        "group_$_ids": ["1"],
+        "group_1_ids": [6],
+        "speaker_$_ids": ["1"],
+        "speaker_1_ids": [2, 3, 7, 10, 11, 13],
+        "personal_note_$_ids": [],
+        "supported_motion_$_ids": [],
+        "submitted_motion_$_ids": [],
+        "motion_poll_voted_$_ids": [],
+        "motion_vote_$_ids": [],
+        "assignment_candidate_$_ids": ["1"],
+        "assignment_candidate_1_ids": [3, 5],
+        "assignment_poll_voted_$_ids": [],
+        "assignment_option_$_ids": ["1"],
+        "assignment_option_1_ids": [6],
+        "assignment_vote_$_ids": []
+    },
+    {
+        "id": 3,
+        "username": "b",
+        "title": "",
+        "first_name": "b",
+        "last_name": "",
+        "is_active": true,
+        "is_committee": false,
+        "default_password": "jKwSLGCk",
+        "about_me": "",
+        "gender": "",
+        "comment": "",
+        "number": "",
+        "structure_level": "",
+        "email": "",
+        "last_email_send": null,
+
+        "role_id": null,
+
+        "is_present_in_meeting_ids": [],
+        "meeting_id": null,
+        "guest_meeting_id": null,
+        "committee_as_member_ids": [],
+        "committee_as_manager_ids": [],
+
+        "projection_ids": [],
+        "current_projector_ids": [],
+
+        "group_$_ids": [],
+        "speaker_$_ids": ["1"],
+        "speaker_1_ids": [4, 8, 9],
+        "personal_note_$_ids": [],
+        "supported_motion_$_ids": [3],
+        "submitted_motion_$_ids": [],
+        "motion_poll_voted_$_ids": [],
+        "motion_vote_$_ids": [],
+        "assignment_candidate_$_ids": ["1"],
+        "assignment_candidate_1_ids": [2, 4],
+        "assignment_poll_voted_$_ids": [],
+        "assignment_option_$_ids": ["1"],
+        "assignment_option_1_ids": [3, 4, 5],
+        "assignment_vote_$_ids": []
+    }],
+"role": [
+    {
+        "id": 1,
+        "name": "Superadmin role",
+        "permissions": [],
+        "is_superadmin_role": true,
+
+        "organisation_id": 1,
+        "user_ids": [1]
+    }],
+"resource": [],
+"committee": [
+    {
+        "id": 1,
+        "name": "Default committee",
+        "description": "Add description here",
+
+        "meeting_ids": [1],
+        "default_meeting_id": 1,
+        "member_ids": [],
+        "manager_ids": [],
+        "forward_to_committee_ids": [],
+        "receive_forwardings_from_committee_ids": [],
+        "organisation_id": 1
+    }],
+"meeting": [
+    {
+        "id": 1,
+        "url_name": "os3_test",
+        "is_template": false,
+        "enable_anonymous": false,
+
+        "name": "OpenSlides - Die Veranstaltung (Teil II)",
+        "description": "Presentation and assembly system",
+        "location": "",
+        "start_time": 0,
+        "end_time": 0,
+        "welcome_title": "Welcome to OpenSlides",
+        "welcome_text": "[Space for your welcome text.]",
+        "custom_translations": [],
+
+        "projector_default_countdown_time": 60,
+        "projector_countdown_warning_time": 0,
+
+        "export_csv_encoding": "utf-8",
+        "export_csv_separator": ",",
+        "export_pdf_pagenumber_alignment": "center",
+        "export_pdf_fontsize": "10",
+        "export_pdf_pagesize": "A4",
+
+        "agenda_show_subtitles": false,
+        "agenda_enable_numbering": true,
+        "agenda_number_prefix": "",
+        "agenda_numeral_system": "arabic",
+        "agenda_item_creation": "default_yes",
+        "agenda_new_items_default_visibility": "2",
+        "agenda_show_internal_items_on_projector": false,
+
+        "list_of_speakers_amount_last_on_projector": 1,
+        "list_of_speakers_amount_next_on_projector": -1,
+        "list_of_speakers_couple_countdown": false,
+        "list_of_speakers_show_amount_of_speakers_on_slide": true,
+        "list_of_speakers_present_users_only": false,
+
+        "motions_default_workflow_id": 1,
+        "motions_statute_amendments_workflow_id": 2,
+        "motions_preamble": "The assembly may decide:",
+        "motions_default_line_numbering": "none",
+        "motions_line_length": 90,
+        "motions_reason_required": false,
+        "motions_enable_text_on_projector": true,
+        "motions_enable_reason_on_projector": true,
+        "motions_enable_sidebox_on_projector": false,
+        "motions_enable_recommendation_on_projector": true,
+        "motions_show_referring_motions": true,
+        "motions_show_sequential_numbers": true,
+        "motions_recommendations_by": "",
+        "motions_statute_recommendations_by": "",
+        "motions_recommendation_text_mode": "normal",
+        "motions_default_sorting": "number",
+        "motions_number_type": "per_category",
+        "motions_number_min_digits": 1,
+        "motions_number_with_blank": false,
+        "motions_statutes_enabled": true,
+        "motions_amendments_enabled": true,
+        "motions_amendments_in_main_list": true,
+        "motions_amendments_of_amendments": false,
+        "motions_amendments_prefix": "-",
+        "motions_amendments_text_mode": "freestyle",
+        "motions_amendments_multiple_paragraphs": true,
+        "motions_supporters_min_amount": 0,
+        "motions_supporters_autoremove": false,
+        "motions_export_title": "Motions",
+        "motions_export_preamble": "",
+        "motions_export_submitter_recommendation": false,
+        "motions_export_follow_recommendation": false,
+
+        "motion_poll_ballot_paper_selection": "CUSTOM_NUMBER",
+        "motion_poll_ballot_paper_number": 8,
+        "motion_poll_default_100_percent_base": "YNA",
+        "motion_poll_default_majority_method": "simple",
+        "motion_poll_default_groups": [2, 3],
+
+        "users_sort_by": "first_name",
+        "users_enable_presence_view": false,
+        "users_pdf_welcometitle": "Welcome to OpenSlides",
+        "users_pdf_welcometext": "[Place for your welcome and help text.]",
+        "users_pdf_url": "http://example.com:8000",
+        "users_pdf_wlan_ssid": "",
+        "users_pdf_wlan_password": "",
+        "users_pdf_wlan_encryption": "",
+        "users_email_sender": "noreply@yourdomain.com",
+        "users_email_replyto": "",
+        "users_email_subject": "Your login for {event_name}",
+        "users_email_body": "Dear {name},\n\nthis is your OpenSlides login for the event {event_name}:\n\n    {url}\n    username: {username}\n    password: {password}\n\nThis email was generated automatically.",
+
+        "assignments_export_title": "Elections",
+        "assignments_export_preamble": "",
+        "assignment_poll_add_candidates_to_list_of_speakers": true,
+        "assignment_poll_sort_poll_result_by_votes": true,
+        "assignment_poll_default_method": "votes",
+        "assignment_poll_default_100_percent_base": "valid",
+        "assignment_poll_default_majority_method": "simple",
+        "assignment_poll_default_groups": [3, 5],
+
+        "projector_ids": [1, 2],
+        "projectiondefault_ids": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
+        "projector_message_ids": [1],
+        "projector_countdown_ids": [1],
+        "tag_ids": [1, 2, 3],
+        "agenda_item_ids": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+        "list_of_speakers_ids": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+        "topic_ids": [1, 2, 3, 4, 5, 6, 7, 8],
+        "group_ids": [1, 2, 3, 5, 6],
+        "mediafile_ids": [1, 2, 3],
+        "motion_ids": [1, 2, 3, 4],
+        "motion_comment_section_ids": [1],
+        "motion_category_ids": [1, 2],
+        "motion_block_ids": [1],
+        "motion_workflow_ids": [1, 2],
+        "motion_statute_paragraph_ids": [],
+        "motion_poll_ids": [1, 2],
+        "assignment_ids": [1, 2],
+        "assignment_poll_ids": [1, 2, 3],
+
+        "logo_$": ["logo_web_header"],
+        "logo_web_header": 3,
+        "font_$": [],
+
+        "committee_id": 1,
+        "default_meeting_for_committee_id": 1,
+        "present_user_ids": [1],
+        "temorary_user_ids": [],
+        "guest_ids": [],
+        "reference_projector_id": 2
+    }],
+"group": [
+    {
+        "id": 1,
+        "name": "Default",
+        "is_superadmin_group": false,
+        "is_default_group": true,
+        "permissions": [
+            "agenda.can_see",
+            "agenda.can_see_internal_items",
+            "assignments.can_see",
+            "core.can_see_frontpage",
+            "core.can_see_projector",
+            "mediafiles.can_see",
+            "motions.can_see",
+            "users.can_see_name"
+        ],
+
+        "user_ids": [],
+        "mediafile_access_group_ids": [],
+        "read_comment_section_ids": [],
+        "write_comment_section_ids": [],
+        "motion_poll_ids": [],
+        "assignment_poll_ids": [],
+        "used_as_motion_poll_default": null,
+        "used_as_assignment_poll_default": null,
+        "meeting_id": 1
+    },
+    {
+        "id": 2,
+        "name": "Admin",
+        "is_superadmin_group": true,
+        "is_default_group": false,
+        "permissions": [],
+
+        "user_ids": [1],
+        "mediafile_access_group_ids": [],
+        "read_comment_section_ids": [],
+        "write_comment_section_ids": [],
+        "motion_poll_ids": [],
+        "assignment_poll_ids": [3],
+        "used_as_motion_poll_default": 1,
+        "used_as_assignment_poll_default": null,
+        "meeting_id": 1
+    },
+    {
+        "id": 3,
+        "name": "Staff",
+        "is_superadmin_group": false,
+        "is_default_group": false,
+        "permissions": [
+            "agenda.can_manage",
+            "agenda.can_see",
+            "agenda.can_see_internal_items",
+            "agenda.can_be_speaker",
+            "assignments.can_manage",
+            "assignments.can_nominate_other",
+            "assignments.can_nominate_self",
+            "assignments.can_see",
+            "core.can_manage_projector",
+            "core.can_see_frontpage",
+            "core.can_see_projector",
+            "core.can_manage_tags",
+            "mediafiles.can_manage",
+            "mediafiles.can_see",
+            "motions.can_create",
+            "motions.can_manage",
+            "motions.can_see",
+            "users.can_manage",
+            "users.can_see_extra_data",
+            "users.can_see_name"
+        ],
+
+        "user_ids": [],
+        "mediafile_access_group_ids": [],
+        "read_comment_section_ids": [1],
+        "write_comment_section_ids": [1],
+        "motion_poll_ids": [],
+        "assignment_poll_ids": [],
+        "used_as_motion_poll_default": 1,
+        "used_as_assignment_poll_default": 1,
+        "meeting_id": 1
+    },
+    {
+        "id": 5,
+        "name": "Committees",
+        "is_superadmin_group": false,
+        "is_default_group": false,
+        "permissions": [
+            "agenda.can_see",
+            "agenda.can_see_internal_items",
+            "assignments.can_see",
+            "core.can_see_frontpage",
+            "core.can_see_projector",
+            "mediafiles.can_see",
+            "motions.can_create",
+            "motions.can_see",
+            "motions.can_support",
+            "users.can_see_name"
+        ],
+
+        "user_ids": [],
+        "mediafile_access_group_ids": [],
+        "read_comment_section_ids": [],
+        "write_comment_section_ids": [],
+        "motion_poll_ids": [],
+        "assignment_poll_ids": [],
+        "used_as_motion_poll_default": null,
+        "used_as_assignment_poll_default": 1,
+        "meeting_id": 1
+    },
+    {
+        "id": 6,
+        "name": "Delegates",
+        "is_superadmin_group": false,
+        "is_default_group": false,
+        "permissions": [
+            "agenda.can_see",
+            "agenda.can_see_internal_items",
+            "agenda.can_be_speaker",
+            "assignments.can_nominate_other",
+            "assignments.can_nominate_self",
+            "assignments.can_see",
+            "core.can_see_frontpage",
+            "core.can_see_projector",
+            "mediafiles.can_see",
+            "motions.can_create",
+            "motions.can_manage",
+            "motions.can_see",
+            "motions.can_support",
+            "users.can_see_name"
+        ],
+
+        "user_ids": [2],
+        "mediafile_access_group_ids": [],
+        "read_comment_section_ids": [1],
+        "write_comment_section_ids": [1],
+        "motion_poll_ids": [],
+        "assignment_poll_ids": [],
+        "used_as_motion_poll_default": null,
+        "used_as_assignment_poll_default": null,
+        "meeting_id": 1
+    }],
+"personal_note": [
+    {
+        "id": 1,
+        "note": "<p>Some content..</p>",
+        "star": false,
+
+        "user_id": 1,
+        "content_object_id": "motion/2"
+    }],
+"tag": [
+    {
+        "id": 1,
+        "name": "Tag1",
+
+        "tagged_ids": ["motion/2"],
+        "meeting_id": 1
+    },
+    {
+        "id": 2,
+        "name": "Tag2",
+
+        "tagged_ids": ["assignment/2"],
+        "meeting_id": 1
+    },
+    {
+        "id": 3,
+        "name": "Tag3",
+
+        "tagged_ids": ["motion/2", "motion/3"],
+        "meeting_id": 1
+    }],
+"angeda_item": [
+    {
+        "id": 3,
+        "item_number": "",
+        "comment": null,
+        "closed": false,
+        "type": 1,
+        "is_internal": false,
+        "is_hidden": false,
+        "duration": null,
+        "weight": 1000,
+        "level": 0,
+
+        "content_object_id": "topic/1",
+        "parent_id": null,
+        "children_ids": [14],
+        "projection_ids": [],
+        "current_projector_ids": [],
+        "meeting_id": 1
+    },
+    {
+        "id": 14,
+        "item_number": "",
+        "comment": null,
+        "closed": false,
+        "type": 2,
+        "is_internal": true,
+        "is_hidden": false,
+        "duration": null,
+        "weight": 1001,
+        "parent_id": 3,
+        "level": 1,
+
+        "content_object_id": "assignment/2",
+        "parent_id": 3,
+        "children_ids": [],
+        "projection_ids": [],
+        "current_projector_ids": [],
+        "meeting_id": 1
+    },
+    {
+        "id": 4,
+        "item_number": "",
+        "comment": null,
+        "closed": false,
+        "type": 1,
+        "is_internal": false,
+        "is_hidden": false,
+        "duration": null,
+        "weight": 1001,
+        "level": 0,
+
+        "content_object_id": "topic/2",
+        "parent_id": null,
+        "children_ids": [],
+        "projection_ids": [],
+        "current_projector_ids": [],
+        "meeting_id": 1
+    },
+    {
+        "id": 5,
+        "item_number": "",
+        "comment": null,
+        "closed": false,
+        "type": 2,
+        "is_internal": true,
+        "is_hidden": false,
+        "duration": null,
+        "weight": 1002,
+        "level": 0,
+
+        "content_object_id": "topic/3",
+        "parent_id": null,
+        "children_ids": [],
+        "projection_ids": [],
+        "current_projector_ids": [],
+        "meeting_id": 1
+    },
+    {
+        "id": 6,
+        "item_number": "",
+        "comment": null,
+        "closed": false,
+        "type": 2,
+        "is_internal": true,
+        "is_hidden": false,
+        "duration": null,
+        "weight": 1003,
+        "level": 0,
+
+        "content_object_id": "topic/4",
+        "parent_id": null,
+        "children_ids": [],
+        "projection_ids": [],
+        "current_projector_ids": [],
+        "meeting_id": 1
+    },
+    {
+        "id": 7,
+        "item_number": "",
+        "comment": null,
+        "closed": false,
+        "type": 1,
+        "is_internal": false,
+        "is_hidden": false,
+        "duration": null,
+        "weight": 1004,
+        "level": 0,
+
+        "content_object_id": "topic/5",
+        "parent_id": null,
+        "children_ids": [],
+        "projection_ids": [],
+        "current_projector_ids": [],
+        "meeting_id": 1
+    },
+    {
+        "id": 8,
+        "item_number": "",
+        "comment": null,
+        "closed": false,
+        "type": 1,
+        "is_internal": false,
+        "is_hidden": false,
+        "duration": null,
+        "weight": 1005,
+        "level": 0,
+
+        "content_object_id": "topic/6",
+        "parent_id": null,
+        "children_ids": [],
+        "projection_ids": [],
+        "current_projector_ids": [],
+        "meeting_id": 1
+    },
+    {
+        "id": 9,
+        "item_number": "",
+        "comment": null,
+        "closed": false,
+        "type": 1,
+        "is_internal": false,
+        "is_hidden": false,
+        "duration": null,
+        "weight": 1006,
+        "level": 0,
+
+        "content_object_id": "topic/7",
+        "parent_id": null,
+        "children_ids": [],
+        "projection_ids": [],
+        "current_projector_ids": [],
+        "meeting_id": 1
+    },
+    {
+        "id": 10,
+        "item_number": "",
+        "comment": null,
+        "closed": false,
+        "type": 3,
+        "is_internal": false,
+        "is_hidden": true,
+        "duration": null,
+        "weight": 1007,
+        "level": 0,
+
+        "content_object_id": "topic/8",
+        "parent_id": null,
+        "children_ids": [],
+        "projection_ids": [],
+        "current_projector_ids": [],
+        "meeting_id": 1
+    },
+    {
+        "id": 1,
+        "item_number": "",
+        "comment": null,
+        "closed": false,
+        "type": 1,
+        "is_internal": false,
+        "is_hidden": false,
+        "duration": null,
+        "weight": 10000,
+        "level": 0,
+
+        "content_object_id": "motion/1",
+        "parent_id": null,
+        "children_ids": [],
+        "projection_ids": [],
+        "current_projector_ids": [],
+        "meeting_id": 1
+    },
+    {
+        "id": 2,
+        "item_number": "",
+        "comment": null,
+        "closed": false,
+        "type": 2,
+        "is_internal": true,
+        "is_hidden": false,
+        "duration": null,
+        "weight": 10000,
+        "level": 0,
+
+        "content_object_id": "motion/2",
+        "parent_id": null,
+        "children_ids": [],
+        "projection_ids": [],
+        "current_projector_ids": [],
+        "meeting_id": 1
+    },
+    {
+        "id": 11,
+        "item_number": "",
+        "comment": null,
+        "closed": false,
+        "type": 2,
+        "is_internal": true,
+        "is_hidden": false,
+        "duration": null,
+        "weight": 10000,
+        "level": 0,
+
+        "content_object_id": "assignment/1",
+        "parent_id": null,
+        "children_ids": [],
+        "projection_ids": [],
+        "current_projector_ids": [],
+        "meeting_id": 1
+    },
+    {
+        "id": 12,
+        "item_number": "",
+        "comment": null,
+        "closed": false,
+        "type": 2,
+        "is_internal": true,
+        "is_hidden": false,
+        "duration": null,
+        "weight": 10000,
+        "level": 0,
+
+        "content_object_id": "motion/3",
+        "parent_id": null,
+        "children_ids": [],
+        "projection_ids": [],
+        "current_projector_ids": [],
+        "meeting_id": 1
+    },
+    {
+        "id": 13,
+        "item_number": "",
+        "comment": null,
+        "closed": false,
+        "type": 2,
+        "is_internal": true,
+        "is_hidden": false,
+        "duration": null,
+        "weight": 10000,
+        "level": 0,
+
+        "content_object_id": "motion/4",
+        "parent_id": null,
+        "children_ids": [],
+        "projection_ids": [],
+        "current_projector_ids": [],
+        "meeting_id": 1
+    },
+    {
+        "id": 15,
+        "item_number": "",
+        "comment": null,
+        "closed": false,
+        "type": 2,
+        "is_internal": true,
+        "is_hidden": false,
+        "duration": null,
+        "weight": 10000,
+        "level": 0,
+
+        "content_object_id": "motion_block/1",
+        "parent_id": null,
+        "children_ids": [],
+        "projection_ids": [],
+        "current_projector_ids": [],
+        "meeting_id": 1
+    }],
+"list_of_speakers": [
+    {
+        "id": 1,
+        "closed": false,
+
+        "content_object_id": "motion/1",
+        "speaker_ids": [11, 12, 13],
+        "projection_ids": [],
+        "current_projector_ids": [],
+        "meeting_id": 1
+    },
+    {
+        "id": 2,
+        "closed": false,
+
+        "content_object_id": "motion/2",
+        "speakers": [],
+        "projection_ids": [],
+        "current_projector_ids": [],
+        "meeting_id": 1
+    },
+    {
+        "id": 3,
+        "closed": false,
+
+        "content_object": "topic/1",
+        "speaker_ids": [1, 2],
+        "projection_ids": [],
+        "current_projector_ids": [],
+        "meeting_id": 1
+    },
+    {
+        "id": 4,
+        "closed": false,
+
+        "content_object": "topic/2",
+        "speaker_ids": [],
+        "projection_ids": [],
+        "current_projector_ids": [],
+        "meeting_id": 1
+    },
+    {
+        "id": 5,
+        "closed": false,
+
+        "content_object": "topic/3",
+        "speaker_ids": [],
+        "projection_ids": [],
+        "current_projector_ids": [],
+        "meeting_id": 1
+    },
+    {
+        "id": 6,
+        "closed": false,
+
+        "content_object": "topic/4",
+        "speaker_ids": [],
+        "projection_ids": [],
+        "current_projector_ids": [],
+        "meeting_id": 1
+    },
+    {
+        "id": 7,
+        "closed": false,
+
+        "content_object": "topic/5",
+        "speaker_ids": [3, 4],
+        "projection_ids": [],
+        "current_projector_ids": [],
+        "meeting_id": 1
+    },
+    {
+        "id": 8,
+        "closed": false,
+
+        "content_object": "topic/6",
+        "speaker_ids": [5],
+        "projection_ids": [],
+        "current_projector_ids": [],
+        "meeting_id": 1
+    },
+    {
+        "id": 9,
+        "closed": false,
+
+        "content_object": "topic/7",
+        "speaker_ids": [],
+        "projection_ids": [],
+        "current_projector_ids": [],
+        "meeting_id": 1
+    },
+    {
+        "id": 10,
+        "closed": false,
+
+        "content_object": "topic/8",
+        "speaker_ids": [],
+        "projection_ids": [],
+        "current_projector_ids": [],
+        "meeting_id": 1
+    },
+    {
+        "id": 11,
+        "closed": false,
+
+        "content_object": "assignment/1",
+        "speakers": [6, 7, 8],
+        "projection_ids": [],
+        "current_projector_ids": [],
+        "meeting_id": 1
+    },
+    {
+        "id": 12,
+        "closed": false,
+
+        "content_object": "motion/3",
+        "speakers": [],
+        "projection_ids": [],
+        "current_projector_ids": [],
+        "meeting_id": 1
+    },
+    {
+        "id": 13,
+        "closed": false,
+
+        "content_object": "motion/4",
+        "speakers": [],
+        "projection_ids": [],
+        "current_projector_ids": [],
+        "meeting_id": 1
+    },
+    {
+        "id": 14,
+        "closed": false,
+
+        "content_object": "assignment/2",
+        "speakers": [9, 10],
+        "projection_ids": [],
+        "current_projector_ids": [],
+        "meeting_id": 1
+    },
+    {
+        "id": 15,
+        "closed": false,
+
+        "content_object": "motion_block/1",
+        "speakers": [],
+        "projection_ids": [],
+        "current_projector_ids": [],
+        "meeting_id": 1
+    }],
+"speaker": [
+    {
+        "id": 11,
+        "begin_time": 1584512636,
+        "end_time": 1584512638,
+        "weight": null,
+        "marked": false,
+
+        "list_of_speakers_id": 1,
+        "user_id": 2
+    },
+    {
+        "id": 12,
+        "begin_time": null,
+        "end_time": null,
+        "weight": 2,
+        "marked": false,
+
+        "list_of_speakers_id": 1,
+        "user_id": 1
+    },
+    {
+        "id": 13,
+        "begin_time": null,
+        "end_time": null,
+        "weight": 3,
+        "marked": false,
+
+        "list_of_speakers_id": 1,
+        "user_id": 2
+    },
+    {
+        "id": 1,
+        "begin_time": null,
+        "end_time": null,
+        "weight": 1,
+        "marked": false,
+
+        "list_of_speakers_id": 3,
+        "user_id": 1
+    },
+    {
+        "id": 2,
+        "begin_time": null,
+        "end_time": null,
+        "weight": 0,
+        "marked": false,
+
+        "list_of_speakers_id": 3,
+        "user_id": 2
+    },
+    {
+        "id": 3,
+        "begin_time": null,
+        "end_time": null,
+        "weight": 1,
+        "marked": false,
+
+        "list_of_speakers_id": 7,
+        "user_id": 2
+    },
+    {
+        "id": 4,
+        "begin_time": null,
+        "end_time": null,
+        "weight": 2,
+        "marked": false,
+
+        "list_of_speakers_id": 7,
+        "user_id": 3
+    },
+    {
+        "id": 5,
+        "begin_time": null,
+        "end_time": null,
+        "weight": 1,
+        "marked": false,
+
+        "list_of_speakers_id": 8,
+        "user_id": 1
+    },
+    {
+        "id": 6,
+        "begin_time": null,
+        "end_time": null,
+        "weight": 1,
+        "marked": false,
+
+        "list_of_speakers_id": 11,
+        "user_id": 1
+    },
+    {
+        "id": 7,
+        "begin_time": null,
+        "end_time": null,
+        "weight": 2,
+        "marked": false,
+
+        "list_of_speakers_id": 11,
+        "user_id": 2
+    },
+    {
+        "id": 8,
+        "begin_time": null,
+        "end_time": null,
+        "weight": 3,
+        "marked": false,
+
+        "list_of_speakers_id": 11,
+        "user_id": 3
+    },
+    {
+        "id": 9,
+        "begin_time": null,
+        "end_time": null,
+        "weight": 1,
+        "marked": false,
+
+        "list_of_speakers_id": 14,
+        "user_id": 3
+    },
+    {
+        "id": 10,
+        "begin_time": null,
+        "end_time": null,
+        "weight": 2,
+        "marked": false,
+
+        "list_of_speakers_id": 14,
+        "user_id": 2
+    }],
+"topic": [
+    {
+        "id": 1,
+        "title": "A",
+        "text": "",
+
+        "attachment_ids": [],
+        "agenda_item_id": 3,
+        "list_of_speakers_id": 3,
+        "tag_ids": [],
+        "meeting_id": 1
+    },
+    {
+        "id": 2,
+        "title": "B",
+        "text": "",
+
+        "attachment_ids": [],
+        "agenda_item_id": 4,
+        "list_of_speakers_id": 4,
+        "tag_ids": [],
+        "meeting_id": 1
+    },
+    {
+        "id": 3,
+        "title": "C",
+        "text": "",
+
+        "attachment_ids": [],
+        "agenda_item_id": 5,
+        "list_of_speakers_id": 5,
+        "tag_ids": [],
+        "meeting_id": 1
+    },
+    {
+        "id": 4,
+        "title": "D",
+        "text": "",
+
+        "attachment_ids": [],
+        "agenda_item_id": 6,
+        "list_of_speakers_id": 6,
+        "tag_ids": [],
+        "meeting_id": 1
+    },
+    {
+        "id": 5,
+        "title": "E",
+        "text": "",
+
+        "attachment_ids": [],
+        "agenda_item_id": 7,
+        "list_of_speakers_id": 7,
+        "tag_ids": [],
+        "meeting_id": 1
+    },
+    {
+        "id": 6,
+        "title": "F",
+        "text": "",
+
+        "attachment_ids": [],
+        "agenda_item_id": 8,
+        "list_of_speakers_id": 8,
+        "tag_ids": [],
+        "meeting_id": 1
+    },
+    {
+        "id": 7,
+        "title": "G",
+        "text": "",
+
+        "attachment_ids": [],
+        "agenda_item_id": 9,
+        "list_of_speakers_id": 9,
+        "tag_ids": [],
+        "meeting_id": 1
+    },
+    {
+        "id": 8,
+        "title": "H",
+        "text": "",
+
+        "attachment_ids": [],
+        "agenda_item_id": 10,
+        "list_of_speakers_id": 10,
+        "tag_ids": [],
+        "meeting_id": 1
+    }],
+"motion": [
+    {
+        "id": 1,
+        "number": "A1",
+        "sequential_number": 1,
+        "title": "test",
+        "text": "<ul>\n<li>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque</li>\n<li>penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat ma</li>\n<li>ssa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, vene<br>\n<br>\nnatis vitae, justo. Null<br>\nam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi.Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibu</li>\n<li>s in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem.Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc, quis gravida magna mi a libero. Fusce vulputate eleifend sapien. Vestibulum purus quam, scelerisque ut, mollis sed, nonummy id, metus. Nullam accumsan lorem in dui. Cras ultricies mi eu turpis hendrerit fringilla. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; In ac dui quis mi consectetuer lacinia. Nam pretium turpis et arcu. Duis arcu tortor, suscipit eget, imperdiet nec, imperdiet iaculis, ipsum. Sed aliquam ultrices mauris. Integer ante arcu, accumsan a, consectetuer eget, posuere ut, mauris. Praesent adipiscing. Phasellus ullamcorper ipsum rutrum nunc. Nunc nonummy metus. Vestibulum volutpat pretium libero. Cras id dui. Aenean ut</li>\n</ul>",
+        "amendment_paragraph_$": [],
+        "modified_final_version": "<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi.Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem.Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc, quis gravida magna mi a libero. Fusce vulputate eleifend sapien. Vestibulum purus quam, scelerisque ut, mollis sed, nonummy id, metus. Nullam accumsan lorem in dui. Cras ultricies mi eu turpis hendrerit fringilla. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; In ac dui quis mi consectetuer lacinia. Nam pretium turpis et arcu. Duis arcu tortor, suscipit eget, imperdiet nec, imperdiet iaculis, ipsum. Sed aliquam ultrices mauris. Integer ante arcu, accumsan a, consectetuer eget, posuere ut, mauris. Praesent adipiscing. Phasellus ullamcorper ipsum rutrum nunc. Nunc nonummy metus. Vestibulum volutpat pretium libero. Cras id dui. Aenean ut</p>",
+        "reason": "",
+        "category_weight": 10000,
+        "state_extension": null,
+        "recommendation_extension": null,
+        "sort_weight": 10000,
+        "created": 1584512346,
+        "last_modified": 1584512346,
+
+        "parent_id": null,
+        "children_ids": [2],
+        "sort_parent_id": null,
+        "sort_children_ids": [],
+        "origin_id": null,
+        "derived_motion_ids": [],
+        "state_id": 1,
+        "workflow_id": 1,
+        "recommendation_id": null,
+        "category_id": 2,
+        "motion_block_id": null,
+        "submitter_ids": [1],
+        "supporter_ids": [],
+        "poll_ids": [1, 2],
+        "change_recommendations_id": [],
+        "statute_paragraph_id": null,
+        "comment_ids": [1],
+        "agenda_item_id": 1,
+        "list_of_speakers_id": 1,
+        "tag_ids": [],
+        "attachment_ids": [],
+        "projection_ids": [],
+        "current_projector_ids": [],
+        "personal_note_ids": [],
+        "meeting_id": 1
+    },
+    {
+        "id": 2,
+        "number": "1 - 1",
+        "sequential_number": 2,
+        "title": "Änderungsantrag zu 1",
+        "text": "<p>l&ouml;mk</p>",
+        "amendment_paragraph_$": [],
+        "modified_final_version": "",
+        "reason": "",
+        "category_weight": 10000,
+        "state_extension": "<p>regeer</p>",
+        "recommendation_extension": null,
+        "sort_weight": 10000,
+        "created": 1584512346,
+        "last_modified": 1584512346,
+
+        "parent_id": 1,
+        "children_ids": [],
+        "sort_parent_id": null,
+        "sort_chldren_ids": [],
+        "origin_id": null,
+        "derived_motion_ids": [],
+        "state_id": 1,
+        "workflow_id": 1,
+        "recommendation_id": null,
+        "category_id": 1,
+        "motion_block_id": null,
+        "submitter_ids": [2],
+        "supporter_ids": [],
+        "poll_ids": [],
+        "change_recommendations_id": [],
+        "statute_paragraph_id": null,
+        "comment_ids": [],
+        "agenda_item_id": 2,
+        "list_of_speakers_id": 2,
+        "tag_ids": [1, 3],
+        "attachment_ids": [],
+        "projection_ids": [],
+        "current_projector_ids": [],
+        "personal_note_ids": [],
+        "meeting_id": 1
+    },
+    {
+        "id": 3,
+        "number": "2",
+        "sequential_number": 3,
+        "title": "ohne",
+        "text": "<p>sf</p>",
+        "amendment_paragraph_$": [],
+        "modified_final_version": "",
+        "reason": "",
+        "category_weight": 10000,
+        "state_extension": null,
+        "recommendation_extension": null,
+        "sort_weight": 10000,
+        "created": 1584512346,
+        "last_modified": 1584512346,
+
+        "parent_id": null,
+        "children_ids": [],
+        "sort_parent_id": null,
+        "sort_chldren_ids": [],
+        "origin_id": null,
+        "derived_motion_ids": [],
+        "state_id": 1,
+        "workflow_id": 1,
+        "recommendation_id": null,
+        "category_id": 2,
+        "motion_block_id": 1,
+        "submitter_ids": [3],
+        "supporter_ids": [3],
+        "poll_ids": [],
+        "change_recommendations_id": [5],
+        "statute_paragraph_id": null,
+        "comment_ids": [],
+        "agenda_item_id": 12,
+        "list_of_speakers_id": 12,
+        "tag_ids": [3],
+        "attachment_ids": [],
+        "projection_ids": [],
+        "current_projector_ids": [],
+        "personal_note_ids": [],
+        "meeting_id": 1
+    },
+    {
+        "id": 4,
+        "number": "3",
+        "sequential_number": 4,
+        "title": "komplex",
+        "text": "<p>sdf sdfpdfkw wef</p>\n\n<p>wepkf&nbsp;</p>\n\n<p>we&uuml;pfk&nbsp;</p>\n\n<p>we&uuml;pfdfg</p>",
+        "amendment_paragraph_$": [],
+        "modified_final_version": "",
+        "reason": "",
+        "category_weight": 10000,
+        "state_extension": null,
+        "recommendation_extension": null,
+        "sort_weight": 10000,
+        "created": 1584512346,
+        "last_modified": 1584512346,
+
+        "parent_id": null,
+        "children_ids": [],
+        "sort_parent_id": null,
+        "sort_chldren_ids": [],
+        "origin_id": null,
+        "derived_motion_ids": [],
+        "state_id": 6,
+        "workflow_id": 2,
+        "recommendation_id": null,
+        "category_id": null,
+        "motion_block_id": 1,
+        "submitter_ids": [4],
+        "supporter_ids": [],
+        "poll_ids": [],
+        "change_recommendations_id": [4],
+        "statute_paragraph_id": null,
+        "comments": [],
+        "agenda_item_id": 13,
+        "list_of_speakers_id": 13,
+        "tag_ids": [],
+        "attachment_ids": [2],
+        "projection_ids": [2],
+        "current_projector_ids": [],
+        "personal_note_ids": [],
+        "meeting_id": 1
+    }],
+"motion_submitter": [
+    {
+        "id": 1,
+        "weight": 1,
+
+        "user_id": 1,
+        "motion_id": 1
+    },
+    {
+        "id": 2,
+        "weight": 1,
+
+        "user_id": 1,
+        "motion_id": 2
+    },
+    {
+        "id": 3,
+        "weight": 1,
+
+        "user_id": 1,
+        "motion_id": 3
+    },
+    {
+        "id": 4,
+        "weight": 1,
+
+        "user_id": 1,
+        "motion_id": 4
+    }],
+"motion_comment": [
+    {
+        "id": 1,
+        "comment": "<p>sgsdklf jhs&ouml;lkf sd&ouml;lkdsf jglkfd</p>",
+
+        "motion_id": 1,
+        "section_id": 1
+    }],
+"motion_comment_section": [
+    {
+        "id": 1,
+        "name": "Neu",
+        "weight": 10000,
+
+        "comment_ids": [1],
+        "read_groups_id": [3, 6],
+        "write_groups_id": [3, 6],
+        "meeting_id": 1
+    }],
+"category": [
+    {
+        "id": 1,
+        "name": "Cad",
+        "prefix": "C",
+        "weight": 2,
+        "level": 0,
+
+        "parent_id": null,
+        "children_ids": [2],
+        "motion_ids": [2],
+        "meeting_id": 1
+    },
+    {
+        "id": 2,
+        "name": "Bildung",
+        "prefix": "B",
+        "weight": 4,
+        "level": 1,
+
+        "parent_id": 1,
+        "children_ids": [],
+        "motion_ids": [1, 3],
+        "meeting_id": 1
+    }],
+"motion_block": [
+    {
+        "id": 1,
+        "title": "BLOCK A",
+        "internal": false,
+
+        "motion_ids": [3, 4],
+        "agenda_item_id": 15,
+        "list_of_speakers_id": 15,
+        "projection_ids": [1],
+        "current_projector_ids": [],
+        "meeting_id": 1
+    }],
+"motion_change_recommendation": [
+     {
+        "id": 4,
+        "rejected": false,
+        "internal": false,
+        "type": 2,
+        "other_description": "",
+        "line_from": 1,
+        "line_to": 2,
+        "text": "<p>sdf sdfpef</p>",
+        "creation_time": 1584512345,
+
+        "motion_id": 4
+    },
+    {
+        "id": 5,
+        "rejected": false,
+        "internal": false,
+        "type": 0,
+        "other_description": "",
+        "line_from": 1,
+        "line_to": 2,
+        "text": "<p>skp</p>",
+        "creation_time": 1584512667,
+
+        "motion_id": 3
+    }],
+"motion_state": [
+    {
+        "id": 1,
+        "name": "submitted",
+        "recommendation_label": null,
+        "css_class": "lightblue",
+        "restriction": [],
+        "allow_support": true,
+        "allow_create_poll": true,
+        "allow_submitter_edit": true,
+        "set_number": true,
+        "show_state_extension_field": false,
+        "merge_amendment_into_final": 0,
+        "show_recommendation_extension_field": false,
+
+        "next_states_id": [2, 3, 4],
+        "previous_state_ids": [],
+        "motion_ids": [1, 2, 3],
+        "motion_recommendation_ids": [],
+        "workflow_id": 1,
+        "first_state_of_workflow_id": 1
+    },
+    {
+        "id": 2,
+        "name": "accepted",
+        "recommendation_label": "Acceptance",
+        "css_class": "green",
+        "restriction": [],
+        "allow_support": false,
+        "allow_create_poll": false,
+        "allow_submitter_edit": false,
+        "set_number": true,
+        "show_state_extension_field": false,
+        "merge_amendment_into_final": 0,
+        "show_recommendation_extension_field": false,
+
+        "next_states_id": [],
+        "previous_state_ids": [1],
+        "motion_ids": [],
+        "motion_recommendation_ids": [],
+        "workflow_id": 1,
+        "first_state_of_workflow_id": null
+    },
+    {
+        "id": 3,
+        "name": "rejected",
+        "recommendation_label": "Rejection",
+        "css_class": "red",
+        "restriction": [],
+        "allow_support": false,
+        "allow_create_poll": false,
+        "allow_submitter_edit": false,
+        "set_number": true,
+        "show_state_extension_field": false,
+        "merge_amendment_into_final": 0,
+        "show_recommendation_extension_field": false,
+
+        "next_states_id": [],
+        "previous_state_ids": [1],
+        "motion_ids": [],
+        "motion_recommendation_ids": [],
+        "workflow_id": 1,
+        "first_state_of_workflow_id": null
+    },
+    {
+        "id": 4,
+        "name": "not decided",
+        "recommendation_label": "No decision",
+        "css_class": "grey",
+        "restriction": [],
+        "allow_support": false,
+        "allow_create_poll": false,
+        "allow_submitter_edit": false,
+        "set_number": true,
+        "show_state_extension_field": false,
+        "merge_amendment_into_final": 0,
+        "show_recommendation_extension_field": false,
+
+        "next_states_id": [],
+        "previous_state_ids": [1],
+        "motion_ids": [],
+        "motion_recommendation_ids": [],
+        "workflow_id": 1,
+        "first_state_of_workflow_id": null
+    },
+    {
+        "id": 5,
+        "name": "published",
+        "recommendation_label": null,
+        "css_class": "lightblue",
+        "restriction": [],
+        "allow_support": true,
+        "allow_create_poll": false,
+        "allow_submitter_edit": true,
+        "set_number": false,
+        "show_state_extension_field": false,
+        "merge_amendment_into_final": 0,
+        "show_recommendation_extension_field": false,
+
+        "next_states_id": [6, 9, 14],
+        "previous_state_ids": [],
+        "motion_ids": [],
+        "motion_recommendation_ids": [],
+        "workflow_id": 2,
+        "first_state_of_workflow_id": 2
+    },
+    {
+        "id": 6,
+        "name": "permitted",
+        "recommendation_label": "Permission",
+        "css_class": "lightblue",
+        "restriction": [],
+        "allow_support": false,
+        "allow_create_poll": true,
+        "allow_submitter_edit": true,
+        "set_number": true,
+        "show_state_extension_field": false,
+        "merge_amendment_into_final": 0,
+        "show_recommendation_extension_field": false,
+
+        "next_states_id": [7, 8, 9, 10, 11, 12, 13],
+        "previous_state_ids": [5],
+        "motion_ids": [4],
+        "motion_recommendation_ids": [],
+        "workflow_id": 2,
+        "first_state_of_workflow_id": null
+    },
+    {
+        "id": 7,
+        "name": "accepted",
+        "recommendation_label": "Acceptance",
+        "css_class": "green",
+        "restriction": [],
+        "allow_support": false,
+        "allow_create_poll": false,
+        "allow_submitter_edit": false,
+        "set_number": true,
+        "show_state_extension_field": false,
+        "merge_amendment_into_final": 0,
+        "show_recommendation_extension_field": false,
+
+        "next_states_id": [],
+        "previous_state_ids": [6],
+        "motion_ids": [],
+        "motion_recommendation_ids": [],
+        "workflow_id": 2,
+        "first_state_of_workflow_id": null
+    },
+    {
+        "id": 8,
+        "name": "rejected",
+        "recommendation_label": "Rejection",
+        "css_class": "red",
+        "restriction": [],
+        "allow_support": false,
+        "allow_create_poll": false,
+        "allow_submitter_edit": false,
+        "set_number": true,
+        "show_state_extension_field": false,
+        "merge_amendment_into_final": 0,
+        "show_recommendation_extension_field": false,
+
+        "next_states_id": [],
+        "previous_state_ids": [6],
+        "motion_ids": [],
+        "motion_recommendation_ids": [],
+        "workflow_id": 2,
+        "first_state_of_workflow_id": null
+    },
+    {
+        "id": 9,
+        "name": "withdrawed",
+        "recommendation_label": null,
+        "css_class": "grey",
+        "restriction": [],
+        "allow_support": false,
+        "allow_create_poll": false,
+        "allow_submitter_edit": false,
+        "set_number": true,
+        "show_state_extension_field": false,
+        "merge_amendment_into_final": 0,
+        "show_recommendation_extension_field": false,
+
+        "next_states_id": [],
+        "previous_state_ids": [5, 6],
+        "motion_ids": [],
+        "motion_recommendation_ids": [],
+        "workflow_id": 2,
+        "first_state_of_workflow_id": null
+    },
+    {
+        "id": 10,
+        "name": "adjourned",
+        "recommendation_label": "Adjournment",
+        "css_class": "grey",
+        "restriction": [],
+        "allow_support": false,
+        "allow_create_poll": false,
+        "allow_submitter_edit": false,
+        "set_number": true,
+        "show_state_extension_field": false,
+        "merge_amendment_into_final": 0,
+        "show_recommendation_extension_field": false,
+
+        "next_states_id": [],
+        "previous_state_ids": [6],
+        "motion_ids": [],
+        "motion_recommendation_ids": [],
+        "workflow_id": 2,
+        "first_state_of_workflow_id": null
+    },
+    {
+        "id": 11,
+        "name": "not concerned",
+        "recommendation_label": "No concernment",
+        "css_class": "grey",
+        "restriction": [],
+        "allow_support": false,
+        "allow_create_poll": false,
+        "allow_submitter_edit": false,
+        "set_number": true,
+        "show_state_extension_field": false,
+        "merge_amendment_into_final": 0,
+        "show_recommendation_extension_field": false,
+
+        "next_states_id": [],
+        "previous_state_ids": [6],
+        "motion_ids": [],
+        "motion_recommendation_ids": [],
+        "workflow_id": 2,
+        "first_state_of_workflow_id": null
+    },
+    {
+        "id": 12,
+        "name": "refered to committee",
+        "recommendation_label": "Referral to committee",
+        "css_class": "grey",
+        "restriction": [],
+        "allow_support": false,
+        "allow_create_poll": false,
+        "allow_submitter_edit": false,
+        "set_number": true,
+        "show_state_extension_field": false,
+        "merge_amendment_into_final": 0,
+        "show_recommendation_extension_field": false,
+
+        "next_states_id": [],
+        "previous_state_ids": [6],
+        "motion_ids": [],
+        "motion_recommendation_ids": [],
+        "workflow_id": 2,
+        "first_state_of_workflow_id": null
+    },
+    {
+        "id": 13,
+        "name": "needs review",
+        "recommendation_label": null,
+        "css_class": "grey",
+        "restriction": [],
+        "allow_support": false,
+        "allow_create_poll": false,
+        "allow_submitter_edit": false,
+        "set_number": true,
+        "show_state_extension_field": false,
+        "merge_amendment_into_final": 0,
+        "show_recommendation_extension_field": false,
+
+        "next_states_id": [],
+        "previous_state_ids": [6],
+        "motion_ids": [],
+        "motion_recommendation_ids": [],
+        "workflow_id": 2,
+        "first_state_of_workflow_id": null
+    },
+    {
+        "id": 14,
+        "name": "rejected (not authorized)",
+        "recommendation_label": "Rejection (not authorized)",
+        "css_class": "grey",
+        "restriction": [],
+        "allow_support": false,
+        "allow_create_poll": false,
+        "allow_submitter_edit": false,
+        "set_number": true,
+        "show_state_extension_field": false,
+        "merge_amendment_into_final": 0,
+        "show_recommendation_extension_field": false,
+
+        "next_states_id": [],
+        "previous_state_ids": [5],
+        "motion_ids": [],
+        "motion_recommendation_ids": [],
+        "workflow_id": 2,
+        "first_state_of_workflow_id": null
+    }],
+"motion_workflow": [
+    {
+        "id": 1,
+        "name": "Simple Workflow",
+
+        "states_id": [1, 2, 3, 4],
+        "first_state_id": 1,
+        "motion_ids": [1, 2, 3],
+        "default_workflow_meeting_id": 1,
+        "default_statute_amendments_meeting_id": null,
+        "meeting_id": 1
+    },
+    {
+        "id": 2,
+        "name": "Complex Workflow",
+
+        "states_id": [5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
+        "first_state_id": 5,
+        "motion_ids": [4],
+        "default_workflow_meeting_id": null,
+        "default_statute_amendments_meeting_id": 1,
+        "meeting_id": 1
+    }],
+"motion_statute_paragraph": [],
+"motion_poll": [
+    {
+        "id": 1,
+        "pollmethod": "YNA",
+        "state": 3,
+        "type": "analog",
+        "title": "1",
+        "onehundred_percent_base": "YNA",
+        "majority_method": "simple",
+        "votesvalid": "2.000000",
+        "votesinvalid": "9.000000",
+        "votescast": "2.000000",
+        "user_has_voted": false,
+
+        "motion_id": 1,
+        "option_ids": [1],
+        "voted_ids": [],
+        "entitled_group_ids": [],
+        "projection_ids": [],
+        "current_projector_ids": [],
+        "meeting_id": 1
+    },
+    {
+        "id": 2,
+        "pollmethod": "YNA",
+        "state": 1,
+        "type": "analog",
+        "title": "2",
+        "onehundred_percent_base": "YNA",
+        "majority_method": "simple",
+        "votesvalid": null,
+        "votesinvalid": null,
+        "votescast": null,
+        "user_has_voted": false,
+
+        "motion_id": 1,
+        "option_ids": [2],
+        "voted_ids": [],
+        "entitled_group_ids": [],
+        "projection_ids": [],
+        "current_projector_ids": [],
+        "meeting_id": 1
+    }],
+"motion_option": [
+    {
+        "id": 1,
+        "yes": "2.000000",
+        "no": "4.000000",
+        "abstain": "1.000000",
+
+        "poll_id": 1,
+        "vote_ids": [1, 2, 3]
+    },
+    {
+        "id": 2,
+        "yes": "0.000000",
+        "no": "0.000000",
+        "abstain": "0.000000",
+
+        "poll_id": 2,
+        "vote_ids": []
+    }],
+"motion_vote": [
+    {
+        "id": 1,
+        "weight": "2.000000",
+        "value": "Y",
+
+        "user_id": null,
+        "option_id": 1
+    },
+    {
+        "id": 2,
+        "weight": "4.000000",
+        "value": "N",
+
+        "user_id": null,
+        "option_id": 1
+    },
+    {
+        "id": 3,
+        "weight": "1.000000",
+        "value": "A",
+
+        "user_id": null,
+        "option_id": 1
+    }],
+"assignment": [
+    {
+        "id": 1,
+        "title": "Wahl",
+        "description": "",
+        "open_posts": 1,
+        "phase": 1,
+        "default_poll_description": "",
+        "number_poll_candidates": false,
+
+        "assignment_candidate_ids": [1, 2, 3],
+        "polls_id": [1, 2],
+        "agenda_item_id": 11,
+        "list_of_speakers_id": 11,
+        "tag_ids": [],
+        "attachment_ids": [],
+        "projection_ids": [4],
+        "current_projector_ids": [1],
+        "meeting_id": 1
+    },
+    {
+        "id": 2,
+        "title": "2. Wahl",
+        "description": "<p>B-Ware</p>",
+        "open_posts": 1,
+        "phase": 0,
+        "default_poll_description": "",
+        "number_poll_candidates": true,
+
+        "assignment_candidate_ids": [4, 5],
+        "polls_id": [3],
+        "agenda_item_id": 14,
+        "list_of_speakers_id": 14,
+        "tag_ids": [2],
+        "attachment_ids": [],
+        "projection_ids": [],
+        "current_projector_ids": [],
+        "meeting_id": 1
+    }],
+"assignment_candidate": [
+    {
+        "id": 1,
+        "weight": 1,
+
+        "assignment_id": 1,
+        "user_id": 1
+    },
+    {
+        "id": 2,
+        "weight": 2,
+
+        "assignment_id": 1,
+        "user_id": 3
+    },
+    {
+        "id": 3,
+        "weight": 3,
+
+        "assignment_id": 1,
+        "user_id": 2
+    },
+    {
+        "id": 4,
+        "weight": 1,
+
+        "assignment_id": 2,
+        "user_id": 3
+    },
+    {
+        "id": 5,
+        "weight": 2,
+
+        "assignment_id": 2,
+        "user_id": 2
+    }],
+"assignment_poll": [
+    {
+        "id": 1,
+        "description": "",
+        "pollmethod": "YNA",
+        "votes_amount": 1,
+        "allow_multiple_votes_per_candidate": false,
+        "global_no": true,
+        "global_abstain": true,
+        "amount_global_no": null,
+        "amount_global_abstain": null,
+        "state": 1,
+        "title": "1",
+        "type": "analog",
+        "onehundred_percent_base": "YNA",
+        "majority_method": "simple",
+        "votesvalid": null,
+        "votesinvalid": null,
+        "votescast": null,
+        "user_has_voted": false,
+
+        "assignment_id": 1,
+        "voted_id": [],
+        "entitled_groups_id": [],
+        "option_ids": [1],
+        "projection_ids": [],
+        "current_projector_ids": [],
+        "meeting_id": 1
+    },
+    {
+        "id": 2,
+        "description": "",
+        "pollmethod": "votes",
+        "votes_amount": 1,
+        "allow_multiple_votes_per_candidate": false,
+        "global_no": true,
+        "global_abstain": true,
+        "amount_global_no": "2.000000",
+        "amount_global_abstain": "1.000000",
+        "state": 3,
+        "title": "2",
+        "type": "analog",
+        "onehundred_percent_base": "votes",
+        "majority_method": "simple",
+        "votesvalid": "9.000000",
+        "votesinvalid": "2.000000",
+        "votescast": "16.000000",
+        "user_has_voted": false,
+
+        "assignment_id": 1,
+        "voted_ids": [],
+        "entitled_group_ids": [],
+        "option_ids": [2, 3, 4],
+        "projection_ids": [],
+        "current_projector_ids": [],
+        "meeting_id": 1
+    },
+    {
+        "id": 3,
+        "description": "",
+        "pollmethod": "votes",
+        "votes_amount": 1,
+        "allow_multiple_votes_per_candidate": false,
+        "global_no": true,
+        "global_abstain": false,
+        "amount_global_no": "0.000000",
+        "amount_global_abstain": null,
+        "state": 3,
+        "title": "Wahlgang",
+        "type": "named",
+        "onehundred_percent_base": "valid",
+        "majority_method": "simple",
+        "votesvalid": "1.000000",
+        "votesinvalid": "0.000000",
+        "votescast": "1.000000",
+        "user_has_voted": true,
+
+        "assignment_id": 2,
+        "voted_ids": [1],
+        "entitled_groups_id": [2],
+        "option_ids": [5, 6],
+        "projection_ids": [],
+        "current_projector_ids": [],
+        "meeting_id": 1
+    }],
+"assignment_option": [
+    {
+        "id": 1,
+        "yes": "0.000000",
+        "no": "0.000000",
+        "abstain": "0.000000",
+        "weight": 1,
+
+        "poll_id": 1,
+        "user_id": 1,
+        "vote_ids": []
+    },
+    {
+        "id": 2,
+        "yes": "3.000000",
+        "no": "0.000000",
+        "abstain": "0.000000",
+        "weight": 1,
+
+        "poll_id": 2,
+        "user_id": 1,
+        "vote_ids": [1]
+    },
+    {
+        "id": 3,
+        "yes": "7.000000",
+        "no": "0.000000",
+        "abstain": "0.000000",
+        "weight": 2,
+
+        "poll_id": 2,
+        "user_id": 3,
+        "vote_ids": [3]
+    },
+    {
+        "id": 4,
+        "yes": "2.000000",
+        "no": "0.000000",
+        "abstain": "0.000000",
+        "weight": 3,
+
+        "poll_id": 2,
+        "user_id": 2,
+        "vote_ids": [2]
+    },
+    {
+        "id": 5,
+        "yes": "0.000000",
+        "no": "0.000000",
+        "abstain": "0.000000",
+        "weight": 1,
+
+        "poll_id": 3,
+        "user_id": 3,
+        "vote_ids": []
+    },
+    {
+        "id": 6,
+        "yes": "1.000000",
+        "no": "0.000000",
+        "abstain": "0.000000",
+        "weight": 2,
+
+        "poll_id": 3,
+        "user_id": 2,
+        "vote_ids": [4]
+    }],
+"assignment_vote": [
+    {
+        "id": 1,
+        "value": "Y",
+        "weight": "3.000000",
+
+        "user_id": null,
+        "option_id": 2
+    },
+    {
+        "id": 2,
+        "value": "Y",
+        "weight": "2.000000",
+
+        "user_id": null,
+        "option_id": 4
+    },
+    {
+        "id": 3,
+        "value": "Y",
+        "weight": "7.000000",
+
+        "user_id": null,
+        "option_id": 3
+    },
+    {
+        "id": 4,
+        "value": "Y",
+        "weight": "1.000000",
+
+        "user_id": 1,
+        "option_id": 6
+    }],
+"mediafile": [
+    {
+        "id": 1,
+        "title": "logos",
+        "is_directory": true,
+        "filesize": null,
+        "filename": null,
+        "mimetype": null,
+        "pdf_information": {},
+        "create_timestamp": 1584513763,
+        "path": "logos/",
+        "inherited_access_groups_id": [2, 3],
+
+        "access_groups_id": [2, 3],
+        "parent_id": null,
+        "children_ids": [3],
+        "list_of_speakers_id": 16,
+        "projection_ids": [],
+        "current_projector_ids": [],
+        "attachment_ids": [],
+        "meeting_id": 1,
+
+        "logo_$": [],
+        "font_$": []
+    },
+    {
+        "id": 2,
+        "title": "A.txt",
+        "is_directory": false,
+        "filesize": 3,
+        "filename": "A.txt",
+        "mimetype": "text/plain",
+        "pdf_information": {},
+        "create_timestamp": 1584513771,
+        "path": "A.txt",
+        "inherited_access_groups_id": true,
+
+        "access_groups_id": [],
+        "parent_id": null,
+        "children_ids": [],
+        "list_of_speakers_id": 17,
+        "projection_ids": [],
+        "current_projector_ids": [],
+        "attachment_ids": ["motion/4"],
+        "meeting_id": 1,
+
+        "logo_$": [],
+        "font_$": []
+    },
+    {
+        "id": 3,
+        "title": "in.jpg",
+        "is_directory": false,
+        "filesize": 125820,
+        "filename": "in.jpg",
+        "mimetype": "image/jpeg",
+        "pdf_information": {},
+        "create_timestamp": 1584513791,
+        "path": "logos/in.jpg",
+        "inherited_access_groups_id": [2, 3],
+
+        "access_groups_id": [],
+        "parent_id": 1,
+        "children_ids": [],
+        "list_of_speakers_id": 18,
+        "projection_ids": [],
+        "current_projector_ids": [],
+        "attachment_ids": [],
+        "meeting_id": 1,
+
+        "logo_$": ["logo_web_header"],
+        "logo_web_header": 1,
+        "font_$": []
+    }],
+"projector": [
+    {
+        "id": 1,
+        "name": "Default projector",
+        "scale": 0,
+        "scroll": 0,
+        "width": 1220,
+        "aspect_ratio_numerator": 4,
+        "aspect_ratio_denominator": 3,
+        "color": "#000000",
+        "background_color": "#ffffff",
+        "header_background_color": "#317796",
+        "header_font_color": "#f5f5f5",
+        "header_h1_color": "#317796",
+        "chyron_background_color": "#317796",
+        "chyron_font_color": "#ffffff",
+        "show_header_footer": true,
+        "show_title": true,
+        "show_logo": true,
+
+        "current_projection_ids": [4],
+        "current_element_ids": ["assignment/1"],
+        "elements_preview": [1, 2],
+        "elements_history": [],
+        "used_as_reference_projector_meeting_id": null,
+        "projectiondefaults_id": [1, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
+        "meeting_id": 1
+    },
+    {
+        "id": 2,
+        "name": "Nebenprojektor",
+        "scale": 0,
+        "scroll": 0,
+        "width": 1024,
+        "aspect_ratio_numerator": 16,
+        "aspect_ratio_denominator": 9,
+        "color": "#000000",
+        "background_color": "#888888",
+        "header_background_color": "#317796",
+        "header_font_color": "#f5f5f5",
+        "header_h1_color": "#317796",
+        "chyron_background_color": "#317796",
+        "chyron_font_color": "#ffffff",
+        "show_header_footer": true,
+        "show_title": true,
+        "show_logo": true,
+
+        "current_projection_ids": [6],
+        "current_element_ids": ["clock/1"],
+        "elements_preview": [],
+        "elements_history": [],
+        "used_as_reference_projector_meeting_id": 1,
+        "projectiondefaults_id": [2, 3],
+        "meeting_id": 1
+    }],
+"projection": [
+    {
+        "id": 1,
+        "projector_id": null,
+        "projector_history_id": null,
+        "projector_preview_id": 1,
+        "element_id": "motion_block/1",
+        "options": {}
+    },
+    {
+        "id": 2,
+        "projector_id": null,
+        "projector_history_id": null,
+        "projector_preview_id": 1,
+        "element_id": "motion/4",
+        "options": {
+            "mode": "diff"
+        }
+    },
+    {
+        "id": 4,
+        "projector_id": 1,
+        "projector_history_id": null,
+        "projector_preview_id": null,
+        "element_id": "assignment/1",
+        "options": {}
+    },
+    {
+        "id": 6,
+        "projector_id": 1,
+        "projector_history_id": null,
+        "projector_preview_id": null,
+        "element_id": "clock/1",
+        "_comment": "there is no clock model, but it should just not be resolved.",
+        "options": {
+            "stable": true
+        }
+    }],
+"projectiondefault": [
+    {
+        "id": 1,
+        "name": "agenda_all_items",
+        "display_name": "Agenda",
+
+        "projector_id": 1,
+        "meeting_id": 1
+    },
+    {
+        "id": 2,
+        "name": "topics",
+        "display_name": "Topics",
+
+        "projector_id": 2,
+        "meeting_id": 1
+    },
+    {
+        "id": 3,
+        "name": "agenda_list_of_speakers",
+        "display_name": "List of speakers",
+
+        "projector_id": 2,
+        "meeting_id": 1
+    },
+    {
+        "id": 4,
+        "name": "agenda_current_list_of_speakers",
+        "display_name": "Current list of speakers",
+
+        "projector_id": 1,
+        "meeting_id": 1
+    },
+    {
+        "id": 5,
+        "name": "motions",
+        "display_name": "Motions",
+
+        "projector_id": 1,
+        "meeting_id": 1
+    },
+    {
+        "id": 6,
+        "name": "motionBlocks",
+        "display_name": "Motion blocks",
+
+        "projector_id": 1,
+        "meeting_id": 1
+    },
+    {
+        "id": 7,
+        "name": "assignments",
+        "display_name": "Elections",
+
+        "projector_id": 1,
+        "meeting_id": 1
+    },
+    {
+        "id": 8,
+        "name": "users",
+        "display_name": "Participants",
+
+        "projector_id": 1,
+        "meeting_id": 1
+    },
+    {
+        "id": 9,
+        "name": "mediafiles",
+        "display_name": "Files",
+
+        "projector_id": 1,
+        "meeting_id": 1
+    },
+    {
+        "id": 10,
+        "name": "messages",
+        "display_name": "Messages",
+
+        "projector_id": 1,
+        "meeting_id": 1
+    },
+    {
+        "id": 11,
+        "name": "countdowns",
+        "display_name": "Countdowns",
+
+        "projector_id": 1,
+        "meeting_id": 1
+    },
+    {
+        "id": 12,
+        "name": "assignment_poll",
+        "display_name": "Assignment poll",
+
+        "projector_id": 1,
+        "meeting_id": 1
+    },
+    {
+        "id": 13,
+        "name": "motion_poll",
+        "display_name": "Motion Poll",
+
+        "projector_id": 1,
+        "meeting_id": 1
+    }],
+"projector_message": [
+    {
+        "id": 1,
+        "message": "<p>Hi!</p>",
+
+        "projection_ids": [],
+        "current_projector_ids": [],
+        "meeting_id": 1
+    }],
+"projector_countdown": [
+    {
+        "id": 1,
+        "title": "Countdown 1",
+        "description": "",
+        "default_time": 60,
+        "countdown_time": 60.0,
+        "running": false,
+
+        "projection_ids": [],
+        "current_projector_ids": [],
+        "meeting_id": 1
+    }]
+}
