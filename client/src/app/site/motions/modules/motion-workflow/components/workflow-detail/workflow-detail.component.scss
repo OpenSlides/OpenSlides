@@ -40,5 +40,9 @@ table {
 }
 
 .scrollable-matrix {
-    overflow: auto;
+    overflow-y: scroll;
+    overflow-x: auto;
+    // the most simple solution that requires every other size to be exact.
+    // TODO: if the whole page is absolute again, this will not be required anymore.
+    height: calc(100vh - 128px);
 }
