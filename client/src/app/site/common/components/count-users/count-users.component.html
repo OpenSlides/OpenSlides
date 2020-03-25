@@ -7,17 +7,16 @@
     </button>
     <div *ngIf="stats">
         <p>
-            {{ userIds().length }} <span translate>active users</span>
-            ({{ stats.usesIndexedDB }} <span translate>with indexedDB</span>,
-            {{ stats.activeUserHandles-stats.usesIndexedDB }} <span translate>with local storage</span>)
-            ({{ stats.activeUserHandles }} <span translate>connections</span>)
+            {{ userIds().length }} <span translate>active users</span> ({{ stats.activeUserHandles }}
+            <span translate>connections</span>)
         </p>
         <h3 translate>Groups</h3>
         <ul>
             <li *ngFor="let groupId of groupIds()">
-                <strong>{{ stats.groups[groupId].name }}</strong>:
-                {{ userInGroupIds(groupId).length }} <span translate>active users</span>
-                ({{ stats.groups[groupId].userHandleCount }} <span translate>connections</span>)
+                <strong>{{ stats.groups[groupId].name }}</strong>
+                <span> : {{ userInGroupIds(groupId).length }} </span>
+                <span translate>active users</span>
+                (<span>{{ stats.groups[groupId].userHandleCount }}</span> <span translate>connections</span>)
             </li>
         </ul>
     </div>
