@@ -96,6 +96,16 @@ export abstract class ViewBasePoll<
         return MajorityMethodVerbose[this.majority_method];
     }
 
+    public get hasVote(): boolean | null {
+        if (!this.user_has_voted && this.canBeVotedFor()) {
+            return false;
+        } else if (this.user_has_voted) {
+            return true;
+        } else {
+            return null;
+        }
+    }
+
     public abstract get pollmethodVerbose(): string;
 
     public abstract get percentBaseVerbose(): string;

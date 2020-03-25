@@ -1,5 +1,5 @@
 <os-head-bar>
-    <div class="title-slot" translate>List of votes</div>
+    <div class="title-slot" translate>List of electronic votes</div>
 </os-head-bar>
 
 <os-list-view-table
@@ -30,11 +30,11 @@
 
     <!-- Voted Indicator -->
     <div *pblNgridCellDef="'votability'; row as poll" class="cell-slot fill">
-        <mat-icon *ngIf="poll.user_has_voted" color="accent" matTooltip="{{ 'You have already voted.' | translate }}">
+        <mat-icon *ngIf="poll.hasVote" color="accent" matTooltip="{{ 'You have already voted.' | translate }}">
             check_circle
         </mat-icon>
         <mat-icon
-            *ngIf="!poll.user_has_voted && poll.canBeVotedFor"
+            *ngIf="!poll.hasVote && poll.hasVote !== null"
             color="warn"
             matTooltip="{{ 'Voting is currently in progress.' | translate }}"
         >

@@ -80,7 +80,7 @@
         </div>
 
         <!-- The Vote -->
-        <os-assignment-poll-vote *ngIf="poll.canBeVotedFor" [poll]="poll"></os-assignment-poll-vote>
+        <os-assignment-poll-vote *ngIf="poll.canBeVotedFor()" [poll]="poll"></os-assignment-poll-vote>
 
         <!-- More-Button -->
         <div class="poll-detail-button-wrapper">
