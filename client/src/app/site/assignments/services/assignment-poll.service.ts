@@ -103,8 +103,6 @@ export class AssignmentPollService extends PollService {
     }
 
     public generateTableData(poll: ViewAssignmentPoll | PollData): PollTableData[] {
-        console.log('poll: ', poll);
-
         const tableData: PollTableData[] = poll.options
             .sort((a, b) => {
                 if (this.sortByVote) {
