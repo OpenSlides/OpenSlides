@@ -91,7 +91,7 @@
                     <os-search-value-selector
                         formControlName="read_groups_id"
                         [multiple]="true"
-                        placeholder="Groups with read permissions"
+                        placeholder="{{ 'Groups with read permissions' | translate }}"
                         [inputListValues]="groups"
                     ></os-search-value-selector>
                 </mat-form-field>
@@ -101,7 +101,7 @@
                     <os-search-value-selector
                         formControlName="write_groups_id"
                         [multiple]="true"
-                        placeholder="Groups with write permissions"
+                        placeholder="{{ 'Groups with write permissions' | translate }}"
                         [inputListValues]="groups"
                     ></os-search-value-selector>
                 </mat-form-field>
