@@ -22,6 +22,14 @@ export class PollFilterListService extends BaseFilterListService<ViewBasePoll> {
     }
 
     /**
+     * Filter out analog polls
+     * @param viewPoll All polls
+     */
+    protected preFilter(viewPoll: ViewBasePoll[]): ViewBasePoll[] | void {
+        return viewPoll.filter(poll => !poll.isAnalog);
+    }
+
+    /**
      * @returns the filter definition
      */
     protected getFilterDefinitions(): OsFilter[] {
@@ -37,19 +45,11 @@ export class PollFilterListService extends BaseFilterListService<ViewBasePoll> {
                 ]
             },
             {
-                property: 'canBeVotedFor',
-                label: this.translate.instant('Vote'),
+                property: 'hasVote',
+                label: this.translate.instant('Voting'),
                 options: [
-                    { condition: true, label: this.translate.instant('Vote currently possible') },
-                    { condition: false, label: this.translate.instant('Vote not possible') }
-                ]
-            },
-            {
-                property: 'user_has_voted',
-                label: this.translate.instant('Vote finished'),
-                options: [
-                    { condition: true, label: this.translate.instant('Has been voted for') },
-                    { condition: false, label: this.translate.instant('Has not been voted for') }
+                    { condition: false, label: this.translate.instant('Voting is currently in progress.') },
+                    { condition: true, label: this.translate.instant('You have already voted.') }
                 ]
             }
         ];

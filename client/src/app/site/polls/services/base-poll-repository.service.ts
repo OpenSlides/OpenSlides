@@ -53,7 +53,7 @@ export abstract class BasePollRepositoryService<
     protected createViewModelWithTitles(model: M): V {
         const viewModel = super.createViewModelWithTitles(model);
         Object.defineProperty(viewModel, 'canBeVotedFor', {
-            get: () => this.votingService.canVote(viewModel)
+            value: () => this.votingService.canVote(viewModel)
         });
         return viewModel;
     }
