@@ -46,7 +46,7 @@ export class PollFilterListService extends BaseFilterListService<ViewBasePoll> {
             },
             {
                 property: 'hasVote',
-                label: this.translate.instant('Voting'),
+                label: this.translate.instant('Votings'),
                 options: [
                     { condition: false, label: this.translate.instant('Voting is currently in progress.') },
                     { condition: true, label: this.translate.instant('You have already voted.') }
