@@ -56,12 +56,6 @@ export class ChartsComponent extends BaseViewComponent {
     public labels: Label[];
 
     /**
-     * Determine, if the chart has some padding at the borders.
-     */
-    @Input()
-    public hasPadding = true;
-
-    /**
      * Show a legend
      */
     @Input()
@@ -89,7 +83,8 @@ export class ChartsComponent extends BaseViewComponent {
     public get chartOptions(): ChartOptions {
         if (this.isCircle) {
             return {
-                aspectRatio: 1,
+                responsive: true,
+                maintainAspectRatio: false,
                 tooltips: {
                     enabled: false
                 },
@@ -99,7 +94,8 @@ export class ChartsComponent extends BaseViewComponent {
             };
         } else {
             return {
-                aspectRatio: 3,
+                responsive: true,
+                maintainAspectRatio: false,
                 tooltips: {
                     enabled: false
                 },
@@ -143,6 +139,16 @@ export class ChartsComponent extends BaseViewComponent {
      */
     public constructor(title: Title, translate: TranslateService, matSnackbar: MatSnackBar) {
         super(title, translate, matSnackbar);
+    }
+
+    public calcBarChartHeight(): string | undefined {
+        if (!this.isCircle) {
+            const baseHeight = 120;
+            const perLabel = 60;
+            return `${baseHeight + perLabel * this.labels.length}px`;
+        } else {
+            return undefined;
+        }
     }
 
     private progressInputData(inputChartData: ChartData): void {

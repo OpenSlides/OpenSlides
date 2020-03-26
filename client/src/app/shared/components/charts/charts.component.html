@@ -1,4 +1,4 @@
-<div class="charts-wrapper" [ngClass]="[hasPadding ? 'has-padding' : '']">
+<div class="charts-wrapper" [style.height]="calcBarChartHeight()">
     <canvas
         class="chart-js-canvas"
         *ngIf="chartData && chartData.length"
