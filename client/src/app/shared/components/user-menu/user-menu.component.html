@@ -1,0 +1,74 @@
+<mat-expansion-panel class="user-menu mat-elevation-z0">
+    <mat-expansion-panel-header class="username">
+        <!-- Get the username from operator -->
+        {{ username }}
+    </mat-expansion-panel-header>
+    <mat-nav-list>
+        <!-- select languate -->
+        <a mat-list-item [matMenuTriggerFor]="languageMenu">
+            <mat-icon class="menu-icon">language</mat-icon>
+            <span class="menu-text">{{ getLangName() }}</span>
+        </a>
+        <div *ngIf="user && isLoggedIn">
+            <!-- present toggle -->
+            <button
+                [ngClass]="{ active: user.is_present }"
+                mat-menu-item
+                (click)="toggleUserIsPresent()"
+                *ngIf="allowSelfSetPresent"
+            >
+                <mat-icon [color]="user.is_present ? 'primary' : ''" class="menu-icon">
+                    {{ user.is_present ? 'check_box' : 'check_box_outline_blank' }}
+                </mat-icon>
+                <span class="menu-text" translate>Present</span>
+            </button>
+            <!-- Show profile -->
+            <a
+                [ngClass]="{ active: isOnProfilePage() }"
+                [routerLink]="user ? ['/users/', user.id] : []"
+                (click)="onClickNavEntry()"
+                mat-list-item
+            >
+                <mat-icon class="menu-icon">person</mat-icon>
+                <span class="menu-text" translate>Show profile</span>
+            </a>
+            <!-- Change password -->
+            <ng-container *ngIf="authType === 'default'">
+                <a
+                    [ngClass]="{ active: isOnChangePasswordPage() }"
+                    *osPerms="'users.can_change_password'"
+                    routerLink="/users/password"
+                    (click)="onClickNavEntry()"
+                    mat-list-item
+                >
+                    <mat-icon class="menu-icon">vpn_key</mat-icon>
+                    <span class="menu-text" translate>Change password</span>
+                </a>
+            </ng-container>
+            <ng-container *ngIf="authType === 'saml'">
+                <a *osPerms="'users.can_change_password'" [href]="samlChangePasswordUrl" mat-list-item>
+                    <mat-icon class="menu-icon">vpn_key</mat-icon>
+                    <span class="menu-text" translate>Change password</span>
+                </a>
+            </ng-container>
+            <!-- logout -->
+            <a (click)="logout()" mat-list-item>
+                <mat-icon class="menu-icon">exit_to_app</mat-icon>
+                <span class="menu-text" translate>Logout</span>
+            </a>
+        </div>
+    </mat-nav-list>
+</mat-expansion-panel>
+<mat-nav-list *ngIf="!isLoggedIn">
+    <a routerLink="/login" mat-list-item>
+        <mat-icon class="menu-icon">exit_to_app</mat-icon>
+        <span class="menu-text" translate>Login</span>
+    </a>
+</mat-nav-list>
+
+<mat-menu #languageMenu="matMenu">
+    <button mat-menu-item (click)="selectLang('en')">{{ getLangName('en') }}</button>
+    <button mat-menu-item (click)="selectLang('de')">{{ getLangName('de') }}</button>
+    <button mat-menu-item (click)="selectLang('ru')">{{ getLangName('ru') }}</button>
+    <button mat-menu-item (click)="selectLang('cs')">{{ getLangName('cs') }}</button>
+</mat-menu>

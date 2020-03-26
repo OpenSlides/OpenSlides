@@ -107,7 +107,7 @@ import { SuperSearchComponent } from 'app/site/common/components/super-search/su
 import { OverlayComponent } from 'app/site/common/components/overlay/overlay.component';
 import { PreviewComponent } from './components/preview/preview.component';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
-import { GlobalSpinnerComponent } from 'app/site/common/components/global-spinner/global-spinner.component';
+
 import { HeightResizingDirective } from './directives/height-resizing.directive';
 import { TrustPipe } from './pipes/trust.pipe';
 import { LocalizedDatePipe } from './pipes/localized-date.pipe';
@@ -124,6 +124,9 @@ import { PollPercentBasePipe } from './pipes/poll-percent-base.pipe';
 import { VotingPrivacyWarningComponent } from './components/voting-privacy-warning/voting-privacy-warning.component';
 import { MotionPollDetailContentComponent } from './components/motion-poll-detail-content/motion-poll-detail-content.component';
 import { AssignmentPollDetailContentComponent } from './components/assignment-poll-detail-content/assignment-poll-detail-content.component';
+
+import { GlobalSpinnerComponent } from './components/global-spinner/global-spinner.component';
+import { UserMenuComponent } from './components/user-menu/user-menu.component';
 
 /**
  * Share Module for all "dumb" components and pipes.
@@ -272,6 +275,7 @@ import { AssignmentPollDetailContentComponent } from './components/assignment-po
         ExtensionFieldComponent,
         RoundedInputComponent,
         GlobalSpinnerComponent,
+        UserMenuComponent,
         OverlayComponent,
         PreviewComponent,
         NgxMaterialTimepickerModule,
@@ -332,6 +336,7 @@ import { AssignmentPollDetailContentComponent } from './components/assignment-po
         RoundedInputComponent,
         ProgressSnackBarComponent,
         GlobalSpinnerComponent,
+        UserMenuComponent,
         SuperSearchComponent,
         OverlayComponent,
         PreviewComponent,

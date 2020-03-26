@@ -34,6 +34,15 @@ def get_config_variables():
         group="Participants",
     )
 
+    yield ConfigVariable(
+        name="users_allow_self_set_present",
+        default_value=False,
+        input_type="boolean",
+        label="Allow users to set themselves as present",
+        weight=512,
+        group="Participants",
+    )
+
     # PDF
 
     yield ConfigVariable(

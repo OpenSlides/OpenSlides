@@ -29,8 +29,7 @@
         }
 
         /** style and align the nav icons the icons*/
-        .main-nav,
-        .user-menu {
+        .main-nav {
             mat-icon {
                 color: mat-color($foreground, icon);
             }
