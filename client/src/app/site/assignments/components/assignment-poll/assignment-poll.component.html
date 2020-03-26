@@ -60,6 +60,8 @@
         <div *ngIf="poll.stateHasVotes">
             <div *osPerms="'assignments.can_manage'; or: poll.isPublished">
                 <os-charts
+                    class="pointer"
+                    routerLink="/assignments/polls/{{ poll.id }}"
                     [labels]="candidatesLabels"
                     [data]="chartDataSubject | async"
                     [hasPadding]="false"

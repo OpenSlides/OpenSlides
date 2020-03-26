@@ -86,7 +86,7 @@
                 </os-icon-container>
             </div>
         </div>
-        <div class="doughnut-chart">
+        <div class="doughnut-chart" [routerLink]="pollLink">
             <os-charts *ngIf="showChart" type="doughnut" [data]="chartDataSubject | async" [hasPadding]="false">
             </os-charts>
         </div>
