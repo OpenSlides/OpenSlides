@@ -90,6 +90,9 @@ export class ChartsComponent extends BaseViewComponent {
         if (this.isCircle) {
             return {
                 aspectRatio: 1,
+                tooltips: {
+                    enabled: false
+                },
                 legend: {
                     position: 'left'
                 }
@@ -97,6 +100,9 @@ export class ChartsComponent extends BaseViewComponent {
         } else {
             return {
                 aspectRatio: 3,
+                tooltips: {
+                    enabled: false
+                },
                 scales: {
                     xAxes: [
                         {
