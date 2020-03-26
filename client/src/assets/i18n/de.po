@@ -1167,14 +1167,8 @@ msgstr "Gast"
 msgid "Has amendments"
 msgstr "Hat Änderungsanträge"
 
-msgid "Has been voted for"
-msgstr ""
-
 msgid "Has no speakers"
 msgstr "Keine Wortmeldungen vorhanden"
-
-msgid "Has not been voted for"
-msgstr ""
 
 msgid "Has notes"
 msgstr "Hat Notizen"
@@ -1273,9 +1267,6 @@ msgstr "Inaktiv"
 
 msgid "Initial password"
 msgstr "Initiales Passwort"
-
-msgid "Initiate update check for all clients"
-msgstr "Update-Prüfung für alle Clients starten"
 
 msgid "Input format: DD.MM.YYYY HH:MM"
 msgstr "Eingabeformat: TT.MM.JJJJ HH:MM"
@@ -1397,6 +1388,9 @@ msgstr "Zeilenlänge"
 msgid "Line numbering"
 msgstr "Zeilennummerierung"
 
+msgid "List of electronic votes"
+msgstr "Elektronische Stimmabgaben"
+
 msgid "List of participants"
 msgstr "Teilnehmendenliste"
 
@@ -1408,9 +1402,6 @@ msgstr "Redeliste"
 
 msgid "List of speakers overlay"
 msgstr "Redelisten-Einblendung"
-
-msgid "List of votes"
-msgstr "Stimmabgaben"
 
 msgid "List view"
 msgstr "Listenansicht"
@@ -2646,10 +2637,6 @@ msgstr ""
 "Alle noch nicht gespeicherten Änderungen werden zurückgesetzt und die "
 "Aufrufliste wird neu sortiert."
 
-msgid "This will send an update notification to all active clients"
-msgstr ""
-"Es wird eine Update-Benachrichtigung an alle aktiven Clients gesendet."
-
 msgid "This will set the favorite status for all selected motions:"
 msgstr "Favoriten-Markierung für alle ausgewählten Anträge setzen:"
 
@@ -2791,26 +2778,14 @@ msgstr "Abstimmung"
 msgid "Vote created"
 msgstr "Abstimmung erstellt"
 
-msgid "Vote currently possible"
-msgstr "Stimmabgabe aktuell möglich"
-
 msgid "Vote deleted"
 msgstr "Abstimmung gelöscht"
-
-msgid "Vote finished"
-msgstr "Stimmabgabe abgeschlossen"
-
-msgid "Vote not possible"
-msgstr "Stimmabgabe nicht möglich"
 
 msgid "Vote updated"
 msgstr "Abstimmung aktualisiert"
 
 msgid "Votes"
 msgstr "Stimmen"
-
-msgid "Voting"
-msgstr "Im Wahlvorgang"
 
 msgid "Voting and ballot papers"
 msgstr "Abstimmung und Stimmzettel"
@@ -2832,6 +2807,9 @@ msgstr "Stimmabgabe erfolgreich."
 
 msgid "Voting type"
 msgstr "Art der Stimmabgabe"
+
+msgid "Votings"
+msgstr "Stimmabgaben"
 
 msgid "WEP"
 msgstr "WEP"
@@ -3176,12 +3154,6 @@ msgstr "nicht erfasst"
 
 msgid "with filter"
 msgstr "mit Filter"
-
-msgid "with indexedDB"
-msgstr "mit indexedDB"
-
-msgid "with local storage"
-msgstr "mit Local Storage"
 
 msgid "withdrawed"
 msgstr "zurückgezogen"

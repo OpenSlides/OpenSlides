@@ -48,6 +48,6 @@ export class PollListComponent extends BaseListViewComponent<ViewBasePoll> {
         snackbar: MatSnackBar
     ) {
         super(title, translate, snackbar, storage);
-        super.setTitle('List of votes');
+        super.setTitle('List of electronic votes');
     }
 }

@@ -1099,13 +1099,7 @@ msgstr ""
 msgid "Has amendments"
 msgstr ""
 
-msgid "Has been voted for"
-msgstr ""
-
 msgid "Has no speakers"
-msgstr ""
-
-msgid "Has not been voted for"
 msgstr ""
 
 msgid "Has notes"
@@ -1201,9 +1195,6 @@ msgid "Inactive"
 msgstr ""
 
 msgid "Initial password"
-msgstr ""
-
-msgid "Initiate update check for all clients"
 msgstr ""
 
 msgid "Input format: DD.MM.YYYY HH:MM"
@@ -1326,6 +1317,9 @@ msgstr ""
 msgid "Line numbering"
 msgstr ""
 
+msgid "List of electronic votes"
+msgstr ""
+
 msgid "List of participants"
 msgstr ""
 
@@ -1336,9 +1330,6 @@ msgid "List of speakers"
 msgstr ""
 
 msgid "List of speakers overlay"
-msgstr ""
-
-msgid "List of votes"
 msgstr ""
 
 msgid "List view"
@@ -2524,9 +2515,6 @@ msgstr ""
 msgid "This will reset all made changes and sort the call list."
 msgstr ""
 
-msgid "This will send an update notification to all active clients"
-msgstr ""
-
 msgid "This will set the favorite status for all selected motions:"
 msgstr ""
 
@@ -2660,25 +2648,13 @@ msgstr ""
 msgid "Vote created"
 msgstr ""
 
-msgid "Vote currently possible"
-msgstr ""
-
 msgid "Vote deleted"
-msgstr ""
-
-msgid "Vote finished"
-msgstr ""
-
-msgid "Vote not possible"
 msgstr ""
 
 msgid "Vote updated"
 msgstr ""
 
 msgid "Votes"
-msgstr ""
-
-msgid "Voting"
 msgstr ""
 
 msgid "Voting and ballot papers"
@@ -2700,6 +2676,9 @@ msgid "Voting successful."
 msgstr ""
 
 msgid "Voting type"
+msgstr ""
+
+msgid "Votings"
 msgstr ""
 
 msgid "WEP"
@@ -3031,12 +3010,6 @@ msgid "undocumented"
 msgstr ""
 
 msgid "with filter"
-msgstr ""
-
-msgid "with indexedDB"
-msgstr ""
-
-msgid "with local storage"
 msgstr ""
 
 msgid "withdrawed"
