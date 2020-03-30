@@ -39,6 +39,7 @@ def get_config_variables():
         default_value=False,
         input_type="boolean",
         label="Allow users to set themselves as present",
+        help_text="e.g. for online meetings",
         weight=512,
         group="Participants",
     )
@@ -151,7 +152,7 @@ def get_config_variables():
             """\
             Dear {name},
 
-            this is your OpenSlides login for the event {event_name}:
+            this is your personal OpenSlides login:
 
                 {url}
                 username: {username}
