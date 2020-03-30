@@ -719,6 +719,23 @@ class PersonalNoteViewSet(ModelViewSet):
 # Special API views
 
 
+class SetPresenceView(APIView):
+    http_method_names = ["post"]
+
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        if not config["users_allow_self_set_present"] or not user.is_authenticated:
+            raise ValidationError({"detail": "You cannot set your own presence"})
+
+        present = request.data
+        if present not in (True, False):
+            raise ValidationError({"detail": "Data must be a boolean"})
+
+        user.is_present = present
+        user.save()
+        return Response()
+
+
 class WhoAmIDataView(APIView):
     def get_whoami_data(self):
         """

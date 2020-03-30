@@ -1,0 +1,16 @@
+.username {
+    span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}
+
+.menu-icon {
+    min-width: 20px !important; //puts the text to the right on the same level
+    margin-right: 25px !important;
+}
+
+.menu-text {
+    font-size: 16px;
+}
