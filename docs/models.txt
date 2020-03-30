@@ -57,6 +57,7 @@ Interface user {
     structure_level: string;
     email: string;
     last_email_send: string;
+    vote_weight: decimal;
 
     role_id: role/user_ids; // Attention: prevent impelenting a "default-role" or let a
     // user create such a role! This would cause the user_ids-array for this
@@ -91,7 +92,7 @@ Interface user {
     motion_vote_$<meeting_id>_ids: (motion_vote/user_id)[];
     assignment_candidate_$<meeting_id>_ids: (assignment_candidate/user_id)[];
     assignment_poll_voted_$<meeting_id>_ids: (assignment_poll/voted_ids)[];
-    assignment_option_$<meeting_id>_ids: (assignment_option/user_ids)[];
+    assignment_option_$<meeting_id>_ids: (assignment_option/user_id)[];
     assignment_vote_$<meeting_id>_ids: (assignment_vote/user_id)[];
 }
 
@@ -128,7 +129,7 @@ Interface committee {
     description: HTML;
 
     meeting_ids: (meeting/committee_id)[];
-    default_meting_id: meeting/default_meeting_for_committee_id;
+    default_meeting_id: meeting/default_meeting_for_committee_id;
     member_ids: (user/committee_as_memeber_ids)[];
     manager_ids: (user/committee_as_manager_ids)[];
     forward_to_committee_ids: (committee/receive_forwardings_from_committee_ids)[];
@@ -160,7 +161,7 @@ Interface meeting {
     export_csv_encoding: string;
     export_csv_separator: string;
     export_pdf_pagenumber_alignment: string;
-    export pdf_fontsize: number;
+    export_pdf_fontsize: number;
     export_pdf_pagesize: string;
 
     // Agenda
@@ -214,20 +215,21 @@ Interface meeting {
     motions_export_follow_recommendation: boolean;
 
     motion_poll_ballot_paper_selection: string;
-    motion_poll_ballot_paper_number: number,
+    motion_poll_ballot_paper_number: number;
     motion_poll_default_100_percent_base: string;
-    motion_poll_default_majority_method:string;
-    motion_poll_default_groups: (group/used_as_motion_poll_default)[];
+    motion_poll_default_majority_method: string;
+    motion_poll_default_group_ids: (group/used_as_motion_poll_default_id)[];
 
     // Users
     users_sort_by: string;
     users_enable_presence_view: boolean;
+    users_allow_self_set_present: boolean;
     users_pdf_welcometitle: string;
     users_pdf_welcometext: string;
     users_pdf_url: string;
     users_pdf_wlan_ssid: string;
     users_pdf_wlan_password: string;
-    users_pdf_wlan_encryption": string;
+    users_pdf_wlan_encryption: string;
     users_email_sender: string;
     users_email_replyto: string;
     users_email_subject: string;
@@ -241,7 +243,7 @@ Interface meeting {
     assignment_poll_default_method: string;
     assignment_poll_default_100_percent_base: string;
     assignment_poll_default_majority_method: string;
-    assignment_poll_default_groups: (group/used_as_assignment_poll_default)[];
+    assignment_poll_default_group_ids: (group/used_as_assignment_poll_default_id)[];
 
     projector_ids: (projector/meeting_id)[];
     projectiondefault_ids: (projectiondefault/meeting_id)[];
@@ -258,7 +260,7 @@ Interface meeting {
     motion_category_ids: (motion_category/meeting_id)[];
     motion_block_ids: (motion_block/meeting_id)[];
     motion_workflow_ids: (motion_workflow/meeting_id)[];
-    motion_statute_paragraph_ids: (motion_statute_paragraph/meetin_id)[];
+    motion_statute_paragraph_ids: (motion_statute_paragraph/meeting_id)[];
     motion_poll_ids: (motion_poll/meeting_id)[];
     assignment_ids: (assignment/meeting_id)[];
     assignment_poll_ids: (assignment_poll/meeting_id)[];
@@ -279,8 +281,8 @@ Interface meeting {
     // assignment_vote
 
     // Logos and Fonts
-    logo_$<token>: mediafile/logo_$<token>;
-    font_$<token>: mediafile/font_$<token>;
+    logo_$<token>: mediafile/used_as_logo_$<token>_in_meeting;
+    font_$<token>: mediafile/used_as_font_$<token>_in_mmeting;
     // Examples:
     // logo_web_header: Mediafile;
     // font_italic_pdf: Mediafile;
@@ -293,7 +295,7 @@ Interface meeting {
     committee_id: committee/meeting_ids;
     default_meeting_for_committee_id: committee/default_meeting_id;
     present_user_ids: (user/is_present_in_meeting_ids)[];
-    temorary_user_ids: (user/meeting_id)[];
+    temporary_user_ids: (user/meeting_id)[];
     guest_ids: (user/guest_meeting_ids)[];
     reference_projector_id: projector/used_as_reference_projector_meeting_id;
 }
@@ -311,8 +313,8 @@ Interface group {
     write_comment_section_ids: (motion_comment_section/write_group_ids)[];
     motion_poll_ids: (motion_poll/entitled_group_ids)[];
     assignment_poll_ids: (assignment_poll/entitled_group_ids)[];
-    used_as_motion_poll_default: meeting/motion_poll_default_groups;
-    used_as_assignment_poll_default: meeting/assignment_poll_default_groups;
+    used_as_motion_poll_default_id: meeting/motion_poll_default_group_ids;
+    used_as_assignment_poll_default_id: meeting/assignment_poll_default_group_ids;
     meeting_id: meeting/group_ids;
 }
 
@@ -346,8 +348,8 @@ Interface agenda_item {
     level: number; // calculated.
 
     content_object_id: */agenda_item_id;
-    parent_id: agenda_item/children_ids;
-    children_ids: (agenda_item/parent_id)[];
+    parent_id: agenda_item/child_ids;
+    child_ids: (agenda_item/parent_id)[];
     projection_ids: (projection/element_id)[];
     current_projector_ids: (projector/current_element_ids)[]
     meeting_id: meeting/agenda_item_ids;
@@ -380,7 +382,7 @@ Interface topic {
     title: string;
     text: HTML;
 
-    attachments_id: (mediafile/attachement_ids)[];
+    attachment_ids: (mediafile/attachement_ids)[];
     agenda_item_id: agenda_item/content_object_id;
     list_of_speakers_id: list_of_speakers/content_object_id;
     tag_ids: (tag/tagged_ids)[];
@@ -400,20 +402,20 @@ Interface motion {
     state_extension: string;
     recommendation_extension: string;
     sort_weight: number;
-    created: string;
-    last_modified: string;
+    created: datetime;
+    last_modified: datetime;
 
-    parent_id: motion/children_ids;
-    children_ids: (motion/parent_id)[];
-    sort_parent_id: motion/sort_children_ids;
-    sort_children_ids: (motion/parent_id)[];
+    lead_motion_id: motion/amendment_ids;
+    amendment_ids: (motion/lead_motion_id)[];
+    sort_parent_id: motion/sort_child_ids;
+    sort_child_ids: (motion/parent_id)[];
     origin_id: motion/derived_motion_ids; // Note: The related motions may not be in the same meeting
     derived_motion_ids: (motion/origin_id)[]; // Note: The related motions may not be in the same meeting
     state_id: motion_state/motion_ids;
     workflow_id: motion_workflow/motion_ids;
     recommendation_id: motion_state/motion_recommendation_ids;
     category_id: category/motion_ids;
-    motion_block_id: motion_block/motion_ids;
+    block_id: motion_block/motion_ids;
     submitter_ids: (motion_submitter/motion_id)[];
     supporter_ids: (user/supported_motion_$<meeting_id>_ids)[];
     poll_ids: (motion_poll/motion_id)[];
@@ -434,7 +436,7 @@ Interface motion_submitter {
     id: number;
     weight: number;
 
-    user_id: (user/submitted_motion_$<meeting_id>_ids)[];
+    user_id: user/submitted_motion_$<meeting_id>_ids;
     motion_id: motion/submitter_ids;
 }
 
@@ -464,8 +466,8 @@ Interface motion_category {
     weight: number;
     level: number;
 
-    parent_id: motion_category/children_ids;
-    children_ids: (motion_category/parent_id)[];
+    parent_id: motion_category/child_ids;
+    child_ids: (motion_category/parent_id)[];
     motion_ids: (motion/category_id)[];
     meeting_id: meeting/category_ids;
 }
@@ -475,7 +477,7 @@ Interface motion_block {
     title: string;
     internal: boolean;
 
-    motion_ids: (motion/motion_block_id)[];
+    motion_ids: (motion/block_id)[];
     agenda_item_id: agenda_item/content_object_id;
     list_of_speakers_id: list_of_speakers/content_object_id;
     projection_ids: (projection/element_id)[];
@@ -591,7 +593,7 @@ Interface assignment {
     default_poll_description: string;
     number_poll_candidates: boolean;
 
-    assignment_candidate_ids: (assignment_candidate/assignment_id)[];
+    candidate_ids: (assignment_candidate/assignment_id)[];
     poll_ids: (assignment_poll/assignment_id)[];
     agenda_item_id: agenda_item/content_object_id;
     list_of_speakers_id: list_of_speakers/content_object_id;
@@ -606,7 +608,7 @@ Inteface assignment_candidate {
     id: number;
     weight: number;
 
-    assignment_id: assignment/assignment_candidate_ids;
+    assignment_id: assignment/candidate_ids;
     user_id: user/assignment_candidate_$<meeting_id>_ids;
 }
 
@@ -677,8 +679,8 @@ Interface mediafile {
     // reverse-relation for the group ids.
 
     access_group_ids: (group/mediafile_access_group_ids)[];
-    parent_id: mediafile/children_ids;
-    children_ids: (mediafile/parent_id)[];
+    parent_id: mediafile/child_ids;
+    child_ids: (mediafile/parent_id)[];
     list_of_speakers_id: list_of_speakers/content_object_id;
     projection_ids: (projection/element_id)[];
     current_projector_ids: (projector/current_element_ids)[]
@@ -686,8 +688,8 @@ Interface mediafile {
     meeting_id: meeting/mediafile_ids;
 
     // Reverse relations for meetings, if a mediafile is used as a special resource
-    logo_$<token>: meeting/logo_$<token>;
-    font_$<token>: meeting/font_$<token>;
+    used_as_logo_$<token>_in_meeting: meeting/logo_$<token>;
+    used_as_font_$<token>_in_meeting: meeting/font_$<token>;
 }
 
 Interface projector {
@@ -709,12 +711,12 @@ Interface projector {
     show_title: boolean;
     show_logo: boolean
 
-    current_projection_ids: (projection/current_projector_ids)[];
+    current_projection_ids: (projection/current_projector_id)[];
     // A relation to the currently projected elements to get a direct link, if
     // the element is projected.
-    current_element_ids: (*/projector_ids)[];
-    elements_preview: (projection/projector_preview_ids)[];
-    elements_history: (projection/projector_history_ids)[];
+    current_element_ids: (*/current_projector_ids)[];
+    preview_projection_ids: (projection/projector_preview_id)[];
+    history_projection_ids: (projection/projector_history_id)[];
     used_as_reference_projector_meeting_id: meeting/reference_projector_id;
     projectiondefault_ids: projectiondefault[];
     meeting_id: meeting/projector_ids;
@@ -727,11 +729,12 @@ Interface projector {
 // and element, these references will not change.
 Interface projection {
     id: number;
-    current_projector_id: projector/current_projection_ids;
-    projector_history_id: projector/elements_preview;
-    projector_preview_id: projector/elements_history;
-    element_id: */projection_ids;
     options: JSON;
+
+    current_projector_id: projector/current_projection_ids;
+    preview_projector_id: projector/preview_projection_ids;
+    history_projector_id: projector/history_projection_ids;
+    element_id: */projection_ids;
 }
 
 Interface projectiondefault {
