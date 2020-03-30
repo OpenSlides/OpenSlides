@@ -153,6 +153,9 @@ msgstr ""
 msgid "Allow support"
 msgstr ""
 
+msgid "Allow users to set themselves as present"
+msgstr ""
+
 msgid "Allowed access groups for this directory"
 msgstr ""
 
@@ -686,7 +689,7 @@ msgstr ""
 msgid ""
 "Dear {name},\n"
 "\n"
-"this is your OpenSlides login for the event {event_name}:\n"
+"this is your personal OpenSlides login:\n"
 "\n"
 "    {url}\n"
 "    username: {username}\n"
@@ -2854,6 +2857,9 @@ msgid "disabled"
 msgstr ""
 
 msgid "diverse"
+msgstr ""
+
+msgid "e.g. for online meetings"
 msgstr ""
 
 msgid "emails"

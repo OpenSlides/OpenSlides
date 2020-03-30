@@ -339,6 +339,8 @@ _('Can change its own password');
 _('General');
 _('Sort name of participants by');
 _('Enable participant presence view');
+_('Allow users to set themselves as present');
+_('e.g. for online meetings');
 _('Participants');
 _('Given name');
 _('Surname');
@@ -367,7 +369,7 @@ _('OpenSlides access data');
 _('You can use {event_name} and {username} as placeholder.');
 _('Email body');
 _(
-    'Dear {name},\n\nthis is your OpenSlides login for the event {event_name}:\n\n    {url}\n    username: {username}\n    password: {password}\n\nThis email was generated automatically.'
+    'Dear {name},\n\nthis is your personal OpenSlides login:\n\n    {url}\n    username: {username}\n    password: {password}\n\nThis email was generated automatically.'
 );
 _('Use these placeholders: {name}, {event_name}, {url}, {username}, {password}. The url referrs to the system url.');
 _(
