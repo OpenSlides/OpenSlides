@@ -7,11 +7,15 @@ from . import logging
 
 logger = logging.getLogger(__name__)
 
+# Defaults
+use_redis = False
+use_read_only_redis = False
+read_only_redis_amount_replicas = None
+
 try:
     import aioredis
 except ImportError:
-    use_redis = False
-    use_read_only_redis = False
+    pass
 else:
     from .redis_connection_pool import ConnectionPool
 
@@ -28,6 +32,9 @@ else:
         if use_read_only_redis:
             logger.info(f"Redis read only address {redis_read_only_address}")
             read_only_pool = ConnectionPool({"address": redis_read_only_address})
+
+            read_only_redis_amount_replicas = getattr(settings, "AMOUNT_REPLICAS", 1)
+            logger.info(f"AMOUNT_REPLICAS={read_only_redis_amount_replicas}")
     else:
         logger.info("Redis is not configured.")
 

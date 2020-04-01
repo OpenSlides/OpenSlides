@@ -8,7 +8,7 @@ from django.core.exceptions import ImproperlyConfigured
 from typing_extensions import Protocol
 
 from . import logging
-from .redis import use_redis
+from .redis import read_only_redis_amount_replicas, use_redis
 from .schema_version import SchemaVersion
 from .utils import split_element_id, str_dict_to_bytes
 
@@ -435,14 +435,23 @@ class RedisCacheProvider:
 
         async with get_connection(read_only=read_only) as redis:
             try:
-                return await redis.evalsha(hash, keys, args)
+                result = await redis.evalsha(hash, keys, args)
             except aioredis.errors.ReplyError as e:
                 if str(e).startswith("NOSCRIPT"):
-                    return await self._eval(redis, script_name, keys=keys, args=args)
+                    result = await self._eval(redis, script_name, keys=keys, args=args)
                 elif str(e) == "cache_reset":
                     raise CacheReset()
                 else:
                     raise e
+            if not read_only and read_only_redis_amount_replicas is not None:
+                reported_amount = await redis.wait(
+                    read_only_redis_amount_replicas, 1000
+                )
+                if reported_amount != read_only_redis_amount_replicas:
+                    logger.warn(
+                        f"WAIT reported {reported_amount} replicas of {read_only_redis_amount_replicas} requested!"
+                    )
+            return result
 
     async def _eval(
         self, redis: Any, script_name: str, keys: List[str] = [], args: List[Any] = []
