@@ -12,7 +12,7 @@ describe('MotionPdfService', () => {
     );
 
     it('should be created', () => {
-        const service: MotionPollPdfService = TestBed.get(MotionPollPdfService);
+        const service: MotionPollPdfService = TestBed.inject(MotionPollPdfService);
         expect(service).toBeTruthy();
     });
 });

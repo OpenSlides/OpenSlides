@@ -12,7 +12,7 @@ describe('PollListObservableService', () => {
     );
 
     it('should be created', () => {
-        const service: PollListObservableService = TestBed.get(PollListObservableService);
+        const service: PollListObservableService = TestBed.inject(PollListObservableService);
         expect(service).toBeTruthy();
     });
 });

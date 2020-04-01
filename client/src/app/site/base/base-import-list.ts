@@ -1,4 +1,4 @@
-import { OnInit, ViewChild } from '@angular/core';
+import { Directive, OnInit, ViewChild } from '@angular/core';
 import { MatSelectChange } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
@@ -12,7 +12,9 @@ import { BaseModel } from 'app/shared/models/base/base-model';
 import { getLongPreview, getShortPreview } from 'app/shared/utils/previewStrings';
 import { BaseViewComponent } from './base-view';
 
-export abstract class BaseImportListComponent<M extends BaseModel> extends BaseViewComponent implements OnInit {
+@Directive()
+export abstract class BaseImportListComponentDirective<M extends BaseModel> extends BaseViewComponent
+    implements OnInit {
     /**
      * The data source for a table. Requires to be initialised with a BaseViewModel
      */
@@ -47,7 +49,7 @@ export abstract class BaseImportListComponent<M extends BaseModel> extends BaseV
     /**
      * The table itself
      */
-    @ViewChild(MatTable, { static: false })
+    @ViewChild(MatTable)
     protected table: MatTable<NewEntry<M>>;
 
     /**

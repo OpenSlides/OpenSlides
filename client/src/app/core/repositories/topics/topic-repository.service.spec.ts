@@ -11,7 +11,7 @@ describe('TopicRepositoryService', () => {
     );
 
     it('should be created', () => {
-        const service: TopicRepositoryService = TestBed.get(TopicRepositoryService);
+        const service: TopicRepositoryService = TestBed.inject(TopicRepositoryService);
         expect(service).toBeTruthy();
     });
 });

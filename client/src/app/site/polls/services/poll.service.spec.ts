@@ -11,7 +11,7 @@ describe('PollService', () => {
     });
 
     it('should be created', () => {
-        const service: PollService = TestBed.get(PollService);
+        const service: PollService = TestBed.inject(PollService);
         expect(service).toBeTruthy();
     });
 });

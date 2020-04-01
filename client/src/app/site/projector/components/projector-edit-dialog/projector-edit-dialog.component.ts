@@ -8,7 +8,8 @@ import {
     ViewEncapsulation
 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
@@ -39,7 +40,7 @@ export class ProjectorEditDialogComponent extends BaseViewComponent implements O
      * import the projector as view child, to determine when to update
      * the preview.
      */
-    @ViewChild('preview', { static: false })
+    @ViewChild('preview')
     public preview: ProjectorComponent;
 
     /**

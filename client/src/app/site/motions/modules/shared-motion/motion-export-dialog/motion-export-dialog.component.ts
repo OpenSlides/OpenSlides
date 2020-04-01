@@ -96,7 +96,7 @@ export class MotionExportDialogComponent implements OnInit {
     /**
      * To deactivate the speakers button.
      */
-    @ViewChild('speakersButton', { static: false })
+    @ViewChild('speakersButton')
     public speakersButton: MatButtonToggle;
 
     /**

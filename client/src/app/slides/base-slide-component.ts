@@ -8,7 +8,7 @@ import { ViewProjector } from 'app/site/projector/models/view-projector';
  * Every slide has to extends this base class. It forces the slides
  * to have an input for the slidedata.
  */
-export abstract class BaseSlideComponent<T extends object, P extends ProjectorElement = ProjectorElement> {
+export abstract class BaseSlideComponentDirective<T extends object, P extends ProjectorElement = ProjectorElement> {
     /**
      * Each slide must take slide data.
      */

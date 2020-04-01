@@ -1,10 +1,10 @@
 import { Inject, Injectable, Optional } from '@angular/core';
-import { MAT_DATE_LOCALE } from '@angular/material';
 import {
-    MAT_MOMENT_DATE_ADAPTER_OPTIONS,
     MatMomentDateAdapterOptions,
+    MAT_MOMENT_DATE_ADAPTER_OPTIONS,
     MomentDateAdapter
 } from '@angular/material-moment-adapter';
+import { MAT_DATE_LOCALE } from '@angular/material/core';
 
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 

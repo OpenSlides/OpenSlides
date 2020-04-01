@@ -1,7 +1,12 @@
+import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 
-import { makeSlideModule } from 'app/slides/base-slide-module';
+import { SharedModule } from 'app/shared/shared.module';
+import { SlideToken } from 'app/slides/slide-token';
 import { AssignmentPollSlideComponent } from './assignment-poll-slide.component';
-
-@NgModule(makeSlideModule(AssignmentPollSlideComponent))
+@NgModule({
+    imports: [CommonModule, SharedModule],
+    declarations: [AssignmentPollSlideComponent],
+    providers: [{ provide: SlideToken.token, useValue: AssignmentPollSlideComponent }]
+})
 export class AssignmentPollSlideModule {}

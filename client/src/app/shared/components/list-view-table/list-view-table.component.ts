@@ -93,7 +93,7 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
     /**
      * Declare the table
      */
-    @ViewChild(PblNgridComponent, { static: false })
+    @ViewChild(PblNgridComponent)
     private ngrid: PblNgridComponent;
 
     /**
@@ -531,11 +531,7 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
             // filter by ID
             const trimmedInput = this.inputValue.trim().toLowerCase();
             const idString = '' + item.id;
-            const foundId =
-                idString
-                    .trim()
-                    .toLowerCase()
-                    .indexOf(trimmedInput) !== -1;
+            const foundId = idString.trim().toLowerCase().indexOf(trimmedInput) !== -1;
             if (foundId) {
                 return true;
             }
@@ -564,11 +560,7 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
                         }
 
                         if (propertyAsString) {
-                            const foundProp =
-                                propertyAsString
-                                    .trim()
-                                    .toLowerCase()
-                                    .indexOf(trimmedInput) !== -1;
+                            const foundProp = propertyAsString.trim().toLowerCase().indexOf(trimmedInput) !== -1;
 
                             if (foundProp) {
                                 return true;

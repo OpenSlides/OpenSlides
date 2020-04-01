@@ -16,7 +16,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -116,7 +116,6 @@ import { CheckInputComponent } from './components/check-input/check-input.compon
 import { BannerComponent } from './components/banner/banner.component';
 import { PollFormComponent } from 'app/site/polls/components/poll-form/poll-form.component';
 import { MotionPollDialogComponent } from 'app/site/motions/modules/motion-poll/motion-poll-dialog/motion-poll-dialog.component';
-import { AssignmentPollDialogComponent } from 'app/site/assignments/components/assignment-poll-dialog/assignment-poll-dialog.component';
 import { ParsePollNumberPipe } from './pipes/parse-poll-number.pipe';
 import { ReversePipe } from './pipes/reverse.pipe';
 import { PollKeyVerbosePipe } from './pipes/poll-key-verbose.pipe';
@@ -287,7 +286,6 @@ import { UserMenuComponent } from './components/user-menu/user-menu.component';
         BannerComponent,
         PollFormComponent,
         MotionPollDialogComponent,
-        AssignmentPollDialogComponent,
         ParsePollNumberPipe,
         ReversePipe,
         PollKeyVerbosePipe,
@@ -348,7 +346,6 @@ import { UserMenuComponent } from './components/user-menu/user-menu.component';
         BannerComponent,
         PollFormComponent,
         MotionPollDialogComponent,
-        AssignmentPollDialogComponent,
         ParsePollNumberPipe,
         ReversePipe,
         PollKeyVerbosePipe,
@@ -376,18 +373,6 @@ import { UserMenuComponent } from './components/user-menu/user-menu.component';
         ReversePipe,
         PollKeyVerbosePipe,
         PollPercentBasePipe
-    ],
-    entryComponents: [
-        SortBottomSheetComponent,
-        C4DialogComponent,
-        PromptDialogComponent,
-        ChoiceDialogComponent,
-        ProjectionDialogComponent,
-        ProgressSnackBarComponent,
-        SuperSearchComponent,
-        MotionPollDialogComponent,
-        AssignmentPollDialogComponent,
-        VotingPrivacyWarningComponent
     ]
 })
 export class SharedModule {}

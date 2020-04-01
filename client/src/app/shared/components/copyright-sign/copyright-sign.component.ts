@@ -576,9 +576,7 @@ export class C4DialogComponent implements OnInit, OnDestroy {
 
 @Component({
     selector: 'os-copyright-sign',
-    template: `
-        <span (click)="launchC4($event)">©</span>
-    `,
+    template: ` <span (click)="launchC4($event)">©</span> `,
     styles: [``]
 })
 export class CopyrightSignComponent {

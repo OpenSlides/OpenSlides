@@ -14,7 +14,6 @@ import { SharedModule } from '../../shared/shared.module';
  */
 @NgModule({
     imports: [CommonModule, AgendaRoutingModule, SharedModule],
-    entryComponents: [ItemInfoDialogComponent],
     declarations: [
         AgendaListComponent,
         ItemInfoDialogComponent,

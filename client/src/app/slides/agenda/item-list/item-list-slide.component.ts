@@ -4,7 +4,7 @@ import { CollectionStringMapperService } from 'app/core/core-services/collection
 import { SlideData } from 'app/core/core-services/projector-data.service';
 import { isBaseIsAgendaItemContentObjectRepository } from 'app/core/repositories/base-is-agenda-item-content-object-repository';
 import { ProjectorElement } from 'app/shared/models/core/projector';
-import { BaseSlideComponent } from 'app/slides/base-slide-component';
+import { BaseSlideComponentDirective } from 'app/slides/base-slide-component';
 import { ItemListSlideData, SlideItem } from './item-list-slide-data';
 
 @Component({
@@ -12,7 +12,7 @@ import { ItemListSlideData, SlideItem } from './item-list-slide-data';
     templateUrl: './item-list-slide.component.html',
     styleUrls: ['./item-list-slide.component.scss']
 })
-export class ItemListSlideComponent extends BaseSlideComponent<ItemListSlideData> {
+export class ItemListSlideComponent extends BaseSlideComponentDirective<ItemListSlideData> {
     @Input()
     public set data(value: SlideData<ItemListSlideData, ProjectorElement>) {
         value.data.items.forEach(

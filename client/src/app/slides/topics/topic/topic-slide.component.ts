@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { BaseSlideComponent } from 'app/slides/base-slide-component';
+import { BaseSlideComponentDirective } from 'app/slides/base-slide-component';
 import { TopicSlideData } from './topic-slide-data';
 
 @Component({
@@ -8,8 +8,4 @@ import { TopicSlideData } from './topic-slide-data';
     templateUrl: './topic-slide.component.html',
     styleUrls: ['./topic-slide.component.scss']
 })
-export class TopicSlideComponent extends BaseSlideComponent<TopicSlideData> {
-    public constructor() {
-        super();
-    }
-}
+export class TopicSlideComponent extends BaseSlideComponentDirective<TopicSlideData> {}

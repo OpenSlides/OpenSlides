@@ -12,7 +12,7 @@ describe('AmendmentListPdfService', () => {
     );
 
     it('should be created', () => {
-        const service: AmendmentListPdfService = TestBed.get(AmendmentListPdfService);
+        const service: AmendmentListPdfService = TestBed.inject(AmendmentListPdfService);
         expect(service).toBeTruthy();
     });
 });

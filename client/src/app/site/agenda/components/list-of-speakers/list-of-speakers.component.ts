@@ -34,7 +34,7 @@ import { SpeakerState, ViewSpeaker } from '../../models/view-speaker';
     styleUrls: ['./list-of-speakers.component.scss']
 })
 export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit {
-    @ViewChild(SortingListComponent, { static: false })
+    @ViewChild(SortingListComponent)
     public listElement: SortingListComponent;
 
     /**

@@ -12,7 +12,7 @@ describe('MotionPdfExportService', () => {
     );
 
     it('should be created', () => {
-        const service: MotionPdfExportService = TestBed.get(MotionPdfExportService);
+        const service: MotionPdfExportService = TestBed.inject(MotionPdfExportService);
         expect(service).toBeTruthy();
     });
 });

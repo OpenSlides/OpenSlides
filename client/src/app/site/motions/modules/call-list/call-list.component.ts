@@ -10,7 +10,7 @@ import { MotionRepositoryService } from 'app/core/repositories/motions/motion-re
 import { TagRepositoryService } from 'app/core/repositories/tags/tag-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { FlatNode } from 'app/core/ui-services/tree.service';
-import { SortTreeFilterOption, SortTreeViewComponent } from 'app/site/base/sort-tree.component';
+import { SortTreeFilterOption, SortTreeViewComponentDirective } from 'app/site/base/sort-tree.component';
 import { ViewMotion } from 'app/site/motions/models/view-motion';
 import { MotionCsvExportService } from 'app/site/motions/services/motion-csv-export.service';
 import { MotionPdfExportService } from 'app/site/motions/services/motion-pdf-export.service';
@@ -27,7 +27,7 @@ import { ViewTag } from 'app/site/tags/models/view-tag';
         '../../../../shared/components/sort-filter-bar/sort-filter-bar.component.scss'
     ]
 })
-export class CallListComponent extends SortTreeViewComponent<ViewMotion> implements OnInit {
+export class CallListComponent extends SortTreeViewComponentDirective<ViewMotion> implements OnInit {
     /**
      * All motions sorted first by weight, then by id.
      */

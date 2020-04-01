@@ -4,10 +4,10 @@ import { NgModule } from '@angular/core';
 import { SharedModule } from 'app/shared/shared.module';
 import { CommonListOfSpeakersSlideComponent } from '../common/common-list-of-speakers-slide.component';
 import { CommonListOfSpeakersSlideModule } from '../common/common-list-of-speakers-slide.module';
-import { SLIDE } from '../../slide-token';
+import { SlideToken } from '../../slide-token';
 
 @NgModule({
     imports: [CommonModule, SharedModule, CommonListOfSpeakersSlideModule],
-    providers: [{ provide: SLIDE, useValue: CommonListOfSpeakersSlideComponent }]
+    providers: [{ provide: SlideToken.token, useValue: CommonListOfSpeakersSlideComponent }]
 })
 export class ListOfSpeakersSlideModule {}

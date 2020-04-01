@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 
-import { BaseSlideComponent } from 'app/slides/base-slide-component';
+import { BaseSlideComponentDirective } from 'app/slides/base-slide-component';
 import { CommonListOfSpeakersSlideData, SlideSpeaker } from '../common/common-list-of-speakers-slide-data';
 
 @Component({
@@ -8,7 +8,9 @@ import { CommonListOfSpeakersSlideData, SlideSpeaker } from '../common/common-li
     templateUrl: './current-list-of-speakers-overlay-slide.component.html',
     styleUrls: ['./current-list-of-speakers-overlay-slide.component.scss']
 })
-export class CurrentListOfSpeakersOverlaySlideComponent extends BaseSlideComponent<CommonListOfSpeakersSlideData> {
+export class CurrentListOfSpeakersOverlaySlideComponent extends BaseSlideComponentDirective<
+    CommonListOfSpeakersSlideData
+> {
     /**
      * Gets the data. Sets necessary information for the list of speakers in the overlay.
      *

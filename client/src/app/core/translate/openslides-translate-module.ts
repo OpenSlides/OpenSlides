@@ -29,7 +29,7 @@ import { OpenSlidesTranslateService } from './translation-service';
     exports: [TranslatePipe, TranslateDirective]
 })
 export class OpenSlidesTranslateModule {
-    public static forRoot(): ModuleWithProviders {
+    public static forRoot(): ModuleWithProviders<TranslateModule> {
         return {
             ngModule: TranslateModule,
             providers: [
@@ -46,7 +46,7 @@ export class OpenSlidesTranslateModule {
     }
 
     // no config store for child.
-    public static forChild(): ModuleWithProviders {
+    public static forChild(): ModuleWithProviders<TranslateModule> {
         return {
             ngModule: TranslateModule,
             providers: [

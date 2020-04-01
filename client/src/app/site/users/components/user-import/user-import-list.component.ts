@@ -8,7 +8,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { NewEntry } from 'app/core/ui-services/base-import.service';
 import { CsvExportService } from 'app/core/ui-services/csv-export.service';
 import { User } from 'app/shared/models/users/user';
-import { BaseImportListComponent } from 'app/site/base/base-import-list';
+import { BaseImportListComponentDirective } from 'app/site/base/base-import-list';
 import { UserImportService } from '../../services/user-import.service';
 
 /**
@@ -18,7 +18,7 @@ import { UserImportService } from '../../services/user-import.service';
     selector: 'os-user-import-list',
     templateUrl: './user-import-list.component.html'
 })
-export class UserImportListComponent extends BaseImportListComponent<User> {
+export class UserImportListComponent extends BaseImportListComponentDirective<User> {
     public textAreaForm: FormGroup;
 
     /**

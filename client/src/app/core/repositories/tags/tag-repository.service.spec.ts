@@ -12,7 +12,7 @@ describe('TagRepositoryService', () => {
     });
 
     it('should be created', () => {
-        const service = TestBed.get(TagRepositoryService);
+        const service = TestBed.inject(TagRepositoryService);
         expect(service).toBeTruthy();
     });
 });

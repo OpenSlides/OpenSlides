@@ -5,7 +5,7 @@ import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 
 import { Motion } from 'app/shared/models/motions/motion';
-import { BaseImportListComponent } from 'app/site/base/base-import-list';
+import { BaseImportListComponentDirective } from 'app/site/base/base-import-list';
 import { MotionCsvExportService } from 'app/site/motions/services/motion-csv-export.service';
 import { MotionImportService } from 'app/site/motions/services/motion-import.service';
 
@@ -16,7 +16,7 @@ import { MotionImportService } from 'app/site/motions/services/motion-import.ser
     selector: 'os-motion-import-list',
     templateUrl: './motion-import-list.component.html'
 })
-export class MotionImportListComponent extends BaseImportListComponent<Motion> {
+export class MotionImportListComponent extends BaseImportListComponentDirective<Motion> {
     /**
      * Fetach a list of the headers expected by the importer, and prepare them
      * to be translateable (upper case)

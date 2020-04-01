@@ -34,19 +34,19 @@ export class BlockTileComponent extends TileComponent implements AfterViewInit {
     /**
      * Reference to the content of the content part.
      */
-    @ViewChild('contentNode', { static: false })
+    @ViewChild('contentNode')
     public contentNode: ElementRef<HTMLElement>;
 
     /**
      * Reference to the block part, if it is a node.
      */
-    @ViewChild('blockNode', { static: false })
+    @ViewChild('blockNode')
     public blockNode: ElementRef<HTMLElement>;
 
     /**
      * Reference to the action buttons in the content part, if used.
      */
-    @ViewChild('actionNode', { static: false })
+    @ViewChild('actionNode')
     public actionNode: ElementRef<HTMLElement>;
 
     /**

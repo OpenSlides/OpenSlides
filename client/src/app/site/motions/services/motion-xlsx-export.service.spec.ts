@@ -12,7 +12,7 @@ describe('MotionXlsxExportService', () => {
     );
 
     it('should be created', () => {
-        const service: MotionXlsxExportService = TestBed.get(MotionXlsxExportService);
+        const service: MotionXlsxExportService = TestBed.inject(MotionXlsxExportService);
         expect(service).toBeTruthy();
     });
 });

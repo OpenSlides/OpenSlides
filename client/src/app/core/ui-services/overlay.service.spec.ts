@@ -12,7 +12,7 @@ describe('OverlayService', () => {
     );
 
     it('should be created', () => {
-        const service: OverlayService = TestBed.get(OverlayService);
+        const service: OverlayService = TestBed.inject(OverlayService);
         expect(service).toBeTruthy();
     });
 });

@@ -7,7 +7,7 @@
             "projectType": "application",
             "schematics": {
                 "@schematics/angular:component": {
-                    "styleext": "scss"
+                    "style": "scss"
                 }
             },
             "root": "",
@@ -22,7 +22,7 @@
                         "main": "src/main.ts",
                         "polyfills": "src/polyfills.ts",
                         "tsConfig": "tsconfig.app.json",
-                        "aot": false,
+                        "aot": true,
                         "assets": [
                             "src/assets",
                             "src/manifest.json",
@@ -48,10 +48,12 @@
                     },
                     "configurations": {
                         "production": {
-                            "fileReplacements": [{
-                                "replace": "src/environments/environment.ts",
-                                "with": "src/environments/environment.prod.ts"
-                            }],
+                            "fileReplacements": [
+                                {
+                                    "replace": "src/environments/environment.ts",
+                                    "with": "src/environments/environment.prod.ts"
+                                }
+                            ],
                             "optimization": true,
                             "outputHashing": "all",
                             "sourceMap": false,
@@ -62,13 +64,25 @@
                             "vendorChunk": false,
                             "buildOptimizer": true,
                             "serviceWorker": true,
-                            "budgets": [{
-                                "type": "initial",
-                                "maximumWarning": "5mb",
-                                "maximumError": "10mb"
-                            }]
+                            "budgets": [
+                                {
+                                    "type": "initial",
+                                    "maximumWarning": "5mb",
+                                    "maximumError": "10mb"
+                                },
+                                {
+                                    "type": "anyComponentStyle",
+                                    "maximumWarning": "6kb"
+                                }
+                            ]
                         },
                         "es5": {
+                            "budgets": [
+                                {
+                                    "type": "anyComponentStyle",
+                                    "maximumWarning": "6kb"
+                                }
+                            ],
                             "tsConfig": "./tsconfig-es5.app.json"
                         }
                     }

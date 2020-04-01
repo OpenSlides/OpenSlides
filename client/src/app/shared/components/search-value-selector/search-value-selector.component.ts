@@ -10,7 +10,7 @@ import {
     ViewEncapsulation
 } from '@angular/core';
 import { FormBuilder, FormControl, NgControl } from '@angular/forms';
-import { MatFormFieldControl } from '@angular/material';
+import { MatFormFieldControl } from '@angular/material/form-field';
 
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
@@ -139,22 +139,13 @@ export class SearchValueSelectorComponent extends BaseFormControlComponent<Selec
             const searchValue: string = this.searchValue.value.toLowerCase();
             return this.selectableItems.filter(item => {
                 const idString = '' + item.id;
-                const foundId =
-                    idString
-                        .trim()
-                        .toLowerCase()
-                        .indexOf(searchValue) !== -1;
+                const foundId = idString.trim().toLowerCase().indexOf(searchValue) !== -1;
 
                 if (foundId) {
                     return true;
                 }
 
-                return (
-                    item
-                        .toString()
-                        .toLowerCase()
-                        .indexOf(searchValue) > -1
-                );
+                return item.toString().toLowerCase().indexOf(searchValue) > -1;
             });
         }
     }

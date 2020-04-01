@@ -5,7 +5,7 @@ import { SlideData } from 'app/core/core-services/projector-data.service';
 import { isBaseIsAgendaItemContentObjectRepository } from 'app/core/repositories/base-is-agenda-item-content-object-repository';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { ProjectorElement } from 'app/shared/models/core/projector';
-import { BaseSlideComponent } from 'app/slides/base-slide-component';
+import { BaseSlideComponentDirective } from 'app/slides/base-slide-component';
 import { CommonListOfSpeakersSlideData } from './common-list-of-speakers-slide-data';
 
 @Component({
@@ -13,7 +13,7 @@ import { CommonListOfSpeakersSlideData } from './common-list-of-speakers-slide-d
     templateUrl: './common-list-of-speakers-slide.component.html',
     styleUrls: ['./common-list-of-speakers-slide.component.scss']
 })
-export class CommonListOfSpeakersSlideComponent extends BaseSlideComponent<CommonListOfSpeakersSlideData>
+export class CommonListOfSpeakersSlideComponent extends BaseSlideComponentDirective<CommonListOfSpeakersSlideData>
     implements OnInit {
     @Input()
     public set data(value: SlideData<CommonListOfSpeakersSlideData, ProjectorElement>) {

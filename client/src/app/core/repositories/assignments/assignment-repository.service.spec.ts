@@ -8,7 +8,7 @@ describe('AssignmentRepositoryService', () => {
     beforeEach(() => TestBed.configureTestingModule({ imports: [E2EImportsModule] }));
 
     it('should be created', () => {
-        const service: AssignmentRepositoryService = TestBed.get(AssignmentRepositoryService);
+        const service: AssignmentRepositoryService = TestBed.inject(AssignmentRepositoryService);
         expect(service).toBeTruthy();
     });
 });

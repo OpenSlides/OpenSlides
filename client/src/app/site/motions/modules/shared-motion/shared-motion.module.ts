@@ -8,7 +8,6 @@ import { MotionMultiselectActionsComponent } from './motion-multiselect-actions/
 @NgModule({
     imports: [CommonModule, SharedModule],
     exports: [MotionMultiselectActionsComponent],
-    declarations: [MotionExportDialogComponent, MotionMultiselectActionsComponent],
-    entryComponents: [MotionExportDialogComponent]
+    declarations: [MotionExportDialogComponent, MotionMultiselectActionsComponent]
 })
 export class SharedMotionModule {}

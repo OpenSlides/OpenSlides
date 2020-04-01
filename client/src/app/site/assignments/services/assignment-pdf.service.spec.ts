@@ -12,7 +12,7 @@ describe('AssignmentPdfService', () => {
     );
 
     it('should be created', () => {
-        const service: AssignmentPdfService = TestBed.get(AssignmentPdfService);
+        const service: AssignmentPdfService = TestBed.inject(AssignmentPdfService);
         expect(service).toBeTruthy();
     });
 });

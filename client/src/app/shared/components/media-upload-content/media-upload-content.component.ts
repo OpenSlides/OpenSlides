@@ -64,7 +64,7 @@ export class MediaUploadContentComponent implements OnInit {
     /**
      * Hold the mat table to manually render new rows
      */
-    @ViewChild(MatTable, { static: false })
+    @ViewChild(MatTable)
     public table: MatTable<any>;
 
     /**

@@ -4,6 +4,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServiceWorkerModule } from '@angular/service-worker';
 
+import { StorageModule } from '@ngx-pwa/local-storage';
+
 import { AppLoadService } from './core/core-services/app-load.service';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -39,7 +41,8 @@ export function AppLoaderFactory(appLoadService: AppLoadService): () => Promise<
         CoreModule,
         LoginModule,
         ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
-        SlidesModule.forRoot()
+        SlidesModule.forRoot(),
+        StorageModule.forRoot({ IDBNoWrap: false })
     ],
     providers: [{ provide: APP_INITIALIZER, useFactory: AppLoaderFactory, deps: [AppLoadService], multi: true }],
     bootstrap: [AppComponent]

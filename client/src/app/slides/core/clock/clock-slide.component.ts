@@ -3,14 +3,14 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 
 import { ServertimeService } from 'app/core/core-services/servertime.service';
-import { BaseSlideComponent } from 'app/slides/base-slide-component';
+import { BaseSlideComponentDirective } from 'app/slides/base-slide-component';
 
 @Component({
     selector: 'os-clock-slide',
     templateUrl: './clock-slide.component.html',
     styleUrls: ['./clock-slide.component.scss']
 })
-export class ClockSlideComponent extends BaseSlideComponent<{}> implements OnInit, OnDestroy {
+export class ClockSlideComponent extends BaseSlideComponentDirective<{}> implements OnInit, OnDestroy {
     public time: string;
 
     private servertimeSubscription: Subscription | null = null;
