@@ -13,7 +13,7 @@ describe('TimeTravelService', () => {
     );
 
     it('should be created', () => {
-        const service: TimeTravelService = TestBed.get(TimeTravelService);
+        const service: TimeTravelService = TestBed.inject(TimeTravelService);
         expect(service).toBeTruthy();
     });
 });

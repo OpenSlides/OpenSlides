@@ -2,10 +2,10 @@ import { Compiler, ComponentFactory, Inject, Injectable, Injector, NgModuleFacto
 
 import { allSlidesDynamicConfiguration } from '../all-slide-configurations';
 import { IdentifiableProjectorElement, ProjectorElement } from 'app/shared/models/core/projector';
-import { BaseSlideComponent } from '../base-slide-component';
+import { BaseSlideComponentDirective } from '../base-slide-component';
 import { Slide, SlideDynamicConfiguration, SlideManifest } from '../slide-manifest';
 import { SLIDE_MANIFESTS } from '../slide-manifest';
-import { SLIDE } from '../slide-token';
+import { SlideToken } from '../slide-token';
 
 /**
  * Cares about loading slides dynamically.
@@ -81,7 +81,7 @@ export class SlideManager {
      *
      * @param slideName The slide to search.
      */
-    public async getSlideFactory<T extends BaseSlideComponent<object>>(
+    public async getSlideFactory<T extends BaseSlideComponentDirective<object>>(
         slideName: string
     ): Promise<ComponentFactory<T>> {
         const manifest = this.getManifest(slideName);
@@ -98,18 +98,19 @@ export class SlideManager {
         // create the module
         const moduleRef = ngModuleFactory.create(this.injector);
 
-        // Get the slide provided by the SLIDE-injectiontoken.
+        // Get the slide provided by the `SlideToken.token`-injectiontoken.
         let dynamicComponentType: Type<T>;
         try {
             // Read from the moduleRef injector and locate the dynamic component type
-            dynamicComponentType = moduleRef.injector.get(SLIDE);
+            dynamicComponentType = moduleRef.injector.get(SlideToken.token);
         } catch (e) {
             console.log(
-                'The module for Slide "' + slideName + '" is not configured right: Make usage of makeSlideModule.'
+                'The module for Slide "' + slideName + '" is not configured right: Cannot file the slide token.'
             );
             throw e;
         }
         // Resolve this component factory
-        return moduleRef.componentFactoryResolver.resolveComponentFactory(dynamicComponentType);
+        const componentFactory = moduleRef.componentFactoryResolver.resolveComponentFactory(dynamicComponentType);
+        return componentFactory;
     }
 }

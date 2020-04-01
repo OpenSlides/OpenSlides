@@ -21,7 +21,7 @@ describe('AgendaContentObjectFormComponent', () => {
     });
 
     it('should create', () => {
-        const formBuilder: FormBuilder = TestBed.get(FormBuilder);
+        const formBuilder: FormBuilder = TestBed.inject(FormBuilder);
         component.form = formBuilder.group({
             agenda_create: [''],
             agenda_parent_id: [],

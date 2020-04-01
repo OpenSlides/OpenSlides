@@ -6,7 +6,7 @@ import {
     OnInit,
     ViewEncapsulation
 } from '@angular/core';
-import { MatSnackBarRef } from '@angular/material';
+import { MatSnackBarRef } from '@angular/material/snack-bar';
 
 import { Subscription } from 'rxjs';
 import { distinctUntilChanged } from 'rxjs/operators';

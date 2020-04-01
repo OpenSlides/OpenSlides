@@ -8,7 +8,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ItemVisibilityChoices } from 'app/shared/models/agenda/item';
-import { SortTreeFilterOption, SortTreeViewComponent } from 'app/site/base/sort-tree.component';
+import { SortTreeFilterOption, SortTreeViewComponentDirective } from 'app/site/base/sort-tree.component';
 import { ViewItem } from '../../models/view-item';
 
 /**
@@ -19,7 +19,7 @@ import { ViewItem } from '../../models/view-item';
     templateUrl: './agenda-sort.component.html',
     styleUrls: ['./agenda-sort.component.scss']
 })
-export class AgendaSortComponent extends SortTreeViewComponent<ViewItem> implements OnInit {
+export class AgendaSortComponent extends SortTreeViewComponentDirective<ViewItem> implements OnInit {
     /**
      * All agendaItems sorted by their weight {@link ViewItem.weight}
      */

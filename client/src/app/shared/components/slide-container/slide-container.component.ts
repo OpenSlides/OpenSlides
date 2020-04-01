@@ -8,7 +8,7 @@ import { SlideData } from 'app/core/core-services/projector-data.service';
 import { ProjectorElement } from 'app/shared/models/core/projector';
 import { ViewProjector } from 'app/site/projector/models/view-projector';
 import { isBaseScaleScrollSlideComponent } from 'app/slides/base-scale-scroll-slide-component';
-import { BaseSlideComponent } from 'app/slides/base-slide-component';
+import { BaseSlideComponentDirective } from 'app/slides/base-slide-component';
 import { SlideManager } from 'app/slides/services/slide-manager.service';
 
 function hasError(obj: object): obj is { error: string } {
@@ -28,7 +28,7 @@ export class SlideContainerComponent extends BaseComponent {
 
     @ViewChild('slide', { read: ViewContainerRef, static: true })
     private slide: ViewContainerRef;
-    private slideRef: ComponentRef<BaseSlideComponent<object>>;
+    private slideRef: ComponentRef<BaseSlideComponentDirective<object>>;
 
     /**
      * A slide is autonomic, if it takes care of scaling and scrolling by itself.
@@ -152,7 +152,7 @@ export class SlideContainerComponent extends BaseComponent {
         if (this.slideOptions.scrollable && !this.slideIsAutonomic) {
             let value = this.scroll;
             value *= -100;
-            if (this.projector.show_header_footer) {
+            if (this.projector && this.projector.show_header_footer) {
                 value += 50; // Default offset for the header
             }
             this.slideStyle['margin-top'] = `${value}px`;

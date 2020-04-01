@@ -26,13 +26,6 @@ import { PersonalNoteComponent } from './components/personal-note/personal-note.
         MotionDetailOriginalChangeRecommendationsComponent,
         MotionChangeRecommendationDialogComponent,
         MotionTitleChangeRecommendationDialogComponent
-    ],
-    entryComponents: [
-        MotionCommentsComponent,
-        PersonalNoteComponent,
-        ManageSubmittersComponent,
-        MotionChangeRecommendationDialogComponent,
-        MotionTitleChangeRecommendationDialogComponent
     ]
 })
 export class MotionDetailModule {}

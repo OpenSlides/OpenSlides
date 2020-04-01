@@ -1,6 +1,6 @@
 import { Component, HostListener, Inject, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 
 import { auditTime, debounceTime } from 'rxjs/operators';
@@ -209,10 +209,7 @@ export class SuperSearchComponent implements OnInit {
             splittedQuery = query.split(':', 2);
             splittedQuery.push(
                 // Get the second part of the query and split it into single words.
-                ...splittedQuery
-                    .pop()
-                    .trim()
-                    .split(/\s/g)
+                ...splittedQuery.pop().trim().split(/\s/g)
             );
         } else {
             splittedQuery = query.split(/\s/g);

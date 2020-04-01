@@ -13,7 +13,7 @@ describe('TreeSortService', () => {
 
     // TODO testing (does not work without injecting a BaseViewComponent)
     //   it('should be created', () => {
-    //     const service: TreeSortService = TestBed.get(TreeSortService);
+    //     const service: TreeSortService = TestBed.inject(TreeSortService);
     //     expect(service).toBeTruthy();
     //   });
 });

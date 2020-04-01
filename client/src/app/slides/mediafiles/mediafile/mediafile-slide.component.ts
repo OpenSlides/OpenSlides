@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 
 import { MediafileProjectorElement } from 'app/site/mediafiles/models/mediafile-projector-element';
 import { IMAGE_MIMETYPES, PDF_MIMETYPES } from 'app/site/mediafiles/models/view-mediafile';
-import { BaseSlideComponent } from 'app/slides/base-slide-component';
+import { BaseSlideComponentDirective } from 'app/slides/base-slide-component';
 import { MediafileSlideData } from './mediafile-slide-data';
 
 @Component({
@@ -10,7 +10,10 @@ import { MediafileSlideData } from './mediafile-slide-data';
     templateUrl: './mediafile-slide.component.html',
     styleUrls: ['./mediafile-slide.component.scss']
 })
-export class MediafileSlideComponent extends BaseSlideComponent<MediafileSlideData, MediafileProjectorElement> {
+export class MediafileSlideComponent extends BaseSlideComponentDirective<
+    MediafileSlideData,
+    MediafileProjectorElement
+> {
     public get url(): string {
         return `${this.data.data.media_url_prefix}${this.data.data.path}`;
     }

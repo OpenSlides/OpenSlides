@@ -171,11 +171,7 @@ export class ProjectorComponent extends BaseComponent implements OnDestroy {
     ) {
         super(titleService, translate);
 
-        this.projectorClass =
-            'projector-' +
-            Math.random()
-                .toString(36)
-                .substring(4);
+        this.projectorClass = 'projector-' + Math.random().toString(36).substring(4);
         this.elementRef.nativeElement.classList.add(this.projectorClass);
         this.styleElement = document.createElement('style');
         this.styleElement.appendChild(document.createTextNode('')); // Hack for WebKit to trigger update

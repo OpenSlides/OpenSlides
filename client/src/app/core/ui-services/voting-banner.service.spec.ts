@@ -12,7 +12,7 @@ describe('VotingBannerService', () => {
     );
 
     it('should be created', () => {
-        const service: VotingBannerService = TestBed.get(VotingBannerService);
+        const service: VotingBannerService = TestBed.inject(VotingBannerService);
         expect(service).toBeTruthy();
     });
 });

@@ -618,10 +618,7 @@ export class HtmlToPdfService {
         const styleObject: any = {};
         if (styles && styles.length > 0) {
             for (const style of styles) {
-                const styleDefinition = style
-                    .trim()
-                    .toLowerCase()
-                    .split(':');
+                const styleDefinition = style.trim().toLowerCase().split(':');
                 const key = styleDefinition[0];
                 const value = styleDefinition[1];
 

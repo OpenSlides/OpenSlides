@@ -12,7 +12,7 @@ describe('AssignmentPollDialogService', () => {
     );
 
     it('should be created', () => {
-        const service: AssignmentPollDialogService = TestBed.get(AssignmentPollDialogService);
+        const service: AssignmentPollDialogService = TestBed.inject(AssignmentPollDialogService);
         expect(service).toBeTruthy();
     });
 });

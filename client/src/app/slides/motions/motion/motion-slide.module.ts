@@ -1,7 +1,12 @@
+import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 
-import { makeSlideModule } from 'app/slides/base-slide-module';
+import { SharedModule } from 'app/shared/shared.module';
+import { SlideToken } from 'app/slides/slide-token';
 import { MotionSlideComponent } from './motion-slide.component';
-
-@NgModule(makeSlideModule(MotionSlideComponent))
+@NgModule({
+    imports: [CommonModule, SharedModule],
+    declarations: [MotionSlideComponent],
+    providers: [{ provide: SlideToken.token, useValue: MotionSlideComponent }]
+})
 export class MotionSlideModule {}

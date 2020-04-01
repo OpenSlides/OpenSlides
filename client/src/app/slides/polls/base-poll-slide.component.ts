@@ -7,9 +7,12 @@ import { ChartData } from 'app/shared/components/charts/charts.component';
 import { PollState } from 'app/shared/models/poll/base-poll';
 import { PollService } from 'app/site/polls/services/poll.service';
 import { BasePollSlideData } from './base-poll-slide-data';
-import { BaseSlideComponent } from '../base-slide-component';
+import { BaseSlideComponentDirective } from '../base-slide-component';
 
-export class BasePollSlideComponent<T extends BasePollSlideData, S extends PollService> extends BaseSlideComponent<T> {
+export class BasePollSlideComponent<
+    T extends BasePollSlideData,
+    S extends PollService
+> extends BaseSlideComponentDirective<T> {
     public chartDataSubject: BehaviorSubject<ChartData> = new BehaviorSubject([]);
 
     @Input()

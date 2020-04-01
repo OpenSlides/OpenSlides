@@ -12,7 +12,7 @@ describe('UserPdfExportService', () => {
     );
 
     it('should be created', () => {
-        const service: UserPdfExportService = TestBed.get(UserPdfExportService);
+        const service: UserPdfExportService = TestBed.inject(UserPdfExportService);
         expect(service).toBeTruthy();
     });
 });

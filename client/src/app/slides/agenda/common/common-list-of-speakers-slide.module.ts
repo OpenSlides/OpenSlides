@@ -6,7 +6,6 @@ import { CommonListOfSpeakersSlideComponent } from './common-list-of-speakers-sl
 
 @NgModule({
     declarations: [CommonListOfSpeakersSlideComponent],
-    entryComponents: [CommonListOfSpeakersSlideComponent],
     imports: [CommonModule, SharedModule],
     exports: [CommonListOfSpeakersSlideComponent]
 })

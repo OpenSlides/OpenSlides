@@ -10,7 +10,7 @@ describe('HttpService', () => {
     });
     // TODO: Write a working Test
     // it('should be created', () => {
-    //     const service: HttpService = TestBed.get(HttpService);
+    //     const service: HttpService = TestBed.inject(HttpService);
     //     expect(service).toBeTruthy();
     // });
 });

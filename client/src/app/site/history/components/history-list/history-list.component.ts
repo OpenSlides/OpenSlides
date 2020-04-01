@@ -129,20 +129,11 @@ export class HistoryListComponent extends BaseViewComponent implements OnInit {
                 return true;
             }
 
-            if (
-                this.getElementInfo(history) &&
-                this.getElementInfo(history)
-                    .toLowerCase()
-                    .indexOf(filter) >= 0
-            ) {
+            if (this.getElementInfo(history) && this.getElementInfo(history).toLowerCase().indexOf(filter) >= 0) {
                 return true;
             }
 
-            return (
-                this.parseInformation(history)
-                    .toLowerCase()
-                    .indexOf(filter) >= 0
-            );
+            return this.parseInformation(history).toLowerCase().indexOf(filter) >= 0;
         };
 
         // If an element id is given, validate it and update the view.

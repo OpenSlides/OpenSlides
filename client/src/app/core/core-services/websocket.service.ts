@@ -208,9 +208,7 @@ export class WebsocketService {
      * Uses NgZone to let all callbacks run in the angular context.
      */
     public async connect(options: ConnectOptions = {}, retry: boolean = false): Promise<void> {
-        const websocketId = Math.random()
-            .toString(36)
-            .substring(7);
+        const websocketId = Math.random().toString(36).substring(7);
         this.websocketId = websocketId;
 
         if (this.websocket) {
@@ -316,8 +314,9 @@ export class WebsocketService {
             const compressedSize = data.byteLength;
             const decompressedBuffer: Uint8Array = decompress(new Uint8Array(data));
             console.debug(
-                `Recieved ${compressedSize / 1024} KB (${decompressedBuffer.byteLength /
-                    1024} KB uncompressed), ratio ${decompressedBuffer.byteLength / compressedSize}`
+                `Recieved ${compressedSize / 1024} KB (${
+                    decompressedBuffer.byteLength / 1024
+                } KB uncompressed), ratio ${decompressedBuffer.byteLength / compressedSize}`
             );
             data = this.arrayBufferToString(decompressedBuffer);
         }

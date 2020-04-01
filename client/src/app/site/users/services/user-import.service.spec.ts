@@ -12,7 +12,7 @@ describe('UserImportService', () => {
     );
 
     it('should be created', () => {
-        const service: UserImportService = TestBed.get(UserImportService);
+        const service: UserImportService = TestBed.inject(UserImportService);
         expect(service).toBeTruthy();
     });
 });

@@ -12,7 +12,7 @@ describe('AmendmentFilterService', () => {
     );
 
     it('should be created', () => {
-        const service: AmendmentFilterListService = TestBed.get(AmendmentFilterListService);
+        const service: AmendmentFilterListService = TestBed.inject(AmendmentFilterListService);
         expect(service).toBeTruthy();
     });
 });

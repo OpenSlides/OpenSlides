@@ -25,13 +25,6 @@ import { SharedModule } from '../../shared/shared.module';
         MessageDialogComponent,
         PresentationControlComponent,
         ProjectorEditDialogComponent
-    ],
-    entryComponents: [
-        CountdownDialogComponent,
-        MessageDialogComponent,
-        PresentationControlComponent,
-        ProjectorListEntryComponent,
-        ProjectorEditDialogComponent
     ]
 })
 export class ProjectorModule {}

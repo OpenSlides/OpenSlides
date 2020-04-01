@@ -12,7 +12,7 @@ describe('AssignmentPollService', () => {
     );
 
     it('should be created', () => {
-        const service: AssignmentPollService = TestBed.get(AssignmentPollService);
+        const service: AssignmentPollService = TestBed.inject(AssignmentPollService);
         expect(service).toBeTruthy();
     });
 });

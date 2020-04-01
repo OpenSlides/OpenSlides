@@ -39,7 +39,7 @@ export class OpenSlidesTranslateService extends TranslateService {
         @Inject(USE_DEFAULT_LANG) useDefaultLang: boolean = true,
         @Inject(USE_STORE) isolate: boolean = false
     ) {
-        super(store, currentLoader, compiler, parser, missingTranslationHandler, useDefaultLang, isolate);
+        super(store, currentLoader, compiler, parser, missingTranslationHandler, useDefaultLang, isolate, true, 'en');
     }
 
     /**

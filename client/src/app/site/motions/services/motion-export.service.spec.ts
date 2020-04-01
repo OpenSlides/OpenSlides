@@ -12,7 +12,7 @@ describe('MotionExportService', () => {
     );
 
     it('should be created', () => {
-        const service: MotionExportService = TestBed.get(MotionExportService);
+        const service: MotionExportService = TestBed.inject(MotionExportService);
         expect(service).toBeTruthy();
     });
 });

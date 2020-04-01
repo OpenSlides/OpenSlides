@@ -7,7 +7,7 @@ describe('LocalPermissionsService', () => {
     beforeEach(() => TestBed.configureTestingModule({ imports: [E2EImportsModule] }));
 
     it('should be created', () => {
-        const service: LocalPermissionsService = TestBed.get(LocalPermissionsService);
+        const service: LocalPermissionsService = TestBed.inject(LocalPermissionsService);
         expect(service).toBeTruthy();
     });
 });

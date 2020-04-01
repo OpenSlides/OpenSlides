@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { BaseSlideComponent } from 'app/slides/base-slide-component';
+import { BaseSlideComponentDirective } from 'app/slides/base-slide-component';
 import { CountdownSlideData } from './countdown-slide-data';
 
 @Component({
@@ -8,7 +8,7 @@ import { CountdownSlideData } from './countdown-slide-data';
     templateUrl: './countdown-slide.component.html',
     styleUrls: ['./countdown-slide.component.scss']
 })
-export class CountdownSlideComponent extends BaseSlideComponent<CountdownSlideData> {
+export class CountdownSlideComponent extends BaseSlideComponentDirective<CountdownSlideData> {
     public constructor() {
         super();
     }

@@ -14,8 +14,8 @@ describe('AppComponent', () => {
             imports: [E2EImportsModule]
         }).compileComponents();
 
-        servertimeService = TestBed.get(ServertimeService);
-        translate = TestBed.get(TranslateService);
+        servertimeService = TestBed.inject(ServertimeService);
+        translate = TestBed.inject(TranslateService);
         spyOn(servertimeService, 'startScheduler').and.stub();
         spyOn(translate, 'addLangs').and.stub();
         spyOn(translate, 'setDefaultLang').and.stub();

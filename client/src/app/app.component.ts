@@ -116,7 +116,7 @@ export class AppComponent {
 
     private overloadArrayFunctions(): void {
         Object.defineProperty(Array.prototype, 'toString', {
-            value: function(): string {
+            value: function (): string {
                 let string = '';
                 const iterations = Math.min(this.length, 3);
 
@@ -137,7 +137,7 @@ export class AppComponent {
         });
 
         Object.defineProperty(Array.prototype, 'flatMap', {
-            value: function(o: any): any[] {
+            value: function (o: any): any[] {
                 const concatFunction = (x: any, y: any[]) => x.concat(y);
                 const flatMapLogic = (f: any, xs: any) => xs.map(f).reduce(concatFunction, []);
                 return flatMapLogic(o, this);
@@ -146,7 +146,7 @@ export class AppComponent {
         });
 
         Object.defineProperty(Array.prototype, 'intersect', {
-            value: function<T>(other: T[]): T[] {
+            value: function <T>(other: T[]): T[] {
                 let a = this;
                 let b = other;
                 // indexOf to loop over shorter
@@ -159,7 +159,7 @@ export class AppComponent {
         });
 
         Object.defineProperty(Array.prototype, 'mapToObject', {
-            value: function<T>(f: (item: T) => { [key: string]: any }): { [key: string]: any } {
+            value: function <T>(f: (item: T) => { [key: string]: any }): { [key: string]: any } {
                 return this.reduce((aggr, item) => {
                     const res = f(item);
                     for (const key in res) {
@@ -179,7 +179,7 @@ export class AppComponent {
      */
     private overloadSetFunctions(): void {
         Object.defineProperty(Set.prototype, 'equals', {
-            value: function<T>(other: Set<T>): boolean {
+            value: function <T>(other: Set<T>): boolean {
                 const difference = new Set(this);
                 for (const elem of other) {
                     if (difference.has(elem)) {
@@ -200,7 +200,7 @@ export class AppComponent {
      */
     private overloadModulo(): void {
         Object.defineProperty(Number.prototype, 'modulo', {
-            value: function(n: number): number {
+            value: function (n: number): number {
                 return ((this % n) + n) % n;
             },
             enumerable: false

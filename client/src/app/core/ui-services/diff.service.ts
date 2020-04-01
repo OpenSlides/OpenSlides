@@ -885,10 +885,7 @@ export class DiffService {
             }
         }
 
-        return str
-            .replace(/^\s+/g, '')
-            .replace(/\s+$/g, '')
-            .replace(/ {2,}/g, ' ');
+        return str.replace(/^\s+/g, '').replace(/\s+$/g, '').replace(/ {2,}/g, ' ');
     }
 
     /**
@@ -1000,14 +997,7 @@ export class DiffService {
                     classes = childElement.getAttribute('class').split(' ');
                 }
                 classes.push(className);
-                childElement.setAttribute(
-                    'class',
-                    classes
-                        .sort()
-                        .join(' ')
-                        .replace(/^\s+/, '')
-                        .replace(/\s+$/, '')
-                );
+                childElement.setAttribute('class', classes.sort().join(' ').replace(/^\s+/, '').replace(/\s+$/, ''));
                 foundLast = true;
             }
         }
@@ -1150,10 +1140,7 @@ export class DiffService {
         let html = this.serializeTag(node);
         for (let i = 0; i < node.childNodes.length; i++) {
             if (node.childNodes[i].nodeType === TEXT_NODE) {
-                html += node.childNodes[i].nodeValue
-                    .replace(/&/g, '&amp;')
-                    .replace(/</g, '&lt;')
-                    .replace(/>/g, '&gt;');
+                html += node.childNodes[i].nodeValue.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
             } else if (
                 !stripLineNumbers ||
                 (!this.lineNumberingService.isOsLineNumberNode(node.childNodes[i]) &&
@@ -1867,10 +1854,7 @@ export class DiffService {
 
         // Performing the actual diff
         const str = this.diffString(workaroundPrepend + htmlOld, workaroundPrepend + htmlNew);
-        let diffUnnormalized = str
-            .replace(/^\s+/g, '')
-            .replace(/\s+$/g, '')
-            .replace(/ {2,}/g, ' ');
+        let diffUnnormalized = str.replace(/^\s+/g, '').replace(/\s+$/g, '').replace(/ {2,}/g, ' ');
 
         diffUnnormalized = this.fixWrongChangeDetection(diffUnnormalized);
 

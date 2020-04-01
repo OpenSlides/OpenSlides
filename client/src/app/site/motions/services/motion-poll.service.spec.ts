@@ -9,7 +9,7 @@ describe('MotionPollService', () => {
     beforeEach(() => TestBed.configureTestingModule({ imports: [E2EImportsModule, RouterTestingModule] }));
 
     it('should be created', () => {
-        const service: MotionPollService = TestBed.get(MotionPollService);
+        const service: MotionPollService = TestBed.inject(MotionPollService);
         expect(service).toBeTruthy();
     });
 });

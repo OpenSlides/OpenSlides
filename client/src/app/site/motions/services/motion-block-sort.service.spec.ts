@@ -12,7 +12,7 @@ describe('MotionBlockSortService', () => {
     );
 
     it('should be created', () => {
-        const service: MotionBlockSortService = TestBed.get(MotionBlockSortService);
+        const service: MotionBlockSortService = TestBed.inject(MotionBlockSortService);
         expect(service).toBeTruthy();
     });
 });

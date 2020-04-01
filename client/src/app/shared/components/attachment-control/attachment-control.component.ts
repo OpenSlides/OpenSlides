@@ -11,7 +11,8 @@ import {
     TemplateRef
 } from '@angular/core';
 import { FormBuilder, NgControl } from '@angular/forms';
-import { MatDialog, MatFormFieldControl } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatFormFieldControl } from '@angular/material/form-field';
 
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';

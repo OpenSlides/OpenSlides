@@ -12,7 +12,7 @@ describe('AgendaPdfService', () => {
     );
 
     it('should be created', () => {
-        const service: AgendaPdfService = TestBed.get(AgendaPdfService);
+        const service: AgendaPdfService = TestBed.inject(AgendaPdfService);
         expect(service).toBeTruthy();
     });
 });

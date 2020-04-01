@@ -12,7 +12,7 @@ describe('BlockDetailFilterListService', () => {
     );
 
     it('should be created', () => {
-        const service: BlockDetailFilterListService = TestBed.get(BlockDetailFilterListService);
+        const service: BlockDetailFilterListService = TestBed.inject(BlockDetailFilterListService);
         expect(service).toBeTruthy();
     });
 });

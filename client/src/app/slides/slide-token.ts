@@ -1,3 +1,5 @@
 import { InjectionToken } from '@angular/core';
 
-export const SLIDE = new InjectionToken<any>('SLIDE');
+export const SlideToken = {
+    token: new InjectionToken<any>('Token.SLIDE')
+};

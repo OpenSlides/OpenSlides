@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 
 import { CollectionStringMapperService } from 'app/core/core-services/collection-string-mapper.service';
 import { BasePollDialogService } from 'app/core/ui-services/base-poll-dialog.service';

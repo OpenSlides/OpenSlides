@@ -8,7 +8,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { CsvExportService } from 'app/core/ui-services/csv-export.service';
 import { DurationService } from 'app/core/ui-services/duration.service';
 import { ItemVisibilityChoices } from 'app/shared/models/agenda/item';
-import { BaseImportListComponent } from 'app/site/base/base-import-list';
+import { BaseImportListComponentDirective } from 'app/site/base/base-import-list';
 import { CreateTopic } from 'app/site/topics/models/create-topic';
 import { TopicImportService } from '../../../topics/services/topic-import.service';
 
@@ -19,7 +19,7 @@ import { TopicImportService } from '../../../topics/services/topic-import.servic
     selector: 'os-topic-import-list',
     templateUrl: './topic-import-list.component.html'
 })
-export class TopicImportListComponent extends BaseImportListComponent<CreateTopic> {
+export class TopicImportListComponent extends BaseImportListComponentDirective<CreateTopic> {
     /**
      * A form for text input
      */

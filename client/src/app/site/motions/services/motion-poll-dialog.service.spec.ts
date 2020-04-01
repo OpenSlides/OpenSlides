@@ -12,7 +12,7 @@ describe('MotionPollDialogService', () => {
     );
 
     it('should be created', () => {
-        const service: MotionPollDialogService = TestBed.get(MotionPollDialogService);
+        const service: MotionPollDialogService = TestBed.inject(MotionPollDialogService);
         expect(service).toBeTruthy();
     });
 });

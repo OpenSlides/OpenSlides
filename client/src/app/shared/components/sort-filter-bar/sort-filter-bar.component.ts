@@ -89,7 +89,7 @@ export class SortFilterBarComponent<V extends BaseViewModel> {
     /**
      * The bottom sheet used to alter sorting in mobile view
      */
-    @ViewChild('sortBottomSheet', { static: false })
+    @ViewChild('sortBottomSheet')
     public sortBottomSheet: SortBottomSheetComponent<V>;
 
     /**

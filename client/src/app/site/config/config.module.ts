@@ -10,7 +10,6 @@ import { SharedModule } from '../../shared/shared.module';
 
 @NgModule({
     imports: [CommonModule, ConfigRoutingModule, SharedModule],
-    declarations: [ConfigOverviewComponent, ConfigListComponent, ConfigFieldComponent, CustomTranslationComponent],
-    entryComponents: [CustomTranslationComponent]
+    declarations: [ConfigOverviewComponent, ConfigListComponent, ConfigFieldComponent, CustomTranslationComponent]
 })
 export class ConfigModule {}
