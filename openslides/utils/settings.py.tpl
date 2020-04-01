@@ -103,6 +103,8 @@ if use_redis:
     # a (host, port) tuple — ('localhost', 6379);
     # or a unix domain socket path string — "/path/to/redis.sock".
     REDIS_ADDRESS = "redis://127.0.0.1"
+    # REDIS_READ_ONLY_ADDRESS
+    AMOUNT_REPLICAS = 1
 
     # Session backend
 
