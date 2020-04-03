@@ -4,7 +4,7 @@ Exception ActionException(message: string);
 
 
 /**
- * Executes multiple actions in the conext of the user given by the user_id.
+ * Executes multiple actions in the context of the user given by the user_id.
  * All actions are processed independently.
  *
  * TODO: Maybe we do not want to run them independently.
@@ -12,7 +12,7 @@ Exception ActionException(message: string);
  *
  * @throws ActionException
  */
-handle_request (payload: Action[], user_id: number): ActionResult[]
+handle_request (payload: Action[], user_id: Id): ActionResult[]
 
 interface Action {
     action: string;

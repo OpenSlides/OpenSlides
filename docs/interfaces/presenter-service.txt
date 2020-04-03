@@ -23,12 +23,12 @@ Exception PresenterException(message: string);
  *
  * @throws PresenterException This exception might be thrown, if there was an
  * server error (Http-500-equivalent). For user error (e.g. wrong data) use the
- * PresenterError interface
+ * PresenterError interface.
  */
-handle_request(user_id: Id, payload: Presenter[]): PresenterResult[]
+handle_request(payload: Presenter[], user_id: Id): PresenterResult[]
 
 /**
- * This interface specifies what presenter is used with the payload for the call
+ * This interface specifies what presenter is used with the payload for the call.
  */
 Interface Presenter {
     presenter: string;
@@ -39,6 +39,9 @@ Interface Presenter {
  * A presenter may return anything. This is presenter-specific. But if there was
  * an error (user error, not a PresenterException), the response for this
  * presenter should follow `PresenterError`.
+ *
+ * TODO: Maybe we do not want to response an error but always throw an exception
+ * instead.
  */
 type PresenterResult = any | PresenterError;
 
@@ -48,4 +51,3 @@ type PresenterResult = any | PresenterError;
 Interface PresenterError {
     error: object;
 }
-
