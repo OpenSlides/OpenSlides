@@ -10,6 +10,7 @@ import { ViewModelStoreService } from 'app/core/core-services/view-model-store.s
 import { RelationDefinition } from 'app/core/definitions/relations';
 import { Topic } from 'app/shared/models/topics/topic';
 import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
+import { CreateTopic } from 'app/site/topics/models/create-topic';
 import { TopicTitleInformation, ViewTopic } from 'app/site/topics/models/view-topic';
 import { BaseIsAgendaItemAndListOfSpeakersContentObjectRepository } from '../base-is-agenda-item-and-list-of-speakers-content-object-repository';
 
@@ -72,4 +73,15 @@ export class TopicRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCon
     public getVerboseName = (plural: boolean = false) => {
         return this.translate.instant(plural ? 'Topics' : 'Topic');
     };
+
+    public duplicateTopic(topic: ViewTopic): void {
+        this.create(
+            new CreateTopic({
+                ...topic.topic,
+                agenda_type: topic.item.type,
+                agenda_parent_id: topic.item.parent_id,
+                agenda_weight: topic.item.weight
+            })
+        );
+    }
 }

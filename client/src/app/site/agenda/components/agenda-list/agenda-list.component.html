@@ -180,6 +180,12 @@
             </button>
             <mat-divider></mat-divider>
 
+            <!-- Duplicate items -->
+            <button mat-menu-item [disabled]="!selectedRows.length" (click)="duplicateMultipleTopics(selectedRows)">
+                <mat-icon>file_copy</mat-icon>
+                <span>{{ 'Create copy of selected topics' | translate }}</span>
+            </button>
+
             <!-- Delete selected -->
             <button mat-menu-item [disabled]="!selectedRows.length" (click)="removeSelected()">
                 <mat-icon>remove</mat-icon>
@@ -211,22 +217,19 @@
                 <span>{{ 'Edit details' | translate }}</span>
             </button>
 
+            <!-- Duplicate button -->
+            <button mat-menu-item (click)="duplicateTopic(item.contentObject)" *ngIf="isTopic(item.contentObject)">
+                <mat-icon>file_copy</mat-icon>
+                <span>{{ 'Create copy' | translate }}</span>
+            </button>
+
             <!-- Delete Button -->
-            <button
-                mat-menu-item
-                (click)="removeFromAgenda(item)"
-                *ngIf="item.contentObjectData.collection !== 'topics/topic'"
-            >
+            <button mat-menu-item (click)="removeFromAgenda(item)" *ngIf="!isTopic(item.contentObject)">
                 <mat-icon>remove</mat-icon>
                 <span>{{ 'Remove from agenda' | translate }}</span>
             </button>
 
-            <button
-                mat-menu-item
-                class="red-warning-text"
-                (click)="deleteTopic(item)"
-                *ngIf="item.contentObjectData.collection === 'topics/topic'"
-            >
+            <button mat-menu-item class="red-warning-text" (click)="deleteTopic(item)" *ngIf="isTopic(item.contentObject)">
                 <mat-icon>delete</mat-icon>
                 <span>{{ 'Delete' | translate }}</span>
             </button>
