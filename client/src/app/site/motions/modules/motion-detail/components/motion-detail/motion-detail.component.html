@@ -695,7 +695,7 @@
                 <editor
                     [hidden]="!isFinalEdit"
                     formControlName="modified_final_version"
-                    [init]="tinyMceSettings"
+                    [init]="strictTinyMceSettings"
                     required
                     (onChange)="detectChanges()"
                 ></editor>
@@ -721,7 +721,12 @@
 
         <!-- The HTML Editor for motions and traditional amendments -->
         <ng-container *ngIf="motion && editMotion && !motion.isParagraphBasedAmendment()">
-            <editor formControlName="text" [init]="tinyMceSettings" (onChange)="detectChanges()" required></editor>
+            <editor
+                formControlName="text"
+                [init]="strictTinyMceSettings"
+                (onChange)="detectChanges()"
+                required
+            ></editor>
             <div
                 *ngIf="
                     contentForm.get('text').invalid &&
@@ -744,7 +749,7 @@
                         {{ 'Line' | translate }} {{ paragraph.lineFrom }} - {{ paragraph.lineTo - 1 }}
                     </span>
                 </h3>
-                <editor [formControlName]="'text_' + paragraph.paragraphNo" [init]="tinyMceSettings"></editor>
+                <editor [formControlName]="'text_' + paragraph.paragraphNo" [init]="strictTinyMceSettings"></editor>
                 <div
                     *ngIf="
                         contentForm.get('text_' + paragraph.paragraphNo).invalid &&
@@ -782,7 +787,7 @@
             <!-- The HTML Editor -->
             <editor
                 formControlName="reason"
-                [init]="tinyMceSettings"
+                [init]="strictTinyMceSettings"
                 *ngIf="editMotion"
                 [required]="reasonRequired"
             ></editor>

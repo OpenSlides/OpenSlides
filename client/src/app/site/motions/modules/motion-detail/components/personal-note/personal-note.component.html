@@ -48,7 +48,7 @@
             <!-- The HTML Editor -->
             <editor
                 formControlName="note"
-                [init]="tinyMceSettings"
+                [init]="strictTinyMceSettings"
                 (onInit)="onInitTinyMce($event)"
                 (onRemove)="onLeaveTinyMce($event)"
             ></editor>

@@ -16,7 +16,7 @@
             <span>{{ 'to' | translate }}</span> {{ lineRange.to - 1 }}:
         </h4>
         <div>
-            <editor formControlName="text" [init]="tinyMceSettings"></editor>
+            <editor formControlName="text" [init]="strictTinyMceSettings"></editor>
         </div>
 
         <mat-checkbox formControlName="public">{{ 'Public' | translate }}</mat-checkbox>

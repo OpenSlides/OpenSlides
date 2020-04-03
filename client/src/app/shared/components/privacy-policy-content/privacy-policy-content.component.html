@@ -7,7 +7,7 @@
     </ng-container>
     <ng-container *ngIf="isEditing">
         <form [formGroup]="formGroup">
-            <editor formControlName="privacyPolicy" [init]="tinyMceSettings"></editor>
+            <editor formControlName="privacyPolicy" [init]="strictTinyMceSettings"></editor>
         </form>
     </ng-container>
 </mat-card>

@@ -106,7 +106,7 @@ export class MotionChangeRecommendationDialogComponent extends BaseViewComponent
         this.changeReco = data.changeRecommendation;
         this.lineRange = data.lineRange;
 
-        this.tinyMceSettings.toolbar = `undo redo | bold italic underline strikethrough
+        this.strictTinyMceSettings.toolbar = `undo redo | bold italic underline strikethrough
             | removeformat | bullist numlist | outdent indent | link charmap code`;
 
         this.createForm();

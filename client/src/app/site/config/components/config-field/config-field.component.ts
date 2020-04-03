@@ -319,7 +319,7 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit, OnDes
      */
     public getTinyMceSettings(): object {
         return {
-            ...this.tinyMceSettings,
+            ...this.strictTinyMceSettings,
             setup: editor => {
                 editor.on('Blur', ev => {
                     if (ev.target.getContent() !== this.translatedValue) {

@@ -193,7 +193,7 @@
         <div *ngIf="isAllowed('seePersonal')" class="spacer-bottom-20">
             <!-- The HTML Editor -->
             <h4>{{ 'About me' | translate }}</h4>
-            <editor formControlName="about_me" [init]="tinyMceSettings"></editor>
+            <editor formControlName="about_me" [init]="strictTinyMceSettings"></editor>
         </div>
 
         <div *ngIf="isAllowed('seePersonal')">

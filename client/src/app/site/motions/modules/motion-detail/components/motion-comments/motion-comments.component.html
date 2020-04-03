@@ -21,7 +21,7 @@
                 <editor
                     [id]="section.id"
                     formControlName="comment"
-                    [init]="tinyMceSettings"
+                    [init]="strictTinyMceSettings"
                     (onInit)="onInitTinyMce($event)"
                     (onRemove)="onLeaveTinyMce($event)"
                 ></editor>

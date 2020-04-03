@@ -35,7 +35,7 @@ export abstract class BaseComponent {
     /**
      * Settings for the TinyMCE editor selector
      */
-    public tinyMceSettings = {
+    public strictTinyMceSettings = {
         base_url: '/tinymce', // Root for resources
         suffix: '.min', // Suffix to use when loading resources
         theme: 'silver',
@@ -49,7 +49,7 @@ export abstract class BaseComponent {
         link_title: false,
         height: 320,
         plugins: `autolink charmap code fullscreen image imagetools
-            lists link paste searchreplace`,
+            lists link paste searchreplace table`,
         menubar: false,
         contextmenu: false,
         toolbar: `styleselect | bold italic underline strikethrough |
@@ -63,9 +63,39 @@ export abstract class BaseComponent {
         remove_script_host: true
     };
 
+    public easeTinyMceSettings = {
+        base_url: '/tinymce', // Root for resources
+        suffix: '.min', // Suffix to use when loading resources
+        theme: 'silver',
+        language: null,
+        language_url: null,
+        inline: false,
+        statusbar: false,
+        browser_spellcheck: true,
+        image_advtab: true,
+        image_description: false,
+        link_title: false,
+        height: 320,
+        plugins: `autolink charmap code fullscreen image imagetools
+            lists link paste searchreplace table`,
+        menubar: false,
+        toolbar1: `undo redo | fontselect | fontsizeselect | superscript subscript | table`,
+        contextmenu: `undo redo bold italic underline forecolor backcolor fontsizeselect fontselect`,
+        toolbar2: `styleselect | bold italic underline strikethrough |
+            forecolor backcolor removeformat | bullist numlist |
+            link image charmap | code fullscreen`,
+        mobile: {
+            theme: 'mobile',
+            plugins: ['autosave', 'lists', 'autolink']
+        }
+    };
+
     public constructor(protected titleService: Title, protected translate: TranslateService) {
-        this.tinyMceSettings.language_url = '/assets/tinymce/langs/' + this.translate.currentLang + '.js';
-        this.tinyMceSettings.language = this.translate.currentLang;
+        const languageUrl = '/assets/tinymce/langs/' + this.translate.currentLang + '.js';
+        this.strictTinyMceSettings.language_url = languageUrl;
+        this.strictTinyMceSettings.language = this.translate.currentLang;
+        this.easeTinyMceSettings.language_url = languageUrl;
+        this.easeTinyMceSettings.language = this.translate.currentLang;
     }
 
     /**

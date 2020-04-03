@@ -9,7 +9,7 @@
         <ng-container *ngIf="isEditing">
             <div>
                 <form [formGroup]="formGroup">
-                    <editor formControlName="legalNotice" [init]="tinyMceSettings"></editor>
+                    <editor formControlName="legalNotice" [init]="strictTinyMceSettings"></editor>
                 </form>
             </div>
         </ng-container>
