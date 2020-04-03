@@ -1,9 +1,9 @@
 <os-head-bar
     [nav]="false"
     [goBack]="true"
-    [editMode]="isSortMode"
+    [editMode]="isMobile && isSortMode"
     (cancelEditEvent)="onCancelSorting()"
-    (saveEvent)="onSaveSorting()"
+    (saveEvent)="onMobileSaveSorting()"
 >
     <!-- Title -->
     <div class="title-slot">
@@ -91,7 +91,13 @@
 
     <!-- Waiting speakers -->
     <div class="waiting-list" *ngIf="speakers && speakers.length > 0">
-        <os-sorting-list [input]="speakers" [live]="!isSortMode" [count]="true" [enable]="opCanManage() && isSortMode">
+        <os-sorting-list
+            [live]="true"
+            [input]="speakers"
+            [count]="true"
+            [enable]="opCanManage() && isSortMode"
+            (sortEvent)="onSortingChanged($event)"
+        >
             <!-- implicit speaker references into the component using ng-template slot -->
             <ng-template let-speaker>
                 <span *osPerms="'agenda.can_manage_list_of_speakers'">
@@ -172,7 +178,7 @@
 </mat-card>
 
 <mat-menu #speakerMenu="matMenu">
-    <button mat-menu-item (click)="isSortMode = true">
+    <button *ngIf="isMobile" mat-menu-item (click)="isSortMode = true">
         <mat-icon>sort</mat-icon>
         <span>{{ 'Sort' | translate }}</span>
     </button>
