@@ -11,12 +11,7 @@ export class IconContainerComponent {
      */
     @HostBinding('class')
     public get classes(): string {
-        switch (this.size) {
-            case 'medium':
-                return 'medium-container';
-            case 'large':
-                return 'large-container';
-        }
+        return `${this.size}-container`;
     }
 
     /**
@@ -29,7 +24,7 @@ export class IconContainerComponent {
      * Optional size property. Can be large, if needed.
      */
     @Input()
-    public size: 'medium' | 'large' = 'medium';
+    public size: 'small' | 'medium' | 'large' = 'medium';
 
     /**
      * Reverse text and icon.

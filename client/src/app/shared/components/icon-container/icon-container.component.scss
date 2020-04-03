@@ -1,3 +1,19 @@
+@mixin icon-container($iconSize, $contentSize, $fontWeight) {
+    line-height: $iconSize;
+
+    & > mat-icon {
+        font-size: $iconSize;
+        width: $iconSize;
+        height: $iconSize;
+        margin-top: 0 !important;
+    }
+
+    & > .content-node {
+        font-size: $contentSize;
+        font-weight: $fontWeight;
+    }
+}
+
 os-icon-container {
     display: flex;
     align-items: center;
@@ -6,33 +22,16 @@ os-icon-container {
         margin-top: 5px;
     }
 
-    &.medium-container {
-        $size: 18px;
-        line-height: $size;
+    &.small-container {
+        @include icon-container(12px, 12px, 400);
+    }
 
-        mat-icon {
-            font-size: $size;
-            height: $size;
-            width: $size;
-            margin-top: 0 !important;
-        }
+    &.medium-container {
+        @include icon-container(18px, 14px, 400);
     }
 
     &.large-container {
-        $size: 24px;
-        line-height: $size;
-
-        mat-icon {
-            font-size: $size;
-            width: $size;
-            height: $size;
-            margin-top: 0 !important;
-        }
-
-        .content-node {
-            font-size: 16px;
-            font-weight: 500;
-        }
+        @include icon-container(24px, 16px, 500);
     }
 
     .content-node {
