@@ -576,17 +576,16 @@ export class MotionPdfService {
         if (motion.isParagraphBasedAmendment()) {
             // this is logically redundant with the formation of amendments in the motion-detail html.
             // Should be refactored in a way that a service returns the correct html for both cases
-            for (const paragraph of this.motionRepo.getAmendmentParagraphs(motion, lineLength, false)) {
-                if (paragraph.diffLineTo === paragraph.diffLineFrom + 1) {
-                    motionText += `<h3>
-                        ${this.translate.instant('Line')} ${paragraph.diffLineFrom}:
-                    </h3>`;
-                } else {
-                    motionText += `<h3>
-                        ${this.translate.instant('Line')} ${paragraph.diffLineFrom} - ${paragraph.diffLineTo - 1}:
-                    </h3>`;
-                }
-
+            const changeRecos = this.changeRecoRepo.getChangeRecoOfMotion(motion.id);
+            const amendmentParas = this.motionRepo.getAmendmentParagraphLines(
+                motion,
+                lineLength,
+                crMode,
+                changeRecos,
+                false
+            );
+            for (const paragraph of amendmentParas) {
+                motionText += '<h3>' + this.motionRepo.getAmendmentParagraphLinesTitle(paragraph) + '</h3>';
                 motionText += `<div class="paragraphcontext">${paragraph.textPre}</div>`;
                 motionText += paragraph.text;
                 motionText += `<div class="paragraphcontext">${paragraph.textPost}</div>`;
@@ -634,11 +633,12 @@ export class MotionPdfService {
         return this.changeRecoRepo
             .getChangeRecoOfMotion(motion.id)
             .concat(
-                this.motionRepo
-                    .getAmendmentsInstantly(motion.id)
-                    .flatMap((amendment: ViewMotion) =>
-                        this.motionRepo.getAmendmentAmendedParagraphs(amendment, lineLength)
-                    )
+                this.motionRepo.getAmendmentsInstantly(motion.id).flatMap((amendment: ViewMotion) => {
+                    const changeRecos = this.changeRecoRepo
+                        .getChangeRecoOfMotion(amendment.id)
+                        .filter(reco => reco.showInFinalView());
+                    return this.motionRepo.getAmendmentAmendedParagraphs(amendment, lineLength, changeRecos);
+                })
             )
             .sort((a, b) => a.getLineFrom() - b.getLineFrom()) as ViewUnifiedChange[];
     }

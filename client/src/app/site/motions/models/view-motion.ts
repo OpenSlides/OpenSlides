@@ -199,7 +199,6 @@ export class ViewMotion extends BaseViewModelWithAgendaItemAndListOfSpeakers<Mot
      * Extract the lines of the amendments
      * If an amendments has multiple changes, they will be printed like an array of strings
      *
-     * @param amendment the motion to create the amendment to
      * @return The lines of the amendment
      */
     public getChangeLines(): string {

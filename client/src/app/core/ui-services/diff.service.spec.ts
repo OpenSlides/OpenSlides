@@ -1172,6 +1172,28 @@ describe('DiffService', () => {
                 );
             }
         ));
+
+        it('detects a word replacement at the end of line correctly', inject([DiffService], (service: DiffService) => {
+            const before =
+                '<p>' +
+                noMarkup(1) +
+                'wuid Brotzeit? Pfenningguat Stubn bitt da, hog di hi fei nia need nia need Goaßmaß ' +
+                brMarkup(2) +
+                'gscheid kloan mim';
+            const after =
+                '<P>wuid Brotzeit? Pfenningguat Stubn bitt da, ' +
+                'hog di hi fei nia need nia need Radler gscheid kloan mim';
+
+            const diff = service.diff(before, after);
+            expect(diff).toBe(
+                '<p>' +
+                    noMarkup(1) +
+                    'wuid Brotzeit? Pfenningguat Stubn bitt da, ' +
+                    'hog di hi fei nia need nia need <del>Goaßmaß </del><ins>Radler </ins>' +
+                    brMarkup(2) +
+                    'gscheid kloan mim</p>'
+            );
+        }));
     });
 
     describe('addCSSClassToFirstTag function', () => {

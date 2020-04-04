@@ -530,7 +530,6 @@
                     [matMenuTriggerFor]="changeRecoMenu"
                     *ngIf="
                         motion &&
-                        !motion.isParagraphBasedAmendment() &&
                         ((allChangingObjects && allChangingObjects.length) || motion.modified_final_version)
                     "
                 >
@@ -874,33 +873,40 @@
             <div class="alert alert-info" *ngIf="motion.diffLines.length === 0">
                 <span>{{ 'No changes at the text.' | translate }}</span>
             </div>
-            <div
-                *ngFor="let paragraph of getAmendmentParagraphs(showAmendmentContext)"
-                class="motion-text motion-text-diff amendment-view"
-                [class.line-numbers-none]="isLineNumberingNone()"
-                [class.line-numbers-inline]="isLineNumberingInline()"
-                [class.line-numbers-outside]="isLineNumberingOutside()"
-                [class.amendment-context]="showAmendmentContext"
-            >
-                <!-- TODO: everything here is required for PDF as well. Should be in a service -->
-                <h3
-                    *ngIf="paragraph.diffLineTo === paragraph.diffLineFrom + 1 && !showAmendmentContext"
-                    class="amendment-line-header"
+            <ng-container *ngIf="!isRecoMode(ChangeRecoMode.Diff) && !isFinalEdit">
+                <div
+                    *ngFor="let paragraph of getAmendmentParagraphs()"
+                    class="motion-text motion-text-diff amendment-view"
+                    [class.line-numbers-none]="isLineNumberingNone()"
+                    [class.line-numbers-inline]="isLineNumberingInline()"
+                    [class.line-numbers-outside]="isLineNumberingOutside()"
+                    [class.amendment-context]="showAmendmentContext"
                 >
-                    {{ 'Line' | translate }} {{ paragraph.diffLineFrom }}:
-                </h3>
-                <h3
-                    *ngIf="paragraph.diffLineTo !== paragraph.diffLineFrom + 1 && !showAmendmentContext"
-                    class="amendment-line-header"
-                >
-                    {{ 'Line' | translate }} {{ paragraph.diffLineFrom }} - {{ paragraph.diffLineTo - 1 }}:
-                </h3>
+                    <h3 class="amendment-line-header" *ngIf="!showAmendmentContext">{{ getAmendmentParagraphLinesTitle(paragraph) }}</h3>
 
-                <!-- TODO: Seems to be directly duplicated in the slide -->
-                <div class="paragraphcontext" [innerHtml]="paragraph.textPre | trust: 'html'"></div>
-                <div [innerHtml]="paragraph.text | trust: 'html'"></div>
-                <div class="paragraphcontext" [innerHtml]="paragraph.textPost | trust: 'html'"></div>
-            </div>
+                    <os-motion-detail-original-change-recommendations
+                        *ngIf="isLineNumberingOutside() && (isRecoMode(ChangeRecoMode.Original) || isRecoMode(ChangeRecoMode.Changed))"
+                        [html]="getAmendmentDiffTextWithContext(paragraph)"
+                        [changeRecommendations]="changeRecommendations"
+                        (createChangeRecommendation)="createChangeRecommendation($event)"
+                        (gotoChangeRecommendation)="gotoChangeRecommendation($event)"
+                    ></os-motion-detail-original-change-recommendations>
+                    <div
+                        *ngIf="!isLineNumberingOutside() || !(isRecoMode(ChangeRecoMode.Original) || isRecoMode(ChangeRecoMode.Changed))"
+                        [outerHTML]="getAmendmentDiffTextWithContext(paragraph) | trust: 'html'"
+                    ></div><!-- the <div> element is only a placeholder -> outerHTML to replace it -->
+                </div>
+            </ng-container>
+
+            <os-motion-detail-diff
+                *ngIf="isRecoMode(ChangeRecoMode.Diff)"
+                [motion]="motion"
+                [changes]="getChangesForDiffMode()"
+                [scrollToChange]="scrollToChange"
+                [highlightedLine]="highlightedLine"
+                [lineNumberingMode]="lnMode"
+                (createChangeRecommendation)="createChangeRecommendation($event)"
+            ></os-motion-detail-diff>
         </div>
         <div *ngIf="!motion.diffLines">
             <span class="red-warning-text">{{
@@ -910,7 +916,7 @@
     </section>
 
     <!-- Show entire motion text -->
-    <div>
+    <div *ngIf="isRecoMode(ChangeRecoMode.Original) || isRecoMode(ChangeRecoMode.Changed)">
         <mat-checkbox
             (change)="showAmendmentContext = !showAmendmentContext"
             *ngIf="motion && motion.isParagraphBasedAmendment()"
@@ -953,7 +959,10 @@
     </div>
 </mat-menu>
 
-<!-- Diff View Menu -->
+<!-- Diff View Menu
+     For motions, all items are available if there are changing objects. The final print template only after is has been created.
+     For paragraph-based amendments, only the original and the diff version is available.
+-->
 <mat-menu #changeRecoMenu="matMenu">
     <button
         mat-menu-item
@@ -982,13 +991,13 @@
         mat-menu-item
         (click)="setChangeRecoMode(ChangeRecoMode.Final)"
         [ngClass]="{ selected: crMode === ChangeRecoMode.Final }"
-        *ngIf="allChangingObjects && allChangingObjects.length"
+        *ngIf="motion && !motion.isParagraphBasedAmendment() && allChangingObjects && allChangingObjects.length"
     >
         {{ 'Final version' | translate }}
     </button>
     <button
         mat-menu-item
-        *ngIf="motion && motion.modified_final_version"
+        *ngIf="motion && motion.modified_final_version && !motion.isParagraphBasedAmendment()"
         (click)="setChangeRecoMode(ChangeRecoMode.ModifiedFinal)"
         [ngClass]="{ selected: crMode === ChangeRecoMode.ModifiedFinal }"
     >

@@ -18,6 +18,7 @@ import {
 import { ChangeRecoMode } from 'app/site/motions/motions.constants';
 import { BaseRepository } from '../base-repository';
 import { DiffService, LineRange, ModificationType } from '../../ui-services/diff.service';
+import { LinenumberingService } from '../../ui-services/linenumbering.service';
 import { ViewMotion } from '../../../site/motions/models/view-motion';
 import { ViewUnifiedChange } from '../../../shared/models/motions/view-unified-change';
 
@@ -50,7 +51,9 @@ export class ChangeRecommendationRepositoryService extends BaseRepository<
      * @param {CollectionStringMapperService} mapperService Maps collection strings to classes
      * @param {ViewModelStoreService} viewModelStoreService
      * @param {TranslateService} translate
+     * @param {RelationManagerService} relationManager
      * @param {DiffService} diffService
+     * @param {LinenumberingService} lineNumbering Line numbering service
      */
     public constructor(
         DS: DataStoreService,
@@ -59,7 +62,8 @@ export class ChangeRecommendationRepositoryService extends BaseRepository<
         viewModelStoreService: ViewModelStoreService,
         translate: TranslateService,
         relationManager: RelationManagerService,
-        private diffService: DiffService
+        private diffService: DiffService,
+        private lineNumbering: LinenumberingService
     ) {
         super(
             DS,
@@ -103,7 +107,7 @@ export class ChangeRecommendationRepositoryService extends BaseRepository<
     /**
      * Synchronously getting the change recommendations of the corresponding motion.
      *
-     * @param motionId the id of the target motion
+     * @param motion_id the id of the target motion
      * @returns the array of change recommendations to the motions.
      */
     public getChangeRecoOfMotion(motion_id: number): ViewMotionChangeRecommendation[] {
@@ -171,18 +175,57 @@ export class ChangeRecommendationRepositoryService extends BaseRepository<
      * @param {LineRange} lineRange
      * @param {number} lineLength
      */
-    public createChangeRecommendationTemplate(
+    public createMotionChangeRecommendationTemplate(
         motion: ViewMotion,
         lineRange: LineRange,
         lineLength: number
     ): ViewMotionChangeRecommendation {
+        const motionText = this.lineNumbering.insertLineNumbers(motion.text, lineLength);
+
         const changeReco = new MotionChangeRecommendation();
         changeReco.line_from = lineRange.from;
         changeReco.line_to = lineRange.to;
         changeReco.type = ModificationType.TYPE_REPLACEMENT;
-        changeReco.text = this.diffService.extractMotionLineRange(motion.text, lineRange, false, lineLength, null);
+        changeReco.text = this.diffService.extractMotionLineRange(motionText, lineRange, false, lineLength, null);
         changeReco.rejected = false;
         changeReco.motion_id = motion.id;
+
+        return new ViewMotionChangeRecommendation(changeReco);
+    }
+
+    /**
+     * Creates a {@link ViewMotionChangeRecommendation} object based on the amendment ID, the precalculated
+     * paragraphs (because we don't have access to motion-repository serice here) and the given lange range.
+     * This object is not saved yet and does not yet have any changed HTML. It's meant to populate the UI form.
+     *
+     * @param {ViewMotion} amendment
+     * @param {string[]} lineNumberedParagraphs
+     * @param {LineRange} lineRange
+     * @param {number} lineLength
+     */
+    public createAmendmentChangeRecommendationTemplate(
+        amendment: ViewMotion,
+        lineNumberedParagraphs: string[],
+        lineRange: LineRange,
+        lineLength: number
+    ): ViewMotionChangeRecommendation {
+        const consolidatedText = lineNumberedParagraphs.join('\n');
+
+        const extracted = this.diffService.extractRangeByLineNumbers(consolidatedText, lineRange.from, lineRange.to);
+        const extractedHtml =
+            extracted.outerContextStart +
+            extracted.innerContextStart +
+            extracted.html +
+            extracted.innerContextEnd +
+            extracted.outerContextEnd;
+
+        const changeReco = new MotionChangeRecommendation();
+        changeReco.line_from = lineRange.from;
+        changeReco.line_to = lineRange.to;
+        changeReco.type = ModificationType.TYPE_REPLACEMENT;
+        changeReco.rejected = false;
+        changeReco.motion_id = amendment.id;
+        changeReco.text = extractedHtml;
 
         return new ViewMotionChangeRecommendation(changeReco);
     }

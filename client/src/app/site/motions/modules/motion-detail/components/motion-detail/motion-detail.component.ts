@@ -215,9 +215,20 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
     public changeRecommendations: ViewMotionChangeRecommendation[];
 
     /**
-     * All amendments to this motions
+     * All amendments to this motion
      */
     public amendments: ViewMotion[];
+
+    /**
+     * The change recommendations to amendments to this motion
+     */
+    public amendmentChangeRecos: { [amendmentId: string]: ViewMotionChangeRecommendation[] } = {};
+
+    /**
+     * The observables for the `amendmentChangeRecos` field above.
+     * Necessary to track which amendments' change recommendations we have already subscribed to.
+     */
+    public amendmentChangeRecoSubscriptions: { [amendmentId: string]: Subscription } = {};
 
     /**
      * All change recommendations AND amendments, sorted by line number.
@@ -416,25 +427,25 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      * @param repo Motion Repository
      * @param changeRecoRepo Change Recommendation Repository
      * @param statuteRepo: Statute Paragraph Repository
-     * @param mediafileRepo Mediafile Repository
-     * @param DS The DataStoreService
      * @param configService The configuration provider
      * @param promptService ensure safe deletion
      * @param pdfExport export the motion to pdf
      * @param personalNoteService: personal comments and favorite marker
      * @param linenumberingService The line numbering service
      * @param categoryRepo Repository for categories
-     * @param viewModelStore accessing view models
-     * @param categoryRepo access the category repository
      * @param userRepo Repository for users
      * @param notifyService: NotifyService work with notification
      * @param tagRepo
-     * @param mediaFilerepo
      * @param workflowRepo
      * @param blockRepo
      * @param itemRepo
      * @param motionSortService
-     * @param motionFilterListService
+     * @param amendmentSortService
+     * @param motionFilterService
+     * @param amendmentFilterService
+     * @param cd ChangeDetectorRef
+     * @param pollDialog
+     * @param motionPollService
      */
     public constructor(
         title: Title,
@@ -591,6 +602,24 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
     }
 
     /**
+     * Subscribes to all new amendment's change recommendations so we can access their data for the diff view
+     */
+    private resetAmendmentChangeRecoListener(): void {
+        this.amendments.forEach((amendment: ViewMotion) => {
+            if (this.amendmentChangeRecoSubscriptions[amendment.id] === undefined) {
+                this.amendmentChangeRecoSubscriptions[
+                    amendment.id
+                ] = this.changeRecoRepo
+                    .getChangeRecosOfMotionObservable(amendment.id)
+                    .subscribe((changeRecos: ViewMotionChangeRecommendation[]): void => {
+                        this.amendmentChangeRecos[amendment.id] = changeRecos;
+                        this.recalcUnifiedChanges();
+                    });
+            }
+        });
+    }
+
+    /**
      * Merges amendments and change recommendations and sorts them by the line numbers.
      * Called each time one of these arrays changes.
      *
@@ -614,8 +643,12 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         }
         if (this.amendments) {
             this.amendments.forEach((amendment: ViewMotion): void => {
+                const toApplyChanges = (this.amendmentChangeRecos[amendment.id] || []).filter(
+                    // The rejected change recommendations for amendments should not be considered
+                    change => change.showInFinalView()
+                );
                 this.repo
-                    .getAmendmentAmendedParagraphs(amendment, this.lineLength)
+                    .getAmendmentAmendedParagraphs(amendment, this.lineLength, toApplyChanges)
                     .forEach((change: ViewUnifiedChange): void => {
                         this.allChangingObjects.push(change);
                     });
@@ -630,6 +663,14 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
                 return 0;
             }
         });
+
+        // When "diff" is the default view mode, the crMode might have been set
+        // before the motion and allChangingObjects have been loaded. As the availability of "diff" depends on
+        // allChangingObjects, we set "diff" first in this case (in the config-listener) and perform the actual
+        // check if "diff" is possible now.
+        // Test: "diff" as default view. Open a motion, create an amendment. "Original" should be set automatically.
+        this.crMode = this.determineCrMode(this.crMode);
+
         this.cd.markForCheck();
     }
 
@@ -664,6 +705,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
 
                 this.repo.amendmentsTo(motionId).subscribe((amendments: ViewMotion[]): void => {
                     this.amendments = amendments;
+                    this.resetAmendmentChangeRecoListener();
                     this.recalcUnifiedChanges();
                 }),
                 this.repo
@@ -909,14 +951,47 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
     }
 
     /**
+     * This returns the plain HTML of a changed area in an amendment, including its context,
+     * for the purpose of piping it into <motion-detail-original-change-recommendations>.
+     * This component works with plain HTML, hence we are composing plain HTML here, too.
+     *
+     * @param {DiffLinesInParagraph} paragraph
+     * @returns {string}
+     *
+     * TODO: Seems to be directly duplicated in the slide
+     */
+    public getAmendmentDiffTextWithContext(paragraph: DiffLinesInParagraph): string {
+        return (
+            '<div class="paragraphcontext">' +
+            paragraph.textPre +
+            '</div>' +
+            '<div>' +
+            paragraph.text +
+            '</div>' +
+            '<div class="paragraphcontext">' +
+            paragraph.textPost +
+            '</div>'
+        );
+    }
+
+    /**
      * If `this.motion` is an amendment, this returns the list of all changed paragraphs.
      * TODO: Cleanup: repo function could be injected part of the model, to have easier access
      *
-     * @param {boolean} includeUnchanged
      * @returns {DiffLinesInParagraph[]}
      */
-    public getAmendmentParagraphs(includeUnchanged: boolean): DiffLinesInParagraph[] {
-        return this.repo.getAmendmentParagraphs(this.motion, this.lineLength, includeUnchanged);
+    public getAmendmentParagraphs(): DiffLinesInParagraph[] {
+        return this.repo.getAmendmentParagraphLines(
+            this.motion,
+            this.lineLength,
+            this.crMode,
+            this.changeRecommendations,
+            this.showAmendmentContext
+        );
+    }
+
+    public getAmendmentParagraphLinesTitle(paragraph: DiffLinesInParagraph): string {
+        return this.repo.getAmendmentParagraphLinesTitle(paragraph);
     }
 
     /**
@@ -1063,12 +1138,27 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
             editChangeRecommendation: false,
             newChangeRecommendation: true,
             lineRange: lineRange,
-            changeRecommendation: this.changeRecoRepo.createChangeRecommendationTemplate(
+            changeRecommendation: null
+        };
+        if (this.motion.isParagraphBasedAmendment()) {
+            const lineNumberedParagraphs = this.repo.getAllAmendmentParagraphsWithOriginalLineNumbers(
+                this.motion,
+                this.lineLength,
+                false
+            );
+            data.changeRecommendation = this.changeRecoRepo.createAmendmentChangeRecommendationTemplate(
+                this.motion,
+                lineNumberedParagraphs,
+                lineRange,
+                this.lineLength
+            );
+        } else {
+            data.changeRecommendation = this.changeRecoRepo.createMotionChangeRecommendationTemplate(
                 this.motion,
                 lineRange,
                 this.lineLength
-            )
-        };
+            );
+        }
         this.dialogService.open(MotionChangeRecommendationDialogComponent, {
             ...mediumDialogSettings,
             data: data
@@ -1329,7 +1419,8 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
     /**
      * Adds or removes a tag to the current motion
      *
-     * @param id Motion tag id
+     * @param {MouseEvent} event
+     * @param {number} id Motion tag id
      */
     public setTag(event: MouseEvent, id: number): void {
         event.stopPropagation();
@@ -1497,7 +1588,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      * Function to handle leaving persons and
      * recognize if there is no other person editing the same motion anymore.
      *
-     * @param senderId The id of the sender who has left the editing-view.
+     * @param senderName The name of the sender who has left the editing-view.
      */
     private recognizeOtherWorkerOnMotion(senderName: string): void {
         this.otherWorkOnMotion = this.otherWorkOnMotion.filter(value => value !== senderName);
