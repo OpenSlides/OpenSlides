@@ -1861,14 +1861,27 @@ export class DiffService {
         // Remove <del> tags that only delete line numbers
         // We need to do this before removing </del><del> as done in one of the next statements
         diffUnnormalized = diffUnnormalized.replace(
-            /<del>((<BR CLASS="os-line-break"><\/del><del>)?(<span[^>]+os-line-number[^>]+?>)(\s|<\/?del>)*<\/span>)<\/del>/gi,
-            (found: string, tag: string, br: string, span: string): string => {
-                return (br !== undefined ? br : '') + span + ' </span>';
+            /<del>(((<BR CLASS="os-line-break">)<\/del><del>)?(<span[^>]+os-line-number[^>]+?>)(\s|<\/?del>)*<\/span>)<\/del>/gi,
+            (found: string, tag: string, brWithDel: string, plainBr: string, span: string): string => {
+                return (plainBr !== undefined ? plainBr : '') + span + ' </span>';
             }
         );
 
         // Merging individual insert/delete statements into bigger blocks
         diffUnnormalized = diffUnnormalized.replace(/<\/ins><ins>/gi, '').replace(/<\/del><del>/gi, '');
+
+        // If we have a <del>deleted word</del>LINEBREAK<ins>new word</ins>, let's assume that the insertion
+        // was actually done in the same line as the deletion.
+        // We don't have the LINEBREAK-markers in the new string, hence we can't be a 100% sure, but
+        // this will probably the more frequent case.
+        // This only really makes a differences for change recommendations anyway, where we split the text into lines
+        // Hint: if there is no deletion before the line break, we have the same issue, but cannot solve this here.
+        diffUnnormalized = diffUnnormalized.replace(
+            /(<\/del>)(<BR CLASS="os-line-break"><span[^>]+os-line-number[^>]+?>\s*<\/span>)(<ins>[\s\S]*?<\/ins>)/gi,
+            (found: string, del: string, br: string, ins: string): string => {
+                return del + ins + br;
+            }
+        );
 
         // If only a few characters of a word have changed, don't display this as a replacement of the whole word,
         // but only of these specific characters
