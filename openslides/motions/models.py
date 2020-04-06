@@ -880,6 +880,7 @@ class MotionVote(RESTModelMixin, BaseVote):
 
     class Meta:
         default_permissions = ()
+        unique_together = ("user", "option")
 
 
 class MotionOptionManager(BaseManager):

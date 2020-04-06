@@ -115,6 +115,7 @@ class BasePollViewSet(ModelViewSet):
         poll.save()
 
     @detail_route(methods=["POST"])
+    @transaction.atomic
     def start(self, request, pk):
         poll = self.get_object()
         if poll.state != BasePoll.STATE_CREATED:
@@ -126,6 +127,7 @@ class BasePollViewSet(ModelViewSet):
         return Response()
 
     @detail_route(methods=["POST"])
+    @transaction.atomic
     def stop(self, request, pk):
         poll = self.get_object()
         # Analog polls could not be stopped; they are stopped when
@@ -145,6 +147,7 @@ class BasePollViewSet(ModelViewSet):
         return Response()
 
     @detail_route(methods=["POST"])
+    @transaction.atomic
     def publish(self, request, pk):
         poll = self.get_object()
         if poll.state != BasePoll.STATE_FINISHED:
@@ -157,6 +160,7 @@ class BasePollViewSet(ModelViewSet):
         return Response()
 
     @detail_route(methods=["POST"])
+    @transaction.atomic
     def pseudoanonymize(self, request, pk):
         poll = self.get_object()
 
@@ -173,6 +177,7 @@ class BasePollViewSet(ModelViewSet):
         return Response()
 
     @detail_route(methods=["POST"])
+    @transaction.atomic
     def reset(self, request, pk):
         poll = self.get_object()
         poll.reset()
@@ -226,11 +231,11 @@ class BasePollViewSet(ModelViewSet):
             if poll.state != BasePoll.STATE_STARTED:
                 raise ValidationError("You can only vote on a started poll.")
             if not request.user.is_present or not in_some_groups(
-                request.user.id,
-                list(poll.groups.values_list("pk", flat=True)),
-                exact=True,
+               request.user.id,
+               list(poll.groups.values_list("pk", flat=True)),
+               exact=True,
             ):
-                self.permission_denied(request)
+               self.permission_denied(request)
 
     def parse_vote_value(self, obj, key):
         """ Raises a ValidationError on incorrect values, including None """

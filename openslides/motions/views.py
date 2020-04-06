@@ -1,4 +1,3 @@
-from decimal import Decimal
 from typing import List, Set
 
 import jsonschema
@@ -1223,28 +1222,31 @@ class MotionPollViewSet(BasePollViewSet):
             elif poll.pollmethod == MotionPoll.POLLMETHOD_YN and data not in ("Y", "N"):
                 raise ValidationError("Data must be Y or N")
 
-            if poll.type == MotionPoll.TYPE_PSEUDOANONYMOUS:
-                if user in poll.voted.all():
-                    raise ValidationError("You already voted on this poll")
-
     def handle_named_vote(self, data, poll, user):
+        if user in poll.voted.all():
+            raise ValidationError({"detail": "You have already voted"})
+        poll.voted.add(user)
+        poll.save()
+
         option = poll.options.get()
-        vote, _ = MotionVote.objects.get_or_create(user=user, option=option)
+        vote = MotionVote.objects.create(user=user, option=option)
         self.handle_named_and_pseudoanonymous_vote(data, user, poll, option, vote)
 
     def handle_pseudoanonymous_vote(self, data, poll, user):
+        if user in poll.voted.all():
+            raise ValidationError({"detail": "You have already voted"})
+        poll.voted.add(user)
+        poll.save()
+
         option = poll.options.get()
         vote = MotionVote.objects.create(user=None, option=option)
         self.handle_named_and_pseudoanonymous_vote(data, user, poll, option, vote)
 
     def handle_named_and_pseudoanonymous_vote(self, data, user, poll, option, vote):
         vote.value = data
-        vote.weight = Decimal("1")
+        vote.weight = user.vote_weight
         vote.save(no_delete_on_restriction=True)
         inform_changed_data(option)
-
-        poll.voted.add(user)
-        poll.save()
 
 
 class MotionOptionViewSet(BaseOptionViewSet):

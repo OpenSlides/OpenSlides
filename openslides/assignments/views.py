@@ -2,6 +2,7 @@ from decimal import Decimal
 
 from django.contrib.auth import get_user_model
 from django.db import transaction
+from django.db.utils import IntegrityError
 
 from openslides.poll.views import BaseOptionViewSet, BasePollViewSet, BaseVoteViewSet
 from openslides.utils.auth import has_perm
@@ -507,12 +508,18 @@ class AssignmentPollViewSet(BasePollViewSet):
     def create_votes_type_named_pseudoanonymous(
         self, data, poll, check_user, vote_user
     ):
-        """ check_user is used for the voted-array, vote_user is the one put into the vote """
+        """
+        check_user is used for the voted-array and weight of the vote,
+        vote_user is the one put into the vote
+        """
         options = poll.get_options()
         for option_id, result in data.items():
             option = options.get(pk=option_id)
             vote = AssignmentVote.objects.create(
-                option=option, user=vote_user, value=result
+                option=option,
+                user=vote_user,
+                value=result,
+                weight=check_user.vote_weight,
             )
             inform_changed_data(vote, no_delete_on_restriction=True)
             inform_changed_data(option, no_delete_on_restriction=True)
@@ -520,6 +527,13 @@ class AssignmentPollViewSet(BasePollViewSet):
         poll.voted.add(check_user)
 
     def handle_named_vote(self, data, poll, user):
+        try:
+            with transaction.atomic():
+                return self.try_handle_named_vote(data, poll, user)
+        except IntegrityError:
+            raise ValidationError({"detail": "You have already voted"})
+
+    def try_handle_named_vote(self, data, poll, user):
         if user in poll.voted.all():
             raise ValidationError({"detail": "You have already voted"})
 
@@ -532,6 +546,13 @@ class AssignmentPollViewSet(BasePollViewSet):
             self.create_votes_type_named_pseudoanonymous(data, poll, user, user)
 
     def handle_pseudoanonymous_vote(self, data, poll, user):
+        try:
+            with transaction.atomic():
+                return self.try_handle_pseudoanonymous_vote(data, poll, user)
+        except IntegrityError:
+            raise ValidationError({"detail": "You have already voted"})
+
+    def try_handle_pseudoanonymous_vote(self, data, poll, user):
         if user in poll.voted.all():
             raise ValidationError({"detail": "You have already voted"})
 

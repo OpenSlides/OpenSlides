@@ -1,7 +1,7 @@
 from unittest import TestCase
 from unittest.mock import MagicMock, patch
 
-from openslides.users.serializers import UserFullSerializer
+from openslides.users.serializers import UserSerializer
 from openslides.utils.rest_api import ValidationError
 
 
@@ -10,7 +10,7 @@ class UserCreateUpdateSerializerTest(TestCase):
         """
         Tests, that the validator raises a ValidationError, if not data is given.
         """
-        serializer = UserFullSerializer()
+        serializer = UserSerializer()
         data: object = {}
 
         with self.assertRaises(ValidationError):
@@ -22,7 +22,7 @@ class UserCreateUpdateSerializerTest(TestCase):
         Tests, that an empty username is generated.
         """
         generate_username.return_value = "test_value"
-        serializer = UserFullSerializer()
+        serializer = UserSerializer()
         data = {"first_name": "TestName"}
 
         new_data = serializer.validate(data)
@@ -34,7 +34,7 @@ class UserCreateUpdateSerializerTest(TestCase):
         Tests, that an empty username is not set in a patch request context.
         """
         view = MagicMock(action="partial_update")
-        serializer = UserFullSerializer(context={"view": view})
+        serializer = UserSerializer(context={"view": view})
         data = {"first_name": "TestName"}
 
         new_data = serializer.validate(data)

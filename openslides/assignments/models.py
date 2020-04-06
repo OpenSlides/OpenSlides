@@ -245,6 +245,7 @@ class AssignmentVote(RESTModelMixin, BaseVote):
 
     class Meta:
         default_permissions = ()
+        unique_together = ("user", "option")
 
 
 class AssignmentOptionManager(BaseManager):

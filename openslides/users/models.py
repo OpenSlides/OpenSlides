@@ -1,4 +1,5 @@
 import smtplib
+from decimal import Decimal
 
 from django.conf import settings
 from django.contrib.auth.hashers import make_password
@@ -158,6 +159,10 @@ class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
     is_present = models.BooleanField(default=False)
 
     is_committee = models.BooleanField(default=False)
+
+    vote_weight = models.DecimalField(
+        default=Decimal("1"), max_digits=15, decimal_places=6, null=False, blank=True
+    )
 
     objects = UserManager()
 

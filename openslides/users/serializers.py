@@ -25,6 +25,7 @@ USERCANSEESERIALIZER_FIELDS = (
     "groups",
     "is_present",
     "is_committee",
+    "vote_weight",
 )
 
 
@@ -38,7 +39,7 @@ USERCANSEEEXTRASERIALIZER_FIELDS = USERCANSEESERIALIZER_FIELDS + (
 )
 
 
-class UserFullSerializer(ModelSerializer):
+class UserSerializer(ModelSerializer):
     """
     Serializer for users.models.User objects.
 
