@@ -111,7 +111,7 @@
     <os-projector-button [menuItem]="true" [object]="poll" *osPerms="'core.can_manage_projector'"></os-projector-button>
     <button *osPerms="'assignments.can_manage'" mat-menu-item (click)="openDialog(poll)">
         <mat-icon>edit</mat-icon>
-        <span translate>Edit</span>
+        <span>{{ 'Edit' | translate }}</span>
     </button>
     <button
         mat-menu-item
@@ -119,11 +119,11 @@
         (click)="pseudoanonymizePoll()"
     >
         <mat-icon>warning</mat-icon>
-        <span translate>Anonymize votes</span>
+        <span>{{ 'Anonymize votes' | translate }}</span>
     </button>
     <mat-divider></mat-divider>
     <button *osPerms="'assignments.can_manage'" mat-menu-item (click)="deletePoll()">
         <mat-icon color="warn">delete</mat-icon>
-        <span translate>Delete</span>
+        <span>{{ 'Delete' | translate }}</span>
     </button>
 </mat-menu>

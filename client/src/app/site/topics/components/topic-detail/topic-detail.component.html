@@ -11,9 +11,9 @@
     <!-- Title -->
     <div class="title-slot">
         <h2>
-            <span *ngIf="newTopic" translate>New topic</span>
-            <span *ngIf="editTopic && !newTopic" translate>Edit topic</span>
-            <span *ngIf="!newTopic && !editTopic" translate>Topic</span>
+            <span *ngIf="newTopic">{{ 'New topic' | translate }}</span>
+            <span *ngIf="editTopic && !newTopic">{{ 'Edit topic' | translate }}</span>
+            <span *ngIf="!newTopic && !editTopic">{{ 'Topic' | translate }}</span>
         </h2>
     </div>
 
@@ -38,7 +38,8 @@
 
     <div *ngIf="topic.hasAttachments() && !editTopic">
         <h3>
-            <span translate>Attachments</span>:
+            <span>{{ 'Attachments' | translate }}</span
+            >:
             <mat-list dense>
                 <mat-list-item *ngFor="let file of topic.attachments">
                     <a [routerLink]="file.url" target="_blank">{{ file.getTitle() }}</a>
@@ -58,13 +59,13 @@
                     formControlName="title"
                     placeholder="{{ 'Title' | translate }}"
                 />
-                <mat-error *ngIf="topicForm.invalid" translate>A name is required</mat-error>
+                <mat-error *ngIf="topicForm.invalid">{{ 'A name is required' | translate }}</mat-error>
             </mat-form-field>
         </div>
 
         <!-- The editor -->
         <div class="spacer-bottom-20">
-            <h4 translate>Text</h4>
+            <h4>{{ 'Text' | translate }}</h4>
             <editor formControlName="text" [init]="tinyMceSettings"></editor>
         </div>
 
@@ -108,7 +109,7 @@
         <mat-divider></mat-divider>
         <button *osPerms="'agenda.can_manage'" mat-menu-item class="red-warning-text" (click)="onDeleteButton()">
             <mat-icon>delete</mat-icon>
-            <span translate>Delete</span>
+            <span>{{ 'Delete' | translate }}</span>
         </button>
     </div>
 </mat-menu>

@@ -1,5 +1,5 @@
 <h4>
-    <span translate>Submitters</span>
+    <span>{{ 'Submitters' | translate }}</span>
     <button
         class="small-button"
         type="button"
@@ -45,7 +45,11 @@
     </form>
 
     <p>
-        <button type="button" mat-button (click)="onSave()"><span translate>Save</span></button>
-        <button type="button" mat-button (click)="onCancel()"><span translate>Cancel</span></button>
+        <button type="button" mat-button (click)="onSave()">
+            <span>{{ 'Save' | translate }}</span>
+        </button>
+        <button type="button" mat-button (click)="onCancel()">
+            <span>{{ 'Cancel' | translate }}</span>
+        </button>
     </p>
 </div>

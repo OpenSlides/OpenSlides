@@ -1,6 +1,8 @@
 <os-head-bar prevUrl="../.." [nav]="false" [multiSelectMode]="isMultiSelect">
     <!-- Title -->
-    <div class="title-slot" *ngIf="!parentMotion"><h2 translate>Amendments</h2></div>
+    <div class="title-slot" *ngIf="!parentMotion">
+        <h2>{{ 'Amendments' | translate }}</h2>
+    </div>
 
     <!-- TODO would require translations with parameters -->
     <div class="title-slot" *ngIf="parentMotion">
@@ -20,7 +22,7 @@
     <!-- Multiselect info -->
     <div class="central-info-slot">
         <button mat-icon-button (click)="toggleMultiSelect()"><mat-icon>arrow_back</mat-icon></button>
-        <span>{{ selectedRows.length }}&nbsp;</span><span translate>selected</span>
+        <span>{{ selectedRows.length }}&nbsp;</span><span>{{ 'selected' | translate }}</span>
     </div>
 </os-head-bar>
 
@@ -45,7 +47,7 @@
                 <span>{{ motion.identifier }}</span>
                 <span *ngIf="motion.diffLines && motion.diffLines.length">
                     <span *ngIf="motion.identifier">&nbsp;&middot;&nbsp;</span>
-                    <span translate>Line</span>
+                    <span>{{ 'Line' | translate }}</span>
                     <span>&nbsp;{{ motion.getChangeLines() }}</span>
                 </span>
             </div>
@@ -53,14 +55,14 @@
             <!-- Submitter -->
             <div class="submitters-line one-line">
                 <span *ngIf="motion.submitters.length">
-                    <span translate>by</span>
+                    <span>{{ 'by' | translate }}</span>
                     {{ motion.submitters }}
                 </span>
 
                 <span *ngIf="motion.submitters.length">
                     &middot;
                 </span>
-                <span translate>Sequential number</span>
+                <span>{{ 'Sequential number' | translate }}</span>
                 {{ motion.id }}
             </div>
 
@@ -115,26 +117,26 @@
         <div *osPerms="'motions.can_manage'">
             <button mat-menu-item (click)="toggleMultiSelect()">
                 <mat-icon>library_add</mat-icon>
-                <span translate>Multiselect</span>
+                <span>{{ 'Multiselect' | translate }}</span>
             </button>
         </div>
         <button mat-menu-item (click)="openExportDialog()">
             <mat-icon>archive</mat-icon>
-            <span translate>Export</span>
+            <span>{{ 'Export' | translate }}</span>
         </button>
         <button mat-menu-item (click)="exportAmendmentListPdf()">
             <mat-icon>picture_as_pdf</mat-icon>
-            <span translate>Amendment list (PDF)</span>
+            <span>{{ 'Amendment list (PDF)' | translate }}</span>
         </button>
     </div>
     <div *ngIf="isMultiSelect">
         <button mat-menu-item (click)="selectAll()">
             <mat-icon>done_all</mat-icon>
-            <span translate>Select all</span>
+            <span>{{ 'Select all' | translate }}</span>
         </button>
         <button mat-menu-item [disabled]="!selectedRows.length" (click)="deselectAll()">
             <mat-icon>clear</mat-icon>
-            <span translate>Deselect all</span>
+            <span>{{ 'Deselect all' | translate }}</span>
         </button>
 
         <ng-container *osPerms="'motions.can_manage'; or: 'motions.can_manage_metadata'">

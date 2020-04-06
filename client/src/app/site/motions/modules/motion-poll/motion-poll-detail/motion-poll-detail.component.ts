@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -21,6 +21,7 @@ import { BasePollDetailComponent } from 'app/site/polls/components/base-poll-det
     selector: 'os-motion-poll-detail',
     templateUrl: './motion-poll-detail.component.html',
     styleUrls: ['./motion-poll-detail.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None
 })
 export class MotionPollDetailComponent extends BasePollDetailComponent<ViewMotionPoll, MotionPollService> {

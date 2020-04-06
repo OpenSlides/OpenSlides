@@ -26,7 +26,9 @@
                     -->
                 </span>
                 <span class="status">
-                    <ng-container *ngIf="change.isRejected()"> – <span translate>Rejected</span></ng-container>
+                    <ng-container *ngIf="change.isRejected()">
+                        – <span>{{ 'Rejected' | translate }}</span></ng-container
+                    >
                     <ng-container *ngIf="change.isAccepted() && isAmendment(change)">
                         – {{ change.stateName | translate }}</ng-container
                     >
@@ -150,7 +152,7 @@
             (click)="setAcceptanceValue(change, 'accepted')"
         >
             <mat-icon>thumb_up</mat-icon>
-            <span translate>Accept</span>
+            <span>{{ 'Accept' | translate }}</span>
             <mat-icon class="active-indicator">{{ change.isAccepted() ? 'done' : '' }}</mat-icon>
         </button>
         <button
@@ -160,16 +162,16 @@
             (click)="setAcceptanceValue(change, 'rejected')"
         >
             <mat-icon>thumb_down</mat-icon>
-            <span translate>Reject</span>
+            <span>{{ 'Reject' | translate }}</span>
             <mat-icon class="active-indicator">{{ change.isRejected() ? 'done' : '' }}</mat-icon>
         </button>
         <button type="button" mat-menu-item (click)="setInternal(change, !change.internal)">
             <mat-icon>{{ change.internal ? 'check_box_outline_blank' : 'check_box' }}</mat-icon>
-            <span translate>Public</span>
+            <span>{{ 'Public' | translate }}</span>
         </button>
         <button type="button" mat-menu-item (click)="deleteChangeRecommendation(change, $event)">
             <mat-icon>delete</mat-icon>
-            <span translate>Delete</span>
+            <span>{{ 'Delete' | translate }}</span>
         </button>
         <button
             type="button"
@@ -178,7 +180,7 @@
             *ngIf="!change.isTitleChange()"
         >
             <mat-icon>edit</mat-icon>
-            <span translate>Edit</span>
+            <span>{{ 'Edit' | translate }}</span>
         </button>
         <button
             type="button"
@@ -187,7 +189,7 @@
             *ngIf="change.isTitleChange()"
         >
             <mat-icon>edit</mat-icon>
-            <span translate>Edit</span>
+            <span>{{ 'Edit' | translate }}</span>
         </button>
     </ng-template>
 </mat-menu>

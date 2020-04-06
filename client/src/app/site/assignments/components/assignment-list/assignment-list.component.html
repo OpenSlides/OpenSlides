@@ -4,7 +4,9 @@
     [multiSelectMode]="isMultiSelect"
 >
     <!-- Title -->
-    <div class="title-slot"><h2 translate>Elections</h2></div>
+    <div class="title-slot">
+        <h2>{{ 'Elections' | translate }}</h2>
+    </div>
     <!-- Menu -->
     <div class="menu-slot">
         <button type="button" mat-icon-button [matMenuTriggerFor]="assignmentMenu">
@@ -15,7 +17,7 @@
     <!-- Multiselect info -->
     <div class="central-info-slot">
         <button mat-icon-button (click)="toggleMultiSelect()"><mat-icon>arrow_back</mat-icon></button>
-        <span>{{ selectedRows.length }}&nbsp;</span><span translate>selected</span>
+        <span>{{ selectedRows.length }}&nbsp;</span><span>{{ 'selected' | translate }}</span>
     </div>
 </os-head-bar>
 
@@ -90,28 +92,28 @@
     <div *ngIf="!isMultiSelect">
         <button mat-menu-item *osPerms="'assignment.can_manage'" (click)="toggleMultiSelect()">
             <mat-icon>library_add</mat-icon>
-            <span translate>Multiselect</span>
+            <span>{{ 'Multiselect' | translate }}</span>
         </button>
         <button mat-menu-item (click)="downloadAssignmentButton()">
             <mat-icon>archive</mat-icon>
-            <span translate>Export ...</span>
+            <span>{{ 'Export ...' | translate }}</span>
         </button>
         <mat-divider></mat-divider>
         <!-- Settings -->
         <button mat-menu-item *osPerms="'core.can_manage_config'" routerLink="/settings/elections">
             <mat-icon>settings</mat-icon>
-            <span translate>Settings</span>
+            <span>{{ 'Settings' | translate }}</span>
         </button>
     </div>
 
     <div *ngIf="isMultiSelect">
         <button mat-menu-item (click)="selectAll()">
             <mat-icon>done_all</mat-icon>
-            <span translate>Select all</span>
+            <span>{{ 'Select all' | translate }}</span>
         </button>
         <button mat-menu-item [disabled]="!selectedRows.length" (click)="deselectAll()">
             <mat-icon>clear</mat-icon>
-            <span translate>Deselect all</span>
+            <span>{{ 'Deselect all' | translate }}</span>
         </button>
         <mat-divider></mat-divider>
         <button
@@ -132,7 +134,7 @@
             (click)="deleteSelected()"
         >
             <mat-icon>delete</mat-icon>
-            <span translate>Delete</span>
+            <span>{{ 'Delete' | translate }}</span>
         </button>
     </div>
 </mat-menu>

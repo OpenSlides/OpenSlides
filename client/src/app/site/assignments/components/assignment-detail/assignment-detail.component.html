@@ -9,8 +9,8 @@
 >
     <!-- Title -->
     <div class="title-slot">
-        <h2 *ngIf="!newAssignment" translate>Election</h2>
-        <h2 *ngIf="newAssignment" translate>New election</h2>
+        <h2 *ngIf="!newAssignment">{{ 'Election' | translate }}</h2>
+        <h2 *ngIf="newAssignment">{{ 'New election' | translate }}</h2>
     </div>
 
     <!-- Menu -->
@@ -25,7 +25,7 @@
             <!-- PDF -->
             <button mat-menu-item (click)="onDownloadPdf()">
                 <mat-icon>picture_as_pdf</mat-icon>
-                <span translate>PDF</span>
+                <span>{{ 'PDF' | translate }}</span>
             </button>
             <!-- List of speakers -->
             <os-speaker-button [object]="assignment" [menuItem]="true"></os-speaker-button>
@@ -37,11 +37,11 @@
         <div *osPerms="'agenda.can_manage'">
             <button mat-menu-item (click)="addToAgenda()" *ngIf="assignment && !assignment.item">
                 <mat-icon>add</mat-icon>
-                <span translate>Add to agenda</span>
+                <span>{{ 'Add to agenda' | translate }}</span>
             </button>
             <button mat-menu-item (click)="removeFromAgenda()" *ngIf="assignment && assignment.item">
                 <mat-icon>remove</mat-icon>
-                <span translate>Remove from agenda</span>
+                <span>{{ 'Remove from agenda' | translate }}</span>
             </button>
         </div>
 
@@ -51,7 +51,7 @@
             <mat-divider></mat-divider>
             <button mat-menu-item class="red-warning-text" (click)="onDeleteAssignmentButton()">
                 <mat-icon>delete</mat-icon>
-                <span translate>Delete</span>
+                <span>{{ 'Delete' | translate }}</span>
             </button>
         </div>
     </mat-menu>
@@ -76,7 +76,7 @@
         <div class="new-ballot-button" *ngIf="assignment && hasPerms('createPoll')">
             <button mat-stroked-button (click)="openDialog()">
                 <mat-icon>add</mat-icon>
-                <span translate>New ballot</span>
+                <span>{{ 'New ballot' | translate }}</span>
             </button>
         </div>
 
@@ -98,11 +98,11 @@
         </div>
         <div class="meta-info-grid">
             <div class="number-of-elected">
-                <h4 translate>Number of persons to be elected</h4>
+                <h4>{{ 'Number of persons to be elected' | translate }}</h4>
                 <span>{{ assignment.assignment.open_posts }}</span>
             </div>
             <div class="current-phase">
-                <h4 translate>Phase</h4>
+                <h4>{{ 'Phase' | translate }}</h4>
                 <mat-basic-chip
                     *ngIf="hasPerms('manage')"
                     [matMenuTriggerFor]="phaseMenu"
@@ -123,7 +123,7 @@
         </div>
 
         <div *ngIf="assignment.attachments.length">
-            <h4 translate>Election documents</h4>
+            <h4>{{ 'Election documents' | translate }}</h4>
             <mat-list dense class="election-document-list">
                 <mat-list-item *ngFor="let file of assignment.attachments">
                     <a [routerLink]="file.url" target="_blank">{{ file.getTitle() }}</a>
@@ -136,7 +136,7 @@
 <ng-template #candidatesTemplate>
     <mat-card class="os-card" *ngIf="assignment && !assignment.isFinished">
         <ng-container>
-            <h3 translate>Candidates</h3>
+            <h3>{{ 'Candidates' | translate }}</h3>
             <div>
                 <div
                     class="candidates-list"
@@ -196,11 +196,11 @@
                         <div>
                             <button mat-button color="accent" (click)="addSelf()" *ngIf="!isSelfCandidate">
                                 <mat-icon>add</mat-icon>
-                                <span translate>Add me</span>
+                                <span>{{ 'Add me' | translate }}</span>
                             </button>
                             <button mat-button color="accent" (click)="removeSelf()" *ngIf="isSelfCandidate">
                                 <mat-icon>remove</mat-icon>
-                                <span translate>Remove me</span>
+                                <span>{{ 'Remove me' | translate }}</span>
                             </button>
                         </div>
                     </div>
@@ -291,7 +291,7 @@
             <!-- Number candidates -->
             <div>
                 <mat-checkbox formControlName="number_poll_candidates">
-                    <span translate>Number candidates</span>
+                    <span>{{ 'Number candidates' | translate }}</span>
                 </mat-checkbox>
             </div>
         </form>

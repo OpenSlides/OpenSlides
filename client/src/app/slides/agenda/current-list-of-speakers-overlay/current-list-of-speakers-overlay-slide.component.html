@@ -1,5 +1,5 @@
 <div id="overlay" *ngIf="currentSpeaker || nextSpeakers.length > 0">
-    <h3 translate>List of speakers</h3>
+    <h3>{{ 'List of speakers' | translate }}</h3>
 
     <div *ngIf="currentSpeaker" class="currentSpeaker one-line">
         <mat-icon>mic</mat-icon>

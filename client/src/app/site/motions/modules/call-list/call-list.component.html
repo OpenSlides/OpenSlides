@@ -1,7 +1,7 @@
 <os-head-bar prevUrl="../.." [nav]="false" [editMode]="hasChanged" (mainEvent)="onCancel()" (saveEvent)="onSave()">
     <!-- Title -->
     <div class="title-slot">
-        <h2 translate>Call list</h2>
+        <h2>{{ 'Call list' | translate }}</h2>
     </div>
 
     <!-- Export menu -->
@@ -14,15 +14,18 @@
 
 <div class="custom-table-header flex-spaced">
     <div class="filter-count">
-        <span> {{ seenNodes[0] }}&nbsp;</span><span translate>of</span>
+        <span> {{ seenNodes[0] }}&nbsp;</span><span>{{ 'of' | translate }}</span>
         <span>&nbsp;{{ seenNodes[1] }}</span>
     </div>
     <div class="current-filters" *ngIf="hasActiveFilter">
-        <div><span translate>Active filters</span>:&nbsp;</div>
+        <div>
+            <span>{{ 'Active filters' | translate }}</span
+            >:&nbsp;
+        </div>
         <div>
             <button mat-button (click)="resetFilters()">
                 <mat-icon inline>cancel</mat-icon>
-                <span translate>Clear all</span>
+                <span>{{ 'Clear all' | translate }}</span>
             </button>
         </div>
     </div>
@@ -34,9 +37,8 @@
                     [matBadge]="activeCatFilterCount > 0 ? activeCatFilterCount : null"
                     matBadgeColor="accent"
                     [matBadgeOverlap]="false"
-                    translate
                 >
-                    Categories
+                    {{ 'Categories' | translate }}
                 </span>
             </button>
         </div>
@@ -47,9 +49,8 @@
                     [matBadge]="activeTagFilterCount > 0 ? activeTagFilterCount : null"
                     matBadgeColor="accent"
                     [matBadgeOverlap]="false"
-                    translate
                 >
-                    Tags
+                    {{ 'Tags' | translate }}
                 </span>
             </button>
         </div>
@@ -103,18 +104,18 @@
 <mat-menu #mainMenu="matMenu">
     <button mat-menu-item (click)="sortMotionsByIdentifier()">
         <mat-icon>sort</mat-icon>
-        <span translate>Sort by identifier</span>
+        <span>{{ 'Sort by identifier' | translate }}</span>
     </button>
 
     <mat-divider></mat-divider>
 
     <button mat-menu-item (click)="pdfExportCallList()">
         <mat-icon>picture_as_pdf</mat-icon>
-        <span translate>Export as PDF</span>
+        <span>{{ 'Export as PDF' | translate }}</span>
     </button>
 
     <button mat-menu-item (click)="csvExportCallList()">
         <mat-icon>archive</mat-icon>
-        <span translate>Export as CSV</span>
+        <span>{{ 'Export as CSV' | translate }}</span>
     </button>
 </mat-menu>

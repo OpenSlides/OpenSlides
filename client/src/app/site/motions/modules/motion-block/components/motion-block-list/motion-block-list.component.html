@@ -1,6 +1,8 @@
 <os-head-bar prevUrl="../.." [nav]="false" [hasMainButton]="canEdit" (mainEvent)="onPlusButton()">
     <!-- Title -->
-    <div class="title-slot"><h2 translate>Motion blocks</h2></div>
+    <div class="title-slot">
+        <h2>{{ 'Motion blocks' | translate }}</h2>
+    </div>
 </os-head-bar>
 
 <os-list-view-table
@@ -28,7 +30,7 @@
                 [noWrap]="true"
                 [icon]="block.isFinished ? 'check' : block.internal ? 'lock' : null"
                 size="large"
-                [iconTooltip]="block.isFinished ? 'Finished' : block.internal ? 'Internal' : '' | translate"
+                [iconTooltip]="block.isFinished ? 'Finished' : block.internal ? 'Internal' : ('' | translate)"
             >
                 <os-icon-container
                     [noWrap]="true"
@@ -75,21 +77,23 @@
 <!-- Template for new motion block dialog -->
 <ng-template #newMotionBlockDialog>
     <h1 mat-dialog-title>
-        <span translate>New motion block</span>
+        <span>{{ 'New motion block' | translate }}</span>
     </h1>
     <form [formGroup]="createBlockForm" (keydown)="onKeyDown($event)">
         <div mat-dialog-content>
             <!-- Title -->
             <mat-form-field>
                 <input formControlName="title" matInput placeholder="{{ 'Title' | translate }}" required />
-                <mat-error *ngIf="createBlockForm.get('title').hasError('required')" translate>
-                    A title is required
+                <mat-error *ngIf="createBlockForm.get('title').hasError('required')">
+                    {{ 'A title is required' | translate }}
                 </mat-error>
             </mat-form-field>
 
             <!-- Internal -->
             <p>
-                <mat-checkbox formControlName="internal"><span translate>Internal</span></mat-checkbox>
+                <mat-checkbox formControlName="internal"
+                    ><span>{{ 'Internal' | translate }}</span></mat-checkbox
+                >
             </p>
 
             <os-agenda-content-object-form [form]="createBlockForm"></os-agenda-content-object-form>
@@ -97,8 +101,10 @@
     </form>
     <div mat-dialog-actions>
         <button mat-button [disabled]="!createBlockForm.valid" [mat-dialog-close]="true">
-            <span translate>Save</span>
+            <span>{{ 'Save' | translate }}</span>
         </button>
-        <button mat-button [mat-dialog-close]="false"><span translate>Cancel</span></button>
+        <button mat-button [mat-dialog-close]="false">
+            <span>{{ 'Cancel' | translate }}</span>
+        </button>
     </div>
 </ng-template>

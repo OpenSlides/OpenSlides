@@ -5,7 +5,7 @@
         [ngStyle]="{ 'margin-top': projector.show_header_footer ? '144px' : '94px' }"
     >
         <!-- Submitters -->
-        <h3 translate>Submitters</h3>
+        <h3>{{ 'Submitters' | translate }}</h3>
         <span *ngFor="let submitter of data.data.submitters; let last = last">
             {{ submitter }}<span *ngIf="!last">, </span>
         </span>
@@ -27,7 +27,8 @@
             </h1>
             <!-- recommendation referencing motions -->
             <h2 *ngIf="data.data.show_meta_box && data.data.recommendation_referencing_motions">
-                <span translate>Referring motions</span>:
+                <span>{{ 'Referring motions' | translate }}</span
+                >:
                 <span *ngFor="let titleInformation of referencingMotions; let last = last">
                     {{ getIdentifierOrTitle(titleInformation) }}<span *ngIf="!last">,</span>
                 </span>
@@ -106,7 +107,7 @@
             <!-- Amendment text -->
             <section class="text-holder" *ngIf="isParagraphBasedAmendment()">
                 <div class="alert alert-info" *ngIf="getAmendedParagraphs().length === 0">
-                    <span translate>No changes at the text.</span>
+                    <span>{{ 'No changes at the text.' | translate }}</span>
                 </div>
                 <div
                     *ngFor="let paragraph of getAmendedParagraphs()"
@@ -116,10 +117,11 @@
                     [class.line-numbers-outside]="isLineNumberingOutside()"
                 >
                     <h3 *ngIf="paragraph.diffLineTo === paragraph.diffLineFrom + 1" class="amendment-line-header">
-                        <span translate>Line</span> {{ paragraph.diffLineFrom }}:
+                        <span>{{ 'Line' | translate }}</span> {{ paragraph.diffLineFrom }}:
                     </h3>
                     <h3 *ngIf="paragraph.diffLineTo !== paragraph.diffLineFrom + 1" class="amendment-line-header">
-                        <span translate>Line</span> {{ paragraph.diffLineFrom }} - {{ paragraph.diffLineTo - 1 }}:
+                        <span>{{ 'Line' | translate }}</span> {{ paragraph.diffLineFrom }} -
+                        {{ paragraph.diffLineTo - 1 }}:
                     </h3>
                     <div [innerHtml]="paragraph.text | trust: 'html'"></div>
                 </div>
@@ -127,7 +129,7 @@
 
             <!-- Reason -->
             <div *ngIf="data.data.reason">
-                <h3 translate>Reason</h3>
+                <h3>{{ 'Reason' | translate }}</h3>
                 <div [innerHTML]="data.data.reason | trust: 'html'"></div>
             </div>
         </div>

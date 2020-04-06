@@ -12,8 +12,8 @@
         <ng-container class="meta-text-block-content">
             <ng-container *ngIf="!isCommentEdited(section)">
                 <div *ngIf="comments[section.id]" [innerHTML]="comments[section.id].comment | trust: 'html'"></div>
-                <div class="no-content" *ngIf="!comments[section.id] || !comments[section.id].comment" translate>
-                    No comment
+                <div class="no-content" *ngIf="!comments[section.id] || !comments[section.id].comment">
+                    {{ 'No comment' | translate }}
                 </div>
             </ng-container>
             <form [formGroup]="commentForms[section.id]" *ngIf="isCommentEdited(section)">
@@ -27,9 +27,9 @@
                 ></editor>
             </form>
             <div *ngIf="saveHint">
-                <span translate>Touch the book icon to enter text</span>
+                <span>{{ 'Touch the book icon to enter text' | translate }}</span>
                 <br />
-                <span class="red-warning-text" translate>Do not forget to save your changes!</span>
+                <span class="red-warning-text">{{ 'Do not forget to save your changes!' | translate }}</span>
             </div>
         </ng-container>
 

@@ -13,7 +13,7 @@
 
         <button type="button" *ngIf="menuItem" mat-menu-item [routerLink]="listOfSpeakers.listOfSpeakersUrl">
             <mat-icon>{{ icon }}</mat-icon>
-            <span translate>List of speakers</span>
+            <span>{{ 'List of speakers' | translate }}</span>
             <span>&nbsp;</span>
             <mat-basic-chip disableRipple class="lightblue" *ngIf="listOfSpeakers.waitingSpeakerAmount > 0">
                 <span>{{ listOfSpeakers.waitingSpeakerAmount }}</span>

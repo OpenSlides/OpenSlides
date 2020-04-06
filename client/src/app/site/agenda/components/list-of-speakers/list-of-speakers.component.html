@@ -8,9 +8,9 @@
     <!-- Title -->
     <div class="title-slot">
         <h2>
-            <span *ngIf="!isCurrentListOfSpeakers && !isSortMode" translate>List of speakers</span>
-            <span *ngIf="isCurrentListOfSpeakers && !isSortMode" translate>Current list of speakers</span>
-            <span *ngIf="isSortMode" translate>Sort list of speakers</span>
+            <span *ngIf="!isCurrentListOfSpeakers && !isSortMode">{{ 'List of speakers' | translate }}</span>
+            <span *ngIf="isCurrentListOfSpeakers && !isSortMode">{{ 'Current list of speakers' | translate }}</span>
+            <span *ngIf="isSortMode">{{ 'Sort list of speakers' | translate }}</span>
         </h2>
     </div>
     <div class="menu-slot" *osPerms="['agenda.can_manage_list_of_speakers', 'core.can_manage_projector']">
@@ -39,7 +39,7 @@
     <!-- List of finished speakers -->
     <mat-expansion-panel *ngIf="finishedSpeakers && finishedSpeakers.length > 0" class="finished-list">
         <mat-expansion-panel-header>
-            <mat-panel-title translate> Last speakers </mat-panel-title>
+            <mat-panel-title>{{ 'Last speakers' | translate }}</mat-panel-title>
         </mat-expansion-panel-header>
         <mat-list>
             <mat-list-item *ngFor="let speaker of finishedSpeakers; let number = index">
@@ -96,7 +96,7 @@
             <ng-template let-speaker>
                 <span *osPerms="'agenda.can_manage_list_of_speakers'">
                     <span *ngIf="hasSpokenCount(speaker)" class="red-warning-text speaker-warning">
-                        {{ hasSpokenCount(speaker) + 1 }}. <span translate>contribution</span>
+                        {{ hasSpokenCount(speaker) + 1 }}. <span>{{ 'contribution' | translate }}</span>
                     </span>
                     <span *ngIf="speaker.gender">({{ speaker.gender | translate }})</span>
                 </span>
@@ -154,11 +154,11 @@
                 *ngIf="!isOpInList() && canAddSelf"
             >
                 <mat-icon>add</mat-icon>
-                <span translate>Add me</span>
+                <span>{{ 'Add me' | translate }}</span>
             </button>
             <button mat-stroked-button (click)="onDeleteButton()" *ngIf="isOpInList()">
                 <mat-icon>remove</mat-icon>
-                <span translate>Remove me</span>
+                <span>{{ 'Remove me' | translate }}</span>
             </button>
         </div>
     </div>
@@ -167,7 +167,7 @@
 <mat-menu #speakerMenu="matMenu">
     <button mat-menu-item (click)="isSortMode = true">
         <mat-icon>sort</mat-icon>
-        <span translate>Sort</span>
+        <span>{{ 'Sort' | translate }}</span>
     </button>
 
     <os-projector-button
@@ -193,18 +193,18 @@
 
     <button mat-menu-item *ngIf="isListOfSpeakersClosed" (click)="openSpeakerList()">
         <mat-icon>lock_open</mat-icon>
-        <span translate>Open list of speakers</span>
+        <span>{{ 'Open list of speakers' | translate }}</span>
     </button>
 
     <button mat-menu-item *ngIf="!isListOfSpeakersClosed" (click)="closeSpeakerList()">
         <mat-icon>lock</mat-icon>
-        <span translate>Close list of speakers</span>
+        <span>{{ 'Close list of speakers' | translate }}</span>
     </button>
 
     <mat-divider *ngIf="!isListOfSpeakersEmpty"></mat-divider>
 
     <button mat-menu-item (click)="clearSpeakerList()" *ngIf="!isListOfSpeakersEmpty" class="red-warning-text">
         <mat-icon>delete</mat-icon>
-        <span translate>Remove all speakers</span>
+        <span>{{ 'Remove all speakers' | translate }}</span>
     </button>
 </mat-menu>

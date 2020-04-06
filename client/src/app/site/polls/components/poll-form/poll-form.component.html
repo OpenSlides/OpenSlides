@@ -17,7 +17,7 @@
                         {{ option.value | translate }}
                     </mat-option>
                 </mat-select>
-                <mat-error translate>This field is required.</mat-error>
+                <mat-error>{{ 'This field is required.' | translate }}</mat-error>
                 <mat-hint (click)="openVotingWarning()" *ngIf="showNonNominalWarning">
                     {{ 'Not suitable for formal secret voting!' | translate }}</mat-hint
                 >
@@ -46,7 +46,7 @@
                         {{ option.value | translate }}
                     </mat-option>
                 </mat-select>
-                <mat-error translate>This field is required.</mat-error>
+                <mat-error>{{ 'This field is required.' | translate }}</mat-error>
             </mat-form-field>
         </ng-container>
 

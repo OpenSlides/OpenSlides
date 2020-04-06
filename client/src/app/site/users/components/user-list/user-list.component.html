@@ -1,6 +1,8 @@
 <os-head-bar [hasMainButton]="canAddUser" (mainEvent)="onPlusButton()" [multiSelectMode]="isMultiSelect">
     <!-- Title -->
-    <div class="title-slot"><h2 translate>Participants</h2></div>
+    <div class="title-slot">
+        <h2>{{ 'Participants' | translate }}</h2>
+    </div>
 
     <!-- Menu -->
     <div class="menu-slot">
@@ -10,7 +12,7 @@
     <!-- Multiselect info -->
     <div class="central-info-slot">
         <button mat-icon-button (click)="toggleMultiSelect()"><mat-icon>arrow_back</mat-icon></button>
-        <span>{{ selectedRows.length }}&nbsp;</span><span translate>selected</span>
+        <span>{{ selectedRows.length }}&nbsp;</span><span>{{ 'selected' | translate }}</span>
     </div>
 </os-head-bar>
 
@@ -85,7 +87,7 @@
             </mat-icon>
 
             <os-icon-container *ngIf="user.isSamlUser" icon="device_hub"
-                ><span translate>Is SAML user</span></os-icon-container
+                ><span>{{ 'Is SAML user' | translate }}</span></os-icon-container
             >
         </div>
     </div>
@@ -98,7 +100,7 @@
             [checked]="user.is_present"
             [disabled]="isMultiSelect || !this.operator.hasPerms('users.can_manage')"
         >
-            <span translate>Present</span>
+            <span>{{ 'Present' | translate }}</span>
         </mat-checkbox>
     </div>
 
@@ -124,7 +126,7 @@
         <!-- Presence -->
         <button mat-menu-item (click)="setPresent(user)">
             <mat-icon color="accent"> {{ user.is_present ? 'check_box' : 'check_box_outline_blank' }} </mat-icon>
-            <span translate>Present</span>
+            <span>{{ 'Present' | translate }}</span>
         </button>
     </ng-template>
 </mat-menu>
@@ -133,39 +135,39 @@
     <div *ngIf="!isMultiSelect">
         <button mat-menu-item *osPerms="'users.can_manage'" (click)="toggleMultiSelect()">
             <mat-icon>library_add</mat-icon>
-            <span translate>Multiselect</span>
+            <span>{{ 'Multiselect' | translate }}</span>
         </button>
 
         <button mat-menu-item *osPerms="'users.can_manage'" routerLink="groups">
             <mat-icon>people</mat-icon>
-            <span translate>Groups</span>
+            <span>{{ 'Groups' | translate }}</span>
         </button>
 
         <div *ngIf="presenceViewConfigured">
             <button mat-menu-item *osPerms="'users.can_manage'" routerLink="presence">
                 <mat-icon>transfer_within_a_station</mat-icon>
-                <span translate>Presence</span>
+                <span>{{ 'Presence' | translate }}</span>
             </button>
         </div>
 
         <button mat-menu-item (click)="pdfExportUserList()">
             <mat-icon>picture_as_pdf</mat-icon>
-            <span translate>List of participants (PDF)</span>
+            <span>{{ 'List of participants (PDF)' | translate }}</span>
         </button>
 
         <button mat-menu-item *osPerms="'users.can_manage'" (click)="onDownloadAccessPdf()">
             <mat-icon>picture_as_pdf</mat-icon>
-            <span translate>Access data (PDF)</span>
+            <span>{{ 'Access data (PDF)' | translate }}</span>
         </button>
 
         <button mat-menu-item *osPerms="'users.can_manage'" (click)="csvExportUserList()">
             <mat-icon>archive</mat-icon>
-            <span translate>Export as CSV</span>
+            <span>{{ 'Export as CSV' | translate }}</span>
         </button>
 
         <button mat-menu-item *osPerms="'users.can_manage'" routerLink="import">
             <mat-icon>cloud_upload</mat-icon>
-            <span translate>Import</span>
+            <span>{{ 'Import' | translate }}</span>
         </button>
 
         <mat-divider></mat-divider>
@@ -173,25 +175,25 @@
         <!-- Settings -->
         <button mat-menu-item *osPerms="'core.can_manage_config'" routerLink="/settings/participants">
             <mat-icon>settings</mat-icon>
-            <span translate>Settings</span>
+            <span>{{ 'Settings' | translate }}</span>
         </button>
     </div>
     <div *ngIf="isMultiSelect">
         <button mat-menu-item (click)="selectAll()">
             <mat-icon>done_all</mat-icon>
-            <span translate>Select all</span>
+            <span>{{ 'Select all' | translate }}</span>
         </button>
 
         <button mat-menu-item [disabled]="!selectedRows.length" (click)="deselectAll()">
             <mat-icon>clear</mat-icon>
-            <span translate>Deselect all</span>
+            <span>{{ 'Deselect all' | translate }}</span>
         </button>
 
         <div *osPerms="'users.can_manage'">
             <mat-divider></mat-divider>
             <button mat-menu-item [disabled]="!selectedRows.length" (click)="setGroupSelected()">
                 <mat-icon>people</mat-icon>
-                <span translate>Add/remove groups ...</span>
+                <span>{{ 'Add/remove groups ...' | translate }}</span>
             </button>
 
             <div *ngIf="presenceViewConfigured">
@@ -202,7 +204,7 @@
                     routerLink="presence"
                 >
                     <mat-icon>transfer_within_a_station</mat-icon>
-                    <span translate>Presence</span>
+                    <span>{{ 'Presence' | translate }}</span>
                 </button>
             </div>
 
@@ -211,29 +213,29 @@
 
                 <button mat-menu-item [disabled]="!selectedRows.length" (click)="setStateSelected('is_active')">
                     <mat-icon>block</mat-icon>
-                    <span translate>Enable/disable account ...</span>
+                    <span>{{ 'Enable/disable account ...' | translate }}</span>
                 </button>
 
                 <button mat-menu-item [disabled]="!selectedRows.length" (click)="setStateSelected('is_present')">
                     <mat-icon>check_box</mat-icon>
-                    <span translate>Set presence ...</span>
+                    <span>{{ 'Set presence ...' | translate }}</span>
                 </button>
 
                 <button mat-menu-item [disabled]="!selectedRows.length" (click)="setStateSelected('is_committee')">
                     <mat-icon>account_balance</mat-icon>
-                    <span translate>Set committee ...</span>
+                    <span>{{ 'Set committee ...' | translate }}</span>
                 </button>
 
                 <mat-divider></mat-divider>
 
                 <button mat-menu-item [disabled]="!selectedRows.length" (click)="sendInvitationEmailSelected()">
                     <mat-icon>mail</mat-icon>
-                    <span translate>Send invitation email</span>
+                    <span>{{ 'Send invitation email' | translate }}</span>
                 </button>
 
                 <button mat-menu-item [disabled]="!selectedRows.length" (click)="resetPasswordsToDefaultSelected()">
                     <mat-icon>vpn_key</mat-icon>
-                    <span translate>Reset passwords to the default ones</span>
+                    <span>{{ 'Reset passwords to the default ones' | translate }}</span>
                 </button>
                 <button
                     mat-menu-item
@@ -241,7 +243,7 @@
                     (click)="generateNewPasswordsPasswordsSelected()"
                 >
                     <mat-icon>vpn_key</mat-icon>
-                    <span translate>Generate new passwords</span>
+                    <span>{{ 'Generate new passwords' | translate }}</span>
                 </button>
                 <mat-divider></mat-divider>
                 <button
@@ -251,7 +253,7 @@
                     (click)="deleteSelected()"
                 >
                     <mat-icon>delete</mat-icon>
-                    <span translate>Delete</span>
+                    <span>{{ 'Delete' | translate }}</span>
                 </button>
             </div>
         </div>
@@ -305,10 +307,10 @@
                 structure_level: infoDialog.structure_level
             }"
         >
-            <span translate>Save</span>
+            <span>{{ 'Save' | translate }}</span>
         </button>
         <button type="button" mat-button [mat-dialog-close]="null">
-            <span translate>Cancel</span>
+            <span>{{ 'Cancel' | translate }}</span>
         </button>
     </div>
 </ng-template>

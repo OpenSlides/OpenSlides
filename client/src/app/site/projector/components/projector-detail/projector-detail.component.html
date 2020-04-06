@@ -33,7 +33,7 @@
         <!-- delete -->
         <button mat-menu-item class="red-warning-text" (click)="onDeleteProjectorButton()">
             <mat-icon>delete</mat-icon>
-            <span translate>Delete</span>
+            <span>{{ 'Delete' | translate }}</span>
         </button>
     </mat-menu>
 </os-head-bar>
@@ -143,7 +143,7 @@
                     [disabled]="projector?.elements_history.length === 0"
                 >
                     <mat-icon>arrow_back</mat-icon>
-                    <span translate>Previous</span>
+                    <span>{{ 'Previous' | translate }}</span>
                 </button>
                 <button
                     type="button"
@@ -151,7 +151,7 @@
                     (click)="projectNextSlide()"
                     [disabled]="projector?.elements_preview.length === 0"
                 >
-                    <span translate>Next</span>
+                    <span>{{ 'Next' | translate }}</span>
                     <mat-icon>arrow_forward</mat-icon>
                 </button>
                 <hr />
@@ -186,7 +186,7 @@
                     <!-- Queue -->
                     <mat-expansion-panel *ngIf="projector.elements_preview.length" [expanded]="true" class="queue">
                         <mat-expansion-panel-header>
-                            <span translate>Queue</span>
+                            <span>{{ 'Queue' | translate }}</span>
                         </mat-expansion-panel-header>
                         <div
                             cdkDropList
@@ -232,7 +232,7 @@
                     <!-- countdowns -->
                     <mat-expansion-panel>
                         <mat-expansion-panel-header>
-                            <span translate>Countdowns</span>
+                            <span>{{ 'Countdowns' | translate }}</span>
                         </mat-expansion-panel-header>
                         <mat-list>
                             <mat-list-item *ngFor="let countdown of countdowns" class="larger-mat-list-item">
@@ -247,7 +247,7 @@
                         <mat-action-row>
                             <button type="button" mat-button (click)="openCountdownDialog()">
                                 <mat-icon>add</mat-icon>
-                                <span translate>Add countdown</span>
+                                <span>{{ 'Add countdown' | translate }}</span>
                             </button>
                         </mat-action-row>
                     </mat-expansion-panel>
@@ -255,7 +255,7 @@
                     <!-- messages -->
                     <mat-expansion-panel>
                         <mat-expansion-panel-header>
-                            <span translate>Messages</span>
+                            <span>{{ 'Messages' | translate }}</span>
                         </mat-expansion-panel-header>
                         <mat-list>
                             <mat-list-item *ngFor="let message of messages" class="larger-mat-list-item">
@@ -271,7 +271,7 @@
                         <mat-action-row>
                             <button type="button" mat-button (click)="openMessagesDialog()">
                                 <mat-icon>add</mat-icon>
-                                <span translate>Add message</span>
+                                <span>{{ 'Add message' | translate }}</span>
                             </button>
                         </mat-action-row>
                     </mat-expansion-panel>
@@ -279,7 +279,7 @@
                     <!-- Current list of speakers -->
                     <mat-expansion-panel>
                         <mat-expansion-panel-header>
-                            <span translate>Current list of speakers</span>
+                            <span>{{ 'Current list of speakers' | translate }}</span>
                         </mat-expansion-panel-header>
 
                         <!-- Slide-->
@@ -293,7 +293,7 @@
                                 >
                                     <mat-icon>videocam</mat-icon>
                                 </button>
-                                <span class="spacer-left-10" translate>Slide</span>
+                                <span class="spacer-left-10">{{ 'Slide' | translate }}</span>
                             </mat-list-item>
                         </mat-list>
 
@@ -308,7 +308,7 @@
                                 >
                                     <mat-icon>videocam</mat-icon>
                                 </button>
-                                <span class="spacer-left-10" translate>Overlay</span>
+                                <span class="spacer-left-10">{{ 'Overlay' | translate }}</span>
                             </mat-list-item>
                         </mat-list>
 
@@ -323,14 +323,14 @@
                                 >
                                     <mat-icon>videocam</mat-icon>
                                 </button>
-                                <span class="spacer-left-10" translate>Chyron</span>
+                                <span class="spacer-left-10">{{ 'Chyron' | translate }}</span>
                             </mat-list-item>
                         </mat-list>
                     </mat-expansion-panel>
 
                     <mat-expansion-panel *ngIf="projector.elements_history.length">
                         <mat-expansion-panel-header>
-                            <span translate>Previous slides</span>
+                            <span>{{ 'Previous slides' | translate }}</span>
                         </mat-expansion-panel-header>
                         <ol>
                             <li *ngFor="let elements of projector.elements_history">

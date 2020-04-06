@@ -4,7 +4,7 @@
     (click)="action.emit(multiselectService.bulkSetFavorite(selectedMotions))"
 >
     <mat-icon>star</mat-icon>
-    <span translate>Set favorite</span>
+    <span>{{ 'Set favorite' | translate }}</span>
 </button>
 <button
     mat-menu-item
@@ -12,7 +12,7 @@
     (click)="action.emit(multiselectService.setStateOfMultiple(selectedMotions))"
 >
     <mat-icon>label</mat-icon>
-    <span translate>Set status</span>
+    <span>{{ 'Set status' | translate }}</span>
 </button>
 <button
     *ngIf="recommendationEnabled"
@@ -22,7 +22,7 @@
 >
     <mat-icon>report</mat-icon>
     <!-- TODO: better icon -->
-    <span translate>Set recommendation</span>
+    <span>{{ 'Set recommendation' | translate }}</span>
 </button>
 <button
     mat-menu-item
@@ -32,7 +32,7 @@
 >
     <mat-icon>category</mat-icon>
     <!-- TODO: icon -->
-    <span translate>Set category</span>
+    <span>{{ 'Set category' | translate }}</span>
 </button>
 <button
     mat-menu-item
@@ -42,7 +42,7 @@
 >
     <mat-icon>widgets</mat-icon>
     <!-- TODO: icon -->
-    <span translate>Set motion block</span>
+    <span>{{ 'Set motion block' | translate }}</span>
 </button>
 
 <button
@@ -52,7 +52,7 @@
 >
     <mat-icon>person_add</mat-icon>
     <!-- TODO: icon -->
-    <span translate>Add/remove submitters</span>
+    <span>{{ 'Add/remove submitters' | translate }}</span>
 </button>
 <button
     mat-menu-item
@@ -62,7 +62,7 @@
 >
     <mat-icon>bookmarks</mat-icon>
     <!-- TODO: icon -->
-    <span translate>Add/remove tags</span>
+    <span>{{ 'Add/remove tags' | translate }}</span>
 </button>
 
 <ng-content></ng-content>
@@ -70,7 +70,7 @@
 <ng-container *osPerms="'motions.can_manage'">
     <button mat-menu-item [disabled]="!selectedMotions.length" (click)="openExportDialog()">
         <mat-icon>archive</mat-icon>
-        <span translate>Export selected motions</span>
+        <span>{{ 'Export selected motions' | translate }}</span>
     </button>
     <mat-divider></mat-divider>
     <button
@@ -80,6 +80,6 @@
         (click)="action.emit(multiselectService.delete(selectedMotions))"
     >
         <mat-icon>delete</mat-icon>
-        <span translate>Delete</span>
+        <span>{{ 'Delete' | translate }}</span>
     </button>
 </ng-container>

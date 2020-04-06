@@ -1,10 +1,12 @@
 <os-head-bar [nav]="false">
     <!-- Title -->
-    <div class="title-slot"><h2 translate>Import participants</h2></div>
+    <div class="title-slot">
+        <h2>{{ 'Import participants' | translate }}</h2>
+    </div>
 
     <div class="menu-slot">
         <button *ngIf="hasFile && newCount" mat-button (click)="doImport()">
-            <span class="upper" translate> Import</span>
+            <span class="upper">{{ 'Import' | translate }}</span>
         </button>
     </div>
 </os-head-bar>
@@ -12,12 +14,13 @@
     <mat-tab-group (selectedTabChange)="onTabChange()">
         <!-- textarea import tab -->
         <mat-tab label="{{ 'Text import' | translate }}">
-            <br>
+            <br />
             <div [formGroup]="textAreaForm">
                 <div>
-                    <span translate> Copy and paste your participant names in this textbox.</span>
-                    <span translate> Keep each person in a single line. </span><br />
-                    <span translate> Comma separated names will be read as 'Surname, given name(s)'. </span>
+                    <span>{{ 'Copy and paste your participant names in this textbox.' | translate }}</span>
+                    <span>{{ 'Keep each person in a single line.' | translate }}</span
+                    ><br />
+                    <span>{{ 'Comma separated names will be read as "Surname, given name(s)".' | translate }}</span>
                 </div>
                 <mat-form-field>
                     <textarea
@@ -32,39 +35,59 @@
                 </mat-form-field>
             </div>
             <div>
-                <button mat-button color="accent" (click)="parseTextArea()"><span translate>Preview</span></button>
+                <button mat-button color="accent" (click)="parseTextArea()">
+                    <span>{{ 'Preview' | translate }}</span>
+                </button>
             </div>
         </mat-tab>
         <!-- CSV import tab -->
         <mat-tab label="{{ 'CSV import' | translate }}">
-            <br>
-            <span translate
-                >Required comma or semicolon separated values with these column header names in the first row:</span
-            ><br />
+            <br />
+            <span>
+                {{
+                    'Required comma or semicolon separated values with these column header names in the first row:'
+                        | translate
+                }}
+            </span>
+            <br />
             <div class="code red-warning-text">
-                <span translate>Title</span>, <span translate>Given name</span>, <span translate>Surname</span>,
-                <span translate>Structure level</span>, <span translate>Participant number</span>,
-                <span translate>Groups</span>, <span translate>Comment</span>, <span translate>Is active</span>,
-                <span translate>Is present</span>, <span translate>Is committee</span>, <span translate>Initial password</span>,
-                <span translate>Email</span>, <span translate>Username</span>, <span translate>Gender</span>
+                <span>{{ 'Title' | translate }}</span
+                >, <span>{{ 'Given name' | translate }}</span
+                >, <span>{{ 'Surname' | translate }}</span
+                >, <span>{{ 'Structure level' | translate }}</span
+                >, <span>{{ 'Participant number' | translate }}</span
+                >, <span>{{ 'Groups' | translate }}</span
+                >, <span>{{ 'Comment' | translate }}</span
+                >, <span>{{ 'Is active' | translate }}</span
+                >, <span>{{ 'Is present' | translate }}</span
+                >, <span>{{ 'Is committee' | translate }}</span
+                >, <span>{{ 'Initial password' | translate }}</span
+                >, <span>{{ 'Email' | translate }}</span
+                >, <span>{{ 'Username' | translate }}</span
+                >, <span>{{ 'Gender' | translate }}</span>
             </div>
             <ul>
-                <li translate>
-                    One of given name, surname and username has to be filled in. All other fields are optional and may be empty.
+                <li>
+                    {{
+                        'One of given name, surname and username has to be filled in. All other fields are optional and may be empty.'
+                            | translate
+                    }}
                 </li>
-                <li translate>
-                    Additional columns after the required ones may be present and won't affect the import.
+                <li>
+                    {{
+                        'Additional columns after the required ones may be present and will not affect the import.'
+                            | translate
+                    }}
                 </li>
             </ul>
-            <button mat-button color="accent" (click)="downloadCsvExample()" translate>
-                Download CSV example file
+            <button mat-button color="accent" (click)="downloadCsvExample()">
+                {{ 'Download CSV example file' | translate }}
             </button>
             <div class="wrapper">
                 <mat-form-field>
-                    <mat-label translate>Encoding of the file</mat-label>
+                    <mat-label>{{ 'Encoding of the file' | translate }}</mat-label>
                     <mat-select
                         class="selection"
-                        placeholder="translate.instant('Select encoding')"
                         (selectionChange)="selectEncoding($event)"
                         [value]="encodings[0].value"
                     >
@@ -74,7 +97,7 @@
                     </mat-select>
                 </mat-form-field>
                 <mat-form-field>
-                    <mat-label translate>Column separator</mat-label>
+                    <mat-label>{{ 'Column separator' | translate }}</mat-label>
                     <mat-select class="selection" (selectionChange)="selectColSep($event)" value="">
                         <mat-option *ngFor="let option of columnSeparators" [value]="option.value">
                             {{ option.label | translate }}
@@ -82,7 +105,7 @@
                     </mat-select>
                 </mat-form-field>
                 <mat-form-field>
-                    <mat-label translate>Text separator</mat-label>
+                    <mat-label>{{ 'Text separator' | translate }}</mat-label>
                     <mat-select class="selection" (selectionChange)="selectTextSep($event)" value='"'>
                         <mat-option *ngFor="let option of textSeparators" [value]="option.value">
                             {{ option.label | translate }}
@@ -105,7 +128,7 @@
                         color="accent"
                         onclick="document.getElementById('user-import-file-input').click()"
                     >
-                        <span translate> Select file</span>
+                        <span>{{ 'Select file' | translate }}</span>
                     </button>
                 </div>
             </div>
@@ -115,34 +138,34 @@
 
 <!-- preview table -->
 <mat-card *ngIf="hasFile" class="os-form-card import-table">
-    <h3 translate>Preview</h3>
+    <h3>{{ 'Preview' | translate }}</h3>
     <div class="summary">
         <!-- new entries -->
         <div *ngIf="newCount">
             &nbsp;
             <mat-icon inline>playlist_add</mat-icon>
-            <span>&nbsp;{{ newCount }}&nbsp;</span> <span translate>Participant(s) will be imported.</span>
+            <span>&nbsp;{{ newCount }}&nbsp;</span> <span>{{ 'Participant(s) will be imported.' | translate }}</span>
         </div>
         <!-- errors/duplicates -->
         <div *ngIf="nonImportableCount" class="red-warning-text">
             &nbsp;
             <mat-icon inline>warning</mat-icon>
-            <span>&nbsp;{{ nonImportableCount }}&nbsp;</span> <span translate>entries will be ommitted.</span>
+            <span>&nbsp;{{ nonImportableCount }}&nbsp;</span> <span>{{ 'entries will be ommitted.' | translate }}</span>
         </div>
         <!-- have been imported -->
         <div *ngIf="doneCount" class="green-text">
             &nbsp;
             <mat-icon inline>done</mat-icon>
-            <span>&nbsp;{{ doneCount }}&nbsp;</span> <span translate>Participants have been imported.</span>
+            <span>&nbsp;{{ doneCount }}&nbsp;</span> <span>{{ 'Participants have been imported.' | translate }}</span>
         </div>
     </div>
     <div *ngIf="newCount">
-        <span translate>After verifiy the preview click on 'import' please (see top right).</span>
+        <span>{{ 'After verifiy the preview click on "import" please (see top right).' | translate }}</span>
     </div>
     <mat-select *ngIf="nonImportableCount" class="filter-imports" [(value)]="shown" (selectionChange)="setFilter()">
-        <mat-option value="all" translate>Show all</mat-option>
-        <mat-option value="error" translate>Show errors only</mat-option>
-        <mat-option value="noerror" translate>Show correct entries only</mat-option>
+        <mat-option value="all">{{ 'Show all' | translate }}</mat-option>
+        <mat-option value="error">{{ 'Show errors only' | translate }}</mat-option>
+        <mat-option value="noerror">{{ 'Show correct entries only' | translate }}</mat-option>
     </mat-select>
     <div class="table-container">
         <table mat-table [dataSource]="dataSource" matSort>
@@ -180,7 +203,7 @@
 
             <!-- Title column -->
             <ng-container matColumnDef="title">
-                <mat-header-cell *matHeaderCellDef translate>Title</mat-header-cell>
+                <mat-header-cell *matHeaderCellDef>{{ 'Title' | translate }}</mat-header-cell>
                 <mat-cell *matCellDef="let entry">
                     <span *ngIf="nameErrors(entry)">
                         <mat-icon color="warn" inline matTooltip="{{ nameErrors(entry) | translate }}">
@@ -194,7 +217,7 @@
 
             <!-- title column -->
             <ng-container matColumnDef="first_name">
-                <mat-header-cell *matHeaderCellDef translate>Given name</mat-header-cell>
+                <mat-header-cell *matHeaderCellDef>{{ 'Given name' | translate }}</mat-header-cell>
                 <mat-cell *matCellDef="let entry">
                     <span *ngIf="nameErrors(entry)">
                         <mat-icon color="warn" inline matTooltip="{{ nameErrors(entry) | translate }}">
@@ -207,7 +230,7 @@
             </ng-container>
 
             <ng-container matColumnDef="last_name">
-                <mat-header-cell *matHeaderCellDef translate>Surname</mat-header-cell>
+                <mat-header-cell *matHeaderCellDef>{{ 'Surname' | translate }}</mat-header-cell>
                 <mat-cell *matCellDef="let entry">
                     <span *ngIf="nameErrors(entry)">
                         <mat-icon color="warn" inline matTooltip="{{ nameErrors(entry) | translate }}">
@@ -220,18 +243,18 @@
             </ng-container>
 
             <ng-container matColumnDef="structure_level">
-                <mat-header-cell *matHeaderCellDef translate>Structure level</mat-header-cell>
+                <mat-header-cell *matHeaderCellDef>{{ 'Structure level' | translate }}</mat-header-cell>
                 <mat-cell *matCellDef="let entry"> {{ entry.newEntry.structure_level }} </mat-cell>
             </ng-container>
 
             <ng-container matColumnDef="number">
-                <mat-header-cell *matHeaderCellDef translate>Participant number</mat-header-cell>
+                <mat-header-cell *matHeaderCellDef>{{ 'Participant number' | translate }}</mat-header-cell>
                 <mat-cell *matCellDef="let entry"> {{ entry.newEntry.number }} </mat-cell>
             </ng-container>
 
             <!-- groups column -->
             <ng-container matColumnDef="groups_id">
-                <mat-header-cell *matHeaderCellDef translate>Groups</mat-header-cell>
+                <mat-header-cell *matHeaderCellDef>{{ 'Groups' | translate }}</mat-header-cell>
                 <mat-cell *matCellDef="let entry">
                     <div *ngIf="entry.newEntry.csvGroups.length">
                         <span *ngIf="hasError(entry, 'Groups')">
@@ -249,42 +272,42 @@
             </ng-container>
 
             <ng-container matColumnDef="comment">
-                <mat-header-cell *matHeaderCellDef translate>Comment</mat-header-cell>
+                <mat-header-cell *matHeaderCellDef>{{ 'Comment' | translate }}</mat-header-cell>
                 <mat-cell *matCellDef="let entry"> {{ entry.newEntry.comment }} </mat-cell>
             </ng-container>
 
             <ng-container matColumnDef="is_active">
-                <mat-header-cell *matHeaderCellDef translate>Is active</mat-header-cell>
+                <mat-header-cell *matHeaderCellDef>{{ 'Is active' | translate }}</mat-header-cell>
                 <mat-cell *matCellDef="let entry">
                     <mat-checkbox disabled [checked]="entry.newEntry.is_active"> </mat-checkbox>
                 </mat-cell>
             </ng-container>
             <ng-container matColumnDef="is_present">
-                <mat-header-cell *matHeaderCellDef translate>Is present</mat-header-cell>
+                <mat-header-cell *matHeaderCellDef>{{ 'Is present' | translate }}</mat-header-cell>
                 <mat-cell *matCellDef="let entry">
                     <mat-checkbox disabled [checked]="entry.newEntry.is_present"> </mat-checkbox>
                 </mat-cell>
             </ng-container>
             <ng-container matColumnDef="is_committee">
-                <mat-header-cell *matHeaderCellDef translate>Is committee</mat-header-cell>
+                <mat-header-cell *matHeaderCellDef>{{ 'Is committee' | translate }}</mat-header-cell>
                 <mat-cell *matCellDef="let entry">
                     <mat-checkbox disabled [checked]="entry.newEntry.is_committee"> </mat-checkbox>
                 </mat-cell>
             </ng-container>
             <ng-container matColumnDef="default_password">
-                <mat-header-cell *matHeaderCellDef translate>Initial password</mat-header-cell>
+                <mat-header-cell *matHeaderCellDef>{{ 'Initial password' | translate }}</mat-header-cell>
                 <mat-cell *matCellDef="let entry"> {{ entry.newEntry.default_password }} </mat-cell>
             </ng-container>
             <ng-container matColumnDef="email">
-                <mat-header-cell *matHeaderCellDef translate>Email</mat-header-cell>
+                <mat-header-cell *matHeaderCellDef>{{ 'Email' | translate }}</mat-header-cell>
                 <mat-cell *matCellDef="let entry"> {{ entry.newEntry.email }} </mat-cell>
             </ng-container>
             <ng-container matColumnDef="username">
-                <mat-header-cell *matHeaderCellDef translate>Username</mat-header-cell>
+                <mat-header-cell *matHeaderCellDef>{{ 'Username' | translate }}</mat-header-cell>
                 <mat-cell *matCellDef="let entry"> {{ entry.newEntry.username }} </mat-cell>
             </ng-container>
             <ng-container matColumnDef="gender">
-                <mat-header-cell *matHeaderCellDef translate>Gender</mat-header-cell>
+                <mat-header-cell *matHeaderCellDef>{{ 'Gender' | translate }}</mat-header-cell>
                 <mat-cell *matCellDef="let entry"> {{ entry.newEntry.gender }} </mat-cell>
             </ng-container>
 

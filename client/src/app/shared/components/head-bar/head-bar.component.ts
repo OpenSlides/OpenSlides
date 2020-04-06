@@ -46,7 +46,7 @@ import { ViewportService } from 'app/core/ui-services/viewport.service';
  *     <button mat-icon-button (click)="toggleMultiSelect()">
  *         <mat-icon>arrow_back</mat-icon>
  *     </button>
- *         <span>{{ selectedRows.length }}&nbsp;</span><span translate>selected</span>
+ *         <span>{{ selectedRows.length }}&nbsp;</span><span>selected</span>
  * </div>
  * </os-head-bar>
  * ```

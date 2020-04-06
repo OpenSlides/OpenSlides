@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -23,6 +23,7 @@ import { AssignmentPhases, ViewAssignment } from '../../models/view-assignment';
 @Component({
     selector: 'os-assignment-list',
     templateUrl: './assignment-list.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush,
     styleUrls: ['./assignment-list.component.scss']
 })
 export class AssignmentListComponent extends BaseListViewComponent<ViewAssignment> implements OnInit {

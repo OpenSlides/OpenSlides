@@ -49,18 +49,16 @@
     <!-- Publish immediately button. Only show for new polls -->
     <div *ngIf="!pollData.isPublished">
         <mat-checkbox [(ngModel)]="publishImmediately" (change)="publishStateChanged($event.checked)">
-            <span translate>Publish immediately</span>
+            <span>{{ 'Publish immediately' | translate }}</span>
         </mat-checkbox>
-        <mat-error *ngIf="!dialogVoteForm.valid" translate>
-            Error in form field.
-        </mat-error>
+        <mat-error *ngIf="!dialogVoteForm.valid"> {{ 'Error in form field.' | translate }}</mat-error>
     </div>
 </ng-container>
 <div mat-dialog-actions>
     <button mat-button (click)="submitPoll()" [disabled]="pollForm.contentForm.invalid || dialogVoteForm.invalid">
-        <span translate>Save</span>
+        <span>{{ 'Save' | translate }}</span>
     </button>
     <button mat-button [mat-dialog-close]="false">
-        <span translate>Cancel</span>
+        <span>{{ 'Cancel' | translate }}</span>
     </button>
 </div>

@@ -7,7 +7,9 @@
     (cancelEditEvent)="cancelCreation()"
 >
     <!-- Title -->
-    <div class="title-slot"><h2 translate>New amendment</h2></div>
+    <div class="title-slot">
+        <h2>{{ 'New amendment' | translate }}</h2>
+    </div>
 
     <!-- Next-button -->
     <div class="extra-controls-slot">
@@ -17,12 +19,12 @@
                 [disabled]="contentForm.value.selectedParagraphs.length === 0"
                 (click)="matStepper.next()"
             >
-                <span class="upper" translate>Next</span>
+                <span class="upper">{{ 'Next' | translate }}</span>
             </button>
         </div>
         <div *ngIf="matStepper.selectedIndex === 1">
             <button type="button" mat-button (click)="matStepper.previous()">
-                <span class="upper" translate>Previous</span>
+                <span class="upper">{{ 'Previous' | translate }}</span>
             </button>
         </div>
     </div>
@@ -59,7 +61,9 @@
         <mat-step>
             <ng-template matStepLabel>{{ 'Change paragraph' | translate }}</ng-template>
 
-            <h3><span translate>Amendment text</span></h3>
+            <h3>
+                <span>{{ 'Amendment text' | translate }}</span>
+            </h3>
 
             <!-- Text -->
             <section *ngFor="let paragraph of contentForm.value.selectedParagraphs">
@@ -84,7 +88,8 @@
                         : ''
                 "
             >
-                <span translate>Reason</span>&nbsp;<span *ngIf="reasonRequired">*</span>
+                <span>{{ 'Reason' | translate }}</span
+                >&nbsp;<span *ngIf="reasonRequired">*</span>
             </h3>
 
             <editor formControlName="reason" [init]="tinyMceSettings" required></editor>
@@ -95,9 +100,8 @@
                     (contentForm.get('reason').dirty || contentForm.get('reason').touched)
                 "
                 class="red-warning-text"
-                translate
             >
-                This field is required.
+                {{ 'This field is required.' | translate }}
             </div>
         </mat-step>
     </mat-horizontal-stepper>

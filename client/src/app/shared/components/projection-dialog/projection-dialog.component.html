@@ -1,5 +1,5 @@
 <h2 mat-dialog-title>
-    <span translate>Project selection?</span>
+    <span>{{ 'Project selection?' | translate }}</span>
 </h2>
 <div class="element-name" *ngIf="projectorElementBuildDescriptor">
     {{ projectorElementBuildDescriptor.getDialogTitle() }}

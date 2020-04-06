@@ -58,6 +58,13 @@ _('PDF footer logo (left)');
 _('PDF footer logo (right)');
 _('Web interface header logo');
 _('PDF ballot paper logo');
+_('Foreground color');
+_('Background color');
+_('Header background color');
+_('Header font color');
+_('Headline color');
+_('Chyron background color');
+_('Chyron font color');
 
 // Agenda config strings
 _('Enable numbering for agenda items');
@@ -409,3 +416,18 @@ _('Motion change recommendation deleted');
 // core misc strings
 _('items per page');
 _('Tag');
+
+// strings which are not extracted as translateable strings from client code
+_('Foreground color');
+_('Background color');
+_('Header background color');
+_('Header font color');
+_('Headline color');
+_('Chyron background color');
+_('Chyron font color');
+_('Show full text');
+_('Hide more text');
+_('Show password');
+_('Hide password');
+_('result');
+_('results');

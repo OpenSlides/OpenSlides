@@ -1,6 +1,8 @@
 <os-head-bar [nav]="false" [goBack]="true">
     <!-- Title -->
-    <div class="title-slot"><h2 translate>Upload files</h2></div>
+    <div class="title-slot">
+        <h2>{{ 'Upload files' | translate }}</h2>
+    </div>
 
     <!-- Menu -->
     <div class="menu-slot">
@@ -23,6 +25,6 @@
     <!-- Select upload strategy -->
     <button mat-menu-item (click)="setUploadStrategy(!parallel)">
         <mat-icon color="accent">{{ parallel ? 'check_box' : 'check_box_outline_blank' }}</mat-icon>
-        <span translate>Parallel upload</span>
+        <span>{{ 'Parallel upload' | translate }}</span>
     </button>
 </mat-menu>

@@ -306,7 +306,8 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User, UserTi
         } else if (numEmails === 1) {
             msg = this.translate.instant('One email was send sucessfully.');
         } else {
-            msg = this.translate.instant('%num% emails were send sucessfully.').replace('%num%', numEmails);
+            msg = this.translate.instant('%num% emails were send sucessfully.');
+            msg = msg.replace('%num%', numEmails);
         }
 
         if (noEmailIds.length) {

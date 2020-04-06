@@ -9,9 +9,9 @@
     [ngSwitch]="banner.type"
 >
     <ng-container *ngSwitchCase="'history'">
-        <span translate>You are using the history mode of OpenSlides. Changes will not be saved.</span>
+        <span>{{ 'You are using the history mode of OpenSlides. Changes will not be saved.' | translate }}</span>
         <span>({{ getHistoryTimestamp() }})</span>
-        <a (click)="timeTravel.resumeTime()" translate>Exit</a>
+        <a (click)="timeTravel.resumeTime()">{{ 'Exit' | translate }}</a>
     </ng-container>
     <ng-container *ngSwitchDefault>
         <a class="banner-link" [routerLink]="banner.link" [style.cursor]="banner.link ? 'pointer' : 'default'">

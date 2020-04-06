@@ -1,5 +1,5 @@
 <h1 mat-dialog-title>
-    <span translate>Edit projector</span>
+    <span>{{ 'Edit projector' | translate }}</span>
 </h1>
 
 <div class="settings-grid">
@@ -9,11 +9,11 @@
             <mat-form-field>
                 <input formControlName="name" matInput placeholder="{{ 'Name' | translate }}" required />
                 <mat-hint *ngIf="!updateForm.controls.name.valid">
-                    <span translate>Required</span>
+                    <span>{{ 'Required' | translate }}</span>
                 </mat-hint>
             </mat-form-field>
 
-            <h3 translate>Resolution and size</h3>
+            <h3>{{ 'Resolution and size' | translate }}</h3>
             <!-- Aspect ratio field -->
             <div>
                 <mat-radio-group formControlName="aspectRatio" name="aspectRatio">
@@ -72,28 +72,28 @@
             <div>
                 <div>
                     <mat-checkbox formControlName="show_header_footer">
-                        <span translate>Show header and footer</span>
+                        <span>{{ 'Show header and footer' | translate }}</span>
                     </mat-checkbox>
                 </div>
                 <div>
                     <mat-checkbox formControlName="show_title">
-                        <span translate>Show title</span>
+                        <span>{{ 'Show title' | translate }}</span>
                     </mat-checkbox>
                 </div>
                 <div>
                     <mat-checkbox formControlName="show_logo">
-                        <span translate>Show logo</span>
+                        <span>{{ 'Show logo' | translate }}</span>
                     </mat-checkbox>
                 </div>
                 <div>
                     <mat-checkbox formControlName="clock">
-                        <span translate>Show clock</span>
+                        <span>{{ 'Show clock' | translate }}</span>
                     </mat-checkbox>
                 </div>
             </div>
 
             <!-- projection defaults -->
-            <h3 translate>Projection defaults</h3>
+            <h3>{{ 'Projection defaults' | translate }}</h3>
             <mat-select
                 formControlName="projectiondefaults_id"
                 placeholder="{{ 'Projection defaults' | translate }}"
@@ -130,43 +130,49 @@
 
                 <ng-template
                     [ngTemplateOutlet]="colorFormField"
-                    [ngTemplateOutletContext]="{ title: 'Foreground color' | translate, form: 'color' }"
+                    [ngTemplateOutletContext]="{ title: 'Foreground color', form: 'color' }"
                 >
                 </ng-template>
 
                 <ng-template
                     [ngTemplateOutlet]="colorFormField"
-                    [ngTemplateOutletContext]="{ title: 'Background color' | translate, form: 'background_color' }"
+                    [ngTemplateOutletContext]="{ title: 'Background color', form: 'background_color' }"
                 >
                 </ng-template>
 
                 <ng-template
                     [ngTemplateOutlet]="colorFormField"
-                    [ngTemplateOutletContext]="{ title: 'Header background color' | translate, form: 'header_background_color' }"
+                    [ngTemplateOutletContext]="{
+                        title: 'Header background color',
+                        form: 'header_background_color'
+                    }"
                 >
                 </ng-template>
 
                 <ng-template
                     [ngTemplateOutlet]="colorFormField"
-                    [ngTemplateOutletContext]="{ title: 'Header font color' | translate, form: 'header_font_color' }"
+                    [ngTemplateOutletContext]="{ title: 'Header font color', form: 'header_font_color' }"
                 >
                 </ng-template>
 
                 <ng-template
                     [ngTemplateOutlet]="colorFormField"
-                    [ngTemplateOutletContext]="{ title: 'Headline color' | translate, form: 'header_h1_color' }"
+                    [ngTemplateOutletContext]="{ title: 'Headline color', form: 'header_h1_color' }"
                 >
                 </ng-template>
 
                 <ng-template
                     [ngTemplateOutlet]="colorFormField"
-                    [ngTemplateOutletContext]="{ title: 'Chyron background color' | translate, form: 'chyron_background_color' }"
+                    [ngTemplateOutletContext]="{
+                        title: 'Chyron background color',
+                        form: 'chyron_background_color'
+                    }"
                 >
                 </ng-template>
 
                 <ng-template
                     [ngTemplateOutlet]="colorFormField"
-                    [ngTemplateOutletContext]="{ title: 'Chyron font color' | translate, form: 'chyron_font_color' }"
+                    [ngTemplateOutletContext]="{ title: 'Chyron font color', form: 'chyron_font_color' }"
                 >
                 </ng-template>
             </div>
@@ -176,18 +182,18 @@
         <div mat-dialog-actions>
             <mat-divider></mat-divider>
             <button type="submit" mat-button color="primary">
-                <span translate>Save</span>
+                <span>{{ 'Save' | translate }}</span>
             </button>
             <button type="button" mat-button [mat-dialog-close]="null">
-                <span translate>Cancel</span>
+                <span>{{ 'Cancel' | translate }}</span>
             </button>
             <button type="button" mat-button (click)="applyChanges()">
-                <span translate>Apply</span>
+                <span>{{ 'Apply' | translate }}</span>
             </button>
         </div>
     </form>
     <div>
-        <h3 translate>Preview</h3>
+        <h3>{{ 'Preview' | translate }}</h3>
         <div class="preview-container">
             <os-projector #preview *ngIf="previewProjector" [projector]="previewProjector"></os-projector>
         </div>

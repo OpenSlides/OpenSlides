@@ -10,7 +10,7 @@
     (saveEvent)="saveChanges()"
 >
     <div class="title-slot">
-        <h2 translate>Legal notice</h2>
+        <h2>{{ 'Legal notice' | translate }}</h2>
     </div>
 </os-head-bar>
 
@@ -23,13 +23,13 @@
 <mat-card class="os-card">
     <div>
         <button type="button" mat-button (click)="resetCache()">
-            <span translate>Reset cache</span>
+            <span>{{ 'Reset cache' | translate }}</span>
         </button>
     </div>
 
     <div>
         <button type="button" mat-button (click)="checkForUpdate()">
-            <span translate>Check for updates</span>
+            <span>{{ 'Check for updates' | translate }}</span>
         </button>
     </div>
 </mat-card>

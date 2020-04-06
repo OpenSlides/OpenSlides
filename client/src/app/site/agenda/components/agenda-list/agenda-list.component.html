@@ -1,6 +1,8 @@
 <os-head-bar [hasMainButton]="canManage" (mainEvent)="onPlusButton()" [multiSelectMode]="isMultiSelect">
     <!-- Title -->
-    <div class="title-slot"><h2 translate>Agenda</h2></div>
+    <div class="title-slot">
+        <h2>{{ 'Agenda' | translate }}</h2>
+    </div>
     <!-- Menu -->
     <div class="menu-slot">
         <button type="button" mat-icon-button [matMenuTriggerFor]="agendaMenu"><mat-icon>more_vert</mat-icon></button>
@@ -9,7 +11,7 @@
     <!-- Multiselect info -->
     <div class="central-info-slot">
         <button mat-icon-button (click)="toggleMultiSelect()"><mat-icon>arrow_back</mat-icon></button>
-        <span>{{ selectedRows.length }}&nbsp;</span><span translate>selected</span>
+        <span>{{ selectedRows.length }}&nbsp;</span><span>{{ 'selected' | translate }}</span>
     </div>
 </os-head-bar>
 
@@ -79,17 +81,17 @@
             <!-- Enable multi select -->
             <button mat-menu-item (click)="toggleMultiSelect()">
                 <mat-icon>library_add</mat-icon>
-                <span translate>Multiselect</span>
+                <span>{{ 'Multiselect' | translate }}</span>
             </button>
 
             <!-- automatic numbering -->
             <button mat-menu-item *ngIf="isNumberingAllowed" (click)="onAutoNumbering()">
                 <mat-icon>format_list_numbered</mat-icon>
-                <span translate>Numbering</span>
+                <span>{{ 'Numbering' | translate }}</span>
             </button>
             <button mat-menu-item routerLink="sort-agenda">
                 <mat-icon>sort</mat-icon>
-                <span translate>Sort</span>
+                <span>{{ 'Sort' | translate }}</span>
             </button>
         </div>
 
@@ -99,28 +101,28 @@
         <!-- Current list of speakers -->
         <button mat-menu-item *osPerms="'agenda.can_see_list_of_speakers'" routerLink="speakers">
             <mat-icon>mic</mat-icon>
-            <span translate>Current list of speakers</span>
+            <span>{{ 'Current list of speakers' | translate }}</span>
         </button>
         <!-- CSV export -->
         <button mat-menu-item *osPerms="'agenda.can_manage'" (click)="csvExportItemList()">
             <mat-icon>archive</mat-icon>
-            <span translate>Export as CSV</span>
+            <span>{{ 'Export as CSV' | translate }}</span>
         </button>
         <!-- PDF export -->
         <button mat-menu-item (click)="onDownloadPdf()">
             <mat-icon>picture_as_pdf</mat-icon>
-            <span translate>Export as PDF</span>
+            <span>{{ 'Export as PDF' | translate }}</span>
         </button>
         <!-- Import -->
         <button mat-menu-item *osPerms="'agenda.can_manage'" routerLink="import">
             <mat-icon>cloud_upload</mat-icon>
-            <span translate>Import</span>
+            <span>{{ 'Import' | translate }}</span>
         </button>
         <mat-divider></mat-divider>
         <!-- Settings -->
         <button mat-menu-item *osPerms="'core.can_manage_config'" routerLink="/settings/agenda">
             <mat-icon>settings</mat-icon>
-            <span translate>Settings</span>
+            <span>{{ 'Settings' | translate }}</span>
         </button>
     </div>
 
@@ -128,26 +130,26 @@
         <!-- Select all -->
         <button mat-menu-item (click)="selectAll()">
             <mat-icon>done_all</mat-icon>
-            <span translate>Select all</span>
+            <span>{{ 'Select all' | translate }}</span>
         </button>
 
         <!-- Deselect all -->
         <button mat-menu-item [disabled]="!selectedRows.length" (click)="deselectAll()">
             <mat-icon>clear</mat-icon>
-            <span translate>Deselect all</span>
+            <span>{{ 'Deselect all' | translate }}</span>
         </button>
         <mat-divider></mat-divider>
         <div *osPerms="'agenda.can_manage'">
             <!-- Close selected -->
             <button mat-menu-item [disabled]="!selectedRows.length" (click)="setClosedSelected(true)">
                 <mat-icon>done</mat-icon>
-                <span translate>Close</span>
+                <span>{{ 'Close' | translate }}</span>
             </button>
 
             <!-- Open selected -->
             <button mat-menu-item [disabled]="!selectedRows.length" (click)="setClosedSelected(false)">
                 <mat-icon>redo</mat-icon>
-                <span translate>Open</span>
+                <span>{{ 'Open' | translate }}</span>
             </button>
 
             <mat-divider></mat-divider>
@@ -155,26 +157,26 @@
             <!-- Set multiple to public -->
             <button mat-menu-item [disabled]="!selectedRows.length" (click)="setAgendaType(1)">
                 <mat-icon>public</mat-icon>
-                <span translate>Set public</span>
+                <span>{{ 'Set public' | translate }}</span>
             </button>
 
             <!-- Set multiple to internal -->
             <button mat-menu-item [disabled]="!selectedRows.length" (click)="setAgendaType(2)">
                 <mat-icon>visibility</mat-icon>
-                <span translate>Set internal</span>
+                <span>{{ 'Set internal' | translate }}</span>
             </button>
 
             <!-- Set multiple to hidden -->
             <button mat-menu-item [disabled]="!selectedRows.length" (click)="setAgendaType(3)">
                 <mat-icon>visibility_off</mat-icon>
-                <span translate>Set hidden</span>
+                <span>{{ 'Set hidden' | translate }}</span>
             </button>
             <mat-divider></mat-divider>
 
             <!-- Delete selected -->
             <button mat-menu-item [disabled]="!selectedRows.length" (click)="removeSelected()">
                 <mat-icon>remove</mat-icon>
-                <span translate>Remove from agenda</span>
+                <span>{{ 'Remove from agenda' | translate }}</span>
             </button>
         </div>
     </div>
@@ -193,13 +195,13 @@
             <!-- Done check -->
             <button mat-menu-item (click)="onDoneSingleButton(item)">
                 <mat-icon color="accent"> {{ item.closed ? 'check_box' : 'check_box_outline_blank' }} </mat-icon>
-                <span translate>Done</span>
+                <span>{{ 'Done' | translate }}</span>
             </button>
 
             <!-- Edit button -->
             <button mat-menu-item (click)="openEditInfo(item, $event)">
                 <mat-icon>edit</mat-icon>
-                <span translate>Edit details</span>
+                <span>{{ 'Edit details' | translate }}</span>
             </button>
 
             <!-- Delete Button -->
@@ -209,7 +211,7 @@
                 *ngIf="item.contentObjectData.collection !== 'topics/topic'"
             >
                 <mat-icon>remove</mat-icon>
-                <span translate>Remove from agenda</span>
+                <span>{{ 'Remove from agenda' | translate }}</span>
             </button>
 
             <button
@@ -219,7 +221,7 @@
                 *ngIf="item.contentObjectData.collection === 'topics/topic'"
             >
                 <mat-icon>delete</mat-icon>
-                <span translate>Delete</span>
+                <span>{{ 'Delete' | translate }}</span>
             </button>
         </div>
     </ng-template>

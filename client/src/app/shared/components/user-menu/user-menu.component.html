@@ -20,7 +20,7 @@
                 <mat-icon [color]="user.is_present ? 'primary' : ''" class="menu-icon">
                     {{ user.is_present ? 'check_box' : 'check_box_outline_blank' }}
                 </mat-icon>
-                <span class="menu-text" translate>Present</span>
+                <span class="menu-text">{{ 'Present' | translate }}</span>
             </button>
             <!-- Show profile -->
             <a
@@ -30,7 +30,7 @@
                 mat-list-item
             >
                 <mat-icon class="menu-icon">person</mat-icon>
-                <span class="menu-text" translate>Show profile</span>
+                <span class="menu-text">{{ 'Show profile' | translate }}</span>
             </a>
             <!-- Change password -->
             <ng-container *ngIf="authType === 'default'">
@@ -42,19 +42,19 @@
                     mat-list-item
                 >
                     <mat-icon class="menu-icon">vpn_key</mat-icon>
-                    <span class="menu-text" translate>Change password</span>
+                    <span class="menu-text">{{ 'Change password' | translate }}</span>
                 </a>
             </ng-container>
             <ng-container *ngIf="authType === 'saml'">
                 <a *osPerms="'users.can_change_password'" [href]="samlChangePasswordUrl" mat-list-item>
                     <mat-icon class="menu-icon">vpn_key</mat-icon>
-                    <span class="menu-text" translate>Change password</span>
+                    <span class="menu-text">{{ 'Change password' | translate }}</span>
                 </a>
             </ng-container>
             <!-- logout -->
             <a (click)="logout()" mat-list-item>
                 <mat-icon class="menu-icon">exit_to_app</mat-icon>
-                <span class="menu-text" translate>Logout</span>
+                <span class="menu-text">{{ 'Logout' | translate }}</span>
             </a>
         </div>
     </mat-nav-list>
@@ -62,7 +62,7 @@
 <mat-nav-list *ngIf="!isLoggedIn">
     <a routerLink="/login" mat-list-item>
         <mat-icon class="menu-icon">exit_to_app</mat-icon>
-        <span class="menu-text" translate>Login</span>
+        <span class="menu-text">{{ 'Login' | translate }}</span>
     </a>
 </mat-nav-list>
 

@@ -18,7 +18,8 @@
 <div *ngIf="workflow">
     <div class="title-line">
         <strong>
-            <span translate>First state</span>:
+            <span>{{ 'First state' | translate }}</span
+            >:
             <span>{{ workflow.first_state.name | translate }}</span>
         </strong>
     </div>
@@ -26,7 +27,7 @@
     <div class="scrollable-matrix">
         <table mat-table [dataSource]="getTableDataSource()">
             <ng-container matColumnDef="perm" sticky>
-                <th mat-header-cell class="group-head-table-cell" *matHeaderCellDef translate>Permissions</th>
+                <th mat-header-cell class="group-head-table-cell" *matHeaderCellDef>{{ 'Permissions' | translate }}</th>
                 <td mat-cell *matCellDef="let perm">
                     <div class="permission-name">
                         {{ perm.name | translate }}
@@ -144,10 +145,10 @@
             color="primary"
             [mat-dialog-close]="{ action: 'update', value: dialogData.value }"
         >
-            <span translate>Save</span>
+            <span>{{ 'Save' | translate }}</span>
         </button>
         <button type="button" mat-button [mat-dialog-close]="null">
-            <span translate>Cancel</span>
+            <span>{{ 'Cancel' | translate }}</span>
         </button>
         <button
             type="button"
@@ -156,7 +157,7 @@
             *ngIf="dialogData.deletable"
             [mat-dialog-close]="{ action: 'delete' }"
         >
-            <span translate>Delete</span>
+            <span>{{ 'Delete' | translate }}</span>
         </button>
     </div>
 </ng-template>

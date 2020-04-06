@@ -1,16 +1,20 @@
 <os-head-bar prevUrl="../.." [nav]="false">
     <!-- Title -->
-    <div class="title-slot"><h2 translate>Import motions</h2></div>
+    <div class="title-slot">
+        <h2>{{ 'Import motions' | translate }}</h2>
+    </div>
 
     <div class="menu-slot">
         <button *ngIf="hasFile && newCount" mat-button (click)="doImport()">
-            <span class="upper" translate> Import</span>
+            <span class="upper">{{ 'Import' | translate }}</span>
         </button>
     </div>
 </os-head-bar>
 
 <mat-card class="os-form-card import-table">
-    <span translate>Required comma or semicolon separated values with these column header names in the first row:</span>
+    <span>{{
+        'Required comma or semicolon separated values with these column header names in the first row:' | translate
+    }}</span>
     <br />
     <div class="code red-warning-text">
         <span *ngFor="let header of this.expectedHeader; let last = last">
@@ -19,18 +23,27 @@
         </span>
     </div>
     <ul>
-        <li translate>
-            Identifier, reason, submitter, category, origin and motion block are optional and may be empty.
+        <li>
+            {{
+                'Identifier, reason, submitter, category, origin and motion block are optional and may be empty.'
+                    | translate
+            }}
         </li>
-        <li translate>Additional columns after the required ones may be present and won't affect the import.</li>
+        <li>
+            {{
+                'Additional columns after the required ones may be present and will not affect the import.' | translate
+            }}
+        </li>
     </ul>
-    <button mat-button color="accent" (click)="downloadCsvExample()" translate>Download CSV example file</button>
+    <button mat-button color="accent" (click)="downloadCsvExample()">
+        {{ 'Download CSV example file' | translate }}
+    </button>
     <div class="wrapper">
         <mat-form-field>
-            <mat-label translate>Encoding of the file</mat-label>
+            <mat-label>{{ 'Encoding of the file' | translate }}</mat-label>
             <mat-select
                 class="selection"
-                placeholder="translate.instant('Select encoding')"
+                placeholder="{{ 'Select encoding' | translate }}"
                 (selectionChange)="selectEncoding($event)"
                 [value]="encodings[0].value"
             >
@@ -40,7 +53,7 @@
             </mat-select>
         </mat-form-field>
         <mat-form-field>
-            <mat-label translate>Column separator</mat-label>
+            <mat-label>{{ 'Column separator' | translate }}</mat-label>
             <mat-select class="selection" (selectionChange)="selectColSep($event)" value="">
                 <mat-option *ngFor="let option of columnSeparators" [value]="option.value">
                     {{ option.label | translate }}
@@ -48,7 +61,7 @@
             </mat-select>
         </mat-form-field>
         <mat-form-field>
-            <mat-label translate>Text separator</mat-label>
+            <mat-label>{{ 'Text separator' | translate }}</mat-label>
             <mat-select class="selection" (selectionChange)="selectTextSep($event)" value='"'>
                 <mat-option *ngFor="let option of textSeparators" [value]="option.value">
                     {{ option.label | translate }}
@@ -67,7 +80,7 @@
                 (change)="onSelectFile($event)"
             />
             <button mat-button osAutofocus onclick="document.getElementById('motion-import-file-input').click()">
-                <span translate> Select file</span>
+                <span>{{ 'Select file' | translate }}</span>
             </button>
         </div>
     </div>
@@ -75,35 +88,35 @@
 
 <!-- preview table -->
 <mat-card *ngIf="hasFile" class="os-form-card import-table">
-    <h3 translate>Preview</h3>
+    <h3>{{ 'Preview' | translate }}</h3>
     <div class="summary">
         <!-- new entries -->
         <div *ngIf="newCount">
             &nbsp;
             <mat-icon inline>playlist_add</mat-icon>
-            <span>&nbsp;{{ newCount }}&nbsp;</span> <span translate>Motion(s) will be imported.</span>
+            <span>&nbsp;{{ newCount }}&nbsp;</span> <span>{{ 'Motion(s) will be imported.' | translate }}</span>
         </div>
         <!-- errors/duplicates -->
         <div *ngIf="nonImportableCount" class="red-warning-text">
             &nbsp;
             <mat-icon inline>warning</mat-icon>
-            <span>&nbsp;{{ nonImportableCount }}&nbsp;</span> <span translate>entries will be ommitted.</span>
+            <span>&nbsp;{{ nonImportableCount }}&nbsp;</span> <span>{{ 'entries will be ommitted.' | translate }}</span>
         </div>
         <!-- have been imported -->
         <div *ngIf="doneCount" class="green-text">
             &nbsp;
             <mat-icon inline>done</mat-icon>
-            <span>&nbsp;{{ doneCount }}&nbsp;</span> <span translate>Motions have been imported.</span>
+            <span>&nbsp;{{ doneCount }}&nbsp;</span> <span>{{ 'Motions have been imported.' | translate }}</span>
         </div>
     </div>
     <div *ngIf="newCount">
-        <span translate>After verifiy the preview click on 'import' please (see top right).</span>
+        <span>{{ 'After verifiy the preview click on "import" please (see top right).' | translate }}</span>
     </div>
     <div>
         <mat-select *ngIf="nonImportableCount" class="filter-imports" [(value)]="shown" (selectionChange)="setFilter()">
-            <mat-option value="all" translate> Show all </mat-option>
-            <mat-option value="error" translate> Show errors only </mat-option>
-            <mat-option value="noerror" translate> Show correct entries </mat-option>
+            <mat-option value="all">{{ 'Show all' | translate }}</mat-option>
+            <mat-option value="error">{{ 'Show errors only' | translate }}</mat-option>
+            <mat-option value="noerror">{{ 'Show correct entries' | translate }}</mat-option>
         </mat-select>
     </div>
     <div class="table-container">
@@ -135,7 +148,7 @@
 
             <!-- identifier column -->
             <ng-container matColumnDef="identifier">
-                <mat-header-cell *matHeaderCellDef translate>Identifier</mat-header-cell>
+                <mat-header-cell *matHeaderCellDef>{{ 'Identifier' | translate }}</mat-header-cell>
                 <mat-cell *matCellDef="let entry">
                     <mat-icon
                         color="warn"
@@ -151,7 +164,7 @@
 
             <!-- title column -->
             <ng-container matColumnDef="title">
-                <mat-header-cell *matHeaderCellDef translate>Title</mat-header-cell>
+                <mat-header-cell *matHeaderCellDef>{{ 'Title' | translate }}</mat-header-cell>
                 <mat-cell *matCellDef="let entry">
                     <mat-icon
                         color="warn"
@@ -166,7 +179,7 @@
 
             <!-- text column -->
             <ng-container matColumnDef="text">
-                <mat-header-cell *matHeaderCellDef translate>Motion text</mat-header-cell>
+                <mat-header-cell *matHeaderCellDef>{{ 'Motion text' | translate }}</mat-header-cell>
                 <mat-cell *matCellDef="let entry" matTooltip="{{ getLongPreview(entry.newEntry.text) }}">
                     <mat-icon
                         color="warn"
@@ -181,7 +194,7 @@
 
             <!-- reason column -->
             <ng-container matColumnDef="reason">
-                <mat-header-cell *matHeaderCellDef translate>Reason</mat-header-cell>
+                <mat-header-cell *matHeaderCellDef>{{ 'Reason' | translate }}</mat-header-cell>
                 <mat-cell *matCellDef="let entry" matTooltip="{{ getLongPreview(entry.newEntry.reason) }}">
                     {{ getShortPreview(entry.newEntry.reason) }}
                 </mat-cell>
@@ -189,7 +202,7 @@
 
             <!-- submitters column -->
             <ng-container matColumnDef="submitters">
-                <mat-header-cell *matHeaderCellDef translate>Submitters</mat-header-cell>
+                <mat-header-cell *matHeaderCellDef>{{ 'Submitters' | translate }}</mat-header-cell>
                 <mat-cell *matCellDef="let entry">
                     <div *ngIf="entry.newEntry.csvSubmitters && entry.newEntry.csvSubmitters.length">
                         <mat-icon
@@ -210,7 +223,7 @@
 
             <!-- category column -->
             <ng-container matColumnDef="category">
-                <mat-header-cell *matHeaderCellDef translate>Category</mat-header-cell>
+                <mat-header-cell *matHeaderCellDef>{{ 'Category' | translate }}</mat-header-cell>
                 <mat-cell *matCellDef="let entry">
                     <div *ngIf="entry.newEntry.csvCategory">
                         <mat-icon
@@ -230,7 +243,7 @@
 
             <!-- tag column -->
             <ng-container matColumnDef="tags">
-                <mat-header-cell *matHeaderCellDef translate>Tags</mat-header-cell>
+                <mat-header-cell *matHeaderCellDef>{{ 'Tags' | translate }}</mat-header-cell>
                 <mat-cell *matCellDef="let entry">
                     <div *ngIf="entry.newEntry.csvTags">
                         <mat-icon
@@ -250,13 +263,13 @@
 
             <!-- origin column -->
             <ng-container matColumnDef="origin">
-                <mat-header-cell *matHeaderCellDef translate>Origin</mat-header-cell>
+                <mat-header-cell *matHeaderCellDef>{{ 'Origin' | translate }}</mat-header-cell>
                 <mat-cell *matCellDef="let entry">{{ entry.newEntry.origin }}</mat-cell>
             </ng-container>
 
             <!-- motion block column -->
             <ng-container matColumnDef="motion_block">
-                <mat-header-cell *matHeaderCellDef translate>Motion block</mat-header-cell>
+                <mat-header-cell *matHeaderCellDef>{{ 'Motion block' | translate }}</mat-header-cell>
                 <mat-cell *matCellDef="let entry">
                     <div *ngIf="entry.newEntry.csvMotionblock">
                         <mat-icon

@@ -13,9 +13,9 @@
         <!-- Duration -->
         <mat-form-field>
             <input type="string" matInput placeholder="{{ 'Duration' | translate }}" formControlName="durationText" />
-            <mat-error *ngIf="agendaInfoForm.invalid"
-                >Your input does not match the following structure 'hh:mm'...</mat-error
-            >
+            <mat-error *ngIf="agendaInfoForm.invalid">
+                {{ 'Your input does not match the following structure: "hh:mm"' | translate }}
+            </mat-error>
         </mat-form-field>
 
         <!-- Item number (prefix) -->
@@ -37,6 +37,10 @@
     </form>
 </div>
 <div mat-dialog-actions>
-    <button mat-button (click)="saveItemInfo()" [disabled]="agendaInfoForm.invalid"><span translate>Save</span></button>
-    <button mat-button (click)="onCancelButton()"><span translate>Cancel</span></button>
+    <button mat-button (click)="saveItemInfo()" [disabled]="agendaInfoForm.invalid">
+        <span>{{ 'Save' | translate }}</span>
+    </button>
+    <button mat-button (click)="onCancelButton()">
+        <span>{{ 'Cancel' | translate }}</span>
+    </button>
 </div>

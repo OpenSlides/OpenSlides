@@ -256,14 +256,11 @@ export class PdfDocumentService {
         if (logoHeaderLeftUrl && logoHeaderRightUrl) {
             text = '';
         } else {
-            const general_event_name = this.configService.instant<string>('general_event_name');
-            const general_event_description = this.configService.instant<string>('general_event_description');
-            const line1 = [
-                this.translate.instant(general_event_name),
-                this.translate.instant(general_event_description)
-            ]
-                .filter(Boolean)
-                .join(' – ');
+            const general_event_name = this.translate.instant(this.configService.instant<string>('general_event_name'));
+            const general_event_description = this.translate.instant(
+                this.configService.instant<string>('general_event_description')
+            );
+            const line1 = [general_event_name, general_event_description].filter(Boolean).join(' - ');
             const line2 = [
                 this.configService.instant('general_event_location'),
                 this.configService.instant('general_event_date')
