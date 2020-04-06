@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 
+import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { TranslateService } from '@ngx-translate/core';
 
-import { _ } from 'app/core/translate/translation-marker';
 import { ViewAssignmentPoll } from 'app/site/assignments/models/view-assignment-poll';
 import { ViewMotionPoll } from 'app/site/motions/models/view-motion-poll';
 import { ViewBasePoll } from 'app/site/polls/models/view-base-poll';

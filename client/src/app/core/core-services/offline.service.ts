@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 
+import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
-import { _ } from 'app/core/translate/translation-marker';
 import { BannerDefinition, BannerService } from '../ui-services/banner.service';
 
 /**

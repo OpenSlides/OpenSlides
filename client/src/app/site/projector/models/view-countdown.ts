@@ -1,4 +1,5 @@
-import { _ } from 'app/core/translate/translation-marker';
+import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
+
 import { Countdown } from 'app/shared/models/core/countdown';
 import { BaseProjectableViewModel } from 'app/site/base/base-projectable-view-model';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
