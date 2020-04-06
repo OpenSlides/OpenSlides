@@ -4,6 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { TranslateService } from '@ngx-translate/core';
 import { PblColumnDefinition } from '@pebula/ngrid';
 
@@ -11,7 +12,6 @@ import { OperatorService } from 'app/core/core-services/operator.service';
 import { StorageService } from 'app/core/core-services/storage.service';
 import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
-import { _ } from 'app/core/translate/translation-marker';
 import { ChoiceService } from 'app/core/ui-services/choice.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { CsvExportService } from 'app/core/ui-services/csv-export.service';

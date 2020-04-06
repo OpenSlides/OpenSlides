@@ -1,6 +1,6 @@
+import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { BehaviorSubject } from 'rxjs';
 
-import { _ } from 'app/core/translate/translation-marker';
 import { ChartData } from 'app/shared/components/charts/charts.component';
 import {
     AssignmentPoll,

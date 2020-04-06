@@ -1,4 +1,5 @@
-import { _ } from 'app/core/translate/translation-marker';
+import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
+
 import { BaseModel } from '../base/base-model';
 
 /**

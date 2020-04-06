@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 
+import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { TranslateService } from '@ngx-translate/core';
 
 import { OpenSlidesStatusService } from 'app/core/core-services/openslides-status.service';
 import { StorageService } from 'app/core/core-services/storage.service';
 import { Deferred } from 'app/core/promises/deferred';
-import { _ } from 'app/core/translate/translation-marker';
 import { BaseSortListService } from 'app/core/ui-services/base-sort-list.service';
 import { OsSortingDefinition, OsSortingOption } from 'app/core/ui-services/base-sort.service';
 import { ConfigService } from 'app/core/ui-services/config.service';

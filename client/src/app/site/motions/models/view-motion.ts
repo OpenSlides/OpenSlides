@@ -1,4 +1,5 @@
-import { _ } from 'app/core/translate/translation-marker';
+import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
+
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { DiffLinesInParagraph } from 'app/core/ui-services/diff.service';
 import { SearchProperty, SearchRepresentation } from 'app/core/ui-services/search.service';
