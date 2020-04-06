@@ -4,7 +4,7 @@
         <tbody>
             <tr>
                 <th></th>
-                <th colspan="2" translate>Votes</th>
+                <th colspan="2">{{ 'Votes' | translate }}</th>
             </tr>
             <tr *ngFor="let row of getTableData()" [class]="row.votingOption">
                 <!-- YNA/Valid etc -->

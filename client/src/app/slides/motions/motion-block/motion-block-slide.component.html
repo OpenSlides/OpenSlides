@@ -1,7 +1,10 @@
 <div *ngIf="data">
     <div class="slidetitle">
         <h1>{{ data.data.title }}</h1>
-        <h2><span translate>Motion block</span> – {{ data.data.motions.length }} <span translate>motions</span></h2>
+        <h2>
+            <span>{{ 'Motion block' | translate }}</span> – {{ data.data.motions.length }}
+            <span>{{ 'motions' | translate }}</span>
+        </h2>
     </div>
 
     <div *ngIf="commonRecommendation" class="spacer-bottom-20">
@@ -16,9 +19,13 @@
                 <ng-container *ngIf="getMotion(i, j)">
                     <div class="ellipsis-overflow spacer-top-5">
                         {{ getMotionTitle(i, j) }}
-                        <br *ngIf="!shortDisplayStyle"/>
+                        <br *ngIf="!shortDisplayStyle" />
                         <span class="white" *ngIf="!commonRecommendation && getMotion(i, j).recommendationLabel">
-                            <mat-basic-chip disableRipple [ngClass]="getStateCssColor(i, j)" class="block-recommendation">
+                            <mat-basic-chip
+                                disableRipple
+                                [ngClass]="getStateCssColor(i, j)"
+                                class="block-recommendation"
+                            >
                                 {{ getMotion(i, j).recommendationLabel }}
                             </mat-basic-chip>
                         </span>

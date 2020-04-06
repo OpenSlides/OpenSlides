@@ -1,7 +1,7 @@
 <os-head-bar [hasMainButton]="canEdit" [multiSelectMode]="isMultiSelect" (mainEvent)="onMainEvent()">
     <!-- Title -->
     <div class="title-slot">
-        <h2 translate>Files</h2>
+        <h2>{{ 'Files' | translate }}</h2>
     </div>
 
     <!-- Menu -->
@@ -17,7 +17,7 @@
     <!-- Multiselect info -->
     <div *ngIf="isMultiSelect" class="central-info-slot">
         <button mat-icon-button (click)="toggleMultiSelect()"><mat-icon>arrow_back</mat-icon></button>
-        <span>{{ selectedRows.length }}&nbsp;</span><span translate>selected</span>
+        <span>{{ selectedRows.length }}&nbsp;</span><span>{{ 'selected' | translate }}</span>
     </div>
 </os-head-bar>
 
@@ -93,7 +93,12 @@
 >
     <!-- Icon column -->
     <div *pblNgridCellDef="'icon'; row as mediafile" class="fill clickable">
-        <a class="detail-link" target="_blank" [routerLink]="mediafile.url" *ngIf="!mediafile.is_directory && !isMultiSelect">
+        <a
+            class="detail-link"
+            target="_blank"
+            [routerLink]="mediafile.url"
+            *ngIf="!mediafile.is_directory && !isMultiSelect"
+        >
         </a>
         <a class="detail-link" (click)="changeDirectory(mediafile.id)" *ngIf="mediafile.is_directory && !isMultiSelect">
         </a>
@@ -102,7 +107,12 @@
 
     <!-- Title column -->
     <div *pblNgridCellDef="'title'; row as mediafile" class="fill clickable">
-        <a class="detail-link" target="_blank" [routerLink]="mediafile.url" *ngIf="!mediafile.is_directory && !isMultiSelect">
+        <a
+            class="detail-link"
+            target="_blank"
+            [routerLink]="mediafile.url"
+            *ngIf="!mediafile.is_directory && !isMultiSelect"
+        >
         </a>
         <a class="detail-link" (click)="changeDirectory(mediafile.id)" *ngIf="mediafile.is_directory && !isMultiSelect">
         </a>
@@ -155,7 +165,7 @@
 
     <!-- No Results -->
     <div *pblNgridNoDataRef class="pbl-ngrid-no-data">
-        <span translate>No data</span>
+        <span>{{ 'No data' | translate }}</span>
     </div>
 </pbl-ngrid>
 
@@ -203,15 +213,15 @@
         <div *ngIf="canEdit">
             <button mat-menu-item (click)="onEditFile(mediafile)">
                 <mat-icon>edit</mat-icon>
-                <span translate>Edit</span>
+                <span>{{ 'Edit' | translate }}</span>
             </button>
             <button mat-menu-item (click)="move(moveDialog, [mediafile])">
                 <mat-icon>near_me</mat-icon>
-                <span translate>Move</span>
+                <span>{{ 'Move' | translate }}</span>
             </button>
             <button mat-menu-item class="red-warning-text" (click)="onDelete(mediafile)">
                 <mat-icon>delete</mat-icon>
-                <span translate>Delete</span>
+                <span>{{ 'Delete' | translate }}</span>
             </button>
         </div>
     </ng-template>
@@ -222,22 +232,22 @@
     <div *ngIf="!isMultiSelect">
         <button mat-menu-item *osPerms="'mediafiles.can_manage'" (click)="toggleMultiSelect()">
             <mat-icon>library_add</mat-icon>
-            <span translate>Multiselect</span>
+            <span>{{ 'Multiselect' | translate }}</span>
         </button>
     </div>
     <div *ngIf="isMultiSelect">
         <button mat-menu-item [disabled]="!selectedRows.length" (click)="move(moveDialog, selectedRows)">
             <mat-icon>near_me</mat-icon>
-            <span translate>Move</span>
+            <span>{{ 'Move' | translate }}</span>
         </button>
         <mat-divider></mat-divider>
         <button mat-menu-item (click)="selectAll()">
             <mat-icon>done_all</mat-icon>
-            <span translate>Select all</span>
+            <span>{{ 'Select all' | translate }}</span>
         </button>
         <button mat-menu-item [disabled]="!selectedRows.length" (click)="deselectAll()">
             <mat-icon>clear</mat-icon>
-            <span translate>Deselect all</span>
+            <span>{{ 'Deselect all' | translate }}</span>
         </button>
         <mat-divider></mat-divider>
         <button
@@ -247,7 +257,7 @@
             (click)="deleteSelected()"
         >
             <mat-icon color="warn">delete</mat-icon>
-            <span translate>Delete</span>
+            <span>{{ 'Delete' | translate }}</span>
         </button>
     </div>
 </mat-menu>
@@ -266,7 +276,7 @@
                     formControlName="title"
                     placeholder="{{ 'New file name' | translate }}"
                 />
-                <mat-error *ngIf="fileEditForm.invalid" translate>Required</mat-error>
+                <mat-error *ngIf="fileEditForm.invalid">{{ 'Required' | translate }}</mat-error>
             </mat-form-field>
 
             <mat-form-field>
@@ -287,10 +297,10 @@
             color="primary"
             (click)="onSaveEditedFile(fileEditForm.value)"
         >
-            <span translate>Save</span>
+            <span>{{ 'Save' | translate }}</span>
         </button>
         <button type="button" mat-button [mat-dialog-close]="null">
-            <span translate>Cancel</span>
+            <span>{{ 'Cancel' | translate }}</span>
         </button>
     </div>
 </ng-template>
@@ -300,7 +310,7 @@
     <h1 mat-dialog-title>{{ 'New directory' | translate }}</h1>
     <div class="os-form-card-mobile" mat-dialog-content>
         <form class="edit-file-form" [formGroup]="newDirectoryForm">
-            <p translate>Please enter a name for the new directory:</p>
+            <p>{{ 'Please enter a name for the new directory:' | translate }}</p>
             <mat-form-field>
                 <input matInput osAutofocus formControlName="title" placeholder="{{ 'Title' | translate }}" required />
             </mat-form-field>
@@ -317,10 +327,10 @@
     </div>
     <div mat-dialog-actions>
         <button type="submit" mat-button [disabled]="!newDirectoryForm.valid" color="primary" [mat-dialog-close]="true">
-            <span translate>Save</span>
+            <span>{{ 'Save' | translate }}</span>
         </button>
         <button type="button" mat-button [mat-dialog-close]="null">
-            <span translate>Cancel</span>
+            <span>{{ 'Cancel' | translate }}</span>
         </button>
     </div>
 </ng-template>
@@ -328,10 +338,10 @@
 <!-- Move dialog -->
 <ng-template #moveDialog>
     <h1 mat-dialog-title>
-        <span translate>Move into directory</span>
+        <span>{{ 'Move into directory' | translate }}</span>
     </h1>
     <div class="os-form-card-mobile" [formGroup]="moveForm" mat-dialog-content>
-        <p translate>Please select the directory:</p>
+        <p>{{ 'Please select the directory:' | translate }}</p>
         <mat-form-field>
             <os-search-value-selector
                 formControlName="directory_id"
@@ -344,10 +354,10 @@
     </div>
     <div mat-dialog-actions>
         <button type="submit" mat-button color="primary" [mat-dialog-close]="true">
-            <span translate>Move</span>
+            <span>{{ 'Move' | translate }}</span>
         </button>
         <button type="button" mat-button [mat-dialog-close]="null">
-            <span translate>Cancel</span>
+            <span>{{ 'Cancel' | translate }}</span>
         </button>
     </div>
 </ng-template>

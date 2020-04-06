@@ -1,6 +1,6 @@
 <os-head-bar>
     <!-- Title -->
-    <div class="title-slot" translate>History</div>
+    <div class="title-slot">{{ 'History' | translate }}</div>
 
     <!-- Menu -->
     <div class="menu-slot">
@@ -27,7 +27,7 @@
         <span class="spacer-left-20">
             <button mat-button (click)="refresh()" *ngIf="currentModelId">
                 <mat-icon>refresh</mat-icon>
-                <span translate>Refresh</span>
+                <span>{{ 'Refresh' | translate }}</span>
             </button>
         </span>
     </div>
@@ -42,13 +42,13 @@
 <mat-table [dataSource]="dataSource" matSort class="os-headed-listview-table">
     <!-- Timestamp -->
     <ng-container matColumnDef="time">
-        <mat-header-cell *matHeaderCellDef translate>Timestamp</mat-header-cell>
+        <mat-header-cell *matHeaderCellDef>{{ 'Timestamp' | translate }}</mat-header-cell>
         <mat-cell *matCellDef="let history">{{ getTimestamp(history) }}</mat-cell>
     </ng-container>
 
     <!-- Element -->
     <ng-container matColumnDef="element">
-        <mat-header-cell *matHeaderCellDef translate>Element</mat-header-cell>
+        <mat-header-cell *matHeaderCellDef>{{ 'Element' | translate }}</mat-header-cell>
         <mat-cell *matCellDef="let history">
             <div *ngIf="getElementInfo(history)">{{ getElementInfo(history) | translate }}</div>
             <div
@@ -63,13 +63,13 @@
 
     <!-- Info -->
     <ng-container matColumnDef="info">
-        <mat-header-cell *matHeaderCellDef translate>Comment</mat-header-cell>
+        <mat-header-cell *matHeaderCellDef>{{ 'Comment' | translate }}</mat-header-cell>
         <mat-cell *matCellDef="let history">{{ parseInformation(history) }}</mat-cell>
     </ng-container>
 
     <!-- User -->
     <ng-container matColumnDef="user">
-        <mat-header-cell *matHeaderCellDef translate>Changed by</mat-header-cell>
+        <mat-header-cell *matHeaderCellDef>{{ 'Changed by' | translate }}</mat-header-cell>
         <mat-cell *matCellDef="let history">{{ getUserName(history) }}</mat-cell>
     </ng-container>
 
@@ -82,6 +82,6 @@
 <mat-menu #historyMenu="matMenu">
     <button mat-menu-item class="red-warning-text" (click)="clearHistory()">
         <mat-icon>delete</mat-icon>
-        <span translate>Delete whole history</span>
+        <span>{{ 'Delete whole history' | translate }}</span>
     </button>
 </mat-menu>

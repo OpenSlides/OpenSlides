@@ -1,5 +1,7 @@
 <os-head-bar [hasMainButton]="true" [nav]="true" (mainEvent)="openTagDialog()" [multiSelectMode]="isMultiSelect">
-    <div class="title-slot"><h2 translate>Tags</h2></div>
+    <div class="title-slot">
+        <h2>{{ 'Tags' | translate }}</h2>
+    </div>
 </os-head-bar>
 
 <os-list-view-table
@@ -35,8 +37,8 @@
 <!-- Template for dialog for quick editing -->
 <ng-template #tagDialog>
     <h1 mat-dialog-title>
-        <span *ngIf="currentTag" translate>Edit tag</span>
-        <span *ngIf="!currentTag" translate>New tag</span>
+        <span *ngIf="currentTag">{{ 'Edit tag' | translate }}</span>
+        <span *ngIf="!currentTag">{{ 'New tag' | translate }}</span>
     </h1>
     <div class="os-form-card-mobile" mat-dialog-content>
         <form [formGroup]="tagForm" (keydown)="onKeyDown($event)">
@@ -48,10 +50,10 @@
 
     <div mat-dialog-actions>
         <button type="submit" mat-button [mat-dialog-close]="true" color="primary">
-            <span translate>Save</span>
+            <span>{{ 'Save' | translate }}</span>
         </button>
         <button type="button" mat-button [mat-dialog-close]="false">
-            <span translate>Cancel</span>
+            <span>{{ 'Cancel' | translate }}</span>
         </button>
     </div>
 </ng-template>

@@ -1,7 +1,7 @@
 <os-head-bar prevUrl="../.." [nav]="false" [hasMainButton]="true" (mainEvent)="openDialog()">
     <!-- Title -->
     <div class="title-slot">
-        <h2 translate>Comment fields</h2>
+        <h2>{{ 'Comment fields' | translate }}</h2>
     </div>
 
     <!-- Menu -->
@@ -40,18 +40,18 @@
                 </div>
             </mat-panel-title>
         </mat-expansion-panel-header>
-        <h3 translate>Name</h3>
+        <h3>{{ 'Name' | translate }}</h3>
         <div class="spacer-left">{{ section.name }}</div>
-        <h3 translate>Groups with read permissions</h3>
+        <h3>{{ 'Groups with read permissions' | translate }}</h3>
         <ul *ngFor="let group of section.read_groups">
             <li>{{ group.getTitle() }}</li>
         </ul>
-        <div class="spacer-left" *ngIf="section.read_groups.length === 0" translate>No groups selected</div>
-        <h3 translate>Groups with write permissions</h3>
+        <div class="spacer-left" *ngIf="section.read_groups.length === 0">{{ 'No groups selected' | translate }}</div>
+        <h3>{{ 'Groups with write permissions' | translate }}</h3>
         <ul *ngFor="let group of section.write_groups">
             <li>{{ group.getTitle() }}</li>
         </ul>
-        <div class="spacer-left" *ngIf="section.write_groups.length === 0" translate>No groups selected</div>
+        <div class="spacer-left" *ngIf="section.write_groups.length === 0">{{ 'No groups selected' | translate }}</div>
         <mat-action-row>
             <button mat-button (click)="openDialog(section)" mat-icon-button>
                 <mat-icon>edit</mat-icon>
@@ -66,15 +66,15 @@
 <mat-menu #commentListMenu="matMenu">
     <button mat-menu-item routerLink="sort">
         <mat-icon>sort</mat-icon>
-        <span translate>Sort</span>
+        <span>{{ 'Sort' | translate }}</span>
     </button>
 </mat-menu>
 
 <!-- Template for motion comment dialog -->
 <ng-template #motionCommentDialog>
     <h1 mat-dialog-title>
-        <span *ngIf="currentComment" translate>Edit comment field</span>
-        <span *ngIf="!currentComment" translate>New comment field</span>
+        <span *ngIf="currentComment">{{ 'Edit comment field' | translate }}</span>
+        <span *ngIf="!currentComment">{{ 'New comment field' | translate }}</span>
     </h1>
     <div class="os-form-card-mobile" mat-dialog-content>
         <form [formGroup]="commentFieldForm" (keydown)="onKeyDown($event)">
@@ -82,7 +82,7 @@
                 <mat-form-field>
                     <input formControlName="name" matInput placeholder="{{ 'Name' | translate }}" required />
                     <mat-error *ngIf="!commentFieldForm.controls.name.valid">
-                        <span translate>Required</span>
+                        <span>{{ 'Required' | translate }}</span>
                     </mat-error>
                 </mat-form-field>
             </p>
@@ -110,10 +110,10 @@
     </div>
     <div mat-dialog-actions>
         <button [disabled]="commentFieldForm.invalid" mat-button [mat-dialog-close]="true">
-            <span translate>Save</span>
+            <span>{{ 'Save' | translate }}</span>
         </button>
         <button mat-button [mat-dialog-close]="false">
-            <span translate>Cancel</span>
+            <span>{{ 'Cancel' | translate }}</span>
         </button>
     </div>
 </ng-template>

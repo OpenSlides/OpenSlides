@@ -55,7 +55,7 @@
         "chart.js": "^2.9.2",
         "core-js": "^3.6.4",
         "css-element-queries": "^1.2.3",
-        "exceljs": "3.8.2",
+        "exceljs": "1.15.0",
         "file-saver": "^2.0.2",
         "lz4js": "^0.2.0",
         "material-icon-font": "git+https://github.com/petergng/materialIconFont.git",

@@ -109,25 +109,25 @@
 <mat-menu #pollDetailMenu="matMenu">
     <button *osPerms="'motions.can_manage_polls'" mat-menu-item (click)="openDialog()">
         <mat-icon>edit</mat-icon>
-        <span translate>Edit</span>
+        <span>{{ 'Edit' | translate }}</span>
     </button>
     <os-projector-button [menuItem]="true" [object]="poll" *osPerms="'core.can_manage_projector'"></os-projector-button>
     <button mat-menu-item (click)="downloadPdf()">
         <mat-icon>picture_as_pdf</mat-icon>
-        <span translate>Ballot papers</span>
+        <span>{{ 'Ballot papers' | translate }}</span>
     </button>
     <div *osPerms="'motions.can_manage_polls'">
         <mat-divider></mat-divider>
         <!-- Reset Button -->
         <button mat-menu-item (click)="resetState()">
             <mat-icon color="warn">replay</mat-icon>
-            <span translate>Reset state</span>
+            <span>{{ 'Reset state' | translate }}</span>
         </button>
 
         <!-- Delete button -->
         <button mat-menu-item (click)="deletePoll()">
             <mat-icon color="warn">delete</mat-icon>
-            <span translate>Delete</span>
+            <span>{{ 'Delete' | translate }}</span>
         </button>
     </div>
 </mat-menu>

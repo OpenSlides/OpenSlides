@@ -1,14 +1,14 @@
 <os-head-bar [nav]="true" [hasMainButton]="canManage" (mainEvent)="createNewProjector(projectorDialog)">
     <!-- Title -->
     <div class="title-slot">
-        <h2 translate>Projectors</h2>
+        <h2>{{ 'Projectors' | translate }}</h2>
     </div>
 </os-head-bar>
 
 <!-- Create projector dialog -->
 <ng-template #projectorDialog>
     <h1 mat-dialog-title>
-        <span translate>New Projector</span>
+        <span>{{ 'New Projector' | translate }}</span>
     </h1>
 
     <form [formGroup]="createForm">
@@ -16,17 +16,17 @@
             <mat-form-field>
                 <input formControlName="name" matInput placeholder="{{ 'Name' | translate }}" required />
                 <mat-hint *ngIf="!createForm.controls.name.valid">
-                    <span translate>Required</span>
+                    <span>{{ 'Required' | translate }}</span>
                 </mat-hint>
             </mat-form-field>
         </div>
 
         <div mat-dialog-actions>
             <button type="submit" mat-button [disabled]="!createForm.valid" color="primary" [mat-dialog-close]="true">
-                <span translate>Create</span>
+                <span>{{ 'Create' | translate }}</span>
             </button>
             <button type="button" mat-button [mat-dialog-close]="null">
-                <span translate>Cancel</span>
+                <span>{{ 'Cancel' | translate }}</span>
             </button>
         </div>
     </form>

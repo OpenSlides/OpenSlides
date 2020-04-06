@@ -1,4 +1,4 @@
-<h1 mat-dialog-title translate>New change recommendation</h1>
+<h1 mat-dialog-title>{{ 'New change recommendation' | translate }}</h1>
 <div mat-dialog-content>
     <form class="motion-content" [formGroup]="contentForm" (ngSubmit)="saveChangeRecommendation()">
         <mat-radio-group #rGroup formControlName="diffType">
@@ -9,11 +9,11 @@
 
         <!-- The HTML Editor -->
         <h4 *ngIf="lineRange.to == lineRange.from + 1">
-            <span translate>Changed version in line</span> {{ lineRange.from }}:
+            <span>{{ 'Changed version in line' | translate }}</span> {{ lineRange.from }}:
         </h4>
         <h4 *ngIf="lineRange.to != lineRange.from + 1">
-            <span translate>Changed version in line</span> {{ lineRange.from }} <span translate>to</span>
-            {{ lineRange.to - 1 }}:
+            <span>{{ 'Changed version in line' | translate }}</span> {{ lineRange.from }}
+            <span>{{ 'to' | translate }}</span> {{ lineRange.to - 1 }}:
         </h4>
         <div>
             <editor formControlName="text" [init]="tinyMceSettings"></editor>
@@ -25,9 +25,9 @@
 <div mat-dialog-actions>
     <!-- The mat-dialog-close directive optionally accepts a value as a result for the dialog. -->
     <button mat-button (click)="saveChangeRecommendation()">
-        <span translate>Save</span>
+        <span>{{ 'Save' | translate }}</span>
     </button>
     <button mat-button mat-dialog-close>
-        <span translate>Cancel</span>
+        <span>{{ 'Cancel' | translate }}</span>
     </button>
 </div>

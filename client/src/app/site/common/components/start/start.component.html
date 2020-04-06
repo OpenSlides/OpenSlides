@@ -8,7 +8,7 @@
     (cancelEditEvent)="isEditing = !isEditing"
 >
     <div class="title-slot">
-        <h2 translate>Home</h2>
+        <h2>{{ 'Home' | translate }}</h2>
     </div>
 </os-head-bar>
 
@@ -30,7 +30,7 @@
                     required
                     placeholder="{{ 'Front page title' | translate }}"
                 />
-                <mat-error translate>The title is required</mat-error>
+                <mat-error>{{ 'The title is required' | translate }}</mat-error>
             </mat-form-field>
             <editor formControlName="general_event_welcome_text" [init]="tinyMceSettings"></editor>
         </form>

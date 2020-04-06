@@ -90,7 +90,7 @@
                 </ng-container>
             </mat-accordion>
             <div class="no-results" *ngIf="!selectedModel && searchString.length > 0">
-                <span translate>No search result found</span>
+                <span>{{ 'No search result found' | translate }}</span>
                 <span *ngIf="searchCollection"
                     >&nbsp;({{ 'with filter' | translate }} "{{ searchCollection | translate }}")</span
                 >.

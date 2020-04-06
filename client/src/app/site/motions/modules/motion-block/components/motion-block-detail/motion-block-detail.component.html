@@ -37,7 +37,7 @@
             [disabled]="isFollowingProhibited()"
         >
             <os-icon-container icon="done_all">
-                <span translate>Follow recommendations for all motions</span>
+                <span>{{ 'Follow recommendations for all motions' | translate }}</span>
             </os-icon-container>
         </button>
     </div>
@@ -85,7 +85,7 @@
             <!-- Submitters -->
             <div class="submitters-line ellipsis-overflow">
                 <span *ngIf="motion.submitters.length">
-                    <span translate>by</span>
+                    <span>{{ 'by' | translate }}</span>
                     {{ motion.submitters }}
                 </span>
 
@@ -93,7 +93,7 @@
                     <span *ngIf="motion.submitters.length">
                         &middot;
                     </span>
-                    <span translate>Sequential number</span>
+                    <span>{{ 'Sequential number' | translate }}</span>
                     {{ motion.id }}
                 </span>
             </div>
@@ -148,7 +148,7 @@
         <os-speaker-button [object]="motion" [menuItem]="true"></os-speaker-button>
         <button mat-menu-item class="red-warning-text" (click)="onRemoveMotionButton(motion)">
             <mat-icon>close</mat-icon>
-            <span translate>Remove from motion block</span>
+            <span>{{ 'Remove from motion block' | translate }}</span>
         </button>
     </ng-template>
 </mat-menu>
@@ -163,7 +163,7 @@
             [disabled]="isFollowingProhibited()"
         >
             <mat-icon>done_all</mat-icon>
-            <span translate>Follow recommendations for all motions</span>
+            <span>{{ 'Follow recommendations for all motions' | translate }}</span>
         </button>
     </div>
 
@@ -174,24 +174,24 @@
     <div *osPerms="'agenda.can_manage'">
         <button mat-menu-item (click)="addToAgenda()" *ngIf="block && !block.item">
             <mat-icon>add</mat-icon>
-            <span translate>Add to agenda</span>
+            <span>{{ 'Add to agenda' | translate }}</span>
         </button>
         <button mat-menu-item (click)="removeFromAgenda()" *ngIf="block && block.item">
             <mat-icon>remove</mat-icon>
-            <span translate>Remove from agenda</span>
+            <span>{{ 'Remove from agenda' | translate }}</span>
         </button>
     </div>
 
     <div *osPerms="['motions.can_manage', 'motions.can_manage_metadata']">
         <button mat-menu-item (click)="toggleEditMode()">
             <mat-icon>edit</mat-icon>
-            <span translate>Edit</span>
+            <span>{{ 'Edit' | translate }}</span>
         </button>
         <mat-divider></mat-divider>
 
         <button mat-menu-item class="red-warning-text" (click)="onDeleteBlockButton()">
             <mat-icon>delete</mat-icon>
-            <span translate>Delete</span>
+            <span>{{ 'Delete' | translate }}</span>
         </button>
     </div>
 </mat-menu>
@@ -210,10 +210,10 @@
     </div>
     <div mat-dialog-actions>
         <button type="submit" mat-button [disabled]="!blockEditForm.valid" color="primary" (click)="saveBlock()">
-            <span translate>Save</span>
+            <span>{{ 'Save' | translate }}</span>
         </button>
         <button type="button" mat-button [mat-dialog-close]="null">
-            <span translate>Cancel</span>
+            <span>{{ 'Cancel' | translate }}</span>
         </button>
     </div>
 </ng-template>

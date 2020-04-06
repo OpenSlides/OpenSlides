@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
@@ -36,6 +36,7 @@ import { ViewListOfSpeakers } from '../../models/view-list-of-speakers';
 @Component({
     selector: 'os-agenda-list',
     templateUrl: './agenda-list.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush,
     styleUrls: ['./agenda-list.component.scss']
 })
 export class AgendaListComponent extends BaseListViewComponent<ViewItem> implements OnInit {

@@ -2,8 +2,8 @@
     <div>
         <ng-container *ngIf="!isEditing">
             <div *ngIf="legalNotice" class="legal-notice-text" [innerHtml]="legalNotice | trust: 'html'"></div>
-            <div *ngIf="!legalNotice" translate>
-                The event manager hasn't set up a legal notice yet.
+            <div *ngIf="!legalNotice">
+                {{ 'The event manager has not set up a legal notice yet.' | translate }}
             </div>
         </ng-container>
         <ng-container *ngIf="isEditing">
@@ -18,13 +18,17 @@
             <a [attr.href]="versionInfo.openslides_url" target="_blank">
                 OpenSlides {{ versionInfo.openslides_version }}
             </a>
-            (<span translate>License</span>: {{ versionInfo.openslides_license }})
+            <span>({{ 'License' | translate }}: {{ versionInfo.openslides_license }})</span>
 
             <div *ngIf="versionInfo.plugins.length">
-                <p><span translate>Installed plugins</span>:</p>
+                <p>
+                    <span>{{ 'Installed plugins' | translate }}:</span>
+                </p>
                 <div *ngFor="let plugin of versionInfo.plugins">
                     <a [attr.href]="plugin.url" target="_blank"> {{ plugin.verbose_name }} {{ plugin.version }} </a>
-                    <div *ngIf="plugin.license">(<span translate>License</span>: {{ plugin.license }})</div>
+                    <div *ngIf="plugin.license">
+                        <span>({{ 'License' | translate }}: {{ plugin.license }})</span>
+                    </div>
                 </div>
             </div>
         </div>

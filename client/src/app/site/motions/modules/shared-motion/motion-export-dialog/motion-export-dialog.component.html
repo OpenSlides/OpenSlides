@@ -4,7 +4,7 @@
     <!-- Content -->
     <div mat-dialog-content class="motion-export-dialog-wrapper">
         <div>
-            <p class="toggle-group-head" translate>Format</p>
+            <p class="toggle-group-head">{{ 'Format' | translate }}</p>
             <mat-button-toggle-group class="smaller-buttons" formControlName="format">
                 <mat-button-toggle [value]="fileFormat.PDF">PDF</mat-button-toggle>
                 <mat-button-toggle [value]="fileFormat.CSV">CSV</mat-button-toggle>
@@ -13,64 +13,84 @@
         </div>
 
         <div>
-            <p class="toggle-group-head" translate>Line numbering</p>
+            <p class="toggle-group-head">{{ 'Line numbering' | translate }}</p>
             <mat-button-toggle-group class="smaller-buttons" formControlName="lnMode">
-                <mat-button-toggle [value]="lnMode.None"> <span translate>None</span> </mat-button-toggle>
-                <mat-button-toggle [value]="lnMode.Outside"> <span translate>Outside</span> </mat-button-toggle>
+                <mat-button-toggle [value]="lnMode.None">
+                    <span>{{ 'None' | translate }}</span>
+                </mat-button-toggle>
+                <mat-button-toggle [value]="lnMode.Outside">
+                    <span>{{ 'Outside' | translate }}</span>
+                </mat-button-toggle>
             </mat-button-toggle-group>
         </div>
 
         <div>
-            <p class="toggle-group-head" translate>Change recommendations</p>
+            <p class="toggle-group-head">{{ 'Change recommendations' | translate }}</p>
             <mat-button-toggle-group class="smaller-buttons" formControlName="crMode">
                 <mat-button-toggle [value]="crMode.Original">
-                    <span translate>Original version</span>
+                    <span>{{ 'Original version' | translate }}</span>
                 </mat-button-toggle>
-                <mat-button-toggle [value]="crMode.Changed"> <span translate>Changed version</span> </mat-button-toggle>
+                <mat-button-toggle [value]="crMode.Changed">
+                    <span>{{ 'Changed version' | translate }}</span>
+                </mat-button-toggle>
                 <mat-button-toggle [value]="crMode.Diff" #diffVersionButton>
-                    <span translate>Diff version</span>
+                    <span>{{ 'Diff version' | translate }}</span>
                 </mat-button-toggle>
-                <mat-button-toggle [value]="crMode.ModifiedFinal"> <span translate>Final version</span> </mat-button-toggle>
+                <mat-button-toggle [value]="crMode.ModifiedFinal">
+                    <span>{{ 'Final version' | translate }}</span>
+                </mat-button-toggle>
             </mat-button-toggle-group>
         </div>
 
         <div>
-            <p class="toggle-group-head" translate>Content</p>
+            <p class="toggle-group-head">{{ 'Content' | translate }}</p>
             <mat-button-toggle-group class="smaller-buttons" multiple formControlName="content">
-                <mat-button-toggle value="text"> <span translate>Text</span> </mat-button-toggle>
-                <mat-button-toggle value="reason"> <span translate>Reason</span> </mat-button-toggle>
+                <mat-button-toggle value="text">
+                    <span>{{ 'Text' | translate }}</span>
+                </mat-button-toggle>
+                <mat-button-toggle value="reason">
+                    <span>{{ 'Reason' | translate }}</span>
+                </mat-button-toggle>
             </mat-button-toggle-group>
         </div>
 
         <div>
-            <p class="toggle-group-head" translate>Meta information</p>
+            <p class="toggle-group-head">{{ 'Meta information' | translate }}</p>
             <mat-button-toggle-group class="smaller-buttons" multiple formControlName="metaInfo">
                 <mat-button-toggle *ngFor="let metaInfo of metaInfoExportOrder" [value]="metaInfo">
                     <span>{{ getLabelForMetadata(metaInfo) | translate }}</span>
                 </mat-button-toggle>
                 <mat-button-toggle *osPerms="'agenda.can_see_list_of_speakers'" value="speakers" #speakersButton>
-                    <span translate>Speakers</span>
+                    <span>{{ 'Speakers' | translate }}</span>
                 </mat-button-toggle>
                 <mat-button-toggle value="polls" #votingResultButton>
-                    <span translate>Voting result</span>
+                    <span>{{ 'Voting result' | translate }}</span>
                 </mat-button-toggle>
             </mat-button-toggle-group>
         </div>
         <div>
-            <p class="toggle-group-head" translate>PDF options</p>
+            <p class="toggle-group-head">{{ 'PDF options' | translate }}</p>
             <mat-button-toggle-group class="smaller-buttons" multiple formControlName="pdfOptions">
-                <mat-button-toggle value="toc"> <span translate>Table of contents</span> </mat-button-toggle>
-                <mat-button-toggle value="page"> <span translate>Page numbers</span> </mat-button-toggle>
-                <mat-button-toggle value="date"> <span translate>Current date</span> </mat-button-toggle>
-                <mat-button-toggle value="addBreaks"> <span translate>Enforce page breaks</span> </mat-button-toggle>
+                <mat-button-toggle value="toc">
+                    <span>{{ 'Table of contents' | translate }}</span>
+                </mat-button-toggle>
+                <mat-button-toggle value="page">
+                    <span>{{ 'Page numbers' | translate }}</span>
+                </mat-button-toggle>
+                <mat-button-toggle value="date">
+                    <span>{{ 'Current date' | translate }}</span>
+                </mat-button-toggle>
+                <mat-button-toggle value="addBreaks">
+                    <span>{{ 'Enforce page breaks' | translate }}</span>
+                </mat-button-toggle>
             </mat-button-toggle-group>
         </div>
 
         <div>
-            <p class="toggle-group-head" translate>Comments</p>
+            <p class="toggle-group-head">{{ 'Comments' | translate }}</p>
             <mat-button-toggle-group class="smaller-buttons" multiple formControlName="comments">
                 <mat-button-toggle [value]="PERSONAL_NOTE_ID">
-                    <span translate>Personal note</span>
+                    <span>{{ 'Personal note' | translate }}</span>
                 </mat-button-toggle>
                 <mat-button-toggle *ngFor="let comment of commentsToExport" [value]="comment.id">
                     <span>{{ comment.name }}</span>
@@ -85,8 +105,10 @@
     <!-- Action buttons -->
     <div mat-dialog-actions>
         <button mat-button type="button" color="primary" [mat-dialog-close]="exportForm.value">
-            <span translate>Export</span>
+            <span>{{ 'Export' | translate }}</span>
         </button>
-        <button mat-button type="button" (click)="onCloseClick()"><span translate>Cancel</span></button>
+        <button mat-button type="button" (click)="onCloseClick()">
+            <span>{{ 'Cancel' | translate }}</span>
+        </button>
     </div>
 </form>

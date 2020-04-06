@@ -1,6 +1,6 @@
 <div cdkDropList [cdkDropListDisabled]="!enable" (cdkDropListDropped)="drop($event)">
     <div class="line" *ngIf="!sortedItems.length">
-        <span translate>No data</span>
+        <span>{{ 'No data' | translate }}</span>
     </div>
     <div
         [ngClass]="isSelectedRow(i) ? 'backgroundColorSelected line' : 'backgroundColorLight line'"
@@ -23,7 +23,7 @@
         </div>
         <div class="line" *cdkDragPreview>
             <div class="spacer.left-10" *ngIf="multiSelectedIndex.length > 0">
-                {{ multiSelectedIndex.length }}&nbsp;<span translate>items selected</span>
+                {{ multiSelectedIndex.length }}&nbsp;<span>{{ 'items selected' | translate }}</span>
             </div>
         </div>
     </div>

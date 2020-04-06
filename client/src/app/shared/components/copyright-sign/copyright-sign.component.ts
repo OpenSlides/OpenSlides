@@ -89,13 +89,14 @@ type StateMachine = { [state in State]?: { [event in StateEvent]?: SMAction } };
                     *ngIf="state === 'start'"
                     mat-raised-button
                     color="accent"
-                    translate
                 >
-                    Search player
+                    {{ 'Search player' | translate }}
                 </button>
             </div>
         </mat-dialog-content>
-        <mat-dialog-actions> <button mat-button mat-dialog-close translate>Close</button> </mat-dialog-actions>
+        <mat-dialog-actions>
+            <button mat-button mat-dialog-close>{{ 'Close' | translate }}</button>
+        </mat-dialog-actions>
     `,
     styles: [
         `

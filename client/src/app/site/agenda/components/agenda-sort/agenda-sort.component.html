@@ -1,11 +1,8 @@
-<os-head-bar
-    [nav]="false"
-    [editMode]="hasChanged"
-    (mainEvent)="onCancel()"
-    (saveEvent)="onSave()">
-
+<os-head-bar [nav]="false" [editMode]="hasChanged" (mainEvent)="onCancel()" (saveEvent)="onSave()">
     <!-- Title -->
-    <div class="title-slot"><h2 translate>Sort agenda</h2></div>
+    <div class="title-slot">
+        <h2>{{ 'Sort agenda' | translate }}</h2>
+    </div>
 </os-head-bar>
 <div class="custom-table-header sort-header">
     <div class="button-menu left">
@@ -13,7 +10,10 @@
         <button mat-button (click)="onStateChange(false)">{{ 'Collapse all' | translate }}</button>
     </div>
     <div class="current-filters" *ngIf="hasActiveFilter">
-        <div><span translate>Active filters</span>:&nbsp;</div>
+        <div>
+            <span>{{ 'Active filters' | translate }}</span
+            >:&nbsp;
+        </div>
         <div>
             <button mat-button (click)="resetFilters()">
                 <mat-icon inline>cancel</mat-icon>
@@ -22,7 +22,9 @@
         </div>
     </div>
     <div class="button-menu right">
-        <button mat-button (click)="visibilityFilter.opened ? visibilityFilter.close() : visibilityFilter.open()">Filter</button>
+        <button mat-button (click)="visibilityFilter.opened ? visibilityFilter.close() : visibilityFilter.open()">
+            Filter
+        </button>
         <mat-drawer #visibilityFilter mode="over" position="end">
             <section class="sort-drawer-content">
                 <button mat-button (click)="visibilityFilter.toggle()">
@@ -31,8 +33,13 @@
                 <span class="sort-grid">
                     <div class="hint">{{ 'Visibility' | translate }}</div>
                     <div>
-                        <mat-checkbox *ngFor="let option of filterOptions" [(ngModel)]="option.state" (change)="onFilterChange(option.id)">
-                            <mat-icon matTooltip="{{ option.label | translate }}">{{ getIcon(option.label) }}</mat-icon> {{ option.label | translate }}
+                        <mat-checkbox
+                            *ngFor="let option of filterOptions"
+                            [(ngModel)]="option.state"
+                            (change)="onFilterChange(option.id)"
+                        >
+                            <mat-icon matTooltip="{{ option.label | translate }}">{{ getIcon(option.label) }}</mat-icon>
+                            {{ option.label | translate }}
                         </mat-checkbox>
                     </div>
                 </span>
@@ -42,8 +49,8 @@
 </div>
 <mat-card>
     <div class="current-nodes">
-        {{ seenNodes[0] }} <span translate>of</span> {{ seenNodes[1] }}
-        <span translate>items</span>
+        {{ seenNodes[0] }} <span>{{ 'of' | translate }}</span> {{ seenNodes[1] }}
+        <span>{{ 'items' | translate }}</span>
     </div>
     <os-sorting-tree
         #osSortedTree

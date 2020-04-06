@@ -103,7 +103,7 @@
     <div *osPerms="'assignments.can_manage'">
         <button mat-menu-item (click)="openDialog()">
             <mat-icon>edit</mat-icon>
-            <span translate>Edit</span>
+            <span>{{ 'Edit' | translate }}</span>
         </button>
     </div>
     <div *osPerms="'core.can_manage_projector'">
@@ -112,17 +112,17 @@
     <div *osPerms="'assignments.can_manage'">
         <button mat-menu-item (click)="printBallot()">
             <mat-icon>picture_as_pdf</mat-icon>
-            <span translate>Ballot papers</span>
+            <span>{{ 'Ballot papers' | translate }}</span>
         </button>
         <mat-divider></mat-divider>
         <!-- Reset Button -->
         <button mat-menu-item (click)="resetState()">
             <mat-icon color="warn">replay</mat-icon>
-            <span translate>Reset state</span>
+            <span>{{ 'Reset state' | translate }}</span>
         </button>
         <button mat-menu-item class="red-warning-text" (click)="onDeletePoll()">
             <mat-icon>delete</mat-icon>
-            <span translate>Delete</span>
+            <span>{{ 'Delete' | translate }}</span>
         </button>
     </div>
 </mat-menu>

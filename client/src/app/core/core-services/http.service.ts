@@ -145,12 +145,11 @@ export class HttpService {
             if (isDetailResponse(e.error)) {
                 error += this.processDetailResponse(e.error);
             } else {
-                error = Object.keys(e.error)
-                    .map(key => {
-                        const capitalizedKey = key.charAt(0).toUpperCase() + key.slice(1);
-                        return this.translate.instant(capitalizedKey) + ': ' + this.processDetailResponse(e.error[key]);
-                    })
-                    .join(', ');
+                const errorList = Object.keys(e.error).map(key => {
+                    const capitalizedKey = key.charAt(0).toUpperCase() + key.slice(1);
+                    return `${this.translate.instant(capitalizedKey)}: ${this.processDetailResponse(e.error[key])}`;
+                });
+                error = errorList.join(', ');
             }
         } else if (e.status === 500) {
             error += this.translate.instant('A server error occured. Please contact your system administrator.');

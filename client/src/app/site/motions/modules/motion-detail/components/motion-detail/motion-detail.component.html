@@ -12,13 +12,13 @@
     <!-- Title -->
     <div class="title-slot">
         <h2 *ngIf="motion && !newMotion">
-            <span translate>Motion</span>
+            <span>{{ 'Motion' | translate }}</span>
             <!-- Whitespace between "Motion" and identifier -->
             <span>&nbsp;</span> <span *ngIf="!editMotion">{{ motion.identifier }}</span>
             <span *ngIf="editMotion">{{ contentForm.get('identifier').value }}</span>
         </h2>
-        <h2 *ngIf="newMotion && !amendmentEdit" translate>New motion</h2>
-        <h2 *ngIf="amendmentEdit" translate>New amendment</h2>
+        <h2 *ngIf="newMotion && !amendmentEdit">{{ 'New motion' | translate }}</h2>
+        <h2 *ngIf="amendmentEdit">{{ 'New amendment' | translate }}</h2>
     </div>
 
     <!-- Back and forth buttons -->
@@ -62,7 +62,7 @@
             <!-- PDF -->
             <button mat-menu-item (click)="onDownloadPdf()">
                 <mat-icon>picture_as_pdf</mat-icon>
-                <span translate>PDF</span>
+                <span>{{ 'PDF' | translate }}</span>
             </button>
             <mat-divider></mat-divider>
             <!-- Project -->
@@ -75,11 +75,11 @@
             <div *osPerms="'agenda.can_manage'">
                 <button mat-menu-item (click)="addToAgenda()" *ngIf="motion && !motion.item">
                     <mat-icon>add</mat-icon>
-                    <span translate>Add to agenda</span>
+                    <span>{{ 'Add to agenda' | translate }}</span>
                 </button>
                 <button mat-menu-item (click)="removeFromAgenda()" *ngIf="motion && motion.item">
                     <mat-icon>remove</mat-icon>
-                    <span translate>Remove from agenda</span>
+                    <span>{{ 'Remove from agenda' | translate }}</span>
                 </button>
             </div>
             <button
@@ -89,15 +89,15 @@
                 [queryParams]="{ element: motion.elementId }"
             >
                 <mat-icon>history</mat-icon>
-                <span translate>
-                    History
+                <span>
+                    {{ 'History' | translate }}
                 </span>
             </button>
             <mat-divider></mat-divider>
             <!-- Edit-->
             <button mat-menu-item (click)="setEditMode(true)" *ngIf="perms.isAllowed('update', motion)">
                 <mat-icon>edit</mat-icon>
-                <span translate>Edit</span>
+                <span>{{ 'Edit' | translate }}</span>
             </button>
             <!-- Delete -->
             <button
@@ -107,7 +107,7 @@
                 *ngIf="perms.isAllowed('manage')"
             >
                 <mat-icon>delete</mat-icon>
-                <span translate>Delete</span>
+                <span>{{ 'Delete' | translate }}</span>
             </button>
         </div>
     </mat-menu>
@@ -145,14 +145,15 @@
 
         <!-- Sequential number -->
         <span class="main-nav-color title-font">
-            <span *ngIf="showSequential"> <span translate>Sequential number</span>&nbsp;{{ motion.id }} </span>
+            <span *ngIf="showSequential">
+                <span>{{ 'Sequential number' | translate }}</span
+                >&nbsp;{{ motion.id }}
+            </span>
             <span *ngIf="showSequential && motion.parent_id">&#xb7;&nbsp;</span>
             <span *ngIf="motion.parent_id">
                 <span>
-                    <span translate>Amendment to</span>&nbsp;<a
-                        [routerLink]="motion.parent.getDetailStateURL()"
-                        [state]="{ back: 'true' }"
-                    >
+                    <span>{{ 'Amendment to' | translate }}</span
+                    >&nbsp;<a [routerLink]="motion.parent.getDetailStateURL()" [state]="{ back: 'true' }">
                         {{ motion.parent.identifier || motion.parent.title }}
                     </a>
                 </span>
@@ -208,7 +209,7 @@
 
         <!-- do Support -->
         <div *ngIf="minSupporters && !editMotion">
-            <h4 *ngIf="perms.isAllowed('support', motion) || motion.hasSupporters()" translate>Supporters</h4>
+            <h4 *ngIf="perms.isAllowed('support', motion) || motion.hasSupporters()">{{ 'Supporters' | translate }}</h4>
 
             <!-- support button -->
             <button
@@ -321,13 +322,13 @@
                 (click)="onFollowRecButton()"
                 class="spacer-top-10"
             >
-                <span translate>Follow recommendation</span>
+                <span>{{ 'Follow recommendation' | translate }}</span>
             </button>
         </div>
 
         <!-- recommendation referencing motions -->
         <div *ngIf="!editMotion && recommendationReferencingMotions.length > 0 && showReferringMotions">
-            <h4 translate>Referring motions</h4>
+            <h4>{{ 'Referring motions' | translate }}</h4>
             <span *ngFor="let motion of recommendationReferencingMotions; let last = last">
                 <a [routerLink]="motion.getDetailStateURL()" class="nowrap">{{ motion.identifierOrTitle }}</a>
                 <span *ngIf="!last"> · </span>
@@ -337,7 +338,7 @@
         <!-- Category -->
         <!-- Disabled during "new motion" since changing has no effect -->
         <div *ngIf="!editMotion && categoryObserver.value.length">
-            <h4 *ngIf="perms.isAllowed('change_metadata', motion) || motion.category" translate>Category</h4>
+            <h4 *ngIf="perms.isAllowed('change_metadata', motion) || motion.category">{{ 'Category' | translate }}</h4>
             <mat-menu #categoryMenu="matMenu">
                 <button
                     mat-menu-item
@@ -382,7 +383,7 @@
         <!-- Tags -->
         <!-- Disabled during "new motion" since changing has no effect -->
         <div *ngIf="!editMotion && tagObserver.value.length > 0">
-            <h4 *ngIf="perms.isAllowed('change_metadata', motion) || motion.hasTags()" translate>Tags</h4>
+            <h4 *ngIf="perms.isAllowed('change_metadata', motion) || motion.hasTags()">{{ 'Tags' | translate }}</h4>
 
             <!-- For privileged users -->
             <div *ngIf="perms.isAllowed('change_metadata', motion)">
@@ -422,7 +423,9 @@
 
         <!-- Block -->
         <div *ngIf="!editMotion && blockObserver.value.length > 0">
-            <h4 *ngIf="perms.isAllowed('change_metadata', motion) || motion.motion_block" translate>Motion block</h4>
+            <h4 *ngIf="perms.isAllowed('change_metadata', motion) || motion.motion_block">
+                {{ 'Motion block' | translate }}
+            </h4>
             <mat-menu #blockMenu="matMenu">
                 <button mat-menu-item *ngFor="let block of blockObserver.value" (click)="setBlock(block.id)">
                     <mat-icon *ngIf="motion.motion_block_id === block.id">check</mat-icon>
@@ -448,17 +451,17 @@
 
         <!-- Origin - display only -->
         <div *ngIf="!editMotion && motion.origin">
-            <h4 translate>Origin</h4>
+            <h4>{{ 'Origin' | translate }}</h4>
             {{ motion.origin }}
         </div>
 
         <!-- Ammendments -->
         <div *ngIf="!editMotion && amendments && amendments.length > 0">
-            <h4 translate>Amendments</h4>
+            <h4>{{ 'Amendments' | translate }}</h4>
             <a [routerLink]="['/motions/amendments', motion.id]" [state]="{ back: 'true' }">
                 {{ amendments.length }}
-                <span *ngIf="amendments.length === 1" translate>Amendment</span>
-                <span *ngIf="amendments.length > 1" translate>Amendments</span>
+                <span *ngIf="amendments.length === 1">{{ 'Amendment' | translate }}</span>
+                <span *ngIf="amendments.length > 1">{{ 'Amendments' | translate }}</span>
             </a>
         </div>
 
@@ -473,7 +476,7 @@
                 *ngIf="perms.isAllowed('createpoll', motion)"
             >
                 <mat-icon class="main-nav-color">add</mat-icon>
-                <span translate>New vote</span>
+                <span>{{ 'New vote' | translate }}</span>
             </button>
         </div>
     </div>
@@ -496,7 +499,7 @@
                         [ngModelOptions]="{ standalone: true }"
                         [errorStateMatcher]="highlightedLineMatcher"
                     />
-                    <mat-error *ngIf="highlightedLineTyping > 10" translate>Invalid line number</mat-error>
+                    <mat-error *ngIf="highlightedLineTyping > 10">{{ 'Invalid line number' | translate }}</mat-error>
                     <button
                         type="submit"
                         mat-button
@@ -515,8 +518,11 @@
 
                 <button type="button" mat-button [matMenuTriggerFor]="lineNumberingMenu">
                     <mat-icon>format_list_numbered</mat-icon>
-                    &nbsp;<span translate>Line numbering</span>
-                    <span *ngIf="lnMode === LineNumberingMode.None"> &nbsp;(<span translate>none</span>) </span>
+                    &nbsp;<span>{{ 'Line numbering' | translate }}</span>
+                    <span *ngIf="lnMode === LineNumberingMode.None">
+                        &nbsp;(<span>{{ 'none' | translate }}</span
+                        >)
+                    </span>
                 </button>
                 <button
                     type="button"
@@ -695,9 +701,8 @@
                             contentForm.get('modified_final_version').touched)
                     "
                     class="red-warning-text"
-                    translate
                 >
-                    This field is required.
+                    {{ 'This field is required.' | translate }}
                 </div>
             </div>
         </ng-container>
@@ -718,9 +723,8 @@
                     (contentForm.get('text').dirty || contentForm.get('text').touched)
                 "
                 class="red-warning-text"
-                translate
             >
-                This field is required.
+                {{ 'This field is required.' | translate }}
             </div>
         </ng-container>
 
@@ -743,9 +747,8 @@
                             contentForm.get('text_' + paragraph.paragraphNo).touched)
                     "
                     class="red-warning-text"
-                    translate
                 >
-                    This field is required.
+                    {{ 'This field is required.' | translate }}
                 </div>
             </section>
         </ng-container>
@@ -766,7 +769,8 @@
                         : ''
                 "
             >
-                <span translate>Reason</span>&nbsp;<span *ngIf="reasonRequired && editMotion">*</span>
+                <span>{{ 'Reason' | translate }}</span
+                >&nbsp;<span *ngIf="reasonRequired && editMotion">*</span>
             </h3>
             <div class="motion-text" *ngIf="!editMotion" [innerHtml]="motion.reason | trust: 'html'"></div>
 
@@ -784,9 +788,8 @@
                     (contentForm.get('reason').dirty || contentForm.get('reason').touched)
                 "
                 class="red-warning-text"
-                translate
             >
-                This field is required.
+                {{ 'This field is required.' | translate }}
             </div>
         </div>
 
@@ -869,7 +872,7 @@
         <!-- If the array exists, we do not have an error -->
         <div *ngIf="motion.diffLines">
             <div class="alert alert-info" *ngIf="motion.diffLines.length === 0">
-                <span translate>No changes at the text.</span>
+                <span>{{ 'No changes at the text.' | translate }}</span>
             </div>
             <div
                 *ngFor="let paragraph of getAmendmentParagraphs(showAmendmentContext)"
@@ -900,9 +903,9 @@
             </div>
         </div>
         <div *ngIf="!motion.diffLines">
-            <span class="red-warning-text" translate>
-                There is an error with this amendment. Please edit it manually.
-            </span>
+            <span class="red-warning-text">{{
+                'There is an error with this amendment. Please edit it manually.' | translate
+            }}</span>
         </div>
     </section>
 
@@ -913,7 +916,7 @@
             *ngIf="motion && motion.isParagraphBasedAmendment()"
             class="show-entire-text-check"
         >
-            <span translate>Show entire motion text</span>
+            <span>{{ 'Show entire motion text' | translate }}</span>
         </mat-checkbox>
     </div>
 </ng-template>
@@ -923,32 +926,29 @@
     <div *ngIf="motion">
         <button
             mat-menu-item
-            translate
             (click)="setLineNumberingMode(LineNumberingMode.None)"
             [ngClass]="{ selected: lnMode === LineNumberingMode.None }"
         >
-            none
+            {{ 'none' | translate }}
         </button>
         <button
             mat-menu-item
-            translate
             (click)="setLineNumberingMode(LineNumberingMode.Inside)"
             [ngClass]="{ selected: lnMode === LineNumberingMode.Inside }"
         >
-            inline
+            {{ 'inline' | translate }}
         </button>
         <button
             mat-menu-item
-            translate
             (click)="setLineNumberingMode(LineNumberingMode.Outside)"
             [ngClass]="{ selected: lnMode === LineNumberingMode.Outside }"
         >
-            outside
+            {{ 'outside' | translate }}
         </button>
         <mat-divider></mat-divider>
         <button mat-menu-item *ngIf="!highlightedLineOpened" (click)="highlightedLineOpened = true">
             <mat-icon>redo</mat-icon>
-            <span translate>Go to line</span>
+            <span>{{ 'Go to line' | translate }}</span>
         </button>
     </div>
 </mat-menu>
@@ -957,46 +957,41 @@
 <mat-menu #changeRecoMenu="matMenu">
     <button
         mat-menu-item
-        translate
         (click)="setChangeRecoMode(ChangeRecoMode.Original)"
         [ngClass]="{ selected: crMode === ChangeRecoMode.Original }"
     >
-        Original version
+        {{ 'Original version' | translate }}
     </button>
     <button
         mat-menu-item
-        translate
         (click)="setChangeRecoMode(ChangeRecoMode.Changed)"
         [ngClass]="{ selected: crMode === ChangeRecoMode.Changed }"
         *ngIf="allChangingObjects && allChangingObjects.length"
     >
-        Changed version
+        {{ 'Changed version' | translate }}
     </button>
     <button
         mat-menu-item
-        translate
         (click)="setChangeRecoMode(ChangeRecoMode.Diff)"
         [ngClass]="{ selected: crMode === ChangeRecoMode.Diff }"
         *ngIf="allChangingObjects && allChangingObjects.length"
     >
-        Diff version
+        {{ 'Diff version' | translate }}
     </button>
     <button
         mat-menu-item
-        translate
         (click)="setChangeRecoMode(ChangeRecoMode.Final)"
         [ngClass]="{ selected: crMode === ChangeRecoMode.Final }"
         *ngIf="allChangingObjects && allChangingObjects.length"
     >
-        Final version
+        {{ 'Final version' | translate }}
     </button>
     <button
         mat-menu-item
-        translate
         *ngIf="motion && motion.modified_final_version"
         (click)="setChangeRecoMode(ChangeRecoMode.ModifiedFinal)"
         [ngClass]="{ selected: crMode === ChangeRecoMode.ModifiedFinal }"
     >
-        Final print template
+        {{ 'Final print template' | translate }}
     </button>
 </mat-menu>

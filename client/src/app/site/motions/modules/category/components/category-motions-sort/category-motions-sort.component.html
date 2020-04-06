@@ -8,8 +8,10 @@
 <mat-card class="os-form-card">
     <div *ngIf="isMultiSelect">
         <span>{{ sortSelector.multiSelectedIndex.length }}&nbsp;</span>
-        <span translate>selected</span>
-        <button mat-button (click)="moveToPosition()"><span translate>move ...</span></button>
+        <span>{{ 'selected' | translate }}</span>
+        <button mat-button (click)="moveToPosition()">
+            <span>{{ 'move ...' | translate }}</span>
+        </button>
     </div>
     <os-sorting-list (sortEvent)="onListUpdate($event)" [input]="motionObservable" #sorter>
         <ng-template let-motion>

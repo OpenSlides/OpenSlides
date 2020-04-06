@@ -7,12 +7,12 @@
         <ng-container [formGroupName]="i">
             <mat-form-field>
                 <input formControlName="original" matInput placeholder="{{ 'Original' | translate }}" />
-                <mat-error translate>You have to fill this field.</mat-error>
+                <mat-error>{{ 'You have to fill this field.' | translate }}</mat-error>
             </mat-form-field>
             <mat-icon>arrow_forward</mat-icon>
             <mat-form-field>
                 <input formControlName="translation" matInput placeholder="{{ 'Translation' | translate }}" />
-                <mat-error translate>You have to fill this field.</mat-error>
+                <mat-error>{{ 'You have to fill this field.' | translate }}</mat-error>
             </mat-form-field>
             <button
                 mat-icon-button

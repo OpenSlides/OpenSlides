@@ -1,12 +1,12 @@
 <os-head-bar [hasMainButton]="true" [nav]="false" (mainEvent)="setEditMode(!editGroup)">
     <!-- Title -->
     <div class="title-slot">
-        <h2 translate>Groups</h2>
+        <h2>{{ 'Groups' | translate }}</h2>
     </div>
 </os-head-bar>
 
 <div class="hint-text">
-    <span translate>All your changes are saved immediately.</span>
+    <span>{{ 'All your changes are saved immediately.' | translate }}</span>
 </div>
 
 <mat-accordion *ngFor="let app of appPermissions">
@@ -20,7 +20,7 @@
         <div class="scrollable-perm-matrix">
             <table mat-table [dataSource]="getTableDataSource(app.permissions)">
                 <ng-container matColumnDef="perm" sticky>
-                    <mat-header-cell *matHeaderCellDef translate>Permissions</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>{{ 'Permissions' | translate }}</mat-header-cell>
                     <mat-cell *matCellDef="let perm">
                         {{ perm.display_name | translate }}
                     </mat-cell>
@@ -68,7 +68,7 @@
                     formControlName="name"
                     placeholder="{{ 'New group name' | translate }}"
                 />
-                <mat-error *ngIf="!groupForm.valid" translate>Required</mat-error>
+                <mat-error *ngIf="!groupForm.valid">{{ 'Required' | translate }}</mat-error>
             </mat-form-field>
         </form>
     </div>
@@ -80,13 +80,20 @@
             color="primary"
             (click)="saveGroup(groupForm.value)"
         >
-            <span translate>Save</span>
+            <span>{{ 'Save' | translate }}</span>
         </button>
         <button type="button" mat-button (click)="cancelEditing()">
-            <span translate>Cancel</span>
+            <span>{{ 'Cancel' | translate }}</span>
         </button>
-        <button *ngIf="selectedGroup" [disabled]="!canDeleteGroup(selectedGroup)" type="button" mat-button color="warn" (click)="deleteSelectedGroup()">
-            <span translate>Delete</span>
+        <button
+            *ngIf="selectedGroup"
+            [disabled]="!canDeleteGroup(selectedGroup)"
+            type="button"
+            mat-button
+            color="warn"
+            (click)="deleteSelectedGroup()"
+        >
+            <span>{{ 'Delete' | translate }}</span>
         </button>
     </div>
 </ng-template>

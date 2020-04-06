@@ -25,7 +25,9 @@
         <table class="os-headed-listview-table" mat-table [dataSource]="dataSources[category.id]">
             <!-- title column -->
             <ng-container matColumnDef="title">
-                <mat-header-cell *matHeaderCellDef> <span translate>Motion</span> </mat-header-cell>
+                <mat-header-cell *matHeaderCellDef>
+                    <span>{{ 'Motion' | translate }}</span>
+                </mat-header-cell>
                 <mat-cell *matCellDef="let motion">
                     {{ motion.getTitle() }}
                 </mat-cell>
@@ -33,7 +35,9 @@
 
             <!-- state column -->
             <ng-container matColumnDef="state">
-                <mat-header-cell *matHeaderCellDef> <span translate>State</span> </mat-header-cell>
+                <mat-header-cell *matHeaderCellDef>
+                    <span>{{ 'State' | translate }}</span>
+                </mat-header-cell>
                 <mat-cell class="chip-container" *matCellDef="let motion">
                     <mat-basic-chip disableRipple [ngClass]="motion.stateCssColor">
                         {{ getStateLabel(motion) }}
@@ -43,7 +47,9 @@
 
             <!-- Recommendation column -->
             <ng-container matColumnDef="recommendation">
-                <mat-header-cell *matHeaderCellDef> <span translate>Recommendation</span> </mat-header-cell>
+                <mat-header-cell *matHeaderCellDef>
+                    <span>{{ 'Recommendation' | translate }}</span>
+                </mat-header-cell>
                 <mat-cell class="chip-container" *matCellDef="let motion">
                     <mat-basic-chip *ngIf="motion.recommendation" disableRipple class="bluegrey">
                         {{ getRecommendationLabel(motion) }}
@@ -69,20 +75,20 @@
 <mat-menu #categoryMenu="matMenu">
     <button mat-menu-item (click)="toggleEditMode()">
         <mat-icon>edit</mat-icon>
-        <span translate>Edit</span>
+        <span>{{ 'Edit' | translate }}</span>
     </button>
     <button mat-menu-item [routerLink]="'./sort'">
         <mat-icon>sort</mat-icon>
-        <span translate>Sort motions</span>
+        <span>{{ 'Sort motions' | translate }}</span>
     </button>
     <button mat-menu-item (click)="numberMotions()">
         <mat-icon>format_list_numbered</mat-icon>
-        <span translate>Number motions</span>
+        <span>{{ 'Number motions' | translate }}</span>
     </button>
     <mat-divider></mat-divider>
     <button mat-menu-item class="red-warning-text" (click)="onDeleteButton()">
         <mat-icon>delete</mat-icon>
-        <span translate>Delete</span>
+        <span>{{ 'Delete' | translate }}</span>
     </button>
 </mat-menu>
 
@@ -102,10 +108,10 @@
     </div>
     <div mat-dialog-actions>
         <button type="submit" mat-button [disabled]="!editForm.valid" color="primary" (click)="save()">
-            <span translate>Save</span>
+            <span>{{ 'Save' | translate }}</span>
         </button>
         <button type="button" mat-button [mat-dialog-close]="null">
-            <span translate>Cancel</span>
+            <span>{{ 'Cancel' | translate }}</span>
         </button>
     </div>
 </ng-template>

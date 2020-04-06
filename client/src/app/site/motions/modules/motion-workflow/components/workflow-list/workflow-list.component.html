@@ -1,6 +1,8 @@
 <os-head-bar prevUrl="../.." [nav]="false" [hasMainButton]="true" (mainEvent)="onNewButton(newWorkflowDialog)">
     <!-- Title -->
-    <div class="title-slot"><h2 translate>Workflows</h2></div>
+    <div class="title-slot">
+        <h2>{{ 'Workflows' | translate }}</h2>
+    </div>
 </os-head-bar>
 
 <os-list-view-table
@@ -30,10 +32,10 @@
 <!-- New workflow dialog -->
 <ng-template #newWorkflowDialog>
     <h1 mat-dialog-title>
-        <span translate>New workflow</span>
+        <span>{{ 'New workflow' | translate }}</span>
     </h1>
     <div mat-dialog-content>
-        <p translate>Please enter a name for the new workflow:</p>
+        <p>{{ 'Please enter a name for the new workflow:' | translate }}</p>
         <mat-form-field>
             <input matInput osAutofocus [(ngModel)]="newWorkflowTitle" required />
         </mat-form-field>
@@ -46,10 +48,10 @@
             [disabled]="newWorkflowTitle === ''"
             [mat-dialog-close]="newWorkflowTitle"
         >
-            <span translate>Save</span>
+            <span>{{ 'Save' | translate }}</span>
         </button>
         <button type="button" mat-button [mat-dialog-close]="null">
-            <span translate>Cancel</span>
+            <span>{{ 'Cancel' | translate }}</span>
         </button>
     </div>
 </ng-template>

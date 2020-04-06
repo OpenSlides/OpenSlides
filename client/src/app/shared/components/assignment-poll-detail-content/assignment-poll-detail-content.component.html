@@ -2,17 +2,17 @@
     <table class="assignment-result-table">
         <tbody>
             <tr>
-                <th class="voting-option" translate>Candidates</th>
+                <th class="voting-option">{{ 'Candidates' | translate }}</th>
                 <th class="result yes">
-                    <span *ngIf="!isMethodY" translate>
-                        Yes
+                    <span *ngIf="!isMethodY">
+                        {{ 'Yes' | translate }}
                     </span>
-                    <span *ngIf="isMethodY" translate>
-                        Votes
+                    <span *ngIf="isMethodY">
+                        {{ 'Votes' | translate }}
                     </span>
                 </th>
-                <th class="result no" translate *ngIf="!isMethodY">No</th>
-                <th class="result abstain" translate *ngIf="isMethodYNA">Abstain</th>
+                <th class="result no" *ngIf="!isMethodY">{{ 'No' | translate }}</th>
+                <th class="result abstain" *ngIf="isMethodYNA">{{ 'Abstain' | translate }}</th>
             </tr>
             <tr *ngFor="let row of tableData" [class]="row.class">
                 <td class="voting-option">

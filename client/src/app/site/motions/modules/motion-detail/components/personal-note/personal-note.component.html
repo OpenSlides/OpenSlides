@@ -1,7 +1,7 @@
 <os-meta-text-block showActionRow="true" icon="speaker_notes" [disableExpandControl]="true">
     <!-- Title row -->
     <ng-container class="meta-text-block-title">
-        <span translate>Personal note</span>
+        <span>{{ 'Personal note' | translate }}</span>
     </ng-container>
 
     <!-- Actions -->
@@ -40,8 +40,8 @@
     <ng-container class="meta-text-block-content">
         <ng-container *ngIf="!isEditMode">
             <div *ngIf="motion && motion.personalNote" [innerHTML]="personalNoteText | trust: 'html'"></div>
-            <div class="no-content" *ngIf="!motion || !motion.hasNotes" translate>
-                No personal note
+            <div class="no-content" *ngIf="!motion || !motion.hasNotes">
+                {{ 'No personal note' | translate }}
             </div>
         </ng-container>
         <form [formGroup]="personalNoteForm" *ngIf="isEditMode">
@@ -54,9 +54,9 @@
             ></editor>
         </form>
         <div *ngIf="saveHint">
-            <span translate>Touch the book icon to enter text</span>
+            <span>{{ 'Touch the book icon to enter text' | translate }}</span>
             <br />
-            <span class="red-warning-text" translate>Do not forget to save your changes!</span>
+            <span class="red-warning-text">{{ 'Do not forget to save your changes!' | translate }}</span>
         </div>
     </ng-container>
 </os-meta-text-block>

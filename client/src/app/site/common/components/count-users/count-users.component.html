@@ -1,22 +1,24 @@
 <mat-card class="os-card" *osPerms="'users.can_manage'">
     <button type="button" mat-button (click)="countUsers()" *ngIf="!this.token">
-        <span translate>Count active users</span>
+        <span>{{ 'Count active users' | translate }}</span>
     </button>
     <button type="button" mat-button (click)="stopCounting()" *ngIf="this.token">
-        <span translate>Stop counting</span>
+        <span>{{ 'Stop counting' | translate }}</span>
     </button>
     <div *ngIf="stats">
         <p>
-            {{ userIds().length }} <span translate>active users</span> ({{ stats.activeUserHandles }}
-            <span translate>connections</span>)
+            {{ userIds().length }} <span>{{ 'active users' | translate }}</span> ({{ stats.activeUserHandles }}
+            <span>{{ 'connections' | translate }}</span
+            >)
         </p>
-        <h3 translate>Groups</h3>
+        <h3>{{ 'Groups' | translate }}</h3>
         <ul>
             <li *ngFor="let groupId of groupIds()">
                 <strong>{{ stats.groups[groupId].name }}</strong>
                 <span> : {{ userInGroupIds(groupId).length }} </span>
-                <span translate>active users</span>
-                (<span>{{ stats.groups[groupId].userHandleCount }}</span> <span translate>connections</span>)
+                <span>{{ 'active users' | translate }}</span>
+                (<span>{{ stats.groups[groupId].userHandleCount }}</span> <span>{{ 'connections' | translate }}</span
+                >)
             </li>
         </ul>
     </div>

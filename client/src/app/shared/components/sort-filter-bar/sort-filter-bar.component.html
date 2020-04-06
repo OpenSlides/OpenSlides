@@ -1,7 +1,7 @@
 <div class="custom-table-header flex-spaced">
     <!-- Amount of filters -->
     <div class="filter-count">
-        <span>{{ filterCount }}&nbsp;</span><span translate>of</span>
+        <span>{{ filterCount }}&nbsp;</span><span>{{ 'of' | translate }}</span>
         <span>&nbsp;{{ totalCount }}</span>
         <span *ngIf="extraItemInfo">&nbsp;·&nbsp;{{ extraItemInfo }}</span>
     </div>
@@ -30,10 +30,10 @@
 
         <!-- Sort Button -->
         <button mat-button *ngIf="vp.isMobile && hasSorting" (click)="openSortDropDown()">
-            <span class="upper" translate>Sort</span>
+            <span class="upper">{{ 'Sort' | translate }}</span>
         </button>
         <button mat-button *ngIf="!vp.isMobile && hasSorting" [matMenuTriggerFor]="menu">
-            <span class="upper" translate>Sort</span>
+            <span class="upper">{{ 'Sort' | translate }}</span>
         </button>
 
         <!-- Search bar -->
@@ -58,7 +58,7 @@
 
         <button mat-button (click)="onClearAllButton($event)" *ngIf="filterAmount">
             <os-icon-container icon="clear">
-                <span translate>Clear all filters</span>
+                <span>{{ 'Clear all filters' | translate }}</span>
             </os-icon-container>
         </button>
     </div>

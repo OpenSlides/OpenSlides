@@ -1,6 +1,8 @@
 <os-head-bar [hasMainButton]="perms.isAllowed('create')" (mainEvent)="onPlusButton()" [multiSelectMode]="isMultiSelect">
     <!-- Title -->
-    <div class="title-slot"><h2 translate>Motions</h2></div>
+    <div class="title-slot">
+        <h2>{{ 'Motions' | translate }}</h2>
+    </div>
 
     <!-- Menu -->
     <div class="menu-slot">
@@ -12,7 +14,7 @@
     <!-- Multiselect info -->
     <div class="central-info-slot">
         <button mat-icon-button (click)="toggleMultiSelect()"><mat-icon>arrow_back</mat-icon></button>
-        <span>{{ selectedRows.length }}&nbsp;</span><span translate>selected</span>
+        <span>{{ selectedRows.length }}&nbsp;</span><span>{{ 'selected' | translate }}</span>
     </div>
 
     <div class="extra-controls-slot">
@@ -89,7 +91,7 @@
                 <!-- Submitters -->
                 <div class="submitters-line ellipsis-overflow">
                     <span *ngIf="motion.submitters.length">
-                        <span translate>by</span>
+                        <span>{{ 'by' | translate }}</span>
                         {{ motion.submitters }}
                     </span>
 
@@ -97,7 +99,7 @@
                         <span *ngIf="motion.submitters.length">
                             &middot;
                         </span>
-                        <span translate>Sequential number</span>
+                        <span>{{ 'Sequential number' | translate }}</span>
                         {{ motion.id }}
                     </span>
                 </div>
@@ -228,7 +230,7 @@
         <div *ngIf="perms.isAllowed('change_metadata') && selectedView === 'list'">
             <button mat-menu-item (click)="toggleMultiSelect()">
                 <mat-icon>library_add</mat-icon>
-                <span translate>Multiselect</span>
+                <span>{{ 'Multiselect' | translate }}</span>
             </button>
             <mat-divider></mat-divider>
         </div>
@@ -239,7 +241,7 @@
                 <!-- color_lens -->
                 <!-- format_paint -->
                 <mat-icon>color_lens</mat-icon>
-                <span translate>Amendments</span>
+                <span>{{ 'Amendments' | translate }}</span>
             </button>
         </div>
 
@@ -247,7 +249,7 @@
         <div *ngIf="perms.isAllowed('manage') || categories.length">
             <button mat-menu-item routerLink="category">
                 <mat-icon>category</mat-icon>
-                <span translate>Categories</span>
+                <span>{{ 'Categories' | translate }}</span>
             </button>
         </div>
 
@@ -255,7 +257,7 @@
         <div *ngIf="perms.isAllowed('manage') || motionBlocks.length">
             <button mat-menu-item routerLink="blocks">
                 <mat-icon>widgets</mat-icon>
-                <span translate>Motion blocks</span>
+                <span>{{ 'Motion blocks' | translate }}</span>
             </button>
         </div>
 
@@ -267,31 +269,31 @@
             <!-- Call list -->
             <button mat-menu-item routerLink="call-list">
                 <mat-icon>sort</mat-icon>
-                <span translate>Call list</span>
+                <span>{{ 'Call list' | translate }}</span>
             </button>
 
             <!-- Statutes -->
             <button mat-menu-item routerLink="statute-paragraphs" *ngIf="statutesEnabled">
                 <mat-icon>account_balance</mat-icon>
-                <span translate>Statute</span>
+                <span>{{ 'Statute' | translate }}</span>
             </button>
 
             <!-- Comments -->
             <button mat-menu-item routerLink="comment-section">
                 <mat-icon>speaker_notes</mat-icon>
-                <span translate>Comment fields</span>
+                <span>{{ 'Comment fields' | translate }}</span>
             </button>
 
             <!-- Workflows -->
             <button mat-menu-item routerLink="workflow">
                 <mat-icon>build</mat-icon>
-                <span translate>Workflows</span>
+                <span>{{ 'Workflows' | translate }}</span>
             </button>
 
             <!-- Tags -->
             <button mat-menu-item routerLink="/tags" *osPerms="'core.can_manage_tags'">
                 <mat-icon>local_offer</mat-icon>
-                <span translate>Tags</span>
+                <span>{{ 'Tags' | translate }}</span>
             </button>
 
             <mat-divider></mat-divider>
@@ -300,14 +302,14 @@
         <!-- Export -->
         <button mat-menu-item *ngIf="selectedView === 'list'" (click)="openExportDialog()">
             <mat-icon>archive</mat-icon>
-            <span translate>Export</span>
+            <span>{{ 'Export' | translate }}</span>
         </button>
 
         <!-- Import -->
         <div *ngIf="perms.isAllowed('manage')">
             <button mat-menu-item routerLink="import">
                 <mat-icon>cloud_upload</mat-icon>
-                <span translate>Import</span>
+                <span>{{ 'Import' | translate }}</span>
             </button>
         </div>
 
@@ -316,17 +318,17 @@
         <!-- Settings -->
         <button mat-menu-item *osPerms="'core.can_manage_config'" routerLink="/settings/motions">
             <mat-icon>settings</mat-icon>
-            <span translate>Settings</span>
+            <span>{{ 'Settings' | translate }}</span>
         </button>
     </div>
     <div *ngIf="isMultiSelect">
         <button mat-menu-item (click)="selectAll()">
             <mat-icon>done_all</mat-icon>
-            <span translate>Select all</span>
+            <span>{{ 'Select all' | translate }}</span>
         </button>
         <button mat-menu-item [disabled]="!selectedRows.length" (click)="deselectAll()">
             <mat-icon>clear</mat-icon>
-            <span translate>Deselect all</span>
+            <span>{{ 'Deselect all' | translate }}</span>
         </button>
         <ng-container *ngIf="perms.isAllowed('change_metadata')">
             <mat-divider></mat-divider>
@@ -337,7 +339,7 @@
                     (click)="multiselectWrapper(multiselectService.moveToItem(selectedRows))"
                 >
                     <mat-icon>sort</mat-icon>
-                    <span translate>Move to agenda item</span>
+                    <span>{{ 'Move to agenda item' | translate }}</span>
                 </button>
                 <button
                     mat-menu-item
@@ -345,7 +347,7 @@
                     (click)="multiselectWrapper(multiselectService.bulkMoveItems(selectedRows))"
                 >
                     <mat-icon>format_indent_increase</mat-icon>
-                    <span translate>Move in call list</span>
+                    <span>{{ 'Move in call list' | translate }}</span>
                 </button>
             </os-motion-multiselect-actions>
         </ng-container>
@@ -406,10 +408,10 @@
 
     <div mat-dialog-actions>
         <button type="submit" mat-button color="primary" [mat-dialog-close]="infoDialog">
-            <span translate>Save</span>
+            <span>{{ 'Save' | translate }}</span>
         </button>
         <button type="button" mat-button [mat-dialog-close]="null">
-            <span translate>Cancel</span>
+            <span>{{ 'Cancel' | translate }}</span>
         </button>
     </div>
 </ng-template>

@@ -1,7 +1,7 @@
 <os-head-bar prevUrl="../.." [nav]="false" [hasMainButton]="true" (mainEvent)="openDialog()">
     <!-- Title -->
     <div class="title-slot">
-        <h2 translate>Statute</h2>
+        <h2>{{ 'Statute' | translate }}</h2>
     </div>
 
     <!-- Use the menu slot for an add button -->
@@ -14,10 +14,7 @@
 
 <cdk-virtual-scroll-viewport itemSize="50" [ngClass]="statuteParagraphs.length ? 'virtual-scroll-full-page' : ''">
     <mat-accordion class="os-card">
-        <mat-expansion-panel
-            *cdkVirtualFor="let statuteParagraph of statuteParagraphs"
-            multiple="false"
-        >
+        <mat-expansion-panel *cdkVirtualFor="let statuteParagraph of statuteParagraphs" multiple="false">
             <mat-expansion-panel-header>
                 <mat-panel-title>
                     {{ statuteParagraph.title }}
@@ -43,26 +40,26 @@
 
 <mat-card *ngIf="statuteParagraphs.length === 0">
     <mat-card-content>
-        <div class="no-content" translate>No statute paragraphs</div>
+        <div class="no-content">{{ 'No statute paragraphs' | translate }}</div>
     </mat-card-content>
 </mat-card>
 
 <mat-menu #commentMenu="matMenu">
     <button mat-menu-item (click)="onCsvExport()">
         <mat-icon>archive</mat-icon>
-        <span translate>Export as CSV</span>
+        <span>{{ 'Export as CSV' | translate }}</span>
     </button>
     <button mat-menu-item *osPerms="'motions.can_manage'" routerLink="import">
         <mat-icon>cloud_upload</mat-icon>
-        <span translate>Import</span>
+        <span>{{ 'Import' | translate }}</span>
     </button>
 </mat-menu>
 
 <!-- Template for statute paragraph dialog -->
 <ng-template #statuteParagraphDialog>
     <h1 mat-dialog-title>
-        <span *ngIf="currentStatuteParagraph" translate>Edit statute paragraph</span>
-        <span *ngIf="!currentStatuteParagraph" translate>New statute paragraph</span>
+        <span *ngIf="currentStatuteParagraph">{{ 'Edit statute paragraph' | translate }}</span>
+        <span *ngIf="!currentStatuteParagraph">{{ 'New statute paragraph' | translate }}</span>
     </h1>
     <div class="os-form-card-mobile" mat-dialog-content>
         <form [formGroup]="statuteParagraphForm" (keydown)="onKeyDown($event)">
@@ -70,23 +67,23 @@
                 <mat-form-field>
                     <input formControlName="title" matInput placeholder="{{ 'Title' | translate }}" required />
                     <mat-hint *ngIf="!statuteParagraphForm.controls.title.valid">
-                        <span translate>Required</span>
+                        <span>{{ 'Required' | translate }}</span>
                     </mat-hint>
                 </mat-form-field>
             </p>
             <span>
                 <!-- The HTML Editor -->
-                <h4 translate>Statute paragraph</h4>
+                <h4>{{ 'Statute paragraph' | translate }}</h4>
                 <editor formControlName="text" [init]="tinyMceSettings"></editor>
             </span>
         </form>
     </div>
     <div mat-dialog-actions>
         <button mat-button [mat-dialog-close]="true" [disabled]="!statuteParagraphForm.valid">
-            <span translate>Save</span>
+            <span>{{ 'Save' | translate }}</span>
         </button>
         <button mat-button [mat-dialog-close]="false">
-            <span translate>Cancel</span>
+            <span>{{ 'Cancel' | translate }}</span>
         </button>
     </div>
 </ng-template>

@@ -1,13 +1,16 @@
 <os-head-bar [hasMainButton]="false" [nav]="false">
     <!-- Title -->
-    <div class="title-slot"><h2 translate>Presence</h2></div>
+    <div class="title-slot">
+        <h2>{{ 'Presence' | translate }}</h2>
+    </div>
 </os-head-bar>
 
 <mat-card *ngIf="permission">
-    <p translate>Check in or check out participants based on their participant numbers:</p>
+    <p>{{ 'Check in or check out participants based on their participant numbers:' | translate }}</p>
 
     <mat-form-field [formGroup]="userForm">
-        <input osAutofocus
+        <input
+            osAutofocus
             matInput
             [formControl]="userForm.get('number')"
             placeholder="{{ 'Enter participant number' | translate }}"
@@ -16,7 +19,8 @@
     </mat-form-field>
     <button mat-button (click)="changePresence()">{{ 'Change presence' | translate }}</button>
     <mat-card *ngIf="lastChangedUser" [ngClass]="lastChangedUser.is_present ? 'success' : 'warning'">
-        <span>{{ lastChangedUser.full_name }}&nbsp;</span> <span translate>is now</span>:
+        <span>{{ lastChangedUser.full_name }}&nbsp;</span> <span>{{ 'is now' | translate }}</span
+        >:
         <span>&nbsp;{{ lastChangedUser.is_present ? ('present' | translate) : ('absent' | translate) }}</span>
     </mat-card>
     <mat-card *ngIf="errorMsg" class="error">{{ errorMsg | translate }}</mat-card>

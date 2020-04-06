@@ -68,11 +68,9 @@
     <!-- Publish Check -->
     <div class="spacer-top-20">
         <mat-checkbox [(ngModel)]="publishImmediately" (change)="publishStateChanged($event.checked)">
-            <span translate>Publish immediately</span>
+            <span>{{ 'Publish immediately' | translate }}</span>
         </mat-checkbox>
-        <mat-error *ngIf="!dialogVoteForm.valid" translate>
-            Error in form field.
-        </mat-error>
+        <mat-error *ngIf="!dialogVoteForm.valid"> {{ 'Error in form field.' | translate }}</mat-error>
     </div>
 </ng-container>
 
@@ -85,11 +83,11 @@
         *ngIf="pollForm && dialogVoteForm && pollForm.contentForm"
         [disabled]="pollForm.contentForm.invalid || dialogVoteForm.invalid"
     >
-        <span translate>Save</span>
+        <span>{{ 'Save' | translate }}</span>
     </button>
 
     <!-- Cancel Button -->
     <button mat-button [mat-dialog-close]="false">
-        <span translate>Cancel</span>
+        <span>{{ 'Cancel' | translate }}</span>
     </button>
 </div>

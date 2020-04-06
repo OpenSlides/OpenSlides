@@ -1,7 +1,7 @@
 <os-head-bar [isSearchEnabled]="false">
     <!-- Title -->
     <div class="title-slot">
-        <h2 translate>Settings</h2>
+        <h2>{{ 'Settings' | translate }}</h2>
     </div>
     <!-- Menu -->
     <div class="menu-slot">
@@ -45,6 +45,6 @@
 <mat-menu #settingsMenu="matMenu">
     <button mat-menu-item (click)="resetAll()">
         <mat-icon>undo</mat-icon>
-        <span translate>Reset to factory defaults</span>
+        <span>{{ 'Reset to factory defaults' | translate }}</span>
     </button>
 </mat-menu>

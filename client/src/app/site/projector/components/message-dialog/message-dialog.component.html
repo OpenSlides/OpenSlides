@@ -1,5 +1,5 @@
 <h1 mat-dialog-title>
-    <span translate>Message</span>
+    <span>{{ 'Message' | translate }}</span>
 </h1>
 
 <form [formGroup]="messageForm">
@@ -16,12 +16,12 @@
             [mat-dialog-close]="messageForm.value"
             [disabled]="!messageForm.valid"
         >
-            <span translate>Save</span>
+            <span>{{ 'Save' | translate }}</span>
         </button>
 
         <!-- Cancel Countdown button -->
         <button type="button" mat-button [mat-dialog-close]="null">
-            <span translate>Cancel</span>
+            <span>{{ 'Cancel' | translate }}</span>
         </button>
     </div>
 </form>
