@@ -42,6 +42,6 @@ export class User extends BaseDecimalModel<User> {
     }
 
     protected getDecimalFields(): string[] {
-        return ["vote_weight"];
+        return ['vote_weight'];
     }
 }

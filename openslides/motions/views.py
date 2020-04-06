@@ -1176,6 +1176,10 @@ class MotionPollViewSet(BasePollViewSet):
 
         return result
 
+    def add_user_to_voted_array(self, user, poll):
+        VotedModel = MotionPoll.voted.through
+        VotedModel.objects.create(motionpoll=poll, user=user)
+
     def handle_analog_vote(self, data, poll, user):
         option = poll.options.get()
         vote, _ = MotionVote.objects.get_or_create(option=option, value="Y")
@@ -1223,21 +1227,11 @@ class MotionPollViewSet(BasePollViewSet):
                 raise ValidationError("Data must be Y or N")
 
     def handle_named_vote(self, data, poll, user):
-        if user in poll.voted.all():
-            raise ValidationError({"detail": "You have already voted"})
-        poll.voted.add(user)
-        poll.save()
-
         option = poll.options.get()
         vote = MotionVote.objects.create(user=user, option=option)
         self.handle_named_and_pseudoanonymous_vote(data, user, poll, option, vote)
 
     def handle_pseudoanonymous_vote(self, data, poll, user):
-        if user in poll.voted.all():
-            raise ValidationError({"detail": "You have already voted"})
-        poll.voted.add(user)
-        poll.save()
-
         option = poll.options.get()
         vote = MotionVote.objects.create(user=None, option=option)
         self.handle_named_and_pseudoanonymous_vote(data, user, poll, option, vote)

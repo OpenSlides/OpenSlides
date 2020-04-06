@@ -2,6 +2,7 @@ from textwrap import dedent
 
 from django.contrib.auth.models import AnonymousUser
 from django.db import transaction
+from django.db.utils import IntegrityError
 from rest_framework import status
 
 from openslides.utils.auth import in_some_groups
@@ -184,6 +185,7 @@ class BasePollViewSet(ModelViewSet):
         return Response()
 
     @detail_route(methods=["POST"])
+    @transaction.atomic
     def vote(self, request, pk):
         """
         For motion polls: Just "Y", "N" or "A" (if pollmethod is "YNA")
@@ -219,10 +221,10 @@ class BasePollViewSet(ModelViewSet):
 
     def assert_can_vote(self, poll, request):
         """
-        Raises a permission denied, if the user is not allowed to vote.
+        Raises a permission denied, if the user is not allowed to vote (or has already voted).
+        Adds the user to the voted array, so this needs to be reverted on error!
         Analog:                     has to have manage permissions
         Named & Pseudoanonymous:    has to be in a poll group and present
-        Note: For pseudoanonymous it is *not* tested, if the user has already voted!
         """
         if poll.type == BasePoll.TYPE_ANALOG:
             if not self.has_manage_permissions():
@@ -231,11 +233,17 @@ class BasePollViewSet(ModelViewSet):
             if poll.state != BasePoll.STATE_STARTED:
                 raise ValidationError("You can only vote on a started poll.")
             if not request.user.is_present or not in_some_groups(
-               request.user.id,
-               list(poll.groups.values_list("pk", flat=True)),
-               exact=True,
+                request.user.id,
+                list(poll.groups.values_list("pk", flat=True)),
+                exact=True,
             ):
-               self.permission_denied(request)
+                self.permission_denied(request)
+
+            try:
+                self.add_user_to_voted_array(request.user, poll)
+                inform_changed_data(poll)
+            except IntegrityError:
+                raise ValidationError({"detail": "You have already voted"})
 
     def parse_vote_value(self, obj, key):
         """ Raises a ValidationError on incorrect values, including None """
@@ -256,6 +264,13 @@ class BasePollViewSet(ModelViewSet):
         May be overwritten by subclass. Adjusts the option data based on the now existing poll
         """
         pass
+
+    def add_user_to_voted_array(self, user, poll):
+        """
+        To be implemented by subclass. Adds the given user to the voted array of the given poll.
+        Throws an IntegrityError if the user already exists in the array
+        """
+        raise NotImplementedError()
 
     def validate_vote_data(self, data, poll, user):
         """

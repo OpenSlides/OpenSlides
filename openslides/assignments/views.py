@@ -2,7 +2,6 @@ from decimal import Decimal
 
 from django.contrib.auth import get_user_model
 from django.db import transaction
-from django.db.utils import IntegrityError
 
 from openslides.poll.views import BaseOptionViewSet, BasePollViewSet, BaseVoteViewSet
 from openslides.utils.auth import has_perm
@@ -526,17 +525,11 @@ class AssignmentPollViewSet(BasePollViewSet):
 
         poll.voted.add(check_user)
 
+    def add_user_to_voted_array(self, user, poll):
+        VotedModel = AssignmentPoll.voted.through
+        VotedModel.objects.create(assignmentpoll=poll, user=user)
+
     def handle_named_vote(self, data, poll, user):
-        try:
-            with transaction.atomic():
-                return self.try_handle_named_vote(data, poll, user)
-        except IntegrityError:
-            raise ValidationError({"detail": "You have already voted"})
-
-    def try_handle_named_vote(self, data, poll, user):
-        if user in poll.voted.all():
-            raise ValidationError({"detail": "You have already voted"})
-
         if poll.pollmethod == AssignmentPoll.POLLMETHOD_VOTES:
             self.create_votes_type_votes(data, poll, user)
         elif poll.pollmethod in (
@@ -546,16 +539,6 @@ class AssignmentPollViewSet(BasePollViewSet):
             self.create_votes_type_named_pseudoanonymous(data, poll, user, user)
 
     def handle_pseudoanonymous_vote(self, data, poll, user):
-        try:
-            with transaction.atomic():
-                return self.try_handle_pseudoanonymous_vote(data, poll, user)
-        except IntegrityError:
-            raise ValidationError({"detail": "You have already voted"})
-
-    def try_handle_pseudoanonymous_vote(self, data, poll, user):
-        if user in poll.voted.all():
-            raise ValidationError({"detail": "You have already voted"})
-
         if poll.pollmethod == AssignmentPoll.POLLMETHOD_VOTES:
             self.create_votes_type_votes(data, poll, user)
 
