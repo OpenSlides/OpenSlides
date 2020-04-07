@@ -232,6 +232,7 @@ class BasePollViewSet(ModelViewSet):
         else:
             if poll.state != BasePoll.STATE_STARTED:
                 raise ValidationError("You can only vote on a started poll.")
+
             if not request.user.is_present or not in_some_groups(
                 request.user.id,
                 list(poll.groups.values_list("pk", flat=True)),
@@ -268,7 +269,8 @@ class BasePollViewSet(ModelViewSet):
     def add_user_to_voted_array(self, user, poll):
         """
         To be implemented by subclass. Adds the given user to the voted array of the given poll.
-        Throws an IntegrityError if the user already exists in the array
+        This operation should be atomic: If the user is already in the array, an IntegrityError must
+        be thrown, otherwise the user must be added.
         """
         raise NotImplementedError()
 
