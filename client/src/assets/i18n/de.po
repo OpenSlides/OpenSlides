@@ -109,11 +109,11 @@ msgid "Add/remove tags"
 msgstr "Schlagwörter hinzufügen/entfernen"
 
 msgid ""
-"Additional columns after the required ones may be present and won't affect "
-"the import."
+"Additional columns after the required ones may be present and will not "
+"affect the import."
 msgstr ""
-"Zusätzliche Spalten nach den erforderlichen Spalten können vorhanden sein "
-"und haben keinen Einfluss auf den Import."
+"Es könnten zusätzliche Spalten nach den erforderlichen Spalten vorhanden "
+"sein. Diese haben jedoch keinen Einfluss auf den Import."
 
 msgid "Adjourn"
 msgstr "Vertagen"
@@ -124,9 +124,10 @@ msgstr "Vertagung"
 msgid "Admin"
 msgstr "Admin"
 
-msgid "After verifiy the preview click on 'import' please (see top right)."
+msgid "After verifiy the preview click on \"import\" please (see top right)."
 msgstr ""
-"Nach Prüfung der Vorschau klicken Sie bitte auf 'Importieren' (oben rechts)."
+"Nach Prüfung der Vorschau klicken Sie bitte auf \"Importieren\" (oben "
+"rechts)."
 
 msgid "Agenda"
 msgstr "Tagesordnung"
@@ -636,9 +637,8 @@ msgstr "Alle zusammenklappen"
 msgid "Column separator"
 msgstr "Spaltentrenner"
 
-msgid "Comma separated names will be read as 'Surname, given name(s)'."
-msgstr ""
-"Kommaseparierte Namen werden als 'Nachname, Vorname(n)' interpretiert."
+msgid "Comma separated names will be read as \"Surname, given name(s)\"."
+msgstr "Kommaseparierte Namen werden als \"Nachname, Vorname(n)\" interpretiert."
 
 msgid "Comment"
 msgstr "Kommentar"
@@ -2501,10 +2501,10 @@ msgstr "Texttrenner"
 msgid "The assembly may decide:"
 msgstr "Die Versammlung möge beschließen:"
 
-msgid "The event manager hasn't set up a legal notice yet."
+msgid "The event manager has not set up a legal notice yet."
 msgstr "Der Veranstalter hat noch kein Impressum hinterlegt."
 
-msgid "The event manager hasn't set up a privacy policy yet."
+msgid "The event manager has not set up a privacy policy yet."
 msgstr "Der Veranstalter hat noch keine Datenschutzerklärung hinterlegt."
 
 msgid "The file has too few columns to be parsed properly."
@@ -2931,6 +2931,9 @@ msgstr ""
 
 msgid "Your decision cannot be changed afterwards."
 msgstr "Ihre Stimmabgabe kann anschließend nicht mehr geändert werden."
+
+msgid "Your input does not match the following structure: \"hh:mm\""
+msgstr "Ihre Eingabe entspricht nicht der folgenden Struktur: \"hh:mm\""
 
 msgid "Your password was resetted successfully!"
 msgstr "Ihr Passwort wurde erfolgreich zurückgesetzt!"

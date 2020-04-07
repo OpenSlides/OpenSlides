@@ -58,7 +58,7 @@ export class LoginMaskComponent extends BaseViewComponent implements OnInit, OnD
     /**
      * The message, that should appear, when the user logs in.
      */
-    private loginMessage = 'Loading data. Please wait...';
+    private loginMessage = 'Loading data. Please wait ...';
 
     /**
      * Constructor for the login component
