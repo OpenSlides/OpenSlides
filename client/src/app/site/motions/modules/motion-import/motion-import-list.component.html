@@ -43,7 +43,6 @@
             <mat-label>{{ 'Encoding of the file' | translate }}</mat-label>
             <mat-select
                 class="selection"
-                placeholder="{{ 'Select encoding' | translate }}"
                 (selectionChange)="selectEncoding($event)"
                 [value]="encodings[0].value"
             >

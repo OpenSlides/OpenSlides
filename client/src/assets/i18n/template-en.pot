@@ -98,8 +98,8 @@ msgid "Add/remove tags"
 msgstr ""
 
 msgid ""
-"Additional columns after the required ones may be present and won't affect "
-"the import."
+"Additional columns after the required ones may be present and will not "
+"affect the import."
 msgstr ""
 
 msgid "Adjourn"
@@ -111,7 +111,7 @@ msgstr ""
 msgid "Admin"
 msgstr ""
 
-msgid "After verifiy the preview click on 'import' please (see top right)."
+msgid "After verifiy the preview click on \"import\" please (see top right)."
 msgstr ""
 
 msgid "Agenda"
@@ -599,7 +599,7 @@ msgstr ""
 msgid "Column separator"
 msgstr ""
 
-msgid "Comma separated names will be read as 'Surname, given name(s)'."
+msgid "Comma separated names will be read as \"Surname, given name(s)\"."
 msgstr ""
 
 msgid "Comment"
@@ -2414,10 +2414,10 @@ msgstr ""
 msgid "The assembly may decide:"
 msgstr ""
 
-msgid "The event manager hasn't set up a legal notice yet."
+msgid "The event manager has not set up a legal notice yet."
 msgstr ""
 
-msgid "The event manager hasn't set up a privacy policy yet."
+msgid "The event manager has not set up a privacy policy yet."
 msgstr ""
 
 msgid "The file has too few columns to be parsed properly."
@@ -2788,6 +2788,9 @@ msgid "You reached the maximum amount of votes. Deselect somebody first."
 msgstr ""
 
 msgid "Your decision cannot be changed afterwards."
+msgstr ""
+
+msgid "Your input does not match the following structure: \"hh:mm\""
 msgstr ""
 
 msgid "Your password was resetted successfully!"
