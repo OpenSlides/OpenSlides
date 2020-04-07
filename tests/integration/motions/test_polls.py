@@ -775,7 +775,7 @@ class VoteMotionPollNamed(TestCase):
         response = self.client.post(
             reverse("motionpoll-vote", args=[self.poll.pk]), "A"
         )
-        self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
+        self.assertHttpStatusVerbose(response, status.HTTP_400_BAD_REQUEST)
         poll = MotionPoll.objects.get()
         self.assertEqual(poll.votesvalid, Decimal("1"))
         self.assertEqual(poll.votesinvalid, Decimal("0"))
@@ -783,8 +783,8 @@ class VoteMotionPollNamed(TestCase):
         self.assertEqual(poll.get_votes().count(), 1)
         option = poll.options.get()
         self.assertEqual(option.yes, Decimal("0"))
-        self.assertEqual(option.no, Decimal("0"))
-        self.assertEqual(option.abstain, Decimal("1"))
+        self.assertEqual(option.no, Decimal("1"))
+        self.assertEqual(option.abstain, Decimal("0"))
         vote = option.votes.get()
         self.assertEqual(vote.user, self.admin)
 
