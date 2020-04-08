@@ -3,8 +3,10 @@ import {
     ChangeDetectionStrategy,
     Component,
     ElementRef,
+    EventEmitter,
     Input,
     Optional,
+    Output,
     Self,
     ViewChild,
     ViewEncapsulation
@@ -74,6 +76,12 @@ export class SearchValueSelectorComponent extends BaseFormControlComponent<Selec
     public errorStateMatcher: ParentErrorStateMatcher;
 
     /**
+     * Whether to show a button, if there is no matching option.
+     */
+    @Input()
+    public showNotFoundButton = false;
+
+    /**
      * The inputlist subject. Subscribes to it and updates the selector, if the subject
      * changes its values.
      */
@@ -95,6 +103,12 @@ export class SearchValueSelectorComponent extends BaseFormControlComponent<Selec
             );
         }
     }
+
+    /**
+     * Emits the currently searched string.
+     */
+    @Output()
+    public clickNotFound = new EventEmitter<string>();
 
     public searchValue: FormControl;
 
@@ -147,6 +161,8 @@ export class SearchValueSelectorComponent extends BaseFormControlComponent<Selec
 
                 return item.toString().toLowerCase().indexOf(searchValue) > -1;
             });
+        } else {
+            return [];
         }
     }
 
@@ -163,6 +179,14 @@ export class SearchValueSelectorComponent extends BaseFormControlComponent<Selec
         if ((event.target as Element).tagName.toLowerCase() !== 'select') {
             // this.element.nativeElement.querySelector('select').focus();
         }
+    }
+
+    /**
+     * Emits the click on 'notFound' and resets the search-value.
+     */
+    public onNotFoundClick(): void {
+        this.clickNotFound.emit(this.searchValue.value);
+        this.searchValue.setValue('');
     }
 
     protected initializeForm(): void {

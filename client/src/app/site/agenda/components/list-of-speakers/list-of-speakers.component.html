@@ -139,7 +139,14 @@
                     formControlName="user_id"
                     placeholder="{{ 'Select or search new speaker ...' | translate }}"
                     [inputListValues]="filteredUsers"
-                ></os-search-value-selector>
+                    [showNotFoundButton]="true"
+                    (clickNotFound)="onCreateUser($event)"
+                >
+                    <ng-container notFoundDescription>
+                        <mat-icon>add</mat-icon>
+                        {{ 'Create user' | translate }}
+                    </ng-container>
+                </os-search-value-selector>
             </mat-form-field>
         </form>
     </div>
