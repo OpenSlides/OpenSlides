@@ -89,28 +89,19 @@ export class MotionSortListService extends BaseSortListService<ViewMotion> {
     }
 
     /**
-     * Custom function to sort the categories internal by the `category_weight` of the motion.
+     * Custom function to sort the categories by the `category_weight` of the motion.
      *
      * @param itemA The first item to sort
      * @param itemB The second item to sort
-     * @param intl The localizer to compare strings
      * @param ascending If the sorting should be in ascended or descended order
      *
      * @returns {number} The result of comparing.
      */
-    private categorySortFn(itemA: ViewMotion, itemB: ViewMotion, ascending: boolean, intl: Intl.Collator): number {
-        const property = 'category';
-        const subProperty = 'category_weight';
-        const firstValue = ascending ? itemA[property] : itemB[property];
-        const secondValue = ascending ? itemB[property] : itemA[property];
-
-        const diff = intl.compare(firstValue.toString(), secondValue.toString());
-        if (diff === 0) {
-            const firstSubValue = ascending ? itemA[subProperty] : itemB[subProperty];
-            const secondSubValue = ascending ? itemB[subProperty] : itemA[subProperty];
-            return firstSubValue > secondSubValue ? 1 : -1;
+    private categorySortFn(itemA: ViewMotion, itemB: ViewMotion, ascending: boolean): number {
+        if (itemA.category.weight < itemB.category.weight === ascending) {
+            return -1;
         } else {
-            return diff;
+            return 1;
         }
     }
 }
