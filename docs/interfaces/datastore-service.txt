@@ -165,7 +165,7 @@ get(fqid: Fqid, mapped_fields?: Field[], position?: Position, get_deleted_models
  *
  * @throws InvalidFormat
  */
-getMany(requests: GetManyRequest[], mapped_fields?: Field[], position?: Position, get_deleted_models?: DeletedModelsBehaviour): Partial<Model>[];
+getMany(requests: GetManyRequest[], mapped_fields?: Field[], position?: Position, get_deleted_models?: DeletedModelsBehaviour): Map<Fqid, Partial<Model>>;
 
 Interface GetManyRequest {
     collection: Collection;
@@ -208,18 +208,19 @@ count(collection: Collection, filter: Filter): {count: number; position: Positio
 /**
  * Executes a min aggregation on all models of one collection on
  * the given field that satisfy the filter condition.
+ * The field is cast to int by default. If aggregation of another field type is needed,
+ * a valid type can be passed via the type parameter.
  *
  * @throws InvalidFormat
  */
-min(collection: Collection, filter: Filter, field: Field): {min: Value; position: Position;}
+min(collection: Collection, filter: Filter, field: Field, type?: string): {min: Value; position: Position;}
 
 /**
- * Executes a max aggregation on all models of one collection on
- * the given field that satisfy the filter condition.
+ * Analogous to min.
  *
  * @throws InvalidFormat
  */
-max(collection: Collection, filter: Filter, field: Field): {max: Value; position: Position;}
+max(collection: Collection, filter: Filter, field: Field, type?: string): {max: Value; position: Position;}
 
 Type Filter = And | Or | Not | FilterOperator
 
@@ -230,7 +231,7 @@ Type Filter = And | Or | Not | FilterOperator
 Interface FilterOperator {
     field: Field;
     value: Value | null;
-    operator: '==' | '!=' | '<' | '>' | '>=' | '<=';
+    operator: '=' | '!=' | '<' | '>' | '>=' | '<=';
 }
 
 Interface Not {
