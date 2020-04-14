@@ -98,10 +98,10 @@ export class MotionSortListService extends BaseSortListService<ViewMotion> {
      * @returns {number} The result of comparing.
      */
     private categorySortFn(itemA: ViewMotion, itemB: ViewMotion, ascending: boolean): number {
-        if (itemA.category.weight < itemB.category.weight === ascending) {
-            return -1;
+        if (itemA.category_id === itemB.category_id) {
+            return itemA.category_weight < itemB.category_weight === ascending ? -1 : 1;
         } else {
-            return 1;
+            return itemA.category.weight < itemB.category.weight === ascending ? -1 : 1;
         }
     }
 }
