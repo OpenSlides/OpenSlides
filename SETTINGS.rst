@@ -57,6 +57,15 @@ useful for debugging to print all email the the console::
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 
+Electronic voting
+=================
+
+Electronic voting is disabled by default, so only analog polls are available.
+To enable it, set::
+
+    ENABLE_ELECTRONIC_VOTING = True
+
+
 Logging
 =======
 
