@@ -167,7 +167,7 @@ class BasePollViewSet(ModelViewSet):
 
         if poll.state not in (BasePoll.STATE_FINISHED, BasePoll.STATE_PUBLISHED):
             raise ValidationError(
-                {"detail": "Pseudoanonmizing can only be done after a finished poll"}
+                {"detail": "Pseudoanonymizing can only be done after finishing a poll"}
             )
         if poll.type != BasePoll.TYPE_NAMED:
             raise ValidationError(

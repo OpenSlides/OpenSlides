@@ -50,7 +50,6 @@ export class AssignmentPollDetailComponent extends BasePollDetailComponent<ViewA
     }
 
     protected createVotesData(): void {
-        const votes = {};
         const definitions: PblColumnDefinition[] = [
             {
                 prop: 'user',
@@ -66,35 +65,45 @@ export class AssignmentPollDetailComponent extends BasePollDetailComponent<ViewA
             }
         ];
 
+        const votes = {};
+        let isPseudoanonymized = true;
         for (const option of this.poll.options) {
             for (const vote of option.votes) {
                 const userId = vote.user_id;
-                if (!votes[userId]) {
-                    votes[userId] = {
-                        user: vote.user,
-                        votes: []
-                    };
-                }
+                if (userId) {
+                    isPseudoanonymized = false;
+                    if (!votes[userId]) {
+                        votes[userId] = {
+                            user: vote.user,
+                            votes: []
+                        };
+                    }
 
-                if (vote.weight > 0) {
-                    if (this.poll.isMethodY) {
-                        if (vote.value === 'Y') {
-                            votes[userId].votes.push(option.user.getFullName());
+                    if (vote.weight > 0) {
+                        if (this.poll.isMethodY) {
+                            if (vote.value === 'Y') {
+                                votes[userId].votes.push(option.user.getFullName());
+                            } else {
+                                votes[userId].votes.push(this.voteValueToLabel(vote.value));
+                            }
                         } else {
-                            votes[userId].votes.push(this.voteValueToLabel(vote.value));
+                            votes[userId].votes.push(
+                                `${option.user.getShortName()}: ${this.voteValueToLabel(vote.value)}`
+                            );
                         }
-                    } else {
-                        votes[userId].votes.push(`${option.user.getShortName()}: ${this.voteValueToLabel(vote.value)}`);
                     }
                 }
             }
         }
-        for (const user of this.poll.voted) {
-            if (!votes[user.id]) {
-                votes[user.id] = {
-                    user: user,
-                    votes: [this.translate.instant('empty vote')]
-                };
+        // if the poll was not pseudoanonymized, add all other users as empty votes
+        if (!isPseudoanonymized) {
+            for (const user of this.poll.voted) {
+                if (!votes[user.id]) {
+                    votes[user.id] = {
+                        user: user,
+                        votes: [this.translate.instant('empty vote')]
+                    };
+                }
             }
         }
 
