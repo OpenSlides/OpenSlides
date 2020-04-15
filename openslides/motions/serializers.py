@@ -24,7 +24,7 @@ from ..utils.rest_api import (
     SerializerMethodField,
     ValidationError,
 )
-from ..utils.validate import validate_html
+from ..utils.validate import validate_html_strict
 from .models import (
     Category,
     Motion,
@@ -292,7 +292,7 @@ class MotionChangeRecommendationSerializer(ModelSerializer):
     def validate(self, data):
         # Change recommendations for titles are stored as plain-text, thus they don't need to be html-escaped
         if "text" in data and not self.is_title_cr(data):
-            data["text"] = validate_html(data["text"])
+            data["text"] = validate_html_strict(data["text"])
         return data
 
 
@@ -419,21 +419,21 @@ class MotionSerializer(ModelSerializer):
 
     def validate(self, data):
         if "text" in data:
-            data["text"] = validate_html(data["text"])
+            data["text"] = validate_html_strict(data["text"])
 
         if "modified_final_version" in data:
-            data["modified_final_version"] = validate_html(
+            data["modified_final_version"] = validate_html_strict(
                 data["modified_final_version"]
             )
 
         if "reason" in data:
-            data["reason"] = validate_html(data["reason"])
+            data["reason"] = validate_html_strict(data["reason"])
 
         # The motion text is only needed, if it is not a paragraph based amendment.
         if data.get("amendment_paragraphs") is not None:
             data["amendment_paragraphs"] = list(
                 map(
-                    lambda entry: validate_html(entry)
+                    lambda entry: validate_html_strict(entry)
                     if isinstance(entry, str)
                     else None,
                     data["amendment_paragraphs"],

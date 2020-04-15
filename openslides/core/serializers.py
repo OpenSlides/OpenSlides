@@ -10,7 +10,7 @@ from ..utils.rest_api import (
     SerializerMethodField,
     ValidationError,
 )
-from ..utils.validate import validate_html
+from ..utils.validate import validate_html_strict
 from .models import (
     ConfigStore,
     Countdown,
@@ -161,7 +161,7 @@ class ProjectorMessageSerializer(ModelSerializer):
 
     def validate(self, data):
         if "message" in data:
-            data["message"] = validate_html(data["message"])
+            data["message"] = validate_html_strict(data["message"])
         return data
 
 

@@ -1,6 +1,6 @@
 from openslides.utils.autoupdate import inform_changed_data
 from openslides.utils.rest_api import CharField, IntegerField, ModelSerializer
-from openslides.utils.validate import validate_html
+from openslides.utils.validate import validate_html_permissive
 
 from .models import Topic
 
@@ -36,7 +36,7 @@ class TopicSerializer(ModelSerializer):
 
     def validate(self, data):
         if "text" in data:
-            data["text"] = validate_html(data["text"])
+            data["text"] = validate_html_permissive(data["text"])
         return data
 
     def create(self, validated_data):
