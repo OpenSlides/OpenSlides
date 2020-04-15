@@ -2191,3 +2191,74 @@ class VoteAssignmentPollPseudoanonymousAutoupdates(
                     },
                 },
             )
+
+
+class PseudoanonymizeAssignmentPoll(TestCase):
+    def advancedSetUp(self):
+        self.assignment = Assignment.objects.create(
+            title="test_assignment_QLydMOqkyOHG68yZFJxl", open_posts=1
+        )
+        self.assignment.add_candidate(self.admin)
+        self.poll = AssignmentPoll.objects.create(
+            assignment=self.assignment,
+            title="test_title_3LbUCNirKirpJhRHRxzW",
+            pollmethod=AssignmentPoll.POLLMETHOD_YNA,
+            type=BasePoll.TYPE_NAMED,
+            state=AssignmentPoll.STATE_FINISHED,
+        )
+        self.poll.groups.add(GROUP_ADMIN_PK)
+        self.poll.create_options()
+
+        self.option = self.poll.options.get()
+        self.user1, _ = self.create_user()
+        self.vote1 = AssignmentVote.objects.create(
+            user=self.user1, option=self.option, value="Y", weight=Decimal(1)
+        )
+        self.poll.voted.add(self.user1)
+        self.user2, _ = self.create_user()
+        self.vote2 = AssignmentVote.objects.create(
+            user=self.user2, option=self.option, value="N", weight=Decimal(1)
+        )
+        self.poll.voted.add(self.user2)
+
+    def test_pseudoanonymize_poll(self):
+        response = self.client.post(
+            reverse("assignmentpoll-pseudoanonymize", args=[self.poll.pk])
+        )
+        self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
+        poll = AssignmentPoll.objects.get()
+        self.assertEqual(poll.get_votes().count(), 2)
+        self.assertEqual(poll.amount_users_voted(), 2)
+        self.assertEqual(poll.votesvalid, Decimal("2"))
+        self.assertEqual(poll.votesinvalid, Decimal("0"))
+        self.assertEqual(poll.votescast, Decimal("2"))
+        option = poll.options.get()
+        self.assertEqual(option.yes, Decimal("1"))
+        self.assertEqual(option.no, Decimal("1"))
+        self.assertEqual(option.abstain, Decimal("0"))
+        self.assertTrue(self.user1 in poll.voted.all())
+        self.assertTrue(self.user2 in poll.voted.all())
+        for vote in poll.get_votes().all():
+            self.assertTrue(vote.user is None)
+
+    def test_pseudoanonymize_wrong_state(self):
+        self.poll.state = AssignmentPoll.STATE_CREATED
+        self.poll.save()
+        response = self.client.post(
+            reverse("assignmentpoll-pseudoanonymize", args=[self.poll.pk])
+        )
+        self.assertHttpStatusVerbose(response, status.HTTP_400_BAD_REQUEST)
+        poll = AssignmentPoll.objects.get()
+        self.assertTrue(poll.get_votes().filter(user=self.user1).exists())
+        self.assertTrue(poll.get_votes().filter(user=self.user2).exists())
+
+    def test_pseudoanonymize_wrong_type(self):
+        self.poll.type = AssignmentPoll.TYPE_ANALOG
+        self.poll.save()
+        response = self.client.post(
+            reverse("assignmentpoll-pseudoanonymize", args=[self.poll.pk])
+        )
+        self.assertHttpStatusVerbose(response, status.HTTP_400_BAD_REQUEST)
+        poll = AssignmentPoll.objects.get()
+        self.assertTrue(poll.get_votes().filter(user=self.user1).exists())
+        self.assertTrue(poll.get_votes().filter(user=self.user2).exists())
