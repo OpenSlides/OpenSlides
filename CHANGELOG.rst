@@ -4,9 +4,14 @@
 
 https://openslides.com
 
+Version 3.2 (unreleased)
+========================
+`Milestone <https://github.com/OpenSlides/OpenSlides/milestones/3.2>`_
+
+
 Version 3.1 (2019-12-13)
 ========================
-`Milestone <https://github.com/OpenSlides/OpenSlides/milestones/3.0>`_
+`Milestone <https://github.com/OpenSlides/OpenSlides/milestones/3.1>`_
 
 General:
  - Improved loading time of OpenSlides [#5061, 5087, #5110, #5146 - Breaks IE11].
