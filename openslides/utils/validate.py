@@ -1,11 +1,11 @@
-from typing import Any
+from typing import Any, List
 
 import bleach
 
 from .rest_api import ValidationError
 
 
-allowed_tags = [
+allowed_tags_strict = [
     "a",
     "img",  # links and images
     "br",
@@ -37,14 +37,18 @@ allowed_tags = [
     "th",
     "tr",
     "td",  # tables
+    "div",
 ]
-allowed_attributes = {
-    "*": ["class", "style"],
-    "img": ["alt", "src", "title"],
-    "a": ["href", "title"],
-    "th": ["scope"],
-    "ol": ["start"],
-}
+allowed_tags_permissive = allowed_tags_strict + [
+    "video",
+]
+
+
+def allow_all(tag: str, name: str, value: str) -> bool:
+    return True
+
+
+allowed_attributes = allow_all
 allowed_styles = [
     "color",
     "background-color",
@@ -52,16 +56,40 @@ allowed_styles = [
     "width",
     "text-align",
     "float",
-    "padding",
     "text-decoration",
+    "margin",
+    "padding",
+    "line-height",
+    "max-width",
+    "min-width",
+    "max-height",
+    "min-height",
+    "overflow",
+    "word-break",
+    "word-wrap",
 ]
 
 
-def validate_html(html: str) -> str:
+def validate_html_strict(html: str) -> str:
     """
     This method takes a string and escapes all non-whitelisted html entries.
     Every field of a model that is loaded trusted in the DOM should be validated.
     During copy and paste from Word maybe some tabs are spread over the html. Remove them.
+    """
+    return base_validate_html(html, allowed_tags_strict)
+
+
+def validate_html_permissive(html: str) -> str:
+    """
+    See validate_html_strict, but allows some more tags, like iframes and videos.
+    Do not use on validation for normal users, only for admins!
+    """
+    return base_validate_html(html, allowed_tags_permissive)
+
+
+def base_validate_html(html: str, allowed_tags: List[str]) -> str:
+    """
+    For internal use only.
     """
     html = html.replace("\t", "")
     return bleach.clean(
@@ -72,7 +100,7 @@ def validate_html(html: str) -> str:
 def validate_json(json: Any, max_depth: int) -> Any:
     """
     Traverses through the JSON structure (dicts and lists) and runs
-    validate_html on every found string.
+    validate_html_strict on every found string.
 
     Give max-depth to protect against stack-overflows. This should be the
     maximum nested depth of the object expected.
@@ -86,6 +114,6 @@ def validate_json(json: Any, max_depth: int) -> Any:
     if isinstance(json, list):
         return [validate_json(item, max_depth - 1) for item in json]
     if isinstance(json, str):
-        return validate_html(json)
+        return validate_html_strict(json)
 
     return json

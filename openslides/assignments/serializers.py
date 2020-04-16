@@ -17,7 +17,7 @@ from openslides.utils.rest_api import (
 
 from ..utils.auth import has_perm
 from ..utils.autoupdate import inform_changed_data
-from ..utils.validate import validate_html
+from ..utils.validate import validate_html_strict
 from .models import (
     Assignment,
     AssignmentOption,
@@ -177,7 +177,7 @@ class AssignmentSerializer(ModelSerializer):
 
     def validate(self, data):
         if "description" in data:
-            data["description"] = validate_html(data["description"])
+            data["description"] = validate_html_strict(data["description"])
         return data
 
     def create(self, validated_data):
