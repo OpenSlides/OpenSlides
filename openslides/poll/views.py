@@ -156,6 +156,7 @@ class BasePollViewSet(ModelViewSet):
 
         poll.state = BasePoll.STATE_PUBLISHED
         poll.save()
+        inform_changed_data(vote.user for vote in poll.get_votes().all() if vote.user)
         inform_changed_data(poll.get_votes())
         inform_changed_data(poll.get_options())
         return Response()
