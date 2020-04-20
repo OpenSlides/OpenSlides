@@ -98,7 +98,7 @@
             class="checkbox-ripple-padding"
             (change)="setPresent(user)"
             [checked]="user.is_present"
-            [disabled]="isMultiSelect || !this.operator.hasPerms('users.can_manage')"
+            [disabled]="isPresentToggleDisabled(user)"
         >
             <span>{{ 'Present' | translate }}</span>
         </mat-checkbox>
