@@ -428,10 +428,10 @@ export class UserListComponent extends BaseListViewComponent<ViewUser> implement
     public setPresent(viewUser: ViewUser): void {
         viewUser.user.is_present = !viewUser.user.is_present;
 
-        if (this.operator.viewUser === viewUser) {
-            this.operator.setPresence(viewUser.user.is_present).catch(this.raiseError);
-        } else {
+        if (this.operator.hasPerms('users.can_manage')) {
             this.repo.update(viewUser.user, viewUser).catch(this.raiseError);
+        } else if (this.allowSelfSetPresent && this.operator.viewUser === viewUser) {
+            this.operator.setPresence(viewUser.user.is_present).catch(this.raiseError);
         }
     }
 }
