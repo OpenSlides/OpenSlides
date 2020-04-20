@@ -134,6 +134,10 @@ export class UserListComponent extends BaseListViewComponent<ViewUser> implement
      */
     public filterProps = ['full_name', 'groups', 'structure_level', 'number'];
 
+    private selfPresentConfStr = 'users_allow_self_set_present';
+
+    private allowSelfSetPresent: boolean;
+
     /**
      * The usual constructor for components
      * @param titleService Serivce for setting the title
@@ -176,6 +180,7 @@ export class UserListComponent extends BaseListViewComponent<ViewUser> implement
         // enable multiSelect for this listView
         this.canMultiSelect = true;
         config.get<boolean>('users_enable_presence_view').subscribe(state => (this._presenceViewConfigured = state));
+        config.get<boolean>(this.selfPresentConfStr).subscribe(allowed => (this.allowSelfSetPresent = allowed));
     }
 
     /**
@@ -199,6 +204,16 @@ export class UserListComponent extends BaseListViewComponent<ViewUser> implement
      */
     public onPlusButton(): void {
         this.router.navigate(['./new'], { relativeTo: this.route });
+    }
+
+    public isPresentToggleDisabled(user: ViewUser): boolean {
+        if (this.isMultiSelect) {
+            return true;
+        } else if (this.allowSelfSetPresent && this.operator.viewUser === user) {
+            return false;
+        } else {
+            return !this.operator.hasPerms('users.can_manage');
+        }
     }
 
     /**
@@ -412,6 +427,11 @@ export class UserListComponent extends BaseListViewComponent<ViewUser> implement
      */
     public setPresent(viewUser: ViewUser): void {
         viewUser.user.is_present = !viewUser.user.is_present;
-        this.repo.update(viewUser.user, viewUser).catch(this.raiseError);
+
+        if (this.operator.viewUser === viewUser) {
+            this.operator.setPresence(viewUser.user.is_present).catch(this.raiseError);
+        } else {
+            this.repo.update(viewUser.user, viewUser).catch(this.raiseError);
+        }
     }
 }
