@@ -17,7 +17,7 @@
 
 <os-list-view-table
     [listObservableProvider]="repo"
-    [vScrollFixed]="64"
+    [vScrollFixed]="76"
     [filterService]="filterService"
     [columns]="tableColumnDefinition"
     [multiSelect]="isMultiSelect"
@@ -40,6 +40,11 @@
                 <div *ngIf="showSubtitle" class="subtitle ellipsis-overflow">
                     {{ item.getSubtitle() }}
                 </div>
+                <div *ngIf="item.comment" class="subtitle ellipsis-overflow">
+                    <os-icon-container size="small" icon="comment" [noWrap]="true">
+                        {{ item.comment }}
+                    </os-icon-container>
+                </div>
             </os-icon-container>
         </div>
     </div>
@@ -55,9 +60,6 @@
                     {{ durationService.durationToString(item.duration, 'h') }}
                 </os-icon-container>
             </div>
-        </div>
-        <div *ngIf="item.comment" class="align-right">
-            <os-icon-container [matTooltip]="item.comment" icon="comment"></os-icon-container>
         </div>
     </div>
 
