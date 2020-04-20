@@ -1,4 +1,9 @@
-<mat-select [formControl]="contentForm" [multiple]="multiple" [panelClass]="{ 'os-search-value-selector': multiple }" [errorStateMatcher]="errorStateMatcher">
+<mat-select
+    [formControl]="contentForm"
+    [multiple]="multiple"
+    [panelClass]="{ 'os-search-value-selector': multiple }"
+    [errorStateMatcher]="errorStateMatcher"
+>
     <ngx-mat-select-search [formControl]="searchValue"></ngx-mat-select-search>
     <ng-container *ngIf="multiple && showChips">
         <div #chipPlaceholder>
@@ -17,6 +22,11 @@
             </div>
             <div class="os-search-value-selector-chip-placeholder"></div>
         </div>
+    </ng-container>
+    <ng-container *ngIf="showNotFoundButton && !getFilteredItems().length">
+        <button class="os-not-found-button" mat-button (click)="onNotFoundClick()">
+            <ng-content select="[notFoundDescription]"></ng-content>
+        </button>
     </ng-container>
     <ng-container *ngIf="!multiple && includeNone">
         <mat-option>

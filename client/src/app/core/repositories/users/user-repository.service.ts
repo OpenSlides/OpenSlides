@@ -389,7 +389,7 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User, UserTi
      * @param schema optional hint on how to handle the strings.
      * @returns A User object (note: is only a local object, not uploaded to the server)
      */
-    public parseUserString(inputUser: string, schema?: StringNamingSchema): User {
+    public parseUserString(inputUser: string, schema: StringNamingSchema = 'firstSpaceLast'): User {
         const newUser: Partial<User> = {};
         if (schema === 'lastCommaFirst') {
             const commaSeparated = inputUser.split(',');
@@ -404,7 +404,7 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User, UserTi
                 default:
                     newUser.first_name = inputUser;
             }
-        } else if (!schema || schema === 'firstSpaceLast') {
+        } else if (schema === 'firstSpaceLast') {
             const splitUser = inputUser.split(' ');
             switch (splitUser.length) {
                 case 1:

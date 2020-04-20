@@ -471,6 +471,16 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
     }
 
     /**
+     * Imports a new user by the given username.
+     *
+     * @param username The name of the new user.
+     */
+    public onCreateUser(username: string): void {
+        this.userRepository.createFromString(username).then(result => {
+            this.addNewSpeaker(result.id);
+        });
+    }
+    /**
      * Triggers an update of the filter for the list of available potential speakers
      * (triggered on an update of users or config)
      */
