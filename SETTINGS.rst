@@ -75,7 +75,7 @@ We recommend to enable all OpenSlides related logging with level `INFO` per
 default::
 
     LOGGING = {
-        'formatters':
+       'formatters': {
            'lessnoise': {
                'format': '[{levelname}] {name} {message}',
                'style': '{',
