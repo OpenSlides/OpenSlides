@@ -220,6 +220,10 @@ export class ListOfSpeakersRepositoryService extends BaseHasContentObjectReposit
         await this.httpService.put(restUrl, { speaker: speaker.id });
     }
 
+    public async deleteAllSpeakersOfAllListsOfSpeakers(): Promise<void> {
+        await this.httpService.post('/rest/agenda/list-of-speakers/delete_all_speakers/');
+    }
+
     /**
      * Helper function get the url to the speaker rest address
      *

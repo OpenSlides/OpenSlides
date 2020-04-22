@@ -296,6 +296,7 @@ class ListOfSpeakersViewSet(
             "speak",
             "sort_speakers",
             "readd_last_speaker",
+            "delete_all_speakers",
         ):
             result = has_perm(
                 self.request.user, "agenda.can_see_list_of_speakers"
@@ -553,4 +554,10 @@ class ListOfSpeakersViewSet(
         last_speaker.weight = new_weight
         last_speaker.save()
 
+        return Response()
+
+    @list_route(methods=["post"])
+    def delete_all_speakers(self, request):
+        Speaker.objects.all().delete()
+        inform_changed_data(ListOfSpeakers.objects.all())
         return Response()
