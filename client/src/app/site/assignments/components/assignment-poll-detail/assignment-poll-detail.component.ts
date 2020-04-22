@@ -10,6 +10,7 @@ import { OperatorService } from 'app/core/core-services/operator.service';
 import { AssignmentPollRepositoryService } from 'app/core/repositories/assignments/assignment-poll-repository.service';
 import { AssignmentVoteRepositoryService } from 'app/core/repositories/assignments/assignment-vote-repository.service';
 import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
+import { ConfigService } from 'app/core/ui-services/config.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { VoteValue } from 'app/shared/models/poll/base-vote';
 import { BasePollDetailComponent } from 'app/site/polls/components/base-poll-detail.component';
@@ -32,6 +33,8 @@ export class AssignmentPollDetailComponent extends BasePollDetailComponent<ViewA
 
     public candidatesLabels: string[] = [];
 
+    public isVoteWeightActive: boolean;
+
     public constructor(
         title: Title,
         translate: TranslateService,
@@ -41,12 +44,16 @@ export class AssignmentPollDetailComponent extends BasePollDetailComponent<ViewA
         groupRepo: GroupRepositoryService,
         prompt: PromptService,
         pollDialog: AssignmentPollDialogService,
+        configService: ConfigService,
         protected pollService: AssignmentPollService,
         votesRepo: AssignmentVoteRepositoryService,
         private operator: OperatorService,
         private router: Router
     ) {
         super(title, translate, matSnackbar, repo, route, groupRepo, prompt, pollDialog, pollService, votesRepo);
+        configService
+            .get<boolean>('users_activate_vote_weight')
+            .subscribe(active => (this.isVoteWeightActive = active));
     }
 
     protected createVotesData(): void {

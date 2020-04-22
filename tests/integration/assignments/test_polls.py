@@ -15,6 +15,7 @@ from openslides.assignments.models import (
     AssignmentPoll,
     AssignmentVote,
 )
+from openslides.core.config import config
 from openslides.poll.models import BasePoll
 from openslides.utils.auth import get_group_model
 from openslides.utils.autoupdate import inform_changed_data
@@ -982,6 +983,7 @@ class VoteAssignmentPollNamedYNA(VoteAssignmentPollBaseTestClass):
         self.assertEqual(poll.votesinvalid, Decimal("0"))
         self.assertEqual(poll.votescast, Decimal("1"))
         self.assertEqual(poll.state, AssignmentPoll.STATE_STARTED)
+        self.assertEqual(poll.amount_users_voted_with_individual_weight(), Decimal("1"))
         option1 = poll.options.get(pk=1)
         option2 = poll.options.get(pk=2)
         option3 = poll.options.get(pk=3)
@@ -994,6 +996,43 @@ class VoteAssignmentPollNamedYNA(VoteAssignmentPollBaseTestClass):
         self.assertEqual(option3.yes, Decimal("0"))
         self.assertEqual(option3.no, Decimal("0"))
         self.assertEqual(option3.abstain, Decimal("1"))
+
+    def test_vote_with_voteweight(self):
+        config["users_activate_vote_weight"] = True
+        self.admin.vote_weight = weight = Decimal("4.2")
+        self.admin.save()
+        self.add_candidate()
+        self.add_candidate()
+        self.start_poll()
+        response = self.client.post(
+            reverse("assignmentpoll-vote", args=[self.poll.pk]),
+            {"1": "Y", "2": "N", "3": "A"},
+        )
+        self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
+        self.assertEqual(AssignmentVote.objects.count(), 3)
+        poll = AssignmentPoll.objects.get()
+        self.assertEqual(poll.votesvalid, weight)
+        self.assertEqual(poll.votesinvalid, Decimal("0"))
+        self.assertEqual(poll.votescast, weight)
+        self.assertEqual(poll.state, AssignmentPoll.STATE_STARTED)
+        self.assertEqual(poll.amount_users_voted_with_individual_weight(), weight)
+        option1 = poll.options.get(pk=1)
+        option2 = poll.options.get(pk=2)
+        option3 = poll.options.get(pk=3)
+        self.assertEqual(option1.yes, weight)
+        self.assertEqual(option1.no, Decimal("0"))
+        self.assertEqual(option1.abstain, Decimal("0"))
+        self.assertEqual(option2.yes, Decimal("0"))
+        self.assertEqual(option2.no, weight)
+        self.assertEqual(option2.abstain, Decimal("0"))
+        self.assertEqual(option3.yes, Decimal("0"))
+        self.assertEqual(option3.no, Decimal("0"))
+        self.assertEqual(option3.abstain, weight)
+
+    def test_vote_without_voteweight(self):
+        self.admin.vote_weight = Decimal("4.2")
+        self.admin.save()
+        self.test_vote()
 
     def test_change_vote(self):
         self.start_poll()
@@ -2233,7 +2272,7 @@ class PseudoanonymizeAssignmentPoll(TestCase):
         self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
         poll = AssignmentPoll.objects.get()
         self.assertEqual(poll.get_votes().count(), 2)
-        self.assertEqual(poll.amount_users_voted(), 2)
+        self.assertEqual(poll.amount_users_voted_with_individual_weight(), 2)
         self.assertEqual(poll.votesvalid, Decimal("2"))
         self.assertEqual(poll.votesinvalid, Decimal("0"))
         self.assertEqual(poll.votescast, Decimal("2"))

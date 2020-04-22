@@ -33,7 +33,8 @@ export class UserImportService extends BaseImportService<User> {
         'default_password',
         'email',
         'username',
-        'gender'
+        'gender',
+        'vote_weight'
     ];
 
     /**
@@ -116,6 +117,13 @@ export class UserImportService extends BaseImportService<User> {
                     break;
                 case 'number':
                     newViewUser.number = line[idx];
+                    break;
+                case 'vote_weight':
+                    if (!line[idx]) {
+                        newViewUser[this.expectedHeader[idx]] = 1;
+                    } else {
+                        newViewUser[this.expectedHeader[idx]] = line[idx];
+                    }
                     break;
                 default:
                     newViewUser[this.expectedHeader[idx]] = line[idx];

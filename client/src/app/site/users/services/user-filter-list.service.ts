@@ -85,6 +85,14 @@ export class UserFilterListService extends BaseFilterListService<ViewUser> {
                     { condition: true, label: this.translate.instant('Got an email') },
                     { condition: false, label: this.translate.instant("Didn't get an email") }
                 ]
+            },
+            {
+                property: 'isVoteWeightOne',
+                label: this.translate.instant('Vote Weight'),
+                options: [
+                    { condition: false, label: this.translate.instant('Has changed vote weight') },
+                    { condition: true, label: this.translate.instant('Has unchanged vote weight') }
+                ]
             }
         ];
         return staticFilterOptions.concat(this.userGroupFilterOptions);

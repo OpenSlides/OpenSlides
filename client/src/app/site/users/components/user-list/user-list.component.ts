@@ -19,6 +19,7 @@ import { PromptService } from 'app/core/ui-services/prompt.service';
 import { genders } from 'app/shared/models/users/user';
 import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
 import { BaseListViewComponent } from 'app/site/base/base-list-view';
+import { PollService } from 'app/site/polls/services/poll.service';
 import { UserFilterListService } from '../../services/user-filter-list.service';
 import { UserPdfExportService } from '../../services/user-pdf-export.service';
 import { UserSortListService } from '../../services/user-sort-list.service';
@@ -98,6 +99,8 @@ export class UserListComponent extends BaseListViewComponent<ViewUser> implement
         return this._presenceViewConfigured && this.operator.hasPerms('users.can_manage');
     }
 
+    private isVoteWeightActive: boolean;
+
     /**
      * Helper to check for main button permissions
      *
@@ -105,6 +108,10 @@ export class UserListComponent extends BaseListViewComponent<ViewUser> implement
      */
     public get canAddUser(): boolean {
         return this.operator.hasPerms('users.can_manage');
+    }
+
+    public get showVoteWeight(): boolean {
+        return this.pollService.isElectronicVotingEnabled && this.isVoteWeightActive;
     }
 
     /**
@@ -173,13 +180,15 @@ export class UserListComponent extends BaseListViewComponent<ViewUser> implement
         public sortService: UserSortListService,
         config: ConfigService,
         private userPdf: UserPdfExportService,
-        private dialog: MatDialog
+        private dialog: MatDialog,
+        private pollService: PollService
     ) {
         super(titleService, translate, matSnackBar, storage);
 
         // enable multiSelect for this listView
         this.canMultiSelect = true;
         config.get<boolean>('users_enable_presence_view').subscribe(state => (this._presenceViewConfigured = state));
+        config.get<boolean>('users_activate_vote_weight').subscribe(active => (this.isVoteWeightActive = active));
         config.get<boolean>(this.selfPresentConfStr).subscribe(allowed => (this.allowSelfSetPresent = allowed));
     }
 

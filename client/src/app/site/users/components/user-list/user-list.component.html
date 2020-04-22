@@ -30,18 +30,26 @@
     (dataSourceChange)="onDataSourceChange($event)"
 >
     <!-- Name column -->
-    <div *pblNgridCellDef="'short_name'; value as name; row as user; rowContext as rowContext" class="cell-slot fill">
+    <div *pblNgridCellDef="'short_name'; row as user; rowContext as rowContext" class="cell-slot fill">
         <a class="detail-link" [routerLink]="user.id" *ngIf="!isMultiSelect"></a>
         <div class="nameCell">
-            <span>{{ name }}</span>
-        </div>
-        <div class="icon-group">
-            <mat-icon matTooltip="{{ 'Is committee' | translate }}" *ngIf="user.is_committee">account_balance</mat-icon>
-            <mat-icon
-                matTooltip="{{ 'Inactive' | translate }}"
-                *ngIf="!user.is_active && this.operator.hasPerms('users.see_extra')"
-                >block</mat-icon
-            >
+            <div>
+                <div>{{ user.short_name }}</div>
+                <div class="user-subtitle" *ngIf="showVoteWeight">
+                    {{ 'Vote weight' | translate }}: {{ user.vote_weight }}
+                </div>
+            </div>
+            <div class="icon-group">
+                <mat-icon matTooltip="{{ 'Is committee' | translate }}" *ngIf="user.is_committee">
+                    account_balance
+                </mat-icon>
+                <mat-icon
+                    matTooltip="{{ 'Inactive' | translate }}"
+                    *ngIf="!user.is_active && this.operator.hasPerms('users.see_extra')"
+                >
+                    block
+                </mat-icon>
+            </div>
         </div>
     </div>
 

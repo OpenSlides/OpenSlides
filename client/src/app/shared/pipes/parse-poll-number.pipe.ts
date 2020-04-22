@@ -11,14 +11,13 @@ export class ParsePollNumberPipe implements PipeTransform {
     public constructor(private translate: TranslateService) {}
 
     public transform(value: number): number | string {
-        const input = Math.trunc(value);
-        switch (input) {
+        switch (value) {
             case VOTE_MAJORITY:
                 return this.translate.instant('majority');
             case VOTE_UNDOCUMENTED:
                 return this.translate.instant('undocumented');
             default:
-                return input;
+                return value;
         }
     }
 }

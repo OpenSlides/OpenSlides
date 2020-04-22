@@ -3,6 +3,7 @@ from decimal import Decimal
 from django.contrib.auth import get_user_model
 from django.db import transaction
 
+from openslides.core.config import config
 from openslides.poll.views import BaseOptionViewSet, BasePollViewSet, BaseVoteViewSet
 from openslides.utils.auth import has_perm
 from openslides.utils.autoupdate import inform_changed_data
@@ -489,14 +490,20 @@ class AssignmentPollViewSet(BasePollViewSet):
                 # skip creating votes with empty weights
                 if amount == 0:
                     continue
+                weight = Decimal(amount)
+                if config["users_activate_vote_weight"]:
+                    weight *= user.vote_weight
                 vote = AssignmentVote.objects.create(
-                    option=option, user=user, weight=Decimal(amount), value="Y"
+                    option=option, user=user, weight=weight, value="Y"
                 )
                 inform_changed_data(vote, no_delete_on_restriction=True)
         else:  # global_no or global_abstain
             option = options[0]
+            weight = (
+                user.vote_weight if config["users_activate_vote_weight"] else Decimal(1)
+            )
             vote = AssignmentVote.objects.create(
-                option=option, user=user, weight=Decimal(1), value=data
+                option=option, user=user, weight=weight, value=data
             )
             inform_changed_data(vote, no_delete_on_restriction=True)
             inform_changed_data(option)
@@ -512,13 +519,15 @@ class AssignmentPollViewSet(BasePollViewSet):
         vote_user is the one put into the vote
         """
         options = poll.get_options()
+        weight = (
+            check_user.vote_weight
+            if config["users_activate_vote_weight"]
+            else Decimal(1)
+        )
         for option_id, result in data.items():
             option = options.get(pk=option_id)
             vote = AssignmentVote.objects.create(
-                option=option,
-                user=vote_user,
-                value=result,
-                weight=check_user.vote_weight,
+                option=option, user=vote_user, value=result, weight=weight,
             )
             inform_changed_data(vote, no_delete_on_restriction=True)
             inform_changed_data(option, no_delete_on_restriction=True)

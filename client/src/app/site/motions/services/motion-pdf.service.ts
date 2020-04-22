@@ -381,7 +381,12 @@ export class MotionPdfService {
                         column1.push(`${votingOption}:`);
                         if (value.showPercent) {
                             const resultInPercent = this.motionPollService.getVoteValueInPercent(value.amount, poll);
-                            column2.push(`(${resultInPercent})`);
+                            // hard check for "null" since 0 is a valid number in this case
+                            if (resultInPercent !== null) {
+                                column2.push(`(${resultInPercent})`);
+                            } else {
+                                column2.push('');
+                            }
                         } else {
                             column2.push('');
                         }

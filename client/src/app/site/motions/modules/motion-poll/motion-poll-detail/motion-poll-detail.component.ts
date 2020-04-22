@@ -10,6 +10,7 @@ import { OperatorService } from 'app/core/core-services/operator.service';
 import { MotionPollRepositoryService } from 'app/core/repositories/motions/motion-poll-repository.service';
 import { MotionVoteRepositoryService } from 'app/core/repositories/motions/motion-vote-repository.service';
 import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
+import { ConfigService } from 'app/core/ui-services/config.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ViewMotion } from 'app/site/motions/models/view-motion';
 import { ViewMotionPoll } from 'app/site/motions/models/view-motion-poll';
@@ -41,6 +42,8 @@ export class MotionPollDetailComponent extends BasePollDetailComponent<ViewMotio
 
     public filterProps = ['user.getFullName', 'valueVerbose'];
 
+    public isVoteWeightActive: boolean;
+
     public constructor(
         title: Title,
         translate: TranslateService,
@@ -52,10 +55,14 @@ export class MotionPollDetailComponent extends BasePollDetailComponent<ViewMotio
         pollDialog: MotionPollDialogService,
         pollService: MotionPollService,
         votesRepo: MotionVoteRepositoryService,
+        configService: ConfigService,
         private operator: OperatorService,
         private router: Router
     ) {
         super(title, translate, matSnackbar, repo, route, groupRepo, prompt, pollDialog, pollService, votesRepo);
+        configService
+            .get<boolean>('users_activate_vote_weight')
+            .subscribe(active => (this.isVoteWeightActive = active));
     }
 
     protected createVotesData(): void {

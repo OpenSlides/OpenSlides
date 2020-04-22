@@ -1,3 +1,4 @@
+from decimal import Decimal
 from typing import List, Set
 
 import jsonschema
@@ -1227,16 +1228,20 @@ class MotionPollViewSet(BasePollViewSet):
         VotedModel.objects.create(motionpoll=poll, user=user)
 
     def handle_named_vote(self, data, poll, user):
-        self.handle_named_and_pseudoanonymous_vote(data, user.vote_weight, user, poll)
+        self.handle_named_and_pseudoanonymous_vote(data, user, user, poll)
 
     def handle_pseudoanonymous_vote(self, data, poll, user):
-        self.handle_named_and_pseudoanonymous_vote(data, user.vote_weight, None, poll)
+        self.handle_named_and_pseudoanonymous_vote(data, user, None, poll)
 
-    def handle_named_and_pseudoanonymous_vote(self, data, weight, user, poll):
+    def handle_named_and_pseudoanonymous_vote(self, data, weight_user, vote_user, poll):
         option = poll.options.get()
-        vote = MotionVote.objects.create(user=user, option=option)
+        vote = MotionVote.objects.create(user=vote_user, option=option)
         vote.value = data
-        vote.weight = weight
+        vote.weight = (
+            weight_user.vote_weight
+            if config["users_activate_vote_weight"]
+            else Decimal(1)
+        )
         vote.save(no_delete_on_restriction=True)
         inform_changed_data(option)
 

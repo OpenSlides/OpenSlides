@@ -44,6 +44,15 @@ def get_config_variables():
         group="Participants",
     )
 
+    yield ConfigVariable(
+        name="users_activate_vote_weight",
+        default_value=False,
+        input_type="boolean",
+        label="Activate vote weight",
+        weight=513,
+        group="Participants",
+    )
+
     # PDF
 
     yield ConfigVariable(
