@@ -111,7 +111,13 @@
 
         <div>
             <!-- Strucuture Level -->
-            <mat-form-field class="form70 distance">
+            <mat-form-field
+                class="distance"
+                [ngClass]="{
+                    form37: showVoteWeight,
+                    form70: !showVoteWeight
+                }"
+            >
                 <input
                     type="text"
                     matInput
@@ -119,13 +125,31 @@
                     formControlName="structure_level"
                 />
             </mat-form-field>
+
             <!-- Participant Number -->
-            <mat-form-field class="form25 force-min-with">
+            <mat-form-field
+                [ngClass]="{
+                    distance: showVoteWeight,
+                    form37: showVoteWeight,
+                    form25: !showVoteWeight
+                }"
+            >
                 <input
                     type="text"
                     matInput
                     placeholder="{{ 'Participant number' | translate }}"
                     formControlName="number"
+                />
+            </mat-form-field>
+
+            <!-- Vote weight -->
+            <mat-form-field class="form16 force-min-with" *ngIf="showVoteWeight">
+                <!-- TODO Input type should be number with limited decimal spaces -->
+                <input
+                    type="number"
+                    matInput
+                    placeholder="{{ 'Vote weight' | translate }}"
+                    formControlName="vote_weight"
                 />
             </mat-form-field>
         </div>
@@ -275,6 +299,12 @@
         </div>
 
         <div *ngIf="isAllowed('manage')">
+            <!-- Vote weight -->
+            <div *ngIf="user.vote_weight && showVoteWeight">
+                <h4>{{ 'Vote weight' | translate }}</h4>
+                <span>{{ user.vote_weight }}</span>
+            </div>
+
             <!-- Initial Password -->
             <div *ngIf="user.default_password">
                 <h4>{{ 'Initial password' | translate }}</h4>

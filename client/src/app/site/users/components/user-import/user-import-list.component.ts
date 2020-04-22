@@ -21,6 +21,24 @@ import { UserImportService } from '../../services/user-import.service';
 export class UserImportListComponent extends BaseImportListComponentDirective<User> {
     public textAreaForm: FormGroup;
 
+    public headerRow = [
+        'Title',
+        'Given name',
+        'Surname',
+        'Structure level',
+        'Participant number',
+        'Groups',
+        'Comment',
+        'Is active',
+        'Is present',
+        'Is a committee',
+        'Initial password',
+        'Email',
+        'Username',
+        'Gender',
+        'Vote weight'
+    ];
+
     /**
      * Constructor for list view bases
      *
@@ -47,22 +65,6 @@ export class UserImportListComponent extends BaseImportListComponentDirective<Us
      * Triggers an example csv download
      */
     public downloadCsvExample(): void {
-        const headerRow = [
-            'Title',
-            'Given name',
-            'Surname',
-            'Structure level',
-            'Participant number',
-            'Groups',
-            'Comment',
-            'Is active',
-            'Is present',
-            'Is a committee',
-            'Initial password',
-            'Email',
-            'Username',
-            'Gender'
-        ];
         const rows = [
             [
                 'Dr.',
@@ -78,7 +80,8 @@ export class UserImportListComponent extends BaseImportListComponentDirective<Us
                 'initialPassword',
                 null,
                 'mmustermann',
-                'm'
+                'm',
+                1.0
             ],
             [
                 null,
@@ -94,12 +97,13 @@ export class UserImportListComponent extends BaseImportListComponentDirective<Us
                 null,
                 'john.doe@email.com',
                 'jdoe',
-                'diverse'
+                'diverse',
+                2.0
             ],
-            [null, 'Julia', 'Bloggs', 'London', null, null, null, null, null, null, null, null, 'jbloggs', 'f'],
-            [null, null, 'Executive Board', null, null, null, null, null, null, 1, null, null, 'executive', null]
+            [null, 'Julia', 'Bloggs', 'London', null, null, null, null, null, null, null, null, 'jbloggs', 'f', 1.5],
+            [null, null, 'Executive Board', null, null, null, null, null, null, 1, null, null, 'executive', null, 2.5]
         ];
-        this.exporter.dummyCSVExport(headerRow, rows, `${this.translate.instant('participants-example')}.csv`);
+        this.exporter.dummyCSVExport(this.headerRow, rows, `${this.translate.instant('participants-example')}.csv`);
     }
 
     /**

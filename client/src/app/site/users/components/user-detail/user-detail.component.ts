@@ -11,10 +11,12 @@ import { ConstantsService } from 'app/core/core-services/constants.service';
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
+import { ConfigService } from 'app/core/ui-services/config.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { genders } from 'app/shared/models/users/user';
 import { OneOfValidator } from 'app/shared/validators/one-of-validator';
 import { BaseViewComponent } from 'app/site/base/base-view';
+import { PollService } from 'app/site/polls/services/poll.service';
 import { UserPdfExportService } from '../../services/user-pdf-export.service';
 import { ViewGroup } from '../../models/view-group';
 import { ViewUser } from '../../models/view-user';
@@ -76,6 +78,12 @@ export class UserDetailComponent extends BaseViewComponent implements OnInit {
 
     private userBackends: UserBackends | null = null;
 
+    private isVoteWeightActive: boolean;
+
+    public get showVoteWeight(): boolean {
+        return this.pollService.isElectronicVotingEnabled && this.isVoteWeightActive;
+    }
+
     /**
      * Constructor for user
      *
@@ -103,12 +111,17 @@ export class UserDetailComponent extends BaseViewComponent implements OnInit {
         private promptService: PromptService,
         private pdfService: UserPdfExportService,
         private groupRepo: GroupRepositoryService,
-        private constantsService: ConstantsService
+        private constantsService: ConstantsService,
+        private pollService: PollService,
+        configService: ConfigService
     ) {
         super(title, translate, matSnackBar);
         this.createForm();
 
         this.constantsService.get<UserBackends>('UserBackends').subscribe(backends => (this.userBackends = backends));
+        configService
+            .get<boolean>('users_activate_vote_weight')
+            .subscribe(active => (this.isVoteWeightActive = active));
 
         this.groupRepo.getViewModelListObservableWithoutDefaultGroup().subscribe(this.groups);
     }
@@ -157,6 +170,7 @@ export class UserDetailComponent extends BaseViewComponent implements OnInit {
                 gender: [''],
                 structure_level: [''],
                 number: [''],
+                vote_weight: [],
                 about_me: [''],
                 groups_id: [''],
                 is_present: [true],

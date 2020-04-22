@@ -51,20 +51,9 @@
             </span>
             <br />
             <div class="code red-warning-text">
-                <span>{{ 'Title' | translate }}</span
-                >, <span>{{ 'Given name' | translate }}</span
-                >, <span>{{ 'Surname' | translate }}</span
-                >, <span>{{ 'Structure level' | translate }}</span
-                >, <span>{{ 'Participant number' | translate }}</span
-                >, <span>{{ 'Groups' | translate }}</span
-                >, <span>{{ 'Comment' | translate }}</span
-                >, <span>{{ 'Is active' | translate }}</span
-                >, <span>{{ 'Is present' | translate }}</span
-                >, <span>{{ 'Is committee' | translate }}</span
-                >, <span>{{ 'Initial password' | translate }}</span
-                >, <span>{{ 'Email' | translate }}</span
-                >, <span>{{ 'Username' | translate }}</span
-                >, <span>{{ 'Gender' | translate }}</span>
+                <span *ngFor="let entry of headerRow; let last = last">
+                    {{ entry | translate }}<span *ngIf="!last">, </span>
+                </span>
             </div>
             <ul>
                 <li>
@@ -282,33 +271,44 @@
                     <mat-checkbox disabled [checked]="entry.newEntry.is_active"> </mat-checkbox>
                 </mat-cell>
             </ng-container>
+
             <ng-container matColumnDef="is_present">
                 <mat-header-cell *matHeaderCellDef>{{ 'Is present' | translate }}</mat-header-cell>
                 <mat-cell *matCellDef="let entry">
                     <mat-checkbox disabled [checked]="entry.newEntry.is_present"> </mat-checkbox>
                 </mat-cell>
             </ng-container>
+
             <ng-container matColumnDef="is_committee">
                 <mat-header-cell *matHeaderCellDef>{{ 'Is committee' | translate }}</mat-header-cell>
                 <mat-cell *matCellDef="let entry">
                     <mat-checkbox disabled [checked]="entry.newEntry.is_committee"> </mat-checkbox>
                 </mat-cell>
             </ng-container>
+
             <ng-container matColumnDef="default_password">
                 <mat-header-cell *matHeaderCellDef>{{ 'Initial password' | translate }}</mat-header-cell>
                 <mat-cell *matCellDef="let entry"> {{ entry.newEntry.default_password }} </mat-cell>
             </ng-container>
+
             <ng-container matColumnDef="email">
                 <mat-header-cell *matHeaderCellDef>{{ 'Email' | translate }}</mat-header-cell>
                 <mat-cell *matCellDef="let entry"> {{ entry.newEntry.email }} </mat-cell>
             </ng-container>
+
             <ng-container matColumnDef="username">
                 <mat-header-cell *matHeaderCellDef>{{ 'Username' | translate }}</mat-header-cell>
                 <mat-cell *matCellDef="let entry"> {{ entry.newEntry.username }} </mat-cell>
             </ng-container>
+
             <ng-container matColumnDef="gender">
                 <mat-header-cell *matHeaderCellDef>{{ 'Gender' | translate }}</mat-header-cell>
                 <mat-cell *matCellDef="let entry"> {{ entry.newEntry.gender }} </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="vote_weight">
+                <mat-header-cell *matHeaderCellDef>{{ 'Vote weight' | translate }}</mat-header-cell>
+                <mat-cell *matCellDef="let entry"> {{ entry.newEntry.vote_weight }} </mat-cell>
             </ng-container>
 
             <mat-header-row *matHeaderRowDef="getColumnDefinition()"></mat-header-row>

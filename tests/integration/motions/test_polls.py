@@ -763,6 +763,36 @@ class VoteMotionPollNamed(TestCase):
         self.assertEqual(option.abstain, Decimal("0"))
         vote = option.votes.get()
         self.assertEqual(vote.user, self.admin)
+        self.assertEqual(vote.weight, Decimal("1"))
+
+    def test_vote_with_voteweight(self):
+        config["users_activate_vote_weight"] = True
+        self.start_poll()
+        self.make_admin_delegate()
+        self.make_admin_present()
+        self.admin.vote_weight = weight = Decimal("3.5")
+        self.admin.save()
+        response = self.client.post(
+            reverse("motionpoll-vote", args=[self.poll.pk]), "A"
+        )
+        self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
+        poll = MotionPoll.objects.get()
+        self.assertEqual(poll.votesvalid, weight)
+        self.assertEqual(poll.votesinvalid, Decimal("0"))
+        self.assertEqual(poll.votescast, weight)
+        self.assertEqual(poll.get_votes().count(), 1)
+        self.assertEqual(poll.amount_users_voted_with_individual_weight(), weight)
+        option = poll.options.get()
+        self.assertEqual(option.yes, Decimal("0"))
+        self.assertEqual(option.no, Decimal("0"))
+        self.assertEqual(option.abstain, weight)
+        vote = option.votes.get()
+        self.assertEqual(vote.weight, weight)
+
+    def test_vote_without_voteweight(self):
+        self.admin.vote_weight = Decimal("3.5")
+        self.admin.save()
+        self.test_vote()
 
     def test_change_vote(self):
         self.start_poll()
@@ -1155,7 +1185,7 @@ class VoteMotionPollPseudoanonymous(TestCase):
         self.assertEqual(poll.votesinvalid, Decimal("0"))
         self.assertEqual(poll.votescast, Decimal("1"))
         self.assertEqual(poll.get_votes().count(), 1)
-        self.assertEqual(poll.amount_users_voted(), 1)
+        self.assertEqual(poll.amount_users_voted_with_individual_weight(), 1)
         option = poll.options.get()
         self.assertEqual(option.yes, Decimal("0"))
         self.assertEqual(option.no, Decimal("1"))
@@ -1378,7 +1408,7 @@ class PseudoanonymizeMotionPoll(TestCase):
         self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
         poll = MotionPoll.objects.get()
         self.assertEqual(poll.get_votes().count(), 2)
-        self.assertEqual(poll.amount_users_voted(), 2)
+        self.assertEqual(poll.amount_users_voted_with_individual_weight(), 2)
         self.assertEqual(poll.votesvalid, Decimal("2"))
         self.assertEqual(poll.votesinvalid, Decimal("0"))
         self.assertEqual(poll.votescast, Decimal("2"))
@@ -1446,7 +1476,7 @@ class ResetMotionPoll(TestCase):
         self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
         poll = MotionPoll.objects.get()
         self.assertEqual(poll.get_votes().count(), 0)
-        self.assertEqual(poll.amount_users_voted(), 0)
+        self.assertEqual(poll.amount_users_voted_with_individual_weight(), 0)
         self.assertEqual(poll.votesvalid, None)
         self.assertEqual(poll.votesinvalid, None)
         self.assertEqual(poll.votescast, None)

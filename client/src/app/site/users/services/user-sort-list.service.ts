@@ -31,6 +31,7 @@ export class UserSortListService extends BaseSortListService<ViewUser> {
         { property: 'is_committee', label: 'Is committee' },
         { property: 'number', label: 'Participant number' },
         { property: 'structure_level', label: 'Structure level' },
+        { property: 'vote_weight', label: 'Vote weight' },
         { property: 'comment' }
         // TODO email send?
     ];

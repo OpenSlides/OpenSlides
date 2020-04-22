@@ -37,6 +37,10 @@ export class User extends BaseDecimalModel<User> {
     public auth_type?: UserAuthType;
     public vote_weight: number;
 
+    public get isVoteWeightOne(): boolean {
+        return this.vote_weight === 1;
+    }
+
     public constructor(input?: Partial<User>) {
         super(User.COLLECTIONSTRING, input);
     }

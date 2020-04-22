@@ -5,6 +5,7 @@ from django.conf import settings
 from django.core.validators import MinValueValidator
 from django.db import models
 
+from ..core.config import config
 from ..utils.autoupdate import inform_changed_data, inform_deleted_data
 from ..utils.models import SET_NULL_AND_AUTOUPDATE
 
@@ -184,7 +185,7 @@ class BasePoll(models.Model):
         if self.type == self.TYPE_ANALOG:
             return self.db_votesvalid
         else:
-            return Decimal(self.amount_users_voted())
+            return Decimal(self.amount_users_voted_with_individual_weight())
 
     def set_votesvalid(self, value):
         if self.type != self.TYPE_ANALOG:
@@ -210,7 +211,7 @@ class BasePoll(models.Model):
         if self.type == self.TYPE_ANALOG:
             return self.db_votescast
         else:
-            return Decimal(self.amount_users_voted())
+            return Decimal(self.amount_users_voted_with_individual_weight())
 
     def set_votescast(self, value):
         if self.type != self.TYPE_ANALOG:
@@ -219,8 +220,11 @@ class BasePoll(models.Model):
 
     votescast = property(get_votescast, set_votescast)
 
-    def amount_users_voted(self):
-        return len(self.voted.all())
+    def amount_users_voted_with_individual_weight(self):
+        if config["users_activate_vote_weight"]:
+            return sum(user.vote_weight for user in self.voted.all())
+        else:
+            return len(self.voted.all())
 
     def create_options(self):
         """ Should be called after creation of this model. """
