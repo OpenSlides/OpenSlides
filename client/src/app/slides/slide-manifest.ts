@@ -3,6 +3,7 @@ import { LoadChildrenCallback } from '@angular/router';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import { ProjectorTitle } from 'app/core/core-services/projector.service';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { IdentifiableProjectorElement, ProjectorElement } from 'app/shared/models/core/projector';
 
@@ -30,7 +31,7 @@ export interface SlideDynamicConfiguration {
         element: ProjectorElement,
         translate: TranslateService,
         viewModelStore: ViewModelStoreService
-    ) => string;
+    ) => ProjectorTitle;
 }
 
 /**

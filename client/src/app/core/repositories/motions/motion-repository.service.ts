@@ -17,6 +17,7 @@ import { Motion } from 'app/shared/models/motions/motion';
 import { Submitter } from 'app/shared/models/motions/submitter';
 import { ViewUnifiedChange, ViewUnifiedChangeType } from 'app/shared/models/motions/view-unified-change';
 import { PersonalNoteContent } from 'app/shared/models/users/personal-note';
+import { AgendaListTitle } from 'app/site/base/base-view-model-with-agenda-item';
 import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
 import { ViewCategory } from 'app/site/motions/models/view-category';
 import { MotionTitleInformation, ViewMotion } from 'app/site/motions/models/view-motion';
@@ -269,46 +270,40 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
     public getAgendaListTitle = (titleInformation: MotionTitleInformation) => {
         const numberPrefix = titleInformation.agenda_item_number() ? `${titleInformation.agenda_item_number()} · ` : '';
         // Append the verbose name only, if not the special format 'Motion <identifier>' is used.
+        let title;
         if (titleInformation.identifier) {
-            return `${numberPrefix}${this.translate.instant('Motion')} ${titleInformation.identifier} · ${
+            title = `${numberPrefix}${this.translate.instant('Motion')} ${titleInformation.identifier} · ${
                 titleInformation.title
             }`;
         } else {
-            return `${numberPrefix}${titleInformation.title} (${this.getVerboseName()})`;
+            title = `${numberPrefix}${titleInformation.title} (${this.getVerboseName()})`;
         }
-    };
+        const agendaTitle: AgendaListTitle = { title };
 
-    /**
-     * @override The base function and returns the submitters as optional subtitle.
-     */
-    public getAgendaSubtitle = (motion: ViewMotion) => {
-        if (motion.submittersAsUsers && motion.submittersAsUsers.length) {
-            return `${this.translate.instant('by')} ${motion.submittersAsUsers.join(', ')}`;
-        } else {
-            return null;
+        // Subtitle.
+        // This is a bit hacky: If one has not motions.can_see, the titleinformation is nut sufficient for
+        // submitters. So try-cast titleInformation to a ViewMotion and check, if submittersAsUsers is available
+        const viewMotion: ViewMotion = titleInformation as ViewMotion;
+        if (viewMotion.submittersAsUsers && viewMotion.submittersAsUsers.length) {
+            agendaTitle.subtitle = `${this.translate.instant('by')} ${viewMotion.submittersAsUsers.join(', ')}`;
         }
-    };
-
-    /**
-     * @override The base function
-     */
-    public getAgendaListTitleWithoutItemNumber = (titleInformation: MotionTitleInformation) => {
-        if (titleInformation.identifier) {
-            return this.translate.instant('Motion') + ' ' + titleInformation.identifier;
-        } else {
-            return titleInformation.title + `(${this.getVerboseName()})`;
-        }
+        return agendaTitle;
     };
 
     public getVerboseName = (plural: boolean = false) => {
         return this.translate.instant(plural ? 'Motions' : 'Motion');
     };
 
+    public getProjectorTitle = (viewMotion: ViewMotion) => {
+        const subtitle = viewMotion.item && viewMotion.item.comment ? viewMotion.item.comment : null;
+        return { title: this.getAgendaSlideTitle(viewMotion), subtitle };
+    };
+
     protected createViewModelWithTitles(model: Motion): ViewMotion {
         const viewModel = super.createViewModelWithTitles(model);
 
         viewModel.getIdentifierOrTitle = () => this.getIdentifierOrTitle(viewModel);
-        viewModel.getProjectorTitle = () => this.getAgendaSlideTitle(viewModel);
+        viewModel.getProjectorTitle = () => this.getProjectorTitle(viewModel);
 
         return viewModel;
     }

@@ -1,3 +1,4 @@
+import { ProjectorTitle } from 'app/core/core-services/projector.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { BaseModel } from 'app/shared/models/base/base-model';
 import { BaseViewModel } from './base-view-model';
@@ -13,7 +14,7 @@ export abstract class BaseProjectableViewModel<M extends BaseModel = any> extend
     /**
      * @returns the projector title used for managing projector elements.
      */
-    public getProjectorTitle = () => {
-        return this.getTitle();
-    };
+    public getProjectorTitle(): ProjectorTitle {
+        return { title: this.getTitle() };
+    }
 }

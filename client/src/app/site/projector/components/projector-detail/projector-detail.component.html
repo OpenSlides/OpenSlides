@@ -169,8 +169,18 @@
                                     <mat-icon>videocam</mat-icon>
                                 </button>
 
+                                <!-- Slide title and subtitle -->
                                 <span class="ellipsis-overflow current-element-text">
                                     {{ getSlideTitle(element) }}
+                                    <os-icon-container
+                                        class="subtitle-nocolor"
+                                        size="small"
+                                        icon="comment"
+                                        [noWrap]="true"
+                                        *ngIf="getSlideSubtitle(element)"
+                                    >
+                                        {{ getSlideSubtitle(element) }}
+                                    </os-icon-container>
                                 </span>
 
                                 <button type="button" mat-icon-button (click)="unprojectCurrent(element)">
@@ -207,8 +217,18 @@
                                         <mat-icon>videocam</mat-icon>
                                     </button>
                                 </div>
+                                <!-- Slide title ans subtitle -->
                                 <div class="name">
-                                    <span>{{ getSlideTitle(element) }}</span>
+                                    <span class="ellipsis-overflow">{{ getSlideTitle(element) }}</span>
+                                    <os-icon-container
+                                        class="subtitle"
+                                        size="small"
+                                        icon="comment"
+                                        [noWrap]="true"
+                                        *ngIf="getSlideSubtitle(element)"
+                                    >
+                                        {{ getSlideSubtitle(element) }}
+                                    </os-icon-container>
                                 </div>
                                 <div class="button-right" *ngIf="editQueue">
                                     <div>
@@ -335,6 +355,7 @@
                         <ol>
                             <li *ngFor="let elements of projector.elements_history">
                                 {{ getSlideTitle(elements[0]) }}
+                                {{ getSlideSubtitle(elements[0]) }}
                             </li>
                         </ol>
                     </mat-expansion-panel>

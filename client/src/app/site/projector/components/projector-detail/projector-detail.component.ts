@@ -208,7 +208,11 @@ export class ProjectorDetailComponent extends BaseViewComponent implements OnIni
     }
 
     public getSlideTitle(element: ProjectorElement): string {
-        return this.projectorService.getSlideTitle(element);
+        return this.projectorService.getSlideTitle(element).title;
+    }
+
+    public getSlideSubtitle(element: ProjectorElement): string | null {
+        return this.projectorService.getSlideTitle(element).subtitle;
     }
 
     public isProjected(obj: Projectable): boolean {

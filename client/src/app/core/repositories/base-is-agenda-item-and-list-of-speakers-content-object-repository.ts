@@ -3,6 +3,7 @@ import { ViewItem } from 'app/site/agenda/models/view-item';
 import { ViewListOfSpeakers } from 'app/site/agenda/models/view-list-of-speakers';
 import { BaseProjectableViewModel } from 'app/site/base/base-projectable-view-model';
 import {
+    AgendaListTitle,
     BaseViewModelWithAgendaItem,
     TitleInformationWithAgendaItem
 } from 'app/site/base/base-view-model-with-agenda-item';
@@ -52,14 +53,11 @@ export abstract class BaseIsAgendaItemAndListOfSpeakersContentObjectRepository<
         });
     }
 
-    public getAgendaListTitle(titleInformation: T): string {
+    public getAgendaListTitle(titleInformation: T): AgendaListTitle {
         // Return the agenda title with the model's verbose name appended
         const numberPrefix = titleInformation.agenda_item_number() ? `${titleInformation.agenda_item_number()} · ` : '';
-        return numberPrefix + this.getTitle(titleInformation) + ' (' + this.getVerboseName() + ')';
-    }
-
-    public getAgendaSubtitle(viewModel: V): string | null {
-        return null;
+        const title = numberPrefix + this.getTitle(titleInformation) + ' (' + this.getVerboseName() + ')';
+        return { title };
     }
 
     public getAgendaSlideTitle(titleInformation: T): string {
@@ -68,19 +66,8 @@ export abstract class BaseIsAgendaItemAndListOfSpeakersContentObjectRepository<
         return numberPrefix + this.getTitle(titleInformation);
     }
 
-    /**
-     * Function to get the list-title without the item-number.
-     *
-     * @param titleInformation The title-information for an object.
-     *
-     * @returns {string} The title without any prefix like item-number.
-     */
-    public getAgendaListTitleWithoutItemNumber(titleInformation: T): string {
-        return this.getTitle(titleInformation) + ' (' + this.getVerboseName() + ')';
-    }
-
     public getListOfSpeakersTitle = (titleInformation: T) => {
-        return this.getAgendaListTitle(titleInformation);
+        return this.getAgendaListTitle(titleInformation).title;
     };
 
     public getListOfSpeakersSlideTitle = (titleInformation: T) => {
@@ -90,9 +77,7 @@ export abstract class BaseIsAgendaItemAndListOfSpeakersContentObjectRepository<
     protected createViewModelWithTitles(model: M): V {
         const viewModel = super.createViewModelWithTitles(model);
         viewModel.getAgendaListTitle = () => this.getAgendaListTitle(viewModel);
-        viewModel.getAgendaListTitleWithoutItemNumber = () => this.getAgendaListTitleWithoutItemNumber(viewModel);
         viewModel.getAgendaSlideTitle = () => this.getAgendaSlideTitle(viewModel);
-        viewModel.getAgendaSubtitle = () => this.getAgendaSubtitle(viewModel);
         viewModel.getListOfSpeakersTitle = () => this.getListOfSpeakersTitle(viewModel);
         viewModel.getListOfSpeakersSlideTitle = () => this.getListOfSpeakersSlideTitle(viewModel);
         return viewModel;
