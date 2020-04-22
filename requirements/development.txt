@@ -4,6 +4,6 @@ flake8
 isort
 mypy
 pytest
-pytest-django
-pytest-asyncio
+pytest-django<3.9.0
+pytest-asyncio<0.11.0
 pytest-cov
