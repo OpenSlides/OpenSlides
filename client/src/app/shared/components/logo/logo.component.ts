@@ -62,7 +62,8 @@ export class LogoComponent implements OnInit, OnDestroy {
 
     /**
      * Get the image based on custom images and footer.
-     * If a custom image is set and this component is displayed as footer or there is no custom image, then the OpenSlides logo is used.
+     * If a custom image is set and this component is displayed as footer or there is no custom image, then the
+     * OpenSlides logo is used.
      *
      * @returns path to image
      */

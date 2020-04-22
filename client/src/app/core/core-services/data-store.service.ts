@@ -160,7 +160,8 @@ interface JsonStorage {
 }
 
 /**
- * TODO: Avoid circular dependencies between `DataStoreUpdateManagerService` and `DataStoreService` and split them into two files
+ * TODO: Avoid circular dependencies between `DataStoreUpdateManagerService` and
+ * `DataStoreService` and split them into two files
  */
 @Injectable({
     providedIn: 'root'

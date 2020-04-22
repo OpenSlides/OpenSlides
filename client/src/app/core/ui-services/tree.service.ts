@@ -354,7 +354,8 @@ export class TreeService {
      *
      * @param item The current item from which the flat node will be created.
      * @param level The level the flat node will be.
-     * @param additionalTag Optional: A key of the items. If this parameter is set, the nodes will have a tag for filtering them.
+     * @param additionalTag Optional: A key of the items. If this parameter is set,
+     *                      the nodes will have a tag for filtering them.
      *
      * @returns An array containing the parent node with all its children.
      */

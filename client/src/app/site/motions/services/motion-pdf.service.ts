@@ -78,7 +78,8 @@ export class MotionPdfService {
      * @param crMode determine the used change Recommendation mode
      * @param contentToExport determine which content is to export. If left out, everything will be exported
      * @param infoToExport determine which metaInfo to export. If left out, everything will be exported.
-     * @param commentsToExport comments to chose for export. If 'allcomments' is set in infoToExport, this selection will be ignored and all comments exported
+     * @param commentsToExport comments to chose for export. If 'allcomments' is set in infoToExport,
+     *                         this selection will be ignored and all comments exported
      * @returns doc def for the motion
      */
     public motionToDocDef(motion: ViewMotion, exportInfo?: MotionExportInfo): object {

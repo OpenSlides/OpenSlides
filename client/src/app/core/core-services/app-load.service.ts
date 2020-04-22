@@ -99,8 +99,8 @@ export class AppLoadService {
     private isSearchableModelEntry(entry: ModelEntry | SearchableModelEntry): entry is SearchableModelEntry {
         if ((<SearchableModelEntry>entry).searchOrder !== undefined) {
             // We need to double check, because Typescipt cannot check contructors. If typescript could differentiate
-            // between  (ModelConstructor<BaseModel>) and (new (...args: any[]) => (BaseModel & Searchable)), we would not have
-            // to check if the result of the contructor (the model instance) is really a searchable.
+            // between  (ModelConstructor<BaseModel>) and (new (...args: any[]) => (BaseModel & Searchable)),
+            // we would not have to check if the result of the contructor (the model instance) is really a searchable.
             if (!isSearchable(new entry.viewModel())) {
                 throw Error(
                     `Wrong configuration for ${entry.model.COLLECTIONSTRING}: you gave a searchOrder, but the model is not searchable.`

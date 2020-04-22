@@ -206,7 +206,8 @@ export class MotionMultiselectService {
             if (selectedChoice.action === choices[0]) {
                 requestData = motions.map(motion => {
                     let submitterIds = [...motion.sorted_submitter_ids, ...(selectedChoice.items as number[])];
-                    submitterIds = submitterIds.filter((id, index, self) => self.indexOf(id) === index); // remove duplicates
+                    // remove duplicates
+                    submitterIds = submitterIds.filter((id, index, self) => self.indexOf(id) === index);
                     return {
                         id: motion.id,
                         submitters: submitterIds

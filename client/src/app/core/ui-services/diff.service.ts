@@ -25,7 +25,8 @@ export enum ModificationType {
 }
 
 /**
- * This data structure is used when determining the most specific common ancestor of two HTML nodes (`node1` and `node2`)
+ * This data structure is used when determining the most specific common ancestor of two HTML node
+ * (`node1` and `node2`)
  * within the same Document Fragment.
  */
 interface CommonAncestorData {
@@ -34,11 +35,13 @@ interface CommonAncestorData {
      */
     commonAncestor: Node;
     /**
-     * The nodes inbetween `commonAncestor` and the `node1` in the DOM hierarchy. Empty, if node1 is a direct descendant.
+     * The nodes inbetween `commonAncestor` and the `node1` in the DOM hierarchy.
+     * Empty, if node1 is a direct descendant.
      */
     trace1: Node[];
     /**
-     * The nodes inbetween `commonAncestor` and the `node2` in the DOM hierarchy. Empty, if node2 is a direct descendant.
+     * The nodes inbetween `commonAncestor` and the `node2` in the DOM hierarchy.
+     * Empty, if node2 is a direct descendant.
      */
     trace2: Node[];
     /**
@@ -109,7 +112,8 @@ export interface LineRange {
     /**
      * The end line number.
      * HINT: As this object is usually referring to actual line numbers, not lines,
-     * the line starting by `to` is not included in the extracted content anymore, only the text between `from` and `to`.
+     * the line starting by `to` is not included in the extracted content anymore,
+     * only the text between `from` and `to`.
      */
     to: number;
 }
@@ -167,7 +171,9 @@ export interface DiffLinesInParagraph {
  *
  * ```ts
  * const lineLength = 80;
- * const lineNumberedText = this.lineNumbering.insertLineNumbers('<p>A line</p><p>Another line</p><ul><li>A list item</li><li>Yet another item</li></ul>', lineLength);
+ * const lineNumberedText = this.lineNumbering.insertLineNumbers(
+ *   '<p>A line</p><p>Another line</p><ul><li>A list item</li><li>Yet another item</li></ul>', lineLength
+ * );
  * const extractFrom = 2;
  * const extractUntil = 3;
  * const extractedData = this.diffService.extractRangeByLineNumbers(lineNumberedText, extractFrom, extractUntil)
@@ -197,7 +203,8 @@ export interface DiffLinesInParagraph {
  * Given a diff'ed string, apply all changes to receive the new version of the text:
  *
  * ```ts
- * const diffedHtml = '<p>Test <span class="delete">Test 2</span> Another test <del>Test 3</del></p><p class="delete">Test 4</p>';
+ * const diffedHtml =
+ *   '<p>Test <span class="delete">Test 2</span> Another test <del>Test 3</del></p><p class="delete">Test 4</p>';
  * const newVersion = this.diffService.diffHtmlToFinalText(diffedHtml);
  * ```
  *
@@ -205,7 +212,11 @@ export interface DiffLinesInParagraph {
  *
  * ```ts
  * const lineLength = 80;
- * const lineNumberedText = this.lineNumbering.insertLineNumbers('<p>A line</p><p>Another line</p><ul><li>A list item</li><li>Yet another item</li></ul>', lineLength);
+ * const lineNumberedText =
+ *   this.lineNumbering.insertLineNumbers(
+ *     '<p>A line</p><p>Another line</p><ul><li>A list item</li><li>Yet another item</li></ul>',
+ *     lineLength
+ *   );
  * const merged = this.diffService.replaceLines(lineNumberedText, '<p>Replaced paragraph</p>', 1, 2);
  * ```
  */
@@ -1063,7 +1074,8 @@ export class DiffService {
     }
 
     /**
-     * This fixes a very specific, really weird bug that is tested in the test case "does not a change in a very specific case".
+     * This fixes a very specific, really weird bug that is tested in the test case "does not a change in a very
+     * specific case.
      *
      * @param {string}diffStr
      * @return {string}
@@ -1178,7 +1190,8 @@ export class DiffService {
     /**
      * Given a DOM tree and a specific node within that tree, this method returns the HTML string from the beginning
      * of this tree up to this node.
-     * The returned string in itself is not renderable, as it stops in the middle of the complete HTML, with opened tags.
+     * The returned string in itself is not renderable, as it stops in the middle of the complete HTML, with
+     * opened tags.
      *
      * Implementation hint: the first element of "toChildTrace" array needs to be a child element of "node"
      * @param {Node} node
@@ -1228,7 +1241,8 @@ export class DiffService {
     /**
      * Given a DOM tree and a specific node within that tree, this method returns the HTML string beginning after this
      * node to the end of the tree.
-     * The returned string in itself is not renderable, as it starts in the middle of the complete HTML, with opened tags.
+     * The returned string in itself is not renderable, as it starts in the middle of the complete HTML
+     * with opened tags.
      *
      * Implementation hint: the first element of "fromChildTrace" array needs to be a child element of "node"
      * @param {Node} node
@@ -1283,7 +1297,8 @@ export class DiffService {
      * Returns the HTML snippet between two given line numbers.
      * extractRangeByLineNumbers
      * Hint:
-     * - The last line (toLine) is not included anymore, as the number refers to the line breaking element at the end of the line
+     * - The last line (toLine) is not included anymore, as the number refers to the line breaking element at the end
+     *   of the line
      * - if toLine === null, then everything from fromLine to the end of the fragment is returned
      *
      * In addition to the HTML snippet, additional information is provided regarding the most specific DOM element
@@ -1296,7 +1311,8 @@ export class DiffService {
      * rendering it and for merging it again correctly.
      * - os-split-*:        These classes are set for all HTML Tags that have been split into two by this process,
      *                      e.g. if the fromLine- or toLine-line-break was somewhere in the middle of this tag.
-     *                      If a tag is split, the first one receives "os-split-after", and the second one "os-split-before".
+     *                      If a tag is split, the first one receives "os-split-after", and the second
+     *                      one "os-split-before".
      * For example, for the following string <p>Line 1<br>Line 2<br>Line 3</p>:
      * - extracting line 1 to 2 results in <p class="os-split-after">Line 1</p>
      * - extracting line 2 to 3 results in <p class="os-split-after os-split-before">Line 2</p>
@@ -1588,7 +1604,8 @@ export class DiffService {
 
     /**
      * This returns the line number range in which changes (insertions, deletions) are encountered.
-     * As in extractRangeByLineNumbers(), "to" refers to the line breaking element at the end, i.e. the start of the following line.
+     * As in extractRangeByLineNumbers(), "to" refers to the line breaking element at the end, i.e. the start of the
+     * following line.
      *
      * @param {string} diffHtml
      * @returns {LineRange}

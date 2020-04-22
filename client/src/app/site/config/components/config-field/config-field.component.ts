@@ -146,7 +146,8 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit, OnDes
      * Sets up the form for this config field.
      */
     public ngOnInit(): void {
-        // filter out empty results in group observable. We never have no groups and it messes up the settings change detection
+        // filter out empty results in group observable. We never have no groups and it messes up
+        // the settings change detection
         this.groupObservable = this.groupRepo
             .getViewModelListObservableWithoutDefaultGroup()
             .pipe(filter(groups => !!groups.length));

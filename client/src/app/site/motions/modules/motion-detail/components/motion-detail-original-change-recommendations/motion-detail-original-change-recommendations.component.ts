@@ -20,7 +20,8 @@ import { ViewMotionChangeRecommendation } from 'app/site/motions/models/view-mot
  * It's called from motion-details for displaying the whole motion text as well as from the diff view to show the
  * unchanged parts of the motion.
  *
- * The line numbers are provided within the pre-rendered HTML, so we have to work with raw HTML and native HTML elements.
+ * The line numbers are provided within the pre-rendered HTML, so we have to work with raw HTML
+ * and native HTML elements.
  *
  * It takes the styling from the parent component.
  *

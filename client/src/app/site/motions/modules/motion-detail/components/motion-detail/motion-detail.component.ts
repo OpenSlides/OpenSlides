@@ -730,7 +730,9 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
                         this.contentForm.addControl('text_' + paragraphNo, new FormControl(''));
 
                         contentPatch.selected_paragraphs.push(paragraph);
-                        contentPatch.text = formMotion.amendment_paragraphs[paragraphNo]; // Workaround as 'text' is required from the backend
+
+                        // Workaround as 'text' is required from the backend
+                        contentPatch.text = formMotion.amendment_paragraphs[paragraphNo];
                         contentPatch['text_' + paragraphNo] = formMotion.amendment_paragraphs[paragraphNo];
                     }
                 });
@@ -1370,7 +1372,8 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         this.pdfExport.exportSingleMotion(this.motion, {
             lnMode: this.lnMode === this.LineNumberingMode.Inside ? this.LineNumberingMode.Outside : this.lnMode,
             crMode: this.crMode,
-            comments: this.motion.commentSectionIds.concat([PERSONAL_NOTE_ID]) // export all comment fields as well as personal note
+            // export all comment fields as well as personal note
+            comments: this.motion.commentSectionIds.concat([PERSONAL_NOTE_ID])
         });
     }
 

@@ -59,7 +59,8 @@ export class CurrentListOfSpeakersService {
     private getCurrentListOfSpeakersForProjector(projector: ViewProjector): ViewListOfSpeakers | null {
         const nonStableElements = projector.elements.filter(element => !element.stable);
         if (nonStableElements.length > 0) {
-            const nonStableElement = this.slideManager.getIdentifialbeProjectorElement(nonStableElements[0]); // The normal case is just one non stable slide
+            // The normal case is just one non stable slide
+            const nonStableElement = this.slideManager.getIdentifialbeProjectorElement(nonStableElements[0]);
             try {
                 const viewModel = this.projectorService.getViewModelFromProjectorElement(nonStableElement);
                 if (isBaseViewModelWithListOfSpeakers(viewModel)) {
