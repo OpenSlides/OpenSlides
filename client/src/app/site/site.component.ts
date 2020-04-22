@@ -135,9 +135,8 @@ export class SiteComponent extends BaseComponent implements OnInit {
             const version = +agent.slice(index, index + 2);
 
             if (version < 64) {
-                const sideNav = document.querySelector(
-                    'mat-sidenav.side-panel > div.mat-drawer-inner-container'
-                ) as HTMLElement;
+                const sideNav =
+                    document.querySelector('mat-sidenav.side-panel > div.mat-drawer-inner-container') as HTMLElement;
                 sideNav.style.overflow = 'hidden';
                 sideNav.addEventListener('MozMousePixelScroll', (event: any) => {
                     sideNav.scrollBy(0, event.detail);

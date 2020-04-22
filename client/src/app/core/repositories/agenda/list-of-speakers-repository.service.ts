@@ -117,9 +117,9 @@ export class ListOfSpeakersRepositoryService extends BaseHasContentObjectReposit
         if (titleInformation.contentObject) {
             return titleInformation.contentObject.getListOfSpeakersTitle();
         } else {
-            const repo = this.collectionStringMapperService.getRepository(
-                titleInformation.contentObjectData.collection
-            ) as BaseIsListOfSpeakersContentObjectRepository<any, any, any>;
+            const repo =
+                this.collectionStringMapperService.getRepository(titleInformation.contentObjectData.collection) as
+                BaseIsListOfSpeakersContentObjectRepository<any, any, any>;
 
             // Try to get the agenda item for this to get the item number
             // TODO: This can be resolved with #4738

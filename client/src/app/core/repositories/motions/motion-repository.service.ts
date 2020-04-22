@@ -756,12 +756,14 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
      */
     private extractAffectedParagraphs(paragraph: string, index: number): ParagraphToChoose {
         const affected: LineNumberRange = this.lineNumbering.getLineNumberRange(paragraph);
-        return {
-            paragraphNo: index,
-            html: this.lineNumbering.stripLineNumbers(paragraph),
-            lineFrom: affected.from,
-            lineTo: affected.to
-        } as ParagraphToChoose;
+        return (
+            {
+                paragraphNo: index,
+                html: this.lineNumbering.stripLineNumbers(paragraph),
+                lineFrom: affected.from,
+                lineTo: affected.to
+            } as ParagraphToChoose
+        );
     }
 
     /**
@@ -794,16 +796,18 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
                         // Nothing has changed in this paragraph
                         if (includeUnchanged) {
                             const paragraph_line_range = this.lineNumbering.getLineNumberRange(baseParagraphs[paraNo]);
-                            return {
-                                paragraphNo: paraNo,
-                                paragraphLineFrom: paragraph_line_range.from,
-                                paragraphLineTo: paragraph_line_range.to,
-                                diffLineFrom: paragraph_line_range.to,
-                                diffLineTo: paragraph_line_range.to,
-                                textPre: baseParagraphs[paraNo],
-                                text: '',
-                                textPost: ''
-                            } as DiffLinesInParagraph;
+                            return (
+                                {
+                                    paragraphNo: paraNo,
+                                    paragraphLineFrom: paragraph_line_range.from,
+                                    paragraphLineTo: paragraph_line_range.to,
+                                    diffLineFrom: paragraph_line_range.to,
+                                    diffLineTo: paragraph_line_range.to,
+                                    textPre: baseParagraphs[paraNo],
+                                    text: '',
+                                    textPost: ''
+                                } as DiffLinesInParagraph
+                            );
                         } else {
                             return null; // null will make this paragraph filtered out
                         }

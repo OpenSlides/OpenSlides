@@ -305,14 +305,16 @@ export abstract class PollService {
         const fields = this.getPollDataFields(poll);
 
         const data: ChartData = fields.map(key => {
-            return {
-                data: this.getResultFromPoll(poll, key),
-                label: key.toUpperCase(),
-                backgroundColor: PollColor[key],
-                hoverBackgroundColor: PollColor[key],
-                barThickness: PollChartBarThickness,
-                maxBarThickness: PollChartBarThickness
-            } as ChartDate;
+            return (
+                {
+                    data: this.getResultFromPoll(poll, key),
+                    label: key.toUpperCase(),
+                    backgroundColor: PollColor[key],
+                    hoverBackgroundColor: PollColor[key],
+                    barThickness: PollChartBarThickness,
+                    maxBarThickness: PollChartBarThickness
+                } as ChartDate
+            );
         });
 
         return data;

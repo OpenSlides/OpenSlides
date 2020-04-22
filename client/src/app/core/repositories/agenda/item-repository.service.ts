@@ -83,9 +83,9 @@ export class ItemRepositoryService extends BaseHasContentObjectRepository<
         if (titleInformation.contentObject) {
             return titleInformation.contentObject.getAgendaListTitle();
         } else {
-            const repo = this.collectionStringMapperService.getRepository(
-                titleInformation.contentObjectData.collection
-            ) as BaseIsAgendaItemContentObjectRepository<any, any, any>;
+            const repo =
+                this.collectionStringMapperService.getRepository(titleInformation.contentObjectData.collection) as
+                BaseIsAgendaItemContentObjectRepository<any, any, any>;
             return repo.getAgendaListTitle(titleInformation.title_information);
         }
     };
@@ -113,9 +113,9 @@ export class ItemRepositoryService extends BaseHasContentObjectRepository<
         if (titleInformation.contentObject) {
             return titleInformation.contentObject.getAgendaListTitleWithoutItemNumber();
         } else {
-            const repo = this.collectionStringMapperService.getRepository(
-                titleInformation.contentObjectData.collection
-            ) as BaseIsAgendaItemContentObjectRepository<any, any, any>;
+            const repo =
+                this.collectionStringMapperService.getRepository(titleInformation.contentObjectData.collection) as
+                BaseIsAgendaItemContentObjectRepository<any, any, any>;
             return repo.getAgendaListTitleWithoutItemNumber(titleInformation.title_information);
         }
     };

@@ -2174,16 +2174,18 @@ export class DiffService {
             affected_lines.from
         );
 
-        return {
-            paragraphNo: paragraphNo,
-            paragraphLineFrom: paragraph_line_range.from,
-            paragraphLineTo: paragraph_line_range.to,
-            diffLineFrom: affected_lines.from,
-            diffLineTo: affected_lines.to,
-            textPre: textPre,
-            text: text,
-            textPost: textPost
-        } as DiffLinesInParagraph;
+        return (
+            {
+                paragraphNo: paragraphNo,
+                paragraphLineFrom: paragraph_line_range.from,
+                paragraphLineTo: paragraph_line_range.to,
+                diffLineFrom: affected_lines.from,
+                diffLineTo: affected_lines.to,
+                textPre: textPre,
+                text: text,
+                textPost: textPost
+            } as DiffLinesInParagraph
+        );
     }
 
     /**

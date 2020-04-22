@@ -250,11 +250,12 @@ export abstract class BaseFilterListService<V extends BaseViewModel> {
                         for (const option of newDef.options) {
                             if (typeof option === 'object') {
                                 if (matchingExistingFilter && matchingExistingFilter.options) {
-                                    const existingOption = matchingExistingFilter.options.find(
-                                        o =>
-                                            typeof o !== 'string' &&
-                                            JSON.stringify(o.condition) === JSON.stringify(option.condition)
-                                    ) as OsFilterOption;
+                                    const existingOption =
+                                        matchingExistingFilter.options.find(
+                                            o =>
+                                                typeof o !== 'string' &&
+                                                JSON.stringify(o.condition) === JSON.stringify(option.condition)
+                                        ) as OsFilterOption;
                                     if (existingOption) {
                                         option.isActive = existingOption.isActive;
                                     }
@@ -391,9 +392,8 @@ export abstract class BaseFilterListService<V extends BaseViewModel> {
         const filter = this.filterDefinitions.find(f => f.property === filterProperty);
 
         if (filter) {
-            const filterOption = filter.options.find(
-                o => typeof o !== 'string' && o.condition === option.condition
-            ) as OsFilterOption;
+            const filterOption =
+                filter.options.find(o => typeof o !== 'string' && o.condition === option.condition) as OsFilterOption;
 
             if (filterOption && !filterOption.isActive) {
                 filterOption.isActive = true;
@@ -423,9 +423,8 @@ export abstract class BaseFilterListService<V extends BaseViewModel> {
     protected removeFilterOption(filterProperty: string, option: OsFilterOption): void {
         const filter = this.filterDefinitions.find(f => f.property === filterProperty);
         if (filter) {
-            const filterOption = filter.options.find(
-                o => typeof o !== 'string' && o.condition === option.condition
-            ) as OsFilterOption;
+            const filterOption =
+                filter.options.find(o => typeof o !== 'string' && o.condition === option.condition) as OsFilterOption;
             if (filterOption && filterOption.isActive) {
                 filterOption.isActive = false;
 

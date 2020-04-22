@@ -104,42 +104,45 @@ export class WorkflowDetailComponent extends BaseViewComponent implements OnInit
     /**
      * Holds state permissions
      */
-    private statePermissionsList = [
-        { name: 'Recommendation label', selector: 'recommendation_label', type: 'input' },
-        { name: 'Allow support', selector: 'allow_support', type: 'check' },
-        { name: 'Allow create poll', selector: 'allow_create_poll', type: 'check' },
-        { name: 'Allow submitter edit', selector: 'allow_submitter_edit', type: 'check' },
-        { name: 'Do not set identifier', selector: 'dont_set_identifier', type: 'check' },
-        { name: 'Show state extension field', selector: 'show_state_extension_field', type: 'check' },
-        {
-            name: 'Show recommendation extension field',
-            selector: 'show_recommendation_extension_field',
-            type: 'check'
-        },
-        { name: 'Show amendment in parent motion', selector: 'merge_amendment_into_final', type: 'amendment' },
-        { name: 'Restrictions', selector: 'restriction', type: 'restriction' },
-        { name: 'Label color', selector: 'css_class', type: 'color' },
-        { name: 'Next states', selector: 'next_states_id', type: 'state' }
-    ] as StatePerm[];
+    private statePermissionsList =
+        [
+            { name: 'Recommendation label', selector: 'recommendation_label', type: 'input' },
+            { name: 'Allow support', selector: 'allow_support', type: 'check' },
+            { name: 'Allow create poll', selector: 'allow_create_poll', type: 'check' },
+            { name: 'Allow submitter edit', selector: 'allow_submitter_edit', type: 'check' },
+            { name: 'Do not set identifier', selector: 'dont_set_identifier', type: 'check' },
+            { name: 'Show state extension field', selector: 'show_state_extension_field', type: 'check' },
+            {
+                name: 'Show recommendation extension field',
+                selector: 'show_recommendation_extension_field',
+                type: 'check'
+            },
+            { name: 'Show amendment in parent motion', selector: 'merge_amendment_into_final', type: 'amendment' },
+            { name: 'Restrictions', selector: 'restriction', type: 'restriction' },
+            { name: 'Label color', selector: 'css_class', type: 'color' },
+            { name: 'Next states', selector: 'next_states_id', type: 'state' }
+        ] as StatePerm[];
 
     /**
      * Determines possible restrictions
      */
-    public restrictions = [
-        { key: 'motions.can_manage', label: 'Can manage motions' },
-        { key: 'motions.can_see_internal', label: 'Can see motions in internal state' },
-        { key: 'motions.can_manage_metadata', label: 'Can manage motion metadata' },
-        { key: 'is_submitter', label: 'Submitters' }
-    ] as Restriction[];
+    public restrictions =
+        [
+            { key: 'motions.can_manage', label: 'Can manage motions' },
+            { key: 'motions.can_see_internal', label: 'Can see motions in internal state' },
+            { key: 'motions.can_manage_metadata', label: 'Can manage motion metadata' },
+            { key: 'is_submitter', label: 'Submitters' }
+        ] as Restriction[];
 
     /**
      * Determines possible "Merge amendments into final"
      */
-    public amendmentIntoFinal = [
-        { merge: MergeAmendment.NO, label: 'No' },
-        { merge: MergeAmendment.UNDEFINED, label: '-' },
-        { merge: MergeAmendment.YES, label: 'Yes' }
-    ] as AmendmentIntoFinal[];
+    public amendmentIntoFinal =
+        [
+            { merge: MergeAmendment.NO, label: 'No' },
+            { merge: MergeAmendment.UNDEFINED, label: '-' },
+            { merge: MergeAmendment.YES, label: 'Yes' }
+        ] as AmendmentIntoFinal[];
 
     /**
      * Constructor

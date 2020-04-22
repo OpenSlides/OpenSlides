@@ -226,10 +226,12 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User, UserTi
         const data = newEntries.map(entry => {
             return { ...entry.newEntry, importTrackId: entry.importTrackId };
         });
-        const response = (await this.httpService.post(`/rest/users/user/mass_import/`, { users: data })) as {
-            detail: string;
-            importedTrackIds: number[];
-        };
+        const response =
+            (await this.httpService.post(`/rest/users/user/mass_import/`, { users: data })) as
+            {
+                detail: string;
+                importedTrackIds: number[];
+            };
         return response.importedTrackIds;
     }
 
