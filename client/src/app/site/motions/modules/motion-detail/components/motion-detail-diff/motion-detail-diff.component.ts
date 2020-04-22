@@ -29,7 +29,8 @@ import {
  * This component displays the original motion text with the change blocks inside.
  * If the user is an administrator, each change block can be rejected.
  *
- * The line numbers are provided within the pre-rendered HTML, so we have to work with raw HTML and native HTML elements.
+ * The line numbers are provided within the pre-rendered HTML, so we have to work with raw HTML
+ * and native HTML elements.
  *
  * It takes the styling from the parent component.
  *

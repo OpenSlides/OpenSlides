@@ -1,11 +1,7 @@
 {
     "rulesDirectory": ["node_modules/codelyzer"],
     "linterOptions": {
-        "exclude": [
-            "src/polyfills.ts",
-            "src/test.ts",
-            "src/app/shared/shared.module.ts"
-        ]
+        "exclude": ["src/polyfills.ts", "src/test.ts", "src/app/shared/shared.module.ts"]
     },
     "rules": {
         "array-type": [true, "array"],
@@ -21,6 +17,7 @@
         "interface-name": false,
         "interface-over-type-literal": true,
         "label-position": true,
+        "max-line-length": [true, { "limit": 120, "ignore-pattern": "^import [^,]+ from" }],
         "member-access": false,
         "member-ordering": [
             true,
@@ -30,7 +27,19 @@
         ],
         "no-arg": true,
         "no-bitwise": true,
-        "no-console": [true, "table", "clear", "count", "countReset", "info", "time", "timeEnd", "timeline", "timelineEnd", "trace"],
+        "no-console": [
+            true,
+            "table",
+            "clear",
+            "count",
+            "countReset",
+            "info",
+            "time",
+            "timeEnd",
+            "timeline",
+            "timelineEnd",
+            "trace"
+        ],
         "no-consecutive-blank-lines": false,
         "no-construct": true,
         "no-debugger": true,
@@ -51,26 +60,33 @@
         "no-var-keyword": true,
         "object-literal-key-quotes": [true, "as-needed"],
         "object-literal-sort-keys": false,
-        "ordered-imports": [true, {
-            "import-source-order": "case-sensitive",
-            "grouped-imports": true,
-            "groups": [{
-                "name": "angular",
-                "match": "^@angular",
-                "order": 10
-            },{
-                "name": "internal dependencies",
-                "match": "^(app/|\\.?\\./).*",
-                "order": 30
-            },{
-                "name": "external dependencies",
-                "_match": "^(?!(app/|\\.?\\./)).*",
-                "match": ".*",
-                "order": 20
-            }],
-            "named-imports-order": "case-insensitive",
-            "module-source-path": "basename"
-        }],
+        "ordered-imports": [
+            true,
+            {
+                "import-source-order": "case-sensitive",
+                "grouped-imports": true,
+                "groups": [
+                    {
+                        "name": "angular",
+                        "match": "^@angular",
+                        "order": 10
+                    },
+                    {
+                        "name": "internal dependencies",
+                        "match": "^(app/|\\.?\\./).*",
+                        "order": 30
+                    },
+                    {
+                        "name": "external dependencies",
+                        "_match": "^(?!(app/|\\.?\\./)).*",
+                        "match": ".*",
+                        "order": 20
+                    }
+                ],
+                "named-imports-order": "case-insensitive",
+                "module-source-path": "basename"
+            }
+        ],
         "prefer-const": true,
         "radix": true,
         "triple-equals": [true, "allow-null-check"],

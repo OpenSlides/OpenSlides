@@ -114,7 +114,8 @@ export abstract class BasePollDetailComponent<V extends ViewBasePoll, S extends 
         this.votesRepo
             .getViewModelListObservable()
             .pipe(
-                filter(() => this.poll && this.canSeeVotes), // filter first for valid poll state to avoid unneccessary iteration of potentially thousands of votes
+                // filter first for valid poll state to avoid unneccessary iteration of potentially thousands of votes
+                filter(() => this.poll && this.canSeeVotes),
                 map(votes => votes.filter(vote => vote.option.poll_id === this.poll.id)),
                 filter(votes => !!votes.length)
             )

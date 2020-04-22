@@ -91,7 +91,8 @@ export class AssignmentPollDialogComponent extends BasePollDialogComponent<ViewA
 
     public ngOnInit(): void {
         // TODO: not solid.
-        // on new poll creation, poll.options does not exist, so we have to build a substitute from the assignment candidates
+        // on new poll creation, poll.options does not exist, so we have to build a substitute
+        // from the assignment candidates
         if (this.pollData) {
             if (this.pollData.options) {
                 this.options = this.pollData.options;

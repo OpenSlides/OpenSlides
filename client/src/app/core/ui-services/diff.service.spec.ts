@@ -754,7 +754,10 @@ describe('DiffService', () => {
         }));
 
         it('handles inserted paragraphs (2)', inject([DiffService], (service: DiffService) => {
-            // Specifically, Noch</p> should not be enclosed by <ins>...</ins>, as <ins>Noch </p></ins> would be seriously broken
+            /**
+             * Specifically, Noch</p> should not be enclosed by <ins>...</ins>, as <ins>Noch </p></ins>
+             * would be seriously broken
+             */
             const before =
                     "<P>rief sie alle sieben herbei und sprach 'liebe Kinder, ich will hinaus in den Wald, seid </P>",
                 after =

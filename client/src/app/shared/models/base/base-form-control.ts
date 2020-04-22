@@ -7,7 +7,8 @@ import { MatFormFieldControl } from '@angular/material/form-field';
 import { Subject, Subscription } from 'rxjs';
 
 /**
- * Abstract class to implement some simple logic and provide the subclass as a controllable form-control in `MatFormField`.
+ * Abstract class to implement some simple logic and provide the subclass as a controllable
+ * form-control in `MatFormField`.
  *
  * Please remember to prepare the `providers` in the `@Component`-decorator. Something like:
  *

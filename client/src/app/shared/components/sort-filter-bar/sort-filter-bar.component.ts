@@ -62,7 +62,8 @@ export class SortFilterBarComponent<V extends BaseViewModel> {
     public extraItemInfo: string;
 
     /**
-     * Optional string to tell the verbose name of the filtered items. This string is displayed, if no filter service is given.
+     * Optional string to tell the verbose name of the filtered items. This string is displayed,
+     * if no filter service is given.
      */
     @Input()
     public itemsVerboseName: string;

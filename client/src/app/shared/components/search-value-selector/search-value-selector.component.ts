@@ -25,7 +25,8 @@ import { Selectable } from '../selectable';
 /**
  * Searchable Value Selector
  *
- * Use `multiple="true"`, `[inputListValues]=myValues`,`formControlName="myformcontrol"` and `placeholder={{listname}}` to pass the Values and Listname
+ * Use `multiple="true"`, `[inputListValues]=myValues`,`formControlName="myformcontrol"` and
+ * `placeholder={{listname}}` to pass the Values and Listname
  *
  * ## Examples:
  *

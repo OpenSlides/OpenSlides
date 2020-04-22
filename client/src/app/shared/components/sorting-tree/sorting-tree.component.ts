@@ -865,7 +865,8 @@ export class SortingTreeComponent<T extends Identifiable & Displayable> implemen
     /**
      * Function to get the data from tree.
      *
-     * @returns An array that contains all necessary information to see the connections between the nodes and their subnodes.
+     * @returns An array that contains all necessary information to see the connections between the nodes
+     * and their subnodes.
      */
     public getTreeData(): TreeIdNode[] {
         return this.treeService.makeTreeFromFlatTree(this.osTreeData);
@@ -940,12 +941,13 @@ export class SortingTreeComponent<T extends Identifiable & Displayable> implemen
     }
 
     /**
-     * Function to check recursively the child nodes of a given node whether they will be filtered or if they should be seen.
+     * Function to check recursively the child nodes of a given node whether they will be filtered
+     * or if they should be seen.
      * The result is necessary to decide whether the parent node is expandable or not.
      *
      * @param node is the inspected node.
-     * @param parent optional: If the node has a parent, it is necessary to see if this parent will be filtered or is seen.
-     *
+     * @param parent optional: If the node has a parent, it is necessary to see if this parent
+     *               will be filtered or is seen.
      * @returns A boolean which describes if the given node will be filtered.
      */
     private checkChildrenToBeFiltered(node: FlatNode<T>, parent?: FlatNode<T>): boolean {

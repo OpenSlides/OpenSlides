@@ -47,8 +47,8 @@ export class PdfError extends Error {
  * Provides the general document structure for PDF documents, such as page margins, header, footer and styles.
  * Also provides general purpose open and download functions.
  *
- * Use a local pdf service (i.e. MotionPdfService) to get the document definition for the content and use this service to
- * open or download the pdf document
+ * Use a local pdf service (i.e. MotionPdfService) to get the document definition for the content and
+ * use this service to open or download the pdf document
  *
  * @example
  * ```ts

@@ -275,7 +275,8 @@ export abstract class BaseFilterListService<V extends BaseViewModel> {
     }
 
     /**
-     * Helper function to get the `viewModelListObservable` of a given repository object and creates dynamic filters for them
+     * Helper function to get the `viewModelListObservable` of a given repository object and creates dynamic
+     * filters for them
      *
      * @param repo repository to create dynamic filters from
      * @param filter the OSFilter for the filter property
