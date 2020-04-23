@@ -24,11 +24,19 @@ export class ViewListOfSpeakers extends BaseViewModelWithContentObject<ListOfSpe
         return this._model;
     }
 
+    public get finishedSpeakers(): ViewSpeaker[] {
+        return this.speakers.filter(speaker => speaker.state === SpeakerState.FINISHED);
+    }
+
     /**
      * Gets the amount of waiting speakers
      */
     public get waitingSpeakerAmount(): number {
-        return this.speakers.filter(speaker => speaker.state === SpeakerState.WAITING).length;
+        return this.waitingSpeakers.length;
+    }
+
+    public get waitingSpeakers(): ViewSpeaker[] {
+        return this.speakers.filter(speaker => speaker.state === SpeakerState.WAITING);
     }
 
     public get listOfSpeakersUrl(): string {
@@ -50,6 +58,10 @@ export class ViewListOfSpeakers extends BaseViewModelWithContentObject<ListOfSpe
             projectionDefaultName: 'agenda_list_of_speakers',
             getDialogTitle: () => this.getTitle()
         };
+    }
+
+    public hasSpeakerSpoken(checkSpeaker: ViewSpeaker): boolean {
+        return this.finishedSpeakers.findIndex(speaker => speaker.user_id === checkSpeaker.user_id) !== -1;
     }
 }
 interface IListOfSpeakersRelations {
