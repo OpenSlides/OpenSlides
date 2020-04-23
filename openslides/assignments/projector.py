@@ -76,7 +76,7 @@ async def assignment_poll_slide(
             float(poll["amount_global_no"]) if poll["amount_global_no"] else None
         )
         poll_data["amount_global_abstain"] = (
-            float(poll["amount_global_abstain"]) if poll["amount_global_no"] else None
+            float(poll["amount_global_abstain"]) if poll["amount_global_abstain"] else None
         )
         poll_data["votesvalid"] = float(poll["votesvalid"])
         poll_data["votesinvalid"] = float(poll["votesinvalid"])
