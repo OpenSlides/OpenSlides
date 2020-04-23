@@ -72,6 +72,9 @@ msgstr "Änderungsanträge aktivieren"
 msgid "Activate statute amendments"
 msgstr "Satzungsänderungsanträge aktivieren"
 
+msgid "Activate vote weight"
+msgstr "Stimmgewicht aktivieren"
+
 msgid "Active"
 msgstr "Aktiv"
 
@@ -700,6 +703,9 @@ msgstr "Erstellen"
 msgid "Create final print template"
 msgstr "Beschluss-Druckvorlage erstellen"
 
+msgid "Create user"
+msgstr "Nutzer anlegen"
+
 msgid "Creating PDF file ..."
 msgstr "PDF-Datei wird erstellt ..."
 
@@ -1170,6 +1176,9 @@ msgstr "Gast"
 msgid "Has amendments"
 msgstr "Hat Änderungsanträge"
 
+msgid "Has changed vote weight"
+msgstr "Stimmgewicht verändert"
+
 msgid "Has no speakers"
 msgstr "Keine Wortmeldungen vorhanden"
 
@@ -1178,6 +1187,9 @@ msgstr "Hat Notizen"
 
 msgid "Has speakers"
 msgstr "Wortmeldungen vorhanden"
+
+msgid "Has unchanged vote weight"
+msgstr "Stimmgewicht unverändert"
 
 msgid "Header background color"
 msgstr "Hintergrundfarbe Kopfbereich"
@@ -2786,6 +2798,9 @@ msgstr "Abstimmung gelöscht"
 
 msgid "Vote updated"
 msgstr "Abstimmung aktualisiert"
+
+msgid "Vote weight"
+msgstr "Stimmgewicht"
 
 msgid "Votes"
 msgstr "Stimmen"
