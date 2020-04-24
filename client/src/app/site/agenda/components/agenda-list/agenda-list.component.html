@@ -121,6 +121,11 @@
             <span>{{ 'Import' | translate }}</span>
         </button>
         <mat-divider></mat-divider>
+        <button mat-menu-item *osPerms="'agenda.can_manage'" class="red-warning-text" (click)="deleteAllSpeakersOfAllListsOfSpeakers()">
+            <mat-icon>delete</mat-icon>
+            <span>{{ 'Delete all speakers' | translate }}</span>
+        </button>
+        <mat-divider></mat-divider>
         <!-- Settings -->
         <button mat-menu-item *osPerms="'core.can_manage_config'" routerLink="/settings/agenda">
             <mat-icon>settings</mat-icon>

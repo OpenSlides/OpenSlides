@@ -342,4 +342,12 @@ export class AgendaListComponent extends BaseListViewComponent<ViewItem> impleme
             return result;
         }
     }
+
+    public async deleteAllSpeakersOfAllListsOfSpeakers(): Promise<void> {
+        const title = this.translate.instant('Are you sure you want to clear all speakers of all lists of speakers?');
+        const content = this.translate.instant('All lists of speakers will be cleared and are empty afterwards.');
+        if (await this.promptService.open(title, content)) {
+            this.listOfSpeakersRepo.deleteAllSpeakersOfAllListsOfSpeakers().catch(this.raiseError);
+        }
+    }
 }
