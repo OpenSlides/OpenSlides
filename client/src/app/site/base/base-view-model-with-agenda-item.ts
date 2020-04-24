@@ -1,9 +1,15 @@
+import { ProjectorTitle } from 'app/core/core-services/projector.service';
 import { SearchRepresentation } from 'app/core/ui-services/search.service';
 import { BaseModelWithAgendaItem } from 'app/shared/models/base/base-model-with-agenda-item';
 import { DetailNavigable, isDetailNavigable } from 'app/shared/models/base/detail-navigable';
 import { BaseProjectableViewModel } from './base-projectable-view-model';
 import { TitleInformation } from './base-view-model';
 import { isSearchable, Searchable } from './searchable';
+
+export interface AgendaListTitle {
+    title: string;
+    subtitle?: string;
+}
 
 export function isBaseViewModelWithAgendaItem(obj: any): obj is BaseViewModelWithAgendaItem {
     const model = <BaseViewModelWithAgendaItem>obj;
@@ -13,7 +19,6 @@ export function isBaseViewModelWithAgendaItem(obj: any): obj is BaseViewModelWit
         isSearchable(model) &&
         model.getAgendaSlideTitle !== undefined &&
         model.getAgendaListTitle !== undefined &&
-        model.getAgendaSubtitle !== undefined &&
         model.getCSVExportText !== undefined &&
         model.item !== undefined &&
         model.getModel !== undefined &&
@@ -42,12 +47,7 @@ export interface BaseViewModelWithAgendaItem<M extends BaseModelWithAgendaItem =
     /**
      * @return the agenda title with the verbose name of the content object
      */
-    getAgendaListTitle: () => string;
-
-    /**
-     * @return the agenda title with the verbose name of the content object
-     */
-    getAgendaListTitleWithoutItemNumber: () => string;
+    getAgendaListTitle: () => AgendaListTitle;
 }
 
 /**
@@ -63,20 +63,20 @@ export abstract class BaseViewModelWithAgendaItem<
     }
 
     /**
+     * @returns the projector title used for managing projector elements.
+     * Appends the agneda item comment as the subtitle, if this model has an agenda item
+     */
+    public getProjectorTitle(): ProjectorTitle {
+        const subtitle = this.item.comment || null;
+        return { title: this.getTitle(), subtitle };
+    }
+
+    /**
      * @returns the (optional) descriptive text to be exported in the CSV.
      * May be overridden by inheriting classes
      */
     public getCSVExportText(): string {
         return '';
-    }
-
-    /**
-     * @override The base-method from `IBaseViewModelWithAgendaItem`.
-     *
-     * @returns Defaults to `null`.
-     */
-    public getAgendaSubtitle(): string | null {
-        return null;
     }
 
     public abstract getDetailStateURL(): string;

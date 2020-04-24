@@ -1,3 +1,4 @@
+import { ProjectorTitle } from 'app/core/core-services/projector.service';
 import { ListOfSpeakers, ListOfSpeakersWithoutNestedModels } from 'app/shared/models/agenda/list-of-speakers';
 import { ContentObject } from 'app/shared/models/base/content-object';
 import { BaseViewModelWithContentObject } from 'app/site/base/base-view-model-with-content-object';
@@ -34,8 +35,8 @@ export class ViewListOfSpeakers extends BaseViewModelWithContentObject<ListOfSpe
         return `/agenda/speakers/${this.id}`;
     }
 
-    public getProjectorTitle(): string {
-        return this.getTitle();
+    public getProjectorTitle(): ProjectorTitle {
+        return { title: this.getTitle() };
     }
 
     public getSlide(): ProjectorElementBuildDeskriptor {

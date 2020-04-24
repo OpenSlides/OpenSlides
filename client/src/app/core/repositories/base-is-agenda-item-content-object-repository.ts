@@ -2,6 +2,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { ViewItem } from 'app/site/agenda/models/view-item';
 import {
+    AgendaListTitle,
     BaseViewModelWithAgendaItem,
     TitleInformationWithAgendaItem
 } from 'app/site/base/base-view-model-with-agenda-item';
@@ -29,8 +30,7 @@ export interface IBaseIsAgendaItemContentObjectRepository<
     M extends BaseModel,
     T extends TitleInformationWithAgendaItem
 > extends BaseRepository<V, M, T> {
-    getAgendaListTitle: (titleInformation: T) => string;
-    getAgendaListTitleWithoutItemNumber: (titleInformation: T) => string;
+    getAgendaListTitle: (titleInformation: T) => AgendaListTitle;
     getAgendaSlideTitle: (titleInformation: T) => string;
 }
 
@@ -77,31 +77,11 @@ export abstract class BaseIsAgendaItemContentObjectRepository<
      * @returns the agenda title for the agenda item list. Should
      * be `<item number> · <title> (<type>)`. E.g. `7 · the is an election (Election)`.
      */
-    public getAgendaListTitle(titleInformation: T): string {
+    public getAgendaListTitle(titleInformation: T): AgendaListTitle {
         // Return the agenda title with the model's verbose name appended
         const numberPrefix = titleInformation.agenda_item_number() ? `${titleInformation.agenda_item_number()} · ` : '';
-        return numberPrefix + this.getTitle(titleInformation) + ' (' + this.getVerboseName() + ')';
-    }
-
-    /**
-     * Overrides the base function. Returns an optional subtitle.
-     *
-     * @param viewModel The model to get the subtitle from.
-     * @returns A string as subtitle. Defaults to `null`.
-     */
-    public getAgendaSubtitle(viewModel: V): string | null {
-        return null;
-    }
-
-    /**
-     * Function to return the title without item-number, in example used for pdf-creation.
-     *
-     * @param titleInformation The title information.
-     *
-     * @returns {string} The title without any prefix like the item-number.
-     */
-    public getAgendaListTitleWithoutItemNumber(titleInformation: T): string {
-        return this.getTitle(titleInformation) + ' (' + this.getVerboseName() + ')';
+        const title = numberPrefix + this.getTitle(titleInformation) + ' (' + this.getVerboseName() + ')';
+        return { title };
     }
 
     /**
@@ -117,9 +97,7 @@ export abstract class BaseIsAgendaItemContentObjectRepository<
     protected createViewModelWithTitles(model: M): V {
         const viewModel = super.createViewModelWithTitles(model);
         viewModel.getAgendaListTitle = () => this.getAgendaListTitle(viewModel);
-        viewModel.getAgendaListTitleWithoutItemNumber = () => this.getAgendaListTitleWithoutItemNumber(viewModel);
         viewModel.getAgendaSlideTitle = () => this.getAgendaSlideTitle(viewModel);
-        viewModel.getAgendaSubtitle = () => this.getAgendaSubtitle(viewModel);
         return viewModel;
     }
 }

@@ -25,6 +25,11 @@ import { HttpService } from './http.service';
 import { ProjectorDataService } from './projector-data.service';
 import { ViewModelStoreService } from './view-model-store.service';
 
+export interface ProjectorTitle {
+    title: string;
+    subtitle?: string;
+}
+
 /**
  * This service cares about Projectables being projected and manage all projection-related
  * actions.
@@ -325,7 +330,7 @@ export class ProjectorService {
 
     /**
      */
-    public getSlideTitle(element: ProjectorElement): string {
+    public getSlideTitle(element: ProjectorElement): ProjectorTitle {
         if (this.slideManager.canSlideBeMappedToModel(element.name)) {
             const idElement = this.slideManager.getIdentifialbeProjectorElement(element);
             const viewModel = this.getViewModelFromProjectorElement(idElement);
@@ -338,7 +343,7 @@ export class ProjectorService {
             return configuration.getSlideTitle(element, this.translate, this.viewModelStore);
         }
 
-        return this.translate.instant(this.slideManager.getSlideVerboseName(element.name));
+        return { title: this.translate.instant(this.slideManager.getSlideVerboseName(element.name)) };
     }
 
     /**

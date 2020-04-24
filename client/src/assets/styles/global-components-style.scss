@@ -93,10 +93,14 @@
         color: mat-color($foreground, secondary-text);
     }
 
-    .subtitle {
-        color: mat-color($foreground, secondary-text);
+    .subtitle-nocolor {
         font-size: 12px;
         font-weight: 400;
+    }
+
+    .subtitle {
+        @extend .subtitle-nocolor;
+        color: mat-color($foreground, secondary-text);
     }
 
     .user-subtitle {
