@@ -344,8 +344,8 @@ export class AgendaListComponent extends BaseListViewComponent<ViewItem> impleme
     }
 
     public async deleteAllSpeakersOfAllListsOfSpeakers(): Promise<void> {
-        const title = this.translate.instant('Are you sure you want to clear all speakers of all lists of speakers?');
-        const content = this.translate.instant('All lists of speakers will be cleared and are empty afterwards.');
+        const title = this.translate.instant('Are you sure you want to clear all speakers of all lists?');
+        const content = this.translate.instant('All lists of speakers will be cleared.');
         if (await this.promptService.open(title, content)) {
             this.listOfSpeakersRepo.deleteAllSpeakersOfAllListsOfSpeakers().catch(this.raiseError);
         }

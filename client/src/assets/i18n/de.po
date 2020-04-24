@@ -73,7 +73,7 @@ msgid "Activate statute amendments"
 msgstr "Satzungsänderungsanträge aktivieren"
 
 msgid "Activate vote weight"
-msgstr "Stimmgewicht aktivieren"
+msgstr "Stimmgewichtung aktivieren"
 
 msgid "Active"
 msgstr "Aktiv"
@@ -140,6 +140,9 @@ msgstr "Sichtbarkeit in der Tagesordnung"
 
 msgid "All casted ballots"
 msgstr "Alle abgegebenen Stimmzettel"
+
+msgid "All lists of speakers will be cleared."
+msgstr "Alle Redelisten werden bereinigt."
 
 msgid "All topics will be deleted and won't be accessible afterwards."
 msgstr "Alle Themen werden gelöscht und sind danach nicht mehr zugänglich."
@@ -226,6 +229,9 @@ msgid "Are you sure you want to anonymize all votes? This cannot be undone."
 msgstr ""
 "Sollen alle Stimmen wirklich anonymisiert werden? Dies kann nicht rückgängig"
 " gemacht werden."
+
+msgid "Are you sure you want to clear all speakers of all lists?"
+msgstr "Sollen wirklich alle Redner/innen von allen Listen entfernt werden?"
 
 msgid "Are you sure you want to delete all selected elections?"
 msgstr "Sollen alle ausgewählten Wahlen wirklich gelöscht werden?"
@@ -613,6 +619,9 @@ msgstr "Alle löschen"
 msgid "Clear all filters"
 msgstr "Alle Filter löschen"
 
+msgid "Clear all list of speakers"
+msgstr "Alle Redelisten bereinigen"
+
 msgid "Clear list"
 msgstr "Liste leeren"
 
@@ -895,6 +904,9 @@ msgstr "CSV-Beispiel-Datei herunterladen"
 msgid "Drop files into this area OR click here to select files"
 msgstr ""
 "Dateien auf diesen Bereich ziehen ODER hier klicken um Dateien auszuwählen"
+
+msgid "Duplicate"
+msgstr "Duplizieren"
 
 msgid "Duration"
 msgstr "Dauer"
