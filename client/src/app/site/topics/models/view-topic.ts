@@ -26,7 +26,7 @@ export class ViewTopic extends BaseViewModelWithAgendaItemAndListOfSpeakers<Topi
         return {
             properties: [
                 { key: 'Title', value: this.getTitle() },
-                { key: 'Text', value: this.text }
+                { key: 'Text', value: this.text, trusted: true }
             ],
             searchValue: [this.getTitle(), this.text]
         };
