@@ -407,13 +407,14 @@ class AssignmentPollViewSet(BasePollViewSet):
                 )
 
         else:
+            available_options = poll.get_options()
             if poll.pollmethod == AssignmentPoll.POLLMETHOD_VOTES:
                 if isinstance(data, dict):
                     amount_sum = 0
                     for option_id, amount in data.items():
                         if not is_int(option_id):
                             raise ValidationError({"detail": "Each id must be an int."})
-                        if not AssignmentOption.objects.filter(id=option_id).exists():
+                        if not available_options.filter(id=option_id).exists():
                             raise ValidationError(
                                 {"detail": f"Option {option_id} does not exist."}
                             )
@@ -458,7 +459,7 @@ class AssignmentPollViewSet(BasePollViewSet):
                 for option_id, value in data.items():
                     if not is_int(option_id):
                         raise ValidationError({"detail": "Keys must be int"})
-                    if not AssignmentOption.objects.filter(id=option_id).exists():
+                    if not available_options.filter(id=option_id).exists():
                         raise ValidationError(
                             {"detail": f"Option {option_id} does not exist."}
                         )
@@ -511,9 +512,7 @@ class AssignmentPollViewSet(BasePollViewSet):
 
         poll.voted.add(user)
 
-    def create_votes_type_named_pseudoanonymous(
-        self, data, poll, check_user, vote_user
-    ):
+    def create_votes_types_yn_yna(self, data, poll, check_user, vote_user):
         """
         check_user is used for the voted-array and weight of the vote,
         vote_user is the one put into the vote
@@ -545,7 +544,7 @@ class AssignmentPollViewSet(BasePollViewSet):
             AssignmentPoll.POLLMETHOD_YN,
             AssignmentPoll.POLLMETHOD_YNA,
         ):
-            self.create_votes_type_named_pseudoanonymous(data, poll, user, user)
+            self.create_votes_types_yn_yna(data, poll, user, user)
 
     def handle_pseudoanonymous_vote(self, data, poll, user):
         if poll.pollmethod == AssignmentPoll.POLLMETHOD_VOTES:
@@ -555,7 +554,7 @@ class AssignmentPollViewSet(BasePollViewSet):
             AssignmentPoll.POLLMETHOD_YN,
             AssignmentPoll.POLLMETHOD_YNA,
         ):
-            self.create_votes_type_named_pseudoanonymous(data, poll, user, None)
+            self.create_votes_types_yn_yna(data, poll, user, None)
 
     def convert_option_data(self, poll, data):
         poll_options = poll.get_options()

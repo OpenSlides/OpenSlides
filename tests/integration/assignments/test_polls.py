@@ -1051,6 +1051,31 @@ class VoteAssignmentPollNamedYNA(VoteAssignmentPollBaseTestClass):
         vote = AssignmentVote.objects.get()
         self.assertEqual(vote.value, "Y")
 
+    def test_option_from_wrong_poll(self):
+        self.poll2 = self.create_poll()
+        self.poll2.create_options()
+        inform_changed_data(self.poll2)
+        # start both polls
+        self.poll.state = AssignmentPoll.STATE_STARTED
+        self.poll.save()
+        self.poll2.state = AssignmentPoll.STATE_STARTED
+        self.poll2.save()
+        option2 = self.poll2.options.get()
+        # Do request to poll with option2 (which is wrong...)
+        response = self.client.post(
+            reverse("assignmentpoll-vote", args=[self.poll.pk]), {str(option2.id): "Y"},
+        )
+        self.assertHttpStatusVerbose(response, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(AssignmentVote.objects.count(), 0)
+        option = self.poll.options.get()
+        option2 = self.poll2.options.get()
+        self.assertEqual(option.yes, Decimal("0"))
+        self.assertEqual(option.no, Decimal("0"))
+        self.assertEqual(option.abstain, Decimal("0"))
+        self.assertEqual(option2.yes, Decimal("0"))
+        self.assertEqual(option2.no, Decimal("0"))
+        self.assertEqual(option2.abstain, Decimal("0"))
+
     def test_too_many_options(self):
         self.start_poll()
         response = self.client.post(
