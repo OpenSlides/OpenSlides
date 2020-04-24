@@ -61,6 +61,9 @@ msgstr ""
 msgid "Activate statute amendments"
 msgstr ""
 
+msgid "Activate vote weight"
+msgstr ""
+
 msgid "Active"
 msgstr ""
 
@@ -662,6 +665,9 @@ msgstr ""
 msgid "Create final print template"
 msgstr ""
 
+msgid "Create user"
+msgstr ""
+
 msgid "Creating PDF file ..."
 msgstr ""
 
@@ -1102,6 +1108,9 @@ msgstr ""
 msgid "Has amendments"
 msgstr ""
 
+msgid "Has changed vote weight"
+msgstr ""
+
 msgid "Has no speakers"
 msgstr ""
 
@@ -1109,6 +1118,9 @@ msgid "Has notes"
 msgstr ""
 
 msgid "Has speakers"
+msgstr ""
+
+msgid "Has unchanged vote weight"
 msgstr ""
 
 msgid "Header background color"
@@ -2655,6 +2667,9 @@ msgid "Vote deleted"
 msgstr ""
 
 msgid "Vote updated"
+msgstr ""
+
+msgid "Vote weight"
 msgstr ""
 
 msgid "Votes"

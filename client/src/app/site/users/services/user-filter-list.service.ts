@@ -88,7 +88,7 @@ export class UserFilterListService extends BaseFilterListService<ViewUser> {
             },
             {
                 property: 'isVoteWeightOne',
-                label: this.translate.instant('Vote Weight'),
+                label: this.translate.instant('Vote weight'),
                 options: [
                     { condition: false, label: this.translate.instant('Has changed vote weight') },
                     { condition: true, label: this.translate.instant('Has unchanged vote weight') }

@@ -346,6 +346,7 @@ _('Can change its own password');
 _('General');
 _('Sort name of participants by');
 _('Enable participant presence view');
+_('Activate vote weight');
 _('Allow users to set themselves as present');
 _('e.g. for online meetings');
 _('Participants');
