@@ -123,7 +123,7 @@
         <mat-divider></mat-divider>
         <button mat-menu-item *osPerms="'agenda.can_manage'" class="red-warning-text" (click)="deleteAllSpeakersOfAllListsOfSpeakers()">
             <mat-icon>delete</mat-icon>
-            <span>{{ 'Delete all speakers' | translate }}</span>
+            <span>{{ 'Clear all list of speakers' | translate }}</span>
         </button>
         <mat-divider></mat-divider>
         <!-- Settings -->
@@ -183,7 +183,7 @@
             <!-- Duplicate items -->
             <button mat-menu-item [disabled]="!selectedRows.length" (click)="duplicateMultipleTopics(selectedRows)">
                 <mat-icon>file_copy</mat-icon>
-                <span>{{ 'Create copy of selected topics' | translate }}</span>
+                <span>{{ 'Duplicate' | translate }}</span>
             </button>
 
             <!-- Delete selected -->
@@ -220,7 +220,7 @@
             <!-- Duplicate button -->
             <button mat-menu-item (click)="duplicateTopic(item.contentObject)" *ngIf="isTopic(item.contentObject)">
                 <mat-icon>file_copy</mat-icon>
-                <span>{{ 'Create copy' | translate }}</span>
+                <span>{{ 'Duplicate' | translate }}</span>
             </button>
 
             <!-- Delete Button -->

@@ -126,6 +126,9 @@ msgstr ""
 msgid "All casted ballots"
 msgstr ""
 
+msgid "All lists of speakers will be cleared."
+msgstr ""
+
 msgid "All topics will be deleted and won't be accessible afterwards."
 msgstr ""
 
@@ -208,6 +211,9 @@ msgid "Arabic"
 msgstr ""
 
 msgid "Are you sure you want to anonymize all votes? This cannot be undone."
+msgstr ""
+
+msgid "Are you sure you want to clear all speakers of all lists?"
 msgstr ""
 
 msgid "Are you sure you want to delete all selected elections?"
@@ -575,6 +581,9 @@ msgstr ""
 msgid "Clear all filters"
 msgstr ""
 
+msgid "Clear all list of speakers"
+msgstr ""
+
 msgid "Clear list"
 msgstr ""
 
@@ -838,6 +847,9 @@ msgid "Download CSV example file"
 msgstr ""
 
 msgid "Drop files into this area OR click here to select files"
+msgstr ""
+
+msgid "Duplicate"
 msgstr ""
 
 msgid "Duration"
