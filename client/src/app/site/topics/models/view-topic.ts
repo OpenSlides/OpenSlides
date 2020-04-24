@@ -17,6 +17,10 @@ export interface TopicTitleInformation extends TitleInformationWithAgendaItem {
 export class ViewTopic extends BaseViewModelWithAgendaItemAndListOfSpeakers<Topic> implements TopicTitleInformation {
     public static COLLECTIONSTRING = Topic.COLLECTIONSTRING;
 
+    public get topic(): Topic {
+        return this._model;
+    }
+
     /**
      * Formats the category for search
      *

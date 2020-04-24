@@ -350,4 +350,43 @@ export class AgendaListComponent extends BaseListViewComponent<ViewItem> impleme
             this.listOfSpeakersRepo.deleteAllSpeakersOfAllListsOfSpeakers().catch(this.raiseError);
         }
     }
+
+    /**
+     * Duplicates a single selected item.
+     *
+     * @param item The item to duplicte.
+     */
+    public duplicateTopic(topic: ViewTopic): void {
+        this.topicRepo.duplicateTopic(topic);
+    }
+
+    /**
+     * Duplicates all selected items, that are topics.
+     *
+     * @param selectedItems All selected items.
+     */
+    public duplicateMultipleTopics(selectedItems: ViewItem[]): void {
+        for (const item of selectedItems) {
+            if (this.isTopic(item.contentObject)) {
+                this.duplicateTopic(item.contentObject);
+            }
+        }
+    }
+
+    /**
+     * Helper function to determine, if the given item is a `Topic`.
+     *
+     * @param item The selected item.
+     *
+     * @returns `true` if the given item's collection is equal to the `Topic.COLLECTIONSTRING`.
+     */
+    public isTopic(obj: any): obj is ViewTopic {
+        const topic = obj as ViewTopic;
+        return (
+            !!topic &&
+            topic.collectionString !== undefined &&
+            topic.collectionString === ViewTopic.COLLECTIONSTRING &&
+            !!topic.topic
+        );
+    }
 }
