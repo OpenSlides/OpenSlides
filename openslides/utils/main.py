@@ -351,11 +351,7 @@ def is_local_installation() -> bool:
 
     This is the case if manage.py is used, or when the --local-installation flag is set.
     """
-    return (
-        True
-        if "--local-installation" in sys.argv or "manage.py" in sys.argv[0]
-        else False
-    )
+    return "--local-installation" in sys.argv or "manage.py" in sys.argv[0]
 
 
 def is_windows() -> bool:

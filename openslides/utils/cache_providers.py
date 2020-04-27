@@ -44,6 +44,9 @@ class ElementCacheProvider(Protocol):
     ) -> None:
         ...
 
+    async def add_to_full_data(self, data: Dict[str, str]) -> None:
+        ...
+
     async def data_exists(self) -> bool:
         ...
 
@@ -252,6 +255,10 @@ class RedisCacheProvider:
             )
             await tr.execute()
 
+    async def add_to_full_data(self, data: Dict[str, str]) -> None:
+        async with get_connection() as redis:
+            redis.hmset_dict(self.full_data_cache_key, data)
+
     async def data_exists(self) -> bool:
         """
         Returns True, when there is data in the cache.
@@ -331,7 +338,7 @@ class RedisCacheProvider:
         Returns all elements since a change_id (included) and until the max_change_id (included).
 
         The returend value is a two element tuple. The first value is a dict the elements where
-        the key is the collection_string and the value a list of (json-) encoded elements. The
+        the key is the collection and the value a list of (json-) encoded elements. The
         second element is a list of element_ids, that have been deleted since the change_id.
         """
         changed_elements: Dict[str, List[bytes]] = defaultdict(list)
@@ -361,8 +368,8 @@ class RedisCacheProvider:
                 # The element is not in the cache. It has to be deleted.
                 deleted_elements.append(element_id.decode())
             else:
-                collection_string, id = split_element_id(element_id)
-                changed_elements[collection_string].append(element_json)
+                collection, id = split_element_id(element_id)
+                changed_elements[collection].append(element_json)
         return changed_elements, deleted_elements
 
     @ensure_cache_wrapper()
@@ -501,6 +508,9 @@ class MemoryCacheProvider:
         self.full_data = data
         self.default_change_id = default_change_id
 
+    async def add_to_full_data(self, data: Dict[str, str]) -> None:
+        self.full_data.update(data)
+
     async def data_exists(self) -> bool:
         return bool(self.full_data) and self.default_change_id >= 0
 
@@ -564,8 +574,8 @@ class MemoryCacheProvider:
             if element_json is None:
                 deleted_elements.append(element_id)
             else:
-                collection_string, id = split_element_id(element_id)
-                changed_elements[collection_string].append(element_json.encode())
+                collection, id = split_element_id(element_id)
+                changed_elements[collection].append(element_json.encode())
         return changed_elements, deleted_elements
 
     async def get_current_change_id(self) -> int:
