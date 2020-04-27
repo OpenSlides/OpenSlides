@@ -85,28 +85,23 @@ class ConfigHandler:
         before this is called.
         """
         async with build_key_to_id_lock:
-            # Another cliend could have build the key_to_id_dict, check and return early
+            # Another worker could have build the key_to_id_dict, check and return early
             if self.key_to_id is not None:
                 return
 
-        config_full_data = await element_cache.get_collection_data(
-            self.get_collection_string()
-        )
-        elements = config_full_data.values()
-        self.key_to_id = {}
-        for element in elements:
-            self.key_to_id[element["key"]] = element["id"]
+            config_full_data = await element_cache.get_collection_data(
+                self.get_collection_string()
+            )
+            elements = config_full_data.values()
+            self.key_to_id = {}
+            for element in elements:
+                self.key_to_id[element["key"]] = element["id"]
 
     def exists(self, key: str) -> bool:
         """
         Returns True, if the config varialbe was defined.
         """
-        try:
-            self.config_variables[key]
-        except KeyError:
-            return False
-        else:
-            return True
+        return key in self.config_variables
 
     # TODO: Remove the any by using right types in INPUT_TYPE_MAPPING
     def __setitem__(self, key: str, value: Any) -> None:
