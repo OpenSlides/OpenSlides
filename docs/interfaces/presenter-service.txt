@@ -32,7 +32,7 @@ handle_request(payload: Presenter[], user_id: Id): PresenterResult[]
  */
 Interface Presenter {
     presenter: string;
-    data: any;
+    data: object;
 }
 
 /**
@@ -43,7 +43,7 @@ Interface Presenter {
  * TODO: Maybe we do not want to response an error but always throw an exception
  * instead.
  */
-type PresenterResult = any | PresenterError;
+type PresenterResult = object | PresenterError;
 
 /**
  * A common format for errors.

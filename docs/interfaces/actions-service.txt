@@ -19,7 +19,9 @@ interface Action {
     data: object[];  # An array of action specific data. See JSON schema defintions.
 }
 
-interface ActionResult {
-    success: boolean;
-    message: string;
+type actionResult = object | ActionError
+
+Interface ActionError {
+    type: number;
+    msg: string;
 }
