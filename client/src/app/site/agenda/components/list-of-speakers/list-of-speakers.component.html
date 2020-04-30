@@ -95,9 +95,18 @@
             <!-- implicit speaker references into the component using ng-template slot -->
             <ng-template let-speaker>
                 <span *osPerms="'agenda.can_manage_list_of_speakers'">
+
+                    <!-- Speaker count -->
                     <span *ngIf="hasSpokenCount(speaker)" class="red-warning-text speaker-warning">
                         {{ hasSpokenCount(speaker) + 1 }}. <span>{{ 'contribution' | translate }}</span>
                     </span>
+
+                    <!-- First contribution -->
+                    <span *ngIf="showFistContributionHint && isFirstContribution(speaker)" class="speaker-warning">
+                        {{ 'First contribution' | translate }}
+                    </span>
+
+                    <!-- Speaker gender -->
                     <span *ngIf="speaker.gender">({{ speaker.gender | translate }})</span>
                 </span>
 

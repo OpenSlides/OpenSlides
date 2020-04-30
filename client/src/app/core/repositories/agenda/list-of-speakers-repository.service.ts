@@ -224,6 +224,10 @@ export class ListOfSpeakersRepositoryService extends BaseHasContentObjectReposit
         await this.httpService.post('/rest/agenda/list-of-speakers/delete_all_speakers/');
     }
 
+    public isFirstContribution(speaker: ViewSpeaker): boolean {
+        return !this.getViewModelList().some(list => list.hasSpeakerSpoken(speaker));
+    }
+
     /**
      * Helper function get the url to the speaker rest address
      *

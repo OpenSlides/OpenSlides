@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
@@ -31,7 +31,8 @@ import { SpeakerState, ViewSpeaker } from '../../models/view-speaker';
 @Component({
     selector: 'os-list-of-speakers',
     templateUrl: './list-of-speakers.component.html',
-    styleUrls: ['./list-of-speakers.component.scss']
+    styleUrls: ['./list-of-speakers.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit {
     @ViewChild(SortingListComponent)
@@ -122,6 +123,8 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
 
     private closSubscription: Subscription | null;
 
+    public showFistContributionHint: boolean;
+
     /**
      * Constructor for speaker list component. Generates the forms.
      *
@@ -205,6 +208,9 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
         this.subscriptions.push(
             this.config.get('agenda_present_speakers_only').subscribe(() => {
                 this.filterUsers();
+            }),
+            this.config.get<boolean>('agenda_show_first_contribution').subscribe(show => {
+                this.showFistContributionHint = show;
             })
         );
     }
@@ -414,6 +420,15 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
                 return finishedSpeaker.user.id === speaker.user.id;
             }
         }).length;
+    }
+
+    /**
+     * Returns true if the speaker did never appear on any list of speakers
+     *
+     * @param speaker
+     */
+    public isFirstContribution(speaker: ViewSpeaker): boolean {
+        return this.listOfSpeakersRepo.isFirstContribution(speaker);
     }
 
     /**
