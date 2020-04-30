@@ -18,7 +18,7 @@
                 mat-mini-fab
                 *ngIf="isJoined"
                 (click)="toggleMute()"
-                matTooltip="{{ 'mute/unmute' | translate }}"
+                matTooltip="{{ 'Mute / Unmute' | translate }}"
             >
                 <mat-icon color="{{ muted ? 'primary' : 'warn' }}">{{ muted ? 'moff' : 'mic' }}</mat-icon>
             </button>
@@ -41,7 +41,7 @@
             <!-- <span class="list-wrapper apply-theme regular-shadow"> -->
             <!-- open-window button -->
             <button class="toggle-list-button" mat-button (click)="toggleShowJitsi()">
-                <span> {{ 'Audio Conference' | translate }}</span>
+                <span> {{ 'Audio conference' | translate }}</span>
                 <mat-icon class="opened-indicator" *ngIf="!showJitsiWindow">keyboard_arrow_up</mat-icon>
                 <mat-icon class="opened-indicator" *ngIf="showJitsiWindow">keyboard_arrow_down </mat-icon>
 
@@ -67,9 +67,9 @@
                 <div class="content">
                     <!-- The "somewhere else active" warning -->
                     <div class="disconnected" *ngIf="isJitsiActiveInAnotherTab && !isJitsiActive">
-                        <span>{{ 'Another instance of Jitsi is active in you OpenSlides session' | translate }}</span>
+                        <span>{{ 'The audio conference is already running in your OpenSlides session.' | translate }}</span>
                         <button mat-button color="warn" (click)="forceStart()">
-                            <span>{{ 'Force Jitsi to reload' | translate }}</span>
+                            <span>{{ 'Reenter to audio conference' | translate }}</span>
                         </button>
                     </div>
 
@@ -134,7 +134,7 @@
                             class="open-jitsi-in-tab"
                             color="accent"
                             (click)="openExternal()"
-                            matTooltip="{{ 'Open Jitsi in new tab' | translate }}"
+                            matTooltip="{{ 'Open Jitsi Meet in new tab' | translate }}"
                             [disabled]="isRoomPasswordProtected"
                         >
                             <mat-icon>
