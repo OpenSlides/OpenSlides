@@ -1,0 +1,149 @@
+<div class="jitsi-integration">
+    <div
+        class="jitsi-bar"
+        [ngClass]="{
+            'cdk-visually-hidden': !enableJitsi,
+            'cast-shadow': !showJitsiWindow
+        }"
+    >
+        <span
+            class="control-icon-wrapper apply-theme"
+            [ngClass]="{
+                'cast-shadow': showJitsiWindow
+            }"
+        >
+            <!-- mute/unmute button -->
+            <button
+                class="indicator quick-icon"
+                mat-mini-fab
+                *ngIf="isJoined"
+                (click)="toggleMute()"
+                matTooltip="{{ 'mute/unmute' | translate }}"
+            >
+                <mat-icon color="{{ muted ? 'primary' : 'warn' }}">{{ muted ? 'moff' : 'mic' }}</mat-icon>
+            </button>
+
+            <!-- disconnected icon -->
+            <mat-icon class="indicator" *ngIf="!isJoined">cloud_off</mat-icon>
+
+            <!-- hide unhide video -->
+            <!-- <button class="quick-icon" mat-mini-fab [disabled]="!isJoined">
+            <mat-icon *ngIf="isJoined" color="primary">videocam_off</mat-icon>
+            </button> -->
+        </span>
+
+        <span
+            class="list-wrapper apply-theme"
+            [ngClass]="{
+                'cast-shadow': showJitsiWindow
+            }"
+        >
+            <!-- <span class="list-wrapper apply-theme regular-shadow"> -->
+            <!-- open-window button -->
+            <button class="toggle-list-button" mat-button (click)="toggleShowJitsi()">
+                <span> {{ 'Audio Conference' | translate }}</span>
+                <mat-icon class="opened-indicator" *ngIf="!showJitsiWindow">keyboard_arrow_up</mat-icon>
+                <mat-icon class="opened-indicator" *ngIf="showJitsiWindow">keyboard_arrow_down </mat-icon>
+
+                <div class="one-line">
+                    &nbsp;
+                    <span *ngIf="currentDominantSpeaker">
+                        » <span class="dominant-speaker">{{ currentDominantSpeaker.displayName }}</span>
+                    </span>
+                    <span *ngIf="!isJitsiActive">
+                        <i>{{ 'disconnected' | translate }}</i>
+                    </span>
+                </div>
+            </button>
+
+            <!-- unfolded list -->
+            <div
+                class="jitsi-list"
+                [ngClass]="{
+                    'cdk-visually-hidden': !showJitsiWindow
+                }"
+            >
+                <!-- Jitsi content window -->
+                <div class="content">
+                    <!-- The "somewhere else active" warning -->
+                    <div class="disconnected" *ngIf="isJitsiActiveInAnotherTab && !isJitsiActive">
+                        <span>{{ 'Another instance of Jitsi is active in you OpenSlides session' | translate }}</span>
+                        <button mat-button color="warn" (click)="forceStart()">
+                            <span>{{ 'Force Jitsi to reload' | translate }}</span>
+                        </button>
+                    </div>
+
+                    <div class="disconnected" *ngIf="!isJitsiActiveInAnotherTab && !isJitsiActive">
+                        <span>{{ 'disconnected' | translate }}</span>
+                    </div>
+
+                    <!-- Hidden jitsy container -->
+                    <div [ngStyle]="{ display: 'none' }" #jitsi></div>
+
+                    <!-- user list -->
+                    <div class="room-members" *ngIf="isJitsiActive">
+                        <div class="member-list">
+                            <ol>
+                                <li
+                                    *ngFor="let memberId of memberList; trackBy: trackByIndex"
+                                    [ngClass]="{
+                                        focused: members[memberId].focus
+                                    }"
+                                >
+                                    <div class="member-list-entry">
+                                        {{ members[memberId].name }}
+                                    </div>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Custom control buttons -->
+                <div>
+                    <mat-divider></mat-divider>
+                    <div class="control-grid">
+                        <div class="control-buttons">
+                            <!-- Hangup -->
+                            <button
+                                mat-mini-fab
+                                color="warn"
+                                (click)="stopJitsi()"
+                                *ngIf="isJitsiActive && isJoined"
+                                matTooltip="{{ 'Leave' | translate }}"
+                            >
+                                <mat-icon>call_end</mat-icon>
+                            </button>
+
+                            <!-- Enter jitsi manually -->
+                            <button
+                                mat-mini-fab
+                                color="accent"
+                                (click)="enterConversation()"
+                                [disabled]="isJitsiActive || isJitsiActiveInAnotherTab"
+                                *ngIf="!isJoined"
+                                matTooltip="{{ 'Enter conference' | translate }}"
+                            >
+                                <mat-icon>call</mat-icon>
+                            </button>
+                        </div>
+
+                        <!-- Open in new tab -->
+                        <button
+                            mat-icon-button
+                            class="open-jitsi-in-tab"
+                            color="accent"
+                            (click)="openExternal()"
+                            matTooltip="{{ 'Open Jitsi in new tab' | translate }}"
+                            [disabled]="isRoomPasswordProtected"
+                        >
+                            <mat-icon>
+                                open_in_new
+                            </mat-icon>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </span>
+    </div>
+</div>

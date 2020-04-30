@@ -126,6 +126,7 @@ import { AssignmentPollDetailContentComponent } from './components/assignment-po
 
 import { GlobalSpinnerComponent } from './components/global-spinner/global-spinner.component';
 import { UserMenuComponent } from './components/user-menu/user-menu.component';
+import { JitsiComponent } from './components/jitsi/jitsi.component';
 
 /**
  * Share Module for all "dumb" components and pipes.
@@ -292,7 +293,8 @@ import { UserMenuComponent } from './components/user-menu/user-menu.component';
         PollPercentBasePipe,
         VotingPrivacyWarningComponent,
         MotionPollDetailContentComponent,
-        AssignmentPollDetailContentComponent
+        AssignmentPollDetailContentComponent,
+        JitsiComponent
     ],
     declarations: [
         PermsDirective,
@@ -352,7 +354,8 @@ import { UserMenuComponent } from './components/user-menu/user-menu.component';
         PollPercentBasePipe,
         VotingPrivacyWarningComponent,
         MotionPollDetailContentComponent,
-        AssignmentPollDetailContentComponent
+        AssignmentPollDetailContentComponent,
+        JitsiComponent
     ],
     providers: [
         {

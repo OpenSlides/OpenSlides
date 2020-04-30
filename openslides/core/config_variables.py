@@ -122,6 +122,24 @@ def get_config_variables():
         subgroup="System",
     )
 
+    yield ConfigVariable(
+        name="general_system_conference_auto_connect",
+        default_value=False,
+        input_type="boolean",
+        label="Show the audio conferece integration at the bottom right corner",
+        weight=142,
+        subgroup="System",
+    )
+
+    yield ConfigVariable(
+        name="general_system_conference_show",
+        default_value=False,
+        input_type="boolean",
+        label="Allow users to automatically connect to the audio conference",
+        weight=143,
+        subgroup="System",
+    )
+
     # General export settings
 
     yield ConfigVariable(

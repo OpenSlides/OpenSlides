@@ -10,6 +10,11 @@ $pbl-height: var(--pbl-height);
     height: $pbl-height;
 }
 
+// additional space if the jitsi integration is active
+.pbl-ngrid-row:last-of-type {
+    margin-bottom: 30px !important;
+}
+
 .pbl-ngrid-cell {
     height: inherit;
 }

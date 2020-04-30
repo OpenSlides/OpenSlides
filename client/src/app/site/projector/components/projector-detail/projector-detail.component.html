@@ -41,7 +41,7 @@
 <os-grid-layout *ngIf="projector">
     <os-tile [preferredSize]="projectorTileSizeLeft">
         <div *ngIf="projector" class="projector-detail-wrapper column-left">
-            <a [routerLink]="['/projector', projector.id]">
+            <a [routerLink]="['/projector', projector.id]" target="_blank">
                 <div id="projector">
                     <os-projector [projector]="projector"></os-projector>
                 </div>
