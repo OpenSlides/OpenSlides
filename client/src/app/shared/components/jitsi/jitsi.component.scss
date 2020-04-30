@@ -1,0 +1,116 @@
+.jitsi-integration {
+    .cast-shadow {
+        box-shadow: -3px -3px 10px 0px rgba(0, 0, 0, 0.2) !important;
+    }
+
+    .jitsi-bar {
+        z-index: 99;
+        display: flex;
+        position: fixed;
+        right: 20px;
+        bottom: 0;
+        $wrapper-padding: 5px;
+        $bar-height: 40px;
+
+        .control-icon-wrapper {
+            z-index: 1;
+            min-height: $bar-height;
+            display: flex;
+            margin-top: auto;
+            padding-right: 0.5em;
+            padding: $wrapper-padding 0 $wrapper-padding $wrapper-padding;
+            border-top-left-radius: 4px;
+
+            .indicator {
+                width: 40px;
+                text-align: center;
+                margin: auto $wrapper-padding auto 0;
+            }
+        }
+
+        .list-wrapper {
+            min-height: $bar-height;
+            padding-top: $wrapper-padding;
+            border-top-right-radius: 4px;
+            width: 250px;
+            max-width: 250px;
+
+            .toggle-list-button {
+                position: relative;
+                line-height: normal;
+                width: 100%;
+                padding: 0 2.5em;
+                margin-bottom: $wrapper-padding;
+                font-weight: normal;
+                text-align: right;
+
+                .opened-indicator {
+                    position: absolute;
+                    right: $wrapper-padding;
+                    top: $wrapper-padding;
+                }
+
+                .dominant-speaker {
+                    font-weight: 500;
+                    width: fit-content;
+                    margin: 0 auto;
+                }
+            }
+
+            .jitsi-list {
+                .content {
+                    height: 40vh;
+                    clear: both;
+
+                    .disconnected {
+                        display: flex;
+                        flex-direction: column;
+                        height: inherit;
+                        padding-left: 1em;
+                        padding-right: 1em;
+
+                        span {
+                            margin: auto;
+                        }
+                    }
+
+                    .room-members {
+                        height: inherit;
+
+                        .member-list {
+                            max-height: 100%;
+                            overflow-y: auto;
+
+                            .member-list-entry {
+                                margin: 5px;
+                                overflow-x: hidden;
+                                text-overflow: ellipsis;
+                                white-space: nowrap;
+                            }
+                        }
+
+                        .focused {
+                            font-weight: bold;
+                        }
+                    }
+                }
+
+                .control-grid {
+                    padding: $wrapper-padding 0;
+                    display: grid;
+                    grid-template-areas: 'helper buttons new-tab';
+                    grid-template-columns: 40px auto 40px;
+
+                    .control-buttons {
+                        grid-area: buttons;
+                        margin: auto;
+                    }
+
+                    .open-jitsi-in-tab {
+                        grid-area: new-tab;
+                    }
+                }
+            }
+        }
+    }
+}

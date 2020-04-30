@@ -35,6 +35,14 @@ export class ProjectorListEntryComponent extends BaseViewComponent implements On
         return this._projector;
     }
 
+    public get projectionTarget(): '_blank' | '_self' {
+        if (this.operator.hasPerms('core.can_manage_projector')) {
+            return '_self';
+        } else {
+            return '_blank';
+        }
+    }
+
     private _projector: ViewProjector;
 
     /**

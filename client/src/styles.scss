@@ -32,6 +32,7 @@
 @import './app/site/motions/modules/motion-poll/motion-poll-detail/motion-poll-detail.component.scss-theme.scss';
 @import './app/site/assignments/components/assignment-poll-detail/assignment-poll-detail-component.scss-theme.scss';
 @import './app/shared/components/progress-snack-bar/progress-snack-bar.component.scss-theme.scss';
+@import './app/shared/components/jitsi/jitsi.component.scss-theme.scss';
 
 /** fonts */
 @import './assets/styles/fonts.scss';
@@ -64,6 +65,7 @@ $narrow-spacing: (
     @include os-motion-poll-detail-style($theme);
     @include os-assignment-poll-detail-style($theme);
     @include os-progress-snack-bar-style($theme);
+    @include os-jitsi-theme($theme);
 }
 
 /** Load projector specific SCSS values */
@@ -335,9 +337,15 @@ b,
     text-align: center;
     color: gray;
 }
-mat-card {
+
+.regular-shadow {
     box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.37) !important;
 }
+
+.mat-card {
+    @extend .regular-shadow;
+}
+
 .os-card {
     max-width: 770px;
     margin-top: 20px !important;

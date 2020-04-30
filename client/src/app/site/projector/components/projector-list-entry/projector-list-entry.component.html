@@ -24,7 +24,7 @@
         </button>
     </ng-container>
     <ng-container class="meta-text-block-content">
-        <a class="no-markup" [routerLink]="getDetailLink()">
+        <a class="no-markup" [routerLink]="getDetailLink()" [target]="projectionTarget">
             <div class="projector">
                 <os-projector [projector]="projector"></os-projector>
             </div>
