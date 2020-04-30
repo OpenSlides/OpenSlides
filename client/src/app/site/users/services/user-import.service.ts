@@ -51,7 +51,8 @@ export class UserImportService extends BaseImportService<User> {
         NoName: 'Entry has no valid name',
         DuplicateImport: 'Entry cannot be imported twice. This line will be ommitted',
         ParsingErrors: 'Some csv values could not be read correctly.',
-        FailedImport: 'Imported user could not be imported.'
+        FailedImport: 'Imported user could not be imported.',
+        vote_weight: 'The vote weight has too many decimal places (max.: 6).'
     };
 
     /**
@@ -94,19 +95,19 @@ export class UserImportService extends BaseImportService<User> {
      * @returns a new entry representing an User
      */
     public mapData(line: string): NewEntry<User> {
-        const newViewUser = new ImportCreateUser();
+        const user = new ImportCreateUser();
         const headerLength = Math.min(this.expectedHeader.length, line.length);
         let hasErrors = false;
         for (let idx = 0; idx < headerLength; idx++) {
             switch (this.expectedHeader[idx]) {
                 case 'groups_id':
-                    newViewUser.csvGroups = this.getGroups(line[idx]);
+                    user.csvGroups = this.getGroups(line[idx]);
                     break;
                 case 'is_active':
                 case 'is_committee':
                 case 'is_present':
                     try {
-                        newViewUser[this.expectedHeader[idx]] = this.toBoolean(line[idx]);
+                        user[this.expectedHeader[idx]] = this.toBoolean(line[idx]);
                     } catch (e) {
                         if (e instanceof TypeError) {
                             console.log(e);
@@ -116,21 +117,21 @@ export class UserImportService extends BaseImportService<User> {
                     }
                     break;
                 case 'number':
-                    newViewUser.number = line[idx];
+                    user.number = line[idx];
                     break;
                 case 'vote_weight':
                     if (!line[idx]) {
-                        newViewUser[this.expectedHeader[idx]] = 1;
+                        user[this.expectedHeader[idx]] = 1;
                     } else {
-                        newViewUser[this.expectedHeader[idx]] = line[idx];
+                        user[this.expectedHeader[idx]] = line[idx];
                     }
                     break;
                 default:
-                    newViewUser[this.expectedHeader[idx]] = line[idx];
+                    user[this.expectedHeader[idx]] = line[idx];
                     break;
             }
         }
-        const newEntry = this.userToEntry(newViewUser);
+        const newEntry = this.userToEntry(user);
         if (hasErrors) {
             this.setError(newEntry, 'ParsingErrors');
         }
@@ -151,8 +152,8 @@ export class UserImportService extends BaseImportService<User> {
             if (entry.status !== 'new') {
                 continue;
             }
-            const openBlocks = (entry.newEntry as ImportCreateUser).solveGroups(this.newGroups);
-            if (openBlocks) {
+            const openGroups = (entry.newEntry as ImportCreateUser).solveGroups(this.newGroups);
+            if (openGroups) {
                 this.setError(entry, 'Group');
                 this.updatePreview();
                 continue;
@@ -163,13 +164,15 @@ export class UserImportService extends BaseImportService<User> {
         }
         while (importUsers.length) {
             const subSet = importUsers.splice(0, 100); // don't send bulks too large
-            const importedTracks = await this.repo.bulkCreate(subSet);
-            subSet.map(entry => {
-                const importModel = this.entries.find(e => e.importTrackId === entry.importTrackId);
-                if (importModel && importedTracks.includes(importModel.importTrackId)) {
-                    importModel.status = 'done';
+            const result = await this.repo.bulkCreate(subSet);
+            subSet.forEach(importUser => {
+                // const importModel = this.entries.find(e => e.importTrackId === importUser.importTrackId);
+                if (importUser && result.importedTrackIds.includes(importUser.importTrackId)) {
+                    importUser.status = 'done';
+                } else if (result.errors[importUser.importTrackId]) {
+                    this.setError(importUser, result.errors[importUser.importTrackId]);
                 } else {
-                    this.setError(importModel, 'FailedImport');
+                    this.setError(importUser, 'FailedImport');
                 }
             });
             this.updatePreview();
@@ -273,20 +276,20 @@ export class UserImportService extends BaseImportService<User> {
     /**
      * Checks a newly created ViewCsvCreateuser for validity and duplicates,
      *
-     * @param newUser
+     * @param user
      * @returns a NewEntry with duplicate/error information
      */
-    private userToEntry(newUser: ImportCreateUser): NewEntry<User> {
+    private userToEntry(user: ImportCreateUser): NewEntry<User> {
         const newEntry: NewEntry<User> = {
-            newEntry: newUser,
+            newEntry: user,
             hasDuplicates: false,
             status: 'new',
             errors: []
         };
-        if (newUser.isValid) {
+        if (user.isValid) {
             newEntry.hasDuplicates = this.repo
                 .getViewModelList()
-                .some(user => user.full_name === this.repo.getFullName(newUser));
+                .some(existingUser => existingUser.full_name === this.repo.getFullName(user));
             if (newEntry.hasDuplicates) {
                 this.setError(newEntry, 'Duplicates');
             }

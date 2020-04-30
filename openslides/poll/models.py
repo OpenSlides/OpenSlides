@@ -211,7 +211,7 @@ class BasePoll(models.Model):
         if self.type == self.TYPE_ANALOG:
             return self.db_votescast
         else:
-            return Decimal(self.amount_users_voted_with_individual_weight())
+            return Decimal(self.amount_users_voted())
 
     def set_votescast(self, value):
         if self.type != self.TYPE_ANALOG:
@@ -220,11 +220,14 @@ class BasePoll(models.Model):
 
     votescast = property(get_votescast, set_votescast)
 
+    def amount_users_voted(self):
+        return len(self.voted.all())
+
     def amount_users_voted_with_individual_weight(self):
         if config["users_activate_vote_weight"]:
             return sum(user.vote_weight for user in self.voted.all())
         else:
-            return len(self.voted.all())
+            return self.amount_users_voted()
 
     def create_options(self):
         """ Should be called after creation of this model. """

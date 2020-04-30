@@ -779,7 +779,7 @@ class VoteMotionPollNamed(TestCase):
         poll = MotionPoll.objects.get()
         self.assertEqual(poll.votesvalid, weight)
         self.assertEqual(poll.votesinvalid, Decimal("0"))
-        self.assertEqual(poll.votescast, weight)
+        self.assertEqual(poll.votescast, Decimal("1"))
         self.assertEqual(poll.get_votes().count(), 1)
         self.assertEqual(poll.amount_users_voted_with_individual_weight(), weight)
         option = poll.options.get()

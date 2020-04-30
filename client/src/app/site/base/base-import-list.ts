@@ -141,7 +141,6 @@ export abstract class BaseImportListComponentDirective<M extends BaseModel> exte
             .getNewEntries()
             .pipe(auditTime(100))
             .subscribe(newEntries => {
-                this.dataSource.data = [];
                 this.dataSource.data = newEntries;
                 this.hasFile = newEntries.length > 0;
             });

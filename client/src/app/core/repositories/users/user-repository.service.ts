@@ -17,6 +17,11 @@ import { DataSendService } from '../../core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
 import { environment } from '../../../../environments/environment';
 
+export interface MassImportResult {
+    importedTrackIds: number[];
+    errors: { [id: number]: string };
+}
+
 /**
  * type for determining the user name from a string during import.
  * See {@link parseUserString} for implementations
@@ -222,15 +227,11 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User, UserTi
      *
      * @param newEntries
      */
-    public async bulkCreate(newEntries: NewEntry<User>[]): Promise<number[]> {
+    public async bulkCreate(newEntries: NewEntry<User>[]): Promise<MassImportResult> {
         const data = newEntries.map(entry => {
             return { ...entry.newEntry, importTrackId: entry.importTrackId };
         });
-        const response = (await this.httpService.post(`/rest/users/user/mass_import/`, { users: data })) as {
-            detail: string;
-            importedTrackIds: number[];
-        };
-        return response.importedTrackIds;
+        return await this.httpService.post<MassImportResult>(`/rest/users/user/mass_import/`, { users: data });
     }
 
     /**

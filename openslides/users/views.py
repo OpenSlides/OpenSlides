@@ -354,14 +354,16 @@ class UserViewSet(ModelViewSet):
         created_users = []
         # List of all track ids of all imported users. The track ids are just used in the client.
         imported_track_ids = []
+        errors = {}  # maps imported track ids to errors
 
         for user in users:
             serializer = self.get_serializer(data=user)
             try:
                 serializer.is_valid(raise_exception=True)
-            except ValidationError:
+            except ValidationError as e:
                 # Skip invalid users.
-
+                if "vote_weight" in e.detail and "importTrackId" in user:
+                    errors[user["importTrackId"]] = "vote_weight"
                 continue
             data = serializer.prepare_password(serializer.data)
             groups = data["groups_id"]
@@ -383,6 +385,7 @@ class UserViewSet(ModelViewSet):
         return Response(
             {
                 "detail": "{0} users successfully imported.",
+                "errors": errors,
                 "args": [len(created_users)],
                 "importedTrackIds": imported_track_ids,
             }
