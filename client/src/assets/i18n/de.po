@@ -1,3 +1,4 @@
+# 
 # Translators:
 # Emanuel Schütze <emanuel.schuetze@intevation.de>, 2020
 # 
@@ -385,6 +386,9 @@ msgstr "Nachfragen, voreingestellt ja"
 msgid "Attachments"
 msgstr "Anhänge"
 
+msgid "Audio conference"
+msgstr "Audiokonferenz"
+
 msgid "Available votes"
 msgstr "Verfügbare Stimmen"
 
@@ -672,6 +676,9 @@ msgstr "Komplexer Arbeitsablauf"
 
 msgid "Confirm new password"
 msgstr "Neues Passwort bestätigen"
+
+msgid "Connect all users to audio conference automatically"
+msgstr "Alle Nutzer automatisch mit der Audiokonferenz verbinden"
 
 msgid "Content"
 msgstr "Inhalt"
@@ -1000,6 +1007,9 @@ msgstr "Rede beenden"
 msgid "Enforce page breaks"
 msgstr "Seitenumbrüche erzwingen"
 
+msgid "Enter conference"
+msgstr "Konferenz beitreten"
+
 msgid "Enter duration in seconds. Choose 0 to disable warning color."
 msgstr ""
 "Geben Sie die Dauer in Sekunden an. Zum Deaktivieren der Warn-Farbe 0 "
@@ -1115,6 +1125,9 @@ msgstr "Beschlussfassung"
 
 msgid "Finished"
 msgstr "Abgeschlossen"
+
+msgid "First speech"
+msgstr "Erstredner/in"
 
 msgid "First state"
 msgstr "Erster Status"
@@ -1397,6 +1410,9 @@ msgstr "Zuletzt geändert"
 msgid "Last speakers"
 msgstr "Letzte Redner/innen"
 
+msgid "Leave"
+msgstr "Verlassen"
+
 msgid "Left"
 msgstr "Links"
 
@@ -1540,6 +1556,9 @@ msgstr "Zu TOP verschieben"
 
 msgid "Multiselect"
 msgstr "Mehrfachauswahl"
+
+msgid "Mute / Unmute"
+msgstr "Stummschaltung aktivieren / deaktivieren"
 
 msgid "Name"
 msgstr "Name"
@@ -1804,6 +1823,9 @@ msgstr "Nur Ampel"
 msgid "Open"
 msgstr "Öffnen"
 
+msgid "Open Jitsi Meet in new tab"
+msgstr "Jitsi Meet im neuen Tab öffnen"
+
 msgid "Open items"
 msgstr "Offene Einträge"
 
@@ -2057,6 +2079,9 @@ msgstr "Empfehlung"
 msgid "Recommendation set to {arg1}"
 msgstr "Empfehlung gesetzt auf {arg1}"
 
+msgid "Reenter to audio conference"
+msgstr "Audiokonferenz erneut beitreten"
+
 msgid "Refer to committee"
 msgstr "In Ausschuss verweisen"
 
@@ -2233,6 +2258,10 @@ msgstr "Laufende Nummer"
 msgid "Serially numbered"
 msgstr "fortlaufend nummerieren"
 
+msgid "Server settings required to activate Jitsi Meet integration."
+msgstr ""
+"Servereinstellungen erforderlich zur Aktivierung der Jitsi-Meet-Integration."
+
 msgid "Set as favorite"
 msgstr "Als Favorit markieren"
 
@@ -2296,6 +2325,9 @@ msgstr "Änderungsantrag im Hauptantrag anzeigen"
 msgid "Show amendments together with motions"
 msgstr "Änderungsanträge zusätzlich in der Hauptantragsübersicht anzeigen"
 
+msgid "Show audio conference window"
+msgstr "Audiokonferenz-Fenster anzeigen"
+
 msgid "Show checkbox to record decision"
 msgstr "Ankreuzfelder zum Dokumentieren der Entscheidung anzeigen"
 
@@ -2319,6 +2351,9 @@ msgstr "mehr anzeigen"
 
 msgid "Show header and footer"
 msgstr "Kopf- und Fußzeile anzeigen"
+
+msgid "Show hint »first speech« in the list of speakers management view"
+msgstr "Hinweis »Erstredner/in« in der Redelistenverwaltung anzeigen "
 
 msgid "Show logo"
 msgstr "Logo anzeigen"
@@ -2524,6 +2559,9 @@ msgstr "Texttrenner"
 
 msgid "The assembly may decide:"
 msgstr "Die Versammlung möge beschließen:"
+
+msgid "The audio conference is already running in your OpenSlides session."
+msgstr "Die Audiokonferenz läuft bereits in Ihrer OpenSlides-Sitzung."
 
 msgid "The event manager has not set up a legal notice yet."
 msgstr "Der Veranstalter hat noch kein Impressum hinterlegt."
@@ -3028,6 +3066,9 @@ msgstr "benutzerdefiniert"
 
 msgid "disabled"
 msgstr "deaktiviert"
+
+msgid "disconnected"
+msgstr "getrennt"
 
 msgid "diverse"
 msgstr "divers"

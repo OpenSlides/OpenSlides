@@ -97,10 +97,30 @@ def get_config_variables():
     )
 
     yield ConfigVariable(
+        name="general_system_conference_auto_connect",
+        default_value=False,
+        input_type="boolean",
+        label="Show audio conference window",
+        help_text="Server settings required to activate Jitsi Meet integration.",
+        weight=140,
+        subgroup="System",
+    )
+
+    yield ConfigVariable(
+        name="general_system_conference_show",
+        default_value=False,
+        input_type="boolean",
+        label="Connect all users to audio conference automatically",
+        help_text="Server settings required to activate Jitsi Meet integration.",
+        weight=142,
+        subgroup="System",
+    )
+
+    yield ConfigVariable(
         name="general_login_info_text",
         default_value="",
         label="Show this text on the login page",
-        weight=140,
+        weight=144,
         subgroup="System",
     )
 
@@ -118,25 +138,7 @@ def get_config_variables():
                 "display_name": "OpenSlides Developer",
             },
         ),
-        weight=141,
-        subgroup="System",
-    )
-
-    yield ConfigVariable(
-        name="general_system_conference_auto_connect",
-        default_value=False,
-        input_type="boolean",
-        label="Show the audio conferece integration at the bottom right corner",
-        weight=142,
-        subgroup="System",
-    )
-
-    yield ConfigVariable(
-        name="general_system_conference_show",
-        default_value=False,
-        input_type="boolean",
-        label="Allow users to automatically connect to the audio conference",
-        weight=143,
+        weight=146,
         subgroup="System",
     )
 

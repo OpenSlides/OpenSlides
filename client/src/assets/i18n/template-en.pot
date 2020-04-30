@@ -350,6 +350,9 @@ msgstr ""
 msgid "Attachments"
 msgstr ""
 
+msgid "Audio conference"
+msgstr ""
+
 msgid "Available votes"
 msgstr ""
 
@@ -633,6 +636,9 @@ msgid "Complex Workflow"
 msgstr ""
 
 msgid "Confirm new password"
+msgstr ""
+
+msgid "Connect all users to audio conference automatically"
 msgstr ""
 
 msgid "Content"
@@ -938,6 +944,9 @@ msgstr ""
 msgid "Enforce page breaks"
 msgstr ""
 
+msgid "Enter conference"
+msgstr ""
+
 msgid "Enter duration in seconds. Choose 0 to disable warning color."
 msgstr ""
 
@@ -1046,6 +1055,9 @@ msgid "Final version"
 msgstr ""
 
 msgid "Finished"
+msgstr ""
+
+msgid "First speech"
 msgstr ""
 
 msgid "First state"
@@ -1326,6 +1338,9 @@ msgstr ""
 msgid "Last speakers"
 msgstr ""
 
+msgid "Leave"
+msgstr ""
+
 msgid "Left"
 msgstr ""
 
@@ -1468,6 +1483,9 @@ msgid "Move to agenda item"
 msgstr ""
 
 msgid "Multiselect"
+msgstr ""
+
+msgid "Mute / Unmute"
 msgstr ""
 
 msgid "Name"
@@ -1726,6 +1744,9 @@ msgstr ""
 msgid "Open"
 msgstr ""
 
+msgid "Open Jitsi Meet in new tab"
+msgstr ""
+
 msgid "Open items"
 msgstr ""
 
@@ -1978,6 +1999,9 @@ msgstr ""
 msgid "Recommendation set to {arg1}"
 msgstr ""
 
+msgid "Reenter to audio conference"
+msgstr ""
+
 msgid "Refer to committee"
 msgstr ""
 
@@ -2150,6 +2174,9 @@ msgstr ""
 msgid "Serially numbered"
 msgstr ""
 
+msgid "Server settings required to activate Jitsi Meet integration."
+msgstr ""
+
 msgid "Set as favorite"
 msgstr ""
 
@@ -2213,6 +2240,9 @@ msgstr ""
 msgid "Show amendments together with motions"
 msgstr ""
 
+msgid "Show audio conference window"
+msgstr ""
+
 msgid "Show checkbox to record decision"
 msgstr ""
 
@@ -2235,6 +2265,9 @@ msgid "Show full text"
 msgstr ""
 
 msgid "Show header and footer"
+msgstr ""
+
+msgid "Show hint »first speech« in the list of speakers management view"
 msgstr ""
 
 msgid "Show logo"
@@ -2436,6 +2469,9 @@ msgid "Text separator"
 msgstr ""
 
 msgid "The assembly may decide:"
+msgstr ""
+
+msgid "The audio conference is already running in your OpenSlides session."
 msgstr ""
 
 msgid "The event manager has not set up a legal notice yet."
@@ -2884,6 +2920,9 @@ msgid "custom"
 msgstr ""
 
 msgid "disabled"
+msgstr ""
+
+msgid "disconnected"
 msgstr ""
 
 msgid "diverse"
