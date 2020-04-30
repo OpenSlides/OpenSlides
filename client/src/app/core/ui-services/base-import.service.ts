@@ -179,7 +179,6 @@ export abstract class BaseImportService<M extends BaseModel> {
 
     /**
      * Clears all stored secondary data
-     * TODO: Merge with clearPreview()
      */
     public abstract clearData(): void;
 
@@ -190,7 +189,6 @@ export abstract class BaseImportService<M extends BaseModel> {
      * @param file
      */
     public parseInput(file: string): void {
-        this.clearData();
         this.clearPreview();
         const papaConfig: ParseConfig = {
             header: false,
@@ -205,28 +203,7 @@ export abstract class BaseImportService<M extends BaseModel> {
         if (!valid) {
             return;
         }
-        entryLines.forEach(line => {
-            const item = this.mapData(line);
-            if (item) {
-                this._entries.push(item);
-            }
-        });
-        this.newEntries.next(this._entries);
-        this.updatePreview();
-    }
-
-    /**
-     * parses pre-prepared entries (e.g. from a textarea) instead of a csv structure
-     *
-     * @param entries: an array of prepared newEntry objects
-     */
-    public setParsedEntries(entries: NewEntry<M>[]): void {
-        this.clearData();
-        this.clearPreview();
-        if (!entries) {
-            return;
-        }
-        this._entries = entries;
+        this._entries = entryLines.map(x => this.mapData(x)).filter(x => !!x);
         this.newEntries.next(this._entries);
         this.updatePreview();
     }
@@ -237,6 +214,21 @@ export abstract class BaseImportService<M extends BaseModel> {
      * @param line a line extracted by the CSV (not including the header)
      */
     public abstract mapData(line: string): NewEntry<M>;
+
+    /**
+     * parses pre-prepared entries (e.g. from a textarea) instead of a csv structure
+     *
+     * @param entries: an array of prepared newEntry objects
+     */
+    public setParsedEntries(entries: NewEntry<M>[]): void {
+        this.clearPreview();
+        if (!entries) {
+            return;
+        }
+        this._entries = entries;
+        this.newEntries.next(this._entries);
+        this.updatePreview();
+    }
 
     /**
      * Trigger for executing the import.
@@ -293,7 +285,7 @@ export abstract class BaseImportService<M extends BaseModel> {
         // TODO: error message for wrong file type (test Firefox on Windows!)
         if (event.target.files && event.target.files.length === 1) {
             this._rawFile = event.target.files[0];
-            this.readFile(event.target.files[0]);
+            this.readFile();
         }
     }
 
@@ -303,15 +295,15 @@ export abstract class BaseImportService<M extends BaseModel> {
      */
     public refreshFile(): void {
         if (this._rawFile) {
-            this.readFile(this._rawFile);
+            this.readFile();
         }
     }
 
     /**
-     * (re)-reads a given file with the current parameter
+     * reads the _rawFile
      */
-    private readFile(file: File): void {
-        this.reader.readAsText(file, this.encoding);
+    private readFile(): void {
+        this.reader.readAsText(this._rawFile, this.encoding);
     }
 
     /**
@@ -349,6 +341,7 @@ export abstract class BaseImportService<M extends BaseModel> {
      * Resets the data and preview (triggered upon selecting an invalid file)
      */
     public clearPreview(): void {
+        this.clearData();
         this._entries = [];
         this.newEntries.next([]);
         this._preview = null;
@@ -358,7 +351,7 @@ export abstract class BaseImportService<M extends BaseModel> {
      * set a list of short names for error, indicating which column failed
      */
     public setError(entry: NewEntry<M>, error: string): void {
-        if (this.errorList.hasOwnProperty(error)) {
+        if (this.errorList[error]) {
             if (!entry.errors) {
                 entry.errors = [error];
             } else if (!entry.errors.includes(error)) {
