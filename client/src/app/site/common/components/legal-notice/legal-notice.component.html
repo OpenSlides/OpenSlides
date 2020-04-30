@@ -34,4 +34,14 @@
     </div>
 </mat-card>
 
-<os-count-users></os-count-users>
+<mat-card class="os-card" *osPerms="'users.can_manage'">
+    <h3>{{ 'Statistics' | translate }}</h3>
+    <div>
+        <h4>{{ 'Count active users' | translate }}</h4>
+        <os-count-users></os-count-users>
+    </div>
+    <div>
+        <h4>{{ 'Count active word requests' | translate }}</h4>
+        <os-user-statistics></os-user-statistics>
+    </div>
+</mat-card>

@@ -484,7 +484,7 @@ export class ListViewTableComponent<V extends BaseViewModel | BaseViewModelWithC
     }
 
     public isElementProjected = (context: PblNgridRowContext<V>) => {
-        if (this.projectorService.isProjected(this.getProjectable(context.$implicit as V))) {
+        if (this.allowProjector && this.projectorService.isProjected(this.getProjectable(context.$implicit as V))) {
             return 'projected';
         }
     };

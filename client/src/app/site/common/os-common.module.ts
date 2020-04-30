@@ -8,9 +8,17 @@ import { LegalNoticeComponent } from './components/legal-notice/legal-notice.com
 import { PrivacyPolicyComponent } from './components/privacy-policy/privacy-policy.component';
 import { SharedModule } from '../../shared/shared.module';
 import { StartComponent } from './components/start/start.component';
+import { UserStatisticsComponent } from './components/user-statistics/user-statistics.component';
 
 @NgModule({
     imports: [CommonModule, CommonRoutingModule, SharedModule],
-    declarations: [PrivacyPolicyComponent, StartComponent, LegalNoticeComponent, CountUsersComponent, ErrorComponent]
+    declarations: [
+        PrivacyPolicyComponent,
+        StartComponent,
+        LegalNoticeComponent,
+        CountUsersComponent,
+        ErrorComponent,
+        UserStatisticsComponent
+    ]
 })
 export class OsCommonModule {}

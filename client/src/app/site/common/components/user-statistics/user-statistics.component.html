@@ -1,0 +1,48 @@
+<button mat-button *ngIf="!openedStatistics" (click)="changeViewOfStatistics()">
+    {{ 'Count active word requests' | translate }}
+</button>
+<button mat-button *ngIf="openedStatistics" (click)="changeViewOfStatistics()">
+    {{ 'Stop counting' | translate }}
+</button>
+<ng-container *ngIf="openedStatistics">
+    <table class="user-statistics-table">
+        <tr>
+            <td>{{ 'Total number of word requests' | translate }}</td>
+            <td>{{ numberOfWordRequests }}</td>
+        </tr>
+        <tr>
+            <td>{{ 'Unique speakers' | translate }}</td>
+            <td>{{ numberOfUniqueSpeakers }}</td>
+        </tr>
+        <tr>
+            <td>{{ 'Total duration of word requests' | translate }}</td>
+            <td>{{ totalDuration }}</td>
+        </tr>
+    </table>
+    <os-list-view-table
+        [listObservable]="statisticsByStructureLevelObservable"
+        [columns]="columnDefinition"
+        [filterProps]="filterProps"
+        [vScrollFixed]="45"
+        [allowProjector]="false"
+        [fullScreen]="false"
+        [showListOfSpeakers]="false"
+        [cssClasses]="{ 'user-statistics-table--virtual-scroll': true }"
+    >
+        <!-- Header -->
+        <div *pblNgridHeaderCellDef="'*'; col as col">
+            {{ col.label | translate }}
+        </div>
+
+        <!-- Content -->
+        <div *pblNgridCellDef="'structureLevel'; row as object">
+            {{ object.structureLevel | translate }}
+        </div>
+        <div *pblNgridCellDef="'durationOfWordRequests'; row as object">
+            {{ parseDuration(object.speakingTime) }}
+        </div>
+        <div *pblNgridCellDef="'numberOfWordRequests'; row as object">
+            {{ object.finishedSpeakers.length }}
+        </div>
+    </os-list-view-table>
+</ng-container>
