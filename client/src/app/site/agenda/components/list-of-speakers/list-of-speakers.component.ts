@@ -15,6 +15,8 @@ import { UserRepositoryService } from 'app/core/repositories/users/user-reposito
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { DurationService } from 'app/core/ui-services/duration.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
+import { ViewportService } from 'app/core/ui-services/viewport.service';
+import { Selectable } from 'app/shared/components/selectable';
 import { SortingListComponent } from 'app/shared/components/sorting-list/sorting-list.component';
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
@@ -94,6 +96,11 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
     public addSpeakerForm: FormGroup;
 
     /**
+     * Check, if list-view is seen on mobile-device.
+     */
+    public isMobile = false;
+
+    /**
      * @returns true if the list of speakers list is currently closed
      */
     public get isListOfSpeakersClosed(): boolean {
@@ -126,6 +133,11 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
     public showFistContributionHint: boolean;
 
     /**
+     * List of speakers to save temporarily changes made by sorting-list.
+     */
+    private speakerListAsSelectable: Selectable[] = [];
+
+    /**
      * Constructor for speaker list component. Generates the forms.
      *
      * @param title
@@ -154,7 +166,8 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
         private userRepository: UserRepositoryService,
         private collectionStringMapper: CollectionStringMapperService,
         private currentListOfSpeakersSlideService: CurrentListOfSpeakersSlideService,
-        private config: ConfigService
+        private config: ConfigService,
+        private viewport: ViewportService
     ) {
         super(title, translate, snackBar);
         this.addSpeakerForm = new FormGroup({ user_id: new FormControl() });
@@ -204,6 +217,8 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
                 }
             })
         );
+
+        this.subscriptions.push(this.viewport.isMobileSubject.subscribe(isMobile => this.checkSortMode(isMobile)));
 
         this.subscriptions.push(
             this.config.get('agenda_present_speakers_only').subscribe(() => {
@@ -313,17 +328,22 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
     }
 
     /**
-     * send the current order of the sorting list to the server
+     * Saves sorting on mobile devices.
      */
-    public onSaveSorting(): void {
-        if (this.isSortMode) {
-            this.isSortMode = false;
-            this.listOfSpeakersRepo
-                .sortSpeakers(
-                    this.viewListOfSpeakers,
-                    this.listElement.sortedItems.map(el => el.id)
-                )
-                .catch(this.raiseError);
+    public onMobileSaveSorting(): void {
+        this.onSaveSorting(this.speakerListAsSelectable);
+        this.isSortMode = false;
+    }
+
+    /**
+     * Receives an updated list from sorting-event.
+     *
+     * @param sortedSpeakerList The updated list.
+     */
+    public onSortingChanged(sortedSpeakerList: Selectable[]): void {
+        this.speakerListAsSelectable = sortedSpeakerList;
+        if (!this.isMobile) {
+            this.onSaveSorting(sortedSpeakerList);
         }
     }
 
@@ -507,5 +527,31 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
         } else {
             this.filteredUsers.next(users.filter(u => !this.speakers.some(speaker => speaker.user_id === u.id)));
         }
+    }
+
+    /**
+     * send the current order of the sorting list to the server
+     *
+     * @param sortedSpeakerList The list to save.
+     */
+    private onSaveSorting(sortedSpeakerList: Selectable[]): void {
+        if (this.isSortMode) {
+            this.listOfSpeakersRepo
+                .sortSpeakers(
+                    this.viewListOfSpeakers,
+                    sortedSpeakerList.map(el => el.id)
+                )
+                .catch(this.raiseError);
+        }
+    }
+
+    /**
+     * Check, that the sorting mode is immediately active, if not in mobile-view.
+     *
+     * @param isMobile If currently a mobile device is used.
+     */
+    private checkSortMode(isMobile: boolean): void {
+        this.isMobile = isMobile;
+        this.isSortMode = !isMobile;
     }
 }

@@ -169,8 +169,8 @@ export class ListOfSpeakersRepositoryService extends BaseHasContentObjectReposit
     /**
      * Posts an (manually) sorted speaker list to the server
      *
+     * @param listOfSpeakers the target list of speakers, which speaker-list is changed.
      * @param speakerIds array of speaker id numbers
-     * @param Item the target agenda item
      */
     public async sortSpeakers(listOfSpeakers: ViewListOfSpeakers, speakerIds: number[]): Promise<void> {
         const restUrl = this.getRestUrl(listOfSpeakers.id, 'sort_speakers');
