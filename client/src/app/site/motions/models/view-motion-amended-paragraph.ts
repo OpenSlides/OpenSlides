@@ -15,7 +15,7 @@ export class ViewMotionAmendedParagraph implements ViewUnifiedChange {
     }
 
     public constructor(
-        private amendment: ViewMotion,
+        public amendment: ViewMotion,
         private paragraphNo: number,
         private newText: string,
         private lineRange: LineRange

@@ -328,6 +328,11 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
     private amendmentTextMode: string;
 
     /**
+     * Show all amendments in the text, not only the ones with the apropriate state
+     */
+    public showAllAmendments = false;
+
+    /**
      * For using the enum constants from the template
      */
     public ChangeRecoMode = ChangeRecoMode;
@@ -1005,7 +1010,11 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
 
     public getChangesForDiffMode(): ViewUnifiedChange[] {
         return this.allChangingObjects.filter(change => {
-            return change.showInDiffView();
+            if (this.showAllAmendments) {
+                return true;
+            } else {
+                return change.showInDiffView();
+            }
         });
     }
 

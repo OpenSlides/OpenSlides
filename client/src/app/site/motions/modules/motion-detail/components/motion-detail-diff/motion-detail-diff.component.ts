@@ -26,6 +26,7 @@ import {
     MotionTitleChangeRecommendationDialogComponent,
     MotionTitleChangeRecommendationDialogComponentData
 } from '../motion-title-change-recommendation-dialog/motion-title-change-recommendation-dialog.component';
+import { ViewMotionAmendedParagraph } from '../../../../models/view-motion-amended-paragraph';
 
 /**
  * This component displays the original motion text with the change blocks inside.
@@ -45,6 +46,7 @@ import {
  *       [scrollToChange]="change"
  *       [highlightedLine]="highlightedLine"
  *       [lineNumberingMode]="lnMode"
+ *       [showAllAmendments]="showAllAmendments"
  *       (createChangeRecommendation)="createChangeRecommendation($event)"
  * ></os-motion-detail-diff>
  * ```
@@ -70,6 +72,8 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
     public highlightedLine: number;
     @Input()
     public lineNumberingMode: LineNumberingMode;
+    @Input()
+    public showAllAmendments: boolean;
 
     @Output()
     public createChangeRecommendation: EventEmitter<LineRange> = new EventEmitter<LineRange>();
@@ -362,6 +366,10 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
             ...mediumDialogSettings,
             data: data
         });
+    }
+
+    public setAmendmentState(change: ViewUnifiedChange, state: number): void {
+        this.motionRepo.setState((change as ViewMotionAmendedParagraph).amendment, state).catch(this.raiseError);
     }
 
     /**
