@@ -13,18 +13,18 @@ import {
 import { NavigationStart, Router } from '@angular/router';
 
 import { columnFactory, createDS, DataSourcePredicate, PblDataSource, PblNgridComponent } from '@pebula/ngrid';
-import { PblColumnDefinition, PblColumnFactory, PblNgridColumnSet } from '@pebula/ngrid/lib/grid';
+import { PblColumnDefinition, PblColumnFactory, PblNgridColumnSet, PblNgridRowContext } from '@pebula/ngrid/lib/grid';
 import { PblNgridDataMatrixRow } from '@pebula/ngrid/target-events';
 import { Observable, Subscription } from 'rxjs';
 import { distinctUntilChanged, filter } from 'rxjs/operators';
 
 import { OperatorService, Permission } from 'app/core/core-services/operator.service';
+import { ProjectorService } from 'app/core/core-services/projector.service';
 import { StorageService } from 'app/core/core-services/storage.service';
 import { HasViewModelListObservable } from 'app/core/definitions/has-view-model-list-observable';
 import { BaseFilterListService } from 'app/core/ui-services/base-filter-list.service';
 import { BaseSortListService } from 'app/core/ui-services/base-sort-list.service';
 import { ViewportService } from 'app/core/ui-services/viewport.service';
-import { BaseModel } from 'app/shared/models/base/base-model';
 import { BaseProjectableViewModel } from 'app/site/base/base-projectable-view-model';
 import { BaseViewModel } from 'app/site/base/base-view-model';
 import { BaseViewModelWithContentObject } from 'app/site/base/base-view-model-with-content-object';
@@ -89,7 +89,8 @@ export interface ColumnRestriction {
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None
 })
-export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel> implements OnInit, OnDestroy {
+export class ListViewTableComponent<V extends BaseViewModel | BaseViewModelWithContentObject>
+    implements OnInit, OnDestroy {
     /**
      * Declare the table
      */
@@ -255,11 +256,6 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
     private dataListObservable: Observable<V[]>;
 
     /**
-     * Minimal column width
-     */
-    private columnMinWidth = '60px';
-
-    /**
      * The column set to display in the table
      */
     public columnSet: PblNgridColumnSet;
@@ -289,6 +285,14 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
      */
     private subs: Subscription[] = [];
 
+    private get projectorColumnWidth(): number {
+        if (this.operator.hasPerms('core.can_manage_projector')) {
+            return 60;
+        } else {
+            return 24;
+        }
+    }
+
     /**
      * Most, of not all list views require these
      */
@@ -302,7 +306,7 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
             {
                 prop: 'projector',
                 label: '',
-                width: this.columnMinWidth
+                width: `${this.projectorColumnWidth}px`
             }
         ];
         return columns;
@@ -358,12 +362,7 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
         }
 
         // hide the projector columns
-        if (
-            this.multiSelect ||
-            this.isMobile ||
-            !this.allowProjector ||
-            !this.operator.hasPerms('core.can_manage_projector')
-        ) {
+        if (this.multiSelect || this.isMobile || !this.allowProjector) {
             hidden.push('projector');
         }
 
@@ -398,7 +397,8 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
         vp: ViewportService,
         router: Router,
         private store: StorageService,
-        private cd: ChangeDetectorRef
+        private cd: ChangeDetectorRef,
+        public projectorService: ProjectorService
     ) {
         vp.isMobileSubject.subscribe(mobile => {
             if (mobile !== this.isMobile) {
@@ -458,7 +458,7 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
         // Define the columns. Has to be in the OnInit cause "columns" is slower than
         // the constructor of this class
         this.columnSet = columnFactory()
-            .default({ width: this.columnMinWidth })
+            .default({ width: '60px' })
             .table(...this.defaultStartColumns, ...this.columns, ...this.defaultEndColumns)
             .build();
 
@@ -482,6 +482,12 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
             );
         }
     }
+
+    public isElementProjected = (context: PblNgridRowContext<V>) => {
+        if (this.projectorService.isProjected(this.getProjectable(context.$implicit as V))) {
+            return 'projected';
+        }
+    };
 
     /**
      * Determines and sets the raw data as observable lists according
@@ -597,11 +603,8 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
      * @param viewModel The model of the table
      * @returns a view model that can be projected
      */
-    public getProjectable(
-        viewModel: BaseViewModelWithContentObject | BaseProjectableViewModel
-    ): BaseProjectableViewModel {
-        const withContent = viewModel as BaseViewModelWithContentObject;
-        return !!withContent.contentObject ? withContent.contentObject : viewModel;
+    public getProjectable(viewModel: V): BaseProjectableViewModel {
+        return (viewModel as BaseViewModelWithContentObject)?.contentObject ?? viewModel;
     }
 
     /**

@@ -33,19 +33,31 @@
     <div *pblNgridCellDef="'title'; row as item; rowContext as rowContext" class="cell-slot fill">
         <a class="detail-link" [routerLink]="getDetailUrl(item)" *ngIf="!isMultiSelect"></a>
         <div [ngStyle]="{ 'margin-left': item.level * 25 + 'px' }" class="innerTable">
-            <os-icon-container [noWrap]="true" [icon]="item.closed ? 'check' : null" size="large">
-                <div class="ellipsis-overflow">
+
+            <!-- Title line -->
+            <div class="title-line ellipsis-overflow">
+                <!-- Is Closed -->
+                <span class="icon-prefix" *ngIf="item.closed">
+                    <mat-icon>check</mat-icon>
+                </span>
+
+                <!-- Title -->
+                <span>
                     {{ item.getListTitle() }}
-                </div>
-                <div *ngIf="showSubtitle" class="subtitle ellipsis-overflow">
-                    {{ item.getSubtitle() }}
-                </div>
-                <div *ngIf="item.comment" class="subtitle ellipsis-overflow">
-                    <os-icon-container size="small" icon="comment" [noWrap]="true">
-                        {{ item.comment }}
-                    </os-icon-container>
-                </div>
-            </os-icon-container>
+                </span>
+            </div>
+
+            <!-- Subtitle line -->
+            <div class="subtitle ellipsis-overflow">
+                {{ item.getSubtitle() }}
+            </div>
+
+            <!-- Comment line -->
+            <div class="subtitle ellipsis-overflow" *ngIf="item.comment">
+                <os-icon-container size="small" icon="comment" [noWrap]="true">
+                    {{ item.comment }}
+                </os-icon-container>
+            </div>
         </div>
     </div>
 
@@ -121,7 +133,12 @@
             <span>{{ 'Import' | translate }}</span>
         </button>
         <mat-divider></mat-divider>
-        <button mat-menu-item *osPerms="'agenda.can_manage'" class="red-warning-text" (click)="deleteAllSpeakersOfAllListsOfSpeakers()">
+        <button
+            mat-menu-item
+            *osPerms="'agenda.can_manage'"
+            class="red-warning-text"
+            (click)="deleteAllSpeakersOfAllListsOfSpeakers()"
+        >
             <mat-icon>delete</mat-icon>
             <span>{{ 'Clear all list of speakers' | translate }}</span>
         </button>
@@ -229,7 +246,12 @@
                 <span>{{ 'Remove from agenda' | translate }}</span>
             </button>
 
-            <button mat-menu-item class="red-warning-text" (click)="deleteTopic(item)" *ngIf="isTopic(item.contentObject)">
+            <button
+                mat-menu-item
+                class="red-warning-text"
+                (click)="deleteTopic(item)"
+                *ngIf="isTopic(item.contentObject)"
+            >
                 <mat-icon>delete</mat-icon>
                 <span>{{ 'Delete' | translate }}</span>
             </button>
