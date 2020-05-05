@@ -7,7 +7,7 @@ Types:
       in the DB. And we do not need more precision than 1 second.
 Relations:
     - <collection>/<field>: This is a reference to a collection. The reverse relation
-      field is <field>. E.g. `category_id: category/motion_ids` in a motion links
+      field is <field>. E.g. `category_id: motion_category/motion_ids` in a motion links
       to one category. The reverse field is `motion_ids` which may be `motion_ids:
       (motion/category_id)[]` indicating, that there are many motion ids.
     - <T>[]: This indicated multiple ids. For an example see above.
@@ -153,6 +153,9 @@ Interface meeting {
     welcome_text: HTML;
     custom_translations: JSON;
 
+    conference_show: boolean: boolean;
+    conference_auto_connect: boolean;
+
     // Projector
     projector_default_countdown_time: number;
     projector_countdown_warning_time: number;
@@ -223,6 +226,7 @@ Interface meeting {
     // Users
     users_sort_by: string;
     users_enable_presence_view: boolean;
+    users_enable_vote_weight: boolean;
     users_allow_self_set_present: boolean;
     users_pdf_welcometitle: string;
     users_pdf_welcometext: string;
@@ -412,9 +416,8 @@ Interface motion {
     origin_id: motion/derived_motion_ids; // Note: The related motions may not be in the same meeting
     derived_motion_ids: (motion/origin_id)[]; // Note: The related motions may not be in the same meeting
     state_id: motion_state/motion_ids;
-    workflow_id: motion_workflow/motion_ids;
     recommendation_id: motion_state/motion_recommendation_ids;
-    category_id: category/motion_ids;
+    category_id: motion_category/motion_ids;
     block_id: motion_block/motion_ids;
     submitter_ids: (motion_submitter/motion_id)[];
     supporter_ids: (user/supported_motion_$<meeting_id>_ids)[];
@@ -527,7 +530,6 @@ Interface motion_workflow {
 
     state_ids: (motion_state/workflow_id)[];
     first_state_id: motion_state/first_state_of_workflow_id;
-    motion_ids: (motion/workflow_id)[];
     default_workflow_meeting_id: meeting/motions_default_workflow_id;
     default_statute_amendments_meeting_id: meeting/motions_default_statute_amendments_workflow_id;
     meeting_id: meeting/motion_workflow_ids;
