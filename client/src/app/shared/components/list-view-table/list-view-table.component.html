@@ -22,6 +22,8 @@
         [columns]="columnSet"
         [hideColumns]="hiddenColumns"
         (rowClick)="onSelectRow($event)"
+        [rowClassUpdate]="isElementProjected"
+        rowClassUpdateFreq="ngDoCheck"
     >
         <!-- "row" has the view model -->
         <!-- "value" has the property, that was defined in the columnDefinition -->
@@ -30,10 +32,21 @@
         <!-- Projector column -->
         <div *pblNgridCellDef="'projector'; row as viewModel" class="fill ngrid-lg">
             <os-projector-button
+                *osPerms="'core.can_manage_projector'"
                 class="projector-button"
                 [object]="getProjectable(viewModel)"
                 (changeEvent)="viewUpdateEvent()"
             ></os-projector-button>
+            <!-- Projector indicator -->
+            <div class="projector-button" *osPerms="'core.can_manage_projector'; complement: true">
+                <mat-icon
+                    color="accent"
+                    *ngIf="projectorService.isProjected(getProjectable(viewModel))"
+                    matTooltip="{{ 'Currently projected' | translate }}"
+                >
+                    videocam
+                </mat-icon>
+            </div>
         </div>
 
         <!-- No Results -->

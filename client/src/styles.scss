@@ -33,6 +33,7 @@
 @import './app/site/assignments/components/assignment-poll-detail/assignment-poll-detail-component.scss-theme.scss';
 @import './app/shared/components/progress-snack-bar/progress-snack-bar.component.scss-theme.scss';
 @import './app/shared/components/jitsi/jitsi.component.scss-theme.scss';
+@import './app/shared/components/list-view-table/list-view-table.component.scss-theme.scss';
 
 /** fonts */
 @import './assets/styles/fonts.scss';
@@ -66,6 +67,7 @@ $narrow-spacing: (
     @include os-assignment-poll-detail-style($theme);
     @include os-progress-snack-bar-style($theme);
     @include os-jitsi-theme($theme);
+    @include os-list-view-table-theme($theme);
 }
 
 /** Load projector specific SCSS values */

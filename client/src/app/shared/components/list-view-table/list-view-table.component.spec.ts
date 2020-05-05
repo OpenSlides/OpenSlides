@@ -5,8 +5,8 @@ import { E2EImportsModule } from 'e2e-imports.module';
 import { ListViewTableComponent } from './list-view-table.component';
 
 describe('ListViewTableComponent', () => {
-    let component: ListViewTableComponent<any, any>;
-    let fixture: ComponentFixture<ListViewTableComponent<any, any>>;
+    let component: ListViewTableComponent<any>;
+    let fixture: ComponentFixture<ListViewTableComponent<any>>;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
