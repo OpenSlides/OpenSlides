@@ -58,7 +58,9 @@ export abstract class BaseComponent {
         mobile: {
             theme: 'mobile',
             plugins: ['autosave', 'lists', 'autolink']
-        }
+        },
+        relative_urls: false,
+        remove_script_host: true
     };
 
     public constructor(protected titleService: Title, protected translate: TranslateService) {
