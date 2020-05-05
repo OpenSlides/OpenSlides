@@ -155,17 +155,31 @@ get(fqid: Fqid, mapped_fields?: Field[], position?: Position, get_deleted_models
 
 /**
  * Returns multiple models.
- * Can either be called with a list of fqids (if all fields are needed/wanted or if the
- * same fields of all objects are needed) or with a list of specific request objects
- * that map a collection to the needed ids and fields. If both the lower and the higher
- * level mapped_fields are given, the higher level one is merged into all lower level
- * ones.
+ * Can either be called with a list of Fqfields or with a list of specific request
+ * objects that map a collection to the needed ids and fields. If both the lower and
+ * the higher level mapped_fields are given, the higher level one is merged into all
+ * lower level ones. If Fqfields are given, the mapped_fields are ignored.
  * If an id is not found, it is not included in the response instead of throwing a
  * ModelDoesNotExist.
  *
+ * @returns A mapping of collection to ids to models. Example:
+ *          {
+ *              "collection1": {
+ *                  "id1": {
+ *                      "field1": "foo",
+ *                      "field2": "bar",
+ *                  },
+ *              },
+ *              "collection2": {
+ *                  "id2": {
+ *                      "field3": 42,
+ *                  },
+ *              },
+ *          }
+ *
  * @throws InvalidFormat
  */
-getMany(requests: GetManyRequest[], mapped_fields?: Field[], position?: Position, get_deleted_models?: DeletedModelsBehaviour): Map<Fqid, Partial<Model>>;
+getMany(requests: GetManyRequest[] | Fqfield[], mapped_fields?: Field[], position?: Position, get_deleted_models?: DeletedModelsBehaviour): Map<Collection, Map<Id, Partial<Model>>>;
 
 Interface GetManyRequest {
     collection: Collection;
