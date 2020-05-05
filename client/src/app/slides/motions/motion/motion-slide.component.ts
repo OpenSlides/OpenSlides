@@ -6,7 +6,7 @@ import { SlideData } from 'app/core/core-services/projector-data.service';
 import { ChangeRecommendationRepositoryService } from 'app/core/repositories/motions/change-recommendation-repository.service';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { DiffLinesInParagraph, DiffService, LineRange } from 'app/core/ui-services/diff.service';
-import { LinenumberingService } from 'app/core/ui-services/linenumbering.service';
+import { LineNumberedString, LinenumberingService } from 'app/core/ui-services/linenumbering.service';
 import { ViewUnifiedChange, ViewUnifiedChangeType } from 'app/shared/models/motions/view-unified-change';
 import { MotionTitleInformation } from 'app/site/motions/models/view-motion';
 import { ChangeRecoMode, LineNumberingMode } from 'app/site/motions/motions.constants';
@@ -270,19 +270,18 @@ export class MotionSlideComponent extends BaseMotionSlideComponent<MotionSlideDa
     /**
      * Extracts a renderable HTML string representing the given line number range of this motion
      *
-     * @param {string} motionHtml
+     * @param {LineNumberedString} motionHtml
      * @param {LineRange} lineRange
      * @param {boolean} lineNumbers - weather to add line numbers to the returned HTML string
      * @param {number} lineLength
      */
     public extractMotionLineRange(
-        motionHtml: string,
+        motionHtml: LineNumberedString,
         lineRange: LineRange,
         lineNumbers: boolean,
         lineLength: number
     ): string {
-        const origHtml = this.lineNumbering.insertLineNumbers(motionHtml, this.lineLength, this.highlightedLine);
-        const extracted = this.diff.extractRangeByLineNumbers(origHtml, lineRange.from, lineRange.to);
+        const extracted = this.diff.extractRangeByLineNumbers(motionHtml, lineRange.from, lineRange.to);
         let html =
             extracted.outerContextStart +
             extracted.innerContextStart +
@@ -343,21 +342,22 @@ export class MotionSlideComponent extends BaseMotionSlideComponent<MotionSlideDa
                 const changes = this.getAllTextChangingObjects().filter(change => {
                     return change.showInDiffView();
                 });
+                const motionText = this.lineNumbering.insertLineNumbers(motion.text, this.lineLength);
                 changes.forEach((change: ViewUnifiedChange, idx: number) => {
                     if (idx === 0) {
                         const lineRange = { from: 1, to: change.getLineFrom() };
-                        text += this.extractMotionLineRange(motion.text, lineRange, true, this.lineLength);
+                        text += this.extractMotionLineRange(motionText, lineRange, true, this.lineLength);
                     } else if (changes[idx - 1].getLineTo() < change.getLineFrom()) {
                         const lineRange = {
                             from: changes[idx - 1].getLineTo(),
                             to: change.getLineFrom()
                         };
-                        text += this.extractMotionLineRange(motion.text, lineRange, true, this.lineLength);
+                        text += this.extractMotionLineRange(motionText, lineRange, true, this.lineLength);
                     }
-                    text += this.diff.getChangeDiff(motion.text, change, this.lineLength, this.highlightedLine);
+                    text += this.diff.getChangeDiff(motionText, change, this.lineLength, this.highlightedLine);
                 });
                 text += this.diff.getTextRemainderAfterLastChange(
-                    motion.text,
+                    motionText,
                     changes,
                     this.lineLength,
                     this.highlightedLine
@@ -412,7 +412,7 @@ export class MotionSlideComponent extends BaseMotionSlideComponent<MotionSlideDa
                         return null;
                     }
                     // Hint: can be either DiffLinesInParagraph or null, if no changes are made
-                    return this.diff.getAmendmentParagraphsLinesByMode(
+                    return this.diff.getAmendmentParagraphsLines(
                         paraNo,
                         baseParagraphs[paraNo],
                         newText,

@@ -4,6 +4,11 @@ const ELEMENT_NODE = 1;
 const TEXT_NODE = 3;
 
 /**
+ * A helper to indicate that certain functions expect the provided HTML strings to contain line numbers
+ */
+export type LineNumberedString = string;
+
+/**
  * Specifies a point within a HTML Text Node where a line break might be possible, if the following word
  * exceeds the maximum line length.
  */
@@ -894,7 +899,7 @@ export class LinenumberingService {
         highlight?: number,
         callback?: () => void,
         firstLine?: number
-    ): string {
+    ): LineNumberedString {
         let newHtml, newRoot;
 
         if (highlight > 0) {

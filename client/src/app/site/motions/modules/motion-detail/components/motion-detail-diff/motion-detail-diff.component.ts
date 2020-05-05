@@ -6,8 +6,10 @@ import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 
 import { ChangeRecommendationRepositoryService } from 'app/core/repositories/motions/change-recommendation-repository.service';
+import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { DiffService, LineRange } from 'app/core/ui-services/diff.service';
+import { LineNumberedString, LinenumberingService } from 'app/core/ui-services/linenumbering.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ViewUnifiedChange, ViewUnifiedChangeType } from 'app/shared/models/motions/view-unified-change';
 import { mediumDialogSettings } from 'app/shared/utils/dialog-settings';
@@ -84,7 +86,9 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
      * @param translate
      * @param matSnackBar
      * @param diff
+     * @param lineNumbering
      * @param recoRepo
+     * @param motionRepo
      * @param dialogService
      * @param configService
      * @param el
@@ -95,7 +99,9 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
         protected translate: TranslateService, // protected required for ng-translate-extract
         matSnackBar: MatSnackBar,
         private diff: DiffService,
+        private lineNumbering: LinenumberingService,
         private recoRepo: ChangeRecommendationRepositoryService,
+        private motionRepo: MotionRepositoryService,
         private dialogService: MatDialog,
         private configService: ConfigService,
         private el: ElementRef,
@@ -123,13 +129,16 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
             return '';
         }
 
-        return this.diff.extractMotionLineRange(
-            this.motion.text,
-            lineRange,
-            true,
-            this.lineLength,
-            this.highlightedLine
-        );
+        let baseText: LineNumberedString;
+        if (this.motion.isParagraphBasedAmendment()) {
+            baseText = this.motionRepo
+                .getAllAmendmentParagraphsWithOriginalLineNumbers(this.motion, this.lineLength, true)
+                .join('\n');
+        } else {
+            baseText = this.lineNumbering.insertLineNumbers(this.motion.text, this.lineLength);
+        }
+
+        return this.diff.extractMotionLineRange(baseText, lineRange, true, this.lineLength, this.highlightedLine);
     }
 
     /**
@@ -158,7 +167,15 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
      * @param {ViewUnifiedChange} change
      */
     public getDiff(change: ViewUnifiedChange): string {
-        return this.diff.getChangeDiff(this.motion.text, change, this.lineLength, this.highlightedLine);
+        let motionHtml: string;
+        if (this.motion.isParagraphBasedAmendment()) {
+            const parentMotion = this.motionRepo.getViewModel(this.motion.parent_id);
+            motionHtml = parentMotion.text;
+        } else {
+            motionHtml = this.motion.text;
+        }
+        const baseHtml = this.lineNumbering.insertLineNumbers(motionHtml, this.lineLength);
+        return this.diff.getChangeDiff(baseHtml, change, this.lineLength, this.highlightedLine);
     }
 
     /**
@@ -168,12 +185,15 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
         if (!this.lineLength) {
             return ''; // @TODO This happens in the test case when the lineLength-variable is not set
         }
-        return this.diff.getTextRemainderAfterLastChange(
-            this.motion.text,
-            this.changes,
-            this.lineLength,
-            this.highlightedLine
-        );
+        let baseText: LineNumberedString;
+        if (this.motion.isParagraphBasedAmendment()) {
+            baseText = this.motionRepo
+                .getAllAmendmentParagraphsWithOriginalLineNumbers(this.motion, this.lineLength, true)
+                .join('\n');
+        } else {
+            baseText = this.lineNumbering.insertLineNumbers(this.motion.text, this.lineLength);
+        }
+        return this.diff.getTextRemainderAfterLastChange(baseText, this.changes, this.lineLength, this.highlightedLine);
     }
 
     /**

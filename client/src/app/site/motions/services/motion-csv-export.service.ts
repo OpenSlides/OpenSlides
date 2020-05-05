@@ -64,7 +64,14 @@ export class MotionCsvExportService {
         const amendments = this.motionRepo.getAmendmentsInstantly(motion.id);
         if (amendments) {
             for (const amendment of amendments) {
-                const changedParagraphs = this.motionRepo.getAmendmentAmendedParagraphs(amendment, lineLength);
+                const changeRecos = this.changeRecoRepo
+                    .getChangeRecoOfMotion(amendment.id)
+                    .filter(reco => reco.showInFinalView());
+                const changedParagraphs = this.motionRepo.getAmendmentAmendedParagraphs(
+                    amendment,
+                    lineLength,
+                    changeRecos
+                );
                 for (const change of changedParagraphs) {
                     changes.push(change as ViewUnifiedChange);
                 }
