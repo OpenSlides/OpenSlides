@@ -53,7 +53,7 @@ Interface ModelLockedData {
 
 /**
  * Writes Events into the datastore.
- * Url: POST to /datastore/writer/write
+ * Url: POST to /internal/datastore/writer/write
  *
  * @throws ModelDoesNotExist
  * @throws ModelExists
@@ -116,7 +116,7 @@ Event ModifiedFieldsEvent on topic ModifiedFields {
 
 /**
  * Gibt n sequentielle Ids für die gegebene Collection zurück.
- * Url: POST to /datastore/writer/get_ids
+ * Url: POST to /internal/datastore/writer/get_ids
  */
 getIds(collection: Collection, n: number): Id[]
 
@@ -147,6 +147,7 @@ Enum DeletedModelsBehaviour {
 
 /**
  * Returns a model by fqid.
+ * Url: POST to /internal/datastore/reader/get
  *
  * @throws ModelDoesNotExist
  * @throws InvalidFormat
@@ -155,6 +156,8 @@ get(fqid: Fqid, mapped_fields?: Field[], position?: Position, get_deleted_models
 
 /**
  * Returns multiple models.
+ * Url: POST to /internal/datastore/reader/get_many
+ *
  * Can either be called with a list of Fqfields or with a list of specific request
  * objects that map a collection to the needed ids and fields. If both the lower and
  * the higher level mapped_fields are given, the higher level one is merged into all
@@ -179,7 +182,7 @@ get(fqid: Fqid, mapped_fields?: Field[], position?: Position, get_deleted_models
  *
  * @throws InvalidFormat
  */
-getMany(requests: GetManyRequest[] | Fqfield[], mapped_fields?: Field[], position?: Position, get_deleted_models?: DeletedModelsBehaviour): Map<Collection, Map<Id, Partial<Model>>>;
+get_many(requests: GetManyRequest[] | Fqfield[], mapped_fields?: Field[], position?: Position, get_deleted_models?: DeletedModelsBehaviour): Map<Collection, Map<Id, Partial<Model>>>;
 
 Interface GetManyRequest {
     collection: Collection;
@@ -188,22 +191,30 @@ Interface GetManyRequest {
 }
 
 /**
- * Returns all models of one collection. It is not possible to specify a position, so
- * this method cannot be used if the user browses the history. It should be noted that
- * it is highly disencouraged to use this method because it might return a huge amount
- * of data.
+ * Returns all models of one collection.
+ * Url: POST to /internal/datastore/reader/get_all
+ *
+ * It is not possible to specify a position, so this method cannot be used if the user
+ * browses the history. It should be noted that it is highly disencouraged to use this
+ * method because it might return a huge amount of data.
+ *
+ * @throws InvalidFormat
  */
-getAll(collection: Collection, mapped_fields?: Field[], get_deleted_models?: DeletedModelsBehaviour): Partial<Model>[];
+get_all(collection: Collection, mapped_fields?: Field[], get_deleted_models?: DeletedModelsBehaviour): Partial<Model>[];
 
 /**
- * Returns all models of one collection that satisfy the filter condition. This method
- * does not take a position and can not be used when browsing the history.
+ * Returns all models of one collection that satisfy the filter condition.
+ * Url: POST to /internal/datastore/reader/filter
+ *
+ * This method does not take a position and can not be used when browsing the history.
  *
  * @throws InvalidFormat
  */
 filter(collection: Collection, filter: Filter, mapped_fields?: Field[]): Partial<Model>[]
 
 /**
+ * Url: POST to /internal/datastore/reader/exists
+ *
  * See `filter`, returns true, if at least one model was found. The returned position is
  * the highest position in the complete datastore.
  *
@@ -212,6 +223,8 @@ filter(collection: Collection, filter: Filter, mapped_fields?: Field[]): Partial
 exists(collection: Collection, filter: Filter): {exists: boolean; position: Position;}
 
 /**
+ * Url: POST to /internal/datastore/reader/count
+ *
  * See `filter`, returns the amount of found models. The returned position is
  * the highest position in the complete datastore.
  *
@@ -220,6 +233,8 @@ exists(collection: Collection, filter: Filter): {exists: boolean; position: Posi
 count(collection: Collection, filter: Filter): {count: number; position: Position;}
 
 /**
+ * Url: POST to /internal/datastore/reader/min
+ *
  * Executes a min aggregation on all models of one collection on
  * the given field that satisfy the filter condition.
  * The field is cast to int by default. If aggregation of another field type is needed,
@@ -230,6 +245,7 @@ count(collection: Collection, filter: Filter): {count: number; position: Positio
 min(collection: Collection, filter: Filter, field: Field, type?: string): {min: Value; position: Position;}
 
 /**
+ * Url: POST to /internal/datastore/reader/max
  * Analogous to min.
  *
  * @throws InvalidFormat
