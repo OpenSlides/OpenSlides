@@ -77,7 +77,12 @@
     <!-- Result Chart and legend -->
     <div class="poll-chart-wrapper" *osPerms="'motions.can_manage_polls'; or: poll.isPublished">
         <div class="vote-legend" [routerLink]="pollLink">
-            <div *ngFor="let row of reducedPollTableData" [class]="row.votingOption">
+
+            <!-- any (click)-binding in an *ngFor-loop of dynamic length will break the view on iOS.
+                Therefore, we have to provide the trackBy-function here.
+                I suppose there would be debug output, but i-devices are not giving any.
+                The error-handling-service (PR #5131) might be helpful here. Nothing easy to find. -->
+            <div *ngFor="let row of reducedPollTableData; trackBy: trackByIndex" [class]="row.votingOption">
                 <os-icon-container [icon]="row.value[0].icon" size="large">
                     {{ row.value[0].amount | parsePollNumber }}
                     <span *ngIf="row.value[0].showPercent">
