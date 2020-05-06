@@ -252,6 +252,10 @@ export class OperatorService implements OnAfterAppsLoaded {
         return response;
     }
 
+    public async clearWhoAmIFromStorage(): Promise<void> {
+        await this.storageService.remove(WHOAMI_STORAGE_KEY);
+    }
+
     /**
      * Sets the operator user. Will be saved to storage
      * @param user The new operator.
