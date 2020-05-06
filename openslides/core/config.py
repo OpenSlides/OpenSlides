@@ -1,4 +1,3 @@
-import asyncio
 from typing import Any, Callable, Dict, Iterable, Optional, TypeVar, Union, cast
 
 from asgiref.sync import async_to_sync
@@ -27,8 +26,6 @@ INPUT_TYPE_MAPPING = {
 }
 
 ALLOWED_NONE = ("datetimepicker",)
-
-build_key_to_id_lock = asyncio.Lock()
 
 
 class ConfigHandler:
@@ -77,25 +74,18 @@ class ConfigHandler:
 
     async def build_key_to_id(self) -> None:
         """
-        Build the key_to_id dict.
-
-        Recreates it, if it does not exists.
-
-        This uses the element_cache. It expects, that the config values are in the database
-        before this is called.
+        Build the key_to_id dict, if it does not exists.
         """
-        async with build_key_to_id_lock:
-            # Another worker could have build the key_to_id_dict, check and return early
-            if self.key_to_id is not None:
-                return
+        if self.key_to_id is not None:
+            return
 
-            config_full_data = await element_cache.get_collection_data(
-                self.get_collection_string()
-            )
-            elements = config_full_data.values()
-            self.key_to_id = {}
-            for element in elements:
-                self.key_to_id[element["key"]] = element["id"]
+        config_full_data = await element_cache.get_collection_data(
+            self.get_collection_string()
+        )
+        elements = config_full_data.values()
+        self.key_to_id = {}
+        for element in elements:
+            self.key_to_id[element["key"]] = element["id"]
 
     def exists(self, key: str) -> bool:
         """
