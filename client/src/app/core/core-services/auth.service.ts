@@ -56,6 +56,9 @@ export class AuthService {
             await this.OpenSlides.afterLoginBootup(response.user_id);
             await this.redirectUser(response.user_id);
         } else if (authType === 'saml') {
+            await this.operator.clearWhoAmIFromStorage(); // This is important:
+            // Then returning to the page, we do not want to have anything cached so a
+            // fresh whoami is executed.
             window.location.href = environment.urlPrefix + '/saml/?sso'; // Bye
         } else {
             throw new Error(`Unsupported auth type "${authType}"`);
@@ -67,7 +70,7 @@ export class AuthService {
      * if it wasn't done before.
      */
     public async redirectUser(userId: number): Promise<void> {
-        if (!this.OpenSlides.booted) {
+        if (!this.OpenSlides.isBooted) {
             await this.OpenSlides.afterLoginBootup(userId);
         }
 
