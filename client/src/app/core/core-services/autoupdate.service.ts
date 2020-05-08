@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { BaseModel } from '../../shared/models/base/base-model';
 import { CollectionStringMapperService } from './collection-string-mapper.service';
 import { DataStoreService, DataStoreUpdateManagerService } from './data-store.service';
+import { Mutex } from '../promises/mutex';
 import { WebsocketService, WEBSOCKET_ERROR_CODES } from './websocket.service';
 
 interface AutoupdateFormat {
@@ -45,6 +46,7 @@ interface AutoupdateFormat {
     providedIn: 'root'
 })
 export class AutoupdateService {
+    private mutex = new Mutex();
     /**
      * Constructor to create the AutoupdateService. Calls the constructor of the parent class.
      * @param websocketService
@@ -79,11 +81,13 @@ export class AutoupdateService {
      * Handles the change ids of all autoupdates.
      */
     private async storeResponse(autoupdate: AutoupdateFormat): Promise<void> {
+        const unlock = await this.mutex.lock();
         if (autoupdate.all_data) {
             await this.storeAllData(autoupdate);
         } else {
             await this.storePartialAutoupdate(autoupdate);
         }
+        unlock();
     }
 
     /**
