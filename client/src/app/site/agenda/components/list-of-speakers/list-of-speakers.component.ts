@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
@@ -167,7 +167,8 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
         private collectionStringMapper: CollectionStringMapperService,
         private currentListOfSpeakersSlideService: CurrentListOfSpeakersSlideService,
         private config: ConfigService,
-        private viewport: ViewportService
+        private viewport: ViewportService,
+        private cd: ChangeDetectorRef
     ) {
         super(title, translate, snackBar);
         this.addSpeakerForm = new FormGroup({ user_id: new FormControl() });
@@ -200,30 +201,27 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
             this.setListOfSpeakersId(id);
         }
 
-        // load and observe users
         this.subscriptions.push(
-            /* List of eligible users */
+            // Observe the user list
             this.userRepository.getViewModelListObservable().subscribe(users => {
                 this.users.next(users);
                 this.filterUsers();
-            })
-        );
-        this.subscriptions.push(
-            // detect changes in the form
+                this.cd.markForCheck();
+            }),
+            // ovserve changes to the add-speaker form
             this.addSpeakerForm.valueChanges.subscribe(formResult => {
                 // resetting a form triggers a form.next(null) - check if user_id
                 if (formResult && formResult.user_id) {
                     this.addNewSpeaker(formResult.user_id);
                 }
-            })
-        );
-
-        this.subscriptions.push(this.viewport.isMobileSubject.subscribe(isMobile => this.checkSortMode(isMobile)));
-
-        this.subscriptions.push(
+            }),
+            // observe changes to the viewport
+            this.viewport.isMobileSubject.subscribe(isMobile => this.checkSortMode(isMobile)),
+            // observe changes the agenda_present_speakers_only config
             this.config.get('agenda_present_speakers_only').subscribe(() => {
                 this.filterUsers();
             }),
+            // observe changes to the agenda_show_first_contribution config
             this.config.get<boolean>('agenda_show_first_contribution').subscribe(show => {
                 this.showFistContributionHint = show;
             })
