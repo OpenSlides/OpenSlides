@@ -258,6 +258,7 @@ export class DataStoreUpdateManagerService {
 
     private serveNextSlot(): void {
         if (this.updateSlotRequests.length > 0) {
+            console.warn('Concurrent update slots');
             const request = this.updateSlotRequests.pop();
             request.resolve();
         }
