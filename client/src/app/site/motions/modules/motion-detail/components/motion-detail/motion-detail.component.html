@@ -463,6 +463,11 @@
                 <span *ngIf="amendments.length === 1">{{ 'Amendment' | translate }}</span>
                 <span *ngIf="amendments.length > 1">{{ 'Amendments' | translate }}</span>
             </a>
+
+            <br>
+            <mat-checkbox [(ngModel)]="showAllAmendments" *ngIf="isRecoMode(ChangeRecoMode.Diff)">
+                {{ 'Temporarily show all in text' | translate }}
+            </mat-checkbox>
         </div>
 
         <!-- motion polls -->
@@ -681,6 +686,7 @@
                 [changes]="getChangesForDiffMode()"
                 [scrollToChange]="scrollToChange"
                 [highlightedLine]="highlightedLine"
+                [showAllAmendments]="showAllAmendments"
                 [lineNumberingMode]="lnMode"
                 (createChangeRecommendation)="createChangeRecommendation($event)"
             ></os-motion-detail-diff>
@@ -904,6 +910,7 @@
                 [changes]="getChangesForDiffMode()"
                 [scrollToChange]="scrollToChange"
                 [highlightedLine]="highlightedLine"
+                [showAllAmendments]="showAllAmendments"
                 [lineNumberingMode]="lnMode"
                 (createChangeRecommendation)="createChangeRecommendation($event)"
             ></os-motion-detail-diff>
