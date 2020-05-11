@@ -1,0 +1,25 @@
+.user-statistics-table {
+    width: 100%;
+    margin: 16px auto;
+
+    &,
+    td,
+    th {
+        border-collapse: collapse;
+        border-bottom-width: 1px;
+        border-bottom-style: solid;
+    }
+    td,
+    th {
+        padding: 8px 8px 8px 24px;
+        text-align: left;
+    }
+}
+
+.user-statistics-table--virtual-scroll {
+    height: 500px;
+
+    .pbl-ngrid-header-cell:not(:first-child):before {
+        display: none;
+    }
+}

@@ -1,0 +1,19 @@
+@import '~@angular/material/theming';
+
+@mixin os-user-statistics-style($theme) {
+    $foreground: map-get($theme, foreground);
+    $text: mat-color($foreground, secondary-text);
+
+    .user-statistics-table {
+        th {
+            font-weight: 400;
+            color: $text;
+        }
+
+        &,
+        td,
+        th {
+            border-color: mat-color($foreground, divider);
+        }
+    }
+}
