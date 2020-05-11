@@ -82,6 +82,9 @@ msgstr "Aktiv"
 msgid "Active filters"
 msgstr "Aktive Filter"
 
+msgid "Active users"
+msgstr "Aktive Nutzer"
+
 msgid "Add"
 msgstr "Hinzufügen"
 
@@ -689,6 +692,9 @@ msgstr "Kopieren Sie die Name Ihrer Teilnehmer/innen in diese Textbox."
 msgid "Count active users"
 msgstr "Aktive Nutzer zählen"
 
+msgid "Count completed requests to speak"
+msgstr "Abgeschlossene Wortmeldungen zählen"
+
 msgid "Countdown"
 msgstr "Countdown"
 
@@ -736,6 +742,9 @@ msgstr "Aktuelles Datum"
 
 msgid "Current list of speakers"
 msgstr "Aktuelle Redeliste"
+
+msgid "Currently projected"
+msgstr "Aktuell projiziert"
 
 msgid "Custom aspect ratio"
 msgstr "Eigenes Seitenverhältnis"
@@ -917,6 +926,12 @@ msgstr "Duplizieren"
 
 msgid "Duration"
 msgstr "Dauer"
+
+msgid "Duration of all requests to speak"
+msgstr "Dauer aller Wortmeldungen"
+
+msgid "Duration of requests to speak"
+msgstr "Dauer der Wortmeldungen"
 
 msgid ""
 "During non-nominal voting OpenSlides does NOT store the individual user ID "
@@ -1750,6 +1765,9 @@ msgstr "Anzahl aller Delegierten"
 msgid "Number of all participants"
 msgstr "Anzahl aller Teilnehmenden"
 
+msgid "Number of all requests to speak"
+msgstr "Anzahl aller Wortmeldungen"
+
 msgid "Number of ballot papers"
 msgstr "Stimmzettelanzahl"
 
@@ -1767,6 +1785,9 @@ msgstr "Minimale Anzahl an Ziffern im Bezeichner"
 
 msgid "Number of persons to be elected"
 msgstr "Anzahl der zu wählenden Personen"
+
+msgid "Number of requests to speak"
+msgstr "Anzahl der Wortmeldungen"
 
 msgid "Number of the next speakers to be shown on the projector"
 msgstr "Anzahl der dargestellten nächsten Render/innen auf dem Projektor"
@@ -2140,6 +2161,9 @@ msgstr "Ersetzung"
 msgid "Reply address"
 msgstr "Antwortadresse"
 
+msgid "Requests to speak"
+msgstr "Wortmeldungen"
+
 msgid "Required"
 msgstr "Erforderlich"
 
@@ -2319,6 +2343,12 @@ msgstr "Kurzbeschreibung der Veranstaltung"
 msgid "Show all"
 msgstr "Alle anzeigen"
 
+msgid "Show all changes"
+msgstr "Alle Änderungen anzeigen"
+
+msgid "Show amendment"
+msgstr "Änderungsantrag anzeigen"
+
 msgid "Show amendment in parent motion"
 msgstr "Änderungsantrag im Hauptantrag anzeigen"
 
@@ -2462,6 +2492,9 @@ msgstr "Status"
 
 msgid "State set to {arg1}"
 msgstr "Status gesetzt auf {arg1}"
+
+msgid "Statistics"
+msgstr "Statistiken"
 
 msgid "Statute"
 msgstr "Satzung"
@@ -2778,6 +2811,9 @@ msgstr "Typ"
 
 msgid "Undone"
 msgstr "unerledigt"
+
+msgid "Unique speakers"
+msgstr "Eindeutige Redner/innen"
 
 msgid "Unknown user"
 msgstr "Unbekannter Nutzer"

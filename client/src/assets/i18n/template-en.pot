@@ -70,6 +70,9 @@ msgstr ""
 msgid "Active filters"
 msgstr ""
 
+msgid "Active users"
+msgstr ""
+
 msgid "Add"
 msgstr ""
 
@@ -650,6 +653,9 @@ msgstr ""
 msgid "Count active users"
 msgstr ""
 
+msgid "Count completed requests to speak"
+msgstr ""
+
 msgid "Countdown"
 msgstr ""
 
@@ -696,6 +702,9 @@ msgid "Current date"
 msgstr ""
 
 msgid "Current list of speakers"
+msgstr ""
+
+msgid "Currently projected"
 msgstr ""
 
 msgid "Custom aspect ratio"
@@ -859,6 +868,12 @@ msgid "Duplicate"
 msgstr ""
 
 msgid "Duration"
+msgstr ""
+
+msgid "Duration of all requests to speak"
+msgstr ""
+
+msgid "Duration of requests to speak"
 msgstr ""
 
 msgid ""
@@ -1673,6 +1688,9 @@ msgstr ""
 msgid "Number of all participants"
 msgstr ""
 
+msgid "Number of all requests to speak"
+msgstr ""
+
 msgid "Number of ballot papers"
 msgstr ""
 
@@ -1689,6 +1707,9 @@ msgid "Number of minimal digits for identifier"
 msgstr ""
 
 msgid "Number of persons to be elected"
+msgstr ""
+
+msgid "Number of requests to speak"
 msgstr ""
 
 msgid "Number of the next speakers to be shown on the projector"
@@ -2058,6 +2079,9 @@ msgstr ""
 msgid "Reply address"
 msgstr ""
 
+msgid "Requests to speak"
+msgstr ""
+
 msgid "Required"
 msgstr ""
 
@@ -2234,6 +2258,12 @@ msgstr ""
 msgid "Show all"
 msgstr ""
 
+msgid "Show all changes"
+msgstr ""
+
+msgid "Show amendment"
+msgstr ""
+
 msgid "Show amendment in parent motion"
 msgstr ""
 
@@ -2373,6 +2403,9 @@ msgid "State"
 msgstr ""
 
 msgid "State set to {arg1}"
+msgstr ""
+
+msgid "Statistics"
 msgstr ""
 
 msgid "Statute"
@@ -2651,6 +2684,9 @@ msgid "Type"
 msgstr ""
 
 msgid "Undone"
+msgstr ""
+
+msgid "Unique speakers"
 msgstr ""
 
 msgid "Unknown user"

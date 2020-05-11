@@ -1,23 +1,20 @@
-<button type="button" mat-button (click)="countUsers()" *ngIf="!this.token">
-    <span>{{ 'Count active users' | translate }}</span>
+<button type="button" mat-stroked-button (click)="countUsers()" *ngIf="!this.token">
+    {{ 'Count active users' | translate }}
 </button>
-<button type="button" mat-button (click)="stopCounting()" *ngIf="this.token">
-    <span>{{ 'Stop counting' | translate }}</span>
+<button type="button" mat-stroked-button (click)="stopCounting()" *ngIf="this.token">
+    {{ 'Stop counting' | translate }}
 </button>
 <div *ngIf="stats">
     <p>
-        {{ userIds().length }} <span>{{ 'active users' | translate }}</span> ({{ stats.activeUserHandles }}
-        <span>{{ 'connections' | translate }}</span
-        >)
+        {{ userIds().length }} {{ 'active users' | translate }} 
+        ({{ stats.activeUserHandles }} {{ 'connections' | translate }})
     </p>
-    <h3>{{ 'Groups' | translate }}</h3>
+    {{ 'Groups' | translate }}:
     <ul>
         <li *ngFor="let groupId of groupIds()">
-            <strong>{{ stats.groups[groupId].name }}</strong>
-            <span> : {{ userInGroupIds(groupId).length }} </span>
-            <span>{{ 'active users' | translate }}</span>
-            (<span>{{ stats.groups[groupId].userHandleCount }}</span> <span>{{ 'connections' | translate }}</span
-            >)
+            <strong>{{ stats.groups[groupId].name }}:</strong>
+            {{ userInGroupIds(groupId).length }} {{ 'active users' | translate }}
+            ({{ stats.groups[groupId].userHandleCount }} {{ 'connections' | translate }})
         </li>
     </ul>
 </div>

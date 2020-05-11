@@ -1,13 +1,13 @@
-<button mat-button *ngIf="!openedStatistics" (click)="changeViewOfStatistics()">
-    {{ 'Count active word requests' | translate }}
+<button mat-stroked-button *ngIf="!openedStatistics" (click)="changeViewOfStatistics()">
+    {{ 'Count completed requests to speak' | translate }}
 </button>
-<button mat-button *ngIf="openedStatistics" (click)="changeViewOfStatistics()">
+<button mat-stroked-button *ngIf="openedStatistics" (click)="changeViewOfStatistics()">
     {{ 'Stop counting' | translate }}
 </button>
 <ng-container *ngIf="openedStatistics">
     <table class="user-statistics-table">
         <tr>
-            <td>{{ 'Total number of word requests' | translate }}</td>
+            <td>{{ 'Number of all requests to speak' | translate }}</td>
             <td>{{ numberOfWordRequests }}</td>
         </tr>
         <tr>
@@ -15,7 +15,7 @@
             <td>{{ numberOfUniqueSpeakers }}</td>
         </tr>
         <tr>
-            <td>{{ 'Total duration of word requests' | translate }}</td>
+            <td>{{ 'Duration of all requests to speak' | translate }}</td>
             <td>{{ totalDuration }}</td>
         </tr>
     </table>
