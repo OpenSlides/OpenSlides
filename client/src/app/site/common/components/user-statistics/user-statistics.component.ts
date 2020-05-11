@@ -40,7 +40,7 @@ export class UserStatisticsComponent extends BaseViewComponent {
     /**
      * Returns an observable containing a list. This list contains objects separated by the structure-level of speakers.
      *
-     * Those objects hold information about number of word requests and duration of word requests for a given
+     * Those objects hold information about number and duration of requests to speak for a given
      * structure-level.
      */
     public get statisticsByStructureLevelObservable(): Observable<SpeakingTimeStructureLevelObject[]> {
@@ -63,19 +63,19 @@ export class UserStatisticsComponent extends BaseViewComponent {
         {
             prop: 'durationOfWordRequests',
             width: 'auto',
-            label: 'Duration of word requests'
+            label: this.translate.instant('Duration of requests to speak')
         },
         {
             prop: 'numberOfWordRequests',
             width: 'auto',
-            label: 'Number of word requests'
+            label: this.translate.instant('Number of requests to speak')
         }
     ];
 
     public readonly filterProps: string[] = ['structureLevel'];
 
     /**
-     * Holds information about hours, minutes and seconds for the total duration of word requests.
+     * Holds information about hours, minutes and seconds for the total duration of requests to speak.
      */
     private speakingTimeAsNumber = 0;
 
