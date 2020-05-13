@@ -532,9 +532,11 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         this.configService
             .get<LineNumberingMode>('motions_default_line_numbering')
             .subscribe(mode => (this.lnMode = mode));
-        this.configService
-            .get<ChangeRecoMode>('motions_recommendation_text_mode')
-            .subscribe(mode => (this.crMode = this.determineCrMode(mode)));
+        this.configService.get<ChangeRecoMode>('motions_recommendation_text_mode').subscribe(mode => {
+            if (mode) {
+                this.crMode = this.determineCrMode(mode);
+            }
+        });
         this.configService
             .get<boolean>('motions_show_sequential_numbers')
             .subscribe(shown => (this.showSequential = shown));
@@ -674,7 +676,9 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         // allChangingObjects, we set "diff" first in this case (in the config-listener) and perform the actual
         // check if "diff" is possible now.
         // Test: "diff" as default view. Open a motion, create an amendment. "Original" should be set automatically.
-        this.crMode = this.determineCrMode(this.crMode);
+        if (this.crMode) {
+            this.crMode = this.determineCrMode(this.crMode);
+        }
 
         this.cd.markForCheck();
     }
@@ -1531,13 +1535,22 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      * Tries to determine the realistic CR-Mode from a given CR mode
      */
     private determineCrMode(mode: ChangeRecoMode): ChangeRecoMode {
-        if (this.motion) {
-            if (mode === ChangeRecoMode.Final && this.motion.modified_final_version) {
+        if (mode === ChangeRecoMode.Final) {
+            if (this.motion?.modified_final_version) {
                 return ChangeRecoMode.ModifiedFinal;
-            }
-            if ((mode === ChangeRecoMode.Diff || mode === ChangeRecoMode.Changed) && !this.allChangingObjects.length) {
+                /**
+                 * Because without change recos you cannot escape the final version anymore
+                 */
+            } else if (!this.allChangingObjects?.length) {
                 return ChangeRecoMode.Original;
             }
+        } else if (mode === ChangeRecoMode.Changed && !this.allChangingObjects?.length) {
+            /**
+             * Because without change recos you cannot escape the changed version view
+             * You will not be able to automatically change to the Changed view after creating
+             * a change reco. The autoupdate has to come "after" this routine
+             */
+            return ChangeRecoMode.Original;
         }
         return mode;
     }
