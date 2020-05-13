@@ -332,8 +332,21 @@ def get_config_variables():
     # Voting and ballot papers
 
     yield ConfigVariable(
+        name="motion_poll_default_type",
+        default_value=MotionPoll.TYPE_ANALOG,
+        input_type="choice",
+        label="Default type for motion polls",
+        choices=tuple(
+            {"value": type[0], "display_name": type[1]} for type in MotionPoll.TYPES
+        ),
+        weight=367,
+        group="Motions",
+        subgroup="Voting and ballot papers",
+    )
+
+    yield ConfigVariable(
         name="motion_poll_default_100_percent_base",
-        default_value="YNA",
+        default_value=MotionPoll.PERCENT_BASE_YNA,
         input_type="choice",
         label="Default 100 % base of a voting result",
         choices=tuple(
@@ -347,7 +360,7 @@ def get_config_variables():
 
     yield ConfigVariable(
         name="motion_poll_default_majority_method",
-        default_value="simple",
+        default_value=MotionPoll.MAJORITY_SIMPLE,
         input_type="choice",
         choices=tuple(
             {"value": method[0], "display_name": method[1]}
