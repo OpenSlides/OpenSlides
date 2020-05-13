@@ -738,6 +738,50 @@ class SetPresenceView(APIView):
         user.save()
         return Response()
 
+class Echo(APIView):
+    http_method_names = ["post"]
+
+    def post(self, request, *args, **kwargs):
+        return Response(request.data)
+
+class EchoLogin(Echo):
+    def post(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            raise ValidationError({"detail": "You cannot set your own presence"})
+        return super().post(request, *args, **kwargs)
+
+from collections import defaultdict
+class CurrentAutoupdate(APIView):
+    http_method_names = ["post"]
+
+    def post(self, request, *args, **kwargs):
+        data = async_to_sync(self.getCurrentAutoupdate)()
+        return Response(data)
+
+    async def getCurrentAutoupdate(self):
+        change_id = max_change_id = await element_cache.get_current_change_id()
+        user_id = 1
+        changed_elements, deleted_element_ids = await element_cache.get_data_since(
+            user_id, change_id, max_change_id
+        )
+        deleted_elements = defaultdict(list)
+        for element_id in deleted_element_ids:
+            collection_string, id = split_element_id(element_id)
+            deleted_elements[collection_string].append(id)
+        return {
+            "changed": changed_elements,
+            "deleted": deleted_elements,
+            "from_change_id": change_id,
+            "to_change_id": max_change_id,
+            "all_data": False,
+        }
+
+class CurrentAutoupdateLogin(CurrentAutoupdate):
+    def post(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            raise ValidationError({"detail": "You cannot set your own presence"})
+        return super().post(request, *args, **kwargs)
+
 
 class WhoAmIDataView(APIView):
     def get_whoami_data(self):

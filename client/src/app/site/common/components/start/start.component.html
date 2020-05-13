@@ -12,6 +12,11 @@
     </div>
 </os-head-bar>
 
+<button mat-button (click)="echo()">Echo</button>
+<button mat-button (click)="echoLogin()">Echo Login</button>
+<button mat-button (click)="currentAutoupdate()">Current Autoupdate</button>
+<button mat-button (click)="currentAutoupdateLogin()">Current Autoupdate Login</button>
+
 <mat-card [ngClass]="isEditing ? 'os-form-card' : 'os-card'">
     <ng-container *ngIf="!isEditing">
         <div class="app-content">

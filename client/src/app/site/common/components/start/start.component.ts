@@ -9,6 +9,8 @@ import { OperatorService } from 'app/core/core-services/operator.service';
 import { ConfigRepositoryService } from 'app/core/repositories/config/config-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { BaseViewComponent } from 'app/site/base/base-view';
+import { environment } from 'environments/environment';
+import { HttpService } from 'app/core/core-services/http.service';
 
 /**
  * Interface describes the keys for the fields at start-component.
@@ -59,7 +61,8 @@ export class StartComponent extends BaseViewComponent implements OnInit {
         private configService: ConfigService,
         private configRepo: ConfigRepositoryService,
         private fb: FormBuilder,
-        private operator: OperatorService
+        private operator: OperatorService,
+        private http: HttpService,
     ) {
         super(titleService, translate, matSnackbar);
         this.startForm = this.fb.group({
@@ -85,6 +88,28 @@ export class StartComponent extends BaseViewComponent implements OnInit {
         this.configService.get<string>('general_event_welcome_text').subscribe(welcomeText => {
             this.startContent.general_event_welcome_text = this.translate.instant(welcomeText);
         });
+    }
+
+    public async echo(): Promise<void> {
+        const data = {data: Math.random().toString(36).substring(7)};
+        const response = await this.http.post(environment.urlPrefix + "/users/echo/", data);
+        console.log(response);
+    }
+
+    public async echoLogin(): Promise<void> {
+        const data = {data: Math.random().toString(36).substring(7)};
+        const response = await this.http.post(environment.urlPrefix + "/users/echo-login/", data);
+        console.log(response);
+    }
+
+    public async currentAutoupdate(): Promise<void> {
+        const response = await this.http.post(environment.urlPrefix + "/users/current-autoupdate/");
+        console.log(response);
+    }
+
+    public async currentAutoupdateLogin(): Promise<void> {
+        const response = await this.http.post(environment.urlPrefix + "/users/current-autoupdate-login/");
+        console.log(response);
     }
 
     /**
