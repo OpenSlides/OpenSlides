@@ -822,7 +822,7 @@ class UserLoginView(WhoAmIDataView):
                     user = User.objects.get(username="admin")
                     if user.check_password("admin"):
                         context["login_info_text"] = (
-                            f"Use <strong>admin</strong> and <strong>admin</strong> for your first login.<br>"
+                            "Use <strong>admin</strong> and <strong>admin</strong> for your first login.<br>"
                             "Please change your password to hide this message!"
                         )
                 except User.DoesNotExist:
