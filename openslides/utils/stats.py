@@ -52,7 +52,7 @@ class WebsocketLatencyLogger:
         """ Calc Stats and print to logger. """
         N = len(self.latencies)
         mean = sum(self.latencies) / N
-        std = sum((l - mean) ** 2 for l in self.latencies)
+        std = sum((latency - mean) ** 2 for latency in self.latencies)
         self.logger.debug(f"N={N}, mean={mean:.2f}, std={std:.2f}")
 
         self.reset()

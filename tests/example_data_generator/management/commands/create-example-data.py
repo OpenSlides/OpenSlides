@@ -86,8 +86,7 @@ class Command(BaseCommand):
         parser.add_argument(
             "--only",
             action="store_true",
-            help="Only the given objects are created i. e. all defaults are "
-            "set to 0.",
+            help="Only the given objects are created i. e. all defaults are set to 0.",
         )
         parser.add_argument(
             "-t",
@@ -112,9 +111,13 @@ class Command(BaseCommand):
             "--users",
             nargs=2,
             type=int,
-            help=f"Number of users to be created. The first number of users is "
-            'added to the group "Staff" (default {DEFAULT_NUMBER}). The second number '
-            "of users is not added to any group (default {DEFAULT_NUMBER}).",
+            help=dedent(
+                f"""
+                Number of users to be created. The first number of users is added \
+                to the group "Staff" (default {DEFAULT_NUMBER}). The second number \
+                of users is not added to any group (default {DEFAULT_NUMBER}).
+            """
+            ),
         )
 
     def handle(self, *args, **options):

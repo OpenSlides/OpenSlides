@@ -66,7 +66,7 @@ def test_list_of_speakers_db_queries():
     Motion.objects.create(title="motion2")
     Assignment.objects.create(title="assignment", open_posts=5)
     Mediafile.objects.create(
-        title=f"mediafile", mediafile=SimpleUploadedFile(f"some_file", b"some content.")
+        title="mediafile", mediafile=SimpleUploadedFile("some_file", b"some content.")
     )
 
     assert count_queries(ListOfSpeakers.get_elements)() == 6
