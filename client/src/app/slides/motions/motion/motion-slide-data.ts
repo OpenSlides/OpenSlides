@@ -63,7 +63,7 @@ export interface MotionSlideData {
     reason?: string;
     is_child: boolean;
     show_meta_box: boolean;
-    submitter?: string[];
+    submitters?: string[];
     recommender?: string;
     recommendation?: string;
     recommendation_extension?: string;

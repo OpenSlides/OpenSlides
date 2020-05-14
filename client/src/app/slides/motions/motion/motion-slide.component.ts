@@ -85,6 +85,15 @@ export class MotionSlideComponent extends BaseMotionSlideComponent<MotionSlideDa
         return this._data;
     }
 
+    public get showMetaTable(): boolean {
+        return (
+            !this.data.data.show_meta_box &&
+            (this.data.data?.submitters.length > 0 ||
+                (!!this.data.data.recommendation && !!this.data.data.recommender) ||
+                !!this.data.data.recommendation_referencing_motions)
+        );
+    }
+
     private _scroll = 0;
 
     @Input()
