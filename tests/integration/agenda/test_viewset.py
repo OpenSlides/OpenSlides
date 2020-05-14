@@ -32,6 +32,7 @@ def test_agenda_item_db_queries():
     * 1 request to get all topics,
     * 1 request to get all motion blocks and
     * 1 request to get all parents
+    * 1 request to get all tags
     """
     parent = Topic.objects.create(title="parent").agenda_item
     for index in range(10):
@@ -45,7 +46,7 @@ def test_agenda_item_db_queries():
     MotionBlock.objects.create(title="block1")
     MotionBlock.objects.create(title="block1")
 
-    assert count_queries(Item.get_elements)() == 6
+    assert count_queries(Item.get_elements)() == 7
 
 
 @pytest.mark.django_db(transaction=False)

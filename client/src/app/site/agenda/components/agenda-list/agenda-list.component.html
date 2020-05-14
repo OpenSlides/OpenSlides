@@ -33,7 +33,6 @@
     <div *pblNgridCellDef="'title'; row as item; rowContext as rowContext" class="cell-slot fill">
         <a class="detail-link" [routerLink]="getDetailUrl(item)" *ngIf="!isMultiSelect"></a>
         <div [ngStyle]="{ 'margin-left': item.level * 25 + 'px' }" class="innerTable">
-
             <!-- Title line -->
             <div class="title-line ellipsis-overflow">
                 <!-- Is Closed -->
@@ -64,9 +63,22 @@
     <!-- Info Column -->
     <div *pblNgridCellDef="'info'; row as item" class="cell-slot fill clickable" (click)="openEditInfo(item)">
         <div class="info-col-items">
-            <div *osPerms="'agenda.can_manage'; and: item.verboseType">
+            <!-- Tags -->
+            <div *ngIf="item.tags && item.tags.length">
+                <os-icon-container icon="local_offer">
+                    <span *ngFor="let tag of item.tags; let last = last">
+                        {{ tag.getTitle() }}
+                        <span *ngIf="!last">,&nbsp;</span>
+                    </span>
+                </os-icon-container>
+            </div>
+
+            <!-- Visibility (Internal, Public, Hidden) -->
+            <div *osPerms="'agenda.can_manage'; and: item.verboseType" class="spacer-top-5">
                 <os-icon-container icon="visibility">{{ item.verboseType | translate }}</os-icon-container>
             </div>
+
+            <!-- Duration -->
             <div *ngIf="item.duration" class="spacer-top-5">
                 <os-icon-container icon="access_time">
                     {{ durationService.durationToString(item.duration, 'h') }}
@@ -98,6 +110,8 @@
                 <span>{{ 'Multiselect' | translate }}</span>
             </button>
 
+            <mat-divider></mat-divider>
+
             <!-- automatic numbering -->
             <button mat-menu-item *ngIf="isNumberingAllowed" (click)="onAutoNumbering()">
                 <mat-icon>format_list_numbered</mat-icon>
@@ -117,6 +131,15 @@
             <mat-icon>mic</mat-icon>
             <span>{{ 'Current list of speakers' | translate }}</span>
         </button>
+
+        <!-- Tags -->
+        <button mat-menu-item routerLink="/tags" *osPerms="'core.can_manage_tags'">
+            <mat-icon>local_offer</mat-icon>
+            <span>{{ 'Tags' | translate }}</span>
+        </button>
+
+        <mat-divider></mat-divider>
+
         <!-- CSV export -->
         <button mat-menu-item *osPerms="'agenda.can_manage'" (click)="csvExportItemList()">
             <mat-icon>archive</mat-icon>

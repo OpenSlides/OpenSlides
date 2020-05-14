@@ -20,6 +20,7 @@ import {
 } from 'app/site/base/base-view-model-with-agenda-item';
 import { ViewMotion } from 'app/site/motions/models/view-motion';
 import { ViewMotionBlock } from 'app/site/motions/models/view-motion-block';
+import { ViewTag } from 'app/site/tags/models/view-tag';
 import { ViewTopic } from 'app/site/topics/models/view-topic';
 import { BaseHasContentObjectRepository } from '../base-has-content-object-repository';
 import { BaseIsAgendaItemContentObjectRepository } from '../base-is-agenda-item-content-object-repository';
@@ -34,6 +35,12 @@ const ItemRelations: RelationDefinition[] = [
         VForeignVerbose: 'BaseViewModelWithAgendaItem',
         ownContentObjectDataKey: 'contentObjectData',
         ownKey: 'contentObject'
+    },
+    {
+        type: 'M2M',
+        ownIdKey: 'tags_id',
+        ownKey: 'tags',
+        foreignViewModel: ViewTag
     }
 ];
 

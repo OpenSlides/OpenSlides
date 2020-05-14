@@ -9,7 +9,7 @@ from django.db import models, transaction
 from django.utils import timezone
 
 from openslides.core.config import config
-from openslides.core.models import Countdown
+from openslides.core.models import Countdown, Tag
 from openslides.utils.autoupdate import inform_changed_data
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.manager import BaseManager
@@ -41,7 +41,7 @@ class ItemManager(BaseManager):
         return (
             super()
             .get_prefetched_queryset(*args, **kwargs)
-            .prefetch_related("content_object", "parent")
+            .prefetch_related("content_object", "parent", "tags")
         )
 
     def get_only_non_public_items(self):
@@ -274,6 +274,11 @@ class Item(RESTModelMixin, models.Model):
     content_object = GenericForeignKey()
     """
     Field for generic relation to a related object. General field to the related object.
+    """
+
+    tags = models.ManyToManyField(Tag, blank=True)
+    """
+    Tags for the agenda item.
     """
 
     class Meta:

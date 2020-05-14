@@ -2,6 +2,7 @@ import { Item, ItemVisibilityChoices } from 'app/shared/models/agenda/item';
 import { ContentObject } from 'app/shared/models/base/content-object';
 import { BaseViewModelWithAgendaItem } from 'app/site/base/base-view-model-with-agenda-item';
 import { BaseViewModelWithContentObject } from 'app/site/base/base-view-model-with-content-object';
+import { ViewTag } from 'app/site/tags/models/view-tag';
 
 export interface ItemTitleInformation {
     contentObject: BaseViewModelWithAgendaItem;
@@ -53,4 +54,7 @@ export class ViewItem extends BaseViewModelWithContentObject<Item, BaseViewModel
         return this.contentObjectData.collection;
     }
 }
-export interface ViewItem extends Item {}
+interface IItemRelations {
+    tags: ViewTag[];
+}
+export interface ViewItem extends Item, IItemRelations {}

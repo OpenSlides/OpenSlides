@@ -51,6 +51,7 @@ class ItemSerializer(ModelSerializer):
             "weight",
             "parent",
             "level",
+            "tags",
         )
 
 
