@@ -133,6 +133,12 @@ if ENABLE_SAML:
 ENABLE_ELECTRONIC_VOTING = False
 
 
+# Jitsi integration
+# JITSI_DOMAIN = None
+# JITSI_ROOM_NAME = None
+# JITSI_PASSWORD = None
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
 
