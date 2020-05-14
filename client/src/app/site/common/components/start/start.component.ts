@@ -90,6 +90,26 @@ export class StartComponent extends BaseViewComponent implements OnInit {
         });
     }
 
+    public async setpresence(): Promise<void> {
+        const response = await this.http.post(environment.urlPrefix + "/users/setpresence/", true);
+        console.log(response);
+    }
+
+    public async setpresence_no_autoupdate(): Promise<void> {
+        const response = await this.http.post(environment.urlPrefix + "/users/setpresence-no-autoupdate/", true);
+        console.log(response);
+    }
+
+    public async setpresence_only_autoupdate(): Promise<void> {
+        const response = await this.http.post(environment.urlPrefix + "/users/setpresence-only-autoupdate/", true);
+        console.log(response);
+    }
+
+    public async simple_autoupdate(): Promise<void> {
+        const response = await this.http.post(environment.urlPrefix + "/users/simple-autoupdate/", true);
+        console.log(response);
+    }
+
     public async echo(): Promise<void> {
         const data = {data: Math.random().toString(36).substring(7)};
         const response = await this.http.post(environment.urlPrefix + "/users/echo/", data);
@@ -99,6 +119,16 @@ export class StartComponent extends BaseViewComponent implements OnInit {
     public async echoLogin(): Promise<void> {
         const data = {data: Math.random().toString(36).substring(7)};
         const response = await this.http.post(environment.urlPrefix + "/users/echo-login/", data);
+        console.log(response);
+    }
+
+    public async getConfig(): Promise<void> {
+        const response = await this.http.post(environment.urlPrefix + "/users/get-config/");
+        console.log(response);
+    }
+
+    public async getConfigLogin(): Promise<void> {
+        const response = await this.http.post(environment.urlPrefix + "/users/get-config-login/");
         console.log(response);
     }
 

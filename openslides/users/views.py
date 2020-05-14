@@ -738,6 +738,52 @@ class SetPresenceView(APIView):
         user.save()
         return Response()
 
+class SetPresenceNoAutoupdateView(APIView):
+    http_method_names = ["post"]
+
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        if not config["users_allow_self_set_present"] or not user.is_authenticated:
+            raise ValidationError({"detail": "You cannot set your own presence"})
+
+        present = request.data
+        if present not in (True, False):
+            raise ValidationError({"detail": "Data must be a boolean"})
+
+        user.is_present = present
+        user.save(skip_autoupdate=True)
+        return Response()
+
+class SetPresenceOnlyAutoupdateView(APIView):
+    http_method_names = ["post"]
+
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        if not config["users_allow_self_set_present"] or not user.is_authenticated:
+            raise ValidationError({"detail": "You cannot set your own presence"})
+
+        present = request.data
+        if present not in (True, False):
+            raise ValidationError({"detail": "Data must be a boolean"})
+
+        inform_changed_data(user)
+        return Response()
+
+class SimpleAutoupdate(APIView):
+    http_method_names = ["post"]
+
+    def post(self, request, *args, **kwargs):
+        elements = [AutoupdateElement(
+            id=1,
+            collection_string="users/user",
+            disable_history=False,
+            information=[],
+            user_id=1,
+            no_delete_on_restriction=False,
+        )]
+        inform_elements(elements)
+        return Response()
+
 class Echo(APIView):
     http_method_names = ["post"]
 
@@ -745,6 +791,19 @@ class Echo(APIView):
         return Response(request.data)
 
 class EchoLogin(Echo):
+    def post(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            raise ValidationError({"detail": "You cannot set your own presence"})
+        return super().post(request, *args, **kwargs)
+
+class GetConfig(APIView):
+    http_method_names = ["post"]
+
+    def post(self, request, *args, **kwargs):
+        data = {"data": config["users_allow_self_set_present"]}
+        return Response(data)
+
+class GetConfigLogin(GetConfig):
     def post(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
             raise ValidationError({"detail": "You cannot set your own presence"})
