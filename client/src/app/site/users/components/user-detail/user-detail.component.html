@@ -103,7 +103,7 @@
             <!-- Gender -->
             <mat-form-field class="form25 force-min-with">
                 <mat-select placeholder="{{ 'Gender' | translate }}" formControlName="gender">
-                    <mat-option>-</mat-option>
+                    <mat-option value="">-</mat-option>
                     <mat-option *ngFor="let gender of genderList" [value]="gender">{{ gender | translate }}</mat-option>
                 </mat-select>
             </mat-form-field>
