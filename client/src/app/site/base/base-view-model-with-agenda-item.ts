@@ -67,7 +67,7 @@ export abstract class BaseViewModelWithAgendaItem<
      * Appends the agneda item comment as the subtitle, if this model has an agenda item
      */
     public getProjectorTitle(): ProjectorTitle {
-        const subtitle = this.item.comment || null;
+        const subtitle = this.item ? this.item.comment : null;
         return { title: this.getTitle(), subtitle };
     }
 
