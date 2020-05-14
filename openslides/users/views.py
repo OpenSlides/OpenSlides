@@ -784,6 +784,21 @@ class SimpleAutoupdate(APIView):
         inform_elements(elements)
         return Response()
 
+class SimpleAutoupdateNoHistory(APIView):
+    http_method_names = ["post"]
+
+    def post(self, request, *args, **kwargs):
+        elements = [AutoupdateElement(
+            id=1,
+            collection_string="users/user",
+            disable_history=True,
+            information=[],
+            user_id=1,
+            no_delete_on_restriction=False,
+        )]
+        inform_elements(elements)
+        return Response()
+
 class Echo(APIView):
     http_method_names = ["post"]
 

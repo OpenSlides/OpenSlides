@@ -14,6 +14,7 @@ urlpatterns = [
     url(r"^setpresence-no-autoupdate/$", views.SetPresenceNoAutoupdateView.as_view(), name="user_setpresence_no_autoupdate"),
     url(r"^setpresence-only-autoupdate/$", views.SetPresenceOnlyAutoupdateView.as_view(), name="user_setpresence_only_autoupdate"),
     url(r"^simple-autoupdate/$", views.SimpleAutoupdate.as_view(), name="user_simple_autoupdate"),
+    url(r"^simple-autoupdate-no-history/$", views.SimpleAutoupdateNoHistory.as_view(), name="user_simple_autoupdate_no_history"),
     url(r"^echo/$", csrf_exempt(views.Echo.as_view()), name="user_echo"),
     url(r"^echo-login/$", views.EchoLogin.as_view(), name="user_echo_login"),
     url(r"^get-config/$", views.GetConfig.as_view(), name="user_get_config"),

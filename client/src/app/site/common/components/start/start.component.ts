@@ -110,6 +110,11 @@ export class StartComponent extends BaseViewComponent implements OnInit {
         console.log(response);
     }
 
+    public async simple_autoupdate_no_history(): Promise<void> {
+        const response = await this.http.post(environment.urlPrefix + "/users/simple-autoupdate-no-history/", true);
+        console.log(response);
+    }
+
     public async echo(): Promise<void> {
         const data = {data: Math.random().toString(36).substring(7)};
         const response = await this.http.post(environment.urlPrefix + "/users/echo/", data);
