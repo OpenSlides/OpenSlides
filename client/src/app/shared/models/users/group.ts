@@ -1,3 +1,4 @@
+import { Permission } from 'app/core/core-services/operator.service';
 import { BaseModel } from '../base/base-model';
 
 /**
@@ -9,7 +10,7 @@ export class Group extends BaseModel<Group> {
 
     public id: number;
     public name: string;
-    public permissions: string[];
+    public permissions: Permission[];
 
     public constructor(input?: Partial<Group>) {
         super(Group.COLLECTIONSTRING, input);

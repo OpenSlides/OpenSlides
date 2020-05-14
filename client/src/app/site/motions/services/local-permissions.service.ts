@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { OperatorService } from 'app/core/core-services/operator.service';
+import { OperatorService, Permission } from 'app/core/core-services/operator.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { ViewMotion } from '../models/view-motion';
 
@@ -30,7 +30,7 @@ export class LocalPermissionsService {
      * in mobile mode
      */
     public canAccessMobileDotMenu(): boolean {
-        return this.operator.hasPerms('agenda.can_see_list_of_speakers', 'core.can_manage_projector');
+        return this.operator.hasPerms(Permission.agendaCanSeeListOfSpeakers, Permission.coreCanManageProjector);
     }
 
     /**
@@ -57,14 +57,14 @@ export class LocalPermissionsService {
     public isAllowed(action: string, motion?: ViewMotion): boolean {
         switch (action) {
             case 'create': {
-                return this.operator.hasPerms('motions.can_create');
+                return this.operator.hasPerms(Permission.motionsCanCreate);
             }
             case 'support': {
                 if (!motion || !motion.state) {
                     return false;
                 }
                 return (
-                    this.operator.hasPerms('motions.can_support') &&
+                    this.operator.hasPerms(Permission.motionsCanSupport) &&
                     this.configMinSupporters > 0 &&
                     motion.state &&
                     motion.state.allow_support &&
@@ -90,8 +90,8 @@ export class LocalPermissionsService {
                     return false;
                 }
                 return (
-                    (this.operator.hasPerms('motions.can_manage') ||
-                        this.operator.hasPerms('motions.can_manage_metadata')) &&
+                    (this.operator.hasPerms(Permission.motionsCanManage) ||
+                        this.operator.hasPerms(Permission.motionsCanManageMetadata)) &&
                     motion.state &&
                     motion.state.allow_create_poll
                 );
@@ -103,7 +103,7 @@ export class LocalPermissionsService {
                     return false;
                 }
                 return (
-                    this.operator.hasPerms('motions.can_manage') ||
+                    this.operator.hasPerms(Permission.motionsCanManage) ||
                     (motion.state &&
                         motion.state.allow_submitter_edit &&
                         motion.submitters &&
@@ -113,14 +113,14 @@ export class LocalPermissionsService {
                 );
             }
             case 'update_submitters': {
-                return this.operator.hasPerms('motions.can_manage');
+                return this.operator.hasPerms(Permission.motionsCanManage);
             }
             case 'delete': {
                 if (!motion) {
                     return false;
                 }
                 return (
-                    this.operator.hasPerms('motions.can_manage') &&
+                    this.operator.hasPerms(Permission.motionsCanManage) &&
                     motion.state &&
                     motion.state.allow_submitter_edit &&
                     motion.submitters &&
@@ -135,8 +135,8 @@ export class LocalPermissionsService {
                     return false;
                 }
                 return (
-                    this.operator.hasPerms('motions.can_manage') ||
-                    this.operator.hasPerms('motions.can_manage_metadata') ||
+                    this.operator.hasPerms(Permission.motionsCanManage) ||
+                    this.operator.hasPerms(Permission.motionsCanManageMetadata) ||
                     (motion.state &&
                         motion.state.allow_submitter_edit &&
                         !this.operator.isAnonymous &&
@@ -146,8 +146,8 @@ export class LocalPermissionsService {
             }
             case 'change_metadata': {
                 return (
-                    this.operator.hasPerms('motions.can_manage') ||
-                    this.operator.hasPerms('motions.can_manage_metadata')
+                    this.operator.hasPerms(Permission.motionsCanManage) ||
+                    this.operator.hasPerms(Permission.motionsCanManageMetadata)
                 );
             }
             case 'can_create_amendments': {
@@ -155,19 +155,19 @@ export class LocalPermissionsService {
                     return false;
                 }
                 return (
-                    this.operator.hasPerms('motions.can_create_amendments') &&
+                    this.operator.hasPerms(Permission.motionsCanCreateAmendments) &&
                     this.amendmentEnabled &&
                     (!motion.parent_id || (motion.parent_id && this.amendmentOfAmendment))
                 );
             }
             case 'can_manage_metadata': {
                 return (
-                    this.operator.hasPerms('motions.can_manage') &&
-                    this.operator.hasPerms('motions.can_manage_metadata')
+                    this.operator.hasPerms(Permission.motionsCanManage) &&
+                    this.operator.hasPerms(Permission.motionsCanManageMetadata)
                 );
             }
             case 'manage': {
-                return this.operator.hasPerms('motions.can_manage');
+                return this.operator.hasPerms(Permission.motionsCanManage);
             }
             default: {
                 return false;

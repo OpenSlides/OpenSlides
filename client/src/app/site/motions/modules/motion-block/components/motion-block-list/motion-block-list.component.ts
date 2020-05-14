@@ -8,7 +8,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { PblColumnDefinition } from '@pebula/ngrid';
 import { BehaviorSubject } from 'rxjs';
 
-import { OperatorService } from 'app/core/core-services/operator.service';
+import { OperatorService, Permission } from 'app/core/core-services/operator.service';
 import { StorageService } from 'app/core/core-services/storage.service';
 import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
 import { MotionBlockRepositoryService } from 'app/core/repositories/motions/motion-block-repository.service';
@@ -57,7 +57,7 @@ export class MotionBlockListComponent extends BaseListViewComponent<ViewMotionBl
      * @returns true if the user may alter motions or their metadata
      */
     public get canEdit(): boolean {
-        return this.operator.hasPerms('motions.can_manage', 'motions.can_manage_metadata');
+        return this.operator.hasPerms(Permission.motionsCanManage, Permission.motionsCanManageMetadata);
     }
 
     /**

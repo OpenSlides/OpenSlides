@@ -8,7 +8,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, Subscription } from 'rxjs';
 
 import { CollectionStringMapperService } from 'app/core/core-services/collection-string-mapper.service';
-import { OperatorService } from 'app/core/core-services/operator.service';
+import { OperatorService, Permission } from 'app/core/core-services/operator.service';
 import { ListOfSpeakersRepositoryService } from 'app/core/repositories/agenda/list-of-speakers-repository.service';
 import { ProjectorRepositoryService } from 'app/core/repositories/projector/projector-repository.service';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
@@ -229,7 +229,7 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
     }
 
     public opCanManage(): boolean {
-        return this.operator.hasPerms('agenda.can_manage_list_of_speakers');
+        return this.operator.hasPerms(Permission.agendaCanManageListOfSpeakers);
     }
 
     /**

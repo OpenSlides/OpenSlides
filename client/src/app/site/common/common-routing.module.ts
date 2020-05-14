@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
+import { Permission } from 'app/core/core-services/operator.service';
 import { ErrorComponent } from './components/error/error.component';
 import { LegalNoticeComponent } from './components/legal-notice/legal-notice.component';
 import { PrivacyPolicyComponent } from './components/privacy-policy/privacy-policy.component';
@@ -11,7 +12,7 @@ const routes: Routes = [
         path: '',
         component: StartComponent,
         pathMatch: 'full',
-        data: { basePerm: 'core.can_see_frontpage' }
+        data: { basePerm: Permission.coreCanSeeFrontpage }
     },
     {
         path: 'legalnotice',

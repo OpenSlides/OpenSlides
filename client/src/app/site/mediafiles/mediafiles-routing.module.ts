@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
+import { Permission } from 'app/core/core-services/operator.service';
 import { MediaUploadComponent } from './components/media-upload/media-upload.component';
 import { MediafileListComponent } from './components/mediafile-list/mediafile-list.component';
 
@@ -17,7 +18,7 @@ const routes: Routes = [
     },
     {
         path: 'upload',
-        data: { basePerm: 'mediafiles.can_manage' },
+        data: { basePerm: Permission.mediafilesCanManage },
         children: [{ path: '**', component: MediaUploadComponent }],
         pathMatch: 'prefix'
     }

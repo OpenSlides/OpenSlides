@@ -3,7 +3,7 @@ import { ActivatedRouteSnapshot, CanActivate, CanActivateChild, Router } from '@
 
 import { FallbackRoutesService } from './fallback-routes.service';
 import { OpenSlidesService } from './openslides.service';
-import { OperatorService } from './operator.service';
+import { OperatorService, Permission } from './operator.service';
 
 /**
  * Classical Auth-Guard. Checks if the user has to correct permissions to enter a page, and forwards to login if not.
@@ -36,7 +36,7 @@ export class AuthGuard implements CanActivate, CanActivateChild {
      * @param route the route the user wants to navigate to
      */
     public canActivate(route: ActivatedRouteSnapshot): boolean {
-        const basePerm: string | string[] = route.data.basePerm;
+        const basePerm: Permission | Permission[] = route.data.basePerm;
 
         if (!basePerm) {
             return true;

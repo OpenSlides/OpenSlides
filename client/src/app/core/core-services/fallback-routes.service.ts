@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 
-import { OperatorService } from './operator.service';
+import { OperatorService, Permission } from './operator.service';
 
 export interface AuthGuardFallbackEntry {
     route: string;
     weight: number;
-    permission: string;
+    permission: Permission;
 }
 
 /**

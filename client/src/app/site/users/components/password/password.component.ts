@@ -6,7 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { OperatorService } from 'app/core/core-services/operator.service';
+import { OperatorService, Permission } from 'app/core/core-services/operator.service';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { ViewUser } from '../../models/view-user';
@@ -120,7 +120,7 @@ export class PasswordComponent extends BaseViewComponent implements OnInit {
         } else {
             this.user = this.repo.getViewModel(this.urlUserId);
         }
-        this.canManage = this.operator.hasPerms('users.can_manage');
+        this.canManage = this.operator.hasPerms(Permission.usersCanManage);
     }
 
     /**

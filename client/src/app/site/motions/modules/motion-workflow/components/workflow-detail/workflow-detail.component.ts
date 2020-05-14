@@ -13,7 +13,7 @@ import { map } from 'rxjs/operators';
 import { StateRepositoryService } from 'app/core/repositories/motions/state-repository.service';
 import { WorkflowRepositoryService } from 'app/core/repositories/motions/workflow-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
-import { MergeAmendment, State } from 'app/shared/models/motions/state';
+import { MergeAmendment, Restriction, State } from 'app/shared/models/motions/state';
 import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { ViewState } from 'app/site/motions/models/view-state';
@@ -59,8 +59,8 @@ interface AmendmentIntoFinal {
 /**
  * Defines the structure of restrictions
  */
-interface Restriction {
-    key: string;
+interface RestrictionShape {
+    key: Restriction;
     label: string;
 }
 
@@ -126,11 +126,11 @@ export class WorkflowDetailComponent extends BaseViewComponent implements OnInit
      * Determines possible restrictions
      */
     public restrictions = [
-        { key: 'motions.can_manage', label: 'Can manage motions' },
-        { key: 'motions.can_see_internal', label: 'Can see motions in internal state' },
-        { key: 'motions.can_manage_metadata', label: 'Can manage motion metadata' },
-        { key: 'is_submitter', label: 'Submitters' }
-    ] as Restriction[];
+        { key: Restriction.motionsCanManage, label: 'Can manage motions' },
+        { key: Restriction.motionsCanSeeInternal, label: 'Can see motions in internal state' },
+        { key: Restriction.motionsCanManageMetadata, label: 'Can manage motion metadata' },
+        { key: Restriction.motionsIsSubmitter, label: 'Submitters' }
+    ] as RestrictionShape[];
 
     /**
      * Determines possible "Merge amendments into final"
@@ -313,7 +313,7 @@ export class WorkflowDetailComponent extends BaseViewComponent implements OnInit
      * @param restrictions The new restrictions
      * @param state the state to change
      */
-    public onSetRestriction(restriction: string, state: ViewState): void {
+    public onSetRestriction(restriction: Restriction, state: ViewState): void {
         const restrictions = state.restriction.map(r => r);
         const restrictionIndex = restrictions.findIndex(r => r === restriction);
 

@@ -11,7 +11,7 @@ import {
     SimpleChanges
 } from '@angular/core';
 
-import { OperatorService } from 'app/core/core-services/operator.service';
+import { OperatorService, Permission } from 'app/core/core-services/operator.service';
 import { LineRange, ModificationType } from 'app/core/ui-services/diff.service';
 import { ViewMotionChangeRecommendation } from 'app/site/motions/models/view-motion-change-recommendation';
 
@@ -110,7 +110,7 @@ export class MotionDetailOriginalChangeRecommendationsComponent implements OnIni
      * The permissions of the user have changed -> activate / deactivate editing functionality
      */
     private onPermissionsChanged(): void {
-        if (this.operator.hasPerms('motions.can_manage')) {
+        if (this.operator.hasPerms(Permission.motionsCanManage)) {
             this.can_manage = true;
             if (this.selectedFrom === null) {
                 this.startCreating();

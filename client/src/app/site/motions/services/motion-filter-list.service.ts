@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
 import { OpenSlidesStatusService } from 'app/core/core-services/openslides-status.service';
-import { OperatorService } from 'app/core/core-services/operator.service';
+import { OperatorService, Permission } from 'app/core/core-services/operator.service';
 import { StorageService } from 'app/core/core-services/storage.service';
 import { CategoryRepositoryService } from 'app/core/repositories/motions/category-repository.service';
 import { MotionBlockRepositoryService } from 'app/core/repositories/motions/motion-block-repository.service';
@@ -17,6 +17,7 @@ import {
     OsFilterOptions
 } from 'app/core/ui-services/base-filter-list.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
+import { Restriction } from 'app/shared/models/motions/state';
 import { AmendmentType } from '../motions.constants';
 import { ViewMotion } from '../models/view-motion';
 
@@ -234,7 +235,7 @@ export class MotionFilterListService extends BaseFilterListService<ViewMotion> {
         ];
 
         // only add the filter if the user has the correct permission
-        if (this.operator.hasPerms('agenda.can_see_list_of_speakers')) {
+        if (this.operator.hasPerms(Permission.agendaCanSeeListOfSpeakers)) {
             filterDefinitions.push(this.hasSpeakerOptions);
         }
 
@@ -276,7 +277,10 @@ export class MotionFilterListService extends BaseFilterListService<ViewMotion> {
 
                         for (const state of workflow.states) {
                             // get the restriction array, but remove the is_submitter condition, if present
-                            const restrictions = state.restriction.filter(r => r !== 'is_submitter');
+                            const restrictions = (state.restriction.filter(
+                                r => r !== Restriction.motionsIsSubmitter
+                            ) as unknown) as Permission[];
+
                             if (!restrictions.length || this.operator.hasPerms(...restrictions)) {
                                 // sort final and non final states
                                 state.isFinalState ? finalStates.push(state.id) : nonFinalStates.push(state.id);

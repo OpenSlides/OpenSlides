@@ -11,7 +11,7 @@ import { PblColumnDefinition } from '@pebula/ngrid';
 import { AgendaCsvExportService } from '../../services/agenda-csv-export.service';
 import { AgendaFilterListService } from '../../services/agenda-filter-list.service';
 import { AgendaPdfService } from '../../services/agenda-pdf.service';
-import { OperatorService } from 'app/core/core-services/operator.service';
+import { OperatorService, Permission } from 'app/core/core-services/operator.service';
 import { StorageService } from 'app/core/core-services/storage.service';
 import { PdfDocumentService } from 'app/core/pdf-services/pdf-document.service';
 import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
@@ -56,7 +56,7 @@ export class AgendaListComponent extends BaseListViewComponent<ViewItem> impleme
      * @returns true if the operator can manage agenda items
      */
     public get canManage(): boolean {
-        return this.operator.hasPerms('agenda.can_manage');
+        return this.operator.hasPerms(Permission.agendaCanManage);
     }
 
     public itemListSlide: ProjectorElementBuildDeskriptor = {
@@ -92,7 +92,7 @@ export class AgendaListComponent extends BaseListViewComponent<ViewItem> impleme
     public restrictedColumns: ColumnRestriction[] = [
         {
             columnName: 'menu',
-            permission: 'agenda.can_manage'
+            permission: Permission.agendaCanManage
         }
     ];
 

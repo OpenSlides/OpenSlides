@@ -1,4 +1,5 @@
 import { AppConfig } from '../../core/definitions/app-config';
+import { Permission } from 'app/core/core-services/operator.service';
 
 export const CommonAppConfig: AppConfig = {
     name: 'common',
@@ -8,7 +9,7 @@ export const CommonAppConfig: AppConfig = {
             displayName: 'Home',
             icon: 'home',
             weight: 100,
-            permission: 'core.can_see_frontpage'
+            permission: Permission.coreCanSeeFrontpage
         }
     ]
 };

@@ -7,7 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject } from 'rxjs';
 
-import { OperatorService } from 'app/core/core-services/operator.service';
+import { OperatorService, Permission } from 'app/core/core-services/operator.service';
 import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
 import { TopicRepositoryService } from 'app/core/repositories/topics/topic-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
@@ -217,9 +217,9 @@ export class TopicDetailComponent extends BaseViewComponent {
     public isAllowed(action: string): boolean {
         switch (action) {
             case 'see':
-                return this.operator.hasPerms('agenda.can_see');
+                return this.operator.hasPerms(Permission.agendaCanSee);
             case 'edit':
-                return this.operator.hasPerms('agenda.can_manage');
+                return this.operator.hasPerms(Permission.agendaCanManage);
             case 'default':
                 return false;
         }

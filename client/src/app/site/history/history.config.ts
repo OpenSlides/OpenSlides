@@ -1,4 +1,5 @@
 import { AppConfig } from '../../core/definitions/app-config';
+import { Permission } from 'app/core/core-services/operator.service';
 
 /**
  * Config object for history.
@@ -12,7 +13,7 @@ export const HistoryAppConfig: AppConfig = {
             displayName: 'History',
             icon: 'history',
             weight: 1200,
-            permission: 'core.can_see_history'
+            permission: Permission.coreCanSeeHistory
         }
     ]
 };

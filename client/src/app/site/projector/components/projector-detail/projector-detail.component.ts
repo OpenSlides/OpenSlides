@@ -8,7 +8,7 @@ import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { timer } from 'rxjs';
 
-import { OperatorService } from 'app/core/core-services/operator.service';
+import { OperatorService, Permission } from 'app/core/core-services/operator.service';
 import { ProjectorService } from 'app/core/core-services/projector.service';
 import { CountdownRepositoryService } from 'app/core/repositories/projector/countdown-repository.service';
 import { ProjectorMessageRepositoryService } from 'app/core/repositories/projector/projector-message-repository.service';
@@ -162,7 +162,7 @@ export class ProjectorDetailComponent extends BaseViewComponent implements OnIni
      * @returns true if the operator can manage
      */
     public canManage(): boolean {
-        return this.opertator.hasPerms('core.can_manage_projector');
+        return this.opertator.hasPerms(Permission.coreCanManageProjector);
     }
 
     /**

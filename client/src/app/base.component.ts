@@ -2,6 +2,8 @@ import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import { Permission } from './core/core-services/operator.service';
+
 /**
  * Provides functionalities that will be used by most components
  * currently able to set the title with the suffix ' - OpenSlides'
@@ -10,6 +12,11 @@ import { TranslateService } from '@ngx-translate/core';
  * Components in the 'Side'- or 'projector' Folder are BaseComponents
  */
 export abstract class BaseComponent {
+    /**
+     * To check permissions in templates using permission.[...]
+     */
+    public permission = Permission;
+
     /**
      * To manipulate the browser title bar, adds the Suffix "OpenSlides"
      *

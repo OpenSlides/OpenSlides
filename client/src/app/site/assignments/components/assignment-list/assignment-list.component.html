@@ -1,5 +1,5 @@
 <os-head-bar
-    [hasMainButton]="operator.hasPerms('assignments.can_manage')"
+    [hasMainButton]="canManageAssignments"
     (mainEvent)="onPlusButton()"
     [multiSelectMode]="isMultiSelect"
 >

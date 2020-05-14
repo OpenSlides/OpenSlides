@@ -5,7 +5,7 @@ import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { OperatorService } from 'app/core/core-services/operator.service';
+import { OperatorService, Permission } from 'app/core/core-services/operator.service';
 import { ProjectorRepositoryService } from 'app/core/repositories/projector/projector-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { largeDialogSettings } from 'app/shared/utils/dialog-settings';
@@ -36,7 +36,7 @@ export class ProjectorListEntryComponent extends BaseViewComponent implements On
     }
 
     public get projectionTarget(): '_blank' | '_self' {
-        if (this.operator.hasPerms('core.can_manage_projector')) {
+        if (this.operator.hasPerms(Permission.coreCanManageProjector)) {
             return '_self';
         } else {
             return '_blank';
@@ -94,7 +94,7 @@ export class ProjectorListEntryComponent extends BaseViewComponent implements On
      * and not the detail view
      */
     public getDetailLink(): string {
-        if (this.operator.hasPerms('core.can_can_manage_projector')) {
+        if (this.operator.hasPerms(Permission.coreCanManageProjector)) {
             return `/projectors/detail/${this.projector.id}`;
         } else {
             return `/projector/${this.projector.id}`;

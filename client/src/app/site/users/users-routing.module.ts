@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
+import { Permission } from 'app/core/core-services/operator.service';
 import { GroupListComponent } from './components/group-list/group-list.component';
 import { PasswordComponent } from './components/password/password.component';
 import { PresenceDetailComponent } from './components/presence-detail/presence-detail.component';
@@ -13,38 +14,38 @@ const routes: Routes = [
         path: '',
         component: UserListComponent,
         pathMatch: 'full',
-        data: { basePerm: 'users.can_see_name' }
+        data: { basePerm: Permission.usersCanSeeName }
     },
     {
         path: 'password',
         component: PasswordComponent,
-        data: { basePerm: 'users.can_change_password' }
+        data: { basePerm: Permission.usersCanChangePassword }
     },
     {
         path: 'password/:id',
         component: PasswordComponent,
-        data: { basePerm: 'users.can_manage' }
+        data: { basePerm: Permission.usersCanManage }
     },
     {
         path: 'new',
         component: UserDetailComponent,
-        data: { basePerm: 'users.can_manage' }
+        data: { basePerm: Permission.usersCanManage }
     },
     {
         path: 'import',
         component: UserImportListComponent,
-        data: { basePerm: 'users.can_manage' }
+        data: { basePerm: Permission.usersCanManage }
     },
     {
         path: 'presence',
         component: PresenceDetailComponent,
         // TODO: 'users_enable_presence_view' missing in permissions
-        data: { basePerm: 'users.can_manage' }
+        data: { basePerm: Permission.usersCanManage }
     },
     {
         path: 'groups',
         component: GroupListComponent,
-        data: { basePerm: 'users.can_manage' }
+        data: { basePerm: Permission.usersCanManage }
     },
     {
         path: ':id',

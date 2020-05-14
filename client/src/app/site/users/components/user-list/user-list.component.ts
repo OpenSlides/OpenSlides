@@ -8,7 +8,7 @@ import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { TranslateService } from '@ngx-translate/core';
 import { PblColumnDefinition } from '@pebula/ngrid';
 
-import { OperatorService } from 'app/core/core-services/operator.service';
+import { OperatorService, Permission } from 'app/core/core-services/operator.service';
 import { StorageService } from 'app/core/core-services/storage.service';
 import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
@@ -96,7 +96,7 @@ export class UserListComponent extends BaseListViewComponent<ViewUser> implement
      * @returns true if the presence view is available to administrators
      */
     public get presenceViewConfigured(): boolean {
-        return this._presenceViewConfigured && this.operator.hasPerms('users.can_manage');
+        return this._presenceViewConfigured && this.operator.hasPerms(Permission.usersCanManage);
     }
 
     private isVoteWeightActive: boolean;
@@ -107,7 +107,7 @@ export class UserListComponent extends BaseListViewComponent<ViewUser> implement
      * @returns true if the user should be able to create users
      */
     public get canAddUser(): boolean {
-        return this.operator.hasPerms('users.can_manage');
+        return this.operator.hasPerms(Permission.usersCanManage);
     }
 
     public get showVoteWeight(): boolean {
@@ -221,7 +221,7 @@ export class UserListComponent extends BaseListViewComponent<ViewUser> implement
         } else if (this.allowSelfSetPresent && this.operator.viewUser === user) {
             return false;
         } else {
-            return !this.operator.hasPerms('users.can_manage');
+            return !this.operator.hasPerms(Permission.usersCanManage);
         }
     }
 
@@ -233,7 +233,7 @@ export class UserListComponent extends BaseListViewComponent<ViewUser> implement
      * @param user is an instance of ViewUser. This is the given user, who will be modified.
      */
     public openEditInfo(user: ViewUser, ev: MouseEvent): void {
-        if (this.isMultiSelect || !this.operator.hasPerms('users.can_manage')) {
+        if (this.isMultiSelect || !this.operator.hasPerms(Permission.usersCanManage)) {
             return;
         }
         ev.stopPropagation();
@@ -437,7 +437,7 @@ export class UserListComponent extends BaseListViewComponent<ViewUser> implement
     public setPresent(viewUser: ViewUser): void {
         viewUser.user.is_present = !viewUser.user.is_present;
 
-        if (this.operator.hasPerms('users.can_manage')) {
+        if (this.operator.hasPerms(Permission.usersCanManage)) {
             this.repo.update(viewUser.user, viewUser).catch(this.raiseError);
         } else if (this.allowSelfSetPresent && this.operator.viewUser === viewUser) {
             this.operator.setPresence(viewUser.user.is_present).catch(this.raiseError);
