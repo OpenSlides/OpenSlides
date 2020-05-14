@@ -36,7 +36,8 @@ export class AgendaCsvExportService {
                 },
                 { label: 'Duration', property: 'duration' },
                 { label: 'Comment', property: 'comment' },
-                { label: 'Item type', property: 'verboseCsvType' }
+                { label: 'Item type', property: 'verboseCsvType' },
+                { label: 'Tags', property: 'tags' }
             ],
             this.translate.instant('Agenda') + '.csv'
         );
