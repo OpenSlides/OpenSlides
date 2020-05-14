@@ -21,7 +21,39 @@ import { UserRepositoryService } from '../repositories/users/user-repository.ser
  * Permissions on the client are just strings. This makes clear, that
  * permissions instead of arbitrary strings should be given.
  */
-export type Permission = string;
+export enum Permission {
+    agendaCanManage = 'agenda.can_manage',
+    agendaCanSee = 'agenda.can_see',
+    agendaCanSeeInternalItems = 'agenda.can_see_internal_items',
+    agendaCanManageListOfSpeakers = 'agenda.can_manage_list_of_speakers',
+    agendaCanSeeListOfSpeakers = 'agenda.can_see_list_of_speakers',
+    agendaCanBeSpeaker = 'agenda.can_be_speaker',
+    assignmentsCanManage = 'assignments.can_manage',
+    assignmentsCanNominateOther = 'assignments.can_nominate_other',
+    assignmentsCanNominateSelf = 'assignments.can_nominate_self',
+    assignmentsCanSee = 'assignments.can_see',
+    coreCanManageConfig = 'core.can_manage_config',
+    coreCanManageLogosAndFonts = 'core.can_manage_logos_and_fonts',
+    coreCanSeeHistory = 'core.can_see_history',
+    coreCanManageProjector = 'core.can_manage_projector',
+    coreCanSeeFrontpage = 'core.can_see_frontpage',
+    coreCanSeeProjector = 'core.can_see_projector',
+    coreCanManageTags = 'core.can_manage_tags',
+    mediafilesCanManage = 'mediafiles.can_manage',
+    mediafilesCanSee = 'mediafiles.can_see',
+    motionsCanCreate = 'motions.can_create',
+    motionsCanCreateAmendments = 'motions.can_create_amendments',
+    motionsCanManage = 'motions.can_manage',
+    motionsCanManageMetadata = 'motions.can_manage_metadata',
+    motionsCanManagePolls = 'motions.can_manage_polls',
+    motionsCanSee = 'motions.can_see',
+    motionsCanSeeInternal = 'motions.can_see_internal',
+    motionsCanSupport = 'motions.can_support',
+    usersCanChangePassword = 'users.can_change_password',
+    usersCanManage = 'users.can_manage',
+    usersCanSeeExtraData = 'users.can_see_extra_data',
+    usersCanSeeName = 'users.can_see_name'
+}
 
 /**
  * Response format of the WhoAmI request.
@@ -394,12 +426,12 @@ export class OperatorService implements OnAfterAppsLoaded {
         } else {
             // Anonymous or users in the default group.
             if (!this.user || this.user.groups_id.length === 0) {
-                const defaultGroup = this.DS.get<Group>('users/group', 1);
+                const defaultGroup: Group = this.DS.get<Group>('users/group', 1);
                 if (defaultGroup && defaultGroup.permissions instanceof Array) {
                     this.permissions = defaultGroup.permissions;
                 }
             } else {
-                const permissionSet = new Set<string>();
+                const permissionSet = new Set<Permission>();
                 this.DS.getMany(Group, this.user.groups_id).forEach(group => {
                     group.permissions.forEach(permission => {
                         permissionSet.add(permission);

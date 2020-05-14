@@ -1,3 +1,4 @@
+import { Permission } from 'app/core/core-services/operator.service';
 import { Group } from 'app/shared/models/users/group';
 import { BaseViewModel } from '../../base/base-view-model';
 
@@ -12,7 +13,7 @@ export class ViewGroup extends BaseViewModel<Group> implements GroupTitleInforma
         return this._model;
     }
 
-    public hasPermission(perm: string): boolean {
+    public hasPermission(perm: Permission): boolean {
         return this.permissions.includes(perm);
     }
 }

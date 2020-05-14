@@ -1,4 +1,5 @@
 import { AppConfig } from '../../core/definitions/app-config';
+import { Permission } from 'app/core/core-services/operator.service';
 import { CategoryRepositoryService } from 'app/core/repositories/motions/category-repository.service';
 import { ChangeRecommendationRepositoryService } from 'app/core/repositories/motions/change-recommendation-repository.service';
 import { MotionBlockRepositoryService } from 'app/core/repositories/motions/motion-block-repository.service';
@@ -90,7 +91,7 @@ export const MotionsAppConfig: AppConfig = {
             displayName: 'Motions',
             icon: 'assignment',
             weight: 300,
-            permission: 'motions.can_see'
+            permission: Permission.motionsCanSee
         }
     ]
 };

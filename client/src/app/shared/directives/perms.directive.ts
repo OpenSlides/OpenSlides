@@ -87,10 +87,10 @@ export class PermsDirective implements OnInit, OnDestroy {
      * The value defines the requires permissions as an array or a single permission.
      */
     @Input()
-    public set osPerms(value: string | string[]) {
+    public set osPerms(value: Permission | Permission[]) {
         if (!value) {
             value = [];
-        } else if (typeof value === 'string') {
+        } else if (!Array.isArray(value)) {
             value = [value];
         }
         this.permissions = value;

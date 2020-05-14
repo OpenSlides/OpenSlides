@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 
 import { Subject } from 'rxjs';
 
+import { Permission } from './operator.service';
+
 /**
  * This represents one entry in the main menu
  */
@@ -28,7 +30,7 @@ export interface MainMenuEntry {
     /**
      * The permission to see the entry.
      */
-    permission: string;
+    permission: Permission;
 }
 
 /**

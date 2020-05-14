@@ -10,6 +10,16 @@ export enum MergeAmendment {
 }
 
 /**
+ * Restrictions are usually processed in the motion workflow
+ */
+export enum Restriction {
+    motionsCanManage = 'motions.can_manage',
+    motionsCanSeeInternal = 'motions.can_see_internal',
+    motionsCanManageMetadata = 'motions.can_manage_metadata',
+    motionsIsSubmitter = 'is_submitter'
+}
+
+/**
  * Representation of a workflow state
  *
  * Part of the 'states'-array in motion/workflow
@@ -22,7 +32,7 @@ export class State extends BaseModel<State> {
     public name: string;
     public recommendation_label: string;
     public css_class: string;
-    public restriction: string[];
+    public restriction: Restriction[];
     public allow_support: boolean;
     public allow_create_poll: boolean;
     public allow_submitter_edit: boolean;

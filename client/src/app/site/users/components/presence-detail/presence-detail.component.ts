@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 
-import { OperatorService } from 'app/core/core-services/operator.service';
+import { OperatorService, Permission } from 'app/core/core-services/operator.service';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { ViewUser } from '../../models/view-user';
@@ -51,7 +51,7 @@ export class PresenceDetailComponent implements OnInit {
      * @returns true if the user is allowed to use this view
      */
     public get permission(): boolean {
-        return this.operator.hasPerms('users.can_manage') && this._enabledInConfig;
+        return this.operator.hasPerms(Permission.usersCanManage) && this._enabledInConfig;
     }
 
     /**

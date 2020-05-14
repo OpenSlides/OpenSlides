@@ -7,7 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject } from 'rxjs';
 
-import { OperatorService } from 'app/core/core-services/operator.service';
+import { OperatorService, Permission } from 'app/core/core-services/operator.service';
 import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
 import { AssignmentRepositoryService } from 'app/core/repositories/assignments/assignment-repository.service';
 import { MediafileRepositoryService } from 'app/core/repositories/mediafiles/mediafile-repository.service';
@@ -229,7 +229,7 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
      * @returns true if the user is able to perform the action
      */
     public hasPerms(operation: string): boolean {
-        const isManager = this.operator.hasPerms('assignments.can_manage');
+        const isManager = this.operator.hasPerms(Permission.assignmentsCanManage);
         switch (operation) {
             case 'addSelf':
                 if (isManager && !this.assignment.isFinished) {
@@ -237,7 +237,7 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
                 } else {
                     return (
                         this.assignment.isSearchingForCandidates &&
-                        this.operator.hasPerms('assignments.can_nominate_self') &&
+                        this.operator.hasPerms(Permission.assignmentsCanNominateSelf) &&
                         !this.assignment.isFinished
                     );
                 }
@@ -247,7 +247,7 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
                 } else {
                     return (
                         this.assignment.isSearchingForCandidates &&
-                        this.operator.hasPerms('assignments.can_nominate_other') &&
+                        this.operator.hasPerms(Permission.assignmentsCanNominateOther) &&
                         !this.assignment.isFinished
                     );
                 }

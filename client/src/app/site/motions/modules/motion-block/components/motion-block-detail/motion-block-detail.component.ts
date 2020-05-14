@@ -8,6 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { PblColumnDefinition } from '@pebula/ngrid';
 
+import { Permission } from 'app/core/core-services/operator.service';
 import { StorageService } from 'app/core/core-services/storage.service';
 import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
 import { MotionBlockRepositoryService } from 'app/core/repositories/motions/motion-block-repository.service';
@@ -74,7 +75,7 @@ export class MotionBlockDetailComponent extends BaseListViewComponent<ViewMotion
     public restrictedColumns: ColumnRestriction[] = [
         {
             columnName: 'remove',
-            permission: 'motions.can_manage'
+            permission: Permission.motionsCanManage
         }
     ];
 

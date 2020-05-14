@@ -7,7 +7,7 @@ import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 import { PblColumnDefinition } from '@pebula/ngrid';
 
-import { OperatorService } from 'app/core/core-services/operator.service';
+import { OperatorService, Permission } from 'app/core/core-services/operator.service';
 import { StorageService } from 'app/core/core-services/storage.service';
 import { CategoryRepositoryService } from 'app/core/repositories/motions/category-repository.service';
 import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
@@ -56,7 +56,7 @@ export class CategoryListComponent extends BaseListViewComponent<ViewCategory> i
      * @returns true if the user may alter motions or their metadata
      */
     public get canEdit(): boolean {
-        return this.operator.hasPerms('motions.can_manage');
+        return this.operator.hasPerms(Permission.motionsCanManage);
     }
 
     /**

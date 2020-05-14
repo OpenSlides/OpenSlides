@@ -1,4 +1,5 @@
 import { AppConfig } from '../../core/definitions/app-config';
+import { Permission } from 'app/core/core-services/operator.service';
 import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
 import { PersonalNoteRepositoryService } from 'app/core/repositories/users/personal-note-repository.service';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
@@ -31,7 +32,7 @@ export const UsersAppConfig: AppConfig = {
             displayName: 'Participants',
             icon: 'people',
             weight: 500,
-            permission: 'users.can_see_name'
+            permission: Permission.usersCanSeeName
         }
     ]
 };

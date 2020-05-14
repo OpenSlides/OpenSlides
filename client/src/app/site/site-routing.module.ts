@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
+import { Permission } from 'app/core/core-services/operator.service';
 import { AuthGuard } from '../core/core-services/auth-guard.service';
 import { SiteComponent } from './site.component';
 
@@ -21,32 +22,32 @@ const routes: Routes = [
             {
                 path: 'agenda',
                 loadChildren: () => import('./agenda/agenda.module').then(m => m.AgendaModule),
-                data: { basePerm: 'agenda.can_see' }
+                data: { basePerm: Permission.agendaCanSee }
             },
             {
                 path: 'topics',
                 loadChildren: () => import('./topics/topics.module').then(m => m.TopicsModule),
-                data: { basePerm: 'agenda.can_see' }
+                data: { basePerm: Permission.agendaCanSee }
             },
             {
                 path: 'assignments',
                 loadChildren: () => import('./assignments/assignments.module').then(m => m.AssignmentsModule),
-                data: { basePerm: 'assignments.can_see' }
+                data: { basePerm: Permission.assignmentsCanSee }
             },
             {
                 path: 'mediafiles',
                 loadChildren: () => import('./mediafiles/mediafiles.module').then(m => m.MediafilesModule),
-                data: { basePerm: 'mediafiles.can_see' }
+                data: { basePerm: Permission.mediafilesCanSee }
             },
             {
                 path: 'motions',
                 loadChildren: () => import('./motions/motions.module').then(m => m.MotionsModule),
-                data: { basePerm: 'motions.can_see' }
+                data: { basePerm: Permission.motionsCanSee }
             },
             {
                 path: 'settings',
                 loadChildren: () => import('./config/config.module').then(m => m.ConfigModule),
-                data: { basePerm: 'core.can_manage_config' }
+                data: { basePerm: Permission.coreCanManageConfig }
             },
             {
                 path: 'users',
@@ -57,22 +58,23 @@ const routes: Routes = [
             {
                 path: 'tags',
                 loadChildren: () => import('./tags/tag.module').then(m => m.TagModule),
-                data: { basePerm: 'core.can_manage_tags' }
+                data: { basePerm: Permission.coreCanManageTags }
             },
             {
                 path: 'history',
                 loadChildren: () => import('./history/history.module').then(m => m.HistoryModule),
-                data: { basePerm: 'core.can_see_history' }
+                data: { basePerm: Permission.coreCanSeeHistory }
             },
             {
                 path: 'projectors',
                 loadChildren: () => import('./projector/projector.module').then(m => m.ProjectorModule),
-                data: { basePerm: 'core.can_see_projector' }
+                data: { basePerm: Permission.coreCanSeeProjector }
             },
             {
                 path: 'polls',
                 loadChildren: () => import('./polls/polls.module').then(m => m.PollsModule),
-                data: { basePerm: ['motions.can_see', 'assignments.can_see'] } // one of them is sufficient
+                // one of them is sufficient
+                data: { basePerm: [Permission.motionsCanSee, Permission.assignmentsCanSee] }
             }
         ],
         canActivateChild: [AuthGuard]

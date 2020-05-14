@@ -16,7 +16,7 @@ import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, timer } from 'rxjs';
 
-import { OperatorService } from 'app/core/core-services/operator.service';
+import { OperatorService, Permission } from 'app/core/core-services/operator.service';
 import { ProjectorRepositoryService } from 'app/core/repositories/projector/projector-repository.service';
 import { Projector } from 'app/shared/models/core/projector';
 import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
@@ -55,7 +55,7 @@ export class ProjectorListComponent extends BaseViewComponent implements OnInit,
      * @returns true if the user can manage projectors
      */
     public get canManage(): boolean {
-        return this.operator.hasPerms('core.can_manage_projector');
+        return this.operator.hasPerms(Permission.coreCanManageProjector);
     }
 
     /**

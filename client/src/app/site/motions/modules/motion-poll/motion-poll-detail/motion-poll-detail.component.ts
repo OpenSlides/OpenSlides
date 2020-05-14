@@ -6,7 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { PblColumnDefinition } from '@pebula/ngrid';
 
-import { OperatorService } from 'app/core/core-services/operator.service';
+import { OperatorService, Permission } from 'app/core/core-services/operator.service';
 import { MotionPollRepositoryService } from 'app/core/repositories/motions/motion-poll-repository.service';
 import { MotionVoteRepositoryService } from 'app/core/repositories/motions/motion-vote-repository.service';
 import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
@@ -78,6 +78,6 @@ export class MotionPollDetailComponent extends BasePollDetailComponent<ViewMotio
     }
 
     protected hasPerms(): boolean {
-        return this.operator.hasPerms('motions.can_manage_polls');
+        return this.operator.hasPerms(Permission.motionsCanManagePolls);
     }
 }

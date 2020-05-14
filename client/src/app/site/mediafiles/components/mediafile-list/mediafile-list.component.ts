@@ -19,7 +19,7 @@ import { columnFactory, createDS, PblColumnDefinition } from '@pebula/ngrid';
 import { PblNgridDataMatrixRow } from '@pebula/ngrid/target-events';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 
-import { OperatorService } from 'app/core/core-services/operator.service';
+import { OperatorService, Permission } from 'app/core/core-services/operator.service';
 import { StorageService } from 'app/core/core-services/storage.service';
 import { MediafileRepositoryService } from 'app/core/repositories/mediafiles/mediafile-repository.service';
 import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
@@ -71,7 +71,7 @@ export class MediafileListComponent extends BaseListViewComponent<ViewMediafile>
      * @return true if the user can manage media files
      */
     public get canEdit(): boolean {
-        return this.operator.hasPerms('mediafiles.can_manage');
+        return this.operator.hasPerms(Permission.mediafilesCanManage);
     }
 
     /**
@@ -79,9 +79,9 @@ export class MediafileListComponent extends BaseListViewComponent<ViewMediafile>
      */
     public get canAccessFileMenu(): boolean {
         return (
-            this.operator.hasPerms('core.can_manage_projector') ||
-            this.operator.hasPerms('agenda.can_see_list_of_speakers') ||
-            this.operator.hasPerms('core.can_manage_logos_and_fonts') ||
+            this.operator.hasPerms(Permission.coreCanManageProjector) ||
+            this.operator.hasPerms(Permission.agendaCanSeeListOfSpeakers) ||
+            this.operator.hasPerms(Permission.coreCanManageLogosAndFonts) ||
             this.canEdit
         );
     }
@@ -253,10 +253,10 @@ export class MediafileListComponent extends BaseListViewComponent<ViewMediafile>
      */
     public showFileMenu(file: ViewMediafile): boolean {
         return (
-            this.operator.hasPerms('agenda.can_see_list_of_speakers') ||
-            (file.isProjectable() && this.operator.hasPerms('core.can_manage_projector')) ||
-            (file.isFont() && this.operator.hasPerms('core.can_manage_logos_and_fonts')) ||
-            (file.isImage() && this.operator.hasPerms('core.can_manage_logos_and_fonts')) ||
+            this.operator.hasPerms(Permission.agendaCanSeeListOfSpeakers) ||
+            (file.isProjectable() && this.operator.hasPerms(Permission.coreCanManageProjector)) ||
+            (file.isFont() && this.operator.hasPerms(Permission.coreCanManageLogosAndFonts)) ||
+            (file.isImage() && this.operator.hasPerms(Permission.coreCanManageLogosAndFonts)) ||
             this.canEdit
         );
     }

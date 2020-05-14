@@ -8,7 +8,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject } from 'rxjs';
 
 import { ConstantsService } from 'app/core/core-services/constants.service';
-import { OperatorService } from 'app/core/core-services/operator.service';
+import { OperatorService, Permission } from 'app/core/core-services/operator.service';
 import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
@@ -206,23 +206,25 @@ export class UserDetailComponent extends BaseViewComponent implements OnInit {
     public isAllowed(action: string): boolean {
         switch (action) {
             case 'delete':
-                return this.operator.hasPerms('users.can_manage') && !this.ownPage;
+                return this.operator.hasPerms(Permission.usersCanManage) && !this.ownPage;
             case 'manage':
-                return this.operator.hasPerms('users.can_manage');
+                return this.operator.hasPerms(Permission.usersCanManage);
             case 'seeName':
-                return this.operator.hasPerms('users.can_see_name', 'users.can_manage') || this.ownPage;
+                return this.operator.hasPerms(Permission.usersCanSeeName, Permission.usersCanManage) || this.ownPage;
             case 'seeOtherUsers':
-                return this.operator.hasPerms('users.can_see_name', 'users.can_manage');
+                return this.operator.hasPerms(Permission.usersCanSeeName, Permission.usersCanManage);
             case 'seeExtra':
-                return this.operator.hasPerms('users.can_see_extra_data', 'users.can_manage');
+                return this.operator.hasPerms(Permission.usersCanSeeExtraData, Permission.usersCanManage);
             case 'seePersonal':
-                return this.operator.hasPerms('users.can_see_extra_data', 'users.can_manage') || this.ownPage;
+                return (
+                    this.operator.hasPerms(Permission.usersCanSeeExtraData, Permission.usersCanManage) || this.ownPage
+                );
             case 'changePersonal':
-                return this.operator.hasPerms('users.can_manage') || this.ownPage;
+                return this.operator.hasPerms(Permission.usersCanManage) || this.ownPage;
             case 'changePassword':
                 return (
-                    (this.ownPage && this.operator.hasPerms('users.can_change_password')) ||
-                    this.operator.hasPerms('users.can_manage')
+                    (this.ownPage && this.operator.hasPerms(Permission.usersCanChangePassword)) ||
+                    this.operator.hasPerms(Permission.usersCanManage)
                 );
             default:
                 return false;

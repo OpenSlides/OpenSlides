@@ -5,7 +5,7 @@ import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { OperatorService } from 'app/core/core-services/operator.service';
+import { OperatorService, Permission } from 'app/core/core-services/operator.service';
 import { MotionPollRepositoryService } from 'app/core/repositories/motions/motion-poll-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { VotingPrivacyWarningComponent } from 'app/shared/components/voting-privacy-warning/voting-privacy-warning.component';
@@ -54,7 +54,7 @@ export class MotionPollComponent extends BasePollComponent<ViewMotionPoll, Motio
     public get showPoll(): boolean {
         if (this.poll) {
             if (
-                this.operator.hasPerms('motions.can_manage_polls') ||
+                this.operator.hasPerms(Permission.motionsCanManagePolls) ||
                 this.poll.isPublished ||
                 (this.poll.isEVoting && !this.poll.isCreated)
             ) {

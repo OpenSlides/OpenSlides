@@ -1,11 +1,12 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
+import { Permission } from 'app/core/core-services/operator.service';
 import { TopicDetailComponent } from './components/topic-detail/topic-detail.component';
 
 const routes: Routes = [
-    { path: 'new', component: TopicDetailComponent, data: { basePerm: 'agenda.can_manage' } },
-    { path: ':id', component: TopicDetailComponent, data: { basePerm: 'agenda.can_see' } }
+    { path: 'new', component: TopicDetailComponent, data: { basePerm: Permission.agendaCanManage } },
+    { path: ':id', component: TopicDetailComponent, data: { basePerm: Permission.agendaCanSee } }
 ];
 
 @NgModule({

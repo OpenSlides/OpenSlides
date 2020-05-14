@@ -5,7 +5,7 @@ import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core'; // showcase
 
-import { OperatorService } from 'app/core/core-services/operator.service';
+import { OperatorService, Permission } from 'app/core/core-services/operator.service';
 import { ConfigRepositoryService } from 'app/core/repositories/config/config-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { BaseViewComponent } from 'app/site/base/base-view';
@@ -115,6 +115,6 @@ export class StartComponent extends BaseViewComponent implements OnInit {
      * Returns, if the current user has the necessary permissions.
      */
     public canManage(): boolean {
-        return this.operator.hasPerms('core.can_manage_config');
+        return this.operator.hasPerms(Permission.coreCanManageConfig);
     }
 }

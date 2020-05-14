@@ -1,4 +1,5 @@
 import { AppConfig } from '../../core/definitions/app-config';
+import { Permission } from 'app/core/core-services/operator.service';
 import { CountdownRepositoryService } from 'app/core/repositories/projector/countdown-repository.service';
 import { ProjectionDefaultRepositoryService } from 'app/core/repositories/projector/projection-default-repository.service';
 import { ProjectorMessageRepositoryService } from 'app/core/repositories/projector/projector-message-repository.service';
@@ -42,7 +43,7 @@ export const ProjectorAppConfig: AppConfig = {
             displayName: 'Projector',
             icon: 'videocam',
             weight: 700,
-            permission: 'core.can_see_projector'
+            permission: Permission.coreCanSeeProjector
         }
     ]
 };

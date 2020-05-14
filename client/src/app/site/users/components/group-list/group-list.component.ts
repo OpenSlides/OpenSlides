@@ -7,6 +7,7 @@ import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import { Permission } from 'app/core/core-services/operator.service';
 import { AppPermissions, GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { Group } from 'app/shared/models/users/group';
@@ -158,7 +159,7 @@ export class GroupListComponent extends BaseViewComponent implements OnInit {
      * @param viewGroup
      * @param perm
      */
-    public togglePerm(viewGroup: ViewGroup, perm: string): void {
+    public togglePerm(viewGroup: ViewGroup, perm: Permission): void {
         this.repo.togglePerm(viewGroup, perm);
     }
 
