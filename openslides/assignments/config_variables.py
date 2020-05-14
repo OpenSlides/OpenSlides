@@ -13,7 +13,7 @@ def get_config_variables():
     # Voting
     yield ConfigVariable(
         name="assignment_poll_method",
-        default_value="votes",
+        default_value=AssignmentPoll.POLLMETHOD_VOTES,
         input_type="choice",
         label="Default election method",
         choices=tuple(
@@ -26,8 +26,21 @@ def get_config_variables():
     )
 
     yield ConfigVariable(
+        name="assignment_poll_default_type",
+        default_value=AssignmentPoll.TYPE_ANALOG,
+        input_type="choice",
+        label="Default type for assignment polls",
+        choices=tuple(
+            {"value": type[0], "display_name": type[1]} for type in AssignmentPoll.TYPES
+        ),
+        weight=403,
+        group="Elections",
+        subgroup="Ballot",
+    )
+
+    yield ConfigVariable(
         name="assignment_poll_default_100_percent_base",
-        default_value="valid",
+        default_value=AssignmentPoll.PERCENT_BASE_VALID,
         input_type="choice",
         label="Default 100 % base of an election result",
         choices=tuple(
@@ -51,7 +64,7 @@ def get_config_variables():
 
     yield ConfigVariable(
         name="assignment_poll_default_majority_method",
-        default_value="simple",
+        default_value=AssignmentPoll.MAJORITY_SIMPLE,
         input_type="choice",
         choices=tuple(
             {"value": method[0], "display_name": method[1]}

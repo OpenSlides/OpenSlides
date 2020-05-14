@@ -179,6 +179,11 @@ export abstract class PollService {
     public abstract defaultGroupIds: number[];
 
     /**
+     * The default poll type
+     */
+    public abstract defaultPollType: PollType;
+
+    /**
      * The majority method currently in use
      */
     public majorityMethod: CalculableMajorityMethod;
@@ -227,7 +232,7 @@ export abstract class PollService {
             onehundred_percent_base: this.defaultPercentBase,
             majority_method: this.defaultMajorityMethod,
             groups_id: this.defaultGroupIds,
-            type: PollType.Analog
+            type: this.defaultPollType
         };
     }
 

@@ -116,9 +116,9 @@ class BasePoll(models.Model):
     TYPE_NAMED = "named"
     TYPE_PSEUDOANONYMOUS = "pseudoanonymous"
     TYPES = (
-        (TYPE_ANALOG, "Analog"),
-        (TYPE_NAMED, "Named"),
-        (TYPE_PSEUDOANONYMOUS, "Pseudoanonymous"),
+        (TYPE_ANALOG, "analog"),
+        (TYPE_NAMED, "nominal"),
+        (TYPE_PSEUDOANONYMOUS, "non-nominal"),
     )
     type = models.CharField(max_length=64, blank=False, null=False, choices=TYPES)
 

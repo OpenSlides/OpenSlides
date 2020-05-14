@@ -6,7 +6,7 @@ import { ConstantsService } from 'app/core/core-services/constants.service';
 import { MotionPollRepositoryService } from 'app/core/repositories/motions/motion-poll-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { MotionPoll, MotionPollMethod } from 'app/shared/models/motions/motion-poll';
-import { MajorityMethod, PercentBase } from 'app/shared/models/poll/base-poll';
+import { MajorityMethod, PercentBase, PollType } from 'app/shared/models/poll/base-poll';
 import { ParsePollNumberPipe } from 'app/shared/pipes/parse-poll-number.pipe';
 import { PollKeyVerbosePipe } from 'app/shared/pipes/poll-key-verbose.pipe';
 import { PollData, PollService, PollTableData, VotingResult } from 'app/site/polls/services/poll.service';
@@ -38,6 +38,8 @@ export class MotionPollService extends PollService {
 
     public defaultGroupIds: number[];
 
+    public defaultPollType: PollType;
+
     /**
      * Constructor. Subscribes to the configuration values needed
      * @param config ConfigService
@@ -57,6 +59,7 @@ export class MotionPollService extends PollService {
         config
             .get<MajorityMethod>('motion_poll_default_majority_method')
             .subscribe(method => (this.defaultMajorityMethod = method));
+        config.get<PollType>('motion_poll_default_type').subscribe(type => (this.defaultPollType = type));
 
         config.get<number[]>(MotionPoll.defaultGroupsConfig).subscribe(ids => (this.defaultGroupIds = ids));
     }

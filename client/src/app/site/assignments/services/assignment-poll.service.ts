@@ -10,7 +10,7 @@ import {
     AssignmentPollMethod,
     AssignmentPollPercentBase
 } from 'app/shared/models/assignments/assignment-poll';
-import { MajorityMethod, VOTE_UNDOCUMENTED } from 'app/shared/models/poll/base-poll';
+import { MajorityMethod, PollType, VOTE_UNDOCUMENTED } from 'app/shared/models/poll/base-poll';
 import { ParsePollNumberPipe } from 'app/shared/pipes/parse-poll-number.pipe';
 import { PollKeyVerbosePipe } from 'app/shared/pipes/poll-key-verbose.pipe';
 import {
@@ -41,6 +41,8 @@ export class AssignmentPollService extends PollService {
 
     public defaultPollMethod: AssignmentPollMethod;
 
+    public defaultPollType: PollType;
+
     private sortByVote: boolean;
 
     /**
@@ -66,6 +68,7 @@ export class AssignmentPollService extends PollService {
         config
             .get<AssignmentPollMethod>(AssignmentPoll.defaultPollMethodConfig)
             .subscribe(method => (this.defaultPollMethod = method));
+        config.get<PollType>('assignment_poll_default_type').subscribe(type => (this.defaultPollType = type));
         config.get<boolean>('assignment_poll_sort_poll_result_by_votes').subscribe(sort => (this.sortByVote = sort));
     }
 
