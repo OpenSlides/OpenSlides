@@ -56,15 +56,13 @@
             </div>
         </div>
 
-        <!-- Chart -->
-        <div *ngIf="poll.stateHasVotes">
+        <!-- Chart / Table -->
+        <div *ngIf="poll.stateHasVotes" class="poll-result-wrapper">
             <div *osPerms="'assignments.can_manage'; or: poll.isPublished">
-                <os-charts
-                    class="pointer"
+                <os-assignment-poll-detail-content
                     routerLink="/assignments/polls/{{ poll.id }}"
-                    [labels]="candidatesLabels"
-                    [data]="chartDataSubject | async"
-                ></os-charts>
+                    [poll]="poll"
+                ></os-assignment-poll-detail-content>
             </div>
 
             <!-- Cannot see unpublished -->
