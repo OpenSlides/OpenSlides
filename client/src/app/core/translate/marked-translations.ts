@@ -167,6 +167,7 @@ _('Choose 0 to disable the supporting system.');
 _('Remove all supporters of a motion if a submitter edits his motion in early state');
 // subgroup Voting and ballot papers
 _('Voting and ballot papers');
+_('Default voting type');
 _('Default 100 % base of a voting result');
 _('Yes/No/Abstain');
 _('Yes/No');

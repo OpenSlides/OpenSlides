@@ -29,7 +29,7 @@ def get_config_variables():
         name="assignment_poll_default_type",
         default_value=AssignmentPoll.TYPE_ANALOG,
         input_type="choice",
-        label="Default type for assignment polls",
+        label="Default voting type",
         choices=tuple(
             {"value": type[0], "display_name": type[1]} for type in AssignmentPoll.TYPES
         ),
