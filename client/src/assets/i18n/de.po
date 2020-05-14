@@ -826,6 +826,9 @@ msgid "Default visibility for new agenda items (except topics)"
 msgstr ""
 "Voreingestellte Sichtbarkeit für neue Tagesordnungspunkte (außer Themen)"
 
+msgid "Default voting type"
+msgstr "Voreingestellte Art der Stimmabgabe"
+
 msgid "Delegates"
 msgstr "Delegierte"
 

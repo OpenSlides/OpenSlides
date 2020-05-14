@@ -772,6 +772,9 @@ msgstr ""
 msgid "Default visibility for new agenda items (except topics)"
 msgstr ""
 
+msgid "Default voting type"
+msgstr ""
+
 msgid "Delegates"
 msgstr ""
 
