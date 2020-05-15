@@ -9,7 +9,7 @@ import time
 from typing import Any, Awaitable, Callable, Dict, List
 
 from .cache import element_cache
-from .utils import timeprint
+from .timing import timeprint
 
 
 AllData = Dict[str, Dict[int, Dict[str, Any]]]

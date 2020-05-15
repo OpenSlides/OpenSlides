@@ -18,7 +18,8 @@ from .cache_providers import (
 from .locking import locking
 from .redis import use_redis
 from .schema_version import SchemaVersion, schema_version_handler
-from .utils import get_element_id, split_element_id, timeprint
+from .utils import get_element_id, split_element_id
+from .timing import timeprint
 
 
 logger = logging.getLogger(__name__)

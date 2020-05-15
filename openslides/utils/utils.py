@@ -7,17 +7,8 @@ import roman
 from django.apps import apps
 from django.db.models import Model
 
-
 CAMEL_CASE_TO_PSEUDO_SNAKE_CASE_CONVERSION_REGEX_1 = re.compile("(.)([A-Z][a-z]+)")
 CAMEL_CASE_TO_PSEUDO_SNAKE_CASE_CONVERSION_REGEX_2 = re.compile("([a-z0-9])([A-Z])")
-
-
-def timeprint(name, times):
-    s = f"{name}: "
-    for i in range(1, len(times)):
-        s += f"{i}: {times[i]-times[i-1]:.5f} "
-    s += f"sum: {times[-1]-times[0]:.5f}"
-    print(s)
 
 
 def convert_camel_case_to_pseudo_snake_case(text: str) -> str:
