@@ -1,4 +1,5 @@
 import threading
+import time
 from collections import defaultdict
 from typing import Any, Dict, Iterable, List, Optional, Tuple, Union
 
@@ -9,7 +10,7 @@ from mypy_extensions import TypedDict
 
 from .cache import element_cache, get_element_id
 from .projector import get_projector_data
-from .utils import get_model_from_collection_string, is_iterable
+from .utils import get_model_from_collection_string, is_iterable, timeprint
 
 
 class AutoupdateElementBase(TypedDict):
@@ -74,6 +75,8 @@ class AutoupdateBundle:
         if not self.autoupdate_elements:
             return
 
+        a0 = time.time()
+
         for collection, elements in self.autoupdate_elements.items():
             # Get all ids, that do not have a full_data key
             # (element["full_data"]=None will not be resolved again!)
@@ -91,11 +94,18 @@ class AutoupdateBundle:
                 for full_data in model_class.get_elements(ids):
                     elements[full_data["id"]]["full_data"] = full_data
 
+        a1 = time.time()
+
         # Save histroy here using sync code.
         save_history(self.elements)
 
+        a2 = time.time()
+
         # Update cache and send autoupdate using async code.
         async_to_sync(self.async_handle_collection_elements)()
+
+        a3 = time.time()
+        print("done(): 1:", a1-a0, "2:", a2-a1, "3:", a3-a2, "sum:", a3-a0)
 
     @property
     def elements(self) -> Iterable[AutoupdateElement]:
@@ -124,18 +134,33 @@ class AutoupdateBundle:
         """
         Async helper function to update cache and send autoupdate.
         """
+        a = [time.time()]
+
         # Update cache
         change_id = await self.update_cache()
 
+        a.append(time.time())
+
         # Send autoupdate
         channel_layer = get_channel_layer()
+
+        a.append(time.time())
+
         await channel_layer.group_send(
             "autoupdate", {"type": "send_data", "change_id": change_id}
         )
 
+        a.append(time.time())
+
         projector_data = await get_projector_data()
+
+        a.append(time.time())
+
         # Send projector
         channel_layer = get_channel_layer()
+
+        a.append(time.time())
+
         await channel_layer.group_send(
             "projector",
             {
@@ -144,6 +169,9 @@ class AutoupdateBundle:
                 "change_id": change_id,
             },
         )
+
+        a.append(time.time())
+        timeprint("ahce", a)
 
 
 def inform_changed_data(
@@ -246,10 +274,17 @@ class AutoupdateBundleMiddleware:
         thread_id = threading.get_ident()
         autoupdate_bundle[thread_id] = AutoupdateBundle()
 
+        a = [time.time()]
+
         response = self.get_response(request)
+
+        a.append(time.time())
 
         bundle: AutoupdateBundle = autoupdate_bundle.pop(thread_id)
         bundle.done()
+
+        a.append(time.time())
+        timeprint("middleware", a)
         return response
 
 

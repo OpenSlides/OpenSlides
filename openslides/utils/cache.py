@@ -1,4 +1,5 @@
 import json
+import time
 from collections import defaultdict
 from datetime import datetime
 from time import sleep
@@ -17,7 +18,7 @@ from .cache_providers import (
 from .locking import locking
 from .redis import use_redis
 from .schema_version import SchemaVersion, schema_version_handler
-from .utils import get_element_id, split_element_id
+from .utils import get_element_id, split_element_id, timeprint
 
 
 logger = logging.getLogger(__name__)
@@ -263,15 +264,27 @@ class ElementCache:
             }
         }
         """
+        a = [time.time()]
         all_data: Dict[str, Dict[int, Dict[str, Any]]] = defaultdict(dict)
-        for element_id, data in (await self.cache_provider.get_all_data()).items():
+        all_data_wrong_format = await self.cache_provider.get_all_data()
+
+        a.append(time.time())
+
+        for element_id, data in all_data_wrong_format.items():
             collection, id = split_element_id(element_id)
             element = json.loads(data.decode())
             element.pop(
                 "_no_delete_on_restriction", False
             )  # remove special field for get_data_since
             all_data[collection][id] = element
-        return dict(all_data)
+
+        a.append(time.time())
+
+        r = dict(all_data)
+
+        a.append(time.time())
+        timeprint("get_all_data_dict", a)
+        return r
 
     async def get_collection_data(self, collection: str) -> Dict[int, Dict[str, Any]]:
         """

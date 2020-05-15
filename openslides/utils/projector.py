@@ -4,10 +4,12 @@ General projector code.
 Functions  that handel the registration of projector elements and the rendering
 of the data to present it on the projector.
 """
+import time
 
 from typing import Any, Awaitable, Callable, Dict, List
 
 from .cache import element_cache
+from .utils import timeprint
 
 
 AllData = Dict[str, Dict[int, Dict[str, Any]]]
@@ -64,11 +66,15 @@ async def get_projector_data(
         ],
     }
     """
+    a = [time.time()]
+
     if projector_ids is None:
         projector_ids = []
 
     all_data = await element_cache.get_all_data_dict()
     projector_data: Dict[int, List[Dict[str, Any]]] = {}
+
+    a.append(time.time())
 
     for projector_id, projector in all_data.get("core/projector", {}).items():
         if projector_ids and projector_id not in projector_ids:
@@ -88,6 +94,8 @@ async def get_projector_data(
                 data = {"error": str(err)}
             projector_data[projector_id].append({"data": data, "element": element})
 
+    a.append(time.time())
+    timeprint("projector", a)
     return projector_data
 
 
