@@ -40,7 +40,7 @@ export class PrioritizeService {
         if (this.openSlidesStatusService.isPrioritizedClient !== opPrioritized) {
             console.log('Alter prioritization:', opPrioritized);
             this.openSlidesStatusService.isPrioritizedClient = opPrioritized;
-            this.websocketService.reconnect({ changeId: this.DS.maxChangeId });
+            this.websocketService.reconnect(this.DS.maxChangeId);
         }
     }
 }

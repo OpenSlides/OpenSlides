@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import { AutoupdateFormat, AutoupdateService, isAutoupdateFormat } from './autoupdate.service';
 import { OpenSlidesStatusService } from './openslides-status.service';
 import { formatQueryParams, QueryParams } from '../definitions/query-params';
 
@@ -17,18 +18,27 @@ export enum HTTPMethod {
     DELETE = 'delete'
 }
 
-export interface DetailResponse {
+export interface ErrorDetailResponse {
     detail: string | string[];
     args?: string[];
 }
 
-function isDetailResponse(obj: any): obj is DetailResponse {
+function isErrorDetailResponse(obj: any): obj is ErrorDetailResponse {
     return (
         obj &&
         typeof obj === 'object' &&
         (typeof obj.detail === 'string' || obj.detail instanceof Array) &&
         (!obj.args || obj.args instanceof Array)
     );
+}
+
+interface AutoupdateResponse {
+    autoupdate: AutoupdateFormat;
+    data?: any;
+}
+
+function isAutoupdateReponse(obj: any): obj is AutoupdateResponse {
+    return obj && typeof obj === 'object' && isAutoupdateFormat((obj as AutoupdateResponse).autoupdate);
 }
 
 /**
@@ -55,7 +65,8 @@ export class HttpService {
     public constructor(
         private http: HttpClient,
         private translate: TranslateService,
-        private OSStatus: OpenSlidesStatusService
+        private OSStatus: OpenSlidesStatusService,
+        private autoupdateService: AutoupdateService
     ) {
         this.defaultHeaders = new HttpHeaders().set('Content-Type', 'application/json');
     }
@@ -82,7 +93,7 @@ export class HttpService {
     ): Promise<T> {
         // end early, if we are in history mode
         if (this.OSStatus.isInHistoryMode && method !== HTTPMethod.GET) {
-            throw this.handleError('You cannot make changes while in history mode');
+            throw this.processError('You cannot make changes while in history mode');
         }
 
         // there is a current bug with the responseType.
@@ -108,9 +119,10 @@ export class HttpService {
         };
 
         try {
-            return await this.http.request<T>(method, url, options).toPromise();
-        } catch (e) {
-            throw this.handleError(e);
+            const responseData: T = await this.http.request<T>(method, url, options).toPromise();
+            return this.processResponse(responseData);
+        } catch (error) {
+            throw this.processError(error);
         }
     }
 
@@ -120,7 +132,7 @@ export class HttpService {
      * @param e The error thrown.
      * @returns The prepared and translated message for the user
      */
-    private handleError(e: any): string {
+    private processError(e: any): string {
         let error = this.translate.instant('Error') + ': ';
         // If the error is a string already, return it.
         if (typeof e === 'string') {
@@ -142,12 +154,14 @@ export class HttpService {
         } else if (!e.error) {
             error += this.translate.instant("The server didn't respond.");
         } else if (typeof e.error === 'object') {
-            if (isDetailResponse(e.error)) {
-                error += this.processDetailResponse(e.error);
+            if (isErrorDetailResponse(e.error)) {
+                error += this.processErrorDetailResponse(e.error);
             } else {
                 const errorList = Object.keys(e.error).map(key => {
                     const capitalizedKey = key.charAt(0).toUpperCase() + key.slice(1);
-                    return `${this.translate.instant(capitalizedKey)}: ${this.processDetailResponse(e.error[key])}`;
+                    return `${this.translate.instant(capitalizedKey)}: ${this.processErrorDetailResponse(
+                        e.error[key]
+                    )}`;
                 });
                 error = errorList.join(', ');
             }
@@ -168,11 +182,9 @@ export class HttpService {
      * @param str a string or a string array to join together.
      * @returns Error text(s) as single string
      */
-    private processDetailResponse(response: DetailResponse): string {
+    private processErrorDetailResponse(response: ErrorDetailResponse): string {
         let message: string;
-        if (response instanceof Array) {
-            message = response.join(' ');
-        } else if (response.detail instanceof Array) {
+        if (response.detail instanceof Array) {
             message = response.detail.join(' ');
         } else {
             message = response.detail;
@@ -185,6 +197,14 @@ export class HttpService {
             }
         }
         return message;
+    }
+
+    private processResponse<T>(responseData: T): T {
+        if (isAutoupdateReponse(responseData)) {
+            this.autoupdateService.injectAutoupdateIgnoreChangeId(responseData.autoupdate);
+            responseData = responseData.data;
+        }
+        return responseData;
     }
 
     /**

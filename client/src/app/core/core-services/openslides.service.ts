@@ -130,10 +130,7 @@ export class OpenSlidesService {
      * Init DS from cache and after this start the websocket service.
      */
     private async setupDataStoreAndWebSocket(): Promise<void> {
-        let changeId = await this.DS.initFromStorage();
-        if (changeId > 0) {
-            changeId += 1;
-        }
+        const changeId = await this.DS.initFromStorage();
         // disconnect the WS connection, if there was one. This is needed
         // to update the connection parameters, namely the cookies. If the user
         // is changed, the WS needs to reconnect, so the new connection holds the new
@@ -141,7 +138,7 @@ export class OpenSlidesService {
         if (this.websocketService.isConnected) {
             await this.websocketService.close(); // Wait for the disconnect.
         }
-        await this.websocketService.connect({ changeId: changeId }); // Request changes after changeId.
+        await this.websocketService.connect(changeId); // Request changes after changeId.
     }
 
     /**

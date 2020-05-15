@@ -35,9 +35,11 @@ class ProjectorAllDataProvider:
             if data is None:
                 data = ProjectorAllDataProvider.NON_EXISTENT_MARKER
             self.cache[collection][id] = data
-        elif cache_data == ProjectorAllDataProvider.NON_EXISTENT_MARKER:
+
+        cache_data = self.cache[collection][id]
+        if cache_data == ProjectorAllDataProvider.NON_EXISTENT_MARKER:
             return None
-        return self.cache[collection][id]
+        return cache_data
 
     async def get_collection(self, collection: str) -> Dict[int, Dict[str, Any]]:
         if not self.fetched_collection.get(collection, False):

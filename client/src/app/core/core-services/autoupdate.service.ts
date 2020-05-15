@@ -6,7 +6,7 @@ import { DataStoreService, DataStoreUpdateManagerService } from './data-store.se
 import { Mutex } from '../promises/mutex';
 import { WebsocketService, WEBSOCKET_ERROR_CODES } from './websocket.service';
 
-interface AutoupdateFormat {
+export interface AutoupdateFormat {
     /**
      * All changed (and created) items as their full/restricted data grouped by their collection.
      */
@@ -35,6 +35,19 @@ interface AutoupdateFormat {
      * Flag, if this autoupdate contains all data. If so, the DS needs to be resetted.
      */
     all_data: boolean;
+}
+
+export function isAutoupdateFormat(obj: any): obj is AutoupdateFormat {
+    const format = obj as AutoupdateFormat;
+    return (
+        obj &&
+        typeof obj === 'object' &&
+        format.changed !== undefined &&
+        format.deleted !== undefined &&
+        format.from_change_id !== undefined &&
+        format.to_change_id !== undefined &&
+        format.all_data !== undefined
+    );
 }
 
 /**
@@ -120,25 +133,38 @@ export class AutoupdateService {
 
         // Normal autoupdate
         if (autoupdate.from_change_id <= maxChangeId + 1 && autoupdate.to_change_id > maxChangeId) {
-            const updateSlot = await this.DSUpdateManager.getNewUpdateSlot(this.DS);
-
-            // Delete the removed objects from the DataStore
-            for (const collection of Object.keys(autoupdate.deleted)) {
-                await this.DS.remove(collection, autoupdate.deleted[collection]);
-            }
-
-            // Add the objects to the DataStore.
-            for (const collection of Object.keys(autoupdate.changed)) {
-                await this.DS.add(this.mapObjectsToBaseModels(collection, autoupdate.changed[collection]));
-            }
-
-            await this.DS.flushToStorage(autoupdate.to_change_id);
-
-            this.DSUpdateManager.commit(updateSlot, autoupdate.to_change_id);
+            this.injectAutupdateIntoDS(autoupdate, true);
         } else {
             // autoupdate fully in the future. we are missing something!
             this.requestChanges();
         }
+    }
+
+    public async injectAutoupdateIgnoreChangeId(autoupdate: AutoupdateFormat): Promise<void> {
+        const unlock = await this.mutex.lock();
+        console.debug('inject autoupdate', autoupdate);
+        this.injectAutupdateIntoDS(autoupdate, false);
+        unlock();
+    }
+
+    private async injectAutupdateIntoDS(autoupdate: AutoupdateFormat, flush: boolean): Promise<void> {
+        const updateSlot = await this.DSUpdateManager.getNewUpdateSlot(this.DS);
+
+        // Delete the removed objects from the DataStore
+        for (const collection of Object.keys(autoupdate.deleted)) {
+            await this.DS.remove(collection, autoupdate.deleted[collection]);
+        }
+
+        // Add the objects to the DataStore.
+        for (const collection of Object.keys(autoupdate.changed)) {
+            await this.DS.add(this.mapObjectsToBaseModels(collection, autoupdate.changed[collection]));
+        }
+
+        if (flush) {
+            await this.DS.flushToStorage(autoupdate.to_change_id);
+        }
+
+        this.DSUpdateManager.commit(updateSlot, autoupdate.to_change_id);
     }
 
     /**
@@ -164,9 +190,8 @@ export class AutoupdateService {
      * The server should return an autoupdate with all new data.
      */
     public requestChanges(): void {
-        const changeId = this.DS.maxChangeId === 0 ? 0 : this.DS.maxChangeId + 1;
-        console.log(`requesting changed objects with DS max change id ${changeId}`);
-        this.websocketService.send('getElements', { change_id: changeId });
+        console.log(`requesting changed objects with DS max change id ${this.DS.maxChangeId}`);
+        this.websocketService.send('getElements', { change_id: this.DS.maxChangeId });
     }
 
     /**

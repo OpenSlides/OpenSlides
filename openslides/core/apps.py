@@ -34,16 +34,10 @@ class CoreAppConfig(AppConfig):
             ProjectionDefaultViewSet,
             TagViewSet,
         )
-        from .websocket import (
-            NotifyWebsocketClientMessage,
-            ConstantsWebsocketClientMessage,
-            GetElementsWebsocketClientMessage,
-            AutoupdateWebsocketClientMessage,
-            ListenToProjectors,
-            PingPong,
-        )
         from ..utils.rest_api import router
-        from ..utils.websocket import register_client_message
+
+        # Let all client websocket message register
+        from ..utils import websocket_client_messages  # noqa
 
         # Collect all config variables before getting the constants.
         config.collect_config_variables_from_apps()
@@ -91,14 +85,6 @@ class CoreAppConfig(AppConfig):
         router.register(
             self.get_model("Countdown").get_collection_string(), CountdownViewSet
         )
-
-        # Register client messages
-        register_client_message(NotifyWebsocketClientMessage())
-        register_client_message(ConstantsWebsocketClientMessage())
-        register_client_message(GetElementsWebsocketClientMessage())
-        register_client_message(AutoupdateWebsocketClientMessage())
-        register_client_message(ListenToProjectors())
-        register_client_message(PingPong())
 
         if "runserver" in sys.argv or "changeconfig" in sys.argv:
             from openslides.utils.startup import run_startup_hooks

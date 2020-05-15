@@ -1,4 +1,3 @@
-import asyncio
 from importlib import import_module
 from typing import Optional, Tuple
 from unittest.mock import patch
@@ -158,17 +157,7 @@ async def test_connection_with_too_big_change_id(get_communicator, set_config):
 
 
 @pytest.mark.asyncio
-async def test_changed_data_autoupdate_off(communicator, set_config):
-    await set_config("general_system_enable_anonymous", True)
-    await communicator.connect()
-
-    # Change a config value
-    await set_config("general_event_name", "Test Event")
-    assert await communicator.receive_nothing()
-
-
-@pytest.mark.asyncio
-async def test_changed_data_autoupdate_on(get_communicator, set_config):
+async def test_changed_data_autoupdate(get_communicator, set_config):
     await set_config("general_system_enable_anonymous", True)
     communicator = get_communicator("autoupdate=on")
     await communicator.connect()
@@ -422,12 +411,12 @@ async def test_send_connect_up_to_date(communicator, set_config):
         {"type": "getElements", "content": {"change_id": 0}, "id": "test_id"}
     )
     response1 = await communicator.receive_json_from()
-    first_change_id = response1.get("content")["to_change_id"]
+    max_change_id = response1.get("content")["to_change_id"]
 
     await communicator.send_json_to(
         {
             "type": "getElements",
-            "content": {"change_id": first_change_id + 1},
+            "content": {"change_id": max_change_id},
             "id": "test_id",
         }
     )
@@ -511,43 +500,6 @@ async def test_send_invalid_get_elements(communicator, set_config):
 
 
 @pytest.mark.asyncio
-async def test_turn_on_autoupdate(communicator, set_config):
-    await set_config("general_system_enable_anonymous", True)
-    await communicator.connect()
-
-    await communicator.send_json_to(
-        {"type": "autoupdate", "content": "on", "id": "test_id"}
-    )
-    await asyncio.sleep(0.01)
-    # Change a config value
-    await set_config("general_event_name", "Test Event")
-    response = await communicator.receive_json_from()
-
-    id = config.get_key_to_id()["general_event_name"]
-    type = response.get("type")
-    content = response.get("content")
-    assert type == "autoupdate"
-    assert content["changed"] == {
-        "core/config": [{"id": id, "key": "general_event_name", "value": "Test Event"}]
-    }
-
-
-@pytest.mark.asyncio
-async def test_turn_off_autoupdate(get_communicator, set_config):
-    await set_config("general_system_enable_anonymous", True)
-    communicator = get_communicator("autoupdate=on")
-    await communicator.connect()
-
-    await communicator.send_json_to(
-        {"type": "autoupdate", "content": False, "id": "test_id"}
-    )
-    await asyncio.sleep(0.01)
-    # Change a config value
-    await set_config("general_event_name", "Test Event")
-    assert await communicator.receive_nothing()
-
-
-@pytest.mark.asyncio
 async def test_listen_to_projector(communicator, set_config):
     await set_config("general_system_enable_anonymous", True)
     await communicator.connect()
@@ -588,10 +540,15 @@ async def test_update_projector(communicator, set_config):
             "id": "test_id",
         }
     )
-    await communicator.receive_json_from()
+    await communicator.receive_json_from()  # recieve initial projector data
 
     # Change a config value
     await set_config("general_event_name", "Test Event")
+
+    # We need two messages: The autoupdate and the projector data in this order
+    response = await communicator.receive_json_from()
+    assert response.get("type") == "autoupdate"
+
     response = await communicator.receive_json_from()
 
     type = response.get("type")
@@ -628,5 +585,9 @@ async def test_update_projector_to_current_value(communicator, set_config):
 
     # Change a config value to current_value
     await set_config("general_event_name", "OpenSlides")
+
+    # We await an autoupdate, bot no projector data
+    response = await communicator.receive_json_from()
+    assert response.get("type") == "autoupdate"
 
     assert await communicator.receive_nothing()

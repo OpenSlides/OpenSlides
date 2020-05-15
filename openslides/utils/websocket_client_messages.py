@@ -1,21 +1,22 @@
 from typing import Any, Dict, Optional
 
-from ..utils import logging
-from ..utils.auth import async_has_perm
-from ..utils.constants import get_constants
-from ..utils.projector import get_projector_data
-from ..utils.stats import WebsocketLatencyLogger
-from ..utils.websocket import (
-    WEBSOCKET_NOT_AUTHORIZED,
+from . import logging
+from .auth import async_has_perm
+from .constants import get_constants
+from .projector import get_projector_data
+from .stats import WebsocketLatencyLogger
+from .websocket import (
     BaseWebsocketClientMessage,
+    NotAuthorizedException,
     ProtocollAsyncJsonWebsocketConsumer,
+    register_client_message,
 )
 
 
 logger = logging.getLogger(__name__)
 
 
-class NotifyWebsocketClientMessage(BaseWebsocketClientMessage):
+class Notify(BaseWebsocketClientMessage):
     """
     Websocket message from a client to send a message to other clients.
     """
@@ -59,13 +60,9 @@ class NotifyWebsocketClientMessage(BaseWebsocketClientMessage):
     ) -> None:
         # Check if the user is allowed to send this notify message
         perm = self.notify_permissions.get(content["name"])
-        if perm is not None and not await async_has_perm(
-            consumer.scope["user"]["id"], perm
-        ):
-            await consumer.send_error(
-                code=WEBSOCKET_NOT_AUTHORIZED,
-                message=f"You need '{perm}' to send this message.",
-                in_response=id,
+        if perm is not None and not await async_has_perm(consumer.user_id, perm):
+            raise NotAuthorizedException(
+                f"You need '{perm}' to send this message.", in_response=id,
             )
         else:
             # Some logging
@@ -84,15 +81,18 @@ class NotifyWebsocketClientMessage(BaseWebsocketClientMessage):
             await consumer.channel_layer.group_send(
                 "site",
                 {
-                    "type": "send_notify",
+                    "type": "msg_notify",
                     "incomming": content,
                     "senderChannelName": consumer.channel_name,
-                    "senderUserId": consumer.scope["user"]["id"],
+                    "senderUserId": consumer.user_id,
                 },
             )
 
 
-class ConstantsWebsocketClientMessage(BaseWebsocketClientMessage):
+register_client_message(Notify())
+
+
+class Constants(BaseWebsocketClientMessage):
     """
     The Client requests the constants.
     """
@@ -109,7 +109,10 @@ class ConstantsWebsocketClientMessage(BaseWebsocketClientMessage):
         )
 
 
-class GetElementsWebsocketClientMessage(BaseWebsocketClientMessage):
+register_client_message(Constants())
+
+
+class GetElements(BaseWebsocketClientMessage):
     """
     The Client request database elements.
     """
@@ -130,26 +133,10 @@ class GetElementsWebsocketClientMessage(BaseWebsocketClientMessage):
         self, consumer: "ProtocollAsyncJsonWebsocketConsumer", content: Any, id: str
     ) -> None:
         requested_change_id = content.get("change_id", 0)
-        await consumer.send_autoupdate(requested_change_id, in_response=id)
+        await consumer.request_autoupdate(requested_change_id, in_response=id)
 
 
-class AutoupdateWebsocketClientMessage(BaseWebsocketClientMessage):
-    """
-    The Client turns autoupdate on or off.
-    """
-
-    identifier = "autoupdate"
-
-    async def receive_content(
-        self, consumer: "ProtocollAsyncJsonWebsocketConsumer", content: Any, id: str
-    ) -> None:
-        # Turn on or off the autoupdate for the client
-        if content:  # accept any value, that can be interpreted as bool
-            await consumer.channel_layer.group_add("autoupdate", consumer.channel_name)
-        else:
-            await consumer.channel_layer.group_discard(
-                "autoupdate", consumer.channel_name
-            )
+register_client_message(GetElements())
 
 
 class ListenToProjectors(BaseWebsocketClientMessage):
@@ -198,6 +185,9 @@ class ListenToProjectors(BaseWebsocketClientMessage):
             await consumer.send_projector_data(projector_data, in_response=id)
 
 
+register_client_message(ListenToProjectors())
+
+
 class PingPong(BaseWebsocketClientMessage):
     """
     Responds to pings from the client.
@@ -220,3 +210,6 @@ class PingPong(BaseWebsocketClientMessage):
         await consumer.send_json(type="pong", content=latency, in_response=id)
         if latency is not None:
             await WebsocketLatencyLogger.add_latency(latency)
+
+
+register_client_message(PingPong())
