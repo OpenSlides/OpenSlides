@@ -203,7 +203,11 @@ class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
         Send changed or deleted elements to the user.
         """
         change_id = event["change_id"]
+        a = time.time()
+        logger.debug(f"request for autoupdate ({self._id}) {change_id}")
         await self.send_autoupdate(change_id, max_change_id=change_id)
+        b = time.time()
+        logger.debug(f"request for autoupdate ({self._id}) done in {b-a:.5f}")
 
     async def projector_changed(self, event: Dict[str, Any]) -> None:
         """

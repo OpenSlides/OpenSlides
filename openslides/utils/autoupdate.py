@@ -1,4 +1,5 @@
 import threading
+import asyncio
 import time
 from collections import defaultdict
 from typing import Any, Dict, Iterable, List, Optional, Tuple, Union
@@ -153,7 +154,9 @@ class AutoupdateBundle:
 
         a.append(time.time())
 
-        projector_data = await get_projector_data()
+        #projector_data = await get_projector_data()
+        projector_data = {}
+        await asyncio.sleep(0.01)
 
         a.append(time.time())
 
