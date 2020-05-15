@@ -92,13 +92,13 @@ class AutoupdateBundle:
                     elements[full_data["id"]]["full_data"] = full_data
 
         # Save histroy here using sync code.
-        save_history(self.elements)
+        save_history(self.element_iterator)
 
         # Update cache and send autoupdate using async code.
         async_to_sync(self.async_handle_collection_elements)()
 
     @property
-    def elements(self) -> Iterable[AutoupdateElement]:
+    def element_iterator(self) -> Iterable[AutoupdateElement]:
         """ Iterator for all elements in this bundle """
         for elements in self.autoupdate_elements.values():
             yield from elements.values()
@@ -110,7 +110,7 @@ class AutoupdateBundle:
         Returns the change_id
         """
         cache_elements: Dict[str, Optional[Dict[str, Any]]] = {}
-        for element in self.elements:
+        for element in self.element_iterator:
             element_id = get_element_id(element["collection_string"], element["id"])
             full_data = element.get("full_data")
             if full_data:
@@ -253,7 +253,7 @@ class AutoupdateBundleMiddleware:
         return response
 
 
-def save_history(elements: Iterable[AutoupdateElement]) -> Iterable:
+def save_history(element_iterator: Iterable[AutoupdateElement]) -> Iterable:
     """
     Thin wrapper around the call of history saving manager method.
 
@@ -261,4 +261,4 @@ def save_history(elements: Iterable[AutoupdateElement]) -> Iterable:
     """
     from ..core.models import History
 
-    return History.objects.add_elements(elements)
+    return History.objects.add_elements(element_iterator)

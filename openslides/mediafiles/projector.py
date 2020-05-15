@@ -1,35 +1,23 @@
 from typing import Any, Dict
 
 from ..utils.projector import (
-    AllData,
-    ProjectorElementException,
+    ProjectorAllDataProvider,
+    get_model,
     register_projector_slide,
 )
 
 
-# Important: All functions have to be prune. This means, that thay can only
-#            access the data, that they get as argument and do not have any
-#            side effects.
-
-
 async def mediafile_slide(
-    all_data: AllData, element: Dict[str, Any], projector_id: int
+    all_data_provider: ProjectorAllDataProvider,
+    element: Dict[str, Any],
+    projector_id: int,
 ) -> Dict[str, Any]:
     """
     Slide for Mediafile.
     """
-    mediafile_id = element.get("id")
-
-    if mediafile_id is None:
-        raise ProjectorElementException("id is required for mediafile slide")
-
-    try:
-        mediafile = all_data["mediafiles/mediafile"][mediafile_id]
-    except KeyError:
-        raise ProjectorElementException(
-            f"mediafile with id {mediafile_id} does not exist"
-        )
-
+    mediafile = await get_model(
+        all_data_provider, "mediafiles/mediafile", element.get("id")
+    )
     return {
         "path": mediafile["path"],
         "mimetype": mediafile["mimetype"],

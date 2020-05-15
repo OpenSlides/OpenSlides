@@ -460,7 +460,8 @@ class RedisCacheProvider:
                 )
                 if reported_amount != read_only_redis_amount_replicas:
                     logger.warn(
-                        f"WAIT reported {reported_amount} replicas of {read_only_redis_amount_replicas} requested after {read_only_redis_wait_timeout} ms!"
+                        f"WAIT reported {reported_amount} replicas of {read_only_redis_amount_replicas} "
+                        + f"requested after {read_only_redis_wait_timeout} ms!"
                     )
             return result
 
