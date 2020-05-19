@@ -300,7 +300,13 @@ def get_config_variables():
     # Fonts
     yield ConfigVariable(
         name="fonts_available",
-        default_value=["font_regular", "font_italic", "font_bold", "font_bold_italic"],
+        default_value=[
+            "font_regular",
+            "font_italic",
+            "font_bold",
+            "font_bold_italic",
+            "font_monospace",
+        ],
         weight=320,
         group="Font",
         hidden=True,
@@ -350,6 +356,19 @@ def get_config_variables():
         default_value={
             "display_name": "Font bold italic",
             "default": "assets/fonts/fira-sans-latin-500italic.woff",
+            "path": "",
+        },
+        input_type="static",
+        weight=321,
+        group="Font",
+        hidden=True,
+    )
+
+    yield ConfigVariable(
+        name="font_monospace",
+        default_value={
+            "display_name": "Font monospace",
+            "default": "assets/fonts/courier-prime.woff",
             "path": "",
         },
         input_type="static",

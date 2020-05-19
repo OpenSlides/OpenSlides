@@ -49,7 +49,7 @@
 
     .countdown-wrapper {
         width: 170px;
-        text-align: right;
+        text-align: right !important;
         position: relative;
         height: 100%;
 
@@ -67,6 +67,8 @@
         }
 
         #countdown {
+            white-space: nowrap;
+            font-family: $font-monospace;
             font-weight: bold;
             text-align: center;
         }
