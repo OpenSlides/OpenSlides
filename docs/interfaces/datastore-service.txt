@@ -198,9 +198,10 @@ Interface GetManyRequest {
  * browses the history. It should be noted that it is highly disencouraged to use this
  * method because it might return a huge amount of data.
  *
+ * @returns see get_many
  * @throws InvalidFormat
  */
-get_all(collection: Collection, mapped_fields?: Field[], get_deleted_models?: DeletedModelsBehaviour): Partial<Model>[];
+get_all(collection: Collection, mapped_fields?: Field[], get_deleted_models?: DeletedModelsBehaviour): Map<Id, Partial<Model>>;
 
 /**
  * Returns all models of one collection that satisfy the filter condition.
@@ -208,9 +209,10 @@ get_all(collection: Collection, mapped_fields?: Field[], get_deleted_models?: De
  *
  * This method does not take a position and can not be used when browsing the history.
  *
+ * @returns see get_many
  * @throws InvalidFormat
  */
-filter(collection: Collection, filter: Filter, mapped_fields?: Field[]): Partial<Model>[]
+filter(collection: Collection, filter: Filter, mapped_fields?: Field[]): Map<Id, Partial<Model>>
 
 /**
  * Url: POST to /internal/datastore/reader/exists
