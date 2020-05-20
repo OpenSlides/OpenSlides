@@ -21,8 +21,8 @@ import { SortingListComponent } from 'app/shared/components/sorting-list/sorting
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 import { ViewProjector } from 'app/site/projector/models/view-projector';
-import { CurrentListOfSpeakersService } from 'app/site/projector/services/current-agenda-item.service';
-import { CurrentListOfSpeakersSlideService } from 'app/site/projector/services/current-list-of-of-speakers-slide.service';
+import { CurrentListOfSpeakersSlideService } from 'app/site/projector/services/current-list-of-speakers-slide.service';
+import { CurrentListOfSpeakersService } from 'app/site/projector/services/current-list-of-speakers.service';
 import { ViewUser } from 'app/site/users/models/view-user';
 import { ViewListOfSpeakers } from '../../models/view-list-of-speakers';
 import { SpeakerState, ViewSpeaker } from '../../models/view-speaker';
@@ -254,7 +254,7 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
             .getListOfSpeakersObservable(referenceProjector)
             .subscribe(listOfSpeakers => {
                 if (listOfSpeakers) {
-                    this.setListOfSpeakersId(listOfSpeakers.id);
+                    this.setListOfSpeakers(listOfSpeakers);
                 }
             });
         this.subscriptions.push(this.projectorSubscription);
@@ -279,28 +279,32 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
 
         this.closSubscription = this.listOfSpeakersRepo.getViewModelObservable(id).subscribe(listOfSpeakers => {
             if (listOfSpeakers) {
-                const title = this.isCurrentListOfSpeakers
-                    ? 'Current list of speakers'
-                    : listOfSpeakers.getTitle() + ` - ${this.translate.instant('List of speakers')}`;
-                super.setTitle(title);
-                this.viewListOfSpeakers = listOfSpeakers;
-                const allSpeakers = this.viewListOfSpeakers.speakers.sort((a, b) => a.weight - b.weight);
-                this.speakers = allSpeakers.filter(speaker => speaker.state === SpeakerState.WAITING);
-                // Since the speaker repository is not a normal repository, sorting cannot be handled there
-                this.speakers.sort((a: ViewSpeaker, b: ViewSpeaker) => a.weight - b.weight);
-                this.filterUsers();
-                this.finishedSpeakers = allSpeakers.filter(speaker => speaker.state === SpeakerState.FINISHED);
-
-                // convert begin time to date and sort
-                this.finishedSpeakers.sort((a: ViewSpeaker, b: ViewSpeaker) => {
-                    const aTime = new Date(a.begin_time).getTime();
-                    const bTime = new Date(b.begin_time).getTime();
-                    return aTime - bTime;
-                });
-
-                this.activeSpeaker = allSpeakers.find(speaker => speaker.state === SpeakerState.CURRENT);
+                this.setListOfSpeakers(listOfSpeakers);
             }
         });
+    }
+
+    private setListOfSpeakers(listOfSpeakers: ViewListOfSpeakers): void {
+        const title = this.isCurrentListOfSpeakers
+            ? 'Current list of speakers'
+            : listOfSpeakers.getTitle() + ` - ${this.translate.instant('List of speakers')}`;
+        super.setTitle(title);
+        this.viewListOfSpeakers = listOfSpeakers;
+        const allSpeakers = this.viewListOfSpeakers.speakers.sort((a, b) => a.weight - b.weight);
+        this.speakers = allSpeakers.filter(speaker => speaker.state === SpeakerState.WAITING);
+        // Since the speaker repository is not a normal repository, sorting cannot be handled there
+        this.speakers.sort((a: ViewSpeaker, b: ViewSpeaker) => a.weight - b.weight);
+        this.filterUsers();
+        this.finishedSpeakers = allSpeakers.filter(speaker => speaker.state === SpeakerState.FINISHED);
+
+        // convert begin time to date and sort
+        this.finishedSpeakers.sort((a: ViewSpeaker, b: ViewSpeaker) => {
+            const aTime = new Date(a.begin_time).getTime();
+            const bTime = new Date(b.begin_time).getTime();
+            return aTime - bTime;
+        });
+
+        this.activeSpeaker = allSpeakers.find(speaker => speaker.state === SpeakerState.CURRENT);
     }
 
     /**

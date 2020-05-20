@@ -29,7 +29,7 @@ import { ViewCountdown } from 'app/site/projector/models/view-countdown';
 import { ViewProjectorMessage } from 'app/site/projector/models/view-projector-message';
 import { SlideManager } from 'app/slides/services/slide-manager.service';
 import { CountdownData, CountdownDialogComponent } from '../countdown-dialog/countdown-dialog.component';
-import { CurrentListOfSpeakersSlideService } from '../../services/current-list-of-of-speakers-slide.service';
+import { CurrentListOfSpeakersSlideService } from '../../services/current-list-of-speakers-slide.service';
 import { CurrentSpeakerChyronSlideService } from '../../services/current-speaker-chyron-slide.service';
 import { MessageData, MessageDialogComponent } from '../message-dialog/message-dialog.component';
 import { ProjectorEditDialogComponent } from '../projector-edit-dialog/projector-edit-dialog.component';
@@ -232,7 +232,7 @@ export class ProjectorDetailComponent extends BaseViewComponent implements OnIni
     }
 
     public unprojectCurrent(element: ProjectorElement): void {
-        const idElement = this.slideManager.getIdentifialbeProjectorElement(element);
+        const idElement = this.slideManager.getIdentifiableProjectorElement(element);
         this.projectorService.removeFrom(this.projector.projector, idElement).catch(this.raiseError);
     }
 
