@@ -138,7 +138,7 @@ export class PresentationControlComponent extends BaseViewComponent {
     }
 
     private updateElement(element: MediafileProjectorElement): void {
-        const idElement = this.slideManager.getIdentifialbeProjectorElement(element);
+        const idElement = this.slideManager.getIdentifiableProjectorElement(element);
         this.projectorService.updateElement(this.projector.projector, idElement).catch(this.raiseError);
     }
 }

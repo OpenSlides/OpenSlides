@@ -255,7 +255,7 @@ export class ProjectorService {
             projectorData.forEach(entry => {
                 if (entry.data.error && entry.element.stable) {
                     // Remove this element
-                    const idElementToRemove = this.slideManager.getIdentifialbeProjectorElement(entry.element);
+                    const idElementToRemove = this.slideManager.getIdentifiableProjectorElement(entry.element);
                     elements = elements.filter(element => {
                         return !elementIdentifies(idElementToRemove, element);
                     });
@@ -332,7 +332,7 @@ export class ProjectorService {
      */
     public getSlideTitle(element: ProjectorElement): ProjectorTitle {
         if (this.slideManager.canSlideBeMappedToModel(element.name)) {
-            const idElement = this.slideManager.getIdentifialbeProjectorElement(element);
+            const idElement = this.slideManager.getIdentifiableProjectorElement(element);
             const viewModel = this.getViewModelFromProjectorElement(idElement);
             if (viewModel) {
                 return viewModel.getProjectorTitle();
