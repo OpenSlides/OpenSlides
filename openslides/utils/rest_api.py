@@ -6,6 +6,7 @@ from django.db.models import Model
 from django.http import Http404
 from rest_framework import status
 from rest_framework.decorators import detail_route, list_route
+from rest_framework.exceptions import APIException
 from rest_framework.metadata import SimpleMetadata
 from rest_framework.mixins import (
     CreateModelMixin as _CreateModelMixin,
@@ -44,6 +45,7 @@ from rest_framework.viewsets import (
     ModelViewSet as _ModelViewSet,
 )
 
+from . import logging
 from .access_permissions import BaseAccessPermissions
 from .cache import element_cache
 
@@ -70,6 +72,7 @@ __all__ = [
 
 
 router = DefaultRouter()
+error_logger = logging.getLogger("openslides.requests.errors")
 
 
 class IdManyRelatedField(ManyRelatedField):
@@ -127,6 +130,27 @@ class IdPrimaryKeyRelatedField(PrimaryKeyRelatedField):
             if key in MANY_RELATION_KWARGS:
                 list_kwargs[key] = kwargs[key]
         return IdManyRelatedField(**list_kwargs)
+
+
+class ErrorLoggingMixin:
+    def handle_exception(self, exc: Any) -> Response:
+        user_id = self.request.user.pk or 0  # type: ignore
+        path = self.request._request.get_full_path()  # type: ignore
+        prefix = f"{path} {user_id}"
+        if isinstance(exc, APIException):
+            detail = self._detail_to_string(exc.detail)
+            error_logger.warn(f"{prefix} {str(detail)}")
+        else:
+            error_logger.warn(f"{prefix} unknown exception: {exc}")
+        return super().handle_exception(exc)  # type: ignore
+
+    def _detail_to_string(self, detail: Any) -> Any:
+        if isinstance(detail, list):
+            return [self._detail_to_string(item) for item in detail]
+        elif isinstance(detail, dict):
+            return {key: self._detail_to_string(value) for key, value in detail.items()}
+        else:
+            return str(detail)
 
 
 class PermissionMixin:
@@ -324,11 +348,12 @@ class UpdateModelMixin(_UpdateModelMixin):
         return response
 
 
-class GenericViewSet(PermissionMixin, _GenericViewSet):
+class GenericViewSet(ErrorLoggingMixin, PermissionMixin, _GenericViewSet):
     pass
 
 
 class ModelViewSet(
+    ErrorLoggingMixin,
     PermissionMixin,
     ListModelMixin,
     RetrieveModelMixin,

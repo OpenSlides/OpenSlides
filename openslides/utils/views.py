@@ -3,10 +3,10 @@ from typing import Any, Dict, List, Set
 from django.db import models, transaction
 from rest_framework.views import APIView as _APIView
 
-from .rest_api import Response, ValidationError
+from .rest_api import ErrorLoggingMixin, Response, ValidationError
 
 
-class APIView(_APIView):
+class APIView(ErrorLoggingMixin, _APIView):
     """
     The Django Rest framework APIView with improvements for OpenSlides.
     """
