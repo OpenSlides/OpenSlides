@@ -150,6 +150,12 @@ class RedisCacheProvider:
         ),
         "get_element_data": ("return redis.call('hget', KEYS[1], ARGV[1])", True),
         "add_changed_elements": (
+            # KEYS[1]: full data cache key
+            # KEYS[2]: change id cache key
+            # ARGV[1]: amount changed elements
+            # ARGV[2]: amount deleted elements
+            # ARGV[3..(ARGV[1]+2)]: changed_elements (element_id, element, element_id, element, ...)
+            # ARGV[(3+ARGV[1])..(ARGV[1]+ARGV[2]+2)]: deleted_elements (element_id, element_id, ...)
             """
             -- Generate a new change_id
             local tmp = redis.call('zrevrangebyscore', KEYS[2], '+inf', '-inf', 'WITHSCORES', 'LIMIT', 0, 1)
@@ -164,25 +170,59 @@ class RedisCacheProvider:
             local nc = tonumber(ARGV[1])
             local nd = tonumber(ARGV[2])
 
-            local i, max
-            -- Add changed_elements to the cache and sorted set (the first of the pairs)
+            local i, max, batch_counter
+            local change_id_data -- change_id, element_id, change_id, element_id, ...
+
+            -- Add changed_elements to the cache and sorted set using batches of 1000
+            -- values in unpack() (see #5386)
+            local elements -- element_id, element, element_id, element, ...
             if (nc > 0) then
-                max = 1 + nc
-                redis.call('hmset', KEYS[1], unpack(ARGV, 3, max + 1))
-                for i = 3, max, 2 do
-                    redis.call('zadd', KEYS[2], change_id, ARGV[i])
+                i = 3
+                max = 3 + nc
+                while (i < max) do
+                    change_id_data = {}
+                    elements = {}
+                    batch_counter = 1
+                    while (i < max and batch_counter <= 1000) do
+                        change_id_data[batch_counter] = change_id
+                        change_id_data[batch_counter + 1] = ARGV[i]
+                        elements[batch_counter] = ARGV[i]
+                        elements[batch_counter + 1] = ARGV[i + 1]
+                        batch_counter = batch_counter + 2
+                        i = i + 2
+                    end
+                    if (#change_id_data > 0) then -- so is #elements > 0
+                        redis.call('hmset', KEYS[1], unpack(elements))
+                        redis.call('zadd', KEYS[2], unpack(change_id_data))
+                    end
                 end
             end
 
             -- Delete deleted_element_ids and add them to sorted set
+            local element_ids -- element_id, element_id, ...
+            local element_ids_counter
             if (nd > 0) then
-                max = 2 + nc + nd
-                redis.call('hdel', KEYS[1], unpack(ARGV, 3 + nc, max))
-                for i = 3 + nc, max, 1 do
-                    redis.call('zadd', KEYS[2], change_id, ARGV[i])
+                i = 3 + nc
+                max = 3 + nc + nd
+                while (i < max) do
+                    change_id_data = {}
+                    element_ids = {}
+                    batch_counter = 1
+                    element_ids_counter = 1
+                    while (i < max and batch_counter <= 1000) do
+                        change_id_data[batch_counter] = change_id
+                        change_id_data[batch_counter + 1] = ARGV[i]
+                        element_ids[element_ids_counter] = ARGV[i]
+                        batch_counter = batch_counter + 2
+                        element_ids_counter = element_ids_counter + 1
+                        i = i + 1
+                    end
+                    if (#change_id_data > 0) then -- so is #element_ids > 0
+                        redis.call('hdel', KEYS[1], unpack(element_ids))
+                        redis.call('zadd', KEYS[2], unpack(change_id_data))
+                    end
                 end
             end
-
             return change_id
             """,
             True,
