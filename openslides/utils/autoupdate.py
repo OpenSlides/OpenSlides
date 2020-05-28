@@ -111,7 +111,8 @@ class AutoupdateBundle:
         save_history(self.element_iterator)
 
         # Update cache and send autoupdate using async code.
-        return async_to_sync(self.dispatch_autoupdate)()
+        change_id = async_to_sync(self.dispatch_autoupdate)()
+        return change_id
 
     @property
     def element_iterator(self) -> Iterable[AutoupdateElement]:
@@ -172,6 +173,7 @@ def inform_changed_data(
     user_id: Optional[int] = None,
     disable_history: bool = False,
     no_delete_on_restriction: bool = False,
+    final_data: bool = False,
 ) -> None:
     """
     Informs the autoupdate system and the caching system about the creation or
@@ -187,8 +189,10 @@ def inform_changed_data(
         instances = (instances,)
 
     root_instances = set(instance.get_root_rest_element() for instance in instances)
-    elements = [
-        AutoupdateElement(
+
+    elements = []
+    for root_instance in root_instances:
+        element = AutoupdateElement(
             id=root_instance.get_rest_pk(),
             collection_string=root_instance.get_collection_string(),
             disable_history=disable_history,
@@ -196,8 +200,9 @@ def inform_changed_data(
             user_id=user_id,
             no_delete_on_restriction=no_delete_on_restriction,
         )
-        for root_instance in root_instances
-    ]
+        if final_data:
+            element["full_data"] = root_instance.get_full_data()
+        elements.append(element)
     inform_elements(elements)
 
 

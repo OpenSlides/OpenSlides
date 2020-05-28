@@ -261,7 +261,7 @@ class RedisCacheProvider:
 
     async def add_to_full_data(self, data: Dict[str, str]) -> None:
         async with get_connection() as redis:
-            redis.hmset_dict(self.full_data_cache_key, data)
+            await redis.hmset_dict(self.full_data_cache_key, data)
 
     async def data_exists(self) -> bool:
         """

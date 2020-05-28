@@ -456,8 +456,7 @@ export class OperatorService implements OnAfterAppsLoaded {
      * Set the operators presence to isPresent
      */
     public async setPresence(isPresent: boolean): Promise<void> {
-        const r = await this.http.post(environment.urlPrefix + '/users/setpresence/', isPresent);
-        console.log('operator', r);
+        await this.http.post(environment.urlPrefix + '/users/setpresence/', isPresent);
     }
 
     /**

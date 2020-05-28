@@ -554,7 +554,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
             this.motionFilterService.initFilters(this.motionObserver);
             this.motionSortService.initSorting(this.motionFilterService.outputObservable);
             this.sortedMotionsObservable = this.motionSortService.outputObservable;
-        } else if (this.motion.parent_id) {
+        } else if (this.motion && this.motion.parent_id) {
             // only use the amendments for this motion
             this.amendmentFilterService.initFilters(this.repo.amendmentsTo(this.motion.parent_id));
             this.amendmentSortService.initSorting(this.amendmentFilterService.outputObservable);

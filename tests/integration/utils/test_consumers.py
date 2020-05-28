@@ -50,7 +50,7 @@ async def prepare_element_cache(settings):
         ]
     )
     element_cache._cachables = None
-    await element_cache.async_ensure_cache(default_change_id=2)
+    await element_cache.async_ensure_cache(default_change_id=10)
     yield
     # Reset the cachable_provider
     element_cache.cachable_provider = orig_cachable_provider
@@ -159,7 +159,7 @@ async def test_connection_with_too_big_change_id(get_communicator, set_config):
 @pytest.mark.asyncio
 async def test_changed_data_autoupdate(get_communicator, set_config):
     await set_config("general_system_enable_anonymous", True)
-    communicator = get_communicator("autoupdate=on")
+    communicator = get_communicator()
     await communicator.connect()
 
     # Change a config value
@@ -201,7 +201,7 @@ async def create_user_session_cookie(user_id: int) -> Tuple[bytes, bytes]:
 @pytest.mark.asyncio
 async def test_with_user(get_communicator):
     cookie_header = await create_user_session_cookie(1)
-    communicator = get_communicator("autoupdate=on", headers=[cookie_header])
+    communicator = get_communicator(headers=[cookie_header])
 
     connected, __ = await communicator.connect()
 
@@ -211,7 +211,7 @@ async def test_with_user(get_communicator):
 @pytest.mark.asyncio
 async def test_skipping_autoupdate(set_config, get_communicator):
     cookie_header = await create_user_session_cookie(1)
-    communicator = get_communicator("autoupdate=on", headers=[cookie_header])
+    communicator = get_communicator(headers=[cookie_header])
 
     await communicator.connect()
 
@@ -254,7 +254,7 @@ async def test_skipping_autoupdate(set_config, get_communicator):
 @pytest.mark.asyncio
 async def test_receive_deleted_data(get_communicator, set_config):
     await set_config("general_system_enable_anonymous", True)
-    communicator = get_communicator("autoupdate=on")
+    communicator = get_communicator()
     await communicator.connect()
 
     # Delete test element
@@ -384,6 +384,7 @@ async def test_send_get_elements_too_big_change_id(communicator, set_config):
 
 @pytest.mark.asyncio
 async def test_send_get_elements_too_small_change_id(communicator, set_config):
+    # Note: this test depends on the default_change_id set in prepare_element_cache
     await set_config("general_system_enable_anonymous", True)
     await communicator.connect()
 
@@ -517,7 +518,7 @@ async def test_listen_to_projector(communicator, set_config):
     content = response.get("content")
     assert type == "projector"
     assert content == {
-        "change_id": 3,
+        "change_id": 11,
         "data": {
             "1": [
                 {
@@ -555,7 +556,7 @@ async def test_update_projector(communicator, set_config):
     content = response.get("content")
     assert type == "projector"
     assert content == {
-        "change_id": 4,
+        "change_id": 12,
         "data": {
             "1": [
                 {

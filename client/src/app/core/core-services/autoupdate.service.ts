@@ -60,6 +60,7 @@ export function isAutoupdateFormat(obj: any): obj is AutoupdateFormat {
 })
 export class AutoupdateService {
     private mutex = new Mutex();
+
     /**
      * Constructor to create the AutoupdateService. Calls the constructor of the parent class.
      * @param websocketService
@@ -104,7 +105,7 @@ export class AutoupdateService {
     }
 
     /**
-     * Stores all data from the autoupdate. This means, that the DS is resettet and filled with just the
+     * Stores all data from the autoupdate. This means, that the DS is resetted and filled with just the
      * given data from the autoupdate.
      * @param autoupdate The autoupdate
      */
@@ -133,9 +134,10 @@ export class AutoupdateService {
 
         // Normal autoupdate
         if (autoupdate.from_change_id <= maxChangeId + 1 && autoupdate.to_change_id > maxChangeId) {
-            this.injectAutupdateIntoDS(autoupdate, true);
+            await this.injectAutupdateIntoDS(autoupdate, true);
         } else {
             // autoupdate fully in the future. we are missing something!
+            console.log('Autoupdate in the future', maxChangeId, autoupdate.from_change_id, autoupdate.to_change_id);
             this.requestChanges();
         }
     }
@@ -143,7 +145,7 @@ export class AutoupdateService {
     public async injectAutoupdateIgnoreChangeId(autoupdate: AutoupdateFormat): Promise<void> {
         const unlock = await this.mutex.lock();
         console.debug('inject autoupdate', autoupdate);
-        this.injectAutupdateIntoDS(autoupdate, false);
+        await this.injectAutupdateIntoDS(autoupdate, false);
         unlock();
     }
 

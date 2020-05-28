@@ -258,6 +258,7 @@ export class DataStoreUpdateManagerService {
 
     private serveNextSlot(): void {
         if (this.updateSlotRequests.length > 0) {
+            console.log('Concurrent update slots');
             const request = this.updateSlotRequests.pop();
             request.resolve();
         }
@@ -664,5 +665,12 @@ export class DataStoreService {
         this._maxChangeId = changeId;
         await this.storageService.set(DataStoreService.cachePrefix + 'DS', this.jsonStore);
         await this.storageService.set(DataStoreService.cachePrefix + 'maxChangeId', changeId);
+    }
+
+    public print(): void {
+        console.log('Max change id', this.maxChangeId);
+        console.log('json storage');
+        console.log(JSON.stringify(this.jsonStore));
+        console.log(this.modelStore);
     }
 }
