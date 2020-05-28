@@ -7,6 +7,6 @@
         <h2 class="poll-title">{{ data.data.poll.title }}</h2>
     </div>
     <div *ngIf="data.data.poll.state === PollState.Published">
-        <os-motion-poll-detail-content [poll]="pollData" [chartData]="chartDataSubject"> </os-motion-poll-detail-content>
+        <os-motion-poll-detail-content [poll]="pollData" [chartData]="chartDataSubject" iconSize="gigantic"></os-motion-poll-detail-content>
     </div>
 </ng-container>

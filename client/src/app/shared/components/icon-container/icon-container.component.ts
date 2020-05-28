@@ -24,7 +24,7 @@ export class IconContainerComponent {
      * Optional size property. Can be large, if needed.
      */
     @Input()
-    public size: 'small' | 'medium' | 'large' = 'medium';
+    public size: 'small' | 'medium' | 'large' | 'gigantic' = 'medium';
 
     /**
      * Reverse text and icon.
