@@ -36,6 +36,7 @@ def test_motion_db_queries():
     * 1 request for all motion comments
     * 1 request for all motion comment sections required for the comments
     * 1 request for all users required for the read_groups of the sections
+    * 1 request to get all amendments of all motions
     * 1 request to get the agenda item,
     * 1 request to get the list of speakers,
     * 1 request to get the attachments,
@@ -90,7 +91,7 @@ def test_motion_db_queries():
         )
         poll.create_options()
 
-    assert count_queries(Motion.get_elements)() == 12
+    assert count_queries(Motion.get_elements)() == 13
 
 
 class CreateMotion(TestCase):
@@ -109,7 +110,7 @@ class CreateMotion(TestCase):
         The created motion should have an identifier and the admin user should
         be the submitter.
         """
-        with self.assertNumQueries(52):
+        with self.assertNumQueries(54):
             response = self.client.post(
                 reverse("motion-list"),
                 {
@@ -141,6 +142,7 @@ class CreateMotion(TestCase):
                     "title": "test_title_OoCoo3MeiT9li5Iengu9",
                     "text": "test_text_thuoz0iecheiheereiCi",
                     "amendment_paragraphs": None,
+                    "amendments_id": [],
                     "modified_final_version": "",
                     "reason": "",
                     "parent_id": None,

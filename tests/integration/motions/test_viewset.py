@@ -53,11 +53,30 @@ def test_statute_paragraph_db_queries():
 def test_workflow_db_queries():
     """
     Tests that only the following db queries are done:
-    * 1 requests to get the list of all workflows and
+    * 1 request to get the list of all workflows and
     * 1 request to get all states.
     """
 
     assert count_queries(Workflow.get_elements)() == 2
+
+
+@pytest.mark.django_db(transaction=False)
+def test_motion_block_db_queries():
+    """
+    Tests that only the following db queries are done:
+    * 1 request to get all motion blocks
+    * 1 request to get all agenda items
+    * 1 request to get all lists of speakers
+    * 1 request to get all motions
+    """
+    for i in range(5):
+        motion_block = MotionBlock.objects.create(title=f"block{i}")
+        for j in range(3):
+            Motion.objects.create(
+                title=f"motion{i}_{j}", text="text", motion_block=motion_block
+            )
+
+    assert count_queries(MotionBlock.get_elements)() == 4
 
 
 class TestStatuteParagraphs(TestCase):
@@ -1100,7 +1119,14 @@ class TestMotionBlock(TestCase):
         self.assertEqual(
             sorted(response.data.keys()),
             sorted(
-                ("agenda_item_id", "id", "internal", "list_of_speakers_id", "title")
+                (
+                    "agenda_item_id",
+                    "id",
+                    "internal",
+                    "list_of_speakers_id",
+                    "title",
+                    "motions_id",
+                )
             ),
         )
 
