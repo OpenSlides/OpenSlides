@@ -2,21 +2,13 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http
 import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
+import { Subject } from 'rxjs';
 
-import { AutoupdateFormat, AutoupdateService, isAutoupdateFormat } from './autoupdate.service';
+import { AutoupdateFormat } from '../definitions/autoupdate-format';
+import { AutoupdateThrottleService } from './autoupdate-throttle.service';
+import { HTTPMethod } from '../definitions/http-methods';
 import { OpenSlidesStatusService } from './openslides-status.service';
 import { formatQueryParams, QueryParams } from '../definitions/query-params';
-
-/**
- * Enum for different HTTPMethods
- */
-export enum HTTPMethod {
-    GET = 'get',
-    POST = 'post',
-    PUT = 'put',
-    PATCH = 'patch',
-    DELETE = 'delete'
-}
 
 export interface ErrorDetailResponse {
     detail: string | string[];
@@ -33,12 +25,12 @@ function isErrorDetailResponse(obj: any): obj is ErrorDetailResponse {
 }
 
 interface AutoupdateResponse {
-    autoupdate: AutoupdateFormat;
+    change_id: number;
     data?: any;
 }
 
 function isAutoupdateReponse(obj: any): obj is AutoupdateResponse {
-    return obj && typeof obj === 'object' && isAutoupdateFormat((obj as AutoupdateResponse).autoupdate);
+    return obj && typeof obj === 'object' && typeof (obj as AutoupdateResponse).change_id === 'number';
 }
 
 /**
@@ -53,6 +45,8 @@ export class HttpService {
      */
     private defaultHeaders: HttpHeaders;
 
+    public readonly responseChangeIds = new Subject<number>();
+
     /**
      * Construct a HttpService
      *
@@ -65,8 +59,7 @@ export class HttpService {
     public constructor(
         private http: HttpClient,
         private translate: TranslateService,
-        private OSStatus: OpenSlidesStatusService,
-        private autoupdateService: AutoupdateService
+        private OSStatus: OpenSlidesStatusService
     ) {
         this.defaultHeaders = new HttpHeaders().set('Content-Type', 'application/json');
     }
@@ -205,8 +198,8 @@ export class HttpService {
 
     private processResponse<T>(responseData: T): T {
         if (isAutoupdateReponse(responseData)) {
-            this.autoupdateService.injectAutoupdateIgnoreChangeId(responseData.autoupdate);
-            responseData = responseData.data;
+            this.responseChangeIds.next(responseData.change_id);
+            return responseData.data;
         }
         return responseData;
     }

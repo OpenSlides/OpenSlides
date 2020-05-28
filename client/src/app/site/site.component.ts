@@ -10,7 +10,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { filter } from 'rxjs/operators';
 
 import { navItemAnim } from '../shared/animations';
-import { OfflineService } from 'app/core/core-services/offline.service';
+import { OfflineBroadcastService } from 'app/core/core-services/offline-broadcast.service';
 import { OverlayService } from 'app/core/ui-services/overlay.service';
 import { UpdateService } from 'app/core/ui-services/update.service';
 import { BaseComponent } from '../base.component';
@@ -84,7 +84,7 @@ export class SiteComponent extends BaseComponent implements OnInit {
     public constructor(
         title: Title,
         protected translate: TranslateService,
-        offlineService: OfflineService,
+        offlineBroadcastService: OfflineBroadcastService,
         private updateService: UpdateService,
         private router: Router,
         public operator: OperatorService,
@@ -99,7 +99,7 @@ export class SiteComponent extends BaseComponent implements OnInit {
         super(title, translate);
         overlayService.showSpinner(translate.instant('Loading data. Please wait ...'));
 
-        offlineService.isOffline().subscribe(offline => {
+        offlineBroadcastService.isOfflineObservable.subscribe(offline => {
             this.isOffline = offline;
         });
 

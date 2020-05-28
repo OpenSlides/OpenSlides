@@ -8,11 +8,7 @@ from django.core.exceptions import ImproperlyConfigured
 from typing_extensions import Protocol
 
 from . import logging
-from .redis import (
-    read_only_redis_amount_replicas,
-    read_only_redis_wait_timeout,
-    use_redis,
-)
+from .redis import use_redis
 from .schema_version import SchemaVersion
 from .utils import split_element_id, str_dict_to_bytes
 
@@ -52,6 +48,9 @@ class ElementCacheProvider(Protocol):
         ...
 
     async def data_exists(self) -> bool:
+        ...
+
+    async def set_cache_ready(self) -> None:
         ...
 
     async def get_all_data(self) -> Dict[bytes, bytes]:
@@ -127,6 +126,7 @@ class RedisCacheProvider:
     full_data_cache_key: str = "full_data"
     change_id_cache_key: str = "change_id"
     schema_cache_key: str = "schema"
+    cache_ready_key: str = "cache_ready"
 
     # All lua-scripts used by this provider. Every entry is a Tuple (str, bool) with the
     # script and an ensure_cache-indicator. If the indicator is True, a short ensure_cache-script
@@ -325,6 +325,7 @@ class RedisCacheProvider:
         """
         async with get_connection() as redis:
             tr = redis.multi_exec()
+            tr.delete(self.cache_ready_key)
             tr.delete(self.change_id_cache_key)
             tr.delete(self.full_data_cache_key)
             tr.hmset_dict(self.full_data_cache_key, data)
@@ -342,11 +343,16 @@ class RedisCacheProvider:
         Returns True, when there is data in the cache.
         """
         async with get_connection(read_only=True) as redis:
-            return await redis.exists(self.full_data_cache_key) and bool(
-                await redis.zrangebyscore(
-                    self.change_id_cache_key, withscores=True, count=1, offset=0
-                )
-            )
+            return (await redis.get(self.cache_ready_key)) is not None
+            # return await redis.exists(self.full_data_cache_key) and bool(
+            #    await redis.zrangebyscore(
+            #        self.change_id_cache_key, withscores=True, count=1, offset=0
+            #    )
+            # )
+
+    async def set_cache_ready(self) -> None:
+        async with get_connection(read_only=False) as redis:
+            await redis.set(self.cache_ready_key, "ok")
 
     @ensure_cache_wrapper()
     async def get_all_data(self) -> Dict[bytes, bytes]:
@@ -495,7 +501,11 @@ class RedisCacheProvider:
     async def get_schema_version(self) -> Optional[SchemaVersion]:
         """ Retrieves the schema version of the cache or None, if not existent """
         async with get_connection(read_only=True) as redis:
-            schema_version = await redis.hgetall(self.schema_cache_key)
+            try:
+                schema_version = await redis.hgetall(self.schema_cache_key)
+            except aioredis.errors.ReplyError:
+                await redis.delete(self.schema_cache_key)
+                return None
         if not schema_version:
             return None
 
@@ -543,15 +553,6 @@ class RedisCacheProvider:
                     raise CacheReset()
                 else:
                     raise e
-            if not read_only and read_only_redis_amount_replicas is not None:
-                reported_amount = await redis.wait(
-                    read_only_redis_amount_replicas, read_only_redis_wait_timeout
-                )
-                if reported_amount != read_only_redis_amount_replicas:
-                    logger.warn(
-                        f"WAIT reported {reported_amount} replicas of {read_only_redis_amount_replicas} "
-                        + f"requested after {read_only_redis_wait_timeout} ms!"
-                    )
             return result
 
     async def _eval(
@@ -584,6 +585,7 @@ class MemoryCacheProvider:
         self.set_data_dicts()
 
     def set_data_dicts(self) -> None:
+        self.ready = False
         self.full_data: Dict[str, str] = {}
         self.change_id_data: Dict[int, Set[str]] = {}
         self.locks: Dict[str, str] = {}
@@ -594,6 +596,7 @@ class MemoryCacheProvider:
 
     async def clear_cache(self) -> None:
         self.set_data_dicts()
+        self.ready = False
 
     async def reset_full_cache(
         self, data: Dict[str, str], default_change_id: int
@@ -606,7 +609,11 @@ class MemoryCacheProvider:
         self.full_data.update(data)
 
     async def data_exists(self) -> bool:
-        return bool(self.full_data) and self.default_change_id >= 0
+        return self.ready
+        # return bool(self.full_data) and self.default_change_id >= 0
+
+    async def set_cache_ready(self) -> None:
+        self.ready = True
 
     async def get_all_data(self) -> Dict[bytes, bytes]:
         return str_dict_to_bytes(self.full_data)

@@ -361,12 +361,12 @@ export class DataStoreService {
      *
      * @returns The max change id.
      */
-    public async initFromStorage(): Promise<number> {
+    public async initFromStorage(): Promise<void> {
         // This promise will be resolved with cached datastore.
         const store = await this.storageService.get<JsonStorage>(DataStoreService.cachePrefix + 'DS');
         if (!store) {
             await this.clear();
-            return this.maxChangeId;
+            return;
         }
 
         const updateSlot = await this.DSUpdateManager.getNewUpdateSlot(this);
@@ -395,7 +395,6 @@ export class DataStoreService {
             this.DSUpdateManager.dropUpdateSlot();
             await this.clear();
         }
-        return this.maxChangeId;
     }
 
     /**
@@ -670,6 +669,6 @@ export class DataStoreService {
     public print(): void {
         console.log('Max change id', this.maxChangeId);
         console.log(JSON.stringify(this.jsonStore));
-        console.log(this.modelStore);
+        console.log(JSON.parse(JSON.stringify(this.modelStore)));
     }
 }

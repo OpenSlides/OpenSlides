@@ -7,7 +7,7 @@ import { distinctUntilChanged } from 'rxjs/operators';
 import { largeDialogSettings } from 'app/shared/utils/dialog-settings';
 import { SuperSearchComponent } from 'app/site/common/components/super-search/super-search.component';
 import { DataStoreUpgradeService } from '../core-services/data-store-upgrade.service';
-import { OfflineService } from '../core-services/offline.service';
+import { OfflineBroadcastService } from '../core-services/offline-broadcast.service';
 import { OpenSlidesService } from '../core-services/openslides.service';
 import { OperatorService } from '../core-services/operator.service';
 
@@ -59,7 +59,7 @@ export class OverlayService {
         private operator: OperatorService,
         OpenSlides: OpenSlidesService,
         upgradeService: DataStoreUpgradeService,
-        offlineService: OfflineService
+        offlineBroadcastService: OfflineBroadcastService
     ) {
         // Subscribe to the current user.
         operator.getViewUserObservable().subscribe(user => {
@@ -79,13 +79,10 @@ export class OverlayService {
             this.checkConnection();
         });
         // Subscribe to check if we are offline
-        offlineService
-            .isOffline()
-            .pipe(distinctUntilChanged())
-            .subscribe(offline => {
-                this.isOffline = offline;
-                this.checkConnection();
-            });
+        offlineBroadcastService.isOfflineObservable.pipe(distinctUntilChanged()).subscribe(offline => {
+            this.isOffline = offline;
+            this.checkConnection();
+        });
     }
 
     /**

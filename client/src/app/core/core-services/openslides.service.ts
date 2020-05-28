@@ -3,12 +3,11 @@ import { Router } from '@angular/router';
 
 import { BehaviorSubject } from 'rxjs';
 
-import { AutoupdateService } from './autoupdate.service';
-import { ConstantsService } from './constants.service';
+import { CommunicationManagerService } from './communication-manager.service';
 import { DataStoreService } from './data-store.service';
-import { OperatorService } from './operator.service';
+import { OfflineBroadcastService, OfflineReason } from './offline-broadcast.service';
+import { OperatorService, WhoAmI } from './operator.service';
 import { StorageService } from './storage.service';
-import { WebsocketService } from './websocket.service';
 
 /**
  * Handles the bootup/showdown of this application.
@@ -35,29 +34,19 @@ export class OpenSlidesService {
         return this.booted.value;
     }
 
-    /**
-     * Constructor to create the OpenSlidesService. Registers itself to the WebsocketService.
-     * @param storageService
-     * @param operator
-     * @param websocketService
-     * @param router
-     * @param autoupdateService
-     * @param DS
-     */
     public constructor(
         private storageService: StorageService,
         private operator: OperatorService,
-        private websocketService: WebsocketService,
         private router: Router,
-        private autoupdateService: AutoupdateService,
         private DS: DataStoreService,
-        private constantsService: ConstantsService
+        private communicationManager: CommunicationManagerService,
+        private offlineBroadcastService: OfflineBroadcastService
     ) {
         // Handler that gets called, if the websocket connection reconnects after a disconnection.
         // There might have changed something on the server, so we check the operator, if he changed.
-        websocketService.retryReconnectEvent.subscribe(() => {
+        /*websocketService.retryReconnectEvent.subscribe(() => {
             this.checkOperator();
-        });
+        });*/
 
         this.bootup();
     }
@@ -68,20 +57,24 @@ export class OpenSlidesService {
      */
     public async bootup(): Promise<void> {
         // start autoupdate if the user is logged in:
-        let response = await this.operator.whoAmIFromStorage();
-        const needToCheckOperator = !!response;
+        let whoami = await this.operator.whoAmIFromStorage();
+        const needToCheckOperator = !!whoami;
 
-        if (!response) {
-            response = await this.operator.whoAmI();
+        if (!whoami) {
+            const response = await this.operator.whoAmI();
+            if (!response.online) {
+                this.offlineBroadcastService.goOffline(OfflineReason.WhoAmIFailed);
+            }
+            whoami = response.whoami;
         }
 
-        if (!response.user && !response.guest_enabled) {
+        if (!whoami.user && !whoami.guest_enabled) {
             if (!location.pathname.includes('error')) {
                 this.redirectUrl = location.pathname;
             }
             this.redirectToLoginIfNotSubpage();
         } else {
-            await this.afterLoginBootup(response.user_id);
+            await this.afterLoginBootup(whoami.user_id);
         }
 
         if (needToCheckOperator) {
@@ -121,7 +114,7 @@ export class OpenSlidesService {
             await this.DS.clear();
             await this.storageService.set('lastUserLoggedIn', userId);
         }
-        await this.setupDataStoreAndWebSocket();
+        await this.setupDataStoreAndStartCommunication();
         // Now finally booted.
         this.booted.next(true);
     }
@@ -129,23 +122,16 @@ export class OpenSlidesService {
     /**
      * Init DS from cache and after this start the websocket service.
      */
-    private async setupDataStoreAndWebSocket(): Promise<void> {
-        const changeId = await this.DS.initFromStorage();
-        // disconnect the WS connection, if there was one. This is needed
-        // to update the connection parameters, namely the cookies. If the user
-        // is changed, the WS needs to reconnect, so the new connection holds the new
-        // user information.
-        if (this.websocketService.isConnected) {
-            await this.websocketService.close(); // Wait for the disconnect.
-        }
-        await this.websocketService.connect(changeId); // Request changes after changeId.
+    private async setupDataStoreAndStartCommunication(): Promise<void> {
+        await this.DS.initFromStorage();
+        this.communicationManager.startCommunication();
     }
 
     /**
-     * Shuts down OpenSlides. The websocket connection is closed and the operator is not set.
+     * Shuts down OpenSlides.
      */
     public async shutdown(): Promise<void> {
-        await this.websocketService.close();
+        this.communicationManager.closeConnections();
         this.booted.next(false);
     }
 
@@ -167,29 +153,37 @@ export class OpenSlidesService {
         await this.bootup();
     }
 
+    public async checkOperator(requestChanges: boolean = true): Promise<void> {
+        const response = await this.operator.whoAmI();
+        if (!response.online) {
+            this.offlineBroadcastService.goOffline(OfflineReason.WhoAmIFailed);
+        }
+        await this.checkWhoAmI(response.whoami, requestChanges);
+    }
+
     /**
      * Verify that the operator is the same as it was before. Should be alled on a reconnect.
+     *
+     * @returns true, if the user is still logged in
      */
-    private async checkOperator(requestChanges: boolean = true): Promise<void> {
-        const response = await this.operator.whoAmI();
+    public async checkWhoAmI(whoami: WhoAmI, requestChanges: boolean = true): Promise<boolean> {
+        let isLoggedIn = false;
         // User logged off.
-        if (!response.user && !response.guest_enabled) {
-            this.websocketService.cancelReconnectenRetry();
+        if (!whoami.user && !whoami.guest_enabled) {
             await this.shutdown();
             this.redirectToLoginIfNotSubpage();
         } else {
+            isLoggedIn = true;
             if (
-                (this.operator.user && this.operator.user.id !== response.user_id) ||
-                (!this.operator.user && response.user_id)
+                (this.operator.user && this.operator.user.id !== whoami.user_id) ||
+                (!this.operator.user && whoami.user_id)
             ) {
                 // user changed
                 await this.DS.clear();
                 await this.reboot();
-            } else if (requestChanges) {
-                // User is still the same, but check for missed autoupdates.
-                this.autoupdateService.requestChanges();
-                this.constantsService.refresh();
             }
         }
+
+        return isLoggedIn;
     }
 }

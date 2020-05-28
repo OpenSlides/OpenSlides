@@ -5,7 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Subject, Subscription } from 'rxjs';
 
 import { BaseComponent } from 'app/base.component';
-import { OfflineService } from 'app/core/core-services/offline.service';
+import { OfflineBroadcastService } from 'app/core/core-services/offline-broadcast.service';
 import { ProjectorDataService, SlideData } from 'app/core/core-services/projector-data.service';
 import { ProjectorRepositoryService } from 'app/core/repositories/projector/projector-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
@@ -166,7 +166,7 @@ export class ProjectorComponent extends BaseComponent implements OnDestroy {
         private projectorDataService: ProjectorDataService,
         private projectorRepository: ProjectorRepositoryService,
         private configService: ConfigService,
-        private offlineService: OfflineService,
+        private offlineBroadcastService: OfflineBroadcastService,
         private elementRef: ElementRef
     ) {
         super(titleService, translate);
@@ -207,7 +207,9 @@ export class ProjectorComponent extends BaseComponent implements OnDestroy {
             }
         });
 
-        this.offlineSubscription = this.offlineService.isOffline().subscribe(isOffline => (this.isOffline = isOffline));
+        this.offlineSubscription = this.offlineBroadcastService.isOfflineObservable.subscribe(
+            isOffline => (this.isOffline = isOffline)
+        );
     }
 
     /**

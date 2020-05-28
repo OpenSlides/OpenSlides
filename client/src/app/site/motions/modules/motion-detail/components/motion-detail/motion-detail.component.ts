@@ -1639,7 +1639,7 @@ export class MotionDetailComponent extends BaseViewComponentDirective implements
      */
     private listenToEditNotification(): Subscription {
         return this.notifyService.getMessageObservable(this.NOTIFICATION_EDIT_MOTION).subscribe(message => {
-            const content = <MotionEditNotification>message.content;
+            const content = <MotionEditNotification>message.message;
             if (this.operator.viewUser.id !== content.senderId && content.motionId === this.motion.id) {
                 let warning = '';
 
@@ -1656,7 +1656,7 @@ export class MotionDetailComponent extends BaseViewComponentDirective implements
                         if (content.type === MotionEditNotificationType.TYPE_BEGIN_EDITING_MOTION) {
                             this.sendEditNotification(
                                 MotionEditNotificationType.TYPE_ALSO_EDITING_MOTION,
-                                message.senderUserId
+                                message.sender_user_id
                             );
                         }
                         break;

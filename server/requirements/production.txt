@@ -7,14 +7,12 @@ asgiref>=3.2.9
 
 # Requirements for OpenSlides in production in alphabetical order
 bleach>=1.5.0,<3.2
-channels>=2.1.2,<2.4
 daphne>=2.2,<2.5
 Django>=2.1,<2.3
 djangorestframework>=3.9.4,<3.10
 jsonfield2>=3.0,<3.1
 attrs>=19.2.0
 jsonschema>=3.0,<3.1
-lz4>=2.1.6
 mypy_extensions>=0.4,<0.5
 PyPDF2>=1.26,<1.27
 roman>=2.0,<3.2

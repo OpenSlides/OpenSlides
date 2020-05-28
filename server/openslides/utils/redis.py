@@ -10,15 +10,13 @@ logger = logging.getLogger(__name__)
 # Defaults
 use_redis = False
 use_read_only_redis = False
-read_only_redis_amount_replicas = None
-read_only_redis_wait_timeout = None
 
 try:
     import aioredis
 except ImportError:
     pass
 else:
-    from .redis_connection_pool import ConnectionPool
+    from .redis_connection_pool import ConnectionPool  # type: ignore
 
     # set use_redis to true, if there is a value for REDIS_ADDRESS in the settings
     redis_address = getattr(settings, "REDIS_ADDRESS", "")
@@ -33,13 +31,6 @@ else:
         if use_read_only_redis:
             logger.info(f"Redis read only address {redis_read_only_address}")
             read_only_pool = ConnectionPool({"address": redis_read_only_address})
-
-            read_only_redis_amount_replicas = getattr(settings, "AMOUNT_REPLICAS", 1)
-            logger.info(f"AMOUNT_REPLICAS={read_only_redis_amount_replicas}")
-            read_only_redis_wait_timeout = getattr(
-                settings, "REDIS_SLAVE_WAIT_TIMEOUT", 1000
-            )
-            logger.info(f"REDIS_SLAVE_WAIT_TIMEOUT={read_only_redis_wait_timeout}")
     else:
         logger.info("Redis is not configured.")
 

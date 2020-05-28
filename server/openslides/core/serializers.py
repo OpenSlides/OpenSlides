@@ -1,7 +1,6 @@
 from typing import Any
 
 from ..core.config import config
-from ..utils.projector import projector_slides
 from ..utils.rest_api import (
     Field,
     IdPrimaryKeyRelatedField,
@@ -61,10 +60,6 @@ def elements_validator(value: Any) -> None:
         if element.get("name") is None:
             raise ValidationError(
                 {"detail": "Every dictionary must have a key 'name'."}
-            )
-        if element["name"] not in projector_slides:
-            raise ValidationError(
-                {"detail": "Unknown projector element {0}.", "args": [element["name"]]}
             )
 
 

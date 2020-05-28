@@ -11,9 +11,7 @@ class MediafilesAppConfig(AppConfig):
         # Import all required stuff.
         from openslides.core.signals import permission_change
         from openslides.utils.rest_api import router
-
         from . import serializers  # noqa
-        from .projector import register_projector_slides
         from .signals import get_permission_change_data
         from .views import MediafileViewSet
 
@@ -24,9 +22,6 @@ class MediafilesAppConfig(AppConfig):
             raise ImproperlyConfigured(
                 "The MEDIA_URL setting must start and end with a slash"
             )
-
-        # Define projector elements.
-        register_projector_slides()
 
         # Connect signals.
         permission_change.connect(

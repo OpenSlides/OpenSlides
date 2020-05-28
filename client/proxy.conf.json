@@ -15,5 +15,9 @@
         "target": "ws://localhost:8000",
         "secure": false,
         "ws": true
+    },
+    "/system/": {
+        "target": "https://localhost:8002",
+        "secure": false
     }
 }

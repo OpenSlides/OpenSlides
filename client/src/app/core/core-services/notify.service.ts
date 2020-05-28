@@ -2,8 +2,9 @@ import { Injectable } from '@angular/core';
 
 import { Observable, Subject } from 'rxjs';
 
+import { CommunicationManagerService, OfflineError } from './communication-manager.service';
+import { HttpService } from './http.service';
 import { OperatorService } from './operator.service';
-import { WebsocketService } from './websocket.service';
 
 /**
  * Encapslates the name and content of every message regardless of being a request or response.
@@ -17,7 +18,12 @@ interface NotifyBase<T> {
     /**
      * The content to send.
      */
-    content: T;
+    message: T;
+}
+
+function isNotifyBase(obj: object): obj is NotifyResponse<any> {
+    const base = obj as NotifyBase<any>;
+    return !!obj && base.message !== undefined && base.name !== undefined;
 }
 
 /**
@@ -26,15 +32,18 @@ interface NotifyBase<T> {
  * channel names.
  */
 export interface NotifyRequest<T> extends NotifyBase<T> {
+    channel_id: string;
+    to_all?: boolean;
+
     /**
      * User ids (or `true` for all users) to send this message to.
      */
-    users?: number[] | boolean;
+    to_users?: number[];
 
     /**
      * An array of channels to send this message to.
      */
-    replyChannels?: string[];
+    to_channels?: string[];
 }
 
 /**
@@ -45,18 +54,32 @@ export interface NotifyResponse<T> extends NotifyBase<T> {
      * This is the channel name of the one, who sends this message. Can be use to directly
      * answer this message.
      */
-    senderChannelName: string;
+    sender_channel_id: string;
 
     /**
      * The user id of the user who sends this message. It is 0 for Anonymous.
      */
-    senderUserId: number;
+    sender_user_id: number;
 
     /**
      * This is validated here and is true, if the senderUserId matches the current operator's id.
      * It's also true, if one recieves a request from an anonymous and the operator itself is the anonymous.
      */
     sendByThisUser: boolean;
+}
+
+function isNotifyResponse(obj: object): obj is NotifyResponse<any> {
+    const response = obj as NotifyResponse<any>;
+    // Note: we do not test for sendByThisUser, since it is set later in our code.
+    return isNotifyBase(obj) && response.sender_channel_id !== undefined && response.sender_user_id !== undefined;
+}
+
+interface ChannelIdResponse {
+    channel_id: string;
+}
+
+function isChannelIdResponse(obj: object): obj is ChannelIdResponse {
+    return !!obj && (obj as ChannelIdResponse).channel_id !== undefined;
 }
 
 /**
@@ -78,18 +101,41 @@ export class NotifyService {
         [name: string]: Subject<NotifyResponse<any>>;
     } = {};
 
-    /**
-     * Constructor to create the NotifyService. Registers itself to the WebsocketService.
-     * @param websocketService
-     */
-    public constructor(private websocketService: WebsocketService, private operator: OperatorService) {
-        websocketService.getOberservable<NotifyResponse<any>>('notify').subscribe(notify => {
-            notify.sendByThisUser = notify.senderUserId === (this.operator.user ? this.operator.user.id : 0);
-            this.notifySubject.next(notify);
-            if (this.messageSubjects[notify.name]) {
-                this.messageSubjects[notify.name].next(notify);
+    private channelId: string;
+
+    public constructor(
+        private communicationManager: CommunicationManagerService,
+        private http: HttpService,
+        private operator: OperatorService
+    ) {
+        this.communicationManager.startCommunicationEvent.subscribe(() => this.startListening());
+        this.communicationManager.stopCommunicationEvent.subscribe(() => (this.channelId = null));
+    }
+
+    private async startListening(): Promise<void> {
+        try {
+            await this.communicationManager.subscribe<NotifyResponse<any> | ChannelIdResponse>(
+                '/system/notify',
+                notify => {
+                    if (isChannelIdResponse(notify)) {
+                        this.channelId = notify.channel_id;
+                    } else if (isNotifyResponse(notify)) {
+                        notify.sendByThisUser =
+                            notify.sender_user_id === (this.operator.user ? this.operator.user.id : 0);
+                        this.notifySubject.next(notify);
+                        if (this.messageSubjects[notify.name]) {
+                            this.messageSubjects[notify.name].next(notify);
+                        }
+                    } else {
+                        console.error('Unknwon notify message', notify);
+                    }
+                }
+            );
+        } catch (e) {
+            if (!(e instanceof OfflineError)) {
+                console.log(e);
             }
-        });
+        }
     }
 
     /**
@@ -97,8 +143,8 @@ export class NotifyService {
      * @param name The name of the notify message
      * @param content The payload to send
      */
-    public sendToAllUsers<T>(name: string, content: T): void {
-        this.send(name, content);
+    public async sendToAllUsers<T>(name: string, content: T): Promise<void> {
+        await this.send(name, content, true);
     }
 
     /**
@@ -107,8 +153,11 @@ export class NotifyService {
      * @param content The payload to send.
      * @param users Multiple user ids.
      */
-    public sendToUsers<T>(name: string, content: T, ...users: number[]): void {
-        this.send(name, content, users);
+    public async sendToUsers<T>(name: string, content: T, ...users: number[]): Promise<void> {
+        if (users.length < 1) {
+            throw new Error('You have to provide at least one user');
+        }
+        await this.send(name, content, false, users);
     }
 
     /**
@@ -117,35 +166,48 @@ export class NotifyService {
      * @param content The payload to send.
      * @param channels Multiple channels to send this message to.
      */
-    public sendToChannels<T>(name: string, content: T, ...channels: string[]): void {
+    public async sendToChannels<T>(name: string, content: T, ...channels: string[]): Promise<void> {
         if (channels.length < 1) {
             throw new Error('You have to provide at least one channel');
         }
-        this.send(name, content, null, channels);
+        await this.send(name, content, false, null, channels);
     }
 
     /**
      * General send function for notify messages.
      * @param name The name of the notify message
-     * @param content The payload to send.
+     * @param message The payload to send.
      * @param users Either an array of IDs or `true` meaning of sending this message to all online users clients.
      * @param channels An array of channels to send this message to.
      */
-    public send<T>(name: string, content: T, users?: number[] | boolean, channels?: string[]): void {
+    private async send<T>(
+        name: string,
+        message: T,
+        toAll?: boolean,
+        users?: number[],
+        channels?: string[]
+    ): Promise<void> {
+        if (!this.channelId) {
+            throw new Error('No channel id!');
+        }
+
         const notify: NotifyRequest<T> = {
             name: name,
-            content: content
+            message: message,
+            channel_id: this.channelId
         };
-        if (typeof users === 'boolean' && users !== true) {
-            throw new Error('You just can give true as a boolean to send this message to all users.');
+        if (toAll === true) {
+            notify.to_all = true;
         }
-        if (users !== null) {
-            notify.users = users;
+        if (users) {
+            notify.to_users = users;
         }
-        if (channels !== null) {
-            notify.replyChannels = channels;
+        if (channels) {
+            notify.to_channels = channels;
         }
-        this.websocketService.send('notify', notify);
+
+        console.debug('send notify', notify);
+        await this.http.post<unknown>('/system/notify/send', notify);
     }
 
     /**

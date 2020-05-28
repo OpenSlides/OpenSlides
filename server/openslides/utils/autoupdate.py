@@ -4,13 +4,12 @@ from collections import defaultdict
 from typing import Any, Dict, Iterable, List, Optional, Tuple, Union
 
 from asgiref.sync import async_to_sync
-from channels.layers import get_channel_layer
 from django.db.models import Model
 from mypy_extensions import TypedDict
 
 from .auth import UserDoesNotExist
 from .cache import ChangeIdTooLowError, element_cache, get_element_id
-from .projector import get_projector_data
+from .stream import stream
 from .timing import Timing
 from .utils import get_model_from_collection_string, is_iterable, split_element_id
 
@@ -112,8 +111,7 @@ class AutoupdateBundle:
         save_history(self.element_iterator)
 
         # Update cache and send autoupdate using async code.
-        change_id = async_to_sync(self.dispatch_autoupdate)()
-        return change_id
+        return async_to_sync(self.dispatch_autoupdate)()
 
     @property
     def element_iterator(self) -> Iterable[AutoupdateElement]:
@@ -121,7 +119,7 @@ class AutoupdateBundle:
         for elements in self.autoupdate_elements.values():
             yield from elements.values()
 
-    async def update_cache(self) -> int:
+    async def get_data_for_cache(self) -> Dict[str, Optional[Dict[str, Any]]]:
         """
         Async helper function to update the cache.
 
@@ -136,7 +134,7 @@ class AutoupdateBundle:
                     "no_delete_on_restriction", False
                 )
             cache_elements[element_id] = full_data
-        return await element_cache.change_elements(cache_elements)
+        return cache_elements
 
     async def dispatch_autoupdate(self) -> int:
         """
@@ -145,25 +143,12 @@ class AutoupdateBundle:
         Return the change_id
         """
         # Update cache
-        change_id = await self.update_cache()
+        cache_elements = await self.get_data_for_cache()
+        change_id = await element_cache.change_elements(cache_elements)
 
         # Send autoupdate
-        channel_layer = get_channel_layer()
-        await channel_layer.group_send(
-            "autoupdate", {"type": "msg_new_change_id", "change_id": change_id}
-        )
-
-        # Send projector
-        projector_data = await get_projector_data()
-        channel_layer = get_channel_layer()
-        await channel_layer.group_send(
-            "projector",
-            {
-                "type": "msg_projector_data",
-                "data": projector_data,
-                "change_id": change_id,
-            },
-        )
+        autoupdate_payload = {"elements": cache_elements, "change_id": change_id}
+        await stream.send("autoupdate", autoupdate_payload)
 
         return change_id
 
@@ -286,14 +271,12 @@ class AutoupdateBundleMiddleware:
         if status_ok or status_redirect:
             change_id = bundle.done()
 
-            # inject the autoupdate, if there is an autoupdate and the status is
+            # inject the change id, if there was an autoupdate and the response status is
             # ok (and not redirect; redirects do not have a useful content)
             if change_id is not None and status_ok:
-                user_id = request.user.pk or 0
                 # Inject the autoupdate in the response.
                 # The complete response body will be overwritten!
-                _, autoupdate = async_to_sync(get_autoupdate_data)(change_id, user_id)
-                content = {"autoupdate": autoupdate, "data": response.data}
+                content = {"change_id": change_id, "data": response.data}
                 # Note: autoupdate may be none on skipped ones (which should not happen
                 # since the user has made the request....)
                 response.content = json.dumps(content)

@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 
+import { environment } from 'environments/environment';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
-import { WebsocketService } from './websocket.service';
+import { CommunicationManagerService } from './communication-manager.service';
+import { HttpService } from './http.service';
 
 /**
  * constants have a key associated with the data.
@@ -36,23 +38,14 @@ export class ConstantsService {
      */
     private subjects: { [key: string]: BehaviorSubject<any> } = {};
 
-    /**
-     * @param websocketService
-     */
-    public constructor(private websocketService: WebsocketService) {
-        // The hook for recieving constants.
-        websocketService.getOberservable<Constants>('constants').subscribe(constants => {
-            this.constants = constants;
+    public constructor(communicationManager: CommunicationManagerService, private http: HttpService) {
+        communicationManager.startCommunicationEvent.subscribe(async () => {
+            console.log('start communication');
+            this.constants = await this.http.get<Constants>(environment.urlPrefix + '/core/constants/');
+            console.log('constants:', this.constants);
             Object.keys(this.subjects).forEach(key => {
                 this.subjects[key].next(this.constants[key]);
             });
-        });
-
-        // We can request constants, if the websocket connection opens.
-        // On retries, the `refresh()` method is called by the OpenSlidesService, so
-        // here we do not need to take care about this.
-        websocketService.noRetryConnectEvent.subscribe(() => {
-            this.refresh();
         });
     }
 
@@ -65,15 +58,5 @@ export class ConstantsService {
             this.subjects[key] = new BehaviorSubject<any>(this.constants[key]);
         }
         return this.subjects[key].asObservable().pipe(filter(x => !!x));
-    }
-
-    /**
-     * Refreshed the constants
-     */
-    public refresh(): Promise<void> {
-        if (!this.websocketService.isConnected) {
-            return;
-        }
-        this.websocketService.send('constants', {});
     }
 }

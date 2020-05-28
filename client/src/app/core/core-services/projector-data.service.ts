@@ -3,8 +3,8 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { auditTime } from 'rxjs/operators';
 
-import { WebsocketService } from 'app/core/core-services/websocket.service';
 import { Projector, ProjectorElement } from 'app/shared/models/core/projector';
+import { CommunicationManagerService, OfflineError } from './communication-manager.service';
 
 export interface SlideData<T = { error?: string }, P extends ProjectorElement = ProjectorElement> {
     data: T;
@@ -15,13 +15,13 @@ export interface SlideData<T = { error?: string }, P extends ProjectorElement = 
 export type ProjectorData = SlideData[];
 
 interface AllProjectorData {
-    [id: number]: ProjectorData | { error: string };
+    [id: number]: ProjectorData;
 }
 
 /**
  * Received data from server.
  */
-interface ProjectorWebsocketMessage {
+interface ProjectorDataMessage {
     /**
      * The `change_id` of the current update.
      */
@@ -63,36 +63,61 @@ export class ProjectorDataService {
      */
     private currentChangeId = 0;
 
-    /**
-     * Constructor.
-     *
-     * @param websocketService
-     */
-    public constructor(private websocketService: WebsocketService) {
-        // Dispatch projector data.
-        this.websocketService.getOberservable('projector').subscribe((update: ProjectorWebsocketMessage) => {
-            if (this.currentChangeId > update.change_id) {
-                return;
-            }
-            Object.keys(update.data).forEach(_id => {
-                const id = parseInt(_id, 10);
-                if (this.currentProjectorData[id]) {
-                    this.currentProjectorData[id].next(update.data[id] as ProjectorData);
-                }
-            });
-            this.currentChangeId = update.change_id;
-        });
+    private streamCloseFn: () => void | null = null;
 
-        // The service need to re-register, if the websocket connection was lost.
-        this.websocketService.generalConnectEvent.subscribe(() => this.updateProjectorDataSubscription());
+    public constructor(private communicationManager: CommunicationManagerService) {
+        this.communicationManager.startCommunicationEvent.subscribe(() => this.updateProjectorDataSubscription());
 
         // With a bit of debounce, update the needed projectors.
         this.updateProjectorDataDebounceSubject.pipe(auditTime(10)).subscribe(() => {
             const allActiveProjectorIds = Object.keys(this.openProjectorInstances)
                 .map(id => parseInt(id, 10))
                 .filter(id => this.openProjectorInstances[id] > 0);
-            this.websocketService.send('listenToProjectors', { projector_ids: allActiveProjectorIds });
+            this.requestProjectors(allActiveProjectorIds);
         });
+    }
+
+    public async requestProjectors(allActiveProjectorIds: number[]): Promise<void> {
+        this.cancelCurrentServerSubscription();
+
+        if (allActiveProjectorIds.length === 0) {
+            return;
+        }
+
+        try {
+            this.streamCloseFn = await this.communicationManager.subscribe<ProjectorDataMessage>(
+                '/system/projector',
+                message => {
+                    this.handleMesage(message);
+                },
+                () => ({ projector_ids: allActiveProjectorIds.join(',') })
+            );
+        } catch (e) {
+            if (!(e instanceof OfflineError)) {
+                console.log(e);
+            }
+        }
+    }
+
+    public cancelCurrentServerSubscription(): void {
+        if (this.streamCloseFn) {
+            this.streamCloseFn();
+            this.streamCloseFn = null;
+        }
+    }
+
+    private handleMesage(message: ProjectorDataMessage): void {
+        if (this.currentChangeId > message.change_id) {
+            console.log('Projector: Change id too low:', this.currentChangeId, message.change_id);
+            return;
+        }
+        Object.keys(message.data).forEach(_id => {
+            const id = parseInt(_id, 10);
+            if (this.currentProjectorData[id]) {
+                this.currentProjectorData[id].next(message.data[id] as ProjectorData);
+            }
+        });
+        this.currentChangeId = message.change_id;
     }
 
     /**

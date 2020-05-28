@@ -10,7 +10,6 @@ import { CollectionStringMapperService } from './collection-string-mapper.servic
 import { DataStoreService } from './data-store.service';
 import { Deferred } from '../promises/deferred';
 import { HttpService } from './http.service';
-import { OfflineService } from './offline.service';
 import { OnAfterAppsLoaded } from '../definitions/on-after-apps-loaded';
 import { OpenSlidesStatusService } from './openslides-status.service';
 import { StorageService } from './storage.service';
@@ -207,7 +206,6 @@ export class OperatorService implements OnAfterAppsLoaded {
     public constructor(
         private http: HttpService,
         private DS: DataStoreService,
-        private offlineService: OfflineService,
         private collectionStringMapper: CollectionStringMapperService,
         private storageService: StorageService,
         private OSStatus: OpenSlidesStatusService
@@ -306,18 +304,19 @@ export class OperatorService implements OnAfterAppsLoaded {
      *
      * @returns The response of the WhoAmI request.
      */
-    public async whoAmI(): Promise<WhoAmI> {
+    public async whoAmI(): Promise<{ whoami: WhoAmI; online: boolean }> {
+        let online = true;
         try {
             const response = await this.http.get(environment.urlPrefix + '/users/whoami/');
             if (isWhoAmI(response)) {
                 await this.updateCurrentWhoAmI(response);
             } else {
-                this.offlineService.goOfflineBecauseFailedWhoAmI();
+                online = false;
             }
         } catch (e) {
-            this.offlineService.goOfflineBecauseFailedWhoAmI();
+            online = false;
         }
-        return this.currentWhoAmI;
+        return { whoami: this.currentWhoAmI, online };
     }
 
     /**

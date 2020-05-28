@@ -22,6 +22,7 @@ from ..utils.arguments import arguments
 from ..utils.auth import GROUP_ADMIN_PK, anonymous_is_enabled, has_perm, in_some_groups
 from ..utils.autoupdate import inform_changed_data
 from ..utils.cache import element_cache
+from ..utils.constants import get_constants
 from ..utils.plugins import (
     get_plugin_description,
     get_plugin_license,
@@ -569,7 +570,7 @@ class CountdownViewSet(ModelViewSet):
 # Special API views
 
 
-class ServerTime(utils_views.APIView):
+class ServertimeView(utils_views.APIView):
     """
     Returns the server time as UNIX timestamp.
     """
@@ -578,6 +579,19 @@ class ServerTime(utils_views.APIView):
 
     def get_context_data(self, **context):
         return now().timestamp()
+
+
+class ConstantsView(utils_views.APIView):
+    """
+    Returns the server time as UNIX timestamp.
+    """
+
+    http_method_names = ["get"]
+
+    def get_context_data(self, **context):
+        if not self.request.user.is_authenticated and not anonymous_is_enabled():
+            self.permission_denied(self.request)
+        return get_constants()
 
 
 class VersionView(utils_views.APIView):

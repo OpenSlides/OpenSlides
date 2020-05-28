@@ -15,16 +15,12 @@ class AgendaAppConfig(AppConfig):
         from ..utils.access_permissions import required_user
         from ..utils.rest_api import router
         from . import serializers  # noqa
-        from .projector import register_projector_slides
         from .signals import (
             get_permission_change_data,
             listen_to_related_object_post_delete,
             listen_to_related_object_post_save,
         )
         from .views import ItemViewSet, ListOfSpeakersViewSet
-
-        # Define projector elements.
-        register_projector_slides()
 
         # Connect signals.
         post_save.connect(

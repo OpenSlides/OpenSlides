@@ -163,6 +163,8 @@ class ElementCache:
         logger.info("Saving cache data into the cache...")
         await self.cache_provider.add_to_full_data(mapping)
         logger.info("Done saving the cache data.")
+        await self.cache_provider.set_cache_ready()
+        logger.info("Done: Cache is ready now.")
 
     def _build_cache_get_elementid_model_mapping(
         self, config_only: bool = False

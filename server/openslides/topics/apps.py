@@ -11,12 +11,8 @@ class TopicsAppConfig(AppConfig):
 
         from ..utils.rest_api import router
         from . import serializers  # noqa
-        from .projector import register_projector_slides
         from .signals import get_permission_change_data
         from .views import TopicViewSet
-
-        # Define projector elements.
-        register_projector_slides()
 
         # Connect signals.
         permission_change.connect(

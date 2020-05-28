@@ -1,0 +1,30 @@
+FROM python:3.7-slim AS base
+
+# Variables relevant for CMD
+ENV DJANGO_SETTINGS_MODULE settings
+ENV PYTHONPATH personal_data/var/
+
+WORKDIR /app
+RUN apt-get -y update &&  apt-get install --no-install-recommends -y \
+    postgresql-client \
+    wait-for-it \
+    gcc \
+    git \
+    libxml2-dev \
+    libxmlsec1-dev \
+    libxmlsec1-openssl \
+    pkg-config
+  
+RUN rm -rf /var/lib/apt/lists/*
+
+COPY requirements /app/requirements
+COPY requirements.txt /app/requirements.txt
+
+RUN pip install -r requirements.txt -r requirements/saml.txt && \
+    rm -rf /root/.cache/pip
+
+EXPOSE 8000
+COPY docker/entrypoint-dev /usr/local/sbin/
+COPY . .
+ENTRYPOINT ["/usr/local/sbin/entrypoint-dev"]
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

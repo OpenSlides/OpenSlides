@@ -70,5 +70,4 @@ COPY manage.py /app/
 COPY openslides /app/openslides
 COPY docker/server-version.txt /app/openslides/core/static/server-version.txt
 ENTRYPOINT ["/usr/local/sbin/entrypoint"]
-CMD ["gunicorn", "-w", "8", "--preload", "-b", "0.0.0.0:8000", "-k", \
-  "uvicorn.workers.UvicornWorker", "openslides.asgi:application"]
+CMD ["gunicorn", "-w", "8", "--preload", "-t", "240", "-b", "0.0.0.0:8000", "openslides.wsgi"]

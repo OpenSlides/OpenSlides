@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 
+import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { BehaviorSubject } from 'rxjs';
+
+import { OfflineBroadcastService } from '../core-services/offline-broadcast.service';
 
 export interface BannerDefinition {
     type?: string;
@@ -20,7 +23,25 @@ export interface BannerDefinition {
     providedIn: 'root'
 })
 export class BannerService {
+    private offlineBannerDefinition: BannerDefinition = {
+        text: _('Offline mode'),
+        icon: 'cloud_off'
+    };
+
     public activeBanners: BehaviorSubject<BannerDefinition[]> = new BehaviorSubject<BannerDefinition[]>([]);
+
+    public constructor(/*translate: TranslateService, */ offlineBroadcastService: OfflineBroadcastService) {
+        /*translate.onLangChange.subscribe(() => {
+            this.offlineBannerDefinition.text = translate.instant(this.offlineBannerDefinition.text);
+        });*/
+        offlineBroadcastService.isOfflineObservable.subscribe(offline => {
+            if (offline) {
+                this.addBanner(this.offlineBannerDefinition);
+            } else {
+                this.removeBanner(this.offlineBannerDefinition);
+            }
+        });
+    }
 
     /**
      * Adds a banner to the list of active banners. Skip the banner if it's already in the list
