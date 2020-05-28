@@ -140,6 +140,11 @@ export class MotionListComponent extends BaseListViewComponent<ViewMotion> imple
     public statutesEnabled: boolean;
 
     /**
+     * Value of the configuration variable `motions_amendments_enabled` - are amendments enabled?
+     */
+    public amendmentsEnabled: boolean;
+
+    /**
      * Value of the config variable `motions_show_sequential_numbers`
      */
     public showSequential: boolean;
@@ -235,6 +240,9 @@ export class MotionListComponent extends BaseListViewComponent<ViewMotion> imple
         this.configService
             .get<boolean>('motions_statutes_enabled')
             .subscribe(enabled => (this.statutesEnabled = enabled));
+        this.configService
+            .get<boolean>('motions_amendments_enabled')
+            .subscribe(enabled => (this.amendmentsEnabled = enabled));
         this.configService.get<string>('motions_recommendations_by').subscribe(recommender => {
             this.recommendationEnabled = !!recommender;
         });
