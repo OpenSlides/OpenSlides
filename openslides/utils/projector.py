@@ -5,22 +5,60 @@ Functions  that handel the registration of projector elements and the rendering
 of the data to present it on the projector.
 """
 
-from typing import Any, Awaitable, Callable, Dict, List
+from collections import defaultdict
+from typing import Any, Awaitable, Callable, Dict, List, Optional
 
+from . import logging
 from .cache import element_cache
 
 
-AllData = Dict[str, Dict[int, Dict[str, Any]]]
-ProjectorSlide = Callable[[AllData, Dict[str, Any], int], Awaitable[Dict[str, Any]]]
-
-
-projector_slides: Dict[str, ProjectorSlide] = {}
+logger = logging.getLogger(__name__)
 
 
 class ProjectorElementException(Exception):
     """
     Exception for errors in one element on the projector.
     """
+
+
+class ProjectorAllDataProvider:
+    NON_EXISTENT_MARKER = object()
+
+    def __init__(self) -> None:
+        self.cache: Any = defaultdict(dict)  # fuu you mypy
+        self.fetched_collection: Dict[str, bool] = {}
+
+    async def get(self, collection: str, id: int) -> Optional[Dict[str, Any]]:
+        cache_data = self.cache[collection].get(id)
+        if cache_data is None:
+            data: Any = await element_cache.get_element_data(collection, id)
+            if data is None:
+                data = ProjectorAllDataProvider.NON_EXISTENT_MARKER
+            self.cache[collection][id] = data
+
+        cache_data = self.cache[collection][id]
+        if cache_data == ProjectorAllDataProvider.NON_EXISTENT_MARKER:
+            return None
+        return cache_data
+
+    async def get_collection(self, collection: str) -> Dict[int, Dict[str, Any]]:
+        if not self.fetched_collection.get(collection, False):
+            collection_data = await element_cache.get_collection_data(collection)
+            self.cache[collection] = collection_data
+            self.fetched_collection[collection] = True
+        return self.cache[collection]
+
+    async def exists(self, collection: str, id: int) -> bool:
+        model = await self.get(collection, id)
+        return model is not None
+
+
+ProjectorSlide = Callable[
+    [ProjectorAllDataProvider, Dict[str, Any], int], Awaitable[Dict[str, Any]]
+]
+
+
+projector_slides: Dict[str, ProjectorSlide] = {}
 
 
 def register_projector_slide(name: str, slide: ProjectorSlide) -> None:
@@ -67,10 +105,11 @@ async def get_projector_data(
     if projector_ids is None:
         projector_ids = []
 
-    all_data = await element_cache.get_all_data_dict()
     projector_data: Dict[int, List[Dict[str, Any]]] = {}
+    all_data_provider = ProjectorAllDataProvider()
+    projectors = await all_data_provider.get_collection("core/projector")
 
-    for projector_id, projector in all_data.get("core/projector", {}).items():
+    for projector_id, projector in projectors.items():
         if projector_ids and projector_id not in projector_ids:
             # only render the projector in question.
             continue
@@ -83,7 +122,7 @@ async def get_projector_data(
         for element in projector["elements"]:
             projector_slide = projector_slides[element["name"]]
             try:
-                data = await projector_slide(all_data, element, projector_id)
+                data = await projector_slide(all_data_provider, element, projector_id)
             except ProjectorElementException as err:
                 data = {"error": str(err)}
             projector_data[projector_id].append({"data": data, "element": element})
@@ -91,18 +130,23 @@ async def get_projector_data(
     return projector_data
 
 
-async def get_config(all_data: AllData, key: str) -> Any:
+async def get_config(all_data_provider: ProjectorAllDataProvider, key: str) -> Any:
     """
-    Returns a config value from all_data.
+    Returns a config value from all_data_provider.
+    Triggers the cache early: It access `get_colelction` instead of `get`. It
+    allows for all successive queries for configs to be cached.
     """
     from ..core.config import config
 
     config_id = (await config.async_get_key_to_id())[key]
 
-    return all_data[config.get_collection_string()][config_id]["value"]
+    configs = await all_data_provider.get_collection(config.get_collection_string())
+    return configs[config_id]["value"]
 
 
-def get_model(all_data: AllData, collection: str, id: Any) -> Dict[str, Any]:
+async def get_model(
+    all_data_provider: ProjectorAllDataProvider, collection: str, id: Any
+) -> Dict[str, Any]:
     """
     Tries to get the model identified by the collection and id.
     If the id is invalid or the model not found, ProjectorElementExceptions will be raised.
@@ -110,17 +154,19 @@ def get_model(all_data: AllData, collection: str, id: Any) -> Dict[str, Any]:
     if id is None:
         raise ProjectorElementException(f"id is required for {collection} slide")
 
-    try:
-        model = all_data[collection][id]
-    except KeyError:
+    model = await all_data_provider.get(collection, id)
+    if model is None:
         raise ProjectorElementException(f"{collection} with id {id} does not exist")
     return model
 
 
-def get_models(
-    all_data: AllData, collection: str, ids: List[Any]
+async def get_models(
+    all_data_provider: ProjectorAllDataProvider, collection: str, ids: List[Any]
 ) -> List[Dict[str, Any]]:
     """
     Tries to fetch all given models. Models are required to be all of the collection `collection`.
     """
-    return [get_model(all_data, collection, id) for id in ids]
+    logger.info(
+        f"Note: a call to `get_models` with {collection}/{ids}. This might be cache-intensive"
+    )
+    return [await get_model(all_data_provider, collection, id) for id in ids]

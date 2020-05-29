@@ -8,7 +8,11 @@ from django.core.exceptions import ImproperlyConfigured
 from typing_extensions import Protocol
 
 from . import logging
-from .redis import read_only_redis_amount_replicas, use_redis
+from .redis import (
+    read_only_redis_amount_replicas,
+    read_only_redis_wait_timeout,
+    use_redis,
+)
 from .schema_version import SchemaVersion
 from .utils import split_element_id, str_dict_to_bytes
 
@@ -297,7 +301,7 @@ class RedisCacheProvider:
 
     async def add_to_full_data(self, data: Dict[str, str]) -> None:
         async with get_connection() as redis:
-            redis.hmset_dict(self.full_data_cache_key, data)
+            await redis.hmset_dict(self.full_data_cache_key, data)
 
     async def data_exists(self) -> bool:
         """
@@ -492,11 +496,12 @@ class RedisCacheProvider:
                     raise e
             if not read_only and read_only_redis_amount_replicas is not None:
                 reported_amount = await redis.wait(
-                    read_only_redis_amount_replicas, 1000
+                    read_only_redis_amount_replicas, read_only_redis_wait_timeout
                 )
                 if reported_amount != read_only_redis_amount_replicas:
                     logger.warn(
-                        f"WAIT reported {reported_amount} replicas of {read_only_redis_amount_replicas} requested!"
+                        f"WAIT reported {reported_amount} replicas of {read_only_redis_amount_replicas} "
+                        + f"requested after {read_only_redis_wait_timeout} ms!"
                     )
             return result
 

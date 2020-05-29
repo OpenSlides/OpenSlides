@@ -1,9 +1,13 @@
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional, cast
 
 from openslides.core.config import config
 from openslides.core.models import Projector
 from openslides.users.models import User
-from openslides.utils.projector import AllData, get_config, register_projector_slide
+from openslides.utils.projector import (
+    ProjectorAllDataProvider,
+    get_config,
+    register_projector_slide,
+)
 
 
 class TConfig:
@@ -94,19 +98,23 @@ class TProjector:
 
 
 async def slide1(
-    all_data: AllData, element: Dict[str, Any], projector_id: int
+    all_data_provider: ProjectorAllDataProvider,
+    element: Dict[str, Any],
+    projector_id: int,
 ) -> Dict[str, Any]:
     """
     Slide that shows the general_event_name.
     """
     return {
         "name": "slide1",
-        "event_name": await get_config(all_data, "general_event_name"),
+        "event_name": await get_config(all_data_provider, "general_event_name"),
     }
 
 
 async def slide2(
-    all_data: AllData, element: Dict[str, Any], projector_id: int
+    all_data_provider: ProjectorAllDataProvider,
+    element: Dict[str, Any],
+    projector_id: int,
 ) -> Dict[str, Any]:
     return {"name": "slide2"}
 
@@ -115,17 +123,26 @@ register_projector_slide("test/slide1", slide1)
 register_projector_slide("test/slide2", slide2)
 
 
-def all_data_config() -> AllData:
-    return {
-        TConfig().get_collection_string(): {
-            element["id"]: element for element in TConfig().get_elements()
-        }
-    }
+class TestProjectorAllDataProvider:
+    def __init__(self, data):
+        self.data = data
+
+    async def get(self, collection: str, id: int) -> Optional[Dict[str, Any]]:
+        collection_data = await self.get_collection(collection)
+        return collection_data.get(id)
+
+    async def get_collection(self, collection: str) -> Dict[int, Dict[str, Any]]:
+        return self.data.get(collection, {})
+
+    async def exists(self, collection: str, id: int) -> bool:
+        return (await self.get(collection, id)) is not None
 
 
-def all_data_users() -> AllData:
-    return {
-        TUser().get_collection_string(): {
-            element["id"]: element for element in TUser().get_elements()
-        }
+def get_all_data_provider(data) -> ProjectorAllDataProvider:
+    data[TConfig().get_collection_string()] = {
+        element["id"]: element for element in TConfig().get_elements()
     }
+    data[TUser().get_collection_string()] = {
+        element["id"]: element for element in TUser().get_elements()
+    }
+    return cast(ProjectorAllDataProvider, TestProjectorAllDataProvider(data))

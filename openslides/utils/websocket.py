@@ -25,6 +25,26 @@ WEBSOCKET_WRONG_FORMAT = 102
 # If the recieved data has not the expected format.
 
 
+class BaseWebsocketException(Exception):
+    code: int
+
+    def __init__(self, message: str, in_response: Optional[str] = None) -> None:
+        self.message = message
+        self.in_response = in_response
+
+
+class NotAuthorizedException(BaseWebsocketException):
+    code = WEBSOCKET_NOT_AUTHORIZED
+
+
+class ChangeIdTooHighException(BaseWebsocketException):
+    code = WEBSOCKET_CHANGE_ID_TOO_HIGH
+
+
+class WrongFormatException(BaseWebsocketException):
+    code = WEBSOCKET_WRONG_FORMAT
+
+
 class AsyncCompressedJsonWebsocketConsumer(AsyncWebsocketConsumer):
     async def receive(
         self,
@@ -122,6 +142,20 @@ class ProtocollAsyncJsonWebsocketConsumer(AsyncCompressedJsonWebsocketConsumer):
             silence_errors=silence_errors,
         )
 
+    async def send_exception(
+        self, e: BaseWebsocketException, silence_errors: Optional[bool] = True,
+    ) -> None:
+        """
+        Send generic error messages with a custom status code (see above) and a text message.
+        """
+        await self.send_json(
+            "error",
+            {"code": e.code, "message": e.message},
+            None,
+            in_response=e.in_response,
+            silence_errors=silence_errors,
+        )
+
     async def receive_json(self, content: Any) -> None:  # type: ignore
         """
         Receives the json data, parses it and calls receive_content.
@@ -140,9 +174,12 @@ class ProtocollAsyncJsonWebsocketConsumer(AsyncCompressedJsonWebsocketConsumer):
             )
             return
 
-        await websocket_client_messages[content["type"]].receive_content(
-            self, content["content"], id=content["id"]
-        )
+        try:
+            await websocket_client_messages[content["type"]].receive_content(
+                self, content["content"], id=content["id"]
+            )
+        except BaseWebsocketException as e:
+            await self.send_exception(e)
 
 
 schema: Dict[str, Any] = {

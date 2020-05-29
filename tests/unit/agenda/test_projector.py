@@ -4,10 +4,12 @@ import pytest
 
 from openslides.agenda import projector
 
+from ...integration.helpers import get_all_data_provider
+
 
 @pytest.fixture
-def all_data():
-    all_data = {
+def all_data_provider():
+    data = {
         "agenda/item": {
             1: {
                 "id": 1,
@@ -82,14 +84,14 @@ def all_data():
         }
     }
 
-    return all_data
+    return get_all_data_provider(data)
 
 
 @pytest.mark.asyncio
-async def test_main_items(all_data):
+async def test_main_items(all_data_provider):
     element: Dict[str, Any] = {}
 
-    data = await projector.item_list_slide(all_data, element, 1)
+    data = await projector.item_list_slide(all_data_provider, element, 1)
 
     assert data == {
         "items": [
@@ -106,10 +108,10 @@ async def test_main_items(all_data):
 
 
 @pytest.mark.asyncio
-async def test_all_items(all_data):
+async def test_all_items(all_data_provider):
     element: Dict[str, Any] = {"only_main_items": False}
 
-    data = await projector.item_list_slide(all_data, element, 1)
+    data = await projector.item_list_slide(all_data_provider, element, 1)
 
     assert data == {
         "items": [

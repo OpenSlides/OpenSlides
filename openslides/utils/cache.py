@@ -254,25 +254,6 @@ class ElementCache:
                 all_data[collection] = await restricter(user_id, all_data[collection])
         return dict(all_data)
 
-    async def get_all_data_dict(self) -> Dict[str, Dict[int, Dict[str, Any]]]:
-        """
-        Returns all data with a dict (id <-> element) per collection:
-        {
-            <collection>: {
-                <id>: <element>
-            }
-        }
-        """
-        all_data: Dict[str, Dict[int, Dict[str, Any]]] = defaultdict(dict)
-        for element_id, data in (await self.cache_provider.get_all_data()).items():
-            collection, id = split_element_id(element_id)
-            element = json.loads(data.decode())
-            element.pop(
-                "_no_delete_on_restriction", False
-            )  # remove special field for get_data_since
-            all_data[collection][id] = element
-        return dict(all_data)
-
     async def get_collection_data(self, collection: str) -> Dict[int, Dict[str, Any]]:
         """
         Returns the data for one collection as dict: {id: <element>}

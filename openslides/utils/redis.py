@@ -11,6 +11,7 @@ logger = logging.getLogger(__name__)
 use_redis = False
 use_read_only_redis = False
 read_only_redis_amount_replicas = None
+read_only_redis_wait_timeout = None
 
 try:
     import aioredis
@@ -35,6 +36,8 @@ else:
 
             read_only_redis_amount_replicas = getattr(settings, "AMOUNT_REPLICAS", 1)
             logger.info(f"AMOUNT_REPLICAS={read_only_redis_amount_replicas}")
+            read_only_redis_wait_timeout = getattr(settings, "WAIT_TIMEOUT", 1000)
+            logger.info(f"WAIT_TIMEOUT={read_only_redis_wait_timeout}")
     else:
         logger.info("Redis is not configured.")
 

@@ -1,19 +1,16 @@
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from ..utils.projector import (
-    AllData,
-    ProjectorElementException,
+    ProjectorAllDataProvider,
+    get_model,
     register_projector_slide,
 )
 
 
-# Important: All functions have to be prune. This means, that thay can only
-#            access the data, that they get as argument and do not have any
-#            side effects.
-
-
 async def user_slide(
-    all_data: AllData, element: Dict[str, Any], projector_id: int
+    all_data_provider: ProjectorAllDataProvider,
+    element: Dict[str, Any],
+    projector_id: int,
 ) -> Dict[str, Any]:
     """
     User slide.
@@ -21,22 +18,16 @@ async def user_slide(
     The returned dict can contain the following fields:
     * user
     """
-    user_id = element.get("id")
-
-    if user_id is None:
-        raise ProjectorElementException("id is required for user slide")
-
-    return {"user": await get_user_name(all_data, user_id)}
+    return {"user": await get_user_name(all_data_provider, element.get("id"))}
 
 
-async def get_user_name(all_data: AllData, user_id: int) -> str:
+async def get_user_name(
+    all_data_provider: ProjectorAllDataProvider, user_id: Optional[int]
+) -> str:
     """
     Returns the short name for an user_id.
     """
-    try:
-        user = all_data["users/user"][user_id]
-    except KeyError:
-        raise ProjectorElementException(f"user with id {user_id} does not exist")
+    user = await get_model(all_data_provider, "users/user", user_id)
 
     name_parts: List[str] = []
     for name_part in ("title", "first_name", "last_name"):

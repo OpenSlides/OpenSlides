@@ -32,6 +32,26 @@
             <span>{{ 'Check for updates' | translate }}</span>
         </button>
     </div>
+
+    <div>
+        <button type="button" mat-button (click)="showDevTools=!showDevTools">
+            <span>{{ 'Show devtools' | translate }}</span>
+        </button>
+    </div>
+
+    <mat-card class="os-card" *ngIf="showDevTools">
+        <div>
+            <button type="button" mat-button (click)="printDS()">
+                <span>Print DS</span>
+            </button>
+        </div>
+
+        <div>
+            <button type="button" mat-button (click)="getThisComponent()">
+                <span>Get this component</span>
+            </button>
+        </div>
+    </mat-card>
 </mat-card>
 
 <mat-card class="os-card" *osPerms="'users.can_manage'">

@@ -1,3 +1,4 @@
+import json
 import threading
 from collections import defaultdict
 from typing import Any, Dict, Iterable, List, Optional, Tuple, Union
@@ -7,9 +8,22 @@ from channels.layers import get_channel_layer
 from django.db.models import Model
 from mypy_extensions import TypedDict
 
-from .cache import element_cache, get_element_id
+from .cache import ChangeIdTooLowError, element_cache, get_element_id
 from .projector import get_projector_data
-from .utils import get_model_from_collection_string, is_iterable
+from .timing import Timing
+from .utils import get_model_from_collection_string, is_iterable, split_element_id
+
+
+AutoupdateFormat = TypedDict(
+    "AutoupdateFormat",
+    {
+        "changed": Dict[str, List[Dict[str, Any]]],
+        "deleted": Dict[str, List[int]],
+        "from_change_id": int,
+        "to_change_id": int,
+        "all_data": bool,
+    },
+)
 
 
 class AutoupdateElementBase(TypedDict):
@@ -66,13 +80,15 @@ class AutoupdateBundle:
                 element["id"]
             ] = element
 
-    def done(self) -> None:
+    def done(self) -> Optional[int]:
         """
         Finishes the bundle by resolving all missing data and passing it to
         the history and element cache.
+
+        Returns the change id, if there are autoupdate elements. Otherwise none.
         """
         if not self.autoupdate_elements:
-            return
+            return None
 
         for collection, elements in self.autoupdate_elements.items():
             # Get all ids, that do not have a full_data key
@@ -92,13 +108,14 @@ class AutoupdateBundle:
                     elements[full_data["id"]]["full_data"] = full_data
 
         # Save histroy here using sync code.
-        save_history(self.elements)
+        save_history(self.element_iterator)
 
         # Update cache and send autoupdate using async code.
-        async_to_sync(self.async_handle_collection_elements)()
+        change_id = async_to_sync(self.dispatch_autoupdate)()
+        return change_id
 
     @property
-    def elements(self) -> Iterable[AutoupdateElement]:
+    def element_iterator(self) -> Iterable[AutoupdateElement]:
         """ Iterator for all elements in this bundle """
         for elements in self.autoupdate_elements.values():
             yield from elements.values()
@@ -110,7 +127,7 @@ class AutoupdateBundle:
         Returns the change_id
         """
         cache_elements: Dict[str, Optional[Dict[str, Any]]] = {}
-        for element in self.elements:
+        for element in self.element_iterator:
             element_id = get_element_id(element["collection_string"], element["id"])
             full_data = element.get("full_data")
             if full_data:
@@ -120,9 +137,11 @@ class AutoupdateBundle:
             cache_elements[element_id] = full_data
         return await element_cache.change_elements(cache_elements)
 
-    async def async_handle_collection_elements(self) -> None:
+    async def dispatch_autoupdate(self) -> int:
         """
         Async helper function to update cache and send autoupdate.
+
+        Return the change_id
         """
         # Update cache
         change_id = await self.update_cache()
@@ -130,20 +149,22 @@ class AutoupdateBundle:
         # Send autoupdate
         channel_layer = get_channel_layer()
         await channel_layer.group_send(
-            "autoupdate", {"type": "send_data", "change_id": change_id}
+            "autoupdate", {"type": "msg_new_change_id", "change_id": change_id}
         )
 
-        projector_data = await get_projector_data()
         # Send projector
+        projector_data = await get_projector_data()
         channel_layer = get_channel_layer()
         await channel_layer.group_send(
             "projector",
             {
-                "type": "projector_changed",
+                "type": "msg_projector_data",
                 "data": projector_data,
                 "change_id": change_id,
             },
         )
+
+        return change_id
 
 
 def inform_changed_data(
@@ -152,6 +173,7 @@ def inform_changed_data(
     user_id: Optional[int] = None,
     disable_history: bool = False,
     no_delete_on_restriction: bool = False,
+    final_data: bool = False,
 ) -> None:
     """
     Informs the autoupdate system and the caching system about the creation or
@@ -167,8 +189,10 @@ def inform_changed_data(
         instances = (instances,)
 
     root_instances = set(instance.get_root_rest_element() for instance in instances)
-    elements = [
-        AutoupdateElement(
+
+    elements = []
+    for root_instance in root_instances:
+        element = AutoupdateElement(
             id=root_instance.get_rest_pk(),
             collection_string=root_instance.get_collection_string(),
             disable_history=disable_history,
@@ -176,8 +200,9 @@ def inform_changed_data(
             user_id=user_id,
             no_delete_on_restriction=no_delete_on_restriction,
         )
-        for root_instance in root_instances
-    ]
+        if final_data:
+            element["full_data"] = root_instance.get_full_data()
+        elements.append(element)
     inform_elements(elements)
 
 
@@ -246,14 +271,68 @@ class AutoupdateBundleMiddleware:
         thread_id = threading.get_ident()
         autoupdate_bundle[thread_id] = AutoupdateBundle()
 
+        timing = Timing("request")
+
         response = self.get_response(request)
 
+        timing()
+
+        # rewrite the response by adding the autoupdate on any success-case (2xx status)
         bundle: AutoupdateBundle = autoupdate_bundle.pop(thread_id)
-        bundle.done()
+        if response.status_code >= 200 and response.status_code < 300:
+            change_id = bundle.done()
+
+            if change_id is not None:
+                user_id = request.user.pk or 0
+                # Inject the autoupdate in the response.
+                # The complete response body will be overwritten!
+                autoupdate = async_to_sync(get_autoupdate_data)(
+                    change_id, change_id, user_id
+                )
+                content = {"autoupdate": autoupdate, "data": response.data}
+                # Note: autoupdate may be none on skipped ones (which should not happen
+                # since the user has made the request....)
+                response.content = json.dumps(content)
+
+        timing(True)
         return response
 
 
-def save_history(elements: Iterable[AutoupdateElement]) -> Iterable:
+async def get_autoupdate_data(
+    from_change_id: int, to_change_id: int, user_id: int
+) -> Optional[AutoupdateFormat]:
+    try:
+        changed_elements, deleted_element_ids = await element_cache.get_data_since(
+            user_id, from_change_id, to_change_id
+        )
+    except ChangeIdTooLowError:
+        # The change_id is lower the the lowerst change_id in redis. Return all data
+        changed_elements = await element_cache.get_all_data_list(user_id)
+        all_data = True
+        deleted_elements: Dict[str, List[int]] = {}
+    else:
+        all_data = False
+        deleted_elements = defaultdict(list)
+        for element_id in deleted_element_ids:
+            collection_string, id = split_element_id(element_id)
+            deleted_elements[collection_string].append(id)
+
+    # Check, if the autoupdate has any data.
+    if not changed_elements and not deleted_element_ids:
+        # Skip empty updates
+        return None
+    else:
+        # Normal autoupdate with data
+        return AutoupdateFormat(
+            changed=changed_elements,
+            deleted=deleted_elements,
+            from_change_id=from_change_id,
+            to_change_id=to_change_id,
+            all_data=all_data,
+        )
+
+
+def save_history(element_iterator: Iterable[AutoupdateElement]) -> Iterable:
     """
     Thin wrapper around the call of history saving manager method.
 
@@ -261,4 +340,4 @@ def save_history(elements: Iterable[AutoupdateElement]) -> Iterable:
     """
     from ..core.models import History
 
-    return History.objects.add_elements(elements)
+    return History.objects.add_elements(element_iterator)

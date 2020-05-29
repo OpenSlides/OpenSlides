@@ -175,7 +175,7 @@ class RESTModelMixin:
                 current_time = time.time()
                 if current_time > last_time + 5:
                     last_time = current_time
-                    logger.info(f"\t{i+1}/{instances_length}...")
+                    logger.info(f"    {i+1}/{instances_length}...")
         return full_data
 
     @classmethod

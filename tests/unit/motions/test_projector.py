@@ -4,14 +4,13 @@ import pytest
 
 from openslides.motions import projector
 
-from ...integration.helpers import all_data_config, all_data_users
+from ...integration.helpers import get_all_data_provider
 
 
 @pytest.fixture
-def all_data():
-    return_value = all_data_config()
-    return_value.update(all_data_users())
-    return_value["motions/motion"] = {
+def all_data_provider():
+    data = {}
+    data["motions/motion"] = {
         1: {
             "id": 1,
             "identifier": "4",
@@ -143,7 +142,7 @@ def all_data():
             "change_recommendations": [],
         },
     }
-    return_value["motions/workflow"] = {
+    data["motions/workflow"] = {
         1: {
             "id": 1,
             "name": "Simple Workflow",
@@ -151,7 +150,7 @@ def all_data():
             "first_state_id": 1,
         }
     }
-    return_value["motions/state"] = {
+    data["motions/state"] = {
         1: {
             "id": 1,
             "name": "submitted",
@@ -217,7 +216,7 @@ def all_data():
             "workflow_id": 1,
         },
     }
-    return_value["motions/statute-paragraph"] = {
+    data["motions/statute-paragraph"] = {
         1: {
             "id": 1,
             "title": "§1 Preamble",
@@ -225,7 +224,7 @@ def all_data():
             "weight": 10000,
         }
     }
-    return_value["motions/motion-change-recommendation"] = {
+    data["motions/motion-change-recommendation"] = {
         1: {
             "id": 1,
             "motion_id": 1,
@@ -251,14 +250,14 @@ def all_data():
             "creation_time": "2019-02-09T09:54:06.256378+01:00",
         },
     }
-    return return_value
+    return get_all_data_provider(data)
 
 
 @pytest.mark.asyncio
-async def test_motion_slide(all_data):
+async def test_motion_slide(all_data_provider):
     element: Dict[str, Any] = {"id": 1}
 
-    data = await projector.motion_slide(all_data, element, 1)
+    data = await projector.motion_slide(all_data_provider, element, 1)
 
     assert data == {
         "identifier": "4",
@@ -304,10 +303,10 @@ async def test_motion_slide(all_data):
 
 
 @pytest.mark.asyncio
-async def test_amendment_slide(all_data):
+async def test_amendment_slide(all_data_provider):
     element: Dict[str, Any] = {"id": 2}
 
-    data = await projector.motion_slide(all_data, element, 1)
+    data = await projector.motion_slide(all_data_provider, element, 1)
 
     assert data == {
         "identifier": "Ä1",
@@ -331,10 +330,10 @@ async def test_amendment_slide(all_data):
 
 
 @pytest.mark.asyncio
-async def test_statute_amendment_slide(all_data):
+async def test_statute_amendment_slide(all_data_provider):
     element: Dict[str, Any] = {"id": 3}
 
-    data = await projector.motion_slide(all_data, element, 1)
+    data = await projector.motion_slide(all_data_provider, element, 1)
 
     assert data == {
         "identifier": None,

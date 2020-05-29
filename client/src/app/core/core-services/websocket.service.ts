@@ -55,14 +55,6 @@ export const WEBSOCKET_ERROR_CODES = {
     WRONG_FORMAT: 102
 };
 
-/*
- * Options for (re-)connecting.
- */
-interface ConnectOptions {
-    changeId?: number;
-    enableAutoupdates?: boolean;
-}
-
 /**
  * Service that handles WebSocket connections. Other services can register themselfs
  * with {@method getOberservable} for a specific type of messages. The content will be published.
@@ -207,7 +199,7 @@ export class WebsocketService {
      *
      * Uses NgZone to let all callbacks run in the angular context.
      */
-    public async connect(options: ConnectOptions = {}, retry: boolean = false): Promise<void> {
+    public async connect(changeId: number | null = null, retry: boolean = false): Promise<void> {
         const websocketId = Math.random().toString(36).substring(7);
         this.websocketId = websocketId;
 
@@ -220,17 +212,10 @@ export class WebsocketService {
             this.shouldBeClosed = false;
         }
 
-        // set defaults
-        options = Object.assign(options, {
-            enableAutoupdates: true
-        });
+        const queryParams: QueryParams = {};
 
-        const queryParams: QueryParams = {
-            autoupdate: options.enableAutoupdates
-        };
-
-        if (options.changeId !== undefined) {
-            queryParams.change_id = options.changeId;
+        if (changeId !== null) {
+            queryParams.change_id = changeId;
         }
 
         // Create the websocket
@@ -398,7 +383,7 @@ export class WebsocketService {
             const timeout = Math.floor(Math.random() * 3000 + 2000);
             this.retryTimeout = setTimeout(() => {
                 this.retryTimeout = null;
-                this.connect({ enableAutoupdates: true }, true);
+                this.connect(null, true);
             }, timeout);
         }
     }
@@ -438,9 +423,9 @@ export class WebsocketService {
      *
      * @param options The options for the new connection
      */
-    public async reconnect(options: ConnectOptions = {}): Promise<void> {
+    public async reconnect(changeId: number | null = null): Promise<void> {
         await this.close();
-        await this.connect(options);
+        await this.connect(changeId);
     }
 
     /**
