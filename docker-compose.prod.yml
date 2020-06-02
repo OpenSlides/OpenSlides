@@ -2,10 +2,20 @@ version: '3'
 services:
     datastore-writer:
         build:
-            context: "https://github.com/OpenSlides/openslides-datastore-service.git#:writer"
+            context: "https://github.com/OpenSlides/openslides-datastore-service.git"
             args:
                 GIT_CHECKOUT: "${OPENSLIDES_DATASTORE_SERVICE_COMMIT_HASH}"
+                MODULE: "writer"
+                PORT: "${OPENSLIDES_DATASTORE_WRITER_PORT}"
         image: openslides-datastore-writer
+    datastore-reader:
+        build:
+            context: "https://github.com/OpenSlides/openslides-datastore-service.git"
+            args:
+                GIT_CHECKOUT: "${OPENSLIDES_DATASTORE_SERVICE_COMMIT_HASH}"
+                MODULE: "reader"
+                PORT: "${OPENSLIDES_DATASTORE_READER_PORT}"
+        image: openslides-datastore-reader
     client:
         build:
             context: "https://github.com/OpenSlides/openslides-client.git"

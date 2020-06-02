@@ -1,15 +1,16 @@
 version: '3'
 services:
     # DATASTORE SECTION
+    datastore-reader:
+        depends_on:
+            - datastore-postgresql
+        env_file: services.env
+        networks:
+            - datastore-postgresql
     datastore-writer:
         depends_on:
             - datastore-postgresql
             - message-bus
-        environment:
-            - DATASTORE_DATABASE_HOST=datastore-postgresql
-            - DATASTORE_DATABASE_USER=openslides
-            - DATASTORE_DATABASE_PASSWORD=openslides
-            - DATASTORE_DATABASE_NAME=openslides
         env_file: services.env
         networks:
             - datastore-postgresql

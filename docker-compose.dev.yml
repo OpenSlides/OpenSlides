@@ -1,9 +1,16 @@
 version: '3'
 services:
+    datastore-reader:
+        image: openslides-datastore-reader-dev
+        volumes:
+            - ./openslides-datastore-service/shared/shared:/app/shared
+            - ./openslides-datastore-service/reader/reader:/app/reader
     datastore-writer:
         image: openslides-datastore-writer-dev
         volumes:
+            - ./openslides-datastore-service/shared/shared:/app/shared
             - ./openslides-datastore-service/writer/writer:/app/writer
+            - ./cli:/app/cli
     haproxy:
         image: openslides-haproxy-dev
         volumes:
