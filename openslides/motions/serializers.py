@@ -83,6 +83,7 @@ class MotionBlockSerializer(ModelSerializer):
         write_only=True, required=False, min_value=1, max_value=3, allow_null=True
     )
     agenda_parent_id = IntegerField(write_only=True, required=False, min_value=1)
+    motions_id = SerializerMethodField()
 
     class Meta:
         model = MotionBlock
@@ -95,7 +96,11 @@ class MotionBlockSerializer(ModelSerializer):
             "agenda_type",
             "agenda_parent_id",
             "internal",
+            "motions_id",
         )
+
+    def get_motions_id(self, block):
+        return [motion.id for motion in block.motion_set.all()]
 
     def create(self, validated_data):
         """
@@ -371,6 +376,7 @@ class MotionSerializer(ModelSerializer):
     agenda_parent_id = IntegerField(write_only=True, required=False, min_value=1)
     submitters = SubmitterSerializer(many=True, read_only=True)
     change_recommendations = IdPrimaryKeyRelatedField(many=True, read_only=True)
+    amendments_id = SerializerMethodField()
 
     class Meta:
         model = Motion
@@ -409,13 +415,18 @@ class MotionSerializer(ModelSerializer):
             "created",
             "last_modified",
             "change_recommendations",
+            "amendments_id",
         )
         read_only_fields = (
             "state",
             "recommendation",
             "weight",
             "category_weight",
+            "amendments_id",
         )  # Some other fields are also read_only. See definitions above.
+
+    def get_amendments_id(self, motion):
+        return [amendment.id for amendment in motion.amendments.all()]
 
     def validate(self, data):
         if "text" in data:
@@ -488,6 +499,12 @@ class MotionSerializer(ModelSerializer):
         motion.supporters.add(*validated_data.get("supporters", []))
         motion.attachments.add(*validated_data.get("attachments", []))
         motion.tags.add(*validated_data.get("tags", []))
+
+        if motion.parent:
+            inform_changed_data(motion.parent)
+        if motion.motion_block:
+            inform_changed_data(motion.motion_block)
+
         return motion
 
     @transaction.atomic
@@ -508,6 +525,8 @@ class MotionSerializer(ModelSerializer):
             if validated_data.get("category") is not None
             else None
         )
+        old_block = motion.motion_block
+        new_block = validated_data.get("motion_block")
 
         result = super().update(motion, validated_data)
 
@@ -522,6 +541,12 @@ class MotionSerializer(ModelSerializer):
             motion.save(skip_autoupdate=True)
 
         inform_changed_data(motion)
+
+        if new_block != old_block:
+            if new_block:
+                inform_changed_data(new_block)
+            if old_block:
+                inform_changed_data(old_block)
 
         return result
 

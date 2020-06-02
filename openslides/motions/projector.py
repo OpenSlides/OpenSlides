@@ -69,25 +69,24 @@ async def get_amendment_merge_into_motion_final(all_data_provider, amendment):
 
 async def get_amendments_for_motion(motion, all_data_provider):
     amendment_data = []
-    all_motions = await all_data_provider.get_collection("motions/motion")
-    for amendment_id, amendment in all_motions.items():
-        if amendment["parent_id"] == motion["id"]:
-            merge_amendment_into_final = await get_amendment_merge_into_motion_final(
-                all_data_provider, amendment
-            )
-            merge_amendment_into_diff = await get_amendment_merge_into_motion_diff(
-                all_data_provider, amendment
-            )
-            amendment_data.append(
-                {
-                    "id": amendment["id"],
-                    "identifier": amendment["identifier"],
-                    "title": amendment["title"],
-                    "amendment_paragraphs": amendment["amendment_paragraphs"],
-                    "merge_amendment_into_diff": merge_amendment_into_diff,
-                    "merge_amendment_into_final": merge_amendment_into_final,
-                }
-            )
+    for amendment_id in motion["amendments_id"]:
+        amendment = await all_data_provider.get("motions/motion", amendment_id)
+        merge_amendment_into_final = await get_amendment_merge_into_motion_final(
+            all_data_provider, amendment
+        )
+        merge_amendment_into_diff = await get_amendment_merge_into_motion_diff(
+            all_data_provider, amendment
+        )
+        amendment_data.append(
+            {
+                "id": amendment["id"],
+                "identifier": amendment["identifier"],
+                "title": amendment["title"],
+                "amendment_paragraphs": amendment["amendment_paragraphs"],
+                "merge_amendment_into_diff": merge_amendment_into_diff,
+                "merge_amendment_into_final": merge_amendment_into_final,
+            }
+        )
     return amendment_data
 
 
@@ -334,32 +333,37 @@ async def motion_block_slide(
     # All title information for referenced motions in the recommendation
     referenced_motions: Dict[int, Dict[str, str]] = {}
 
-    # Search motions.
-    all_motions = await all_data_provider.get_collection("motions/motion")
-    for motion in all_motions.values():
-        if motion["motion_block_id"] == motion_block["id"]:
-            motion_object = {
-                "title": motion["title"],
-                "identifier": motion["identifier"],
+    # iterate motions.
+    for motion_id in motion_block["motions_id"]:
+        motion = await all_data_provider.get("motions/motion", motion_id)
+        # primarily to please mypy, should theoretically not happen
+        if motion is None:
+            raise RuntimeError(
+                f"motion {motion_id} of block {element.get('id')} could not be found"
+            )
+
+        motion_object = {
+            "title": motion["title"],
+            "identifier": motion["identifier"],
+        }
+
+        recommendation_id = motion["recommendation_id"]
+        if recommendation_id is not None:
+            recommendation = await get_state(
+                all_data_provider, motion, "recommendation_id"
+            )
+            motion_object["recommendation"] = {
+                "name": recommendation["recommendation_label"],
+                "css_class": recommendation["css_class"],
             }
-
-            recommendation_id = motion["recommendation_id"]
-            if recommendation_id is not None:
-                recommendation = await get_state(
-                    all_data_provider, motion, "recommendation_id"
+            if recommendation["show_recommendation_extension_field"]:
+                recommendation_extension = motion["recommendation_extension"]
+                await extend_reference_motion_dict(
+                    all_data_provider, recommendation_extension, referenced_motions
                 )
-                motion_object["recommendation"] = {
-                    "name": recommendation["recommendation_label"],
-                    "css_class": recommendation["css_class"],
-                }
-                if recommendation["show_recommendation_extension_field"]:
-                    recommendation_extension = motion["recommendation_extension"]
-                    await extend_reference_motion_dict(
-                        all_data_provider, recommendation_extension, referenced_motions
-                    )
-                    motion_object["recommendation_extension"] = recommendation_extension
+                motion_object["recommendation_extension"] = recommendation_extension
 
-            motions.append(motion_object)
+        motions.append(motion_object)
 
     return {
         "title": motion_block["title"],

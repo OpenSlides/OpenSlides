@@ -128,6 +128,12 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
             user_id=request.user.pk,
         )
 
+        # inform parents/blocks of deletion
+        if motion.parent:
+            inform_changed_data(motion.parent)
+        if motion.motion_block:
+            inform_changed_data(motion.motion_block)
+
         return result
 
     def create(self, request, *args, **kwargs):
@@ -674,6 +680,13 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
                             "args": [item["motion_block"]],
                         }
                     )
+
+            # inform old motion block
+            if motion.motion_block:
+                inform_changed_data(motion.motion_block)
+            # inform new motion block
+            if motion_block:
+                inform_changed_data(motion_block)
 
             # Set motion bock
             motion.motion_block = motion_block

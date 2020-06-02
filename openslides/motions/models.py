@@ -84,6 +84,7 @@ class MotionManager(BaseManager):
                 "submitters",
                 "supporters",
                 "change_recommendations",
+                "amendments",
             )
         )
 
@@ -192,7 +193,7 @@ class Motion(RESTModelMixin, AgendaItemWithListOfSpeakersMixin, models.Model):
     """
 
     motion_block = models.ForeignKey(
-        "MotionBlock", on_delete=SET_NULL_AND_AUTOUPDATE, null=True, blank=True
+        "MotionBlock", on_delete=SET_NULL_AND_AUTOUPDATE, null=True, blank=True,
     )
     """
     ForeignKey to one block of motions.
@@ -821,7 +822,7 @@ class MotionBlockManager(BaseManager):
         return (
             super()
             .get_prefetched_queryset(*args, **kwargs)
-            .prefetch_related("agenda_items", "lists_of_speakers")
+            .prefetch_related("agenda_items", "lists_of_speakers", "motion_set")
         )
 
 

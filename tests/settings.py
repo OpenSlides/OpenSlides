@@ -77,3 +77,37 @@ RESTRICTED_DATA_CACHE = False
 REST_FRAMEWORK = {"TEST_REQUEST_DEFAULT_FORMAT": "json"}
 
 ENABLE_ELECTRONIC_VOTING = True
+
+
+# https://stackoverflow.com/questions/24876343/django-traceback-on-queries
+if os.environ.get("DEBUG_SQL_TRACEBACK"):
+    import traceback
+    import django.db.backends.utils as bakutils
+
+    cursor_debug_wrapper_orig = bakutils.CursorDebugWrapper
+
+    def print_stack_in_project(sql):
+        stack = traceback.extract_stack()
+        for path, lineno, func, line in stack:
+            if "lib/python" in path or "settings.py" in path:
+                continue
+            print(f'File "{path}", line {lineno}, in {func}')
+            print(f" {line}")
+        print(sql)
+        print("\n")
+
+    class CursorDebugWrapperLoud(cursor_debug_wrapper_orig):  # type: ignore
+        def execute(self, sql, params=None):
+            try:
+                return super().execute(sql, params)
+            finally:
+                sql = self.db.ops.last_executed_query(self.cursor, sql, params)
+                print_stack_in_project(sql)
+
+        def executemany(self, sql, param_list):
+            try:
+                return super().executemany(sql, param_list)
+            finally:
+                print_stack_in_project(sql)
+
+    bakutils.CursorDebugWrapper = CursorDebugWrapperLoud
