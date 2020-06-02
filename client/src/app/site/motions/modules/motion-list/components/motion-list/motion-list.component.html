@@ -236,7 +236,7 @@
         </div>
 
         <!-- Amendments -->
-        <div *ngIf="perms.isAllowed('manage') || hasAmendments()">
+        <div *ngIf="amendmentsEnabled && (perms.isAllowed('manage') || hasAmendments())">
             <button mat-menu-item routerLink="amendments">
                 <!-- color_lens -->
                 <!-- format_paint -->
