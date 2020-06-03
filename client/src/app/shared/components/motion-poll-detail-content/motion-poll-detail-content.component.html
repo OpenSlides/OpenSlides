@@ -9,7 +9,7 @@
             <tr *ngFor="let row of getTableData()" [class]="row.votingOption">
                 <!-- YNA/Valid etc -->
                 <td>
-                    <os-icon-container *ngIf="row.value[0].icon" [icon]="row.value[0].icon">
+                    <os-icon-container *ngIf="row.value[0].icon" [icon]="row.value[0].icon" [size]="iconSize">
                         {{ row.votingOption | pollKeyVerbose | translate }}
                     </os-icon-container>
                     <span *ngIf="!row.value[0].icon">

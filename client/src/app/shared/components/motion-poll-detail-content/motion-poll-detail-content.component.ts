@@ -19,6 +19,9 @@ export class MotionPollDetailContentComponent implements OnInit {
     @Input()
     public chartData: BehaviorSubject<ChartData>;
 
+    @Input()
+    public iconSize: 'large' | 'gigantic' = 'large';
+
     public get hasVotes(): boolean {
         return this.poll && !!this.poll.options;
     }

@@ -31,7 +31,11 @@ os-icon-container {
     }
 
     &.large-container {
-        @include icon-container(24px, 16px, 500);
+        @include icon-container(24px, 16px, 400);
+    }
+
+    &.gigantic-container {
+        @include icon-container(34px, 22px, 400);
     }
 
     .content-node {

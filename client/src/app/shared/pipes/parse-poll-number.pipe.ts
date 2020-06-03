@@ -8,6 +8,13 @@ import { VOTE_MAJORITY, VOTE_UNDOCUMENTED } from '../models/poll/base-poll';
     name: 'parsePollNumber'
 })
 export class ParsePollNumberPipe implements PipeTransform {
+    private formatter = new Intl.NumberFormat('us-us', {
+        style: 'decimal',
+        useGrouping: false,
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 6
+    });
+
     public constructor(private translate: TranslateService) {}
 
     public transform(value: number): number | string {
@@ -17,7 +24,7 @@ export class ParsePollNumberPipe implements PipeTransform {
             case VOTE_UNDOCUMENTED:
                 return this.translate.instant('undocumented');
             default:
-                return value;
+                return this.formatter.format(value);
         }
     }
 }
