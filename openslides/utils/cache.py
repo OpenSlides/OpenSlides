@@ -239,8 +239,23 @@ class ElementCache:
         }
         If the user id is given the data will be restricted for this user.
         """
+        all_data = await self.cache_provider.get_all_data()
+        return await self.format_all_data(all_data, user_id)
+
+    async def get_all_data_list_with_max_change_id(
+        self, user_id: Optional[int] = None
+    ) -> Tuple[int, Dict[str, List[Dict[str, Any]]]]:
+        (
+            max_change_id,
+            all_data,
+        ) = await self.cache_provider.get_all_data_with_max_change_id()
+        return max_change_id, await self.format_all_data(all_data, user_id)
+
+    async def format_all_data(
+        self, all_data_bytes: Dict[bytes, bytes], user_id: Optional[int]
+    ) -> Dict[str, List[Dict[str, Any]]]:
         all_data: Dict[str, List[Dict[str, Any]]] = defaultdict(list)
-        for element_id, data in (await self.cache_provider.get_all_data()).items():
+        for element_id, data in all_data_bytes.items():
             collection, _ = split_element_id(element_id)
             element = json.loads(data.decode())
             element.pop(
@@ -299,16 +314,15 @@ class ElementCache:
         return restricted_elements[0] if restricted_elements else None
 
     async def get_data_since(
-        self, user_id: Optional[int] = None, change_id: int = 0, max_change_id: int = -1
-    ) -> Tuple[Dict[str, List[Dict[str, Any]]], List[str]]:
+        self, user_id: Optional[int] = None, change_id: int = 0
+    ) -> Tuple[int, Dict[str, List[Dict[str, Any]]], List[str]]:
         """
-        Returns all data since change_id until max_change_id (included).
-        max_change_id -1 means the highest change_id. If the user id is given the
+        Returns all data since change_id until the max change id.cIf the user id is given the
         data will be restricted for this user.
 
-        Returns two values inside a tuple. The first value is a dict where the
-        key is the collection and the value is a list of data. The second
-        is a list of element_ids with deleted elements.
+        Returns three values inside a tuple. The first value is the max change id. The second
+        value is a dict where the key is the collection and the value is a list of data.
+        The third is a list of element_ids with deleted elements.
 
         Only returns elements with the change_id or newer. When change_id is 0,
         all elements are returned.
@@ -319,7 +333,11 @@ class ElementCache:
         that the cache does not know about.
         """
         if change_id == 0:
-            return (await self.get_all_data_list(user_id), [])
+            (
+                max_change_id,
+                changed_elements,
+            ) = await self.get_all_data_list_with_max_change_id(user_id)
+            return (max_change_id, changed_elements, [])
 
         # This raises a Runtime Exception, if there is no change_id
         lowest_change_id = await self.get_lowest_change_id()
@@ -332,11 +350,10 @@ class ElementCache:
             )
 
         (
+            max_change_id,
             raw_changed_elements,
             deleted_elements,
-        ) = await self.cache_provider.get_data_since(
-            change_id, max_change_id=max_change_id
-        )
+        ) = await self.cache_provider.get_data_since(change_id)
         changed_elements = {
             collection: [json.loads(value.decode()) for value in value_list]
             for collection, value_list in raw_changed_elements.items()
@@ -381,7 +398,7 @@ class ElementCache:
                 else:
                     changed_elements[collection] = restricted_elements
 
-        return (changed_elements, deleted_elements)
+        return (max_change_id, changed_elements, deleted_elements)
 
     async def get_current_change_id(self) -> int:
         """

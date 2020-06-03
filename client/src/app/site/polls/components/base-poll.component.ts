@@ -103,4 +103,8 @@ export abstract class BasePollComponent<V extends ViewBasePoll, S extends PollSe
     protected initPoll(model: V): void {
         this._poll = model;
     }
+
+    public refreshPoll(): void {
+        this.repo.refresh(this._poll);
+    }
 }

@@ -119,11 +119,19 @@
             <span>{{ 'Ballot papers' | translate }}</span>
         </button>
         <mat-divider></mat-divider>
+        <!-- Refresh Button -->
+        <button mat-menu-item (click)="refreshPoll()">
+            <mat-icon>refresh</mat-icon>
+            <span>{{ 'Refresh' | translate }}</span>
+        </button>
+
         <!-- Reset Button -->
         <button mat-menu-item (click)="resetState()">
             <mat-icon color="warn">replay</mat-icon>
             <span>{{ 'Reset state' | translate }}</span>
         </button>
+
+        <!-- Delete button -->
         <button mat-menu-item class="red-warning-text" (click)="onDeletePoll()">
             <mat-icon>delete</mat-icon>
             <span>{{ 'Delete' | translate }}</span>

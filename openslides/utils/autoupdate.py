@@ -286,9 +286,7 @@ class AutoupdateBundleMiddleware:
                 user_id = request.user.pk or 0
                 # Inject the autoupdate in the response.
                 # The complete response body will be overwritten!
-                autoupdate = async_to_sync(get_autoupdate_data)(
-                    change_id, change_id, user_id
-                )
+                _, autoupdate = async_to_sync(get_autoupdate_data)(change_id, user_id)
                 content = {"autoupdate": autoupdate, "data": response.data}
                 # Note: autoupdate may be none on skipped ones (which should not happen
                 # since the user has made the request....)
@@ -299,17 +297,25 @@ class AutoupdateBundleMiddleware:
 
 
 async def get_autoupdate_data(
-    from_change_id: int, to_change_id: int, user_id: int
-) -> Optional[AutoupdateFormat]:
+    from_change_id: int, user_id: int
+) -> Tuple[int, Optional[AutoupdateFormat]]:
+    """
+    Returns the max_change_id and the autoupdate from from_change_id to max_change_id
+    """
     try:
-        changed_elements, deleted_element_ids = await element_cache.get_data_since(
-            user_id, from_change_id, to_change_id
-        )
+        (
+            max_change_id,
+            changed_elements,
+            deleted_element_ids,
+        ) = await element_cache.get_data_since(user_id, from_change_id)
     except ChangeIdTooLowError:
         # The change_id is lower the the lowerst change_id in redis. Return all data
-        changed_elements = await element_cache.get_all_data_list(user_id)
-        all_data = True
+        (
+            max_change_id,
+            changed_elements,
+        ) = await element_cache.get_all_data_list_with_max_change_id(user_id)
         deleted_elements: Dict[str, List[int]] = {}
+        all_data = True
     else:
         all_data = False
         deleted_elements = defaultdict(list)
@@ -320,15 +326,18 @@ async def get_autoupdate_data(
     # Check, if the autoupdate has any data.
     if not changed_elements and not deleted_element_ids:
         # Skip empty updates
-        return None
+        return max_change_id, None
     else:
         # Normal autoupdate with data
-        return AutoupdateFormat(
-            changed=changed_elements,
-            deleted=deleted_elements,
-            from_change_id=from_change_id,
-            to_change_id=to_change_id,
-            all_data=all_data,
+        return (
+            max_change_id,
+            AutoupdateFormat(
+                changed=changed_elements,
+                deleted=deleted_elements,
+                from_change_id=from_change_id,
+                to_change_id=max_change_id,
+                all_data=all_data,
+            ),
         )
 
 
