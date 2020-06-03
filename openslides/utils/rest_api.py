@@ -139,9 +139,9 @@ class ErrorLoggingMixin:
         prefix = f"{path} {user_id}"
         if isinstance(exc, APIException):
             detail = self._detail_to_string(exc.detail)
-            error_logger.warn(f"{prefix} {str(detail)}")
+            error_logger.warning(f"{prefix} {str(detail)}")
         else:
-            error_logger.warn(f"{prefix} unknown exception: {exc}")
+            error_logger.warning(f"{prefix} unknown exception: {exc}")
         return super().handle_exception(exc)  # type: ignore
 
     def _detail_to_string(self, detail: Any) -> Any:

@@ -72,16 +72,19 @@ export abstract class BasePollRepositoryService<
         }
     }
 
-    public resetPoll(poll: BasePoll): Promise<void> {
-        return this.http.post(`${this.restPath(poll)}/reset/`);
-    }
-
     private restPath(poll: BasePoll): string {
         return `/rest/${poll.collectionString}/${poll.id}`;
     }
 
+    public resetPoll(poll: BasePoll): Promise<void> {
+        return this.http.post(`${this.restPath(poll)}/reset/`);
+    }
+
     public pseudoanonymize(poll: BasePoll): Promise<void> {
-        const path = this.restPath(poll);
-        return this.http.post(`${path}/pseudoanonymize/`);
+        return this.http.post(`${this.restPath(poll)}/pseudoanonymize/`);
+    }
+
+    public refresh(poll: BasePoll): Promise<void> {
+        return this.http.post(`${this.restPath(poll)}/refresh/`);
     }
 }

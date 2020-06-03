@@ -222,6 +222,15 @@ class BasePollViewSet(ModelViewSet):
 
         return Response()
 
+    @detail_route(methods=["POST"])
+    @transaction.atomic
+    def refresh(self, request, pk):
+        poll = self.get_object()
+        inform_changed_data(poll, final_data=True)
+        inform_changed_data(poll.get_options(), final_data=True)
+        inform_changed_data(poll.get_votes(), final_data=True)
+        return Response()
+
     def assert_can_vote(self, poll, request):
         """
         Raises a permission denied, if the user is not allowed to vote (or has already voted).
@@ -262,6 +271,12 @@ class BasePollViewSet(ModelViewSet):
                 }
             )
         return value
+
+    def has_manage_permissions(self):
+        """
+        Returns true, if the request user has manage perms.
+        """
+        raise NotImplementedError()
 
     def convert_option_data(self, poll, data):
         """

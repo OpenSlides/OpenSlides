@@ -123,6 +123,12 @@
     </button>
     <div *osPerms="'motions.can_manage_polls'">
         <mat-divider></mat-divider>
+        <!-- Refresh Button -->
+        <button mat-menu-item (click)="refreshPoll()">
+            <mat-icon>refresh</mat-icon>
+            <span>{{ 'Refresh' | translate }}</span>
+        </button>
+
         <!-- Reset Button -->
         <button mat-menu-item (click)="resetState()">
             <mat-icon color="warn">replay</mat-icon>
