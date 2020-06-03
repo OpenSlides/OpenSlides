@@ -42,10 +42,16 @@
                     mat-stroked-button
                     [ngClass]="pollStateActions[poll.state].css"
                     (click)="changeState(poll.nextState)"
+                    [disabled]="stateChangePending"
                 >
                     <mat-icon> {{ pollStateActions[poll.state].icon }}</mat-icon>
                     <span class="next-state-label">
-                        {{ poll.nextStateActionVerbose | translate }}
+                        <ng-container *ngIf="!stateChangePending">
+                            {{ poll.nextStateActionVerbose | translate }}
+                        </ng-container>
+                        <ng-container *ngIf="stateChangePending">
+                            {{ 'In progress, please wait...' | translate }}
+                        </ng-container>
                     </span>
                 </button>
             </div>

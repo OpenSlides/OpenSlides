@@ -8,6 +8,14 @@
     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
 }
 
+.submit-vote-indicator {
+    margin-top: 1em;
+    text-align: center;
+    .mat-spinner {
+        margin: auto;
+    }
+}
+
 .vote-button {
     display: inline-grid;
     grid-gap: 1em;

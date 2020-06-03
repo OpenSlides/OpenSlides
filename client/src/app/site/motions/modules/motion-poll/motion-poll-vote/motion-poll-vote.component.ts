@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 
@@ -22,7 +22,8 @@ interface VoteOption {
 @Component({
     selector: 'os-motion-poll-vote',
     templateUrl: './motion-poll-vote.component.html',
-    styleUrls: ['./motion-poll-vote.component.scss']
+    styleUrls: ['./motion-poll-vote.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MotionPollVoteComponent extends BasePollVoteComponent<ViewMotionPoll> {
     public currentVote: VoteOption = {};
@@ -54,19 +55,28 @@ export class MotionPollVoteComponent extends BasePollVoteComponent<ViewMotionPol
         operator: OperatorService,
         public vmanager: VotingService,
         private pollRepo: MotionPollRepositoryService,
-        private promptService: PromptService
+        private promptService: PromptService,
+        private cd: ChangeDetectorRef
     ) {
         super(title, translate, matSnackbar, operator);
     }
 
-    public saveVote(vote: VoteValue): void {
+    public async saveVote(vote: VoteValue): Promise<void> {
         this.currentVote.vote = vote;
         const title = this.translate.instant('Submit selection now?');
         const content = this.translate.instant('Your decision cannot be changed afterwards.');
-        this.promptService.open(title, content).then(confirmed => {
-            if (confirmed) {
-                this.pollRepo.vote(vote, this.poll.id).catch(this.raiseError);
-            }
-        });
+        const confirmed = await this.promptService.open(title, content);
+
+        if (confirmed) {
+            this.deliveringVote = true;
+            this.cd.markForCheck();
+
+            this.pollRepo
+                .vote(vote, this.poll.id)
+                .catch(this.raiseError)
+                .finally(() => {
+                    this.deliveringVote = false;
+                });
+        }
     }
 }

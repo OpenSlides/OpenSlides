@@ -15,6 +15,8 @@ import { PollService } from '../services/poll.service';
 import { ViewBasePoll } from '../models/view-base-poll';
 
 export abstract class BasePollComponent<V extends ViewBasePoll, S extends PollService> extends BaseViewComponent {
+    public stateChangePending = false;
+
     public chartDataSubject: BehaviorSubject<ChartData> = new BehaviorSubject([]);
 
     protected _poll: V;
@@ -55,10 +57,22 @@ export abstract class BasePollComponent<V extends ViewBasePoll, S extends PollSe
             const title = this.translate.instant('Are you sure you want to reset this vote?');
             const content = this.translate.instant('All votes will be lost.');
             if (await this.promptService.open(title, content)) {
-                this.repo.resetPoll(this._poll).catch(this.raiseError);
+                this.stateChangePending = true;
+                this.repo
+                    .resetPoll(this._poll)
+                    .catch(this.raiseError)
+                    .finally(() => {
+                        this.stateChangePending = false;
+                    });
             }
         } else {
-            this.repo.changePollState(this._poll).catch(this.raiseError);
+            this.stateChangePending = true;
+            this.repo
+                .changePollState(this._poll)
+                .catch(this.raiseError)
+                .finally(() => {
+                    this.stateChangePending = false;
+                });
         }
     }
 
