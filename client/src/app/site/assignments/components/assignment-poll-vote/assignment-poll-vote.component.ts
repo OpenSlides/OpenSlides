@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 
@@ -29,7 +29,8 @@ interface VoteActions {
 @Component({
     selector: 'os-assignment-poll-vote',
     templateUrl: './assignment-poll-vote.component.html',
-    styleUrls: ['./assignment-poll-vote.component.scss']
+    styleUrls: ['./assignment-poll-vote.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AssignmentPollVoteComponent extends BasePollVoteComponent<ViewAssignmentPoll> implements OnInit {
     public AssignmentPollMethod = AssignmentPollMethod;
@@ -47,7 +48,8 @@ export class AssignmentPollVoteComponent extends BasePollVoteComponent<ViewAssig
         operator: OperatorService,
         public vmanager: VotingService,
         private pollRepo: AssignmentPollRepositoryService,
-        private promptService: PromptService
+        private promptService: PromptService,
+        private cd: ChangeDetectorRef
     ) {
         super(title, translate, matSnackbar, operator);
     }
@@ -58,6 +60,7 @@ export class AssignmentPollVoteComponent extends BasePollVoteComponent<ViewAssig
             this.defineVoteOptions();
         } else {
             this.alreadyVoted = true;
+            this.cd.markForCheck();
         }
     }
 
@@ -104,19 +107,23 @@ export class AssignmentPollVoteComponent extends BasePollVoteComponent<ViewAssig
         return !!this.voteRequestData.global;
     }
 
-    public submitVote(): void {
+    public async submitVote(): Promise<void> {
         const title = this.translate.instant('Submit selection now?');
         const content = this.translate.instant('Your decision cannot be changed afterwards.');
-        this.promptService.open(title, content).then(confirmed => {
-            if (confirmed) {
-                this.pollRepo
-                    .vote(this.voteRequestData, this.poll.id)
-                    .then(() => {
-                        this.alreadyVoted = true;
-                    })
-                    .catch(this.raiseError);
-            }
-        });
+        const confirmed = await this.promptService.open(title, content);
+        if (confirmed) {
+            this.deliveringVote = true;
+            this.cd.markForCheck();
+            this.pollRepo
+                .vote(this.voteRequestData, this.poll.id)
+                .then(() => {
+                    this.alreadyVoted = true;
+                })
+                .catch(this.raiseError)
+                .finally(() => {
+                    this.deliveringVote = false;
+                });
+        }
     }
 
     public saveSingleVote(optionId: number, vote: VoteValue): void {

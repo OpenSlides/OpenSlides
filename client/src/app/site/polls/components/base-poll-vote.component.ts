@@ -16,6 +16,8 @@ export abstract class BasePollVoteComponent<V extends ViewBasePoll> extends Base
 
     public votingErrors = VotingError;
 
+    public deliveringVote = false;
+
     protected user: ViewUser;
 
     public constructor(

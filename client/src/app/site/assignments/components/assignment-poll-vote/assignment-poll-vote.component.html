@@ -1,5 +1,5 @@
 <ng-container *ngIf="poll">
-    <ng-container *ngIf="vmanager.canVote(poll) && !alreadyVoted; else cannotVote">
+    <ng-container *ngIf="vmanager.canVote(poll) && !alreadyVoted && !deliveringVote; else cannotVote">
         <!-- Poll hint -->
         <p *ngIf="pollHint">
             <i>{{ pollHint }}</i>
@@ -9,9 +9,7 @@
         <h4 *ngIf="poll.pollmethod === AssignmentPollMethod.Votes && poll.votes_amount > 1">
             {{ 'Available votes' | translate }}:
 
-            <b>
-                {{ getVotesAvailable() }}/{{ poll.votes_amount }}
-            </b>
+            <b> {{ getVotesAvailable() }}/{{ poll.votes_amount }} </b>
         </h4>
 
         <!-- Options and Actions -->
@@ -39,6 +37,7 @@
                             class="vote-button"
                             mat-raised-button
                             (click)="saveSingleVote(option.id, action.vote)"
+                            [disabled]="deliveringVote"
                             [ngClass]="
                                 voteRequestData.votes[option.id] === action.vote ||
                                 voteRequestData.votes[option.id] === 1
@@ -67,6 +66,7 @@
                         mat-raised-button
                         (click)="saveGlobalVote('N')"
                         [ngClass]="voteRequestData.global === 'N' ? 'voted-no' : ''"
+                        [disabled]="deliveringVote"
                     >
                         <mat-icon> thumb_down </mat-icon>
                     </button>
@@ -103,12 +103,18 @@
 
 <ng-template #cannotVote>
     <div class="centered-button-wrapper">
-        <div>
+        <div *ngIf="!deliveringVote">
             <mat-icon class="vote-submitted">
                 check_circle
             </mat-icon>
             <br />
             <span>{{ 'Voting successful.' | translate }}</span>
+        </div>
+
+        <div *ngIf="deliveringVote" class="submit-vote-indicator">
+            <mat-spinner class="small-spinner"></mat-spinner>
+            <br />
+            <span>{{ 'Delivering vote... Please wait!' | translate }}</span>
         </div>
     </div>
 </ng-template>

@@ -67,3 +67,10 @@
 .mat-divider-horizontal {
     position: initial;
 }
+
+.submit-vote-indicator {
+    text-align: center;
+    .mat-spinner {
+        margin: auto;
+    }
+}

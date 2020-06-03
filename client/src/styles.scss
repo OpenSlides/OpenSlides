@@ -778,6 +778,17 @@ button.mat-menu-item.selected {
     display: none !important; /* hide scrollbars in webkit browsers */
 }
 
+.small-spinner {
+    // 24px is the size of a normal icon
+    $spinner-size: 24px;
+    height: $spinner-size !important;
+    height: $spinner-size !important;
+    svg {
+        height: $spinner-size !important;
+        height: $spinner-size !important;
+    }
+}
+
 .import-table {
     .table-container {
         width: 100%;
