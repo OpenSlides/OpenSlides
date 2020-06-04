@@ -42,7 +42,7 @@ class TestCase(_TestCase):
         """
         user_id = None if user is None else user.id
         current_change_id = async_to_sync(element_cache.get_current_change_id)()
-        _changed_elements, deleted_element_ids = async_to_sync(
+        _, _changed_elements, deleted_element_ids = async_to_sync(
             element_cache.get_data_since
         )(user_id=user_id, change_id=current_change_id)
 

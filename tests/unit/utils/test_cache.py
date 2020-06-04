@@ -150,9 +150,14 @@ async def test_get_data_since_change_id_0(element_cache):
         "app/personalized-collection:2": '{"id": 2, "key": "value2", "user_id": 2}',
     }
 
-    result = await element_cache.get_data_since(None, 0)
+    (
+        max_change_id,
+        changed_elements,
+        deleted_element_ids,
+    ) = await element_cache.get_data_since(None, 0)
 
-    assert sort_dict(result[0]) == sort_dict(example_data())
+    assert sort_dict(changed_elements) == sort_dict(example_data())
+    assert max_change_id == 0
 
 
 @pytest.mark.asyncio
@@ -184,6 +189,7 @@ async def test_get_data_since_change_id_data_in_redis(element_cache):
     result = await element_cache.get_data_since(None, 1)
 
     assert result == (
+        1,
         {"app/collection1": [{"id": 1, "value": "value1"}]},
         ["app/collection1:3"],
     )
@@ -198,6 +204,7 @@ async def test_get_data_since_change_id_data_in_db(element_cache):
     result = await element_cache.get_data_since(None, 1)
 
     assert result == (
+        1,
         {"app/collection1": [{"id": 1, "value": "value1"}]},
         ["app/collection1:3"],
     )
@@ -207,7 +214,7 @@ async def test_get_data_since_change_id_data_in_db(element_cache):
 async def test_get_gata_since_change_id_data_in_db_empty_change_id(element_cache):
     result = await element_cache.get_data_since(None, 1)
 
-    assert result == ({}, [])
+    assert result == (0, {}, [])
 
 
 @pytest.mark.asyncio
@@ -261,9 +268,14 @@ async def test_get_all_restricted_data(element_cache):
 
 @pytest.mark.asyncio
 async def test_get_restricted_data_change_id_0(element_cache):
-    result = await element_cache.get_data_since(2, 0)
+    (
+        max_change_id,
+        changed_elements,
+        deleted_element_ids,
+    ) = await element_cache.get_data_since(2, 0)
 
-    assert sort_dict(result[0]) == sort_dict(
+    assert max_change_id == 0
+    assert sort_dict(changed_elements) == sort_dict(
         {
             "app/collection1": [
                 {"id": 1, "value": "restricted_value1"},
@@ -276,6 +288,7 @@ async def test_get_restricted_data_change_id_0(element_cache):
             "app/personalized-collection": [{"id": 2, "key": "value2", "user_id": 2}],
         }
     )
+    assert deleted_element_ids == []
 
 
 @pytest.mark.asyncio
@@ -287,6 +300,7 @@ async def test_get_restricted_data_2(element_cache):
     result = await element_cache.get_data_since(0, 1)
 
     assert result == (
+        1,
         {"app/collection1": [{"id": 1, "value": "restricted_value1"}]},
         ["app/collection1:3"],
     )
@@ -298,7 +312,7 @@ async def test_get_restricted_data_from_personalized_cacheable(element_cache):
 
     result = await element_cache.get_data_since(0, 1)
 
-    assert result == ({}, [])
+    assert result == (1, {}, [])
 
 
 @pytest.mark.asyncio
@@ -310,12 +324,13 @@ async def test_get_restricted_data_change_id_lower_than_in_redis(element_cache):
 
 
 @pytest.mark.asyncio
-async def test_get_restricted_data_change_with_id(element_cache):
+async def test_get_restricted_data_with_change_id(element_cache):
     element_cache.cache_provider.change_id_data = {2: {"app/collection1:1"}}
 
     result = await element_cache.get_data_since(0, 2)
 
     assert result == (
+        2,
         {"app/collection1": [{"id": 1, "value": "restricted_value1"}]},
         [],
     )

@@ -57,6 +57,9 @@ class ElementCacheProvider(Protocol):
     async def get_all_data(self) -> Dict[bytes, bytes]:
         ...
 
+    async def get_all_data_with_max_change_id(self) -> Tuple[int, Dict[bytes, bytes]]:
+        ...
+
     async def get_collection_data(self, collection: str) -> Dict[int, bytes]:
         ...
 
@@ -69,8 +72,8 @@ class ElementCacheProvider(Protocol):
         ...
 
     async def get_data_since(
-        self, change_id: int, max_change_id: int = -1
-    ) -> Tuple[Dict[str, List[bytes]], List[str]]:
+        self, change_id: int
+    ) -> Tuple[int, Dict[str, List[bytes]], List[str]]:
         ...
 
     async def get_current_change_id(self) -> int:
@@ -137,6 +140,24 @@ class RedisCacheProvider:
             False,
         ),
         "get_all_data": ("return redis.call('hgetall', KEYS[1])", True),
+        "get_all_data_with_max_change_id": (
+            """
+            local tmp = redis.call('zrevrangebyscore', KEYS[2], '+inf', '-inf', 'WITHSCORES', 'LIMIT', 0, 1)
+            local max_change_id
+            if next(tmp) == nil then
+                -- The key does not exist
+                return redis.error_reply("cache_reset")
+            else
+                max_change_id = tmp[2]
+            end
+
+            local all_data = redis.call('hgetall', KEYS[1])
+            table.insert(all_data, 'max_change_id')
+            table.insert(all_data, max_change_id)
+            return all_data
+            """,
+            True,
+        ),
         "get_collection_data": (
             """
             local cursor = 0
@@ -233,11 +254,24 @@ class RedisCacheProvider:
         ),
         "get_data_since": (
             """
-            -- Get change ids of changed elements
-            local element_ids = redis.call('zrangebyscore', KEYS[2], ARGV[1], ARGV[2])
+            -- get max change id
+            local tmp = redis.call('zrevrangebyscore', KEYS[2], '+inf', '-inf', 'WITHSCORES', 'LIMIT', 0, 1)
+            local max_change_id
+            if next(tmp) == nil then
+                -- The key does not exist
+                return redis.error_reply("cache_reset")
+            else
+                max_change_id = tmp[2]
+            end
 
-            -- Save elements in array. Rotate element_id and element_json
+            -- Get change ids of changed elements
+            local element_ids = redis.call('zrangebyscore', KEYS[2], ARGV[1], max_change_id)
+
+            -- Save elements in array. First is the max_change_id with the key "max_change_id"
+            -- Than rotate element_id and element_json. This is ocnverted into a dict in python code.
             local elements = {}
+            table.insert(elements, 'max_change_id')
+            table.insert(elements, max_change_id)
             for _, element_id in pairs(element_ids) do
               table.insert(elements, element_id)
               table.insert(elements, redis.call('hget', KEYS[1], element_id))
@@ -320,8 +354,24 @@ class RedisCacheProvider:
         Returns all data from the full_data_cache in a mapping from element_id to the element.
         """
         return await aioredis.util.wait_make_dict(
-            self.eval("get_all_data", [self.full_data_cache_key], read_only=True)
+            self.eval("get_all_data", keys=[self.full_data_cache_key], read_only=True)
         )
+
+    @ensure_cache_wrapper()
+    async def get_all_data_with_max_change_id(self) -> Tuple[int, Dict[bytes, bytes]]:
+        """
+        Returns all data from the full_data_cache in a mapping from element_id to the element and
+        the max change id.
+        """
+        all_data = await aioredis.util.wait_make_dict(
+            self.eval(
+                "get_all_data_with_max_change_id",
+                keys=[self.full_data_cache_key, self.change_id_cache_key],
+                read_only=True,
+            )
+        )
+        max_change_id = int(all_data.pop(b"max_change_id"))
+        return max_change_id, all_data
 
     @ensure_cache_wrapper()
     async def get_collection_data(self, collection: str) -> Dict[int, bytes]:
@@ -376,8 +426,8 @@ class RedisCacheProvider:
 
     @ensure_cache_wrapper()
     async def get_data_since(
-        self, change_id: int, max_change_id: int = -1
-    ) -> Tuple[Dict[str, List[bytes]], List[str]]:
+        self, change_id: int
+    ) -> Tuple[int, Dict[str, List[bytes]], List[str]]:
         """
         Returns all elements since a change_id (included) and until the max_change_id (included).
 
@@ -388,8 +438,6 @@ class RedisCacheProvider:
         changed_elements: Dict[str, List[bytes]] = defaultdict(list)
         deleted_elements: List[str] = []
 
-        # Convert max_change_id to a string. If its negative, use the string '+inf'
-        redis_max_change_id = "+inf" if max_change_id < 0 else str(max_change_id)
         # lua script that returns gets all element_ids from change_id_cache_key
         # and then uses each element_id on full_data or restricted_data.
         # It returns a list where the odd values are the change_id and the
@@ -399,13 +447,14 @@ class RedisCacheProvider:
             self.eval(
                 "get_data_since",
                 keys=[self.full_data_cache_key, self.change_id_cache_key],
-                args=[change_id, redis_max_change_id],
+                args=[change_id],
                 read_only=True,
             )
         )
 
+        max_change_id = int(elements[b"max_change_id"].decode())  # type: ignore
         for element_id, element_json in elements.items():
-            if element_id.startswith(b"_config"):
+            if element_id.startswith(b"_config") or element_id == b"max_change_id":
                 # Ignore config values from the change_id cache key
                 continue
             if element_json is None:
@@ -414,7 +463,7 @@ class RedisCacheProvider:
             else:
                 collection, id = split_element_id(element_id)
                 changed_elements[collection].append(element_json)
-        return changed_elements, deleted_elements
+        return max_change_id, changed_elements, deleted_elements
 
     @ensure_cache_wrapper()
     async def get_current_change_id(self) -> int:
@@ -562,6 +611,11 @@ class MemoryCacheProvider:
     async def get_all_data(self) -> Dict[bytes, bytes]:
         return str_dict_to_bytes(self.full_data)
 
+    async def get_all_data_with_max_change_id(self) -> Tuple[int, Dict[bytes, bytes]]:
+        all_data = await self.get_all_data()
+        max_change_id = await self.get_current_change_id()
+        return max_change_id, all_data
+
     async def get_collection_data(self, collection: str) -> Dict[int, bytes]:
         out = {}
         query = f"{collection}:"
@@ -602,16 +656,14 @@ class MemoryCacheProvider:
         return change_id
 
     async def get_data_since(
-        self, change_id: int, max_change_id: int = -1
-    ) -> Tuple[Dict[str, List[bytes]], List[str]]:
+        self, change_id: int
+    ) -> Tuple[int, Dict[str, List[bytes]], List[str]]:
         changed_elements: Dict[str, List[bytes]] = defaultdict(list)
         deleted_elements: List[str] = []
 
         all_element_ids: Set[str] = set()
         for data_change_id, element_ids in self.change_id_data.items():
-            if data_change_id >= change_id and (
-                max_change_id == -1 or data_change_id <= max_change_id
-            ):
+            if data_change_id >= change_id:
                 all_element_ids.update(element_ids)
 
         for element_id in all_element_ids:
@@ -621,7 +673,8 @@ class MemoryCacheProvider:
             else:
                 collection, id = split_element_id(element_id)
                 changed_elements[collection].append(element_json.encode())
-        return changed_elements, deleted_elements
+        max_change_id = await self.get_current_change_id()
+        return (max_change_id, changed_elements, deleted_elements)
 
     async def get_current_change_id(self) -> int:
         if self.change_id_data:
