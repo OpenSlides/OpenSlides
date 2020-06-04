@@ -853,6 +853,9 @@ msgstr "Chronik löschen"
 msgid "Deletion"
 msgstr "Streichung"
 
+msgid "Delivering vote... Please wait!"
+msgstr "Stimmabgabe läuft ... Bitte etwas Geduld!"
+
 msgid "Description"
 msgstr "Beschreibung"
 
@@ -1317,6 +1320,9 @@ msgstr "Themen importieren"
 msgid "In motion list, motion detail and PDF."
 msgstr "In Antragsliste, Detailansicht und PDF."
 
+msgid "In progress, please wait..."
+msgstr "In Bearbeitung – bitte warten ..."
+
 msgid "In the election process"
 msgstr "Im Wahlvorgang"
 
@@ -1488,6 +1494,9 @@ msgstr "Als persönlichen Favorit markieren"
 msgid "Mark speaker"
 msgstr "Redner/in markieren"
 
+msgid "Maximize Jitsi window"
+msgstr "Jitsi-Fenster maximieren"
+
 msgid "Media file"
 msgstr "Mediendatei"
 
@@ -1499,6 +1508,9 @@ msgstr "Mitteilungen"
 
 msgid "Meta information"
 msgstr "Metainformationen"
+
+msgid "Minimize"
+msgstr "Minimieren"
 
 msgid "More"
 msgstr "Mehr"
@@ -1847,8 +1859,8 @@ msgstr "Nur Ampel"
 msgid "Open"
 msgstr "Öffnen"
 
-msgid "Open Jitsi Meet in new tab"
-msgstr "Jitsi Meet im neuen Tab öffnen"
+msgid "Open Jitsi in new tab"
+msgstr "Jitsi im neuen Tab öffnen"
 
 msgid "Open items"
 msgstr "Offene Einträge"
@@ -2372,6 +2384,9 @@ msgstr "Korrekte Einträge anzeigen"
 
 msgid "Show correct entries only"
 msgstr "Nur korrekte Einträge anzeigen"
+
+msgid "Show devtools"
+msgstr "Entwicklerwerkzeuge anzeigen"
 
 msgid "Show entire motion text"
 msgstr "Vollständigen Antragstext anzeigen"
