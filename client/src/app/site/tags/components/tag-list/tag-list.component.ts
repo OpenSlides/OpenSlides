@@ -1,6 +1,6 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 
@@ -30,6 +30,8 @@ import { ViewTag } from '../../models/view-tag';
 export class TagListComponent extends BaseListViewComponent<ViewTag> implements OnInit {
     @ViewChild('tagDialog', { static: true })
     private tagDialog: TemplateRef<string>;
+
+    private dialogRef: MatDialogRef<any>;
 
     public tagForm: FormGroup = this.formBuilder.group({
         name: ['', [Validators.required]]
@@ -95,8 +97,8 @@ export class TagListComponent extends BaseListViewComponent<ViewTag> implements 
         this.currentTag = tag;
         this.tagForm.reset();
         this.tagForm.get('name').setValue(this.currentTag ? this.currentTag.name : '');
-        const dialogRef = this.dialog.open(this.tagDialog, infoDialogSettings);
-        dialogRef.afterClosed().subscribe(res => {
+        this.dialogRef = this.dialog.open(this.tagDialog, infoDialogSettings);
+        this.dialogRef.afterClosed().subscribe(res => {
             if (res) {
                 this.save();
             }
@@ -138,10 +140,10 @@ export class TagListComponent extends BaseListViewComponent<ViewTag> implements 
     public onKeyDown(event: KeyboardEvent): void {
         if (event.key === 'Enter' && event.shiftKey) {
             this.save();
-            this.dialog.closeAll();
+            this.dialogRef.close();
         }
         if (event.key === 'Escape') {
-            this.dialog.closeAll();
+            this.dialogRef.close();
         }
     }
 }

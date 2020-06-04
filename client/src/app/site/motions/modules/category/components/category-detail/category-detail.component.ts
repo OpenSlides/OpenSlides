@@ -1,6 +1,6 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
 import { Title } from '@angular/platform-browser';
@@ -52,6 +52,8 @@ export class CategoryDetailComponent extends BaseViewComponent implements OnInit
      */
     @ViewChild('editDialog', { static: true })
     private editDialog: TemplateRef<string>;
+
+    private dialogRef: MatDialogRef<any>;
 
     /**
      * helper for permission checks
@@ -159,7 +161,7 @@ export class CategoryDetailComponent extends BaseViewComponent implements OnInit
      */
     public onKeyDown(event: KeyboardEvent): void {
         if (event.key === 'Escape') {
-            this.dialog.closeAll();
+            this.dialogRef.close();
         }
         if (event.key === 'Enter') {
             this.save();
@@ -172,7 +174,7 @@ export class CategoryDetailComponent extends BaseViewComponent implements OnInit
     public save(): void {
         this.repo
             .update(this.editForm.value, this.selectedCategory)
-            .then(() => this.dialog.closeAll())
+            .then(() => this.dialogRef.close())
             .catch(this.raiseError);
     }
 
@@ -185,7 +187,7 @@ export class CategoryDetailComponent extends BaseViewComponent implements OnInit
             name: [this.selectedCategory.name, Validators.required]
         });
 
-        this.dialog.open(this.editDialog, infoDialogSettings);
+        this.dialogRef = this.dialog.open(this.editDialog, infoDialogSettings);
     }
 
     /**

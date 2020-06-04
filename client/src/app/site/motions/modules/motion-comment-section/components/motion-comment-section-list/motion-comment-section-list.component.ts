@@ -1,6 +1,6 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 
@@ -27,6 +27,8 @@ import { ViewGroup } from 'app/site/users/models/view-group';
 export class MotionCommentSectionListComponent extends BaseViewComponent implements OnInit {
     @ViewChild('motionCommentDialog', { static: true })
     private motionCommentDialog: TemplateRef<string>;
+
+    private dialogRef: MatDialogRef<any>;
 
     public currentComment: ViewMotionCommentSection | null;
 
@@ -90,10 +92,10 @@ export class MotionCommentSectionListComponent extends BaseViewComponent impleme
     public onKeyDown(event: KeyboardEvent, viewSection?: ViewMotionCommentSection): void {
         if (event.key === 'Enter' && event.shiftKey) {
             this.save();
-            this.dialog.closeAll();
+            this.dialogRef.close();
         }
         if (event.key === 'Escape') {
-            this.dialog.closeAll();
+            this.dialogRef.close();
         }
     }
 
@@ -107,8 +109,8 @@ export class MotionCommentSectionListComponent extends BaseViewComponent impleme
             read_groups_id: commentSection ? commentSection.read_groups_id : [],
             write_groups_id: commentSection ? commentSection.write_groups_id : []
         });
-        const dialogRef = this.dialog.open(this.motionCommentDialog, infoDialogSettings);
-        dialogRef.afterClosed().subscribe(res => {
+        this.dialogRef = this.dialog.open(this.motionCommentDialog, infoDialogSettings);
+        this.dialogRef.afterClosed().subscribe(res => {
             if (res) {
                 this.save();
             }

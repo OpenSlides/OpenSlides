@@ -1,3 +1,18 @@
+.jitsi-dialog-hide {
+    display: none;
+}
+
+.jitsi-iframe-wrapper {
+    height: 70vh;
+}
+
+.minimize-jitsi-dialog-button {
+    margin-left: auto !important;
+    span {
+        line-height: initial;
+    }
+}
+
 .jitsi-integration {
     .cast-shadow {
         box-shadow: -3px -3px 10px 0px rgba(0, 0, 0, 0.2) !important;

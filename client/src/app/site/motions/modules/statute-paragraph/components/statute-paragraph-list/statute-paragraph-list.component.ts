@@ -1,6 +1,6 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 
@@ -25,6 +25,8 @@ import { StatuteCsvExportService } from 'app/site/motions/services/statute-csv-e
 export class StatuteParagraphListComponent extends BaseViewComponent implements OnInit {
     @ViewChild('statuteParagraphDialog', { static: true })
     private statuteParagraphDialog: TemplateRef<string>;
+
+    private dialogRef: MatDialogRef<any>;
 
     private currentStatuteParagraph: ViewStatuteParagraph | null;
 
@@ -92,8 +94,8 @@ export class StatuteParagraphListComponent extends BaseViewComponent implements 
                 text: paragraph.text
             });
         }
-        const dialogRef = this.dialog.open(this.statuteParagraphDialog, largeDialogSettings);
-        dialogRef.afterClosed().subscribe(res => {
+        this.dialogRef = this.dialog.open(this.statuteParagraphDialog, largeDialogSettings);
+        this.dialogRef.afterClosed().subscribe(res => {
             if (res) {
                 this.save();
             }
@@ -146,10 +148,10 @@ export class StatuteParagraphListComponent extends BaseViewComponent implements 
     public onKeyDown(event: KeyboardEvent): void {
         if (event.key === 'Enter' && event.shiftKey) {
             this.save();
-            this.dialog.closeAll();
+            this.dialogRef.close();
         }
         if (event.key === 'Escape') {
-            this.dialog.closeAll();
+            this.dialogRef.close();
         }
     }
 
