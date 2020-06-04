@@ -1,6 +1,6 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -95,6 +95,8 @@ export class MotionBlockDetailComponent extends BaseListViewComponent<ViewMotion
      */
     @ViewChild('editDialog', { static: true })
     private editDialog: TemplateRef<string>;
+
+    private dialogRef: MatDialogRef<any>;
 
     /**
      * Constructor for motion block details
@@ -197,7 +199,7 @@ export class MotionBlockDetailComponent extends BaseListViewComponent<ViewMotion
      */
     public onKeyDown(event: KeyboardEvent): void {
         if (event.key === 'Escape') {
-            this.dialog.closeAll();
+            this.dialogRef.close();
         }
     }
 
@@ -219,7 +221,7 @@ export class MotionBlockDetailComponent extends BaseListViewComponent<ViewMotion
     public saveBlock(): void {
         this.repo
             .update(this.blockEditForm.value as MotionBlock, this.block)
-            .then(() => this.dialog.closeAll())
+            .then(() => this.dialogRef.close())
             .catch(this.raiseError);
     }
 
@@ -232,9 +234,9 @@ export class MotionBlockDetailComponent extends BaseListViewComponent<ViewMotion
             internal: [this.block.internal]
         });
 
-        const dialogRef = this.dialog.open(this.editDialog, infoDialogSettings);
+        this.dialogRef = this.dialog.open(this.editDialog, infoDialogSettings);
 
-        dialogRef.keydownEvents().subscribe((event: KeyboardEvent) => {
+        this.dialogRef.keydownEvents().subscribe((event: KeyboardEvent) => {
             if (event.key === 'Enter' && event.shiftKey) {
                 this.saveBlock();
             }

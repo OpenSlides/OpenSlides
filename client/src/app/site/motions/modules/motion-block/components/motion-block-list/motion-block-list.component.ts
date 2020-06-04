@@ -1,6 +1,6 @@
 import { Component, OnInit, TemplateRef, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 
@@ -30,6 +30,8 @@ import { MotionBlockSortService } from 'app/site/motions/services/motion-block-s
 export class MotionBlockListComponent extends BaseListViewComponent<ViewMotionBlock> implements OnInit {
     @ViewChild('newMotionBlockDialog', { static: true })
     private newMotionBlockDialog: TemplateRef<string>;
+
+    private dialogRef: MatDialogRef<any>;
 
     /**
      * Holds the create form
@@ -136,8 +138,8 @@ export class MotionBlockListComponent extends BaseListViewComponent<ViewMotionBl
      */
     public onPlusButton(): void {
         this.resetForm();
-        const dialogRef = this.dialog.open(this.newMotionBlockDialog, infoDialogSettings);
-        dialogRef.afterClosed().subscribe(res => {
+        this.dialogRef = this.dialog.open(this.newMotionBlockDialog, infoDialogSettings);
+        this.dialogRef.afterClosed().subscribe(res => {
             if (res) {
                 this.save();
             }
@@ -167,11 +169,11 @@ export class MotionBlockListComponent extends BaseListViewComponent<ViewMotionBl
     public onKeyDown(event: KeyboardEvent): void {
         if (event.key === 'Enter' && event.shiftKey) {
             this.save();
-            this.dialog.closeAll();
+            this.dialogRef.close();
         }
         if (event.key === 'Escape') {
             this.resetForm();
-            this.dialog.closeAll();
+            this.dialogRef.close();
         }
     }
 }

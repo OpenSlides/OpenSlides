@@ -11,7 +11,7 @@ import {
     TemplateRef
 } from '@angular/core';
 import { FormBuilder, NgControl } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldControl } from '@angular/material/form-field';
 
 import { Observable } from 'rxjs';
@@ -35,6 +35,8 @@ export class AttachmentControlComponent extends BaseFormControlComponent<ViewMed
      */
     @Output()
     public errorHandler: EventEmitter<string> = new EventEmitter();
+
+    private dialogRef: MatDialogRef<any>;
 
     /**
      * The file list that is necessary for the `SearchValueSelector`
@@ -74,7 +76,7 @@ export class AttachmentControlComponent extends BaseFormControlComponent<ViewMed
      * @param dialog the dialog to open
      */
     public openUploadDialog(dialog: TemplateRef<string>): void {
-        this.dialogService.open(dialog, { ...mediumDialogSettings, disableClose: false });
+        this.dialogRef = this.dialogService.open(dialog, { ...mediumDialogSettings, disableClose: false });
     }
 
     /**
@@ -85,7 +87,7 @@ export class AttachmentControlComponent extends BaseFormControlComponent<ViewMed
     public uploadSuccess(fileIDs: number[]): void {
         const newValues = [...this.contentForm.value, ...fileIDs];
         this.updateForm(newValues);
-        this.dialogService.closeAll();
+        this.dialogRef.close();
     }
 
     /**

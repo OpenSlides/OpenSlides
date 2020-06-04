@@ -1,4 +1,26 @@
 <div class="jitsi-integration">
+    <!-- iFrame Dialog -->
+    <ng-template #conferenceDialog>
+        <div class="jitsi-iframe-wrapper" #jitsi></div>
+        <div mat-dialog-actions>
+            <button
+                type="button"
+                mat-button
+                color="primary"
+                (click)="openExternal()"
+                matTooltip="{{ 'Open Jitsi in new tab' | translate }}"
+            >
+                <mat-icon>open_in_new</mat-icon>
+            </button>
+
+            <button class="minimize-jitsi-dialog-button" type="button" mat-button color="primary" (click)="toggleConferenceDialog()">
+                <span>{{ 'Minimize' | translate }}</span>
+                <mat-icon>fullscreen_exit</mat-icon>
+            </button>
+        </div>
+    </ng-template>
+
+    <!-- Audio-Conference-bar -->
     <div
         class="jitsi-bar"
         [ngClass]="{
@@ -67,7 +89,9 @@
                 <div class="content">
                     <!-- The "somewhere else active" warning -->
                     <div class="disconnected" *ngIf="isJitsiActiveInAnotherTab && !isJitsiActive">
-                        <span>{{ 'The audio conference is already running in your OpenSlides session.' | translate }}</span>
+                        <span>{{
+                            'The audio conference is already running in your OpenSlides session.' | translate
+                        }}</span>
                         <button mat-button color="warn" (click)="forceStart()">
                             <span>{{ 'Reenter to audio conference' | translate }}</span>
                         </button>
@@ -76,9 +100,6 @@
                     <div class="disconnected" *ngIf="!isJitsiActiveInAnotherTab && !isJitsiActive">
                         <span>{{ 'disconnected' | translate }}</span>
                     </div>
-
-                    <!-- Hidden jitsy container -->
-                    <div [ngStyle]="{ display: 'none' }" #jitsi></div>
 
                     <!-- user list -->
                     <div class="room-members" *ngIf="isJitsiActive">
@@ -128,17 +149,17 @@
                             </button>
                         </div>
 
-                        <!-- Open in new tab -->
+                        <!-- open dialog -->
                         <button
                             mat-icon-button
                             class="open-jitsi-in-tab"
                             color="accent"
-                            (click)="openExternal()"
-                            matTooltip="{{ 'Open Jitsi Meet in new tab' | translate }}"
-                            [disabled]="isRoomPasswordProtected"
+                            (click)="toggleConferenceDialog()"
+                            [disabled]="!isJitsiActive"
+                            matTooltip="{{ 'Show / Hide Jitsi' | translate }}"
                         >
                             <mat-icon>
-                                open_in_new
+                                fullscreen
                             </mat-icon>
                         </button>
                     </div>

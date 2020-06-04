@@ -1,6 +1,6 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
 import { Title } from '@angular/platform-browser';
@@ -58,6 +58,8 @@ export class GroupListComponent extends BaseViewComponent implements OnInit {
     @ViewChild('groupEditDialog', { static: true })
     public groupEditDialog: TemplateRef<string>;
 
+    private dialogRef: MatDialogRef<any>;
+
     public get appPermissions(): AppPermissions[] {
         return this.repo.appPermissions;
     }
@@ -98,9 +100,9 @@ export class GroupListComponent extends BaseViewComponent implements OnInit {
             name: [name, Validators.required]
         });
 
-        const dialogRef = this.dialog.open(this.groupEditDialog, infoDialogSettings);
+        this.dialogRef = this.dialog.open(this.groupEditDialog, infoDialogSettings);
 
-        dialogRef.keydownEvents().subscribe((event: KeyboardEvent) => {
+        this.dialogRef.keydownEvents().subscribe((event: KeyboardEvent) => {
             if (event.key === 'Enter' && event.shiftKey && this.groupForm.valid) {
                 this.saveGroup(this.groupForm.value);
             }
@@ -141,7 +143,7 @@ export class GroupListComponent extends BaseViewComponent implements OnInit {
      * Cancel the editing
      */
     public cancelEditing(): void {
-        this.dialog.closeAll();
+        this.dialogRef.close();
         this.newGroup = false;
         this.editGroup = false;
         this.selectedGroup = null;

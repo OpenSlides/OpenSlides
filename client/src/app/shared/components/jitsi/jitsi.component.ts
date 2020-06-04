@@ -1,4 +1,14 @@
-import { Component, ElementRef, HostListener, OnDestroy, ViewChild } from '@angular/core';
+import {
+    Component,
+    ElementRef,
+    HostListener,
+    OnDestroy,
+    OnInit,
+    TemplateRef,
+    ViewChild,
+    ViewEncapsulation
+} from '@angular/core';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Title } from '@angular/platform-browser';
 
 import { StorageMap } from '@ngx-pwa/local-storage';
@@ -11,6 +21,7 @@ import { OperatorService } from 'app/core/core-services/operator.service';
 import { Deferred } from 'app/core/promises/deferred';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
+import { largeDialogSettings } from 'app/shared/utils/dialog-settings';
 
 declare var JitsiMeetExternalAPI: any;
 
@@ -47,9 +58,10 @@ interface ConferenceMember {
 @Component({
     selector: 'os-jitsi',
     templateUrl: './jitsi.component.html',
-    styleUrls: ['./jitsi.component.scss']
+    styleUrls: ['./jitsi.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
-export class JitsiComponent extends BaseComponent implements OnDestroy {
+export class JitsiComponent extends BaseComponent implements OnInit, OnDestroy {
     public enableJitsi: boolean;
     private autoconnect: boolean;
     private roomName: string;
@@ -64,6 +76,11 @@ export class JitsiComponent extends BaseComponent implements OnDestroy {
 
     @ViewChild('jitsi')
     private jitsiNode: ElementRef;
+
+    @ViewChild('conferenceDialog', { static: true })
+    public conferenceDialog: TemplateRef<string>;
+
+    private confDialogRef: MatDialogRef<any>;
 
     // JitsiMeet api object
     private api: any | null;
@@ -96,7 +113,7 @@ export class JitsiComponent extends BaseComponent implements OnDestroy {
     }
 
     private configOverwrite = {
-        startAudioOnly: true,
+        startAudioOnly: false,
         // allows jitsi on mobile devices
         disableDeepLinking: true,
         startWithAudioMuted: true,
@@ -111,15 +128,12 @@ export class JitsiComponent extends BaseComponent implements OnDestroy {
     };
 
     private interfaceConfigOverwrite = {
-        filmStripOnly: true,
-        INITIAL_TOOLBAR_TIMEOUT: 2000,
-        TOOLBAR_TIMEOUT: 400,
-        SHOW_JITSI_WATERMARK: false,
-        SHOW_WATERMARK_FOR_GUESTS: false,
+        DISABLE_VIDEO_BACKGROUND: true,
+        SHOW_JITSI_WATERMARK: true,
+        SHOW_WATERMARK_FOR_GUESTS: true,
         INVITATION_POWERED_BY: false,
         DISABLE_JOIN_LEAVE_NOTIFICATIONS: true,
-        TOOLBAR_BUTTONS: [],
-        SETTINGS_SECTIONS: []
+        DISABLE_PRESENCE_STATUS: true
     };
 
     public constructor(
@@ -129,9 +143,18 @@ export class JitsiComponent extends BaseComponent implements OnDestroy {
         private storageMap: StorageMap,
         private userRepo: UserRepositoryService,
         private constantsService: ConstantsService,
-        private configService: ConfigService
+        private configService: ConfigService,
+        private dialog: MatDialog
     ) {
         super(titleService, translate);
+    }
+
+    public ngOnInit(): void {
+        this.confDialogRef = this.dialog.open(this.conferenceDialog, {
+            ...largeDialogSettings,
+            panelClass: 'jitsi-dialog-hide',
+            hasBackdrop: false
+        });
         this.setUp();
     }
 
@@ -307,6 +330,7 @@ export class JitsiComponent extends BaseComponent implements OnDestroy {
             await this.deleteJitsiLock();
             this.api.dispose();
             this.api = undefined;
+            this.hideJitsiDialog();
         }
         this.isJoined = false;
         this.isPasswortSet = false;
@@ -328,6 +352,24 @@ export class JitsiComponent extends BaseComponent implements OnDestroy {
 
     private getJitsiMeetUrl(): string {
         return `https://${this.jitsiDomain}/${this.roomName}`;
+    }
+
+    public toggleConferenceDialog(): void {
+        // there is no good way to detect the current classes in MatDialogRef or conferenceDialog.
+        // searching the global cdk-overlay-pane is the only thing which works
+        const pane = document.querySelector('.cdk-overlay-pane') as HTMLElement;
+        if (pane.classList.contains('jitsi-dialog-hide')) {
+            this.confDialogRef.removePanelClass('jitsi-dialog-hide');
+        } else {
+            this.confDialogRef.addPanelClass('jitsi-dialog-hide');
+        }
+    }
+
+    private hideJitsiDialog(): void {
+        const pane = document.querySelector('.cdk-overlay-pane') as HTMLElement;
+        if (!pane.classList.contains('jitsi-dialog-hide')) {
+            this.confDialogRef.addPanelClass('jitsi-dialog-hide');
+        }
     }
 
     public openExternal(): void {

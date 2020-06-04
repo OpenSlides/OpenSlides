@@ -1,6 +1,6 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 
@@ -25,6 +25,8 @@ import { ViewCategory } from 'app/site/motions/models/view-category';
 export class CategoryListComponent extends BaseListViewComponent<ViewCategory> implements OnInit {
     @ViewChild('newCategoryDialog', { static: true })
     private newCategoryDialog: TemplateRef<string>;
+
+    private dialogRef: MatDialogRef<any>;
 
     /**
      * Holds the create form
@@ -101,8 +103,8 @@ export class CategoryListComponent extends BaseListViewComponent<ViewCategory> i
      */
     public onPlusButton(): void {
         this.createForm.reset();
-        const dialogRef = this.dialog.open(this.newCategoryDialog, infoDialogSettings);
-        dialogRef.afterClosed().subscribe(res => {
+        this.dialogRef = this.dialog.open(this.newCategoryDialog, infoDialogSettings);
+        this.dialogRef.afterClosed().subscribe(res => {
             if (res) {
                 this.save();
             }
@@ -127,10 +129,10 @@ export class CategoryListComponent extends BaseListViewComponent<ViewCategory> i
     public onKeyDown(event: KeyboardEvent): void {
         if (event.key === 'Enter') {
             this.save();
-            this.dialog.closeAll();
+            this.dialogRef.close();
         }
         if (event.key === 'Escape') {
-            this.dialog.closeAll();
+            this.dialogRef.close();
         }
     }
 
