@@ -799,6 +799,9 @@ msgstr ""
 msgid "Deletion"
 msgstr ""
 
+msgid "Delivering vote... Please wait!"
+msgstr ""
+
 msgid "Description"
 msgstr ""
 
@@ -1245,6 +1248,9 @@ msgstr ""
 msgid "In motion list, motion detail and PDF."
 msgstr ""
 
+msgid "In progress, please wait..."
+msgstr ""
+
 msgid "In the election process"
 msgstr ""
 
@@ -1416,6 +1422,9 @@ msgstr ""
 msgid "Mark speaker"
 msgstr ""
 
+msgid "Maximize Jitsi window"
+msgstr ""
+
 msgid "Media file"
 msgstr ""
 
@@ -1426,6 +1435,9 @@ msgid "Messages"
 msgstr ""
 
 msgid "Meta information"
+msgstr ""
+
+msgid "Minimize"
 msgstr ""
 
 msgid "More"
@@ -1768,7 +1780,7 @@ msgstr ""
 msgid "Open"
 msgstr ""
 
-msgid "Open Jitsi Meet in new tab"
+msgid "Open Jitsi in new tab"
 msgstr ""
 
 msgid "Open items"
@@ -2286,6 +2298,9 @@ msgid "Show correct entries"
 msgstr ""
 
 msgid "Show correct entries only"
+msgstr ""
+
+msgid "Show devtools"
 msgstr ""
 
 msgid "Show entire motion text"
