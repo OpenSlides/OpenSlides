@@ -377,22 +377,27 @@ export class LinenumberingService {
      * @returns {LineNumberRange}
      */
     public getLineNumberRange(html: string): LineNumberRange {
-        const fragment = this.htmlToFragment(html);
-        const range = {
-            from: null,
-            to: null
-        };
-        const lineNumbers = fragment.querySelectorAll('.os-line-number');
-        for (let i = 0; i < lineNumbers.length; i++) {
-            const node = lineNumbers.item(i);
-            const number = parseInt(node.getAttribute('data-line-number'), 10);
-            if (range.from === null || number < range.from) {
-                range.from = number;
-            }
-            if (range.to === null || number + 1 > range.to) {
-                range.to = number + 1;
+        const cacheKey = this.djb2hash(html);
+        let range = this.lineNumberCache.get(cacheKey);
+        if (!range) {
+            const fragment = this.htmlToFragment(html);
+            range = {
+                from: null,
+                to: null
+            };
+            const lineNumbers = fragment.querySelectorAll('.os-line-number');
+            for (let i = 0; i < lineNumbers.length; i++) {
+                const node = lineNumbers.item(i);
+                const number = parseInt(node.getAttribute('data-line-number'), 10);
+                if (range.from === null || number < range.from) {
+                    range.from = number;
+                }
+                if (range.to === null || number + 1 > range.to) {
+                    range.to = number + 1;
+                }
             }
         }
+        this.lineNumberCache.put(cacheKey, range);
         return range;
     }
 
@@ -482,10 +487,17 @@ export class LinenumberingService {
      * @return {string[]}
      */
     public splitToParagraphs(html: string): string[] {
-        const fragment = this.htmlToFragment(html);
-        return this.splitNodeToParagraphs(fragment).map((node: Element): string => {
-            return node.outerHTML;
-        });
+        const cacheKey = this.djb2hash(html);
+        let cachedParagraphs = this.lineNumberCache.get(cacheKey);
+        if (!cachedParagraphs) {
+            const fragment = this.htmlToFragment(html);
+            cachedParagraphs = this.splitNodeToParagraphs(fragment).map((node: Element): string => {
+                return node.outerHTML;
+            });
+
+            this.lineNumberCache.put(cacheKey, cachedParagraphs);
+        }
+        return cachedParagraphs;
     }
 
     /**
