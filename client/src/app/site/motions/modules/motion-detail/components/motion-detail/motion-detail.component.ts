@@ -1547,6 +1547,16 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
              * a change reco. The autoupdate has to come "after" this routine
              */
             return ChangeRecoMode.Original;
+        } else if (
+            mode === ChangeRecoMode.Diff &&
+            !this.changeRecommendations?.length &&
+            this.motion?.isParagraphBasedAmendment()
+        ) {
+            /**
+             * The Diff view for paragraph-based amendments is only relevant for change recommendations;
+             * the regular amendment changes are shown in the "original" view.
+             */
+            return ChangeRecoMode.Original;
         }
         return mode;
     }
