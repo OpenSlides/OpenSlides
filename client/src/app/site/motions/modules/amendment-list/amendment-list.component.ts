@@ -134,12 +134,14 @@ export class AmendmentListComponent extends BaseListViewComponent<ViewMotion> im
      */
     public getAmendmentSummary(amendment: ViewMotion): string {
         const diffLines = amendment.diffLines;
-        if (diffLines) {
+        if (diffLines.length) {
             return diffLines
                 .map(diffLine => {
                     return this.linenumberingService.stripLineNumbers(diffLine.text);
                 })
                 .join('[...]');
+        } else {
+            return amendment.text;
         }
     }
 

@@ -798,7 +798,7 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
             }
         });
 
-        return amendment.amendment_paragraphs.map((newText: string, paraNo: number) => {
+        return amendment.amendment_paragraphs?.map((newText: string, paraNo: number) => {
             let paragraph: string;
             let paragraphHasChanges;
 
@@ -866,7 +866,7 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
         }
 
         return amendmentParagraphs
-            .map(
+            ?.map(
                 (newText: string, paraNo: number): DiffLinesInParagraph => {
                     if (newText !== null) {
                         return this.diff.getAmendmentParagraphsLines(
@@ -937,7 +937,7 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
         const changedAmendmentParagraphs = this.applyChangesToAmendment(amendment, lineLength, changeRecos, false);
 
         return changedAmendmentParagraphs
-            .map(
+            ?.map(
                 (newText: string, paraNo: number): ViewMotionAmendedParagraph => {
                     if (newText === null) {
                         return null;
