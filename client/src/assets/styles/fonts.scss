@@ -44,3 +44,12 @@
     font-weight: $font-weight-condensed-regular;
     src: $font-condensed-regular;
 }
+
+/** Countown */
+@font-face {
+    font-family: $font-monospace;
+    font-style: normal;
+    font-display: swap;
+    font-weight: $font-weight-monospace;
+    src: $font-monospace-src;
+}

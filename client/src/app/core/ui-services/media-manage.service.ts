@@ -18,7 +18,7 @@ interface ImageConfigObject {
 /**
  * The structure of a font config
  */
-interface FontConfigObject {
+export interface FontConfigObject {
     display_name: string;
     default: string;
     path: string;
