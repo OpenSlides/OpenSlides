@@ -309,49 +309,55 @@ export abstract class PollService {
     public generateChartData(poll: PollData | ViewBasePoll): ChartData {
         const fields = this.getPollDataFields(poll);
 
-        const data: ChartData = fields.map(key => {
-            return {
-                data: this.getResultFromPoll(poll, key),
-                label: key.toUpperCase(),
-                backgroundColor: PollColor[key],
-                hoverBackgroundColor: PollColor[key],
-                barThickness: PollChartBarThickness,
-                maxBarThickness: PollChartBarThickness
-            } as ChartDate;
-        });
+        const data: ChartData = fields
+            .filter(key => {
+                return this.getPollDataFieldsByPercentBase(poll).includes(key);
+            })
+            .map(key => {
+                return {
+                    data: this.getResultFromPoll(poll, key),
+                    label: key.toUpperCase(),
+                    backgroundColor: PollColor[key],
+                    hoverBackgroundColor: PollColor[key],
+                    barThickness: PollChartBarThickness,
+                    maxBarThickness: PollChartBarThickness
+                } as ChartDate;
+            });
 
         return data;
     }
 
     protected getPollDataFields(poll: PollData | ViewBasePoll): CalculablePollKey[] {
-        let fields: CalculablePollKey[];
-        let isAssignment: boolean;
+        const isAssignment: boolean = (poll as ViewBasePoll).pollClassType === 'assignment';
+        return isAssignment ? this.getPollDataFieldsByMethod(poll) : this.getPollDataFieldsByPercentBase(poll);
+    }
 
-        if (poll instanceof ViewBasePoll) {
-            isAssignment = poll.pollClassType === 'assignment';
-        } else {
-            isAssignment = Object.keys(poll.options[0]).includes('user');
-        }
-
-        if (isAssignment) {
-            if (poll.pollmethod === AssignmentPollMethod.YNA) {
-                fields = ['yes', 'no', 'abstain'];
-            } else if (poll.pollmethod === AssignmentPollMethod.YN) {
-                fields = ['yes', 'no'];
-            } else {
-                fields = ['yes'];
+    private getPollDataFieldsByMethod(poll: PollData | ViewBasePoll): CalculablePollKey[] {
+        switch (poll.pollmethod) {
+            case AssignmentPollMethod.YNA: {
+                return ['yes', 'no', 'abstain'];
             }
-        } else {
-            if (poll.onehundred_percent_base === PercentBase.YN) {
-                fields = ['yes', 'no'];
-            } else if (poll.onehundred_percent_base === PercentBase.Cast) {
-                fields = ['yes', 'no', 'abstain', 'votesinvalid'];
-            } else {
-                fields = ['yes', 'no', 'abstain'];
+            case AssignmentPollMethod.YN: {
+                return ['yes', 'no'];
+            }
+            default: {
+                return ['yes'];
             }
         }
+    }
 
-        return fields;
+    private getPollDataFieldsByPercentBase(poll: PollData | ViewBasePoll): CalculablePollKey[] {
+        switch (poll.onehundred_percent_base) {
+            case PercentBase.YN: {
+                return ['yes', 'no'];
+            }
+            case PercentBase.Cast: {
+                return ['yes', 'no', 'abstain', 'votesinvalid'];
+            }
+            default: {
+                return ['yes', 'no', 'abstain'];
+            }
+        }
     }
 
     /**
