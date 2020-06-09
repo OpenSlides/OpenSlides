@@ -323,11 +323,6 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
     public showAmendmentContext = false;
 
     /**
-     * Sets the current amendment text mode from the settings
-     */
-    private amendmentTextMode: string;
-
-    /**
      * Show all amendments in the text, not only the ones with the apropriate state
      */
     public showAllAmendments = false;
@@ -540,9 +535,6 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         this.configService
             .get<boolean>('motions_show_sequential_numbers')
             .subscribe(shown => (this.showSequential = shown));
-        this.configService
-            .get<string>('motions_amendments_text_mode')
-            .subscribe(amendmentTextMode => (this.amendmentTextMode = amendmentTextMode));
 
         // Update statute paragraphs
         this.statuteRepo.getViewModelListObservable().subscribe(newViewStatuteParagraphs => {
@@ -649,17 +641,19 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
             });
         }
         if (this.amendments) {
-            this.amendments.forEach((amendment: ViewMotion): void => {
-                const toApplyChanges = (this.amendmentChangeRecos[amendment.id] || []).filter(
-                    // The rejected change recommendations for amendments should not be considered
-                    change => change.showInFinalView()
-                );
-                this.repo
-                    .getAmendmentAmendedParagraphs(amendment, this.lineLength, toApplyChanges)
-                    .forEach((change: ViewUnifiedChange): void => {
-                        this.allChangingObjects.push(change);
-                    });
-            });
+            this.amendments
+                .filter(amendment => amendment.isParagraphBasedAmendment())
+                .forEach((amendment: ViewMotion): void => {
+                    const toApplyChanges = (this.amendmentChangeRecos[amendment.id] || []).filter(
+                        // The rejected change recommendations for amendments should not be considered
+                        change => change.showInFinalView()
+                    );
+                    this.repo
+                        .getAmendmentAmendedParagraphs(amendment, this.lineLength, toApplyChanges)
+                        .forEach((change: ViewUnifiedChange): void => {
+                            this.allChangingObjects.push(change);
+                        });
+                });
         }
         this.allChangingObjects.sort((a: ViewUnifiedChange, b: ViewUnifiedChange) => {
             if (a.getLineFrom() < b.getLineFrom()) {
@@ -750,7 +744,8 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
                     tags_id: parentMotion.tags_id
                 });
 
-                if (this.amendmentTextMode === 'fulltext') {
+                const amendmentTextMode = this.configService.instant<string>('motions_amendments_text_mode');
+                if (amendmentTextMode === 'fulltext') {
                     defaultMotion.text = parentMotion.text;
                     this.contentForm.patchValue({ text: defaultMotion.text });
                 }
@@ -1219,7 +1214,8 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      * Goes to the amendment creation wizard. Executed via click.
      */
     public createAmendment(): void {
-        if (this.amendmentTextMode === 'paragraph') {
+        const amendmentTextMode = this.configService.instant<string>('motions_amendments_text_mode');
+        if (amendmentTextMode === 'paragraph') {
             this.router.navigate(['./create-amendment'], { relativeTo: this.route });
         } else {
             this.router.navigate(['./motions/new-amendment'], {
@@ -1549,6 +1545,16 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
              * Because without change recos you cannot escape the changed version view
              * You will not be able to automatically change to the Changed view after creating
              * a change reco. The autoupdate has to come "after" this routine
+             */
+            return ChangeRecoMode.Original;
+        } else if (
+            mode === ChangeRecoMode.Diff &&
+            !this.changeRecommendations?.length &&
+            this.motion?.isParagraphBasedAmendment()
+        ) {
+            /**
+             * The Diff view for paragraph-based amendments is only relevant for change recommendations;
+             * the regular amendment changes are shown in the "original" view.
              */
             return ChangeRecoMode.Original;
         }
