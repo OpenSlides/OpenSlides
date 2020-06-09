@@ -268,6 +268,7 @@ This is an example ``nginx.conf`` configuration for Daphne listing on port
                 proxy_pass http://localhost:8000;
             }
             location /rest {
+                proxy_set_header Host $http_host; 
                 proxy_pass http://localhost:8000;
             }
             location /ws {
