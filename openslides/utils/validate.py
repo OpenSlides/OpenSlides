@@ -55,6 +55,7 @@ allowed_styles = [
     "height",
     "width",
     "text-align",
+    "vertical-align",
     "float",
     "text-decoration",
     "margin",
