@@ -115,10 +115,10 @@ Event ModifiedFieldsEvent on topic ModifiedFields {
 }
 
 /**
- * Reserviert n sequentielle Ids für die gegebene Collection und gibt diese zurück.
+ * Reserves multiple sequential ids for the given collection und returns them.
  * Url: POST to /internal/datastore/writer/reserve_ids
  */
-reserveIds(collection: Collection, n: number): Id[]
+reserveIds(collection: Collection, amount: number): Id[]
 
 
 ## Reader
