@@ -6,3 +6,10 @@
 	path = openslides-client
 	url = git@github.com:OpenSlides/openslides-client.git
 	branch = master
+[submodule "openslides-backend"]
+	path = openslides-backend
+	url = git@github.com:OpenSlides/openslides-backend.git
+	branch = master
+[submodule "openslides-autoupdate-service"]
+	path = openslides-autoupdate-service
+	url = git@github.com:OpenSlides/openslides-autoupdate-service.git

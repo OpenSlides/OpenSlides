@@ -21,16 +21,18 @@ current commit:
 
     $ git diff --cached
 
-Than, commit changes and create a pull request.
+Then, commit changes and create a pull request.
 
 ## Work in submodules
 
 - Create your own fork at github.
 - Remove the upstream (main) repo as the origin in the submodule:
+
     $ cd <submodule>
     $ git remote remove origin
 
 - Add your fork and the main repo as origin and upstream
+
     $ git remote add origin <your fork>
     $ git remote add upstream <main repo>
 
@@ -102,9 +104,18 @@ Or a direct push on master:
     $ git commit -am "Updated my-service"
     $ git push origin master
 
-## A useful command
+## Working with Submodules
 
 After working in many services with different branches, this command checks
-out `master` (or the given branch in the .gitmodules) in all submodules:
+out `master` (or the given branch in the .gitmodules) in all submodules and
+pulls master from upstream (This requres to have `upstream`set up as a remote
+in all submodules):
 
-    $ git submodule foreach -q --recursive 'git checkout $(git config -f $toplevel/.gitmodules submodule.$name.branch || echo master)'
+    $ git submodule foreach -q --recursive 'git checkout $(git config -f $toplevel/.gitmodules submodule.$name.branch || echo master); git pull upstream $(git config -f $toplevel/.gitmodules submodule.$name.branch || echo master)'
+
+When changing the branch in the main repo (this one), the submodules do not
+automatically gets changed. THis ocmmand checks out all submodules to the given
+commits in the main repo:
+
+    $ git submodule update
+

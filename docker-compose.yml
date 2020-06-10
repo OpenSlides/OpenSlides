@@ -6,6 +6,7 @@ services:
             - datastore-postgresql
         env_file: services.env
         networks:
+            - backend
             - datastore-postgresql
     datastore-writer:
         depends_on:
@@ -13,6 +14,7 @@ services:
             - message-bus
         env_file: services.env
         networks:
+            - backend
             - datastore-postgresql
             - message-bus
     datastore-postgresql:
@@ -28,8 +30,32 @@ services:
     
     # CLIENT
     client:
-        networks:
+        depends_on:
             - backend
+            - autoupdate
+        networks:
+            - frontend
+
+    # BACKEND
+    backend:
+        depends_on:
+            - datastore-reader
+            - datastore-writer
+        env_file: services.env
+        networks:
+            - frontend
+            - backend
+
+    # AUTOUPDATE
+    autoupdate:
+        depends_on:
+            - datastore-reader
+            - message-bus
+        env_file: services.env
+        networks:
+            - frontend
+            - backend
+            - message-bus
 
     # SHARED
     message-bus:
@@ -41,17 +67,23 @@ services:
     haproxy:
         depends_on:
             - client
+            - backend
+            - autoupdate
         ports:
             - "8000:8000"
         networks:
             - uplink
-            - backend
+            - frontend
 
+# Setup: host <-uplink-> haproxy <-frontend-> services that are reachable from the client <-backend-> services that are internal-only
+# There are special networks for some services only, e.g. datastore-postgresql only for the postgresql, datastore reader and datastore writer
 networks:
     uplink:
+    frontend:
+        internal: true
+    backend:
+        internal: true
     datastore-postgresql:
         internal: true
     message-bus:
-        internal: true
-    backend:
         internal: true
