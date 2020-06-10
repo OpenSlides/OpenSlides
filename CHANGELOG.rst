@@ -8,6 +8,71 @@ Version 3.2 (unreleased)
 ========================
 `Milestone <https://github.com/OpenSlides/OpenSlides/milestones/3.2>`_
 
+General:
+ - New electronic voting integrated for motions and elections [#5255].
+ - New WebRTC based voice and video conferences using Jitsi-Meet (requires external Jitsi-Meet Server) [#5309, #5371, #5394, #5430, #5437, #5442, #5452, #5453].
+ - Improved system libraries (upgraded to Angular 9 which uses the Ivy rendering engine) [#5234].
+ - Improved the load of autoupdate system [#5109, #5375].
+ - Improved relations (i.e discovery of Motion - User - Motions). [#5091, #5180, #5389].
+ - Improved server validation of HTML in the OpenSlides config [#5168].
+ - Improved UI, UX, stability and theming [#5228, #5238, #5262, #5270, #5272, #5274, #5278, #5410, #5429].
+ - Improved themes (new: default dark, red light, green dark and solarized) and better support for dark themes [#5416, #5431, #5451].
+ - Improved HTML validation for welcome page and agenda topics to allow more tags (e.g. div, video) and attributes/styles [#5314].
+ - Improved permission checking system in client [#5359].
+ - Improved browser support by catching unsuported browsers on login page [#5403, #5446].
+ - Improved SAML support [#5405, #5418, #5432].
+ - Fixed wrong relative urls in TinyMCE [#5349].
+ - Fixed PDF generation if a left footer image was set [#5443].
+ - Removed the "check update for other clients" button [#5277].
+ - Various cleanups and improvements to usability, performance and translation.
+
+Angeda:
+ - New tags for agenda items [#5370].
+ - New possibility to duplicate selected topic items [#5433].
+ - New 'create user' button in list of speakers if user was not found in the search box [#5307].
+ - New list of speakers statistic section on legal notice page [#5347].
+ - New "first contribution" hint for speakers [#5330].
+ - Improved showing comments in agenda list (as separate line) and projector queue [#5293].
+ - Improved line height of agenda slide [#5419].
+ - Fixed agenda PDF where the agenda item number was printed twice [#5417, #5454].
+ - Fixed negative speakers duration [#5447, #5448].
+
+Motions:
+ - New electronic voting feature for motions [#5255].
+ - New possibility to create paragraph based amendments of paragraph based amendments [#5173].
+ - New option for page breaks in motion PDF export [#5191].
+ - New option to show all changes of amendments in main motion (clientside) [#5348].
+ - New 'done' indicator for motion block if all motions reached their final state [#5246].
+ - Improved PDF table of content (hide the recommendation if state is final) [#5192].
+ - Improved creating "final print version" (modified final version) also for motions without change recommendations [#5193, #5209].
+ - Improved voting results with nice charts.
+ - Improved navigation between amendments (reflects sorting of amendment list if the option "show amendments together with motions" is disabled) [#5245].
+ - Improved workflow manager for small devices [#5280].
+ - Improved sorting motions by category (sorts the list by category weight instead of the identifier) [#5308, #5310].
+ - Improved preselection and fallback behavior for motions with various change recommendation settings [#5366]
+ - Improved CSV/XLSX export (moved motion id as last column) for easier import via CSV [#5425].
+ - Fixed error by removing recommendation string in workflow manager [#5271].
+ - Fixed bug where TinyMCE changes would not update a motions save button [#5402].
+
+Elections:
+ - New electronic voting feature for elections [#5255].
+ - Improved voting results with nice charts.
+ - Fixed some permission errors [#5194].
+
+Users:
+ - New option to activate vote weight [#5305].
+ - New option to allow users to set themselves as present [#5283, #5317, #5319].
+ - Improved the permission "can see extra data" (only the fields email, comment, is_active, last_email_send are allowed) [#5423].
+
+Mediafiles:
+ - External servers can be used to store media files [#5153, #5230].
+
+Projector:
+ - New projector indicator for the currently projected element in all list view tables (visible for users without projector manage permission) [#5321].
+ - Improved "current list of speakers" reference for new projectors [#5273].
+ - Improved motion slide to hide submitter box if empty [#5367].
+ - New (configurable) monospace font for the countdown [#5378, #5408].
+
 
 Version 3.1 (2019-12-13)
 ========================
