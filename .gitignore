@@ -29,6 +29,7 @@ dist/*
 debug/*
 .DS_Store
 .idea
+*.code-workspace
 
 # Unit test and coverage reports
 .coverage

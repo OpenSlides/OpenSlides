@@ -322,22 +322,21 @@ class UserViewSet(ModelViewSet):
         self.assert_list_of_ints(ids)
 
         # Exclude the request user
-        users = self.bulk_get_users(request, ids)
+        users = self.bulk_get_users(request, ids, auth_type=None)
         for user in list(users):
             user.delete()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    def bulk_get_users(self, request, ids):
+    def bulk_get_users(self, request, ids, auth_type="default"):
         """
-        Get all users for the given ids. Exludes the request user and all
-        users with a non-default auth_type.
+        Get all users for the given ids. Exludes the request user.
+        If the auth type is given (so it is not None), only these users are included.
         """
-        return (
-            User.objects.filter(auth_type="default")
-            .exclude(pk=request.user.id)
-            .filter(pk__in=ids)
-        )
+        queryset = User.objects
+        if auth_type is not None:
+            queryset = queryset.filter(auth_type=auth_type)
+        return queryset.exclude(pk=request.user.id).filter(pk__in=ids)
 
     @list_route(methods=["post"])
     @transaction.atomic
