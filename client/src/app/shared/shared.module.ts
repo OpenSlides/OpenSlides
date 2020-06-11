@@ -127,6 +127,8 @@ import { AssignmentPollDetailContentComponent } from './components/assignment-po
 import { GlobalSpinnerComponent } from './components/global-spinner/global-spinner.component';
 import { UserMenuComponent } from './components/user-menu/user-menu.component';
 import { JitsiComponent } from './components/jitsi/jitsi.component';
+import { VjsPlayerComponent } from './components/vjs-player/vjs-player.component';
+import { LiveStreamComponent } from './components/live-stream/live-stream.component';
 
 /**
  * Share Module for all "dumb" components and pipes.
@@ -294,7 +296,9 @@ import { JitsiComponent } from './components/jitsi/jitsi.component';
         VotingPrivacyWarningComponent,
         MotionPollDetailContentComponent,
         AssignmentPollDetailContentComponent,
-        JitsiComponent
+        JitsiComponent,
+        VjsPlayerComponent,
+        LiveStreamComponent
     ],
     declarations: [
         PermsDirective,
@@ -355,7 +359,9 @@ import { JitsiComponent } from './components/jitsi/jitsi.component';
         VotingPrivacyWarningComponent,
         MotionPollDetailContentComponent,
         AssignmentPollDetailContentComponent,
-        JitsiComponent
+        JitsiComponent,
+        VjsPlayerComponent,
+        LiveStreamComponent
     ],
     providers: [
         {

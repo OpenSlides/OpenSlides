@@ -19,11 +19,8 @@
     }
 
     .jitsi-bar {
-        z-index: 99;
         display: flex;
-        position: fixed;
-        right: 20px;
-        bottom: 0;
+        margin-right: 20px;
         $wrapper-padding: 5px;
         $bar-height: 40px;
 
@@ -43,17 +40,26 @@
             }
         }
 
+        .stream-width-wrapper {
+            width: 500px;
+            max-width: 500px;
+        }
+
+        .audio-list-wrapper {
+            width: 300px;
+            max-width: 300px;
+        }
+
         .list-wrapper {
             min-height: $bar-height;
             padding-top: $wrapper-padding;
             border-top-right-radius: 4px;
-            width: 250px;
-            max-width: 250px;
 
             .toggle-list-button {
                 position: relative;
                 line-height: normal;
                 width: 100%;
+                height: 40px;
                 padding: 0 2.5em;
                 margin-bottom: $wrapper-padding;
                 font-weight: normal;
@@ -62,7 +68,7 @@
                 .opened-indicator {
                     position: absolute;
                     right: $wrapper-padding;
-                    top: $wrapper-padding;
+                    top: 8px;
                 }
 
                 .dominant-speaker {
@@ -113,8 +119,12 @@
                 .control-grid {
                     padding: $wrapper-padding 0;
                     display: grid;
-                    grid-template-areas: 'helper buttons new-tab';
+                    grid-template-areas: 'exit buttons new-tab';
                     grid-template-columns: 40px auto 40px;
+
+                    .exit-conference {
+                        grid-area: exit;
+                    }
 
                     .control-buttons {
                         grid-area: buttons;

@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { HttpService } from 'app/core/core-services/http.service';
 import { RelationManagerService } from 'app/core/core-services/relation-manager.service';
@@ -138,8 +140,21 @@ export class ProjectorRepositoryService extends BaseRepository<ViewProjector, Pr
 
     /**
      * return the id of the current reference projector
+     * prefer the observable whenever possible
      */
     public getReferenceProjectorId(): number {
+        // TODO: After logging in, this is null this.getViewModelList() is null
         return this.getViewModelList().find(projector => projector.isReferenceProjector).id;
+    }
+
+    public getReferenceProjectorIdObservable(): Observable<number> {
+        return this.getViewModelListObservable().pipe(
+            map(projectors => {
+                const refProjector = projectors.find(projector => projector.isReferenceProjector);
+                if (refProjector) {
+                    return refProjector.id;
+                }
+            })
+        );
     }
 }

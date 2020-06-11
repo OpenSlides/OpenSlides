@@ -1,30 +1,35 @@
-<div class="jitsi-integration">
-    <!-- iFrame Dialog -->
-    <ng-template #conferenceDialog>
-        <div class="jitsi-iframe-wrapper" #jitsi></div>
-        <div mat-dialog-actions>
-            <button
-                type="button"
-                mat-button
-                color="primary"
-                (click)="openExternal()"
-                matTooltip="{{ 'Open Jitsi in new tab' | translate }}"
-            >
-                <mat-icon>open_in_new</mat-icon>
-            </button>
+<!-- iFrame Dialog -->
+<ng-template #conferenceDialog>
+    <div class="jitsi-iframe-wrapper" #jitsi></div>
+    <div mat-dialog-actions>
+        <button
+            type="button"
+            mat-button
+            color="primary"
+            (click)="openExternal()"
+            matTooltip="{{ 'Open Jitsi in new tab' | translate }}"
+        >
+            <mat-icon>open_in_new</mat-icon>
+        </button>
 
-            <button class="minimize-jitsi-dialog-button" type="button" mat-button color="primary" (click)="toggleConferenceDialog()">
-                <span>{{ 'Minimize' | translate }}</span>
-                <mat-icon>fullscreen_exit</mat-icon>
-            </button>
-        </div>
-    </ng-template>
+        <button
+            class="minimize-jitsi-dialog-button"
+            type="button"
+            mat-button
+            color="primary"
+            (click)="hideJitsiDialog()"
+        >
+            <span>{{ 'Minimize' | translate }}</span>
+            <mat-icon>fullscreen_exit</mat-icon>
+        </button>
+    </div>
+</ng-template>
 
+<div class="jitsi-integration" *ngIf="canSeeLiveStream && (enableJitsi || videoStreamUrl)">
     <!-- Audio-Conference-bar -->
     <div
         class="jitsi-bar"
         [ngClass]="{
-            'cdk-visually-hidden': !enableJitsi,
             'cast-shadow': !showJitsiWindow
         }"
     >
@@ -34,48 +39,85 @@
                 'cast-shadow': showJitsiWindow
             }"
         >
-            <!-- mute/unmute button -->
-            <button
-                class="indicator quick-icon"
-                mat-mini-fab
-                *ngIf="isJoined"
-                (click)="toggleMute()"
-                matTooltip="{{ 'Mute / Unmute' | translate }}"
-            >
-                <mat-icon color="{{ muted ? 'primary' : 'warn' }}">{{ muted ? 'moff' : 'mic' }}</mat-icon>
-            </button>
+            <ng-container *ngIf="currentState == state.jitsi">
+                <!-- Exit jitsi -->
+                <button
+                    mat-mini-fab
+                    class="indicator quick-icon"
+                    color="accent"
+                    (click)="viewStream()"
+                    matTooltip="{{ 'Exit live conference and view the live stream' | translate }}"
+                    *ngIf="videoStreamUrl"
+                >
+                    <mat-icon color="warn">
+                        meeting_room
+                    </mat-icon>
+                </button>
 
-            <!-- disconnected icon -->
-            <mat-icon class="indicator" *ngIf="!isJoined">cloud_off</mat-icon>
+                <!-- mute/unmute button -->
+                <button
+                    class="indicator quick-icon"
+                    mat-mini-fab
+                    *ngIf="isJoined"
+                    (click)="toggleMute()"
+                    matTooltip="{{ 'Mute / Unmute' | translate }}"
+                >
+                    <mat-icon color="{{ muted ? 'primary' : 'warn' }}">{{ muted ? 'moff' : 'mic' }}</mat-icon>
+                </button>
 
-            <!-- hide unhide video -->
-            <!-- <button class="quick-icon" mat-mini-fab [disabled]="!isJoined">
-            <mat-icon *ngIf="isJoined" color="primary">videocam_off</mat-icon>
-            </button> -->
+                <!-- disconnected icon -->
+                <mat-icon class="indicator" *ngIf="!isJoined && !videoStreamUrl">cloud_off</mat-icon>
+            </ng-container>
+
+            <ng-container *ngIf="currentState == state.stream">
+                <!-- Enter conference from stream -->
+                <button
+                    *ngIf="enableJitsi && isAccessPermitted"
+                    class="indicator quick-icon"
+                    mat-mini-fab
+                    (click)="enterConversation()"
+                    matTooltip="{{ 'Enter live conference' | translate }}"
+                >
+                    <mat-icon color="primary">meeting_room</mat-icon>
+                </button>
+
+                <mat-icon *ngIf="enableJitsi && !isAccessPermitted" class="indicator">no_meeting_room</mat-icon>
+            </ng-container>
         </span>
 
         <span
             class="list-wrapper apply-theme"
             [ngClass]="{
+                'stream-width-wrapper': currentState == state.stream,
+                'audio-list-wrapper': currentState == state.jitsi,
                 'cast-shadow': showJitsiWindow
             }"
         >
-            <!-- <span class="list-wrapper apply-theme regular-shadow"> -->
             <!-- open-window button -->
             <button class="toggle-list-button" mat-button (click)="toggleShowJitsi()">
-                <span> {{ 'Audio conference' | translate }}</span>
+                <ng-container *ngIf="currentState == state.jitsi">
+                    <span> {{ 'Live conference' | translate }}</span>
+                    <div class="one-line">
+                        &nbsp;
+                        <span *ngIf="currentDominantSpeaker">
+                            » <span class="dominant-speaker">{{ currentDominantSpeaker.displayName }}</span>
+                        </span>
+                        <span *ngIf="!isJitsiActive">
+                            <i>{{ 'disconnected' | translate }}</i>
+                        </span>
+                        <span *ngIf="isJitsiActive && !isJoined">
+                            <i>{{ 'connecting...' | translate }}</i>
+                        </span>
+                    </div>
+                </ng-container>
+
+                <ng-container *ngIf="currentState == state.stream">
+                    <!-- os-icon-container does weid things here -->
+                    <span> {{ 'Live stream' | translate }}</span>
+                </ng-container>
+
                 <mat-icon class="opened-indicator" *ngIf="!showJitsiWindow">keyboard_arrow_up</mat-icon>
                 <mat-icon class="opened-indicator" *ngIf="showJitsiWindow">keyboard_arrow_down </mat-icon>
-
-                <div class="one-line">
-                    &nbsp;
-                    <span *ngIf="currentDominantSpeaker">
-                        » <span class="dominant-speaker">{{ currentDominantSpeaker.displayName }}</span>
-                    </span>
-                    <span *ngIf="!isJitsiActive">
-                        <i>{{ 'disconnected' | translate }}</i>
-                    </span>
-                </div>
             </button>
 
             <!-- unfolded list -->
@@ -85,85 +127,109 @@
                     'cdk-visually-hidden': !showJitsiWindow
                 }"
             >
-                <!-- Jitsi content window -->
-                <div class="content">
-                    <!-- The "somewhere else active" warning -->
-                    <div class="disconnected" *ngIf="isJitsiActiveInAnotherTab && !isJitsiActive">
-                        <span>{{
-                            'The audio conference is already running in your OpenSlides session.' | translate
-                        }}</span>
-                        <button mat-button color="warn" (click)="forceStart()">
-                            <span>{{ 'Reenter to audio conference' | translate }}</span>
+                <ng-container *ngIf="currentState == state.jitsi">
+                    <!-- Jitsi content window -->
+                    <div class="content">
+                        <!-- The "somewhere else active" warning -->
+                        <div class="disconnected" *ngIf="isJitsiActiveInAnotherTab && !isJitsiActive">
+                            <span>{{
+                                'The audio conference is already running in your OpenSlides session.' | translate
+                            }}</span>
+                            <button mat-button color="warn" (click)="forceStart()">
+                                <span>{{ 'Reenter to audio conference' | translate }}</span>
+                            </button>
+                        </div>
+
+                        <div class="disconnected" *ngIf="!isJitsiActiveInAnotherTab && !isJitsiActive">
+                            <span>{{ 'disconnected' | translate }}</span>
+                        </div>
+
+                        <div class="disconnected" *ngIf="isJitsiActive && !isJoined">
+                            <span>{{ 'connecting...' | translate }}</span>
+                        </div>
+
+                        <!-- user list -->
+                        <div class="room-members" *ngIf="isJitsiActive && isJoined">
+                            <div class="member-list">
+                                <ol>
+                                    <li
+                                        *ngFor="let memberId of memberList; trackBy: trackByIndex"
+                                        [ngClass]="{
+                                            focused: members[memberId].focus
+                                        }"
+                                    >
+                                        <div class="member-list-entry">
+                                            {{ members[memberId].name }}
+                                        </div>
+                                    </li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+
+                <ng-container *ngIf="currentState == state.stream">
+                    <os-vjs-player
+                        [videoUrl]="videoStreamUrl"
+                        (started)="onSteamStarted()"
+                        *ngIf="!streamActiveInAnotherTab || streamRunning"
+                    ></os-vjs-player>
+                    <div class="disconnected" *ngIf="streamActiveInAnotherTab && !streamRunning">
+                        <span>{{ 'The video stream is already running in your OpenSlides session.' | translate }}</span>
+                        <button mat-button color="warn" (click)="deleteStreamingLock()">
+                            <span>{{ 'Force the stream to reload' | translate }}</span>
                         </button>
                     </div>
+                </ng-container>
 
-                    <div class="disconnected" *ngIf="!isJitsiActiveInAnotherTab && !isJitsiActive">
-                        <span>{{ 'disconnected' | translate }}</span>
-                    </div>
-
-                    <!-- user list -->
-                    <div class="room-members" *ngIf="isJitsiActive">
-                        <div class="member-list">
-                            <ol>
-                                <li
-                                    *ngFor="let memberId of memberList; trackBy: trackByIndex"
-                                    [ngClass]="{
-                                        focused: members[memberId].focus
-                                    }"
+                <ng-container *ngIf="currentState == state.jitsi">
+                    <!-- Custom control buttons -->
+                    <div>
+                        <mat-divider></mat-divider>
+                        <div class="control-grid">
+                            <div class="control-buttons">
+                                <!-- Hangup -->
+                                <button
+                                    mat-mini-fab
+                                    color="warn"
+                                    (click)="stopJitsi()"
+                                    *ngIf="isJitsiActive && isJoined"
+                                    matTooltip="{{ 'Leave' | translate }}"
                                 >
-                                    <div class="member-list-entry">
-                                        {{ members[memberId].name }}
-                                    </div>
-                                </li>
-                            </ol>
-                        </div>
-                    </div>
-                </div>
+                                    <mat-icon>call_end</mat-icon>
+                                </button>
 
-                <!-- Custom control buttons -->
-                <div>
-                    <mat-divider></mat-divider>
-                    <div class="control-grid">
-                        <div class="control-buttons">
-                            <!-- Hangup -->
-                            <button
-                                mat-mini-fab
-                                color="warn"
-                                (click)="stopJitsi()"
-                                *ngIf="isJitsiActive && isJoined"
-                                matTooltip="{{ 'Leave' | translate }}"
-                            >
-                                <mat-icon>call_end</mat-icon>
-                            </button>
+                                <!-- Enter jitsi manually -->
+                                <button
+                                    mat-mini-fab
+                                    color="accent"
+                                    (click)="enterConversation()"
+                                    [disabled]="
+                                        !enableJitsi || isJitsiActive || isJitsiActiveInAnotherTab || !isAccessPermitted
+                                    "
+                                    *ngIf="!isJoined"
+                                    matTooltip="{{ 'Enter conference' | translate }}"
+                                >
+                                    <mat-icon>call</mat-icon>
+                                </button>
+                            </div>
 
-                            <!-- Enter jitsi manually -->
+                            <!-- open dialog -->
                             <button
-                                mat-mini-fab
+                                mat-icon-button
+                                class="open-jitsi-in-tab"
                                 color="accent"
-                                (click)="enterConversation()"
-                                [disabled]="isJitsiActive || isJitsiActiveInAnotherTab"
-                                *ngIf="!isJoined"
-                                matTooltip="{{ 'Enter conference' | translate }}"
+                                (click)="toggleConferenceDialog()"
+                                [disabled]="!isJitsiActive"
+                                matTooltip="{{ 'Maximize / minimize Jitsi window' | translate }}"
                             >
-                                <mat-icon>call</mat-icon>
+                                <mat-icon>
+                                    {{ isJitsiDialogOpen ? 'fullscreen_exit' : 'fullscreen' }}
+                                </mat-icon>
                             </button>
                         </div>
-
-                        <!-- open dialog -->
-                        <button
-                            mat-icon-button
-                            class="open-jitsi-in-tab"
-                            color="accent"
-                            (click)="toggleConferenceDialog()"
-                            [disabled]="!isJitsiActive"
-                            matTooltip="{{ 'Maximize Jitsi window' | translate }}"
-                        >
-                            <mat-icon>
-                                fullscreen
-                            </mat-icon>
-                        </button>
                     </div>
-                </div>
+                </ng-container>
             </div>
         </span>
     </div>

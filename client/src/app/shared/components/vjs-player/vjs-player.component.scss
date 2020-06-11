@@ -1,0 +1,25 @@
+.video-wrapper {
+    display: flex;
+    width: 100%;
+    .video-js {
+        margin: auto;
+
+        .vjs-control-bar {
+            .vjs-subs-caps-button {
+                display: none !important;
+            }
+
+            .vjs-descriptions-button {
+                display: none !important;
+            }
+
+            .vjs-picture-in-picture-control {
+                display: none !important;
+            }
+
+            .vjs-audio-button {
+                display: none !important;
+            }
+        }
+    }
+}

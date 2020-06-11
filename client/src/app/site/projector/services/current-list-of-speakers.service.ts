@@ -19,6 +19,11 @@ import { ViewProjector } from '../models/view-projector';
 })
 export class CurrentListOfSpeakersService {
     /**
+     * Id of the current lost of speakers projector. Filled through observer
+     */
+    private closId: number;
+
+    /**
      * This map holds the current (number or null) los-id for the the projector.
      * It is used to check, if the reference has changed (this clos id changed for one projector).
      */
@@ -34,6 +39,10 @@ export class CurrentListOfSpeakersService {
      */
     private currentListOfSpeakers: { [projectorId: number]: BehaviorSubject<ViewListOfSpeakers | null> } = {};
 
+    private currentListOfSpeakerSubject = new BehaviorSubject<ViewListOfSpeakers>(null);
+
+    public currentListOfSpeakersObservable = this.currentListOfSpeakerSubject.asObservable();
+
     public constructor(
         private projectorService: ProjectorService,
         private projectorRepo: ProjectorRepositoryService,
@@ -46,6 +55,21 @@ export class CurrentListOfSpeakersService {
                 this.setListOfSpeakersForProjector(projector);
             }
         });
+
+        this.projectorRepo.getReferenceProjectorIdObservable().subscribe(closId => {
+            if (closId) {
+                this.closId = closId;
+                this.currentListOfSpeakerSubject.next(this.getCurrentListOfSpeakers());
+            }
+        });
+    }
+
+    /**
+     * Use the subject to get it
+     */
+    private getCurrentListOfSpeakers(): ViewListOfSpeakers | null {
+        const refProjector = this.projectorRepo.getViewModel(this.closId);
+        return this.getCurrentListOfSpeakersForProjector(refProjector);
     }
 
     /**

@@ -46,6 +46,9 @@ $narrow-spacing: (
     spacing: $pbl-spacing-theme-narrow
 );
 
+/** Videjs */
+@import '~video.js/dist/video-js.css';
+
 /** Mix the component-related style-rules */
 @mixin openslides-components-theme($theme) {
     @include os-site-theme($theme);

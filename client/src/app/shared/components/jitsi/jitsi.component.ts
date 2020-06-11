@@ -55,6 +55,11 @@ interface ConferenceMember {
     focus: boolean;
 }
 
+enum ConferenceState {
+    stream,
+    jitsi
+}
+
 @Component({
     selector: 'os-jitsi',
     templateUrl: './jitsi.component.html',
@@ -63,14 +68,19 @@ interface ConferenceMember {
 })
 export class JitsiComponent extends BaseComponent implements OnInit, OnDestroy {
     public enableJitsi: boolean;
+
     private autoconnect: boolean;
     private roomName: string;
     private roomPassword: string;
     private jitsiDomain: string;
 
+    public restricted = false;
+    public videoStreamUrl: string;
+
     // do not set the password twice
     private isPasswortSet = false;
 
+    public isJitsiDialogOpen = false;
     public showJitsiWindow = false;
     public muted = true;
 
@@ -90,15 +100,21 @@ export class JitsiComponent extends BaseComponent implements OnInit, OnDestroy {
     }
 
     public isJoined: boolean;
+    public streamRunning: boolean;
 
     private options: object;
 
     private lockLoaded: Deferred<void> = new Deferred();
     private constantsLoaded: Deferred<void> = new Deferred();
+    private configsLoaded: Deferred<void> = new Deferred();
 
     // storage locks
     public isJitsiActiveInAnotherTab: boolean;
+    public streamActiveInAnotherTab: boolean;
+
     private RTC_LOGGED_STORAGE_KEY = 'rtcIsLoggedIn';
+    private STREAM_RUNNING_STORAGE_KEY = 'streamIsRunning';
+    private CONFERENCE_STATE_STORAGE_KEY = 'conferenceState';
 
     // JitsiID to ConferenceMember
     public members = {};
@@ -111,6 +127,27 @@ export class JitsiComponent extends BaseComponent implements OnInit, OnDestroy {
     public get isRoomPasswordProtected(): boolean {
         return this.roomPassword?.length > 0;
     }
+
+    public get canSeeLiveStream(): boolean {
+        return this.operator.hasPerms(this.permission.coreCanSeeLiveStream);
+    }
+
+    private isOnCurrentLos: boolean;
+
+    public get isAccessPermitted(): boolean {
+        return (
+            !this.restricted ||
+            this.operator.hasPerms(this.permission.agendaCanManageListOfSpeakers) ||
+            this.isOnCurrentLos
+        );
+    }
+
+    /**
+     * The conference state, to determine if the user consumes the stream or can
+     * contribute to jitsi
+     */
+    public state = ConferenceState;
+    public currentState: ConferenceState;
 
     private configOverwrite = {
         startAudioOnly: false,
@@ -158,15 +195,22 @@ export class JitsiComponent extends BaseComponent implements OnInit, OnDestroy {
         this.setUp();
     }
 
-    public ngOnDestroy(): void {
-        this.stopJitsi();
+    public async ngOnDestroy(): Promise<void> {
+        this.stopConference();
     }
 
     // closing the tab should also try to stop jitsi.
     // this will usually not be cought by ngOnDestroy
     @HostListener('window:beforeunload', ['$event'])
     public async beforeunload($event: any): Promise<void> {
+        await this.stopConference();
+    }
+
+    private async stopConference(): Promise<void> {
         await this.stopJitsi();
+        if (this.streamActiveInAnotherTab && this.streamRunning) {
+            await this.deleteStreamingLock();
+        }
     }
 
     private async setUp(): Promise<void> {
@@ -181,6 +225,13 @@ export class JitsiComponent extends BaseComponent implements OnInit, OnDestroy {
                 }
             });
 
+        this.storageMap
+            .watch(this.STREAM_RUNNING_STORAGE_KEY)
+            .pipe(distinctUntilChanged())
+            .subscribe((running: boolean) => {
+                this.streamActiveInAnotherTab = running;
+            });
+
         await this.lockLoaded;
         this.constantsService.get<JitsiSettings>('Settings').subscribe(settings => {
             if (settings) {
@@ -193,10 +244,10 @@ export class JitsiComponent extends BaseComponent implements OnInit, OnDestroy {
 
         await this.constantsLoaded;
         this.configService
-            .get<boolean>('general_system_conference_show')
+            .get<boolean>('general_system_conference_auto_connect')
             .subscribe(autoconnect => (this.autoconnect = autoconnect));
 
-        this.configService.get<boolean>('general_system_conference_auto_connect').subscribe(show => {
+        this.configService.get<boolean>('general_system_conference_show').subscribe(show => {
             this.enableJitsi = show && !!this.jitsiDomain && !!this.roomName;
             if (this.enableJitsi && this.autoconnect) {
                 this.startJitsi();
@@ -204,6 +255,51 @@ export class JitsiComponent extends BaseComponent implements OnInit, OnDestroy {
                 this.stopJitsi();
             }
         });
+
+        this.configService.get<boolean>('general_system_conference_los_restriction').subscribe(restricted => {
+            this.restricted = restricted;
+        });
+
+        this.configService.get<string>('general_system_stream_url').subscribe(url => {
+            this.videoStreamUrl = url;
+            this.configsLoaded.resolve();
+        });
+
+        await this.configsLoaded;
+        // after configs are loaded
+        this.storageMap
+            .watch(this.CONFERENCE_STATE_STORAGE_KEY)
+            .pipe(distinctUntilChanged())
+            .subscribe((confState: ConferenceState) => {
+                if (confState in ConferenceState) {
+                    if (this.enableJitsi && !this.videoStreamUrl) {
+                        this.currentState = ConferenceState.jitsi;
+                    } else if (!this.enableJitsi && this.videoStreamUrl) {
+                        this.currentState = ConferenceState.stream;
+                    } else {
+                        this.currentState = confState;
+                    }
+                } else {
+                    this.setDefaultConfState();
+                }
+                // show stream window when the state changes to stream
+                if (this.currentState === ConferenceState.stream && !this.streamActiveInAnotherTab) {
+                    this.showJitsiWindow = true;
+                }
+            });
+
+        // check if the user is on the clos, remove from room if not permitted
+        this.operator
+            .isOnCurrentListOfSpeakersObservable()
+            .pipe(distinctUntilChanged())
+            .subscribe(isOnList => {
+                this.isOnCurrentLos = isOnList;
+                console.log('this.isOnCurrentLos: ', this.isOnCurrentLos);
+
+                if (!this.isAccessPermitted) {
+                    this.viewStream();
+                }
+            });
     }
 
     public toggleMute(): void {
@@ -227,6 +323,7 @@ export class JitsiComponent extends BaseComponent implements OnInit, OnDestroy {
     public async enterConversation(): Promise<void> {
         await this.operator.loaded;
         this.storageMap.set(this.RTC_LOGGED_STORAGE_KEY, true).subscribe(() => {});
+        this.setConferenceState(ConferenceState.jitsi);
         this.setOptions();
         this.api = new JitsiMeetExternalAPI(this.jitsiDomain, this.options);
 
@@ -273,6 +370,9 @@ export class JitsiComponent extends BaseComponent implements OnInit, OnDestroy {
         this.isJoined = true;
         this.addMember({ displayName: info.displayName, id: info.id });
         this.setRoomPassword();
+        if (this.videoStreamUrl) {
+            this.showJitsiDialog();
+        }
     }
 
     private setRoomPassword(): void {
@@ -355,21 +455,26 @@ export class JitsiComponent extends BaseComponent implements OnInit, OnDestroy {
     }
 
     public toggleConferenceDialog(): void {
-        // there is no good way to detect the current classes in MatDialogRef or conferenceDialog.
-        // searching the global cdk-overlay-pane is the only thing which works
-        const pane = document.querySelector('.cdk-overlay-pane') as HTMLElement;
-        if (pane.classList.contains('jitsi-dialog-hide')) {
-            this.confDialogRef.removePanelClass('jitsi-dialog-hide');
+        if (this.isJitsiDialogOpen) {
+            this.hideJitsiDialog();
         } else {
-            this.confDialogRef.addPanelClass('jitsi-dialog-hide');
+            this.showJitsiDialog();
         }
     }
 
-    private hideJitsiDialog(): void {
-        const pane = document.querySelector('.cdk-overlay-pane') as HTMLElement;
-        if (!pane.classList.contains('jitsi-dialog-hide')) {
-            this.confDialogRef.addPanelClass('jitsi-dialog-hide');
-        }
+    public hideJitsiDialog(): void {
+        this.confDialogRef.addPanelClass('jitsi-dialog-hide');
+        this.isJitsiDialogOpen = false;
+    }
+
+    public showJitsiDialog(): void {
+        this.confDialogRef.removePanelClass('jitsi-dialog-hide');
+        this.isJitsiDialogOpen = true;
+    }
+
+    public async viewStream(): Promise<void> {
+        this.stopJitsi();
+        this.setConferenceState(ConferenceState.stream);
     }
 
     public openExternal(): void {
@@ -377,7 +482,28 @@ export class JitsiComponent extends BaseComponent implements OnInit, OnDestroy {
         window.open(this.getJitsiMeetUrl(), '_blank');
     }
 
+    public onSteamStarted(): void {
+        this.streamRunning = true;
+        this.storageMap.set(this.STREAM_RUNNING_STORAGE_KEY, true).subscribe(() => {});
+    }
+
     private async deleteJitsiLock(): Promise<void> {
         await this.storageMap.delete(this.RTC_LOGGED_STORAGE_KEY).toPromise();
+    }
+
+    public async deleteStreamingLock(): Promise<void> {
+        await this.storageMap.delete(this.STREAM_RUNNING_STORAGE_KEY).toPromise();
+    }
+
+    private setDefaultConfState(): void {
+        this.videoStreamUrl
+            ? this.setConferenceState(ConferenceState.stream)
+            : this.setConferenceState(ConferenceState.jitsi);
+    }
+
+    private setConferenceState(newState: ConferenceState): void {
+        if (this.currentState !== newState) {
+            this.storageMap.set(this.CONFERENCE_STATE_STORAGE_KEY, newState).subscribe(() => {});
+        }
     }
 }
