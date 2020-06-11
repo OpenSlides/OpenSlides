@@ -3,10 +3,11 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
 import { HtmlToPdfService } from 'app/core/pdf-services/html-to-pdf.service';
+import { AssignmentPollMethod } from 'app/shared/models/assignments/assignment-poll';
 import { ParsePollNumberPipe } from 'app/shared/pipes/parse-poll-number.pipe';
 import { PollKeyVerbosePipe } from 'app/shared/pipes/poll-key-verbose.pipe';
 import { PollPercentBasePipe } from 'app/shared/pipes/poll-percent-base.pipe';
-import { PollTableData } from 'app/site/polls/services/poll.service';
+import { PollTableData, VotingResult } from 'app/site/polls/services/poll.service';
 import { AssignmentPollService } from './assignment-poll.service';
 import { ViewAssignment } from '../models/view-assignment';
 import { ViewAssignmentPoll } from '../models/view-assignment-poll';
@@ -185,7 +186,6 @@ export class AssignmentPdfService {
                 ]);
 
                 const tableData = this.assignmentPollService.generateTableData(poll);
-
                 for (const pollResult of tableData) {
                     const voteOption = this.translate.instant(this.pollKeyVerbose.transform(pollResult.votingOption));
                     const resultLine = this.getPollResult(pollResult, poll);
@@ -219,14 +219,24 @@ export class AssignmentPdfService {
      * Converts pollData to a printable string representation
      */
     private getPollResult(votingResult: PollTableData, poll: ViewAssignmentPoll): string {
-        const resultList = votingResult.value.map(singleResult => {
-            const votingKey = this.translate.instant(this.pollKeyVerbose.transform(singleResult.vote));
-            const resultValue = this.parsePollNumber.transform(singleResult.amount);
-            const resultInPercent = this.pollPercentBase.transform(singleResult.amount, poll);
-            return `${votingKey}${!!votingKey ? ': ' : ''}${resultValue} ${
-                singleResult.showPercent && resultInPercent ? resultInPercent : ''
-            }`;
-        });
+        const resultList = votingResult.value
+            .filter((singleResult: VotingResult) => {
+                if (poll.pollmethod === AssignmentPollMethod.Votes) {
+                    return singleResult.vote !== 'no' && singleResult.vote !== 'abstain';
+                } else if (poll.pollmethod === AssignmentPollMethod.YN) {
+                    return singleResult.vote !== 'abstain';
+                } else {
+                    return true;
+                }
+            })
+            .map((singleResult: VotingResult) => {
+                const votingKey = this.translate.instant(this.pollKeyVerbose.transform(singleResult.vote));
+                const resultValue = this.parsePollNumber.transform(singleResult.amount);
+                const resultInPercent = this.pollPercentBase.transform(singleResult.amount, poll);
+                return `${votingKey}${!!votingKey ? ': ' : ''}${resultValue} ${
+                    singleResult.showPercent && resultInPercent ? resultInPercent : ''
+                }`;
+            });
         return resultList.join('\n');
     }
 }
