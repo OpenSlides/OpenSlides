@@ -386,7 +386,7 @@ def get_config_variables():
         name="font_monospace",
         default_value={
             "display_name": "Font monospace",
-            "default": "assets/fonts/courier-prime.woff",
+            "default": "assets/fonts/roboto-condensed-bold.woff",
             "path": "",
         },
         input_type="static",
