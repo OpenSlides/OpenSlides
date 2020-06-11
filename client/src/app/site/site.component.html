@@ -89,11 +89,15 @@
                 <mat-icon>arrow_forward_ios</mat-icon>
             </button>
         </div>
-        <os-jitsi></os-jitsi>
         <div (touchstart)="swipe($event, 'start')" (touchend)="swipe($event, 'end')" class="content">
             <main>
                 <router-outlet #o="outlet"></router-outlet>
             </main>
+        </div>
+        <div class="toolbars">
+            <!-- test -->
+            <os-jitsi></os-jitsi>
+            <!-- <os-live-stream></os-live-stream> -->
         </div>
     </mat-sidenav-content>
 </mat-sidenav-container>

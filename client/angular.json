@@ -43,7 +43,11 @@
                             }
                         ],
                         "styles": ["src/styles.scss"],
-                        "scripts": ["node_modules/tinymce/tinymce.min.js", "src/assets/jitsi/external_api.js"],
+                        "scripts": [
+                            "node_modules/tinymce/tinymce.min.js",
+                            "node_modules/video.js/dist/video.min.js",
+                            "src/assets/jitsi/external_api.js"
+                        ],
                         "webWorkerTsConfig": "tsconfig.worker.json"
                     },
                     "configurations": {

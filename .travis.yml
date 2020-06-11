@@ -25,7 +25,7 @@ matrix:
 
     - name: "Installing npm dependencies"
       language: node_js
-      node_js: "10.13"
+      node_js: "12.18"
       cache:
         - directories:
             - "client/node_modules"
@@ -39,7 +39,7 @@ matrix:
     - stage: "Run tests"
       name: "Client: Testing"
       language: node_js
-      node_js: "10.13"
+      node_js: "12.18"
       apt:
         sources:
           - google-chrome
@@ -56,7 +56,7 @@ matrix:
 
     - name: "Client: Production Build (ES5)"
       language: node_js
-      node_js: "10.13"
+      node_js: "12.18"
       install:
         - cd client
         - sed -i '/\"target\"/c\\"target\":\"es5\",' tsconfig.json
@@ -65,7 +65,7 @@ matrix:
 
     - name: "Client: Production Build (ES2015)"
       language: node_js
-      node_js: "10.13"
+      node_js: "12.18"
       install:
         - cd client
         - echo "Firefox ESR" > browserslist
@@ -74,7 +74,7 @@ matrix:
 
     - name: "Client: Build"
       language: node_js
-      node_js: "10.13"
+      node_js: "12.18"
       script:
         - cd client
         - npm run build-debug
@@ -111,14 +111,14 @@ matrix:
 
     - name: "Client: Linting"
       language: node_js
-      node_js: "10.13"
+      node_js: "12.18"
       script:
         - cd client
         - npm run lint-check
 
     - name: "Client: Code Formatting Check"
       language: node_js
-      node_js: "10.13"
+      node_js: "12.18"
       script:
         - cd client
         - npm list --depth=0 || cat --help

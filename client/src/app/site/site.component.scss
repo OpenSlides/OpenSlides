@@ -134,3 +134,15 @@ mat-sidenav-container {
         }
     }
 }
+
+.toolbars {
+    z-index: 99;
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    display: flex;
+
+    * {
+        margin-top: auto;
+    }
+}

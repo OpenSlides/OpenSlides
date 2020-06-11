@@ -51,6 +51,7 @@
         "@pebula/ngrid-material": "2.0.0-rc.1",
         "@pebula/utils": "1.0.2",
         "@tinymce/tinymce-angular": "^3.3.1",
+        "@videojs/http-streaming": "^1.13.3",
         "acorn": "^7.1.0",
         "chart.js": "^2.9.2",
         "core-js": "^3.6.4",
@@ -61,8 +62,8 @@
         "material-icon-font": "git+https://github.com/petergng/materialIconFont.git",
         "moment": "^2.24.0",
         "ng2-charts": "^2.3.0",
-        "ngx-file-drop": "^8.0.8",
         "ng2-pdf-viewer": "^6.1.2",
+        "ngx-file-drop": "^8.0.8",
         "ngx-mat-select-search": "^2.1.2",
         "ngx-material-timepicker": "^5.5.1",
         "ngx-papaparse": "^4.0.2",
@@ -71,6 +72,7 @@
         "rxjs": "^6.5.4",
         "tinymce": "5.2.2",
         "tslib": "^1.10.0",
+        "video.js": "^7.7.6",
         "zone.js": "~0.10.2"
     },
     "devDependencies": {

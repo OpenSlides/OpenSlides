@@ -97,22 +97,40 @@ def get_config_variables():
     )
 
     yield ConfigVariable(
-        name="general_system_conference_auto_connect",
+        name="general_system_conference_show",
         default_value=False,
         input_type="boolean",
-        label="Show audio conference window",
+        label="Show live conference window",
         help_text="Server settings required to activate Jitsi Meet integration.",
         weight=140,
         subgroup="System",
     )
 
     yield ConfigVariable(
-        name="general_system_conference_show",
+        name="general_system_conference_auto_connect",
         default_value=False,
         input_type="boolean",
-        label="Connect all users to audio conference automatically",
+        label="Connect all users to live conference automatically",
+        help_text="Server settings required to activate Jitsi Meet integration.",
+        weight=141,
+        subgroup="System",
+    )
+
+    yield ConfigVariable(
+        name="general_system_conference_los_restriction",
+        default_value=False,
+        input_type="boolean",
+        label="Allow only speakers and permitted users to enter the live conference",
         help_text="Server settings required to activate Jitsi Meet integration.",
         weight=142,
+        subgroup="System",
+    )
+
+    yield ConfigVariable(
+        name="general_system_stream_url",
+        default_value="",
+        label="Live stream url",
+        weight=143,
         subgroup="System",
     )
 
@@ -120,7 +138,7 @@ def get_config_variables():
         name="general_login_info_text",
         default_value="",
         label="Show this text on the login page",
-        weight=144,
+        weight=145,
         subgroup="System",
     )
 

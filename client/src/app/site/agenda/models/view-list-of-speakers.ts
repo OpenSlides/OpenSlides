@@ -63,6 +63,10 @@ export class ViewListOfSpeakers extends BaseViewModelWithContentObject<ListOfSpe
     public hasSpeakerSpoken(checkSpeaker: ViewSpeaker): boolean {
         return this.finishedSpeakers.findIndex(speaker => speaker.user_id === checkSpeaker.user_id) !== -1;
     }
+
+    public isUserOnList(userId: number): boolean {
+        return !!this.speakers.find(speaker => speaker.user_id === userId);
+    }
 }
 interface IListOfSpeakersRelations {
     speakers: ViewSpeaker[];
