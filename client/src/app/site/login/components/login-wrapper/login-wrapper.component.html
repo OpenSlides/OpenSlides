@@ -1,7 +1,9 @@
 <!-- The actual form -->
 <header>
     <mat-toolbar class="login-logo-bar" color="primary">
-        <a routerLink="/login"><img src="assets/img/openslides-logo-dark.svg" alt="OpenSlides-logo" /></a>
+        <a routerLink="/login" [queryParams]="{ checkBrowser: false }"
+            ><img src="assets/img/openslides-logo-dark.svg" alt="OpenSlides-logo"
+        /></a>
     </mat-toolbar>
 </header>
 

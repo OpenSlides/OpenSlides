@@ -63,6 +63,7 @@
         "moment": "^2.24.0",
         "ng2-charts": "^2.3.0",
         "ng2-pdf-viewer": "^6.1.2",
+        "ngx-device-detector": "^1.4.4",
         "ngx-file-drop": "^8.0.8",
         "ngx-mat-select-search": "^2.1.2",
         "ngx-material-timepicker": "^5.5.1",
