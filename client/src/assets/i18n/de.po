@@ -172,6 +172,13 @@ msgstr "Leerzeichen im Bezeichner erlauben"
 msgid "Allow create poll"
 msgstr "Abstimmung möglich"
 
+msgid ""
+"Allow only current speakers and list of speakers managers to enter the live "
+"conference"
+msgstr ""
+"Nur aktuellen Redner/innen und der Redelistenverwaltung erlauben in eine "
+"Livekonferenz beizutreten"
+
 msgid "Allow submitter edit"
 msgstr "Antragsteller/in darf bearbeiten"
 
@@ -389,9 +396,6 @@ msgstr "Nachfragen, voreingestellt ja"
 msgid "Attachments"
 msgstr "Anhänge"
 
-msgid "Audio conference"
-msgstr "Audiokonferenz"
-
 msgid "Available votes"
 msgstr "Verfügbare Stimmen"
 
@@ -538,6 +542,9 @@ msgstr "Darf die Startseite sehen"
 msgid "Can see the list of files"
 msgstr "Darf die Dateiliste sehen"
 
+msgid "Can see the live stream"
+msgstr "Darf den Livestream sehen"
+
 msgid "Can see the projector"
 msgstr "Darf den Projektor sehen"
 
@@ -680,8 +687,11 @@ msgstr "Komplexer Arbeitsablauf"
 msgid "Confirm new password"
 msgstr "Neues Passwort bestätigen"
 
-msgid "Connect all users to audio conference automatically"
-msgstr "Alle Nutzer automatisch mit der Audiokonferenz verbinden"
+msgid "Congratuations! Your browser is supported by OpenSlides."
+msgstr "Glückwunsch! Ihr Browser wird von OpenSlides unterstützt. "
+
+msgid "Connect all users to live conference automatically"
+msgstr "Alle Nutzer automatisch mit der Livekonferenz verbinden"
 
 msgid "Content"
 msgstr "Inhalt"
@@ -1036,6 +1046,9 @@ msgstr ""
 "Geben Sie die Dauer in Sekunden an. Zum Deaktivieren der Warn-Farbe 0 "
 "auswählen."
 
+msgid "Enter live conference"
+msgstr "Livekonferenz beitreten"
+
 msgid ""
 "Enter number of the next shown speakers. Choose -1 to show all next "
 "speakers."
@@ -1089,6 +1102,9 @@ msgstr "Veranstalter"
 
 msgid "Exit"
 msgstr "Beenden"
+
+msgid "Exit live conference and continue livestream"
+msgstr "Livekonferenz verlassen und Livestream fortsetzen"
 
 msgid "Expand all"
 msgstr "Alle ausklappen"
@@ -1473,6 +1489,15 @@ msgstr "Redelisten-Einblendung"
 msgid "List view"
 msgstr "Listenansicht"
 
+msgid "Live conference"
+msgstr "Livekonferenz"
+
+msgid "Livestream"
+msgstr "Livestream"
+
+msgid "Livestream url"
+msgstr "Livestream-URL"
+
 msgid "Loading data. Please wait ..."
 msgstr "Daten werden geladen. Bitte warten ..."
 
@@ -1494,8 +1519,8 @@ msgstr "Als persönlichen Favorit markieren"
 msgid "Mark speaker"
 msgstr "Redner/in markieren"
 
-msgid "Maximize Jitsi window"
-msgstr "Jitsi-Fenster maximieren"
+msgid "Maximize / minimize Jitsi window"
+msgstr "Jitsi-Fenster maximieren/minimieren"
 
 msgid "Media file"
 msgstr "Mediendatei"
@@ -1508,6 +1533,9 @@ msgstr "Mitteilungen"
 
 msgid "Meta information"
 msgstr "Metainformationen"
+
+msgid "Minimal required version"
+msgstr "Minimal erforderliche Version"
 
 msgid "Minimize"
 msgstr "Minimieren"
@@ -1883,6 +1911,9 @@ msgstr "OpenSlides-Zugangsdaten"
 msgid "OpenSlides is temporarily reset to following timestamp"
 msgstr "OpenSlides ist vorübergehend auf folgenden Zeitpunkt zurückgesetzt:"
 
+msgid "OpenSlides recommends:"
+msgstr "OpenSlides empfiehlt:"
+
 msgid "Origin"
 msgstr "Herkunft"
 
@@ -2013,6 +2044,11 @@ msgstr "Bitte geben Sie Ihr neues Passwort ein"
 msgid "Please select the directory:"
 msgstr "Bitte wählen Sie das Verzeichnis aus:"
 
+msgid "Please update your browser or contact your system administration."
+msgstr ""
+"Bitte aktualisieren Sie Ihren Browser oder kontaktieren Sie Ihre "
+"Systemadministration."
+
 msgid "Preamble text for PDF document (all elections)"
 msgstr "Einleitungstext für PDF-Dokument (alle Wahlen) "
 
@@ -2115,8 +2151,8 @@ msgstr "Empfehlung"
 msgid "Recommendation set to {arg1}"
 msgstr "Empfehlung gesetzt auf {arg1}"
 
-msgid "Reenter to audio conference"
-msgstr "Audiokonferenz erneut beitreten"
+msgid "Reenter to live conference"
+msgstr "Livekonferenz erneut beitreten"
 
 msgid "Refer to committee"
 msgstr "In Ausschuss verweisen"
@@ -2147,6 +2183,13 @@ msgstr "Verwerfung (nicht berechtigt)"
 
 msgid "Remove"
 msgstr "Entfernen"
+
+msgid ""
+"Remove URL to deactivate livestream. Check extra group permission to see "
+"livestream."
+msgstr ""
+"Um den Livestream zu deaktivieren entfernen Sie die URL. Prüfen Sie die "
+"extra Gruppenberechtigung um den Livestream zu sehen."
 
 msgid "Remove all speakers"
 msgstr "Alle Redner/innen entfernen"
@@ -2215,6 +2258,9 @@ msgstr "Auf Werkseinstellung zurücksetzen"
 
 msgid "Resolution and size"
 msgstr "Auflösung und Größe"
+
+msgid "Restart livestream"
+msgstr "Livestream neustarten"
 
 msgid "Restrictions"
 msgstr "Zugriffsbeschränkung"
@@ -2370,9 +2416,6 @@ msgstr "Änderungsantrag im Hauptantrag anzeigen"
 msgid "Show amendments together with motions"
 msgstr "Änderungsanträge zusätzlich in der Hauptantragsübersicht anzeigen"
 
-msgid "Show audio conference window"
-msgstr "Audiokonferenz-Fenster anzeigen"
-
 msgid "Show checkbox to record decision"
 msgstr "Ankreuzfelder zum Dokumentieren der Entscheidung anzeigen"
 
@@ -2402,6 +2445,9 @@ msgstr "Kopf- und Fußzeile anzeigen"
 
 msgid "Show hint »first speech« in the list of speakers management view"
 msgstr "Hinweis »Erstredner/in« in der Redelistenverwaltung anzeigen "
+
+msgid "Show live conference window"
+msgstr "Livekonferenz-Fenster anzeigen"
 
 msgid "Show logo"
 msgstr "Logo anzeigen"
@@ -2611,9 +2657,6 @@ msgstr "Texttrenner"
 msgid "The assembly may decide:"
 msgstr "Die Versammlung möge beschließen:"
 
-msgid "The audio conference is already running in your OpenSlides session."
-msgstr "Die Audiokonferenz läuft bereits in Ihrer OpenSlides-Sitzung."
-
 msgid "The event manager has not set up a legal notice yet."
 msgstr "Der Veranstalter hat noch kein Impressum hinterlegt."
 
@@ -2642,6 +2685,17 @@ msgstr ""
 
 msgid "The list of speakers is closed."
 msgstr "Die Redeliste ist geschlossen."
+
+msgid "The live conference is already running in your OpenSlides session."
+msgstr "Die Livekonferenz läuft bereits in Ihrer OpenSlides-Sitzung."
+
+msgid "The livestream is already running in your OpenSlides session."
+msgstr "Der Livestream läuft bereits in Ihrer OpenSlides-Sitzung."
+
+msgid "The livestream is disabled because you are inside a conference"
+msgstr ""
+"Der Livestream ist deaktiviert, weil Sie gerade an der Livekonferenz "
+"teilnehmen."
 
 msgid ""
 "The maximum number of characters per line. Relevant when line numbering is "
@@ -3048,6 +3102,12 @@ msgstr ""
 "Sie haben die maximale Anzahl von Stimmen erreicht. Deselektieren Sie zuerst"
 " eine Auswahl."
 
+msgid "Your browser"
+msgstr "Ihr Browser"
+
+msgid "Your browser is not supported by OpenSlides!"
+msgstr "Ihr Browser wird von OpenSlides nicht unterstützt!"
+
 msgid "Your decision cannot be changed afterwards."
 msgstr "Ihre Stimmabgabe kann anschließend nicht mehr geändert werden."
 
@@ -3105,6 +3165,9 @@ msgstr "von"
 
 msgid "committee"
 msgstr "Gremium"
+
+msgid "connecting ..."
+msgstr "Verbindungsaufbau ..."
 
 msgid "connections"
 msgstr "Verbindungen"
@@ -3282,6 +3345,9 @@ msgstr "bis"
 
 msgid "undocumented"
 msgstr "nicht erfasst"
+
+msgid "version"
+msgstr "Version"
 
 msgid "with filter"
 msgstr "mit Filter"

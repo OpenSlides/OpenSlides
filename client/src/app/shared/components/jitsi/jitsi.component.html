@@ -46,7 +46,7 @@
                     class="indicator quick-icon"
                     color="accent"
                     (click)="viewStream()"
-                    matTooltip="{{ 'Exit live conference and view the live stream' | translate }}"
+                    matTooltip="{{ 'Exit live conference and continue livestream' | translate }}"
                     *ngIf="videoStreamUrl"
                 >
                     <mat-icon color="warn">
@@ -106,14 +106,14 @@
                             <i>{{ 'disconnected' | translate }}</i>
                         </span>
                         <span *ngIf="isJitsiActive && !isJoined">
-                            <i>{{ 'connecting...' | translate }}</i>
+                            <i>{{ 'connecting ...' | translate }}</i>
                         </span>
                     </div>
                 </ng-container>
 
                 <ng-container *ngIf="currentState == state.stream">
                     <!-- os-icon-container does weid things here -->
-                    <span> {{ 'Live stream' | translate }}</span>
+                    <span> {{ 'Livestream' | translate }}</span>
                 </ng-container>
 
                 <mat-icon class="opened-indicator" *ngIf="!showJitsiWindow">keyboard_arrow_up</mat-icon>
@@ -133,10 +133,10 @@
                         <!-- The "somewhere else active" warning -->
                         <div class="disconnected" *ngIf="isJitsiActiveInAnotherTab && !isJitsiActive">
                             <span>{{
-                                'The audio conference is already running in your OpenSlides session.' | translate
+                                'The live conference is already running in your OpenSlides session.' | translate
                             }}</span>
                             <button mat-button color="warn" (click)="forceStart()">
-                                <span>{{ 'Reenter to audio conference' | translate }}</span>
+                                <span>{{ 'Reenter to live conference' | translate }}</span>
                             </button>
                         </div>
 
@@ -145,7 +145,7 @@
                         </div>
 
                         <div class="disconnected" *ngIf="isJitsiActive && !isJoined">
-                            <span>{{ 'connecting...' | translate }}</span>
+                            <span>{{ 'connecting ...' | translate }}</span>
                         </div>
 
                         <!-- user list -->
@@ -175,9 +175,9 @@
                         *ngIf="!streamActiveInAnotherTab || streamRunning"
                     ></os-vjs-player>
                     <div class="disconnected" *ngIf="streamActiveInAnotherTab && !streamRunning">
-                        <span>{{ 'The video stream is already running in your OpenSlides session.' | translate }}</span>
+                        <span>{{ 'The livestream is already running in your OpenSlides session.' | translate }}</span>
                         <button mat-button color="warn" (click)="deleteStreamingLock()">
-                            <span>{{ 'Force the stream to reload' | translate }}</span>
+                            <span>{{ 'Restart livestream' | translate }}</span>
                         </button>
                     </div>
                 </ng-container>

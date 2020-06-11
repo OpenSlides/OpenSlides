@@ -156,6 +156,11 @@ msgstr ""
 msgid "Allow create poll"
 msgstr ""
 
+msgid ""
+"Allow only current speakers and list of speakers managers to enter the live "
+"conference"
+msgstr ""
+
 msgid "Allow submitter edit"
 msgstr ""
 
@@ -353,9 +358,6 @@ msgstr ""
 msgid "Attachments"
 msgstr ""
 
-msgid "Audio conference"
-msgstr ""
-
 msgid "Available votes"
 msgstr ""
 
@@ -500,6 +502,9 @@ msgstr ""
 msgid "Can see the list of files"
 msgstr ""
 
+msgid "Can see the live stream"
+msgstr ""
+
 msgid "Can see the projector"
 msgstr ""
 
@@ -641,7 +646,10 @@ msgstr ""
 msgid "Confirm new password"
 msgstr ""
 
-msgid "Connect all users to audio conference automatically"
+msgid "Congratuations! Your browser is supported by OpenSlides."
+msgstr ""
+
+msgid "Connect all users to live conference automatically"
 msgstr ""
 
 msgid "Content"
@@ -971,6 +979,9 @@ msgstr ""
 msgid "Enter duration in seconds. Choose 0 to disable warning color."
 msgstr ""
 
+msgid "Enter live conference"
+msgstr ""
+
 msgid ""
 "Enter number of the next shown speakers. Choose -1 to show all next "
 "speakers."
@@ -1019,6 +1030,9 @@ msgid "Event organizer"
 msgstr ""
 
 msgid "Exit"
+msgstr ""
+
+msgid "Exit live conference and continue livestream"
 msgstr ""
 
 msgid "Expand all"
@@ -1401,6 +1415,15 @@ msgstr ""
 msgid "List view"
 msgstr ""
 
+msgid "Live conference"
+msgstr ""
+
+msgid "Livestream"
+msgstr ""
+
+msgid "Livestream url"
+msgstr ""
+
 msgid "Loading data. Please wait ..."
 msgstr ""
 
@@ -1422,7 +1445,7 @@ msgstr ""
 msgid "Mark speaker"
 msgstr ""
 
-msgid "Maximize Jitsi window"
+msgid "Maximize / minimize Jitsi window"
 msgstr ""
 
 msgid "Media file"
@@ -1435,6 +1458,9 @@ msgid "Messages"
 msgstr ""
 
 msgid "Meta information"
+msgstr ""
+
+msgid "Minimal required version"
 msgstr ""
 
 msgid "Minimize"
@@ -1804,6 +1830,9 @@ msgstr ""
 msgid "OpenSlides is temporarily reset to following timestamp"
 msgstr ""
 
+msgid "OpenSlides recommends:"
+msgstr ""
+
 msgid "Origin"
 msgstr ""
 
@@ -1933,6 +1962,9 @@ msgstr ""
 msgid "Please select the directory:"
 msgstr ""
 
+msgid "Please update your browser or contact your system administration."
+msgstr ""
+
 msgid "Preamble text for PDF document (all elections)"
 msgstr ""
 
@@ -2035,7 +2067,7 @@ msgstr ""
 msgid "Recommendation set to {arg1}"
 msgstr ""
 
-msgid "Reenter to audio conference"
+msgid "Reenter to live conference"
 msgstr ""
 
 msgid "Refer to committee"
@@ -2066,6 +2098,11 @@ msgid "Rejection (not authorized)"
 msgstr ""
 
 msgid "Remove"
+msgstr ""
+
+msgid ""
+"Remove URL to deactivate livestream. Check extra group permission to see "
+"livestream."
 msgstr ""
 
 msgid "Remove all speakers"
@@ -2130,6 +2167,9 @@ msgid "Reset to factory defaults"
 msgstr ""
 
 msgid "Resolution and size"
+msgstr ""
+
+msgid "Restart livestream"
 msgstr ""
 
 msgid "Restrictions"
@@ -2285,9 +2325,6 @@ msgstr ""
 msgid "Show amendments together with motions"
 msgstr ""
 
-msgid "Show audio conference window"
-msgstr ""
-
 msgid "Show checkbox to record decision"
 msgstr ""
 
@@ -2316,6 +2353,9 @@ msgid "Show header and footer"
 msgstr ""
 
 msgid "Show hint »first speech« in the list of speakers management view"
+msgstr ""
+
+msgid "Show live conference window"
 msgstr ""
 
 msgid "Show logo"
@@ -2522,9 +2562,6 @@ msgstr ""
 msgid "The assembly may decide:"
 msgstr ""
 
-msgid "The audio conference is already running in your OpenSlides session."
-msgstr ""
-
 msgid "The event manager has not set up a legal notice yet."
 msgstr ""
 
@@ -2547,6 +2584,15 @@ msgid "The link is broken. Please contact your system administrator."
 msgstr ""
 
 msgid "The list of speakers is closed."
+msgstr ""
+
+msgid "The live conference is already running in your OpenSlides session."
+msgstr ""
+
+msgid "The livestream is already running in your OpenSlides session."
+msgstr ""
+
+msgid "The livestream is disabled because you are inside a conference"
 msgstr ""
 
 msgid ""
@@ -2904,6 +2950,12 @@ msgstr ""
 msgid "You reached the maximum amount of votes. Deselect somebody first."
 msgstr ""
 
+msgid "Your browser"
+msgstr ""
+
+msgid "Your browser is not supported by OpenSlides!"
+msgstr ""
+
 msgid "Your decision cannot be changed afterwards."
 msgstr ""
 
@@ -2959,6 +3011,9 @@ msgid "by"
 msgstr ""
 
 msgid "committee"
+msgstr ""
+
+msgid "connecting ..."
 msgstr ""
 
 msgid "connections"
@@ -3136,6 +3191,9 @@ msgid "to"
 msgstr ""
 
 msgid "undocumented"
+msgstr ""
+
+msgid "version"
 msgstr ""
 
 msgid "with filter"
