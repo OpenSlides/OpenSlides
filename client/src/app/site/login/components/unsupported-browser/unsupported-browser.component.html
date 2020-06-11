@@ -1,9 +1,9 @@
 <main>
     <h1 class="center spacer-top-20" *ngIf="!supported">
-        {{ 'Your browser is not supported by OpenSlides' | translate }}
+        {{ 'Your browser is not supported by OpenSlides!' | translate }}
     </h1>
     <h1 class="center spacer-top-20" *ngIf="supported">
-        {{ 'Congratuations! Your browser is supported by OpenSlides' | translate }}
+        {{ 'Congratuations! Your browser is supported by OpenSlides.' | translate }}
     </h1>
 
     <mat-card class="os-card">
@@ -13,13 +13,12 @@
                 {{ browserVersion }})
             </span>
             <br />
-            <span *ngIf="!!supportedVersion">{{ 'Minimal required version for your browser' | translate }}: {{ supportedVersion }}</span>
+            <span *ngIf="!!supportedVersion">{{ 'Minimal required version' | translate }}: {{ supportedVersion }}</span>
         </div>
 
         <div class="spacer-top-20" *ngIf="!supported">
             <span>{{
-                'Please update your browser or contact your system administration to have your browser updated for you.'
-                    | translate
+                'Please update your browser or contact your system administration.' | translate
             }}</span>
         </div>
 

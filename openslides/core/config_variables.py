@@ -55,8 +55,9 @@ def get_config_variables():
         "elections of an assembly.",
         input_type="markupText",
         label="Legal notice",
-        weight=132,
+        weight=131,
         subgroup="Event",
+        hidden=True,
     )
 
     yield ConfigVariable(
@@ -66,14 +67,16 @@ def get_config_variables():
         label="Privacy policy",
         weight=132,
         subgroup="Event",
+        hidden=True,
     )
 
     yield ConfigVariable(
         name="general_event_welcome_title",
         default_value="Welcome to OpenSlides",
         label="Front page title",
-        weight=134,
+        weight=133,
         subgroup="Event",
+        hidden=True,
     )
 
     yield ConfigVariable(
@@ -81,20 +84,12 @@ def get_config_variables():
         default_value="[Space for your welcome text.]",
         input_type="markupText",
         label="Front page text",
-        weight=136,
+        weight=134,
         subgroup="Event",
+        hidden=True,
     )
 
-    # General System
-
-    yield ConfigVariable(
-        name="general_system_enable_anonymous",
-        default_value=False,
-        input_type="boolean",
-        label="Allow access for anonymous guest users",
-        weight=138,
-        subgroup="System",
-    )
+    # Live conference
 
     yield ConfigVariable(
         name="general_system_conference_show",
@@ -103,7 +98,7 @@ def get_config_variables():
         label="Show live conference window",
         help_text="Server settings required to activate Jitsi Meet integration.",
         weight=140,
-        subgroup="System",
+        subgroup="Live conference",
     )
 
     yield ConfigVariable(
@@ -113,24 +108,36 @@ def get_config_variables():
         label="Connect all users to live conference automatically",
         help_text="Server settings required to activate Jitsi Meet integration.",
         weight=141,
-        subgroup="System",
+        subgroup="Live conference",
     )
 
     yield ConfigVariable(
         name="general_system_conference_los_restriction",
         default_value=False,
         input_type="boolean",
-        label="Allow only speakers and permitted users to enter the live conference",
+        label="Allow only current speakers and list of speakers managers to enter the live conference",
         help_text="Server settings required to activate Jitsi Meet integration.",
         weight=142,
-        subgroup="System",
+        subgroup="Live conference",
     )
 
     yield ConfigVariable(
         name="general_system_stream_url",
         default_value="",
-        label="Live stream url",
+        label="Livestream url",
+        help_text="Remove URL to deactivate livestream. Check extra group permission to see livestream.",
         weight=143,
+        subgroup="Live conference",
+    )
+
+    # General System
+
+    yield ConfigVariable(
+        name="general_system_enable_anonymous",
+        default_value=False,
+        input_type="boolean",
+        label="Allow access for anonymous guest users",
+        weight=150,
         subgroup="System",
     )
 
@@ -138,7 +145,7 @@ def get_config_variables():
         name="general_login_info_text",
         default_value="",
         label="Show this text on the login page",
-        weight=145,
+        weight=152,
         subgroup="System",
     )
 
@@ -156,7 +163,7 @@ def get_config_variables():
                 "display_name": "OpenSlides Developer",
             },
         ),
-        weight=146,
+        weight=154,
         subgroup="System",
     )
 
