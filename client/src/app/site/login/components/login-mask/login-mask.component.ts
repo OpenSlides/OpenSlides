@@ -6,6 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
 
 import { AuthService } from 'app/core/core-services/auth.service';
 import { OperatorService } from 'app/core/core-services/operator.service';
@@ -14,6 +15,7 @@ import { OverlayService } from 'app/core/ui-services/overlay.service';
 import { UserAuthType } from 'app/shared/models/users/user';
 import { ParentErrorStateMatcher } from 'app/shared/parent-error-state-matcher';
 import { BaseViewComponent } from 'app/site/base/base-view';
+import { BrowserSupportService } from '../../services/browser-support.service';
 
 /**
  * Login mask component.
@@ -30,6 +32,8 @@ export class LoginMaskComponent extends BaseViewComponent implements OnInit, OnD
      * Show or hide password and change the indicator accordingly
      */
     public hide: boolean;
+
+    private checkBrowser = true;
 
     /**
      * Reference to the SnackBarEntry for the installation notice send by the server.
@@ -82,7 +86,8 @@ export class LoginMaskComponent extends BaseViewComponent implements OnInit, OnD
         private route: ActivatedRoute,
         private formBuilder: FormBuilder,
         private loginDataService: LoginDataService,
-        private overlayService: OverlayService
+        private overlayService: OverlayService,
+        private browserSupport: BrowserSupportService
     ) {
         super(title, translate, matSnackBar);
         // Hide the spinner if the user is at `login-mask`
@@ -113,6 +118,14 @@ export class LoginMaskComponent extends BaseViewComponent implements OnInit, OnD
                 this.authService.redirectUser(user.id);
             }
         });
+
+        this.route.queryParams.pipe(filter(params => params.checkBrowser)).subscribe(params => {
+            this.checkBrowser = params.checkBrowser === 'true';
+        });
+
+        if (this.checkBrowser) {
+            this.checkDevice();
+        }
     }
 
     /**
@@ -120,6 +133,12 @@ export class LoginMaskComponent extends BaseViewComponent implements OnInit, OnD
      */
     public ngOnDestroy(): void {
         this.clearOperatorSubscription();
+    }
+
+    private checkDevice(): void {
+        if (!this.browserSupport.isBrowserSupported()) {
+            this.router.navigate(['./unsupported-browser'], { relativeTo: this.route });
+        }
     }
 
     /**
