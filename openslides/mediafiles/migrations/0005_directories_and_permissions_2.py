@@ -22,7 +22,10 @@ def change_logo_and_font_configs(apps, schema_editor):
         pass
 
     for key in logo_font_keys:
-        config = ConfigStore.objects.get(key=key)
+        try:
+            config = ConfigStore.objects.get(key=key)
+        except ConfigStore.DoesNotExist:
+            continue
         logo = config.value
         path = logo.get("path")
         if path and path.startswith("/media/file/"):
