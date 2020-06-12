@@ -1,25 +1,46 @@
-header {
-    width: 100%;
-    flex: 1;
-    mat-toolbar {
-        min-height: 200px !important;
-    }
-    .login-logo-bar a {
-        margin-left: auto;
-        margin-right: auto;
-
-        img {
-            width: 90%;
-            height: 90%;
-            max-width: 400px;
-        }
-    }
+html,
+body {
+    height: 100%;
 }
 
-.footer {
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 80px;
-    font-size: 12px;
-    text-align: center;
+.main-login-wrapper {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+
+    .content-wrapper {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        overflow: auto;
+
+        .login-logo-bar {
+            min-height: 80px !important;
+            max-height: 200px !important;
+            height: 20vh !important;
+
+            a {
+                margin-left: auto;
+                margin-right: auto;
+
+                img {
+                    width: 100%;
+                    max-width: 400px;
+                    display: block;
+                }
+            }
+        }
+
+        .main-router {
+            flex: 1 0 auto;
+        }
+
+        .footer {
+            flex-shrink: 0;
+            margin-left: auto;
+            margin-right: auto;
+            font-size: 12px;
+            text-align: center;
+        }
+    }
 }

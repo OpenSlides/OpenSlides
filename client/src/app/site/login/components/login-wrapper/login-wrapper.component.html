@@ -1,24 +1,25 @@
-<!-- The actual form -->
-<header>
-    <mat-toolbar class="login-logo-bar" color="primary">
-        <a routerLink="/login" [queryParams]="{ checkBrowser: false }"
-            ><img src="assets/img/openslides-logo-dark.svg" alt="OpenSlides-logo"
-        /></a>
-    </mat-toolbar>
-</header>
+<div class="main-login-wrapper">
+    <div class="content-wrapper">
+        <mat-toolbar class="login-logo-bar" color="primary">
+            <a routerLink="/login" [queryParams]="{ checkBrowser: false }">
+                <img src="assets/img/openslides-logo-dark.svg" alt="OpenSlides-logo" />
+            </a>
+        </mat-toolbar>
 
-<main>
-    <router-outlet></router-outlet>
-</main>
+        <div class="main-router">
+            <router-outlet></router-outlet>
+        </div>
 
-<div class="footer">
-    <a href="https://openslides.com" target="_bank">© Copyright by OpenSlides</a>
-    &middot;
-    <a routerLink="/login/legalnotice">
-        {{ 'Legal notice' | translate }}
-    </a>
-    &middot;
-    <a routerLink="/login/privacypolicy">
-        {{ 'Privacy policy' | translate }}
-    </a>
+        <div class="footer">
+            <a href="https://openslides.com" target="_bank">© Copyright by OpenSlides</a>
+            &middot;
+            <a routerLink="/login/legalnotice">
+                {{ 'Legal notice' | translate }}
+            </a>
+            &middot;
+            <a routerLink="/login/privacypolicy">
+                {{ 'Privacy policy' | translate }}
+            </a>
+        </div>
+    </div>
 </div>

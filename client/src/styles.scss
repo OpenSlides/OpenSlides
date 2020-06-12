@@ -35,6 +35,7 @@
 @import './app/shared/components/jitsi/jitsi.component.scss-theme.scss';
 @import './app/shared/components/list-view-table/list-view-table.component.scss-theme.scss';
 @import './app/site/common/components/user-statistics/user-statistics.component.scss-theme.scss';
+@import './app/site/login/components/login-wrapper/login-wrapper.component.scss-theme.scss';
 
 /** fonts */
 @import './assets/styles/fonts.scss';
@@ -73,6 +74,8 @@ $narrow-spacing: (
     @include os-jitsi-theme($theme);
     @include os-list-view-table-theme($theme);
     @include os-user-statistics-style($theme);
+    @include os-user-statistics-style($theme);
+    @include os-login-wrapper-theme($theme);
 }
 
 /** Load projector specific SCSS values */
@@ -104,6 +107,7 @@ $narrow-spacing: (
 
 .openslides-dark-theme,
 .openslides-developer-dark-theme {
+    color: white;
     .logo-container {
         img.dark {
             display: inherit;

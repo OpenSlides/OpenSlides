@@ -1,0 +1,9 @@
+@import '~@angular/material/theming';
+
+@mixin os-login-wrapper-theme($theme) {
+    $background: map-get($theme, background);
+
+    .main-login-wrapper {
+        background-color: mat-color($background, background);
+    }
+}
