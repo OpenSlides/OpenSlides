@@ -3,12 +3,12 @@ import { Injectable } from '@angular/core';
 import { DeviceDetectorService, DeviceInfo } from 'ngx-device-detector';
 
 const SmallestSupportedBrowserVersion = {
-    Chrome: 81,
+    Chrome: 80,
     Safari: 13,
     Firefox: 68,
     Opera: 66,
-    'MS-Edge': 81,
-    'MS-Edge-Chromium': 81
+    'MS-Edge': 80,
+    'MS-Edge-Chromium': 80
 };
 
 const BrowserBlacklist = ['IE'];
