@@ -1,0 +1,7 @@
+@import './assets/styles/color-palettes/os-red.scss';
+
+$openslides-primary: mat-palette($openslides-primary-red, 500, 300, 900);
+$openslides-accent: mat-palette($openslides-primary-red, 500, 300, 900);
+$openslides-warn: mat-palette($mat-orange, 700, 300, 900);
+
+$openslides-red-light: mat-light-theme($openslides-primary, $openslides-accent, $openslides-warn);

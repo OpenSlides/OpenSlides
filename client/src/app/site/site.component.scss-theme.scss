@@ -7,6 +7,7 @@
     $warn: map-get($theme, accent);
     $foreground: map-get($theme, foreground);
     $background: map-get($theme, background);
+    $is-dark-theme: map-get($theme, is-dark);
 
     os-site {
         /* main background color */
@@ -41,10 +42,10 @@
         /** style the active link */
         .active {
             mat-icon {
-                color: mat-color($primary);
+                color: mat-color(if($is-dark-theme, $accent, $primary));
             }
             span {
-                color: mat-color($primary);
+                color: mat-color(if($is-dark-theme, $accent, $primary));
             }
         }
     }

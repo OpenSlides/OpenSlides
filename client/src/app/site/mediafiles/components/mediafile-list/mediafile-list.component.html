@@ -294,7 +294,7 @@
             type="submit"
             mat-button
             [disabled]="!fileEditForm.valid"
-            color="primary"
+            color="accent"
             (click)="onSaveEditedFile(fileEditForm.value)"
         >
             <span>{{ 'Save' | translate }}</span>
@@ -326,7 +326,7 @@
         </form>
     </div>
     <div mat-dialog-actions>
-        <button type="submit" mat-button [disabled]="!newDirectoryForm.valid" color="primary" [mat-dialog-close]="true">
+        <button type="submit" mat-button [disabled]="!newDirectoryForm.valid" color="accent" [mat-dialog-close]="true">
             <span>{{ 'Save' | translate }}</span>
         </button>
         <button type="button" mat-button [mat-dialog-close]="null">
@@ -353,7 +353,7 @@
         </mat-form-field>
     </div>
     <div mat-dialog-actions>
-        <button type="submit" mat-button color="primary" [mat-dialog-close]="true">
+        <button type="submit" mat-button color="accent" [mat-dialog-close]="true">
             <span>{{ 'Move' | translate }}</span>
         </button>
         <button type="button" mat-button [mat-dialog-close]="null">

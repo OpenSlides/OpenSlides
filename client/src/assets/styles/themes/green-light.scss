@@ -1,0 +1,7 @@
+@import './assets/styles/color-palettes/os-green.scss';
+
+$openslides-primary: mat-palette($openslides-green);
+$openslides-accent: mat-palette($mat-amber);
+$openslides-warn: mat-palette($mat-red);
+
+$openslides-green-light: mat-light-theme($openslides-primary, $openslides-accent, $openslides-warn);

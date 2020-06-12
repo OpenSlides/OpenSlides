@@ -135,7 +135,7 @@
             </h1>
             <button
                 mat-icon-button
-                color="primary"
+                color="accent"
                 (click)="toggleFavorite()"
                 matTooltip="{{ 'Mark as personal favorite' | translate }}"
             >
@@ -215,7 +215,7 @@
             <button
                 type="button"
                 mat-stroked-button
-                color="primary"
+                color="accent"
                 (click)="support()"
                 *ngIf="perms.isAllowed('support', motion)"
             >
@@ -229,7 +229,7 @@
                 *ngIf="perms.isAllowed('unsupport', motion)"
                 (click)="unsupport()"
                 mat-stroked-button
-                color="primary"
+                color="accent"
             >
                 <mat-icon>thumb_down</mat-icon>
                 {{ 'Unsupport' | translate }}

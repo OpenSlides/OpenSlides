@@ -30,9 +30,3 @@ $openslides-green: (
         A700: #000000
     )
 );
-
-$openslides-primary: mat-palette($openslides-green);
-$openslides-accent: mat-palette($mat-amber);
-$openslides-warn: mat-palette($mat-red);
-
-$openslides-green-theme: mat-light-theme($openslides-primary, $openslides-accent, $openslides-warn);

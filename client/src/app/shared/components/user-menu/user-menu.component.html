@@ -17,7 +17,7 @@
                 (click)="toggleUserIsPresent()"
                 *ngIf="allowSelfSetPresent"
             >
-                <mat-icon [color]="user.is_present ? 'primary' : ''" class="menu-icon">
+                <mat-icon [color]="user.is_present ? 'accent' : ''" class="menu-icon">
                     {{ user.is_present ? 'check_box' : 'check_box_outline_blank' }}
                 </mat-icon>
                 <span class="menu-text">{{ 'Present' | translate }}</span>

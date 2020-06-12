@@ -151,16 +151,34 @@ def get_config_variables():
 
     yield ConfigVariable(
         name="openslides_theme",
-        default_value="openslides-theme",
+        default_value="openslides-default-light",
         input_type="choice",
         label="OpenSlides Theme",
         choices=(
-            {"value": "openslides-theme", "display_name": "OpenSlides Default"},
-            {"value": "openslides-dark-theme", "display_name": "OpenSlides Dark"},
-            {"value": "openslides-green-theme", "display_name": "OpenSlides Green"},
             {
-                "value": "openslides-developer-dark-theme",
-                "display_name": "OpenSlides Developer",
+                "value": "openslides-default-light-theme",
+                "display_name": "OpenSlides Default",
+            },
+            {
+                "value": "openslides-default-dark-theme",
+                "display_name": "OpenSlides Dark",
+            },
+            {"value": "openslides-red-light-theme", "display_name": "OpenSlides Red"},
+            {
+                "value": "openslides-red-dark-theme",
+                "display_name": "OpenSlides Red Dark",
+            },
+            {
+                "value": "openslides-green-light-theme",
+                "display_name": "OpenSlides Green",
+            },
+            {
+                "value": "openslides-green-dark-theme",
+                "display_name": "OpenSlides Green Dark",
+            },
+            {
+                "value": "openslides-solarized-dark-theme",
+                "display_name": "OpenSlides Solarized",
             },
         ),
         weight=154,

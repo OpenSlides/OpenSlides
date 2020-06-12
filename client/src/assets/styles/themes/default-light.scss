@@ -1,0 +1,38 @@
+@import './assets/styles/color-palettes/os-blue';
+
+// Generate paletes using: https://material.io/design/color/
+// default values for mat-palette: $default: 500, $lighter: 100, $darker: 700.
+$openslides-primary: mat-palette($openslides-blue);
+$openslides-accent: mat-palette($mat-light-blue);
+$openslides-warn: mat-palette($mat-red);
+
+// Create the theme object (a Sass map containing all of the palettes).
+$openslides-default-light: mat-light-theme($openslides-primary, $openslides-accent, $openslides-warn);
+
+// Create Sass color vars (for using in scss files).
+// This will be set dynamically with the selecting theme
+
+$os-outline: mat-color($mat-grey, 300);
+$os-background: mat-color($mat-grey, 100);
+
+/** This is the workaround to set a custom background-color
+ *  In the first step the color must be merged, in order to have to a map.
+ *  The components will get a value from this map.
+ */
+$background: map-get($openslides-default-light, background);
+$background: map_merge(
+    $background,
+    (
+        background: $os-background
+    )
+);
+
+/**
+ *  Merge the theme with the custom-background.
+ */
+$openslides-default-light: map_merge(
+    $openslides-default-light,
+    (
+        background: $background
+    )
+);

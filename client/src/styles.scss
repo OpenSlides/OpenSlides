@@ -1,194 +1,18 @@
-/** Imports the material-design-theming */
-@import '~@angular/material/theming';
-@include mat-core();
-
-/** Import brand theme */
-@import './assets/styles/openslides-general-theme.scss';
-@import './assets/styles/openslides-theme.scss';
-@import './assets/styles/openslides-dark-theme.scss';
-@import './assets/styles/openslides-green-theme.scss';
-@import './assets/styles/openslides-developer-theme.scss';
-
-/** Import the component-related style sheets here */
-@import './app/site/site.component.scss-theme.scss';
-@import './assets/styles/global-components-style.scss';
-@import './app/shared/components/projector-button/projector-button.component.scss';
-@import './app/site/agenda/components/list-of-speakers/list-of-speakers.component.scss-theme.scss';
-@import './app/shared/components/sorting-tree/sorting-tree.component.scss';
-@import './app/shared/components/global-spinner/global-spinner.component.scss';
-@import './app/shared/components/tile/tile.component.scss';
-@import './app/shared/components/block-tile/block-tile.component.scss';
-@import './app/shared/components/icon-container/icon-container.component.scss';
-@import './app/site/common/components/start/start.component.scss';
-@import './app/site/mediafiles/components/mediafile-list/mediafile-list.component.scss-theme.scss';
-@import './app/site/common/components/super-search/super-search.component.scss';
-@import './app/shared/components/rounded-input/rounded-input.component.scss';
-@import './app/shared/components/meta-text-block/meta-text-block.component.scss';
-@import './app/site/config/components/config-field/config-field.component.scss-theme.scss';
-@import './app/site/motions/modules/motion-detail/components/amendment-create-wizard/amendment-create-wizard.components.scss-theme.scss';
-@import './app/site/motions/modules/motion-detail/components/motion-detail-diff/motion-detail-diff.component.scss-theme.scss';
-@import './app/shared/components/banner/banner.component.scss-theme.scss';
-@import './app/site/motions/modules/motion-poll/motion-poll/motion-poll.component.scss-theme.scss';
-@import './app/site/motions/modules/motion-poll/motion-poll-detail/motion-poll-detail.component.scss-theme.scss';
-@import './app/site/assignments/components/assignment-poll-detail/assignment-poll-detail-component.scss-theme.scss';
-@import './app/shared/components/progress-snack-bar/progress-snack-bar.component.scss-theme.scss';
-@import './app/shared/components/jitsi/jitsi.component.scss-theme.scss';
-@import './app/shared/components/list-view-table/list-view-table.component.scss-theme.scss';
-@import './app/site/common/components/user-statistics/user-statistics.component.scss-theme.scss';
-@import './app/site/login/components/login-wrapper/login-wrapper.component.scss-theme.scss';
+/** theming */
+@import './assets/styles/component-themes.scss';
 
 /** fonts */
 @import './assets/styles/fonts.scss';
 @import '~material-icon-font/dist/Material-Icons.css';
 
-/** NGrid */
-@import '~@pebula/ngrid/theming';
-$narrow-spacing: (
-    spacing: $pbl-spacing-theme-narrow
-);
-
-/** Videjs */
+/** Videojs */
 @import '~video.js/dist/video-js.css';
-
-/** Mix the component-related style-rules */
-@mixin openslides-components-theme($theme) {
-    @include os-site-theme($theme);
-    @include os-components-style($theme);
-    @include os-projector-button-style($theme);
-    @include os-list-of-speakers-style($theme);
-    @include os-sorting-tree-style($theme);
-    @include os-global-spinner-theme($theme);
-    @include os-tile-style($theme);
-    @include os-mediafile-list-theme($theme);
-    @include os-super-search-style($theme);
-    @include os-rounded-input-style($theme);
-    @include os-meta-text-block-style($theme);
-    @include os-config-field-style($theme);
-    @include os-amendment-create-wizard-style($theme);
-    @include os-motion-detail-diff-style($theme);
-    @include os-banner-style($theme);
-    @include os-motion-poll-style($theme);
-    @include os-motion-poll-detail-style($theme);
-    @include os-assignment-poll-detail-style($theme);
-    @include os-progress-snack-bar-style($theme);
-    @include os-jitsi-theme($theme);
-    @include os-list-view-table-theme($theme);
-    @include os-user-statistics-style($theme);
-    @include os-user-statistics-style($theme);
-    @include os-login-wrapper-theme($theme);
-}
 
 /** Load projector specific SCSS values */
 @import './assets/styles/projector.scss';
 
 /** Load global scss variables and device mixing */
 @import './assets/styles/variables.scss';
-
-.general-theme {
-    @include os-global-spinner-theme($openslides-general-theme);
-}
-
-/** Define the classes to switch between themes */
-.openslides-theme {
-    @include angular-material-theme($openslides-theme);
-    @include openslides-components-theme($openslides-theme);
-    $ngrid-material-theme: pbl-light-theme($openslides-theme);
-    @include pbl-ngrid-theme(map-merge($ngrid-material-theme, $narrow-spacing));
-
-    .logo-container {
-        img.dark {
-            display: none;
-        }
-        img.default {
-            display: inherit;
-        }
-    }
-}
-
-.openslides-dark-theme,
-.openslides-developer-dark-theme {
-    color: white;
-    .logo-container {
-        img.dark {
-            display: inherit;
-        }
-        img.default {
-            display: none;
-        }
-    }
-}
-
-.openslides-dark-theme {
-    @include angular-material-theme($openslides-dark-theme);
-    @include openslides-components-theme($openslides-dark-theme);
-    $ngrid-material-theme: pbl-dark-theme($openslides-dark-theme);
-    @include pbl-ngrid-theme(map-merge($ngrid-material-theme, $narrow-spacing));
-}
-
-.openslides-green-theme {
-    @include angular-material-theme($openslides-green-theme);
-    @include openslides-components-theme($openslides-green-theme);
-    $ngrid-material-theme: pbl-light-theme($openslides-green-theme);
-    @include pbl-ngrid-theme(map-merge($ngrid-material-theme, $narrow-spacing));
-}
-
-.openslides-developer-dark-theme {
-    @include angular-material-theme($openslides-developer-theme);
-    @include openslides-components-theme($openslides-developer-theme);
-    $ngrid-material-theme: pbl-dark-theme($openslides-developer-theme);
-    @include pbl-ngrid-theme(map-merge($ngrid-material-theme, $narrow-spacing));
-
-    * {
-        font-family: monospace !important;
-        color: mat-color(map-get($openslides-developer-theme, accent));
-    }
-
-    os-site {
-        .active mat-icon,
-        .active span {
-            color: mat-color(map-get($openslides-developer-theme, accent));
-        }
-    }
-
-    .custom-table-header {
-        background: #000;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-    }
-
-    .mat-toolbar.sticky-toolbar {
-        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-        height: 64px;
-    }
-
-    .mat-drawer-inner-container {
-        background: #000;
-    }
-
-    .mat-drawer-inner-container > * {
-        background: #000 !important;
-        z-index: 3;
-
-        .os-site.nav-toolbar {
-            background: #000;
-        }
-    }
-
-    .mat-drawer-content > * {
-        background: #000;
-    }
-
-    mat-icon {
-        font-family: 'Material Icons' !important;
-    }
-
-    .mat-mini-fab.projector-active {
-        background-color: mat-color(map-get($openslides-developer-theme, warn));
-    }
-
-    .mce-ico {
-        font-family: 'tinymce', Arial !important;
-    }
-}
 
 .pbl-ngrid-cell {
     .fill {
@@ -236,6 +60,7 @@ $narrow-spacing: (
 * {
     font-family: OSFont, Fira Sans, Roboto, Arial, Helvetica, sans-serif;
 }
+
 .mat-toolbar h2,
 .mat-dialog-title {
     font-family: OSFont, Fira Sans, Roboto, Arial, Helvetica, sans-serif;
@@ -268,6 +93,7 @@ h1 {
     font-weight: normal;
     font-size: 36px;
 }
+
 h3 {
     font-weight: 500;
     margin-bottom: 0;
@@ -330,7 +156,7 @@ b,
 
 .red-warning-text {
     color: red;
-    mat-icon {
+    .mat-icon {
         color: red !important;
     }
 }
@@ -369,6 +195,7 @@ b,
         visibility: hidden;
     }
 }
+
 .os-form-card {
     max-width: 770px;
     margin-top: 20px !important;
@@ -392,6 +219,7 @@ b,
         width: 100%;
     }
 }
+
 .projector-card .mat-form-field-infix {
     width: 290px;
 }
@@ -452,7 +280,7 @@ b,
         margin-right: 0px;
     }
 
-    mat-icon {
+    .mat-icon {
         vertical-align: text-bottom;
         margin-right: 2px;
     }
@@ -481,7 +309,7 @@ b,
 }
 
 /* TODO: find a better way to get more vertical space in (empty/small) tables for maximize filter dialog */
-mat-paginator {
+.mat-paginator {
     min-height: 800px;
 }
 
@@ -516,14 +344,9 @@ mat-paginator {
     flex: 1 1 auto;
 }
 
-mat-expansion-panel {
+.mat-expansion-panel {
     border-radius: 0 !important;
 }
-
-/* This destroys the projector button in list views using extension panels. */
-/*mat-panel-title mat-icon {
-    padding-right: 30px;
-}*/
 
 .mat-menu-panel {
     max-width: initial !important;
@@ -598,30 +421,39 @@ button.mat-menu-item.selected {
 .spacer-top-3 {
     margin-top: 3px !important;
 }
+
 .spacer-top-5 {
     margin-top: 5px !important;
 }
+
 .spacer-top-10 {
     margin-top: 10px !important;
 }
+
 .spacer-top-20 {
     margin-top: 20px !important;
 }
+
 .spacer-bottom-10 {
     margin-bottom: 10px !important;
 }
+
 .spacer-bottom-20 {
     margin-bottom: 20px !important;
 }
+
 .spacer-bottom-40 {
     margin-bottom: 40px !important;
 }
+
 .spacer-left-10 {
     margin-left: 10px;
 }
+
 .spacer-left-20 {
     margin-left: 20px;
 }
+
 .spacer-left-50 {
     margin-left: 50px !important;
 }
@@ -631,6 +463,7 @@ button.mat-menu-item.selected {
     width: 24px !important;
     height: 24px !important;
 }
+
 .icon24 {
     font-size: 16px;
     margin-top: -8px;
@@ -648,10 +481,12 @@ button.mat-menu-item.selected {
         line-height: 24px;
     }
 }
+
 .title {
     padding-top: 20px;
     padding-bottom: 20px;
 }
+
 .mat-radio-button {
     padding-right: 20px;
 }
@@ -935,6 +770,7 @@ button.mat-menu-item.selected {
     scrollbar-width: 5px;
     scrollbar-color: #666666;
 }
+
 .h-scroller::-webkit-scrollbar {
     width: 5px;
     height: 5px;

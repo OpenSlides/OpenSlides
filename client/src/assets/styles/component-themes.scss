@@ -1,0 +1,152 @@
+/** Imports the material-design-theming */
+@import '~@angular/material/theming';
+@include mat-core();
+
+/** NGrid theme */
+@import '~@pebula/ngrid/theming';
+$narrow-spacing: (
+    spacing: $pbl-spacing-theme-narrow
+);
+
+/** Import brand theme */
+@import './assets/styles/themes/default-dark.scss';
+@import './assets/styles/themes/default-light.scss';
+@import './assets/styles/themes/green-dark.scss';
+@import './assets/styles/themes/green-light.scss';
+@import './assets/styles/themes/red-dark.scss';
+@import './assets/styles/themes/red-light.scss';
+@import './assets/styles/themes/solarized-dark.scss';
+
+/** Global component style definition */
+@import './assets/styles/global-components-style.scss';
+
+/** Import the component-related style sheets here */
+@import './app/site/site.component.scss-theme.scss';
+@import './app/shared/components/projector-button/projector-button.component.scss';
+@import './app/site/agenda/components/list-of-speakers/list-of-speakers.component.scss-theme.scss';
+@import './app/shared/components/sorting-tree/sorting-tree.component.scss';
+@import './app/shared/components/global-spinner/global-spinner.component.scss';
+@import './app/shared/components/tile/tile.component.scss';
+@import './app/shared/components/block-tile/block-tile.component.scss';
+@import './app/shared/components/icon-container/icon-container.component.scss';
+@import './app/site/common/components/start/start.component.scss';
+@import './app/site/mediafiles/components/mediafile-list/mediafile-list.component.scss-theme.scss';
+@import './app/site/common/components/super-search/super-search.component.scss';
+@import './app/shared/components/rounded-input/rounded-input.component.scss';
+@import './app/shared/components/meta-text-block/meta-text-block.component.scss';
+@import './app/site/config/components/config-field/config-field.component.scss-theme.scss';
+@import './app/site/motions/modules/motion-detail/components/amendment-create-wizard/amendment-create-wizard.components.scss-theme.scss';
+@import './app/site/motions/modules/motion-detail/components/motion-detail-diff/motion-detail-diff.component.scss-theme.scss';
+@import './app/shared/components/banner/banner.component.scss-theme.scss';
+@import './app/site/motions/modules/motion-poll/motion-poll/motion-poll.component.scss-theme.scss';
+@import './app/site/motions/modules/motion-poll/motion-poll-detail/motion-poll-detail.component.scss-theme.scss';
+@import './app/site/assignments/components/assignment-poll-detail/assignment-poll-detail-component.scss-theme.scss';
+@import './app/shared/components/progress-snack-bar/progress-snack-bar.component.scss-theme.scss';
+@import './app/shared/components/jitsi/jitsi.component.scss-theme.scss';
+@import './app/shared/components/list-view-table/list-view-table.component.scss-theme.scss';
+@import './app/site/common/components/user-statistics/user-statistics.component.scss-theme.scss';
+@import './app/site/login/components/login-wrapper/login-wrapper.component.scss-theme.scss';
+
+/** Mix the component-related style-rules. Every single custom style goes here */
+@mixin openslides-components-theme($theme) {
+    @include os-site-theme($theme);
+    @include os-components-style($theme);
+    @include os-projector-button-style($theme);
+    @include os-list-of-speakers-style($theme);
+    @include os-sorting-tree-style($theme);
+    @include os-global-spinner-theme($theme);
+    @include os-tile-style($theme);
+    @include os-mediafile-list-theme($theme);
+    @include os-super-search-style($theme);
+    @include os-rounded-input-style($theme);
+    @include os-meta-text-block-style($theme);
+    @include os-config-field-style($theme);
+    @include os-amendment-create-wizard-style($theme);
+    @include os-motion-detail-diff-style($theme);
+    @include os-banner-style($theme);
+    @include os-motion-poll-style($theme);
+    @include os-motion-poll-detail-style($theme);
+    @include os-assignment-poll-detail-style($theme);
+    @include os-progress-snack-bar-style($theme);
+    @include os-jitsi-theme($theme);
+    @include os-list-view-table-theme($theme);
+    @include os-user-statistics-style($theme);
+    @include os-login-wrapper-theme($theme);
+}
+
+.openslides-default-light-theme {
+    @include angular-material-theme($openslides-default-light);
+    @include openslides-components-theme($openslides-default-light);
+    $ngrid-material-theme: pbl-light-theme($openslides-default-light);
+    @include pbl-ngrid-theme(map-merge($ngrid-material-theme, $narrow-spacing));
+}
+
+.openslides-default-dark-theme {
+    @include angular-material-theme($openslides-default-dark);
+    @include openslides-components-theme($openslides-default-dark);
+    $ngrid-material-theme: pbl-dark-theme($openslides-default-dark);
+    @include pbl-ngrid-theme(map-merge($ngrid-material-theme, $narrow-spacing));
+}
+
+.openslides-red-light-theme {
+    @include angular-material-theme($openslides-red-light);
+    @include openslides-components-theme($openslides-red-light);
+    $ngrid-material-theme: pbl-light-theme($openslides-red-light);
+    @include pbl-ngrid-theme(map-merge($ngrid-material-theme, $narrow-spacing));
+}
+
+.openslides-red-dark-theme {
+    @include angular-material-theme($openslides-red-dark);
+    @include openslides-components-theme($openslides-red-dark);
+    $ngrid-material-theme: pbl-dark-theme($openslides-red-dark);
+    @include pbl-ngrid-theme(map-merge($ngrid-material-theme, $narrow-spacing));
+}
+
+.openslides-green-light-theme {
+    @include angular-material-theme($openslides-green-light);
+    @include openslides-components-theme($openslides-green-light);
+    $ngrid-material-theme: pbl-light-theme($openslides-green-light);
+    @include pbl-ngrid-theme(map-merge($ngrid-material-theme, $narrow-spacing));
+}
+
+.openslides-green-dark-theme {
+    @include angular-material-theme($openslides-green-dark);
+    @include openslides-components-theme($openslides-green-dark);
+    $ngrid-material-theme: pbl-dark-theme($openslides-green-dark);
+    @include pbl-ngrid-theme(map-merge($ngrid-material-theme, $narrow-spacing));
+}
+
+.openslides-solarized-dark-theme {
+    @include angular-material-theme($openslides-solarized-dark);
+    @include openslides-components-theme($openslides-solarized-dark);
+    $ngrid-material-theme: pbl-dark-theme($openslides-solarized-dark);
+    @include pbl-ngrid-theme(map-merge($ngrid-material-theme, $narrow-spacing));
+}
+
+/**
+ * Custom configuration for light themes
+ */
+ [class^="openslides-"][class*="-light-theme"] {
+    .logo-container {
+        img.dark {
+            display: none;
+        }
+        img.default {
+            display: inherit;
+        }
+    }
+}
+
+/**
+ * Custom configuration for dark themes
+ */
+ [class^="openslides-"][class*="-dark-theme"] {
+    .logo-container {
+        img.dark {
+            display: inherit;
+        }
+        img.default {
+            display: none;
+        }
+    }
+}
