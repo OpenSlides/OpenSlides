@@ -94,6 +94,7 @@ class SamlSettings:
     - request_settings: {
         <key>: <value>,
       }
+    - default_group_ids: [<id>, ...] | null | undefined
     """
 
     def __init__(self):
@@ -121,6 +122,7 @@ class SamlSettings:
         self.load_general_settings(content)
         self.load_attribute_mapping(content)
         self.load_request_settings(content)
+        self.load_default_group_ids(content)
 
         # Load saml settings
         self.saml_settings = OneLogin_Saml2_Settings(
@@ -210,6 +212,20 @@ class SamlSettings:
                 "https"
             ] not in ("on", "off"):
                 raise SamlException('The https value must be "on" or "off"')
+
+    def load_default_group_ids(self, content):
+        self.default_group_ids = content.pop("default_group_ids", None)
+        if self.default_group_ids is None:
+            return
+        if not isinstance(self.default_group_ids, list):
+            raise SamlException(
+                "default_group_ids must be null (or not present) or a list of integers"
+            )
+        for id in self.default_group_ids:
+            if not isinstance(id, int):
+                raise SamlException(
+                    "default_group_ids must be null (or not present) or a list of integers"
+                )
 
 
 saml_settings = None

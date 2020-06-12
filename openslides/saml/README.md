@@ -79,3 +79,9 @@ One can overwrite the data extracted from the request headers of saml-requests. 
 - ``http_host``: The hostname.
 - ``script_name``: The aquivalent to ``PATH_INFO`` in the meta values.
 - ``server_port``: The port listen by the server.
+
+### Default group ids
+
+If the optional key `default_group_ids` is given, these groups are assigned to
+each new created user on each saml login. It must be a list of ids. To disable
+this feature, either just do not inlcude this key, or set it to `null`.
