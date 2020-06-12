@@ -204,18 +204,6 @@
                 <span>{{ 'Add/remove groups ...' | translate }}</span>
             </button>
 
-            <div *ngIf="presenceViewConfigured">
-                <button
-                    mat-menu-item
-                    *osPerms="'users.can_manage'"
-                    [disabled]="!selectedRows.length"
-                    routerLink="presence"
-                >
-                    <mat-icon>transfer_within_a_station</mat-icon>
-                    <span>{{ 'Presence' | translate }}</span>
-                </button>
-            </div>
-
             <div *osPerms="'users.can_manage'">
                 <mat-divider></mat-divider>
 
