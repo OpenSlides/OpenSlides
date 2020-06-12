@@ -277,12 +277,17 @@ class AutoupdateBundleMiddleware:
 
         timing()
 
+        status_ok = response.status_code >= 200 and response.status_code < 300
+        status_redirect = response.status_code >= 300 and response.status_code < 400
+
         # rewrite the response by adding the autoupdate on any success-case (2xx status)
         bundle: AutoupdateBundle = autoupdate_bundle.pop(thread_id)
-        if response.status_code >= 200 and response.status_code < 300:
+        if status_ok or status_redirect:
             change_id = bundle.done()
 
-            if change_id is not None:
+            # inject the autoupdate, if there is an autoupdate and the status is
+            # ok (and not redirect; redirects do not have a useful content)
+            if change_id is not None and status_ok:
                 user_id = request.user.pk or 0
                 # Inject the autoupdate in the response.
                 # The complete response body will be overwritten!
