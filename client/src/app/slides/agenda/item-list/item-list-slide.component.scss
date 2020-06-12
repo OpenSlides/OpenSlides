@@ -1,10 +1,17 @@
-.item {
-    line-height: 34px;
-}
-.mainitem {
-    font-size: 110%;
-}
+.agenda-slide-wrapper {
+    .item {
+        line-height: 34px;
+    }
 
-.subitem {
-    font-size: 90%;
+    .item + .item {
+        margin-top: 10px;
+    }
+
+    .mainitem {
+        font-size: 110%;
+    }
+
+    .subitem {
+        font-size: 90%;
+    }
 }
