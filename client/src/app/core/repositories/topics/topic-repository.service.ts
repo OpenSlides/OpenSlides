@@ -53,16 +53,19 @@ export class TopicRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCon
     }
 
     public getTitle = (titleInformation: TopicTitleInformation) => {
+        return titleInformation.title;
+    };
+
+    public getListTitle = (titleInformation: TopicTitleInformation) => {
         if (titleInformation.agenda_item_number && titleInformation.agenda_item_number()) {
             return `${titleInformation.agenda_item_number()} · ${titleInformation.title}`;
         } else {
-            return titleInformation.title;
+            return this.getTitle(titleInformation);
         }
     };
 
     public getAgendaListTitle = (titleInformation: TopicTitleInformation) => {
-        // Do not append ' (Topic)' to the title.
-        return { title: this.getTitle(titleInformation) };
+        return { title: this.getListTitle(titleInformation) };
     };
 
     public getAgendaSlideTitle = (titleInformation: TopicTitleInformation) => {

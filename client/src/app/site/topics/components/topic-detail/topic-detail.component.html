@@ -27,7 +27,7 @@
 
 <mat-card *ngIf="topic || editTopic" [ngClass]="editTopic ? 'os-form-card' : 'os-card'">
     <div *ngIf="!editTopic">
-        <h1>{{ topic.getTitle() }}</h1>
+        <h1>{{ topic.getListTitle() }}</h1>
     </div>
     <div>
         <span *ngIf="!editTopic">
