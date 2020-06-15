@@ -16,6 +16,7 @@ import { ChoiceService } from 'app/core/ui-services/choice.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { CsvExportService } from 'app/core/ui-services/csv-export.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
+import { ColumnRestriction } from 'app/shared/components/list-view-table/list-view-table.component';
 import { genders } from 'app/shared/models/users/user';
 import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
 import { BaseListViewComponent } from 'app/site/base/base-list-view';
@@ -133,6 +134,17 @@ export class UserListComponent extends BaseListViewComponent<ViewUser> implement
         {
             prop: 'presence',
             width: '100px'
+        }
+    ];
+
+    public restrictedColumns: ColumnRestriction[] = [
+        {
+            columnName: 'infos',
+            permission: Permission.usersCanSeeExtraData
+        },
+        {
+            columnName: 'presence',
+            permission: Permission.usersCanSeeExtraData
         }
     ];
 
