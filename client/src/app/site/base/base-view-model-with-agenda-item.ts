@@ -68,7 +68,7 @@ export abstract class BaseViewModelWithAgendaItem<
      */
     public getProjectorTitle(): ProjectorTitle {
         const subtitle = this.item ? this.item.comment : null;
-        return { title: this.getTitle(), subtitle };
+        return { title: this.getListTitle(), subtitle };
     }
 
     /**
