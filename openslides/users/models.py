@@ -172,7 +172,7 @@ class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
             ("can_see_name", "Can see names of users"),
             (
                 "can_see_extra_data",
-                "Can see extra data of users (e.g. present and comment)",
+                "Can see extra data of users (e.g. email and comment)",
             ),
             ("can_change_password", "Can change its own password"),
             ("can_manage", "Can manage users"),

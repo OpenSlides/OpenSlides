@@ -250,8 +250,10 @@
             <h4>{{ 'Name' | translate }}</h4>
             <span class="state-icons">
                 <span>{{ user.short_name }}</span>
-                <mat-icon *ngIf="user.is_present" matTooltip="{{ 'Is present' | translate }}">check_box</mat-icon>
-                <mat-icon *ngIf="user.is_committee" matTooltip="{{ 'Is committee' | translate }}"
+                <mat-icon *ngIf="user.is_present && isAllowed('seeName')" matTooltip="{{ 'Is present' | translate }}"
+                    >check_box</mat-icon
+                >
+                <mat-icon *ngIf="user.is_committee && isAllowed('seeName')" matTooltip="{{ 'Is committee' | translate }}"
                     >account_balance</mat-icon
                 >
                 <mat-icon *ngIf="!user.is_active && isAllowed('seeExtra')" matTooltip="{{ 'Inactive' | translate }}"
@@ -260,18 +262,18 @@
             </span>
         </div>
 
+        <!-- Mail -->
         <div *ngIf="isAllowed('seePersonal')">
-            <!-- Mail -->
             <div *ngIf="user.email">
                 <h4>{{ 'Email' | translate }}</h4>
                 <span>{{ user.email }}</span>
             </div>
+        </div>
 
-            <!-- Gender -->
-            <div *ngIf="user.gender">
-                <h4>{{ 'Gender' | translate }}</h4>
-                <span>{{ user.gender | translate }}</span>
-            </div>
+        <!-- Gender -->
+        <div *ngIf="user.gender">
+            <h4>{{ 'Gender' | translate }}</h4>
+            <span>{{ user.gender | translate }}</span>
         </div>
 
         <!-- Structure Level -->
@@ -305,6 +307,12 @@
                 <span>{{ user.vote_weight }}</span>
             </div>
 
+            <!-- Username -->
+            <div *ngIf="user.username">
+                <h4>{{ 'Username' | translate }}</h4>
+                <span>{{ user.username }}</span>
+            </div>
+
             <!-- Initial Password -->
             <div *ngIf="user.default_password">
                 <h4>{{ 'Initial password' | translate }}</h4>
@@ -312,17 +320,11 @@
             </div>
         </div>
 
-        <div *ngIf="isAllowed('seePersonal')">
+        <div *ngIf="isAllowed('seeName')">
             <!-- About me -->
             <div *ngIf="user.about_me">
                 <h4>{{ 'About me' | translate }}</h4>
                 <div [innerHTML]="user.about_me | trust: 'html'"></div>
-            </div>
-
-            <!-- Username -->
-            <div *ngIf="user.username">
-                <h4>{{ 'Username' | translate }}</h4>
-                <span>{{ user.username }}</span>
             </div>
         </div>
 

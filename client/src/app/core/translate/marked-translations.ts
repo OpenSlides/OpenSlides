@@ -347,7 +347,7 @@ _('Can manage motion polls');
 
 // users
 _('Can see names of users');
-_('Can see extra data of users (e.g. present and comment)');
+_('Can see extra data of users (e.g. email and comment)');
 _('Can manage users');
 _('Can change its own password');
 

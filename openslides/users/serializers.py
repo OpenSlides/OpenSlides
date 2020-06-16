@@ -26,11 +26,11 @@ USERCANSEESERIALIZER_FIELDS = (
     "is_present",
     "is_committee",
     "vote_weight",
+    "gender",
 )
 
 
 USERCANSEEEXTRASERIALIZER_FIELDS = USERCANSEESERIALIZER_FIELDS + (
-    "gender",
     "email",
     "last_email_send",
     "comment",
