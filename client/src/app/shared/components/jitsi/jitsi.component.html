@@ -5,7 +5,7 @@
         <button
             type="button"
             mat-button
-            color="primary"
+            color=""
             (click)="openExternal()"
             matTooltip="{{ 'Open Jitsi in new tab' | translate }}"
         >
@@ -78,7 +78,7 @@
                     (click)="enterConversation()"
                     matTooltip="{{ 'Enter live conference' | translate }}"
                 >
-                    <mat-icon color="primary">meeting_room</mat-icon>
+                    <mat-icon color="">meeting_room</mat-icon>
                 </button>
 
                 <mat-icon *ngIf="enableJitsi && !isAccessPermitted" class="indicator">no_meeting_room</mat-icon>

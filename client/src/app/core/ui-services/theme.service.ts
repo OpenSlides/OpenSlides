@@ -12,7 +12,7 @@ export class ThemeService {
     /**
      * Constant, that describes the default theme class.
      */
-    public static DEFAULT_THEME = 'openslides-theme';
+    public static DEFAULT_THEME = 'openslides-default-light-theme';
 
     /**
      * Constant path of the logo with dark colors for bright themes.
@@ -54,7 +54,7 @@ export class ThemeService {
         this.currentTheme = theme;
 
         const classList = document.getElementsByTagName('body')[0].classList; // Get the classlist of the body.
-        const toRemove = Array.from(classList).filter((item: string) => item.includes('theme'));
+        const toRemove = Array.from(classList).filter((item: string) => item.includes('-theme'));
         if (toRemove.length) {
             classList.remove(...toRemove); // Remove all old themes.
         }

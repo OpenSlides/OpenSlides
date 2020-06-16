@@ -1,0 +1,8 @@
+@import './assets/styles/color-palettes/os-cyan.scss';
+@import './assets/styles/color-palettes/os-gray.scss';
+
+$openslides-primary: mat-palette($openslides-grey);
+$openslides-accent: mat-palette($openslides-cyan);
+$openslides-warn: mat-palette($mat-orange);
+
+$openslides-solarized-dark: mat-dark-theme($openslides-primary, $openslides-accent, $openslides-warn);

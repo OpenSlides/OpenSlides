@@ -1,0 +1,8 @@
+@import './assets/styles/color-palettes/os-blue';
+
+$openslides-primary: mat-palette($openslides-blue);
+$openslides-accent: mat-palette($mat-light-blue);
+$openslides-warn: mat-palette($mat-red);
+
+$openslides-default-dark: mat-dark-theme($openslides-primary, $openslides-accent, $openslides-warn);
+
