@@ -98,12 +98,14 @@
             <mat-icon>archive</mat-icon>
             <span>{{ 'Export ...' | translate }}</span>
         </button>
-        <mat-divider></mat-divider>
-        <!-- Settings -->
-        <button mat-menu-item *osPerms="'core.can_manage_config'" routerLink="/settings/elections">
-            <mat-icon>settings</mat-icon>
-            <span>{{ 'Settings' | translate }}</span>
-        </button>
+        <div *osPerms="'core.can_manage_config'">
+            <mat-divider></mat-divider>
+            <!-- Settings -->
+            <button mat-menu-item routerLink="/settings/elections">
+                <mat-icon>settings</mat-icon>
+                <span>{{ 'Settings' | translate }}</span>
+            </button>
+        </div>
     </div>
 
     <div *ngIf="isMultiSelect">

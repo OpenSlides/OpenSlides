@@ -155,22 +155,25 @@
             <mat-icon>cloud_upload</mat-icon>
             <span>{{ 'Import' | translate }}</span>
         </button>
-        <mat-divider></mat-divider>
-        <button
-            mat-menu-item
-            *osPerms="'agenda.can_manage'"
-            class="red-warning-text"
-            (click)="deleteAllSpeakersOfAllListsOfSpeakers()"
-        >
-            <mat-icon>delete</mat-icon>
-            <span>{{ 'Clear all list of speakers' | translate }}</span>
-        </button>
-        <mat-divider></mat-divider>
-        <!-- Settings -->
-        <button mat-menu-item *osPerms="'core.can_manage_config'" routerLink="/settings/agenda">
-            <mat-icon>settings</mat-icon>
-            <span>{{ 'Settings' | translate }}</span>
-        </button>
+        <div *osPerms="'agenda.can_manage'">
+            <mat-divider></mat-divider>
+            <button
+                mat-menu-item
+                class="red-warning-text"
+                (click)="deleteAllSpeakersOfAllListsOfSpeakers()"
+            >
+                <mat-icon>delete</mat-icon>
+                <span>{{ 'Clear all list of speakers' | translate }}</span>
+            </button>
+        </div>
+        <div *osPerms="'core.can_manage_config'">
+            <mat-divider></mat-divider>
+            <!-- Settings -->
+            <button mat-menu-item routerLink="/settings/agenda">
+                <mat-icon>settings</mat-icon>
+                <span>{{ 'Settings' | translate }}</span>
+            </button>
+        </div>
     </div>
 
     <div *ngIf="isMultiSelect">

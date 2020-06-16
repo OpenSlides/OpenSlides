@@ -262,7 +262,8 @@
         </div>
 
         <mat-divider
-            *ngIf="categories.length || motionBlocks.length || hasAmendments() || perms.isAllowed('manage')"
+            *ngIf="(categories.length || motionBlocks.length || hasAmendments() || perms.isAllowed('manage'))
+            && (perms.isAllowed('manage') || selectedView === 'list' || operator.hasPerms('core.can_manage_config'))"
         ></mat-divider>
 
         <div *ngIf="perms.isAllowed('manage')">
@@ -313,13 +314,15 @@
             </button>
         </div>
 
-        <mat-divider></mat-divider>
+        <div *osPerms="'core.can_manage_config'">
+            <mat-divider></mat-divider>
 
-        <!-- Settings -->
-        <button mat-menu-item *osPerms="'core.can_manage_config'" routerLink="/settings/motions">
-            <mat-icon>settings</mat-icon>
-            <span>{{ 'Settings' | translate }}</span>
-        </button>
+            <!-- Settings -->
+            <button mat-menu-item routerLink="/settings/motions">
+                <mat-icon>settings</mat-icon>
+                <span>{{ 'Settings' | translate }}</span>
+            </button>
+        </div>
     </div>
     <div *ngIf="isMultiSelect">
         <button mat-menu-item (click)="selectAll()">
