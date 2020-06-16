@@ -193,10 +193,10 @@ export class UserDetailComponent extends BaseViewComponent implements OnInit {
      *
      * actions might be:
      * - delete         (deleting the user) (users.can_manage and not ownPage)
-     * - seeName        (title, first, last) (user.can_see_name or ownPage)
-     * - seeOtherUsers  (title, first, last) (user.can_see_name)
-     * - seeExtra       (checkboxes, comment) (user.can_see_extra_data)
-     * - seePersonal    (mail, username, about, gender, structure level) (user.can_see_extra_data or ownPage)
+     * - seeName        (title, first, last, gender, about) (user.can_see_name or ownPage)
+     * - seeOtherUsers  (title, first, last, gender, about) (user.can_see_name)
+     * - seeExtra       (email, comment, is_active, last_email_send) (user.can_see_extra_data)
+     * - seePersonal    (mail, username, structure level) (user.can_see_extra_data or ownPage)
      * - manage         (everything) (user.can_manage)
      * - changePersonal (mail, username, about) (user.can_manage or ownPage)
      * - changePassword (user.can_change_password)
