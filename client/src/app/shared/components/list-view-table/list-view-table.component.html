@@ -1,70 +1,72 @@
-<mat-drawer-container *ngIf="columns && columnSet">
-    <os-sort-filter-bar
-        *ngIf="showFilterBar"
-        [totalCount]="totalCount"
-        [filterCount]="countFilter"
-        [filterService]="filterService"
-        [sortService]="sortService"
-        [searchFieldInput]="inputValue"
-        (searchFieldChange)="searchFilter($event)"
-    >
-    </os-sort-filter-bar>
+<mat-drawer-container class="list-view-frame" *ngIf="columns && columnSet">
+    <div class="list-view-table-wrapper">
+        <os-sort-filter-bar
+            class="sort-filter-bar"
+            *ngIf="showFilterBar"
+            [totalCount]="totalCount"
+            [filterCount]="countFilter"
+            [filterService]="filterService"
+            [sortService]="sortService"
+            [searchFieldInput]="inputValue"
+            (searchFieldChange)="searchFilter($event)"
+        >
+        </os-sort-filter-bar>
 
-    <!-- vScrollFixed="110" -->
-    <!-- vScrollAuto () -->
-    <pbl-ngrid
-        [ngClass]="cssClasses"
-        [attr.vScrollFixed]="vScrollFixed !== -1 ? vScrollFixed : false"
-        [attr.vScrollAuto]="vScrollFixed === -1"
-        [showHeader]="!showFilterBar || !fullScreen"
-        matCheckboxSelection="selection"
-        [dataSource]="dataSource"
-        [columns]="columnSet"
-        [hideColumns]="hiddenColumns"
-        (rowClick)="onSelectRow($event)"
-        [rowClassUpdate]="isElementProjected"
-        rowClassUpdateFreq="ngDoCheck"
-    >
-        <!-- "row" has the view model -->
-        <!-- "value" has the property, that was defined in the columnDefinition -->
-        <!-- "col" has a column reference -->
+        <pbl-ngrid
+            class="vscroll-list-view"
+            [attr.vScrollFixed]="vScrollFixed !== -1 ? vScrollFixed : false"
+            [attr.vScrollAuto]="vScrollFixed === -1"
+            [showHeader]="!showFilterBar || !fullScreen"
+            [showHeader]="false"
+            matCheckboxSelection="selection"
+            [dataSource]="dataSource"
+            [columns]="columnSet"
+            [hideColumns]="hiddenColumns"
+            (rowClick)="onSelectRow($event)"
+            [rowClassUpdate]="isElementProjected"
+            rowClassUpdateFreq="ngDoCheck"
+        >
+            <!-- "row" has the view model -->
+            <!-- "value" has the property, that was defined in the columnDefinition -->
+            <!-- "col" has a column reference -->
 
-        <!-- Projector column -->
-        <div *pblNgridCellDef="'projector'; row as viewModel" class="fill ngrid-lg">
-            <os-projector-button
-                *osPerms="'core.can_manage_projector'"
-                class="projector-button"
-                [object]="getProjectable(viewModel)"
-                (changeEvent)="viewUpdateEvent()"
-            ></os-projector-button>
-            <!-- Projector indicator -->
-            <div class="projector-button" *osPerms="'core.can_manage_projector'; complement: true">
-                <mat-icon
-                    color="accent"
-                    *ngIf="projectorService.isProjected(getProjectable(viewModel))"
-                    matTooltip="{{ 'Currently projected' | translate }}"
-                >
-                    videocam
-                </mat-icon>
+            <!-- Projector column -->
+            <div *pblNgridCellDef="'projector'; row as viewModel" class="fill ngrid-lg">
+                <os-projector-button
+                    *osPerms="'core.can_manage_projector'"
+                    class="projector-button"
+                    [object]="getProjectable(viewModel)"
+                    (changeEvent)="viewUpdateEvent()"
+                ></os-projector-button>
+                <!-- Projector indicator -->
+                <div class="projector-button" *osPerms="'core.can_manage_projector'; complement: true">
+                    <mat-icon
+                        color="accent"
+                        *ngIf="projectorService.isProjected(getProjectable(viewModel))"
+                        matTooltip="{{ 'Currently projected' | translate }}"
+                    >
+                        videocam
+                    </mat-icon>
+                </div>
             </div>
-        </div>
 
-        <!-- No Results -->
-        <div *pblNgridNoDataRef class="pbl-ngrid-no-data">
-            <span>{{ 'No data' | translate }}</span>
-        </div>
+            <!-- No Results -->
+            <div *pblNgridNoDataRef class="pbl-ngrid-no-data">
+                <span>{{ 'No data' | translate }}</span>
+            </div>
 
-        <!-- Slot transclusion for the individual cells -->
-        <div #contentWrapper>
-            <ng-content class="ngrid-lg" select=".cell-slot"></ng-content>
-        </div>
+            <!-- Slot transclusion for the individual cells -->
+            <div #contentWrapper>
+                <ng-content class="ngrid-lg" select=".cell-slot"></ng-content>
+            </div>
 
-        <!-- Speaker -->
-        <div *pblNgridCellDef="'speaker'; row as viewModel; rowContext as rowContext" class="fill">
-            <os-speaker-button
-                [object]="viewModel.contentObjectData ? viewModel.contentObjectData : viewModel"
-                [disabled]="multiSelect"
-            ></os-speaker-button>
-        </div>
-    </pbl-ngrid>
+            <!-- Speaker -->
+            <div *pblNgridCellDef="'speaker'; row as viewModel; rowContext as rowContext" class="fill">
+                <os-speaker-button
+                    [object]="viewModel.contentObjectData ? viewModel.contentObjectData : viewModel"
+                    [disabled]="multiSelect"
+                ></os-speaker-button>
+            </div>
+        </pbl-ngrid>
+    </div>
 </mat-drawer-container>

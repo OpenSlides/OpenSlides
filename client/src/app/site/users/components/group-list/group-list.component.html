@@ -5,53 +5,54 @@
     </div>
 </os-head-bar>
 
-<div class="hint-text">
-    <span>{{ 'All your changes are saved immediately.' | translate }}</span>
-</div>
+<mat-card class="spacer-bottom-60">
+    <div class="hint-text">
+        <span>{{ 'All your changes are saved immediately.' | translate }}</span>
+    </div>
+    <mat-accordion *ngFor="let app of appPermissions">
+        <mat-expansion-panel class="mat-elevation-z0" [expanded]="true">
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    {{ app.name | translate }}
+                </mat-panel-title>
+            </mat-expansion-panel-header>
 
-<mat-accordion *ngFor="let app of appPermissions">
-    <mat-expansion-panel class="mat-elevation-z0" [expanded]="true">
-        <mat-expansion-panel-header>
-            <mat-panel-title>
-                {{ app.name | translate }}
-            </mat-panel-title>
-        </mat-expansion-panel-header>
-
-        <div class="scrollable-perm-matrix">
-            <table mat-table [dataSource]="getTableDataSource(app.permissions)">
-                <ng-container matColumnDef="perm" sticky>
-                    <mat-header-cell *matHeaderCellDef>{{ 'Permissions' | translate }}</mat-header-cell>
-                    <mat-cell *matCellDef="let perm">
-                        {{ perm.display_name | translate }}
-                    </mat-cell>
-                </ng-container>
-
-                <div *ngFor="let group of groups; trackBy: trackByIndex">
-                    <ng-container [matColumnDef]="group.name">
-                        <mat-header-cell class="group-head-table-cell" *matHeaderCellDef (click)="selectGroup(group)">
-                            <div class="inner-table">
-                                {{ group.name | translate }}
-                            </div>
-                        </mat-header-cell>
+            <div class="scrollable-perm-matrix">
+                <table mat-table [dataSource]="getTableDataSource(app.permissions)">
+                    <ng-container matColumnDef="perm" sticky>
+                        <mat-header-cell *matHeaderCellDef>{{ 'Permissions' | translate }}</mat-header-cell>
                         <mat-cell *matCellDef="let perm">
-                            <div class="inner-table">
-                                <mat-checkbox
-                                    *ngIf="group.id !== 2"
-                                    [checked]="group.hasPermission(perm.value)"
-                                    (change)="togglePerm(group, perm.value)"
-                                ></mat-checkbox>
-                                <mat-checkbox *ngIf="group.id === 2" [checked]="true" [disabled]="true"></mat-checkbox>
-                            </div>
+                            {{ perm.display_name | translate }}
                         </mat-cell>
                     </ng-container>
-                </div>
 
-                <mat-header-row *matHeaderRowDef="headerRowDef"></mat-header-row>
-                <mat-row *matRowDef="let row; columns: headerRowDef"></mat-row>
-            </table>
-        </div>
-    </mat-expansion-panel>
-</mat-accordion>
+                    <div *ngFor="let group of groups; trackBy: trackByIndex">
+                        <ng-container [matColumnDef]="group.name">
+                            <mat-header-cell class="group-head-table-cell" *matHeaderCellDef (click)="selectGroup(group)">
+                                <div class="inner-table">
+                                    {{ group.name | translate }}
+                                </div>
+                            </mat-header-cell>
+                            <mat-cell *matCellDef="let perm">
+                                <div class="inner-table">
+                                    <mat-checkbox
+                                        *ngIf="group.id !== 2"
+                                        [checked]="group.hasPermission(perm.value)"
+                                        (change)="togglePerm(group, perm.value)"
+                                    ></mat-checkbox>
+                                    <mat-checkbox *ngIf="group.id === 2" [checked]="true" [disabled]="true"></mat-checkbox>
+                                </div>
+                            </mat-cell>
+                        </ng-container>
+                    </div>
+
+                    <mat-header-row *matHeaderRowDef="headerRowDef"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: headerRowDef"></mat-row>
+                </table>
+            </div>
+        </mat-expansion-panel>
+    </mat-accordion>
+</mat-card>
 
 <ng-template #groupEditDialog>
     <h1 mat-dialog-title>

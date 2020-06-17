@@ -1,4 +1,4 @@
-<mat-card [ngClass]="isEditing ? 'os-form-card' : 'os-card'">
+<mat-card class="spacer-bottom-60" [ngClass]="isEditing ? 'os-form-card' : 'os-card'">
     <ng-container *ngIf="!isEditing">
         <div *ngIf="privacyPolicy" [innerHtml]="privacyPolicy | trust: 'html'"></div>
         <div *ngIf="!privacyPolicy">

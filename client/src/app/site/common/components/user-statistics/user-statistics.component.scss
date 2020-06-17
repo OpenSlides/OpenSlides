@@ -17,9 +17,10 @@
 }
 
 .user-statistics-table--virtual-scroll {
+    display: block;
     height: 500px;
 
-    .pbl-ngrid-header-cell:not(:first-child):before {
-        display: none;
+    .list-view-frame {
+        height: 100%;
     }
 }

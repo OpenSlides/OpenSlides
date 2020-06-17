@@ -22,7 +22,7 @@
 
 <div class="spacer-top-20"></div>
 
-<mat-card class="os-card" *ngIf="configGroup">
+<mat-card class="os-card spacer-bottom-60" *ngIf="configGroup">
     <div id="wrapper">
         <ng-container *ngFor="let subgroup of configGroup.subgroups; trackBy: trackByIndex">
             <h3 class="accent" *ngIf="configGroup.subgroups.length > 1">{{ subgroup.name | translate }}</h3>

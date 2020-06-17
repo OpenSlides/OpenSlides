@@ -1,13 +1,5 @@
 @import '~assets/styles/tables.scss';
 
-.block-list {
-    display: block;
-
-    .virtual-scroll-full-page {
-        height: calc(100vh - 150px);
-    }
-}
-
 .mat-dialog-container {
     .mat-dialog-title {
         margin: 0;

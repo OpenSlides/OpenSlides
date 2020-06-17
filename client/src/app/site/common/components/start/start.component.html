@@ -12,7 +12,7 @@
     </div>
 </os-head-bar>
 
-<mat-card [ngClass]="isEditing ? 'os-form-card' : 'os-card'">
+<mat-card class="spacer-bottom-60" [ngClass]="isEditing ? 'os-form-card' : 'os-card'">
     <ng-container *ngIf="!isEditing">
         <div class="app-content">
             <h1>{{ startContent.general_event_welcome_title | translate }}</h1>

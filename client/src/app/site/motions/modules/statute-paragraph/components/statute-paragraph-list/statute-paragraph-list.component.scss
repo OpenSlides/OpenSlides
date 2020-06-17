@@ -1,16 +1,11 @@
-.head-spacer {
-    width: 100%;
-    height: 60px;
-    line-height: 60px;
-    text-align: right;
-    background: white; /* TODO: remove this and replace with theme */
-    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
-}
+.statute-vscroll-wrapper {
+    height: calc(100vh - 64px);
 
-mat-card {
-    margin-bottom: 20px;
+    .mat-card {
+        margin-bottom: 20px;
 
-    mat-form-field {
-        width: 100%;
+        .mat-form-field {
+            width: 100%;
+        }
     }
 }
