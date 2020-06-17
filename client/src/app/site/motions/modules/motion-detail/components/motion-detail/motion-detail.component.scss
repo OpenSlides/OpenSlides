@@ -8,18 +8,9 @@ span {
     margin-bottom: 1em;
 }
 
-.extra-controls-slot {
+.prev-next-motion-controls {
     div {
-        padding: 0px;
-        button {
-            .mat-button-wrapper {
-                display: inherit;
-            }
-            font-size: 100%;
-        }
-        span {
-            font-size: 80%;
-        }
+        display: inherit;
     }
 }
 

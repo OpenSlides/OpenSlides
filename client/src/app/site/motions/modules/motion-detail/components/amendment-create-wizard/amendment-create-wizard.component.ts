@@ -264,7 +264,7 @@ export class AmendmentCreateWizardComponent extends BaseViewComponent implements
         });
         const newMotionValues = {
             ...this.contentForm.value,
-            title: this.translate.instant('Amendment to') + ' ' + this.motion.identifier,
+            title: this.translate.instant('Amendment to') + ' ' + this.motion.getIdentifierOrTitle(),
             text: text, // Workaround as 'text' is required from the backend
             parent_id: this.motion.id,
             category_id: this.motion.category_id,

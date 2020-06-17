@@ -22,17 +22,19 @@
     </div>
 
     <!-- Back and forth buttons -->
-    <div *ngIf="!editMotion && !vp.isMobile" class="extra-controls-slot">
+    <div *ngIf="!editMotion && !vp.isMobile" class="extra-controls-slot prev-next-motion-controls">
         <div *ngIf="previousMotion">
             <button mat-button (click)="navigateToMotion(previousMotion)">
-                <mat-icon>chevron_left</mat-icon>
-                <span>{{ previousMotion.identifier }}</span>
+                <os-icon-container icon="chevron_left">
+                    {{ previousMotion.identifier }}
+                </os-icon-container>
             </button>
         </div>
         <div *ngIf="nextMotion">
             <button mat-button (click)="navigateToMotion(nextMotion)">
-                <span>{{ nextMotion.identifier }}</span>
-                <mat-icon>chevron_right</mat-icon>
+                <os-icon-container icon="chevron_right" [swap]="true">
+                    {{ nextMotion.identifier }}
+                </os-icon-container>
             </button>
         </div>
     </div>
@@ -464,7 +466,7 @@
                 <span *ngIf="amendments.length > 1">{{ 'Amendments' | translate }}</span>
             </a>
 
-            <br>
+            <br />
             <mat-checkbox [(ngModel)]="showAllAmendments" *ngIf="isRecoMode(ChangeRecoMode.Diff)">
                 {{ 'Show all changes' | translate }}
             </mat-checkbox>
@@ -534,8 +536,7 @@
                     mat-button
                     [matMenuTriggerFor]="changeRecoMenu"
                     *ngIf="
-                        motion &&
-                        ((allChangingObjects && allChangingObjects.length) || motion.modified_final_version)
+                        motion && ((allChangingObjects && allChangingObjects.length) || motion.modified_final_version)
                     "
                 >
                     <mat-icon>rate_review</mat-icon>
@@ -888,19 +889,28 @@
                     [class.line-numbers-outside]="isLineNumberingOutside()"
                     [class.amendment-context]="showAmendmentContext"
                 >
-                    <h3 class="amendment-line-header" *ngIf="!showAmendmentContext">{{ getAmendmentParagraphLinesTitle(paragraph) }}</h3>
+                    <h3 class="amendment-line-header" *ngIf="!showAmendmentContext">
+                        {{ getAmendmentParagraphLinesTitle(paragraph) }}
+                    </h3>
 
                     <os-motion-detail-original-change-recommendations
-                        *ngIf="isLineNumberingOutside() && (isRecoMode(ChangeRecoMode.Original) || isRecoMode(ChangeRecoMode.Changed))"
+                        *ngIf="
+                            isLineNumberingOutside() &&
+                            (isRecoMode(ChangeRecoMode.Original) || isRecoMode(ChangeRecoMode.Changed))
+                        "
                         [html]="getAmendmentDiffTextWithContext(paragraph)"
                         [changeRecommendations]="changeRecommendations"
                         (createChangeRecommendation)="createChangeRecommendation($event)"
                         (gotoChangeRecommendation)="gotoChangeRecommendation($event)"
                     ></os-motion-detail-original-change-recommendations>
                     <div
-                        *ngIf="!isLineNumberingOutside() || !(isRecoMode(ChangeRecoMode.Original) || isRecoMode(ChangeRecoMode.Changed))"
+                        *ngIf="
+                            !isLineNumberingOutside() ||
+                            !(isRecoMode(ChangeRecoMode.Original) || isRecoMode(ChangeRecoMode.Changed))
+                        "
                         [outerHTML]="getAmendmentDiffTextWithContext(paragraph) | trust: 'html'"
-                    ></div><!-- the <div> element is only a placeholder -> outerHTML to replace it -->
+                    ></div>
+                    <!-- the <div> element is only a placeholder -> outerHTML to replace it -->
                 </div>
             </ng-container>
 
