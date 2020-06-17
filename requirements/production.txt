@@ -1,6 +1,10 @@
 # Hotfix see https://github.com/crossbario/autobahn-python/issues/1205
 autobahn==19.5.1
 
+# Use release 3.2.9 with this issue fixed: https://github.com/django/asgiref/issues/170
+# introduced with 3.2.8
+asgiref>=3.2.9
+
 # Requirements for OpenSlides in production in alphabetical order
 bleach>=1.5.0,<3.2
 channels>=2.1.2,<2.4
