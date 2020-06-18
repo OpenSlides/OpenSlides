@@ -30,7 +30,6 @@ export class TopicImportService extends BaseImportService<CreateTopic> {
      */
     public errorList = {
         NoTitle: 'A Topic needs a title',
-        Duplicates: 'A topic with this title already exists',
         ParsingErrors: 'Some csv values could not be read correctly.'
     };
 
@@ -99,7 +98,6 @@ export class TopicImportService extends BaseImportService<CreateTopic> {
                     newEntry[this.expectedHeader[idx]] = line[idx];
             }
         }
-        const hasDuplicates = this.repo.getViewModelList().some(topic => topic.title === newEntry.title);
 
         // set type to 'public' if none is given in import
         if (!newEntry.agenda_type) {
@@ -107,13 +105,9 @@ export class TopicImportService extends BaseImportService<CreateTopic> {
         }
         const mappedEntry: NewEntry<CreateTopic> = {
             newEntry: newEntry,
-            hasDuplicates: hasDuplicates,
             status: 'new',
             errors: []
         };
-        if (hasDuplicates) {
-            this.setError(mappedEntry, 'Duplicates');
-        }
         if (hasErrors) {
             this.setError(mappedEntry, 'ParsingErrors');
         }
@@ -196,16 +190,11 @@ export class TopicImportService extends BaseImportService<CreateTopic> {
                     agenda_type: 1 // set type to 'public item' by default
                 })
             );
-            const hasDuplicates = this.repo.getViewModelList().some(topic => topic.title === newTopic.title);
             const newEntry: NewEntry<CreateTopic> = {
                 newEntry: newTopic,
-                hasDuplicates: hasDuplicates,
                 status: 'new',
                 errors: []
             };
-            if (hasDuplicates) {
-                this.setError(newEntry, 'Duplicates');
-            }
             newEntries.push(newEntry);
         });
         this.setParsedEntries(newEntries);

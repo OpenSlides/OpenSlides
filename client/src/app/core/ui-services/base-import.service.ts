@@ -26,7 +26,7 @@ export interface NewEntry<V> {
     newEntry: V;
     status: CsvImportStatus;
     errors: string[];
-    hasDuplicates: boolean;
+    hasDuplicates?: boolean;
     importTrackId?: number;
 }
 
