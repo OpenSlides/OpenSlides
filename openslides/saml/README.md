@@ -82,6 +82,6 @@ One can overwrite the data extracted from the request headers of saml-requests. 
 
 ### Default group ids
 
-If the optional key `default_group_ids` is given, these groups are assigned to
+If the optional key `defaultGroupIds` is given, these groups are assigned to
 each new created user on each saml login. It must be a list of ids. To disable
 this feature, either just do not inlcude this key, or set it to `null`.
