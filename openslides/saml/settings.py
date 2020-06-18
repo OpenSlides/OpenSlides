@@ -214,7 +214,7 @@ class SamlSettings:
                 raise SamlException('The https value must be "on" or "off"')
 
     def load_default_group_ids(self, content):
-        self.default_group_ids = content.pop("default_group_ids", None)
+        self.default_group_ids = content.pop("defaultGroupIds", None)
         if self.default_group_ids is None:
             return
         if not isinstance(self.default_group_ids, list):

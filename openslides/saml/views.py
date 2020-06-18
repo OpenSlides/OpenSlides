@@ -145,7 +145,7 @@ class SamlView(View):
             )
             group_ids = get_saml_settings().default_group_ids
             if group_ids:
-                user.groups.add(group_ids)
+                user.groups.add(*group_ids)
             inform_changed_data(user)  # put the new user into the cache
         else:
             logger.info(

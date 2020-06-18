@@ -14,7 +14,10 @@ node_modules/*
 bower_components/*
 
 # OS4-Submodules
-openslides-*
+/openslides-*
+
+# OS3+
+/server/
 
 # Local user data (settings, database, media, search index, static files)
 personal_data/*
@@ -81,6 +84,7 @@ client/yarn.lock
 package-lock.json
 client/package-lock.json
 cypress.json
+*-version.txt
 
 # System Files
 client/.DS_Store
