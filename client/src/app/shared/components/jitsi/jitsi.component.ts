@@ -272,9 +272,9 @@ export class JitsiComponent extends BaseComponent implements OnInit, OnDestroy {
             .pipe(distinctUntilChanged())
             .subscribe((confState: ConferenceState) => {
                 if (confState in ConferenceState) {
-                    if (this.enableJitsi && !this.videoStreamUrl) {
+                    if (this.enableJitsi && (!this.videoStreamUrl || !this.canSeeLiveStream)) {
                         this.currentState = ConferenceState.jitsi;
-                    } else if (!this.enableJitsi && this.videoStreamUrl) {
+                    } else if (!this.enableJitsi && this.videoStreamUrl && this.canSeeLiveStream) {
                         this.currentState = ConferenceState.stream;
                     } else {
                         this.currentState = confState;
@@ -496,7 +496,7 @@ export class JitsiComponent extends BaseComponent implements OnInit, OnDestroy {
     }
 
     private setDefaultConfState(): void {
-        this.videoStreamUrl
+        this.videoStreamUrl && this.canSeeLiveStream
             ? this.setConferenceState(ConferenceState.stream)
             : this.setConferenceState(ConferenceState.jitsi);
     }

@@ -25,7 +25,7 @@
     </div>
 </ng-template>
 
-<div class="jitsi-integration" *ngIf="canSeeLiveStream && (enableJitsi || videoStreamUrl)">
+<div class="jitsi-integration" *ngIf="enableJitsi || (videoStreamUrl && canSeeLiveStream)">
     <!-- Audio-Conference-bar -->
     <div
         class="jitsi-bar"
@@ -47,7 +47,7 @@
                     color="accent"
                     (click)="viewStream()"
                     matTooltip="{{ 'Exit live conference and continue livestream' | translate }}"
-                    *ngIf="videoStreamUrl"
+                    *ngIf="videoStreamUrl && canSeeLiveStream"
                 >
                     <mat-icon color="warn">
                         meeting_room
@@ -78,7 +78,7 @@
                     (click)="enterConversation()"
                     matTooltip="{{ 'Enter live conference' | translate }}"
                 >
-                    <mat-icon color="">meeting_room</mat-icon>
+                    <mat-icon color="primary">meeting_room</mat-icon>
                 </button>
 
                 <mat-icon *ngIf="enableJitsi && !isAccessPermitted" class="indicator">no_meeting_room</mat-icon>
@@ -172,7 +172,7 @@
                     <os-vjs-player
                         [videoUrl]="videoStreamUrl"
                         (started)="onSteamStarted()"
-                        *ngIf="!streamActiveInAnotherTab || streamRunning"
+                        *ngIf="canSeeLiveStream && !streamActiveInAnotherTab || streamRunning"
                     ></os-vjs-player>
                     <div class="disconnected" *ngIf="streamActiveInAnotherTab && !streamRunning">
                         <span>{{ 'The livestream is already running in your OpenSlides session.' | translate }}</span>
