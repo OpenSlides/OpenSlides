@@ -178,13 +178,15 @@
             <span>{{ 'Import' | translate }}</span>
         </button>
 
-        <mat-divider></mat-divider>
+        <div *osPerms="'core.can_manage_config'">
+            <mat-divider></mat-divider>
 
-        <!-- Settings -->
-        <button mat-menu-item *osPerms="'core.can_manage_config'" routerLink="/settings/participants">
-            <mat-icon>settings</mat-icon>
-            <span>{{ 'Settings' | translate }}</span>
-        </button>
+            <!-- Settings -->
+            <button mat-menu-item routerLink="/settings/participants">
+                <mat-icon>settings</mat-icon>
+                <span>{{ 'Settings' | translate }}</span>
+            </button>
+        </div>
     </div>
     <div *ngIf="isMultiSelect">
         <button mat-menu-item (click)="selectAll()">

@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy } from '@angular/core';
+import { Component, Input, OnDestroy, ViewEncapsulation } from '@angular/core';
 
 import { Subscription } from 'rxjs';
 import { distinctUntilChanged } from 'rxjs/operators';
@@ -19,7 +19,9 @@ import {
  */
 @Component({
     selector: 'os-speaker-button',
-    templateUrl: './speaker-button.component.html'
+    templateUrl: './speaker-button.component.html',
+    styleUrls: ['./speaker-button.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class SpeakerButtonComponent implements OnDestroy {
     @Input()

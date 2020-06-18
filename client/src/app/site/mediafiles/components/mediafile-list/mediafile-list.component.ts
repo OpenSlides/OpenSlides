@@ -255,7 +255,6 @@ export class MediafileListComponent extends BaseListViewComponent<ViewMediafile>
      */
     public showFileMenu(file: ViewMediafile): boolean {
         return (
-            this.operator.hasPerms(Permission.agendaCanSeeListOfSpeakers) ||
             (file.isProjectable() && this.operator.hasPerms(Permission.coreCanManageProjector)) ||
             (file.isFont() && this.operator.hasPerms(Permission.coreCanManageLogosAndFonts)) ||
             (file.isImage() && this.operator.hasPerms(Permission.coreCanManageLogosAndFonts)) ||
