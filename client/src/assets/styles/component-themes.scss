@@ -141,6 +141,7 @@ $narrow-spacing: (
  * Custom configuration for dark themes
  */
  [class^="openslides-"][class*="-dark-theme"] {
+    color: white;
     .logo-container {
         img.dark {
             display: inherit;
