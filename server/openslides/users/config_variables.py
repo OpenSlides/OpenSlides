@@ -1,3 +1,4 @@
+import os
 from textwrap import dedent
 
 from openslides.core.config import ConfigVariable
@@ -76,7 +77,7 @@ def get_config_variables():
     # TODO: Use Django's URLValidator here.
     yield ConfigVariable(
         name="users_pdf_url",
-        default_value="http://example.com:8000",
+        default_value=os.getenv("INSTANCE_DOMAIN", default="http://example.com:8000"),
         label="System URL",
         help_text="Used for QRCode in PDF of access data.",
         weight=540,

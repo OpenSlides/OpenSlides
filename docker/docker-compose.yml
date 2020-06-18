@@ -1,0 +1,162 @@
+version: '3.4'
+
+# @Gernot: TODO env file
+x-server-env: &default-server-env
+    SECRET_KEY: "TODO"
+    # @Gernot: TODO secret key generation. -> secret?
+    INSTANCE_DOMAIN: "http://example.com:8000"
+x-pgnode: &default-pgnode
+  image: openslides/openslides-repmgr:latest
+  build: https://github.com/OpenSlides/openslides-docker-compose.git#:repmgr
+  networks:
+    - dbnet
+  labels:
+    org.openslides.role: "postgres"
+  restart: always
+x-pgnode-env: &default-pgnode-env
+  REPMGR_RECONNECT_ATTEMPTS: 30
+  REPMGR_RECONNECT_INTERVAL: 10
+
+services:
+  server:
+    image: openslides/openslides-server:latest
+    networks:
+      - front
+      - back
+    restart: always
+    # Below is the default command.  You can uncomment it to override the
+    # number of workers, for example:
+    # command: "gunicorn -w 8 --preload -b 0.0.0.0:8000
+    #   -k uvicorn.workers.UvicornWorker openslides.asgi:application"
+    #
+    # Uncomment the following line to use daphne instead of gunicorn:
+    # command: "daphne -b 0.0.0.0 -p 8000 openslides.asgi:application"
+    depends_on:
+      - postfix
+      - media
+      - pgbouncer
+      - redis
+      - redis-slave
+      - redis-channels
+    environment:
+      << : *default-server-env
+    secrets:
+      - os_admin
+      - os_user
+
+  server-db-setup:
+    image: openslides/openslides-server:latest
+    networks:
+      - back
+    restart: always
+    entrypoint: /usr/local/sbin/entrypoint-db-setup
+    depends_on:
+      - pgbouncer
+      - redis
+      - redis-slave
+      - redis-channels
+    environment:
+      << : *default-server-env
+    secrets:
+      - os_admin
+      - os_user
+
+  client:
+    image: openslides/openslides-client:latest
+    restart: always
+    depends_on:
+      - server
+    networks:
+      - front
+    ports:
+      - "127.0.0.1:8000:80"
+
+  pgnode1:
+    << : *default-pgnode
+    environment:
+      << : *default-pgnode-env
+      REPMGR_NODE_ID: 1
+      REPMGR_PRIMARY: # empty; this *is* the primary
+    volumes:
+      - "dbdata1:/var/lib/postgresql"
+  # Note: You can add more postgres nodes by copying the template
+  # and replacing all %X% with the number of the pgnode. Remember
+  # to add all pgnodes to the pgbouncer below!
+  # pgnode%X%:
+  #   << : *default-pgnode
+  #   environment:
+  #     << : *default-pgnode-env
+  #     REPMGR_NODE_ID: %X%
+  #     REPMGR_PRIMARY: pgnode1
+  #   volumes:
+  #     - "dbdata%X%:/var/lib/postgresql"
+
+  pgbouncer:
+    # environment:
+    #   - PG_NODE_LIST=pgnode1,pgnode2,pgnode3
+    image: openslides/openslides-pgbouncer:latest
+    build: https://github.com/OpenSlides/openslides-docker-compose.git#:pgbouncer
+    restart: always
+    networks:
+      back:
+        aliases:
+          - db
+          - postgres
+      dbnet:
+  postfix:
+    image: openslides/openslides-postfix:latest
+    build: https://github.com/OpenSlides/openslides-docker-compose.git#:postfix
+    restart: always
+    environment:
+      MYHOSTNAME: localhost
+      RELAYHOST: localhost
+    networks:
+      - back
+  redis:
+    image: redis:alpine
+    restart: always
+    networks:
+      - back
+  redis-slave:
+    image: redis:alpine
+    restart: always
+    command: ["redis-server", "--save", "", "--slaveof", "redis", "6379"]
+    depends_on:
+      - redis
+    networks:
+      - back
+  redis-channels:
+    image: redis:alpine
+    restart: always
+    networks:
+      - back
+  media:
+    image: openslides/openslides-media-service:latest
+    build: https://github.com/OpenSlides/openslides-media-service.git
+    environment:
+      - CHECK_REQUEST_URL=server:8000/check-media/
+    restart: always
+    networks:
+      front:
+      back:
+    # Override command to run more workers per task
+    # command: ["gunicorn", "-w", "4", "--preload", "-b",
+    #   "0.0.0.0:8000", "src.mediaserver:app"]
+
+volumes:
+  dbdata1:
+  dbdata2:
+  dbdata3:
+
+networks:
+  front:
+  back:
+  dbnet:
+
+secrets:
+  os_admin:
+    file: ./secrets/admin.env
+  os_user:
+    file: ./secrets/user.env
+
+# vim: set ft=yaml sw=2 et:

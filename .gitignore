@@ -1,63 +1,9 @@
-# General
+## General
 *.pyc
 *.swp
 *.swo
 *.log
 *~
-
-# Virtual Environment
-.virtualenv*/*
-.venv/*
-
-# Javascript tools and libraries
-node_modules/*
-bower_components/*
-
-# OS4-Submodules
-/openslides-*
-
-# OS3+
-/server/
-/haproxy/
-
-# Local user data (settings, database, media, search index, static files)
-personal_data/*
-openslides/static/*
-collected-static/*
-
-# Package building/IDE
-docs/_build/*
-*.egg-info
-build/*
-dist/*
-debug/*
-.DS_Store
-.idea
-*.code-workspace
-
-# Unit test and coverage reports
-.coverage
-tests/file/*
-tests/db.sqlite3.test
-.pytest_cache
-
-# Plugin development
-openslides_*
-
-# Mypy cache for typechecking
-.mypy_cache
-
-# OpenSlides 3 Client
-
-# compiled output
-client/dist
-client/tmp
-client/out-tsc
-client/documentation
-
-# dependencies
-client/node_modules
-
 # IDEs and editors
 /.idea
 .project
@@ -66,13 +12,50 @@ client/node_modules
 *.launch
 .settings/
 *.sublime-workspace
-
-# IDE - VSCode
 .vscode/*
+*.code-workspace
+# System Files
+.DS_Store
+Thumbs.db
+# Virtual Environment
+.virtualenv*/*
+.venv/*
 
-# misc
+## Compatibility
+# OS4-Submodules
+/openslides-*/
+# Plugin development
+openslides_*
+
+## Server
+# Local user data (settings, database, media, search index, static files)
+personal_data/*
+server/personal_data/*
+server/openslides/static/*
+# Unit test and coverage reports
+.coverage
+server/tests/file/*
+server/tests/db.sqlite3.test
+.pytest_cache
+# Package building
+*.egg-info
+# Mypy cache for typechecking
+.mypy_cache
+
+## OpenSlides 3 Client
+# Javascript tools and libraries
+**/node_modules/*
+**/bower_components/*
+# compiled output
+client/dist
+client/static
+client/tmp
+client/out-tsc
+# docs
+client/documentation
 Compodoc
 Compodocmodules
+# build artifacts
 client/.sass-cache
 client/connect.lock
 client/coverage
@@ -85,8 +68,9 @@ client/yarn.lock
 package-lock.json
 client/package-lock.json
 cypress.json
-*-version.txt
 
-# System Files
-client/.DS_Store
-client/Thumbs.db
+## Deployment
+# Docker build artifacts
+*-version.txt
+# secrets
+docker/secrets/*.env

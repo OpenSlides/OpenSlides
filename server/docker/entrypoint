@@ -1,0 +1,14 @@
+#!/bin/bash
+
+set -e
+
+# TODO: env variable for this host
+wait-for-it -t 0 "server-db-setup:8000"
+
+printf 'Executing server: "%s"\n' "$*"
+
+# Expected commands are one of:
+# - daphne -b 0.0.0.0 -p 8000 openslides.asgi:application
+# - gunicorn -w 4 -b 0.0.0.0:8000 -k uvicorn.workers.UvicornWorker \
+#   openslides.asgi:application
+exec $*
