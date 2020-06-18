@@ -15,11 +15,11 @@
 
     h1,
     h3.accent {
-        color: mat-color($primary);
+        color: mat-color(if($is-dark-theme, $accent, $primary));
     }
 
     a {
-        color: mat-color($primary);
+        color: mat-color(if($is-dark-theme, $accent, $primary));
     }
 
     .anchor-button {
@@ -31,8 +31,8 @@
         color: mat-color($accent);
     }
 
-    .button24 {
-        color: mat-color($primary);
+    .primary-accent-by-theme {
+        color: mat-color(if($is-dark-theme, $accent, $primary));
     }
 
     //custom table header for search button, filtering and more. Used in ListViews
