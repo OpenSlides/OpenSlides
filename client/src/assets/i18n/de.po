@@ -510,10 +510,9 @@ msgstr "Darf Kommentare sehen"
 msgid "Can see elections"
 msgstr "Darf Wahlen sehen"
 
-msgid "Can see extra data of users (e.g. present and comment)"
+msgid "Can see extra data of users (e.g. email and comment)"
 msgstr ""
-"Darf die zusätzlichen Daten der Benutzer sehen (z. B. anwesend und "
-"Kommentar)"
+"Darf die zusätzlichen Daten der Benutzer sehen (z. B. E-Mail und Kommentar)"
 
 msgid "Can see hidden files"
 msgstr "Darf versteckte Dateien sehen"
@@ -1112,14 +1111,11 @@ msgstr "Alle ausklappen"
 msgid "Export"
 msgstr "Exportieren"
 
-msgid "Export ..."
-msgstr "Exportieren ..."
-
 msgid "Export as CSV"
 msgstr "Exportieren als CSV"
 
 msgid "Export as PDF"
-msgstr "Als PDF exportieren"
+msgstr "Exportieren als PDF"
 
 msgid "Export comment"
 msgstr "Kommentar exportieren"
