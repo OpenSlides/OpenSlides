@@ -24,4 +24,6 @@ tests
 .venv/
 .vscode/
 package-lock.json
+server/
+docker/
 
