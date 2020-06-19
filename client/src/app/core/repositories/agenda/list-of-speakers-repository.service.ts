@@ -287,7 +287,7 @@ export class ListOfSpeakersRepositoryService extends BaseHasContentObjectReposit
         return {
             structureLevel:
                 !speaker.user || (speaker.user && !speaker.user.structure_level)
-                    ? 'No structure level'
+                    ? '–'
                     : speaker.user.structure_level,
             finishedSpeakers: [speaker],
             speakingTime: this.getSpeakingTimeAsNumber(speaker)

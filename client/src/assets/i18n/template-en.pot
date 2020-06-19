@@ -472,7 +472,7 @@ msgstr ""
 msgid "Can see elections"
 msgstr ""
 
-msgid "Can see extra data of users (e.g. present and comment)"
+msgid "Can see extra data of users (e.g. email and comment)"
 msgstr ""
 
 msgid "Can see hidden files"
@@ -1039,9 +1039,6 @@ msgid "Expand all"
 msgstr ""
 
 msgid "Export"
-msgstr ""
-
-msgid "Export ..."
 msgstr ""
 
 msgid "Export as CSV"
