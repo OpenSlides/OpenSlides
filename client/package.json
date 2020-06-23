@@ -50,7 +50,7 @@
         "@pebula/ngrid": "2.0.0-rc.1",
         "@pebula/ngrid-material": "2.0.0-rc.1",
         "@pebula/utils": "1.0.2",
-        "@tinymce/tinymce-angular": "^3.3.1",
+        "@tinymce/tinymce-angular": "^3.6.0",
         "@videojs/http-streaming": "^1.13.3",
         "acorn": "^7.1.0",
         "chart.js": "^2.9.2",
@@ -64,7 +64,7 @@
         "ng2-charts": "^2.3.0",
         "ng2-pdf-viewer": "^6.1.2",
         "ngx-device-detector": "^1.4.4",
-        "ngx-file-drop": "^8.0.8",
+        "ngx-file-drop": "^9.0.1",
         "ngx-mat-select-search": "^2.1.2",
         "ngx-material-timepicker": "^5.5.1",
         "ngx-papaparse": "^4.0.2",
@@ -77,7 +77,7 @@
         "zone.js": "~0.10.2"
     },
     "devDependencies": {
-        "@angular-devkit/build-angular": "~0.900.7",
+        "@angular-devkit/build-angular": "~0.901.9",
         "@angular-devkit/schematics": "^9.0.6",
         "@angular/cli": "~9.1.0",
         "@angular/compiler-cli": "~9.1.0",
