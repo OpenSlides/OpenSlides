@@ -121,7 +121,6 @@ matrix:
       node_js: "12.18"
       script:
         - cd client
-        - npm list --depth=0 || cat --help
         - npm run prettify-check
 
     - name: "Server: Tests Startup Routine Python 3.7"
