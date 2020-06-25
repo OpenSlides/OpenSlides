@@ -8,6 +8,7 @@ import { DEFAULT_AUTH_TYPE, UserAuthType } from 'app/shared/models/users/user';
 import { DataStoreService } from './data-store.service';
 import { HttpService } from './http.service';
 import { OpenSlidesService } from './openslides.service';
+import { StorageService } from './storage.service';
 
 /**
  * Authenticates an OpenSlides user with username and password
@@ -29,7 +30,8 @@ export class AuthService {
         private operator: OperatorService,
         private OpenSlides: OpenSlidesService,
         private router: Router,
-        private DS: DataStoreService
+        private DS: DataStoreService,
+        private storageService: StorageService
     ) {}
 
     /**
@@ -106,10 +108,12 @@ export class AuthService {
                 // We do nothing on failures. Reboot OpenSlides anyway.
             }
             this.router.navigate(['/']);
+            await this.storageService.clear();
             await this.DS.clear();
             await this.operator.setWhoAmI(response);
             await this.OpenSlides.reboot();
         } else if (authType === 'saml') {
+            await this.storageService.clear();
             await this.DS.clear();
             await this.operator.setWhoAmI(null);
             window.location.href = environment.urlPrefix + '/saml/?slo'; // Bye

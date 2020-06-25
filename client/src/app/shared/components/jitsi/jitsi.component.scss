@@ -1,19 +1,39 @@
+.jitsi-fake-dialog-wrapper {
+    z-index: 98;
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    padding: 20px 10% 20px 5%;
+
+    .jitsi-fake-dialog {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 90%;
+
+        .jitsi-iframe-wrapper {
+            flex: 1;
+        }
+
+        .jitsi-dialog-actions {
+            display: flex;
+            justify-content: space-between;
+        }
+    }
+}
+
 .jitsi-dialog-hide {
     display: none;
 }
 
-.jitsi-iframe-wrapper {
-    height: 70vh;
-}
-
-.minimize-jitsi-dialog-button {
-    margin-left: auto !important;
-    span {
-        line-height: initial;
-    }
-}
-
 .jitsi-integration {
+    z-index: 99;
+    position: fixed;
+    right: 0;
+    bottom: 0;
+
     .cast-shadow {
         box-shadow: -3px -3px 10px 0px rgba(0, 0, 0, 0.2) !important;
     }
