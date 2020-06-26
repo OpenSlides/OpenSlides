@@ -151,11 +151,11 @@ export class JitsiComponent extends BaseViewComponent implements OnInit, OnDestr
 
     private interfaceConfigOverwrite = {
         DISABLE_VIDEO_BACKGROUND: true,
-        SHOW_JITSI_WATERMARK: true,
-        SHOW_WATERMARK_FOR_GUESTS: true,
         INVITATION_POWERED_BY: false,
         DISABLE_JOIN_LEAVE_NOTIFICATIONS: true,
-        DISABLE_PRESENCE_STATUS: true
+        DISABLE_PRESENCE_STATUS: true,
+        TOOLBAR_ALWAYS_VISIBLE: true,
+        TOOLBAR_TIMEOUT: 10000000
     };
 
     public constructor(
