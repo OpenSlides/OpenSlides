@@ -4,7 +4,7 @@ import { Title } from '@angular/platform-browser';
 
 import { StorageMap } from '@ngx-pwa/local-storage';
 import { TranslateService } from '@ngx-translate/core';
-import { distinctUntilChanged } from 'rxjs/operators';
+import { distinctUntilChanged, map } from 'rxjs/operators';
 
 import { ConstantsService } from 'app/core/core-services/constants.service';
 import { OperatorService } from 'app/core/core-services/operator.service';
@@ -12,6 +12,7 @@ import { Deferred } from 'app/core/promises/deferred';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { BaseViewComponent } from 'app/site/base/base-view';
+import { CurrentListOfSpeakersService } from 'app/site/projector/services/current-list-of-speakers.service';
 
 declare var JitsiMeetExternalAPI: any;
 
@@ -166,7 +167,8 @@ export class JitsiComponent extends BaseViewComponent implements OnInit, OnDestr
         private storageMap: StorageMap,
         private userRepo: UserRepositoryService,
         private constantsService: ConstantsService,
-        private configService: ConfigService
+        private configService: ConfigService,
+        private closService: CurrentListOfSpeakersService
     ) {
         super(titleService, translate, snackBar);
     }
@@ -273,10 +275,12 @@ export class JitsiComponent extends BaseViewComponent implements OnInit, OnDestr
                         this.showJitsiWindow = true;
                     }
                 }),
-            // check if the user is on the clos, remove from room if not permitted
-            this.operator
-                .isOnCurrentListOfSpeakersObservable()
-                .pipe(distinctUntilChanged())
+            // check if the operator is on the clos, remove from room if not permitted
+            this.closService.currentListOfSpeakersObservable
+                .pipe(
+                    map(los => (los ? los.isUserOnList(this.operator.user.id) : false)),
+                    distinctUntilChanged()
+                )
                 .subscribe(isOnList => {
                     this.isOnCurrentLos = isOnList;
                     console.log('this.isOnCurrentLos: ', this.isOnCurrentLos);

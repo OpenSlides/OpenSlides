@@ -2,10 +2,9 @@ import { Injectable } from '@angular/core';
 
 import { environment } from 'environments/environment';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
-import { auditTime, filter, map } from 'rxjs/operators';
+import { auditTime, filter } from 'rxjs/operators';
 
 import { Group } from 'app/shared/models/users/group';
-import { CurrentListOfSpeakersService } from 'app/site/projector/services/current-list-of-speakers.service';
 import { ViewUser } from 'app/site/users/models/view-user';
 import { CollectionStringMapperService } from './collection-string-mapper.service';
 import { DataStoreService } from './data-store.service';
@@ -210,8 +209,7 @@ export class OperatorService implements OnAfterAppsLoaded {
         private offlineService: OfflineService,
         private collectionStringMapper: CollectionStringMapperService,
         private storageService: StorageService,
-        private OSStatus: OpenSlidesStatusService,
-        private closService: CurrentListOfSpeakersService
+        private OSStatus: OpenSlidesStatusService
     ) {
         this.DS.getChangeObservable(User).subscribe(newModel => {
             if (this._user && this._user.id === newModel.id) {
@@ -460,16 +458,6 @@ export class OperatorService implements OnAfterAppsLoaded {
      */
     public async setPresence(isPresent: boolean): Promise<void> {
         await this.http.post(environment.urlPrefix + '/users/setpresence/', isPresent);
-    }
-
-    public isOnCurrentListOfSpeakersObservable(): Observable<boolean> {
-        return this.closService.currentListOfSpeakersObservable.pipe(
-            map(los => {
-                if (los) {
-                    return los.isUserOnList(this.user.id);
-                }
-            })
-        );
     }
 
     /**
