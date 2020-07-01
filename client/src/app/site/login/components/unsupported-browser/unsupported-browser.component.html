@@ -17,9 +17,7 @@
         </div>
 
         <div class="spacer-top-20" *ngIf="!supported">
-            <span>{{
-                'Please update your browser or contact your system administration.' | translate
-            }}</span>
+            <span>{{ 'Please update your browser or contact your system administration.' | translate }}</span>
         </div>
 
         <div class="spacer-top-20">
@@ -32,5 +30,14 @@
                 </ul>
             </span>
         </div>
+
+        <a mat-stroked-button color="primary" routerLink="/login" [queryParams]="{ checkBrowser: false }">
+            <span *ngIf="!supported">
+                {{ 'Login anyway' | translate }}
+            </span>
+            <span *ngIf="supported">
+                {{ 'Login' | translate }}
+            </span>
+        </a>
     </mat-card>
 </main>
