@@ -248,6 +248,11 @@ _('Show amendment in parent motion');
 _('Restrictions');
 _('Label color');
 _('Next states');
+_('grey');
+_('red');
+_('green');
+_('lightblue');
+_('yellow');
 // misc for motions
 _('Amendment');
 _('Statute amendment for');
@@ -422,6 +427,11 @@ _('OpenSlides is temporarily reset to following timestamp');
 _('Motion change recommendation created');
 _('Motion change recommendation updated');
 _('Motion change recommendation deleted');
+_('Motion block set to');
+_('Poll created');
+_('Poll updated');
+_('Poll deleted');
+_('Comment {arg1} updated');
 
 // core misc strings
 _('items per page');

@@ -671,6 +671,9 @@ msgstr "Kommentar"
 msgid "Comment fields"
 msgstr "Kommentarfelder"
 
+msgid "Comment {arg1} updated"
+msgstr "Kommentar {arg1} aktualisiert"
+
 msgid "Comments"
 msgstr "Kommentare"
 
@@ -1500,6 +1503,9 @@ msgstr "Daten werden geladen. Bitte warten ..."
 msgid "Login"
 msgstr "Anmelden"
 
+msgid "Login anyway"
+msgstr "Trotzdem anmelden"
+
 msgid "Login as guest"
 msgstr "Als Gast anmelden"
 
@@ -1544,6 +1550,9 @@ msgstr "Antrag"
 
 msgid "Motion block"
 msgstr "Antragsblock"
+
+msgid "Motion block set to"
+msgstr "Antragsblock gesetzt auf"
 
 msgid "Motion blocks"
 msgstr "Antragsblöcke"
@@ -1907,8 +1916,8 @@ msgstr "OpenSlides-Zugangsdaten"
 msgid "OpenSlides is temporarily reset to following timestamp"
 msgstr "OpenSlides ist vorübergehend auf folgenden Zeitpunkt zurückgesetzt:"
 
-msgid "OpenSlides recommends:"
-msgstr "OpenSlides empfiehlt:"
+msgid "OpenSlides recommends"
+msgstr "OpenSlides empfiehlt"
 
 msgid "Origin"
 msgstr "Herkunft"
@@ -2044,6 +2053,15 @@ msgid "Please update your browser or contact your system administration."
 msgstr ""
 "Bitte aktualisieren Sie Ihren Browser oder kontaktieren Sie Ihre "
 "Systemadministration."
+
+msgid "Poll created"
+msgstr "Abstimmung erstellt"
+
+msgid "Poll deleted"
+msgstr "Abstimmung gelöscht"
+
+msgid "Poll updated"
+msgstr "Abstimmung aktualisiert"
 
 msgid "Preamble text for PDF document (all elections)"
 msgstr "Einleitungstext für PDF-Dokument (alle Wahlen) "
@@ -3210,6 +3228,12 @@ msgstr "abgeschlossen (unveröffentlicht)"
 msgid "fullscreen"
 msgstr "Vollbild"
 
+msgid "green"
+msgstr "grün"
+
+msgid "grey"
+msgstr "grau"
+
 msgid "has saved his work on this motion."
 msgstr "hat die Arbeit an diesem Antrag gespeichert."
 
@@ -3239,6 +3263,9 @@ msgstr "Einträge pro Seite"
 
 msgid "items selected"
 msgstr "Einträge ausgewählt"
+
+msgid "lightblue"
+msgstr "hellblau"
 
 msgid "majority"
 msgstr "Mehrheit"
@@ -3282,6 +3309,9 @@ msgstr "von"
 msgid "open votes"
 msgstr "offene Stimmabgaben"
 
+msgid "or"
+msgstr "oder"
+
 msgid "outside"
 msgstr "außerhalb"
 
@@ -3299,6 +3329,9 @@ msgstr "öffentlich"
 
 msgid "published"
 msgstr "veröffentlicht"
+
+msgid "red"
+msgstr "rot"
 
 msgid "refered to committee"
 msgstr "in Ausschuss verwiesen"
@@ -3350,3 +3383,6 @@ msgstr "mit Filter"
 
 msgid "withdrawed"
 msgstr "zurückgezogen"
+
+msgid "yellow"
+msgstr "gelb"
