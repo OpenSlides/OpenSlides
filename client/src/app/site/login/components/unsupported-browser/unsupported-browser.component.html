@@ -21,14 +21,14 @@
         </div>
 
         <div class="spacer-top-20">
-            <span>
-                {{ 'OpenSlides recommends:' | translate }}
-                <ul>
-                    <li *ngFor="let browser of recommendedBrowsers">
-                        <a [href]="browser.url">{{ browser.name }}</a>
-                    </li>
-                </ul>
-            </span>
+            <p>
+                {{ 'OpenSlides recommends' | translate }}
+                <span *ngFor="let browser of recommendedBrowsers; last as isLast">
+                    <a [href]="browser.url">{{ browser.name }}</a>
+                    <span *ngIf="!isLast">&nbsp;{{ 'or' | translate }}&nbsp;</span>
+                    <span *ngIf="isLast">.</span>
+                </span>
+            </p>
         </div>
 
         <a mat-stroked-button color="primary" routerLink="/login" [queryParams]="{ checkBrowser: false }">

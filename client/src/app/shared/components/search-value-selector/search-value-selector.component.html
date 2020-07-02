@@ -15,7 +15,7 @@
                         (removed)="removeItem(item.id)"
                         [disableRipple]="true"
                     >
-                        {{ item.getTitle() }}
+                        {{ item.getTitle() | translate }}
                         <mat-icon matChipRemove>cancel</mat-icon>
                     </mat-chip>
                 </mat-chip-list>
