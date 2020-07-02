@@ -13,6 +13,10 @@
             display: block;
             height: 500px;
 
+            .list-view-frame {
+                height: 100%;
+            }
+
             .single-vote-result + .single-vote-result {
                 margin-top: 1em;
             }

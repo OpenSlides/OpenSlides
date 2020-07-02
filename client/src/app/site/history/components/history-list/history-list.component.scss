@@ -1,13 +1,16 @@
 .no-info {
     font-style: italic;
-    color: slategray; // TODO: Colors per theme
 }
 
-.custom-table-header {
+.history-table-header {
+    display: flex;
     justify-content: space-between;
-    text-align: left;
+}
 
-    & > div {
-        padding: 0 20px;
+.os-headed-listview-table {
+    .mat-header-cell,
+    .mat-cell {
+        padding-left: 5px;
+        padding-right: 5px;
     }
 }

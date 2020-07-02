@@ -309,11 +309,6 @@ b,
     @extend %os-table;
 }
 
-/* TODO: find a better way to get more vertical space in (empty/small) tables for maximize filter dialog */
-.mat-paginator {
-    min-height: 800px;
-}
-
 /* hide scrollbars caused by hidden filter dialog outside of the viewport */
 .mat-drawer-content {
     overflow-x: hidden !important;
@@ -447,6 +442,10 @@ button.mat-menu-item.selected {
     margin-bottom: 40px !important;
 }
 
+.spacer-bottom-60 {
+    margin-bottom: 60px !important;
+}
+
 .spacer-left-10 {
     margin-left: 10px;
 }
@@ -499,19 +498,6 @@ button.mat-menu-item.selected {
     }
 }
 
-/**
- * cdk-virtual-scroll-viewport requires a hight, otherwise it would always be 0
- * Depending in mobile-mode and desktop mode we need to subtract different values
- * from 100vh
- */
-.virtual-scroll-full-page {
-    height: calc(100vh - 64px);
-}
-
-.virtual-scroll-with-head-bar {
-    height: calc(100vh - 129px);
-}
-
 /** css hacks https://codepen.io/edge0703/pen/iHJuA */
 .innerTable {
     display: inline-block;
@@ -519,12 +505,13 @@ button.mat-menu-item.selected {
     width: -webkit-fill-available;
 }
 
-.ngrid-hide-head {
-    // For some reason, hiding the table header adds an empty meta bar.
-    .pbl-ngrid-container {
-        > div {
-            height: 0;
-        }
+/**
+ * Compilcated ngrid hack: The meta row won't disappear (just like that)
+ * Select the first ever container pbl-ngrid-container div and hide
+ */
+.pbl-ngrid-container {
+    > div {
+        height: 0;
     }
 }
 

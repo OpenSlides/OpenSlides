@@ -20,6 +20,7 @@
         </tr>
     </table>
     <os-list-view-table
+        class="user-statistics-table--virtual-scroll "
         [listObservable]="statisticsByStructureLevelObservable"
         [columns]="columnDefinition"
         [filterProps]="filterProps"
@@ -27,7 +28,6 @@
         [allowProjector]="false"
         [fullScreen]="false"
         [showListOfSpeakers]="false"
-        [cssClasses]="{ 'user-statistics-table--virtual-scroll': true }"
     >
         <!-- Header -->
         <div *pblNgridHeaderCellDef="'*'; col as col">

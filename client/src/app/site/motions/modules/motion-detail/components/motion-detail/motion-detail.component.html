@@ -115,7 +115,7 @@
     </mat-menu>
 </os-head-bar>
 
-<div class="content-container" (touchstart)="swipe($event, 'start')" (touchend)="swipe($event, 'end')">
+<div class="content-container spacer-bottom-60" (touchstart)="swipe($event, 'start')" (touchend)="swipe($event, 'end')">
     <!-- Title -->
     <div class="title" *ngIf="motion && !editMotion">
         <div class="title-line">

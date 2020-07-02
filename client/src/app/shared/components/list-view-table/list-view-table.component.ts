@@ -215,31 +215,6 @@ export class ListViewTableComponent<V extends BaseViewModel | BaseViewModelWithC
     public fullScreen = true;
 
     /**
-     * Option to apply additional classes to the virtual-scrolling-list.
-     */
-    @Input()
-    public set cssClasses(values: CssClassDefinition) {
-        this._cssClasses = values;
-    }
-
-    /**
-     * Returns the list of classes, that are applied to the virtual-scrolling-list.
-     * Already prepared for the `[ngClass]`-property.
-     *
-     * `Warning: The defaultClasses will overwrite custom classes with the same key.`
-     *
-     * @returns An object looking like `{ [key: string]: boolean }`.
-     */
-    public get cssClasses(): CssClassDefinition {
-        const defaultClasses = {
-            'virtual-scroll-with-head-bar ngrid-hide-head': this.fullScreen && this.showFilterBar,
-            'virtual-scroll-full-page': this.fullScreen && !this.showFilterBar,
-            multiselect: this.multiSelect
-        };
-        return Object.assign(this._cssClasses, defaultClasses);
-    }
-
-    /**
      * Inform about changes in the dataSource
      */
     @Output()
@@ -274,11 +249,6 @@ export class ListViewTableComponent<V extends BaseViewModel | BaseViewModelWithC
      * Search input value
      */
     public inputValue: string;
-
-    /**
-     * Private variable to hold all classes for the virtual-scrolling-list.
-     */
-    private _cssClasses: CssClassDefinition = {};
 
     /**
      * Collect subsciptions

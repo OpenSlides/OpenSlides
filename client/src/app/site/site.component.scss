@@ -122,12 +122,11 @@ mat-sidenav-container {
     position: relative;
 
     main {
+        position: absolute;
         display: flex;
         flex-direction: column;
         width: 100%;
-        position: relative;
         z-index: 50;
-        flex: 1;
         > *:not(router-outlet) {
             flex: 1;
             display: block;

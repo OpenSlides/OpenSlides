@@ -26,7 +26,12 @@
 }
 
 .single-votes-table {
+    display: block;
     height: 500px;
+
+    .list-view-frame {
+        height: 100%;
+    }
 }
 
 .openslides-theme .pbl-ngrid-no-data {

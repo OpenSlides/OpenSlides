@@ -11,73 +11,75 @@
     </div>
 </os-head-bar>
 
-<div class="custom-table-header">
-    <div>
-        <span [formGroup]="modelSelectForm">
+<mat-card class="os-card spacer-bottom-60">
+    <div class="history-table-header">
+        <div>
+            <span [formGroup]="modelSelectForm">
+                <mat-form-field>
+                    <os-search-value-selector
+                        formControlName="model"
+                        [multiple]="false"
+                        [includeNone]="false"
+                        placeholder="{{ 'Motion' | translate }}"
+                        [inputListValues]="collectionObserver"
+                    ></os-search-value-selector>
+                </mat-form-field>
+            </span>
+            <span class="spacer-left-20">
+                <button mat-button (click)="refresh()" *ngIf="currentModelId">
+                    <mat-icon>refresh</mat-icon>
+                    <span>{{ 'Refresh' | translate }}</span>
+                </button>
+            </span>
+        </div>
+        <div>
             <mat-form-field>
-                <os-search-value-selector
-                    formControlName="model"
-                    [multiple]="false"
-                    [includeNone]="false"
-                    placeholder="{{ 'Motion' | translate }}"
-                    [inputListValues]="collectionObserver"
-                ></os-search-value-selector>
+                <input matInput (keyup)="applySearch($event.target.value)" placeholder="{{ 'Search' | translate }}" />
+                <mat-icon matSuffix>search</mat-icon>
             </mat-form-field>
-        </span>
-        <span class="spacer-left-20">
-            <button mat-button (click)="refresh()" *ngIf="currentModelId">
-                <mat-icon>refresh</mat-icon>
-                <span>{{ 'Refresh' | translate }}</span>
-            </button>
-        </span>
+        </div>
     </div>
-    <div>
-        <mat-form-field>
-            <input matInput (keyup)="applySearch($event.target.value)" placeholder="{{ 'Search' | translate }}" />
-            <mat-icon matSuffix>search</mat-icon>
-        </mat-form-field>
-    </div>
-</div>
 
-<mat-table [dataSource]="dataSource" matSort class="os-headed-listview-table">
-    <!-- Timestamp -->
-    <ng-container matColumnDef="time">
-        <mat-header-cell *matHeaderCellDef>{{ 'Timestamp' | translate }}</mat-header-cell>
-        <mat-cell *matCellDef="let history">{{ getTimestamp(history) }}</mat-cell>
-    </ng-container>
+    <mat-table [dataSource]="dataSource" matSort class="os-headed-listview-table">
+        <!-- Timestamp -->
+        <ng-container matColumnDef="time">
+            <mat-header-cell *matHeaderCellDef>{{ 'Timestamp' | translate }}</mat-header-cell>
+            <mat-cell *matCellDef="let history">{{ getTimestamp(history) }}</mat-cell>
+        </ng-container>
 
-    <!-- Element -->
-    <ng-container matColumnDef="element">
-        <mat-header-cell *matHeaderCellDef>{{ 'Element' | translate }}</mat-header-cell>
-        <mat-cell *matCellDef="let history">
-            <div *ngIf="getElementInfo(history)">{{ getElementInfo(history) | translate }}</div>
-            <div
-                class="no-info"
-                matTooltip="{{ 'This element does not exist at this time.' | translate }}"
-                *ngIf="!getElementInfo(history)"
-            >
-                <span>{{ 'No information available' | translate }} ({{ history.element_id }})</span>
-            </div>
-        </mat-cell>
-    </ng-container>
+        <!-- Element -->
+        <ng-container matColumnDef="element">
+            <mat-header-cell *matHeaderCellDef>{{ 'Element' | translate }}</mat-header-cell>
+            <mat-cell *matCellDef="let history">
+                <div *ngIf="getElementInfo(history)">{{ getElementInfo(history) | translate }}</div>
+                <div
+                    class="no-info"
+                    matTooltip="{{ 'This element does not exist at this time.' | translate }}"
+                    *ngIf="!getElementInfo(history)"
+                >
+                    <span>{{ 'No information available' | translate }} ({{ history.element_id }})</span>
+                </div>
+            </mat-cell>
+        </ng-container>
 
-    <!-- Info -->
-    <ng-container matColumnDef="info">
-        <mat-header-cell *matHeaderCellDef>{{ 'Comment' | translate }}</mat-header-cell>
-        <mat-cell *matCellDef="let history">{{ parseInformation(history) }}</mat-cell>
-    </ng-container>
+        <!-- Info -->
+        <ng-container matColumnDef="info">
+            <mat-header-cell *matHeaderCellDef>{{ 'Comment' | translate }}</mat-header-cell>
+            <mat-cell *matCellDef="let history">{{ parseInformation(history) }}</mat-cell>
+        </ng-container>
 
-    <!-- User -->
-    <ng-container matColumnDef="user">
-        <mat-header-cell *matHeaderCellDef>{{ 'Changed by' | translate }}</mat-header-cell>
-        <mat-cell *matCellDef="let history">{{ getUserName(history) }}</mat-cell>
-    </ng-container>
+        <!-- User -->
+        <ng-container matColumnDef="user">
+            <mat-header-cell *matHeaderCellDef>{{ 'Changed by' | translate }}</mat-header-cell>
+            <mat-cell *matCellDef="let history">{{ getUserName(history) }}</mat-cell>
+        </ng-container>
 
-    <mat-header-row *matHeaderRowDef="getRowDef()"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: getRowDef()" (click)="onClickRow(row)"></mat-row>
-</mat-table>
+        <mat-header-row *matHeaderRowDef="getRowDef()"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: getRowDef()" (click)="onClickRow(row)"></mat-row>
+    </mat-table>
 
-<mat-paginator [pageSizeOptions]="pageSizes"></mat-paginator>
+    <mat-paginator [pageSizeOptions]="pageSizes"></mat-paginator>
+</mat-card>
 
 <mat-menu #historyMenu="matMenu">
     <button mat-menu-item class="red-warning-text" (click)="clearHistory()">

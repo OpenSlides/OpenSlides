@@ -10,7 +10,7 @@
     </div>
 </os-head-bar>
 
-<mat-card class="os-card">
+<mat-card class="os-card spacer-bottom-60">
     <ng-container [ngTemplateOutlet]="viewTemplate"></ng-container>
 </mat-card>
 
@@ -40,6 +40,7 @@
                 <h2>{{ 'Single votes' | translate }}</h2>
                 <os-list-view-table
                     *ngIf="votesDataObservable"
+                    class="single-votes-table"
                     [listObservable]="votesDataObservable"
                     [columns]="columnDefinition"
                     [filterProps]="filterProps"
@@ -47,7 +48,6 @@
                     [fullScreen]="true"
                     [vScrollFixed]="-1"
                     listStorageKey="motion-poll-vote"
-                    [cssClasses]="{ 'single-votes-table': true }"
                 >
                     <!-- Header -->
                     <div *pblNgridHeaderCellDef="'*'; col as col">

@@ -12,30 +12,32 @@
     </div>
 </os-head-bar>
 
-<cdk-virtual-scroll-viewport itemSize="50" [ngClass]="statuteParagraphs.length ? 'virtual-scroll-full-page' : ''">
-    <mat-accordion class="os-card">
-        <mat-expansion-panel *cdkVirtualFor="let statuteParagraph of statuteParagraphs" multiple="false">
-            <mat-expansion-panel-header>
-                <mat-panel-title>
-                    {{ statuteParagraph.title }}
-                </mat-panel-title>
-            </mat-expansion-panel-header>
-            <mat-card>
-                <mat-card-title>{{ statuteParagraph.title }}</mat-card-title>
-                <mat-card-content>
-                    <div [innerHTML]="statuteParagraph.text | trust: 'html'"></div>
-                </mat-card-content>
-            </mat-card>
-            <mat-action-row>
-                <button mat-button mat-icon-button (click)="openDialog(statuteParagraph)">
-                    <mat-icon>edit</mat-icon>
-                </button>
-                <button mat-button mat-icon-button (click)="onDeleteButton(statuteParagraph)">
-                    <mat-icon>delete</mat-icon>
-                </button>
-            </mat-action-row>
-        </mat-expansion-panel>
-    </mat-accordion>
+<cdk-virtual-scroll-viewport class="statute-vscroll-wrapper" itemSize="50">
+    <mat-card>
+        <mat-accordion>
+            <mat-expansion-panel *cdkVirtualFor="let statuteParagraph of statuteParagraphs" multiple="false">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        {{ statuteParagraph.title }}
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <mat-card>
+                    <mat-card-title>{{ statuteParagraph.title }}</mat-card-title>
+                    <mat-card-content>
+                        <div [innerHTML]="statuteParagraph.text | trust: 'html'"></div>
+                    </mat-card-content>
+                </mat-card>
+                <mat-action-row>
+                    <button mat-button mat-icon-button (click)="openDialog(statuteParagraph)">
+                        <mat-icon>edit</mat-icon>
+                    </button>
+                    <button mat-button mat-icon-button (click)="onDeleteButton(statuteParagraph)">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                </mat-action-row>
+            </mat-expansion-panel>
+        </mat-accordion>
+    </mat-card>
 </cdk-virtual-scroll-viewport>
 
 <mat-card *ngIf="statuteParagraphs.length === 0">

@@ -2,26 +2,45 @@
 
 $pbl-height: var(--pbl-height);
 
-.projector-button {
-    margin: auto;
+.list-view-frame {
+    // remove the height of the top-bar
+    height: calc(100vh - 64px);
+}
+
+.list-view-table-wrapper {
     display: flex;
-}
+    flex-flow: column;
+    height: 100%;
 
-.pbl-ngrid-row {
-    height: $pbl-height;
-}
+    .sort-filter-bar {
+        flex: 0 1 auto;
+        display: block;
+    }
 
-// additional space if the jitsi integration is active
-.pbl-ngrid-row:last-of-type {
-    margin-bottom: 30px !important;
-}
+    .vscroll-list-view {
+        flex: 1 1 auto;
 
-.pbl-ngrid-cell {
-    height: inherit;
-}
+        .projector-button {
+            margin: auto;
+            display: flex;
+        }
 
-.multiselect {
-    .pbl-ngrid-cell {
-        cursor: pointer;
+        .pbl-ngrid-row {
+            height: $pbl-height;
+        }
+
+        .pbl-ngrid-row:last-of-type {
+            margin-bottom: 60px !important;
+        }
+
+        .pbl-ngrid-cell {
+            height: inherit;
+        }
+
+        .multiselect {
+            .pbl-ngrid-cell {
+                cursor: pointer;
+            }
+        }
     }
 }
