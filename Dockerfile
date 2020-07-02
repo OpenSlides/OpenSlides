@@ -5,7 +5,7 @@ RUN mkdir /app
 RUN apt -y update && \
   apt -y upgrade && \
   apt install -y libpq-dev curl wget xz-utils bzip2 git gcc gnupg2 make g++
-RUN curl -sL https://deb.nodesource.com/setup_11.x | bash -
+RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
 RUN apt -y install nodejs
 RUN npm install -g @angular/cli@latest
 RUN useradd -m openslides
