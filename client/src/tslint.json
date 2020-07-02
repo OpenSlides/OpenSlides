@@ -23,6 +23,7 @@
             "parameter",
             "object-destructuring",
             "array-destructuring"
-        ]
+        ],
+        "ban": [true, ["fdescribe"]]
     }
 }
