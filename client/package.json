@@ -17,6 +17,7 @@
         "build-debug": "ng build",
         "test": "ng test",
         "test-silently": "npm run test -- --watch=false --no-progress --browsers=ChromeHeadlessNoSandbox",
+        "test-live": "npm run test -- --watch=true --browsers=ChromeHeadlessNoSandbox",
         "lint-check": "ng lint",
         "lint-write": "ng lint --fix",
         "e2e": "ng e2e",

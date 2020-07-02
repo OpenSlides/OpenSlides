@@ -88,11 +88,12 @@ export class DurationService {
      * @returns a more human readable time representation
      */
     public durationToString(duration: number, suffix: 'h' | 'm'): string {
-        const major = duration < 0 ? Math.ceil(duration / 60) : Math.floor(duration / 60);
-        const minor = `0${duration % 60}`.slice(-2);
-        if (!isNaN(+major) && !isNaN(+minor)) {
-            // converting the number '-0' to string results in '0'
-            return `${major === -0 ? '-' + major : major}:${minor} ${suffix}`;
+        const negative = duration < 0;
+        const major = negative ? Math.ceil(duration / 60) : Math.floor(duration / 60);
+        const minor = `0${Math.abs(duration) % 60}`.slice(-2);
+        if (!isNaN(+major) && !isNaN(+minor) && suffix) {
+            // converting the number '-0' to string results in '0', depending on the browser.
+            return `${major === 0 && negative ? '-' + Math.abs(major) : major}:${minor} ${suffix}`;
         } else {
             return '';
         }
