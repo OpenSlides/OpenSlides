@@ -1,3 +1,5 @@
+@import '~assets/styles/variables.scss';
+
 .filter-menu-head {
     padding-left: 5px;
 
@@ -14,6 +16,9 @@
     display: flex;
     os-rounded-input {
         margin: 0 10px;
+        @include phone {
+            display: none;
+        }
     }
 }
 

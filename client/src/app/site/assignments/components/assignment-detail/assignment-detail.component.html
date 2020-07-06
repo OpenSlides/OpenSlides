@@ -86,7 +86,7 @@
 </div>
 
 <ng-template #metaInfoTemplate>
-    <mat-card class="os-card" *ngIf="assignment">
+    <mat-card class="os-card spacer-bottom-60" *ngIf="assignment">
         <div *ngIf="!editAssignment && assignment.getTitle">
             <h1>{{ assignment.getTitle() }}</h1>
         </div>
@@ -134,7 +134,7 @@
 </ng-template>
 
 <ng-template #candidatesTemplate>
-    <mat-card class="os-card" *ngIf="assignment && !assignment.isFinished">
+    <mat-card class="os-card spacer-bottom-60" *ngIf="assignment && !assignment.isFinished">
         <ng-container>
             <h3>{{ 'Candidates' | translate }}</h3>
             <div>
@@ -212,7 +212,7 @@
 
 <!-- Form -->
 <ng-template #assignmentFormTemplate>
-    <mat-card class="os-form-card">
+    <mat-card class="os-form-card spacer-bottom-60">
         <form
             class="content"
             [formGroup]="assignmentForm"

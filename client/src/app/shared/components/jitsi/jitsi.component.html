@@ -1,5 +1,5 @@
 <!-- iFrame Dialog -->
-<div class="jitsi-fake-dialog-wrapper" [ngClass]="{'jitsi-dialog-hide': !isJitsiDialogOpen}">
+<div class="jitsi-fake-dialog-wrapper" [ngClass]="{ 'jitsi-dialog-hide': !isJitsiDialogOpen }">
     <mat-card class="jitsi-fake-dialog">
         <div class="jitsi-iframe-wrapper" #jitsi></div>
         <div class="jitsi-dialog-actions">
@@ -13,12 +13,7 @@
                 <mat-icon>open_in_new</mat-icon>
             </button>
 
-            <button
-                type="button"
-                mat-button
-                color="primary"
-                (click)="hideJitsiDialog()"
-            >
+            <button type="button" mat-button color="primary" (click)="hideJitsiDialog()">
                 <span>{{ 'Minimize' | translate }}</span>
                 <mat-icon>fullscreen_exit</mat-icon>
             </button>
@@ -30,15 +25,9 @@
     <!-- Audio-Conference-bar -->
     <div
         class="jitsi-bar"
-        [ngClass]="{
-            'cast-shadow': !showJitsiWindow
-        }"
     >
         <span
             class="control-icon-wrapper apply-theme"
-            [ngClass]="{
-                'cast-shadow': showJitsiWindow
-            }"
         >
             <ng-container *ngIf="currentState == state.jitsi">
                 <!-- Exit jitsi -->
@@ -97,7 +86,7 @@
             <!-- open-window button -->
             <button class="toggle-list-button" mat-button (click)="toggleShowJitsi()">
                 <ng-container *ngIf="currentState == state.jitsi">
-                    <span> {{ 'Live conference' | translate }}</span>
+                    <div class="ellipsis-overflow"> {{ 'Live conference' | translate }}</div>
                     <div class="one-line">
                         &nbsp;
                         <span *ngIf="currentDominantSpeaker">
@@ -113,8 +102,8 @@
                 </ng-container>
 
                 <ng-container *ngIf="currentState == state.stream">
-                    <!-- os-icon-container does weid things here -->
-                    <span> {{ 'Livestream' | translate }}</span>
+                    <!-- os-icon-container does weird things here -->
+                    <div class="ellipsis-overflow">{{ 'Livestream' | translate }}</div>
                 </ng-container>
 
                 <mat-icon class="opened-indicator" *ngIf="!showJitsiWindow">keyboard_arrow_up</mat-icon>
