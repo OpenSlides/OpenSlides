@@ -5,18 +5,11 @@ services:
         depends_on:
             - datastore-postgresql
         env_file: services.env
-        networks:
-            - backend
-            - datastore-postgresql
     datastore-writer:
         depends_on:
             - datastore-postgresql
             - message-bus
         env_file: services.env
-        networks:
-            - backend
-            - datastore-postgresql
-            - message-bus
     datastore-postgresql:
         image: sameersbn/postgresql:10
         labels:
@@ -25,16 +18,12 @@ services:
             - DB_USER=openslides
             - DB_PASS=openslides
             - DB_NAME=openslides
-        networks:
-            - datastore-postgresql
     
     # CLIENT
     client:
         depends_on:
             - backend
             - autoupdate
-        networks:
-            - frontend
 
     # BACKEND
     backend:
@@ -42,9 +31,6 @@ services:
             - datastore-reader
             - datastore-writer
         env_file: services.env
-        networks:
-            - frontend
-            - backend
 
     # AUTOUPDATE
     autoupdate:
@@ -52,16 +38,10 @@ services:
             - datastore-reader
             - message-bus
         env_file: services.env
-        networks:
-            - frontend
-            - backend
-            - message-bus
 
     # SHARED
     message-bus:
         image: redis:alpine
-        networks:
-            - message-bus
 
     # UPLINK
     haproxy:
@@ -71,19 +51,3 @@ services:
             - autoupdate
         ports:
             - "8000:8000"
-        networks:
-            - uplink
-            - frontend
-
-# Setup: host <-uplink-> haproxy <-frontend-> services that are reachable from the client <-backend-> services that are internal-only
-# There are special networks for some services only, e.g. datastore-postgresql only for the postgresql, datastore reader and datastore writer
-networks:
-    uplink:
-    frontend:
-        internal: true
-    backend:
-        internal: true
-    datastore-postgresql:
-        internal: true
-    message-bus:
-        internal: true

@@ -13,6 +13,9 @@ build-dev:
 run-dev: | build-dev
 	docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
 
+stop-dev:
+	docker-compose -f docker-compose.yml -f docker-compose.dev.yml down
+
 copy-node-modules:
 	docker-compose -f docker-compose.yml -f docker-compose.dev.yml exec client bash -c "cp -r /app/node_modules/ /app/src/"
 	mv openslides-client/client/src/node_modules/ openslides-client/client/

@@ -1,13 +1,5 @@
 version: '3'
 services:
-    datastore-writer:
-        build:
-            context: "https://github.com/OpenSlides/openslides-datastore-service.git"
-            args:
-                GIT_CHECKOUT: "${OPENSLIDES_DATASTORE_SERVICE_COMMIT_HASH}"
-                MODULE: "writer"
-                PORT: "${OPENSLIDES_DATASTORE_WRITER_PORT}"
-        image: openslides-datastore-writer
     datastore-reader:
         build:
             context: "https://github.com/OpenSlides/openslides-datastore-service.git"
@@ -16,12 +8,67 @@ services:
                 MODULE: "reader"
                 PORT: "${OPENSLIDES_DATASTORE_READER_PORT}"
         image: openslides-datastore-reader
+        networks:
+            - backend
+            - datastore-postgresql
+
+    datastore-writer:
+        build:
+            context: "https://github.com/OpenSlides/openslides-datastore-service.git"
+            args:
+                GIT_CHECKOUT: "${OPENSLIDES_DATASTORE_SERVICE_COMMIT_HASH}"
+                MODULE: "writer"
+                PORT: "${OPENSLIDES_DATASTORE_WRITER_PORT}"
+        image: openslides-datastore-writer
+        networks:
+            - backend
+            - datastore-postgresql
+            - message-bus
+
+    datastore-postgresql:
+        networks:
+            - datastore-postgresql
+
     client:
         build:
             context: "https://github.com/OpenSlides/openslides-client.git"
             args:
                 GIT_CHECKOUT: "${OPENSLIDES_CLIENT_COMMIT_HASH}"
         image: openslides-client
+        networks:
+            - frontend
+
+    backend:
+        networks:
+            - frontend
+            - backend
+
+    autoupdate:
+        networks:
+            - frontend
+            - backend
+            - message-bus
+
+    message-bus:
+        networks:
+            - message-bus
+
     haproxy:
         build: ./haproxy
         image: openslides-haproxy
+        networks:
+            - uplink
+            - frontend
+
+# Setup: host <-uplink-> haproxy <-frontend-> services that are reachable from the client <-backend-> services that are internal-only
+# There are special networks for some services only, e.g. datastore-postgresql only for the postgresql, datastore reader and datastore writer
+networks:
+    uplink:
+    frontend:
+        internal: true
+    backend:
+        internal: true
+    datastore-postgresql:
+        internal: true
+    message-bus:
+        internal: true

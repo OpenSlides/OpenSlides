@@ -10,7 +10,11 @@ services:
         volumes:
             - ./openslides-datastore-service/shared/shared:/app/shared
             - ./openslides-datastore-service/writer/writer:/app/writer
-            - ./cli:/app/cli
+            - ./openslides-datastore-service/cli:/app/cli
+        environment:
+            - DATASTORE_ENABLE_DEV_ENVIRONMENT=1
+            - COMMAND=create_initial_data
+            - DATASTORE_INITIAL_DATA_FILE=https://raw.githubusercontent.com/OpenSlides/OpenSlides/openslides4-dev/docs/example-data.json
     client:
         image: openslides-client-dev
         volumes:
@@ -22,8 +26,8 @@ services:
     autoupdate:
         image: openslides-autoupdate-dev
         volumes:
-            - ./openslides-autoupdate-service/cmd:/app/cmd
-            - ./openslides-autoupdate-service/internal:/app/internal
+            - ./openslides-autoupdate-service/cmd:/root/cmd
+            - ./openslides-autoupdate-service/internal:/root/internal
     haproxy:
         image: openslides-haproxy-dev
         volumes:
