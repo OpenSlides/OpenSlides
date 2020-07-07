@@ -8,11 +8,12 @@ class TopicsAppConfig(AppConfig):
     def ready(self):
         # Import all required stuff.
         from openslides.core.signals import permission_change
+
         from ..utils.rest_api import router
+        from . import serializers  # noqa
         from .projector import register_projector_slides
         from .signals import get_permission_change_data
         from .views import TopicViewSet
-        from . import serializers  # noqa
 
         # Define projector elements.
         register_projector_slides()

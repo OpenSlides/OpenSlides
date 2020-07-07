@@ -1,7 +1,6 @@
 """
 Settings file for OpenSlides' tests.
 """
-
 import os
 
 from openslides.global_settings import *  # noqa
@@ -82,7 +81,8 @@ ENABLE_ELECTRONIC_VOTING = True
 # https://stackoverflow.com/questions/24876343/django-traceback-on-queries
 if os.environ.get("DEBUG_SQL_TRACEBACK"):
     import traceback
-    import django.db.backends.utils as bakutils
+
+    from django.db.backends import utils as bakutils
 
     cursor_debug_wrapper_orig = bakutils.CursorDebugWrapper
 

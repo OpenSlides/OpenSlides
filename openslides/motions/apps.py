@@ -12,23 +12,24 @@ class MotionsAppConfig(AppConfig):
         # Import all required stuff.
         from openslides.core.signals import permission_change
         from openslides.utils.rest_api import router
+
+        from ..utils.access_permissions import required_user
+        from . import serializers  # noqa
         from .projector import register_projector_slides
         from .signals import create_builtin_workflows, get_permission_change_data
-        from . import serializers  # noqa
         from .views import (
             CategoryViewSet,
-            StatuteParagraphViewSet,
-            MotionViewSet,
-            MotionCommentSectionViewSet,
-            MotionVoteViewSet,
             MotionBlockViewSet,
-            MotionPollViewSet,
-            MotionOptionViewSet,
             MotionChangeRecommendationViewSet,
+            MotionCommentSectionViewSet,
+            MotionOptionViewSet,
+            MotionPollViewSet,
+            MotionViewSet,
+            MotionVoteViewSet,
             StateViewSet,
+            StatuteParagraphViewSet,
             WorkflowViewSet,
         )
-        from ..utils.access_permissions import required_user
 
         # Define projector elements.
         register_projector_slides()

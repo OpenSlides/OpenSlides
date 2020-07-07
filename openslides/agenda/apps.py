@@ -9,9 +9,12 @@ class AgendaAppConfig(AppConfig):
 
     def ready(self):
         # Import all required stuff.
-        from django.db.models.signals import pre_delete, post_save
+        from django.db.models.signals import post_save, pre_delete
+
         from ..core.signals import permission_change
+        from ..utils.access_permissions import required_user
         from ..utils.rest_api import router
+        from . import serializers  # noqa
         from .projector import register_projector_slides
         from .signals import (
             get_permission_change_data,
@@ -19,8 +22,6 @@ class AgendaAppConfig(AppConfig):
             listen_to_related_object_post_save,
         )
         from .views import ItemViewSet, ListOfSpeakersViewSet
-        from . import serializers  # noqa
-        from ..utils.access_permissions import required_user
 
         # Define projector elements.
         register_projector_slides()

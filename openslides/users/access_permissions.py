@@ -19,8 +19,8 @@ class UserAccessPermissions(BaseAccessPermissions):
         not get the fields they should not get.
         """
         from .serializers import (
-            USERCANSEESERIALIZER_FIELDS,
             USERCANSEEEXTRASERIALIZER_FIELDS,
+            USERCANSEESERIALIZER_FIELDS,
         )
 
         def filtered_data(full_data, whitelist, whitelist_operator=None):

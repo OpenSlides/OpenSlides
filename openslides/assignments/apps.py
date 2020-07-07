@@ -16,9 +16,9 @@ class AssignmentsAppConfig(AppConfig):
         from .projector import register_projector_slides
         from .signals import get_permission_change_data
         from .views import (
-            AssignmentViewSet,
-            AssignmentPollViewSet,
             AssignmentOptionViewSet,
+            AssignmentPollViewSet,
+            AssignmentViewSet,
             AssignmentVoteViewSet,
         )
 
@@ -82,7 +82,7 @@ async def required_users_assignments(element: Dict[str, Any]) -> Set[int]:
     Returns all user ids that are displayed as candidates (including poll
     options) in the assignment element.
     """
-    from openslides.assignments.models import AssignmentPoll, AssignmentOption
+    from openslides.assignments.models import AssignmentOption, AssignmentPoll
     from openslides.utils.cache import element_cache
 
     candidates = set(

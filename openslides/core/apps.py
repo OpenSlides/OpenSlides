@@ -15,9 +15,12 @@ class CoreAppConfig(AppConfig):
 
     def ready(self):
         # Import all required stuff.
+        # Let all client websocket message register
+        from ..utils import websocket_client_messages  # noqa
+        from ..utils.rest_api import router
+        from . import serializers  # noqa
         from .config import config
         from .projector import register_projector_slides
-        from . import serializers  # noqa
         from .signals import (
             autoupdate_for_many_to_many_relations,
             cleanup_unused_permissions,
@@ -29,15 +32,11 @@ class CoreAppConfig(AppConfig):
         from .views import (
             ConfigViewSet,
             CountdownViewSet,
+            ProjectionDefaultViewSet,
             ProjectorMessageViewSet,
             ProjectorViewSet,
-            ProjectionDefaultViewSet,
             TagViewSet,
         )
-        from ..utils.rest_api import router
-
-        # Let all client websocket message register
-        from ..utils import websocket_client_messages  # noqa
 
         # Collect all config variables before getting the constants.
         config.collect_config_variables_from_apps()
@@ -92,9 +91,9 @@ class CoreAppConfig(AppConfig):
             run_startup_hooks()
 
     def get_startup_hooks(self):
-        from openslides.utils.constants import set_constants_from_apps
-        from openslides.utils.cache import element_cache
         from openslides.core.models import History
+        from openslides.utils.cache import element_cache
+        from openslides.utils.constants import set_constants_from_apps
 
         return {
             10: element_cache.ensure_schema_version,
