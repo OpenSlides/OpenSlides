@@ -34,7 +34,7 @@ export class ItemListSlideComponent extends BaseSlideComponentDirective<ItemList
     public getTitle(item: SlideItem): string {
         const repo = this.collectionStringMapperService.getRepository(item.collection);
         if (isBaseIsAgendaItemContentObjectRepository(repo)) {
-            return repo.getAgendaSlideTitle(item.title_information);
+            return repo.getListTitle(item.title_information);
         } else {
             throw new Error('The content object has no agenda based repository!');
         }
