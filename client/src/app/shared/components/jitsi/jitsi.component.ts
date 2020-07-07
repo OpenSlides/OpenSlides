@@ -128,6 +128,10 @@ export class JitsiComponent extends BaseViewComponent implements OnInit, OnDestr
         );
     }
 
+    public get jitsiMeetUrl(): string {
+        return `https://${this.jitsiDomain}/${this.roomName}`;
+    }
+
     /**
      * The conference state, to determine if the user consumes the stream or can
      * contribute to jitsi
@@ -440,10 +444,6 @@ export class JitsiComponent extends BaseViewComponent implements OnInit, OnDestr
         this.showJitsiWindow = !this.showJitsiWindow;
     }
 
-    private getJitsiMeetUrl(): string {
-        return `https://${this.jitsiDomain}/${this.roomName}`;
-    }
-
     public toggleConferenceDialog(): void {
         if (this.isJitsiDialogOpen) {
             this.hideJitsiDialog();
@@ -464,11 +464,6 @@ export class JitsiComponent extends BaseViewComponent implements OnInit, OnDestr
     public async viewStream(): Promise<void> {
         this.stopJitsi();
         this.setConferenceState(ConferenceState.stream);
-    }
-
-    public openExternal(): void {
-        this.stopJitsi();
-        window.open(this.getJitsiMeetUrl(), '_blank');
     }
 
     public onSteamStarted(): void {

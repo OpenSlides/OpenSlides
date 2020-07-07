@@ -3,15 +3,17 @@
     <mat-card class="jitsi-fake-dialog">
         <div class="jitsi-iframe-wrapper" #jitsi></div>
         <div class="jitsi-dialog-actions">
-            <button
+            <a
                 type="button"
                 mat-button
                 color="primary"
-                (click)="openExternal()"
                 matTooltip="{{ 'Open Jitsi in new tab' | translate }}"
+                target="_blank"
+                (click)="stopJitsi()"
+                [href]="jitsiMeetUrl"
             >
                 <mat-icon>open_in_new</mat-icon>
-            </button>
+            </a>
 
             <button type="button" mat-button color="primary" (click)="hideJitsiDialog()">
                 <span>{{ 'Minimize' | translate }}</span>
