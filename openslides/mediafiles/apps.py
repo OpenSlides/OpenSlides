@@ -11,10 +11,11 @@ class MediafilesAppConfig(AppConfig):
         # Import all required stuff.
         from openslides.core.signals import permission_change
         from openslides.utils.rest_api import router
+
+        from . import serializers  # noqa
         from .projector import register_projector_slides
         from .signals import get_permission_change_data
         from .views import MediafileViewSet
-        from . import serializers  # noqa
 
         # Validate, that the media_url is correct formatted:
         # Must begin and end with a slash. It has to be at least "/".

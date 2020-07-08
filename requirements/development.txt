@@ -1,7 +1,7 @@
 black
 coverage
 flake8
-isort
+isort<5.0.0
 mypy
 pytest<5.4.2
 pytest-django<3.9.0

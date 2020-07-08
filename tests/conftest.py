@@ -64,7 +64,7 @@ def constants(request, reset_cache):
 
     Uses fake constants, if the db is not in use.
     """
-    from openslides.utils.constants import set_constants, get_constants_from_apps
+    from openslides.utils.constants import get_constants_from_apps, set_constants
 
     if "django_db" in request.node.keywords or is_django_unittest(request):
         # When the db is created, use the original constants

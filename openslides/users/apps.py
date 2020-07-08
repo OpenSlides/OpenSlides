@@ -12,9 +12,9 @@ class UsersAppConfig(AppConfig):
 
     def ready(self):
         # Import all required stuff.
-        from . import serializers  # noqa
-        from ..core.signals import post_permission_creation, permission_change
+        from ..core.signals import permission_change, post_permission_creation
         from ..utils.rest_api import router
+        from . import serializers  # noqa
         from .projector import register_projector_slides
         from .signals import create_builtin_groups_and_admin, get_permission_change_data
         from .views import GroupViewSet, PersonalNoteViewSet, UserViewSet

@@ -20,7 +20,7 @@ from .utils import split_element_id, str_dict_to_bytes
 logger = logging.getLogger(__name__)
 
 if use_redis:
-    from .redis import get_connection, aioredis
+    from .redis import aioredis, get_connection
 
 
 class CacheReset(Exception):
