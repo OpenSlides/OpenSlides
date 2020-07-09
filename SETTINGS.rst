@@ -73,8 +73,7 @@ To enable the audio conference with Jitsi Meet, you have to set the following va
 
 - `JITSI_DOMAIN`: must contain an url to a Jitsi server
 - `JITSI_ROOM_NAME`: the name of the room that should be used
-- `JITSI_PASSWORD`: (optional) the password of the room. Will be
-applied automatically from the settings.
+- `JITSI_ROOM_PASSWORD`: (optional) the password of the room. Will be applied automatically from the settings.
 
 
 Logging
