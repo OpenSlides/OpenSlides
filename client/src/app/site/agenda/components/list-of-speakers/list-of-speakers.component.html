@@ -8,9 +8,8 @@
     <!-- Title -->
     <div class="title-slot">
         <h2>
-            <span *ngIf="!isCurrentListOfSpeakers && !isSortMode">{{ 'List of speakers' | translate }}</span>
-            <span *ngIf="isCurrentListOfSpeakers && !isSortMode">{{ 'Current list of speakers' | translate }}</span>
-            <span *ngIf="isSortMode">{{ 'Sort list of speakers' | translate }}</span>
+            <span *ngIf="!isCurrentListOfSpeakers">{{ 'List of speakers' | translate }}</span>
+            <span *ngIf="isCurrentListOfSpeakers">{{ 'Current list of speakers' | translate }}</span>
         </h2>
     </div>
     <div class="menu-slot" *osPerms="['agenda.can_manage_list_of_speakers', 'core.can_manage_projector']">
