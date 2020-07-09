@@ -5,6 +5,8 @@ services:
         depends_on:
             - datastore-postgresql
         env_file: services.env
+        environment:
+            - NUM_WORKERS=8
     datastore-writer:
         depends_on:
             - datastore-postgresql
