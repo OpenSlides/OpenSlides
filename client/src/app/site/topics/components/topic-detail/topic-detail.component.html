@@ -25,7 +25,7 @@
     </div>
 </os-head-bar>
 
-<mat-card *ngIf="topic || editTopic" [ngClass]="editTopic ? 'os-form-card' : 'os-card'">
+<mat-card *ngIf="topic || editTopic" class="spacer-bottom-60" [ngClass]="editTopic ? 'os-form-card' : 'os-card'">
     <div *ngIf="!editTopic">
         <h1>{{ topic.getListTitle() }}</h1>
     </div>

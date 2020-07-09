@@ -11,7 +11,7 @@
     </div>
 </os-head-bar>
 
-<mat-card class="os-form-card import-table">
+<mat-card class="os-form-card import-table spacer-bottom-60">
     <mat-tab-group (selectedTabChange)="onTabChange()">
         <!-- textAreaImport-->
         <mat-tab label="{{ 'Text import' | translate }}">
@@ -116,7 +116,7 @@
 </mat-card>
 
 <!-- preview table -->
-<mat-card *ngIf="hasFile" class="os-form-card import-table">
+<mat-card *ngIf="hasFile" class="os-form-card import-table spacer-bottom-60">
     <h3>{{ 'Preview' | translate }}</h3>
     <div class="summary">
         <!-- new entries -->

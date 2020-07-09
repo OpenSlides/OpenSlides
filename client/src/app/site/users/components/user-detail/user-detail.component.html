@@ -55,7 +55,7 @@
 </os-head-bar>
 
 <div class="content-container">
-    <mat-card [ngClass]="editUser ? 'os-form-card' : 'os-card'" *ngIf="isAllowed('seeName')">
+    <mat-card class="spacer-bottom-60" [ngClass]="editUser ? 'os-form-card' : 'os-card'" *ngIf="isAllowed('seeName')">
         <ng-container *ngIf="editUser; then editView; else showView"></ng-container>
     </mat-card>
 </div>
