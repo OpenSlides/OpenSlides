@@ -194,6 +194,8 @@
 
         "conference_show": false,
         "conference_auto_connect": false,
+        "conference_los_restriction": false,
+        "conference_stream_url": "",
 
         "projector_default_countdown_time": 60,
         "projector_countdown_warning_time": 0,
@@ -217,6 +219,7 @@
         "list_of_speakers_couple_countdown": false,
         "list_of_speakers_show_amount_of_speakers_on_slide": true,
         "list_of_speakers_present_users_only": false,
+        "list_of_speakers_show_first_contribution": false,
 
         "motions_default_workflow_id": 1,
         "motions_statute_amendments_workflow_id": 2,
@@ -253,6 +256,7 @@
 
         "motion_poll_ballot_paper_selection": "CUSTOM_NUMBER",
         "motion_poll_ballot_paper_number": 8,
+        "motion_poll_default_type": "analog",
         "motion_poll_default_100_percent_base": "YNA",
         "motion_poll_default_majority_method": "simple",
         "motion_poll_default_group_ids": [2, 3],
@@ -276,6 +280,7 @@
         "assignments_export_preamble": "",
         "assignment_poll_add_candidates_to_list_of_speakers": true,
         "assignment_poll_sort_poll_result_by_votes": true,
+        "assignment_poll_default_type": "nominal",
         "assignment_poll_default_method": "votes",
         "assignment_poll_default_100_percent_base": "valid",
         "assignment_poll_default_majority_method": "simple",

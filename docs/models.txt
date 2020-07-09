@@ -139,22 +139,27 @@ Interface committee {
 
 Interface meeting {
     id: number;
-    url_name: string; // For unique urls.
-    is_template: boolean; // Unique within a committee
-    enable_anonymous: boolean;
+    welcome_title: string;
+    welcome_text: HTML;
 
-    // Old "general_*" configs
+    // General
     name: string;
     description: string;
     location: string;
     start_time: datetime;
-    end_time: datetime;
-    welcome_title: string;
-    welcome_text: HTML;
+    end_time: datetime; // TODO: is this needed?
     custom_translations: JSON;
 
+    // System
+    url_name: string; // For unique urls.
+    is_template: boolean; // Unique within a committee
+    enable_anonymous: boolean;
+
+    // Jitsi/Livestream settings
     conference_show: boolean: boolean;
     conference_auto_connect: boolean;
+    conference_los_restriction: boolean;
+    conference_stream_url: string;
 
     // Projector
     projector_default_countdown_time: number;
@@ -182,6 +187,7 @@ Interface meeting {
     list_of_speakers_couple_countdown: boolean;
     list_of_speakers_show_amount_of_speakers_on_slide: boolean;
     list_of_speakers_present_users_only: boolean;
+    list_of_speakers_show_first_contribution: boolean;
 
     // Motions
     motions_default_workflow_id: workflow/default_workflow_meeting_id;
@@ -219,6 +225,7 @@ Interface meeting {
 
     motion_poll_ballot_paper_selection: string;
     motion_poll_ballot_paper_number: number;
+    motion_poll_default_type: string;
     motion_poll_default_100_percent_base: string;
     motion_poll_default_majority_method: string;
     motion_poll_default_group_ids: (group/used_as_motion_poll_default_id)[];
@@ -244,6 +251,7 @@ Interface meeting {
     assignments_export_preamble: string;
     assignment_poll_add_candidates_to_list_of_speakers: boolean;
     assignment_poll_sort_poll_result_by_votes: boolean;
+    assignment_poll_default_type: string;
     assignment_poll_default_method: string;
     assignment_poll_default_100_percent_base: string;
     assignment_poll_default_majority_method: string;
