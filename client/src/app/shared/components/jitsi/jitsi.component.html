@@ -3,34 +3,54 @@
     <mat-card class="jitsi-fake-dialog">
         <div class="jitsi-iframe-wrapper" #jitsi></div>
         <div class="jitsi-dialog-actions">
-            <a
-                type="button"
-                mat-button
-                color="primary"
-                matTooltip="{{ 'Open Jitsi in new tab' | translate }}"
-                target="_blank"
-                (click)="stopJitsi()"
-                [href]="jitsiMeetUrl"
-            >
-                <mat-icon>open_in_new</mat-icon>
-            </a>
+            <div>
+                <a
+                    type="button"
+                    mat-icon-button
+                    color="primary"
+                    matTooltip="{{ 'Open Jitsi in new tab' | translate }}"
+                    target="_blank"
+                    (click)="stopJitsi()"
+                    [href]="jitsiMeetUrl"
+                >
+                    <mat-icon>open_in_new</mat-icon>
+                </a>
+            </div>
 
-            <button type="button" mat-button color="primary" (click)="hideJitsiDialog()">
-                <span>{{ 'Minimize' | translate }}</span>
-                <mat-icon>fullscreen_exit</mat-icon>
-            </button>
+            <div>
+                <button
+                    class="dialog-hangup"
+                    type="button"
+                    mat-button
+                    color="warn"
+                    (click)="!!videoStreamUrl ? viewStream() : stopJitsi()"
+                >
+                    <os-icon-container icon="{{ !!videoStreamUrl ? 'meeting_room' : 'call_end' }}">
+                        <span *ngIf="videoStreamUrl">
+                            {{ 'Exit conference' | translate }}
+                        </span>
+                        <span *ngIf="!videoStreamUrl">
+                            {{ 'Hangup' | translate }}
+                        </span>
+                    </os-icon-container>
+                </button>
+            </div>
+
+            <div>
+                <button class="dialog-hide" type="button" mat-button color="primary" (click)="hideJitsiDialog()">
+                    <os-icon-container icon="keyboard_hide">
+                        <span>{{ 'Minimize' | translate }}</span>
+                    </os-icon-container>
+                </button>
+            </div>
         </div>
     </mat-card>
 </div>
 
 <div class="jitsi-integration" *ngIf="enableJitsi || (videoStreamUrl && canSeeLiveStream)">
     <!-- Audio-Conference-bar -->
-    <div
-        class="jitsi-bar"
-    >
-        <span
-            class="control-icon-wrapper apply-theme"
-        >
+    <div class="jitsi-bar">
+        <span class="control-icon-wrapper apply-theme">
             <ng-container *ngIf="currentState == state.jitsi">
                 <!-- Exit jitsi -->
                 <button
@@ -39,7 +59,7 @@
                     color="accent"
                     (click)="viewStream()"
                     matTooltip="{{ 'Exit live conference and continue livestream' | translate }}"
-                    *ngIf="videoStreamUrl && canSeeLiveStream"
+                    *ngIf="videoStreamUrl && canSeeLiveStream && !isJitsiDialogOpen"
                 >
                     <mat-icon color="warn">
                         meeting_room
@@ -50,7 +70,7 @@
                 <button
                     class="indicator quick-icon"
                     mat-mini-fab
-                    *ngIf="isJoined"
+                    *ngIf="isJoined && !isJitsiDialogOpen"
                     (click)="toggleMute()"
                     matTooltip="{{ 'Mute / Unmute' | translate }}"
                 >
@@ -65,15 +85,28 @@
                 <!-- Enter conference from stream -->
                 <button
                     *ngIf="enableJitsi && isAccessPermitted"
-                    class="indicator quick-icon"
+                    class="quick-icon indicator"
                     mat-mini-fab
                     (click)="enterConversation()"
                     matTooltip="{{ 'Enter live conference' | translate }}"
                 >
-                    <mat-icon color="primary">meeting_room</mat-icon>
+                    <mat-icon
+                        color="primary"
+                        [ngClass]="{
+                            'enter-meeting-room': !canManageSpeaker
+                        }"
+                    >
+                        meeting_room
+                    </mat-icon>
                 </button>
 
-                <mat-icon *ngIf="enableJitsi && !isAccessPermitted" class="indicator">no_meeting_room</mat-icon>
+                <mat-icon
+                    *ngIf="enableJitsi && !isAccessPermitted"
+                    class="indicator"
+                    matTooltip="{{ 'Add yourself to the current list of speakers to join the conference' | translate }}"
+                >
+                    no_meeting_room
+                </mat-icon>
             </ng-container>
         </span>
 
@@ -88,7 +121,7 @@
             <!-- open-window button -->
             <button class="toggle-list-button" mat-button (click)="toggleShowJitsi()">
                 <ng-container *ngIf="currentState == state.jitsi">
-                    <div class="ellipsis-overflow"> {{ 'Live conference' | translate }}</div>
+                    <div class="ellipsis-overflow">{{ 'Live conference' | translate }}</div>
                     <div class="one-line">
                         &nbsp;
                         <span *ngIf="currentDominantSpeaker">
@@ -213,10 +246,10 @@
                                 color="accent"
                                 (click)="toggleConferenceDialog()"
                                 [disabled]="!isJitsiActive"
-                                matTooltip="{{ 'Maximize / minimize Jitsi window' | translate }}"
+                                matTooltip="{{ 'Show/Hide video conference' | translate }}"
                             >
                                 <mat-icon>
-                                    {{ isJitsiDialogOpen ? 'fullscreen_exit' : 'fullscreen' }}
+                                    {{ isJitsiDialogOpen ? 'keyboard_hide' : 'voice_chat' }}
                                 </mat-icon>
                             </button>
                         </div>

@@ -120,12 +120,12 @@ export class JitsiComponent extends BaseViewComponent implements OnInit, OnDestr
 
     private isOnCurrentLos: boolean;
 
+    public get canManageSpeaker(): boolean {
+        return this.operator.hasPerms(this.permission.agendaCanManageListOfSpeakers);
+    }
+
     public get isAccessPermitted(): boolean {
-        return (
-            !this.restricted ||
-            this.operator.hasPerms(this.permission.agendaCanManageListOfSpeakers) ||
-            this.isOnCurrentLos
-        );
+        return !this.restricted || this.canManageSpeaker || this.isOnCurrentLos;
     }
 
     public get jitsiMeetUrl(): string {
@@ -160,7 +160,32 @@ export class JitsiComponent extends BaseViewComponent implements OnInit, OnDestr
         DISABLE_JOIN_LEAVE_NOTIFICATIONS: true,
         DISABLE_PRESENCE_STATUS: true,
         TOOLBAR_ALWAYS_VISIBLE: true,
-        TOOLBAR_TIMEOUT: 10000000
+        TOOLBAR_TIMEOUT: 10000000,
+        TOOLBAR_BUTTONS: [
+            'microphone',
+            'camera',
+            'desktop',
+            'fullscreen',
+            'fodeviceselection',
+            'profile',
+            'chat',
+            'recording',
+            'livestreaming',
+            'etherpad',
+            'sharedvideo',
+            'settings',
+            'videoquality',
+            'filmstrip',
+            'invite',
+            'feedback',
+            'stats',
+            'shortcuts',
+            'tileview',
+            'download',
+            'help',
+            'mute-everyone',
+            'security'
+        ]
     };
 
     public constructor(

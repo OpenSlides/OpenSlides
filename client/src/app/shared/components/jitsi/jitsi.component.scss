@@ -20,6 +20,20 @@
         .jitsi-dialog-actions {
             display: flex;
             justify-content: space-between;
+
+            div {
+                min-width: 33%;
+                display: flex;
+            }
+
+            .dialog-hangup {
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .dialog-hide {
+                margin-left: auto;
+            }
         }
     }
 }
@@ -58,6 +72,22 @@
                 width: 40px;
                 text-align: center;
                 margin: auto $wrapper-padding auto 0;
+            }
+
+            /**
+             * appear animation
+             */
+            @keyframes fade-in-out {
+                from {
+                    opacity: 100%;
+                }
+                to {
+                    opacity: 25%;
+                }
+            }
+
+            .enter-meeting-room {
+                animation: fade-in-out 1s linear infinite alternate;
             }
         }
 
