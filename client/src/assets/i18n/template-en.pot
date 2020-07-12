@@ -94,6 +94,9 @@ msgstr ""
 msgid "Add to queue"
 msgstr ""
 
+msgid "Add yourself to the current list of speakers to join the conference"
+msgstr ""
+
 msgid "Add/remove groups ..."
 msgstr ""
 
@@ -1035,6 +1038,9 @@ msgstr ""
 msgid "Exit"
 msgstr ""
 
+msgid "Exit conference"
+msgstr ""
+
 msgid "Exit live conference and continue livestream"
 msgstr ""
 
@@ -1162,6 +1168,9 @@ msgid "Groups with write permissions"
 msgstr ""
 
 msgid "Guest"
+msgstr ""
+
+msgid "Hang up"
 msgstr ""
 
 msgid "Has amendments"
@@ -1446,9 +1455,6 @@ msgid "Mark as personal favorite"
 msgstr ""
 
 msgid "Mark speaker"
-msgstr ""
-
-msgid "Maximize / minimize Jitsi window"
 msgstr ""
 
 msgid "Media file"
@@ -2412,6 +2418,9 @@ msgstr ""
 msgid "Show title"
 msgstr ""
 
+msgid "Show/Hide video conference"
+msgstr ""
+
 msgid "Simple Workflow"
 msgstr ""
 
@@ -2440,9 +2449,6 @@ msgid "Sort comments"
 msgstr ""
 
 msgid "Sort election results by amount of votes"
-msgstr ""
-
-msgid "Sort list of speakers"
 msgstr ""
 
 msgid "Sort motions"
