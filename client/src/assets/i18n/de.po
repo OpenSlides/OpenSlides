@@ -106,6 +106,10 @@ msgstr "Zur Tagesordnung hinzufügen"
 msgid "Add to queue"
 msgstr "Zur Warteschlange hinzufügen"
 
+msgid "Add yourself to the current list of speakers to join the conference"
+msgstr ""
+"Setzen Sie sich auf die aktuelle Redeliste um der Konferenz hier beizutreten"
+
 msgid "Add/remove groups ..."
 msgstr "Gruppen hinzufügen/entfernen ..."
 
@@ -1105,6 +1109,9 @@ msgstr "Veranstalter"
 msgid "Exit"
 msgstr "Beenden"
 
+msgid "Exit conference"
+msgstr "Konferenz beenden"
+
 msgid "Exit live conference and continue livestream"
 msgstr "Livekonferenz verlassen und Livestream fortsetzen"
 
@@ -1233,6 +1240,9 @@ msgstr "Gruppen mit Schreibberechtigungen"
 
 msgid "Guest"
 msgstr "Gast"
+
+msgid "Hang up"
+msgstr "Auflegen"
 
 msgid "Has amendments"
 msgstr "Hat Änderungsanträge"
@@ -1520,9 +1530,6 @@ msgstr "Als persönlichen Favorit markieren"
 
 msgid "Mark speaker"
 msgstr "Redner/in markieren"
-
-msgid "Maximize / minimize Jitsi window"
-msgstr "Jitsi-Fenster maximieren/minimieren"
 
 msgid "Media file"
 msgstr "Mediendatei"
@@ -2505,6 +2512,9 @@ msgstr "Diesen Text auf der Login-Seite anzeigen"
 msgid "Show title"
 msgstr "Veranstaltungstitel anzeigen"
 
+msgid "Show/Hide video conference"
+msgstr "Videokonferenz anzeigen/verstecken"
+
 msgid "Simple Workflow"
 msgstr "Einfacher Arbeitsablauf"
 
@@ -2534,9 +2544,6 @@ msgstr "Kommentare sortieren"
 
 msgid "Sort election results by amount of votes"
 msgstr "Wahlergebnisse nach Stimmanzahl sortieren"
-
-msgid "Sort list of speakers"
-msgstr "Redeliste sortieren"
 
 msgid "Sort motions"
 msgstr "Anträge sortieren"
