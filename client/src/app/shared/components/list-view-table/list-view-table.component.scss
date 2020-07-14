@@ -19,6 +19,7 @@ $pbl-height: var(--pbl-height);
 
     .vscroll-list-view {
         flex: 1 1 auto;
+        height: 100%;
 
         .projector-button {
             margin: auto;
