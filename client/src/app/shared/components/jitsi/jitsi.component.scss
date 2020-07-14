@@ -43,6 +43,7 @@
 }
 
 .jitsi-integration {
+    pointer-events: none;
     z-index: 99;
     position: fixed;
     left: 0;
@@ -60,6 +61,7 @@
         $bar-height: 40px;
 
         .control-icon-wrapper {
+            pointer-events: all;
             z-index: 1;
             min-height: $bar-height;
             display: flex;
@@ -104,6 +106,7 @@
         }
 
         .list-wrapper {
+            pointer-events: all;
             min-height: $bar-height;
             padding-top: $wrapper-padding;
             border-top-right-radius: 4px;
