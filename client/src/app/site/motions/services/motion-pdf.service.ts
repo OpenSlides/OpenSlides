@@ -630,17 +630,26 @@ export class MotionPdfService {
      * @returns
      */
     private getUnifiedChanges(motion: ViewMotion, lineLength: number): ViewUnifiedChange[] {
-        return this.changeRecoRepo
-            .getChangeRecoOfMotion(motion.id)
-            .concat(
-                this.motionRepo.getAmendmentsInstantly(motion.id).flatMap((amendment: ViewMotion) => {
-                    const changeRecos = this.changeRecoRepo
-                        .getChangeRecoOfMotion(amendment.id)
-                        .filter(reco => reco.showInFinalView());
-                    return this.motionRepo.getAmendmentAmendedParagraphs(amendment, lineLength, changeRecos);
-                })
-            )
-            .sort((a, b) => a.getLineFrom() - b.getLineFrom()) as ViewUnifiedChange[];
+        const changeRecosOfMotion = this.changeRecoRepo.getChangeRecoOfMotion(motion.id);
+
+        if (changeRecosOfMotion && changeRecosOfMotion.length) {
+            return changeRecosOfMotion
+                .concat(
+                    this.motionRepo.getAmendmentsInstantly(motion.id).flatMap((amendment: ViewMotion) => {
+                        const changeRecos = this.changeRecoRepo
+                            .getChangeRecoOfMotion(amendment.id)
+                            .filter(reco => reco.showInFinalView());
+                        if (changeRecos && changeRecos.length) {
+                            return this.motionRepo.getAmendmentAmendedParagraphs(amendment, lineLength, changeRecos);
+                        }
+                    })
+                )
+                .sort((a, b) => {
+                    return a.getLineFrom() - b.getLineFrom();
+                });
+        } else {
+            return [];
+        }
     }
 
     /**
