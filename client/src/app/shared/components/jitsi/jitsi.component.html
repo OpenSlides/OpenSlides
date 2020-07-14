@@ -38,7 +38,7 @@
 
             <div>
                 <button class="dialog-hide" type="button" mat-button color="primary" (click)="hideJitsiDialog()">
-                    <os-icon-container icon="keyboard_hide">
+                    <os-icon-container icon="aspect_ratio">
                         <span>{{ 'Minimize' | translate }}</span>
                     </os-icon-container>
                 </button>
@@ -100,13 +100,18 @@
                     </mat-icon>
                 </button>
 
-                <mat-icon
-                    *ngIf="enableJitsi && !isAccessPermitted"
+                <a
                     class="indicator"
+                    type="button"
+                    mat-icon-button
                     matTooltip="{{ 'Add yourself to the current list of speakers to join the conference' | translate }}"
+                    *ngIf="enableJitsi && !isAccessPermitted"
+                    [routerLink]="['/agenda/speakers']"
                 >
-                    no_meeting_room
-                </mat-icon>
+                    <mat-icon>
+                        no_meeting_room
+                    </mat-icon>
+                </a>
             </ng-container>
         </span>
 
@@ -249,7 +254,7 @@
                                 matTooltip="{{ 'Show/Hide video conference' | translate }}"
                             >
                                 <mat-icon>
-                                    {{ isJitsiDialogOpen ? 'keyboard_hide' : 'voice_chat' }}
+                                    {{ isJitsiDialogOpen ? 'aspect_ratio' : 'voice_chat' }}
                                 </mat-icon>
                             </button>
                         </div>
