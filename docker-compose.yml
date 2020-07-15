@@ -1,55 +1,64 @@
-version: '3'
+version: "3"
 services:
-    # DATASTORE SECTION
-    datastore-reader:
-        depends_on:
-            - datastore-postgresql
-        env_file: services.env
-        environment:
-            - NUM_WORKERS=8
-    datastore-writer:
-        depends_on:
-            - datastore-postgresql
-            - message-bus
-        env_file: services.env
-    datastore-postgresql:
-        image: sameersbn/postgresql:10
-        labels:
-            org.openslides.role: "postgres"
-        environment:
-            - DB_USER=openslides
-            - DB_PASS=openslides
-            - DB_NAME=openslides
-    
-    # CLIENT
-    client:
-        depends_on:
-            - backend
-            - autoupdate
+  # DATASTORE SECTION
+  datastore-reader:
+    depends_on:
+      - datastore-postgresql
+    env_file: services.env
+    environment:
+      - NUM_WORKERS=8
+  datastore-writer:
+    depends_on:
+      - datastore-postgresql
+      - message-bus
+    env_file: services.env
+  datastore-postgresql:
+    image: sameersbn/postgresql:10
+    labels:
+      org.openslides.role: "postgres"
+    environment:
+      - DB_USER=openslides
+      - DB_PASS=openslides
+      - DB_NAME=openslides
 
-    # BACKEND
-    backend:
-        depends_on:
-            - datastore-reader
-            - datastore-writer
-        env_file: services.env
+  # CLIENT
+  client:
+    depends_on:
+      - backend
+      - autoupdate
 
-    # AUTOUPDATE
-    autoupdate:
-        depends_on:
-            - datastore-reader
-            - message-bus
-        env_file: services.env
+  # BACKEND
+  backend:
+    depends_on:
+      - datastore-reader
+      - datastore-writer
+    env_file: services.env
 
-    # SHARED
-    message-bus:
-        image: redis:alpine
+  # AUTOUPDATE
+  autoupdate:
+    depends_on:
+      - datastore-reader
+      - message-bus
+    env_file: services.env
 
-    # UPLINK
-    haproxy:
-        depends_on:
-            - client
-            - backend
-            - autoupdate
-        ports:
-            - "8000:8000"
+  # AUTH
+  auth:
+    depends_on:
+      - datastore-reader
+      - cache
+    env_file: services.env
+  cache:
+    image: redis:alpine
+
+  # SHARED
+  message-bus:
+    image: redis:alpine
+
+  # UPLINK
+  haproxy:
+    depends_on:
+      - client
+      - backend
+      - autoupdate
+    ports:
+      - "8000:8000"

@@ -1,34 +1,38 @@
-version: '3'
+version: "3"
 services:
-    datastore-reader:
-        image: openslides-datastore-reader-dev
-        volumes:
-            - ./openslides-datastore-service/shared/shared:/app/shared
-            - ./openslides-datastore-service/reader/reader:/app/reader
-    datastore-writer:
-        image: openslides-datastore-writer-dev
-        volumes:
-            - ./openslides-datastore-service/shared/shared:/app/shared
-            - ./openslides-datastore-service/writer/writer:/app/writer
-            - ./openslides-datastore-service/cli:/app/cli
-        environment:
-            - DATASTORE_ENABLE_DEV_ENVIRONMENT=1
-            - COMMAND=create_initial_data
-            - DATASTORE_INITIAL_DATA_FILE=https://raw.githubusercontent.com/OpenSlides/OpenSlides/openslides4-dev/docs/example-data.json
-    client:
-        image: openslides-client-dev
-        volumes:
-            - ./openslides-client/client/src:/app/src
-    backend:
-        image: openslides-backend-dev
-        volumes:
-            - ./openslides-backend/openslides_backend:/srv/code/openslides_backend
-    autoupdate:
-        image: openslides-autoupdate-dev
-        volumes:
-            - ./openslides-autoupdate-service/cmd:/root/cmd
-            - ./openslides-autoupdate-service/internal:/root/internal
-    haproxy:
-        image: openslides-haproxy-dev
-        volumes:
-            - ./haproxy/src:/usr/local/etc/haproxy
+  datastore-reader:
+    image: openslides-datastore-reader-dev
+    volumes:
+      - ./openslides-datastore-service/shared/shared:/app/shared
+      - ./openslides-datastore-service/reader/reader:/app/reader
+  datastore-writer:
+    image: openslides-datastore-writer-dev
+    volumes:
+      - ./openslides-datastore-service/shared/shared:/app/shared
+      - ./openslides-datastore-service/writer/writer:/app/writer
+      - ./openslides-datastore-service/cli:/app/cli
+    environment:
+      - DATASTORE_ENABLE_DEV_ENVIRONMENT=1
+      - COMMAND=create_initial_data
+      - DATASTORE_INITIAL_DATA_FILE=https://raw.githubusercontent.com/OpenSlides/OpenSlides/openslides4-dev/docs/example-data.json
+  client:
+    image: openslides-client-dev
+    volumes:
+      - ./openslides-client/client/src:/app/src
+  backend:
+    image: openslides-backend-dev
+    volumes:
+      - ./openslides-backend/openslides_backend:/srv/code/openslides_backend
+  autoupdate:
+    image: openslides-autoupdate-dev
+    volumes:
+      - ./openslides-autoupdate-service/cmd:/root/cmd
+      - ./openslides-autoupdate-service/internal:/root/internal
+  auth:
+    image: openslides-auth-dev
+    volumes:
+      - ./openslides-auth-service/auth:/app/auth
+  haproxy:
+    image: openslides-haproxy-dev
+    volumes:
+      - ./haproxy/src:/usr/local/etc/haproxy

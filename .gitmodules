@@ -13,3 +13,7 @@
 [submodule "openslides-autoupdate-service"]
 	path = openslides-autoupdate-service
 	url = git@github.com:OpenSlides/openslides-autoupdate-service.git
+[submodule "openslides-auth-service"]
+	path = openslides-auth-service
+	url = git@github.com:OpenSlides/openslides-auth-service.git
+	branch = master
