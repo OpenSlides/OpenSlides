@@ -21,4 +21,4 @@ roman>=2.0,<3.2
 setuptools>=29.0,<42.0
 typing_extensions>=3.6.6,<3.8
 websockets>=8.0,<9.0
-twisted>=20.3.0
+twisted[tls]>=20.3.0
