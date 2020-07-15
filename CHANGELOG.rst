@@ -4,7 +4,7 @@
 
 https://openslides.com
 
-Version 3.2 (unreleased)
+Version 3.2 (2020-07-15)
 ========================
 `Milestone <https://github.com/OpenSlides/OpenSlides/milestones/3.2>`_
 
@@ -26,7 +26,7 @@ General:
  - Removed the "check update for other clients" button [#5277].
  - Various cleanups and improvements to usability, performance and translation.
 
-Angeda:
+Agenda:
  - New tags for agenda items [#5370].
  - New possibility to duplicate selected topic items [#5433].
  - New 'create user' button in list of speakers if user was not found in the search box [#5307].
