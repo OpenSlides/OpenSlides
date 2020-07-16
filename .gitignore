@@ -8,6 +8,9 @@
 .env
 *.code-workspace
 
+# certs
+*.pem
+
 # Old OS3 files and folders
 .coverage
 .mypy_cache

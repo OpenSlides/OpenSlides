@@ -26,3 +26,6 @@ build-prod:
 
 run-prod: | build-prod
 	docker-compose -f docker-compose.yml -f docker-compose.prod.yml up
+
+reload-haproxy:
+	docker-compose -f docker-compose.yml -f docker-compose.dev.yml kill -s HUP haproxy

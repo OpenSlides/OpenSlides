@@ -1,10 +1,30 @@
 # Development of OpenSlides 4
 
+## Requirements
+
+You need git, bash, docker, docker-compose, make and go installed.
+
+Go is needed to install https://github.com/FiloSottile/mkcert. The development setup uses HTTPS per default. OpenSlides does not work with HTTP anymore since features are required (like http2) that only works in a secure environment.
+
 ## First time checkout
 
-After cloning the repository you need to initialize all submodules, before you can start the development setup
+Clone this repository:
+
+    $ git clone git@github.com:OpenSlides/OpenSlides.git
+    $ git checkout openslides4-dev
+
+TODO: use `--recurse-submodules`, when master is OS4
+
+After checking out the os4-branch you need to initialize all submodules and install a root-cert:
 
     $ git submodule update --init
+    $ go get https://github.com/FiloSottile/mkcert
+    $ sudo mkcert -install
+
+If you get an error, you might need to install `certutil`. For Debian: `sudo apt install libnss3-tools`.
+
+Finally, start the dev server:
+
     $ make run-dev
 
 ## Running tests
