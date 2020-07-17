@@ -362,6 +362,7 @@ Interface agenda_item {
     content_object_id: */agenda_item_id;
     parent_id: agenda_item/child_ids;
     child_ids: (agenda_item/parent_id)[];
+    tag_ids: (tag/tagged_ids)[];
     projection_ids: (projection/element_id)[];
     current_projector_ids: (projector/current_element_ids)[]
     meeting_id: meeting/agenda_item_ids;
