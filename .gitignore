@@ -22,6 +22,7 @@ personal_data
 tests
 .launch/
 .venv/
+.virtualenv/
 .vscode/
 package-lock.json
 server/
