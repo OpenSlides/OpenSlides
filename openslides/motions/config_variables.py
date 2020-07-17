@@ -48,6 +48,16 @@ def get_config_variables():
     )
 
     yield ConfigVariable(
+        name="motions_amendments_workflow",
+        default_value="1",
+        input_type="choice",
+        label="Workflow of new amendments",
+        choices=get_workflow_choices,
+        weight=314,
+        group="Motions",
+    )
+
+    yield ConfigVariable(
         name="motions_preamble",
         default_value="The assembly may decide:",
         label="Motion preamble",

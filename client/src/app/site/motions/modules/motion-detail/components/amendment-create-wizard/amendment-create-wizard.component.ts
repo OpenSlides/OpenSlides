@@ -270,7 +270,8 @@ export class AmendmentCreateWizardComponent extends BaseViewComponent implements
             category_id: this.motion.category_id,
             tags_id: this.motion.tags_id,
             motion_block_id: this.motion.motion_block_id,
-            amendment_paragraphs: amendedParagraphs
+            amendment_paragraphs: amendedParagraphs,
+            workflow_id: this.configService.instant<number>('motions_amendments_workflow')
         };
 
         const motion = new CreateMotion();

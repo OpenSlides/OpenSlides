@@ -728,8 +728,9 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
             this.editMotion = true;
             const defaultMotion: Partial<CreateMotion> = {};
             if (this.route.snapshot.queryParams.parent) {
+                const parentId = +this.route.snapshot.queryParams.parent;
                 this.amendmentEdit = true;
-                const parentMotion = this.repo.getViewModel(this.route.snapshot.queryParams.parent);
+                const parentMotion = this.repo.getViewModel(parentId);
                 const defaultTitle = `${this.translate.instant('Amendment to')} ${parentMotion.identifierOrTitle}`;
                 defaultMotion.title = defaultTitle;
                 defaultMotion.parent_id = parentMotion.id;
@@ -1289,9 +1290,16 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      * Sets the default workflow ID during form creation
      */
     public updateWorkflowIdForCreateForm(paragraph?: number): void {
-        const isStatuteAmendment = !!this.contentForm.get('statute_amendment').value && !!paragraph;
-        const configKey = isStatuteAmendment ? 'motions_statute_amendments_workflow' : 'motions_workflow';
-        const workflowId = this.configService.instant<string>(configKey);
+        let configKey: string;
+
+        if (!!this.contentForm.get('statute_amendment').value && !!paragraph) {
+            configKey = 'motions_statute_amendments_workflow';
+        } else if (!!this.route.snapshot.queryParams.parent) {
+            configKey = 'motions_amendments_workflow';
+        } else {
+            configKey = 'motions_workflow';
+        }
+        const workflowId = this.configService.instant(configKey);
         this.contentForm.patchValue({ workflow_id: +workflowId });
     }
 
