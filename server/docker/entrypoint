@@ -11,4 +11,4 @@ printf 'Executing server: "%s"\n' "$*"
 # - daphne -b 0.0.0.0 -p 8000 openslides.asgi:application
 # - gunicorn -w 4 -b 0.0.0.0:8000 -k uvicorn.workers.UvicornWorker \
 #   openslides.asgi:application
-exec $*
+exec "$@"
