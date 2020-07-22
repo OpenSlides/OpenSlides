@@ -13,13 +13,11 @@ services:
       - message-bus
     env_file: services.env
   datastore-postgresql:
-    image: sameersbn/postgresql:10
-    labels:
-      org.openslides.role: "postgres"
+    image: postgres:11
     environment:
-      - DB_USER=openslides
-      - DB_PASS=openslides
-      - DB_NAME=openslides
+      - POSTGRES_USER=openslides
+      - POSTGRES_PASSWORD=openslides
+      - POSTGRES_DB=openslides
 
   # CLIENT
   client:
