@@ -480,7 +480,7 @@
         "id": 2,
         "name": "Tag2",
 
-        "tagged_ids": ["assignment/2"],
+        "tagged_ids": ["assignment/2", "agenda_item/4"],
         "meeting_id": 1
     },
     {
@@ -506,6 +506,7 @@
         "content_object_id": "topic/1",
         "parent_id": null,
         "child_ids": [14],
+        "tag_ids": [],
         "projection_ids": [],
         "current_projector_ids": [],
         "meeting_id": 1
@@ -520,12 +521,12 @@
         "is_hidden": false,
         "duration": null,
         "weight": 1001,
-        "parent_id": 3,
         "level": 1,
 
         "content_object_id": "assignment/2",
         "parent_id": 3,
         "child_ids": [],
+        "tag_ids": [],
         "projection_ids": [],
         "current_projector_ids": [],
         "meeting_id": 1
@@ -545,6 +546,7 @@
         "content_object_id": "topic/2",
         "parent_id": null,
         "child_ids": [],
+        "tag_ids": [2],
         "projection_ids": [],
         "current_projector_ids": [],
         "meeting_id": 1
@@ -564,6 +566,7 @@
         "content_object_id": "topic/3",
         "parent_id": null,
         "child_ids": [],
+        "tag_ids": [],
         "projection_ids": [],
         "current_projector_ids": [],
         "meeting_id": 1
@@ -583,6 +586,7 @@
         "content_object_id": "topic/4",
         "parent_id": null,
         "child_ids": [],
+        "tag_ids": [],
         "projection_ids": [],
         "current_projector_ids": [],
         "meeting_id": 1
@@ -602,6 +606,7 @@
         "content_object_id": "topic/5",
         "parent_id": null,
         "child_ids": [],
+        "tag_ids": [],
         "projection_ids": [],
         "current_projector_ids": [],
         "meeting_id": 1
@@ -621,6 +626,7 @@
         "content_object_id": "topic/6",
         "parent_id": null,
         "child_ids": [],
+        "tag_ids": [],
         "projection_ids": [],
         "current_projector_ids": [],
         "meeting_id": 1
@@ -640,6 +646,7 @@
         "content_object_id": "topic/7",
         "parent_id": null,
         "child_ids": [],
+        "tag_ids": [],
         "projection_ids": [],
         "current_projector_ids": [],
         "meeting_id": 1
@@ -659,6 +666,7 @@
         "content_object_id": "topic/8",
         "parent_id": null,
         "child_ids": [],
+        "tag_ids": [],
         "projection_ids": [],
         "current_projector_ids": [],
         "meeting_id": 1
@@ -678,6 +686,7 @@
         "content_object_id": "motion/1",
         "parent_id": null,
         "child_ids": [],
+        "tag_ids": [],
         "projection_ids": [],
         "current_projector_ids": [],
         "meeting_id": 1
@@ -697,6 +706,7 @@
         "content_object_id": "motion/2",
         "parent_id": null,
         "child_ids": [],
+        "tag_ids": [],
         "projection_ids": [],
         "current_projector_ids": [],
         "meeting_id": 1
@@ -716,6 +726,7 @@
         "content_object_id": "assignment/1",
         "parent_id": null,
         "child_ids": [],
+        "tag_ids": [],
         "projection_ids": [],
         "current_projector_ids": [],
         "meeting_id": 1
@@ -735,6 +746,7 @@
         "content_object_id": "motion/3",
         "parent_id": null,
         "child_ids": [],
+        "tag_ids": [],
         "projection_ids": [],
         "current_projector_ids": [],
         "meeting_id": 1
@@ -754,6 +766,7 @@
         "content_object_id": "motion/4",
         "parent_id": null,
         "child_ids": [],
+        "tag_ids": [],
         "projection_ids": [],
         "current_projector_ids": [],
         "meeting_id": 1
@@ -773,6 +786,7 @@
         "content_object_id": "motion_block/1",
         "parent_id": null,
         "child_ids": [],
+        "tag_ids": [],
         "projection_ids": [],
         "current_projector_ids": [],
         "meeting_id": 1
