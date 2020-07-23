@@ -46,11 +46,11 @@ services:
       - cache
     env_file: services.env
   cache:
-    image: redis:alpine
+    image: redis:latest
 
   # SHARED
   message-bus:
-    image: redis:alpine
+    image: redis:latest
 
   # UPLINK
   haproxy:
