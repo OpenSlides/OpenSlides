@@ -18,6 +18,8 @@ Read more about our [concept of OpenSlides 4.0](https://github.com/OpenSlides/Op
 
 ## Installation
 
+NOTE: Do not use prod at the moment. It will not work. Please refer to the DEVELOPMENT.md!
+
 Required software: Docker, docker-compose, make, git
 
 For a non-development setup, clone this repo and run it via docker compose. The make command is a handy shortcut for this:
