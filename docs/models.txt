@@ -48,7 +48,7 @@ Interface user {
     last_name: string;
     is_active: boolean;
     is_committee: boolean;
-    // TODO: auth
+    password: string;
     default_password: string;
     about_me: HTML;
     gender: string,
@@ -107,13 +107,10 @@ Interface role {
 }
 
 // New: Resource
-// Resources are meeting-specific or organsation wide.
-// For organisation-resources, no permission chacks are done (event the user
-// must not be logged in). If a meeting-resource is requested, it is checked, if
-// the user can see the meeting (Anonymous, guest, member).
-// A resource has a token, e.g. `web_header` or `pdf_font_italic`, so the client
-// knowns, where to put the resource. They are delivered by the mediafile server
-// with the URL `<media-prefix>/resource/<id>`
+// Resources are organsation wide "mediafiles", like logos for the organisatio or
+// organisation-wide fonts. Therefore, no permission checks are done and the user
+// must not be logged in to retrieve files. A resource has a token, e.g. `web_header`
+// or `pdf_font_italic`, so the client knowns, where to put the resource.
 Interface resource {
     id: number;
     token: string;
@@ -310,17 +307,21 @@ Interface meeting {
     temporary_user_ids: (user/meeting_id)[];
     guest_ids: (user/guest_meeting_ids)[];
     reference_projector_id: projector/used_as_reference_projector_meeting_id;
+
+    default_group_id: group/default_group_for_meeting_id;
+    superadmin_group_id: group/superadmin_group_for_meeting_id;
 }
 
 Interface group {
     id: number;
     name: string;
-    is_superadmin_group: boolean;
-    is_default_group: boolean;
     permissions: string[];
 
     user_ids: (user/group_$<meeting_id>_ids)[];
+    default_group_for_meeting_id: meeting/default_group_id;
+    superadmin_group_for_meeting_id: meeting/superadmin_group_id;
     mediafile_access_group_ids: (mediafile/access_group_ids)[];
+    mediafile_inherited_access_group_ids: (mediafile/inherited_access_group_ids)[];
     read_comment_section_ids: (motion_comment_section/read_group_ids)[];
     write_comment_section_ids: (motion_comment_section/write_group_ids)[];
     motion_poll_ids: (motion_poll/entitled_group_ids)[];
@@ -685,10 +686,10 @@ Interface mediafile {
     mimetype: string;
     pdf_information: JSON;
     create_timestamp: datetime;
-    path: string; // Note: calcuated
-    inherited_access_group_ids: boolean | number[]; // Note: calculated and no
-    // reverse-relation for the group ids.
+    path: string; // Note: calculated
+    has_inherited_access_groups: boolean; // Note: calculated
 
+    inherited_access_group_ids: (group/mediafile_inherited_access_group_ids)[];  // Note: calculated
     access_group_ids: (group/mediafile_access_group_ids)[];
     parent_id: mediafile/child_ids;
     child_ids: (mediafile/parent_id)[];

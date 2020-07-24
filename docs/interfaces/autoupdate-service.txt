@@ -119,7 +119,12 @@ Interface RelationFieldDescriptor extends Fields {
  * null` without using this interface, the response would be just the template
  * field `B_$_ids` and no structured fields.
  *
- * For just resolving values, leav `values` out (hence the optional parameter).
+ * For just resolving values, leave `values` out (hence the optional parameter).
+ *
+ * For retrieveing a single structured field, use `RelationFieldDescriptor`. E.g.
+ * when trying to get the groups for a user from meeting 2, use `group_2_ids`
+ * directly and do not bother with structured fields. The terminology is a
+ * `specific structured field`.
  *
  * If the values of all structured fields are references, use the `values`
  * parameter analog to the `fields` paramter as documented in
@@ -127,12 +132,7 @@ Interface RelationFieldDescriptor extends Fields {
  */
 Interface StructuredFieldDecriptor {
     type: 'template',
-    values?: {
-        [field: Field]: GenericRelationFieldDescriptor
-            | RelationFieldDescriptor
-            | StructuredFieldDescriptor
-            | null;
-    }
+    values?: GenericRelationFieldDescriptor | RelationFieldDescriptor;
 }
 
 
