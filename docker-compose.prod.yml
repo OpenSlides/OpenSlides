@@ -11,7 +11,7 @@ services:
     networks:
       - backend
       - datastore-reader
-      - datastore-postgresql
+      - postgres
 
   datastore-writer:
     build:
@@ -23,12 +23,12 @@ services:
     image: openslides-datastore-writer
     networks:
       - backend
-      - datastore-postgresql
+      - postgres
       - message-bus
 
-  datastore-postgresql:
+  postgres:
     networks:
-      - datastore-postgresql
+      - postgres
 
   client:
     build:
@@ -67,6 +67,14 @@ services:
     networks:
       - message-bus
 
+  media:
+    # TODO: build
+    image: openslides-media
+    networks:
+      - frontend
+      - backend
+      - postgres
+
   haproxy:
     build: ./haproxy
     image: openslides-haproxy
@@ -75,14 +83,14 @@ services:
       - frontend
 
 # Setup: host <-uplink-> haproxy <-frontend-> services that are reachable from the client <-backend-> services that are internal-only
-# There are special networks for some services only, e.g. datastore-postgresql only for the postgresql, datastore reader and datastore writer
+# There are special networks for some services only, e.g. postgres only for the postgresql, datastore reader and datastore writer
 networks:
   uplink:
   frontend:
     internal: true
   backend:
     internal: true
-  datastore-postgresql:
+  postgres:
     internal: true
   datastore-reader:
     internal: true

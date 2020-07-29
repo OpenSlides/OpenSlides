@@ -3,21 +3,15 @@ services:
   # DATASTORE SECTION
   datastore-reader:
     depends_on:
-      - datastore-postgresql
+      - postgres
     env_file: services.env
     environment:
       - NUM_WORKERS=8
   datastore-writer:
     depends_on:
-      - datastore-postgresql
+      - postgres
       - message-bus
     env_file: services.env
-  datastore-postgresql:
-    image: postgres:11
-    environment:
-      - POSTGRES_USER=openslides
-      - POSTGRES_PASSWORD=openslides
-      - POSTGRES_DB=openslides
 
   # CLIENT
   client:
@@ -47,6 +41,21 @@ services:
     env_file: services.env
   cache:
     image: redis:latest
+
+  # MEDIA
+  media:
+    depends_on:
+      - backend
+      - postgres
+    env_file: services.env
+
+  # PERSISTENCE
+  postgres:
+    image: postgres:11
+    environment:
+      - POSTGRES_USER=openslides
+      - POSTGRES_PASSWORD=openslides
+      - POSTGRES_DB=openslides
 
   # SHARED
   message-bus:

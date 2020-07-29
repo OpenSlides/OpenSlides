@@ -32,6 +32,10 @@ services:
     image: openslides-auth-dev
     volumes:
       - ./openslides-auth-service/auth/src:/app/src
+  media:
+    image: openslides-media-dev
+    volumes:
+      - ./openslides-media-service/src:/app/src
   haproxy:
     image: openslides-haproxy-dev
     volumes:
