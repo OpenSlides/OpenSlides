@@ -17,3 +17,7 @@
 	path = openslides-auth-service
 	url = git@github.com:OpenSlides/openslides-auth-service.git
 	branch = master
+[submodule "openslides-media-service"]
+	path = openslides-media-service
+	url = git@github.com:OpenSlides/openslides-media-service.git
+	branch = openslides4-dev
