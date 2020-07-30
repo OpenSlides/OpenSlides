@@ -48,6 +48,8 @@ services:
     depends_on:
       - datastore-reader
       - datastore-writer
+      - auth
+      - permission
     env_file: services.env
     volumes:
       - ../openslides-backend/openslides_backend:/app/openslides_backend
@@ -62,6 +64,15 @@ services:
     volumes:
       - ../openslides-autoupdate-service/cmd:/root/cmd
       - ../openslides-autoupdate-service/internal:/root/internal
+  permission:
+    image: openslides-permission-dev
+    depends_on:
+      - datastore-reader
+    env_file: services.env
+    volumes:
+      - ../openslides-permission-service/cmd:/app/cmd
+      - ../openslides-permission-service/internal:/app/internal
+      - ../openslides-permission-service/pkg:/app/pkg
   auth:
     image: openslides-auth-dev
     depends_on:
