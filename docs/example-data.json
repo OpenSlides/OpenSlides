@@ -36,7 +36,7 @@
 
         "is_present_in_meeting_ids": [1],
         "meeting_id": null,
-        "guest_meeting_id": [],
+        "guest_meeting_ids": [],
         "committee_as_member_ids": [],
         "committee_as_manager_ids": [],
 
@@ -86,7 +86,7 @@
 
         "is_present_in_meeting_ids": [],
         "meeting_id": null,
-        "guest_meeting_id": [],
+        "guest_meeting_ids": [],
         "committee_as_member_ids": [],
         "committee_as_manager_ids": [],
 
@@ -132,7 +132,7 @@
 
         "is_present_in_meeting_ids": [],
         "meeting_id": null,
-        "guest_meeting_id": [1],
+        "guest_meeting_ids": [1],
         "committee_as_member_ids": [],
         "committee_as_manager_ids": [],
 
@@ -1200,7 +1200,7 @@
         "submitter_ids": [1],
         "supporter_ids": [],
         "poll_ids": [1, 2],
-        "change_recommendations_id": [],
+        "change_recommendation_ids": [],
         "statute_paragraph_id": null,
         "comment_ids": [1],
         "agenda_item_id": 1,
@@ -1241,7 +1241,7 @@
         "submitter_ids": [2],
         "supporter_ids": [],
         "poll_ids": [],
-        "change_recommendations_id": [],
+        "change_recommendation_ids": [],
         "statute_paragraph_id": null,
         "comment_ids": [],
         "agenda_item_id": 2,
@@ -1282,7 +1282,7 @@
         "submitter_ids": [3],
         "supporter_ids": [3],
         "poll_ids": [],
-        "change_recommendations_id": [5],
+        "change_recommendation_ids": [5],
         "statute_paragraph_id": null,
         "comment_ids": [],
         "agenda_item_id": 12,
@@ -1323,7 +1323,7 @@
         "submitter_ids": [4],
         "supporter_ids": [],
         "poll_ids": [],
-        "change_recommendations_id": [4],
+        "change_recommendation_ids": [4],
         "statute_paragraph_id": null,
         "comments": [],
         "agenda_item_id": 13,
@@ -1748,7 +1748,7 @@
         "id": 1,
         "name": "Simple Workflow",
 
-        "states_id": [1, 2, 3, 4],
+        "state_ids": [1, 2, 3, 4],
         "first_state_id": 1,
         "default_workflow_meeting_id": 1,
         "default_statute_amendments_meeting_id": null,
@@ -1758,7 +1758,7 @@
         "id": 2,
         "name": "Complex Workflow",
 
-        "states_id": [5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
+        "state_ids": [5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
         "first_state_id": 5,
         "default_workflow_meeting_id": null,
         "default_statute_amendments_meeting_id": 1,
@@ -1863,7 +1863,7 @@
         "number_poll_candidates": false,
 
         "candidate_ids": [1, 2, 3],
-        "polls_id": [1, 2],
+        "poll_ids": [1, 2],
         "agenda_item_id": 11,
         "list_of_speakers_id": 11,
         "tag_ids": [],
@@ -1882,7 +1882,7 @@
         "number_poll_candidates": true,
 
         "candidate_ids": [4, 5],
-        "polls_id": [3],
+        "poll_ids": [3],
         "agenda_item_id": 14,
         "list_of_speakers_id": 14,
         "tag_ids": [2],
@@ -1949,7 +1949,7 @@
         "user_has_voted": false,
 
         "assignment_id": 1,
-        "voted_id": [],
+        "voted_ids": [],
         "entitled_group_ids": [],
         "option_ids": [1],
         "projection_ids": [],
@@ -2214,7 +2214,7 @@
         "preview_projection_ids": [1, 2],
         "history_projection_ids": [],
         "used_as_reference_projector_meeting_id": null,
-        "projectiondefaults_id": [1, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
+        "projectiondefault_ids": [1, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
         "meeting_id": 1
     },
     {
@@ -2241,7 +2241,7 @@
         "preview_projection_ids": [],
         "history_projection_ids": [],
         "used_as_reference_projector_meeting_id": 1,
-        "projectiondefaults_id": [2, 3],
+        "projectiondefault_ids": [2, 3],
         "meeting_id": 1
     }],
 "projection": [
