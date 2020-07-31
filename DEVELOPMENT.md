@@ -2,7 +2,7 @@
 
 ## Requirements
 
-You need git, bash, docker, docker-compose, make and go installed.
+You need git, bash, docker, docker-compose, make and openssl installed.
 
 Go is needed to install https://github.com/FiloSottile/mkcert. The development setup uses HTTPS per default. OpenSlides does not work with HTTP anymore since features are required (like http2) that only works in a secure environment.
 
@@ -15,13 +15,9 @@ Clone this repository:
 
 TODO: use `--recurse-submodules`, when master is OS4
 
-After checking out the os4-branch you need to initialize all submodules and install a root-cert:
+After checking out the os4-branch you need to initialize all submodules:
 
     $ git submodule update --init
-    $ go get https://github.com/FiloSottile/mkcert
-    $ sudo mkcert -install
-
-If you get an error, you might need to install `certutil`. For Debian: `sudo apt install libnss3-tools`.
 
 Finally, start the dev server:
 
