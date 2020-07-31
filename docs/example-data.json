@@ -1379,8 +1379,8 @@
         "weight": 10000,
 
         "comment_ids": [1],
-        "read_groups_id": [3, 6],
-        "write_groups_id": [3, 6],
+        "read_group_ids": [3, 6],
+        "write_group_ids": [3, 6],
         "meeting_id": 1
     }],
 "motion_category": [
@@ -1950,7 +1950,7 @@
 
         "assignment_id": 1,
         "voted_id": [],
-        "entitled_groups_id": [],
+        "entitled_group_ids": [],
         "option_ids": [1],
         "projection_ids": [],
         "current_projector_ids": [],
@@ -2006,7 +2006,7 @@
 
         "assignment_id": 2,
         "voted_ids": [1],
-        "entitled_groups_id": [2],
+        "entitled_group_ids": [2],
         "option_ids": [5, 6],
         "projection_ids": [],
         "current_projector_ids": [],
@@ -2125,8 +2125,8 @@
         "path": "logos/",
         "has_inherited_access_groups": true,
 
-        "access_groups_id": [2, 3],
-        "inherited_access_groups_id": [2, 3],
+        "access_group_ids": [2, 3],
+        "inherited_access_group_ids": [2, 3],
         "parent_id": null,
         "child_ids": [3],
         "list_of_speakers_id": 16,
@@ -2150,8 +2150,8 @@
         "path": "A.txt",
         "has_inherited_access_groups": false,
 
-        "access_groups_id": [],
-        "inherited_access_groups_id": [],
+        "access_group_ids": [],
+        "inherited_access_group_ids": [],
         "parent_id": null,
         "child_ids": [],
         "list_of_speakers_id": 17,
@@ -2175,8 +2175,8 @@
         "path": "logos/in.jpg",
         "has_inherited_access_groups": true,
 
-        "access_groups_id": [],
-        "inherited_access_groups_id": [2, 3],
+        "access_group_ids": [],
+        "inherited_access_group_ids": [2, 3],
         "parent_id": 1,
         "child_ids": [],
         "list_of_speakers_id": 18,
