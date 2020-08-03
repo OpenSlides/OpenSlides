@@ -51,7 +51,7 @@ Interface user {
     password: string;
     default_password: string;
     about_me: HTML;
-    gender: string,
+    gender: string;
     comment: HTML;
     number: string;
     structure_level: string;
@@ -351,9 +351,9 @@ Interface tag {
 Interface agenda_item {
     id: number;
     item_number: string;
-    comment: string,
-    closed: boolean,
-    type: number,
+    comment: string;
+    closed: boolean;
+    type: number;
     is_internal: boolean;
     is_hidden: boolean;
     duration: number; // in seconds
@@ -365,7 +365,7 @@ Interface agenda_item {
     child_ids: (agenda_item/parent_id)[];
     tag_ids: (tag/tagged_ids)[];
     projection_ids: (projection/element_id)[];
-    current_projector_ids: (projector/current_element_ids)[]
+    current_projector_ids: (projector/current_element_ids)[];
     meeting_id: meeting/agenda_item_ids;
 }
 
@@ -376,7 +376,7 @@ Interface list_of_speakers {
     content_object_id: */list_of_speakers_id;
     speaker_ids: (speaker/list_of_speakers_id)[];
     projection_ids: (projection/element_id)[];
-    current_projector_ids: (projector/current_element_ids)[]
+    current_projector_ids: (projector/current_element_ids)[];
     meeting_id: meeting/list_of_speakers_ids;
 }
 
@@ -440,7 +440,7 @@ Interface motion {
     tag_ids: (tag/tagged_ids)[];
     attachment_ids: (mediafile/attachment_ids)[];
     projection_ids: (projection/element_id)[];
-    current_projector_ids: (projector/current_element_ids)[]
+    current_projector_ids: (projector/current_element_ids)[];
     personal_note_ids: (personal_note/content_object_id)[];
     meeting_id: meeting/motion_ids;
 }
@@ -494,7 +494,7 @@ Interface motion_block {
     agenda_item_id: agenda_item/content_object_id;
     list_of_speakers_id: list_of_speakers/content_object_id;
     projection_ids: (projection/element_id)[];
-    current_projector_ids: (projector/current_element_ids)[]
+    current_projector_ids: (projector/current_element_ids)[];
     meeting_id: meeting/motion_block_ids;
 }
 
@@ -517,7 +517,7 @@ Interface motion_state {
     name: string;
     recommendation_label: string;
     css_class: string;
-    restrictions: string[],
+    restrictions: string[];
     allow_support: boolean;
     allow_create_poll: boolean;
     allow_submitter_edit: boolean;
@@ -573,7 +573,7 @@ Interface motion_poll {
     voted_ids: (user/motion_poll_voted_$<meeting_id>_ids)[];
     entitled_group_ids: (group/motion_poll_ids)[];
     projection_ids: (projection/element_id)[];
-    current_projector_ids: (projector/current_element_ids)[]
+    current_projector_ids: (projector/current_element_ids)[];
     meeting_id: meeting/motion_poll_ids;
 }
 
@@ -612,7 +612,7 @@ Interface assignment {
     tag_ids: (tag/tagged_ids)[];
     attachment_ids: (mediafile/attachment_ids)[];
     projection_ids: (projection/element_id)[];
-    current_projector_ids: (projector/current_element_ids)[]
+    current_projector_ids: (projector/current_element_ids)[];
     meeting_id: meeting/assignment_ids;
 }
 
@@ -649,7 +649,7 @@ Interface assignment_poll {
     entitled_group_ids: (group/assignment_poll_ids)[];
     option_ids: (assignment_option/poll_id)[];
     projection_ids: (projection/element_id)[];
-    current_projector_ids: (projector/current_element_ids)[]
+    current_projector_ids: (projector/current_element_ids)[];
     meeting_id: meeting/assignment_poll_ids;
 }
 
@@ -695,7 +695,7 @@ Interface mediafile {
     child_ids: (mediafile/parent_id)[];
     list_of_speakers_id: list_of_speakers/content_object_id;
     projection_ids: (projection/element_id)[];
-    current_projector_ids: (projector/current_element_ids)[]
+    current_projector_ids: (projector/current_element_ids)[];
     attachment_ids: (*/attachment_ids)[];
     meeting_id: meeting/mediafile_ids;
 
@@ -730,7 +730,7 @@ Interface projector {
     preview_projection_ids: (projection/projector_preview_id)[];
     history_projection_ids: (projection/projector_history_id)[];
     used_as_reference_projector_meeting_id: meeting/reference_projector_id;
-    projectiondefault_ids: projectiondefault[];
+    projectiondefault_ids: (projectiondefault/projector_id)[];
     meeting_id: meeting/projector_ids;
 }
 
@@ -763,7 +763,7 @@ Interface projector_message {
     message: HTML;
 
     projection_ids: (projection/element_id)[];
-    current_projector_ids: (projector/current_element_ids)[]
+    current_projector_ids: (projector/current_element_ids)[];
     meeting_id: meeting/projector_message_ids;
 }
 
@@ -776,6 +776,6 @@ Interface projector_countdown {
     running: boolean;
 
     projection_ids: (projection/element_id)[];
-    current_projector_ids: (projector/current_element_ids)[]
+    current_projector_ids: (projector/current_element_ids)[];
     meeting_id: meeting/projector_countdown_ids;
 }
