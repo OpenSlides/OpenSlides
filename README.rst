@@ -137,7 +137,7 @@ The installation instruction for (1) and (2) described a way to use OpenSlides i
 
 The easiest way to run the OpenSlides 'big mode' environment (with PostgreSQL, Redis
 and NGINX) with Docker Compose: use our docker compose suite. Follow the instruction in
-the `openslides-doccker-compose Repository <https://github.com/OpenSlides/openslides-docker-compose>`_.
+the `openslides-docker-compose Repository <https://github.com/OpenSlides/openslides-docker-compose>`_.
 
 To install and configure all components of our 'big mode' manually you can read the
 `big-mode-instruction <https://github.com/OpenSlides/OpenSlides/blob/master/DEVELOPMENT.rst#openslides-in-big-mode>`_
