@@ -1,10 +1,11 @@
+import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 
 import { StorageMap } from '@ngx-pwa/local-storage';
 import { TranslateService } from '@ngx-translate/core';
-import { distinctUntilChanged, map } from 'rxjs/operators';
+import { delay, distinctUntilChanged, map } from 'rxjs/operators';
 
 import { ConstantsService } from 'app/core/core-services/constants.service';
 import { OperatorService } from 'app/core/core-services/operator.service';
@@ -55,6 +56,23 @@ enum ConferenceState {
     selector: 'os-jitsi',
     templateUrl: './jitsi.component.html',
     styleUrls: ['./jitsi.component.scss'],
+    animations: [
+        trigger('fadeInOut', [
+            state(
+                'true',
+                style({
+                    opacity: 1
+                })
+            ),
+            state(
+                'false',
+                style({
+                    opacity: 0.2
+                })
+            ),
+            transition('true <=> false', animate('1s'))
+        ])
+    ],
     encapsulation: ViewEncapsulation.None
 })
 export class JitsiComponent extends BaseViewComponent implements OnInit, OnDestroy {
@@ -114,15 +132,11 @@ export class JitsiComponent extends BaseViewComponent implements OnInit, OnDestr
         return this.roomPassword?.length > 0;
     }
 
-    public get canSeeLiveStream(): boolean {
-        return this.operator.hasPerms(this.permission.coreCanSeeLiveStream);
-    }
-
     private isOnCurrentLos: boolean;
 
-    public get canManageSpeaker(): boolean {
-        return this.operator.hasPerms(this.permission.agendaCanManageListOfSpeakers);
-    }
+    public canSeeLiveStream: boolean;
+
+    public canManageSpeaker: boolean;
 
     public get isAccessPermitted(): boolean {
         return !this.restricted || this.canManageSpeaker || this.isOnCurrentLos;
@@ -138,6 +152,7 @@ export class JitsiComponent extends BaseViewComponent implements OnInit, OnDestr
      */
     public state = ConferenceState;
     public currentState: ConferenceState;
+    public isEnterMeetingRoomVisible = true;
 
     private configOverwrite = {
         startAudioOnly: false,
@@ -218,6 +233,14 @@ export class JitsiComponent extends BaseViewComponent implements OnInit, OnDestr
         await this.stopConference();
     }
 
+    public triggerMeetingRoomButtonAnimation(): void {
+        if (this.canManageSpeaker) {
+            this.isEnterMeetingRoomVisible = true;
+        } else {
+            this.isEnterMeetingRoomVisible = !this.isEnterMeetingRoomVisible;
+        }
+    }
+
     private async stopConference(): Promise<void> {
         await this.stopJitsi();
         if (this.streamActiveInAnotherTab && this.streamRunning) {
@@ -227,6 +250,16 @@ export class JitsiComponent extends BaseViewComponent implements OnInit, OnDestr
 
     private async setUp(): Promise<void> {
         this.subscriptions.push(
+            // if the operators users has changes, check if we have to start the animation
+            this.operator
+                .getUserObservable()
+                .pipe(delay(0))
+                .subscribe(() => {
+                    this.canManageSpeaker = this.operator.hasPerms(this.permission.agendaCanManageListOfSpeakers);
+                    this.canSeeLiveStream = this.operator.hasPerms(this.permission.coreCanSeeLiveStream);
+                    this.isEnterMeetingRoomVisible = this.canManageSpeaker;
+                }),
+
             this.storageMap
                 .watch(this.RTC_LOGGED_STORAGE_KEY)
                 .pipe(distinctUntilChanged())
@@ -312,7 +345,7 @@ export class JitsiComponent extends BaseViewComponent implements OnInit, OnDestr
                 )
                 .subscribe(isOnList => {
                     this.isOnCurrentLos = isOnList;
-                    console.log('this.isOnCurrentLos: ', this.isOnCurrentLos);
+                    this.triggerMeetingRoomButtonAnimation();
 
                     if (!this.isAccessPermitted) {
                         this.viewStream();
