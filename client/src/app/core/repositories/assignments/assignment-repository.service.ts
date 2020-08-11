@@ -130,9 +130,9 @@ export class AssignmentRepositoryService extends BaseIsAgendaItemAndListOfSpeake
      * of the candidate. Else, the candidate will be added if not on the list,
      * and removed if on the list
      */
-    public async changeCandidate(user: ViewUser, assignment: ViewAssignment, adding?: boolean): Promise<void> {
-        const data = { user: user.id };
-        if (assignment.candidates.some(candidate => candidate.id === user.id) && adding !== true) {
+    public async changeCandidate(userId: number, assignment: ViewAssignment, adding?: boolean): Promise<void> {
+        const data = { user: userId };
+        if (assignment.candidates.some(candidate => candidate.id === userId) && adding !== true) {
             await this.httpService.delete(this.restPath + assignment.id + this.candidatureOtherPath, data);
         } else if (adding !== false) {
             await this.httpService.post(this.restPath + assignment.id + this.candidatureOtherPath, data);

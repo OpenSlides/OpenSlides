@@ -186,7 +186,14 @@
                                     [multiple]="false"
                                     placeholder="{{ 'Select a new candidate' | translate }}"
                                     [inputListValues]="filteredCandidates"
-                                ></os-search-value-selector>
+                                    [showNotFoundButton]="true"
+                                    (clickNotFound)="createNewCandidate($event)"
+                                >
+                                    <ng-container notFoundDescription>
+                                        <mat-icon>add</mat-icon>
+                                        {{ 'Create user' | translate }}
+                                    </ng-container>
+                                </os-search-value-selector>
                             </mat-form-field>
                         </form>
                     </div>

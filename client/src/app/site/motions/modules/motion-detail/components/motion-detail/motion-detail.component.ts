@@ -29,7 +29,7 @@ import { MotionRepositoryService, ParagraphToChoose } from 'app/core/repositorie
 import { StatuteParagraphRepositoryService } from 'app/core/repositories/motions/statute-paragraph-repository.service';
 import { WorkflowRepositoryService } from 'app/core/repositories/motions/workflow-repository.service';
 import { TagRepositoryService } from 'app/core/repositories/tags/tag-repository.service';
-import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
+import { NewUser, UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { DiffLinesInParagraph, LineRange } from 'app/core/ui-services/diff.service';
 import { LinenumberingService } from 'app/core/ui-services/linenumbering.service';
@@ -1703,6 +1703,31 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         if (this.editMotion) {
             event.returnValue = null;
         }
+    }
+
+    public async createNewSubmitter(username: string): Promise<void> {
+        const newUserObj = await this.createNewUser(username);
+        this.addNewUserToFormCtrl(newUserObj, 'submitters_id');
+    }
+
+    public async createNewSupporter(username: string): Promise<void> {
+        const newUserObj = await this.createNewUser(username);
+        this.addNewUserToFormCtrl(newUserObj, 'supporters_id');
+    }
+
+    private addNewUserToFormCtrl(newUserObj: NewUser, controlName: string): void {
+        const control = this.contentForm.get(controlName);
+        let currentSubmitters: number[] = control.value;
+        if (currentSubmitters?.length) {
+            currentSubmitters.push(newUserObj.id);
+        } else {
+            currentSubmitters = [newUserObj.id];
+        }
+        control.setValue(currentSubmitters);
+    }
+
+    private createNewUser(username: string): Promise<NewUser> {
+        return this.userRepo.createFromString(username);
     }
 
     public swipe(e: TouchEvent, when: string): void {

@@ -338,9 +338,8 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
      * @param userId the id of a ViewUser
      */
     public async addUser(userId: number): Promise<void> {
-        const user = this.userRepo.getViewModel(userId);
-        if (user) {
-            await this.repo.changeCandidate(user, this.assignment, true).catch(this.raiseError);
+        if (userId) {
+            await this.repo.changeCandidate(userId, this.assignment, true).catch(this.raiseError);
         }
     }
 
@@ -350,7 +349,15 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
      * @param candidate A ViewAssignmentUser currently in the list of related users
      */
     public async removeUser(candidate: ViewAssignmentRelatedUser): Promise<void> {
-        await this.repo.changeCandidate(candidate.user, this.assignment, false).catch(this.raiseError);
+        await this.repo.changeCandidate(candidate.user.id, this.assignment, false).catch(this.raiseError);
+    }
+
+    /**
+     * Creates unfound candidate on the fly and add the the list
+     */
+    public async createNewCandidate(username: string): Promise<void> {
+        const newUserObj = await this.userRepo.createFromString(username);
+        await this.addUser(newUserObj.id);
     }
 
     /**

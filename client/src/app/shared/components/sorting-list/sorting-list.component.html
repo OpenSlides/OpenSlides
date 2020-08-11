@@ -15,7 +15,7 @@
         <div class="section-two">
             <!-- {number}. {item.getTitle()} -->
             <span *ngIf="count">{{ i + 1 }}.&nbsp;</span>
-            <span>{{ item.getTitle() }}</span>
+            <span>{{ item?.getTitle() }}</span>
         </div>
         <div class="section-three">
             <!-- Extra controls slot using implicit template references -->
