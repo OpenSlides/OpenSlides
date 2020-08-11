@@ -37,6 +37,7 @@ Interface organisation {
 
     committee_ids: (committee/organisation_id)[];
     role_ids: (role/organisation_id)[];
+    superadmin_role_id: role/superadmin_role_for_organisation_id;
     resource_ids: (resource/organisation_id)[];
 }
 
@@ -100,9 +101,9 @@ Interface role {
     id: number;
     name: string;
     permissions: string[];
-    is_superadmin_role: boolean;
 
     organisation_id: organisation/role_ids;
+    superadmin_role_for_organisation_id: organisation/superadmin_role_id;
     user_ids: (user/role_id)[];
 }
 
@@ -306,6 +307,7 @@ Interface meeting {
     present_user_ids: (user/is_present_in_meeting_ids)[];
     temporary_user_ids: (user/meeting_id)[];
     guest_ids: (user/guest_meeting_ids)[];
+    user_ids: (Id)[]; // Calculated: All ids from temporary_user_ids, guest_ids and all users assigned to groups.
     reference_projector_id: projector/used_as_reference_projector_meeting_id;
 
     default_group_id: group/default_group_for_meeting_id;
@@ -425,6 +427,7 @@ Interface motion {
     sort_child_ids: (motion/parent_id)[];
     origin_id: motion/derived_motion_ids; // Note: The related motions may not be in the same meeting
     derived_motion_ids: (motion/origin_id)[]; // Note: The related motions may not be in the same meeting
+    forwarding_tree_motion_ids: (Id)[]; // Calculated: All children (derived_motion_ids), grand children, ... and all parents (origin_id).
     state_id: motion_state/motion_ids;
     recommendation_id: motion_state/motion_recommendation_ids;
     category_id: motion_category/motion_ids;
