@@ -430,6 +430,8 @@ Interface motion {
     forwarding_tree_motion_ids: (Id)[]; // Calculated: All children (derived_motion_ids), grand children, ... and all parents (origin_id).
     state_id: motion_state/motion_ids;
     recommendation_id: motion_state/motion_recommendation_ids;
+    recommendation_extension_reference_ids: (*/referenced_in_motion_recommendation_extension_ids)[]; // current option: motion
+    referenced_in_motion_recommendation_extension_ids: (motion/recommendation_extension_reference_ids)[];
     category_id: motion_category/motion_ids;
     block_id: motion_block/motion_ids;
     submitter_ids: (motion_submitter/motion_id)[];
