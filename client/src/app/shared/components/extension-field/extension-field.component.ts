@@ -153,22 +153,20 @@ export class ExtensionFieldComponent implements OnInit, OnDestroy {
                 list: [[]]
             });
 
-            this.searchValueSubscription = this.extensionFieldForm
-                .get('list')
-                .valueChanges.subscribe((value: number) => {
-                    if (value) {
-                        if (this.listSubmitOnChange) {
-                            this.listChange.emit(value);
-                        }
-                        if (this.appendValueToInput) {
-                            if (!this.inputControl) {
-                                this.inputControl = '';
-                            }
-                            this.inputControl += `[${this.listValuePrefix}${value}${this.listValueSuffix}]`;
-                        }
-                        this.extensionFieldForm.reset();
+            this.searchValueSubscription = this.extensionFieldForm.get('list').valueChanges.subscribe((value: any) => {
+                if (value && typeof value === 'number') {
+                    if (this.listSubmitOnChange) {
+                        this.listChange.emit(value);
                     }
-                });
+                    if (this.appendValueToInput) {
+                        if (!this.inputControl) {
+                            this.inputControl = '';
+                        }
+                        this.inputControl += `[${this.listValuePrefix}${value}${this.listValueSuffix}]`;
+                    }
+                    this.extensionFieldForm.reset();
+                }
+            });
         }
     }
 
