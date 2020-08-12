@@ -66,7 +66,9 @@
                 <mat-icon>picture_as_pdf</mat-icon>
                 <span>{{ 'PDF' | translate }}</span>
             </button>
-            <mat-divider *osPerms="['core.can_manage_projector', 'agenda.can_manage', 'core.can_see_history']"></mat-divider>
+            <mat-divider
+                *osPerms="['core.can_manage_projector', 'agenda.can_manage', 'core.can_see_history']"
+            ></mat-divider>
             <!-- Project -->
             <os-projector-button
                 [object]="motion"
@@ -627,7 +629,14 @@
                         [multiple]="true"
                         placeholder="{{ 'Submitters' | translate }}"
                         [inputListValues]="submitterObserver"
-                    ></os-search-value-selector>
+                        [showNotFoundButton]="true"
+                        (clickNotFound)="createNewSubmitter($event)"
+                    >
+                        <ng-container notFoundDescription>
+                            <mat-icon>add</mat-icon>
+                            {{ 'Create user' | translate }}
+                        </ng-container>
+                    </os-search-value-selector>
                 </mat-form-field>
             </ng-container>
         </div>
@@ -843,7 +852,14 @@
                             [multiple]="true"
                             placeholder="{{ 'Supporters' | translate }}"
                             [inputListValues]="supporterObserver"
-                        ></os-search-value-selector>
+                            [showNotFoundButton]="true"
+                            (clickNotFound)="createNewSupporter($event)"
+                        >
+                            <ng-container notFoundDescription>
+                                <mat-icon>add</mat-icon>
+                                {{ 'Create user' | translate }}
+                            </ng-container>
+                        </os-search-value-selector>
                     </mat-form-field>
                 </div>
             </div>

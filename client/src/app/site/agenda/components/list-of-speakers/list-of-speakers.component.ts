@@ -512,11 +512,11 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
      *
      * @param username The name of the new user.
      */
-    public onCreateUser(username: string): void {
-        this.userRepository.createFromString(username).then(result => {
-            this.addNewSpeaker(result.id);
-        });
+    public async onCreateUser(username: string): Promise<void> {
+        const newUser = await this.userRepository.createFromString(username);
+        this.addNewSpeaker(newUser.id);
     }
+
     /**
      * Triggers an update of the filter for the list of available potential speakers
      * (triggered on an update of users or config)

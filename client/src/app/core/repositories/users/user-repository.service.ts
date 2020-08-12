@@ -22,6 +22,11 @@ export interface MassImportResult {
     errors: { [id: number]: string };
 }
 
+export interface NewUser {
+    id: number;
+    name: string;
+}
+
 /**
  * type for determining the user name from a string during import.
  * See {@link parseUserString} for implementations
@@ -370,10 +375,10 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User, UserTi
      * @param user: String to create the user from
      * @returns Promise with a created user id and the raw name used as input
      */
-    public async createFromString(user: string): Promise<{ id: number; name: string }> {
+    public async createFromString(user: string): Promise<NewUser> {
         const newUser = this.parseUserString(user);
         const createdUser = await this.create(newUser);
-        return { id: createdUser.id, name: user };
+        return { id: createdUser.id, name: user } as NewUser;
     }
 
     /**
