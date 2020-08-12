@@ -90,12 +90,7 @@
                     (click)="enterConversation()"
                     matTooltip="{{ 'Enter live conference' | translate }}"
                 >
-                    <mat-icon
-                        color="primary"
-                        [ngClass]="{
-                            'enter-meeting-room': !canManageSpeaker
-                        }"
-                    >
+                    <mat-icon color="primary" [@fadeInOut]="isEnterMeetingRoomVisible" (@fadeInOut.done)="triggerMeetingRoomButtonAnimation()">
                         meeting_room
                     </mat-icon>
                 </button>
