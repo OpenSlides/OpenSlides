@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Route, RouterModule } from '@angular/router';
 
 import { Permission } from 'app/core/core-services/operator.service';
 import { ErrorComponent } from './components/error/error.component';
@@ -7,7 +7,7 @@ import { LegalNoticeComponent } from './components/legal-notice/legal-notice.com
 import { PrivacyPolicyComponent } from './components/privacy-policy/privacy-policy.component';
 import { StartComponent } from './components/start/start.component';
 
-const routes: Routes = [
+const routes: Route[] = [
     {
         path: '',
         component: StartComponent,

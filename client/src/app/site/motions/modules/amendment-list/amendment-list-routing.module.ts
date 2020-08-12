@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Route, RouterModule } from '@angular/router';
 
 import { AmendmentListComponent } from './amendment-list.component';
 
-const routes: Routes = [
+const routes: Route[] = [
     {
         path: '',
         component: AmendmentListComponent,

@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Route, RouterModule } from '@angular/router';
 
 import { Permission } from 'app/core/core-services/operator.service';
 import { AuthGuard } from '../core/core-services/auth-guard.service';
@@ -10,7 +10,7 @@ import { SiteComponent } from './site.component';
  *
  * TODO: Plugins will have to append to the Routes-Array
  */
-const routes: Routes = [
+const routes: Route[] = [
     {
         path: '',
         component: SiteComponent,

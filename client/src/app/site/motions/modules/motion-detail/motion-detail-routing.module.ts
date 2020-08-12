@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Route, RouterModule } from '@angular/router';
 
 import { AmendmentCreateWizardComponent } from './components/amendment-create-wizard/amendment-create-wizard.component';
 import { MotionDetailComponent } from './components/motion-detail/motion-detail.component';
 
-const routes: Routes = [
+const routes: Route[] = [
     { path: '', component: MotionDetailComponent, pathMatch: 'full', runGuardsAndResolvers: 'paramsChange' },
     { path: 'create-amendment', component: AmendmentCreateWizardComponent }
 ];

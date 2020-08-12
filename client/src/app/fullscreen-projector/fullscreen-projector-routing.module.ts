@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Route, RouterModule } from '@angular/router';
 
 import { FullscreenProjectorComponent } from './fullscreen-projector/fullscreen-projector.component';
 
-const routes: Routes = [
+const routes: Route[] = [
     {
         path: '',
         component: FullscreenProjectorComponent,
