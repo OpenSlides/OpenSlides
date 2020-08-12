@@ -2,6 +2,8 @@ import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
+import { saveAs } from 'file-saver';
+import * as JSZip from 'jszip';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { first, map } from 'rxjs/operators';
 
@@ -134,6 +136,18 @@ export class MediafileRepositoryService extends BaseIsListOfSpeakersContentObjec
     public async uploadFile(file: any): Promise<Identifiable> {
         const emptyHeader = new HttpHeaders();
         return this.httpService.post<Identifiable>('/rest/mediafiles/mediafile/', file, {}, emptyHeader);
+    }
+
+    public async downloadArchive(archiveName: string, files: ViewMediafile[]): Promise<void> {
+        const zip = new JSZip();
+        for (const file of files) {
+            if (!file.is_directory) {
+                const base64Data = await this.httpService.downloadAsBase64(file.url);
+                zip.file(file.filename, base64Data, { base64: true });
+            }
+        }
+        const archive = await zip.generateAsync({ type: 'blob' });
+        saveAs(archive, archiveName);
     }
 
     public getDirectoryBehaviorSubject(): BehaviorSubject<ViewMediafile[]> {

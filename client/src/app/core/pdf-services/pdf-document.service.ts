@@ -1,4 +1,3 @@
-import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
@@ -100,7 +99,7 @@ export class PdfDocumentService {
         );
 
         const promises = fontPathList.map(fontPath => {
-            return this.convertUrlToBase64(fontPath).then(base64 => {
+            return this.httpService.downloadAsBase64(fontPath).then(base64 => {
                 return {
                     [fontPath.split('/').pop()]: base64
                 };
@@ -115,29 +114,6 @@ export class PdfDocumentService {
             };
         });
         return vfs;
-    }
-
-    /**
-     * Retrieves a binary file from the url and returns a base64 value
-     *
-     * @param url file url
-     * @returns a promise with a base64 string
-     */
-    private async convertUrlToBase64(url: string): Promise<string> {
-        return new Promise<string>((resolve, reject) => {
-            const headers = new HttpHeaders();
-            this.httpService.get<Blob>(url, {}, {}, headers, 'blob').then(file => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = () => {
-                    const resultStr: string = reader.result as string;
-                    resolve(resultStr.split(',')[1]);
-                };
-                reader.onerror = error => {
-                    reject(error);
-                };
-            });
-        });
     }
 
     /**
@@ -665,7 +641,7 @@ export class PdfDocumentService {
         }
 
         if (!vfs[url]) {
-            const base64 = await this.convertUrlToBase64(url);
+            const base64 = await this.httpService.downloadAsBase64(url);
             vfs[url] = base64;
         }
     }

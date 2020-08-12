@@ -23,6 +23,7 @@ import { OperatorService, Permission } from 'app/core/core-services/operator.ser
 import { StorageService } from 'app/core/core-services/storage.service';
 import { MediafileRepositoryService } from 'app/core/repositories/mediafiles/mediafile-repository.service';
 import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
+import { ConfigService } from 'app/core/ui-services/config.service';
 import { MediaManageService } from 'app/core/ui-services/media-manage.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ViewportService } from 'app/core/ui-services/viewport.service';
@@ -202,7 +203,8 @@ export class MediafileListComponent extends BaseListViewComponent<ViewMediafile>
         private fb: FormBuilder,
         private formBuilder: FormBuilder,
         private groupRepo: GroupRepositoryService,
-        private cd: ChangeDetectorRef
+        private cd: ChangeDetectorRef,
+        private configService: ConfigService
     ) {
         super(titleService, translate, matSnackBar, storage);
         this.canMultiSelect = true;
@@ -457,6 +459,16 @@ export class MediafileListComponent extends BaseListViewComponent<ViewMediafile>
                 this.repo.create(mediafile).catch(this.raiseError);
             }
         });
+    }
+
+    public downloadMultiple(mediafiles: ViewMediafile[] = this.dataSource.source): void {
+        /**
+         * TODO: naming the files is discussable
+         */
+        const eventName = this.configService.instant<string>('general_event_name');
+        const dirName = this.directory?.filename ?? this.translate.instant('Files');
+        const archiveName = `${eventName} - ${dirName}`.trim();
+        this.repo.downloadArchive(archiveName, mediafiles);
     }
 
     public move(templateRef: TemplateRef<string>, mediafiles: ViewMediafile[]): void {

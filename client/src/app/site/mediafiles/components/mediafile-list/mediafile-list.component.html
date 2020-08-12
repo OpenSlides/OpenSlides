@@ -229,12 +229,20 @@
 <!-- Menu for Mediafiles -->
 <mat-menu #mediafilesMenu="matMenu">
     <div *ngIf="!isMultiSelect">
+        <button mat-menu-item (click)="downloadMultiple()">
+            <mat-icon>cloud_download</mat-icon>
+            <span>{{ 'Download folder' | translate }}</span>
+        </button>
         <button mat-menu-item *osPerms="'mediafiles.can_manage'" (click)="toggleMultiSelect()">
             <mat-icon>library_add</mat-icon>
             <span>{{ 'Multiselect' | translate }}</span>
         </button>
     </div>
     <div *ngIf="isMultiSelect">
+        <button mat-menu-item [disabled]="!selectedRows.length" (click)="downloadMultiple(selectedRows)">
+            <mat-icon>cloud_download</mat-icon>
+            <span>{{ 'Download selected' | translate }}</span>
+        </button>
         <button mat-menu-item [disabled]="!selectedRows.length" (click)="move(moveDialog, selectedRows)">
             <mat-icon>near_me</mat-icon>
             <span>{{ 'Move' | translate }}</span>
