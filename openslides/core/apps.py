@@ -133,6 +133,7 @@ class CoreAppConfig(AppConfig):
             "JITSI_DOMAIN",
             "JITSI_ROOM_NAME",
             "JITSI_ROOM_PASSWORD",
+            "DEMO",
         ]
         client_settings_dict = {}
         for key in client_settings_keys:
