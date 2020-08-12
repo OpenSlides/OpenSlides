@@ -164,7 +164,7 @@ export class MotionPdfService {
     private createTitle(motion: ViewMotion, crMode: ChangeRecoMode, lineLength: number): object {
         // summary of change recommendations (for motion diff version only)
         const changes = this.getUnifiedChanges(motion, lineLength);
-        const titleChange = changes.find(change => change.isTitleChange());
+        const titleChange = changes.find(change => change?.isTitleChange());
         const changedTitle = this.changeRecoRepo.getTitleWithChanges(motion.title, titleChange, crMode);
 
         const identifier = motion.identifier ? ' ' + motion.identifier : '';
@@ -630,26 +630,19 @@ export class MotionPdfService {
      * @returns
      */
     private getUnifiedChanges(motion: ViewMotion, lineLength: number): ViewUnifiedChange[] {
-        const changeRecosOfMotion = this.changeRecoRepo.getChangeRecoOfMotion(motion.id);
+        const motionChangeRecos = this.changeRecoRepo.getChangeRecoOfMotion(motion.id);
 
-        if (changeRecosOfMotion && changeRecosOfMotion.length) {
-            return changeRecosOfMotion
-                .concat(
-                    this.motionRepo.getAmendmentsInstantly(motion.id).flatMap((amendment: ViewMotion) => {
-                        const changeRecos = this.changeRecoRepo
-                            .getChangeRecoOfMotion(amendment.id)
-                            .filter(reco => reco.showInFinalView());
-                        if (changeRecos && changeRecos.length) {
-                            return this.motionRepo.getAmendmentAmendedParagraphs(amendment, lineLength, changeRecos);
-                        }
-                    })
-                )
-                .sort((a, b) => {
-                    return a.getLineFrom() - b.getLineFrom();
-                });
-        } else {
-            return [];
-        }
+        const motionAmendments = this.motionRepo.getAmendmentsInstantly(motion.id).flatMap((amendment: ViewMotion) => {
+            const changeRecos = this.changeRecoRepo
+                .getChangeRecoOfMotion(amendment.id)
+                .filter(reco => reco.showInFinalView());
+            return this.motionRepo.getAmendmentAmendedParagraphs(amendment, lineLength, changeRecos);
+        });
+
+        return motionChangeRecos
+            .concat(motionAmendments)
+            .filter(change => !!change)
+            .sort((a, b) => a.getLineFrom() - b.getLineFrom()) as ViewUnifiedChange[];
     }
 
     /**
