@@ -273,4 +273,26 @@ export class HttpService {
     public async delete<T>(path: string, data?: any, queryParams?: QueryParams, header?: HttpHeaders): Promise<T> {
         return await this.send<T>(path, HTTPMethod.DELETE, data, queryParams, header);
     }
+
+    /**
+     * Retrieves a binary file from the url and returns a base64 value
+     *
+     * @param url file url
+     * @returns a promise with a base64 string
+     */
+    public async downloadAsBase64(url: string): Promise<string> {
+        return new Promise<string>(async (resolve, reject) => {
+            const headers = new HttpHeaders();
+            const file = await this.get<Blob>(url, {}, {}, headers, 'blob');
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => {
+                const resultStr: string = reader.result as string;
+                resolve(resultStr.split(',')[1]);
+            };
+            reader.onerror = error => {
+                reject(error);
+            };
+        });
+    }
 }
