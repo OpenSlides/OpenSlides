@@ -669,7 +669,6 @@ export class DataStoreService {
 
     public print(): void {
         console.log('Max change id', this.maxChangeId);
-        console.log('json storage');
         console.log(JSON.stringify(this.jsonStore));
         console.log(this.modelStore);
     }

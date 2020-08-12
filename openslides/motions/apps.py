@@ -84,7 +84,7 @@ class MotionsAppConfig(AppConfig):
 
         required_user.add_collection_string(
             self.get_model("MotionPoll").get_collection_string(),
-            required_users_options,
+            required_users_motion_polls,
         )
 
     def get_config_variables(self):
@@ -126,8 +126,13 @@ async def required_users_motions(element: Dict[str, Any]) -> Set[int]:
     return submitters_supporters
 
 
-async def required_users_options(element: Dict[str, Any]) -> Set[int]:
+async def required_users_motion_polls(element: Dict[str, Any]) -> Set[int]:
     """
     Returns all user ids that have voted on an option and are therefore required for the single votes table.
     """
-    return element["voted_id"]
+    from openslides.poll.models import BasePoll
+
+    if element["state"] == BasePoll.STATE_PUBLISHED:
+        return element["voted_id"]
+    else:
+        return set()

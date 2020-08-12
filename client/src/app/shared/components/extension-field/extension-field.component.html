@@ -38,7 +38,7 @@
             (keydown)="keyDownFunction($event)"
         />
     </mat-form-field>
-    <mat-form-field *ngIf="searchList">
+    <mat-form-field *ngIf="searchList" [formGroup]="extensionFieldForm">
         <os-search-value-selector
             formControlName="list"
             [inputListValues]="searchList"

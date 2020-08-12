@@ -55,7 +55,11 @@ class AssignmentsAppConfig(AppConfig):
         )
         required_user.add_collection_string(
             self.get_model("AssignmentPoll").get_collection_string(),
-            required_users_options,
+            required_users_assignment_polls,
+        )
+        required_user.add_collection_string(
+            self.get_model("AssignmentOption").get_collection_string(),
+            required_users_assignment_options,
         )
 
     def get_config_variables(self):
@@ -82,28 +86,23 @@ async def required_users_assignments(element: Dict[str, Any]) -> Set[int]:
     Returns all user ids that are displayed as candidates (including poll
     options) in the assignment element.
     """
-    from openslides.assignments.models import AssignmentOption, AssignmentPoll
-    from openslides.utils.cache import element_cache
 
-    candidates = set(
+    return set(
         related_user["user_id"] for related_user in element["assignment_related_users"]
     )
-    for poll_id in element["polls_id"]:
-        poll = await element_cache.get_element_data(
-            AssignmentPoll.get_collection_string(), poll_id
-        )
-        if poll:
-            for option_id in poll["options_id"]:
-                option = await element_cache.get_element_data(
-                    AssignmentOption.get_collection_string(), option_id
-                )
-                if option:
-                    candidates.add(option["user_id"])
-    return candidates
 
 
-async def required_users_options(element: Dict[str, Any]) -> Set[int]:
+async def required_users_assignment_polls(element: Dict[str, Any]) -> Set[int]:
     """
     Returns all user ids that have voted on an option and are therefore required for the single votes table.
     """
-    return element["voted_id"]
+    from openslides.poll.models import BasePoll
+
+    if element["state"] == BasePoll.STATE_PUBLISHED:
+        return element["voted_id"]
+    else:
+        return set()
+
+
+async def required_users_assignment_options(element: Dict[str, Any]) -> Set[int]:
+    return set([element["user_id"]])
