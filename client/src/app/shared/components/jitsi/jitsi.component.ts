@@ -176,15 +176,13 @@ export class JitsiComponent extends BaseViewComponent implements OnInit, OnDestr
             'settings',
             'videoquality',
             'filmstrip',
-            'invite',
             'feedback',
             'stats',
             'shortcuts',
             'tileview',
             'download',
             'help',
-            'mute-everyone',
-            'security'
+            'mute-everyone'
         ]
     };
 
