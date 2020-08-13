@@ -1,6 +1,3 @@
-<div *osPerms="'motions.can_manage_polls'; and: poll && poll.isStarted">
-    <os-poll-progress [poll]="poll"></os-poll-progress>
-</div>
 <ng-container *ngIf="poll && !poll.user_has_voted; else userHasVotes">
     <div *ngIf="vmanager.canVote(poll) && !deliveringVote" class="vote-button-grid">
         <!-- Voting -->

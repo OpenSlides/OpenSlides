@@ -14,7 +14,7 @@ import { OfflineService } from 'app/core/core-services/offline.service';
 import { OverlayService } from 'app/core/ui-services/overlay.service';
 import { UpdateService } from 'app/core/ui-services/update.service';
 import { BaseComponent } from '../base.component';
-import { MainMenuService } from '../core/core-services/main-menu.service';
+import { MainMenuEntry, MainMenuService } from '../core/core-services/main-menu.service';
 import { OpenSlidesStatusService } from '../core/core-services/openslides-status.service';
 import { OperatorService } from '../core/core-services/operator.service';
 import { TimeTravelService } from '../core/core-services/time-travel.service';
@@ -66,6 +66,10 @@ export class SiteComponent extends BaseComponent implements OnInit {
      */
     private delayedUpdateAvailable = false;
 
+    public get mainMenuEntries(): MainMenuEntry[] {
+        return this.mainMenuService.entries;
+    }
+
     /**
      * Constructor
      * @param route
@@ -86,7 +90,7 @@ export class SiteComponent extends BaseComponent implements OnInit {
         public operator: OperatorService,
         public vp: ViewportService,
         public dialog: MatDialog,
-        public mainMenuService: MainMenuService,
+        private mainMenuService: MainMenuService,
         public OSStatus: OpenSlidesStatusService,
         public timeTravel: TimeTravelService,
         private matSnackBar: MatSnackBar,

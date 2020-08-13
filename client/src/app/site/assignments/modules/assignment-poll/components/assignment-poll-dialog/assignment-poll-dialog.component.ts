@@ -12,13 +12,13 @@ import { LOWEST_VOTE_VALUE, PollType } from 'app/shared/models/poll/base-poll';
 import { GeneralValueVerbose, VoteValue, VoteValueVerbose } from 'app/shared/models/poll/base-vote';
 import {
     AssignmentPollMethodVerbose,
-    AssignmentPollPercentBaseVerbose
+    AssignmentPollPercentBaseVerbose,
+    ViewAssignmentPoll
 } from 'app/site/assignments/models/view-assignment-poll';
 import { BasePollDialogComponent } from 'app/site/polls/components/base-poll-dialog.component';
 import { PollFormComponent } from 'app/site/polls/components/poll-form/poll-form.component';
 import { ViewUser } from 'app/site/users/models/view-user';
 import { AssignmentPollService } from '../../services/assignment-poll.service';
-import { ViewAssignmentPoll } from '../../models/view-assignment-poll';
 
 type OptionsObject = { user_id: number; user: ViewUser }[];
 

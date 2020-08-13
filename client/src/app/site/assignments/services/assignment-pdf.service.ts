@@ -8,7 +8,7 @@ import { ParsePollNumberPipe } from 'app/shared/pipes/parse-poll-number.pipe';
 import { PollKeyVerbosePipe } from 'app/shared/pipes/poll-key-verbose.pipe';
 import { PollPercentBasePipe } from 'app/shared/pipes/poll-percent-base.pipe';
 import { PollTableData, VotingResult } from 'app/site/polls/services/poll.service';
-import { AssignmentPollService } from './assignment-poll.service';
+import { AssignmentPollService } from '../modules/assignment-poll/services/assignment-poll.service';
 import { ViewAssignment } from '../models/view-assignment';
 import { ViewAssignmentPoll } from '../models/view-assignment-poll';
 

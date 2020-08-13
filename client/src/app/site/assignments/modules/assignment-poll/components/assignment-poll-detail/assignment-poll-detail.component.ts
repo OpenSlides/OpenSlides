@@ -13,10 +13,10 @@ import { GroupRepositoryService } from 'app/core/repositories/users/group-reposi
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { VoteValue } from 'app/shared/models/poll/base-vote';
+import { ViewAssignmentPoll } from 'app/site/assignments/models/view-assignment-poll';
 import { BasePollDetailComponent } from 'app/site/polls/components/base-poll-detail.component';
 import { AssignmentPollDialogService } from '../../services/assignment-poll-dialog.service';
 import { AssignmentPollService } from '../../services/assignment-poll.service';
-import { ViewAssignmentPoll } from '../../models/view-assignment-poll';
 
 @Component({
     selector: 'os-assignment-poll-detail',

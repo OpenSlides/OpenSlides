@@ -19,9 +19,9 @@ import { ViewProjector } from '../models/view-projector';
 })
 export class CurrentListOfSpeakersService {
     /**
-     * Id of the current lost of speakers projector. Filled through observer
+     * Current clos reference projector
      */
-    private closId: number;
+    private closRefProjector: ViewProjector;
 
     /**
      * This map holds the current (number or null) los-id for the the projector.
@@ -56,9 +56,9 @@ export class CurrentListOfSpeakersService {
             }
         });
 
-        this.projectorRepo.getReferenceProjectorIdObservable().subscribe(closId => {
-            if (closId) {
-                this.closId = closId;
+        this.projectorRepo.getReferenceProjectorObservable().subscribe(clos => {
+            if (clos) {
+                this.closRefProjector = clos;
                 this.currentListOfSpeakerSubject.next(this.getCurrentListOfSpeakers());
             }
         });
@@ -68,8 +68,7 @@ export class CurrentListOfSpeakersService {
      * Use the subject to get it
      */
     private getCurrentListOfSpeakers(): ViewListOfSpeakers | null {
-        const refProjector = this.projectorRepo.getViewModel(this.closId);
-        return this.getCurrentListOfSpeakersForProjector(refProjector);
+        return this.getCurrentListOfSpeakersForProjector(this.closRefProjector);
     }
 
     /**
@@ -135,7 +134,9 @@ export class CurrentListOfSpeakersService {
         for (const nonStableElement of nonStableElements) {
             const identifiableNonStableElement = this.slideManager.getIdentifiableProjectorElement(nonStableElement);
             try {
-                const viewModel = this.projectorService.getViewModelFromProjectorElement(identifiableNonStableElement);
+                const viewModel = this.projectorService.getViewModelFromIdentifiableProjectorElement(
+                    identifiableNonStableElement
+                );
                 if (isBaseViewModelWithListOfSpeakers(viewModel)) {
                     return viewModel.listOfSpeakers;
                 }

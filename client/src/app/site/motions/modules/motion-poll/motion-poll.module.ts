@@ -10,7 +10,7 @@ import { MotionPollComponent } from './motion-poll/motion-poll.component';
 
 @NgModule({
     imports: [CommonModule, SharedModule, MotionPollRoutingModule, PollsModule],
-    exports: [MotionPollComponent],
+    exports: [MotionPollComponent, MotionPollVoteComponent],
     declarations: [MotionPollComponent, MotionPollDetailComponent, MotionPollVoteComponent]
 })
 export class MotionPollModule {}

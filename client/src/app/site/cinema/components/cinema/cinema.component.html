@@ -1,0 +1,45 @@
+<os-head-bar>
+    <div class="title-slot">
+        <h2>{{ 'Autopilot' | translate }}</h2>
+    </div>
+</os-head-bar>
+
+<!-- Title Card -->
+<mat-card class="os-card">
+    <h1 class="line-and-icon">
+        {{ title }}
+        <a
+            mat-icon-button
+            [disabled]="!viewModelUrl"
+            [class.disabled]="!viewModelUrl"
+            [routerLink]="viewModelUrl"
+            [state]="{ back: 'true' }"
+        >
+            <mat-icon>open_in_new</mat-icon>
+        </a>
+    </h1>
+</mat-card>
+
+<!-- List of speakers -->
+<os-list-of-speakers-content [customTitle]="true" [speakers]="listOfSpeakers">
+    <p class="subtitle-text line-and-icon">
+        <a [routerLink]="closUrl" [class.disabled]="!closUrl">
+            {{ 'List of speakers' | translate }}
+        </a>
+        <mat-icon *ngIf="isLosClosed" matTooltip="{{ 'The list of speakers is closed.' | translate }}">
+            lock
+        </mat-icon>
+    </p>
+</os-list-of-speakers-content>
+
+<os-poll-collection [currentProjection]="projectedViewModel"></os-poll-collection>
+
+<!-- Projector -->
+<mat-card class="os-card spacer-bottom-60">
+    <p class="subtitle-text">{{ projectorTitle | translate }}</p>
+    <a [routerLink]="projectorUrl" [target]="projectionTarget">
+        <div class="projector">
+            <os-projector *ngIf="projector" [projector]="projector"></os-projector>
+        </div>
+    </a>
+</mat-card>
