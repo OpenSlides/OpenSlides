@@ -50,7 +50,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { NgxFileDropModule } from 'ngx-file-drop';
 
 // TinyMCE
-import { EditorModule } from '@tinymce/tinymce-angular';
+import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
 
 // directives
 import { PermsDirective } from './directives/perms.directive';
@@ -369,6 +369,10 @@ import { LiveStreamComponent } from './components/live-stream/live-stream.compon
             useClass: OpenSlidesDateAdapter,
             deps: [TranslateService, MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS]
         }, // see remarks in OpenSlidesDateAdapter
+        {
+            provide: TINYMCE_SCRIPT_SRC,
+            useValue: 'tinymce/tinymce.min.js'
+        },
         SearchValueSelectorComponent,
         SortingListComponent,
         SortingTreeComponent,
