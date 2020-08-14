@@ -73,6 +73,8 @@ services:
       - server-db-setup
     environment:
       << : *default-osserver-env
+    secrets:
+      - django
     ifelse(read_env(`OPENSLIDES_BACKEND_SERVICE_REPLICAS'),,,deploy:
       replicas: ifenvelse(`OPENSLIDES_BACKEND_SERVICE_REPLICAS', 1))
 
@@ -81,7 +83,8 @@ services:
     entrypoint: /usr/local/sbin/entrypoint-db-setup
     environment:
       << : *default-osserver-env
-    ifelse(ADMIN_SECRET_AVAILABLE, 0, secrets:, USER_SECRET_AVAILABLE, 0, secrets:)
+    secrets:
+      - django
       ifelse(ADMIN_SECRET_AVAILABLE, 0,- os_admin)
       ifelse(USER_SECRET_AVAILABLE, 0,- os_user)
     depends_on:
@@ -195,7 +198,9 @@ networks:
   back:
   dbnet:
 
-ifelse(ADMIN_SECRET_AVAILABLE, 0, secrets:, USER_SECRET_AVAILABLE, 0, secrets:)
+secrets:
+  django:
+    file: ./secrets/django.env
   ifelse(ADMIN_SECRET_AVAILABLE, 0,os_admin:
     file: ./secrets/adminsecret.env)
   ifelse(USER_SECRET_AVAILABLE, 0,os_user:

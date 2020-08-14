@@ -2,6 +2,15 @@
 
 set -e
 
+# Set DJANGO_SECRET_KEY variable
+source /run/secrets/django
+[[ -n "$DJANGO_SECRET_KEY" ]] || {
+  echo "ERROR: Django secret key undefined!  Cannot continue."
+  sleep 5
+  exit 2
+}
+export SECRET_KEY="$DJANGO_SECRET_KEY"
+
 # TODO: env variable for this host
 wait-for-it -t 0 "server-db-setup:8000"
 

@@ -71,6 +71,8 @@ services:
     # command: "daphne -b 0.0.0.0 -p 8000 openslides.asgi:application"
     environment:
       << : *default-osserver-env
+    secrets:
+      - django
     deploy:
       restart_policy:
         condition: on-failure
@@ -82,7 +84,8 @@ services:
     entrypoint: /usr/local/sbin/entrypoint-db-setup
     environment:
       << : *default-osserver-env
-    ifelse(ADMIN_SECRET_AVAILABLE, 0, secrets:, USER_SECRET_AVAILABLE, 0, secrets:)
+    secrets:
+      - django
       ifelse(ADMIN_SECRET_AVAILABLE, 0,- os_admin)
       ifelse(USER_SECRET_AVAILABLE, 0,- os_user)
 
@@ -229,7 +232,9 @@ networks:
     driver_opts:
       encrypted: ""
 
-ifelse(ADMIN_SECRET_AVAILABLE, 0, secrets:, USER_SECRET_AVAILABLE, 0, secrets:)
+secrets:
+  django:
+    file: ./secrets/django.env
   ifelse(ADMIN_SECRET_AVAILABLE, 0,os_admin:
     file: ./secrets/adminsecret.env)
   ifelse(USER_SECRET_AVAILABLE, 0,os_user:

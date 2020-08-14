@@ -15,6 +15,15 @@ EOF
   sleep 10
 }
 
+# Set DJANGO_SECRET_KEY variable
+source /run/secrets/django
+[[ -n "$DJANGO_SECRET_KEY" ]] || {
+  echo "ERROR: Django secret key undefined!  Cannot continue."
+  sleep 5
+  exit 2
+}
+export SECRET_KEY="$DJANGO_SECRET_KEY"
+
 # Configure database
 # TODO: env variables??
 echo "postgres:5432:instancecfg:openslides:openslides" > "${HOME}/.pgpass"
