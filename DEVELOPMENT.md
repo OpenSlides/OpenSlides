@@ -23,6 +23,11 @@ Finally, start the dev server:
 
     $ make run-dev
 
+You can access the services independently using their corresponding ports
+or access the full stack on
+
+    $ https://localhost:8000
+
 ## Running tests
 
 To run all tests of all services, execute `run-service-tests`. TODO: Systemtests in this repo.
@@ -41,16 +46,19 @@ Then, commit changes and create a pull request.
 
 ## Work in submodules
 
-- Create your own fork at github.
-- Remove the upstream (main) repo as the origin in the submodule:
+Create your own fork at github.
+
+Remove the upstream (main) repo as the origin in the submodule:
 
     $ cd <submodule>
     $ git remote remove origin
 
-- Add your fork and the main repo as origin and upstream
+Add your fork and the main repo as origin and upstream
 
-    $ git remote add origin <your fork>
-    $ git remote add upstream <main repo>
+    $ git remote add origin `<your fork>`
+    $ git remote add upstream `<main repo>`
+    $ git fetch --all
+    $ git checkout master
 
 ## Requirements for services
 
