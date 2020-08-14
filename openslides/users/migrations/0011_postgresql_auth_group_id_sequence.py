@@ -2,7 +2,11 @@
 
 from django.db import migrations
 
-from openslides.users.db import postgres_restart_auth_group_id_sequence
+from openslides.utils.postgres import restart_id_sequence
+
+
+def postgres_restart_auth_group_id_sequence(*args, **kwargs):
+    restart_id_sequence("auth_group")
 
 
 class Migration(migrations.Migration):
