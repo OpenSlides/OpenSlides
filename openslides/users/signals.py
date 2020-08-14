@@ -2,8 +2,9 @@ from django.apps import apps
 from django.contrib.auth.models import Permission
 from django.db.models import Q
 
-from ..utils.auth import GROUP_ADMIN_PK, GROUP_DEFAULT_PK
-from .db import postgres_restart_auth_group_id_sequence
+from openslides.utils.auth import GROUP_ADMIN_PK, GROUP_DEFAULT_PK
+from openslides.utils.postgres import restart_id_sequence
+
 from .models import Group, User
 
 
@@ -185,5 +186,5 @@ def create_builtin_groups_and_admin(**kwargs):
     # added to the group. But we do not have to update the cache by calling
     # inform_changed_data() because the cache is updated on server start.
 
-    # For postgres: After inserting the gorups by id, the id sequence needs to be restarted.
-    postgres_restart_auth_group_id_sequence()
+    # For postgres: After inserting the groups by id, the id sequence needs to be restarted.
+    restart_id_sequence("auth_group")

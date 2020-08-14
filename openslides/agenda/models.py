@@ -18,6 +18,7 @@ from openslides.utils.models import (
     SET_NULL_AND_AUTOUPDATE,
     RESTModelMixin,
 )
+from openslides.utils.postgres import restart_id_sequence
 from openslides.utils.utils import to_roman
 
 from .access_permissions import ItemAccessPermissions, ListOfSpeakersAccessPermissions
@@ -535,7 +536,9 @@ class Speaker(RESTModelMixin, models.Model):
                     "countdown_time": config["projector_default_countdown"],
                 },
             )
-            if not created:
+            if created:
+                restart_id_sequence("core_countdown")
+            else:
                 countdown.control(action="reset", skip_autoupdate=True)
             countdown.control(action="start", skip_autoupdate=True)
 
