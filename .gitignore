@@ -24,8 +24,11 @@ Thumbs.db
 ## Compatibility
 # OS4-Submodules
 /openslides-*/
+/haproxy/
 # Plugin development
 openslides_*
+# Old OS3 stuff
+/tests/
 
 ## Server
 # Local user data (settings, database, media, search index, static files)
