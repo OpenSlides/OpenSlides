@@ -12,7 +12,7 @@ source /run/secrets/django
 export SECRET_KEY="$DJANGO_SECRET_KEY"
 
 # TODO: env variable for this host
-wait-for-it -t 0 "server-db-setup:8000"
+wait-for-it -t 0 "server-setup:8000"
 
 printf 'Executing server: "%s"\n' "$*"
 

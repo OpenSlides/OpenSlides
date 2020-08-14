@@ -70,7 +70,7 @@ services:
     # Uncomment the following line to use daphne instead of gunicorn:
     # command: "daphne -b 0.0.0.0 -p 8000 openslides.asgi:application"
     depends_on:
-      - server-db-setup
+      - server-setup
     environment:
       << : *default-osserver-env
     secrets:
@@ -78,7 +78,7 @@ services:
     ifelse(read_env(`OPENSLIDES_BACKEND_SERVICE_REPLICAS'),,,deploy:
       replicas: ifenvelse(`OPENSLIDES_BACKEND_SERVICE_REPLICAS', 1))
 
-  server-db-setup:
+  server-setup:
     << : *default-osserver
     entrypoint: /usr/local/sbin/entrypoint-db-setup
     environment:

@@ -79,7 +79,7 @@ services:
         delay: 5s
       replicas: ifenvelse(`OPENSLIDES_BACKEND_SERVICE_REPLICAS', 1)
 
-  server-db-setup:
+  server-setup:
     << : *default-osserver
     entrypoint: /usr/local/sbin/entrypoint-db-setup
     environment:
