@@ -27,6 +27,11 @@ You need to build the docker images for the client and server with this script::
 
     $ ./build.sh
 
+You must define a Django secret key in ``secrets/django.env``, for example::
+
+    $ printf "DJANGO_SECRET_KEY='%s'\n" \
+      "$(tr -dc 'a-zA-Z0-9' < /dev/urandom | head -c 64)" > secrets/django.env
+
 We strongly recomment to set an initial admin password and create a second
 non-admin user. Both are not strictly required (and a missing admin password will print warnings on the
 startup), but if you want to have a secure setup, do::
