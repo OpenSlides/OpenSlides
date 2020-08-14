@@ -28,7 +28,7 @@ First, you have to clone this repository::
 You need to build the Docker images for the client and server with this
 script::
 
-    $ ./build.sh
+    $ ./build.sh all
 
 You must define a Django secret key in ``secrets/django.env``, for example::
 
@@ -46,8 +46,7 @@ Afterwards, generate the configuration file::
 
     EXTERNAL_HTTP_PORT=8000 m4 docker-compose.yml.m4 > docker-compose.yml
 
-Once the server and client have been built, you can use ``docker-compose`` as
-usual (except for the ``build`` method)::
+Finally, you can start the instance using ``docker-compose``::
 
     $ docker-compose up
     $ # or:

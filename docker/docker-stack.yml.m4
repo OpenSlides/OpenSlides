@@ -47,7 +47,6 @@ x-osserver-env: &default-osserver-env
     REDIS_REPLICAS: ifenvelse(`REDIS_RO_SERVICE_REPLICAS', 3)
 x-pgnode: &default-pgnode
   image: ifenvelse(`DEFAULT_DOCKER_REGISTRY', openslides)/openslides-repmgr:latest
-  build: https://github.com/OpenSlides/openslides-docker-compose.git#:repmgr
   networks:
     - dbnet
   labels:
@@ -141,7 +140,6 @@ ifelse(read_env(`PGNODE_3_ENABLED'), 1, `'
     environment:
       - PG_NODE_LIST=pgnode1`'PGBOUNCER_NODELIST
     image: ifenvelse(`DEFAULT_DOCKER_REGISTRY', openslides)/openslides-pgbouncer:latest
-    build: https://github.com/OpenSlides/openslides-docker-compose.git#:pgbouncer
     networks:
       back:
         aliases:
@@ -156,7 +154,6 @@ ifelse(read_env(`PGNODE_3_ENABLED'), 1, `'
         constraints: ifenvelse(`PGBOUNCER_PLACEMENT_CONSTR', [node.role == manager])
   postfix:
     image: ifenvelse(`DEFAULT_DOCKER_REGISTRY', openslides)/openslides-postfix:latest
-    build: https://github.com/OpenSlides/openslides-docker-compose.git#:postfix
     environment:
       MYHOSTNAME: "ifenvelse(`POSTFIX_MYHOSTNAME', localhost)"
       RELAYHOST: "ifenvelse(`POSTFIX_RELAYHOST', localhost)"
@@ -203,7 +200,6 @@ ifelse(read_env(`PGNODE_3_ENABLED'), 1, `'
         delay: 5s
   media:
     image: ifenvelse(`DEFAULT_DOCKER_REGISTRY', openslides)/openslides-media-service:latest
-    build: https://github.com/OpenSlides/openslides-media-service.git
     environment:
       - CHECK_REQUEST_URL=server:8000/check-media/
     deploy:

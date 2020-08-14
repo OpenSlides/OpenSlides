@@ -16,7 +16,7 @@ COPY browserslist *.json ./
 COPY src ./src
 RUN npm run build
 
-COPY client-version.txt static/
+COPY docker/client-version.txt static/
 
 FROM nginx
 COPY --from=nodejs /build/app/static /usr/share/nginx/html
