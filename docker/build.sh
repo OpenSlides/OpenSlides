@@ -91,13 +91,22 @@ for i in "${SELECTED_TARGETS[@]}"; do
   else
     docker build --tag "$img" --pull "${OPTIONS[@]}" "$loc"
   fi
-  BUILT_IMAGES+=("$img")
+  BUILT_IMAGES+=("$img OFF")
 done
 
-for img in "${BUILT_IMAGES[@]}"; do
-  read -p "Push image '$img' to repository? [y/N] " REPL
-  case "$REPL" in
-    Y|y|Yes|yes|YES)
-      docker push "$img" ;;
-  esac
-done
+if hash whiptail > /dev/null 2>&1; then
+  while read img; do
+    echo "Pushing ${img}."
+    docker push "$img"
+  done < <( whiptail --title "OpenSlides build script" \
+    --checklist "Select images to push to their registry." \
+    25 78 16 --separate-output --noitem --clear \
+    ${BUILT_IMAGES[@]} \
+    3>&2 2>&1 1>&3 )
+else
+  printf "\nSuccessfully built images:\n\n"
+  for i in "${BUILT_IMAGES[@]}"; do
+    read -r img x <<< "$i"
+    printf "  - $img\n"
+  done
+fi
