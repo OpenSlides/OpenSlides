@@ -74,6 +74,7 @@ cypress.json
 
 ## Deployment
 # Docker build artifacts
+/docker/docker-compose.yml
 *-version.txt
 # secrets
 docker/secrets/*.env
