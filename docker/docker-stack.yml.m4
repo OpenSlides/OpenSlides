@@ -42,9 +42,34 @@ x-osserver:
     - front
     - back
 x-osserver-env: &default-osserver-env
-    INSTANCE_DOMAIN: "ifenvelse(`INSTANCE_DOMAIN', http://example.com:8000)"
+    AMOUNT_REPLICAS: ifenvelse(`REDIS_RO_SERVICE_REPLICAS', 3)
+    AUTOUPDATE_DELAY: ifenvelse(`AUTOUPDATE_DELAY', 1)
+    CONNECTION_POOL_LIMIT: ifenvelse(`CONNECTION_POOL_LIMIT', 100)
+    DATABASE_HOST: "ifenvelse(`DATABASE_HOST', pgbouncer)"
+    DATABASE_PASSWORD: "ifenvelse(`DATABASE_PASSWORD', openslides)"
+    DATABASE_PORT: ifenvelse(`DATABASE_PORT', 5432)
+    DATABASE_USER: "ifenvelse(`DATABASE_USER', openslides)"
     DEFAULT_FROM_EMAIL: "ifenvelse(`DEFAULT_FROM_EMAIL', noreply@example.com)"
-    REDIS_REPLICAS: ifenvelse(`REDIS_RO_SERVICE_REPLICAS', 3)
+    DJANGO_LOG_LEVEL: "ifenvelse(`DJANGO_LOG_LEVEL', INFO)"
+    EMAIL_HOST: "ifenvelse(`EMAIL_HOST', postfix)"
+    EMAIL_HOST_PASSWORD: "ifenvelse(`EMAIL_HOST_PASSWORD',)"
+    EMAIL_HOST_USER: "ifenvelse(`EMAIL_HOST_USER',)"
+    EMAIL_PORT: ifenvelse(`EMAIL_PORT', 25)
+    ENABLE_ELECTRONIC_VOTING: "ifenvelse(`ENABLE_ELECTRONIC_VOTING', False)"
+    ENABLE_SAML: "ifenvelse(`ENABLE_SAML', False)"
+    INSTANCE_DOMAIN: "ifenvelse(`INSTANCE_DOMAIN', http://example.com:8000)"
+    JITSI_DOMAIN: "ifenvelse(`JITSI_DOMAIN', None)"
+    JITSI_PASSWORD: "ifenvelse(`JITSI_PASSWORD', None)"
+    JITSI_ROOM_NAME: "ifenvelse(`JITSI_ROOM_NAME', None)"
+    OPENSLIDES_LOG_LEVEL: "ifenvelse(`OPENSLIDES_LOG_LEVEL', INFO)"
+    REDIS_CHANNLES_HOST: "ifenvelse(`REDIS_CHANNLES_HOST', redis-channels)"
+    REDIS_CHANNLES_PORT: ifenvelse(`REDIS_CHANNLES_PORT', 6379)
+    REDIS_HOST: "ifenvelse(`REDIS_HOST', redis)"
+    REDIS_PORT: ifenvelse(`REDIS_PORT', 6379)
+    REDIS_SLAVE_HOST: "ifenvelse(`REDIS_SLAVE_HOST', redis-slave)"
+    REDIS_SLAVE_PORT: ifenvelse(`REDIS_SLAVE_PORT', 6379)
+    REDIS_SLAVE_WAIT_TIMEOUT: ifenvelse(`REDIS_SLAVE_WAIT_TIMEOUT', 10000)
+    RESET_PASSWORD_VERBOSE_ERRORS: "ifenvelse(`RESET_PASSWORD_VERBOSE_ERRORS', False)"
 x-pgnode: &default-pgnode
   image: ifenvelse(`DEFAULT_DOCKER_REGISTRY', openslides)/openslides-repmgr:latest
   networks:
