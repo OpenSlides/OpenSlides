@@ -82,5 +82,8 @@ if [[ -f /run/secrets/os_user ]]; then
   fi
 fi
 
+# SAML setup
+. /usr/local/lib/saml-setup.sh
+
 echo "Done migrating and setting up user accounts..."
 python -m http.server --directory /app/empty --bind 0.0.0.0 8000

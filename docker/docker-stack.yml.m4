@@ -97,6 +97,9 @@ services:
       << : *default-osserver-env
     secrets:
       - django
+      ifelse(read_env(`ENABLE_SAML'), `True',- saml_cert
+      - saml_key
+      - saml_config)
     deploy:
       restart_policy:
         condition: on-failure
@@ -112,6 +115,9 @@ services:
       - django
       ifelse(ADMIN_SECRET_AVAILABLE, 0,- os_admin)
       ifelse(USER_SECRET_AVAILABLE, 0,- os_user)
+      ifelse(read_env(`ENABLE_SAML'), `True',- saml_cert
+      - saml_key
+      - saml_config)
 
   client:
     image: FRONTEND_IMAGE
@@ -260,5 +266,11 @@ secrets:
     file: ./secrets/adminsecret.env)
   ifelse(USER_SECRET_AVAILABLE, 0,os_user:
     file: ./secrets/usersecret.env)
+  ifelse(read_env(`ENABLE_SAML'), `True', saml_cert:
+    file: ./secrets/saml/sp.crt
+  saml_key:
+    file: ./secrets/saml/sp.key
+  saml_config:
+    file: ./secrets/saml/saml_settings.json)
 
 # vim: set sw=2 et:

@@ -50,8 +50,14 @@ RUN apt-get install --no-install-recommends -y \
 RUN rm -rf /var/lib/apt/lists/*
 
 COPY requirements /app/requirements
-RUN pip install -r requirements/production.txt -r requirements/big_mode.txt && \
-      rm -rf /root/.cache/pip
+RUN pip install -r requirements/production.txt -r requirements/big_mode.txt \
+    -r requirements/saml.txt && \
+    rm -rf /root/.cache/pip
+
+# SAML
+COPY docker/saml-setup.sh /usr/local/lib/
+RUN mkdir -p /app/personal_data/var/certs/ && \
+      chown -R openslides:openslides /app/personal_data/var/
 
 USER openslides
 # the `empty` folder is used for the dummy http server für the migrate entrypoint to serve no files.

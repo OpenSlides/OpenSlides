@@ -11,6 +11,9 @@ source /run/secrets/django
 }
 export SECRET_KEY="$DJANGO_SECRET_KEY"
 
+# SAML setup
+. /usr/local/lib/saml-setup.sh
+
 # TODO: env variable for this host
 wait-for-it -t 0 "server-setup:8000"
 
