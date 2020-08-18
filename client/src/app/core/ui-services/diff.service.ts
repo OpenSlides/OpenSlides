@@ -470,15 +470,9 @@ export class DiffService {
      * @return {DocumentFragment}
      */
     public htmlToFragment(html: string): DocumentFragment {
-        const fragment = document.createDocumentFragment(),
-            div = document.createElement('DIV');
-        div.innerHTML = html;
-        while (div.childElementCount) {
-            const child = div.childNodes[0];
-            div.removeChild(child);
-            fragment.appendChild(child);
-        }
-        return fragment;
+        const template = document.createElement('template');
+        template.innerHTML = html;
+        return template.content;
     }
 
     /**

@@ -538,7 +538,7 @@
                     mat-button
                     [matMenuTriggerFor]="changeRecoMenu"
                     *ngIf="
-                        motion && ((allChangingObjects && allChangingObjects.length) || motion.modified_final_version)
+                        motion && (hasChangingObjects() || motion.modified_final_version)
                     "
                 >
                     <mat-icon>rate_review</mat-icon>
@@ -1009,7 +1009,7 @@
         mat-menu-item
         (click)="setChangeRecoMode(ChangeRecoMode.Changed)"
         [ngClass]="{ selected: crMode === ChangeRecoMode.Changed }"
-        *ngIf="allChangingObjects && allChangingObjects.length"
+        *ngIf="hasChangingObjects()"
     >
         {{ 'Changed version' | translate }}
     </button>
@@ -1017,7 +1017,7 @@
         mat-menu-item
         (click)="setChangeRecoMode(ChangeRecoMode.Diff)"
         [ngClass]="{ selected: crMode === ChangeRecoMode.Diff }"
-        *ngIf="allChangingObjects && allChangingObjects.length"
+        *ngIf="hasChangingObjects()"
     >
         {{ 'Diff version' | translate }}
     </button>
@@ -1025,7 +1025,7 @@
         mat-menu-item
         (click)="setChangeRecoMode(ChangeRecoMode.Final)"
         [ngClass]="{ selected: crMode === ChangeRecoMode.Final }"
-        *ngIf="motion && !motion.isParagraphBasedAmendment() && allChangingObjects && allChangingObjects.length"
+        *ngIf="motion && !motion.isParagraphBasedAmendment() && hasChangingObjects()"
     >
         {{ 'Final version' | translate }}
     </button>
