@@ -37,8 +37,7 @@ RUN apt-get install --no-install-recommends -y \
   iputils-ping \
   netcat \
   procps \
-  traceroute \
-  vim
+  traceroute
 
 # Install saml requirements
 RUN apt-get install --no-install-recommends -y \
