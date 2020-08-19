@@ -40,7 +40,7 @@
     <div *ngIf="changes.length === 0" class="no-changes">{{ 'No change recommendations yet' | translate }}</div>
 </section>
 
-<span class="text-prefix-label">{{ preamble | translate }}</span>
+<span class="text-prefix-label" *ngIf="showPreamble">{{ preamble | translate }}</span>
 
 <!-- The actual diff view -->
 <div class="motion-text-with-diffs">
@@ -126,7 +126,7 @@
             <div class="status-row" *ngIf="isChangeRecommendation(change) && change.isRejected()">
                 <i class="grey">{{ 'Rejected' | translate }}</i>
             </div>
-            
+
             <!-- If it's an amendment, only accepted ones will be passed to this component
                  by default (== !showAllAmendments). In this case, don't show the prefix.
                  However, if showAllAmendments === true, the prefix should be shown alwayes,

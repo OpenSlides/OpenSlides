@@ -132,8 +132,10 @@ export class MotionPdfService {
         }
 
         if (!contentToExport || contentToExport.includes('text')) {
-            const preamble = this.createPreamble(motion);
-            motionPdfContent.push(preamble);
+            if (motion.showPreamble) {
+                const preamble = this.createPreamble(motion);
+                motionPdfContent.push(preamble);
+            }
             const text = this.createText(motion, lineLength, lnMode, crMode);
             motionPdfContent.push(text);
         }
