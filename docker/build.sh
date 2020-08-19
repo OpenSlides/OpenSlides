@@ -27,6 +27,7 @@ Options:
   -D, --docker-repo  Specify a Docker repository
                      (default: unspecified, i.e., system default)
   -t, --tag          Tag the Docker image (default: $DOCKER_TAG)
+  --ask-push         Offer to push newly built images to registry
   --no-cache         Pass --no-cache to docker-build
 EOF
 }
@@ -38,7 +39,7 @@ if [[ -f "$CONFIG" ]]; then
 fi
 
 shortopt="hr:D:t:"
-longopt="help,docker-repo:,tag:,no-cache"
+longopt="help,docker-repo:,tag:,ask-push,no-cache"
 ARGS=$(getopt -o "$shortopt" -l "$longopt" -n "$ME" -- "$@")
 if [ $? -ne 0 ]; then usage; exit 1; fi
 eval set -- "$ARGS";
@@ -54,6 +55,10 @@ while true; do
     -t|--tag)
       DOCKER_TAG="$2"
       shift 2
+      ;;
+    --ask-push)
+      ASK_PUSH=1
+      shift 1
       ;;
     --no-cache)
       OPTIONS+="--no-cache"
@@ -91,8 +96,21 @@ for i in "${SELECTED_TARGETS[@]}"; do
   else
     docker build --tag "$img" --pull "${OPTIONS[@]}" "$loc"
   fi
-  BUILT_IMAGES+=("$img OFF")
+  BUILT_IMAGES+=("$img ON")
 done
+
+if [[ "${#BUILT_IMAGES[@]}" -ge 1 ]]; then
+  printf "\nSuccessfully built images:\n\n"
+  for i in "${BUILT_IMAGES[@]}"; do
+    read -r img x <<< "$i"
+    printf "  - $img\n"
+  done
+else
+  echo "No images were built."
+  exit 3
+fi
+
+[[ "$ASK_PUSH" ]] || exit 0
 
 if hash whiptail > /dev/null 2>&1; then
   while read img; do
@@ -104,9 +122,13 @@ if hash whiptail > /dev/null 2>&1; then
     ${BUILT_IMAGES[@]} \
     3>&2 2>&1 1>&3 )
 else
-  printf "\nSuccessfully built images:\n\n"
+  echo
   for i in "${BUILT_IMAGES[@]}"; do
     read -r img x <<< "$i"
-    printf "  - $img\n"
+    read -p "Push image '$img' to repository? [Y/n] " REPL
+    case "$REPL" in
+      N|n|No|no|NO) exit 0;;
+      *) docker push "$img" ;;
+    esac
   done
 fi
