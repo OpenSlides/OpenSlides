@@ -33,14 +33,20 @@
         </ng-template>
     </os-sorting-list>
 
-    <form *ngIf="users && users.value.length > 0" [formGroup]="addSubmitterForm">
+    <form class="search-users" *ngIf="users && users.value.length > 0" [formGroup]="addSubmitterForm">
         <mat-form-field>
             <os-search-value-selector
-                class="search-users"
                 formControlName="userId"
                 placeholder="{{ 'Select or search new submitter ...' | translate }}"
                 [inputListValues]="users"
-            ></os-search-value-selector>
+                [showNotFoundButton]="true"
+                (clickNotFound)="createNewSubmitter($event)"
+            >
+                <ng-container notFoundDescription>
+                    <mat-icon>add</mat-icon>
+                    {{ 'Create user' | translate }}
+                </ng-container>
+            </os-search-value-selector>
         </mat-form-field>
     </form>
 

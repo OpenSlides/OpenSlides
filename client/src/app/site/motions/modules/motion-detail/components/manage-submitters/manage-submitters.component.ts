@@ -9,7 +9,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
-import { User } from 'app/shared/models/users/user';
+import { Selectable } from 'app/shared/components/selectable';
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { ViewMotion } from 'app/site/motions/models/view-motion';
 import { LocalPermissionsService } from 'app/site/motions/services/local-permissions.service';
@@ -43,13 +43,13 @@ export class ManageSubmittersComponent extends BaseViewComponent {
     /**
      * The current list of submitters.
      */
-    public readonly editSubmitterSubject: BehaviorSubject<ViewUser[]> = new BehaviorSubject([]);
+    public readonly editSubmitterSubject: BehaviorSubject<Selectable[]> = new BehaviorSubject([]);
 
     /**
      * The observable from editSubmitterSubject. Fixing this value is a performance boost, because
      * it is just set one time at loading instead of calling .asObservable() every time.
      */
-    public editSubmitterObservable: Observable<ViewUser[]>;
+    public editSubmitterObservable: Observable<Selectable[]>;
 
     /**
      * Saves, if the users edits the note.
@@ -83,7 +83,8 @@ export class ManageSubmittersComponent extends BaseViewComponent {
         // detect changes in the form
         this.addSubmitterForm.valueChanges.subscribe(formResult => {
             if (formResult && formResult.userId) {
-                this.addNewSubmitter(formResult.userId);
+                const submitter = this.viewModelStore.get(ViewUser, formResult.userId);
+                this.addNewSubmitter(submitter);
             }
         });
     }
@@ -105,7 +106,10 @@ export class ManageSubmittersComponent extends BaseViewComponent {
      */
     public onSave(): void {
         this.motionRepository
-            .setSubmitters(this.motion, this.editSubmitterSubject.getValue())
+            .setSubmitters(
+                this.motion,
+                this.editSubmitterSubject.getValue().map(user => user.id)
+            )
             .then(() => (this.isEditMode = false), this.raiseError);
     }
 
@@ -116,15 +120,25 @@ export class ManageSubmittersComponent extends BaseViewComponent {
         this.isEditMode = false;
     }
 
+    public async createNewSubmitter(username: string): Promise<void> {
+        const newUserObj = await this.userRepository.createFromString(username);
+        const selectableUser: Selectable = {
+            id: newUserObj.id,
+            getTitle: () => newUserObj.name,
+            getListTitle: () => newUserObj.name
+        };
+        this.addNewSubmitter(selectableUser);
+    }
+
     /**
      * Adds the user to the submitters, if he isn't already in there.
      *
      * @param userId The user to add
      */
-    public addNewSubmitter(userId: number): void {
+    public addNewSubmitter(user: Selectable): void {
         const submitters = this.editSubmitterSubject.getValue();
-        if (!submitters.map(u => u.id).includes(userId)) {
-            submitters.push(this.viewModelStore.get(ViewUser, userId));
+        if (!submitters.map(u => u.id).includes(user.id)) {
+            submitters.push(user);
             this.editSubmitterSubject.next(submitters);
         }
         this.addSubmitterForm.reset();
@@ -135,7 +149,7 @@ export class ManageSubmittersComponent extends BaseViewComponent {
      *
      * @param users The new, sorted users.
      */
-    public onSortingChange(users: ViewUser[]): void {
+    public onSortingChange(users: Selectable[]): void {
         this.editSubmitterSubject.next(users);
     }
 
@@ -144,7 +158,7 @@ export class ManageSubmittersComponent extends BaseViewComponent {
      *
      * @param user The user to remove as a submitters
      */
-    public onRemove(user: User): void {
+    public onRemove(user: Selectable): void {
         const submitters = this.editSubmitterSubject.getValue();
         this.editSubmitterSubject.next(submitters.filter(u => u.id !== user.id));
     }

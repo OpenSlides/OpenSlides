@@ -484,14 +484,14 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
      * Sets the submitters by sending a request to the server,
      *
      * @param viewMotion The motion to change the submitters from
-     * @param submitters The submitters to set
+     * @param submitterUserIds The submitters to set
      */
-    public async setSubmitters(viewMotion: ViewMotion, submitters: ViewUser[]): Promise<void> {
+    public async setSubmitters(viewMotion: ViewMotion, submitterUserIds: number[]): Promise<void> {
         const requestData = {
             motions: [
                 {
                     id: viewMotion.id,
-                    submitters: submitters.map(s => s.id)
+                    submitters: submitterUserIds
                 }
             ]
         };
