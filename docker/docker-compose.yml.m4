@@ -60,7 +60,7 @@ x-osserver-env: &default-osserver-env
     ENABLE_SAML: "ifenvelse(`ENABLE_SAML', False)"
     INSTANCE_DOMAIN: "ifenvelse(`INSTANCE_DOMAIN', http://example.com:8000)"
     JITSI_DOMAIN: "ifenvelse(`JITSI_DOMAIN', None)"
-    JITSI_PASSWORD: "ifenvelse(`JITSI_PASSWORD', None)"
+    JITSI_ROOM_PASSWORD: "ifenvelse(`JITSI_ROOM_PASSWORD', None)"
     JITSI_ROOM_NAME: "ifenvelse(`JITSI_ROOM_NAME', None)"
     OPENSLIDES_LOG_LEVEL: "ifenvelse(`OPENSLIDES_LOG_LEVEL', INFO)"
     REDIS_CHANNLES_HOST: "ifenvelse(`REDIS_CHANNLES_HOST', redis-channels)"
