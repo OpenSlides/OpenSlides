@@ -23,6 +23,7 @@ from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 
 from openslides.saml import SAML_ENABLED
+from openslides.utils import logging
 
 from ..core.config import config
 from ..core.signals import permission_change
@@ -55,7 +56,23 @@ from .serializers import GroupSerializer, PermissionRelatedField
 from .user_backend import user_backend_manager
 
 
-# Viewsets for the REST API
+demo_mode_users = getattr(settings, "DEMO", None)
+is_demo_mode = isinstance(demo_mode_users, list) and len(demo_mode_users) > 0
+logger = logging.getLogger(__name__)
+if is_demo_mode:
+    logger.info("OpenSlides started in demo mode. Some features are unavailable.")
+
+
+def assertNoDemoAndAdmin(user_ids):
+    if isinstance(user_ids, int):
+        user_ids = [user_ids]
+    if is_demo_mode and any(user_id in demo_mode_users for user_id in user_ids):
+        raise ValidationError({"detail": "Not allowed in demo mode"})
+
+
+def assertNoDemo():
+    if is_demo_mode:
+        raise ValidationError({"detail": "Not allowed in demo mode"})
 
 
 class UserViewSet(ModelViewSet):
@@ -117,6 +134,7 @@ class UserViewSet(ModelViewSet):
         wants to update himself or is manager.
         """
         user = self.get_object()
+        assertNoDemoAndAdmin(user.id)
         # Check permissions.
         if (
             has_perm(self.request.user, "users.can_see_name")
@@ -165,6 +183,7 @@ class UserViewSet(ModelViewSet):
 
         Ensures that no one can delete himself.
         """
+        assertNoDemo()
         instance = self.get_object()
         if instance == self.request.user:
             raise ValidationError({"detail": "You can not delete yourself."})
@@ -178,6 +197,7 @@ class UserViewSet(ModelViewSet):
         Expected data: { pasword: <the new password> }
         """
         user = self.get_object()
+        assertNoDemoAndAdmin(user.id)
         if user.auth_type != "default":
             raise ValidationError(
                 {
@@ -204,6 +224,7 @@ class UserViewSet(ModelViewSet):
         and the default password will be set to the new generated passwords.
         Expected data: { user_ids: <list of ids> }
         """
+        assertNoDemo()
         ids = request.data.get("user_ids")
         self.assert_list_of_ints(ids)
 
@@ -223,6 +244,7 @@ class UserViewSet(ModelViewSet):
         request user is excluded.
         Expected data: { user_ids: <list of ids> }
         """
+        assertNoDemo()
         ids = request.data.get("user_ids")
         self.assert_list_of_ints(ids)
 
@@ -260,9 +282,9 @@ class UserViewSet(ModelViewSet):
           value: True|False
         }
         """
-
         ids = request.data.get("user_ids")
         self.assert_list_of_ints(ids)
+        assertNoDemoAndAdmin(ids)
 
         field = request.data.get("field")
         if field not in ("is_active", "is_present", "is_committee"):
@@ -293,6 +315,7 @@ class UserViewSet(ModelViewSet):
         """
         user_ids = request.data.get("user_ids")
         self.assert_list_of_ints(user_ids)
+        assertNoDemoAndAdmin(user_ids)
         group_ids = request.data.get("group_ids")
         self.assert_list_of_ints(group_ids, ids_name="groups_id")
 
@@ -318,6 +341,7 @@ class UserViewSet(ModelViewSet):
         Deletes many users. The request user will be excluded. Expected data:
         { user_ids: <list of ids> }
         """
+        assertNoDemo()
         ids = request.data.get("user_ids")
         self.assert_list_of_ints(ids)
 
@@ -396,6 +420,7 @@ class UserViewSet(ModelViewSet):
         Endpoint to send invitation emails to all given users (by id). Returns the
         number of emails send.
         """
+        assertNoDemo()
         user_ids = request.data.get("user_ids")
         self.assert_list_of_ints(user_ids)
         # Get subject and body from the response. Do not use the config values
@@ -881,6 +906,7 @@ class SetPasswordView(APIView):
             or user.auth_type != "default"
         ):
             self.permission_denied(request)
+        assertNoDemoAndAdmin(user.id)
         if user.check_password(request.data["old_password"]):
             try:
                 validate_password(request.data.get("new_password"), user=user)

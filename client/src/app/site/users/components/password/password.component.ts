@@ -158,7 +158,7 @@ export class PasswordComponent extends BaseViewComponent implements OnInit {
                 if (newPassword1 !== newPassword2) {
                     this.raiseError(this.translate.instant('Error: The new passwords do not match.'));
                 } else {
-                    await this.repo.setNewPassword(oldPassword, newPassword1);
+                    await this.repo.setNewPassword(this.user, oldPassword, newPassword1);
                     this.router.navigate(['./']);
                 }
             }

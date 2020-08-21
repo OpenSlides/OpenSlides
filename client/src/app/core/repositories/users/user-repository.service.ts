@@ -2,9 +2,11 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import { ConstantsService } from 'app/core/core-services/constants.service';
 import { HttpService } from 'app/core/core-services/http.service';
 import { RelationManagerService } from 'app/core/core-services/relation-manager.service';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
+import { PreventedInDemo } from 'app/core/definitions/custom-errors';
 import { RelationDefinition } from 'app/core/definitions/relations';
 import { NewEntry } from 'app/core/ui-services/base-import.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
@@ -58,6 +60,8 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User, UserTi
      */
     protected sortProperty: SortProperty;
 
+    private demoModeUserIds: number[] | null = null;
+
     /**
      * Constructor for the user repo
      *
@@ -76,13 +80,19 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User, UserTi
         relationManager: RelationManagerService,
         protected translate: TranslateService,
         private httpService: HttpService,
-        private configService: ConfigService
+        private configService: ConfigService,
+        private constantsService: ConstantsService
     ) {
         super(DS, dataSend, mapperService, viewModelStoreService, translate, relationManager, User, UserRelations);
         this.sortProperty = this.configService.instant('users_sort_by');
         this.configService.get<SortProperty>('users_sort_by').subscribe(conf => {
             this.sortProperty = conf;
             this.setConfigSortFn();
+        });
+        this.constantsService.get<any>('Settings').subscribe(settings => {
+            if (settings) {
+                this.demoModeUserIds = settings.DEMO || null;
+            }
         });
     }
 
@@ -186,6 +196,7 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User, UserTi
      * @param updateDefaultPassword Control, if the default password should be updated.
      */
     public async resetPassword(user: ViewUser, password: string): Promise<void> {
+        this.preventAlterationOnDemoUsers(user);
         const path = `/rest/users/user/${user.id}/reset_password/`;
         await this.httpService.post(path, { password: password });
     }
@@ -196,7 +207,8 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User, UserTi
      * @param oldPassword the old password
      * @param newPassword the new password
      */
-    public async setNewPassword(oldPassword: string, newPassword: string): Promise<void> {
+    public async setNewPassword(user: ViewUser, oldPassword: string, newPassword: string): Promise<void> {
+        this.preventAlterationOnDemoUsers(user);
         await this.httpService.post(`${environment.urlPrefix}/users/setpassword/`, {
             old_password: oldPassword,
             new_password: newPassword
@@ -210,6 +222,7 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User, UserTi
      * @param users The users to reset the passwords from
      */
     public async bulkResetPasswordsToDefault(users: ViewUser[]): Promise<void> {
+        this.preventInDemo();
         await this.httpService.post('/rest/users/user/bulk_reset_passwords_to_default/', {
             user_ids: users.map(user => user.id)
         });
@@ -222,6 +235,7 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User, UserTi
      * @param users The users to generate new passwords for
      */
     public async bulkGenerateNewPasswords(users: ViewUser[]): Promise<void> {
+        this.preventInDemo();
         await this.httpService.post('/rest/users/user/bulk_generate_passwords/', {
             user_ids: users.map(user => user.id)
         });
@@ -239,12 +253,23 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User, UserTi
         return await this.httpService.post<MassImportResult>(`/rest/users/user/mass_import/`, { users: data });
     }
 
+    public async update(update: Partial<User>, viewModel: ViewUser): Promise<void> {
+        this.preventAlterationOnDemoUsers(viewModel);
+        return super.update(update, viewModel);
+    }
+
+    public async delete(viewModel: ViewUser): Promise<void> {
+        this.preventInDemo();
+        return super.delete(viewModel);
+    }
+
     /**
      * Deletes many users. The operator will not be deleted (if included in `uisers`)
      *
      * @param users The users to delete
      */
     public async bulkDelete(users: ViewUser[]): Promise<void> {
+        this.preventInDemo();
         await this.httpService.post('/rest/users/user/bulk_delete/', { user_ids: users.map(user => user.id) });
     }
 
@@ -260,6 +285,7 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User, UserTi
         field: 'is_active' | 'is_present' | 'is_committee',
         value: boolean
     ): Promise<void> {
+        this.preventAlterationOnDemoUsers(users);
         await this.httpService.post('/rest/users/user/bulk_set_state/', {
             user_ids: users.map(user => user.id),
             field: field,
@@ -275,6 +301,7 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User, UserTi
      * @param groupIds All group ids to add or remove
      */
     public async bulkAlterGroups(users: ViewUser[], action: 'add' | 'remove', groupIds: number[]): Promise<void> {
+        this.preventAlterationOnDemoUsers(users);
         await this.httpService.post('/rest/users/user/bulk_alter_groups/', {
             user_ids: users.map(user => user.id),
             action: action,
@@ -290,6 +317,7 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User, UserTi
      * @param users All affected users
      */
     public async bulkSendInvitationEmail(users: ViewUser[]): Promise<string> {
+        this.preventInDemo();
         const user_ids = users.map(user => user.id);
         const users_email_subject = this.configService.instant<string>('users_email_subject');
         const users_email_body = this.configService.instant<string>('users_email_body');
@@ -469,5 +497,21 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User, UserTi
             return '';
         }
         return new Date(user.user.last_email_send).toLocaleString(this.translate.currentLang);
+    }
+
+    private preventAlterationOnDemoUsers(users: ViewUser | ViewUser[]): void {
+        if (Array.isArray(users)) {
+            if (users.map(user => user.id).intersect(this.demoModeUserIds).length > 0) {
+                this.preventInDemo();
+            }
+        } else if (this.demoModeUserIds.some(userId => userId === users.id)) {
+            this.preventInDemo();
+        }
+    }
+
+    private preventInDemo(): void {
+        if (this.demoModeUserIds) {
+            throw new PreventedInDemo();
+        }
     }
 }
