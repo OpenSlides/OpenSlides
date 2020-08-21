@@ -1,12 +1,12 @@
 dist: xenial
-sudo: true
+os: linux
 
 cache:
   - directories:
       - $HOME/.cache/pip
       - client/node_modules
 
-matrix:
+jobs:
   include:
     - stage: "Dependencies"
       name: "Installing dependencies for python"
@@ -15,11 +15,12 @@ matrix:
         - "3.6"
       cache:
         pip: true
-      install:
+      before_install:
         - python --version
-        - pip install --upgrade setuptools pip
-        - pip install --upgrade --requirement requirements/development.txt
-        - pip install --upgrade .[big_mode]
+        - cd server
+      install:
+        - pip install --upgrade pip
+        - pip install --upgrade --requirement requirements.txt
         - pip freeze
       script: skip
 
@@ -36,15 +37,11 @@ matrix:
       install:
         - npm install
       script: skip
+
     - stage: "Run tests"
       name: "Client: Testing"
       language: node_js
       node_js: "12.18"
-      apt:
-        sources:
-          - google-chrome
-        packages:
-          - google-chrome-stable
       services:
         - xvfb
       install:
@@ -79,36 +76,6 @@ matrix:
         - cd client
         - npm run build-debug
 
-    - name: "Server: Tests Python 3.6"
-      language: python
-      python:
-        - "3.6"
-      script:
-        - mypy openslides/ tests/
-        - pytest --cov --cov-fail-under=75
-
-    - name: "Server: Tests Python 3.7"
-      language: python
-      python:
-        - "3.7"
-      script:
-        - flake8 openslides tests
-        - isort --check-only --diff --recursive openslides tests
-        - black --check --diff --target-version py36 openslides tests
-        - mypy openslides/ tests/
-        - pytest --cov --cov-fail-under=75
-
-    - name: "Server: Tests Python 3.8"
-      language: python
-      python:
-        - "3.8"
-      script:
-        - flake8 openslides tests
-        - isort --check-only --diff --recursive openslides tests
-        - black --check --diff --target-version py36 openslides tests
-        - mypy openslides/ tests/
-        - pytest --cov --cov-fail-under=75
-
     - name: "Client: Linting"
       language: node_js
       node_js: "12.18"
@@ -123,13 +90,51 @@ matrix:
         - cd client
         - npm run prettify-check
 
+    - name: "Server: Tests Python 3.6"
+      language: python
+      python:
+        - "3.6"
+      before_install:
+        - cd server
+      script:
+        - mypy openslides/ tests/
+        - pytest --cov --cov-fail-under=75
+
+    - name: "Server: Tests Python 3.7"
+      language: python
+      python:
+        - "3.7"
+      before_install:
+        - cd server
+      script:
+        - flake8 openslides tests
+        - isort --check-only --diff --recursive openslides tests
+        - black --check --diff --target-version py36 openslides tests
+        - mypy openslides/ tests/
+        - pytest --cov --cov-fail-under=75
+
+    - name: "Server: Tests Python 3.8"
+      language: python
+      python:
+        - "3.8"
+      before_install:
+        - cd server
+      script:
+        - flake8 openslides tests
+        - isort --check-only --diff --recursive openslides tests
+        - black --check --diff --target-version py36 openslides tests
+        - mypy openslides/ tests/
+        - pytest --cov --cov-fail-under=75
+
     - name: "Server: Tests Startup Routine Python 3.7"
       language: python
       python:
         - "3.7"
+      before_install:
+        - cd server
       script:
         - set -e
         - python manage.py createsettings
         - python manage.py migrate
-        - python manage.py runserver --noreload & (sleep 15 && kill $(ps aux | grep 'manage.py runserver' | head -n -1 | awk '{print $2}'))
+        - python manage.py runserver --noreload & (sleep 20 && kill $(ps aux | grep 'manage.py runserver' | head -n -1 | awk '{print $2}'))
         - set +e

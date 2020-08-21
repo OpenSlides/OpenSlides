@@ -1,0 +1,89 @@
+#!/bin/bash
+
+set -e
+
+warn_insecure_admin() {
+  cat <<-EOF
+
+                 ==============================================
+                                    WARNING
+                 ==============================================
+
+                 WARNING: INSECURE ADMIN ACCOUNT CONFIGURATION!
+
+EOF
+  sleep 10
+}
+
+# Set DJANGO_SECRET_KEY variable
+source /run/secrets/django
+[[ -n "$DJANGO_SECRET_KEY" ]] || {
+  echo "ERROR: Django secret key undefined!  Cannot continue."
+  sleep 5
+  exit 2
+}
+export SECRET_KEY="$DJANGO_SECRET_KEY"
+
+# Configure database
+# TODO: env variables??
+echo "postgres:5432:instancecfg:openslides:openslides" > "${HOME}/.pgpass"
+chmod 600 "${HOME}/.pgpass"
+
+until pg_isready -h db; do
+  echo "Waiting for Postgres cluster to become available..."
+  sleep 3
+done
+
+# Wait for redis
+wait-for-it redis:6379
+wait-for-it redis-slave:6379
+wait-for-it redis-channels:6379
+
+echo 'running migrations'
+python manage.py migrate
+
+# Admin
+if [[ -f /run/secrets/os_admin ]]; then
+  echo "Retrieving secure admin password"
+  source /run/secrets/os_admin
+  if [[ -n "${OPENSLIDES_ADMIN_PASSWORD}" ]]; then
+    echo "Changing admin password"
+    python manage.py changedefaultadminpassword "${OPENSLIDES_ADMIN_PASSWORD}"
+  else
+    warn_insecure_admin
+  fi
+else
+  warn_insecure_admin
+fi
+
+# Main user
+if [[ -f /run/secrets/os_user ]]; then
+  echo "Retrieving secure user credentials"
+  source /run/secrets/os_user
+  if [[ -n "${OPENSLIDES_USER_FIRSTNAME}" ]] &&
+      [[ -n "${OPENSLIDES_USER_LASTNAME}" ]] &&
+      [[ -n "${OPENSLIDES_USER_PASSWORD}" ]]; then
+    user_name="${OPENSLIDES_USER_FIRSTNAME} ${OPENSLIDES_USER_LASTNAME}"
+    echo "Adding user: ${user_name}"
+    # createopenslidesuser: error: the following arguments are required:
+    # first_name, last_name, username, password, groups_id
+    # email is optional
+    # userid forces to to only create a user with this id, if it not exists before.
+    python manage.py createopenslidesuser \
+      --userid 2 \
+      --email "${OPENSLIDES_USER_EMAIL:-}" \
+      "${OPENSLIDES_USER_FIRSTNAME}" \
+      "${OPENSLIDES_USER_LASTNAME}" \
+      "${user_name}" \
+      "${OPENSLIDES_USER_PASSWORD}" \
+      2
+  else
+    echo "Incomplete user account data. Skipping account creation."
+  fi
+fi
+
+# SAML setup
+. /usr/local/lib/saml-setup.sh
+
+echo "Done migrating and setting up user accounts..."
+python -m http.server --directory /app/empty --bind 0.0.0.0 8000

@@ -36,8 +36,10 @@ else:
 
             read_only_redis_amount_replicas = getattr(settings, "AMOUNT_REPLICAS", 1)
             logger.info(f"AMOUNT_REPLICAS={read_only_redis_amount_replicas}")
-            read_only_redis_wait_timeout = getattr(settings, "WAIT_TIMEOUT", 1000)
-            logger.info(f"WAIT_TIMEOUT={read_only_redis_wait_timeout}")
+            read_only_redis_wait_timeout = getattr(
+                settings, "REDIS_SLAVE_WAIT_TIMEOUT", 1000
+            )
+            logger.info(f"REDIS_SLAVE_WAIT_TIMEOUT={read_only_redis_wait_timeout}")
     else:
         logger.info("Redis is not configured.")
 
