@@ -154,7 +154,7 @@
             </mat-form-field>
         </div>
 
-        <div>
+        <div *osPerms="permission.usersCanManage">
             <!-- Groups -->
             <mat-form-field>
                 <os-search-value-selector
@@ -253,7 +253,9 @@
                 <mat-icon *ngIf="user.is_present && isAllowed('seeName')" matTooltip="{{ 'Is present' | translate }}"
                     >check_box</mat-icon
                 >
-                <mat-icon *ngIf="user.is_committee && isAllowed('seeName')" matTooltip="{{ 'Is committee' | translate }}"
+                <mat-icon
+                    *ngIf="user.is_committee && isAllowed('seeName')"
+                    matTooltip="{{ 'Is committee' | translate }}"
                     >account_balance</mat-icon
                 >
                 <mat-icon *ngIf="!user.is_active && isAllowed('seeExtra')" matTooltip="{{ 'Inactive' | translate }}"
