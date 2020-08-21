@@ -5,8 +5,8 @@ import { DeviceDetectorService, DeviceInfo } from 'ngx-device-detector';
 const SmallestSupportedBrowserVersion = {
     Chrome: 80,
     Safari: 13,
-    Firefox: 68,
-    Opera: 66,
+    Firefox: 78,
+    Opera: 70,
     'MS-Edge': 80,
     'MS-Edge-Chromium': 80
 };
