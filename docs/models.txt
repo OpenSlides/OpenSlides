@@ -188,8 +188,8 @@ Interface meeting {
     list_of_speakers_show_first_contribution: boolean;
 
     // Motions
-    motions_default_workflow_id: workflow/default_workflow_meeting_id;
-    motions_default_statute_amendments_workflow_id: workflow/default_statute_amendments_meeting_id;
+    motions_default_workflow_id: motion_workflow/default_workflow_meeting_id;
+    motions_default_statute_amendments_workflow_id: motion_workflow/default_statute_amendments_meeting_id;
     motions_preamble: string;
     motions_default_line_numbering: string;
     motions_line_length: number;
@@ -466,7 +466,7 @@ Interface motion_comment {
     section_id: motion_comment_section/comment_ids;
 }
 
-Inteface motion_comment_section {
+Interface motion_comment_section {
     id: number;
     name: string;
     weight: number;
@@ -621,7 +621,7 @@ Interface assignment {
     meeting_id: meeting/assignment_ids;
 }
 
-Inteface assignment_candidate {
+Interface assignment_candidate {
     id: number;
     weight: number;
 
