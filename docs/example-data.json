@@ -226,7 +226,7 @@
         "list_of_speakers_show_first_contribution": false,
 
         "motions_default_workflow_id": 1,
-        "motions_statute_amendments_workflow_id": 2,
+        "motions_statute_amendment_workflow_id": 2,
         "motions_preamble": "The assembly may decide:",
         "motions_default_line_numbering": "none",
         "motions_line_length": 90,
@@ -239,7 +239,7 @@
         "motions_show_sequential_numbers": true,
         "motions_recommendations_by": "",
         "motions_statute_recommendations_by": "",
-        "motions_recommendation_text_mode": "normal",
+        "motions_recommendation_text_mode": "original",
         "motions_default_sorting": "number",
         "motions_number_type": "per_category",
         "motions_number_min_digits": 1,
@@ -310,9 +310,9 @@
         "assignment_ids": [1, 2],
         "assignment_poll_ids": [1, 2, 3],
 
-        "logo_$": ["web_header"],
-        "logo_web_header": 3,
-        "font_$": [],
+        "logo_$_id": ["web_header"],
+        "logo_web_header_id": 3,
+        "font_$_id": [],
 
         "committee_id": 1,
         "default_meeting_for_committee_id": 1,
@@ -2136,7 +2136,6 @@
         "mimetype": null,
         "pdf_information": {},
         "create_timestamp": 1584513763,
-        "path": "logos/",
         "has_inherited_access_groups": true,
 
         "access_group_ids": [2, 3],
@@ -2149,8 +2148,8 @@
         "attachment_ids": [],
         "meeting_id": 1,
 
-        "used_as_logo_$_in_meeting": [],
-        "used_as_font_$_in_meeting": []
+        "used_as_logo_$_in_meeting_id": [],
+        "used_as_font_$_in_meeting_id": []
     },
     {
         "id": 2,
@@ -2161,7 +2160,6 @@
         "mimetype": "text/plain",
         "pdf_information": {},
         "create_timestamp": 1584513771,
-        "path": "A.txt",
         "has_inherited_access_groups": false,
 
         "access_group_ids": [],
@@ -2174,8 +2172,8 @@
         "attachment_ids": ["motion/4"],
         "meeting_id": 1,
 
-        "used_as_logo_$_in_meeting": [],
-        "used_as_font_$_in_meeting": []
+        "used_as_logo_$_in_meeting_id": [],
+        "used_as_font_$_in_meeting_id": []
     },
     {
         "id": 3,
@@ -2186,7 +2184,6 @@
         "mimetype": "image/png",
         "pdf_information": {},
         "create_timestamp": 1584513791,
-        "path": "logos/in.jpg",
         "has_inherited_access_groups": true,
 
         "access_group_ids": [],
@@ -2199,9 +2196,9 @@
         "attachment_ids": [],
         "meeting_id": 1,
 
-        "used_as_logo_$_in_meeting": ["web_header"],
-        "used_as_logo_web_header_in_meeting": 1,
-        "used_as_font_$_in_meeting": []
+        "used_as_logo_$_in_meeting_id": ["web_header"],
+        "used_as_logo_web_header_in_meeting_id": 1,
+        "used_as_font_$_in_meeting_id": []
     }],
 "projector": [
     {

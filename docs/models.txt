@@ -189,7 +189,8 @@ Interface meeting {
 
     // Motions
     motions_default_workflow_id: workflow/default_workflow_meeting_id;
-    motions_default_statute_amendments_workflow_id: workflow/default_statute_amendments_meeting_id;
+    motions_default_amendment_workflow_id: workflow/default_amendment_workflow_meeting_id;
+    motions_default_statute_amendment_workflow_id: workflow/default_statute_amendment_workflow_meeting_id;
     motions_preamble: string;
     motions_default_line_numbering: string;
     motions_line_length: number;
@@ -247,6 +248,9 @@ Interface meeting {
     // Assignments
     assignemnts_export_title: string;
     assignments_export_preamble: string;
+
+    assignment_poll_ballot_paper_selection: string;
+    assignment_poll_ballot_paper_number: number;
     assignment_poll_add_candidates_to_list_of_speakers: boolean;
     assignment_poll_sort_poll_result_by_votes: boolean;
     assignment_poll_default_type: string;
@@ -291,13 +295,13 @@ Interface meeting {
     // assignment_vote
 
     // Logos and Fonts
-    logo_$<token>: mediafile/used_as_logo_$<token>_in_meeting;
-    font_$<token>: mediafile/used_as_font_$<token>_in_mmeting;
+    logo_$<place>_id: mediafile/used_as_logo_$<place>_in_meeting_id;
+    font_$<place>_id: mediafile/used_as_font_$<place>_in_mmeting_id;
     // Examples:
     // logo_web_header: Mediafile;
     // font_italic_pdf: Mediafile;
     // The client can define these resources. There is no need
-    // to have whitelist/blacklist on the server. The tokens must
+    // to have whitelist/blacklist on the server. The places must
     // be checked: They must match `[a-z]([a-z_]*[a-z])?` and must
     // not be longer than 32 characters.
 
@@ -408,7 +412,7 @@ Interface topic {
 Interface motion {
     id: number;
     number: string;
-    sequential_number: number;
+    sequential_number: number; // Calculated
     title: string;
     text: HTML;
     amendment_paragraph_$<paragraph_number>: HTML;
@@ -546,7 +550,8 @@ Interface motion_workflow {
     state_ids: (motion_state/workflow_id)[];
     first_state_id: motion_state/first_state_of_workflow_id;
     default_workflow_meeting_id: meeting/motions_default_workflow_id;
-    default_statute_amendments_meeting_id: meeting/motions_default_statute_amendments_workflow_id;
+    default_amendment_workflow_meeting_id: meeting/motions_default_amendment_workflow_id;
+    default_statute_amendment_workflow_meeting_id: meeting/motions_default_statute_amendment_workflow_id;
     meeting_id: meeting/motion_workflow_ids;
 }
 
@@ -683,15 +688,13 @@ Interface assignment_vote {
 // `<media-prefix>/media/<meeting_id>/path`
 Interface mediafile {
     id: number;
-    title: string;
+    title: string; // title and parent_id must be unique.
     is_directory: boolean;
     filesize: number; // Note: in bytes, not the human readable format anymore
-    filename: string; // Note: The uploaded filename. Filename and parent_id
-    // must be unique as well as title and parent_id must be unique.
+    filename: string; // Note: The uploaded filename. will be used for downloading. Only writeable on create.
     mimetype: string;
     pdf_information: JSON;
     create_timestamp: datetime;
-    path: string; // Note: calculated
     has_inherited_access_groups: boolean; // Note: calculated
 
     inherited_access_group_ids: (group/mediafile_inherited_access_group_ids)[];  // Note: calculated
@@ -705,8 +708,8 @@ Interface mediafile {
     meeting_id: meeting/mediafile_ids;
 
     // Reverse relations for meetings, if a mediafile is used as a special resource
-    used_as_logo_$<token>_in_meeting: meeting/logo_$<token>;
-    used_as_font_$<token>_in_meeting: meeting/font_$<token>;
+    used_as_logo_$<place>_in_meeting_id: meeting/logo_$<place>_id;
+    used_as_font_$<place>_in_meeting_id: meeting/font_$<place>_id;
 }
 
 Interface projector {
