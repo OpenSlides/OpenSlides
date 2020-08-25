@@ -76,7 +76,7 @@ Interface user {
 
     // Projection
     projection_ids: (projection/element_id)[];
-    current_projector_ids: (projector/current_element_ids)[]
+    current_projector_ids: (projector/current_element_ids)[];
 
     // All foreign keys are meeting-specific:
     // - Keys are smaller (Space is in O(n^2) for n keys
@@ -154,7 +154,7 @@ Interface meeting {
     enable_anonymous: boolean;
 
     // Jitsi/Livestream settings
-    conference_show: boolean: boolean;
+    conference_show: boolean;
     conference_auto_connect: boolean;
     conference_los_restriction: boolean;
     conference_stream_url: string;
@@ -188,9 +188,9 @@ Interface meeting {
     list_of_speakers_show_first_contribution: boolean;
 
     // Motions
-    motions_default_workflow_id: workflow/default_workflow_meeting_id;
-    motions_default_amendment_workflow_id: workflow/default_amendment_workflow_meeting_id;
-    motions_default_statute_amendment_workflow_id: workflow/default_statute_amendment_workflow_meeting_id;
+    motions_default_workflow_id: motion_workflow/default_workflow_meeting_id;
+    motions_default_amendment_workflow_id: motion_workflow/default_amendment_workflow_meeting_id;
+    motions_default_statute_amendment_workflow_id: motion_workflow/default_statute_amendment_workflow_meeting_id;
     motions_preamble: string;
     motions_default_line_numbering: string;
     motions_line_length: number;
@@ -470,7 +470,7 @@ Interface motion_comment {
     section_id: motion_comment_section/comment_ids;
 }
 
-Inteface motion_comment_section {
+Interface motion_comment_section {
     id: number;
     name: string;
     weight: number;
@@ -626,7 +626,7 @@ Interface assignment {
     meeting_id: meeting/assignment_ids;
 }
 
-Inteface assignment_candidate {
+Interface assignment_candidate {
     id: number;
     weight: number;
 
@@ -729,7 +729,7 @@ Interface projector {
     chyron_font_color: string;
     show_header_footer: boolean;
     show_title: boolean;
-    show_logo: boolean
+    show_logo: boolean;
 
     current_projection_ids: (projection/current_projector_id)[];
     // A relation to the currently projected elements to get a direct link, if
