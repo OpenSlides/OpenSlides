@@ -19,7 +19,7 @@
 Thumbs.db
 # Virtual Environment
 .virtualenv*/*
-.venv/*
+.venv
 server/.venv
 
 ## Compatibility

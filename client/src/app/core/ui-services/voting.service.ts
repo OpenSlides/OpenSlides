@@ -43,10 +43,11 @@ export class VotingService {
      * @returns null if no errors exist (= user can vote) or else a VotingError
      */
     public getVotePermissionError(poll: ViewBasePoll): VotingError | void {
-        const user = this.operator.viewUser;
         if (this.operator.isAnonymous) {
             return VotingError.USER_IS_ANONYMOUS;
         }
+
+        const user = this.operator.user;
         if (!poll.groups_id.intersect(user.groups_id).length) {
             return VotingError.USER_HAS_NO_PERMISSION;
         }

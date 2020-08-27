@@ -68,6 +68,9 @@ export class LoadFontService {
      */
     private setCustomProjectorFont(font: any, weight: number): void {
         const path = font.path ? font.path : font.default;
+        if (!path) {
+            return;
+        }
         const url = font.path ? `${this.urlPrefix}${path}` : path;
         const fontFace = new FontFace('customProjectorFont', `url(${url})`, { weight: weight });
         fontFace
