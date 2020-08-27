@@ -137,6 +137,13 @@ export class LinenumberingService {
     // text with inline diff annotations and get the same line numbering as with the original text (when set to false)
     private ignoreInsertedText = false;
 
+    // A precompiled regular expression that looks for line number nodes in a HTML string
+    private getLineNumberRangeRegexp = RegExp(/<span[^>]+data\-line\-number=\"(\d+)\"/, 'g');
+
+    // .setAttribute and .innerHTML seem to be really slow, so we try to avoid them for static attributes / content
+    // by creating a static template, cloning it and only set the dynamic attributes each time
+    private lineNumberToClone: Element = null;
+
     /**
      * Creates a hash of a given string. This is not meant to be specifically secure, but rather as quick as possible.
      *
@@ -244,15 +251,9 @@ export class LinenumberingService {
      * @return {DocumentFragment}
      */
     private htmlToFragment(html: string): DocumentFragment {
-        const fragment: DocumentFragment = document.createDocumentFragment(),
-            div = document.createElement('DIV');
-        div.innerHTML = html;
-        while (div.childElementCount) {
-            const child = div.childNodes[0];
-            div.removeChild(child);
-            fragment.appendChild(child);
-        }
-        return fragment;
+        const template = document.createElement('template');
+        template.innerHTML = html;
+        return template.content;
     }
 
     /**
@@ -377,27 +378,19 @@ export class LinenumberingService {
      * @returns {LineNumberRange}
      */
     public getLineNumberRange(html: string): LineNumberRange {
-        const cacheKey = this.djb2hash(html);
-        let range = this.lineNumberCache.get(cacheKey);
-        if (!range) {
-            const fragment = this.htmlToFragment(html);
-            range = {
-                from: null,
-                to: null
-            };
-            const lineNumbers = fragment.querySelectorAll('.os-line-number');
-            for (let i = 0; i < lineNumbers.length; i++) {
-                const node = lineNumbers.item(i);
-                const number = parseInt(node.getAttribute('data-line-number'), 10);
-                if (range.from === null || number < range.from) {
-                    range.from = number;
-                }
-                if (range.to === null || number + 1 > range.to) {
-                    range.to = number + 1;
-                }
+        const range = {
+            from: null,
+            to: null
+        };
+
+        let foundLineNumber;
+        while ((foundLineNumber = this.getLineNumberRangeRegexp.exec(html)) !== null) {
+            if (range.from === null) {
+                range.from = parseInt(foundLineNumber[1], 10);
             }
+            range.to = parseInt(foundLineNumber[1], 10) + 1;
         }
-        this.lineNumberCache.put(cacheKey, range);
+
         return range;
     }
 
@@ -550,13 +543,18 @@ export class LinenumberingService {
             this.ignoreNextRegularLineNumber = false;
             return;
         }
-        const node = document.createElement('span');
+
+        if (this.lineNumberToClone === null) {
+            this.lineNumberToClone = document.createElement('span');
+            this.lineNumberToClone.setAttribute('contenteditable', 'false');
+            this.lineNumberToClone.innerHTML = '&nbsp;'; // Prevent ckeditor from stripping out empty span's
+        }
+        const node = this.lineNumberToClone.cloneNode(true) as Element;
         const lineNumber = this.currentLineNumber;
         this.currentLineNumber++;
         node.setAttribute('class', 'os-line-number line-number-' + lineNumber);
         node.setAttribute('data-line-number', lineNumber + '');
-        node.setAttribute('contenteditable', 'false');
-        node.innerHTML = '&nbsp;'; // Prevent ckeditor from stripping out empty span's
+
         return node;
     }
 

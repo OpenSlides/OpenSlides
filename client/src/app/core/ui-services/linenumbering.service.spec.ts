@@ -6,20 +6,20 @@ describe('LinenumberingService', () => {
     const brMarkup = (no: number): string => {
             return (
                 '<br class="os-line-break">' +
-                '<span class="os-line-number line-number-' +
+                '<span contenteditable="false" class="os-line-number line-number-' +
                 no +
                 '" data-line-number="' +
                 no +
-                '" contenteditable="false">&nbsp;</span>'
+                '">&nbsp;</span>'
             );
         },
         noMarkup = (no: number): string => {
             return (
-                '<span class="os-line-number line-number-' +
+                '<span contenteditable="false" class="os-line-number line-number-' +
                 no +
                 '" data-line-number="' +
                 no +
-                '" contenteditable="false">&nbsp;</span>'
+                '">&nbsp;</span>'
             );
         },
         longstr = (length: number): string => {
