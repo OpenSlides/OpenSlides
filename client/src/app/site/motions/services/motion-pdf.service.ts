@@ -247,23 +247,25 @@ export class MotionPdfService {
         }
 
         // supporters
-        const minSupporters = this.configService.instant<number>('motions_min_supporters');
-        if (minSupporters && motion.supporters.length > 0) {
-            const supporters = motion.supporters
-                .map(supporter => {
-                    return supporter.full_name;
-                })
-                .join(', ');
+        if (!infoToExport || infoToExport.includes('supporters')) {
+            const minSupporters = this.configService.instant<number>('motions_min_supporters');
+            if (!!minSupporters && motion.supporters.length > 0) {
+                const supporters = motion.supporters
+                    .map(supporter => {
+                        return supporter.full_name;
+                    })
+                    .join(', ');
 
-            metaTableBody.push([
-                {
-                    text: `${this.translate.instant('Supporters')}:`,
-                    style: 'boldText'
-                },
-                {
-                    text: supporters
-                }
-            ]);
+                metaTableBody.push([
+                    {
+                        text: `${this.translate.instant('Supporters')}:`,
+                        style: 'boldText'
+                    },
+                    {
+                        text: supporters
+                    }
+                ]);
+            }
         }
 
         // state

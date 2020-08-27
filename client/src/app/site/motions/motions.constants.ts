@@ -21,6 +21,7 @@ export const PERSONAL_NOTE_ID = -1;
  */
 export type InfoToExport =
     | 'submitters'
+    | 'supporters'
     | 'state'
     | 'recommendation'
     | 'category'
@@ -99,6 +100,7 @@ export enum MotionEditNotificationType {
 export const motionImportExportHeaderOrder: string[] = [
     'identifier',
     'submitters',
+    'supporters',
     'title',
     'text',
     'reason',
