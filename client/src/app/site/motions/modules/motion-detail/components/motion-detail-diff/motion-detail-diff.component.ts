@@ -85,6 +85,10 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
 
     public preamble: string;
 
+    public get showPreamble(): boolean {
+        return this.motion.showPreamble;
+    }
+
     /**
      * @param title
      * @param translate

@@ -167,6 +167,10 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         );
     }
 
+    public get showPreamble(): boolean {
+        return this.motion.showPreamble;
+    }
+
     /**
      * Saves the target motion. Accessed via the getter and setter.
      */

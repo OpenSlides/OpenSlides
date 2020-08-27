@@ -667,7 +667,7 @@
         </div>
 
         <!-- Text (hide preamble, if diff mode. The preample is included in the motion-detail-diff component) -->
-        <span *ngIf="!isRecoMode(ChangeRecoMode.Diff)" class="text-prefix-label">{{ preamble | translate }}</span>
+        <span *ngIf="showPreamble && !isRecoMode(ChangeRecoMode.Diff)" class="text-prefix-label">{{ preamble | translate }}</span>
 
         <!-- Regular motions or traditional amendments -->
         <ng-container *ngIf="!editMotion && !motion.isStatuteAmendment() && !motion.isParagraphBasedAmendment()">

@@ -142,6 +142,10 @@ export class ViewMotion extends BaseViewModelWithAgendaItemAndListOfSpeakers<Mot
         return this.speakerAmount > 0;
     }
 
+    public get showPreamble(): boolean {
+        return !this.state?.isFinalState ?? true;
+    }
+
     /**
      * Translate the state's css class into a color
      *
