@@ -176,6 +176,9 @@ export class HtmlToPdfService {
             docDef.push(parsedElement);
         }
 
+        // DEBUG: printing the following. Do not remove, just comment out
+        // console.log('MakePDF doc :\n---\n', JSON.stringify(docDef), '\n---\n');
+
         return docDef;
     }
 
@@ -458,7 +461,6 @@ export class HtmlToPdfService {
                     // Add a blank with the normal font size here, so in rare cases the text
                     // is rendered on the next page and the line number on the previous page.
                     text: ' ',
-                    fontSize: 10,
                     decoration: ''
                 },
                 {
@@ -540,10 +542,8 @@ export class HtmlToPdfService {
                 }
             }
 
-            // If this is an list item, add some space to the lineNumbers:
-            if (childrenLineNumbers.length && element.nodeName === 'LI') {
-                childrenLineNumbers[childrenLineNumbers.length - 1].marginBottom = this.LI_MARGIN_BOTTOM;
-            } else if (childrenLineNumbers.length && element.parentNode.nodeName === 'LI') {
+            // if the found element is a list item, add some spacing
+            if (childrenLineNumbers.length && (element.nodeName === 'LI' || element.parentNode.nodeName === 'LI')) {
                 childrenLineNumbers[childrenLineNumbers.length - 1].marginBottom = this.P_MARGIN_BOTTOM;
             }
 
