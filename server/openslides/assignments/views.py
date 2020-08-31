@@ -465,14 +465,14 @@ class AssignmentPollViewSet(BasePollViewSet):
                         )
                     if (
                         poll.pollmethod == AssignmentPoll.POLLMETHOD_YNA
-                        and value not in ("Y", "N", "A",)
+                        and value not in ("Y", "N", "A")
                     ):
                         raise ValidationError(
                             {"detail": "Every value must be Y, N or A"}
                         )
                     elif (
                         poll.pollmethod == AssignmentPoll.POLLMETHOD_YN
-                        and value not in ("Y", "N",)
+                        and value not in ("Y", "N")
                     ):
                         raise ValidationError({"detail": "Every value must be Y or N"})
 
@@ -526,7 +526,7 @@ class AssignmentPollViewSet(BasePollViewSet):
         for option_id, result in data.items():
             option = options.get(pk=option_id)
             vote = AssignmentVote.objects.create(
-                option=option, user=vote_user, value=result, weight=weight,
+                option=option, user=vote_user, value=result, weight=weight
             )
             inform_changed_data(vote, no_delete_on_restriction=True)
             inform_changed_data(option, no_delete_on_restriction=True)

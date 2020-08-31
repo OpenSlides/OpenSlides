@@ -1744,8 +1744,6 @@ class StateViewSet(ModelViewSet, ProtectedErrorMessageMixin):
         return result
 
     def create(self, request, *args, **kwargs):
-        """
-        """
         result = super().create(request, *args, **kwargs)
         workflow_id = request.data[
             "workflow_id"

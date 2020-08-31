@@ -360,8 +360,6 @@ class ListOfSpeakersManager(BaseManager):
 
 
 class ListOfSpeakers(RESTModelMixin, models.Model):
-    """
-    """
 
     access_permissions = ListOfSpeakersAccessPermissions()
     objects = ListOfSpeakersManager()

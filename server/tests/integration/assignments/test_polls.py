@@ -105,7 +105,7 @@ def create_assignment_polls():
 class CreateAssignmentPoll(TestCase):
     def advancedSetUp(self):
         self.assignment = Assignment.objects.create(
-            title="test_assignment_ohneivoh9caiB8Yiungo", open_posts=1,
+            title="test_assignment_ohneivoh9caiB8Yiungo", open_posts=1
         )
         self.assignment.add_candidate(self.admin)
 
@@ -576,7 +576,7 @@ class UpdateAssignmentPoll(TestCase):
 
     def test_patch_groups_to_empty(self):
         response = self.client.patch(
-            reverse("assignmentpoll-detail", args=[self.poll.pk]), {"groups_id": []},
+            reverse("assignmentpoll-detail", args=[self.poll.pk]), {"groups_id": []}
         )
         self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
         poll = AssignmentPoll.objects.get()
@@ -869,7 +869,7 @@ class VoteAssignmentPollAnalogYNA(VoteAssignmentPollBaseTestClass):
     def test_wrong_data_format(self):
         self.start_poll()
         response = self.client.post(
-            reverse("assignmentpoll-vote", args=[self.poll.pk]), [1, 2, 5],
+            reverse("assignmentpoll-vote", args=[self.poll.pk]), [1, 2, 5]
         )
         self.assertHttpStatusVerbose(response, status.HTTP_400_BAD_REQUEST)
         self.assertFalse(AssignmentVote.objects.exists())
@@ -1063,7 +1063,7 @@ class VoteAssignmentPollNamedYNA(VoteAssignmentPollBaseTestClass):
         option2 = self.poll2.options.get()
         # Do request to poll with option2 (which is wrong...)
         response = self.client.post(
-            reverse("assignmentpoll-vote", args=[self.poll.pk]), {str(option2.id): "Y"},
+            reverse("assignmentpoll-vote", args=[self.poll.pk]), {str(option2.id): "Y"}
         )
         self.assertHttpStatusVerbose(response, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(AssignmentVote.objects.count(), 0)

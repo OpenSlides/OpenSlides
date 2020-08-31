@@ -20,5 +20,5 @@ class Migration(migrations.Migration):
         migrations.RemoveField(model_name="assignmentpoll", name="votesabstain"),
         migrations.RemoveField(model_name="assignmentpoll", name="votesno"),
         migrations.RemoveField(model_name="assignmentpoll", name="published"),
-        migrations.RemoveField(model_name="assignmentrelateduser", name="elected",),
+        migrations.RemoveField(model_name="assignmentrelateduser", name="elected"),
     ]
