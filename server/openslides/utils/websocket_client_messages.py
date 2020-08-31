@@ -62,7 +62,7 @@ class Notify(BaseWebsocketClientMessage):
         perm = self.notify_permissions.get(content["name"])
         if perm is not None and not await async_has_perm(consumer.user_id, perm):
             raise NotAuthorizedException(
-                f"You need '{perm}' to send this message.", in_response=id,
+                f"You need '{perm}' to send this message.", in_response=id
             )
         else:
             # Some logging

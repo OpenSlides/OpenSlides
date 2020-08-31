@@ -98,5 +98,5 @@ class ConsumerAutoupdateStrategy:
             self.client_change_id = max_change_id
             # It will be send, so we can set the client_change_id
             await self.consumer.send_json(
-                type="autoupdate", content=autoupdate, in_response=in_response,
+                type="autoupdate", content=autoupdate, in_response=in_response
             )

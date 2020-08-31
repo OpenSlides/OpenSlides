@@ -723,7 +723,7 @@ class GroupCreate(TestCase):
         self.client.login(username="admin", password="admin")
 
         response = self.client.post(
-            reverse("group-list"), {"name": "Test name ldr59xq2mvt96rdayhju"},
+            reverse("group-list"), {"name": "Test name ldr59xq2mvt96rdayhju"}
         )
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)

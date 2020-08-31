@@ -9,6 +9,4 @@ class Migration(migrations.Migration):
         ("core", "0027_projector_size_2"),
     ]
 
-    operations = [
-        migrations.RemoveField(model_name="projector", name="height",),
-    ]
+    operations = [migrations.RemoveField(model_name="projector", name="height")]

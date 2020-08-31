@@ -143,7 +143,7 @@ class ProtocollAsyncJsonWebsocketConsumer(AsyncCompressedJsonWebsocketConsumer):
         )
 
     async def send_exception(
-        self, e: BaseWebsocketException, silence_errors: Optional[bool] = True,
+        self, e: BaseWebsocketException, silence_errors: Optional[bool] = True
     ) -> None:
         """
         Send generic error messages with a custom status code (see above) and a text message.

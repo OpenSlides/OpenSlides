@@ -109,7 +109,7 @@ jobs:
       script:
         - flake8 openslides tests
         - isort --check-only --diff --recursive openslides tests
-        - black --check --diff --target-version py36 openslides tests
+        - black --check --diff openslides tests
         - mypy openslides/ tests/
         - pytest --cov --cov-fail-under=75
 
@@ -122,7 +122,7 @@ jobs:
       script:
         - flake8 openslides tests
         - isort --check-only --diff --recursive openslides tests
-        - black --check --diff --target-version py36 openslides tests
+        - black --check --diff openslides tests
         - mypy openslides/ tests/
         - pytest --cov --cov-fail-under=75
 

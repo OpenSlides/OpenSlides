@@ -165,7 +165,7 @@ class ElementCache:
         logger.info("Done saving the cache data.")
 
     def _build_cache_get_elementid_model_mapping(
-        self, config_only: bool = False,
+        self, config_only: bool = False
     ) -> Dict[str, str]:
         """
         Do NOT call this in an asynchronous context!

@@ -488,7 +488,7 @@ class UpdateMotionPoll(TestCase):
 
     def test_patch_groups_to_empty(self):
         response = self.client.patch(
-            reverse("motionpoll-detail", args=[self.poll.pk]), {"groups_id": []},
+            reverse("motionpoll-detail", args=[self.poll.pk]), {"groups_id": []}
         )
         self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
         poll = MotionPoll.objects.get()
@@ -641,7 +641,7 @@ class VoteMotionPollAnalog(TestCase):
     def test_vote_missing_data(self):
         self.start_poll()
         response = self.client.post(
-            reverse("motionpoll-vote", args=[self.poll.pk]), {"Y": "4", "N": "22.6"},
+            reverse("motionpoll-vote", args=[self.poll.pk]), {"Y": "4", "N": "22.6"}
         )
         self.assertHttpStatusVerbose(response, status.HTTP_400_BAD_REQUEST)
         self.assertFalse(MotionPoll.objects.get().get_votes().exists())
@@ -879,7 +879,7 @@ class VoteMotionPollNamed(TestCase):
 
 
 class VoteMotionPollNamedAutoupdates(TestCase):
-    """ 3 important users:
+    """3 important users:
     self.admin: manager, has can_see, can_manage, can_manage_polls (in admin group)
     self.user1: votes, has can_see perms and in in delegate group
     self.other_user: Just has can_see perms and is NOT in the delegate group.
@@ -1018,7 +1018,7 @@ class VoteMotionPollNamedAutoupdates(TestCase):
 
 
 class VoteMotionPollPseudoanonymousAutoupdates(TestCase):
-    """ 3 important users:
+    """3 important users:
     self.admin: manager, has can_see, can_manage, can_manage_polls (in admin group)
     self.user: votes, has can_see perms and in in delegate group
     self.other_user: Just has can_see perms and is NOT in the delegate group.
