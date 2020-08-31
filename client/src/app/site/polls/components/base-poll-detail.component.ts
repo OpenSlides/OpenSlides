@@ -1,4 +1,4 @@
-import { OnInit } from '@angular/core';
+import { Directive, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
@@ -15,7 +15,7 @@ import { BasePollDialogService } from 'app/core/ui-services/base-poll-dialog.ser
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ChartData } from 'app/shared/components/charts/charts.component';
 import { BaseVote } from 'app/shared/models/poll/base-vote';
-import { BaseViewComponent } from 'app/site/base/base-view';
+import { BaseViewComponentDirective } from 'app/site/base/base-view';
 import { ViewGroup } from 'app/site/users/models/view-group';
 import { ViewUser } from 'app/site/users/models/view-user';
 import { BasePollRepositoryService } from '../services/base-poll-repository.service';
@@ -27,7 +27,9 @@ export interface BaseVoteData {
     user?: ViewUser;
 }
 
-export abstract class BasePollDetailComponent<V extends ViewBasePoll, S extends PollService> extends BaseViewComponent
+@Directive()
+export abstract class BasePollDetailComponentDirective<V extends ViewBasePoll, S extends PollService>
+    extends BaseViewComponentDirective
     implements OnInit {
     /**
      * All the groups of users.

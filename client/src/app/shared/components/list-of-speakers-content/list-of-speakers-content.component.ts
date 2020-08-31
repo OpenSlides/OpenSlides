@@ -24,7 +24,7 @@ import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ViewportService } from 'app/core/ui-services/viewport.service';
 import { ViewListOfSpeakers } from 'app/site/agenda/models/view-list-of-speakers';
 import { SpeakerState, ViewSpeaker } from 'app/site/agenda/models/view-speaker';
-import { BaseViewComponent } from 'app/site/base/base-view';
+import { BaseViewComponentDirective } from 'app/site/base/base-view';
 import { ViewUser } from 'app/site/users/models/view-user';
 import { Selectable } from '../selectable';
 import { SortingListComponent } from '../sorting-list/sorting-list.component';
@@ -35,7 +35,7 @@ import { SortingListComponent } from '../sorting-list/sorting-list.component';
     styleUrls: ['./list-of-speakers-content.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ListOfSpeakersContentComponent extends BaseViewComponent implements OnInit {
+export class ListOfSpeakersContentComponent extends BaseViewComponentDirective implements OnInit {
     @ViewChild(SortingListComponent)
     public listElement: SortingListComponent;
 

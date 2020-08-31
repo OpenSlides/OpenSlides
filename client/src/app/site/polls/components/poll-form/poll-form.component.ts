@@ -15,7 +15,7 @@ import { PercentBase } from 'app/shared/models/poll/base-poll';
 import { PollType } from 'app/shared/models/poll/base-poll';
 import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
 import { ViewAssignmentPoll } from 'app/site/assignments/models/view-assignment-poll';
-import { BaseViewComponent } from 'app/site/base/base-view';
+import { BaseViewComponentDirective } from 'app/site/base/base-view';
 import {
     MajorityMethodVerbose,
     PollClassType,
@@ -31,7 +31,8 @@ import { PollService } from '../../services/poll.service';
     templateUrl: './poll-form.component.html',
     styleUrls: ['./poll-form.component.scss']
 })
-export class PollFormComponent<T extends ViewBasePoll, S extends PollService> extends BaseViewComponent
+export class PollFormComponent<T extends ViewBasePoll, S extends PollService>
+    extends BaseViewComponentDirective
     implements OnInit {
     /**
      * The form-group for the meta-info.

@@ -7,7 +7,7 @@ import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 
 import { MediafileRepositoryService } from 'app/core/repositories/mediafiles/mediafile-repository.service';
-import { BaseViewComponent } from 'app/site/base/base-view';
+import { BaseViewComponentDirective } from 'app/site/base/base-view';
 
 /**
  * Handle file uploads from user
@@ -17,7 +17,7 @@ import { BaseViewComponent } from 'app/site/base/base-view';
     templateUrl: './media-upload.component.html',
     styleUrls: ['./media-upload.component.scss']
 })
-export class MediaUploadComponent extends BaseViewComponent implements OnInit {
+export class MediaUploadComponent extends BaseViewComponentDirective implements OnInit {
     /**
      * Determine if uploading should happen parallel or synchronously.
      * Synchronous uploading might be necessary if we see that stuff breaks

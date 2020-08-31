@@ -12,7 +12,8 @@ export type MotionChangeRecommendationTitleInformation = object;
  * Provides "safe" access to variables and functions in {@link MotionChangeRecommendation}
  * @ignore
  */
-export class ViewMotionChangeRecommendation extends BaseViewModel<MotionChangeRecommendation>
+export class ViewMotionChangeRecommendation
+    extends BaseViewModel<MotionChangeRecommendation>
     implements MotionChangeRecommendationTitleInformation, ViewUnifiedChange {
     public static COLLECTIONSTRING = MotionChangeRecommendation.COLLECTIONSTRING;
     protected _collectionString = MotionChangeRecommendation.COLLECTIONSTRING;

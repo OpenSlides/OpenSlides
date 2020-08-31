@@ -9,7 +9,7 @@ import { CategoryRepositoryService } from 'app/core/repositories/motions/categor
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { SortingTreeComponent } from 'app/shared/components/sorting-tree/sorting-tree.component';
 import { CanComponentDeactivate } from 'app/shared/utils/watch-for-changes.guard';
-import { BaseViewComponent } from 'app/site/base/base-view';
+import { BaseViewComponentDirective } from 'app/site/base/base-view';
 import { ViewCategory } from 'app/site/motions/models/view-category';
 
 /**
@@ -20,7 +20,7 @@ import { ViewCategory } from 'app/site/motions/models/view-category';
     templateUrl: './categories-sort.component.html',
     styleUrls: ['./categories-sort.component.scss']
 })
-export class CategoriesSortComponent extends BaseViewComponent implements CanComponentDeactivate {
+export class CategoriesSortComponent extends BaseViewComponentDirective implements CanComponentDeactivate {
     /**
      * Reference to the sorting tree.
      */

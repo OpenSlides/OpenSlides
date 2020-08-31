@@ -1,6 +1,6 @@
 import { FocusMonitor } from '@angular/cdk/a11y';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { ElementRef, HostBinding, Input, OnDestroy, Optional, Self } from '@angular/core';
+import { Directive, ElementRef, HostBinding, Input, OnDestroy, Optional, Self } from '@angular/core';
 import { ControlValueAccessor, FormBuilder, FormControl, FormGroup, NgControl } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material/form-field';
 
@@ -21,11 +21,13 @@ import { Subject, Subscription } from 'rxjs';
  * })
  * ```
  */
-export abstract class BaseFormControlComponent<T> extends MatFormFieldControl<T>
+@Directive()
+export abstract class BaseFormControlComponentDirective<T>
+    extends MatFormFieldControl<T>
     implements OnDestroy, ControlValueAccessor {
     public static nextId = 0;
 
-    @HostBinding() public id = `base-form-control-${BaseFormControlComponent.nextId++}`;
+    @HostBinding() public id = `base-form-control-${BaseFormControlComponentDirective.nextId++}`;
 
     @HostBinding('class.floating') public get shouldLabelFloat(): boolean {
         return this.focused || !this.empty;

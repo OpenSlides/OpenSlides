@@ -6,14 +6,14 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { OperatorService, Permission } from 'app/core/core-services/operator.service';
 import { ConfigRepositoryService } from 'app/core/repositories/config/config-repository.service';
-import { BaseViewComponent } from 'app/site/base/base-view';
+import { BaseViewComponentDirective } from 'app/site/base/base-view';
 
 @Component({
     selector: 'os-privacy-policy',
     templateUrl: './privacy-policy.component.html',
     styleUrls: ['./privacy-policy.component.scss']
 })
-export class PrivacyPolicyComponent extends BaseViewComponent implements OnInit {
+export class PrivacyPolicyComponent extends BaseViewComponentDirective implements OnInit {
     /**
      * Whether the component is in editing-mode.
      */

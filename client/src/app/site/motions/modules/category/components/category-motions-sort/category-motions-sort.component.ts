@@ -12,7 +12,7 @@ import { ChoiceService } from 'app/core/ui-services/choice.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { SortingListComponent } from 'app/shared/components/sorting-list/sorting-list.component';
 import { CanComponentDeactivate } from 'app/shared/utils/watch-for-changes.guard';
-import { BaseViewComponent } from 'app/site/base/base-view';
+import { BaseViewComponentDirective } from 'app/site/base/base-view';
 import { ViewCategory } from 'app/site/motions/models/view-category';
 import { ViewMotion } from 'app/site/motions/models/view-motion';
 
@@ -26,7 +26,7 @@ import { ViewMotion } from 'app/site/motions/models/view-motion';
     templateUrl: './category-motions-sort.component.html',
     styleUrls: ['./category-motions-sort.component.scss']
 })
-export class CategoryMotionsSortComponent extends BaseViewComponent implements OnInit, CanComponentDeactivate {
+export class CategoryMotionsSortComponent extends BaseViewComponentDirective implements OnInit, CanComponentDeactivate {
     /**
      * The current category. Determined by the route
      */

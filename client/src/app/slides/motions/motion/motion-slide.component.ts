@@ -11,7 +11,7 @@ import { ViewUnifiedChange, ViewUnifiedChangeType } from 'app/shared/models/moti
 import { MotionTitleInformation } from 'app/site/motions/models/view-motion';
 import { ChangeRecoMode, LineNumberingMode } from 'app/site/motions/motions.constants';
 import { IBaseScaleScrollSlideComponent } from 'app/slides/base-scale-scroll-slide-component';
-import { BaseMotionSlideComponent } from '../base/base-motion-slide';
+import { BaseMotionSlideComponentDirective } from '../base/base-motion-slide';
 import { MotionSlideData, MotionSlideDataAmendment } from './motion-slide-data';
 import { MotionSlideObjAmendmentParagraph } from './motion-slide-obj-amendment-paragraph';
 import { MotionSlideObjChangeReco } from './motion-slide-obj-change-reco';
@@ -22,7 +22,8 @@ import { MotionSlideObjChangeReco } from './motion-slide-obj-change-reco';
     styleUrls: ['./motion-slide.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
-export class MotionSlideComponent extends BaseMotionSlideComponent<MotionSlideData>
+export class MotionSlideComponent
+    extends BaseMotionSlideComponentDirective<MotionSlideData>
     implements IBaseScaleScrollSlideComponent<MotionSlideData> {
     /**
      * Indicates the LineNumberingMode Mode.

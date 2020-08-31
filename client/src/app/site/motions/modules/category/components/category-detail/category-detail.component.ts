@@ -13,7 +13,7 @@ import { CategoryRepositoryService } from 'app/core/repositories/motions/categor
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
-import { BaseViewComponent } from 'app/site/base/base-view';
+import { BaseViewComponentDirective } from 'app/site/base/base-view';
 import { ViewCategory } from 'app/site/motions/models/view-category';
 import { ViewMotion } from 'app/site/motions/models/view-motion';
 
@@ -25,7 +25,7 @@ import { ViewMotion } from 'app/site/motions/models/view-motion';
     templateUrl: './category-detail.component.html',
     styleUrls: ['./category-detail.component.scss']
 })
-export class CategoryDetailComponent extends BaseViewComponent implements OnInit {
+export class CategoryDetailComponent extends BaseViewComponentDirective implements OnInit {
     /**
      * The one selected category
      */

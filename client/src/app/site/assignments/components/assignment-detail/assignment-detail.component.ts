@@ -16,7 +16,7 @@ import { UserRepositoryService } from 'app/core/repositories/users/user-reposito
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { Assignment } from 'app/shared/models/assignments/assignment';
 import { ViewItem } from 'app/site/agenda/models/view-item';
-import { BaseViewComponent } from 'app/site/base/base-view';
+import { BaseViewComponentDirective } from 'app/site/base/base-view';
 import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
 import { LocalPermissionsService } from 'app/site/motions/services/local-permissions.service';
 import { ViewTag } from 'app/site/tags/models/view-tag';
@@ -36,7 +36,7 @@ import { ViewAssignmentRelatedUser } from '../../models/view-assignment-related-
     templateUrl: './assignment-detail.component.html',
     styleUrls: ['./assignment-detail.component.scss']
 })
-export class AssignmentDetailComponent extends BaseViewComponent implements OnInit {
+export class AssignmentDetailComponent extends BaseViewComponentDirective implements OnInit {
     /**
      * Determines if the assignment is new
      */

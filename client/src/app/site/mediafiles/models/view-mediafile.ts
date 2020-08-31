@@ -26,7 +26,8 @@ export interface MediafileTitleInformation {
     title: string;
 }
 
-export class ViewMediafile extends BaseViewModelWithListOfSpeakers<Mediafile>
+export class ViewMediafile
+    extends BaseViewModelWithListOfSpeakers<Mediafile>
     implements MediafileTitleInformation, Searchable {
     public static COLLECTIONSTRING = Mediafile.COLLECTIONSTRING;
     protected _collectionString = Mediafile.COLLECTIONSTRING;

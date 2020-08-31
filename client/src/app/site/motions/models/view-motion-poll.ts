@@ -23,7 +23,8 @@ export const MotionPollPercentBaseVerbose = {
     disabled: 'Disabled (no percents)'
 };
 
-export class ViewMotionPoll extends ViewBasePoll<MotionPoll, MotionPollMethod, PercentBase>
+export class ViewMotionPoll
+    extends ViewBasePoll<MotionPoll, MotionPollMethod, PercentBase>
     implements MotionPollTitleInformation {
     public static COLLECTIONSTRING = MotionPoll.COLLECTIONSTRING;
     protected _collectionString = MotionPoll.COLLECTIONSTRING;

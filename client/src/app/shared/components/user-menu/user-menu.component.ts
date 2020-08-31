@@ -11,7 +11,7 @@ import { ConfigService } from 'app/core/ui-services/config.service';
 import { LoginDataService } from 'app/core/ui-services/login-data.service';
 import { OverlayService } from 'app/core/ui-services/overlay.service';
 import { DEFAULT_AUTH_TYPE } from 'app/shared/models/users/user';
-import { BaseViewComponent } from 'app/site/base/base-view';
+import { BaseViewComponentDirective } from 'app/site/base/base-view';
 import { ViewUser } from 'app/site/users/models/view-user';
 
 @Component({
@@ -19,7 +19,7 @@ import { ViewUser } from 'app/site/users/models/view-user';
     templateUrl: './user-menu.component.html',
     styleUrls: ['./user-menu.component.scss']
 })
-export class UserMenuComponent extends BaseViewComponent implements OnInit {
+export class UserMenuComponent extends BaseViewComponentDirective implements OnInit {
     public isLoggedIn: boolean;
 
     public user: ViewUser;

@@ -10,7 +10,7 @@ import { ConfigService } from 'app/core/ui-services/config.service';
 import { ProjectionDialogService } from 'app/core/ui-services/projection-dialog.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { Projector } from 'app/shared/models/core/projector';
-import { BaseViewComponent } from 'app/site/base/base-view';
+import { BaseViewComponentDirective } from 'app/site/base/base-view';
 import { ViewCountdown } from '../../models/view-countdown';
 
 /**
@@ -21,7 +21,7 @@ import { ViewCountdown } from '../../models/view-countdown';
     templateUrl: './countdown-controls.component.html',
     styleUrls: ['./countdown-controls.component.scss']
 })
-export class CountdownControlsComponent extends BaseViewComponent {
+export class CountdownControlsComponent extends BaseViewComponentDirective {
     /**
      * Countdown as input
      */

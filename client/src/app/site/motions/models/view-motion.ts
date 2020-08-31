@@ -35,7 +35,8 @@ export interface MotionTitleInformation extends TitleInformationWithAgendaItem {
  * Provides "safe" access to variables and functions in {@link Motion}
  * @ignore
  */
-export class ViewMotion extends BaseViewModelWithAgendaItemAndListOfSpeakers<Motion>
+export class ViewMotion
+    extends BaseViewModelWithAgendaItemAndListOfSpeakers<Motion>
     implements MotionTitleInformation, Searchable {
     public get motion(): Motion {
         return this._model;

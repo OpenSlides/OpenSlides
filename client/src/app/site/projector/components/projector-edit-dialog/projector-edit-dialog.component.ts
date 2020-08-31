@@ -19,7 +19,7 @@ import { ProjectionDefaultRepositoryService } from 'app/core/repositories/projec
 import { ProjectorRepositoryService } from 'app/core/repositories/projector/projector-repository.service';
 import { ProjectorComponent } from 'app/shared/components/projector/projector.component';
 import { Projector } from 'app/shared/models/core/projector';
-import { BaseViewComponent } from 'app/site/base/base-view';
+import { BaseViewComponentDirective } from 'app/site/base/base-view';
 import { ClockSlideService } from '../../services/clock-slide.service';
 import { ViewProjectionDefault } from '../../models/view-projection-default';
 import { ViewProjector } from '../../models/view-projector';
@@ -35,7 +35,7 @@ import { ViewProjector } from '../../models/view-projector';
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ProjectorEditDialogComponent extends BaseViewComponent implements OnInit {
+export class ProjectorEditDialogComponent extends BaseViewComponentDirective implements OnInit {
     /**
      * import the projector as view child, to determine when to update
      * the preview.

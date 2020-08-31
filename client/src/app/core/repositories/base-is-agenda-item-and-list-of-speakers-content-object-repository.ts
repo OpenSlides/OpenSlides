@@ -31,10 +31,11 @@ export function isBaseIsAgendaItemAndListOfSpeakersContentObjectRepository(
  * multi-inheritance by implementing both inherit classes again...
  */
 export abstract class BaseIsAgendaItemAndListOfSpeakersContentObjectRepository<
-    V extends BaseProjectableViewModel & BaseViewModelWithAgendaItem & BaseViewModelWithListOfSpeakers & T,
-    M extends BaseModel,
-    T extends TitleInformationWithAgendaItem
-> extends BaseRepository<V, M, T>
+        V extends BaseProjectableViewModel & BaseViewModelWithAgendaItem & BaseViewModelWithListOfSpeakers & T,
+        M extends BaseModel,
+        T extends TitleInformationWithAgendaItem
+    >
+    extends BaseRepository<V, M, T>
     implements
         IBaseIsAgendaItemContentObjectRepository<V, M, T>,
         IBaseIsListOfSpeakersContentObjectRepository<V, M, T> {

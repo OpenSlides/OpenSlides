@@ -13,7 +13,8 @@ export interface MotionCommentSectionTitleInformation {
  * Provides "safe" access to variables and functions in {@link MotionCommentSection}
  * @ignore
  */
-export class ViewMotionCommentSection extends BaseViewModel<MotionCommentSection>
+export class ViewMotionCommentSection
+    extends BaseViewModel<MotionCommentSection>
     implements MotionCommentSectionTitleInformation {
     public static COLLECTIONSTRING = MotionCommentSection.COLLECTIONSTRING;
     protected _collectionString = MotionCommentSection.COLLECTIONSTRING;

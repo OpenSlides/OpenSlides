@@ -23,7 +23,7 @@ import { Countdown } from 'app/shared/models/core/countdown';
 import { ProjectorElement } from 'app/shared/models/core/projector';
 import { ProjectorMessage } from 'app/shared/models/core/projector-message';
 import { infoDialogSettings, largeDialogSettings } from 'app/shared/utils/dialog-settings';
-import { BaseViewComponent } from 'app/site/base/base-view';
+import { BaseViewComponentDirective } from 'app/site/base/base-view';
 import { Projectable } from 'app/site/base/projectable';
 import { ViewCountdown } from 'app/site/projector/models/view-countdown';
 import { ViewProjectorMessage } from 'app/site/projector/models/view-projector-message';
@@ -44,7 +44,7 @@ import { ViewProjector } from '../../models/view-projector';
     styleUrls: ['./projector-detail.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ProjectorDetailComponent extends BaseViewComponent implements OnInit {
+export class ProjectorDetailComponent extends BaseViewComponentDirective implements OnInit {
     /**
      * The projector to show.
      */

@@ -8,7 +8,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { MotionCommentSectionRepositoryService } from 'app/core/repositories/motions/motion-comment-section-repository.service';
 import { MotionComment } from 'app/shared/models/motions/motion';
-import { BaseViewComponent } from 'app/site/base/base-view';
+import { BaseViewComponentDirective } from 'app/site/base/base-view';
 import { ViewMotion } from 'app/site/motions/models/view-motion';
 import { ViewMotionCommentSection } from 'app/site/motions/models/view-motion-comment-section';
 import { MotionPdfExportService } from 'app/site/motions/services/motion-pdf-export.service';
@@ -21,7 +21,7 @@ import { MotionPdfExportService } from 'app/site/motions/services/motion-pdf-exp
     templateUrl: './motion-comments.component.html',
     styleUrls: ['./motion-comments.component.scss']
 })
-export class MotionCommentsComponent extends BaseViewComponent implements OnInit {
+export class MotionCommentsComponent extends BaseViewComponentDirective implements OnInit {
     /**
      * An array of all sections the operator can see.
      */

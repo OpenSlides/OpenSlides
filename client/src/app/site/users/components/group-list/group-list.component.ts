@@ -12,7 +12,7 @@ import { AppPermissions, GroupRepositoryService } from 'app/core/repositories/us
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { Group } from 'app/shared/models/users/group';
 import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
-import { BaseViewComponent } from 'app/site/base/base-view';
+import { BaseViewComponentDirective } from 'app/site/base/base-view';
 import { ViewGroup } from '../../models/view-group';
 
 /**
@@ -23,7 +23,7 @@ import { ViewGroup } from '../../models/view-group';
     templateUrl: './group-list.component.html',
     styleUrls: ['./group-list.component.scss']
 })
-export class GroupListComponent extends BaseViewComponent implements OnInit {
+export class GroupListComponent extends BaseViewComponentDirective implements OnInit {
     /**
      * Holds all Groups
      */

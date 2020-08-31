@@ -14,7 +14,7 @@ import { LoginDataService } from 'app/core/ui-services/login-data.service';
 import { OverlayService } from 'app/core/ui-services/overlay.service';
 import { UserAuthType } from 'app/shared/models/users/user';
 import { ParentErrorStateMatcher } from 'app/shared/parent-error-state-matcher';
-import { BaseViewComponent } from 'app/site/base/base-view';
+import { BaseViewComponentDirective } from 'app/site/base/base-view';
 import { BrowserSupportService } from '../../services/browser-support.service';
 
 /**
@@ -27,7 +27,7 @@ import { BrowserSupportService } from '../../services/browser-support.service';
     templateUrl: './login-mask.component.html',
     styleUrls: ['./login-mask.component.scss']
 })
-export class LoginMaskComponent extends BaseViewComponent implements OnInit, OnDestroy {
+export class LoginMaskComponent extends BaseViewComponentDirective implements OnInit, OnDestroy {
     /**
      * Show or hide password and change the indicator accordingly
      */

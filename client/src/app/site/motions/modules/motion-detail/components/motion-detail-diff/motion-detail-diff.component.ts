@@ -14,7 +14,7 @@ import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ViewUnifiedChange, ViewUnifiedChangeType } from 'app/shared/models/motions/view-unified-change';
 import { mediumDialogSettings } from 'app/shared/utils/dialog-settings';
 import { getRecommendationTypeName } from 'app/shared/utils/recommendation-type-names';
-import { BaseViewComponent } from 'app/site/base/base-view';
+import { BaseViewComponentDirective } from 'app/site/base/base-view';
 import { ViewMotion } from 'app/site/motions/models/view-motion';
 import { ViewMotionChangeRecommendation } from 'app/site/motions/models/view-motion-change-recommendation';
 import { LineNumberingMode } from 'app/site/motions/motions.constants';
@@ -57,7 +57,7 @@ import { ViewMotionAmendedParagraph } from '../../../../models/view-motion-amend
     styleUrls: ['./motion-detail-diff.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
-export class MotionDetailDiffComponent extends BaseViewComponent implements AfterViewInit {
+export class MotionDetailDiffComponent extends BaseViewComponentDirective implements AfterViewInit {
     /**
      * Get the {@link getRecommendationTypeName}-Function from Utils
      */
