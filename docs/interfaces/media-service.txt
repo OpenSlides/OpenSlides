@@ -1,0 +1,16 @@
+/**
+ * Saves a file (encoded as base64) into this service.
+ *
+ * Technical:
+ * POST to /internal/media/upload/ with JSON payload.
+ * Returns 200 on success, 4xx on Errors with a message in the payload.
+ */
+upload(file: string, id: Id, mimetype: string): {message: string} | void
+
+/**
+ * Retrieves a mediafile given by the meeting and the path of the file.
+ *
+ * Technical:
+ * GET to /system/media/get/<meeting_id>/<path>
+ */
+get(meeting_id: Id, path: string): Blob
