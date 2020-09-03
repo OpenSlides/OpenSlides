@@ -505,16 +505,6 @@ button.mat-menu-item.selected {
     width: -webkit-fill-available;
 }
 
-/**
- * Compilcated ngrid hack: The meta row won't disappear (just like that)
- * Select the first ever container pbl-ngrid-container div and hide
- */
-.pbl-ngrid-container {
-    > div {
-        height: 0;
-    }
-}
-
 .cdk-column-menu {
     padding: 0 16px 0 0 !important;
 }
