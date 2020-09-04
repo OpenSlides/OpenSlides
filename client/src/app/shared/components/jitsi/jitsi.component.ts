@@ -138,6 +138,30 @@ export class JitsiComponent extends BaseViewComponent implements OnInit, OnDestr
 
     public canManageSpeaker: boolean;
 
+    /**
+     * Jitsi|URL|Perm||Show
+     * =====|===|====||====
+     *   0  | 0 |  0 || 0
+     *   0  | 0 |  1 || 0
+     *   0  | 1 |  0 || 0
+     *   0  | 1 |  1 || 1
+     *   1  | 0 |  0 || 1
+     *   1  | 0 |  1 || 1
+     *   1  | 1 |  0 || 0
+     *   1  | 1 |  1 || 1
+     */
+    public get showConferenceBar(): boolean {
+        if (this.enableJitsi) {
+            if (this.videoStreamUrl && !this.canSeeLiveStream) {
+                return false;
+            } else {
+                return true;
+            }
+        } else {
+            return this.videoStreamUrl && this.canSeeLiveStream;
+        }
+    }
+
     public get isAccessPermitted(): boolean {
         return !this.restricted || this.canManageSpeaker || this.isOnCurrentLos;
     }
