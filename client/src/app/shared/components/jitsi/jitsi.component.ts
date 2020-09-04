@@ -315,26 +315,23 @@ export class JitsiComponent extends BaseViewComponent implements OnInit, OnDestr
         await this.configsLoaded;
 
         this.subscriptions.push(
-            this.storageMap
-                .watch(this.CONFERENCE_STATE_STORAGE_KEY)
-                .pipe(distinctUntilChanged())
-                .subscribe((confState: ConferenceState) => {
-                    if (confState in ConferenceState) {
-                        if (this.enableJitsi && (!this.videoStreamUrl || !this.canSeeLiveStream)) {
-                            this.currentState = ConferenceState.jitsi;
-                        } else if (!this.enableJitsi && this.videoStreamUrl && this.canSeeLiveStream) {
-                            this.currentState = ConferenceState.stream;
-                        } else {
-                            this.currentState = confState;
-                        }
+            this.storageMap.watch(this.CONFERENCE_STATE_STORAGE_KEY).subscribe((confState: ConferenceState) => {
+                if (confState in ConferenceState) {
+                    if (this.enableJitsi && (!this.videoStreamUrl || !this.canSeeLiveStream)) {
+                        this.currentState = ConferenceState.jitsi;
+                    } else if (!this.enableJitsi && this.videoStreamUrl && this.canSeeLiveStream) {
+                        this.currentState = ConferenceState.stream;
                     } else {
-                        this.setDefaultConfState();
+                        this.currentState = confState;
                     }
-                    // show stream window when the state changes to stream
-                    if (this.currentState === ConferenceState.stream && !this.streamActiveInAnotherTab) {
-                        this.showJitsiWindow = true;
-                    }
-                }),
+                } else {
+                    this.setDefaultConfState();
+                }
+                // show stream window when the state changes to stream
+                if (this.currentState === ConferenceState.stream && !this.streamActiveInAnotherTab) {
+                    this.showJitsiWindow = true;
+                }
+            }),
             // check if the operator is on the clos, remove from room if not permitted
             this.closService.currentListOfSpeakersObservable
                 .pipe(
