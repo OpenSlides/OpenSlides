@@ -92,7 +92,7 @@ for i in "${SELECTED_TARGETS[@]}"; do
   # Special instructions for local services
   build_script="$(dirname "${BASH_SOURCE[0]}")/../${i}/build.sh"
   if [[ -f "$build_script" ]]; then
-    . "$build_script"
+    ( . "$build_script" )
   else
     docker build --tag "$img" --pull "${OPTIONS[@]}" "$loc"
   fi
