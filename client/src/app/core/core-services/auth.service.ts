@@ -10,6 +10,12 @@ import { HttpService } from './http.service';
 import { OpenSlidesService } from './openslides.service';
 import { StorageService } from './storage.service';
 
+interface LoginData {
+    username: string;
+    password: string;
+    cookies?: boolean;
+}
+
 /**
  * Authenticates an OpenSlides user with username and password
  */
@@ -47,11 +53,14 @@ export class AuthService {
         earlySuccessCallback: () => void
     ): Promise<void> {
         if (authType === 'default') {
-            const user = {
+            const data: LoginData = {
                 username: username,
                 password: password
             };
-            const response = await this.http.post<WhoAmI>(environment.urlPrefix + '/users/login/', user);
+            if (!navigator.cookieEnabled) {
+                data.cookies = false;
+            }
+            const response = await this.http.post<WhoAmI>(environment.urlPrefix + '/users/login/', data);
             earlySuccessCallback();
             await this.OpenSlides.shutdown();
             await this.operator.setWhoAmI(response);
