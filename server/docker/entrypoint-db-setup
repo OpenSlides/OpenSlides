@@ -69,8 +69,7 @@ if [[ -f /run/secrets/os_user ]]; then
     # first_name, last_name, username, password, groups_id
     # email is optional
     # userid forces to to only create a user with this id, if it not exists before.
-    python manage.py createopenslidesuser \
-      --userid 2 \
+    python manage.py createinitialuser \
       --email "${OPENSLIDES_USER_EMAIL:-}" \
       "${OPENSLIDES_USER_FIRSTNAME}" \
       "${OPENSLIDES_USER_LASTNAME}" \
