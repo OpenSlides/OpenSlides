@@ -34,7 +34,9 @@
         </mat-option>
         <mat-divider></mat-divider>
     </ng-container>
-    <mat-option *ngFor="let selectedItem of getFilteredItems()" [value]="selectedItem.id">
-        {{ selectedItem.getTitle() | translate }}
-    </mat-option>
+    <cdk-virtual-scroll-viewport class="vscroll-viewport" minBufferPx="200" maxBufferPx="300" [itemSize]="50">
+        <mat-option *cdkVirtualFor="let selectedItem of getFilteredItems()" [value]="selectedItem.id">
+            {{ selectedItem.getTitle() | translate }}
+        </mat-option>
+    </cdk-virtual-scroll-viewport>
 </mat-select>
