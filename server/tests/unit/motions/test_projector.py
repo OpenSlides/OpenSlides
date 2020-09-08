@@ -108,6 +108,7 @@ def all_data_provider():
             "created": "2019-01-19T18:37:34.741336+01:00",
             "last_modified": "2019-01-19T18:37:34.741368+01:00",
             "change_recommendations": [],
+            "change_recommendations_id": [],
             "amendments_id": [],
         },
         3: {
@@ -142,6 +143,7 @@ def all_data_provider():
             "created": "2019-01-19T18:37:34.741336+01:00",
             "last_modified": "2019-01-19T18:37:34.741368+01:00",
             "change_recommendations": [],
+            "change_recommendations_id": [],
             "amendments_id": [],
         },
     }

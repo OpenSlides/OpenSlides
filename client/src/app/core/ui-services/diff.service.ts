@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { LineNumberedString, LinenumberingService } from './linenumbering.service';
+import { LineNumberedString, LinenumberingService, LineNumberRange } from './linenumbering.service';
 import { ViewUnifiedChange } from '../../shared/models/motions/view-unified-change';
 
 const ELEMENT_NODE = 1;
@@ -2149,11 +2149,24 @@ export class DiffService {
         paragraphNo: number,
         origText: string,
         newText: string,
-        lineLength: number
+        lineLength: number,
+        changeRecos?: ViewUnifiedChange[]
     ): DiffLinesInParagraph {
-        const paragraph_line_range = this.lineNumberingService.getLineNumberRange(origText),
-            diff = this.diff(origText, newText),
-            affected_lines = this.detectAffectedLineRange(diff);
+        const paragraph_line_range: LineNumberRange = this.lineNumberingService.getLineNumberRange(origText);
+        let diff = this.diff(origText, newText);
+        const affected_lines = this.detectAffectedLineRange(diff);
+
+        /**
+         * If the affect line has change recos, overwirte the diff with the change reco
+         */
+        if (changeRecos && changeRecos.length) {
+            const recoToThisLine = changeRecos.find(reco => {
+                return reco.getLineFrom() === affected_lines.from;
+            });
+            if (recoToThisLine) {
+                diff = this.diff(origText, recoToThisLine.getChangeNewText());
+            }
+        }
 
         if (affected_lines === null) {
             return null;

@@ -78,6 +78,9 @@ export class MotionSlideComponent extends BaseMotionSlideComponent<MotionSlideDa
             );
         }
 
+        console.log('cr mode? ', this.crMode);
+        console.log('the data: ', this._data);
+
         this.recalcUnifiedChanges();
     }
 
@@ -410,26 +413,28 @@ export class MotionSlideComponent extends BaseMotionSlideComponent<MotionSlideDa
      * @returns {DiffLinesInParagraph[]}
      */
     public getAmendedParagraphs(): DiffLinesInParagraph[] {
-        let baseHtml = this.data.data.base_motion.text;
-        baseHtml = this.lineNumbering.insertLineNumbers(baseHtml, this.lineLength);
+        const motion = this.data.data;
+        const baseHtml = this.lineNumbering.insertLineNumbers(motion.base_motion?.text, this.lineLength);
         const baseParagraphs = this.lineNumbering.splitToParagraphs(baseHtml);
 
-        return this.data.data.amendment_paragraphs
+        const amendmentParagraphs = motion.amendment_paragraphs
             .map(
-                (newText: string, paraNo: number): DiffLinesInParagraph => {
-                    if (newText === null) {
+                (amendmentText: string, paraNo: number): DiffLinesInParagraph => {
+                    if (amendmentText === null) {
                         return null;
                     }
-                    // Hint: can be either DiffLinesInParagraph or null, if no changes are made
                     return this.diff.getAmendmentParagraphsLines(
                         paraNo,
                         baseParagraphs[paraNo],
-                        newText,
-                        this.lineLength
+                        amendmentText,
+                        this.lineLength,
+                        this.crMode === ChangeRecoMode.Diff ? this.getAllTextChangingObjects() : undefined
                     );
                 }
             )
             .filter((para: DiffLinesInParagraph) => para !== null);
+
+        return amendmentParagraphs;
     }
 
     /**
