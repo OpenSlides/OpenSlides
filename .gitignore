@@ -78,4 +78,4 @@ cypress.json
 /docker/docker-compose.yml
 *-version.txt
 # secrets
-docker/secrets/*.env
+docker/*.env
