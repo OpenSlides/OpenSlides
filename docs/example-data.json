@@ -173,6 +173,7 @@
         "description": "Add description here",
 
         "meeting_ids": [1],
+        "template_meeting_id": null,
         "default_meeting_id": 1,
         "member_ids": [],
         "manager_ids": [],
@@ -184,7 +185,7 @@
     {
         "id": 1,
         "url_name": "os3_test",
-        "is_template": false,
+        "template_for_committee_id": null,
         "enable_anonymous": false,
 
         "name": "OpenSlides - Die Veranstaltung (Teil II)",
