@@ -127,6 +127,7 @@ Interface committee {
     description: HTML;
 
     meeting_ids: (meeting/committee_id)[];
+    template_meeting_id: meeting/template_for_committee_id;
     default_meeting_id: meeting/default_meeting_for_committee_id;
     member_ids: (user/committee_as_memeber_ids)[];
     manager_ids: (user/committee_as_manager_ids)[];
@@ -145,12 +146,12 @@ Interface meeting {
     description: string;
     location: string;
     start_time: datetime;
-    end_time: datetime; // TODO: is this needed?
+    end_time: datetime;
     custom_translations: JSON;
 
     // System
     url_name: string; // For unique urls.
-    is_template: boolean; // Unique within a committee
+    template_for_committee_id: committee/template_meeting_id;
     enable_anonymous: boolean;
 
     // Jitsi/Livestream settings
