@@ -1,5 +1,6 @@
 from textwrap import dedent
 
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from django.db import transaction
 from django.db.utils import IntegrityError
@@ -104,8 +105,8 @@ class BasePollViewSet(ModelViewSet):
         # convert user ids to option ids
         self.convert_option_data(poll, vote_data)
 
-        self.validate_vote_data(vote_data, poll, request.user)
-        self.handle_analog_vote(vote_data, poll, request.user)
+        self.validate_vote_data(vote_data, poll)
+        self.handle_analog_vote(vote_data, poll)
 
         if request.data.get("publish_immediately"):
             poll.state = BasePoll.STATE_PUBLISHED
@@ -198,25 +199,41 @@ class BasePollViewSet(ModelViewSet):
         if isinstance(request.user, AnonymousUser):
             self.permission_denied(request)
 
-        # check permissions based on poll type and handle requests
-        self.assert_can_vote(poll, request)
-
+        # data format is:
+        # { data: <vote_data>, [user_id: int] }
+        # if user_id is given, the operator votes for this user instead of himself
+        # user_id is ignored for analog polls
         data = request.data
-        self.validate_vote_data(data, poll, request.user)
+        if "data" not in data:
+            raise ValidationError({"detail": "No data provided."})
+        vote_data = data["data"]
+        if "user_id" in data and poll.type != BasePoll.TYPE_ANALOG:
+            try:
+                vote_user = get_user_model().objects.get(pk=data["user_id"])
+            except get_user_model().DoesNotExist:
+                raise ValidationError({"detail": "The given user does not exist."})
+        else:
+            vote_user = request.user
+
+        # check permissions based on poll type and user
+        self.assert_can_vote(poll, request, vote_user)
+
+        # validate the vote data
+        self.validate_vote_data(vote_data, poll)
 
         if poll.type == BasePoll.TYPE_ANALOG:
-            self.handle_analog_vote(data, poll, request.user)
-            if request.data.get("publish_immediately") == "1":
+            self.handle_analog_vote(vote_data, poll)
+            if vote_data.get("publish_immediately") == "1":
                 poll.state = BasePoll.STATE_PUBLISHED
             else:
                 poll.state = BasePoll.STATE_FINISHED
             poll.save()
 
         elif poll.type == BasePoll.TYPE_NAMED:
-            self.handle_named_vote(data, poll, request.user)
+            self.handle_named_vote(vote_data, poll, vote_user, request.user)
 
         elif poll.type == BasePoll.TYPE_PSEUDOANONYMOUS:
-            self.handle_pseudoanonymous_vote(data, poll, request.user)
+            self.handle_pseudoanonymous_vote(vote_data, poll, vote_user)
 
         inform_changed_data(poll)
 
@@ -231,13 +248,16 @@ class BasePollViewSet(ModelViewSet):
         inform_changed_data(poll.get_votes(), final_data=True)
         return Response()
 
-    def assert_can_vote(self, poll, request):
+    def assert_can_vote(self, poll, request, vote_user):
         """
         Raises a permission denied, if the user is not allowed to vote (or has already voted).
-        Adds the user to the voted array, so this needs to be reverted on error!
+        Adds the user to the voted array, so this needs to be reverted if a later error happens!
         Analog:                     has to have manage permissions
         Named & Pseudoanonymous:    has to be in a poll group and present
         """
+        if request.user != vote_user and request.user != vote_user.vote_delegated_to:
+            self.permission_denied(request)
+
         if poll.type == BasePoll.TYPE_ANALOG:
             if not self.has_manage_permissions():
                 self.permission_denied(request)
@@ -246,14 +266,14 @@ class BasePollViewSet(ModelViewSet):
                 raise ValidationError("You can only vote on a started poll.")
 
             if not request.user.is_present or not in_some_groups(
-                request.user.id,
+                vote_user.id,
                 list(poll.groups.values_list("pk", flat=True)),
                 exact=True,
             ):
                 self.permission_denied(request)
 
             try:
-                self.add_user_to_voted_array(request.user, poll)
+                self.add_user_to_voted_array(vote_user, poll)
                 inform_changed_data(poll)
             except IntegrityError:
                 raise ValidationError({"detail": "You have already voted"})
@@ -292,20 +312,20 @@ class BasePollViewSet(ModelViewSet):
         """
         raise NotImplementedError()
 
-    def validate_vote_data(self, data, poll, user):
+    def validate_vote_data(self, data, poll):
         """
         To be implemented by subclass. Validates the data according to poll type and method and fields by validated versions.
         Raises ValidationError on failure
         """
         raise NotImplementedError()
 
-    def handle_analog_vote(self, data, poll, user):
+    def handle_analog_vote(self, data, poll):
         """
         To be implemented by subclass. Handles the analog vote. Assumes data is validated
         """
         raise NotImplementedError()
 
-    def handle_named_vote(self, data, poll, user):
+    def handle_named_vote(self, data, poll, vote_user, request_user):
         """
         To be implemented by subclass. Handles the named vote. Assumes data is validated.
         Needs to manage the voted-array per option.

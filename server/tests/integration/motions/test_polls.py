@@ -167,6 +167,7 @@ class CreateMotionPoll(TestCase):
                 "id": 1,
                 "voted_id": [],
                 "user_has_voted": False,
+                "user_has_voted_for_delegations": [],
             },
         )
         self.assertEqual(autoupdate[1], [])
@@ -610,12 +611,14 @@ class VoteMotionPollAnalog(TestCase):
         response = self.client.post(
             reverse("motionpoll-vote", args=[self.poll.pk]),
             {
-                "Y": "1",
-                "N": "2.35",
-                "A": "-1",
-                "votesvalid": "4.64",
-                "votesinvalid": "-2",
-                "votescast": "-2",
+                "data": {
+                    "Y": "1",
+                    "N": "2.35",
+                    "A": "-1",
+                    "votesvalid": "4.64",
+                    "votesinvalid": "-2",
+                    "votescast": "-2",
+                },
             },
         )
         self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
@@ -634,14 +637,23 @@ class VoteMotionPollAnalog(TestCase):
     def test_vote_no_permissions(self):
         self.start_poll()
         self.make_admin_delegate()
-        response = self.client.post(reverse("motionpoll-vote", args=[self.poll.pk]))
+        response = self.client.post(
+            reverse("motionpoll-vote", args=[self.poll.pk]), {"data": {}}
+        )
         self.assertHttpStatusVerbose(response, status.HTTP_403_FORBIDDEN)
+        self.assertFalse(MotionPoll.objects.get().get_votes().exists())
+
+    def test_vote_no_data(self):
+        self.start_poll()
+        response = self.client.post(reverse("motionpoll-vote", args=[self.poll.pk]), {})
+        self.assertHttpStatusVerbose(response, status.HTTP_400_BAD_REQUEST)
         self.assertFalse(MotionPoll.objects.get().get_votes().exists())
 
     def test_vote_missing_data(self):
         self.start_poll()
         response = self.client.post(
-            reverse("motionpoll-vote", args=[self.poll.pk]), {"Y": "4", "N": "22.6"}
+            reverse("motionpoll-vote", args=[self.poll.pk]),
+            {"data": {"Y": "4", "N": "22.6"}},
         )
         self.assertHttpStatusVerbose(response, status.HTTP_400_BAD_REQUEST)
         self.assertFalse(MotionPoll.objects.get().get_votes().exists())
@@ -649,7 +661,7 @@ class VoteMotionPollAnalog(TestCase):
     def test_vote_wrong_data_format(self):
         self.start_poll()
         response = self.client.post(
-            reverse("motionpoll-vote", args=[self.poll.pk]), [1, 2, 5]
+            reverse("motionpoll-vote", args=[self.poll.pk]), {"data": [1, 2, 5]}
         )
         self.assertHttpStatusVerbose(response, status.HTTP_400_BAD_REQUEST)
         self.assertFalse(MotionPoll.objects.get().get_votes().exists())
@@ -658,7 +670,7 @@ class VoteMotionPollAnalog(TestCase):
         self.start_poll()
         response = self.client.post(
             reverse("motionpoll-vote", args=[self.poll.pk]),
-            {"Y": "some string", "N": "-2", "A": "3"},
+            {"data": {"Y": "some string", "N": "-2", "A": "3"}},
         )
         self.assertHttpStatusVerbose(response, status.HTTP_400_BAD_REQUEST)
         self.assertFalse(MotionPoll.objects.get().get_votes().exists())
@@ -668,12 +680,14 @@ class VoteMotionPollAnalog(TestCase):
         self.client.post(
             reverse("motionpoll-vote", args=[self.poll.pk]),
             {
-                "Y": "3",
-                "N": "1",
-                "A": "5",
-                "votesvalid": "-2",
-                "votesinvalid": "1",
-                "votescast": "-1",
+                "data": {
+                    "Y": "3",
+                    "N": "1",
+                    "A": "5",
+                    "votesvalid": "-2",
+                    "votesinvalid": "1",
+                    "votescast": "-1",
+                },
             },
         )
         self.poll.state = 3
@@ -681,12 +695,14 @@ class VoteMotionPollAnalog(TestCase):
         response = self.client.post(
             reverse("motionpoll-vote", args=[self.poll.pk]),
             {
-                "Y": "1",
-                "N": "2.35",
-                "A": "-1",
-                "votesvalid": "4.64",
-                "votesinvalid": "-2",
-                "votescast": "3",
+                "data": {
+                    "Y": "1",
+                    "N": "2.35",
+                    "A": "-1",
+                    "votesvalid": "4.64",
+                    "votesinvalid": "-2",
+                    "votescast": "3",
+                },
             },
         )
         self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
@@ -749,7 +765,7 @@ class VoteMotionPollNamed(TestCase):
         self.make_admin_delegate()
         self.make_admin_present()
         response = self.client.post(
-            reverse("motionpoll-vote", args=[self.poll.pk]), "N"
+            reverse("motionpoll-vote", args=[self.poll.pk]), {"data": "N"}
         )
         self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
         poll = MotionPoll.objects.get()
@@ -773,7 +789,7 @@ class VoteMotionPollNamed(TestCase):
         self.admin.vote_weight = weight = Decimal("3.5")
         self.admin.save()
         response = self.client.post(
-            reverse("motionpoll-vote", args=[self.poll.pk]), "A"
+            reverse("motionpoll-vote", args=[self.poll.pk]), {"data": "A"}
         )
         self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
         poll = MotionPoll.objects.get()
@@ -799,11 +815,11 @@ class VoteMotionPollNamed(TestCase):
         self.make_admin_delegate()
         self.make_admin_present()
         response = self.client.post(
-            reverse("motionpoll-vote", args=[self.poll.pk]), "N"
+            reverse("motionpoll-vote", args=[self.poll.pk]), {"data": "N"}
         )
         self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
         response = self.client.post(
-            reverse("motionpoll-vote", args=[self.poll.pk]), "A"
+            reverse("motionpoll-vote", args=[self.poll.pk]), {"data": "A"}
         )
         self.assertHttpStatusVerbose(response, status.HTTP_400_BAD_REQUEST)
         poll = MotionPoll.objects.get()
@@ -824,38 +840,35 @@ class VoteMotionPollNamed(TestCase):
         config["general_system_enable_anonymous"] = True
         guest_client = APIClient()
         response = guest_client.post(
-            reverse("motionpoll-vote", args=[self.poll.pk]), "Y"
+            reverse("motionpoll-vote", args=[self.poll.pk]), {"data": "Y"}
         )
         self.assertHttpStatusVerbose(response, status.HTTP_403_FORBIDDEN)
         self.assertFalse(MotionPoll.objects.get().get_votes().exists())
 
-    # TODO: Move to unit tests
-    def test_not_set_vote_values(self):
-        with self.assertRaises(ValueError):
-            self.poll.votesvalid = Decimal("1")
-        with self.assertRaises(ValueError):
-            self.poll.votesinvalid = Decimal("1")
-        with self.assertRaises(ValueError):
-            self.poll.votescast = Decimal("1")
-
     def test_vote_wrong_state(self):
         self.make_admin_present()
         self.make_admin_delegate()
-        response = self.client.post(reverse("motionpoll-vote", args=[self.poll.pk]))
+        response = self.client.post(
+            reverse("motionpoll-vote", args=[self.poll.pk]), {"data": {}}
+        )
         self.assertHttpStatusVerbose(response, status.HTTP_400_BAD_REQUEST)
         self.assertFalse(MotionPoll.objects.get().get_votes().exists())
 
     def test_vote_wrong_group(self):
         self.start_poll()
         self.make_admin_present()
-        response = self.client.post(reverse("motionpoll-vote", args=[self.poll.pk]))
+        response = self.client.post(
+            reverse("motionpoll-vote", args=[self.poll.pk]), {"data": {}}
+        )
         self.assertHttpStatusVerbose(response, status.HTTP_403_FORBIDDEN)
         self.assertFalse(MotionPoll.objects.get().get_votes().exists())
 
     def test_vote_not_present(self):
         self.start_poll()
         self.make_admin_delegate()
-        response = self.client.post(reverse("motionpoll-vote", args=[self.poll.pk]))
+        response = self.client.post(
+            reverse("motionpoll-vote", args=[self.poll.pk]), {"data": {}}
+        )
         self.assertHttpStatusVerbose(response, status.HTTP_403_FORBIDDEN)
         self.assertFalse(MotionPoll.objects.get().get_votes().exists())
 
@@ -863,7 +876,9 @@ class VoteMotionPollNamed(TestCase):
         self.start_poll()
         self.make_admin_delegate()
         self.make_admin_present()
-        response = self.client.post(reverse("motionpoll-vote", args=[self.poll.pk]))
+        response = self.client.post(
+            reverse("motionpoll-vote", args=[self.poll.pk]), {"data": {}}
+        )
         self.assertHttpStatusVerbose(response, status.HTTP_400_BAD_REQUEST)
         self.assertFalse(MotionPoll.objects.get().get_votes().exists())
 
@@ -872,9 +887,116 @@ class VoteMotionPollNamed(TestCase):
         self.make_admin_delegate()
         self.make_admin_present()
         response = self.client.post(
-            reverse("motionpoll-vote", args=[self.poll.pk]), [1, 2, 5]
+            reverse("motionpoll-vote", args=[self.poll.pk]), {"data": [1, 2, 5]}
         )
         self.assertHttpStatusVerbose(response, status.HTTP_400_BAD_REQUEST)
+        self.assertFalse(MotionPoll.objects.get().get_votes().exists())
+
+    def setup_vote_delegation(self, with_delegation=True):
+        """ user -> admin """
+        self.start_poll()
+        self.make_admin_delegate()
+        self.make_admin_present()
+        user, _ = self.create_user()
+        user.groups.add(GROUP_DELEGATE_PK)
+        if with_delegation:
+            user.vote_delegated_to = self.admin
+        user.save()
+        inform_changed_data(self.admin)  # put the admin into the cache to update
+        # its vote_delegated_to_id field
+        self.user = user
+
+    def test_vote_delegation(self):
+        self.setup_vote_delegation()
+        response = self.client.post(
+            reverse("motionpoll-vote", args=[self.poll.pk]),
+            {"data": "N", "user_id": self.user.pk},  # user not present
+        )
+        self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
+        poll = MotionPoll.objects.get()
+        self.assertEqual(poll.votesvalid, Decimal("1"))
+        self.assertEqual(poll.votesinvalid, Decimal("0"))
+        self.assertEqual(poll.votescast, Decimal("1"))
+        self.assertEqual(poll.get_votes().count(), 1)
+        option = poll.options.get()
+        self.assertEqual(option.yes, Decimal("0"))
+        self.assertEqual(option.no, Decimal("1"))
+        self.assertEqual(option.abstain, Decimal("0"))
+        vote = option.votes.get()
+        self.assertEqual(vote.user, self.user)
+        self.assertEqual(vote.delegated_user, self.admin)
+
+        autoupdate = self.get_last_autoupdate(user=self.admin)
+        self.assertIn("motions/motion-poll:1", autoupdate[0])
+        self.assertEqual(
+            autoupdate[0]["motions/motion-poll:1"]["user_has_voted_for_delegations"],
+            [self.user.pk],
+        )
+
+    def test_vote_delegation_and_self_vote(self):
+        self.test_vote_delegation()
+        response = self.client.post(
+            reverse("motionpoll-vote", args=[self.poll.pk]), {"data": "Y"}
+        )
+        self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
+        poll = MotionPoll.objects.get()
+        self.assertEqual(poll.votesvalid, Decimal("2"))
+        self.assertEqual(poll.votesinvalid, Decimal("0"))
+        self.assertEqual(poll.votescast, Decimal("2"))
+        self.assertEqual(poll.get_votes().count(), 2)
+        option = poll.options.get()
+        self.assertEqual(option.yes, Decimal("1"))
+        self.assertEqual(option.no, Decimal("1"))
+        self.assertEqual(option.abstain, Decimal("0"))
+        vote = option.votes.get(user_id=self.admin.pk)
+        self.assertEqual(vote.user, self.admin)
+        self.assertEqual(vote.delegated_user, self.admin)
+
+    def test_vote_delegation_forbidden(self):
+        self.setup_vote_delegation(False)
+        response = self.client.post(
+            reverse("motionpoll-vote", args=[self.poll.pk]),
+            {"data": "N", "user_id": self.user.pk},
+        )
+        self.assertHttpStatusVerbose(response, status.HTTP_403_FORBIDDEN)
+        self.assertFalse(MotionPoll.objects.get().get_votes().exists())
+
+    def test_vote_delegation_not_present(self):
+        self.setup_vote_delegation()
+        self.admin.is_present = False
+        self.admin.save()
+        response = self.client.post(
+            reverse("motionpoll-vote", args=[self.poll.pk]),
+            {"data": "N", "user_id": self.user.pk},
+        )
+        self.assertHttpStatusVerbose(response, status.HTTP_403_FORBIDDEN)
+        self.assertFalse(MotionPoll.objects.get().get_votes().exists())
+
+    def test_vote_delegation_delegatee_not_in_group(self):
+        self.setup_vote_delegation()
+        self.admin.groups.remove(GROUP_DELEGATE_PK)
+        self.admin.save()
+        response = self.client.post(
+            reverse("motionpoll-vote", args=[self.poll.pk]),
+            {"data": "N", "user_id": self.user.pk},
+        )
+        self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
+        poll = MotionPoll.objects.get()
+        self.assertEqual(poll.get_votes().count(), 1)
+        vote = poll.get_votes()[0]
+        self.assertEqual(vote.value, "N")
+        self.assertEqual(vote.user, self.user)
+        self.assertEqual(vote.delegated_user, self.admin)
+
+    def test_vote_delegation_delegator_not_in_group(self):
+        self.setup_vote_delegation()
+        self.user.groups.remove(GROUP_DELEGATE_PK)
+        self.user.save()
+        response = self.client.post(
+            reverse("motionpoll-vote", args=[self.poll.pk]),
+            {"data": "N", "user_id": self.user.pk},
+        )
+        self.assertHttpStatusVerbose(response, status.HTTP_403_FORBIDDEN)
         self.assertFalse(MotionPoll.objects.get().get_votes().exists())
 
 
@@ -916,7 +1038,7 @@ class VoteMotionPollNamedAutoupdates(TestCase):
 
     def test_vote(self):
         response = self.user_client.post(
-            reverse("motionpoll-vote", args=[self.poll.pk]), "A"
+            reverse("motionpoll-vote", args=[self.poll.pk]), {"data": "A"}
         )
         self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
         poll = MotionPoll.objects.get()
@@ -942,6 +1064,7 @@ class VoteMotionPollNamedAutoupdates(TestCase):
                     "options_id": [1],
                     "id": 1,
                     "user_has_voted": False,
+                    "user_has_voted_for_delegations": [],
                     "voted_id": [self.user.id],
                 },
                 "motions/motion-vote:1": {
@@ -950,6 +1073,7 @@ class VoteMotionPollNamedAutoupdates(TestCase):
                     "weight": "1.000000",
                     "value": "A",
                     "user_id": self.user.id,
+                    "delegated_user_id": self.user.id,
                     "option_id": 1,
                 },
                 "motions/motion-option:1": {
@@ -975,6 +1099,7 @@ class VoteMotionPollNamedAutoupdates(TestCase):
                 "weight": "1.000000",
                 "value": "A",
                 "user_id": self.user.id,
+                "delegated_user_id": self.user.id,
             },
         )
         self.assertEqual(
@@ -1001,6 +1126,7 @@ class VoteMotionPollNamedAutoupdates(TestCase):
                     "options_id": [1],
                     "id": 1,
                     "user_has_voted": user == self.user,
+                    "user_has_voted_for_delegations": [],
                 },
             )
             self.assertEqual(
@@ -1055,7 +1181,7 @@ class VoteMotionPollPseudoanonymousAutoupdates(TestCase):
 
     def test_vote(self):
         response = self.user_client.post(
-            reverse("motionpoll-vote", args=[self.poll.pk]), "A"
+            reverse("motionpoll-vote", args=[self.poll.pk]), {"data": "A"}
         )
         self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
         poll = MotionPoll.objects.get()
@@ -1081,6 +1207,7 @@ class VoteMotionPollPseudoanonymousAutoupdates(TestCase):
                     "options_id": [1],
                     "id": 1,
                     "user_has_voted": False,
+                    "user_has_voted_for_delegations": [],
                     "voted_id": [self.user.id],
                 },
                 "motions/motion-vote:1": {
@@ -1090,6 +1217,7 @@ class VoteMotionPollPseudoanonymousAutoupdates(TestCase):
                     "weight": "1.000000",
                     "value": "A",
                     "user_id": None,
+                    "delegated_user_id": None,
                 },
                 "motions/motion-option:1": {
                     "abstain": "1.000000",
@@ -1122,6 +1250,7 @@ class VoteMotionPollPseudoanonymousAutoupdates(TestCase):
                     "options_id": [1],
                     "id": 1,
                     "user_has_voted": user == self.user,
+                    "user_has_voted_for_delegations": [],
                 },
             )
 
@@ -1177,7 +1306,7 @@ class VoteMotionPollPseudoanonymous(TestCase):
         self.make_admin_delegate()
         self.make_admin_present()
         response = self.client.post(
-            reverse("motionpoll-vote", args=[self.poll.pk]), "N"
+            reverse("motionpoll-vote", args=[self.poll.pk]), {"data": "N"}
         )
         self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
         poll = MotionPoll.objects.get()
@@ -1199,11 +1328,11 @@ class VoteMotionPollPseudoanonymous(TestCase):
         self.make_admin_delegate()
         self.make_admin_present()
         response = self.client.post(
-            reverse("motionpoll-vote", args=[self.poll.pk]), "N"
+            reverse("motionpoll-vote", args=[self.poll.pk]), {"data": "N"}
         )
         self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
         response = self.client.post(
-            reverse("motionpoll-vote", args=[self.poll.pk]), "A"
+            reverse("motionpoll-vote", args=[self.poll.pk]), {"data": "A"}
         )
         self.assertHttpStatusVerbose(response, status.HTTP_400_BAD_REQUEST)
         option = MotionPoll.objects.get().options.get()
@@ -1219,7 +1348,7 @@ class VoteMotionPollPseudoanonymous(TestCase):
         config["general_system_enable_anonymous"] = True
         guest_client = APIClient()
         response = guest_client.post(
-            reverse("motionpoll-vote", args=[self.poll.pk]), "Y"
+            reverse("motionpoll-vote", args=[self.poll.pk]), {"data": "Y"}
         )
         self.assertHttpStatusVerbose(response, status.HTTP_403_FORBIDDEN)
         self.assertFalse(MotionPoll.objects.get().get_votes().exists())
@@ -1227,21 +1356,27 @@ class VoteMotionPollPseudoanonymous(TestCase):
     def test_vote_wrong_state(self):
         self.make_admin_present()
         self.make_admin_delegate()
-        response = self.client.post(reverse("motionpoll-vote", args=[self.poll.pk]))
+        response = self.client.post(
+            reverse("motionpoll-vote", args=[self.poll.pk]), {"data": {}}
+        )
         self.assertHttpStatusVerbose(response, status.HTTP_400_BAD_REQUEST)
         self.assertFalse(MotionPoll.objects.get().get_votes().exists())
 
     def test_vote_wrong_group(self):
         self.start_poll()
         self.make_admin_present()
-        response = self.client.post(reverse("motionpoll-vote", args=[self.poll.pk]))
+        response = self.client.post(
+            reverse("motionpoll-vote", args=[self.poll.pk]), {"data": {}}
+        )
         self.assertHttpStatusVerbose(response, status.HTTP_403_FORBIDDEN)
         self.assertFalse(MotionPoll.objects.get().get_votes().exists())
 
     def test_vote_not_present(self):
         self.start_poll()
         self.make_admin_delegate()
-        response = self.client.post(reverse("motionpoll-vote", args=[self.poll.pk]))
+        response = self.client.post(
+            reverse("motionpoll-vote", args=[self.poll.pk]), {"data": {}}
+        )
         self.assertHttpStatusVerbose(response, status.HTTP_403_FORBIDDEN)
         self.assertFalse(MotionPoll.objects.get().get_votes().exists())
 
@@ -1249,7 +1384,9 @@ class VoteMotionPollPseudoanonymous(TestCase):
         self.start_poll()
         self.make_admin_delegate()
         self.make_admin_present()
-        response = self.client.post(reverse("motionpoll-vote", args=[self.poll.pk]))
+        response = self.client.post(
+            reverse("motionpoll-vote", args=[self.poll.pk]), {"data": {}}
+        )
         self.assertHttpStatusVerbose(response, status.HTTP_400_BAD_REQUEST)
         self.assertFalse(MotionPoll.objects.get().get_votes().exists())
 
@@ -1258,7 +1395,7 @@ class VoteMotionPollPseudoanonymous(TestCase):
         self.make_admin_delegate()
         self.make_admin_present()
         response = self.client.post(
-            reverse("motionpoll-vote", args=[self.poll.pk]), [1, 2, 5]
+            reverse("motionpoll-vote", args=[self.poll.pk]), {"data": [1, 2, 5]}
         )
         self.assertHttpStatusVerbose(response, status.HTTP_400_BAD_REQUEST)
         self.assertFalse(MotionPoll.objects.get().get_votes().exists())
@@ -1344,6 +1481,7 @@ class PublishMotionPoll(TestCase):
                         "options_id": [1],
                         "id": 1,
                         "user_has_voted": False,
+                        "user_has_voted_for_delegations": [],
                         "voted_id": [],
                     },
                     "motions/motion-vote:1": {
@@ -1353,6 +1491,7 @@ class PublishMotionPoll(TestCase):
                         "weight": "2.000000",
                         "value": "N",
                         "user_id": None,
+                        "delegated_user_id": None,
                     },
                     "motions/motion-option:1": {
                         "abstain": "0.000000",
@@ -1495,3 +1634,45 @@ class ResetMotionPoll(TestCase):
         for user in (self.admin, self.user1, self.user2):
             self.assertDeletedAutoupdate(self.vote1, user=user)
             self.assertDeletedAutoupdate(self.vote2, user=user)
+
+
+class TestMotionPollWithVoteDelegationAutoupdate(TestCase):
+    def advancedSetUp(self):
+        """ Set up user -> other_user delegation. """
+        self.motion = Motion(
+            title="test_title_dL91JqhMTiQuQLSDRItZ",
+            text="test_text_R7nURdXKVEfEnnJBXJYa",
+        )
+        self.motion.save()
+
+        self.delegate_group = get_group_model().objects.get(pk=GROUP_DELEGATE_PK)
+
+        self.other_user, _ = self.create_user()
+        self.user, user_password = self.create_user()
+        self.user.groups.add(self.delegate_group)
+        self.user.is_present = True
+        self.user.vote_delegated_to = self.other_user
+        self.user.save()
+
+        self.user_client = APIClient()
+        self.user_client.login(username=self.user.username, password=user_password)
+
+        self.poll = MotionPoll.objects.create(
+            motion=self.motion,
+            title="test_title_Q3EuRaALSCCPJuQ2tMqj",
+            pollmethod="YNA",
+            type=BasePoll.TYPE_NAMED,
+            onehundred_percent_base="YN",
+            majority_method="simple",
+        )
+        self.poll.create_options()
+        self.poll.groups.add(self.delegate_group)
+        self.poll.save()
+
+    def test_start_poll(self):
+        response = self.client.post(reverse("motionpoll-start", args=[self.poll.pk]))
+        self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
+
+        # other_user has to receive an autoupdate because he was delegated
+        autoupdate = self.get_last_autoupdate(user=self.other_user)
+        assert "motions/motion-poll:1" in autoupdate[0]

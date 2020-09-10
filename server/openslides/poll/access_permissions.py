@@ -2,8 +2,13 @@ import json
 from typing import Any, Dict, List
 
 from ..poll.views import BasePoll
+from ..utils import logging
 from ..utils.access_permissions import BaseAccessPermissions
-from ..utils.auth import async_has_perm
+from ..utils.auth import async_has_perm, user_collection_string
+from ..utils.cache import element_cache
+
+
+logger = logging.getLogger(__name__)
 
 
 class BaseVoteAccessPermissions(BaseAccessPermissions):
@@ -26,6 +31,7 @@ class BaseVoteAccessPermissions(BaseAccessPermissions):
                 for vote in full_data
                 if vote["pollstate"] == BasePoll.STATE_PUBLISHED
                 or vote["user_id"] == user_id
+                or vote["delegated_user_id"] == user_id
             ]
         return data
 
@@ -71,8 +77,24 @@ class BasePollAccessPermissions(BaseAccessPermissions):
         """
 
         # add has_voted for all users to check whether op has voted
+        # also fill user_has_voted_for_delegations with all users for which he has
+        # already voted
+        user_data = await element_cache.get_element_data(
+            user_collection_string, user_id
+        )
+        if user_data is None:
+            logger.error(f"Could not find userdata for {user_id}")
+            vote_delegated_from_ids = set()
+        else:
+            vote_delegated_from_ids = set(user_data["vote_delegated_from_users_id"])
+
         for poll in full_data:
             poll["user_has_voted"] = user_id in poll["voted_id"]
+            voted_ids = set(poll["voted_id"])
+            voted_for_delegations = list(
+                vote_delegated_from_ids.intersection(voted_ids)
+            )
+            poll["user_has_voted_for_delegations"] = voted_for_delegations
 
         if await async_has_perm(user_id, self.manage_permission):
             data = full_data
