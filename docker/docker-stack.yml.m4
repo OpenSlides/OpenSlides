@@ -58,9 +58,9 @@ x-osserver-env: &default-osserver-env
     ENABLE_ELECTRONIC_VOTING: "ifenvelse(`ENABLE_ELECTRONIC_VOTING', False)"
     ENABLE_SAML: "ifenvelse(`ENABLE_SAML', False)"
     INSTANCE_DOMAIN: "ifenvelse(`INSTANCE_DOMAIN', http://example.com:8000)"
-    JITSI_DOMAIN: "ifenvelse(`JITSI_DOMAIN', None)"
-    JITSI_ROOM_PASSWORD: "ifenvelse(`JITSI_ROOM_PASSWORD', None)"
-    JITSI_ROOM_NAME: "ifenvelse(`JITSI_ROOM_NAME', None)"
+    JITSI_DOMAIN: "ifenvelse(`JITSI_DOMAIN',)"
+    JITSI_ROOM_PASSWORD: "ifenvelse(`JITSI_ROOM_PASSWORD',)"
+    JITSI_ROOM_NAME: "ifenvelse(`JITSI_ROOM_NAME',)"
     OPENSLIDES_LOG_LEVEL: "ifenvelse(`OPENSLIDES_LOG_LEVEL', INFO)"
     REDIS_CHANNLES_HOST: "ifenvelse(`REDIS_CHANNLES_HOST', redis-channels)"
     REDIS_CHANNLES_PORT: ifenvelse(`REDIS_CHANNLES_PORT', 6379)
