@@ -192,7 +192,6 @@ async def motion_slide(
     motions_preamble = await get_config(all_data_provider, "motions_preamble")
 
     # Query all change-recommendation and amendment related things.
-    change_recommendations = []  # type: ignore
     amendments = []  # type: ignore
     base_motion = None
     base_statute = None
@@ -201,15 +200,17 @@ async def motion_slide(
     elif motion["parent_id"] is not None and motion["amendment_paragraphs"]:
         base_motion = await get_amendment_base_motion(motion, all_data_provider)
     else:
-        for change_recommendation_id in motion["change_recommendations_id"]:
-            cr = await get_model(
-                all_data_provider,
-                "motions/motion-change-recommendation",
-                change_recommendation_id,
-            )
-            if cr is not None and not cr["internal"]:
-                change_recommendations.append(cr)
         amendments = await get_amendments_for_motion(motion, all_data_provider)
+
+    change_recommendations = []  # type: ignore
+    for change_recommendation_id in motion["change_recommendations_id"]:
+        cr = await get_model(
+            all_data_provider,
+            "motions/motion-change-recommendation",
+            change_recommendation_id,
+        )
+        if cr is not None and not cr["internal"]:
+            change_recommendations.append(cr)
 
     # The base return value. More fields will get added below.
     return_value = {

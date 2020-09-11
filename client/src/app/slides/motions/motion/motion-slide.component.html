@@ -68,7 +68,6 @@
                     </td>
                 </tr>
             </table>
-
         </div>
     </div>
 
@@ -78,7 +77,8 @@
             <span
                 *ngIf="isStatuteAmendment() || isParagraphBasedAmendment() || !!getFormattedText()"
                 class="text-prefix-label"
-                >{{ preamble | translate }}</span
+            >
+                {{ preamble | translate }}</span
             >
 
             <!-- Regular motions or traditional amendments -->
