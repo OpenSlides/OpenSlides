@@ -138,7 +138,7 @@ export class LinenumberingService {
     private ignoreInsertedText = false;
 
     // A precompiled regular expression that looks for line number nodes in a HTML string
-    private getLineNumberRangeRegexp = RegExp(/<span[^>]+data\-line\-number=\"(\d+)\"/, 'g');
+    private getLineNumberRangeRegexp = RegExp(/<span[^>]+data\-line\-number=\"(\d+)\"/, 'gi');
 
     // .setAttribute and .innerHTML seem to be really slow, so we try to avoid them for static attributes / content
     // by creating a static template, cloning it and only set the dynamic attributes each time
