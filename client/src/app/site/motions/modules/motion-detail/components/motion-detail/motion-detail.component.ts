@@ -171,6 +171,17 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         return this.motion.showPreamble;
     }
 
+    public get showCreateFinalVersionButton(): boolean {
+        if (
+            this.motion.isParagraphBasedAmendment() ||
+            !this.motion.state.isFinalState ||
+            this.motion.modified_final_version
+        ) {
+            return false;
+        }
+        return true;
+    }
+
     /**
      * Saves the target motion. Accessed via the getter and setter.
      */
@@ -1267,6 +1278,9 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      * Sets the modified final version to the final version.
      */
     public async createModifiedFinalVersion(): Promise<void> {
+        if (this.motion.isParagraphBasedAmendment()) {
+            throw new Error('Cannot create a final version of an amendment.');
+        }
         // Get the final version and remove line numbers
         const changes: ViewUnifiedChange[] = Object.assign([], this.getChangesForFinalMode());
         let finalVersion = this.repo.formatMotion(
