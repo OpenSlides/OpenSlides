@@ -553,7 +553,7 @@
                     type="button"
                     mat-icon-button
                     matTooltip="{{ 'Create final print template' | translate }}"
-                    *ngIf="motion.state.isFinalState && !motion.modified_final_version"
+                    *ngIf="showCreateFinalVersionButton"
                     (click)="createModifiedFinalVersion()"
                 >
                     <mat-icon>file_copy</mat-icon>
@@ -564,6 +564,7 @@
                     type="button"
                     mat-icon-button
                     *ngIf="isRecoMode(ChangeRecoMode.ModifiedFinal) && !isFinalEdit"
+                    matTooltip="{{ 'Edit final print template' | translate }}"
                     (click)="editModifiedFinal()"
                 >
                     <mat-icon>edit</mat-icon>
@@ -574,6 +575,7 @@
                     *ngIf="isRecoMode(ChangeRecoMode.ModifiedFinal) && isFinalEdit"
                     mat-icon-button
                     [disabled]="!finalVersionEdited"
+                    matTooltip="{{ 'Save final print template' | translate }}"
                     (click)="onSubmitFinalVersion()"
                 >
                     <mat-icon>save</mat-icon>
@@ -583,6 +585,7 @@
                     type="button"
                     *ngIf="isRecoMode(ChangeRecoMode.ModifiedFinal) && isFinalEdit"
                     mat-icon-button
+                    matTooltip="{{ 'Cancel editing without saving' | translate }}"
                     (click)="cancelFinalVersionEdit()"
                 >
                     <mat-icon>close</mat-icon>
