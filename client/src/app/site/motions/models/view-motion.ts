@@ -334,6 +334,13 @@ export class ViewMotion extends BaseViewModelWithAgendaItemAndListOfSpeakers<Mot
             }
         ];
 
+        let projectionDefaultName: string;
+        if (this.isParagraphBasedAmendment()) {
+            projectionDefaultName = 'amendments';
+        } else {
+            projectionDefaultName = 'motions';
+        }
+
         return {
             getBasicProjectorElement: options => ({
                 name: Motion.COLLECTIONSTRING,
@@ -341,7 +348,7 @@ export class ViewMotion extends BaseViewModelWithAgendaItemAndListOfSpeakers<Mot
                 getIdentifiers: () => ['name', 'id']
             }),
             slideOptions: slideOptions,
-            projectionDefaultName: 'motions',
+            projectionDefaultName: projectionDefaultName,
             getDialogTitle: this.getAgendaSlideTitle
         };
     }
