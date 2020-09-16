@@ -80,7 +80,7 @@ export class UserImportListComponent extends BaseImportListComponentDirective<Us
                 'initialPassword',
                 null,
                 'mmustermann',
-                'm',
+                'male',
                 1.0
             ],
             [
@@ -100,7 +100,23 @@ export class UserImportListComponent extends BaseImportListComponentDirective<Us
                 'diverse',
                 2.0
             ],
-            [null, 'Julia', 'Bloggs', 'London', null, null, null, null, null, null, null, null, 'jbloggs', 'f', 1.5],
+            [
+                null,
+                'Julia',
+                'Bloggs',
+                'London',
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                'jbloggs',
+                'female',
+                1.5
+            ],
             [null, null, 'Executive Board', null, null, null, null, null, null, 1, null, null, 'executive', null, 2.5]
         ];
         this.exporter.dummyCSVExport(this.headerRow, rows, `${this.translate.instant('participants-example')}.csv`);
