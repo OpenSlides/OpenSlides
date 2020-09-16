@@ -446,4 +446,42 @@ export class MotionSlideComponent extends BaseMotionSlideComponent<MotionSlideDa
         const diffHtml = this.diff.diff(this.data.data.base_statute.text, this.data.data.text);
         return this.lineNumbering.insertLineBreaksWithoutNumbers(diffHtml, this.lineLength, true);
     }
+
+    /**
+     * Returns true if this change is colliding with another change
+     * @param {ViewUnifiedChange} change
+     * @param {ViewUnifiedChange[]} changes
+     */
+    public hasCollissions(change: ViewUnifiedChange, changes: ViewUnifiedChange[]): boolean {
+        return this.motionRepo.changeHasCollissions(change, changes);
+    }
+
+    /**
+     * Returns true if the change is an Amendment
+     *
+     * @param {ViewUnifiedChange} change
+     */
+    public isAmendment(change: ViewUnifiedChange): boolean {
+        return change.getChangeType() === ViewUnifiedChangeType.TYPE_AMENDMENT;
+    }
+
+    /**
+     * Returns true if the change is a Change Recommendation
+     *
+     * @param {ViewUnifiedChange} change
+     */
+    public isChangeRecommendation(change: ViewUnifiedChange): boolean {
+        return change.getChangeType() === ViewUnifiedChangeType.TYPE_CHANGE_RECOMMENDATION;
+    }
+
+    /**
+     * Returns the diff string from the motion to the change
+     * @param {ViewUnifiedChange} change
+     */
+    public getAmendmentDiff(change: ViewUnifiedChange): string {
+        const motion = this.data.data;
+        const baseHtml = this.lineNumbering.insertLineNumbers(motion.base_motion?.text, this.lineLength);
+
+        return this.diff.getChangeDiff(baseHtml, change, this.lineLength, this.highlightedLine);
+    }
 }
