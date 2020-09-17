@@ -67,8 +67,8 @@
     &.line-numbers-outside {
         .os-line-number {
             &:after {
-                top: 17px;
-                font-size: 16px;
+                top: 17px !important;
+                font-size: 16px !important;
             }
         }
     }

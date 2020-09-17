@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, ViewEncapsulation } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
@@ -54,7 +54,8 @@ import { ViewMotionAmendedParagraph } from '../../../../models/view-motion-amend
 @Component({
     selector: 'os-motion-detail-diff',
     templateUrl: './motion-detail-diff.component.html',
-    styleUrls: ['./motion-detail-diff.component.scss']
+    styleUrls: ['./motion-detail-diff.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class MotionDetailDiffComponent extends BaseViewComponent implements AfterViewInit {
     /**
@@ -155,19 +156,7 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
      * @param {ViewUnifiedChange[]} changes
      */
     public hasCollissions(change: ViewUnifiedChange, changes: ViewUnifiedChange[]): boolean {
-        return (
-            changes.filter((otherChange: ViewUnifiedChange) => {
-                return (
-                    otherChange.getChangeId() !== change.getChangeId() &&
-                    ((otherChange.getLineFrom() >= change.getLineFrom() &&
-                        otherChange.getLineFrom() < change.getLineTo()) ||
-                        (otherChange.getLineTo() > change.getLineFrom() &&
-                            otherChange.getLineTo() <= change.getLineTo()) ||
-                        (otherChange.getLineFrom() < change.getLineFrom() &&
-                            otherChange.getLineTo() > change.getLineTo()))
-                );
-            }).length > 0
-        );
+        return this.motionRepo.changeHasCollissions(change, changes);
     }
 
     /**
