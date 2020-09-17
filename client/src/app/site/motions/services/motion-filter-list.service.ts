@@ -44,7 +44,7 @@ export class MotionFilterListService extends BaseFilterListService<ViewMotion> {
     /**
      * Listen to the configuration for change in defined/used workflows
      */
-    private enabledWorkflows = { statuteEnabled: false, statute: null, motion: null };
+    protected enabledWorkflows = { statuteEnabled: false, statute: null, motion: null, amendment: null };
 
     /**
      * Determine to show amendments in the motion list
@@ -216,6 +216,10 @@ export class MotionFilterListService extends BaseFilterListService<ViewMotion> {
             this.enabledWorkflows.motion = +id;
         });
 
+        this.config.get<string>('motions_amendments_workflow').subscribe(id => {
+            this.enabledWorkflows.amendment = +id;
+        });
+
         this.config.get<boolean>('motions_statutes_enabled').subscribe(bool => {
             this.enabledWorkflows.statuteEnabled = bool;
         });
@@ -343,7 +347,7 @@ export class MotionFilterListService extends BaseFilterListService<ViewMotion> {
         });
     }
 
-    private isWorkflowEnabled(workflowId: number): boolean {
+    protected isWorkflowEnabled(workflowId: number): boolean {
         return (
             workflowId === this.enabledWorkflows.motion ||
             (this.enabledWorkflows.statuteEnabled && workflowId === this.enabledWorkflows.statute)
