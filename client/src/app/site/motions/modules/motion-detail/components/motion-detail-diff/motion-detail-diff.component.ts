@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, ViewEncapsulation } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
@@ -54,7 +54,8 @@ import { ViewMotionAmendedParagraph } from '../../../../models/view-motion-amend
 @Component({
     selector: 'os-motion-detail-diff',
     templateUrl: './motion-detail-diff.component.html',
-    styleUrls: ['./motion-detail-diff.component.scss']
+    styleUrls: ['./motion-detail-diff.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class MotionDetailDiffComponent extends BaseViewComponent implements AfterViewInit {
     /**
