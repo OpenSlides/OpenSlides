@@ -51,7 +51,7 @@
             </span>
             <br />
             <div class="code red-warning-text">
-                <span *ngFor="let entry of headerRow; let last = last">
+                <span *ngFor="let entry of headerRowDefinition; let last = last">
                     {{ entry | translate }}<span *ngIf="!last">, </span>
                 </span>
             </div>
@@ -126,9 +126,9 @@
 </mat-card>
 
 <!-- preview table -->
-<mat-card *ngIf="hasFile" class="os-form-card import-table spacer-bottom-60">
+<mat-card *ngIf="hasFile" class="os-form-card spacer-bottom-60">
     <h3>{{ 'Preview' | translate }}</h3>
-    <div class="summary">
+    <div>
         <!-- new entries -->
         <div *ngIf="newCount">
             &nbsp;
@@ -151,168 +151,54 @@
     <div *ngIf="newCount">
         <span>{{ 'After verifiy the preview click on "import" please (see top right).' | translate }}</span>
     </div>
+
     <mat-select *ngIf="nonImportableCount" class="filter-imports" [(value)]="shown" (selectionChange)="setFilter()">
         <mat-option value="all">{{ 'Show all' | translate }}</mat-option>
         <mat-option value="error">{{ 'Show errors only' | translate }}</mat-option>
         <mat-option value="noerror">{{ 'Show correct entries only' | translate }}</mat-option>
     </mat-select>
-    <div class="table-container">
-        <table mat-table [dataSource]="dataSource" matSort>
-            <!-- Status column -->
-            <ng-container matColumnDef="status" sticky>
-                <mat-header-cell *matHeaderCellDef class="first-column"></mat-header-cell>
-                <mat-cell *matCellDef="let entry" class="first-column">
-                    <div *ngIf="entry.status === 'error'">
-                        <mat-icon
-                            class="red-warning-text"
-                            matTooltip="{{ entry.errors.length }} {{ 'errors' | translate }}"
-                        >
-                            {{ getActionIcon(entry) }}
-                        </mat-icon>
-                        <mat-icon
-                            color="warn"
-                            *ngIf="hasError(entry, 'ParsingErrors')"
-                            matTooltip="{{ getVerboseError('ParsingErrors') | translate }}"
-                        >
-                            warning
-                        </mat-icon>
-                    </div>
-                    <div *ngIf="entry.status === 'new'">
-                        <mat-icon matTooltip="{{ 'Participant will be imported' | translate }}">
-                            {{ getActionIcon(entry) }}
-                        </mat-icon>
-                    </div>
-                    <div *ngIf="entry.status === 'done'">
-                        <mat-icon matTooltip="{{ 'Participant has been imported' | translate }}">
-                            {{ getActionIcon(entry) }}
-                        </mat-icon>
-                    </div>
-                </mat-cell>
-            </ng-container>
 
-            <!-- Title column -->
-            <ng-container matColumnDef="title">
-                <mat-header-cell *matHeaderCellDef>{{ 'Title' | translate }}</mat-header-cell>
-                <mat-cell *matCellDef="let entry">
-                    <span *ngIf="nameErrors(entry)">
-                        <mat-icon color="warn" inline matTooltip="{{ nameErrors(entry) | translate }}">
-                            warning
-                        </mat-icon>
-                        &nbsp;
-                    </span>
-                    {{ entry.newEntry.title }}
-                </mat-cell>
-            </ng-container>
+    <div>
+        <pbl-ngrid
+            class="import-preview-table"
+            vScrollFixed="50"
+            [showHeader]="true"
+            [dataSource]="vScrollDataSource"
+            [columns]="columnSet"
+        >
+            <!-- ngrid template for boolean values -->
+            <div *pblNgridCellTypeDef="'boolean'; value as value">
+                <mat-checkbox disabled [checked]="value"></mat-checkbox>
+            </div>
 
-            <!-- title column -->
-            <ng-container matColumnDef="first_name">
-                <mat-header-cell *matHeaderCellDef>{{ 'Given name' | translate }}</mat-header-cell>
-                <mat-cell *matCellDef="let entry">
-                    <span *ngIf="nameErrors(entry)">
-                        <mat-icon color="warn" inline matTooltip="{{ nameErrors(entry) | translate }}">
-                            warning
-                        </mat-icon>
-                        &nbsp;
-                    </span>
-                    {{ entry.newEntry.first_name }}
-                </mat-cell>
-            </ng-container>
-
-            <ng-container matColumnDef="last_name">
-                <mat-header-cell *matHeaderCellDef>{{ 'Surname' | translate }}</mat-header-cell>
-                <mat-cell *matCellDef="let entry">
-                    <span *ngIf="nameErrors(entry)">
-                        <mat-icon color="warn" inline matTooltip="{{ nameErrors(entry) | translate }}">
-                            warning
-                        </mat-icon>
-                        &nbsp;
-                    </span>
-                    {{ entry.newEntry.last_name }}
-                </mat-cell>
-            </ng-container>
-
-            <ng-container matColumnDef="structure_level">
-                <mat-header-cell *matHeaderCellDef>{{ 'Structure level' | translate }}</mat-header-cell>
-                <mat-cell *matCellDef="let entry"> {{ entry.newEntry.structure_level }} </mat-cell>
-            </ng-container>
-
-            <ng-container matColumnDef="number">
-                <mat-header-cell *matHeaderCellDef>{{ 'Participant number' | translate }}</mat-header-cell>
-                <mat-cell *matCellDef="let entry"> {{ entry.newEntry.number }} </mat-cell>
-            </ng-container>
-
-            <!-- groups column -->
-            <ng-container matColumnDef="groups_id">
-                <mat-header-cell *matHeaderCellDef>{{ 'Groups' | translate }}</mat-header-cell>
-                <mat-cell *matCellDef="let entry">
-                    <div *ngIf="entry.newEntry.csvGroups.length">
-                        <span *ngIf="hasError(entry, 'Groups')">
-                            <mat-icon color="warn" matTooltip="{{ getVerboseError('Groups') | translate }}">
-                                warning
-                            </mat-icon>
-                        </span>
-                        <span *ngFor="let group of entry.newEntry.csvGroups">
-                            {{ group.name }}
-                            <mat-icon class="newBadge" color="accent" inline *ngIf="!group.id">add</mat-icon>
-                            &nbsp;
-                        </span>
-                    </div>
-                </mat-cell>
-            </ng-container>
-
-            <ng-container matColumnDef="comment">
-                <mat-header-cell *matHeaderCellDef>{{ 'Comment' | translate }}</mat-header-cell>
-                <mat-cell *matCellDef="let entry"> {{ entry.newEntry.comment }} </mat-cell>
-            </ng-container>
-
-            <ng-container matColumnDef="is_active">
-                <mat-header-cell *matHeaderCellDef>{{ 'Is active' | translate }}</mat-header-cell>
-                <mat-cell *matCellDef="let entry">
-                    <mat-checkbox disabled [checked]="entry.newEntry.is_active"> </mat-checkbox>
-                </mat-cell>
-            </ng-container>
-
-            <ng-container matColumnDef="is_present">
-                <mat-header-cell *matHeaderCellDef>{{ 'Is present' | translate }}</mat-header-cell>
-                <mat-cell *matCellDef="let entry">
-                    <mat-checkbox disabled [checked]="entry.newEntry.is_present"> </mat-checkbox>
-                </mat-cell>
-            </ng-container>
-
-            <ng-container matColumnDef="is_committee">
-                <mat-header-cell *matHeaderCellDef>{{ 'Is committee' | translate }}</mat-header-cell>
-                <mat-cell *matCellDef="let entry">
-                    <mat-checkbox disabled [checked]="entry.newEntry.is_committee"> </mat-checkbox>
-                </mat-cell>
-            </ng-container>
-
-            <ng-container matColumnDef="default_password">
-                <mat-header-cell *matHeaderCellDef>{{ 'Initial password' | translate }}</mat-header-cell>
-                <mat-cell *matCellDef="let entry"> {{ entry.newEntry.default_password }} </mat-cell>
-            </ng-container>
-
-            <ng-container matColumnDef="email">
-                <mat-header-cell *matHeaderCellDef>{{ 'Email' | translate }}</mat-header-cell>
-                <mat-cell *matCellDef="let entry"> {{ entry.newEntry.email }} </mat-cell>
-            </ng-container>
-
-            <ng-container matColumnDef="username">
-                <mat-header-cell *matHeaderCellDef>{{ 'Username' | translate }}</mat-header-cell>
-                <mat-cell *matCellDef="let entry"> {{ entry.newEntry.username }} </mat-cell>
-            </ng-container>
-
-            <ng-container matColumnDef="gender">
-                <mat-header-cell *matHeaderCellDef>{{ 'Gender' | translate }}</mat-header-cell>
-                <mat-cell *matCellDef="let entry"> {{ entry.newEntry.gender }} </mat-cell>
-            </ng-container>
-
-            <ng-container matColumnDef="vote_weight">
-                <mat-header-cell *matHeaderCellDef>{{ 'Vote weight' | translate }}</mat-header-cell>
-                <mat-cell *matCellDef="let entry"> {{ entry.newEntry.vote_weight }} </mat-cell>
-            </ng-container>
-
-            <mat-header-row *matHeaderRowDef="getColumnDefinition()"></mat-header-row>
-            <mat-row [ngClass]="getStateClass(row)" *matRowDef="let row; columns: getColumnDefinition()"> </mat-row>
-        </table>
+            <!-- special row handling for the status column -->
+            <div *pblNgridCellDef="'status'; row as entry">
+                <div *ngIf="entry.status === 'error'">
+                    <mat-icon
+                        class="red-warning-text"
+                        matTooltip="{{ entry.errors.length }} {{ 'errors' | translate }}"
+                    >
+                        {{ getActionIcon(entry) }}
+                    </mat-icon>
+                    <mat-icon
+                        color="warn"
+                        *ngIf="hasError(entry, 'ParsingErrors')"
+                        matTooltip="{{ getVerboseError('ParsingErrors') | translate }}"
+                    >
+                        warning
+                    </mat-icon>
+                </div>
+                <div *ngIf="entry.status === 'new'">
+                    <mat-icon matTooltip="{{ 'Participant will be imported' | translate }}">
+                        {{ getActionIcon(entry) }}
+                    </mat-icon>
+                </div>
+                <div *ngIf="entry.status === 'done'">
+                    <mat-icon matTooltip="{{ 'Participant has been imported' | translate }}">
+                        {{ getActionIcon(entry) }}
+                    </mat-icon>
+                </div>
+            </div>
+        </pbl-ngrid>
     </div>
 </mat-card>
