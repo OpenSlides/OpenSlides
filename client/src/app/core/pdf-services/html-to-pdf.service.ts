@@ -33,11 +33,6 @@ export class HtmlToPdfService {
     private lineNumberingMode: LineNumberingMode;
 
     /**
-     * Space between list elements
-     */
-    private LI_MARGIN_BOTTOM = 8;
-
-    /**
      * Normal line height for paragraphs
      */
     private LINE_HEIGHT = 1.25;
@@ -192,6 +187,8 @@ export class HtmlToPdfService {
      */
     public parseElement(element: Element, styles?: string[]): any {
         const nodeName = element.nodeName.toLowerCase();
+        const childNodes = Array.from(element.childNodes) as Element[];
+        const directChildIsCrNode = childNodes.some(child => this.isCrElement(child));
         let classes = [];
         let newParagraph: any;
 
@@ -237,7 +234,12 @@ export class HtmlToPdfService {
             case 'div': {
                 const children = this.parseChildren(element, styles);
 
-                if (this.lineNumberingMode === LineNumberingMode.Outside && !classes.includes('insert')) {
+                if (
+                    this.lineNumberingMode === LineNumberingMode.Outside &&
+                    !classes.includes('insert') &&
+                    !(nodeName === 'li' && directChildIsCrNode)
+                ) {
+                    //
                     newParagraph = this.create('stack');
                     newParagraph.stack = children;
                 } else {
@@ -367,7 +369,7 @@ export class HtmlToPdfService {
 
                         // if this is a "fake list" lower put it close to the element above
                         if (this.isFakeList(element)) {
-                            listCol.margin[3] = -this.LI_MARGIN_BOTTOM;
+                            listCol.margin[3] = -this.P_MARGIN_BOTTOM;
                         }
 
                         for (const line of lines) {
@@ -501,7 +503,7 @@ export class HtmlToPdfService {
                 children[i].remove();
             }
 
-            if (children[i].childNodes.length > 0) {
+            if (children[i]?.childNodes.length > 0) {
                 const cleanChildren = this.cleanLineNumbers(children[i] as Element);
                 elementCopy.replaceChild(cleanChildren, children[i]);
             }
@@ -687,6 +689,16 @@ export class HtmlToPdfService {
             }
         }
         return styleObject;
+    }
+
+    /**
+     * Detect if the given element is a cr exclusive node
+     * @param child
+     */
+    private isCrElement(element: Element): boolean {
+        const nodeName = element.nodeName.toLowerCase();
+        const crNodeNames = ['ins', 'del'];
+        return crNodeNames.includes(nodeName);
     }
 
     /**
