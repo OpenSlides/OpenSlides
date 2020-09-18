@@ -1,28 +1,28 @@
 # Types:
-#   - nativ datatypes: string, number, boolean, JSON
-#   - HTML: string with HTML content
-#   - float: numbers that are expected to be non-integer. Formatted as in rfc7159.
-#   - decimal(X): Decimal values represented as a string with X decimal places
-#   - datetime: Datetime as a unix timestamp. Why a number? This enables queries
-#     in the DB. And we do not need more precision than 1 second.
+#     - nativ datatypes: string, number, boolean, JSON
+#     - HTML: string with HTML content
+#     - float: numbers that are expected to be non-integer. Formatted as in rfc7159.
+#     - decimal(X): Decimal values represented as a string with X decimal places
+#     - datetime: Datetime as a unix timestamp. Why a number? This enables queries
+#       in the DB. And we do not need more precision than 1 second.
 # Relations:
-#   - <collection>/<field>: This is a reference to a collection. The reverse relation
-#     field is <field>. E.g. `category_id: motion_category/motion_ids` in a motion links
-#     to one category. The reverse field is `motion_ids` which may be `motion_ids:
-#     (motion/category_id)[]` indicating, that there are many motion ids.
-#   - <T>[]: This indicated multiple ids. For an example see above.
-#   - {x,y,z}/<field>: This is a generic relation (analog: `({x,y,z}/<field>)[]` a
-#     generic list relation) with fqids as values to the given ollections x, y and z.
-#   - If no field is specified, there is no reverse relation.
+#     - <collection>/<field>: This is a reference to a collection. The reverse relation
+#       field is <field>. E.g. `category_id: motion_category/motion_ids` in a motion links
+#       to one category. The reverse field is `motion_ids` which may be `motion_ids:
+#       (motion/category_id)[]` indicating, that there are many motion ids.
+#     - <T>[]: This indicated multiple ids. For an example see above.
+#     - {x,y,z}/<field>: This is a generic relation (analog: `({x,y,z}/<field>)[]` a
+#       generic list relation) with fqids as values to the given ollections x, y and z.
+#     - If no field is specified, there is no reverse relation.
 # Structured Fields:
-#   - There are template fields (see autoupdate service interface) with a `$` as
-#     the placeholder. In this document, angle brackets are followed by the
-#     dollar sign including the meaning of the template. E.g.
-#     group_$<meeting_id>_ids: (group/user_ids)[];
-#     says, that the template are meeting ids and each structured field is a
-#     multi-relation to groups and the reverse relation field for groups is
-#     user_ids.
-
+#     - There are template fields (see autoupdate service interface) with a `$` as
+#       the placeholder. In this document, angle brackets are followed by the
+#       dollar sign including the meaning of the template. E.g.
+#       group_$<meeting_id>_ids: (group/user_ids)[];
+#       says, that the template are meeting ids and each structured field is a
+#       multi-relation to groups and the reverse relation field for groups is
+#       user_ids.
+#
 organisation:
   id: number
   name: string
@@ -59,7 +59,7 @@ user:
   last_email_send: string
   vote_weight: decimal
 
-  role_id: role/user_ids #  Attention: prevent impelenting a "default-role" or let a
+  role_id: role/user_ids  # Attention: prevent impelenting a "default-role" or let a
   # user create such a role! This would cause the user_ids-array for this
   # role to explode in size. If a user has no role, it should be handles as
   # the user has no permission in the organisation and is a "normal" delegate
@@ -68,8 +68,8 @@ user:
 
   # Meeting and committee
   is_present_in_meeting_ids: (meeting/present_user_ids)[]
-  meeting_id: meeting/temporary_user_ids;  # Temporary users
-  guest_meeting_ids: (meeting/guest_ids)[];  # Guests in meetings
+  meeting_id: meeting/temporary_user_ids  # Temporary users
+  guest_meeting_ids: (meeting/guest_ids)[]  # Guests in meetings
   committee_as_member_ids: (committee/member_ids)[]
   committee_as_manager_ids: (committee/manager_ids)[]
 
@@ -145,7 +145,7 @@ meeting:
   custom_translations: JSON
 
   # System
-  url_name: string #  For unique urls.
+  url_name: string  # For unique urls.
   template_for_committee_id: committee/template_meeting_id
   enable_anonymous: boolean
 
@@ -307,7 +307,7 @@ meeting:
   present_user_ids: (user/is_present_in_meeting_ids)[]
   temporary_user_ids: (user/meeting_id)[]
   guest_ids: (user/guest_meeting_ids)[]
-  user_ids: (Id)[] #  Calculated: All ids from temporary_user_ids, guest_ids and all users assigned to groups.
+  user_ids: (Id)[]  # Calculated: All ids from temporary_user_ids, guest_ids and all users assigned to groups.
   reference_projector_id: projector/used_as_reference_projector_meeting_id
 
   default_group_id: group/default_group_for_meeting_id
@@ -354,9 +354,9 @@ agenda_item:
   type: number
   is_internal: boolean
   is_hidden: boolean
-  duration: number #  in seconds
+  duration: number  # in seconds
   weight: number
-  level: number #  calculated.
+  level: number  # calculated.
 
   content_object_id: "{motion,motion_block,assignment,topic}/agenda_item_id"
   parent_id: agenda_item/child_ids
@@ -400,7 +400,7 @@ topic:
 motion:
   id: number
   number: string
-  sequential_number: number #  Calculated
+  sequential_number: number  # Calculated
   title: string
   text: HTML
   amendment_paragraph_$<paragraph_number>: HTML
@@ -417,9 +417,9 @@ motion:
   amendment_ids: (motion/lead_motion_id)[]
   sort_parent_id: motion/sort_child_ids
   sort_child_ids: (motion/parent_id)[]
-  origin_id: motion/derived_motion_ids #  Note: The related motions may not be in the same meeting
-  derived_motion_ids: (motion/origin_id)[] #  Note: The related motions may not be in the same meeting
-  forwarding_tree_motion_ids: (Id)[] #  Calculated: All children (derived_motion_ids), grand children, ... and all parents (origin_id).
+  origin_id: motion/derived_motion_ids  # Note: The related motions may not be in the same meeting
+  derived_motion_ids: (motion/origin_id)[]  # Note: The related motions may not be in the same meeting
+  forwarding_tree_motion_ids: (Id)[]  # Calculated: All children (derived_motion_ids), grand children, ... and all parents (origin_id).
   state_id: motion_state/motion_ids
   recommendation_id: motion_state/motion_recommendation_ids
   recommendation_extension_reference_ids: ({motion}/referenced_in_motion_recommendation_extension_ids)[]
@@ -554,7 +554,7 @@ motion_poll:
   votesvalid: decimal(6)
   votesinvalid: decimal(6)
   votescast: decimal(6)
-  user_has_voted: boolean #  This is user specific and set during restriction
+  user_has_voted: boolean  # This is user specific and set during restriction
 
   motion_id: motion/poll_ids
   option_ids: (motion_option/poll_id)[]
@@ -625,7 +625,7 @@ assignment_poll:
   votescast: decimal(6)
   votesinvalid: decimal(6)
   votesvalid: decimal(6)
-  user_has_voted: boolean #  This is user specific and set during restriction
+  user_has_voted: boolean  # This is user specific and set during restriction
 
   assignment_id: assignment/poll_ids
   voted_ids: (user/assignment_poll_voted_$<meeting_id>_ids)[]
@@ -658,16 +658,16 @@ assignment_vote:
 # `<media-prefix>/media/<meeting_id>/path`
 mediafile:
   id: number
-  title: string #  title and parent_id must be unique.
+  title: string  # title and parent_id must be unique.
   is_directory: boolean
-  filesize: number #  Note: in bytes, not the human readable format anymore
-  filename: string #  Note: The uploaded filename. will be used for downloading. Only writeable on create.
+  filesize: number  # Note: in bytes, not the human readable format anymore
+  filename: string  # Note: The uploaded filename. will be used for downloading. Only writeable on create.
   mimetype: string
   pdf_information: JSON
   create_timestamp: datetime
-  has_inherited_access_groups: boolean #  Note: calculated
+  has_inherited_access_groups: boolean  # Note: calculated
 
-  inherited_access_group_ids: (group/mediafile_inherited_access_group_ids)[];  # Note: calculated
+  inherited_access_group_ids: (group/mediafile_inherited_access_group_ids)[]  # Note: calculated
   access_group_ids: (group/mediafile_access_group_ids)[]
   parent_id: mediafile/child_ids
   child_ids: (mediafile/parent_id)[]
@@ -745,7 +745,7 @@ projector_countdown:
   title: string
   description: string
   default_time: number
-  countdown_time: number #  float?
+  countdown_time: number  # float?
   running: boolean
 
   projection_ids: (projection/element_id)[]
