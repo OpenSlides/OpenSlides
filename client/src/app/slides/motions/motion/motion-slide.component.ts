@@ -79,9 +79,6 @@ export class MotionSlideComponent
             );
         }
 
-        console.log('cr mode? ', this.crMode);
-        console.log('the data: ', this._data);
-
         this.recalcUnifiedChanges();
     }
 
@@ -216,8 +213,14 @@ export class MotionSlideComponent
         }
         if (this.data.data.amendments) {
             this.data.data.amendments.forEach(amendment => {
-                const paras = this.getAmendmentAmendedParagraphs(amendment);
-                paras.forEach(para => this.allChangingObjects.push(para));
+                if (amendment.change_recommendations?.length) {
+                    const amendmentCRData = amendment.change_recommendations;
+                    const amendmentCRs = amendmentCRData.map(cr => new MotionSlideObjChangeReco(cr));
+                    this.allChangingObjects.push(...amendmentCRs);
+                } else {
+                    const paras = this.getAmendmentAmendedParagraphs(amendment);
+                    this.allChangingObjects.push(...paras);
+                }
             });
         }
         this.allChangingObjects.sort((a: ViewUnifiedChange, b: ViewUnifiedChange) => {
