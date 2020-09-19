@@ -1,28 +1,40 @@
+---
 # Types:
-#     - nativ datatypes: string, number, boolean, JSON
-#     - HTML: string with HTML content
-#     - float: numbers that are expected to be non-integer. Formatted as in rfc7159.
-#     - decimal(X): Decimal values represented as a string with X decimal places
+#     - Nativ datatypes: string, number, boolean, JSON
+#     - HTML: A string with HTML content.
+#     - float: Numbers that are expected to be non-integer. Formatted as in rfc7159.
+#     - decimal(X): Decimal values represented as a string with X decimal places.
 #     - datetime: Datetime as a unix timestamp. Why a number? This enables queries
 #       in the DB. And we do not need more precision than 1 second.
+#     - <T>[]: This indicates and arbitrary array of the given type.
 # Relations:
-#     - <collection>/<field>: This is a reference to a collection. The reverse relation
-#       field is <field>. E.g. `category_id: motion_category/motion_ids` in a motion links
-#       to one category. The reverse field is `motion_ids` which may be `motion_ids:
-#       (motion/category_id)[]` indicating, that there are many motion ids.
-#     - <T>[]: This indicated multiple ids. For an example see above.
-#     - {x,y,z}/<field>: This is a generic relation (analog: `({x,y,z}/<field>)[]` a
-#       generic list relation) with fqids as values to the given ollections x, y and z.
-#     - If no field is specified, there is no reverse relation.
-# Structured Fields:
+#     - We have the following types: `relation`, `relation-list`, `generic-relation`
+#       and `generic-relation-list`.
+#     - Non-generic relations: The simple syntax for such a field
+#       `to: <collection>/<field>`. This is a reference to a collection. The reverse
+#       relation field in this collection is <field>. E. g. in a motion the field
+#       `category_id` links to one category where the field `motion_ids` contains the
+#       motion id. The simple notation for the field is `motion_category/motion_ids`.
+#       The reverse field has type `relation-list` and is related back to
+#       `motion/category_id`. The type indicates that there are many
+#       motion ids.
+#     - Generic relations: The difference to non-generic relations is that you have a
+#       list of possible collections. Therefor we split the simple notation up to the
+#       properties `collection` and `field`.
+# Structured fields:
 #     - There are template fields (see autoupdate service interface) with a `$` as
-#       the placeholder. In this document, angle brackets are followed by the
-#       dollar sign including the meaning of the template. E.g.
-#       group_$<meeting_id>_ids: (group/user_ids)[];
-#       says, that the template are meeting ids and each structured field is a
-#       multi-relation to groups and the reverse relation field for groups is
-#       user_ids.
-#
+#       the placeholder. We have three different types: `template`,
+#       `structured-relation` and `structured-tag`.
+#     - The type `template` describes a structured field for the given model. The
+#       property `replacement` describes the meaning of the template. The property
+#       `fields` contains the definition for all the fields that come from the template
+#       field.
+#     - The type `structured-relation` describes the content of a related field as a
+#       structured field (with properties `name`, `replacement` and `through`).
+#     - The type `structured-tag` describes the content of a related field as a
+#       structured field where the template is filled with arbitrary strings instead of
+#       instance ids.
+
 organisation:
   id: number
   name: string
@@ -65,7 +77,7 @@ user:
   structure_level: string
   email: string
   last_email_send: string
-  vote_weight: decimal
+  vote_weight: decimal(6)
 
   role_id:
     type: relation
@@ -220,7 +232,7 @@ committee:
     to: meeting/default_meeting_for_committee_id
   member_ids:
     type: relation-list
-    to: user/committee_as_memeber_ids
+    to: user/committee_as_member_ids
   manager_ids:
     type: relation-list
     to: user/committee_as_manager_ids
@@ -248,7 +260,9 @@ meeting:
   custom_translations: JSON
 
   # System
-  url_name: string  # For unique urls.
+  url_name:
+    type: string
+    description: For unique urls.
   template_for_committee_id:
     type: relation
     to: committee/template_meeting_id
@@ -463,7 +477,7 @@ meeting:
       to:
         collection: mediafile
         field:
-          name: used_as_font_$_in_mmeting_id
+          name: used_as_font_$_in_meeting_id
           type: structured-tag
           replacement: location
   # Examples:
@@ -490,7 +504,7 @@ meeting:
   guest_ids:
     type: relation-list
     to: user/guest_meeting_ids
-  user_ids: (Id)[]  # Calculated: All ids from temporary_user_ids, guest_ids and all users assigned to groups.
+  user_ids: number[]  # Calculated: All ids from temporary_user_ids, guest_ids and all users assigned to groups.
   reference_projector_id:
     type: relation
     to: projector/used_as_reference_projector_meeting_id
@@ -595,7 +609,9 @@ agenda_item:
   is_internal: boolean
   is_hidden: boolean
   duration: number  # in seconds
-  weight: number
+  weight:
+    type: number
+    default: 0
   level: number  # calculated.
 
   content_object_id:
@@ -657,7 +673,9 @@ speaker:
   id: number
   begin_time: datetime
   end_time: datetime
-  weight: number
+  weight:
+    type: number
+    default: 0
   marked: boolean
 
   list_of_speakers_id:
@@ -679,7 +697,7 @@ topic:
 
   attachment_ids:
     type: relation-list
-    to: mediafile/attachement_ids
+    to: mediafile/attachment_ids
   agenda_item_id:
     type: relation
     to: agenda_item/content_object_id
@@ -705,10 +723,14 @@ motion:
     fields: HTML
   modified_final_version: HTML
   reason: HTML
-  category_weight: number
+  category_weight:
+    type: number
+    default: 0
   state_extension: string
   recommendation_extension: string
-  sort_weight: number
+  sort_weight:
+    type: number
+    default: 0
   created: datetime
   last_modified: datetime
 
@@ -723,14 +745,14 @@ motion:
     to: motion/sort_child_ids
   sort_child_ids:
     type: relation-list
-    to: motion/parent_id
+    to: motion/sort_parent_id
   origin_id:
     type: relation
     to: motion/derived_motion_ids  # Note: The related motions may not be in the same meeting
   derived_motion_ids:
     type: relation-list
     to: motion/origin_id  # Note: The related motions may not be in the same meeting
-  forwarding_tree_motion_ids: (Id)[]  # Calculated: All children (derived_motion_ids), grand children, ... and all parents (origin_id).
+  forwarding_tree_motion_ids: number[]  # Calculated: All children (derived_motion_ids), grand children, ... and all parents (origin_id).
   state_id:
     type: relation
     to: motion_state/motion_ids
@@ -802,7 +824,9 @@ motion:
 
 motion_submitter:
   id: number
-  weight: number
+  weight:
+    type: number
+    default: 0
 
   user_id:
     type: relation
@@ -830,7 +854,9 @@ motion_comment:
 motion_comment_section:
   id: number
   name: string
-  weight: number
+  weight:
+    type: number
+    default: 0
 
   comment_ids:
     type: relation-list
@@ -849,7 +875,9 @@ motion_category:
   id: number
   name: string
   prefix: string
-  weight: number
+  weight:
+    type: number
+    default: 0
   level: number
 
   parent_id:
@@ -863,7 +891,7 @@ motion_category:
     to: motion/category_id
   meeting_id:
     type: relation
-    to: meeting/category_ids
+    to: meeting/motion_category_ids
 
 motion_block:
   id: number
@@ -964,7 +992,9 @@ motion_statute_paragraph:
   id: number
   title: string
   text: HTML
-  weight: number
+  weight:
+    type: number
+    default: 0
 
   motion_ids:
     type: relation-list
@@ -1082,7 +1112,9 @@ assignment:
 
 assignment_candidate:
   id: number
-  weight: number
+  weight:
+    type: number
+    default: 0
 
   assignment_id:
     type: relation
@@ -1148,7 +1180,9 @@ assignment_option:
   yes: decimal(6)
   no: decimal(6)
   abstain: decimal(6)
-  weight: number
+  weight:
+    type: number
+    default: 0
 
   poll_id:
     type: relation
@@ -1294,10 +1328,10 @@ projector:
       field: current_projector_ids
   preview_projection_ids:
     type: relation-list
-    to: projection/projector_preview_id
+    to: projection/preview_projector_id
   history_projection_ids:
     type: relation-list
-    to: projection/projector_history_id
+    to: projection/history_projector_id
   used_as_reference_projector_meeting_id:
     type: relation
     to: meeting/reference_projector_id

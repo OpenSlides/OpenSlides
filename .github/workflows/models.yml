@@ -1,0 +1,30 @@
+name: Validate models.yml
+on: [push, pull_request]
+jobs:
+  validate:
+    name: Validate models.yml
+    runs-on: ubuntu-latest
+    steps:
+    - name: Set up Go 1.15
+      uses: actions/setup-go@v1
+      with:
+        go-version: 1.15
+
+    - name: Install validator
+      run: go get github.com/OpenSlides/openslides-modelsvalidate/cmd/modelsvalidate
+
+    - name: Check out code
+      uses: actions/checkout@v2
+
+    - name: Validate models.yml
+      run: $HOME/go/bin/modelsvalidate docs/models.yml
+
+  check-old:
+    name: Check old models.txt
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+
+    - name: Check MD5 hash of old models.txt
+      run: echo "4dee769da047e0169b5fe1280f3ea2f0  docs/models.txt" | md5sum --check
