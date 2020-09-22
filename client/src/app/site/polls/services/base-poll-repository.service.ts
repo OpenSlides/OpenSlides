@@ -8,7 +8,6 @@ import { RelationManagerService } from 'app/core/core-services/relation-manager.
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { RelationDefinition } from 'app/core/definitions/relations';
 import { BaseRepository, NestedModelDescriptors } from 'app/core/repositories/base-repository';
-import { VotingService } from 'app/core/ui-services/voting.service';
 import { ModelConstructor } from 'app/shared/models/base/base-model';
 import { BasePoll, PollState } from 'app/shared/models/poll/base-poll';
 import { BaseViewModel, TitleInformation } from 'app/site/base/base-view-model';
@@ -30,7 +29,6 @@ export abstract class BasePollRepositoryService<
         protected baseModelCtor: ModelConstructor<M>,
         protected relationDefinitions: RelationDefinition<BaseViewModel>[] = [],
         protected nestedModelDescriptors: NestedModelDescriptors = {},
-        private votingService: VotingService,
         protected http: HttpService
     ) {
         super(
@@ -53,7 +51,7 @@ export abstract class BasePollRepositoryService<
     protected createViewModelWithTitles(model: M): V {
         const viewModel = super.createViewModelWithTitles(model);
         Object.defineProperty(viewModel, 'canBeVotedFor', {
-            value: () => this.votingService.canVote(viewModel)
+            value: () => viewModel.isStarted
         });
         return viewModel;
     }

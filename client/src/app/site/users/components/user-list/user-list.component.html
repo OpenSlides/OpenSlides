@@ -62,7 +62,7 @@
     >
         <div class="groupsCell">
             <div *ngIf="user.groups && user.groups.length">
-                <os-icon-container icon="people">
+                <os-icon-container icon="people" noWrap="true">
                     <span *ngFor="let group of user.groups; let last = last">
                         {{ group.getTitle() | translate }}<span *ngIf="!last">,</span>
                     </span>
@@ -73,6 +73,10 @@
             </div>
             <div *ngIf="user.number" class="spacer-top-5">
                 <os-icon-container icon="perm_identity">{{ user.number }}</os-icon-container>
+            </div>
+
+            <div *ngIf="user.vote_delegated_to_id" class="spacer-top-5">
+                <os-icon-container icon="forward" noWrap="true">{{ user.voteDelegatedTo }}</os-icon-container>
             </div>
         </div>
     </div>
@@ -90,9 +94,7 @@
             </mat-icon>
 
             <!-- Has comment indicator -->
-            <mat-icon inline *ngIf="!!user.comment" matTooltip="{{ user.comment }}">
-                comment
-            </mat-icon>
+            <mat-icon inline *ngIf="!!user.comment" matTooltip="{{ user.comment }}"> comment </mat-icon>
 
             <os-icon-container *ngIf="user.isSamlUser" icon="device_hub"
                 ><span>{{ 'Is SAML user' | translate }}</span></os-icon-container
@@ -271,6 +273,14 @@
             </mat-select>
         </mat-form-field>
         <mat-form-field>
+            <os-search-value-selector
+                [(ngModel)]="infoDialog.vote_delegated_from_users_id"
+                [multiple]="true"
+                placeholder="{{ 'Transferred voting rights from' | translate }}"
+                [inputListValues]="users"
+            ></os-search-value-selector>
+        </mat-form-field>
+        <mat-form-field>
             <mat-select placeholder="{{ 'Gender' | translate }}" [(ngModel)]="infoDialog.gender">
                 <mat-option>-</mat-option>
                 <mat-option *ngFor="let gender of genderList" [value]="gender">{{ gender | translate }}</mat-option>
@@ -300,6 +310,7 @@
             color="accent"
             [mat-dialog-close]="{
                 groups_id: infoDialog.groups_id,
+                vote_delegated_from_users_id: infoDialog.vote_delegated_from_users_id,
                 gender: infoDialog.gender,
                 number: infoDialog.number,
                 structure_level: infoDialog.structure_level

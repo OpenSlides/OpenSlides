@@ -56,8 +56,9 @@ export abstract class BasePoll<
     public votescast: number;
     public groups_id: number[];
     public majority_method: MajorityMethod;
+    public voted_id: number[];
     public user_has_voted: boolean;
-
+    public user_has_voted_for_delegations: number[];
     public pollmethod: PM;
     public onehundred_percent_base: PB;
 

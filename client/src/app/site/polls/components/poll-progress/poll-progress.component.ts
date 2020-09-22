@@ -39,8 +39,15 @@ export class PollProgressComponent extends BaseViewComponentDirective implements
                     .getViewModelListObservable()
                     .pipe(
                         map(users =>
+                            /**
+                             * Filter the users who would be able to vote:
+                             * They are present or have their right to vote delegated
+                             * They are in one of the voting groups
+                             */
                             users.filter(
-                                user => user.is_present && this.poll.groups_id.intersect(user.groups_id).length
+                                user =>
+                                    (user.is_present || user.isVoteRightDelegated) &&
+                                    this.poll.groups_id.intersect(user.groups_id).length
                             )
                         )
                     )

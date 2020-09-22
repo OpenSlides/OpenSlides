@@ -1,12 +1,34 @@
-<ng-container *ngIf="poll && !poll.user_has_voted; else userHasVotes">
-    <div *ngIf="vmanager.canVote(poll) && !deliveringVote" class="vote-button-grid">
+<ng-container *ngIf="poll">
+    <!-- own voting -->
+    <ng-container [ngTemplateOutlet]="votingArea"></ng-container>
+
+    <!-- Delegations -->
+    <ng-container *ngIf="user.is_present">
+        <div class="motion-vote-delegation" *ngFor="let delegation of delegations">
+            <mat-divider></mat-divider>
+
+            <ng-container
+                [ngTemplateOutlet]="votingArea"
+                [ngTemplateOutletContext]="{ delegation: delegation }"
+            ></ng-container>
+        </div>
+    </ng-container>
+</ng-container>
+
+<ng-template #votingArea let-delegation="delegation">
+    <h4 *ngIf="delegation" class="motion-delegation-title">
+        <span>{{ 'Vote delegation for' | translate }}</span>
+        <span>&nbsp;{{ delegation.getFullName() }}</span>
+    </h4>
+
+    <div *ngIf="canVote(delegation)" class="vote-button-grid">
         <!-- Voting -->
         <div class="vote-button" *ngFor="let option of voteOptions">
             <button
                 mat-raised-button
-                (click)="saveVote(option.vote)"
-                [ngClass]="currentVote && currentVote.vote === option.vote ? option.css : ''"
-                [disabled]="deliveringVote"
+                (click)="saveVote(option.vote, delegation)"
+                [ngClass]="getActionButtonClass(option, delegation)"
+                [disabled]="isDeliveringVote(delegation)"
             >
                 <mat-icon> {{ option.icon }}</mat-icon>
             </button>
@@ -14,21 +36,33 @@
         </div>
     </div>
 
-    <div *ngIf="deliveringVote" class="submit-vote-indicator">
+    <ng-container
+        *ngIf="!canVote(delegation)"
+        [ngTemplateOutlet]="cannotVote"
+        [ngTemplateOutletContext]="{ delegation: delegation }"
+    >
+    </ng-container>
+
+    <!-- Delivering -->
+    <div *ngIf="isDeliveringVote(delegation)" class="submit-vote-indicator">
         <mat-spinner class="small-spinner"></mat-spinner>
         <br />
         <span>{{ 'Delivering vote... Please wait!' | translate }}</span>
     </div>
-</ng-container>
+</ng-template>
 
-<ng-template #userHasVotes>
-    <div class="user-has-voted">
+<ng-template #cannotVote let-delegation="delegation">
+    <!-- Success -->
+    <div *ngIf="hasAlreadyVoted(delegation) && !isDeliveringVote(delegation)" class="user-has-voted">
         <div>
-            <mat-icon class="vote-submitted">
-                check_circle
-            </mat-icon>
+            <mat-icon class="vote-submitted"> check_circle </mat-icon>
             <br />
             <span>{{ 'Voting successful.' | translate }}</span>
         </div>
+    </div>
+
+    <!-- Error -->
+    <div *ngIf="!hasAlreadyVoted(delegation) && !isDeliveringVote(delegation)">
+        <span>{{ getVotingError(delegation) | translate }}</span>
     </div>
 </ng-template>

@@ -72,6 +72,8 @@ export class AssignmentPollComponent
         this.descriptionForm = this.formBuilder.group({
             description: this.poll ? this.poll.description : ''
         });
+
+        console.log('the poll: ', this.poll);
     }
 
     /**

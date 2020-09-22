@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 
@@ -10,14 +10,8 @@ import { PromptService } from 'app/core/ui-services/prompt.service';
 import { VotingService } from 'app/core/ui-services/voting.service';
 import { VoteValue } from 'app/shared/models/poll/base-vote';
 import { ViewMotionPoll } from 'app/site/motions/models/view-motion-poll';
-import { BasePollVoteComponentDirective } from 'app/site/polls/components/base-poll-vote.component';
-
-interface VoteOption {
-    vote?: VoteValue;
-    css?: string;
-    icon?: string;
-    label?: string;
-}
+import { BasePollVoteComponentDirective, VoteOption } from 'app/site/polls/components/base-poll-vote.component';
+import { ViewUser } from 'app/site/users/models/view-user';
 
 @Component({
     selector: 'os-motion-poll-vote',
@@ -25,8 +19,7 @@ interface VoteOption {
     styleUrls: ['./motion-poll-vote.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MotionPollVoteComponent extends BasePollVoteComponentDirective<ViewMotionPoll> {
-    public currentVote: VoteOption = {};
+export class MotionPollVoteComponent extends BasePollVoteComponentDirective<ViewMotionPoll> implements OnInit {
     public voteOptions: VoteOption[] = [
         {
             vote: 'Y',
@@ -53,30 +46,56 @@ export class MotionPollVoteComponent extends BasePollVoteComponentDirective<View
         translate: TranslateService,
         matSnackbar: MatSnackBar,
         operator: OperatorService,
-        public vmanager: VotingService,
+        public votingService: VotingService,
         private pollRepo: MotionPollRepositoryService,
         private promptService: PromptService,
         private cd: ChangeDetectorRef
     ) {
-        super(title, translate, matSnackbar, operator);
+        super(title, translate, matSnackbar, operator, votingService);
+
+        // observe user updates to refresh the view on dynamic changes
+        this.subscriptions.push(
+            operator.getViewUserObservable().subscribe(() => {
+                this.cd.markForCheck();
+            })
+        );
     }
 
-    public async saveVote(vote: VoteValue): Promise<void> {
-        this.currentVote.vote = vote;
-        const title = this.translate.instant('Submit selection now?');
-        const content = this.translate.instant('Your decision cannot be changed afterwards.');
-        const confirmed = await this.promptService.open(title, content);
+    public ngOnInit(): void {
+        this.createVotingDataObjects();
+        this.cd.markForCheck();
+    }
 
-        if (confirmed) {
-            this.deliveringVote = true;
-            this.cd.markForCheck();
+    public getActionButtonClass(voteOption: VoteOption, user: ViewUser = this.user): string {
+        if (this.voteRequestData[user.id]?.vote === voteOption.vote) {
+            return voteOption.css;
+        }
+        return '';
+    }
 
-            this.pollRepo
-                .vote(vote, this.poll.id)
-                .catch(this.raiseError)
-                .finally(() => {
-                    this.deliveringVote = false;
-                });
+    public async saveVote(vote: VoteValue, user: ViewUser = this.user): Promise<void> {
+        if (this.voteRequestData[user.id]) {
+            this.voteRequestData[user.id].vote = vote;
+
+            const title = this.translate.instant('Submit selection now?');
+            const content = this.translate.instant('Your decision cannot be changed afterwards.');
+            const confirmed = await this.promptService.open(title, content);
+
+            if (confirmed) {
+                this.deliveringVote[user.id] = true;
+                this.cd.markForCheck();
+
+                this.pollRepo
+                    .vote(vote, this.poll.id, user.id)
+                    .then(() => {
+                        this.alreadyVoted[user.id] = true;
+                    })
+                    .catch(this.raiseError)
+                    .finally(() => {
+                        this.deliveringVote[user.id] = false;
+                        this.cd.markForCheck();
+                    });
+            }
         }
     }
 }

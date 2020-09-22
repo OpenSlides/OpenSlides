@@ -7,8 +7,8 @@ import { HttpService } from 'app/core/core-services/http.service';
 import { RelationManagerService } from 'app/core/core-services/relation-manager.service';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { RelationDefinition } from 'app/core/definitions/relations';
-import { VotingService } from 'app/core/ui-services/voting.service';
 import { AssignmentPoll } from 'app/shared/models/assignments/assignment-poll';
+import { UserVote } from 'app/shared/models/poll/base-vote';
 import { ViewAssignment } from 'app/site/assignments/models/view-assignment';
 import { ViewAssignmentOption } from 'app/site/assignments/models/view-assignment-option';
 import { AssignmentPollTitleInformation, ViewAssignmentPoll } from 'app/site/assignments/models/view-assignment-poll';
@@ -97,7 +97,6 @@ export class AssignmentPollRepositoryService extends BasePollRepositoryService<
         viewModelStoreService: ViewModelStoreService,
         translate: TranslateService,
         relationManager: RelationManagerService,
-        votingService: VotingService,
         http: HttpService
     ) {
         super(
@@ -110,7 +109,6 @@ export class AssignmentPollRepositoryService extends BasePollRepositoryService<
             AssignmentPoll,
             AssignmentPollRelations,
             {},
-            votingService,
             http
         );
     }
@@ -123,14 +121,11 @@ export class AssignmentPollRepositoryService extends BasePollRepositoryService<
         return this.translate.instant(plural ? 'Polls' : 'Poll');
     };
 
-    public vote(data: VotingData, poll_id: number): Promise<void> {
-        let requestData;
-        if (data.global) {
-            requestData = `"${data.global}"`;
-        } else {
-            requestData = data.votes;
-        }
-
+    public vote(data: VotingData, poll_id: number, userId?: number): Promise<void> {
+        const requestData: UserVote = {
+            data: data.global ?? data.votes,
+            user_id: userId ?? undefined
+        };
         return this.http.post(`/rest/assignments/assignment-poll/${poll_id}/vote/`, requestData);
     }
 }

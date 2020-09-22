@@ -8,6 +8,14 @@
     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
 }
 
+.motion-vote-delegation {
+    margin-top: 1em;
+
+    .motion-delegation-title {
+        font-weight: 500;
+    }
+}
+
 .submit-vote-indicator {
     margin-top: 1em;
     text-align: center;
@@ -24,6 +32,10 @@
     .vote-label {
         text-align: center;
     }
+}
+
+.mat-divider-horizontal {
+    position: initial;
 }
 
 .user-has-voted {
