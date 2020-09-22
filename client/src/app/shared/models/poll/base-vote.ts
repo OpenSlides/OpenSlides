@@ -16,6 +16,13 @@ export const GeneralValueVerbose = {
     votesabstain: 'Votes abstain'
 };
 
+export interface UserVote {
+    // the voting payload is hard to describe.
+    // Can be "VoteValue" or any userID-Number sequence in combination with any VoteValue
+    data: Object;
+    user_id?: number;
+}
+
 export abstract class BaseVote<T = any> extends BaseDecimalModel<T> {
     public weight: number;
     public value: VoteValue;

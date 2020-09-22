@@ -114,6 +114,10 @@ export abstract class ViewBasePoll<
 
     public canBeVotedFor: () => boolean;
 
+    public hasVotedId(userId: number): boolean {
+        return this.user_has_voted_for_delegations?.includes(userId);
+    }
+
     public abstract getSlide(): ProjectorElementBuildDeskriptor;
 
     public abstract getContentObject(): BaseViewModel;

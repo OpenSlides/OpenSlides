@@ -29,7 +29,7 @@
         </button>
     </ng-container>
     <ng-container *ngIf="!multiple && includeNone">
-        <mat-option>
+        <mat-option [value]="null">
             {{ noneTitle | translate }}
         </mat-option>
         <mat-divider></mat-divider>

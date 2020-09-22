@@ -164,6 +164,16 @@
                     [inputListValues]="groups"
                 ></os-search-value-selector>
             </mat-form-field>
+
+            <!-- Delegate Vote -->
+            <mat-form-field>
+                <os-search-value-selector
+                    formControlName="vote_delegated_from_users_id"
+                    [multiple]="true"
+                    placeholder="{{ 'Transferred voting rights from' | translate }}"
+                    [inputListValues]="users"
+                ></os-search-value-selector>
+            </mat-form-field>
         </div>
 
         <div *ngIf="isAllowed('manage')">
@@ -303,6 +313,18 @@
         </div>
 
         <div *ngIf="isAllowed('manage')">
+            <!-- Own Vote delegations -->
+            <div *ngIf="user.voteDelegatedTo">
+                <h4>{{ 'Vote right delegated to:' | translate }}</h4>
+                <span>{{ user.voteDelegatedTo }}</span>
+            </div>
+
+            <!-- Received Vote delegations -->
+            <div *ngIf="user.voteDelegationsFrom && user.voteDelegationsFrom.length">
+                <h4>{{ 'Vote delegations from' | translate }}</h4>
+                <span>{{ user.voteDelegationsFrom }}</span>
+            </div>
+
             <!-- Vote weight -->
             <div *ngIf="user.vote_weight && showVoteWeight">
                 <h4>{{ 'Vote weight' | translate }}</h4>

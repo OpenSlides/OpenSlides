@@ -7,24 +7,17 @@ import { TranslateService } from '@ngx-translate/core';
 import { OperatorService } from 'app/core/core-services/operator.service';
 import {
     AssignmentPollRepositoryService,
-    GlobalVote,
-    VotingData
+    GlobalVote
 } from 'app/core/repositories/assignments/assignment-poll-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { VotingService } from 'app/core/ui-services/voting.service';
 import { AssignmentPollMethod } from 'app/shared/models/assignments/assignment-poll';
 import { PollType } from 'app/shared/models/poll/base-poll';
 import { VoteValue } from 'app/shared/models/poll/base-vote';
+import { ViewAssignmentOption } from 'app/site/assignments/models/view-assignment-option';
 import { ViewAssignmentPoll } from 'app/site/assignments/models/view-assignment-poll';
-import { BasePollVoteComponentDirective } from 'app/site/polls/components/base-poll-vote.component';
-
-// TODO: Duplicate
-interface VoteActions {
-    vote: VoteValue;
-    css: string;
-    icon: string;
-    label: string;
-}
+import { BasePollVoteComponentDirective, VoteOption } from 'app/site/polls/components/base-poll-vote.component';
+import { ViewUser } from 'app/site/users/models/view-user';
 
 @Component({
     selector: 'os-assignment-poll-vote',
@@ -35,37 +28,60 @@ interface VoteActions {
 export class AssignmentPollVoteComponent extends BasePollVoteComponentDirective<ViewAssignmentPoll> implements OnInit {
     public AssignmentPollMethod = AssignmentPollMethod;
     public PollType = PollType;
-    public voteActions: VoteActions[] = [];
-    public voteRequestData: VotingData = {
-        votes: {}
-    };
-    public alreadyVoted: boolean;
+    public voteActions: VoteOption[] = [];
+
+    public get pollHint(): string {
+        return this.poll.assignment.default_poll_description;
+    }
 
     public constructor(
         title: Title,
         protected translate: TranslateService,
         matSnackbar: MatSnackBar,
         operator: OperatorService,
-        public vmanager: VotingService,
+        votingService: VotingService,
         private pollRepo: AssignmentPollRepositoryService,
         private promptService: PromptService,
         private cd: ChangeDetectorRef
     ) {
-        super(title, translate, matSnackbar, operator);
+        super(title, translate, matSnackbar, operator, votingService);
+
+        // observe user updates to refresh the view on dynamic changes
+        this.subscriptions.push(
+            operator.getViewUserObservable().subscribe(() => {
+                this.cd.markForCheck();
+            })
+        );
     }
 
     public ngOnInit(): void {
-        if (this.poll && !this.poll.user_has_voted) {
-            this.alreadyVoted = false;
-            this.defineVoteOptions();
-        } else {
-            this.alreadyVoted = true;
-            this.cd.markForCheck();
-        }
+        this.createVotingDataObjects();
+        this.defineVoteOptions();
+        this.cd.markForCheck();
     }
 
-    public get pollHint(): string {
-        return this.poll.assignment.default_poll_description;
+    public getActionButtonClass(actions: VoteOption, option: ViewAssignmentOption, user: ViewUser = this.user): string {
+        if (
+            this.voteRequestData[user.id]?.votes[option.id] === actions.vote ||
+            this.voteRequestData[user.id]?.votes[option.id] === 1
+        ) {
+            return actions.css;
+        }
+        return '';
+    }
+
+    public getGlobalAbstainClass(user: ViewUser = this.user): string {
+        if (this.voteRequestData[user.id]?.global === 'A') {
+            return 'voted-abstain';
+        }
+        return '';
+    }
+
+    public getGlobalNoClass(user: ViewUser = this.user): string {
+        if (this.voteRequestData[user.id]?.global === 'N') {
+            return 'voted-no';
+        }
+        return '';
     }
 
     private defineVoteOptions(): void {
@@ -76,7 +92,7 @@ export class AssignmentPollVoteComponent extends BasePollVoteComponentDirective<
             label: 'Yes'
         });
 
-        if (this.poll.pollmethod !== AssignmentPollMethod.Votes) {
+        if (this.poll?.pollmethod !== AssignmentPollMethod.Votes) {
             this.voteActions.push({
                 vote: 'N',
                 css: 'voted-no',
@@ -85,7 +101,7 @@ export class AssignmentPollVoteComponent extends BasePollVoteComponentDirective<
             });
         }
 
-        if (this.poll.pollmethod === AssignmentPollMethod.YNA) {
+        if (this.poll?.pollmethod === AssignmentPollMethod.YNA) {
             this.voteActions.push({
                 vote: 'A',
                 css: 'voted-abstain',
@@ -95,40 +111,48 @@ export class AssignmentPollVoteComponent extends BasePollVoteComponentDirective<
         }
     }
 
-    public getVotesCount(): number {
-        return Object.keys(this.voteRequestData.votes).filter(key => this.voteRequestData.votes[key]).length;
+    public getVotesCount(user: ViewUser = this.user): number {
+        if (this.voteRequestData[user.id]) {
+            return Object.keys(this.voteRequestData[user.id].votes).filter(
+                key => this.voteRequestData[user.id].votes[key]
+            ).length;
+        }
     }
 
-    public getVotesAvailable(): number {
-        return this.poll.votes_amount - this.getVotesCount();
+    public getVotesAvailable(user: ViewUser = this.user): number {
+        return this.poll.votes_amount - this.getVotesCount(user);
     }
 
-    private isGlobalOptionSelected(): boolean {
-        return !!this.voteRequestData.global;
+    private isGlobalOptionSelected(user: ViewUser = this.user): boolean {
+        return !!this.voteRequestData[user.id]?.global;
     }
 
-    public async submitVote(): Promise<void> {
+    public async submitVote(user: ViewUser = this.user): Promise<void> {
         const title = this.translate.instant('Submit selection now?');
         const content = this.translate.instant('Your decision cannot be changed afterwards.');
         const confirmed = await this.promptService.open(title, content);
         if (confirmed) {
-            this.deliveringVote = true;
+            this.deliveringVote[user.id] = true;
             this.cd.markForCheck();
             this.pollRepo
-                .vote(this.voteRequestData, this.poll.id)
+                .vote(this.voteRequestData[user.id], this.poll.id, user.id)
                 .then(() => {
-                    this.alreadyVoted = true;
+                    this.alreadyVoted[user.id] = true;
                 })
                 .catch(this.raiseError)
                 .finally(() => {
-                    this.deliveringVote = false;
+                    this.deliveringVote[user.id] = false;
                 });
         }
     }
 
-    public saveSingleVote(optionId: number, vote: VoteValue): void {
-        if (this.isGlobalOptionSelected()) {
-            delete this.voteRequestData.global;
+    public saveSingleVote(optionId: number, vote: VoteValue, user: ViewUser = this.user): void {
+        if (!this.voteRequestData[user.id]) {
+            throw new Error('The user for your voting request does not exist');
+        }
+
+        if (this.isGlobalOptionSelected(user)) {
+            delete this.voteRequestData[user.id].global;
         }
 
         if (this.poll.pollmethod === AssignmentPollMethod.Votes) {
@@ -138,10 +162,10 @@ export class AssignmentPollVoteComponent extends BasePollVoteComponentDirective<
                 .reduce((o, n) => {
                     o[n] = 0;
                     if (votesAmount === 1) {
-                        if (n === optionId && this.voteRequestData.votes[n] !== 1) {
+                        if (n === optionId && this.voteRequestData[user.id].votes[n] !== 1) {
                             o[n] = 1;
                         }
-                    } else if ((n === optionId) !== (this.voteRequestData.votes[n] === 1)) {
+                    } else if ((n === optionId) !== (this.voteRequestData[user.id].votes[n] === 1)) {
                         o[n] = 1;
                     }
 
@@ -151,11 +175,11 @@ export class AssignmentPollVoteComponent extends BasePollVoteComponentDirective<
             // check if you can still vote
             const countedVotes = Object.keys(tmpVoteRequest).filter(key => tmpVoteRequest[key]).length;
             if (countedVotes <= votesAmount) {
-                this.voteRequestData.votes = tmpVoteRequest;
+                this.voteRequestData[user.id].votes = tmpVoteRequest;
 
                 // if you have no options anymore, try to send
-                if (this.getVotesCount() === votesAmount) {
-                    this.submitVote();
+                if (this.getVotesCount(user) === votesAmount) {
+                    this.submitVote(user);
                 }
             } else {
                 this.raiseError(
@@ -164,26 +188,29 @@ export class AssignmentPollVoteComponent extends BasePollVoteComponentDirective<
             }
         } else {
             // YN/YNA
-            if (this.voteRequestData.votes[optionId] && this.voteRequestData.votes[optionId] === vote) {
-                delete this.voteRequestData.votes[optionId];
+            if (
+                this.voteRequestData[user.id].votes[optionId] &&
+                this.voteRequestData[user.id].votes[optionId] === vote
+            ) {
+                delete this.voteRequestData[user.id].votes[optionId];
             } else {
-                this.voteRequestData.votes[optionId] = vote;
+                this.voteRequestData[user.id].votes[optionId] = vote;
             }
 
             // if you filled out every option, try to send
-            if (Object.keys(this.voteRequestData.votes).length === this.poll.options.length) {
-                this.submitVote();
+            if (Object.keys(this.voteRequestData[user.id].votes).length === this.poll.options.length) {
+                this.submitVote(user);
             }
         }
     }
 
-    public saveGlobalVote(globalVote: GlobalVote): void {
-        this.voteRequestData.votes = {};
-        if (this.voteRequestData.global && this.voteRequestData.global === globalVote) {
-            delete this.voteRequestData.global;
+    public saveGlobalVote(globalVote: GlobalVote, user: ViewUser = this.user): void {
+        this.voteRequestData[user.id].votes = {};
+        if (this.voteRequestData[user.id].global && this.voteRequestData[user.id].global === globalVote) {
+            delete this.voteRequestData[user.id].global;
         } else {
-            this.voteRequestData.global = globalVote;
-            this.submitVote();
+            this.voteRequestData[user.id].global = globalVote;
+            this.submitVote(user);
         }
     }
 }
