@@ -2,11 +2,15 @@
 # Types:
 #     - Nativ datatypes: string, number, boolean, JSON
 #     - HTML: A string with HTML content.
+#     - HTMLVideo: A string with HTML content (with video tags).
 #     - float: Numbers that are expected to be non-integer. Formatted as in rfc7159.
 #     - decimal(X): Decimal values represented as a string with X decimal places.
+#       At the moment we support only X == 6.
 #     - datetime: Datetime as a unix timestamp. Why a number? This enables queries
 #       in the DB. And we do not need more precision than 1 second.
-#     - <T>[]: This indicates and arbitrary array of the given type.
+#     - <T>[]: This indicates and arbitrary array of the given type. At the moment
+#       we support only some types. You can add JSON Schema properties for items
+#       using the extra property `items`
 # Relations:
 #     - We have the following types: `relation`, `relation-list`, `generic-relation`
 #       and `generic-relation-list`.
@@ -34,6 +38,8 @@
 #     - The type `structured-tag` describes the content of a related field as a
 #       structured field where the template is filled with arbitrary strings instead of
 #       instance ids.
+# JSON Schema Properties:
+#     - You can add JSON Schema properties like `enum` and `description` to the fields.
 
 organisation:
   id: number
@@ -218,7 +224,9 @@ resource:
 
 committee:
   id: number
-  name: string
+  name:
+    type: string
+    required: true
   description: HTML
 
   meeting_ids:
@@ -245,15 +253,20 @@ committee:
   organisation_id:
     type: relation
     to: organisation/committee_ids
+    required: true
 
 meeting:
   id: number
   welcome_title: string
-  welcome_text: HTML
+  welcome_text: HTMLVideo
 
   # General
-  name: string
-  description: string
+  name:
+    type: string
+    maxLength: 100
+  description:
+    type: string
+    maxLength: 100
   location: string
   start_time: datetime
   end_time: datetime
@@ -276,26 +289,65 @@ meeting:
 
   # Projector
   projector_default_countdown_time: number
-  projector_countdown_warning_time: number
+  projector_countdown_warning_time:
+    type: number
+    minimum: 0
 
   # Exports
-  export_csv_encoding: string
+  export_csv_encoding:
+    type: string
+    enum:
+    - utf-8
+    - iso-8859-15
   export_csv_separator: string
-  export_pdf_pagenumber_alignment: string
-  export_pdf_fontsize: number
-  export_pdf_pagesize: string
+  export_pdf_pagenumber_alignment:
+    type: string
+    enum:
+    - left
+    - right
+    - center
+  export_pdf_fontsize:
+    type: number
+    enum:
+    - 10
+    - 11
+    - 12
+  export_pdf_pagesize:
+    type: string
+    enum:
+    - A4
+    - A5
 
   # Agenda
   agenda_show_subtitles: boolean
   agenda_enable_numbering: boolean
-  agenda_number_prefix: string
-  agenda_numeral_system: string
-  agenda_item_creation: string
-  agenda_new_items_default_visibility: number
+  agenda_number_prefix:
+    type: string
+    maxLength: 20
+  agenda_numeral_system:
+    type: string
+    enum:
+    - arabic
+    - roman
+  agenda_item_creation:
+    type: string
+    enum:
+    - always
+    - never
+    - default_yes
+    - default_no
+  agenda_new_items_default_visibility:
+    type: number
+    enum:
+    - 1
+    - 2
+    - 3
   agenda_show_internal_items_on_projector: boolean
 
   # List of speakers
-  list_of_speakers_amount_last_on_projector: number
+  list_of_speakers_amount_last_on_projector:
+    type: number
+    minimum: 0
   list_of_speakers_amount_next_on_projector: boolean
   list_of_speakers_couple_countdown: boolean
   list_of_speakers_show_amount_of_speakers_on_slide: boolean
@@ -306,15 +358,25 @@ meeting:
   motions_default_workflow_id:
     type: relation
     to: motion_workflow/default_workflow_meeting_id
+    required: true
   motions_default_amendment_workflow_id:
     type: relation
     to: motion_workflow/default_amendment_workflow_meeting_id
+    required: true
   motions_default_statute_amendment_workflow_id:
     type: relation
     to: motion_workflow/default_statute_amendment_workflow_meeting_id
+    required: true
   motions_preamble: string
-  motions_default_line_numbering: string
-  motions_line_length: number
+  motions_default_line_numbering:
+    type: string
+    enum:
+    - outside
+    - inline
+    - none
+  motions_line_length:
+    type: number
+    minimium: 40
   motions_reason_required: boolean
   motions_enable_text_on_projector: boolean
   motions_enable_reason_on_projector: boolean
@@ -324,9 +386,20 @@ meeting:
   motions_show_sequential_number: boolean
   motions_recommendations_by: string
   motions_statute_recommendations_by: string
-  motions_recommendation_text_mode: string
+  motions_recommendation_text_mode:
+    type: string
+    enum:
+    - original
+    - changed
+    - diff
+    - agreed
   motions_default_sorting: string
-  motions_identifier_type: string
+  motions_identifier_type:
+    type: string
+    enum:
+    - per_category
+    - serially_numbered
+    - manually
   motions_identifier_min_digits: number
   motions_identifier_with_blank: boolean
   motions_statutes_enabled: boolean
@@ -334,16 +407,28 @@ meeting:
   motions_amendments_in_main_list: boolean
   motions_amendments_of_amendments: boolean
   motions_amendments_prefix: string
-  motions_amendments_text_mode: string
+  motions_amendments_text_mode:
+    type: string
+    enum:
+    - freestyle
+    - fulltext
+    - paragraph
   motions_amendments_multiple_paragraphs: boolean
-  motions_supporters_min_amount: number
+  motions_supporters_min_amount:
+    type: number
+    minimum: 0
   motions_supporters_enable_autoremove: boolean
   motions_export_title: string
   motions_export_preamble: string
   motions_export_submitter_recommendation: boolean
   motions_export_follow_recommendation: boolean
 
-  motion_poll_ballot_paper_selection: string
+  motion_poll_ballot_paper_selection:
+    type: string
+    enum:
+    - NUMBER_OF_DELEGATES
+    - NUMBER_OF_ALL_PARTICIPANTS
+    - CUSTOM_NUMBER
   motion_poll_ballot_paper_number: number
   motion_poll_default_type: string
   motion_poll_default_100_percent_base: string
@@ -353,7 +438,12 @@ meeting:
     to: group/used_as_motion_poll_default_id
 
   # Users
-  users_sort_by: string
+  users_sort_by:
+    type: string
+    enum:
+    - first_name
+    - last_name
+    - number
   users_enable_presence_view: boolean
   users_enable_vote_weight: boolean
   users_allow_self_set_present: boolean
@@ -362,7 +452,13 @@ meeting:
   users_pdf_url: string
   users_pdf_wlan_ssid: string
   users_pdf_wlan_password: string
-  users_pdf_wlan_encryption: string
+  users_pdf_wlan_encryption:
+    type: string
+    enum:
+    - ""
+    - WEP
+    - WPA
+    - nopass
   users_email_sender: string
   users_email_replyto: string
   users_email_subject: string
@@ -372,7 +468,12 @@ meeting:
   assignemnts_export_title: string
   assignments_export_preamble: string
 
-  assignment_poll_ballot_paper_selection: string
+  assignment_poll_ballot_paper_selection:
+    type: string
+    enum:
+    - NUMBER_OF_DELEGATES
+    - NUMBER_OF_ALL_PARTICIPANTS
+    - CUSTOM_NUMBER
   assignment_poll_ballot_paper_number: number
   assignment_poll_add_candidates_to_list_of_speakers: boolean
   assignment_poll_sort_poll_result_by_votes: boolean
@@ -492,6 +593,7 @@ meeting:
   committee_id:
     type: relation
     to: committee/meeting_ids
+    required: true
   default_meeting_for_committee_id:
     type: relation
     to: committee/default_meeting_id
@@ -504,7 +606,10 @@ meeting:
   guest_ids:
     type: relation-list
     to: user/guest_meeting_ids
-  user_ids: number[]  # Calculated: All ids from temporary_user_ids, guest_ids and all users assigned to groups.
+  user_ids:
+    type: number[]
+    decription: Calculated. All ids from temporary_user_ids, guest_ids and all users assigned to groups.
+    read_only: true
   reference_projector_id:
     type: relation
     to: projector/used_as_reference_projector_meeting_id
@@ -512,13 +617,16 @@ meeting:
   default_group_id:
     type: relation
     to: group/default_group_for_meeting_id
+    required: true
   superadmin_group_id:
     type: relation
     to: group/superadmin_group_for_meeting_id
 
 group:
   id: number
-  name: string
+  name:
+    type: string
+    required: true
   permissions: string[]
 
   user_ids:
@@ -541,6 +649,8 @@ group:
   mediafile_inherited_access_group_ids:
     type: relation-list
     to: mediafile/inherited_access_group_ids
+    description: Calculated field.
+    read_only: true
   read_comment_section_ids:
     type: relation-list
     to: motion_comment_section/read_group_ids
@@ -562,6 +672,7 @@ group:
   meeting_id:
     type: relation
     to: meeting/group_ids
+    required: true
 
 personal_note:
   id: number
@@ -585,7 +696,9 @@ personal_note:
 
 tag:
   id: number
-  name: string
+  name:
+    type: string
+    required: true
 
   tagged_ids:
     type: generic-relation-list
@@ -599,20 +712,38 @@ tag:
   meeting_id:
     type: relation
     to: meeting/tag_ids
+    required: true
 
 agenda_item:
   id: number
   item_number: string
   comment: string
   closed: boolean
-  type: number
-  is_internal: boolean
-  is_hidden: boolean
-  duration: number  # in seconds
+  type:
+    type: number
+    enum:
+    - 1
+    - 2
+    - 3
+  duration:
+    type: number
+    description: Given in seconds
+    minimum: 0
+  is_internal:
+    type: boolean
+    description: Calculated by the server
+    read_only: true
+  is_hidden:
+    type: boolean
+    description: Calculated by the server
+    read_only: true
+  level:
+    type: number
+    description: Calculated by the server
+    read_only: true
   weight:
     type: number
     default: 0
-  level: number  # calculated.
 
   content_object_id:
     type: generic-relation
@@ -623,6 +754,7 @@ agenda_item:
         - assignment
         - topic
       field: agenda_item_id
+    required: true
   parent_id:
     type: relation
     to: agenda_item/child_ids
@@ -641,6 +773,7 @@ agenda_item:
   meeting_id:
     type: relation
     to: meeting/agenda_item_ids
+    required: true
 
 list_of_speakers:
   id: number
@@ -656,6 +789,7 @@ list_of_speakers:
         - topic
         - mediafile
       field: list_of_speakers_id
+    required: true
   speaker_ids:
     type: relation-list
     to: speaker/list_of_speakers_id
@@ -668,11 +802,16 @@ list_of_speakers:
   meeting_id:
     type: relation
     to: meeting/list_of_speakers_ids
+    required: true
 
 speaker:
   id: number
-  begin_time: datetime
-  end_time: datetime
+  begin_time:
+    type: datetime
+    read_only: true
+  end_time:
+    type: datetime
+    read_only: true
   weight:
     type: number
     default: 0
@@ -681,6 +820,7 @@ speaker:
   list_of_speakers_id:
     type: relation
     to: list_of_speakers/speaker_ids
+    required: true
   user_id:
     type: relation
     to:
@@ -689,11 +829,14 @@ speaker:
         name: speaker_$_ids
         type: structured-relation
         replacement: meeting_id
+    required: true
 
 topic:
   id: number
-  title: string
-  text: HTML
+  title:
+    type: string
+    required: true
+  text: HTMLVideo
 
   attachment_ids:
     type: relation-list
@@ -701,21 +844,29 @@ topic:
   agenda_item_id:
     type: relation
     to: agenda_item/content_object_id
+    required: true
   list_of_speakers_id:
     type: relation
     to: list_of_speakers/content_object_id
+    required: true
   tag_ids:
     type: relation-list
     to: tag/tagged_ids
   meeting_id:
     type: relation
     to: meeting/topic_ids
+    required: true
 
 motion:
   id: number
   number: string
-  sequential_number: number  # Calculated
-  title: string
+  sequential_number:
+    type: number
+    description: The (positive) serial number of this motion. This number is auto-generated and read-only.
+    read_only: true
+  title:
+    type: string
+    required: true
   text: HTML
   amendment_paragraph_$:
     type: template
@@ -731,8 +882,12 @@ motion:
   sort_weight:
     type: number
     default: 0
-  created: datetime
-  last_modified: datetime
+  created:
+    type: datetime
+    read_only: true
+  last_modified:
+    type: datetime
+    read_only: true
 
   lead_motion_id:
     type: relation
@@ -756,6 +911,7 @@ motion:
   state_id:
     type: relation
     to: motion_state/motion_ids
+    required: true
   recommendation_id:
     type: relation
     to: motion_state/motion_recommendation_ids
@@ -803,6 +959,7 @@ motion:
   list_of_speakers_id:
     type: relation
     to: list_of_speakers/content_object_id
+    required: true
   tag_ids:
     type: relation-list
     to: tag/tagged_ids
@@ -821,6 +978,7 @@ motion:
   meeting_id:
     type: relation
     to: meeting/motion_ids
+    required: true
 
 motion_submitter:
   id: number
@@ -847,13 +1005,17 @@ motion_comment:
   motion_id:
     type: relation
     to: motion/comment_ids
+    required: true
   section_id:
     type: relation
     to: motion_comment_section/comment_ids
+    required: true
 
 motion_comment_section:
   id: number
-  name: string
+  name:
+    type: string
+    required: true
   weight:
     type: number
     default: 0
@@ -870,15 +1032,23 @@ motion_comment_section:
   meeting_id:
     type: relation
     to: meeting/motion_comment_section_ids
+    required: true
 
 motion_category:
   id: number
-  name: string
-  prefix: string
+  name:
+    type: string
+    required: true
+  prefix:
+    type: string
+    required: true
   weight:
     type: number
     default: 0
-  level: number
+  level:
+    type: number
+    description: Calculated field.
+    read_only: true
 
   parent_id:
     type: relation
@@ -892,10 +1062,13 @@ motion_category:
   meeting_id:
     type: relation
     to: meeting/motion_category_ids
+    required: true
 
 motion_block:
   id: number
-  title: string
+  title:
+    type: string
+    required: true
   internal: boolean
 
   motion_ids:
@@ -907,6 +1080,7 @@ motion_block:
   list_of_speakers_id:
     type: relation
     to: list_of_speakers/content_object_id
+    required: true
   projection_ids:
     type: relation-list
     to: projection/element_id
@@ -916,34 +1090,70 @@ motion_block:
   meeting_id:
     type: relation
     to: meeting/motion_block_ids
+    required: true
 
 motion_change_recommendation:
   id: number
   rejected: boolean
   internal: boolean
-  type: number
+  type:
+    type: number
+    enum:
+    - 0
+    - 1
+    - 2
+    - 3
   other_description: string
-  line_from: number
-  line_to: number
+  line_from:
+    type: number
+    minimum: 0
+  line_to:
+    type: number
+    minimum: 0
   text: HTML
-  creation_time: datetime
+  creation_time:
+    type: datetime
+    read_only: true
 
   motion_id:
     type: relation
     to: motion/change_recommendation_ids
+    required: true
 
 motion_state:
   id: number
-  name: string
+  name:
+    type: string
+    required: true
   recommendation_label: string
-  css_class: string
-  restrictions: string[]
+  css_class:
+    type: string
+    enum:
+    - gray
+    - red
+    - green
+    - lightblue
+    - yellow
+  restrictions:
+    type: string[]
+    items:
+      enum:
+      - motions.can_see_internal
+      - motions.can_manage_metadata
+      - motions.can_manage
+      - is_submitter
   allow_support: boolean
   allow_create_poll: boolean
   allow_submitter_edit: boolean
   set_number: boolean
   show_state_extension_field: boolean
-  merge_amendment_into_final: number
+  merge_amendment_into_final:
+    type: number
+    default: 0
+    enum:
+    - -1
+    - 0
+    - 1
   show_recommendation_extension_field: boolean
 
   next_state_ids:
@@ -961,13 +1171,16 @@ motion_state:
   workflow_id:
     type: relation
     to: motion_workflow/state_ids
+    required: true
   first_state_of_workflow_id:
     type: relation
     to: motion_workflow/first_state_id
 
 motion_workflow:
   id: number
-  name: string
+  name:
+    type: string
+    required: true
 
   state_ids:
     type: relation-list
@@ -975,6 +1188,7 @@ motion_workflow:
   first_state_id:
     type: relation
     to: motion_state/first_state_of_workflow_id
+    required: true
   default_workflow_meeting_id:
     type: relation
     to: meeting/motions_default_workflow_id
@@ -987,10 +1201,13 @@ motion_workflow:
   meeting_id:
     type: relation
     to: meeting/motion_workflow_ids
+    required: true
 
 motion_statute_paragraph:
   id: number
-  title: string
+  title:
+    type: string
+    required: true
   text: HTML
   weight:
     type: number
@@ -1002,6 +1219,7 @@ motion_statute_paragraph:
   meeting_id:
     type: relation
     to: meeting/motion_statute_paragraph_ids
+    required: true
 
 motion_poll:
   id: number
@@ -1075,10 +1293,19 @@ motion_vote:
 
 assignment:
   id: number
-  title: string
+  title:
+    type: string
+    required: true
   description: HTML
-  open_posts: number
-  phase: number
+  open_posts:
+    type: number
+    minimum: 0
+  phase:
+    type: number
+    enum:
+    - 1
+    - 2
+    - 3
   default_poll_description: string
   number_poll_candidates: boolean
 
@@ -1094,6 +1321,7 @@ assignment:
   list_of_speakers_id:
     type: relation
     to: list_of_speakers/content_object_id
+    required: true
   tag_ids:
     type: relation-list
     to: tag/tagged_ids
@@ -1109,6 +1337,7 @@ assignment:
   meeting_id:
     type: relation
     to: meeting/assignment_ids
+    required: true
 
 assignment_candidate:
   id: number
@@ -1220,18 +1449,31 @@ assignment_vote:
 # `<media-prefix>/media/<meeting_id>/path`
 mediafile:
   id: number
-  title: string  # title and parent_id must be unique.
+  title:
+    type: string
+    description: Title and parent_id must be unique.
   is_directory: boolean
-  filesize: number  # Note: in bytes, not the human readable format anymore
-  filename: string  # Note: The uploaded filename. will be used for downloading. Only writeable on create.
+  filesize:
+    type: number
+    description: In bytes, not the human readable format anymore.
+    read_only: true
+  filename:
+    type: string
+    descriptin: The uploaded filename. Will be used for downloading. Only writeable on create.
+    required: true
   mimetype: string
   pdf_information: JSON
   create_timestamp: datetime
-  has_inherited_access_groups: boolean  # Note: calculated
+  has_inherited_access_groups:
+    type: boolean
+    description: Calculated field.
+    read_only: true
 
   inherited_access_group_ids:
     type: relation-list
-    to: group/mediafile_inherited_access_group_ids  # Note: calculated
+    to: group/mediafile_inherited_access_group_ids
+    description: Calculated field.
+    read_only: true
   access_group_ids:
     type: relation-list
     to: group/mediafile_access_group_ids
@@ -1244,6 +1486,7 @@ mediafile:
   list_of_speakers_id:
     type: relation
     to: list_of_speakers/content_object_id
+    required: true
   projection_ids:
     type: relation-list
     to: projection/element_id
@@ -1261,6 +1504,7 @@ mediafile:
   meeting_id:
     type: relation
     to: meeting/mediafile_ids
+    required: true
 
   # Reverse relations for meetings, if a mediafile is used as a special resource
   used_as_logo_$_in_meeting_id:
