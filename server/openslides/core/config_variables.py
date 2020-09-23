@@ -130,6 +130,15 @@ def get_config_variables():
         subgroup="Live conference",
     )
 
+    yield ConfigVariable(
+        name="general_system_stream_poster",
+        default_value="",
+        label="Livestream poster image url",
+        help_text="Shows if livestream is not started. Recommended image format: 500x281px, PNG or JPG",
+        weight=144,
+        subgroup="Live conference",
+    )
+
     # General System
 
     yield ConfigVariable(
