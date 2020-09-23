@@ -15,8 +15,8 @@ import { VotingService } from 'app/core/ui-services/voting.service';
 import { AssignmentPollMethod } from 'app/shared/models/assignments/assignment-poll';
 import { PollType } from 'app/shared/models/poll/base-poll';
 import { VoteValue } from 'app/shared/models/poll/base-vote';
+import { ViewAssignmentPoll } from 'app/site/assignments/models/view-assignment-poll';
 import { BasePollVoteComponent } from 'app/site/polls/components/base-poll-vote.component';
-import { ViewAssignmentPoll } from '../../models/view-assignment-poll';
 
 // TODO: Duplicate
 interface VoteActions {

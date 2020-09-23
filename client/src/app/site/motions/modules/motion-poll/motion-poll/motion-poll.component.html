@@ -57,6 +57,9 @@
 
     <!-- Results -->
     <ng-container *ngIf="poll && !poll.stateHasVotes && poll.type !== 'analog'; else votingResult">
+        <div *osPerms="'motions.can_manage_polls'; and: poll && poll.isStarted">
+            <os-poll-progress [poll]="poll"></os-poll-progress>
+        </div>
         <os-motion-poll-vote [poll]="poll"></os-motion-poll-vote>
     </ng-container>
 

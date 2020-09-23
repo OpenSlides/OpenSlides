@@ -75,6 +75,11 @@ const routes: Routes = [
                 loadChildren: () => import('./polls/polls.module').then(m => m.PollsModule),
                 // one of them is sufficient
                 data: { basePerm: [Permission.motionsCanSee, Permission.assignmentsCanSee] }
+            },
+            {
+                path: 'autopilot',
+                loadChildren: () => import('./cinema/cinema.module').then(m => m.CinemaModule),
+                data: { basePerm: Permission.coreCanSeeAutopilot }
             }
         ],
         canActivateChild: [AuthGuard]

@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
-import { AssignmentPollService } from 'app/site/assignments/services/assignment-poll.service';
+import { AssignmentPollService } from 'app/site/assignments/modules/assignment-poll/services/assignment-poll.service';
 import { MotionPollService } from 'app/site/motions/services/motion-poll.service';
 import { PollData } from 'app/site/polls/services/poll.service';
 

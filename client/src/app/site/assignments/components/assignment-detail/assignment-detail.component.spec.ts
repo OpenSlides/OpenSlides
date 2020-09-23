@@ -4,8 +4,8 @@ import { E2EImportsModule } from 'e2e-imports.module';
 
 import { PollProgressComponent } from 'app/site/polls/components/poll-progress/poll-progress.component';
 import { AssignmentDetailComponent } from './assignment-detail.component';
-import { AssignmentPollVoteComponent } from '../assignment-poll-vote/assignment-poll-vote.component';
-import { AssignmentPollComponent } from '../assignment-poll/assignment-poll.component';
+import { AssignmentPollVoteComponent } from '../../modules/assignment-poll/components/assignment-poll-vote/assignment-poll-vote.component';
+import { AssignmentPollComponent } from '../../modules/assignment-poll/components/assignment-poll/assignment-poll.component';
 
 describe('AssignmentDetailComponent', () => {
     let component: AssignmentDetailComponent;

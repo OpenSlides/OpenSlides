@@ -22,8 +22,8 @@ import { LocalPermissionsService } from 'app/site/motions/services/local-permiss
 import { ViewTag } from 'app/site/tags/models/view-tag';
 import { ViewUser } from 'app/site/users/models/view-user';
 import { AssignmentPdfExportService } from '../../services/assignment-pdf-export.service';
-import { AssignmentPollDialogService } from '../../services/assignment-poll-dialog.service';
-import { AssignmentPollService } from '../../services/assignment-poll.service';
+import { AssignmentPollDialogService } from '../../modules/assignment-poll/services/assignment-poll-dialog.service';
+import { AssignmentPollService } from '../../modules/assignment-poll/services/assignment-poll.service';
 import { AssignmentPhases, ViewAssignment } from '../../models/view-assignment';
 import { ViewAssignmentPoll } from '../../models/view-assignment-poll';
 import { ViewAssignmentRelatedUser } from '../../models/view-assignment-related-user';

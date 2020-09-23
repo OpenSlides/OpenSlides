@@ -81,6 +81,13 @@
         color: mat-color($foreground, text);
     }
 
+    .subtitle-text {
+        font-size: 125%;
+        margin-top: 0;
+        margin-bottom: 15px;
+        color: mat-color(if($is-dark-theme, $accent, $primary));
+    }
+
     .tile-color {
         background-color: mat-color($background, selected-button);
     }

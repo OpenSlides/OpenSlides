@@ -1,0 +1,13 @@
+<mat-card class="os-card" *ngFor="let poll of polls">
+    <p class="subtitle-text">
+        <a [routerLink]="getPollDetailLink(poll)" [state]="{ back: 'true' }">{{ getPollVoteTitle(poll) }}</a>
+    </p>
+
+    <div *ngIf="poll.pollClassType === 'motion'">
+        <os-motion-poll-vote [poll]="poll"></os-motion-poll-vote>
+    </div>
+
+    <div *ngIf="poll.pollClassType === 'assignment'">
+        <os-assignment-poll-vote [poll]="poll"></os-assignment-poll-vote>
+    </div>
+</mat-card>

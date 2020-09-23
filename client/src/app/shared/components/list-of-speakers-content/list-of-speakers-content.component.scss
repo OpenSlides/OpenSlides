@@ -1,0 +1,125 @@
+@import '~assets/styles/variables.scss';
+
+.los-title {
+    margin-left: 25px;
+}
+
+.finished-list {
+    box-shadow: none !important;
+    margin-bottom: 15px;
+
+    .mat-list-item {
+        height: auto;
+        margin-bottom: 10px;
+    }
+
+    .finished-speaker-grid {
+        display: grid;
+        width: 100%;
+        grid-gap: 5px;
+
+        grid-template-areas:
+            'number name controls'
+            'number time controls';
+        grid-template-columns: 30px 1fr min-content;
+    }
+
+    @include desktop {
+        .finished-speaker-grid {
+            grid-template-areas: 'number name time controls';
+            grid-template-columns: 30px 1fr min-content min-content;
+        }
+    }
+
+    .number {
+        grid-area: number;
+        margin: 0;
+    }
+
+    .name {
+        grid-area: name;
+        margin: 0;
+    }
+
+    .time {
+        grid-area: time;
+        margin: 0;
+        //allows pushing this grid area as small as possible and aligns the end to the same level
+        white-space: nowrap;
+        font-size: 80%;
+    }
+
+    .controls {
+        grid-area: controls;
+        margin: 0;
+        opacity: 0.7;
+
+        .mat-icon-button {
+            height: 20px;
+            line-height: 1;
+
+            .mat-icon {
+                line-height: 19px;
+            }
+        }
+    }
+}
+
+.current-speaker {
+    display: table;
+    width: -webkit-fill-available;
+    height: 50px;
+    margin: 50px 25px 20px 25px;
+    box-shadow: 0px 3px 10px 0px rgba(0, 0, 0, 0.25);
+
+    .prefix {
+        display: table-cell;
+        padding: 0 15px;
+        vertical-align: middle;
+        .mat-icon {
+            vertical-align: middle;
+        }
+    }
+
+    .name {
+        display: table-cell;
+        vertical-align: middle;
+        font-weight: bold;
+        padding-left: 10px;
+        width: 100%;
+    }
+
+    .suffix {
+        display: table-cell;
+        vertical-align: middle;
+        white-space: nowrap;
+        padding-right: 10px;
+    }
+}
+
+.waiting-list {
+    padding: 10px 25px 0 25px;
+}
+
+.search-new-speaker-form {
+    padding: 15px 25px 10px 25px;
+    width: auto;
+
+    .search-users-field {
+        width: 100%;
+        .search-users {
+            display: grid;
+            .mat-form-field {
+                width: 100%;
+            }
+        }
+    }
+}
+
+.add-self-buttons {
+    padding: 15px 0 20px 25px;
+}
+
+.speaker-warning {
+    margin-right: 5px;
+}

@@ -3,9 +3,9 @@ import { MatDialog } from '@angular/material/dialog';
 
 import { CollectionStringMapperService } from 'app/core/core-services/collection-string-mapper.service';
 import { BasePollDialogService } from 'app/core/ui-services/base-poll-dialog.service';
-import { AssignmentPollDialogComponent } from 'app/site/assignments/components/assignment-poll-dialog/assignment-poll-dialog.component';
+import { AssignmentPollDialogComponent } from '../components/assignment-poll-dialog/assignment-poll-dialog.component';
 import { AssignmentPollService } from './assignment-poll.service';
-import { ViewAssignmentPoll } from '../models/view-assignment-poll';
+import { ViewAssignmentPoll } from '../../../models/view-assignment-poll';
 
 /**
  * Subclassed to provide the right `PollService` and `DialogComponent`
