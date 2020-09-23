@@ -11,10 +11,11 @@ RUN ng config -g cli.warnings.versionMismatch false
 
 USER openslides
 COPY package.json .
+COPY package-lock.json .
 RUN npm ci
 COPY browserslist *.json ./
 COPY src ./src
-RUN npm run build
+RUN npm run build-to-dir /build/app/static
 
 COPY docker/client-version.txt static/
 

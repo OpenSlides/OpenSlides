@@ -13,6 +13,7 @@
         "start": "ng serve --proxy-config proxy.conf.json --host=0.0.0.0",
         "start-es5": "ng serve --proxy-config proxy.conf.json --host=0.0.0.0 --configuration es5",
         "build": "ng build --prod",
+        "build-to-dir": "npm run build -- --output-path",
         "postinstall": "ngcc",
         "build-debug": "ng build",
         "test": "ng test",
