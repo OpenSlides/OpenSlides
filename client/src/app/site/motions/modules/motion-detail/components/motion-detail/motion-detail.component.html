@@ -898,7 +898,7 @@
         <div *ngIf="motion.diffLines">
             <div class="alert alert-info" *ngIf="motion.diffLines.length === 0">
                 <i *ngIf="motion.parent">{{ 'No changes at the text.' | translate }}</i>
-                <i *ngIf="!motion.parent">{{ 'The parent motion was deleted' | translate }}</i>
+                <i *ngIf="!motion.parent">{{ 'The parent motion was deleted.' | translate }}</i>
             </div>
             <ng-container *ngIf="motion.parent && !isRecoMode(ChangeRecoMode.Diff) && !isFinalEdit">
                 <div

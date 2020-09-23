@@ -78,7 +78,7 @@ export class HistoryListComponent extends BaseViewComponent implements OnInit {
      */
     public constructor(
         titleService: Title,
-        translate: TranslateService,
+        protected translate: TranslateService,
         matSnackBar: MatSnackBar,
         private viewModelStore: ViewModelStoreService,
         private router: Router,
