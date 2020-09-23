@@ -6,7 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { map } from 'rxjs/operators';
 
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
-import { BaseViewComponent } from 'app/site/base/base-view';
+import { BaseViewComponentDirective } from 'app/site/base/base-view';
 import { ViewBasePoll } from 'app/site/polls/models/view-base-poll';
 
 @Component({
@@ -14,7 +14,7 @@ import { ViewBasePoll } from 'app/site/polls/models/view-base-poll';
     templateUrl: './poll-progress.component.html',
     styleUrls: ['./poll-progress.component.scss']
 })
-export class PollProgressComponent extends BaseViewComponent implements OnInit {
+export class PollProgressComponent extends BaseViewComponentDirective implements OnInit {
     @Input()
     public poll: ViewBasePoll;
     public max: number;

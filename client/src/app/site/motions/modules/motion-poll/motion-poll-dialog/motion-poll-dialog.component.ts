@@ -18,7 +18,8 @@ import { PercentBaseVerbose } from 'app/site/polls/models/view-base-poll';
     templateUrl: './motion-poll-dialog.component.html',
     styleUrls: ['./motion-poll-dialog.component.scss']
 })
-export class MotionPollDialogComponent extends BasePollDialogComponent<ViewMotionPoll, MotionPollService>
+export class MotionPollDialogComponent
+    extends BasePollDialogComponent<ViewMotionPoll, MotionPollService>
     implements OnInit {
     public PercentBaseVerbose = PercentBaseVerbose;
 

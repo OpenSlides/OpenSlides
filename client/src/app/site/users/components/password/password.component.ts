@@ -8,7 +8,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { OperatorService, Permission } from 'app/core/core-services/operator.service';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
-import { BaseViewComponent } from 'app/site/base/base-view';
+import { BaseViewComponentDirective } from 'app/site/base/base-view';
 import { ViewUser } from '../../models/view-user';
 
 /**
@@ -19,7 +19,7 @@ import { ViewUser } from '../../models/view-user';
     templateUrl: './password.component.html',
     styleUrls: ['./password.component.scss']
 })
-export class PasswordComponent extends BaseViewComponent implements OnInit {
+export class PasswordComponent extends BaseViewComponentDirective implements OnInit {
     /**
      * the user that is currently worked own
      */

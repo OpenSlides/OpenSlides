@@ -14,7 +14,7 @@ import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ItemVisibilityChoices } from 'app/shared/models/agenda/item';
 import { Topic } from 'app/shared/models/topics/topic';
 import { ViewItem } from 'app/site/agenda/models/view-item';
-import { BaseViewComponent } from 'app/site/base/base-view';
+import { BaseViewComponentDirective } from 'app/site/base/base-view';
 import { CreateTopic } from '../../models/create-topic';
 import { ViewTopic } from '../../models/view-topic';
 
@@ -26,7 +26,7 @@ import { ViewTopic } from '../../models/view-topic';
     templateUrl: './topic-detail.component.html',
     styleUrls: ['./topic-detail.component.scss']
 })
-export class TopicDetailComponent extends BaseViewComponent {
+export class TopicDetailComponent extends BaseViewComponentDirective {
     /**
      * Determine if the topic is in edit mode
      */

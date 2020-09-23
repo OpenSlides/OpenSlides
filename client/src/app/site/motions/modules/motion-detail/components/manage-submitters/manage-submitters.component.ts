@@ -10,7 +10,7 @@ import { ViewModelStoreService } from 'app/core/core-services/view-model-store.s
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 import { Selectable } from 'app/shared/components/selectable';
-import { BaseViewComponent } from 'app/site/base/base-view';
+import { BaseViewComponentDirective } from 'app/site/base/base-view';
 import { ViewMotion } from 'app/site/motions/models/view-motion';
 import { LocalPermissionsService } from 'app/site/motions/services/local-permissions.service';
 import { ViewUser } from 'app/site/users/models/view-user';
@@ -23,7 +23,7 @@ import { ViewUser } from 'app/site/users/models/view-user';
     templateUrl: './manage-submitters.component.html',
     styleUrls: ['./manage-submitters.component.scss']
 })
-export class ManageSubmittersComponent extends BaseViewComponent {
+export class ManageSubmittersComponent extends BaseViewComponentDirective {
     /**
      * The motion, which the personal note belong to.
      */

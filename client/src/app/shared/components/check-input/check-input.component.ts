@@ -5,7 +5,7 @@ import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { BaseViewComponent } from 'app/site/base/base-view';
+import { BaseViewComponentDirective } from 'app/site/base/base-view';
 
 @Component({
     selector: 'os-check-input',
@@ -13,7 +13,7 @@ import { BaseViewComponent } from 'app/site/base/base-view';
     styleUrls: ['./check-input.component.scss'],
     providers: [{ provide: NG_VALUE_ACCESSOR, multi: true, useExisting: forwardRef(() => CheckInputComponent) }]
 })
-export class CheckInputComponent extends BaseViewComponent implements OnInit, ControlValueAccessor {
+export class CheckInputComponent extends BaseViewComponentDirective implements OnInit, ControlValueAccessor {
     /**
      * Type of the used input.
      */

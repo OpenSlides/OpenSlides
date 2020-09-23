@@ -8,7 +8,7 @@ import { environment } from 'environments/environment';
 
 import { HttpService } from 'app/core/core-services/http.service';
 import { LoginDataService } from 'app/core/ui-services/login-data.service';
-import { BaseViewComponent } from 'app/site/base/base-view';
+import { BaseViewComponentDirective } from 'app/site/base/base-view';
 
 /**
  * Characterize a plugin. This data is retrieved from the server
@@ -69,7 +69,7 @@ interface VersionResponse {
     templateUrl: './legal-notice-content.component.html',
     styleUrls: ['./legal-notice-content.component.scss']
 })
-export class LegalNoticeContentComponent extends BaseViewComponent implements OnInit {
+export class LegalNoticeContentComponent extends BaseViewComponentDirective implements OnInit {
     /**
      * Decides, whether the component can be edited at all.
      * Defaults to `false`.

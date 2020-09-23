@@ -1,3 +1,5 @@
+import { Directive } from '@angular/core';
+
 import { TranslateService } from '@ngx-translate/core';
 
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
@@ -15,7 +17,8 @@ export interface ReferencedMotions {
  * Base slide for motions and motion blocks. This Provides the functionality of
  * replacing referenced motions (format: `[motion:<id>]`) in strings.
  */
-export class BaseMotionSlideComponent<T extends object> extends BaseSlideComponentDirective<T> {
+@Directive()
+export class BaseMotionSlideComponentDirective<T extends object> extends BaseSlideComponentDirective<T> {
     public constructor(protected translate: TranslateService, protected motionRepo: MotionRepositoryService) {
         super();
     }

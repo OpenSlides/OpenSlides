@@ -2,8 +2,6 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
-import { DeviceDetectorModule } from 'ngx-device-detector';
-
 import { LoginLegalNoticeComponent } from './components/login-legal-notice/login-legal-notice.component';
 import { LoginMaskComponent } from './components/login-mask/login-mask.component';
 import { LoginPrivacyPolicyComponent } from './components/login-privacy-policy/login-privacy-policy.component';
@@ -14,7 +12,7 @@ import { SharedModule } from '../../shared/shared.module';
 import { UnsupportedBrowserComponent } from './components/unsupported-browser/unsupported-browser.component';
 
 @NgModule({
-    imports: [CommonModule, RouterModule, SharedModule, DeviceDetectorModule],
+    imports: [CommonModule, RouterModule, SharedModule],
     declarations: [
         LoginWrapperComponent,
         ResetPasswordComponent,

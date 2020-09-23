@@ -8,7 +8,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { DurationService } from 'app/core/ui-services/duration.service';
-import { BaseViewComponent } from 'app/site/base/base-view';
+import { BaseViewComponentDirective } from 'app/site/base/base-view';
 
 /**
  * Countdown data for the form
@@ -28,7 +28,7 @@ export interface CountdownData {
     templateUrl: './countdown-dialog.component.html',
     styleUrls: ['./countdown-dialog.component.scss']
 })
-export class CountdownDialogComponent extends BaseViewComponent implements OnInit {
+export class CountdownDialogComponent extends BaseViewComponentDirective implements OnInit {
     /**
      * The form data
      */

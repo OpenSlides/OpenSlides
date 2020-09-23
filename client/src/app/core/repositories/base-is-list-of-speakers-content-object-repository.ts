@@ -35,10 +35,12 @@ export interface IBaseIsListOfSpeakersContentObjectRepository<
  * The base repository for objects with a list of speakers.
  */
 export abstract class BaseIsListOfSpeakersContentObjectRepository<
-    V extends BaseViewModelWithListOfSpeakers & T,
-    M extends BaseModel,
-    T extends TitleInformation
-> extends BaseRepository<V, M, T> implements IBaseIsListOfSpeakersContentObjectRepository<V, M, T> {
+        V extends BaseViewModelWithListOfSpeakers & T,
+        M extends BaseModel,
+        T extends TitleInformation
+    >
+    extends BaseRepository<V, M, T>
+    implements IBaseIsListOfSpeakersContentObjectRepository<V, M, T> {
     public constructor(
         DS: DataStoreService,
         dataSend: DataSendService,

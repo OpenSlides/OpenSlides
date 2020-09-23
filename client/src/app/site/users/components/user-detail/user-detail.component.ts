@@ -15,7 +15,7 @@ import { ConfigService } from 'app/core/ui-services/config.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { genders } from 'app/shared/models/users/user';
 import { OneOfValidator } from 'app/shared/validators/one-of-validator';
-import { BaseViewComponent } from 'app/site/base/base-view';
+import { BaseViewComponentDirective } from 'app/site/base/base-view';
 import { PollService } from 'app/site/polls/services/poll.service';
 import { UserPdfExportService } from '../../services/user-pdf-export.service';
 import { ViewGroup } from '../../models/view-group';
@@ -35,7 +35,7 @@ interface UserBackends {
     templateUrl: './user-detail.component.html',
     styleUrls: ['./user-detail.component.scss']
 })
-export class UserDetailComponent extends BaseViewComponent implements OnInit {
+export class UserDetailComponent extends BaseViewComponentDirective implements OnInit {
     /**
      * Info form object
      */

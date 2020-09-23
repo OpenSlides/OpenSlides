@@ -32,7 +32,8 @@ export const AssignmentPollPercentBaseVerbose = {
     disabled: _('Disabled (no percents)')
 };
 
-export class ViewAssignmentPoll extends ViewBasePoll<AssignmentPoll, AssignmentPollMethod, AssignmentPollPercentBase>
+export class ViewAssignmentPoll
+    extends ViewBasePoll<AssignmentPoll, AssignmentPollMethod, AssignmentPollPercentBase>
     implements AssignmentPollTitleInformation {
     public static COLLECTIONSTRING = AssignmentPoll.COLLECTIONSTRING;
     protected _collectionString = AssignmentPoll.COLLECTIONSTRING;

@@ -15,7 +15,7 @@ import { WorkflowRepositoryService } from 'app/core/repositories/motions/workflo
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { MergeAmendment, Restriction, State } from 'app/shared/models/motions/state';
 import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
-import { BaseViewComponent } from 'app/site/base/base-view';
+import { BaseViewComponentDirective } from 'app/site/base/base-view';
 import { ViewState } from 'app/site/motions/models/view-state';
 import { ViewWorkflow } from 'app/site/motions/models/view-workflow';
 
@@ -73,7 +73,7 @@ interface RestrictionShape {
     styleUrls: ['./workflow-detail.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class WorkflowDetailComponent extends BaseViewComponent implements OnInit {
+export class WorkflowDetailComponent extends BaseViewComponentDirective implements OnInit {
     /**
      * Reference to the workflow dialog
      */

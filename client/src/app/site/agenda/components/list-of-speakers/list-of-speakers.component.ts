@@ -10,7 +10,7 @@ import { ListOfSpeakersRepositoryService } from 'app/core/repositories/agenda/li
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ViewportService } from 'app/core/ui-services/viewport.service';
 import { ListOfSpeakersContentComponent } from 'app/shared/components/list-of-speakers-content/list-of-speakers-content.component';
-import { BaseViewComponent } from 'app/site/base/base-view';
+import { BaseViewComponentDirective } from 'app/site/base/base-view';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 import { ViewProjector } from 'app/site/projector/models/view-projector';
 import { CurrentListOfSpeakersSlideService } from 'app/site/projector/services/current-list-of-speakers-slide.service';
@@ -25,9 +25,10 @@ import { ViewListOfSpeakers } from '../../models/view-list-of-speakers';
     templateUrl: './list-of-speakers.component.html',
     styleUrls: ['./list-of-speakers.component.scss']
 })
-export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit {
+export class ListOfSpeakersComponent extends BaseViewComponentDirective implements OnInit {
     @ViewChild('content')
     private listOfSpeakersContentComponent: ListOfSpeakersContentComponent;
+
     /**
      * Determine if the user is viewing the current list if speakers
      */

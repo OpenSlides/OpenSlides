@@ -12,7 +12,7 @@ import { GroupRepositoryService } from 'app/core/repositories/users/group-reposi
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { MotionCommentSection } from 'app/shared/models/motions/motion-comment-section';
 import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
-import { BaseViewComponent } from 'app/site/base/base-view';
+import { BaseViewComponentDirective } from 'app/site/base/base-view';
 import { ViewMotionCommentSection } from 'app/site/motions/models/view-motion-comment-section';
 import { ViewGroup } from 'app/site/users/models/view-group';
 
@@ -24,7 +24,7 @@ import { ViewGroup } from 'app/site/users/models/view-group';
     templateUrl: './motion-comment-section-list.component.html',
     styleUrls: ['./motion-comment-section-list.component.scss']
 })
-export class MotionCommentSectionListComponent extends BaseViewComponent implements OnInit {
+export class MotionCommentSectionListComponent extends BaseViewComponentDirective implements OnInit {
     @ViewChild('motionCommentDialog', { static: true })
     private motionCommentDialog: TemplateRef<string>;
 

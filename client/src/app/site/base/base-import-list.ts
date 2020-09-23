@@ -11,10 +11,11 @@ import { auditTime, distinctUntilChanged } from 'rxjs/operators';
 import { BaseImportService, NewEntry, ValueLabelCombination } from 'app/core/ui-services/base-import.service';
 import { BaseModel } from 'app/shared/models/base/base-model';
 import { getLongPreview, getShortPreview } from 'app/shared/utils/previewStrings';
-import { BaseViewComponent } from './base-view';
+import { BaseViewComponentDirective } from './base-view';
 
 @Directive()
-export abstract class BaseImportListComponentDirective<M extends BaseModel> extends BaseViewComponent
+export abstract class BaseImportListComponentDirective<M extends BaseModel>
+    extends BaseViewComponentDirective
     implements OnInit {
     /**
      * The data source for a table. Requires to be initialised with a BaseViewModel

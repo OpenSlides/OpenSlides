@@ -8,7 +8,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { ChangeRecommendationRepositoryService } from 'app/core/repositories/motions/change-recommendation-repository.service';
 import { ModificationType } from 'app/core/ui-services/diff.service';
-import { BaseViewComponent } from 'app/site/base/base-view';
+import { BaseViewComponentDirective } from 'app/site/base/base-view';
 import { ViewMotionChangeRecommendation } from 'app/site/motions/models/view-motion-change-recommendation';
 
 /**
@@ -43,7 +43,7 @@ export interface MotionTitleChangeRecommendationDialogComponentData {
     styleUrls: ['./motion-title-change-recommendation-dialog.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
-export class MotionTitleChangeRecommendationDialogComponent extends BaseViewComponent {
+export class MotionTitleChangeRecommendationDialogComponent extends BaseViewComponentDirective {
     /**
      * Determine if the change recommendation is edited
      */

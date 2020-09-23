@@ -8,7 +8,7 @@ import { TranslateService } from '@ngx-translate/core'; // showcase
 import { OperatorService, Permission } from 'app/core/core-services/operator.service';
 import { ConfigRepositoryService } from 'app/core/repositories/config/config-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
-import { BaseViewComponent } from 'app/site/base/base-view';
+import { BaseViewComponentDirective } from 'app/site/base/base-view';
 
 /**
  * Interface describes the keys for the fields at start-component.
@@ -26,7 +26,7 @@ interface IStartContent {
     templateUrl: './start.component.html',
     styleUrls: ['./start.component.scss']
 })
-export class StartComponent extends BaseViewComponent implements OnInit {
+export class StartComponent extends BaseViewComponentDirective implements OnInit {
     /**
      * Whether the user is editing the content.
      */

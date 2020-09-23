@@ -9,12 +9,15 @@ import { BasePollDialogService } from 'app/core/ui-services/base-poll-dialog.ser
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ChartData } from 'app/shared/components/charts/charts.component';
 import { PollState, PollType } from 'app/shared/models/poll/base-poll';
-import { BaseViewComponent } from 'app/site/base/base-view';
+import { BaseViewComponentDirective } from 'app/site/base/base-view';
 import { BasePollRepositoryService } from '../services/base-poll-repository.service';
 import { PollService } from '../services/poll.service';
 import { ViewBasePoll } from '../models/view-base-poll';
 
-export abstract class BasePollComponent<V extends ViewBasePoll, S extends PollService> extends BaseViewComponent {
+export abstract class BasePollComponent<
+    V extends ViewBasePoll,
+    S extends PollService
+> extends BaseViewComponentDirective {
     public stateChangePending = false;
 
     public chartDataSubject: BehaviorSubject<ChartData> = new BehaviorSubject([]);

@@ -10,7 +10,7 @@ import { StatuteParagraphRepositoryService } from 'app/core/repositories/motions
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { StatuteParagraph } from 'app/shared/models/motions/statute-paragraph';
 import { largeDialogSettings } from 'app/shared/utils/dialog-settings';
-import { BaseViewComponent } from 'app/site/base/base-view';
+import { BaseViewComponentDirective } from 'app/site/base/base-view';
 import { ViewStatuteParagraph } from 'app/site/motions/models/view-statute-paragraph';
 import { StatuteCsvExportService } from 'app/site/motions/services/statute-csv-export.service';
 
@@ -22,7 +22,7 @@ import { StatuteCsvExportService } from 'app/site/motions/services/statute-csv-e
     templateUrl: './statute-paragraph-list.component.html',
     styleUrls: ['./statute-paragraph-list.component.scss']
 })
-export class StatuteParagraphListComponent extends BaseViewComponent implements OnInit {
+export class StatuteParagraphListComponent extends BaseViewComponentDirective implements OnInit {
     @ViewChild('statuteParagraphDialog', { static: true })
     private statuteParagraphDialog: TemplateRef<string>;
 

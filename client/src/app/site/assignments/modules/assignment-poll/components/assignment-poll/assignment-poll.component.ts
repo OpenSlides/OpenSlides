@@ -24,7 +24,8 @@ import { AssignmentPollService } from '../../services/assignment-poll.service';
     templateUrl: './assignment-poll.component.html',
     styleUrls: ['./assignment-poll.component.scss']
 })
-export class AssignmentPollComponent extends BasePollComponent<ViewAssignmentPoll, AssignmentPollService>
+export class AssignmentPollComponent
+    extends BasePollComponent<ViewAssignmentPoll, AssignmentPollService>
     implements OnInit {
     @Input()
     public set poll(value: ViewAssignmentPoll) {

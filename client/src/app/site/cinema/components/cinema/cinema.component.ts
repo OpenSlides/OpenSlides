@@ -11,7 +11,7 @@ import { DetailNavigable, isDetailNavigable } from 'app/shared/models/base/detai
 import { ProjectorElement } from 'app/shared/models/core/projector';
 import { ViewListOfSpeakers } from 'app/site/agenda/models/view-list-of-speakers';
 import { BaseProjectableViewModel } from 'app/site/base/base-projectable-view-model';
-import { BaseViewComponent } from 'app/site/base/base-view';
+import { BaseViewComponentDirective } from 'app/site/base/base-view';
 import { ViewProjector } from 'app/site/projector/models/view-projector';
 import { CurrentListOfSpeakersService } from 'app/site/projector/services/current-list-of-speakers.service';
 
@@ -20,7 +20,7 @@ import { CurrentListOfSpeakersService } from 'app/site/projector/services/curren
     templateUrl: './cinema.component.html',
     styleUrls: ['./cinema.component.scss']
 })
-export class CinemaComponent extends BaseViewComponent implements OnInit {
+export class CinemaComponent extends BaseViewComponentDirective implements OnInit {
     public listOfSpeakers: ViewListOfSpeakers;
     public projector: ViewProjector;
     private currentProjectorElement: ProjectorElement;

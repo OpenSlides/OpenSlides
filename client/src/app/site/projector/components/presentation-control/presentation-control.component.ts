@@ -7,7 +7,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ProjectorService } from 'app/core/core-services/projector.service';
 import { MediafileRepositoryService } from 'app/core/repositories/mediafiles/mediafile-repository.service';
 import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
-import { BaseViewComponent } from 'app/site/base/base-view';
+import { BaseViewComponentDirective } from 'app/site/base/base-view';
 import { MediafileProjectorElement } from 'app/site/mediafiles/models/mediafile-projector-element';
 import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
 import { SlideManager } from 'app/slides/services/slide-manager.service';
@@ -21,7 +21,7 @@ import { ViewProjector } from '../../models/view-projector';
     templateUrl: './presentation-control.component.html',
     styleUrls: ['./presentation-control.component.scss']
 })
-export class PresentationControlComponent extends BaseViewComponent {
+export class PresentationControlComponent extends BaseViewComponentDirective {
     /**
      * The projector.
      */

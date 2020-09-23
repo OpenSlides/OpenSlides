@@ -30,7 +30,8 @@ type OptionsObject = { user_id: number; user: ViewUser }[];
     templateUrl: './assignment-poll-dialog.component.html',
     styleUrls: ['./assignment-poll-dialog.component.scss']
 })
-export class AssignmentPollDialogComponent extends BasePollDialogComponent<ViewAssignmentPoll, AssignmentPollService>
+export class AssignmentPollDialogComponent
+    extends BasePollDialogComponent<ViewAssignmentPoll, AssignmentPollService>
     implements OnInit {
     /**
      * The summary values that will have fields in the dialog

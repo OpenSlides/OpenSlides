@@ -40,7 +40,7 @@ import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
 import { Motion } from 'app/shared/models/motions/motion';
 import { ViewUnifiedChange } from 'app/shared/models/motions/view-unified-change';
 import { infoDialogSettings, mediumDialogSettings } from 'app/shared/utils/dialog-settings';
-import { BaseViewComponent } from 'app/site/base/base-view';
+import { BaseViewComponentDirective } from 'app/site/base/base-view';
 import { CreateMotion } from 'app/site/motions/models/create-motion';
 import { ViewCategory } from 'app/site/motions/models/view-category';
 import { ViewCreateMotion } from 'app/site/motions/models/view-create-motion';
@@ -87,7 +87,7 @@ import {
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None
 })
-export class MotionDetailComponent extends BaseViewComponent implements OnInit, OnDestroy {
+export class MotionDetailComponent extends BaseViewComponentDirective implements OnInit, OnDestroy {
     /**
      * Motion content. Can be a new version
      */

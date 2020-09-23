@@ -5,7 +5,7 @@ import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 import { map } from 'rxjs/operators';
 
-import { BaseViewComponent } from 'app/site/base/base-view';
+import { BaseViewComponentDirective } from 'app/site/base/base-view';
 import { BaseViewModel } from 'app/site/base/base-view-model';
 import { ViewBasePoll } from 'app/site/polls/models/view-base-poll';
 import { PollListObservableService } from 'app/site/polls/services/poll-list-observable.service';
@@ -15,7 +15,7 @@ import { PollListObservableService } from 'app/site/polls/services/poll-list-obs
     templateUrl: './poll-collection.component.html',
     styleUrls: ['./poll-collection.component.scss']
 })
-export class PollCollectionComponent extends BaseViewComponent implements OnInit {
+export class PollCollectionComponent extends BaseViewComponentDirective implements OnInit {
     public polls: ViewBasePoll[];
 
     @Input()

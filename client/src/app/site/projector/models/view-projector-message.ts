@@ -5,7 +5,8 @@ import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 
 export type ProjectorMessageTitleInformation = object;
 
-export class ViewProjectorMessage extends BaseProjectableViewModel<ProjectorMessage>
+export class ViewProjectorMessage
+    extends BaseProjectableViewModel<ProjectorMessage>
     implements ProjectorMessageTitleInformation {
     public static COLLECTIONSTRING = ProjectorMessage.COLLECTIONSTRING;
     protected _collectionString = ProjectorMessage.COLLECTIONSTRING;

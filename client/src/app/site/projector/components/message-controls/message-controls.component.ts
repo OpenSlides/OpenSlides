@@ -8,7 +8,7 @@ import { ProjectorMessageRepositoryService } from 'app/core/repositories/project
 import { ProjectionDialogService } from 'app/core/ui-services/projection-dialog.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { Projector } from 'app/shared/models/core/projector';
-import { BaseViewComponent } from 'app/site/base/base-view';
+import { BaseViewComponentDirective } from 'app/site/base/base-view';
 import { ViewProjectorMessage } from '../../models/view-projector-message';
 
 /**
@@ -20,7 +20,7 @@ import { ViewProjectorMessage } from '../../models/view-projector-message';
     templateUrl: './message-controls.component.html',
     styleUrls: ['./message-controls.component.scss']
 })
-export class MessageControlsComponent extends BaseViewComponent implements OnInit {
+export class MessageControlsComponent extends BaseViewComponentDirective implements OnInit {
     /**
      * Input slot for the projector message model
      */
