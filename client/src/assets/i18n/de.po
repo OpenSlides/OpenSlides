@@ -240,6 +240,9 @@ msgstr "Übernehmen"
 msgid "Arabic"
 msgstr "Arabisch"
 
+msgid "Are you sure you want delete the whole history?"
+msgstr "Soll die vollständige Chronik wirklich gelöscht werden?"
+
 msgid "Are you sure you want to anonymize all votes? This cannot be undone."
 msgstr ""
 "Sollen alle Stimmen wirklich anonymisiert werden? Dies kann nicht rückgängig"
@@ -399,6 +402,9 @@ msgstr "Nachfragen, voreingestellt ja"
 
 msgid "Attachments"
 msgstr "Anhänge"
+
+msgid "Autopilot"
+msgstr "Autopilot"
 
 msgid "Available votes"
 msgstr "Verfügbare Stimmen"
@@ -563,11 +569,20 @@ msgstr "Abbrechen"
 msgid "Cancel edit"
 msgstr "Bearbeitung abbrechen"
 
+msgid "Cancel editing without saving"
+msgstr "Bearbeitung ohne Speichern abbrechen"
+
 msgid "Candidates"
 msgstr "Kandidaten/innen"
 
 msgid "Cannot create PDF files on this browser."
 msgstr "In diesem Browser können keine PDF-Dateien erstellt werden."
+
+msgid "Cannot do that in demo mode!"
+msgstr "Diese Aktion ist im Demo-Modus nicht möglich!"
+
+msgid "Cannot navigate to the selected history element."
+msgstr "Das ausgewählte Chronikelement kann nicht geöffnet werden."
 
 msgid "Categories"
 msgstr "Sachgebiete"
@@ -936,8 +951,14 @@ msgstr "Hat keine Notizen"
 msgid "Done"
 msgstr "erledigt"
 
+msgid "Download"
+msgstr "Herunterladen"
+
 msgid "Download CSV example file"
 msgstr "CSV-Beispiel-Datei herunterladen"
+
+msgid "Download folder"
+msgstr "Verzeichnis herunterladen"
 
 msgid "Drop files into this area OR click here to select files"
 msgstr ""
@@ -980,6 +1001,9 @@ msgstr "Details bearbeiten"
 
 msgid "Edit details for"
 msgstr "Details bearbeiten für"
+
+msgid "Edit final print template"
+msgstr "Beschluss-Druckvorlage bearbeiten"
 
 msgid "Edit projector"
 msgstr "Projektor bearbeiten"
@@ -1110,7 +1134,7 @@ msgid "Exit"
 msgstr "Beenden"
 
 msgid "Exit conference"
-msgstr "Konferenz beenden"
+msgstr "Konferenz verlassen"
 
 msgid "Exit live conference and continue livestream"
 msgstr "Livekonferenz verlassen und Livestream fortsetzen"
@@ -1503,6 +1527,9 @@ msgstr "Livekonferenz"
 
 msgid "Livestream"
 msgstr "Livestream"
+
+msgid "Livestream poster image url"
+msgstr "Livestream-Posterbild-URL"
 
 msgid "Livestream url"
 msgstr "Livestream-URL"
@@ -2298,6 +2325,9 @@ msgstr "Speichern"
 msgid "Save all changes"
 msgstr "Alle Änderungen speichern"
 
+msgid "Save final print template"
+msgstr "Beschluss-Druckvorlage speichern"
+
 msgid "Scan this QR code to connect to WLAN."
 msgstr "QR-Code scannen um sich mit dem WLAN zu verbinden."
 
@@ -2413,6 +2443,9 @@ msgstr "Empfehlung setzen"
 msgid "Set status"
 msgstr "Status setzen"
 
+msgid "Set status for selected participants:"
+msgstr "Status für ausgewählte Teilnehmende setzen:"
+
 msgid "Sets this projector as the reference for the current list of speakers"
 msgstr "Diesen Projektor als Referenz für die aktuelle Redeliste setzen."
 
@@ -2515,6 +2548,13 @@ msgstr "Veranstaltungstitel anzeigen"
 msgid "Show/Hide video conference"
 msgstr "Videokonferenz anzeigen/verstecken"
 
+msgid ""
+"Shows if livestream is not started. Recommended image format: 500x281px, PNG"
+" or JPG"
+msgstr ""
+"Wird angezeigt, wenn der Livestream nicht gestartet werden kann. "
+"Bildformatempfehlung: 500x281px, PNG oder JPG"
+
 msgid "Simple Workflow"
 msgstr "Einfacher Arbeitsablauf"
 
@@ -2580,6 +2620,9 @@ msgstr "Status gesetzt auf {arg1}"
 
 msgid "Statistics"
 msgstr "Statistiken"
+
+msgid "Status"
+msgstr "Status"
 
 msgid "Statute"
 msgstr "Satzung"
@@ -2727,6 +2770,9 @@ msgstr ""
 
 msgid "The number has to be greater than 0."
 msgstr "Die Anzahl muss größer als 0 sein."
+
+msgid "The parent motion was deleted."
+msgstr "Der Eltern-Antrag wurde gelöscht."
 
 msgid "The reason field may not be blank."
 msgstr "Die Begründung darf nicht leer sein."
@@ -3054,6 +3100,9 @@ msgstr "Zurückziehen"
 
 msgid "Workflow"
 msgstr "Arbeitsablauf"
+
+msgid "Workflow of new amendments"
+msgstr "Arbeitsablauf für neue Änderungsanträge"
 
 msgid "Workflow of new motions"
 msgstr "Arbeitsablauf für neue Anträge"

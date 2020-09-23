@@ -351,7 +351,7 @@ export class UserListComponent extends BaseListViewComponent<ViewUser> implement
                 verboseStateName = 'committee';
                 break;
         }
-        const content = this.translate.instant(`Set ${verboseStateName} status for selected participants:`);
+        const content = this.translate.instant(`Set status for selected participants:`);
 
         const selectedChoice = await this.choiceService.open(content, null, false, options);
         if (selectedChoice) {
