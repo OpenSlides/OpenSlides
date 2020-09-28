@@ -984,6 +984,7 @@ class VoteAssignmentPollNamedYNA(VoteAssignmentPollBaseTestClass):
         self.assertEqual(poll.votescast, Decimal("1"))
         self.assertEqual(poll.state, AssignmentPoll.STATE_STARTED)
         self.assertEqual(poll.amount_users_voted_with_individual_weight(), Decimal("1"))
+        self.assertTrue(self.admin in poll.voted.all())
         option1 = poll.options.get(pk=1)
         option2 = poll.options.get(pk=2)
         option3 = poll.options.get(pk=3)
@@ -1238,6 +1239,7 @@ class VoteAssignmentPollNamedVotes(VoteAssignmentPollBaseTestClass):
         self.assertEqual(poll.votesinvalid, Decimal("0"))
         self.assertEqual(poll.votescast, Decimal("1"))
         self.assertEqual(poll.state, AssignmentPoll.STATE_STARTED)
+        self.assertTrue(self.admin in poll.voted.all())
         option1 = poll.options.get(pk=1)
         option2 = poll.options.get(pk=2)
         self.assertEqual(option1.yes, Decimal("1"))
@@ -1695,6 +1697,7 @@ class VoteAssignmentPollPseudoanonymousVotes(VoteAssignmentPollBaseTestClass):
         self.assertEqual(poll.votesinvalid, Decimal("0"))
         self.assertEqual(poll.votescast, Decimal("1"))
         self.assertEqual(poll.state, AssignmentPoll.STATE_STARTED)
+        self.assertTrue(self.admin in poll.voted.all())
         option1 = poll.options.get(pk=1)
         option2 = poll.options.get(pk=2)
         self.assertEqual(option1.yes, Decimal("1"))
@@ -1703,6 +1706,8 @@ class VoteAssignmentPollPseudoanonymousVotes(VoteAssignmentPollBaseTestClass):
         self.assertEqual(option2.yes, Decimal("0"))
         self.assertEqual(option2.no, Decimal("0"))
         self.assertEqual(option2.abstain, Decimal("0"))
+        for vote in poll.get_votes():
+            self.assertIsNone(vote.user)
 
     def test_change_vote(self):
         self.add_candidate()
@@ -1756,6 +1761,8 @@ class VoteAssignmentPollPseudoanonymousVotes(VoteAssignmentPollBaseTestClass):
         self.assertEqual(option2.yes, Decimal("1"))
         self.assertEqual(option2.no, Decimal("0"))
         self.assertEqual(option2.abstain, Decimal("0"))
+        for vote in poll.get_votes():
+            self.assertIsNone(vote.user)
 
     def test_multiple_votes_wrong_amount(self):
         self.setup_for_multiple_votes()
