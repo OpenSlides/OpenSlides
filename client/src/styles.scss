@@ -155,6 +155,15 @@ b,
     text-transform: uppercase;
 }
 
+// for aligning text lines with an icon and or link
+.line-and-icon {
+    display: flex;
+    .mat-icon-button,
+    .mat-icon {
+        margin: auto 0;
+    }
+}
+
 .red-warning-text {
     color: red;
     .mat-icon {
@@ -503,16 +512,6 @@ button.mat-menu-item.selected {
     display: inline-block;
     line-height: 150%;
     width: -webkit-fill-available;
-}
-
-/**
- * Compilcated ngrid hack: The meta row won't disappear (just like that)
- * Select the first ever container pbl-ngrid-container div and hide
- */
-.pbl-ngrid-container {
-    > div {
-        height: 0;
-    }
 }
 
 .cdk-column-menu {

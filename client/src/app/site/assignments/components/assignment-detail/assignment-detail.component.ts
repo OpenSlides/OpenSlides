@@ -16,14 +16,14 @@ import { UserRepositoryService } from 'app/core/repositories/users/user-reposito
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { Assignment } from 'app/shared/models/assignments/assignment';
 import { ViewItem } from 'app/site/agenda/models/view-item';
-import { BaseViewComponent } from 'app/site/base/base-view';
+import { BaseViewComponentDirective } from 'app/site/base/base-view';
 import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
 import { LocalPermissionsService } from 'app/site/motions/services/local-permissions.service';
 import { ViewTag } from 'app/site/tags/models/view-tag';
 import { ViewUser } from 'app/site/users/models/view-user';
 import { AssignmentPdfExportService } from '../../services/assignment-pdf-export.service';
-import { AssignmentPollDialogService } from '../../services/assignment-poll-dialog.service';
-import { AssignmentPollService } from '../../services/assignment-poll.service';
+import { AssignmentPollDialogService } from '../../modules/assignment-poll/services/assignment-poll-dialog.service';
+import { AssignmentPollService } from '../../modules/assignment-poll/services/assignment-poll.service';
 import { AssignmentPhases, ViewAssignment } from '../../models/view-assignment';
 import { ViewAssignmentPoll } from '../../models/view-assignment-poll';
 import { ViewAssignmentRelatedUser } from '../../models/view-assignment-related-user';
@@ -36,7 +36,7 @@ import { ViewAssignmentRelatedUser } from '../../models/view-assignment-related-
     templateUrl: './assignment-detail.component.html',
     styleUrls: ['./assignment-detail.component.scss']
 })
-export class AssignmentDetailComponent extends BaseViewComponent implements OnInit {
+export class AssignmentDetailComponent extends BaseViewComponentDirective implements OnInit {
     /**
      * Determines if the assignment is new
      */

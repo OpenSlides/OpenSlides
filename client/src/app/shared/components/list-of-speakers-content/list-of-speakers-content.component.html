@@ -1,0 +1,171 @@
+<mat-card class="os-card speaker-card">
+    <!-- Title -->
+    <h1 class="los-title" *ngIf="!customTitle">
+        <span>
+            {{ title }}
+        </span>
+        <mat-icon *ngIf="closed" matTooltip="{{ 'The list of speakers is closed.' | translate }}">
+            lock
+        </mat-icon>
+    </h1>
+    <span *ngIf="customTitle">
+        <ng-content></ng-content>
+    </span>
+
+    <!-- List of finished speakers -->
+    <mat-expansion-panel *ngIf="finishedSpeakers?.length" class="finished-list">
+        <mat-expansion-panel-header>
+            <mat-panel-title>{{ 'Last speakers' | translate }}</mat-panel-title>
+        </mat-expansion-panel-header>
+        <mat-list>
+            <mat-list-item *ngFor="let speaker of finishedSpeakers; let number = index">
+                <div class="finished-speaker-grid">
+                    <div class="number">{{ number + 1 }}.</div>
+                    <div class="name">{{ speaker.getTitle() }}</div>
+                    <div class="time">
+                        {{ durationString(speaker) }} ({{ 'Start time' | translate }}: {{ startTimeToString(speaker) }})
+                    </div>
+                    <div class="controls">
+                        <button
+                            mat-icon-button
+                            matTooltip="{{ 'Remove' | translate }}"
+                            *osPerms="'agenda.can_manage_list_of_speakers'"
+                            (click)="onDeleteButton(speaker)"
+                        >
+                            <mat-icon>close</mat-icon>
+                        </button>
+                    </div>
+                </div>
+            </mat-list-item>
+        </mat-list>
+    </mat-expansion-panel>
+
+    <!-- horizontal separation line -->
+    <mat-divider *ngIf="finishedSpeakers && finishedSpeakers.length"></mat-divider>
+    <div *ngIf="finishedSpeakers && finishedSpeakers.length" class="spacer-bottom-40"></div>
+
+    <!-- Current Speaker -->
+    <div class="current-speaker" *ngIf="activeSpeaker">
+        <span class="prefix">
+            <mat-icon>mic</mat-icon>
+        </span>
+
+        <span class="name">{{ activeSpeaker.getListTitle() }}</span>
+
+        <span class="suffix">
+            <!-- Stop speaker button -->
+            <button
+                mat-icon-button
+                matTooltip="{{ 'End speech' | translate }}"
+                *osPerms="'agenda.can_manage_list_of_speakers'"
+                (click)="onStopButton()"
+            >
+                <mat-icon>stop</mat-icon>
+            </button>
+        </span>
+    </div>
+
+    <!-- Waiting speakers -->
+    <div class="waiting-list" *ngIf="waitingSpeakers?.length">
+        <os-sorting-list
+            [live]="true"
+            [input]="waitingSpeakers"
+            [count]="true"
+            [enable]="opCanManage && (isSortMode || !isMobile)"
+            (sortEvent)="onSortingChanged($event)"
+        >
+            <!-- implicit speaker references into the component using ng-template slot -->
+            <ng-template let-speaker>
+                <span *osPerms="'agenda.can_manage_list_of_speakers'">
+                    <!-- Speaker count -->
+                    <span *ngIf="hasSpokenCount(speaker)" class="red-warning-text speaker-warning">
+                        {{ hasSpokenCount(speaker) + 1 }}. <span>{{ 'contribution' | translate }}</span>
+                    </span>
+
+                    <!-- First contribution -->
+                    <span
+                        *ngIf="showFistContributionHint && isFirstContribution(speaker)"
+                        class="red-warning-text speaker-warning"
+                    >
+                        {{ 'First speech' | translate }}
+                    </span>
+
+                    <!-- Speaker gender -->
+                    <span *ngIf="speaker.gender">({{ speaker.gender | translate }})</span>
+                </span>
+
+                <!-- Start, start and delete buttons -->
+                <span *osPerms="'agenda.can_manage_list_of_speakers'">
+                    <!-- start button -->
+                    <button
+                        mat-icon-button
+                        matTooltip="{{ 'Begin speech' | translate }}"
+                        (click)="onStartButton(speaker)"
+                    >
+                        <mat-icon>play_arrow</mat-icon>
+                    </button>
+
+                    <!-- star button -->
+                    <button
+                        mat-icon-button
+                        matTooltip="{{ 'Mark speaker' | translate }}"
+                        (click)="onMarkButton(speaker)"
+                    >
+                        <mat-icon>{{ speaker.marked ? 'star' : 'star_border' }}</mat-icon>
+                    </button>
+
+                    <!-- delete button -->
+                    <button mat-icon-button matTooltip="{{ 'Remove' | translate }}" (click)="onDeleteButton(speaker)">
+                        <mat-icon>close</mat-icon>
+                    </button>
+                </span>
+
+                <!-- For thouse without LOS -->
+                <span *osPerms="'agenda.can_manage_list_of_speakers'; complement: true">
+                    <mat-icon *ngIf="speaker.marked">
+                        star
+                    </mat-icon>
+                </span>
+            </ng-template>
+        </os-sorting-list>
+    </div>
+
+    <!-- Search for speakers -->
+    <div *osPerms="'agenda.can_manage_list_of_speakers'">
+        <form
+            *ngIf="waitingSpeakers && filteredUsers?.value?.length"
+            [formGroup]="addSpeakerForm"
+            class="search-new-speaker-form"
+        >
+            <mat-form-field class="search-users-field">
+                <os-search-value-selector
+                    class="search-users"
+                    formControlName="user_id"
+                    placeholder="{{ 'Select or search new speaker ...' | translate }}"
+                    [inputListValues]="filteredUsers"
+                    [showNotFoundButton]="true"
+                    (clickNotFound)="onCreateUser($event)"
+                >
+                    <ng-container notFoundDescription>
+                        <mat-icon>add</mat-icon>
+                        {{ 'Create user' | translate }}
+                    </ng-container>
+                </os-search-value-selector>
+            </mat-form-field>
+        </form>
+    </div>
+
+    <!-- Add me and remove me if OP has correct permission -->
+    <div *osPerms="'agenda.can_be_speaker'" class="add-self-buttons">
+        <div *ngIf="waitingSpeakers && !closed">
+            <button mat-stroked-button [disabled]="closed" (click)="addNewSpeaker()" *ngIf="!isOpInList && canAddSelf">
+                <mat-icon>add</mat-icon>
+                <span>{{ 'Add me' | translate }}</span>
+            </button>
+            <button mat-stroked-button (click)="onDeleteButton()" *ngIf="isOpInList">
+                <mat-icon>remove</mat-icon>
+                <span>{{ 'Remove me' | translate }}</span>
+            </button>
+        </div>
+    </div>
+</mat-card>

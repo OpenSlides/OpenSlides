@@ -18,7 +18,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { MediafileRepositoryService } from 'app/core/repositories/mediafiles/mediafile-repository.service';
-import { BaseFormControlComponent } from 'app/shared/models/base/base-form-control';
+import { BaseFormControlComponentDirective } from 'app/shared/models/base/base-form-control';
 import { mediumDialogSettings } from 'app/shared/utils/dialog-settings';
 import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
 
@@ -29,7 +29,7 @@ import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
     providers: [{ provide: MatFormFieldControl, useExisting: AttachmentControlComponent }],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AttachmentControlComponent extends BaseFormControlComponent<ViewMediafile[]> implements OnInit {
+export class AttachmentControlComponent extends BaseFormControlComponentDirective<ViewMediafile[]> implements OnInit {
     /**
      * Output for an error handler
      */

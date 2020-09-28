@@ -9,7 +9,7 @@ import { PromptService } from 'app/core/ui-services/prompt.service';
 import { SortingTreeComponent } from 'app/shared/components/sorting-tree/sorting-tree.component';
 import { Identifiable } from 'app/shared/models/base/identifiable';
 import { CanComponentDeactivate } from 'app/shared/utils/watch-for-changes.guard';
-import { BaseViewComponent } from './base-view';
+import { BaseViewComponentDirective } from './base-view';
 import { BaseViewModel } from './base-view-model';
 
 export interface SortTreeFilterOption extends Identifiable {
@@ -22,7 +22,8 @@ export interface SortTreeFilterOption extends Identifiable {
  * Abstract Sort view for hierarchic item trees
  */
 @Directive()
-export abstract class SortTreeViewComponentDirective<V extends BaseViewModel> extends BaseViewComponent
+export abstract class SortTreeViewComponentDirective<V extends BaseViewModel>
+    extends BaseViewComponentDirective
     implements CanComponentDeactivate {
     /**
      * Reference to the view child

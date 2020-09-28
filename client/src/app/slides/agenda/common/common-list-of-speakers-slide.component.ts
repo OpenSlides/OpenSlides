@@ -13,7 +13,8 @@ import { CommonListOfSpeakersSlideData } from './common-list-of-speakers-slide-d
     templateUrl: './common-list-of-speakers-slide.component.html',
     styleUrls: ['./common-list-of-speakers-slide.component.scss']
 })
-export class CommonListOfSpeakersSlideComponent extends BaseSlideComponentDirective<CommonListOfSpeakersSlideData>
+export class CommonListOfSpeakersSlideComponent
+    extends BaseSlideComponentDirective<CommonListOfSpeakersSlideData>
     implements OnInit {
     @Input()
     public set data(value: SlideData<CommonListOfSpeakersSlideData, ProjectorElement>) {

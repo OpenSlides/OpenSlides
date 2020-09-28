@@ -20,7 +20,7 @@ import { isDetailNavigable } from 'app/shared/models/base/detail-navigable';
 import { History } from 'app/shared/models/core/history';
 import { Motion } from 'app/shared/models/motions/motion';
 import { langToLocale } from 'app/shared/utils/lang-to-locale';
-import { BaseViewComponent } from 'app/site/base/base-view';
+import { BaseViewComponentDirective } from 'app/site/base/base-view';
 import { BaseViewModel } from 'app/site/base/base-view-model';
 import { ViewUser } from 'app/site/users/models/view-user';
 
@@ -34,7 +34,7 @@ import { ViewUser } from 'app/site/users/models/view-user';
     templateUrl: './history-list.component.html',
     styleUrls: ['./history-list.component.scss']
 })
-export class HistoryListComponent extends BaseViewComponent implements OnInit {
+export class HistoryListComponent extends BaseViewComponentDirective implements OnInit {
     /**
      * Subject determine when the custom timestamp subject changes
      */
@@ -78,7 +78,7 @@ export class HistoryListComponent extends BaseViewComponent implements OnInit {
      */
     public constructor(
         titleService: Title,
-        translate: TranslateService,
+        protected translate: TranslateService,
         matSnackBar: MatSnackBar,
         private viewModelStore: ViewModelStoreService,
         private router: Router,

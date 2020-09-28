@@ -17,6 +17,16 @@ $pbl-height: var(--pbl-height);
         display: block;
     }
 
+    /**
+    * Compilcated ngrid hack: The meta row won't disappear (just like that)
+    * Select the first ever container pbl-ngrid-container div and hide
+    */
+    .pbl-ngrid-container {
+        > div {
+            height: 0;
+        }
+    }
+
     .vscroll-list-view {
         flex: 1 1 auto;
         height: 100%;

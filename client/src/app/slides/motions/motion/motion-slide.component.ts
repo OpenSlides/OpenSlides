@@ -11,7 +11,7 @@ import { ViewUnifiedChange, ViewUnifiedChangeType } from 'app/shared/models/moti
 import { MotionTitleInformation } from 'app/site/motions/models/view-motion';
 import { ChangeRecoMode, LineNumberingMode } from 'app/site/motions/motions.constants';
 import { IBaseScaleScrollSlideComponent } from 'app/slides/base-scale-scroll-slide-component';
-import { BaseMotionSlideComponent } from '../base/base-motion-slide';
+import { BaseMotionSlideComponentDirective } from '../base/base-motion-slide';
 import { MotionSlideData, MotionSlideDataAmendment } from './motion-slide-data';
 import { MotionSlideObjAmendmentParagraph } from './motion-slide-obj-amendment-paragraph';
 import { MotionSlideObjChangeReco } from './motion-slide-obj-change-reco';
@@ -22,7 +22,8 @@ import { MotionSlideObjChangeReco } from './motion-slide-obj-change-reco';
     styleUrls: ['./motion-slide.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
-export class MotionSlideComponent extends BaseMotionSlideComponent<MotionSlideData>
+export class MotionSlideComponent
+    extends BaseMotionSlideComponentDirective<MotionSlideData>
     implements IBaseScaleScrollSlideComponent<MotionSlideData> {
     /**
      * Indicates the LineNumberingMode Mode.
@@ -77,6 +78,9 @@ export class MotionSlideComponent extends BaseMotionSlideComponent<MotionSlideDa
                 a.identifier.localeCompare(b.identifier)
             );
         }
+
+        console.log('cr mode? ', this.crMode);
+        console.log('the data: ', this._data);
 
         this.recalcUnifiedChanges();
     }
@@ -410,26 +414,28 @@ export class MotionSlideComponent extends BaseMotionSlideComponent<MotionSlideDa
      * @returns {DiffLinesInParagraph[]}
      */
     public getAmendedParagraphs(): DiffLinesInParagraph[] {
-        let baseHtml = this.data.data.base_motion.text;
-        baseHtml = this.lineNumbering.insertLineNumbers(baseHtml, this.lineLength);
+        const motion = this.data.data;
+        const baseHtml = this.lineNumbering.insertLineNumbers(motion.base_motion?.text, this.lineLength);
         const baseParagraphs = this.lineNumbering.splitToParagraphs(baseHtml);
 
-        return this.data.data.amendment_paragraphs
+        const amendmentParagraphs = motion.amendment_paragraphs
             .map(
-                (newText: string, paraNo: number): DiffLinesInParagraph => {
-                    if (newText === null) {
+                (amendmentText: string, paraNo: number): DiffLinesInParagraph => {
+                    if (amendmentText === null) {
                         return null;
                     }
-                    // Hint: can be either DiffLinesInParagraph or null, if no changes are made
                     return this.diff.getAmendmentParagraphsLines(
                         paraNo,
                         baseParagraphs[paraNo],
-                        newText,
-                        this.lineLength
+                        amendmentText,
+                        this.lineLength,
+                        this.crMode === ChangeRecoMode.Diff ? this.getAllTextChangingObjects() : undefined
                     );
                 }
             )
             .filter((para: DiffLinesInParagraph) => para !== null);
+
+        return amendmentParagraphs;
     }
 
     /**
@@ -440,5 +446,43 @@ export class MotionSlideComponent extends BaseMotionSlideComponent<MotionSlideDa
     public getFormattedStatuteAmendment(): string {
         const diffHtml = this.diff.diff(this.data.data.base_statute.text, this.data.data.text);
         return this.lineNumbering.insertLineBreaksWithoutNumbers(diffHtml, this.lineLength, true);
+    }
+
+    /**
+     * Returns true if this change is colliding with another change
+     * @param {ViewUnifiedChange} change
+     * @param {ViewUnifiedChange[]} changes
+     */
+    public hasCollissions(change: ViewUnifiedChange, changes: ViewUnifiedChange[]): boolean {
+        return this.motionRepo.changeHasCollissions(change, changes);
+    }
+
+    /**
+     * Returns true if the change is an Amendment
+     *
+     * @param {ViewUnifiedChange} change
+     */
+    public isAmendment(change: ViewUnifiedChange): boolean {
+        return change.getChangeType() === ViewUnifiedChangeType.TYPE_AMENDMENT;
+    }
+
+    /**
+     * Returns true if the change is a Change Recommendation
+     *
+     * @param {ViewUnifiedChange} change
+     */
+    public isChangeRecommendation(change: ViewUnifiedChange): boolean {
+        return change.getChangeType() === ViewUnifiedChangeType.TYPE_CHANGE_RECOMMENDATION;
+    }
+
+    /**
+     * Returns the diff string from the motion to the change
+     * @param {ViewUnifiedChange} change
+     */
+    public getAmendmentDiff(change: ViewUnifiedChange): string {
+        const motion = this.data.data;
+        const baseHtml = this.lineNumbering.insertLineNumbers(motion.base_motion?.text, this.lineLength);
+
+        return this.diff.getChangeDiff(baseHtml, change, this.lineLength, this.highlightedLine);
     }
 }

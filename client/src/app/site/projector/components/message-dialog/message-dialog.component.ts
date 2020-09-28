@@ -6,7 +6,7 @@ import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { BaseViewComponent } from 'app/site/base/base-view';
+import { BaseViewComponentDirective } from 'app/site/base/base-view';
 
 /**
  * Determine what to send
@@ -23,7 +23,7 @@ export interface MessageData {
     templateUrl: './message-dialog.component.html',
     styleUrls: ['./message-dialog.component.scss']
 })
-export class MessageDialogComponent extends BaseViewComponent implements OnInit {
+export class MessageDialogComponent extends BaseViewComponentDirective implements OnInit {
     /**
      * The form data
      */

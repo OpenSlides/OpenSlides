@@ -138,6 +138,14 @@ export class ProjectorRepositoryService extends BaseRepository<ViewProjector, Pr
         await this.http.post<void>(`/rest/core/projector/${projector_id}/set_reference_projector/`);
     }
 
+    public getReferenceProjectorObservable(): Observable<ViewProjector> {
+        return this.getViewModelListObservable().pipe(
+            map(projectors => {
+                return projectors.find(projector => projector.isReferenceProjector);
+            })
+        );
+    }
+
     /**
      * return the id of the current reference projector
      * prefer the observable whenever possible
@@ -145,16 +153,5 @@ export class ProjectorRepositoryService extends BaseRepository<ViewProjector, Pr
     public getReferenceProjectorId(): number {
         // TODO: After logging in, this is null this.getViewModelList() is null
         return this.getViewModelList().find(projector => projector.isReferenceProjector).id;
-    }
-
-    public getReferenceProjectorIdObservable(): Observable<number> {
-        return this.getViewModelListObservable().pipe(
-            map(projectors => {
-                const refProjector = projectors.find(projector => projector.isReferenceProjector);
-                if (refProjector) {
-                    return refProjector.id;
-                }
-            })
-        );
     }
 }

@@ -3,25 +3,25 @@
 /** Default Font */
 $font: 'OSFont';
 
-$font-regular: url('assets/fonts/fira-sans-latin-400.woff') format('woff');
+$font-regular: url('../fonts/fira-sans-latin-400.woff') format('woff');
 $font-weight-regular: 400;
 
-$font-italic: url('assets/fonts/fira-sans-latin-400italic.woff') format('woff');
+$font-italic: url('../fonts/fira-sans-latin-400italic.woff') format('woff');
 $font-weight-italic: 400;
 
-$font-medium: url('assets/fonts/fira-sans-latin-500.woff') format('woff');
+$font-medium: url('../fonts/fira-sans-latin-500.woff') format('woff');
 $font-weight-medium: 500;
 
-$font-medium-italic: url('assets/fonts/fira-sans-latin-500italic.woff') format('woff');
+$font-medium-italic: url('../fonts/fira-sans-latin-500italic.woff') format('woff');
 $font-weight-medium-italic: 500;
 
 /** Condensed Font */
 $font-condensed: 'OSFont Condensed';
 
-$font-condensed-regular: url('assets/fonts/fira-sans-condensed-latin-400.woff') format('woff');
+$font-condensed-regular: url('../fonts/fira-sans-condensed-latin-400.woff') format('woff');
 $font-weight-condensed-regular: 400;
 
 /** Monospace Font */
 $font-monospace: 'OSFont Monospace';
-$font-monospace-src: url('assets/fonts/roboto-condensed-bold.woff') format('woff');
+$font-monospace-src: url('../fonts/roboto-condensed-bold.woff') format('woff');
 $font-weight-monospace: 400;

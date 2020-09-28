@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 
 import { AssignmentPollMethod } from 'app/shared/models/assignments/assignment-poll';
 import { ViewAssignmentPoll } from 'app/site/assignments/models/view-assignment-poll';
-import { AssignmentPollService } from 'app/site/assignments/services/assignment-poll.service';
+import { AssignmentPollService } from 'app/site/assignments/modules/assignment-poll/services/assignment-poll.service';
 import { PollData, PollTableData, VotingResult } from 'app/site/polls/services/poll.service';
 
 @Component({

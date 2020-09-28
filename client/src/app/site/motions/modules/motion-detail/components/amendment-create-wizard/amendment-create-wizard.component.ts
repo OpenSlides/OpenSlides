@@ -9,7 +9,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { MotionRepositoryService, ParagraphToChoose } from 'app/core/repositories/motions/motion-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
-import { BaseViewComponent } from 'app/site/base/base-view';
+import { BaseViewComponentDirective } from 'app/site/base/base-view';
 import { CreateMotion } from 'app/site/motions/models/create-motion';
 import { ViewMotion } from 'app/site/motions/models/view-motion';
 
@@ -22,7 +22,7 @@ import { ViewMotion } from 'app/site/motions/models/view-motion';
     styleUrls: ['./amendment-create-wizard.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
-export class AmendmentCreateWizardComponent extends BaseViewComponent implements OnInit {
+export class AmendmentCreateWizardComponent extends BaseViewComponentDirective implements OnInit {
     /**
      * The motion to be amended
      */

@@ -221,6 +221,9 @@ msgstr ""
 msgid "Arabic"
 msgstr ""
 
+msgid "Are you sure you want delete the whole history?"
+msgstr ""
+
 msgid "Are you sure you want to anonymize all votes? This cannot be undone."
 msgstr ""
 
@@ -359,6 +362,9 @@ msgid "Ask, default yes"
 msgstr ""
 
 msgid "Attachments"
+msgstr ""
+
+msgid "Autopilot"
 msgstr ""
 
 msgid "Available votes"
@@ -523,10 +529,19 @@ msgstr ""
 msgid "Cancel edit"
 msgstr ""
 
+msgid "Cancel editing without saving"
+msgstr ""
+
 msgid "Candidates"
 msgstr ""
 
 msgid "Cannot create PDF files on this browser."
+msgstr ""
+
+msgid "Cannot do that in demo mode!"
+msgstr ""
+
+msgid "Cannot navigate to the selected history element."
 msgstr ""
 
 msgid "Categories"
@@ -878,7 +893,13 @@ msgstr ""
 msgid "Done"
 msgstr ""
 
+msgid "Download"
+msgstr ""
+
 msgid "Download CSV example file"
+msgstr ""
+
+msgid "Download folder"
 msgstr ""
 
 msgid "Drop files into this area OR click here to select files"
@@ -914,6 +935,9 @@ msgid "Edit details"
 msgstr ""
 
 msgid "Edit details for"
+msgstr ""
+
+msgid "Edit final print template"
 msgstr ""
 
 msgid "Edit projector"
@@ -1428,6 +1452,9 @@ msgid "Live conference"
 msgstr ""
 
 msgid "Livestream"
+msgstr ""
+
+msgid "Livestream poster image url"
 msgstr ""
 
 msgid "Livestream url"
@@ -2208,6 +2235,9 @@ msgstr ""
 msgid "Save all changes"
 msgstr ""
 
+msgid "Save final print template"
+msgstr ""
+
 msgid "Scan this QR code to connect to WLAN."
 msgstr ""
 
@@ -2322,6 +2352,9 @@ msgstr ""
 msgid "Set status"
 msgstr ""
 
+msgid "Set status for selected participants:"
+msgstr ""
+
 msgid "Sets this projector as the reference for the current list of speakers"
 msgstr ""
 
@@ -2421,6 +2454,11 @@ msgstr ""
 msgid "Show/Hide video conference"
 msgstr ""
 
+msgid ""
+"Shows if livestream is not started. Recommended image format: 500x281px, "
+"PNG or JPG"
+msgstr ""
+
 msgid "Simple Workflow"
 msgstr ""
 
@@ -2485,6 +2523,9 @@ msgid "State set to {arg1}"
 msgstr ""
 
 msgid "Statistics"
+msgstr ""
+
+msgid "Status"
 msgstr ""
 
 msgid "Statute"
@@ -2622,6 +2663,9 @@ msgid ""
 msgstr ""
 
 msgid "The number has to be greater than 0."
+msgstr ""
+
+msgid "The parent motion was deleted."
 msgstr ""
 
 msgid "The reason field may not be blank."
@@ -2909,6 +2953,9 @@ msgid "Withdraw"
 msgstr ""
 
 msgid "Workflow"
+msgstr ""
+
+msgid "Workflow of new amendments"
 msgstr ""
 
 msgid "Workflow of new motions"

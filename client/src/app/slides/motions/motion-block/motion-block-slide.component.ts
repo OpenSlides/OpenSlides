@@ -4,7 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { SlideData } from 'app/core/core-services/projector-data.service';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
-import { BaseMotionSlideComponent } from '../base/base-motion-slide';
+import { BaseMotionSlideComponentDirective } from '../base/base-motion-slide';
 import { MotionBlockSlideData, MotionBlockSlideMotionRepresentation } from './motion-block-slide-data';
 
 // Layout:
@@ -27,7 +27,7 @@ const MAX_COLUMNS = 3;
     templateUrl: './motion-block-slide.component.html',
     styleUrls: ['./motion-block-slide.component.scss']
 })
-export class MotionBlockSlideComponent extends BaseMotionSlideComponent<MotionBlockSlideData> {
+export class MotionBlockSlideComponent extends BaseMotionSlideComponentDirective<MotionBlockSlideData> {
     /**
      * For sorting motion blocks by their displayed title
      */

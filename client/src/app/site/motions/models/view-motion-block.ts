@@ -14,7 +14,8 @@ export interface MotionBlockTitleInformation extends TitleInformationWithAgendaI
  * ViewModel for motion blocks.
  * @ignore
  */
-export class ViewMotionBlock extends BaseViewModelWithAgendaItemAndListOfSpeakers
+export class ViewMotionBlock
+    extends BaseViewModelWithAgendaItemAndListOfSpeakers
     implements MotionBlockTitleInformation, Searchable {
     public static COLLECTIONSTRING = MotionBlock.COLLECTIONSTRING;
     protected _collectionString = MotionBlock.COLLECTIONSTRING;

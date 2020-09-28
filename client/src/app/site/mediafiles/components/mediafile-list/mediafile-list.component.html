@@ -241,7 +241,7 @@
     <div *ngIf="isMultiSelect">
         <button mat-menu-item [disabled]="!selectedRows.length" (click)="downloadMultiple(selectedRows)">
             <mat-icon>cloud_download</mat-icon>
-            <span>{{ 'Download selected' | translate }}</span>
+            <span>{{ 'Download' | translate }}</span>
         </button>
         <button mat-menu-item [disabled]="!selectedRows.length" (click)="move(moveDialog, selectedRows)">
             <mat-icon>near_me</mat-icon>

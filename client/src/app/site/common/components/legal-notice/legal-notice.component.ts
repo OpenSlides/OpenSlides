@@ -9,13 +9,13 @@ import { OpenSlidesService } from 'app/core/core-services/openslides.service';
 import { OperatorService, Permission } from 'app/core/core-services/operator.service';
 import { ConfigRepositoryService } from 'app/core/repositories/config/config-repository.service';
 import { UpdateService } from 'app/core/ui-services/update.service';
-import { BaseViewComponent } from 'app/site/base/base-view';
+import { BaseViewComponentDirective } from 'app/site/base/base-view';
 
 @Component({
     selector: 'os-legal-notice',
     templateUrl: './legal-notice.component.html'
 })
-export class LegalNoticeComponent extends BaseViewComponent implements OnInit {
+export class LegalNoticeComponent extends BaseViewComponentDirective implements OnInit {
     /**
      * Whether this component is in editing-mode.
      */

@@ -1121,4 +1121,20 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
             }
         });
     }
+
+    public changeHasCollissions(change: ViewUnifiedChange, changes: ViewUnifiedChange[]): boolean {
+        return (
+            changes.filter((otherChange: ViewUnifiedChange) => {
+                return (
+                    otherChange.getChangeId() !== change.getChangeId() &&
+                    ((otherChange.getLineFrom() >= change.getLineFrom() &&
+                        otherChange.getLineFrom() < change.getLineTo()) ||
+                        (otherChange.getLineTo() > change.getLineFrom() &&
+                            otherChange.getLineTo() <= change.getLineTo()) ||
+                        (otherChange.getLineFrom() < change.getLineFrom() &&
+                            otherChange.getLineTo() > change.getLineTo()))
+                );
+            }).length > 0
+        );
+    }
 }

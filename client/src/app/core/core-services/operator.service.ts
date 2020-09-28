@@ -40,6 +40,7 @@ export enum Permission {
     coreCanSeeProjector = 'core.can_see_projector',
     coreCanManageTags = 'core.can_manage_tags',
     coreCanSeeLiveStream = 'core.can_see_livestream',
+    coreCanSeeAutopilot = 'core.can_see_autopilot',
     mediafilesCanManage = 'mediafiles.can_manage',
     mediafilesCanSee = 'mediafiles.can_see',
     motionsCanCreate = 'motions.can_create',

@@ -10,7 +10,7 @@ import { PromptService } from 'app/core/ui-services/prompt.service';
 import { VotingService } from 'app/core/ui-services/voting.service';
 import { VoteValue } from 'app/shared/models/poll/base-vote';
 import { ViewMotionPoll } from 'app/site/motions/models/view-motion-poll';
-import { BasePollVoteComponent } from 'app/site/polls/components/base-poll-vote.component';
+import { BasePollVoteComponentDirective } from 'app/site/polls/components/base-poll-vote.component';
 
 interface VoteOption {
     vote?: VoteValue;
@@ -25,7 +25,7 @@ interface VoteOption {
     styleUrls: ['./motion-poll-vote.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MotionPollVoteComponent extends BasePollVoteComponent<ViewMotionPoll> {
+export class MotionPollVoteComponent extends BasePollVoteComponentDirective<ViewMotionPoll> {
     public currentVote: VoteOption = {};
     public voteOptions: VoteOption[] = [
         {

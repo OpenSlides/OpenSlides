@@ -7,7 +7,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { PersonalNoteService } from 'app/core/ui-services/personal-note.service';
 import { PersonalNoteContent } from 'app/shared/models/users/personal-note';
-import { BaseViewComponent } from 'app/site/base/base-view';
+import { BaseViewComponentDirective } from 'app/site/base/base-view';
 import { ViewMotion } from 'app/site/motions/models/view-motion';
 import { MotionPdfExportService } from 'app/site/motions/services/motion-pdf-export.service';
 
@@ -19,7 +19,7 @@ import { MotionPdfExportService } from 'app/site/motions/services/motion-pdf-exp
     templateUrl: './personal-note.component.html',
     styleUrls: ['./personal-note.component.scss']
 })
-export class PersonalNoteComponent extends BaseViewComponent {
+export class PersonalNoteComponent extends BaseViewComponentDirective {
     /**
      * The motion, which the personal note belong to.
      */

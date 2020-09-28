@@ -6,10 +6,12 @@ import { TranslateService } from '@ngx-translate/core';
 import { PblColumnDefinition, PblDataSource } from '@pebula/ngrid';
 
 import { StorageService } from 'app/core/core-services/storage.service';
-import { BaseViewComponent } from './base-view';
+import { BaseViewComponentDirective } from './base-view';
 import { BaseViewModel } from './base-view-model';
 
-export abstract class BaseListViewComponent<V extends BaseViewModel> extends BaseViewComponent implements OnDestroy {
+export abstract class BaseListViewComponent<V extends BaseViewModel>
+    extends BaseViewComponentDirective
+    implements OnDestroy {
     /**
      * The source of the table data, will be filled by an event emitter
      */

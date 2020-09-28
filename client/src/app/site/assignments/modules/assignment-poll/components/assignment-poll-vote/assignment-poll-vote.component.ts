@@ -15,8 +15,8 @@ import { VotingService } from 'app/core/ui-services/voting.service';
 import { AssignmentPollMethod } from 'app/shared/models/assignments/assignment-poll';
 import { PollType } from 'app/shared/models/poll/base-poll';
 import { VoteValue } from 'app/shared/models/poll/base-vote';
-import { BasePollVoteComponent } from 'app/site/polls/components/base-poll-vote.component';
-import { ViewAssignmentPoll } from '../../models/view-assignment-poll';
+import { ViewAssignmentPoll } from 'app/site/assignments/models/view-assignment-poll';
+import { BasePollVoteComponentDirective } from 'app/site/polls/components/base-poll-vote.component';
 
 // TODO: Duplicate
 interface VoteActions {
@@ -32,7 +32,7 @@ interface VoteActions {
     styleUrls: ['./assignment-poll-vote.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AssignmentPollVoteComponent extends BasePollVoteComponent<ViewAssignmentPoll> implements OnInit {
+export class AssignmentPollVoteComponent extends BasePollVoteComponentDirective<ViewAssignmentPoll> implements OnInit {
     public AssignmentPollMethod = AssignmentPollMethod;
     public PollType = PollType;
     public voteActions: VoteActions[] = [];

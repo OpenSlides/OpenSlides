@@ -10,11 +10,11 @@ import { AssignmentPollRepositoryService } from 'app/core/repositories/assignmen
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { VotingPrivacyWarningComponent } from 'app/shared/components/voting-privacy-warning/voting-privacy-warning.component';
 import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
+import { ViewAssignmentPoll } from 'app/site/assignments/models/view-assignment-poll';
 import { BasePollComponent } from 'app/site/polls/components/base-poll.component';
 import { AssignmentPollDialogService } from '../../services/assignment-poll-dialog.service';
 import { AssignmentPollPdfService } from '../../services/assignment-poll-pdf.service';
 import { AssignmentPollService } from '../../services/assignment-poll.service';
-import { ViewAssignmentPoll } from '../../models/view-assignment-poll';
 
 /**
  * Component for a single assignment poll. Used in assignment detail view
@@ -24,7 +24,8 @@ import { ViewAssignmentPoll } from '../../models/view-assignment-poll';
     templateUrl: './assignment-poll.component.html',
     styleUrls: ['./assignment-poll.component.scss']
 })
-export class AssignmentPollComponent extends BasePollComponent<ViewAssignmentPoll, AssignmentPollService>
+export class AssignmentPollComponent
+    extends BasePollComponent<ViewAssignmentPoll, AssignmentPollService>
     implements OnInit {
     @Input()
     public set poll(value: ViewAssignmentPoll) {

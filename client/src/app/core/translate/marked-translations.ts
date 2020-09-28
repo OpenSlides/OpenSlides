@@ -36,6 +36,8 @@ _('Allow only current speakers and list of speakers managers to enter the live c
 _('Server settings required to activate Jitsi Meet integration.');
 _('Livestream url');
 _('Remove URL to deactivate livestream. Check extra group permission to see livestream.');
+_('Livestream poster image url');
+_('Shows if livestream is not started. Recommended image format: 500x281px, PNG or JPG');
 _('Show this text on the login page');
 _('OpenSlides Theme');
 _('Export');
@@ -119,6 +121,7 @@ _('Open requests to speak');
 _('General');
 _('Workflow of new motions');
 _('Workflow of new statute amendments');
+_('Workflow of new amendments');
 _('Motion preamble');
 _('The assembly may decide:');
 _('Default line numbering');

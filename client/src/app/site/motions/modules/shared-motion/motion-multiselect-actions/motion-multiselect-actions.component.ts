@@ -10,7 +10,7 @@ import { MotionBlockRepositoryService } from 'app/core/repositories/motions/moti
 import { TagRepositoryService } from 'app/core/repositories/tags/tag-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { largeDialogSettings } from 'app/shared/utils/dialog-settings';
-import { BaseViewComponent } from 'app/site/base/base-view';
+import { BaseViewComponentDirective } from 'app/site/base/base-view';
 import { ViewCategory } from 'app/site/motions/models/view-category';
 import { ViewMotion } from 'app/site/motions/models/view-motion';
 import { ViewMotionBlock } from 'app/site/motions/models/view-motion-block';
@@ -24,7 +24,7 @@ import { MotionExportDialogComponent } from '../motion-export-dialog/motion-expo
     templateUrl: './motion-multiselect-actions.component.html',
     styleUrls: ['./motion-multiselect-actions.component.scss']
 })
-export class MotionMultiselectActionsComponent extends BaseViewComponent implements OnInit {
+export class MotionMultiselectActionsComponent extends BaseViewComponentDirective implements OnInit {
     /**
      * The list of the selected motions.
      */

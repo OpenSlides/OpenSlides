@@ -12,7 +12,7 @@ import { OperatorService } from 'app/core/core-services/operator.service';
 import { Deferred } from 'app/core/promises/deferred';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
-import { BaseViewComponent } from 'app/site/base/base-view';
+import { BaseViewComponentDirective } from 'app/site/base/base-view';
 import { CurrentListOfSpeakersService } from 'app/site/projector/services/current-list-of-speakers.service';
 
 declare var JitsiMeetExternalAPI: any;
@@ -75,7 +75,7 @@ enum ConferenceState {
     ],
     encapsulation: ViewEncapsulation.None
 })
-export class JitsiComponent extends BaseViewComponent implements OnInit, OnDestroy {
+export class JitsiComponent extends BaseViewComponentDirective implements OnInit, OnDestroy {
     public enableJitsi: boolean;
 
     private autoconnect: boolean;
