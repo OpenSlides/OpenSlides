@@ -500,20 +500,17 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User, UserTi
     }
 
     private preventAlterationOnDemoUsers(users: ViewUser | ViewUser[]): void {
-        if (!this.demoModeUserIds) {
-            return;
-        }
         if (Array.isArray(users)) {
-            if (users.map(user => user.id).intersect(this.demoModeUserIds).length > 0) {
+            if (this.demoModeUserIds && users.map(user => user.id).intersect(this.demoModeUserIds).length > 0) {
                 this.preventInDemo();
             }
-        } else if (this.demoModeUserIds.some(userId => userId === users.id)) {
+        } else if (this.demoModeUserIds?.some(userId => userId === users.id)) {
             this.preventInDemo();
         }
     }
 
     private preventInDemo(): void {
-        if (this.demoModeUserIds) {
+        if (this.demoModeUserIds && this.demoModeUserIds.length) {
             throw new PreventedInDemo();
         }
     }
