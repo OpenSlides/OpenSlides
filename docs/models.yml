@@ -687,6 +687,8 @@ personal_note:
         name: personal_note_$_ids
         type: structured-relation
         replacement: meeting_id
+        through:
+        - content_object_id
   content_object_id:
     type: generic-relation
     to:
@@ -829,6 +831,8 @@ speaker:
         name: speaker_$_ids
         type: structured-relation
         replacement: meeting_id
+        through:
+        - list_of_speakers_id
     required: true
 
 topic:
@@ -994,6 +998,8 @@ motion_submitter:
         name: submitted_motion_$_ids
         type: structured-relation
         replacement: meeting_id
+        through:
+        - motion_id
   motion_id:
     type: relation
     to: motion/submitter_ids
@@ -1290,6 +1296,9 @@ motion_vote:
         name: motion_vote_$_ids
         type: structured-relation
         replacement: meeting_id
+        through:
+        - option_id
+        - poll_id
 
 assignment:
   id: number
@@ -1356,6 +1365,8 @@ assignment_candidate:
         name: assignment_candidate_$_ids
         type: structured-relation
         replacement: meeting_id
+        through:
+        - assignment_id
 
 assignment_poll:
   id: number
@@ -1424,6 +1435,8 @@ assignment_option:
         name: assignment_option_$_ids
         type: structured-relation
         replacement: meeting_id
+        through:
+        - poll_id
   vote_ids:
     type: relation-list
     to: assignment_vote/option_id
@@ -1444,6 +1457,9 @@ assignment_vote:
         name: assignment_vote_$_ids
         type: structured-relation
         replacement: meeting_id
+        through:
+        - option_id
+        - poll_id
 
 # Mediafiles are delivered by the mediafile server with the URL
 # `<media-prefix>/media/<meeting_id>/path`
