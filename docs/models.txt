@@ -487,7 +487,7 @@ Interface motion_category {
     name: string;
     prefix: string;
     weight: number;
-    level: number; // calculated
+    level: number;
 
     parent_id: motion_category/child_ids;
     child_ids: (motion_category/parent_id)[];
