@@ -43,7 +43,8 @@ export abstract class BasePollDialogService<V extends ViewBasePoll, S extends Po
                         title: result.title,
                         onehundred_percent_base: result.onehundred_percent_base,
                         majority_method: result.majority_method,
-                        description: result.description
+                        description: result.description,
+                        voting_principle: result.voting_principle
                     };
                     if (viewPoll.type === PollType.Analog) {
                         update = {

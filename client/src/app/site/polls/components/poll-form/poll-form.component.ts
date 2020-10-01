@@ -93,6 +93,12 @@ export class PollFormComponent<T extends ViewBasePoll, S extends PollService>
 
     public showNonNominalWarning = false;
 
+    public isVoteWeightActive: boolean;
+
+    public get showVoteWeight(): boolean {
+        return this.pollService.isElectronicVotingEnabled && this.isVoteWeightActive;
+    }
+
     public get isEVotingEnabled(): boolean {
         if (this.pollService) {
             return this.pollService.isElectronicVotingEnabled;
@@ -115,6 +121,9 @@ export class PollFormComponent<T extends ViewBasePoll, S extends PollService>
         private dialog: MatDialog
     ) {
         super(title, translate, snackbar);
+        configService
+            .get<boolean>('users_activate_vote_weight')
+            .subscribe(active => (this.isVoteWeightActive = active));
         this.initContentForm();
     }
 
@@ -280,6 +289,7 @@ export class PollFormComponent<T extends ViewBasePoll, S extends PollService>
             title: ['', Validators.required],
             type: ['', Validators.required],
             pollmethod: ['', Validators.required],
+            voting_principle: [1, Validators.required],
             onehundred_percent_base: ['', Validators.required],
             majority_method: ['', Validators.required],
             votes_amount: [1, [Validators.required, Validators.min(1)]],

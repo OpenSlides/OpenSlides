@@ -1264,11 +1264,7 @@ class MotionPollViewSet(BasePollViewSet):
             user=vote_user, delegated_user=request_user, option=option
         )
         vote.value = data
-        vote.weight = (
-            weight_user.vote_weight
-            if config["users_activate_vote_weight"]
-            else Decimal(1)
-        )
+        vote.weight = poll.get_vote_weight(weight_user) if config["users_activate_vote_weight"] else Decimal(1)
         vote.save(no_delete_on_restriction=True)
         inform_changed_data(option)
 

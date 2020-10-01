@@ -27,6 +27,10 @@ USERCANSEESERIALIZER_FIELDS = (
     "is_present",
     "is_committee",
     "vote_weight",
+    "vote_weight_2",
+    "vote_weight_3",
+    "vote_weight_4",
+    "vote_weight_5",
     "gender",
 )
 

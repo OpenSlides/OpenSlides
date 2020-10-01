@@ -34,7 +34,11 @@ export class UserImportService extends BaseImportService<User> {
         'email',
         'username',
         'gender',
-        'vote_weight'
+        'vote_weight',
+        'vote_weight_2',
+        'vote_weight_3',
+        'vote_weight_4',
+        'vote_weight_5'
     ];
 
     /**
@@ -122,6 +126,16 @@ export class UserImportService extends BaseImportService<User> {
                 case 'vote_weight':
                     if (!line[idx]) {
                         user[this.expectedHeader[idx]] = 1;
+                    } else {
+                        user[this.expectedHeader[idx]] = line[idx];
+                    }
+                    break;
+                case 'vote_weight_2':
+                case 'vote_weight_3':
+                case 'vote_weight_4':
+                case 'vote_weight_5':
+                    if (!line[idx]) {
+                        user[this.expectedHeader[idx]] = 0;
                     } else {
                         user[this.expectedHeader[idx]] = line[idx];
                     }

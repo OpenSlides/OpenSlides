@@ -61,6 +61,7 @@ export abstract class BasePoll<
     public user_has_voted_for_delegations: number[];
     public pollmethod: PM;
     public onehundred_percent_base: PB;
+    public voting_principle: number;
 
     public get isCreated(): boolean {
         return this.state === PollState.Created;

@@ -30,6 +30,7 @@ class BasePollViewSet(ModelViewSet):
         "onehundred_percent_base",
         "title",
         "description",
+        "voting_principle"
     ]
 
     def check_view_permissions(self):
@@ -95,7 +96,10 @@ class BasePollViewSet(ModelViewSet):
 
         if "votes" in request.data:
             self.handle_request_with_votes(request, poll)
-        return super().update(request, *args, **kwargs)
+        response = super().update(request, *args, **kwargs)
+        # Poll options might have changed.
+        inform_changed_data(poll.get_options(), final_data=True)
+        return response
 
     def handle_request_with_votes(self, request, poll):
         if poll.type != BasePoll.TYPE_ANALOG:
@@ -249,6 +253,7 @@ class BasePollViewSet(ModelViewSet):
     @transaction.atomic
     def refresh(self, request, pk):
         poll = self.get_object()
+        poll.refresh()
         inform_changed_data(poll, final_data=True)
         inform_changed_data(poll.get_options(), final_data=True)
         inform_changed_data(poll.get_votes(), final_data=True)

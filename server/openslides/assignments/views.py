@@ -501,9 +501,7 @@ class AssignmentPollViewSet(BasePollViewSet):
             inform_changed_data(option)
             inform_changed_data(poll)
 
-    def create_votes_types_yn_yna(
-        self, data, poll, vote_weight, vote_user, request_user
-    ):
+    def create_votes_types_yn_yna(self, data, poll, vote_weight, vote_user, request_user):
         """
         Helper function for handle_(named|pseudoanonymous)_vote
         Assumes data is already validated
@@ -530,26 +528,22 @@ class AssignmentPollViewSet(BasePollViewSet):
 
     def handle_named_vote(self, data, poll, vote_user, request_user):
         if poll.pollmethod == AssignmentPoll.POLLMETHOD_VOTES:
-            self.create_votes_type_votes(
-                data, poll, vote_user.vote_weight, vote_user, request_user
-            )
+            self.create_votes_type_votes(data, poll, poll.get_vote_weight(vote_user), vote_user, request_user)
         elif poll.pollmethod in (
             AssignmentPoll.POLLMETHOD_YN,
             AssignmentPoll.POLLMETHOD_YNA,
         ):
-            self.create_votes_types_yn_yna(
-                data, poll, vote_user.vote_weight, vote_user, request_user
-            )
+            self.create_votes_types_yn_yna(data, poll, poll.get_vote_weight(vote_user), vote_user, request_user)
 
     def handle_pseudoanonymous_vote(self, data, poll, user):
         if poll.pollmethod == AssignmentPoll.POLLMETHOD_VOTES:
-            self.create_votes_type_votes(data, poll, user.vote_weight, None, None)
+            self.create_votes_type_votes(data, poll, poll.get_vote_weight(user), None, None)
 
         elif poll.pollmethod in (
             AssignmentPoll.POLLMETHOD_YN,
             AssignmentPoll.POLLMETHOD_YNA,
         ):
-            self.create_votes_types_yn_yna(data, poll, user.vote_weight, None, None)
+            self.create_votes_types_yn_yna(data, poll, poll.get_vote_weight(user), None, None)
 
     def convert_option_data(self, poll, data):
         poll_options = poll.get_options()

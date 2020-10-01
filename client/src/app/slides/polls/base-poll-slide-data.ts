@@ -6,6 +6,7 @@ export interface BasePollSlideData {
         type: PollType;
         state: PollState;
         onehundred_percent_base: PercentBase;
+        voting_principle: number;
         majority_method: MajorityMethod;
         pollmethod: string;
 

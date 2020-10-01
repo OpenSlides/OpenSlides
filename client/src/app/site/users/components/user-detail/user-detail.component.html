@@ -110,14 +110,8 @@
         </div>
 
         <div>
-            <!-- Strucuture Level -->
-            <mat-form-field
-                class="distance"
-                [ngClass]="{
-                    form37: showVoteWeight,
-                    form70: !showVoteWeight
-                }"
-            >
+            <!-- Structure Level -->
+            <mat-form-field class="form70 distance">
                 <input
                     type="text"
                     matInput
@@ -127,13 +121,7 @@
             </mat-form-field>
 
             <!-- Participant Number -->
-            <mat-form-field
-                [ngClass]="{
-                    distance: showVoteWeight,
-                    form37: showVoteWeight,
-                    form25: !showVoteWeight
-                }"
-            >
+            <mat-form-field class="form25">
                 <input
                     type="text"
                     matInput
@@ -141,15 +129,49 @@
                     formControlName="number"
                 />
             </mat-form-field>
+        </div>
 
-            <!-- Vote weight -->
-            <mat-form-field class="form16 force-min-with" *ngIf="showVoteWeight">
+        <div *ngIf="showVoteWeight">
+            <!-- Vote weights -->
+            <mat-form-field class="form16 distance" >
                 <!-- TODO Input type should be number with limited decimal spaces -->
                 <input
                     type="number"
                     matInput
-                    placeholder="{{ 'Vote weight' | translate }}"
+                    placeholder="{{ 'Vote weight' | translate }} 1"
                     formControlName="vote_weight"
+                />
+            </mat-form-field>
+            <mat-form-field class="form16 distance">
+                <input
+                    type="number"
+                    matInput
+                    placeholder="{{ 'Vote weight' | translate }} 2"
+                    formControlName="vote_weight_2"
+                />
+            </mat-form-field>
+            <mat-form-field class="form16 distance">
+                <input
+                    type="number"
+                    matInput
+                    placeholder="{{ 'Vote weight' | translate }} 3"
+                    formControlName="vote_weight_3"
+                />
+            </mat-form-field>
+            <mat-form-field class="form16 distance">
+                <input
+                    type="number"
+                    matInput
+                    placeholder="{{ 'Vote weight' | translate }} 4"
+                    formControlName="vote_weight_4"
+                />
+            </mat-form-field>
+            <mat-form-field class="form16">
+                <input
+                    type="number"
+                    matInput
+                    placeholder="{{ 'Vote weight' | translate }} 5"
+                    formControlName="vote_weight_5"
                 />
             </mat-form-field>
         </div>
@@ -298,6 +320,15 @@
         <div *ngIf="user.number">
             <h4>{{ 'Participant number' | translate }}</h4>
             <span>{{ user.number }}</span>
+        </div>
+
+        <!-- Vote weight -->
+        <div *ngIf="user.vote_weight && showVoteWeight">
+            <h4>{{ 'Vote weight' | translate }}</h4>
+            <span>
+                {{ user.vote_weight }} &middot; {{ user.vote_weight_2 }} &middot;
+                {{ user.vote_weight_3 }} &middot; {{ user.vote_weight_4 }} &middot; {{ user.vote_weight_5 }}
+            </span>
         </div>
 
         <!-- Groups -->

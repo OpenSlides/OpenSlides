@@ -11,6 +11,7 @@ export interface MotionPollSlideData extends BasePollSlideData {
         pollmethod: MotionPollMethod;
         state: PollState;
         onehundred_percent_base: PercentBase;
+        voting_principle: number;
         majority_method: MajorityMethod;
 
         options: {

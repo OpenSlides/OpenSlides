@@ -59,6 +59,7 @@ BASE_POLL_FIELDS = (
     "onehundred_percent_base",
     "majority_method",
     "voted",
+    "voting_principle",
 )
 
 
@@ -110,6 +111,9 @@ class BasePollSerializer(ModelSerializer):
         if new_100_percent_base is not None:
             instance.onehundred_percent_base = new_100_percent_base
             instance.save()
+
+        # Refresh votes since voting principle might have changed.
+        instance.refresh()
 
         return instance
 

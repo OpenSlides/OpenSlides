@@ -13,6 +13,7 @@ export interface AssignmentPollSlideData extends BasePollSlideData {
         description: string;
         state: PollState;
         onehundred_percent_base: PercentBase;
+        voting_principle: number;
         majority_method: MajorityMethod;
 
         options: {

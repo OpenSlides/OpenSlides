@@ -41,7 +41,8 @@
             <div>
                 <div>{{ user.short_name }}</div>
                 <div class="user-subtitle" *ngIf="showVoteWeight">
-                    {{ 'Vote weight' | translate }}: {{ user.vote_weight }}
+                    {{ 'Vote weight' | translate }}: {{ user.vote_weight }} &middot; {{ user.vote_weight_2 }} &middot;
+                    {{ user.vote_weight_3 }} &middot; {{ user.vote_weight_4 }} &middot; {{ user.vote_weight_5 }}
                 </div>
             </div>
             <div class="icon-group">

@@ -38,6 +38,10 @@ export class User extends BaseDecimalModel<User> {
     public default_password?: string;
     public auth_type?: UserAuthType;
     public vote_weight: number;
+    public vote_weight_2: number;
+    public vote_weight_3: number;
+    public vote_weight_4: number;
+    public vote_weight_5: number;
 
     public get isVoteWeightOne(): boolean {
         return this.vote_weight === 1;
@@ -56,6 +60,16 @@ export class User extends BaseDecimalModel<User> {
     }
 
     protected getDecimalFields(): string[] {
-        return ['vote_weight'];
+        return ['vote_weight', 'vote_weight_2', 'vote_weight_3', 'vote_weight_4', 'vote_weight_5'];
     }
-}
+
+    protected getVoteWeight(principle: number): number {
+        const weights = [
+            this.vote_weight,
+            this.vote_weight_2,
+            this.vote_weight_3,
+            this.vote_weight_4,
+            this.vote_weight_5
+        ];
+        return weights[principle - 1];
+    }}

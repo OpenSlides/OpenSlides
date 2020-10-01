@@ -50,6 +50,19 @@
             </mat-form-field>
         </ng-container>
 
+        <!-- Voting Principle -->
+        <mat-form-field *ngIf="showVoteWeight">
+            <mat-select
+                placeholder="{{ 'Voting principle' | translate }}"
+                formControlName="voting_principle"
+                required
+            >
+                <ng-container *ngFor="let option of [1, 2, 3, 4, 5]">
+                    <mat-option [value]="option">{{ 'Vote weight' | translate }} {{ option }}</mat-option>
+                </ng-container>
+            </mat-select>
+        </mat-form-field>
+
         <!-- 100 Percent Base -->
         <mat-form-field>
             <mat-select

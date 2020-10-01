@@ -186,6 +186,8 @@ class BasePoll(models.Model):
         max_length=14, blank=False, null=False, choices=MAJORITY_METHODS
     )
 
+    voting_principle = models.PositiveSmallIntegerField(default=1)
+
     class Meta:
         abstract = True
 
@@ -228,12 +230,20 @@ class BasePoll(models.Model):
 
     votescast = property(get_votescast, set_votescast)
 
+    def get_vote_weight(self, user):
+        """
+        Returns a user's vote weight based on the poll's voting principle.
+        """
+        if 1 < self.voting_principle <= 5:
+            return getattr(user, 'vote_weight_' + str(self.voting_principle))
+        return user.vote_weight
+
     def amount_users_voted(self):
         return len(self.voted.all())
 
     def amount_users_voted_with_individual_weight(self):
         if config["users_activate_vote_weight"]:
-            return sum(user.vote_weight for user in self.voted.all())
+            return sum(self.get_vote_weight(user) for user in self.voted.all())
         else:
             return self.amount_users_voted()
 
@@ -282,3 +292,13 @@ class BasePoll(models.Model):
             self.votesinvalid = None
             self.votescast = None
         self.save()
+
+    def refresh(self):
+        """
+        Refresh votes by applying current voting principle to votes.
+        """
+        if config["users_activate_vote_weight"]:
+            for vote in self.get_votes():
+                if vote.user:
+                    vote.weight = self.get_vote_weight(vote.user)
+                    vote.save(no_delete_on_restriction=True)

@@ -26,6 +26,11 @@
             <span>
                 {{ poll.stateVerbose | translate }}
             </span>
+
+            <!-- Voting principle -->
+            <span *ngIf="isVoteWeightActive">
+                &middot; {{ 'Vote weight' | translate }} {{ poll.voting_principle }}
+            </span>
         </div>
 
         <div class="assignment-result-wrapper" *ngIf="poll && poll.stateHasVotes">
@@ -78,7 +83,7 @@
 
                                 <!-- Vote weight -->
                                 <div *ngIf="isVoteWeightActive">
-                                    {{ 'Vote weight' | translate }}: {{ vote.user.vote_weight }}
+                                    {{ 'Vote weight' | translate }}: {{ vote.user.getVoteWeight(poll.voting_principle) }}
                                 </div>
 
                                 <!-- Delegation -->
