@@ -11,7 +11,9 @@ jobs:
         go-version: 1.15
 
     - name: Install validator
-      run: go get github.com/OpenSlides/openslides-modelsvalidate/cmd/modelsvalidate
+      run: go get github.com/OpenSlides/openslides-modelsvalidate/cmd/modelsvalidate@v0.1.0
+      env:
+        GO111MODULE: on
 
     - name: Check out code
       uses: actions/checkout@v2
