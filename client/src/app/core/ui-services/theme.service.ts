@@ -17,12 +17,12 @@ export class ThemeService {
     /**
      * Constant path of the logo with dark colors for bright themes.
      */
-    public static STANDARD_LOGO = '/assets/img/openslides-logo.svg';
+    public static STANDARD_LOGO = '/assets/img/votehome-logo.png';
 
     /**
      * Constant path of the logo with white colors for dark themes.
      */
-    public static STANDARD_LOGO_DARK_THEME = '/assets/img/openslides-logo-dark.svg';
+    public static STANDARD_LOGO_DARK_THEME = '/assets/img/votehome-logo-dark.png';
 
     /**
      * Holds the current theme as member.

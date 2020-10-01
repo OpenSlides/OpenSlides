@@ -6,7 +6,7 @@ import { Permission } from './core/core-services/operator.service';
 
 /**
  * Provides functionalities that will be used by most components
- * currently able to set the title with the suffix ' - OpenSlides'
+ * currently able to set the title with the suffix ' - Vote@Home'
  *
  * A BaseComponent is an OpenSlides Component.
  * Components in the 'Side'- or 'projector' Folder are BaseComponents
