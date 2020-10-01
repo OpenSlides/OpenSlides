@@ -1,12 +1,12 @@
 ---
 # Types:
 #     - Nativ datatypes: string, number, boolean, JSON
-#     - HTML: A string with HTML content.
-#     - HTMLVideo: A string with HTML content (with video tags).
+#     - HTMLStrict: A string with HTML content.
+#     - HTMLPermissive: A string with HTML content (with video tags).
 #     - float: Numbers that are expected to be non-integer. Formatted as in rfc7159.
 #     - decimal(X): Decimal values represented as a string with X decimal places.
 #       At the moment we support only X == 6.
-#     - datetime: Datetime as a unix timestamp. Why a number? This enables queries
+#     - timestamp: Datetime as a unix timestamp. Why a number? This enables queries
 #       in the DB. And we do not need more precision than 1 second.
 #     - <T>[]: This indicates and arbitrary array of the given type. At the moment
 #       we support only some types. You can add JSON Schema properties for items
@@ -25,6 +25,12 @@
 #     - Generic relations: The difference to non-generic relations is that you have a
 #       list of possible collections. Therefor we split the simple notation up to the
 #       properties `collection` and `field`.
+#     - on_delete: This fields determines what should happen with the foreign model if
+#       this model gets deleted. Possible values are:
+#           - SET_NULL (default): delete the id from the foreign key
+#           - PROTECT: if the foreign key is not empty, throw an error instead of 
+#                      deleting the object
+#           - CASCADE: also delete all models in this foreign key
 # Structured fields:
 #     - There are template fields (see autoupdate service interface) with a `$` as
 #       the placeholder. We have three different types: `template`,
@@ -44,7 +50,7 @@
 organisation:
   id: number
   name: string
-  description: HTML
+  description: HTMLStrict
 
   # Configs
   legal_notice: string
@@ -76,9 +82,9 @@ user:
   is_committee: boolean
   password: string
   default_password: string
-  about_me: HTML
+  about_me: HTMLStrict
   gender: string
-  comment: HTML
+  comment: HTMLStrict
   number: string
   structure_level: string
   email: string
@@ -227,7 +233,7 @@ committee:
   name:
     type: string
     required: true
-  description: HTML
+  description: HTMLStrict
 
   meeting_ids:
     type: relation-list
@@ -258,7 +264,7 @@ committee:
 meeting:
   id: number
   welcome_title: string
-  welcome_text: HTMLVideo
+  welcome_text: HtmlPermissive
 
   # General
   name:
@@ -268,8 +274,8 @@ meeting:
     type: string
     maxLength: 100
   location: string
-  start_time: datetime
-  end_time: datetime
+  start_time: timestamp
+  end_time: timestamp
   custom_translations: JSON
 
   # System
@@ -676,7 +682,7 @@ group:
 
 personal_note:
   id: number
-  note: HTML
+  note: HTMLStrict
   star: boolean
 
   user_id:
@@ -809,10 +815,10 @@ list_of_speakers:
 speaker:
   id: number
   begin_time:
-    type: datetime
+    type: timestamp
     read_only: true
   end_time:
-    type: datetime
+    type: timestamp
     read_only: true
   weight:
     type: number
@@ -840,7 +846,7 @@ topic:
   title:
     type: string
     required: true
-  text: HTMLVideo
+  text: HtmlPermissive
 
   attachment_ids:
     type: relation-list
@@ -877,13 +883,13 @@ motion:
   title:
     type: string
     required: true
-  text: HTML
+  text: HTMLStrict
   amendment_paragraph_$:
     type: template
     replacement: paragraph_number
-    fields: HTML
-  modified_final_version: HTML
-  reason: HTML
+    fields: HTMLStrict
+  modified_final_version: HTMLStrict
+  reason: HTMLStrict
   category_weight:
     type: number
     default: 0
@@ -893,10 +899,10 @@ motion:
     type: number
     default: 0
   created:
-    type: datetime
+    type: timestamp
     read_only: true
   last_modified:
-    type: datetime
+    type: timestamp
     read_only: true
 
   lead_motion_id:
@@ -1012,7 +1018,7 @@ motion_submitter:
 
 motion_comment:
   id: number
-  comment: HTML
+  comment: HTMLStrict
 
   motion_id:
     type: relation
@@ -1035,6 +1041,7 @@ motion_comment_section:
   comment_ids:
     type: relation-list
     to: motion_comment/section_id
+    on_delete: PROTECT
   read_group_ids:
     type: relation-list
     to: group/read_comment_section_ids
@@ -1122,9 +1129,9 @@ motion_change_recommendation:
   line_to:
     type: number
     minimum: 0
-  text: HTML
+  text: HTMLStrict
   creation_time:
-    type: datetime
+    type: timestamp
     read_only: true
 
   motion_id:
@@ -1197,6 +1204,7 @@ motion_workflow:
   state_ids:
     type: relation-list
     to: motion_state/workflow_id
+    on_delete: CASCADE
   first_state_id:
     type: relation
     to: motion_state/first_state_of_workflow_id
@@ -1220,7 +1228,7 @@ motion_statute_paragraph:
   title:
     type: string
     required: true
-  text: HTML
+  text: HTMLStrict
   weight:
     type: number
     default: 0
@@ -1311,7 +1319,7 @@ assignment:
   title:
     type: string
     required: true
-  description: HTML
+  description: HTMLStrict
   open_posts:
     type: number
     minimum: 0
@@ -1485,7 +1493,7 @@ mediafile:
     required: true
   mimetype: string
   pdf_information: JSON
-  create_timestamp: datetime
+  create_timestamp: timestamp
   has_inherited_access_groups:
     type: boolean
     description: Calculated field.
@@ -1659,7 +1667,7 @@ projectiondefault:
 
 projector_message:
   id: number
-  message: HTML
+  message: HTMLStrict
 
   projection_ids:
     type: relation-list
