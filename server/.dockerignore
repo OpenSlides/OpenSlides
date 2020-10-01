@@ -1,2 +1,5 @@
-*.pyc
-__pycache__/
+**/*.pyc
+**/__pycache__/
+**/.venv
+tests/
+personal_data/
