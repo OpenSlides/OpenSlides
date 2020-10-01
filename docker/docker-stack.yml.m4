@@ -68,6 +68,7 @@ x-osserver-env: &default-osserver-env
     JITSI_ROOM_PASSWORD: "ifenvelse(`JITSI_ROOM_PASSWORD',)"
     JITSI_ROOM_NAME: "ifenvelse(`JITSI_ROOM_NAME',)"
     OPENSLIDES_LOG_LEVEL: "ifenvelse(`OPENSLIDES_LOG_LEVEL', INFO)"
+    MAX_VOTERS: ifenvelse(`MAX_VOTERS', 10)
     REDIS_CHANNLES_HOST: "ifenvelse(`REDIS_CHANNLES_HOST', redis-channels)"
     REDIS_CHANNLES_PORT: ifenvelse(`REDIS_CHANNLES_PORT', 6379)
     REDIS_HOST: "ifenvelse(`REDIS_HOST', redis)"

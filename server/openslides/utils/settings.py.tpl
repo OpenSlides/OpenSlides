@@ -136,6 +136,10 @@ if ENABLE_SAML:
 ENABLE_ELECTRONIC_VOTING = False
 
 
+# Vote@Home settings.
+MAX_VOTERS = 10
+
+
 # Jitsi integration
 # JITSI_DOMAIN = None
 # JITSI_ROOM_NAME = None
