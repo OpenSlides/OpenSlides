@@ -14,7 +14,7 @@ import { PollData } from 'app/site/polls/services/poll.service';
  *
  * @example
  * ```html
- * <span> {{ voteYes | pollPercentBase: poll }} </span>
+ * <span> {{ voteYes | pollPercentBase: poll:'assignment' }} </span>
  * ```
  */
 @Pipe({
@@ -26,10 +26,16 @@ export class PollPercentBasePipe implements PipeTransform {
         private motionPollService: MotionPollService
     ) {}
 
-    public transform(value: number, poll: PollData): string | null {
+    public transform(value: number, poll: PollData, type: 'motion' | 'assignment'): string | null {
         // logic handles over the pollService to avoid circular dependencies
         let voteValueInPercent: string;
-        if ((<any>poll).assignment) {
+
+        /**
+         * PollData has not enough explicit information to simply guess the type correctly.
+         * This should not be a problem when PollData is a real model or a real type. Since
+         * we cannot expect the projector to work with real types for now, we need to provice the type
+         */
+        if (type === 'assignment') {
             voteValueInPercent = this.assignmentPollService.getVoteValueInPercent(value, poll);
         } else {
             voteValueInPercent = this.motionPollService.getVoteValueInPercent(value, poll);

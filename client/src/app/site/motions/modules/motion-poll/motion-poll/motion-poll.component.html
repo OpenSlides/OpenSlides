@@ -94,7 +94,7 @@
                 <os-icon-container [icon]="row.value[0].icon" size="large">
                     {{ row.value[0].amount | parsePollNumber }}
                     <span *ngIf="row.value[0].showPercent">
-                        {{ row.value[0].amount | pollPercentBase: poll }}
+                        {{ row.value[0].amount | pollPercentBase: poll:'motion' }}
                     </span>
                 </os-icon-container>
             </div>
