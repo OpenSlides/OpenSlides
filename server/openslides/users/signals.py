@@ -1,6 +1,8 @@
 from django.apps import apps
 from django.contrib.auth.models import Permission
+from django.contrib.auth.signals import user_logged_in
 from django.db.models import Q
+from django.dispatch import receiver
 
 from openslides.utils.auth import GROUP_ADMIN_PK, GROUP_DEFAULT_PK
 from openslides.utils.postgres import restart_id_sequence
@@ -190,3 +192,11 @@ def create_builtin_groups_and_admin(**kwargs):
 
     # For postgres: After inserting the groups by id, the id sequence needs to be restarted.
     restart_id_sequence("auth_group")
+
+
+@receiver(user_logged_in)
+def set_user_present(sender, **kwargs):
+    user = kwargs.get('user')
+    if user:
+        user.is_present = True
+        user.save(skip_autoupdate=False)
