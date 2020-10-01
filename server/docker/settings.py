@@ -140,6 +140,12 @@ if ENABLE_SAML:
 # Controls if electronic voting (means non-analog polls) are enabled.
 ENABLE_ELECTRONIC_VOTING = get_env("ENABLE_ELECTRONIC_VOTING", False, bool)
 
+# Vote@Home settings
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.AllowAllUsersModelBackend"
+]
+MAX_VOTERS = get_env("MAX_VOTERS", 10, int)
+
 # Jitsi integration
 JITSI_DOMAIN = get_env("JITSI_DOMAIN", None)
 JITSI_ROOM_NAME = get_env("JITSI_ROOM_NAME", None)
