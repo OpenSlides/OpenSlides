@@ -898,11 +898,14 @@ class UserLoginView(WhoAmIDataView):
             )
         form = AuthenticationForm(self.request, data=self.request.data)
         if not form.is_valid():
+            user = form.get_user()
+            if user and not user.is_active:
+                raise ValidationError({"detail": form.error_messages["inactive"]})
             raise ValidationError({"detail": "Username or password is not correct."})
-        self.user = form.get_user()
-        if self.user.auth_type != "default":
+        user = form.get_user()
+        if user.auth_type != "default":
             raise ValidationError({"detail": "Please login via your identity provider"})
-        auth_login(self.request, self.user)
+        auth_login(self.request, user)
         return super().post(*args, **kwargs)
 
     def get_context_data(self, **context):

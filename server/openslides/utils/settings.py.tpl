@@ -137,6 +137,9 @@ ENABLE_ELECTRONIC_VOTING = False
 
 
 # Vote@Home settings.
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.AllowAllUsersModelBackend"
+]
 MAX_VOTERS = 10
 
 
