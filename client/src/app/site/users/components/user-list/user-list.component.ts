@@ -280,7 +280,9 @@ export class UserListComponent extends BaseListViewComponent<ViewUser> implement
                 { property: 'is_committee', label: 'Is a committee' },
                 { property: 'default_password', label: 'Initial password' },
                 { property: 'email' },
-                { property: 'gender' }
+                { property: 'username' },
+                { property: 'gender' },
+                { property: 'vote_weight', label: 'Vote weight' }
             ],
             this.translate.instant('Participants') + '.csv'
         );
