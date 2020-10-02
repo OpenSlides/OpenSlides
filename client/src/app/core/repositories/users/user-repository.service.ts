@@ -89,9 +89,9 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User, UserTi
             this.sortProperty = conf;
             this.setConfigSortFn();
         });
-        this.constantsService.get<any>('Settings').subscribe(settings => {
+        this.constantsService.get<{ DEMO_USERS?: number[] }>('Settings').subscribe(settings => {
             if (settings) {
-                this.demoModeUserIds = settings.DEMO || null;
+                this.demoModeUserIds = settings.DEMO_USERS || null;
             }
         });
     }

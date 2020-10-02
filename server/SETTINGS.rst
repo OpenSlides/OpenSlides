@@ -147,6 +147,6 @@ these requests from "prioritized clients" can be routed to different servers.
 deactivated by setting it to `None`. It is deactivated per default. The Delay is
 given in seconds
 
-`DEMO`: Apply special settings for demo use cases. A list of protected user ids handlers
-to be given. Updating these users (also password) is not allowed. Some bulk actions like
-resetting password are completly disabled. Irrelevant for normal use cases.
+`DEMO_USERS`: Apply special settings for demo use cases. A list of protected user ids
+handlers to be given. Updating these users (also password) is not allowed. Some bulk
+actions like resetting password are completly disabled. Irrelevant for normal use cases.

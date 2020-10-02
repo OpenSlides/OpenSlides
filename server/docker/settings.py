@@ -6,6 +6,7 @@ https://github.com/OpenSlides/OpenSlides/blob/master/SETTINGS.rst
 """
 
 import os
+import json
 from openslides.global_settings import *
 
 
@@ -19,17 +20,18 @@ undefined = object()
 def get_env(name, default=undefined, cast=str):
     env = os.environ.get(name)
     default_extension = ""
-    if env is None:
+    if not env:
         env = default
         default_extension = " (default)"
 
     if env is undefined:
         raise MissingEnvironmentVariable(name)
 
-    if cast is bool:
-        env = env in ("1", "true", "True")
-    else:
-        env = cast(env)
+    if env is not None:
+        if cast is bool:
+            env = env in ("1", "true", "True")
+        else:
+            env = cast(env)
 
     if env is None:
         print(f"{name}={default_extension}", flush=True)
@@ -51,7 +53,10 @@ DEBUG = False
 # messages. An success message will always be shown.
 RESET_PASSWORD_VERBOSE_ERRORS = get_env("RESET_PASSWORD_VERBOSE_ERRORS", True, bool)
 
+# OpenSlides specific settings
 AUTOUPDATE_DELAY = get_env("AUTOUPDATE_DELAY", 1, int)
+DEMO_USERS = get_env("DEMO_USERS", default=None)
+DEMO_USERS = json.loads(DEMO_USERS) if DEMO_USERS else None
 
 # Email settings
 # For SSL/TLS specific settings see https://docs.djangoproject.com/en/1.11/topics/email/#smtp-backend
@@ -109,7 +114,7 @@ CHANNEL_LAYERS = {
 # Collection Cache
 REDIS_ADDRESS = f"redis://{REDIS_HOST}:{REDIS_PORT}/0"
 REDIS_READ_ONLY_ADDRESS = f"redis://{REDIS_SLAVE_HOST}:{REDIS_SLAVE_PORT}/0"
-AMOUNT_REPLICAS = get_env("AMOUNT_REPLICAS", 1)
+AMOUNT_REPLICAS = get_env("AMOUNT_REPLICAS", 1, int)
 CONNECTION_POOL_LIMIT = get_env("CONNECTION_POOL_LIMIT", 100, int)
 
 # Session backend
