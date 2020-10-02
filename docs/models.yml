@@ -856,6 +856,12 @@ topic:
   tag_ids:
     type: relation-list
     to: tag/tagged_ids
+  projection_ids:
+    type: relation-list
+    to: projection/element_id
+  current_projector_ids:
+    type: relation-list
+    to: projector/current_element_ids
   meeting_id:
     type: relation
     to: meeting/topic_ids
@@ -1580,6 +1586,7 @@ projector:
         - motion_block
         - assignment
         - agenda_item
+        - topic
         - user
         - assignment_poll
         - motion_poll
@@ -1630,6 +1637,7 @@ projection:
         - motion_block
         - assignment
         - agenda_item
+        - topic
         - user
         - assignment_poll
         - motion_poll
