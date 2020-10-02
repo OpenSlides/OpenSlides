@@ -39,8 +39,11 @@ We also strongly recommend that you set a secure admin password but it is not
 strictly required.  If you do not set an admin password, the default login
 credentials will be displayed on the login page.  Setting the admin password::
 
-    $ cp secrets/admin.env.example secrets/admin.env
-    $ vi secrets/admin.env
+    $ cp secrets/adminsecret.env.example secrets/adminsecret.env
+    $ vi secrets/adminsecret.env
+
+The same can be done for creating an extra user next to the admin with
+the ``secrets/usersecret.env.example``.
 
 Afterwards, generate the configuration file::
 
