@@ -4,7 +4,9 @@
     [panelClass]="{ 'os-search-value-selector': multiple }"
     [errorStateMatcher]="errorStateMatcher"
 >
-    <ngx-mat-select-search [formControl]="searchValue"></ngx-mat-select-search>
+    <mat-option>
+        <ngx-mat-select-search [formControl]="searchValue"></ngx-mat-select-search>
+    </mat-option>
     <ng-container *ngIf="multiple && showChips">
         <div #chipPlaceholder>
             <div class="os-search-value-selector-chip-container" [style.width]="width">
