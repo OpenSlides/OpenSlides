@@ -43,6 +43,18 @@ const UserRelations: RelationDefinition[] = [
         ownIdKey: 'groups_id',
         ownKey: 'groups',
         foreignViewModel: ViewGroup
+    },
+    {
+        type: 'M2O',
+        ownIdKey: 'vote_delegated_to_id',
+        ownKey: 'voteDelegatedTo',
+        foreignViewModel: ViewUser
+    },
+    {
+        type: 'M2M',
+        ownIdKey: 'vote_delegated_from_users_id',
+        ownKey: 'voteDelegationsFrom',
+        foreignViewModel: ViewUser
     }
 ];
 
@@ -255,6 +267,8 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User, UserTi
 
     public async update(update: Partial<User>, viewModel: ViewUser): Promise<void> {
         this.preventAlterationOnDemoUsers(viewModel);
+        console.log('update: ', update);
+
         return super.update(update, viewModel);
     }
 

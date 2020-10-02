@@ -1,5 +1,27 @@
 <ng-container *ngIf="poll">
-    <ng-container *ngIf="vmanager.canVote(poll) && !alreadyVoted && !deliveringVote; else cannotVote">
+    <!-- own voting -->
+    <ng-container [ngTemplateOutlet]="votingArea"></ng-container>
+
+    <!-- Delegations -->
+    <ng-container *ngIf="user.is_present">
+        <div class="assignment-vote-delegation" *ngFor="let delegation of delegations">
+            <mat-divider></mat-divider>
+
+            <ng-container
+                [ngTemplateOutlet]="votingArea"
+                [ngTemplateOutletContext]="{ delegation: delegation }"
+            ></ng-container>
+        </div>
+    </ng-container>
+</ng-container>
+
+<ng-template #votingArea let-delegation="delegation">
+    <h4 *ngIf="delegation" class="assignment-delegation-title">
+        <span>{{ 'Vote delegation for' | translate }}</span>
+        <span>&nbsp;{{ delegation.getFullName() }}</span>
+    </h4>
+
+    <ng-container *ngIf="canVote(delegation)">
         <!-- Poll hint -->
         <p *ngIf="pollHint">
             <i>{{ pollHint }}</i>
@@ -9,7 +31,7 @@
         <h4 *ngIf="poll.pollmethod === AssignmentPollMethod.Votes && poll.votes_amount > 1">
             {{ 'Available votes' | translate }}:
 
-            <b> {{ getVotesAvailable() }}/{{ poll.votes_amount }} </b>
+            <b> {{ getVotesAvailable(delegation) }}/{{ poll.votes_amount }} </b>
         </h4>
 
         <!-- Options and Actions -->
@@ -36,14 +58,9 @@
                         <button
                             class="vote-button"
                             mat-raised-button
-                            (click)="saveSingleVote(option.id, action.vote)"
-                            [disabled]="deliveringVote"
-                            [ngClass]="
-                                voteRequestData.votes[option.id] === action.vote ||
-                                voteRequestData.votes[option.id] === 1
-                                    ? action.css
-                                    : ''
-                            "
+                            (click)="saveSingleVote(option.id, action.vote, delegation)"
+                            [disabled]="isDeliveringVote(delegation)"
+                            [ngClass]="getActionButtonClass(action, option, delegation)"
                         >
                             <mat-icon> {{ action.icon }}</mat-icon>
                         </button>
@@ -64,9 +81,9 @@
                     <button
                         class="vote-button"
                         mat-raised-button
-                        (click)="saveGlobalVote('N')"
-                        [ngClass]="voteRequestData.global === 'N' ? 'voted-no' : ''"
-                        [disabled]="deliveringVote"
+                        (click)="saveGlobalVote('N', delegation)"
+                        [ngClass]="getGlobalNoClass(delegation)"
+                        [disabled]="isDeliveringVote(delegation)"
                     >
                         <mat-icon> thumb_down </mat-icon>
                     </button>
@@ -79,8 +96,9 @@
                     <button
                         class="vote-button"
                         mat-raised-button
-                        (click)="saveGlobalVote('A')"
-                        [ngClass]="voteRequestData.global === 'A' ? 'voted-abstain' : ''"
+                        (click)="saveGlobalVote('A', delegation)"
+                        [ngClass]="getGlobalAbstainClass(delegation)"
+                        [disabled]="isDeliveringVote(delegation)"
                     >
                         <mat-icon> trip_origin</mat-icon>
                     </button>
@@ -92,39 +110,47 @@
         </ng-container>
 
         <!-- Submit Vote -->
-        <ng-container [ngTemplateOutlet]="sendNow"></ng-container>
+        <ng-container
+            [ngTemplateOutlet]="sendNow"
+            [ngTemplateOutletContext]="{ delegation: delegation }"
+        ></ng-container>
     </ng-container>
 
-    <!-- Shows the permission error -->
-    <ng-container *ngIf="!vmanager.canVote(poll)">
-        <span>{{ vmanager.getVotePermissionErrorVerbose(poll) | translate }}</span>
+    <ng-container
+        *ngIf="!canVote(delegation)"
+        [ngTemplateOutlet]="cannotVote"
+        [ngTemplateOutletContext]="{ delegation: delegation }"
+    >
     </ng-container>
-</ng-container>
+</ng-template>
 
-<ng-template #cannotVote>
+<ng-template #cannotVote let-delegation="delegation">
     <div class="centered-button-wrapper">
-        <div *ngIf="!deliveringVote">
-            <mat-icon class="vote-submitted">
-                check_circle
-            </mat-icon>
+        <!-- Success -->
+        <div *ngIf="hasAlreadyVoted(delegation) && !isDeliveringVote(delegation)">
+            <mat-icon class="vote-submitted"> check_circle </mat-icon>
             <br />
             <span>{{ 'Voting successful.' | translate }}</span>
         </div>
 
-        <div *ngIf="deliveringVote" class="submit-vote-indicator">
+        <!-- Delivering -->
+        <div *ngIf="isDeliveringVote(delegation)" class="submit-vote-indicator">
             <mat-spinner class="small-spinner"></mat-spinner>
             <br />
             <span>{{ 'Delivering vote... Please wait!' | translate }}</span>
         </div>
+
+        <!-- Permission error error -->
+        <div *ngIf="!hasAlreadyVoted(delegation) && !isDeliveringVote(delegation)">
+            <span>{{ getVotingError(delegation) | translate }}</span>
+        </div>
     </div>
 </ng-template>
 
-<ng-template #sendNow>
+<ng-template #sendNow let-delegation="delegation">
     <div class="centered-button-wrapper">
-        <button mat-flat-button color="accent" (click)="submitVote()">
-            <mat-icon>
-                how_to_vote
-            </mat-icon>
+        <button mat-flat-button color="accent" (click)="submitVote(delegation)">
+            <mat-icon> how_to_vote </mat-icon>
             <span>
                 {{ 'Submit vote now' | translate }}
             </span>

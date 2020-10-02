@@ -24,12 +24,13 @@ def test_user_db_queries():
     """
     Tests that only the following db queries are done:
     * 2 requests to get the list of all users and
-    * 1 requests to get the list of all groups.
+    * 1 request to get all vote delegations
+    * 1 request to get the list of all groups.
     """
     for index in range(10):
         User.objects.create(username=f"user{index}")
 
-    assert count_queries(User.get_elements)() == 3
+    assert count_queries(User.get_elements)() == 4
 
 
 @pytest.mark.django_db(transaction=False)
@@ -231,6 +232,188 @@ class UserUpdate(TestCase):
         self.assertEqual(user.about_me, "New profile text Faemahphi3Hilokangei")
         # The user is not allowed to change some other fields (like last_name).
         self.assertNotEqual(user.last_name, "New name fae1Bu1Eyeis9eRox4xu")
+
+    def test_update_vote_delegation(self):
+        user = User.objects.create_user(
+            username="non-admin Yd4ejrJXZi4Wn16ugHgY",
+            password="non-admin AQ4Dw2tN9byKpGD4f1gs",
+        )
+
+        response = self.client.patch(
+            reverse("user-detail", args=[user.pk]),
+            {"vote_delegated_to_id": self.admin.pk},
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        user = User.objects.get(pk=user.pk)
+        self.assertEqual(user.vote_delegated_to_id, self.admin.pk)
+        admin = User.objects.get(username="admin")
+        self.assertEqual(
+            list(admin.vote_delegated_from_users.values_list("id", flat=True)),
+            [user.pk],
+        )
+
+    def test_update_vote_delegation_non_admin(self):
+        user = User.objects.create_user(
+            username="non-admin WpBQRSsCg6qNWNtN6bLP",
+            password="non-admin IzsDBt1uoqc2wo5BSUF1",
+        )
+        client = APIClient()
+        client.login(
+            username="non-admin WpBQRSsCg6qNWNtN6bLP",
+            password="non-admin IzsDBt1uoqc2wo5BSUF1",
+        )
+
+        response = client.patch(
+            reverse("user-detail", args=[user.pk]),
+            {"vote_delegated_to_id": self.admin.pk},
+        )
+
+        # self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        user = User.objects.get(pk=user.pk)
+        self.assertIsNone(user.vote_delegated_to_id)
+
+    def test_update_vote_delegated_to_self(self):
+        response = self.client.patch(
+            reverse("user-detail", args=[self.admin.pk]),
+            {"vote_delegated_to_id": self.admin.pk},
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        admin = User.objects.get(pk=self.admin.pk)
+        self.assertIsNone(admin.vote_delegated_to_id)
+
+    def test_update_vote_delegation_invalid_id(self):
+        response = self.client.patch(
+            reverse("user-detail", args=[self.admin.pk]),
+            {"vote_delegated_to_id": 42},
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        admin = User.objects.get(pk=self.admin.pk)
+        self.assertIsNone(admin.vote_delegated_to_id)
+
+    def test_update_vote_delegated_from_self(self):
+        response = self.client.patch(
+            reverse("user-detail", args=[self.admin.pk]),
+            {"vote_delegated_from_users_id": [self.admin.pk]},
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        admin = User.objects.get(pk=self.admin.pk)
+        self.assertIsNone(admin.vote_delegated_to_id)
+
+    def setup_vote_delegation(self):
+        """ login and setup user -> user2 delegation """
+        self.user, _ = self.create_user()
+        self.user2, _ = self.create_user()
+        self.user.vote_delegated_to = self.user2
+        self.user.save()
+        self.assertEqual(self.user.vote_delegated_to_id, self.user2.pk)
+
+    def test_update_reset_vote_delegated_to(self):
+        self.setup_vote_delegation()
+        response = self.client.patch(
+            reverse("user-detail", args=[self.user.pk]),
+            {"vote_delegated_to_id": None},
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        user = User.objects.get(pk=self.user.pk)
+        self.assertEqual(user.vote_delegated_to_id, None)
+
+    def test_update_reset_vote_delegated_from(self):
+        self.setup_vote_delegation()
+        response = self.client.patch(
+            reverse("user-detail", args=[self.user2.pk]),
+            {"vote_delegated_from_users_id": None},
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        user = User.objects.get(pk=self.user.pk)
+        self.assertEqual(user.vote_delegated_to_id, None)
+
+    def test_update_nested_vote_delegation_1(self):
+        """ user -> user2 -> admin """
+        self.setup_vote_delegation()
+        response = self.client.patch(
+            reverse("user-detail", args=[self.user2.pk]),
+            {"vote_delegated_to_id": self.admin.pk},
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        user2 = User.objects.get(pk=self.user2.pk)
+        self.assertIsNone(user2.vote_delegated_to_id)
+
+    def test_update_nested_vote_delegation_2(self):
+        """ admin -> user -> user2 """
+        self.setup_vote_delegation()
+        response = self.client.patch(
+            reverse("user-detail", args=[self.admin.pk]),
+            {"vote_delegated_to_id": self.user.pk},
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        admin = User.objects.get(pk=self.admin.pk)
+        self.assertIsNone(admin.vote_delegated_to_id)
+
+    def test_update_vote_delegation_autoupdate(self):
+        self.setup_vote_delegation()
+        response = self.client.patch(
+            reverse("user-detail", args=[self.user.pk]),
+            {"vote_delegated_to_id": self.admin.pk},
+        )
+        self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
+
+        autoupdate = self.get_last_autoupdate(user=self.admin)
+        user_au = autoupdate[0].get(f"users/user:{self.user.pk}")
+        self.assertIsNotNone(user_au)
+        self.assertEqual(user_au["vote_delegated_to_id"], self.admin.pk)
+        user2_au = autoupdate[0].get(f"users/user:{self.user2.pk}")
+        self.assertIsNotNone(user2_au)
+        self.assertEqual(user2_au["vote_delegated_from_users_id"], [])
+        admin_au = autoupdate[0].get(f"users/user:{self.admin.pk}")
+        self.assertIsNotNone(admin_au)
+        self.assertEqual(admin_au["vote_delegated_from_users_id"], [self.user.pk])
+        self.assertEqual(autoupdate[1], [])
+
+    def test_update_vote_delegated_from(self):
+        self.setup_vote_delegation()
+        response = self.client.patch(
+            reverse("user-detail", args=[self.user2.pk]),
+            {"vote_delegated_from_users_id": [self.admin.pk]},
+        )
+
+        self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
+        admin = User.objects.get(pk=self.admin.pk)
+        self.assertEqual(admin.vote_delegated_to_id, self.user2.id)
+        user = User.objects.get(pk=self.user.pk)
+        self.assertIsNone(user.vote_delegated_to_id)
+
+    def test_update_vote_delegated_from_nested_1(self):
+        """ admin -> user -> user2 """
+        self.setup_vote_delegation()
+        response = self.client.patch(
+            reverse("user-detail", args=[self.user.pk]),
+            {"vote_delegated_from_users_id": [self.admin.pk]},
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        admin = User.objects.get(pk=self.admin.pk)
+        self.assertIsNone(admin.vote_delegated_to_id)
+
+    def test_update_vote_delegated_from_nested_2(self):
+        """ user -> user2 -> admin """
+        self.setup_vote_delegation()
+        response = self.client.patch(
+            reverse("user-detail", args=[self.admin.pk]),
+            {"vote_delegated_from_users_id": [self.user2.pk]},
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        user2 = User.objects.get(pk=self.user2.pk)
+        self.assertIsNone(user2.vote_delegated_to_id)
 
 
 class UserDelete(TestCase):

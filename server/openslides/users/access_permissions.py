@@ -58,6 +58,8 @@ class UserAccessPermissions(BaseAccessPermissions):
         own_data_fields = set(little_data_fields)
         own_data_fields.add("email")
         own_data_fields.add("gender")
+        own_data_fields.add("vote_delegated_to_id")
+        own_data_fields.add("vote_delegated_from_users_id")
 
         # Check user permissions.
         if await async_has_perm(user_id, "users.can_see_name"):

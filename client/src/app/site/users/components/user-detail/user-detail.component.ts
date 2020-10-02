@@ -71,6 +71,8 @@ export class UserDetailComponent extends BaseViewComponentDirective implements O
      */
     public readonly groups: BehaviorSubject<ViewGroup[]> = new BehaviorSubject<ViewGroup[]>([]);
 
+    public readonly users: BehaviorSubject<ViewUser[]> = new BehaviorSubject<ViewUser[]>([]);
+
     /**
      * Hold the list of genders (sexes) publicly to dynamically iterate in the view
      */
@@ -124,6 +126,7 @@ export class UserDetailComponent extends BaseViewComponentDirective implements O
             .subscribe(active => (this.isVoteWeightActive = active));
 
         this.groupRepo.getViewModelListObservableWithoutDefaultGroup().subscribe(this.groups);
+        this.users = this.repo.getViewModelListBehaviorSubject();
     }
 
     /**
@@ -173,6 +176,7 @@ export class UserDetailComponent extends BaseViewComponentDirective implements O
                 vote_weight: [],
                 about_me: [''],
                 groups_id: [''],
+                vote_delegated_from_users_id: [''],
                 is_present: [true],
                 is_committee: [false],
                 email: ['', Validators.email],

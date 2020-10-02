@@ -82,9 +82,15 @@ export class ViewUser extends BaseProjectableViewModel<User> implements UserTitl
             getDialogTitle: () => this.getTitle()
         };
     }
+
+    public canVoteFor(user: ViewUser): boolean {
+        return this.vote_delegated_from_users_id.includes(user.id);
+    }
 }
 interface IUserRelations {
     groups: ViewGroup[];
+    voteDelegatedTo: ViewUser;
+    voteDelegationsFrom: ViewUser[];
 }
 
 export interface ViewUser extends User, IUserRelations {}

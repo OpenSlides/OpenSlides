@@ -7,6 +7,7 @@ from ..utils.rest_api import (
     JSONField,
     ModelSerializer,
     RelatedField,
+    SerializerMethodField,
     ValidationError,
 )
 from ..utils.validate import validate_html_strict
@@ -36,6 +37,8 @@ USERCANSEEEXTRASERIALIZER_FIELDS = USERCANSEESERIALIZER_FIELDS + (
     "comment",
     "is_active",
     "auth_type",
+    "vote_delegated_to_id",
+    "vote_delegated_from_users_id",
 )
 
 
@@ -57,11 +60,14 @@ class UserSerializer(ModelSerializer):
         ),
     )
 
+    vote_delegated_from_users_id = SerializerMethodField()
+
     class Meta:
         model = User
         fields = USERCANSEEEXTRASERIALIZER_FIELDS + (
             "default_password",
             "session_auth_hash",
+            "vote_delegated_to",
         )
         read_only_fields = ("last_email_send", "auth_type")
 
@@ -118,6 +124,13 @@ class UserSerializer(ModelSerializer):
         # TODO: This autoupdate call is redundant (required by issue #2727). See #2736.
         inform_changed_data(user)
         return user
+
+    def get_vote_delegated_from_users_id(self, user):
+        # check needed to prevent errors on import since we only give an OrderedDict there
+        if hasattr(user, "vote_delegated_from_users"):
+            return [delegator.id for delegator in user.vote_delegated_from_users.all()]
+        else:
+            return []
 
 
 class PermissionRelatedField(RelatedField):

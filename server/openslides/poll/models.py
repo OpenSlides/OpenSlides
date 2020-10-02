@@ -29,6 +29,14 @@ class BaseVote(models.Model):
         blank=True,
         on_delete=SET_NULL_AND_AUTOUPDATE,
     )
+    delegated_user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        default=None,
+        null=True,
+        blank=True,
+        on_delete=SET_NULL_AND_AUTOUPDATE,
+        related_name="%(class)s_delegated_votes",
+    )
 
     class Meta:
         abstract = True

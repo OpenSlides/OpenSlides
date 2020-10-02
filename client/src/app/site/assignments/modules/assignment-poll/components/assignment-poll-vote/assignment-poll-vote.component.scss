@@ -7,6 +7,14 @@
     margin: 20px 0;
 }
 
+.assignment-vote-delegation {
+    margin-top: 1em;
+
+    .assignment-delegation-title {
+        font-weight: 500;
+    }
+}
+
 .yn-grid {
     @extend %vote-grid-base;
     grid-template-areas:

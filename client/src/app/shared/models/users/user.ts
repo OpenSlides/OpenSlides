@@ -30,6 +30,8 @@ export class User extends BaseDecimalModel<User> {
     public is_present: boolean;
     public is_committee: boolean;
     public email?: string;
+    public vote_delegated_to_id: number;
+    public vote_delegated_from_users_id: number[];
     public last_email_send?: string; // ISO datetime string
     public comment?: string;
     public is_active?: boolean;
@@ -39,6 +41,10 @@ export class User extends BaseDecimalModel<User> {
 
     public get isVoteWeightOne(): boolean {
         return this.vote_weight === 1;
+    }
+
+    public get isVoteRightDelegated(): boolean {
+        return !!this.vote_delegated_to_id;
     }
 
     public constructor(input?: Partial<User>) {

@@ -1,7 +1,10 @@
 import { Injectable } from '@angular/core';
 
+import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
+
 import { PollState, PollType } from 'app/shared/models/poll/base-poll';
 import { ViewBasePoll } from 'app/site/polls/models/view-base-poll';
+import { ViewUser } from 'app/site/users/models/view-user';
 import { OperatorService } from '../core-services/operator.service';
 
 export enum VotingError {
@@ -9,19 +12,21 @@ export enum VotingError {
     POLL_WRONG_TYPE,
     USER_HAS_NO_PERMISSION,
     USER_IS_ANONYMOUS,
-    USER_NOT_PRESENT
+    USER_NOT_PRESENT,
+    USER_HAS_DELEGATED_RIGHT
 }
 
 /**
  * TODO: It appears that the only message that makes sense for the user to see it the last one.
  */
-export const VotingErrorVerbose = {
-    1: "You can't vote on this poll right now because it's not in the 'Started' state.",
-    2: "You can't vote on this poll because its type is set to analog voting.",
-    3: "You don't have permission to vote on this poll.",
-    4: 'You have to be logged in to be able to vote.',
-    5: 'You have to be present to vote on a poll.',
-    6: "You have already voted on this poll. You can't change your vote in a pseudoanonymous poll."
+const VotingErrorVerbose = {
+    1: _("You can not vote on this poll right now because it is not in the 'Started' state."),
+    2: _('You can not vote on this poll because its type is set to analog voting.'),
+    3: _('You do not not have the permission to vote on this poll.'),
+    4: _('You have to be logged in to be able to vote.'),
+    5: _('You have to be present to vote on a poll.'),
+    6: _('Your right to vote was delegated to another user.'),
+    7: _('You have already voted on this poll. You can not change your vote in a pseudoanonymous poll.')
 };
 
 @Injectable({
@@ -33,8 +38,8 @@ export class VotingService {
     /**
      * checks whether the operator can vote on the given poll
      */
-    public canVote(poll: ViewBasePoll): boolean {
-        const error = this.getVotePermissionError(poll);
+    public canVote(poll: ViewBasePoll, user?: ViewUser): boolean {
+        const error = this.getVotePermissionError(poll, user);
         return !error;
     }
 
@@ -42,12 +47,11 @@ export class VotingService {
      * checks whether the operator can vote on the given poll
      * @returns null if no errors exist (= user can vote) or else a VotingError
      */
-    public getVotePermissionError(poll: ViewBasePoll): VotingError | void {
+    public getVotePermissionError(poll: ViewBasePoll, user: ViewUser = this.operator.viewUser): VotingError | void {
         if (this.operator.isAnonymous) {
             return VotingError.USER_IS_ANONYMOUS;
         }
 
-        const user = this.operator.user;
         if (!poll.groups_id.intersect(user.groups_id).length) {
             return VotingError.USER_HAS_NO_PERMISSION;
         }
@@ -57,13 +61,16 @@ export class VotingService {
         if (poll.state !== PollState.Started) {
             return VotingError.POLL_WRONG_STATE;
         }
-        if (!user.is_present) {
+        if (!user.is_present && !this.operator.viewUser.canVoteFor(user)) {
             return VotingError.USER_NOT_PRESENT;
+        }
+        if (user.isVoteRightDelegated && this.operator.user.id === user.id) {
+            return VotingError.USER_HAS_DELEGATED_RIGHT;
         }
     }
 
-    public getVotePermissionErrorVerbose(poll: ViewBasePoll): string | void {
-        const error = this.getVotePermissionError(poll);
+    public getVotePermissionErrorVerbose(poll: ViewBasePoll, user: ViewUser = this.operator.viewUser): string | void {
+        const error = this.getVotePermissionError(poll, user);
         if (error) {
             return VotingErrorVerbose[error];
         }
