@@ -47,6 +47,10 @@ export class User extends BaseDecimalModel<User> {
         return !!this.vote_delegated_to_id;
     }
 
+    public get hasVoteRightFromOthers(): boolean {
+        return this.vote_delegated_from_users_id?.length > 0;
+    }
+
     public constructor(input?: Partial<User>) {
         super(User.COLLECTIONSTRING, input);
     }
