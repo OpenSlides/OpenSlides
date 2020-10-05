@@ -52,12 +52,18 @@ organisation:
   name: string
   description: HTMLStrict
 
-  # Configs
+  # Settings (configurable by the client)
   legal_notice: string
   privacy_policy: string
   login_text: string
   theme: string
   custom_translations: JSON
+  reset_password_verbose_errors: boolean
+
+  # Configuration (only for the server owner)
+  enable_electronic_voting:
+    type: boolean
+    read_only: true
 
   committee_ids:
     type: relation-list
@@ -90,6 +96,9 @@ user:
   email: string
   last_email_send: string
   vote_weight: decimal(6)
+  is_demo_user:
+    type: boolean
+    read_only: true
 
   role_id:
     type: relation
@@ -173,6 +182,12 @@ user:
     fields:
       type: relation-list
       to: motion_vote/user_id
+  motion_delegated_vote_$_ids:
+    type: template
+    replacement: meeting_id
+    fields:
+      type: relation-list
+      to: motion_vote/delegated_user_id
   assignment_candidate_$_ids:
     type: template
     replacement: meeting_id
@@ -197,6 +212,24 @@ user:
     fields:
       type: relation-list
       to: assignment_vote/user_id
+  assignment_delegated_vote_$_ids:
+    type: template
+    replacement: meeting_id
+    fields:
+      type: relation-list
+      to: assignment_vote/delegated_user_id
+  vote_delegated_$_to_id:
+    type: template
+    replacement: meeting_id
+    fields:
+      type: relation
+      to: user/vote_delegations_$_from_ids
+  vote_delegations_$_from_ids:
+    type: template
+    replacement: meeting_id
+    fields:
+      type: relation-list
+      to: user/vote_delegated_$_to_id
 
 role:
   id: number
@@ -276,7 +309,17 @@ meeting:
   location: string
   start_time: timestamp
   end_time: timestamp
-  custom_translations: JSON
+
+  # Configuration (only for the server owner)
+  jitsi_domain:
+    type: string
+    read_only: true
+  jitsi_room_name:
+    type: string
+    read_only: true
+  jitsi_room_password:
+    type: string
+    read_only: true
 
   # System
   url_name:
@@ -292,6 +335,7 @@ meeting:
   conference_auto_connect: boolean
   conference_los_restriction: boolean
   conference_stream_url: string
+  conference_stream_poster_url: string
 
   # Projector
   projector_default_countdown_time: number
@@ -400,14 +444,14 @@ meeting:
     - diff
     - agreed
   motions_default_sorting: string
-  motions_identifier_type:
+  motions_number_type:
     type: string
     enum:
     - per_category
     - serially_numbered
     - manually
-  motions_identifier_min_digits: number
-  motions_identifier_with_blank: boolean
+  motions_number_min_digits: number
+  motions_number_with_blank: boolean
   motions_statutes_enabled: boolean
   motions_amendments_enabled: boolean
   motions_amendments_in_main_list: boolean
@@ -1313,6 +1357,17 @@ motion_vote:
         through:
         - option_id
         - poll_id
+  delegated_user_id:
+    type: relation
+    to:
+      collection: user
+      field:
+        name: motion_delegated_vote_$_ids
+        type: structured-relation
+        replacement: meeting_id
+        through:
+        - option_id
+        - poll_id
 
 assignment:
   id: number
@@ -1469,6 +1524,17 @@ assignment_vote:
       collection: user
       field:
         name: assignment_vote_$_ids
+        type: structured-relation
+        replacement: meeting_id
+        through:
+        - option_id
+        - poll_id
+  delegated_user_id:
+    type: relation
+    to:
+      collection: user
+      field:
+        name: assignment_delegated_vote_$_ids
         type: structured-relation
         replacement: meeting_id
         through:

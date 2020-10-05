@@ -20,13 +20,3 @@ jobs:
 
     - name: Validate models.yml
       run: $HOME/go/bin/modelsvalidate docs/models.yml
-
-  check-old:
-    name: Check old models.txt
-    runs-on: ubuntu-latest
-    steps:
-    - name: Check out code
-      uses: actions/checkout@v2
-
-    - name: Check MD5 hash of old models.txt
-      run: echo "4dee769da047e0169b5fe1280f3ea2f0  docs/models.txt" | md5sum --check
