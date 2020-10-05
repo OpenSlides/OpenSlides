@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 
+import { AssignmentPoll } from 'app/shared/models/assignments/assignment-poll';
 import { PollState } from 'app/shared/models/poll/base-poll';
 import { AssignmentPollService } from 'app/site/assignments/modules/assignment-poll/services/assignment-poll.service';
 import { BasePollSlideComponentDirective } from 'app/slides/polls/base-poll-slide.component';
@@ -17,4 +18,8 @@ export class AssignmentPollSlideComponent extends BasePollSlideComponentDirectiv
     public PollState = PollState;
 
     public options = { maintainAspectRatio: false, responsive: true, legend: { position: 'right' } };
+
+    protected getDecimalFields(): string[] {
+        return AssignmentPoll.DECIMAL_FIELDS;
+    }
 }
