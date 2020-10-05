@@ -50,10 +50,22 @@ export class AssignmentPollDetailComponent extends BasePollDetailComponentDirect
         configService: ConfigService,
         protected pollService: AssignmentPollService,
         votesRepo: AssignmentVoteRepositoryService,
-        private operator: OperatorService,
+        protected operator: OperatorService,
         private router: Router
     ) {
-        super(title, translate, matSnackbar, repo, route, groupRepo, prompt, pollDialog, pollService, votesRepo);
+        super(
+            title,
+            translate,
+            matSnackbar,
+            repo,
+            route,
+            groupRepo,
+            prompt,
+            pollDialog,
+            pollService,
+            votesRepo,
+            operator
+        );
         configService
             .get<boolean>('users_activate_vote_weight')
             .subscribe(active => (this.isVoteWeightActive = active));

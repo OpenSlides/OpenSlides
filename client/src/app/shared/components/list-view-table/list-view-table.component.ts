@@ -649,6 +649,8 @@ export class ListViewTableComponent<V extends BaseViewModel | BaseViewModelWithC
     private changeRowHeight(): void {
         if (this.vScrollFixed > 0) {
             document.documentElement.style.setProperty('--pbl-height', this.vScrollFixed + 'px');
+        } else {
+            document.documentElement.style.removeProperty('--pbl-height');
         }
     }
 
