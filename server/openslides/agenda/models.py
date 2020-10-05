@@ -432,6 +432,7 @@ class SpeakerManager(models.Manager):
         """
         if isinstance(user, AnonymousUser):
             raise OpenSlidesError("An anonymous user can not be on lists of speakers.")
+
         if self.filter(
             user=user, list_of_speakers=list_of_speakers, begin_time=None
         ).exists():
