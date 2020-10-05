@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Route, RouterModule } from '@angular/router';
 
 import { LoginLegalNoticeComponent } from './site/login/components/login-legal-notice/login-legal-notice.component';
 import { LoginMaskComponent } from './site/login/components/login-mask/login-mask.component';
@@ -12,7 +12,7 @@ import { UnsupportedBrowserComponent } from './site/login/components/unsupported
 /**
  * Global app routing
  */
-const routes: Routes = [
+const routes: Route[] = [
     {
         path: 'login',
         component: LoginWrapperComponent,

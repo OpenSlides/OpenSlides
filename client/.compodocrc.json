@@ -1,0 +1,10 @@
+{
+    "name": "OpenSlides Client Documentation",
+    "output": "../Compodoc/",
+    "tsconfig": "./tsconfig.json",
+    "disableCoverage": true,
+    "hideGenerator": true,
+    "theme": "material",
+    "customLogo": "./src/assets/img/openslides-logo.svg",
+    "customFavicon": "./src/assets/img/favicon.png"
+}

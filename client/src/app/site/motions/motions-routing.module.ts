@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Route, RouterModule } from '@angular/router';
 
 import { Permission } from 'app/core/core-services/operator.service';
 
-const routes: Routes = [
+const routes: Route[] = [
     {
         path: '',
         loadChildren: () => import('./modules/motion-list/motion-list.module').then(m => m.MotionListModule),

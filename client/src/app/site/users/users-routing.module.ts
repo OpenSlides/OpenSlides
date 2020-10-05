@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Route, RouterModule } from '@angular/router';
 
 import { Permission } from 'app/core/core-services/operator.service';
 import { GroupListComponent } from './components/group-list/group-list.component';
@@ -9,7 +9,7 @@ import { UserDetailComponent } from './components/user-detail/user-detail.compon
 import { UserImportListComponent } from './components/user-import/user-import-list.component';
 import { UserListComponent } from './components/user-list/user-list.component';
 
-const routes: Routes = [
+const routes: Route[] = [
     {
         path: '',
         component: UserListComponent,

@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Route, RouterModule } from '@angular/router';
 
 import { Permission } from 'app/core/core-services/operator.service';
 import { TopicDetailComponent } from './components/topic-detail/topic-detail.component';
 
-const routes: Routes = [
+const routes: Route[] = [
     { path: 'new', component: TopicDetailComponent, data: { basePerm: Permission.agendaCanManage } },
     { path: ':id', component: TopicDetailComponent, data: { basePerm: Permission.agendaCanSee } }
 ];
