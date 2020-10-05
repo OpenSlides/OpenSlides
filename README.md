@@ -32,6 +32,25 @@ For a non-development setup, clone this repo and run it via docker compose. The 
 For a development setup, refer to [the development docs](DEVELOPMENT.md)
 
 
+## Productive environment
+
+Setup the repository (may be already done)
+
+    $ git clone git@github.com:OpenSlides/OpenSlides.git
+    $ cd OpenSlides
+    $ git checkout openslides4-dev
+    $ git submodule update --init
+
+Prod setup. `./build.sh` may take a while.
+
+    $ cd docker
+    $ ./build.sh
+    $ ./setup-prod.sh
+    $ docker-compose up
+
+Navigate to https://localhost:8000
+
+
 ## Used software
 
 OpenSlides uses the following projects or parts of them:

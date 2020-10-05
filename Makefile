@@ -1,5 +1,3 @@
-SHELL := /bin/bash
-
 run-system-tests:
 	echo "TODO: write complete system tests"
 
@@ -11,21 +9,14 @@ build-dev:
 	make -C haproxy build-dev
 
 run-dev: | build-dev
-	docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
+	docker-compose -f docker/docker-compose.dev.yml up
 
 stop-dev:
-	docker-compose -f docker-compose.yml -f docker-compose.dev.yml down
+	docker-compose -f docker/docker-compose.dev.yml down
 
 copy-node-modules:
-	docker-compose -f docker-compose.yml -f docker-compose.dev.yml exec client bash -c "cp -r /app/node_modules/ /app/src/"
+	docker-compose -f docker/docker-compose.dev.yml exec client bash -c "cp -r /app/node_modules/ /app/src/"
 	mv openslides-client/client/src/node_modules/ openslides-client/client/
 
-build-prod:
-	git submodule status | awk '{ gsub(/[^0-9a-f]/, "", $$1); gsub("-","_",$$2); print toupper($$2)"_COMMIT_HASH="$$1 }' > .env
-	docker-compose -f docker-compose.yml -f docker-compose.prod.yml build
-
-run-prod: | build-prod
-	docker-compose -f docker-compose.yml -f docker-compose.prod.yml up
-
 reload-haproxy:
-	docker-compose -f docker-compose.yml -f docker-compose.dev.yml kill -s HUP haproxy
+	docker-compose -f docker/docker-compose.dev.yml kill -s HUP haproxy
