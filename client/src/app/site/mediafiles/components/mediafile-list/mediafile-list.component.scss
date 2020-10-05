@@ -63,6 +63,16 @@ $navbar-size: 64px;
         font-size: 90%;
     }
 
+    /**
+    * Compilcated ngrid hack: The meta row won't disappear (just like that)
+    * Select the first ever container pbl-ngrid-container div and hide
+    */
+    .pbl-ngrid-container {
+        > div {
+            height: 0;
+        }
+    }
+
     .pbl-ngrid-row {
         $size: 60px;
         height: $size !important;
