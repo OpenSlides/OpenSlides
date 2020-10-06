@@ -20,7 +20,7 @@
                 <!-- Percent numbers -->
                 <td class="result-cell-definition">
                     <span *ngIf="row.value[0].showPercent">
-                        {{ row.value[0].amount | pollPercentBase: poll }}
+                        {{ row.value[0].amount | pollPercentBase: poll:'motion' }}
                     </span>
                 </td>
 
