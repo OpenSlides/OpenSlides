@@ -82,9 +82,12 @@ export class ProjectorService {
      */
     public isProjected(obj: Projectable | ProjectorElementBuildDeskriptor | IdentifiableProjectorElement): boolean {
         const element = this.getProjectorElement(obj);
-        return this.DS.getAll<Projector>('core/projector').some(projector => {
-            return projector.isElementShown(element);
-        });
+        if (element.getIdentifiers) {
+            return this.DS.getAll<Projector>('core/projector').some(projector => {
+                return projector.isElementShown(element);
+            });
+        }
+        return false;
     }
 
     /**
