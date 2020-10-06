@@ -5,8 +5,13 @@
     </div>
 
     <!-- Menu -->
-    <div class="menu-slot" *osPerms="'mediafiles.can_manage'">
-        <button type="button" mat-icon-button (click)="createNewFolder(newFolderDialog)" *ngIf="!isMultiSelect">
+    <div class="menu-slot">
+        <button
+            type="button"
+            mat-icon-button
+            (click)="createNewFolder(newFolderDialog)"
+            *osPerms="permission.mediafilesCanManage; and: !isMultiSelect"
+        >
             <mat-icon>create_new_folder</mat-icon>
         </button>
         <button type="button" mat-icon-button [matMenuTriggerFor]="mediafilesMenu">
@@ -182,7 +187,7 @@
 <!-- Menu for single files in the list -->
 <mat-menu #singleMediafileMenu="matMenu">
     <ng-template matMenuContent let-mediafile="mediafile">
-        <div *osPerms="'core.can_manage_logos_and_fonts'">
+        <div *osPerms="permission.coreCanManageLogosAndFonts">
             <!-- Exclusive for images -->
             <div *ngIf="mediafile.isImage()">
                 <div *ngFor="let action of logoActions">
@@ -233,7 +238,7 @@
             <mat-icon>cloud_download</mat-icon>
             <span>{{ 'Download folder' | translate }}</span>
         </button>
-        <button mat-menu-item *osPerms="'mediafiles.can_manage'" (click)="toggleMultiSelect()">
+        <button mat-menu-item (click)="toggleMultiSelect()">
             <mat-icon>library_add</mat-icon>
             <span>{{ 'Multiselect' | translate }}</span>
         </button>
@@ -243,7 +248,12 @@
             <mat-icon>cloud_download</mat-icon>
             <span>{{ 'Download' | translate }}</span>
         </button>
-        <button mat-menu-item [disabled]="!selectedRows.length" (click)="move(moveDialog, selectedRows)">
+        <button
+            mat-menu-item
+            *osPerms="permission.mediafilesCanManage"
+            [disabled]="!selectedRows.length"
+            (click)="move(moveDialog, selectedRows)"
+        >
             <mat-icon>near_me</mat-icon>
             <span>{{ 'Move' | translate }}</span>
         </button>
@@ -256,10 +266,10 @@
             <mat-icon>clear</mat-icon>
             <span>{{ 'Deselect all' | translate }}</span>
         </button>
-        <mat-divider></mat-divider>
+        <mat-divider *osPerms="permission.mediafilesCanManage"></mat-divider>
         <button
             mat-menu-item
-            *osPerms="'mediafiles.can_manage'"
+            *osPerms="permission.mediafilesCanManage"
             [disabled]="!selectedRows.length"
             (click)="deleteSelected()"
         >

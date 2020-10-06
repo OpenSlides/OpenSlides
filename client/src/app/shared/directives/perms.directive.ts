@@ -49,7 +49,7 @@ export class PermsDirective implements OnInit, OnDestroy {
 
     /**
      * Add a true-false-condition additional to osPerms
-     * `*osPerms="'motions.can_manage';and:isRecoMode(ChangeRecoMode.Final)"`
+     * `*osPerms="permission.mediafilesCanManage; and: !isMultiSelect"`
      */
     private and = true;
 
