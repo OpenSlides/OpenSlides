@@ -147,7 +147,7 @@ export class UserListComponent extends BaseListViewComponent<ViewUser> implement
     /**
      * Define extra filter properties
      */
-    public filterProps = ['full_name', 'groups', 'structure_level', 'number'];
+    public filterProps = ['full_name', 'groups', 'structure_level', 'number', 'delegationName'];
 
     private selfPresentConfStr = 'users_allow_self_set_present';
 
