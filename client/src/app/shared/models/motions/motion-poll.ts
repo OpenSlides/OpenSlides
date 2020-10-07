@@ -13,6 +13,7 @@ export enum MotionPollMethod {
 export class MotionPoll extends BasePoll<MotionPoll, MotionOption, MotionPollMethod, PercentBase> {
     public static COLLECTIONSTRING = 'motions/motion-poll';
     public static defaultGroupsConfig = 'motion_poll_default_groups';
+    public static DECIMAL_FIELDS = ['votesvalid', 'votesinvalid', 'votescast'];
 
     public id: number;
     public motion_id: number;
@@ -28,5 +29,9 @@ export class MotionPoll extends BasePoll<MotionPoll, MotionOption, MotionPollMet
 
     public constructor(input?: any) {
         super(MotionPoll.COLLECTIONSTRING, input);
+    }
+
+    protected getDecimalFields(): string[] {
+        return MotionPoll.DECIMAL_FIELDS;
     }
 }

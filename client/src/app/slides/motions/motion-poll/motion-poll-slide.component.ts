@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 
+import { MotionPoll } from 'app/shared/models/motions/motion-poll';
 import { PollState } from 'app/shared/models/poll/base-poll';
 import { MotionPollService } from 'app/site/motions/services/motion-poll.service';
 import { PollData, PollTableData } from 'app/site/polls/services/poll.service';
@@ -30,6 +31,10 @@ export class MotionPollSlideComponent extends BasePollSlideComponentDirective<Mo
                 this.voteAbstain = result.abstain;
             }
         });
+    }
+
+    protected getDecimalFields(): string[] {
+        return MotionPoll.DECIMAL_FIELDS;
     }
 
     public showChart(): boolean {

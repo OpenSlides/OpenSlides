@@ -67,6 +67,10 @@ export class ViewMotionPoll
     public anySpecialVotes(): boolean {
         return this.result.yes < 0 || this.result.no < 0 || this.result.abstain < 0;
     }
+
+    protected getDecimalFields(): string[] {
+        return MotionPoll.DECIMAL_FIELDS;
+    }
 }
 
 export interface ViewMotionPoll extends MotionPoll {

@@ -108,8 +108,4 @@ export abstract class BasePoll<
     public get nextState(): PollState {
         return this.state + 1;
     }
-
-    protected getDecimalFields(): string[] {
-        return ['votesvalid', 'votesinvalid', 'votescast'];
-    }
 }

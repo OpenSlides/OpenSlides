@@ -17,7 +17,7 @@ export class ParsePollNumberPipe implements PipeTransform {
 
     public constructor(private translate: TranslateService) {}
 
-    public transform(value: number): number | string {
+    public transform(value: number): string {
         switch (value) {
             case VOTE_MAJORITY:
                 return this.translate.instant('majority');
