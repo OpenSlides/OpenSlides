@@ -96,7 +96,7 @@ export class CinemaComponent extends BaseViewComponentDirective implements OnIni
         this.subscriptions.push(
             this.projectorRepo.getReferenceProjectorObservable().subscribe(refProjector => {
                 this.projector = refProjector;
-                this.currentProjectorElement = refProjector?.elements[0] || null;
+                this.currentProjectorElement = refProjector?.firstUnstableElement || null;
                 if (this.currentProjectorElement) {
                     this.projectedViewModel = this.projectorService.getViewModelFromProjectorElement(
                         this.currentProjectorElement

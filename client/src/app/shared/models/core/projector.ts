@@ -95,6 +95,18 @@ export class Projector extends BaseModel<Projector> {
         return [this.aspect_ratio_numerator, this.aspect_ratio_denominator].join(':');
     }
 
+    public get firstUnstableElement(): ProjectorElement {
+        let elementIndex = 0;
+        /**
+         * while we could use a filter function to remove all stable elements, I expect
+         * this approach to be the fastest
+         */
+        while (!!this.elements[elementIndex]?.stable) {
+            elementIndex++;
+        }
+        return this.elements[elementIndex] ?? null;
+    }
+
     /**
      * Set the aspect ratio
      */
