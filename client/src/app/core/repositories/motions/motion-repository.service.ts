@@ -271,7 +271,15 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
     };
 
     public getAgendaListTitle = (titleInformation: MotionTitleInformation) => {
-        const numberPrefix = titleInformation.agenda_item_number() ? `${titleInformation.agenda_item_number()} · ` : '';
+        let numberPrefix = '';
+        /**
+         * after reloading, titleInformation.agenda_item_number is undefined. It gets defined after
+         * an autoupdate
+         */
+        if (titleInformation.agenda_item_number && titleInformation.agenda_item_number()) {
+            numberPrefix = `${titleInformation.agenda_item_number()} · `;
+        }
+
         // Append the verbose name only, if not the special format 'Motion <identifier>' is used.
         let title;
         if (titleInformation.identifier) {
