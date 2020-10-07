@@ -8,6 +8,7 @@ import { Label } from 'ng2-charts';
 import { BehaviorSubject, from, Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 
+import { OperatorService } from 'app/core/core-services/operator.service';
 import { Deferred } from 'app/core/promises/deferred';
 import { BaseRepository } from 'app/core/repositories/base-repository';
 import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
@@ -104,7 +105,8 @@ export abstract class BasePollDetailComponentDirective<V extends ViewBasePoll, S
         protected promptService: PromptService,
         protected pollDialog: BasePollDialogService<V, S>,
         protected pollService: S,
-        protected votesRepo: BaseRepository<ViewBaseVote, BaseVote, object>
+        protected votesRepo: BaseRepository<ViewBaseVote, BaseVote, object>,
+        protected operator: OperatorService
     ) {
         super(title, translate, matSnackbar);
         this.setup();
@@ -209,6 +211,32 @@ export abstract class BasePollDetailComponentDirective<V extends ViewBasePoll, S
                     }
                 })
             );
+        }
+    }
+
+    protected userHasVoteDelegation(user: ViewUser): boolean {
+        /**
+         * This will be false if the operator does not have "can_see_extra_data"
+         */
+        if (user.isVoteRightDelegated) {
+            return true;
+        } else if (this.operator.viewUser.canVoteFor(user)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    protected getUsersVoteDelegation(user: ViewUser): ViewUser {
+        /**
+         * This will be false if the operator does not have "can_see_extra_data"
+         */
+        if (!!user.voteDelegatedTo) {
+            return user.voteDelegatedTo;
+        }
+
+        if (this.operator.viewUser.canVoteFor(user)) {
+            return this.operator.viewUser;
         }
     }
 }
