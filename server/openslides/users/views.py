@@ -56,7 +56,7 @@ from .serializers import GroupSerializer, PermissionRelatedField
 from .user_backend import user_backend_manager
 
 
-demo_mode_users = getattr(settings, "DEMO", None)
+demo_mode_users = getattr(settings, "DEMO_USERS", None)
 is_demo_mode = isinstance(demo_mode_users, list) and len(demo_mode_users) > 0
 logger = logging.getLogger(__name__)
 if is_demo_mode:

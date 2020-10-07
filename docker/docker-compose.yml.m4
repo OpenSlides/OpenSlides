@@ -45,6 +45,7 @@ x-osserver:
 x-osserver-env: &default-osserver-env
     AMOUNT_REPLICAS: ifenvelse(`REDIS_RO_SERVICE_REPLICAS', 1)
     AUTOUPDATE_DELAY: ifenvelse(`AUTOUPDATE_DELAY', 1)
+    DEMO_USERS: "ifenvelse(`DEMO_USERS',)"
     CONNECTION_POOL_LIMIT: ifenvelse(`CONNECTION_POOL_LIMIT', 100)
     DATABASE_HOST: "ifenvelse(`DATABASE_HOST', pgbouncer)"
     DATABASE_PASSWORD: "ifenvelse(`DATABASE_PASSWORD', openslides)"
