@@ -71,18 +71,32 @@ async def get_amendments_for_motion(motion, all_data_provider):
     amendment_data = []
     for amendment_id in motion["amendments_id"]:
         amendment = await all_data_provider.get("motions/motion", amendment_id)
+
         merge_amendment_into_final = await get_amendment_merge_into_motion_final(
             all_data_provider, amendment
         )
         merge_amendment_into_diff = await get_amendment_merge_into_motion_diff(
             all_data_provider, amendment
         )
+
+        # Add change recommendations to the amendments:
+        change_recommendations = []  # type: ignore
+        for change_recommendation_id in amendment["change_recommendations_id"]:
+            cr = await get_model(
+                all_data_provider,
+                "motions/motion-change-recommendation",
+                change_recommendation_id,
+            )
+            if cr is not None and not cr["internal"] and not cr["rejected"]:
+                change_recommendations.append(cr)
+
         amendment_data.append(
             {
                 "id": amendment["id"],
                 "identifier": amendment["identifier"],
                 "title": amendment["title"],
                 "amendment_paragraphs": amendment["amendment_paragraphs"],
+                "change_recommendations": change_recommendations,
                 "merge_amendment_into_diff": merge_amendment_into_diff,
                 "merge_amendment_into_final": merge_amendment_into_final,
             }

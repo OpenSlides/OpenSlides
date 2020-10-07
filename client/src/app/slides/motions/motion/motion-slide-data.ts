@@ -10,6 +10,7 @@ export interface MotionSlideDataAmendment {
     id: number;
     title: string;
     amendment_paragraphs: string[];
+    change_recommendations: MotionSlideDataChangeReco[];
     merge_amendment_into_final: number;
     merge_amendment_into_diff: number;
 }

@@ -276,6 +276,7 @@ async def test_motion_slide(all_data_provider):
                 "identifier": "Ä1",
                 "merge_amendment_into_final": 0,
                 "merge_amendment_into_diff": 0,
+                "change_recommendations": [],
             }
         ],
         "amendment_paragraphs": None,
