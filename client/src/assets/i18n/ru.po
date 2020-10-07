@@ -235,6 +235,9 @@ msgstr ""
 msgid "Arabic"
 msgstr "Арабский"
 
+msgid "Are you sure you want delete the whole history?"
+msgstr ""
+
 msgid "Are you sure you want to anonymize all votes? This cannot be undone."
 msgstr ""
 
@@ -384,6 +387,9 @@ msgstr "Спросите, по умолчанию да"
 
 msgid "Attachments"
 msgstr "Вложения"
+
+msgid "Autopilot"
+msgstr ""
 
 msgid "Available votes"
 msgstr ""
@@ -547,11 +553,20 @@ msgstr "Отменить"
 msgid "Cancel edit"
 msgstr "Отменить редактирование"
 
+msgid "Cancel editing without saving"
+msgstr ""
+
 msgid "Candidates"
 msgstr "Кандидаты"
 
 msgid "Cannot create PDF files on this browser."
 msgstr "Невозможно создать PDF-файлы в этом браузере."
+
+msgid "Cannot do that in demo mode!"
+msgstr ""
+
+msgid "Cannot navigate to the selected history element."
+msgstr ""
 
 msgid "Categories"
 msgstr "Категории"
@@ -821,6 +836,12 @@ msgstr ""
 msgid "Delegates"
 msgstr "Делегаты"
 
+msgid "Delegation of vote"
+msgstr ""
+
+msgid "Delegation of vote (principals)"
+msgstr ""
+
 msgid "Delete"
 msgstr "Удалить"
 
@@ -909,8 +930,14 @@ msgstr "Не имеет заметок"
 msgid "Done"
 msgstr "Готово"
 
+msgid "Download"
+msgstr ""
+
 msgid "Download CSV example file"
 msgstr "Скачать образец CSV-файла"
+
+msgid "Download folder"
+msgstr ""
 
 msgid "Drop files into this area OR click here to select files"
 msgstr "Перетащите файлы в эту область ИЛИ нажмите здесь, чтобы выбрать файлы"
@@ -946,6 +973,9 @@ msgstr "Редактировать детали"
 
 msgid "Edit details for"
 msgstr "Редактировать детали для"
+
+msgid "Edit final print template"
+msgstr ""
 
 msgid "Edit projector"
 msgstr ""
@@ -1467,6 +1497,9 @@ msgstr ""
 msgid "Livestream"
 msgstr ""
 
+msgid "Livestream poster image url"
+msgstr ""
+
 msgid "Livestream url"
 msgstr ""
 
@@ -1700,6 +1733,9 @@ msgstr "Нет данных"
 
 msgid "No decision"
 msgstr "Нет решения"
+
+msgid "No delegation of vote"
+msgstr ""
 
 msgid "No email sent"
 msgstr "Письмо не отправлено"
@@ -2256,6 +2292,9 @@ msgstr "Сохранить"
 msgid "Save all changes"
 msgstr ""
 
+msgid "Save final print template"
+msgstr ""
+
 msgid "Scan this QR code to connect to WLAN."
 msgstr "Сканируйте этот QR-код для подключения к вай-фай."
 
@@ -2370,6 +2409,9 @@ msgstr "Установить рекомендацию"
 msgid "Set status"
 msgstr "Установить статус"
 
+msgid "Set status for selected participants:"
+msgstr ""
+
 msgid "Sets this projector as the reference for the current list of speakers"
 msgstr ""
 
@@ -2469,6 +2511,11 @@ msgstr "Показать заголовок"
 msgid "Show/Hide video conference"
 msgstr ""
 
+msgid ""
+"Shows if livestream is not started. Recommended image format: 500x281px, PNG"
+" or JPG"
+msgstr ""
+
 msgid "Simple Workflow"
 msgstr "Простой рабочий процесс"
 
@@ -2533,6 +2580,9 @@ msgid "State set to {arg1}"
 msgstr "Состояние установлено на {arg1}"
 
 msgid "Statistics"
+msgstr ""
+
+msgid "Status"
 msgstr ""
 
 msgid "Statute"
@@ -2680,6 +2730,9 @@ msgstr ""
 
 msgid "The number has to be greater than 0."
 msgstr "Число должно быть больше 0."
+
+msgid "The parent motion was deleted."
+msgstr ""
 
 msgid "The reason field may not be blank."
 msgstr "Поле причины не может быть пустым."
@@ -2943,6 +2996,12 @@ msgstr ""
 msgid "Voting result"
 msgstr "Результат голосования"
 
+msgid "Voting right delegated to (proxy)"
+msgstr ""
+
+msgid "Voting right for"
+msgstr ""
+
 msgid "Voting successful."
 msgstr ""
 
@@ -2999,6 +3058,9 @@ msgstr "Отозван"
 msgid "Workflow"
 msgstr "Рабочий процесс"
 
+msgid "Workflow of new amendments"
+msgstr ""
+
 msgid "Workflow of new motions"
 msgstr "Рабочий процесс новых заявлений"
 
@@ -3034,6 +3096,12 @@ msgid ""
 msgstr ""
 "Вы используете режим истории OpenSlides. Изменения не будут сохранены."
 
+msgid "You can not vote because this is an analog voting."
+msgstr ""
+
+msgid "You can not vote right now because the voting has not yet started."
+msgstr ""
+
 msgid "You can use {event_name} and {username} as placeholder."
 msgstr ""
 "Вы можете использовать {event_name} и {username} в качестве заполнителя."
@@ -3046,10 +3114,19 @@ msgstr ""
 msgid "You cannot change the state of motions in different workflows!"
 msgstr "Вы не можете изменить состояние заявлений в разных рабочих процессах!"
 
+msgid "You do not have the permission to vote."
+msgstr ""
+
 msgid "You do not have the required permission to see that page!"
 msgstr "У вас нет необходимого разрешения для просмотра этой страницы!"
 
 msgid "You have already voted."
+msgstr ""
+
+msgid "You have to be logged in to be able to vote."
+msgstr ""
+
+msgid "You have to be present to vote."
 msgstr ""
 
 msgid "You have to fill this field."
@@ -3078,6 +3155,9 @@ msgstr ""
 
 msgid "Your password was resetted successfully!"
 msgstr "Ваш пароль был успешно восстановлен!"
+
+msgid "Your voting right was delegated to another person."
+msgstr ""
 
 msgid "Zoom in"
 msgstr ""
@@ -3293,6 +3373,9 @@ msgstr "отклонено (не авторизован)"
 
 msgid "remove group(s)"
 msgstr "удалить группу(ы)"
+
+msgid "represented by"
+msgstr ""
 
 msgid "result"
 msgstr "результат"

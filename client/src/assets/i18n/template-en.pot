@@ -807,6 +807,12 @@ msgstr ""
 msgid "Delegates"
 msgstr ""
 
+msgid "Delegation of vote"
+msgstr ""
+
+msgid "Delegation of vote (principals)"
+msgstr ""
+
 msgid "Delete"
 msgstr ""
 
@@ -1689,6 +1695,9 @@ msgid "No data"
 msgstr ""
 
 msgid "No decision"
+msgstr ""
+
+msgid "No delegation of vote"
 msgstr ""
 
 msgid "No email sent"
@@ -2903,6 +2912,12 @@ msgstr ""
 msgid "Voting result"
 msgstr ""
 
+msgid "Voting right delegated to (proxy)"
+msgstr ""
+
+msgid "Voting right for"
+msgstr ""
+
 msgid "Voting successful."
 msgstr ""
 
@@ -2991,6 +3006,12 @@ msgstr ""
 msgid "You are using the history mode of OpenSlides. Changes will not be saved."
 msgstr ""
 
+msgid "You can not vote because this is an analog voting."
+msgstr ""
+
+msgid "You can not vote right now because the voting has not yet started."
+msgstr ""
+
 msgid "You can use {event_name} and {username} as placeholder."
 msgstr ""
 
@@ -3000,10 +3021,19 @@ msgstr ""
 msgid "You cannot change the state of motions in different workflows!"
 msgstr ""
 
+msgid "You do not have the permission to vote."
+msgstr ""
+
 msgid "You do not have the required permission to see that page!"
 msgstr ""
 
 msgid "You have already voted."
+msgstr ""
+
+msgid "You have to be logged in to be able to vote."
+msgstr ""
+
+msgid "You have to be present to vote."
 msgstr ""
 
 msgid "You have to fill this field."
@@ -3031,6 +3061,9 @@ msgid "Your input does not match the following structure: \"hh:mm\""
 msgstr ""
 
 msgid "Your password was resetted successfully!"
+msgstr ""
+
+msgid "Your voting right was delegated to another person."
 msgstr ""
 
 msgid "Zoom in"
@@ -3244,6 +3277,9 @@ msgid "rejected (not authorized)"
 msgstr ""
 
 msgid "remove group(s)"
+msgstr ""
+
+msgid "represented by"
 msgstr ""
 
 msgid "result"

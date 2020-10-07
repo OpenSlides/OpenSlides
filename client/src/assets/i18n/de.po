@@ -863,6 +863,12 @@ msgstr "Voreingestellte Art der Stimmabgabe"
 msgid "Delegates"
 msgstr "Delegierte"
 
+msgid "Delegation of vote"
+msgstr "Stimmrechtsübertragung"
+
+msgid "Delegation of vote (principals)"
+msgstr "Stimmrechtsübertragungen (Vollmachtgeber)"
+
 msgid "Delete"
 msgstr "Löschen"
 
@@ -1764,6 +1770,9 @@ msgstr "Keine Daten"
 
 msgid "No decision"
 msgstr "Keine Entscheidung"
+
+msgid "No delegation of vote"
+msgstr "Keine Stimmrechtsübertragungen"
 
 msgid "No email sent"
 msgstr "Keine E-Mail gesendet"
@@ -3045,6 +3054,12 @@ msgstr "Abstimmung eröffnet"
 msgid "Voting result"
 msgstr "Abstimmungsergebnis"
 
+msgid "Voting right delegated to (proxy)"
+msgstr "Stimmrecht übertragen an (Vollmachtnehmer)"
+
+msgid "Voting right for"
+msgstr "Stimmrecht für"
+
 msgid "Voting successful."
 msgstr "Stimmabgabe erfolgreich."
 
@@ -3138,6 +3153,16 @@ msgid ""
 "You are using the history mode of OpenSlides. Changes will not be saved."
 msgstr "Der Chronik-Modus ist aktiv. Änderungen werden nicht gespeichert."
 
+msgid "You can not vote because this is an analog voting."
+msgstr ""
+"Sie können Ihre Stimme nicht abgeben, da es sich um eine analoge Stimmabgabe"
+" handelt."
+
+msgid "You can not vote right now because the voting has not yet started."
+msgstr ""
+"Sie können gerade nicht Ihre Stimme abgeben, weil die Stimmabgabe noch nicht"
+" gestartet wurde."
+
 msgid "You can use {event_name} and {username} as placeholder."
 msgstr "Sie können {event_name} und {username} als Platzhalter verwenden."
 
@@ -3152,11 +3177,20 @@ msgstr ""
 "Das Ändern des Status von Anträgen in verschiedenen Arbeitsabläufen ist "
 "nicht möglich."
 
+msgid "You do not have the permission to vote."
+msgstr "Sie haben nicht die Berechtigung zur Stimmabgabe."
+
 msgid "You do not have the required permission to see that page!"
 msgstr "Sie haben leider keine Berechtigung diese Seite zu sehen."
 
 msgid "You have already voted."
 msgstr "Sie haben bereits Ihre Stimme abgegeben."
+
+msgid "You have to be logged in to be able to vote."
+msgstr "Sie müssen sich einloggen um Ihre Stimme abgeben zu können."
+
+msgid "You have to be present to vote."
+msgstr "Sie müssen \"anwesend\" sein um Ihre Stimme abgeben zu können."
 
 msgid "You have to fill this field."
 msgstr "Sie müssen diese Feld ausfüllen."
@@ -3186,6 +3220,9 @@ msgstr "Ihre Eingabe entspricht nicht der folgenden Struktur: \"hh:mm\""
 
 msgid "Your password was resetted successfully!"
 msgstr "Ihr Passwort wurde erfolgreich zurückgesetzt!"
+
+msgid "Your voting right was delegated to another person."
+msgstr "Ihr Stimmrecht wurde an eine andere Person übertragen."
 
 msgid "Zoom in"
 msgstr "Vergrößern"
@@ -3400,6 +3437,9 @@ msgstr "verworfen (nicht zulässig)"
 
 msgid "remove group(s)"
 msgstr "Gruppe(n) entfernen"
+
+msgid "represented by"
+msgstr "vertreten durch"
 
 msgid "result"
 msgstr "Ergebnis"
