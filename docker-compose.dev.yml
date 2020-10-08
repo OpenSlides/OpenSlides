@@ -22,7 +22,7 @@ services:
   backend:
     image: openslides-backend-dev
     volumes:
-      - ./openslides-backend/openslides_backend:/srv/code/openslides_backend
+      - ./openslides-backend/openslides_backend:/app/openslides_backend
   autoupdate:
     image: openslides-autoupdate-dev
     volumes:
