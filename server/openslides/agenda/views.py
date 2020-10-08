@@ -306,6 +306,7 @@ class ListOfSpeakersViewSet(
         return result
 
     @detail_route(methods=["POST", "PATCH", "DELETE"])
+    @transaction.atomic
     def manage_speaker(self, request, pk=None):
         """
         Special view endpoint to add users to the list of speakers or remove

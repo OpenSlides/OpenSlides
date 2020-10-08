@@ -26,6 +26,7 @@ server/.venv
 # OS4-Submodules
 /openslides-*/
 /haproxy/
+/docker/keys/
 # Plugin development
 openslides_*
 # Old OS3 stuff
