@@ -264,7 +264,7 @@ committee:
 meeting:
   id: number
   welcome_title: string
-  welcome_text: HtmlPermissive
+  welcome_text: HTMLPermissive
 
   # General
   name:
@@ -846,7 +846,7 @@ topic:
   title:
     type: string
     required: true
-  text: HtmlPermissive
+  text: HTMLPermissive
 
   attachment_ids:
     type: relation-list
