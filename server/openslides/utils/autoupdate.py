@@ -8,6 +8,7 @@ from channels.layers import get_channel_layer
 from django.db.models import Model
 from mypy_extensions import TypedDict
 
+from .auth import UserDoesNotExist
 from .cache import ChangeIdTooLowError, element_cache, get_element_id
 from .projector import get_projector_data
 from .timing import Timing
@@ -302,6 +303,15 @@ class AutoupdateBundleMiddleware:
 
 
 async def get_autoupdate_data(
+    from_change_id: int, user_id: int
+) -> Tuple[int, Optional[AutoupdateFormat]]:
+    try:
+        return await _get_autoupdate_data(from_change_id, user_id)
+    except UserDoesNotExist:
+        return 0, None
+
+
+async def _get_autoupdate_data(
     from_change_id: int, user_id: int
 ) -> Tuple[int, Optional[AutoupdateFormat]]:
     """

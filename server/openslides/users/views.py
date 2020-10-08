@@ -847,6 +847,10 @@ class WhoAmIDataView(APIView):
             user_full_data = async_to_sync(element_cache.get_element_data)(
                 self.request.user.get_collection_string(), user_id
             )
+            if user_full_data is None:
+                return Response(
+                    {"detail": "Cache offline, could not fetch user"}, status=500
+                )
             auth_type = user_full_data["auth_type"]
             user_data = async_to_sync(element_cache.restrict_element_data)(
                 user_full_data, self.request.user.get_collection_string(), user_id
