@@ -8,7 +8,9 @@ dnl   ( set -a; source .env; m4 docker-compose.yml.m4 ) > docker-compose.yml
 dnl
 dnl ----------------------------------------
 divert(-1)dnl
-define(`read_env', `esyscmd(`printf "%s" "$$1"')')
+dnl return env variable (quoted)
+define(`read_env', `esyscmd(`printf "\`%s'" "$$1"')')
+dnl return env variable if set; otherwise, return given alternative value
 define(`ifenvelse', `ifelse(read_env(`$1'),, `$2', read_env(`$1'))')
 
 define(`BACKEND_IMAGE',
