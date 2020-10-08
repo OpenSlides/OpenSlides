@@ -170,7 +170,7 @@
                 <os-search-value-selector
                     formControlName="vote_delegated_from_users_id"
                     [multiple]="true"
-                    placeholder="{{ 'Transferred voting rights from' | translate }}"
+                    placeholder="{{ 'Delegation of vote (principals)' | translate }}"
                     [inputListValues]="users"
                 ></os-search-value-selector>
             </mat-form-field>
@@ -315,13 +315,13 @@
         <div *ngIf="isAllowed('manage')">
             <!-- Own Vote delegations -->
             <div *ngIf="user.voteDelegatedTo">
-                <h4>{{ 'Vote right delegated to:' | translate }}</h4>
+                <h4>{{ 'Voting right delegated to (proxy)' | translate }}</h4>
                 <span>{{ user.voteDelegatedTo }}</span>
             </div>
 
             <!-- Received Vote delegations -->
             <div *ngIf="user.voteDelegationsFrom && user.voteDelegationsFrom.length">
-                <h4>{{ 'Vote delegations from' | translate }}</h4>
+                <h4>{{ 'Delegation of vote (principals)' | translate }}</h4>
                 <span>{{ user.voteDelegationsFrom }}</span>
             </div>
 

@@ -81,7 +81,7 @@ export class ViewUser extends BaseProjectableViewModel<User> implements UserTitl
             { key: 'Last name', value: this.last_name },
             { key: 'Structure level', value: this.structure_level },
             { key: 'Number', value: this.number },
-            { key: 'Vote Delegation', value: this.delegationName }
+            { key: 'Delegation of vote', value: this.delegationName }
         ];
         return { properties, searchValue: properties.map(property => property.value) };
     }

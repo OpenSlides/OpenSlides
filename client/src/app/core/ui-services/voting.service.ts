@@ -20,13 +20,13 @@ export enum VotingError {
  * TODO: It appears that the only message that makes sense for the user to see it the last one.
  */
 const VotingErrorVerbose = {
-    1: _("You can not vote on this poll right now because it is not in the 'Started' state."),
-    2: _('You can not vote on this poll because its type is set to analog voting.'),
-    3: _('You do not not have the permission to vote on this poll.'),
+    1: _('You can not vote right now because the voting has not yet started.'),
+    2: _('You can not vote because this is an analog voting.'),
+    3: _('You do not have the permission to vote.'),
     4: _('You have to be logged in to be able to vote.'),
-    5: _('You have to be present to vote on a poll.'),
-    6: _('Your right to vote was delegated to another user.'),
-    7: _('You have already voted on this poll. You can not change your vote in a pseudoanonymous poll.')
+    5: _('You have to be present to vote.'),
+    6: _('Your voting right was delegated to another person.'),
+    7: _('You have already voted.')
 };
 
 @Injectable({

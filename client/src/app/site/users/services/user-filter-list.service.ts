@@ -96,13 +96,19 @@ export class UserFilterListService extends BaseFilterListService<ViewUser> {
             },
             {
                 property: 'delegationType',
-                label: this.translate.instant('Vote delegation'),
+                label: this.translate.instant('Delegation of vote'),
                 options: [
-                    { condition: DelegationType.Transferred, label: this.translate.instant('Transferred vote right') },
-                    { condition: DelegationType.Received, label: this.translate.instant('Received vote right') },
+                    {
+                        condition: DelegationType.Transferred,
+                        label: this.translate.instant('Delegation of vote (principals)')
+                    },
+                    {
+                        condition: DelegationType.Received,
+                        label: this.translate.instant('Voting right delegated to (proxy)')
+                    },
                     {
                         condition: DelegationType.Neither,
-                        label: this.translate.instant('Neither received nor transferred vote right')
+                        label: this.translate.instant('No delegation of vote')
                     }
                 ]
             }
