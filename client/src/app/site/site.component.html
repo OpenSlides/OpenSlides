@@ -1,4 +1,4 @@
-<os-banner></os-banner>
+<os-banner *ngIf="href !== '/autopilot'"></os-banner>
 <mat-sidenav-container
     #siteContainer
     class="main-container"
@@ -9,7 +9,7 @@
     <mat-sidenav
         #sideNav
         [mode]="vp.isMobile ? 'over' : 'side'"
-        [opened]="!vp.isMobile"
+        [opened]="!vp.isMobile && href !== '/autopilot'"
         disableClose="!vp.isMobile"
         class="side-panel"
     >

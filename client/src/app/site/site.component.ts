@@ -70,6 +70,10 @@ export class SiteComponent extends BaseComponent implements OnInit {
         return this.mainMenuService.entries;
     }
 
+    public get href(): string {
+        return this.router.url;
+    }
+
     /**
      * Constructor
      * @param route

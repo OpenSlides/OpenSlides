@@ -8,15 +8,6 @@
     <mat-card class="os-card">
         <h1 class="line-and-icon">
             {{ title }}
-            <a
-                mat-icon-button
-                [disabled]="!viewModelUrl"
-                [class.disabled]="!viewModelUrl"
-                [routerLink]="viewModelUrl"
-                [state]="{ back: 'true' }"
-            >
-                <mat-icon>open_in_new</mat-icon>
-            </a>
         </h1>
     </mat-card>
 
