@@ -733,6 +733,7 @@ agenda_item:
     - 1
     - 2
     - 3
+    default: 1
   duration:
     type: number
     description: Given in seconds
