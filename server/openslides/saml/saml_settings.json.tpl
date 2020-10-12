@@ -2,13 +2,13 @@
     "strict": true,
     "debug": true,
     "sp": {
-        "entityId": "https://sp.domain.xyz/metadata/",
+        "entityId": "https://sp.domain.xyz/apps/saml/metadata/",
         "assertionConsumerService": {
-            "url": "https://sp.domain.xyz/?acs",
+            "url": "https://sp.domain.xyz/apps/saml/?acs",
             "binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
         },
         "singleLogoutService": {
-            "url": "https://sp.domain.xyz/?sls",
+            "url": "https://sp.domain.xyz/apps/saml/?sls",
             "binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
         },
         "NameIDFormat": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
