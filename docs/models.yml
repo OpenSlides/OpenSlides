@@ -158,6 +158,7 @@ user:
     fields:
       type: relation-list
       to: personal_note/user_id
+    on_delete: CASCADE
   supported_motion_$_ids:
     type: template
     replacement: meeting_id
@@ -223,13 +224,23 @@ user:
     replacement: meeting_id
     fields:
       type: relation
-      to: user/vote_delegations_$_from_ids
+      to:
+        collection: user
+        field:
+          name: vote_delegations_$_from_ids
+          type: structured-relation
+          replacement: meeting_id
   vote_delegations_$_from_ids:
     type: template
     replacement: meeting_id
     fields:
       type: relation-list
-      to: user/vote_delegated_$_to_id
+      to:
+        collection: user
+        field:
+          name: vote_delegated_$_to_id
+          type: structured-relation
+          replacement: meeting_id
 
 role:
   id: number
@@ -271,6 +282,7 @@ committee:
   meeting_ids:
     type: relation-list
     to: meeting/committee_id
+    on_delete: CASCADE
   template_meeting_id:
     type: relation
     to: meeting/template_for_committee_id
@@ -538,75 +550,127 @@ meeting:
   projector_ids:
     type: relation-list
     to: projector/meeting_id
+    on_delete: CASCADE
   projectiondefault_ids:
     type: relation-list
     to: projectiondefault/meeting_id
+    on_delete: CASCADE
   projector_message_ids:
     type: relation-list
     to: projector_message/meeting_id
+    on_delete: CASCADE
   projector_countdown_ids:
     type: relation-list
     to: projector_countdown/meeting_id
+    on_delete: CASCADE
   tag_ids:
     type: relation-list
     to: tag/meeting_id
+    on_delete: CASCADE
   agenda_item_ids:
     type: relation-list
     to: agenda_item/meeting_id
+    on_delete: CASCADE
   list_of_speakers_ids:
     type: relation-list
     to: list_of_speakers/meeting_id
+    on_delete: CASCADE
   topic_ids:
     type: relation-list
     to: topic/meeting_id
+    on_delete: CASCADE
   group_ids:
     type: relation-list
     to: group/meeting_id
+    on_delete: CASCADE
   mediafile_ids:
     type: relation-list
     to: mediafile/meeting_id
+    on_delete: CASCADE
   motion_ids:
     type: relation-list
     to: motion/meeting_id
+    on_delete: CASCADE
   motion_comment_section_ids:
     type: relation-list
     to: motion_comment_section/meeting_id
+    on_delete: CASCADE
   motion_category_ids:
     type: relation-list
     to: motion_category/meeting_id
+    on_delete: CASCADE
   motion_block_ids:
     type: relation-list
     to: motion_block/meeting_id
+    on_delete: CASCADE
   motion_workflow_ids:
     type: relation-list
     to: motion_workflow/meeting_id
+    on_delete: CASCADE
   motion_statute_paragraph_ids:
     type: relation-list
     to: motion_statute_paragraph/meeting_id
+    on_delete: CASCADE
   motion_poll_ids:
     type: relation-list
     to: motion_poll/meeting_id
+    on_delete: CASCADE
   assignment_ids:
     type: relation-list
     to: assignment/meeting_id
+    on_delete: CASCADE
   assignment_poll_ids:
     type: relation-list
     to: assignment_poll/meeting_id
-
-  # No relations to a meeting:
-  # user; OK, because not meeting-specific
-  # personal_note
-  # projection
-  # speaker
-  # motion_option
-  # motion_vote
-  # motion_comment
-  # motion_submitter
-  # motion_change_recommendation
-  # motion_state
-  # assignment_candidate
-  # assignment_option
-  # assignment_vote
+    on_delete: CASCADE
+  personal_note_ids:
+    type: relation-list
+    to: personal_note/meeting_id
+    on_delete: CASCADE
+  projection_ids:
+    type: relation-list
+    to: projection/meeting_id
+    on_delete: CASCADE
+  speaker_ids:
+    type: relation-list
+    to: speaker/meeting_id
+    on_delete: CASCADE
+  motion_option_ids:
+    type: relation-list
+    to: motion_option/meeting_id
+    on_delete: CASCADE
+  motion_vote_ids:
+    type: relation-list
+    to: motion_vote/meeting_id
+    on_delete: CASCADE
+  motion_comment_ids:
+    type: relation-list
+    to: motion_comment/meeting_id
+    on_delete: CASCADE
+  motion_submitter_ids:
+    type: relation-list
+    to: motion_submitter/meeting_id
+    on_delete: CASCADE
+  motion_change_recommendation_ids:
+    type: relation-list
+    to: motion_change_recommendation/meeting_id
+    on_delete: CASCADE
+  motion_state_ids:
+    type: relation-list
+    to: motion_state/meeting_id
+    on_delete: CASCADE
+  assignment_candidate_ids:
+    type: relation-list
+    to: assignment_candidate/meeting_id
+    on_delete: CASCADE
+  assignment_option_ids:
+    type: relation-list
+    to: assignment_option/meeting_id
+    on_delete: CASCADE
+  assignment_vote_ids:
+    type: relation-list
+    to: assignment_vote/meeting_id
+    on_delete: CASCADE
 
   # Logos and Fonts
   logo_$_id:
@@ -696,6 +760,7 @@ group:
   mediafile_access_group_ids:
     type: relation-list
     to: mediafile/access_group_ids
+    equal_fields: meeting_id
   mediafile_inherited_access_group_ids:
     type: relation-list
     to: mediafile/inherited_access_group_ids
@@ -704,15 +769,19 @@ group:
   read_comment_section_ids:
     type: relation-list
     to: motion_comment_section/read_group_ids
+    equal_fields: meeting_id
   write_comment_section_ids:
     type: relation-list
     to: motion_comment_section/write_group_ids
+    equal_fields: meeting_id
   motion_poll_ids:
     type: relation-list
     to: motion_poll/entitled_group_ids
+    equal_fields: meeting_id
   assignment_poll_ids:
     type: relation-list
     to: assignment_poll/entitled_group_ids
+    equal_fields: meeting_id
   used_as_motion_poll_default_id:
     type: relation
     to: meeting/motion_poll_default_group_ids
@@ -737,14 +806,17 @@ personal_note:
         name: personal_note_$_ids
         type: structured-relation
         replacement: meeting_id
-        through:
-        - content_object_id
   content_object_id:
     type: generic-relation
     to:
       collection:
         - motion
       field: personal_note_ids
+    equal_fields: meeting_id
+  meeting_id:
+    type: relation
+    to: meeting/personal_note_ids
+    required: true
 
 tag:
   id: number
@@ -761,6 +833,7 @@ tag:
         - motion
         - topic
       field: tag_ids
+    equal_fields: meeting_id
   meeting_id:
     type: relation
     to: meeting/tag_ids
@@ -808,21 +881,27 @@ agenda_item:
         - topic
       field: agenda_item_id
     required: true
+    equal_fields: meeting_id
   parent_id:
     type: relation
     to: agenda_item/child_ids
+    equal_fields: meeting_id
   child_ids:
     type: relation-list
     to: agenda_item/parent_id
+    equal_fields: meeting_id
   tag_ids:
     type: relation-list
     to: tag/tagged_ids
+    equal_fields: meeting_id
   projection_ids:
     type: relation-list
     to: projection/element_id
+    equal_fields: meeting_id
   current_projector_ids:
     type: relation-list
     to: projector/current_element_ids
+    equal_fields: meeting_id
   meeting_id:
     type: relation
     to: meeting/agenda_item_ids
@@ -843,15 +922,20 @@ list_of_speakers:
         - mediafile
       field: list_of_speakers_id
     required: true
+    equal_fields: meeting_id
   speaker_ids:
     type: relation-list
     to: speaker/list_of_speakers_id
+    on_delete: CASCADE
+    equal_fields: meeting_id
   projection_ids:
     type: relation-list
     to: projection/element_id
+    equal_fields: meeting_id
   current_projector_ids:
     type: relation-list
     to: projector/current_element_ids
+    equal_fields: meeting_id
   meeting_id:
     type: relation
     to: meeting/list_of_speakers_ids
@@ -874,6 +958,7 @@ speaker:
     type: relation
     to: list_of_speakers/speaker_ids
     required: true
+    equal_fields: meeting_id
   user_id:
     type: relation
     to:
@@ -882,8 +967,10 @@ speaker:
         name: speaker_$_ids
         type: structured-relation
         replacement: meeting_id
-        through:
-        - list_of_speakers_id
+    required: true
+  meeting_id:
+    type: relation
+    to: meeting/speaker_ids
     required: true
 
 topic:
@@ -896,23 +983,31 @@ topic:
   attachment_ids:
     type: relation-list
     to: mediafile/attachment_ids
+    equal_fields: meeting_id
   agenda_item_id:
     type: relation
     to: agenda_item/content_object_id
     required: true
+    on_delete: CASCADE
+    equal_fields: meeting_id
   list_of_speakers_id:
     type: relation
     to: list_of_speakers/content_object_id
     required: true
+    on_delete: CASCADE
+    equal_fields: meeting_id
   tag_ids:
     type: relation-list
     to: tag/tagged_ids
+    equal_fields: meeting_id
   projection_ids:
     type: relation-list
     to: projection/element_id
+    equal_fields: meeting_id
   current_projector_ids:
     type: relation-list
     to: projector/current_element_ids
+    equal_fields: meeting_id
   meeting_id:
     type: relation
     to: meeting/topic_ids
@@ -953,15 +1048,19 @@ motion:
   lead_motion_id:
     type: relation
     to: motion/amendment_ids
+    equal_fields: meeting_id
   amendment_ids:
     type: relation-list
     to: motion/lead_motion_id
+    equal_fields: meeting_id
   sort_parent_id:
     type: relation
     to: motion/sort_child_ids
+    equal_fields: meeting_id
   sort_child_ids:
     type: relation-list
     to: motion/sort_parent_id
+    equal_fields: meeting_id
   origin_id:
     type: relation
     to: motion/derived_motion_ids  # Note: The related motions may not be in the same meeting
@@ -973,27 +1072,35 @@ motion:
     type: relation
     to: motion_state/motion_ids
     required: true
+    equal_fields: meeting_id
   recommendation_id:
     type: relation
     to: motion_state/motion_recommendation_ids
+    equal_fields: meeting_id
   recommendation_extension_reference_ids:
     type: generic-relation-list
     to:
       collection:
         - motion
       field: referenced_in_motion_recommendation_extension_ids
+    equal_fields: meeting_id
   referenced_in_motion_recommendation_extension_ids:
     type: relation-list
     to: motion/recommendation_extension_reference_ids
+    equal_fields: meeting_id
   category_id:
     type: relation
     to: motion_category/motion_ids
+    equal_fields: meeting_id
   block_id:
     type: relation
     to: motion_block/motion_ids
+    equal_fields: meeting_id
   submitter_ids:
     type: relation-list
     to: motion_submitter/motion_id
+    on_delete: CASCADE
+    equal_fields: meeting_id
   supporter_ids:
     type: relation-list
     to:
@@ -1002,40 +1109,58 @@ motion:
         name: supported_motion_$_ids
         type: structured-relation
         replacement: meeting_id
+    equal_fields: meeting_id
   poll_ids:
     type: relation-list
     to: motion_poll/motion_id
+    on_delete: CASCADE
+    equal_fields: meeting_id
   change_recommendation_ids:
     type: relation-list
     to: motion_change_recommendation/motion_id
+    on_delete: CASCADE
+    equal_fields: meeting_id
   statute_paragraph_id:
     type: relation
     to: motion_statute_paragraph/motion_ids
+    equal_fields: meeting_id
   comment_ids:
     type: relation-list
     to: motion_comment/motion_id
+    on_delete: CASCADE
+    equal_fields: meeting_id
   agenda_item_id:
     type: relation
     to: agenda_item/content_object_id
+    on_delete: CASCADE
+    equal_fields: meeting_id
   list_of_speakers_id:
     type: relation
     to: list_of_speakers/content_object_id
     required: true
+    on_delete: CASCADE
+    equal_fields: meeting_id
   tag_ids:
     type: relation-list
     to: tag/tagged_ids
+    equal_fields: meeting_id
   attachment_ids:
     type: relation-list
     to: mediafile/attachment_ids
+    equal_fields: meeting_id
   projection_ids:
     type: relation-list
     to: projection/element_id
+    equal_fields: meeting_id
   current_projector_ids:
     type: relation-list
     to: projector/current_element_ids
+    equal_fields: meeting_id
   personal_note_ids:
     type: relation-list
     to: personal_note/content_object_id
+    equal_fields: meeting_id
+    on_delete: CASCADE
   meeting_id:
     type: relation
     to: meeting/motion_ids
@@ -1055,11 +1180,14 @@ motion_submitter:
         name: submitted_motion_$_ids
         type: structured-relation
         replacement: meeting_id
-        through:
-        - motion_id
   motion_id:
     type: relation
     to: motion/submitter_ids
+    equal_fields: meeting_id
+  meeting_id:
+    type: relation
+    to: meeting/motion_submitter_ids
+    required: true
 
 motion_comment:
   id: number
@@ -1069,9 +1197,15 @@ motion_comment:
     type: relation
     to: motion/comment_ids
     required: true
+    equal_fields: meeting_id
   section_id:
     type: relation
     to: motion_comment_section/comment_ids
+    required: true
+    equal_fields: meeting_id
+  meeting_id:
+    type: relation
+    to: meeting/motion_comment_ids
     required: true
 
 motion_comment_section:
@@ -1087,12 +1221,15 @@ motion_comment_section:
     type: relation-list
     to: motion_comment/section_id
     on_delete: PROTECT
+    equal_fields: meeting_id
   read_group_ids:
     type: relation-list
     to: group/read_comment_section_ids
+    equal_fields: meeting_id
   write_group_ids:
     type: relation-list
     to: group/write_comment_section_ids
+    equal_fields: meeting_id
   meeting_id:
     type: relation
     to: meeting/motion_comment_section_ids
@@ -1117,12 +1254,15 @@ motion_category:
   parent_id:
     type: relation
     to: motion_category/child_ids
+    equal_fields: meeting_id
   child_ids:
     type: relation-list
     to: motion_category/parent_id
+    equal_fields: meeting_id
   motion_ids:
     type: relation-list
     to: motion/category_id
+    equal_fields: meeting_id
   meeting_id:
     type: relation
     to: meeting/motion_category_ids
@@ -1138,19 +1278,26 @@ motion_block:
   motion_ids:
     type: relation-list
     to: motion/block_id
+    equal_fields: meeting_id
   agenda_item_id:
     type: relation
     to: agenda_item/content_object_id
+    on_delete: CASCADE
+    equal_fields: meeting_id
   list_of_speakers_id:
     type: relation
     to: list_of_speakers/content_object_id
     required: true
+    on_delete: CASCADE
+    equal_fields: meeting_id
   projection_ids:
     type: relation-list
     to: projection/element_id
+    equal_fields: meeting_id
   current_projector_ids:
     type: relation-list
     to: projector/current_element_ids
+    equal_fields: meeting_id
   meeting_id:
     type: relation
     to: meeting/motion_block_ids
@@ -1182,6 +1329,11 @@ motion_change_recommendation:
   motion_id:
     type: relation
     to: motion/change_recommendation_ids
+    required: true
+    equal_fields: meeting_id
+  meeting_id:
+    type: relation
+    to: meeting/motion_change_recommendation_ids
     required: true
 
 motion_state:
@@ -1223,22 +1375,37 @@ motion_state:
   next_state_ids:
     type: relation-list
     to: motion_state/previous_state_ids
+    equal_fields:
+    - meeting_id
+    - workflow_id
   previous_state_ids:
     type: relation-list
     to: motion_state/next_state_ids
+    equal_fields:
+    - meeting_id
+    - workflow_id
   motion_ids:
     type: relation-list
     to: motion/state_id
+    on_delete: PROTECT
+    equal_fields: meeting_id
   motion_recommendation_ids:
     type: relation-list
     to: motion/recommendation_id
+    equal_fields: meeting_id
   workflow_id:
     type: relation
     to: motion_workflow/state_ids
     required: true
+    equal_fields: meeting_id
   first_state_of_workflow_id:
     type: relation
     to: motion_workflow/first_state_id
+    equal_fields: meeting_id
+  meeting_id:
+    type: relation
+    to: meeting/motion_state_ids
+    required: true
 
 motion_workflow:
   id: number
@@ -1250,10 +1417,12 @@ motion_workflow:
     type: relation-list
     to: motion_state/workflow_id
     on_delete: CASCADE
+    equal_fields: meeting_id
   first_state_id:
     type: relation
     to: motion_state/first_state_of_workflow_id
     required: true
+    equal_fields: meeting_id
   default_workflow_meeting_id:
     type: relation
     to: meeting/motions_default_workflow_id
@@ -1281,6 +1450,7 @@ motion_statute_paragraph:
   motion_ids:
     type: relation-list
     to: motion/statute_paragraph_id
+    equal_fields: meeting_id
   meeting_id:
     type: relation
     to: meeting/motion_statute_paragraph_ids
@@ -1302,9 +1472,12 @@ motion_poll:
   motion_id:
     type: relation
     to: motion/poll_ids
+    equal_fields: meeting_id
   option_ids:
     type: relation-list
     to: motion_option/poll_id
+    on_delete: CASCADE
+    equal_fields: meeting_id
   voted_ids:
     type: relation-list
     to:
@@ -1316,12 +1489,15 @@ motion_poll:
   entitled_group_ids:
     type: relation-list
     to: group/motion_poll_ids
+    equal_fields: meeting_id
   projection_ids:
     type: relation-list
     to: projection/element_id
+    equal_fields: meeting_id
   current_projector_ids:
     type: relation-list
     to: projector/current_element_ids
+    equal_fields: meeting_id
   meeting_id:
     type: relation
     to: meeting/motion_poll_ids
@@ -1335,9 +1511,16 @@ motion_option:
   poll_id:
     type: relation
     to: motion_poll/option_ids
+    equal_fields: meeting_id
   vote_ids:
     type: relation-list
     to: motion_vote/option_id
+    on_delete: CASCADE
+    equal_fields: meeting_id
+  meeting_id:
+    type: relation
+    to: meeting/motion_option_ids
+    required: true
 
 motion_vote:
   id: number
@@ -1347,6 +1530,7 @@ motion_vote:
   option_id:
     type: relation
     to: motion_option/vote_ids
+    equal_fields: meeting_id
   user_id:
     type: relation
     to:
@@ -1355,9 +1539,6 @@ motion_vote:
         name: motion_vote_$_ids
         type: structured-relation
         replacement: meeting_id
-        through:
-        - option_id
-        - poll_id
   delegated_user_id:
     type: relation
     to:
@@ -1366,9 +1547,10 @@ motion_vote:
         name: motion_delegated_vote_$_ids
         type: structured-relation
         replacement: meeting_id
-        through:
-        - option_id
-        - poll_id
+  meeting_id:
+    type: relation
+    to: meeting/motion_vote_ids
+    required: true
 
 assignment:
   id: number
@@ -1391,28 +1573,40 @@ assignment:
   candidate_ids:
     type: relation-list
     to: assignment_candidate/assignment_id
+    on_delete: CASCADE
+    equal_fields: meeting_id
   poll_ids:
     type: relation-list
     to: assignment_poll/assignment_id
+    on_delete: CASCADE
+    equal_fields: meeting_id
   agenda_item_id:
     type: relation
     to: agenda_item/content_object_id
+    on_delete: CASCADE
+    equal_fields: meeting_id
   list_of_speakers_id:
     type: relation
     to: list_of_speakers/content_object_id
     required: true
+    on_delete: CASCADE
+    equal_fields: meeting_id
   tag_ids:
     type: relation-list
     to: tag/tagged_ids
+    equal_fields: meeting_id
   attachment_ids:
     type: relation-list
     to: mediafile/attachment_ids
+    equal_fields: meeting_id
   projection_ids:
     type: relation-list
     to: projection/element_id
+    equal_fields: meeting_id
   current_projector_ids:
     type: relation-list
     to: projector/current_element_ids
+    equal_fields: meeting_id
   meeting_id:
     type: relation
     to: meeting/assignment_ids
@@ -1427,6 +1621,7 @@ assignment_candidate:
   assignment_id:
     type: relation
     to: assignment/candidate_ids
+    equal_fields: meeting_id
   user_id:
     type: relation
     to:
@@ -1435,8 +1630,10 @@ assignment_candidate:
         name: assignment_candidate_$_ids
         type: structured-relation
         replacement: meeting_id
-        through:
-        - assignment_id
+  meeting_id:
+    type: relation
+    to: meeting/assignment_candidate_ids
+    required: true
 
 assignment_poll:
   id: number
@@ -1461,6 +1658,7 @@ assignment_poll:
   assignment_id:
     type: relation
     to: assignment/poll_ids
+    equal_fields: meeting_id
   voted_ids:
     type: relation-list
     to:
@@ -1472,15 +1670,20 @@ assignment_poll:
   entitled_group_ids:
     type: relation-list
     to: group/assignment_poll_ids
+    equal_fields: meeting_id
   option_ids:
     type: relation-list
     to: assignment_option/poll_id
+    on_delete: CASCADE
+    equal_fields: meeting_id
   projection_ids:
     type: relation-list
     to: projection/element_id
+    equal_fields: meeting_id
   current_projector_ids:
     type: relation-list
     to: projector/current_element_ids
+    equal_fields: meeting_id
   meeting_id:
     type: relation
     to: meeting/assignment_poll_ids
@@ -1497,6 +1700,7 @@ assignment_option:
   poll_id:
     type: relation
     to: assignment_poll/option_ids
+    equal_fields: meeting_id
   user_id:
     type: relation
     to:
@@ -1505,11 +1709,15 @@ assignment_option:
         name: assignment_option_$_ids
         type: structured-relation
         replacement: meeting_id
-        through:
-        - poll_id
   vote_ids:
     type: relation-list
     to: assignment_vote/option_id
+    on_delete: CASCADE
+    equal_fields: meeting_id
+  meeting_id:
+    type: relation
+    to: meeting/assignment_option_ids
+    required: true
 
 assignment_vote:
   id: number
@@ -1519,6 +1727,7 @@ assignment_vote:
   option_id:
     type: relation
     to: assignment_option/vote_ids
+    equal_fields: meeting_id
   user_id:
     type: relation
     to:
@@ -1527,9 +1736,6 @@ assignment_vote:
         name: assignment_vote_$_ids
         type: structured-relation
         replacement: meeting_id
-        through:
-        - option_id
-        - poll_id
   delegated_user_id:
     type: relation
     to:
@@ -1538,9 +1744,10 @@ assignment_vote:
         name: assignment_delegated_vote_$_ids
         type: structured-relation
         replacement: meeting_id
-        through:
-        - option_id
-        - poll_id
+  meeting_id:
+    type: relation
+    to: meeting/assignment_vote_ids
+    required: true
 
 # Mediafiles are delivered by the mediafile server with the URL
 # `<media-prefix>/media/<meeting_id>/path`
@@ -1574,22 +1781,29 @@ mediafile:
   access_group_ids:
     type: relation-list
     to: group/mediafile_access_group_ids
+    equal_fields: meeting_id
   parent_id:
     type: relation
     to: mediafile/child_ids
+    equal_fields: meeting_id
   child_ids:
     type: relation-list
     to: mediafile/parent_id
+    equal_fields: meeting_id
   list_of_speakers_id:
     type: relation
     to: list_of_speakers/content_object_id
     required: true
+    on_delete: CASCADE
+    equal_fields: meeting_id
   projection_ids:
     type: relation-list
     to: projection/element_id
+    equal_fields: meeting_id
   current_projector_ids:
     type: relation-list
     to: projector/current_element_ids
+    equal_fields: meeting_id
   attachment_ids:
     type: generic-relation-list
     to:
@@ -1598,6 +1812,7 @@ mediafile:
         - topic
         - assignment
       field: attachment_ids
+    equal_fields: meeting_id
   meeting_id:
     type: relation
     to: meeting/mediafile_ids
@@ -1649,6 +1864,8 @@ projector:
   current_projection_ids:
     type: relation-list
     to: projection/current_projector_id
+    on_delete: CASCADE
+    equal_fields: meeting_id
   # A relation to the currently projected elements to get a direct link, if
   # the element is projected.
   current_element_ids:
@@ -1668,18 +1885,23 @@ projector:
         - projector_message
         - projector_countdown
       field: current_projector_ids
+    equal_fields: meeting_id
   preview_projection_ids:
     type: relation-list
     to: projection/preview_projector_id
+    equal_fields: meeting_id
   history_projection_ids:
     type: relation-list
     to: projection/history_projector_id
+    equal_fields: meeting_id
   used_as_reference_projector_meeting_id:
     type: relation
     to: meeting/reference_projector_id
   projectiondefault_ids:
     type: relation-list
     to: projectiondefault/projector_id
+    on_delete: PROTECT
+    equal_fields: meeting_id
   meeting_id:
     type: relation
     to: meeting/projector_ids
@@ -1696,12 +1918,15 @@ projection:
   current_projector_id:
     type: relation
     to: projector/current_projection_ids
+    equal_fields: meeting_id
   preview_projector_id:
     type: relation
     to: projector/preview_projection_ids
+    equal_fields: meeting_id
   history_projector_id:
     type: relation
     to: projector/history_projection_ids
+    equal_fields: meeting_id
   element_id:
     type: generic-relation
     to:
@@ -1719,6 +1944,11 @@ projection:
         - projector_message
         - projector_countdown
       field: projection_ids
+    equal_fields: meeting_id
+  meeting_id:
+    type: relation
+    to: meeting/projection_ids
+    required: true
 
 projectiondefault:
   id: number
@@ -1728,6 +1958,7 @@ projectiondefault:
   projector_id:
     type: relation
     to: projector/projectiondefault_ids
+    equal_fields: meeting_id
   meeting_id:
     type: relation
     to: meeting/projectiondefault_ids
@@ -1739,9 +1970,11 @@ projector_message:
   projection_ids:
     type: relation-list
     to: projection/element_id
+    equal_fields: meeting_id
   current_projector_ids:
     type: relation-list
     to: projector/current_element_ids
+    equal_fields: meeting_id
   meeting_id:
     type: relation
     to: meeting/projector_message_ids
@@ -1757,9 +1990,11 @@ projector_countdown:
   projection_ids:
     type: relation-list
     to: projection/element_id
+    equal_fields: meeting_id
   current_projector_ids:
     type: relation-list
     to: projector/current_element_ids
+    equal_fields: meeting_id
   meeting_id:
     type: relation
     to: meeting/projector_countdown_ids
