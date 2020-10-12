@@ -1314,6 +1314,7 @@ motion_change_recommendation:
     - 1
     - 2
     - 3
+    default: 0
   other_description: string
   line_from:
     type: number
