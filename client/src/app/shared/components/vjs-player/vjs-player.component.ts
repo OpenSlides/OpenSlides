@@ -10,6 +10,9 @@ import {
     ViewEncapsulation
 } from '@angular/core';
 
+import { of } from 'rxjs';
+import { ajax, AjaxResponse } from 'rxjs/ajax';
+import { catchError, map } from 'rxjs/operators';
 import videojs from 'video.js';
 
 import { ConfigService } from 'app/core/ui-services/config.service';
@@ -32,14 +35,17 @@ enum MimeType {
     encapsulation: ViewEncapsulation.None
 })
 export class VjsPlayerComponent implements OnInit, OnDestroy {
-    @ViewChild('videoPlayer', { static: true }) private videoPlayer: ElementRef;
-
+    @ViewChild('videoPlayer', { static: true })
+    private videoPlayer: ElementRef;
     private _videoUrl: string;
+    private posterUrl: string;
+    public player: videojs.Player;
+    public isUrlOnline: boolean;
 
     @Input()
     public set videoUrl(value: string) {
         this._videoUrl = value;
-        this.playVideo();
+        this.checkVideoUrl();
     }
 
     @Output()
@@ -49,16 +55,12 @@ export class VjsPlayerComponent implements OnInit, OnDestroy {
         return this._videoUrl;
     }
 
-    public player: videojs.Player;
-
     private get videoSource(): VideoSource {
         return {
             src: this.videoUrl,
             type: this.determineContentTypeByUrl(this.videoUrl)
         };
     }
-
-    private posterUrl: string;
 
     public constructor(config: ConfigService) {
         config.get<string>('general_system_stream_poster').subscribe(posterUrl => {
@@ -67,14 +69,7 @@ export class VjsPlayerComponent implements OnInit, OnDestroy {
     }
 
     public async ngOnInit(): Promise<void> {
-        this.player = videojs(this.videoPlayer.nativeElement, {
-            textTrackSettings: false,
-            fluid: true,
-            autoplay: 'any',
-            liveui: true,
-            poster: this.posterUrl
-        });
-        this.playVideo();
+        this.initPlayer();
     }
 
     public ngOnDestroy(): void {
@@ -83,11 +78,50 @@ export class VjsPlayerComponent implements OnInit, OnDestroy {
         }
     }
 
-    private playVideo(): void {
-        if (this.player) {
-            this.player.src(this.videoSource);
-            this.started.next();
+    public async checkVideoUrl(): Promise<void> {
+        /**
+         * Using observable would not make sense, because without it would not automatically update
+         * if a Ressource switches from online to offline
+         */
+        const ajaxResponse: AjaxResponse = await ajax(this.videoUrl)
+            .pipe(
+                map(response => response),
+                catchError(error => {
+                    return of(error);
+                })
+            )
+            .toPromise();
+
+        /**
+         * there is no enum for http status codes in the whole Angular stack...
+         */
+        if (ajaxResponse.status === 200) {
+            this.isUrlOnline = true;
+            this.playVideo();
+        } else {
+            this.isUrlOnline = false;
+            if (this.player) {
+                this.player.pause();
+            }
+            this.player.src('');
         }
+    }
+
+    private initPlayer(): void {
+        if (!this.player) {
+            this.player = videojs(this.videoPlayer.nativeElement, {
+                textTrackSettings: false,
+                fluid: true,
+                autoplay: 'any',
+                liveui: true,
+                poster: this.posterUrl
+            });
+        }
+    }
+
+    private playVideo(): void {
+        this.player.src(this.videoSource);
+        this.started.next();
     }
 
     private determineContentTypeByUrl(url: string): MimeType {

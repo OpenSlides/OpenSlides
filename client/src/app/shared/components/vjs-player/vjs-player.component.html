@@ -1,3 +1,14 @@
 <div class="video-wrapper">
-    <video #videoPlayer class="video-js" controls preload="none"></video>
+    <div class="player-container" [ngClass]="{ hide: !isUrlOnline }">
+        <video #videoPlayer class="video-js" controls preload="none"></video>
+    </div>
+    <div *ngIf="!isUrlOnline" class="is-offline-wrapper">
+        <div>
+            {{ 'No stream available' | translate }}
+        </div>
+        <button mat-raised-button (click)="checkVideoUrl()" color="primary">
+            <span>{{ 'Refresh' | translate }}</span>
+            <mat-icon>refresh</mat-icon>
+        </button>
+    </div>
 </div>
