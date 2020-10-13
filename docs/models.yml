@@ -869,7 +869,7 @@ agenda_item:
     read_only: true
   weight:
     type: number
-    default: 0
+    default: 10000
 
   content_object_id:
     type: generic-relation
@@ -951,7 +951,7 @@ speaker:
     read_only: true
   weight:
     type: number
-    default: 0
+    default: 10000
   marked: boolean
 
   list_of_speakers_id:
@@ -1032,12 +1032,12 @@ motion:
   reason: HTMLStrict
   category_weight:
     type: number
-    default: 0
+    default: 10000
   state_extension: string
   recommendation_extension: string
   sort_weight:
     type: number
-    default: 0
+    default: 10000
   created:
     type: timestamp
     read_only: true
@@ -1170,7 +1170,7 @@ motion_submitter:
   id: number
   weight:
     type: number
-    default: 0
+    default: 10000
 
   user_id:
     type: relation
@@ -1215,7 +1215,7 @@ motion_comment_section:
     required: true
   weight:
     type: number
-    default: 0
+    default: 10000
 
   comment_ids:
     type: relation-list
@@ -1245,7 +1245,7 @@ motion_category:
     required: true
   weight:
     type: number
-    default: 0
+    default: 10000
   level:
     type: number
     description: Calculated field.
@@ -1446,7 +1446,7 @@ motion_statute_paragraph:
   text: HTMLStrict
   weight:
     type: number
-    default: 0
+    default: 10000
 
   motion_ids:
     type: relation-list
@@ -1562,12 +1562,14 @@ assignment:
   open_posts:
     type: number
     minimum: 0
+    default: 0
   phase:
     type: number
     enum:
     - 1
     - 2
     - 3
+    default: 1
   default_poll_description: string
   number_poll_candidates: boolean
 
@@ -1617,7 +1619,7 @@ assignment_candidate:
   id: number
   weight:
     type: number
-    default: 0
+    default: 10000
 
   assignment_id:
     type: relation
@@ -1696,7 +1698,7 @@ assignment_option:
   abstain: decimal(6)
   weight:
     type: number
-    default: 0
+    default: 10000
 
   poll_id:
     type: relation
