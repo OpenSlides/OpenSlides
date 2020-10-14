@@ -26,7 +26,7 @@
 
     @include desktop {
         .finished-speaker-grid {
-            grid-template-areas: 'number name time controls';
+            grid-template-areas: 'number name point-of-order time controls';
             grid-template-columns: 30px 1fr min-content min-content;
         }
     }
@@ -39,6 +39,18 @@
     .name {
         grid-area: name;
         margin: 0;
+    }
+
+    .point-of-order {
+        grid-area: point-of-order;
+        margin: 0;
+        //allows pushing this grid area as small as possible and aligns the end to the same level
+        white-space: nowrap;
+        font-size: 80%;
+
+        .mat-icon {
+            line-height: 19px;
+        }
     }
 
     .time {
@@ -102,7 +114,7 @@
 }
 
 .search-new-speaker-form {
-    padding: 15px 25px 10px 25px;
+    padding: 15px 25px 0 25px;
     width: auto;
 
     .search-users-field {
@@ -117,7 +129,12 @@
 }
 
 .add-self-buttons {
-    padding: 15px 0 20px 25px;
+    margin: 15px 25px;
+    display: flex;
+
+    button + button {
+        margin-left: 20px;
+    }
 }
 
 .speaker-warning {

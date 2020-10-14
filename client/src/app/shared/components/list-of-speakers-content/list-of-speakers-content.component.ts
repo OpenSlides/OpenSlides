@@ -58,6 +58,8 @@ export class ListOfSpeakersContentComponent extends BaseViewComponentDirective i
 
     public showFistContributionHint: boolean;
 
+    public showPointOfOrders: boolean;
+
     public get title(): string {
         return this.viewListOfSpeakers?.getTitle();
     }
@@ -68,10 +70,6 @@ export class ListOfSpeakersContentComponent extends BaseViewComponentDirective i
 
     public get opCanManage(): boolean {
         return this.operator.hasPerms(this.permission.agendaCanManageListOfSpeakers);
-    }
-
-    public get isOpInList(): boolean {
-        return this.waitingSpeakers.some(speaker => speaker.user_id === this.operator.user.id);
     }
 
     public get canAddSelf(): boolean {
@@ -98,7 +96,7 @@ export class ListOfSpeakersContentComponent extends BaseViewComponentDirective i
     private isListOfSpeakersEmptyEvent = new EventEmitter<boolean>();
 
     @Output()
-    private hasFinishesSpeakersEvent = new EventEmitter<boolean>();
+    private canReaddLastSpeakerEvent = new EventEmitter<boolean>();
 
     public constructor(
         title: Title,
@@ -129,7 +127,7 @@ export class ListOfSpeakersContentComponent extends BaseViewComponentDirective i
             this.addSpeakerForm.valueChanges.subscribe(formResult => {
                 // resetting a form triggers a form.next(null) - check if user_id
                 if (formResult && formResult.user_id) {
-                    this.addNewSpeaker(formResult.user_id);
+                    this.addUserAsNewSpeaker(formResult.user_id);
                 }
             }),
             // observe changes to the viewport
@@ -144,6 +142,10 @@ export class ListOfSpeakersContentComponent extends BaseViewComponentDirective i
             // observe changes to the agenda_show_first_contribution config
             this.config.get<boolean>('agenda_show_first_contribution').subscribe(show => {
                 this.showFistContributionHint = show;
+            }),
+            // observe point of order settings
+            this.config.get<boolean>('agenda_enable_point_of_order_speakers').subscribe(show => {
+                this.showPointOfOrders = show;
             })
         );
     }
@@ -157,8 +159,16 @@ export class ListOfSpeakersContentComponent extends BaseViewComponentDirective i
         return this.isListOfSpeakersEmptyEvent.emit(!this.activeSpeaker);
     }
 
-    private hasFinishesSpeakers(): void {
-        this.hasFinishesSpeakersEvent.emit(this.finishedSpeakers?.length > 0);
+    private updateCanReaddLastSpeaker(): void {
+        let canReaddLast;
+        if (this.finishedSpeakers?.length > 0) {
+            const lastSpeaker = this.finishedSpeakers[this.finishedSpeakers.length - 1];
+            const isLastSpeakerWaiting = this.waitingSpeakers.some(speaker => speaker.user_id === lastSpeaker.user_id);
+            canReaddLast = !lastSpeaker.point_of_order && !isLastSpeakerWaiting;
+        } else {
+            canReaddLast = false;
+        }
+        this.canReaddLastSpeakerEvent.emit(canReaddLast);
     }
 
     /**
@@ -166,10 +176,13 @@ export class ListOfSpeakersContentComponent extends BaseViewComponentDirective i
      *
      * @param userId the user id to add to the list. No parameter adds the operators user as speaker.
      */
-    public addNewSpeaker(userId?: number): void {
-        this.listOfSpeakersRepo
-            .createSpeaker(this.viewListOfSpeakers, userId)
-            .then(() => this.addSpeakerForm.reset(), this.raiseError);
+    public async addUserAsNewSpeaker(userId?: number): Promise<void> {
+        try {
+            await this.listOfSpeakersRepo.createSpeaker(this.viewListOfSpeakers, userId);
+            this.addSpeakerForm.reset();
+        } catch (e) {
+            this.raiseError(e);
+        }
     }
 
     /**
@@ -178,18 +191,42 @@ export class ListOfSpeakersContentComponent extends BaseViewComponentDirective i
      * @param speaker optional speaker to remove. If none is given,
      * the operator themself is removed
      */
-    public async onDeleteButton(speaker?: ViewSpeaker): Promise<void> {
+    public async removeSpeaker(speaker?: ViewSpeaker): Promise<void> {
         const title = this.translate.instant(
             'Are you sure you want to delete this speaker from this list of speakers?'
         );
         if (await this.promptService.open(title)) {
             try {
-                await this.listOfSpeakersRepo.delete(this.viewListOfSpeakers, speaker ? speaker.id : null);
+                await this.listOfSpeakersRepo.deleteSpeaker(this.viewListOfSpeakers, speaker ? speaker.id : null);
                 this.filterUsers();
             } catch (e) {
                 this.raiseError(e);
             }
         }
+    }
+
+    public async addPointOfOrder(): Promise<void> {
+        const title = this.translate.instant('Are you sure you want to submit a new point of order?');
+        if (await this.promptService.open(title)) {
+            try {
+                await this.listOfSpeakersRepo.createSpeaker(this.viewListOfSpeakers, undefined, true);
+            } catch (e) {
+                this.raiseError(e);
+            }
+        }
+    }
+
+    public removePointOfOrder(): void {
+        this.listOfSpeakersRepo.deleteSpeaker(this.viewListOfSpeakers, undefined, true).catch(this.raiseError);
+    }
+
+    public isOpInWaitlist(pointOfOrder: boolean = false): boolean {
+        if (!this.waitingSpeakers) {
+            return false;
+        }
+        return this.waitingSpeakers.some(
+            speaker => speaker.user_id === this.operator.user.id && speaker.point_of_order === pointOfOrder
+        );
     }
 
     /**
@@ -268,7 +305,7 @@ export class ListOfSpeakersContentComponent extends BaseViewComponentDirective i
         });
 
         this.activeSpeaker = allSpeakers?.find(speaker => speaker.state === SpeakerState.CURRENT);
-        this.hasFinishesSpeakers();
+        this.updateCanReaddLastSpeaker();
         this.isListOfSpeakersEmpty();
     }
 
@@ -293,7 +330,7 @@ export class ListOfSpeakersContentComponent extends BaseViewComponentDirective i
      */
     public async onCreateUser(username: string): Promise<void> {
         const newUser = await this.userRepository.createFromString(username);
-        this.addNewSpeaker(newUser.id);
+        this.addUserAsNewSpeaker(newUser.id);
     }
 
     /**

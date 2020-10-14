@@ -143,6 +143,14 @@ export class ListOfSpeakersRepositoryService extends BaseHasContentObjectReposit
         }
     };
 
+    public async delete(viewModel: ViewListOfSpeakers): Promise<void> {
+        throw new Error('Not supported');
+    }
+
+    public async create(model: ListOfSpeakers): Promise<Identifiable> {
+        throw new Error('Not supported');
+    }
+
     /**
      * Add a new speaker to a list of speakers.
      * Sends the users id to the server
@@ -150,9 +158,13 @@ export class ListOfSpeakersRepositoryService extends BaseHasContentObjectReposit
      * @param userId {@link User} id of the new speaker
      * @param listOfSpeakers the target agenda item
      */
-    public async createSpeaker(listOfSpeakers: ViewListOfSpeakers, userId: number): Promise<Identifiable> {
+    public async createSpeaker(
+        listOfSpeakers: ViewListOfSpeakers,
+        userId: number,
+        pointOfOrder?: boolean
+    ): Promise<Identifiable> {
         const restUrl = this.getRestUrl(listOfSpeakers.id, 'manage_speaker');
-        return await this.httpService.post<Identifiable>(restUrl, { user: userId });
+        return await this.httpService.post<Identifiable>(restUrl, { user: userId, point_of_order: pointOfOrder });
     }
 
     /**
@@ -162,9 +174,20 @@ export class ListOfSpeakersRepositoryService extends BaseHasContentObjectReposit
      * @param speakerId (otional) the speakers id. If no id is given, the speaker with the
      * current operator is removed.
      */
-    public async delete(listOfSpeakers: ViewListOfSpeakers, speakerId?: number): Promise<void> {
+    public async deleteSpeaker(
+        listOfSpeakers: ViewListOfSpeakers,
+        speakerId?: number,
+        pointOfOrder?: boolean
+    ): Promise<void> {
         const restUrl = this.getRestUrl(listOfSpeakers.id, 'manage_speaker');
-        await this.httpService.delete(restUrl, speakerId ? { speaker: speakerId } : null);
+        const payload: { speaker?: number; point_of_order?: boolean } = {};
+        if (speakerId) {
+            payload.speaker = speakerId;
+        }
+        if (pointOfOrder) {
+            payload.point_of_order = pointOfOrder;
+        }
+        await this.httpService.delete(restUrl, payload);
     }
 
     /**
