@@ -32,6 +32,12 @@ Interface Ticket {
     }
 }
 
+// This describes, which information is received by requesting `api/authenticate`.
+interface LoginInformation {
+    userId: number;
+    sessionId: string;
+}
+
 /**
 * Describes an http-response, which is sent back to any requesting service.
 */
@@ -39,9 +45,10 @@ Interface Response <T> {
     // Optional headers, which are set in an http-response
     httpHeaders: {
         // Authentication is passed, if a new access-token is returned.
+        // It is written with a capital 'A', so the value of this header is 'Authentication: "..."'.
         authentication?: string,
         // Cookies, like one containing 'refreshId=(Cookie as string)', if a user signs in, are passed. 
-        // Lifetime of one cookie is about 24h. 
+        // Lifetime of one cookie is the browser-session. 
         // Flags for the cookies are: HttpOnly, Secure
         cookies: {
             [name: string]: string
