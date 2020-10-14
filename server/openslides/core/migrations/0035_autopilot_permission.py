@@ -31,7 +31,7 @@ def add_permission_to_delegates(apps, schema_editor):
         )
 
     delegate.permissions.add(perm)
-    delegate.save()
+    delegate.save(skip_autoupdate=True)
 
 
 class Migration(migrations.Migration):
