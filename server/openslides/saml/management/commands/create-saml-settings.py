@@ -25,7 +25,7 @@ class Command(BaseCommand):
 
         if settings_dir is not None:
             settings_path = os.path.join(settings_dir, "saml_settings.json")
-            if not os.path.isdir(settings_path):
+            if not os.path.isdir(settings_dir):
                 print(f"The directory '{settings_dir}' does not exist. Aborting...")
                 return
         else:
