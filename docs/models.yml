@@ -1346,7 +1346,7 @@ motion_state:
   css_class:
     type: string
     enum:
-    - gray
+    - grey
     - red
     - green
     - lightblue
