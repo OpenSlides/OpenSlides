@@ -29,7 +29,9 @@ RUN apt-get -y update && apt-get -y upgrade && \
     rsync \
     wait-for-it \
     wget \
-    xz-utils
+    xz-utils \
+    zlib1g-dev \
+    libffi-dev # install of zlib1g-dev and libffi-dev is required on armhf architectures
 
 # Install additional tools
 RUN apt-get install --no-install-recommends -y \
