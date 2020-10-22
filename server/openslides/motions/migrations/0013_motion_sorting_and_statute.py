@@ -8,7 +8,7 @@ import openslides.utils.models
 
 class Migration(migrations.Migration):
 
-    dependencies = [("motions", "0012_motion_comments")]
+    dependencies = [("motions", "0012c_motion_comments_3")]
 
     operations = [
         migrations.AlterModelOptions(
