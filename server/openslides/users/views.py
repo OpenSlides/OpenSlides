@@ -515,7 +515,11 @@ class UserViewSet(ModelViewSet):
                 }
             )
         except smtplib.SMTPException as err:
-            raise ValidationError({"detail": f"{err.errno}: {err.strerror}"})
+            if err.errno and err.strerror:
+                detail = f"{err.errno}: {err.strerror}"
+            else:
+                detail = str(err)
+            raise ValidationError({"detail": detail})
 
         success_users = []
         user_pks_without_email = []
