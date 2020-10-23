@@ -5,12 +5,18 @@ services:
     volumes:
       - ./openslides-datastore-service/shared/shared:/app/shared
       - ./openslides-datastore-service/reader/reader:/app/reader
+    ports:
+      - "9010:9010"
+    environment:
+      - DATASTORE_ENABLE_DEV_ENVIRONMENT=1
   datastore-writer:
     image: openslides-datastore-writer-dev
     volumes:
       - ./openslides-datastore-service/shared/shared:/app/shared
       - ./openslides-datastore-service/writer/writer:/app/writer
       - ./openslides-datastore-service/cli:/app/cli
+    ports:
+      - "9011:9011"
     environment:
       - DATASTORE_ENABLE_DEV_ENVIRONMENT=1
       - COMMAND=create_initial_data

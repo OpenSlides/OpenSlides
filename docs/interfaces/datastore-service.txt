@@ -204,6 +204,16 @@ Interface GetManyRequest {
 get_all(collection: Collection, mapped_fields?: Field[], get_deleted_models?: DeletedModelsBehaviour): Map<Id, Partial<Model>>;
 
 /**
+ * Returns all models.
+ * Url: POST to /internal/datastore/reader/get_everything
+ *
+ * This is a dev route only!
+ *
+ * @returns The example data format: A mapping of a collection to a list of models.
+ */
+get_everything(get_deleted_models?: DeletedModelsBehaviour): Map<Collection, Model[]>;
+
+/**
  * Returns all models of one collection that satisfy the filter condition.
  * Url: POST to /internal/datastore/reader/filter
  *
