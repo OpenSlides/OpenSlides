@@ -391,7 +391,7 @@ class UserViewSet(ModelViewSet):
         if action not in ("add", "remove"):
             raise ValidationError({"detail": "The action must be add or remove"})
 
-        users = self.bulk_get_users(request, user_ids)
+        users = self.bulk_get_users(request, user_ids, auth_type=None)
         groups = list(Group.objects.filter(pk__in=group_ids))
 
         for user in users:
