@@ -45,7 +45,7 @@ services:
       - datastore-writer
     env_file: services.env
     volumes:
-      - ../openslides-backend/openslides_backend:/srv/code/openslides_backend
+      - ../openslides-backend/openslides_backend:/app/openslides_backend
   autoupdate:
     image: openslides-autoupdate-dev
     depends_on:
