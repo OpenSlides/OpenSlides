@@ -5,11 +5,14 @@
 *~
 .DS_Store
 .idea
-.env
 *.code-workspace
 
 # certs
 *.pem
+
+# Deployment
+/docker/docker-compose.yml
+/docker/docker-stack.yml
 
 # Old OS3 files and folders
 .coverage
@@ -29,5 +32,4 @@ tests
 .vscode/
 package-lock.json
 server/
-docker/
-
+docker/keys
