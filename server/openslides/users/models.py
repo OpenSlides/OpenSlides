@@ -22,6 +22,7 @@ from openslides.utils.manager import BaseManager
 
 from ..core.config import config
 from ..utils.auth import GROUP_ADMIN_PK
+from ..utils.autoupdate import inform_changed_data
 from ..utils.models import (
     CASCADE_AND_AUTOUPDATE,
     SET_NULL_AND_AUTOUPDATE,
@@ -87,6 +88,8 @@ class UserManager(BaseUserManager):
         admin.password = make_password(admin.default_password)
         admin.save(skip_autoupdate=skip_autoupdate)
         admin.groups.add(GROUP_ADMIN_PK)
+        if not skip_autoupdate:
+            inform_changed_data(admin)
         return created
 
     def generate_username(self, first_name, last_name):

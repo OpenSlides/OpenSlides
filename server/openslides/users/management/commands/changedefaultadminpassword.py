@@ -24,7 +24,7 @@ class Command(BaseCommand):
 
         if user.check_password("admin"):
             user.set_password(options["password"])
-            user.save(skip_autoupdate=True)
+            user.save()
             self.stdout.write(
                 self.style.SUCCESS("Password of user admin successfully changed.")
             )

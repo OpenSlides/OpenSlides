@@ -1,5 +1,7 @@
 from django.core.management.base import BaseCommand
 
+from openslides.utils.autoupdate import inform_changed_data
+
 from ...models import User
 
 
@@ -43,11 +45,11 @@ class Command(BaseCommand):
             user = User.objects.create_user(
                 options["username"],
                 options["password"],
-                skip_autoupdate=True,
                 **user_data,
             )
             if options["groups_id"].isdigit():
                 user.groups.add(int(options["groups_id"]))
+                inform_changed_data(user)
             self.stdout.write(
                 self.style.SUCCESS(f"Created user {options['username']}.")
             )
