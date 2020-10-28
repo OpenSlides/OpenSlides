@@ -6,6 +6,7 @@ from django.db import models
 
 from . import logging
 from .access_permissions import BaseAccessPermissions
+from .auth import UserDoesNotExist
 from .autoupdate import AutoupdateElement, inform_changed_data, inform_elements
 from .rest_api import model_serializer_classes
 from .utils import convert_camel_case_to_pseudo_snake_case, get_element_id
@@ -185,7 +186,12 @@ class RESTModelMixin:
         """
         Converts a list of elements from full_data to restricted_data.
         """
-        return await cls.get_access_permissions().get_restricted_data(elements, user_id)
+        try:
+            return await cls.get_access_permissions().get_restricted_data(
+                elements, user_id
+            )
+        except UserDoesNotExist:
+            return []
 
     def get_full_data(self) -> Dict[str, Any]:
         """
