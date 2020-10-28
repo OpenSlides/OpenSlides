@@ -55,6 +55,17 @@ Finally, you can start the instance using ``docker-compose``::
     $ # ...
     $ docker-compose down
 
+More settings
+-------------
+
+When generating the ``docker-compose.yml``, more settings can be adjusted in the
+``docker/.env`` file. All changes for the backend are passed into djangos ``settings.py``.
+You can find more information about most settings `here
+<https://github.com/OpenSlides/OpenSlides/blob/master/server/SETTINGS.rst>`_. To generate
+the ``docker-compose.yml`` use this command::
+
+    $ ( set -a; source .env; m4 docker-stack.yml.m4 ) > docker-stack.yml
+
 
 Docker Swarm Mode
 -----------------

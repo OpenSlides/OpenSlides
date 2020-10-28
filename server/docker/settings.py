@@ -59,11 +59,14 @@ DEMO_USERS = get_env("DEMO_USERS", default=None)
 DEMO_USERS = json.loads(DEMO_USERS) if DEMO_USERS else None
 
 # Email settings
-# For SSL/TLS specific settings see https://docs.djangoproject.com/en/1.11/topics/email/#smtp-backend
+# For an explaination and more settings values see https://docs.djangoproject.com/en/2.2/topics/email/#smtp-backend
 EMAIL_HOST = get_env("EMAIL_HOST", "postfix")
 EMAIL_PORT = get_env("EMAIL_PORT", 25, int)
 EMAIL_HOST_USER = get_env("EMAIL_HOST_USER", "")
 EMAIL_HOST_PASSWORD = get_env("EMAIL_HOST_PASSWORD", "")
+EMAIL_USE_SSL = get_env("EMAIL_USE_SSL", False, bool)
+EMAIL_USE_TLS = get_env("EMAIL_USE_TLS", False, bool)
+EMAIL_TIMEOUT = get_env("EMAIL_TIMEOUT", None, int)
 DEFAULT_FROM_EMAIL = get_env("DEFAULT_FROM_EMAIL", "noreply@example.com")
 
 # Increasing Upload size to 100mb (default is 2.5mb)

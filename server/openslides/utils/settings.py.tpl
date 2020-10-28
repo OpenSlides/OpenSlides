@@ -45,12 +45,15 @@ DEBUG = %(debug)s
 RESET_PASSWORD_VERBOSE_ERRORS = True
 
 # Email settings
-# For SSL/TLS specific settings see https://docs.djangoproject.com/en/1.11/topics/email/#smtp-backend
+# For an explaination and more settings values see https://docs.djangoproject.com/en/2.2/topics/email/#smtp-backend
 
 EMAIL_HOST = 'localhost'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = ''
 EMAIL_HOST_PASSWORD = ''
+EMAIL_USE_SSL = False
+EMAIL_USE_TLS = False
+EMAIL_TIMEOUT = None
 DEFAULT_FROM_EMAIL = 'noreply@example.com'
 
 # Increasing Upload size to 100mb (default is 2.5mb)
