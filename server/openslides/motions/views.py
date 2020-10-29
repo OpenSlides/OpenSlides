@@ -6,6 +6,7 @@ from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.db.models import Case, When
 from django.db.models.deletion import ProtectedError
+from django.db.utils import IntegrityError
 from django.http.request import QueryDict
 from rest_framework import status
 
@@ -514,7 +515,10 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
                 and not motion.is_supporter(request.user)
             ):
                 raise ValidationError({"detail": "You can not support this motion."})
-            motion.supporters.add(request.user)
+            try:
+                motion.supporters.add(request.user)
+            except IntegrityError:
+                raise ValidationError({"detail": "You are already a supporter."})
             # Send new supporter via autoupdate because users without permission
             # to see users may not have it but can get it now.
             # TODO: Skip history.
