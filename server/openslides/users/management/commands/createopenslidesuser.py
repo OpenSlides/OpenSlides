@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
 
 from openslides.utils.autoupdate import inform_changed_data
+from openslides.utils.postgres import restart_id_sequence
 
 from ...models import User
 
@@ -38,22 +39,29 @@ class Command(BaseCommand):
             "default_password": options["password"],
             "email": options["email"] or "",
         }
-        if userid is None or not User.objects.filter(pk=userid).exists():
+        username = options["username"]
+        if (
+            userid is None or not User.objects.filter(pk=userid).exists()
+        ) and not User.objects.filter(username=username).exists():
             if userid is not None:
                 user_data["pk"] = userid
 
             user = User.objects.create_user(
-                options["username"],
+                username,
                 options["password"],
                 **user_data,
             )
             if options["groups_id"].isdigit():
                 user.groups.add(int(options["groups_id"]))
                 inform_changed_data(user)
-            self.stdout.write(
-                self.style.SUCCESS(f"Created user {options['username']}.")
-            )
+
+            if userid is not None:
+                restart_id_sequence("users_user")
+
+            self.stdout.write(self.style.SUCCESS(f"Created user {username}."))
         else:
             self.stdout.write(
-                self.style.NOTICE(f"A user with id {userid} already exists.")
+                self.style.NOTICE(
+                    f"A user with id {userid} or username {username} already exists."
+                )
             )
