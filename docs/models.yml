@@ -1566,10 +1566,10 @@ assignment:
   phase:
     type: number
     enum:
+    - 0
     - 1
     - 2
-    - 3
-    default: 1
+    default: 0
   default_poll_description: string
   number_poll_candidates: boolean
 
