@@ -64,6 +64,8 @@ EMAIL_HOST = get_env("EMAIL_HOST", "postfix")
 EMAIL_PORT = get_env("EMAIL_PORT", 25, int)
 EMAIL_HOST_USER = get_env("EMAIL_HOST_USER", "")
 EMAIL_HOST_PASSWORD = get_env("EMAIL_HOST_PASSWORD", "")
+EMAIL_USE_TLS = get_env("EMAIL_USE_TLS", False, bool)
+EMAIL_USE_SSL = get_env("EMAIL_USE_SSL", False, bool)
 DEFAULT_FROM_EMAIL = get_env("DEFAULT_FROM_EMAIL", "noreply@example.com")
 
 # Increasing Upload size to 100mb (default is 2.5mb)
