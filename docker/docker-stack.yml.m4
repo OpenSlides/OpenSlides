@@ -58,6 +58,9 @@ x-osserver-env: &default-osserver-env
     EMAIL_HOST_PASSWORD: "ifenvelse(`EMAIL_HOST_PASSWORD',)"
     EMAIL_HOST_USER: "ifenvelse(`EMAIL_HOST_USER',)"
     EMAIL_PORT: ifenvelse(`EMAIL_PORT', 25)
+    EMAIL_USE_SSL: "ifenvelse(`EMAIL_USE_SSL',)"
+    EMAIL_USE_TLS: "ifenvelse(`EMAIL_USE_TLS',)"
+    EMAIL_TIMEOUT: "ifenvelse(`EMAIL_TIMEOUT',)"
     ENABLE_ELECTRONIC_VOTING: "ifenvelse(`ENABLE_ELECTRONIC_VOTING', False)"
     ENABLE_SAML: "ifenvelse(`ENABLE_SAML', False)"
     INSTANCE_DOMAIN: "ifenvelse(`INSTANCE_DOMAIN', http://example.com:8000)"
