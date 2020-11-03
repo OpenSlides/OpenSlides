@@ -10,6 +10,8 @@ services:
     volumes:
       - ../openslides-datastore-service/shared/shared:/app/shared
       - ../openslides-datastore-service/reader/reader:/app/reader
+    ports:
+      - 9010:9010
   datastore-writer:
     image: openslides-datastore-writer-dev
     depends_on:
@@ -24,6 +26,8 @@ services:
       - DATASTORE_ENABLE_DEV_ENVIRONMENT=1
       - COMMAND=create_initial_data
       - DATASTORE_INITIAL_DATA_FILE=https://raw.githubusercontent.com/OpenSlides/OpenSlides/openslides4-dev/docs/example-data.json
+    ports:
+      - 9011:9011
   postgres:
     image: postgres:11
     environment:
@@ -51,6 +55,8 @@ services:
     depends_on:
       - datastore-reader
       - message-bus
+    environment:
+      - AUTH=fake
     env_file: services.env
     volumes:
       - ../openslides-autoupdate-service/cmd:/root/cmd
