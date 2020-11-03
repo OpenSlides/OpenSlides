@@ -85,7 +85,9 @@ user:
   first_name: string
   last_name: string
   is_active: boolean
-  is_committee: boolean
+  is_physical_person:
+    type: boolean
+    default: true
   password: string
   default_password: string
   about_me: HTMLStrict
