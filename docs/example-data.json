@@ -302,7 +302,7 @@
         "projector_countdown_ids": [1],
         "tag_ids": [1, 2, 3],
         "agenda_item_ids": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
-        "list_of_speakers_ids": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+        "list_of_speakers_ids": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
         "topic_ids": [1, 2, 3, 4, 5, 6, 7, 8],
         "group_ids": [1, 2, 3, 5, 6],
         "mediafile_ids": [1, 2, 3],
@@ -953,6 +953,36 @@
         "closed": false,
 
         "content_object_id": "motion_block/1",
+        "speaker_ids": [],
+        "projection_ids": [],
+        "current_projector_ids": [],
+        "meeting_id": 1
+    },
+    {
+        "id": 16,
+        "closed": false,
+
+        "content_object_id": "mediafile/1",
+        "speaker_ids": [],
+        "projection_ids": [],
+        "current_projector_ids": [],
+        "meeting_id": 1
+    },
+    {
+        "id": 17,
+        "closed": false,
+
+        "content_object_id": "mediafile/2",
+        "speaker_ids": [],
+        "projection_ids": [],
+        "current_projector_ids": [],
+        "meeting_id": 1
+    },
+    {
+        "id": 18,
+        "closed": false,
+
+        "content_object_id": "mediafile/3",
         "speaker_ids": [],
         "projection_ids": [],
         "current_projector_ids": [],
