@@ -677,7 +677,7 @@ meeting:
   # Logos and Fonts
   logo_$_id:
     type: template
-    replacement: location
+    replacement: place
     fields:
       type: relation
       to:
@@ -685,10 +685,10 @@ meeting:
         field:
           name: used_as_logo_$_in_meeting_id
           type: structured-tag
-          replacement: location
+          replacement: place
   font_$_id:
     type: template
-    replacement: location
+    replacement: place
     fields:
       type: relation
       to:
@@ -696,7 +696,7 @@ meeting:
         field:
           name: used_as_font_$_in_meeting_id
           type: structured-tag
-          replacement: location
+          replacement: place
   # Examples:
   # logo_web_header: Mediafile;
   # font_italic_pdf: Mediafile;
@@ -1826,7 +1826,7 @@ mediafile:
   # Reverse relations for meetings, if a mediafile is used as a special resource
   used_as_logo_$_in_meeting_id:
     type: template
-    replacement: location
+    replacement: place
     fields:
       type: relation
       to:
@@ -1834,10 +1834,10 @@ mediafile:
         field:
           name: logo_$_id
           type: structured-tag
-          replacement: location
+          replacement: place
   used_as_font_$_in_meeting_id:
     type: template
-    replacement: location
+    replacement: place
     fields:
       type: relation
       to:
@@ -1845,7 +1845,7 @@ mediafile:
         field:
           name: font_$_id
           type: structured-tag
-          replacement: location
+          replacement: place
 
 projector:
   id: number
