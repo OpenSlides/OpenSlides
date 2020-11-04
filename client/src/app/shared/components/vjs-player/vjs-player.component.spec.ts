@@ -1,5 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { E2EImportsModule } from 'e2e-imports.module';
+
 import { VjsPlayerComponent } from './vjs-player.component';
 
 describe('VjsPlayerComponent', () => {
@@ -8,7 +10,7 @@ describe('VjsPlayerComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [VjsPlayerComponent]
+            imports: [E2EImportsModule]
         }).compileComponents();
     }));
 
