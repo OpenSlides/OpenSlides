@@ -53,6 +53,10 @@ export class PollCollectionComponent extends BaseViewComponentDirective implemen
         );
     }
 
+    public identifyPoll(index: number, poll: ViewBasePoll): number {
+        return poll.id;
+    }
+
     public getPollVoteTitle(poll: ViewBasePoll): string {
         const contentObject = poll.getContentObject();
         const listTitle = contentObject.getListTitle();
