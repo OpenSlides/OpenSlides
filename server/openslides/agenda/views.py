@@ -310,8 +310,10 @@ class ListOfSpeakersViewSet(
     def manage_speaker(self, request, pk=None):
         """
         Special view endpoint to add users to the list of speakers or remove
-        them. Send POST {'user': <user_id>} to add a new speaker. Omit
-        data to add yourself. Send DELETE {'speaker': <speaker_id>} or
+        them. Send POST {'user': <user_id>} to add a new speaker.
+        Send POST {'user': <user_id>, 'point_of_order': True } to add a point
+        of order to the list of speakers.
+        Omit data to add yourself. Send DELETE {'speaker': <speaker_id>} or
         DELETE {'speaker': [<speaker_id>, <speaker_id>, ...]} to remove one or
         more speakers from the list of speakers. Omit data to remove yourself.
         Send PATCH {'user': <user_id>, 'marked': <bool>} to mark the speaker.
@@ -329,16 +331,22 @@ class ListOfSpeakersViewSet(
         if request.method == "POST":  # Add new speaker
             # Retrieve user_id
             user_id = request.data.get("user")
+            point_of_order = request.data.get("point_of_order") or False
+            if not isinstance(point_of_order, bool):
+                raise ValidationError({"detail": "point_of_order has to be a bool."})
 
             # Check permissions and other conditions. Get user instance.
             if user_id is None:
                 # Add oneself
-                if not has_perm(self.request.user, "agenda.can_be_speaker"):
+                if not point_of_order and not has_perm(
+                    self.request.user, "agenda.can_be_speaker"
+                ):
                     self.permission_denied(request)
                 if list_of_speakers.closed:
                     raise ValidationError({"detail": "The list of speakers is closed."})
                 user = self.request.user
             else:
+                point_of_order = False  # not for someone else
                 # Add someone else.
                 if not has_perm(
                     self.request.user, "agenda.can_manage_list_of_speakers"
@@ -352,7 +360,9 @@ class ListOfSpeakersViewSet(
             # Try to add the user. This ensurse that a user is not twice in the
             # list of coming speakers.
             try:
-                speaker = Speaker.objects.add(user, list_of_speakers)
+                speaker = Speaker.objects.add(
+                    user, list_of_speakers, point_of_order=point_of_order
+                )
             except OpenSlidesError as e:
                 raise ValidationError({"detail": str(e)})
 
@@ -360,7 +370,7 @@ class ListOfSpeakersViewSet(
             # to see users may not have it but can get it now.
             inform_changed_data(user, disable_history=True)
 
-        # Toggle 'marked' for the speaker
+        # Set 'marked' for the speaker
         elif request.method == "PATCH":
             # Check permissions
             if not has_perm(self.request.user, "agenda.can_manage_list_of_speakers"):
@@ -380,17 +390,12 @@ class ListOfSpeakersViewSet(
             queryset = Speaker.objects.filter(
                 list_of_speakers=list_of_speakers, user=user, begin_time=None
             )
-            try:
-                # We assume that there aren't multiple entries for speakers that
-                # did not yet begin to speak, because this
-                # is forbidden by the Manager's add method. We assume that
-                # there is only one speaker instance or none.
-                speaker = queryset.get()
-            except Speaker.DoesNotExist:
+
+            if not queryset.exists():
                 raise ValidationError(
                     {"detail": "The user is not in the list of speakers."}
                 )
-            else:
+            for speaker in queryset.all():
                 speaker.marked = marked
                 speaker.save()
 
@@ -400,21 +405,29 @@ class ListOfSpeakersViewSet(
 
             # Check permissions and other conditions. Get speaker instance.
             if speaker_ids is None:
+                point_of_order = request.data.get("point_of_order") or False
+                if not isinstance(point_of_order, bool):
+                    raise ValidationError(
+                        {"detail": "point_of_order has to be a bool."}
+                    )
                 # Remove oneself
                 queryset = Speaker.objects.filter(
-                    list_of_speakers=list_of_speakers, user=self.request.user
+                    list_of_speakers=list_of_speakers,
+                    user=self.request.user,
+                    point_of_order=point_of_order,
                 ).exclude(weight=None)
-                try:
-                    # We assume that there aren't multiple entries because this
-                    # is forbidden by the Manager's add method. We assume that
-                    # there is only one speaker instance or none.
-                    speaker = queryset.get()
-                except Speaker.DoesNotExist:
+
+                if not queryset.exists():
                     raise ValidationError(
-                        {"detail": "You are not on the list of speakers."}
+                        {"detail": "The user is not in the list of speakers."}
                     )
-                else:
-                    speaker.delete()
+                # We delete all() from the queryset and do not use get():
+                # The Speaker.objects.add method should assert, that there
+                # is only one speaker. But due to race conditions, sometimes
+                # there are multiple ones. Using all() ensures, that there is
+                # no server crash, if this happens.
+                queryset.all().delete()
+                inform_changed_data(list_of_speakers)
             else:
                 # Remove someone else.
                 if not has_perm(
@@ -423,7 +436,7 @@ class ListOfSpeakersViewSet(
                     self.permission_denied(request)
                 if isinstance(speaker_ids, int):
                     speaker_ids = [speaker_ids]
-                deleted_speaker_count = 0
+                deleted_some_speakers = False
                 for speaker_id in speaker_ids:
                     try:
                         speaker = Speaker.objects.get(pk=int(speaker_id))
@@ -431,9 +444,9 @@ class ListOfSpeakersViewSet(
                         pass
                     else:
                         speaker.delete(skip_autoupdate=True)
-                        deleted_speaker_count += 1
+                        deleted_some_speakers = True
                 # send autoupdate if speakers are deleted
-                if deleted_speaker_count > 0:
+                if deleted_some_speakers:
                     inform_changed_data(list_of_speakers)
 
         return Response()
@@ -543,6 +556,16 @@ class ListOfSpeakersViewSet(
         )
         if not last_speaker:
             raise ValidationError({"detail": "There is no last speaker at the moment."})
+
+        if last_speaker.point_of_order:
+            raise ValidationError(
+                {"detail": "You cannot readd a point of order speaker."}
+            )
+
+        if list_of_speakers.speakers.filter(
+            user=last_speaker.user, begin_time=None
+        ).exists():
+            raise ValidationError({"detail": "The last speaker is already waiting."})
 
         next_speaker = list_of_speakers.get_next_speaker()
         new_weight = 1

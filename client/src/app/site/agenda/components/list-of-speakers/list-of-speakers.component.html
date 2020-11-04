@@ -18,7 +18,7 @@
             mat-icon-button
             matTooltip="{{ 'Re-add last speaker' | translate }}"
             (click)="readdLastSpeaker()"
-            [disabled]="!hasFinishedSpeakers"
+            [disabled]="!canReaddLastSpeaker"
         >
             <mat-icon>undo</mat-icon>
         </button>
@@ -31,7 +31,7 @@
     [speakers]="viewListOfSpeakers"
     [sortMode]="manualSortMode"
     (isListOfSpeakersEmptyEvent)="isListOfSpeakersEmpty = $event"
-    (hasFinishesSpeakersEvent)="hasFinishedSpeakers = $event"
+    (canReaddLastSpeakerEvent)="canReaddLastSpeaker = $event"
 ></os-list-of-speakers-content>
 
 <mat-menu #speakerMenu="matMenu">

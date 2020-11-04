@@ -137,6 +137,16 @@ def get_config_variables():
     )
 
     yield ConfigVariable(
+        name="agenda_enable_point_of_order_speakers",
+        default_value=False,
+        input_type="boolean",
+        label="Enables point of order speakers",
+        weight=223,
+        group="Agenda",
+        subgroup="List of speakers",
+    )
+
+    yield ConfigVariable(
         name="agenda_countdown_warning_time",
         default_value=0,
         input_type="integer",

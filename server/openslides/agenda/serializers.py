@@ -10,7 +10,15 @@ class SpeakerSerializer(ModelSerializer):
 
     class Meta:
         model = Speaker
-        fields = ("id", "user", "begin_time", "end_time", "weight", "marked")
+        fields = (
+            "id",
+            "user",
+            "begin_time",
+            "end_time",
+            "weight",
+            "marked",
+            "point_of_order",
+        )
 
 
 class RelatedItemRelatedField(RelatedField):

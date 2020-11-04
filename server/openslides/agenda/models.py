@@ -424,7 +424,7 @@ class SpeakerManager(models.Manager):
     Manager for Speaker model. Provides a customized add method.
     """
 
-    def add(self, user, list_of_speakers, skip_autoupdate=False):
+    def add(self, user, list_of_speakers, skip_autoupdate=False, point_of_order=False):
         """
         Customized manager method to prevent anonymous users to be on the
         list of speakers and that someone is twice on one list (off coming
@@ -433,20 +433,39 @@ class SpeakerManager(models.Manager):
         if isinstance(user, AnonymousUser):
             raise OpenSlidesError("An anonymous user can not be on lists of speakers.")
 
+        if point_of_order and not config["agenda_enable_point_of_order_speakers"]:
+            raise OpenSlidesError("Point of order speakers are not enabled.")
+
         if self.filter(
-            user=user, list_of_speakers=list_of_speakers, begin_time=None
+            user=user,
+            list_of_speakers=list_of_speakers,
+            begin_time=None,
+            point_of_order=point_of_order,
         ).exists():
             raise OpenSlidesError(f"{user} is already on the list of speakers.")
         if config["agenda_present_speakers_only"] and not user.is_present:
             raise OpenSlidesError("Only present users can be on the lists of speakers.")
-        weight = (
-            self.filter(list_of_speakers=list_of_speakers).aggregate(
-                models.Max("weight")
-            )["weight__max"]
-            or 0
-        )
+
+        if point_of_order:
+            weight = (
+                self.filter(list_of_speakers=list_of_speakers).aggregate(
+                    models.Min("weight")
+                )["weight__min"]
+                or 0
+            ) - 1
+        else:
+            weight = (
+                self.filter(list_of_speakers=list_of_speakers).aggregate(
+                    models.Max("weight")
+                )["weight__max"]
+                or 0
+            ) + 1
+
         speaker = self.model(
-            list_of_speakers=list_of_speakers, user=user, weight=weight + 1
+            list_of_speakers=list_of_speakers,
+            user=user,
+            weight=weight,
+            point_of_order=point_of_order,
         )
         speaker.save(
             force_insert=True,
@@ -493,6 +512,11 @@ class Speaker(RESTModelMixin, models.Model):
     marked = models.BooleanField(default=False)
     """
     Marks a speaker.
+    """
+
+    point_of_order = models.BooleanField(default=False)
+    """
+    Identifies the speaker as someone with a point of order
     """
 
     class Meta:

@@ -294,6 +294,7 @@ class ManageSpeaker(TestCase):
             title="test_title_aZaedij4gohn5eeQu8fe"
         ).list_of_speakers
         self.user, _ = self.create_user()
+        self.admin = get_user_model().objects.get(username="admin")
 
     def test_add_oneself_once(self):
         response = self.client.post(
@@ -303,9 +304,7 @@ class ManageSpeaker(TestCase):
         self.assertTrue(Speaker.objects.all().exists())
 
     def test_add_oneself_twice(self):
-        Speaker.objects.add(
-            get_user_model().objects.get(username="admin"), self.list_of_speakers
-        )
+        Speaker.objects.add(self.admin, self.list_of_speakers)
         response = self.client.post(
             reverse("listofspeakers-manage-speaker", args=[self.list_of_speakers.pk])
         )
@@ -320,9 +319,19 @@ class ManageSpeaker(TestCase):
         self.assertEqual(response.status_code, 400)
 
     def test_remove_oneself(self):
-        Speaker.objects.add(
-            get_user_model().objects.get(username="admin"), self.list_of_speakers
+        Speaker.objects.add(self.admin, self.list_of_speakers)
+        response = self.client.delete(
+            reverse("listofspeakers-manage-speaker", args=[self.list_of_speakers.pk])
         )
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(Speaker.objects.all().exists())
+
+    def test_remove_oneself_if_twice_on_los(self):
+        # This one is a test, if there is malformed speaker data, that
+        # this method still works.
+        Speaker.objects.add(self.admin, self.list_of_speakers)
+        s2 = Speaker(user=self.admin, list_of_speakers=self.list_of_speakers, weight=2)
+        s2.save()
         response = self.client.delete(
             reverse("listofspeakers-manage-speaker", args=[self.list_of_speakers.pk])
         )
@@ -346,6 +355,94 @@ class ManageSpeaker(TestCase):
                 list_of_speakers=self.list_of_speakers, user=self.user
             ).exists()
         )
+
+    def test_point_of_order_single(self):
+        config["agenda_enable_point_of_order_speakers"] = True
+        self.assertEqual(Speaker.objects.all().count(), 0)
+        response = self.client.post(
+            reverse("listofspeakers-manage-speaker", args=[self.list_of_speakers.pk]),
+            {"point_of_order": True},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Speaker.objects.all().count(), 1)
+        self.assertTrue(Speaker.objects.get().point_of_order)
+        self.assertEqual(Speaker.objects.get().weight, -1)
+
+    def test_point_of_order_not_enabled(self):
+        self.assertEqual(Speaker.objects.all().count(), 0)
+        response = self.client.post(
+            reverse("listofspeakers-manage-speaker", args=[self.list_of_speakers.pk]),
+            {"point_of_order": True},
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(Speaker.objects.all().count(), 0)
+
+    def test_point_of_order_before_other(self):
+        config["agenda_enable_point_of_order_speakers"] = True
+        normal_speaker = Speaker.objects.add(self.user, self.list_of_speakers)
+        response = self.client.post(
+            reverse("listofspeakers-manage-speaker", args=[self.list_of_speakers.pk]),
+            {"point_of_order": True},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Speaker.objects.all().count(), 2)
+        poo_speaker = Speaker.objects.get(user=self.admin)
+        self.assertTrue(poo_speaker.point_of_order)
+        self.assertEqual(poo_speaker.weight, normal_speaker.weight - 1)
+
+    def test_point_of_order_with_normal_speaker(self):
+        config["agenda_enable_point_of_order_speakers"] = True
+        Speaker.objects.add(self.admin, self.list_of_speakers)
+        response = self.client.post(
+            reverse("listofspeakers-manage-speaker", args=[self.list_of_speakers.pk]),
+            {"point_of_order": True},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Speaker.objects.all().count(), 2)
+        self.assertTrue(Speaker.objects.filter(user=self.admin).count(), 2)
+
+    def test_point_of_order_twice(self):
+        config["agenda_enable_point_of_order_speakers"] = True
+        Speaker.objects.add(self.admin, self.list_of_speakers, point_of_order=True)
+        response = self.client.post(
+            reverse("listofspeakers-manage-speaker", args=[self.list_of_speakers.pk]),
+            {"point_of_order": True},
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(Speaker.objects.all().count(), 1)
+
+    def test_remove_point_of_order(self):
+        config["agenda_enable_point_of_order_speakers"] = True
+        Speaker.objects.add(self.admin, self.list_of_speakers, point_of_order=True)
+        response = self.client.delete(
+            reverse("listofspeakers-manage-speaker", args=[self.list_of_speakers.pk]),
+            {"point_of_order": True},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(Speaker.objects.all().exists())
+
+    def test_remove_point_of_order_with_normal_speaker(self):
+        config["agenda_enable_point_of_order_speakers"] = True
+        Speaker.objects.add(self.admin, self.list_of_speakers)
+        Speaker.objects.add(self.admin, self.list_of_speakers, point_of_order=True)
+        response = self.client.delete(
+            reverse("listofspeakers-manage-speaker", args=[self.list_of_speakers.pk]),
+            {"point_of_order": True},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Speaker.objects.all().count(), 1)
+        self.assertFalse(Speaker.objects.get().point_of_order)
+
+    def test_remove_self_with_point_of_order(self):
+        config["agenda_enable_point_of_order_speakers"] = True
+        Speaker.objects.add(self.admin, self.list_of_speakers)
+        Speaker.objects.add(self.admin, self.list_of_speakers, point_of_order=True)
+        response = self.client.delete(
+            reverse("listofspeakers-manage-speaker", args=[self.list_of_speakers.pk])
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Speaker.objects.all().count(), 1)
+        self.assertTrue(Speaker.objects.get().point_of_order)
 
     def test_invalid_data_string_instead_of_integer(self):
         response = self.client.post(
@@ -447,6 +544,7 @@ class ManageSpeaker(TestCase):
         speaker.end_time = timezone.now()
         speaker.weight = None
         speaker.save()
+        return speaker
 
     def test_readd_last_speaker_no_speaker(self):
         response = self.client.post(
@@ -513,6 +611,29 @@ class ManageSpeaker(TestCase):
             )
         )
         self.assertEqual(response.status_code, 403)
+
+    def test_readd_last_speaker_already_waiting(self):
+        self.util_add_user_as_last_speaker()
+        Speaker.objects.add(self.user, self.list_of_speakers)
+
+        response = self.client.post(
+            reverse(
+                "listofspeakers-readd-last-speaker", args=[self.list_of_speakers.pk]
+            )
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_readd_last_speaker_point_of_order(self):
+        speaker = self.util_add_user_as_last_speaker()
+        speaker.point_of_order = True
+        speaker.save()
+
+        response = self.client.post(
+            reverse(
+                "listofspeakers-readd-last-speaker", args=[self.list_of_speakers.pk]
+            )
+        )
+        self.assertEqual(response.status_code, 400)
 
 
 class Speak(TestCase):

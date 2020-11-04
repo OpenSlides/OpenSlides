@@ -63,7 +63,7 @@ export class ListOfSpeakersComponent extends BaseViewComponentDirective implemen
     /**
      * filled by child component
      */
-    public hasFinishedSpeakers: boolean;
+    public canReaddLastSpeaker: boolean;
 
     /**
      * Constructor for speaker list component. Generates the forms.
