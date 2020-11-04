@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 
 import { TranslateService } from '@ngx-translate/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 
 import { OperatorService, Permission } from 'app/core/core-services/operator.service';
 import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
@@ -36,7 +36,7 @@ import { ViewAssignmentRelatedUser } from '../../models/view-assignment-related-
     templateUrl: './assignment-detail.component.html',
     styleUrls: ['./assignment-detail.component.scss']
 })
-export class AssignmentDetailComponent extends BaseViewComponentDirective implements OnInit {
+export class AssignmentDetailComponent extends BaseViewComponentDirective implements OnInit, OnDestroy {
     /**
      * Determines if the assignment is new
      */
@@ -144,6 +144,13 @@ export class AssignmentDetailComponent extends BaseViewComponentDirective implem
     }
 
     /**
+     * Hold the subscription to the navigation.
+     * This cannot go into the subscription-list, since it should
+     * only get destroyed using ngOnDestroy routine and not on route changes.
+     */
+    private navigationSubscription: Subscription;
+
+    /**
      * Constructor. Build forms and subscribe to needed configs and updates
      *
      * @param title
@@ -210,10 +217,34 @@ export class AssignmentDetailComponent extends BaseViewComponentDirective implem
      * Init data
      */
     public ngOnInit(): void {
+        this.observeRoute();
         this.getAssignmentByUrl();
         this.agendaObserver = this.itemRepo.getViewModelListBehaviorSubject();
         this.tagsObserver = this.tagRepo.getViewModelListBehaviorSubject();
         this.mediafilesObserver = this.mediafileRepo.getViewModelListBehaviorSubject();
+    }
+
+    /**
+     * Called during view destruction.
+     */
+    public ngOnDestroy(): void {
+        if (this.navigationSubscription) {
+            this.navigationSubscription.unsubscribe();
+        }
+        super.ngOnDestroy();
+    }
+
+    /**
+     * Observes the route for events. Calls to clean all subs if the route changes.
+     * Calls the assignment details from the new route.
+     */
+    private observeRoute(): void {
+        this.navigationSubscription = this.router.events.subscribe(navEvent => {
+            if (navEvent instanceof NavigationEnd) {
+                this.cleanSubjects();
+                this.getAssignmentByUrl();
+            }
+        });
     }
 
     /**
