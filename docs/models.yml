@@ -1347,6 +1347,7 @@ motion_state:
   recommendation_label: string
   css_class:
     type: string
+    default: lightblue
     enum:
     - grey
     - red
