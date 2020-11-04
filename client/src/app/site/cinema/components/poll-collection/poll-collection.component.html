@@ -1,4 +1,4 @@
-<mat-card class="os-card" *ngFor="let poll of polls">
+<mat-card class="os-card" *ngFor="let poll of polls; trackBy: identifyPoll">
     <p class="subtitle-text">
         <a [routerLink]="getPollDetailLink(poll)" [state]="{ back: 'true' }">{{ getPollVoteTitle(poll) }}</a>
     </p>
