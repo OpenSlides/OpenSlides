@@ -134,10 +134,14 @@
         <os-projector-button [object]="user" [menuItem]="true"></os-projector-button>
 
         <!-- Presence -->
-        <button mat-menu-item (click)="setPresent(user)">
-            <mat-icon color="accent"> {{ user.is_present ? 'check_box' : 'check_box_outline_blank' }} </mat-icon>
+        <mat-checkbox
+            class="mat-menu-item"
+            (change)="setPresent(user)"
+            [checked]="user.is_present"
+            [disabled]="isPresentToggleDisabled(user)"
+        >
             <span>{{ 'Present' | translate }}</span>
-        </button>
+        </mat-checkbox>
     </ng-template>
 </mat-menu>
 
