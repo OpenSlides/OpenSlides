@@ -606,7 +606,7 @@ export class MotionDetailComponent extends BaseViewComponentDirective implements
      * Observes the route for events. Calls to clean all subs if the route changes.
      * Calls the motion details from the new route
      */
-    public observeRoute(): void {
+    private observeRoute(): void {
         this.navigationSubscription = this.router.events.subscribe(navEvent => {
             if (navEvent instanceof NavigationEnd) {
                 this.cleanSubjects();
