@@ -3,12 +3,12 @@
         <video #videoPlayer class="video-js" controls preload="none"></video>
     </div>
     <div *ngIf="!isUrlOnline" class="is-offline-wrapper">
-        <div>
-            {{ 'No stream available' | translate }}
-        </div>
+        <p>
+            {{ 'Currently no livestream available.' | translate }}
+        </p>
         <button mat-raised-button (click)="checkVideoUrl()" color="primary">
+            <mat-icon>refresh</mat-icon>&nbsp;
             <span>{{ 'Refresh' | translate }}</span>
-            <mat-icon>refresh</mat-icon>
         </button>
     </div>
 </div>
