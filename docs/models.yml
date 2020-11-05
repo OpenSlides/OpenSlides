@@ -1405,6 +1405,7 @@ motion_state:
   first_state_of_workflow_id:
     type: relation
     to: motion_workflow/first_state_id
+    on_delete: PROTECT
     equal_fields: meeting_id
   meeting_id:
     type: relation
@@ -1774,9 +1775,9 @@ mediafile:
   mimetype: string
   pdf_information: JSON
   create_timestamp: timestamp
-  has_inherited_access_groups:
+  is_public:
     type: boolean
-    description: Calculated field.
+    description: "Calculated field. inherited_access_group_ids == [] can have two causes: cancelling access groups (=> is_public := false) or no access groups at all (=> is_public := true)"
     read_only: true
 
   inherited_access_group_ids:
