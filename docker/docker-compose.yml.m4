@@ -213,6 +213,9 @@ ifelse(read_env(`PGNODE_3_ENABLED'), 1, `'
     image: ifenvelse(`DEFAULT_DOCKER_REGISTRY', openslides)/openslides-media-service:latest
     environment:
       - CHECK_REQUEST_URL=server:8000/check-media/
+      - CACHE_SIZE=ifenvelse(`CACHE_SIZE', 10)
+      - CACHE_DATA_MIN_SIZE_KB=ifenvelse(`CACHE_DATA_MIN_SIZE_KB', 0)
+      - CACHE_DATA_MAX_SIZE_KB=ifenvelse(`CACHE_DATA_MAX_SIZE_KB', 10240)
     restart: always
     networks:
       front:
