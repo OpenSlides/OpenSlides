@@ -65,6 +65,8 @@ def create_builtin_groups_and_admin(**kwargs):
         "users.can_manage",
         "users.can_see_extra_data",
         "users.can_see_name",
+        "posters.can_see",
+        "posters.can_manage",
     )
     permission_query = Q()
     permission_dict = {}
@@ -94,6 +96,7 @@ def create_builtin_groups_and_admin(**kwargs):
         permission_dict["motions.can_see"],
         permission_dict["users.can_see_name"],
         permission_dict["users.can_change_password"],
+        permission_dict["posters.can_see"],
     )
     group_default = Group(pk=GROUP_DEFAULT_PK, name="Default")
     group_default.save(skip_autoupdate=True)
@@ -122,6 +125,7 @@ def create_builtin_groups_and_admin(**kwargs):
         permission_dict["motions.can_support"],
         permission_dict["users.can_see_name"],
         permission_dict["users.can_change_password"],
+        permission_dict["posters.can_see"],
     )
     group_delegates = Group(pk=3, name="Delegates")
     group_delegates.save(skip_autoupdate=True)
@@ -156,6 +160,8 @@ def create_builtin_groups_and_admin(**kwargs):
         permission_dict["users.can_manage"],
         permission_dict["users.can_see_extra_data"],
         permission_dict["users.can_change_password"],
+        permission_dict["posters.can_see"],
+        permission_dict["posters.can_manage"],
     )
     group_staff = Group(pk=4, name="Staff")
     group_staff.save(skip_autoupdate=True)

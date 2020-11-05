@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     "openslides.motions",
     "openslides.assignments",
     "openslides.mediafiles",
+    "openslides.posters",
 ]
 
 INSTALLED_PLUGINS = collect_plugins()  # Adds all automaticly collected plugins

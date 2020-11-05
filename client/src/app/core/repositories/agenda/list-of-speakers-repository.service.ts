@@ -20,6 +20,7 @@ import {
 import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
 import { ViewMotion } from 'app/site/motions/models/view-motion';
 import { ViewMotionBlock } from 'app/site/motions/models/view-motion-block';
+import { ViewPoster } from 'app/site/posters/models/view-poster';
 import { ViewTopic } from 'app/site/topics/models/view-topic';
 import { ViewUser } from 'app/site/users/models/view-user';
 import { BaseHasContentObjectRepository } from '../base-has-content-object-repository';
@@ -32,7 +33,7 @@ import { ItemRepositoryService } from './item-repository.service';
 const ListOfSpeakersRelations: RelationDefinition[] = [
     {
         type: 'generic',
-        possibleModels: [ViewMotion, ViewMotionBlock, ViewTopic, ViewAssignment, ViewMediafile],
+        possibleModels: [ViewMotion, ViewMotionBlock, ViewTopic, ViewAssignment, ViewMediafile, ViewPoster],
         isVForeign: isBaseViewModelWithListOfSpeakers,
         VForeignVerbose: 'BaseViewModelWithListOfSpeakers',
         ownContentObjectDataKey: 'contentObjectData',

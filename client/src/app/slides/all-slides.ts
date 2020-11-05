@@ -149,5 +149,13 @@ export const allSlides: SlideManifest[] = [
         verboseName: 'File',
         elementIdentifiers: ['name', 'id'],
         canBeMappedToModel: true
+    },
+    {
+        slide: 'posters/poster',
+        path: 'posters/poster',
+        loadChildren: () => import('./posters/poster/poster-slide.module').then(m => m.PosterSlideModule),
+        verboseName: 'Poster',
+        elementIdentifiers: ['name', 'id'],
+        canBeMappedToModel: true
     }
 ];

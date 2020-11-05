@@ -66,7 +66,13 @@ export class ProjectorService {
         obj: Projectable | ProjectorElementBuildDeskriptor | IdentifiableProjectorElement
     ): IdentifiableProjectorElement {
         if (isProjectable(obj)) {
-            return obj.getSlide(this.configService).getBasicProjectorElement({});
+            try {
+                const objectSlide = obj.getSlide(this.configService);
+                return objectSlide?.getBasicProjectorElement({});
+            } catch (e) {
+                // TODO hook in error service
+                console.error(e);
+            }
         } else if (isProjectorElementBuildDeskriptor(obj)) {
             return obj.getBasicProjectorElement({});
         } else {

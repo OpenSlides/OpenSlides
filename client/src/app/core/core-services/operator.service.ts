@@ -54,7 +54,9 @@ export enum Permission {
     usersCanChangePassword = 'users.can_change_password',
     usersCanManage = 'users.can_manage',
     usersCanSeeExtraData = 'users.can_see_extra_data',
-    usersCanSeeName = 'users.can_see_name'
+    usersCanSeeName = 'users.can_see_name',
+    postersCanSee = 'posters.can_see',
+    postersCanManage = 'posters.can_manage'
 }
 
 /**

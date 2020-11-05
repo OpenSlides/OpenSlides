@@ -5,6 +5,7 @@ import { AppConfig, ModelEntry, SearchableModelEntry } from '../definitions/app-
 import { BaseRepository } from 'app/core/repositories/base-repository';
 import { CinemaAppConfig } from 'app/site/cinema/cinema.config';
 import { HistoryAppConfig } from 'app/site/history/history.config';
+import { PostersAppConfig } from 'app/site/posters/posters.config';
 import { ProjectorAppConfig } from 'app/site/projector/projector.config';
 import { TopicsAppConfig } from 'app/site/topics/topics.config';
 import { AssignmentsAppConfig } from '../../site/assignments/assignments.config';
@@ -37,7 +38,8 @@ const appConfigs: AppConfig[] = [
     HistoryAppConfig,
     ProjectorAppConfig,
     TopicsAppConfig,
-    CinemaAppConfig
+    CinemaAppConfig,
+    PostersAppConfig
 ];
 
 /**

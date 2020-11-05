@@ -96,5 +96,10 @@ export const allSlidesDynamicConfiguration: (SlideDynamicConfiguration & Slide)[
         slide: 'mediafiles/mediafile',
         scaleable: true,
         scrollable: true
+    },
+    {
+        slide: 'posters/poster',
+        scaleable: true,
+        scrollable: true
     }
 ];

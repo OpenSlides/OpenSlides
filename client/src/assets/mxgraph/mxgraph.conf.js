@@ -1,0 +1,1 @@
+mxBasePath = 'assets/mxgraph';

@@ -1,0 +1,64 @@
+<os-head-bar [hasMainButton]="true" [nav]="true" (mainEvent)="onPlusButton()" [multiSelectMode]="isMultiSelect">
+    <div class="title-slot">
+        <h2>{{ 'Posters' | translate }}</h2>
+    </div>
+</os-head-bar>
+
+<os-list-view-table
+    [listObservableProvider]="repo"
+    [columns]="tableColumnDefinition"
+    [filterProps]="filterProps"
+    [(selectedRows)]="selectedRows"
+    (dataSourceChange)="onDataSourceChange($event)"
+    listStorageKey="assignments"
+>
+    <!-- Title -->
+    <div *pblNgridCellDef="'title'; row as poster" class="cell-slot fill">
+        <a class="detail-link" [routerLink]="poster.getDetailStateURL()"></a>
+        <div class="title-line ellipsis-overflow">
+            {{ poster.title }}
+        </div>
+    </div>
+
+    <!-- Published -->
+    <div *pblNgridCellDef="'info'; row as poster" class="cell-slot fill" (click)="openEditInfo(poster, $event)">
+        <os-icon-container icon="visibility">
+            <span *ngIf="poster.published">
+                {{ 'public' | translate }}
+            </span>
+            <span *ngIf="!poster.published">
+                {{ 'internal' | translate }}
+            </span>
+        </os-icon-container>
+    </div>
+</os-list-view-table>
+
+<!-- Edit dialog -->
+<ng-template #posterInfoDialog>
+    <h1 mat-dialog-title>
+        <span>{{ 'Edit details for' | translate }} {{ infoDialog.title }}</span>
+    </h1>
+    <div class="os-form-card-mobile" mat-dialog-content>
+        <mat-form-field>
+            <mat-select placeholder="{{ 'Visibility' | translate }}" [(ngModel)]="infoDialog.published">
+                <mat-option [value]="false"> {{ 'Internal' | translate }} </mat-option>
+                <mat-option [value]="true"> {{ 'Published' | translate }} </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+    <div mat-dialog-actions>
+        <button
+            type="submit"
+            mat-button
+            color="accent"
+            [mat-dialog-close]="{
+                published: infoDialog.published
+            }"
+        >
+            <span>{{ 'Save' | translate }}</span>
+        </button>
+        <button type="button" mat-button [mat-dialog-close]="null">
+            <span>{{ 'Cancel' | translate }}</span>
+        </button>
+    </div>
+</ng-template>

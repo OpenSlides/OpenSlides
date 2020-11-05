@@ -1,0 +1,111 @@
+<os-head-bar
+    mainButtonIcon="edit"
+    [hasMainButton]="canManage"
+    [editMode]="editPoster"
+    [goBack]="true"
+    [nav]="false"
+    [isSaveButtonEnabled]="posterForm.valid"
+    (mainEvent)="setEditMode(!editPoster)"
+    (saveEvent)="savePoster()"
+    (cancelEditEvent)="cancelEdit()"
+>
+    <div class="title-slot">
+        <h2 *ngIf="newPoster">{{ 'New poster' | translate }}</h2>
+        <h2 *ngIf="!newPoster">
+            <span *ngIf="poster && !editPoster">{{ poster.getTitle() }}</span>
+            <span *ngIf="editPoster">{{ posterForm.get('title').value }}</span>
+        </h2>
+    </div>
+
+    <div class="menu-slot">
+        <button type="button" mat-icon-button [matMenuTriggerFor]="posterDetailMenu">
+            <mat-icon>more_vert</mat-icon>
+        </button>
+    </div>
+</os-head-bar>
+
+<div class="poster-wrapper">
+    <mat-card class="wide-form-card spacer-bottom-60">
+        <form [formGroup]="posterForm" (keydown)="onKeyDown($event)" *ngIf="editPoster">
+            <!-- Title -->
+            <mat-form-field>
+                <input
+                    type="text"
+                    matInput
+                    osAutofocus
+                    placeholder="{{ 'Title' | translate }}"
+                    formControlName="title"
+                />
+            </mat-form-field>
+        </form>
+
+        <div class="graph-wrapper">
+            <div class="toolbar" *ngIf="editPoster">
+                <button
+                    *ngFor="let shape of shapeList"
+                    mat-icon-button
+                    (click)="addObject(shape)"
+                    matTooltip="{{ shape.defaultText | translate }}"
+                >
+                    <mat-icon>{{ shape.icon }}</mat-icon>
+                </button>
+
+                <!-- Change color - creates strange results -->
+                <!-- <button mat-button (click)="changeColor()">
+                    make red
+                </button> -->
+
+                <button mat-button (click)="openXmlDialog()" matTooltip="{{ 'Inspect and edit XML' | translate }}">
+                    XML
+                </button>
+            </div>
+            <mat-divider *ngIf="editPoster"></mat-divider>
+            <div #graphContainer class="graph-container"></div>
+        </div>
+    </mat-card>
+</div>
+
+<mat-menu #posterDetailMenu="matMenu">
+    <!-- PDF -->
+    <button mat-menu-item (click)="onDownloadPdf()">
+        <mat-icon>picture_as_pdf</mat-icon>
+        <span>{{ 'PDF' | translate }}</span>
+    </button>
+    <!-- Speaker -->
+    <os-speaker-button [object]="poster" [menuItem]="true"></os-speaker-button>
+    <!-- Projector -->
+    <os-projector-button [object]="poster" [menuItem]="true"></os-projector-button>
+    <!-- TODO: ManagePerm -->
+    <div *osPerms="permission.postersCanManage">
+        <!-- Delete -->
+        <mat-divider></mat-divider>
+        <button mat-menu-item class="red-warning-text" (click)="deletePoster()">
+            <mat-icon>delete</mat-icon>
+            <span>{{ 'Delete' | translate }}</span>
+        </button>
+    </div>
+</mat-menu>
+
+<!-- XML dialog -->
+<ng-template #xmlDialog>
+    <h1 mat-dialog-title>
+        <span>{{ 'Edit XML' | translate }}</span>
+    </h1>
+    <div class="os-form-card-mobile" mat-dialog-content>
+        <!-- XML text area -->
+        <form [formGroup]="xmlForm">
+            <mat-form-field>
+                <mat-label>XML</mat-label>
+                <textarea class="xml-area" matInput formControlName="xmlString"></textarea>
+            </mat-form-field>
+        </form>
+    </div>
+    <div mat-dialog-actions>
+        <button type="submit" mat-button color="accent" [mat-dialog-close]="true">
+            <span>{{ 'Apply' | translate }}</span>
+        </button>
+        <button type="button" mat-button [mat-dialog-close]="false">
+            <span>{{ 'Cancel' | translate }}</span>
+        </button>
+    </div>
+</ng-template>

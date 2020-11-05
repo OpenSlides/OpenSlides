@@ -207,11 +207,7 @@ b,
 }
 
 .os-form-card {
-    max-width: 770px;
-    margin-top: 20px !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
-    font-size: 16px;
+    @extend .os-card;
     padding: 27px;
 
     .mat-form-field {

@@ -67,7 +67,7 @@ export abstract class BaseIsListOfSpeakersContentObjectRepository<
         this.relationDefinitions.push({
             type: 'M2O',
             ownIdKey: 'list_of_speakers_id',
-            ownKey: 'list_of_speakers',
+            ownKey: 'listOfSpeakers',
             foreignViewModel: ViewListOfSpeakers
         });
     }

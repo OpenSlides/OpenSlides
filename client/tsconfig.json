@@ -12,7 +12,7 @@
         "experimentalDecorators": true,
         "importHelpers": true,
         "target": "es2015",
-        "typeRoots": ["node_modules/@types"],
+        "typeRoots": ["../node_modules/@types", "types"],
         "lib": ["es2018", "dom"],
         "paths": {
             "exceljs": ["../node_modules/exceljs/dist/exceljs.min"],

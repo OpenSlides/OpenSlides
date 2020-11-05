@@ -35,13 +35,25 @@
                                 "glob": "pdf.worker.min.js",
                                 "input": "node_modules/pdfjs-dist/build/",
                                 "output": "/assets/js/"
+                            },
+                            {
+                                "glob": "**/*",
+                                "input": "node_modules/mxgraph/javascript/src/resources",
+                                "output": "/resources/"
+                            },
+                            {
+                                "glob": "**/*",
+                                "input": "node_modules/mxgraph/javascript/src/css",
+                                "output": "/css/"
                             }
                         ],
                         "styles": ["src/styles.scss"],
                         "scripts": [
                             "node_modules/tinymce/tinymce.min.js",
                             "node_modules/video.js/dist/video.min.js",
-                            "src/assets/jitsi/external_api.js"
+                            "node_modules/mxgraph/javascript/mxClient.min.js",
+                            "src/assets/jitsi/external_api.js",
+                            "src/assets/mxgraph/mxgraph.conf.js"
                         ],
                         "webWorkerTsConfig": "tsconfig.worker.json"
                     },
@@ -114,7 +126,11 @@
                         "tsConfig": "tsconfig.spec.json",
                         "karmaConfig": "karma.conf.js",
                         "styles": ["src/styles.scss"],
-                        "scripts": ["node_modules/tinymce/tinymce.min.js"],
+                        "scripts": [
+                            "node_modules/tinymce/tinymce.min.js",
+                            "node_modules/mxgraph/javascript/mxClient.min.js",
+                            "src/assets/mxgraph/mxgraph.conf.js"
+                        ],
                         "assets": [
                             "src/assets",
                             "src/manifest.json",
@@ -132,6 +148,16 @@
                                 "glob": "**/*",
                                 "input": "node_modules/tinymce/plugins",
                                 "output": "/tinymce/plugins/"
+                            },
+                            {
+                                "glob": "**/*",
+                                "input": "node_modules/mxgraph/javascript/src/resources",
+                                "output": "/resources/"
+                            },
+                            {
+                                "glob": "**/*",
+                                "input": "node_modules/mxgraph/javascript/src/css",
+                                "output": "/css/"
                             }
                         ]
                     }

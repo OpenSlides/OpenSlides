@@ -80,6 +80,11 @@ const routes: Route[] = [
                 path: 'autopilot',
                 loadChildren: () => import('./cinema/cinema.module').then(m => m.CinemaModule),
                 data: { basePerm: Permission.coreCanSeeAutopilot }
+            },
+            {
+                path: 'posters',
+                loadChildren: () => import('./posters/posters.module').then(m => m.PostersModule)
+                // todo: perm
             }
         ],
         canActivateChild: [AuthGuard]

@@ -1,0 +1,45 @@
+.poster-wrapper {
+    height: calc(100vh - 64px);
+    display: flex;
+}
+
+.wide-form-card {
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    font-size: 16px;
+
+    .mat-select-arrow-wrapper {
+        visibility: hidden;
+    }
+
+    .mat-form-field {
+        width: 100%;
+        padding: 10px 0;
+    }
+}
+
+.graph-wrapper {
+    display: flex !important;
+    flex-direction: column;
+    flex-grow: 1;
+    min-height: 500px;
+
+    .toolbar {
+        margin-bottom: 10px;
+    }
+
+    .mat-divider {
+        position: relative !important;
+    }
+
+    .graph-container {
+        cursor: default;
+        flex-grow: 1;
+    }
+}
+
+.xml-area {
+    height: 300px;
+}
