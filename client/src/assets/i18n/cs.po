@@ -16,7 +16,7 @@ msgid "%num% emails were send sucessfully."
 msgstr "%num% elektronických dopisů bylo úspěšně odesláno."
 
 msgid "100% base"
-msgstr ""
+msgstr "100 % základ"
 
 msgid ""
 "<a href=\"http://www.openslides.org\">OpenSlides</a> is a free web based "
@@ -106,7 +106,7 @@ msgid "Add to queue"
 msgstr "Přidat do řady"
 
 msgid "Add yourself to the current list of speakers to join the conference"
-msgstr ""
+msgstr "Přidejte se do nynějšího seznamu řečníků pro připojení se k jednání"
 
 msgid "Add/remove groups ..."
 msgstr "Přidat/Odstranit skupiny..."
@@ -121,6 +121,8 @@ msgid ""
 "Additional columns after the required ones may be present and will not "
 "affect the import."
 msgstr ""
+"Za požadovanými mohou být přítomny dodatečné sloupce. Zavedení tím nebude "
+"ovlivněno."
 
 msgid "Adjourn"
 msgstr "Odložit"
@@ -132,7 +134,7 @@ msgid "Admin"
 msgstr "Správce"
 
 msgid "After verifiy the preview click on \"import\" please (see top right)."
-msgstr ""
+msgstr "Po přezkoušení náhledu klepněte na Zavést (nahoře vpravo)."
 
 msgid "Agenda"
 msgstr "Pořad jednání"
@@ -144,7 +146,7 @@ msgid "All casted ballots"
 msgstr "Všechny odevzdané hlasovací lístky"
 
 msgid "All lists of speakers will be cleared."
-msgstr ""
+msgstr "Všechny seznamy řečníků budou vyprázdněny."
 
 msgid "All topics will be deleted and won't be accessible afterwards."
 msgstr "Všechny náměty budou smazány, a potom k nim nebude možno přistupovat."
@@ -174,6 +176,8 @@ msgid ""
 "Allow only current speakers and list of speakers managers to enter the live "
 "conference"
 msgstr ""
+"Povolit jen nynějším řečníkům a správcům seznamu řečníků připojit se k "
+"jednání"
 
 msgid "Allow submitter edit"
 msgstr "Povolit upravení předkladatele"
@@ -182,7 +186,7 @@ msgid "Allow support"
 msgstr "Povolit podporu"
 
 msgid "Allow users to set themselves as present"
-msgstr ""
+msgstr "Povolit uživatelům nastavit se jako přítomní"
 
 msgid "Allowed access groups for this directory"
 msgstr "Povolené přístupové skupiny pro tento adresář"
@@ -224,7 +228,7 @@ msgid "Anonymize votes"
 msgstr "Zbavit hlasy osobních údajů"
 
 msgid "Anonymous"
-msgstr ""
+msgstr "Neoznačený jménem"
 
 msgid "Apply"
 msgstr "Použít"
@@ -232,13 +236,16 @@ msgstr "Použít"
 msgid "Arabic"
 msgstr "Arabský"
 
+msgid "Are you sure you want delete the whole history?"
+msgstr "Opravdu má být smazána veškerá historie?"
+
 msgid "Are you sure you want to anonymize all votes? This cannot be undone."
 msgstr ""
 "Opravdu mají být přečíslovány všechny hlasy zbaveny osobních údajů? Toto "
 "nelze vrátit zpět."
 
 msgid "Are you sure you want to clear all speakers of all lists?"
-msgstr ""
+msgstr "Opravdu chcete vyprázdnit všechny řečníky ze všech seznamů?"
 
 msgid "Are you sure you want to delete all selected elections?"
 msgstr "Opravdu mají být smazány všechny vybrané volby?"
@@ -367,6 +374,9 @@ msgid "Are you sure you want to send emails to all selected participants?"
 msgstr ""
 "Opravdu mají být poslány elektronické dopisy všem vybraným účastníkům?"
 
+msgid "Are you sure you want to submit a point of order?"
+msgstr ""
+
 msgid "As of"
 msgstr "Od"
 
@@ -382,6 +392,9 @@ msgstr "Zeptat se, výchozí je ano"
 msgid "Attachments"
 msgstr "Přílohy"
 
+msgid "Autopilot"
+msgstr ""
+
 msgid "Available votes"
 msgstr "Dostupné hlasy"
 
@@ -392,19 +405,19 @@ msgid "Back to login"
 msgstr "Zpět na přihlášení"
 
 msgid "Background color"
-msgstr ""
+msgstr "Barva pozadí"
 
 msgid "Ballot"
 msgstr "Hlasování"
 
 msgid "Ballot opened"
-msgstr ""
+msgstr "Volba otevřena"
 
 msgid "Ballot papers"
-msgstr ""
+msgstr "Hlasovací lístky"
 
 msgid "Ballots"
-msgstr ""
+msgstr "Hlasování"
 
 msgid "Base folder"
 msgstr "Základní složka"
@@ -464,7 +477,7 @@ msgid "Can manage motion metadata"
 msgstr "Může spravovat návrhy"
 
 msgid "Can manage motion polls"
-msgstr ""
+msgstr "Může spravovat hlasování o návrzích"
 
 msgid "Can manage motions"
 msgstr "Smí spravovat návrhy"
@@ -520,6 +533,9 @@ msgstr "Smí vidět návrhy ve vnitřním stavu"
 msgid "Can see names of users"
 msgstr "Smí vidět jména uživatelů"
 
+msgid "Can see the autopilot"
+msgstr ""
+
 msgid "Can see the front page"
 msgstr "Smí vidět přední stranu"
 
@@ -527,7 +543,7 @@ msgid "Can see the list of files"
 msgstr "Smí vidět seznam souborů"
 
 msgid "Can see the live stream"
-msgstr ""
+msgstr "Smí vidět živý kanál"
 
 msgid "Can see the projector"
 msgstr "Smí vidět promítací přístroj"
@@ -544,11 +560,20 @@ msgstr "Zrušit"
 msgid "Cancel edit"
 msgstr "Zrušit upravení"
 
+msgid "Cancel editing without saving"
+msgstr ""
+
 msgid "Candidates"
 msgstr "Uchazeči"
 
 msgid "Cannot create PDF files on this browser."
 msgstr "Na tomto prohlížeči nelze vytvářet soubory PDF."
+
+msgid "Cannot do that in demo mode!"
+msgstr ""
+
+msgid "Cannot navigate to the selected history element."
+msgstr ""
 
 msgid "Categories"
 msgstr "Skupiny"
@@ -605,10 +630,10 @@ msgid "Chyron"
 msgstr "Dolní třetina"
 
 msgid "Chyron background color"
-msgstr ""
+msgstr "Barva pozadí v dolní třetině"
 
 msgid "Chyron font color"
-msgstr ""
+msgstr "Barva písma v dolní třetině"
 
 msgid "Clear all"
 msgstr "Vyprázdnit vše"
@@ -656,7 +681,7 @@ msgid "Comment fields"
 msgstr "Poznámková pole"
 
 msgid "Comment {arg1} updated"
-msgstr ""
+msgstr "Poznámka {arg1} aktualizována"
 
 msgid "Comments"
 msgstr "Poznámky"
@@ -677,7 +702,7 @@ msgid "Congratuations! Your browser is supported by OpenSlides."
 msgstr ""
 
 msgid "Connect all users to live conference automatically"
-msgstr ""
+msgstr "Připojit všechny uživatele k živému jednání automaticky"
 
 msgid "Content"
 msgstr "Obsah"
@@ -722,7 +747,7 @@ msgid "Create final print template"
 msgstr "Vytvořit předlohu pro konečný tisk"
 
 msgid "Create user"
-msgstr ""
+msgstr "Vytvořit uživatele"
 
 msgid "Creating PDF file ..."
 msgstr "Vytváří se soubor PDF..."
@@ -740,7 +765,7 @@ msgid "Current list of speakers"
 msgstr "Nynější seznam řečníků"
 
 msgid "Currently projected"
-msgstr ""
+msgstr "Nyní promítáno"
 
 msgid "Custom aspect ratio"
 msgstr "Vlastní poměr stran"
@@ -776,7 +801,7 @@ msgid "Default 100 % base of an election result"
 msgstr ""
 
 msgid "Default election method"
-msgstr ""
+msgstr "Výchozí způsob volby"
 
 msgid "Default encoding for all csv exports"
 msgstr "Výchozí kódování pro všechna vyvedení do CSV"
@@ -785,7 +810,7 @@ msgid "Default group"
 msgstr "Výchozí skupina"
 
 msgid "Default groups with voting rights"
-msgstr ""
+msgstr "Výchozí skupiny s hlasovacím právem"
 
 msgid "Default line numbering"
 msgstr "Výchozí číslování řádků"
@@ -814,6 +839,12 @@ msgstr ""
 
 msgid "Delegates"
 msgstr "Zástupci"
+
+msgid "Delegation of vote"
+msgstr ""
+
+msgid "Delegation of vote (principals)"
+msgstr ""
 
 msgid "Delete"
 msgstr "Smazat"
@@ -903,14 +934,20 @@ msgstr "Nemá poznámky"
 msgid "Done"
 msgstr "Hotovo"
 
+msgid "Download"
+msgstr ""
+
 msgid "Download CSV example file"
 msgstr "Stáhnout soubor s příkladem CSV"
+
+msgid "Download folder"
+msgstr ""
 
 msgid "Drop files into this area OR click here to select files"
 msgstr "Upusťte soubory na tuto oblast NEBO klepněte sem a vyberte soubory"
 
 msgid "Duplicate"
-msgstr ""
+msgstr "Zdvojit"
 
 msgid "Duration"
 msgstr "Doba trvání"
@@ -940,6 +977,9 @@ msgstr "Upravit podrobnosti"
 
 msgid "Edit details for"
 msgstr "Upravit podrobnosti pro"
+
+msgid "Edit final print template"
+msgstr ""
 
 msgid "Edit projector"
 msgstr "Upravit promítací přístroj"
@@ -992,6 +1032,9 @@ msgstr "Povolit číslování bodů pořadu jednání"
 msgid "Enable participant presence view"
 msgstr "Povolit pohled na přítomnost účastníka"
 
+msgid "Enable points of order"
+msgstr ""
+
 msgid "Enable/disable account ..."
 msgstr "Povolit/Zakázat účet..."
 
@@ -1005,14 +1048,14 @@ msgid "Enforce page breaks"
 msgstr "Vynutit zalomení stran"
 
 msgid "Enter conference"
-msgstr ""
+msgstr "Připojit se k jednání"
 
 msgid "Enter duration in seconds. Choose 0 to disable warning color."
 msgstr ""
 "Zadejte dobu trvání v sekundách. Zvolte 0 pro vypnutí upozorňující barvy."
 
 msgid "Enter live conference"
-msgstr ""
+msgstr "Připojit se k živému jednání"
 
 msgid ""
 "Enter number of the next shown speakers. Choose -1 to show all next "
@@ -1069,10 +1112,10 @@ msgid "Exit"
 msgstr "Ukončit"
 
 msgid "Exit conference"
-msgstr ""
+msgstr "Ukončit jednání"
 
 msgid "Exit live conference and continue livestream"
-msgstr ""
+msgstr "Ukončit živé jednání a pokračovat na živém kanálu"
 
 msgid "Expand all"
 msgstr "Rozbalit vše"
@@ -1457,9 +1500,12 @@ msgid "List view"
 msgstr "Zobrazení seznamu"
 
 msgid "Live conference"
-msgstr ""
+msgstr "Živé jednání"
 
 msgid "Livestream"
+msgstr ""
+
+msgid "Livestream poster image url"
 msgstr ""
 
 msgid "Livestream url"
@@ -1696,6 +1742,9 @@ msgstr "Žádná data"
 msgid "No decision"
 msgstr "Žádné rozhodnutí"
 
+msgid "No delegation of vote"
+msgstr ""
+
 msgid "No email sent"
 msgstr "Neposlán žádný elektronický dopis"
 
@@ -1731,6 +1780,9 @@ msgstr "Nenalezeny žádné výsledky hledání"
 
 msgid "No statute paragraphs"
 msgstr "Žádné odstavce předpisu"
+
+msgid "No stream available"
+msgstr ""
 
 msgid "No tags"
 msgstr "Žádné značky"
@@ -2014,6 +2066,9 @@ msgstr "Vyberte, prosím, adresář:"
 msgid "Please update your browser or contact your system administration."
 msgstr ""
 
+msgid "Point of order"
+msgstr ""
+
 msgid "Poll created"
 msgstr ""
 
@@ -2126,7 +2181,7 @@ msgid "Recommendation set to {arg1}"
 msgstr "Doporučení nastaveno na {arg1}"
 
 msgid "Reenter to live conference"
-msgstr ""
+msgstr "Připojit se znovu k živému jednání"
 
 msgid "Refer to committee"
 msgstr "Předat do výboru"
@@ -2249,6 +2304,9 @@ msgstr "Uložit"
 msgid "Save all changes"
 msgstr "Uložit všechny změny"
 
+msgid "Save final print template"
+msgstr ""
+
 msgid "Scan this QR code to connect to WLAN."
 msgstr "Snímat tento QRCode pro spojení s WLAN."
 
@@ -2363,6 +2421,9 @@ msgstr "Stanovit doporučení"
 msgid "Set status"
 msgstr "Nastavit stav"
 
+msgid "Set status for selected participants:"
+msgstr ""
+
 msgid "Sets this projector as the reference for the current list of speakers"
 msgstr ""
 "Nastavit tento promítací přístroj jako odkaz pro nynější seznam řečníků."
@@ -2419,7 +2480,7 @@ msgid "Show hint »first speech« in the list of speakers management view"
 msgstr ""
 
 msgid "Show live conference window"
-msgstr ""
+msgstr "Ukázat okno s živým jednáním"
 
 msgid "Show logo"
 msgstr "Ukázat emblém"
@@ -2463,6 +2524,11 @@ msgid "Show title"
 msgstr "Ukázat název"
 
 msgid "Show/Hide video conference"
+msgstr "Ukázat/Skrýt obrazový záznam jednání"
+
+msgid ""
+"Shows if livestream is not started. Recommended image format: 500x281px, PNG"
+" or JPG"
 msgstr ""
 
 msgid "Simple Workflow"
@@ -2529,6 +2595,9 @@ msgid "State set to {arg1}"
 msgstr "Stav nastavit na {arg1}"
 
 msgid "Statistics"
+msgstr ""
+
+msgid "Status"
 msgstr ""
 
 msgid "Statute"
@@ -2653,13 +2722,13 @@ msgid "The list of speakers is closed."
 msgstr "Seznam řečníků je uzavřen."
 
 msgid "The live conference is already running in your OpenSlides session."
-msgstr ""
+msgstr "Živé jednání už běží ve vašem sezení OpenSlides."
 
 msgid "The livestream is already running in your OpenSlides session."
 msgstr ""
 
 msgid "The livestream is disabled because you are inside a conference"
-msgstr ""
+msgstr "Živý kanál je zakázán, protože jste uvnitř jednání"
 
 msgid ""
 "The maximum number of characters per line. Relevant when line numbering is "
@@ -2670,6 +2739,9 @@ msgstr ""
 
 msgid "The number has to be greater than 0."
 msgstr "Číslo musí být větší než 0."
+
+msgid "The parent motion was deleted."
+msgstr ""
 
 msgid "The reason field may not be blank."
 msgstr "Pole pro důvod nesmí být prázdné."
@@ -2935,6 +3007,12 @@ msgstr ""
 msgid "Voting result"
 msgstr "Výsledek hlasování"
 
+msgid "Voting right delegated to (proxy)"
+msgstr ""
+
+msgid "Voting right for"
+msgstr ""
+
 msgid "Voting successful."
 msgstr ""
 
@@ -2988,8 +3066,14 @@ msgstr ""
 msgid "Withdraw"
 msgstr "Stáhnout"
 
+msgid "Withdraw point of order"
+msgstr ""
+
 msgid "Workflow"
 msgstr "Pracovní postup"
+
+msgid "Workflow of new amendments"
+msgstr ""
 
 msgid "Workflow of new motions"
 msgstr "Postup práce na nových návrzích"
@@ -3025,6 +3109,12 @@ msgid ""
 "You are using the history mode of OpenSlides. Changes will not be saved."
 msgstr "Používáte minulostní režim OpenSlides. Změny nebudou uloženy."
 
+msgid "You can not vote because this is an analog voting."
+msgstr ""
+
+msgid "You can not vote right now because the voting has not yet started."
+msgstr ""
+
 msgid "You can use {event_name} and {username} as placeholder."
 msgstr "Můžete použít {event_name} a {username} jako zástupné symboly."
 
@@ -3035,11 +3125,20 @@ msgstr "Nemůžete změnit doporučení návrhů v různých pracovních postupe
 msgid "You cannot change the state of motions in different workflows!"
 msgstr "Nemůžete změnit stav návrhů v různých pracovních postupech!"
 
+msgid "You do not have the permission to vote."
+msgstr ""
+
 msgid "You do not have the required permission to see that page!"
 msgstr ""
 "Nemáte požadované oprávnění k tomu, abyste se mohl podívat na tu stránku."
 
 msgid "You have already voted."
+msgstr ""
+
+msgid "You have to be logged in to be able to vote."
+msgstr ""
+
+msgid "You have to be present to vote."
 msgstr ""
 
 msgid "You have to fill this field."
@@ -3068,6 +3167,9 @@ msgstr ""
 
 msgid "Your password was resetted successfully!"
 msgstr "Vaše heslo byla úspěšně obnoveno!"
+
+msgid "Your voting right was delegated to another person."
+msgstr ""
 
 msgid "Zoom in"
 msgstr "Přiblížit"
@@ -3281,6 +3383,9 @@ msgstr "odmítnuto (není schváleno)"
 
 msgid "remove group(s)"
 msgstr "Odstranit skupinu(y)"
+
+msgid "represented by"
+msgstr ""
 
 msgid "result"
 msgstr "výsledek"

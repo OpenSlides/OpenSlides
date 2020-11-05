@@ -388,6 +388,9 @@ msgid "Are you sure you want to send emails to all selected participants?"
 msgstr ""
 "Sollen E-Mails wirklich an alle ausgewählten Teilnehmende gesendet werden?"
 
+msgid "Are you sure you want to submit a point of order?"
+msgstr "Soll wirklich ein GO-Antrag gestellt werden?"
+
 msgid "As of"
 msgstr "Stand"
 
@@ -544,6 +547,9 @@ msgstr "Darf Anträge im internen Status sehen"
 
 msgid "Can see names of users"
 msgstr "Darf die Namen der Benutzer sehen"
+
+msgid "Can see the autopilot"
+msgstr "Darf den Autopilot sehen"
 
 msgid "Can see the front page"
 msgstr "Darf die Startseite sehen"
@@ -1061,6 +1067,9 @@ msgstr "Nummerierung von Tagesordnungspunkten aktivieren"
 
 msgid "Enable participant presence view"
 msgstr "Ansicht zur Teilnehmeranwesenheit aktivieren"
+
+msgid "Enable points of order"
+msgstr "Geschäftsordnungsanträge aktivieren"
 
 msgid "Enable/disable account ..."
 msgstr "Account ein-/ausschalten ..."
@@ -1810,6 +1819,9 @@ msgstr "Keine Suchergebnisse gefunden"
 msgid "No statute paragraphs"
 msgstr "Keine Satzungsabschnitte vorhanden"
 
+msgid "No stream available"
+msgstr "Kein Stream verfügbar"
+
 msgid "No tags"
 msgstr "Keine Schlagwörter"
 
@@ -2096,6 +2108,9 @@ msgid "Please update your browser or contact your system administration."
 msgstr ""
 "Bitte aktualisieren Sie Ihren Browser oder kontaktieren Sie Ihre "
 "Systemadministration."
+
+msgid "Point of order"
+msgstr "Geschäftsordnungsantrag"
 
 msgid "Poll created"
 msgstr "Abstimmung erstellt"
@@ -3112,6 +3127,9 @@ msgstr ""
 
 msgid "Withdraw"
 msgstr "Zurückziehen"
+
+msgid "Withdraw point of order"
+msgstr "Geschäftsordnungsantrag zurückziehen"
 
 msgid "Workflow"
 msgstr "Arbeitsablauf"

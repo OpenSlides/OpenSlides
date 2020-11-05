@@ -206,7 +206,7 @@ export class ListOfSpeakersContentComponent extends BaseViewComponentDirective i
     }
 
     public async addPointOfOrder(): Promise<void> {
-        const title = this.translate.instant('Are you sure you want to submit a new point of order?');
+        const title = this.translate.instant('Are you sure you want to submit a point of order?');
         if (await this.promptService.open(title)) {
             try {
                 await this.listOfSpeakersRepo.createSpeaker(this.viewListOfSpeakers, undefined, true);

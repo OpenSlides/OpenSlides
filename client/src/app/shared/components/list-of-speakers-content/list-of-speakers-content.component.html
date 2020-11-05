@@ -201,13 +201,13 @@
         </button>
 
         <!-- Point Of order -->
-        <button mat-raised-button color="warn" (click)="addPointOfOrder()" *ngIf="showPointOfOrders && !isOpInWaitlist(true)">
-            <mat-icon>warning</mat-icon>
+        <button mat-stroked-button color="warn" (click)="addPointOfOrder()" *ngIf="showPointOfOrders && !isOpInWaitlist(true)">
+            <mat-icon>warning</mat-icon>&nbsp;
             <span>{{ 'Point of order' | translate }}</span>
         </button>
-        <button mat-raised-button color="warn" (click)="removePointOfOrder()" *ngIf="showPointOfOrders && isOpInWaitlist(true)">
-            <mat-icon>warning</mat-icon>
-            <span>{{ 'Remove point of order request' | translate }}</span>
+        <button mat-stroked-button color="warn" (click)="removePointOfOrder()" *ngIf="showPointOfOrders && isOpInWaitlist(true)">
+            <mat-icon>remove</mat-icon>
+            <span>{{ 'Withdraw point of order' | translate }}</span>
         </button>
     </div>
 </mat-card>
