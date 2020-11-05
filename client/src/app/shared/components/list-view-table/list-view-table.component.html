@@ -10,6 +10,9 @@
             [searchFieldInput]="inputValue"
             (searchFieldChange)="searchFilter($event)"
         >
+            <div class="extra-info-slot">
+                <ng-content select=".filter-bar-info-slot"></ng-content>
+            </div>
         </os-sort-filter-bar>
 
         <pbl-ngrid

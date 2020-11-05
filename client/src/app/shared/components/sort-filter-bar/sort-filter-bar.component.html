@@ -1,9 +1,9 @@
 <div class="custom-table-header flex-spaced">
     <!-- Amount of filters -->
-    <div class="filter-count">
+    <div class="filter-count one-line">
         <span>{{ filterCount }}&nbsp;</span><span>{{ 'of' | translate }}</span>
         <span>&nbsp;{{ totalCount }}</span>
-        <span *ngIf="extraItemInfo">&nbsp;·&nbsp;{{ extraItemInfo }}</span>
+        <ng-content select=".extra-info-slot"></ng-content>
     </div>
 
     <!-- Current filters -->
