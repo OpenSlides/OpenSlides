@@ -1,7 +1,7 @@
-# 
+#
 # Translators:
 # Emanuel Schütze <emanuel.schuetze@intevation.de>, 2020
-# 
+#
 msgid ""
 msgstr ""
 "Last-Translator: Emanuel Schütze <emanuel.schuetze@intevation.de>, 2020\n"
@@ -3483,6 +3483,19 @@ msgstr "zurückgezogen"
 msgid "yellow"
 msgstr "gelb"
 
+
+# Custom translation for mxgraph
+msgid "Posters"
+msgstr "Poster"
+
+msgid "New poster"
+msgstr "Neues Poster"
+
+msgid "Edit XML"
+msgstr "XML bearbeiten"
+
+msgid "Published"
+msgstr "Öffentlich"
 
 # Custom translation for mxgraph
 msgid "Posters"
