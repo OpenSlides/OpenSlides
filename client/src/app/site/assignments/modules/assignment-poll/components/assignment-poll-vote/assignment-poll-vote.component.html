@@ -149,7 +149,7 @@
 
 <ng-template #sendNow let-delegation="delegation">
     <div class="centered-button-wrapper">
-        <button mat-flat-button color="accent" (click)="submitVote(delegation)">
+        <button mat-flat-button color="accent" (click)="submitVote(delegation)" [disabled]="getVotesCount(delegation) == 0">
             <mat-icon> how_to_vote </mat-icon>
             <span>
                 {{ 'Submit vote now' | translate }}

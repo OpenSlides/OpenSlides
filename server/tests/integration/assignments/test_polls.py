@@ -1174,10 +1174,10 @@ class VoteAssignmentPollNamedYNA(VoteAssignmentPollBaseTestClass):
         response = self.client.post(
             reverse("assignmentpoll-vote", args=[self.poll.pk]), {"data": {}}
         )
-        self.assertHttpStatusVerbose(
-            response, status.HTTP_200_OK
-        )  # new "feature" because of partial requests: empty requests work!
+        self.assertHttpStatusVerbose(response, status.HTTP_400_BAD_REQUEST)
         self.assertFalse(AssignmentVote.objects.exists())
+        poll = AssignmentPoll.objects.get()
+        self.assertNotIn(self.admin.id, poll.voted.all())
 
     def test_wrong_data_format(self):
         self.start_poll()
@@ -1459,8 +1459,10 @@ class VoteAssignmentPollNamedVotes(VoteAssignmentPollBaseTestClass):
         response = self.client.post(
             reverse("assignmentpoll-vote", args=[self.poll.pk]), {"data": {}}
         )
-        self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
+        self.assertHttpStatusVerbose(response, status.HTTP_400_BAD_REQUEST)
         self.assertFalse(AssignmentVote.objects.exists())
+        poll = AssignmentPoll.objects.get()
+        self.assertNotIn(self.admin.id, poll.voted.all())
 
     def test_wrong_data_format(self):
         self.start_poll()
@@ -1650,8 +1652,10 @@ class VoteAssignmentPollPseudoanonymousYNA(VoteAssignmentPollBaseTestClass):
         response = self.client.post(
             reverse("assignmentpoll-vote", args=[self.poll.pk]), {"data": {}}
         )
-        self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
+        self.assertHttpStatusVerbose(response, status.HTTP_400_BAD_REQUEST)
         self.assertFalse(AssignmentVote.objects.exists())
+        poll = AssignmentPoll.objects.get()
+        self.assertNotIn(self.admin.id, poll.voted.all())
 
     def test_wrong_data_format(self):
         self.start_poll()
@@ -1883,8 +1887,10 @@ class VoteAssignmentPollPseudoanonymousVotes(VoteAssignmentPollBaseTestClass):
         response = self.client.post(
             reverse("assignmentpoll-vote", args=[self.poll.pk]), {"data": {}}
         )
-        self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
+        self.assertHttpStatusVerbose(response, status.HTTP_400_BAD_REQUEST)
         self.assertFalse(AssignmentVote.objects.exists())
+        poll = AssignmentPoll.objects.get()
+        self.assertNotIn(self.admin.id, poll.voted.all())
 
     def test_wrong_data_format(self):
         self.start_poll()

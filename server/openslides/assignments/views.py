@@ -407,6 +407,8 @@ class AssignmentPollViewSet(BasePollViewSet):
                 )
 
         else:
+            if isinstance(data, dict) and len(data) == 0:
+                raise ValidationError({"details": "Empty ballots are not allowed"})
             available_options = poll.get_options()
             if poll.pollmethod == AssignmentPoll.POLLMETHOD_VOTES:
                 if isinstance(data, dict):
@@ -419,9 +421,7 @@ class AssignmentPollViewSet(BasePollViewSet):
                                 {"detail": f"Option {option_id} does not exist."}
                             )
                         if not is_int(amount):
-                            raise ValidationError(
-                                {"detail": "Each amounts must be int"}
-                            )
+                            raise ValidationError({"detail": "Each amount must be int"})
                         amount = int(amount)
                         if amount < 0:
                             raise ValidationError(
