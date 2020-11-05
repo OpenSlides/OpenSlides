@@ -100,6 +100,7 @@ _('Show orange countdown in the last x seconds of speaking time');
 _('Enter duration in seconds. Choose 0 to disable warning color.');
 _('Hide the amount of speakers in subtitle of list of speakers slide');
 _('Couple countdown with the list of speakers');
+_('Enable points of order');
 _('[Begin speech] starts the countdown, [End speech] stops the countdown.');
 _('Only present participants can be added to the list of speakers');
 _('Show hint »first speech« in the list of speakers management view');
@@ -330,6 +331,7 @@ _('Can manage elections');
 // core
 _('Can see the projector');
 _('Can manage the projector');
+_('Can see the autopilot');
 _('Can see the front page');
 _('Can manage tags');
 _('Can manage configuration');
