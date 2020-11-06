@@ -118,6 +118,10 @@ export class UserListComponent extends BaseListViewComponent<ViewUser> implement
         return this.operator.hasPerms(Permission.usersCanManage);
     }
 
+    public get canSeeExtra(): boolean {
+        return this.operator.hasPerms(Permission.usersCanSeeExtraData);
+    }
+
     public get showVoteWeight(): boolean {
         return this.pollService.isElectronicVotingEnabled && this.isVoteWeightActive;
     }

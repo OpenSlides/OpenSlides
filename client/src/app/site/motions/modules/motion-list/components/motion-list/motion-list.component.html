@@ -263,7 +263,7 @@
 
         <mat-divider
             *ngIf="(categories.length || motionBlocks.length || hasAmendments() || perms.isAllowed('manage'))
-            && (perms.isAllowed('manage') || selectedView === 'list' || operator.hasPerms('core.can_manage_config'))"
+            && (perms.isAllowed('manage') || selectedView === 'list' || perms.isAllowed('can_manage_config'))"
         ></mat-divider>
 
         <div *ngIf="perms.isAllowed('manage')">
