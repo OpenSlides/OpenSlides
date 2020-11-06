@@ -3,7 +3,17 @@
     [multiple]="multiple"
     [panelClass]="{ 'os-search-value-selector': multiple }"
     [errorStateMatcher]="errorStateMatcher"
+    (openedChange)="openSelect($event)"
 >
+    <!-- Custom display of selected items -->
+    <mat-select-trigger>
+        <ng-container *ngIf="selectedItems?.length">
+            <span *ngFor="let item of selectedItems; let i = index">
+                {{ item.getTitle() | translate }}<span *ngIf="i < selectedItems.length - 1">, </span>
+            </span>
+        </ng-container>
+    </mat-select-trigger>
+
     <mat-option>
         <ngx-mat-select-search [formControl]="searchValue"></ngx-mat-select-search>
     </mat-option>
@@ -14,7 +24,7 @@
                     <mat-chip
                         *ngFor="let item of selectedItems"
                         [removable]="true"
-                        (removed)="removeItem(item.id)"
+                        (removed)="removeChipItem(item)"
                         [disableRipple]="true"
                     >
                         {{ item.getTitle() | translate }}
@@ -36,8 +46,12 @@
         </mat-option>
         <mat-divider></mat-divider>
     </ng-container>
-    <cdk-virtual-scroll-viewport class="vscroll-viewport" minBufferPx="200" maxBufferPx="300" [itemSize]="50">
-        <mat-option *cdkVirtualFor="let selectedItem of getFilteredItems()" [value]="selectedItem.id">
+    <cdk-virtual-scroll-viewport class="vscroll-viewport" minBufferPx="400" maxBufferPx="600" [itemSize]="50">
+        <mat-option
+            *cdkVirtualFor="let selectedItem of getFilteredItems()"
+            [value]="selectedItem.id"
+            (onSelectionChange)="onSelectionChange($event)"
+        >
             {{ selectedItem.getTitle() | translate }}
         </mat-option>
     </cdk-virtual-scroll-viewport>
