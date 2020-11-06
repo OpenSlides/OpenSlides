@@ -29,6 +29,11 @@
     [(selectedRows)]="selectedRows"
     (dataSourceChange)="onDataSourceChange($event)"
 >
+    <!-- extra content in the filter bar -->
+    <div class="filter-bar-info-slot" *ngIf="showVoteWeight">
+        &nbsp;<span>({{ 'Vote weight' | translate }} {{ totalVoteWeight }})</span>
+    </div>
+
     <!-- Name column -->
     <div *pblNgridCellDef="'short_name'; row as user; rowContext as rowContext" class="cell-slot fill">
         <a class="detail-link" [routerLink]="user.id" *ngIf="!isMultiSelect"></a>

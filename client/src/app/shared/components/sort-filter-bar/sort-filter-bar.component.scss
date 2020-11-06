@@ -32,9 +32,11 @@ span.right-with-margin {
 }
 
 .filter-count {
+    display: flex;
+    min-width: fit-content;
     font-style: italic;
     margin-left: 24px;
-    margin-right: 5px;
+    margin-right: 1em;
 }
 
 .current-filters {
