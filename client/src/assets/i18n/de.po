@@ -305,10 +305,6 @@ msgstr "Soll diese/r Teilnehmende wirklich gelöscht werden?"
 msgid "Are you sure you want to delete this projector?"
 msgstr "Soll dieser Projektor wirklich gelöscht werden?"
 
-msgid ""
-"Are you sure you want to delete this speaker from this list of speakers?"
-msgstr "Soll diese/r Redner/in von der Redeliste wirklich entfernt werden?"
-
 msgid "Are you sure you want to delete this statute paragraph?"
 msgstr "Soll dieser Satzungsabschnitt wirklich gelöscht werden?"
 
@@ -355,6 +351,13 @@ msgstr "Soll dieser Eintrag wirklich aus der Tagesordnung entfernt werden?"
 msgid "Are you sure you want to remove this motion from motion block?"
 msgstr "Soll dieser Antrag wirklich aus dem Antragsblock entfernt werden?"
 
+msgid ""
+"Are you sure you want to remove this speaker from the list of speakers?"
+msgstr "Soll diese/r Redner/in wirklich von der Redeliste entfernt werden?"
+
+msgid "Are you sure you want to remove yourself from this list of speakers?"
+msgstr "Wollen Sie sich wirklich von dieser Redeliste entfernen?"
+
 msgid "Are you sure you want to renumber all motions of this category?"
 msgstr ""
 "Sollen alle Anträge dieses Sachgebiets wirklich neu nummeriert werden?"
@@ -389,7 +392,7 @@ msgstr ""
 "Sollen E-Mails wirklich an alle ausgewählten Teilnehmende gesendet werden?"
 
 msgid "Are you sure you want to submit a point of order?"
-msgstr "Soll wirklich ein GO-Antrag gestellt werden?"
+msgstr "Soll wirklich ein Geschäftsordnungsantrag gestellt werden?"
 
 msgid "As of"
 msgstr "Stand"
@@ -2110,7 +2113,7 @@ msgstr ""
 "Systemadministration."
 
 msgid "Point of order"
-msgstr "Geschäftsordnungsantrag"
+msgstr "GO-Antrag"
 
 msgid "Poll created"
 msgstr "Abstimmung erstellt"
@@ -3129,7 +3132,7 @@ msgid "Withdraw"
 msgstr "Zurückziehen"
 
 msgid "Withdraw point of order"
-msgstr "Geschäftsordnungsantrag zurückziehen"
+msgstr "GO-Antrag zurückziehen"
 
 msgid "Workflow"
 msgstr "Arbeitsablauf"
