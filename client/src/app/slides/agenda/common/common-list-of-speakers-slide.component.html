@@ -13,18 +13,20 @@
     </div>
 
     <!-- Last speakers -->
-    <div *ngIf="data.data.finished && data.data.finished.length">
-        <div *ngFor="let speaker of data.data.finished" class="lastSpeakers">
+    <div *ngIf="data.data.finished && data.data.finished.length" class="lastSpeakers">
+        <div *ngFor="let speaker of data.data.finished">
             {{ speaker.user }}
             <mat-icon *ngIf="speaker.marked">star</mat-icon>
+            <mat-icon *ngIf="speaker.point_of_order" color="warn"> warning</mat-icon>
         </div>
     </div>
 
     <!-- Current speaker -->
     <div *ngIf="data.data.current" class="currentSpeaker">
-        <mat-icon>mic</mat-icon>
-        <span>{{ data.data.current.user }}</span>
+        <mat-icon class="micicon">mic</mat-icon>
+        {{ data.data.current.user }}
         <mat-icon *ngIf="data.data.current.marked">star</mat-icon>
+        <mat-icon *ngIf="data.data.current.point_of_order" color="warn"> warning</mat-icon>
     </div>
 
     <!-- Next speakers -->
@@ -33,6 +35,7 @@
             <li *ngFor="let speaker of data.data.waiting">
                 {{ speaker.user }}
                 <mat-icon *ngIf="speaker.marked">star</mat-icon>
+                <mat-icon *ngIf="speaker.point_of_order" color="warn"> warning</mat-icon>
             </li>
         </ol>
     </div>

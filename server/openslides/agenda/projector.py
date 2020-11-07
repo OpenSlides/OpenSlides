@@ -147,6 +147,7 @@ async def get_list_of_speakers_slide_data(
         formatted_speaker = {
             "user": user,
             "marked": speaker["marked"],
+            "point_of_order": speaker["point_of_order"],
             "weight": speaker["weight"],
             "end_time": speaker["end_time"],
         }
