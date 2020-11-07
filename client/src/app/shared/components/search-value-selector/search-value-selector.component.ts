@@ -1,4 +1,5 @@
 import { FocusMonitor } from '@angular/cdk/a11y';
+import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import {
     ChangeDetectionStrategy,
     Component,
@@ -12,6 +13,7 @@ import {
     ViewEncapsulation
 } from '@angular/core';
 import { FormBuilder, FormControl, NgControl } from '@angular/forms';
+import { MatOptionSelectionChange } from '@angular/material/core';
 import { MatFormFieldControl } from '@angular/material/form-field';
 
 import { TranslateService } from '@ngx-translate/core';
@@ -19,6 +21,7 @@ import { Observable } from 'rxjs';
 import { auditTime } from 'rxjs/operators';
 
 import { BaseFormControlComponentDirective } from 'app/shared/models/base/base-form-control';
+import { Identifiable } from 'app/shared/models/base/identifiable';
 import { ParentErrorStateMatcher } from 'app/shared/parent-error-state-matcher';
 import { Selectable } from '../selectable';
 
@@ -54,6 +57,9 @@ import { Selectable } from '../selectable';
 export class SearchValueSelectorComponent extends BaseFormControlComponentDirective<Selectable[]> {
     @ViewChild('chipPlaceholder', { static: false })
     public chipPlaceholder: ElementRef<HTMLElement>;
+
+    @ViewChild(CdkVirtualScrollViewport, { static: true })
+    public cdkVirtualScrollViewPort: CdkVirtualScrollViewport;
 
     /**
      * Decide if this should be a single or multi-select-field
@@ -134,6 +140,8 @@ export class SearchValueSelectorComponent extends BaseFormControlComponentDirect
      */
     private selectableItems: Selectable[];
 
+    public selectedIds: number[] = [];
+
     public constructor(
         protected translate: TranslateService,
         formBuilder: FormBuilder,
@@ -142,6 +150,13 @@ export class SearchValueSelectorComponent extends BaseFormControlComponentDirect
         element: ElementRef<HTMLElement>
     ) {
         super(formBuilder, focusMonitor, element, ngControl);
+    }
+
+    public openSelect(event: boolean): void {
+        if (event) {
+            this.cdkVirtualScrollViewPort.scrollToIndex(0);
+            this.cdkVirtualScrollViewPort.checkViewportSize();
+        }
     }
 
     /**
@@ -167,15 +182,30 @@ export class SearchValueSelectorComponent extends BaseFormControlComponentDirect
         }
     }
 
-    public removeItem(itemId: number): void {
-        const items = <number[]>this.contentForm.value;
-        items.splice(
-            items.findIndex(item => item === itemId),
-            1
-        );
-        this.contentForm.setValue(items);
+    public removeChipItem(item: Selectable): void {
+        this.addRemoveId(item.id);
     }
 
+    private addRemoveId(item: number): void {
+        const idx = this.selectedIds.indexOf(item);
+        if (idx > -1) {
+            this.selectedIds.splice(idx, 1);
+        } else {
+            this.selectedIds.push(item);
+        }
+        this.contentForm.setValue(this.selectedIds);
+    }
+
+    public onSelectionChange(change: MatOptionSelectionChange): void {
+        if (change.isUserInput) {
+            const value = change.source.value;
+            this.addRemoveId(value);
+        }
+    }
+
+    /**
+     * Satisfy parent
+     */
     public onContainerClick(event: MouseEvent): void {
         if ((event.target as Element).tagName.toLowerCase() !== 'select') {
             // this.element.nativeElement.querySelector('select').focus();
@@ -197,5 +227,16 @@ export class SearchValueSelectorComponent extends BaseFormControlComponentDirect
 
     protected updateForm(value: Selectable[] | null): void {
         this.contentForm.setValue(value);
+        if (value?.length) {
+            /**
+             * Hack:
+             * for loaded or preselected form, add existing values to selected IDs.
+             * These are usually always numbers,
+             * Would be easier to absolutely always use Selectable and never use IDs,
+             * Could save some work, but every second form has to change for that.
+             * -> os4 todo
+             */
+            this.selectedIds = value as any;
+        }
     }
 }
