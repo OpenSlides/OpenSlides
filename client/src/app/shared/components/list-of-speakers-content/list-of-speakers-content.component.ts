@@ -192,9 +192,9 @@ export class ListOfSpeakersContentComponent extends BaseViewComponentDirective i
      * the operator themself is removed
      */
     public async removeSpeaker(speaker?: ViewSpeaker): Promise<void> {
-        const title = this.translate.instant(
-            'Are you sure you want to delete this speaker from this list of speakers?'
-        );
+        const title = speaker
+            ? this.translate.instant('Are you sure you want to remove this speaker from the list of speakers?')
+            : this.translate.instant('Are you sure you want to remove yourself from this list of speakers?');
         if (await this.promptService.open(title)) {
             try {
                 await this.listOfSpeakersRepo.deleteSpeaker(this.viewListOfSpeakers, speaker ? speaker.id : null);
