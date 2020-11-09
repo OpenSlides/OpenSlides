@@ -124,9 +124,12 @@ export class SearchValueSelectorComponent extends BaseFormControlComponentDirect
     }
 
     public get selectedItems(): Selectable[] {
-        return this.selectableItems && this.contentForm.value
-            ? this.selectableItems.filter(item => this.contentForm.value.includes(item.id))
-            : [];
+        if (this.multiple && this.selectableItems?.length && this.contentForm.value) {
+            return this.selectableItems.filter(item => {
+                return this.contentForm.value.includes(item.id);
+            });
+        }
+        return [];
     }
 
     public controlType = 'search-value-selector';
@@ -197,7 +200,7 @@ export class SearchValueSelectorComponent extends BaseFormControlComponentDirect
     }
 
     public onSelectionChange(change: MatOptionSelectionChange): void {
-        if (change.isUserInput) {
+        if (this.multiple && change.isUserInput) {
             const value = change.source.value;
             this.addRemoveId(value);
         }

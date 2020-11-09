@@ -6,7 +6,7 @@
     (openedChange)="openSelect($event)"
 >
     <!-- Custom display of selected items -->
-    <mat-select-trigger>
+    <mat-select-trigger *ngIf="multiple">
         <ng-container *ngIf="selectedItems?.length">
             <span *ngFor="let item of selectedItems; let i = index">
                 {{ item.getTitle() | translate }}<span *ngIf="i < selectedItems.length - 1">, </span>
