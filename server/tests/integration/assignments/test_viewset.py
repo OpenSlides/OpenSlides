@@ -279,6 +279,14 @@ class CandidatureOther(TestCase):
             .exists()
         )
 
+    def test_nominate_other_invalid_id(self):
+        response = self.client.post(
+            reverse("assignment-candidature-other", args=[self.assignment.pk]),
+            {"user": ["not valid"]},
+        )
+
+        self.assertEqual(response.status_code, 400)
+
     def test_nominate_other_twice(self):
         self.assignment.add_candidate(
             get_user_model().objects.get(username="test_user_eeheekai4Phue6cahtho")

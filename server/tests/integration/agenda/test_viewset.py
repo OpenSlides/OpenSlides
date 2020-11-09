@@ -356,6 +356,13 @@ class ManageSpeaker(TestCase):
             ).exists()
         )
 
+    def test_add_someone_else_no_id(self):
+        response = self.client.post(
+            reverse("listofspeakers-manage-speaker", args=[self.list_of_speakers.pk]),
+            {"user": ["not valid"]},
+        )
+        self.assertEqual(response.status_code, 400)
+
     def test_point_of_order_single(self):
         config["agenda_enable_point_of_order_speakers"] = True
         self.assertEqual(Speaker.objects.all().count(), 0)

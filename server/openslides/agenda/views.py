@@ -346,6 +346,9 @@ class ListOfSpeakersViewSet(
                     raise ValidationError({"detail": "The list of speakers is closed."})
                 user = self.request.user
             else:
+                if not isinstance(user_id, int):
+                    raise ValidationError({"detail": "user_id has to be an int."})
+
                 point_of_order = False  # not for someone else
                 # Add someone else.
                 if not has_perm(
@@ -353,8 +356,8 @@ class ListOfSpeakersViewSet(
                 ):
                     self.permission_denied(request)
                 try:
-                    user = get_user_model().objects.get(pk=int(user_id))
-                except (ValueError, get_user_model().DoesNotExist):
+                    user = get_user_model().objects.get(pk=user_id)
+                except get_user_model().DoesNotExist:
                     raise ValidationError({"detail": "User does not exist."})
 
             # Try to add the user. This ensurse that a user is not twice in the
