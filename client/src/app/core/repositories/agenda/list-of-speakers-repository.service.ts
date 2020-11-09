@@ -262,6 +262,10 @@ export class ListOfSpeakersRepositoryService extends BaseHasContentObjectReposit
         return !this.getViewModelList().some(list => list.hasSpeakerSpoken(speaker));
     }
 
+    public async setListOpenness(listOfSpeakers: ViewListOfSpeakers, open: boolean): Promise<void> {
+        await this.update({ closed: !open }, listOfSpeakers);
+    }
+
     /**
      * List every speaker only once, who has spoken
      *

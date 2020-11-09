@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 
@@ -6,9 +6,11 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { ProjectorService } from 'app/core/core-services/projector.service';
+import { ListOfSpeakersRepositoryService } from 'app/core/repositories/agenda/list-of-speakers-repository.service';
 import { ProjectorRepositoryService } from 'app/core/repositories/projector/projector-repository.service';
 import { DetailNavigable, isDetailNavigable } from 'app/shared/models/base/detail-navigable';
 import { ProjectorElement } from 'app/shared/models/core/projector';
+import { ListOfSpeakersComponent } from 'app/site/agenda/components/list-of-speakers/list-of-speakers.component';
 import { ViewListOfSpeakers } from 'app/site/agenda/models/view-list-of-speakers';
 import { BaseProjectableViewModel } from 'app/site/base/base-projectable-view-model';
 import { BaseViewComponentDirective } from 'app/site/base/base-view';
@@ -87,7 +89,8 @@ export class CinemaComponent extends BaseViewComponentDirective implements OnIni
         private operator: OperatorService,
         private projectorService: ProjectorService,
         private projectorRepo: ProjectorRepositoryService,
-        private closService: CurrentListOfSpeakersService
+        private closService: CurrentListOfSpeakersService,
+        private listOfSpeakersRepo: ListOfSpeakersRepositoryService
     ) {
         super(title, translate, snackBar);
     }
@@ -109,5 +112,9 @@ export class CinemaComponent extends BaseViewComponentDirective implements OnIni
                 this.listOfSpeakers = clos;
             })
         );
+    }
+
+    public async toggleListOfSpeakersOpen(): Promise<void> {
+        await this.listOfSpeakersRepo.setListOpenness(this.listOfSpeakers, this.isLosClosed).catch(this.raiseError);
     }
 }
