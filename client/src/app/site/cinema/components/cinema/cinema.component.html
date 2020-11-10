@@ -22,16 +22,34 @@
 
     <!-- List of speakers -->
     <os-list-of-speakers-content
-            [customTitle]="true" [speakers]="listOfSpeakers"
-            *osPerms="'agenda.can_see_list_of_speakers'"
-        >
-        <p class="subtitle-text line-and-icon">
+        [customTitle]="true"
+        [speakers]="listOfSpeakers"
+        *osPerms="permission.agendaCanSeeListOfSpeakers; and: listOfSpeakers"
+    >
+        <p class="line-and-icon subtitle-text">
             <a [routerLink]="closUrl" [class.disabled]="!closUrl">
                 {{ 'List of speakers' | translate }}
             </a>
-            <mat-icon *ngIf="isLosClosed" matTooltip="{{ 'The list of speakers is closed.' | translate }}">
-                lock
-            </mat-icon>
+
+            <ng-container *osPerms="permission.agendaCanManageListOfSpeakers; complement: true">
+                <mat-icon *ngIf="isLosClosed" matTooltip="{{ 'The list of speakers is closed.' | translate }}">
+                    lock
+                </mat-icon>
+            </ng-container>
+
+            <button
+                *osPerms="permission.agendaCanManageListOfSpeakers"
+                mat-icon-button
+                (click)="toggleListOfSpeakersOpen()"
+            >
+                <mat-icon *ngIf="isLosClosed" matTooltip="{{ 'The list of speakers is closed.' | translate }}">
+                    lock
+                </mat-icon>
+
+                <mat-icon *ngIf="!isLosClosed" matTooltip="{{ 'The list of speakers is open.' | translate }}">
+                    lock_open
+                </mat-icon>
+            </button>
         </p>
     </os-list-of-speakers-content>
 

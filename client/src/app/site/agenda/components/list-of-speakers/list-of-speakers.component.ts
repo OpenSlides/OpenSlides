@@ -175,22 +175,8 @@ export class ListOfSpeakersComponent extends BaseViewComponentDirective implemen
         this.listOfSpeakersRepo.readdLastSpeaker(this.viewListOfSpeakers).catch(this.raiseError);
     }
 
-    /**
-     * Closes the current list of speakers
-     */
-    public closeSpeakerList(): Promise<void> {
-        if (!this.viewListOfSpeakers.closed) {
-            return this.listOfSpeakersRepo.update({ closed: true }, this.viewListOfSpeakers).catch(this.raiseError);
-        }
-    }
-
-    /**
-     * Opens the list of speaker for the current item
-     */
-    public openSpeakerList(): Promise<void> {
-        if (this.viewListOfSpeakers.closed) {
-            return this.listOfSpeakersRepo.update({ closed: false }, this.viewListOfSpeakers).catch(this.raiseError);
-        }
+    public async setOpenness(open: boolean): Promise<void> {
+        await this.listOfSpeakersRepo.setListOpenness(this.viewListOfSpeakers, open).catch(this.raiseError);
     }
 
     /**
