@@ -12,6 +12,7 @@ import { OperatorService } from 'app/core/core-services/operator.service';
 import { Deferred } from 'app/core/promises/deferred';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
+import { UserMediaPermService } from 'app/core/ui-services/user-media-perm.service';
 import { UserListIndexType } from 'app/site/agenda/models/view-list-of-speakers';
 import { BaseViewComponentDirective } from 'app/site/base/base-view';
 import { CurrentListOfSpeakersService } from 'app/site/projector/services/current-list-of-speakers.service';
@@ -80,6 +81,8 @@ export class JitsiComponent extends BaseViewComponentDirective implements OnInit
     public enableJitsi: boolean;
 
     private autoconnect: boolean;
+    private startWithMicMuted: boolean;
+    private startWithVideoMuted: boolean;
     private roomName: string;
     private roomPassword: string;
     private jitsiDomain: string;
@@ -184,8 +187,8 @@ export class JitsiComponent extends BaseViewComponentDirective implements OnInit
         startAudioOnly: false,
         // allows jitsi on mobile devices
         disableDeepLinking: true,
-        startWithAudioMuted: true,
-        startWithVideoMuted: true,
+        startWithAudioMuted: this.startWithMicMuted,
+        startWithVideoMuted: this.startWithVideoMuted,
         useNicks: true,
         enableWelcomePage: false,
         enableUserRolesBasedOnToken: false,
@@ -236,7 +239,8 @@ export class JitsiComponent extends BaseViewComponentDirective implements OnInit
         private userRepo: UserRepositoryService,
         private constantsService: ConstantsService,
         private configService: ConfigService,
-        private closService: CurrentListOfSpeakersService
+        private closService: CurrentListOfSpeakersService,
+        private userMediaPermService: UserMediaPermService
     ) {
         super(titleService, translate, snackBar);
     }
@@ -340,6 +344,14 @@ export class JitsiComponent extends BaseViewComponentDirective implements OnInit
             this.configService.get<string>('general_system_stream_url').subscribe(url => {
                 this.videoStreamUrl = url;
                 this.configsLoaded.resolve();
+            }),
+            this.configService.get<boolean>('general_system_conference_open_microphon').subscribe(open => {
+                this.startWithMicMuted = !open;
+                console.log('this.startWithMicMuted ', this.startWithMicMuted);
+            }),
+            this.configService.get<boolean>('general_system_conference_open_video').subscribe(open => {
+                this.startWithVideoMuted = !open;
+                console.log('this.startWithVideoMuted ', this.startWithVideoMuted);
             })
         );
 
@@ -393,14 +405,19 @@ export class JitsiComponent extends BaseViewComponentDirective implements OnInit
 
     public async enterConversation(): Promise<void> {
         await this.operator.loaded;
-        this.storageMap.set(this.RTC_LOGGED_STORAGE_KEY, true).subscribe(() => {});
-        this.setConferenceState(ConferenceState.jitsi);
-        this.setOptions();
-        this.api = new JitsiMeetExternalAPI(this.jitsiDomain, this.options);
+        try {
+            await this.userMediaPermService.requestMediaAccess();
+            this.storageMap.set(this.RTC_LOGGED_STORAGE_KEY, true).subscribe(() => {});
+            this.setConferenceState(ConferenceState.jitsi);
+            this.setOptions();
+            this.api = new JitsiMeetExternalAPI(this.jitsiDomain, this.options);
 
-        const jitsiname = this.userRepo.getShortName(this.operator.user);
-        this.api.executeCommand('displayName', jitsiname);
-        this.loadApiCallbacks();
+            const jitsiname = this.userRepo.getShortName(this.operator.user);
+            this.api.executeCommand('displayName', jitsiname);
+            this.loadApiCallbacks();
+        } catch (e) {
+            this.raiseError(e);
+        }
     }
 
     private loadApiCallbacks(): void {
