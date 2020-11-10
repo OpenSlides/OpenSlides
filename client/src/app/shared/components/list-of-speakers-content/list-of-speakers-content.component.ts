@@ -151,12 +151,11 @@ export class ListOfSpeakersContentComponent extends BaseViewComponentDirective i
     }
 
     private isListOfSpeakersEmpty(): void {
-        if (this.waitingSpeakers && this.waitingSpeakers.length) {
+        if (this.waitingSpeakers?.length || this.finishedSpeakers?.length) {
             this.isListOfSpeakersEmptyEvent.emit(false);
-        } else if (this.finishedSpeakers && this.finishedSpeakers.length) {
-            this.isListOfSpeakersEmptyEvent.emit(false);
+        } else {
+            return this.isListOfSpeakersEmptyEvent.emit(!this.activeSpeaker);
         }
-        return this.isListOfSpeakersEmptyEvent.emit(!this.activeSpeaker);
     }
 
     private updateCanReaddLastSpeaker(): void {
