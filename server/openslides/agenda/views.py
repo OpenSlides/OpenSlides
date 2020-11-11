@@ -342,7 +342,8 @@ class ListOfSpeakersViewSet(
                     self.request.user, "agenda.can_be_speaker"
                 ):
                     self.permission_denied(request)
-                if list_of_speakers.closed:
+                # even if the list is closed, point of order has to be accepted
+                if not point_of_order and list_of_speakers.closed:
                     raise ValidationError({"detail": "The list of speakers is closed."})
                 user = self.request.user
             else:
