@@ -7,6 +7,10 @@
 .idea
 *.code-workspace
 
+# docs
+docs/modelsvalidator/modelsvalidator
+dev-commands/export.json
+
 # certs
 *.pem
 
