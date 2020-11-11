@@ -46,7 +46,7 @@ class ListOfSpeakersViewSetManageSpeaker(TestCase):
         self.request.method = "POST"
         self.request.user = 1
         self.request.data = {
-            "user": "2"
+            "user": 2
         }  # It is assumed that the request user has pk!=2.
         mock_get_user_model.return_value = MockUser = MagicMock()
         MockUser.objects.get.return_value = mock_user = MagicMock()

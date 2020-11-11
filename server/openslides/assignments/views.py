@@ -126,46 +126,29 @@ class AssignmentViewSet(ModelViewSet):
         assignment.remove_candidate(request.user)
         return "You have withdrawn your candidature successfully."
 
-    def get_user_from_request_data(self, request):
-        """
-        Helper method to get a specific user from request data (not the
-        request.user) so that the view self.candidature_other can play with it.
-        """
-        if not isinstance(request.data, dict):
-            raise ValidationError(
-                {
-                    "detail": "Invalid data. Expected dictionary, got {0}.",
-                    "args": [type(request.data)],
-                }
-            )
-        user_str = request.data.get("user", "")
-        try:
-            user_pk = int(user_str)
-        except ValueError:
-            raise ValidationError(
-                {"detail": 'Invalid data. Expected something like {"user": <id>}.'}
-            )
-        try:
-            user = get_user_model().objects.get(pk=user_pk)
-        except get_user_model().DoesNotExist:
-            raise ValidationError(
-                {"detail": "Invalid data. User {0} does not exist.", "args": [user_pk]}
-            )
-        return user
-
     @detail_route(methods=["post", "delete"])
     def candidature_other(self, request, pk=None):
         """
         View to nominate other users (POST) or delete their candidature
         status (DELETE). The client has to send {'user': <id>}.
         """
-        user = self.get_user_from_request_data(request)
+        user_id = request.data.get("user")
+        if not isinstance(user_id, int):
+            raise ValidationError({"detail": "user_id must be an int."})
+
+        try:
+            user = get_user_model().objects.get(pk=user_id)
+        except get_user_model().DoesNotExist:
+            raise ValidationError(
+                {"detail": "Invalid data. User {0} does not exist.", "args": [user_id]}
+            )
+
         assignment = self.get_object()
         if request.method == "POST":
             return self.nominate_other(request, user, assignment)
         else:
             # request.method == 'DELETE'
-            return self.delete_other(request, user, assignment)
+            return self.withdraw_other(request, user, assignment)
 
     def nominate_other(self, request, user, assignment):
         if assignment.phase == assignment.PHASE_FINISHED:
@@ -191,7 +174,7 @@ class AssignmentViewSet(ModelViewSet):
             {"detail": "User {0} was nominated successfully.", "args": [str(user)]}
         )
 
-    def delete_other(self, request, user, assignment):
+    def withdraw_other(self, request, user, assignment):
         # To delete candidature status you have to be a manager.
         if not has_perm(request.user, "assignments.can_manage"):
             self.permission_denied(request)
