@@ -23,14 +23,14 @@ Exception ActionException(message: string);
  *
  * @throws ActionException
  */
-handle_request (payload: Action[], user_id: Id): ActionsResult | ActionError
+handle_request (payload: Action[], user_id: Id): ActionsResponse | ActionError
 
 interface Action {
     action: string;
     data: object[];  # An array of action specific data.
 }
 
-interace ActionsResult {
+interace ActionsResponse {
     success: true;
     message: string;
 
