@@ -38,6 +38,8 @@ services:
     image: openslides-auth-dev
     volumes:
       - ./openslides-auth-service/auth/src:/app/src
+    environment:
+      - OS4_DEVELOPMENT=1
   media:
     image: openslides-media-dev
     volumes:
