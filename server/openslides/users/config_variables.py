@@ -166,7 +166,7 @@ def get_config_variables():
 
     yield ConfigVariable(
         name="users_email_sender",
-        default_value="OpenSlides",
+        default_value="VoteAtHome",
         input_type="string",
         label="Sender name",
         help_text="The sender address is defined in the OpenSlides server settings and should modified by administrator only.",
