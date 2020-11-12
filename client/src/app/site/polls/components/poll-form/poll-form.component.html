@@ -58,7 +58,7 @@
                 required
             >
                 <ng-container *ngFor="let option of [1, 2, 3, 4, 5]">
-                    <mat-option [value]="option">{{ 'Vote weight' | translate }} {{ option }}</mat-option>
+                    <mat-option [value]="option">{{ pollService.getVotingPrincipleName(option) }}</mat-option>
                 </ng-container>
             </mat-select>
         </mat-form-field>

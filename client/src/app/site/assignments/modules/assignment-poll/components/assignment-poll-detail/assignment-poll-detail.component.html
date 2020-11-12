@@ -23,13 +23,10 @@
             <span *ngIf="poll.type !== 'analog'"> {{ poll.typeVerbose | translate }} &middot; </span>
 
             <!-- State -->
-            <span>
-                {{ poll.stateVerbose | translate }}
-            </span>
+            <span>{{ poll.stateVerbose | translate }}</span>
 
             <!-- Voting principle -->
-            <span *ngIf="isVoteWeightActive">
-                &middot; {{ 'Vote weight' | translate }} {{ poll.voting_principle }}
+            <span *ngIf="isVoteWeightActive"> &middot; {{ pollService.getVotingPrincipleName(poll.voting_principle) }}
             </span>
         </div>
 

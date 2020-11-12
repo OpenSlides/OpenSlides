@@ -1,7 +1,7 @@
-# 
+#
 # Translators:
 # Emanuel Schütze <emanuel.schuetze@intevation.de>, 2020
-# 
+#
 msgid ""
 msgstr ""
 "Last-Translator: Emanuel Schütze <emanuel.schuetze@intevation.de>, 2020\n"
@@ -3054,6 +3054,21 @@ msgstr "Abstimmung aktualisiert"
 msgid "Vote weight"
 msgstr "Stimmgewicht"
 
+msgid "Vote weight 1"
+msgstr "Stimmgewicht 1"
+
+msgid "Vote weight 2"
+msgstr "Stimmgewicht 2"
+
+msgid "Vote weight 3"
+msgstr "Stimmgewicht 3"
+
+msgid "Vote weight 4"
+msgstr "Stimmgewicht 4"
+
+msgid "Vote weight 5"
+msgstr "Stimmgewicht 5"
+
 msgid "Votes"
 msgstr "Stimmen"
 
@@ -3068,6 +3083,9 @@ msgstr "Wahlmethode"
 
 msgid "Voting opened"
 msgstr "Abstimmung eröffnet"
+
+msgid "Voting principle"
+msgstr "Stimmrechtsprinzip"
 
 msgid "Voting result"
 msgstr "Abstimmungsergebnis"

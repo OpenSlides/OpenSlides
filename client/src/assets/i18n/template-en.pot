@@ -2912,6 +2912,21 @@ msgstr ""
 msgid "Vote weight"
 msgstr ""
 
+msgid "Vote weight 1"
+msgstr ""
+
+msgid "Vote weight 2"
+msgstr ""
+
+msgid "Vote weight 3"
+msgstr ""
+
+msgid "Vote weight 4"
+msgstr ""
+
+msgid "Vote weight 5"
+msgstr ""
+
 msgid "Votes"
 msgstr ""
 
@@ -2925,6 +2940,9 @@ msgid "Voting method"
 msgstr ""
 
 msgid "Voting opened"
+msgstr ""
+
+msgid "Voting principle"
 msgstr ""
 
 msgid "Voting result"

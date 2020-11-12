@@ -114,7 +114,7 @@ export class UserDetailComponent extends BaseViewComponentDirective implements O
         private pdfService: UserPdfExportService,
         private groupRepo: GroupRepositoryService,
         private constantsService: ConstantsService,
-        private pollService: PollService,
+        public pollService: PollService,
         configService: ConfigService
     ) {
         super(title, translate, matSnackBar);

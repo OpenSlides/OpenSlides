@@ -58,7 +58,7 @@ export class PollFormComponent<T extends ViewBasePoll, S extends PollService>
     public data: Partial<T>;
 
     @Input()
-    private pollService: S;
+    public pollService: S;
 
     /**
      * The different types the poll can accept.

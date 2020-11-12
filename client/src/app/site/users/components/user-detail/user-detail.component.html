@@ -138,7 +138,7 @@
                 <input
                     type="number"
                     matInput
-                    placeholder="{{ 'Vote weight' | translate }} 1"
+                    placeholder="{{ pollService.getVotingPrincipleName(1) }}"
                     formControlName="vote_weight"
                 />
             </mat-form-field>
@@ -146,7 +146,7 @@
                 <input
                     type="number"
                     matInput
-                    placeholder="{{ 'Vote weight' | translate }} 2"
+                    placeholder="{{ pollService.getVotingPrincipleName(2) }}"
                     formControlName="vote_weight_2"
                 />
             </mat-form-field>
@@ -154,7 +154,7 @@
                 <input
                     type="number"
                     matInput
-                    placeholder="{{ 'Vote weight' | translate }} 3"
+                    placeholder="{{ pollService.getVotingPrincipleName(3) }}"
                     formControlName="vote_weight_3"
                 />
             </mat-form-field>
@@ -162,7 +162,7 @@
                 <input
                     type="number"
                     matInput
-                    placeholder="{{ 'Vote weight' | translate }} 4"
+                    placeholder="{{ pollService.getVotingPrincipleName(4) }}"
                     formControlName="vote_weight_4"
                 />
             </mat-form-field>
@@ -170,7 +170,7 @@
                 <input
                     type="number"
                     matInput
-                    placeholder="{{ 'Vote weight' | translate }} 5"
+                    placeholder="{{ pollService.getVotingPrincipleName(5) }}"
                     formControlName="vote_weight_5"
                 />
             </mat-form-field>

@@ -316,6 +316,8 @@ _('Ballots');
 
 // ** Users **
 // permission strings (see models.py of each Django app)
+// autopilot
+_('Can see the autopilot');
 // agenda
 _('Can see agenda');
 _('Can manage agenda');

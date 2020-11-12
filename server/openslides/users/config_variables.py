@@ -54,6 +54,46 @@ def get_config_variables():
         group="Participants",
     )
 
+    yield ConfigVariable(
+        name="users_voting_principle_1",
+        default_value="",
+        label="Vote weight 1",
+        weight=514,
+        group="Participants",
+    )
+
+    yield ConfigVariable(
+        name="users_voting_principle_2",
+        default_value="",
+        label="Vote weight 2",
+        weight=515,
+        group="Participants",
+    )
+
+    yield ConfigVariable(
+        name="users_voting_principle_3",
+        default_value="",
+        label="Vote weight 3",
+        weight=516,
+        group="Participants",
+    )
+
+    yield ConfigVariable(
+        name="users_voting_principle_4",
+        default_value="",
+        label="Vote weight 4",
+        weight=517,
+        group="Participants",
+    )
+
+    yield ConfigVariable(
+        name="users_voting_principle_5",
+        default_value="",
+        label="Vote weight 5",
+        weight=518,
+        group="Participants",
+    )
+
     # PDF
 
     yield ConfigVariable(

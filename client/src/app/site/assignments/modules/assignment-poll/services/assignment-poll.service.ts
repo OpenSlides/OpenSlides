@@ -57,7 +57,7 @@ export class AssignmentPollService extends PollService {
         protected translate: TranslateService,
         private pollRepo: AssignmentPollRepositoryService
     ) {
-        super(constants, translate, pollKeyVerbose, parsePollNumber);
+        super(config, constants, translate, pollKeyVerbose, parsePollNumber);
         config
             .get<AssignmentPollPercentBase>('assignment_poll_default_100_percent_base')
             .subscribe(base => (this.defaultPercentBase = base));

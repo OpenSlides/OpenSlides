@@ -23,6 +23,7 @@ import {
     PollTypeVerbose,
     ViewBasePoll
 } from 'app/site/polls/models/view-base-poll';
+import { ConfigService } from "../../../core/ui-services/config.service";
 import { ConstantsService } from '../../../core/core-services/constants.service';
 
 const PERCENT_DECIMAL_PLACES = 3;
@@ -197,6 +198,7 @@ export abstract class PollService {
     public pollValues: CalculablePollKey[] = ['yes', 'no', 'abstain', 'votesvalid', 'votesinvalid', 'votescast'];
 
     public constructor(
+        protected config: ConfigService,
         constants: ConstantsService,
         protected translate: TranslateService,
         protected pollKeyVerbose: PollKeyVerbosePipe,
@@ -205,6 +207,11 @@ export abstract class PollService {
         constants
             .get<OpenSlidesSettings>('Settings')
             .subscribe(settings => (this.isElectronicVotingEnabled = settings.ENABLE_ELECTRONIC_VOTING));
+    }
+
+    public getVotingPrincipleName(id: number): string {
+        return this.config.instant('users_voting_principle_' + id) ||
+            this.translate.instant('Vote weight') + " " + id;
     }
 
     /**

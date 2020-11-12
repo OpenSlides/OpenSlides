@@ -52,7 +52,7 @@ export class MotionPollService extends PollService {
         protected translate: TranslateService,
         private pollRepo: MotionPollRepositoryService
     ) {
-        super(constants, translate, pollKeyVerbose, parsePollNumber);
+        super(config, constants, translate, pollKeyVerbose, parsePollNumber);
         config
             .get<PercentBase>('motion_poll_default_100_percent_base')
             .subscribe(base => (this.defaultPercentBase = base));
