@@ -166,6 +166,9 @@ export class LocalPermissionsService {
                     this.operator.hasPerms(Permission.motionsCanManageMetadata)
                 );
             }
+            case 'can_manage_config': {
+                return this.operator.hasPerms(Permission.coreCanManageConfig);
+            }
             case 'manage': {
                 return this.operator.hasPerms(Permission.motionsCanManage);
             }
