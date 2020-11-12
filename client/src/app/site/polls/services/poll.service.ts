@@ -26,7 +26,7 @@ import {
 import { ConfigService } from "../../../core/ui-services/config.service";
 import { ConstantsService } from '../../../core/core-services/constants.service';
 
-const PERCENT_DECIMAL_PLACES = 3;
+const PERCENT_DECIMAL_PLACES = 2;
 /**
  * The possible keys of a poll object that represent numbers.
  * TODO Should be 'key of MotionPoll|AssinmentPoll if type of key is number'
