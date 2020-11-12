@@ -129,7 +129,8 @@ export class VjsPlayerComponent implements OnInit, OnDestroy {
             if (url.startsWith('rtmp')) {
                 throw new Error(`$rtmp (flash) streams cannot be supported`);
             } else {
-                const extension = url?.split('.')?.pop();
+                // Extension can be either ".m3u8" or "?type=m3u8"
+                const extension = url?.split('.')?.pop().split('=')?.pop();
                 const mimeType = MimeType[extension];
                 if (mimeType) {
                     return mimeType;
