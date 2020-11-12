@@ -18,7 +18,7 @@ setup or are interested in developing, please refer to `development
 instructions
 <https://github.com/OpenSlides/OpenSlides/blob/master/DEVELOPMENT.rst>`_.
 
-Note: This is temporary and will be replace with nice scripts...
+Note: This is temporary and will be replaced with nice scripts...
 
 First, you have to clone this repository::
 
