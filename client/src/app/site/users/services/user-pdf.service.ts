@@ -266,7 +266,15 @@ export class UserPdfService {
         let counter = 1;
         users.forEach(user => {
             const groupList = user.groups.map(grp => this.translate.instant(grp.name));
-            result.push([{ text: '' + counter }, { text: user.full_name }, { text: groupList.join(', ') }]);
+            let name = user.full_name;
+            if (user.isVoteRightDelegated) {
+                name += '\t\n>> ' + user.delegationName;
+            }
+            result.push([
+                { text: '' + counter },
+                { text: name },
+                { text: groupList.join(', ') }
+            ]);
             counter += 1;
         });
         return result;
