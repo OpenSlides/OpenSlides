@@ -84,13 +84,27 @@ Interface CreateEvent {
     }
 }
 
-// Note: For deleting keys, they must be set to `None`. These keys
-// will be removed from the model.
+// Note: For deleting keys, they must be set to `None`. These keys will be removed from
+// the model.
+// list_fields can be used to partially update list fields: the values in `add` will be
+// appended to the given field, the values in `remove` will be removed from the field.
+// The case of double adding or removing something invalid will be silently ignored.
+// All given list_fields must be flat arrays of strings or ints, else an error is
+// thrown.
+// Either fields or list_fields must be given or an error will be thrown.
 Interface UpdateEvent {
     type: 'update';
     fqid: Fqid;
     fields: {
         <field>: Value;
+    }
+    list_fields: {
+        add: {
+            <field>: Value[];
+        }
+        remove: {
+            <field>: Value[];
+        }
     }
 }
 
