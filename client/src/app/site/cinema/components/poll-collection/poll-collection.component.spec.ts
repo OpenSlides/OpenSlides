@@ -3,6 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { E2EImportsModule } from 'e2e-imports.module';
 
 import { PollCollectionComponent } from './poll-collection.component';
+import { PollProgressComponent } from "../../../polls/components/poll-progress/poll-progress.component";
 
 describe('PollCollectionComponent', () => {
     let component: PollCollectionComponent;
@@ -11,7 +12,7 @@ describe('PollCollectionComponent', () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             imports: [E2EImportsModule],
-            declarations: [PollCollectionComponent]
+            declarations: [PollCollectionComponent, PollProgressComponent]
         }).compileComponents();
     }));
 

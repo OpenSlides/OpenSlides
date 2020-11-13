@@ -9,6 +9,7 @@ import { BaseViewComponentDirective } from 'app/site/base/base-view';
 import { BaseViewModel } from 'app/site/base/base-view-model';
 import { ViewBasePoll } from 'app/site/polls/models/view-base-poll';
 import { PollListObservableService } from 'app/site/polls/services/poll-list-observable.service';
+import { OperatorService } from "../../../../core/core-services/operator.service";
 
 @Component({
     selector: 'os-poll-collection',
@@ -37,7 +38,8 @@ export class PollCollectionComponent extends BaseViewComponentDirective implemen
         title: Title,
         translate: TranslateService,
         snackBar: MatSnackBar,
-        private pollService: PollListObservableService
+        private pollService: PollListObservableService,
+        public operator: OperatorService
     ) {
         super(title, translate, snackBar);
     }
