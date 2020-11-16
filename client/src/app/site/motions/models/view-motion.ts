@@ -11,6 +11,7 @@ import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 import { Searchable } from 'app/site/base/searchable';
 import { SlideOptions } from 'app/site/base/slide-options';
 import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
+import { HasViewPolls } from 'app/site/polls/models/has-view-polls';
 import { ViewTag } from 'app/site/tags/models/view-tag';
 import { ViewUser } from 'app/site/users/models/view-user';
 import { AmendmentType } from '../motions.constants';
@@ -355,7 +356,7 @@ export class ViewMotion
     }
 }
 
-interface TIMotionRelations {
+interface TIMotionRelations extends HasViewPolls<ViewMotionPoll> {
     category?: ViewCategory;
     submitters: ViewSubmitter[];
     supporters?: ViewUser[];
@@ -369,7 +370,6 @@ interface TIMotionRelations {
     amendments?: ViewMotion[];
     changeRecommendations?: ViewMotionChangeRecommendation[];
     diffLines?: DiffLinesInParagraph[];
-    polls: ViewMotionPoll[];
 }
 
 export interface ViewMotion extends MotionWithoutNestedModels, TIMotionRelations {}

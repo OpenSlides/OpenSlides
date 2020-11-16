@@ -28,22 +28,17 @@
             </span>
         </div>
 
-        <div class="assignment-result-wrapper" *ngIf="poll && poll.stateHasVotes">
+        <div class="assignment-result-wrapper" *ngIf="poll">
             <!-- Result Table -->
             <os-assignment-poll-detail-content [poll]="poll"></os-assignment-poll-detail-content>
 
             <!-- Result Chart -->
-            <div class="chart-wrapper">
-                <os-charts
-                    class="assignment-result-chart"
-                    *ngIf="chartDataSubject.value"
-                    [labels]="candidatesLabels"
-                    [data]="chartDataSubject | async"
-                ></os-charts>
+            <div class="chart-wrapper" *ngIf="showResults && poll.stateHasVotes">
+                <os-charts class="assignment-result-chart" [labels]="candidatesLabels" [data]="chartData"></os-charts>
             </div>
 
             <!-- Single Votes Table -->
-            <div class="named-result-table" *ngIf="poll.type === 'named'">
+            <div class="named-result-table" *ngIf="showResults && poll.stateHasVotes && poll.type === 'named'">
                 <h3>{{ 'Single votes' | translate }}</h3>
                 <os-list-view-table
                     class="single-votes-table"

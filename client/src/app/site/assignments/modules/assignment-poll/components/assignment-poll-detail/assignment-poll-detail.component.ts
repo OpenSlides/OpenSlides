@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewEncapsulation } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -12,6 +12,7 @@ import { AssignmentVoteRepositoryService } from 'app/core/repositories/assignmen
 import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
+import { ChartData } from 'app/shared/components/charts/charts.component';
 import { VoteValue } from 'app/shared/models/poll/base-vote';
 import { ViewAssignmentPoll } from 'app/site/assignments/models/view-assignment-poll';
 import { BasePollDetailComponentDirective } from 'app/site/polls/components/base-poll-detail.component';
@@ -22,6 +23,7 @@ import { AssignmentPollService } from '../../services/assignment-poll.service';
     selector: 'os-assignment-poll-detail',
     templateUrl: './assignment-poll-detail.component.html',
     styleUrls: ['./assignment-poll-detail.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None
 })
 export class AssignmentPollDetailComponent extends BasePollDetailComponentDirective<
@@ -38,6 +40,14 @@ export class AssignmentPollDetailComponent extends BasePollDetailComponentDirect
 
     public isVoteWeightActive: boolean;
 
+    public get showResults(): boolean {
+        return this.hasPerms() || this.poll.isPublished;
+    }
+
+    public get chartData(): ChartData {
+        return this.pollService.generateChartData(this.poll);
+    }
+
     public constructor(
         title: Title,
         translate: TranslateService,
@@ -51,7 +61,8 @@ export class AssignmentPollDetailComponent extends BasePollDetailComponentDirect
         protected pollService: AssignmentPollService,
         votesRepo: AssignmentVoteRepositoryService,
         protected operator: OperatorService,
-        private router: Router
+        private router: Router,
+        protected cd: ChangeDetectorRef
     ) {
         super(
             title,
@@ -64,7 +75,8 @@ export class AssignmentPollDetailComponent extends BasePollDetailComponentDirect
             pollDialog,
             pollService,
             votesRepo,
-            operator
+            operator,
+            cd
         );
         configService
             .get<boolean>('users_activate_vote_weight')

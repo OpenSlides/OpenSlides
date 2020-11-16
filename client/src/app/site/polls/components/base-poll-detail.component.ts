@@ -1,4 +1,4 @@
-import { Directive, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Directive, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
@@ -70,11 +70,6 @@ export abstract class BasePollDetailComponentDirective<V extends ViewBasePoll, S
      */
     public labels: Label[] = [];
 
-    /**
-     * Subject, that holds the data for the chart.
-     */
-    public chartDataSubject: BehaviorSubject<ChartData> = new BehaviorSubject(null);
-
     // The observable for the votes-per-user table
     public votesDataObservable: Observable<BaseVoteData[]>;
 
@@ -106,7 +101,8 @@ export abstract class BasePollDetailComponentDirective<V extends ViewBasePoll, S
         protected pollDialog: BasePollDialogService<V, S>,
         protected pollService: S,
         protected votesRepo: BaseRepository<ViewBaseVote, BaseVote, object>,
-        protected operator: OperatorService
+        protected operator: OperatorService,
+        protected cd: ChangeDetectorRef
     ) {
         super(title, translate, matSnackbar);
         this.setup();
@@ -188,14 +184,6 @@ export abstract class BasePollDetailComponentDirective<V extends ViewBasePoll, S
     protected abstract createVotesData(): void;
 
     /**
-     * Initializes data for the shown chart.
-     * Could be overwritten to implement custom chart data.
-     */
-    protected initChartData(): void {
-        this.chartDataSubject.next(this.pollService.generateChartData(this.poll));
-    }
-
-    /**
      * Helper-function to search for this poll and display data or create a new one.
      */
     private findComponentById(): void {
@@ -206,8 +194,8 @@ export abstract class BasePollDetailComponentDirective<V extends ViewBasePoll, S
                     if (poll) {
                         this.poll = poll;
                         this.createVotesData();
-                        this.initChartData();
                         this.optionsLoaded.resolve();
+                        this.cd.markForCheck();
                     }
                 })
             );

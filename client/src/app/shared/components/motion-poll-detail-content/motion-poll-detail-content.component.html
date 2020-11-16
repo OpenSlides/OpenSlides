@@ -1,39 +1,55 @@
-<div class="result-wrapper" *ngIf="hasVotes">
-    <!-- result table -->
-    <table class="result-table">
-        <tbody>
-            <tr>
-                <th></th>
-                <th colspan="2">{{ 'Votes' | translate }}</th>
-            </tr>
-            <tr *ngFor="let row of getTableData()" [class]="row.votingOption">
-                <!-- YNA/Valid etc -->
-                <td>
-                    <os-icon-container *ngIf="row.value[0].icon" [icon]="row.value[0].icon" [size]="iconSize">
-                        {{ row.votingOption | pollKeyVerbose | translate }}
-                    </os-icon-container>
-                    <span *ngIf="!row.value[0].icon">
-                        {{ row.votingOption | pollKeyVerbose | translate }}
-                    </span>
-                </td>
+<div class="result-wrapper" *ngIf="poll">
+    <ng-container *ngIf="hasResults && canSeeResults">
+        <!-- result table -->
+        <table class="result-table">
+            <tbody>
+                <tr>
+                    <th></th>
+                    <th colspan="2">{{ 'Votes' | translate }}</th>
+                </tr>
+                <tr *ngFor="let row of tableData; trackBy: trackByIndex" [class]="row.votingOption">
+                    <!-- YNA/Valid etc -->
+                    <td>
+                        <os-icon-container *ngIf="row.value[0].icon" [icon]="row.value[0].icon" [size]="iconSize">
+                            {{ row.votingOption | pollKeyVerbose | translate }}
+                        </os-icon-container>
+                        <span *ngIf="!row.value[0].icon">
+                            {{ row.votingOption | pollKeyVerbose | translate }}
+                        </span>
+                    </td>
 
-                <!-- Percent numbers -->
-                <td class="result-cell-definition">
-                    <span *ngIf="row.value[0].showPercent">
-                        {{ row.value[0].amount | pollPercentBase: poll:'motion' }}
-                    </span>
-                </td>
+                    <!-- Percent numbers -->
+                    <td class="result-cell-definition">
+                        <span *ngIf="row.value[0].showPercent">
+                            {{ row.value[0].amount | pollPercentBase: poll:'motion' }}
+                        </span>
+                    </td>
 
-                <!-- Voices -->
-                <td class="result-cell-definition">
-                    {{ row.value[0].amount | parsePollNumber }}
-                </td>
-            </tr>
-        </tbody>
-    </table>
+                    <!-- Voices -->
+                    <td class="result-cell-definition">
+                        {{ row.value[0].amount | parsePollNumber }}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
 
-    <!-- Chart -->
-    <div class="doughnut-chart" *ngIf="showChart">
-        <os-charts type="doughnut" [data]="chartData | async"></os-charts>
+        <!-- Chart -->
+        <div class="doughnut-chart">
+            <os-charts type="doughnut" [data]="chartData"></os-charts>
+        </div>
+    </ng-container>
+
+    <!-- No results yet -->
+    <div *ngIf="!hasResults">
+        <i>
+            {{ 'No results yet.' | translate }}
+        </i>
+    </div>
+
+    <!-- Has results, but user cannot see -->
+    <div *ngIf="hasResults && !canSeeResults">
+        <i>
+            {{ 'Counting of votes is in progress ...' | translate }}
+        </i>
     </div>
 </div>

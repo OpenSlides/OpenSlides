@@ -1,5 +1,5 @@
 <div *ngIf="poll">
-    <table class="assignment-result-table">
+    <table class="assignment-result-table" *ngIf="hasResults && canSeeResults">
         <tbody>
             <tr>
                 <th class="voting-option">{{ 'Candidates' | translate }}</th>
@@ -51,4 +51,18 @@
             </tr>
         </tbody>
     </table>
+
+    <!-- No results yet -->
+    <div *ngIf="!hasResults">
+        <i>
+            {{ 'No results yet.' | translate }}
+        </i>
+    </div>
+
+    <!-- Has results, but user cannot see -->
+    <div *ngIf="hasResults && !canSeeResults">
+        <i>
+            {{ 'Counting of votes is in progress ...' | translate }}
+        </i>
+    </div>
 </div>

@@ -1,6 +1,12 @@
 import { Component, Input } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 
+import { TranslateService } from '@ngx-translate/core';
+
+import { BaseComponent } from 'app/base.component';
+import { OperatorService } from 'app/core/core-services/operator.service';
 import { AssignmentPollMethod } from 'app/shared/models/assignments/assignment-poll';
+import { PollState } from 'app/shared/models/poll/base-poll';
 import { ViewAssignmentPoll } from 'app/site/assignments/models/view-assignment-poll';
 import { AssignmentPollService } from 'app/site/assignments/modules/assignment-poll/services/assignment-poll.service';
 import { PollData, PollTableData, VotingResult } from 'app/site/polls/services/poll.service';
@@ -10,14 +16,16 @@ import { PollData, PollTableData, VotingResult } from 'app/site/polls/services/p
     templateUrl: './assignment-poll-detail-content.component.html',
     styleUrls: ['./assignment-poll-detail-content.component.scss']
 })
-export class AssignmentPollDetailContentComponent {
+export class AssignmentPollDetailContentComponent extends BaseComponent {
     @Input()
     public poll: ViewAssignmentPoll | PollData;
 
-    public constructor(private pollService: AssignmentPollService) {}
-
     private get method(): string {
         return this.poll.pollmethod;
+    }
+
+    private get state(): PollState {
+        return this.poll.state;
     }
 
     public get showYHeader(): boolean {
@@ -44,8 +52,33 @@ export class AssignmentPollDetailContentComponent {
         return this.method === AssignmentPollMethod.YNA;
     }
 
+    public get isFinished(): boolean {
+        return this.state === PollState.Finished;
+    }
+
+    public get isPublished(): boolean {
+        return this.state === PollState.Published;
+    }
+
     public get tableData(): PollTableData[] {
         return this.pollService.generateTableData(this.poll);
+    }
+
+    public get hasResults(): boolean {
+        return this.isFinished || this.isPublished;
+    }
+
+    public get canSeeResults(): boolean {
+        return this.operator.hasPerms(this.permission.assignmentsCanManage) || this.isPublished;
+    }
+
+    public constructor(
+        titleService: Title,
+        translateService: TranslateService,
+        private pollService: AssignmentPollService,
+        private operator: OperatorService
+    ) {
+        super(titleService, translateService);
     }
 
     public getVoteClass(votingResult: VotingResult): string {
