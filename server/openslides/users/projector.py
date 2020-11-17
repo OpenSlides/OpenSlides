@@ -33,7 +33,7 @@ async def get_user_name(
     for name_part in ("title", "first_name", "last_name"):
         if user[name_part]:
             name_parts.append(user[name_part])
-    if not name_part:
+    if not name_parts:
         name_parts.append(user["username"])
     if user["structure_level"]:
         name_parts.append(f"({user['structure_level']})")
