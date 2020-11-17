@@ -27,6 +27,7 @@ server/.venv
 /openslides-*/
 /haproxy/
 /docker/keys/
+/docs/
 # Plugin development
 openslides_*
 # Old OS3 stuff
