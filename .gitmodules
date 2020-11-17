@@ -21,3 +21,6 @@
 	path = openslides-media-service
 	url = git@github.com:OpenSlides/openslides-media-service.git
 	branch = openslides4-dev
+[submodule "openslides-permission-service"]
+	path = openslides-permission-service
+	url = git@github.com:OpenSlides/openslides-permission-service.git
