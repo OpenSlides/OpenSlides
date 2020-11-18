@@ -25,7 +25,7 @@ class BaseVoteAccessPermissions(BaseAccessPermissions):
 
         if await async_has_perm(user_id, self.manage_permission):
             data = full_data
-        else:
+        elif await async_has_perm(user_id, self.base_permission):
             data = [
                 vote
                 for vote in full_data
@@ -33,6 +33,8 @@ class BaseVoteAccessPermissions(BaseAccessPermissions):
                 or vote["user_id"] == user_id
                 or vote["delegated_user_id"] == user_id
             ]
+        else:
+            data = []
         return data
 
 
@@ -45,7 +47,7 @@ class BaseOptionAccessPermissions(BaseAccessPermissions):
 
         if await async_has_perm(user_id, self.manage_permission):
             data = full_data
-        else:
+        elif await async_has_perm(user_id, self.base_permission):
             data = []
             for option in full_data:
                 if option["pollstate"] != BasePoll.STATE_PUBLISHED:
@@ -56,6 +58,8 @@ class BaseOptionAccessPermissions(BaseAccessPermissions):
                     del option["no"]
                     del option["abstain"]
                 data.append(option)
+        else:
+            data = []
         return data
 
 
@@ -98,7 +102,7 @@ class BasePollAccessPermissions(BaseAccessPermissions):
 
         if await async_has_perm(user_id, self.manage_permission):
             data = full_data
-        else:
+        elif await async_has_perm(user_id, self.base_permission):
             data = []
             for poll in full_data:
                 if poll["state"] != BasePoll.STATE_PUBLISHED:
@@ -112,4 +116,6 @@ class BasePollAccessPermissions(BaseAccessPermissions):
                     for field in self.additional_fields:
                         del poll[field]
                 data.append(poll)
+        else:
+            data = []
         return data

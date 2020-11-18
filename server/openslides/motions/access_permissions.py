@@ -99,7 +99,7 @@ class MotionChangeRecommendationAccessPermissions(BaseAccessPermissions):
         the can_see permission.
         """
         # Parse data.
-        if await async_has_perm(user_id, "motions.can_see"):
+        if await async_has_perm(user_id, self.base_permission):
             has_manage_perms = await async_has_perm(user_id, "motions.can_manage")
             data = []
             for full in full_data:
@@ -128,11 +128,13 @@ class MotionCommentSectionAccessPermissions(BaseAccessPermissions):
         data: List[Dict[str, Any]] = []
         if await async_has_perm(user_id, "motions.can_manage"):
             data = full_data
-        else:
+        elif await async_has_perm(user_id, self.base_permission):
             for full in full_data:
                 read_groups = full.get("read_groups_id", [])
                 if await async_in_some_groups(user_id, read_groups):
                     data.append(full)
+        else:
+            data = []
         return data
 
 
@@ -168,8 +170,10 @@ class MotionBlockAccessPermissions(BaseAccessPermissions):
         data: List[Dict[str, Any]] = []
         if await async_has_perm(user_id, "motions.can_manage"):
             data = full_data
-        else:
+        elif await async_has_perm(user_id, self.base_permission):
             data = [full for full in full_data if not full["internal"]]
+        else:
+            data = []
 
         return data
 

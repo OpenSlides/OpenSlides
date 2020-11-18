@@ -90,19 +90,27 @@ class UserAccessPermissions(BaseAccessPermissions):
                 ):
                     can_see_collection_strings.add(collection_string)
 
-            user_ids = await required_user.get_required_users(
+            required_user_ids = await required_user.get_required_users(
                 can_see_collection_strings
             )
 
             # Add oneself.
             if user_id:
-                user_ids.add(user_id)
+                required_user_ids.add(user_id)
+
+            # add vote delegations
+            # Find our model in full_data and get vote_delegated_from_users_id from it.
+            for user in full_data:
+                if user["id"] == user_id:
+                    if len(user["vote_delegated_from_users_id"]) > 0:
+                        required_user_ids.add(*user["vote_delegated_from_users_id"])
+                    break
 
             # Parse data.
             data = [
                 filtered_data(full, little_data_fields, own_data_fields)
                 for full in full_data
-                if full["id"] in user_ids
+                if full["id"] in required_user_ids
             ]
 
         return data
