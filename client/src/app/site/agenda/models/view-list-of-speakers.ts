@@ -12,6 +12,12 @@ export interface ListOfSpeakersTitleInformation {
     title_information: object;
 }
 
+export enum UserListIndexType {
+    Finished = -2,
+    NotOnList = -1,
+    Active = 0
+}
+
 /**
  * TODO: Resolve potential circular dependencies with {@link BaseViewModelWithListOfSpeakers}.
  */
@@ -23,6 +29,10 @@ export class ViewListOfSpeakers
 
     public get listOfSpeakers(): ListOfSpeakers {
         return this._model;
+    }
+
+    public get activeSpeaker(): ViewSpeaker {
+        return this.speakers.find(speaker => speaker.state === SpeakerState.CURRENT);
     }
 
     public get finishedSpeakers(): ViewSpeaker[] {
@@ -65,8 +75,20 @@ export class ViewListOfSpeakers
         return this.finishedSpeakers.findIndex(speaker => speaker.user_id === checkSpeaker.user_id) !== -1;
     }
 
-    public isUserOnList(userId: number): boolean {
-        return !!this.speakers.find(speaker => speaker.user_id === userId);
+    public findUserIndexOnList(userId: number): number {
+        if (this.activeSpeaker?.user.id === userId) {
+            return UserListIndexType.Active;
+        } else {
+            const waitingSpeakersIndex = this.waitingSpeakers.findIndex(speaker => speaker.user_id === userId);
+            const finishedSpeakersIndex = this.finishedSpeakers.findIndex(speaker => speaker.user_id === userId);
+            if (waitingSpeakersIndex !== -1) {
+                return waitingSpeakersIndex + 1;
+            } else if (finishedSpeakersIndex !== -1) {
+                return UserListIndexType.Finished;
+            } else {
+                return UserListIndexType.NotOnList;
+            }
+        }
     }
 }
 interface IListOfSpeakersRelations {
