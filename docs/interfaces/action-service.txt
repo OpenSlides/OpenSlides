@@ -3,11 +3,11 @@
 /**
  * Executes multiple actions in the context of the user given by the user_id.
  * There are two modes of execution:
- * single_validation=false (default):
+ * atomic=false (default):
  *   All actions are validated in common, so if one action or one payload of
  *   one action fails, the request is aborted with an ActionException indicating
  *   the problematic action with both indices.
- * single_validation=true:
+ * atomic=true:
  *   Each action is validated by it's own. If there is an error, the error must
  *   be reported via an ActionError in the ActionsResponse. The actions result
  *   is not written into the Datastore. It might raise an ActionException if the
@@ -22,7 +22,7 @@ handle_request(payload: Action[], user_id: Id): ActionsResponse
 interface Action {
     action: string;
     data: object[];
-    single_validation?: boolean;
+    atomic?: boolean;
 }
 
 interace ActionsResponse {
@@ -59,7 +59,7 @@ interface ActionError {
  * use the action_error_index and action_payload_error_index to indicate the errored
  * action and payload. If there were general errors, both indices must be omitted.
  *
- * If the single_validation Flag was true in the request, it is not allowed to send
+ * If the atomic flag was true in the request, it is not allowed to send
  * action-specific errors with this exception. It must be responded through ActionsResponse.
  */
 Exception ActionException {
