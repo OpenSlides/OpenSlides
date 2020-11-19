@@ -1,0 +1,134 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [master]
+
+jobs:
+  test-server:
+    runs-on: ubuntu-latest
+    env:
+      USING_COVERAGE: "3.6,3.8"
+    strategy:
+      matrix:
+        python-version: ["3.6", "3.7", "3.8"]
+    defaults:
+      run:
+        working-directory: ./server
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: "${{ matrix.python-version }}"
+
+      - name: install python dependencies
+        run: |
+          pip install --upgrade pip
+          pip install --upgrade --requirement requirements.txt
+          pip freeze
+
+      - name: lint with flake8
+        run: flake8 openslides tests
+
+      - name: lint with isort
+        run: isort --check-only --diff --recursive openslides tests
+
+      - name: lint with black
+        run: black --check --diff openslides tests
+
+      - name: test using mypy
+        run: mypy openslides/ tests/
+
+      - name: test using pytest
+        run: pytest --cov --cov-fail-under=75
+
+  install-client-dependencies:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./client
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        id: node-module-cache
+        with:
+          path: |
+            **/node_modules
+          key: node_modules-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            node_modules-
+      - uses: actions/setup-node@v2-beta
+        with:
+          node-version: "12"
+
+      - name: install client dependencies
+        if: steps.node-module-cache.outputs.cache-hit != 'true'
+        run: npm ci
+
+  check-client-code:
+    needs: install-client-dependencies
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./client
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: |
+            **/node_modules
+          key: node_modules-${{ hashFiles('**/package-lock.json') }}
+
+      - name: check code using linter
+        run: npm run lint-check
+
+      - name: check code using prettify
+        run: npm run prettify-check
+
+  test-client:
+    needs: install-client-dependencies
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./client
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: |
+            **/node_modules
+          key: node_modules-${{ hashFiles('**/package-lock.json') }}
+      - name: test client
+        run: npm run test-silently
+
+  build-client-debug:
+    needs: install-client-dependencies
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./client
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: |
+            **/node_modules
+          key: node_modules-${{ hashFiles('**/package-lock.json') }}
+      - name: build client debug
+        run: npm run build-debug
+
+  build-client-prod:
+    needs: install-client-dependencies
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./client
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: |
+            **/node_modules
+          key: node_modules-${{ hashFiles('**/package-lock.json') }}
+      - name: build client prod
+        run: npm run build
