@@ -284,7 +284,7 @@ committee:
   meeting_ids:
     type: relation-list
     to: meeting/committee_id
-    on_delete: CASCADE
+    on_delete: PROTECT
   template_meeting_id:
     type: relation
     to: meeting/template_for_committee_id
