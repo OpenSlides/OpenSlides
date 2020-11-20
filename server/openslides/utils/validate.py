@@ -43,12 +43,40 @@ allowed_tags_permissive = allowed_tags_strict + [
     "video",
 ]
 
+allowed_attributes = [
+    "align",
+    "alt",
+    "autoplay",
+    "background",
+    "bgcolor",
+    "border",
+    "class",
+    "colspan",
+    "controls",
+    "dir",
+    "height",
+    "hidden",
+    "href",
+    "hreflang",
+    "id",
+    "lang",
+    "loop",
+    "muted",
+    "poster",
+    "preload",
+    "rel",
+    "rowspan",
+    "scope",
+    "sizes",
+    "src",
+    "srcset",
+    "start",
+    "style",
+    "target",
+    "title",
+    "width",
+]
 
-def allow_all(tag: str, name: str, value: str) -> bool:
-    return True
-
-
-allowed_attributes = allow_all
 allowed_styles = [
     "color",
     "background-color",
