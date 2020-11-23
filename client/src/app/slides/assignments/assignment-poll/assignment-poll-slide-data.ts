@@ -25,6 +25,7 @@ export interface AssignmentPollSlideData extends BasePollSlideData {
         }[];
 
         // optional for published polls:
+        amount_global_yes?: number;
         amount_global_no?: number;
         amount_global_abstain?: number;
         votesvalid: number;

@@ -109,6 +109,7 @@ export interface PollData {
     votesvalid: number;
     votesinvalid: number;
     votescast: number;
+    amount_global_yes?: number;
     amount_global_no?: number;
     amount_global_abstain?: number;
 }
@@ -145,6 +146,7 @@ export interface VotingResult {
         | 'votesvalid'
         | 'votesinvalid'
         | 'votescast'
+        | 'amount_global_yes'
         | 'amount_global_no'
         | 'amount_global_abstain';
     amount?: number;
@@ -339,6 +341,9 @@ export abstract class PollService {
             }
             case AssignmentPollMethod.YN: {
                 return ['yes', 'no'];
+            }
+            case AssignmentPollMethod.N: {
+                return ['no'];
             }
             default: {
                 return ['yes'];

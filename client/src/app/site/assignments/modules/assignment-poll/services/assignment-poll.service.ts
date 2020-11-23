@@ -93,6 +93,14 @@ export class AssignmentPollService extends PollService {
     private getGlobalVoteKeys(poll: ViewAssignmentPoll | PollData): VotingResult[] {
         return [
             {
+                vote: 'amount_global_yes',
+                showPercent: this.showPercentOfValidOrCast(poll),
+                hide:
+                    poll.amount_global_yes === VOTE_UNDOCUMENTED ||
+                    !poll.amount_global_yes ||
+                    poll.pollmethod === AssignmentPollMethod.N
+            },
+            {
                 vote: 'amount_global_no',
                 showPercent: this.showPercentOfValidOrCast(poll),
                 hide: poll.amount_global_no === VOTE_UNDOCUMENTED || !poll.amount_global_no
@@ -109,7 +117,14 @@ export class AssignmentPollService extends PollService {
         const tableData: PollTableData[] = poll.options
             .sort((a, b) => {
                 if (this.sortByVote) {
-                    return b.yes - a.yes;
+                    if (poll.pollmethod === AssignmentPollMethod.N) {
+                        // most no on top:
+                        // return b.no - a.no;
+                        // least no on top:
+                        return a.no - b.no;
+                    } else {
+                        return b.yes - a.yes;
+                    }
                 } else {
                     // PollData does not have weight, we need to rely on the order of things.
                     if (a.weight && b.weight) {
@@ -144,6 +159,7 @@ export class AssignmentPollService extends PollService {
             });
         tableData.push(...this.formatVotingResultToTableData(this.getGlobalVoteKeys(poll), poll));
         tableData.push(...this.formatVotingResultToTableData(super.getSumTableKeys(poll), poll));
+
         return tableData;
     }
 
@@ -190,7 +206,7 @@ export class AssignmentPollService extends PollService {
             case AssignmentPollPercentBase.YNA:
                 totalByBase = this.sumOptionsYNA(poll);
                 break;
-            case AssignmentPollPercentBase.Votes:
+            case AssignmentPollPercentBase.Y:
                 totalByBase = this.sumOptionsYNA(poll);
                 break;
             case AssignmentPollPercentBase.Valid:

@@ -46,8 +46,17 @@
         <!-- Global Values -->
         <div>
             <os-check-input
+                *ngIf="globalYesEnabled"
+                placeholder="{{ PollPropertyVerbose.global_yes | translate }}"
+                [checkboxValue]="-1"
+                inputType="number"
+                [checkboxLabel]="'majority' | translate"
+                formControlName="amount_global_yes"
+            ></os-check-input>
+
+            <os-check-input
                 *ngIf="globalNoEnabled"
-                placeholder="{{ 'General No' | translate }}"
+                placeholder="{{ PollPropertyVerbose.global_no | translate }}"
                 [checkboxValue]="-1"
                 inputType="number"
                 [checkboxLabel]="'majority' | translate"
@@ -56,7 +65,7 @@
 
             <os-check-input
                 *ngIf="globalAbstainEnabled"
-                placeholder="{{ 'General Abstain' | translate }}"
+                placeholder="{{ PollPropertyVerbose.global_abstain | translate }}"
                 [checkboxValue]="-1"
                 inputType="number"
                 [checkboxLabel]="'majority' | translate"

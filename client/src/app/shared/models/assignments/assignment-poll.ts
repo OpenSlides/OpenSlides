@@ -3,15 +3,16 @@ import { AssignmentOption } from './assignment-option';
 import { BasePoll } from '../poll/base-poll';
 
 export enum AssignmentPollMethod {
+    Y = 'Y',
     YN = 'YN',
     YNA = 'YNA',
-    Votes = 'votes'
+    N = 'N'
 }
 
 export enum AssignmentPollPercentBase {
+    Y = 'Y',
     YN = 'YN',
     YNA = 'YNA',
-    Votes = 'votes',
     Valid = 'valid',
     Cast = 'cast',
     Disabled = 'disabled'
@@ -33,22 +34,29 @@ export class AssignmentPoll extends BasePoll<
         'votesvalid',
         'votesinvalid',
         'votescast',
-        'amount_global_abstain',
-        'amount_global_no'
+        'amount_global_yes',
+        'amount_global_no',
+        'amount_global_abstain'
     ];
 
     public id: number;
     public assignment_id: number;
     public votes_amount: number;
     public allow_multiple_votes_per_candidate: boolean;
+    public global_yes: boolean;
     public global_no: boolean;
     public global_abstain: boolean;
+    public amount_global_yes: number;
     public amount_global_no: number;
     public amount_global_abstain: number;
     public description: string;
 
     public get isMethodY(): boolean {
-        return this.pollmethod === AssignmentPollMethod.Votes;
+        return this.pollmethod === AssignmentPollMethod.Y;
+    }
+
+    public get isMethodN(): boolean {
+        return this.pollmethod === AssignmentPollMethod.N;
     }
 
     public get isMethodYN(): boolean {
@@ -64,7 +72,7 @@ export class AssignmentPoll extends BasePoll<
             return ['yes', 'no'];
         } else if (this.pollmethod === AssignmentPollMethod.YNA) {
             return ['yes', 'no', 'abstain'];
-        } else if (this.pollmethod === AssignmentPollMethod.Votes) {
+        } else if (this.pollmethod === AssignmentPollMethod.Y) {
             return ['yes'];
         }
     }

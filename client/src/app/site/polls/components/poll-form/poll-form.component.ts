@@ -174,6 +174,11 @@ export class PollFormComponent<T extends ViewBasePoll, S extends PollService>
         this.contentForm.get('type').disable();
     }
 
+    public showAmountAndGlobal(data: any): boolean {
+        const selectedPollMethod = this.contentForm.get('pollmethod').value;
+        return (selectedPollMethod === 'Y' || selectedPollMethod === 'N') && (!data || !data.state || data.isCreated);
+    }
+
     /**
      * updates the available percent bases according to the pollmethod
      * @param method the currently chosen pollmethod
@@ -182,10 +187,10 @@ export class PollFormComponent<T extends ViewBasePoll, S extends PollService>
         if (method) {
             let forbiddenBases = [];
             if (method === AssignmentPollMethod.YN) {
-                forbiddenBases = [PercentBase.YNA, AssignmentPollPercentBase.Votes];
+                forbiddenBases = [PercentBase.YNA, AssignmentPollPercentBase.Y];
             } else if (method === AssignmentPollMethod.YNA) {
-                forbiddenBases = [AssignmentPollPercentBase.Votes];
-            } else if (method === AssignmentPollMethod.Votes) {
+                forbiddenBases = [AssignmentPollPercentBase.Y];
+            } else if (method === AssignmentPollMethod.Y || AssignmentPollMethod.N) {
                 forbiddenBases = [PercentBase.YN, PercentBase.YNA];
             }
 
@@ -209,16 +214,16 @@ export class PollFormComponent<T extends ViewBasePoll, S extends PollService>
     ): AssignmentPollPercentBase {
         if (
             method === AssignmentPollMethod.YN &&
-            (base === AssignmentPollPercentBase.YNA || base === AssignmentPollPercentBase.Votes)
+            (base === AssignmentPollPercentBase.YNA || base === AssignmentPollPercentBase.Y)
         ) {
             return AssignmentPollPercentBase.YN;
-        } else if (method === AssignmentPollMethod.YNA && base === AssignmentPollPercentBase.Votes) {
+        } else if (method === AssignmentPollMethod.YNA && base === AssignmentPollPercentBase.Y) {
             return AssignmentPollPercentBase.YNA;
         } else if (
-            method === AssignmentPollMethod.Votes &&
+            method === AssignmentPollMethod.Y &&
             (base === AssignmentPollPercentBase.YN || base === AssignmentPollPercentBase.YNA)
         ) {
-            return AssignmentPollPercentBase.Votes;
+            return AssignmentPollPercentBase.Y;
         }
         return base;
     }
@@ -267,8 +272,10 @@ export class PollFormComponent<T extends ViewBasePoll, S extends PollService>
                         : '---'
                 ]);
             }
-            if (data.pollmethod === 'votes') {
+
+            if (data.pollmethod === 'Y' || data.pollmethod === 'N') {
                 this.pollValues.push([this.pollService.getVerboseNameForKey('votes_amount'), data.votes_amount]);
+                this.pollValues.push([this.pollService.getVerboseNameForKey('global_yes'), data.global_yes]);
                 this.pollValues.push([this.pollService.getVerboseNameForKey('global_no'), data.global_no]);
                 this.pollValues.push([this.pollService.getVerboseNameForKey('global_abstain'), data.global_abstain]);
             }
@@ -284,6 +291,7 @@ export class PollFormComponent<T extends ViewBasePoll, S extends PollService>
             majority_method: ['', Validators.required],
             votes_amount: [1, [Validators.required, Validators.min(1)]],
             groups_id: [],
+            global_yes: [false],
             global_no: [false],
             global_abstain: [false]
         });

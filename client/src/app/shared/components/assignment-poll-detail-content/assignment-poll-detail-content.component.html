@@ -3,7 +3,7 @@
         <tbody>
             <tr>
                 <th class="voting-option">{{ 'Candidates' | translate }}</th>
-                <th class="result yes">
+                <th class="result yes" *ngIf="showYHeader">
                     <span *ngIf="!isMethodY">
                         {{ 'Yes' | translate }}
                     </span>
@@ -11,7 +11,14 @@
                         {{ 'Votes' | translate }}
                     </span>
                 </th>
-                <th class="result no" *ngIf="!isMethodY">{{ 'No' | translate }}</th>
+                <th class="result" *ngIf="showNHeader">
+                    <span class="no" *ngIf="!isMethodN">
+                        {{ 'No' | translate }}
+                    </span>
+                    <span class="yes" *ngIf="isMethodN">
+                        {{ 'Votes' | translate }}
+                    </span>
+                </th>
                 <th class="result abstain" *ngIf="isMethodYNA">{{ 'Abstain' | translate }}</th>
             </tr>
             <tr *ngFor="let row of tableData" [class]="row.class">
@@ -26,13 +33,18 @@
                         </span>
                     </div>
                 </td>
-                <td class="result" *ngFor="let vote of row.value">
-                    <div class="single-result" [ngClass]="getVoteClass(vote)" *ngIf="vote && voteFitsMethod(vote)">
+                <td class="result" *ngFor="let vote of filterRelevantResults(row.value)">
+                    <div class="single-result" [ngClass]="getVoteClass(vote)">
                         <span>
                             <span *ngIf="vote.showPercent">
-                                {{ vote.amount | pollPercentBase: poll:'assignment' }}
+                                {{ getVoteAmount(vote, row) | pollPercentBase: poll:'assignment' }}
                             </span>
-                            {{ vote.amount | parsePollNumber }}
+                            <span *ngIf="row.class === 'user'">
+                                {{ getVoteAmount(vote, row) | parsePollNumber }}
+                            </span>
+                            <span *ngIf="row.class !== 'user'">
+                                {{ vote.amount | parsePollNumber }}
+                            </span>
                         </span>
                     </div>
                 </td>

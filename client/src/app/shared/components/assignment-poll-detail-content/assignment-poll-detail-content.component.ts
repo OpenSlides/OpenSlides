@@ -20,8 +20,20 @@ export class AssignmentPollDetailContentComponent {
         return this.poll.pollmethod;
     }
 
+    public get showYHeader(): boolean {
+        return this.isMethodY || this.isMethodYN || this.isMethodYNA;
+    }
+
+    public get showNHeader(): boolean {
+        return this.isMethodN || this.isMethodYN || this.isMethodYNA;
+    }
+
     public get isMethodY(): boolean {
-        return this.method === AssignmentPollMethod.Votes;
+        return this.method === AssignmentPollMethod.Y;
+    }
+
+    public get isMethodN(): boolean {
+        return this.method === AssignmentPollMethod.N;
     }
 
     public get isMethodYN(): boolean {
@@ -37,19 +49,44 @@ export class AssignmentPollDetailContentComponent {
     }
 
     public getVoteClass(votingResult: VotingResult): string {
-        return votingResult.vote;
+        const votingClass = votingResult.vote;
+        if (this.isMethodN && votingClass === 'no') {
+            return 'yes';
+        } else {
+            return votingClass;
+        }
+    }
+
+    public filterRelevantResults(votingResult: VotingResult[]): VotingResult[] {
+        return votingResult.filter(result => {
+            return result && this.voteFitsMethod(result);
+        });
+    }
+
+    public getVoteAmount(vote: VotingResult, row: PollTableData): number {
+        if (this.isMethodN && row.class === 'user') {
+            if (vote.amount < 0) {
+                return vote.amount;
+            } else {
+                return this.poll.votesvalid - vote.amount;
+            }
+        } else {
+            return vote.amount;
+        }
     }
 
     public voteFitsMethod(result: VotingResult): boolean {
-        if (this.isMethodY) {
-            if (result.vote === 'abstain' || result.vote === 'no') {
-                return false;
-            }
-        } else if (this.isMethodYN) {
-            if (result.vote === 'abstain') {
-                return false;
-            }
+        if (!result.vote) {
+            return true;
         }
-        return true;
+        if (this.isMethodY) {
+            return result.vote === 'yes';
+        } else if (this.isMethodN) {
+            return result.vote === 'no';
+        } else if (this.isMethodYN) {
+            return result.vote !== 'abstain';
+        } else {
+            return true;
+        }
     }
 }

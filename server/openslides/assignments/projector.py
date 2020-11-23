@@ -86,6 +86,9 @@ async def assignment_poll_slide(
         poll_data["options"].append(option_data)
 
     if poll["state"] == AssignmentPoll.STATE_PUBLISHED:
+        poll_data["amount_global_yes"] = (
+            float(poll["amount_global_yes"]) if poll["amount_global_yes"] else None
+        )
         poll_data["amount_global_no"] = (
             float(poll["amount_global_no"]) if poll["amount_global_no"] else None
         )

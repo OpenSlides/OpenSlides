@@ -19,6 +19,27 @@ import { ViewAssignmentPoll } from 'app/site/assignments/models/view-assignment-
 import { BasePollVoteComponentDirective, VoteOption } from 'app/site/polls/components/base-poll-vote.component';
 import { ViewUser } from 'app/site/users/models/view-user';
 
+const voteOptions = {
+    Yes: {
+        vote: 'Y',
+        css: 'voted-yes',
+        icon: 'thumb_up',
+        label: 'Yes'
+    } as VoteOption,
+    No: {
+        vote: 'N',
+        css: 'voted-no',
+        icon: 'thumb_down',
+        label: 'No'
+    } as VoteOption,
+    Abstain: {
+        vote: 'A',
+        css: 'voted-abstain',
+        icon: 'trip_origin',
+        label: 'Abstain'
+    } as VoteOption
+};
+
 @Component({
     selector: 'os-assignment-poll-vote',
     templateUrl: './assignment-poll-vote.component.html',
@@ -70,6 +91,13 @@ export class AssignmentPollVoteComponent extends BasePollVoteComponentDirective<
         return '';
     }
 
+    public getGlobalYesClass(user: ViewUser = this.user): string {
+        if (this.voteRequestData[user.id]?.global === 'Y') {
+            return 'voted-yes';
+        }
+        return '';
+    }
+
     public getGlobalAbstainClass(user: ViewUser = this.user): string {
         if (this.voteRequestData[user.id]?.global === 'A') {
             return 'voted-abstain';
@@ -85,29 +113,20 @@ export class AssignmentPollVoteComponent extends BasePollVoteComponentDirective<
     }
 
     private defineVoteOptions(): void {
-        this.voteActions.push({
-            vote: 'Y',
-            css: 'voted-yes',
-            icon: 'thumb_up',
-            label: 'Yes'
-        });
+        if (this.poll) {
+            if (this.poll.isMethodN) {
+                this.voteActions.push(voteOptions.No);
+            } else {
+                this.voteActions.push(voteOptions.Yes);
 
-        if (this.poll?.pollmethod !== AssignmentPollMethod.Votes) {
-            this.voteActions.push({
-                vote: 'N',
-                css: 'voted-no',
-                icon: 'thumb_down',
-                label: 'No'
-            });
-        }
+                if (!this.poll.isMethodY) {
+                    this.voteActions.push(voteOptions.No);
+                }
 
-        if (this.poll?.pollmethod === AssignmentPollMethod.YNA) {
-            this.voteActions.push({
-                vote: 'A',
-                css: 'voted-abstain',
-                icon: 'trip_origin',
-                label: 'Abstain'
-            });
+                if (this.poll.isMethodYNA) {
+                    this.voteActions.push(voteOptions.Abstain);
+                }
+            }
         }
     }
 
@@ -155,7 +174,7 @@ export class AssignmentPollVoteComponent extends BasePollVoteComponentDirective<
             delete this.voteRequestData[user.id].global;
         }
 
-        if (this.poll.pollmethod === AssignmentPollMethod.Votes) {
+        if (this.poll.isMethodY || this.poll.isMethodN) {
             const votesAmount = this.poll.votes_amount;
             const tmpVoteRequest = this.poll.options
                 .map(option => option.id)

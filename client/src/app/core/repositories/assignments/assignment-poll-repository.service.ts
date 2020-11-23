@@ -56,6 +56,7 @@ export interface AssignmentAnalogVoteData {
     votesvalid?: number;
     votesinvalid?: number;
     votescast?: number;
+    global_yes?: number;
     global_no?: number;
     global_abstain?: number;
 }
