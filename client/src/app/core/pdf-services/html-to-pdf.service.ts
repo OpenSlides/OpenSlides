@@ -278,6 +278,26 @@ export class HtmlToPdfService {
                     ...this.computeStyle(styles),
                     ...this.computeStyle(this.elementStyles[nodeName])
                 };
+                // if the ol list has specific list type
+                if (nodeName === 'li' && element.parentNode.nodeName === 'OL') {
+                    const type = element.parentElement.getAttribute('type');
+                    switch (type) {
+                        case 'a':
+                            newParagraph.listType = 'lower-alpha';
+                            break;
+                        case 'A':
+                            newParagraph.listType = 'upper-alpha';
+                            break;
+                        case 'i':
+                            newParagraph.listType = 'lower-roman';
+                            break;
+                        case 'I':
+                            newParagraph.listType = 'upper-roman';
+                            break;
+                        default:
+                            break;
+                    }
+                }
                 break;
             }
             case 'a':

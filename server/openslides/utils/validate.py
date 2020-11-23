@@ -74,6 +74,7 @@ allowed_attributes = [
     "style",
     "target",
     "title",
+    "type",
     "width",
 ]
 
