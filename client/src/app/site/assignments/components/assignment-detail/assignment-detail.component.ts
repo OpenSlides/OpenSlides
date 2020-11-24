@@ -346,7 +346,7 @@ export class AssignmentDetailComponent extends BaseViewComponentDirective implem
             ...this.assignmentPollService.getDefaultPollData(this.assignment.id)
         };
 
-        this.pollDialog.openDialog(dialogData);
+        this.pollDialog.openDialog(dialogData).catch(this.raiseError);
     }
 
     /**
