@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.core.validators import MinValueValidator
 
 from openslides.assignments.models import AssignmentPoll
@@ -25,14 +26,24 @@ def get_config_variables():
         subgroup="Ballot",
     )
 
+    if getattr(settings, "ENABLE_ELECTRONIC_VOTING", False):
+        assignment_poll_type_choices = tuple(
+            {"value": type[0], "display_name": type[1]} for type in AssignmentPoll.TYPES
+        )
+    else:
+        assignment_poll_type_choices = (
+            {
+                "value": AssignmentPoll.TYPE_ANALOG,
+                "display_name": AssignmentPoll.TYPE_ANALOG,
+            },
+        )
+
     yield ConfigVariable(
         name="assignment_poll_default_type",
         default_value=AssignmentPoll.TYPE_ANALOG,
         input_type="choice",
         label="Default voting type",
-        choices=tuple(
-            {"value": type[0], "display_name": type[1]} for type in AssignmentPoll.TYPES
-        ),
+        choices=assignment_poll_type_choices,
         weight=403,
         group="Elections",
         subgroup="Ballot",

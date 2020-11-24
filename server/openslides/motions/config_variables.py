@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.core.validators import MinValueValidator
 
 from openslides.core.config import ConfigVariable
@@ -341,14 +342,21 @@ def get_config_variables():
 
     # Voting and ballot papers
 
+    if getattr(settings, "ENABLE_ELECTRONIC_VOTING", False):
+        motion_poll_type_choices = tuple(
+            {"value": type[0], "display_name": type[1]} for type in MotionPoll.TYPES
+        )
+    else:
+        motion_poll_type_choices = (
+            {"value": MotionPoll.TYPE_ANALOG, "display_name": MotionPoll.TYPE_ANALOG},
+        )
+
     yield ConfigVariable(
         name="motion_poll_default_type",
         default_value=MotionPoll.TYPE_ANALOG,
         input_type="choice",
         label="Default voting type",
-        choices=tuple(
-            {"value": type[0], "display_name": type[1]} for type in MotionPoll.TYPES
-        ),
+        choices=motion_poll_type_choices,
         weight=367,
         group="Motions",
         subgroup="Voting and ballot papers",
