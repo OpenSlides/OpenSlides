@@ -9,7 +9,8 @@ export interface AssignmentPollSlideData extends BasePollSlideData {
         title: string;
         type: PollType;
         pollmethod: AssignmentPollMethod;
-        votes_amount: number;
+        max_votes_amount: number;
+        min_votes_amount: number;
         description: string;
         state: PollState;
         onehundred_percent_base: PercentBase;

@@ -39,16 +39,18 @@ export const PollTypeVerbose = {
 };
 
 export const PollPropertyVerbose = {
-    majority_method: 'Required majority',
-    onehundred_percent_base: '100% base',
+    majority_method: _('Required majority'),
+    onehundred_percent_base: _('100% base'),
     type: _('Voting type'),
     pollmethod: _('Voting method'),
-    state: 'State',
+    state: _('State'),
     groups: _('Entitled to vote'),
     votes_amount: _('Amount of votes'),
     global_yes: _('General approval'),
     global_no: _('General rejection'),
-    global_abstain: _('General abstain')
+    global_abstain: _('General abstain'),
+    max_votes_amount: _('Maximum amount of votes'),
+    min_votes_amount: _('Minimum amount of votes')
 };
 
 export const MajorityMethodVerbose = {

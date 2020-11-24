@@ -14,6 +14,7 @@ from openslides.utils.autoupdate import inform_changed_data
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.manager import BaseManager
 from openslides.utils.models import RESTModelMixin
+from openslides.utils.rest_api import ValidationError
 
 from ..utils.models import CASCADE_AND_AUTOUPDATE, SET_NULL_AND_AUTOUPDATE
 from .access_permissions import (
@@ -377,7 +378,7 @@ class AssignmentPoll(RESTModelMixin, BasePoll):
         decimal_places=6,
     )
 
-    votes_amount = models.IntegerField(default=1, validators=[MinValueValidator(1)])
+    max_votes_amount = models.IntegerField(default=1, validators=[MinValueValidator(1)])
     """ For "votes" mode: The amount of votes a voter can give. """
 
     allow_multiple_votes_per_candidate = models.BooleanField(default=False)
@@ -446,6 +447,13 @@ class AssignmentPoll(RESTModelMixin, BasePoll):
     amount_global_abstain = property(
         get_amount_global_abstain, set_amount_global_abstain
     )
+
+    def save(self, *args, **kwargs):
+        if self.max_votes_amount < self.min_votes_amount:
+            raise ValidationError(
+                {"detail": "max votes must be larger or equal to min votes"}
+            )
+        super().save(*args, **kwargs)
 
     def create_options(self, skip_autoupdate=False):
         related_users = AssignmentRelatedUser.objects.filter(

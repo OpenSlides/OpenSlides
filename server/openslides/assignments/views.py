@@ -377,7 +377,7 @@ class AssignmentPollViewSet(BasePollViewSet):
                 - ids should be integers of valid option ids for this poll
                 - amounts must be 0 or 1, if poll.allow_multiple_votes_per_candidate is False
                 - if an option is not given, 0 is assumed
-                - The sum of all amounts must be grater than 0 and <= poll.votes_amount
+                - The sum of all amounts must be >= poll.min_votes_amount and <= poll.max_votes_amount
 
             YN/YNA:
                 {<option_id>: 'Y' | 'N' [|'A']}
@@ -471,11 +471,18 @@ class AssignmentPollViewSet(BasePollViewSet):
                             )
                         amount_sum += amount
 
-                    if amount_sum > poll.votes_amount:
+                    if amount_sum > poll.max_votes_amount:
                         raise ValidationError(
                             {
                                 "detail": "You can give a maximum of {0} votes",
-                                "args": [poll.votes_amount],
+                                "args": [poll.max_votes_amount],
+                            }
+                        )
+                    if amount_sum < poll.min_votes_amount:
+                        raise ValidationError(
+                            {
+                                "detail": "You must give a minimum of {0} votes",
+                                "args": [poll.min_votes_amount],
                             }
                         )
                 # return, if there is a global vote, because we dont have to check option presence

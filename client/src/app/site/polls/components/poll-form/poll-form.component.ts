@@ -133,8 +133,8 @@ export class PollFormComponent<T extends ViewBasePoll, S extends PollService>
             }
 
             if (this.data instanceof ViewAssignmentPoll) {
-                if (this.data.assignment && !this.data.votes_amount) {
-                    this.data.votes_amount = this.data.assignment.open_posts;
+                if (this.data.assignment && !this.data.max_votes_amount) {
+                    this.data.max_votes_amount = this.data.assignment.open_posts;
                 }
                 if (!this.data.pollmethod) {
                     this.data.pollmethod = this.configService.instant('assignment_poll_method');
@@ -279,6 +279,14 @@ export class PollFormComponent<T extends ViewBasePoll, S extends PollService>
             if (data.pollmethod === 'Y' || data.pollmethod === 'N') {
                 this.pollValues.push([this.pollService.getVerboseNameForKey('votes_amount'), data.votes_amount]);
                 this.pollValues.push([this.pollService.getVerboseNameForKey('global_yes'), data.global_yes]);
+                this.pollValues.push([
+                    this.pollService.getVerboseNameForKey('max_votes_amount'),
+                    data.max_votes_amount
+                ]);
+                this.pollValues.push([
+                    this.pollService.getVerboseNameForKey('min_votes_amount'),
+                    data.min_votes_amount
+                ]);
                 this.pollValues.push([this.pollService.getVerboseNameForKey('global_no'), data.global_no]);
                 this.pollValues.push([this.pollService.getVerboseNameForKey('global_abstain'), data.global_abstain]);
             }
@@ -292,7 +300,8 @@ export class PollFormComponent<T extends ViewBasePoll, S extends PollService>
             pollmethod: ['', Validators.required],
             onehundred_percent_base: ['', Validators.required],
             majority_method: ['', Validators.required],
-            votes_amount: [1, [Validators.required, Validators.min(1)]],
+            max_votes_amount: [1, [Validators.required, Validators.min(1)]],
+            min_votes_amount: [1, [Validators.required, Validators.min(1)]],
             groups_id: [],
             global_yes: [false],
             global_no: [false],

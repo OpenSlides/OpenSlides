@@ -57,13 +57,25 @@
                     <mat-error>{{ 'This field is required.' | translate }}</mat-error>
                 </mat-form-field>
 
-                <!-- Amount of Votes -->
+                <!-- Max Amount of Votes -->
                 <mat-form-field *ngIf="showAmountAndGlobal(data)">
                     <input
                         type="number"
                         matInput
-                        placeholder="{{ PollPropertyVerbose.votes_amount | translate }}"
-                        formControlName="votes_amount"
+                        placeholder="{{ PollPropertyVerbose.max_votes_amount | translate }}"
+                        formControlName="max_votes_amount"
+                        min="1"
+                        required
+                    />
+                </mat-form-field>
+
+                <!-- Min Amount of Votes -->
+                <mat-form-field>
+                    <input
+                        type="number"
+                        matInput
+                        placeholder="{{ PollPropertyVerbose.min_votes_amount | translate }}"
+                        formControlName="min_votes_amount"
                         min="1"
                         required
                     />
