@@ -232,7 +232,7 @@ export abstract class PollService {
             onehundred_percent_base: this.defaultPercentBase,
             majority_method: this.defaultMajorityMethod,
             groups_id: this.defaultGroupIds,
-            type: this.defaultPollType
+            type: this.isElectronicVotingEnabled ? this.defaultPollType : PollType.Analog
         };
     }
 
