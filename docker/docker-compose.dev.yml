@@ -81,6 +81,8 @@ services:
     env_file: services.env
     volumes:
       - ../openslides-auth-service/auth/src:/app/src
+    ports:
+      - 9004:9004
   cache:
     image: redis:latest
   media:
