@@ -102,8 +102,7 @@ class UserAccessPermissions(BaseAccessPermissions):
             # Find our model in full_data and get vote_delegated_from_users_id from it.
             for user in full_data:
                 if user["id"] == user_id:
-                    if len(user["vote_delegated_from_users_id"]) > 0:
-                        required_user_ids.add(*user["vote_delegated_from_users_id"])
+                    required_user_ids.update(user["vote_delegated_from_users_id"])
                     break
 
             # Parse data.
