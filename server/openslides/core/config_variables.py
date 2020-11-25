@@ -102,22 +102,32 @@ def get_config_variables():
     )
 
     yield ConfigVariable(
-        name="general_system_conference_auto_connect",
+        name="general_system_conference_los_restriction",
         default_value=False,
         input_type="boolean",
-        label="Connect all users to live conference automatically",
+        label="Allow only current speakers and list of speakers managers to enter the live conference",
         help_text="Server settings required to activate Jitsi Meet integration.",
         weight=141,
         subgroup="Live conference",
     )
 
     yield ConfigVariable(
-        name="general_system_conference_los_restriction",
+        name="general_system_conference_auto_connect",
         default_value=False,
         input_type="boolean",
-        label="Allow only current speakers and list of speakers managers to enter the live conference",
+        label="Connect all users to live conference automatically",
         help_text="Server settings required to activate Jitsi Meet integration.",
         weight=142,
+        subgroup="Live conference",
+    )
+
+    yield ConfigVariable(
+        name="general_system_conference_auto_connect_next_speakers",
+        default_value=0,
+        input_type="integer",
+        label="Number of next speakers automatically connecting to the live conference",
+        help_text="Live conference has to be active. Choose 0 to disable auto connect.",
+        weight=143,
         subgroup="Live conference",
     )
 
@@ -126,7 +136,7 @@ def get_config_variables():
         default_value="",
         label="Livestream url",
         help_text="Remove URL to deactivate livestream. Check extra group permission to see livestream.",
-        weight=143,
+        weight=146,
         subgroup="Live conference",
     )
 
@@ -135,7 +145,7 @@ def get_config_variables():
         default_value="",
         label="Livestream poster image url",
         help_text="Shows if livestream is not started. Recommended image format: 500x281px, PNG or JPG",
-        weight=144,
+        weight=147,
         subgroup="Live conference",
     )
 

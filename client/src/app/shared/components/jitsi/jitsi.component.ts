@@ -12,6 +12,7 @@ import { OperatorService } from 'app/core/core-services/operator.service';
 import { Deferred } from 'app/core/promises/deferred';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
+import { UserListIndexType } from 'app/site/agenda/models/view-list-of-speakers';
 import { BaseViewComponentDirective } from 'app/site/base/base-view';
 import { CurrentListOfSpeakersService } from 'app/site/projector/services/current-list-of-speakers.service';
 
@@ -85,6 +86,7 @@ export class JitsiComponent extends BaseViewComponentDirective implements OnInit
 
     public restricted = false;
     public videoStreamUrl: string;
+    private nextSpeakerAmount: number;
 
     // do not set the password twice
     private isPasswortSet = false;
@@ -330,6 +332,11 @@ export class JitsiComponent extends BaseViewComponentDirective implements OnInit
             this.configService.get<boolean>('general_system_conference_los_restriction').subscribe(restricted => {
                 this.restricted = restricted;
             }),
+            this.configService
+                .get<number>('general_system_conference_auto_connect_next_speakers')
+                .subscribe(nextSpeakerAmount => {
+                    this.nextSpeakerAmount = nextSpeakerAmount;
+                }),
             this.configService.get<string>('general_system_stream_url').subscribe(url => {
                 this.videoStreamUrl = url;
                 this.configsLoaded.resolve();
@@ -359,17 +366,10 @@ export class JitsiComponent extends BaseViewComponentDirective implements OnInit
             // check if the operator is on the clos, remove from room if not permitted
             this.closService.currentListOfSpeakersObservable
                 .pipe(
-                    map(los => (los ? los.isUserOnList(this.operator.user.id) : false)),
+                    map(los => los?.findUserIndexOnList(this.operator.user.id) ?? -1),
                     distinctUntilChanged()
                 )
-                .subscribe(isOnList => {
-                    this.isOnCurrentLos = isOnList;
-                    this.triggerMeetingRoomButtonAnimation();
-
-                    if (!this.isAccessPermitted) {
-                        this.viewStream();
-                    }
-                })
+                .subscribe(userLosIndex => this.autoJoinJitsiByLosIndex(userLosIndex))
         );
     }
 
@@ -443,6 +443,31 @@ export class JitsiComponent extends BaseViewComponentDirective implements OnInit
         this.setRoomPassword();
         if (this.videoStreamUrl) {
             this.showJitsiDialog();
+        }
+    }
+
+    private autoJoinJitsiByLosIndex(operatorClosIndex: number): void {
+        if (operatorClosIndex !== UserListIndexType.NotOnList) {
+            if (!this.isOnCurrentLos) {
+                this.isOnCurrentLos = true;
+                this.triggerMeetingRoomButtonAnimation();
+            }
+
+            if (
+                this.nextSpeakerAmount &&
+                this.nextSpeakerAmount > 0 &&
+                operatorClosIndex > UserListIndexType.Active &&
+                operatorClosIndex <= this.nextSpeakerAmount &&
+                !this.isJitsiActive
+            ) {
+                this.enterConversation();
+            }
+        } else {
+            this.isOnCurrentLos = false;
+        }
+
+        if (!this.isAccessPermitted) {
+            this.viewStream();
         }
     }
 

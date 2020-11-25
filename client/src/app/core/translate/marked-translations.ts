@@ -38,6 +38,8 @@ _('Livestream url');
 _('Remove URL to deactivate livestream. Check extra group permission to see livestream.');
 _('Livestream poster image url');
 _('Shows if livestream is not started. Recommended image format: 500x281px, PNG or JPG');
+_('Number of next speakers automatically connecting to the live conference');
+_('Live conference has to be active. Choose 0 to disable auto connect.');
 _('Show this text on the login page');
 _('OpenSlides Theme');
 _('Export');
