@@ -18,15 +18,16 @@ export interface AssignmentPollTitleInformation {
 }
 
 export const AssignmentPollMethodVerbose = {
-    votes: _('Yes per candidate'),
+    Y: _('Yes per candidate'),
+    N: _('No per candidate'),
     YN: _('Yes/No per candidate'),
     YNA: _('Yes/No/Abstain per candidate')
 };
 
 export const AssignmentPollPercentBaseVerbose = {
+    Y: _('Sum of votes including general No/Abstain'),
     YN: _('Yes/No per candidate'),
     YNA: _('Yes/No/Abstain per candidate'),
-    votes: _('Sum of votes including general No/Abstain'),
     valid: _('All valid ballots'),
     cast: _('All casted ballots'),
     disabled: _('Disabled (no percents)')

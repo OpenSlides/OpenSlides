@@ -268,21 +268,32 @@ class AssignmentPollViewSet(BasePollViewSet):
 
         super().perform_create(serializer)
         poll = AssignmentPoll.objects.get(pk=serializer.data["id"])
-        poll.db_amount_global_abstain = Decimal(0)
+        poll.db_amount_global_yes = Decimal(0)
         poll.db_amount_global_no = Decimal(0)
+        poll.db_amount_global_abstain = Decimal(0)
         poll.save()
 
     def handle_analog_vote(self, data, poll):
         for field in ["votesvalid", "votesinvalid", "votescast"]:
             setattr(poll, field, data[field])
 
-        global_no_enabled = (
-            poll.global_no and poll.pollmethod == AssignmentPoll.POLLMETHOD_VOTES
+        global_yes_enabled = poll.global_yes and poll.pollmethod in (
+            AssignmentPoll.POLLMETHOD_Y,
+            AssignmentPoll.POLLMETHOD_N,
+        )
+        if global_yes_enabled:
+            poll.amount_global_yes = data.get("amount_global_yes", Decimal(0))
+
+        global_no_enabled = poll.global_no and poll.pollmethod in (
+            AssignmentPoll.POLLMETHOD_Y,
+            AssignmentPoll.POLLMETHOD_N,
         )
         if global_no_enabled:
             poll.amount_global_no = data.get("amount_global_no", Decimal(0))
-        global_abstain_enabled = (
-            poll.global_abstain and poll.pollmethod == AssignmentPoll.POLLMETHOD_VOTES
+
+        global_abstain_enabled = poll.global_abstain and poll.pollmethod in (
+            AssignmentPoll.POLLMETHOD_Y,
+            AssignmentPoll.POLLMETHOD_N,
         )
         if global_abstain_enabled:
             poll.amount_global_abstain = data.get("amount_global_abstain", Decimal(0))
@@ -293,28 +304,47 @@ class AssignmentPollViewSet(BasePollViewSet):
         with transaction.atomic():
             for option_id, vote in options_data.items():
                 option = options.get(pk=int(option_id))
-                vote_obj, _ = AssignmentVote.objects.get_or_create(
-                    option=option, value="Y"
-                )
-                vote_obj.weight = vote["Y"]
-                vote_obj.save()
 
-                if poll.pollmethod in (
-                    AssignmentPoll.POLLMETHOD_YN,
-                    AssignmentPoll.POLLMETHOD_YNA,
-                ):
+                if poll.pollmethod == AssignmentPoll.POLLMETHOD_N:
                     vote_obj, _ = AssignmentVote.objects.get_or_create(
                         option=option, value="N"
                     )
                     vote_obj.weight = vote["N"]
                     vote_obj.save()
 
-                if poll.pollmethod == AssignmentPoll.POLLMETHOD_YNA:
+                elif poll.pollmethod in (
+                    AssignmentPoll.POLLMETHOD_Y,
+                    AssignmentPoll.POLLMETHOD_YN,
+                    AssignmentPoll.POLLMETHOD_YNA,
+                ):
+                    # All three methods have a Y
                     vote_obj, _ = AssignmentVote.objects.get_or_create(
-                        option=option, value="A"
+                        option=option, value="Y"
                     )
-                    vote_obj.weight = vote["A"]
+                    vote_obj.weight = vote["Y"]
                     vote_obj.save()
+
+                    if poll.pollmethod in (
+                        AssignmentPoll.POLLMETHOD_YN,
+                        AssignmentPoll.POLLMETHOD_YNA,
+                    ):
+                        vote_obj, _ = AssignmentVote.objects.get_or_create(
+                            option=option, value="N"
+                        )
+                        vote_obj.weight = vote["N"]
+                        vote_obj.save()
+
+                        if poll.pollmethod == AssignmentPoll.POLLMETHOD_YNA:
+                            vote_obj, _ = AssignmentVote.objects.get_or_create(
+                                option=option, value="A"
+                            )
+                            vote_obj.weight = vote["A"]
+                            vote_obj.save()
+
+                else:
+                    raise NotImplementedError(
+                        f"handle_analog_vote not implemented for {poll.pollmethod}"
+                    )
                 inform_changed_data(option)
 
             poll.save()
@@ -326,22 +356,27 @@ class AssignmentPollViewSet(BasePollViewSet):
             {
                 "options": {<option_id>: {"Y": <amount>, ["N": <amount>], ["A": <amount>] }},
                 ["votesvalid": <amount>], ["votesinvalid": <amount>], ["votescast": <amount>],
-                ["amount_global_no": <amount>], ["amount_global_abstain": <amount>]
+                ["amount_global_yes": <amount>],
+                ["amount_global_no": <amount>],
+                ["amount_global_abstain": <amount>]
             }
             All amounts are decimals as strings
             required fields per pollmethod:
             - votes: Y
             - YN:    YN
             - YNA:   YNA
+            - N:     N
         named|pseudoanonymous:
             votes:
-                {<option_id>: <amount>} | 'N' | 'A'
+                {<option_id>: <amount>} | 'Y' | 'N' | 'A'
                 - Exactly one of the three options must be given
+                - 'Y' is only valid if poll.global_yes==True
                 - 'N' is only valid if poll.global_no==True
                 - 'A' is only valid if poll.global_abstain==True
                 - amounts must be integer numbers >= 0.
                 - ids should be integers of valid option ids for this poll
                 - amounts must be 0 or 1, if poll.allow_multiple_votes_per_candidate is False
+                - if an option is not given, 0 is assumed
                 - The sum of all amounts must be grater than 0 and <= poll.votes_amount
 
             YN/YNA:
@@ -361,39 +396,56 @@ class AssignmentPollViewSet(BasePollViewSet):
                     raise ValidationError({"detail": "Keys must be int"})
                 if not isinstance(value, dict):
                     raise ValidationError({"detail": "A dict per option is required"})
-                value["Y"] = self.parse_vote_value(value, "Y")
-                if poll.pollmethod in (
-                    AssignmentPoll.POLLMETHOD_YN,
-                    AssignmentPoll.POLLMETHOD_YNA,
-                ):
+                if poll.pollmethod == AssignmentPoll.POLLMETHOD_N:
                     value["N"] = self.parse_vote_value(value, "N")
-                if poll.pollmethod == AssignmentPoll.POLLMETHOD_YNA:
-                    value["A"] = self.parse_vote_value(value, "A")
+                else:
+                    value["Y"] = self.parse_vote_value(value, "Y")
+                    if poll.pollmethod in (
+                        AssignmentPoll.POLLMETHOD_YN,
+                        AssignmentPoll.POLLMETHOD_YNA,
+                    ):
+                        value["N"] = self.parse_vote_value(value, "N")
+                    if poll.pollmethod == AssignmentPoll.POLLMETHOD_YNA:
+                        value["A"] = self.parse_vote_value(value, "A")
 
             for field in ["votesvalid", "votesinvalid", "votescast"]:
                 data[field] = self.parse_vote_value(data, field)
 
-            global_no_enabled = (
-                poll.global_no and poll.pollmethod == AssignmentPoll.POLLMETHOD_VOTES
+            global_yes_enabled = poll.global_yes and poll.pollmethod in (
+                AssignmentPoll.POLLMETHOD_Y,
+                AssignmentPoll.POLLMETHOD_N,
             )
-            global_abstain_enabled = (
-                poll.global_abstain
-                and poll.pollmethod == AssignmentPoll.POLLMETHOD_VOTES
-            )
-            if "amount_global_abstain" in data and global_abstain_enabled:
-                data["amount_global_abstain"] = self.parse_vote_value(
-                    data, "amount_global_abstain"
+            if "amount_global_yes" in data and global_yes_enabled:
+                data["amount_global_yes"] = self.parse_vote_value(
+                    data, "amount_global_yes"
                 )
+
+            global_no_enabled = poll.global_no and poll.pollmethod in (
+                AssignmentPoll.POLLMETHOD_Y,
+                AssignmentPoll.POLLMETHOD_N,
+            )
             if "amount_global_no" in data and global_no_enabled:
                 data["amount_global_no"] = self.parse_vote_value(
                     data, "amount_global_no"
                 )
 
-        else:
+            global_abstain_enabled = poll.global_abstain and poll.pollmethod in (
+                AssignmentPoll.POLLMETHOD_Y,
+                AssignmentPoll.POLLMETHOD_N,
+            )
+            if "amount_global_abstain" in data and global_abstain_enabled:
+                data["amount_global_abstain"] = self.parse_vote_value(
+                    data, "amount_global_abstain"
+                )
+
+        else:  # non-analog polls
             if isinstance(data, dict) and len(data) == 0:
                 raise ValidationError({"details": "Empty ballots are not allowed"})
             available_options = poll.get_options()
-            if poll.pollmethod == AssignmentPoll.POLLMETHOD_VOTES:
+            if poll.pollmethod in (
+                AssignmentPoll.POLLMETHOD_Y,
+                AssignmentPoll.POLLMETHOD_N,
+            ):
                 if isinstance(data, dict):
                     amount_sum = 0
                     for option_id, amount in data.items():
@@ -426,10 +478,13 @@ class AssignmentPollViewSet(BasePollViewSet):
                                 "args": [poll.votes_amount],
                             }
                         )
+                # return, if there is a global vote, because we dont have to check option presence
+                elif data == "Y" and poll.global_yes:
+                    return
                 elif data == "N" and poll.global_no:
-                    return  # return because we dont have to check option presence
+                    return
                 elif data == "A" and poll.global_abstain:
-                    return  # return because we dont have to check option presence
+                    return
                 else:
                     raise ValidationError({"detail": "invalid data."})
 
@@ -479,12 +534,15 @@ class AssignmentPollViewSet(BasePollViewSet):
                 weight = Decimal(amount)
                 if config["users_activate_vote_weight"]:
                     weight *= vote_weight
+                value = "Y"  # POLLMETHOD_Y
+                if poll.pollmethod == AssignmentPoll.POLLMETHOD_N:
+                    value = "N"
                 vote = AssignmentVote.objects.create(
                     option=option,
                     user=vote_user,
                     delegated_user=request_user,
                     weight=weight,
-                    value="Y",
+                    value=value,
                 )
                 inform_changed_data(vote, no_delete_on_restriction=True)
         else:  # global_no or global_abstain
@@ -529,7 +587,10 @@ class AssignmentPollViewSet(BasePollViewSet):
         VotedModel.objects.create(assignmentpoll=poll, user=user)
 
     def handle_named_vote(self, data, poll, vote_user, request_user):
-        if poll.pollmethod == AssignmentPoll.POLLMETHOD_VOTES:
+        if poll.pollmethod in (
+            AssignmentPoll.POLLMETHOD_Y,
+            AssignmentPoll.POLLMETHOD_N,
+        ):
             self.create_votes_type_votes(
                 data, poll, vote_user.vote_weight, vote_user, request_user
             )
@@ -540,16 +601,22 @@ class AssignmentPollViewSet(BasePollViewSet):
             self.create_votes_types_yn_yna(
                 data, poll, vote_user.vote_weight, vote_user, request_user
             )
+        else:
+            raise NotImplementedError(f"The method {poll.pollmethod} is not supported!")
 
     def handle_pseudoanonymous_vote(self, data, poll, user):
-        if poll.pollmethod == AssignmentPoll.POLLMETHOD_VOTES:
+        if poll.pollmethod in (
+            AssignmentPoll.POLLMETHOD_Y,
+            AssignmentPoll.POLLMETHOD_N,
+        ):
             self.create_votes_type_votes(data, poll, user.vote_weight, None, None)
-
         elif poll.pollmethod in (
             AssignmentPoll.POLLMETHOD_YN,
             AssignmentPoll.POLLMETHOD_YNA,
         ):
             self.create_votes_types_yn_yna(data, poll, user.vote_weight, None, None)
+        else:
+            raise NotImplementedError(f"The method {poll.pollmethod} is not supported!")
 
     def convert_option_data(self, poll, data):
         poll_options = poll.get_options()

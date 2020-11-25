@@ -221,7 +221,7 @@ export class AssignmentPdfService {
     private getPollResult(votingResult: PollTableData, poll: ViewAssignmentPoll): string {
         const resultList = votingResult.value
             .filter((singleResult: VotingResult) => {
-                if (poll.pollmethod === AssignmentPollMethod.Votes) {
+                if (poll.pollmethod === AssignmentPollMethod.Y) {
                     return singleResult.vote !== 'no' && singleResult.vote !== 'abstain';
                 } else if (poll.pollmethod === AssignmentPollMethod.YN) {
                     return singleResult.vote !== 'abstain';

@@ -319,24 +319,26 @@ class AssignmentPoll(RESTModelMixin, BasePoll):
 
     POLLMETHOD_YN = "YN"
     POLLMETHOD_YNA = "YNA"
-    POLLMETHOD_VOTES = "votes"
+    POLLMETHOD_Y = "Y"
+    POLLMETHOD_N = "N"
     POLLMETHODS = (
-        (POLLMETHOD_VOTES, "Yes per candidate"),
+        (POLLMETHOD_Y, "Yes per candidate"),
+        (POLLMETHOD_N, "No per candidate"),
         (POLLMETHOD_YN, "Yes/No per candidate"),
         (POLLMETHOD_YNA, "Yes/No/Abstain per candidate"),
     )
     pollmethod = models.CharField(max_length=5, choices=POLLMETHODS)
 
+    PERCENT_BASE_Y = "Y"
     PERCENT_BASE_YN = "YN"
     PERCENT_BASE_YNA = "YNA"
-    PERCENT_BASE_VOTES = "votes"
     PERCENT_BASE_VALID = "valid"
     PERCENT_BASE_CAST = "cast"
     PERCENT_BASE_DISABLED = "disabled"
     PERCENT_BASES = (
         (PERCENT_BASE_YN, "Yes/No per candidate"),
         (PERCENT_BASE_YNA, "Yes/No/Abstain per candidate"),
-        (PERCENT_BASE_VOTES, "Sum of votes including general No/Abstain"),
+        (PERCENT_BASE_Y, "Sum of votes including general No/Abstain"),
         (PERCENT_BASE_VALID, "All valid ballots"),
         (PERCENT_BASE_CAST, "All casted ballots"),
         (PERCENT_BASE_DISABLED, "Disabled (no percents)"),
@@ -345,8 +347,8 @@ class AssignmentPoll(RESTModelMixin, BasePoll):
         max_length=8, blank=False, null=False, choices=PERCENT_BASES
     )
 
-    global_abstain = models.BooleanField(default=True)
-    db_amount_global_abstain = models.DecimalField(
+    global_yes = models.BooleanField(default=True)
+    db_amount_global_yes = models.DecimalField(
         null=True,
         blank=True,
         default=Decimal("0"),
@@ -354,8 +356,19 @@ class AssignmentPoll(RESTModelMixin, BasePoll):
         max_digits=15,
         decimal_places=6,
     )
+
     global_no = models.BooleanField(default=True)
     db_amount_global_no = models.DecimalField(
+        null=True,
+        blank=True,
+        default=Decimal("0"),
+        validators=[MinValueValidator(Decimal("-2"))],
+        max_digits=15,
+        decimal_places=6,
+    )
+
+    global_abstain = models.BooleanField(default=True)
+    db_amount_global_abstain = models.DecimalField(
         null=True,
         blank=True,
         default=Decimal("0"),
@@ -372,12 +385,55 @@ class AssignmentPoll(RESTModelMixin, BasePoll):
     class Meta:
         default_permissions = ()
 
+    def get_amount_global_yes(self):
+        if not self.global_yes:
+            return None
+        elif self.type == self.TYPE_ANALOG:
+            return self.db_amount_global_yes
+        elif self.pollmethod in (
+            AssignmentPoll.POLLMETHOD_Y,
+            AssignmentPoll.POLLMETHOD_N,
+        ):
+            return sum(option.yes for option in self.options.all())
+        else:
+            return None
+
+    def set_amount_global_yes(self, value):
+        if self.type != self.TYPE_ANALOG:
+            raise ValueError("Do not set amount_global_yes for non analog polls")
+        self.db_amount_global_yes = value
+
+    amount_global_yes = property(get_amount_global_yes, set_amount_global_yes)
+
+    def get_amount_global_no(self):
+        if not self.global_no:
+            return None
+        elif self.type == self.TYPE_ANALOG:
+            return self.db_amount_global_no
+        elif self.pollmethod in (
+            AssignmentPoll.POLLMETHOD_Y,
+            AssignmentPoll.POLLMETHOD_N,
+        ):
+            return sum(option.no for option in self.options.all())
+        else:
+            return None
+
+    def set_amount_global_no(self, value):
+        if self.type != self.TYPE_ANALOG:
+            raise ValueError("Do not set amount_global_no for non analog polls")
+        self.db_amount_global_no = value
+
+    amount_global_no = property(get_amount_global_no, set_amount_global_no)
+
     def get_amount_global_abstain(self):
         if not self.global_abstain:
             return None
         elif self.type == self.TYPE_ANALOG:
             return self.db_amount_global_abstain
-        elif self.pollmethod == AssignmentPoll.POLLMETHOD_VOTES:
+        elif self.pollmethod in (
+            AssignmentPoll.POLLMETHOD_Y,
+            AssignmentPoll.POLLMETHOD_N,
+        ):
             return sum(option.abstain for option in self.options.all())
         else:
             return None
@@ -390,23 +446,6 @@ class AssignmentPoll(RESTModelMixin, BasePoll):
     amount_global_abstain = property(
         get_amount_global_abstain, set_amount_global_abstain
     )
-
-    def get_amount_global_no(self):
-        if not self.global_no:
-            return None
-        elif self.type == self.TYPE_ANALOG:
-            return self.db_amount_global_no
-        elif self.pollmethod == AssignmentPoll.POLLMETHOD_VOTES:
-            return sum(option.no for option in self.options.all())
-        else:
-            return None
-
-    def set_amount_global_no(self, value):
-        if self.type != self.TYPE_ANALOG:
-            raise ValueError("Do not set amount_global_no for non analog polls")
-        self.db_amount_global_no = value
-
-    amount_global_no = property(get_amount_global_no, set_amount_global_no)
 
     def create_options(self, skip_autoupdate=False):
         related_users = AssignmentRelatedUser.objects.filter(
@@ -435,6 +474,7 @@ class AssignmentPoll(RESTModelMixin, BasePoll):
                 inform_changed_data(self.assignment.list_of_speakers)
 
     def reset(self):
-        self.db_amount_global_abstain = Decimal(0)
+        self.db_amount_global_yes = Decimal(0)
         self.db_amount_global_no = Decimal(0)
+        self.db_amount_global_abstain = Decimal(0)
         super().reset()

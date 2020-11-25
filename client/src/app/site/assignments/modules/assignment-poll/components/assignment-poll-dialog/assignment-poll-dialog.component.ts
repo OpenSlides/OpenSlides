@@ -17,6 +17,7 @@ import {
 } from 'app/site/assignments/models/view-assignment-poll';
 import { BasePollDialogComponent } from 'app/site/polls/components/base-poll-dialog.component';
 import { PollFormComponent } from 'app/site/polls/components/poll-form/poll-form.component';
+import { PollPropertyVerbose } from 'app/site/polls/models/view-base-poll';
 import { ViewUser } from 'app/site/users/models/view-user';
 import { AssignmentPollService } from '../../services/assignment-poll.service';
 
@@ -57,12 +58,14 @@ export class AssignmentPollDialogComponent
 
     public voteValueVerbose = VoteValueVerbose;
     public generalValueVerbose = GeneralValueVerbose;
+    public PollPropertyVerbose = PollPropertyVerbose;
 
     public AssignmentPollMethodVerbose = AssignmentPollMethodVerbose;
     public AssignmentPollPercentBaseVerbose = AssignmentPollPercentBaseVerbose;
 
     public options: OptionsObject;
 
+    public globalYesEnabled: boolean;
     public globalNoEnabled: boolean;
     public globalAbstainEnabled: boolean;
 
@@ -121,15 +124,25 @@ export class AssignmentPollDialogComponent
 
     private setAnalogPollValues(): void {
         const pollmethod = this.pollForm.contentForm.get('pollmethod').value;
+        this.globalYesEnabled = this.pollForm.contentForm.get('global_yes').value;
         this.globalNoEnabled = this.pollForm.contentForm.get('global_no').value;
         this.globalAbstainEnabled = this.pollForm.contentForm.get('global_abstain').value;
-        const analogPollValues: VoteValue[] = ['Y'];
-        if (pollmethod !== AssignmentPollMethod.Votes) {
+
+        const analogPollValues: VoteValue[] = [];
+
+        if (pollmethod === AssignmentPollMethod.N) {
             analogPollValues.push('N');
+        } else {
+            analogPollValues.push('Y');
+
+            if (pollmethod !== AssignmentPollMethod.Y) {
+                analogPollValues.push('N');
+            }
+            if (pollmethod === AssignmentPollMethod.YNA) {
+                analogPollValues.push('A');
+            }
         }
-        if (pollmethod === AssignmentPollMethod.YNA) {
-            analogPollValues.push('A');
-        }
+
         this.analogPollValues = analogPollValues;
     }
 
@@ -139,13 +152,14 @@ export class AssignmentPollDialogComponent
             votesvalid: data.votesvalid,
             votesinvalid: data.votesinvalid,
             votescast: data.votescast,
+            amount_global_yes: data.amount_global_yes,
             amount_global_no: data.amount_global_no,
             amount_global_abstain: data.amount_global_abstain
         };
         for (const option of data.options) {
             const votes: any = {};
             votes.Y = option.yes;
-            if (data.pollmethod !== AssignmentPollMethod.Votes) {
+            if (data.pollmethod !== AssignmentPollMethod.Y) {
                 votes.N = option.no;
             }
             if (data.pollmethod === AssignmentPollMethod.YNA) {
@@ -178,6 +192,7 @@ export class AssignmentPollDialogComponent
                     )
                 }))
             ),
+            amount_global_yes: ['', [Validators.min(LOWEST_VOTE_VALUE)]],
             amount_global_no: ['', [Validators.min(LOWEST_VOTE_VALUE)]],
             amount_global_abstain: ['', [Validators.min(LOWEST_VOTE_VALUE)]],
             // insert all used global fields

@@ -28,7 +28,7 @@
         </p>
 
         <!-- Leftover votes -->
-        <h4 *ngIf="poll.pollmethod === AssignmentPollMethod.Votes && poll.votes_amount > 1">
+        <h4 *ngIf="(poll.isMethodY || poll.isMethodN) && poll.votes_amount > 1">
             {{ 'Available votes' | translate }}:
 
             <b> {{ getVotesAvailable(delegation) }}/{{ poll.votes_amount }} </b>
@@ -39,9 +39,9 @@
             <div *ngIf="poll.type !== PollType.Pseudoanonymous || !option.user_has_voted">
                 <div
                     [ngClass]="{
-                        'yna-grid': poll.pollmethod === AssignmentPollMethod.YNA,
-                        'yn-grid': poll.pollmethod === AssignmentPollMethod.YN,
-                        'single-vote-grid': poll.pollmethod === AssignmentPollMethod.Votes
+                        'yna-grid': poll.isMethodYNA,
+                        'yn-grid': poll.isMethodYN,
+                        'single-vote-grid': poll.isMethodY || poll.isMethodN
                     }"
                 >
                     <div class="vote-candidate-name">
@@ -64,7 +64,7 @@
                         >
                             <mat-icon> {{ action.icon }}</mat-icon>
                         </button>
-                        <span *ngIf="poll.pollmethod !== AssignmentPollMethod.Votes" class="vote-label">
+                        <span *ngIf="poll.isMethodYN || poll.isMethodYNA" class="vote-label">
                             {{ action.label | translate }}
                         </span>
                     </div>
@@ -74,9 +74,26 @@
         </div>
 
         <!-- global no/abstain -->
-        <ng-container *ngIf="poll.pollmethod === AssignmentPollMethod.Votes && (poll.global_no || poll.global_abstain)">
+        <ng-container
+            *ngIf="(poll.isMethodY || poll.isMethodN) && (poll.global_yes || poll.global_no || poll.global_abstain)"
+        >
             <mat-divider></mat-divider>
             <div class="global-option-grid">
+                <div *ngIf="poll.global_yes">
+                    <button
+                        class="vote-button"
+                        mat-raised-button
+                        (click)="saveGlobalVote('Y', delegation)"
+                        [ngClass]="getGlobalYesClass(delegation)"
+                        [disabled]="isDeliveringVote(delegation)"
+                    >
+                        <mat-icon>thumb_up</mat-icon>
+                    </button>
+                    <span class="vote-label">
+                        {{ PollPropertyVerbose.global_yes | translate }}
+                    </span>
+                </div>
+
                 <div *ngIf="poll.global_no">
                     <button
                         class="vote-button"
@@ -85,10 +102,10 @@
                         [ngClass]="getGlobalNoClass(delegation)"
                         [disabled]="isDeliveringVote(delegation)"
                     >
-                        <mat-icon> thumb_down </mat-icon>
+                        <mat-icon>thumb_down</mat-icon>
                     </button>
                     <span class="vote-label">
-                        {{ 'General No' | translate }}
+                        {{ PollPropertyVerbose.global_no | translate }}
                     </span>
                 </div>
 
@@ -100,10 +117,10 @@
                         [ngClass]="getGlobalAbstainClass(delegation)"
                         [disabled]="isDeliveringVote(delegation)"
                     >
-                        <mat-icon> trip_origin</mat-icon>
+                        <mat-icon>trip_origin</mat-icon>
                     </button>
                     <span class="vote-label">
-                        {{ 'General Abstain' | translate }}
+                        {{ PollPropertyVerbose.global_abstain | translate }}
                     </span>
                 </div>
             </div>
@@ -149,7 +166,12 @@
 
 <ng-template #sendNow let-delegation="delegation">
     <div class="centered-button-wrapper">
-        <button mat-flat-button color="accent" (click)="submitVote(delegation)" [disabled]="getVotesCount(delegation) == 0">
+        <button
+            mat-flat-button
+            color="accent"
+            (click)="submitVote(delegation)"
+            [disabled]="getVotesCount(delegation) == 0"
+        >
             <mat-icon> how_to_vote </mat-icon>
             <span>
                 {{ 'Submit vote now' | translate }}

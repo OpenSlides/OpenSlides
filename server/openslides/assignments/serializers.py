@@ -77,6 +77,9 @@ class AssignmentPollSerializer(BasePollSerializer):
     Serializes all polls.
     """
 
+    amount_global_yes = DecimalField(
+        max_digits=15, decimal_places=6, min_value=-2, read_only=True
+    )
     amount_global_no = DecimalField(
         max_digits=15, decimal_places=6, min_value=-2, read_only=True
     )
@@ -92,6 +95,8 @@ class AssignmentPollSerializer(BasePollSerializer):
             "pollmethod",
             "votes_amount",
             "allow_multiple_votes_per_candidate",
+            "global_yes",
+            "amount_global_yes",
             "global_no",
             "amount_global_no",
             "global_abstain",
@@ -111,13 +116,13 @@ class AssignmentPollSerializer(BasePollSerializer):
         Returns None, if the 100-%-base must not be changed, otherwise the correct 100-%-base.
         """
         if pollmethod == AssignmentPoll.POLLMETHOD_YN and onehundred_percent_base in (
-            AssignmentPoll.PERCENT_BASE_VOTES,
+            AssignmentPoll.PERCENT_BASE_Y,
             AssignmentPoll.PERCENT_BASE_YNA,
         ):
             return AssignmentPoll.PERCENT_BASE_YN
         if (
             pollmethod == AssignmentPoll.POLLMETHOD_YNA
-            and onehundred_percent_base == AssignmentPoll.PERCENT_BASE_VOTES
+            and onehundred_percent_base == AssignmentPoll.PERCENT_BASE_Y
         ):
             if old_100_percent_base is None:
                 return AssignmentPoll.PERCENT_BASE_YNA
@@ -129,12 +134,11 @@ class AssignmentPollSerializer(BasePollSerializer):
                     return old_100_percent_base
                 else:
                     return pollmethod
-        if (
-            pollmethod == AssignmentPoll.POLLMETHOD_VOTES
-            and onehundred_percent_base
-            in (AssignmentPoll.PERCENT_BASE_YN, AssignmentPoll.PERCENT_BASE_YNA)
+        if pollmethod == AssignmentPoll.POLLMETHOD_Y and onehundred_percent_base in (
+            AssignmentPoll.PERCENT_BASE_YN,
+            AssignmentPoll.PERCENT_BASE_YNA,
         ):
-            return AssignmentPoll.PERCENT_BASE_VOTES
+            return AssignmentPoll.PERCENT_BASE_Y
         return None
 
 

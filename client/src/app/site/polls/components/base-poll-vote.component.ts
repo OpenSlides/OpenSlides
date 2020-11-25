@@ -10,7 +10,7 @@ import { VotingError, VotingService } from 'app/core/ui-services/voting.service'
 import { VoteValue } from 'app/shared/models/poll/base-vote';
 import { BaseViewComponentDirective } from 'app/site/base/base-view';
 import { ViewUser } from 'app/site/users/models/view-user';
-import { ViewBasePoll } from '../models/view-base-poll';
+import { PollPropertyVerbose, ViewBasePoll } from '../models/view-base-poll';
 
 export interface VoteOption {
     vote?: VoteValue;
@@ -35,6 +35,8 @@ export abstract class BasePollVoteComponentDirective<V extends ViewBasePoll> ext
     protected user: ViewUser;
 
     protected delegations: ViewUser[];
+
+    public PollPropertyVerbose = PollPropertyVerbose;
 
     public constructor(
         title: Title,
@@ -90,7 +92,7 @@ export abstract class BasePollVoteComponentDirective<V extends ViewBasePoll> ext
     }
 
     public getVotingError(user: ViewUser = this.user): string | void {
-        console.log('error ', this.votingService.getVotePermissionErrorVerbose(this.poll, user));
+        console.log('Cannot vote because:', this.votingService.getVotePermissionErrorVerbose(this.poll, user));
         return this.votingService.getVotePermissionErrorVerbose(this.poll, user);
     }
 }

@@ -24,16 +24,18 @@
             </mat-form-field>
 
             <!-- Groups entitled to Vote -->
-            <mat-form-field *ngIf="contentForm.get('type').value && contentForm.get('type').value !== 'analog'">
-                <os-search-value-selector
-                    formControlName="groups_id"
-                    [multiple]="true"
-                    [showChips]="false"
-                    [includeNone]="false"
-                    [placeholder]="PollPropertyVerbose.groups | translate"
-                    [inputListValues]="groupObservable"
-                ></os-search-value-selector>
-            </mat-form-field>
+            <div class="suboption">
+                <mat-form-field *ngIf="contentForm.get('type').value && contentForm.get('type').value !== 'analog'">
+                    <os-search-value-selector
+                        formControlName="groups_id"
+                        [multiple]="true"
+                        [showChips]="false"
+                        [includeNone]="false"
+                        [placeholder]="PollPropertyVerbose.groups | translate"
+                        [inputListValues]="groupObservable"
+                    ></os-search-value-selector>
+                </mat-form-field>
+            </div>
 
             <!-- Poll Methods -->
             <mat-form-field *ngIf="pollMethods">
@@ -50,6 +52,29 @@
             </mat-form-field>
         </ng-container>
 
+        <!-- Amount of Votes and global options -->
+        <div class="suboption" *ngIf="showAmountAndGlobal(data)">
+            <mat-form-field>
+                <input
+                    type="number"
+                    matInput
+                    placeholder="{{ PollPropertyVerbose.votes_amount | translate }}"
+                    formControlName="votes_amount"
+                    min="1"
+                    required
+                />
+            </mat-form-field>
+            <div class="global-options">
+                <mat-checkbox formControlName="global_yes">
+                    {{ PollPropertyVerbose.global_yes | translate }}
+                </mat-checkbox>
+                <mat-checkbox formControlName="global_no">{{ PollPropertyVerbose.global_no | translate }}</mat-checkbox>
+                <mat-checkbox formControlName="global_abstain">
+                    {{ PollPropertyVerbose.global_abstain | translate }}
+                </mat-checkbox>
+            </div>
+        </div>
+
         <!-- 100 Percent Base -->
         <mat-form-field>
             <mat-select
@@ -62,25 +87,5 @@
                 </ng-container>
             </mat-select>
         </mat-form-field>
-
-        <!-- Amount of Votes -->
-        <ng-container
-            *ngIf="contentForm.get('pollmethod').value === 'votes' && (!data || !data.state || data.isCreated)"
-        >
-            <mat-form-field>
-                <input
-                    type="number"
-                    matInput
-                    placeholder="{{ PollPropertyVerbose.votes_amount | translate }}"
-                    formControlName="votes_amount"
-                    min="1"
-                    required
-                />
-            </mat-form-field>
-            <mat-checkbox formControlName="global_no">{{ PollPropertyVerbose.global_no | translate }}</mat-checkbox>
-            <mat-checkbox formControlName="global_abstain">{{
-                PollPropertyVerbose.global_abstain | translate
-            }}</mat-checkbox>
-        </ng-container>
     </form>
 </div>

@@ -17,7 +17,11 @@ class AssignmentAccessPermissions(BaseAccessPermissions):
 class AssignmentPollAccessPermissions(BasePollAccessPermissions):
     base_permission = "assignments.can_see"
     manage_permission = "assignments.can_manage"
-    additional_fields = ["amount_global_no", "amount_global_abstain"]
+    additional_fields = [
+        "amount_global_yes",
+        "amount_global_no",
+        "amount_global_abstain",
+    ]
 
 
 class AssignmentOptionAccessPermissions(BaseOptionAccessPermissions):

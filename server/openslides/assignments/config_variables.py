@@ -14,7 +14,7 @@ def get_config_variables():
     # Voting
     yield ConfigVariable(
         name="assignment_poll_method",
-        default_value=AssignmentPoll.POLLMETHOD_VOTES,
+        default_value=AssignmentPoll.POLLMETHOD_Y,
         input_type="choice",
         label="Default election method",
         choices=tuple(
