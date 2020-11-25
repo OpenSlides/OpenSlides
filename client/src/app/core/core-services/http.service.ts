@@ -159,9 +159,13 @@ export class HttpService {
             } else {
                 const errorList = Object.keys(e.error).map(key => {
                     const capitalizedKey = key.charAt(0).toUpperCase() + key.slice(1);
-                    return `${this.translate.instant(capitalizedKey)}: ${this.processErrorDetailResponse(
-                        e.error[key]
-                    )}`;
+                    let detail = e.error[key];
+                    if (detail instanceof Array) {
+                        detail = detail.join(' ');
+                    } else {
+                        detail = this.processErrorDetailResponse(detail);
+                    }
+                    return `${this.translate.instant(capitalizedKey)}: ${detail}`;
                 });
                 error = errorList.join(', ');
             }

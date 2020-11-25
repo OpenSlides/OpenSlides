@@ -256,6 +256,16 @@ class ConfigHandler:
         """
         return ConfigStore.get_collection_string()
 
+    def remove_group_id_from_all_group_configs(self, id: int) -> None:
+        for config_variable in self.config_variables.values():
+            if config_variable.input_type == "groups":
+                value = self[config_variable.name]
+                if isinstance(value, list) and id in value:
+                    value = [x for x in value if x != id]
+                    db_value = ConfigStore.objects.get(key=config_variable.name)
+                    db_value.value = value
+                    db_value.save()
+
 
 config = ConfigHandler()
 """

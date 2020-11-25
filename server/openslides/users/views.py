@@ -657,6 +657,7 @@ class GroupViewSet(ModelViewSet):
 
         # Delete the group
         self.perform_destroy(instance)
+        config.remove_group_id_from_all_group_configs(instance.id)
 
         # Get the updated user data from the DB.
         affected_users = User.objects.filter(pk__in=affected_users_ids)
