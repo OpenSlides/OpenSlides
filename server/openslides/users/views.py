@@ -349,6 +349,8 @@ class UserViewSet(ModelViewSet):
           field: 'is_active' | 'is_present' | 'is_committee'
           value: True|False
         }
+
+        Is_active and is_committee will not be settable for non-default auth type users.
         """
         ids = request.data.get("user_ids")
         self.assert_list_of_ints(ids)
@@ -361,9 +363,12 @@ class UserViewSet(ModelViewSet):
         if not isinstance(value, bool):
             raise ValidationError({"detail": "value must be true or false"})
 
-        users = User.objects.filter(auth_type="default").filter(pk__in=ids)
+        users = User.objects.filter(pk__in=ids)
+        if field != "is_present":
+            users = users.filter(auth_type="default")
         if field == "is_active":
             users = users.exclude(pk=request.user.id)
+
         for user in users:
             setattr(user, field, value)
             user.save()
