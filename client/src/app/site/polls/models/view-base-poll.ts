@@ -1,3 +1,5 @@
+import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
+
 import { BasePoll } from 'app/shared/models/poll/base-poll';
 import { BaseProjectableViewModel } from 'app/site/base/base-projectable-view-model';
 import { BaseViewModel } from 'app/site/base/base-view-model';
@@ -24,29 +26,29 @@ export const PollStateVerbose = {
 };
 
 export const PollStateChangeActionVerbose = {
-    1: 'Reset',
-    2: 'Start voting',
-    3: 'Stop voting',
-    4: 'Publish'
+    1: _('Reset'),
+    2: _('Start voting'),
+    3: _('Stop voting'),
+    4: _('Publish')
 };
 
 export const PollTypeVerbose = {
-    analog: 'analog',
-    named: 'nominal',
-    pseudoanonymous: 'non-nominal'
+    analog: _('analog'),
+    named: _('nominal'),
+    pseudoanonymous: _('non-nominal')
 };
 
 export const PollPropertyVerbose = {
     majority_method: 'Required majority',
     onehundred_percent_base: '100% base',
-    type: 'Voting type',
-    pollmethod: 'Voting method',
+    type: _('Voting type'),
+    pollmethod: _('Voting method'),
     state: 'State',
-    groups: 'Entitled to vote',
-    votes_amount: 'Amount of votes',
-    global_yes: 'General Yes',
-    global_no: 'General No',
-    global_abstain: 'General Abstain'
+    groups: _('Entitled to vote'),
+    votes_amount: _('Amount of votes'),
+    global_yes: _('General approval'),
+    global_no: _('General rejection'),
+    global_abstain: _('General abstain')
 };
 
 export const MajorityMethodVerbose = {

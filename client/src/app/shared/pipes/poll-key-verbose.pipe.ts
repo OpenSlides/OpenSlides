@@ -1,5 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
+import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
+
 const PollValues = {
     votesvalid: 'Valid votes',
     votesinvalid: 'Invalid votes',
@@ -9,9 +11,9 @@ const PollValues = {
     yes: 'Yes',
     no: 'No',
     abstain: 'Abstain',
-    amount_global_yes: 'General Yes',
-    amount_global_no: 'General No',
-    amount_global_abstain: 'General Abstain'
+    amount_global_yes: _('General approval'),
+    amount_global_no: _('General rejection'),
+    amount_global_abstain: _('General abstain')
 };
 
 /**

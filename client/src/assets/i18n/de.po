@@ -1112,7 +1112,7 @@ msgstr "Teilnehmernummer eingeben"
 
 msgid "Enter your email to send the password reset link"
 msgstr ""
-"Geben Sie Ihre E-Mail-Adresse ein um eine Link zum Zurücksetzen des "
+"Geben Sie Ihre E-Mail-Adresse ein, um einen Link zum Zurücksetzen des "
 "Passworts zu erhalten."
 
 msgid "Entitled to vote"
@@ -1194,7 +1194,7 @@ msgid "Favorites"
 msgstr "Favoriten"
 
 msgid "File information"
-msgstr "Dateiinformationen"
+msgstr "Dateiinfos"
 
 msgid "File name"
 msgstr "Dateiname"
@@ -1253,11 +1253,14 @@ msgstr "Geschlecht"
 msgid "General"
 msgstr "Allgemein"
 
-msgid "General Abstain"
+msgid "General abstain"
 msgstr "Generelle Enthaltung"
 
-msgid "General No"
-msgstr "Generelles Nein"
+msgid "General approval"
+msgstr "Generelle Zustimmung"
+
+msgid "General rejection"
+msgstr "Generelle Ablehnung"
 
 msgid "Generate new passwords"
 msgstr "Neue Passwörter generieren"
@@ -1809,6 +1812,9 @@ msgstr "Keine Einträge ausgewählte"
 
 msgid "No motion block set"
 msgstr "kein Antragsblock gesetzt"
+
+msgid "No per candidate"
+msgstr "Nein pro Kandidat"
 
 msgid "No personal note"
 msgstr "Keine persönliche Notiz"
@@ -2776,6 +2782,9 @@ msgstr ""
 
 msgid "The list of speakers is closed."
 msgstr "Die Redeliste ist geschlossen."
+
+msgid "The list of speakers is open."
+msgstr "Die Redeliste ist geöffnet."
 
 msgid "The live conference is already running in your OpenSlides session."
 msgstr "Die Livekonferenz läuft bereits in Ihrer OpenSlides-Sitzung."
