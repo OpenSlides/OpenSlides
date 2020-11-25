@@ -301,16 +301,6 @@ _('Finished');
 _('In the election process');
 
 // Voting strings
-_('Voting type');
-_('analog');
-_('nominal');
-_('non-nominal');
-_('Start voting');
-_('Stop voting');
-_('Publish');
-_('Entitled to vote');
-_('Voting method');
-_('Amount of votes');
 _('Motion votes');
 _('Ballots');
 

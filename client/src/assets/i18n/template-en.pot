@@ -1182,10 +1182,13 @@ msgstr ""
 msgid "General"
 msgstr ""
 
-msgid "General Abstain"
+msgid "General abstain"
 msgstr ""
 
-msgid "General No"
+msgid "General approval"
+msgstr ""
+
+msgid "General rejection"
 msgstr ""
 
 msgid "Generate new passwords"
@@ -1734,6 +1737,9 @@ msgid "No items selected"
 msgstr ""
 
 msgid "No motion block set"
+msgstr ""
+
+msgid "No per candidate"
 msgstr ""
 
 msgid "No personal note"
@@ -2673,6 +2679,9 @@ msgid "The link is broken. Please contact your system administrator."
 msgstr ""
 
 msgid "The list of speakers is closed."
+msgstr ""
+
+msgid "The list of speakers is open."
 msgstr ""
 
 msgid "The live conference is already running in your OpenSlides session."
