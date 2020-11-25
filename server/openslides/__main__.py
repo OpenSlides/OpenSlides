@@ -215,10 +215,6 @@ def start(args):
     # A manual given environment variable will be overwritten
     setup_django_settings_module(settings_path, local_installation=local_installation)
     django.setup()
-    from django.conf import settings
-
-    if args.debug_email:
-        settings.EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
     # Migrate database
     call_command("migrate")
@@ -232,7 +228,7 @@ def start(args):
     # Start the built-in webserver
     #
     # Use flag --noreload to tell Django not to reload the server.
-    # Therefor we have to set the keyword noreload to False because Django
+    # Therefore we have to set the keyword noreload to False because Django
     # parses this directly to the use_reloader keyword.
     #
     # Use flag --insecure to serve static files even if DEBUG is False.
@@ -241,6 +237,7 @@ def start(args):
         f"{args.host}:{args.port}",
         noreload=False,  # Means True, see above.
         insecure=True,
+        debug_email=args.debug_email,
     )
 
 
