@@ -17,12 +17,11 @@
  *
  * @throws ActionException
  */
-handle_request(payload: Action[], user_id: Id): ActionsResponse
+handle_request(payload: Action[], user_id: Id, atomic?: boolean): ActionsResponse
 
 interface Action {
     action: string;
     data: object[];
-    atomic?: boolean;
 }
 
 interace ActionsResponse {
