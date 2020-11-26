@@ -122,12 +122,30 @@ def get_config_variables():
     )
 
     yield ConfigVariable(
+        name="general_system_conference_open_microphone",
+        default_value=False,
+        input_type="boolean",
+        label="Automatically open the microphone for new conference speakers",
+        weight=143,
+        subgroup="Live conference",
+    )
+
+    yield ConfigVariable(
+        name="general_system_conference_open_video",
+        default_value=False,
+        input_type="boolean",
+        label="Automatically open the web cam for new conference speakers",
+        weight=144,
+        subgroup="Live conference",
+    )
+
+    yield ConfigVariable(
         name="general_system_conference_auto_connect_next_speakers",
         default_value=0,
         input_type="integer",
         label="Number of next speakers automatically connecting to the live conference",
         help_text="Live conference has to be active. Choose 0 to disable auto connect.",
-        weight=143,
+        weight=145,
         subgroup="Live conference",
     )
 
