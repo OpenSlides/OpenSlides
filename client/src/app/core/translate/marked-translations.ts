@@ -40,6 +40,8 @@ _('Livestream poster image url');
 _('Shows if livestream is not started. Recommended image format: 500x281px, PNG or JPG');
 _('Number of next speakers automatically connecting to the live conference');
 _('Live conference has to be active. Choose 0 to disable auto connect.');
+_('Automatically open the microphone for new conference speakers');
+_('Automatically open the web cam for new conference speakers');
 _('Show this text on the login page');
 _('OpenSlides Theme');
 _('Export');
