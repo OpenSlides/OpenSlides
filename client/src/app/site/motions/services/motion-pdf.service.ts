@@ -370,13 +370,12 @@ export class MotionPdfService {
 
         // voting results
         if (motion.polls.length && (!infoToExport || infoToExport.includes('polls'))) {
-            const column1 = [];
-            const column2 = [];
-            const column3 = [];
             motion.polls.forEach(poll => {
                 if (poll.hasVotes) {
                     const tableData = this.motionPollService.generateTableData(poll);
-
+                    const column1 = [];
+                    const column2 = [];
+                    const column3 = [];
                     tableData.forEach(votingResult => {
                         const votingOption = this.translate.instant(
                             this.pollKeyVerbose.transform(votingResult.votingOption)
@@ -397,33 +396,33 @@ export class MotionPdfService {
                         }
                         column3.push(resultValue);
                     });
+                    metaTableBody.push([
+                        {
+                            text: poll.title,
+                            style: 'boldText'
+                        },
+                        {
+                            columns: [
+                                {
+                                    text: column1.join('\n'),
+                                    width: 'auto'
+                                },
+                                {
+                                    text: column2.join('\n'),
+                                    width: 'auto',
+                                    alignment: 'right'
+                                },
+                                {
+                                    text: column3.join('\n'),
+                                    width: 'auto',
+                                    alignment: 'right'
+                                }
+                            ],
+                            columnGap: 7
+                        }
+                    ]);
                 }
             });
-            metaTableBody.push([
-                {
-                    text: `${this.translate.instant('Voting result')}:`,
-                    style: 'boldText'
-                },
-                {
-                    columns: [
-                        {
-                            text: column1.join('\n'),
-                            width: 'auto'
-                        },
-                        {
-                            text: column2.join('\n'),
-                            width: 'auto',
-                            alignment: 'right'
-                        },
-                        {
-                            text: column3.join('\n'),
-                            width: 'auto',
-                            alignment: 'right'
-                        }
-                    ],
-                    columnGap: 7
-                }
-            ]);
         }
 
         // summary of change recommendations (for motion diff version only)
