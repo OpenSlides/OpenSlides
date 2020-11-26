@@ -126,6 +126,7 @@ def get_config_variables():
         default_value=False,
         input_type="boolean",
         label="Automatically open the microphone for new conference speakers",
+        help_text="Server settings required to activate Jitsi Meet integration.",
         weight=143,
         subgroup="Live conference",
     )
@@ -135,6 +136,7 @@ def get_config_variables():
         default_value=False,
         input_type="boolean",
         label="Automatically open the web cam for new conference speakers",
+        help_text="Server settings required to activate Jitsi Meet integration.",
         weight=144,
         subgroup="Live conference",
     )

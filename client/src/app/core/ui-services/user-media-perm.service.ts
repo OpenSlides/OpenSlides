@@ -7,7 +7,7 @@ import { OverlayService } from './overlay.service';
 
 const givePermsMessage = _('Please allow OpenSlides to access your microphone and/or camera');
 const accessDeniedMessage = _('Media access is denied');
-const noMicMessage = _('Your device has no Microphone');
+const noMicMessage = _('Your device has no microphone');
 @Injectable({
     providedIn: 'root'
 })

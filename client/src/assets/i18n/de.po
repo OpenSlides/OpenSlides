@@ -409,6 +409,12 @@ msgstr "Nachfragen, voreingestellt ja"
 msgid "Attachments"
 msgstr "Anhänge"
 
+msgid "Automatically open the microphone for new conference speakers"
+msgstr "Mikrofon automatisch öffnen beim Eintreten in die Livekonferenz"
+
+msgid "Automatically open the web cam for new conference speakers"
+msgstr "Kamera automatisch öffnen beim Eintreten in die Livekonferenz"
+
 msgid "Autopilot"
 msgstr "Autopilot"
 
@@ -1549,6 +1555,11 @@ msgstr "Listenansicht"
 msgid "Live conference"
 msgstr "Livekonferenz"
 
+msgid "Live conference has to be active. Choose 0 to disable auto connect."
+msgstr ""
+"Die Livekonferenz muss aktiv sein. Wählen Sie 0 um den automatischen "
+"Verbindungsaufbau zu deaktivieren."
+
 msgid "Livestream"
 msgstr "Livestream"
 
@@ -1581,6 +1592,9 @@ msgstr "Als persönlichen Favorit markieren"
 
 msgid "Mark speaker"
 msgstr "Redner/in markieren"
+
+msgid "Media access is denied"
+msgstr "Medienzugriff verweigert"
 
 msgid "Media file"
 msgstr "Mediendatei"
@@ -1895,6 +1909,12 @@ msgstr "Anzahl der dargestellten letzten Redner/innen auf dem Projektor"
 msgid "Number of minimal digits for identifier"
 msgstr "Minimale Anzahl an Ziffern im Bezeichner"
 
+msgid ""
+"Number of next speakers automatically connecting to the live conference"
+msgstr ""
+"Anzahl der nächsten Redner/innen, die automatisch mit der Livekonferenz "
+"verbunden werden"
+
 msgid "Number of persons to be elected"
 msgstr "Anzahl der zu wählenden Personen"
 
@@ -2094,6 +2114,9 @@ msgstr "Persönliche Notizen"
 
 msgid "Phase"
 msgstr "Phase"
+
+msgid "Please allow OpenSlides to access your microphone and/or camera"
+msgstr "Bitte erlauben Sie jetzt den Zugriff auf Mikrofon und Kamera."
 
 msgid "Please enter a name for the new directory:"
 msgstr "Bitte geben Sie einen Namen für das neue Verzeichnis ein:"
@@ -3244,6 +3267,9 @@ msgstr "Ihr Browser wird von OpenSlides nicht unterstützt!"
 
 msgid "Your decision cannot be changed afterwards."
 msgstr "Ihre Stimmabgabe kann anschließend nicht mehr geändert werden."
+
+msgid "Your device has no microphone"
+msgstr "Es wurde kein Mikrofon an ihrem Gerät gefunden."
 
 msgid "Your input does not match the following structure: \"hh:mm\""
 msgstr "Ihre Eingabe entspricht nicht der folgenden Struktur: \"hh:mm\""
