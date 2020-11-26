@@ -187,8 +187,8 @@ export class JitsiComponent extends BaseViewComponentDirective implements OnInit
         startAudioOnly: false,
         // allows jitsi on mobile devices
         disableDeepLinking: true,
-        startWithAudioMuted: this.startWithMicMuted,
-        startWithVideoMuted: this.startWithVideoMuted,
+        startWithAudioMuted: false,
+        startWithVideoMuted: false,
         useNicks: true,
         enableWelcomePage: false,
         enableUserRolesBasedOnToken: false,
@@ -345,12 +345,14 @@ export class JitsiComponent extends BaseViewComponentDirective implements OnInit
                 this.videoStreamUrl = url;
                 this.configsLoaded.resolve();
             }),
-            this.configService.get<boolean>('general_system_conference_open_microphon').subscribe(open => {
+            this.configService.get<boolean>('general_system_conference_open_microphone').subscribe(open => {
                 this.startWithMicMuted = !open;
+                this.configOverwrite.startWithAudioMuted = this.startWithMicMuted;
                 console.log('this.startWithMicMuted ', this.startWithMicMuted);
             }),
             this.configService.get<boolean>('general_system_conference_open_video').subscribe(open => {
                 this.startWithVideoMuted = !open;
+                this.configOverwrite.startWithVideoMuted = this.startWithVideoMuted;
                 console.log('this.startWithVideoMuted ', this.startWithVideoMuted);
             })
         );
