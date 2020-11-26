@@ -90,7 +90,7 @@
 
 <mat-menu #assignmentMenu="matMenu">
     <div *ngIf="!isMultiSelect">
-        <button mat-menu-item *osPerms="'assignment.can_manage'" (click)="toggleMultiSelect()">
+        <button mat-menu-item *osPerms="'assignments.can_manage'" (click)="toggleMultiSelect()">
             <mat-icon>library_add</mat-icon>
             <span>{{ 'Multiselect' | translate }}</span>
         </button>
@@ -119,7 +119,6 @@
         </button>
         <mat-divider></mat-divider>
         <button
-            *osPerms="'assignment.can_manage'"
             mat-menu-item
             [disabled]="!selectedRows.length"
             (click)="downloadAssignmentButton(selectedRows)"
@@ -131,7 +130,7 @@
         <button
             mat-menu-item
             class="red-warning-text"
-            *osPerms="'assignment.can_manage'"
+            *osPerms="'assignments.can_manage'"
             [disabled]="!selectedRows.length"
             (click)="deleteSelected()"
         >
