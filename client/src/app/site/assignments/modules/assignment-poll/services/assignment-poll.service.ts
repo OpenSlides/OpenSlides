@@ -117,19 +117,30 @@ export class AssignmentPollService extends PollService {
         const tableData: PollTableData[] = poll.options
             .sort((a, b) => {
                 if (this.sortByVote) {
+                    let compareValue;
                     if (poll.pollmethod === AssignmentPollMethod.N) {
-                        // most no on top:
-                        // return b.no - a.no;
                         // least no on top:
-                        return a.no - b.no;
+                        compareValue = a.no - b.no;
                     } else {
-                        return b.yes - a.yes;
+                        // most yes on top
+                        compareValue = b.yes - a.yes;
                     }
+
+                    // Equal votes, sort by weight to have equal votes correctly sorted.
+                    if (compareValue === 0 && a.weight && b.weight) {
+                        // least weight on top
+                        return a.weight - b.weight;
+                    } else {
+                        return compareValue;
+                    }
+                }
+
+                // PollData does not have weight, we need to rely on the order of things.
+                if (a.weight && b.weight) {
+                    // least weight on top
+                    return a.weight - b.weight;
                 } else {
-                    // PollData does not have weight, we need to rely on the order of things.
-                    if (a.weight && b.weight) {
-                        return b.weight - a.weight;
-                    }
+                    return 0;
                 }
             })
             .map((candidate: ViewAssignmentOption) => {
