@@ -56,14 +56,15 @@ interface ActionError {
 /**
  * JSON resonse with a status code of !=200. If a specific action raised the error,
  * use the action_error_index and action_payload_error_index to indicate the errored
- * action and payload. If there were general errors, both indices must be omitted.
+ * action and payload. If there were general errors, both indices must be omitted or null.
  *
  * If the atomic flag was true in the request, it is not allowed to send
- * action-specific errors with this exception. It must be responded through ActionsResponse.
+ * action-specific errors with this exception. It must be responded with an
+ * ActionError through ActionsResponse (resulting in a status code of 200).
  */
 Exception ActionException {
     success: false;
     message: string;
-    action_error_index: number;
-    action_payload_error_index: number;
+    action_error_index?: number;
+    action_payload_error_index?: number;
 }
