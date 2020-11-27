@@ -44,7 +44,7 @@ export class VjsPlayerComponent implements OnInit, OnDestroy {
 
     @Input()
     public set videoUrl(value: string) {
-        this._videoUrl = value;
+        this._videoUrl = value.trim();
         this.checkVideoUrl();
     }
 
