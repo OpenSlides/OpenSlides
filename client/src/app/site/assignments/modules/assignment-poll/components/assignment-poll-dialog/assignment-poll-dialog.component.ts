@@ -19,7 +19,7 @@ import { BasePollDialogComponent } from 'app/site/polls/components/base-poll-dia
 import { PollFormComponent } from 'app/site/polls/components/poll-form/poll-form.component';
 import { PollPropertyVerbose } from 'app/site/polls/models/view-base-poll';
 import { ViewUser } from 'app/site/users/models/view-user';
-import { AssignmentPollService } from '../../services/assignment-poll.service';
+import { AssignmentPollService, UnknownUserLabel } from '../../services/assignment-poll.service';
 
 type OptionsObject = { user_id: number; user: ViewUser }[];
 
@@ -34,6 +34,7 @@ type OptionsObject = { user_id: number; user: ViewUser }[];
 export class AssignmentPollDialogComponent
     extends BasePollDialogComponent<ViewAssignmentPoll, AssignmentPollService>
     implements OnInit {
+    public unknownUserLabel = UnknownUserLabel;
     /**
      * The summary values that will have fields in the dialog
      */

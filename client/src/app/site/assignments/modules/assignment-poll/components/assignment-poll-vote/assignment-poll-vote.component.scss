@@ -43,7 +43,8 @@
 .vote-candidate-name {
     grid-area: name;
     display: flex;
-    span {
+    span,
+    i {
         margin-top: auto;
         margin-bottom: auto;
     }

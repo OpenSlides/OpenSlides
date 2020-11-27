@@ -72,15 +72,18 @@ export class AssignmentPollComponent
         this.descriptionForm = this.formBuilder.group({
             description: this.poll ? this.poll.description : ''
         });
-
-        console.log('the poll: ', this.poll);
     }
 
     /**
      * Print the PDF of this poll with the corresponding options and numbers
      */
     public printBallot(): void {
-        this.pdfService.printBallots(this.poll);
+        try {
+            this.pdfService.printBallots(this.poll);
+        } catch (e) {
+            console.error(e);
+            this.raiseError(e);
+        }
     }
 
     public openVotingWarning(): void {

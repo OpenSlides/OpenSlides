@@ -141,9 +141,14 @@ export class AssignmentPollPdfService extends PollPdfService {
             return a.weight - b.weight;
         });
         const resultObject = candidates.map(cand => {
-            return poll.pollmethod === AssignmentPollMethod.Y
-                ? this.createBallotOption(cand.user.full_name)
-                : this.createYNBallotEntry(cand.user.full_name, poll.pollmethod);
+            const candidateName = cand.user?.full_name;
+            if (candidateName) {
+                return poll.pollmethod === AssignmentPollMethod.Y
+                    ? this.createBallotOption(candidateName)
+                    : this.createYNBallotEntry(candidateName, poll.pollmethod);
+            } else {
+                throw new Error(this.translate.instant('This ballot contains deleted users.'));
+            }
         });
 
         if (poll.pollmethod === AssignmentPollMethod.Y) {

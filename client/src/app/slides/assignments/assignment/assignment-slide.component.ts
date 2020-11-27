@@ -26,4 +26,8 @@ export class AssignmentSlideComponent extends BaseSlideComponentDirective<Assign
     public constructor() {
         super();
     }
+
+    public getUserName(relatedUser: { user: string }): string {
+        return relatedUser.user;
+    }
 }
