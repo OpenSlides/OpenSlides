@@ -115,7 +115,8 @@ export class MotionPdfService {
         }
 
         const title = this.createTitle(motion, crMode, lineLength);
-        const sequential = !infoToExport || infoToExport.includes('id');
+        const sequential =
+            infoToExport?.includes('id') ?? this.configService.instant<boolean>('motions_show_sequential_numbers');
         const subtitle = this.createSubtitle(motion, sequential);
 
         motionPdfContent = [title, subtitle];
