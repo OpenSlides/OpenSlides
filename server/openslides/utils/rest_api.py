@@ -51,6 +51,7 @@ from .cache import element_cache
 
 
 __all__ = [
+    "APIException",
     "detail_route",
     "DecimalField",
     "list_route",
