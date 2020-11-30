@@ -36,6 +36,7 @@ from ..utils.auth import (
 from ..utils.autoupdate import AutoupdateElement, inform_changed_data, inform_elements
 from ..utils.cache import element_cache
 from ..utils.rest_api import (
+    APIException,
     ModelViewSet,
     Response,
     SimpleMetadata,
@@ -858,9 +859,8 @@ class WhoAmIDataView(APIView):
                 self.request.user.get_collection_string(), user_id
             )
             if user_full_data is None:
-                return Response(
-                    {"detail": "Cache offline, could not fetch user"}, status=500
-                )
+                raise APIException(f"Could not find user {user_id}", 500)
+
             auth_type = user_full_data["auth_type"]
             user_data = async_to_sync(element_cache.restrict_element_data)(
                 user_full_data, self.request.user.get_collection_string(), user_id
