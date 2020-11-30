@@ -6,6 +6,7 @@ import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import { OperatorService } from 'app/core/core-services/operator.service';
 import { AssignmentPollRepositoryService } from 'app/core/repositories/assignments/assignment-poll-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { VotingPrivacyWarningComponent } from 'app/shared/components/voting-privacy-warning/voting-privacy-warning.component';
@@ -53,6 +54,19 @@ export class AssignmentPollComponent
         return this.descriptionForm.get('description').value !== this.poll.description;
     }
 
+    public get showPoll(): boolean {
+        if (this.poll) {
+            if (
+                this.operator.hasPerms(this.permission.assignmentsCanManage) ||
+                this.poll.isPublished ||
+                (this.poll.isEVoting && !this.poll.isCreated)
+            ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public constructor(
         titleService: Title,
         matSnackBar: MatSnackBar,
@@ -63,7 +77,8 @@ export class AssignmentPollComponent
         pollDialog: AssignmentPollDialogService,
         private pollService: AssignmentPollService,
         private formBuilder: FormBuilder,
-        private pdfService: AssignmentPollPdfService
+        private pdfService: AssignmentPollPdfService,
+        private operator: OperatorService
     ) {
         super(titleService, matSnackBar, translate, dialog, promptService, repo, pollDialog);
     }
