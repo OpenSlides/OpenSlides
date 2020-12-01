@@ -1,0 +1,44 @@
+<ng-container *ngIf="poll">
+    <!-- Candidates -->
+    <small class="meta-info-left subtitle" *ngIf="poll.options?.length && showCandidates">
+        <div>
+            {{ 'Candidates' | translate }}:
+            <ol>
+                <li *ngFor="let option of poll.options">{{ getOptionTitle(option) | translate }}</li>
+            </ol>
+        </div>
+        <div *ngIf="hasGlobalOption">
+            {{ 'Options' | translate }}:
+            <ul>
+                <li *ngIf="poll.global_yes">{{ pollPropertyVerbose.global_yes | translate }}</li>
+                <li *ngIf="poll.global_no">{{ pollPropertyVerbose.global_no | translate }}</li>
+                <li *ngIf="poll.global_abstain">{{ pollPropertyVerbose.global_abstain | translate }}</li>
+            </ul>
+        </div>
+    </small>
+
+    <div class="meta-info-right subtitle">
+        <!-- Groups who can vote -->
+        <small *ngIf="poll.groups && poll.type && poll.type !== 'analog'">
+            {{ 'Entitled to vote' | translate }}:
+
+            <span *ngFor="let group of poll.groups; let i = index">
+                {{ group.getTitle() | translate }}<span *ngIf="i < poll.groups.length - 1">, </span>
+            </span>
+            <br />
+        </small>
+
+        <!-- Voting method -->
+        <small *ngIf="poll.pollmethod">
+            <span> {{ 'Voting method' | translate }}: {{ poll.pollmethodVerbose | translate }} </span>
+            <!-- amount of votes -->
+            <span *ngIf="poll.votes_amount > 1"> ({{ poll.votes_amount }} {{ 'Votes' | translate }})</span>
+            <br />
+        </small>
+
+        <!-- 100% base -->
+        <small *ngIf="poll.onehundred_percent_base">
+            {{ '100% base' | translate }}: {{ poll.percentBaseVerbose | translate }}
+        </small>
+    </div>
+</ng-container>

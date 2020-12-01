@@ -102,19 +102,7 @@
     </div>
 
     <!-- Meta Infos -->
-    <div *ngIf="poll" class="assignment-poll-meta">
-        <small *ngIf="poll.groups && poll.type && poll.type !== 'analog'">
-            {{ 'Groups' | translate }}:
-
-            <span *ngFor="let group of poll.groups; let i = index">
-                {{ group.getTitle() | translate }}<span *ngIf="i < poll.groups.length - 1">, </span>
-            </span>
-        </small>
-
-        <small *ngIf="poll.onehundred_percent_base">
-            {{ '100% base' | translate }}: {{ poll.percentBaseVerbose | translate }}
-        </small>
-    </div>
+    <os-assignment-poll-meta-info [poll]="poll" [showCandidates]="showCandidatesInMetaInfo"></os-assignment-poll-meta-info>
 </ng-template>
 
 <!-- More Menu -->

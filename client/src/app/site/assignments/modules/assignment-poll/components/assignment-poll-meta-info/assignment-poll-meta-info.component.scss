@@ -1,0 +1,23 @@
+:host {
+    width: 100%;
+    padding-top: 20px;
+    display: grid;
+    grid-template-columns: 2fr auto;
+}
+
+.meta-info-left {
+    ul,
+    ol {
+        margin: 0;
+        padding-left: 2em;
+    }
+
+    div + div {
+        margin-top: 1em;
+    }
+}
+
+.meta-info-right {
+    text-align: right;
+    align-self: flex-end;
+}

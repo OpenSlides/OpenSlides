@@ -74,17 +74,12 @@
         <!-- The Vote -->
         <os-assignment-poll-vote *ngIf="poll.canBeVotedFor()" [poll]="poll"></os-assignment-poll-vote>
 
-        <!-- More-Button -->
-        <div class="poll-detail-button-wrapper">
-            <a
-                mat-icon-button
-                routerLink="/assignments/polls/{{ poll.id }}"
-                matTooltip="{{ 'More' | translate }}"
-                *ngIf="poll.isPublished"
-            >
-                <mat-icon class="small-icon"> visibility </mat-icon>
-            </a>
-        </div>
+        <!-- Meta-Info -->
+        <os-assignment-poll-meta-info
+            [poll]="poll"
+            [showCandidates]="showCandidatesInMetaInfo"
+            *ngIf="showMetaInfo"
+        ></os-assignment-poll-meta-info>
     </div>
 </mat-card>
 
