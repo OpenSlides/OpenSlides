@@ -3,12 +3,20 @@
         <video #videoPlayer class="video-js" controls preload="none"></video>
     </div>
     <div *ngIf="!isUrlOnline" class="is-offline-wrapper">
-        <p>
-            {{ 'Currently no livestream available.' | translate }}
-        </p>
-        <button mat-raised-button (click)="checkVideoUrl()" color="primary">
-            <mat-icon>refresh</mat-icon>&nbsp;
-            <span>{{ 'Refresh' | translate }}</span>
-        </button>
+        <ng-container *ngIf="!posterUrl">
+            <p>
+                {{ 'Currently no livestream available.' | translate }}
+            </p>
+            <button mat-raised-button (click)="checkVideoUrl()" color="primary">
+                <mat-icon>refresh</mat-icon>&nbsp;
+                <span>{{ 'Refresh' | translate }}</span>
+            </button>
+        </ng-container>
+        <div *ngIf="posterUrl" class="offlineposter">
+            <button mat-mini-fab (click)="checkVideoUrl()" color="accent" matTooltip="{{ 'Refresh' | translate }}">
+                <mat-icon>refresh</mat-icon>
+            </button>
+            <img [src]="posterUrl" />
+        </div>
     </div>
 </div>
