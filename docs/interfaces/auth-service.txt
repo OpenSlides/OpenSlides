@@ -1,27 +1,8 @@
 // Description of the authentication-service
 // It is listening on port '9004'
-// Routes with a prefix 'api' are protected routes, that can only accessed with a valid ticket.
+// Routes with a prefix 'secure' are protected routes, that can only accessed with a valid ticket.
+// That are routes, that call internally 'authenticate'
 
-Interface Token {
-    payload: {
-        // The lifetime of the Token. The date in unix seconds of the expiration.
-        expiresAt: date,
-        // The corresponding userId of the requesting client.
-        userId: number,
-        // The id of the current session.
-        sessionId: string
-    },
-    signature: string
-}
-
-Interface Cookie {
-    // The id for the session corresponding to the client, who has signed in.
-    sessionId: string,
-    // The lifetime of a cookie. Date of expiration in unix seconds.
-    exp: number,
-    // Date of creation of a token in unix seconds.
-    iat: number
-}
 
 // The properties of this interface have to be passed as HTTP-headers in a request. 
 Interface Ticket {
@@ -32,8 +13,8 @@ Interface Ticket {
     }
 }
 
-// This describes, which information is received by requesting `api/authenticate`.
-interface LoginInformation {
+// This describes, which information is received by requesting `secure/authenticate`.
+Interface LoginInformation {
     userId: number;
     sessionId: string;
 }
@@ -42,18 +23,7 @@ interface LoginInformation {
 * Describes an http-response, which is sent back to any requesting service.
 */
 Interface Response <T> {
-    // Optional headers, which are set in an http-response
-    httpHeaders: {
-        // Authentication is passed, if a new access-token is returned.
-        // It is written with a capital 'A', so the value of this header is 'Authentication: "..."'.
-        authentication?: string,
-        // Cookies, like one containing 'refreshId=(Cookie as string)', if a user signs in, are passed. 
-        // Lifetime of one cookie is the browser-session. 
-        // Flags for the cookies are: HttpOnly, Secure
-        cookies: {
-            [name: string]: string
-        }
-    }
+    set-authentication-header: string // If an old access-token is expired and refreshed, it is set as authentication-header.
     // This determines if a request was successful.
     success: boolean,
     // This sends back a describing message. For example, the reason of a failured request.
@@ -65,12 +35,15 @@ Interface Response <T> {
 /**
 * The credentials for login/authentication are not valid.
 */
-Exception InvalidCredentials
+Exception InvalidCredentials {
+    success: false,
+    message: string
+}
 
 /**
 * POST to /system/auth/login
 *
-* The client can login with its credentials for authentication.
+* A user can login with its credentials for authentication.
 * If they are correct, the service answers with a signed Token and sets a cookie, containing the sessionId of the client.
 *
 * If they aren't correct, the service throws an error.
@@ -80,10 +53,7 @@ Exception InvalidCredentials
 login (username: string, password: string): Response<void>;
 
 /**
-* POST to /system/auth/who-am-i
-*
-* An example for any protected route. If the client requests protected resources, it has to 
-* send the signed Token and the cookie, it receives from the service at login, to the server.
+* POST to /internal/auth/authenticate
 *
 * This will be a library to act as part of the auth-service. The other services have not to 
 * request the auth-service for authentication. Instead, they use this library-function in their own
@@ -93,53 +63,54 @@ login (username: string, password: string): Response<void>;
 *
 * @throws InvalidCredentials
 */
-who-am-i (ticket: Ticket): Response<void>;
+authenticate (ticket: Ticket): Response<LoginInformation>;
 
 /**
-* POST to /internal/auth/api/authenticate
+* POST to /system/auth/who-am-i
 *
 * A request to get knowledge about themselves. This information is contained in the payload of 
 * a Token. So, this function handles the refreshing of a Token.
+* Expects a jwt as string in a cookie (called 'refreshId').
 *
-* Sends back a new Token.
+* Sends back a new Token (passed as http-header).
 *
-* Throws an exception, if the cookie is empty or the transmitted sessionId is wrong.
+* Throws an exception, if the cookie is empty, the transmitted sessionId is wrong or the signature is wrong.
 *
 * @throws InvalidCredentials
 */
-api/authenticate (ticket: Ticket): Response<LoginInformation>;
+who-am-i (refreshId: string): Response<LoginInformation>;
 
 /**
-* DELETE to /system/auth/api/clear-session-by-id
+* POST to /system/auth/secure/clear-session-by-id
 *
 * Function to sign out one specific client from a user by its corresponding session-id.
 */
-api/clear-session-by-id (sessionId: string, ticket: Ticket): Response<void> publishes LogoutSessionEvent;
+secure/clear-session-by-id (sessionId: string, ticket: Ticket): Response<void> publishes LogoutSessionEvent;
 
 /**
-* POST to /system/auth/api/clear-all-session-except-themselves
+* POST to /system/auth/secure/clear-all-session-except-themselves
 *
 * Function to kill all current opened sessions from one user except the one, which is requesting.
 */ 
-api/clear-all-sessions-except-themselves (sessionId: string, ticket: Ticket): Response<void> publishes LogoutSessionEvent;
+secure/clear-all-sessions-except-themselves (sessionId: string, ticket: Ticket): Response<void> publishes LogoutSessionEvent;
 
 /**
-* POST to /system/auth/api/logout
+* POST to /system/auth/secure/logout
 *
 * The service deletes the session depending on the given Token.
 *
 * @throws InvalidCredentials
 */
-api/logout (ticket: Ticket): Response<void> publishes LogoutSessionEvent;
+secure/logout (ticket: Ticket): Response<void> publishes LogoutSessionEvent;
 
 /**
-* GET to system/auth/api/list-sessions
+* GET to system/auth/secure/list-sessions
 *
 * Returns all currently active sessions.
 *
 * @returns an array containing currently active sessions.
 */
-api/list-sessions (ticket: Ticket): Response<{sessions: string[]}>;
+secure/list-sessions (ticket: Ticket): Response<{sessions: string[]}>;
 
 /**
 * POST to /internal/auth/hash
