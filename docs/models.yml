@@ -23,8 +23,19 @@
 #       `motion/category_id`. The type indicates that there are many
 #       motion ids.
 #     - Generic relations: The difference to non-generic relations is that you have a
-#       list of possible collections. Therefor we split the simple notation up to the
-#       properties `collection` and `field`.
+#       list of possible collections. Therefore we split the simple notation up to the
+#       properties `collections` and `field`, if each collection has the same field.
+#       If the different collections have different fields, you can give multiple
+#       `collection` and `field`. E.g.:
+#        to:
+#          collections:
+#            - collection: motion
+#              field: option_ids
+#            - collection: user
+#              field:
+#                name: option_$_ids
+#                type: structured-relation
+#                replacement: meeting_id
 #     - on_delete: This fields determines what should happen with the foreign model if
 #       this model gets deleted. Possible values are:
 #           - SET_NULL (default): delete the id from the foreign key
@@ -173,54 +184,36 @@ user:
     fields:
       type: relation-list
       to: motion_submitter/user_id
-  motion_poll_voted_$_ids:
+  poll_voted_$_ids:
     type: template
     replacement: meeting_id
     fields:
       type: relation-list
-      to: motion_poll/voted_ids
-  motion_vote_$_ids:
+      to: poll/voted_ids
+  option_$_ids:
     type: template
     replacement: meeting_id
     fields:
       type: relation-list
-      to: motion_vote/user_id
-  motion_delegated_vote_$_ids:
+      to: option/content_object_id
+  vote_$_ids:
     type: template
     replacement: meeting_id
     fields:
       type: relation-list
-      to: motion_vote/delegated_user_id
+      to: vote/user_id
+  vote_delegated_vote_$_ids:
+    type: template
+    replacement: meeting_id
+    fields:
+      type: relation-list
+      to: vote/delegated_user_id
   assignment_candidate_$_ids:
     type: template
     replacement: meeting_id
     fields:
       type: relation-list
       to: assignment_candidate/user_id
-  assignment_poll_voted_$_ids:
-    type: template
-    replacement: meeting_id
-    fields:
-      type: relation-list
-      to: assignment_poll/voted_ids
-  assignment_option_$_ids:
-    type: template
-    replacement: meeting_id
-    fields:
-      type: relation-list
-      to: assignment_option/user_id
-  assignment_vote_$_ids:
-    type: template
-    replacement: meeting_id
-    fields:
-      type: relation-list
-      to: assignment_vote/user_id
-  assignment_delegated_vote_$_ids:
-    type: template
-    replacement: meeting_id
-    fields:
-      type: relation-list
-      to: assignment_vote/delegated_user_id
   vote_delegated_$_to_id:
     type: template
     replacement: meeting_id
@@ -487,6 +480,7 @@ meeting:
   motions_export_submitter_recommendation: boolean
   motions_export_follow_recommendation: boolean
 
+  # Motion poll
   motion_poll_ballot_paper_selection:
     type: string
     enum:
@@ -532,6 +526,7 @@ meeting:
   assignemnts_export_title: string
   assignments_export_preamble: string
 
+  # Assignment polls
   assignment_poll_ballot_paper_selection:
     type: string
     enum:
@@ -549,9 +544,31 @@ meeting:
     type: relation-list
     to: group/used_as_assignment_poll_default_id
 
+  # Polls
+  poll_ballot_paper_selection:
+    type: string
+    enum:
+    - NUMBER_OF_DELEGATES
+    - NUMBER_OF_ALL_PARTICIPANTS
+    - CUSTOM_NUMBER
+  poll_ballot_paper_number: number
+  poll_sort_poll_result_by_votes: boolean
+  poll_default_type: string
+  poll_default_method: string
+  poll_default_100_percent_base: string
+  poll_default_majority_method: string
+  poll_default_group_ids:
+    type: relation-list
+    to: group/used_as_poll_default_id
+
+  # Relations
   projector_ids:
     type: relation-list
     to: projector/meeting_id
+    on_delete: CASCADE
+  projection_ids:
+    type: relation-list
+    to: projection/meeting_id
     on_delete: CASCADE
   projectiondefault_ids:
     type: relation-list
@@ -576,6 +593,10 @@ meeting:
   list_of_speakers_ids:
     type: relation-list
     to: list_of_speakers/meeting_id
+    on_delete: CASCADE
+  speaker_ids:
+    type: relation-list
+    to: speaker/meeting_id
     on_delete: CASCADE
   topic_ids:
     type: relation-list
@@ -613,38 +634,6 @@ meeting:
     type: relation-list
     to: motion_statute_paragraph/meeting_id
     on_delete: CASCADE
-  motion_poll_ids:
-    type: relation-list
-    to: motion_poll/meeting_id
-    on_delete: CASCADE
-  assignment_ids:
-    type: relation-list
-    to: assignment/meeting_id
-    on_delete: CASCADE
-  assignment_poll_ids:
-    type: relation-list
-    to: assignment_poll/meeting_id
-    on_delete: CASCADE
-  personal_note_ids:
-    type: relation-list
-    to: personal_note/meeting_id
-    on_delete: CASCADE
-  projection_ids:
-    type: relation-list
-    to: projection/meeting_id
-    on_delete: CASCADE
-  speaker_ids:
-    type: relation-list
-    to: speaker/meeting_id
-    on_delete: CASCADE
-  motion_option_ids:
-    type: relation-list
-    to: motion_option/meeting_id
-    on_delete: CASCADE
-  motion_vote_ids:
-    type: relation-list
-    to: motion_vote/meeting_id
-    on_delete: CASCADE
   motion_comment_ids:
     type: relation-list
     to: motion_comment/meeting_id
@@ -661,17 +650,29 @@ meeting:
     type: relation-list
     to: motion_state/meeting_id
     on_delete: CASCADE
+  poll_ids:
+    type: relation-list
+    to: poll/meeting_id
+    on_delete: CASCADE
+  option_ids:
+    type: relation-list
+    to: option/meeting_id
+    on_delete: CASCADE
+  vote_ids:
+    type: relation-list
+    to: vote/meeting_id
+    on_delete: CASCADE
+  assignment_ids:
+    type: relation-list
+    to: assignment/meeting_id
+    on_delete: CASCADE
   assignment_candidate_ids:
     type: relation-list
     to: assignment_candidate/meeting_id
     on_delete: CASCADE
-  assignment_option_ids:
+  personal_note_ids:
     type: relation-list
-    to: assignment_option/meeting_id
-    on_delete: CASCADE
-  assignment_vote_ids:
-    type: relation-list
-    to: assignment_vote/meeting_id
+    to: personal_note/meeting_id
     on_delete: CASCADE
 
   # Logos and Fonts
@@ -778,13 +779,9 @@ group:
     type: relation-list
     to: motion_comment_section/write_group_ids
     equal_fields: meeting_id
-  motion_poll_ids:
+  poll_ids:
     type: relation-list
-    to: motion_poll/entitled_group_ids
-    equal_fields: meeting_id
-  assignment_poll_ids:
-    type: relation-list
-    to: assignment_poll/entitled_group_ids
+    to: poll/entitled_group_ids
     equal_fields: meeting_id
   used_as_motion_poll_default_id:
     type: relation
@@ -792,6 +789,9 @@ group:
   used_as_assignment_poll_default_id:
     type: relation
     to: meeting/assignment_poll_default_group_ids
+  used_as_poll_default_id:
+    type: relation
+    to: meeting/poll_default_group_ids
   meeting_id:
     type: relation
     to: meeting/group_ids
@@ -813,7 +813,7 @@ personal_note:
   content_object_id:
     type: generic-relation
     to:
-      collection:
+      collections:
         - motion
       field: personal_note_ids
     equal_fields: meeting_id
@@ -831,7 +831,7 @@ tag:
   tagged_ids:
     type: generic-relation-list
     to:
-      collection:
+      collections:
         - agenda_item
         - assignment
         - motion
@@ -878,7 +878,7 @@ agenda_item:
   content_object_id:
     type: generic-relation
     to:
-      collection:
+      collections:
         - motion
         - motion_block
         - assignment
@@ -918,7 +918,7 @@ list_of_speakers:
   content_object_id:
     type: generic-relation
     to:
-      collection:
+      collections:
         - motion
         - motion_block
         - assignment
@@ -998,6 +998,11 @@ topic:
     type: relation
     to: list_of_speakers/content_object_id
     required: true
+    on_delete: CASCADE
+    equal_fields: meeting_id
+  option_ids:
+    type: relation-list
+    to: option/content_object_id
     on_delete: CASCADE
     equal_fields: meeting_id
   tag_ids:
@@ -1084,7 +1089,7 @@ motion:
   recommendation_extension_reference_ids:
     type: generic-relation-list
     to:
-      collection:
+      collections:
         - motion
       field: referenced_in_motion_recommendation_extension_ids
     equal_fields: meeting_id
@@ -1116,7 +1121,12 @@ motion:
     equal_fields: meeting_id
   poll_ids:
     type: relation-list
-    to: motion_poll/motion_id
+    to: poll/content_object_id
+    on_delete: CASCADE
+    equal_fields: meeting_id
+  option_ids:
+    type: relation-list
+    to: option/content_object_id
     on_delete: CASCADE
     equal_fields: meeting_id
   change_recommendation_ids:
@@ -1463,26 +1473,91 @@ motion_statute_paragraph:
     to: meeting/motion_statute_paragraph_ids
     required: true
 
-motion_poll:
+poll:
   id: number
-  pollmethod: string
-  state: number
-  type: string
-  title: string
-  onehundred_percent_base: string
-  majority_method: string
+  description: string
+  title:
+    type: string
+    required: true
+  type:
+    type: string
+    required: true
+    enum:
+      - analog
+      - named
+      - pseudoanonymous
+  pollmethod:
+    type: string
+    required: true
+    enum:
+      - Y
+      - YN
+      - YNA
+      - N
+  state:
+    type: number
+    default: 1
+    enum:
+      - 1
+      - 2
+      - 3
+      - 4
+  min_votes_amount:
+    type: number
+    default: 1
+  max_votes_amount:
+    type: number
+    default: 1
+  allow_multiple_votes_per_candidate:
+    type: boolean
+    default: false
+  global_yes:
+    type: boolean
+    default: false
+  global_no:
+    type: boolean
+    default: false
+  global_abstain:
+    type: boolean
+    default: false
+  onehundred_percent_base:
+    type: string
+    required: true
+    enum:
+      - Y
+      - YN
+      - YNA
+      - valid
+      - cast
+      - disabled
+  majority_method:
+    type: string
+    required: true
+    enum:
+      - simple
+      - two_thirds
+      - three_quarters
+      - disabled
+  amount_global_yes: decimal(6)
+  amount_global_no: decimal(6)
+  amount_global_abstain: decimal(6)
   votesvalid: decimal(6)
   votesinvalid: decimal(6)
   votescast: decimal(6)
   user_has_voted: boolean  # This is user specific and set during restriction
+  user_has_voted_for_delegations: number[]  # This is user specific and set during restriction
 
-  motion_id:
-    type: relation
-    to: motion/poll_ids
+  content_object_id:  # Note: must not be set - it is allowed to have standalone polls
+    type: generic-relation
+    to:
+      collections:
+        - motion
+        - assignment
+      field: poll_ids
     equal_fields: meeting_id
   option_ids:
     type: relation-list
-    to: motion_option/poll_id
+    to: option/poll_id
     on_delete: CASCADE
     equal_fields: meeting_id
   voted_ids:
@@ -1490,12 +1565,12 @@ motion_poll:
     to:
       collection: user
       field:
-        name: motion_poll_voted_$_ids
+        name: poll_voted_$_ids
         type: structured-relation
         replacement: meeting_id
   entitled_group_ids:
     type: relation-list
-    to: group/motion_poll_ids
+    to: group/poll_ids
     equal_fields: meeting_id
   projection_ids:
     type: relation-list
@@ -1507,43 +1582,63 @@ motion_poll:
     equal_fields: meeting_id
   meeting_id:
     type: relation
-    to: meeting/motion_poll_ids
+    to: meeting/poll_ids
 
-motion_option:
+option:
   id: number
+  weight:
+    type: number
+    default: 10000
+  text: HTMLStrict
   yes: decimal(6)
   no: decimal(6)
   abstain: decimal(6)
 
   poll_id:
     type: relation
-    to: motion_poll/option_ids
+    to: poll/option_ids
     equal_fields: meeting_id
+    required: true
   vote_ids:
     type: relation-list
-    to: motion_vote/option_id
+    to: vote/option_id
     on_delete: CASCADE
+    equal_fields: meeting_id
+  content_object_id:
+    type: generic-relation
+    to:
+      collections:  # Now, we have multiple models to vote about.
+        - collection: motion
+          field: option_ids
+        - collection: topic
+          field: option_ids
+        - collection: user
+          field:
+            name: option_$_ids
+            type: structured-relation
+            replacement: meeting_id
     equal_fields: meeting_id
   meeting_id:
     type: relation
-    to: meeting/motion_option_ids
+    to: meeting/option_ids
     required: true
 
-motion_vote:
+vote:
   id: number
   weight: decimal(6)
   value: string
 
   option_id:
     type: relation
-    to: motion_option/vote_ids
+    to: option/vote_ids
     equal_fields: meeting_id
+    required: true
   user_id:
     type: relation
     to:
       collection: user
       field:
-        name: motion_vote_$_ids
+        name: vote_$_ids
         type: structured-relation
         replacement: meeting_id
   delegated_user_id:
@@ -1551,12 +1646,12 @@ motion_vote:
     to:
       collection: user
       field:
-        name: motion_delegated_vote_$_ids
+        name: vote_delegated_vote_$_ids
         type: structured-relation
         replacement: meeting_id
   meeting_id:
     type: relation
-    to: meeting/motion_vote_ids
+    to: meeting/vote_ids
     required: true
 
 assignment:
@@ -1586,7 +1681,7 @@ assignment:
     equal_fields: meeting_id
   poll_ids:
     type: relation-list
-    to: assignment_poll/assignment_id
+    to: poll/content_object_id
     on_delete: CASCADE
     equal_fields: meeting_id
   agenda_item_id:
@@ -1642,120 +1737,6 @@ assignment_candidate:
   meeting_id:
     type: relation
     to: meeting/assignment_candidate_ids
-    required: true
-
-assignment_poll:
-  id: number
-  description: string
-  pollmethod: string
-  votes_amount: number
-  allow_multiple_votes_per_candidate: boolean
-  global_abstain: boolean
-  global_no: boolean
-  amount_global_abstain: decimal(6)
-  amount_global_no: decimal(6)
-  state: number
-  title: string
-  type: string
-  onehundred_percent_base: string
-  majority_method: string
-  votescast: decimal(6)
-  votesinvalid: decimal(6)
-  votesvalid: decimal(6)
-  user_has_voted: boolean  # This is user specific and set during restriction
-
-  assignment_id:
-    type: relation
-    to: assignment/poll_ids
-    equal_fields: meeting_id
-  voted_ids:
-    type: relation-list
-    to:
-      collection: user
-      field:
-        name: assignment_poll_voted_$_ids
-        type: structured-relation
-        replacement: meeting_id
-  entitled_group_ids:
-    type: relation-list
-    to: group/assignment_poll_ids
-    equal_fields: meeting_id
-  option_ids:
-    type: relation-list
-    to: assignment_option/poll_id
-    on_delete: CASCADE
-    equal_fields: meeting_id
-  projection_ids:
-    type: relation-list
-    to: projection/element_id
-    equal_fields: meeting_id
-  current_projector_ids:
-    type: relation-list
-    to: projector/current_element_ids
-    equal_fields: meeting_id
-  meeting_id:
-    type: relation
-    to: meeting/assignment_poll_ids
-
-assignment_option:
-  id: number
-  yes: decimal(6)
-  no: decimal(6)
-  abstain: decimal(6)
-  weight:
-    type: number
-    default: 10000
-
-  poll_id:
-    type: relation
-    to: assignment_poll/option_ids
-    equal_fields: meeting_id
-  user_id:
-    type: relation
-    to:
-      collection: user
-      field:
-        name: assignment_option_$_ids
-        type: structured-relation
-        replacement: meeting_id
-  vote_ids:
-    type: relation-list
-    to: assignment_vote/option_id
-    on_delete: CASCADE
-    equal_fields: meeting_id
-  meeting_id:
-    type: relation
-    to: meeting/assignment_option_ids
-    required: true
-
-assignment_vote:
-  id: number
-  value: string
-  weight: decimal(6)
-
-  option_id:
-    type: relation
-    to: assignment_option/vote_ids
-    equal_fields: meeting_id
-  user_id:
-    type: relation
-    to:
-      collection: user
-      field:
-        name: assignment_vote_$_ids
-        type: structured-relation
-        replacement: meeting_id
-  delegated_user_id:
-    type: relation
-    to:
-      collection: user
-      field:
-        name: assignment_delegated_vote_$_ids
-        type: structured-relation
-        replacement: meeting_id
-  meeting_id:
-    type: relation
-    to: meeting/assignment_vote_ids
     required: true
 
 # Mediafiles are delivered by the mediafile server with the URL
@@ -1816,7 +1797,7 @@ mediafile:
   attachment_ids:
     type: generic-relation-list
     to:
-      collection:
+      collections:
         - motion
         - topic
         - assignment
@@ -1880,7 +1861,7 @@ projector:
   current_element_ids:
     type: generic-relation-list
     to:
-      collection:
+      collections:
         - motion
         - mediafile
         - list_of_speakers
@@ -1889,8 +1870,7 @@ projector:
         - agenda_item
         - topic
         - user
-        - assignment_poll
-        - motion_poll
+        - poll
         - projector_message
         - projector_countdown
       field: current_projector_ids
@@ -1939,7 +1919,7 @@ projection:
   element_id:
     type: generic-relation
     to:
-      collection:
+      collections:
         - motion
         - mediafile
         - list_of_speakers
@@ -1948,8 +1928,7 @@ projection:
         - agenda_item
         - topic
         - user
-        - assignment_poll
-        - motion_poll
+        - poll
         - projector_message
         - projector_countdown
       field: projection_ids

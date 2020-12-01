@@ -53,18 +53,16 @@
         "supported_motion_$_ids": [],
         "submitted_motion_$_ids": ["1"],
         "submitted_motion_$1_ids": [1, 2, 3, 4],
-        "motion_poll_voted_$_ids": [],
-        "motion_vote_$_ids": [],
         "assignment_candidate_$_ids": ["1"],
         "assignment_candidate_$1_ids": [1],
-        "assignment_poll_voted_$_ids": ["1"],
-        "assignment_poll_voted_$1_ids": [3],
-        "assignment_option_$_ids": ["1"],
-        "assignment_option_$1_ids": [1, 2],
-        "assignment_vote_$_ids": ["1"],
-        "assignment_vote_$1_ids": [4],
-        "assignment_delegated_vote_$_ids": ["1"],
-        "assignment_delegated_vote_$1_ids": [4]
+        "poll_voted_$_ids": ["1"],
+        "poll_voted_$1_ids": [5],
+        "option_$_ids": ["1"],
+        "option_$1_ids": [3, 4],
+        "vote_$_ids": ["1"],
+        "vote_$1_ids": [7],
+        "vote_delegated_vote_$_ids": ["1"],
+        "vote_delegated_vote_$1_ids": [7]
     },
     {
         "id": 2,
@@ -103,14 +101,13 @@
         "personal_note_$_ids": [],
         "supported_motion_$_ids": [],
         "submitted_motion_$_ids": [],
-        "motion_poll_voted_$_ids": [],
-        "motion_vote_$_ids": [],
+        "poll_voted_$_ids": [],
         "assignment_candidate_$_ids": ["1"],
         "assignment_candidate_$1_ids": [3, 5],
-        "assignment_poll_voted_$_ids": [],
-        "assignment_option_$_ids": ["1"],
-        "assignment_option_$1_ids": [6],
-        "assignment_vote_$_ids": []
+        "option_$_ids": ["1"],
+        "option_$1_ids": [6, 8],
+        "vote_$_ids": [],
+        "vote_delegated_vote_$_ids": []
     },
     {
         "id": 3,
@@ -149,14 +146,13 @@
         "supported_motion_$_ids": ["1"],
         "supported_motion_$1_ids": [3],
         "submitted_motion_$_ids": [],
-        "motion_poll_voted_$_ids": [],
-        "motion_vote_$_ids": [],
+        "poll_voted_$_ids": [],
         "assignment_candidate_$_ids": ["1"],
         "assignment_candidate_$1_ids": [2, 4],
-        "assignment_poll_voted_$_ids": [],
-        "assignment_option_$_ids": ["1"],
-        "assignment_option_$1_ids": [3, 4, 5],
-        "assignment_vote_$_ids": []
+        "option_$_ids": ["1"],
+        "option_$1_ids": [5, 7],
+        "vote_$_ids": [],
+        "vote_delegated_vote_$_ids": []
     }],
 "role": [
     {
@@ -288,6 +284,9 @@
 
         "assignments_export_title": "Elections",
         "assignments_export_preamble": "",
+
+        "assignment_poll_ballot_paper_selection": "CUSTOM_NUMBER",
+        "assignment_poll_ballot_paper_number": 8,
         "assignment_poll_add_candidates_to_list_of_speakers": true,
         "assignment_poll_sort_poll_result_by_votes": true,
         "assignment_poll_default_type": "nominal",
@@ -296,25 +295,40 @@
         "assignment_poll_default_majority_method": "simple",
         "assignment_poll_default_group_ids": [3, 5],
 
+        "poll_ballot_paper_selection": "CUSTOM_NUMBER",
+        "poll_ballot_paper_number": 8,
+        "poll_sort_poll_result_by_votes": true,
+        "poll_default_type": "nominal",
+        "poll_default_method": "votes",
+        "poll_default_100_percent_base": "valid",
+        "poll_default_majority_method": "simple",
+        "poll_default_group_ids": [3],
+
         "projector_ids": [1, 2],
-        "projectiondefault_ids": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
+        "projection_ids": [1, 2, 4, 6],
+        "projectiondefault_ids": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
         "projector_message_ids": [1],
         "projector_countdown_ids": [1],
         "tag_ids": [1, 2, 3],
         "agenda_item_ids": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
         "list_of_speakers_ids": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
+        "speaker_ids": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
         "topic_ids": [1, 2, 3, 4, 5, 6, 7, 8],
         "group_ids": [1, 2, 3, 5, 6],
         "mediafile_ids": [1, 2, 3],
         "motion_ids": [1, 2, 3, 4],
+        "motion_submitter_ids": [1, 2, 3, 4],
         "motion_comment_section_ids": [1],
         "motion_category_ids": [1, 2],
         "motion_block_ids": [1],
         "motion_workflow_ids": [1, 2],
         "motion_statute_paragraph_ids": [],
-        "motion_poll_ids": [1, 2],
+        "poll_ids": [1, 2, 3, 4, 5],
+        "option_ids": [1, 2, 3, 4, 5, 6, 7, 8],
+        "vote_ids": [1, 2, 3, 4, 5, 6, 7],
         "assignment_ids": [1, 2],
-        "assignment_poll_ids": [1, 2, 3],
+        "assignment_candidate_ids": [1, 2, 3, 4, 5],
+        "personal_note_ids": [1],
 
         "logo_$_id": ["web_header"],
         "logo_$web_header_id": 3,
@@ -323,7 +337,7 @@
         "committee_id": 1,
         "default_meeting_for_committee_id": 1,
         "present_user_ids": [1],
-        "temorary_user_ids": [],
+        "temporary_user_ids": [],
         "guest_ids": [3],
         "user_ids": [1, 2, 3],
         "reference_projector_id": 2,
@@ -352,10 +366,10 @@
         "mediafile_access_group_ids": [],
         "read_comment_section_ids": [],
         "write_comment_section_ids": [],
-        "motion_poll_ids": [],
-        "assignment_poll_ids": [],
+        "poll_ids": [],
         "used_as_motion_poll_default_id": null,
         "used_as_assignment_poll_default_id": null,
+        "used_as_poll_default_id": null,
         "meeting_id": 1
     },
     {
@@ -370,10 +384,10 @@
         "mediafile_inherited_access_group_ids": [1, 3],
         "read_comment_section_ids": [],
         "write_comment_section_ids": [],
-        "motion_poll_ids": [],
-        "assignment_poll_ids": [3],
+        "poll_ids": [5],
         "used_as_motion_poll_default_id": 1,
         "used_as_assignment_poll_default_id": null,
+        "used_as_poll_default_id": null,
         "meeting_id": 1
     },
     {
@@ -409,10 +423,10 @@
         "mediafile_inherited_access_group_ids": [1, 3],
         "read_comment_section_ids": [1],
         "write_comment_section_ids": [1],
-        "motion_poll_ids": [],
-        "assignment_poll_ids": [],
+        "poll_ids": [],
         "used_as_motion_poll_default_id": 1,
         "used_as_assignment_poll_default_id": 1,
+        "used_as_poll_default_id": 1,
         "meeting_id": 1
     },
     {
@@ -437,10 +451,10 @@
         "mediafile_access_group_ids": [],
         "read_comment_section_ids": [],
         "write_comment_section_ids": [],
-        "motion_poll_ids": [],
-        "assignment_poll_ids": [],
+        "poll_ids": [],
         "used_as_motion_poll_default_id": null,
         "used_as_assignment_poll_default_id": 1,
+        "used_as_poll_default_id": null,
         "meeting_id": 1
     },
     {
@@ -469,10 +483,10 @@
         "mediafile_access_group_ids": [],
         "read_comment_section_ids": [1],
         "write_comment_section_ids": [1],
-        "motion_poll_ids": [],
-        "assignment_poll_ids": [],
+        "poll_ids": [],
         "used_as_motion_poll_default_id": null,
         "used_as_assignment_poll_default_id": null,
+        "used_as_poll_default_id": null,
         "meeting_id": 1
     }],
 "personal_note": [
@@ -517,7 +531,7 @@
         "is_internal": false,
         "is_hidden": false,
         "duration": null,
-        "weight": 1000,
+        "weight": 2,
         "level": 0,
 
         "content_object_id": "topic/1",
@@ -537,7 +551,7 @@
         "is_internal": true,
         "is_hidden": false,
         "duration": null,
-        "weight": 1001,
+        "weight": 4,
         "level": 1,
 
         "content_object_id": "assignment/2",
@@ -557,7 +571,7 @@
         "is_internal": false,
         "is_hidden": false,
         "duration": null,
-        "weight": 1001,
+        "weight": 6,
         "level": 0,
 
         "content_object_id": "topic/2",
@@ -577,7 +591,7 @@
         "is_internal": true,
         "is_hidden": false,
         "duration": null,
-        "weight": 1002,
+        "weight": 8,
         "level": 0,
 
         "content_object_id": "topic/3",
@@ -597,7 +611,7 @@
         "is_internal": true,
         "is_hidden": false,
         "duration": null,
-        "weight": 1003,
+        "weight": 10,
         "level": 0,
 
         "content_object_id": "topic/4",
@@ -617,7 +631,7 @@
         "is_internal": false,
         "is_hidden": false,
         "duration": null,
-        "weight": 1004,
+        "weight": 12,
         "level": 0,
 
         "content_object_id": "topic/5",
@@ -637,7 +651,7 @@
         "is_internal": false,
         "is_hidden": false,
         "duration": null,
-        "weight": 1005,
+        "weight": 14,
         "level": 0,
 
         "content_object_id": "topic/6",
@@ -657,7 +671,7 @@
         "is_internal": false,
         "is_hidden": false,
         "duration": null,
-        "weight": 1006,
+        "weight": 16,
         "level": 0,
 
         "content_object_id": "topic/7",
@@ -677,7 +691,7 @@
         "is_internal": false,
         "is_hidden": true,
         "duration": null,
-        "weight": 1007,
+        "weight": 18,
         "level": 0,
 
         "content_object_id": "topic/8",
@@ -697,7 +711,7 @@
         "is_internal": false,
         "is_hidden": false,
         "duration": null,
-        "weight": 10000,
+        "weight": 20,
         "level": 0,
 
         "content_object_id": "motion/1",
@@ -717,7 +731,7 @@
         "is_internal": true,
         "is_hidden": false,
         "duration": null,
-        "weight": 10000,
+        "weight": 22,
         "level": 0,
 
         "content_object_id": "motion/2",
@@ -737,7 +751,7 @@
         "is_internal": true,
         "is_hidden": false,
         "duration": null,
-        "weight": 10000,
+        "weight": 24,
         "level": 0,
 
         "content_object_id": "assignment/1",
@@ -757,7 +771,7 @@
         "is_internal": true,
         "is_hidden": false,
         "duration": null,
-        "weight": 10000,
+        "weight": 26,
         "level": 0,
 
         "content_object_id": "motion/3",
@@ -777,7 +791,7 @@
         "is_internal": true,
         "is_hidden": false,
         "duration": null,
-        "weight": 10000,
+        "weight": 28,
         "level": 0,
 
         "content_object_id": "motion/4",
@@ -797,7 +811,7 @@
         "is_internal": true,
         "is_hidden": false,
         "duration": null,
-        "weight": 10000,
+        "weight": 30,
         "level": 0,
 
         "content_object_id": "motion_block/1",
@@ -1255,6 +1269,8 @@
         "submitter_ids": [1],
         "supporter_ids": [],
         "poll_ids": [1, 2],
+        "option_$_ids": ["1"],
+        "option_$1_ids": [1, 2],
         "change_recommendation_ids": [],
         "statute_paragraph_id": null,
         "comment_ids": [1],
@@ -1299,6 +1315,7 @@
         "submitter_ids": [2],
         "supporter_ids": [],
         "poll_ids": [],
+        "option_$_ids": [],
         "change_recommendation_ids": [],
         "statute_paragraph_id": null,
         "comment_ids": [],
@@ -1343,6 +1360,7 @@
         "submitter_ids": [3],
         "supporter_ids": [3],
         "poll_ids": [],
+        "option_$_ids": [],
         "change_recommendation_ids": [5],
         "statute_paragraph_id": null,
         "comment_ids": [],
@@ -1387,6 +1405,7 @@
         "submitter_ids": [4],
         "supporter_ids": [],
         "poll_ids": [],
+        "option_$_ids": [],
         "change_recommendation_ids": [4],
         "statute_paragraph_id": null,
         "comments": [],
@@ -1538,9 +1557,9 @@
         "previous_state_ids": [],
         "motion_ids": [1, 2, 3],
         "motion_recommendation_ids": [],
-        "meeting_id": 1,
         "workflow_id": 1,
-        "first_state_of_workflow_id": 1
+        "first_state_of_workflow_id": 1,
+        "meeting_id": 1
     },
     {
         "id": 2,
@@ -1560,9 +1579,9 @@
         "previous_state_ids": [1],
         "motion_ids": [],
         "motion_recommendation_ids": [],
-        "meeting_id": 1,
         "workflow_id": 1,
-        "first_state_of_workflow_id": null
+        "first_state_of_workflow_id": null,
+        "meeting_id": 1
     },
     {
         "id": 3,
@@ -1582,9 +1601,9 @@
         "previous_state_ids": [1],
         "motion_ids": [],
         "motion_recommendation_ids": [],
-        "meeting_id": 1,
         "workflow_id": 1,
-        "first_state_of_workflow_id": null
+        "first_state_of_workflow_id": null,
+        "meeting_id": 1
     },
     {
         "id": 4,
@@ -1604,9 +1623,9 @@
         "previous_state_ids": [1],
         "motion_ids": [],
         "motion_recommendation_ids": [],
-        "meeting_id": 1,
         "workflow_id": 1,
-        "first_state_of_workflow_id": null
+        "first_state_of_workflow_id": null,
+        "meeting_id": 1
     },
     {
         "id": 5,
@@ -1626,9 +1645,9 @@
         "previous_state_ids": [],
         "motion_ids": [],
         "motion_recommendation_ids": [],
-        "meeting_id": 1,
         "workflow_id": 2,
-        "first_state_of_workflow_id": 2
+        "first_state_of_workflow_id": 2,
+        "meeting_id": 1
     },
     {
         "id": 6,
@@ -1648,9 +1667,9 @@
         "previous_state_ids": [5],
         "motion_ids": [4],
         "motion_recommendation_ids": [],
-        "meeting_id": 1,
         "workflow_id": 2,
-        "first_state_of_workflow_id": null
+        "first_state_of_workflow_id": null,
+        "meeting_id": 1
     },
     {
         "id": 7,
@@ -1670,9 +1689,9 @@
         "previous_state_ids": [6],
         "motion_ids": [],
         "motion_recommendation_ids": [],
-        "meeting_id": 1,
         "workflow_id": 2,
-        "first_state_of_workflow_id": null
+        "first_state_of_workflow_id": null,
+        "meeting_id": 1
     },
     {
         "id": 8,
@@ -1692,9 +1711,9 @@
         "previous_state_ids": [6],
         "motion_ids": [],
         "motion_recommendation_ids": [],
-        "meeting_id": 1,
         "workflow_id": 2,
-        "first_state_of_workflow_id": null
+        "first_state_of_workflow_id": null,
+        "meeting_id": 1
     },
     {
         "id": 9,
@@ -1714,9 +1733,9 @@
         "previous_state_ids": [5, 6],
         "motion_ids": [],
         "motion_recommendation_ids": [],
-        "meeting_id": 1,
         "workflow_id": 2,
-        "first_state_of_workflow_id": null
+        "first_state_of_workflow_id": null,
+        "meeting_id": 1
     },
     {
         "id": 10,
@@ -1736,9 +1755,9 @@
         "previous_state_ids": [6],
         "motion_ids": [],
         "motion_recommendation_ids": [],
-        "meeting_id": 1,
         "workflow_id": 2,
-        "first_state_of_workflow_id": null
+        "first_state_of_workflow_id": null,
+        "meeting_id": 1
     },
     {
         "id": 11,
@@ -1758,9 +1777,9 @@
         "previous_state_ids": [6],
         "motion_ids": [],
         "motion_recommendation_ids": [],
-        "meeting_id": 1,
         "workflow_id": 2,
-        "first_state_of_workflow_id": null
+        "first_state_of_workflow_id": null,
+        "meeting_id": 1
     },
     {
         "id": 12,
@@ -1780,9 +1799,9 @@
         "previous_state_ids": [6],
         "motion_ids": [],
         "motion_recommendation_ids": [],
-        "meeting_id": 1,
         "workflow_id": 2,
-        "first_state_of_workflow_id": null
+        "first_state_of_workflow_id": null,
+        "meeting_id": 1
     },
     {
         "id": 13,
@@ -1802,9 +1821,9 @@
         "previous_state_ids": [6],
         "motion_ids": [],
         "motion_recommendation_ids": [],
-        "meeting_id": 1,
         "workflow_id": 2,
-        "first_state_of_workflow_id": null
+        "first_state_of_workflow_id": null,
+        "meeting_id": 1
     },
     {
         "id": 14,
@@ -1824,9 +1843,9 @@
         "previous_state_ids": [5],
         "motion_ids": [],
         "motion_recommendation_ids": [],
-        "meeting_id": 1,
         "workflow_id": 2,
-        "first_state_of_workflow_id": null
+        "first_state_of_workflow_id": null,
+        "meeting_id": 1
     }],
 "motion_workflow": [
     {
@@ -1852,21 +1871,31 @@
         "meeting_id": 1
     }],
 "motion_statute_paragraph": [],
-"motion_poll": [
+"poll": [
     {
         "id": 1,
+        "title": "1",
+        "description": "",
+        "type": "analog",
         "pollmethod": "YNA",
         "state": 3,
-        "type": "analog",
-        "title": "1",
+        "min_votes_amount": 1,
+        "max_votes_amount": 1,
+        "allow_multiple_votes_per_candidate": false,
+        "global_yes": false,
+        "global_no": false,
+        "global_abstain": false,
         "onehundred_percent_base": "YNA",
         "majority_method": "simple",
+        "amount_global_yes": null,
+        "amount_global_no": null,
+        "amount_global_abstain": null,
         "votesvalid": "2.000000",
         "votesinvalid": "9.000000",
         "votescast": "2.000000",
         "user_has_voted": false,
 
-        "motion_id": 1,
+        "content_object_id": "motion/1",
         "option_ids": [1],
         "voted_ids": [],
         "entitled_group_ids": [],
@@ -1876,45 +1905,226 @@
     },
     {
         "id": 2,
+        "title": "2",
+        "description": "",
+        "type": "analog",
         "pollmethod": "YNA",
         "state": 1,
-        "type": "analog",
-        "title": "2",
+        "min_votes_amount": 1,
+        "max_votes_amount": 1,
+        "allow_multiple_votes_per_candidate": false,
+        "global_yes": false,
+        "global_no": false,
+        "global_abstain": false,
         "onehundred_percent_base": "YNA",
         "majority_method": "simple",
+        "amount_global_yes": null,
+        "amount_global_no": null,
+        "amount_global_abstain": null,
         "votesvalid": null,
         "votesinvalid": null,
         "votescast": null,
         "user_has_voted": false,
 
-        "motion_id": 1,
+        "content_object_id": "motion/1",
         "option_ids": [2],
         "voted_ids": [],
         "entitled_group_ids": [],
         "projection_ids": [],
         "current_projector_ids": [],
         "meeting_id": 1
+    },
+    {
+        "id": 3,
+        "title": "1",
+        "description": "",
+        "type": "analog",
+        "pollmethod": "YNA",
+        "state": 1,
+        "min_votes_amount": 1,
+        "max_votes_amount": 1,
+        "allow_multiple_votes_per_candidate": false,
+        "global_yes": false,
+        "global_no": true,
+        "global_abstain": true,
+        "onehundred_percent_base": "YNA",
+        "majority_method": "simple",
+        "amount_global_yes": null,
+        "amount_global_no": null,
+        "amount_global_abstain": null,
+        "votesvalid": null,
+        "votesinvalid": null,
+        "votescast": null,
+        "user_has_voted": false,
+
+        "content_object_id": "assignment/1",
+        "voted_ids": [],
+        "entitled_group_ids": [],
+        "option_ids": [3],
+        "projection_ids": [],
+        "current_projector_ids": [],
+        "meeting_id": 1
+    },
+    {
+        "id": 4,
+        "title": "2",
+        "description": "",
+        "type": "analog",
+        "pollmethod": "Y",
+        "state": 3,
+        "min_votes_amount": 1,
+        "max_votes_amount": 1,
+        "allow_multiple_votes_per_candidate": false,
+        "global_yes": false,
+        "global_no": true,
+        "global_abstain": true,
+        "onehundred_percent_base": "Y",
+        "majority_method": "simple",
+        "amount_global_yes": null,
+        "amount_global_no": "2.000000",
+        "amount_global_abstain": "1.000000",
+        "votesvalid": "9.000000",
+        "votesinvalid": "2.000000",
+        "votescast": "16.000000",
+        "user_has_voted": false,
+
+        "content_object_id": "assignment/1",
+        "voted_ids": [],
+        "entitled_group_ids": [],
+        "option_ids": [4, 5, 6],
+        "projection_ids": [],
+        "current_projector_ids": [],
+        "meeting_id": 1
+    },
+    {
+        "id": 5,
+        "title": "Wahlgang",
+        "description": "",
+        "type": "named",
+        "pollmethod": "Y",
+        "state": 3,
+        "min_votes_amount": 1,
+        "max_votes_amount": 1,
+        "allow_multiple_votes_per_candidate": false,
+        "global_yes": false,
+        "global_no": true,
+        "global_abstain": false,
+        "onehundred_percent_base": "valid",
+        "majority_method": "simple",
+        "amount_global_yes": null,
+        "amount_global_no": "0.000000",
+        "amount_global_abstain": null,
+        "votesvalid": "1.000000",
+        "votesinvalid": "0.000000",
+        "votescast": "1.000000",
+        "user_has_voted": true,
+
+        "content_object_id": "assignment/2",
+        "voted_ids": [1],
+        "entitled_group_ids": [2],
+        "option_ids": [7, 8],
+        "projection_ids": [],
+        "current_projector_ids": [],
+        "meeting_id": 1
     }],
-"motion_option": [
+"option": [
     {
         "id": 1,
         "yes": "2.000000",
         "no": "4.000000",
         "abstain": "1.000000",
+        "weight": 10000,
 
         "poll_id": 1,
-        "vote_ids": [1, 2, 3]
+        "content_object_id": "motion/1",
+        "vote_ids": [1, 2, 3],
+        "meeting_id": 1
     },
     {
         "id": 2,
         "yes": "0.000000",
         "no": "0.000000",
         "abstain": "0.000000",
+        "weight": 10000,
 
         "poll_id": 2,
-        "vote_ids": []
+        "content_object_id": "motion/1",
+        "vote_ids": [],
+        "meeting_id": 1
+    },
+    {
+        "id": 3,
+        "yes": "0.000000",
+        "no": "0.000000",
+        "abstain": "0.000000",
+        "weight": 1,
+
+        "poll_id": 3,
+        "content_object_id": "user/1",
+        "vote_ids": [],
+        "meeting_id": 1
+    },
+    {
+        "id": 4,
+        "yes": "3.000000",
+        "no": "0.000000",
+        "abstain": "0.000000",
+        "weight": 1,
+
+        "poll_id": 4,
+        "content_object_id": "user/1",
+        "vote_ids": [1],
+        "meeting_id": 1
+    },
+    {
+        "id": 5,
+        "yes": "7.000000",
+        "no": "0.000000",
+        "abstain": "0.000000",
+        "weight": 2,
+
+        "poll_id": 4,
+        "content_object_id": "user/3",
+        "vote_ids": [3],
+        "meeting_id": 1
+    },
+    {
+        "id": 6,
+        "yes": "2.000000",
+        "no": "0.000000",
+        "abstain": "0.000000",
+        "weight": 3,
+
+        "poll_id": 4,
+        "content_object_id": "user/2",
+        "vote_ids": [2],
+        "meeting_id": 1
+    },
+    {
+        "id": 7,
+        "yes": "0.000000",
+        "no": "0.000000",
+        "abstain": "0.000000",
+        "weight": 1,
+
+        "poll_id": 5,
+        "content_object_id": "user/3",
+        "vote_ids": [],
+        "meeting_id": 1
+    },
+    {
+        "id": 8,
+        "yes": "1.000000",
+        "no": "0.000000",
+        "abstain": "0.000000",
+        "weight": 2,
+
+        "poll_id": 5,
+        "content_object_id": "user/2",
+        "vote_ids": [4],
+        "meeting_id": 1
     }],
-"motion_vote": [
+"vote": [
     {
         "id": 1,
         "weight": "2.000000",
@@ -1922,7 +2132,8 @@
 
         "user_id": null,
         "delegated_user_id": null,
-        "option_id": 1
+        "option_id": 1,
+        "meeting_id": 1
     },
     {
         "id": 2,
@@ -1931,7 +2142,8 @@
 
         "user_id": null,
         "delegated_user_id": null,
-        "option_id": 1
+        "option_id": 1,
+        "meeting_id": 1
     },
     {
         "id": 3,
@@ -1940,7 +2152,48 @@
 
         "user_id": null,
         "delegated_user_id": null,
-        "option_id": 1
+        "option_id": 1,
+        "meeting_id": 1
+    },
+    {
+        "id": 4,
+        "value": "Y",
+        "weight": "3.000000",
+
+        "user_id": null,
+        "delegated_user_id": null,
+        "option_id": 4,
+        "meeting_id": 1
+    },
+    {
+        "id": 5,
+        "value": "Y",
+        "weight": "2.000000",
+
+        "user_id": null,
+        "delegated_user_id": null,
+        "option_id": 6,
+        "meeting_id": 1
+    },
+    {
+        "id": 6,
+        "value": "Y",
+        "weight": "7.000000",
+
+        "user_id": null,
+        "delegated_user_id": null,
+        "option_id": 5,
+        "meeting_id": 1
+    },
+    {
+        "id": 7,
+        "value": "Y",
+        "weight": "1.000000",
+
+        "user_id": 1,
+        "delegated_user_id": 1,
+        "option_id": 8,
+        "meeting_id": 1
     }],
 "assignment": [
     {
@@ -1953,7 +2206,8 @@
         "number_poll_candidates": false,
 
         "candidate_ids": [1, 2, 3],
-        "poll_ids": [1, 2],
+        "poll_ids": [3, 4],
+        "option_$_ids": [],
         "agenda_item_id": 11,
         "list_of_speakers_id": 11,
         "tag_ids": [],
@@ -1972,7 +2226,8 @@
         "number_poll_candidates": true,
 
         "candidate_ids": [4, 5],
-        "poll_ids": [3],
+        "poll_ids": [5],
+        "option_$_ids": [],
         "agenda_item_id": 14,
         "list_of_speakers_id": 14,
         "tag_ids": [2],
@@ -1987,224 +2242,40 @@
         "weight": 1,
 
         "assignment_id": 1,
-        "user_id": 1
+        "user_id": 1,
+        "meeting_id": 1
     },
     {
         "id": 2,
         "weight": 2,
 
         "assignment_id": 1,
-        "user_id": 3
+        "user_id": 3,
+        "meeting_id": 1
     },
     {
         "id": 3,
         "weight": 3,
 
         "assignment_id": 1,
-        "user_id": 2
+        "user_id": 2,
+        "meeting_id": 1
     },
     {
         "id": 4,
         "weight": 1,
 
         "assignment_id": 2,
-        "user_id": 3
+        "user_id": 3,
+        "meeting_id": 1
     },
     {
         "id": 5,
         "weight": 2,
 
         "assignment_id": 2,
-        "user_id": 2
-    }],
-"assignment_poll": [
-    {
-        "id": 1,
-        "description": "",
-        "pollmethod": "YNA",
-        "votes_amount": 1,
-        "allow_multiple_votes_per_candidate": false,
-        "global_no": true,
-        "global_abstain": true,
-        "amount_global_no": null,
-        "amount_global_abstain": null,
-        "state": 1,
-        "title": "1",
-        "type": "analog",
-        "onehundred_percent_base": "YNA",
-        "majority_method": "simple",
-        "votesvalid": null,
-        "votesinvalid": null,
-        "votescast": null,
-        "user_has_voted": false,
-
-        "assignment_id": 1,
-        "voted_ids": [],
-        "entitled_group_ids": [],
-        "option_ids": [1],
-        "projection_ids": [],
-        "current_projector_ids": [],
-        "meeting_id": 1
-    },
-    {
-        "id": 2,
-        "description": "",
-        "pollmethod": "votes",
-        "votes_amount": 1,
-        "allow_multiple_votes_per_candidate": false,
-        "global_no": true,
-        "global_abstain": true,
-        "amount_global_no": "2.000000",
-        "amount_global_abstain": "1.000000",
-        "state": 3,
-        "title": "2",
-        "type": "analog",
-        "onehundred_percent_base": "votes",
-        "majority_method": "simple",
-        "votesvalid": "9.000000",
-        "votesinvalid": "2.000000",
-        "votescast": "16.000000",
-        "user_has_voted": false,
-
-        "assignment_id": 1,
-        "voted_ids": [],
-        "entitled_group_ids": [],
-        "option_ids": [2, 3, 4],
-        "projection_ids": [],
-        "current_projector_ids": [],
-        "meeting_id": 1
-    },
-    {
-        "id": 3,
-        "description": "",
-        "pollmethod": "votes",
-        "votes_amount": 1,
-        "allow_multiple_votes_per_candidate": false,
-        "global_no": true,
-        "global_abstain": false,
-        "amount_global_no": "0.000000",
-        "amount_global_abstain": null,
-        "state": 3,
-        "title": "Wahlgang",
-        "type": "named",
-        "onehundred_percent_base": "valid",
-        "majority_method": "simple",
-        "votesvalid": "1.000000",
-        "votesinvalid": "0.000000",
-        "votescast": "1.000000",
-        "user_has_voted": true,
-
-        "assignment_id": 2,
-        "voted_ids": [1],
-        "entitled_group_ids": [2],
-        "option_ids": [5, 6],
-        "projection_ids": [],
-        "current_projector_ids": [],
-        "meeting_id": 1
-    }],
-"assignment_option": [
-    {
-        "id": 1,
-        "yes": "0.000000",
-        "no": "0.000000",
-        "abstain": "0.000000",
-        "weight": 1,
-
-        "poll_id": 1,
-        "user_id": 1,
-        "vote_ids": []
-    },
-    {
-        "id": 2,
-        "yes": "3.000000",
-        "no": "0.000000",
-        "abstain": "0.000000",
-        "weight": 1,
-
-        "poll_id": 2,
-        "user_id": 1,
-        "vote_ids": [1]
-    },
-    {
-        "id": 3,
-        "yes": "7.000000",
-        "no": "0.000000",
-        "abstain": "0.000000",
-        "weight": 2,
-
-        "poll_id": 2,
-        "user_id": 3,
-        "vote_ids": [3]
-    },
-    {
-        "id": 4,
-        "yes": "2.000000",
-        "no": "0.000000",
-        "abstain": "0.000000",
-        "weight": 3,
-
-        "poll_id": 2,
         "user_id": 2,
-        "vote_ids": [2]
-    },
-    {
-        "id": 5,
-        "yes": "0.000000",
-        "no": "0.000000",
-        "abstain": "0.000000",
-        "weight": 1,
-
-        "poll_id": 3,
-        "user_id": 3,
-        "vote_ids": []
-    },
-    {
-        "id": 6,
-        "yes": "1.000000",
-        "no": "0.000000",
-        "abstain": "0.000000",
-        "weight": 2,
-
-        "poll_id": 3,
-        "user_id": 2,
-        "vote_ids": [4]
-    }],
-"assignment_vote": [
-    {
-        "id": 1,
-        "value": "Y",
-        "weight": "3.000000",
-
-        "user_id": null,
-        "delegated_user_id": null,
-        "option_id": 2
-    },
-    {
-        "id": 2,
-        "value": "Y",
-        "weight": "2.000000",
-
-        "user_id": null,
-        "delegated_user_id": null,
-        "option_id": 4
-    },
-    {
-        "id": 3,
-        "value": "Y",
-        "weight": "7.000000",
-
-        "user_id": null,
-        "delegated_user_id": null,
-        "option_id": 3
-    },
-    {
-        "id": 4,
-        "value": "Y",
-        "weight": "1.000000",
-
-        "user_id": 1,
-        "delegated_user_id": 1,
-        "option_id": 6
+        "meeting_id": 1
     }],
 "mediafile": [
     {
@@ -2226,10 +2297,9 @@
         "projection_ids": [],
         "current_projector_ids": [],
         "attachment_ids": [],
-        "meeting_id": 1,
-
         "used_as_logo_$_in_meeting_id": [],
-        "used_as_font_$_in_meeting_id": []
+        "used_as_font_$_in_meeting_id": [],
+        "meeting_id": 1
     },
     {
         "id": 2,
@@ -2250,10 +2320,9 @@
         "projection_ids": [],
         "current_projector_ids": [],
         "attachment_ids": ["motion/4"],
-        "meeting_id": 1,
-
         "used_as_logo_$_in_meeting_id": [],
-        "used_as_font_$_in_meeting_id": []
+        "used_as_font_$_in_meeting_id": [],
+        "meeting_id": 1
     },
     {
         "id": 3,
@@ -2274,11 +2343,10 @@
         "projection_ids": [],
         "current_projector_ids": [],
         "attachment_ids": [],
-        "meeting_id": 1,
-
         "used_as_logo_$_in_meeting_id": ["web_header"],
         "used_as_logo_$web_header_in_meeting_id": 1,
-        "used_as_font_$_in_meeting_id": []
+        "used_as_font_$_in_meeting_id": [],
+        "meeting_id": 1
     }],
 "projector": [
     {
@@ -2305,7 +2373,7 @@
         "preview_projection_ids": [1, 2],
         "history_projection_ids": [],
         "used_as_reference_projector_meeting_id": null,
-        "projectiondefault_ids": [1, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
+        "projectiondefault_ids": [1, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
         "meeting_id": 1
     },
     {
@@ -2342,7 +2410,8 @@
         "preview_projector_id": 1,
         "history_projector_id": null,
         "element_id": "motion_block/1",
-        "options": {}
+        "options": {},
+        "meeting_id": 1
     },
     {
         "id": 2,
@@ -2352,7 +2421,8 @@
         "element_id": "motion/4",
         "options": {
             "mode": "diff"
-        }
+        },
+        "meeting_id": 1
     },
     {
         "id": 4,
@@ -2360,7 +2430,8 @@
         "preview_projector_id": null,
         "history_projector_id": null,
         "element_id": "assignment/1",
-        "options": {}
+        "options": {},
+        "meeting_id": 1
     },
     {
         "id": 6,
@@ -2370,7 +2441,8 @@
         "element_id": "clock/1",
         "options": {
             "stable": true
-        }
+        },
+        "meeting_id": 1
     }],
 "projectiondefault": [
     {
@@ -2479,6 +2551,14 @@
     },
     {
         "id": 14,
+        "name": "poll",
+        "display_name": "Poll",
+
+        "projector_id": 1,
+        "meeting_id": 1
+    },
+    {
+        "id": 15,
         "name": "amendments",
         "display_name": "Amendments",
 
