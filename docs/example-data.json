@@ -41,9 +41,6 @@
         "committee_as_member_ids": [],
         "committee_as_manager_ids": [],
 
-        "projection_ids": [],
-        "current_projector_ids": [],
-
         "group_$_ids": ["1"],
         "group_$1_ids": [2],
         "speaker_$_ids": ["1"],
@@ -61,8 +58,12 @@
         "option_$1_ids": [3, 4],
         "vote_$_ids": ["1"],
         "vote_$1_ids": [7],
+        "projection_$_ids": [],
+        "current_projector_$_ids": [],
         "vote_delegated_vote_$_ids": ["1"],
-        "vote_delegated_vote_$1_ids": [7]
+        "vote_delegated_vote_$1_ids": [7],
+        "vote_delegated_$_to_id": [],
+        "vote_delegations_$_from_ids": []
     },
     {
         "id": 2,
@@ -91,9 +92,6 @@
         "committee_as_member_ids": [],
         "committee_as_manager_ids": [],
 
-        "projection_ids": [],
-        "current_projector_ids": [],
-
         "group_$_ids": ["1"],
         "group_$1_ids": [6],
         "speaker_$_ids": ["1"],
@@ -107,7 +105,11 @@
         "option_$_ids": ["1"],
         "option_$1_ids": [6, 8],
         "vote_$_ids": [],
-        "vote_delegated_vote_$_ids": []
+        "projection_$_ids": [],
+        "current_projector_$_ids": [],
+        "vote_delegated_vote_$_ids": [],
+        "vote_delegated_$_to_id": [],
+        "vote_delegations_$_from_ids": []
     },
     {
         "id": 3,
@@ -136,9 +138,6 @@
         "committee_as_member_ids": [],
         "committee_as_manager_ids": [],
 
-        "projection_ids": [],
-        "current_projector_ids": [],
-
         "group_$_ids": [],
         "speaker_$_ids": ["1"],
         "speaker_$1_ids": [4, 8, 9],
@@ -152,7 +151,11 @@
         "option_$_ids": ["1"],
         "option_$1_ids": [5, 7],
         "vote_$_ids": [],
-        "vote_delegated_vote_$_ids": []
+        "projection_$_ids": [],
+        "current_projector_$_ids": [],
+        "vote_delegated_vote_$_ids": [],
+        "vote_delegated_$_to_id": [],
+        "vote_delegations_$_from_ids": []
     }],
 "role": [
     {
@@ -201,6 +204,9 @@
         "conference_los_restriction": false,
         "conference_stream_url": "",
         "conference_stream_poster_url": "",
+        "conference_open_microphone": true,
+        "conference_open_video": true,
+        "conference_auto_connect_next_speakers": true,
 
         "projector_default_countdown_time": 60,
         "projector_countdown_warning_time": 0,
@@ -225,6 +231,7 @@
         "list_of_speakers_show_amount_of_speakers_on_slide": true,
         "list_of_speakers_present_users_only": false,
         "list_of_speakers_show_first_contribution": false,
+        "list_of_speakers_enable_point_of_order_speakers": true,
 
         "motions_default_workflow_id": 1,
         "motions_default_amendment_workflow_id": 1,
@@ -1010,6 +1017,7 @@
         "end_time": 1584512638,
         "weight": null,
         "marked": false,
+        "point_of_order": false,
 
         "list_of_speakers_id": 1,
         "user_id": 2,
@@ -1021,6 +1029,7 @@
         "end_time": null,
         "weight": 2,
         "marked": false,
+        "point_of_order": false,
 
         "list_of_speakers_id": 1,
         "user_id": 1,
@@ -1032,6 +1041,7 @@
         "end_time": null,
         "weight": 3,
         "marked": false,
+        "point_of_order": false,
 
         "list_of_speakers_id": 1,
         "user_id": 2,
@@ -1043,6 +1053,7 @@
         "end_time": null,
         "weight": 1,
         "marked": false,
+        "point_of_order": false,
 
         "list_of_speakers_id": 3,
         "user_id": 1,
@@ -1054,6 +1065,7 @@
         "end_time": null,
         "weight": 0,
         "marked": false,
+        "point_of_order": false,
 
         "list_of_speakers_id": 3,
         "user_id": 2,
@@ -1065,6 +1077,7 @@
         "end_time": null,
         "weight": 1,
         "marked": false,
+        "point_of_order": false,
 
         "list_of_speakers_id": 7,
         "user_id": 2,
@@ -1076,6 +1089,7 @@
         "end_time": null,
         "weight": 2,
         "marked": false,
+        "point_of_order": false,
 
         "list_of_speakers_id": 7,
         "user_id": 3,
@@ -1087,6 +1101,7 @@
         "end_time": null,
         "weight": 1,
         "marked": false,
+        "point_of_order": false,
 
         "list_of_speakers_id": 8,
         "user_id": 1,
@@ -1098,6 +1113,7 @@
         "end_time": null,
         "weight": 1,
         "marked": false,
+        "point_of_order": false,
 
         "list_of_speakers_id": 11,
         "user_id": 1,
@@ -1109,6 +1125,7 @@
         "end_time": null,
         "weight": 2,
         "marked": false,
+        "point_of_order": false,
 
         "list_of_speakers_id": 11,
         "user_id": 2,
@@ -1120,6 +1137,7 @@
         "end_time": null,
         "weight": 3,
         "marked": false,
+        "point_of_order": false,
 
         "list_of_speakers_id": 11,
         "user_id": 3,
@@ -1131,6 +1149,7 @@
         "end_time": null,
         "weight": 1,
         "marked": false,
+        "point_of_order": false,
 
         "list_of_speakers_id": 14,
         "user_id": 3,
@@ -1142,6 +1161,7 @@
         "end_time": null,
         "weight": 2,
         "marked": false,
+        "point_of_order": false,
 
         "list_of_speakers_id": 14,
         "user_id": 2,
