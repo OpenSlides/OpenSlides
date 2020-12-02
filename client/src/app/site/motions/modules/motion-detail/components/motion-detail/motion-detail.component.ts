@@ -360,9 +360,14 @@ export class MotionDetailComponent extends BaseViewComponentDirective implements
     public lnMode: LineNumberingMode;
 
     /**
-     * Indicates the Change reco Mode.
+     * Indicates the current change reco mode.
      */
     public crMode: ChangeRecoMode;
+
+    /**
+     * Indicates the default change reco mode.
+     */
+    private defaultCrMode: ChangeRecoMode;
 
     /**
      * Indicates the maximum line length as defined in the configuration.
@@ -544,7 +549,8 @@ export class MotionDetailComponent extends BaseViewComponentDirective implements
             .subscribe(mode => (this.lnMode = mode));
         this.configService.get<ChangeRecoMode>('motions_recommendation_text_mode').subscribe(mode => {
             if (mode) {
-                this.crMode = this.determineCrMode(mode);
+                this.defaultCrMode = mode;
+                this.resetCrMode();
             }
         });
         this.configService
@@ -632,6 +638,10 @@ export class MotionDetailComponent extends BaseViewComponentDirective implements
                     });
             }
         });
+    }
+
+    private resetCrMode(): void {
+        this.crMode = this.determineCrMode(this.defaultCrMode);
     }
 
     /**
@@ -739,6 +749,7 @@ export class MotionDetailComponent extends BaseViewComponentDirective implements
                         if (!this.editMotion) {
                             this.patchForm(this.motion);
                         }
+                        this.resetCrMode();
                         this.cd.markForCheck();
                     }
                 }),
