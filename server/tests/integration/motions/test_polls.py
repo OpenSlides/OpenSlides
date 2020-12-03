@@ -897,14 +897,13 @@ class VoteMotionPollNamed(TestCase):
         self.start_poll()
         self.make_admin_delegate()
         self.make_admin_present()
-        user, _ = self.create_user()
-        user.groups.add(GROUP_DELEGATE_PK)
+        self.user, self.user_password = self.create_user()
+        self.user.groups.add(GROUP_DELEGATE_PK)
         if with_delegation:
-            user.vote_delegated_to = self.admin
-        user.save()
+            self.user.vote_delegated_to = self.admin
+        self.user.save()
         inform_changed_data(self.admin)  # put the admin into the cache to update
         # its vote_delegated_to_id field
-        self.user = user
 
     def test_vote_delegation(self):
         self.setup_vote_delegation()
@@ -958,7 +957,7 @@ class VoteMotionPollNamed(TestCase):
             reverse("motionpoll-vote", args=[self.poll.pk]),
             {"data": "N", "user_id": self.user.pk},
         )
-        self.assertHttpStatusVerbose(response, status.HTTP_403_FORBIDDEN)
+        self.assertHttpStatusVerbose(response, status.HTTP_400_BAD_REQUEST)
         self.assertFalse(MotionPoll.objects.get().get_votes().exists())
 
     def test_vote_delegation_not_present(self):
@@ -972,7 +971,7 @@ class VoteMotionPollNamed(TestCase):
         self.assertHttpStatusVerbose(response, status.HTTP_403_FORBIDDEN)
         self.assertFalse(MotionPoll.objects.get().get_votes().exists())
 
-    def test_vote_delegation_delegatee_not_in_group(self):
+    def test_vote_delegation_delegate_not_in_group(self):
         self.setup_vote_delegation()
         self.admin.groups.remove(GROUP_DELEGATE_PK)
         self.admin.save()
@@ -997,6 +996,23 @@ class VoteMotionPollNamed(TestCase):
             {"data": "N", "user_id": self.user.pk},
         )
         self.assertHttpStatusVerbose(response, status.HTTP_403_FORBIDDEN)
+        self.assertFalse(MotionPoll.objects.get().get_votes().exists())
+
+    def test_vote_delegation_delegator_self_vote_not_allowed(self):
+        self.setup_vote_delegation()
+        # Make the user a delegate and present
+        self.admin.groups.add(GROUP_DELEGATE_PK)
+        self.admin.groups.remove(GROUP_ADMIN_PK)
+        self.user.is_present = True
+        self.user.save()
+        # Use the user to make the request to vote for himself
+        user_client = APIClient()
+        user_client.login(username=self.user.username, password=self.user_password)
+        response = user_client.post(
+            reverse("motionpoll-vote", args=[self.poll.pk]),
+            {"data": "N"},
+        )
+        self.assertHttpStatusVerbose(response, status.HTTP_400_BAD_REQUEST)
         self.assertFalse(MotionPoll.objects.get().get_votes().exists())
 
 
