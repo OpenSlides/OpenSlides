@@ -1547,14 +1547,9 @@ poll:
       - two_thirds
       - three_quarters
       - disabled
-  amount_global_yes: decimal(6)
-  amount_global_no: decimal(6)
-  amount_global_abstain: decimal(6)
   votesvalid: decimal(6)
   votesinvalid: decimal(6)
   votescast: decimal(6)
-  user_has_voted: boolean  # This is user specific and set during restriction
-  user_has_voted_for_delegations: number[]  # This is user specific and set during restriction
 
   content_object_id:  # Note: must not be set - it is allowed to have standalone polls
     type: generic-relation
@@ -1567,6 +1562,11 @@ poll:
   option_ids:
     type: relation-list
     to: option/poll_id
+    on_delete: CASCADE
+    equal_fields: meeting_id
+  global_option_id:
+    type: relation
+    to: option/used_as_global_option_in_poll_id
     on_delete: CASCADE
     equal_fields: meeting_id
   voted_ids:
@@ -1607,7 +1607,10 @@ option:
     type: relation
     to: poll/option_ids
     equal_fields: meeting_id
-    required: true
+  used_as_global_option_in_poll_id:
+    type: relation
+    to: poll/global_option_id
+    equal_fields: meeting_id
   vote_ids:
     type: relation-list
     to: vote/option_id
