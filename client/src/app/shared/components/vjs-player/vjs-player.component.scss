@@ -5,8 +5,28 @@
 
     .is-offline-wrapper {
         width: 100%;
-        margin: 1em;
         text-align: center;
+
+        .offlineposter {
+            position: relative;
+            width: 500px;
+            height: 200px;
+            img {
+                max-width: 100%;
+                max-height: 100%;
+            }
+
+            button {
+                position: absolute;
+                top: 0.5em;
+                right: 0.5em;
+                opacity: 0.3;
+            }
+
+            button:hover {
+                opacity: 1;
+            }
+        }
     }
 
     .player-container {
