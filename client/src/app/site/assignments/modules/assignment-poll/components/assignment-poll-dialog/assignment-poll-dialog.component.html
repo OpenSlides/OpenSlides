@@ -14,7 +14,7 @@
             <div *ngFor="let option of options" class="votes-grid">
                 <div>
                     <span *ngIf="option.user">{{ option.user.getFullName() }}</span>
-                    <span *ngIf="!option.user">{{ 'Unknown user' | translate }}</span>
+                    <i *ngIf="!option.user">{{ unknownUserLabel | translate }}</i>
                 </div>
 
                 <div>

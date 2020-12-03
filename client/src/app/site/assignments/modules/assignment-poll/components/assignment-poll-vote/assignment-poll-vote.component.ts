@@ -18,6 +18,7 @@ import { ViewAssignmentOption } from 'app/site/assignments/models/view-assignmen
 import { ViewAssignmentPoll } from 'app/site/assignments/models/view-assignment-poll';
 import { BasePollVoteComponentDirective, VoteOption } from 'app/site/polls/components/base-poll-vote.component';
 import { ViewUser } from 'app/site/users/models/view-user';
+import { UnknownUserLabel } from '../../services/assignment-poll.service';
 
 const voteOptions = {
     Yes: {
@@ -47,6 +48,7 @@ const voteOptions = {
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AssignmentPollVoteComponent extends BasePollVoteComponentDirective<ViewAssignmentPoll> implements OnInit {
+    public unknownUserLabel = UnknownUserLabel;
     public AssignmentPollMethod = AssignmentPollMethod;
     public PollType = PollType;
     public voteActions: VoteOption[] = [];

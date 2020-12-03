@@ -51,7 +51,7 @@
                                 {{ option.user.getLevelAndNumber() }}
                             </div>
                         </span>
-                        <span *ngIf="!option.user">{{ 'Unknown user' | translate }}</span>
+                        <i *ngIf="!option.user">{{ unknownUserLabel | translate }}</i>
                     </div>
 
                     <div *ngFor="let action of voteActions">

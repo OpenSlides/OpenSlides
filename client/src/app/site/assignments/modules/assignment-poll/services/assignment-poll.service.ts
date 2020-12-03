@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 
+import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { TranslateService } from '@ngx-translate/core';
 
 import { ConstantsService } from 'app/core/core-services/constants.service';
@@ -23,6 +24,7 @@ import {
     VotingResult
 } from 'app/site/polls/services/poll.service';
 
+export const UnknownUserLabel = _('Deleted user');
 @Injectable({
     providedIn: 'root'
 })
@@ -159,11 +161,13 @@ export class AssignmentPollService extends PollService {
                 };
 
                 // Since pollData does not have any subtitle option
-                if (candidate instanceof ViewAssignmentOption) {
+                if (candidate instanceof ViewAssignmentOption && candidate.user) {
                     pollTableEntry.votingOption = candidate.user.short_name;
                     pollTableEntry.votingOptionSubtitle = candidate.user.getLevelAndNumber();
-                } else {
+                } else if (candidate.user) {
                     pollTableEntry.votingOption = (candidate as PollDataOption).user.short_name;
+                } else {
+                    pollTableEntry.votingOption = UnknownUserLabel;
                 }
 
                 return pollTableEntry;
@@ -248,8 +252,8 @@ export class AssignmentPollService extends PollService {
                 }
                 return resultLabel;
             });
-
-            return `${option.user.short_name} · ${votingResults.join(' · ')}`;
+            const optionName = option.user?.short_name ?? UnknownUserLabel;
+            return `${optionName} · ${votingResults.join(' · ')}`;
         });
     }
 }
