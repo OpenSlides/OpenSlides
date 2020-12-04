@@ -1,0 +1,53 @@
+<os-head-bar [nav]="false">
+    <!-- Title -->
+    <div *ngIf="chatgroup" class="title-slot">
+        <h2>{{ chatgroup.name }}</h2>
+    </div>
+
+    <!-- Menu -->
+    <div class="menu-slot" *osPerms="'chat.can_manage'">
+        <button type="button" mat-icon-button [matMenuTriggerFor]="chatgroupMenu">
+            <mat-icon>more_vert</mat-icon>
+        </button>
+    </div>
+</os-head-bar>
+
+
+<div class="messages">
+    <div *ngFor="let message of chatMessages">
+        {{ message.username }} ({{ message.timestamp }}): {{ message.text }}
+    </div>
+</div>
+
+
+<div>
+    <form [formGroup]="newMessageForm">
+        <mat-form-field>
+            <input
+                type="text"
+                matInput
+                osAutofocus
+                required
+                formControlName="text"
+            />
+            <mat-error *ngIf="newMessageForm.invalid">{{ 'Required' | translate }}</mat-error>
+        </mat-form-field>
+    </form>
+    <button
+        type="submit"
+        mat-button
+        [disabled]="!newMessageForm.valid"
+        color="accent"
+        (click)="send()"
+    >
+        <span>{{ 'Send' | translate }}</span>
+    </button>
+</div>
+
+<!-- The menu content -->
+<mat-menu #chatgroupMenu="matMenu">
+    <button mat-menu-item (click)="clearChat()" class="red-warning-text">
+        <mat-icon>delete</mat-icon>
+        <span>{{ 'Clear the chat' | translate }}</span>
+    </button>
+</mat-menu>

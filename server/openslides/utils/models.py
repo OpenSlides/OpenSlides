@@ -98,6 +98,7 @@ class RESTModelMixin:
         self,
         skip_autoupdate: bool = False,
         no_delete_on_restriction: bool = False,
+        disable_history: bool = False,
         *args: Any,
         **kwargs: Any,
     ) -> Any:
@@ -117,6 +118,7 @@ class RESTModelMixin:
             inform_changed_data(
                 self.get_root_rest_element(),
                 no_delete_on_restriction=no_delete_on_restriction,
+                disable_history=disable_history,
             )
         return return_value
 

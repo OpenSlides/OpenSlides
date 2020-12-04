@@ -21,6 +21,7 @@ INSTALLED_APPS = [
     "openslides.motions",
     "openslides.assignments",
     "openslides.mediafiles",
+    "openslides.chat",
 ]
 
 INSTALLED_PLUGINS = collect_plugins()  # Adds all automatically collected plugins

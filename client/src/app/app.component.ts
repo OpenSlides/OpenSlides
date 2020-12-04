@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { filter, take } from 'rxjs/operators';
 
+import { ChatNotificationService } from './core/ui-services/chat-notification.service';
 import { ConfigService } from './core/ui-services/config.service';
 import { ConstantsService } from './core/core-services/constants.service';
 import { CountUsersService } from './core/ui-services/count-users.service';
@@ -83,7 +84,8 @@ export class AppComponent {
         loadFontService: LoadFontService,
         dataStoreUpgradeService: DataStoreUpgradeService, // to start it.
         routingState: RoutingStateService,
-        votingBannerService: VotingBannerService // needed for initialisation
+        votingBannerService: VotingBannerService, // needed for initialisation,
+        chatNotificationService: ChatNotificationService
     ) {
         // manually add the supported languages
         translate.addLangs(['en', 'de', 'cs', 'ru']);

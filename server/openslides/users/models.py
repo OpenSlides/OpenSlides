@@ -226,6 +226,20 @@ class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
             "Do not use user.has_perm() but use openslides.utils.auth.has_perm"
         )
 
+    def short_name(self):
+        first_name = self.first_name.strip()
+        last_name = self.last_name.strip()
+        short_name = f"{first_name} {last_name}".strip()
+
+        if not short_name:
+            short_name = self.username
+
+        title = self.title.strip()
+        if title:
+            short_name = f"{title} {short_name}"
+
+        return short_name
+
     def send_invitation_email(
         self, connection, subject, message, skip_autoupdate=False
     ):
