@@ -26,29 +26,27 @@
     }
 }
 
-.new-ballot-button {
-    display: flex;
-    > * {
-        margin-left: auto;
-        margin-right: auto;
-    }
-}
-
 .election-document-list mat-list-item {
     height: 20px;
 }
 
 .candidates-list {
     padding: 10px 25px 0 25px;
-}
 
-.add-candidates {
-    .search-field {
-        padding: 15px 25px 0 25px;
-        width: auto;
+    .add-candidates {
+        .search-field {
+            width: auto;
+            .mat-form-field {
+                width: 100%;
+            }
+        }
+    }
 
-        .mat-form-field {
-            width: 100%;
+    .candidate-list-controls {
+        margin-top: 1em;
+
+        .mat-button-base + .mat-button-base {
+            margin-left: 1em;
         }
     }
 }

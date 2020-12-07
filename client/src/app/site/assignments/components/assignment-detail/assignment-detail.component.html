@@ -72,14 +72,6 @@
             </ng-container>
         </ng-container>
 
-        <!-- New Ballot button -->
-        <div class="new-ballot-button" *ngIf="assignment && hasPerms('createPoll')">
-            <button mat-stroked-button (click)="openDialog()">
-                <mat-icon>add</mat-icon>
-                <span>{{ 'New ballot' | translate }}</span>
-            </button>
-        </div>
-
         <!-- candidates list -->
         <ng-container [ngTemplateOutlet]="candidatesTemplate"></ng-container>
     </div>
@@ -137,9 +129,8 @@
     <mat-card class="os-card spacer-bottom-60" *ngIf="assignment && !assignment.isFinished">
         <ng-container>
             <h3>{{ 'Candidates' | translate }}</h3>
-            <div>
+            <div class="candidates-list">
                 <div
-                    class="candidates-list"
                     *ngIf="
                         assignment &&
                         assignment.assignment_related_users &&
@@ -197,20 +188,26 @@
                             </mat-form-field>
                         </form>
                     </div>
+                </div>
 
+                <div class="candidate-list-controls">
                     <!-- Add me and remove me if OP has correct permission -->
-                    <div *ngIf="assignment && hasPerms('addSelf') && assignment.candidates">
-                        <div>
-                            <button mat-button color="accent" (click)="addSelf()" *ngIf="!isSelfCandidate">
-                                <mat-icon>add</mat-icon>
-                                <span>{{ 'Add me' | translate }}</span>
-                            </button>
-                            <button mat-button color="accent" (click)="removeSelf()" *ngIf="isSelfCandidate">
-                                <mat-icon>remove</mat-icon>
-                                <span>{{ 'Remove me' | translate }}</span>
-                            </button>
-                        </div>
-                    </div>
+                    <ng-container *ngIf="assignment && hasPerms('addSelf') && assignment.candidates">
+                        <button mat-stroked-button (click)="addSelf()" *ngIf="!isSelfCandidate">
+                            <mat-icon>add</mat-icon>
+                            <span>{{ 'Add me' | translate }}</span>
+                        </button>
+                        <button mat-stroked-button color="warn" (click)="removeSelf()" *ngIf="isSelfCandidate">
+                            <mat-icon>remove</mat-icon>
+                            <span>{{ 'Remove me' | translate }}</span>
+                        </button>
+                    </ng-container>
+
+                    <!-- New Ballot button -->
+                    <button mat-stroked-button (click)="openDialog()" *ngIf="assignment && hasPerms('createPoll')">
+                        <mat-icon>ballot</mat-icon>
+                        <span>{{ 'New ballot' | translate }}</span>
+                    </button>
                 </div>
             </div>
         </ng-container>
