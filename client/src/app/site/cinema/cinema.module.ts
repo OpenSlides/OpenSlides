@@ -7,9 +7,10 @@ import { CinemaRoutingModule } from './cinema-routing.module';
 import { CinemaComponent } from './components/cinema/cinema.component';
 import { MotionPollModule } from '../motions/modules/motion-poll/motion-poll.module';
 import { PollCollectionComponent } from './components/poll-collection/poll-collection.component';
+import { PollsModule } from '../polls/polls.module';
 
 @NgModule({
-    imports: [CommonModule, CinemaRoutingModule, MotionPollModule, AssignmentPollModule, SharedModule],
+    imports: [CommonModule, CinemaRoutingModule, MotionPollModule, AssignmentPollModule, SharedModule, PollsModule],
     declarations: [CinemaComponent, PollCollectionComponent]
 })
 export class CinemaModule {}

@@ -9,6 +9,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { AssignmentPollRepositoryService } from 'app/core/repositories/assignments/assignment-poll-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
+import { VotingService } from 'app/core/ui-services/voting.service';
 import { VotingPrivacyWarningComponent } from 'app/shared/components/voting-privacy-warning/voting-privacy-warning.component';
 import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
 import { ViewAssignmentPoll } from 'app/site/assignments/models/view-assignment-poll';
@@ -67,6 +68,14 @@ export class AssignmentPollComponent
         return false;
     }
 
+    public get showMetaInfo(): boolean {
+        return !this.poll.stateHasVotes && this.operator.hasPerms(this.permission.assignmentsCanManage);
+    }
+
+    public get showCandidatesInMetaInfo(): boolean {
+        return !this.poll.stateHasVotes && !this.votingService.canVote(this.poll);
+    }
+
     public constructor(
         titleService: Title,
         matSnackBar: MatSnackBar,
@@ -78,7 +87,8 @@ export class AssignmentPollComponent
         private pollService: AssignmentPollService,
         private formBuilder: FormBuilder,
         private pdfService: AssignmentPollPdfService,
-        private operator: OperatorService
+        private operator: OperatorService,
+        private votingService: VotingService
     ) {
         super(titleService, matSnackBar, translate, dialog, promptService, repo, pollDialog);
     }

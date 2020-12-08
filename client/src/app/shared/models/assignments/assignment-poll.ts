@@ -67,6 +67,10 @@ export class AssignmentPoll extends BasePoll<
         return this.pollmethod === AssignmentPollMethod.YNA;
     }
 
+    public get hasGlobalOption(): boolean {
+        return this.global_yes || this.global_no || this.global_abstain;
+    }
+
     public get pollmethodFields(): CalculablePollKey[] {
         if (this.pollmethod === AssignmentPollMethod.YN) {
             return ['yes', 'no'];
