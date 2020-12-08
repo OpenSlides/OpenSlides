@@ -163,7 +163,7 @@ README.md using following command::
 ------------------------------------------------
 
 For productive setups refer to the docker-compose setup described in the main
-`README<https://github.com/OpenSlides/OpenSlides/blob/master/README.rst>`_.
+`README <https://github.com/OpenSlides/OpenSlides/blob/master/README.rst>`_.
 
 While develpment it might be handy to use a cache and another database.
 PostgreSQL is recommended and Redis necessary as a cache. Both can be set up in
