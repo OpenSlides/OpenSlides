@@ -200,8 +200,7 @@
                         *ngIf="(canSeeLiveStream && !streamActiveInAnotherTab) || streamRunning"
                     ></os-vjs-player>
                     <div class="disconnected" *ngIf="streamActiveInAnotherTab && !streamRunning">
-                        <span>{{ 'The livestream is already running in your OpenSlides session.' | translate }}</span>
-                        <button mat-button color="warn" (click)="deleteStreamingLock()">
+                        <button class="restart-stream-button" mat-button color="warn" (click)="deleteStreamingLock()">
                             <span>{{ 'Restart livestream' | translate }}</span>
                         </button>
                     </div>

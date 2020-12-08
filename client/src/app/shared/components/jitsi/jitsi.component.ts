@@ -81,8 +81,6 @@ export class JitsiComponent extends BaseViewComponentDirective implements OnInit
     public enableJitsi: boolean;
 
     private autoconnect: boolean;
-    private startWithMicMuted: boolean;
-    private startWithVideoMuted: boolean;
     private roomName: string;
     private roomPassword: string;
     private jitsiDomain: string;
@@ -95,7 +93,7 @@ export class JitsiComponent extends BaseViewComponentDirective implements OnInit
     private isPasswortSet = false;
 
     public isJitsiDialogOpen = false;
-    public showJitsiWindow = false;
+    public showJitsiWindow = true;
     public muted = true;
 
     @ViewChild('jitsi')
@@ -123,7 +121,6 @@ export class JitsiComponent extends BaseViewComponentDirective implements OnInit
 
     private RTC_LOGGED_STORAGE_KEY = 'rtcIsLoggedIn';
     private STREAM_RUNNING_STORAGE_KEY = 'streamIsRunning';
-    private CONFERENCE_STATE_STORAGE_KEY = 'conferenceState';
 
     // JitsiID to ConferenceMember
     public members = {};
@@ -245,8 +242,13 @@ export class JitsiComponent extends BaseViewComponentDirective implements OnInit
         super(titleService, translate, snackBar);
     }
 
-    public ngOnInit(): void {
-        this.setUp();
+    public async ngOnInit(): Promise<void> {
+        await this.setUp();
+        if (this.canSeeLiveStream && this.videoStreamUrl) {
+            this.currentState = ConferenceState.stream;
+        } else {
+            this.currentState = ConferenceState.jitsi;
+        }
     }
 
     public async ngOnDestroy(): Promise<void> {
@@ -292,8 +294,6 @@ export class JitsiComponent extends BaseViewComponentDirective implements OnInit
                 .watch(this.RTC_LOGGED_STORAGE_KEY)
                 .pipe(distinctUntilChanged())
                 .subscribe((inUse: boolean) => {
-                    console.log('RTC_LOGGED_STORAGE_KEY is in use: ', inUse);
-
                     this.isJitsiActiveInAnotherTab = inUse;
                     this.lockLoaded.resolve();
                     if (!inUse && !this.isJitsiActive) {
@@ -342,41 +342,20 @@ export class JitsiComponent extends BaseViewComponentDirective implements OnInit
                     this.nextSpeakerAmount = nextSpeakerAmount;
                 }),
             this.configService.get<string>('general_system_stream_url').subscribe(url => {
-                this.videoStreamUrl = url;
+                this.onLiveStreamAvailable(url);
                 this.configsLoaded.resolve();
             }),
             this.configService.get<boolean>('general_system_conference_open_microphone').subscribe(open => {
-                this.startWithMicMuted = !open;
-                this.configOverwrite.startWithAudioMuted = this.startWithMicMuted;
-                console.log('this.startWithMicMuted ', this.startWithMicMuted);
+                this.configOverwrite.startWithAudioMuted = !open;
             }),
             this.configService.get<boolean>('general_system_conference_open_video').subscribe(open => {
-                this.startWithVideoMuted = !open;
-                this.configOverwrite.startWithVideoMuted = this.startWithVideoMuted;
-                console.log('this.startWithVideoMuted ', this.startWithVideoMuted);
+                this.configOverwrite.startWithVideoMuted = !open;
             })
         );
 
         await this.configsLoaded;
 
         this.subscriptions.push(
-            this.storageMap.watch(this.CONFERENCE_STATE_STORAGE_KEY).subscribe((confState: ConferenceState) => {
-                if (confState in ConferenceState) {
-                    if (this.enableJitsi && (!this.videoStreamUrl || !this.canSeeLiveStream)) {
-                        this.currentState = ConferenceState.jitsi;
-                    } else if (!this.enableJitsi && this.videoStreamUrl && this.canSeeLiveStream) {
-                        this.currentState = ConferenceState.stream;
-                    } else {
-                        this.currentState = confState;
-                    }
-                } else {
-                    this.setDefaultConfState();
-                }
-                // show stream window when the state changes to stream
-                if (this.currentState === ConferenceState.stream && !this.streamActiveInAnotherTab) {
-                    this.showJitsiWindow = true;
-                }
-            }),
             // check if the operator is on the clos, remove from room if not permitted
             this.closService.currentListOfSpeakersObservable
                 .pipe(
@@ -582,14 +561,27 @@ export class JitsiComponent extends BaseViewComponentDirective implements OnInit
         this.showJitsiWindow = false;
     }
 
-    public async viewStream(): Promise<void> {
+    public viewStream(): void {
         this.stopJitsi();
         this.setConferenceState(ConferenceState.stream);
+        this.showJitsiWindow = true;
     }
 
     public onSteamStarted(): void {
         this.streamRunning = true;
         this.storageMap.set(this.STREAM_RUNNING_STORAGE_KEY, true).subscribe(() => {});
+    }
+
+    private onLiveStreamAvailable(liveStreamUrl: string): void {
+        this.videoStreamUrl = liveStreamUrl;
+        // this is the "dead" state; you would see the jitsi state; but are not connected
+        // or the connection is prohibited. If this occurs and a live stream
+        // becomes available, switch to the stream state
+        if (this.videoStreamUrl && this.currentState === ConferenceState.jitsi && !this.isJitsiActive) {
+            this.viewStream();
+        } else if (!this.videoStreamUrl && this.enableJitsi) {
+            this.setConferenceState(ConferenceState.jitsi);
+        }
     }
 
     private async deleteJitsiLock(): Promise<void> {
@@ -600,15 +592,7 @@ export class JitsiComponent extends BaseViewComponentDirective implements OnInit
         await this.storageMap.delete(this.STREAM_RUNNING_STORAGE_KEY).toPromise();
     }
 
-    private setDefaultConfState(): void {
-        this.videoStreamUrl && this.canSeeLiveStream
-            ? this.setConferenceState(ConferenceState.stream)
-            : this.setConferenceState(ConferenceState.jitsi);
-    }
-
     private setConferenceState(newState: ConferenceState): void {
-        if (this.currentState !== newState) {
-            this.storageMap.set(this.CONFERENCE_STATE_STORAGE_KEY, newState).subscribe(() => {});
-        }
+        this.currentState = newState;
     }
 }
