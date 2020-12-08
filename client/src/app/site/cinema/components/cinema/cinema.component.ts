@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 
@@ -90,7 +90,8 @@ export class CinemaComponent extends BaseViewComponentDirective implements OnIni
         private projectorService: ProjectorService,
         private projectorRepo: ProjectorRepositoryService,
         private closService: CurrentListOfSpeakersService,
-        private listOfSpeakersRepo: ListOfSpeakersRepositoryService
+        private listOfSpeakersRepo: ListOfSpeakersRepositoryService,
+        private cd: ChangeDetectorRef
     ) {
         super(title, translate, snackBar);
     }

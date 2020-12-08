@@ -10,6 +10,7 @@ import {
     MajorityMethod,
     PercentBase,
     PollColor,
+    PollState,
     PollType,
     VOTE_UNDOCUMENTED
 } from 'app/shared/models/poll/base-poll';
@@ -104,6 +105,7 @@ export const PollMajorityMethod: CalculableMajorityMethod[] = [
 export interface PollData {
     pollmethod: string;
     type: string;
+    state: PollState;
     onehundred_percent_base: string;
     options: PollDataOption[];
     votesvalid: number;

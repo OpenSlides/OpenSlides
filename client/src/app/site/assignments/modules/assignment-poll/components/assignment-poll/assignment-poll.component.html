@@ -12,9 +12,7 @@
             <div class="italic spacer-bottom-20">
                 <span *osPerms="'assignments.can_manage'; and: poll.type === 'pseudoanonymous'">
                     <button mat-icon-button color="warn" (click)="openVotingWarning()">
-                        <mat-icon>
-                            warning
-                        </mat-icon>
+                        <mat-icon> warning </mat-icon>
                     </button>
                 </span>
                 <span *ngIf="poll.type !== 'analog'"> {{ poll.typeVerbose | translate }} &middot; </span>
@@ -64,19 +62,8 @@
 
         <!-- Chart / Table -->
         <div *ngIf="poll.stateHasVotes" class="poll-result-wrapper">
-            <div *osPerms="'assignments.can_manage'; or: poll.isPublished">
-                <os-assignment-poll-detail-content
-                    routerLink="/assignments/polls/{{ poll.id }}"
-                    [poll]="poll"
-                ></os-assignment-poll-detail-content>
-            </div>
-
-            <!-- Cannot see unpublished -->
-            <div *osPerms="'assignments.can_manage'; complement: true">
-                <span *ngIf="poll.isFinished">
-                    {{ 'Counting of votes is in progress ...' | translate }}
-                </span>
-            </div>
+            <os-assignment-poll-detail-content routerLink="/assignments/polls/{{ poll.id }}" [poll]="poll">
+            </os-assignment-poll-detail-content>
         </div>
 
         <!-- Poll progress bar -->
@@ -95,9 +82,7 @@
                 matTooltip="{{ 'More' | translate }}"
                 *ngIf="poll.isPublished"
             >
-                <mat-icon class="small-icon">
-                    visibility
-                </mat-icon>
+                <mat-icon class="small-icon"> visibility </mat-icon>
             </a>
         </div>
     </div>

@@ -74,7 +74,9 @@ export class ChartsComponent extends BaseViewComponentDirective {
 
     @Input()
     public set data(inputData: ChartData) {
-        this.progressInputData(inputData);
+        if (inputData) {
+            this.progressInputData(inputData);
+        }
     }
 
     /**
@@ -85,6 +87,9 @@ export class ChartsComponent extends BaseViewComponentDirective {
             return {
                 responsive: true,
                 maintainAspectRatio: false,
+                animation: {
+                    duration: 0
+                },
                 tooltips: {
                     enabled: false
                 },
@@ -96,6 +101,9 @@ export class ChartsComponent extends BaseViewComponentDirective {
             return {
                 responsive: true,
                 maintainAspectRatio: false,
+                animation: {
+                    duration: 0
+                },
                 tooltips: {
                     enabled: false
                 },

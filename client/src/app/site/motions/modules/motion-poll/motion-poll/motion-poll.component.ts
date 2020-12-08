@@ -15,7 +15,6 @@ import { MotionPollDialogService } from 'app/site/motions/services/motion-poll-d
 import { MotionPollPdfService } from 'app/site/motions/services/motion-poll-pdf.service';
 import { MotionPollService } from 'app/site/motions/services/motion-poll.service';
 import { BasePollComponent } from 'app/site/polls/components/base-poll.component';
-import { PollTableData } from 'app/site/polls/services/poll.service';
 
 /**
  * Component to show a motion-poll.
@@ -29,8 +28,6 @@ export class MotionPollComponent extends BasePollComponent<ViewMotionPoll, Motio
     @Input()
     public set poll(value: ViewMotionPoll) {
         this.initPoll(value);
-        const chartData = this.pollService.generateChartData(value);
-        this.chartDataSubject.next(chartData);
     }
 
     public get poll(): ViewMotionPoll {
@@ -39,16 +36,6 @@ export class MotionPollComponent extends BasePollComponent<ViewMotionPoll, Motio
 
     public get pollLink(): string {
         return `/motions/polls/${this.poll.id}`;
-    }
-
-    public get showChart(): boolean {
-        return this.pollService.showChart(this.poll);
-    }
-
-    public get reducedPollTableData(): PollTableData[] {
-        return this.pollService
-            .generateTableData(this.poll)
-            .filter(data => ['yes', 'no', 'abstain', 'votesinvalid'].includes(data.votingOption));
     }
 
     public get showPoll(): boolean {

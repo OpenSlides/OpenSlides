@@ -1,7 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 
-import { BehaviorSubject } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 
+import { BaseComponent } from 'app/base.component';
+import { OperatorService } from 'app/core/core-services/operator.service';
+import { PollState } from 'app/shared/models/poll/base-poll';
 import { ViewMotionPoll } from 'app/site/motions/models/view-motion-poll';
 import { MotionPollService } from 'app/site/motions/services/motion-poll.service';
 import { PollData, PollTableData } from 'app/site/polls/services/poll.service';
@@ -10,31 +14,65 @@ import { ChartData } from '../charts/charts.component';
 @Component({
     selector: 'os-motion-poll-detail-content',
     templateUrl: './motion-poll-detail-content.component.html',
-    styleUrls: ['./motion-poll-detail-content.component.scss']
+    styleUrls: ['./motion-poll-detail-content.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MotionPollDetailContentComponent implements OnInit {
-    @Input()
-    public poll: ViewMotionPoll | PollData;
+export class MotionPollDetailContentComponent extends BaseComponent {
+    private _poll: ViewMotionPoll | PollData;
+
+    public chartData: ChartData;
+    public tableData: PollTableData[];
 
     @Input()
-    public chartData: BehaviorSubject<ChartData>;
+    public set poll(pollData: ViewMotionPoll | PollData) {
+        this._poll = pollData;
+        this.setTableData();
+        this.setChartData();
+        this.cd.markForCheck();
+    }
+
+    public get poll(): ViewMotionPoll | PollData {
+        return this._poll;
+    }
 
     @Input()
     public iconSize: 'large' | 'gigantic' = 'large';
 
-    public get hasVotes(): boolean {
-        return this.poll && !!this.poll.options;
+    private get state(): PollState {
+        return this.poll.state;
     }
 
-    public constructor(private motionPollService: MotionPollService) {}
-
-    public ngOnInit(): void {}
-
-    public getTableData(): PollTableData[] {
-        return this.motionPollService.generateTableData(this.poll);
+    public get hasResults(): boolean {
+        return this.isFinished || this.isPublished;
     }
 
-    public get showChart(): boolean {
-        return this.motionPollService.showChart(this.poll) && this.chartData && !!this.chartData.value;
+    public get isFinished(): boolean {
+        return this.state === PollState.Finished;
+    }
+
+    public get isPublished(): boolean {
+        return this.state === PollState.Published;
+    }
+
+    public get canSeeResults(): boolean {
+        return this.operator.hasPerms(this.permission.motionsCanManagePolls) || this.isPublished;
+    }
+
+    public constructor(
+        titleService: Title,
+        translate: TranslateService,
+        private pollService: MotionPollService,
+        private cd: ChangeDetectorRef,
+        private operator: OperatorService
+    ) {
+        super(titleService, translate);
+    }
+
+    private setTableData(): void {
+        this.tableData = this.pollService.generateTableData(this.poll);
+    }
+
+    private setChartData(): void {
+        this.chartData = this.pollService.generateChartData(this.poll);
     }
 }

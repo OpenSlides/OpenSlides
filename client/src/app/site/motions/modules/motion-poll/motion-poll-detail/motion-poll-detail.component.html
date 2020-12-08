@@ -29,68 +29,63 @@
             </span>
         </div>
 
-        <p *ngIf="!poll.hasVotes || !poll.stateHasVotes">{{ 'No results yet.' | translate }}</p>
+        <os-motion-poll-detail-content [poll]="poll"></os-motion-poll-detail-content>
 
-        <div *ngIf="poll.stateHasVotes && (hasPerms() || poll.isPublished)">
-            <os-motion-poll-detail-content [poll]="poll" [chartData]="chartDataSubject">
-            </os-motion-poll-detail-content>
+        <!-- Named table: only show if votes are present -->
+        <div class="named-result-table" *ngIf="showResults && poll.stateHasVotes && poll.type === 'named'">
+            <h2>{{ 'Single votes' | translate }}</h2>
+            <os-list-view-table
+                *ngIf="votesDataObservable"
+                class="single-votes-table"
+                [listObservable]="votesDataObservable"
+                [columns]="columnDefinition"
+                [filterProps]="filterProps"
+                [allowProjector]="false"
+                [fullScreen]="true"
+                [vScrollFixed]="-1"
+                listStorageKey="motion-poll-vote"
+            >
+                <!-- Header -->
+                <div *pblNgridHeaderCellDef="'*'; col as col">
+                    {{ col.label | translate }}
+                </div>
 
-            <!-- Named table: only show if votes are present -->
-            <div class="named-result-table" *ngIf="poll.type === 'named'">
-                <h2>{{ 'Single votes' | translate }}</h2>
-                <os-list-view-table
-                    *ngIf="votesDataObservable"
-                    class="single-votes-table"
-                    [listObservable]="votesDataObservable"
-                    [columns]="columnDefinition"
-                    [filterProps]="filterProps"
-                    [allowProjector]="false"
-                    [fullScreen]="true"
-                    [vScrollFixed]="-1"
-                    listStorageKey="motion-poll-vote"
-                >
-                    <!-- Header -->
-                    <div *pblNgridHeaderCellDef="'*'; col as col">
-                        {{ col.label | translate }}
-                    </div>
+                <!-- Content -->
+                <div *pblNgridCellDef="'user'; row as vote">
+                    <div *ngIf="vote.user">
+                        {{ vote.user.getShortName() }}
 
-                    <!-- Content -->
-                    <div *pblNgridCellDef="'user'; row as vote">
-                        <div *ngIf="vote.user">
-                            {{ vote.user.getShortName() }}
+                        <div class="user-subtitle">
+                            <!-- Level and number -->
+                            <div *ngIf="vote.user.getLevelAndNumber()">
+                                {{ vote.user.getLevelAndNumber() }}
+                            </div>
 
-                            <div class="user-subtitle">
-                                <!-- Level and number -->
-                                <div *ngIf="vote.user.getLevelAndNumber()">
-                                    {{ vote.user.getLevelAndNumber() }}
-                                </div>
+                            <!-- Vote weight -->
+                            <div *ngIf="isVoteWeightActive">
+                                {{ 'Vote weight' | translate }}: {{ vote.user.vote_weight }}
+                            </div>
 
-                                <!-- Vote weight -->
-                                <div *ngIf="isVoteWeightActive">
-                                    {{ 'Vote weight' | translate }}: {{ vote.user.vote_weight }}
-                                </div>
-
-                                <!-- Delegation -->
-                                <div *ngIf="userHasVoteDelegation(vote.user)">
-                                    <span>
-                                        ({{ 'represented by' | translate }}
-                                        {{ getUsersVoteDelegation(vote.user).getShortName().trim() }})
-                                    </span>
-                                </div>
+                            <!-- Delegation -->
+                            <div *ngIf="userHasVoteDelegation(vote.user)">
+                                <span>
+                                    ({{ 'represented by' | translate }}
+                                    {{ getUsersVoteDelegation(vote.user).getShortName().trim() }})
+                                </span>
                             </div>
                         </div>
-                        <div *ngIf="!vote.user">{{ 'Anonymous' | translate }}</div>
                     </div>
-                    <div *pblNgridCellDef="'vote'; row as vote" class="vote-cell">
-                        <div class="vote-cell-icon-container" [ngClass]="voteOptionStyle[vote.value].css">
-                            <mat-icon>{{ voteOptionStyle[vote.value].icon }}</mat-icon>
-                        </div>
-                        <div>{{ vote.valueVerbose | translate }}</div>
-                    </div>
-                </os-list-view-table>
-                <div *ngIf="!votesDataObservable">
-                    {{ 'The individual votes were anonymized.' | translate }}
+                    <div *ngIf="!vote.user">{{ 'Anonymous' | translate }}</div>
                 </div>
+                <div *pblNgridCellDef="'vote'; row as vote" class="vote-cell">
+                    <div class="vote-cell-icon-container" [ngClass]="voteOptionStyle[vote.value].css">
+                        <mat-icon>{{ voteOptionStyle[vote.value].icon }}</mat-icon>
+                    </div>
+                    <div>{{ vote.valueVerbose | translate }}</div>
+                </div>
+            </os-list-view-table>
+            <div *ngIf="!votesDataObservable">
+                {{ 'The individual votes were anonymized.' | translate }}
             </div>
         </div>
 
