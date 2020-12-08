@@ -1034,6 +1034,10 @@ topic:
 motion:
   id: number
   number: string
+  number_value:
+    type: number
+    description: The number value of this motion. This number is auto-generated and read-only.
+    read_only: true
   sequential_number:
     type: number
     description: The (positive) serial number of this motion. This number is auto-generated and read-only.
