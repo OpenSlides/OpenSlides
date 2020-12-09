@@ -41,12 +41,14 @@ export class PollProgressComponent extends BaseViewComponentDirective implements
                         map(users =>
                             /**
                              * Filter the users who would be able to vote:
-                             * They are present or have their right to vote delegated
+                             * They are present and don't have their vote right delegated
+                             * or the have their vote delegated to a user who is present.
                              * They are in one of the voting groups
                              */
                             users.filter(
                                 user =>
-                                    (user.is_present || user.isVoteRightDelegated) &&
+                                    ((user.is_present && !user.isVoteRightDelegated) ||
+                                        user.voteDelegatedTo?.is_present) &&
                                     this.poll.groups_id.intersect(user.groups_id).length
                             )
                         )
