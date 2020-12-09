@@ -50,7 +50,7 @@
                 </mat-icon>
                 <mat-icon
                     matTooltip="{{ 'Inactive' | translate }}"
-                    *ngIf="!user.is_active && this.operator.hasPerms('users.see_extra')"
+                    *ngIf="!user.is_active && canSeeExtra"
                 >
                     block
                 </mat-icon>
