@@ -5,13 +5,14 @@ import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 import { map } from 'rxjs/operators';
 
+import { OperatorService } from 'app/core/core-services/operator.service';
 import { ViewAssignment } from 'app/site/assignments/models/view-assignment';
 import { ViewAssignmentPoll } from 'app/site/assignments/models/view-assignment-poll';
 import { BaseViewComponentDirective } from 'app/site/base/base-view';
 import { BaseViewModel } from 'app/site/base/base-view-model';
 import { ViewMotion } from 'app/site/motions/models/view-motion';
 import { ViewMotionPoll } from 'app/site/motions/models/view-motion-poll';
-import { ViewBasePoll } from 'app/site/polls/models/view-base-poll';
+import { PollClassType, ViewBasePoll } from 'app/site/polls/models/view-base-poll';
 import { PollListObservableService } from 'app/site/polls/services/poll-list-observable.service';
 
 @Component({
@@ -64,6 +65,7 @@ export class PollCollectionComponent extends BaseViewComponentDirective implemen
         title: Title,
         translate: TranslateService,
         snackBar: MatSnackBar,
+        private operator: OperatorService,
         private pollService: PollListObservableService,
         private cd: ChangeDetectorRef
     ) {
@@ -140,5 +142,14 @@ export class PollCollectionComponent extends BaseViewComponentDirective implemen
             return currPolls[0];
         }
         return null;
+    }
+
+    public canManage(poll: ViewBasePoll): boolean {
+        if (poll.pollClassType === PollClassType.Motion) {
+            return this.operator.hasPerms(this.permission.motionsCanManagePolls);
+        } else if (poll.pollClassType === PollClassType.Assignment) {
+            return this.operator.hasPerms(this.permission.assignmentsCanManage);
+        }
+        return false;
     }
 }
