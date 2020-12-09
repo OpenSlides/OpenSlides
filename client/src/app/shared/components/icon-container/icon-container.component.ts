@@ -51,6 +51,9 @@ export class IconContainerComponent {
     @Input()
     public noWrap = false;
 
+    @Input()
+    public color: string;
+
     /**
      * Optional action for clicking on the icon.
      */

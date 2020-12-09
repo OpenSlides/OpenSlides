@@ -10,21 +10,26 @@
 
     <form [formGroup]="contentForm" class="poll-preview-meta-info-form">
         <ng-container *ngIf="!data || !data.state || data.isCreated">
-            <!-- Poll Type -->
-            <mat-form-field class="pollType" *ngIf="isEVotingEnabled">
-                <mat-select [placeholder]="PollPropertyVerbose.type | translate" formControlName="type" required>
-                    <mat-option *ngFor="let option of pollTypes | keyvalue" [value]="option.key">
-                        {{ option.value | translate }}
-                    </mat-option>
-                </mat-select>
-                <mat-error>{{ 'This field is required.' | translate }}</mat-error>
-                <mat-hint (click)="openVotingWarning()" *ngIf="showNonNominalWarning">
-                    {{ 'Not suitable for formal secret voting!' | translate }}</mat-hint
-                >
-            </mat-form-field>
+            <div class="info-grid">
+                <!-- Poll Type -->
+                <mat-form-field *ngIf="isEVotingEnabled">
+                    <mat-select [placeholder]="PollPropertyVerbose.type | translate" formControlName="type" required>
+                        <mat-option *ngFor="let option of pollTypes | keyvalue" [value]="option.key">
+                            {{ option.value | translate }}
+                        </mat-option>
+                    </mat-select>
+                    <mat-icon
+                        color="primary"
+                        matSuffix
+                        *ngIf="showNonNominalWarning"
+                        (click)="openVotingWarning($event)"
+                    >
+                        info
+                    </mat-icon>
+                    <mat-error>{{ 'This field is required.' | translate }}</mat-error>
+                </mat-form-field>
 
-            <!-- Groups entitled to Vote -->
-            <div class="suboption">
+                <!-- Groups entitled to Vote -->
                 <mat-form-field *ngIf="contentForm.get('type').value && contentForm.get('type').value !== 'analog'">
                     <os-search-value-selector
                         formControlName="groups_id"
@@ -37,34 +42,36 @@
                 </mat-form-field>
             </div>
 
-            <!-- Poll Methods -->
-            <mat-form-field *ngIf="pollMethods">
-                <mat-select
-                    [placeholder]="PollPropertyVerbose.pollmethod | translate"
-                    formControlName="pollmethod"
-                    required
-                >
-                    <mat-option *ngFor="let option of pollMethods | keyvalue: keepEntryOrder" [value]="option.key">
-                        {{ option.value | translate }}
-                    </mat-option>
-                </mat-select>
-                <mat-error>{{ 'This field is required.' | translate }}</mat-error>
-            </mat-form-field>
-        </ng-container>
+            <div class="info-grid">
+                <!-- Poll Methods -->
+                <mat-form-field *ngIf="pollMethods">
+                    <mat-select
+                        [placeholder]="PollPropertyVerbose.pollmethod | translate"
+                        formControlName="pollmethod"
+                        required
+                    >
+                        <mat-option *ngFor="let option of pollMethods | keyvalue: keepEntryOrder" [value]="option.key">
+                            {{ option.value | translate }}
+                        </mat-option>
+                    </mat-select>
+                    <mat-error>{{ 'This field is required.' | translate }}</mat-error>
+                </mat-form-field>
 
-        <!-- Amount of Votes and global options -->
-        <div class="suboption" *ngIf="showAmountAndGlobal(data)">
-            <mat-form-field>
-                <input
-                    type="number"
-                    matInput
-                    placeholder="{{ PollPropertyVerbose.votes_amount | translate }}"
-                    formControlName="votes_amount"
-                    min="1"
-                    required
-                />
-            </mat-form-field>
-            <div class="global-options">
+                <!-- Amount of Votes -->
+                <mat-form-field *ngIf="showAmountAndGlobal(data)">
+                    <input
+                        type="number"
+                        matInput
+                        placeholder="{{ PollPropertyVerbose.votes_amount | translate }}"
+                        formControlName="votes_amount"
+                        min="1"
+                        required
+                    />
+                </mat-form-field>
+            </div>
+
+            <!-- Amount of Votes and global options -->
+            <div class="global-options" *ngIf="showAmountAndGlobal(data)">
                 <mat-checkbox formControlName="global_yes">
                     {{ PollPropertyVerbose.global_yes | translate }}
                 </mat-checkbox>
@@ -73,7 +80,7 @@
                     {{ PollPropertyVerbose.global_abstain | translate }}
                 </mat-checkbox>
             </div>
-        </div>
+        </ng-container>
 
         <!-- 100 Percent Base -->
         <mat-form-field>

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -29,7 +29,8 @@ import { PollService } from '../../services/poll.service';
 @Component({
     selector: 'os-poll-form',
     templateUrl: './poll-form.component.html',
-    styleUrls: ['./poll-form.component.scss']
+    styleUrls: ['./poll-form.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class PollFormComponent<T extends ViewBasePoll, S extends PollService>
     extends BaseViewComponentDirective
@@ -160,14 +161,16 @@ export class PollFormComponent<T extends ViewBasePoll, S extends PollService>
             this.contentForm.get('pollmethod').valueChanges.subscribe(method => {
                 if (method) {
                     this.updatePercentBases(method);
-                    this.setVotesAmountCtrl();
+                    this.setWarning();
                 }
             }),
             // poll type changes
             this.contentForm.get('type').valueChanges.subscribe(() => {
-                this.setVotesAmountCtrl();
+                this.setWarning();
             })
         );
+
+        this.setWarning();
     }
 
     private disablePollType(): void {
@@ -232,7 +235,7 @@ export class PollFormComponent<T extends ViewBasePoll, S extends PollService>
      * Disable votes_amount form control if the poll type is anonymous
      * and the poll method is votes.
      */
-    private setVotesAmountCtrl(): void {
+    private setWarning(): void {
         if (this.contentForm.get('type').value === PollType.Pseudoanonymous) {
             this.showNonNominalWarning = true;
         } else {
@@ -297,7 +300,8 @@ export class PollFormComponent<T extends ViewBasePoll, S extends PollService>
         });
     }
 
-    public openVotingWarning(): void {
+    public openVotingWarning(event: MouseEvent): void {
+        event.stopPropagation();
         this.dialog.open(VotingPrivacyWarningComponent, infoDialogSettings);
     }
 

@@ -2,16 +2,11 @@
     margin: 0;
 }
 
-.pollType {
-    .mat-hint {
-        color: red;
-        cursor: pointer;
-    }
-}
-
 .poll-preview-meta-info-form {
-    .suboption {
-        margin-left: 1.5em;
+    .info-grid {
+        display: grid;
+        column-gap: 1em;
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
     }
 
     .mat-checkbox {

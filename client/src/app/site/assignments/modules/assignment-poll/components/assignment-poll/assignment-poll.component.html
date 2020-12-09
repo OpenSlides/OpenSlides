@@ -9,13 +9,22 @@
             </mat-card-title>
 
             <!-- Type and State -->
-            <div class="italic spacer-bottom-20">
-                <span *osPerms="'assignments.can_manage'; and: poll.type === 'pseudoanonymous'">
-                    <button mat-icon-button color="warn" (click)="openVotingWarning()">
-                        <mat-icon> warning </mat-icon>
-                    </button>
+            <div class="type-and-state italic spacer-bottom-20">
+                <span *osPerms="'assignments.can_manage'; and: poll.isEVoting">
+                    <os-icon-container
+                        class="poll-type"
+                        icon="info"
+                        size="large"
+                        color="primary"
+                        [swap]="true"
+                        [showIcon]="poll.isAnon"
+                        (iconAction)="openVotingWarning()"
+                    >
+                        {{ poll.typeVerbose | translate }}
+                    </os-icon-container>
+                    <span *ngIf="poll.isAnon">&nbsp;</span>
+                    &middot;&nbsp;
                 </span>
-                <span *ngIf="poll.type !== 'analog'"> {{ poll.typeVerbose | translate }} &middot; </span>
                 <span>
                     {{ poll.stateVerbose | translate }}
                 </span>
