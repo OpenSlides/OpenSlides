@@ -12,7 +12,7 @@ file system path or an url starting with http:// or https://.
 
 
 ```
-cat models.yaml | modelsvalidator
+cat models.yml | modelsvalidator
 modelsvalidator openslides/docs/models.yml
 modelsvalidator https://raw.githubusercontent.com/OpenSlides/OpenSlides/openslides4-dev/docs/models.yml
 ```
