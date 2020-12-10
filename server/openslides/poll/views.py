@@ -255,15 +255,29 @@ class BasePollViewSet(ModelViewSet):
         Analog:                     has to have manage permissions
         Named & Pseudoanonymous:    has to be in a poll group and present
         """
+        # if the request user is not the vote user, the delegation must be right
         if request.user != vote_user and request.user != vote_user.vote_delegated_to:
-            self.permission_denied(request)
+            raise ValidationError(
+                {
+                    "detail": f"You cannot vote for {vote_user.id} since the vote right was not delegated to you."
+                }
+            )
+
+        # If the request user is the vote user, this user must not have any delegation.
+        # It is not allowed to vote for oneself, if the vote is delegated
+        if request.user == vote_user and request.user.vote_delegated_to is not None:
+            raise ValidationError(
+                {"detail": "You cannot vote since your vote right is delegated."}
+            )
 
         if poll.type == BasePoll.TYPE_ANALOG:
             if not self.has_manage_permissions():
                 self.permission_denied(request)
         else:
             if poll.state != BasePoll.STATE_STARTED:
-                raise ValidationError("You can only vote on a started poll.")
+                raise ValidationError(
+                    {"detail": "You can only vote on a started poll."}
+                )
 
             if not request.user.is_present or not in_some_groups(
                 vote_user.id,
