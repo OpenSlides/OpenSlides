@@ -72,7 +72,7 @@ Interface WriteRequest {
     locked_fields: {
         <fqid>: Position;
         <fqfield>: Position;
-        <CollectionField>: Position;
+        <CollectionField>: Position | CollectionFieldLock;
     }
 }
 
@@ -102,6 +102,11 @@ Interface RestoreEvent {
 Interface DeleteEvent {
     type: 'delete';
     fqid: Fqid;
+}
+
+Interface CollectionFieldLock {
+    position: Position;
+    filter: Filter;
 }
 
 // Note: The modified fqfields include:
@@ -213,16 +218,22 @@ get_all(collection: Collection, mapped_fields?: Field[], get_deleted_models?: De
  */
 get_everything(get_deleted_models?: DeletedModelsBehaviour): Map<Collection, Model[]>;
 
+interface FilterResponse {
+    max_position: Position;
+    data: Map<Id, Partial<Model>>;
+}
+
 /**
  * Returns all models of one collection that satisfy the filter condition.
  * Url: POST to /internal/datastore/reader/filter
  *
+ * The global max position of the datastore is returned next the the filtered data.
  * This method does not take a position and can not be used when browsing the history.
  *
  * @returns see get_many
  * @throws InvalidFormat
  */
-filter(collection: Collection, filter: Filter, mapped_fields?: Field[]): Map<Id, Partial<Model>>
+filter(collection: Collection, filter: Filter, mapped_fields?: Field[]): FilterResponse
 
 /**
  * Url: POST to /internal/datastore/reader/exists
