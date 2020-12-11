@@ -2,21 +2,20 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { E2EImportsModule } from 'e2e-imports.module';
 
-import { LiveStreamComponent } from './live-stream.component';
+import { VideoPlayerComponent } from './video-player.component';
 
-describe('LiveStreamComponent', () => {
-    let component: LiveStreamComponent;
-    let fixture: ComponentFixture<LiveStreamComponent>;
+describe('VjsPlayerComponent', () => {
+    let component: VideoPlayerComponent;
+    let fixture: ComponentFixture<VideoPlayerComponent>;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            imports: [E2EImportsModule],
-            declarations: [LiveStreamComponent]
+            imports: [E2EImportsModule]
         }).compileComponents();
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(LiveStreamComponent);
+        fixture = TestBed.createComponent(VideoPlayerComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });

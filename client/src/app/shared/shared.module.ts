@@ -127,8 +127,7 @@ import { AssignmentPollDetailContentComponent } from './components/assignment-po
 import { GlobalSpinnerComponent } from './components/global-spinner/global-spinner.component';
 import { UserMenuComponent } from './components/user-menu/user-menu.component';
 import { JitsiComponent } from './components/jitsi/jitsi.component';
-import { VjsPlayerComponent } from './components/vjs-player/vjs-player.component';
-import { LiveStreamComponent } from './components/live-stream/live-stream.component';
+import { VideoPlayerComponent } from './components/video-player/video-player.component';
 import { ListOfSpeakersContentComponent } from './components/list-of-speakers-content/list-of-speakers-content.component';
 import { ApplauseBarDisplayComponent } from './components/applause-bar-display/applause-bar-display.component';
 import { ProgressComponent } from './components/progress/progress.component';
@@ -303,8 +302,7 @@ import { ApplauseParticleDisplayComponent } from './components/applause-particle
         MotionPollDetailContentComponent,
         AssignmentPollDetailContentComponent,
         JitsiComponent,
-        VjsPlayerComponent,
-        LiveStreamComponent,
+        VideoPlayerComponent,
         ListOfSpeakersContentComponent
     ],
     declarations: [
@@ -367,8 +365,7 @@ import { ApplauseParticleDisplayComponent } from './components/applause-particle
         MotionPollDetailContentComponent,
         AssignmentPollDetailContentComponent,
         JitsiComponent,
-        VjsPlayerComponent,
-        LiveStreamComponent,
+        VideoPlayerComponent,
         ListOfSpeakersContentComponent,
         ApplauseBarDisplayComponent,
         ProgressComponent,
