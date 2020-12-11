@@ -5,9 +5,10 @@ import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 import { map } from 'rxjs/operators';
 
+import { OperatorService } from 'app/core/core-services/operator.service';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 import { BaseViewComponentDirective } from 'app/site/base/base-view';
-import { ViewBasePoll } from 'app/site/polls/models/view-base-poll';
+import { PollClassType, ViewBasePoll } from 'app/site/polls/models/view-base-poll';
 
 @Component({
     selector: 'os-poll-progress',
@@ -23,11 +24,22 @@ export class PollProgressComponent extends BaseViewComponentDirective implements
         return this.poll?.votescast || 0;
     }
 
+    public get canSeeProgressBar(): boolean {
+        let canManage = false;
+        if (this.poll?.pollClassType === PollClassType.Motion) {
+            canManage = this.operator.hasPerms(this.permission.motionsCanManagePolls);
+        } else if (this.poll?.pollClassType === PollClassType.Assignment) {
+            canManage = this.operator.hasPerms(this.permission.assignmentsCanManage);
+        }
+        return canManage && this.operator.hasPerms(this.permission.usersCanSeeName);
+    }
+
     public constructor(
         title: Title,
         protected translate: TranslateService,
         snackbar: MatSnackBar,
-        private userRepo: UserRepositoryService
+        private userRepo: UserRepositoryService,
+        private operator: OperatorService
     ) {
         super(title, translate, snackbar);
     }
