@@ -63,16 +63,27 @@ class UserAccessPermissions(BaseAccessPermissions):
 
         # Check user permissions.
         if await async_has_perm(user_id, "users.can_see_name"):
+            whitelist_operator = None
             if await async_has_perm(user_id, "users.can_see_extra_data"):
                 if await async_has_perm(user_id, "users.can_manage"):
-                    data = [filtered_data(full, all_data_fields) for full in full_data]
+                    whitelist = all_data_fields
                 else:
-                    data = [filtered_data(full, many_data_fields) for full in full_data]
+                    whitelist = many_data_fields
             else:
-                data = [
-                    filtered_data(full, little_data_fields, own_data_fields)
-                    for full in full_data
-                ]
+                whitelist = little_data_fields
+                whitelist_operator = own_data_fields
+
+            # for managing {motion, assignment} polls the users needs to know
+            # the vote delegation structure.
+            if await async_has_perm(
+                user_id, "motion.can_manage_polls"
+            ) or await async_has_perm(user_id, "assignments.can_manage"):
+                whitelist.add("vote_delegated_to_id")
+                whitelist.add("vote_delegated_from_users_id")
+
+            data = [
+                filtered_data(full, whitelist, whitelist_operator) for full in full_data
+            ]
         else:
             # Build a list of users, that can be seen without any permissions (with little fields).
 

@@ -1,4 +1,4 @@
-<div class="poll-progress-wrapper">
+<div class="poll-progress-wrapper" *ngIf="canSeeProgressBar">
     <div class="vote-number">
         <span>{{ votescast }} / {{ max }}</span>
     </div>
