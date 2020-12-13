@@ -3,6 +3,7 @@
     [matTooltip]="iconTooltip"
     [class]="iconAction ? 'pointer' : ''"
     (click)="iconClick()"
+    [color]="color"
     >{{ icon }}</mat-icon
 >
 <span class="content-node" [ngClass]="noWrap ? 'single-line' : 'break-lines'">
@@ -13,5 +14,6 @@
     [matTooltip]="iconTooltip"
     [class]="iconAction ? 'pointer' : ''"
     (click)="iconClick()"
+    [color]="color"
     >{{ icon }}</mat-icon
 >

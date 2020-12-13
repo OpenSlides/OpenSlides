@@ -21,21 +21,28 @@
 
     <!-- Subtitle -->
     <div class="italic spacer-bottom-20">
-        <span *osPerms="'motions.can_manage_polls'; and: poll.type === 'pseudoanonymous'">
-            <button mat-icon-button color="warn" (click)="openVotingWarning()">
-                <mat-icon>warning</mat-icon>
-            </button>
-        </span>
+        <!-- Type and State -->
+        <div class="type-and-state italic spacer-bottom-20">
+            <span *osPerms="permission.motionsCanManagePolls; and: poll.isEVoting">
+                <os-icon-container
+                    class="poll-type"
+                    icon="info"
+                    color="primary"
+                    [swap]="true"
+                    [showIcon]="poll.isAnon"
+                    (iconAction)="openVotingWarning()"
+                >
+                    {{ poll.typeVerbose | translate }}
+                </os-icon-container>
+                <span *ngIf="poll.isAnon">&nbsp;</span>
+                &middot;&nbsp;
+            </span>
 
-        <!-- Subtitle -->
-        <span *ngIf="pollService.isElectronicVotingEnabled && poll.type !== 'analog'">
-            {{ poll.typeVerbose | translate }} &middot;
-        </span>
-
-        <!-- State chip -->
-        <span>
-            {{ poll.stateVerbose | translate }}
-        </span>
+            <!-- State -->
+            <span>
+                {{ poll.stateVerbose | translate }}
+            </span>
+        </div>
     </div>
 
     <!-- Change state button -->

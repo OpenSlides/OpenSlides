@@ -28,6 +28,16 @@
         }
     }
 
+    .type-and-state {
+        display: flex;
+        span {
+            display: flex;
+        }
+        .poll-type {
+            width: fit-content;
+        }
+    }
+
     .poll-chart-wrapper {
         cursor: pointer;
         display: grid;

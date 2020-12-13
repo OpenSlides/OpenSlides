@@ -19,4 +19,14 @@
         display: flex;
         margin: auto 0;
     }
+
+    .type-and-state {
+        display: flex;
+        span {
+            display: flex;
+        }
+        .poll-type {
+            width: fit-content;
+        }
+    }
 }
