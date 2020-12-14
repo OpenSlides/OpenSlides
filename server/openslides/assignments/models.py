@@ -378,8 +378,11 @@ class AssignmentPoll(RESTModelMixin, BasePoll):
         decimal_places=6,
     )
 
+    min_votes_amount = models.IntegerField(default=1, validators=[MinValueValidator(1)])
+    """ For "votes" mode: The min amount of votes a voter can give. """
+
     max_votes_amount = models.IntegerField(default=1, validators=[MinValueValidator(1)])
-    """ For "votes" mode: The amount of votes a voter can give. """
+    """ For "votes" mode: The max amount of votes a voter can give. """
 
     allow_multiple_votes_per_candidate = models.BooleanField(default=False)
 
