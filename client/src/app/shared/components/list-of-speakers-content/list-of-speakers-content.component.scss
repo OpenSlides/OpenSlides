@@ -129,11 +129,12 @@
 }
 
 .add-self-buttons {
-    margin: 15px 25px;
-    display: flex;
+    margin: 10px 20px;
+    display: inline-flex;
+    flex-wrap: wrap;
 
-    button + button {
-        margin-left: 20px;
+    button {
+        margin: 5px;
     }
 }
 
