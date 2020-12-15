@@ -55,9 +55,6 @@ import { Selectable } from '../selectable';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SearchValueSelectorComponent extends BaseFormControlComponentDirective<Selectable[]> {
-    @ViewChild('chipPlaceholder', { static: false })
-    public chipPlaceholder: ElementRef<HTMLElement>;
-
     @ViewChild(CdkVirtualScrollViewport, { static: true })
     public cdkVirtualScrollViewPort: CdkVirtualScrollViewport;
 
@@ -133,10 +130,6 @@ export class SearchValueSelectorComponent extends BaseFormControlComponentDirect
     }
 
     public controlType = 'search-value-selector';
-
-    public get width(): string {
-        return this.chipPlaceholder ? `${this.chipPlaceholder.nativeElement.clientWidth - 16}px` : '100%';
-    }
 
     /**
      * All items

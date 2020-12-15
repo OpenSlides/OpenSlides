@@ -3,21 +3,17 @@
 }
 
 .os-search-value-selector-chip-container {
-    position: absolute;
-    padding: 8px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
-    top: 52px;
-    width: 100%;
-    background: white;
-    z-index: 100;
-    min-height: 41px;
+    margin: 5px;
+    width: max-content;
+    height: 30px;
+
+    .mat-chip {
+        max-width: 150px;
+    }
 }
 
-.os-search-value-selector-chip-placeholder {
-    padding: 8px;
-    width: 100%;
-    background: white;
-    min-height: 39px;
+.h-scroller {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 }
 
 .os-not-found-button {
