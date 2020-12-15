@@ -17,22 +17,24 @@
     <mat-option>
         <ngx-mat-select-search [formControl]="searchValue"></ngx-mat-select-search>
     </mat-option>
-    <ng-container *ngIf="multiple && showChips">
-        <div #chipPlaceholder>
-            <div class="os-search-value-selector-chip-container" [style.width]="width">
-                <mat-chip-list class="chip-list" [selectable]="false">
+    <ng-container>
+        <div *ngIf="multiple && showChips" class="h-scroller">
+            <div class="os-search-value-selector-chip-container">
+                <mat-chip-list [selectable]="false">
                     <mat-chip
                         *ngFor="let item of selectedItems"
                         [removable]="true"
                         (removed)="removeChipItem(item)"
                         [disableRipple]="true"
+                        matTooltip="{{ item.getTitle() | translate }}"
                     >
-                        {{ item.getTitle() | translate }}
+                        <span class="ellipsis-overflow">
+                            {{ item.getTitle() | translate }}
+                        </span>
                         <mat-icon matChipRemove>cancel</mat-icon>
                     </mat-chip>
                 </mat-chip-list>
             </div>
-            <div class="os-search-value-selector-chip-placeholder"></div>
         </div>
     </ng-container>
     <ng-container *ngIf="showNotFoundButton && !getFilteredItems().length">
