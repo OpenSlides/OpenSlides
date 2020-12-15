@@ -48,10 +48,7 @@
                 <mat-icon matTooltip="{{ 'Is committee' | translate }}" *ngIf="user.is_committee">
                     account_balance
                 </mat-icon>
-                <mat-icon
-                    matTooltip="{{ 'Inactive' | translate }}"
-                    *ngIf="!user.is_active && canSeeExtra"
-                >
+                <mat-icon matTooltip="{{ 'Inactive' | translate }}" *ngIf="!user.is_active && canSeeExtra">
                     block
                 </mat-icon>
             </div>
@@ -80,8 +77,12 @@
                 <os-icon-container icon="perm_identity">{{ user.number }}</os-icon-container>
             </div>
 
-            <div *ngIf="user.vote_delegated_to_id" class="spacer-top-5">
+            <div *ngIf="user.vote_delegated_to_id" class="spacer-top-5" matTooltip="{{ 'Voting right delegated to (proxy)' | translate }}">
                 <os-icon-container icon="forward" noWrap="true">{{ user.voteDelegatedTo }}</os-icon-container>
+            </div>
+
+            <div *ngIf="user.vote_delegated_from_users_id?.length" class="spacer-top-5" matTooltip="{{ 'Delegation of vote (principals)' | translate }}">
+                <os-icon-container icon="undo" noWrap="true">{{ user.voteDelegationsFrom }}</os-icon-container>
             </div>
         </div>
     </div>
@@ -290,6 +291,15 @@
             ></os-search-value-selector>
         </mat-form-field>
         <mat-form-field>
+            <os-search-value-selector
+                [(ngModel)]="infoDialog.vote_delegated_to_id"
+                [multiple]="false"
+                [includeNone]="true"
+                placeholder="{{ 'Voting right delegated to (proxy)' | translate }}"
+                [inputListValues]="users"
+            ></os-search-value-selector>
+        </mat-form-field>
+        <mat-form-field>
             <mat-select placeholder="{{ 'Gender' | translate }}" [(ngModel)]="infoDialog.gender">
                 <mat-option>-</mat-option>
                 <mat-option *ngFor="let gender of genderList" [value]="gender">{{ gender | translate }}</mat-option>
@@ -320,6 +330,7 @@
             [mat-dialog-close]="{
                 groups_id: infoDialog.groups_id,
                 vote_delegated_from_users_id: infoDialog.vote_delegated_from_users_id,
+                vote_delegated_to_id: infoDialog.vote_delegated_to_id,
                 gender: infoDialog.gender,
                 number: infoDialog.number,
                 structure_level: infoDialog.structure_level

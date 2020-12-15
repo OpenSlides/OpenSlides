@@ -177,6 +177,7 @@ export class UserDetailComponent extends BaseViewComponentDirective implements O
                 about_me: [''],
                 groups_id: [''],
                 vote_delegated_from_users_id: [''],
+                vote_delegated_to_id: [''],
                 is_present: [true],
                 is_committee: [false],
                 email: ['', Validators.email],

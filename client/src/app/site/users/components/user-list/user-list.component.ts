@@ -58,9 +58,14 @@ interface InfoDialog {
     structure_level: string;
 
     /**
-     * Transfer voting rights
+     * Transfer voting rights from
      */
     vote_delegated_from_users_id: number[];
+
+    /**
+     * Transfer voting rights to
+     */
+    vote_delegated_to_id: number;
 }
 
 /**
@@ -264,7 +269,8 @@ export class UserListComponent extends BaseListViewComponent<ViewUser> implement
             gender: user.gender,
             structure_level: user.structure_level,
             number: user.number,
-            vote_delegated_from_users_id: user.vote_delegated_from_users_id
+            vote_delegated_from_users_id: user.vote_delegated_from_users_id,
+            vote_delegated_to_id: user.vote_delegated_to_id
         };
 
         const dialogRef = this.dialog.open(this.userInfoDialog, infoDialogSettings);
@@ -277,7 +283,7 @@ export class UserListComponent extends BaseListViewComponent<ViewUser> implement
 
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
-                this.repo.update(result, user);
+                this.repo.update(result, user).catch(this.raiseError);
             }
         });
     }
