@@ -154,7 +154,7 @@
             </mat-form-field>
         </div>
 
-        <div *osPerms="permission.usersCanManage">
+        <div *ngIf="isAllowed('manage')">
             <!-- Groups -->
             <mat-form-field>
                 <os-search-value-selector
@@ -185,9 +185,7 @@
                     [inputListValues]="users"
                 ></os-search-value-selector>
             </mat-form-field>
-        </div>
 
-        <div *ngIf="isAllowed('manage')">
             <!-- Initial Password -->
             <mat-form-field>
                 <input
@@ -318,12 +316,13 @@
                 {{ group.getTitle() | translate }}<span *ngIf="!last">,&nbsp;</span>
             </span>
         </div>
+
         <div *ngIf="!user.groups || user.groups.length === 0">
             <h4>{{ 'Groups' | translate }}</h4>
             <span>{{ 'Default group' | translate }}</span>
         </div>
 
-        <div *ngIf="isAllowed('manage')">
+        <div *ngIf="isAllowed('manage') || ownPage">
             <!-- Own Vote delegations -->
             <div *ngIf="user.voteDelegatedTo">
                 <h4>{{ 'Voting right delegated to (proxy)' | translate }}</h4>
@@ -341,7 +340,9 @@
                 <h4>{{ 'Vote weight' | translate }}</h4>
                 <span>{{ user.vote_weight }}</span>
             </div>
+        </div>
 
+        <div *ngIf="isAllowed('manage')">
             <!-- Username -->
             <div *ngIf="user.username">
                 <h4>{{ 'Username' | translate }}</h4>
