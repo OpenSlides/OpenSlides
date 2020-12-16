@@ -81,8 +81,8 @@
                 <os-icon-container icon="forward" noWrap="true">{{ user.voteDelegatedTo }}</os-icon-container>
             </div>
 
-            <div *ngIf="user.vote_delegated_from_users_id?.length" class="spacer-top-5" matTooltip="{{ 'Delegation of vote (principals)' | translate }}">
-                <os-icon-container icon="undo" noWrap="true">{{ user.voteDelegationsFrom }}</os-icon-container>
+            <div *ngIf="user.vote_delegated_from_users_id?.length" class="spacer-top-5" matTooltip="{{ 'Voting right received from (principals)' | translate }}">
+                <os-icon-container icon="work" noWrap="true">{{ user.voteDelegationsFrom }}</os-icon-container>
             </div>
         </div>
     </div>
@@ -286,7 +286,7 @@
             <os-search-value-selector
                 [(ngModel)]="infoDialog.vote_delegated_from_users_id"
                 [multiple]="true"
-                placeholder="{{ 'Delegation of vote (principals)' | translate }}"
+                placeholder="{{ 'Voting right received from (principals)' | translate }}"
                 [inputListValues]="users"
             ></os-search-value-selector>
         </mat-form-field>

@@ -312,7 +312,7 @@ _('In the election process');
 _('Motion votes');
 _('Ballots');
 _('You cannot delegate a vote to a user who has already delegated his vote.');
-_('You cannot delegate a vote of a user who is already a delegate of another user.');
+_('You cannot delegate a delegation of vote to another user (cascading not allowed).');
 _('You cannot delegate a vote to yourself.');
 
 // ** Users **
@@ -330,10 +330,9 @@ _('Can nominate another participant');
 _('Can nominate oneself');
 _('Can manage elections');
 _('Electronic voting is disabled. Only analog polls are allowed');
-_('Pseudoanonymizing can only be done after finishing a poll');
-_('You can just pseudoanonymize named polls');
+_('Anonymizing can only be done after finishing a poll.');
+_('You can just anonymize named polls');
 _('You cannot vote since your vote right is delegated.');
-_('You have already voted');
 // core
 _('Can see the projector');
 _('Can manage the projector');
@@ -349,8 +348,7 @@ _('Can see the list of files');
 _('Can upload files');
 _('Can manage files');
 _('Can see hidden files');
-_('A mediafile with this title or filename already exists in this folder.');
-_('parent must be a directory.');
+_('A file with this title or filename already exists in this directory.');
 _('The name contains invalid characters: "/"');
 _('The directory does not exist');
 // motions

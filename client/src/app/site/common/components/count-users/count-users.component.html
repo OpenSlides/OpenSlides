@@ -12,7 +12,7 @@
     {{ 'Groups' | translate }}:
     <ul>
         <li *ngFor="let groupId of groupIds()">
-            <strong>{{ stats.groups[groupId].name }}:</strong>
+            <strong>{{ stats.groups[groupId].name | translate }}:</strong>
             {{ userInGroupIds(groupId).length }} {{ 'active users' | translate }}
             ({{ stats.groups[groupId].userHandleCount }} {{ 'connections' | translate }})
         </li>

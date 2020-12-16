@@ -100,7 +100,7 @@ export class UserFilterListService extends BaseFilterListService<ViewUser> {
                 options: [
                     {
                         condition: DelegationType.Transferred,
-                        label: this.translate.instant('Delegation of vote (principals)')
+                        label: this.translate.instant('Voting right received from (principals)')
                     },
                     {
                         condition: DelegationType.Received,
