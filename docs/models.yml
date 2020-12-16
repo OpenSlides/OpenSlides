@@ -1521,9 +1521,6 @@ poll:
   max_votes_amount:
     type: number
     default: 1
-  allow_multiple_votes_per_candidate:
-    type: boolean
-    default: false
   global_yes:
     type: boolean
     default: false
