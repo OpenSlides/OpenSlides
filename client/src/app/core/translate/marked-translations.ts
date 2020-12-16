@@ -77,6 +77,7 @@ _('Header font color');
 _('Headline color');
 _('Chyron background color');
 _('Chyron font color');
+_(`You can't delete the last projector.`);
 
 // Agenda config strings
 _('Enable numbering for agenda items');
@@ -158,6 +159,7 @@ _('Number of minimal digits for identifier');
 _('Uses leading zeros to sort motions correctly by identifier.');
 _('Allow blank in identifier');
 _("Blank between prefix and number, e.g. 'A 001'.");
+_('No motions were numbered');
 // subgroup Amendments
 _('Amendments');
 _('Activate statute amendments');
@@ -261,6 +263,8 @@ _('red');
 _('green');
 _('lightblue');
 _('yellow');
+_('You cannot delete the first state of the workflow.');
+_('You cannot delete the last workflow.');
 // misc for motions
 _('Amendment');
 _('Statute amendment for');
@@ -307,6 +311,9 @@ _('In the election process');
 // Voting strings
 _('Motion votes');
 _('Ballots');
+_('You cannot delegate a vote to a user who has already delegated his vote.');
+_('You cannot delegate a vote of a user who is already a delegate of another user.');
+_('You cannot delegate a vote to yourself.');
 
 // ** Users **
 // permission strings (see models.py of each Django app)
@@ -322,6 +329,11 @@ _('Can see elections');
 _('Can nominate another participant');
 _('Can nominate oneself');
 _('Can manage elections');
+_('Electronic voting is disabled. Only analog polls are allowed');
+_('Pseudoanonymizing can only be done after finishing a poll');
+_('You can just pseudoanonymize named polls');
+_('You cannot vote since your vote right is delegated.');
+_('You have already voted');
 // core
 _('Can see the projector');
 _('Can manage the projector');
@@ -337,6 +349,10 @@ _('Can see the list of files');
 _('Can upload files');
 _('Can manage files');
 _('Can see hidden files');
+_('A mediafile with this title or filename already exists in this folder.');
+_('parent must be a directory.');
+_('The name contains invalid characters: "/"');
+_('The directory does not exist');
 // motions
 _('Can see motions');
 _('Can see motions in internal state');
@@ -399,9 +415,13 @@ _(
 
 // users misc
 _('Username or password is not correct.');
+_('Please login via your identity provider');
+_('You are not authenticated.');
 _('Guest');
 _('Participant');
 _('No users with email {0} found.');
+_('You can not delete yourself.');
+_('You can not deactivate yourself.');
 
 // default groups
 _('Default');
@@ -435,6 +455,7 @@ _('Comment {arg1} updated');
 // core misc strings
 _('items per page');
 _('Tag');
+_('Not allowed in demo mode');
 
 // strings which are not extracted as translateable strings from client code
 _('Foreground color');
