@@ -675,7 +675,6 @@ meeting:
       to: mediafile/used_as_logo_$_in_meeting_id
   font_$_id:
     type: template
-    replacement: place
     fields:
       type: relation
       to: mediafile/used_as_font_$_in_meeting_id
@@ -1747,13 +1746,11 @@ mediafile:
   # Reverse relations for meetings, if a mediafile is used as a special resource
   used_as_logo_$_in_meeting_id:
     type: template
-    replacement: place
     fields:
       type: relation
       to: meeting/logo_$_id
   used_as_font_$_in_meeting_id:
     type: template
-    replacement: place
     fields:
       type: relation
       to: meeting/font_$_id
