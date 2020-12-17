@@ -238,7 +238,7 @@ class UserViewSet(ModelViewSet):
         if user.vote_delegated_from_users and len(user.vote_delegated_from_users.all()):
             raise ValidationError(
                 {
-                    "detail": "You cannot delegate a vote of a user who is already a delegate of another user."
+                    "detail": "You cannot delegate a delegation of vote to another user (cascading not allowed)."
                 }
             )
 

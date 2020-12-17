@@ -19,6 +19,9 @@ msgstr ""
 msgid "<unknown motion>"
 msgstr ""
 
+msgid "A file with this title or filename already exists in this directory."
+msgstr ""
+
 msgid "A name is required"
 msgstr ""
 
@@ -210,6 +213,9 @@ msgid "An unknown error occurred."
 msgstr ""
 
 msgid "Anonymize votes"
+msgstr ""
+
+msgid "Anonymizing can only be done after finishing a poll."
 msgstr ""
 
 msgid "Anonymous"
@@ -828,9 +834,6 @@ msgstr ""
 msgid "Delegation of vote"
 msgstr ""
 
-msgid "Delegation of vote (principals)"
-msgstr ""
-
 msgid "Delete"
 msgstr ""
 
@@ -847,6 +850,9 @@ msgid "Delete recommendation"
 msgstr ""
 
 msgid "Delete whole history"
+msgstr ""
+
+msgid "Deleted user"
 msgstr ""
 
 msgid "Deletion"
@@ -989,6 +995,9 @@ msgid "Election documents"
 msgstr ""
 
 msgid "Elections"
+msgstr ""
+
+msgid "Electronic voting is disabled. Only analog polls are allowed"
 msgstr ""
 
 msgid "Element"
@@ -1751,6 +1760,9 @@ msgstr ""
 msgid "No motion block set"
 msgstr ""
 
+msgid "No motions were numbered"
+msgstr ""
+
 msgid "No per candidate"
 msgstr ""
 
@@ -1781,7 +1793,7 @@ msgstr ""
 msgid "None"
 msgstr ""
 
-msgid "Not suitable for formal secret voting!"
+msgid "Not allowed in demo mode"
 msgstr ""
 
 msgid "Note, that the default password will be changed to the new generated one."
@@ -1917,6 +1929,9 @@ msgstr ""
 msgid "OpenSlides recommends"
 msgstr ""
 
+msgid "Options"
+msgstr ""
+
 msgid "Origin"
 msgstr ""
 
@@ -2044,6 +2059,9 @@ msgid "Please enter a valid email address!"
 msgstr ""
 
 msgid "Please enter your new password"
+msgstr ""
+
+msgid "Please login via your identity provider"
 msgstr ""
 
 msgid "Please select the directory:"
@@ -2506,7 +2524,7 @@ msgid "Show/Hide video conference"
 msgstr ""
 
 msgid ""
-"Shows if livestream is not started. Recommended image format: 500x281px, "
+"Shows if livestream is not started. Recommended image format: 500x200px, "
 "PNG or JPG"
 msgstr ""
 
@@ -2675,6 +2693,9 @@ msgstr ""
 msgid "The assembly may decide:"
 msgstr ""
 
+msgid "The directory does not exist"
+msgstr ""
+
 msgid "The event manager has not set up a legal notice yet."
 msgstr ""
 
@@ -2705,15 +2726,15 @@ msgstr ""
 msgid "The live conference is already running in your OpenSlides session."
 msgstr ""
 
-msgid "The livestream is already running in your OpenSlides session."
-msgstr ""
-
 msgid "The livestream is disabled because you are inside a conference"
 msgstr ""
 
 msgid ""
 "The maximum number of characters per line. Relevant when line numbering is "
 "enabled. Min: 40"
+msgstr ""
+
+msgid "The name contains invalid characters: \"/\""
 msgstr ""
 
 msgid "The number has to be greater than 0."
@@ -2760,6 +2781,9 @@ msgid "There are no items left to chose from"
 msgstr ""
 
 msgid "There is an error with this amendment. Please edit it manually."
+msgstr ""
+
+msgid "This ballot contains deleted users."
 msgstr ""
 
 msgid "This change collides with another one."
@@ -2872,9 +2896,6 @@ msgstr ""
 msgid "Unique speakers"
 msgstr ""
 
-msgid "Unknown user"
-msgstr ""
-
 msgid "Unsupport"
 msgstr ""
 
@@ -2963,6 +2984,9 @@ msgstr ""
 msgid "Voting right for"
 msgstr ""
 
+msgid "Voting right received from (principals)"
+msgstr ""
+
 msgid "Voting successful."
 msgstr ""
 
@@ -3048,10 +3072,22 @@ msgstr ""
 msgid "Yes/No/Abstain per candidate"
 msgstr ""
 
+msgid "You are not authenticated."
+msgstr ""
+
 msgid "You are not supposed to be here..."
 msgstr ""
 
 msgid "You are using the history mode of OpenSlides. Changes will not be saved."
+msgstr ""
+
+msgid "You can just anonymize named polls"
+msgstr ""
+
+msgid "You can not deactivate yourself."
+msgstr ""
+
+msgid "You can not delete yourself."
 msgstr ""
 
 msgid "You can not vote because this is an analog voting."
@@ -3063,10 +3099,33 @@ msgstr ""
 msgid "You can use {event_name} and {username} as placeholder."
 msgstr ""
 
+msgid "You can't delete the last projector."
+msgstr ""
+
 msgid "You cannot change the recommendation of motions in different workflows!"
 msgstr ""
 
 msgid "You cannot change the state of motions in different workflows!"
+msgstr ""
+
+msgid ""
+"You cannot delegate a delegation of vote to another user (cascading not "
+"allowed)."
+msgstr ""
+
+msgid "You cannot delegate a vote to a user who has already delegated his vote."
+msgstr ""
+
+msgid "You cannot delegate a vote to yourself."
+msgstr ""
+
+msgid "You cannot delete the first state of the workflow."
+msgstr ""
+
+msgid "You cannot delete the last workflow."
+msgstr ""
+
+msgid "You cannot vote since your vote right is delegated."
 msgstr ""
 
 msgid "You do not have the permission to vote."

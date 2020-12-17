@@ -170,7 +170,7 @@
                 <os-search-value-selector
                     formControlName="vote_delegated_from_users_id"
                     [multiple]="true"
-                    placeholder="{{ 'Delegation of vote (principals)' | translate }}"
+                    placeholder="{{ 'Voting right received from (principals)' | translate }}"
                     [inputListValues]="users"
                 ></os-search-value-selector>
             </mat-form-field>
@@ -331,7 +331,7 @@
 
             <!-- Received Vote delegations -->
             <div *ngIf="user.voteDelegationsFrom && user.voteDelegationsFrom.length">
-                <h4>{{ 'Delegation of vote (principals)' | translate }}</h4>
+                <h4>{{ 'Voting right received from (principals)' | translate }}</h4>
                 <span>{{ user.voteDelegationsFrom }}</span>
             </div>
 

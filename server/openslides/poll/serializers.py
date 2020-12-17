@@ -126,7 +126,7 @@ class BasePollSerializer(ModelSerializer):
         ):
             raise ValidationError(
                 {
-                    "detail": "Electronic voting is disabled. Only analog polls are allowed"
+                    "detail": "Electronic voting is disabled. Only analog polls are allowed."
                 }
             )
         return data

@@ -142,7 +142,7 @@ class Mediafile(RESTModelMixin, ListOfSpeakersMixin, models.Model):
         ):
             raise ValidationError(
                 {
-                    "detail": "A mediafile with this title or filename already exists in this folder."
+                    "detail": "A file with this title or filename already exists in this directory."
                 }
             )
 

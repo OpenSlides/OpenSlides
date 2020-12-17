@@ -30,6 +30,11 @@ msgstr ""
 msgid "<unknown motion>"
 msgstr "<unbekannter Antrag>"
 
+msgid "A file with this title or filename already exists in this directory."
+msgstr ""
+"Eine Datei mit diesem Titel oder Dateinamen existiert bereits in diesem "
+"Verzeichnis."
+
 msgid "A name is required"
 msgstr "Ein Name ist erforderlich"
 
@@ -230,6 +235,9 @@ msgstr "Ein unbekannter Fehler ist aufgetreten."
 
 msgid "Anonymize votes"
 msgstr "Stimmen anonymisieren"
+
+msgid "Anonymizing can only be done after finishing a poll."
+msgstr "Anonymisieren kann erst nach Beenden der Stimmabgabe erfolgen."
 
 msgid "Anonymous"
 msgstr "Anonym"
@@ -884,9 +892,6 @@ msgstr "Delegierte"
 msgid "Delegation of vote"
 msgstr "Stimmrechtsübertragung"
 
-msgid "Delegation of vote (principals)"
-msgstr "Stimmrechtsübertragungen (Vollmachtgeber)"
-
 msgid "Delete"
 msgstr "Löschen"
 
@@ -904,6 +909,9 @@ msgstr "Empfehlung löschen"
 
 msgid "Delete whole history"
 msgstr "Chronik löschen"
+
+msgid "Deleted user"
+msgstr "Gelöschter Nutzer"
 
 msgid "Deletion"
 msgstr "Streichung"
@@ -1055,6 +1063,11 @@ msgstr "Wahlunterlagen"
 
 msgid "Elections"
 msgstr "Wahlen"
+
+msgid "Electronic voting is disabled. Only analog polls are allowed"
+msgstr ""
+"Die elektronische Stimmabgabe ist deaktiviert. Es sind nur analoge "
+"Abstimmungen erlaubt."
 
 msgid "Element"
 msgstr "Element"
@@ -1827,6 +1840,9 @@ msgstr "Keine Einträge ausgewählte"
 msgid "No motion block set"
 msgstr "kein Antragsblock gesetzt"
 
+msgid "No motions were numbered"
+msgstr "Es wurden keine Anträge nummeriert."
+
 msgid "No per candidate"
 msgstr "Nein pro Kandidat"
 
@@ -1857,8 +1873,8 @@ msgstr "Nr."
 msgid "None"
 msgstr "aus"
 
-msgid "Not suitable for formal secret voting!"
-msgstr "Nicht geeignet für förmliche, geheime Stimmabgaben!"
+msgid "Not allowed in demo mode"
+msgstr "Im Demo-Modus nicht erlaubt."
 
 msgid ""
 "Note, that the default password will be changed to the new generated one."
@@ -2003,6 +2019,9 @@ msgstr "OpenSlides ist vorübergehend auf folgenden Zeitpunkt zurückgesetzt:"
 msgid "OpenSlides recommends"
 msgstr "OpenSlides empfiehlt"
 
+msgid "Options"
+msgstr "Optionen"
+
 msgid "Origin"
 msgstr "Herkunft"
 
@@ -2132,6 +2151,9 @@ msgstr "Bitte geben Sie eine gültige E-Mail-Adresse ein!"
 
 msgid "Please enter your new password"
 msgstr "Bitte geben Sie Ihr neues Passwort ein"
+
+msgid "Please login via your identity provider"
+msgstr "Bitte melden Sie sich über Ihren Identity Provider an"
 
 msgid "Please select the directory:"
 msgstr "Bitte wählen Sie das Verzeichnis aus:"
@@ -2605,11 +2627,11 @@ msgid "Show/Hide video conference"
 msgstr "Videokonferenz anzeigen/verstecken"
 
 msgid ""
-"Shows if livestream is not started. Recommended image format: 500x281px, PNG"
+"Shows if livestream is not started. Recommended image format: 500x200px, PNG"
 " or JPG"
 msgstr ""
 "Wird angezeigt, wenn der Livestream nicht gestartet werden kann. "
-"Bildformatempfehlung: 500x281px, PNG oder JPG"
+"Bildformatempfehlung: 500x200px, PNG oder JPG"
 
 msgid "Simple Workflow"
 msgstr "Einfacher Arbeitsablauf"
@@ -2777,6 +2799,9 @@ msgstr "Texttrenner"
 msgid "The assembly may decide:"
 msgstr "Die Versammlung möge beschließen:"
 
+msgid "The directory does not exist"
+msgstr "Das Verzeichnis existiert nicht"
+
 msgid "The event manager has not set up a legal notice yet."
 msgstr "Der Veranstalter hat noch kein Impressum hinterlegt."
 
@@ -2812,9 +2837,6 @@ msgstr "Die Redeliste ist geöffnet."
 msgid "The live conference is already running in your OpenSlides session."
 msgstr "Die Livekonferenz läuft bereits in Ihrer OpenSlides-Sitzung."
 
-msgid "The livestream is already running in your OpenSlides session."
-msgstr "Der Livestream läuft bereits in Ihrer OpenSlides-Sitzung."
-
 msgid "The livestream is disabled because you are inside a conference"
 msgstr ""
 "Der Livestream ist deaktiviert, weil Sie gerade an der Livekonferenz "
@@ -2826,6 +2848,9 @@ msgid ""
 msgstr ""
 "Die maximale Zeichenanzahl pro Zeile. Relevant, wenn die Zeilennummerierung "
 "eingeschaltet ist. Minimum: 40."
+
+msgid "The name contains invalid characters: \"/\""
+msgstr "Der Name enthält ein ungültiges Zeichen: \"/\""
 
 msgid "The number has to be greater than 0."
 msgstr "Die Anzahl muss größer als 0 sein."
@@ -2884,6 +2909,9 @@ msgid "There is an error with this amendment. Please edit it manually."
 msgstr ""
 "In diesem Änderungsantrag ist ein Fehler. Bitte bearbeiten Sie den Text "
 "manuell."
+
+msgid "This ballot contains deleted users."
+msgstr "Der Wahlgang enthält gelöschte Nutzer."
 
 msgid "This change collides with another one."
 msgstr "Diese Änderung kollidiert mit einer anderen."
@@ -3013,9 +3041,6 @@ msgstr "unerledigt"
 msgid "Unique speakers"
 msgstr "Eindeutige Redner/innen"
 
-msgid "Unknown user"
-msgstr "Unbekannter Nutzer"
-
 msgid "Unsupport"
 msgstr "Unterstützung zurückziehen"
 
@@ -3110,6 +3135,9 @@ msgstr "Stimmrecht übertragen an (Vollmachtnehmer)"
 msgid "Voting right for"
 msgstr "Stimmrecht für"
 
+msgid "Voting right received from (principals)"
+msgstr "Stimmrecht erhalten von (Vollmachtgeber)"
+
 msgid "Voting successful."
 msgstr "Stimmabgabe erfolgreich."
 
@@ -3199,12 +3227,24 @@ msgstr "Ja/Nein/Enthaltung"
 msgid "Yes/No/Abstain per candidate"
 msgstr "Ja/Nein/Enthaltung pro Kandidat"
 
+msgid "You are not authenticated."
+msgstr "Sie sind nicht authentifiziert."
+
 msgid "You are not supposed to be here..."
 msgstr "Sie sollten nicht hier sein ..."
 
 msgid ""
 "You are using the history mode of OpenSlides. Changes will not be saved."
 msgstr "Der Chronik-Modus ist aktiv. Änderungen werden nicht gespeichert."
+
+msgid "You can just anonymize named polls"
+msgstr "Sie können nur namentliche Stimmabgaben anonymisieren"
+
+msgid "You can not deactivate yourself."
+msgstr "Sie dürfen sich nicht selbst deaktivieren."
+
+msgid "You can not delete yourself."
+msgstr "Sie dürfen sich nicht selbst löschen."
 
 msgid "You can not vote because this is an analog voting."
 msgstr ""
@@ -3219,6 +3259,9 @@ msgstr ""
 msgid "You can use {event_name} and {username} as placeholder."
 msgstr "Sie können {event_name} und {username} als Platzhalter verwenden."
 
+msgid "You can't delete the last projector."
+msgstr "Sie dürfen den letzten Projektor nicht löschen."
+
 msgid ""
 "You cannot change the recommendation of motions in different workflows!"
 msgstr ""
@@ -3229,6 +3272,31 @@ msgid "You cannot change the state of motions in different workflows!"
 msgstr ""
 "Das Ändern des Status von Anträgen in verschiedenen Arbeitsabläufen ist "
 "nicht möglich."
+
+msgid ""
+"You cannot delegate a delegation of vote to another user (cascading not "
+"allowed)."
+msgstr ""
+"Sie dürfen eine Stimmrechtsübertragung nicht an eine weitere Person "
+"übertragen (Kaskadierung ausgeschlossen)."
+
+msgid ""
+"You cannot delegate a vote to a user who has already delegated his vote."
+msgstr ""
+"Sie dürfen ein Stimmrecht nicht an eine Person übertragen, die bereits ihr "
+"Stimmrecht an eine andere Person übertragen hat."
+
+msgid "You cannot delegate a vote to yourself."
+msgstr "Sie dürfen keine Stimme an sich selbst delegieren."
+
+msgid "You cannot delete the first state of the workflow."
+msgstr "Sie düfen den ersten Status eines Arbeitsablaufs nicht löschen."
+
+msgid "You cannot delete the last workflow."
+msgstr "Sie dürfen den letzten Arbeitsablauf nicht löschen."
+
+msgid "You cannot vote since your vote right is delegated."
+msgstr "Sie können nicht abstimmen, solange Ihr Stimmrecht übertragen ist."
 
 msgid "You do not have the permission to vote."
 msgstr "Sie haben nicht die Berechtigung zur Stimmabgabe."

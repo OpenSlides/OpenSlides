@@ -171,12 +171,10 @@ class BasePollViewSet(ModelViewSet):
 
         if poll.state not in (BasePoll.STATE_FINISHED, BasePoll.STATE_PUBLISHED):
             raise ValidationError(
-                {"detail": "Pseudoanonymizing can only be done after finishing a poll"}
+                {"detail": "Anonymizing can only be done after finishing a poll."}
             )
         if poll.type != BasePoll.TYPE_NAMED:
-            raise ValidationError(
-                {"detail": "You can just pseudoanonymize named polls"}
-            )
+            raise ValidationError({"detail": "You can just anonymize named polls."})
 
         poll.pseudoanonymize()
         return Response()
@@ -290,7 +288,7 @@ class BasePollViewSet(ModelViewSet):
                 self.add_user_to_voted_array(vote_user, poll)
                 inform_changed_data(poll)
             except IntegrityError:
-                raise ValidationError({"detail": "You have already voted"})
+                raise ValidationError({"detail": "You have already voted."})
 
     def parse_vote_value(self, obj, key):
         """ Raises a ValidationError on incorrect values, including None """
