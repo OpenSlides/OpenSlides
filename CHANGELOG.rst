@@ -4,6 +4,72 @@
 
 https://openslides.com
 
+Version 3.3 (2020-12-18)
+========================
+`Milestone <https://github.com/OpenSlides/OpenSlides/milestones/3.3>`_
+
+General:
+ - Fixed HTML attribute validation (XSS in all user-editable HTML fields) [#5714]
+ - Improved system libraries (u.g. updated to Angular 10 and TinyMCE editor 5.4)
+ - Improved repository structure (moved server code into subdirectory)
+ - Improved docker setup (config and build scripts)
+ - Improved search-value-selectors (e.g. virtual scrolling, multiselect)
+ - Improved management commands to use cache
+ - Improved reporting of SMTP exception
+ - Replaced travis with github actions
+ - Allowd demo mode in settings.py
+ - Fixed Firefox indexedDB state change issue [#5544]
+ - Fixed saml issues and improved saml config commands
+ - Various cleanups and improvements to usability, performance and translation.
+
+eVoting:
+ - New feature for delegation of vote
+ - New election method 'No per candidate'
+ - Show progress bar also in autopilot (for managers only)
+ - Show last voting result always in autopilot (keep current projection and list of speakers)
+ - Show information for candidates and election method for each created ballot
+ - Improved layout of create voting dialog
+ - Improved user export with username and vote weight
+ - Prevent empty ballot paper
+
+Jitsi/Livestream:
+ - New config option for livestream poster url (if livestream gets 404 error)
+ - New config option for auto conntecting next x speakers to Jitsi
+ - New config options to open microphone/camera by entering Jitsi
+ - Improved browser permission check for microphone/camera before entering Jitsi
+ - Improved switching between livestream and jitsi
+ - Added Picture-in-Picture (PIP) option to livestream player
+ - Updated jitsi-meet lib
+
+Agenda:
+ - New autopilot mode to show always current agenda item/motion/list-of-speakers/voting/projector
+ - New "point of order" button in list of speakers
+
+Motions:
+ - New config option for default workflow for amendments
+ - Improved performance for amendments (esp. for diff view in list and main motion view)
+ - Improved motion detail view and PDF to hide motion preamble in final state
+ - Improved motion export dialog to select supporters
+ - Improved navigation between amendments and main motions
+ - Show change recommendations of amendments also in main motion
+ - Fixed PDF issues
+
+Elections:
+ - Improved handling for new candidates (quick create of new candidates)
+
+Users:
+ - Improved user import preview by virtual srolling
+ - Show vote weight totals in user list
+ - Show vote delegations to users on ownPage
+
+Mediafiles:
+ - New possibility to download full directory as zip
+
+Projector:
+ - Always include change recommendations in motion slide
+ - Added amendments to projection defaults
+
+
 Version 3.2 (2020-07-15)
 ========================
 `Milestone <https://github.com/OpenSlides/OpenSlides/milestones/3.2>`_
