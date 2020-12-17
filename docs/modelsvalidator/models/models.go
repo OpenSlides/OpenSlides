@@ -222,12 +222,18 @@ func (t *ToGeneric) UnmarshalYAML(value *yaml.Node) error {
 		return nil
 	}
 
-	var e struct {
-		CollectionFields []ToCollectionField `yaml:"collections"`
-	}
+	var e []string
 	if err := value.Decode(&e); err != nil {
 		return fmt.Errorf("decoding to generic field at line %d: %w", value.Line, err)
 	}
-	t.CollectionFields = e.CollectionFields
+	t.CollectionFields = make([]ToCollectionField, len(e))
+	for i, collectionfield := range e {
+		cf := strings.Split(collectionfield, "/")
+		if len(cf) != 2 {
+			return fmt.Errorf("invalid value of `to` in line %d, expected one `/`: %s", value.Line, collectionfield)
+		}
+		t.CollectionFields[i].Collection = cf[0]
+		t.CollectionFields[i].ToField.Name = cf[1]
+	}
 	return nil
 }

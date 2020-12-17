@@ -23,19 +23,18 @@
 #       `motion/category_id`. The type indicates that there are many
 #       motion ids.
 #     - Generic relations: The difference to non-generic relations is that you have a
-#       list of possible collections. Therefore we split the simple notation up to the
-#       properties `collections` and `field`, if each collection has the same field.
-#       If the different collections have different fields, you can give multiple
-#       `collection` and `field`. E.g.:
-#        to:
-#          collections:
-#            - collection: motion
-#              field: option_ids
-#            - collection: user
-#              field:
-#                name: option_$_ids
-#                type: structured-relation
-#                replacement: meeting_id
+#       list of possible fields, so `to` can either hold multiple collections (if the
+#       field name is the same):
+#         to:
+#           collections:
+#             - agenda_item
+#             - assignment
+#             - ...
+#           field: tag_ids
+#       Or `to` can be a list of collection fields:
+#         to:
+#           - motion/option_ids
+#           - user/option_$_ids
 #     - on_delete: This fields determines what should happen with the foreign model if
 #       this model gets deleted. Possible values are:
 #           - SET_NULL (default): delete the id from the foreign key
@@ -44,17 +43,12 @@
 #           - CASCADE: also delete all models in this foreign key
 # Structured fields:
 #     - There are template fields (see autoupdate service interface) with a `$` as
-#       the placeholder. We have three different types: `template`,
-#       `structured-relation` and `structured-tag`.
-#     - The type `template` describes a structured field for the given model. The
-#       property `replacement` describes the meaning of the template. The property
-#       `fields` contains the definition for all the fields that come from the template
-#       field.
-#     - The type `structured-relation` describes the content of a related field as a
-#       structured field (with properties `name`, `replacement` and `through`).
-#     - The type `structured-tag` describes the content of a related field as a
-#       structured field where the template is filled with arbitrary strings instead of
-#       instance ids.
+#       the placeholder.
+#     - The type `template` describes a structured field for the given model. If the
+#       property `replacement` is given, it describes which field of the same model
+#       is used as the replacement (=> structured relation). If it not given, the field
+#       is a structured tag. The property `fields` contains the definition for all the
+#       fields that come from the template field.
 # JSON Schema Properties:
 #     - You can add JSON Schema properties like `enum` and `description` to the fields.
 
@@ -223,23 +217,13 @@ user:
     replacement: meeting_id
     fields:
       type: relation
-      to:
-        collection: user
-        field:
-          name: vote_delegations_$_from_ids
-          type: structured-relation
-          replacement: meeting_id
+      to: user/vote_delegations_$_from_ids
   vote_delegations_$_from_ids:
     type: template
     replacement: meeting_id
     fields:
       type: relation-list
-      to:
-        collection: user
-        field:
-          name: vote_delegated_$_to_id
-          type: structured-relation
-          replacement: meeting_id
+      to: user/vote_delegated_$_to_id
 
 role:
   id: number
@@ -686,26 +670,15 @@ meeting:
   # Logos and Fonts
   logo_$_id:
     type: template
-    replacement: place
     fields:
       type: relation
-      to:
-        collection: mediafile
-        field:
-          name: used_as_logo_$_in_meeting_id
-          type: structured-tag
-          replacement: place
+      to: mediafile/used_as_logo_$_in_meeting_id
   font_$_id:
     type: template
     replacement: place
     fields:
       type: relation
-      to:
-        collection: mediafile
-        field:
-          name: used_as_font_$_in_meeting_id
-          type: structured-tag
-          replacement: place
+      to: mediafile/used_as_font_$_in_meeting_id
   # Examples:
   # logo_web_header: Mediafile;
   # font_italic_pdf: Mediafile;
@@ -756,12 +729,7 @@ group:
 
   user_ids:
     type: relation-list
-    to:
-      collection: user
-      field:
-        name: group_$_ids
-        type: structured-relation
-        replacement: meeting_id
+    to: user/group_$_ids
   default_group_for_meeting_id:
     type: relation
     to: meeting/default_group_id
@@ -812,12 +780,7 @@ personal_note:
 
   user_id:
     type: relation
-    to:
-      collection: user
-      field:
-        name: personal_note_$_ids
-        type: structured-relation
-        replacement: meeting_id
+    to: user/personal_note_$_ids
   content_object_id:
     type: generic-relation
     to:
@@ -974,12 +937,7 @@ speaker:
     equal_fields: meeting_id
   user_id:
     type: relation
-    to:
-      collection: user
-      field:
-        name: speaker_$_ids
-        type: structured-relation
-        replacement: meeting_id
+    to: user/speaker_$_ids
     required: true
   meeting_id:
     type: relation
@@ -1048,7 +1006,6 @@ motion:
   text: HTMLStrict
   amendment_paragraph_$:
     type: template
-    replacement: paragraph_number
     fields: HTMLStrict
   modified_final_version: HTMLStrict
   reason: HTMLStrict
@@ -1125,12 +1082,7 @@ motion:
     equal_fields: meeting_id
   supporter_ids:
     type: relation-list
-    to:
-      collection: user
-      field:
-        name: supported_motion_$_ids
-        type: structured-relation
-        replacement: meeting_id
+    to: user/supported_motion_$_ids
     equal_fields: meeting_id
   poll_ids:
     type: relation-list
@@ -1201,12 +1153,7 @@ motion_submitter:
 
   user_id:
     type: relation
-    to:
-      collection: user
-      field:
-        name: submitted_motion_$_ids
-        type: structured-relation
-        replacement: meeting_id
+    to: user/submitted_motion_$_ids
   motion_id:
     type: relation
     to: motion/submitter_ids
@@ -1575,12 +1522,7 @@ poll:
     equal_fields: meeting_id
   voted_ids:
     type: relation-list
-    to:
-      collection: user
-      field:
-        name: poll_voted_$_ids
-        type: structured-relation
-        replacement: meeting_id
+    to: user/poll_voted_$_ids
   entitled_group_ids:
     type: relation-list
     to: group/poll_ids
@@ -1623,16 +1565,9 @@ option:
   content_object_id:
     type: generic-relation
     to:
-      collections:  # Now, we have multiple models to vote about.
-        - collection: motion
-          field: option_ids
-        - collection: topic
-          field: option_ids
-        - collection: user
-          field:
-            name: option_$_ids
-            type: structured-relation
-            replacement: meeting_id
+      - motion/option_ids
+      - topic/option_ids
+      - user/option_$_ids
     equal_fields: meeting_id
   meeting_id:
     type: relation
@@ -1651,20 +1586,10 @@ vote:
     required: true
   user_id:
     type: relation
-    to:
-      collection: user
-      field:
-        name: vote_$_ids
-        type: structured-relation
-        replacement: meeting_id
+    to: user/vote_$_ids
   delegated_user_id:
     type: relation
-    to:
-      collection: user
-      field:
-        name: vote_delegated_vote_$_ids
-        type: structured-relation
-        replacement: meeting_id
+    to: user/vote_delegated_vote_$_ids
   meeting_id:
     type: relation
     to: meeting/vote_ids
@@ -1744,12 +1669,7 @@ assignment_candidate:
     equal_fields: meeting_id
   user_id:
     type: relation
-    to:
-      collection: user
-      field:
-        name: assignment_candidate_$_ids
-        type: structured-relation
-        replacement: meeting_id
+    to: user/assignment_candidate_$_ids
   meeting_id:
     type: relation
     to: meeting/assignment_candidate_ids
@@ -1830,23 +1750,13 @@ mediafile:
     replacement: place
     fields:
       type: relation
-      to:
-        collection: meeting
-        field:
-          name: logo_$_id
-          type: structured-tag
-          replacement: place
+      to: meeting/logo_$_id
   used_as_font_$_in_meeting_id:
     type: template
     replacement: place
     fields:
       type: relation
-      to:
-        collection: meeting
-        field:
-          name: font_$_id
-          type: structured-tag
-          replacement: place
+      to: meeting/font_$_id
 
 projector:
   id: number
@@ -1877,32 +1787,17 @@ projector:
   current_element_ids:
     type: generic-relation-list
     to:
-      collections:
-        - collection: motion
-          field: current_projector_ids
-        - collection: mediafile
-          field: current_projector_ids
-        - collection: list_of_speakers
-          field: current_projector_ids
-        - collection: motion_block
-          field: current_projector_ids
-        - collection: assignment
-          field: current_projector_ids
-        - collection: agenda_item
-          field: current_projector_ids
-        - collection: topic
-          field: current_projector_ids
-        - collection: poll
-          field: current_projector_ids
-        - collection: projector_message
-          field: current_projector_ids
-        - collection: projector_countdown
-          field: current_projector_ids
-        - collection: user
-          field:
-            name: current_projector_$_ids
-            type: structured-relation
-            replacement: meeting_id
+      - motion/current_projector_ids
+      - mediafile/current_projector_ids
+      - list_of_speakers/current_projector_ids
+      - motion_block/current_projector_ids
+      - assignment/current_projector_ids
+      - agenda_item/current_projector_ids
+      - topic/current_projector_ids
+      - poll/current_projector_ids
+      - projector_message/current_projector_ids
+      - projector_countdown/current_projector_ids
+      - user/current_projector_$_ids
     equal_fields: meeting_id
   preview_projection_ids:
     type: relation-list
@@ -1948,32 +1843,17 @@ projection:
   element_id:
     type: generic-relation
     to:
-      collections:
-        - collection: motion
-          field: projection_ids
-        - collection: mediafile
-          field: projection_ids
-        - collection: list_of_speakers
-          field: projection_ids
-        - collection: motion_block
-          field: projection_ids
-        - collection: assignment
-          field: projection_ids
-        - collection: agenda_item
-          field: projection_ids
-        - collection: topic
-          field: projection_ids
-        - collection: poll
-          field: projection_ids
-        - collection: projector_message
-          field: projection_ids
-        - collection: projector_countdown
-          field: projection_ids
-        - collection: user
-          field:
-            name: projection_$_ids
-            type: structured-relation
-            replacement: meeting_id
+      - motion/projection_ids
+      - mediafile/projection_ids
+      - list_of_speakers/projection_ids
+      - motion_block/projection_ids
+      - assignment/projection_ids
+      - agenda_item/projection_ids
+      - topic/projection_ids
+      - poll/projection_ids
+      - projector_message/projection_ids
+      - projector_countdown/projection_ids
+      - user/projection_$_ids
     equal_fields: meeting_id
   meeting_id:
     type: relation
