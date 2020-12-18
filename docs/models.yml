@@ -1082,7 +1082,6 @@ motion:
   supporter_ids:
     type: relation-list
     to: user/supported_motion_$_ids
-    equal_fields: meeting_id
   poll_ids:
     type: relation-list
     to: poll/content_object_id
