@@ -38,7 +38,7 @@
 #     - on_delete: This fields determines what should happen with the foreign model if
 #       this model gets deleted. Possible values are:
 #           - SET_NULL (default): delete the id from the foreign key
-#           - PROTECT: if the foreign key is not empty, throw an error instead of 
+#           - PROTECT: if the foreign key is not empty, throw an error instead of
 #                      deleting the object
 #           - CASCADE: also delete all models in this foreign key
 # Structured fields:
@@ -385,11 +385,11 @@ meeting:
     - default_yes
     - default_no
   agenda_new_items_default_visibility:
-    type: number
+    type: string
     enum:
-    - 1
-    - 2
-    - 3
+    - common
+    - internal
+    - hidden
   agenda_show_internal_items_on_projector: boolean
 
   # List of speakers
@@ -819,12 +819,12 @@ agenda_item:
   comment: string
   closed: boolean
   type:
-    type: number
+    type: string
     enum:
-    - 1
-    - 2
-    - 3
-    default: 1
+    - common
+    - internal
+    - hidden
+    default: common
   duration:
     type: number
     description: Given in seconds
@@ -1281,13 +1281,13 @@ motion_change_recommendation:
   rejected: boolean
   internal: boolean
   type:
-    type: number
+    type: string
     enum:
-    - 0
-    - 1
-    - 2
-    - 3
-    default: 0
+    - replacement
+    - insertion
+    - deletion
+    - other
+    default: replacement
   other_description: string
   line_from:
     type: number
@@ -1318,20 +1318,20 @@ motion_state:
   recommendation_label: string
   css_class:
     type: string
-    default: lightblue
     enum:
     - grey
     - red
     - green
     - lightblue
     - yellow
+    default: lightblue
   restrictions:
     type: string[]
     items:
       enum:
-      - motions.can_see_internal
-      - motions.can_manage_metadata
-      - motions.can_manage
+      - motion.can_see_internal
+      - motion.can_manage_metadata
+      - motion.can_manage
       - is_submitter
   allow_support: boolean
   allow_create_poll: boolean
@@ -1339,12 +1339,12 @@ motion_state:
   set_number: boolean
   show_state_extension_field: boolean
   merge_amendment_into_final:
-    type: number
-    default: 0
+    type: string
     enum:
-    - -1
-    - 0
-    - 1
+    - do_not_merge
+    - undefined
+    - do_merge
+    default: undefined
   show_recommendation_extension_field: boolean
 
   next_state_ids:
@@ -1454,13 +1454,13 @@ poll:
       - YNA
       - N
   state:
-    type: number
-    default: 1
+    type: string
     enum:
-      - 1
-      - 2
-      - 3
-      - 4
+      - created
+      - started
+      - finished
+      - published
+    default: created
   min_votes_amount:
     type: number
     default: 1
@@ -1602,12 +1602,12 @@ assignment:
     minimum: 0
     default: 0
   phase:
-    type: number
+    type: string
     enum:
-    - 0
-    - 1
-    - 2
-    default: 0
+    - search
+    - voting
+    - finished
+    default: search
   default_poll_description: string
   number_poll_candidates: boolean
 
