@@ -715,9 +715,9 @@ meeting:
     type: relation
     to: group/default_group_for_meeting_id
     required: true
-  superadmin_group_id:
+  admin_group_id:
     type: relation
-    to: group/superadmin_group_for_meeting_id
+    to: group/admin_group_for_meeting_id
 
 group:
   id: number
@@ -733,9 +733,9 @@ group:
     type: relation
     to: meeting/default_group_id
     on_delete: PROTECT
-  superadmin_group_for_meeting_id:
+  admin_group_for_meeting_id:
     type: relation
-    to: meeting/superadmin_group_id
+    to: meeting/admin_group_id
     on_delete: PROTECT
   mediafile_access_group_ids:
     type: relation-list
