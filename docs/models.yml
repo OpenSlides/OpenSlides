@@ -50,7 +50,15 @@
 #       is a structured tag. The property `fields` contains the definition for all the
 #       fields that come from the template field.
 # JSON Schema Properties:
-#     - You can add JSON Schema properties like `enum` and `description` to the fields.
+#     - You can add JSON Schema properties to the fields like `enum`, `description`,
+#       `maxLength` and `minimum`
+# Additional properties:
+#     - The property `read_only` describes a field that can not be changed by an action.
+#     - The property `default` describes the default value that is used for new objects.
+#     - The property `required` describes that this field can not be null or an empty
+#       string. If this field is given it must have some content.
+#     - The property `equal_fields` describes fields that must have the same value in
+#       the instance and the related instance.
 
 organisation:
   id: number
