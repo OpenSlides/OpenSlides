@@ -8,7 +8,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/OpenSlides/Openslides/modelsvalidator/models"
+	"github.com/OpenSlides/Openslides/modelsvalidator/check"
+	models "github.com/OpenSlides/openslides-models-to-go"
 )
 
 func main() {
@@ -27,7 +28,7 @@ func main() {
 		log.Fatalf("Invalid model format: %v", err)
 	}
 
-	if err := models.Check(data); err != nil {
+	if err := check.Check(data); err != nil {
 		log.Fatalf("Invalid model structure:\n\n%v", err)
 	}
 }
