@@ -1,13 +1,15 @@
-package models
+package check
 
 import (
 	"fmt"
 	"strings"
+
+	models "github.com/OpenSlides/openslides-models-to-go"
 )
 
 // Check runs some checks on the given models.
-func Check(models map[string]Model) error {
-	validators := []func(map[string]Model) error{
+func Check(data map[string]models.Model) error {
+	validators := []func(map[string]models.Model) error{
 		validateTypes,
 		validateRelations,
 		validateTemplatePrefixes,
@@ -15,7 +17,7 @@ func Check(models map[string]Model) error {
 
 	errors := new(ErrorList)
 	for _, v := range validators {
-		if err := v(models); err != nil {
+		if err := v(data); err != nil {
 			errors.append(err)
 		}
 	}
@@ -26,14 +28,14 @@ func Check(models map[string]Model) error {
 	return nil
 }
 
-func validateTypes(models map[string]Model) error {
+func validateTypes(data map[string]models.Model) error {
 	scalar := scalarTypes()
 	relation := relationTypes()
 	errs := &ErrorList{
 		Name:   "type validator",
 		intent: 1,
 	}
-	for modelName, model := range models {
+	for modelName, model := range data {
 		for fieldName, field := range model.Fields {
 			if scalar[strings.TrimSuffix(field.Type, "[]")] {
 				continue
@@ -52,13 +54,13 @@ func validateTypes(models map[string]Model) error {
 	return errs
 }
 
-func validateRelations(models map[string]Model) error {
+func validateRelations(data map[string]models.Model) error {
 	errs := &ErrorList{
 		Name:   "relation validator",
 		intent: 1,
 	}
 	relation := relationTypes()
-	for modelName, model := range models {
+	for modelName, model := range data {
 	Next:
 		for fieldName, field := range model.Fields {
 			r := field.Relation()
@@ -67,12 +69,12 @@ func validateRelations(models map[string]Model) error {
 			}
 
 			for _, c := range r.ToCollections() {
-				toModel, ok := models[c.Collection]
+				toModel, ok := data[c.Collection]
 				if !ok {
-					errs.append(fmt.Errorf("%s/%s directs to nonexisting model `%s`", modelName, fieldName, c.Collection))
+					errs.append(fmt.Errorf("%s/%s directs to nonexisting model `%s`", modelName, fieldName, c))
 					continue Next
 				}
-				// fmt.Printf("Relation %s/%s to %s/%s\n", modelName, fieldName, c.Collection, c.ToField.Name)
+
 				toField, ok := toModel.Fields[c.ToField.Name]
 				if !ok {
 					errs.append(fmt.Errorf("%s/%s directs to nonexisting collectionfield `%s/%s`", modelName, fieldName, c.Collection, c.ToField.Name))
@@ -93,7 +95,7 @@ func validateRelations(models map[string]Model) error {
 	return errs
 }
 
-func validateTemplatePrefixes(models map[string]Model) error {
+func validateTemplatePrefixes(models map[string]models.Model) error {
 	errs := &ErrorList{
 		Name:   "template prefixes validator",
 		intent: 1,

@@ -1,11 +1,12 @@
-package models_test
+package check_test
 
 import (
 	"errors"
 	"strings"
 	"testing"
 
-	"github.com/OpenSlides/Openslides/modelsvalidator/models"
+	"github.com/OpenSlides/Openslides/modelsvalidator/check"
+	models "github.com/OpenSlides/openslides-models-to-go"
 )
 
 const yamlUnknownFieldType = `---
@@ -86,7 +87,7 @@ func TestCheck(t *testing.T) {
 			if err != nil {
 				t.Fatalf("Can not unmarshal yaml: %v", err)
 			}
-			gotErr := models.Check(data)
+			gotErr := check.Check(data)
 			if tt.err == "" {
 				if gotErr != nil {
 					t.Errorf("Models.Check() returned an unexepcted error: %v", err)
@@ -98,14 +99,14 @@ func TestCheck(t *testing.T) {
 				t.Fatalf("Models.Check() did not return an error, expected: %v", tt.err)
 			}
 
-			var errList *models.ErrorList
+			var errList *check.ErrorList
 			if !errors.As(gotErr, &errList) {
 				t.Fatalf("Models.Check() did not return a ListError, got: %v", gotErr)
 			}
 
 			var found bool
 			for _, err := range errList.Errs {
-				var errList *models.ErrorList
+				var errList *check.ErrorList
 				if !errors.As(err, &errList) {
 					continue
 				}
