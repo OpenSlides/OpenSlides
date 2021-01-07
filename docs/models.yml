@@ -466,7 +466,6 @@ meeting:
   motions_supporters_min_amount:
     type: number
     minimum: 0
-  motions_supporters_enable_autoremove: boolean
   motions_export_title: string
   motions_export_preamble: string
   motions_export_submitter_recommendation: boolean
