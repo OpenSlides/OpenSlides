@@ -37,3 +37,4 @@ tests
 package-lock.json
 server/
 docker/keys
+docker/secrets/*.env
