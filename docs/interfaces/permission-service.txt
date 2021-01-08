@@ -8,63 +8,14 @@
  * Convention: For each action and presenter, there will be an permission check.
  * This is not enforced but a good guideline to see which permission check belongs
  * to which usecase.
- *
- * Returns an object with the allowed giving the result. If `allowed` is true, additional
- * permission related information can be provided in `addition`. There is either `null` or
- * an object per data. E.g. for motion update the supporters my be cleared, if the user has
- * no manage perms. This will be given as `{clearSupporters: true}`.
- *
- * If it was not allowed, one of the data in `dataList` was not allowed. This index is given
- * together with the `reason` in `error_index`.
  **/
-is_allowed(name: string, user_id: Id, dataList: object[]):
-    {allowed: true, additions: (object | null)[]} |
-    {allowed: false, reason: string, error_index: number}
+is_allowed(name: string, user_id: Id, dataList: object[]): bool
 
 
 /**
  * Filters the fqfields that can ve deen by the user. Only fqfields are returned, that are accessible.
- *
- * First, it is checked, if the object can be seen (check the fqid with restrict_fqids). If so there are some
- * special cases:
- * - Polls
- * - User
- * TODO
- *
  **/
 restrict_fqfields(fqfields: Fqfield[], user_id: Id): Fqfield[]
-
-
-/**
- * Filters the fqids, if the objects can be seen by the users. Only fqids from 
- * accessible objects are returned.
- *
- * Global special cases:
- * - All fqids, if the user has the superadmin role
- * - Within the context of a committee: Accessible, if the user is manager of this committee.
- * - Within the context of a meeting: Accessible, if the user is in the superadmin group of the meeting.
- *
- * Non-meeting specific collections:
- * - organisation: true
- * - role: true
- * - User: TODO!!
- * - committee: Can the user see the committee
- * - meeting: is the user in meeting/user_ids
- * TODO: Meeting: Antragsweiterleitungsstruktur!!
- *
- * meeting-specific collections (Always check first, if the user can see the meeting):
- * - motion: can_see? State, state restrctions and submitter? [1]
- * - agenda_item: can_see? is_hidden/is_internal -> can_manage?
- * - motion_lock: can_see? internal -> can_manage?
- * - Mediafile: TODO
- * - motion_comment: Can the motion be seen and is the user in one of the read_groups?
- * - personal_note: Is it the correct user? Can the content object be seen?
- * - *: can_see?
- *
- * [1] Exception: origin/derived motions can bee seen, but only title/number. TODO
- *
- **/
-restrict_fqids(fqids: Fqid[], user_id: Id): Fqids[]
 
 
 /**
@@ -80,7 +31,7 @@ restrict_fqids(fqids: Fqid[], user_id: Id): Fqids[]
  * 2) Role of a user has changed
  * 3) Permissions of a group changed -> Full update for all users in this group
  * 4) Changes in specific (meeting-related) models:
- *  - Motion submitter: 
+ *  - Motion submitter:
  *  - Motion state: Update des Antrages
  *  - Motion block internal: Update des Blocks
  *  - Motion comment section read groups: Update aller Comments dieser Section
