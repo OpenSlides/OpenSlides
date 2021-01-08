@@ -181,9 +181,11 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User, UserTi
      */
     public getRandomPassword(length: number = 10): string {
         let pw = '';
+        const array = new Uint8Array(length);
+        window.crypto.getRandomValues(array);
         const characters = 'abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789';
         for (let i = 0; i < length; i++) {
-            pw += characters.charAt(Math.floor(Math.random() * characters.length));
+            pw += characters.charAt(array[i] % characters.length);
         }
         return pw;
     }
