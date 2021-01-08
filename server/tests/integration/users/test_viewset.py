@@ -304,6 +304,16 @@ class UserUpdate(TestCase):
         admin = User.objects.get(pk=self.admin.pk)
         self.assertIsNone(admin.vote_delegated_to_id)
 
+    def test_update_vote_delegated_from_invalid_id(self):
+        response = self.client.patch(
+            reverse("user-detail", args=[self.admin.pk]),
+            {"vote_delegated_from_users_id": [1234]},
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        admin = User.objects.get(pk=self.admin.pk)
+        self.assertIsNone(admin.vote_delegated_to_id)
+
     def setup_vote_delegation(self):
         """ login and setup user -> user2 delegation """
         self.user, _ = self.create_user()
@@ -327,12 +337,23 @@ class UserUpdate(TestCase):
         self.setup_vote_delegation()
         response = self.client.patch(
             reverse("user-detail", args=[self.user2.pk]),
-            {"vote_delegated_from_users_id": None},
+            {"vote_delegated_from_users_id": []},
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         user = User.objects.get(pk=self.user.pk)
         self.assertEqual(user.vote_delegated_to_id, None)
+
+    def test_update_no_reset_vote_delegated_from_on_none(self):
+        self.setup_vote_delegation()
+        response = self.client.patch(
+            reverse("user-detail", args=[self.user2.pk]),
+            {"vote_delegated_from_users_id": None},
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        user = User.objects.get(pk=self.user.pk)
+        self.assertEqual(user.vote_delegated_to_id, self.user2.id)
 
     def test_update_nested_vote_delegation_1(self):
         """ user -> user2 -> admin """

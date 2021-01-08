@@ -125,6 +125,7 @@ class UserViewSet(ModelViewSet):
         except IntegrityError as e:
             raise ValidationError({"detail": str(e)})
 
+    @transaction.atomic
     def update(self, request, *args, **kwargs):
         """
         Customized view endpoint to update an user.
@@ -203,27 +204,31 @@ class UserViewSet(ModelViewSet):
         response = super().update(request, *args, **kwargs)
 
         # after rest of the request succeeded, handle delegation changes
-        if new_delegation_ids:
+        if isinstance(new_delegation_ids, list):
             self.assert_no_self_delegation(user, new_delegation_ids)
             self.assert_vote_not_delegated(user)
 
             for id in new_delegation_ids:
-                delegation_user = User.objects.get(id=id)
+                try:
+                    delegation_user = User.objects.get(id=id)
+                except User.DoesNotExist:
+                    raise ValidationError(
+                        {
+                            "detail": f"The user {id} does not exist and cannot be set as vote delegation"
+                        }
+                    )
                 self.assert_has_no_delegated_votes(delegation_user)
                 delegation_user.vote_delegated_to = user
                 delegation_user.save()
 
-        delegations_to_remove = user.vote_delegated_from_users.exclude(
-            id__in=(new_delegation_ids or [])
-        )
-        for old_delegation_user in delegations_to_remove:
-            old_delegation_user.vote_delegated_to = None
-            old_delegation_user.save()
+            delegations_to_remove = user.vote_delegated_from_users.exclude(
+                id__in=new_delegation_ids
+            )
+            for old_delegation_user in delegations_to_remove:
+                old_delegation_user.vote_delegated_to = None
+                old_delegation_user.save()
 
-        # if only delegated_from was changed, we need an autoupdate for the operator
-        if new_delegation_ids or delegations_to_remove:
-            inform_changed_data(user)
-
+        inform_changed_data(user)
         return response
 
     def assert_vote_not_delegated(self, user):
