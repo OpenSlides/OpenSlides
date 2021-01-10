@@ -113,7 +113,7 @@ for i in "${SELECTED_TARGETS[@]}"; do
   if [[ -f "$build_script" ]]; then
     ( . "$build_script" )
   else
-    docker build --tag "$img" --pull "${OPTIONS[@]}" "$loc"
+    DOCKER_BUILDKIT=0 docker build --tag "$img" --pull "${OPTIONS[@]}" "$loc"
   fi
   BUILT_IMAGES+=("$img ON")
 done
