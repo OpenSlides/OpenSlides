@@ -1,4 +1,15 @@
-#!/bin/bash
+
+# Check if associative arrays arrays are supported
+unset assoc
+if ! declare -A assoc > /dev/null 2>&1 ; then
+    echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+    echo "!!                                                            !!"
+    echo "!!  This script requires associative arrays to be supported.  !!"
+    echo "!!  Please check your bash version.                           !!"
+    echo "!!                                                            !!"
+    echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+    exit 1
+fi
 
 set -e
 
