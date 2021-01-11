@@ -35,11 +35,11 @@ usage() {
 Usage: $(basename ${BASH_SOURCE[0]}) [<options>] <service>...
 
 Options:
-  -D, --docker-repo  Specify a Docker repository
+  -D                 Specify a Docker repository
                      (default: unspecified, i.e., system default)
-  -t, --tag          Tag the Docker image (default: $DOCKER_TAG)
-  --ask-push         Offer to push newly built images to registry
-  --no-cache         Pass --no-cache to docker-build
+  -t                 Tag the Docker image (default: $DOCKER_TAG)
+  -P                 Offer to push newly built images to registry
+  -C                 Pass --no-cache to docker-build
 EOF
 }
 
@@ -49,35 +49,46 @@ if [[ -f "$CONFIG" ]]; then
   source "$CONFIG"
 fi
 
-shortopt="hr:D:t:"
-longopt="help,docker-repo:,tag:,ask-push,no-cache"
-ARGS=$(getopt -o "$shortopt" -l "$longopt" -n "$ME" -- "$@")
-if [ $? -ne 0 ]; then usage; exit 1; fi
-eval set -- "$ARGS";
+ARGS=`getopt hPCD:t: $*`
+if [ $? -ne 0 ]; then
+  usage
+  exit 1
+fi
+
+set -- $ARGS
 unset ARGS
 
 # Parse options
 while true; do
   case "$1" in
-    -D|--docker-repo)
+    -D)
       DOCKER_REPOSITORY="$2"
       shift 2
       ;;
-    -t|--tag)
+    -t)
       DOCKER_TAG="$2"
       shift 2
       ;;
-    --ask-push)
+    -P)
       ASK_PUSH=1
       shift 1
       ;;
-    --no-cache)
+    -C)
       OPTIONS+="--no-cache"
       shift 1
       ;;
-    -h|--help) usage; exit 0 ;;
-    --) shift ; break ;;
-    *) usage; exit 1 ;;
+    -h)
+      usage
+      exit 0
+      ;;
+    --)
+      shift
+      break
+      ;;
+    *)
+      usage
+      exit 1
+      ;;
   esac
 done
 
