@@ -15,6 +15,12 @@ The `settings.py` is just an extension for Django settings. Please visit the
 <https://docs.djangoproject.com/en/2.2/ref/settings/>`_ to get an overview about
 all existing settings.
 
+General
+=======
+
+- `COMPOSE_PROJECT_NAME` If not set, docker-compose creates networks with the prefix `docker_`.
+- `INSTANCE_DOMAIN` The URL pointing to your instance, e.g. `localhost:8000`
+- `EXTERNAL_HTTP_PORT` The port exposed by docker-compose, e.g. `8000`.
 
 SECURITY
 ========
