@@ -40,6 +40,13 @@ Options:
   -t                 Tag the Docker image (default: $DOCKER_TAG)
   -P                 Offer to push newly built images to registry
   -C                 Pass --no-cache to docker-build
+
+Notes:
+  <service> defaults to 'server client'.
+
+  You can build all services with 'all'. Currently supported are:
+    client server media-service pgbouncer postfix repmgr
+
 EOF
 }
 
