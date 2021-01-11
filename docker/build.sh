@@ -49,6 +49,13 @@ if [[ -f "$CONFIG" ]]; then
   source "$CONFIG"
 fi
 
+shortopt="hr:D:t:"
+longopt="help,docker-repo:,tag:,ask-push,no-cache"
+ARGS=$(getopt -o "$shortopt" -l "$longopt" -n "$ME" -- "$@")
+if [ $? -ne 0 ]; then usage; exit 1; fi
+eval set -- "$ARGS";
+unset ARGS
+
 # Parse options
 while true; do
   case "$1" in
@@ -68,28 +75,13 @@ while true; do
       OPTIONS+="--no-cache"
       shift 1
       ;;
-    -h|--help)
-      usage
-      exit 0
-      ;;
-    --)
-      shift
-      break
-      ;;
-    *)
-      break
-      ;;
+    -h|--help) usage; exit 0 ;;
+    --) shift ; break ;;
+    *) usage; exit 1 ;;
   esac
 done
 
 SELECTED_TARGETS=($@)
-
-if [[ -z "$SELECTED_TARGETS" ]]; then
-  echo "ERROR: No service specified. See -h for more details"
-  echo ""
-  exit 1
-fi
-
 [[ "${#SELECTED_TARGETS[@]}" -ge 1 ]] || SELECTED_TARGETS=("${DEFAULT_TARGETS[@]}")
 [[ "${SELECTED_TARGETS[@]}" != "all" ]] || SELECTED_TARGETS=("${!TARGETS[@]}")
 
