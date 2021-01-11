@@ -59,7 +59,7 @@ services:
       - datastore-reader
       - message-bus
     environment:
-      - AUTH=fake
+      - AUTH_SERVICE_PROTOCOL=http
     env_file: services.env
     volumes:
       - ../openslides-autoupdate-service/cmd:/root/cmd
