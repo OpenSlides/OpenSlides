@@ -529,7 +529,7 @@ class CreateAssignmentPoll(TestCase):
             reverse("assignmentpoll-list"),
             {
                 "title": "test_title_9FP4m2f2k09f4gni2sqq",
-                "pollmethod": AssignmentPoll.POLLMETHOD_VOTES,
+                "pollmethod": AssignmentPoll.POLLMETHOD_Y,
                 "type": "named",
                 "assignment_id": self.assignment.id,
                 "onehundred_percent_base": AssignmentPoll.PERCENT_BASE_YNA,
@@ -547,7 +547,7 @@ class CreateAssignmentPoll(TestCase):
             reverse("assignmentpoll-list"),
             {
                 "title": "test_title_9FP4m2f2k09f4gni2sqq",
-                "pollmethod": AssignmentPoll.POLLMETHOD_VOTES,
+                "pollmethod": AssignmentPoll.POLLMETHOD_Y,
                 "type": "named",
                 "assignment_id": self.assignment.id,
                 "onehundred_percent_base": AssignmentPoll.PERCENT_BASE_YNA,
@@ -1401,7 +1401,7 @@ class VoteAssignmentPollNamedY(VoteAssignmentPollBaseTestClass):
         self.assertEqual(option2.abstain, Decimal("0"))
 
     def test_global_yes(self):
-        self.poll.votes_amount = 2
+        self.poll.max_votes_amount = 2
         self.poll.save()
         self.start_poll()
         response = self.client.post(
@@ -1429,7 +1429,7 @@ class VoteAssignmentPollNamedY(VoteAssignmentPollBaseTestClass):
         self.assertEqual(AssignmentPoll.objects.get().amount_global_yes, None)
 
     def test_global_no(self):
-        self.poll.votes_amount = 2
+        self.poll.max_votes_amount = 2
         self.poll.save()
         self.start_poll()
         response = self.client.post(
@@ -1457,7 +1457,7 @@ class VoteAssignmentPollNamedY(VoteAssignmentPollBaseTestClass):
         self.assertEqual(AssignmentPoll.objects.get().amount_global_no, None)
 
     def test_global_abstain(self):
-        self.poll.votes_amount = 2
+        self.poll.max_votes_amount = 2
         self.poll.save()
         self.start_poll()
         response = self.client.post(
@@ -1663,7 +1663,7 @@ class VoteAssignmentPollNamedN(VoteAssignmentPollBaseTestClass):
 
     def setup_for_multiple_votes(self):
         self.poll.allow_multiple_votes_per_candidate = True
-        self.poll.votes_amount = 3
+        self.poll.max_votes_amount = 3
         self.poll.save()
         self.add_candidate()
 
@@ -1729,7 +1729,7 @@ class VoteAssignmentPollNamedN(VoteAssignmentPollBaseTestClass):
         self.assertEqual(option2.abstain, Decimal("0"))
 
     def test_global_yes(self):
-        self.poll.votes_amount = 2
+        self.poll.max_votes_amount = 2
         self.poll.save()
         self.start_poll()
         response = self.client.post(
@@ -1757,7 +1757,7 @@ class VoteAssignmentPollNamedN(VoteAssignmentPollBaseTestClass):
         self.assertEqual(AssignmentPoll.objects.get().amount_global_yes, None)
 
     def test_global_no(self):
-        self.poll.votes_amount = 2
+        self.poll.max_votes_amount = 2
         self.poll.save()
         self.start_poll()
         response = self.client.post(
@@ -1785,7 +1785,7 @@ class VoteAssignmentPollNamedN(VoteAssignmentPollBaseTestClass):
         self.assertEqual(AssignmentPoll.objects.get().amount_global_no, None)
 
     def test_global_abstain(self):
-        self.poll.votes_amount = 2
+        self.poll.max_votes_amount = 2
         self.poll.save()
         self.start_poll()
         response = self.client.post(
@@ -2177,7 +2177,7 @@ class VoteAssignmentPollPseudoanonymousY(VoteAssignmentPollBaseTestClass):
 
     def setup_for_multiple_votes(self):
         self.poll.allow_multiple_votes_per_candidate = True
-        self.poll.votes_amount = 3
+        self.poll.max_votes_amount = 3
         self.poll.save()
         self.add_candidate()
 
@@ -2425,7 +2425,7 @@ class VoteAssignmentPollPseudoanonymousN(VoteAssignmentPollBaseTestClass):
 
     def setup_for_multiple_votes(self):
         self.poll.allow_multiple_votes_per_candidate = True
-        self.poll.votes_amount = 3
+        self.poll.max_votes_amount = 3
         self.poll.save()
         self.add_candidate()
 

@@ -28,6 +28,8 @@ server/.venv
 /haproxy/
 /docker/keys/
 /docs/
+# OS3+-Submodules
+/autoupdate/
 # Plugin development
 openslides_*
 # Old OS3 stuff
