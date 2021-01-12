@@ -11,7 +11,7 @@
         "committee_ids": [1],
         "role_ids": [1],
         "superadmin_role_id": 1,
-        "resource_ids": []
+        "resource_ids": [1]
     }],
 "user": [
     {
@@ -167,7 +167,15 @@
         "superadmin_role_for_organisation_id": 1,
         "user_ids": [1]
     }],
-"resource": [],
+"resource": [
+    {
+        "id": 1,
+        "token": "web_header",
+        "filesize": 1462,
+        "mimetype": "image/png",
+        "organisation_id": 1
+    }
+],
 "committee": [
     {
         "id": 1,
