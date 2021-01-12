@@ -1,3 +1,4 @@
+#!/bin/bash
 
 # Check if associative arrays arrays are supported
 unset assoc
