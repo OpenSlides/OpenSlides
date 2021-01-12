@@ -40,9 +40,9 @@
         <!-- Amount of Votes -->
         <small *ngIf="poll.max_votes_amount > 1">
             <ng-container *ngIf="poll.max_votes_amount !== poll.min_votes_amount">
-                <span> {{ pollPropertyVerbose.max_votes_amount | translate }}: {{ poll.max_votes_amount }}</span>
-                <br />
                 <span> {{ pollPropertyVerbose.min_votes_amount | translate }}: {{ poll.min_votes_amount }}</span>
+                <br />
+                <span> {{ pollPropertyVerbose.max_votes_amount | translate }}: {{ poll.max_votes_amount }}</span>
                 <br />
             </ng-container>
 

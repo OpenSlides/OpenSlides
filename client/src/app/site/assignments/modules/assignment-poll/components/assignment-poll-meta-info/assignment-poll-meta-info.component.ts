@@ -27,8 +27,7 @@ export class AssignmentPollMetaInfoComponent {
     public constructor() {}
 
     public userCanVoe(): boolean {
-        // this.poll.canBeVotedFor
-        return true;
+        return this.poll.canBeVotedFor();
     }
 
     public getOptionTitle(option: ViewAssignmentOption): string {

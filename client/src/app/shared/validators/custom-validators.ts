@@ -1,4 +1,4 @@
-import { FormGroup, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { AbstractControl, FormGroup, ValidationErrors, ValidatorFn } from '@angular/forms';
 
 /**
  * Constant to validate a `duration` field.
@@ -17,3 +17,13 @@ export const durationValidator: ValidatorFn = (control: FormGroup): ValidationEr
     const regExp = /^\s*([0-9]+)(:)?([0-5][0-9]?)?\s*[h|m]?$/g;
     return regExp.test(control.value) || control.value === '' ? null : { valid: false };
 };
+
+export function isNumberRange(minCtrlName: string, maxCtrlName: string): ValidatorFn {
+    return (formControl: AbstractControl): { [key: string]: any } => {
+        const min = formControl.get(minCtrlName).value;
+        const max = formControl.get(maxCtrlName).value;
+        if (min > max) {
+            return { rangeError: true };
+        }
+    };
+}

@@ -57,6 +57,10 @@ export class AssignmentPollVoteComponent extends BasePollVoteComponentDirective<
         return this.poll.assignment.default_poll_description;
     }
 
+    public get minVotes(): number {
+        return this.poll.min_votes_amount;
+    }
+
     public constructor(
         title: Title,
         protected translate: TranslateService,
