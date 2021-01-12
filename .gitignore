@@ -38,3 +38,5 @@ package-lock.json
 server/
 docker/keys
 docker/secrets/*.env
+# OS3+-Submodules
+/autoupdate/
