@@ -1221,7 +1221,6 @@ motion_category:
     required: true
   prefix:
     type: string
-    required: true
   weight:
     type: number
     default: 10000
