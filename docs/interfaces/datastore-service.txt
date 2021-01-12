@@ -104,6 +104,10 @@ Interface DeleteEvent {
     fqid: Fqid;
 }
 
+// Collection fields can not only be locked to a specific position, but also filtered
+// first, e.g. when selecting all models from a specific meeting. WARNING: the filter
+// should always contain an equals check with the meeting_id, since this will be
+// indexed. Other filters can lead to long query times.
 Interface CollectionFieldLock {
     position: Position;
     filter: Filter;
@@ -219,7 +223,7 @@ get_all(collection: Collection, mapped_fields?: Field[], get_deleted_models?: De
 get_everything(get_deleted_models?: DeletedModelsBehaviour): Map<Collection, Model[]>;
 
 interface FilterResponse {
-    max_position: Position;
+    position: Position;
     data: Map<Id, Partial<Model>>;
 }
 
