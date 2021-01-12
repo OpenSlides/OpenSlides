@@ -40,7 +40,7 @@ Notes:
   <service> defaults to 'server client'.
 
   You can build all services with 'all'. Currently supported are:
-    client server media-service pgbouncer postfix repmgr
+    ${!TARGETS[@]}
 
 EOF
 }
