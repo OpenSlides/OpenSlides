@@ -28,10 +28,14 @@
         </p>
 
         <!-- Leftover votes -->
-        <h4 *ngIf="(poll.isMethodY || poll.isMethodN) && poll.votes_amount > 1">
+        <h4 *ngIf="(poll.isMethodY || poll.isMethodN) && poll.max_votes_amount > 1">
             {{ 'Available votes' | translate }}:
+            <b> {{ getVotesAvailable(delegation) }}/{{ poll.max_votes_amount }} </b>
 
-            <b> {{ getVotesAvailable(delegation) }}/{{ poll.votes_amount }} </b>
+            <span *ngIf="poll.min_votes_amount > 1">
+                ({{ 'At least' | translate }} <b>{{ poll.min_votes_amount }}</b
+                >)
+            </span>
         </h4>
 
         <!-- Options and Actions -->
@@ -170,7 +174,7 @@
             mat-flat-button
             color="accent"
             (click)="submitVote(delegation)"
-            [disabled]="getVotesCount(delegation) == 0"
+            [disabled]="getVotesCount(delegation) < minVotes"
         >
             <mat-icon> how_to_vote </mat-icon>
             <span>

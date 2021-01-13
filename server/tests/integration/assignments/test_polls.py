@@ -136,7 +136,8 @@ class CreateAssignmentPoll(TestCase):
         self.assertEqual(poll.amount_global_no, None)
         self.assertEqual(poll.amount_global_abstain, None)
         self.assertFalse(poll.allow_multiple_votes_per_candidate)
-        self.assertEqual(poll.votes_amount, 1)
+        self.assertEqual(poll.min_votes_amount, 1)
+        self.assertEqual(poll.max_votes_amount, 1)
         self.assertEqual(poll.assignment.id, self.assignment.id)
         self.assertEqual(poll.description, "")
         self.assertTrue(poll.options.exists())
@@ -157,7 +158,8 @@ class CreateAssignmentPoll(TestCase):
                 "global_no": False,
                 "global_abstain": False,
                 "allow_multiple_votes_per_candidate": True,
-                "votes_amount": 5,
+                "min_votes_amount": 5,
+                "max_votes_amount": 8,
                 "description": "test_description_ieM8ThuasoSh8aecai8p",
             },
         )
@@ -171,7 +173,8 @@ class CreateAssignmentPoll(TestCase):
         self.assertFalse(poll.global_no)
         self.assertFalse(poll.global_abstain)
         self.assertTrue(poll.allow_multiple_votes_per_candidate)
-        self.assertEqual(poll.votes_amount, 5)
+        self.assertEqual(poll.min_votes_amount, 5)
+        self.assertEqual(poll.max_votes_amount, 8)
         self.assertEqual(poll.description, "test_description_ieM8ThuasoSh8aecai8p")
 
     def test_no_candidates(self):
@@ -521,6 +524,44 @@ class CreateAssignmentPoll(TestCase):
         self.assertFalse(AssignmentPoll.objects.exists())
         self.assertFalse(AssignmentVote.objects.exists())
 
+    def test_create_with_unmatched_votes_amount(self):
+        response = self.client.post(
+            reverse("assignmentpoll-list"),
+            {
+                "title": "test_title_9FP4m2f2k09f4gni2sqq",
+                "pollmethod": AssignmentPoll.POLLMETHOD_Y,
+                "type": "named",
+                "assignment_id": self.assignment.id,
+                "onehundred_percent_base": AssignmentPoll.PERCENT_BASE_YNA,
+                "majority_method": AssignmentPoll.MAJORITY_SIMPLE,
+                "min_votes_amount": 5,
+                "max_votes_amount": 4,
+            },
+        )
+        self.assertHttpStatusVerbose(response, status.HTTP_400_BAD_REQUEST)
+        self.assertFalse(AssignmentPoll.objects.exists())
+        self.assertFalse(AssignmentVote.objects.exists())
+
+    def test_create_with_equal_votes_amount(self):
+        response = self.client.post(
+            reverse("assignmentpoll-list"),
+            {
+                "title": "test_title_9FP4m2f2k09f4gni2sqq",
+                "pollmethod": AssignmentPoll.POLLMETHOD_Y,
+                "type": "named",
+                "assignment_id": self.assignment.id,
+                "onehundred_percent_base": AssignmentPoll.PERCENT_BASE_YNA,
+                "majority_method": AssignmentPoll.MAJORITY_SIMPLE,
+                "min_votes_amount": 4,
+                "max_votes_amount": 4,
+            },
+        )
+        self.assertHttpStatusVerbose(response, status.HTTP_201_CREATED)
+        self.assertTrue(AssignmentPoll.objects.exists())
+        poll = AssignmentPoll.objects.get()
+        self.assertEqual(poll.min_votes_amount, 4)
+        self.assertEqual(poll.max_votes_amount, 4)
+
 
 class UpdateAssignmentPoll(TestCase):
     """
@@ -697,7 +738,8 @@ class UpdateAssignmentPoll(TestCase):
                 "global_no": True,
                 "global_abstain": False,
                 "allow_multiple_votes_per_candidate": True,
-                "votes_amount": 42,
+                "min_votes_amount": 32,
+                "max_votes_amount": 42,
             },
         )
         self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
@@ -711,7 +753,32 @@ class UpdateAssignmentPoll(TestCase):
         self.assertEqual(poll.amount_global_no, Decimal("0"))
         self.assertEqual(poll.amount_global_abstain, None)
         self.assertTrue(poll.allow_multiple_votes_per_candidate)
-        self.assertEqual(poll.votes_amount, 42)
+        self.assertEqual(poll.min_votes_amount, 32)
+        self.assertEqual(poll.max_votes_amount, 42)
+
+    def test_patch_unmatched_votes_amounts(self):
+        response = self.client.patch(
+            reverse("assignmentpoll-detail", args=[self.poll.pk]),
+            {
+                "min_votes_amount": 50,
+                "max_votes_amount": 42,
+            },
+        )
+        self.assertHttpStatusVerbose(response, status.HTTP_400_BAD_REQUEST)
+
+    def test_patch_equal_votes_amounts(self):
+        response = self.client.patch(
+            reverse("assignmentpoll-detail", args=[self.poll.pk]),
+            {
+                "min_votes_amount": 42,
+                "max_votes_amount": 42,
+            },
+        )
+        self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
+        self.assertTrue(AssignmentPoll.objects.exists())
+        poll = AssignmentPoll.objects.get()
+        self.assertEqual(poll.min_votes_amount, 42)
+        self.assertEqual(poll.max_votes_amount, 42)
 
     def test_patch_majority_method_state_not_created(self):
         self.poll.state = 2
@@ -1268,7 +1335,7 @@ class VoteAssignmentPollNamedY(VoteAssignmentPollBaseTestClass):
 
     def setup_for_multiple_votes(self):
         self.poll.allow_multiple_votes_per_candidate = True
-        self.poll.votes_amount = 3
+        self.poll.max_votes_amount = 3
         self.poll.save()
         self.add_candidate()
 
@@ -1334,7 +1401,7 @@ class VoteAssignmentPollNamedY(VoteAssignmentPollBaseTestClass):
         self.assertEqual(option2.abstain, Decimal("0"))
 
     def test_global_yes(self):
-        self.poll.votes_amount = 2
+        self.poll.max_votes_amount = 2
         self.poll.save()
         self.start_poll()
         response = self.client.post(
@@ -1362,7 +1429,7 @@ class VoteAssignmentPollNamedY(VoteAssignmentPollBaseTestClass):
         self.assertEqual(AssignmentPoll.objects.get().amount_global_yes, None)
 
     def test_global_no(self):
-        self.poll.votes_amount = 2
+        self.poll.max_votes_amount = 2
         self.poll.save()
         self.start_poll()
         response = self.client.post(
@@ -1390,7 +1457,7 @@ class VoteAssignmentPollNamedY(VoteAssignmentPollBaseTestClass):
         self.assertEqual(AssignmentPoll.objects.get().amount_global_no, None)
 
     def test_global_abstain(self):
-        self.poll.votes_amount = 2
+        self.poll.max_votes_amount = 2
         self.poll.save()
         self.start_poll()
         response = self.client.post(
@@ -1446,12 +1513,25 @@ class VoteAssignmentPollNamedY(VoteAssignmentPollBaseTestClass):
         self.assertEqual(option2.no, Decimal("0"))
         self.assertEqual(option2.abstain, Decimal("0"))
 
-    def test_multiple_votes_wrong_amount(self):
+    def test_multiple_votes_wrong_max_amount(self):
         self.setup_for_multiple_votes()
         self.start_poll()
         response = self.client.post(
             reverse("assignmentpoll-vote", args=[self.poll.pk]),
             {"data": {"1": 2, "2": 2}},
+            format="json",
+        )
+        self.assertHttpStatusVerbose(response, status.HTTP_400_BAD_REQUEST)
+        self.assertFalse(AssignmentPoll.objects.get().get_votes().exists())
+
+    def test_multiple_votes_wrong_min_amount(self):
+        self.setup_for_multiple_votes()
+        self.poll.min_votes_amount = 2
+        self.poll.save()
+        self.start_poll()
+        response = self.client.post(
+            reverse("assignmentpoll-vote", args=[self.poll.pk]),
+            {"data": {"1": 1}},
             format="json",
         )
         self.assertHttpStatusVerbose(response, status.HTTP_400_BAD_REQUEST)
@@ -1583,7 +1663,7 @@ class VoteAssignmentPollNamedN(VoteAssignmentPollBaseTestClass):
 
     def setup_for_multiple_votes(self):
         self.poll.allow_multiple_votes_per_candidate = True
-        self.poll.votes_amount = 3
+        self.poll.max_votes_amount = 3
         self.poll.save()
         self.add_candidate()
 
@@ -1649,7 +1729,7 @@ class VoteAssignmentPollNamedN(VoteAssignmentPollBaseTestClass):
         self.assertEqual(option2.abstain, Decimal("0"))
 
     def test_global_yes(self):
-        self.poll.votes_amount = 2
+        self.poll.max_votes_amount = 2
         self.poll.save()
         self.start_poll()
         response = self.client.post(
@@ -1677,7 +1757,7 @@ class VoteAssignmentPollNamedN(VoteAssignmentPollBaseTestClass):
         self.assertEqual(AssignmentPoll.objects.get().amount_global_yes, None)
 
     def test_global_no(self):
-        self.poll.votes_amount = 2
+        self.poll.max_votes_amount = 2
         self.poll.save()
         self.start_poll()
         response = self.client.post(
@@ -1705,7 +1785,7 @@ class VoteAssignmentPollNamedN(VoteAssignmentPollBaseTestClass):
         self.assertEqual(AssignmentPoll.objects.get().amount_global_no, None)
 
     def test_global_abstain(self):
-        self.poll.votes_amount = 2
+        self.poll.max_votes_amount = 2
         self.poll.save()
         self.start_poll()
         response = self.client.post(
@@ -1895,6 +1975,12 @@ class VoteAssignmentPollPseudoanonymousYNA(VoteAssignmentPollBaseTestClass):
             pollmethod=AssignmentPoll.POLLMETHOD_YNA,
             type=BasePoll.TYPE_PSEUDOANONYMOUS,
         )
+
+    def setup_for_multiple_votes(self):
+        self.poll.allow_multiple_votes_per_candidate = True
+        self.poll.max_votes_amount = 3
+        self.poll.save()
+        self.add_candidate()
 
     def test_start_poll(self):
         response = self.client.post(
@@ -2091,7 +2177,7 @@ class VoteAssignmentPollPseudoanonymousY(VoteAssignmentPollBaseTestClass):
 
     def setup_for_multiple_votes(self):
         self.poll.allow_multiple_votes_per_candidate = True
-        self.poll.votes_amount = 3
+        self.poll.max_votes_amount = 3
         self.poll.save()
         self.add_candidate()
 
@@ -2189,12 +2275,25 @@ class VoteAssignmentPollPseudoanonymousY(VoteAssignmentPollBaseTestClass):
         for vote in poll.get_votes():
             self.assertIsNone(vote.user)
 
-    def test_multiple_votes_wrong_amount(self):
+    def test_multiple_votes_wrong_max_amount(self):
         self.setup_for_multiple_votes()
         self.start_poll()
         response = self.client.post(
             reverse("assignmentpoll-vote", args=[self.poll.pk]),
             {"data": {"1": 2, "2": 2}},
+            format="json",
+        )
+        self.assertHttpStatusVerbose(response, status.HTTP_400_BAD_REQUEST)
+        self.assertFalse(AssignmentPoll.objects.get().get_votes().exists())
+
+    def test_multiple_votes_wrong_min_amount(self):
+        self.setup_for_multiple_votes()
+        self.poll.min_votes_amount = 2
+        self.poll.save()
+        self.start_poll()
+        response = self.client.post(
+            reverse("assignmentpoll-vote", args=[self.poll.pk]),
+            {"data": {"1": 1}},
             format="json",
         )
         self.assertHttpStatusVerbose(response, status.HTTP_400_BAD_REQUEST)
@@ -2326,7 +2425,7 @@ class VoteAssignmentPollPseudoanonymousN(VoteAssignmentPollBaseTestClass):
 
     def setup_for_multiple_votes(self):
         self.poll.allow_multiple_votes_per_candidate = True
-        self.poll.votes_amount = 3
+        self.poll.max_votes_amount = 3
         self.poll.save()
         self.add_candidate()
 
@@ -2627,7 +2726,8 @@ class VoteAssignmentPollNamedAutoupdates(VoteAssignmentPollAutoupdatesBaseClass)
                     "type": AssignmentPoll.TYPE_NAMED,
                     "onehundred_percent_base": AssignmentPoll.PERCENT_BASE_CAST,
                     "majority_method": AssignmentPoll.MAJORITY_TWO_THIRDS,
-                    "votes_amount": 1,
+                    "min_votes_amount": 1,
+                    "max_votes_amount": 1,
                     "votescast": "1.000000",
                     "votesinvalid": "0.000000",
                     "votesvalid": "1.000000",
@@ -2696,7 +2796,8 @@ class VoteAssignmentPollNamedAutoupdates(VoteAssignmentPollAutoupdatesBaseClass)
                     "groups_id": [GROUP_DELEGATE_PK],
                     "options_id": [1],
                     "id": 1,
-                    "votes_amount": 1,
+                    "min_votes_amount": 1,
+                    "max_votes_amount": 1,
                     "user_has_voted": user == self.user,
                     "user_has_voted_for_delegations": [],
                 },
@@ -2751,7 +2852,8 @@ class VoteAssignmentPollNamedAutoupdates(VoteAssignmentPollAutoupdatesBaseClass)
                     "state": 4,
                     "title": self.poll.title,
                     "type": "named",
-                    "votes_amount": 1,
+                    "min_votes_amount": 1,
+                    "max_votes_amount": 1,
                     "votescast": "1.000000",
                     "votesinvalid": "0.000000",
                     "votesvalid": "1.000000",
@@ -2827,7 +2929,8 @@ class VoteAssignmentPollPseudoanonymousAutoupdates(
                 "voted_id": [self.user.id],
                 "onehundred_percent_base": AssignmentPoll.PERCENT_BASE_CAST,
                 "majority_method": AssignmentPoll.MAJORITY_TWO_THIRDS,
-                "votes_amount": 1,
+                "min_votes_amount": 1,
+                "max_votes_amount": 1,
                 "votescast": "1.000000",
                 "votesinvalid": "0.000000",
                 "votesvalid": "1.000000",
@@ -2878,7 +2981,8 @@ class VoteAssignmentPollPseudoanonymousAutoupdates(
                     "groups_id": [GROUP_DELEGATE_PK],
                     "options_id": [1],
                     "id": 1,
-                    "votes_amount": 1,
+                    "min_votes_amount": 1,
+                    "max_votes_amount": 1,
                     "user_has_voted": user == self.user,
                     "user_has_voted_for_delegations": [],
                 },
@@ -2933,7 +3037,8 @@ class VoteAssignmentPollPseudoanonymousAutoupdates(
                         "state": 4,
                         "title": self.poll.title,
                         "type": AssignmentPoll.TYPE_PSEUDOANONYMOUS,
-                        "votes_amount": 1,
+                        "min_votes_amount": 1,
+                        "max_votes_amount": 1,
                         "votescast": "1.000000",
                         "votesinvalid": "0.000000",
                         "votesvalid": "1.000000",

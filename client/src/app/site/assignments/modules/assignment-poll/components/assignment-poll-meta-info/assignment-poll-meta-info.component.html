@@ -32,8 +32,24 @@
         <small *ngIf="poll.pollmethod">
             <span> {{ 'Voting method' | translate }}: {{ poll.pollmethodVerbose | translate }} </span>
             <!-- amount of votes -->
-            <span *ngIf="poll.votes_amount > 1"> ({{ poll.votes_amount }} {{ 'Votes' | translate }})</span>
+            <!-- <span *ngIf="poll.max_votes_amount > 1"> ({{ poll.max_votes_amount }} {{ 'Votes' | translate }})</span>
+            <span *ngIf="poll.max_votes_amount > 1"> ({{ poll.max_votes_amount }} {{ 'Votes' | translate }})</span> -->
             <br />
+        </small>
+
+        <!-- Amount of Votes -->
+        <small *ngIf="poll.max_votes_amount > 1">
+            <ng-container *ngIf="poll.max_votes_amount !== poll.min_votes_amount">
+                <span> {{ pollPropertyVerbose.min_votes_amount | translate }}: {{ poll.min_votes_amount }}</span>
+                <br />
+                <span> {{ pollPropertyVerbose.max_votes_amount | translate }}: {{ poll.max_votes_amount }}</span>
+                <br />
+            </ng-container>
+
+            <ng-container *ngIf="poll.max_votes_amount === poll.min_votes_amount">
+                <span> {{ 'Votes' | translate }}: {{ poll.max_votes_amount }} </span>
+                <br />
+            </ng-container>
         </small>
 
         <!-- 100% base -->

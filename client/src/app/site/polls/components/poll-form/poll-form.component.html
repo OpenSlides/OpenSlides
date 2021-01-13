@@ -30,7 +30,7 @@
                 </mat-form-field>
 
                 <!-- Groups entitled to Vote -->
-                <mat-form-field *ngIf="contentForm.get('type').value && contentForm.get('type').value !== 'analog'">
+                <mat-form-field *ngIf="isEVotingSelected">
                     <os-search-value-selector
                         formControlName="groups_id"
                         [multiple]="true"
@@ -57,21 +57,39 @@
                     <mat-error>{{ 'This field is required.' | translate }}</mat-error>
                 </mat-form-field>
 
-                <!-- Amount of Votes -->
-                <mat-form-field *ngIf="showAmountAndGlobal(data)">
-                    <input
-                        type="number"
-                        matInput
-                        placeholder="{{ PollPropertyVerbose.votes_amount | translate }}"
-                        formControlName="votes_amount"
-                        min="1"
-                        required
-                    />
-                </mat-form-field>
+                <ng-container formGroupName="votes_amount" *ngIf="isEVotingSelected">
+                    <!-- Min Amount of Votes -->
+                    <mat-form-field *ngIf="showAmountAndGlobal(data)">
+                        <input
+                            type="number"
+                            matInput
+                            placeholder="{{ PollPropertyVerbose.min_votes_amount | translate }}"
+                            formControlName="min_votes_amount"
+                            min="1"
+                            required
+                            [errorStateMatcher]="parentErrorStateMatcher"
+                        />
+                        <mat-error *ngIf="contentForm.controls['votes_amount'].hasError('rangeError')">
+                            {{ 'Min votes must be smaller or equal to max votes' | translate }}
+                        </mat-error>
+                    </mat-form-field>
+
+                    <!-- Max Amount of Votes -->
+                    <mat-form-field *ngIf="showAmountAndGlobal(data)">
+                        <input
+                            type="number"
+                            matInput
+                            placeholder="{{ PollPropertyVerbose.max_votes_amount | translate }}"
+                            formControlName="max_votes_amount"
+                            min="1"
+                            required
+                        />
+                    </mat-form-field>
+                </ng-container>
             </div>
 
             <!-- Amount of Votes and global options -->
-            <div class="global-options" *ngIf="showAmountAndGlobal(data)">
+            <div class="global-options" *ngIf="isEVotingSelected && showAmountAndGlobal(data)">
                 <mat-checkbox formControlName="global_yes">
                     {{ PollPropertyVerbose.global_yes | translate }}
                 </mat-checkbox>

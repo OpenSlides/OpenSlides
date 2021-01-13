@@ -57,6 +57,10 @@ export class AssignmentPollVoteComponent extends BasePollVoteComponentDirective<
         return this.poll.assignment.default_poll_description;
     }
 
+    public get minVotes(): number {
+        return this.poll.min_votes_amount;
+    }
+
     public constructor(
         title: Title,
         protected translate: TranslateService,
@@ -141,7 +145,7 @@ export class AssignmentPollVoteComponent extends BasePollVoteComponentDirective<
     }
 
     public getVotesAvailable(user: ViewUser = this.user): number {
-        return this.poll.votes_amount - this.getVotesCount(user);
+        return this.poll.max_votes_amount - this.getVotesCount(user);
     }
 
     private isGlobalOptionSelected(user: ViewUser = this.user): boolean {
@@ -177,12 +181,12 @@ export class AssignmentPollVoteComponent extends BasePollVoteComponentDirective<
         }
 
         if (this.poll.isMethodY || this.poll.isMethodN) {
-            const votesAmount = this.poll.votes_amount;
+            const maxVotesAmount = this.poll.max_votes_amount;
             const tmpVoteRequest = this.poll.options
                 .map(option => option.id)
                 .reduce((o, n) => {
                     o[n] = 0;
-                    if (votesAmount === 1) {
+                    if (maxVotesAmount === 1) {
                         if (n === optionId && this.voteRequestData[user.id].votes[n] !== 1) {
                             o[n] = 1;
                         }
@@ -195,11 +199,11 @@ export class AssignmentPollVoteComponent extends BasePollVoteComponentDirective<
 
             // check if you can still vote
             const countedVotes = Object.keys(tmpVoteRequest).filter(key => tmpVoteRequest[key]).length;
-            if (countedVotes <= votesAmount) {
+            if (countedVotes <= maxVotesAmount) {
                 this.voteRequestData[user.id].votes = tmpVoteRequest;
 
                 // if you have no options anymore, try to send
-                if (this.getVotesCount(user) === votesAmount) {
+                if (this.getVotesCount(user) === maxVotesAmount) {
                     this.submitVote(user);
                 }
             } else {
