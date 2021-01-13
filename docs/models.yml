@@ -359,13 +359,18 @@ meeting:
   conference_open_video:
     type: boolean
     default: False
-  conference_auto_connect_next_speakers: boolean
+  conference_auto_connect_next_speakers:
+    type: number
+    default: 0
 
   # Projector
-  projector_default_countdown_time: number
+  projector_default_countdown_time:
+    type: number
+    default: 60
   projector_countdown_warning_time:
     type: number
     minimum: 0
+    default: 0
 
   # Exports
   export_csv_encoding:
@@ -376,7 +381,7 @@ meeting:
     default: utf-8
   export_csv_separator:
     type: string
-    default: ,
+    default: ","
   export_pdf_pagenumber_alignment:
     type: string
     enum:
@@ -439,11 +444,14 @@ meeting:
     minimum: 0
     default: 0
   list_of_speakers_amount_next_on_projector:
-    type: boolean
+    type: number
+    default: -1
   list_of_speakers_couple_countdown:
     type: boolean
     default: True
-  list_of_speakers_show_amount_of_speakers_on_slide: boolean
+  list_of_speakers_show_amount_of_speakers_on_slide:
+    type: boolean
+    default: True
   list_of_speakers_present_users_only:
     type: boolean
     default: False
@@ -469,7 +477,7 @@ meeting:
     required: true
   motions_preamble:
     type: string
-    default: The assembly may decide:
+    default: "The assembly may decide"
   motions_default_line_numbering:
     type: string
     enum:
@@ -522,6 +530,7 @@ meeting:
     - per_category
     - serially_numbered
     - manually
+    default: per_category
   motions_number_min_digits:
     type: number
     default: 1
@@ -564,7 +573,8 @@ meeting:
     type: boolean
     default: False
   motions_export_follow_recommendation:
-    default: boolean
+    type: boolean
+    default: False
 
   # Motion poll
   motion_poll_ballot_paper_selection:
@@ -575,8 +585,12 @@ meeting:
     - CUSTOM_NUMBER
     default: CUSTOM_NUMBER
   motion_poll_ballot_paper_number: number
-  motion_poll_default_type: string
-  motion_poll_default_100_percent_base: string
+  motion_poll_default_type:
+    type: string
+    default: analog
+  motion_poll_default_100_percent_base:
+    type: string
+    default: YNA
   motion_poll_default_majority_method: string
   motion_poll_default_group_ids:
     type: relation-list
@@ -596,7 +610,9 @@ meeting:
   users_enable_vote_weight:
     type: boolean
     default: False
-  users_allow_self_set_present: boolean
+  users_allow_self_set_present:
+    type: boolean
+    default: False
   users_pdf_welcometitle:
     type: string
     default: Welcome to OpenSlides
@@ -648,9 +664,13 @@ meeting:
   assignment_poll_sort_poll_result_by_votes:
     type: boolean
     default: True
-  assignment_poll_default_type: string
+  assignment_poll_default_type:
+    type: string
+    default: analog
   assignment_poll_default_method: string
-  assignment_poll_default_100_percent_base: string
+  assignment_poll_default_100_percent_base:
+    type: string
+    default: YNA
   assignment_poll_default_majority_method: string
   assignment_poll_default_group_ids:
     type: relation-list
@@ -665,9 +685,13 @@ meeting:
     - CUSTOM_NUMBER
   poll_ballot_paper_number: number
   poll_sort_poll_result_by_votes: boolean
-  poll_default_type: string
+  poll_default_type:
+    type: string
+    default: analog
   poll_default_method: string
-  poll_default_100_percent_base: string
+  poll_default_100_percent_base:
+    type: string
+    default: YNA
   poll_default_majority_method: string
   poll_default_group_ids:
     type: relation-list
