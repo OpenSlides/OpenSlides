@@ -9,7 +9,6 @@ import { DataStoreService, DataStoreUpdateManagerService } from './data-store.se
 import { HttpService } from './http.service';
 import { OpenSlidesStatusService } from './openslides-status.service';
 import { OpenSlidesService } from './openslides.service';
-import { WebsocketService } from './websocket.service';
 
 interface HistoryData {
     [collection: string]: BaseModel[];
@@ -31,7 +30,6 @@ export class TimeTravelService {
      * Constructs the time travel service
      *
      * @param httpService To fetch the history data
-     * @param webSocketService to disable websocket connection
      * @param modelMapperService to cast history objects into models
      * @param DS to overwrite the dataStore
      * @param OSStatus Sets the history status
@@ -39,7 +37,6 @@ export class TimeTravelService {
      */
     public constructor(
         private httpService: HttpService,
-        private webSocketService: WebsocketService,
         private modelMapperService: CollectionStringMapperService,
         private DS: DataStoreService,
         private OSStatus: OpenSlidesStatusService,
@@ -100,7 +97,8 @@ export class TimeTravelService {
      * Clears the DataStore and stops the WebSocket connection
      */
     private async stopTime(history: History): Promise<void> {
-        await this.webSocketService.close();
+        // await this.webSocketService.close();
+        // TODO
         await this.DS.set(); // Same as clear, but not persistent.
         this.OSStatus.enterHistoryMode(history);
     }

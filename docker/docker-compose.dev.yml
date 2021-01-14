@@ -1,0 +1,47 @@
+version: "3"
+services:
+  client:
+    image: os3-client-dev
+    build:
+        context: ../client
+        dockerfile: docker/Dockerfile.dev
+    volumes:
+        - ../client:/app
+
+  server:
+    image: os3-server-dev
+    user: $UID:$GID
+    build:
+        context: ../server
+        dockerfile: docker/Dockerfile.dev
+    volumes:
+        - ../server:/app
+    depends_on:
+      - redis
+
+  autoupdate:
+    image: os3-autoupdate-dev
+    environment:
+        - MESSAGE_BUS_HOST=redis
+        - MESSAGE_BUS_PORT=6379
+        - WORKER_HOST=server
+        - WORKER_PORT=8000
+    depends_on:
+        - server
+        - redis
+    volumes:
+      - ../autoupdate/cmd:/root/cmd
+      - ../autoupdate/internal:/root/internal
+  redis:
+    image: redis:latest
+
+  haproxy:
+    image: os3-haproxy-dev
+    volumes:
+      - ../haproxy/src:/usr/local/etc/haproxy
+    depends_on:
+      - client
+      - server
+      - autoupdate
+    ports:
+      - "8000:8000"

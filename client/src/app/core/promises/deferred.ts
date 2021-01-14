@@ -15,14 +15,14 @@
  */
 export class Deferred<T = void> extends Promise<T> {
     /**
-     * The promise to wait for
-     */
-    public readonly promise: Promise<T>;
-
-    /**
      * custom resolve function
      */
     private _resolve: (val?: T) => void;
+
+    private _wasResolved;
+    public get wasResolved(): boolean {
+        return this._wasResolved;
+    }
 
     /**
      * Creates the promise and overloads the resolve function
@@ -32,6 +32,7 @@ export class Deferred<T = void> extends Promise<T> {
         super(resolve => {
             preResolve = resolve;
         });
+        this._wasResolved = false;
         this._resolve = preResolve;
     }
 
@@ -40,5 +41,6 @@ export class Deferred<T = void> extends Promise<T> {
      */
     public resolve(val?: T): void {
         this._resolve(val);
+        this._wasResolved = true;
     }
 }

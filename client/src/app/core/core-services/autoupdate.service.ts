@@ -1,57 +1,16 @@
 import { Injectable } from '@angular/core';
 
+import { AutoupdateFormat } from '../definitions/autoupdate-format';
+import { AutoupdateThrottleService } from './autoupdate-throttle.service';
 import { BaseModel } from '../../shared/models/base/base-model';
 import { CollectionStringMapperService } from './collection-string-mapper.service';
+import { CommunicationManagerService, OfflineError } from './communication-manager.service';
 import { DataStoreService, DataStoreUpdateManagerService } from './data-store.service';
+import { HttpService } from './http.service';
 import { Mutex } from '../promises/mutex';
-import { WebsocketService, WEBSOCKET_ERROR_CODES } from './websocket.service';
-
-export interface AutoupdateFormat {
-    /**
-     * All changed (and created) items as their full/restricted data grouped by their collection.
-     */
-    changed: {
-        [collectionString: string]: object[];
-    };
-
-    /**
-     * All deleted items (by id) grouped by their collection.
-     */
-    deleted: {
-        [collectionString: string]: number[];
-    };
-
-    /**
-     * The lower change id bond for this autoupdate
-     */
-    from_change_id: number;
-
-    /**
-     * The upper change id bound for this autoupdate
-     */
-    to_change_id: number;
-
-    /**
-     * Flag, if this autoupdate contains all data. If so, the DS needs to be resetted.
-     */
-    all_data: boolean;
-}
-
-export function isAutoupdateFormat(obj: any): obj is AutoupdateFormat {
-    const format = obj as AutoupdateFormat;
-    return (
-        obj &&
-        typeof obj === 'object' &&
-        format.changed !== undefined &&
-        format.deleted !== undefined &&
-        format.from_change_id !== undefined &&
-        format.to_change_id !== undefined &&
-        format.all_data !== undefined
-    );
-}
 
 /**
- * Handles the initial update and automatic updates using the {@link WebsocketService}
+ * Handles the initial update and automatic updates
  * Incoming objects, usually BaseModels, will be saved in the dataStore (`this.DS`)
  * This service usually creates all models
  */
@@ -61,32 +20,49 @@ export function isAutoupdateFormat(obj: any): obj is AutoupdateFormat {
 export class AutoupdateService {
     private mutex = new Mutex();
 
-    /**
-     * Constructor to create the AutoupdateService. Calls the constructor of the parent class.
-     * @param websocketService
-     * @param DS
-     * @param modelMapper
-     */
+    private streamCloseFn: () => void | null = null;
+
+    private lastMessageContainedAllData = false;
+
     public constructor(
-        private websocketService: WebsocketService,
         private DS: DataStoreService,
         private modelMapper: CollectionStringMapperService,
-        private DSUpdateManager: DataStoreUpdateManagerService
+        private DSUpdateManager: DataStoreUpdateManagerService,
+        private communicationManager: CommunicationManagerService,
+        private autoupdateThrottle: AutoupdateThrottleService
     ) {
-        this.websocketService.getOberservable<AutoupdateFormat>('autoupdate').subscribe(response => {
-            this.storeResponse(response);
-        });
+        this.communicationManager.startCommunicationEvent.subscribe(() => this.startAutoupdate());
 
-        // Check for too high change id-errors. If this happens, reset the DS and get fresh data.
-        this.websocketService.errorResponseObservable.subscribe(error => {
-            if (error.code === WEBSOCKET_ERROR_CODES.CHANGE_ID_TOO_HIGH) {
-                this.doFullUpdate();
+        this.autoupdateThrottle.autoupdatesToInject.subscribe(autoupdate => this.storeAutoupdate(autoupdate));
+    }
+
+    public async startAutoupdate(changeId?: number): Promise<void> {
+        this.stopAutoupdate();
+
+        try {
+            this.streamCloseFn = await this.communicationManager.subscribe<AutoupdateFormat>(
+                '/system/autoupdate',
+                autoupdate => {
+                    this.autoupdateThrottle.newAutoupdate(autoupdate);
+                },
+                () => ({ change_id: (changeId ? changeId : this.DS.maxChangeId).toString() })
+            );
+        } catch (e) {
+            if (!(e instanceof OfflineError)) {
+                console.error(e);
             }
-        });
+        }
+    }
+
+    public stopAutoupdate(): void {
+        if (this.streamCloseFn) {
+            this.streamCloseFn();
+            this.streamCloseFn = null;
+        }
     }
 
     /**
-     * Handle the answer of incoming data via {@link WebsocketService}.
+     * Handle the answer of incoming data, after it was throttled.
      *
      * Detects the Class of an incomming model, creates a new empty object and assigns
      * the data to it using the deserialize function. Also models that are flagged as deleted
@@ -94,8 +70,9 @@ export class AutoupdateService {
      *
      * Handles the change ids of all autoupdates.
      */
-    private async storeResponse(autoupdate: AutoupdateFormat): Promise<void> {
+    private async storeAutoupdate(autoupdate: AutoupdateFormat): Promise<void> {
         const unlock = await this.mutex.lock();
+        this.lastMessageContainedAllData = autoupdate.all_data;
         if (autoupdate.all_data) {
             await this.storeAllData(autoupdate);
         } else {
@@ -138,15 +115,8 @@ export class AutoupdateService {
         } else {
             // autoupdate fully in the future. we are missing something!
             console.log('Autoupdate in the future', maxChangeId, autoupdate.from_change_id, autoupdate.to_change_id);
-            this.requestChanges();
+            this.startAutoupdate(); // restarts it.
         }
-    }
-
-    public async injectAutoupdateIgnoreChangeId(autoupdate: AutoupdateFormat): Promise<void> {
-        const unlock = await this.mutex.lock();
-        console.debug('inject autoupdate', autoupdate);
-        await this.injectAutupdateIntoDS(autoupdate, false);
-        unlock();
     }
 
     private async injectAutupdateIntoDS(autoupdate: AutoupdateFormat, flush: boolean): Promise<void> {
@@ -188,34 +158,20 @@ export class AutoupdateService {
     }
 
     /**
-     * Sends a WebSocket request to the Server with the maxChangeId of the DataStore.
-     * The server should return an autoupdate with all new data.
-     */
-    public requestChanges(): void {
-        console.log(`requesting changed objects with DS max change id ${this.DS.maxChangeId}`);
-        this.websocketService.send('getElements', { change_id: this.DS.maxChangeId });
-    }
-
-    /**
      * Does a full update: Requests all data from the server and sets the DS to the fresh data.
      */
     public async doFullUpdate(): Promise<void> {
-        const oldChangeId = this.DS.maxChangeId;
-        const response = await this.websocketService.sendAndGetResponse<{}, AutoupdateFormat>('getElements', {});
-
-        const updateSlot = await this.DSUpdateManager.getNewUpdateSlot(this.DS);
-        let allModels: BaseModel[] = [];
-        for (const collection of Object.keys(response.changed)) {
-            if (this.modelMapper.isCollectionRegistered(collection)) {
-                allModels = allModels.concat(this.mapObjectsToBaseModels(collection, response.changed[collection]));
-            } else {
-                console.error(`Unregistered collection "${collection}". Ignore it.`);
-            }
+        if (this.lastMessageContainedAllData) {
+            console.log('full update requested. Skipping, last message already contained all data');
+        } else {
+            console.log('requesting full update.');
+            // The mutex is needed, so the DS is not cleared, if there is
+            // another autoupdate running.
+            const unlock = await this.mutex.lock();
+            this.stopAutoupdate();
+            await this.DS.clear();
+            this.startAutoupdate();
+            unlock();
         }
-
-        await this.DS.set(allModels, response.to_change_id);
-        this.DSUpdateManager.commit(updateSlot, response.to_change_id, true);
-
-        console.log(`Full update done from ${oldChangeId} to ${response.to_change_id}`);
     }
 }

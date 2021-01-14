@@ -42,24 +42,24 @@ export class CountUsersService {
     public constructor(private notifyService: NotifyService, operator: OperatorService) {
         // Listen for requests to send an answer.
         this.notifyService.getMessageObservable<CountUserRequest>(REQUEST_NAME).subscribe(request => {
-            if (request.content.token) {
+            if (request.message.token) {
                 this.notifyService.sendToChannels<CountUserResponse>(
                     RESPONSE_NAME,
                     {
-                        token: request.content.token,
+                        token: request.message.token,
                         data: {
                             userId: this.currentUserId
                         }
                     },
-                    request.senderChannelName
+                    request.sender_channel_id
                 );
             }
         });
 
         // Listen for responses and distribute them through `activeCounts`
         this.notifyService.getMessageObservable<CountUserResponse>(RESPONSE_NAME).subscribe(response => {
-            if (response.content.data && response.content.token && this.activeCounts[response.content.token]) {
-                this.activeCounts[response.content.token].next(response.content.data);
+            if (response.message.data && response.message.token && this.activeCounts[response.message.token]) {
+                this.activeCounts[response.message.token].next(response.message.data);
             }
         });
 

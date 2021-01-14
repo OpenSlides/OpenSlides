@@ -37,7 +37,6 @@ done
 # Wait for redis
 wait-for-it redis:6379
 wait-for-it redis-slave:6379
-wait-for-it redis-channels:6379
 
 echo 'running migrations'
 python manage.py migrate

@@ -10,10 +10,9 @@ import { CountUsersService } from './core/ui-services/count-users.service';
 import { DataStoreUpgradeService } from './core/core-services/data-store-upgrade.service';
 import { LoadFontService } from './core/ui-services/load-font.service';
 import { LoginDataService } from './core/ui-services/login-data.service';
+import { OfflineService } from './core/core-services/offline.service';
 import { OperatorService } from './core/core-services/operator.service';
 import { OverlayService } from './core/ui-services/overlay.service';
-import { PingService } from './core/core-services/ping.service';
-import { PrioritizeService } from './core/core-services/prioritize.service';
 import { RoutingStateService } from './core/ui-services/routing-state.service';
 import { ServertimeService } from './core/core-services/servertime.service';
 import { ThemeService } from './core/ui-services/theme.service';
@@ -75,17 +74,16 @@ export class AppComponent {
         appRef: ApplicationRef,
         servertimeService: ServertimeService,
         router: Router,
+        offlineService: OfflineService,
         operator: OperatorService,
         loginDataService: LoginDataService,
-        constantsService: ConstantsService, // Needs to be started, so it can register itself to the WebsocketService
+        constantsService: ConstantsService,
         themeService: ThemeService,
         overlayService: OverlayService,
         countUsersService: CountUsersService, // Needed to register itself.
         configService: ConfigService,
         loadFontService: LoadFontService,
         dataStoreUpgradeService: DataStoreUpgradeService, // to start it.
-        prioritizeService: PrioritizeService,
-        pingService: PingService,
         routingState: RoutingStateService,
         votingBannerService: VotingBannerService // needed for initialisation
     ) {

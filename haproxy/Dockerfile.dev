@@ -1,0 +1,5 @@
+FROM haproxy:2.0-alpine
+COPY src/haproxy.common.cfg /usr/local/etc/haproxy/haproxy.common.cfg
+COPY src/haproxy.dev.cfg /usr/local/etc/haproxy/haproxy.dev.cfg
+COPY src/combined.pem /usr/local/etc/haproxy/combined.pem
+CMD ["haproxy", "-f", "/usr/local/etc/haproxy/haproxy.common.cfg", "-f", "/usr/local/etc/haproxy/haproxy.dev.cfg"]

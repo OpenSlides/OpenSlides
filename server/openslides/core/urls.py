@@ -4,7 +4,8 @@ from . import views
 
 
 urlpatterns = [
-    url(r"^servertime/$", views.ServerTime.as_view(), name="core_servertime"),
+    url(r"^servertime/$", views.ServertimeView.as_view(), name="core_servertime"),
+    url(r"^constants/$", views.ConstantsView.as_view(), name="core_constants"),
     url(r"^version/$", views.VersionView.as_view(), name="core_version"),
     url(
         r"^history/information/$",

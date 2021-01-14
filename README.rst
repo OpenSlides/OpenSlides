@@ -25,6 +25,8 @@ First, you have to clone this repository::
     $ git clone https://github.com/OpenSlides/OpenSlides.git
     $ cd OpenSlides/docker/
 
+TODO: submodules.
+
 You need to build the Docker images for the client and server with this
 script::
 

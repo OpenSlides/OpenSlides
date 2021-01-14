@@ -211,15 +211,15 @@ export class C4DialogComponent implements OnInit, OnDestroy {
         search: {
             recievedSearchRequest: {
                 handle: (notify: NotifyResponse<{ name: string }>) => {
-                    this.replyChannel = notify.senderChannelName;
-                    this.partnerName = notify.content.name;
+                    this.replyChannel = notify.sender_channel_id;
+                    this.partnerName = notify.message.name;
                     return 'waitForResponse';
                 }
             },
             recievedSearchResponse: {
                 handle: (notify: NotifyResponse<{ name: string }>) => {
-                    this.replyChannel = notify.senderChannelName;
-                    this.partnerName = notify.content.name;
+                    this.replyChannel = notify.sender_channel_id;
+                    this.partnerName = notify.message.name;
                     // who starts?
                     const startPlayer = Math.random() < 0.5 ? Player.thisPlayer : Player.partner;
                     const startPartner: boolean = startPlayer === Player.partner;
@@ -232,10 +232,10 @@ export class C4DialogComponent implements OnInit, OnDestroy {
         waitForResponse: {
             recievedACK: {
                 handle: (notify: NotifyResponse<{}>) => {
-                    if (notify.senderChannelName !== this.replyChannel) {
+                    if (notify.sender_channel_id !== this.replyChannel) {
                         return null;
                     }
-                    return notify.content ? 'myTurn' : 'foreignTurn';
+                    return notify.message ? 'myTurn' : 'foreignTurn';
                 }
             },
             waitTimeout: {
@@ -243,7 +243,7 @@ export class C4DialogComponent implements OnInit, OnDestroy {
             },
             recievedRagequit: {
                 handle: (notify: NotifyResponse<{}>) => {
-                    return notify.senderChannelName === this.replyChannel ? 'search' : null;
+                    return notify.sender_channel_id === this.replyChannel ? 'search' : null;
                 }
             }
         },
@@ -270,10 +270,10 @@ export class C4DialogComponent implements OnInit, OnDestroy {
         foreignTurn: {
             recievedTurn: {
                 handle: (notify: NotifyResponse<{ col: number }>) => {
-                    if (notify.senderChannelName !== this.replyChannel) {
+                    if (notify.sender_channel_id !== this.replyChannel) {
                         return null;
                     }
-                    const col: number = notify.content.col;
+                    const col: number = notify.message.col;
                     if (!this.colFree(col)) {
                         return null;
                     }
@@ -455,7 +455,7 @@ export class C4DialogComponent implements OnInit, OnDestroy {
      */
     public enter_waitForResponse(): void {
         this.caption = 'Wait for response...';
-        this.notifyService.send('c4_search_response', { name: this.getPlayerName() });
+        this.notifyService.sendToChannels('c4_search_response', { name: this.getPlayerName() }, this.replyChannel);
         if (this.waitTimout) {
             clearTimeout(<any>this.waitTimout);
         }

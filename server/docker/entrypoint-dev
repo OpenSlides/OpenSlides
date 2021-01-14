@@ -1,0 +1,14 @@
+#!/bin/bash
+
+set -e
+
+wait-for-it -t 0 redis:6379
+
+if [[ ! -f "/app/personal_data/var/settings.py" ]]; then
+    echo "Create settings"
+    python manage.py createsettings
+fi
+
+python -u manage.py migrate
+
+exec "$@"

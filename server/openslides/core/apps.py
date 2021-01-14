@@ -16,11 +16,9 @@ class CoreAppConfig(AppConfig):
     def ready(self):
         # Import all required stuff.
         # Let all client websocket message register
-        from ..utils import websocket_client_messages  # noqa
         from ..utils.rest_api import router
         from . import serializers  # noqa
         from .config import config
-        from .projector import register_projector_slides
         from .signals import (
             autoupdate_for_many_to_many_relations,
             cleanup_unused_permissions,
@@ -40,9 +38,6 @@ class CoreAppConfig(AppConfig):
 
         # Collect all config variables before getting the constants.
         config.collect_config_variables_from_apps()
-
-        # Define projector elements.
-        register_projector_slides()
 
         # Connect signals.
         post_permission_creation.connect(
@@ -126,6 +121,7 @@ class CoreAppConfig(AppConfig):
 
         # Client settings
         client_settings_keys = [
+            "AUTOUPDATE_DELAY",
             "PRIORITIZED_GROUP_IDS",
             "PING_INTERVAL",
             "PING_TIMEOUT",

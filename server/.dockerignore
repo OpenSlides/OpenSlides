@@ -3,3 +3,6 @@
 **/.venv
 tests/
 personal_data/
+**/.mypy_cache
+**/.pytest_cache
+**/tests/file

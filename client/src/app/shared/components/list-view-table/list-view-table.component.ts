@@ -28,6 +28,7 @@ import { ViewportService } from 'app/core/ui-services/viewport.service';
 import { BaseProjectableViewModel } from 'app/site/base/base-projectable-view-model';
 import { BaseViewModel } from 'app/site/base/base-view-model';
 import { BaseViewModelWithContentObject } from 'app/site/base/base-view-model-with-content-object';
+import { isProjectable } from 'app/site/base/projectable';
 
 export interface CssClassDefinition {
     [key: string]: boolean;
@@ -458,8 +459,8 @@ export class ListViewTableComponent<V extends BaseViewModel | BaseViewModelWithC
     }
 
     public isElementProjected = (context: PblNgridRowContext<V>) => {
-        const model = context.$implicit as V;
-        if (this.allowProjector && this.projectorService.isProjected(this.getProjectable(model))) {
+        const projectableViewModel = this.getProjectable(context.$implicit as V);
+        if (projectableViewModel && this.allowProjector && this.projectorService.isProjected(projectableViewModel)) {
             return 'projected';
         }
     };
@@ -578,8 +579,10 @@ export class ListViewTableComponent<V extends BaseViewModel | BaseViewModelWithC
      * @param viewModel The model of the table
      * @returns a view model that can be projected
      */
-    public getProjectable(viewModel: V): BaseProjectableViewModel {
-        return (viewModel as BaseViewModelWithContentObject)?.contentObject ?? viewModel;
+    public getProjectable(viewModel: V): BaseProjectableViewModel | null {
+        const actualViewModel: BaseProjectableViewModel =
+            (viewModel as BaseViewModelWithContentObject)?.contentObject ?? viewModel;
+        return isProjectable(actualViewModel) ? actualViewModel : null;
     }
 
     /**

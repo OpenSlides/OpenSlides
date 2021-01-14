@@ -40,12 +40,6 @@ export interface ProjectorTitle {
     providedIn: 'root'
 })
 export class ProjectorService {
-    /**
-     * Constructor.
-     *
-     * @param DS
-     * @param dataSend
-     */
     public constructor(
         private DS: DataStoreService,
         private http: HttpService,

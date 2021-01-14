@@ -16,7 +16,6 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.staticfiles",
     "rest_framework",
-    "channels",
     "openslides.agenda",
     "openslides.topics",
     "openslides.motions",
@@ -120,14 +119,6 @@ PASSWORD_HASHERS = [
 # https://docs.djangoproject.com/en/1.10/topics/files/
 
 MEDIA_URL = "/media/"
-
-
-# Django Channels
-# http://channels.readthedocs.io/en/latest/
-
-ASGI_APPLICATION = "openslides.routing.application"
-
-CHANNEL_LAYERS = {"default": {"BACKEND": "channels.layers.InMemoryChannelLayer"}}
 
 
 # Enable updating the last_login field for users on every login.

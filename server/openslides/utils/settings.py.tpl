@@ -83,45 +83,20 @@ DATABASES = {
 }
 
 
-# Set use_redis to True to activate redis as cache-, asgi- and session backend.
-use_redis = False
+# Collection Cache
+REDIS_ADDRESS = "redis://redis:6379/0"
 
-if use_redis:
-    # Django Channels
-
-    # https://channels.readthedocs.io/en/latest/topics/channel_layers.html#configuration
-    CHANNEL_LAYERS = {
-        "default": {
-            "BACKEND": "channels_redis.core.RedisChannelLayer",
-            "CONFIG": {
-                "hosts": [("localhost", 6379)],
-                "capacity": 100000,
-            },
-        },
-    }
-    # Collection Cache
-
-    # Can be:
-    # a Redis URI — "redis://host:6379/0?encoding=utf-8";
-    # a (host, port) tuple — ('localhost', 6379);
-    # or a unix domain socket path string — "/path/to/redis.sock".
-    REDIS_ADDRESS = "redis://127.0.0.1"
-    # REDIS_READ_ONLY_ADDRESS
-    AMOUNT_REPLICAS = 1
-
-    # Session backend
-
-    # Redis configuration for django-redis-sessions.
-    # https://github.com/martinrusev/django-redis-sessions
-
-    SESSION_ENGINE = 'redis_sessions.session'
-    SESSION_REDIS = {
-        'host': '127.0.0.1',
-        'port': 6379,
-        'db': 0,
-        'prefix': 'session',
-        'socket_timeout': 2
-    }
+# Session backend
+# Redis configuration for django-redis-sessions.
+# https://github.com/martinrusev/django-redis-sessions
+SESSION_ENGINE = 'redis_sessions.session'
+SESSION_REDIS = {
+    'host': 'redis',
+    'port': 6379,
+    'db': 0,
+    'prefix': 'session',
+    'socket_timeout': 2
+}
 
 # SAML integration
 # Please read https://github.com/OpenSlides/OpenSlides/blob/master/openslides/saml/README.md
@@ -144,21 +119,17 @@ ENABLE_ELECTRONIC_VOTING = False
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
-
 TIME_ZONE = 'Europe/Berlin'
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
-
 STATICFILES_DIRS = [os.path.join(OPENSLIDES_USER_DATA_DIR, 'static')] + STATICFILES_DIRS
-
 STATIC_ROOT = os.path.join(OPENSLIDES_USER_DATA_DIR, 'collected-static')
 
 
 # Files
 # https://docs.djangoproject.com/en/1.10/topics/files/
-
 MEDIA_ROOT = os.path.join(OPENSLIDES_USER_DATA_DIR, 'media', '')
 
 
@@ -169,7 +140,6 @@ MEDIA_ROOT = os.path.join(OPENSLIDES_USER_DATA_DIR, 'media', '')
 
 # Logging
 # see https://docs.djangoproject.com/en/2.2/topics/logging/
-
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,

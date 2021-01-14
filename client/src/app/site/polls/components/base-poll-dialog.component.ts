@@ -58,8 +58,6 @@ export abstract class BasePollDialogComponent<
             votes: this.getVoteData(),
             publish_immediately: this.publishImmediately
         };
-        console.log('answer: ', answer);
-
         this.dialogRef.close(answer);
     }
 
