@@ -299,16 +299,22 @@ committee:
 
 meeting:
   id: number
-  welcome_title: string
-  welcome_text: HTMLPermissive
+  welcome_title:
+    type: string
+    default: Welcome to OpenSlides
+  welcome_text:
+    type: HTMLPermissive
+    default: Space for your welcome text.
 
   # General
   name:
     type: string
     maxLength: 100
+    default: OpenSlides
   description:
     type: string
     maxLength: 100
+    default: Presentation and assembly system
   location: string
   start_time: timestamp
   end_time: timestamp
@@ -331,23 +337,40 @@ meeting:
   template_for_committee_id:
     type: relation
     to: committee/template_meeting_id
-  enable_anonymous: boolean
+  enable_anonymous:
+    type: boolean
+    default: False
 
   # Jitsi/Livestream settings
-  conference_show: boolean
-  conference_auto_connect: boolean
-  conference_los_restriction: boolean
+  conference_show:
+    type: boolean
+    default: False
+  conference_auto_connect:
+    type: boolean
+    default: False
+  conference_los_restriction:
+    type: boolean
+    default: False
   conference_stream_url: string
   conference_stream_poster_url: string
-  conference_open_microphone: boolean
-  conference_open_video: boolean
-  conference_auto_connect_next_speakers: boolean
+  conference_open_microphone:
+    type: boolean
+    default: False
+  conference_open_video:
+    type: boolean
+    default: False
+  conference_auto_connect_next_speakers:
+    type: number
+    default: 0
 
   # Projector
-  projector_default_countdown_time: number
+  projector_default_countdown_time:
+    type: number
+    default: 60
   projector_countdown_warning_time:
     type: number
     minimum: 0
+    default: 0
 
   # Exports
   export_csv_encoding:
@@ -355,28 +378,38 @@ meeting:
     enum:
     - utf-8
     - iso-8859-15
-  export_csv_separator: string
+    default: utf-8
+  export_csv_separator:
+    type: string
+    default: ","
   export_pdf_pagenumber_alignment:
     type: string
     enum:
     - left
     - right
     - center
+    default: center
   export_pdf_fontsize:
     type: number
     enum:
     - 10
     - 11
     - 12
+    default: 10
   export_pdf_pagesize:
     type: string
     enum:
     - A4
     - A5
+    default: A4
 
   # Agenda
-  agenda_show_subtitles: boolean
-  agenda_enable_numbering: boolean
+  agenda_show_subtitles:
+    type: boolean
+    default: False
+  agenda_enable_numbering:
+     type: boolean
+     default: True
   agenda_number_prefix:
     type: string
     maxLength: 20
@@ -385,6 +418,7 @@ meeting:
     enum:
     - arabic
     - roman
+    default: arabic
   agenda_item_creation:
     type: string
     enum:
@@ -392,24 +426,41 @@ meeting:
     - never
     - default_yes
     - default_no
+    default: default_yes
   agenda_new_items_default_visibility:
     type: string
     enum:
     - common
     - internal
     - hidden
-  agenda_show_internal_items_on_projector: boolean
+    default: internal
+  agenda_show_internal_items_on_projector:
+    type: boolean
+    default: True
 
   # List of speakers
   list_of_speakers_amount_last_on_projector:
     type: number
     minimum: 0
-  list_of_speakers_amount_next_on_projector: boolean
-  list_of_speakers_couple_countdown: boolean
-  list_of_speakers_show_amount_of_speakers_on_slide: boolean
-  list_of_speakers_present_users_only: boolean
-  list_of_speakers_show_first_contribution: boolean
-  list_of_speakers_enable_point_of_order_speakers: boolean
+    default: 0
+  list_of_speakers_amount_next_on_projector:
+    type: number
+    default: -1
+  list_of_speakers_couple_countdown:
+    type: boolean
+    default: True
+  list_of_speakers_show_amount_of_speakers_on_slide:
+    type: boolean
+    default: True
+  list_of_speakers_present_users_only:
+    type: boolean
+    default: False
+  list_of_speakers_show_first_contribution:
+    type: boolean
+    default: False
+  list_of_speakers_enable_point_of_order_speakers:
+    type: boolean
+    default: False
 
   # Motions
   motions_default_workflow_id:
@@ -424,24 +475,43 @@ meeting:
     type: relation
     to: motion_workflow/default_statute_amendment_workflow_meeting_id
     required: true
-  motions_preamble: string
+  motions_preamble:
+    type: string
+    default: "The assembly may decide"
   motions_default_line_numbering:
     type: string
     enum:
     - outside
     - inline
     - none
+    default: outside
   motions_line_length:
     type: number
     minimium: 40
-  motions_reason_required: boolean
-  motions_enable_text_on_projector: boolean
-  motions_enable_reason_on_projector: boolean
-  motions_enable_sidebox_on_projector: boolean
-  motions_enable_recommendation_on_projector: boolean
-  motions_show_referring_motions: boolean
-  motions_show_sequential_number: boolean
-  motions_recommendations_by: string
+    default: 85
+  motions_reason_required:
+    type: boolean
+    default: False
+  motions_enable_text_on_projector:
+    type: boolean
+    default: True
+  motions_enable_reason_on_projector:
+    type: boolean
+    default: True
+  motions_enable_sidebox_on_projector:
+    type: boolean
+    default: False
+  motions_enable_recommendation_on_projector:
+    type: boolean
+    default: True
+  motions_show_referring_motions:
+    type: boolean
+    default: True
+  motions_show_sequential_number:
+    type: boolean
+    default: True
+  motions_recommendations_by:
+    type: string
   motions_statute_recommendations_by: string
   motions_recommendation_text_mode:
     type: string
@@ -450,34 +520,61 @@ meeting:
     - changed
     - diff
     - agreed
-  motions_default_sorting: string
+    default: diff
+  motions_default_sorting:
+    type: string
+    default: identifier
   motions_number_type:
     type: string
     enum:
     - per_category
     - serially_numbered
     - manually
-  motions_number_min_digits: number
-  motions_number_with_blank: boolean
-  motions_statutes_enabled: boolean
-  motions_amendments_enabled: boolean
-  motions_amendments_in_main_list: boolean
-  motions_amendments_of_amendments: boolean
-  motions_amendments_prefix: string
+    default: per_category
+  motions_number_min_digits:
+    type: number
+    default: 1
+  motions_number_with_blank:
+    type: boolean
+    default: False
+  motions_statutes_enabled:
+    type: boolean
+    default: False
+  motions_amendments_enabled:
+    type: boolean
+    default: False
+  motions_amendments_in_main_list:
+    type: boolean
+    default: True
+  motions_amendments_of_amendments:
+    type: boolean
+    default: False
+  motions_amendments_prefix:
+    type: string
   motions_amendments_text_mode:
     type: string
     enum:
     - freestyle
     - fulltext
     - paragraph
-  motions_amendments_multiple_paragraphs: boolean
+    default: paragraph
+  motions_amendments_multiple_paragraphs:
+    type: boolean
+    default: True
   motions_supporters_min_amount:
     type: number
     minimum: 0
-  motions_export_title: string
+    default: 0
+  motions_export_title:
+    type: string
+    default: Motions
   motions_export_preamble: string
-  motions_export_submitter_recommendation: boolean
-  motions_export_follow_recommendation: boolean
+  motions_export_submitter_recommendation:
+    type: boolean
+    default: False
+  motions_export_follow_recommendation:
+    type: boolean
+    default: False
 
   # Motion poll
   motion_poll_ballot_paper_selection:
@@ -486,9 +583,14 @@ meeting:
     - NUMBER_OF_DELEGATES
     - NUMBER_OF_ALL_PARTICIPANTS
     - CUSTOM_NUMBER
+    default: CUSTOM_NUMBER
   motion_poll_ballot_paper_number: number
-  motion_poll_default_type: string
-  motion_poll_default_100_percent_base: string
+  motion_poll_default_type:
+    type: string
+    default: analog
+  motion_poll_default_100_percent_base:
+    type: string
+    default: YNA
   motion_poll_default_majority_method: string
   motion_poll_default_group_ids:
     type: relation-list
@@ -501,12 +603,25 @@ meeting:
     - first_name
     - last_name
     - number
-  users_enable_presence_view: boolean
-  users_enable_vote_weight: boolean
-  users_allow_self_set_present: boolean
-  users_pdf_welcometitle: string
-  users_pdf_welcometext: string
-  users_pdf_url: string
+    default: first_name
+  users_enable_presence_view:
+    type: boolean
+    default: False
+  users_enable_vote_weight:
+    type: boolean
+    default: False
+  users_allow_self_set_present:
+    type: boolean
+    default: False
+  users_pdf_welcometitle:
+    type: string
+    default: Welcome to OpenSlides
+  users_pdf_welcometext:
+    type: string
+    default: [Place for your welcome and help text.]
+  users_pdf_url:
+    type: string
+    default: http://example.com:8000
   users_pdf_wlan_ssid: string
   users_pdf_wlan_password: string
   users_pdf_wlan_encryption:
@@ -516,14 +631,21 @@ meeting:
     - WEP
     - WPA
     - nopass
-  users_email_sender: string
+  users_email_sender:
+    type: string
+    default: OpenSlides
   users_email_replyto: string
-  users_email_subject: string
+  users_email_subject:
+    type: string
+    default: OpenSlides access data
   users_email_body: string
 
   # Assignments
-  assignemnts_export_title: string
-  assignments_export_preamble: string
+  assignemnts_export_title:
+    type: string
+    default: Elections
+  assignments_export_preamble:
+    type: string
 
   # Assignment polls
   assignment_poll_ballot_paper_selection:
@@ -532,12 +654,23 @@ meeting:
     - NUMBER_OF_DELEGATES
     - NUMBER_OF_ALL_PARTICIPANTS
     - CUSTOM_NUMBER
-  assignment_poll_ballot_paper_number: number
-  assignment_poll_add_candidates_to_list_of_speakers: boolean
-  assignment_poll_sort_poll_result_by_votes: boolean
-  assignment_poll_default_type: string
+    default: CUSTOM_NUMBER
+  assignment_poll_ballot_paper_number:
+    type: number
+    default: 8
+  assignment_poll_add_candidates_to_list_of_speakers:
+    type: boolean
+    default: True
+  assignment_poll_sort_poll_result_by_votes:
+    type: boolean
+    default: True
+  assignment_poll_default_type:
+    type: string
+    default: analog
   assignment_poll_default_method: string
-  assignment_poll_default_100_percent_base: string
+  assignment_poll_default_100_percent_base:
+    type: string
+    default: YNA
   assignment_poll_default_majority_method: string
   assignment_poll_default_group_ids:
     type: relation-list
@@ -552,9 +685,13 @@ meeting:
     - CUSTOM_NUMBER
   poll_ballot_paper_number: number
   poll_sort_poll_result_by_votes: boolean
-  poll_default_type: string
+  poll_default_type:
+    type: string
+    default: analog
   poll_default_method: string
-  poll_default_100_percent_base: string
+  poll_default_100_percent_base:
+    type: string
+    default: YNA
   poll_default_majority_method: string
   poll_default_group_ids:
     type: relation-list
