@@ -48,6 +48,9 @@ export class VjsPlayerComponent implements OnInit, OnDestroy {
         this.checkVideoUrl();
     }
 
+    @Input()
+    public showParticles: boolean;
+
     @Output()
     private started: EventEmitter<void> = new EventEmitter();
 

@@ -1,0 +1,36 @@
+$bar-margin: 10px;
+$bar-border-radius: 15px;
+
+.progress-wrapper {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+
+    .end-icon {
+        display: block;
+        margin: auto;
+    }
+
+    .progress-bar {
+        position: relative;
+        width: 100%;
+
+        .bar {
+            position: absolute;
+            right: 0;
+            left: 0;
+            bottom: 0;
+            margin-left: $bar-margin;
+            margin-right: $bar-margin;
+            border-radius: $bar-border-radius;
+        }
+
+        .buffer {
+            height: 100%;
+        }
+
+        .progress {
+            transition: height 0.5s ease;
+        }
+    }
+}

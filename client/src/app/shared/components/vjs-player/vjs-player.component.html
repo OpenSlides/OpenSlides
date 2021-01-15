@@ -1,4 +1,5 @@
 <div class="video-wrapper">
+    <os-particle-display *ngIf="showParticles" class="applause-particles"></os-particle-display>
     <div class="player-container" [ngClass]="{ hide: !isUrlOnline }">
         <video #videoPlayer class="video-js" controls preload="none"></video>
     </div>

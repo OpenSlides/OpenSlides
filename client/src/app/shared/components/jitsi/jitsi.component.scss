@@ -56,6 +56,7 @@
 
     .jitsi-bar {
         display: flex;
+        position: relative;
         justify-content: flex-end;
         $wrapper-padding: 5px;
         $bar-height: 40px;
@@ -90,10 +91,19 @@
         }
 
         .list-wrapper {
+            position: relative;
             pointer-events: all;
             min-height: $bar-height;
             padding-top: $wrapper-padding;
             border-top-right-radius: 4px;
+
+            .applause {
+                position: absolute;
+                top: 0;
+                width: 90px;
+                left: -90px;
+                bottom: 50px;
+            }
 
             .toggle-list-button {
                 position: relative;
@@ -121,6 +131,7 @@
             .jitsi-list {
                 .content {
                     height: 40vh;
+                    max-height: 100%;
                     clear: both;
 
                     .disconnected {
@@ -136,7 +147,15 @@
                     }
 
                     .room-members {
-                        height: inherit;
+                        height: 100%;
+                        position: relative;
+
+                        .room-list-applause-particles {
+                            position: absolute;
+                            height: 100%;
+                            width: 70px;
+                            right: 0;
+                        }
 
                         .member-list {
                             max-height: 100%;

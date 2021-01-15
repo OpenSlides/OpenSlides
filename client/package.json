@@ -66,6 +66,7 @@
         "lz4js": "^0.2.0",
         "material-icon-font": "git+https://github.com/petergng/materialIconFont.git",
         "moment": "^2.27.0",
+        "ng-particles": "^2.1.11",
         "ng2-charts": "^2.4.0",
         "ng2-pdf-viewer": "6.3.2",
         "ngx-device-detector": "^2.0.0",
@@ -78,6 +79,7 @@
         "rxjs": "^6.6.2",
         "tinymce": "5.4.2",
         "tslib": "^1.10.0",
+        "tsparticles": "^1.18.11",
         "video.js": "^7.8.4",
         "zone.js": "~0.10.2"
     },

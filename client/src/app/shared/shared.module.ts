@@ -130,6 +130,10 @@ import { JitsiComponent } from './components/jitsi/jitsi.component';
 import { VjsPlayerComponent } from './components/vjs-player/vjs-player.component';
 import { LiveStreamComponent } from './components/live-stream/live-stream.component';
 import { ListOfSpeakersContentComponent } from './components/list-of-speakers-content/list-of-speakers-content.component';
+import { ApplauseDisplayComponent } from './components/applause-display/applause-display.component';
+import { ProgressComponent } from './components/progress/progress.component';
+import { NgParticlesModule } from 'ng-particles';
+import { ParticleDisplayComponent } from './components/particle-display/particle-display.component';
 
 /**
  * Share Module for all "dumb" components and pipes.
@@ -194,7 +198,8 @@ import { ListOfSpeakersContentComponent } from './components/list-of-speakers-co
         PblNgridTargetEventsModule,
         PdfViewerModule,
         NgxMaterialTimepickerModule,
-        ChartsModule
+        ChartsModule,
+        NgParticlesModule
     ],
     exports: [
         FormsModule,
@@ -364,7 +369,10 @@ import { ListOfSpeakersContentComponent } from './components/list-of-speakers-co
         JitsiComponent,
         VjsPlayerComponent,
         LiveStreamComponent,
-        ListOfSpeakersContentComponent
+        ListOfSpeakersContentComponent,
+        ApplauseDisplayComponent,
+        ProgressComponent,
+        ParticleDisplayComponent
     ],
     providers: [
         {

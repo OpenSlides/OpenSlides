@@ -1,4 +1,4 @@
-@import './assets/styles/color-palettes/os-red.scss';
+@import '~assets/styles/color-palettes/os-red.scss';
 
 $openslides-primary: mat-palette($openslides-primary-red, 500, 300, 900);
 $openslides-accent: mat-palette($mat-amber);

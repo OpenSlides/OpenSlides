@@ -11,6 +11,7 @@ import { ConstantsService } from 'app/core/core-services/constants.service';
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { Deferred } from 'app/core/promises/deferred';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
+import { ApplauseService, ApplauseType } from 'app/core/ui-services/applause.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { UserMediaPermService } from 'app/core/ui-services/user-media-perm.service';
 import { UserListIndexType } from 'app/site/agenda/models/view-list-of-speakers';
@@ -96,6 +97,10 @@ export class JitsiComponent extends BaseViewComponentDirective implements OnInit
     public showJitsiWindow = true;
     public muted = true;
 
+    public showApplause: boolean;
+    public applauseDisabled = false;
+    private applauseTimeout: number;
+
     @ViewChild('jitsi')
     private jitsiNode: ElementRef;
 
@@ -180,6 +185,26 @@ export class JitsiComponent extends BaseViewComponentDirective implements OnInit
     public currentState: ConferenceState;
     public isEnterMeetingRoomVisible = true;
 
+    public applauseLevel = 0;
+    private showApplauseLevel: boolean;
+    private isApplausBarUsed: boolean;
+
+    public get showApplauseBadge(): boolean {
+        return this.showApplauseLevel && this.applauseLevel > 0 && (!this.showJitsiWindow || !this.isApplausBarUsed);
+    }
+
+    private get applauseType(): ApplauseType {
+        return this.applauseService.applauseType;
+    }
+
+    public get isApplauseTypeBar(): boolean {
+        return this.applauseType === ApplauseType.bar;
+    }
+
+    public get isApplauseTypeParticles(): boolean {
+        return this.applauseType === ApplauseType.particles;
+    }
+
     private configOverwrite = {
         startAudioOnly: false,
         // allows jitsi on mobile devices
@@ -237,7 +262,8 @@ export class JitsiComponent extends BaseViewComponentDirective implements OnInit
         private constantsService: ConstantsService,
         private configService: ConfigService,
         private closService: CurrentListOfSpeakersService,
-        private userMediaPermService: UserMediaPermService
+        private userMediaPermService: UserMediaPermService,
+        private applauseService: ApplauseService
     ) {
         super(titleService, translate, snackBar);
     }
@@ -350,6 +376,22 @@ export class JitsiComponent extends BaseViewComponentDirective implements OnInit
             }),
             this.configService.get<boolean>('general_system_conference_open_video').subscribe(open => {
                 this.configOverwrite.startWithVideoMuted = !open;
+            }),
+            this.configService.get<boolean>('general_system_applause_enable').subscribe(enable => {
+                this.showApplause = enable;
+            }),
+            this.configService.get<number>('general_system_stream_applause_timeout').subscribe(timeout => {
+                this.applauseTimeout = (timeout || 1) * 1000;
+            }),
+            this.configService.get<boolean>('general_system_applause_show_level').subscribe(show => {
+                this.showApplauseLevel = show;
+            }),
+            this.configService.get<any>('general_system_applause_type').subscribe(type => {
+                if (type === 'applause-type-bar') {
+                    this.isApplausBarUsed = true;
+                } else {
+                    this.isApplausBarUsed = false;
+                }
             })
         );
 
@@ -362,7 +404,10 @@ export class JitsiComponent extends BaseViewComponentDirective implements OnInit
                     map(los => los?.findUserIndexOnList(this.operator.user.id) ?? -1),
                     distinctUntilChanged()
                 )
-                .subscribe(userLosIndex => this.autoJoinJitsiByLosIndex(userLosIndex))
+                .subscribe(userLosIndex => this.autoJoinJitsiByLosIndex(userLosIndex)),
+            this.applauseService.applauseLevelObservable.subscribe(applauseLevel => {
+                this.applauseLevel = applauseLevel || 0;
+            })
         );
     }
 
@@ -594,5 +639,13 @@ export class JitsiComponent extends BaseViewComponentDirective implements OnInit
 
     private setConferenceState(newState: ConferenceState): void {
         this.currentState = newState;
+    }
+
+    public sendApplause(): void {
+        this.applauseDisabled = true;
+        this.applauseService.sendApplause();
+        setTimeout(() => {
+            this.applauseDisabled = false;
+        }, this.applauseTimeout);
     }
 }
