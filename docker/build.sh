@@ -1,11 +1,10 @@
 #!/bin/bash
 
 # Check if associative arrays arrays are supported
-unset assoc
-if ! declare -A assoc > /dev/null 2>&1 ; then
-    echo "This script requires associative arrays to be supported."
+[[ "${BASH_VERSINFO[0]:-0}" -ge 4 ]] || {
+    echo "This script requires associative arrays to be supported (bash version >= 4)"
     exit 1
-fi
+}
 
 set -e
 
