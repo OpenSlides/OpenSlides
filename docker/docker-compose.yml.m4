@@ -158,7 +158,8 @@ services:
       - redis
       - server
     environment:
-      MESSAGE_BUS_HOST: redis
+      REDIS_WRITE_HOST: redis
+      MESSAGE_BUS_HOST: redis-slave
       WORKER_HOST: server
     networks:
       - back

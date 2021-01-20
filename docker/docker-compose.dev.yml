@@ -3,21 +3,31 @@ services:
   client:
     image: os3-client-dev
     build:
-        context: ../client
-        dockerfile: docker/Dockerfile.dev
+      context: ../client
+      dockerfile: docker/Dockerfile.dev
     volumes:
-        - ../client:/app
+      - ../client:/app
 
   server:
     image: os3-server-dev
     user: $UID:$GID
     build:
-        context: ../server
-        dockerfile: docker/Dockerfile.dev
+      context: ../server
+      dockerfile: docker/Dockerfile.dev
     volumes:
-        - ../server:/app
+      - ../server:/app
     depends_on:
       - redis
+
+  postgres:
+    image: postgres:11
+    environment:
+      - POSTGRES_USER=openslides
+      - POSTGRES_PASSWORD=openslides
+      - POSTGRES_DB=openslides
+    volumes:
+      - ./postgresql.dev.conf:/etc/postgresql/postgresql.conf
+    command: postgres -c 'config_file=/etc/postgresql/postgresql.conf'
 
   autoupdate:
     image: os3-autoupdate-dev

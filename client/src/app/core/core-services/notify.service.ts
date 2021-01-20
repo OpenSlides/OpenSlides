@@ -133,7 +133,7 @@ export class NotifyService {
             );
         } catch (e) {
             if (!(e instanceof OfflineError)) {
-                console.log(e);
+                console.error(e);
             }
         }
     }

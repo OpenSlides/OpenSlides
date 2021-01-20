@@ -11,7 +11,7 @@ from . import logging
 
 
 logger = logging.getLogger(__name__)
-connection_pool_limit = getattr(settings, "CONNECTION_POOL_LIMIT", 100)
+connection_pool_limit = getattr(settings, "CONNECTION_POOL_LIMIT", 10)
 logger.info(f"CONNECTION_POOL_LIMIT={connection_pool_limit}")
 
 

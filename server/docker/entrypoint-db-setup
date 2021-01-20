@@ -39,7 +39,7 @@ wait-for-it redis:6379
 wait-for-it redis-slave:6379
 
 echo 'running migrations'
-python manage.py migrate
+python -u manage.py migrate
 
 # Admin
 if [[ -f /run/secrets/os_admin ]]; then

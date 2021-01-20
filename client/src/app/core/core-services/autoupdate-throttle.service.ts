@@ -76,7 +76,6 @@ export class AutoupdateThrottleService {
 
     public disableUntil(changeId: number): void {
         // Wait for an autoupdate with to_id >= changeId.
-        console.log(this.delay);
         if (!this.isActive) {
             return;
         }
@@ -99,6 +98,7 @@ export class AutoupdateThrottleService {
         }
         this.pendingAutoupdates = [];
 
+        console.log(`Processing ${autoupdates.length} pending autoupdates`);
         const autoupdate = this.mergeAutoupdates(autoupdates);
         this._autoupdatesToInject.next(autoupdate);
     }

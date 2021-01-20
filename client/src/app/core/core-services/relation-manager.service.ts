@@ -215,7 +215,6 @@ export class RelationManagerService {
                         result = descriptor.get.bind(viewModel)();
                     } else {
                         result = target[property];
-                        // console.log(property, target);
                     }
                 } else if (property in _model) {
                     result = _model[property];

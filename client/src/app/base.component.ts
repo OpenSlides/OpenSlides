@@ -112,6 +112,5 @@ export abstract class BaseComponent {
     protected onLeaveTinyMce(event: any): void {
         console.log('tinyevent:', event.event.type);
         this.saveHint = false;
-        // console.log("event: ", event.event.type);
     }
 }

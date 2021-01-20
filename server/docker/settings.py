@@ -83,6 +83,8 @@ DATABASES = {
         "PASSWORD": get_env("DATABASE_PASSWORD", "openslides"),
         "HOST": get_env("DATABASE_HOST", "db"),
         "PORT": get_env("DATABASE_PORT", "5432"),
+        "USE_TZ": False,  # Requires postgresql to have UTC set as default
+        "DISABLE_SERVER_SIDE_CURSORS": True,
     },
     "mediafiles": {
         "ENGINE": "django.db.backends.postgresql",

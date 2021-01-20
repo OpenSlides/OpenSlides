@@ -11,6 +11,7 @@ from openslides.utils.cache import element_cache, get_element_id
 from openslides.utils.locking import locking
 from openslides.utils.manager import BaseManager
 from openslides.utils.models import SET_NULL_AND_AUTOUPDATE, RESTModelMixin
+from openslides.utils.postgres import is_postgres
 
 from .access_permissions import (
     ConfigAccessPermissions,
@@ -268,31 +269,60 @@ class HistoryManager(BaseManager):
         """
         Method to add elements to the history. This does not trigger autoupdate.
         """
+        history_time = now()
+        elements = [
+            element for element in elements if not element.get("disable_history", False)
+        ]
+
         with transaction.atomic():
-            instances = []
-            history_time = now()
-            for element in elements:
-                if element.get("disable_history"):
-                    # Do not update history if history is disabled.
-                    continue
-                # HistoryData is not a root rest element so there is no autoupdate and not history saving here.
-                data = HistoryData.objects.create(full_data=element.get("full_data"))
-                instance = self.model(
-                    element_id=get_element_id(
-                        element["collection_string"], element["id"]
-                    ),
-                    now=history_time,
-                    information=element.get("information", []),
-                    user_id=element.get("user_id"),
-                    full_data=data,
-                )
-                instance.save()
-                instances.append(instance)
-        return instances
+            if is_postgres():
+                return self._add_elements_postgres(elements, history_time)
+            else:
+                return self._add_elements_other_dbs(elements, history_time)
+
+    def _add_elements_postgres(self, elements, history_time):
+        """
+        Postgres supports returning ids from bulk requests, so after doing `bulk_create`
+        every HistoryData has an id. This can be used to bulk_create History-Models in a
+        second step.
+        """
+        history_data = [
+            HistoryData(full_data=element.get("full_data")) for element in elements
+        ]
+        HistoryData.objects.bulk_create(history_data)
+
+        history_entries = [
+            self.model(
+                element_id=get_element_id(element["collection_string"], element["id"]),
+                now=history_time,
+                information=element.get("information", []),
+                user_id=element.get("user_id"),
+                full_data_id=hd.id,
+            )
+            for element, hd in zip(elements, history_data)
+        ]
+        self.bulk_create(history_entries)
+        return history_entries
+
+    def _add_elements_other_dbs(self, elements, history_time):
+        history_entries = []
+        for element in elements:
+            # HistoryData is not a root rest element so there is no autoupdate and not history saving here.
+            data = HistoryData.objects.create(full_data=element.get("full_data"))
+            instance = self.model(
+                element_id=get_element_id(element["collection_string"], element["id"]),
+                now=history_time,
+                information=element.get("information", []),
+                user_id=element.get("user_id"),
+                full_data=data,
+            )
+            instance.save()
+            history_entries.append(instance)
+        return history_entries
 
     def build_history(self):
         """
-        Method to add all cachables to the history.
+        Method to add all cacheables to the history.
         """
         async_to_sync(self.async_build_history)()
 
