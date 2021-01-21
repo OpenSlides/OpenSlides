@@ -269,8 +269,6 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User, UserTi
 
     public async update(update: Partial<User>, viewModel: ViewUser): Promise<void> {
         this.preventAlterationOnDemoUsers(viewModel);
-        console.log('update: ', update);
-
         return super.update(update, viewModel);
     }
 

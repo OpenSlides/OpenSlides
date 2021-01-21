@@ -10,6 +10,7 @@ RUN apt-get -y update &&  apt-get install --no-install-recommends -y \
     wait-for-it \
     gcc \
     git \
+    vim \
     libxml2-dev \
     libxmlsec1-dev \
     libxmlsec1-openssl \
@@ -27,4 +28,4 @@ EXPOSE 8000
 COPY docker/entrypoint-dev /usr/local/sbin/
 COPY . .
 ENTRYPOINT ["/usr/local/sbin/entrypoint-dev"]
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["python", "-u", "manage.py", "runserver", "0.0.0.0:8000"]

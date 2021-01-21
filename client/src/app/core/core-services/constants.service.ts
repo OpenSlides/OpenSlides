@@ -40,9 +40,7 @@ export class ConstantsService {
 
     public constructor(communicationManager: CommunicationManagerService, private http: HttpService) {
         communicationManager.startCommunicationEvent.subscribe(async () => {
-            console.log('start communication');
             this.constants = await this.http.get<Constants>(environment.urlPrefix + '/core/constants/');
-            console.log('constants:', this.constants);
             Object.keys(this.subjects).forEach(key => {
                 this.subjects[key].next(this.constants[key]);
             });

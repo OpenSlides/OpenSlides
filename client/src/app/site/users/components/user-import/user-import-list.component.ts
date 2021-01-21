@@ -54,7 +54,6 @@ export class UserImportListComponent extends BaseImportListComponentDirective<Us
                 prop: `newEntry.${property}`,
                 type: this.guessType(property as keyof User)
             };
-            console.log('singleColumnDef ', singleColumnDef);
 
             return singleColumnDef;
         });

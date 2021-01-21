@@ -167,7 +167,8 @@ class RESTModelMixin:
 
         # For logging the progress
         last_time = time.time()
-        instances_length = len(instances)
+        instances_length = len(instances)  # this evaluates the query
+
         for i, instance in enumerate(instances):
             # Append full data from this instance
             full_data.append(instance.get_full_data())
@@ -177,6 +178,7 @@ class RESTModelMixin:
                 if current_time > last_time + 5:
                     last_time = current_time
                     logger.info(f"    {i+1}/{instances_length}...")
+
         return full_data
 
     @classmethod

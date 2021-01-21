@@ -7,7 +7,7 @@ from django.db.utils import IntegrityError
 from rest_framework import status
 
 from openslides.utils.auth import in_some_groups
-from openslides.utils.autoupdate import inform_changed_data
+from openslides.utils.autoupdate import disable_history, inform_changed_data
 from openslides.utils.rest_api import (
     DecimalField,
     GenericViewSet,
@@ -158,10 +158,14 @@ class BasePollViewSet(ModelViewSet):
         poll.state = BasePoll.STATE_PUBLISHED
         poll.save()
         inform_changed_data(
-            (vote.user for vote in poll.get_votes().all() if vote.user), final_data=True
+            (
+                vote.user
+                for vote in poll.get_votes().prefetch_related("user").all()
+                if vote.user
+            )
         )
-        inform_changed_data(poll.get_votes(), final_data=True)
-        inform_changed_data(poll.get_options(), final_data=True)
+        inform_changed_data(poll.get_votes())
+        inform_changed_data(poll.get_options())
         return Response()
 
     @detail_route(methods=["POST"])
@@ -194,6 +198,9 @@ class BasePollViewSet(ModelViewSet):
         """
         poll = self.get_object()
 
+        # Disable history for these requests
+        disable_history()
+
         if isinstance(request.user, AnonymousUser):
             self.permission_denied(request)
 
@@ -205,7 +212,11 @@ class BasePollViewSet(ModelViewSet):
         if "data" not in data:
             raise ValidationError({"detail": "No data provided."})
         vote_data = data["data"]
-        if "user_id" in data and poll.type != BasePoll.TYPE_ANALOG:
+        if (
+            "user_id" in data
+            and data["user_id"] != request.user.id
+            and poll.type != BasePoll.TYPE_ANALOG
+        ):
             try:
                 vote_user = get_user_model().objects.get(pk=data["user_id"])
             except get_user_model().DoesNotExist:
@@ -241,9 +252,9 @@ class BasePollViewSet(ModelViewSet):
     @transaction.atomic
     def refresh(self, request, pk):
         poll = self.get_object()
-        inform_changed_data(poll, final_data=True)
-        inform_changed_data(poll.get_options(), final_data=True)
-        inform_changed_data(poll.get_votes(), final_data=True)
+        inform_changed_data(poll)
+        inform_changed_data(poll.get_options())
+        inform_changed_data(poll.get_votes())
         return Response()
 
     def assert_can_vote(self, poll, request, vote_user):

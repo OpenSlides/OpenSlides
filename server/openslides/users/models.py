@@ -193,7 +193,6 @@ class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
             ("can_change_password", "Can change its own password"),
             ("can_manage", "Can manage users"),
         )
-        ordering = ("last_name", "first_name", "username")
 
     def __str__(self):
         # Strip white spaces from the name parts
