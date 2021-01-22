@@ -81,12 +81,6 @@ organisation:
   committee_ids:
     type: relation-list
     to: committee/organisation_id
-  role_ids:
-    type: relation-list
-    to: role/organisation_id
-  superadmin_role_id:
-    type: relation
-    to: role/superadmin_role_for_organisation_id
   resource_ids:
     type: relation-list
     to: resource/organisation_id
@@ -103,28 +97,24 @@ user:
     default: true
   password: string
   default_password: string
-  about_me: HTMLStrict
   gender: string
-  comment: HTMLStrict
-  number: string
-  structure_level: string
   email: string
+  default_number: string
+  default_structure_level: string
+  default_vote_weight: decimal(6)
   last_email_send: string
-  vote_weight: decimal(6)
   is_demo_user:
     type: boolean
     read_only: true
 
-  role_id:
-    type: relation
-    to: role/user_ids  # Attention: prevent impelenting a "default-role" or let a
-  # user create such a role! This would cause the user_ids-array for this
-  # role to explode in size. If a user has no role, it should be handles as
-  # the user has no permission in the organisation and is a "normal" delegate
-  # there. Just a few users (expected <100) should even get a role and all
-  # other don't.
-
-  # Meeting and committee
+  # Organisation, meeting and committee
+  organisation_management_level:
+    type: string
+    description: Hierarchical permission level for the whole organisation.
+    enum:
+    - superadmin
+    - can_manage_organisation
+    - can_manage_users
   is_present_in_meeting_ids:
     type: relation-list
     to: meeting/present_user_ids
@@ -140,6 +130,24 @@ user:
   committee_as_manager_ids:
     type: relation-list
     to: committee/manager_ids
+
+  # Meeting specific personal data
+  # Replacement is te meeting id but it is not a structured relation.
+  comment_$:
+    type: template
+    fields: HTMLStrict
+  number_$:
+    type: template
+    fields: string
+  structure_level_$:
+    type: template
+    fields: string
+  about_me_$:
+    type: template
+    fields: HTMLStrict
+  vote_weight_$:
+    type: template
+    fields: decimal(6)
 
   # All foreign keys are meeting-specific:
   # - Keys are smaller (Space is in O(n^2) for n keys
@@ -232,21 +240,6 @@ user:
     fields:
       type: relation-list
       to: user/vote_delegated_$_to_id
-
-role:
-  id: number
-  name: string
-  permissions: string[]
-
-  organisation_id:
-    type: relation
-    to: organisation/role_ids
-  superadmin_role_for_organisation_id:
-    type: relation
-    to: organisation/superadmin_role_id
-  user_ids:
-    type: relation-list
-    to: user/role_id
 
 # New: Resource
 # Resources are organsation wide "mediafiles", like logos for the organisatio or
@@ -641,7 +634,7 @@ meeting:
   users_email_body: string
 
   # Assignments
-  assignemnts_export_title:
+  assignments_export_title:
     type: string
     default: Elections
   assignments_export_preamble:
