@@ -3,7 +3,7 @@
 set -e
 
 # Set DJANGO_SECRET_KEY variable
-source /run/secrets/django
+source /run/secrets/django || true
 [[ -n "$DJANGO_SECRET_KEY" ]] || {
   echo "ERROR: Django secret key undefined!  Cannot continue."
   sleep 5
