@@ -24,12 +24,7 @@ source /run/secrets/django
 }
 export SECRET_KEY="$DJANGO_SECRET_KEY"
 
-# Configure database
-# TODO: env variables??
-echo "postgres:5432:instancecfg:openslides:openslides" > "${HOME}/.pgpass"
-chmod 600 "${HOME}/.pgpass"
-
-until pg_isready -h db; do
+until pg_isready -h "${DATABASE_HOST}" -p "${DATABASE_PORT:-5432}"; do
   echo "Waiting for Postgres cluster to become available..."
   sleep 3
 done
