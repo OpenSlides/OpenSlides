@@ -10,6 +10,7 @@ import { NewEntry } from 'app/core/ui-services/base-import.service';
 import { CsvExportService } from 'app/core/ui-services/csv-export.service';
 import { User } from 'app/shared/models/users/user';
 import { BaseImportListComponentDirective } from 'app/site/base/base-import-list';
+import { ImportCreateUser } from '../../models/import-create-user';
 import { UserImportService } from '../../services/user-import.service';
 
 /**
@@ -44,15 +45,19 @@ export class UserImportListComponent extends BaseImportListComponentDirective<Us
 
     private statusImportColumn: PblColumnDefinition = {
         label: this.translate.instant('Status'),
-        prop: `status`
+        prop: `status`,
+        maxWidth: 50
     };
 
     private get generateImportColumns(): PblColumnDefinition[] {
         return this.importer.headerMap.map((property, index: number) => {
+            const columnwidth = this.getPropertyWidth(property);
+
             const singleColumnDef: PblColumnDefinition = {
                 label: this.translate.instant(this.headerRowDefinition[index]),
                 prop: `newEntry.${property}`,
-                type: this.guessType(property as keyof User)
+                type: this.guessType(property as keyof User),
+                width: columnwidth
             };
 
             return singleColumnDef;
@@ -60,7 +65,7 @@ export class UserImportListComponent extends BaseImportListComponentDirective<Us
     }
 
     public columnSet = columnFactory()
-        .default({ minWidth: 150 })
+        .default({ minWidth: 90 })
         .table(this.statusImportColumn, ...this.generateImportColumns)
         .build();
 
@@ -84,6 +89,27 @@ export class UserImportListComponent extends BaseImportListComponentDirective<Us
     ) {
         super(importer, titleService, translate, matSnackBar);
         this.textAreaForm = formBuilder.group({ inputtext: [''] });
+    }
+
+    private getPropertyWidth(property: keyof ImportCreateUser): string {
+        switch (property) {
+            case 'username':
+            case 'gender':
+            case 'vote_weight':
+            case 'default_password':
+                return '120px';
+            case 'first_name':
+            case 'last_name':
+            case 'structure_level':
+            case 'number':
+            case 'email':
+            case 'comment':
+                return '300px';
+            case 'csvGroups':
+                return '400px';
+            default:
+                return '';
+        }
     }
 
     /**

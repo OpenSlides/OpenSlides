@@ -39,27 +39,13 @@ export class ImportCreateUser extends User {
      *
      * @param groups
      */
-    public solveGroups(groups: CsvMapping[]): number {
-        let open = 0;
-        const ids: number[] = [];
-        this.csvGroups.forEach(group => {
-            if (group.id) {
-                ids.push(group.id);
-                return;
-            }
-            if (!groups.length) {
-                open += 1;
-                return;
-            }
-            const mapped = groups.find(newGroup => newGroup.name === group.name);
-            if (mapped) {
-                group.id = mapped.id;
-                ids.push(mapped.id);
-            } else {
-                open += 1;
-            }
-        });
-        this.groups_id = ids;
-        return open;
+    public solveGroups(recentlyCreatedGroups: CsvMapping[]): void {
+        const groups = this.csvGroups;
+        const directIds = groups.filter(directGroup => directGroup.id).map(directGroup => directGroup.id);
+        const groupsWithoutId = groups.filter(noIdGroup => !noIdGroup.id);
+        const transferedIds = recentlyCreatedGroups
+            .filter(newGroup => groupsWithoutId.find(noId => noId.name === newGroup.name))
+            .map(newGroup => newGroup.id);
+        this.groups_id = directIds.concat(transferedIds);
     }
 }

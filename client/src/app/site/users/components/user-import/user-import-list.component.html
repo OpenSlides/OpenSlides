@@ -199,6 +199,20 @@
                     </mat-icon>
                 </div>
             </div>
+
+            <!-- handle groups -->
+            <div *pblNgridCellDef="'newEntry.csvGroups'; value as groups">
+                <span *ngFor="let group of groups; let last = last">
+                    <span>{{ group.name | translate }}</span>
+                    <span *ngIf="!group.id"> <mat-icon class="new-icon" color="accent">add</mat-icon></span>
+                    <span *ngIf="!last">, </span>
+                </span>
+            </div>
+
+            <!-- handle gender, needs translation -->
+            <div *pblNgridCellDef="'newEntry.gender'; value as gender">
+                {{ gender | translate }}
+            </div>
         </pbl-ngrid>
     </div>
 </mat-card>
