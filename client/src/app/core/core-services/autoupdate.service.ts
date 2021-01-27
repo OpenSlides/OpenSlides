@@ -59,6 +59,7 @@ export class AutoupdateService {
             this.streamCloseFn();
             this.streamCloseFn = null;
         }
+        this.autoupdateThrottle.discard();
     }
 
     /**

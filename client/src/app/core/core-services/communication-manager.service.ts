@@ -54,7 +54,7 @@ export class CommunicationManagerService {
         return this._stopCommunicationEvent.asObservable();
     }
 
-    private streamContainers: { [id: number]: StreamContainer } = {};
+    private streamContainers: { [id: number]: StreamContainer<any> } = {};
 
     public constructor(
         private streamingCommunicationService: StreamingCommunicationService,
@@ -87,7 +87,7 @@ export class CommunicationManagerService {
         }
     }
 
-    private async connectWithWrapper(streamContainer: StreamContainer): Promise<() => void> {
+    private async connectWithWrapper<T>(streamContainer: StreamContainer<T>): Promise<() => void> {
         console.log('connect', streamContainer, streamContainer.stream);
         const errorHandler = (type: ErrorType, error: CommunicationError, message: string) =>
             this.handleError(streamContainer, type, error, message);
@@ -96,8 +96,8 @@ export class CommunicationManagerService {
         return () => this.close(streamContainer);
     }
 
-    private async handleError(
-        streamContainer: StreamContainer,
+    private async handleError<T>(
+        streamContainer: StreamContainer<T>,
         type: ErrorType,
         error: CommunicationError,
         message: string
@@ -109,7 +109,7 @@ export class CommunicationManagerService {
         streamContainer.hasErroredAmount++;
         if (streamContainer.hasErroredAmount > MAX_STREAM_FAILURE_RETRIES) {
             this.goOffline(streamContainer, OfflineReason.ConnectionLost);
-        } else if (type === ErrorType.Client && error.type === 'ErrorAuth') {
+        } else if (type === ErrorType.Client && error.type === 'auth_required') {
             this.goOffline(streamContainer, OfflineReason.WhoAmIFailed);
         } else {
             // retry it after some time:
@@ -117,7 +117,7 @@ export class CommunicationManagerService {
                 `Retry no. ${streamContainer.hasErroredAmount} of ${MAX_STREAM_FAILURE_RETRIES} for ${streamContainer.url}`
             );
             try {
-                await this.delayAndCheckReconnection();
+                await this.delayAndCheckReconnection(streamContainer);
                 await this.connectWithWrapper(streamContainer);
             } catch (e) {
                 // delayAndCheckReconnection can throw an OfflineError,
@@ -126,8 +126,13 @@ export class CommunicationManagerService {
         }
     }
 
-    private async delayAndCheckReconnection(): Promise<void> {
-        const delay = Math.floor(Math.random() * 3000 + 2000);
+    private async delayAndCheckReconnection<T>(streamContainer: StreamContainer<T>): Promise<void> {
+        let delay;
+        if (streamContainer.hasErroredAmount === 1) {
+            delay = 500; // the first error has a small delay since these error can happen normally.
+        } else {
+            delay = Math.floor(Math.random() * 3000 + 2000);
+        }
         console.log(`retry again in ${delay} ms`);
 
         await SleepPromise(delay);
@@ -156,7 +161,7 @@ export class CommunicationManagerService {
         this._stopCommunicationEvent.emit();
     }
 
-    private goOffline(streamContainer: StreamContainer, reason: OfflineReason): void {
+    private goOffline<T>(streamContainer: StreamContainer<T>, reason: OfflineReason): void {
         delete this.streamContainers[streamContainer.id];
         this.closeConnections(); // here we close the connections early.
         this.offlineBroadcastService.goOffline(reason);

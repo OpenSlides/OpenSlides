@@ -68,6 +68,12 @@ export class AutoupdateThrottleService {
                 this.disabledUntil = null;
                 console.log('Throttling autoupdates again');
             }
+        } else if (autoupdate.all_data) {
+            // all_data=true (aka initial data) should be processed immediatly
+            // but since there can be pending autoupdates, add it there and
+            // process them now!
+            this.pendingAutoupdates.push(autoupdate);
+            this.processPendingAutoupdates();
         } else {
             this.pendingAutoupdates.push(autoupdate);
             this.receivedAutoupdate.emit();
@@ -91,12 +97,19 @@ export class AutoupdateThrottleService {
         this.disabledUntil = changeId;
     }
 
+    /**
+     * discard all pending autoupdates and resets the timer
+     */
+    public discard(): void {
+        this.pendingAutoupdates = [];
+    }
+
     private processPendingAutoupdates(): void {
-        const autoupdates = this.pendingAutoupdates;
-        if (autoupdates.length === 0) {
+        if (this.pendingAutoupdates.length === 0) {
             return;
         }
-        this.pendingAutoupdates = [];
+        const autoupdates = this.pendingAutoupdates;
+        this.discard();
 
         console.log(`Processing ${autoupdates.length} pending autoupdates`);
         const autoupdate = this.mergeAutoupdates(autoupdates);
