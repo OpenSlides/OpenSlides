@@ -82,9 +82,13 @@ export class JitsiComponent extends BaseViewComponentDirective implements OnInit
     public enableJitsi: boolean;
 
     private autoconnect: boolean;
-    private roomName: string;
+    private defaultRoomName: string;
+    private actualRoomName: string;
     private roomPassword: string;
     private jitsiDomain: string;
+    private isSupportEnabled: boolean;
+
+    public connectToHelpDesk = false;
 
     public restricted = false;
     public videoStreamUrl: string;
@@ -139,6 +143,10 @@ export class JitsiComponent extends BaseViewComponentDirective implements OnInit
         return this.roomPassword?.length > 0;
     }
 
+    public get canAccessSupport(): boolean {
+        return this.isSupportEnabled && this.enableJitsi && !!this.defaultRoomName;
+    }
+
     private isOnCurrentLos: boolean;
 
     public canSeeLiveStream: boolean;
@@ -174,7 +182,7 @@ export class JitsiComponent extends BaseViewComponentDirective implements OnInit
     }
 
     public get jitsiMeetUrl(): string {
-        return `https://${this.jitsiDomain}/${this.roomName}`;
+        return `https://${this.jitsiDomain}/${this.actualRoomName}`;
     }
 
     /**
@@ -339,7 +347,7 @@ export class JitsiComponent extends BaseViewComponentDirective implements OnInit
         this.constantsService.get<JitsiSettings>('Settings').subscribe(settings => {
             if (settings) {
                 this.jitsiDomain = settings.JITSI_DOMAIN;
-                this.roomName = settings.JITSI_ROOM_NAME;
+                this.defaultRoomName = settings.JITSI_ROOM_NAME;
                 this.roomPassword = settings.JITSI_ROOM_PASSWORD;
                 this.constantsLoaded.resolve();
             }
@@ -352,7 +360,7 @@ export class JitsiComponent extends BaseViewComponentDirective implements OnInit
                 .get<boolean>('general_system_conference_auto_connect')
                 .subscribe(autoconnect => (this.autoconnect = autoconnect)),
             this.configService.get<boolean>('general_system_conference_show').subscribe(show => {
-                this.enableJitsi = show && !!this.jitsiDomain && !!this.roomName;
+                this.enableJitsi = show && !!this.jitsiDomain && !!this.defaultRoomName;
                 if (this.enableJitsi && this.autoconnect) {
                     this.startJitsi();
                 } else {
@@ -392,6 +400,9 @@ export class JitsiComponent extends BaseViewComponentDirective implements OnInit
                 } else {
                     this.isApplausBarUsed = false;
                 }
+            }),
+            this.configService.get<boolean>('general_system_conference_enable_helpdesk').subscribe(enabled => {
+                this.isSupportEnabled = enabled;
             })
         );
 
@@ -425,19 +436,22 @@ export class JitsiComponent extends BaseViewComponentDirective implements OnInit
 
     private startJitsi(): void {
         if (!this.isJitsiActiveInAnotherTab && this.enableJitsi && !this.isJitsiActive && this.jitsiNode) {
-            this.enterConversation();
+            this.enterConferenceRoom();
         }
     }
 
-    public async enterConversation(): Promise<void> {
+    private async enterConversation(): Promise<void> {
         await this.operator.loaded;
         try {
             await this.userMediaPermService.requestMediaAccess();
             this.storageMap.set(this.RTC_LOGGED_STORAGE_KEY, true).subscribe(() => {});
             this.setConferenceState(ConferenceState.jitsi);
             this.setOptions();
+            if (this.api) {
+                this.api.dispose();
+                this.api = undefined;
+            }
             this.api = new JitsiMeetExternalAPI(this.jitsiDomain, this.options);
-
             const jitsiname = this.userRepo.getShortName(this.operator.user);
             this.api.executeCommand('displayName', jitsiname);
             this.loadApiCallbacks();
@@ -503,7 +517,7 @@ export class JitsiComponent extends BaseViewComponentDirective implements OnInit
                 operatorClosIndex <= this.nextSpeakerAmount &&
                 !this.isJitsiActive
             ) {
-                this.enterConversation();
+                this.enterConferenceRoom();
             }
         } else {
             this.isOnCurrentLos = false;
@@ -563,6 +577,7 @@ export class JitsiComponent extends BaseViewComponentDirective implements OnInit
     }
 
     public async stopJitsi(): Promise<void> {
+        this.connectToHelpDesk = false;
         if (this.isJitsiActive) {
             this.api.executeCommand('hangup');
             this.clearMembers();
@@ -578,7 +593,7 @@ export class JitsiComponent extends BaseViewComponentDirective implements OnInit
 
     private setOptions(): void {
         this.options = {
-            roomName: this.roomName,
+            roomName: this.actualRoomName,
             parentNode: this.jitsiNode.nativeElement,
             configOverwrite: this.configOverwrite,
             interfaceConfigOverwrite: this.interfaceConfigOverwrite
@@ -615,6 +630,18 @@ export class JitsiComponent extends BaseViewComponentDirective implements OnInit
     public onSteamStarted(): void {
         this.streamRunning = true;
         this.storageMap.set(this.STREAM_RUNNING_STORAGE_KEY, true).subscribe(() => {});
+    }
+
+    public enterConferenceRoom(): void {
+        this.actualRoomName = this.defaultRoomName;
+        this.connectToHelpDesk = false;
+        this.enterConversation();
+    }
+
+    public enterSupportRoom(): void {
+        this.actualRoomName = `${this.defaultRoomName}-SUPPORT`;
+        this.connectToHelpDesk = true;
+        this.enterConversation();
     }
 
     private onLiveStreamAvailable(liveStreamUrl: string): void {
