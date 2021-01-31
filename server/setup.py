@@ -8,7 +8,7 @@ from openslides import __version__ as openslides_version
 from openslides import __license__ as openslides_license
 from openslides import __url__ as openslides_url
 
-with open("README.rst") as readme:
+with open("../README.rst") as readme:
     long_description = readme.read()
 
 with open("requirements/production.txt") as requirements_production:
