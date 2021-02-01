@@ -15,7 +15,6 @@ RUN apt-get -y update &&  apt-get install --no-install-recommends -y \
     libxmlsec1-dev \
     libxmlsec1-openssl \
     pkg-config
-  
 RUN rm -rf /var/lib/apt/lists/*
 
 COPY requirements /app/requirements

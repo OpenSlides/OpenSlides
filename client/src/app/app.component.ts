@@ -1,4 +1,6 @@
 import { ApplicationRef, Component } from '@angular/core';
+import { MatIconRegistry } from '@angular/material/icon';
+import { DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 
 import { TranslateService } from '@ngx-translate/core';
@@ -70,6 +72,8 @@ export class AppComponent {
      * @param dataStoreUpgradeService
      */
     public constructor(
+        private matIconRegistry: MatIconRegistry,
+        private domSanitizer: DomSanitizer,
         translate: TranslateService,
         appRef: ApplicationRef,
         servertimeService: ServertimeService,
@@ -100,6 +104,7 @@ export class AppComponent {
         this.overloadArrayFunctions();
         this.overloadSetFunctions();
         this.overloadModulo();
+        this.loadCustomIcons();
 
         // Wait until the App reaches a stable state.
         // Required for the Service Worker.
@@ -203,5 +208,12 @@ export class AppComponent {
             },
             enumerable: false
         });
+    }
+
+    private loadCustomIcons(): void {
+        this.matIconRegistry.addSvgIcon(
+            `clapping_hands`,
+            this.domSanitizer.bypassSecurityTrustResourceUrl('../assets/svg/clapping_hands.svg')
+        );
     }
 }

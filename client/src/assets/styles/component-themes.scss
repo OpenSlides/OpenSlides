@@ -9,43 +9,44 @@ $narrow-spacing: (
 );
 
 /** Import brand theme */
-@import './assets/styles/themes/default-dark.scss';
-@import './assets/styles/themes/default-light.scss';
-@import './assets/styles/themes/green-dark.scss';
-@import './assets/styles/themes/green-light.scss';
-@import './assets/styles/themes/red-dark.scss';
-@import './assets/styles/themes/red-light.scss';
-@import './assets/styles/themes/solarized-dark.scss';
+@import '~assets/styles/themes/default-dark.scss';
+@import '~assets/styles/themes/default-light.scss';
+@import '~assets/styles/themes/green-dark.scss';
+@import '~assets/styles/themes/green-light.scss';
+@import '~assets/styles/themes/red-dark.scss';
+@import '~assets/styles/themes/red-light.scss';
+@import '~assets/styles/themes/solarized-dark.scss';
 
 /** Global component style definition */
-@import './assets/styles/global-components-style.scss';
+@import '~assets/styles/global-components-style.scss';
 
 /** Import the component-related style sheets here */
-@import './app/site/site.component.scss-theme.scss';
-@import './app/shared/components/projector-button/projector-button.component.scss';
-@import './app/site/agenda/components/list-of-speakers/list-of-speakers.component.scss-theme.scss';
-@import './app/shared/components/sorting-tree/sorting-tree.component.scss';
-@import './app/shared/components/global-spinner/global-spinner.component.scss';
-@import './app/shared/components/tile/tile.component.scss';
-@import './app/shared/components/block-tile/block-tile.component.scss';
-@import './app/shared/components/icon-container/icon-container.component.scss';
-@import './app/site/common/components/start/start.component.scss';
-@import './app/site/mediafiles/components/mediafile-list/mediafile-list.component.scss-theme.scss';
-@import './app/site/common/components/super-search/super-search.component.scss';
-@import './app/shared/components/rounded-input/rounded-input.component.scss';
-@import './app/shared/components/meta-text-block/meta-text-block.component.scss';
-@import './app/site/config/components/config-field/config-field.component.scss-theme.scss';
-@import './app/site/motions/modules/motion-detail/components/amendment-create-wizard/amendment-create-wizard.components.scss-theme.scss';
-@import './app/site/motions/modules/motion-detail/components/motion-detail-diff/motion-detail-diff.component.scss-theme.scss';
-@import './app/shared/components/banner/banner.component.scss-theme.scss';
-@import './app/site/motions/modules/motion-poll/motion-poll/motion-poll.component.scss-theme.scss';
-@import './app/site/motions/modules/motion-poll/motion-poll-detail/motion-poll-detail.component.scss-theme.scss';
-@import './app/site/assignments/modules/assignment-poll/components/assignment-poll-detail/assignment-poll-detail-component.scss-theme.scss';
-@import './app/shared/components/progress-snack-bar/progress-snack-bar.component.scss-theme.scss';
-@import './app/shared/components/jitsi/jitsi.component.scss-theme.scss';
-@import './app/shared/components/list-view-table/list-view-table.component.scss-theme.scss';
-@import './app/site/common/components/user-statistics/user-statistics.component.scss-theme.scss';
-@import './app/site/login/components/login-wrapper/login-wrapper.component.scss-theme.scss';
+@import '~app/site/site.component.scss-theme.scss';
+@import '~app/shared/components/projector-button/projector-button.component.scss';
+@import '~app/site/agenda/components/list-of-speakers/list-of-speakers.component.scss-theme.scss';
+@import '~app/shared/components/sorting-tree/sorting-tree.component.scss';
+@import '~app/shared/components/global-spinner/global-spinner.component.scss';
+@import '~app/shared/components/tile/tile.component.scss';
+@import '~app/shared/components/block-tile/block-tile.component.scss';
+@import '~app/shared/components/icon-container/icon-container.component.scss';
+@import '~app/site/common/components/start/start.component.scss';
+@import '~app/site/mediafiles/components/mediafile-list/mediafile-list.component.scss-theme.scss';
+@import '~app/site/common/components/super-search/super-search.component.scss';
+@import '~app/shared/components/rounded-input/rounded-input.component.scss';
+@import '~app/shared/components/meta-text-block/meta-text-block.component.scss';
+@import '~app/site/config/components/config-field/config-field.component.scss-theme.scss';
+@import '~app/site/motions/modules/motion-detail/components/amendment-create-wizard/amendment-create-wizard.components.scss-theme.scss';
+@import '~app/site/motions/modules/motion-detail/components/motion-detail-diff/motion-detail-diff.component.scss-theme.scss';
+@import '~app/shared/components/banner/banner.component.scss-theme.scss';
+@import '~app/site/motions/modules/motion-poll/motion-poll/motion-poll.component.scss-theme.scss';
+@import '~app/site/motions/modules/motion-poll/motion-poll-detail/motion-poll-detail.component.scss-theme.scss';
+@import '~app/site/assignments/modules/assignment-poll/components/assignment-poll-detail/assignment-poll-detail-component.scss-theme.scss';
+@import '~app/shared/components/progress-snack-bar/progress-snack-bar.component.scss-theme.scss';
+@import '~app/shared/components/jitsi/jitsi.component.scss-theme.scss';
+@import '~app/shared/components/list-view-table/list-view-table.component.scss-theme.scss';
+@import '~app/site/common/components/user-statistics/user-statistics.component.scss-theme.scss';
+@import '~app/site/login/components/login-wrapper/login-wrapper.component.scss-theme.scss';
+@import '~app/shared/components/progress/progress.component.scss-theme.scss';
 
 /** Mix the component-related style-rules. Every single custom style goes here */
 @mixin openslides-components-theme($theme) {
@@ -72,6 +73,7 @@ $narrow-spacing: (
     @include os-list-view-table-theme($theme);
     @include os-user-statistics-style($theme);
     @include os-login-wrapper-theme($theme);
+    @include os-progress-theme($theme);
 }
 
 .openslides-default-light-theme {
@@ -126,7 +128,7 @@ $narrow-spacing: (
 /**
  * Custom configuration for light themes
  */
- [class^="openslides-"][class*="-light-theme"] {
+[class^='openslides-'][class*='-light-theme'] {
     .logo-container {
         img.dark {
             display: none;
@@ -140,7 +142,7 @@ $narrow-spacing: (
 /**
  * Custom configuration for dark themes
  */
- [class^="openslides-"][class*="-dark-theme"] {
+[class^='openslides-'][class*='-dark-theme'] {
     color: white;
     .logo-container {
         img.dark {

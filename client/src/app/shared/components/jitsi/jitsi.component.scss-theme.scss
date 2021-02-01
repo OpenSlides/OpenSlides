@@ -17,6 +17,10 @@
 
             .indicator {
                 color: mat-color($primary, default-contrast);
+
+                svg path {
+                    fill: mat-color($primary) !important;
+                }
             }
 
             .toggle-list-button {

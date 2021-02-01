@@ -1,18 +1,18 @@
 /** theming */
-@import './assets/styles/component-themes.scss';
+@import '~assets/styles/component-themes.scss';
 
 /** fonts */
-@import './assets/styles/fonts.scss';
+@import '~assets/styles/fonts.scss';
 @import '~material-icon-font/dist/Material-Icons.css';
 
 /** Videojs */
 @import '~video.js/dist/video-js.css';
 
 /** Load projector specific SCSS values */
-@import './assets/styles/projector.scss';
+@import '~assets/styles/projector.scss';
 
 /** Load global scss variables and device mixing */
-@import './assets/styles/variables.scss';
+@import '~assets/styles/variables.scss';
 
 .pbl-ngrid-cell {
     .fill {
@@ -787,4 +787,8 @@ button.mat-menu-item.selected {
  */
 .hide {
     display: none;
+}
+
+.hide-height {
+    height: 0 !important;
 }

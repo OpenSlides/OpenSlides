@@ -1,0 +1,9 @@
+<div class="bar-wrapper" *ngIf="isApplauseTypeBar">
+    <os-progress class="progress-bar" [value]="percent">
+        <div class="level-indicator">
+            <div class="level">
+                <b *ngIf="showLevel && hasLevel" [@fade]="'in'">{{ level }}</b>
+            </div>
+        </div>
+    </os-progress>
+</div>

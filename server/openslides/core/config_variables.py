@@ -169,6 +169,85 @@ def get_config_variables():
         subgroup="Live conference",
     )
 
+    # Applause
+
+    yield ConfigVariable(
+        name="general_system_applause_enable",
+        default_value=False,
+        input_type="boolean",
+        label="Enable virtual applause",
+        help_text="Shows a 'Send applause' icon in the live stream bar",
+        weight=170,
+        subgroup="Virtual applause",
+    )
+
+    yield ConfigVariable(
+        name="general_system_applause_type",
+        default_value="applause-type-bar",
+        input_type="choice",
+        choices=(
+            {
+                "value": "applause-type-bar",
+                "display_name": "Bar",
+            },
+            {
+                "value": "applause-type-particles",
+                "display_name": "Particles",
+            },
+        ),
+        label="Applause Type",
+        weight=171,
+        subgroup="Virtual applause",
+    )
+
+    yield ConfigVariable(
+        name="general_system_applause_show_level",
+        default_value=False,
+        input_type="boolean",
+        label="Show applause amount",
+        weight=172,
+        subgroup="Virtual applause",
+    )
+
+    yield ConfigVariable(
+        name="general_system_applause_min_amount",
+        default_value=1,
+        input_type="integer",
+        label="Lowest applause amount",
+        help_text="Lowest amount required for OpenSlides to recognize applause",
+        weight=173,
+        subgroup="Virtual applause",
+    )
+
+    yield ConfigVariable(
+        name="general_system_applause_max_amount",
+        default_value=0,
+        input_type="integer",
+        label="Highest applause amount",
+        help_text="Defines the maximum deflection of the amount. Entering zero will use the amount of present users instead.",
+        weight=174,
+        subgroup="Virtual applause",
+    )
+
+    yield ConfigVariable(
+        name="general_system_stream_applause_timeout",
+        default_value=5,
+        input_type="integer",
+        label="Applause timeout in seconds",
+        help_text="Determines how long a user has to wait to applaud again. Also determines the time in which applause is collected",
+        weight=175,
+        subgroup="Virtual applause",
+    )
+
+    yield ConfigVariable(
+        name="general_system_applause_particle_image",
+        default_value="",
+        label="Applause particle image url",
+        help_text="Shows the given image as applause particle. Recommended image format: 24x24px, PNG, JPG or SVG",
+        weight=176,
+        subgroup="Virtual applause",
+    )
+
     # General System
 
     yield ConfigVariable(

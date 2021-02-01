@@ -1,0 +1,10 @@
+<div class="progress-wrapper">
+    <mat-icon class="end-icon" *ngIf="endIcon"> {{ endIcon }} </mat-icon>
+    <div class="slot">
+        <ng-content></ng-content>
+    </div>
+    <div class="progress-bar">
+        <div class="buffer bar"></div>
+        <div class="progress bar" [style.height.%]="value"></div>
+    </div>
+</div>
