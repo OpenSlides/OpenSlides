@@ -55,18 +55,26 @@ export class StreamConnectionError extends Error {
     }
 }
 
-export class StreamContainer {
+export class StreamContainer<T> {
     public readonly id = Math.floor(Math.random() * (900000 - 1) + 100000); // [100000, 999999]
+
+    public messageHandler: (message: T) => void;
 
     public hasErroredAmount = 0;
 
-    public stream?: Stream<any>;
+    public stream?: Stream<T>;
 
-    public constructor(
-        public url: string,
-        public messageHandler: (message: any) => void,
-        public params: () => Params
-    ) {}
+    public constructor(public url: string, messageHandler: (message: T) => void, public params: () => Params) {
+        this.messageHandler = (message: T) => {
+            // {connected: true} is a special message just to trigger the code below
+            if ((<any>message).connected) {
+                console.log(`resetting error amount for ${this.url} since there was a connect message`);
+                this.hasErroredAmount = 0;
+            } else {
+                messageHandler(message);
+            }
+        };
+    }
 }
 
 export class Stream<T> {
@@ -176,11 +184,8 @@ export class Stream<T> {
                     }
                     return;
                 } else {
-                    // check, if we didn't get a keep alive
-                    if (Object.keys(parsedContent).length > 0) {
-                        console.debug('received', parsedContent);
-                        this.messageHandler(parsedContent);
-                    }
+                    console.debug('received', parsedContent);
+                    this.messageHandler(parsedContent);
                 }
             } else {
                 this.checkedUntilIndex = event.loaded;
@@ -247,7 +252,7 @@ export class Stream<T> {
 export class StreamingCommunicationService {
     public constructor(private http: HttpClient) {}
 
-    public subscribe<T>(streamContainer: StreamContainer, errorHandler: ErrorHandler): void {
+    public subscribe<T>(streamContainer: StreamContainer<T>, errorHandler: ErrorHandler): void {
         const options: {
             body?: any;
             headers?: HttpHeaders | { [header: string]: string | string[] };
