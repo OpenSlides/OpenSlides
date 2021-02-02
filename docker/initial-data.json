@@ -115,7 +115,7 @@
         "export_csv_encoding": "utf-8",
         "export_csv_separator": ",",
         "export_pdf_pagenumber_alignment": "center",
-        "export_pdf_fontsize": "10",
+        "export_pdf_fontsize": 10,
         "export_pdf_pagesize": "A4",
 
         "agenda_show_subtitles": false,
@@ -172,7 +172,7 @@
         "motion_poll_default_type": "analog",
         "motion_poll_default_100_percent_base": "YNA",
         "motion_poll_default_majority_method": "simple",
-        "motion_poll_default_group_ids": [6],
+        "motion_poll_default_group_ids": [5],
 
         "users_sort_by": "first_name",
         "users_enable_presence_view": true,
@@ -199,7 +199,7 @@
         "assignment_poll_default_method": "votes",
         "assignment_poll_default_100_percent_base": "valid",
         "assignment_poll_default_majority_method": "simple",
-        "assignment_poll_default_group_ids": [6],
+        "assignment_poll_default_group_ids": [5],
 
         "poll_ballot_paper_selection": "CUSTOM_NUMBER",
         "poll_ballot_paper_number": 8,
@@ -208,7 +208,7 @@
         "poll_default_method": "votes",
         "poll_default_100_percent_base": "valid",
         "poll_default_majority_method": "simple",
-        "poll_default_group_ids": [6],
+        "poll_default_group_ids": [5],
 
         "projector_ids": [1],
         "projection_ids": [],
@@ -231,7 +231,7 @@
         "motion_comment_ids": [],
         "motion_submitter_ids": [],
         "motion_change_recommendation_ids": [],
-        "motion_state_ids": [],
+        "motion_state_ids": [1, 2, 3, 4],
         "poll_ids": [],
         "option_ids": [],
         "vote_ids": [],
