@@ -6,6 +6,7 @@ from django.contrib.auth.models import AnonymousUser
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models, transaction
+from django.db.models import F
 from django.utils import timezone
 
 from openslides.core.config import config
@@ -447,12 +448,26 @@ class SpeakerManager(models.Manager):
             raise OpenSlidesError("Only present users can be on the lists of speakers.")
 
         if point_of_order:
-            weight = (
-                self.filter(list_of_speakers=list_of_speakers).aggregate(
-                    models.Min("weight")
-                )["weight__min"]
-                or 0
-            ) - 1
+            # the new point of order speaker (poos) must be inserted between
+            # the last poos and the first regular waiting speaker
+            weight = self.filter(
+                list_of_speakers=list_of_speakers, point_of_order=True
+            ).aggregate(models.Max("weight"))["weight__max"]
+            if weight is None:
+                # noo poos, take the min - 1
+                weight = (
+                    self.filter(
+                        list_of_speakers=list_of_speakers, point_of_order=True
+                    ).aggregate(models.Min("weight"))["weight__min"]
+                    or 1
+                ) - 1
+            else:
+                weight += 1
+                # we have to add +1 to every weight of non-poo speakers.
+                self.filter(
+                    list_of_speakers=list_of_speakers, point_of_order=False
+                ).update(weight=F("weight") + 1)
+
         else:
             weight = (
                 self.filter(list_of_speakers=list_of_speakers).aggregate(
