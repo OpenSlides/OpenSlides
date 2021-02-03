@@ -45,7 +45,7 @@ interace ActionsResponse {
      *
      * To report errors, use the ActionError format!
      **/
-    results: ((object | null)[] | null )[] | ActionError
+    results: ((object | ActionError | null)[] | null )[]
 }
 
 interface ActionError {
