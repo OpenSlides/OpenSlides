@@ -169,6 +169,20 @@ def get_config_variables():
         subgroup="Live conference",
     )
 
+    yield ConfigVariable(
+        name="general_system_conference_enable_helpdesk",
+        default_value=False,
+        input_type="boolean",
+        label="Enable help desk",
+        help_text="""
+            Shows a help icon in the conference bar.
+            Users can connect to a dedicated conference.
+            The conference host has to manually ensure the coverage of the help desk.
+        """,
+        weight=148,
+        subgroup="Live conference",
+    )
+
     # Applause
 
     yield ConfigVariable(

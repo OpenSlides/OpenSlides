@@ -61,7 +61,7 @@
                     matTooltip="{{ 'Exit live conference and continue livestream' | translate }}"
                     *ngIf="videoStreamUrl && canSeeLiveStream && !isJitsiDialogOpen"
                 >
-                    <mat-icon color="warn"> meeting_room </mat-icon>
+                    <mat-icon color="warn">meeting_room</mat-icon>
                 </button>
 
                 <!-- mute/unmute button -->
@@ -85,7 +85,7 @@
                     *ngIf="enableJitsi && isAccessPermitted"
                     class="quick-icon indicator"
                     mat-mini-fab
-                    (click)="enterConversation()"
+                    (click)="enterConferenceRoom()"
                     matTooltip="{{ 'Enter live conference' | translate }}"
                 >
                     <mat-icon
@@ -108,6 +108,18 @@
                     <mat-icon> no_meeting_room </mat-icon>
                 </a>
             </ng-container>
+
+            <!-- Call support button -->
+            <button
+                class="indicator quick-icon"
+                mat-mini-fab
+                (click)="enterSupportRoom()"
+                [disabled]="isJitsiActive"
+                matTooltip="{{ 'Access help desk' | translate }}"
+                *ngIf="canAccessSupport"
+            >
+                <mat-icon color="primary">live_help</mat-icon>
+            </button>
 
             <!-- applause button -->
             <button
@@ -137,7 +149,8 @@
             <!-- open-window button -->
             <button class="toggle-list-button" mat-button (click)="toggleShowJitsi()">
                 <ng-container *ngIf="currentState == state.jitsi">
-                    <div class="ellipsis-overflow">{{ 'Live conference' | translate }}</div>
+                    <div *ngIf="!connectToHelpDesk" class="ellipsis-overflow">{{ 'Live conference' | translate }}</div>
+                    <div *ngIf="connectToHelpDesk" class="ellipsis-overflow">{{ 'Help desk' | translate }}</div>
                     <div class="one-line">
                         &nbsp;
                         <span *ngIf="currentDominantSpeaker">
@@ -248,7 +261,7 @@
                                 <button
                                     mat-mini-fab
                                     color="accent"
-                                    (click)="enterConversation()"
+                                    (click)="enterConferenceRoom()"
                                     [disabled]="
                                         !enableJitsi || isJitsiActive || isJitsiActiveInAnotherTab || !isAccessPermitted
                                     "
