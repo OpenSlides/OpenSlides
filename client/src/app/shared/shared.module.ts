@@ -130,10 +130,10 @@ import { JitsiComponent } from './components/jitsi/jitsi.component';
 import { VjsPlayerComponent } from './components/vjs-player/vjs-player.component';
 import { LiveStreamComponent } from './components/live-stream/live-stream.component';
 import { ListOfSpeakersContentComponent } from './components/list-of-speakers-content/list-of-speakers-content.component';
-import { ApplauseDisplayComponent } from './components/applause-display/applause-display.component';
+import { ApplauseBarDisplayComponent } from './components/applause-bar-display/applause-bar-display.component';
 import { ProgressComponent } from './components/progress/progress.component';
 import { NgParticlesModule } from 'ng-particles';
-import { ParticleDisplayComponent } from './components/particle-display/particle-display.component';
+import { ApplauseParticleDisplayComponent } from './components/applause-particle-display/applause-particle-display.component';
 
 /**
  * Share Module for all "dumb" components and pipes.
@@ -370,9 +370,9 @@ import { ParticleDisplayComponent } from './components/particle-display/particle
         VjsPlayerComponent,
         LiveStreamComponent,
         ListOfSpeakersContentComponent,
-        ApplauseDisplayComponent,
+        ApplauseBarDisplayComponent,
         ProgressComponent,
-        ParticleDisplayComponent
+        ApplauseParticleDisplayComponent
     ],
     providers: [
         {

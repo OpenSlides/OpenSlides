@@ -17,12 +17,13 @@ export enum ApplauseType {
     bar = 'applause-type-bar'
 }
 
+const applausePath = '/system/applause';
+const applauseNotifyMessageName = 'applause';
+
 @Injectable({
     providedIn: 'root'
 })
 export class ApplauseService {
-    private applausePath = '/system/applause';
-    private applauseNotifyPath = 'applause';
     private minApplauseLevel: number;
     private maxApplauseLevel: number;
     private presentApplauseUsers: number;
@@ -51,7 +52,7 @@ export class ApplauseService {
             this.applauseType = type;
         });
         this.notifyService
-            .getMessageObservable<Applause>(this.applauseNotifyPath)
+            .getMessageObservable<Applause>(applauseNotifyMessageName)
             .pipe(
                 map(notify => notify.message as Applause),
                 /**
@@ -71,7 +72,7 @@ export class ApplauseService {
     }
 
     public async sendApplause(): Promise<void> {
-        await this.httpService.post(this.applausePath);
+        await this.httpService.post(applausePath);
     }
 
     public getApplauseQuote(applauseLevel: number): number {

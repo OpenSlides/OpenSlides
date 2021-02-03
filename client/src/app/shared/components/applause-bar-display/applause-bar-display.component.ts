@@ -10,14 +10,14 @@ import { fadeAnimation } from 'app/shared/animations';
 import { BaseViewComponentDirective } from 'app/site/base/base-view';
 
 @Component({
-    selector: 'os-applause-display',
-    templateUrl: './applause-display.component.html',
-    styleUrls: ['./applause-display.component.scss'],
+    selector: 'os-applause-bar-display',
+    templateUrl: './applause-bar-display.component.html',
+    styleUrls: ['./applause-bar-display.component.scss'],
     animations: [fadeAnimation],
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None
 })
-export class ApplauseDisplayComponent extends BaseViewComponentDirective {
+export class ApplauseBarDisplayComponent extends BaseViewComponentDirective {
     public level = 0;
     public showLevel: boolean;
     public percent = 0;

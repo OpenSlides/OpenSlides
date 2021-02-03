@@ -1,7 +1,6 @@
 import { Directive, ElementRef, Input, OnInit } from '@angular/core';
 
 import { ResizeSensor } from 'css-element-queries';
-import { Interface } from 'readline';
 import { Subject } from 'rxjs';
 
 export interface ElementSize {

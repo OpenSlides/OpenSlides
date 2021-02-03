@@ -132,7 +132,7 @@
                 'cast-shadow': showJitsiWindow
             }"
         >
-            <os-applause-display *ngIf="showApplause && isApplauseTypeBar" class="applause"></os-applause-display>
+            <os-applause-bar-display *ngIf="showApplause && isApplauseTypeBar" class="applause"></os-applause-bar-display>
 
             <!-- open-window button -->
             <button class="toggle-list-button" mat-button (click)="toggleShowJitsi()">
@@ -191,10 +191,10 @@
 
                         <!-- user list -->
                         <div class="room-members" *ngIf="isJitsiActive && isJoined">
-                            <os-particle-display
+                            <os-applause-particle-display
                                 *ngIf="isApplauseTypeParticles"
                                 class="room-list-applause-particles"
-                            ></os-particle-display>
+                            ></os-applause-particle-display>
                             <div class="member-list">
                                 <ol>
                                     <li

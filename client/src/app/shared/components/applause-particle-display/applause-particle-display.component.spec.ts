@@ -2,11 +2,11 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { E2EImportsModule } from 'e2e-imports.module';
 
-import { ParticleDisplayComponent } from './particle-display.component';
+import { ApplauseParticleDisplayComponent } from './applause-particle-display.component';
 
-describe('ParticleDisplayComponent', () => {
-    let component: ParticleDisplayComponent;
-    let fixture: ComponentFixture<ParticleDisplayComponent>;
+describe('ApplauseParticleDisplayComponent', () => {
+    let component: ApplauseParticleDisplayComponent;
+    let fixture: ComponentFixture<ApplauseParticleDisplayComponent>;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
@@ -15,7 +15,7 @@ describe('ParticleDisplayComponent', () => {
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(ParticleDisplayComponent);
+        fixture = TestBed.createComponent(ApplauseParticleDisplayComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });
