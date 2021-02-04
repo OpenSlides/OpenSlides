@@ -373,7 +373,7 @@ class ManageSpeaker(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Speaker.objects.all().count(), 1)
         self.assertTrue(Speaker.objects.get().point_of_order)
-        self.assertEqual(Speaker.objects.get().weight, -1)
+        self.assertEqual(Speaker.objects.get().weight, 0)
 
     def test_point_of_order_not_enabled(self):
         self.assertEqual(Speaker.objects.all().count(), 0)
@@ -384,7 +384,7 @@ class ManageSpeaker(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(Speaker.objects.all().count(), 0)
 
-    def test_point_of_order_before_other(self):
+    def test_point_of_order_before_normal(self):
         config["agenda_enable_point_of_order_speakers"] = True
         normal_speaker = Speaker.objects.add(self.user, self.list_of_speakers)
         response = self.client.post(
@@ -397,7 +397,7 @@ class ManageSpeaker(TestCase):
         self.assertTrue(poo_speaker.point_of_order)
         self.assertEqual(poo_speaker.weight, normal_speaker.weight - 1)
 
-    def test_point_of_order_with_normal_speaker(self):
+    def test_point_of_order_with_same_normal_speaker(self):
         config["agenda_enable_point_of_order_speakers"] = True
         Speaker.objects.add(self.admin, self.list_of_speakers)
         response = self.client.post(
@@ -406,7 +406,29 @@ class ManageSpeaker(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Speaker.objects.all().count(), 2)
-        self.assertTrue(Speaker.objects.filter(user=self.admin).count(), 2)
+        self.assertEqual(Speaker.objects.filter(user=self.admin).count(), 2)
+
+    def test_point_of_order_two_poo_speakers(self):
+        config["agenda_enable_point_of_order_speakers"] = True
+        # user 2 and user3 are non-poo speakers
+        self.user2, _ = self.create_user()
+        self.user3, _ = self.create_user()
+        Speaker.objects.add(self.user2, self.list_of_speakers)
+        Speaker.objects.add(self.user3, self.list_of_speakers)
+        Speaker.objects.add(self.user, self.list_of_speakers, point_of_order=True)
+        self.assertEqual(Speaker.objects.get(user=self.user).weight, 0)
+        self.assertEqual(Speaker.objects.get(user=self.user2).weight, 1)
+        self.assertEqual(Speaker.objects.get(user=self.user3).weight, 2)
+        response = self.client.post(
+            reverse("listofspeakers-manage-speaker", args=[self.list_of_speakers.pk]),
+            {"point_of_order": True},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Speaker.objects.all().count(), 4)
+        self.assertEqual(Speaker.objects.get(user=self.user).weight, 0)
+        self.assertEqual(Speaker.objects.get(user=self.admin).weight, 1)
+        self.assertEqual(Speaker.objects.get(user=self.user2).weight, 2)
+        self.assertEqual(Speaker.objects.get(user=self.user3).weight, 3)
 
     def test_point_of_order_twice(self):
         config["agenda_enable_point_of_order_speakers"] = True
