@@ -1,8 +1,3 @@
-{
-    # Enable debug output
-    #debug
-}
-
 :8000
 
 reverse_proxy /system/* autoupdate:8002 {

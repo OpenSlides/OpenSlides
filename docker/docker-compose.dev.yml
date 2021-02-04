@@ -34,8 +34,6 @@ services:
     environment:
         - MESSAGE_BUS_HOST=redis
         - MESSAGE_BUS_PORT=6379
-        - WORKER_HOST=server
-        - WORKER_PORT=8000
     depends_on:
         - server
         - redis

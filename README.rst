@@ -108,8 +108,7 @@ Used software
 
 OpenSlides uses the following projects or parts of them:
 
-* several Python packages (see ``server/requirements/production.txt`` and
-  ``server/requirements/big_mode.txt``)
+* several Python packages (see ``server/requirements/production.txt``)
 
 * several JavaScript packages (see ``client/package.json``)
 
