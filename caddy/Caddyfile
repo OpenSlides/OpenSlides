@@ -1,0 +1,26 @@
+{
+    # General Options
+    debug
+}
+
+:8000
+
+reverse_proxy /system/* https://autoupdate:8002 {
+    flush_interval -1
+
+    transport http {
+        tls_insecure_skip_verify
+        versions 2
+    }
+}
+
+@server {
+    path /apps/*
+    path /rest/*
+    path /server-version.txt
+}
+reverse_proxy @server server:8000
+
+reverse_proxy /media/* media:8000
+
+reverse_proxy client:4200
