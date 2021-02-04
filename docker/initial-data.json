@@ -104,6 +104,7 @@
         "conference_auto_connect": false,
         "conference_los_restriction": false,
         "conference_stream_url": "",
+        "conference_stream_poster_url": "",
         "conference_open_microphone": true,
         "conference_open_video": true,
         "conference_auto_connect_next_speakers": true,
@@ -114,7 +115,7 @@
         "export_csv_encoding": "utf-8",
         "export_csv_separator": ",",
         "export_pdf_pagenumber_alignment": "center",
-        "export_pdf_fontsize": "10",
+        "export_pdf_fontsize": 10,
         "export_pdf_pagesize": "A4",
 
         "agenda_show_subtitles": false,
@@ -171,7 +172,7 @@
         "motion_poll_default_type": "analog",
         "motion_poll_default_100_percent_base": "YNA",
         "motion_poll_default_majority_method": "simple",
-        "motion_poll_default_group_ids": [2, 3],
+        "motion_poll_default_group_ids": [5],
 
         "users_sort_by": "first_name",
         "users_enable_presence_view": true,
@@ -188,6 +189,8 @@
         "users_email_subject": "Your login for {event_name}",
         "users_email_body": "Dear {name},\n\nthis is your OpenSlides login for the event {event_name}:\n\n    {url}\n    username: {username}\n    password: {password}\n\nThis email was generated automatically.",
 
+        "assignment_poll_ballot_paper_selection": "CUSTOM_NUMBER",
+        "assignment_poll_ballot_paper_number": 8,
         "assignments_export_title": "Elections",
         "assignments_export_preamble": "",
         "assignment_poll_add_candidates_to_list_of_speakers": true,
@@ -196,7 +199,16 @@
         "assignment_poll_default_method": "votes",
         "assignment_poll_default_100_percent_base": "valid",
         "assignment_poll_default_majority_method": "simple",
-        "assignment_poll_default_group_ids": [3, 5],
+        "assignment_poll_default_group_ids": [5],
+
+        "poll_ballot_paper_selection": "CUSTOM_NUMBER",
+        "poll_ballot_paper_number": 8,
+        "poll_sort_poll_result_by_votes": true,
+        "poll_default_type": "nominal",
+        "poll_default_method": "votes",
+        "poll_default_100_percent_base": "valid",
+        "poll_default_majority_method": "simple",
+        "poll_default_group_ids": [5],
 
         "projector_ids": [1],
         "projection_ids": [],
@@ -206,8 +218,9 @@
         "tag_ids": [],
         "agenda_item_ids": [],
         "list_of_speakers_ids": [],
+        "speaker_ids": [],
         "topic_ids": [],
-        "group_ids": [1, 2, 3, 5, 6],
+        "group_ids": [1, 2, 3, 4, 5],
         "mediafile_ids": [],
         "motion_ids": [],
         "motion_comment_section_ids": [],
@@ -218,7 +231,7 @@
         "motion_comment_ids": [],
         "motion_submitter_ids": [],
         "motion_change_recommendation_ids": [],
-        "motion_state_ids": [],
+        "motion_state_ids": [1, 2, 3, 4],
         "poll_ids": [],
         "option_ids": [],
         "vote_ids": [],
@@ -265,6 +278,7 @@
         "poll_ids": [],
         "used_as_motion_poll_default_id": null,
         "used_as_assignment_poll_default_id": null,
+        "used_as_poll_default_id": null,
         "meeting_id": 1
     },
     {
@@ -282,6 +296,7 @@
         "poll_ids": [],
         "used_as_motion_poll_default_id": null,
         "used_as_assignment_poll_default_id": null,
+        "used_as_poll_default_id": null,
         "meeting_id": 1
     },
     {
@@ -320,10 +335,11 @@
         "poll_ids": [],
         "used_as_motion_poll_default_id": null,
         "used_as_assignment_poll_default_id": null,
+        "used_as_poll_default_id": null,
         "meeting_id": 1
     },
     {
-        "id": 5,
+        "id": 4,
         "name": "Committees",
         "permissions": [
             "agenda_item.can_see",
@@ -348,10 +364,11 @@
         "poll_ids": [],
         "used_as_motion_poll_default_id": null,
         "used_as_assignment_poll_default_id": null,
+        "used_as_poll_default_id": null,
         "meeting_id": 1
     },
     {
-        "id": 6,
+        "id": 5,
         "name": "Delegates",
         "permissions": [
             "agenda_item.can_see",
@@ -380,6 +397,7 @@
         "poll_ids": [],
         "used_as_motion_poll_default_id": 1,
         "used_as_assignment_poll_default_id": 1,
+        "used_as_poll_default_id": 1,
         "meeting_id": 1
     }],
 "personal_note": [],
