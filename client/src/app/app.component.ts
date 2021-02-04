@@ -13,6 +13,7 @@ import { DataStoreUpgradeService } from './core/core-services/data-store-upgrade
 import { LoadFontService } from './core/ui-services/load-font.service';
 import { LoginDataService } from './core/ui-services/login-data.service';
 import { OfflineService } from './core/core-services/offline.service';
+import { OpenSlidesService } from './core/core-services/openslides.service';
 import { OperatorService } from './core/core-services/operator.service';
 import { OverlayService } from './core/ui-services/overlay.service';
 import { RoutingStateService } from './core/ui-services/routing-state.service';
@@ -60,16 +61,8 @@ export class AppComponent {
      *
      * Handles the altering of Array.toString()
      *
-     * @param translate To set the default language
-     * @param operator To call the constructor of the OperatorService
-     * @param loginDataService to call the constructor of the LoginDataService
-     * @param constantService to call the constructor of the ConstantService
-     * @param servertimeService executes the scheduler early on
-     * @param themeService used to listen to theme-changes
-     * @param countUsersService to call the constructor of the CountUserService
-     * @param configService to call the constructor of the ConfigService
-     * @param loadFontService to call the constructor of the LoadFontService
-     * @param dataStoreUpgradeService
+     * Most of the injected service are not used - this is ok. It is needed to definitly
+     * run their constructors at app loading time
      */
     public constructor(
         private matIconRegistry: MatIconRegistry,
@@ -77,6 +70,7 @@ export class AppComponent {
         translate: TranslateService,
         appRef: ApplicationRef,
         servertimeService: ServertimeService,
+        openslidesService: OpenSlidesService,
         router: Router,
         offlineService: OfflineService,
         operator: OperatorService,
@@ -114,7 +108,10 @@ export class AppComponent {
                 filter(s => s),
                 take(1)
             )
-            .subscribe(() => servertimeService.startScheduler());
+            .subscribe(() => {
+                openslidesService.setStable();
+                servertimeService.startScheduler();
+            });
     }
 
     private overloadArrayFunctions(): void {

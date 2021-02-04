@@ -5,6 +5,7 @@ import { BehaviorSubject } from 'rxjs';
 
 import { CommunicationManagerService } from './communication-manager.service';
 import { DataStoreService } from './data-store.service';
+import { Deferred } from '../promises/deferred';
 import { OfflineBroadcastService, OfflineReason } from './offline-broadcast.service';
 import { OperatorService, WhoAmI } from './operator.service';
 import { StorageService } from './storage.service';
@@ -34,6 +35,8 @@ export class OpenSlidesService {
         return this.booted.value;
     }
 
+    private stable = new Deferred();
+
     public constructor(
         private storageService: StorageService,
         private operator: OperatorService,
@@ -42,13 +45,11 @@ export class OpenSlidesService {
         private communicationManager: CommunicationManagerService,
         private offlineBroadcastService: OfflineBroadcastService
     ) {
-        // Handler that gets called, if the websocket connection reconnects after a disconnection.
-        // There might have changed something on the server, so we check the operator, if he changed.
-        /*websocketService.retryReconnectEvent.subscribe(() => {
-            this.checkOperator();
-        });*/
-
         this.bootup();
+    }
+
+    public setStable(): void {
+        this.stable.resolve();
     }
 
     /**
@@ -124,6 +125,7 @@ export class OpenSlidesService {
      */
     private async setupDataStoreAndStartCommunication(): Promise<void> {
         await this.DS.initFromStorage();
+        await this.stable;
         this.communicationManager.startCommunication();
     }
 
