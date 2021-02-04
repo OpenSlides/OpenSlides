@@ -53,6 +53,9 @@ Interface ModelLockedData {
 
 /**
  * Writes Events into the datastore.
+ * If multiple WriteRequests are given, they are fully executed one-by-one, meaning
+ * if a earlier event invalidates the locked_field of a later WriteRequest, an
+ * exception is thrown.
  * Url: POST to /internal/datastore/writer/write
  *
  * @throws ModelDoesNotExist
@@ -61,7 +64,7 @@ Interface ModelLockedData {
  * @throws InvalidFormat
  * @throws ModelNotDeleted
  */
-write(request: WriteRequest): void publishes ModifiedFieldsEvent
+write(request: WriteRequest | WriteRequest[]): void publishes ModifiedFieldsEvent
 
 Interface WriteRequest {
     events: (CreateEvent | RestoreEvent | UpdateEvent | DeleteEvent)[];
