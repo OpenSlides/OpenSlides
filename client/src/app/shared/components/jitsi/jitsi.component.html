@@ -227,13 +227,14 @@
                 </ng-container>
 
                 <ng-container *ngIf="currentState == state.stream">
-                    <os-vjs-player
-                        [videoUrl]="videoStreamUrl"
-                        [showParticles]="isApplauseTypeParticles"
-                        (started)="onSteamStarted()"
-                        *ngIf="(canSeeLiveStream && !streamActiveInAnotherTab) || streamRunning"
-                    ></os-vjs-player>
-                    <div class="disconnected" *ngIf="streamActiveInAnotherTab && !streamRunning">
+                    <ng-container *ngIf="showVideoPlayer()">
+                        <os-video-player
+                            [videoUrl]="videoStreamUrl"
+                            [showParticles]="isApplauseTypeParticles"
+                            (started)="onSteamLoaded()"
+                        ></os-video-player>
+                    </ng-container>
+                    <div class="disconnected" *ngIf="isStreamInOtherTab()">
                         <button class="restart-stream-button" mat-button color="warn" (click)="deleteStreamingLock()">
                             <span>{{ 'Restart livestream' | translate }}</span>
                         </button>

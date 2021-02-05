@@ -1,0 +1,35 @@
+<div class="video-wrapper">
+    <os-applause-particle-display *ngIf="showParticles" class="applause-particles"></os-applause-particle-display>
+    <div class="player-container" [ngClass]="{ hide: !isUrlOnline && usingVjs }">
+        <div *ngIf="usingVjs">
+            <video #vjs class="video-js" controls preload="none"></video>
+        </div>
+        <div *ngIf="usingYouTube" class="youtube-player">
+            <iframe
+                class="youtube-iFrame"
+                type="text/html"
+                frameborder="0"
+                allow="autoplay; encrypted-media"
+                allowfullscreen
+                [src]="youTubeVideoUrl | trust: 'resourceUrl'"
+            ></iframe>
+        </div>
+    </div>
+    <div *ngIf="usingVjs && !isUrlOnline" class="is-offline-wrapper">
+        <ng-container *ngIf="!posterUrl">
+            <p>
+                {{ 'Currently no livestream available.' | translate }}
+            </p>
+            <button mat-raised-button (click)="onRefreshVideo()" color="primary">
+                <mat-icon>refresh</mat-icon>&nbsp;
+                <span>{{ 'Refresh' | translate }}</span>
+            </button>
+        </ng-container>
+        <div *ngIf="posterUrl" class="offlineposter">
+            <button mat-mini-fab (click)="onRefreshVideo()" color="accent" matTooltip="{{ 'Refresh' | translate }}">
+                <mat-icon>refresh</mat-icon>
+            </button>
+            <img [src]="posterUrl" />
+        </div>
+    </div>
+</div>
