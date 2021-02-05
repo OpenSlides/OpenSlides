@@ -74,6 +74,7 @@
         "ngx-mat-select-search": "^3.0.3",
         "ngx-material-timepicker": "^5.5.3",
         "ngx-papaparse": "^4.0.4",
+        "pdfjs-dist": "2.5.207",
         "pdfmake": "^0.1.68",
         "po2json": "^1.0.0-beta-2",
         "rxjs": "^6.6.2",

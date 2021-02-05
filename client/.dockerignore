@@ -1,3 +1,4 @@
 .git
 **/node_modules
 **/.vscode
+build.sh
