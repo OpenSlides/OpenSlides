@@ -1194,6 +1194,14 @@ class MotionPollViewSet(BasePollViewSet):
 
         return result
 
+    def extend_history_information(self, information):
+        poll = self.get_object()
+        inform_changed_data(
+            poll.motion,
+            information=information,
+            user_id=self.request.user.pk,
+        )
+
     def handle_analog_vote(self, data, poll):
         option = poll.options.get()
         vote, _ = MotionVote.objects.get_or_create(option=option, value="Y")
