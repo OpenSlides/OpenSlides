@@ -1,0 +1,2 @@
+fastjsonschema
+pyyaml

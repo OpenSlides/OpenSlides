@@ -248,7 +248,7 @@
         "temporary_user_ids": [],
         "guest_ids": [],
         "user_ids": [1],
-        "reference_projector_id": 2,
+        "reference_projector_id": 1,
 
         "default_group_id": 1,
         "admin_group_id": 2
@@ -546,7 +546,7 @@
         "current_element_ids": [],
         "preview_projection_ids": [],
         "history_projection_ids": [],
-        "used_as_reference_projector_meeting_id": null,
+        "used_as_reference_projector_meeting_id": 1,
         "projectiondefault_ids": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
         "meeting_id": 1
     }],
