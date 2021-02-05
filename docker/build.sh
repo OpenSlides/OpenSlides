@@ -6,7 +6,7 @@ declare -A TARGETS
 TARGETS=(
   [client]="$(dirname "${BASH_SOURCE[0]}")/../client/docker/"
   [server]="$(dirname "${BASH_SOURCE[0]}")/../server/docker/"
-  [haproxy]="$(dirname "${BASH_SOURCE[0]}")/../haproxy/"
+  [caddy]="$(dirname "${BASH_SOURCE[0]}")/../caddy/"
   [autoupdate]="$(dirname "${BASH_SOURCE[0]}")/../autoupdate/"
   [media]="https://github.com/OpenSlides/openslides-media-service.git"
   [pgbouncer]="https://github.com/OpenSlides/openslides-docker-compose.git#:pgbouncer"
