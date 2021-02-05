@@ -19,11 +19,6 @@ some_model:
   no_other_model:
     type: relation
     to: not_existing/field
-  no_other_field:
-    type: relation
-    to: other_model/bar
-other_model:
-  foo: string
 `
 
 const yamlNonExistingField = `---
@@ -119,7 +114,7 @@ func TestCheck(t *testing.T) {
 			}
 
 			if !found {
-				t.Errorf("Models.Check() returned %v, expected %v", gotErr, tt.err)
+				t.Errorf("Models.Check() returned:\n%v\n\nExpected something that contains:\n%v", gotErr, tt.err)
 			}
 		})
 	}

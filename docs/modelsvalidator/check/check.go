@@ -71,7 +71,7 @@ func validateRelations(data map[string]models.Model) error {
 			for _, c := range r.ToCollections() {
 				toModel, ok := data[c.Collection]
 				if !ok {
-					errs.append(fmt.Errorf("%s/%s directs to nonexisting model `%s`", modelName, fieldName, c))
+					errs.append(fmt.Errorf("%s/%s directs to nonexisting model `%s`", modelName, fieldName, c.Collection))
 					continue Next
 				}
 
