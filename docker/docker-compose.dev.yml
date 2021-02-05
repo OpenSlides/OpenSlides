@@ -45,10 +45,8 @@ services:
   redis:
     image: redis:latest
 
-  haproxy:
-    image: os3-haproxy-dev
-    volumes:
-      - ../haproxy/src:/usr/local/etc/haproxy
+  caddy:
+    image: caddy:2.3.0-alpine
     depends_on:
       - client
       - server

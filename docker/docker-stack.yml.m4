@@ -15,7 +15,7 @@ define(`ifenvelse', `ifelse(read_env(`$1'),, `$2', read_env(`$1'))')
 
 define(`HAPROXY_IMAGE',
 ifenvelse(`DEFAULT_DOCKER_REGISTRY', openslides)/dnl
-ifenvelse(`DOCKER_OPENSLIDES_HAPROXY_NAME', openslides-haproxy):dnl
+ifenvelse(`DOCKER_OPENSLIDES_HAPROXY_NAME', openslides-caddy):dnl
 ifenvelse(`DOCKER_OPENSLIDES_HAPROXY_TAG', latest))
 define(`BACKEND_IMAGE',
 ifenvelse(`DEFAULT_DOCKER_REGISTRY', openslides)/dnl
