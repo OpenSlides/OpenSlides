@@ -1,17 +1,12 @@
 {
-    # General Options
-    debug
+    # Enable debug output
+    #debug
 }
 
 :8000
 
-reverse_proxy /system/* https://autoupdate:8002 {
+reverse_proxy /system/* http://autoupdate:8002 {
     flush_interval -1
-
-    transport http {
-        tls_insecure_skip_verify
-        versions 2
-    }
 }
 
 @server {
