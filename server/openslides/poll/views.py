@@ -116,6 +116,11 @@ class BasePollViewSet(ModelViewSet):
             poll.state = BasePoll.STATE_FINISHED
         poll.save()
 
+    def extend_history_information(self, information):
+        # Use this method to add history information when a poll is started and stopped.
+        # The implementation can be found in concret view set e. g. MotionPollViewSet.
+        pass
+
     @detail_route(methods=["POST"])
     @transaction.atomic
     def start(self, request, pk):
@@ -126,6 +131,7 @@ class BasePollViewSet(ModelViewSet):
 
         poll.save()
         inform_changed_data(poll.get_votes())
+        self.extend_history_information(["Voting started"])
         return Response()
 
     @detail_route(methods=["POST"])
@@ -146,6 +152,7 @@ class BasePollViewSet(ModelViewSet):
         poll.save()
         inform_changed_data(poll.get_votes())
         inform_changed_data(poll.get_options())
+        self.extend_history_information(["Voting stopped"])
         return Response()
 
     @detail_route(methods=["POST"])
@@ -181,6 +188,7 @@ class BasePollViewSet(ModelViewSet):
             raise ValidationError({"detail": "You can just anonymize named polls."})
 
         poll.pseudoanonymize()
+        self.extend_history_information(["Voting anonymized"])
         return Response()
 
     @detail_route(methods=["POST"])
@@ -188,6 +196,7 @@ class BasePollViewSet(ModelViewSet):
     def reset(self, request, pk):
         poll = self.get_object()
         poll.reset()
+        self.extend_history_information(["Voting reset"])
         return Response()
 
     @detail_route(methods=["POST"])
