@@ -3,21 +3,21 @@
 ========================
 
 Check requirements
-'''''''''''''''''''''
+''''''''''''''''''
 
 - ``docker``
 - ``docker-compose``
 - ``git``
 - ``make``
 
-**Note about migrating from development
-setups before version 3.4**: You must set the ``OPENSLIDES_USER_DATA_DIR`` variable in
-your ``server/personal_data/var/settings.py`` to  ``'/app/personal_data/var'``. Another
-way is to just delete this file. It is recreated with the right paths afterwards.
+**Note about migrating from development setups before version 3.4**: You must set the
+``OPENSLIDES_USER_DATA_DIR`` variable in your ``server/personal_data/var/settings.py``
+to  ``'/app/personal_data/var'``. Another way is to just delete this file. It is
+recreated with the right paths afterwards.
 
 
 Get OpenSlides source code
-'''''''''''''''''''''''''''''
+''''''''''''''''''''''''''
 
 Clone current master version from `OpenSlides GitHub repository
 <https://github.com/OpenSlides/OpenSlides/>`_::
@@ -30,7 +30,8 @@ When updating the repository, submodules must be updated explicitly, too::
     git submodule update
 
 Start the development setup
-''''''''''''''''''''''''''''''
+'''''''''''''''''''''''''''
+
 Use `make` to start the setup::
 
     make run-dev
@@ -41,11 +42,14 @@ To stop the setup press Ctrl+C. To clean up the docker containers run::
     make stop-dev
 
 Running the test cases
-'''''''''''''''''''''''
+''''''''''''''''''''''
+
 For all services in submodules check out the documentation there.
 
+
 Server tests and scripts
--------------------------
+------------------------
+
 You need to have python (>=3.8) and python-venv installed. Change your workdirectory to the server::
 
     cd server
@@ -69,7 +73,8 @@ To deactivate it type ``deactivate``. Running all tests and linters::
     pytest tests/
 
 Client tests
--------------
+------------
+
 You need `node` and `npm` installed. Change to the client's directory. For the first time, install all dependencies::
 
     cd client/

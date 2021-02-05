@@ -4,10 +4,10 @@ Advanced configuration
 Docker Swarm Mode
 -----------------
 
-OpenSlides may also be deployed in Swarm mode.  Distributing instances over
+OpenSlides may also be deployed in Swarm mode. Distributing instances over
 multiple nodes may increase performance and offer failure resistance.
 
-An example configuration file, ``docker-stack.yml.m4``, is provided.  Unlike
+An example configuration file, ``docker-stack.yml.m4``, is provided. Unlike
 the Docker Compose setup, this configuration will most likely need to be
 customized, especially its placement constraints and database-related
 preferences.
@@ -37,14 +37,14 @@ please familiarize yourself with `repmgr <https://repmgr.org/>`_.
 Backups
 -------
 
-All important data is stored in the database.  Additionally, the project
+All important data is stored in the database. Additionally, the project
 directory should be included in backups to ensure a smooth recovery.
 
 The primary database usually runs in the ``pgnode1`` service (but see `Database
 Configuration`_ above).
 
 In some cases, it may be sufficient to generate SQL dumps with ``pg_dump``
-through ``docker exec`` to create backups.  However, for proper incremental
+through ``docker exec`` to create backups. However, for proper incremental
 backups, the host system can backup the cluster's data directory and WAL
 archives.
 
