@@ -6,7 +6,7 @@ services:
       context: ../client
       dockerfile: docker/Dockerfile.dev
     volumes:
-      - ../client:/app
+      - ../client/src:/app/src
 
   server:
     image: os3-server-dev
