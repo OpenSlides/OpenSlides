@@ -25,7 +25,7 @@ export class UserImportService extends BaseImportService<User> {
         'last_name',
         'structure_level',
         'number',
-        'groups_id',
+        'csvGroups',
         'comment',
         'is_active',
         'is_present',
@@ -97,10 +97,11 @@ export class UserImportService extends BaseImportService<User> {
     public mapData(line: string): NewEntry<User> {
         const user = new ImportCreateUser();
         const headerLength = Math.min(this.expectedHeader.length, line.length);
+
         let hasErrors = false;
         for (let idx = 0; idx < headerLength; idx++) {
             switch (this.expectedHeader[idx]) {
-                case 'groups_id':
+                case 'csvGroups':
                     user.csvGroups = this.getGroups(line[idx]);
                     break;
                 case 'is_active':
@@ -152,16 +153,12 @@ export class UserImportService extends BaseImportService<User> {
             if (entry.status !== 'new') {
                 continue;
             }
-            const openGroups = (entry.newEntry as ImportCreateUser).solveGroups(this.newGroups);
-            if (openGroups) {
-                this.setError(entry, 'Group');
-                this.updatePreview();
-                continue;
-            }
+            (entry.newEntry as ImportCreateUser).solveGroups(this.newGroups);
             entry.importTrackId = trackId;
             trackId += 1;
             importUsers.push(entry);
         }
+
         while (importUsers.length) {
             const subSet = importUsers.splice(0, 100); // don't send bulks too large
             const result = await this.repo.bulkCreate(subSet);
