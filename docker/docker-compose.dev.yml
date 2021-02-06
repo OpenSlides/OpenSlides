@@ -48,7 +48,7 @@ services:
   caddy:
     image: caddy:2.3.0-alpine
     volumes:
-      - ../caddy/Caddyfile:/etc/caddy/Caddyfile
+      - ../caddy/Caddyfile.dev:/etc/caddy/Caddyfile
     depends_on:
       - client
       - server
