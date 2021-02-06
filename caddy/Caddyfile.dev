@@ -7,7 +7,7 @@ localhost:8000
 
 @autoupdate {
     path /system/*
-    expression {http.request.proto}.startsWith("HTTP/2")
+    expression `{http.request.proto} == "HTTP/2.0"`
 }
 reverse_proxy @autoupdate autoupdate:8002 {
     flush_interval -1
