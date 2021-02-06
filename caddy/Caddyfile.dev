@@ -5,9 +5,22 @@
 
 localhost:8000
 
-reverse_proxy /system/* autoupdate:8002 {
+@autoupdate {
+    path /system/*
+    expression {http.request.proto}.startsWith("HTTP/2")
+}
+reverse_proxy @autoupdate autoupdate:8002 {
     flush_interval -1
 }
+
+@autoupdate_http1 {
+    path /system/*
+    expression {http.request.proto}.startsWith("HTTP/1")
+}
+respond @autoupdate_http1 "HTTP1 not supported" 400 {
+    close
+}
+
 
 @server {
     path /apps/*
@@ -15,6 +28,7 @@ reverse_proxy /system/* autoupdate:8002 {
     path /server-version.txt
     path /media/*
 }
+
 reverse_proxy @server server:8000
 
 reverse_proxy client:4200
