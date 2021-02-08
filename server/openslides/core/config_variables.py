@@ -173,11 +173,9 @@ def get_config_variables():
         name="general_system_conference_enable_helpdesk",
         default_value=False,
         input_type="boolean",
-        label="Enable help desk",
+        label="Enable virtual help desk room",
         help_text="""
-            Shows a help icon in the conference bar.
-            Users can connect to a dedicated conference.
-            The conference host has to manually ensure the coverage of the help desk.
+            Shows a button with help icon to connect to an extra Jitsi conference room for technical audio/video tests.
         """,
         weight=148,
         subgroup="Live conference",
@@ -190,8 +188,7 @@ def get_config_variables():
         default_value=False,
         input_type="boolean",
         label="Enable virtual applause",
-        help_text="Shows a 'Send applause' icon in the live stream bar",
-        weight=170,
+        weight=150,
         subgroup="Virtual applause",
     )
 
@@ -202,15 +199,15 @@ def get_config_variables():
         choices=(
             {
                 "value": "applause-type-bar",
-                "display_name": "Bar",
+                "display_name": "Level indicator",
             },
             {
                 "value": "applause-type-particles",
                 "display_name": "Particles",
             },
         ),
-        label="Applause Type",
-        weight=171,
+        label="Applause visualization",
+        weight=151,
         subgroup="Virtual applause",
     )
 
@@ -219,7 +216,7 @@ def get_config_variables():
         default_value=False,
         input_type="boolean",
         label="Show applause amount",
-        weight=172,
+        weight=152,
         subgroup="Virtual applause",
     )
 
@@ -228,8 +225,8 @@ def get_config_variables():
         default_value=1,
         input_type="integer",
         label="Lowest applause amount",
-        help_text="Lowest amount required for OpenSlides to recognize applause",
-        weight=173,
+        help_text="Defines the minimum deflection which is required to recognize applause.",
+        weight=153,
         subgroup="Virtual applause",
     )
 
@@ -238,8 +235,8 @@ def get_config_variables():
         default_value=0,
         input_type="integer",
         label="Highest applause amount",
-        help_text="Defines the maximum deflection of the amount. Entering zero will use the amount of present users instead.",
-        weight=174,
+        help_text="Defines the maximum deflection. Entering zero will use the amount of present participants instead.",
+        weight=154,
         subgroup="Virtual applause",
     )
 
@@ -247,18 +244,18 @@ def get_config_variables():
         name="general_system_stream_applause_timeout",
         default_value=5,
         input_type="integer",
-        label="Applause timeout in seconds",
-        help_text="Determines how long a user has to wait to applaud again. Also determines the time in which applause is collected",
-        weight=175,
+        label="Applause interval in seconds",
+        help_text="Defines the time in which applause amounts are add up.",
+        weight=155,
         subgroup="Virtual applause",
     )
 
     yield ConfigVariable(
         name="general_system_applause_particle_image",
         default_value="",
-        label="Applause particle image url",
+        label="Applause particle image URL",
         help_text="Shows the given image as applause particle. Recommended image format: 24x24px, PNG, JPG or SVG",
-        weight=176,
+        weight=156,
         subgroup="Virtual applause",
     )
 
@@ -269,7 +266,7 @@ def get_config_variables():
         default_value=False,
         input_type="boolean",
         label="Allow access for anonymous guest users",
-        weight=150,
+        weight=160,
         subgroup="System",
     )
 
@@ -277,7 +274,7 @@ def get_config_variables():
         name="general_login_info_text",
         default_value="",
         label="Show this text on the login page",
-        weight=152,
+        weight=162,
         subgroup="System",
     )
 
@@ -313,7 +310,7 @@ def get_config_variables():
                 "display_name": "OpenSlides Solarized",
             },
         ),
-        weight=154,
+        weight=164,
         subgroup="System",
     )
 
@@ -323,7 +320,7 @@ def get_config_variables():
         name="general_csv_separator",
         default_value=",",
         label="Separator used for all csv exports and examples",
-        weight=160,
+        weight=170,
         subgroup="Export",
     )
 
@@ -336,7 +333,7 @@ def get_config_variables():
             {"value": "utf-8", "display_name": "UTF-8"},
             {"value": "iso-8859-15", "display_name": "ISO-8859-15"},
         ),
-        weight=162,
+        weight=172,
         subgroup="Export",
     )
 
@@ -350,7 +347,7 @@ def get_config_variables():
             {"value": "center", "display_name": "Center"},
             {"value": "right", "display_name": "Right"},
         ),
-        weight=164,
+        weight=174,
         subgroup="Export",
     )
 
@@ -364,7 +361,7 @@ def get_config_variables():
             {"value": "11", "display_name": "11"},
             {"value": "12", "display_name": "12"},
         ),
-        weight=166,
+        weight=176,
         subgroup="Export",
     )
 
@@ -377,7 +374,7 @@ def get_config_variables():
             {"value": "A4", "display_name": "DIN A4"},
             {"value": "A5", "display_name": "DIN A5"},
         ),
-        weight=168,
+        weight=178,
         subgroup="Export",
     )
 

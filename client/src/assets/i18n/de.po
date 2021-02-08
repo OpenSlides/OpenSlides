@@ -1,10 +1,10 @@
 # 
 # Translators:
-# Emanuel Schütze <emanuel.schuetze@intevation.de>, 2020
+# Emanuel Schütze <emanuel.schuetze@intevation.de>, 2021
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Emanuel Schütze <emanuel.schuetze@intevation.de>, 2020\n"
+"Last-Translator: Emanuel Schütze <emanuel.schuetze@intevation.de>, 2021\n"
 "Language-Team: German (https://www.transifex.com/openslides/teams/14270/de/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -241,6 +241,15 @@ msgstr "Anonymisieren kann erst nach Beenden der Stimmabgabe erfolgen."
 
 msgid "Anonymous"
 msgstr "Anonym"
+
+msgid "Applause interval in seconds"
+msgstr "Applaus-Zeitintervall in Sekunden"
+
+msgid "Applause particle image URL"
+msgstr "Applaus-Partikelbild-URL"
+
+msgid "Applause visualization"
+msgstr "Applaus-Visualisierung"
 
 msgid "Apply"
 msgstr "Übernehmen"
@@ -886,6 +895,22 @@ msgstr ""
 msgid "Default voting type"
 msgstr "Voreingestellte Art der Stimmabgabe"
 
+msgid ""
+"Defines the maximum deflection. Entering zero will use the amount of present"
+" participants instead."
+msgstr ""
+"Definiert den maximalen Ausschlag. Bei Eingabe von 0 wird die Anzahl der "
+"anwesenden Teilnehmenden verwendet."
+
+msgid ""
+"Defines the minimum deflection which is required to recognize applause."
+msgstr ""
+"Definiert den minimalen Ausschlag, der erforderlich ist, um Applaus zu "
+"erkennen."
+
+msgid "Defines the time in which applause amounts are add up."
+msgstr "Definiert die Zeit in der Applauswerte aufsummiert werden."
+
 msgid "Delegates"
 msgstr "Delegierte"
 
@@ -1096,6 +1121,12 @@ msgstr "Ansicht zur Teilnehmeranwesenheit aktivieren"
 msgid "Enable points of order"
 msgstr "Geschäftsordnungsanträge aktivieren"
 
+msgid "Enable virtual applause"
+msgstr "Virtuellen Applaus einschalten"
+
+msgid "Enable virtual help desk room"
+msgstr "Virtuellen Help-Desk-Raum einschalten"
+
 msgid "Enable/disable account ..."
 msgstr "Account ein-/ausschalten ..."
 
@@ -1287,6 +1318,9 @@ msgstr "Neue Passwörter generieren"
 msgid "Generate password"
 msgstr "Passwort generieren"
 
+msgid "Give applause"
+msgstr "Applaus geben"
+
 msgid "Given name"
 msgstr "Vorname"
 
@@ -1338,6 +1372,9 @@ msgstr "Schriftfarbe Kopfbereich"
 msgid "Headline color"
 msgstr "Überschriftenfarbe"
 
+msgid "Help desk"
+msgstr "Help Desk"
+
 msgid "Help text for access data and welcome PDF"
 msgstr "Hilfetext für das Zugangsdaten- und Willkommens-PDF"
 
@@ -1368,6 +1405,9 @@ msgstr "Verweisende Anträge ausblenden"
 msgid "Hide the amount of speakers in subtitle of list of speakers slide"
 msgstr ""
 "Anzahl der Redner/innen im Untertitel der Redelistenprojektion ausblenden"
+
+msgid "Highest applause amount"
+msgstr "Höchster Applauswert"
 
 msgid "Hint on voting"
 msgstr "Hinweis zur Stimmabgabe"
@@ -1535,6 +1575,9 @@ msgstr "Links"
 msgid "Legal notice"
 msgstr "Impressum"
 
+msgid "Level indicator"
+msgstr "Pegelanzeige"
+
 msgid "License"
 msgstr "Lizenz"
 
@@ -1597,6 +1640,9 @@ msgstr "Als Gast anmelden"
 msgid "Logout"
 msgstr "Abmelden"
 
+msgid "Lowest applause amount"
+msgstr "Niedrigster Applauswert"
+
 msgid "Main motion and line number"
 msgstr "Hauptantrag und Zeilennummer"
 
@@ -1605,6 +1651,9 @@ msgstr "Als persönlichen Favorit markieren"
 
 msgid "Mark speaker"
 msgstr "Redner/in markieren"
+
+msgid "Maximum amount of votes"
+msgstr "Maximale Stimmenanzahl"
 
 msgid "Media access is denied"
 msgstr "Medienzugriff verweigert"
@@ -1621,11 +1670,17 @@ msgstr "Mitteilungen"
 msgid "Meta information"
 msgstr "Metainformationen"
 
+msgid "Min votes cannot be greater than max votes."
+msgstr "Die min. Stimmen dürfen nicht größer also die max. Stimmen sein."
+
 msgid "Minimal required version"
 msgstr "Minimal erforderliche Version"
 
 msgid "Minimize"
 msgstr "Minimieren"
+
+msgid "Minimum amount of votes"
+msgstr "Minimale Stimmenanzahl"
 
 msgid "More"
 msgstr "Mehr"
@@ -2109,6 +2164,9 @@ msgstr "Teilnehmende"
 msgid "Participants have been imported."
 msgstr "Teilnehmende wurden importiert."
 
+msgid "Particles"
+msgstr "Partikel"
+
 msgid "Password"
 msgstr "Passwort"
 
@@ -2548,6 +2606,9 @@ msgstr "Änderungsantrag im Hauptantrag anzeigen"
 msgid "Show amendments together with motions"
 msgstr "Änderungsanträge zusätzlich in der Hauptantragsübersicht anzeigen"
 
+msgid "Show applause amount"
+msgstr "Applauswert anzeigen"
+
 msgid "Show checkbox to record decision"
 msgstr "Ankreuzfelder zum Dokumentieren der Entscheidung anzeigen"
 
@@ -2627,11 +2688,25 @@ msgid "Show/Hide video conference"
 msgstr "Videokonferenz anzeigen/verstecken"
 
 msgid ""
+"Shows a button with help icon to connect to an extra Jitsi conference room "
+"for technical audio/video tests."
+msgstr ""
+"Zeigt einen Fragezeichen-Button an, um sich mit einem extra Jitsi-"
+"Konferenzraum für technische Audio-/Video-Tests zu verbinden."
+
+msgid ""
 "Shows if livestream is not started. Recommended image format: 500x200px, PNG"
 " or JPG"
 msgstr ""
 "Wird angezeigt, wenn der Livestream nicht gestartet werden kann. "
 "Bildformatempfehlung: 500x200px, PNG oder JPG"
+
+msgid ""
+"Shows the given image as applause particle. Recommended image format: "
+"24x24px, PNG, JPG or SVG"
+msgstr ""
+"Zeigt das angegebene Bild als Applaus-Partikel. Bildformatempfehlung: "
+"24x24px, PNG, JPG oder SVG"
 
 msgid "Simple Workflow"
 msgstr "Einfacher Arbeitsablauf"
@@ -2836,11 +2911,6 @@ msgstr "Die Redeliste ist geöffnet."
 
 msgid "The live conference is already running in your OpenSlides session."
 msgstr "Die Livekonferenz läuft bereits in Ihrer OpenSlides-Sitzung."
-
-msgid "The livestream is disabled because you are inside a conference"
-msgstr ""
-"Der Livestream ist deaktiviert, weil Sie gerade an der Livekonferenz "
-"teilnehmen."
 
 msgid ""
 "The maximum number of characters per line. Relevant when line numbering is "
@@ -3093,6 +3163,9 @@ msgstr "Gültige Stimmen"
 msgid "View"
 msgstr "Anzeigen"
 
+msgid "Virtual applause"
+msgstr "Virtueller Applaus"
+
 msgid "Visibility"
 msgstr "Sichtbarkeit"
 
@@ -3117,6 +3190,9 @@ msgstr "Stimmen"
 msgid "Voting and ballot papers"
 msgstr "Abstimmung und Stimmzettel"
 
+msgid "Voting anonymized"
+msgstr "Abstimmung anonymisiert"
+
 msgid "Voting is currently in progress."
 msgstr "Stimmabgabe läuft aktuell "
 
@@ -3125,6 +3201,9 @@ msgstr "Wahlmethode"
 
 msgid "Voting opened"
 msgstr "Abstimmung eröffnet"
+
+msgid "Voting reset"
+msgstr "Abstimmung zurückgesetzt"
 
 msgid "Voting result"
 msgstr "Abstimmungsergebnis"
@@ -3137,6 +3216,12 @@ msgstr "Stimmrecht für"
 
 msgid "Voting right received from (principals)"
 msgstr "Stimmrecht erhalten von (Vollmachtgeber)"
+
+msgid "Voting started"
+msgstr "Abstimmung gestartet"
+
+msgid "Voting stopped"
+msgstr "Abstimmung gestoppt"
 
 msgid "Voting successful."
 msgstr "Stimmabgabe erfolgreich."
@@ -3387,6 +3472,9 @@ msgstr "analog"
 
 msgid "and"
 msgstr "und"
+
+msgid "at least"
+msgstr "mindestens"
 
 msgid "ballot-paper"
 msgstr "stimmzettel"

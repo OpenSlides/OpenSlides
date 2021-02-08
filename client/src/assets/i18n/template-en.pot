@@ -221,6 +221,15 @@ msgstr ""
 msgid "Anonymous"
 msgstr ""
 
+msgid "Applause interval in seconds"
+msgstr ""
+
+msgid "Applause particle image URL"
+msgstr ""
+
+msgid "Applause visualization"
+msgstr ""
+
 msgid "Apply"
 msgstr ""
 
@@ -828,6 +837,17 @@ msgstr ""
 msgid "Default voting type"
 msgstr ""
 
+msgid ""
+"Defines the maximum deflection. Entering zero will use the amount of "
+"present participants instead."
+msgstr ""
+
+msgid "Defines the minimum deflection which is required to recognize applause."
+msgstr ""
+
+msgid "Defines the time in which applause amounts are add up."
+msgstr ""
+
 msgid "Delegates"
 msgstr ""
 
@@ -1027,6 +1047,12 @@ msgstr ""
 msgid "Enable points of order"
 msgstr ""
 
+msgid "Enable virtual applause"
+msgstr ""
+
+msgid "Enable virtual help desk room"
+msgstr ""
+
 msgid "Enable/disable account ..."
 msgstr ""
 
@@ -1212,6 +1238,9 @@ msgstr ""
 msgid "Generate password"
 msgstr ""
 
+msgid "Give applause"
+msgstr ""
+
 msgid "Given name"
 msgstr ""
 
@@ -1263,6 +1292,9 @@ msgstr ""
 msgid "Headline color"
 msgstr ""
 
+msgid "Help desk"
+msgstr ""
+
 msgid "Help text for access data and welcome PDF"
 msgstr ""
 
@@ -1291,6 +1323,9 @@ msgid "Hide referring motions"
 msgstr ""
 
 msgid "Hide the amount of speakers in subtitle of list of speakers slide"
+msgstr ""
+
+msgid "Highest applause amount"
 msgstr ""
 
 msgid "Hint on voting"
@@ -1457,6 +1492,9 @@ msgstr ""
 msgid "Legal notice"
 msgstr ""
 
+msgid "Level indicator"
+msgstr ""
+
 msgid "License"
 msgstr ""
 
@@ -1517,6 +1555,9 @@ msgstr ""
 msgid "Logout"
 msgstr ""
 
+msgid "Lowest applause amount"
+msgstr ""
+
 msgid "Main motion and line number"
 msgstr ""
 
@@ -1524,6 +1565,9 @@ msgid "Mark as personal favorite"
 msgstr ""
 
 msgid "Mark speaker"
+msgstr ""
+
+msgid "Maximum amount of votes"
 msgstr ""
 
 msgid "Media access is denied"
@@ -1541,10 +1585,16 @@ msgstr ""
 msgid "Meta information"
 msgstr ""
 
+msgid "Min votes cannot be greater than max votes."
+msgstr ""
+
 msgid "Minimal required version"
 msgstr ""
 
 msgid "Minimize"
+msgstr ""
+
+msgid "Minimum amount of votes"
 msgstr ""
 
 msgid "More"
@@ -2019,6 +2069,9 @@ msgstr ""
 msgid "Participants have been imported."
 msgstr ""
 
+msgid "Particles"
+msgstr ""
+
 msgid "Password"
 msgstr ""
 
@@ -2448,6 +2501,9 @@ msgstr ""
 msgid "Show amendments together with motions"
 msgstr ""
 
+msgid "Show applause amount"
+msgstr ""
+
 msgid "Show checkbox to record decision"
 msgstr ""
 
@@ -2524,8 +2580,18 @@ msgid "Show/Hide video conference"
 msgstr ""
 
 msgid ""
+"Shows a button with help icon to connect to an extra Jitsi conference room "
+"for technical audio/video tests."
+msgstr ""
+
+msgid ""
 "Shows if livestream is not started. Recommended image format: 500x200px, "
 "PNG or JPG"
+msgstr ""
+
+msgid ""
+"Shows the given image as applause particle. Recommended image format: "
+"24x24px, PNG, JPG or SVG"
 msgstr ""
 
 msgid "Simple Workflow"
@@ -2724,9 +2790,6 @@ msgid "The list of speakers is open."
 msgstr ""
 
 msgid "The live conference is already running in your OpenSlides session."
-msgstr ""
-
-msgid "The livestream is disabled because you are inside a conference"
 msgstr ""
 
 msgid ""
@@ -2942,6 +3005,9 @@ msgstr ""
 msgid "View"
 msgstr ""
 
+msgid "Virtual applause"
+msgstr ""
+
 msgid "Visibility"
 msgstr ""
 
@@ -2966,6 +3032,9 @@ msgstr ""
 msgid "Voting and ballot papers"
 msgstr ""
 
+msgid "Voting anonymized"
+msgstr ""
+
 msgid "Voting is currently in progress."
 msgstr ""
 
@@ -2973,6 +3042,9 @@ msgid "Voting method"
 msgstr ""
 
 msgid "Voting opened"
+msgstr ""
+
+msgid "Voting reset"
 msgstr ""
 
 msgid "Voting result"
@@ -2985,6 +3057,12 @@ msgid "Voting right for"
 msgstr ""
 
 msgid "Voting right received from (principals)"
+msgstr ""
+
+msgid "Voting started"
+msgstr ""
+
+msgid "Voting stopped"
 msgstr ""
 
 msgid "Voting successful."
@@ -3213,6 +3291,9 @@ msgid "analog"
 msgstr ""
 
 msgid "and"
+msgstr ""
+
+msgid "at least"
 msgstr ""
 
 msgid "ballot-paper"

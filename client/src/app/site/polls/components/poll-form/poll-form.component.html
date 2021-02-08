@@ -70,7 +70,7 @@
                             [errorStateMatcher]="parentErrorStateMatcher"
                         />
                         <mat-error *ngIf="contentForm.controls['votes_amount'].hasError('rangeError')">
-                            {{ 'Min votes must be smaller or equal to max votes' | translate }}
+                            {{ 'Min votes cannot be greater than max votes.' | translate }}
                         </mat-error>
                     </mat-form-field>
 
