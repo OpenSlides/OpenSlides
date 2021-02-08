@@ -13,10 +13,10 @@ define(`read_env', `esyscmd(`printf "\`%s'" "$$1"')')
 dnl return env variable if set; otherwise, return given alternative value
 define(`ifenvelse', `ifelse(read_env(`$1'),, `$2', read_env(`$1'))')
 
-define(`HAPROXY_IMAGE',
+define(`PROXY_IMAGE',
 ifenvelse(`DEFAULT_DOCKER_REGISTRY', openslides)/dnl
-ifenvelse(`DOCKER_OPENSLIDES_HAPROXY_NAME', openslides-caddy):dnl
-ifenvelse(`DOCKER_OPENSLIDES_HAPROXY_TAG', latest))
+ifenvelse(`DOCKER_OPENSLIDES_PROXY_NAME', openslides-proxy):dnl
+ifenvelse(`DOCKER_OPENSLIDES_PROXY_TAG', latest))
 define(`BACKEND_IMAGE',
 ifenvelse(`DEFAULT_DOCKER_REGISTRY', openslides)/dnl
 ifenvelse(`DOCKER_OPENSLIDES_BACKEND_NAME', openslides-server):dnl
@@ -95,8 +95,8 @@ x-pgnode-env: &default-pgnode-env
   REPMGR_WAL_ARCHIVE: "ifenvelse(`PGNODE_WAL_ARCHIVING', on)"
 
 services:
-  haproxy:
-    image: HAPROXY_IMAGE
+  proxy:
+    image: PROXY_IMAGE
     networks:
       - front
       - back
