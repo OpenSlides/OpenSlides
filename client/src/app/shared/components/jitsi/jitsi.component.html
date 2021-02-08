@@ -115,7 +115,7 @@
                 mat-mini-fab
                 (click)="enterSupportRoom()"
                 [disabled]="isJitsiActive"
-                matTooltip="{{ 'Access help desk' | translate }}"
+                matTooltip="{{ 'Help desk' | translate }}"
                 *ngIf="canAccessSupport"
             >
                 <mat-icon color="primary">live_help</mat-icon>
@@ -127,7 +127,7 @@
                 [disabled]="applauseDisabled"
                 mat-mini-fab
                 (click)="sendApplause()"
-                matTooltip="{{ 'Send applause' | translate }}"
+                matTooltip="{{ 'Give applause' | translate }}"
                 *ngIf="showApplause"
                 [matBadge]="showApplauseBadge ? applauseLevel : null"
                 matBadgeColor="accent"
