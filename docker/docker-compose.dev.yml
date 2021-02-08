@@ -45,7 +45,7 @@ services:
   redis:
     image: redis:latest
 
-  caddy:
+  proxy:
     image: caddy:2.3.0-alpine
     volumes:
       - ../caddy/Caddyfile.dev:/etc/caddy/Caddyfile
