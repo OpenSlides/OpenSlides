@@ -110,6 +110,8 @@ if ENABLE_SAML:
 # Controls if electronic voting (means non-analog polls) are enabled.
 ENABLE_ELECTRONIC_VOTING = False
 
+# Controls if chat should be enabled
+ENABLE_CHAT = False
 
 # Jitsi integration
 # JITSI_DOMAIN = None

@@ -55,6 +55,7 @@ class Migration(migrations.Migration):
                 ("text", models.CharField(max_length=512)),
                 ("timestamp", models.DateTimeField(auto_now_add=True)),
                 ("username", models.CharField(max_length=256)),
+                ("user_id", models.IntegerField()),
                 (
                     "chatgroup",
                     models.ForeignKey(

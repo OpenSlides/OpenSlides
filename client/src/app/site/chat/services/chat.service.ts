@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 
 import { BehaviorSubject, Observable } from 'rxjs';
 
-import { ChatGroupRepositoryService } from '../repositories/chat/chat-group-repository.service';
-import { ConstantsService } from '../core-services/constants.service';
-import { OperatorService, Permission } from '../core-services/operator.service';
+import { ChatGroupRepositoryService } from '../../../core/repositories/chat/chat-group-repository.service';
+import { ConstantsService } from '../../../core/core-services/constants.service';
+import { OperatorService, Permission } from '../../../core/core-services/operator.service';
 
 interface OpenSlidesSettings {
     ENABLE_CHAT: boolean;

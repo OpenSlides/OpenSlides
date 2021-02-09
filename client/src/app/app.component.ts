@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { filter, take } from 'rxjs/operators';
 
-import { ChatNotificationService } from './core/ui-services/chat-notification.service';
+import { ChatNotificationService } from './site/chat/services/chat-notification.service';
 import { ConfigService } from './core/ui-services/config.service';
 import { ConstantsService } from './core/core-services/constants.service';
 import { CountUsersService } from './core/ui-services/count-users.service';

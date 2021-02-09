@@ -1,60 +1,10 @@
-<os-head-bar [hasMainButton]="canEdit" (mainEvent)="createNewChatGroup()">
+<os-head-bar [hasMainButton]="canManage" (mainEvent)="createNewChatGroup()">
     <!-- Title -->
     <div class="title-slot">
-        <h2>{{ 'Chat groups' | translate }}</h2>
+        <h2>{{ 'Chat' | translate }}</h2>
     </div>
 </os-head-bar>
 
-<div *ngFor="let chatGroup of chatGroups">
-    <a [routerLink]="'./' + chatGroup.id">{{ chatGroup.name }}</a><br/>
-    {{ chatGroup.access_groups.length ? chatGroup.access_groups : 'No access groups, public to all' }}<br/>
-    <button type="button" *osPerms="'chat.can_manage'" mat-icon-button (click)="edit(chatGroup)">
-        <mat-icon>create</mat-icon>
-    </button>
-    <div *ngIf="amountNotification(chatGroup)>0">{{ amountNotification(chatGroup) }} NEW MESSAGES</div>
-    <hr />
-</div>
-
-<!-- edit/update dialog -->
-<ng-template #createUpdateDialog>
-    <h1 *ngIf="isCreateMode" mat-dialog-title>{{ 'Create new chat group' | translate }}</h1>
-    <h1 *ngIf="isEditMode" mat-dialog-title>{{ 'Edit details for' | translate }} {{ editModel.name }}</h1>
-    <div class="os-form-card-mobile" mat-dialog-content>
-        <form [formGroup]="createUpdateForm">
-            <mat-form-field>
-                <input
-                    type="text"
-                    matInput
-                    osAutofocus
-                    required
-                    formControlName="name"
-                    placeholder="{{ 'Name' | translate }}"
-                />
-                <mat-error *ngIf="createUpdateForm.invalid">{{ 'Required' | translate }}</mat-error>
-            </mat-form-field>
-
-            <mat-form-field>
-                <os-search-value-selector
-                    formControlName="access_groups_id"
-                    [multiple]="true"
-                    placeholder="{{ 'Access groups' | translate }}"
-                    [inputListValues]="groupsBehaviorSubject"
-                ></os-search-value-selector>
-            </mat-form-field>
-        </form>
-    </div>
-    <div mat-dialog-actions>
-        <button
-            type="submit"
-            mat-button
-            [disabled]="!createUpdateForm.valid"
-            [mat-dialog-close]="true"
-            color="accent"
-        >
-            <span>{{ 'Save' | translate }}</span>
-        </button>
-        <button type="button" mat-button [mat-dialog-close]="false">
-            <span>{{ 'Cancel' | translate }}</span>
-        </button>
-    </div>
-</ng-template>
+<mat-card class="os-card spacer-bottom-340">
+    <os-chat-tabs></os-chat-tabs>
+</mat-card>

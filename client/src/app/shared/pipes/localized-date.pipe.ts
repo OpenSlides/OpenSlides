@@ -5,6 +5,7 @@ import * as moment from 'moment';
 
 /**
  * pipe to convert and translate dates
+ * requires a "date"object
  */
 @Pipe({
     name: 'localizedDate',
@@ -13,13 +14,13 @@ import * as moment from 'moment';
 export class LocalizedDatePipe implements PipeTransform {
     public constructor(private translate: TranslateService) {}
 
-    public transform(value: any, dateFormat: string = 'lll'): any {
+    public transform(date: Date, dateFormat: string = 'lll'): any {
         const lang = this.translate.currentLang ? this.translate.currentLang : this.translate.defaultLang;
-        if (!value) {
+        if (!date) {
             return '';
         }
         moment.locale(lang);
-        const dateLocale = moment.unix(value).local();
+        const dateLocale = moment.unix(date.getTime() / 1000).local();
         return dateLocale.format(dateFormat);
     }
 }

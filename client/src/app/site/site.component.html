@@ -48,10 +48,16 @@
                 routerLink="/chat"
                 routerLinkActive="active"
             >
-                <mat-icon *ngIf="chatNotificationAmount <= 0">chat</mat-icon>
-                <mat-icon *ngIf="chatNotificationAmount > 0" class="unread-chat">notification_important</mat-icon>
-                <span>{{ 'Chat' | translate }}</span>
-                <span *ngIf="chatNotificationAmount > 0">({{ chatNotificationAmount }})</span>
+                <mat-icon
+                    [matBadgeHidden]="chatNotificationAmount === 0"
+                    [matBadge]="chatNotificationAmount"
+                    matBadgeColor="accent"
+                    matBadgeOverlap="false"
+                    >chat</mat-icon
+                >
+                <span>
+                    {{ 'Chat' | translate }}
+                </span>
             </a>
             <a
                 [@navItemAnim]

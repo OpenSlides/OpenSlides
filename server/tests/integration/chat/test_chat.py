@@ -26,7 +26,10 @@ def test_motion_db_queries():
 
         for i2 in range(10):
             ChatMessage.objects.create(
-                text=f"text-{i1}-{i2}", username=f"user-{i1}-{i2}", chatgroup=chatgroup
+                text=f"text-{i1}-{i2}",
+                username=f"user-{i1}-{i2}",
+                user_id=i1 * 1000 + i2,
+                chatgroup=chatgroup,
             )
 
     assert count_queries(ChatGroup.get_elements)() == 2

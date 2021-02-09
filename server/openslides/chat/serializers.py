@@ -45,9 +45,13 @@ class ChatMessageSerializer(ModelSerializer):
             "chatgroup",
             "timestamp",
             "username",
+            "user_id",
             "access_groups_id",
         )
-        read_only_fields = ("username",)
+        read_only_fields = (
+            "username",
+            "user_id",
+        )
 
     def validate(self, data):
         if "text" in data:

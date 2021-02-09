@@ -78,6 +78,7 @@ class ChatMessage(RESTModelMixin, models.Model):
         ChatGroup, on_delete=CASCADE_AND_AUTOUPDATE, related_name="messages"
     )
     username = models.CharField(max_length=256)
+    user_id = models.IntegerField()
 
     class Meta:
         default_permissions = ()

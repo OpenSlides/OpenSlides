@@ -1,10 +1,16 @@
 from django.conf import settings
+from django.contrib.auth.models import AnonymousUser
 from rest_framework.utils.serializer_helpers import ReturnDict
 
 from openslides.utils.auth import has_perm
-from openslides.utils.autoupdate import inform_changed_data, inform_deleted_data
+from openslides.utils.autoupdate import (
+    disable_history,
+    inform_changed_data,
+    inform_deleted_data,
+)
 from openslides.utils.rest_api import (
     CreateModelMixin,
+    DestroyModelMixin,
     GenericViewSet,
     ListModelMixin,
     ModelViewSet,
@@ -64,7 +70,11 @@ class ChatGroupViewSet(ModelViewSet):
 
 
 class ChatMessageViewSet(
-    ListModelMixin, RetrieveModelMixin, CreateModelMixin, GenericViewSet
+    ListModelMixin,
+    RetrieveModelMixin,
+    CreateModelMixin,
+    DestroyModelMixin,
+    GenericViewSet,
 ):
     """
     API endpoint for chat groups.
@@ -76,7 +86,8 @@ class ChatMessageViewSet(
     queryset = ChatMessage.objects.all()
 
     def check_view_permissions(self):
-        return ENABLE_CHAT
+        # The permissions are checked in the view.
+        return ENABLE_CHAT and not isinstance(self.request.user, AnonymousUser)
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -89,6 +100,7 @@ class ChatMessageViewSet(
         validated_data = {
             **serializer.validated_data,
             "username": self.request.user.short_name(),
+            "user_id": self.request.user.id,
         }
         chatmessage = ChatMessage(**validated_data)
         chatmessage.save(disable_history=True)
@@ -97,3 +109,14 @@ class ChatMessageViewSet(
             ReturnDict(id=chatmessage.id, serializer=serializer),
             status=status.HTTP_201_CREATED,
         )
+
+    def destroy(self, request, *args, **kwargs):
+        if (
+            not has_perm(self.request.user, "chat.can_manage")
+            and self.get_object().user_id != self.request.user.id
+        ):
+            self.permission_denied(request)
+
+        disable_history()
+
+        return super().destroy(request, *args, **kwargs)

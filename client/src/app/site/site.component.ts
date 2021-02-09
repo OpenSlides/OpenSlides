@@ -11,10 +11,10 @@ import { filter } from 'rxjs/operators';
 
 import { navItemAnim } from '../shared/animations';
 import { OfflineBroadcastService } from 'app/core/core-services/offline-broadcast.service';
-import { ChatNotificationService } from 'app/core/ui-services/chat-notification.service';
-import { ChatService } from 'app/core/ui-services/chat.service';
 import { OverlayService } from 'app/core/ui-services/overlay.service';
 import { UpdateService } from 'app/core/ui-services/update.service';
+import { ChatNotificationService } from 'app/site/chat/services/chat-notification.service';
+import { ChatService } from 'app/site/chat/services/chat.service';
 import { BaseComponent } from '../base.component';
 import { MainMenuEntry, MainMenuService } from '../core/core-services/main-menu.service';
 import { OpenSlidesStatusService } from '../core/core-services/openslides-status.service';

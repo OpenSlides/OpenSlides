@@ -3,8 +3,8 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 import { ViewChatMessage } from 'app/site/chat/models/view-chat-message';
-import { ChatMessageRepositoryService } from '../repositories/chat/chat-message-repository.service';
-import { StorageService } from '../core-services/storage.service';
+import { ChatMessageRepositoryService } from '../../../core/repositories/chat/chat-message-repository.service';
+import { StorageService } from '../../../core/core-services/storage.service';
 
 interface LastMessageTimestampsSeen {
     [chatgroupId: number]: Date;
