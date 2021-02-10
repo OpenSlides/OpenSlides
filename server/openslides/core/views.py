@@ -134,10 +134,17 @@ class ProjectorViewSet(ModelViewSet):
             "control_view",
             "set_scroll",
             "set_reference_projector",
-            "project",
+            # "project",
         ):
             result = has_perm(self.request.user, "core.can_see_projector") and has_perm(
                 self.request.user, "core.can_manage_projector"
+            )
+        elif self.action in ("project"):
+            result = has_perm(self.request.user, "core.can_see_projector") and (
+                has_perm(self.request.user, "core.can_manage_projector")
+                or in_some_groups(
+                    self.request.user, [config["agenda_point_of_order_groups"]]
+                )
             )
         else:
             result = False
@@ -536,7 +543,13 @@ class ProjectorMessageViewSet(ModelViewSet):
         """
         if self.action in ("list", "retrieve"):
             result = self.get_access_permissions().check_permissions(self.request.user)
-        elif self.action in ("create", "partial_update", "update", "destroy"):
+        elif self.action in ("create", "destroy"):
+            result = has_perm(
+                self.request.user, "core.can_manage_projector"
+            ) or in_some_groups(
+                self.request.user, [config["agenda_point_of_order_groups"]]
+            )
+        elif self.action in ("partial_update", "update"):
             result = has_perm(self.request.user, "core.can_manage_projector")
         else:
             result = False
