@@ -447,34 +447,7 @@ class SpeakerManager(models.Manager):
         if config["agenda_present_speakers_only"] and not user.is_present:
             raise OpenSlidesError("Only present users can be on the lists of speakers.")
 
-        if point_of_order:
-            # the new point of order speaker (poos) must be inserted between
-            # the last poos and the first regular waiting speaker
-            weight = self.filter(
-                list_of_speakers=list_of_speakers, point_of_order=True
-            ).aggregate(models.Max("weight"))["weight__max"]
-            if weight is None:
-                # noo poos, take the min - 1
-                weight = (
-                    self.filter(
-                        list_of_speakers=list_of_speakers, point_of_order=True
-                    ).aggregate(models.Min("weight"))["weight__min"]
-                    or 1
-                ) - 1
-            else:
-                weight += 1
-                # we have to add +1 to every weight of non-poo speakers.
-                self.filter(
-                    list_of_speakers=list_of_speakers, point_of_order=False
-                ).update(weight=F("weight") + 1)
-
-        else:
-            weight = (
-                self.filter(list_of_speakers=list_of_speakers).aggregate(
-                    models.Max("weight")
-                )["weight__max"]
-                or 0
-            ) + 1
+        weight = self._get_new_speaker_weight(list_of_speakers, point_of_order)
 
         speaker = self.model(
             list_of_speakers=list_of_speakers,
@@ -488,6 +461,59 @@ class SpeakerManager(models.Manager):
             no_delete_on_restriction=True,
         )
         return speaker
+
+    def _get_new_speaker_weight(self, list_of_speakers, point_of_order):
+        """
+        Calculates the weight of a newly to create speaker
+
+        - if there are no speakers, it will be 1
+        - non-poo speakers get max_weight + 1
+        - poo speakers:
+          * if the first waiting speaker is no poo speaker, insert it before it (min_weight-1)
+          * else: insert it before the first non-poo speaker. All other speakers must get a weight+1 update
+
+        Note that this method has side-effects: It might change the weight of other speakers to make
+        space for the new point of order speaker.
+        """
+        if point_of_order:
+            # get the first waiting speaker
+            first_speaker = self.filter(begin_time=None).order_by("weight").first()
+
+            if first_speaker is None:
+                return 1
+            if not first_speaker.point_of_order:
+                return first_speaker.weight - 1
+
+            # get the first non-poo speaker
+            first_non_poo_speaker = (
+                self.filter(begin_time=None, point_of_order=False)
+                .order_by("weight")
+                .first()
+            )
+
+            if first_non_poo_speaker is None:
+                # max weight + 1, the speaker is last since there are no non-poo speakers
+                return (
+                    self.filter(
+                        list_of_speakers=list_of_speakers, begin_time=None
+                    ).aggregate(models.Max("weight"))["weight__max"]
+                    + 1
+                )
+
+            weight = first_non_poo_speaker.weight
+            # add +1 to all speakers with weight >= first_non_poo_speaker.weight
+            self.filter(
+                list_of_speakers=list_of_speakers, begin_time=None, weight__gte=weight
+            ).update(weight=F("weight") + 1)
+
+            return weight
+        else:
+            return (
+                self.filter(list_of_speakers=list_of_speakers).aggregate(
+                    models.Max("weight")
+                )["weight__max"]
+                or 0
+            ) + 1
 
 
 class Speaker(RESTModelMixin, models.Model):
