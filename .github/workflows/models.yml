@@ -1,7 +1,9 @@
 name: Validate models.yml
 on: [push, pull_request]
+env:
+  PYTHON_VERSION: 3.8.5
 jobs:
-  validate:
+  validate-models:
     name: Validate models.yml
     runs-on: ubuntu-latest
     steps:
@@ -21,3 +23,23 @@ jobs:
 
     - name: Validate models.yml
       run: docs/modelsvalidator/modelsvalidator docs/models.yml
+
+  validate-data:
+    name: Validate example-data.json and initial-data.json
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Install requirements
+      working-directory: docs/datavalidator
+      run: pip install -U -r requirements.txt
+
+    - name: Validate
+      working-directory: docs/datavalidator
+      run: python check_json.py
