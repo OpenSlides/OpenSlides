@@ -53,6 +53,8 @@ services:
     env_file: services.env
     volumes:
       - ../openslides-backend/openslides_backend:/app/openslides_backend
+    ports:
+      - 5678:5678
   autoupdate:
     image: openslides-autoupdate-dev
     depends_on:
