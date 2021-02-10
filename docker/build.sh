@@ -19,7 +19,7 @@ DOCKER_TAG="latest"
 CONFIG="/etc/osinstancectl"
 OPTIONS=()
 BUILT_IMAGES=()
-DEFAULT_TARGETS=(server client haproxy autoupdate)
+DEFAULT_TARGETS=(server client proxy autoupdate)
 
 usage() {
   cat << EOF
