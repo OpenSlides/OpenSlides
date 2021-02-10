@@ -46,7 +46,7 @@ services:
     image: redis:latest
 
   proxy:
-    image: caddy:2.3.0-alpine
+    image: os3-proxy-dev
     volumes:
       - ../caddy/Caddyfile.dev:/etc/caddy/Caddyfile
     depends_on:
