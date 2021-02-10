@@ -180,6 +180,44 @@ def get_config_variables():
     )
 
     yield ConfigVariable(
+        name="agenda_point_of_order_groups",
+        default_value=[],
+        input_type="groups",
+        label="Default groups with rights to request points of order",
+        weight=229,
+        group="Agenda",
+        subgroup="List of speakers",
+    )
+
+    yield ConfigVariable(
+        name="agenda_point_of_order_requests",
+        default_value='["Sofortige Abstimmung","Begrenzung der Redezeit","..."]',
+        label="Point of order requests in the format of a JSON-Array",
+        weight=229,
+        group="Agenda",
+        subgroup="List of speakers",
+    )
+
+    yield ConfigVariable(
+        name="agenda_point_of_orders_project",
+        default_value=False,
+        input_type="boolean",
+        label="Project point of order as message to projector",
+        weight=229,
+        group="Agenda",
+        subgroup="List of speakers",
+    )
+
+    yield ConfigVariable(
+        name="agenda_point_of_order_projectors",
+        default_value="[1]",
+        label="Projectors to project point of orders to in the format of a JSON-Array",
+        weight=229,
+        group="Agenda",
+        subgroup="List of speakers",
+    )
+
+    yield ConfigVariable(
         name="agenda_hide_amount_of_speakers",
         default_value=False,
         input_type="boolean",
