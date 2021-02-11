@@ -242,6 +242,9 @@ msgstr ""
 msgid "Are you sure you want to anonymize all votes? This cannot be undone."
 msgstr ""
 
+msgid "Are you sure you want to clear all messages in this chat?"
+msgstr ""
+
 msgid "Are you sure you want to clear all speakers of all lists?"
 msgstr ""
 
@@ -269,6 +272,9 @@ msgstr ""
 msgid "Are you sure you want to delete this change recommendation?"
 msgstr ""
 
+msgid "Are you sure you want to delete this chat group?"
+msgstr ""
+
 msgid "Are you sure you want to delete this comment field?"
 msgstr ""
 
@@ -282,6 +288,9 @@ msgid "Are you sure you want to delete this file?"
 msgstr ""
 
 msgid "Are you sure you want to delete this group?"
+msgstr ""
+
+msgid "Are you sure you want to delete this message?"
 msgstr ""
 
 msgid "Are you sure you want to delete this motion block?"
@@ -454,6 +463,9 @@ msgstr ""
 msgid "Can manage agenda"
 msgstr ""
 
+msgid "Can manage chat"
+msgstr ""
+
 msgid "Can manage comments"
 msgstr ""
 
@@ -616,6 +628,9 @@ msgstr ""
 msgid "Changes"
 msgstr ""
 
+msgid "Chat"
+msgstr ""
+
 msgid "Check for updates"
 msgstr ""
 
@@ -632,6 +647,9 @@ msgid "Chyron background color"
 msgstr ""
 
 msgid "Chyron font color"
+msgstr ""
+
+msgid "Clear"
 msgstr ""
 
 msgid "Clear all"
@@ -743,6 +761,9 @@ msgid "Create"
 msgstr ""
 
 msgid "Create final print template"
+msgstr ""
+
+msgid "Create new chat group"
 msgstr ""
 
 msgid "Create user"
@@ -1774,6 +1795,9 @@ msgstr ""
 msgid "No changes at the text."
 msgstr ""
 
+msgid "No chat groups available"
+msgstr ""
+
 msgid "No comment"
 msgstr ""
 
@@ -2406,6 +2430,9 @@ msgid "Select or search new submitter ..."
 msgstr ""
 
 msgid "Select paragraphs"
+msgstr ""
+
+msgid "Send"
 msgstr ""
 
 msgid "Send invitation email"

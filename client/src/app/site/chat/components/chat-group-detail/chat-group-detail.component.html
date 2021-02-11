@@ -28,17 +28,17 @@
     <ng-container *osPerms="permission.chatCanManage">
         <button mat-menu-item (click)="editChat()">
             <mat-icon>edit</mat-icon>
-            <span>{{ 'Edit chat' | translate }}</span>
+            <span>{{ 'Edit' | translate }}</span>
         </button>
         <!-- clear history -->
         <button mat-menu-item (click)="clearChat()" class="red-warning-text">
             <mat-icon>format_clear</mat-icon>
-            <span>{{ 'Clear chat' | translate }}</span>
+            <span>{{ 'Clear' | translate }}</span>
         </button>
         <!-- delete -->
         <button mat-menu-item (click)="deleteChatGroup()" class="red-warning-text">
             <mat-icon>delete</mat-icon>
-            <span>{{ 'Delete chat' | translate }}</span>
+            <span>{{ 'Delete' | translate }}</span>
         </button>
     </ng-container>
     <!-- edit -->
