@@ -40,6 +40,10 @@ const routes: Route[] = [
                 data: { basePerm: Permission.mediafilesCanSee }
             },
             {
+                path: 'chat',
+                loadChildren: () => import('./chat/chat.module').then(m => m.ChatModule)
+            },
+            {
                 path: 'motions',
                 loadChildren: () => import('./motions/motions.module').then(m => m.MotionsModule),
                 data: { basePerm: Permission.motionsCanSee }

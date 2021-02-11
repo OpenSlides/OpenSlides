@@ -5,6 +5,9 @@ from django.contrib.auth.signals import user_logged_in
 from .user_backend import DefaultUserBackend, user_backend_manager
 
 
+ENABLE_CHAT = getattr(settings, "ENABLE_CHAT", False)
+
+
 class UsersAppConfig(AppConfig):
     name = "openslides.users"
     verbose_name = "OpenSlides Users"
@@ -60,6 +63,8 @@ class UsersAppConfig(AppConfig):
         # Permissions
         permissions = []
         for permission in Permission.objects.all():
+            if permission.content_type.app_label == "chat" and not ENABLE_CHAT:
+                continue
             permissions.append(
                 {
                     "display_name": permission.name,

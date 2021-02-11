@@ -1,0 +1,53 @@
+<h1 mat-dialog-title>
+    <span *ngIf="createMode">
+        {{ 'Create new chat group' | translate }}
+    </span>
+
+    <span *ngIf="!createMode"> {{ 'Edit details for' | translate }} {{ previousChatGroupName }} </span>
+</h1>
+
+<form [formGroup]="createUpdateForm">
+    <div class="os-form-card-mobile" mat-dialog-content>
+        <!-- Name -->
+        <mat-form-field>
+            <input
+                type="text"
+                matInput
+                osAutofocus
+                required
+                formControlName="name"
+                placeholder="{{ 'Name' | translate }}"
+            />
+            <mat-error *ngIf="createUpdateForm.invalid">{{ 'Required' | translate }}</mat-error>
+        </mat-form-field>
+
+        <!-- Groups -->
+        <mat-form-field>
+            <os-search-value-selector
+                formControlName="access_groups_id"
+                [multiple]="true"
+                placeholder="{{ 'Access groups' | translate }}"
+                [inputListValues]="groupsBehaviorSubject"
+            ></os-search-value-selector>
+        </mat-form-field>
+    </div>
+
+    <div mat-dialog-actions>
+        <!-- save  -->
+        <button
+            type="submit"
+            color="accent"
+            mat-button
+            [disabled]="createUpdateForm.invalid"
+            [mat-dialog-close]="createUpdateForm.value"
+            color="accent"
+        >
+            <span>{{ 'Save' | translate }}</span>
+        </button>
+
+        <!-- cancel -->
+        <button type="button" mat-button [mat-dialog-close]="false">
+            <span>{{ 'Cancel' | translate }}</span>
+        </button>
+    </div>
+</form>

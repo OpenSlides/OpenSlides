@@ -3,6 +3,7 @@ import { Injectable, Injector } from '@angular/core';
 import { AgendaAppConfig } from '../../site/agenda/agenda.config';
 import { AppConfig, ModelEntry, SearchableModelEntry } from '../definitions/app-config';
 import { BaseRepository } from 'app/core/repositories/base-repository';
+import { ChatAppConfig } from 'app/site/chat/chat.config';
 import { CinemaAppConfig } from 'app/site/cinema/cinema.config';
 import { HistoryAppConfig } from 'app/site/history/history.config';
 import { ProjectorAppConfig } from 'app/site/projector/projector.config';
@@ -37,7 +38,8 @@ const appConfigs: AppConfig[] = [
     HistoryAppConfig,
     ProjectorAppConfig,
     TopicsAppConfig,
-    CinemaAppConfig
+    CinemaAppConfig,
+    ChatAppConfig
 ];
 
 /**

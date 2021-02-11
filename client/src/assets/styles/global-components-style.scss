@@ -173,8 +173,23 @@
         background-color: rgba(0, 0, 0, 0.025);
     }
 
-    .pbl-ngrid-header-row, .pbl-ngrid-row {
+    .pbl-ngrid-header-row,
+    .pbl-ngrid-row {
         align-items: stretch;
+    }
+
+    /**
+     * CLEANUP:
+     * whole themes can be replaced using classes like this one
+     */
+    .background-primary {
+        background: mat-color($primary);
+        color: mat-color($primary, default-contrast) !important;
+    }
+
+    .background-primary-darkest {
+        background: mat-color($primary, 900);
+        color: mat-color($primary, default-contrast) !important;
     }
 
     .primary-foreground {

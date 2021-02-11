@@ -65,6 +65,7 @@ def create_builtin_groups_and_admin(**kwargs):
         "users.can_manage",
         "users.can_see_extra_data",
         "users.can_see_name",
+        "chat.can_manage",
     )
     permission_query = Q()
     permission_dict = {}

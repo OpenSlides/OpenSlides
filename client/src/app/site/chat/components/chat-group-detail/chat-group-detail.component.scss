@@ -1,0 +1,21 @@
+.chat-header {
+    display: flex;
+    justify-content: space-between;
+
+    .chat-options {
+        margin-left: auto;
+    }
+}
+
+.chat-list-wrapper {
+    min-height: 300px;
+    height: 50vh;
+
+    .chat-message-list {
+        height: 100%;
+    }
+}
+
+.chat-message {
+    height: auto;
+}

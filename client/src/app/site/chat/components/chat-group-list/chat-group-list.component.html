@@ -1,0 +1,10 @@
+<os-head-bar [hasMainButton]="canManage" (mainEvent)="createNewChatGroup()">
+    <!-- Title -->
+    <div class="title-slot">
+        <h2>{{ 'Chat' | translate }}</h2>
+    </div>
+</os-head-bar>
+
+<mat-card class="os-card spacer-bottom-340">
+    <os-chat-tabs></os-chat-tabs>
+</mat-card>

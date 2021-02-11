@@ -65,6 +65,13 @@ To enable it, set::
 
     ENABLE_ELECTRONIC_VOTING = True
 
+Chat
+=================
+
+Is disabled by default. Enable the chatting feature::
+
+    ENABLE_CHAT = True
+
 
 Jitsi integration
 =================

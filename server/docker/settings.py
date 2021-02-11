@@ -125,6 +125,9 @@ if ENABLE_SAML:
 # Controls if electronic voting (means non-analog polls) are enabled.
 ENABLE_ELECTRONIC_VOTING = get_env("ENABLE_ELECTRONIC_VOTING", False, bool)
 
+# Enable Chat
+ENABLE_CHAT = get_env("ENABLE_CHAT", False, bool)
+
 # Jitsi integration
 JITSI_DOMAIN = get_env("JITSI_DOMAIN", None)
 JITSI_ROOM_NAME = get_env("JITSI_ROOM_NAME", None)

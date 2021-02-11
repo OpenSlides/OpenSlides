@@ -1,0 +1,45 @@
+<div class="chat-header" *osPerms="permission.chatCanManage">
+    <os-icon-container
+        icon="group"
+        *ngIf="chatGroup.access_groups.length"
+        matTooltip="{{ 'Access groups' | translate }}"
+    >
+        <span *ngFor="let group of chatGroup.access_groups | slice: 0:3; let last = last">
+            <span>{{ group.getTitle() | translate }}</span>
+            <span *ngIf="!last">, </span>
+            <span *ngIf="last && chatGroup.access_groups.length > 3">...</span>
+        </span>
+    </os-icon-container>
+    <button class="chat-options" mat-icon-button [matMenuTriggerFor]="chatgroupMenu">
+        <mat-icon> more_vert </mat-icon>
+    </button>
+</div>
+
+<div class="chat-list-wrapper">
+    <cdk-virtual-scroll-viewport class="chat-message-list" itemSize="70">
+        <div *cdkVirtualFor="let message of chatMessages" class="chat-message">
+            <os-chat-message [message]="message" (deleteEvent)="deleteChatMessage(message)"></os-chat-message>
+        </div>
+    </cdk-virtual-scroll-viewport>
+</div>
+
+<!-- The menu content -->
+<mat-menu #chatgroupMenu="matMenu">
+    <ng-container *osPerms="permission.chatCanManage">
+        <button mat-menu-item (click)="editChat()">
+            <mat-icon>edit</mat-icon>
+            <span>{{ 'Edit chat' | translate }}</span>
+        </button>
+        <!-- clear history -->
+        <button mat-menu-item (click)="clearChat()" class="red-warning-text">
+            <mat-icon>format_clear</mat-icon>
+            <span>{{ 'Clear chat' | translate }}</span>
+        </button>
+        <!-- delete -->
+        <button mat-menu-item (click)="deleteChatGroup()" class="red-warning-text">
+            <mat-icon>delete</mat-icon>
+            <span>{{ 'Delete chat' | translate }}</span>
+        </button>
+    </ng-container>
+    <!-- edit -->
+</mat-menu>

@@ -42,6 +42,25 @@
             <mat-divider></mat-divider>
             <a
                 [@navItemAnim]
+                *ngIf="canSeeChat"
+                mat-list-item
+                (click)="mobileAutoCloseNav()"
+                routerLink="/chat"
+                routerLinkActive="active"
+            >
+                <mat-icon
+                    [matBadgeHidden]="chatNotificationAmount === 0"
+                    [matBadge]="chatNotificationAmount"
+                    matBadgeColor="accent"
+                    matBadgeOverlap="false"
+                    >chat</mat-icon
+                >
+                <span>
+                    {{ 'Chat' | translate }}
+                </span>
+            </a>
+            <a
+                [@navItemAnim]
                 mat-list-item
                 routerLink="/legalnotice"
                 routerLinkActive="active"
