@@ -82,3 +82,7 @@ docker/docker-compose.yml
 *.pem
 # secrets
 docker/secrets/*.env
+
+# performance folder
+performance/**/secrets
+performance/autoupdate-clients/autoupdate-clients
