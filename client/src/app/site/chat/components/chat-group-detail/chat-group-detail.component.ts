@@ -132,7 +132,7 @@ export class ChatGroupDetailComponent extends BaseViewComponentDirective impleme
     }
 
     public async clearChat(): Promise<void> {
-        const title = this.translate.instant('Are you sure you want to clear this chats history?');
+        const title = this.translate.instant('Are you sure you want to clear all messages in this chat?');
         if (await this.promptService.open(title)) {
             await this.repo.clearMessages(this.chatGroup).catch(this.raiseError);
             this.cd.markForCheck();
@@ -140,8 +140,9 @@ export class ChatGroupDetailComponent extends BaseViewComponentDirective impleme
     }
 
     public async deleteChatGroup(): Promise<void> {
-        const title = this.translate.instant('Are you sure you want to delete this chat?');
-        if (await this.promptService.open(title)) {
+        const title = this.translate.instant('Are you sure you want to delete this chat group?');
+        const content = this.chatGroup.name;
+        if (await this.promptService.open(title, content)) {
             await this.repo.delete(this.chatGroup).catch(this.raiseError);
             this.cd.markForCheck();
         }
