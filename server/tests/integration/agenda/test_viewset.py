@@ -373,7 +373,7 @@ class ManageSpeaker(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Speaker.objects.all().count(), 1)
         self.assertTrue(Speaker.objects.get().point_of_order)
-        self.assertEqual(Speaker.objects.get().weight, 0)
+        self.assertEqual(Speaker.objects.get().weight, 1)
 
     def test_point_of_order_not_enabled(self):
         self.assertEqual(Speaker.objects.all().count(), 0)
@@ -409,6 +409,18 @@ class ManageSpeaker(TestCase):
         self.assertEqual(Speaker.objects.filter(user=self.admin).count(), 2)
 
     def test_point_of_order_two_poo_speakers(self):
+        """
+        before (poo):
+            - user (y)
+            - user2 (n)
+            - user3 (n)
+
+        after adding admin as poo speaker:
+            - user (y)
+            - admin (y)
+            - user2 (n)
+            - user3 (n)
+        """
         config["agenda_enable_point_of_order_speakers"] = True
         # user 2 and user3 are non-poo speakers
         self.user2, _ = self.create_user()
@@ -419,6 +431,92 @@ class ManageSpeaker(TestCase):
         self.assertEqual(Speaker.objects.get(user=self.user).weight, 0)
         self.assertEqual(Speaker.objects.get(user=self.user2).weight, 1)
         self.assertEqual(Speaker.objects.get(user=self.user3).weight, 2)
+        response = self.client.post(
+            reverse("listofspeakers-manage-speaker", args=[self.list_of_speakers.pk]),
+            {"point_of_order": True},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Speaker.objects.all().count(), 4)
+        self.assertEqual(Speaker.objects.get(user=self.user).weight, 0)
+        self.assertEqual(Speaker.objects.get(user=self.admin).weight, 1)
+        self.assertEqual(Speaker.objects.get(user=self.user2).weight, 2)
+        self.assertEqual(Speaker.objects.get(user=self.user3).weight, 3)
+
+    def test_point_of_order_two_poo_speakers_different_ordering(self):
+        """
+        before (poo):
+            - user (n)
+            - user2 (y)
+            - user3 (n)
+
+        after adding admin as poo speaker (no weight modifications of other speakers!)
+            - admin (y)
+            - user (n)
+            - user2 (y)
+            - user3 (n)
+        """
+        config["agenda_enable_point_of_order_speakers"] = True
+        # user 2 and user3 are non-poo speakers
+        self.user2, _ = self.create_user()
+        self.user3, _ = self.create_user()
+        s_user = Speaker.objects.add(self.user, self.list_of_speakers)
+        s_user2 = Speaker.objects.add(
+            self.user2, self.list_of_speakers, point_of_order=True
+        )
+        s_user3 = Speaker.objects.add(self.user3, self.list_of_speakers)
+
+        # set different ordering
+        s_user.weight = 0
+        s_user.save()
+        s_user2.weight = 1
+        s_user2.save()
+        s_user3.weight = 2
+        s_user3.save()
+
+        response = self.client.post(
+            reverse("listofspeakers-manage-speaker", args=[self.list_of_speakers.pk]),
+            {"point_of_order": True},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Speaker.objects.all().count(), 4)
+        self.assertEqual(Speaker.objects.get(user=self.admin).weight, -1)
+        self.assertEqual(Speaker.objects.get(user=self.user).weight, 0)
+        self.assertEqual(Speaker.objects.get(user=self.user2).weight, 1)
+        self.assertEqual(Speaker.objects.get(user=self.user3).weight, 2)
+
+    def test_point_of_order_three_poo_speakers(self):
+        """
+        before (poo):
+            - user (y)
+            - user2 (n)
+            - user3 (y)
+
+        after adding admin as poo speaker (there are weight modifications of other speakers!)
+            - user (y)
+            - admin (y)
+            - user2 (n)
+            - user3 (y)
+        """
+        config["agenda_enable_point_of_order_speakers"] = True
+        # user 2 and user3 are non-poo speakers
+        self.user2, _ = self.create_user()
+        self.user3, _ = self.create_user()
+        s_user = Speaker.objects.add(
+            self.user, self.list_of_speakers, point_of_order=True
+        )
+        s_user2 = Speaker.objects.add(self.user2, self.list_of_speakers)
+        s_user3 = Speaker.objects.add(
+            self.user3, self.list_of_speakers, point_of_order=True
+        )
+
+        # set different ordering
+        s_user.weight = 0
+        s_user.save()
+        s_user2.weight = 1
+        s_user2.save()
+        s_user3.weight = 2
+        s_user3.save()
+
         response = self.client.post(
             reverse("listofspeakers-manage-speaker", args=[self.list_of_speakers.pk]),
             {"point_of_order": True},
