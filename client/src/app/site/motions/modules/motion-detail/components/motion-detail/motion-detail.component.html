@@ -537,9 +537,7 @@
                     type="button"
                     mat-button
                     [matMenuTriggerFor]="changeRecoMenu"
-                    *ngIf="
-                        motion && (hasChangingObjects() || motion.modified_final_version)
-                    "
+                    *ngIf="motion && (hasChangingObjects() || motion.modified_final_version)"
                 >
                     <mat-icon>rate_review</mat-icon>
                     &nbsp;<span>{{ verboseChangeRecoMode[crMode] | translate }}</span>
@@ -670,7 +668,9 @@
         </div>
 
         <!-- Text (hide preamble, if diff mode. The preample is included in the motion-detail-diff component) -->
-        <span *ngIf="showPreamble && !isRecoMode(ChangeRecoMode.Diff)" class="text-prefix-label">{{ preamble | translate }}</span>
+        <span *ngIf="showPreamble && !isRecoMode(ChangeRecoMode.Diff)" class="text-prefix-label">{{
+            preamble | translate
+        }}</span>
 
         <!-- Regular motions or traditional amendments -->
         <ng-container *ngIf="!editMotion && !motion.isStatuteAmendment() && !motion.isParagraphBasedAmendment()">
@@ -902,7 +902,7 @@
             </div>
             <ng-container *ngIf="motion.parent && !isRecoMode(ChangeRecoMode.Diff) && !isFinalEdit">
                 <div
-                    *ngFor="let paragraph of getAmendmentParagraphs()"
+                    *ngFor="let paragraph of getAmendmentParagraphs(); trackBy: trackByIndex"
                     class="motion-text motion-text-diff amendment-view"
                     [class.line-numbers-none]="isLineNumberingNone()"
                     [class.line-numbers-inline]="isLineNumberingInline()"
