@@ -3,27 +3,27 @@ import { Injectable } from '@angular/core';
 import { LoginDataService } from './login-data.service';
 
 /**
+ * Constant, that describes the default theme class.
+ */
+export const OS_DEFAULT_THEME = 'openslides-default-light-theme';
+
+/**
+ * Constant path of the logo with dark colors for bright themes.
+ */
+export const OS_DEFAULT_LOGO = '/assets/img/openslides-logo.svg';
+
+/**
+ * Constant path of the logo with white colors for dark themes.
+ */
+export const OS_DEFAULT_LOGO_DARK_THEME = '/assets/img/openslides-logo-dark.svg';
+
+/**
  * Service to set the theme for OpenSlides.
  */
 @Injectable({
     providedIn: 'root'
 })
 export class ThemeService {
-    /**
-     * Constant, that describes the default theme class.
-     */
-    public static DEFAULT_THEME = 'openslides-default-light-theme';
-
-    /**
-     * Constant path of the logo with dark colors for bright themes.
-     */
-    public static STANDARD_LOGO = '/assets/img/openslides-logo.svg';
-
-    /**
-     * Constant path of the logo with white colors for dark themes.
-     */
-    public static STANDARD_LOGO_DARK_THEME = '/assets/img/openslides-logo-dark.svg';
-
     /**
      * Holds the current theme as member.
      */
@@ -58,7 +58,7 @@ export class ThemeService {
         if (toRemove.length) {
             classList.remove(...toRemove); // Remove all old themes.
         }
-        classList.add(theme, ThemeService.DEFAULT_THEME); // Add the new theme.
+        classList.add(theme, OS_DEFAULT_THEME); // Add the new theme.
     }
 
     /**
@@ -70,9 +70,7 @@ export class ThemeService {
      */
     public getLogoRelativeToTheme(shouldDefault?: boolean): string {
         if (this.currentTheme) {
-            return this.currentTheme.includes('dark') && !shouldDefault
-                ? ThemeService.STANDARD_LOGO_DARK_THEME
-                : ThemeService.STANDARD_LOGO;
+            return this.currentTheme.includes('dark') && !shouldDefault ? OS_DEFAULT_LOGO_DARK_THEME : OS_DEFAULT_LOGO;
         } else {
             return null;
         }

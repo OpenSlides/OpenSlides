@@ -1,6 +1,6 @@
 {
     "name": "OpenSlides3-Client",
-    "version": "3.3.0",
+    "version": "3.4.0",
     "repository": {
         "type": "git",
         "url": "git://github.com/OpenSlides/OpenSlides.git"
@@ -32,7 +32,14 @@
         "prettify-check": "prettier --config ./.prettierrc --list-different \"src/{app,environments}/**/*{.ts,.js,.json,.css,.scss}\"",
         "prettify-write": "prettier --config ./.prettierrc --write \"src/{app,environments}/**/*{.ts,.js,.json,.css,.scss}\"",
         "cleanup": "npm run prettify-write; npm run lint-write",
-        "cleanup-win": "npm run prettify-write & npm run lint-write"
+        "cleanup-win": "npm run prettify-write & npm run lint-write",
+        "electron-create-main": "tsc -p tsconfig.electron-main.json",
+        "electron-test": "npm run electron-create-main && electron . --debug",
+        "electron-build-debug": "ng build --output-path ./dist/os3",
+        "electron-build-lin": "npm run electron-create-main && electron-builder build -l",
+        "electron-build-win": "npm run electron-create-main && electron-builder build -w",
+        "electron-build-mac": "npm run electron-create-main && electron-builder build -m",
+        "electron-build-all": "npm run electron-create-main && electron-builder build -lwm"
     },
     "dependencies": {
         "@angular/animations": "~10.0.14",
@@ -60,6 +67,7 @@
         "chart.js": "^2.9.3",
         "core-js": "^3.6.5",
         "css-element-queries": "^1.2.3",
+        "electron-updater": "^4.3.5",
         "exceljs": "4.1.1",
         "file-saver": "^2.0.2",
         "jszip": "^3.5.0",
@@ -99,6 +107,8 @@
         "@types/node": "^14.6.2",
         "@types/yargs": "^15.0.4",
         "codelyzer": "^6.0.0",
+        "electron": "^11.2.3",
+        "electron-builder": "^22.9.1",
         "husky": "^4.2.3",
         "jasmine-core": "~3.6.0",
         "jasmine-spec-reporter": "~5.0.1",
@@ -115,5 +125,6 @@
         "tslint": "~6.1.3",
         "tsutils": "3.17.1",
         "typescript": "~3.9.7"
-    }
+    },
+    "main": "electron-main.js"
 }

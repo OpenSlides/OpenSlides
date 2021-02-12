@@ -2,7 +2,9 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { BehaviorSubject } from 'rxjs';
+import { distinctUntilChanged } from 'rxjs/operators';
 
+import { AttachExternalServerService } from './attach-external-server.service';
 import { CommunicationManagerService } from './communication-manager.service';
 import { DataStoreService } from './data-store.service';
 import { Deferred } from '../promises/deferred';
@@ -47,9 +49,19 @@ export class OpenSlidesService {
         private router: Router,
         private DS: DataStoreService,
         private communicationManager: CommunicationManagerService,
-        private offlineBroadcastService: OfflineBroadcastService
+        private offlineBroadcastService: OfflineBroadcastService,
+        private externalServer: AttachExternalServerService
     ) {
         this.bootup();
+
+        /**
+         * In electron, restart OpenSlides if a new backend was set
+         */
+        if (this.externalServer.isElectronApp) {
+            this.externalServer.serverUrlObservavle.pipe(distinctUntilChanged()).subscribe(newServerUrl => {
+                this.reboot();
+            });
+        }
     }
 
     public setStable(): void {

@@ -9,6 +9,7 @@ import { ConstantsService } from '../core-services/constants.service';
 import { HttpService } from '../core-services/http.service';
 import { OpenSlidesStatusService } from '../core-services/openslides-status.service';
 import { StorageService } from '../core-services/storage.service';
+import { OS_DEFAULT_THEME } from './theme.service';
 
 interface SamlSettings {
     loginButtonText: string;
@@ -88,7 +89,7 @@ export class LoginDataService {
     /**
      * Holds the theme
      */
-    private readonly _theme = new BehaviorSubject<string>('');
+    private readonly _theme = new BehaviorSubject<string>(OS_DEFAULT_THEME);
 
     /**
      * Returns an observable for the theme

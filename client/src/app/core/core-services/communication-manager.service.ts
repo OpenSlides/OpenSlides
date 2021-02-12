@@ -3,6 +3,7 @@ import { EventEmitter, Injectable } from '@angular/core';
 
 import { Observable } from 'rxjs';
 
+import { AttachExternalServerService } from 'app/core/core-services/attach-external-server.service';
 import { HttpService } from './http.service';
 import { OfflineBroadcastService, OfflineReason } from './offline-broadcast.service';
 import { OperatorService } from './operator.service';
@@ -60,7 +61,8 @@ export class CommunicationManagerService {
         private streamingCommunicationService: StreamingCommunicationService,
         private offlineBroadcastService: OfflineBroadcastService,
         private http: HttpService,
-        private operatorService: OperatorService
+        private operatorService: OperatorService,
+        private externalServer: AttachExternalServerService
     ) {
         this.offlineBroadcastService.goOfflineObservable.subscribe(() => this.closeConnections());
     }
@@ -72,6 +74,12 @@ export class CommunicationManagerService {
     ): Promise<() => void> {
         if (!params) {
             params = () => null;
+        }
+        /**
+         * external server
+         */
+        if (this.externalServer.extUrl) {
+            url = `${this.externalServer.extUrl}${url}`;
         }
 
         const streamContainer = new StreamContainer(url, messageHandler, params);

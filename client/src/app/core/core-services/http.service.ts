@@ -4,6 +4,7 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
 
+import { AttachExternalServerService } from 'app/core/core-services/attach-external-server.service';
 import { AutoupdateFormat } from '../definitions/autoupdate-format';
 import { AutoupdateThrottleService } from './autoupdate-throttle.service';
 import { HTTPMethod } from '../definitions/http-methods';
@@ -59,7 +60,8 @@ export class HttpService {
     public constructor(
         private http: HttpClient,
         private translate: TranslateService,
-        private OSStatus: OpenSlidesStatusService
+        private OSStatus: OpenSlidesStatusService,
+        private externalServer: AttachExternalServerService
     ) {
         this.defaultHeaders = new HttpHeaders().set('Content-Type', 'application/json');
     }
@@ -103,6 +105,13 @@ export class HttpService {
         }
         if (this.OSStatus.isPrioritizedClient) {
             url = '/prioritize' + url;
+        }
+
+        /**
+         * external server
+         */
+        if (this.externalServer.extUrl) {
+            url = `${this.externalServer.extUrl}${url}`;
         }
 
         const options = {

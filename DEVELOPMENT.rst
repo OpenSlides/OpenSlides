@@ -91,3 +91,40 @@ Fix the code format and lint it with::
 To extract translations run::
 
     npm run extract
+
+Building electron applications
+------------
+
+As above, you need `node` and `npm` installed.
+Change to the client's directory. For the first time, install all dependencies::
+
+    cd client
+    npm install
+
+To test OpenSlides using electron without creating a productive build:
+
+    npm run electron-build-debug &&
+    npm run electron-test
+
+This will build the OpenSlides with debug information and mount the build into electron
+
+To create production ready electon packages, build the client in prod mode first.
+
+    npm run build
+
+Use electron builder to create a desktop application for either Windows Linux or macOS.
+Electron builder will use the production ready files from `server/openslides/static/`
+You can find the build applications under `client/dist/electron-builds`
+
+To create a windows portable ".exe"
+
+    npm run electron-build-win
+
+To create a linux portable .AppImage
+
+    npm run electron-build-lin
+
+To create a macOS (Intel) portable .dmg
+(This was not tested because we cannot sign applications for macOS)
+
+    npm run electron-build-mac

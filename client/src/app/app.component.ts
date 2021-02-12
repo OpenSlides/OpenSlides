@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { first, tap } from 'rxjs/operators';
 
+import { AttachExternalServerService } from './core/core-services/attach-external-server.service';
 import { ChatNotificationService } from './site/chat/services/chat-notification.service';
 import { ConfigService } from './core/ui-services/config.service';
 import { ConstantsService } from './core/core-services/constants.service';
@@ -87,7 +88,8 @@ export class AppComponent {
         dataStoreUpgradeService: DataStoreUpgradeService, // to start it.
         routingState: RoutingStateService,
         votingBannerService: VotingBannerService, // needed for initialisation,
-        chatNotificationService: ChatNotificationService
+        chatNotificationService: ChatNotificationService,
+        attachExternalServerService: AttachExternalServerService
     ) {
         // manually add the supported languages
         translate.addLangs(['en', 'de', 'cs', 'ru']);

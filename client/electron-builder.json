@@ -1,0 +1,41 @@
+{
+    "productName": "OpenSlides",
+    "asar": true,
+    "directories": {
+        "output": "dist/electron-builds"
+    },
+    "files": [
+        "**/*",
+        "!**/*.ts",
+        "!**/*.json",
+        "!**.*.md",
+        "!*.sh",
+        "!*.code-workspace",
+        "!.dockerignore",
+        "!.prettierrc",
+        "!docker/",
+        "!node_modules/",
+        "!src/",
+        "!e2e/",
+        "!hooks/",
+        "!_config.yml",
+        "!karma.conf.js",
+        {
+            "from": "../server/openslides/static",
+            "to": "./dist/os3",
+            "filter": ["**/*"]
+        }
+    ],
+    "win": {
+        "icon": "dist/assets/icons/icon-512x512.png",
+        "target": ["nsis, portable"]
+    },
+    "mac": {
+        "icon": "dist/assets/icons/icon-512x512.png",
+        "target": ["dmg"]
+    },
+    "linux": {
+        "icon": "dist/assets/icons/icon-512x512.png",
+        "target": ["AppImage"]
+    }
+}

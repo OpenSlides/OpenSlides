@@ -98,13 +98,7 @@
 >
     <!-- Icon column -->
     <div *pblNgridCellDef="'icon'; row as mediafile" class="fill clickable">
-        <a
-            class="detail-link"
-            target="_blank"
-            [routerLink]="mediafile.url"
-            *ngIf="!mediafile.is_directory && !isMultiSelect"
-        >
-        </a>
+        <ng-container [ngTemplateOutlet]="fileLinkTemplate" [ngTemplateOutletContext]="mediafile"></ng-container>
         <a class="detail-link" (click)="changeDirectory(mediafile.id)" *ngIf="mediafile.is_directory && !isMultiSelect">
         </a>
         <mat-icon class="file-icon">{{ mediafile.getIcon() }}</mat-icon>
@@ -112,15 +106,7 @@
 
     <!-- Title column -->
     <div *pblNgridCellDef="'title'; row as mediafile" class="fill clickable">
-        <a
-            class="detail-link"
-            target="_blank"
-            [routerLink]="mediafile.url"
-            *ngIf="!mediafile.is_directory && !isMultiSelect"
-        >
-        </a>
-        <a class="detail-link" (click)="changeDirectory(mediafile.id)" *ngIf="mediafile.is_directory && !isMultiSelect">
-        </a>
+        <ng-container [ngTemplateOutlet]="fileLinkTemplate" [ngTemplateOutletContext]="mediafile"></ng-container>
         <div class="innerTable">
             <div class="file-title ellipsis-overflow">
                 {{ mediafile.filename }}
@@ -377,4 +363,11 @@
             <span>{{ 'Cancel' | translate }}</span>
         </button>
     </div>
+</ng-template>
+
+<ng-template #fileLinkTemplate let-mediafile="mediafile">
+    <a class="detail-link" target="_blank" [href]="mediafile.url" *ngIf="!mediafile.is_directory && !isMultiSelect">
+    </a>
+    <a class="detail-link" (click)="changeDirectory(mediafile.id)" *ngIf="mediafile.is_directory && !isMultiSelect">
+    </a>
 </ng-template>

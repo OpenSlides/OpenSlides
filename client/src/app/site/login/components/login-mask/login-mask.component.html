@@ -1,9 +1,21 @@
 <div class="form-wrapper">
-
     <!-- Install notice -->
     <div class="login-container" *ngIf="installationNotice">
-        <mat-card [innerHTML]="(installationNotice) | translate"></mat-card>
+        <mat-card [innerHTML]="installationNotice | translate"></mat-card>
     </div>
+
+    <!-- select-server form -->
+    <form [formGroup]="serverSelectForm" class="login-container" *ngIf="isElectronApp">
+        <mat-form-field>
+            <input
+                matInput
+                osAutofocus
+                required
+                placeholder="{{ 'OpenSlides Server URL' | translate }}"
+                formControlName="backendUrl"
+            />
+        </mat-form-field>
+    </form>
 
     <!-- login form -->
     <form [formGroup]="loginForm" class="login-container" (ngSubmit)="formLogin('default')">
@@ -27,14 +39,16 @@
                 [type]="!hide ? 'password' : 'text'"
                 [errorStateMatcher]="parentErrorStateMatcher"
             />
-            <mat-icon color="primary" matSuffix (click)="hide = !hide">{{ hide ? 'visibility_off' : 'visibility_on' }}</mat-icon>
+            <mat-icon color="primary" matSuffix (click)="hide = !hide">{{
+                hide ? 'visibility_off' : 'visibility_on'
+            }}</mat-icon>
 
             <mat-error>{{ loginErrorMsg | translate }}</mat-error>
         </mat-form-field>
 
         <!-- forgot password button -->
         <br />
-        <button mat-button color="primary" type="button" class="forgot-password-button" (click)="resetPassword()" >
+        <button mat-button color="primary" type="button" class="forgot-password-button" (click)="resetPassword()">
             {{ 'Forgot Password?' | translate }}
         </button>
 
@@ -42,13 +56,7 @@
         <br />
         <!-- TODO: Next to each other...-->
         <button mat-raised-button color="primary" class="login-button" type="submit">{{ 'Login' | translate }}</button>
-        <button
-            mat-stroked-button
-            *ngIf="areGuestsEnabled()"
-            class="login-button"
-            type="button"
-            (click)="guestLogin()"
-        >
+        <button mat-stroked-button *ngIf="areGuestsEnabled()" class="login-button" type="button" (click)="guestLogin()">
             {{ 'Login as guest' | translate }}
         </button>
         <a

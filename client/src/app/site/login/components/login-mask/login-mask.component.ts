@@ -6,8 +6,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, filter, take } from 'rxjs/operators';
 
+import { AttachExternalServerService } from 'app/core/core-services/attach-external-server.service';
 import { AuthService } from 'app/core/core-services/auth.service';
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { LoginDataService } from 'app/core/ui-services/login-data.service';
@@ -33,6 +34,8 @@ export class LoginMaskComponent extends BaseViewComponentDirective implements On
      */
     public hide: boolean;
 
+    public isElectronApp = false;
+
     private checkBrowser = true;
 
     /**
@@ -49,6 +52,11 @@ export class LoginMaskComponent extends BaseViewComponentDirective implements On
      * Form group for the login form
      */
     public loginForm: FormGroup;
+
+    /**
+     * Form group for select server form (electron only)
+     */
+    public serverSelectForm: FormGroup;
 
     /**
      * Custom Form validation
@@ -87,10 +95,12 @@ export class LoginMaskComponent extends BaseViewComponentDirective implements On
         private formBuilder: FormBuilder,
         private loginDataService: LoginDataService,
         private overlayService: OverlayService,
-        private browserSupport: BrowserSupportService
+        private browserSupport: BrowserSupportService,
+        private attachExternalServerService: AttachExternalServerService
     ) {
         super(title, translate, matSnackBar);
         // Hide the spinner if the user is at `login-mask`
+        this.isElectronApp = this.attachExternalServerService.isElectronApp;
         this.createForm();
     }
 
@@ -102,7 +112,11 @@ export class LoginMaskComponent extends BaseViewComponentDirective implements On
      */
     public ngOnInit(): void {
         this.subscriptions.push(
-            this.loginDataService.loginInfoText.subscribe(notice => (this.installationNotice = notice))
+            this.loginDataService.loginInfoText.subscribe(notice => (this.installationNotice = notice)),
+            this.serverSelectForm?.valueChanges.subscribe(val => {
+                this.attachExternalServerService.setExtUrl(val?.backendUrl);
+            }),
+            this.attachExternalServerService.serverUrlObservavle.subscribe(newUrl => this.onExternalUrlChange(newUrl))
         );
 
         this.subscriptions.push(
@@ -126,6 +140,11 @@ export class LoginMaskComponent extends BaseViewComponentDirective implements On
         if (this.checkBrowser) {
             this.checkDevice();
         }
+    }
+
+    private onExternalUrlChange(newUrl: string): void {
+        this.serverSelectForm?.get('backendUrl').setValue(newUrl, { emitEvent: false });
+        this.loginDataService.refresh();
     }
 
     /**
@@ -155,6 +174,12 @@ export class LoginMaskComponent extends BaseViewComponentDirective implements On
      * Create the login Form
      */
     public createForm(): void {
+        if (this.isElectronApp) {
+            this.serverSelectForm = this.formBuilder.group({
+                backendUrl: ['', { validators: Validators.required, updateOn: 'blur' }]
+            });
+        }
+
         this.loginForm = this.formBuilder.group({
             username: ['', [Validators.required, Validators.maxLength(128)]],
             password: ['', [Validators.required, Validators.maxLength(128)]]

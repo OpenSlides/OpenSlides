@@ -57,6 +57,8 @@ client/dist
 client/static
 client/tmp
 client/out-tsc
+client/electron-main.js
+client/electron-main.js.map
 # docs
 client/documentation
 Compodoc
