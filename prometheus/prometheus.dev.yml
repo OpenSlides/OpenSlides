@@ -1,0 +1,10 @@
+global:
+  scrape_interval: 5s
+  scrape_timeout: 5s
+  evaluation_interval: 15s
+
+scrape_configs:
+- job_name: openslides3-autoupdate
+  static_configs:
+  - targets:
+    - autoupdate:8002
