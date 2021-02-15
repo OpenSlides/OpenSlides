@@ -5,6 +5,8 @@ from openslides.utils.plugins import collect_plugins
 
 MODULE_DIR = os.path.realpath(os.path.dirname(os.path.abspath(__file__)))
 
+# This is not set to the docker environment
+OPENSLIDES_USER_DATA_DIR = "/app/personal_data/var"
 
 # Application definition
 
@@ -49,6 +51,8 @@ TEMPLATES = [
     }
 ]
 
+SESSION_ENGINE = "openslides.utils.sessions"
+
 # Email
 # https://docs.djangoproject.com/en/1.10/topics/email/
 
@@ -84,11 +88,19 @@ LOCALE_PATHS = [os.path.join(MODULE_DIR, "locale")]
 
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = "/static/"
 
-STATICFILES_DIRS = [os.path.join(MODULE_DIR, "static")]
+STATICFILES_DIRS = [os.path.join(MODULE_DIR, "static")] + [
+    os.path.join(OPENSLIDES_USER_DATA_DIR, "static")
+]
+
+# Static files (CSS, JavaScript, Images)
+STATIC_ROOT = os.path.join(OPENSLIDES_USER_DATA_DIR, "collected-static")
+
+# Files
+# https://docs.djangoproject.com/en/1.10/topics/files/
+MEDIA_ROOT = os.path.join(OPENSLIDES_USER_DATA_DIR, "media", "")
 
 
 # Sessions and user authentication

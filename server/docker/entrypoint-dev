@@ -2,17 +2,46 @@
 
 set -e
 
+function isSettingsFileOk() {
+    # Forbidden keys to set
+    # - OPENSLIDES_USER_DATA_DIR
+    # - SESSION_ENGINE
+    if grep -q "OPENSLIDES_USER_DATA_DIR.*=" /app/personal_data/var/settings.py; then
+        echo "Found forbidden key OPENSLIDES_USER_DATA_DIR"
+        return 1;
+    fi
+
+    if grep -q "SESSION_ENGINE.*=" /app/personal_data/var/settings.py; then
+        echo "Found forbidden key SESSION_ENGINE"
+        return 1;
+    fi
+
+    return 0;
+}
+
 wait-for-it -t 0 redis:6379
 
 until pg_isready -h postgres -p 5432 -U openslides; do
-  echo "Waiting for Postgres to become available..."
-  sleep 3
+    echo "Waiting for Postgres to become available..."
+    sleep 3
 done
 
 if [[ ! -f "/app/personal_data/var/settings.py" ]]; then
     echo "Create settings"
     python manage.py createsettings
+else
+    echo "Settings exists - checking for invalid configurations"
+    if ! isSettingsFileOk; then
+        echo "Settings are not ok."
+        echo "Saving old settings in settings.py.bak"
+        mv /app/personal_data/var/settings.py /app/personal_data/var/settings.py.bak
+        python manage.py createsettings
+    else
+        echo "Settings are ok."
+    fi
 fi
+
+sed -i -e "s/SECRET_KEY.*$/SECRET_KEY = 'development'/" /app/personal_data/var/settings.py
 
 python -u manage.py migrate
 

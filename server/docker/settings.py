@@ -107,16 +107,6 @@ REDIS_ADDRESS = f"redis://{REDIS_HOST}:{REDIS_PORT}/0"
 REDIS_READ_ONLY_ADDRESS = f"redis://{REDIS_SLAVE_HOST}:{REDIS_SLAVE_PORT}/0"
 CONNECTION_POOL_LIMIT = get_env("CONNECTION_POOL_LIMIT", 100, int)
 
-# Session backend
-SESSION_ENGINE = "redis_sessions.session"
-SESSION_REDIS = {
-    "host": REDIS_HOST,
-    "port": REDIS_PORT,
-    "db": 0,
-    "prefix": "session",
-    "socket_timeout": 2,
-}
-
 # SAML integration
 ENABLE_SAML = get_env("ENABLE_SAML", False, bool)
 if ENABLE_SAML:

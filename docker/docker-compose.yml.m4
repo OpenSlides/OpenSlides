@@ -158,10 +158,11 @@ services:
     depends_on:
       - redis
       - server
+    secrets:
+      - django
     environment:
       REDIS_WRITE_HOST: redis
       MESSAGE_BUS_HOST: redis-slave
-      WORKER_HOST: server
     networks:
       - back
 

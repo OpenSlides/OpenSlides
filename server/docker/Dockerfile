@@ -51,8 +51,7 @@ RUN apt-get install --no-install-recommends -y \
 RUN rm -rf /var/lib/apt/lists/*
 
 COPY requirements /app/requirements
-RUN pip install -r requirements/production.txt -r requirements/big_mode.txt \
-    -r requirements/saml.txt && \
+RUN pip install -r requirements/production.txt -r requirements/saml.txt && \
     rm -rf /root/.cache/pip
 
 # SAML

@@ -156,10 +156,12 @@ services:
   autoupdate:
     image: AUTOUPDATE_IMAGE
     environment:
-      MESSAGE_BUS_HOST: redis
-      WORKER_HOST: server
+      REDIS_WRITE_HOST: redis
+      MESSAGE_BUS_HOST: redis-slave
     networks:
       - back
+    secrets:
+      - django
     deploy:
       replicas: ifenvelse(`OPENSLIDES_AUTOUPDATE_SERVICE_REPLICAS', 1)
       restart_policy:
