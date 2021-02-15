@@ -20,8 +20,9 @@ def get_pdf_information(mediafile):
     try:
         pdf = PdfFileReader(mediafile)
         result["pages"] = pdf.getNumPages()
-    except PdfReadError:
+    except (PdfReadError, KeyError):
         # File could be encrypted but not be detected by PyPDF.
+        # KeyError: https://github.com/mstamy2/PyPDF2/issues/353 Very rare to occur, but do not raise a 500
         result["pages"] = 0
         result["encrypted"] = True
     return result
