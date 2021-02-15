@@ -36,10 +36,11 @@ first and initialize all submodules::
 Setup Docker images
 -------------------
 
-You need to build the Docker images for the client and server and have to setup some
-configuration.
+You need to build the Docker images and have to setup some configuration. First,
+configure HTTPS by checking the `Using HTTPS`_ section. In this section are
+reasons why HTTPS is required for large deployments.
 
-First go to ``docker`` subdirectory::
+Go to ``docker`` subdirectory::
 
     cd docker
 
@@ -67,7 +68,7 @@ Finally, you can start the instance using ``docker-compose``::
 
     docker-compose up
 
-OpenSlides runs on https://localhost:8000/.
+OpenSlides is accessible on http://localhost:8000/ (or https, if configured).
 
 Use can also use daemonized instance::
 
@@ -75,6 +76,40 @@ Use can also use daemonized instance::
     docker-compose logs
     docker-compose down
 
+Using HTTPS
+-----------
+
+The main reason (next to obviously security ones) HTTPS is required originates
+from the need of HTTP/2. OpenSlides uses streaming responses to asynchronously
+send data to the client. With HTTP/1.1 one TCP-Connection per request is opened.
+Browsers limit the amount of concurrent connections
+(`reference<https://docs.pushtechnology.com/cloud/latest/manual/html/designguide/solution/support/connection_limitations.html>`_),
+so you are limited in opening tabs. HTTPS/2 just uses one connection per browser
+and eliminates these restrictions. The main point to use HTTPS is that browsers
+only use HTTP/2 if HTTPS is enabled.
+
+Setting up HTTPS
+""""""""""""""""
+
+Use common providers for retrieving a certificate and private key for your
+deployment. Place the certificate and private key in ``caddy/certs/cert.pem``
+and ``caddy/certs/key.pem``. To use a self-signed localhost certificate, you can
+execute ``caddy/make-localhost-cert.sh``.
+
+The certificate and key are put into the docker image into ``/certs/``, so
+setting up these files needs to be done before calling ``./build.sh``. When you
+update the files, you must run ``./build.sh proxy`` again. If you want to have a
+more flexible setup without the files in the image, you can also mount the
+folder or the certificate and key into the running containers if you wish to do
+so.
+
+If both files are not present, OpenSlides will be configured to run with HTTP
+only. When mounting the files make sure, that they are present during the
+container startup.
+
+Caddy, the proxy used, wants the user to persist the ``/data`` directory. If you
+are going to use HTTPS add a volume in your ``docker-compose.yml`` /
+``docker-stack.yml`` persisting the ``/data`` directory.
 
 More settings
 -------------
