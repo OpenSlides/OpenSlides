@@ -39,13 +39,9 @@ class SessionStore(SessionBase):
         async with get_connection(read_only=True) as redis:
             try:
                 key = to_redis_key(self._get_or_create_session_key())
-                print("laod:", key)
                 session_data = await redis.get(key)
-                x = self.decode(force_str(session_data))
-                print("load result:", x)
-                return x
-            except Exception as e:
-                print("load ex", e)
+                return self.decode(force_str(session_data))
+            except Exception:
                 self._session_key = None
                 return {}
 
@@ -55,10 +51,7 @@ class SessionStore(SessionBase):
     async def _exists(self, session_key):
         async with get_connection(read_only=True) as redis:
             key = to_redis_key(session_key)
-            print("exists:", key)
-            x = await redis.exists(key)
-            print("exists result:", x)
-            return x
+            return await redis.exists(key)
 
     def create(self):
         async_to_sync(self._create)()
@@ -85,7 +78,6 @@ class SessionStore(SessionBase):
             if must_create and await self._exists(self._get_or_create_session_key()):
                 raise CreateError
             data = self.encode(self._get_session(no_load=must_create))
-            print("Save:", self._get_or_create_session_key(), data)
             await redis.setex(
                 to_redis_key(self._get_or_create_session_key()),
                 self.get_expiry_age(),
@@ -102,12 +94,7 @@ class SessionStore(SessionBase):
             session_key = self.session_key
 
         async with get_connection() as redis:
-            try:
-                print("delete:", to_redis_key(session_key))
-                await redis.delete(to_redis_key(session_key))
-            except Exception as e:
-                print("delete ex:", e)
-                pass
+            await redis.delete(to_redis_key(session_key))
 
     # This must be overwritten to stay inside async code...
     async def _async_get_new_session_key(self):
