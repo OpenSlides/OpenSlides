@@ -371,15 +371,17 @@ export class JitsiComponent extends BaseViewComponentDirective implements OnInit
                 this.defaultRoomName = settings.JITSI_ROOM_NAME;
                 this.roomPassword = settings.JITSI_ROOM_PASSWORD;
                 this.constantsLoaded.resolve();
+                this.cd.markForCheck();
             }
         });
 
         await this.constantsLoaded;
 
         this.subscriptions.push(
-            this.configService
-                .get<boolean>('general_system_conference_auto_connect')
-                .subscribe(autoconnect => (this.autoconnect = autoconnect)),
+            this.configService.get<boolean>('general_system_conference_auto_connect').subscribe(autoconnect => {
+                this.autoconnect = autoconnect;
+                this.cd.markForCheck();
+            }),
             this.configService.get<boolean>('general_system_conference_show').subscribe(show => {
                 this.enableJitsi = show && !!this.jitsiDomain && !!this.defaultRoomName;
                 if (this.enableJitsi && this.autoconnect) {
@@ -387,30 +389,38 @@ export class JitsiComponent extends BaseViewComponentDirective implements OnInit
                 } else {
                     this.stopJitsi();
                 }
+                this.cd.markForCheck();
             }),
             this.configService.get<boolean>('general_system_conference_los_restriction').subscribe(restricted => {
                 this.restricted = restricted;
+                this.cd.markForCheck();
             }),
             this.configService
                 .get<number>('general_system_conference_auto_connect_next_speakers')
                 .subscribe(nextSpeakerAmount => {
                     this.nextSpeakerAmount = nextSpeakerAmount;
+                    this.cd.markForCheck();
                 }),
             this.configService.get<string>('general_system_stream_url').subscribe(url => {
                 this.onLiveStreamAvailable(url);
                 this.configsLoaded.resolve();
+                this.cd.markForCheck();
             }),
             this.configService.get<boolean>('general_system_conference_open_microphone').subscribe(open => {
                 this.configOverwrite.startWithAudioMuted = !open;
+                this.cd.markForCheck();
             }),
             this.configService.get<boolean>('general_system_conference_open_video').subscribe(open => {
                 this.configOverwrite.startWithVideoMuted = !open;
+                this.cd.markForCheck();
             }),
             this.configService.get<boolean>('general_system_applause_enable').subscribe(enable => {
                 this.showApplause = enable;
+                this.cd.markForCheck();
             }),
             this.configService.get<number>('general_system_stream_applause_timeout').subscribe(timeout => {
                 this.applauseTimeout = (timeout || 1) * 1000;
+                this.cd.markForCheck();
             }),
             this.configService.get<boolean>('general_system_applause_show_level').subscribe(show => {
                 this.showApplauseLevel = show;
@@ -422,9 +432,11 @@ export class JitsiComponent extends BaseViewComponentDirective implements OnInit
                 } else {
                     this.isApplausBarUsed = false;
                 }
+                this.cd.markForCheck();
             }),
             this.configService.get<boolean>('general_system_conference_enable_helpdesk').subscribe(enabled => {
                 this.isSupportEnabled = enabled;
+                this.cd.markForCheck();
             })
         );
 
@@ -451,6 +463,7 @@ export class JitsiComponent extends BaseViewComponentDirective implements OnInit
     public toggleMute(): void {
         if (this.isJitsiActive) {
             this.api.executeCommand('toggleAudio');
+            this.cd.markForCheck();
         }
     }
 
