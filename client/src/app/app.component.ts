@@ -4,7 +4,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 
 import { TranslateService } from '@ngx-translate/core';
-import { filter, take } from 'rxjs/operators';
+import { first, tap } from 'rxjs/operators';
 
 import { ChatNotificationService } from './site/chat/services/chat-notification.service';
 import { ConfigService } from './core/ui-services/config.service';
@@ -19,6 +19,7 @@ import { OperatorService } from './core/core-services/operator.service';
 import { OverlayService } from './core/ui-services/overlay.service';
 import { RoutingStateService } from './core/ui-services/routing-state.service';
 import { ServertimeService } from './core/core-services/servertime.service';
+import { StableService } from './core/core-services/stable.service';
 import { ThemeService } from './core/ui-services/theme.service';
 import { VotingBannerService } from './core/ui-services/voting-banner.service';
 
@@ -72,6 +73,7 @@ export class AppComponent {
         appRef: ApplicationRef,
         servertimeService: ServertimeService,
         openslidesService: OpenSlidesService,
+        stableService: StableService,
         router: Router,
         offlineService: OfflineService,
         operator: OperatorService,
@@ -107,11 +109,12 @@ export class AppComponent {
         appRef.isStable
             .pipe(
                 // take only the stable state
-                filter(s => s),
-                take(1)
+                first(stable => stable),
+                tap(() => console.debug('App is now stable!'))
             )
             .subscribe(() => {
                 openslidesService.setStable();
+                stableService.setStable();
                 servertimeService.startScheduler();
             });
     }

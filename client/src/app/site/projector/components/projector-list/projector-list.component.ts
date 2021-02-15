@@ -16,6 +16,7 @@ import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, timer } from 'rxjs';
 
+import { OpenSlidesService } from 'app/core/core-services/openslides.service';
 import { OperatorService, Permission } from 'app/core/core-services/operator.service';
 import { ProjectorRepositoryService } from 'app/core/repositories/projector/projector-repository.service';
 import { Projector } from 'app/shared/models/core/projector';
@@ -77,6 +78,7 @@ export class ProjectorListComponent extends BaseViewComponentDirective implement
         private repo: ProjectorRepositoryService,
         private formBuilder: FormBuilder,
         private operator: OperatorService,
+        private openslidesService: OpenSlidesService,
         private dialogService: MatDialog,
         private cd: ChangeDetectorRef
     ) {
@@ -86,14 +88,7 @@ export class ProjectorListComponent extends BaseViewComponentDirective implement
             name: ['', Validators.required]
         });
 
-        /**
-         * Angulars change detection goes nuts, since countdown and motios with long texts are pushing too much data
-         */
-        this.subscriptions.push(
-            timer(0, 1000).subscribe(() => {
-                this.cd.detectChanges();
-            })
-        );
+        this.installUpdater();
     }
 
     /**
@@ -137,5 +132,17 @@ export class ProjectorListComponent extends BaseViewComponentDirective implement
     public ngOnDestroy(): void {
         super.ngOnDestroy();
         this.cd.detach();
+    }
+
+    private async installUpdater(): Promise<void> {
+        await this.openslidesService.isStable;
+        /**
+         * Angulars change detection goes nuts, since countdown and motios with long texts are pushing too much data
+         */
+        this.subscriptions.push(
+            timer(0, 1000).subscribe(() => {
+                this.cd.detectChanges();
+            })
+        );
     }
 }

@@ -35,6 +35,10 @@ export class OpenSlidesService {
         return this.booted.value;
     }
 
+    public get isStable(): Promise<void> {
+        return this.stable;
+    }
+
     private stable = new Deferred();
 
     public constructor(
