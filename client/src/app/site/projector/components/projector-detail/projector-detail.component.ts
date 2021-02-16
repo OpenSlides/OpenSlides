@@ -8,9 +8,9 @@ import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { timer } from 'rxjs';
 
+import { OpenSlidesStatusService } from 'app/core/core-services/openslides-status.service';
 import { OperatorService, Permission } from 'app/core/core-services/operator.service';
 import { ProjectorService } from 'app/core/core-services/projector.service';
-import { StableService } from 'app/core/core-services/stable.service';
 import { CountdownRepositoryService } from 'app/core/repositories/projector/countdown-repository.service';
 import { ProjectorMessageRepositoryService } from 'app/core/repositories/projector/projector-message-repository.service';
 import {
@@ -98,7 +98,7 @@ export class ProjectorDetailComponent extends BaseViewComponentDirective impleme
         private cd: ChangeDetectorRef,
         private promptService: PromptService,
         private opertator: OperatorService,
-        private stableService: StableService
+        private openslidesStatus: OpenSlidesStatusService
     ) {
         super(titleService, translate, matSnackBar);
     }
@@ -119,8 +119,10 @@ export class ProjectorDetailComponent extends BaseViewComponentDirective impleme
                 })
             );
         });
+        this.countdownRepo.getViewModelListObservable().subscribe(countdowns => (this.countdowns = countdowns));
+        this.messageRepo.getViewModelListObservable().subscribe(messages => (this.messages = messages));
+        this.repo.getViewModelListObservable().subscribe(projectors => (this.projectorCount = projectors.length));
         this.installUpdater();
-        this.loadSubscriptions();
     }
 
     public editProjector(): void {
@@ -351,15 +353,8 @@ export class ProjectorDetailComponent extends BaseViewComponentDirective impleme
         }
     }
 
-    private async loadSubscriptions(): Promise<void> {
-        await this.stableService.isStable;
-        this.countdownRepo.getViewModelListObservable().subscribe(countdowns => (this.countdowns = countdowns));
-        this.messageRepo.getViewModelListObservable().subscribe(messages => (this.messages = messages));
-        this.repo.getViewModelListObservable().subscribe(projectors => (this.projectorCount = projectors.length));
-    }
-
     private async installUpdater(): Promise<void> {
-        await this.stableService.isStable;
+        await this.openslidesStatus.stable;
         this.subscriptions.push(timer(0, 500).subscribe(() => this.cd.detectChanges()));
     }
 }

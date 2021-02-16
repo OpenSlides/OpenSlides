@@ -14,12 +14,12 @@ import { DataStoreUpgradeService } from './core/core-services/data-store-upgrade
 import { LoadFontService } from './core/ui-services/load-font.service';
 import { LoginDataService } from './core/ui-services/login-data.service';
 import { OfflineService } from './core/core-services/offline.service';
+import { OpenSlidesStatusService } from './core/core-services/openslides-status.service';
 import { OpenSlidesService } from './core/core-services/openslides.service';
 import { OperatorService } from './core/core-services/operator.service';
 import { OverlayService } from './core/ui-services/overlay.service';
 import { RoutingStateService } from './core/ui-services/routing-state.service';
 import { ServertimeService } from './core/core-services/servertime.service';
-import { StableService } from './core/core-services/stable.service';
 import { ThemeService } from './core/ui-services/theme.service';
 import { VotingBannerService } from './core/ui-services/voting-banner.service';
 
@@ -73,7 +73,7 @@ export class AppComponent {
         appRef: ApplicationRef,
         servertimeService: ServertimeService,
         openslidesService: OpenSlidesService,
-        stableService: StableService,
+        openslidesStatus: OpenSlidesStatusService,
         router: Router,
         offlineService: OfflineService,
         operator: OperatorService,
@@ -113,8 +113,7 @@ export class AppComponent {
                 tap(() => console.debug('App is now stable!'))
             )
             .subscribe(() => {
-                openslidesService.setStable();
-                stableService.setStable();
+                openslidesStatus.setStable();
                 servertimeService.startScheduler();
             });
     }

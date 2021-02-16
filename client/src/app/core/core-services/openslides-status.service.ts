@@ -1,7 +1,10 @@
 import { Injectable } from '@angular/core';
 
+import { BehaviorSubject } from 'rxjs';
+
 import { History } from 'app/shared/models/core/history';
 import { BannerDefinition, BannerService } from '../ui-services/banner.service';
+import { Deferred } from '../promises/deferred';
 
 /**
  * Holds information about OpenSlides. This is not included into other services to
@@ -26,12 +29,24 @@ export class OpenSlidesStatusService {
         return !!this.history;
     }
 
+    public get stable(): Promise<void> {
+        return this._stable;
+    }
+
     public isPrioritizedClient = false;
+
+    private _stable = new Deferred();
+    private _bootedSubject = new BehaviorSubject<boolean>(false);
 
     /**
      * Ctor, does nothing.
      */
     public constructor(private banner: BannerService) {}
+
+    public setStable(): void {
+        this._stable.resolve();
+        this._bootedSubject.next(true);
+    }
 
     /**
      * Calls the getLocaleString function of the history object, if present.
