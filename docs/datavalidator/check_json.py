@@ -41,6 +41,12 @@ def check_string(value: Any) -> bool:
     return value is None or isinstance(value, str)
 
 
+color_regex = re.compile("^#[0-9a-f]{6}$")
+
+def check_color(value: Any) -> bool:
+    return value is None or (isinstance(value, str) and color_regex.match(value))
+
+
 def check_number(value: Any) -> bool:
     return value is None or isinstance(value, int)
 
@@ -158,6 +164,8 @@ class Checker:
                 checker = check_number_list
             elif field_type == "decimal(6)":
                 checker = check_decimal
+            elif field_type == "color":
+                checker = check_color
             elif field_type in (
                 "JSON",
                 "template",

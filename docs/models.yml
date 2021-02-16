@@ -11,6 +11,7 @@
 #     - <T>[]: This indicates and arbitrary array of the given type. At the moment
 #       we support only some types. You can add JSON Schema properties for items
 #       using the extra property `items`
+#     - color: string that must match ^#[0-9a-f]{6}$
 # Relations:
 #     - We have the following types: `relation`, `relation-list`, `generic-relation`
 #       and `generic-relation-list`.
@@ -221,13 +222,7 @@ user:
     replacement: meeting_id
     fields:
       type: relation-list
-      to: projection/element_id
-  current_projector_$_ids:
-    type: template
-    replacement: meeting_id
-    fields:
-      type: relation-list
-      to: projector/current_element_ids
+      to: projection/content_object_id
   vote_delegated_$_to_id:
     type: template
     replacement: meeting_id
@@ -695,13 +690,9 @@ meeting:
     type: relation-list
     to: projector/meeting_id
     on_delete: CASCADE
-  projection_ids:
+  all_projection_ids:
     type: relation-list
     to: projection/meeting_id
-    on_delete: CASCADE
-  projectiondefault_ids:
-    type: relation-list
-    to: projectiondefault/meeting_id
     on_delete: CASCADE
   projector_message_ids:
     type: relation-list
@@ -815,9 +806,6 @@ meeting:
     fields:
       type: relation
       to: mediafile/used_as_font_$_in_meeting_id
-  # Examples:
-  # logo_web_header: Mediafile;
-  # font_italic_pdf: Mediafile;
   # The client can define these resources. There is no need
   # to have whitelist/blacklist on the server. The places must
   # be checked: They must match `[a-z]([a-z_]*[a-z])?` and must
@@ -847,6 +835,31 @@ meeting:
   reference_projector_id:
     type: relation
     to: projector/used_as_reference_projector_meeting_id
+
+  default_projector_$_id:
+    type: template
+    fields:
+      type: relation
+      to: projector/used_as_default_$_in_meeting_id
+  # Available template field replacements:
+  #  - agenda_all_items
+  #  - topics
+  #  - list_of_speakers
+  #  - current_list_of_speakers
+  #  - motion
+  #  - amendment
+  #  - motion_block
+  #  - assignment
+  #  - user
+  #  - mediafile
+  #  - projector_message
+  #  - projector_countdowns
+  #  - assignment_poll
+  #  - motion_poll
+  #  - poll
+  projection_ids:
+    type: relation-list
+    to: projection/content_object_id
 
   default_group_id:
     type: relation
@@ -1044,11 +1057,7 @@ agenda_item:
     equal_fields: meeting_id
   projection_ids:
     type: relation-list
-    to: projection/element_id
-    equal_fields: meeting_id
-  current_projector_ids:
-    type: relation-list
-    to: projector/current_element_ids
+    to: projection/content_object_id
     equal_fields: meeting_id
   meeting_id:
     type: relation
@@ -1078,11 +1087,7 @@ list_of_speakers:
     equal_fields: meeting_id
   projection_ids:
     type: relation-list
-    to: projection/element_id
-    equal_fields: meeting_id
-  current_projector_ids:
-    type: relation-list
-    to: projector/current_element_ids
+    to: projection/content_object_id
     equal_fields: meeting_id
   meeting_id:
     type: relation
@@ -1151,11 +1156,7 @@ topic:
     equal_fields: meeting_id
   projection_ids:
     type: relation-list
-    to: projection/element_id
-    equal_fields: meeting_id
-  current_projector_ids:
-    type: relation-list
-    to: projector/current_element_ids
+    to: projection/content_object_id
     equal_fields: meeting_id
   meeting_id:
     type: relation
@@ -1301,11 +1302,7 @@ motion:
     equal_fields: meeting_id
   projection_ids:
     type: relation-list
-    to: projection/element_id
-    equal_fields: meeting_id
-  current_projector_ids:
-    type: relation-list
-    to: projector/current_element_ids
+    to: projection/content_object_id
     equal_fields: meeting_id
   personal_note_ids:
     type: relation-list
@@ -1437,11 +1434,7 @@ motion_block:
     equal_fields: meeting_id
   projection_ids:
     type: relation-list
-    to: projection/element_id
-    equal_fields: meeting_id
-  current_projector_ids:
-    type: relation-list
-    to: projector/current_element_ids
+    to: projection/content_object_id
     equal_fields: meeting_id
   meeting_id:
     type: relation
@@ -1697,11 +1690,7 @@ poll:
     equal_fields: meeting_id
   projection_ids:
     type: relation-list
-    to: projection/element_id
-    equal_fields: meeting_id
-  current_projector_ids:
-    type: relation-list
-    to: projector/current_element_ids
+    to: projection/content_object_id
     equal_fields: meeting_id
   meeting_id:
     type: relation
@@ -1814,11 +1803,7 @@ assignment:
     equal_fields: meeting_id
   projection_ids:
     type: relation-list
-    to: projection/element_id
-    equal_fields: meeting_id
-  current_projector_ids:
-    type: relation-list
-    to: projector/current_element_ids
+    to: projection/content_object_id
     equal_fields: meeting_id
   meeting_id:
     type: relation
@@ -1892,11 +1877,7 @@ mediafile:
     equal_fields: meeting_id
   projection_ids:
     type: relation-list
-    to: projection/element_id
-    equal_fields: meeting_id
-  current_projector_ids:
-    type: relation-list
-    to: projector/current_element_ids
+    to: projection/content_object_id
     equal_fields: meeting_id
   attachment_ids:
     type: generic-relation-list
@@ -1927,43 +1908,59 @@ mediafile:
 projector:
   id: number
   name: string
-  scale: number
-  scroll: number
-  width: number
-  aspect_ratio_numerator: number
-  aspect_ratio_denominator: number
-  color: string
-  background_color: string
-  header_background_color: string
-  header_font_color: string
-  header_h1_color: string
-  chyron_background_color: string
-  chyron_font_color: string
-  show_header_footer: boolean
-  show_title: boolean
-  show_logo: boolean
+  scale:
+    type: number
+    default: 0
+  scroll:
+    type: number
+    default: 0
+  width:
+    type: number
+    default: 1200
+  aspect_ratio_numerator:
+    type: number
+    default: 16
+  aspect_ratio_denominator:
+    type: number
+    default: 9
+  color:
+    type: color
+    default: "#000000"
+  background_color:
+    type: color
+    default: "#ffffff"
+  header_background_color:
+    type: color
+    default: "#317796"
+  header_font_color:
+    type: color
+    default: "#f5f5f5"
+  header_h1_color:
+    type: color
+    default: "#317796"
+  chyron_background_color:
+    type: color
+    default: "#317796"
+  chyron_font_color:
+    type: color
+    default: "#ffffff"
+  show_header_footer:
+    type: boolean
+    default: true
+  show_title: 
+    type: boolean
+    default: true
+  show_logo: 
+    type: boolean
+    default: true
+  show_clock: 
+    type: boolean
+    default: true
 
   current_projection_ids:
     type: relation-list
     to: projection/current_projector_id
     on_delete: CASCADE
-    equal_fields: meeting_id
-  # A relation to the currently projected elements to get a direct link, if
-  # the element is projected.
-  current_element_ids:
-    type: generic-relation-list
-    to:
-      - motion/current_projector_ids
-      - mediafile/current_projector_ids
-      - list_of_speakers/current_projector_ids
-      - motion_block/current_projector_ids
-      - assignment/current_projector_ids
-      - agenda_item/current_projector_ids
-      - topic/current_projector_ids
-      - poll/current_projector_ids
-      - projector_message/current_projector_ids
-      - projector_countdown/current_projector_ids
-      - user/current_projector_$_ids
     equal_fields: meeting_id
   preview_projection_ids:
     type: relation-list
@@ -1976,11 +1973,11 @@ projector:
   used_as_reference_projector_meeting_id:
     type: relation
     to: meeting/reference_projector_id
-  projectiondefault_ids:
-    type: relation-list
-    to: projectiondefault/projector_id
-    on_delete: PROTECT
-    equal_fields: meeting_id
+  used_as_default_$_in_meeting_id:
+    type: template
+    fields:
+      type: relation
+      to: meeting/default_projector_$_id
   meeting_id:
     type: relation
     to: meeting/projector_ids
@@ -1993,6 +1990,11 @@ projector:
 projection:
   id: number
   options: JSON
+  stable:
+    type: boolean
+    default: false
+  weight: number
+  type: string
 
   current_projector_id:
     type: relation
@@ -2006,9 +2008,10 @@ projection:
     type: relation
     to: projector/history_projection_ids
     equal_fields: meeting_id
-  element_id:
+  content_object_id:
     type: generic-relation
     to:
+      - meeting/projection_ids
       - motion/projection_ids
       - mediafile/projection_ids
       - list_of_speakers/projection_ids
@@ -2023,21 +2026,8 @@ projection:
     equal_fields: meeting_id
   meeting_id:
     type: relation
-    to: meeting/projection_ids
+    to: meeting/all_projection_ids
     required: true
-
-projectiondefault:
-  id: number
-  name: string
-  display_name: string
-
-  projector_id:
-    type: relation
-    to: projector/projectiondefault_ids
-    equal_fields: meeting_id
-  meeting_id:
-    type: relation
-    to: meeting/projectiondefault_ids
 
 projector_message:
   id: number
@@ -2045,11 +2035,7 @@ projector_message:
 
   projection_ids:
     type: relation-list
-    to: projection/element_id
-    equal_fields: meeting_id
-  current_projector_ids:
-    type: relation-list
-    to: projector/current_element_ids
+    to: projection/content_object_id
     equal_fields: meeting_id
   meeting_id:
     type: relation
@@ -2065,11 +2051,7 @@ projector_countdown:
 
   projection_ids:
     type: relation-list
-    to: projection/element_id
-    equal_fields: meeting_id
-  current_projector_ids:
-    type: relation-list
-    to: projector/current_element_ids
+    to: projection/content_object_id
     equal_fields: meeting_id
   meeting_id:
     type: relation
