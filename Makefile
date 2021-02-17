@@ -12,3 +12,5 @@ stop-dev:
 get-server-shell:
 	docker-compose -f docker/docker-compose.dev.yml run server bash
 
+reload-proxy:
+	docker-compose -f docker/docker-compose.dev.yml exec -w /etc/caddy proxy caddy reload
