@@ -18,8 +18,14 @@ import { DataStoreService } from '../../core-services/data-store.service';
 const ChatGroupRelations: RelationDefinition[] = [
     {
         type: 'M2M',
-        ownIdKey: 'access_groups_id',
-        ownKey: 'access_groups',
+        ownIdKey: 'read_groups_id',
+        ownKey: 'read_groups',
+        foreignViewModel: ViewGroup
+    },
+    {
+        type: 'M2M',
+        ownIdKey: 'write_groups_id',
+        ownKey: 'write_groups',
         foreignViewModel: ViewGroup
     }
 ];

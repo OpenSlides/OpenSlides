@@ -18,9 +18,9 @@ export class ChatService {
     private canSeeSomeChatGroup = false;
     private canManage = false;
 
-    private canSeeChat = new BehaviorSubject<boolean>(false);
+    private canSeeChatSubject = new BehaviorSubject<boolean>(false);
     public get canSeeChatObservable(): Observable<boolean> {
-        return this.canSeeChat.asObservable();
+        return this.canSeeChatSubject.asObservable();
     }
 
     public constructor(
@@ -34,7 +34,7 @@ export class ChatService {
         });
 
         this.repo.getViewModelListBehaviorSubject().subscribe(groups => {
-            this.canSeeSomeChatGroup = !!groups && groups.length > 0;
+            this.canSeeSomeChatGroup = groups?.length > 0;
             this.update();
         });
 
@@ -45,6 +45,6 @@ export class ChatService {
     }
 
     private update(): void {
-        this.canSeeChat.next(this.chatEnabled && (this.canSeeSomeChatGroup || this.canManage));
+        this.canSeeChatSubject.next(this.chatEnabled && (this.canSeeSomeChatGroup || this.canManage));
     }
 }

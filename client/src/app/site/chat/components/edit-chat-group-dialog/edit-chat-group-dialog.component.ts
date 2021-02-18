@@ -10,7 +10,8 @@ import { ViewGroup } from 'app/site/users/models/view-group';
 
 export interface ChatGroupData {
     name: string;
-    access_groups_id: number[];
+    read_groups_id: number[];
+    write_groups_id: number[];
 }
 
 @Component({
@@ -36,7 +37,8 @@ export class EditChatGroupDialogComponent {
         this.createMode = !data;
         this.createUpdateForm = formBuilder.group({
             name: [data?.name || '', Validators.required],
-            access_groups_id: [data?.access_groups_id || []]
+            read_groups_id: [data?.read_groups_id || []],
+            write_groups_id: [data?.write_groups_id || []]
         });
         this.groupsBehaviorSubject = groupRepo.getViewModelListBehaviorSubject();
     }

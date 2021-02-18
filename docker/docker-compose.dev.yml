@@ -18,6 +18,7 @@ services:
       - ../server:/app
     depends_on:
       - redis
+      - postgres
 
   postgres:
     image: postgres:11

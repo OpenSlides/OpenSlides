@@ -24,9 +24,17 @@
         <!-- Groups -->
         <mat-form-field>
             <os-search-value-selector
-                formControlName="access_groups_id"
+                formControlName="read_groups_id"
                 [multiple]="true"
-                placeholder="{{ 'Access groups' | translate }}"
+                placeholder="{{ 'Groups with read permissions' | translate }}"
+                [inputListValues]="groupsBehaviorSubject"
+            ></os-search-value-selector>
+        </mat-form-field>
+        <mat-form-field>
+            <os-search-value-selector
+                formControlName="write_groups_id"
+                [multiple]="true"
+                placeholder="{{ 'Groups with write permissions' | translate }}"
                 [inputListValues]="groupsBehaviorSubject"
             ></os-search-value-selector>
         </mat-form-field>

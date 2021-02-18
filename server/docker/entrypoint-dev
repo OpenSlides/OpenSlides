@@ -19,12 +19,7 @@ function isSettingsFileOk() {
     return 0;
 }
 
-wait-for-it -t 0 redis:6379
-
-until pg_isready -h postgres -p 5432 -U openslides; do
-    echo "Waiting for Postgres to become available..."
-    sleep 3
-done
+/app/docker/wait-for-dev-dependencies.sh
 
 if [[ ! -f "/app/personal_data/var/settings.py" ]]; then
     echo "Create settings"

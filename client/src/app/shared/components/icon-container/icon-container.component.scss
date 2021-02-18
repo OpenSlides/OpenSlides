@@ -18,10 +18,6 @@ os-icon-container {
     display: flex;
     align-items: center;
 
-    & + & {
-        margin-top: 5px;
-    }
-
     &.small-container {
         @include icon-container(12px, 12px, 400);
     }

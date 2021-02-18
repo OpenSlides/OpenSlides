@@ -22,6 +22,7 @@ from django.http.request import QueryDict
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 
+from openslides.chat.models import ChatGroup
 from openslides.saml import SAML_ENABLED
 from openslides.utils import logging
 
@@ -229,6 +230,7 @@ class UserViewSet(ModelViewSet):
                 old_delegation_user.save()
 
         inform_changed_data(user)
+        inform_changed_data(ChatGroup.objects.all())
         return response
 
     def assert_vote_not_delegated(self, user):

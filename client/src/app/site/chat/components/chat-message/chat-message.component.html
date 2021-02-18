@@ -4,8 +4,12 @@
     </div>
     <div
         class="chat-text"
-        [ngClass]="{ 'background-primary': !isOwnMessage, 'background-primary-darkest': isOwnMessage }"
-        [matMenuTriggerFor]="canDelete ? singleChatMenu : null"
+        [ngClass]="{
+            disabled: !canDelete,
+            'background-primary': !isOwnMessage,
+            'background-primary-darkest': isOwnMessage
+        }"
+        [matMenuTriggerFor]="singleChatMenu"
     >
         {{ text }}
         <div class="timestamp">{{ date | localizedDate }}</div>

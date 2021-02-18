@@ -18,7 +18,7 @@ class ChatGroupManager(BaseManager):
         return (
             super()
             .get_prefetched_queryset(*args, **kwargs)
-            .prefetch_related("access_groups")
+            .prefetch_related("read_groups", "write_groups")
         )
 
 
@@ -30,8 +30,11 @@ class ChatGroup(RESTModelMixin, models.Model):
     objects = ChatGroupManager()
 
     name = models.CharField(max_length=256)
-    access_groups = models.ManyToManyField(
-        settings.AUTH_GROUP_MODEL, blank=True, related_name="chat_access_groups"
+    read_groups = models.ManyToManyField(
+        settings.AUTH_GROUP_MODEL, blank=True, related_name="chat_read_groups"
+    )
+    write_groups = models.ManyToManyField(
+        settings.AUTH_GROUP_MODEL, blank=True, related_name="chat_write_groups"
     )
 
     class Meta:
@@ -41,14 +44,11 @@ class ChatGroup(RESTModelMixin, models.Model):
     def __str__(self):
         return self.name
 
-    def can_access(self, user):
+    def can_write(self, user):
         if has_perm(user.id, "chat.can_manage"):
             return True
 
-        if not self.access_groups.exists():
-            return True
-
-        return in_some_groups(user.id, self.access_groups.values_list(flat=True))
+        return in_some_groups(user.id, self.write_groups.values_list(flat=True))
 
 
 class ChatMessageManager(BaseManager):
@@ -61,7 +61,9 @@ class ChatMessageManager(BaseManager):
         return (
             super()
             .get_prefetched_queryset(*args, **kwargs)
-            .prefetch_related("chatgroup", "chatgroup__access_groups")
+            .prefetch_related(
+                "chatgroup", "chatgroup__read_groups", "chatgroup__write_groups"
+            )
         )
 
 
