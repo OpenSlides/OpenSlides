@@ -190,19 +190,19 @@ def get_config_variables():
     )
 
     yield ConfigVariable(
-        name="agenda_point_of_order_requests",
-        default_value='["Sofortige Abstimmung","Begrenzung der Redezeit","..."]',
-        label="Point of order requests in the format of a JSON-Array",
+        name="agenda_point_of_orders_project",
+        default_value=False,
+        input_type="boolean",
+        label="Project point of order as message to projector",
         weight=229,
         group="Agenda",
         subgroup="List of speakers",
     )
 
     yield ConfigVariable(
-        name="agenda_point_of_orders_project",
-        default_value=False,
-        input_type="boolean",
-        label="Project point of order as message to projector",
+        name="agenda_point_of_orders",
+        default_value='["Sofortige Abstimmung","Begrenzung der Redezeit","..."]',
+        label="Point of order requests in the format of a JSON-Array",
         weight=229,
         group="Agenda",
         subgroup="List of speakers",
