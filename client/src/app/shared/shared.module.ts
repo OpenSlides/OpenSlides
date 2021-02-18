@@ -133,6 +133,7 @@ import { ApplauseBarDisplayComponent } from './components/applause-bar-display/a
 import { ProgressComponent } from './components/progress/progress.component';
 import { NgParticlesModule } from 'ng-particles';
 import { ApplauseParticleDisplayComponent } from './components/applause-particle-display/applause-particle-display.component';
+import { ProjectPointOfOrderComponent } from './components/project-point-of-order/project-point-of-order.component';
 
 /**
  * Share Module for all "dumb" components and pipes.
@@ -303,7 +304,8 @@ import { ApplauseParticleDisplayComponent } from './components/applause-particle
         AssignmentPollDetailContentComponent,
         JitsiComponent,
         VideoPlayerComponent,
-        ListOfSpeakersContentComponent
+        ListOfSpeakersContentComponent,
+        ProjectPointOfOrderComponent
     ],
     declarations: [
         PermsDirective,
@@ -369,7 +371,8 @@ import { ApplauseParticleDisplayComponent } from './components/applause-particle
         ListOfSpeakersContentComponent,
         ApplauseBarDisplayComponent,
         ProgressComponent,
-        ApplauseParticleDisplayComponent
+        ApplauseParticleDisplayComponent,
+        ProjectPointOfOrderComponent
     ],
     providers: [
         {
