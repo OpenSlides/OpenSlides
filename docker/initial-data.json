@@ -260,15 +260,13 @@
         "permissions": [
             "agenda_item.can_see_internal",
             "assignment.can_see",
-            "meeting.can_see_frontpage",
-            "projector.can_see",
-            "mediafile.can_see",
-            "motion.can_see",
-            "user.can_see",
-
-            # Missing compared with os3 and existing permissions in models.yml
             "list_of_speakers.can_see",
-            "user.can_change_own_password",
+            "mediafile.can_see",
+            "meeting.can_see_frontpage",
+            "motion.can_see",
+            "projector.can_see",
+            "user.can_see",
+            "user.can_change_own_password"
         ],
 
         "user_ids": [],
@@ -307,20 +305,18 @@
         "name": "Staff",
         "permissions": [
             "agenda_item.can_manage",
-            "list_of_speakers.can_be_speaker",
             "assignment.can_manage",
             "assignment.can_nominate_self",
-            "projector.can_manage",
-            "meeting.can_see_frontpage",
-            "tag.can_manage",
-            "mediafile.can_manage",
-            "motion.can_manage",
-            "user.can_manage",
-
-            # Missing compared with os3 and existing permissions in models.yml
+            "list_of_speakers.can_be_speaker",
             "list_of_speakers.can_manage",
+            "mediafile.can_manage",
+            "meeting.can_see_frontpage",
             "meeting.can_see_history",
-            "user.can_change_own_password",
+            "motion.can_manage",
+            "projector.can_manage",
+            "tag.can_manage",
+            "user.can_manage",
+            "user.can_change_own_password"
         ],
 
         "user_ids": [],
@@ -342,17 +338,14 @@
         "permissions": [
             "agenda_item.can_see_internal",
             "assignment.can_see",
-            "meeting.can_see_frontpage",
-            "projector.can_see",
-            "mediafile.can_see",
-            "motion.can_create",
-            "motion.can_support",
-            "user.can_see"
-            # Missing permissions compared with os3 and existing permissions in models.yml
             "list_of_speakers.can_see",
+            "mediafile.can_see",
+            "meeting.can_see_frontpage",
+            "motion.can_create",
             "motion.can_create_amendments",
-            "user.can_see_extra_data",
-            "user.can_change_own_password",
+            "motion.can_support",
+            "projector.can_see",
+            "user.can_see"
         ],
 
         "user_ids": [],
@@ -373,24 +366,18 @@
         "name": "Delegates",
         "permissions": [
             "agenda_item.can_see_internal",
-            "list_of_speakers.can_be_speaker",
             "assignment.can_nominate_other",
             "assignment.can_nominate_self",
-            "meeting.can_see_frontpage",
-            "projector.can_see",
+            "list_of_speakers.can_be_speaker",
             "mediafile.can_see",
-            "motion.can_manage",
-            "motion.can_support",
-            "user.can_see"
-            # Missing compared with os3 and existing permissions in models.yml
-            "user.can_change_own_password",
             "meeting.can_see_autopilot",
-
-            # to discuss: OS3 permissions transferred to Os4 results for motion in following permissions:
+            "meeting.can_see_frontpage",
             "motion.can_create",
             "motion.can_create_amendments",
             "motion.can_support",
-
+            "projector.can_see",
+            "user.can_see",
+            "user.can_change_own_password"
         ],
 
         "user_ids": [],
