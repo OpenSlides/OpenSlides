@@ -1,0 +1,24 @@
+<div mat-dialog-content>
+    <h3>{{ 'Point of order' | translate }}</h3>
+    <p>{{ 'I make a point of order' | translate }}:
+        <mat-form-field>
+            <mat-select [(value)]="selectPointOfOrder">
+                <mat-option *ngFor="let x of PointOfOrders; let indexOfelement=index" [value]="indexOfelement">
+                    {{x}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </p>
+    <button mat-stroked-button [disabled]="selectPointOfOrder === ''" (click)="sendPointOfOrder()">
+        {{ 'Send' | translate }}
+    </button>
+    <div class="alert" *ngIf="PointOfOrderSent">
+        <span>{{ 'Your point of order has been sent' | translate }}</span>
+    </div>
+</div>
+
+<div mat-dialog-actions>
+    <button type="button" mat-button [mat-dialog-close]="null">
+        <span>{{ 'Close' | translate }}</span>
+    </button>
+</div>
