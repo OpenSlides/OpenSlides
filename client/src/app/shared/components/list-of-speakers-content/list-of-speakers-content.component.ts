@@ -9,6 +9,7 @@ import {
     ViewChild
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 
@@ -28,6 +29,8 @@ import { BaseViewComponentDirective } from 'app/site/base/base-view';
 import { ViewUser } from 'app/site/users/models/view-user';
 import { Selectable } from '../selectable';
 import { SortingListComponent } from '../sorting-list/sorting-list.component';
+import { largeDialogSettings } from 'app/shared/utils/dialog-settings';
+import { ProjectPointOfOrderComponent } from '../project-point-of-order/project-point-of-order.component';
 
 @Component({
     selector: 'os-list-of-speakers-content',
@@ -102,6 +105,7 @@ export class ListOfSpeakersContentComponent extends BaseViewComponentDirective i
         title: Title,
         protected translate: TranslateService,
         snackBar: MatSnackBar,
+        public dialog: MatDialog,
         private listOfSpeakersRepo: ListOfSpeakersRepositoryService,
         private operator: OperatorService,
         private promptService: PromptService,
@@ -205,12 +209,19 @@ export class ListOfSpeakersContentComponent extends BaseViewComponentDirective i
     }
 
     public async addPointOfOrder(): Promise<void> {
-        const title = this.translate.instant('Are you sure you want to submit a point of order?');
-        if (await this.promptService.open(title)) {
-            try {
-                await this.listOfSpeakersRepo.createSpeaker(this.viewListOfSpeakers, undefined, true);
-            } catch (e) {
-                this.raiseError(e);
+        const project_enabled = this.config.instant('agenda_point_of_orders_project');
+        if (project_enabled) {
+            this.dialog.open(ProjectPointOfOrderComponent,{
+                ...largeDialogSettings
+            });
+        } else {
+            const title = this.translate.instant('Are you sure you want to submit a point of order?');
+            if (await this.promptService.open(title)) {
+                try {
+                    await this.listOfSpeakersRepo.createSpeaker(this.viewListOfSpeakers, undefined, true);
+                } catch (e) {
+                    this.raiseError(e);
+                }
             }
         }
     }
