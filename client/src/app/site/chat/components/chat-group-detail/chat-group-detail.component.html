@@ -1,17 +1,29 @@
 <div class="chat-header" *osPerms="permission.chatCanManage">
     <os-icon-container
         icon="group"
-        *ngIf="chatGroup.access_groups.length"
-        matTooltip="{{ 'Access groups' | translate }}"
+        *ngIf="chatGroup.write_groups.length"
+        matTooltip="{{ 'Groups with write permissions' | translate }}"
     >
-        <span *ngFor="let group of chatGroup.access_groups | slice: 0:3; let last = last">
+        <span *ngFor="let group of chatGroup.write_groups | slice: 0:3; let last = last">
             <span>{{ group.getTitle() | translate }}</span>
             <span *ngIf="!last">, </span>
-            <span *ngIf="last && chatGroup.access_groups.length > 3">...</span>
+            <span *ngIf="last && chatGroup.write_groups.length > 3">...</span>
+        </span>
+    </os-icon-container>
+
+    <os-icon-container
+        icon="remove_red_eye"
+        *ngIf="readOnlyGroups.length"
+        matTooltip="{{ 'Groups with read permissions' | translate }}"
+    >
+        <span *ngFor="let group of readOnlyGroups | slice: 0:3; let last = last">
+            <span>{{ group.getTitle() | translate }}</span>
+            <span *ngIf="!last">, </span>
+            <span *ngIf="last && chatGroup.read_groups.length > 3">...</span>
         </span>
     </os-icon-container>
     <button class="chat-options" mat-icon-button [matMenuTriggerFor]="chatgroupMenu">
-        <mat-icon> more_vert </mat-icon>
+        <mat-icon>more_vert</mat-icon>
     </button>
 </div>
 
@@ -41,5 +53,4 @@
             <span>{{ 'Delete' | translate }}</span>
         </button>
     </ng-container>
-    <!-- edit -->
 </mat-menu>

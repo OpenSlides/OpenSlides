@@ -7,7 +7,7 @@ from openslides.utils.auth import async_has_perm, async_in_some_groups
 class ChatGroupAccessPermissions(BaseAccessPermissions):
     """
     Access permissions container for ChatGroup and ChatGroupViewSet.
-    No base perm: The access permissions are done with the access groups
+    No base perm: The access permissions are done with the read/write groups.
     """
 
     async def get_restricted_data(
@@ -22,10 +22,11 @@ class ChatGroupAccessPermissions(BaseAccessPermissions):
             data = full_data
         else:
             for full in full_data:
-                access_groups = full.get("access_groups_id", [])
-                if len(
-                    full.get("access_groups_id", [])
-                ) == 0 or await async_in_some_groups(user_id, access_groups):
+                read_groups = full.get("read_groups_id", [])
+                write_groups = full.get("write_groups_id", [])
+                if await async_in_some_groups(
+                    user_id, read_groups
+                ) or await async_in_some_groups(user_id, write_groups):
                     data.append(full)
         return data
 

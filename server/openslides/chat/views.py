@@ -51,8 +51,8 @@ class ChatGroupViewSet(ModelViewSet):
 
     def update(self, *args, **kwargs):
         response = super().update(*args, **kwargs)
-        # Update all affected chatmessages to update their `access_groups_id` field,
-        # which is taken from the updated chatgroup.
+        # Update all affected chatmessages to update their `read_groups_id`  and
+        # `write_groups_id` field, which is taken from the updated chatgroup.
         inform_changed_data(ChatMessage.objects.filter(chatgroup=self.get_object()))
         return response
 
@@ -93,7 +93,7 @@ class ChatMessageViewSet(
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        if not serializer.validated_data["chatgroup"].can_access(self.request.user):
+        if not serializer.validated_data["chatgroup"].can_write(self.request.user):
             self.permission_denied(self.request)
 
         # Do not use the serializer.save since it will put the model in the history.

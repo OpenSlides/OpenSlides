@@ -14,7 +14,10 @@ class ChatGroupSerializer(ModelSerializer):
     Serializer for chat.models.ChatGroup objects.
     """
 
-    access_groups = IdPrimaryKeyRelatedField(
+    read_groups = IdPrimaryKeyRelatedField(
+        many=True, required=False, queryset=get_group_model().objects.all()
+    )
+    write_groups = IdPrimaryKeyRelatedField(
         many=True, required=False, queryset=get_group_model().objects.all()
     )
 
@@ -23,7 +26,8 @@ class ChatGroupSerializer(ModelSerializer):
         fields = (
             "id",
             "name",
-            "access_groups",
+            "read_groups",
+            "write_groups",
         )
 
 
@@ -35,7 +39,8 @@ class ChatMessageSerializer(ModelSerializer):
     chatgroup = IdPrimaryKeyRelatedField(
         required=False, queryset=ChatGroup.objects.all()
     )
-    access_groups_id = SerializerMethodField()
+    read_groups_id = SerializerMethodField()
+    write_groups_id = SerializerMethodField()
 
     class Meta:
         model = ChatMessage
@@ -46,7 +51,8 @@ class ChatMessageSerializer(ModelSerializer):
             "timestamp",
             "username",
             "user_id",
-            "access_groups_id",
+            "read_groups_id",
+            "write_groups_id",
         )
         read_only_fields = (
             "username",
@@ -58,5 +64,8 @@ class ChatMessageSerializer(ModelSerializer):
             data["text"] = validate_html_strict(data["text"])
         return data
 
-    def get_access_groups_id(self, chatmessage):
-        return [group.id for group in chatmessage.chatgroup.access_groups.all()]
+    def get_read_groups_id(self, chatmessage):
+        return [group.id for group in chatmessage.chatgroup.read_groups.all()]
+
+    def get_write_groups_id(self, chatmessage):
+        return [group.id for group in chatmessage.chatgroup.write_groups.all()]

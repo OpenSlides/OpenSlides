@@ -5,7 +5,8 @@ export class ChatGroup extends BaseModel<ChatGroup> {
 
     public id: number;
     public name: string;
-    public access_groups_id: number[];
+    public read_groups_id: number[];
+    public write_groups_id: number[];
 
     public constructor(input?: any) {
         super(ChatGroup.COLLECTIONSTRING, input);

@@ -15,5 +15,6 @@ export class ViewChatGroup extends BaseViewModel<ChatGroup> implements ChatGroup
     }
 }
 export interface ViewChatGroup extends ChatGroup {
-    access_groups: ViewGroup[];
+    read_groups: ViewGroup[];
+    write_groups: ViewGroup[];
 }

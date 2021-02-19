@@ -1,9 +1,9 @@
-<mat-tab-group (selectedTabChange)="selectedTabChange($event)" *ngIf="chatGroupsExist()">
+<mat-tab-group (selectedTabChange)="selectedTabChange($event)" *ngIf="chatGroupsExist">
     <mat-tab *ngFor="let chat of chatGroupSubject | async">
         <ng-template mat-tab-label>
             <span
-                [matBadgeHidden]="!getNotidficationsForChatId(chat.id)"
-                [matBadge]="getNotidficationsForChatId(chat.id)"
+                [matBadgeHidden]="!getNotificationsForChatId(chat.id)"
+                [matBadge]="getNotificationsForChatId(chat.id)"
                 matBadgeColor="accent"
                 matBadgeOverlap="false"
             >
@@ -16,14 +16,14 @@
     </mat-tab>
 </mat-tab-group>
 
-<div *ngIf="!chatGroupsExist()">
+<div *ngIf="!chatGroupsExist">
     <span>
         {{ 'No chat groups available' | translate }}
     </span>
 </div>
 
 <!-- send chat -->
-<form [formGroup]="newMessageForm" (ngSubmit)="send()" *ngIf="chatGroupsExist()">
+<form [formGroup]="newMessageForm" (ngSubmit)="send()" *ngIf="chatGroupsExist && canSendInSelectedChat" [@collapse]>
     <mat-form-field appearance="outline" class="chat-form-field">
         <input class="chat-input" type="text" matInput formControlName="text" />
         <mat-label>{{ 'Message' | translate }}</mat-label>

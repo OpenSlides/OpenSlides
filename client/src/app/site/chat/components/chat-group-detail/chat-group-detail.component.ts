@@ -22,6 +22,7 @@ import { ChatGroup } from 'app/shared/models/chat/chat-group';
 import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
 import { BaseViewComponentDirective } from 'app/site/base/base-view';
 import { ChatNotificationService } from 'app/site/chat/services/chat-notification.service';
+import { ViewGroup } from 'app/site/users/models/view-group';
 import {
     ChatGroupData,
     EditChatGroupDialogComponent
@@ -49,6 +50,12 @@ export class ChatGroupDetailComponent extends BaseViewComponentDirective impleme
     public get isOnBottomOfChat(): boolean {
         const isOnBottom = this.virtualScrollViewport?.measureScrollOffset('bottom') === 0;
         return isOnBottom;
+    }
+
+    public get readOnlyGroups(): ViewGroup[] {
+        const readGroups = this.chatGroup?.read_groups;
+        const writeGrous = this.chatGroup?.write_groups;
+        return readGroups?.filter(group => !writeGrous.includes(group)) || [];
     }
 
     public constructor(
@@ -111,7 +118,8 @@ export class ChatGroupDetailComponent extends BaseViewComponentDirective impleme
     public editChat(): void {
         const chatData: ChatGroupData = {
             name: this.chatGroup.name,
-            access_groups_id: this.chatGroup.access_groups_id
+            read_groups_id: this.chatGroup.read_groups_id,
+            write_groups_id: this.chatGroup.write_groups_id
         };
 
         const dialogRef = this.dialog.open(EditChatGroupDialogComponent, {
