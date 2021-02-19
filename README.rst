@@ -83,7 +83,7 @@ The main reason (next to obviously security ones) HTTPS is required originates
 from the need of HTTP/2. OpenSlides uses streaming responses to asynchronously
 send data to the client. With HTTP/1.1 one TCP-Connection per request is opened.
 Browsers limit the amount of concurrent connections
-(`reference<https://docs.pushtechnology.com/cloud/latest/manual/html/designguide/solution/support/connection_limitations.html>`_),
+(`reference <https://docs.pushtechnology.com/cloud/latest/manual/html/designguide/solution/support/connection_limitations.html>`_),
 so you are limited in opening tabs. HTTPS/2 just uses one connection per browser
 and eliminates these restrictions. The main point to use HTTPS is that browsers
 only use HTTP/2 if HTTPS is enabled.
@@ -152,5 +152,5 @@ License and authors
 ===================
 
 OpenSlides is Free/Libre Open Source Software (FLOSS), and distributed
-under the MIT License, see ``LICENSE`` file. The authors of OpenSlides are
-mentioned in the ``AUTHORS`` file.
+under the MIT License, see `LICENSE file <LICENSE>`_. The authors of OpenSlides are
+mentioned in the `AUTHORS file <AUTHORS>`_.
