@@ -45,18 +45,27 @@ interace ActionsResponse {
      *
      * To report errors, use the ActionError format!
      **/
-    results: ((object | ActionError | null)[] | null )[]
+    results: (object[] | ActionError | null )[]
 }
 
+/**
+ * If action_data_error_index is given, the error can be directly associated with the
+ * respective action data. If not, the error is of general fashion and/or not directly
+ * associated with a single action data.
+ *
+ * Note: ActionError can only be used if atomic=true.
+ */
 interface ActionError {
     success: false;
     message: string;
+    action_data_error_index?: number;
 }
 
 /**
  * JSON resonse with a status code of !=200. If a specific action raised the error,
- * use the action_error_index and action_payload_error_index to indicate the errored
- * action and payload. If there were general errors, both indices must be omitted or null.
+ * use the action_error_index and action_data_error_index to indicate the errored
+ * action and data, respectively. If there were general errors, both indices must be
+ * omitted or null.
  *
  * If the atomic flag was true in the request, it is not allowed to send
  * action-specific errors with this exception. It must be responded with an
@@ -66,5 +75,5 @@ Exception ActionException {
     success: false;
     message: string;
     action_error_index?: number;
-    action_payload_error_index?: number;
+    action_data_error_index?: number;
 }
