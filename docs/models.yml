@@ -132,21 +132,26 @@ user:
     to: committee/manager_ids
 
   # Meeting specific personal data
-  # Replacement is te meeting id but it is not a structured relation.
+  # Replacement is the meeting id but it is not a structured relation.
   comment_$:
     type: template
+    replacement: meeting_id
     fields: HTMLStrict
   number_$:
     type: template
+    replacement: meeting_id
     fields: string
   structure_level_$:
     type: template
+    replacement: meeting_id
     fields: string
   about_me_$:
     type: template
+    replacement: meeting_id
     fields: HTMLStrict
   vote_weight_$:
     type: template
+    replacement: meeting_id
     fields: decimal(6)
 
   # All foreign keys are meeting-specific:
