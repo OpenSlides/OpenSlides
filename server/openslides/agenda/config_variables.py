@@ -210,3 +210,13 @@ def get_config_variables():
         group="Agenda",
         subgroup="List of speakers",
     )
+
+    yield ConfigVariable(
+        name="agenda_list_of_speakers_initially_closed",
+        default_value=False,
+        input_type="boolean",
+        label="List of speakers is initially closed",
+        weight=235,
+        group="Agenda",
+        subgroup="List of speakers",
+    )

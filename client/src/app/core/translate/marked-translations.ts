@@ -125,6 +125,7 @@ _('Enable points of order');
 _('[Begin speech] starts the countdown, [End speech] stops the countdown.');
 _('Only present participants can be added to the list of speakers');
 _('Show hint »first speech« in the list of speakers management view');
+_('List of speakers is initially closed');
 _('Default visibility for new agenda items (except topics)');
 _('public');
 _('internal');
