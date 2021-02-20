@@ -61,4 +61,15 @@ os-performance -u admin -p secred -n 1000 create_users
 ```
 
 This creates 1.000 users with the names dummy1, dummy2 etc and the password
-"pass".
+"pass". All users are present and in the group with id 3 (delegates).
+
+
+## Votes
+
+```
+os-performance -t votes -n 1000
+```
+
+Sends 1.000 votes with differnt user. Make sure the users are created with
+`create_users` so they have the correct names and passwords. Make also sure,
+there is a poll in the correct state.

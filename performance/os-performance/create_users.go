@@ -21,7 +21,7 @@ func runCreateUsers(ctx context.Context, cfg *Config) error {
 
 	var users []json.RawMessage
 	for i := 1; i <= cfg.clientCount; i++ {
-		user := fmt.Sprintf(`{"first_name":"dummy%d","default_password":"pass", "collectionString":"users/user","csvGroups":[],"groups_id":[],"importTrackId":1}`, i)
+		user := fmt.Sprintf(`{"first_name":"dummy%d","default_password":"pass","is_present":true,"collectionString":"users/user","csvGroups":[],"groups_id":[3],"importTrackId":1}`, i)
 		users = append(users, []byte(user))
 	}
 
