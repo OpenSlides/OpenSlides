@@ -6,6 +6,13 @@ import (
 	"strings"
 )
 
+const (
+	testBrowser = iota
+	testConnect
+	testCreateUsers
+	testVotes
+)
+
 // Config contains all settings that can be changed with command line options.
 type Config struct {
 	testCase    int
@@ -43,15 +50,11 @@ func loadConfig(args []string) (*Config, error) {
 		cfg.testCase = testConnect
 	case "create_users":
 		cfg.testCase = testCreateUsers
+	case "votes":
+		cfg.testCase = testVotes
 	default:
 		return nil, fmt.Errorf("invalid testcase %s", *test)
 	}
 
 	return cfg, nil
 }
-
-const (
-	testBrowser = iota
-	testConnect
-	testCreateUsers
-)

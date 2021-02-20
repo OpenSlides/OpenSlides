@@ -60,6 +60,8 @@ func run(ctx context.Context, args []string) error {
 		err = runKeepOpen(ctx, cfg)
 	case testCreateUsers:
 		err = runCreateUsers(ctx, cfg)
+	case testVotes:
+		err = runVotes(ctx, cfg)
 	default:
 		err = fmt.Errorf("unknown testCase")
 	}

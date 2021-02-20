@@ -122,3 +122,8 @@ func (c *client) get(ctx context.Context, path string) error {
 	resp.Body.Close()
 	return nil
 }
+
+// Do works like http.Client.Do().
+func (c *client) Do(req *http.Request) (*http.Response, error) {
+	return c.hc.Do(req)
+}
