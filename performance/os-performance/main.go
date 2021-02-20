@@ -8,44 +8,39 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"log"
-	"net/http"
-	"os"
-	"os/signal"
 	"sync"
 	"time"
 
+	"github.com/OpenSlides/OpenSlides/performance/os-performace/client"
+	"github.com/OpenSlides/OpenSlides/performance/os-performace/cmd"
 	"github.com/vbauerster/mpb/v6"
 	"github.com/vbauerster/mpb/v6/decor"
 )
 
-const (
-	pathLogin      = "/apps/users/login/"
-	pathWhoami     = "/apps/users/whoami/"
-	pathServertime = "/apps/core/servertime/"
-	pathConstants  = "/apps/core/constants/"
-)
-
 func main() {
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-
-	go func() {
-		c := make(chan os.Signal, 1)
-		signal.Notify(c, os.Interrupt)
-		<-c
-		cancel()
-	}()
-
-	if err := run(ctx, os.Args); err != nil {
-		if errors.Is(err, context.Canceled) {
-			return
-		}
-		log.Printf("Error: %v", err)
-		os.Exit(1)
-	}
+	cmd.Execute()
 }
+
+// func main() {
+// 	ctx, cancel := context.WithCancel(context.Background())
+// 	defer cancel()
+
+// 	go func() {
+// 		c := make(chan os.Signal, 1)
+// 		signal.Notify(c, os.Interrupt)
+// 		<-c
+// 		cancel()
+// 	}()
+
+// 	if err := run(ctx, os.Args); err != nil {
+// 		if errors.Is(err, context.Canceled) {
+// 			return
+// 		}
+// 		log.Printf("Error: %v", err)
+// 		os.Exit(1)
+// 	}
+// }
 
 func run(ctx context.Context, args []string) error {
 	cfg, err := loadConfig(args[1:])
@@ -58,8 +53,6 @@ func run(ctx context.Context, args []string) error {
 		err = runBrowser(ctx, cfg)
 	case testConnect:
 		err = runKeepOpen(ctx, cfg)
-	case testCreateUsers:
-		err = runCreateUsers(ctx, cfg)
 	case testVotes:
 		err = runVotes(ctx, cfg)
 	default:
@@ -78,9 +71,9 @@ func runBrowser(_ context.Context, cfg *Config) error {
 	progress := mpb.New()
 	bar := progress.AddBar(int64(cfg.clientCount) * 5)
 
-	clients := make([]*client, cfg.clientCount)
+	clients := make([]*client.Client, cfg.clientCount)
 	for i := range clients {
-		c, err := newClient(cfg.domain, cfg.username, cfg.passwort, bar)
+		c, err := client.New(cfg.domain, cfg.username, cfg.passwort, bar)
 		if err != nil {
 			return fmt.Errorf("creating client: %w", err)
 		}
@@ -92,9 +85,9 @@ func runBrowser(_ context.Context, cfg *Config) error {
 	var wg sync.WaitGroup
 	for _, c := range clients {
 		wg.Add(1)
-		go func(c *client) {
+		go func(c *client.Client) {
 			defer wg.Done()
-			if err := c.browser(); err != nil {
+			if err := c.Browser(); err != nil {
 				log.Printf("Client failed: %v", err)
 			}
 		}(c)
@@ -122,12 +115,12 @@ func runKeepOpen(ctx context.Context, cfg *Config) error {
 	default:
 		return fmt.Errorf("unknown autoupdate-url %s", cfg.url)
 	}
-	c, err := newClient(cfg.domain, cfg.username, cfg.passwort, nil)
+	c, err := client.New(cfg.domain, cfg.username, cfg.passwort, nil)
 	if err != nil {
 		return fmt.Errorf("creating client: %w", err)
 	}
 
-	if err := c.login(); err != nil {
+	if err := c.Login(); err != nil {
 		return fmt.Errorf("login client: %w", err)
 	}
 
@@ -136,7 +129,7 @@ func runKeepOpen(ctx context.Context, cfg *Config) error {
 
 	for i := 0; i < cfg.clientCount; i++ {
 		go func() {
-			r, err := c.keepOpen(ctx, path)
+			r, err := c.KeepOpen(ctx, path)
 			if err != nil {
 				log.Println("Can not create connection: %w", err)
 				return
@@ -217,20 +210,4 @@ func scannerNotify(line string) (string, error) {
 		return "", fmt.Errorf("decode json: %v", err)
 	}
 	return fmt.Sprintf("notify name %s", format.Name), nil
-}
-
-func checkStatus(resp *http.Response, err error) (*http.Response, error) {
-	if err != nil {
-		return nil, fmt.Errorf("sending login request: %w", err)
-	}
-
-	if resp.StatusCode != 200 {
-		body, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			body = []byte("[can not read body]")
-		}
-		resp.Body.Close()
-		return nil, fmt.Errorf("got status %s: %s", resp.Status, body)
-	}
-	return resp, nil
 }

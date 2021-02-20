@@ -8,6 +8,7 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/OpenSlides/OpenSlides/performance/os-performace/client"
 	"github.com/vbauerster/mpb/v6"
 )
 
@@ -22,13 +23,13 @@ func runVotes(ctx context.Context, cfg *Config) error {
 		go func(i int) {
 			defer wg.Done()
 
-			c, err := newClient(cfg.domain, fmt.Sprintf("dummy%d", i+1), "pass", nil)
+			c, err := client.New(cfg.domain, fmt.Sprintf("dummy%d", i+1), "pass", nil)
 			if err != nil {
 				log.Printf("Error creating client: %v", err)
 				return
 			}
 
-			if err := c.login(); err != nil {
+			if err := c.Login(); err != nil {
 				log.Printf("Error loging in client: %v", err)
 				return
 			}
@@ -40,7 +41,7 @@ func runVotes(ctx context.Context, cfg *Config) error {
 				return
 			}
 
-			if _, err := checkStatus(c.Do(req)); err != nil {
+			if _, err := client.CheckStatus(c.Do(req)); err != nil {
 				log.Printf("Error sending vote request: %v", err)
 				return
 			}
