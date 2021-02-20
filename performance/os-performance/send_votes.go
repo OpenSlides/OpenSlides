@@ -22,7 +22,7 @@ func runVotes(ctx context.Context, cfg *Config) error {
 		go func(i int) {
 			defer wg.Done()
 
-			c, err := newClient(cfg.domain, fmt.Sprintf("dummy%d", i+1), "pass", bar)
+			c, err := newClient(cfg.domain, fmt.Sprintf("dummy%d", i+1), "pass", nil)
 			if err != nil {
 				log.Printf("Error creating client: %v", err)
 				return
@@ -34,7 +34,7 @@ func runVotes(ctx context.Context, cfg *Config) error {
 			}
 
 			body := `{"data":"Y"}`
-			req, err := http.NewRequestWithContext(ctx, "POST", "https://"+cfg.domain+"/system/vote/motion/1", strings.NewReader(body))
+			req, err := http.NewRequestWithContext(ctx, "POST", "https://"+cfg.domain+"/system/vote/motion/2", strings.NewReader(body))
 			if err != nil {
 				log.Printf("Error creating request: %v", err)
 				return
@@ -44,6 +44,8 @@ func runVotes(ctx context.Context, cfg *Config) error {
 				log.Printf("Error sending vote request: %v", err)
 				return
 			}
+
+			bar.Increment()
 			return
 		}(i)
 	}
