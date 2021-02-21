@@ -19,16 +19,16 @@ go build
 
 ## Run
 
-To see a list of
+You can see the usage of the command by calling it.
 
 ```
-os-performance -h
+os-performance
 ```
 
 Example:
 
 ```
-os-performace -d localhost:8000 -u admin -p secred -n 1000 -t connect
+os-performace connect -d localhost:8000 -u admin -p admin -a 100
 ```
 
 ## Test cases

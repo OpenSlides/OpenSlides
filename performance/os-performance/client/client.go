@@ -4,42 +4,27 @@ import (
 	"context"
 	"crypto/tls"
 	"fmt"
-	"io"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"net/http/cookiejar"
 	"strings"
-	"sync"
 )
 
-const (
-	pathLogin      = "/apps/users/login/"
-	pathWhoami     = "/apps/users/whoami/"
-	pathServertime = "/apps/core/servertime/"
-	pathConstants  = "/apps/core/constants/"
-)
-
-// Incrementer is called after each step.
-type Incrementer interface {
-	Increment()
-}
+const pathLogin = "/apps/users/login/"
 
 // Client can send requests to the server.
 type Client struct {
 	domain             string
 	hc                 *http.Client
 	username, password string
-	inc                Incrementer
 }
 
 // New creates a client object. No requests are sent.
-func New(domain, username, password string, inc Incrementer) (*Client, error) {
+func New(domain, username, password string) (*Client, error) {
 	c := &Client{
 		domain:   "https://" + domain,
 		username: username,
 		password: password,
-		inc:      inc,
 	}
 
 	jar, err := cookiejar.New(nil)
@@ -53,57 +38,6 @@ func New(domain, username, password string, inc Incrementer) (*Client, error) {
 		},
 	}
 	return c, nil
-}
-
-// Browser sends the request each Browser tab sends.
-// TODO: Move in own cmd.
-func (c *Client) Browser() error {
-	if err := c.Login(); err != nil {
-		return fmt.Errorf("login client: %w", err)
-	}
-
-	if c.inc != nil {
-		c.inc.Increment()
-	}
-
-	var wg sync.WaitGroup
-
-	for _, path := range []string{
-		pathWhoami,
-		pathLogin,
-		pathServertime,
-		pathConstants,
-	} {
-		wg.Add(1)
-		go func(path string) {
-			defer wg.Done()
-
-			if c.inc != nil {
-				defer c.inc.Increment()
-			}
-
-			if err := c.get(context.Background(), path); err != nil {
-				log.Printf("Error get request to %s: %v", path, err)
-			}
-		}(path)
-	}
-
-	wg.Wait()
-	return nil
-}
-
-// KeepOpen TODO in its own command.
-func (c *Client) KeepOpen(ctx context.Context, path string) (io.ReadCloser, error) {
-	req, err := http.NewRequestWithContext(ctx, "GET", c.domain+path, nil)
-	if err != nil {
-		return nil, fmt.Errorf("creating request: %w", err)
-	}
-
-	resp, err := CheckStatus(c.hc.Do(req))
-	if err != nil {
-		return nil, fmt.Errorf("sending %s request: %w", path, err)
-	}
-	return resp.Body, nil
 }
 
 // Login uses the username and password to login the client. Sets the returned

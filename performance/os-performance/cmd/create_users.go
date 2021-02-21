@@ -11,16 +11,12 @@ import (
 )
 
 var (
-	username string
-	password string
-	amount   int
+	createUserAmount int
 )
 
 func init() {
 	rootCmd.AddCommand(createUserCmd)
-	createUserCmd.Flags().StringVarP(&username, "username", "u", "admin", "Username that can create the users.")
-	createUserCmd.Flags().StringVarP(&password, "password", "p", "admin", "Password to use.")
-	createUserCmd.Flags().IntVarP(&amount, "amount", "a", 10, "Amount of users to create.")
+	createUserCmd.Flags().IntVarP(&createUserAmount, "amount", "a", 10, "Amount of users to create.")
 }
 
 var createUserCmd = &cobra.Command{
@@ -29,7 +25,7 @@ var createUserCmd = &cobra.Command{
 	Long: `All users get a name like dummy1, have the password "pass",
 			are present and in the group with id 3.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		c, err := client.New(domain, username, password, nil)
+		c, err := client.New(domain, username, password)
 		if err != nil {
 			return fmt.Errorf("creating client: %w", err)
 		}
@@ -39,7 +35,7 @@ var createUserCmd = &cobra.Command{
 		}
 
 		var users []json.RawMessage
-		for i := 1; i <= amount; i++ {
+		for i := 1; i <= createUserAmount; i++ {
 			user := fmt.Sprintf(`{"first_name":"dummy%d","default_password":"pass","is_present":true,"collectionString":"users/user","csvGroups":[],"groups_id":[3],"importTrackId":1}`, i)
 			users = append(users, []byte(user))
 		}
