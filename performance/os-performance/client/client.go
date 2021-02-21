@@ -4,7 +4,7 @@ import (
 	"context"
 	"crypto/tls"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/http/cookiejar"
 	"strings"
@@ -93,7 +93,7 @@ func CheckStatus(resp *http.Response, err error) (*http.Response, error) {
 	}
 
 	if resp.StatusCode != 200 {
-		body, err := ioutil.ReadAll(resp.Body)
+		body, err := io.ReadAll(resp.Body)
 		if err != nil {
 			body = []byte("[can not read body]")
 		}
