@@ -345,7 +345,8 @@
             "motion.can_create_amendments",
             "motion.can_support",
             "projector.can_see",
-            "user.can_see"
+            "user.can_see",
+            "user.can_change_own_password"
         ],
 
         "user_ids": [],
