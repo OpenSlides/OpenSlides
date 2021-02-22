@@ -102,7 +102,7 @@ user:
   default_number: string
   default_structure_level: string
   default_vote_weight: decimal(6)
-  last_email_send: string
+  last_email_send: timestamp
   is_demo_user:
     type: boolean
     read_only: true
