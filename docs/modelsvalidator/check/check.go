@@ -133,6 +133,7 @@ func scalarTypes() map[string]bool {
 		"float",
 		"decimal(6)",
 		"timestamp",
+		"color",
 	}
 	out := make(map[string]bool)
 	for _, t := range s {

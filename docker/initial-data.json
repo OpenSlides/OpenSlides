@@ -211,8 +211,7 @@
         "poll_default_group_ids": [5],
 
         "projector_ids": [1],
-        "projection_ids": [],
-        "projectiondefault_ids": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
+        "all_projection_ids": [],
         "projector_message_ids": [],
         "projector_countdown_ids": [],
         "tag_ids": [],
@@ -249,6 +248,40 @@
         "guest_ids": [],
         "user_ids": [1],
         "reference_projector_id": 1,
+
+        "default_$_projector_id": [
+            "agenda_all_items",
+            "topics",
+            "list_of_speakers",
+            "current_list_of_speakers",
+            "motion",
+            "amendment",
+            "motion_block",
+            "assignment",
+            "user",
+            "mediafile",
+            "projector_message",
+            "projector_countdowns",
+            "assignment_poll",
+            "motion_poll",
+            "poll"
+        ],
+        "default_$agenda_all_items_projector_id": 1,
+        "default_$topics_projector_id": 1,
+        "default_$list_of_speakers_projector_id": 1,
+        "default_$current_list_of_speakers_projector_id": 1,
+        "default_$motion_projector_id": 1,
+        "default_$amendment_projector_id": 1,
+        "default_$motion_block_projector_id": 1,
+        "default_$assignment_projector_id": 1,
+        "default_$user_projector_id": 1,
+        "default_$mediafile_projector_id": 1,
+        "default_$projector_message_projector_id": 1,
+        "default_$projector_countdowns_projector_id": 1,
+        "default_$assignment_poll_projector_id": 1,
+        "default_$motion_poll_projector_id": 1,
+        "default_$poll_projector_id": 1,
+        "projection_ids": [],
 
         "default_group_id": 1,
         "admin_group_id": 2
@@ -541,121 +574,49 @@
         "show_header_footer": true,
         "show_title": true,
         "show_logo": true,
+        "show_clock": true,
 
         "current_projection_ids": [],
-        "current_element_ids": [],
         "preview_projection_ids": [],
         "history_projection_ids": [],
         "used_as_reference_projector_meeting_id": 1,
-        "projectiondefault_ids": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
+        
+        "used_as_default_$_in_meeting_id": [
+            "agenda_all_items",
+            "topics",
+            "list_of_speakers",
+            "current_list_of_speakers",
+            "motion",
+            "amendment",
+            "motion_block",
+            "assignment",
+            "user",
+            "mediafile",
+            "projector_message",
+            "projector_countdowns",
+            "assignment_poll",
+            "motion_poll",
+            "poll"
+        ],
+        "used_as_default_$agenda_all_items_in_meeting_id": 1,
+        "used_as_default_$topics_in_meeting_id": 1,
+        "used_as_default_$list_of_speakers_in_meeting_id": 1,
+        "used_as_default_$current_list_of_speakers_in_meeting_id": 1,
+        "used_as_default_$motion_in_meeting_id": 1,
+        "used_as_default_$amendment_in_meeting_id": 1,
+        "used_as_default_$motion_block_in_meeting_id": 1,
+        "used_as_default_$assignment_in_meeting_id": 1,
+        "used_as_default_$user_in_meeting_id": 1,
+        "used_as_default_$mediafile_in_meeting_id": 1,
+        "used_as_default_$projector_message_in_meeting_id": 1,
+        "used_as_default_$projector_countdowns_in_meeting_id": 1,
+        "used_as_default_$assignment_poll_in_meeting_id": 1,
+        "used_as_default_$motion_poll_in_meeting_id": 1,
+        "used_as_default_$poll_in_meeting_id": 1,
+
         "meeting_id": 1
     }],
 "projection": [],
-"projectiondefault": [
-    {
-        "id": 1,
-        "name": "agenda_all_items",
-        "display_name": "Agenda",
-
-        "projector_id": 1,
-        "meeting_id": 1
-    },
-    {
-        "id": 2,
-        "name": "topics",
-        "display_name": "Topics",
-
-        "projector_id": 1,
-        "meeting_id": 1
-    },
-    {
-        "id": 3,
-        "name": "agenda_list_of_speakers",
-        "display_name": "List of speakers",
-
-        "projector_id": 1,
-        "meeting_id": 1
-    },
-    {
-        "id": 4,
-        "name": "agenda_current_list_of_speakers",
-        "display_name": "Current list of speakers",
-
-        "projector_id": 1,
-        "meeting_id": 1
-    },
-    {
-        "id": 5,
-        "name": "motions",
-        "display_name": "Motions",
-
-        "projector_id": 1,
-        "meeting_id": 1
-    },
-    {
-        "id": 6,
-        "name": "motionBlocks",
-        "display_name": "Motion blocks",
-
-        "projector_id": 1,
-        "meeting_id": 1
-    },
-    {
-        "id": 7,
-        "name": "assignments",
-        "display_name": "Elections",
-
-        "projector_id": 1,
-        "meeting_id": 1
-    },
-    {
-        "id": 8,
-        "name": "users",
-        "display_name": "Participants",
-
-        "projector_id": 1,
-        "meeting_id": 1
-    },
-    {
-        "id": 9,
-        "name": "mediafiles",
-        "display_name": "Files",
-
-        "projector_id": 1,
-        "meeting_id": 1
-    },
-    {
-        "id": 10,
-        "name": "messages",
-        "display_name": "Messages",
-
-        "projector_id": 1,
-        "meeting_id": 1
-    },
-    {
-        "id": 11,
-        "name": "countdowns",
-        "display_name": "Countdowns",
-
-        "projector_id": 1,
-        "meeting_id": 1
-    },
-    {
-        "id": 12,
-        "name": "assignment_poll",
-        "display_name": "Assignment poll",
-
-        "projector_id": 1,
-        "meeting_id": 1
-    },
-    {
-        "id": 13,
-        "name": "motion_poll",
-        "display_name": "Motion Poll",
-
-        "projector_id": 1,
-        "meeting_id": 1
-    }],
 "projector_message": [],
 "projector_countdown": []
 }
