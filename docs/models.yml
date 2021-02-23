@@ -1916,12 +1916,15 @@ projector:
     default: 0
   width:
     type: number
+    minimum: 1
     default: 1200
   aspect_ratio_numerator:
     type: number
+    minimum: 1
     default: 16
   aspect_ratio_denominator:
     type: number
+    minimum: 1
     default: 9
   color:
     type: color
