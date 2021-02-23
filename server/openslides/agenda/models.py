@@ -475,45 +475,34 @@ class SpeakerManager(models.Manager):
         Note that this method has side-effects: It might change the weight of other speakers to make
         space for the new point of order speaker.
         """
-        if point_of_order:
-            # get the first waiting speaker
-            first_speaker = self.filter(begin_time=None).order_by("weight").first()
+        queryset = self.filter(list_of_speakers=list_of_speakers, begin_time=None)
 
-            if first_speaker is None:
-                return 1
-            if not first_speaker.point_of_order:
-                return first_speaker.weight - 1
+        # get non-poo speakers out of the way
+        if not point_of_order:
+            return (queryset.aggregate(models.Max("weight"))["weight__max"] or 0) + 1
 
-            # get the first non-poo speaker
-            first_non_poo_speaker = (
-                self.filter(begin_time=None, point_of_order=False)
-                .order_by("weight")
-                .first()
-            )
+        # get the first waiting speaker
+        first_speaker = queryset.order_by("weight").first()
 
-            if first_non_poo_speaker is None:
-                # max weight + 1, the speaker is last since there are no non-poo speakers
-                return (
-                    self.filter(
-                        list_of_speakers=list_of_speakers, begin_time=None
-                    ).aggregate(models.Max("weight"))["weight__max"]
-                    + 1
-                )
+        if first_speaker is None:
+            return 1  # no speakers yet
+        if not first_speaker.point_of_order:
+            return first_speaker.weight - 1
 
-            weight = first_non_poo_speaker.weight
-            # add +1 to all speakers with weight >= first_non_poo_speaker.weight
-            self.filter(
-                list_of_speakers=list_of_speakers, begin_time=None, weight__gte=weight
-            ).update(weight=F("weight") + 1)
+        # get the first non-poo speaker
+        first_non_poo_speaker = (
+            queryset.filter(point_of_order=False).order_by("weight").first()
+        )
 
-            return weight
-        else:
-            return (
-                self.filter(list_of_speakers=list_of_speakers).aggregate(
-                    models.Max("weight")
-                )["weight__max"]
-                or 0
-            ) + 1
+        if first_non_poo_speaker is None:
+            # max weight + 1, the speaker is last since there are no non-poo speakers
+            return (queryset.aggregate(models.Max("weight"))["weight__max"] or 0) + 1
+
+        weight = first_non_poo_speaker.weight
+        # add +1 to all speakers with weight >= first_non_poo_speaker.weight
+        queryset.filter(weight__gte=weight).update(weight=F("weight") + 1)
+
+        return weight
 
 
 class Speaker(RESTModelMixin, models.Model):
