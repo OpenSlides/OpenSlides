@@ -2046,11 +2046,21 @@ projector_message:
 
 projector_countdown:
   id: number
-  title: string
-  description: string
-  default_time: number
-  countdown_time: number  # float?
-  running: boolean
+  title:
+    type: string
+    required: true
+  description:
+    type: string
+    default: ""
+  default_time:
+    type: number
+    default: 60
+  countdown_time:
+    type: float
+    default: 60
+  running:
+    type: boolean
+    default: false
 
   projection_ids:
     type: relation-list

@@ -51,6 +51,10 @@ def check_number(value: Any) -> bool:
     return value is None or isinstance(value, int)
 
 
+def check_float(value: Any) -> bool:
+    return value is None or isinstance(value, int) or isinstance(value, float)
+
+
 def check_boolean(value: Any) -> bool:
     return value is None or value is False or value is True
 
@@ -156,6 +160,8 @@ class Checker:
                 checker = check_string
             elif field_type in ("number", "timestamp", "relation"):
                 checker = check_number
+            elif field_type == "float":
+                checker = check_float
             elif field_type == "boolean":
                 checker = check_boolean
             elif field_type in ("string[]", "generic-relation-list"):
