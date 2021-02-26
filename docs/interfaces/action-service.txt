@@ -3,11 +3,12 @@
 /**
  * Executes multiple actions in the context of the user given by the user_id.
  * There are two modes of execution:
- * atomic=false (default):
+ * atomic=true (default):
  *   All actions are validated in common, so if one action or one payload of
  *   one action fails, the request is aborted with an ActionException indicating
  *   the problematic action with both indices.
- * atomic=true:
+ *   => The whole request is handled atomically.
+ * atomic=false:
  *   Each action is validated by it's own. If there is an error, the error must
  *   be reported via an ActionError in the ActionsResponse. The actions result
  *   is not written into the Datastore. It might raise an ActionException if the
@@ -53,7 +54,7 @@ interace ActionsResponse {
  * respective action data. If not, the error is of general fashion and/or not directly
  * associated with a single action data.
  *
- * Note: ActionError can only be used if atomic=true.
+ * Note: ActionError can only be used if atomic=false.
  */
 interface ActionError {
     success: false;
@@ -67,7 +68,7 @@ interface ActionError {
  * action and data, respectively. If there were general errors, both indices must be
  * omitted or null.
  *
- * If the atomic flag was true in the request, it is not allowed to send
+ * If the atomic flag was false in the request, it is not allowed to send
  * action-specific errors with this exception. It must be responded with an
  * ActionError through ActionsResponse (resulting in a status code of 200).
  */
