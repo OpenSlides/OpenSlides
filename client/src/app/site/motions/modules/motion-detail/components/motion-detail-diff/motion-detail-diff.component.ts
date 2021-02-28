@@ -140,9 +140,14 @@ export class MotionDetailDiffComponent extends BaseViewComponentDirective implem
 
         let baseText: LineNumberedString;
         if (this.motion.isParagraphBasedAmendment()) {
-            baseText = this.motionRepo
-                .getAllAmendmentParagraphsWithOriginalLineNumbers(this.motion, this.lineLength, true)
-                .join('\n');
+            try {
+                baseText = this.motionRepo
+                    .getAllAmendmentParagraphsWithOriginalLineNumbers(this.motion, this.lineLength, true)
+                    .join('\n');
+            } catch (e) {
+                console.error(e);
+                return '';
+            }
         } else {
             baseText = this.lineNumbering.insertLineNumbers(this.motion.text, this.lineLength);
         }
@@ -184,9 +189,14 @@ export class MotionDetailDiffComponent extends BaseViewComponentDirective implem
         }
         let baseText: LineNumberedString;
         if (this.motion.isParagraphBasedAmendment()) {
-            baseText = this.motionRepo
-                .getAllAmendmentParagraphsWithOriginalLineNumbers(this.motion, this.lineLength, true)
-                .join('\n');
+            try {
+                baseText = this.motionRepo
+                    .getAllAmendmentParagraphsWithOriginalLineNumbers(this.motion, this.lineLength, true)
+                    .join('\n');
+            } catch (e) {
+                console.error(e);
+                return '';
+            }
         } else {
             baseText = this.lineNumbering.insertLineNumbers(this.motion.text, this.lineLength);
         }

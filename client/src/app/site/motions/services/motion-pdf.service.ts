@@ -580,19 +580,23 @@ export class MotionPdfService {
         if (motion.isParagraphBasedAmendment()) {
             // this is logically redundant with the formation of amendments in the motion-detail html.
             // Should be refactored in a way that a service returns the correct html for both cases
-            const changeRecos = this.changeRecoRepo.getChangeRecoOfMotion(motion.id);
-            const amendmentParas = this.motionRepo.getAmendmentParagraphLines(
-                motion,
-                lineLength,
-                crMode,
-                changeRecos,
-                false
-            );
-            for (const paragraph of amendmentParas) {
-                motionText += '<h3>' + this.motionRepo.getAmendmentParagraphLinesTitle(paragraph) + '</h3>';
-                motionText += `<div class="paragraphcontext">${paragraph.textPre}</div>`;
-                motionText += paragraph.text;
-                motionText += `<div class="paragraphcontext">${paragraph.textPost}</div>`;
+            try {
+                const changeRecos = this.changeRecoRepo.getChangeRecoOfMotion(motion.id);
+                const amendmentParas = this.motionRepo.getAmendmentParagraphLines(
+                    motion,
+                    lineLength,
+                    crMode,
+                    changeRecos,
+                    false
+                );
+                for (const paragraph of amendmentParas) {
+                    motionText += '<h3>' + this.motionRepo.getAmendmentParagraphLinesTitle(paragraph) + '</h3>';
+                    motionText += `<div class="paragraphcontext">${paragraph.textPre}</div>`;
+                    motionText += paragraph.text;
+                    motionText += `<div class="paragraphcontext">${paragraph.textPost}</div>`;
+                }
+            } catch (e) {
+                motionText += '<em style="color: red; font-weight: bold;">' + e.toString() + '</em>';
             }
         } else if (motion.isStatuteAmendment()) {
             // statute amendments

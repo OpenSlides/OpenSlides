@@ -430,6 +430,8 @@ export class MotionDetailComponent extends BaseViewComponentDirective implements
 
     public recommendationReferencingMotions: ViewMotion[] = [];
 
+    public amendmentErrorMessage: string = null;
+
     /**
      * Constructs the detail view.
      *
@@ -816,6 +818,7 @@ export class MotionDetailComponent extends BaseViewComponentDirective implements
 
         if (formMotion.isParagraphBasedAmendment()) {
             contentPatch.selected_paragraphs = [];
+            contentPatch.broken_paragraphs = [];
             const parentMotion = this.repo.getViewModel(formMotion.parent_id);
             // Hint: lineLength is sometimes not loaded yet when this form is initialized;
             // This doesn't hurt as long as patchForm is called when editing mode is started, i.e., later.
@@ -833,6 +836,18 @@ export class MotionDetailComponent extends BaseViewComponentDirective implements
                         contentPatch['text_' + paragraphNo] = formMotion.amendment_paragraphs[paragraphNo];
                     }
                 });
+
+                // If the motion has been shortened after the amendment has been created, we will show the paragraphs
+                // of the amendment as read-only
+                for (
+                    let paragraphNo = paragraphsToChoose.length;
+                    paragraphNo < formMotion.amendment_paragraphs.length;
+                    paragraphNo++
+                ) {
+                    if (formMotion.amendment_paragraphs[paragraphNo] !== null) {
+                        contentPatch.broken_paragraphs.push(formMotion.amendment_paragraphs[paragraphNo]);
+                    }
+                }
             }
         }
 
@@ -867,6 +882,7 @@ export class MotionDetailComponent extends BaseViewComponentDirective implements
             tags_id: [],
             origin: [''],
             selected_paragraphs: [],
+            broken_paragraphs: [],
             statute_amendment: [''], // Internal value for the checkbox, not saved to the model
             statute_paragraph_id: [''],
             motion_block_id: [],
@@ -1039,15 +1055,21 @@ export class MotionDetailComponent extends BaseViewComponentDirective implements
      * TODO: Cleanup: repo function could be injected part of the model, to have easier access
      *
      * @returns {DiffLinesInParagraph[]}
+     * @throws Error
      */
     public getAmendmentParagraphs(): DiffLinesInParagraph[] {
-        return this.repo.getAmendmentParagraphLines(
-            this.motion,
-            this.lineLength,
-            this.crMode,
-            this.changeRecommendations,
-            this.showAmendmentContext
-        );
+        try {
+            this.amendmentErrorMessage = null;
+            return this.repo.getAmendmentParagraphLines(
+                this.motion,
+                this.lineLength,
+                this.crMode,
+                this.changeRecommendations,
+                this.showAmendmentContext
+            );
+        } catch (e) {
+            this.amendmentErrorMessage = e.toString();
+        }
     }
 
     public getAmendmentParagraphLinesTitle(paragraph: DiffLinesInParagraph): string {
@@ -1209,17 +1231,22 @@ export class MotionDetailComponent extends BaseViewComponentDirective implements
             changeRecommendation: null
         };
         if (this.motion.isParagraphBasedAmendment()) {
-            const lineNumberedParagraphs = this.repo.getAllAmendmentParagraphsWithOriginalLineNumbers(
-                this.motion,
-                this.lineLength,
-                false
-            );
-            data.changeRecommendation = this.changeRecoRepo.createAmendmentChangeRecommendationTemplate(
-                this.motion,
-                lineNumberedParagraphs,
-                lineRange,
-                this.lineLength
-            );
+            try {
+                const lineNumberedParagraphs = this.repo.getAllAmendmentParagraphsWithOriginalLineNumbers(
+                    this.motion,
+                    this.lineLength,
+                    false
+                );
+                data.changeRecommendation = this.changeRecoRepo.createAmendmentChangeRecommendationTemplate(
+                    this.motion,
+                    lineNumberedParagraphs,
+                    lineRange,
+                    this.lineLength
+                );
+            } catch (e) {
+                console.error(e);
+                return;
+            }
         } else {
             data.changeRecommendation = this.changeRecoRepo.createMotionChangeRecommendationTemplate(
                 this.motion,
