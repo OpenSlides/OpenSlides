@@ -29,7 +29,8 @@ const AssignmentPollRelations: RelationDefinition[] = [
         type: 'O2M',
         ownIdKey: 'options_id',
         ownKey: 'options',
-        foreignViewModel: ViewAssignmentOption
+        foreignViewModel: ViewAssignmentOption,
+        order: 'weight'
     },
     {
         type: 'M2O',
