@@ -10,10 +10,19 @@ agenda_item:
     can_manage:
         can_see_internal:
             can_see:
+assignment:
+    can_manage:
+        can_nominate_other:
+            can_see:
+    can_nominate_self:
+        can_see:
 list_of_speakers:
     can_manage:
         can_see:
     can_be_speaker:
+        can_see:
+mediafile:
+    can_manage:
         can_see:
 meeting:
     can_manage_settings:
@@ -22,11 +31,6 @@ meeting:
     can_see_autopilot:
     can_see_livestream:
     can_see_history:
-projector:
-    can_manage:
-        can_see:
-tag:
-    can_manage:
 motion:
     can_manage:
         can_manage_metadata:
@@ -41,15 +45,13 @@ motion:
             can_see:
     can_support:
         can_see:
-assignment:
+poll:
     can_manage:
-        can_nominate_other:
-            can_see:
-    can_nominate_self:
-        can_see:
-mediafile:
+projector:
     can_manage:
         can_see:
+tag:
+    can_manage:
 user:
     can_manage:
         can_see_extra_data:
