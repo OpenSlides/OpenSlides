@@ -5,8 +5,8 @@ import { BehaviorSubject } from 'rxjs';
 
 import { CommunicationManagerService } from './communication-manager.service';
 import { DataStoreService } from './data-store.service';
-import { Deferred } from '../promises/deferred';
 import { OfflineBroadcastService, OfflineReason } from './offline-broadcast.service';
+import { OpenSlidesStatusService } from './openslides-status.service';
 import { OperatorService, WhoAmI } from './operator.service';
 import { StorageService } from './storage.service';
 
@@ -35,25 +35,16 @@ export class OpenSlidesService {
         return this.booted.value;
     }
 
-    public get isStable(): Promise<void> {
-        return this.stable;
-    }
-
-    private stable = new Deferred();
-
     public constructor(
         private storageService: StorageService,
         private operator: OperatorService,
+        private openslidesStatus: OpenSlidesStatusService,
         private router: Router,
         private DS: DataStoreService,
         private communicationManager: CommunicationManagerService,
         private offlineBroadcastService: OfflineBroadcastService
     ) {
         this.bootup();
-    }
-
-    public setStable(): void {
-        this.stable.resolve();
     }
 
     /**
@@ -129,7 +120,7 @@ export class OpenSlidesService {
      */
     private async setupDataStoreAndStartCommunication(): Promise<void> {
         await this.DS.initFromStorage();
-        await this.stable;
+        await this.openslidesStatus.stable;
         this.communicationManager.startCommunication();
     }
 

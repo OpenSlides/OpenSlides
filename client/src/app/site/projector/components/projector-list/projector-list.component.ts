@@ -16,7 +16,7 @@ import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, timer } from 'rxjs';
 
-import { OpenSlidesService } from 'app/core/core-services/openslides.service';
+import { OpenSlidesStatusService } from 'app/core/core-services/openslides-status.service';
 import { OperatorService, Permission } from 'app/core/core-services/operator.service';
 import { ProjectorRepositoryService } from 'app/core/repositories/projector/projector-repository.service';
 import { Projector } from 'app/shared/models/core/projector';
@@ -78,7 +78,7 @@ export class ProjectorListComponent extends BaseViewComponentDirective implement
         private repo: ProjectorRepositoryService,
         private formBuilder: FormBuilder,
         private operator: OperatorService,
-        private openslidesService: OpenSlidesService,
+        private openslidesStatus: OpenSlidesStatusService,
         private dialogService: MatDialog,
         private cd: ChangeDetectorRef
     ) {
@@ -135,7 +135,7 @@ export class ProjectorListComponent extends BaseViewComponentDirective implement
     }
 
     private async installUpdater(): Promise<void> {
-        await this.openslidesService.isStable;
+        await this.openslidesStatus.stable;
         /**
          * Angulars change detection goes nuts, since countdown and motios with long texts are pushing too much data
          */
