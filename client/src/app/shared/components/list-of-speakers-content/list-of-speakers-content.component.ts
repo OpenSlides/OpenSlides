@@ -58,7 +58,11 @@ export class ListOfSpeakersContentComponent extends BaseViewComponentDirective i
 
     public showFistContributionHint: boolean;
 
-    public showPointOfOrders: boolean;
+    public get showPointOfOrders(): boolean {
+        return this.pointOfOrderEnabled && this.canAddDueToPresence;
+    }
+
+    private pointOfOrderEnabled: boolean;
 
     public get title(): string {
         return this.viewListOfSpeakers?.getTitle();
@@ -72,7 +76,7 @@ export class ListOfSpeakersContentComponent extends BaseViewComponentDirective i
         return this.operator.hasPerms(this.permission.agendaCanManageListOfSpeakers);
     }
 
-    public get canAddSelf(): boolean {
+    public get canAddDueToPresence(): boolean {
         return !this.config.instant('agenda_present_speakers_only') || this.operator.user.is_present;
     }
 
@@ -144,8 +148,8 @@ export class ListOfSpeakersContentComponent extends BaseViewComponentDirective i
                 this.showFistContributionHint = show;
             }),
             // observe point of order settings
-            this.config.get<boolean>('agenda_enable_point_of_order_speakers').subscribe(show => {
-                this.showPointOfOrders = show;
+            this.config.get<boolean>('agenda_enable_point_of_order_speakers').subscribe(enabled => {
+                this.pointOfOrderEnabled = enabled;
             })
         );
     }
