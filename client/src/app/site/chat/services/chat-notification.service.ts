@@ -43,6 +43,7 @@ export class ChatNotificationService {
     private openChatgroupIds: number[] = [];
 
     public constructor(private repo: ChatMessageRepositoryService, private storage: StorageService) {
+        this.storage.addNoClearKey(STORAGE_KEY);
         this.setup();
     }
 
