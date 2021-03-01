@@ -110,13 +110,6 @@ services:
 
   server:
     << : *default-osserver
-    # Below is the default command.  You can uncomment it to override the
-    # number of workers, for example:
-    # command: "gunicorn -w 8 --preload -b 0.0.0.0:8000
-    #   -k uvicorn.workers.UvicornWorker openslides.asgi:application"
-    #
-    # Uncomment the following line to use daphne instead of gunicorn:
-    # command: "daphne -b 0.0.0.0 -p 8000 openslides.asgi:application"
     environment:
       << : *default-osserver-env
     secrets:
