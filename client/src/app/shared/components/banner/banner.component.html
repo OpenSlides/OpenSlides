@@ -3,6 +3,7 @@
     class="banner"
     [ngClass]="[
         banner.type === 'history' ? 'history-mode-indicator' : '',
+        banner.type === 'tooLessLocalStorage' ? 'too-less-local-storage-indicator' : '',
         banner.class ? banner.class : '',
         banner.largerOnMobileView ? 'larger-on-mobile' : ''
     ]"
@@ -12,6 +13,10 @@
         <span>{{ 'You are using the history mode of OpenSlides. Changes will not be saved.' | translate }}</span>
         <span>({{ getHistoryTimestamp() }})</span>
         <a (click)="timeTravel.resumeTime()">{{ 'Exit' | translate }}</a>
+    </ng-container>
+    <ng-container *ngSwitchCase="'tooLessLocalStorage'">
+        <span>{{ "QuotaExceededError: The local storage's quota is too low" | translate }}</span>
+        <a href="https://support.openslides.com/help/de-de/7/57" target="_blank">{{ 'Click here for more information' | translate }}</a>
     </ng-container>
     <ng-container *ngSwitchDefault>
         <a class="banner-link" [routerLink]="banner.link" [style.cursor]="banner.link ? 'pointer' : 'default'">

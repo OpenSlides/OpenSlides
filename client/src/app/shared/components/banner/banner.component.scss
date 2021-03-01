@@ -40,7 +40,8 @@
     }
 }
 
-.history-mode-indicator {
+.history-mode-indicator,
+.too-less-local-storage-indicator {
     background: repeating-linear-gradient(45deg, #ffee00, #ffee00 10px, #070600 10px, #000000 20px);
 
     span,
