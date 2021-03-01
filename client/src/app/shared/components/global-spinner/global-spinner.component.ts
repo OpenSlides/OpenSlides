@@ -4,6 +4,7 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 
+import { ErrorInformation, OpenSlidesStatusService } from 'app/core/core-services/openslides-status.service';
 import { OverlayService } from 'app/core/ui-services/overlay.service';
 
 /**
@@ -35,6 +36,8 @@ export class GlobalSpinnerComponent implements OnInit, OnDestroy {
      */
     private LOADING = this.translate.instant('Loading data. Please wait ...');
 
+    public error: ErrorInformation | null = null;
+
     /**
      * Constructor
      *
@@ -45,8 +48,14 @@ export class GlobalSpinnerComponent implements OnInit, OnDestroy {
     public constructor(
         private overlayService: OverlayService,
         protected translate: TranslateService,
-        private cd: ChangeDetectorRef
-    ) {}
+        private cd: ChangeDetectorRef,
+        private statusService: OpenSlidesStatusService
+    ) {
+        this.statusService.currentError.subscribe(error => {
+            this.error = error;
+            this.cd.markForCheck();
+        });
+    }
 
     /**
      * Init method

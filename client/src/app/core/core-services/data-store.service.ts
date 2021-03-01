@@ -5,6 +5,7 @@ import { Observable, Subject } from 'rxjs';
 import { BaseModel, ModelConstructor } from '../../shared/models/base/base-model';
 import { CollectionStringMapperService } from './collection-string-mapper.service';
 import { Deferred } from '../promises/deferred';
+import { OpenSlidesStatusService } from './openslides-status.service';
 import { RelationCacheService } from './relation-cache.service';
 import { StorageService } from './storage.service';
 
@@ -338,7 +339,8 @@ export class DataStoreService {
     public constructor(
         private storageService: StorageService,
         private modelMapper: CollectionStringMapperService,
-        private DSUpdateManager: DataStoreUpdateManagerService
+        private DSUpdateManager: DataStoreUpdateManagerService,
+        private statusService: OpenSlidesStatusService
     ) {}
 
     /**
@@ -662,8 +664,16 @@ export class DataStoreService {
      */
     public async flushToStorage(changeId: number): Promise<void> {
         this._maxChangeId = changeId;
-        await this.storageService.set(DataStoreService.cachePrefix + 'DS', this.jsonStore);
-        await this.storageService.set(DataStoreService.cachePrefix + 'maxChangeId', changeId);
+        try {
+            await this.storageService.set(DataStoreService.cachePrefix + 'DS', this.jsonStore);
+            await this.storageService.set(DataStoreService.cachePrefix + 'maxChangeId', changeId);
+        } catch (e) {
+            if (e?.name === 'QuotaExceededError') {
+                this.statusService.setTooLessLocalStorage();
+            } else {
+                throw e;
+            }
+        }
     }
 
     public print(): void {

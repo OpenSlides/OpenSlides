@@ -2,7 +2,11 @@
     <div class="spinner-container">
         <div>
             <div class="spinner-component"></div>
-            <div class="spinner-text">{{ text }}</div>
+            <div *ngIf="!error" class="spinner-text">{{ text }}</div>
+            <div *ngIf="error" class="spinner-text">
+                {{ 'An error happened' | translate}}{{ error.name ? ': ' + error.name : ''}}.<br>
+                {{ 'Please contact your system administrator.' | translate }}
+            </div>
         </div>
     </div>
 </os-overlay>
