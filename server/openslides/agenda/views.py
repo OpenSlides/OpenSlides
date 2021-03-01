@@ -338,10 +338,9 @@ class ListOfSpeakersViewSet(
             # Check permissions and other conditions. Get user instance.
             if user_id is None:
                 # Add oneself
-                if not point_of_order and not has_perm(
-                    self.request.user, "agenda.can_be_speaker"
-                ):
+                if not has_perm(self.request.user, "agenda.can_be_speaker"):
                     self.permission_denied(request)
+
                 # even if the list is closed, point of order has to be accepted
                 if not point_of_order and list_of_speakers.closed:
                     raise ValidationError({"detail": "The list of speakers is closed."})
