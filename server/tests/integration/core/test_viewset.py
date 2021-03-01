@@ -361,7 +361,7 @@ class ConfigViewSet(TestCase):
 
     def test_reset_group(self):
         config["general_event_name"] = "test_name_of20w2fj20clqwcm2pij"  # Group General
-        config["agenda_show_subtitle"] = True  # Group Agenda
+        config["agenda_show_subtitle"] = False  # Group Agenda
         config[
             "motions_preamble"
         ] = "test_preamble_2390jvwohjwo1oigefoq"  # Group motions
@@ -370,7 +370,7 @@ class ConfigViewSet(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(config["general_event_name"], "OpenSlides")
-        self.assertEqual(config["agenda_show_subtitle"], False)
+        self.assertEqual(config["agenda_show_subtitle"], True)
         self.assertEqual(
             config["motions_preamble"], "test_preamble_2390jvwohjwo1oigefoq"
         )
