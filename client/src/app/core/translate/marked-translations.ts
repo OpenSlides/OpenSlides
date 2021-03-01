@@ -110,7 +110,7 @@ _('Arabic');
 _('Roman');
 _('Begin of event');
 _('Input format: DD.MM.YYYY HH:MM');
-_('Show subtitles in the agenda');
+_('Show motion submitters in the agenda');
 _('Hide internal items when projecting subitems');
 _('Number of the next speakers to be shown on the projector');
 _('Enter number of the next shown speakers. Choose -1 to show all next speakers.');
