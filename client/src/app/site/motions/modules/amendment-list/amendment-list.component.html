@@ -141,7 +141,7 @@
             <span>{{ 'Deselect all' | translate }}</span>
         </button>
 
-        <ng-container *osPerms="'motions.can_manage'; or: 'motions.can_manage_metadata'">
+        <ng-container *osPerms="['motions.can_manage', 'motions.can_manage_metadata']">
             <mat-divider></mat-divider>
             <os-motion-multiselect-actions [selectedMotions]="selectedRows" (action)="multiselectWrapper($event)">
             </os-motion-multiselect-actions>
