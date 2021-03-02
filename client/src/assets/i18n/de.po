@@ -230,6 +230,9 @@ msgstr "Anzahl der Stimmen"
 msgid "An email with a password reset link was send!"
 msgstr "Es wurde eine E-Mail mit Link zum Passwort-Zurücksetzen gesendet."
 
+msgid "An error happened"
+msgstr "Ein Fehler ist aufgetreten"
+
 msgid "An unknown error occurred."
 msgstr "Ein unbekannter Fehler ist aufgetreten."
 
@@ -712,6 +715,9 @@ msgstr "Antragsblock löschen"
 
 msgid "Clear tags"
 msgstr "Schlagwörter löschen"
+
+msgid "Click here for more information"
+msgstr "Mehr Informationen"
 
 msgid "Click here to vote!"
 msgstr "Zur Stimmabgabe hier klicken!"
@@ -1692,7 +1698,9 @@ msgid "Meta information"
 msgstr "Metainformationen"
 
 msgid "Min votes cannot be greater than max votes."
-msgstr "Die min. Stimmen dürfen nicht größer also die max. Stimmen sein."
+msgstr ""
+"Die minimale Stimmenanzahl darf nicht größer als die maximale Stimmenanzahl "
+"sein."
 
 msgid "Minimal required version"
 msgstr "Minimal erforderliche Version"
@@ -2219,6 +2227,9 @@ msgstr "Phase"
 msgid "Please allow OpenSlides to access your microphone and/or camera"
 msgstr "Bitte erlauben Sie jetzt den Zugriff auf Mikrofon und Kamera."
 
+msgid "Please contact your system administrator."
+msgstr "Bitte kontaktieren Sie den Systemadministrator."
+
 msgid "Please enter a name for the new directory:"
 msgstr "Bitte geben Sie einen Namen für das neue Verzeichnis ein:"
 
@@ -2337,6 +2348,11 @@ msgstr "Alle Kandidaten auf die Redeliste setzen"
 
 msgid "Queue"
 msgstr "Warteliste"
+
+msgid "QuotaExceededError: The local storage's quota is too low"
+msgstr ""
+"QuotaExceededError: Das Quotalimit des lokalen Browserspeichers wurde "
+"überschritten."
 
 msgid "Re-add last speaker"
 msgstr "Letzte/n Redner/in zurückholen"
@@ -2676,6 +2692,9 @@ msgid "Show meta information box below the title on projector"
 msgstr ""
 "Meta-Informations-Box auf dem Projektor unterhalb des Antragstitels anzeigen"
 
+msgid "Show motion submitters in the agenda"
+msgstr "Antragsteller in der Tagesordnung anzeigen"
+
 msgid "Show orange countdown in the last x seconds of speaking time"
 msgstr "Countdown in den letzten x Sekunden der Redezeit orange darstellen"
 
@@ -2698,9 +2717,6 @@ msgid "Show submitters and recommendation/state in table of contents"
 msgstr ""
 "Antragsteller/in und Beschlussempfehlung/Beschluss im PDF-Inhaltsverzeichnis"
 " anzeigen"
-
-msgid "Show subtitles in the agenda"
-msgstr "Untertitel in der Tagesordnungsübersicht anzeigen"
 
 msgid "Show the sequential number for a motion"
 msgstr "Laufende Nummer von Anträgen anzeigen"

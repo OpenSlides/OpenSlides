@@ -209,6 +209,9 @@ msgstr ""
 msgid "An email with a password reset link was send!"
 msgstr ""
 
+msgid "An error happened"
+msgstr ""
+
 msgid "An unknown error occurred."
 msgstr ""
 
@@ -668,6 +671,9 @@ msgid "Clear motion block"
 msgstr ""
 
 msgid "Clear tags"
+msgstr ""
+
+msgid "Click here for more information"
 msgstr ""
 
 msgid "Click here to vote!"
@@ -2123,6 +2129,9 @@ msgstr ""
 msgid "Please allow OpenSlides to access your microphone and/or camera"
 msgstr ""
 
+msgid "Please contact your system administrator."
+msgstr ""
+
 msgid "Please enter a name for the new directory:"
 msgstr ""
 
@@ -2238,6 +2247,9 @@ msgid "Put all candidates on the list of speakers"
 msgstr ""
 
 msgid "Queue"
+msgstr ""
+
+msgid "QuotaExceededError: The local storage's quota is too low"
 msgstr ""
 
 msgid "Re-add last speaker"
@@ -2570,6 +2582,9 @@ msgstr ""
 msgid "Show meta information box below the title on projector"
 msgstr ""
 
+msgid "Show motion submitters in the agenda"
+msgstr ""
+
 msgid "Show orange countdown in the last x seconds of speaking time"
 msgstr ""
 
@@ -2589,9 +2604,6 @@ msgid "Show state extension field"
 msgstr ""
 
 msgid "Show submitters and recommendation/state in table of contents"
-msgstr ""
-
-msgid "Show subtitles in the agenda"
 msgstr ""
 
 msgid "Show the sequential number for a motion"
