@@ -19,6 +19,11 @@ msgstr ""
 msgid "<unknown motion>"
 msgstr ""
 
+msgid ""
+"A change recommendation or amendment is probably referring to a "
+"non-existant line number."
+msgstr ""
+
 msgid "A file with this title or filename already exists in this directory."
 msgstr ""
 
@@ -204,6 +209,9 @@ msgid "Amendments to"
 msgstr ""
 
 msgid "Amount of votes"
+msgstr ""
+
+msgid "An amendment is probably referring to a non-existant line number."
 msgstr ""
 
 msgid "An email with a password reset link was send!"
@@ -1378,6 +1386,11 @@ msgid ""
 "optional and may be empty."
 msgstr ""
 
+msgid ""
+"If it is an amendment, you can back up its content when editing it and "
+"delete it afterwards."
+msgstr ""
+
 msgid "Import"
 msgstr ""
 
@@ -1403,6 +1416,9 @@ msgid "In the election process"
 msgstr ""
 
 msgid "Inactive"
+msgstr ""
+
+msgid "Inconsistent data."
 msgstr ""
 
 msgid "Initial password"
@@ -2897,6 +2913,9 @@ msgstr ""
 msgid "This field is required."
 msgstr ""
 
+msgid "This paragraph does not exist in the main motion anymore:"
+msgstr ""
+
 msgid "This prefix will be set if you run the automatic agenda numbering."
 msgstr ""
 
@@ -3196,6 +3215,9 @@ msgid "You are not supposed to be here..."
 msgstr ""
 
 msgid "You are using the history mode of OpenSlides. Changes will not be saved."
+msgstr ""
+
+msgid "You can back up its content when editing it and delete it afterwards."
 msgstr ""
 
 msgid "You can just anonymize named polls"

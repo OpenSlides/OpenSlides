@@ -215,7 +215,7 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
         dataSend: DataSendService,
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
-        translate: TranslateService,
+        private translate: TranslateService,
         relationManager: RelationManagerService,
         config: ConfigService,
         private httpService: HttpService,
@@ -817,8 +817,9 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
 
             if (baseParagraphs[paraNo] === undefined) {
                 const msg =
-                    'Inconsistent data. An amendment is probably referring to a non-existant line number. ' +
-                    'You can back up its content when editing it and delete it afterwards.';
+                    this.translate.instant('Inconsistent data.') + ' ' +
+                    this.translate.instant('An amendment is probably referring to a non-existant line number.') + ' ' +
+                    this.translate.instant('You can back up its content when editing it and delete it afterwards.');
                 return '<em style="color: red; font-weight: bold;">' + msg + '</em>';
             }
 
@@ -891,7 +892,8 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
                 (newText: string, paraNo: number): DiffLinesInParagraph => {
                     if (baseParagraphs[paraNo] === undefined) {
                         throw new Error(
-                            'Inconsistent data. An amendment is probably referring to a non-existant line number.'
+                            this.translate.instant('Inconsistent data.') + ' ' +
+                            this.translate.instant('An amendment is probably referring to a non-existant line number.')
                         );
                     } else if (newText !== null) {
                         return this.diff.getAmendmentParagraphsLines(
@@ -969,7 +971,8 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
                     }
                     if (baseParagraphs[paraNo] === undefined) {
                         console.error(
-                            'Inconsistent data. An amendment is probably referring to a non-existant line number.'
+                            this.translate.instant('Inconsistent data.') + ' ' +
+                            this.translate.instant('An amendment is probably referring to a non-existant line number.')
                         );
                         return null;
                     }
@@ -1014,7 +1017,10 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
         return (amendment.amendment_paragraphs || []).map((newText: string, paraNo: number): string => {
             const origText = baseParagraphs[paraNo];
             if (origText === undefined) {
-                throw new Error('Inconsistent data. An amendment is probably referring to a non-existant line number.');
+                throw new Error(
+                    this.translate.instant('Inconsistent data.') + ' ' +
+                    this.translate.instant('An amendment is probably referring to a non-existant line number.')
+                );
             }
 
             if (newText === null) {
