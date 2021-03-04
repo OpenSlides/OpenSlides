@@ -1848,7 +1848,6 @@ mediafile:
   filename:
     type: string
     descriptin: The uploaded filename. Will be used for downloading. Only writeable on create.
-    required: true
   mimetype: string
   pdf_information: JSON
   create_timestamp: timestamp
@@ -1877,7 +1876,6 @@ mediafile:
   list_of_speakers_id:
     type: relation
     to: list_of_speakers/content_object_id
-    required: true
     on_delete: CASCADE
     equal_fields: meeting_id
   projection_ids:
