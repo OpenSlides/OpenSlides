@@ -46,42 +46,6 @@ def test_group_db_queries():
     assert count_queries(Group.get_elements)() == 2
 
 
-class UserGetTest(TestCase):
-    """
-    Tests to receive a users via REST API.
-    """
-
-    def test_get_with_user_who_is_in_group_with_pk_1(self):
-        """
-        It is invalid, that a user is in the group with the pk 1. But if the
-        database is invalid, the user should nevertheless be received.
-        """
-        admin = User.objects.get(username="admin")
-        group1 = Group.objects.get(pk=1)
-        admin.groups.add(group1)
-        self.client.login(username="admin", password="admin")
-
-        response = self.client.get("/rest/users/user/1/")
-
-        self.assertEqual(response.status_code, 200)
-
-    def test_get_with_user_without_permissions(self):
-        group = Group.objects.get(pk=1)
-        permission_string = "users.can_see_name"
-        app_label, codename = permission_string.split(".")
-        permission = group.permissions.get(
-            content_type__app_label=app_label, codename=codename
-        )
-        group.permissions.remove(permission)
-        inform_changed_data(group)
-        config["general_system_enable_anonymous"] = True
-        guest_client = APIClient()
-
-        response = guest_client.get("/rest/users/user/1/")
-
-        self.assertEqual(response.status_code, 404)
-
-
 class UserCreate(TestCase):
     """
     Tests creation of users via REST API.
@@ -378,26 +342,6 @@ class UserUpdate(TestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         admin = User.objects.get(pk=self.admin.pk)
         self.assertIsNone(admin.vote_delegated_to_id)
-
-    def test_update_vote_delegation_autoupdate(self):
-        self.setup_vote_delegation()
-        response = self.client.patch(
-            reverse("user-detail", args=[self.user.pk]),
-            {"vote_delegated_to_id": self.admin.pk},
-        )
-        self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
-
-        autoupdate = self.get_last_autoupdate(user=self.admin)
-        user_au = autoupdate[0].get(f"users/user:{self.user.pk}")
-        self.assertIsNotNone(user_au)
-        self.assertEqual(user_au["vote_delegated_to_id"], self.admin.pk)
-        user2_au = autoupdate[0].get(f"users/user:{self.user2.pk}")
-        self.assertIsNotNone(user2_au)
-        self.assertEqual(user2_au["vote_delegated_from_users_id"], [])
-        admin_au = autoupdate[0].get(f"users/user:{self.admin.pk}")
-        self.assertIsNotNone(admin_au)
-        self.assertEqual(admin_au["vote_delegated_from_users_id"], [self.user.pk])
-        self.assertEqual(autoupdate[1], [])
 
     def test_update_vote_delegated_from(self):
         self.setup_vote_delegation()
@@ -864,60 +808,6 @@ class UserSendIntivationEmail(TestCase):
         self.assertEqual(mail.outbox[0].to[0], self.email)
 
 
-class GroupMetadata(TestCase):
-    def test_options_request_as_anonymous_user_activated(self):
-        config["general_system_enable_anonymous"] = True
-
-        response = self.client.options("/rest/users/group/")
-
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data["name"], "Group List")
-        perm_list = response.data["actions"]["POST"]["permissions"]["choices"]
-        self.assertEqual(type(perm_list), list)
-        for item in perm_list:
-            self.assertEqual(type(item), dict)
-            self.assertTrue(item.get("display_name") is not None)
-            self.assertTrue(item.get("value") is not None)
-
-
-class GroupReceive(TestCase):
-    def setUp(self):
-        pass
-
-    def test_get_groups_as_anonymous_deactivated(self):
-        """
-        Test to get the groups with an anonymous user, when they are deactivated.
-        """
-        response = self.client.get("/rest/users/group/")
-
-        self.assertEqual(response.status_code, 403)
-
-    def test_get_groups_as_anonymous_user_activated(self):
-        """
-        Test to get the groups with an anonymous user, when they are activated.
-        """
-        config["general_system_enable_anonymous"] = True
-
-        response = self.client.get("/rest/users/group/")
-
-        self.assertEqual(response.status_code, 200)
-
-    def test_logged_in_user_with_no_permission(self):
-        """
-        Test to get the groups with an logged in user with no permissions.
-        """
-        user = User(username="test")
-        user.set_password("test")
-        user.save()
-        default_group = Group.objects.get(pk=GROUP_DEFAULT_PK)
-        default_group.permissions.all().delete()
-        self.client.login(username="test", password="test")
-
-        response = self.client.get("/rest/users/group/")
-
-        self.assertEqual(response.status_code, 200)
-
-
 class GroupCreate(TestCase):
     """
     Tests creation of groups via REST API.
@@ -1157,17 +1047,6 @@ class PersonalNoteTest(TestCase):
 
     def setUp(self):
         self.admin = User.objects.get(username="admin")
-
-    def test_anonymous_without_personal_notes(self):
-        personal_note = PersonalNote.objects.create(
-            user=self.admin, notes='["admin_personal_note_OoGh8choro0oosh0roob"]'
-        )
-        config["general_system_enable_anonymous"] = True
-        guest_client = APIClient()
-        response = guest_client.get(
-            reverse("personalnote-detail", args=[personal_note.pk])
-        )
-        self.assertEqual(response.status_code, 404)
 
     def test_create(self):
         admin_client = APIClient()

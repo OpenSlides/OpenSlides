@@ -1,18 +1,14 @@
 from collections import OrderedDict
-from typing import Any, Dict, Iterable, Optional, Type
+from typing import Any, Dict, Iterable, Type
 
-from asgiref.sync import async_to_sync
 from django.db.models import Model
-from django.http import Http404
 from rest_framework import status
 from rest_framework.decorators import detail_route, list_route
 from rest_framework.exceptions import APIException
 from rest_framework.metadata import SimpleMetadata
 from rest_framework.mixins import (
     CreateModelMixin as _CreateModelMixin,
-    DestroyModelMixin,
-    ListModelMixin as _ListModelMixin,
-    RetrieveModelMixin as _RetrieveModelMixin,
+    DestroyModelMixin as _DestroyModelMixin,
     UpdateModelMixin as _UpdateModelMixin,
 )
 from rest_framework.relations import MANY_RELATION_KWARGS
@@ -40,14 +36,9 @@ from rest_framework.serializers import (
     ValidationError,
 )
 from rest_framework.utils.serializer_helpers import ReturnDict
-from rest_framework.viewsets import (
-    GenericViewSet as _GenericViewSet,
-    ModelViewSet as _ModelViewSet,
-)
+from rest_framework.viewsets import GenericViewSet as _GenericViewSet
 
 from . import logging
-from .access_permissions import BaseAccessPermissions
-from .cache import element_cache
 
 
 __all__ = [
@@ -156,7 +147,7 @@ class ErrorLoggingMixin:
 
 class PermissionMixin:
     """
-    Mixin for subclasses of APIView like GenericViewSet and ModelViewSet.
+    Mixin for subclasses of APIView like GenericViewSet.
 
     The method check_view_permissions is evaluated. If it returns False
     self.permission_denied() is called. Django REST Framework's permission
@@ -165,8 +156,6 @@ class PermissionMixin:
     Also connects container to handle access permissions for model and
     viewset.
     """
-
-    access_permissions: Optional[BaseAccessPermissions] = None
 
     def get_permissions(self) -> Iterable[str]:
         """
@@ -188,13 +177,6 @@ class PermissionMixin:
         requests.
         """
         return False
-
-    def get_access_permissions(self) -> BaseAccessPermissions:
-        """
-        Returns a container to handle access permissions for this viewset and
-        its corresponding model.
-        """
-        return self.access_permissions  # type: ignore
 
     def get_serializer_class(self) -> Type[Serializer]:
         """
@@ -265,54 +247,6 @@ class ModelSerializer(_ModelSerializer, metaclass=ModelSerializerRegisterer):
         return fields
 
 
-class ListModelMixin(_ListModelMixin):
-    """
-    Mixin to add the caching system to list requests.
-    """
-
-    def list(self, request: Any, *args: Any, **kwargs: Any) -> Response:
-        model = self.get_queryset().model
-        try:
-            collection_string = model.get_collection_string()
-        except AttributeError:
-            # The corresponding queryset does not support caching.
-            response = super().list(request, *args, **kwargs)
-        else:
-            # TODO
-            # This loads all data from the cache, not only the requested data.
-            # If we would use the rest api, we should add a method
-            # element_cache.get_collection_restricted_data
-            all_restricted_data = async_to_sync(element_cache.get_all_data_list)(
-                request.user.pk or 0
-            )
-            response = Response(all_restricted_data.get(collection_string, []))
-        return response
-
-
-class RetrieveModelMixin(_RetrieveModelMixin):
-    """
-    Mixin to add the caching system to retrieve requests.
-    """
-
-    def retrieve(self, request: Any, *args: Any, **kwargs: Any) -> Response:
-        model = self.get_queryset().model
-        try:
-            collection_string = model.get_collection_string()
-        except AttributeError:
-            # The corresponding queryset does not support caching.
-            response = super().retrieve(request, *args, **kwargs)
-        else:
-            lookup_url_kwarg = self.lookup_url_kwarg or self.lookup_field
-            user_id = request.user.pk or 0
-            content = async_to_sync(element_cache.get_element_data)(
-                collection_string, self.kwargs[lookup_url_kwarg], user_id
-            )
-            if content is None:
-                raise Http404
-            response = Response(content)
-        return response
-
-
 class CreateModelMixin(_CreateModelMixin):
     """
     Mixin to override create requests.
@@ -349,6 +283,10 @@ class UpdateModelMixin(_UpdateModelMixin):
         return response
 
 
+class DestroyModelMixin(_DestroyModelMixin):
+    pass
+
+
 class GenericViewSet(ErrorLoggingMixin, PermissionMixin, _GenericViewSet):
     pass
 
@@ -356,10 +294,9 @@ class GenericViewSet(ErrorLoggingMixin, PermissionMixin, _GenericViewSet):
 class ModelViewSet(
     ErrorLoggingMixin,
     PermissionMixin,
-    ListModelMixin,
-    RetrieveModelMixin,
     CreateModelMixin,
     UpdateModelMixin,
-    _ModelViewSet,
+    DestroyModelMixin,
+    _GenericViewSet,
 ):
     pass

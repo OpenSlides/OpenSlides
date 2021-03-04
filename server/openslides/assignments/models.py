@@ -17,12 +17,6 @@ from openslides.utils.models import RESTModelMixin
 from openslides.utils.rest_api import ValidationError
 
 from ..utils.models import CASCADE_AND_AUTOUPDATE, SET_NULL_AND_AUTOUPDATE
-from .access_permissions import (
-    AssignmentAccessPermissions,
-    AssignmentOptionAccessPermissions,
-    AssignmentPollAccessPermissions,
-    AssignmentVoteAccessPermissions,
-)
 
 
 class AssignmentRelatedUser(RESTModelMixin, models.Model):
@@ -93,7 +87,6 @@ class Assignment(RESTModelMixin, AgendaItemWithListOfSpeakersMixin, models.Model
     Model for assignments.
     """
 
-    access_permissions = AssignmentAccessPermissions()
     can_see_permission = "assignments.can_see"
 
     objects = AssignmentManager()
@@ -237,7 +230,6 @@ class AssignmentVoteManager(BaseManager):
 
 
 class AssignmentVote(RESTModelMixin, BaseVote):
-    access_permissions = AssignmentVoteAccessPermissions()
     objects = AssignmentVoteManager()
 
     option = models.ForeignKey(
@@ -268,7 +260,6 @@ class AssignmentOptionManager(BaseManager):
 
 
 class AssignmentOption(RESTModelMixin, BaseOption):
-    access_permissions = AssignmentOptionAccessPermissions()
     can_see_permission = "assignments.can_see"
     objects = AssignmentOptionManager()
     vote_class = AssignmentVote
@@ -306,7 +297,6 @@ class AssignmentPollManager(BaseManager):
 
 
 class AssignmentPoll(RESTModelMixin, BasePoll):
-    access_permissions = AssignmentPollAccessPermissions()
     can_see_permission = "assignments.can_see"
     objects = AssignmentPollManager()
 

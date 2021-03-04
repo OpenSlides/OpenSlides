@@ -22,8 +22,6 @@ from openslides.utils.models import (
 from openslides.utils.postgres import restart_id_sequence
 from openslides.utils.utils import to_roman
 
-from .access_permissions import ItemAccessPermissions, ListOfSpeakersAccessPermissions
-
 
 class ItemManager(BaseManager):
     """
@@ -204,7 +202,6 @@ class Item(RESTModelMixin, models.Model):
     An Agenda Item
     """
 
-    access_permissions = ItemAccessPermissions()
     objects = ItemManager()
     can_see_permission = "agenda.can_see"
 
@@ -362,7 +359,6 @@ class ListOfSpeakersManager(BaseManager):
 
 class ListOfSpeakers(RESTModelMixin, models.Model):
 
-    access_permissions = ListOfSpeakersAccessPermissions()
     objects = ListOfSpeakersManager()
     can_see_permission = "agenda.can_see_list_of_speakers"
 
@@ -458,7 +454,6 @@ class SpeakerManager(models.Manager):
         speaker.save(
             force_insert=True,
             skip_autoupdate=skip_autoupdate,
-            no_delete_on_restriction=True,
         )
         return speaker
 

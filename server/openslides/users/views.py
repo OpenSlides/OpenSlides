@@ -48,12 +48,8 @@ from ..utils.rest_api import (
 )
 from ..utils.validate import validate_json
 from ..utils.views import APIView
-from .access_permissions import (
-    GroupAccessPermissions,
-    PersonalNoteAccessPermissions,
-    UserAccessPermissions,
-)
 from .models import Group, PersonalNote, User
+from .restrict import restrict_user
 from .serializers import GroupSerializer, PermissionRelatedField
 from .user_backend import user_backend_manager
 
@@ -85,18 +81,13 @@ class UserViewSet(ModelViewSet):
     partial_update, update, destroy and reset_password.
     """
 
-    access_permissions = UserAccessPermissions()
     queryset = User.objects.all()
 
     def check_view_permissions(self):
         """
         Returns True if the user has required permissions.
         """
-        if self.action in ("list", "retrieve"):
-            result = self.get_access_permissions().check_permissions(self.request.user)
-        elif self.action == "metadata":
-            result = has_perm(self.request.user, "users.can_see_name")
-        elif self.action in ("update", "partial_update"):
+        if self.action in ("update", "partial_update"):
             result = self.request.user.is_authenticated
         elif self.action in (
             "create",
@@ -597,19 +588,12 @@ class GroupViewSet(ModelViewSet):
     metadata_class = GroupViewSetMetadata
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
-    access_permissions = GroupAccessPermissions()
 
     def check_view_permissions(self):
         """
         Returns True if the user has required permissions.
         """
-        if self.action in ("list", "retrieve"):
-            result = self.get_access_permissions().check_permissions(self.request.user)
-        elif self.action == "metadata":
-            # Every authenticated user can see the metadata.
-            # Anonymous users can do so if they are enabled.
-            result = self.request.user.is_authenticated or anonymous_is_enabled()
-        elif self.action in (
+        if self.action in (
             "create",
             "partial_update",
             "update",
@@ -762,16 +746,13 @@ class PersonalNoteViewSet(ModelViewSet):
     partial_update, update, and destroy.
     """
 
-    access_permissions = PersonalNoteAccessPermissions()
     queryset = PersonalNote.objects.all()
 
     def check_view_permissions(self):
         """
         Returns True if the user has required permissions.
         """
-        if self.action in ("list", "retrieve"):
-            result = self.get_access_permissions().check_permissions(self.request.user)
-        elif self.action in ("create_or_update", "destroy"):
+        if self.action in ("create_or_update", "destroy"):
             # Every authenticated user can see metadata and create personal
             # notes for himself and can manipulate only his own personal notes.
             # See self.perform_create(), self.update() and self.destroy().
@@ -869,9 +850,7 @@ class WhoAmIDataView(APIView):
                 raise APIException(f"Could not find user {user_id}", 500)
 
             auth_type = user_full_data["auth_type"]
-            user_data = async_to_sync(element_cache.restrict_element_data)(
-                user_full_data, self.request.user.get_collection_string(), user_id
-            )
+            user_data = async_to_sync(restrict_user)(user_full_data)
             group_ids = user_data["groups_id"] or [GROUP_DEFAULT_PK]
         else:
             user_data = None

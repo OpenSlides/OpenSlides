@@ -11,10 +11,8 @@ from openslides.utils.autoupdate import disable_history, inform_changed_data
 from openslides.utils.rest_api import (
     DecimalField,
     GenericViewSet,
-    ListModelMixin,
     ModelViewSet,
     Response,
-    RetrieveModelMixin,
     ValidationError,
     detail_route,
 )
@@ -373,9 +371,9 @@ class BasePollViewSet(ModelViewSet):
         raise NotImplementedError()
 
 
-class BaseVoteViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
+class BaseVoteViewSet(GenericViewSet):
     pass
 
 
-class BaseOptionViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
+class BaseOptionViewSet(GenericViewSet):
     pass

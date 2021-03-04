@@ -13,7 +13,6 @@ from ..agenda.mixins import ListOfSpeakersMixin
 from ..core.config import config
 from ..utils.models import RESTModelMixin
 from ..utils.rest_api import ValidationError
-from .access_permissions import MediafileAccessPermissions
 from .utils import bytes_to_human
 
 
@@ -62,7 +61,6 @@ class Mediafile(RESTModelMixin, ListOfSpeakersMixin, models.Model):
     """
 
     objects = MediafileManager()
-    access_permissions = MediafileAccessPermissions()
     can_see_permission = "mediafiles.can_see"
 
     mediafile = models.FileField(upload_to=get_file_path, null=True)

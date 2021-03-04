@@ -8,10 +8,8 @@ from openslides.utils.autoupdate import inform_changed_data
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.rest_api import (
     GenericViewSet,
-    ListModelMixin,
     ModelViewSet,
     Response,
-    RetrieveModelMixin,
     UpdateModelMixin,
     ValidationError,
     detail_route,
@@ -22,7 +20,6 @@ from openslides.utils.views import TreeSortMixin
 
 from ..utils.auth import has_perm
 from ..utils.utils import get_model_from_collection_string
-from .access_permissions import ItemAccessPermissions
 from .models import Item, ListOfSpeakers, Speaker
 
 
@@ -36,16 +33,13 @@ class ItemViewSet(ModelViewSet, TreeSortMixin):
     There are some views, see check_view_permissions.
     """
 
-    access_permissions = ItemAccessPermissions()
     queryset = Item.objects.all()
 
     def check_view_permissions(self):
         """
         Returns True if the user has required permissions.
         """
-        if self.action in ("list", "retrieve", "metadata"):
-            result = self.get_access_permissions().check_permissions(self.request.user)
-        elif self.action in (
+        if self.action in (
             "partial_update",
             "update",
             "destroy",
@@ -268,25 +262,20 @@ class ItemViewSet(ModelViewSet, TreeSortMixin):
         )
 
 
-class ListOfSpeakersViewSet(
-    ListModelMixin, RetrieveModelMixin, UpdateModelMixin, TreeSortMixin, GenericViewSet
-):
+class ListOfSpeakersViewSet(UpdateModelMixin, TreeSortMixin, GenericViewSet):
     """
     API endpoint for agenda items.
 
     There are some views, see check_view_permissions.
     """
 
-    access_permissions = ItemAccessPermissions()
     queryset = ListOfSpeakers.objects.all()
 
     def check_view_permissions(self):
         """
         Returns True if the user has required permissions.
         """
-        if self.action in ("list", "retrieve", "metadata"):
-            result = self.get_access_permissions().check_permissions(self.request.user)
-        elif self.action in ("manage_speaker",):
+        if self.action == "manage_speaker":
             result = has_perm(self.request.user, "agenda.can_see_list_of_speakers")
             # For manage_speaker requests the rest of the check is
             # done in the specific method. See below.

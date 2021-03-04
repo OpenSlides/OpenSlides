@@ -9,7 +9,6 @@ from openslides.motions.models import (
     Category,
     Motion,
     MotionBlock,
-    MotionChangeRecommendation,
     MotionComment,
     MotionCommentSection,
     State,
@@ -130,16 +129,6 @@ class TestStatuteParagraphs(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_retrieve_simple(self):
-        self.create_statute_paragraph()
-        response = self.client.get(
-            reverse("statuteparagraph-detail", args=[self.cp.pk])
-        )
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(
-            sorted(response.data.keys()), sorted(("id", "title", "text", "weight"))
-        )
-
     def test_update_simple(self):
         self.create_statute_paragraph()
         response = self.client.patch(
@@ -235,37 +224,6 @@ class ManageComments(TestCase):
         self.section_read_write.save()
         self.section_read_write.read_groups.add(self.group_in)
         self.section_read_write.write_groups.add(self.group_in)
-
-    def test_retrieve_comment(self):
-        comment = MotionComment(
-            motion=self.motion,
-            section=self.section_read_write,
-            comment="test_comment_gwic37Csc&3lf3eo2",
-        )
-        comment.save()
-
-        response = self.client.get(reverse("motion-detail", args=[self.motion.pk]))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTrue("comments" in response.data)
-        comments = response.data["comments"]
-        self.assertTrue(isinstance(comments, list))
-        self.assertEqual(len(comments), 1)
-        self.assertEqual(comments[0]["comment"], "test_comment_gwic37Csc&3lf3eo2")
-
-    def test_retrieve_comment_no_read_permission(self):
-        comment = MotionComment(
-            motion=self.motion,
-            section=self.section_no_groups,
-            comment="test_comment_fgkj3C7veo3ijWE(j2DJ",
-        )
-        comment.save()
-
-        response = self.client.get(reverse("motion-detail", args=[self.motion.pk]))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTrue("comments" in response.data)
-        comments = response.data["comments"]
-        self.assertTrue(isinstance(comments, list))
-        self.assertEqual(len(comments), 0)
 
     def test_wrong_data_type(self):
         response = self.client.post(
@@ -427,58 +385,6 @@ class TestMotionCommentSection(TestCase):
         self.group_out = get_group_model().objects.get(
             pk=GROUP_DELEGATE_PK
         )  # The admin should not be in this group
-
-    def test_retrieve(self):
-        """
-        Checks, if the sections can be seen by a manager.
-        """
-        section = MotionCommentSection(name="test_name_f3jOF3m8fp.<qiqmf32=")
-        section.save()
-
-        response = self.client.get(reverse("motioncommentsection-list"))
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTrue(isinstance(response.data, list))
-        self.assertEqual(len(response.data), 1)
-        self.assertEqual(response.data[0]["name"], "test_name_f3jOF3m8fp.<qiqmf32=")
-
-    def test_retrieve_non_manager_with_read_permission(self):
-        """
-        Checks, if the sections can be seen by a non manager, but he is in
-        one of the read_groups.
-        """
-        self.admin.groups.remove(
-            self.group_in
-        )  # group_in has motions.can_manage permission
-        self.admin.groups.add(self.group_out)  # group_out does not.
-        inform_changed_data(self.admin)
-
-        section = MotionCommentSection(name="test_name_f3mMD28LMcm29Coelwcm")
-        section.save()
-        section.read_groups.add(self.group_out, self.group_in)
-        inform_changed_data(section)
-
-        response = self.client.get(reverse("motioncommentsection-list"))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
-        self.assertEqual(response.data[0]["name"], "test_name_f3mMD28LMcm29Coelwcm")
-
-    def test_retrieve_non_manager_no_read_permission(self):
-        """
-        Checks, if sections are removed, if the user is a non manager and is in
-        any of the read_groups.
-        """
-        self.admin.groups.remove(self.group_in)
-        inform_changed_data(self.admin)
-
-        section = MotionCommentSection(name="test_name_f3jOF3m8fp.<qiqmf32=")
-        section.save()
-        section.read_groups.add(self.group_out)
-
-        response = self.client.get(reverse("motioncommentsection-list"))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTrue(isinstance(response.data, list))
-        self.assertEqual(len(response.data), 0)
 
     def test_create(self):
         """
@@ -757,55 +663,6 @@ class TestMotionCommentSectionSorting(TestCase):
         """ Asserts, that every comment section has the default weight of 10000. """
         for section in MotionCommentSection.objects.all():
             self.assertEqual(section.weight, 10000)
-
-
-class RetrieveMotionChangeRecommendation(TestCase):
-    """
-    Tests retrieving motion change recommendations.
-    """
-
-    def setUp(self):
-        self.client = APIClient()
-        self.client.login(username="admin", password="admin")
-
-        motion = Motion(
-            title="test_title_3kd)K23,c9239mdj2wcG",
-            text="test_text_f8FLP,gvprC;wovVEwlQ",
-        )
-        motion.save()
-
-        self.public_cr = MotionChangeRecommendation(
-            motion=motion, internal=False, line_from=1, line_to=1
-        )
-        self.public_cr.save()
-
-        self.internal_cr = MotionChangeRecommendation(
-            motion=motion, internal=True, line_from=2, line_to=2
-        )
-        self.internal_cr.save()
-
-    def test_simple(self):
-        """
-        Test retrieving all change recommendations.
-        """
-        response = self.client.get(reverse("motionchangerecommendation-list"))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 2)
-
-    def test_non_admin(self):
-        """
-        Test retrieving of all change recommendations that are public, if the user
-        has no manage perms.
-        """
-        self.admin = get_user_model().objects.get(username="admin")
-        self.admin.groups.add(GROUP_DELEGATE_PK)
-        self.admin.groups.remove(GROUP_ADMIN_PK)
-        inform_changed_data(self.admin)
-
-        response = self.client.get(reverse("motionchangerecommendation-list"))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
-        self.assertEqual(response.data[0]["id"], self.public_cr.id)
 
 
 class CreateMotionChangeRecommendation(TestCase):
@@ -1107,38 +964,6 @@ class TestMotionBlock(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertFalse(MotionBlock.objects.exists())
-
-    def test_retrieve_simple(self):
-        motion_block = MotionBlock(title="test_title")
-        motion_block.save()
-
-        response = self.client.get(
-            reverse("motionblock-detail", args=[motion_block.pk])
-        )
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(
-            sorted(response.data.keys()),
-            sorted(
-                (
-                    "agenda_item_id",
-                    "id",
-                    "internal",
-                    "list_of_speakers_id",
-                    "title",
-                    "motions_id",
-                )
-            ),
-        )
-
-    def test_retrieve_internal_non_admin(self):
-        self.make_admin_delegate()
-        motion_block = MotionBlock(title="test_title", internal=True)
-        motion_block.save()
-
-        response = self.client.get(
-            reverse("motionblock-detail", args=[motion_block.pk])
-        )
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 
 class FollowRecommendationsForMotionBlock(TestCase):

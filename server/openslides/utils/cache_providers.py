@@ -1,6 +1,5 @@
 import functools
 import hashlib
-from collections import defaultdict
 from textwrap import dedent
 from typing import Any, Callable, Coroutine, Dict, List, Optional, Set, Tuple
 
@@ -68,11 +67,6 @@ class ElementCacheProvider(Protocol):
     async def add_changed_elements(
         self, changed_elements: List[str], deleted_element_ids: List[str]
     ) -> int:
-        ...
-
-    async def get_data_since(
-        self, change_id: int
-    ) -> Tuple[int, Dict[str, List[bytes]], List[str]]:
         ...
 
     async def get_current_change_id(self) -> int:
@@ -252,34 +246,6 @@ class RedisCacheProvider:
             """,
             True,
         ),
-        "get_data_since": (
-            """
-            -- get max change id
-            local tmp = redis.call('zrevrangebyscore', KEYS[2], '+inf', '-inf', 'WITHSCORES', 'LIMIT', 0, 1)
-            local max_change_id
-            if next(tmp) == nil then
-                -- The key does not exist
-                return redis.error_reply("cache_reset")
-            else
-                max_change_id = tmp[2]
-            end
-
-            -- Get change ids of changed elements
-            local element_ids = redis.call('zrangebyscore', KEYS[2], ARGV[1], max_change_id)
-
-            -- Save elements in array. First is the max_change_id with the key "max_change_id"
-            -- Than rotate element_id and element_json. This is ocnverted into a dict in python code.
-            local elements = {}
-            table.insert(elements, 'max_change_id')
-            table.insert(elements, max_change_id)
-            for _, element_id in pairs(element_ids) do
-              table.insert(elements, element_id)
-              table.insert(elements, redis.call('hget', KEYS[1], element_id))
-            end
-            return elements
-            """,
-            True,
-        ),
     }
 
     def __init__(self, ensure_cache: Callable[[], Coroutine[Any, Any, None]]) -> None:
@@ -429,47 +395,6 @@ class RedisCacheProvider:
                 ],
             )
         )
-
-    @ensure_cache_wrapper()
-    async def get_data_since(
-        self, change_id: int
-    ) -> Tuple[int, Dict[str, List[bytes]], List[str]]:
-        """
-        Returns all elements since a change_id (included) and until the max_change_id (included).
-
-        The returend value is a two element tuple. The first value is a dict the elements where
-        the key is the collection and the value a list of (json-) encoded elements. The
-        second element is a list of element_ids, that have been deleted since the change_id.
-        """
-        changed_elements: Dict[str, List[bytes]] = defaultdict(list)
-        deleted_elements: List[str] = []
-
-        # lua script that returns gets all element_ids from change_id_cache_key
-        # and then uses each element_id on full_data or restricted_data.
-        # It returns a list where the odd values are the change_id and the
-        # even values the element as json. The function wait_make_dict creates
-        # a python dict from the returned list.
-        elements: Dict[bytes, Optional[bytes]] = await aioredis.util.wait_make_dict(
-            self.eval(
-                "get_data_since",
-                keys=[self.full_data_cache_key, self.change_id_cache_key],
-                args=[change_id],
-                read_only=True,
-            )
-        )
-
-        max_change_id = int(elements[b"max_change_id"].decode())  # type: ignore
-        for element_id, element_json in elements.items():
-            if element_id.startswith(b"_config") or element_id == b"max_change_id":
-                # Ignore config values from the change_id cache key
-                continue
-            if element_json is None:
-                # The element is not in the cache. It has to be deleted.
-                deleted_elements.append(element_id.decode())
-            else:
-                collection, id = split_element_id(element_id)
-                changed_elements[collection].append(element_json)
-        return max_change_id, changed_elements, deleted_elements
 
     @ensure_cache_wrapper()
     async def get_current_change_id(self) -> int:
@@ -662,27 +587,6 @@ class MemoryCacheProvider:
 
         return change_id
 
-    async def get_data_since(
-        self, change_id: int
-    ) -> Tuple[int, Dict[str, List[bytes]], List[str]]:
-        changed_elements: Dict[str, List[bytes]] = defaultdict(list)
-        deleted_elements: List[str] = []
-
-        all_element_ids: Set[str] = set()
-        for data_change_id, element_ids in self.change_id_data.items():
-            if data_change_id >= change_id:
-                all_element_ids.update(element_ids)
-
-        for element_id in all_element_ids:
-            element_json = self.full_data.get(element_id, None)
-            if element_json is None:
-                deleted_elements.append(element_id)
-            else:
-                collection, id = split_element_id(element_id)
-                changed_elements[collection].append(element_json.encode())
-        max_change_id = await self.get_current_change_id()
-        return (max_change_id, changed_elements, deleted_elements)
-
     async def get_current_change_id(self) -> int:
         if self.change_id_data:
             return max(self.change_id_data.keys())
@@ -706,8 +610,6 @@ class Cachable(Protocol):
     It needs at least the methods defined here.
     """
 
-    personalized_model: bool
-
     def get_collection_string(self) -> str:
         """
         Returns the string representing the name of the cachable.
@@ -716,14 +618,4 @@ class Cachable(Protocol):
     def get_elements(self) -> List[Dict[str, Any]]:
         """
         Returns all elements of the cachable.
-        """
-
-    async def restrict_elements(
-        self, user_id: int, elements: List[Dict[str, Any]]
-    ) -> List[Dict[str, Any]]:
-        """
-        Converts full_data to restricted_data.
-
-        elements can be an empty list, a list with some elements of the cachable or with all
-        elements of the cachable.
         """

@@ -28,11 +28,6 @@ from ..utils.models import (
     SET_NULL_AND_AUTOUPDATE,
     RESTModelMixin,
 )
-from .access_permissions import (
-    GroupAccessPermissions,
-    PersonalNoteAccessPermissions,
-    UserAccessPermissions,
-)
 
 
 class UserManager(BaseUserManager):
@@ -129,8 +124,6 @@ class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
     in other OpenSlides apps like motion submitter or (assignment) election
     candidates.
     """
-
-    access_permissions = UserAccessPermissions()
 
     USERNAME_FIELD = "username"
 
@@ -356,7 +349,6 @@ class Group(RESTModelMixin, DjangoGroup):
     Extend the django group with support of our REST and caching system.
     """
 
-    access_permissions = GroupAccessPermissions()
     objects = GroupManager()
 
     class Meta:
@@ -380,14 +372,6 @@ class PersonalNote(RESTModelMixin, models.Model):
     """
     Model for personal notes (e. g. likes/stars) of a user concerning different
     openslides objects like motions.
-    """
-
-    access_permissions = PersonalNoteAccessPermissions()
-
-    personalized_model = True
-    """
-    Each model belongs to one user. This relation is set during creation and
-    will not be changed.
     """
 
     objects = PersonalNoteManager()

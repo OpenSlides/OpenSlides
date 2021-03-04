@@ -15,7 +15,6 @@ from openslides.utils.rest_api import (
 )
 from openslides.utils.utils import is_int
 
-from .access_permissions import AssignmentAccessPermissions
 from .models import (
     Assignment,
     AssignmentOption,
@@ -31,24 +30,15 @@ from .models import (
 class AssignmentViewSet(ModelViewSet):
     """
     API endpoint for assignments.
-
-    There are the following views: metadata, list, retrieve, create,
-    partial_update, update, destroy, candidature_self, candidature_other and create_poll.
     """
 
-    access_permissions = AssignmentAccessPermissions()
     queryset = Assignment.objects.all()
 
     def check_view_permissions(self):
         """
         Returns True if the user has required permissions.
         """
-        if self.action in ("list", "retrieve"):
-            result = self.get_access_permissions().check_permissions(self.request.user)
-        elif self.action == "metadata":
-            # Everybody is allowed to see the metadata.
-            result = True
-        elif self.action in (
+        if self.action in (
             "create",
             "partial_update",
             "update",
@@ -551,7 +541,7 @@ class AssignmentPollViewSet(BasePollViewSet):
                     weight=weight,
                     value=value,
                 )
-                inform_changed_data(vote, no_delete_on_restriction=True)
+                inform_changed_data(vote)
         else:  # global_no or global_abstain
             option = options[0]
             weight = vote_weight if config["users_activate_vote_weight"] else Decimal(1)
@@ -562,7 +552,7 @@ class AssignmentPollViewSet(BasePollViewSet):
                 weight=weight,
                 value=data,
             )
-            inform_changed_data(vote, no_delete_on_restriction=True)
+            inform_changed_data(vote)
             inform_changed_data(option)
             inform_changed_data(poll)
 
@@ -586,8 +576,8 @@ class AssignmentPollViewSet(BasePollViewSet):
                 value=result,
                 weight=weight,
             )
-            inform_changed_data(vote, no_delete_on_restriction=True)
-            inform_changed_data(option, no_delete_on_restriction=True)
+            inform_changed_data(vote)
+            inform_changed_data(option)
 
     def add_user_to_voted_array(self, user, poll):
         VotedModel = AssignmentPoll.voted.through

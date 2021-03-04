@@ -16,19 +16,6 @@ from openslides.utils.models import RESTModelMixin
 from openslides.utils.rest_api import ValidationError
 
 from ..utils.models import CASCADE_AND_AUTOUPDATE, SET_NULL_AND_AUTOUPDATE
-from .access_permissions import (
-    CategoryAccessPermissions,
-    MotionAccessPermissions,
-    MotionBlockAccessPermissions,
-    MotionChangeRecommendationAccessPermissions,
-    MotionCommentSectionAccessPermissions,
-    MotionOptionAccessPermissions,
-    MotionPollAccessPermissions,
-    MotionVoteAccessPermissions,
-    StateAccessPermissions,
-    StatuteParagraphAccessPermissions,
-    WorkflowAccessPermissions,
-)
 from .exceptions import WorkflowError
 
 
@@ -36,8 +23,6 @@ class StatuteParagraph(RESTModelMixin, models.Model):
     """
     Model for parts of the statute
     """
-
-    access_permissions = StatuteParagraphAccessPermissions()
 
     title = models.CharField(max_length=255)
     """Title of the statute paragraph."""
@@ -95,9 +80,6 @@ class Motion(RESTModelMixin, AgendaItemWithListOfSpeakersMixin, models.Model):
 
     This class is the main entry point to all other classes related to a motion.
     """
-
-    access_permissions = MotionAccessPermissions()
-    can_see_permission = "motions.can_see"
 
     objects = MotionManager()
 
@@ -540,8 +522,6 @@ class MotionCommentSection(RESTModelMixin, models.Model):
     each motions has the ability to have comments from the same section.
     """
 
-    access_permissions = MotionCommentSectionAccessPermissions()
-
     name = models.CharField(max_length=255)
     """
     The name of the section.
@@ -672,8 +652,6 @@ class MotionChangeRecommendation(RESTModelMixin, models.Model):
     A MotionChangeRecommendation object saves change recommendations for a specific Motion
     """
 
-    access_permissions = MotionChangeRecommendationAccessPermissions()
-
     motion = models.ForeignKey(
         Motion, on_delete=CASCADE_AND_AUTOUPDATE, related_name="change_recommendations"
     )
@@ -763,8 +741,6 @@ class Category(RESTModelMixin, models.Model):
     Model for categories of motions.
     """
 
-    access_permissions = CategoryAccessPermissions()
-
     name = models.CharField(max_length=255)
     """Name of the category."""
 
@@ -831,8 +807,6 @@ class MotionBlock(RESTModelMixin, AgendaItemWithListOfSpeakersMixin, models.Mode
     Model for blocks of motions.
     """
 
-    access_permissions = MotionBlockAccessPermissions()
-
     objects = MotionBlockManager()
 
     title = models.CharField(max_length=255)
@@ -872,7 +846,6 @@ class MotionVoteManager(BaseManager):
 
 
 class MotionVote(RESTModelMixin, BaseVote):
-    access_permissions = MotionVoteAccessPermissions()
     option = models.ForeignKey(
         "MotionOption", on_delete=CASCADE_AND_AUTOUPDATE, related_name="votes"
     )
@@ -903,8 +876,6 @@ class MotionOptionManager(BaseManager):
 
 
 class MotionOption(RESTModelMixin, BaseOption):
-    access_permissions = MotionOptionAccessPermissions()
-    can_see_permission = "motions.can_see"
     objects = MotionOptionManager()
     vote_class = MotionVote
 
@@ -935,8 +906,6 @@ class MotionPollManager(BaseManager):
 
 
 class MotionPoll(RESTModelMixin, BasePoll):
-    access_permissions = MotionPollAccessPermissions()
-    can_see_permission = "motions.can_see"
     option_class = MotionOption
 
     objects = MotionPollManager()
@@ -972,8 +941,6 @@ class State(RESTModelMixin, models.Model):
     means that the person or committee recommends to set the motion to this
     state.
     """
-
-    access_permissions = StateAccessPermissions()
 
     name = models.CharField(max_length=255)
     """A string representing the state."""
@@ -1117,8 +1084,6 @@ class Workflow(RESTModelMixin, models.Model):
     """
     Defines a workflow for a motion.
     """
-
-    access_permissions = WorkflowAccessPermissions()
 
     objects = WorkflowManager()
 
