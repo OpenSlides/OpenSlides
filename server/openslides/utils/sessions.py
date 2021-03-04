@@ -1,4 +1,5 @@
 # type: ignore
+from time import sleep
 
 from asgiref.sync import async_to_sync
 from django.conf import settings
@@ -33,7 +34,16 @@ class SessionStore(SessionBase):
         return salted_hmac(key_salt, value).hexdigest()
 
     def load(self):
-        return async_to_sync(self._load)()
+        retries = 0
+        while True:
+            try:
+                return async_to_sync(self._load)()
+            except TimeoutError as e:
+                if retries < 3:
+                    sleep(0.1)
+                else:
+                    raise e
+            retries += 1
 
     async def _load(self):
         async with get_connection(read_only=True) as redis:
