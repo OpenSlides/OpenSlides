@@ -336,13 +336,18 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
                     const changeRecos = viewMotion.changeRecommendations.filter(changeReco =>
                         changeReco.showInFinalView()
                     );
-                    return this.getAmendmentParagraphLines(
-                        viewMotion,
-                        this.motionLineLength,
-                        ChangeRecoMode.Changed,
-                        changeRecos,
-                        false
-                    );
+                    try {
+                        return this.getAmendmentParagraphLines(
+                            viewMotion,
+                            this.motionLineLength,
+                            ChangeRecoMode.Changed,
+                            changeRecos,
+                            false
+                        );
+                    } catch (e) {
+                        // Inconsistency between motion and amendment -> the best we can do is not to fail completely
+                        return [];
+                    }
                 } else {
                     return [];
                 }
@@ -810,6 +815,13 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
             let paragraph: string;
             let paragraphHasChanges;
 
+            if (baseParagraphs[paraNo] === undefined) {
+                const msg =
+                    'Inconsistent data. An amendment is probably referring to a non-existant line number. ' +
+                    'You can back up its content when editing it and delete it afterwards.';
+                return '<em style="color: red; font-weight: bold;">' + msg + '</em>';
+            }
+
             if (newText === null) {
                 paragraph = baseParagraphs[paraNo];
                 paragraphHasChanges = false;
@@ -855,6 +867,7 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
      * @param {ViewMotionChangeRecommendation[]} changeRecommendations
      * @param {boolean} includeUnchanged
      * @returns {DiffLinesInParagraph}
+     * @throws Error
      */
     public getAmendmentParagraphLines(
         amendment: ViewMotion,
@@ -876,7 +889,11 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
         return amendmentParagraphs
             ?.map(
                 (newText: string, paraNo: number): DiffLinesInParagraph => {
-                    if (newText !== null) {
+                    if (baseParagraphs[paraNo] === undefined) {
+                        throw new Error(
+                            'Inconsistent data. An amendment is probably referring to a non-existant line number.'
+                        );
+                    } else if (newText !== null) {
                         return this.diff.getAmendmentParagraphsLines(
                             paraNo,
                             baseParagraphs[paraNo],
@@ -950,6 +967,12 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
                     if (newText === null) {
                         return null;
                     }
+                    if (baseParagraphs[paraNo] === undefined) {
+                        console.error(
+                            'Inconsistent data. An amendment is probably referring to a non-existant line number.'
+                        );
+                        return null;
+                    }
 
                     const origText = baseParagraphs[paraNo],
                         diff = this.diff.diff(origText, newText),
@@ -990,6 +1013,9 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
 
         return (amendment.amendment_paragraphs || []).map((newText: string, paraNo: number): string => {
             const origText = baseParagraphs[paraNo];
+            if (origText === undefined) {
+                throw new Error('Inconsistent data. An amendment is probably referring to a non-existant line number.');
+            }
 
             if (newText === null) {
                 return origText;

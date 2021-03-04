@@ -769,6 +769,10 @@
                     {{ 'This field is required.' | translate }}
                 </div>
             </section>
+            <section *ngFor="let paragraph of contentForm.value.broken_paragraphs">
+                <em class="red-warning-text">{{ 'This paragraph does not exist in the main motion anymore:' | translate }}</em>
+                <div class="motion-text" [innerHTML]="paragraph | trust: 'html'"></div>
+            </section>
         </ng-container>
 
         <!-- Paragraph-based amendments -->
@@ -899,6 +903,9 @@
             <div class="alert alert-info" *ngIf="motion.diffLines.length === 0">
                 <i *ngIf="motion.parent">{{ 'No changes at the text.' | translate }}</i>
                 <i *ngIf="!motion.parent">{{ 'The parent motion was deleted.' | translate }}</i>
+            </div>
+            <div class="alert alert-info alert-inconsistency" *ngIf="amendmentErrorMessage">
+                <i [innerHTML]="amendmentErrorMessage"></i>
             </div>
             <ng-container *ngIf="motion.parent && !isRecoMode(ChangeRecoMode.Diff) && !isFinalEdit">
                 <div
