@@ -2733,7 +2733,6 @@ class VoteAssignmentPollNamedAutoupdates(VoteAssignmentPollAutoupdatesBaseClass)
                     "votesvalid": "1.000000",
                     "user_has_voted": False,
                     "user_has_voted_for_delegations": [],
-                    "voted_id": [self.user.id],
                 },
                 "assignments/assignment-option:1": {
                     "abstain": "1.000000",
@@ -2926,7 +2925,6 @@ class VoteAssignmentPollPseudoanonymousAutoupdates(
                 "type": AssignmentPoll.TYPE_PSEUDOANONYMOUS,
                 "user_has_voted": False,
                 "user_has_voted_for_delegations": [],
-                "voted_id": [self.user.id],
                 "onehundred_percent_base": AssignmentPoll.PERCENT_BASE_CAST,
                 "majority_method": AssignmentPoll.MAJORITY_TWO_THIRDS,
                 "min_votes_amount": 1,

@@ -165,7 +165,6 @@ class CreateMotionPoll(TestCase):
                 "votescast": "0.000000",
                 "options_id": [1],
                 "id": 1,
-                "voted_id": [],
                 "user_has_voted": False,
                 "user_has_voted_for_delegations": [],
             },
@@ -1081,7 +1080,6 @@ class VoteMotionPollNamedAutoupdates(TestCase):
                     "id": 1,
                     "user_has_voted": False,
                     "user_has_voted_for_delegations": [],
-                    "voted_id": [self.user.id],
                 },
                 "motions/motion-vote:1": {
                     "pollstate": 2,
@@ -1224,7 +1222,6 @@ class VoteMotionPollPseudoanonymousAutoupdates(TestCase):
                     "id": 1,
                     "user_has_voted": False,
                     "user_has_voted_for_delegations": [],
-                    "voted_id": [self.user.id],
                 },
                 "motions/motion-vote:1": {
                     "pollstate": 2,

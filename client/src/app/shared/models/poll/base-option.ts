@@ -6,7 +6,7 @@ export abstract class BaseOption<T> extends BaseDecimalModel<T> {
     public no: number;
     public abstain: number;
     public poll_id: number;
-    public voted_id: number[];
+    public votes_id: number[];
 
     protected getDecimalFields(): string[] {
         return ['yes', 'no', 'abstain'];

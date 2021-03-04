@@ -77,7 +77,7 @@ class BasePollAccessPermissions(BaseAccessPermissions):
         Non-published polls will be restricted:
          - Remove votes* values from the poll
          - Remove yes/no/abstain fields from options
-         - Remove fields given in self.assitional_fields from the poll
+         - Remove fields given in self.additional_fields from the poll
         """
 
         # add has_voted for all users to check whether op has voted
@@ -100,22 +100,23 @@ class BasePollAccessPermissions(BaseAccessPermissions):
             )
             poll["user_has_voted_for_delegations"] = voted_for_delegations
 
+        data_copy = json.loads(json.dumps(full_data))
+        for poll in data_copy:
+            if poll["state"] not in (BasePoll.STATE_FINISHED, BasePoll.STATE_PUBLISHED):
+                del poll["voted_id"]
+
         if await async_has_perm(user_id, self.manage_permission):
-            data = full_data
+            pass
         elif await async_has_perm(user_id, self.base_permission):
-            data = []
-            for poll in full_data:
+            for poll in data_copy:
                 if poll["state"] != BasePoll.STATE_PUBLISHED:
-                    poll = json.loads(
-                        json.dumps(poll)
-                    )  # copy, so we can remove some fields.
                     del poll["votesvalid"]
                     del poll["votesinvalid"]
                     del poll["votescast"]
-                    del poll["voted_id"]
+                    if "voted_id" in poll:  # could be removed earlier
+                        del poll["voted_id"]
                     for field in self.additional_fields:
                         del poll[field]
-                data.append(poll)
         else:
-            data = []
-        return data
+            data_copy = []
+        return data_copy
