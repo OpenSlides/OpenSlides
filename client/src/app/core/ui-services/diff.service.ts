@@ -2238,8 +2238,11 @@ export class DiffService {
             // That's a pretty serious inconsistency that should not happen at all,
             // we're just doing some basic damage control here.
             const msg =
-                'Inconsistent data. A change recommendation or amendment is probably referring to a non-existant line number. ' +
-                'If it is an amendment, you can back up its content when editing it and delete it afterwards';
+                'Inconsistent data.' +
+                ' ' +
+                'A change recommendation or amendment is probably referring to a non-existant line number.' +
+                ' ' +
+                'If it is an amendment, you can back up its content when editing it and delete it afterwards.';
             return '<em style="color: red; font-weight: bold;">' + msg + '</em>';
         }
 
@@ -2300,7 +2303,9 @@ export class DiffService {
             // That's a pretty serious inconsistency that should not happen at all,
             // we're just doing some basic damage control here.
             const msg =
-                'Inconsistent data. A change recommendation or amendment is probably referring to a non-existant line number.';
+                'Inconsistent data.' +
+                ' ' +
+                'A change recommendation or amendment is probably referring to a non-existant line number.';
             return '<em style="color: red; font-weight: bold;">' + msg + '</em>';
         }
 
