@@ -1186,4 +1186,40 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
             }).length > 0
         );
     }
+
+    /**
+     * Tries to determine the realistic CR-Mode from a given CR mode
+     */
+    public determineCrMode(
+        mode: ChangeRecoMode,
+        hasChangingObjects: boolean,
+        isModifiedFinalVersion: boolean,
+        isParagraphBasedAmendment: boolean,
+        hasChangeRecommendations: boolean
+    ): ChangeRecoMode {
+        if (mode === ChangeRecoMode.Final) {
+            if (isModifiedFinalVersion) {
+                return ChangeRecoMode.ModifiedFinal;
+                /**
+                 * Because without change recos you cannot escape the final version anymore
+                 */
+            } else if (!hasChangingObjects) {
+                return ChangeRecoMode.Original;
+            }
+        } else if (mode === ChangeRecoMode.Changed && !hasChangingObjects) {
+            /**
+             * Because without change recos you cannot escape the changed version view
+             * You will not be able to automatically change to the Changed view after creating
+             * a change reco. The autoupdate has to come "after" this routine
+             */
+            return ChangeRecoMode.Original;
+        } else if (mode === ChangeRecoMode.Diff && !hasChangeRecommendations && isParagraphBasedAmendment) {
+            /**
+             * The Diff view for paragraph-based amendments is only relevant for change recommendations;
+             * the regular amendment changes are shown in the "original" view.
+             */
+            return ChangeRecoMode.Original;
+        }
+        return mode;
+    }
 }

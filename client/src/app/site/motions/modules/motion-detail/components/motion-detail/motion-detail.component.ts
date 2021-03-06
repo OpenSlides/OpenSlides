@@ -643,7 +643,13 @@ export class MotionDetailComponent extends BaseViewComponentDirective implements
     }
 
     private resetCrMode(): void {
-        this.crMode = this.determineCrMode(this.defaultCrMode);
+        this.crMode = this.repo.determineCrMode(
+            this.defaultCrMode,
+            this.hasChangingObjects(),
+            !!this.motion?.modified_final_version,
+            this.motion?.isParagraphBasedAmendment(),
+            this.changeRecommendations?.length > 0
+        );
     }
 
     /**
@@ -720,7 +726,13 @@ export class MotionDetailComponent extends BaseViewComponentDirective implements
         // first in this case (in the config-listener) and perform the actual check if "diff" is possible now.
         // Test: "diff" as default view. Open a motion, create an amendment. "Original" should be set automatically.
         if (this.crMode) {
-            this.crMode = this.determineCrMode(this.crMode);
+            this.crMode = this.repo.determineCrMode(
+                this.crMode,
+                this.hasChangingObjects(),
+                !!this.motion?.modified_final_version,
+                this.motion?.isParagraphBasedAmendment(),
+                this.changeRecommendations?.length > 0
+            );
         }
 
         this.cd.markForCheck();
@@ -1622,40 +1634,6 @@ export class MotionDetailComponent extends BaseViewComponentDirective implements
         } else {
             this.notifyService.sendToAllUsers<MotionEditNotification>(this.NOTIFICATION_EDIT_MOTION, content);
         }
-    }
-
-    /**
-     * Tries to determine the realistic CR-Mode from a given CR mode
-     */
-    private determineCrMode(mode: ChangeRecoMode): ChangeRecoMode {
-        if (mode === ChangeRecoMode.Final) {
-            if (this.motion?.modified_final_version) {
-                return ChangeRecoMode.ModifiedFinal;
-                /**
-                 * Because without change recos you cannot escape the final version anymore
-                 */
-            } else if (!this.hasChangingObjects()) {
-                return ChangeRecoMode.Original;
-            }
-        } else if (mode === ChangeRecoMode.Changed && !this.hasChangingObjects()) {
-            /**
-             * Because without change recos you cannot escape the changed version view
-             * You will not be able to automatically change to the Changed view after creating
-             * a change reco. The autoupdate has to come "after" this routine
-             */
-            return ChangeRecoMode.Original;
-        } else if (
-            mode === ChangeRecoMode.Diff &&
-            !this.changeRecommendations?.length &&
-            this.motion?.isParagraphBasedAmendment()
-        ) {
-            /**
-             * The Diff view for paragraph-based amendments is only relevant for change recommendations;
-             * the regular amendment changes are shown in the "original" view.
-             */
-            return ChangeRecoMode.Original;
-        }
-        return mode;
     }
 
     /**
