@@ -109,7 +109,7 @@
         "conference_open_video": true,
         "conference_auto_connect_next_speakers": true,
 
-        "projector_default_countdown_time": 60,
+        "projector_countdown_default_time": 60,
         "projector_countdown_warning_time": 0,
 
         "export_csv_encoding": "utf-8",
@@ -128,7 +128,7 @@
 
         "list_of_speakers_amount_last_on_projector": 1,
         "list_of_speakers_amount_next_on_projector": -1,
-        "list_of_speakers_couple_countdown": false,
+        "list_of_speakers_couple_countdown": true,
         "list_of_speakers_show_amount_of_speakers_on_slide": true,
         "list_of_speakers_present_users_only": false,
         "list_of_speakers_show_first_contribution": false,
@@ -209,11 +209,12 @@
         "poll_default_100_percent_base": "valid",
         "poll_default_majority_method": "simple",
         "poll_default_group_ids": [5],
+        "poll_couple_countdown": true,
 
         "projector_ids": [1],
         "all_projection_ids": [],
         "projector_message_ids": [],
-        "projector_countdown_ids": [],
+        "projector_countdown_ids": [1, 2],
         "tag_ids": [],
         "agenda_item_ids": [],
         "list_of_speakers_ids": [],
@@ -248,6 +249,8 @@
         "guest_ids": [],
         "user_ids": [1],
         "reference_projector_id": 1,
+        "list_of_speakers_countdown_id": 1,
+        "poll_countdown_id": 2,
 
         "default_$_projector_id": [
             "agenda_all_items",
@@ -613,5 +616,31 @@
     }],
 "projection": [],
 "projector_message": [],
-"projector_countdown": []
+"projector_countdown": [
+    {
+        "id": 1,
+        "title": "List of speaker countdown",
+        "description": "",
+        "default_time": 60,
+        "countdown_time": 60,
+        "running": false,
+
+        "projection_ids": [],
+        "used_as_list_of_speaker_countdown_meeting_id": 1,
+        "used_as_poll_countdown_meeting_id": null,
+        "meeting_id": 1
+    },
+    {
+        "id": 2,
+        "title": "Voting countdown",
+        "description": "",
+        "default_time": 60,
+        "countdown_time": 60,
+        "running": false,
+
+        "projection_ids": [],
+        "used_as_list_of_speaker_countdown_meeting_id": null,
+        "used_as_poll_countdown_meeting_id": 1,
+        "meeting_id": 1
+    }]
 }

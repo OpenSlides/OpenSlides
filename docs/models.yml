@@ -356,8 +356,8 @@ meeting:
     type: number
     default: 0
 
-  # Projector
-  projector_default_countdown_time:
+  # Projector countdown
+  projector_countdown_default_time:
     type: number
     default: 60
   projector_countdown_warning_time:
@@ -689,6 +689,9 @@ meeting:
   poll_default_group_ids:
     type: relation-list
     to: group/used_as_poll_default_id
+  poll_couple_countdown:
+    type: boolean
+    default: True
 
   # Relations
   projector_ids:
@@ -840,6 +843,12 @@ meeting:
   reference_projector_id:
     type: relation
     to: projector/used_as_reference_projector_meeting_id
+  list_of_speakers_countdown_id:
+    type: relation
+    to: projector_countdown/used_as_list_of_speaker_countdown_meeting_id
+  poll_countdown_id:
+    type: relation
+    to: projector_countdown/used_as_poll_countdown_meeting_id
 
   default_projector_$_id:
     type: template
@@ -2091,6 +2100,12 @@ projector_countdown:
     type: relation-list
     to: projection/content_object_id
     equal_fields: meeting_id
+  used_as_list_of_speaker_countdown_meeting_id:
+    type: relation
+    to: meeting/list_of_speakers_countdown_id
+  used_as_poll_countdown_meeting_id:
+    type: relation
+    to: meeting/poll_countdown_id
   meeting_id:
     type: relation
     to: meeting/projector_countdown_ids
