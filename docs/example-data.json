@@ -241,7 +241,7 @@
         "jitsi_domain": "",
         "jitsi_room_password": "",
 
-        "projector_default_countdown_time": 60,
+        "projector_countdown_default_time": 60,
         "projector_countdown_warning_time": 0,
 
         "export_csv_encoding": "utf-8",
@@ -260,7 +260,7 @@
 
         "list_of_speakers_amount_last_on_projector": 1,
         "list_of_speakers_amount_next_on_projector": -1,
-        "list_of_speakers_couple_countdown": false,
+        "list_of_speakers_couple_countdown": true,
         "list_of_speakers_show_amount_of_speakers_on_slide": true,
         "list_of_speakers_present_users_only": false,
         "list_of_speakers_show_first_contribution": false,
@@ -342,11 +342,12 @@
         "poll_default_100_percent_base": "valid",
         "poll_default_majority_method": "simple",
         "poll_default_group_ids": [3],
+        "poll_couple_countdown": true,
 
         "projector_ids": [1, 2],
         "all_projection_ids": [1, 2, 3, 4],
         "projector_message_ids": [1],
-        "projector_countdown_ids": [1],
+        "projector_countdown_ids": [1, 2],
         "tag_ids": [1, 2, 3],
         "agenda_item_ids": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
         "list_of_speakers_ids": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
@@ -382,6 +383,8 @@
         "guest_ids": [3],
         "user_ids": [1, 2, 3],
         "reference_projector_id": 2,
+        "list_of_speakers_countdown_id": 1,
+        "poll_countdown_id": 2,
 
         "default_$_projector_id": [
             "agenda_all_items",
@@ -2644,13 +2647,28 @@
 "projector_countdown": [
     {
         "id": 1,
-        "title": "Countdown 1",
+        "title": "List of speaker countdown",
         "description": "",
         "default_time": 60,
         "countdown_time": 60,
         "running": false,
 
         "projection_ids": [],
+        "used_as_list_of_speaker_countdown_meeting_id": 1,
+        "used_as_poll_countdown_meeting_id": null,
+        "meeting_id": 1
+    },
+    {
+        "id": 2,
+        "title": "Voting countdown",
+        "description": "",
+        "default_time": 60,
+        "countdown_time": 60,
+        "running": false,
+
+        "projection_ids": [],
+        "used_as_list_of_speaker_countdown_meeting_id": null,
+        "used_as_poll_countdown_meeting_id": 1,
         "meeting_id": 1
     }]
 }
