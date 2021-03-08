@@ -69,7 +69,6 @@ export class MotionSlideComponent
         this.lnMode = value.data.line_numbering_mode;
         this.lineLength = value.data.line_length;
         this.preamble = value.data.preamble;
-        this.crMode = value.element.mode || 'original';
 
         this.textDivStyles.width = value.data.show_meta_box ? 'calc(100% - 250px)' : '100%';
 
@@ -80,6 +79,14 @@ export class MotionSlideComponent
         }
 
         this.recalcUnifiedChanges();
+
+        this.crMode = this.motionRepo.determineCrMode(
+            value.element.mode || 'original',
+            this.allChangingObjects.length > 0,
+            !!this.data.data.modified_final_version,
+            this.isParagraphBasedAmendment(),
+            this.data.data.change_recommendations.length > 0
+        );
     }
 
     public get data(): SlideData<MotionSlideData> {
