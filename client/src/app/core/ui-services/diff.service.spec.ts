@@ -1,6 +1,7 @@
 import { inject, TestBed } from '@angular/core/testing';
 
 import { DiffService, ModificationType } from './diff.service';
+import { E2EImportsModule } from '../../../e2e-imports.module';
 import { LinenumberingService } from './linenumbering.service';
 
 describe('DiffService', () => {
@@ -167,6 +168,7 @@ describe('DiffService', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
+            imports: [E2EImportsModule],
             providers: [DiffService]
         });
     });
