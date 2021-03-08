@@ -107,7 +107,8 @@ services:
       - front
       - back
     ports:
-      - "127.0.0.1:ifenvelse(`EXTERNAL_HTTP_PORT', 8000):8000"
+      ifelse(read_env(`EXTERNAL_HTTP_PORT'),, ,- "ifenvelse(`EXTERNAL_HTTP_PORT', 8000):8000" )
+      ifelse(read_env(`EXTERNAL_HTTP_PORT'),, ,ifelse(read_env(`EXTERNAL_HTTP_PORT'), "443",, - "80:80"))
 
   server:
     << : *default-osserver
