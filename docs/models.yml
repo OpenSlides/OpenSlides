@@ -1009,7 +1009,9 @@ agenda_item:
   id: number
   item_number: string
   comment: string
-  closed: boolean
+  closed:
+      type: boolean
+      default: false
   type:
     type: string
     enum:
@@ -1071,7 +1073,9 @@ agenda_item:
 
 list_of_speakers:
   id: number
-  closed: boolean
+  closed:
+    type: boolean
+    default: false
 
   content_object_id:
     type: generic-relation
