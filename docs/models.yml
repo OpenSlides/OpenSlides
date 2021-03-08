@@ -102,7 +102,9 @@ user:
   email: string
   default_number: string
   default_structure_level: string
-  default_vote_weight: decimal(6)
+  default_vote_weight:
+    type: decimal(6)
+    default: "1"
   last_email_send: timestamp
   is_demo_user:
     type: boolean
