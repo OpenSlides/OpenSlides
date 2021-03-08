@@ -909,6 +909,7 @@ group:
       - motion.can_see
       - motion.can_see_internal
       - motion.can_support
+      - poll.can_manage
       - projector.can_manage
       - projector.can_see
       - tag.can_manage
@@ -1452,8 +1453,12 @@ motion_block:
 
 motion_change_recommendation:
   id: number
-  rejected: boolean
-  internal: boolean
+  rejected:
+    type: boolean
+    default: false
+  internal:
+    type: boolean
+    default: false
   type:
     type: string
     enum:
@@ -1507,11 +1512,22 @@ motion_state:
       - motion.can_manage_metadata
       - motion.can_manage
       - is_submitter
-  allow_support: boolean
-  allow_create_poll: boolean
-  allow_submitter_edit: boolean
-  set_number: boolean
-  show_state_extension_field: boolean
+    default: []
+  allow_support:
+    type: boolean
+    default: false
+  allow_create_poll:
+    type: boolean
+    default: false
+  allow_submitter_edit:
+    type: boolean
+    default: false
+  set_number:
+    type: boolean
+    default: true
+  show_state_extension_field:
+    type: boolean
+    default: false
   merge_amendment_into_final:
     type: string
     enum:
@@ -1519,7 +1535,9 @@ motion_state:
     - undefined
     - do_merge
     default: undefined
-  show_recommendation_extension_field: boolean
+  show_recommendation_extension_field:
+    type: boolean
+    default: false
 
   next_state_ids:
     type: relation-list

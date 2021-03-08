@@ -346,6 +346,7 @@
             "meeting.can_see_frontpage",
             "meeting.can_see_history",
             "motion.can_manage",
+            "poll.can_manage",
             "projector.can_manage",
             "tag.can_manage",
             "user.can_manage",
