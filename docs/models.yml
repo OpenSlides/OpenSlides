@@ -1653,6 +1653,7 @@ poll:
       - Y
       - YN
       - YNA
+      - N
       - valid
       - cast
       - disabled
