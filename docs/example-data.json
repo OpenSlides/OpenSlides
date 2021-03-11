@@ -265,6 +265,7 @@
         "list_of_speakers_present_users_only": false,
         "list_of_speakers_show_first_contribution": false,
         "list_of_speakers_enable_point_of_order_speakers": true,
+        "list_of_speakers_initially_closed": true,
 
         "motions_default_workflow_id": 1,
         "motions_default_amendment_workflow_id": 1,

@@ -456,6 +456,9 @@ meeting:
   list_of_speakers_enable_point_of_order_speakers:
     type: boolean
     default: False
+  list_of_speakers_initially_closed:
+    type: boolean
+    default: False
 
   # Motions
   motions_default_workflow_id:
