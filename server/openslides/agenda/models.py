@@ -360,6 +360,13 @@ class ListOfSpeakersManager(BaseManager):
         )
 
 
+def list_of_speakers_initially_closed():
+    """
+    Return whether a newly created list of speakers is initially closed.
+    """
+    return config["agenda_list_of_speakers_initially_closed"]
+
+
 class ListOfSpeakers(RESTModelMixin, models.Model):
 
     access_permissions = ListOfSpeakersAccessPermissions()
@@ -383,7 +390,7 @@ class ListOfSpeakers(RESTModelMixin, models.Model):
     Field for generic relation to a related object. General field to the related object.
     """
 
-    closed = models.BooleanField(default=False)
+    closed = models.BooleanField(default=list_of_speakers_initially_closed)
     """
     True, if the list of speakers is closed.
     """
