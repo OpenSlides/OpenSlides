@@ -1141,6 +1141,7 @@ speaker:
     type: relation
     to: user/speaker_$_ids
     required: true
+    equal_fields: meeting_id
   meeting_id:
     type: relation
     to: meeting/speaker_ids
