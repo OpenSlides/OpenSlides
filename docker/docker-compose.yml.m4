@@ -82,6 +82,8 @@ x-osserver-env: &default-osserver-env
     REDIS_PORT: ifenvelse(`REDIS_PORT', 6379)
     REDIS_SLAVE_HOST: "ifenvelse(`REDIS_SLAVE_HOST', redis-slave)"
     REDIS_SLAVE_PORT: ifenvelse(`REDIS_SLAVE_PORT', 6379)
+    SERVER_SETUP_HOST: "ifenvelse(`SERVER_SETUP_HOST', server-setup)"
+    SERVER_SETUP_PORT: ifenvelse(`SERVER_SETUP_PORT', 8000)
     RESET_PASSWORD_VERBOSE_ERRORS: "ifenvelse(`RESET_PASSWORD_VERBOSE_ERRORS', False)"
 x-pgnode: &default-pgnode
   image: ifenvelse(`DEFAULT_DOCKER_REGISTRY', openslides)/openslides-repmgr:latest

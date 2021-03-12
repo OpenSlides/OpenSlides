@@ -14,8 +14,7 @@ export SECRET_KEY="$DJANGO_SECRET_KEY"
 # SAML setup
 . /usr/local/lib/saml-setup.sh
 
-# TODO: env variable for this host
-wait-for-it -t 0 "server-setup:8000"
+wait-for-it -t 0 "${SERVER_SETUP_HOST:-server-setup}:${SERVER_SETUP_PORT:-8000}"
 
 printf 'Executing server: "%s"\n' "$*"
 
