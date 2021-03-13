@@ -43,6 +43,10 @@ define(`MEDIA_IMAGE',
 ifenvelse(`DEFAULT_DOCKER_REGISTRY', openslides)/dnl
 ifenvelse(`DOCKER_OPENSLIDES_MEDIA_NAME', openslides-media):dnl
 ifenvelse(`DOCKER_OPENSLIDES_MEDIA_TAG', latest))
+define(`MANAGE_IMAGE',
+ifenvelse(`DEFAULT_DOCKER_REGISTRY', openslides)/dnl
+ifenvelse(`DOCKER_OPENSLIDES_MANAGE_NAME', openslides-manage):dnl
+ifenvelse(`DOCKER_OPENSLIDES_MANAGE_TAG', latest))
 
 define(`PROJECT_DIR', ifdef(`PROJECT_DIR',PROJECT_DIR,.))
 define(`ADMIN_SECRET_AVAILABLE', `syscmd(`test -f 'PROJECT_DIR`/secrets/admin.env')sysval')
@@ -168,6 +172,16 @@ services:
       - frontend
       - backend
       - postgres
+
+  manage:
+    image: MANAGE_IMAGE
+    depends_on:
+    - auth
+    - datastore
+    env_file: services.env
+    networks:
+    - backend
+    - auth
 
 # Setup: host <-uplink-> haproxy <-frontend-> services that are reachable from the client <-backend-> services that are internal-only
 # There are special networks for some services only, e.g. postgres only for the postgresql, datastore reader and datastore writer

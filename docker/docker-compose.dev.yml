@@ -93,6 +93,12 @@ services:
     env_file: services.env
     volumes:
       - ../openslides-media-service/src:/app/src
+  manage:
+    image: openslides-manage-dev
+    depends_on:
+    - auth
+    - datastore
+    env_file: services.env
   message-bus:
     image: redis:latest
   haproxy:

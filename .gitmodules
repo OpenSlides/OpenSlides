@@ -24,3 +24,6 @@
 [submodule "openslides-permission-service"]
 	path = openslides-permission-service
 	url = git@github.com:OpenSlides/openslides-permission-service.git
+[submodule "openslides-manage-service"]
+	path = openslides-manage-service
+	url = git@github.com:OpenSlides/openslides-manage-service.git
