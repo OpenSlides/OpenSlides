@@ -177,7 +177,7 @@ services:
     image: MANAGE_IMAGE
     depends_on:
     - auth
-    - datastore
+    - datastore-writer
     env_file: services.env
     networks:
     - backend
