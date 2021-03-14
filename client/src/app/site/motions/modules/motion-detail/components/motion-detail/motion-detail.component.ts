@@ -1376,6 +1376,7 @@ export class MotionDetailComponent extends BaseViewComponentDirective implements
             this.patchForm(this.motion);
             this.editNotificationSubscription = this.listenToEditNotification();
             this.sendEditNotification(MotionEditNotificationType.TYPE_BEGIN_EDITING_MOTION);
+            this.showMotionEditConflictWarningIfNecessary();
         }
         if (!mode && this.newMotion) {
             this.router.navigate(['./motions/']);
@@ -1384,6 +1385,15 @@ export class MotionDetailComponent extends BaseViewComponentDirective implements
         // notify the users who are still editing the same motion
         if (!mode && !this.newMotion) {
             this.unsubscribeEditNotifications(MotionEditNotificationType.TYPE_CLOSING_EDITING_MOTION);
+        }
+    }
+
+    public showMotionEditConflictWarningIfNecessary(): void {
+        if (this.amendments?.filter(amend => amend.isParagraphBasedAmendment()).length > 0) {
+            const msg = this.translate.instant(
+                'Warning: Amendments exist for this motion. Editing this text will likely impact them negatively. Particularily, amendments might become unusable if the paragraph they affect is deleted.'
+            );
+            this.raiseWarning(msg);
         }
     }
 
