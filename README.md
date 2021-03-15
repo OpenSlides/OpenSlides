@@ -44,6 +44,7 @@ Setup the repository (may be already done)
 Prod setup. `./build.sh` may take a while.
 
     $ cd docker
+    $ m4 docker-compose.yml.m4 > docker-compose.yml
     $ ./build.sh
     $ ./setup-prod.sh
     $ docker-compose up

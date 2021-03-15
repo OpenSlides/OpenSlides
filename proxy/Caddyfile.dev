@@ -1,0 +1,13 @@
+https://:8000 {
+    tls /certs/cert.pem /certs/key.pem
+
+    reverse_proxy /system/action* backend:9002
+    reverse_proxy /system/presenter* backend:9003
+    reverse_proxy /system/autoupdate* autoupdate:9012 {
+        flush_interval -1
+    }
+    reverse_proxy /system/auth* auth:9004
+    reverse_proxy /system/media* media:9006
+
+    reverse_proxy client:9001
+}
