@@ -19,7 +19,6 @@ from openslides.utils.rest_api import (
     status,
 )
 
-from .access_permissions import MediafileAccessPermissions
 from .config import watch_and_update_configs
 from .models import Mediafile
 from .utils import bytes_to_human, get_pdf_information
@@ -47,16 +46,13 @@ class MediafileViewSet(ModelViewSet):
     partial_update, update and destroy.
     """
 
-    access_permissions = MediafileAccessPermissions()
     queryset = Mediafile.objects.all()
 
     def check_view_permissions(self):
         """
         Returns True if the user has required permissions.
         """
-        if self.action in ("list", "retrieve", "metadata"):
-            result = self.get_access_permissions().check_permissions(self.request.user)
-        elif self.action in (
+        if self.action in (
             "create",
             "partial_update",
             "update",

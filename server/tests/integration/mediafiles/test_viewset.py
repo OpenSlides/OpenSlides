@@ -213,9 +213,6 @@ class TestCreation(TestCase):
         self.assertFalse(Mediafile.objects.exists())
 
 
-# TODO: List and retrieve
-
-
 class TestUpdate(TestCase):
     """
     Tree:

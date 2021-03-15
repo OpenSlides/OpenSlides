@@ -1,5 +1,3 @@
-from typing import Any, Dict, Set
-
 from django.apps import AppConfig
 from django.db.models.signals import post_migrate
 
@@ -12,7 +10,6 @@ class MotionsAppConfig(AppConfig):
         # Import all required stuff.
         from openslides.core.signals import permission_change
         from openslides.utils.rest_api import router
-        from ..utils.access_permissions import required_user
         from . import serializers  # noqa
         from .signals import create_builtin_workflows, get_permission_change_data
         from .views import (
@@ -72,16 +69,6 @@ class MotionsAppConfig(AppConfig):
         )
         router.register(self.get_model("State").get_collection_string(), StateViewSet)
 
-        # Register required_users
-        required_user.add_collection_string(
-            self.get_model("Motion").get_collection_string(), required_users_motions
-        )
-
-        required_user.add_collection_string(
-            self.get_model("MotionPoll").get_collection_string(),
-            required_users_motion_polls,
-        )
-
     def get_config_variables(self):
         from .config_variables import get_config_variables
 
@@ -106,28 +93,3 @@ class MotionsAppConfig(AppConfig):
             "MotionVote",
         ):
             yield self.get_model(model_name)
-
-
-async def required_users_motions(element: Dict[str, Any]) -> Set[int]:
-    """
-    Returns all user ids that are displayed as as submitter or supporter in
-    any motion if request_user can see motions. This function may return an
-    empty set.
-    """
-    submitters_supporters = set(
-        [submitter["user_id"] for submitter in element["submitters"]]
-    )
-    submitters_supporters.update(element["supporters_id"])
-    return submitters_supporters
-
-
-async def required_users_motion_polls(element: Dict[str, Any]) -> Set[int]:
-    """
-    Returns all user ids that have voted on an option and are therefore required for the single votes table.
-    """
-    from openslides.poll.models import BasePoll
-
-    if element["state"] == BasePoll.STATE_PUBLISHED:
-        return element["voted_id"]
-    else:
-        return set()

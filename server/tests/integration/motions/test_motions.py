@@ -20,9 +20,8 @@ from openslides.motions.models import (
     Workflow,
 )
 from openslides.poll.models import BasePoll
-from openslides.utils.auth import get_group_model
 from openslides.utils.autoupdate import inform_changed_data
-from tests.common_groups import GROUP_ADMIN_PK, GROUP_DEFAULT_PK, GROUP_DELEGATE_PK
+from tests.common_groups import GROUP_ADMIN_PK, GROUP_DELEGATE_PK
 from tests.count_queries import count_queries
 from tests.test_case import TestCase
 
@@ -120,78 +119,6 @@ class CreateMotion(TestCase):
             )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         motion = Motion.objects.get()
-        changed_autoupdate, deleted_autoupdate = self.get_last_autoupdate()
-        del changed_autoupdate["motions/motion:1"]["created"]
-        del changed_autoupdate["motions/motion:1"]["last_modified"]
-        self.assertEqual(
-            changed_autoupdate,
-            {
-                "agenda/list-of-speakers:1": {
-                    "id": 1,
-                    "title_information": {
-                        "title": "test_title_OoCoo3MeiT9li5Iengu9",
-                        "identifier": "1",
-                    },
-                    "speakers": [],
-                    "closed": False,
-                    "content_object": {"collection": "motions/motion", "id": 1},
-                },
-                "motions/motion:1": {
-                    "id": 1,
-                    "identifier": "1",
-                    "title": "test_title_OoCoo3MeiT9li5Iengu9",
-                    "text": "test_text_thuoz0iecheiheereiCi",
-                    "amendment_paragraphs": None,
-                    "amendments_id": [],
-                    "modified_final_version": "",
-                    "reason": "",
-                    "parent_id": None,
-                    "category_id": None,
-                    "category_weight": 10000,
-                    "comments": [],
-                    "motion_block_id": None,
-                    "origin": "",
-                    "submitters": [
-                        {"id": 1, "user_id": 1, "motion_id": 1, "weight": 1}
-                    ],
-                    "supporters_id": [],
-                    "state_id": 1,
-                    "state_extension": None,
-                    "state_restriction": [],
-                    "statute_paragraph_id": None,
-                    "workflow_id": 1,
-                    "recommendation_id": None,
-                    "recommendation_extension": None,
-                    "tags_id": [],
-                    "attachments_id": [],
-                    "agenda_item_id": 1,
-                    "list_of_speakers_id": 1,
-                    "sort_parent_id": None,
-                    "weight": 10000,
-                    "change_recommendations_id": [],
-                },
-                "agenda/item:1": {
-                    "id": 1,
-                    "item_number": "",
-                    "title_information": {
-                        "title": "test_title_OoCoo3MeiT9li5Iengu9",
-                        "identifier": "1",
-                    },
-                    "comment": None,
-                    "closed": False,
-                    "type": 3,
-                    "is_internal": False,
-                    "is_hidden": True,
-                    "duration": None,
-                    "content_object": {"collection": "motions/motion", "id": 1},
-                    "weight": 10000,
-                    "parent_id": None,
-                    "level": 0,
-                    "tags_id": [],
-                },
-            },
-        )
-        self.assertEqual(deleted_autoupdate, [])
         self.assertEqual(motion.title, "test_title_OoCoo3MeiT9li5Iengu9")
         self.assertEqual(motion.identifier, "1")
         self.assertTrue(motion.submitters.exists())
@@ -412,92 +339,6 @@ class CreateMotion(TestCase):
         return Motion.objects.get(pk=int(response.data["id"]))
 
 
-class RetrieveMotion(TestCase):
-    """
-    Tests retrieving a motion
-    """
-
-    def setUp(self):
-        self.client = APIClient()
-        self.client.login(username="admin", password="admin")
-        self.motion = Motion(
-            title="test_title_uj5eeSiedohSh3ohyaaj",
-            text="test_text_ithohchaeThohmae5aug",
-        )
-        self.motion.save()
-        for index in range(10):
-            get_user_model().objects.create_user(
-                username=f"user_{index}", password="password"
-            )
-
-    def test_guest_state_with_restriction(self):
-        config["general_system_enable_anonymous"] = True
-        guest_client = APIClient()
-        state = self.motion.state
-        state.restriction = ["motions.can_manage"]
-        state.save()
-        # The cache has to be cleared, see:
-        # https://github.com/OpenSlides/OpenSlides/issues/3396
-        inform_changed_data(self.motion)
-
-        response = guest_client.get(reverse("motion-detail", args=[self.motion.pk]))
-        self.assertEqual(response.status_code, 404)
-
-    def test_admin_state_with_restriction(self):
-        state = self.motion.state
-        state.restriction = ["motions.can_manage"]
-        state.save()
-        response = self.client.get(reverse("motion-detail", args=[self.motion.pk]))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-    def test_submitter_state_with_restriction(self):
-        state = self.motion.state
-        state.restriction = ["is_submitter"]
-        state.save()
-        user = get_user_model().objects.create_user(
-            username="username_ohS2opheikaSa5theijo",
-            password="password_kau4eequaisheeBateef",
-        )
-        Submitter.objects.add(user, self.motion)
-        submitter_client = APIClient()
-        submitter_client.force_login(user)
-        response = submitter_client.get(reverse("motion-detail", args=[self.motion.pk]))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-    def test_user_without_can_see_user_permission_to_see_motion_and_submitter_data(
-        self,
-    ):
-        admin = get_user_model().objects.get(username="admin")
-        Submitter.objects.add(admin, self.motion)
-        group = get_group_model().objects.get(
-            pk=GROUP_DEFAULT_PK
-        )  # Group with pk 1 is for anonymous and default users.
-        permission_string = "users.can_see_name"
-        app_label, codename = permission_string.split(".")
-        permission = group.permissions.get(
-            content_type__app_label=app_label, codename=codename
-        )
-        group.permissions.remove(permission)
-        config["general_system_enable_anonymous"] = True
-        guest_client = APIClient()
-        inform_changed_data(group)
-        inform_changed_data(self.motion)
-
-        response_1 = guest_client.get(reverse("motion-detail", args=[self.motion.pk]))
-        self.assertEqual(response_1.status_code, status.HTTP_200_OK)
-        submitter_id = response_1.data["submitters"][0]["user_id"]
-        response_2 = guest_client.get(reverse("user-detail", args=[submitter_id]))
-        self.assertEqual(response_2.status_code, status.HTTP_200_OK)
-
-        extra_user = get_user_model().objects.create_user(
-            username="username_wequePhieFoom0hai3wa",
-            password="password_ooth7taechai5Oocieya",
-        )
-
-        response_3 = guest_client.get(reverse("user-detail", args=[extra_user.pk]))
-        self.assertEqual(response_3.status_code, 404)
-
-
 class UpdateMotion(TestCase):
     """
     Tests updating motions.
@@ -519,9 +360,6 @@ class UpdateMotion(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         motion = Motion.objects.get()
-        self.assertAutoupdate(motion)
-        self.assertAutoupdate(motion.agenda_item)
-        self.assertAutoupdate(motion.list_of_speakers)
         self.assertEqual(motion.title, "test_title_aeng7ahChie3waiR8xoh")
         self.assertEqual(motion.identifier, "test_identifier_jieseghohj7OoSah1Ko9")
 

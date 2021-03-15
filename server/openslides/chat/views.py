@@ -12,15 +12,12 @@ from openslides.utils.rest_api import (
     CreateModelMixin,
     DestroyModelMixin,
     GenericViewSet,
-    ListModelMixin,
     ModelViewSet,
     Response,
-    RetrieveModelMixin,
     detail_route,
     status,
 )
 
-from .access_permissions import ChatGroupAccessPermissions, ChatMessageAccessPermissions
 from .models import ChatGroup, ChatMessage
 
 
@@ -35,7 +32,6 @@ class ChatGroupViewSet(ModelViewSet):
     partial_update, update, destroy and clear.
     """
 
-    access_permissions = ChatGroupAccessPermissions()
     queryset = ChatGroup.objects.all()
 
     def check_view_permissions(self):
@@ -70,8 +66,6 @@ class ChatGroupViewSet(ModelViewSet):
 
 
 class ChatMessageViewSet(
-    ListModelMixin,
-    RetrieveModelMixin,
     CreateModelMixin,
     DestroyModelMixin,
     GenericViewSet,
@@ -82,7 +76,6 @@ class ChatMessageViewSet(
     There are the following views: metadata, list, retrieve, create
     """
 
-    access_permissions = ChatMessageAccessPermissions()
     queryset = ChatMessage.objects.all()
 
     def check_view_permissions(self):

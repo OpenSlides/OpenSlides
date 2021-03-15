@@ -1,6 +1,5 @@
 import pytest
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import Permission
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
 from django.utils import timezone
@@ -14,12 +13,8 @@ from openslides.core.models import Countdown
 from openslides.mediafiles.models import Mediafile
 from openslides.motions.models import Motion, MotionBlock
 from openslides.topics.models import Topic
-from openslides.users.models import Group
-from openslides.utils.autoupdate import inform_changed_data
 from tests.count_queries import count_queries
 from tests.test_case import TestCase
-
-from ...common_groups import GROUP_DEFAULT_PK
 
 
 @pytest.mark.django_db(transaction=False)
@@ -106,24 +101,14 @@ class ContentObjects(TestCase):
 
         assert topic.agenda_item is not None
         assert topic.list_of_speakers is not None
-        response = self.client.get(reverse("item-detail", args=[topic.agenda_item.pk]))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        response = self.client.get(
-            reverse("listofspeakers-detail", args=[topic.list_of_speakers.pk])
-        )
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_delete_topic(self):
         topic = Topic.objects.create(title="test_title_lwOCK32jZGFb37DpmoP(")
         item_id = topic.agenda_item_id
         list_of_speakers_id = topic.list_of_speakers_id
         topic.delete()
-        response = self.client.get(reverse("item-detail", args=[item_id]))
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-        response = self.client.get(
-            reverse("listofspeakers-detail", args=[list_of_speakers_id])
-        )
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertFalse(Item.objects.filter(pk=item_id).exists())
+        self.assertFalse(ListOfSpeakers.objects.filter(pk=list_of_speakers_id).exists())
 
     def test_prevent_removing_topic_from_agenda(self):
         topic = Topic.objects.create(title="test_title_lwOCK32jZGFb37DpmoP(")
@@ -183,105 +168,6 @@ class ContentObjects(TestCase):
         motion = Motion.objects.get()
         self.assertTrue(motion.agenda_item is not None)
         self.assertEqual(motion.agenda_item_id, motion.agenda_item.id)
-
-
-class RetrieveItem(TestCase):
-    """
-    Tests retrieving items.
-    """
-
-    def setUp(self):
-        self.client = APIClient()
-        config["general_system_enable_anonymous"] = True
-        self.item = Topic.objects.create(
-            title="test_title_Idais2pheepeiz5uph1c"
-        ).agenda_item
-
-    def test_normal_by_anonymous_without_perm_to_see_internal_items(self):
-        group = get_user_model().groups.field.related_model.objects.get(
-            pk=GROUP_DEFAULT_PK
-        )
-        permission_string = "agenda.can_see_internal_items"
-        app_label, codename = permission_string.split(".")
-        permission = group.permissions.get(
-            content_type__app_label=app_label, codename=codename
-        )
-        group.permissions.remove(permission)
-        self.item.type = Item.AGENDA_ITEM
-        self.item.save()
-        response = self.client.get(reverse("item-detail", args=[self.item.pk]))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-    def test_hidden_by_anonymous_without_manage_perms(self):
-        response = self.client.get(reverse("item-detail", args=[self.item.pk]))
-        self.assertEqual(response.status_code, 404)
-
-    def test_hidden_by_anonymous_with_manage_perms(self):
-        group = Group.objects.get(pk=GROUP_DEFAULT_PK)
-        permission_string = "agenda.can_manage"
-        app_label, codename = permission_string.split(".")
-        permission = Permission.objects.get(
-            content_type__app_label=app_label, codename=codename
-        )
-        group.permissions.add(permission)
-        inform_changed_data(group)
-        response = self.client.get(reverse("item-detail", args=[self.item.pk]))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-    def test_internal_by_anonymous_without_perm_to_see_internal_items(self):
-        group = Group.objects.get(pk=GROUP_DEFAULT_PK)
-        permission_string = "agenda.can_see_internal_items"
-        app_label, codename = permission_string.split(".")
-        permission = group.permissions.get(
-            content_type__app_label=app_label, codename=codename
-        )
-        group.permissions.remove(permission)
-        inform_changed_data(group)
-        self.item.type = Item.INTERNAL_ITEM
-        self.item.save()
-        response = self.client.get(reverse("item-detail", args=[self.item.pk]))
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-
-    def test_normal_by_anonymous_cant_see_agenda_comments(self):
-        self.item.type = Item.AGENDA_ITEM
-        self.item.comment = "comment_gbiejd67gkbmsogh8374jf$kd"
-        self.item.save()
-        response = self.client.get(reverse("item-detail", args=[self.item.pk]))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTrue(response.data.get("comment") is None)
-
-
-class RetrieveListOfSpeakers(TestCase):
-    """
-    Tests retrieving list of speakers.
-    """
-
-    def setUp(self):
-        self.client = APIClient()
-        config["general_system_enable_anonymous"] = True
-        self.list_of_speakers = Topic.objects.create(
-            title="test_title_qsjem(ZUNfp7egnzp37n"
-        ).list_of_speakers
-
-    def test_simple(self):
-        response = self.client.get(
-            reverse("listofspeakers-detail", args=[self.list_of_speakers.pk])
-        )
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-    def test_without_permission(self):
-        group = Group.objects.get(pk=GROUP_DEFAULT_PK)
-        permission_string = "agenda.can_see_list_of_speakers"
-        app_label, codename = permission_string.split(".")
-        permission = Permission.objects.get(
-            content_type__app_label=app_label, codename=codename
-        )
-        group.permissions.remove(permission)
-        inform_changed_data(group)
-        response = self.client.get(
-            reverse("listofspeakers-detail", args=[self.list_of_speakers.pk])
-        )
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 
 class ManageSpeaker(TestCase):

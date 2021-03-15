@@ -5,7 +5,6 @@ from openslides.utils.manager import BaseManager
 
 from ..utils.auth import has_perm, in_some_groups
 from ..utils.models import CASCADE_AND_AUTOUPDATE, RESTModelMixin
-from .access_permissions import ChatGroupAccessPermissions, ChatMessageAccessPermissions
 
 
 class ChatGroupManager(BaseManager):
@@ -14,7 +13,6 @@ class ChatGroupManager(BaseManager):
     """
 
     def get_prefetched_queryset(self, *args, **kwargs):
-        """"""
         return (
             super()
             .get_prefetched_queryset(*args, **kwargs)
@@ -23,10 +21,6 @@ class ChatGroupManager(BaseManager):
 
 
 class ChatGroup(RESTModelMixin, models.Model):
-    """"""
-
-    access_permissions = ChatGroupAccessPermissions()
-
     objects = ChatGroupManager()
 
     name = models.CharField(max_length=256)
@@ -57,7 +51,6 @@ class ChatMessageManager(BaseManager):
     """
 
     def get_prefetched_queryset(self, *args, **kwargs):
-        """"""
         return (
             super()
             .get_prefetched_queryset(*args, **kwargs)
@@ -68,10 +61,6 @@ class ChatMessageManager(BaseManager):
 
 
 class ChatMessage(RESTModelMixin, models.Model):
-    """"""
-
-    access_permissions = ChatMessageAccessPermissions()
-
     objects = ChatMessageManager()
 
     text = models.CharField(max_length=512)

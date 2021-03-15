@@ -35,17 +35,11 @@ class AutoupdateElement(AutoupdateElementBase, total=False):
 
     disable_history: If this is True, the element (and the containing full_data) won't
     be saved into the history. Information and user_id is then irrelevant.
-
-    no_delete_on_restriction is a flag, which is saved into the models in the cache
-    as the _no_delete_on_restriction key. If this is true, there should neither be an
-    entry for one specific model in the changed *nor the deleted* part of the
-    autoupdate, if the model was restricted.
     """
 
     information: List[str]
     user_id: Optional[int]
     disable_history: bool
-    no_delete_on_restriction: bool
     full_data: Optional[Dict[str, Any]]
 
 
@@ -122,12 +116,7 @@ class AutoupdateBundle:
         cache_elements: Dict[str, Optional[Dict[str, Any]]] = {}
         for element in self.element_iterator:
             element_id = get_element_id(element["collection_string"], element["id"])
-            full_data = element.get("full_data")
-            if full_data:
-                full_data["_no_delete_on_restriction"] = element.get(
-                    "no_delete_on_restriction", False
-                )
-            cache_elements[element_id] = full_data
+            cache_elements[element_id] = element.get("full_data")
         return cache_elements
 
     async def dispatch_autoupdate(self) -> int:

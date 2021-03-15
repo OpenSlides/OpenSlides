@@ -13,20 +13,6 @@ from tests.test_case import TestCase
 
 
 @pytest.mark.django_db(transaction=False)
-def test_slide_on_default_projector(client):
-    client.login(username="admin", password="admin")
-    client.put(
-        reverse("projector-detail", args=["1"]),
-        {"elements": [{"name": "topics/topic", "id": 1}]},
-        content_type="application/json",
-    )
-
-    response = client.get(reverse("projector-detail", args=["1"]))
-
-    assert response.status_code == 200
-
-
-@pytest.mark.django_db(transaction=False)
 def test_invalid_element_non_existing_slide(client):
     client.login(username="admin", password="admin")
 

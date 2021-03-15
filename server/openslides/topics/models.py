@@ -5,7 +5,6 @@ from openslides.utils.manager import BaseManager
 from ..agenda.mixins import AgendaItemWithListOfSpeakersMixin
 from ..mediafiles.models import Mediafile
 from ..utils.models import RESTModelMixin
-from .access_permissions import TopicAccessPermissions
 
 
 class TopicManager(BaseManager):
@@ -30,8 +29,6 @@ class Topic(RESTModelMixin, AgendaItemWithListOfSpeakersMixin, models.Model):
     """
     Model for slides with custom content. Used to be called custom slide.
     """
-
-    access_permissions = TopicAccessPermissions()
 
     objects = TopicManager()
 

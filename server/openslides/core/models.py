@@ -13,15 +13,6 @@ from openslides.utils.manager import BaseManager
 from openslides.utils.models import SET_NULL_AND_AUTOUPDATE, RESTModelMixin
 from openslides.utils.postgres import is_postgres
 
-from .access_permissions import (
-    ConfigAccessPermissions,
-    CountdownAccessPermissions,
-    ProjectionDefaultAccessPermissions,
-    ProjectorAccessPermissions,
-    ProjectorMessageAccessPermissions,
-    TagAccessPermissions,
-)
-
 
 class ProjectorManager(BaseManager):
     """
@@ -72,8 +63,6 @@ class Projector(RESTModelMixin, models.Model):
     The projector can be controlled using the REST API with POST requests
     on e. g. the URL /rest/core/projector/1/activate_elements/.
     """
-
-    access_permissions = ProjectorAccessPermissions()
 
     objects = ProjectorManager()
 
@@ -134,8 +123,6 @@ class ProjectionDefault(RESTModelMixin, models.Model):
     name on the front end for the user.
     """
 
-    access_permissions = ProjectionDefaultAccessPermissions()
-
     name = models.CharField(max_length=256)
 
     display_name = models.CharField(max_length=256)
@@ -157,8 +144,6 @@ class Tag(RESTModelMixin, models.Model):
     motions or assignments.
     """
 
-    access_permissions = TagAccessPermissions()
-
     name = models.CharField(max_length=255, unique=True)
 
     class Meta:
@@ -174,8 +159,6 @@ class ConfigStore(RESTModelMixin, models.Model):
     """
     A model class to store all config variables in the database.
     """
-
-    access_permissions = ConfigAccessPermissions()
 
     key = models.CharField(max_length=255, unique=True, db_index=True)
     """A string, the key of the config variable."""
@@ -200,8 +183,6 @@ class ProjectorMessage(RESTModelMixin, models.Model):
     Model for ProjectorMessages.
     """
 
-    access_permissions = ProjectorMessageAccessPermissions()
-
     message = models.TextField(blank=True)
 
     class Meta:
@@ -212,8 +193,6 @@ class Countdown(RESTModelMixin, models.Model):
     """
     Model for countdowns.
     """
-
-    access_permissions = CountdownAccessPermissions()
 
     title = models.CharField(max_length=256, unique=True)
 

@@ -2,7 +2,7 @@ import json
 from collections import defaultdict
 from datetime import datetime
 from time import sleep
-from typing import Any, Callable, Dict, List, Optional, Tuple, Type
+from typing import Any, Callable, Dict, List, Optional, Type
 
 from asgiref.sync import async_to_sync, sync_to_async
 from django.apps import apps
@@ -21,10 +21,6 @@ from .utils import get_element_id, split_element_id
 
 
 logger = logging.getLogger(__name__)
-
-
-class ChangeIdTooLowError(Exception):
-    pass
 
 
 def get_all_cachables() -> List[Cachable]:
@@ -231,9 +227,7 @@ class ElementCache:
             changed_elements, deleted_elements
         )
 
-    async def get_all_data_list(
-        self, user_id: Optional[int] = None
-    ) -> Dict[str, List[Dict[str, Any]]]:
+    async def get_all_data_list(self) -> Dict[str, List[Dict[str, Any]]]:
         """
         Returns all data with a list per collection:
         {
@@ -242,33 +236,17 @@ class ElementCache:
         If the user id is given the data will be restricted for this user.
         """
         all_data = await self.cache_provider.get_all_data()
-        return await self.format_all_data(all_data, user_id)
-
-    async def get_all_data_list_with_max_change_id(
-        self, user_id: Optional[int] = None
-    ) -> Tuple[int, Dict[str, List[Dict[str, Any]]]]:
-        (
-            max_change_id,
-            all_data,
-        ) = await self.cache_provider.get_all_data_with_max_change_id()
-        return max_change_id, await self.format_all_data(all_data, user_id)
+        return await self.format_all_data(all_data)
 
     async def format_all_data(
-        self, all_data_bytes: Dict[bytes, bytes], user_id: Optional[int]
+        self, all_data_bytes: Dict[bytes, bytes]
     ) -> Dict[str, List[Dict[str, Any]]]:
         all_data: Dict[str, List[Dict[str, Any]]] = defaultdict(list)
         for element_id, data in all_data_bytes.items():
             collection, _ = split_element_id(element_id)
             element = json.loads(data.decode())
-            element.pop(
-                "_no_delete_on_restriction", False
-            )  # remove special field for get_data_since
             all_data[collection].append(element)
 
-        if user_id is not None:
-            for collection in all_data.keys():
-                restricter = self.cachables[collection].restrict_elements
-                all_data[collection] = await restricter(user_id, all_data[collection])
         return dict(all_data)
 
     async def get_collection_data(self, collection: str) -> Dict[int, Dict[str, Any]]:
@@ -281,13 +259,10 @@ class ElementCache:
         collection_data = {}
         for id in encoded_collection_data.keys():
             collection_data[id] = json.loads(encoded_collection_data[id].decode())
-            collection_data[id].pop(
-                "_no_delete_on_restriction", False
-            )  # remove special field for get_data_since
         return collection_data
 
     async def get_element_data(
-        self, collection: str, id: int, user_id: Optional[int] = None
+        self, collection: str, id: int
     ) -> Optional[Dict[str, Any]]:
         """
         Returns one element or None, if the element does not exist.
@@ -299,108 +274,7 @@ class ElementCache:
 
         if encoded_element is None:
             return None
-        element = json.loads(encoded_element.decode())  # type: ignore
-        element.pop(
-            "_no_delete_on_restriction", False
-        )  # remove special field for get_data_since
-
-        if user_id is not None:
-            element = await self.restrict_element_data(element, collection, user_id)
-        return element
-
-    async def restrict_element_data(
-        self, element: Dict[str, Any], collection: str, user_id: int
-    ) -> Optional[Dict[str, Any]]:
-        restricter = self.cachables[collection].restrict_elements
-        restricted_elements = await restricter(user_id, [element])
-        return restricted_elements[0] if restricted_elements else None
-
-    async def get_data_since(
-        self, user_id: Optional[int] = None, change_id: int = 0
-    ) -> Tuple[int, Dict[str, List[Dict[str, Any]]], List[str]]:
-        """
-        Returns all data since change_id until the max change id.cIf the user id is given the
-        data will be restricted for this user.
-
-        Returns three values inside a tuple. The first value is the max change id. The second
-        value is a dict where the key is the collection and the value is a list of data.
-        The third is a list of element_ids with deleted elements.
-
-        Only returns elements with the change_id or newer. When change_id is 0,
-        all elements are returned.
-
-        Raises a ChangeIdTooLowError when the lowest change_id in redis is higher then
-        the requested change_id. In this case the method has to be rerun with
-        change_id=0. This is importend because there could be deleted elements
-        that the cache does not know about.
-        """
-        if change_id == 0:
-            (
-                max_change_id,
-                changed_elements,
-            ) = await self.get_all_data_list_with_max_change_id(user_id)
-            return (max_change_id, changed_elements, [])
-
-        # This raises a Runtime Exception, if there is no change_id
-        lowest_change_id = await self.get_lowest_change_id()
-
-        if change_id < lowest_change_id:
-            # When change_id is lower then the lowest change_id in redis, we can
-            # not inform the user about deleted elements.
-            raise ChangeIdTooLowError(
-                f"change_id {change_id} is lower then the lowest change_id in redis {lowest_change_id}."
-            )
-
-        (
-            max_change_id,
-            raw_changed_elements,
-            deleted_elements,
-        ) = await self.cache_provider.get_data_since(change_id)
-        changed_elements = {
-            collection: [json.loads(value.decode()) for value in value_list]
-            for collection, value_list in raw_changed_elements.items()
-        }
-
-        if user_id is None:
-            for elements in changed_elements.values():
-                for element in elements:
-                    element.pop("_no_delete_on_restriction", False)
-        else:
-            # the list(...) is important, because `changed_elements` will be
-            # altered during iteration and restricting data
-            for collection, elements in list(changed_elements.items()):
-                # Remove the _no_delete_on_restriction from each element. Collect all ids, where
-                # this field is absent or False.
-                unrestricted_ids = set()
-                for element in elements:
-                    no_delete_on_restriction = element.pop(
-                        "_no_delete_on_restriction", False
-                    )
-                    if not no_delete_on_restriction:
-                        unrestricted_ids.add(element["id"])
-
-                cacheable = self.cachables[collection]
-                restricted_elements = await cacheable.restrict_elements(
-                    user_id, elements
-                )
-
-                # If the model is personalized, it must not be deleted for other users
-                if not cacheable.personalized_model:
-                    # Add removed objects (through restricter) to deleted elements.
-                    restricted_element_ids = set(
-                        [element["id"] for element in restricted_elements]
-                    )
-                    # Delete all ids, that are allowed to be deleted (see unrestricted_ids) and are
-                    # not present after restricting the data.
-                    for id in unrestricted_ids - restricted_element_ids:
-                        deleted_elements.append(get_element_id(collection, id))
-
-                if not restricted_elements:
-                    del changed_elements[collection]
-                else:
-                    changed_elements[collection] = restricted_elements
-
-        return (max_change_id, changed_elements, deleted_elements)
+        return json.loads(encoded_element.decode())  # type: ignore
 
     async def get_current_change_id(self) -> int:
         """

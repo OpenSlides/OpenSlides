@@ -134,43 +134,6 @@ class CreateMotionPoll(TestCase):
         poll = MotionPoll.objects.get()
         self.assertEqual(poll.pollmethod, "YNA")
 
-    def test_autoupdate(self):
-        response = self.client.post(
-            reverse("motionpoll-list"),
-            {
-                "title": "test_title_9Ce8OsdB8YWTVm5YOzqH",
-                "pollmethod": "YNA",
-                "type": "named",
-                "motion_id": self.motion.id,
-                "onehundred_percent_base": "YN",
-                "majority_method": "simple",
-            },
-        )
-        self.assertHttpStatusVerbose(response, status.HTTP_201_CREATED)
-
-        autoupdate = self.get_last_autoupdate(user=self.admin)
-        self.assertEqual(
-            autoupdate[0]["motions/motion-poll:1"],
-            {
-                "motion_id": 1,
-                "pollmethod": MotionPoll.POLLMETHOD_YNA,
-                "state": MotionPoll.STATE_CREATED,
-                "type": MotionPoll.TYPE_NAMED,
-                "title": "test_title_9Ce8OsdB8YWTVm5YOzqH",
-                "onehundred_percent_base": MotionPoll.PERCENT_BASE_YN,
-                "majority_method": MotionPoll.MAJORITY_SIMPLE,
-                "groups_id": [],
-                "votesvalid": "0.000000",
-                "votesinvalid": "0.000000",
-                "votescast": "0.000000",
-                "options_id": [1],
-                "id": 1,
-                "user_has_voted": False,
-                "user_has_voted_for_delegations": [],
-            },
-        )
-        self.assertEqual(autoupdate[1], [])
-
     def test_missing_keys(self):
         complete_request_data = {
             "title": "test_title_OoCh9aitaeyaeth8nom1",
@@ -631,7 +594,6 @@ class VoteMotionPollAnalog(TestCase):
         self.assertEqual(option.yes, Decimal("1"))
         self.assertEqual(option.no, Decimal("2.35"))
         self.assertEqual(option.abstain, Decimal("-1"))
-        self.assertAutoupdate(poll)
 
     def test_vote_no_permissions(self):
         self.start_poll()
@@ -924,13 +886,6 @@ class VoteMotionPollNamed(TestCase):
         self.assertEqual(vote.user, self.user)
         self.assertEqual(vote.delegated_user, self.admin)
 
-        autoupdate = self.get_last_autoupdate(user=self.admin)
-        self.assertIn("motions/motion-poll:1", autoupdate[0])
-        self.assertEqual(
-            autoupdate[0]["motions/motion-poll:1"]["user_has_voted_for_delegations"],
-            [self.user.pk],
-        )
-
     def test_vote_delegation_and_self_vote(self):
         self.test_vote_delegation()
         response = self.client.post(
@@ -1013,262 +968,6 @@ class VoteMotionPollNamed(TestCase):
         )
         self.assertHttpStatusVerbose(response, status.HTTP_400_BAD_REQUEST)
         self.assertFalse(MotionPoll.objects.get().get_votes().exists())
-
-
-class VoteMotionPollNamedAutoupdates(TestCase):
-    """3 important users:
-    self.admin: manager, has can_see, can_manage, can_manage_polls (in admin group)
-    self.user1: votes, has can_see perms and in in delegate group
-    self.other_user: Just has can_see perms and is NOT in the delegate group.
-    """
-
-    def advancedSetUp(self):
-        self.motion = Motion(
-            title="test_title_OoK9IeChe2Jeib9Deeji",
-            text="test_text_eichui1oobiSeit9aifo",
-        )
-        self.motion.save()
-        self.delegate_group = get_group_model().objects.get(pk=GROUP_DELEGATE_PK)
-        self.other_user, _ = self.create_user()
-        inform_changed_data(self.other_user)
-
-        self.user, user_password = self.create_user()
-        self.user.groups.add(self.delegate_group)
-        self.user.is_present = True
-        self.user.save()
-        self.user_client = APIClient()
-        self.user_client.login(username=self.user.username, password=user_password)
-
-        self.poll = MotionPoll.objects.create(
-            motion=self.motion,
-            title="test_title_tho8PhiePh8upaex6phi",
-            pollmethod="YNA",
-            type=BasePoll.TYPE_NAMED,
-            state=MotionPoll.STATE_STARTED,
-            onehundred_percent_base="YN",
-            majority_method="simple",
-        )
-        self.poll.create_options()
-        self.poll.groups.add(self.delegate_group)
-
-    def test_vote(self):
-        response = self.user_client.post(
-            reverse("motionpoll-vote", args=[self.poll.pk]), {"data": "A"}
-        )
-        self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
-        poll = MotionPoll.objects.get()
-        vote = MotionVote.objects.get()
-
-        # Expect the admin to see the full data in the autoupdate
-        autoupdate = self.get_last_autoupdate(user=self.admin)
-        self.assertEqual(
-            autoupdate[0],
-            {
-                "motions/motion-poll:1": {
-                    "motion_id": 1,
-                    "pollmethod": "YNA",
-                    "state": 2,
-                    "type": "named",
-                    "title": "test_title_tho8PhiePh8upaex6phi",
-                    "onehundred_percent_base": "YN",
-                    "majority_method": "simple",
-                    "groups_id": [GROUP_DELEGATE_PK],
-                    "votesvalid": "1.000000",
-                    "votesinvalid": "0.000000",
-                    "votescast": "1.000000",
-                    "options_id": [1],
-                    "id": 1,
-                    "user_has_voted": False,
-                    "user_has_voted_for_delegations": [],
-                },
-                "motions/motion-vote:1": {
-                    "pollstate": 2,
-                    "id": 1,
-                    "weight": "1.000000",
-                    "value": "A",
-                    "user_id": self.user.id,
-                    "delegated_user_id": self.user.id,
-                    "option_id": 1,
-                },
-                "motions/motion-option:1": {
-                    "abstain": "1.000000",
-                    "id": 1,
-                    "no": "0.000000",
-                    "poll_id": 1,
-                    "pollstate": 2,
-                    "yes": "0.000000",
-                },
-            },
-        )
-        self.assertEqual(autoupdate[1], [])
-
-        # Expect user1 to receive his vote
-        autoupdate = self.get_last_autoupdate(user=self.user)
-        self.assertEqual(
-            autoupdate[0]["motions/motion-vote:1"],
-            {
-                "pollstate": 2,
-                "option_id": 1,
-                "id": 1,
-                "weight": "1.000000",
-                "value": "A",
-                "user_id": self.user.id,
-                "delegated_user_id": self.user.id,
-            },
-        )
-        self.assertEqual(
-            autoupdate[0]["motions/motion-option:1"],
-            {"id": 1, "poll_id": 1, "pollstate": 2},
-        )
-        self.assertEqual(autoupdate[1], [])
-
-        # Expect non-admins to get a restricted poll update
-        for user in (self.user, self.other_user):
-            self.assertAutoupdate(poll, user=user)
-            autoupdate = self.get_last_autoupdate(user=user)
-            self.assertEqual(
-                autoupdate[0]["motions/motion-poll:1"],
-                {
-                    "motion_id": 1,
-                    "pollmethod": "YNA",
-                    "state": 2,
-                    "type": "named",
-                    "title": "test_title_tho8PhiePh8upaex6phi",
-                    "onehundred_percent_base": "YN",
-                    "majority_method": "simple",
-                    "groups_id": [GROUP_DELEGATE_PK],
-                    "options_id": [1],
-                    "id": 1,
-                    "user_has_voted": user == self.user,
-                    "user_has_voted_for_delegations": [],
-                },
-            )
-            self.assertEqual(
-                autoupdate[0]["motions/motion-option:1"],
-                {
-                    "id": 1,
-                    "poll_id": 1,
-                    "pollstate": 2,
-                },  # noqa black and flake are no friends :(
-            )
-
-        # Other users should not get a vote autoupdate
-        self.assertNoAutoupdate(vote, user=self.other_user)
-        self.assertNoDeletedAutoupdate(vote, user=self.other_user)
-
-
-class VoteMotionPollPseudoanonymousAutoupdates(TestCase):
-    """3 important users:
-    self.admin: manager, has can_see, can_manage, can_manage_polls (in admin group)
-    self.user: votes, has can_see perms and in in delegate group
-    self.other_user: Just has can_see perms and is NOT in the delegate group.
-    """
-
-    def advancedSetUp(self):
-        self.motion = Motion(
-            title="test_title_OoK9IeChe2Jeib9Deeji",
-            text="test_text_eichui1oobiSeit9aifo",
-        )
-        self.motion.save()
-        self.delegate_group = get_group_model().objects.get(pk=GROUP_DELEGATE_PK)
-        self.other_user, _ = self.create_user()
-        inform_changed_data(self.other_user)
-
-        self.user, user_password = self.create_user()
-        self.user.groups.add(self.delegate_group)
-        self.user.is_present = True
-        self.user.save()
-        self.user_client = APIClient()
-        self.user_client.login(username=self.user.username, password=user_password)
-
-        self.poll = MotionPoll.objects.create(
-            motion=self.motion,
-            title="test_title_cahP1umooteehah2jeey",
-            pollmethod="YNA",
-            type=BasePoll.TYPE_PSEUDOANONYMOUS,
-            state=MotionPoll.STATE_STARTED,
-            onehundred_percent_base="YN",
-            majority_method="simple",
-        )
-        self.poll.create_options()
-        self.poll.groups.add(self.delegate_group)
-
-    def test_vote(self):
-        response = self.user_client.post(
-            reverse("motionpoll-vote", args=[self.poll.pk]), {"data": "A"}
-        )
-        self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
-        poll = MotionPoll.objects.get()
-        vote = MotionVote.objects.get()
-
-        # Expect the admin to see the full data in the autoupdate
-        autoupdate = self.get_last_autoupdate(user=self.admin)
-        self.assertEqual(
-            autoupdate[0],
-            {
-                "motions/motion-poll:1": {
-                    "motion_id": 1,
-                    "pollmethod": "YNA",
-                    "state": 2,
-                    "type": "pseudoanonymous",
-                    "title": "test_title_cahP1umooteehah2jeey",
-                    "onehundred_percent_base": "YN",
-                    "majority_method": "simple",
-                    "groups_id": [GROUP_DELEGATE_PK],
-                    "votesvalid": "1.000000",
-                    "votesinvalid": "0.000000",
-                    "votescast": "1.000000",
-                    "options_id": [1],
-                    "id": 1,
-                    "user_has_voted": False,
-                    "user_has_voted_for_delegations": [],
-                },
-                "motions/motion-vote:1": {
-                    "pollstate": 2,
-                    "option_id": 1,
-                    "id": 1,
-                    "weight": "1.000000",
-                    "value": "A",
-                    "user_id": None,
-                    "delegated_user_id": None,
-                },
-                "motions/motion-option:1": {
-                    "abstain": "1.000000",
-                    "id": 1,
-                    "no": "0.000000",
-                    "poll_id": 1,
-                    "pollstate": 2,
-                    "yes": "0.000000",
-                },
-            },
-        )
-        self.assertEqual(autoupdate[1], [])
-
-        # Expect non-admins to get a restricted poll update and no autoupdate
-        # for a changed vote nor a deleted one
-        for user in (self.user, self.other_user):
-            self.assertAutoupdate(poll, user=user)
-            autoupdate = self.get_last_autoupdate(user=user)
-            self.assertEqual(
-                autoupdate[0]["motions/motion-poll:1"],
-                {
-                    "motion_id": 1,
-                    "pollmethod": "YNA",
-                    "state": 2,
-                    "type": "pseudoanonymous",
-                    "title": "test_title_cahP1umooteehah2jeey",
-                    "onehundred_percent_base": "YN",
-                    "majority_method": "simple",
-                    "groups_id": [GROUP_DELEGATE_PK],
-                    "options_id": [1],
-                    "id": 1,
-                    "user_has_voted": user == self.user,
-                    "user_has_voted_for_delegations": [],
-                },
-            )
-
-            self.assertNoAutoupdate(vote, user=user)
-            self.assertNoDeletedAutoupdate(vote, user=user)
 
 
 class VoteMotionPollPseudoanonymous(TestCase):
@@ -1473,51 +1172,6 @@ class PublishMotionPoll(TestCase):
         self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
         self.assertEqual(MotionPoll.objects.get().state, MotionPoll.STATE_PUBLISHED)
 
-        # Test autoupdates: Every user should get the full data
-        for user in (self.admin, self.user):
-            autoupdate = self.get_last_autoupdate(user=user)
-            self.assertEqual(
-                autoupdate[0],
-                {
-                    "motions/motion-poll:1": {
-                        "motion_id": 1,
-                        "pollmethod": "YNA",
-                        "state": 4,
-                        "type": "pseudoanonymous",
-                        "title": "test_title_Nufae0iew7Iorox2thoo",
-                        "onehundred_percent_base": "YN",
-                        "majority_method": "simple",
-                        "groups_id": [],
-                        "votesvalid": "0.000000",
-                        "votesinvalid": "0.000000",
-                        "votescast": "0.000000",
-                        "options_id": [1],
-                        "id": 1,
-                        "user_has_voted": False,
-                        "user_has_voted_for_delegations": [],
-                        "voted_id": [],
-                    },
-                    "motions/motion-vote:1": {
-                        "pollstate": 4,
-                        "option_id": 1,
-                        "id": 1,
-                        "weight": "2.000000",
-                        "value": "N",
-                        "user_id": None,
-                        "delegated_user_id": None,
-                    },
-                    "motions/motion-option:1": {
-                        "abstain": "0.000000",
-                        "id": 1,
-                        "no": "2.000000",
-                        "poll_id": 1,
-                        "pollstate": 4,
-                        "yes": "0.000000",
-                    },
-                },
-            )
-            self.assertEqual(autoupdate[1], [])
-
     def test_publish_wrong_state(self):
         response = self.client.post(reverse("motionpoll-publish", args=[self.poll.pk]))
         self.assertHttpStatusVerbose(response, status.HTTP_400_BAD_REQUEST)
@@ -1638,16 +1292,6 @@ class ResetMotionPoll(TestCase):
         self.assertEqual(option.abstain, Decimal("0"))
         self.assertFalse(option.votes.exists())
 
-    def test_deleted_autoupdate(self):
-        response = self.client.post(reverse("motionpoll-reset", args=[self.poll.pk]))
-        self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
-        poll = MotionPoll.objects.get()
-        option = poll.options.get()
-        self.assertAutoupdate(option, self.admin)
-        for user in (self.admin, self.user1, self.user2):
-            self.assertDeletedAutoupdate(self.vote1, user=user)
-            self.assertDeletedAutoupdate(self.vote2, user=user)
-
 
 class TestMotionPollWithVoteDelegationAutoupdate(TestCase):
     def advancedSetUp(self):
@@ -1685,7 +1329,3 @@ class TestMotionPollWithVoteDelegationAutoupdate(TestCase):
     def test_start_poll(self):
         response = self.client.post(reverse("motionpoll-start", args=[self.poll.pk]))
         self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
-
-        # other_user has to receive an autoupdate because he was delegated
-        autoupdate = self.get_last_autoupdate(user=self.other_user)
-        assert "motions/motion-poll:1" in autoupdate[0]
