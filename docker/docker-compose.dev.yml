@@ -93,6 +93,14 @@ services:
     env_file: services.env
     volumes:
       - ../openslides-media-service/src:/app/src
+  manage:
+    image: openslides-manage-dev
+    depends_on:
+    - auth
+    - datastore-writer
+    env_file: services.env
+    ports:
+    - "8001:8001"
   message-bus:
     image: redis:latest
   haproxy:
