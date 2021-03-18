@@ -104,7 +104,7 @@ user:
   default_structure_level: string
   default_vote_weight:
     type: decimal(6)
-    default: "1"
+    default: "1.000000"
   last_email_send: timestamp
   is_demo_user:
     type: boolean

@@ -27,3 +27,4 @@
 [submodule "openslides-manage-service"]
 	path = openslides-manage-service
 	url = git@github.com:OpenSlides/openslides-manage-service.git
+	branch = main
