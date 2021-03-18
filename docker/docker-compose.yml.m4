@@ -15,10 +15,10 @@ define(`BACKEND_IMAGE',
 ifenvelse(`DEFAULT_DOCKER_REGISTRY', openslides)/dnl
 ifenvelse(`DOCKER_OPENSLIDES_BACKEND_NAME', openslides-backend):dnl
 ifenvelse(`DOCKER_OPENSLIDES_BACKEND_TAG', latest))
-define(`HAPROXY_IMAGE',
+define(`PROXY_IMAGE',
 ifenvelse(`DEFAULT_DOCKER_REGISTRY', openslides)/dnl
-ifenvelse(`DOCKER_OPENSLIDES_HAPROXY_NAME', openslides-haproxy):dnl
-ifenvelse(`DOCKER_OPENSLIDES_HAPROXY_TAG', latest))
+ifenvelse(`DOCKER_OPENSLIDES_PROXY_NAME', openslides-proxy):dnl
+ifenvelse(`DOCKER_OPENSLIDES_PROXY_TAG', latest))
 define(`CLIENT_IMAGE',
 ifenvelse(`DEFAULT_DOCKER_REGISTRY', openslides)/dnl
 ifenvelse(`DOCKER_OPENSLIDES_CLIENT_NAME', openslides-client):dnl
@@ -60,8 +60,8 @@ dnl ----------------------------------------
 version: '3.4'
 
 services:
-  haproxy:
-    image: HAPROXY_IMAGE
+  proxy:
+    image: PROXY_IMAGE
     depends_on:
       - client
       - backend
@@ -183,7 +183,7 @@ services:
     - backend
     - auth
 
-# Setup: host <-uplink-> haproxy <-frontend-> services that are reachable from the client <-backend-> services that are internal-only
+# Setup: host <-uplink-> proxy <-frontend-> services that are reachable from the client <-backend-> services that are internal-only
 # There are special networks for some services only, e.g. postgres only for the postgresql, datastore reader and datastore writer
 networks:
   uplink:

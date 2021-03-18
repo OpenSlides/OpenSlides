@@ -1,0 +1,4 @@
+FROM caddy:2.3.0-alpine
+
+COPY Caddyfile.dev /etc/caddy/Caddyfile
+COPY certs /certs

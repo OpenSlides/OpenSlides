@@ -103,8 +103,8 @@ services:
     - "8001:8001"
   message-bus:
     image: redis:latest
-  haproxy:
-    image: openslides-haproxy-dev
+  proxy:
+    image: openslides-proxy-dev
     depends_on:
       - client
       - backend
@@ -112,4 +112,4 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ../haproxy/src:/usr/local/etc/haproxy
+      - ../proxy/Caddyfile.dev:/etc/caddy/Caddyfile

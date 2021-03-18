@@ -5,7 +5,7 @@ set -e
 HOME=$(dirname "$(realpath "${BASH_SOURCE[0]}")")
 declare -A TARGETS
 TARGETS=(
-  [haproxy]="$HOME/../haproxy/"
+  [proxy]="$HOME/../proxy/"
   [client]="$HOME/../openslides-client/"
   [backend]="$HOME/../openslides-backend/"
   [auth]="$HOME/../openslides-auth-service/"
@@ -23,7 +23,7 @@ DOCKER_TAG="latest"
 CONFIG="/etc/osinstancectl"
 OPTIONS=()
 BUILT_IMAGES=()
-DEFAULT_TARGETS=(haproxy client backend auth autoupdate datastore-reader datastore-writer media)
+DEFAULT_TARGETS=(proxy client backend auth autoupdate datastore-reader datastore-writer media)
 
 usage() {
   cat << EOF
