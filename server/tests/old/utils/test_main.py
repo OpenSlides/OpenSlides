@@ -38,6 +38,7 @@ class TestFunctions(TestCase):
     @patch("openslides.utils.main.detect_openslides_type")
     @patch("openslides.utils.main.os.path.expanduser")
     def test_get_default_settings_dir_unix(self, mock_expanduser, mock_detect):
+        os.environ.pop("XDG_CONFIG_HOME", None)
         mock_expanduser.return_value = "/home/test/.config"
         self.assertEqual(
             main.get_default_settings_dir(main.UNIX_VERSION),

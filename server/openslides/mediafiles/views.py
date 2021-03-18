@@ -292,7 +292,7 @@ def get_mediafile(request, path):
     A user must have all access permissions for all folders the the file itself,
     or the file is a special file (logo or font), then it is always returned.
 
-    If the mediafile cannot be found,  a Mediafile.DoesNotExist will be raised.
+    If the mediafile cannot be found, a Mediafile.DoesNotExist will be raised.
     """
     if not path:
         raise Mediafile.DoesNotExist()
@@ -301,14 +301,19 @@ def get_mediafile(request, path):
     can_see = has_perm(request.user, "mediafiles.can_see")
     for i, part in enumerate(parts):
         is_directory = i < len(parts) - 1
+        # A .get would be sufficient, but sometimes someone has uploaded a file twice due to complicated
+        # transaction management of two databases during create. So instead of returning a 500er (since
+        # .get returned multiple objects) we deliver the first file.
         if is_directory:
-            mediafile = Mediafile.objects.get(
+            mediafile = Mediafile.objects.filter(
                 parent=parent, is_directory=is_directory, title=part
-            )
+            ).first()
         else:
-            mediafile = Mediafile.objects.get(
+            mediafile = Mediafile.objects.filter(
                 parent=parent, is_directory=is_directory, original_filename=part
-            )
+            ).first()
+        if mediafile is None:
+            raise Mediafile.DoesNotExist()
         if mediafile.access_groups.exists() and not in_some_groups(
             request.user.id, [group.id for group in mediafile.access_groups.all()]
         ):
