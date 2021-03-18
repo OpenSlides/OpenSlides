@@ -1676,13 +1676,13 @@ poll:
     default: 1
   global_yes:
     type: boolean
-    default: true
+    default: false
   global_no:
     type: boolean
-    default: true
+    default: false
   global_abstain:
     type: boolean
-    default: true
+    default: false
   onehundred_percent_base:
     type: string
     required: true
