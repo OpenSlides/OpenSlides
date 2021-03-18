@@ -2096,7 +2096,6 @@ projector_countdown:
     default: ""
   default_time:
     type: number
-    default: 60
   countdown_time:
     type: float
     default: 60
