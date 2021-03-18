@@ -1519,6 +1519,7 @@ motion_state:
     - lightblue
     - yellow
     default: lightblue
+    required: true
   restrictions:
     type: string[]
     items:
