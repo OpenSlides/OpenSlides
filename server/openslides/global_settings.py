@@ -99,17 +99,20 @@ STATICFILES_DIRS = [os.path.join(MODULE_DIR, "static")] + [
 STATIC_ROOT = os.path.join(OPENSLIDES_USER_DATA_DIR, "collected-static")
 
 # Files
-# https://docs.djangoproject.com/en/1.10/topics/files/
+# https://docs.djangoproject.com/en/2.2/topics/files/
 MEDIA_ROOT = os.path.join(OPENSLIDES_USER_DATA_DIR, "media", "")
 
+MEDIA_URL = "/media/"
 
 # Sessions and user authentication
-# https://docs.djangoproject.com/en/1.10/topics/http/sessions/
-# https://docs.djangoproject.com/en/1.10/topics/auth/
+# https://docs.djangoproject.com/en/2.2/topics/http/sessions/
+# https://docs.djangoproject.com/en/2.2/topics/auth/
 
 AUTH_USER_MODEL = "users.User"
 
 AUTH_GROUP_MODEL = "users.Group"
+
+AUTHENTICATION_BACKENDS = ["openslides.utils.auth_backend.ModelBackend"]
 
 SESSION_COOKIE_NAME = "OpenSlidesSessionID"
 
@@ -126,13 +129,6 @@ PASSWORD_HASHERS = [
     "django.contrib.auth.hashers.BCryptSHA256PasswordHasher",
     "django.contrib.auth.hashers.BCryptPasswordHasher",
 ]
-
-
-# Files
-# https://docs.djangoproject.com/en/1.10/topics/files/
-
-MEDIA_URL = "/media/"
-
 
 # Enable updating the last_login field for users on every login.
 ENABLE_LAST_LOGIN_FIELD = False
