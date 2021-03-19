@@ -6,7 +6,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
 import { auditTime } from 'rxjs/operators';
 import { Container } from 'tsparticles';
-import { Emitters } from 'tsparticles/dist/Plugins/Emitters/Emitters';
 
 import { ApplauseService } from 'app/core/ui-services/applause.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
@@ -79,7 +78,8 @@ export class ApplauseParticleDisplayComponent extends BaseViewComponentDirective
 
     private setParticleLevel(level: number): void {
         if (this.particleContainer) {
-            const emitters = this.particleContainer.plugins.get('emitters') as Emitters;
+            const emitters = this.particleContainer.plugins.get('emitters') as any;
+            // TODO: Use `Emitters` instead of any.
             if (emitters) {
                 emitters.array[0].emitterOptions.rate.quantity = level;
             }
