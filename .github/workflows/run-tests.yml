@@ -65,6 +65,9 @@ jobs:
         if: steps.node-module-cache.outputs.cache-hit != 'true'
         run: npm ci
 
+      - name: list installed client dependencies
+        run: npm list
+
   install-fresh-client-dependencies:
     runs-on: ubuntu-latest
     defaults:
@@ -86,6 +89,9 @@ jobs:
 
       - name: install client dependencies
         run: npm install --no-package-lock
+
+      - name: list installed client dependencies
+        run: npm list
 
   check-client-code:
     needs: install-client-dependencies
