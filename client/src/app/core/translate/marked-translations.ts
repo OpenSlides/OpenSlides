@@ -431,8 +431,10 @@ _(
 
 // users misc
 _('Username or password is not correct.');
-_('Please login via your identity provider');
+_('Please login via your identity provider.');
+_('Your account is not active.');
 _('You are not authenticated.');
+_('Cookies have to be enabled to use OpenSlides.');
 _('Guest');
 _('Participant');
 _('No users with email {0} found.');

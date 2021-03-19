@@ -785,6 +785,9 @@ msgstr "Alle Nutzer automatisch mit der Livekonferenz verbinden"
 msgid "Content"
 msgstr "Inhalt"
 
+msgid "Cookies have to be enabled to use OpenSlides."
+msgstr "Cookies müssen aktiviert sein, um OpenSlides verwenden zu können."
+
 msgid "Copy and paste your participant names in this textbox."
 msgstr "Kopieren Sie die Name Ihrer Teilnehmer*innen in diese Textbox."
 
@@ -1651,6 +1654,9 @@ msgstr "Teilnehmendenliste (PDF)"
 msgid "List of speakers"
 msgstr "Redeliste"
 
+msgid "List of speakers is initially closed"
+msgstr "Redelisten sind zunächst geschlossen"
+
 msgid "List of speakers overlay"
 msgstr "Redelisten-Einblendung"
 
@@ -2267,8 +2273,8 @@ msgstr "Bitte geben Sie eine gültige E-Mail-Adresse ein!"
 msgid "Please enter your new password"
 msgstr "Bitte geben Sie Ihr neues Passwort ein"
 
-msgid "Please login via your identity provider"
-msgstr "Bitte melden Sie sich über Ihren Identity Provider an"
+msgid "Please login via your identity provider."
+msgstr "Bitte melden Sie sich über Ihren Identity Provider an."
 
 msgid "Please select the directory:"
 msgstr "Bitte wählen Sie das Verzeichnis aus:"
@@ -3483,6 +3489,9 @@ msgid "You reached the maximum amount of votes. Deselect somebody first."
 msgstr ""
 "Sie haben die maximale Anzahl von Stimmen erreicht. Deselektieren Sie zuerst"
 " eine Auswahl."
+
+msgid "Your account is not active."
+msgstr "Ihr Nutzerkonto ist nicht aktiv."
 
 msgid "Your browser"
 msgstr "Ihr Browser"

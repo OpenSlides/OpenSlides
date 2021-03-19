@@ -137,7 +137,7 @@ class TestUserLoginView(TestCase):
         )
         self.assertEqual(response.status_code, 400)
         content = json.loads(response.content.decode())
-        self.assertEqual(content.get("detail"), "You are not active.")
+        self.assertEqual(content.get("detail"), "Your account is not active.")
 
     def test_user_wrong_auth_type(self):
         admin = User.objects.get()
