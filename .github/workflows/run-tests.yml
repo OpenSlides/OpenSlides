@@ -65,6 +65,28 @@ jobs:
         if: steps.node-module-cache.outputs.cache-hit != 'true'
         run: npm ci
 
+  install-fresh-client-dependencies:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./client
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        id: node-module-cache
+        with:
+          path: |
+            **/node_modules
+          key: node_modules-fresh-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            node_modules-
+      - uses: actions/setup-node@v2-beta
+        with:
+          node-version: "14"
+
+      - name: install client dependencies
+        run: npm install
+
   check-client-code:
     needs: install-client-dependencies
     runs-on: ubuntu-latest
@@ -102,7 +124,7 @@ jobs:
         run: npm run test-silently
 
   build-client-debug:
-    needs: install-client-dependencies
+    needs: install-fresh-client-dependencies
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -113,7 +135,7 @@ jobs:
         with:
           path: |
             **/node_modules
-          key: node_modules-${{ hashFiles('**/package-lock.json') }}
+          key: node_modules-fresh-${{ hashFiles('**/package-lock.json') }}
       - name: build client debug
         run: npm run build-debug
 
