@@ -738,6 +738,9 @@ msgstr ""
 msgid "Content"
 msgstr ""
 
+msgid "Cookies have to be enabled to use OpenSlides."
+msgstr ""
+
 msgid "Copy and paste your participant names in this textbox."
 msgstr ""
 
@@ -1562,6 +1565,9 @@ msgstr ""
 msgid "List of speakers"
 msgstr ""
 
+msgid "List of speakers is initially closed"
+msgstr ""
+
 msgid "List of speakers overlay"
 msgstr ""
 
@@ -2163,7 +2169,7 @@ msgstr ""
 msgid "Please enter your new password"
 msgstr ""
 
-msgid "Please login via your identity provider"
+msgid "Please login via your identity provider."
 msgstr ""
 
 msgid "Please select the directory:"
@@ -3292,6 +3298,9 @@ msgid "You override the personally set password!"
 msgstr ""
 
 msgid "You reached the maximum amount of votes. Deselect somebody first."
+msgstr ""
+
+msgid "Your account is not active."
 msgstr ""
 
 msgid "Your browser"

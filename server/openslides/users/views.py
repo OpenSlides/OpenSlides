@@ -895,7 +895,7 @@ class UserLoginView(WhoAmIDataView):
         if user is None:
             raise ValidationError({"detail": "Username or password is not correct."})
         elif not user.is_active:
-            raise ValidationError({"detail": "You are not active."})
+            raise ValidationError({"detail": "Your account is not active."})
         elif user.auth_type != "default":
             raise ValidationError(
                 {"detail": "Please login via your identity provider."}
