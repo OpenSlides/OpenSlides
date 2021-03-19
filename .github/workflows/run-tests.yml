@@ -85,7 +85,7 @@ jobs:
           node-version: "14"
 
       - name: install client dependencies
-        run: npm install
+        run: npm install --no-package-lock
 
   check-client-code:
     needs: install-client-dependencies
