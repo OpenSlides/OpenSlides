@@ -87,6 +87,9 @@ jobs:
         with:
           node-version: "14"
 
+      - name: test
+        run: rm package-lock.json
+
       - name: install client dependencies
         run: npm install --no-package-lock
 
