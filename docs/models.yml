@@ -1695,6 +1695,7 @@ poll:
       - valid
       - cast
       - disabled
+    default: disabled
   majority_method:
     type: string
     required: true
@@ -1703,6 +1704,7 @@ poll:
       - two_thirds
       - three_quarters
       - disabled
+    default: disabled
   votesvalid: decimal(6)
   votesinvalid: decimal(6)
   votescast: decimal(6)
