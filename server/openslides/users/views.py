@@ -5,11 +5,11 @@ from typing import Iterable, List, Set, Union
 from asgiref.sync import async_to_sync
 from django.conf import settings
 from django.contrib.auth import (
+    authenticate as auth_authenticate,
     login as auth_login,
     logout as auth_logout,
     update_session_auth_hash,
 )
-from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import Permission
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth.tokens import default_token_generator
@@ -888,13 +888,19 @@ class UserLoginView(WhoAmIDataView):
             raise ValidationError(
                 {"detail": "Cookies have to be enabled to use OpenSlides."}
             )
-        form = AuthenticationForm(self.request, data=self.request.data)
-        if not form.is_valid():
+
+        username = self.request.data.get("username")
+        password = self.request.data.get("password")
+        user = auth_authenticate(self.request, username=username, password=password)
+        if user is None:
             raise ValidationError({"detail": "Username or password is not correct."})
-        self.user = form.get_user()
-        if self.user.auth_type != "default":
-            raise ValidationError({"detail": "Please login via your identity provider"})
-        auth_login(self.request, self.user)
+        elif not user.is_active:
+            raise ValidationError({"detail": "You are not active."})
+        elif user.auth_type != "default":
+            raise ValidationError(
+                {"detail": "Please login via your identity provider."}
+            )
+        auth_login(self.request, user)
         return super().post(*args, **kwargs)
 
     def get_context_data(self, **context):

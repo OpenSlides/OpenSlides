@@ -3,6 +3,7 @@ import json
 from django.urls import reverse
 from rest_framework.test import APIClient
 
+from openslides.users.models import User
 from tests.test_case import TestCase
 
 
@@ -101,6 +102,8 @@ class TestUserLoginView(TestCase):
         response = self.client.post(self.url)
 
         self.assertEqual(response.status_code, 400)
+        content = json.loads(response.content.decode())
+        self.assertEqual(content.get("detail"), "Username or password is not correct.")
 
     def test_post_correct_data(self):
         response = self.client.post(
@@ -121,3 +124,41 @@ class TestUserLoginView(TestCase):
         )
 
         self.assertEqual(response.status_code, 400)
+        content = json.loads(response.content.decode())
+        self.assertEqual(content.get("detail"), "Username or password is not correct.")
+
+    def test_user_inactive(self):
+        admin = User.objects.get()
+        admin.is_active = False
+        admin.save()
+
+        response = self.client.post(
+            self.url, {"username": "admin", "password": "admin"}
+        )
+        self.assertEqual(response.status_code, 400)
+        content = json.loads(response.content.decode())
+        self.assertEqual(content.get("detail"), "You are not active.")
+
+    def test_user_wrong_auth_type(self):
+        admin = User.objects.get()
+        admin.auth_type = "not default"
+        admin.save()
+
+        response = self.client.post(
+            self.url, {"username": "admin", "password": "admin"}
+        )
+        self.assertEqual(response.status_code, 400)
+        content = json.loads(response.content.decode())
+        self.assertEqual(
+            content.get("detail"), "Please login via your identity provider."
+        )
+
+    def test_no_cookies(self):
+        response = self.client.post(
+            self.url, {"username": "admin", "password": "admin", "cookies": False}
+        )
+        self.assertEqual(response.status_code, 400)
+        content = json.loads(response.content.decode())
+        self.assertEqual(
+            content.get("detail"), "Cookies have to be enabled to use OpenSlides."
+        )
