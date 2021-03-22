@@ -2,10 +2,12 @@
 
 from django.db import migrations, models
 
-import openslides.agenda.models
-
 
 class Migration(migrations.Migration):
+    """
+    The default formerly was openslides.agenda.models.list_of_speakers_initially_closed
+    This function does not exists anymore, so for new migrations, we replaced it with False.
+    """
 
     dependencies = [
         ("agenda", "0010_speaker_point_of_order"),
@@ -15,8 +17,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="listofspeakers",
             name="closed",
-            field=models.BooleanField(
-                default=openslides.agenda.models.list_of_speakers_initially_closed
-            ),
+            field=models.BooleanField(default=False),
         ),
     ]

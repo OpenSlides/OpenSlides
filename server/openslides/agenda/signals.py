@@ -85,7 +85,10 @@ def listen_to_related_object_post_save(sender, instance, created, **kwargs):
 
     if is_list_of_speakers_content_object:
         if created:
-            ListOfSpeakers.objects.create(content_object=instance)
+            ListOfSpeakers.objects.create(
+                content_object=instance,
+                closed=config["agenda_list_of_speakers_initially_closed"],
+            )
             if not instance.list_of_speakers_skip_autoupdate:
                 instance_inform_changed_data = True
 
