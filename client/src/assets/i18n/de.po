@@ -3324,6 +3324,16 @@ msgstr "WLAN-Passwort"
 msgid "WPA/WPA2"
 msgstr "WPA/WPA2"
 
+msgid ""
+"Warning: Amendments exist for this motion. Editing this text will likely "
+"impact them negatively. Particularily, amendments might become unusable if "
+"the paragraph they affect is deleted."
+msgstr ""
+"Warnung: Zu diesem Antrag gibt es Änderungsanträge. Die Bearbeitung dieses "
+"Textes wird sich wahrscheinlich negativ auf diese auswirken. Insbesondere "
+"können Änderungsanträge unbrauchbar werden, wenn der Absatz, auf den sie "
+"referenzieren, gelöscht wird."
+
 msgid "Web interface header logo"
 msgstr "Web-Interface-Kopfzeilen-Logo"
 
