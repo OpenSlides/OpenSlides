@@ -3156,6 +3156,12 @@ msgstr ""
 msgid "WPA/WPA2"
 msgstr ""
 
+msgid ""
+"Warning: Amendments exist for this motion. Editing this text will likely "
+"impact them negatively. Particularily, amendments might become unusable if "
+"the paragraph they affect is deleted."
+msgstr ""
+
 msgid "Web interface header logo"
 msgstr ""
 
