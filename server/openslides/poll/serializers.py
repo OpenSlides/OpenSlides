@@ -5,6 +5,7 @@ from ..utils.rest_api import (
     CharField,
     DecimalField,
     IdPrimaryKeyRelatedField,
+    JSONField,
     ModelSerializer,
     SerializerMethodField,
     ValidationError,
@@ -18,6 +19,7 @@ BASE_VOTE_FIELDS = (
     "value",
     "user",
     "delegated_user",
+    "user_token",
     "option",
     "pollstate",
 )
@@ -58,7 +60,9 @@ BASE_POLL_FIELDS = (
     "id",
     "onehundred_percent_base",
     "majority_method",
+    "is_pseudoanonymized",
     "voted",
+    "entitled_users_at_stop",
 )
 
 
@@ -69,27 +73,21 @@ class BasePollSerializer(ModelSerializer):
     )
     options = IdPrimaryKeyRelatedField(many=True, read_only=True)
     voted = IdPrimaryKeyRelatedField(many=True, read_only=True)
-
-    votesvalid = DecimalField(
-        max_digits=15, decimal_places=6, min_value=-2, read_only=True
-    )
-    votesinvalid = DecimalField(
-        max_digits=15, decimal_places=6, min_value=-2, read_only=True
-    )
-    votescast = DecimalField(
-        max_digits=15, decimal_places=6, min_value=-2, read_only=True
-    )
+    entitled_users_at_stop = JSONField(required=False)
 
     def create(self, validated_data):
         """
         Match the 100 percent base to the pollmethod. Change the base, if it does not
-        fit to the pollmethod
+        fit to the pollmethod.
+        Set is_pseudoanonymized if type is pseudoanonymous.
         """
         new_100_percent_base = self.norm_100_percent_base_to_pollmethod(
             validated_data["onehundred_percent_base"], validated_data["pollmethod"]
         )
         if new_100_percent_base is not None:
             validated_data["onehundred_percent_base"] = new_100_percent_base
+        if validated_data["type"] == BasePoll.TYPE_PSEUDOANONYMOUS:
+            validated_data["is_pseudoanonymized"] = True
         return super().create(validated_data)
 
     def update(self, instance, validated_data):
@@ -100,8 +98,15 @@ class BasePollSerializer(ModelSerializer):
 
         E.g. the pollmethod is YN, but the 100%-base is YNA, this might not be
         possible (see implementing serializers to see forbidden combinations)
+
+        Also updates is_pseudoanonymized, if needed.
         """
         old_100_percent_base = instance.onehundred_percent_base
+        if "type" in validated_data:
+            if validated_data["type"] == BasePoll.TYPE_PSEUDOANONYMOUS:
+                validated_data["is_pseudoanonymized"] = True
+            else:
+                validated_data["is_pseudoanonymized"] = False
         instance = super().update(instance, validated_data)
 
         new_100_percent_base = self.norm_100_percent_base_to_pollmethod(

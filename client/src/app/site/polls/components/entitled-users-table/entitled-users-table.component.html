@@ -1,0 +1,35 @@
+<div *ngIf="canSeeUsers">
+    <os-list-view-table
+        [listObservable]="entitledUsersObservable"
+        [columns]="columnDefinitionEntitledUsersTable"
+        [filterProps]="filterPropsEntitledUsersTable"
+        [allowProjector]="false"
+        [fullScreen]="false"
+        [vScrollFixed]="-1"
+        [listStorageKey]="list-storage-keys"
+    >
+        <!-- Header -->
+        <div *pblNgridHeaderCellDef="'*'; col as col">
+            {{ col.label | translate }}
+        </div>
+
+        <!-- Content -->
+        <div *pblNgridCellDef="'user_id'; row as entry">
+            <span *ngIf="entry.user">{{ entry.user.getFullName() }}</span>
+            <i *ngIf="!entry.user">{{ 'Deleted user' | translate }}</i>
+        </div>
+        <div *pblNgridCellDef="'voted'; row as entry">
+            <mat-icon *ngIf="entry.voted">check_box</mat-icon>
+        </div>
+        <div *pblNgridCellDef="'delegation'; row as entry">
+            <div *ngIf="entry.vote_delegated_to_id">
+                <span class="repr-prefix">represented by</span>&nbsp;
+                <span *ngIf="entry.vote_delegated_to">{{ entry.vote_delegated_to.getFullName() }}</span>
+                <i *ngIf="!entry.vote_delegated_to">{{ 'Deleted user' | translate }}</i>
+            </div>
+        </div>
+    </os-list-view-table>
+</div>
+<div class="no-can-see-users" *ngIf="!canSeeUsers">
+    <i>{{ 'You are not allowed to see all entitled users.' | translate }}</i>
+</div>

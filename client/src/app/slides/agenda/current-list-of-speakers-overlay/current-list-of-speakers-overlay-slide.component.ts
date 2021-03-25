@@ -3,6 +3,7 @@ import { Component, Input } from '@angular/core';
 import { BaseSlideComponentDirective } from 'app/slides/base-slide-component';
 import { CommonListOfSpeakersSlideData, SlideSpeaker } from '../common/common-list-of-speakers-slide-data';
 
+// prettier-ignore
 @Component({
     selector: 'os-current-list-of-speakers-overlay-slide',
     templateUrl: './current-list-of-speakers-overlay-slide.component.html',

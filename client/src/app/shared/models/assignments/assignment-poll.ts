@@ -15,6 +15,7 @@ export enum AssignmentPollPercentBase {
     YNA = 'YNA',
     Valid = 'valid',
     Cast = 'cast',
+    Entitled = 'entitled',
     Disabled = 'disabled'
 }
 

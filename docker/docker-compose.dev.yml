@@ -10,7 +10,7 @@ services:
 
   server:
     image: os3-server-dev
-    user: $UID:$GID
+    user: $USER_ID:$GROUP_ID
     build:
       context: ../server
       dockerfile: docker/Dockerfile.dev

@@ -19,8 +19,9 @@ RUN rm -rf /var/lib/apt/lists/*
 
 COPY requirements /app/requirements
 COPY requirements.txt /app/requirements.txt
+COPY make/requirements.txt /app/requirements/make_requirements.txt
 
-RUN pip install -r requirements.txt -r requirements/saml.txt && \
+RUN pip install -r requirements.txt -r requirements/saml.txt -r requirements/make_requirements.txt && \
     rm -rf /root/.cache/pip
 
 EXPOSE 8000

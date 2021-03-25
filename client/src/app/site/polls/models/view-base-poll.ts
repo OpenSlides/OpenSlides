@@ -65,6 +65,7 @@ export const PercentBaseVerbose = {
     YNA: 'Yes/No/Abstain',
     valid: 'Valid votes',
     cast: 'Total votes cast',
+    entitled: 'All entitled users',
     disabled: 'Disabled'
 };
 

@@ -6,6 +6,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from rest_framework import status
+from rest_framework.test import APIClient
 
 from openslides.assignments.models import (
     Assignment,
@@ -108,7 +109,7 @@ class CreateAssignmentPoll(TestCase):
         self.assignment.add_candidate(self.admin)
 
     def test_simple(self):
-        with self.assertNumQueries(40):
+        with self.assertNumQueries(38):
             response = self.client.post(
                 reverse("assignmentpoll-list"),
                 {
@@ -886,6 +887,7 @@ class VoteAssignmentPollAnalogYNA(VoteAssignmentPollBaseTestClass):
         self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
         self.assertEqual(AssignmentVote.objects.count(), 6)
         poll = AssignmentPoll.objects.get()
+        poll.calculate_votes()
         self.assertEqual(poll.votesvalid, Decimal("4.64"))
         self.assertEqual(poll.votesinvalid, Decimal("-2"))
         self.assertEqual(poll.votescast, Decimal("-2"))
@@ -1056,6 +1058,7 @@ class VoteAssignmentPollAnalogYNA(VoteAssignmentPollBaseTestClass):
         )
         self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
         poll = AssignmentPoll.objects.get()
+        poll.calculate_votes()
         self.assertEqual(poll.votesvalid, Decimal("4.64"))
         self.assertEqual(poll.votesinvalid, Decimal("-2"))
         self.assertEqual(poll.votescast, Decimal("3"))
@@ -1081,6 +1084,7 @@ class VoteAssignmentPollNamedYNA(VoteAssignmentPollBaseTestClass):
         )
         self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
         poll = AssignmentPoll.objects.get()
+        poll.calculate_votes()
         self.assertEqual(poll.state, AssignmentPoll.STATE_STARTED)
         self.assertEqual(poll.votesvalid, Decimal("0"))
         self.assertEqual(poll.votesinvalid, Decimal("0"))
@@ -1099,11 +1103,11 @@ class VoteAssignmentPollNamedYNA(VoteAssignmentPollBaseTestClass):
         self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
         self.assertEqual(AssignmentVote.objects.count(), 3)
         poll = AssignmentPoll.objects.get()
+        poll.calculate_votes()
         self.assertEqual(poll.votesvalid, Decimal("1"))
         self.assertEqual(poll.votesinvalid, Decimal("0"))
         self.assertEqual(poll.votescast, Decimal("1"))
         self.assertEqual(poll.state, AssignmentPoll.STATE_STARTED)
-        self.assertEqual(poll.amount_users_voted_with_individual_weight(), Decimal("1"))
         self.assertTrue(self.admin in poll.voted.all())
         option1 = poll.options.get(pk=1)
         option2 = poll.options.get(pk=2)
@@ -1132,11 +1136,11 @@ class VoteAssignmentPollNamedYNA(VoteAssignmentPollBaseTestClass):
         self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
         self.assertEqual(AssignmentVote.objects.count(), 3)
         poll = AssignmentPoll.objects.get()
+        poll.calculate_votes()
         self.assertEqual(poll.votesvalid, weight)
         self.assertEqual(poll.votesinvalid, Decimal("0"))
         self.assertEqual(poll.votescast, Decimal("1"))
         self.assertEqual(poll.state, AssignmentPoll.STATE_STARTED)
-        self.assertEqual(poll.amount_users_voted_with_individual_weight(), weight)
         option1 = poll.options.get(pk=1)
         option2 = poll.options.get(pk=2)
         option3 = poll.options.get(pk=3)
@@ -1321,6 +1325,51 @@ class VoteAssignmentPollNamedYNA(VoteAssignmentPollBaseTestClass):
         self.assertHttpStatusVerbose(response, status.HTTP_400_BAD_REQUEST)
         self.assertFalse(AssignmentVote.objects.exists())
 
+    def test_same_user_token(self):
+        self.add_candidate()
+        self.add_candidate()
+        self.start_poll()
+        response = self.client.post(
+            reverse("assignmentpoll-vote", args=[self.poll.pk]),
+            {"data": {"1": "Y", "2": "N", "3": "A"}},
+            format="json",
+        )
+        self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
+        self.assertEqual(AssignmentVote.objects.count(), 3)
+        votes = AssignmentVote.objects.all()
+        user_token = votes[0].user_token
+        for vote in votes[1:2]:
+            assert vote.user_token == user_token
+
+    def test_valid_votes_count_with_deleted_user(self):
+        self.add_candidate()
+        self.start_poll()
+        user, user_password = self.create_user()
+        user.groups.add(GROUP_ADMIN_PK)
+        user.is_present = True
+        user.save()
+        user_client = APIClient()
+        user_client.login(username=user.username, password=user_password)
+        response = self.client.post(
+            reverse("assignmentpoll-vote", args=[self.poll.pk]),
+            {"data": {"1": "Y", "2": "N"}},
+            format="json",
+        )
+        self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
+        response = user_client.post(
+            reverse("assignmentpoll-vote", args=[self.poll.pk]),
+            {"data": {"1": "N", "2": "Y"}},
+            format="json",
+        )
+        self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
+        self.poll.stop()
+        response = self.client.delete(reverse("user-detail", args=[user.pk]))
+        self.assertHttpStatusVerbose(response, status.HTTP_204_NO_CONTENT)
+        poll = AssignmentPoll.objects.get()
+        self.assertEqual(poll.votesvalid, Decimal("2"))
+        self.assertEqual(poll.votesinvalid, Decimal("0"))
+        self.assertEqual(poll.votescast, Decimal("2"))
+
 
 class VoteAssignmentPollNamedY(VoteAssignmentPollBaseTestClass):
     def create_poll(self):
@@ -1343,6 +1392,7 @@ class VoteAssignmentPollNamedY(VoteAssignmentPollBaseTestClass):
         )
         self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
         poll = AssignmentPoll.objects.get()
+        poll.calculate_votes()
         self.assertEqual(poll.state, AssignmentPoll.STATE_STARTED)
         self.assertEqual(poll.votesvalid, Decimal("0"))
         self.assertEqual(poll.votesinvalid, Decimal("0"))
@@ -1360,6 +1410,7 @@ class VoteAssignmentPollNamedY(VoteAssignmentPollBaseTestClass):
         self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
         self.assertEqual(AssignmentVote.objects.count(), 1)
         poll = AssignmentPoll.objects.get()
+        poll.calculate_votes()
         self.assertEqual(poll.votesvalid, Decimal("1"))
         self.assertEqual(poll.votesinvalid, Decimal("0"))
         self.assertEqual(poll.votescast, Decimal("1"))
@@ -1671,6 +1722,7 @@ class VoteAssignmentPollNamedN(VoteAssignmentPollBaseTestClass):
         )
         self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
         poll = AssignmentPoll.objects.get()
+        poll.calculate_votes()
         self.assertEqual(poll.state, AssignmentPoll.STATE_STARTED)
         self.assertEqual(poll.votesvalid, Decimal("0"))
         self.assertEqual(poll.votesinvalid, Decimal("0"))
@@ -1688,6 +1740,7 @@ class VoteAssignmentPollNamedN(VoteAssignmentPollBaseTestClass):
         self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
         self.assertEqual(AssignmentVote.objects.count(), 1)
         poll = AssignmentPoll.objects.get()
+        poll.calculate_votes()
         self.assertEqual(poll.votesvalid, Decimal("1"))
         self.assertEqual(poll.votesinvalid, Decimal("0"))
         self.assertEqual(poll.votescast, Decimal("1"))
@@ -1986,6 +2039,7 @@ class VoteAssignmentPollPseudoanonymousYNA(VoteAssignmentPollBaseTestClass):
         )
         self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
         poll = AssignmentPoll.objects.get()
+        poll.calculate_votes()
         self.assertEqual(poll.state, AssignmentPoll.STATE_STARTED)
         self.assertEqual(poll.votesvalid, Decimal("0"))
         self.assertEqual(poll.votesinvalid, Decimal("0"))
@@ -2004,6 +2058,7 @@ class VoteAssignmentPollPseudoanonymousYNA(VoteAssignmentPollBaseTestClass):
         self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
         self.assertEqual(AssignmentVote.objects.count(), 3)
         poll = AssignmentPoll.objects.get()
+        poll.calculate_votes()
         self.assertEqual(poll.votesvalid, Decimal("1"))
         self.assertEqual(poll.votesinvalid, Decimal("0"))
         self.assertEqual(poll.votescast, Decimal("1"))
@@ -2163,6 +2218,22 @@ class VoteAssignmentPollPseudoanonymousYNA(VoteAssignmentPollBaseTestClass):
         self.assertHttpStatusVerbose(response, status.HTTP_400_BAD_REQUEST)
         self.assertFalse(AssignmentVote.objects.exists())
 
+    def test_same_user_token(self):
+        self.add_candidate()
+        self.add_candidate()
+        self.start_poll()
+        response = self.client.post(
+            reverse("assignmentpoll-vote", args=[self.poll.pk]),
+            {"data": {"1": "Y", "2": "N", "3": "A"}},
+            format="json",
+        )
+        self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
+        self.assertEqual(AssignmentVote.objects.count(), 3)
+        votes = AssignmentVote.objects.all()
+        user_token = votes[0].user_token
+        for vote in votes[1:2]:
+            assert vote.user_token == user_token
+
 
 class VoteAssignmentPollPseudoanonymousY(VoteAssignmentPollBaseTestClass):
     def create_poll(self):
@@ -2185,6 +2256,7 @@ class VoteAssignmentPollPseudoanonymousY(VoteAssignmentPollBaseTestClass):
         )
         self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
         poll = AssignmentPoll.objects.get()
+        poll.calculate_votes()
         self.assertEqual(poll.state, AssignmentPoll.STATE_STARTED)
         self.assertEqual(poll.votesvalid, Decimal("0"))
         self.assertEqual(poll.votesinvalid, Decimal("0"))
@@ -2202,6 +2274,7 @@ class VoteAssignmentPollPseudoanonymousY(VoteAssignmentPollBaseTestClass):
         self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
         self.assertEqual(AssignmentVote.objects.count(), 1)
         poll = AssignmentPoll.objects.get()
+        poll.calculate_votes()
         self.assertEqual(poll.votesvalid, Decimal("1"))
         self.assertEqual(poll.votesinvalid, Decimal("0"))
         self.assertEqual(poll.votescast, Decimal("1"))
@@ -2433,6 +2506,7 @@ class VoteAssignmentPollPseudoanonymousN(VoteAssignmentPollBaseTestClass):
         )
         self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
         poll = AssignmentPoll.objects.get()
+        poll.calculate_votes()
         self.assertEqual(poll.state, AssignmentPoll.STATE_STARTED)
         self.assertEqual(poll.votesvalid, Decimal("0"))
         self.assertEqual(poll.votesinvalid, Decimal("0"))
@@ -2450,6 +2524,7 @@ class VoteAssignmentPollPseudoanonymousN(VoteAssignmentPollBaseTestClass):
         self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
         self.assertEqual(AssignmentVote.objects.count(), 1)
         poll = AssignmentPoll.objects.get()
+        poll.calculate_votes()
         self.assertEqual(poll.votesvalid, Decimal("1"))
         self.assertEqual(poll.votesinvalid, Decimal("0"))
         self.assertEqual(poll.votescast, Decimal("1"))
@@ -2681,8 +2756,9 @@ class PseudoanonymizeAssignmentPoll(TestCase):
         )
         self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
         poll = AssignmentPoll.objects.get()
+        poll.calculate_votes()
+        self.assertEqual(poll.is_pseudoanonymized, True)
         self.assertEqual(poll.get_votes().count(), 2)
-        self.assertEqual(poll.amount_users_voted_with_individual_weight(), 2)
         self.assertEqual(poll.votesvalid, Decimal("2"))
         self.assertEqual(poll.votesinvalid, Decimal("0"))
         self.assertEqual(poll.votescast, Decimal("2"))

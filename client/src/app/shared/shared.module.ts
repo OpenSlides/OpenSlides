@@ -115,6 +115,7 @@ import { ChartsComponent } from './components/charts/charts.component';
 import { CheckInputComponent } from './components/check-input/check-input.component';
 import { BannerComponent } from './components/banner/banner.component';
 import { PollFormComponent } from 'app/site/polls/components/poll-form/poll-form.component';
+import { EntitledUsersTableComponent } from 'app/site/polls/components/entitled-users-table/entitled-users-table.component';
 import { MotionPollDialogComponent } from 'app/site/motions/modules/motion-poll/motion-poll-dialog/motion-poll-dialog.component';
 import { ParsePollNumberPipe } from './pipes/parse-poll-number.pipe';
 import { ReversePipe } from './pipes/reverse.pipe';
@@ -293,6 +294,7 @@ import { ApplauseParticleDisplayComponent } from './components/applause-particle
         CheckInputComponent,
         BannerComponent,
         PollFormComponent,
+        EntitledUsersTableComponent,
         MotionPollDialogComponent,
         ParsePollNumberPipe,
         ReversePipe,
@@ -356,6 +358,7 @@ import { ApplauseParticleDisplayComponent } from './components/applause-particle
         CheckInputComponent,
         BannerComponent,
         PollFormComponent,
+        EntitledUsersTableComponent,
         MotionPollDialogComponent,
         ParsePollNumberPipe,
         ReversePipe,

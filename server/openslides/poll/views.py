@@ -146,8 +146,7 @@ class BasePollViewSet(ModelViewSet):
         if poll.state != BasePoll.STATE_STARTED:
             raise ValidationError({"detail": "Wrong poll state"})
 
-        poll.state = BasePoll.STATE_FINISHED
-        poll.save()
+        poll.stop()
         inform_changed_data(poll.get_votes())
         inform_changed_data(poll.get_options())
         self.extend_history_information(["Voting stopped"])

@@ -59,7 +59,7 @@ export class MotionDetailOriginalChangeRecommendationsComponent implements OnIni
     @Output()
     public gotoChangeRecommendation: EventEmitter<ViewMotionChangeRecommendation> = new EventEmitter<
         ViewMotionChangeRecommendation
-    >();
+    >(); // prettier-ignore
 
     @Input()
     public html: string;

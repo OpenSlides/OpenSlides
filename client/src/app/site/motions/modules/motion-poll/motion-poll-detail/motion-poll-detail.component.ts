@@ -10,6 +10,7 @@ import { OperatorService, Permission } from 'app/core/core-services/operator.ser
 import { MotionPollRepositoryService } from 'app/core/repositories/motions/motion-poll-repository.service';
 import { MotionVoteRepositoryService } from 'app/core/repositories/motions/motion-vote-repository.service';
 import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
+import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ViewMotion } from 'app/site/motions/models/view-motion';
@@ -27,7 +28,7 @@ import { BasePollDetailComponentDirective } from 'app/site/polls/components/base
 })
 export class MotionPollDetailComponent extends BasePollDetailComponentDirective<ViewMotionPoll, MotionPollService> {
     public motion: ViewMotion;
-    public columnDefinition: PblColumnDefinition[] = [
+    public columnDefinitionSingleVotesTable: PblColumnDefinition[] = [
         {
             prop: 'user',
             width: 'auto',
@@ -40,7 +41,7 @@ export class MotionPollDetailComponent extends BasePollDetailComponentDirective<
         }
     ];
 
-    public filterProps = ['user.getFullName', 'valueVerbose'];
+    public filterPropsSingleVotesTable = ['user.getFullName', 'valueVerbose'];
 
     public isVoteWeightActive: boolean;
 
@@ -62,7 +63,8 @@ export class MotionPollDetailComponent extends BasePollDetailComponentDirective<
         configService: ConfigService,
         protected operator: OperatorService,
         private router: Router,
-        protected cd: ChangeDetectorRef
+        protected cd: ChangeDetectorRef,
+        protected userRepo: UserRepositoryService
     ) {
         super(
             title,
@@ -76,7 +78,8 @@ export class MotionPollDetailComponent extends BasePollDetailComponentDirective<
             pollService,
             votesRepo,
             operator,
-            cd
+            cd,
+            userRepo
         );
         configService
             .get<boolean>('users_activate_vote_weight')

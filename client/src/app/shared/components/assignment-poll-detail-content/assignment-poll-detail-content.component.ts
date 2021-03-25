@@ -6,7 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { BaseComponent } from 'app/base.component';
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { AssignmentPollMethod } from 'app/shared/models/assignments/assignment-poll';
-import { PollState } from 'app/shared/models/poll/base-poll';
+import { PercentBase, PollState } from 'app/shared/models/poll/base-poll';
 import { ViewAssignmentPoll } from 'app/site/assignments/models/view-assignment-poll';
 import { AssignmentPollService } from 'app/site/assignments/modules/assignment-poll/services/assignment-poll.service';
 import { PollData, PollTableData, VotingResult } from 'app/site/polls/services/poll.service';
@@ -70,6 +70,10 @@ export class AssignmentPollDetailContentComponent extends BaseComponent {
 
     public get canSeeResults(): boolean {
         return this.operator.hasPerms(this.permission.assignmentsCanManage) || this.isPublished;
+    }
+
+    public get isPercentBaseEntitled(): boolean {
+        return this.poll.onehundred_percent_base === PercentBase.Entitled;
     }
 
     public constructor(
