@@ -2620,7 +2620,7 @@
         "history_projector_id": null,
         "content_object_id": "meeting/1",
         "stable": true,
-        "type": "current-list-of-speakers",
+        "type": "current_list_of_speakers",
         "weight": 1,
         "options": {},
         "meeting_id": 1
