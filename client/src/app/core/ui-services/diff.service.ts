@@ -547,7 +547,21 @@ export class DiffService {
             '&sect;': '§',
             '&eacute;': 'é',
             '&rsquo;': '’',
-            '&euro;': '€'
+            '&euro;': '€',
+            '&reg;': '®',
+            '&trade;': '™',
+            '&raquo;': '»',
+            '&laquo;': '«',
+            '&Acirc;': 'Â',
+            '&acirc;': 'â',
+            '&Ccedil;': 'Ç',
+            '&ccedil;': 'ç',
+            '&Egrave;': 'È',
+            '&egrave;': 'è',
+            '&Ntilde;': 'Ñ',
+            '&ntilde;': 'ñ',
+            '&Euml;': 'Ë',
+            '&euml;': 'ë'
         };
 
         html = html
