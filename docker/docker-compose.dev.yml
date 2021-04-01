@@ -8,6 +8,7 @@ services:
     environment:
       - DATASTORE_ENABLE_DEV_ENVIRONMENT=1
       - NUM_WORKERS=8
+      - OPENSLIDES_DEVELOPMENT=1
     volumes:
       - ../openslides-datastore-service/shared/shared:/app/shared
       - ../openslides-datastore-service/reader/reader:/app/reader
@@ -27,6 +28,7 @@ services:
       - DATASTORE_ENABLE_DEV_ENVIRONMENT=1
       - COMMAND=create_initial_data
       - DATASTORE_INITIAL_DATA_FILE=https://raw.githubusercontent.com/OpenSlides/OpenSlides/openslides4-dev/docs/example-data.json
+      - OPENSLIDES_DEVELOPMENT=1
     ports:
       - 9011:9011
   postgres:
@@ -41,6 +43,8 @@ services:
       - backend
       - autoupdate
     env_file: services.env
+    environment:
+      - OPENSLIDES_DEVELOPMENT=1
     volumes:
       - ../openslides-client/client/src:/app/src
   backend:
@@ -51,6 +55,8 @@ services:
       - auth
       - permission
     env_file: services.env
+    environment:
+      - OPENSLIDES_DEVELOPMENT=1
     volumes:
       - ../openslides-backend/openslides_backend:/app/openslides_backend
     ports:
@@ -61,6 +67,8 @@ services:
       - datastore-reader
       - message-bus
     env_file: services.env
+    environment:
+      - OPENSLIDES_DEVELOPMENT=1
     volumes:
       - ../openslides-autoupdate-service/cmd:/root/cmd
       - ../openslides-autoupdate-service/internal:/root/internal
@@ -69,6 +77,8 @@ services:
     depends_on:
       - datastore-reader
     env_file: services.env
+    environment:
+      - OPENSLIDES_DEVELOPMENT=1
     volumes:
       - ../openslides-permission-service/cmd:/app/cmd
       - ../openslides-permission-service/internal:/app/internal
@@ -79,6 +89,8 @@ services:
       - datastore-reader
       - cache
     env_file: services.env
+    environment:
+      - OPENSLIDES_DEVELOPMENT=1
     volumes:
       - ../openslides-auth-service/auth/src:/app/src
     ports:
@@ -91,6 +103,8 @@ services:
       - backend
       - postgres
     env_file: services.env
+    environment:
+      - OPENSLIDES_DEVELOPMENT=1
     volumes:
       - ../openslides-media-service/src:/app/src
   manage:
@@ -99,6 +113,8 @@ services:
     - auth
     - datastore-writer
     env_file: services.env
+    environment:
+      - OPENSLIDES_DEVELOPMENT=1
     ports:
     - "8001:8001"
   message-bus:

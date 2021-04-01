@@ -10,6 +10,8 @@ TARGETS=(
   [backend]="$HOME/../openslides-backend/"
   [auth]="$HOME/../openslides-auth-service/"
   [autoupdate]="$HOME/../openslides-autoupdate-service/"
+  [permission]="$HOME/../openslides-permission-service/"
+  [manage]="$HOME/../openslides-manage-service/"
   [datastore-reader]="$HOME/../openslides-datastore-service/reader"
   [datastore-writer]="$HOME/../openslides-datastore-service/writer"
   [media]="$HOME/../openslides-media-service/"
@@ -19,11 +21,11 @@ TARGETS=(
 )
 
 DOCKER_REPOSITORY="openslides"
-DOCKER_TAG="latest"
+DOCKER_TAG="latest-4"
 CONFIG="/etc/osinstancectl"
 OPTIONS=()
 BUILT_IMAGES=()
-DEFAULT_TARGETS=(proxy client backend auth autoupdate datastore-reader datastore-writer media)
+DEFAULT_TARGETS=(proxy client backend auth autoupdate permission manage datastore-reader datastore-writer media)
 
 usage() {
   cat << EOF

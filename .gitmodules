@@ -1,31 +1,31 @@
 [submodule "openslides-datastore-service"]
 	path = openslides-datastore-service
-	url = git@github.com:OpenSlides/openslides-datastore-service.git
+	url = https://github.com/OpenSlides/openslides-datastore-service.git
 	branch = master
 [submodule "openslides-client"]
 	path = openslides-client
-	url = git@github.com:OpenSlides/openslides-client.git
+	url = https://github.com/OpenSlides/openslides-client.git
 	branch = master
 [submodule "openslides-backend"]
 	path = openslides-backend
-	url = git@github.com:OpenSlides/openslides-backend.git
+	url = https://github.com/OpenSlides/openslides-backend.git
 	branch = master
 [submodule "openslides-autoupdate-service"]
 	path = openslides-autoupdate-service
-	url = git@github.com:OpenSlides/openslides-autoupdate-service.git
+	url = https://github.com/OpenSlides/openslides-autoupdate-service.git
 [submodule "openslides-auth-service"]
 	path = openslides-auth-service
-	url = git@github.com:OpenSlides/openslides-auth-service.git
+	url = https://github.com/OpenSlides/openslides-auth-service.git
 	branch = master
 [submodule "openslides-media-service"]
 	path = openslides-media-service
-	url = git@github.com:OpenSlides/openslides-media-service.git
+	url = https://github.com/OpenSlides/openslides-media-service.git
 	branch = openslides4-dev
 [submodule "openslides-permission-service"]
 	path = openslides-permission-service
-	url = git@github.com:OpenSlides/openslides-permission-service.git
+	url = https://github.com/OpenSlides/openslides-permission-service.git
 	branch = master
 [submodule "openslides-manage-service"]
 	path = openslides-manage-service
-	url = git@github.com:OpenSlides/openslides-manage-service.git
+	url = https://github.com/OpenSlides/openslides-manage-service.git
 	branch = main
