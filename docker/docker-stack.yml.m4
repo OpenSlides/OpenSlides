@@ -12,21 +12,48 @@ define(`read_env', `esyscmd(`printf "%s" "$$1"')')
 define(`ifenvelse', `ifelse(read_env(`$1'),, `$2', read_env(`$1'))')
 
 define(`BACKEND_IMAGE',
-ifenvelse(`DOCKER_OPENSLIDES_BACKEND_NAME', openslides/openslides-server):dnl
-ifenvelse(`DOCKER_OPENSLIDES_BACKEND_TAG', latest))
-define(`FRONTEND_IMAGE',
-ifenvelse(`DOCKER_OPENSLIDES_FRONTEND_NAME', openslides/openslides-client):dnl
-ifenvelse(`DOCKER_OPENSLIDES_FRONTEND_TAG', latest))
-
-define(`PRIMARY_DB', `ifenvelse(`PGNODE_REPMGR_PRIMARY', pgnode1)')
-
-define(`PGBOUNCER_NODELIST',
-`ifelse(read_env(`PGNODE_2_ENABLED'), 1, `,pgnode2')`'dnl
-ifelse(read_env(`PGNODE_3_ENABLED'), 1, `,pgnode3')')
+ifenvelse(`DEFAULT_DOCKER_REGISTRY', openslides)/dnl
+ifenvelse(`DOCKER_OPENSLIDES_BACKEND_NAME', openslides-backend):dnl
+ifenvelse(`DOCKER_OPENSLIDES_BACKEND_TAG', latest-4))
+define(`PROXY_IMAGE',
+ifenvelse(`DEFAULT_DOCKER_REGISTRY', openslides)/dnl
+ifenvelse(`DOCKER_OPENSLIDES_PROXY_NAME', openslides-proxy):dnl
+ifenvelse(`DOCKER_OPENSLIDES_PROXY_TAG', latest-4))
+define(`CLIENT_IMAGE',
+ifenvelse(`DEFAULT_DOCKER_REGISTRY', openslides)/dnl
+ifenvelse(`DOCKER_OPENSLIDES_CLIENT_NAME', openslides-client):dnl
+ifenvelse(`DOCKER_OPENSLIDES_CLIENT_TAG', latest-4))
+define(`AUTH_IMAGE',
+ifenvelse(`DEFAULT_DOCKER_REGISTRY', openslides)/dnl
+ifenvelse(`DOCKER_OPENSLIDES_AUTH_NAME', openslides-auth):dnl
+ifenvelse(`DOCKER_OPENSLIDES_AUTH_TAG', latest-4))
+define(`AUTOUPDATE_IMAGE',
+ifenvelse(`DEFAULT_DOCKER_REGISTRY', openslides)/dnl
+ifenvelse(`DOCKER_OPENSLIDES_AUTOUPDATE_NAME', openslides-autoupdate):dnl
+ifenvelse(`DOCKER_OPENSLIDES_AUTOUPDATE_TAG', latest-4))
+define(`DATASTORE_READER_IMAGE',
+ifenvelse(`DEFAULT_DOCKER_REGISTRY', openslides)/dnl
+ifenvelse(`DOCKER_OPENSLIDES_DATASTORE_READER_NAME', openslides-datastore-reader):dnl
+ifenvelse(`DOCKER_OPENSLIDES_DATASTORE_READER_TAG', latest-4))
+define(`DATASTORE_WRITER_IMAGE',
+ifenvelse(`DEFAULT_DOCKER_REGISTRY', openslides)/dnl
+ifenvelse(`DOCKER_OPENSLIDES_DATASTORE_WRITER_NAME', openslides-datastore-writer):dnl
+ifenvelse(`DOCKER_OPENSLIDES_DATASTORE_WRITER_TAG', latest-4))
+define(`MEDIA_IMAGE',
+ifenvelse(`DEFAULT_DOCKER_REGISTRY', openslides)/dnl
+ifenvelse(`DOCKER_OPENSLIDES_MEDIA_NAME', openslides-media):dnl
+ifenvelse(`DOCKER_OPENSLIDES_MEDIA_TAG', latest-4))
+define(`MANAGE_IMAGE',
+ifenvelse(`DEFAULT_DOCKER_REGISTRY', openslides)/dnl
+ifenvelse(`DOCKER_OPENSLIDES_MANAGE_NAME', openslides-manage):dnl
+ifenvelse(`DOCKER_OPENSLIDES_MANAGE_TAG', latest-4))
+define(`PERMISSION_IMAGE',
+ifenvelse(`DEFAULT_DOCKER_REGISTRY', openslides)/dnl
+ifenvelse(`DOCKER_OPENSLIDES_PERMISSION_NAME', openslides-permission):dnl
+ifenvelse(`DOCKER_OPENSLIDES_PERMISSION_TAG', latest-4))
 
 define(`PROJECT_DIR', ifdef(`PROJECT_DIR',PROJECT_DIR,.))
-define(`ADMIN_SECRET_AVAILABLE', `syscmd(`test -f 'PROJECT_DIR`/secrets/adminsecret.env')sysval')
-define(`USER_SECRET_AVAILABLE', `syscmd(`test -f 'PROJECT_DIR`/secrets/usersecret.env')sysval')
+define(`ADMIN_SECRET_AVAILABLE', `syscmd(`test -f 'PROJECT_DIR`/secrets/admin.env')sysval')
 divert(0)dnl
 dnl ----------------------------------------
 # This configuration was created from a template file.  Before making changes,
@@ -35,242 +62,217 @@ dnl ----------------------------------------
 # place for customizations instead.
 version: '3.4'
 
-x-osserver:
-  &default-osserver
-  image: BACKEND_IMAGE
-  networks:
-    - front
-    - back
-x-osserver-env: &default-osserver-env
-    AMOUNT_REPLICAS: ifenvelse(`REDIS_RO_SERVICE_REPLICAS', 3)
-    AUTOUPDATE_DELAY: ifenvelse(`AUTOUPDATE_DELAY', 1)
-    CONNECTION_POOL_LIMIT: ifenvelse(`CONNECTION_POOL_LIMIT', 100)
-    DATABASE_HOST: "ifenvelse(`DATABASE_HOST', pgbouncer)"
-    DATABASE_PASSWORD: "ifenvelse(`DATABASE_PASSWORD', openslides)"
-    DATABASE_PORT: ifenvelse(`DATABASE_PORT', 5432)
-    DATABASE_USER: "ifenvelse(`DATABASE_USER', openslides)"
-    DEFAULT_FROM_EMAIL: "ifenvelse(`DEFAULT_FROM_EMAIL', noreply@example.com)"
-    DJANGO_LOG_LEVEL: "ifenvelse(`DJANGO_LOG_LEVEL', INFO)"
-    EMAIL_HOST: "ifenvelse(`EMAIL_HOST', postfix)"
-    EMAIL_HOST_PASSWORD: "ifenvelse(`EMAIL_HOST_PASSWORD',)"
-    EMAIL_HOST_USER: "ifenvelse(`EMAIL_HOST_USER',)"
-    EMAIL_PORT: ifenvelse(`EMAIL_PORT', 25)
-    ENABLE_ELECTRONIC_VOTING: "ifenvelse(`ENABLE_ELECTRONIC_VOTING', False)"
-    ENABLE_SAML: "ifenvelse(`ENABLE_SAML', False)"
-    INSTANCE_DOMAIN: "ifenvelse(`INSTANCE_DOMAIN', http://example.com:8000)"
-    JITSI_DOMAIN: "ifenvelse(`JITSI_DOMAIN',)"
-    JITSI_ROOM_PASSWORD: "ifenvelse(`JITSI_ROOM_PASSWORD',)"
-    JITSI_ROOM_NAME: "ifenvelse(`JITSI_ROOM_NAME',)"
-    OPENSLIDES_LOG_LEVEL: "ifenvelse(`OPENSLIDES_LOG_LEVEL', INFO)"
-    REDIS_CHANNLES_HOST: "ifenvelse(`REDIS_CHANNLES_HOST', redis-channels)"
-    REDIS_CHANNLES_PORT: ifenvelse(`REDIS_CHANNLES_PORT', 6379)
-    REDIS_HOST: "ifenvelse(`REDIS_HOST', redis)"
-    REDIS_PORT: ifenvelse(`REDIS_PORT', 6379)
-    REDIS_SLAVE_HOST: "ifenvelse(`REDIS_SLAVE_HOST', redis-slave)"
-    REDIS_SLAVE_PORT: ifenvelse(`REDIS_SLAVE_PORT', 6379)
-    REDIS_SLAVE_WAIT_TIMEOUT: ifenvelse(`REDIS_SLAVE_WAIT_TIMEOUT', 10000)
-    RESET_PASSWORD_VERBOSE_ERRORS: "ifenvelse(`RESET_PASSWORD_VERBOSE_ERRORS', False)"
-x-pgnode: &default-pgnode
-  image: ifenvelse(`DEFAULT_DOCKER_REGISTRY', openslides)/openslides-repmgr:latest
-  networks:
-    - dbnet
-  labels:
-    org.openslides.role: "postgres"
-  deploy:
-    replicas: 1
-x-pgnode-env: &default-pgnode-env
-  REPMGR_RECONNECT_ATTEMPTS: 30
-  REPMGR_RECONNECT_INTERVAL: 10
-  REPMGR_WAL_ARCHIVE: "ifenvelse(`PGNODE_WAL_ARCHIVING', on)"
-
 services:
-  server:
-    << : *default-osserver
-    # Below is the default command.  You can uncomment it to override the
-    # number of workers, for example:
-    # command: "gunicorn -w 8 --preload -b 0.0.0.0:8000
-    #   -k uvicorn.workers.UvicornWorker openslides.asgi:application"
-    #
-    # Uncomment the following line to use daphne instead of gunicorn:
-    # command: "daphne -b 0.0.0.0 -p 8000 openslides.asgi:application"
-    environment:
-      << : *default-osserver-env
-    secrets:
-      - django
-      ifelse(read_env(`ENABLE_SAML'), `True',- saml_cert
-      - saml_key
-      - saml_config)
+  proxy:
+    image: PROXY_IMAGE
+    networks:
+      - uplink
+      - frontend
+    ports:
+      - "127.0.0.1:ifenvelse(`EXTERNAL_HTTP_PORT', 8000):8000"
     deploy:
       restart_policy:
         condition: on-failure
         delay: 5s
-      replicas: ifenvelse(`OPENSLIDES_BACKEND_SERVICE_REPLICAS', 1)
-
-  server-setup:
-    << : *default-osserver
-    entrypoint: /usr/local/sbin/entrypoint-db-setup
-    environment:
-      << : *default-osserver-env
-    secrets:
-      - django
-      ifelse(ADMIN_SECRET_AVAILABLE, 0,- os_admin)
-      ifelse(USER_SECRET_AVAILABLE, 0,- os_user)
-      ifelse(read_env(`ENABLE_SAML'), `True',- saml_cert
-      - saml_key
-      - saml_config)
+      replicas: ifenvelse(`OPENSLIDES_PROXY_REPLICAS', 1)
 
   client:
-    image: FRONTEND_IMAGE
+    image: CLIENT_IMAGE
     networks:
-      - front
-    ports:
-      - "0.0.0.0:ifenvelse(`EXTERNAL_HTTP_PORT', 8000):80"
+      - frontend
     deploy:
-      replicas: ifenvelse(`OPENSLIDES_FRONTEND_SERVICE_REPLICAS', 1)
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+      replicas: ifenvelse(`OPENSLIDES_CLIENT_REPLICAS', 1)
+
+  backend:
+    image: BACKEND_IMAGE
+    env_file: services.env
+    environment:
+      - AUTH_TOKEN_KEY=test123
+      - AUTH_COOKIE_KEY=test123
+    networks:
+      - frontend
+      - backend
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+      replicas: ifenvelse(`OPENSLIDES_BACKEND_REPLICAS', 1)
+
+  datastore-reader:
+    image: DATASTORE_READER_IMAGE
+    env_file: services.env
+    environment:
+      - NUM_WORKERS=8
+    networks:
+      - backend
+      - datastore-reader
+      - postgres
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+      replicas: ifenvelse(`OPENSLIDES_DATASTORE_READER_REPLICAS', 1)
+
+  datastore-writer:
+    image: DATASTORE_WRITER_IMAGE
+    env_file: services.env
+    networks:
+      - backend
+      - postgres
+      - message-bus
+    environment:
+      - COMMAND=create_initial_data
+      - DATASTORE_INITIAL_DATA_FILE=/data/initial-data.json
+    volumes:
+      - ./initial-data.json:/data/initial-data.json
+    deploy:
       restart_policy:
         condition: on-failure
         delay: 5s
 
-  pgnode1:
-    << : *default-pgnode
+  postgres:
+    image: postgres:11
     environment:
-      << : *default-pgnode-env
-      REPMGR_NODE_ID: 1
-      REPMGR_PRIMARY: ifelse(PRIMARY_DB, pgnode1, `# This is the primary', PRIMARY_DB)
+      - POSTGRES_USER=openslides
+      - POSTGRES_PASSWORD=openslides
+      - POSTGRES_DB=openslides
+    networks:
+      - postgres
     deploy:
-      placement:
-        constraints: ifenvelse(`PGNODE_1_PLACEMENT_CONSTR', [node.labels.openslides-db == dbnode1])
-    volumes:
-      - "dbdata1:/var/lib/postgresql"
-ifelse(read_env(`PGNODE_2_ENABLED'), 1, `'
-  pgnode2:
-    << : *default-pgnode
-    environment:
-      << : *default-pgnode-env
-      REPMGR_NODE_ID: 2
-      REPMGR_PRIMARY: ifelse(PRIMARY_DB, pgnode2, `# This is the primary', PRIMARY_DB)
-    deploy:
-      placement:
-        constraints: ifenvelse(`PGNODE_2_PLACEMENT_CONSTR', [node.labels.openslides-db == dbnode2])
-    volumes:
-      - "dbdata2:/var/lib/postgresql")
-ifelse(read_env(`PGNODE_3_ENABLED'), 1, `'
-  pgnode3:
-    << : *default-pgnode
-    environment:
-      << : *default-pgnode-env
-      REPMGR_NODE_ID: 3
-      REPMGR_PRIMARY: ifelse(PRIMARY_DB, pgnode3, `# This is the primary', PRIMARY_DB)
-    deploy:
-      placement:
-        constraints: ifenvelse(`PGNODE_3_PLACEMENT_CONSTR', [node.labels.openslides-db == dbnode3])
-    volumes:
-      - "dbdata3:/var/lib/postgresql")
+      restart_policy:
+        condition: on-failure
+        delay: 5s
 
-  pgbouncer:
+  autoupdate:
+    image: AUTOUPDATE_IMAGE
+    env_file: services.env
     environment:
-      - PG_NODE_LIST=pgnode1`'PGBOUNCER_NODELIST
-    image: ifenvelse(`DEFAULT_DOCKER_REGISTRY', openslides)/openslides-pgbouncer:latest
+      - AUTH_KEY_TOKEN=test123
+      - AUTH_KEY_COOKIE=test123
     networks:
-      back:
-        aliases:
-          - db
-          - postgres
-      dbnet:
+      - frontend
+      - backend
+      - message-bus
     deploy:
       restart_policy:
         condition: on-failure
-        delay: 10s
-      placement:
-        constraints: ifenvelse(`PGBOUNCER_PLACEMENT_CONSTR', [node.role == manager])
-  postfix:
-    image: ifenvelse(`DEFAULT_DOCKER_REGISTRY', openslides)/openslides-postfix:latest
+        delay: 5s
+      replicas: ifenvelse(`OPENSLIDES_AUTOUPDATE_REPLICAS', 1)
+
+  auth:
+    image: AUTH_IMAGE
+    env_file: services.env
     environment:
-      MYHOSTNAME: "ifenvelse(`POSTFIX_MYHOSTNAME', localhost)"
-      RELAYHOST: "ifenvelse(`POSTFIX_RELAYHOST', localhost)"
+      - AUTH_TOKEN_KEY=test123
+      - AUTH_COOKIE_KEY=test123
     networks:
-      - back
+      - datastore-reader
+      - frontend
+      - message-bus
+      - auth
     deploy:
       restart_policy:
         condition: on-failure
         delay: 5s
-      replicas: 1
-      placement:
-        constraints: [node.role == manager]
-  redis:
-    image: redis:alpine
+      replicas: ifenvelse(`OPENSLIDES_AUTH_REPLICAS', 1)
+
+  cache:
+    image: redis:latest
     networks:
-      back:
-        aliases:
-          - rediscache
+      - auth
     deploy:
-      replicas: 1
       restart_policy:
         condition: on-failure
         delay: 5s
-  redis-slave:
-    image: redis:alpine
-    command: ["redis-server", "--save", "", "--slaveof", "redis", "6379"]
+
+  message-bus:
+    image: redis:latest
     networks:
-      back:
-        aliases:
-          - rediscache-slave
+      - message-bus
     deploy:
-      replicas: ifenvelse(`REDIS_RO_SERVICE_REPLICAS', 3)
       restart_policy:
         condition: on-failure
         delay: 5s
-  redis-channels:
-    image: redis:alpine
-    networks:
-      back:
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
-        delay: 5s
+
   media:
-    image: ifenvelse(`DEFAULT_DOCKER_REGISTRY', openslides)/openslides-media-service:latest
-    environment:
-      - CHECK_REQUEST_URL=server:8000/check-media/
+    image: MEDIA_IMAGE
+    env_file: services.env
+    networks:
+      - frontend
+      - backend
+      - postgres
     deploy:
-      replicas: ifenvelse(`MEDIA_SERVICE_REPLICAS', 8)
       restart_policy:
         condition: on-failure
-        delay: 10s
-    networks:
-      front:
-      back:
-    # Override command to run more workers per task
-    # command: ["gunicorn", "-w", "4", "--preload", "-b",
-    #   "0.0.0.0:8000", "src.mediaserver:app"]
+        delay: 5s
+      replicas: ifenvelse(`OPENSLIDES_MEDIA_REPLICAS', 1)
 
-volumes:
-  dbdata1:
-ifelse(read_env(`PGNODE_2_ENABLED'), 1, `  dbdata2:')
-ifelse(read_env(`PGNODE_3_ENABLED'), 1, `  dbdata3:')
+  manage:
+    image: MANAGE_IMAGE
+    env_file: services.env
+    networks:
+    - backend
+    - auth
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+
+  manage-setup:
+    image: MANAGE_IMAGE
+    entrypoint: /root/entrypoint-setup
+    env_file: services.env
+    networks:
+    - backend
+    ifelse(ADMIN_SECRET_AVAILABLE, 0,secrets:
+      - admin)
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+
+  permission:
+    image: PERMISSION_IMAGE
+    env_file: services.env
+    networks:
+    - backend
+    - auth
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+      replicas: ifenvelse(`OPENSLIDES_PERMISSION_REPLICAS', 1)
 
 networks:
-  front:
-  back:
+  uplink:
+  frontend:
     driver_opts:
       encrypted: ""
-  dbnet:
+    internal: true
+  backend:
     driver_opts:
       encrypted: ""
+    internal: true
+  postgres:
+    driver_opts:
+      encrypted: ""
+    internal: true
+  datastore-reader:
+    driver_opts:
+      encrypted: ""
+    internal: true
+  message-bus:
+    driver_opts:
+      encrypted: ""
+    internal: true
+  auth:
+    driver_opts:
+      encrypted: ""
+    internal: true
 
-secrets:
-  django:
-    file: ./secrets/django.env
-  ifelse(ADMIN_SECRET_AVAILABLE, 0,os_admin:
-    file: ./secrets/adminsecret.env)
-  ifelse(USER_SECRET_AVAILABLE, 0,os_user:
-    file: ./secrets/usersecret.env)
-  ifelse(read_env(`ENABLE_SAML'), `True', saml_cert:
-    file: ./secrets/saml/sp.crt
-  saml_key:
-    file: ./secrets/saml/sp.key
-  saml_config:
-    file: ./secrets/saml/saml_settings.json)
-
-# vim: set sw=2 et:
+ifelse(ADMIN_SECRET_AVAILABLE, 0,secrets:
+  admin:
+    file: ./secrets/admin.env)
