@@ -140,6 +140,9 @@ msgstr ""
 msgid "All casted ballots"
 msgstr ""
 
+msgid "All entitled users"
+msgstr ""
+
 msgid "All lists of speakers will be cleared."
 msgstr ""
 
@@ -1124,6 +1127,9 @@ msgid "Enter your email to send the password reset link"
 msgstr ""
 
 msgid "Entitled to vote"
+msgstr ""
+
+msgid "Entitled users"
 msgstr ""
 
 msgid "Error"
@@ -2838,9 +2844,6 @@ msgstr ""
 msgid "The file seems to have some ommitted columns. They will be considered empty."
 msgstr ""
 
-msgid "The individual votes were anonymized."
-msgstr ""
-
 msgid "The link is broken. Please contact your system administrator."
 msgstr ""
 
@@ -3218,6 +3221,9 @@ msgid "Yes/No/Abstain"
 msgstr ""
 
 msgid "Yes/No/Abstain per candidate"
+msgstr ""
+
+msgid "You are not allowed to see all entitled users."
 msgstr ""
 
 msgid "You are not authenticated."
