@@ -24,7 +24,7 @@ source /run/secrets/django || true
 }
 export SECRET_KEY="$DJANGO_SECRET_KEY"
 
-until pg_isready -h "${DATABASE_HOST:-postgres}" -p "${DATABASE_PORT:-5432}"; do
+until pg_isready -h "${DATABASE_HOST:-pgbouncer}" -p "${DATABASE_PORT:-5432}"; do
   echo "Waiting for Postgres cluster to become available..."
   sleep 3
 done
