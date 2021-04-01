@@ -16,7 +16,7 @@ msgid "%num% emails were send sucessfully."
 msgstr "%num% E-Mails wurden erfolgreich versandt."
 
 msgid "100% base"
-msgstr "100-%-Basis"
+msgstr "100%-Basis"
 
 msgid ""
 "<a href=\"http://www.openslides.org\">OpenSlides</a> is a free web based "
@@ -160,6 +160,9 @@ msgstr "Sichtbarkeit in der Tagesordnung"
 
 msgid "All casted ballots"
 msgstr "Alle abgegebenen Stimmzettel"
+
+msgid "All entitled users"
+msgstr "Anzahl der Stimmberechtigten"
 
 msgid "All lists of speakers will be cleared."
 msgstr "Alle Redelisten werden bereinigt."
@@ -1208,6 +1211,9 @@ msgstr ""
 "Passworts zu erhalten."
 
 msgid "Entitled to vote"
+msgstr "Stimmberechtigte"
+
+msgid "Entitled users"
 msgstr "Stimmberechtigte"
 
 msgid "Error"
@@ -2967,9 +2973,6 @@ msgstr ""
 "Die Datei scheint einige ausgelassene Spalten zu haben. Sie werden als leer "
 "betrachtet."
 
-msgid "The individual votes were anonymized."
-msgstr "Die individuellen Stimmen wurden anonymisiert."
-
 msgid "The link is broken. Please contact your system administrator."
 msgstr ""
 "Der Link ist defekt. Bitte kontaktieren Sie den zuständigen Administrator."
@@ -3395,6 +3398,9 @@ msgstr "Ja/Nein/Enthaltung"
 
 msgid "Yes/No/Abstain per candidate"
 msgstr "Ja/Nein/Enthaltung pro Kandidat"
+
+msgid "You are not allowed to see all entitled users."
+msgstr "Sie sind nicht berechtigt alle Stimmberechtigte zu sehen."
 
 msgid "You are not authenticated."
 msgstr "Sie sind nicht authentifiziert."
