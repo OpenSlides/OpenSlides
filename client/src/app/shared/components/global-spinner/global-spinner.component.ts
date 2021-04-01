@@ -31,11 +31,6 @@ export class GlobalSpinnerComponent implements OnInit, OnDestroy {
      */
     private spinnerSubscription: Subscription;
 
-    /**
-     * Constant string as default message when the spinner is shown.
-     */
-    private LOADING = this.translate.instant('Loading data. Please wait ...');
-
     public error: ErrorInformation | null = null;
 
     /**
@@ -64,10 +59,11 @@ export class GlobalSpinnerComponent implements OnInit, OnDestroy {
         this.spinnerSubscription = this.overlayService // subscribe to the service.
             .getSpinner()
             .subscribe((value: { isVisible: boolean; text: string }) => {
+                this.error = null;
                 this.isVisible = value.isVisible;
                 this.text = this.translate.instant(value.text);
                 if (!this.text) {
-                    this.text = this.LOADING;
+                    this.text = this.translate.instant('Loading data. Please wait ...');
                 }
                 this.cd.detectChanges();
             });
