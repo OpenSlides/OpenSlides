@@ -24,14 +24,14 @@ source /run/secrets/django || true
 }
 export SECRET_KEY="$DJANGO_SECRET_KEY"
 
-until pg_isready -h "${DATABASE_HOST}" -p "${DATABASE_PORT:-5432}"; do
+until pg_isready -h "${DATABASE_HOST:-pgbouncer}" -p "${DATABASE_PORT:-5432}"; do
   echo "Waiting for Postgres cluster to become available..."
   sleep 3
 done
 
 # Wait for redis
-wait-for-it redis:6379
-wait-for-it redis-slave:6379
+wait-for-it "${REDIS_HOST:-redis}:${REDIS_PORT:-6379}"
+wait-for-it "${REDIS_SLAVE_HOST:-redis-slave}:${REDIS_SLAVE_PORT:-6379}"
 
 echo 'running migrations'
 python -u manage.py migrate
