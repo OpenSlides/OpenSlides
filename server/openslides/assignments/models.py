@@ -9,7 +9,7 @@ from openslides.agenda.models import Speaker
 from openslides.core.config import config
 from openslides.core.models import Tag
 from openslides.mediafiles.models import Mediafile
-from openslides.poll.models import BaseOption, BasePoll, BaseVote
+from openslides.poll.models import BaseOption, BasePoll, BaseVote, BaseVoteManager
 from openslides.utils.autoupdate import inform_changed_data
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.manager import BaseManager
@@ -212,7 +212,7 @@ class Assignment(RESTModelMixin, AgendaItemWithListOfSpeakersMixin, models.Model
         return {"title": self.title}
 
 
-class AssignmentVoteManager(BaseManager):
+class AssignmentVoteManager(BaseVoteManager):
     """
     Customized model manager to support our get_prefetched_queryset method.
     """
@@ -325,6 +325,7 @@ class AssignmentPoll(RESTModelMixin, BasePoll):
     PERCENT_BASE_YNA = "YNA"
     PERCENT_BASE_VALID = "valid"
     PERCENT_BASE_CAST = "cast"
+    PERCENT_BASE_ENTITLED = "entitled"
     PERCENT_BASE_DISABLED = "disabled"
     PERCENT_BASES = (
         (PERCENT_BASE_YN, "Yes/No per candidate"),
@@ -332,6 +333,7 @@ class AssignmentPoll(RESTModelMixin, BasePoll):
         (PERCENT_BASE_Y, "Sum of votes including general No/Abstain"),
         (PERCENT_BASE_VALID, "All valid ballots"),
         (PERCENT_BASE_CAST, "All casted ballots"),
+        (PERCENT_BASE_ENTITLED, "All entitled users"),
         (PERCENT_BASE_DISABLED, "Disabled (no percents)"),
     )
     onehundred_percent_base = models.CharField(

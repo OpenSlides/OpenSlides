@@ -522,6 +522,7 @@ class AssignmentPollViewSet(BasePollViewSet):
         """
         options = poll.get_options()
         if isinstance(data, dict):
+            user_token = AssignmentVote.objects.generate_user_token()
             for option_id, amount in data.items():
                 # Add user to the option's voted array
                 option = options.get(pk=option_id)
@@ -540,6 +541,7 @@ class AssignmentPollViewSet(BasePollViewSet):
                     delegated_user=request_user,
                     weight=weight,
                     value=value,
+                    user_token=user_token,
                 )
                 inform_changed_data(vote)
         else:  # global_no or global_abstain
@@ -566,6 +568,7 @@ class AssignmentPollViewSet(BasePollViewSet):
         request_user is the user who gives the vote, may be a delegate
         """
         options = poll.get_options()
+        user_token = AssignmentVote.objects.generate_user_token()
         weight = vote_weight if config["users_activate_vote_weight"] else Decimal(1)
         for option_id, result in data.items():
             option = options.get(pk=option_id)
@@ -575,6 +578,7 @@ class AssignmentPollViewSet(BasePollViewSet):
                 delegated_user=request_user,
                 value=result,
                 weight=weight,
+                user_token=user_token,
             )
             inform_changed_data(vote)
             inform_changed_data(option)

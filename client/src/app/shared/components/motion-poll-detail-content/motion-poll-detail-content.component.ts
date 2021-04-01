@@ -5,7 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { BaseComponent } from 'app/base.component';
 import { OperatorService } from 'app/core/core-services/operator.service';
-import { PollState } from 'app/shared/models/poll/base-poll';
+import { PercentBase, PollState } from 'app/shared/models/poll/base-poll';
 import { ViewMotionPoll } from 'app/site/motions/models/view-motion-poll';
 import { MotionPollService } from 'app/site/motions/services/motion-poll.service';
 import { PollData, PollTableData } from 'app/site/polls/services/poll.service';
@@ -56,6 +56,10 @@ export class MotionPollDetailContentComponent extends BaseComponent {
 
     public get canSeeResults(): boolean {
         return this.operator.hasPerms(this.permission.motionsCanManagePolls) || this.isPublished;
+    }
+
+    public get isPercentBaseEntitled(): boolean {
+        return this.poll.onehundred_percent_base === PercentBase.Entitled;
     }
 
     public constructor(

@@ -1,7 +1,6 @@
-from decimal import Decimal
 from unittest import TestCase
 
-from openslides.motions.models import Motion, MotionChangeRecommendation, MotionPoll
+from openslides.motions.models import Motion, MotionChangeRecommendation
 
 
 # TODO: test for MotionPoll.set_options()
@@ -51,25 +50,3 @@ class MotionChangeRecommendationTest(TestCase):
             other_recommendations
         )
         self.assertFalse(collides)
-
-
-class MotionPollAnalogFieldsTest(TestCase):
-    def setUp(self):
-        self.motion = Motion(
-            title="test_title_OoK9IeChe2Jeib9Deeji",
-            text="test_text_eichui1oobiSeit9aifo",
-        )
-        self.poll = MotionPoll(
-            motion=self.motion,
-            title="test_title_tho8PhiePh8upaex6phi",
-            pollmethod="YNA",
-            type=MotionPoll.TYPE_NAMED,
-        )
-
-    def test_not_set_vote_values(self):
-        with self.assertRaises(ValueError):
-            self.poll.votesvalid = Decimal("1")
-        with self.assertRaises(ValueError):
-            self.poll.votesinvalid = Decimal("1")
-        with self.assertRaises(ValueError):
-            self.poll.votescast = Decimal("1")

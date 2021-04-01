@@ -8,7 +8,7 @@ from openslides.agenda.mixins import AgendaItemWithListOfSpeakersMixin
 from openslides.core.config import config
 from openslides.core.models import Tag
 from openslides.mediafiles.models import Mediafile
-from openslides.poll.models import BaseOption, BasePoll, BaseVote
+from openslides.poll.models import BaseOption, BasePoll, BaseVote, BaseVoteManager
 from openslides.utils.autoupdate import inform_changed_data
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.manager import BaseManager
@@ -828,7 +828,7 @@ class MotionBlock(RESTModelMixin, AgendaItemWithListOfSpeakersMixin, models.Mode
         return {"title": self.title}
 
 
-class MotionVoteManager(BaseManager):
+class MotionVoteManager(BaseVoteManager):
     """
     Customized model manager to support our get_prefetched_queryset method.
     """

@@ -1,25 +1,29 @@
-import { ChangeDetectorRef, Directive, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Directive, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 
 import { TranslateService } from '@ngx-translate/core';
+import { PblColumnDefinition } from '@pebula/ngrid';
 import { Label } from 'ng2-charts';
-import { BehaviorSubject, from, Observable } from 'rxjs';
+import { BehaviorSubject, from, Observable, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { Deferred } from 'app/core/promises/deferred';
 import { BaseRepository } from 'app/core/repositories/base-repository';
 import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
+import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 import { BasePollDialogService } from 'app/core/ui-services/base-poll-dialog.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ChartData } from 'app/shared/components/charts/charts.component';
+import { EntitledUsersEntry } from 'app/shared/models/poll/base-poll';
 import { BaseVote } from 'app/shared/models/poll/base-vote';
 import { BaseViewComponentDirective } from 'app/site/base/base-view';
 import { ViewGroup } from 'app/site/users/models/view-group';
 import { ViewUser } from 'app/site/users/models/view-user';
 import { BasePollRepositoryService } from '../services/base-poll-repository.service';
+import { EntitledUsersTableEntry } from './entitled-users-table/entitled-users-table.component';
 import { PollService } from '../services/poll.service';
 import { ViewBasePoll } from '../models/view-base-poll';
 import { ViewBaseVote } from '../models/view-base-vote';
@@ -31,7 +35,7 @@ export interface BaseVoteData {
 @Directive()
 export abstract class BasePollDetailComponentDirective<V extends ViewBasePoll, S extends PollService>
     extends BaseViewComponentDirective
-    implements OnInit {
+    implements OnInit, OnDestroy {
     /**
      * All the groups of users.
      */
@@ -73,7 +77,12 @@ export abstract class BasePollDetailComponentDirective<V extends ViewBasePoll, S
     // The observable for the votes-per-user table
     public votesDataObservable: Observable<BaseVoteData[]>;
 
+    // The observable for the entitled-users-table
+    public entitledUsersObservable: Observable<EntitledUsersTableEntry[]>;
+
     protected optionsLoaded = new Deferred();
+
+    private entitledUsersSubscription: Subscription;
 
     /**
      * Constructor
@@ -102,7 +111,8 @@ export abstract class BasePollDetailComponentDirective<V extends ViewBasePoll, S
         protected pollService: S,
         protected votesRepo: BaseRepository<ViewBaseVote, BaseVote, object>,
         protected operator: OperatorService,
-        protected cd: ChangeDetectorRef
+        protected cd: ChangeDetectorRef,
+        protected userRepo: UserRepositoryService
     ) {
         super(title, translate, matSnackbar);
         this.setup();
@@ -168,14 +178,10 @@ export abstract class BasePollDetailComponentDirective<V extends ViewBasePoll, S
     }
 
     /**
-     * sets the votes data only if the poll wasn't pseudoanonymized
+     * Set the votes data.
      */
     protected setVotesData(data: BaseVoteData[]): void {
-        if (data.every(voteDate => !voteDate.user)) {
-            this.votesDataObservable = null;
-        } else {
-            this.votesDataObservable = from([data]);
-        }
+        this.votesDataObservable = from([data]);
     }
 
     /**
@@ -196,10 +202,44 @@ export abstract class BasePollDetailComponentDirective<V extends ViewBasePoll, S
                         this.createVotesData();
                         this.optionsLoaded.resolve();
                         this.cd.markForCheck();
+                        this.setEntitledUsersData();
                     }
                 })
             );
         }
+    }
+
+    private setEntitledUsersData(): void {
+        if (this.entitledUsersSubscription) {
+            this.entitledUsersSubscription.unsubscribe();
+        }
+        const userIds = new Set<number>();
+        for (const entry of this.poll.entitled_users_at_stop) {
+            userIds.add(entry.user_id);
+            if (entry.vote_delegated_to_id) {
+                userIds.add(entry.vote_delegated_to_id);
+            }
+        }
+        this.entitledUsersSubscription = this.userRepo
+            .getViewModelListObservable()
+            .pipe(
+                filter(users => !!users.length),
+                map(users => users.filter(user => userIds.has(user.id)))
+            )
+            .subscribe(users => {
+                const entries = [];
+                for (const entry of this.poll.entitled_users_at_stop) {
+                    entries.push({
+                        ...entry,
+                        user: users.find(user => user.id === entry.user_id),
+                        voted_verbose: `voted:${entry.voted}`,
+                        vote_delegated_to: entry.vote_delegated_to_id
+                            ? users.find(user => user.id === entry.vote_delegated_to_id)
+                            : null
+                    });
+                }
+                this.entitledUsersObservable = from([entries]);
+            });
     }
 
     protected userHasVoteDelegation(user: ViewUser): boolean {
@@ -226,5 +266,11 @@ export abstract class BasePollDetailComponentDirective<V extends ViewBasePoll, S
         if (this.operator.viewUser.canVoteFor(user)) {
             return this.operator.viewUser;
         }
+    }
+
+    public ngOnDestroy(): void {
+        super.ngOnDestroy();
+        this.entitledUsersSubscription.unsubscribe();
+        this.entitledUsersSubscription = null;
     }
 }

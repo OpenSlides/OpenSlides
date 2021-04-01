@@ -112,6 +112,7 @@ class CreateMotionPoll(TestCase):
         self.assertHttpStatusVerbose(response, status.HTTP_201_CREATED)
         self.assertTrue(MotionPoll.objects.exists())
         poll = MotionPoll.objects.get()
+        self.assertEqual(poll.is_pseudoanonymized, False)
         self.assertEqual(poll.title, "test_title_ailai4toogh3eefaa2Vo")
         self.assertEqual(poll.pollmethod, "YNA")
         self.assertEqual(poll.type, "named")
@@ -394,6 +395,27 @@ class UpdateMotionPoll(TestCase):
         poll = MotionPoll.objects.get()
         self.assertEqual(poll.type, "analog")
 
+    def test_patch_type_to_pseudoanonymous(self):
+        response = self.client.patch(
+            reverse("motionpoll-detail", args=[self.poll.pk]),
+            {"type": BasePoll.TYPE_PSEUDOANONYMOUS},
+        )
+        self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
+        poll = MotionPoll.objects.get()
+        self.assertEqual(poll.type, BasePoll.TYPE_PSEUDOANONYMOUS)
+        self.assertTrue(poll.is_pseudoanonymized)
+
+    def test_patch_type_to_named(self):
+        self.test_patch_type_to_pseudoanonymous()
+        response = self.client.patch(
+            reverse("motionpoll-detail", args=[self.poll.pk]),
+            {"type": BasePoll.TYPE_NAMED},
+        )
+        self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
+        poll = MotionPoll.objects.get()
+        self.assertEqual(poll.type, BasePoll.TYPE_NAMED)
+        self.assertFalse(poll.is_pseudoanonymized)
+
     def test_patch_invalid_type(self):
         response = self.client.patch(
             reverse("motionpoll-detail", args=[self.poll.pk]), {"type": "invalid"}
@@ -585,6 +607,7 @@ class VoteMotionPollAnalog(TestCase):
         )
         self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
         poll = MotionPoll.objects.get()
+        poll.calculate_votes()
         self.assertEqual(poll.votesvalid, Decimal("4.64"))
         self.assertEqual(poll.votesinvalid, Decimal("-2"))
         self.assertEqual(poll.votescast, Decimal("-2"))
@@ -668,6 +691,7 @@ class VoteMotionPollAnalog(TestCase):
         )
         self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
         poll = MotionPoll.objects.get()
+        poll.calculate_votes()
         self.assertEqual(poll.votesvalid, Decimal("4.64"))
         self.assertEqual(poll.votesinvalid, Decimal("-2"))
         self.assertEqual(poll.votescast, Decimal("3"))
@@ -715,6 +739,7 @@ class VoteMotionPollNamed(TestCase):
         response = self.client.post(reverse("motionpoll-start", args=[self.poll.pk]))
         self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
         poll = MotionPoll.objects.get()
+        poll.calculate_votes()
         self.assertEqual(poll.state, MotionPoll.STATE_STARTED)
         self.assertEqual(poll.votesvalid, Decimal("0"))
         self.assertEqual(poll.votesinvalid, Decimal("0"))
@@ -730,6 +755,7 @@ class VoteMotionPollNamed(TestCase):
         )
         self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
         poll = MotionPoll.objects.get()
+        poll.calculate_votes()
         self.assertEqual(poll.votesvalid, Decimal("1"))
         self.assertEqual(poll.votesinvalid, Decimal("0"))
         self.assertEqual(poll.votescast, Decimal("1"))
@@ -754,11 +780,11 @@ class VoteMotionPollNamed(TestCase):
         )
         self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
         poll = MotionPoll.objects.get()
+        poll.calculate_votes()
         self.assertEqual(poll.votesvalid, weight)
         self.assertEqual(poll.votesinvalid, Decimal("0"))
         self.assertEqual(poll.votescast, Decimal("1"))
         self.assertEqual(poll.get_votes().count(), 1)
-        self.assertEqual(poll.amount_users_voted_with_individual_weight(), weight)
         option = poll.options.get()
         self.assertEqual(option.yes, Decimal("0"))
         self.assertEqual(option.no, Decimal("0"))
@@ -784,6 +810,7 @@ class VoteMotionPollNamed(TestCase):
         )
         self.assertHttpStatusVerbose(response, status.HTTP_400_BAD_REQUEST)
         poll = MotionPoll.objects.get()
+        poll.calculate_votes()
         self.assertEqual(poll.votesvalid, Decimal("1"))
         self.assertEqual(poll.votesinvalid, Decimal("0"))
         self.assertEqual(poll.votescast, Decimal("1"))
@@ -874,6 +901,7 @@ class VoteMotionPollNamed(TestCase):
         )
         self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
         poll = MotionPoll.objects.get()
+        poll.calculate_votes()
         self.assertEqual(poll.votesvalid, Decimal("1"))
         self.assertEqual(poll.votesinvalid, Decimal("0"))
         self.assertEqual(poll.votescast, Decimal("1"))
@@ -893,6 +921,7 @@ class VoteMotionPollNamed(TestCase):
         )
         self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
         poll = MotionPoll.objects.get()
+        poll.calculate_votes()
         self.assertEqual(poll.votesvalid, Decimal("2"))
         self.assertEqual(poll.votesinvalid, Decimal("0"))
         self.assertEqual(poll.votescast, Decimal("2"))
@@ -1007,6 +1036,7 @@ class VoteMotionPollPseudoanonymous(TestCase):
         response = self.client.post(reverse("motionpoll-start", args=[self.poll.pk]))
         self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
         poll = MotionPoll.objects.get()
+        poll.calculate_votes()
         self.assertEqual(poll.state, MotionPoll.STATE_STARTED)
         self.assertEqual(poll.votesvalid, Decimal("0"))
         self.assertEqual(poll.votesinvalid, Decimal("0"))
@@ -1022,11 +1052,11 @@ class VoteMotionPollPseudoanonymous(TestCase):
         )
         self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
         poll = MotionPoll.objects.get()
+        poll.calculate_votes()
         self.assertEqual(poll.votesvalid, Decimal("1"))
         self.assertEqual(poll.votesinvalid, Decimal("0"))
         self.assertEqual(poll.votescast, Decimal("1"))
         self.assertEqual(poll.get_votes().count(), 1)
-        self.assertEqual(poll.amount_users_voted_with_individual_weight(), 1)
         option = poll.options.get()
         self.assertEqual(option.yes, Decimal("0"))
         self.assertEqual(option.no, Decimal("1"))
@@ -1142,6 +1172,42 @@ class StopMotionPoll(TestCase):
         self.assertHttpStatusVerbose(response, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(MotionPoll.objects.get().state, MotionPoll.STATE_CREATED)
 
+    def setup_entitled_users(self):
+        self.poll.state = MotionPoll.STATE_STARTED
+        self.poll.save()
+        self.admin = get_user_model().objects.get(username="admin")
+        self.admin.is_present = True
+        self.admin.save()
+        self.group = get_group_model().objects.get(pk=GROUP_ADMIN_PK)
+        self.poll.groups.add(self.group)
+
+    def test_stop_poll_with_entitled_users(self):
+        self.setup_entitled_users()
+        response = self.client.post(reverse("motionpoll-stop", args=[self.poll.pk]))
+        self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
+        self.assertEqual(
+            MotionPoll.objects.get().entitled_users_at_stop,
+            [{"user_id": self.admin.id, "voted": False, "vote_delegated_to_id": None}],
+        )
+
+    def test_stop_poll_with_entitled_users_and_vote_delegation(self):
+        self.setup_entitled_users()
+        user, _ = self.create_user()
+        self.admin.vote_delegated_to = user
+        self.admin.save()
+        response = self.client.post(reverse("motionpoll-stop", args=[self.poll.pk]))
+        self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
+        self.assertEqual(
+            MotionPoll.objects.get().entitled_users_at_stop,
+            [
+                {
+                    "user_id": self.admin.id,
+                    "voted": False,
+                    "vote_delegated_to_id": user.id,
+                }
+            ],
+        )
+
 
 class PublishMotionPoll(TestCase):
     def advancedSetUp(self):
@@ -1213,8 +1279,9 @@ class PseudoanonymizeMotionPoll(TestCase):
         )
         self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
         poll = MotionPoll.objects.get()
+        poll.calculate_votes()
+        self.assertEqual(poll.is_pseudoanonymized, True)
         self.assertEqual(poll.get_votes().count(), 2)
-        self.assertEqual(poll.amount_users_voted_with_individual_weight(), 2)
         self.assertEqual(poll.votesvalid, Decimal("2"))
         self.assertEqual(poll.votesinvalid, Decimal("0"))
         self.assertEqual(poll.votescast, Decimal("2"))
@@ -1282,7 +1349,6 @@ class ResetMotionPoll(TestCase):
         self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
         poll = MotionPoll.objects.get()
         self.assertEqual(poll.get_votes().count(), 0)
-        self.assertEqual(poll.amount_users_voted_with_individual_weight(), 0)
         self.assertEqual(poll.votesvalid, None)
         self.assertEqual(poll.votesinvalid, None)
         self.assertEqual(poll.votescast, None)
@@ -1291,6 +1357,24 @@ class ResetMotionPoll(TestCase):
         self.assertEqual(option.no, Decimal("0"))
         self.assertEqual(option.abstain, Decimal("0"))
         self.assertFalse(option.votes.exists())
+
+    def test_reset_pseudoanonymized(self):
+        self.poll.type = BasePoll.TYPE_NAMED
+        self.poll.is_pseudoanonymized = True
+        self.poll.save()
+        response = self.client.post(reverse("motionpoll-reset", args=[self.poll.pk]))
+        self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
+        poll = MotionPoll.objects.get()
+        self.assertFalse(poll.is_pseudoanonymized)
+
+    def test_reset_pseudoanonymous(self):
+        self.poll.type = BasePoll.TYPE_PSEUDOANONYMOUS
+        self.poll.is_pseudoanonymized = True
+        self.poll.save()
+        response = self.client.post(reverse("motionpoll-reset", args=[self.poll.pk]))
+        self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
+        poll = MotionPoll.objects.get()
+        self.assertTrue(poll.is_pseudoanonymized)
 
 
 class TestMotionPollWithVoteDelegationAutoupdate(TestCase):

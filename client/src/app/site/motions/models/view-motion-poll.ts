@@ -20,6 +20,7 @@ export const MotionPollPercentBaseVerbose = {
     YNA: 'Yes/No/Abstain',
     valid: 'All valid ballots',
     cast: 'All casted ballots',
+    entitled: 'All entitled users',
     disabled: 'Disabled (no percents)'
 };
 

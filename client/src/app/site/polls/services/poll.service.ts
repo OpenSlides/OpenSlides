@@ -7,6 +7,7 @@ import { ChartData, ChartDate } from 'app/shared/components/charts/charts.compon
 import { AssignmentPollMethod } from 'app/shared/models/assignments/assignment-poll';
 import {
     BasePoll,
+    EntitledUsersEntry,
     MajorityMethod,
     PercentBase,
     PollColor,
@@ -111,6 +112,7 @@ export interface PollData {
     votesvalid: number;
     votesinvalid: number;
     votescast: number;
+    entitled_users_at_stop: EntitledUsersEntry[];
     amount_global_yes?: number;
     amount_global_no?: number;
     amount_global_abstain?: number;
@@ -286,7 +288,11 @@ export abstract class PollService {
     }
 
     public showPercentOfValidOrCast(poll: PollData | ViewBasePoll): boolean {
-        return poll.onehundred_percent_base === PercentBase.Valid || poll.onehundred_percent_base === PercentBase.Cast;
+        return (
+            poll.onehundred_percent_base === PercentBase.Valid ||
+            poll.onehundred_percent_base === PercentBase.Cast ||
+            poll.onehundred_percent_base === PercentBase.Entitled
+        );
     }
 
     public getSumTableKeys(poll: PollData | ViewBasePoll): VotingResult[] {

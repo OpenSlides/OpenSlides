@@ -35,7 +35,14 @@ export enum PercentBase {
     YNA = 'YNA',
     Valid = 'valid',
     Cast = 'cast',
+    Entitled = 'entitled',
     Disabled = 'disabled'
+}
+
+export interface EntitledUsersEntry {
+    user_id: number;
+    voted: boolean;
+    vote_delegated_to_id?: number;
 }
 
 export const VOTE_MAJORITY = -1;
@@ -61,6 +68,8 @@ export abstract class BasePoll<
     public user_has_voted_for_delegations: number[];
     public pollmethod: PM;
     public onehundred_percent_base: PB;
+    public is_pseudoanonymized: boolean;
+    public entitled_users_at_stop: EntitledUsersEntry[];
 
     public get isCreated(): boolean {
         return this.state === PollState.Created;

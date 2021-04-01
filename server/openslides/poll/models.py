@@ -4,10 +4,19 @@ from typing import Iterable, Optional, Tuple, Type
 from django.conf import settings
 from django.core.validators import MinValueValidator
 from django.db import models
+from django.utils.crypto import get_random_string
+from jsonfield import JSONField
+
+from openslides.utils.manager import BaseManager
 
 from ..core.config import config
 from ..utils.autoupdate import inform_changed_data, inform_deleted_data
 from ..utils.models import SET_NULL_AND_AUTOUPDATE
+
+
+def generate_user_token():
+    """ Generates a 16 character alphanumeric token. """
+    return get_random_string(16)
 
 
 class BaseVote(models.Model):
@@ -37,9 +46,19 @@ class BaseVote(models.Model):
         on_delete=SET_NULL_AND_AUTOUPDATE,
         related_name="%(class)s_delegated_votes",
     )
+    user_token = models.CharField(default=generate_user_token, max_length=16)
 
     class Meta:
         abstract = True
+
+
+class BaseVoteManager(BaseManager):
+    """
+    Base vote manager that supplies the generate_user_token method.
+    """
+
+    def generate_user_token(self):
+        return generate_user_token()
 
 
 class BaseOption(models.Model):
@@ -134,21 +153,21 @@ class BasePoll(models.Model):
     groups = models.ManyToManyField(settings.AUTH_GROUP_MODEL, blank=True)
     voted = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)
 
-    db_votesvalid = models.DecimalField(
+    votesvalid = models.DecimalField(
         null=True,
         blank=True,
         validators=[MinValueValidator(Decimal("-2"))],
         max_digits=15,
         decimal_places=6,
     )
-    db_votesinvalid = models.DecimalField(
+    votesinvalid = models.DecimalField(
         null=True,
         blank=True,
         validators=[MinValueValidator(Decimal("-2"))],
         max_digits=15,
         decimal_places=6,
     )
-    db_votescast = models.DecimalField(
+    votescast = models.DecimalField(
         null=True,
         blank=True,
         validators=[MinValueValidator(Decimal("-2"))],
@@ -160,12 +179,14 @@ class BasePoll(models.Model):
     PERCENT_BASE_YNA = "YNA"
     PERCENT_BASE_VALID = "valid"
     PERCENT_BASE_CAST = "cast"
+    PERCENT_BASE_ENTITLED = "entitled"
     PERCENT_BASE_DISABLED = "disabled"
     PERCENT_BASES: Iterable[Tuple[str, str]] = (
         (PERCENT_BASE_YN, "Yes/No"),
         (PERCENT_BASE_YNA, "Yes/No/Abstain"),
         (PERCENT_BASE_VALID, "All valid ballots"),
         (PERCENT_BASE_CAST, "All casted ballots"),
+        (PERCENT_BASE_ENTITLED, "All entitled users"),
         (PERCENT_BASE_DISABLED, "Disabled (no percents)"),
     )  # type: ignore
     onehundred_percent_base = models.CharField(
@@ -186,56 +207,12 @@ class BasePoll(models.Model):
         max_length=14, blank=False, null=False, choices=MAJORITY_METHODS
     )
 
+    is_pseudoanonymized = models.BooleanField(default=False)
+
+    entitled_users_at_stop = JSONField(null=True)
+
     class Meta:
         abstract = True
-
-    def get_votesvalid(self):
-        if self.type == self.TYPE_ANALOG:
-            return self.db_votesvalid
-        else:
-            return Decimal(self.amount_users_voted_with_individual_weight())
-
-    def set_votesvalid(self, value):
-        if self.type != self.TYPE_ANALOG:
-            raise ValueError("Do not set votesvalid for non analog polls")
-        self.db_votesvalid = value
-
-    votesvalid = property(get_votesvalid, set_votesvalid)
-
-    def get_votesinvalid(self):
-        if self.type == self.TYPE_ANALOG:
-            return self.db_votesinvalid
-        else:
-            return Decimal(0)
-
-    def set_votesinvalid(self, value):
-        if self.type != self.TYPE_ANALOG:
-            raise ValueError("Do not set votesinvalid for non analog polls")
-        self.db_votesinvalid = value
-
-    votesinvalid = property(get_votesinvalid, set_votesinvalid)
-
-    def get_votescast(self):
-        if self.type == self.TYPE_ANALOG:
-            return self.db_votescast
-        else:
-            return Decimal(self.amount_users_voted())
-
-    def set_votescast(self, value):
-        if self.type != self.TYPE_ANALOG:
-            raise ValueError("Do not set votescast for non analog polls")
-        self.db_votescast = value
-
-    votescast = property(get_votescast, set_votescast)
-
-    def amount_users_voted(self):
-        return len(self.voted.all())
-
-    def amount_users_voted_with_individual_weight(self):
-        if config["users_activate_vote_weight"]:
-            return sum(user.vote_weight for user in self.voted.all())
-        else:
-            return self.amount_users_voted()
 
     def create_options(self):
         """ Should be called after creation of this model. """
@@ -268,6 +245,8 @@ class BasePoll(models.Model):
     def pseudoanonymize(self):
         for option in self.get_options():
             option.pseudoanonymize()
+        self.is_pseudoanonymized = True
+        self.save()
 
     def reset(self):
         for option in self.get_options():
@@ -281,4 +260,38 @@ class BasePoll(models.Model):
             self.votesvalid = None
             self.votesinvalid = None
             self.votescast = None
+        if self.type != self.TYPE_PSEUDOANONYMOUS:
+            self.is_pseudoanonymized = False
+        self.save()
+
+    def calculate_votes(self):
+        if self.type != BasePoll.TYPE_ANALOG:
+            self.votescast = self.voted.count()
+            if config["users_activate_vote_weight"]:
+                self.votesvalid = sum(self.voted.values_list("vote_weight", flat=True))
+            else:
+                self.votesvalid = self.votescast
+            self.votesinvalid = Decimal(0)
+
+    def calculate_entitled_users(self):
+        entitled_users = []
+        for group in self.groups.all():
+            for user in group.user_set.all():
+                if user.is_present:
+                    entitled_users.append(
+                        {
+                            "user_id": user.id,
+                            "voted": user in self.voted.all(),
+                            "vote_delegated_to_id": user.vote_delegated_to_id,
+                        }
+                    )
+        self.entitled_users_at_stop = entitled_users
+
+    def stop(self):
+        """
+        Saves a snapshot of the current voted users into the relevant fields and stops the poll.
+        """
+        self.calculate_votes()
+        self.calculate_entitled_users()
+        self.state = self.STATE_FINISHED
         self.save()

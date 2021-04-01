@@ -30,6 +30,15 @@
                         {{ row.value[0].amount | parsePollNumber }}
                     </td>
                 </tr>
+                <tr *ngIf="isPercentBaseEntitled" class="entitled-users-row">
+                    <td>{{ 'Entitled users' | translate }}</td>
+                    <td class="result-cell-definition">
+                        {{ poll.entitled_users_at_stop.length | pollPercentBase: poll:'motion' }}
+                    </td>
+                    <td class="result-cell-definition">
+                        {{ poll.entitled_users_at_stop.length }}
+                    </td>
+                </tr>
             </tbody>
         </table>
 

@@ -11,7 +11,7 @@ import {
     AssignmentPollMethod,
     AssignmentPollPercentBase
 } from 'app/shared/models/assignments/assignment-poll';
-import { MajorityMethod, PollType, VOTE_UNDOCUMENTED } from 'app/shared/models/poll/base-poll';
+import { MajorityMethod, PercentBase, PollType, VOTE_UNDOCUMENTED } from 'app/shared/models/poll/base-poll';
 import { ParsePollNumberPipe } from 'app/shared/pipes/parse-poll-number.pipe';
 import { PollKeyVerbosePipe } from 'app/shared/pipes/poll-key-verbose.pipe';
 import { ViewAssignmentOption } from 'app/site/assignments/models/view-assignment-option';
@@ -226,6 +226,9 @@ export class AssignmentPollService extends PollService {
                 break;
             case AssignmentPollPercentBase.Valid:
                 totalByBase = poll.votesvalid;
+                break;
+            case AssignmentPollPercentBase.Entitled:
+                totalByBase = poll.entitled_users_at_stop.length;
                 break;
             case AssignmentPollPercentBase.Cast:
                 totalByBase = poll.votescast;

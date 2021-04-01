@@ -3,6 +3,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { TranslateService } from '@ngx-translate/core';
 import { PblColumnDefinition } from '@pebula/ngrid';
 
@@ -10,6 +11,7 @@ import { OperatorService, Permission } from 'app/core/core-services/operator.ser
 import { AssignmentPollRepositoryService } from 'app/core/repositories/assignments/assignment-poll-repository.service';
 import { AssignmentVoteRepositoryService } from 'app/core/repositories/assignments/assignment-vote-repository.service';
 import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
+import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ChartData } from 'app/shared/components/charts/charts.component';
@@ -62,7 +64,8 @@ export class AssignmentPollDetailComponent extends BasePollDetailComponentDirect
         votesRepo: AssignmentVoteRepositoryService,
         protected operator: OperatorService,
         private router: Router,
-        protected cd: ChangeDetectorRef
+        protected cd: ChangeDetectorRef,
+        protected userRepo: UserRepositoryService
     ) {
         super(
             title,
@@ -76,7 +79,8 @@ export class AssignmentPollDetailComponent extends BasePollDetailComponentDirect
             pollService,
             votesRepo,
             operator,
-            cd
+            cd,
+            userRepo
         );
         configService
             .get<boolean>('users_activate_vote_weight')
@@ -100,47 +104,33 @@ export class AssignmentPollDetailComponent extends BasePollDetailComponentDirect
         ];
 
         const votes = {};
-        let isPseudoanonymized = true;
         for (const option of this.poll.options) {
             for (const vote of option.votes) {
-                const userId = vote.user_id;
-                if (userId) {
-                    isPseudoanonymized = false;
-                    if (!votes[userId]) {
-                        votes[userId] = {
-                            user: vote.user,
-                            votes: []
-                        };
-                    }
-
-                    if (vote.weight > 0) {
-                        if (this.poll.isMethodY) {
-                            if (vote.value === 'Y') {
-                                votes[userId].votes.push(option.user.getFullName());
-                            } else {
-                                votes[userId].votes.push(this.voteValueToLabel(vote.value));
-                            }
-                        } else {
-                            votes[userId].votes.push(
-                                `${option.user.getShortName()}: ${this.voteValueToLabel(vote.value)}`
-                            );
-                        }
-                    }
+                const token = vote.user_token;
+                if (!token) {
+                    throw new Error(`assignment_vote/${vote.id} does not contain a user_token`);
                 }
-            }
-        }
-        // if the poll was not pseudoanonymized, add all other users as empty votes
-        if (!isPseudoanonymized) {
-            for (const user of this.poll.voted) {
-                if (!votes[user.id]) {
-                    votes[user.id] = {
-                        user: user,
-                        votes: [this.translate.instant('empty vote')]
+                if (!votes[token]) {
+                    votes[token] = {
+                        user: vote.user,
+                        votes: []
                     };
                 }
+
+                if (vote.weight > 0) {
+                    if (this.poll.isMethodY) {
+                        if (vote.value === 'Y') {
+                            votes[token].votes.push(option.user.getFullName());
+                        } else {
+                            votes[token].votes.push(this.voteValueToLabel(vote.value));
+                        }
+                    } else {
+                        const candidate_name = option.user?.getShortName() ?? this.translate.instant('Deleted user');
+                        votes[token].votes.push(`${candidate_name}: ${this.voteValueToLabel(vote.value)}`);
+                    }
+                }
             }
         }
-
         this.setVotesData(Object.values(votes));
         this.candidatesLabels = this.pollService.getChartLabels(this.poll);
         this.columnDefinitionSingleVotes = definitions;

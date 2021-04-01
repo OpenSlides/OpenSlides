@@ -30,6 +30,7 @@ export const AssignmentPollPercentBaseVerbose = {
     YNA: _('Yes/No/Abstain per candidate'),
     valid: _('All valid ballots'),
     cast: _('All casted ballots'),
+    entitled: _('All entitled users'),
     disabled: _('Disabled (no percents)')
 };
 

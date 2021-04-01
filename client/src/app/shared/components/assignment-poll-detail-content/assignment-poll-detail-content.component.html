@@ -49,6 +49,19 @@
                     </div>
                 </td>
             </tr>
+            <tr *ngIf="isPercentBaseEntitled" class="entitled-users-row">
+                <td>{{ 'Entitled users' | translate }}</td>
+                <td class="result">
+                    <div class="single-result">
+                        <span>
+                            {{ poll.entitled_users_at_stop.length | pollPercentBase: poll:'assignment' }}
+                        </span>
+                        <span>
+                            {{ poll.entitled_users_at_stop.length }}
+                        </span>
+                    </div>
+                </td>
+            </tr>
         </tbody>
     </table>
 
