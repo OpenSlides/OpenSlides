@@ -936,7 +936,7 @@ describe('DiffService', () => {
             const diff = service.diff(before, after);
 
             expect(diff).toBe(
-                '<P class="delete">...so frißt er Euch alle mit Haut und Haar.</P><P class="insert">...so frißt er <SPAN>Euch alle</SPAN> mit Haut und Haar.</P>'
+                '<p>...so frißt er <del>Euch alle</del><ins><span style="color: #000000;">Euch alle</span></ins> mit Haut und Haar.</p>'
             );
         }));
 
@@ -947,7 +947,7 @@ describe('DiffService', () => {
             const diff = service.diff(before, after);
 
             expect(diff).toBe(
-                '<P class="delete">...so frißt er Euch alle mit Haut und Haar.</P><P class="insert">...so frißt er <SPAN style="font-size: 2em; opacity: 0.5">Euch alle</SPAN> mit Haut und Haar.</P>'
+                '<p>...so frißt er <del>Euch alle</del><ins><span style="font-size: 2em; color: #000000; opacity: 0.5">Euch alle</span></ins> mit Haut und Haar.</p>'
             );
         }));
 
@@ -997,6 +997,30 @@ describe('DiffService', () => {
                 const diff = service.diff(before, after);
                 expect(diff).toBe(
                     '<p>Lorem ipsum dolor sit amet, consetetur <del><br></del>sadipscing elitr.<ins> Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua..</ins><br>Bavaria ipsum dolor sit amet o’ha wea nia ausgähd<br><del>kummt nia hoam i hob di narrisch gean</del><ins>Autonomie erfährt ihre Grenzen</ins></p>'
+                );
+            }
+        ));
+
+        it('does not fall back to block level replacement when only a formatting is inserted', inject(
+            [DiffService],
+            (service: DiffService) => {
+                const before = '<p>This is a text with a word that will be formatted</p>',
+                    after = '<p>This is a text with a <span class="testclass">word</span> that will be formatted</p>';
+                const diff = service.diff(before, after);
+                expect(diff).toBe(
+                    '<p>This is a text with a <del>word</del><ins><span class="testclass">word</span></ins> that will be formatted</p>'
+                );
+            }
+        ));
+
+        it('does not fall back to block level replacement when only a formatting is deleted', inject(
+            [DiffService],
+            (service: DiffService) => {
+                const before = '<p>This is a text with a <strong>word</strong> that is formatted</p>',
+                    after = '<p>This is a text with a word that is formatted</p>';
+                const diff = service.diff(before, after);
+                expect(diff).toBe(
+                    '<p>This is a text with a <del><strong>word</strong></del><ins>word</ins> that is formatted</p>'
                 );
             }
         ));
