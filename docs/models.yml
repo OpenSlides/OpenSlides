@@ -1660,6 +1660,7 @@ poll:
       - YN
       - YNA
       - N
+  is_pseudoanonymized: boolean
   state:
     type: string
     enum:
@@ -1693,6 +1694,7 @@ poll:
       - N
       - valid
       - cast
+      - entitled
       - disabled
   majority_method:
     type: string
@@ -1705,6 +1707,7 @@ poll:
   votesvalid: decimal(6)
   votesinvalid: decimal(6)
   votescast: decimal(6)
+  entitled_users_at_stop: JSON
 
   content_object_id:  # Note: must not be set - it is allowed to have standalone polls
     type: generic-relation
@@ -1778,6 +1781,9 @@ vote:
   id: number
   weight: decimal(6)
   value: string
+  user_token:
+    type: string
+    required: true
 
   option_id:
     type: relation
