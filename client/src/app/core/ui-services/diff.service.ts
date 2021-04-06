@@ -965,7 +965,7 @@ export class DiffService {
         let found, inner;
         while (!!(found = findDel.exec(html))) {
             inner = found[1].replace(/<br[^>]*>/gi, '');
-            if (inner.match(/<[^>]*>/)) {
+            if (!this.isValidInlineHtml(inner)) {
                 return true;
             }
         }
@@ -2078,6 +2078,46 @@ export class DiffService {
             /<del><\/(p|div|blockquote|li)><\/del><ins>([\s\S]*?)<\/\1>(\s*)<\/ins>/gi,
             (whole: string, blockTag: string, content: string, space: string): string => {
                 return '<ins>' + content + '</ins></' + blockTag + '>' + space;
+            }
+        );
+
+        // <ins><STRONG></ins>formatted<ins></STRONG></ins> => <del>formatted</del><ins><STRONG>formatted</STRONG></ins>
+        diffUnnormalized = diffUnnormalized.replace(
+            /<ins><(span|strong|em|b|i|u|s|a|small|big|sup|sub)( [^>]*)?><\/ins>([^<]*)<ins><\/\1><\/ins>/gi,
+            (whole: string, inlineTag: string, tagAttributes: string, content: string): string => {
+                return (
+                    '<del>' +
+                    content +
+                    '</del>' +
+                    '<ins><' +
+                    inlineTag +
+                    (tagAttributes ? tagAttributes : '') +
+                    '>' +
+                    content +
+                    '</' +
+                    inlineTag +
+                    '></ins>'
+                );
+            }
+        );
+
+        // <del><STRONG></del>formatted<del></STRONG></del> => <del><STRONG>formatted</STRONG></del><ins>formatted</ins>
+        diffUnnormalized = diffUnnormalized.replace(
+            /<del><(span|strong|em|b|i|u|s|a|small|big|sup|sub)( [^>]*)?><\/del>([^<]*)<del><\/\1><\/del>/gi,
+            (whole: string, inlineTag: string, tagAttributes: string, content: string): string => {
+                return (
+                    '<del><' +
+                    inlineTag +
+                    (tagAttributes ? tagAttributes : '') +
+                    '>' +
+                    content +
+                    '</' +
+                    inlineTag +
+                    '></del>' +
+                    '<ins>' +
+                    content +
+                    '</ins>'
+                );
             }
         );
 
