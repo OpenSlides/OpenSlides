@@ -1948,6 +1948,7 @@
         "title": "1",
         "description": "",
         "type": "analog",
+        "is_pseudoanonymized": false,
         "pollmethod": "YNA",
         "state": "finished",
         "min_votes_amount": 1,
@@ -1960,6 +1961,7 @@
         "votesvalid": "2.000000",
         "votesinvalid": "9.000000",
         "votescast": "2.000000",
+        "entitled_users_at_stop": null,
 
         "content_object_id": "motion/1",
         "option_ids": [1],
@@ -1974,6 +1976,7 @@
         "title": "2",
         "description": "",
         "type": "analog",
+        "is_pseudoanonymized": false,
         "pollmethod": "YNA",
         "state": "created",
         "min_votes_amount": 1,
@@ -1986,6 +1989,7 @@
         "votesvalid": null,
         "votesinvalid": null,
         "votescast": null,
+        "entitled_users_at_stop": null,
 
         "content_object_id": "motion/1",
         "option_ids": [3],
@@ -2000,6 +2004,7 @@
         "title": "1",
         "description": "",
         "type": "analog",
+        "is_pseudoanonymized": false,
         "pollmethod": "YNA",
         "state": "created",
         "min_votes_amount": 1,
@@ -2012,6 +2017,7 @@
         "votesvalid": null,
         "votesinvalid": null,
         "votescast": null,
+        "entitled_users_at_stop": null,
 
         "content_object_id": "assignment/1",
         "voted_ids": [],
@@ -2026,6 +2032,7 @@
         "title": "2",
         "description": "",
         "type": "analog",
+        "is_pseudoanonymized": false,
         "pollmethod": "Y",
         "state": "finished",
         "min_votes_amount": 1,
@@ -2038,6 +2045,7 @@
         "votesvalid": "9.000000",
         "votesinvalid": "2.000000",
         "votescast": "16.000000",
+        "entitled_users_at_stop": null,
 
         "content_object_id": "assignment/1",
         "voted_ids": [],
@@ -2052,6 +2060,7 @@
         "title": "Wahlgang",
         "description": "",
         "type": "named",
+        "is_pseudoanonymized": false,
         "pollmethod": "Y",
         "state": "finished",
         "min_votes_amount": 1,
@@ -2064,6 +2073,7 @@
         "votesvalid": "1.000000",
         "votesinvalid": "0.000000",
         "votescast": "1.000000",
+        "entitled_users_at_stop": null,
 
         "content_object_id": "assignment/2",
         "voted_ids": [1],
@@ -2261,6 +2271,7 @@
         "id": 1,
         "weight": "2.000000",
         "value": "Y",
+        "user_token": "SNuxJc7W93bnhAiA",
 
         "user_id": null,
         "delegated_user_id": null,
@@ -2271,6 +2282,7 @@
         "id": 2,
         "weight": "4.000000",
         "value": "N",
+        "user_token": "4bgn4RBjNlIeO7vj",
 
         "user_id": null,
         "delegated_user_id": null,
@@ -2281,6 +2293,7 @@
         "id": 3,
         "weight": "1.000000",
         "value": "A",
+        "user_token": "xLBFgo3O1pAfGZ0h",
 
         "user_id": null,
         "delegated_user_id": null,
@@ -2291,6 +2304,7 @@
         "id": 4,
         "value": "Y",
         "weight": "3.000000",
+        "user_token": "neT9r5YkT9U8yJfa",
 
         "user_id": null,
         "delegated_user_id": null,
@@ -2301,6 +2315,7 @@
         "id": 5,
         "value": "Y",
         "weight": "7.000000",
+        "user_token": "U5YSuLUI1G5rNOHn",
 
         "user_id": null,
         "delegated_user_id": null,
@@ -2311,6 +2326,7 @@
         "id": 6,
         "value": "Y",
         "weight": "2.000000",
+        "user_token": "jkNKIiJr8Dl0yOXI",
 
         "user_id": null,
         "delegated_user_id": null,
@@ -2321,6 +2337,7 @@
         "id": 7,
         "value": "N",
         "weight": "2.000000",
+        "user_token": "Z1cxOviuelzPT2rm",
 
         "user_id": null,
         "delegated_user_id": null,
@@ -2331,6 +2348,7 @@
         "id": 8,
         "value": "A",
         "weight": "1.000000",
+        "user_token": "daUZh16fXCAu5DBL",
 
         "user_id": null,
         "delegated_user_id": null,
@@ -2341,6 +2359,7 @@
         "id": 9,
         "value": "Y",
         "weight": "1.000000",
+        "user_token": "ivgipZ18D9Xac8pd",
 
         "user_id": 1,
         "delegated_user_id": 1,

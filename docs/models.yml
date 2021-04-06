@@ -1652,6 +1652,7 @@ poll:
       - analog
       - named
       - pseudoanonymous
+  is_pseudoanonymized: boolean
   pollmethod:
     type: string
     required: true
@@ -1660,7 +1661,6 @@ poll:
       - YN
       - YNA
       - N
-  is_pseudoanonymized: boolean
   state:
     type: string
     enum:
