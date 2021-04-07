@@ -107,7 +107,7 @@ func CheckStatus(resp *http.Response, err error) (*http.Response, error) {
 		return nil, fmt.Errorf("sending login request: %w", err)
 	}
 
-	if resp.StatusCode != 200 {
+	if resp.StatusCode < 200 || resp.StatusCode > 299 {
 		body, err := io.ReadAll(resp.Body)
 		if err != nil {
 			body = []byte("[can not read body]")
