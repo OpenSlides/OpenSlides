@@ -273,7 +273,14 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
 
             if has_perm(request.user, "motions.can_manage_metadata"):
                 whitelist.extend(
-                    ("category_id", "motion_block_id", "origin", "supporters_id")
+                    (
+                        "category_id",
+                        "motion_block_id",
+                        "origin",
+                        "supporters_id",
+                        "state_extension",
+                        "recommendation_extension",
+                    )
                 )
 
             for key in keys:

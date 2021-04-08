@@ -2,6 +2,7 @@ import json
 
 import pytest
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Permission
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
@@ -20,6 +21,7 @@ from openslides.motions.models import (
     Workflow,
 )
 from openslides.poll.models import BasePoll
+from openslides.utils.auth import get_group_model
 from openslides.utils.autoupdate import inform_changed_data
 from tests.common_groups import GROUP_ADMIN_PK, GROUP_DELEGATE_PK
 from tests.count_queries import count_queries
@@ -496,6 +498,37 @@ class UpdateMotion(TestCase):
 
         # Forbidden because of changed workflow state.
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_patch_recommendation_extension(self):
+        group = get_group_model().objects.get(pk=GROUP_DELEGATE_PK)
+        group.permissions.clear()
+        group.permissions.add(
+            Permission.objects.get(
+                content_type__app_label="motions",
+                codename="can_see",
+            ),
+            Permission.objects.get(
+                content_type__app_label="motions",
+                codename="can_manage_metadata",
+            ),
+        )
+        group.save()
+        password = "test_password_lln8tep0UdxDvFDW"
+        user = get_user_model().objects.create_user(
+            username="test_username_cuZUI20g3AUbcFVC",
+            password=password,
+        )
+        user.groups.add(group)
+        user.save()
+        self.client.login(username=user.username, password=password)
+
+        response = self.client.patch(
+            reverse("motion-detail", args=[self.motion.pk]),
+            {"recommendation_extension": "extension"},
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        motion = Motion.objects.get()
+        self.assertEqual(motion.recommendation_extension, "extension")
 
 
 class DeleteMotion(TestCase):
