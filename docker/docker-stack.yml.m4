@@ -89,9 +89,6 @@ services:
   backend:
     image: BACKEND_IMAGE
     env_file: services.env
-    environment:
-      - AUTH_TOKEN_KEY=test123
-      - AUTH_COOKIE_KEY=test123
     networks:
       - frontend
       - backend
@@ -100,6 +97,9 @@ services:
         condition: on-failure
         delay: 5s
       replicas: ifenvelse(`OPENSLIDES_BACKEND_REPLICAS', 1)
+    secrets:
+      - auth_token_key
+      - auth_cookie_key
 
   datastore-reader:
     image: DATASTORE_READER_IMAGE
@@ -149,9 +149,6 @@ services:
   autoupdate:
     image: AUTOUPDATE_IMAGE
     env_file: services.env
-    environment:
-      - AUTH_KEY_TOKEN=test123
-      - AUTH_KEY_COOKIE=test123
     networks:
       - frontend
       - backend
@@ -161,13 +158,13 @@ services:
         condition: on-failure
         delay: 5s
       replicas: ifenvelse(`OPENSLIDES_AUTOUPDATE_REPLICAS', 1)
+    secrets:
+      - auth_token_key
+      - auth_cookie_key
 
   auth:
     image: AUTH_IMAGE
     env_file: services.env
-    environment:
-      - AUTH_TOKEN_KEY=test123
-      - AUTH_COOKIE_KEY=test123
     networks:
       - datastore-reader
       - frontend
@@ -178,6 +175,9 @@ services:
         condition: on-failure
         delay: 5s
       replicas: ifenvelse(`OPENSLIDES_AUTH_REPLICAS', 1)
+    secrets:
+      - auth_token_key
+      - auth_cookie_key
 
   cache:
     image: redis:latest
@@ -221,12 +221,17 @@ services:
         condition: on-failure
         delay: 5s
 
+  # TODO: Remove depenency to auth in "networks"
+  # Should be doable when the manage service is fixed
   manage-setup:
     image: MANAGE_IMAGE
     entrypoint: /root/entrypoint-setup
     env_file: services.env
+    environment:
+      ENABLE_ELECTRONIC_VOTING: "ifenvelse(`ENABLE_ELECTRONIC_VOTING',)"
     networks:
     - backend
+    - auth
     ifelse(ADMIN_SECRET_AVAILABLE, 0,secrets:
       - admin)
     deploy:
@@ -273,6 +278,10 @@ networks:
       encrypted: ""
     internal: true
 
-ifelse(ADMIN_SECRET_AVAILABLE, 0,secrets:
-  admin:
+secrets:
+  auth_token_key:
+    file: ./secrets/auth_token_key
+  auth_cookie_key:
+    file: ./secrets/auth_cookie_key
+  ifelse(ADMIN_SECRET_AVAILABLE, 0,admin:
     file: ./secrets/admin.env)

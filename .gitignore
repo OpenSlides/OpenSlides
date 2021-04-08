@@ -17,6 +17,8 @@ dev-commands/export.json
 # Deployment
 /docker/docker-compose.yml
 /docker/docker-stack.yml
+/docker/secrets/auth_*_key
+docker/secrets/*.env
 
 # Old OS3 files and folders
 .coverage
@@ -36,7 +38,5 @@ tests
 .vscode/
 package-lock.json
 server/
-docker/keys
-docker/secrets/*.env
 # OS3+-Submodules
 /autoupdate/

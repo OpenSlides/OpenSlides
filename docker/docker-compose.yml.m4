@@ -91,12 +91,12 @@ services:
       - datastore-reader
       - datastore-writer
     env_file: services.env
-    environment:
-      - AUTH_TOKEN_KEY=test123
-      - AUTH_COOKIE_KEY=test123
     networks:
       - frontend
       - backend
+    secrets:
+      - auth_token_key
+      - auth_cookie_key
 
   datastore-reader:
     image: DATASTORE_READER_IMAGE
@@ -141,13 +141,13 @@ services:
       - datastore-reader
       - message-bus
     env_file: services.env
-    environment:
-      - AUTH_KEY_TOKEN=test123
-      - AUTH_KEY_COOKIE=test123
     networks:
       - frontend
       - backend
       - message-bus
+    secrets:
+      - auth_token_key
+      - auth_cookie_key
 
   auth:
     image: AUTH_IMAGE
@@ -156,14 +156,14 @@ services:
       - message-bus
       - cache
     env_file: services.env
-    environment:
-      - AUTH_TOKEN_KEY=test123
-      - AUTH_COOKIE_KEY=test123
     networks:
       - datastore-reader
       - frontend
       - message-bus
       - auth
+    secrets:
+      - auth_token_key
+      - auth_cookie_key
 
   cache:
     image: redis:latest
@@ -196,14 +196,22 @@ services:
     - backend
     - auth
 
+  # TODO: Remove depenencies to auth and datastore in "depends_on" and "networks"
+  # Should be doable when the manage service is fixed
   manage-setup:
     image: MANAGE_IMAGE
     entrypoint: /root/entrypoint-setup
     depends_on:
     - manage
+    - auth
+    - datastore-writer
+    - datastore-reader
     env_file: services.env
+    environment:
+      ENABLE_ELECTRONIC_VOTING: "ifenvelse(`ENABLE_ELECTRONIC_VOTING',)"
     networks:
     - backend
+    - auth
     ifelse(ADMIN_SECRET_AVAILABLE, 0,secrets:
       - admin)
 
@@ -233,6 +241,10 @@ networks:
   auth:
     internal: true
 
-ifelse(ADMIN_SECRET_AVAILABLE, 0,secrets:
-  admin:
+secrets:
+  auth_token_key:
+    file: ./secrets/auth_token_key
+  auth_cookie_key:
+    file: ./secrets/auth_cookie_key
+  ifelse(ADMIN_SECRET_AVAILABLE, 0,admin:
     file: ./secrets/admin.env)
