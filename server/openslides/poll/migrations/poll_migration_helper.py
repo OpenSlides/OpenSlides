@@ -34,3 +34,25 @@ def calculate_vote_fields(poll_model_collection, poll_model_name):
                 poll.save(skip_autoupdate=True)
 
     return _calculate_vote_fields
+
+
+def remove_entitled_users_duplicates(poll_model_collection, poll_model_name):
+    """
+    Takes all polls of the given model and removes any duplicate entries from
+    entitled_users_at_stop
+    """
+
+    def _remove_entitled_users_duplicates(apps, schema_editor):
+        PollModel = apps.get_model(poll_model_collection, poll_model_name)
+        for poll in PollModel.objects.all():
+            if poll.entitled_users_at_stop:
+                new_entitled_users = []
+                entitled_users_ids = set()
+                for entry in poll.entitled_users_at_stop:
+                    if entry["user_id"] not in entitled_users_ids:
+                        entitled_users_ids.add(entry["user_id"])
+                        new_entitled_users.append(entry)
+                poll.entitled_users_at_stop = new_entitled_users
+                poll.save(skip_autoupdate=True)
+
+    return _remove_entitled_users_duplicates

@@ -275,9 +275,11 @@ class BasePoll(models.Model):
 
     def calculate_entitled_users(self):
         entitled_users = []
+        entitled_users_ids = set()
         for group in self.groups.all():
             for user in group.user_set.all():
-                if user.is_present:
+                if user.is_present and user.id not in entitled_users_ids:
+                    entitled_users_ids.add(user.id)
                     entitled_users.append(
                         {
                             "user_id": user.id,
