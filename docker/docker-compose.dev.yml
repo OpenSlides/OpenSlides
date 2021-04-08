@@ -116,7 +116,7 @@ services:
     environment:
       - OPENSLIDES_DEVELOPMENT=1
     ports:
-    - "8001:8001"
+    - "9008:9008"
   message-bus:
     image: redis:latest
   proxy:

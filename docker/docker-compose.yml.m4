@@ -192,28 +192,14 @@ services:
     - auth
     - datastore-writer
     env_file: services.env
+    ports:
+    - "9008:9008"
     networks:
+    - frontend
     - backend
-    - auth
-
-  # TODO: Remove depenencies to auth and datastore in "depends_on" and "networks"
-  # Should be doable when the manage service is fixed
-  manage-setup:
-    image: MANAGE_IMAGE
-    entrypoint: /root/entrypoint-setup
-    depends_on:
-    - manage
-    - auth
-    - datastore-writer
     - datastore-reader
-    env_file: services.env
-    environment:
-      ENABLE_ELECTRONIC_VOTING: "ifenvelse(`ENABLE_ELECTRONIC_VOTING',)"
-    networks:
-    - backend
     - auth
-    ifelse(ADMIN_SECRET_AVAILABLE, 0,secrets:
-      - admin)
+    - uplink
 
   permission:
     image: PERMISSION_IMAGE

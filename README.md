@@ -27,7 +27,6 @@ For a non-development setup, clone this repo and run it via docker compose. The 
     $ git clone git@github.com:OpenSlides/OpenSlides.git
     $ cd OpenSlides
     $ git checkout openslides4-dev  # needed, until OS4 is released
-    $ make run-prod
 
 For a development setup, refer to [the development docs](DEVELOPMENT.md)
 
