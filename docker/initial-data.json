@@ -14,7 +14,8 @@
         "enable_electronic_voting": true,
 
         "committee_ids": [1],
-        "resource_ids": []
+        "resource_ids": [],
+        "organisation_tag_ids": []
     }],
 "user": [
     {
@@ -65,6 +66,7 @@
         "vote_delegations_$_from_ids": []
     }],
 "resource": [],
+"organisation_tag": [],
 "committee": [
     {
         "id": 1,
@@ -78,6 +80,7 @@
         "manager_ids": [],
         "forward_to_committee_ids": [],
         "receive_forwardings_from_committee_ids": [],
+        "organisation_tag_ids": [],
         "organisation_id": 1
     }],
 "meeting": [
@@ -245,6 +248,7 @@
 
         "committee_id": 1,
         "default_meeting_for_committee_id": 1,
+        "organisation_tag_ids": [],
         "present_user_ids": [],
         "temporary_user_ids": [],
         "guest_ids": [],

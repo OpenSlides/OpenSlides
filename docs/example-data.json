@@ -9,11 +9,12 @@
         "custom_translations": [],
         "enable_electronic_voting": true,
         "reset_password_verbose_errors": true,
-        "name": "Test Organization",
+        "name": "Test Organisation",
         "description": "",
 
         "committee_ids": [1],
-        "resource_ids": [1]
+        "resource_ids": [1],
+        "organisation_tag_ids": [1]
     }],
 "user": [
     {
@@ -198,6 +199,15 @@
         "organisation_id": 1
     }
 ],
+"organisation_tag": [
+    {
+        "id": 1,
+        "name": "Orga Tag 1",
+        "color": "#317796",
+        "tagged_ids": ["committee/1", "meeting/1"],
+        "organisation_id": 1
+    }
+],
 "committee": [
     {
         "id": 1,
@@ -211,6 +221,7 @@
         "manager_ids": [],
         "forward_to_committee_ids": [],
         "receive_forwardings_from_committee_ids": [],
+        "organisation_tag_ids": [1],
         "organisation_id": 1
     }],
 "meeting": [
@@ -379,6 +390,7 @@
 
         "committee_id": 1,
         "default_meeting_for_committee_id": 1,
+        "organisation_tag_ids": [1],
         "present_user_ids": [1],
         "temporary_user_ids": [],
         "guest_ids": [3],

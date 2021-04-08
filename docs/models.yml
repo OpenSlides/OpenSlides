@@ -85,6 +85,9 @@ organisation:
   resource_ids:
     type: relation-list
     to: resource/organisation_id
+  organisation_tag_ids:
+    type: relation-list
+    to: organisation_tag/organisation_id
 
 user:
   id: number
@@ -258,6 +261,26 @@ resource:
     type: relation
     to: organisation/resource_ids
 
+organisation_tag:
+  id: number
+  name:
+    type: string
+    required: True
+  color:
+    type: color
+    required: True
+
+  tagged_ids:
+    type: generic-relation-list
+    to:
+      collections:
+        - committee
+        - meeting
+      field: organisation_tag_ids
+  organisation_id:
+    type: relation
+    to: organisation/organisation_tag_ids
+
 committee:
   id: number
   name:
@@ -287,6 +310,9 @@ committee:
   receive_forwardings_from_committee_ids:
     type: relation-list
     to: committee/forward_to_committee_ids
+  organisation_tag_ids:
+    type: relation-list
+    to: organisation_tag/tagged_ids
   organisation_id:
     type: relation
     to: organisation/committee_ids
@@ -832,6 +858,9 @@ meeting:
   default_meeting_for_committee_id:
     type: relation
     to: committee/default_meeting_id
+  organisation_tag_ids:
+    type: relation-list
+    to: organisation_tag/tagged_ids
   present_user_ids:
     type: relation-list
     to: user/is_present_in_meeting_ids
