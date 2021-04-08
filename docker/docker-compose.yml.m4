@@ -42,6 +42,14 @@ ifelse(read_env(`PGNODE_3_ENABLED'), 1, `,pgnode3')')
 define(`PROJECT_DIR', ifdef(`PROJECT_DIR',PROJECT_DIR,.))
 define(`ADMIN_SECRET_AVAILABLE', `syscmd(`test -f 'PROJECT_DIR`/secrets/adminsecret.env')sysval')
 define(`USER_SECRET_AVAILABLE', `syscmd(`test -f 'PROJECT_DIR`/secrets/usersecret.env')sysval')
+
+dnl set EXTERNAL_HTTPS_PORT to 443 if EXTERNAL_HTTPS_PORT and EXTERNAL_HTTP_PORT are empty
+define(
+  `EXTERNAL_HTTPS_PORT',
+  ifelse(read_env(`EXTERNAL_HTTPS_PORT')read_env(`EXTERNAL_HTTP_PORT'),,443,read_env(`EXTERNAL_HTTPS_PORT'))dnl
+)
+define(`EXTERNAL_HTTP_PORT',read_env(`EXTERNAL_HTTP_PORT'))
+
 divert(0)dnl
 dnl ----------------------------------------
 # This configuration was created from a template file.  Before making changes,
@@ -75,7 +83,8 @@ x-osserver-env: &default-osserver-env
     ENABLE_ELECTRONIC_VOTING: "ifenvelse(`ENABLE_ELECTRONIC_VOTING', False)"
     ENABLE_CHAT: "ifenvelse(`ENABLE_CHAT', False)"
     ENABLE_SAML: "ifenvelse(`ENABLE_SAML', False)"
-    INSTANCE_DOMAIN: "ifenvelse(`INSTANCE_DOMAIN', http://example.com:8000)"
+    INSTANCE_DOMAIN: "ifenvelse(`INSTANCE_DOMAIN', 127.0.0.1)"
+    INSTANCE_URL_SCHEME: "ifenvelse(`INSTANCE_URL_SCHEME', https)"
     JITSI_DOMAIN: "ifenvelse(`JITSI_DOMAIN',)"
     JITSI_ROOM_PASSWORD: "ifenvelse(`JITSI_ROOM_PASSWORD',)"
     JITSI_ROOM_NAME: "ifenvelse(`JITSI_ROOM_NAME',)"
@@ -108,11 +117,17 @@ services:
       - client
       - autoupdate
       - media
+    environment:
+        INSTANCE_DOMAIN: "ifenvelse(`INSTANCE_DOMAIN', 127.0.0.1:443)"
+        `EXTERNAL_HTTP_PORT': "EXTERNAL_HTTP_PORT"
+        `EXTERNAL_HTTPS_PORT': "EXTERNAL_HTTPS_PORT"
+        ALLOWED_HOSTS: "ifenvelse(`ALLOWED_HOSTS',)"
     networks:
       - front
       - back
     ports:
-      - "127.0.0.1:ifenvelse(`EXTERNAL_HTTP_PORT', 8000):8000"
+      ifelse(EXTERNAL_HTTP_PORT,,,- "127.0.0.1:EXTERNAL_HTTP_PORT:8000")
+      ifelse(EXTERNAL_HTTPS_PORT,,,- "127.0.0.1:EXTERNAL_HTTPS_PORT:8001")
 
   server:
     << : *default-osserver

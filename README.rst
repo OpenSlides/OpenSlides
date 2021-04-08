@@ -33,8 +33,8 @@ first and initialize all submodules::
 
     git submodule update --init
 
-Setup Docker images
--------------------
+Setup Docker Compose
+--------------------
 
 You need to build the Docker images and have to setup some configuration. First,
 configure HTTPS by checking the `Using HTTPS`_ section. In this section are
@@ -64,11 +64,15 @@ Afterwards, generate the configuration file::
 
     m4 docker-compose.yml.m4 > docker-compose.yml
 
+You can configure OpenSlides using the `.env` file. See `More settings`_. Another
+hint: If you choose to deploy the default configuration, a https certificate is
+needed, so make sure you have set it up beforehand.
+
 Finally, you can start the instance using ``docker-compose``::
 
     docker-compose up
 
-OpenSlides is accessible on http://localhost:8000/ (or https, if configured).
+OpenSlides is accessible on https://localhost/ (or https, if configured).
 
 Use can also use daemonized instance::
 

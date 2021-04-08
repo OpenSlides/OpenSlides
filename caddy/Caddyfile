@@ -1,4 +1,5 @@
 import endpoint
+    import invalid_host*
 
     reverse_proxy /system/* autoupdate:8002 {
         flush_interval -1
@@ -15,3 +16,5 @@ import endpoint
 
     reverse_proxy client:4200
 }
+
+import redirect*
