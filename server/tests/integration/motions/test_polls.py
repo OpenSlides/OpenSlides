@@ -1208,6 +1208,19 @@ class StopMotionPoll(TestCase):
             ],
         )
 
+    def test_stop_poll_assert_no_duplicate_entitled_users(self):
+        self.setup_entitled_users()
+        delegate_group = get_group_model().objects.get(pk=GROUP_DELEGATE_PK)
+        self.admin.groups.add(delegate_group)
+        self.poll.groups.add(delegate_group)
+
+        response = self.client.post(reverse("motionpoll-stop", args=[self.poll.pk]))
+        self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
+        self.assertEqual(
+            MotionPoll.objects.get().entitled_users_at_stop,
+            [{"user_id": self.admin.id, "voted": False, "vote_delegated_to_id": None}],
+        )
+
 
 class PublishMotionPoll(TestCase):
     def advancedSetUp(self):
