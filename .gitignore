@@ -25,6 +25,7 @@ Thumbs.db
 # OS4-Submodules and aux-directories
 /openslides-*/
 /docker/keys/
+/docker/secrets/auth_*_key
 /docs/
 # OS3+-Submodules
 /autoupdate/
@@ -78,6 +79,7 @@ cypress.json
 ## Deployment
 # Docker build artifacts
 docker/docker-compose.yml
+docker/docker-stack.yml
 *-version.txt
 *.pem
 # secrets
