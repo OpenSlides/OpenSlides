@@ -31,13 +31,13 @@ from ..core.signals import permission_change
 from ..utils.auth import (
     GROUP_ADMIN_PK,
     GROUP_DEFAULT_PK,
+    UserDoesNotExist,
     anonymous_is_enabled,
     has_perm,
 )
 from ..utils.autoupdate import AutoupdateElement, inform_changed_data, inform_elements
 from ..utils.cache import element_cache
 from ..utils.rest_api import (
-    APIException,
     ModelViewSet,
     Response,
     SimpleMetadata,
@@ -193,7 +193,10 @@ class UserViewSet(ModelViewSet):
         if "vote_delegated_from_users_id" in request.data:
             del request.data["vote_delegated_from_users_id"]
 
-        response = super().update(request, *args, **kwargs)
+        try:
+            response = super().update(request, *args, **kwargs)
+        except IntegrityError as e:
+            raise ValidationError({"detail": str(e)})
 
         # after rest of the request succeeded, handle delegation changes
         if isinstance(new_delegation_ids, list):
@@ -841,18 +844,24 @@ class WhoAmIDataView(APIView):
         user_id = self.request.user.pk or 0
         guest_enabled = anonymous_is_enabled()
 
-        auth_type = "default"
         if user_id:
-            user_full_data = async_to_sync(element_cache.get_element_data)(
-                self.request.user.get_collection_string(), user_id
-            )
-            if user_full_data is None:
-                raise APIException(f"Could not find user {user_id}", 500)
+            try:
+                user_full_data = async_to_sync(element_cache.get_element_data)(
+                    self.request.user.get_collection_string(), user_id
+                )
+                if user_full_data is None:
+                    raise UserDoesNotExist()
 
-            auth_type = user_full_data["auth_type"]
-            user_data = async_to_sync(restrict_user)(user_full_data)
-            group_ids = user_data["groups_id"] or [GROUP_DEFAULT_PK]
-        else:
+                auth_type = user_full_data["auth_type"]
+                user_data = async_to_sync(restrict_user)(
+                    user_full_data
+                )  # This could also raise UserDoesNotExist
+                group_ids = user_data["groups_id"] or [GROUP_DEFAULT_PK]
+            except UserDoesNotExist:
+                user_id = None  # continue as the anonymous user
+
+        if not user_id:
+            auth_type = "default"
             user_data = None
             group_ids = [GROUP_DEFAULT_PK] if guest_enabled else []
 
