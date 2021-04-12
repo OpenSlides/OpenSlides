@@ -106,6 +106,14 @@ class MediafileViewSet(ModelViewSet):
             raise ValidationError({"detail": "You forgot to provide a file."})
 
         if mediafile:
+            # Still don't know, how this can happen. But catch it...
+            if isinstance(mediafile, str):
+                raise ValidationError(
+                    {
+                        "detail": "The upload was not successful. Please reach out for the support."
+                    }
+                )
+
             if mediafile.size > max_upload_size:
                 max_size_for_humans = bytes_to_human(max_upload_size)
                 raise ValidationError(
