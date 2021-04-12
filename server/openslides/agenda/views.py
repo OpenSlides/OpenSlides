@@ -12,8 +12,7 @@ from openslides.utils.rest_api import (
     Response,
     UpdateModelMixin,
     ValidationError,
-    detail_route,
-    list_route,
+    action,
     status,
 )
 from openslides.utils.views import TreeSortMixin
@@ -143,7 +142,7 @@ class ItemViewSet(ModelViewSet, TreeSortMixin):
 
         return response
 
-    @list_route(methods=["post"])
+    @action(detail=False, methods=["post"])
     def numbering(self, request):
         """
         Auto numbering of the agenda according to the config. Manually added
@@ -157,7 +156,7 @@ class ItemViewSet(ModelViewSet, TreeSortMixin):
         Item.objects.number_all(numeral_system=config["agenda_numeral_system"])
         return Response({"detail": "The agenda has been numbered."})
 
-    @list_route(methods=["post"])
+    @action(detail=False, methods=["post"])
     def sort(self, request):
         """
         Sorts the whole agenda represented in a tree of ids. The request data should be a list (the root)
@@ -172,7 +171,7 @@ class ItemViewSet(ModelViewSet, TreeSortMixin):
         """
         return self.sort_tree(request, Item, "weight", "parent_id")
 
-    @list_route(methods=["post"])
+    @action(detail=False, methods=["post"])
     @transaction.atomic
     def assign(self, request):
         """
@@ -294,7 +293,7 @@ class ListOfSpeakersViewSet(UpdateModelMixin, TreeSortMixin, GenericViewSet):
             result = False
         return result
 
-    @detail_route(methods=["POST", "PATCH", "DELETE"])
+    @action(detail=True, methods=["POST", "PATCH", "DELETE"])
     @transaction.atomic
     def manage_speaker(self, request, pk=None):
         """
@@ -443,7 +442,7 @@ class ListOfSpeakersViewSet(UpdateModelMixin, TreeSortMixin, GenericViewSet):
 
         return Response()
 
-    @detail_route(methods=["PUT", "DELETE"])
+    @action(detail=True, methods=["PUT", "DELETE"])
     def speak(self, request, pk=None):
         """
         Special view endpoint to begin and end speech of speakers. Send PUT
@@ -494,7 +493,7 @@ class ListOfSpeakersViewSet(UpdateModelMixin, TreeSortMixin, GenericViewSet):
         # Initiate response.
         return Response({"detail": message})
 
-    @detail_route(methods=["POST"])
+    @action(detail=True, methods=["POST"])
     def sort_speakers(self, request, pk=None):
         """
         Special view endpoint to sort the list of speakers.
@@ -533,7 +532,7 @@ class ListOfSpeakersViewSet(UpdateModelMixin, TreeSortMixin, GenericViewSet):
         # Initiate response.
         return Response({"detail": "List of speakers successfully sorted."})
 
-    @detail_route(methods=["POST"])
+    @action(detail=True, methods=["POST"])
     def readd_last_speaker(self, request, pk=None):
         """
         Special view endpoint to re-add the last finished speaker to the list of speakers.
@@ -572,7 +571,7 @@ class ListOfSpeakersViewSet(UpdateModelMixin, TreeSortMixin, GenericViewSet):
 
         return Response()
 
-    @list_route(methods=["post"])
+    @action(detail=False, methods=["post"])
     def delete_all_speakers(self, request):
         Speaker.objects.all().delete()
         inform_changed_data(ListOfSpeakers.objects.all())

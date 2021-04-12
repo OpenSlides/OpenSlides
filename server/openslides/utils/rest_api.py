@@ -3,7 +3,7 @@ from typing import Any, Dict, Iterable, Type
 
 from django.db.models import Model
 from rest_framework import status
-from rest_framework.decorators import detail_route, list_route
+from rest_framework.decorators import action
 from rest_framework.exceptions import APIException
 from rest_framework.metadata import SimpleMetadata
 from rest_framework.mixins import (
@@ -43,9 +43,8 @@ from . import logging
 
 __all__ = [
     "APIException",
-    "detail_route",
+    "action",
     "DecimalField",
-    "list_route",
     "SimpleMetadata",
     "DestroyModelMixin",
     "CharField",

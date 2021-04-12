@@ -15,7 +15,7 @@ from openslides.utils.rest_api import (
     ModelViewSet,
     Response,
     ValidationError,
-    list_route,
+    action,
     status,
 )
 
@@ -178,7 +178,7 @@ class MediafileViewSet(ModelViewSet):
         inform_changed_data(self.get_object().get_children_deep())
         return response
 
-    @list_route(methods=["post"])
+    @action(detail=False, methods=["post"])
     def move(self, request):
         """
         {
@@ -249,7 +249,7 @@ class MediafileViewSet(ModelViewSet):
 
         return Response()
 
-    @list_route(methods=["post"])
+    @action(detail=False, methods=["post"])
     def bulk_delete(self, request):
         """
         Deletes mediafiles *from one directory*. Expected data:

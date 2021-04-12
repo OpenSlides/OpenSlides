@@ -14,7 +14,7 @@ from openslides.utils.rest_api import (
     GenericViewSet,
     ModelViewSet,
     Response,
-    detail_route,
+    action,
     status,
 )
 
@@ -52,7 +52,7 @@ class ChatGroupViewSet(ModelViewSet):
         inform_changed_data(ChatMessage.objects.filter(chatgroup=self.get_object()))
         return response
 
-    @detail_route(methods=["POST"])
+    @action(detail=True, methods=["POST"])
     def clear(self, request, *args, **kwargs):
         """
         Deletes all chat messages of the group.

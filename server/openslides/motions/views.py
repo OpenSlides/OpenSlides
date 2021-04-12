@@ -16,14 +16,7 @@ from ..core.config import config
 from ..core.models import Tag
 from ..utils.auth import has_perm, in_some_groups
 from ..utils.autoupdate import inform_changed_data, inform_deleted_data
-from ..utils.rest_api import (
-    ModelViewSet,
-    Response,
-    ReturnDict,
-    ValidationError,
-    detail_route,
-    list_route,
-)
+from ..utils.rest_api import ModelViewSet, Response, ReturnDict, ValidationError, action
 from ..utils.views import TreeSortMixin
 from .models import (
     Category,
@@ -316,7 +309,7 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
         # We do not add serializer.data to response so nobody gets unrestricted data here.
         return Response()
 
-    @list_route(methods=["post"])
+    @action(detail=False, methods=["post"])
     def sort(self, request):
         """
         Sorts all motions represented in a tree of ids. The request data should be a list (the root)
@@ -331,7 +324,7 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
         """
         return self.sort_tree(request, Motion, "weight", "sort_parent_id")
 
-    @detail_route(methods=["POST", "DELETE"])
+    @action(detail=True, methods=["POST", "DELETE"])
     def manage_comments(self, request, pk=None):
         """
         Create, update and delete motion comments.
@@ -402,7 +395,7 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
 
         return Response({"detail": message})
 
-    @list_route(methods=["post"])
+    @action(detail=False, methods=["post"])
     @transaction.atomic
     def manage_multiple_submitters(self, request):
         """
@@ -488,7 +481,7 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
             }
         )
 
-    @detail_route(methods=["post", "delete"])
+    @action(detail=True, methods=["post", "delete"])
     def support(self, request, pk=None):
         """
         Special view endpoint to support a motion or withdraw support
@@ -534,7 +527,7 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
         # Initiate response.
         return Response({"detail": message})
 
-    @list_route(methods=["post"])
+    @action(detail=False, methods=["post"])
     @transaction.atomic
     def manage_multiple_category(self, request):
         """
@@ -621,7 +614,7 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
             }
         )
 
-    @list_route(methods=["post"])
+    @action(detail=False, methods=["post"])
     @transaction.atomic
     def manage_multiple_motion_block(self, request):
         """
@@ -715,7 +708,7 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
             }
         )
 
-    @detail_route(methods=["put"])
+    @action(detail=True, methods=["put"])
     def set_state(self, request, pk=None):
         """
         Special view endpoint to set and reset a state of a motion.
@@ -774,7 +767,7 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
 
         return Response({"detail": message})
 
-    @list_route(methods=["post"])
+    @action(detail=False, methods=["post"])
     @transaction.atomic
     def manage_multiple_state(self, request):
         """
@@ -864,7 +857,7 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
             }
         )
 
-    @detail_route(methods=["put"])
+    @action(detail=True, methods=["put"])
     def set_recommendation(self, request, pk=None):
         """
         Special view endpoint to set a recommendation of a motion.
@@ -926,7 +919,7 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
             }
         )
 
-    @list_route(methods=["post"])
+    @action(detail=False, methods=["post"])
     @transaction.atomic
     def manage_multiple_recommendation(self, request):
         """
@@ -1020,7 +1013,7 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
             }
         )
 
-    @detail_route(methods=["post"])
+    @action(detail=True, methods=["post"])
     def follow_recommendation(self, request, pk=None):
         motion = self.get_object()
         if motion.recommendation is None:
@@ -1048,7 +1041,7 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
 
         return Response({"detail": "Recommendation followed successfully."})
 
-    @list_route(methods=["post"])
+    @action(detail=False, methods=["post"])
     @transaction.atomic
     def manage_multiple_tags(self, request):
         """
@@ -1407,7 +1400,7 @@ class MotionCommentSectionViewSet(ModelViewSet):
         inform_changed_data(MotionComment.objects.filter(section=section))
         return response
 
-    @list_route(methods=["post"])
+    @action(detail=False, methods=["post"])
     def sort(self, request, *args, **kwargs):
         """
         Changes the sorting of comment sections. Every id must be given exactly once.
@@ -1494,7 +1487,7 @@ class CategoryViewSet(TreeSortMixin, ModelViewSet):
             result = False
         return result
 
-    @list_route(methods=["post"])
+    @action(detail=False, methods=["post"])
     def sort_categories(self, request):
         """
         Sorts all categoreis represented in a tree of ids. The request data should be
@@ -1510,7 +1503,7 @@ class CategoryViewSet(TreeSortMixin, ModelViewSet):
         """
         return self.sort_tree(request, Category, "weight", "parent_id")
 
-    @detail_route(methods=["post"])
+    @action(detail=True, methods=["post"])
     @transaction.atomic
     def sort_motions(self, request, pk=None):
         """
@@ -1556,7 +1549,7 @@ class CategoryViewSet(TreeSortMixin, ModelViewSet):
         inform_changed_data(motions)
         return Response()
 
-    @detail_route(methods=["post"])
+    @action(detail=True, methods=["post"])
     def numbering(self, request, pk=None):
         """
         Special view endpoint to number all motions in this category and all
@@ -1609,7 +1602,7 @@ class MotionBlockViewSet(ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(request_user=self.request.user)
 
-    @detail_route(methods=["post"])
+    @action(detail=True, methods=["post"])
     def follow_recommendations(self, request, pk=None):
         """
         View to set the states of all motions of this motion block each to
