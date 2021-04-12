@@ -35,8 +35,7 @@ from ..utils.rest_api import (
     ModelViewSet,
     Response,
     ValidationError,
-    detail_route,
-    list_route,
+    action,
 )
 from .config import config
 from .exceptions import ConfigError, ConfigNotFound
@@ -186,7 +185,7 @@ class ProjectorViewSet(ModelViewSet):
                 projection_default.save()
         return super(ProjectorViewSet, self).destroy(*args, **kwargs)
 
-    @detail_route(methods=["post"])
+    @action(detail=True, methods=["post"])
     def project(self, request, pk):
         """
         Sets the `elements` and `elements_preview` and adds one item to the
@@ -237,7 +236,7 @@ class ProjectorViewSet(ModelViewSet):
         projector.save()
         return Response()
 
-    @detail_route(methods=["post"])
+    @action(detail=True, methods=["post"])
     def control_view(self, request, pk):
         """
         REST API operation to control the projector view, i. e. scale and
@@ -296,7 +295,7 @@ class ProjectorViewSet(ModelViewSet):
         inform_changed_data(projector_instance)
         return Response()
 
-    @detail_route(methods=["post"])
+    @action(detail=True, methods=["post"])
     def set_scroll(self, request, pk):
         """
         REST API operation to scroll the projector.
@@ -315,7 +314,7 @@ class ProjectorViewSet(ModelViewSet):
             {"detail": "Setting scroll to {0} was successful.", "args": [request.data]}
         )
 
-    @detail_route(methods=["post"])
+    @action(detail=True, methods=["post"])
     def set_reference_projector(self, request, pk):
         """
         REST API operation to set the projector with the given pk as the new reference projector for all projectors.
@@ -434,7 +433,7 @@ class ConfigViewSet(ModelViewSet):
         # Return response.
         return Response({"key": key, "value": value})
 
-    @list_route(methods=["post"])
+    @action(detail=False, methods=["post"])
     def bulk_update(self, request):
         """
         Updates many config variables:
@@ -467,7 +466,7 @@ class ConfigViewSet(ModelViewSet):
 
         return Response({"errors": errors})
 
-    @list_route(methods=["post"])
+    @action(detail=False, methods=["post"])
     def reset_groups(self, request):
         """
         Resets multiple groups. The request data contains all

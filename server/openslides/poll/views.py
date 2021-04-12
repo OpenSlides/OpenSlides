@@ -14,7 +14,7 @@ from openslides.utils.rest_api import (
     ModelViewSet,
     Response,
     ValidationError,
-    detail_route,
+    action,
 )
 
 from .models import BasePoll
@@ -119,7 +119,7 @@ class BasePollViewSet(ModelViewSet):
         # The implementation can be found in concret view set e. g. MotionPollViewSet.
         pass
 
-    @detail_route(methods=["POST"])
+    @action(detail=True, methods=["POST"])
     @transaction.atomic
     def start(self, request, pk):
         poll = self.get_object()
@@ -132,7 +132,7 @@ class BasePollViewSet(ModelViewSet):
         self.extend_history_information(["Voting started"])
         return Response()
 
-    @detail_route(methods=["POST"])
+    @action(detail=True, methods=["POST"])
     @transaction.atomic
     def stop(self, request, pk):
         poll = self.get_object()
@@ -152,7 +152,7 @@ class BasePollViewSet(ModelViewSet):
         self.extend_history_information(["Voting stopped"])
         return Response()
 
-    @detail_route(methods=["POST"])
+    @action(detail=True, methods=["POST"])
     @transaction.atomic
     def publish(self, request, pk):
         poll = self.get_object()
@@ -172,7 +172,7 @@ class BasePollViewSet(ModelViewSet):
         inform_changed_data(poll.get_options())
         return Response()
 
-    @detail_route(methods=["POST"])
+    @action(detail=True, methods=["POST"])
     @transaction.atomic
     def pseudoanonymize(self, request, pk):
         poll = self.get_object()
@@ -188,7 +188,7 @@ class BasePollViewSet(ModelViewSet):
         self.extend_history_information(["Voting anonymized"])
         return Response()
 
-    @detail_route(methods=["POST"])
+    @action(detail=True, methods=["POST"])
     @transaction.atomic
     def reset(self, request, pk):
         poll = self.get_object()
@@ -196,7 +196,7 @@ class BasePollViewSet(ModelViewSet):
         self.extend_history_information(["Voting reset"])
         return Response()
 
-    @detail_route(methods=["POST"])
+    @action(detail=True, methods=["POST"])
     @transaction.atomic
     def vote(self, request, pk):
         """
@@ -254,7 +254,7 @@ class BasePollViewSet(ModelViewSet):
 
         return Response()
 
-    @detail_route(methods=["POST"])
+    @action(detail=True, methods=["POST"])
     @transaction.atomic
     def refresh(self, request, pk):
         poll = self.get_object()

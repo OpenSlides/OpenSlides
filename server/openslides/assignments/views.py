@@ -7,12 +7,7 @@ from openslides.core.config import config
 from openslides.poll.views import BaseOptionViewSet, BasePollViewSet, BaseVoteViewSet
 from openslides.utils.auth import has_perm
 from openslides.utils.autoupdate import inform_changed_data
-from openslides.utils.rest_api import (
-    ModelViewSet,
-    Response,
-    ValidationError,
-    detail_route,
-)
+from openslides.utils.rest_api import ModelViewSet, Response, ValidationError, action
 from openslides.utils.utils import is_int
 
 from .models import (
@@ -63,7 +58,7 @@ class AssignmentViewSet(ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(request_user=self.request.user)
 
-    @detail_route(methods=["post", "delete"])
+    @action(detail=True, methods=["post", "delete"])
     def candidature_self(self, request, pk=None):
         """
         View to nominate self as candidate (POST) or withdraw own
@@ -116,7 +111,7 @@ class AssignmentViewSet(ModelViewSet):
         assignment.remove_candidate(request.user)
         return "You have withdrawn your candidature successfully."
 
-    @detail_route(methods=["post", "delete"])
+    @action(detail=True, methods=["post", "delete"])
     def candidature_other(self, request, pk=None):
         """
         View to nominate other users (POST) or delete their candidature
@@ -186,7 +181,7 @@ class AssignmentViewSet(ModelViewSet):
             {"detail": "Candidate {0} was withdrawn successfully.", "args": [str(user)]}
         )
 
-    @detail_route(methods=["post"])
+    @action(detail=True, methods=["post"])
     def sort_related_users(self, request, pk=None):
         """
         Special view endpoint to sort the assignment related users.
