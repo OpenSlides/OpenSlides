@@ -1,7 +1,13 @@
 <div class="text"></div>
 <ul class="change-recommendation-list" *ngIf="showChangeRecommendations">
-    <li *ngFor="let reco of getTextChangeRecommendations()" [title]="reco.getTitle()"
-        [style.top]="calcRecoTop(reco)" [style.height]="calcRecoHeight(reco)"
-        [class.delete]="recoIsDeletion(reco)" [class.insert]="recoIsInsertion(reco)"
-        [class.replace]="recoIsReplacement(reco)" (click)="gotoReco(reco)"></li>
+    <li
+        *ngFor="let reco of getTextChangeRecommendations()"
+        [title]="reco.getTitle()"
+        [style.top]="calcRecoTop(reco)"
+        [style.height]="calcRecoHeight(reco)"
+        [class.delete]="recoIsDeletion(reco)"
+        [class.insert]="recoIsInsertion(reco)"
+        [class.replace]="recoIsReplacement(reco)"
+        (click)="gotoReco(reco)"
+    ></li>
 </ul>

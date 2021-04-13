@@ -770,7 +770,9 @@
                 </div>
             </section>
             <section *ngFor="let paragraph of contentForm.value.broken_paragraphs">
-                <em class="red-warning-text">{{ 'This paragraph does not exist in the main motion anymore:' | translate }}</em>
+                <em class="red-warning-text">{{
+                    'This paragraph does not exist in the main motion anymore:' | translate
+                }}</em>
                 <div class="motion-text" [innerHTML]="paragraph | trust: 'html'"></div>
             </section>
         </ng-container>

@@ -1,9 +1,20 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, ViewEncapsulation } from '@angular/core';
+import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
+import {
+    AfterViewInit,
+    Component,
+    ElementRef,
+    EventEmitter,
+    Input,
+    Output,
+    ViewChild,
+    ViewEncapsulation
+} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
+import { retry } from 'rxjs/operators';
 
 import { ChangeRecommendationRepositoryService } from 'app/core/repositories/motions/change-recommendation-repository.service';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
@@ -57,7 +68,7 @@ import { ViewMotionAmendedParagraph } from '../../../../models/view-motion-amend
     styleUrls: ['./motion-detail-diff.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
-export class MotionDetailDiffComponent extends BaseViewComponentDirective implements AfterViewInit {
+export class MotionDetailDiffComponent extends BaseViewComponentDirective {
     /**
      * Get the {@link getRecommendationTypeName}-Function from Utils
      */
@@ -65,8 +76,7 @@ export class MotionDetailDiffComponent extends BaseViewComponentDirective implem
 
     @Input()
     public motion: ViewMotion;
-    @Input()
-    public changes: ViewUnifiedChange[];
+
     @Input()
     public scrollToChange: ViewUnifiedChange;
     @Input()
@@ -89,6 +99,31 @@ export class MotionDetailDiffComponent extends BaseViewComponentDirective implem
     public get showPreamble(): boolean {
         return this.motion.showPreamble;
     }
+
+    private _changes: ViewUnifiedChange[] = [];
+
+    @Input()
+    public set changes(newChanges: ViewUnifiedChange[]) {
+        this._changes = newChanges;
+        this.allTextChangingObjects = newChanges;
+        this.setItemHeight();
+    }
+
+    public get changes(): ViewUnifiedChange[] {
+        return this._changes;
+    }
+
+    private _allTextChangingObjects: ViewUnifiedChange[] = [];
+
+    public get allTextChangingObjects(): ViewUnifiedChange[] {
+        return this._allTextChangingObjects;
+    }
+
+    public set allTextChangingObjects(changes: ViewUnifiedChange[]) {
+        this._allTextChangingObjects = changes.filter((obj: ViewUnifiedChange) => !obj.isTitleChange());
+    }
+
+    public changeHeights: number[];
 
     /**
      * @param title
@@ -113,8 +148,8 @@ export class MotionDetailDiffComponent extends BaseViewComponentDirective implem
         private motionRepo: MotionRepositoryService,
         private dialogService: MatDialog,
         private configService: ConfigService,
-        private el: ElementRef,
-        private promptService: PromptService
+        private promptService: PromptService,
+        private el: ElementRef
     ) {
         super(title, translate, matSnackBar);
         this.configService.get<number>('motions_line_length').subscribe(lineLength => (this.lineLength = lineLength));
@@ -271,10 +306,6 @@ export class MotionDetailDiffComponent extends BaseViewComponentDirective implem
         return change.getChangeType() === ViewUnifiedChangeType.TYPE_CHANGE_RECOMMENDATION;
     }
 
-    public getAllTextChangingObjects(): ViewUnifiedChange[] {
-        return this.changes.filter((obj: ViewUnifiedChange) => !obj.isTitleChange());
-    }
-
     public getTitleChangingObject(): ViewUnifiedChange {
         return this.changes.find((obj: ViewUnifiedChange) => obj.isTitleChange());
     }
@@ -375,19 +406,30 @@ export class MotionDetailDiffComponent extends BaseViewComponentDirective implem
         this.motionRepo.setState((change as ViewMotionAmendedParagraph).amendment, state).catch(this.raiseError);
     }
 
-    /**
-     * Scrolls to the native element specified by [scrollToChange]
-     */
-    private scrollToChangeElement(change: ViewUnifiedChange): void {
-        const element = <HTMLElement>this.el.nativeElement;
-        const target = element.querySelector('[data-change-id="' + change.getChangeId() + '"]');
-        target.scrollIntoView({ behavior: 'smooth' });
+    private setItemHeight(): void {
+        const averageLineHeight = 24;
+        const amendmentMargin = 34;
+        const heights = this.allTextChangingObjects.map((change, index, array) => {
+            const lineAmountSinceLastChange = change.getLineFrom() - (array[index - 1]?.getLineFrom() || 0) || 1;
+
+            const pureLineHeight = lineAmountSinceLastChange * averageLineHeight;
+
+            if (change.getChangeType() === ViewUnifiedChangeType.TYPE_AMENDMENT) {
+                return pureLineHeight + amendmentMargin;
+            } else {
+                return pureLineHeight;
+            }
+        });
+
+        this.changeHeights = heights;
     }
 
-    public scrollToChangeClicked(change: ViewUnifiedChange, $event: MouseEvent): void {
-        $event.preventDefault();
-        $event.stopPropagation();
-        this.scrollToChangeElement(change);
+    public getSubmitterName(change: ViewMotionAmendedParagraph): string {
+        if (change.getChangeType() === ViewUnifiedChangeType.TYPE_AMENDMENT) {
+            const submitters = change.amendment.submittersAsUsers;
+            return submitters.map(submitter => submitter.full_name).join(', ');
+        }
+        return '';
     }
 
     /**
@@ -397,13 +439,5 @@ export class MotionDetailDiffComponent extends BaseViewComponentDirective implem
      */
     public onCreateChangeRecommendation(event: LineRange): void {
         this.createChangeRecommendation.emit(event);
-    }
-
-    public ngAfterViewInit(): void {
-        if (this.scrollToChange) {
-            window.setTimeout(() => {
-                this.scrollToChangeElement(this.scrollToChange);
-            }, 50);
-        }
     }
 }

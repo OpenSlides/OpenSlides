@@ -5,6 +5,7 @@
     margin-bottom: 0;
     padding-top: 0;
     padding-right: 40px;
+    margin-right: 3px;
 
     &:hover {
         .action-row {
@@ -32,6 +33,12 @@
             margin-left: 5px;
             min-width: 68px;
         }
+
+        .mat-icon-button {
+            height: 24px;
+            width: 24px;
+            line-height: 24px;
+        }
     }
 
     .status-row {
@@ -42,12 +49,29 @@
             content: ':';
         }
     }
+
+    .os-split-after {
+        margin: 0;
+    }
 }
 
-.change-recommendation-overview {
-    border-radius: 3px;
-    margin-bottom: 15px;
-    padding: 5px 10px;
+.collission-hint {
+    position: absolute;
+    right: 24px;
+}
+
+// vscroll
+.motion-scroll {
+    height: calc(100vh - 440px);
+    min-height: 300px;
+}
+
+.change-recommendation-summary {
+    margin-bottom: 1em;
+
+    .summary-of-changes-scroll {
+        height: 200px;
+    }
 
     a,
     a:link,
@@ -55,37 +79,19 @@
         text-decoration: none;
     }
 
-    h3 {
-        margin-top: 10px;
-    }
-
     ul {
+        padding: 0;
         list-style: none;
         display: table;
     }
 
     li {
         display: table-row;
-        cursor: pointer;
-
-        &:hover {
-            text-decoration: underline;
-        }
 
         & > * {
             display: table-cell;
             padding: 1px;
         }
-    }
-
-    .status {
-        color: gray;
-        font-style: italic;
-    }
-
-    .no-changes {
-        font-style: italic;
-        color: grey;
     }
 }
 
