@@ -91,7 +91,9 @@ organisation:
 
 user:
   id: number
-  username: string
+  username:
+    type: string
+    required: true
   title: string
   first_name: string
   last_name: string
