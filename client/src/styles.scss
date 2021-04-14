@@ -727,6 +727,17 @@ button.mat-menu-item.selected {
     }
 }
 
+.smaller-icon-button {
+    height: 24px !important;
+    width: 24px !important;
+    line-height: 24px !important;
+
+    .mat-button-wrapper {
+        vertical-align: top;
+        line-height: initial;
+    }
+}
+
 /**
  * Fix to enable multi line mat hints. See:
  * https://github.com/angular/components/issues/5227

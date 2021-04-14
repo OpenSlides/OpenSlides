@@ -1,4 +1,8 @@
 .amendment-create-wizard-wrapper {
+    .paragraph-scroll {
+        height: calc(100vh - 160px);
+    }
+
     .paragraph-row {
         display: flex;
         flex-direction: row;

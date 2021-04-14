@@ -35,27 +35,39 @@
         <mat-step [completed]="contentForm.value.selectedParagraphs.length > 0">
             <ng-template matStepLabel>{{ 'Select paragraphs' | translate }}</ng-template>
             <div class="amendment-create-wizard-wrapper">
-                <section
-                    *ngFor="let paragraph of paragraphs; let i = index"
-                    class="paragraph-row"
-                    [class.active]="isParagraphSelected(paragraph)"
-                    (click)="onParagraphClicked(paragraph)"
-                >
-                    <mat-checkbox
-                        *ngIf="multipleParagraphsAllowed"
-                        class="paragraph-select"
-                        [checked]="isParagraphSelected(paragraph)"
-                        (click)="checkboxClicked($event)"
+                <cdk-virtual-scroll-viewport itemSize="90" minBufferPx="400" maxBufferPx="600" class="paragraph-scroll">
+                    <section
+                        *ngFor="let paragraph of paragraphs; let i = index"
+                        class="paragraph-row"
+                        [class.active]="isParagraphSelected(paragraph)"
+                        (click)="onParagraphClicked(paragraph)"
                     >
-                    </mat-checkbox>
-                    <mat-radio-button
-                        *ngIf="!multipleParagraphsAllowed"
-                        class="paragraph-select"
-                        [checked]="isParagraphSelected(paragraph)"
-                    >
-                    </mat-radio-button>
-                    <div class="paragraph-text motion-text" [innerHTML]="getParagraphPreview(i) | trust: 'html'"></div>
-                </section>
+                        <mat-checkbox
+                            *ngIf="multipleParagraphsAllowed"
+                            class="paragraph-select"
+                            [checked]="isParagraphSelected(paragraph)"
+                            (click)="checkboxClicked($event)"
+                        >
+                        </mat-checkbox>
+                        <mat-radio-button
+                            *ngIf="!multipleParagraphsAllowed"
+                            class="paragraph-select"
+                            [checked]="isParagraphSelected(paragraph)"
+                        >
+                        </mat-radio-button>
+                        <div class="paragraph-text motion-text">
+                            <div>
+                                <i *ngIf="paragraph.lineFrom >= paragraph.lineTo - 1" class="line-number">
+                                    {{ 'Line' | translate }} {{ paragraph.lineFrom }}:</i
+                                >
+                                <i *ngIf="paragraph.lineFrom < paragraph.lineTo - 1" class="line-number">
+                                    {{ 'Line' | translate }} {{ paragraph.lineFrom }} - {{ paragraph.lineTo - 1 }}:</i
+                                >
+                            </div>
+                            <div [innerHTML]="getParagraphPreview(i) | trust: 'html'"></div>
+                        </div>
+                    </section>
+                </cdk-virtual-scroll-viewport>
             </div>
         </mat-step>
         <mat-step>
