@@ -877,6 +877,7 @@ meeting:
   reference_projector_id:
     type: relation
     to: projector/used_as_reference_projector_meeting_id
+    required: true
   list_of_speakers_countdown_id:
     type: relation
     to: projector_countdown/used_as_list_of_speaker_countdown_meeting_id
