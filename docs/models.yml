@@ -388,10 +388,12 @@ meeting:
   projector_countdown_default_time:
     type: number
     default: 60
+    required: true
   projector_countdown_warning_time:
     type: number
     minimum: 0
     default: 0
+    required: true
 
   # Exports
   export_csv_encoding:
