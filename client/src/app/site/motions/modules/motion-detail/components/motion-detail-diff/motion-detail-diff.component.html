@@ -1,47 +1,52 @@
 <!-- A summary of all changes -->
 <div class="motion-detail-diff">
-    <section class="change-recommendation-overview" *ngIf="changes.length > 0">
-        <strong> {{ 'Summary of changes' | translate }}: </strong>
+    <div class="change-recommendation-summary" *ngIf="changes?.length">
+        <strong [matBadge]="changes.length" matBadgeOverlap="false">{{ 'Summary of changes' | translate }}&nbsp;</strong>
 
-        <ul>
-            <li *ngFor="let change of changes">
-                <a
-                    href=""
-                    (click)="scrollToChangeClicked(change, $event)"
-                    [class.amendment]="isAmendment(change)"
-                    [class.recommendation]="isChangeRecommendation(change)"
-                >
-                    <span *ngIf="!change.isTitleChange()" class="line-number">
-                        {{ 'Line' | translate }} {{ formatLineRange(change) }}
-                    </span>
-                    <span *ngIf="change.isTitleChange()">{{ 'Title' | translate }}</span>
-                    <span *ngIf="isChangeRecommendation(change)"> ({{ 'Change recommendation' | translate }})</span>
-                    <span *ngIf="isAmendment(change)">
-                        ({{ 'Amendment' | translate }} {{ change.getIdentifier() }})</span
-                    >
-                    <span class="operation" *ngIf="isChangeRecommendation(change)">
-                        – {{ getRecommendationTypeName(change) | translate }}
-                        <!--
-                        @TODO
-                        <span ng-if="change.original.getType(motion.getVersion(version).text) == 3">
-                          { change.other_description }
-                        </span>
-                    -->
-                    </span>
-                    <span class="status">
-                        <ng-container *ngIf="change.isRejected() && !isAmendment(change)">
-                            – <span>{{ 'Rejected' | translate }}</span></ng-container
+        <cdk-virtual-scroll-viewport
+            itemSize="22"
+            minBufferPx="100"
+            maxBufferPx="300"
+            class="summary-of-changes-scroll"
+        >
+            <ul>
+                <li *cdkVirtualFor="let change of changes; let index = index">
+                    <span class="one-line">
+                        <a href="" (click)="scrollToChangeClicked(change, $event)" *ngIf="!change.isTitleChange()">
+                            <span> {{ 'Line' | translate }} {{ formatLineRange(change) }} </span>
+                            <span *ngIf="change.isTitleChange()">{{ 'Title' | translate }}</span>
+                            <span *ngIf="isChangeRecommendation(change)">
+                                ({{ 'Change recommendation' | translate }})</span
+                            >
+                            <span *ngIf="isAmendment(change)">
+                                ({{ 'Amendment' | translate }} {{ change.getIdentifier() }})
+                            </span>
+                        </a>
+                        <i class="user-subtitle" *ngIf="isChangeRecommendation(change)">
+                            – {{ getRecommendationTypeName(change) | translate }}
+                        </i>
+                        <i class="user-subtitle">
+                            <ng-container *ngIf="change.isRejected() && !isAmendment(change)">
+                                – <span>{{ 'Rejected' | translate }}</span></ng-container
+                            >
+                            <ng-container *ngIf="(change.isAccepted() || isAmendment(change)) && change.stateName">
+                                – {{ change.stateName | translate }}</ng-container
+                            >
+                        </i>
+                        <a
+                            mat-icon-button
+                            [routerLink]="change.amendment.getDetailStateURL()"
+                            [state]="{ back: 'true' }"
+                            class="smaller-icon-button amendment-link"
+                            *ngIf="isAmendment(change)"
                         >
-                        <ng-container *ngIf="(change.isAccepted() || isAmendment(change)) && change.stateName">
-                            – {{ change.stateName | translate }}</ng-container
-                        >
+                            <mat-icon>arrow_forward</mat-icon>
+                        </a>
                     </span>
-                </a>
-            </li>
-        </ul>
-
-        <div *ngIf="changes.length === 0" class="no-changes">{{ 'No change recommendations yet' | translate }}</div>
-    </section>
+                </li>
+            </ul>
+        </cdk-virtual-scroll-viewport>
+    </div>
 
     <span class="text-prefix-label" *ngIf="showPreamble">{{ preamble | translate }}</span>
 
@@ -97,10 +102,10 @@
                 <div class="collission-hint" *ngIf="hasCollissions(change, getAllTextChangingObjects())">
                     <mat-icon matTooltip="{{ 'This change collides with another one.' | translate }}">warning</mat-icon>
                 </div>
-                <div class="action-row" *osPerms="'motions.can_manage'">
+                <div class="action-row">
                     <button
                         mat-icon-button
-                        *ngIf="isRecommendation(change)"
+                        *osPerms="'motions.can_manage'; and: isRecommendation(change)"
                         type="button"
                         [matMenuTriggerFor]="changeRecommendationMenu"
                         [matMenuTriggerData]="{ change: change }"
@@ -166,41 +171,48 @@
 
     <mat-menu #amendmentMenu="matMenu">
         <ng-template matMenuContent let-change="change">
-            <button
+            <a
                 type="button"
                 mat-menu-item
                 [routerLink]="change.amendment.getDetailStateURL()"
                 [state]="{ back: 'true' }"
             >
                 <mat-icon>visibility_on</mat-icon>
-                <span>{{ 'Show amendment' | translate }}</span>
-            </button>
+                <ng-container *ngIf="!change?.amendment?.identifier">
+                    <span>{{ 'Show amendment' | translate }}</span>
+                </ng-container>
 
-            <mat-divider *ngIf="change.amendment.state.next_states.length > 0"></mat-divider>
+                <ng-container *ngIf="change?.amendment?.identifier">
+                    <span>{{ change.amendment.identifier }}</span>
+                </ng-container>
+            </a>
 
-            <button
-                *ngFor="let state of change.amendment.state.next_states"
-                mat-menu-item
-                (click)="setAmendmentState(change, state.id)"
-            >
-                {{ state.name | translate }} <span *ngIf="state.show_state_extension_field">&nbsp;...</span>
-            </button>
-            <mat-divider *ngIf="change.amendment.state.next_states.length > 0"></mat-divider>
-            <button
-                *ngFor="let state of change.amendment.state.previous_states"
-                mat-menu-item
-                (click)="setAmendmentState(change, state.id)"
-            >
-                <mat-icon>arrow_back</mat-icon>
-                {{ state.name | translate }}
-                <span *ngIf="state.show_state_extension_field">&nbsp;...</span>
-            </button>
-            <button mat-menu-item (click)="setAmendmentState(change, null)">
-                <mat-icon>replay</mat-icon>
-                {{ 'Reset state' | translate }}
-            </button>
+            <!-- perms.isAllowed('change_state', motion) (which does not exist)-->
+            <ng-container *osPerms="'motions.can_manage'">
+                <mat-divider *ngIf="change.amendment.state.next_states.length > 0"></mat-divider>
 
-            <!-- perms.isAllowed('change_state', motion) -->
+                <button
+                    *ngFor="let state of change.amendment.state.next_states"
+                    mat-menu-item
+                    (click)="setAmendmentState(change, state.id)"
+                >
+                    {{ state.name | translate }} <span *ngIf="state.show_state_extension_field">&nbsp;...</span>
+                </button>
+                <mat-divider *ngIf="change.amendment.state.next_states.length > 0"></mat-divider>
+                <button
+                    *ngFor="let state of change.amendment.state.previous_states"
+                    mat-menu-item
+                    (click)="setAmendmentState(change, state.id)"
+                >
+                    <mat-icon>arrow_back</mat-icon>
+                    {{ state.name | translate }}
+                    <span *ngIf="state.show_state_extension_field">&nbsp;...</span>
+                </button>
+                <button mat-menu-item (click)="setAmendmentState(change, null)">
+                    <mat-icon>replay</mat-icon>
+                    {{ 'Reset state' | translate }}
+                </button>
+            </ng-container>
         </ng-template>
     </mat-menu>
 

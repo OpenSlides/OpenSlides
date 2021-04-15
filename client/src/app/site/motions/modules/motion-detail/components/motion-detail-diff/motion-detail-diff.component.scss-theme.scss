@@ -4,7 +4,7 @@
     $background: map-get($theme, background);
 
     .motion-detail-diff {
-        .change-recommendation-overview,
+        .change-recommendation-summary,
         .diff-box {
             background-color: mat-color($background, background);
             border: 1px solid mat-color($background, selected-button);
