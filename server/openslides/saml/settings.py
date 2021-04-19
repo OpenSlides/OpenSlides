@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+import re
 from typing import Dict, Tuple
 
 from django.conf import settings
@@ -94,7 +95,14 @@ class SamlSettings:
     - request_settings: {
         <key>: <value>,
       }
-    - default_group_ids: [<id>, ...] | null | undefined
+    - groups: {
+        matchers: [{
+            regex: <regex>,
+            attribute: <str>,
+            group_ids: [<id>, ...]
+        }],
+        default_group_ids: [<id>, ...] | null | undefined
+      }
     """
 
     def __init__(self):
@@ -122,7 +130,7 @@ class SamlSettings:
         self.load_general_settings(content)
         self.load_attribute_mapping(content)
         self.load_request_settings(content)
-        self.load_default_group_ids(content)
+        self.load_groups(content)
 
         # Load saml settings
         self.saml_settings = OneLogin_Saml2_Settings(
@@ -213,19 +221,39 @@ class SamlSettings:
             ] not in ("on", "off"):
                 raise SamlException('The https value must be "on" or "off"')
 
-    def load_default_group_ids(self, content):
-        self.default_group_ids = content.pop("defaultGroupIds", None)
-        if self.default_group_ids is None:
-            return
-        if not isinstance(self.default_group_ids, list):
-            raise SamlException(
-                "default_group_ids must be null (or not present) or a list of integers"
-            )
-        for id in self.default_group_ids:
-            if not isinstance(id, int):
-                raise SamlException(
-                    "default_group_ids must be null (or not present) or a list of integers"
-                )
+    def load_groups(self, content):
+        self.groups = content.pop("groups", {})
+        matchers = self.groups.get("matchers", [])
+        for i, m in enumerate(matchers):
+            if not isinstance(m.get("attribute"), str):
+                raise SamlException(f"Attribute of matcher {i+1} must be a string")
+            regex = m["regex"]
+            if not regex:
+                raise SamlException(f"Matcher {i+1} does not have a regex")
+            try:
+                regex = re.compile(regex)
+            except re.error as e:
+                raise SamlException(f"The regex for matcher {i+1} is invalid: {str(e)}")
+            m["regex"] = regex
+            m["group_ids"] = m.get("group_ids", [])
+            if not m["group_ids"]:
+                raise SamlException(f"The group_ids for matcher {i+1} is empty")
+            self.assert_list_of_ints(m["group_ids"], f"group_ids of matcher {i+1}")
+        self.groups["matchers"] = matchers
+
+        default_group_ids = self.groups.pop("default_group_ids", [])
+        self.assert_list_of_ints(default_group_ids, "default_group_ids")
+        self.groups["default_group_ids"] = default_group_ids
+
+        logger.info(f"Loaded {len(matchers)} matchers")
+        logger.info(f"Configured {default_group_ids} as default groups")
+
+    def assert_list_of_ints(self, value, name):
+        if not isinstance(value, list):
+            raise SamlException(f"{name} must be a list of integers")
+        for x in value:
+            if not isinstance(x, int):
+                raise SamlException(f"Each entry of {name} must be an integer")
 
 
 saml_settings = None
