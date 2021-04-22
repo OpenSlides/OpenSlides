@@ -69,13 +69,13 @@ write(request: WriteRequest | WriteRequest[]): void publishes ModifiedFieldsEven
 Interface WriteRequest {
     events: (CreateEvent | RestoreEvent | UpdateEvent | DeleteEvent)[];
     information: {
-        <fqid>: Object
+        <fqid>: Object;
     };
     user_id: number;
     locked_fields: {
         <fqid>: Position;
         <fqfield>: Position;
-        <CollectionField>: Position | CollectionFieldLock;
+        <CollectionField>: Position | CollectionFieldLock[];
     }
 }
 
