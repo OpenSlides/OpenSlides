@@ -271,12 +271,26 @@ class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
         except KeyError as err:
             raise ValidationError({"detail": "Invalid property {0}", "args": [err]})
 
+        from_email = config["users_email_sender"].strip()
+        blacklist = ("[", "]", "\\")
+        if any(x in from_email for x in blacklist):
+            blacklist_str = '"' + '", "'.join(blacklist) + '"'
+            raise ValidationError(
+                {
+                    "detail": "Invalid characters in the sender name configuration. "
+                    + f"Not allowed: {blacklist_str}"
+                }
+            )
+        if from_email:
+            from_email += " "
+        from_email += f"<{settings.DEFAULT_FROM_EMAIL}>"
+
         # Create an email and send it.
         email = mail.EmailMessage(
-            subject,
-            message,
-            config["users_email_sender"] + " <" + settings.DEFAULT_FROM_EMAIL + ">",
-            [self.email],
+            subject=subject,
+            body=message,
+            from_email=from_email,
+            to=[self.email],
             reply_to=[config["users_email_replyto"]],
         )
         try:
