@@ -19,6 +19,8 @@ services:
     depends_on:
       - redis
       - postgres
+    stdin_open: true
+    tty: true
 
   postgres:
     image: postgres:11

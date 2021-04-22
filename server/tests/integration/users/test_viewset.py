@@ -217,6 +217,40 @@ class UserUpdate(TestCase):
             [user.pk],
         )
 
+    def test_update_vote_delegation_same_user(self):
+        user = User.objects.create_user(
+            username="non-admin EVnE4n103fPZXcVV",
+            password="non-admin 1WywRnqKbcdtQwS2",
+            vote_delegated_to=self.admin,
+        )
+
+        response = self.client.patch(
+            reverse("user-detail", args=[user.pk]),
+            {"vote_delegated_to_id": self.admin.pk, "vote_delegated_from_users_id": []},
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        user = User.objects.get(pk=user.pk)
+        self.assertEqual(user.vote_delegated_to_id, self.admin.pk)
+
+    def test_update_remove_vote_delegation(self):
+        user = User.objects.create_user(
+            username="non-admin EVnE4n103fPZXcVV",
+            password="non-admin 1WywRnqKbcdtQwS2",
+            vote_delegated_to=self.admin,
+        )
+
+        response = self.client.patch(
+            reverse("user-detail", args=[user.pk]),
+            {"vote_delegated_to_id": None, "vote_delegated_from_users_id": []},
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        user = User.objects.get(pk=user.pk)
+        self.assertEqual(user.vote_delegated_to_id, None)
+        admin = User.objects.get(username="admin")
+        self.assertEqual(admin.vote_delegated_from_users.count(), 0)
+
     def test_update_vote_delegation_non_admin(self):
         user = User.objects.create_user(
             username="non-admin WpBQRSsCg6qNWNtN6bLP",
@@ -379,6 +413,68 @@ class UserUpdate(TestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         user2 = User.objects.get(pk=self.user2.pk)
         self.assertIsNone(user2.vote_delegated_to_id)
+
+    def test_update_vote_delegation_both_1(self):
+        """ Change user -> user2 to admin -> user in one request. """
+        self.user2 = User.objects.create_user(
+            username="user2",
+            password="non-admin 1WywRnqKbcdtQwS2",
+        )
+        self.user = User.objects.create_user(
+            username="user",
+            password="non-admin 1WywRnqKbcdtQwS2",
+            vote_delegated_to=self.user2,
+        )
+        response = self.client.patch(
+            reverse("user-detail", args=[self.user.pk]),
+            {
+                "vote_delegated_to_id": None,
+                "vote_delegated_from_users_id": [self.admin.pk],
+            },
+        )
+
+        self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
+        admin = User.objects.get(pk=self.admin.pk)
+        self.assertEqual(admin.vote_delegated_to_id, self.user.id)
+        user = User.objects.get(pk=self.user.pk)
+        self.assertIsNone(user.vote_delegated_to_id)
+        self.assertEqual(
+            list(user.vote_delegated_from_users.values_list("id", flat=True)),
+            [self.admin.pk],
+        )
+        user2 = User.objects.get(pk=self.user2.pk)
+        self.assertEqual(user2.vote_delegated_from_users.count(), 0)
+
+    def test_update_vote_delegation_both_2(self):
+        """ Change user -> user2 to user2 -> admin in one request. """
+        self.user2 = User.objects.create_user(
+            username="user2",
+            password="non-admin 1WywRnqKbcdtQwS2",
+        )
+        self.user = User.objects.create_user(
+            username="user",
+            password="non-admin 1WywRnqKbcdtQwS2",
+            vote_delegated_to=self.user2,
+        )
+        response = self.client.patch(
+            reverse("user-detail", args=[self.user2.pk]),
+            {
+                "vote_delegated_to_id": self.admin.pk,
+                "vote_delegated_from_users_id": [],
+            },
+        )
+
+        self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
+        admin = User.objects.get(pk=self.admin.pk)
+        self.assertEqual(
+            list(admin.vote_delegated_from_users.values_list("id", flat=True)),
+            [self.user2.pk],
+        )
+        user = User.objects.get(pk=self.user.pk)
+        self.assertIsNone(user.vote_delegated_to_id)
+        user2 = User.objects.get(pk=self.user2.pk)
+        self.assertEqual(user2.vote_delegated_to, self.admin)
+        self.assertEqual(user2.vote_delegated_from_users.count(), 0)
 
 
 class UserDelete(TestCase):
