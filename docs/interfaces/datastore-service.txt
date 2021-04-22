@@ -69,13 +69,13 @@ write(request: WriteRequest | WriteRequest[]): void publishes ModifiedFieldsEven
 Interface WriteRequest {
     events: (CreateEvent | RestoreEvent | UpdateEvent | DeleteEvent)[];
     information: {
-        <fqid>: Object
+        <fqid>: Object;
     };
     user_id: number;
     locked_fields: {
         <fqid>: Position;
         <fqfield>: Position;
-        <CollectionField>: Position | CollectionFieldLock;
+        <CollectionField>: Position | CollectionFieldLock | CollectionFieldLock[];
     }
 }
 
@@ -135,9 +135,10 @@ Interface DeleteEvent {
 // first, e.g. when selecting all models from a specific meeting. WARNING: the filter
 // should always contain an equals check with the meeting_id, since this will be
 // indexed. Other filters can lead to long query times.
+// If no filter is given, it has the same meaning as just giving the position.
 Interface CollectionFieldLock {
     position: Position;
-    filter: Filter;
+    filter: Filter | null;
 }
 
 // Note: The modified fqfields include:
