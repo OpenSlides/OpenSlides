@@ -27,9 +27,22 @@
     >
         <!-- implicit user references into the component using ng-template slot -->
         <ng-template let-user>
-            <button type="button" mat-icon-button matTooltip="{{ 'Remove' | translate }}" (click)="onRemove(user)">
-                <mat-icon>close</mat-icon>
-            </button>
+            <div class="single-submitter-line">
+                <span class="ellipsis-overflow">
+                    {{ user.getTitle() }}
+                </span>
+
+                <span>
+                    <button
+                        type="button"
+                        mat-icon-button
+                        matTooltip="{{ 'Remove' | translate }}"
+                        (click)="onRemove(user)"
+                    >
+                        <mat-icon>close</mat-icon>
+                    </button>
+                </span>
+            </div>
         </ng-template>
     </os-sorting-list>
 

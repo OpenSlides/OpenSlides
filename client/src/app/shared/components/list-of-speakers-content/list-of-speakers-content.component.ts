@@ -9,6 +9,7 @@ import {
     ViewChild
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 
@@ -22,10 +23,13 @@ import { ConfigService } from 'app/core/ui-services/config.service';
 import { DurationService } from 'app/core/ui-services/duration.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ViewportService } from 'app/core/ui-services/viewport.service';
+import { Identifiable } from 'app/shared/models/base/identifiable';
+import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
 import { ViewListOfSpeakers } from 'app/site/agenda/models/view-list-of-speakers';
 import { SpeakerState, ViewSpeaker } from 'app/site/agenda/models/view-speaker';
 import { BaseViewComponentDirective } from 'app/site/base/base-view';
 import { ViewUser } from 'app/site/users/models/view-user';
+import { PointOfOrderDialogComponent } from '../point-of-order-dialog/point-of-order-dialog.component';
 import { Selectable } from '../selectable';
 import { SortingListComponent } from '../sorting-list/sorting-list.component';
 
@@ -63,6 +67,9 @@ export class ListOfSpeakersContentComponent extends BaseViewComponentDirective i
     }
 
     private pointOfOrderEnabled: boolean;
+    public enableProContraSpeech: boolean;
+    private canSetMarkSelf: boolean;
+    private noteForAll: boolean;
 
     public get title(): string {
         return this.viewListOfSpeakers?.getTitle();
@@ -78,6 +85,10 @@ export class ListOfSpeakersContentComponent extends BaseViewComponentDirective i
 
     public get canAddDueToPresence(): boolean {
         return !this.config.instant('agenda_present_speakers_only') || this.operator.user.is_present;
+    }
+
+    public get showSpeakersOrderNote(): boolean {
+        return this.noteForAll || this.opCanManage;
     }
 
     @Input()
@@ -113,7 +124,8 @@ export class ListOfSpeakersContentComponent extends BaseViewComponentDirective i
         private userRepository: UserRepositoryService,
         private config: ConfigService,
         private viewport: ViewportService,
-        private cd: ChangeDetectorRef
+        private cd: ChangeDetectorRef,
+        private dialog: MatDialog
     ) {
         super(title, translate, snackBar);
         this.addSpeakerForm = new FormGroup({ user_id: new FormControl() });
@@ -150,6 +162,15 @@ export class ListOfSpeakersContentComponent extends BaseViewComponentDirective i
             // observe point of order settings
             this.config.get<boolean>('agenda_enable_point_of_order_speakers').subscribe(enabled => {
                 this.pointOfOrderEnabled = enabled;
+            }),
+            this.config.get<boolean>('agenda_list_of_speakers_enable_pro_contra_speech').subscribe(enabled => {
+                this.enableProContraSpeech = enabled;
+            }),
+            this.config.get<boolean>('agenda_list_of_speakers_can_set_mark_self').subscribe(canMark => {
+                this.canSetMarkSelf = canMark;
+            }),
+            this.config.get<boolean>('agenda_list_of_speakers_speaker_note_for_everyone').subscribe(noteForAll => {
+                this.noteForAll = noteForAll;
             })
         );
     }
@@ -209,13 +230,18 @@ export class ListOfSpeakersContentComponent extends BaseViewComponentDirective i
     }
 
     public async addPointOfOrder(): Promise<void> {
-        const title = this.translate.instant('Are you sure you want to submit a point of order?');
-        if (await this.promptService.open(title)) {
-            try {
-                await this.listOfSpeakersRepo.createSpeaker(this.viewListOfSpeakers, undefined, true);
-            } catch (e) {
-                this.raiseError(e);
+        const dialogRef = this.dialog.open<PointOfOrderDialogComponent, ViewListOfSpeakers, Promise<Identifiable>>(
+            PointOfOrderDialogComponent,
+            {
+                data: this.viewListOfSpeakers,
+                ...infoDialogSettings
             }
+        );
+
+        try {
+            await dialogRef.afterClosed().toPromise();
+        } catch (e) {
+            this.raiseError(e);
         }
     }
 
@@ -235,7 +261,7 @@ export class ListOfSpeakersContentComponent extends BaseViewComponentDirective i
     /**
      * Click on the mic button to mark a speaker as speaking
      *
-     * @param speaker the speaker marked in the list
+     * @param speaker the speaker selected in the list
      */
     public async onStartButton(speaker: ViewSpeaker): Promise<void> {
         try {
@@ -258,13 +284,26 @@ export class ListOfSpeakersContentComponent extends BaseViewComponentDirective i
         }
     }
 
+    public speakerIsOperator(speaker: ViewSpeaker): boolean {
+        return speaker.user_id === this.operator.userId;
+    }
+
+    public canMark(speaker: ViewSpeaker): boolean {
+        return this.opCanManage || (this.canSetMarkSelf && this.speakerIsOperator(speaker));
+    }
+
     /**
      * Click on the star button. Toggles the marked attribute.
      *
      * @param speaker The speaker clicked on.
      */
     public onMarkButton(speaker: ViewSpeaker): void {
-        this.listOfSpeakersRepo.markSpeaker(this.viewListOfSpeakers, speaker, !speaker.marked).catch(this.raiseError);
+        this.listOfSpeakersRepo.toggleMarked(speaker).catch(this.raiseError);
+    }
+
+    public onProContraButtons(speaker: ViewSpeaker, isPro: boolean): void {
+        const value = speaker.pro_speech === isPro ? null : isPro;
+        this.listOfSpeakersRepo.setProContraSpeech(speaker, value).catch(this.raiseError);
     }
 
     /**

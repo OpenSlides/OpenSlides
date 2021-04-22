@@ -421,7 +421,14 @@ class SpeakerManager(models.Manager):
     Manager for Speaker model. Provides a customized add method.
     """
 
-    def add(self, user, list_of_speakers, skip_autoupdate=False, point_of_order=False):
+    def add(
+        self,
+        user,
+        list_of_speakers,
+        skip_autoupdate=False,
+        point_of_order=False,
+        note=None,
+    ):
         """
         Customized manager method to prevent anonymous users to be on the
         list of speakers and that someone is twice on one list (off coming
@@ -450,6 +457,7 @@ class SpeakerManager(models.Manager):
             user=user,
             weight=weight,
             point_of_order=point_of_order,
+            note=note,
         )
         speaker.save(
             force_insert=True,
@@ -534,6 +542,8 @@ class Speaker(RESTModelMixin, models.Model):
     The sort order of the list of speakers. None, if he has already spoken.
     """
 
+    note = models.CharField(max_length=255, null=True, blank=True)
+
     marked = models.BooleanField(default=False)
     """
     Marks a speaker.
@@ -543,6 +553,8 @@ class Speaker(RESTModelMixin, models.Model):
     """
     Identifies the speaker as someone with a point of order
     """
+
+    pro_speech = models.BooleanField(null=True, blank=True, default=None)
 
     class Meta:
         default_permissions = ()

@@ -13,9 +13,11 @@ export class Speaker extends BaseModel<Speaker> {
     public id: number;
     public user_id: number;
     public weight: number;
+    public note?: string;
     public marked: boolean;
     public item_id: number;
     public point_of_order: boolean;
+    public pro_speech?: boolean;
 
     /**
      * ISO datetime string to indicate the begin time of the speech. Empty if

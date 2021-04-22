@@ -529,27 +529,6 @@ class ManageSpeaker(TestCase):
         )
         self.assertEqual(response.status_code, 403)
 
-    def test_mark_speaker(self):
-        Speaker.objects.add(self.user, self.list_of_speakers)
-        response = self.client.patch(
-            reverse("listofspeakers-manage-speaker", args=[self.list_of_speakers.pk]),
-            {"user": self.user.pk, "marked": True},
-        )
-
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue(Speaker.objects.get().marked)
-
-    def test_mark_speaker_non_admin(self):
-        self.make_admin_delegate()
-        Speaker.objects.add(self.user, self.list_of_speakers)
-
-        response = self.client.patch(
-            reverse("listofspeakers-manage-speaker", args=[self.list_of_speakers.pk]),
-            {"user": self.user.pk},
-        )
-
-        self.assertEqual(response.status_code, 403)
-
     # re-add last speaker
     def util_add_user_as_last_speaker(self):
         speaker = Speaker.objects.add(self.user, self.list_of_speakers)
@@ -647,6 +626,109 @@ class ManageSpeaker(TestCase):
             )
         )
         self.assertEqual(response.status_code, 400)
+
+
+class UpdateSpeaker(TestCase):
+    def advancedSetUp(self):
+        self.list_of_speakers = Topic.objects.create(
+            title="test_title_aZaedij4gohn5eeQu8fe"
+        ).list_of_speakers
+        self.user, _ = self.create_user()
+        self.admin = get_user_model().objects.get(username="admin")
+
+    def test_mark_speaker(self):
+        speaker = Speaker.objects.add(self.user, self.list_of_speakers)
+        response = self.client.patch(
+            reverse("speaker-detail", args=[speaker.pk]),
+            {"marked": True},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(Speaker.objects.get().marked)
+
+    def test_mark_speaker_non_admin(self):
+        self.make_admin_delegate()
+        speaker = Speaker.objects.add(self.user, self.list_of_speakers)
+
+        response = self.client.patch(
+            reverse("speaker-detail", args=[speaker.pk]),
+            {"marked": True},
+        )
+
+        self.assertEqual(response.status_code, 403)
+        self.assertFalse(Speaker.objects.get().marked)
+
+    def test_mark_speaker_self(self):
+        config["agenda_list_of_speakers_can_set_mark_self"] = True
+        self.make_admin_delegate()
+        speaker = Speaker.objects.add(self.admin, self.list_of_speakers)
+
+        response = self.client.patch(
+            reverse("speaker-detail", args=[speaker.pk]),
+            {"marked": True},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(Speaker.objects.get().marked)
+
+    def test_mark_speaker_self_not_allowed(self):
+        self.make_admin_delegate()
+        speaker = Speaker.objects.add(self.admin, self.list_of_speakers)
+
+        response = self.client.patch(
+            reverse("speaker-detail", args=[speaker.pk]),
+            {"marked": True},
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertFalse(Speaker.objects.get().marked)
+
+    def test_pro_speech_admin(self):
+        config["agenda_list_of_speakers_enable_pro_contra_speech"] = True
+        speaker = Speaker.objects.add(self.user, self.list_of_speakers)
+        response = self.client.patch(
+            reverse("speaker-detail", args=[speaker.pk]),
+            {"pro_speech": True},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(Speaker.objects.get().pro_speech)
+
+    def test_pro_speech_disabled(self):
+        speaker = Speaker.objects.add(self.user, self.list_of_speakers)
+        response = self.client.patch(
+            reverse("speaker-detail", args=[speaker.pk]),
+            {"pro_speech": True},
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertFalse(Speaker.objects.get().pro_speech)
+
+    def test_pro_speech_non_admin(self):
+        config["agenda_list_of_speakers_enable_pro_contra_speech"] = True
+        self.make_admin_delegate()
+        speaker = Speaker.objects.add(self.user, self.list_of_speakers)
+
+        response = self.client.patch(
+            reverse("speaker-detail", args=[speaker.pk]),
+            {"pro_speech": True},
+        )
+
+        self.assertEqual(response.status_code, 403)
+        self.assertFalse(Speaker.objects.get().pro_speech)
+
+    def test_pro_speech_self(self):
+        config["agenda_list_of_speakers_enable_pro_contra_speech"] = True
+        self.make_admin_delegate()
+        speaker = Speaker.objects.add(self.admin, self.list_of_speakers)
+
+        response = self.client.patch(
+            reverse("speaker-detail", args=[speaker.pk]),
+            {"pro_speech": True},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(Speaker.objects.get().pro_speech)
 
 
 class Speak(TestCase):

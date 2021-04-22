@@ -2,6 +2,7 @@ export interface SlideSpeaker {
     user: string;
     marked: boolean;
     point_of_order: boolean;
+    pro_speech?: boolean;
 }
 
 export interface CommonListOfSpeakersSlideData {

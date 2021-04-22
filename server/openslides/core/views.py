@@ -13,6 +13,7 @@ from django.utils.timezone import now
 from django.views import static
 from django.views.generic.base import View
 
+from openslides.agenda.models import ListOfSpeakers
 from openslides.utils.utils import split_element_id
 
 from .. import __license__ as license, __url__ as url, __version__ as version
@@ -425,6 +426,7 @@ class ConfigViewSet(ModelViewSet):
         # Validate and change value.
         try:
             config[key] = value
+            self.autoupdate_for_key(key)
         except ConfigNotFound:
             raise Http404
         except ConfigError as err:
@@ -461,6 +463,7 @@ class ConfigViewSet(ModelViewSet):
         for entry in request.data:
             try:
                 config[entry["key"]] = entry["value"]
+                self.autoupdate_for_key(entry["key"])
             except ConfigError as err:
                 errors[entry["key"]] = str(err)
 
@@ -484,8 +487,13 @@ class ConfigViewSet(ModelViewSet):
                 and config[key] != config_variable.default_value
             ):
                 config[key] = config_variable.default_value
+                self.autoupdate_for_key(key)
 
         return Response()
+
+    def autoupdate_for_key(self, key):
+        if key == "agenda_list_of_speakers_speaker_note_for_everyone":
+            inform_changed_data(ListOfSpeakers.objects.all())
 
 
 class ProjectorMessageViewSet(ModelViewSet):

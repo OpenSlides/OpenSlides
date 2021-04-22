@@ -9,31 +9,26 @@
     min-height: 50px;
     margin-bottom: 5px;
 
-    .section-one {
+    .drag-indicator {
         display: table-cell;
-        padding: 0 10px;
-        line-height: 0px;
         vertical-align: middle;
+        padding: 0 0.5em;
+        line-height: 0px;
         width: 50px;
         color: slategrey;
         cursor: move;
     }
 
-    .section-two {
+    .count {
+        display: table-cell;
+        vertical-align: middle;
+        min-width: 2em;
+        padding-left: 1.25em;
+    }
+
+    .content {
         display: table-cell;
         vertical-align: middle;
         width: 100%;
-        padding-left: 20px;
-
-        span + span {
-            margin-left: 20px;
-        }
-    }
-
-    .section-three {
-        display: table-cell;
-        padding-right: 10px;
-        width: auto;
-        white-space: nowrap;
     }
 }

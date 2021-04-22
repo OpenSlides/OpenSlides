@@ -15,9 +15,16 @@
     </div>
     <os-sorting-list (sortEvent)="onListUpdate($event)" [input]="motionObservable" #sorter>
         <ng-template let-motion>
-            <mat-basic-chip class="bluegrey" disableRipple matTooltip="{{ 'Sequential number' | translate }}">
-                {{ motion.id }}
-            </mat-basic-chip>
+            <div class="single-motion-line">
+                <span>
+                    {{ motion.getTitle() }}
+                </span>
+                <span>
+                    <mat-basic-chip class="bluegrey" disableRipple matTooltip="{{ 'Sequential number' | translate }}">
+                        {{ motion.id }}
+                    </mat-basic-chip>
+                </span>
+            </div>
         </ng-template>
     </os-sorting-list>
 </mat-card>

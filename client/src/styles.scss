@@ -173,15 +173,27 @@ b,
 }
 
 .red-warning-text {
-    color: red;
+    color: red !important;
     .mat-icon {
         color: red !important;
     }
 }
 
 .green-text {
-    // TODO better name/theming
-    color: #5a5;
+    color: #5a5 !important;
+}
+
+.icon-as-block.mat-icon {
+    display: block;
+}
+
+/**
+ * Can better align icons with text. Use like:
+ * <mat-icon inline class="inline-icon-text-align"> ...
+ * <span> ...
+ */
+.inline-icon-text-align.mat-icon {
+    vertical-align: bottom;
 }
 
 .icon-text-distance {

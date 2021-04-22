@@ -161,10 +161,11 @@ export class ListOfSpeakersRepositoryService extends BaseHasContentObjectReposit
     public async createSpeaker(
         listOfSpeakers: ViewListOfSpeakers,
         userId: number,
-        pointOfOrder?: boolean
+        pointOfOrder?: boolean,
+        note?: string
     ): Promise<Identifiable> {
         const restUrl = this.getRestUrl(listOfSpeakers.id, 'manage_speaker');
-        return await this.httpService.post<Identifiable>(restUrl, { user: userId, point_of_order: pointOfOrder });
+        return await this.httpService.post<Identifiable>(restUrl, { user: userId, point_of_order: pointOfOrder, note });
     }
 
     /**
@@ -222,15 +223,14 @@ export class ListOfSpeakersRepositoryService extends BaseHasContentObjectReposit
     }
 
     /**
-     * Marks all speakers for a given user
-     *
-     * @param userId {@link User} id of the user
-     * @param marked determine if the user should be marked or not
-     * @param listOfSpeakers the target list of speakers
+     * Toggles the mark for a given speaker.
      */
-    public async markSpeaker(listOfSpeakers: ViewListOfSpeakers, speaker: ViewSpeaker, marked: boolean): Promise<void> {
-        const restUrl = this.getRestUrl(listOfSpeakers.id, 'manage_speaker');
-        await this.httpService.patch(restUrl, { user: speaker.user.id, marked: marked });
+    public async toggleMarked(speaker: ViewSpeaker): Promise<void> {
+        await this.httpService.put(`/rest/agenda/speaker/${speaker.id}/`, { marked: !speaker.marked });
+    }
+
+    public async setProContraSpeech(speaker: ViewSpeaker, proSpeech: boolean | null): Promise<void> {
+        await this.httpService.put(`/rest/agenda/speaker/${speaker.id}/`, { pro_speech: proSpeech });
     }
 
     /**

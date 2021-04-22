@@ -2,6 +2,7 @@ import jsonschema
 from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.db.utils import IntegrityError
+from django.http.request import QueryDict
 
 from openslides.core.config import config
 from openslides.utils.autoupdate import inform_changed_data
@@ -299,12 +300,11 @@ class ListOfSpeakersViewSet(UpdateModelMixin, TreeSortMixin, GenericViewSet):
         """
         Special view endpoint to add users to the list of speakers or remove
         them. Send POST {'user': <user_id>} to add a new speaker.
-        Send POST {'user': <user_id>, 'point_of_order': True } to add a point
-        of order to the list of speakers.
+        Send POST {'user': <user_id>, 'point_of_order': True, 'note': <optional string> }
+        to add a pointof order to the list of speakers.
         Omit data to add yourself. Send DELETE {'speaker': <speaker_id>} or
         DELETE {'speaker': [<speaker_id>, <speaker_id>, ...]} to remove one or
         more speakers from the list of speakers. Omit data to remove yourself.
-        Send PATCH {'user': <user_id>, 'marked': <bool>} to mark the speaker.
 
         Checks also whether the requesting user can do this. He needs at
         least the permissions 'agenda.can_see_list_of_speakers' (see
@@ -322,6 +322,10 @@ class ListOfSpeakersViewSet(UpdateModelMixin, TreeSortMixin, GenericViewSet):
             point_of_order = request.data.get("point_of_order") or False
             if not isinstance(point_of_order, bool):
                 raise ValidationError({"detail": "point_of_order has to be a bool."})
+
+            note = request.data.get("note")
+            if note is not None and not isinstance(note, str):
+                raise ValidationError({"detail": "note must be a string"})
 
             # Check permissions and other conditions. Get user instance.
             if user_id is None:
@@ -352,7 +356,7 @@ class ListOfSpeakersViewSet(UpdateModelMixin, TreeSortMixin, GenericViewSet):
             # list of coming speakers.
             try:
                 speaker = Speaker.objects.add(
-                    user, list_of_speakers, point_of_order=point_of_order
+                    user, list_of_speakers, point_of_order=point_of_order, note=note
                 )
             except OpenSlidesError as e:
                 raise ValidationError({"detail": str(e)})
@@ -361,37 +365,7 @@ class ListOfSpeakersViewSet(UpdateModelMixin, TreeSortMixin, GenericViewSet):
             # to see users may not have it but can get it now.
             inform_changed_data(user, disable_history=True)
 
-        # Set 'marked' for the speaker
-        elif request.method == "PATCH":
-            # Check permissions
-            if not has_perm(self.request.user, "agenda.can_manage_list_of_speakers"):
-                self.permission_denied(request)
-
-            # Retrieve user_id
-            user_id = request.data.get("user")
-            try:
-                user = get_user_model().objects.get(pk=int(user_id))
-            except (ValueError, get_user_model().DoesNotExist):
-                raise ValidationError({"detail": "User does not exist."})
-
-            marked = request.data.get("marked")
-            if not isinstance(marked, bool):
-                raise ValidationError({"detail": "Marked has to be a bool."})
-
-            queryset = Speaker.objects.filter(
-                list_of_speakers=list_of_speakers, user=user, begin_time=None
-            )
-
-            if not queryset.exists():
-                raise ValidationError(
-                    {"detail": "The user is not in the list of speakers."}
-                )
-            for speaker in queryset.all():
-                speaker.marked = marked
-                speaker.save()
-
-        else:
-            # request.method == 'DELETE'
+        elif request.method == "DELETE":
             speaker_ids = request.data.get("speaker")
 
             # Check permissions and other conditions. Get speaker instance.
@@ -439,6 +413,8 @@ class ListOfSpeakersViewSet(UpdateModelMixin, TreeSortMixin, GenericViewSet):
                 # send autoupdate if speakers are deleted
                 if deleted_some_speakers:
                     inform_changed_data(list_of_speakers)
+        else:
+            raise ValidationError({"detail": "Invalid method"})
 
         return Response()
 
@@ -576,3 +552,42 @@ class ListOfSpeakersViewSet(UpdateModelMixin, TreeSortMixin, GenericViewSet):
         Speaker.objects.all().delete()
         inform_changed_data(ListOfSpeakers.objects.all())
         return Response()
+
+
+class SpeakerViewSet(UpdateModelMixin, GenericViewSet):
+    queryset = Speaker.objects.all()
+
+    def check_view_permissions(self):
+        """
+        Returns True if the user has required permissions.
+        """
+        return has_perm(self.request.user, "agenda.can_see_list_of_speakers")
+
+    def update(self, request, *args, **kwargs):
+        # This is a hack to make request.data mutable. Otherwise fields can not be deleted.
+        if isinstance(request.data, QueryDict):
+            request.data._mutable = True
+
+        if (
+            "pro_speech" in request.data
+            and not config["agenda_list_of_speakers_enable_pro_contra_speech"]
+        ):
+            raise ValidationError({"detail": "pro/contra speech is not enabled"})
+
+        if not has_perm(request.user, "agenda.can_manage_list_of_speakers"):
+            # if no manage perms, only the speaker user itself can update the speaker.
+            speaker = self.get_object()
+            if speaker.user_id != request.user.id:
+                self.permission_denied(request)
+
+            whitelist = ["pro_speech"]  # was checked above
+            if config["agenda_list_of_speakers_can_set_mark_self"]:
+                whitelist.append("marked")
+
+            for key in request.data.keys():
+                if key not in whitelist:
+                    raise ValidationError(
+                        {"detail": f"You are not allowed to set {key}"}
+                    )
+
+        return super().update(request, *args, **kwargs)

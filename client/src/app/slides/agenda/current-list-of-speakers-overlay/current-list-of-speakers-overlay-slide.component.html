@@ -10,6 +10,8 @@
         <li *ngFor="let speaker of nextSpeakers" class="one-line">
             {{ speaker.user }}
             <mat-icon *ngIf="speaker.marked">star</mat-icon>
+            <mat-icon *ngIf="speaker.pro_speech===true">thumb_up</mat-icon>
+            <mat-icon *ngIf="speaker.pro_speech===false">thumb_down</mat-icon>
         </li>
     </ol>
 </div>

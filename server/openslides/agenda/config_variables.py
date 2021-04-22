@@ -220,3 +220,33 @@ def get_config_variables():
         group="Agenda",
         subgroup="List of speakers",
     )
+
+    yield ConfigVariable(
+        name="agenda_list_of_speakers_enable_pro_contra_speech",
+        default_value=False,
+        input_type="boolean",
+        label="Enable pro/contra buttons for speakers",
+        weight=240,
+        group="Agenda",
+        subgroup="List of speakers",
+    )
+
+    yield ConfigVariable(
+        name="agenda_list_of_speakers_can_set_mark_self",
+        default_value=False,
+        input_type="boolean",
+        label="Speakers can set the mark by themselfs",
+        weight=245,
+        group="Agenda",
+        subgroup="List of speakers",
+    )
+
+    yield ConfigVariable(
+        name="agenda_list_of_speakers_speaker_note_for_everyone",
+        default_value=False,
+        input_type="boolean",
+        label="Everyone can see the note of a speaker (instead of admins and the speaker only)",
+        weight=250,
+        group="Agenda",
+        subgroup="List of speakers",
+    )
