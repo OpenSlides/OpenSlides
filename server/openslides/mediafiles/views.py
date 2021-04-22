@@ -28,7 +28,12 @@ logger = logging.getLogger(__name__)
 
 use_mediafile_database = "mediafiles" in connections
 if use_mediafile_database:
-    logger.info("Using a standalone mediafile database")
+    mediafile_database_tablename = (
+        settings.MEDIAFILE_DATABASE_TABLENAME or "mediafile_data"
+    )
+    logger.info(
+        f"Using a standalone mediafile database with the table '{mediafile_database_tablename}'"
+    )
 
 max_upload_size = getattr(
     settings, "MEDIAFILE_MAX_SIZE", 100 * 1024 * 1024
@@ -146,7 +151,7 @@ class MediafileViewSet(ModelViewSet):
             if use_mediafile_database:
                 with connections["mediafiles"].cursor() as cursor:
                     cursor.execute(
-                        "INSERT INTO mediafile_data (id, data, mimetype) VALUES (%s, %s, %s)",
+                        f"INSERT INTO {mediafile_database_tablename} (id, data, mimetype) VALUES (%s, %s, %s)",
                         [
                             db_mediafile.id,
                             mediafile.open().read(),
@@ -166,7 +171,7 @@ class MediafileViewSet(ModelViewSet):
             if use_mediafile_database:
                 with connections["mediafiles"].cursor() as cursor:
                     cursor.execute(
-                        "DELETE FROM mediafile_data WHERE id IN %s",
+                        f"DELETE FROM {mediafile_database_tablename} WHERE id IN %s",
                         [tuple(id for id in deleted_ids)],
                     )
 

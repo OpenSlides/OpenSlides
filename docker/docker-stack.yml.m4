@@ -71,6 +71,12 @@ x-osserver-env: &default-osserver-env
     DATABASE_PASSWORD: "ifenvelse(`DATABASE_PASSWORD', openslides)"
     DATABASE_PORT: ifenvelse(`DATABASE_PORT', 5432)
     DATABASE_USER: "ifenvelse(`DATABASE_USER', openslides)"
+    MEDIAFILE_DATABASE_NAME: "read_env(`MEDIAFILE_DATABASE_NAME')"
+    MEDIAFILE_DATABASE_USER: "read_env(`MEDIAFILE_DATABASE_USER')"
+    MEDIAFILE_DATABASE_PASSWORD: "read_env(`MEDIAFILE_DATABASE_PASSWORD')"
+    MEDIAFILE_DATABASE_HOST: "read_env(`MEDIAFILE_DATABASE_HOST')"
+    MEDIAFILE_DATABASE_PORT: "read_env(`MEDIAFILE_DATABASE_PORT')"
+    MEDIAFILE_DATABASE_TABLENAME: "read_env(`MEDIAFILE_DATABASE_TABLENAME')"
     DEFAULT_FROM_EMAIL: "ifenvelse(`DEFAULT_FROM_EMAIL', noreply@example.com)"
     EMAIL_HOST: "ifenvelse(`EMAIL_HOST', postfix)"
     EMAIL_HOST_PASSWORD: "ifenvelse(`EMAIL_HOST_PASSWORD',)"
@@ -271,6 +277,8 @@ ifelse(read_env(`PGNODE_3_ENABLED'), 1, `'
       - CACHE_SIZE=ifenvelse(`CACHE_SIZE', 10)
       - CACHE_DATA_MIN_SIZE_KB=ifenvelse(`CACHE_DATA_MIN_SIZE_KB', 0)
       - CACHE_DATA_MAX_SIZE_KB=ifenvelse(`CACHE_DATA_MAX_SIZE_KB', 10240)
+      - DATABASE_NAME=read_env(`MEDIAFILE_DATABASE_NAME')
+      - DATABASE_TABLE=read_env(`MEDIAFILE_DATABASE_TABLENAME')
     deploy:
       replicas: ifenvelse(`MEDIA_SERVICE_REPLICAS', 2)
       restart_policy:
