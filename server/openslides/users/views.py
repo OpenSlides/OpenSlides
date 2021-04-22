@@ -167,6 +167,11 @@ class UserViewSet(ModelViewSet):
         ):
             request.data["username"] = user.username
 
+        # handle delegated_from field seperately since its a SerializerMethodField
+        new_delegation_ids = request.data.get("vote_delegated_from_users_id")
+        if "vote_delegated_from_users_id" in request.data:
+            del request.data["vote_delegated_from_users_id"]
+
         # check that no chains are created with vote delegation
         delegate_id = request.data.get("vote_delegated_to_id")
         if delegate_id:
@@ -181,16 +186,15 @@ class UserViewSet(ModelViewSet):
 
             self.assert_no_self_delegation(user, [delegate_id])
             self.assert_vote_not_delegated(delegate)
-            self.assert_has_no_delegated_votes(user)
+            # if vote_delegated_from is reset in this request, we can skip this check
+            if new_delegation_ids != []:
+                self.assert_has_no_delegated_votes(user)
 
             inform_changed_data(delegate)
             if user.vote_delegated_to:
                 inform_changed_data(user.vote_delegated_to)
-
-        # handle delegated_from field seperately since its a SerializerMethodField
-        new_delegation_ids = request.data.get("vote_delegated_from_users_id")
-        if "vote_delegated_from_users_id" in request.data:
-            del request.data["vote_delegated_from_users_id"]
+        elif "vote_delegated_to_id" in request.data and user.vote_delegated_to:
+            inform_changed_data(user.vote_delegated_to)
 
         try:
             response = super().update(request, *args, **kwargs)
@@ -199,8 +203,10 @@ class UserViewSet(ModelViewSet):
 
         # after rest of the request succeeded, handle delegation changes
         if isinstance(new_delegation_ids, list):
+            user.refresh_from_db()  # fetch updated model
             self.assert_no_self_delegation(user, new_delegation_ids)
-            self.assert_vote_not_delegated(user)
+            if new_delegation_ids:
+                self.assert_vote_not_delegated(user)
 
             for id in new_delegation_ids:
                 try:
