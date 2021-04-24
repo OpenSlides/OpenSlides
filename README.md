@@ -8,48 +8,59 @@ https://openslides.com for more information.
 
 __Note: OpenSlides 4 is currently under development.__
 
-### Architecture of OpenSlides 4
+
+## Architecture of OpenSlides 4
 
 ![System architecture of OpenSlides 4](docs/OpenSlides4-systemarchitecture.png)
-
 
 Read more about our [concept of OpenSlides 4.0](https://github.com/OpenSlides/OpenSlides/wiki/DE%3A-Konzept-OpenSlides-4).
 
 
 ## Installation
 
-NOTE: Do not use prod at the moment. It will not work. Please refer to the DEVELOPMENT.md!
+### Requirements
 
-Required software: Docker, docker-compose, make, git
+You need [Docker](https://docs.docker.com/engine/install/) and [Docker
+Compose](https://docs.docker.com/compose/install/).
 
-For a non-development setup, clone this repo and run it via docker compose. The make command is a handy shortcut for this:
+### Setup OpenSlides
 
-    $ git clone git@github.com:OpenSlides/OpenSlides.git
-    $ cd OpenSlides
-    $ git checkout openslides4-dev  # needed, until OS4 is released
-    $ make run-prod
+Go to a nice place in your filesystem and get the [OpenSlides manage
+tool](https://github.com/OpenSlides/openslides-manage-service/releases/tag/latest).
+
+Create configuration files:
+
+    $ ./manage setup --cwd  # TODO: Provide instruction using XDG_DATA_PATH.
+
+Build and start Docker containers. According to your Docker installation you may
+have to run this as root:
+
+    $ docker-compose up --build --detach
+
+Setup initial-data:
+
+    $ ./manage initial-data
+
+Now you can open http://localhost:8000 and use OpenSlides.
+
+To stop OpenSlides run:
+
+    $ docker-compose stop
+
+To remove all containers including the complete database run:
+
+    $ docker-compose rm
+
+
+## Installation with ...
+
+TODO: Provide a short instruction for setup with Docker Swarm or Kubernetes or
+something else.
+
+
+## Development setup
 
 For a development setup, refer to [the development docs](DEVELOPMENT.md)
-
-
-## Productive environment
-
-Setup the repository (may be already done)
-
-    $ git clone git@github.com:OpenSlides/OpenSlides.git
-    $ cd OpenSlides
-    $ git checkout openslides4-dev
-    $ git submodule update --init
-
-Prod setup. `./build.sh` may take a while.
-
-    $ cd docker
-    $ m4 docker-compose.yml.m4 > docker-compose.yml
-    $ ./build.sh
-    $ ./setup-prod.sh
-    $ docker-compose up
-
-Navigate to https://localhost:8000
 
 
 ## Used software
