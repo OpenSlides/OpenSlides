@@ -256,7 +256,7 @@ class MotionPollSerializer(BasePollSerializer):
         read_only_fields = ("state",)
 
     def update(self, instance, validated_data):
-        """ Prevent updating the motion """
+        """Prevent updating the motion"""
         validated_data.pop("motion", None)
         return super().update(instance, validated_data)
 
@@ -320,7 +320,7 @@ class MotionCommentSectionSerializer(ModelSerializer):
         read_only_fields = ("weight",)
 
     def create(self, validated_data):
-        """ Call inform_changed_data on creation, so the cache includes the groups. """
+        """Call inform_changed_data on creation, so the cache includes the groups."""
         section = super().create(validated_data)
         inform_changed_data(section)
         return section

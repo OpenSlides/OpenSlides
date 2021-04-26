@@ -32,7 +32,7 @@ class SamlView(View):
         return super().__init__(*args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        """ POST requests should do the same as GET requests. """
+        """POST requests should do the same as GET requests."""
         return self.get(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
@@ -183,7 +183,7 @@ class SamlView(View):
         return queryargs
 
     def update_user(self, user, attributes):
-        """ Updates a user with the new attributes """
+        """Updates a user with the new attributes"""
         if "auth_type" in attributes:
             del attributes["auth_type"]
 

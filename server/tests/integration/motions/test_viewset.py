@@ -660,7 +660,7 @@ class TestMotionCommentSectionSorting(TestCase):
         self.assert_not_changed()
 
     def assert_not_changed(self):
-        """ Asserts, that every comment section has the default weight of 10000. """
+        """Asserts, that every comment section has the default weight of 10000."""
         for section in MotionCommentSection.objects.all():
             self.assertEqual(section.weight, 10000)
 

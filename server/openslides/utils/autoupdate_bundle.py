@@ -56,7 +56,7 @@ class AutoupdateBundle:
         self._disable_history = False
 
     def add(self, elements: Iterable[AutoupdateElement]) -> None:
-        """ Adds the elements to the bundle """
+        """Adds the elements to the bundle"""
         for element in elements:
             self.autoupdate_elements[element["collection_string"]][
                 element["id"]
@@ -103,7 +103,7 @@ class AutoupdateBundle:
 
     @property
     def element_iterator(self) -> Iterable[AutoupdateElement]:
-        """ Iterator for all elements in this bundle """
+        """Iterator for all elements in this bundle"""
         for elements in self.autoupdate_elements.values():
             yield from elements.values()
 

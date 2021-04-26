@@ -424,7 +424,7 @@ class RedisCacheProvider:
         return value
 
     async def get_schema_version(self) -> Optional[SchemaVersion]:
-        """ Retrieves the schema version of the cache or None, if not existent """
+        """Retrieves the schema version of the cache or None, if not existent"""
         async with get_connection(read_only=True) as redis:
             try:
                 schema_version = await redis.hgetall(self.schema_cache_key)
@@ -441,7 +441,7 @@ class RedisCacheProvider:
         }
 
     async def set_schema_version(self, schema_version: SchemaVersion) -> None:
-        """ Sets the schema version for this cache. """
+        """Sets the schema version for this cache."""
         async with get_connection() as redis:
             await redis.hmset_dict(self.schema_cache_key, schema_version)
 
@@ -483,7 +483,7 @@ class RedisCacheProvider:
     async def _eval(
         self, redis: Any, script_name: str, keys: List[str] = [], args: List[Any] = []
     ) -> Any:
-        """ Do a real eval of the script (no hash used here). Catches "cache_reset". """
+        """Do a real eval of the script (no hash used here). Catches "cache_reset"."""
         try:
             return await redis.eval(self.scripts[script_name][0], keys, args)
         except aioredis.errors.ReplyError as e:

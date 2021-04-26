@@ -6,7 +6,7 @@ from django.db import migrations, transaction
 
 
 def change_pollmethods(apps, schema_editor):
-    """ yn->YN, yna->YNA """
+    """yn->YN, yna->YNA"""
     AssignmentPoll = apps.get_model("assignments", "AssignmentPoll")
     pollmethod_map = {
         "yn": "YN",
@@ -113,7 +113,7 @@ def convert_votesno(apps, schema_editor):
 
 
 def set_correct_state(apps, schema_editor):
-    """ if poll.published, set state to published """
+    """if poll.published, set state to published"""
     AssignmentPoll = apps.get_model("assignments", "AssignmentPoll")
     AssignmentVote = apps.get_model("assignments", "AssignmentVote")
     for poll in AssignmentPoll.objects.all():

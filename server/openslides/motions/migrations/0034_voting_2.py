@@ -4,7 +4,7 @@ from django.db import migrations
 
 
 def change_pollmethods(apps, schema_editor):
-    """ yn->YN, yna->YNA """
+    """yn->YN, yna->YNA"""
     MotionPoll = apps.get_model("motions", "MotionPoll")
     pollmethod_map = {
         "yn": "YN",
@@ -83,7 +83,7 @@ def convert_votes(apps, schema_editor):
 
 
 def set_correct_state(apps, schema_editor):
-    """ If there are votes, set the state to finished """
+    """If there are votes, set the state to finished"""
     MotionPoll = apps.get_model("motions", "MotionPoll")
     MotionVote = apps.get_model("motions", "MotionVote")
     for poll in MotionPoll.objects.all():

@@ -881,7 +881,7 @@ class VoteMotionPollNamed(TestCase):
         self.assertFalse(MotionPoll.objects.get().get_votes().exists())
 
     def setup_vote_delegation(self, with_delegation=True):
-        """ user -> admin """
+        """user -> admin"""
         self.start_poll()
         self.make_admin_delegate()
         self.make_admin_present()
@@ -1392,7 +1392,7 @@ class ResetMotionPoll(TestCase):
 
 class TestMotionPollWithVoteDelegationAutoupdate(TestCase):
     def advancedSetUp(self):
-        """ Set up user -> other_user delegation. """
+        """Set up user -> other_user delegation."""
         self.motion = Motion(
             title="test_title_dL91JqhMTiQuQLSDRItZ",
             text="test_text_R7nURdXKVEfEnnJBXJYa",
