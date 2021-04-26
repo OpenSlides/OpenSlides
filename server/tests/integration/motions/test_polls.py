@@ -1193,6 +1193,9 @@ class StopMotionPoll(TestCase):
     def test_stop_poll_with_entitled_users_and_vote_delegation(self):
         self.setup_entitled_users()
         user, _ = self.create_user()
+        user.is_present = True
+        user.save()
+        self.admin.is_present = False
         self.admin.vote_delegated_to = user
         self.admin.save()
         response = self.client.post(reverse("motionpoll-stop", args=[self.poll.pk]))

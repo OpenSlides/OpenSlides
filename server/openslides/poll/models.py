@@ -278,7 +278,10 @@ class BasePoll(models.Model):
         entitled_users_ids = set()
         for group in self.groups.all():
             for user in group.user_set.all():
-                if user.is_present and user.id not in entitled_users_ids:
+                if (
+                    user.is_present
+                    or (user.vote_delegated_to and user.vote_delegated_to.is_present)
+                ) and user.id not in entitled_users_ids:
                     entitled_users_ids.add(user.id)
                     entitled_users.append(
                         {
