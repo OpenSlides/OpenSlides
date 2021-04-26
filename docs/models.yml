@@ -1687,6 +1687,13 @@ poll:
       - analog
       - named
       - pseudoanonymous
+  backend:
+    type: string
+    required: True
+    default: long
+    enum:
+      - long
+      - fast
   is_pseudoanonymized: boolean
   pollmethod:
     type: string
