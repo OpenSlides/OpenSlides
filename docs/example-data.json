@@ -38,11 +38,10 @@
         "organisation_management_level": "superadmin",
 
         "is_present_in_meeting_ids": [1],
-        "meeting_id": null,
-        "guest_meeting_ids": [],
-        "committee_as_member_ids": [],
-        "committee_as_manager_ids": [],
-
+        "committee_ids": [1],
+        "committee_$_management_level": ["1"],
+        "committee_$1_management_level": "can_manage",
+        
         "comment_$": ["1"],
         "comment_$1": "Test comment",
         "number_$": ["1"],
@@ -76,7 +75,9 @@
         "vote_delegated_vote_$_ids": ["1"],
         "vote_delegated_vote_$1_ids": [7],
         "vote_delegated_$_to_id": [],
-        "vote_delegations_$_from_ids": []
+        "vote_delegations_$_from_ids": [],
+
+        "meeting_ids": [1]
     },
     {
         "id": 2,
@@ -99,10 +100,8 @@
         "organisation_management_level": "",
 
         "is_present_in_meeting_ids": [],
-        "meeting_id": null,
-        "guest_meeting_ids": [],
-        "committee_as_member_ids": [],
-        "committee_as_manager_ids": [],
+        "committee_ids": [1],
+        "committee_$_management_level": [],
 
         "comment_$": ["1"],
         "comment_$1": "Test comment a",
@@ -116,7 +115,7 @@
         "vote_weight_$1": "1.000000",
 
         "group_$_ids": ["1"],
-        "group_$1_ids": [6],
+        "group_$1_ids": [5],
         "speaker_$_ids": ["1"],
         "speaker_$1_ids": [2, 3, 7, 10, 11, 13],
         "personal_note_$_ids": [],
@@ -132,7 +131,9 @@
         "current_projector_$_ids": [],
         "vote_delegated_vote_$_ids": [],
         "vote_delegated_$_to_id": [],
-        "vote_delegations_$_from_ids": []
+        "vote_delegations_$_from_ids": [],
+
+        "meeting_ids": [1]
     },
     {
         "id": 3,
@@ -155,10 +156,8 @@
         "organisation_management_level": "",
 
         "is_present_in_meeting_ids": [],
-        "meeting_id": null,
-        "guest_meeting_ids": [1],
-        "committee_as_member_ids": [],
-        "committee_as_manager_ids": [],
+        "committee_ids": [],
+        "committee_$_management_level": [],
 
         "comment_$": ["1"],
         "comment_$1": "Test comment b as guest",
@@ -171,7 +170,8 @@
         "vote_weight_$": ["1"],
         "vote_weight_$1": "1.000000",
 
-        "group_$_ids": [],
+        "group_$_ids": ["1"],
+        "group_$1_ids": [5],
         "speaker_$_ids": ["1"],
         "speaker_$1_ids": [4, 8, 9],
         "personal_note_$_ids": [],
@@ -188,7 +188,9 @@
         "current_projector_$_ids": [],
         "vote_delegated_vote_$_ids": [],
         "vote_delegated_$_to_id": [],
-        "vote_delegations_$_from_ids": []
+        "vote_delegations_$_from_ids": [],
+
+        "meeting_ids": [1]
     }],
 "resource": [
     {
@@ -217,8 +219,7 @@
         "meeting_ids": [1],
         "template_meeting_id": null,
         "default_meeting_id": 1,
-        "member_ids": [],
-        "manager_ids": [],
+        "user_ids": [1, 2],
         "forward_to_committee_ids": [],
         "receive_forwardings_from_committee_ids": [],
         "organisation_tag_ids": [1],
@@ -392,8 +393,6 @@
         "default_meeting_for_committee_id": 1,
         "organisation_tag_ids": [1],
         "present_user_ids": [1],
-        "temporary_user_ids": [],
-        "guest_ids": [3],
         "user_ids": [1, 2, 3],
         "reference_projector_id": 2,
         "list_of_speakers_countdown_id": 1,
@@ -567,7 +566,7 @@
             "user.can_change_own_password"
         ],
 
-        "user_ids": [2],
+        "user_ids": [2, 3],
         "mediafile_access_group_ids": [],
         "mediafile_inherited_access_group_ids": [],
         "read_comment_section_ids": [1],
