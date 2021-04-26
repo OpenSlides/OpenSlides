@@ -554,7 +554,7 @@ class UserViewSet(ModelViewSet):
         )
 
     def assert_list_of_ints(self, ids, ids_name="user_ids"):
-        """ Asserts, that ids is a list of ints. Raises a ValidationError, if not. """
+        """Asserts, that ids is a list of ints. Raises a ValidationError, if not."""
         if not isinstance(ids, list):
             raise ValidationError({"detail": "{0} must be a list", "args": [ids_name]})
         for id in ids:

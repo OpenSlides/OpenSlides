@@ -1057,7 +1057,7 @@ class State(RESTModelMixin, models.Model):
                 )
 
     def is_next_or_previous_state_id(self, state_id):
-        """ Returns true, if the given state id is a valid next or previous state """
+        """Returns true, if the given state id is a valid next or previous state"""
         next_state_ids = [item.id for item in self.next_states.all()]
         previous_state_ids = [
             item.id for item in State.objects.filter(next_states__in=[self.id])

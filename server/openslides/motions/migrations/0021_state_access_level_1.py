@@ -4,7 +4,7 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-    """ Note: this is a combined migration to execute code in a seperate transaction """
+    """Note: this is a combined migration to execute code in a seperate transaction"""
 
     dependencies = [("motions", "0020_auto_20190119_1425")]
 

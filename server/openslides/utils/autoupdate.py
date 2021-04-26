@@ -20,7 +20,6 @@ AutoupdateFormat = TypedDict(
 
 
 def disable_history() -> None:
-    """"""
     with autoupdate_bundle() as bundle:
         bundle.disable_history()
 

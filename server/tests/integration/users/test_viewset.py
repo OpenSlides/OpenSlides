@@ -313,7 +313,7 @@ class UserUpdate(TestCase):
         self.assertIsNone(admin.vote_delegated_to_id)
 
     def setup_vote_delegation(self):
-        """ login and setup user -> user2 delegation """
+        """login and setup user -> user2 delegation"""
         self.user, _ = self.create_user()
         self.user2, _ = self.create_user()
         self.user.vote_delegated_to = self.user2
@@ -354,7 +354,7 @@ class UserUpdate(TestCase):
         self.assertEqual(user.vote_delegated_to_id, self.user2.id)
 
     def test_update_nested_vote_delegation_1(self):
-        """ user -> user2 -> admin """
+        """user -> user2 -> admin"""
         self.setup_vote_delegation()
         response = self.client.patch(
             reverse("user-detail", args=[self.user2.pk]),
@@ -366,7 +366,7 @@ class UserUpdate(TestCase):
         self.assertIsNone(user2.vote_delegated_to_id)
 
     def test_update_nested_vote_delegation_2(self):
-        """ admin -> user -> user2 """
+        """admin -> user -> user2"""
         self.setup_vote_delegation()
         response = self.client.patch(
             reverse("user-detail", args=[self.admin.pk]),
@@ -391,7 +391,7 @@ class UserUpdate(TestCase):
         self.assertIsNone(user.vote_delegated_to_id)
 
     def test_update_vote_delegated_from_nested_1(self):
-        """ admin -> user -> user2 """
+        """admin -> user -> user2"""
         self.setup_vote_delegation()
         response = self.client.patch(
             reverse("user-detail", args=[self.user.pk]),
@@ -403,7 +403,7 @@ class UserUpdate(TestCase):
         self.assertIsNone(admin.vote_delegated_to_id)
 
     def test_update_vote_delegated_from_nested_2(self):
-        """ user -> user2 -> admin """
+        """user -> user2 -> admin"""
         self.setup_vote_delegation()
         response = self.client.patch(
             reverse("user-detail", args=[self.admin.pk]),
@@ -415,7 +415,7 @@ class UserUpdate(TestCase):
         self.assertIsNone(user2.vote_delegated_to_id)
 
     def test_update_vote_delegation_both_1(self):
-        """ Change user -> user2 to admin -> user in one request. """
+        """Change user -> user2 to admin -> user in one request."""
         self.user2 = User.objects.create_user(
             username="user2",
             password="non-admin 1WywRnqKbcdtQwS2",
@@ -446,7 +446,7 @@ class UserUpdate(TestCase):
         self.assertEqual(user2.vote_delegated_from_users.count(), 0)
 
     def test_update_vote_delegation_both_2(self):
-        """ Change user -> user2 to user2 -> admin in one request. """
+        """Change user -> user2 to user2 -> admin in one request."""
         self.user2 = User.objects.create_user(
             username="user2",
             password="non-admin 1WywRnqKbcdtQwS2",
@@ -519,7 +519,7 @@ class UserDelete(TestCase):
         self.assertFalse(User.objects.filter(pk__in=ids).exists())
 
     def test_bulk_delete_self(self):
-        """ The own id should be excluded, so nothing should happen. """
+        """The own id should be excluded, so nothing should happen."""
         response = self.admin_client.post(
             reverse("user-bulk-delete"), {"user_ids": [1]}
         )

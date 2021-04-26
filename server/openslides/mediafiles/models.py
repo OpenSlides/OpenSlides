@@ -169,11 +169,11 @@ class Mediafile(RESTModelMixin, ListOfSpeakersMixin, models.Model):
         return deleted_ids
 
     def _db_delete(self, *args, **kwargs):
-        """ Captures the original .delete() method. """
+        """Captures the original .delete() method."""
         return super().delete(*args, **kwargs)
 
     def get_children_deep(self):
-        """ Returns all children and all children of childrens and so forth. """
+        """Returns all children and all children of childrens and so forth."""
         children = []
         for child in self.children.all():
             children.append(child)
@@ -257,7 +257,7 @@ class Mediafile(RESTModelMixin, ListOfSpeakersMixin, models.Model):
 
     @property
     def is_file(self):
-        """ Do not check the self.mediafile, becuase this is not a valid indicator. """
+        """Do not check the self.mediafile, becuase this is not a valid indicator."""
         return not self.is_directory
 
     def get_list_of_speakers_title_information(self):

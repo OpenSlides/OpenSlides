@@ -5,7 +5,7 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-    """ Cleanup 2 """
+    """Cleanup 2"""
 
     dependencies = [("motions", "0011_motion_version_3")]
 

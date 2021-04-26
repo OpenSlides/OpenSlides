@@ -142,7 +142,7 @@ class InvalidConnection(Exception):
 
 
 class ConnectionPool(ChannelRedisConnectionPool):
-    """ Adds a trivial, soft limit for the pool """
+    """Adds a trivial, soft limit for the pool"""
 
     def __init__(self, host: Any) -> None:
         self.counter = 0

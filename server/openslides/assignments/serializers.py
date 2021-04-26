@@ -106,7 +106,7 @@ class AssignmentPollSerializer(BasePollSerializer):
         read_only_fields = ("state",)
 
     def update(self, instance, validated_data):
-        """ Prevent updating the assignment """
+        """Prevent updating the assignment"""
         validated_data.pop("assignment", None)
         return super().update(instance, validated_data)
 

@@ -28,7 +28,7 @@ class WebsocketLatencyLogger:
 
     @classmethod
     async def add_latency(cls, latency: int) -> None:
-        """ Add the latency to the logger. """
+        """Add the latency to the logger."""
         # pass the latency value to the single instance
         if cls.instance is None:
             cls.instance = cls()
@@ -49,7 +49,7 @@ class WebsocketLatencyLogger:
                 self.flush()
 
     def flush(self) -> None:
-        """ Calc Stats and print to logger. """
+        """Calc Stats and print to logger."""
         N = len(self.latencies)
         mean = sum(self.latencies) / N
         std = sum((latency - mean) ** 2 for latency in self.latencies)
@@ -58,7 +58,7 @@ class WebsocketLatencyLogger:
         self.reset()
 
     def reset(self) -> None:
-        """ Resets the stats. """
+        """Resets the stats."""
         self.latencies: List[int] = []
         self.time = time.time()
 
@@ -131,7 +131,7 @@ class WebsocketThroughputLogger:
             self.reset()
 
     def reset(self) -> None:
-        """ Resets the stats. """
+        """Resets the stats."""
         self.send_compressed = 0
         self.send_uncompressed = 0
         self.receive_compressed = 0

@@ -15,7 +15,7 @@ from ..utils.models import SET_NULL_AND_AUTOUPDATE
 
 
 def generate_user_token():
-    """ Generates a 16 character alphanumeric token. """
+    """Generates a 16 character alphanumeric token."""
     return get_random_string(16)
 
 
@@ -215,7 +215,7 @@ class BasePoll(models.Model):
         abstract = True
 
     def create_options(self):
-        """ Should be called after creation of this model. """
+        """Should be called after creation of this model."""
         raise NotImplementedError()
 
     @classmethod

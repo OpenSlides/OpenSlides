@@ -316,7 +316,7 @@ class BasePollViewSet(ModelViewSet):
                 raise ValidationError({"detail": "You have already voted."})
 
     def parse_vote_value(self, obj, key):
-        """ Raises a ValidationError on incorrect values, including None """
+        """Raises a ValidationError on incorrect values, including None"""
         if key not in obj:
             raise ValidationError({"detail": f"The field {key} is required"})
         field = DecimalField(min_value=-2, max_digits=15, decimal_places=6)

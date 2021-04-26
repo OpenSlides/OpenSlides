@@ -30,7 +30,7 @@ class BaseUserBackend:
 
 
 class DefaultUserBackend(BaseUserBackend):
-    """ The default user backend for OpenSlides """
+    """The default user backend for OpenSlides"""
 
     @property
     def name(self) -> str:
@@ -51,14 +51,14 @@ class UserBackendManager:
         self.backends: Dict[str, BaseUserBackend] = {}
 
     def collect_backends_from_apps(self):
-        """ Iterate through app configs and get an optional "user_backend_class" for a backend """
+        """Iterate through app configs and get an optional "user_backend_class" for a backend"""
         for app in apps.get_app_configs():
             user_backend_class = getattr(app, "user_backend_class", None)
             if user_backend_class:
                 self.register_user_backend(user_backend_class())
 
     def register_user_backend(self, backend: BaseUserBackend):
-        """ Registeres a user backend """
+        """Registeres a user backend"""
         if backend.name in self.backends:
             raise UserBackendException(
                 f"The user backend {backend.name} already exists."
@@ -75,7 +75,7 @@ class UserBackendManager:
         return self.backends[name]
 
     def get_backends_for_client(self) -> Dict[str, Dict[str, Any]]:
-        """ Formats the backends for the client """
+        """Formats the backends for the client"""
         return {name: backend.for_client() for name, backend in self.backends.items()}
 
 

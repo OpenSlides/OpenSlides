@@ -266,7 +266,7 @@ class TestUpdate(TestCase):
         )
 
     def test_update_parent_id(self):
-        """ Assert, that the parent id does not change """
+        """Assert, that the parent id does not change"""
         response = self.client.put(
             reverse("mediafile-detail", args=[self.mediafileA.pk]),
             {"title": self.mediafileA.title, "parent_id": None},

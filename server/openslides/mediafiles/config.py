@@ -23,7 +23,7 @@ def watch_and_update_configs():
 
 
 def build_mapping(base_config_key, mediafiles):
-    """ Returns a map of config keys to medaifile ids """
+    """Returns a map of config keys to medaifile ids"""
     logos = {}
     for key in config[base_config_key]:
         url = config[key]["path"]
