@@ -55,11 +55,11 @@
             {{ activeSpeaker.getListTitle() }}
             <div class="active-speaker-subtitle">
                 <i *ngIf="activeSpeaker.pro_speech === true">
-                    {{ 'Pro speech' | translate }}
+                    {{ 'Forspeech' | translate }}
                 </i>
 
                 <i *ngIf="activeSpeaker.pro_speech === false">
-                    {{ 'Contra speech' | translate }}
+                    {{ 'Counter speech' | translate }}
                 </i>
 
                 <i *ngIf="activeSpeaker.marked">
@@ -112,7 +112,7 @@
                             <ng-container *ngIf="speaker.pro_speech === true">
                                 <mat-icon inline class="inline-icon-text-align green-text"> add_circle </mat-icon>
                                 <i class="user-subtitle">
-                                    {{ 'Pro speech' | translate }}
+                                    {{ 'Forspeech' | translate }}
                                 </i>
                             </ng-container>
 
@@ -121,7 +121,7 @@
                                     remove_circle
                                 </mat-icon>
                                 <i class="user-subtitle">
-                                    {{ 'Contra speech' | translate }}
+                                    {{ 'Counter speech' | translate }}
                                 </i>
                             </ng-container>
 
@@ -174,7 +174,7 @@
                                 <button
                                     mat-icon-button
                                     (click)="onProContraButtons(speaker, true)"
-                                    matTooltip="{{ 'Pro speech' | translate }}"
+                                    matTooltip="{{ 'Forspeech' | translate }}"
                                     *ngIf="enableProContraSpeech && !speaker.point_of_order"
                                 >
                                     <mat-icon class="user-subtitle" *ngIf="speaker.pro_speech !== true"> add_circle_outline </mat-icon>
@@ -187,7 +187,7 @@
                                 <button
                                     mat-icon-button
                                     (click)="onProContraButtons(speaker, false)"
-                                    matTooltip="{{ 'Contra speech' | translate }}"
+                                    matTooltip="{{ 'Counter speech' | translate }}"
                                     *ngIf="enableProContraSpeech && !speaker.point_of_order"
                                 >
                                     <mat-icon class="user-subtitle" *ngIf="speaker.pro_speech !== false"> remove_circle_outline </mat-icon>
@@ -305,14 +305,14 @@
             <button mat-menu-item (click)="onProContraButtons(speaker, true)" *ngIf="enableProContraSpeech">
                 <mat-icon *ngIf="speaker.pro_speech !== true"> add_circle_outline </mat-icon>
                 <mat-icon class="green-text" *ngIf="speaker.pro_speech === true"> add_circle </mat-icon>
-                <span>{{ 'Pro speech' | translate }}</span>
+                <span>{{ 'Forspeech' | translate }}</span>
             </button>
 
             <!-- contra button -->
             <button mat-menu-item (click)="onProContraButtons(speaker, false)" *ngIf="enableProContraSpeech">
                 <mat-icon *ngIf="speaker.pro_speech !== false"> remove_circle_outline </mat-icon>
                 <mat-icon class="red-warning-text" *ngIf="speaker.pro_speech === false"> remove_circle </mat-icon>
-                <span>{{ 'Contra speech' | translate }}</span>
+                <span>{{ 'Counter speech' | translate }}</span>
             </button>
 
             <!-- star button -->

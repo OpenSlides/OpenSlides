@@ -182,11 +182,21 @@ def get_config_variables():
     )
 
     yield ConfigVariable(
+        name="agenda_list_of_speakers_speaker_note_for_everyone",
+        default_value=False,
+        input_type="boolean",
+        label="Everyone can see the request of a point of order (instead of managers for list of speakers only)",
+        weight=230,
+        group="Agenda",
+        subgroup="List of speakers",
+    )
+
+    yield ConfigVariable(
         name="agenda_hide_amount_of_speakers",
         default_value=False,
         input_type="boolean",
         label="Hide the amount of speakers in subtitle of list of speakers slide",
-        weight=230,
+        weight=231,
         group="Agenda",
         subgroup="List of speakers",
     )
@@ -225,7 +235,7 @@ def get_config_variables():
         name="agenda_list_of_speakers_enable_pro_contra_speech",
         default_value=False,
         input_type="boolean",
-        label="Enable pro/contra buttons for speakers",
+        label="Enable forspeech / counter speech",
         weight=240,
         group="Agenda",
         subgroup="List of speakers",
@@ -235,18 +245,8 @@ def get_config_variables():
         name="agenda_list_of_speakers_can_set_mark_self",
         default_value=False,
         input_type="boolean",
-        label="Speakers can set the mark by themselfs",
+        label="Enable star icon to mark speaker (e.g. for contribution)",
         weight=245,
-        group="Agenda",
-        subgroup="List of speakers",
-    )
-
-    yield ConfigVariable(
-        name="agenda_list_of_speakers_speaker_note_for_everyone",
-        default_value=False,
-        input_type="boolean",
-        label="Everyone can see the note of a speaker (instead of admins and the speaker only)",
-        weight=250,
         group="Agenda",
         subgroup="List of speakers",
     )
