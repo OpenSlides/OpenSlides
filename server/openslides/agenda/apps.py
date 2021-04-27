@@ -17,7 +17,7 @@ class AgendaAppConfig(AppConfig):
             listen_to_related_object_post_delete,
             listen_to_related_object_post_save,
         )
-        from .views import ItemViewSet, ListOfSpeakersViewSet
+        from .views import ItemViewSet, ListOfSpeakersViewSet, SpeakerViewSet
 
         # Connect signals.
         post_save.connect(
@@ -37,6 +37,10 @@ class AgendaAppConfig(AppConfig):
         router.register(
             self.get_model("ListOfSpeakers").get_collection_string(),
             ListOfSpeakersViewSet,
+        )
+        router.register(
+            self.get_model("Speaker").get_collection_string(),
+            SpeakerViewSet,
         )
 
     def get_config_variables(self):

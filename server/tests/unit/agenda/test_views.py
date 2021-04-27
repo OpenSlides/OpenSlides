@@ -32,7 +32,10 @@ class ListOfSpeakersViewSetManageSpeaker(TestCase):
         self.view_instance.manage_speaker(self.request)
 
         mock_speaker.objects.add.assert_called_with(
-            self.request.user, self.mock_list_of_speakers, point_of_order=False
+            self.request.user,
+            self.mock_list_of_speakers,
+            point_of_order=False,
+            note=None,
         )
 
     @patch("openslides.agenda.views.inform_changed_data")
@@ -56,7 +59,7 @@ class ListOfSpeakersViewSetManageSpeaker(TestCase):
 
         MockUser.objects.get.assert_called_with(pk=2)
         mock_speaker.objects.add.assert_called_with(
-            mock_user, self.mock_list_of_speakers, point_of_order=False
+            mock_user, self.mock_list_of_speakers, point_of_order=False, note=None
         )
 
     @patch("openslides.agenda.views.Speaker")

@@ -1,0 +1,10 @@
+.single-motion-line {
+    display: grid;
+    grid-template-columns: auto min-content;
+    grid-column-gap: 0.5em;
+    margin-right: 0.5em;
+
+    span {
+        margin: auto 0;
+    }
+}

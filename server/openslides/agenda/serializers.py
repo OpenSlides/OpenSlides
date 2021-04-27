@@ -16,7 +16,18 @@ class SpeakerSerializer(ModelSerializer):
             "begin_time",
             "end_time",
             "weight",
+            "note",
             "marked",
+            "point_of_order",
+            "pro_speech",
+        )
+        read_only_fields = (
+            "id",
+            "user",
+            "begin_time",
+            "end_time",
+            "weight",
+            "note",
             "point_of_order",
         )
 

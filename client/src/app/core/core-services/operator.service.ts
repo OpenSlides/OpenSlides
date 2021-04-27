@@ -117,6 +117,13 @@ export class OperatorService implements OnAfterAppsLoaded {
         return this._viewUser;
     }
 
+    /**
+     * Returns 0 for the anonymous
+     */
+    public get userId(): number {
+        return this.user?.id || 0;
+    }
+
     public get isAnonymous(): boolean {
         return !this.user || this.user.id === 0;
     }

@@ -40,6 +40,16 @@
 
 .candidates-list {
     padding: 10px 25px 0 25px;
+
+    .single-candidate-line {
+        display: grid;
+        grid-template-columns: auto min-content;
+        grid-column-gap: 0.5em;
+
+        span {
+            margin: auto 0;
+        }
+    }
 }
 
 .add-candidates {

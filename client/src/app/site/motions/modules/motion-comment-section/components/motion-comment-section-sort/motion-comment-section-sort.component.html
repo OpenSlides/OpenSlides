@@ -8,5 +8,11 @@
 <!-- Content -->
 <mat-card class="os-form-card">
     <!-- The sorting component -->
-    <os-sorting-list (sortEvent)="onSortingChange($event)" [live]="true" [input]="comments" #sorter> </os-sorting-list>
+    <os-sorting-list (sortEvent)="onSortingChange($event)" [live]="true" [input]="comments" #sorter>
+        <ng-template let-comment>
+            <span>
+                {{ comment.getTitle() }}
+            </span>
+        </ng-template>
+    </os-sorting-list>
 </mat-card>
