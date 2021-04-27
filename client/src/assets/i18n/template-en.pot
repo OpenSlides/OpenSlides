@@ -741,6 +741,9 @@ msgstr ""
 msgid "Content"
 msgstr ""
 
+msgid "Contribution"
+msgstr ""
+
 msgid "Cookies have to be enabled to use OpenSlides."
 msgstr ""
 
@@ -769,6 +772,9 @@ msgid "Countdown title"
 msgstr ""
 
 msgid "Countdowns"
+msgstr ""
+
+msgid "Counter speech"
 msgstr ""
 
 msgid "Counting of votes is in progress ..."
@@ -1079,6 +1085,9 @@ msgstr ""
 msgid "Empty text field"
 msgstr ""
 
+msgid "Enable forspeech / counter speech"
+msgstr ""
+
 msgid "Enable numbering for agenda items"
 msgstr ""
 
@@ -1086,6 +1095,9 @@ msgid "Enable participant presence view"
 msgstr ""
 
 msgid "Enable points of order"
+msgstr ""
+
+msgid "Enable star icon to mark speaker (e.g. for contribution)"
 msgstr ""
 
 msgid "Enable virtual applause"
@@ -1163,6 +1175,11 @@ msgid "Event name"
 msgstr ""
 
 msgid "Event organizer"
+msgstr ""
+
+msgid ""
+"Everyone can see the request of a point of order (instead of managers for "
+"list of speakers only)"
 msgstr ""
 
 msgid "Exit"
@@ -1250,6 +1267,9 @@ msgid "Forgot Password?"
 msgstr ""
 
 msgid "Format"
+msgstr ""
+
+msgid "Forspeech"
 msgstr ""
 
 msgid "Front page text"
@@ -1619,9 +1639,6 @@ msgstr ""
 msgid "Mark as personal favorite"
 msgstr ""
 
-msgid "Mark speaker"
-msgstr ""
-
 msgid "Maximum amount of votes"
 msgstr ""
 
@@ -1821,9 +1838,6 @@ msgid "No category"
 msgstr ""
 
 msgid "No category set"
-msgstr ""
-
-msgid "No change recommendations yet"
 msgstr ""
 
 msgid "No changes at the text."
@@ -2363,6 +2377,9 @@ msgid "Replacement"
 msgstr ""
 
 msgid "Reply address"
+msgstr ""
+
+msgid "Request"
 msgstr ""
 
 msgid "Requests to speak"

@@ -788,6 +788,9 @@ msgstr "Alle Nutzer automatisch mit der Livekonferenz verbinden"
 msgid "Content"
 msgstr "Inhalt"
 
+msgid "Contribution"
+msgstr "Einbringung"
+
 msgid "Cookies have to be enabled to use OpenSlides."
 msgstr "Cookies müssen aktiviert sein, um OpenSlides verwenden zu können."
 
@@ -817,6 +820,9 @@ msgstr "Countdown-Titel"
 
 msgid "Countdowns"
 msgstr "Countdowns"
+
+msgid "Counter speech"
+msgstr "Gegenrede"
 
 msgid "Counting of votes is in progress ..."
 msgstr "Die Auszählung der Stimmen läuft ..."
@@ -1157,6 +1163,9 @@ msgstr "Betreff"
 msgid "Empty text field"
 msgstr "Leeres Textfeld"
 
+msgid "Enable forspeech / counter speech"
+msgstr "Fürrede/Gegenrede aktivieren"
+
 msgid "Enable numbering for agenda items"
 msgstr "Nummerierung von Tagesordnungspunkten aktivieren"
 
@@ -1165,6 +1174,11 @@ msgstr "Ansicht zur Teilnehmeranwesenheit aktivieren"
 
 msgid "Enable points of order"
 msgstr "Geschäftsordnungsanträge aktivieren"
+
+msgid "Enable star icon to mark speaker (e.g. for contribution)"
+msgstr ""
+"Stern-Icon zum Markieren von Redner*innen aktivieren (z.B. zur Einbringung "
+"eines Antrags)"
 
 msgid "Enable virtual applause"
 msgstr "Virtuellen Applaus einschalten"
@@ -1248,6 +1262,13 @@ msgstr "Veranstaltungsname"
 
 msgid "Event organizer"
 msgstr "Veranstalter"
+
+msgid ""
+"Everyone can see the request of a point of order (instead of managers for "
+"list of speakers only)"
+msgstr ""
+"Jede*r darf das Anliegen eines GO-Antrags sehen (anstatt nur die "
+"Redelistenverwaltung)"
 
 msgid "Exit"
 msgstr "Beenden"
@@ -1335,6 +1356,9 @@ msgstr "Passwort vergessen?"
 
 msgid "Format"
 msgstr "Format"
+
+msgid "Forspeech"
+msgstr "Fürrede"
 
 msgid "Front page text"
 msgstr "Text der Startseite"
@@ -1710,9 +1734,6 @@ msgstr "Hauptantrag und Zeilennummer"
 msgid "Mark as personal favorite"
 msgstr "Als persönlichen Favorit markieren"
 
-msgid "Mark speaker"
-msgstr "Redner*in markieren"
-
 msgid "Maximum amount of votes"
 msgstr "Maximale Stimmenanzahl"
 
@@ -1915,9 +1936,6 @@ msgstr "Kein Sachgebiet"
 
 msgid "No category set"
 msgstr "kein Sachgebiet gesetzt"
-
-msgid "No change recommendations yet"
-msgstr "Bisher keine Änderungsempfehlungen"
 
 msgid "No changes at the text."
 msgstr "Keine Änderung am Text."
@@ -2476,6 +2494,9 @@ msgstr "Ersetzung"
 
 msgid "Reply address"
 msgstr "Antwortadresse"
+
+msgid "Request"
+msgstr "Anliegen"
 
 msgid "Requests to speak"
 msgstr "Wortmeldungen"
