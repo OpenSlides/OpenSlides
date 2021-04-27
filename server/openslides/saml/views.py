@@ -143,9 +143,7 @@ class SamlView(View):
             logger.info(
                 f"Created new saml user with id {user.id} and username {user.username}"
             )
-            group_ids = get_saml_settings().default_group_ids
-            if group_ids:
-                user.groups.add(*group_ids)
+            self.add_groups_to_user(user, attributes)
             inform_changed_data(user)  # put the new user into the cache
         else:
             logger.info(
@@ -153,6 +151,43 @@ class SamlView(View):
             )
             self.update_user(user, queryargs["defaults"])
         auth_login(request, user)
+
+    def add_groups_to_user(self, user, attributes):
+        groups = get_saml_settings().groups
+        group_ids = set()
+        for i, m in enumerate(groups["matchers"]):
+            raw_attr_value = attributes.get(m["attribute"], "")
+            # Convert the raw_attr_value to a list of string.
+            # It can be a string or list of strings. Other types will be ignored.
+            attr_values = None
+            if isinstance(raw_attr_value, str):
+                attr_values = [raw_attr_value]
+            elif isinstance(raw_attr_value, list) and all(
+                isinstance(x, str) for x in raw_attr_value
+            ):
+                attr_values = raw_attr_value
+            if attr_values is None:
+                logger.warning(
+                    f"Want to match matcher {i+1} but the attribute value is not a string or a list of strings but {type(raw_attr_value)}"
+                )
+                continue
+
+            if any(m["regex"].search(x) for x in attr_values):
+                group_ids.update(m["group_ids"])
+                logger.info(f"Matcher {i+1} matched. Adding groups: {m['group_ids']}")
+            else:
+                logger.info(f"Matcher {i+1} did not match")
+
+        # since a matcher must have groups, not having groups here means no matcher matched
+        if not group_ids:
+            logger.info(
+                f"No matcher matched. Adding default groups: {groups['default_group_ids']}"
+            )
+            group_ids = groups["default_group_ids"]
+
+        logger.info(f"Adding these groups to the user: {list(group_ids)}")
+        if group_ids:
+            user.groups.add(*group_ids)
 
     def get_queryargs(self, attributes):
         """

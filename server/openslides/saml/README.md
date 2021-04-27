@@ -35,17 +35,17 @@ folder next to the ``saml_settings.json``.
 
 The following settings are given in the `saml_settings.json`. All entries are required, except for the request settings.
 
-### General settings
+### `generalSettings`
 Here you can provide a custom text for the SAML login button. The `changePasswordUrl`
 redirects the user to the given URL when click on `Change password` in the OpenSlides user
 menu.
 
-### Attributes
-The identity provider sends attributes to the server if a user sucessfully logged in. To
+### `attributeMapping`
+The identity provider sends attributes to the server if a user successfully logged in. To
 map these attributes to attributes of OpenSlides users, the section `attributeMapping`
 exists. The structure is like this::
 
-    "attributeMapping: {
+    "attributeMapping": {
         "attributeFromIDP": ["attributeOfOpenSlidesUser", <used for lookup>],
         "anotherAttributeFromIDP": ["anotherAttributeOfOpenSlidesUser", <used for lookup>]
     }
@@ -56,7 +56,7 @@ All available OpenSlides user attributes are:
 - ``first_name``: The user's first name.
 - ``last_name``: The user's last name.
 - ``title``: The title of the user, e.g. "Dr.".
-- ``email``: The user's email addreess.
+- ``email``: The user's email address.
 - ``structure_level``: The structure level.
 - ``number``: The participant number (text, not an actual number). Note: This field is not unique.
 - ``about_me``: A free text field.
@@ -71,7 +71,7 @@ created with all values given. Try to choose unique attributes (e.g. the usernam
 attributes you are sure about to be unique (e.g. maybe the number) or use a combination of
 attributes.
 
-### Requests
+### `requestsSettings`
 
 One can overwrite the data extracted from the request headers of saml-requests. E.g. if the public port is 80 and the server is reverse-proxied and listen to port 8000, one should set the `server_port` to 80, so OpenSlides does not take the port of the request header. If not specified all these values are taken from the requests meta information:
 
@@ -80,8 +80,29 @@ One can overwrite the data extracted from the request headers of saml-requests. 
 - ``script_name``: The aquivalent to ``PATH_INFO`` in the meta values.
 - ``server_port``: The port listen by the server.
 
-### Default group ids
+### `groups`
 
-If the optional key `defaultGroupIds` is given, these groups are assigned to
-each new created user on each saml login. It must be a list of ids. To disable
-this feature, either just do not inlcude this key, or set it to `null`.
+The optional key `groups` can contain rules to assign groups to new created users on saml logins.
+
+First, there is an optional list of matchers (may not be given or empty). Each amtcher matches an attribute against an regex. If an attribute value matches the regex, the groups given in `groups` (list of groups) will be added to the user. This is done for all matchers indipendently, so if multiple matchers matches, all groups are used.
+
+If no matcher matches (also if there is no matcher), the groups in `default_groups` will be used. This key is also optional. Leaving it out or using an empty list will not assign default groups.
+
+An example with two matchers and default groups:
+```
+"groups": {
+    "matchers": [
+        {
+            "attribute": "attr1",
+            "regex": "^.*test.*$",
+            "group_ids": [1]
+        },
+        {
+            "attribute": "attr2",
+            "regex": "^012.*$",
+            "group_ids": [2, 3]
+        }
+    ],
+    "default_group_ids": [5]
+}
+```
