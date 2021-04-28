@@ -143,13 +143,4 @@ export class PollCollectionComponent extends BaseViewComponentDirective implemen
         }
         return null;
     }
-
-    public canManage(poll: ViewBasePoll): boolean {
-        if (poll.pollClassType === PollClassType.Motion) {
-            return this.operator.hasPerms(this.permission.motionsCanManagePolls);
-        } else if (poll.pollClassType === PollClassType.Assignment) {
-            return this.operator.hasPerms(this.permission.assignmentsCanManage);
-        }
-        return false;
-    }
 }
