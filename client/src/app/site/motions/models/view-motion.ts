@@ -231,19 +231,25 @@ export class ViewMotion
         const properties: SearchProperty[] = [];
         properties.push({ key: 'Title', value: this.getTitle() });
         properties.push({ key: 'Submitters', value: this.submittersAsUsers.map(user => user.full_name).join(', ') });
-        properties.push({ key: 'Text', value: this.text, trusted: true });
-        properties.push({ key: 'Reason', value: this.reason, trusted: true });
+        properties.push({ key: 'Text', value: this.text.decode(), trusted: true });
+        properties.push({ key: 'Reason', value: this.reason.decode(), trusted: true });
         if (this.amendment_paragraphs) {
             properties.push({
                 key: 'Amendments',
-                value: this.amendment_paragraphs.filter(x => !!x).join('\n'),
+                value: this.amendment_paragraphs
+                    .filter(x => !!x)
+                    .join('\n')
+                    .decode(),
                 trusted: true
             });
         }
         properties.push({ key: 'Tags', value: this.tags.map(tag => tag.getTitle()).join(', ') });
         properties.push({
             key: 'Comments',
-            value: this.motion.comments.map(comment => comment.comment).join('\n'),
+            value: this.motion.comments
+                .map(comment => comment.comment)
+                .join('\n')
+                .decode(),
             trusted: true
         });
         properties.push({ key: 'Supporters', value: this.supporters.map(user => user.full_name).join(', ') });
