@@ -489,7 +489,7 @@ meeting:
   list_of_speakers_enable_pro_contra_speech:
     type: boolean
     default: False
-  list_of_speakers_can_set_mark_self:
+  list_of_speakers_can_set_contribution_self:
     type: boolean
     default: False
   list_of_speakers_speaker_note_for_everyone:
@@ -1173,15 +1173,12 @@ speaker:
   weight:
     type: number
     default: 10000
-  marked:
-    type: boolean
-    default: False
-  pro_speech:
-    type: boolean
-    default: False
-  contra_speech:
-    type: boolean
-    default: False
+  speech_state:
+    type: string
+    enum:
+      - contribution
+      - pro
+      - contra
   note:
     type: string
     maxLength: 250
