@@ -574,6 +574,11 @@ class SpeakerViewSet(UpdateModelMixin, GenericViewSet):
         ):
             raise ValidationError({"detail": "pro/contra speech is not enabled"})
 
+        if "pro_speech" in request.data and "marked" in request.data:
+            raise ValidationError(
+                {"detail": "pro_speech and marked cannot be given together"}
+            )
+
         if not has_perm(request.user, "agenda.can_manage_list_of_speakers"):
             # if no manage perms, only the speaker user itself can update the speaker.
             speaker = self.get_object()
@@ -589,5 +594,11 @@ class SpeakerViewSet(UpdateModelMixin, GenericViewSet):
                     raise ValidationError(
                         {"detail": f"You are not allowed to set {key}"}
                     )
+
+        # toggle marked/pro_speech: If one is given, reset the other one
+        if request.data.get("pro_speech") in (True, False):
+            request.data["marked"] = False
+        if request.data.get("marked"):
+            request.data["pro_speech"] = None
 
         return super().update(request, *args, **kwargs)
