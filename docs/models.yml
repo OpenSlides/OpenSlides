@@ -486,9 +486,19 @@ meeting:
   list_of_speakers_enable_point_of_order_speakers:
     type: boolean
     default: False
+  list_of_speakers_enable_pro_contra_speech:
+    type: boolean
+    default: False
+  list_of_speakers_can_set_mark_self:
+    type: boolean
+    default: False
+  list_of_speakers_speaker_note_for_everyone:
+    type: boolean
+    default: False
   list_of_speakers_initially_closed:
     type: boolean
     default: False
+
 
   # Motions
   motions_default_workflow_id:
@@ -515,7 +525,7 @@ meeting:
     default: outside
   motions_line_length:
     type: number
-    minimium: 40
+    minimum: 40
     default: 85
   motions_reason_required:
     type: boolean
@@ -1163,7 +1173,18 @@ speaker:
   weight:
     type: number
     default: 10000
-  marked: boolean
+  marked:
+    type: boolean
+    default: False
+  pro_speech:
+    type: boolean
+    default: False
+  contra_speech:
+    type: boolean
+    default: False
+  note:
+    type: string
+    maxLength: 250
   point_of_order: boolean
 
   list_of_speakers_id:
