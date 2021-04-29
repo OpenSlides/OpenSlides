@@ -109,6 +109,10 @@ export class UserMenuComponent extends BaseViewComponentDirective implements OnI
             return 'English';
         } else if (abbreviation === 'de') {
             return 'Deutsch';
+        } else if (abbreviation === 'it') {
+            return 'Italiano';
+        } else if (abbreviation === 'es') {
+            return 'Español';
         } else if (abbreviation === 'cs') {
             return 'Čeština';
         } else if (abbreviation === 'ru') {
