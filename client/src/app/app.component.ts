@@ -45,7 +45,16 @@ declare global {
     interface Number {
         modulo(n: number): number;
     }
+
+    interface String {
+        decode(): string;
+    }
 }
+
+/**
+ * May only be created once since this thing is fat
+ */
+const domParser = new DOMParser();
 
 /**
  * Angular's global App Component
@@ -103,6 +112,7 @@ export class AppComponent {
         this.overloadSetFunctions();
         this.overloadModulo();
         this.loadCustomIcons();
+        this.overloadDecodeString();
 
         // Wait until the App reaches a stable state.
         // Required for the Service Worker.
@@ -195,6 +205,23 @@ export class AppComponent {
                 return !difference.size;
             },
             enumerable: false
+        });
+    }
+
+    /**
+     * This is not the fastest solution but the most reliable one.
+     * Certain languages and TinyMCE do not follow the any predictable
+     * behaviour when it comes to encoding UTF8.
+     * decodeURI and decodeURIComponent were not able to successfully
+     * replace any ;&*uml with something meaningfull.
+     */
+    private overloadDecodeString(): void {
+        Object.defineProperty(String.prototype, 'decode', {
+            enumerable: false,
+            value(): string {
+                const doc = domParser.parseFromString(this, 'text/html');
+                return doc.body.textContent || '';
+            }
         });
     }
 
