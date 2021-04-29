@@ -87,10 +87,6 @@ export class ListOfSpeakersContentComponent extends BaseViewComponentDirective i
         return !this.config.instant('agenda_present_speakers_only') || this.operator.user.is_present;
     }
 
-    public get showSpeakersOrderNote(): boolean {
-        return this.noteForAll || this.opCanManage;
-    }
-
     @Input()
     public set speakers(los: ViewListOfSpeakers) {
         this.setListOfSpeakers(los);
