@@ -1,7 +1,9 @@
-name: Validate models.yml
+---
+name: Validate models.yml and initial and example data
 on: [push, pull_request]
 env:
   PYTHON_VERSION: 3.8.5
+  GO_VERSION: 1.15
 jobs:
   validate-models:
     name: Validate models.yml
@@ -10,7 +12,7 @@ jobs:
     - name: Set up Go 1.15
       uses: actions/setup-go@v1
       with:
-        go-version: 1.15
+        go-version: ${{ env.GO_VERSION }}
 
     - name: Check out code
       uses: actions/checkout@v2

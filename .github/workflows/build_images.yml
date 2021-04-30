@@ -55,9 +55,9 @@ jobs:
     - name: Build image
       working-directory: ${{ matrix.service.directory }}
       env:
-        DOCKER_BUILDKIT=1
+        DOCKER_BUILDKIT: 1
       run: |
-        if [ ${{ matrix.service.args }} != "" ]
+        if [ "${{ matrix.service.args }}" != "" ]
         then
           export BUILD_ARGS="--build-arg MODULE=${{ matrix.service.args.MODULE }}
                              --build-arg PORT=${{ matrix.service.args.PORT }}"
@@ -66,11 +66,11 @@ jobs:
 
     - name: Log into registry
       run: echo "${{ secrets.GITHUB_TOKEN }}" |
-           docker login docker.pkg.github.com --username ${{ github.actor }} --password-stdin
+           docker login ghcr.io --username ${{ github.actor }} --password-stdin
 
     - name: Push image
       run: |
-        IMAGE_ID=docker.pkg.github.com/${{ github.repository }}/${{ matrix.service.name }}
+        IMAGE_ID=ghcr.io/${{ github.repository }}/${{ matrix.service.name }}
 
         # Change all uppercase to lowercase
         IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')

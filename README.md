@@ -35,7 +35,7 @@ Create configuration files:
 Build and start Docker containers. According to your Docker installation you may
 have to run this as root:
 
-    $ docker-compose up --build --detach
+    $ docker-compose up --detach
 
 Setup initial-data:
 
