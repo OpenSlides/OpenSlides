@@ -25,8 +25,12 @@ Compose](https://docs.docker.com/compose/install/).
 
 ### Setup OpenSlides
 
-Go to a nice place in your filesystem and get the [OpenSlides manage
-tool](https://github.com/OpenSlides/openslides-manage-service/releases/tag/latest).
+Go to a nice place in your filesystem, get the [OpenSlides manage
+tool](https://github.com/OpenSlides/openslides-manage-service/releases/tag/latest)
+from GitHub and make it executable. E. g. run:
+
+    $ wget https://github.com/OpenSlides/openslides-manage-service/releases/download/latest/manage
+    $ chmod +x manage
 
 Create configuration files:
 
