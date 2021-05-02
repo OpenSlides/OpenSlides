@@ -1866,18 +1866,34 @@ export class DiffService {
         // We only do this for P for now, as for more complex types like UL/LI that tend to be nestend,
         // information would get lost by this that we will need to recursively merge it again later on.
         let oldIsSplitAfter = false,
-            newIsSplitAfter = false;
+            newIsSplitAfter = false,
+            oldIsSplitBefore = false,
+            newIsSplitBefore = false;
         htmlOld = htmlOld.replace(
-            /(\s*<p[^>]+class\s*=\s*["'][^"']*)os-split-after/gi,
+            /(\s*<(?:p|ul|ol|li|blockquote|div)[^>]+class\s*=\s*["'][^"']*)os-split-after */gi,
             (match: string, beginning: string): string => {
                 oldIsSplitAfter = true;
                 return beginning;
             }
         );
         htmlNew = htmlNew.replace(
-            /(\s*<p[^>]+class\s*=\s*["'][^"']*)os-split-after/gi,
+            /(\s*<(?:p|ul|ol|li|blockquote|div)[^>]+class\s*=\s*["'][^"']*)os-split-after */gi,
             (match: string, beginning: string): string => {
                 newIsSplitAfter = true;
+                return beginning;
+            }
+        );
+        htmlOld = htmlOld.replace(
+            /(\s*<(?:p|ul|ol|li|blockquote|div)[^>]+class\s*=\s*["'][^"']*)os-split-before */gi,
+            (match: string, beginning: string): string => {
+                oldIsSplitBefore = true;
+                return beginning;
+            }
+        );
+        htmlNew = htmlNew.replace(
+            /(\s*<(?:p|ul|ol|li|blockquote|div)[^>]+class\s*=\s*["'][^"']*)os-split-before */gi,
+            (match: string, beginning: string): string => {
+                newIsSplitBefore = true;
                 return beginning;
             }
         );
@@ -2149,6 +2165,9 @@ export class DiffService {
 
         if (oldIsSplitAfter || newIsSplitAfter) {
             diff = this.addClassToLastNode(diff, 'os-split-after');
+        }
+        if (oldIsSplitBefore || newIsSplitBefore) {
+            diff = this.addClassToLastNode(diff, 'os-split-before');
         }
 
         this.diffCache.put(cacheKey, diff);
