@@ -76,9 +76,7 @@
         </div>
 
         <!-- Poll progress bar -->
-        <div *osPerms="'assignments.can_manage'; and: poll && poll.isStarted">
-            <os-poll-progress [poll]="poll"></os-poll-progress>
-        </div>
+        <os-poll-progress *ngIf="poll && poll.isStarted" [poll]="poll"></os-poll-progress>
 
         <!-- The Vote -->
         <os-assignment-poll-vote *ngIf="poll.canBeVotedFor()" [poll]="poll"></os-assignment-poll-vote>

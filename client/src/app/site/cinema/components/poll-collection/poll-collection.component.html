@@ -16,7 +16,7 @@
             <a [routerLink]="getPollDetailLink(poll)" [state]="{ back: 'true' }">{{ getPollVoteTitle(poll) }}</a>
         </p>
 
-        <os-poll-progress *ngIf="canManage(poll) && poll.canBeVotedFor()" [poll]="poll"></os-poll-progress>
+        <os-poll-progress *ngIf="poll.canBeVotedFor()" [poll]="poll"></os-poll-progress>
 
         <div *ngIf="poll.pollClassType === 'motion'">
             <os-motion-poll-vote [poll]="poll" *ngIf="poll.canBeVotedFor() && !last"></os-motion-poll-vote>
