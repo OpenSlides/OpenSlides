@@ -46,10 +46,10 @@
 #     - There are template fields (see autoupdate service interface) with a `$` as
 #       the placeholder.
 #     - The type `template` describes a structured field for the given model. If the
-#       property `replacement` is given, it describes which field of the same model
-#       is used as the replacement (=> structured relation). If it not given, the field
-#       is a structured tag. The property `fields` contains the definition for all the
-#       fields that come from the template field.
+#       property `replacement_collection` is given, it describes which model the
+#       replacement ids are belonging to (=> structured relation). If it is not given,
+#       the field is a structured tag. The property `fields` contains the definition
+#       for all the fields that come from the template field.
 # JSON Schema Properties:
 #     - You can add JSON Schema properties to the fields like `enum`, `description`,
 #       `maxLength` and `minimum`
@@ -126,40 +126,38 @@ user:
   is_present_in_meeting_ids:
     type: relation-list
     to: meeting/present_user_ids
-  meeting_id:
-    type: relation
-    to: meeting/temporary_user_ids  # Temporary users
-  guest_meeting_ids:
+  committee_ids:
     type: relation-list
-    to: meeting/guest_ids  # Guests in meetings
-  committee_as_member_ids:
-    type: relation-list
-    to: committee/member_ids
-  committee_as_manager_ids:
-    type: relation-list
-    to: committee/manager_ids
+    to: committee/user_ids
+
+  # committee specific permissions
+  committee_$_management_level:
+    type: template
+    replacement_collection: committee
+    description: Hierarchical permission level for the each committee organisation.
+    enum:
+    - can_manage
 
   # Meeting specific personal data
-  # Replacement is the meeting id but it is not a structured relation.
   comment_$:
     type: template
-    replacement: meeting_id
+    replacement_collection: meeting
     fields: HTMLStrict
   number_$:
     type: template
-    replacement: meeting_id
+    replacement_collection: meeting
     fields: string
   structure_level_$:
     type: template
-    replacement: meeting_id
+    replacement_collection: meeting
     fields: string
   about_me_$:
     type: template
-    replacement: meeting_id
+    replacement_collection: meeting
     fields: HTMLStrict
   vote_weight_$:
     type: template
-    replacement: meeting_id
+    replacement_collection: meeting
     fields: decimal(6)
 
   # All foreign keys are meeting-specific:
@@ -170,83 +168,88 @@ user:
   #   the need to get all groups and filter them for the meeting
   group_$_ids:
     type: template
-    replacement: meeting_id
+    replacement_collection: meeting
     fields:
       type: relation-list
       to: group/user_ids
   speaker_$_ids:
     type: template
-    replacement: meeting_id
+    replacement_collection: meeting
     fields:
       type: relation-list
       to: speaker/user_id
   personal_note_$_ids:
     type: template
-    replacement: meeting_id
+    replacement_collection: meeting
     fields:
       type: relation-list
       to: personal_note/user_id
     on_delete: CASCADE
   supported_motion_$_ids:
     type: template
-    replacement: meeting_id
+    replacement_collection: meeting
     fields:
       type: relation-list
       to: motion/supporter_ids
   submitted_motion_$_ids:
     type: template
-    replacement: meeting_id
+    replacement_collection: meeting
     fields:
       type: relation-list
       to: motion_submitter/user_id
   poll_voted_$_ids:
     type: template
-    replacement: meeting_id
+    replacement_collection: meeting
     fields:
       type: relation-list
       to: poll/voted_ids
   option_$_ids:
     type: template
-    replacement: meeting_id
+    replacement_collection: meeting
     fields:
       type: relation-list
       to: option/content_object_id
   vote_$_ids:
     type: template
-    replacement: meeting_id
+    replacement_collection: meeting
     fields:
       type: relation-list
       to: vote/user_id
   vote_delegated_vote_$_ids:
     type: template
-    replacement: meeting_id
+    replacement_collection: meeting
     fields:
       type: relation-list
       to: vote/delegated_user_id
   assignment_candidate_$_ids:
     type: template
-    replacement: meeting_id
+    replacement_collection: meeting
     fields:
       type: relation-list
       to: assignment_candidate/user_id
   projection_$_ids:
     type: template
-    replacement: meeting_id
+    replacement_collection: meeting
     fields:
       type: relation-list
       to: projection/content_object_id
   vote_delegated_$_to_id:
     type: template
-    replacement: meeting_id
+    replacement_collection: meeting
     fields:
       type: relation
       to: user/vote_delegations_$_from_ids
   vote_delegations_$_from_ids:
     type: template
-    replacement: meeting_id
+    replacement_collection: meeting
     fields:
       type: relation-list
       to: user/vote_delegated_$_to_id
+
+  meeting_ids:
+    type: number[]
+    decription: Calculated. All ids from group_$_ids as integers.
+    read_only: true
 
 # New: Resource
 # Resources are organsation wide "mediafiles", like logos for the organisatio or
@@ -300,12 +303,9 @@ committee:
   default_meeting_id:
     type: relation
     to: meeting/default_meeting_for_committee_id
-  member_ids:
+  user_ids:
     type: relation-list
-    to: user/committee_as_member_ids
-  manager_ids:
-    type: relation-list
-    to: user/committee_as_manager_ids
+    to: user/committee_ids
   forward_to_committee_ids:
     type: relation-list
     to: committee/receive_forwardings_from_committee_ids
@@ -878,15 +878,9 @@ meeting:
   present_user_ids:
     type: relation-list
     to: user/is_present_in_meeting_ids
-  temporary_user_ids:
-    type: relation-list
-    to: user/meeting_id
-  guest_ids:
-    type: relation-list
-    to: user/guest_meeting_ids
   user_ids:
     type: number[]
-    decription: Calculated. All ids from temporary_user_ids, guest_ids and all users assigned to groups.
+    decription: Calculated. All user ids from all users assigned to groups of this meeting.
     read_only: true
   reference_projector_id:
     type: relation

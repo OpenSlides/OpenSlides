@@ -37,11 +37,11 @@
         "is_demo_user": false,
 
         "organisation_management_level": "superadmin",
+
         "is_present_in_meeting_ids": [],
-        "meeting_id": null,
-        "guest_meeting_ids": [],
-        "committee_as_member_ids": [],
-        "committee_as_manager_ids": [],
+        "committee_ids": [1],
+        "committee_$_management_level": ["1"],
+        "committee_$1_management_level": "can_manage",
 
         "comment_$": [],
         "number_$": [],
@@ -63,7 +63,9 @@
         "projection_$_ids": [],
         "current_projector_$_ids": [],
         "vote_delegated_$_to_id": [],
-        "vote_delegations_$_from_ids": []
+        "vote_delegations_$_from_ids": [],
+
+        "meeting_ids": [1]
     }],
 "resource": [],
 "organisation_tag": [],
@@ -76,8 +78,7 @@
         "meeting_ids": [1],
         "template_meeting_id": null,
         "default_meeting_id": 1,
-        "member_ids": [],
-        "manager_ids": [],
+        "user_ids": [1],
         "forward_to_committee_ids": [],
         "receive_forwardings_from_committee_ids": [],
         "organisation_tag_ids": [],
@@ -253,8 +254,6 @@
         "default_meeting_for_committee_id": 1,
         "organisation_tag_ids": [],
         "present_user_ids": [],
-        "temporary_user_ids": [],
-        "guest_ids": [],
         "user_ids": [1],
         "reference_projector_id": 1,
         "list_of_speakers_countdown_id": 1,
