@@ -13,5 +13,7 @@ import endpoint
 
     reverse_proxy /media/* media:8000
 
+    reverse_proxy /prometheus/* prometheus:9090
+
     reverse_proxy client:4200
 }

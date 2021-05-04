@@ -266,6 +266,11 @@ ifelse(read_env(`PGNODE_3_ENABLED'), 1, `'
     # Override command to run more workers per task
     # command: ["gunicorn", "-w", "4", "--preload", "-b",
     #   "0.0.0.0:8000", "src.mediaserver:app"]
+ifelse(read_env(`PROMETHEUS_ENABLED'), 1, `'
+  prometheus:
+    image: ifenvelse(`DEFAULT_DOCKER_REGISTRY', openslides)/openslides-prometheus:latest
+    networks:
+      - back)
 
 volumes:
   dbdata1:
