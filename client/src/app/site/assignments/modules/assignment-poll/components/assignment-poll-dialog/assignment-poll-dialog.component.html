@@ -12,12 +12,12 @@
         <!-- Candidates Values -->
         <div formGroupName="options">
             <div *ngFor="let option of options" class="votes-grid">
-                <div>
+                <div class="candidate">
                     <span *ngIf="option.user">{{ option.user.getFullName() }}</span>
                     <i *ngIf="!option.user">{{ unknownUserLabel | translate }}</i>
                 </div>
 
-                <div>
+                <div class="amount">
                     <div *ngFor="let value of analogPollValues" [formGroupName]="option.user_id">
                         <os-check-input
                             [placeholder]="voteValueVerbose[value] | translate"
@@ -31,21 +31,10 @@
             </div>
         </div>
 
-        <!-- Sum Values -->
-        <div *ngFor="let value of sumValues" class="votes-grid">
-            <div></div>
-            <os-check-input
-                [placeholder]="generalValueVerbose[value] | translate"
-                [checkboxValue]="-1"
-                inputType="number"
-                [checkboxLabel]="'majority' | translate"
-                [formControlName]="value"
-            ></os-check-input>
-        </div>
-
         <!-- Global Values -->
-        <div>
+        <div class="votes-grid">
             <os-check-input
+                class="amount"
                 *ngIf="globalYesEnabled"
                 placeholder="{{ PollPropertyVerbose.global_yes | translate }}"
                 [checkboxValue]="-1"
@@ -53,8 +42,11 @@
                 [checkboxLabel]="'majority' | translate"
                 formControlName="amount_global_yes"
             ></os-check-input>
+        </div>
 
+        <div class="votes-grid">
             <os-check-input
+                class="amount"
                 *ngIf="globalNoEnabled"
                 placeholder="{{ PollPropertyVerbose.global_no | translate }}"
                 [checkboxValue]="-1"
@@ -62,14 +54,29 @@
                 [checkboxLabel]="'majority' | translate"
                 formControlName="amount_global_no"
             ></os-check-input>
+        </div>
 
+        <div class="votes-grid">
             <os-check-input
+                class="amount"
                 *ngIf="globalAbstainEnabled"
                 placeholder="{{ PollPropertyVerbose.global_abstain | translate }}"
                 [checkboxValue]="-1"
                 inputType="number"
                 [checkboxLabel]="'majority' | translate"
                 formControlName="amount_global_abstain"
+            ></os-check-input>
+        </div>
+
+        <!-- Sum Values -->
+        <div *ngFor="let value of sumValues" class="votes-grid">
+            <os-check-input
+                class="amount"
+                [placeholder]="generalValueVerbose[value] | translate"
+                [checkboxValue]="-1"
+                inputType="number"
+                [checkboxLabel]="'majority' | translate"
+                [formControlName]="value"
             ></os-check-input>
         </div>
     </form>

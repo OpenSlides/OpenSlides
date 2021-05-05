@@ -228,7 +228,7 @@ export class AssignmentPollService extends PollService {
                 totalByBase = poll.votesvalid;
                 break;
             case AssignmentPollPercentBase.Entitled:
-                totalByBase = poll.entitled_users_at_stop.length;
+                totalByBase = poll?.entitled_users_at_stop?.length || 0;
                 break;
             case AssignmentPollPercentBase.Cast:
                 totalByBase = poll.votescast;

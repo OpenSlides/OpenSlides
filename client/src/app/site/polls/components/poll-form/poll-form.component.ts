@@ -215,7 +215,7 @@ export class PollFormComponent<T extends ViewBasePoll, S extends PollService>
         this.pollTypeControl.disable();
     }
 
-    public showAmountAndGlobal(data: any): boolean {
+    public showMinMaxVotes(data: any): boolean {
         const selectedPollMethod: AssignmentPollMethod = this.pollMethodControl.value;
         return (selectedPollMethod === 'Y' || selectedPollMethod === 'N') && (!data || !data.state || data.isCreated);
     }

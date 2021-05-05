@@ -49,7 +49,7 @@
                     </div>
                 </td>
             </tr>
-            <tr *ngIf="isPercentBaseEntitled" class="entitled-users-row">
+            <tr *ngIf="isPercentBaseEntitled && poll.entitled_users_at_stop" class="entitled-users-row">
                 <td>{{ 'Entitled users' | translate }}</td>
                 <td class="result">
                     <div class="single-result">

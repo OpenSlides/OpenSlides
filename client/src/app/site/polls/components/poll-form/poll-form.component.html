@@ -59,7 +59,7 @@
 
                 <ng-container formGroupName="votes_amount" *ngIf="isEVotingSelected">
                     <!-- Min Amount of Votes -->
-                    <mat-form-field *ngIf="showAmountAndGlobal(data)">
+                    <mat-form-field *ngIf="showMinMaxVotes(data)">
                         <input
                             type="number"
                             matInput
@@ -75,7 +75,7 @@
                     </mat-form-field>
 
                     <!-- Max Amount of Votes -->
-                    <mat-form-field *ngIf="showAmountAndGlobal(data)">
+                    <mat-form-field *ngIf="showMinMaxVotes(data)">
                         <input
                             type="number"
                             matInput
@@ -89,7 +89,7 @@
             </div>
 
             <!-- Amount of Votes and global options -->
-            <div class="global-options" *ngIf="isEVotingSelected && showAmountAndGlobal(data)">
+            <div class="global-options">
                 <mat-checkbox formControlName="global_yes">
                     {{ PollPropertyVerbose.global_yes | translate }}
                 </mat-checkbox>
