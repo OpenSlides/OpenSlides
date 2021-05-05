@@ -2,6 +2,7 @@
     <table class="assignment-result-table" *ngIf="hasResults && canSeeResults">
         <tbody>
             <tr>
+                <td></td>
                 <th class="voting-option">{{ 'Candidates' | translate }}</th>
                 <th class="result yes" *ngIf="showYHeader">
                     <span *ngIf="!isMethodY">
@@ -21,7 +22,10 @@
                 </th>
                 <th class="result abstain" *ngIf="isMethodYNA">{{ 'Abstain' | translate }}</th>
             </tr>
-            <tr *ngFor="let row of tableData" [class]="row.class">
+            <tr *ngFor="let row of tableData; let i = index" [class]="row.class">
+                <td>
+                    <span *ngIf="row.class === 'user'">{{ i + 1 }}.</span>
+                </td>
                 <td class="voting-option">
                     <div>
                         <span>
@@ -50,6 +54,7 @@
                 </td>
             </tr>
             <tr *ngIf="isPercentBaseEntitled && poll.entitled_users_at_stop" class="entitled-users-row">
+                <td></td>
                 <td>{{ 'Entitled users' | translate }}</td>
                 <td class="result">
                     <div class="single-result">

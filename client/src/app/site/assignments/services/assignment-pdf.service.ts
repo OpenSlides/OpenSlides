@@ -176,6 +176,10 @@ export class AssignmentPdfService {
 
                 pollTableBody.push([
                     {
+                        text: '',
+                        style: 'tableHeader'
+                    },
+                    {
                         text: this.translate.instant('Candidates'),
                         style: 'tableHeader'
                     },
@@ -186,10 +190,15 @@ export class AssignmentPdfService {
                 ]);
 
                 const tableData = this.assignmentPollService.generateTableData(poll);
-                for (const pollResult of tableData) {
+                for (const [index, pollResult] of tableData.entries()) {
+                    const rank = pollResult.class === 'user' ? index + 1 : '';
                     const voteOption = this.translate.instant(this.pollKeyVerbose.transform(pollResult.votingOption));
                     const resultLine = this.getPollResult(pollResult, poll);
+
                     const tableLine = [
+                        {
+                            text: rank
+                        },
                         {
                             text: voteOption
                         },
@@ -203,7 +212,7 @@ export class AssignmentPdfService {
 
                 resultBody.push({
                     table: {
-                        widths: ['64%', '33%'],
+                        widths: ['3%', '65%', '33%'],
                         headerRows: 1,
                         body: pollTableBody
                     },
