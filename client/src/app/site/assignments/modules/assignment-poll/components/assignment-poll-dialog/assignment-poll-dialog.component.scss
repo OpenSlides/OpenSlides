@@ -4,6 +4,16 @@
     margin-bottom: 10px;
     align-items: baseline;
     grid-template-columns: auto max-content;
+    grid-template-areas: 'candidate amount';
+
+    .candidate {
+        grid-area: candidate;
+    }
+
+    .amount {
+        grid-area: amount;
+    }
+
     .mat-form-field {
         width: 100%;
     }
