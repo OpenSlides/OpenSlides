@@ -135,8 +135,10 @@ user:
     type: template
     replacement_collection: committee
     description: Hierarchical permission level for the each committee organisation.
-    enum:
-    - can_manage
+    fields:
+      type: string
+      enum:
+      - can_manage
 
   # Meeting specific personal data
   comment_$:
