@@ -264,18 +264,25 @@ class BasePoll(models.Model):
             self.is_pseudoanonymized = False
         self.save()
 
-    def calculate_votes(self):
-        if self.type != BasePoll.TYPE_ANALOG:
-            self.votescast = self.voted.count()
-            if config["users_activate_vote_weight"]:
-                self.votesvalid = sum(self.voted.values_list("vote_weight", flat=True))
-            else:
-                self.votesvalid = self.votescast
-            self.votesinvalid = Decimal(0)
+    def calculate_votes(self, all_voted_users=None):
+        if self.type == BasePoll.TYPE_ANALOG:
+            return
 
-    def calculate_entitled_users(self):
+        if all_voted_users is None:
+            all_voted_users = self.voted.all()
+
+        self.votescast = len(all_voted_users)
+        if config["users_activate_vote_weight"]:
+            self.votesvalid = sum(user.vote_weight for user in all_voted_users)
+        else:
+            self.votesvalid = self.votescast
+        self.votesinvalid = Decimal(0)
+
+    def calculate_entitled_users(self, all_voted_users=None):
         entitled_users = []
         entitled_users_ids = set()
+        if all_voted_users is None:
+            all_voted_users = self.voted.all()
         for group in self.groups.all():
             for user in group.user_set.all():
                 if (
@@ -286,7 +293,7 @@ class BasePoll(models.Model):
                     entitled_users.append(
                         {
                             "user_id": user.id,
-                            "voted": user in self.voted.all(),
+                            "voted": user in all_voted_users,
                             "vote_delegated_to_id": user.vote_delegated_to_id,
                         }
                     )
@@ -296,7 +303,8 @@ class BasePoll(models.Model):
         """
         Saves a snapshot of the current voted users into the relevant fields and stops the poll.
         """
-        self.calculate_votes()
-        self.calculate_entitled_users()
+        all_voted_users = self.voted.all()  # just fetch this once from the database now
+        self.calculate_votes(all_voted_users)
+        self.calculate_entitled_users(all_voted_users)
         self.state = self.STATE_FINISHED
         self.save()

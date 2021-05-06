@@ -1211,6 +1211,31 @@ class StopMotionPoll(TestCase):
             ],
         )
 
+    def test_stop_poll_multiple_users_database_query_count(self):
+        """
+        The code in BasePoll.stop() should not make too much queries.
+        """
+        self.setup_entitled_users()
+        expected = []
+        for _ in range(10):
+            user, _ = self.create_user()
+            user.is_present = True
+            user.vote_delegated_to = self.admin
+            user.save()
+            user.groups.add(self.group)
+            expected.append(
+                {
+                    "user_id": user.id,
+                    "voted": False,
+                    "vote_delegated_to_id": self.admin.id,
+                }
+            )
+        self.admin.is_present = False
+        self.admin.save()
+        config["users_activate_vote_weight"] = True
+        self.assertEqual(count_queries(self.poll.stop)(), 13)
+        self.assertEqual(MotionPoll.objects.get().entitled_users_at_stop, expected)
+
     def test_stop_poll_assert_no_duplicate_entitled_users(self):
         self.setup_entitled_users()
         delegate_group = get_group_model().objects.get(pk=GROUP_DELEGATE_PK)
