@@ -64,6 +64,9 @@ export class PollFormComponent<T extends ViewBasePoll, S extends PollService>
     @Input()
     private pollService: S;
 
+    @Input()
+    public pollClassType: PollClassType;
+
     /**
      * The different types the poll can accept.
      */
@@ -105,6 +108,10 @@ export class PollFormComponent<T extends ViewBasePoll, S extends PollService>
         }
     }
 
+    public get isAssignmentPoll(): boolean {
+        return this.pollClassType === PollClassType.Assignment;
+    }
+
     public get isEVotingSelected(): boolean {
         return this.pollTypeControl?.value !== PollType.Analog || false;
     }
@@ -140,6 +147,7 @@ export class PollFormComponent<T extends ViewBasePoll, S extends PollService>
     ) {
         super(title, translate, snackbar);
         this.initContentForm();
+        this.groupObservable = this.groupRepo.getViewModelListObservableWithoutDefaultGroup();
     }
 
     /**
@@ -147,9 +155,6 @@ export class PollFormComponent<T extends ViewBasePoll, S extends PollService>
      * Sets the observable for groups.
      */
     public ngOnInit(): void {
-        // without default group since default cant ever vote
-        this.groupObservable = this.groupRepo.getViewModelListObservableWithoutDefaultGroup();
-
         if (this.data) {
             if (this.data.state) {
                 this.disablePollType();
@@ -312,7 +317,7 @@ export class PollFormComponent<T extends ViewBasePoll, S extends PollService>
                 ]
             ];
             // show pollmethod only for assignment polls
-            if (this.data.pollClassType === PollClassType.Assignment) {
+            if (this.isAssignmentPoll) {
                 this.pollValues.push([
                     this.pollService.getVerboseNameForKey('pollmethod'),
                     this.pollService.getVerboseNameForValue('pollmethod', data.pollmethod)
@@ -375,6 +380,16 @@ export class PollFormComponent<T extends ViewBasePoll, S extends PollService>
             global_yes: [false],
             global_no: [false],
             global_abstain: [false]
+            /**
+             * TODO, global is not required for motions, current logic does not
+             * survive changes after constructor due strickt access calls
+             * Change to observe
+             */
+            // ...(this.isAssignmentPoll && {
+            //     global_yes: [false],
+            //     global_no: [false],
+            //     global_abstain: [false]
+            // })
         });
     }
 

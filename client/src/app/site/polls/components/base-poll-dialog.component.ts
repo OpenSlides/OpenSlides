@@ -10,7 +10,7 @@ import { OneOfValidator } from 'app/shared/validators/one-of-validator';
 import { BaseViewComponentDirective } from 'app/site/base/base-view';
 import { PollFormComponent } from './poll-form/poll-form.component';
 import { PollService } from '../services/poll.service';
-import { ViewBasePoll } from '../models/view-base-poll';
+import { PollClassType, ViewBasePoll } from '../models/view-base-poll';
 
 /**
  * A dialog for updating the values of a poll.
@@ -20,6 +20,7 @@ export abstract class BasePollDialogComponent<
     S extends PollService
 > extends BaseViewComponentDirective {
     public publishImmediately: boolean;
+    public pollClassType = PollClassType;
 
     protected pollForm: PollFormComponent<T, S>;
 

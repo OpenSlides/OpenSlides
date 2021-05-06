@@ -89,7 +89,7 @@
             </div>
 
             <!-- Amount of Votes and global options -->
-            <div class="global-options">
+            <div class="global-options" *ngIf="isAssignmentPoll">
                 <mat-checkbox formControlName="global_yes">
                     {{ PollPropertyVerbose.global_yes | translate }}
                 </mat-checkbox>
