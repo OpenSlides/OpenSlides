@@ -31,7 +31,7 @@ func cmdCreateUsers(cfg *config) *cobra.Command {
 		Short: "Create a lot of users.",
 		Long:  createUsersHelp,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			c, err := client.New(cfg.domain, cfg.username, cfg.password)
+			c, err := client.New(cfg.addr(), cfg.username, cfg.password)
 			if err != nil {
 				return fmt.Errorf("creating client: %w", err)
 			}
@@ -57,7 +57,7 @@ func cmdCreateUsers(cfg *config) *cobra.Command {
 				return fmt.Errorf("encoding users: %w", err)
 			}
 
-			req, err := http.NewRequest("POST", "https://"+cfg.domain+"/rest/users/user/mass_import/", bytes.NewReader(bs))
+			req, err := http.NewRequest("POST", cfg.addr()+"/rest/users/user/mass_import/", bytes.NewReader(bs))
 			if err != nil {
 				return fmt.Errorf("creating mass import request: %w", err)
 			}

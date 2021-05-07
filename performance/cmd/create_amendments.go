@@ -22,7 +22,7 @@ func cmdCreateAmendments(cfg *config) *cobra.Command {
 		Short: "Creates a motion with amendments.",
 		Long:  helpCreateAmendments,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			c, err := client.New(cfg.domain, cfg.username, cfg.password)
+			c, err := client.New(cfg.addr(), cfg.username, cfg.password)
 			if err != nil {
 				return fmt.Errorf("creating client: %w", err)
 			}
@@ -31,15 +31,13 @@ func cmdCreateAmendments(cfg *config) *cobra.Command {
 				return fmt.Errorf("login client: %w", err)
 			}
 
-			addr := "https://" + cfg.domain
-
-			motionID, err := createMotion(c, addr, amendmentAmount)
+			motionID, err := createMotion(c, cfg.addr(), amendmentAmount)
 			if err != nil {
 				return fmt.Errorf("create motion: %w", err)
 			}
 
 			for i := 0; i < amendmentAmount; i++ {
-				createAmendment(c, addr, motionID, i)
+				createAmendment(c, cfg.addr(), motionID, i)
 			}
 
 			fmt.Println(motionID)
