@@ -1,0 +1,56 @@
+---
+name: Build Docker images for all OpenSlides services
+on: push
+env:
+  IMAGE_VERSION: 3.4.0-dev
+jobs:
+  build:
+    name: Builds Docker images
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+      with:
+        submodules: true
+
+    - name: Build images
+      run: build.sh all
+
+    - name: Log into registry
+      run: echo "${{ secrets.GITHUB_TOKEN }}" |
+           docker login ghcr.io --username ${{ github.actor }} --password-stdin
+
+    - name: Push images
+      run: |
+        IMAGE_ID=ghcr.io/${{ github.repository }}/openslides-server
+        IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+        docker push $IMAGE_ID:$IMAGE_VERSION
+
+        IMAGE_ID=ghcr.io/${{ github.repository }}/openslides-repmgr
+        IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+        docker push $IMAGE_ID:$IMAGE_VERSION
+
+        IMAGE_ID=ghcr.io/${{ github.repository }}/openslides-autoupdate
+        IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+        docker push $IMAGE_ID:$IMAGE_VERSION
+
+        IMAGE_ID=ghcr.io/${{ github.repository }}/openslides-postfix
+        IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+        docker push $IMAGE_ID:$IMAGE_VERSION
+
+        IMAGE_ID=ghcr.io/${{ github.repository }}/openslides-client
+        IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+        docker push $IMAGE_ID:$IMAGE_VERSION
+
+        IMAGE_ID=ghcr.io/${{ github.repository }}/openslides-pgbouncer
+        IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+        docker push $IMAGE_ID:$IMAGE_VERSION
+
+        IMAGE_ID=ghcr.io/${{ github.repository }}/openslides-proxy
+        IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+        docker push $IMAGE_ID:$IMAGE_VERSION
+
+        IMAGE_ID=ghcr.io/${{ github.repository }}/openslides-media
+        IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+        docker push $IMAGE_ID:$IMAGE_VERSION
