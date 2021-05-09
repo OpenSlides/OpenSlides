@@ -25,32 +25,32 @@ jobs:
       run: |
         IMAGE_ID=${{ github.repository_owner }}/openslides-server
         IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
-        docker push $IMAGE_ID:$IMAGE_VERSION
+        docker push ghcr.io/$IMAGE_ID:$IMAGE_VERSION
 
         IMAGE_ID=${{ github.repository_owner }}/openslides-repmgr
         IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
-        docker push $IMAGE_ID:$IMAGE_VERSION
+        docker push ghcr.io/$IMAGE_ID:$IMAGE_VERSION
 
         IMAGE_ID=${{ github.repository_owner }}/openslides-autoupdate
         IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
-        docker push $IMAGE_ID:$IMAGE_VERSION
+        docker push ghcr.io/$IMAGE_ID:$IMAGE_VERSION
 
         IMAGE_ID=${{ github.repository_owner }}/openslides-postfix
         IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
-        docker push $IMAGE_ID:$IMAGE_VERSION
+        docker push ghcr.io/$IMAGE_ID:$IMAGE_VERSION
 
         IMAGE_ID=${{ github.repository_owner }}/openslides-client
         IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
-        docker push $IMAGE_ID:$IMAGE_VERSION
+        docker push ghcr.io/$IMAGE_ID:$IMAGE_VERSION
 
         IMAGE_ID=${{ github.repository_owner }}/openslides-pgbouncer
         IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
-        docker push $IMAGE_ID:$IMAGE_VERSION
+        docker push ghcr.io/$IMAGE_ID:$IMAGE_VERSION
 
         IMAGE_ID=${{ github.repository_owner }}/openslides-proxy
         IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
-        docker push $IMAGE_ID:$IMAGE_VERSION
+        docker push ghcr.io/$IMAGE_ID:$IMAGE_VERSION
 
         IMAGE_ID=${{ github.repository_owner }}/openslides-media
         IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
-        docker push $IMAGE_ID:$IMAGE_VERSION
+        docker push ghcr.io/$IMAGE_ID:$IMAGE_VERSION
