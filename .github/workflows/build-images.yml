@@ -15,7 +15,7 @@ jobs:
         submodules: true
 
     - name: Build images
-      run: docker/build.sh all
+      run: docker/build.sh -D ${{ github.repository }} all
 
     - name: Log into registry
       run: echo "${{ secrets.GITHUB_TOKEN }}" |
