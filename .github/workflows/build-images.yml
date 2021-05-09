@@ -23,34 +23,34 @@ jobs:
 
     - name: Push images
       run: |
-        IMAGE_ID=ghcr.io/${{ github.repository }}/openslides-server
+        IMAGE_ID=ghcr.io/${{ github.repository_owner }}/openslides-server
         IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
         docker push $IMAGE_ID:$IMAGE_VERSION
 
-        IMAGE_ID=ghcr.io/${{ github.repository }}/openslides-repmgr
+        IMAGE_ID=ghcr.io/${{ github.repository_owner }}/openslides-repmgr
         IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
         docker push $IMAGE_ID:$IMAGE_VERSION
 
-        IMAGE_ID=ghcr.io/${{ github.repository }}/openslides-autoupdate
+        IMAGE_ID=ghcr.io/${{ github.repository_owner }}/openslides-autoupdate
         IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
         docker push $IMAGE_ID:$IMAGE_VERSION
 
-        IMAGE_ID=ghcr.io/${{ github.repository }}/openslides-postfix
+        IMAGE_ID=ghcr.io/${{ github.repository_owner }}/openslides-postfix
         IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
         docker push $IMAGE_ID:$IMAGE_VERSION
 
-        IMAGE_ID=ghcr.io/${{ github.repository }}/openslides-client
+        IMAGE_ID=ghcr.io/${{ github.repository_owner }}/openslides-client
         IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
         docker push $IMAGE_ID:$IMAGE_VERSION
 
-        IMAGE_ID=ghcr.io/${{ github.repository }}/openslides-pgbouncer
+        IMAGE_ID=ghcr.io/${{ github.repository_owner }}/openslides-pgbouncer
         IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
         docker push $IMAGE_ID:$IMAGE_VERSION
 
-        IMAGE_ID=ghcr.io/${{ github.repository }}/openslides-proxy
+        IMAGE_ID=ghcr.io/${{ github.repository_owner }}/openslides-proxy
         IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
         docker push $IMAGE_ID:$IMAGE_VERSION
 
-        IMAGE_ID=ghcr.io/${{ github.repository }}/openslides-media
+        IMAGE_ID=ghcr.io/${{ github.repository_owner }}/openslides-media
         IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
         docker push $IMAGE_ID:$IMAGE_VERSION
