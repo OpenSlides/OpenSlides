@@ -1,6 +1,9 @@
 ---
 name: Build Docker images for all OpenSlides services
-on: push
+on:
+    push:
+        branches:
+            - master
 env:
   IMAGE_VERSION: 3.4.0-dev
 jobs:

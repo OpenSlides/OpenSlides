@@ -14,24 +14,25 @@ dnl return env variable if set; otherwise, return given alternative value
 define(`ifenvelse', `ifelse(read_env(`$1'),, `$2', read_env(`$1'))')
 
 define(`DEFAULT_DOCKER_REGISTRY', ifenvelse(`DEFAULT_DOCKER_REGISTRY', openslides))
+define(`DEFAULT_DOCKER_TAG', ifenvelse(`DEFAULT_DOCKER_TAG', latest))
 
 dnl Parse image versions that can be configured through .env
 define(`BACKEND_IMAGE',
 ifenvelse(`DOCKER_OPENSLIDES_BACKEND_REGISTRY', DEFAULT_DOCKER_REGISTRY)/dnl
 openslides-server:dnl
-ifenvelse(`DOCKER_OPENSLIDES_BACKEND_TAG', latest))
+ifenvelse(`DOCKER_OPENSLIDES_BACKEND_TAG', DEFAULT_DOCKER_TAG))
 define(`FRONTEND_IMAGE',
 ifenvelse(`DOCKER_OPENSLIDES_FRONTEND_REGISTRY', DEFAULT_DOCKER_REGISTRY)/dnl
 openslides-client:dnl
-ifenvelse(`DOCKER_OPENSLIDES_FRONTEND_TAG', latest))
+ifenvelse(`DOCKER_OPENSLIDES_FRONTEND_TAG', DEFAULT_DOCKER_TAG))
 define(`AUTOUPDATE_IMAGE',
 ifenvelse(`DOCKER_OPENSLIDES_AUTOUPDATE_REGISTRY', DEFAULT_DOCKER_REGISTRY)/dnl
 openslides-autoupdate:dnl
-ifenvelse(`DOCKER_OPENSLIDES_AUTOUPDATE_TAG', latest))
+ifenvelse(`DOCKER_OPENSLIDES_AUTOUPDATE_TAG', DEFAULT_DOCKER_TAG))
 define(`PROXY_IMAGE',
 ifenvelse(`DOCKER_OPENSLIDES_PROXY_REGISTRY', DEFAULT_DOCKER_REGISTRY)/dnl
 openslides-proxy:dnl
-ifenvelse(`DOCKER_OPENSLIDES_PROXY_TAG', latest))
+ifenvelse(`DOCKER_OPENSLIDES_PROXY_TAG', DEFAULT_DOCKER_TAG))
 
 define(`PRIMARY_DB', `ifenvelse(`PGNODE_REPMGR_PRIMARY', pgnode1)')
 
@@ -86,7 +87,7 @@ x-osserver-env: &default-osserver-env
     REDIS_SLAVE_PORT: ifenvelse(`REDIS_SLAVE_PORT', 6379)
     RESET_PASSWORD_VERBOSE_ERRORS: "ifenvelse(`RESET_PASSWORD_VERBOSE_ERRORS', False)"
 x-pgnode: &default-pgnode
-  image: DEFAULT_DOCKER_REGISTRY/openslides-repmgr:latest
+  image: DEFAULT_DOCKER_REGISTRY/openslides-repmgr:DEFAULT_DOCKER_TAG
   networks:
     - dbnet
   labels:
@@ -203,7 +204,7 @@ ifelse(read_env(`PGNODE_3_ENABLED'), 1, `'
   pgbouncer:
     environment:
       - PG_NODE_LIST=pgnode1`'PGBOUNCER_NODELIST
-    image: DEFAULT_DOCKER_REGISTRY/openslides-pgbouncer:latest
+    image: DEFAULT_DOCKER_REGISTRY/openslides-pgbouncer:DEFAULT_DOCKER_TAG
     networks:
       back:
         aliases:
@@ -217,7 +218,7 @@ ifelse(read_env(`PGNODE_3_ENABLED'), 1, `'
       placement:
         constraints: ifenvelse(`PGBOUNCER_PLACEMENT_CONSTR', [node.role == manager])
   postfix:
-    image: DEFAULT_DOCKER_REGISTRY/openslides-postfix:latest
+    image: DEFAULT_DOCKER_REGISTRY/openslides-postfix:DEFAULT_DOCKER_TAG
     environment:
       MYHOSTNAME: "ifenvelse(`POSTFIX_MYHOSTNAME', localhost)"
       RELAYHOST: "ifenvelse(`POSTFIX_RELAYHOST', localhost)"
@@ -250,7 +251,7 @@ ifelse(read_env(`PGNODE_3_ENABLED'), 1, `'
         condition: on-failure
         delay: 5s
   media:
-    image: DEFAULT_DOCKER_REGISTRY/openslides-media:latest
+    image: DEFAULT_DOCKER_REGISTRY/openslides-media:DEFAULT_DOCKER_TAG
     environment:
       - CHECK_REQUEST_URL=server:8000/check-media/
       - CACHE_SIZE=ifenvelse(`CACHE_SIZE', 10)
