@@ -1,10 +1,6 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy } from '@angular/core';
 
 import { ServertimeService } from 'app/core/core-services/servertime.service';
-import { ConfigService } from 'app/core/ui-services/config.service';
-import { FontConfigObject } from 'app/core/ui-services/media-manage.service';
-
-declare let FontFace: any;
 
 export interface CountdownData {
     running: boolean;
@@ -19,7 +15,7 @@ export interface CountdownData {
     templateUrl: './countdown-time.component.html',
     styleUrls: ['./countdown-time.component.scss']
 })
-export class CountdownTimeComponent implements OnInit, OnDestroy {
+export class CountdownTimeComponent implements OnDestroy {
     /**
      * The time in seconds to make the countdown orange, is the countdown is below this value.
      */
@@ -96,23 +92,7 @@ export class CountdownTimeComponent implements OnInit, OnDestroy {
         return this._countdown;
     }
 
-    public constructor(private servertimeService: ServertimeService, private configService: ConfigService) {}
-
-    public ngOnInit(): void {
-        this.configService.get<FontConfigObject>('font_monospace').subscribe(font => {
-            if (font) {
-                const customFont = new FontFace('OSFont Monospace', `url(${font.path || font.default})`);
-                customFont
-                    .load()
-                    .then(res => {
-                        (document as any).fonts.add(res);
-                    })
-                    .catch(error => {
-                        console.log(error);
-                    });
-            }
-        });
-    }
+    public constructor(private servertimeService: ServertimeService) {}
 
     /**
      * Updates the countdown time and string format it.
