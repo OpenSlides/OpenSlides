@@ -250,7 +250,7 @@ user:
 
   meeting_ids:
     type: number[]
-    decription: Calculated. All ids from group_$_ids as integers.
+    description: Calculated. All ids from group_$_ids as integers.
     read_only: true
 
 # New: Resource
@@ -882,7 +882,7 @@ meeting:
     to: user/is_present_in_meeting_ids
   user_ids:
     type: number[]
-    decription: Calculated. All user ids from all users assigned to groups of this meeting.
+    description: Calculated. All user ids from all users assigned to groups of this meeting.
     read_only: true
   reference_projector_id:
     type: relation
