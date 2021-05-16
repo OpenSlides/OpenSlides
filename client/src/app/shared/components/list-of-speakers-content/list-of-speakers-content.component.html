@@ -204,7 +204,8 @@
                                     *ngIf="canMark(speaker) && !speaker.point_of_order"
                                 >
                                     <mat-icon *ngIf="speaker.marked">star</mat-icon>
-                                    <mat-icon class="user-subtitle" *ngIf="!speaker.marked">star_border</mat-icon>                                </button>
+                                    <mat-icon class="user-subtitle" *ngIf="!speaker.marked">star_border</mat-icon>
+                                </button>
                             </ng-container>
                         </span>
 
@@ -270,7 +271,7 @@
             <mat-icon>add</mat-icon>
             <span>{{ 'Add me' | translate }}</span>
         </button>
-        <button *ngIf="isOpInWaitlist()" mat-stroked-button [disabled]="closed" (click)="removeSpeaker()">
+        <button *ngIf="isOpInWaitlist()" mat-stroked-button (click)="removeSpeaker()">
             <mat-icon>remove</mat-icon>
             <span>{{ 'Remove me' | translate }}</span>
         </button>
