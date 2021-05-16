@@ -12,8 +12,6 @@ services:
     volumes:
       - ../openslides-datastore-service/shared/shared:/app/shared
       - ../openslides-datastore-service/reader/reader:/app/reader
-    ports:
-      - 9010:9010
   datastore-writer:
     image: openslides-datastore-writer-dev
     depends_on:
@@ -29,8 +27,6 @@ services:
       - COMMAND=create_initial_data
       - DATASTORE_INITIAL_DATA_FILE=https://raw.githubusercontent.com/OpenSlides/OpenSlides/openslides4-dev/docs/example-data.json
       - OPENSLIDES_DEVELOPMENT=1
-    ports:
-      - 9011:9011
   postgres:
     image: postgres:11
     environment:
@@ -59,8 +55,6 @@ services:
       - OPENSLIDES_DEVELOPMENT=1
     volumes:
       - ../openslides-backend/openslides_backend:/app/openslides_backend
-    ports:
-      - 5678:5678
   autoupdate:
     image: openslides-autoupdate-dev
     depends_on:
@@ -93,8 +87,6 @@ services:
       - OPENSLIDES_DEVELOPMENT=1
     volumes:
       - ../openslides-auth-service/auth/src:/app/src
-    ports:
-      - 9004:9004
   cache:
     image: redis:latest
   media:
@@ -116,7 +108,7 @@ services:
     environment:
       - OPENSLIDES_DEVELOPMENT=1
     ports:
-    - "8001:8001"
+    - "9008:9008"
   message-bus:
     image: redis:latest
   proxy:
