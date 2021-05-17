@@ -2,15 +2,77 @@
 
 set -e
 
+if [[ -z "$EXTERNAL_HTTP_PORT" ]] && [[ -z "$EXTERNAL_HTTPS_PORT" ]]; then
+    echo "EXTERNAL_HTTP_PORT and EXTERNAL_HTTPS_PORT are not set. Aborting."
+    exit 1
+fi
+
 if [[ -f "/certs/key.pem" ]] && [[ -f "/certs/cert.pem" ]]; then
+    certs_exists=1
+fi
+
+if [[ -n "$EXTERNAL_HTTPS_PORT" ]] && [[ -z "$certs_exists" ]]; then
+    echo "Configured https, but no certificates found. Aborting"
+    exit 1
+fi
+
+# config: https
+if [[ -n "$EXTERNAL_HTTPS_PORT" ]] ; then
     cat <<EOF >> /etc/caddy/endpoint
-https://:8000 {
+https://:8001 {
     tls /certs/cert.pem /certs/key.pem
 EOF
     echo "Configured https"
-else
+fi
+
+# config: http and no https
+if [[ -n "$EXTERNAL_HTTP_PORT" ]] && [[ -z "$EXTERNAL_HTTPS_PORT" ]] ; then
     echo "http://:8000 {" > /etc/caddy/endpoint
-    echo "Configured http"
+    echo "Configured http only"
+fi
+
+# config: https and additionally http -> create redirect-file
+if [[ -n "$EXTERNAL_HTTP_PORT" ]] && [[ -n "$EXTERNAL_HTTPS_PORT" ]] ; then
+    cat <<EOF >> /etc/caddy/redirect
+http://:8000 {
+    redir https://$INSTANCE_DOMAIN{uri}
+}
+EOF
+    echo "Configured http to https redirect"
+fi
+
+# Add allowed hosts from $ALLOWED_HOSTS
+# If the variable is empty, all hosts are allowed.
+# The hosts are ORed, so the request is valid, if one host matches.
+# Example: ALLOWED_HOSTS="localhost:8000 127.0.0.1:8000"
+#
+# @invalid-host {
+#     not {
+#         header Host localhost:8000
+#         header Host 127.0.0.1:8000
+#     }
+# }
+# respond @invalid-host "Misdirected Request" 421 {
+#     close
+# }
+if [[ ! -z "$ALLOWED_HOSTS" ]]; then
+    cat <<EOF >> /etc/caddy/invalid_host
+    @invalid-host {
+        not {
+EOF
+    for host in $ALLOWED_HOSTS; do
+        echo "            host $host" >> /etc/caddy/invalid_host
+    done
+    cat <<EOF >> /etc/caddy/invalid_host
+        }
+    }
+    respond @invalid-host "Misdirected Request" 421 {
+        close
+    }
+EOF
+    echo "Configured allowed hosts: $ALLOWED_HOSTS"
+else
+    echo "All hosts allowed"
 fi
 
 exec "$@"

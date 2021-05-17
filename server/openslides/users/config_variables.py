@@ -77,7 +77,9 @@ def get_config_variables():
     # TODO: Use Django's URLValidator here.
     yield ConfigVariable(
         name="users_pdf_url",
-        default_value=os.getenv("INSTANCE_DOMAIN", default="http://example.com:8000"),
+        default_value=os.getenv("INSTANCE_URL_SCHEME", default="https")
+        + "://"
+        + os.getenv("INSTANCE_DOMAIN", default="127.0.0.1"),
         label="System URL",
         help_text="Used for QRCode in PDF of access data.",
         weight=540,
