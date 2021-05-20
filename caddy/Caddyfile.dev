@@ -1,4 +1,4 @@
-:8000 {
+localhost:8000 {
     reverse_proxy /system/* autoupdate:8002 {
         flush_interval -1
     }
