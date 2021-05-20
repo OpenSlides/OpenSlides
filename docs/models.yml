@@ -103,6 +103,9 @@ user:
     default: true
   password: string
   default_password: string
+  can_change_own_password:
+    type: boolean
+    default: true
   gender: string
   email: string
   default_number: string
@@ -967,7 +970,6 @@ group:
       - projector.can_manage
       - projector.can_see
       - tag.can_manage
-      - user.can_change_own_password
       - user.can_manage
       - user.can_see
       - user.can_see_extra_data

@@ -28,6 +28,7 @@
         "is_physical_person": true,
         "password": "1422e767c5e08bb7196844025a0f98e1x61Ey612Kl2gpFL56FT9weDnpSo4AV8j8+qx2AuTHdRyY036xxzTTrw10Wq3+4qQyB+XURPWx1ONxp3Y3pB37A==",
         "default_password": "admin",
+        "can_change_own_password": true,
         "gender": "",
         "email": "",
         "default_number": "",
@@ -308,8 +309,7 @@
             "meeting.can_see_frontpage",
             "motion.can_see",
             "projector.can_see",
-            "user.can_see",
-            "user.can_change_own_password"
+            "user.can_see"
         ],
 
         "user_ids": [],
@@ -359,8 +359,7 @@
             "poll.can_manage",
             "projector.can_manage",
             "tag.can_manage",
-            "user.can_manage",
-            "user.can_change_own_password"
+            "user.can_manage"
         ],
 
         "user_ids": [],
@@ -389,8 +388,7 @@
             "motion.can_create_amendments",
             "motion.can_support",
             "projector.can_see",
-            "user.can_see",
-            "user.can_change_own_password"
+            "user.can_see"
         ],
 
         "user_ids": [],
@@ -421,8 +419,7 @@
             "motion.can_create_amendments",
             "motion.can_support",
             "projector.can_see",
-            "user.can_see",
-            "user.can_change_own_password"
+            "user.can_see"
         ],
 
         "user_ids": [],
