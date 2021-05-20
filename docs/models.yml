@@ -350,13 +350,10 @@ meeting:
   # Configuration (only for the server owner)
   jitsi_domain:
     type: string
-    read_only: true
   jitsi_room_name:
     type: string
-    read_only: true
   jitsi_room_password:
     type: string
-    read_only: true
 
   # System
   url_name:
