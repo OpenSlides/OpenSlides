@@ -1,11 +1,12 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { auditTime, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { ChatGroupRepositoryService } from 'app/core/repositories/chat/chat-group-repository.service';
@@ -15,7 +16,6 @@ import { ChatMessage } from 'app/shared/models/chat/chat-message';
 import { BaseViewComponentDirective } from 'app/site/base/base-view';
 import { ChatNotificationService, NotificationAmount } from '../../services/chat-notification.service';
 import { ViewChatGroup } from '../../models/view-chat-group';
-
 @Component({
     selector: 'os-chat-tabs',
     templateUrl: './chat-tabs.component.html',
@@ -26,6 +26,8 @@ import { ViewChatGroup } from '../../models/view-chat-group';
 export class ChatTabsComponent extends BaseViewComponentDirective implements OnInit {
     public chatGroupSubject: BehaviorSubject<ViewChatGroup[]>;
     public newMessageForm: FormGroup;
+    private messageControl: AbstractControl;
+    public chatMessageMaxLength = 512;
     private selectedTabIndex = 0;
 
     private notifications: NotificationAmount;
@@ -58,8 +60,18 @@ export class ChatTabsComponent extends BaseViewComponentDirective implements OnI
         super(titleService, translate, matSnackBar);
 
         this.newMessageForm = formBuilder.group({
-            text: ['']
+            text: ['', [Validators.required, Validators.maxLength(this.chatMessageMaxLength)]]
         });
+        this.messageControl = this.newMessageForm.get('text');
+
+        this.subscriptions.push(
+            this.messageControl.valueChanges.subscribe(text => {
+                if (!text) {
+                    this.newMessageForm.markAsUntouched();
+                    this.messageControl.setErrors(null);
+                }
+            })
+        );
     }
 
     public ngOnInit(): void {
@@ -78,21 +90,20 @@ export class ChatTabsComponent extends BaseViewComponentDirective implements OnI
         return this.notifications?.[chatId] ?? 0;
     }
 
-    public isChatMessageEmpty(): boolean {
-        return !this.newMessageForm?.value?.text?.trim();
-    }
-
     public send(): void {
-        const payload = {
-            text: this.newMessageForm.value.text,
-            chatgroup_id: this.chatGroupFromIndex.id
-        };
-        this.chatMessageRepo
-            .create(payload as ChatMessage)
-            .then(() => {
-                this.clearTextInput();
-            })
-            .catch(this.raiseError);
+        const message = this.messageControl.value?.trim();
+        if (message) {
+            const payload = {
+                text: message,
+                chatgroup_id: this.chatGroupFromIndex.id
+            };
+            this.chatMessageRepo
+                .create(payload as ChatMessage)
+                .then(() => {
+                    this.clearTextInput();
+                })
+                .catch(this.raiseError);
+        }
     }
 
     private clearTextInput(): void {

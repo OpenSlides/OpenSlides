@@ -25,7 +25,14 @@
 <!-- send chat -->
 <form [formGroup]="newMessageForm" (ngSubmit)="send()" *ngIf="chatGroupsExist && canSendInSelectedChat" [@collapse]>
     <mat-form-field appearance="outline" class="chat-form-field">
-        <input class="chat-input" type="text" matInput formControlName="text" />
+        <input #chatinput autocomplete="off" type="text" matInput formControlName="text" />
+        <mat-hint align="end" *ngIf="chatinput.value?.length >= chatMessageMaxLength - 100">
+            <span> {{ chatinput.value?.length || 0 }}/{{ chatMessageMaxLength }} </span>
+
+            <span class="warn" *ngIf="chatinput.value?.length > chatMessageMaxLength">
+                ({{ chatMessageMaxLength - chatinput.value?.length }})
+            </span>
+        </mat-hint>
         <mat-label>{{ 'Message' | translate }}</mat-label>
         <button
             mat-icon-button
@@ -33,7 +40,7 @@
             type="submit"
             color="accent"
             matTooltip=" {{ 'Send' | translate }}"
-            [disabled]="isChatMessageEmpty()"
+            [disabled]="!chatinput.value?.trim()?.length || newMessageForm.invalid"
         >
             <mat-icon>send</mat-icon>
         </button>
