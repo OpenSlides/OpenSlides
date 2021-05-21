@@ -17,16 +17,25 @@
         </mat-expansion-panel-header>
         <mat-list>
             <mat-list-item *ngFor="let speaker of finishedSpeakers; let number = index">
-                <div class="finished-speaker-grid">
-                    <div class="number">{{ number + 1 }}.</div>
-                    <div class="name">{{ speaker.getTitle() }}</div>
-                    <div class="point-of-order" *ngIf="speaker.point_of_order">
-                        <mat-icon color="warn">warning</mat-icon>
+                <div class="finished-speakers-grid">
+                    <div>{{ number + 1 }}.</div>
+                    <div class="finished-speaker-info">
+                        <div>
+                            <div>{{ speaker.getTitle() }}</div>
+                            <div>
+                                <ng-container
+                                    [ngTemplateOutlet]="speakerSubtitle"
+                                    [ngTemplateOutletContext]="{ speaker: speaker, showcolor: true }"
+                                ></ng-container>
+                            </div>
+                        </div>
+                        <div class="user-subtitle">
+                            {{ durationString(speaker) }} ({{ 'Start time' | translate }}:
+                            {{ startTimeToString(speaker) }})
+                        </div>
                     </div>
-                    <div class="time">
-                        {{ durationString(speaker) }} ({{ 'Start time' | translate }}: {{ startTimeToString(speaker) }})
-                    </div>
-                    <div class="controls">
+
+                    <div>
                         <button
                             mat-icon-button
                             matTooltip="{{ 'Remove' | translate }}"
@@ -54,17 +63,10 @@
         <span class="name">
             {{ activeSpeaker.getListTitle() }}
             <div class="active-speaker-subtitle">
-                <i *ngIf="activeSpeaker.pro_speech === true">
-                    {{ 'Forspeech' | translate }}
-                </i>
-
-                <i *ngIf="activeSpeaker.pro_speech === false">
-                    {{ 'Counter speech' | translate }}
-                </i>
-
-                <i *ngIf="activeSpeaker.marked">
-                    {{ 'Contribution' | translate }}
-                </i>
+                <ng-container
+                    [ngTemplateOutlet]="speakerSubtitle"
+                    [ngTemplateOutletContext]="{ speaker: activeSpeaker }"
+                ></ng-container>
             </div>
         </span>
 
@@ -75,7 +77,7 @@
                 matTooltip="{{ 'Point of order' | translate }}"
                 *ngIf="activeSpeaker.point_of_order"
             >
-                <mat-icon color="warn">warning</mat-icon>
+                <mat-icon>warning</mat-icon>
             </button>
             <!-- Stop speaker button -->
             <button
@@ -107,45 +109,10 @@
                             {{ speaker.getTitle() }}
                         </div>
                         <!-- Extra line -->
-                        <ng-container>
-                            <!-- Pro Contra Mark  -->
-                            <ng-container *ngIf="speaker.pro_speech === true">
-                                <mat-icon inline class="inline-icon-text-align green-text"> add_circle </mat-icon>
-                                <i class="user-subtitle">
-                                    {{ 'Forspeech' | translate }}
-                                </i>
-                            </ng-container>
-
-                            <ng-container *ngIf="speaker.pro_speech === false">
-                                <mat-icon inline class="inline-icon-text-align red-warning-text">
-                                    remove_circle
-                                </mat-icon>
-                                <i class="user-subtitle">
-                                    {{ 'Counter speech' | translate }}
-                                </i>
-                            </ng-container>
-
-                            <ng-container *ngIf="speaker.marked">
-                                <mat-icon inline class="inline-icon-text-align icon">star</mat-icon>
-                                <i class="user-subtitle">
-                                    {{ 'Contribution' | translate }}
-                                </i>
-                            </ng-container>
-
-                            <!-- Point Of Order and note -->
-                            <ng-container>
-                                <mat-icon
-                                    inline
-                                    color="warn"
-                                    class="inline-icon-text-align"
-                                    *ngIf="speaker.point_of_order"
-                                    >warning</mat-icon
-                                >
-                                <i class="red-warning-text">
-                                    {{ speaker.note }}
-                                </i>
-                            </ng-container>
-                        </ng-container>
+                        <ng-container
+                            [ngTemplateOutlet]="speakerSubtitle"
+                            [ngTemplateOutletContext]="{ speaker: speaker, showcolor: true }"
+                        ></ng-container>
                     </div>
                     <div class="speaker-controls one-line">
                         <!-- Extra stuff: Spoken Count, Gender, 1st Contribution -->
@@ -177,7 +144,9 @@
                                     matTooltip="{{ 'Forspeech' | translate }}"
                                     *ngIf="enableProContraSpeech && !speaker.point_of_order"
                                 >
-                                    <mat-icon class="user-subtitle" *ngIf="speaker.pro_speech !== true"> add_circle_outline </mat-icon>
+                                    <mat-icon class="user-subtitle" *ngIf="speaker.pro_speech !== true">
+                                        add_circle_outline
+                                    </mat-icon>
                                     <mat-icon class="green-text" *ngIf="speaker.pro_speech === true">
                                         add_circle
                                     </mat-icon>
@@ -190,9 +159,8 @@
                                     matTooltip="{{ 'Counter speech' | translate }}"
                                     *ngIf="enableProContraSpeech && !speaker.point_of_order"
                                 >
-                                    <mat-icon class="user-subtitle" *ngIf="speaker.pro_speech !== false"> remove_circle_outline </mat-icon>
-                                    <mat-icon class="red-warning-text" *ngIf="speaker.pro_speech === false">
-                                        remove_circle
+                                    <mat-icon class="user-subtitle" *ngIf="speaker.pro_speech !== false">
+                                        remove_circle_outline speaker remove_circle
                                     </mat-icon>
                                 </button>
 
@@ -331,3 +299,45 @@
         </ng-container>
     </ng-template>
 </mat-menu>
+
+<ng-template #speakerSubtitle let-speaker="speaker" let-showcolor="showcolor">
+    <!-- Pro Speech -->
+    <ng-container *ngIf="speaker.pro_speech === true">
+        <mat-icon inline class="inline-icon-text-align" [class.green-text]="!!showcolor"> add_circle </mat-icon>
+        <i [class.user-subtitle]="!!showcolor">
+            {{ 'Forspeech' | translate }}
+        </i>
+    </ng-container>
+
+    <!-- Contra Speech -->
+    <ng-container *ngIf="speaker.pro_speech === false">
+        <mat-icon inline class="inline-icon-text-align" [class.red-warning-text]="!!showcolor">
+            remove_circle
+        </mat-icon>
+        <i [class.user-subtitle]="!!showcolor">
+            {{ 'Counter speech' | translate }}
+        </i>
+    </ng-container>
+
+    <!-- Marked -->
+    <ng-container *ngIf="speaker.marked">
+        <mat-icon inline class="inline-icon-text-align" [class.icon]="!!showcolor">star</mat-icon>
+        <i [class.user-subtitle]="!!showcolor">
+            {{ 'Contribution' | translate }}
+        </i>
+    </ng-container>
+
+    <!-- Point Of Order and note -->
+    <ng-container>
+        <mat-icon
+            inline
+            color="{{ !!showcolor ? 'warn' : null }}"
+            class="inline-icon-text-align"
+            *ngIf="speaker.point_of_order"
+            >warning</mat-icon
+        >
+        <i [class.red-warning-text]="!!showcolor">
+            {{ speaker.note }}
+        </i>
+    </ng-container>
+</ng-template>
