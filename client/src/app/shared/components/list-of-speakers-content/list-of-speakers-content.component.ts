@@ -230,7 +230,8 @@ export class ListOfSpeakersContentComponent extends BaseViewComponentDirective i
             PointOfOrderDialogComponent,
             {
                 data: this.viewListOfSpeakers,
-                ...infoDialogSettings
+                ...infoDialogSettings,
+                disableClose: false
             }
         );
 
