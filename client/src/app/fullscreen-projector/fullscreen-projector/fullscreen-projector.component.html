@@ -1,5 +1,5 @@
 <div id="container" #container [osResized]="resizeSubject">
-    <div id="projector" [ngStyle]="projectorStyle">
+    <div id="projector" class="nocursor" [ngStyle]="projectorStyle">
         <os-projector *ngIf="projector" [projector]="projector"></os-projector>
     </div>
 </div>
