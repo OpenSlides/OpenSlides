@@ -6,7 +6,8 @@ import {
     Input,
     OnInit,
     Output,
-    ViewChild
+    ViewChild,
+    ViewEncapsulation
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -37,6 +38,7 @@ import { SortingListComponent } from '../sorting-list/sorting-list.component';
     selector: 'os-list-of-speakers-content',
     templateUrl: './list-of-speakers-content.component.html',
     styleUrls: ['./list-of-speakers-content.component.scss'],
+    encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ListOfSpeakersContentComponent extends BaseViewComponentDirective implements OnInit {

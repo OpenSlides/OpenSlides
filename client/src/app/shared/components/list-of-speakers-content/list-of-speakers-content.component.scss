@@ -10,69 +10,21 @@
 
     .mat-list-item {
         height: auto;
-        margin-bottom: 10px;
-    }
+        margin: 10px;
 
-    .finished-speaker-grid {
+        .mat-list-item-content {
+            display: block !important;
+        }
+    }
+    .finished-speakers-grid {
+        font-size: 14px;
         display: grid;
-        width: 100%;
-        grid-gap: 5px;
+        grid-gap: 1em;
+        grid-template-columns: min-content auto min-content;
 
-        grid-template-areas:
-            'number name controls'
-            'number time controls';
-        grid-template-columns: 30px 1fr min-content;
-    }
-
-    @include desktop {
-        .finished-speaker-grid {
-            grid-template-areas: 'number name point-of-order time controls';
-            grid-template-columns: 30px 1fr min-content min-content;
-        }
-    }
-
-    .number {
-        grid-area: number;
-        margin: 0;
-    }
-
-    .name {
-        grid-area: name;
-        margin: 0;
-    }
-
-    .point-of-order {
-        grid-area: point-of-order;
-        margin: 0;
-        //allows pushing this grid area as small as possible and aligns the end to the same level
-        white-space: nowrap;
-        font-size: 80%;
-
-        .mat-icon {
-            line-height: 19px;
-        }
-    }
-
-    .time {
-        grid-area: time;
-        margin: 0;
-        //allows pushing this grid area as small as possible and aligns the end to the same level
-        white-space: nowrap;
-        font-size: 80%;
-    }
-
-    .controls {
-        grid-area: controls;
-        margin: 0;
-        opacity: 0.7;
-
-        .mat-icon-button {
-            height: 20px;
-            line-height: 1;
-
-            .mat-icon {
-                line-height: 19px;
-            }
+        .finished-speaker-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
         }
     }
 }
