@@ -4,7 +4,7 @@
         <!-- Title Area -->
         <div class="poll-title-area">
             <!-- Title -->
-            <span class="poll-title">
+            <span class="poll-title break-word">
                 <a [routerLink]="pollLink">
                     {{ poll.title | translate }}
                 </a>
@@ -22,10 +22,10 @@
     <!-- Subtitle -->
     <div class="italic spacer-bottom-20">
         <!-- Type and State -->
-        <div class="type-and-state italic spacer-bottom-20">
+        <div class="type-and-state italic spacer-bottom-20 break-word">
             <span *osPerms="permission.motionsCanManagePolls; and: poll.isEVoting">
                 <os-icon-container
-                    class="poll-type"
+                    class="poll-type break-word"
                     icon="info"
                     color="primary"
                     [swap]="true"
@@ -39,7 +39,7 @@
             </span>
 
             <!-- State -->
-            <span>
+            <span class="break-word">
                 {{ poll.stateVerbose | translate }}
             </span>
         </div>
