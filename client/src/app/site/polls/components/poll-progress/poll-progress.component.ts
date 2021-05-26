@@ -33,6 +33,9 @@ export class PollProgressComponent extends BaseViewComponentDirective implements
         return this.operator.hasPerms(this.permission.agendaCanManageListOfSpeakers);
     }
 
+    /**
+     * TODO: some non apstract poll function service is required.
+     */
     private get canManagePoll(): boolean {
         if (this.poll.pollClassType === PollClassType.Motion) {
             return this.operator.hasPerms(this.permission.motionsCanManagePolls);

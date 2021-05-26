@@ -12,8 +12,12 @@
 
 <ng-template #pollArea let-poll="poll" let-last="last">
     <mat-card class="os-card">
-        <p class="subtitle-text">
-            <a [routerLink]="getPollDetailLink(poll)" [state]="{ back: 'true' }">{{ getPollVoteTitle(poll) }}</a>
+        <p>
+            <a [routerLink]="getPollDetailLink(poll)" [state]="{ back: 'true' }" class="subtitle-text">
+                {{ getPollVoteTitle(poll) }}
+            </a>
+            <br>
+            <i *ngIf="canManagePoll(poll) && poll.isFinished" class="small">{{ 'finished (unpublished)' | translate }}</i>
         </p>
 
         <os-poll-progress *ngIf="poll.canBeVotedFor()" [poll]="poll"></os-poll-progress>
