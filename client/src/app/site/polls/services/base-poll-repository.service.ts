@@ -56,26 +56,22 @@ export abstract class BasePollRepositoryService<
         return viewModel;
     }
 
-    public changePollState(poll: BasePoll): Promise<void> {
+    public changePollState(poll: BasePoll, targetState: PollState): Promise<void> {
         const path = this.restPath(poll);
-        switch (poll.state) {
+        switch (targetState) {
             case PollState.Created:
-                return this.http.post(`${path}/start/`);
+                return this.http.post(`${path}/reset/`);
             case PollState.Started:
-                return this.http.post(`${path}/stop/`);
+                return this.http.post(`${path}/start/`);
             case PollState.Finished:
-                return this.http.post(`${path}/publish/`);
+                return this.http.post(`${path}/stop/`);
             case PollState.Published:
-                return this.resetPoll(poll);
+                return this.http.post(`${path}/publish/`);
         }
     }
 
     private restPath(poll: BasePoll): string {
         return `/rest/${poll.collectionString}/${poll.id}`;
-    }
-
-    public resetPoll(poll: BasePoll): Promise<void> {
-        return this.http.post(`${this.restPath(poll)}/reset/`);
     }
 
     public pseudoanonymize(poll: BasePoll): Promise<void> {

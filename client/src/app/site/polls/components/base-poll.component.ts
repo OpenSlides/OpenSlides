@@ -6,13 +6,14 @@ import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject } from 'rxjs';
 
 import { BasePollDialogService } from 'app/core/ui-services/base-poll-dialog.service';
+import { ChoiceService } from 'app/core/ui-services/choice.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ChartData } from 'app/shared/components/charts/charts.component';
 import { PollState, PollType } from 'app/shared/models/poll/base-poll';
 import { BaseViewComponentDirective } from 'app/site/base/base-view';
 import { BasePollRepositoryService } from '../services/base-poll-repository.service';
 import { PollService } from '../services/poll.service';
-import { ViewBasePoll } from '../models/view-base-poll';
+import { PollStateChangeActionVerbose, ViewBasePoll } from '../models/view-base-poll';
 
 export abstract class BasePollComponent<
     V extends ViewBasePoll,
@@ -49,38 +50,46 @@ export abstract class BasePollComponent<
         protected translate: TranslateService,
         protected dialog: MatDialog,
         protected promptService: PromptService,
+        protected choiceService: ChoiceService,
         protected repo: BasePollRepositoryService,
         protected pollDialog: BasePollDialogService<V, S>
     ) {
         super(titleService, translate, matSnackBar);
     }
 
-    public async changeState(key: PollState): Promise<void> {
-        if (key === PollState.Created) {
-            const title = this.translate.instant('Are you sure you want to reset this vote?');
-            const content = this.translate.instant('All votes will be lost.');
-            if (await this.promptService.open(title, content)) {
-                this.stateChangePending = true;
-                this.repo
-                    .resetPoll(this._poll)
-                    .catch(this.raiseError)
-                    .finally(() => {
-                        this.stateChangePending = false;
-                    });
+    public async nextPollState(): Promise<void> {
+        const currentState: PollState = this._poll.state;
+        if (currentState === PollState.Created || currentState === PollState.Finished) {
+            await this.changeState(this._poll.nextState);
+        } else if (currentState === PollState.Started) {
+            const title = this.translate.instant('Are you sure you want to stop this voting?');
+            const actions = [this.translate.instant('Stop'), this.translate.instant('Stop & publish')];
+            const choice = await this.choiceService.open(title, null, false, actions);
+
+            if (choice?.action === 'Stop') {
+                await this.changeState(PollState.Finished);
+            } else if (choice?.action === 'Stop & publish') {
+                await this.changeState(PollState.Published);
             }
-        } else {
-            this.stateChangePending = true;
-            this.repo
-                .changePollState(this._poll)
-                .catch(this.raiseError)
-                .finally(() => {
-                    this.stateChangePending = false;
-                });
         }
     }
 
-    public resetState(): void {
-        this.changeState(PollState.Created);
+    private async changeState(targetState: PollState): Promise<void> {
+        this.stateChangePending = true;
+        this.repo
+            .changePollState(this._poll, targetState)
+            .catch(this.raiseError)
+            .finally(() => {
+                this.stateChangePending = false;
+            });
+    }
+
+    public async resetState(): Promise<void> {
+        const title = this.translate.instant('Are you sure you want to reset this vote?');
+        const content = this.translate.instant('All votes will be lost.');
+        if (await this.promptService.open(title, content)) {
+            this.changeState(PollState.Created);
+        }
     }
 
     /**

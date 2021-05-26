@@ -1284,6 +1284,29 @@ class PublishMotionPoll(TestCase):
         self.assertHttpStatusVerbose(response, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(MotionPoll.objects.get().state, MotionPoll.STATE_CREATED)
 
+    def test_publish_from_started(self):
+        self.poll.state = MotionPoll.STATE_STARTED
+        self.poll.save()
+        response = self.client.post(reverse("motionpoll-publish", args=[self.poll.pk]))
+        self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
+        self.assertEqual(MotionPoll.objects.get().state, MotionPoll.STATE_PUBLISHED)
+
+    def test_publish_from_started_with_entitled_users(self):
+        self.poll.state = MotionPoll.STATE_STARTED
+        self.poll.save()
+        admin = get_user_model().objects.get(username="admin")
+        admin.is_present = True
+        admin.save()
+        self.poll.groups.add(GROUP_ADMIN_PK)
+        response = self.client.post(reverse("motionpoll-publish", args=[self.poll.pk]))
+        self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
+        poll = MotionPoll.objects.get()
+        self.assertEqual(poll.state, MotionPoll.STATE_PUBLISHED)
+        self.assertEqual(
+            poll.entitled_users_at_stop,
+            [{"user_id": admin.id, "voted": False, "vote_delegated_to_id": None}],
+        )
+
 
 class PseudoanonymizeMotionPoll(TestCase):
     def setUp(self):

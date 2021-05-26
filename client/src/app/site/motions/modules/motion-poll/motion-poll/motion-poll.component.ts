@@ -7,6 +7,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { OperatorService, Permission } from 'app/core/core-services/operator.service';
 import { MotionPollRepositoryService } from 'app/core/repositories/motions/motion-poll-repository.service';
+import { ChoiceService } from 'app/core/ui-services/choice.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { VotingPrivacyWarningComponent } from 'app/shared/components/voting-privacy-warning/voting-privacy-warning.component';
 import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
@@ -68,6 +69,7 @@ export class MotionPollComponent extends BasePollComponent<ViewMotionPoll, Motio
         titleService: Title,
         matSnackBar: MatSnackBar,
         promptService: PromptService,
+        choiceService: ChoiceService,
         pollDialog: MotionPollDialogService,
         protected dialog: MatDialog,
         protected pollRepo: MotionPollRepositoryService,
@@ -76,7 +78,7 @@ export class MotionPollComponent extends BasePollComponent<ViewMotionPoll, Motio
         private pdfService: MotionPollPdfService,
         private operator: OperatorService
     ) {
-        super(titleService, matSnackBar, translate, dialog, promptService, pollRepo, pollDialog);
+        super(titleService, matSnackBar, translate, dialog, promptService, choiceService, pollRepo, pollDialog);
     }
 
     public openVotingWarning(): void {

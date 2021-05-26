@@ -8,6 +8,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { AssignmentPollRepositoryService } from 'app/core/repositories/assignments/assignment-poll-repository.service';
+import { ChoiceService } from 'app/core/ui-services/choice.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { VotingService } from 'app/core/ui-services/voting.service';
 import { VotingPrivacyWarningComponent } from 'app/shared/components/voting-privacy-warning/voting-privacy-warning.component';
@@ -82,6 +83,7 @@ export class AssignmentPollComponent
         translate: TranslateService,
         dialog: MatDialog,
         promptService: PromptService,
+        choiceService: ChoiceService,
         repo: AssignmentPollRepositoryService,
         pollDialog: AssignmentPollDialogService,
         private pollService: AssignmentPollService,
@@ -90,7 +92,7 @@ export class AssignmentPollComponent
         private operator: OperatorService,
         private votingService: VotingService
     ) {
-        super(titleService, matSnackBar, translate, dialog, promptService, repo, pollDialog);
+        super(titleService, matSnackBar, translate, dialog, promptService, choiceService, repo, pollDialog);
     }
 
     public ngOnInit(): void {
