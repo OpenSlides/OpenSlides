@@ -113,6 +113,19 @@ export class PollCollectionComponent extends BaseViewComponentDirective implemen
     }
 
     /**
+     * TODO: Some non abstract base poll service was required
+     * @param poll
+     */
+    public canManagePoll(poll: ViewBasePoll): boolean {
+        if (poll.pollClassType === PollClassType.Motion) {
+            return this.operator.hasPerms(this.permission.motionsCanManagePolls);
+        } else if (poll.pollClassType === PollClassType.Assignment) {
+            return this.operator.hasPerms(this.permission.assignmentsCanManage);
+        }
+        return false;
+    }
+
+    /**
      * Helper function to detect new latest published polls and set them.
      */
     private updateLastPublished(): void {

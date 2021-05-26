@@ -10,7 +10,6 @@ import { ListOfSpeakersRepositoryService } from 'app/core/repositories/agenda/li
 import { ProjectorRepositoryService } from 'app/core/repositories/projector/projector-repository.service';
 import { DetailNavigable, isDetailNavigable } from 'app/shared/models/base/detail-navigable';
 import { ProjectorElement } from 'app/shared/models/core/projector';
-import { ListOfSpeakersComponent } from 'app/site/agenda/components/list-of-speakers/list-of-speakers.component';
 import { ViewListOfSpeakers } from 'app/site/agenda/models/view-list-of-speakers';
 import { BaseProjectableViewModel } from 'app/site/base/base-projectable-view-model';
 import { BaseViewComponentDirective } from 'app/site/base/base-view';
@@ -20,7 +19,8 @@ import { CurrentListOfSpeakersService } from 'app/site/projector/services/curren
 @Component({
     selector: 'os-cinema',
     templateUrl: './cinema.component.html',
-    styleUrls: ['./cinema.component.scss']
+    styleUrls: ['./cinema.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CinemaComponent extends BaseViewComponentDirective implements OnInit {
     public listOfSpeakers: ViewListOfSpeakers;
@@ -109,9 +109,11 @@ export class CinemaComponent extends BaseViewComponentDirective implements OnIni
                 } else {
                     this.projectedViewModel = null;
                 }
+                this.cd.markForCheck();
             }),
             this.closService.currentListOfSpeakersObservable.subscribe(clos => {
                 this.listOfSpeakers = clos;
+                this.cd.markForCheck();
             })
         );
     }
