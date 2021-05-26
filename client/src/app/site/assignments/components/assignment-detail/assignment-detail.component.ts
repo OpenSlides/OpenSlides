@@ -143,6 +143,10 @@ export class AssignmentDetailComponent extends BaseViewComponentDirective implem
         return this.agendaObserver.getValue().length > 0;
     }
 
+    public get enumerateCandidates(): boolean {
+        return this.assignment?.number_poll_candidates || false;
+    }
+
     /**
      * Hold the subscription to the navigation.
      * This cannot go into the subscription-list, since it should

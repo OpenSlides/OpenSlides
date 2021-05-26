@@ -3,9 +3,12 @@
     <small class="meta-info-left subtitle" *ngIf="poll.options?.length && showCandidates">
         <div>
             {{ 'Candidates' | translate }}:
-            <ol>
+            <ol *ngIf="enumerateCandidates">
                 <li *ngFor="let option of poll.options">{{ getOptionTitle(option) | translate }}</li>
             </ol>
+            <ul *ngIf="!enumerateCandidates">
+                <li *ngFor="let option of poll.options">{{ getOptionTitle(option) | translate }}</li>
+            </ul>
         </div>
         <div *ngIf="hasGlobalOption">
             {{ 'Options' | translate }}:

@@ -149,7 +149,7 @@
                     <os-sorting-list
                         [input]="assignment.assignment_related_users"
                         [live]="true"
-                        [count]="true"
+                        [count]="enumerateCandidates"
                         [enable]="hasPerms('manage')"
                         (sortEvent)="onSortingChange($event)"
                     >
