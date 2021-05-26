@@ -30,11 +30,15 @@ export class UserStatisticsComponent extends BaseViewComponentDirective {
     }
 
     public get numberOfUniqueSpeakers(): number {
-        return this.uniqueSpeakers.length;
+        return this.uniqueSpeakers?.length || 0;
     }
 
     public get numberOfWordRequests(): number {
-        return this._numberOfWordRequests;
+        return this._numberOfWordRequests || 0;
+    }
+
+    public get numberOfPoo(): number {
+        return this._numberOfPoo || 0;
     }
 
     /**
@@ -84,6 +88,7 @@ export class UserStatisticsComponent extends BaseViewComponentDirective {
      */
     private uniqueSpeakers: ViewSpeaker[] = [];
     private _numberOfWordRequests = 0;
+    private _numberOfPoo = 0;
     private statisticIsOpen = false;
     private relationSpeakingTimeStructureLevelSubject = new BehaviorSubject<SpeakingTimeStructureLevelObject[]>([]);
 
@@ -122,6 +127,7 @@ export class UserStatisticsComponent extends BaseViewComponentDirective {
         }
         this.relationSpeakingTimeStructureLevelSubject.next(list);
         this.uniqueSpeakers = this.losRepo.getAllFirstContributions();
+        this._numberOfPoo = this.losRepo.getPooAmount();
     }
 
     /**
