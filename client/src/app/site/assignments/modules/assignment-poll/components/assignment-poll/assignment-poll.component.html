@@ -48,7 +48,7 @@
                 <button
                     mat-stroked-button
                     [ngClass]="pollStateActions[poll.state].css"
-                    (click)="changeState(poll.nextState)"
+                    (click)="nextPollState()"
                     [disabled]="stateChangePending"
                 >
                     <mat-icon> {{ pollStateActions[poll.state].icon }}</mat-icon>

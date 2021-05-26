@@ -164,8 +164,12 @@ class BasePollViewSet(ModelViewSet):
     @transaction.atomic
     def publish(self, request, pk):
         poll = self.get_locked_object()
-        if poll.state != BasePoll.STATE_FINISHED:
+        if poll.state not in (BasePoll.STATE_STARTED, BasePoll.STATE_FINISHED):
             raise ValidationError({"detail": "Wrong poll state"})
+
+        # stop poll if needed
+        if poll.state == BasePoll.STATE_STARTED:
+            poll.stop()
 
         poll.state = BasePoll.STATE_PUBLISHED
         poll.save()
