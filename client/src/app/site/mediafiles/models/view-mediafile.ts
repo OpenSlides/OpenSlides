@@ -6,7 +6,33 @@ import { Searchable } from 'app/site/base/searchable';
 import { ViewGroup } from 'app/site/users/models/view-group';
 
 export const IMAGE_MIMETYPES = ['image/png', 'image/jpeg', 'image/gif'];
-export const FONT_MIMETYPES = ['font/ttf', 'font/woff', 'application/font-woff', 'application/font-sfnt'];
+
+export const FONT_MIMETYPES = [
+    /**
+     * Standard fonts by iana May 2021. See:
+     * https://www.iana.org/assignments/media-types/media-types.xhtml#font
+     */
+    'font/ttf',
+    'font/sfnt',
+    'font/otf',
+    'font/woff',
+    'font/woff2',
+    /**
+     * Non standard types
+     */
+    /** (IANA: March 2013) (special non standard OTF fonts) */
+    'font/opentype',
+    'application/x-font-opentype',
+    'application/vnd.oasis.opendocument.formula-template',
+    /** (IANA: January 2013) */
+    'application/font-woff',
+    /** (W3C W./E.Draft: May 2014/March 2016) */
+    'application/font-woff2',
+    /** (IANA: March 2013) */
+    'application/font-sfnt',
+    'application/x-font-ttf',
+    'application/x-font-truetype'
+];
 export const PDF_MIMETYPES = ['application/pdf'];
 export const VIDEO_MIMETYPES = [
     'video/quicktime',

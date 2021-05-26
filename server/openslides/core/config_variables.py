@@ -478,6 +478,7 @@ def get_config_variables():
             "font_bold",
             "font_bold_italic",
             "font_monospace",
+            "font_chyron_speaker_name",
         ],
         weight=320,
         group="Font",
@@ -541,6 +542,19 @@ def get_config_variables():
         default_value={
             "display_name": "Font monospace",
             "default": "assets/fonts/roboto-condensed-bold.woff",
+            "path": "",
+        },
+        input_type="static",
+        weight=321,
+        group="Font",
+        hidden=True,
+    )
+
+    yield ConfigVariable(
+        name="font_chyron_speaker_name",
+        default_value={
+            "display_name": "Font for speaker name (chyron)",
+            "default": "assets/fonts/fira-sans-latin-400.woff",
             "path": "",
         },
         input_type="static",
