@@ -285,6 +285,16 @@ export class ListOfSpeakersRepositoryService extends BaseHasContentObjectReposit
     }
 
     /**
+     * @returns the amount of point of orders (sync)
+     */
+    public getPooAmount(): number {
+        const speakers: ViewSpeaker[] = this.getViewModelList()
+            .flatMap((los: ViewListOfSpeakers) => los.finishedSpeakers)
+            .filter(speaker => speaker.point_of_order);
+        return speakers.length || 0;
+    }
+
+    /**
      * Maps structure-level to speaker.
      *
      * @returns A list, which entries are `SpeakingTimeStructureLevelObject`.
