@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 
+import { ViewAssignment } from 'app/site/assignments/models/view-assignment';
 import { ViewAssignmentOption } from 'app/site/assignments/models/view-assignment-option';
 import { ViewAssignmentPoll } from 'app/site/assignments/models/view-assignment-poll';
 import { UnknownUserLabel } from 'app/site/assignments/modules/assignment-poll/services/assignment-poll.service';
@@ -19,6 +20,14 @@ export class AssignmentPollMetaInfoComponent {
 
     @Input()
     public showCandidates = true;
+
+    private get assignment(): ViewAssignment {
+        return this.poll.assignment;
+    }
+
+    public get enumerateCandidates(): boolean {
+        return this.assignment?.number_poll_candidates || false;
+    }
 
     public get hasGlobalOption(): boolean {
         return this.poll.hasGlobalOption;
