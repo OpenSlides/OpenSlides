@@ -435,6 +435,9 @@ msgid "Are you sure you want to send emails to all selected participants?"
 msgstr ""
 "Sollen E-Mails wirklich an alle ausgewählten Teilnehmende gesendet werden?"
 
+msgid "Are you sure you want to stop this voting?"
+msgstr "Soll die Stimmabgabe wirklich beendet werden?"
+
 msgid "Are you sure you want to submit a point of order?"
 msgstr "Soll wirklich ein Geschäftsordnungsantrag gestellt werden?"
 
@@ -2896,6 +2899,12 @@ msgstr "Satzungsabschnitt wird importiert"
 msgid "Statute paragraphs"
 msgstr "Satzung"
 
+msgid "Stop"
+msgstr "Beenden"
+
+msgid "Stop & publish"
+msgstr "Beenden & veröffentlichen"
+
 msgid "Stop counting"
 msgstr "Zählen stoppen"
 
@@ -3074,6 +3083,9 @@ msgid "There is an error with this amendment. Please edit it manually."
 msgstr ""
 "In diesem Änderungsantrag ist ein Fehler. Bitte bearbeiten Sie den Text "
 "manuell."
+
+msgid "Thereof point of orders"
+msgstr "davon Geschäftsordnungsanträge"
 
 msgid "This ballot contains deleted users."
 msgstr "Der Wahlgang enthält gelöschte Nutzer."

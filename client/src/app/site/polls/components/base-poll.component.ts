@@ -65,10 +65,9 @@ export abstract class BasePollComponent<
             const title = this.translate.instant('Are you sure you want to stop this voting?');
             const actions = [this.translate.instant('Stop'), this.translate.instant('Stop & publish')];
             const choice = await this.choiceService.open(title, null, false, actions);
-
-            if (choice?.action === 'Stop') {
+            if (choice?.action === actions[0]) {
                 await this.changeState(PollState.Finished);
-            } else if (choice?.action === 'Stop & publish') {
+            } else if (choice?.action === actions[1]) {
                 await this.changeState(PollState.Published);
             }
         }

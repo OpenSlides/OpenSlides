@@ -390,6 +390,9 @@ msgstr ""
 msgid "Are you sure you want to send emails to all selected participants?"
 msgstr ""
 
+msgid "Are you sure you want to stop this voting?"
+msgstr ""
+
 msgid "Are you sure you want to submit a point of order?"
 msgstr ""
 
@@ -2768,6 +2771,12 @@ msgstr ""
 msgid "Statute paragraphs"
 msgstr ""
 
+msgid "Stop"
+msgstr ""
+
+msgid "Stop & publish"
+msgstr ""
+
 msgid "Stop counting"
 msgstr ""
 
@@ -2925,6 +2934,9 @@ msgid "There are no items left to chose from"
 msgstr ""
 
 msgid "There is an error with this amendment. Please edit it manually."
+msgstr ""
+
+msgid "Thereof point of orders"
 msgstr ""
 
 msgid "This ballot contains deleted users."
