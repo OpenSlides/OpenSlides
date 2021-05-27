@@ -6,18 +6,11 @@
 <div class="content-container">
     <!-- Title Card -->
     <mat-card class="os-card">
-        <h1 class="line-and-icon">
-            {{ title }}
-            <a
-                mat-icon-button
-                [disabled]="!viewModelUrl"
-                [class.disabled]="!viewModelUrl"
-                [routerLink]="viewModelUrl"
-                [state]="{ back: 'true' }"
-            >
-                <mat-icon>open_in_new</mat-icon>
-            </a>
-        </h1>
+        <a [routerLink]="viewModelUrl || null" [state]="{ back: 'true' }">
+            <h1 class="line-and-icon">
+                {{ title }}
+            </h1>
+        </a>
     </mat-card>
 
     <!-- List of speakers -->
@@ -25,6 +18,7 @@
         [customTitle]="true"
         [speakers]="listOfSpeakers"
         *osPerms="permission.agendaCanSeeListOfSpeakers; and: listOfSpeakers"
+        (canReaddLastSpeakerEvent)="canReaddLastSpeaker = $event"
     >
         <p class="line-and-icon subtitle-text">
             <a [routerLink]="closUrl" [class.disabled]="!closUrl">
@@ -37,19 +31,26 @@
                 </mat-icon>
             </ng-container>
 
-            <button
-                *osPerms="permission.agendaCanManageListOfSpeakers"
-                mat-icon-button
-                (click)="toggleListOfSpeakersOpen()"
-            >
-                <mat-icon *ngIf="isLosClosed" matTooltip="{{ 'The list of speakers is closed.' | translate }}">
-                    lock
-                </mat-icon>
+            <ng-container *osPerms="permission.agendaCanManageListOfSpeakers">
+                <button mat-icon-button (click)="toggleListOfSpeakersOpen()">
+                    <mat-icon *ngIf="isLosClosed" matTooltip="{{ 'The list of speakers is closed.' | translate }}">
+                        lock
+                    </mat-icon>
 
-                <mat-icon *ngIf="!isLosClosed" matTooltip="{{ 'The list of speakers is open.' | translate }}">
-                    lock_open
-                </mat-icon>
-            </button>
+                    <mat-icon *ngIf="!isLosClosed" matTooltip="{{ 'The list of speakers is open.' | translate }}">
+                        lock_open
+                    </mat-icon>
+                </button>
+
+                <button
+                    mat-icon-button
+                    (click)="readdLastSpeaker()"
+                    matTooltip="{{ 'Re-add last speaker' | translate }}"
+                    [disabled]="!canReaddLastSpeaker"
+                >
+                    <mat-icon> undo </mat-icon>
+                </button>
+            </ng-container>
         </p>
     </os-list-of-speakers-content>
 
@@ -57,8 +58,11 @@
 
     <!-- Projector -->
     <mat-card class="os-card spacer-bottom-60">
-        <p class="subtitle-text">{{ projectorTitle | translate }}</p>
-        <a [routerLink]="projectorUrl" [target]="projectionTarget">
+        <a [routerLink]="projectorUrl" [target]="projectionTarget" [state]="{ back: 'true' }">
+            <p class="subtitle-text">{{ projectorTitle | translate }}</p>
+        </a>
+
+        <a [routerLink]="viewModelUrl || null" [state]="{ back: 'true' }">
             <div class="projector">
                 <os-projector *ngIf="projector" [projector]="projector"></os-projector>
             </div>
