@@ -18,7 +18,7 @@ fi
 
 # config: https
 if [[ -n "$EXTERNAL_HTTPS_PORT" ]] ; then
-    cat <<EOF >> /etc/caddy/endpoint
+    cat <<EOF > /etc/caddy/endpoint
 https://:8001 {
     tls /certs/cert.pem /certs/key.pem
 EOF
@@ -33,7 +33,7 @@ fi
 
 # config: https and additionally http -> create redirect-file
 if [[ -n "$EXTERNAL_HTTP_PORT" ]] && [[ -n "$EXTERNAL_HTTPS_PORT" ]] ; then
-    cat <<EOF >> /etc/caddy/redirect
+    cat <<EOF > /etc/caddy/redirect
 http://:8000 {
     redir https://$INSTANCE_DOMAIN{uri}
 }
@@ -56,7 +56,7 @@ fi
 #     close
 # }
 if [[ ! -z "$ALLOWED_HOSTS" ]]; then
-    cat <<EOF >> /etc/caddy/invalid_host
+    cat <<EOF > /etc/caddy/invalid_host
     @invalid-host {
         not {
 EOF
