@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 
@@ -22,11 +22,16 @@ import { CurrentListOfSpeakersService } from 'app/site/projector/services/curren
     styleUrls: ['./cinema.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CinemaComponent extends BaseViewComponentDirective implements OnInit {
+export class CinemaComponent extends BaseViewComponentDirective implements OnInit, AfterViewInit {
     public listOfSpeakers: ViewListOfSpeakers;
     public projector: ViewProjector;
     private currentProjectorElement: ProjectorElement;
     public projectedViewModel: BaseProjectableViewModel;
+
+    /**
+     * filled by child component
+     */
+    public canReaddLastSpeaker: boolean;
 
     public get title(): string {
         if (this.projectedViewModel) {
@@ -109,7 +114,7 @@ export class CinemaComponent extends BaseViewComponentDirective implements OnIni
                 } else {
                     this.projectedViewModel = null;
                 }
-                this.cd.markForCheck();
+                this.delayedCheck();
             }),
             this.closService.currentListOfSpeakersObservable.subscribe(clos => {
                 this.listOfSpeakers = clos;
@@ -118,7 +123,27 @@ export class CinemaComponent extends BaseViewComponentDirective implements OnIni
         );
     }
 
+    public ngAfterViewInit(): void {
+        this.delayedCheck();
+    }
+
     public async toggleListOfSpeakersOpen(): Promise<void> {
         await this.listOfSpeakersRepo.setListOpenness(this.listOfSpeakers, this.isLosClosed).catch(this.raiseError);
+    }
+
+    public async readdLastSpeaker(): Promise<void> {
+        await this.listOfSpeakersRepo.readdLastSpeaker(this.listOfSpeakers).catch(this.raiseError);
+    }
+
+    /**
+     * Ref Projector Update fireing and Projector content updates
+     * are not in sync.
+     * This is a deep projector issue, OpenSlides has no chance
+     * to really know when the projector content is ready
+     */
+    private delayedCheck(): void {
+        setTimeout(() => {
+            this.cd.markForCheck();
+        }, 2000);
     }
 }
