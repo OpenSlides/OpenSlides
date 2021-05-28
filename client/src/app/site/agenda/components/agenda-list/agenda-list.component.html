@@ -103,13 +103,14 @@
 
 <mat-menu #agendaMenu="matMenu">
     <div *ngIf="!isMultiSelect">
-        <div *osPerms="'agenda.can_manage'">
+        <div *osPerms="['agenda.can_manage', 'agenda.can_manage_list_of_speakers']">
             <!-- Enable multi select -->
             <button mat-menu-item (click)="toggleMultiSelect()">
                 <mat-icon>library_add</mat-icon>
                 <span>{{ 'Multiselect' | translate }}</span>
             </button>
-
+        </div>
+        <div *osPerms="'agenda.can_manage'">
             <mat-divider></mat-divider>
 
             <!-- automatic numbering -->
@@ -233,6 +234,23 @@
             <button mat-menu-item [disabled]="!selectedRows.length" (click)="removeSelected()">
                 <mat-icon>remove</mat-icon>
                 <span>{{ 'Remove from agenda' | translate }}</span>
+            </button>
+        </div>
+
+        <ng-container *osPerms="['agenda.can_manage', 'agenda.can_manage_list_of_speakers']">
+            <mat-divider></mat-divider>
+        </ng-container>
+        <div *osPerms="'agenda.can_manage_list_of_speakers'">
+            <!-- Close selected -->
+            <button mat-menu-item [disabled]="!selectedRows.length" (click)="setClosedListsOfSpeakersSelected(true)">
+                <mat-icon>lock</mat-icon>
+                <span>{{ 'Close list of speakers' | translate }}</span>
+            </button>
+
+            <!-- Open selected -->
+            <button mat-menu-item [disabled]="!selectedRows.length" (click)="setClosedListsOfSpeakersSelected(false)">
+                <mat-icon>lock_open</mat-icon>
+                <span>{{ 'Open list of speakers' | translate }}</span>
             </button>
         </div>
     </div>
