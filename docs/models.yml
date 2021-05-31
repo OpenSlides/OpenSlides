@@ -77,7 +77,6 @@ organisation:
   # Configuration (only for the server owner)
   enable_electronic_voting:
     type: boolean
-    read_only: true
 
   committee_ids:
     type: relation-list
