@@ -27,6 +27,8 @@ services:
       - COMMAND=create_initial_data
       - DATASTORE_INITIAL_DATA_FILE=https://raw.githubusercontent.com/OpenSlides/OpenSlides/openslides4-dev/docs/example-data.json
       - OPENSLIDES_DEVELOPMENT=1
+    ports:
+      - 9011:9011
   postgres:
     image: postgres:11
     environment:
