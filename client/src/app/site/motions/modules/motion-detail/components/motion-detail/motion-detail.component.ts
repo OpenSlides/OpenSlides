@@ -564,30 +564,25 @@ export class MotionDetailComponent extends BaseViewComponentDirective implements
             this.statuteParagraphs = newViewStatuteParagraphs;
         });
 
-        // use the filter and the search service to get the current sorting
-        if (this.configService.instant<boolean>('motions_amendments_main_table')) {
-            this.motionFilterService.initFilters(this.motionObserver);
-            this.motionSortService.initSorting(this.motionFilterService.outputObservable);
-            this.sortedMotionsObservable = this.motionSortService.outputObservable;
-        } else if (this.motion && this.motion.parent_id) {
+        if (this.motion && this.motion.parent_id) {
             // only use the amendments for this motion
             this.amendmentFilterService.initFilters(this.repo.amendmentsTo(this.motion.parent_id));
             this.amendmentSortService.initSorting(this.amendmentFilterService.outputObservable);
             this.sortedMotionsObservable = this.amendmentSortService.outputObservable;
         } else {
-            this.sortedMotions = [];
+            this.motionFilterService.initFilters(this.motionObserver);
+            this.motionSortService.initSorting(this.motionFilterService.outputObservable);
+            this.sortedMotionsObservable = this.motionSortService.outputObservable;
         }
 
-        if (this.sortedMotionsObservable) {
-            this.subscriptions.push(
-                this.sortedMotionsObservable.subscribe(motions => {
-                    if (motions) {
-                        this.sortedMotions = motions;
-                        this.setSurroundingMotions();
-                    }
-                })
-            );
-        }
+        this.subscriptions.push(
+            this.sortedMotionsObservable?.subscribe(motions => {
+                if (motions) {
+                    this.sortedMotions = motions;
+                    this.setSurroundingMotions();
+                }
+            })
+        );
 
         /**
          * Check for changes of the viewport subject changes
@@ -619,6 +614,7 @@ export class MotionDetailComponent extends BaseViewComponentDirective implements
             if (navEvent instanceof NavigationEnd) {
                 this.cleanSubjects();
                 this.getMotionByUrl();
+                this.cd.markForCheck();
             }
         });
     }
