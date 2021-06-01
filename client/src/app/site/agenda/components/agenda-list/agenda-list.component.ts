@@ -304,6 +304,25 @@ export class AgendaListComponent extends BaseListViewComponent<ViewItem> impleme
     }
 
     /**
+     * Sets multiple entries' open/closed state. Needs items in selectedRows, which
+     * is only filled with any data in multiSelect mode
+     *
+     * @param closed true if the item is to be considered done
+     */
+    public async setClosedListsOfSpeakersSelected(closed: boolean): Promise<void> {
+        try {
+            for (const item of this.selectedRows) {
+                const los = (item.contentObject as any)?.listOfSpeakers;
+                if (los) {
+                    await this.listOfSpeakersRepo.update({ closed: closed }, los);
+                }
+            }
+        } catch (e) {
+            this.raiseError(e);
+        }
+    }
+
+    /**
      * Export all items as CSV
      */
     public csvExportItemList(): void {
