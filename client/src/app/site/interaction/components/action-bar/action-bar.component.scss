@@ -1,0 +1,17 @@
+:host {
+    margin: auto 0.5em 0 0;
+}
+
+.interaction-bar-wrapper {
+    width: auto;
+    transition: all 2s linear;
+}
+
+.action-bar-shadow {
+    box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, 0.5) !important;
+}
+
+.mat-button-base {
+    margin-left: 0.5em;
+    margin-bottom: 0.5em;
+}

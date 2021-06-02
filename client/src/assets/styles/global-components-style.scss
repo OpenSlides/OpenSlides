@@ -35,10 +35,32 @@
         color: mat-color(if($is-dark-theme, $accent, $primary));
     }
 
-    //custom table header for search button, filtering and more. Used in ListViews
+    /**
+     * normal current mat bg color with primary text color.
+     * important is required to overwrite materials default
+     * button color
+     */
     .custom-table-header,
-    .background--default {
-        background: mat-color($background, background);
+    .background-default {
+        background: mat-color($background, background) !important;
+    }
+
+    .fake-disabled {
+        background: mat-color($background, unselected-chip) !important;
+        opacity: 1 !important;
+
+        .mat-button-wrapper {
+            .mat-icon {
+                color: mat-color($foreground, disabled-button) !important;
+                svg path {
+                    fill: mat-color($foreground, disabled-button) !important;
+                }
+            }
+        }
+    }
+
+    .background-default[disabled] {
+        @extend .fake-disabled;
     }
 
     .underline {
@@ -192,11 +214,22 @@
         color: mat-color($primary, default-contrast) !important;
     }
 
+    .background-card {
+        background: mat-color($background, card);
+        color: mat-color($foreground, text);
+    }
+
     .primary-foreground {
         color: mat-color($primary);
     }
 
     .accent-foreground {
         color: mat-color($accent);
+    }
+
+    .svg-primary {
+        svg path {
+            fill: mat-color($primary) !important;
+        }
     }
 }

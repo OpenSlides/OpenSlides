@@ -1,6 +1,5 @@
 <div class="video-wrapper">
-    <os-applause-particle-display *ngIf="showParticles" class="applause-particles"></os-applause-particle-display>
-    <div class="player-container" [ngClass]="{ hide: !isUrlOnline && usingVjs }">
+    <div class="player-container" [ngClass]="{ hide: !isUrlOnline && usingVjs }" *ngIf="isStable">
         <div *ngIf="usingVjs">
             <video #vjs class="video-js" controls preload="none"></video>
         </div>

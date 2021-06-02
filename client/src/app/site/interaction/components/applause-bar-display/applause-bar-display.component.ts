@@ -4,10 +4,10 @@ import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { Applause, ApplauseService, ApplauseType } from 'app/core/ui-services/applause.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { fadeAnimation } from 'app/shared/animations';
 import { BaseViewComponentDirective } from 'app/site/base/base-view';
+import { ApplauseService, ApplauseType } from 'app/site/interaction/services/applause.service';
 
 @Component({
     selector: 'os-applause-bar-display',
@@ -24,10 +24,6 @@ export class ApplauseBarDisplayComponent extends BaseViewComponentDirective {
 
     public get hasLevel(): boolean {
         return !!this.level;
-    }
-
-    public get isApplauseTypeBar(): boolean {
-        return this.applauseService.applauseType === ApplauseType.bar;
     }
 
     public constructor(

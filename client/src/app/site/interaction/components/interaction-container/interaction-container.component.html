@@ -1,0 +1,36 @@
+<div *ngIf="!(isConfStateNone | async)" class="interaction-container-wrapper">
+    <div class="container-head background-primary" (click)="showHideBody()">
+        <div class="container-head-wrapper">
+            <div class="ellipsis-overflow container-head-title">
+                {{ containerHeadTitle | translate }}
+            </div>
+            <div class="ellipsis-overflow">
+                {{ containerHeadSubtitle | translate }}
+            </div>
+        </div>
+    </div>
+
+    <div
+        class="container-body background-card"
+        [ngClass]="{ 'container-body-with-applause-bar': showApplauseBar | async, 'container-body-hide': !showBody }"
+    >
+        <os-applause-bar-display
+            *ngIf="(isApplausEnabled | async) && (showApplauseBar | async)"
+        ></os-applause-bar-display>
+        <ng-container *ngIf="isConfStateStream | async">
+            <os-stream
+                class="video-player"
+                (streamTitle)="updateTitle($event)"
+                (streamSubtitle)="updateSubtitle($event)"
+            ></os-stream>
+        </ng-container>
+
+        <ng-container *ngIf="isConfStateJitsi | async">
+            <os-call
+                class="call-body"
+                (conferenceTitle)="updateTitle($event)"
+                (conferenceSubtitle)="updateSubtitle($event)"
+            ></os-call>
+        </ng-container>
+    </div>
+</div>

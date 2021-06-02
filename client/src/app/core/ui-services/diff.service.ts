@@ -256,7 +256,7 @@ export class DiffService {
      * @returns {Element}
      */
     public getLineNumberNode(fragment: DocumentFragment, lineNumber: number): Element {
-        return fragment.querySelector('os-linebreak.os-line-number.line-number-' + lineNumber);
+        return fragment?.querySelector('os-linebreak.os-line-number.line-number-' + lineNumber);
     }
 
     /**

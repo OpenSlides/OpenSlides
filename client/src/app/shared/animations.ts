@@ -16,6 +16,22 @@ const slideOut = [
     )
 ];
 
+export const fadeInOut = trigger('fadeInOut', [
+    state(
+        'true',
+        style({
+            opacity: 1
+        })
+    ),
+    state(
+        'false',
+        style({
+            opacity: 0.2
+        })
+    ),
+    transition('true <=> false', animate('1s'))
+]);
+
 export const collapseAndFade = trigger('collapse', [
     state('in', style({ opacity: 1, height: '100%' })),
     transition(':enter', [style({ opacity: 0, height: 0 }), animate(fadeSpeed.fast)]),

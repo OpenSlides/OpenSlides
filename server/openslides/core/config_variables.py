@@ -164,7 +164,7 @@ def get_config_variables():
         name="general_system_stream_poster",
         default_value="",
         label="Livestream poster image url",
-        help_text="Shows if livestream is not started. Recommended image format: 500x200px, PNG or JPG",
+        help_text="Shows if livestream is not started. Recommended image format: 500x280px, PNG or JPG",
         weight=147,
         subgroup="Live conference",
     )

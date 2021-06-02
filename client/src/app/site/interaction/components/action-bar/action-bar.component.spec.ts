@@ -2,21 +2,21 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { E2EImportsModule } from 'e2e-imports.module';
 
-import { JitsiComponent } from './jitsi.component';
+import { ActionBarComponent } from './action-bar.component';
 
-describe('JitsiComponent', () => {
-    let component: JitsiComponent;
-    let fixture: ComponentFixture<JitsiComponent>;
+describe('ActionBarComponent', () => {
+    let component: ActionBarComponent;
+    let fixture: ComponentFixture<ActionBarComponent>;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            imports: [E2EImportsModule],
-            declarations: [JitsiComponent]
+            declarations: [ActionBarComponent],
+            imports: [E2EImportsModule]
         }).compileComponents();
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(JitsiComponent);
+        fixture = TestBed.createComponent(ActionBarComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });
