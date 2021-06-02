@@ -1,0 +1,15 @@
+<div *osPerms="permission.coreCanSeeLiveStream; and: showVideoPlayer">
+    <os-applause-particle-display
+        *ngIf="showParticles | async"
+        class="applause-particles"
+    ></os-applause-particle-display>
+    <os-video-player [videoUrl]="liveStreamUrl" (started)="onSteamLoaded()"></os-video-player>
+</div>
+<div *osPerms="permission.coreCanSeeLiveStream; complement: true">
+    <span> {{ 'You are not allowed to see the live stream' | translate }} </span>
+</div>
+<div class="disconnected" *ngIf="isStreamInOtherTab">
+    <button class="restart-stream-button" mat-button color="warn" (click)="forceLoadStream()">
+        <span>{{ 'Restart livestream' | translate }}</span>
+    </button>
+</div>

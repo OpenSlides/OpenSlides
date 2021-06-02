@@ -136,9 +136,16 @@ mat-sidenav-container {
 
 .toolbars {
     display: flex;
-
+    position: fixed;
+    bottom: 0;
+    /**
+     * right 0 would overlap the browser scrollbar
+     */
+    right: 20px;
+    z-index: 99;
+    pointer-events: none;
     * {
-        margin-top: auto;
+        pointer-events: initial;
     }
 }
 

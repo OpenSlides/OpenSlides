@@ -127,14 +127,10 @@ import { AssignmentPollDetailContentComponent } from './components/assignment-po
 
 import { GlobalSpinnerComponent } from './components/global-spinner/global-spinner.component';
 import { UserMenuComponent } from './components/user-menu/user-menu.component';
-import { JitsiComponent } from './components/jitsi/jitsi.component';
-import { VideoPlayerComponent } from './components/video-player/video-player.component';
 import { ListOfSpeakersContentComponent } from './components/list-of-speakers-content/list-of-speakers-content.component';
-import { ApplauseBarDisplayComponent } from './components/applause-bar-display/applause-bar-display.component';
 import { ProgressComponent } from './components/progress/progress.component';
-import { NgParticlesModule } from 'ng-particles';
-import { ApplauseParticleDisplayComponent } from './components/applause-particle-display/applause-particle-display.component';
 import { PointOfOrderDialogComponent } from './components/point-of-order-dialog/point-of-order-dialog.component';
+import { VideoPlayerComponent } from './components/video-player/video-player.component';
 
 /**
  * Share Module for all "dumb" components and pipes.
@@ -199,8 +195,7 @@ import { PointOfOrderDialogComponent } from './components/point-of-order-dialog/
         PblNgridTargetEventsModule,
         PdfViewerModule,
         NgxMaterialTimepickerModule,
-        ChartsModule,
-        NgParticlesModule
+        ChartsModule
     ],
     exports: [
         FormsModule,
@@ -304,10 +299,11 @@ import { PointOfOrderDialogComponent } from './components/point-of-order-dialog/
         VotingPrivacyWarningComponent,
         MotionPollDetailContentComponent,
         AssignmentPollDetailContentComponent,
-        JitsiComponent,
-        VideoPlayerComponent,
         ListOfSpeakersContentComponent,
-        PointOfOrderDialogComponent
+        PointOfOrderDialogComponent,
+        ListOfSpeakersContentComponent,
+        ProgressComponent,
+        VideoPlayerComponent
     ],
     declarations: [
         PermsDirective,
@@ -369,13 +365,10 @@ import { PointOfOrderDialogComponent } from './components/point-of-order-dialog/
         VotingPrivacyWarningComponent,
         MotionPollDetailContentComponent,
         AssignmentPollDetailContentComponent,
-        JitsiComponent,
-        VideoPlayerComponent,
         ListOfSpeakersContentComponent,
-        ApplauseBarDisplayComponent,
         ProgressComponent,
-        ApplauseParticleDisplayComponent,
-        PointOfOrderDialogComponent
+        PointOfOrderDialogComponent,
+        VideoPlayerComponent
     ],
     providers: [
         {

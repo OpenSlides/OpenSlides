@@ -1,0 +1,64 @@
+<div class="interaction-bar-wrapper" *ngIf="!(isConfStateNone | async)">
+    <ng-container *ngIf="isConfStateJitsi | async">
+        <ng-container *ngIf="(isJoined | async) && !(showCallDialog | async)">
+            <!-- show dialog -->
+            <button
+                mat-mini-fab
+                class="action-bar-shadow background-default"
+                matTooltip="{{ 'Show conference room' | translate }}"
+                (click)="maximizeCallDialog()"
+                @fade
+            >
+                <mat-icon
+                    color="primary"
+                    [@fadeInOut]="meetingActiveAnimHelper"
+                    (@fadeInOut.done)="triggerCallHiddenAnimation()"
+                >
+                    fullscreen
+                </mat-icon>
+            </button>
+        </ng-container>
+    </ng-container>
+
+    <ng-container *ngIf="(showLiveConf | async) && (isConfStateStream | async)">
+        <!-- Enter conference from stream -->
+        <button
+            mat-mini-fab
+            class="action-bar-shadow"
+            [class.background-default]="canEnterCall"
+            [class.fake-disabled]="!canEnterCall"
+            matTooltip="{{ enterRoomTooltip | translate }}"
+            (click)="enterConferenceRoom(canEnterCall)"
+            @fade
+        >
+            <mat-icon color="primary"> phone </mat-icon>
+        </button>
+
+        <!-- Call support button -->
+        <button
+            mat-mini-fab
+            class="action-bar-shadow background-default"
+            (click)="enterSupportRoom()"
+            matTooltip="{{ 'Access help desk' | translate }}"
+            *ngIf="isSupportEnabled | async"
+            @fade
+        >
+            <mat-icon color="primary">help_outline</mat-icon>
+        </button>
+    </ng-container>
+
+    <!-- applause button -->
+    <button
+        mat-mini-fab
+        class="action-bar-shadow background-default"
+        matTooltip="{{ 'Send applause' | translate }}"
+        [disabled]="applauseDisabled"
+        [matBadge]="applauseLevelObservable | async"
+        [matBadgeHidden]="!(applauseLevelObservable | async)"
+        (click)="sendApplause()"
+        *ngIf="showApplause | async"
+        @fade
+    >
+        <mat-icon class="svg-primary" svgIcon="clapping_hands"></mat-icon>
+    </button>
+</div>

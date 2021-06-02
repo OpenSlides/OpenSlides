@@ -1,6 +1,9 @@
+import { ThrowStmt } from '@angular/compiler';
 import {
     AfterViewInit,
+    ApplicationRef,
     ChangeDetectionStrategy,
+    ChangeDetectorRef,
     Component,
     ElementRef,
     EventEmitter,
@@ -17,6 +20,7 @@ import { ajax, AjaxResponse } from 'rxjs/ajax';
 import { catchError, map } from 'rxjs/operators';
 import videojs from 'video.js';
 
+import { OpenSlidesStatusService } from 'app/core/core-services/openslides-status.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 
 enum MimeType {
@@ -34,31 +38,40 @@ enum Player {
     selector: 'os-video-player',
     templateUrl: './video-player.component.html',
     styleUrls: ['./video-player.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None
 })
-export class VideoPlayerComponent implements OnDestroy, AfterViewInit {
+export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
     @ViewChild('vjs', { static: false })
     private vjsPlayerElementRef: ElementRef;
 
     private _videoUrl: string;
 
+    public isStable = false;
+    private afterViewInitDone = false;
+
+    private youtubeQuerryParams = '?rel=0&iv_load_policy=3&modestbranding=1&autoplay=1';
+
     @Input()
     public set videoUrl(value: string) {
+        if (!value.trim()) {
+            return;
+        }
         this._videoUrl = value.trim();
         this.playerType = this.determinePlayer(this.videoUrl);
 
         if (this.usingVjs) {
             this.mimeType = this.determineContentTypeByUrl(this.videoUrl);
-            this.initVjs();
+            if (this.afterViewInitDone) {
+                this.initVjs();
+            }
         } else if (this.usingYouTube) {
             this.stopVJS();
             this.unloadVjs();
             this.youTubeVideoId = this.getYouTubeVideoId(this.videoUrl);
         }
+        this.cd.markForCheck();
     }
-
-    @Input()
-    public showParticles: boolean;
 
     public get videoUrl(): string {
         return this._videoUrl;
@@ -83,17 +96,39 @@ export class VideoPlayerComponent implements OnDestroy, AfterViewInit {
     }
 
     public get youTubeVideoUrl(): string {
-        return `https://www.youtube.com/embed/${this.youTubeVideoId}?autoplay=1`;
+        return `https://www.youtube.com/embed/${this.youTubeVideoId}${this.youtubeQuerryParams}`;
     }
 
-    public constructor(config: ConfigService) {
+    public constructor(
+        config: ConfigService,
+        private cd: ChangeDetectorRef,
+        private osStatus: OpenSlidesStatusService
+    ) {
         config.get<string>('general_system_stream_poster').subscribe(posterUrl => {
             this.posterUrl = posterUrl?.trim();
+        });
+
+        /**
+         * external iFrame will block loading, since for some reason the app will
+         * not become stable if an iFrame was loaded.
+         * (or just goes instable again, for some unknown reason)
+         * This will result in an endless spinner
+         * It's crucial to render external
+         * Videos AFTER the app was stable
+         */
+        this.osStatus.stable.then(() => {
+            this.isStable = true;
+            this.cd.markForCheck();
         });
     }
 
     public ngAfterViewInit(): void {
-        this.started.next();
+        if (this.usingVjs) {
+            this.initVjs();
+        } else {
+            this.started.next();
+        }
+        this.afterViewInitDone = true;
     }
 
     public ngOnDestroy(): void {
@@ -102,7 +137,6 @@ export class VideoPlayerComponent implements OnDestroy, AfterViewInit {
 
     private stopVJS(): void {
         if (this.vjsPlayer) {
-            this.vjsPlayer.src = '';
             this.vjsPlayer.pause();
         }
     }
@@ -136,6 +170,7 @@ export class VideoPlayerComponent implements OnDestroy, AfterViewInit {
         } else {
             this.isUrlOnline = false;
         }
+        this.cd.markForCheck();
     }
 
     public async onRefreshVideo(): Promise<void> {
@@ -145,7 +180,6 @@ export class VideoPlayerComponent implements OnDestroy, AfterViewInit {
 
     private async initVjs(): Promise<void> {
         await this.isUrlReachable();
-
         if (!this.vjsPlayer && this.usingVjs && this.vjsPlayerElementRef) {
             this.vjsPlayer = videojs(this.vjsPlayerElementRef.nativeElement, {
                 textTrackSettings: false,
@@ -159,11 +193,15 @@ export class VideoPlayerComponent implements OnDestroy, AfterViewInit {
     }
 
     private playVjsVideo(): void {
+        if (!this.isUrlOnline) {
+            this.stopVJS();
+        }
         if (this.usingVjs && this.vjsPlayer && this.isUrlOnline) {
             this.vjsPlayer.src({
                 src: this.videoUrl,
                 type: this.mimeType
             });
+            this.started.next();
         }
     }
 

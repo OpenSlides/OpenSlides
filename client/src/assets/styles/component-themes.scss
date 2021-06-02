@@ -42,7 +42,6 @@ $narrow-spacing: (
 @import '~app/site/motions/modules/motion-poll/motion-poll-detail/motion-poll-detail.component.scss-theme.scss';
 @import '~app/site/assignments/modules/assignment-poll/components/assignment-poll-detail/assignment-poll-detail-component.scss-theme.scss';
 @import '~app/shared/components/progress-snack-bar/progress-snack-bar.component.scss-theme.scss';
-@import '~app/shared/components/jitsi/jitsi.component.scss-theme.scss';
 @import '~app/shared/components/list-view-table/list-view-table.component.scss-theme.scss';
 @import '~app/site/common/components/user-statistics/user-statistics.component.scss-theme.scss';
 @import '~app/site/login/components/login-wrapper/login-wrapper.component.scss-theme.scss';
@@ -69,7 +68,6 @@ $narrow-spacing: (
     @include os-motion-poll-detail-style($theme);
     @include os-assignment-poll-detail-style($theme);
     @include os-progress-snack-bar-style($theme);
-    @include os-jitsi-theme($theme);
     @include os-list-view-table-theme($theme);
     @include os-user-statistics-style($theme);
     @include os-login-wrapper-theme($theme);

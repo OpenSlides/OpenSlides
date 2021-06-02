@@ -3,9 +3,9 @@ import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, map } from 'rxjs/operators';
 
-import { ConfigService } from './config.service';
-import { HttpService } from '../core-services/http.service';
-import { NotifyService } from '../core-services/notify.service';
+import { ConfigService } from '../../../core/ui-services/config.service';
+import { HttpService } from '../../../core/core-services/http.service';
+import { NotifyService } from '../../../core/core-services/notify.service';
 
 export interface Applause {
     level: number;
@@ -21,20 +21,33 @@ const applausePath = '/system/applause';
 const applauseNotifyMessageName = 'applause';
 
 @Injectable({
+    // providedIn: InteractionModule
     providedIn: 'root'
+    // provided: InteractionModule
 })
 export class ApplauseService {
     private minApplauseLevel: number;
     private maxApplauseLevel: number;
     private presentApplauseUsers: number;
+    private applauseTypeObservable: Observable<ApplauseType>;
 
-    public applauseType: ApplauseType;
+    public showApplause: Observable<boolean>;
+    public showApplauseLevel: boolean;
+    public applauseTimeout: number;
 
     private applauseLevelSubject: Subject<number> = new Subject<number>();
-    public applauseLevelObservable = this.applauseLevelSubject.asObservable();
+    public applauseLevelObservable: Observable<number> = this.applauseLevelSubject.asObservable();
 
     private get maxApplause(): number {
         return this.maxApplauseLevel || this.presentApplauseUsers || 0;
+    }
+
+    public get showParticles(): Observable<boolean> {
+        return this.applauseTypeObservable.pipe(map(type => type === ApplauseType.particles));
+    }
+
+    public get showBar(): Observable<boolean> {
+        return this.applauseTypeObservable.pipe(map(type => type === ApplauseType.bar));
     }
 
     public constructor(
@@ -42,14 +55,20 @@ export class ApplauseService {
         private httpService: HttpService,
         private notifyService: NotifyService
     ) {
+        this.showApplause = configService.get<boolean>('general_system_applause_enable');
+        this.applauseTypeObservable = configService.get<ApplauseType>('general_system_applause_type');
+
         configService.get<number>('general_system_applause_min_amount').subscribe(minLevel => {
             this.minApplauseLevel = minLevel;
         });
         configService.get<number>('general_system_applause_max_amount').subscribe(maxLevel => {
             this.maxApplauseLevel = maxLevel;
         });
-        configService.get<ApplauseType>('general_system_applause_type').subscribe((type: ApplauseType) => {
-            this.applauseType = type;
+        configService.get<boolean>('general_system_applause_show_level').subscribe(show => {
+            this.showApplauseLevel = show;
+        });
+        configService.get<number>('general_system_stream_applause_timeout').subscribe(timeout => {
+            this.applauseTimeout = (timeout || 1) * 1000;
         });
         this.notifyService
             .getMessageObservable<Applause>(applauseNotifyMessageName)

@@ -1,0 +1,64 @@
+$wrapper-padding: 5px;
+
+.jitsi-list {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    .content {
+        flex: 1 0 auto;
+
+        .disconnected {
+            display: flex;
+            height: 100%;
+
+            * {
+                margin: auto;
+            }
+        }
+
+        .room-members {
+            height: 100%;
+            position: relative;
+
+            .room-list-applause-particles {
+                position: absolute;
+                height: 100%;
+                width: 70px;
+                right: 0;
+            }
+
+            .member-list {
+                max-height: 100%;
+                overflow-y: auto;
+
+                .member-list-entry {
+                    margin: 5px;
+                    overflow-x: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                }
+            }
+
+            .focused {
+                font-weight: bold;
+            }
+        }
+    }
+
+    .control-grid {
+        padding: $wrapper-padding;
+        display: grid;
+        grid-template-areas: 'empty buttons exit';
+        grid-template-columns: 40px auto 40px;
+
+        .exit {
+            grid-area: exit;
+        }
+
+        .control-buttons {
+            grid-area: buttons;
+            margin: auto;
+        }
+    }
+}

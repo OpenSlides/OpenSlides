@@ -7,10 +7,10 @@ import { Subject } from 'rxjs';
 import { auditTime } from 'rxjs/operators';
 import { Container } from 'tsparticles';
 
-import { ApplauseService } from 'app/core/ui-services/applause.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { ElementSize } from 'app/shared/directives/resized.directive';
 import { BaseViewComponentDirective } from 'app/site/base/base-view';
+import { ApplauseService } from 'app/site/interaction/services/applause.service';
 import { particleConfig, particleOptions } from './particle-options';
 
 @Component({
@@ -79,7 +79,6 @@ export class ApplauseParticleDisplayComponent extends BaseViewComponentDirective
     private setParticleLevel(level: number): void {
         if (this.particleContainer) {
             const emitters = this.particleContainer.plugins.get('emitters') as any;
-            // TODO: Use `Emitters` instead of any.
             if (emitters) {
                 emitters.array[0].emitterOptions.rate.quantity = level;
             }
