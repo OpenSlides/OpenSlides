@@ -6,7 +6,7 @@
     <os-video-player [videoUrl]="liveStreamUrl" (started)="onSteamLoaded()"></os-video-player>
 </div>
 <div *osPerms="permission.coreCanSeeLiveStream; complement: true">
-    <span> {{ 'You are not allowed to see the live stream' | translate }} </span>
+    <span> {{ 'You are not allowed to see the livestream' | translate }} </span>
 </div>
 <div class="disconnected" *ngIf="isStreamInOtherTab">
     <button class="restart-stream-button" mat-button color="warn" (click)="forceLoadStream()">

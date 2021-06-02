@@ -24,6 +24,9 @@ msgid ""
 "non-existant line number."
 msgstr ""
 
+msgid "A conference is already running in your OpenSlides session."
+msgstr ""
+
 msgid "A file with this title or filename already exists in this directory."
 msgstr ""
 
@@ -732,6 +735,9 @@ msgstr ""
 msgid "Complex Workflow"
 msgstr ""
 
+msgid "Conference room"
+msgstr ""
+
 msgid "Confirm new password"
 msgstr ""
 
@@ -742,6 +748,9 @@ msgid "Connect all users to live conference automatically"
 msgstr ""
 
 msgid "Content"
+msgstr ""
+
+msgid "Continue livestream"
 msgstr ""
 
 msgid "Contribution"
@@ -1121,13 +1130,10 @@ msgstr ""
 msgid "Enforce page breaks"
 msgstr ""
 
-msgid "Enter conference"
+msgid "Enter conference room"
 msgstr ""
 
 msgid "Enter duration in seconds. Choose 0 to disable warning color."
-msgstr ""
-
-msgid "Enter live conference"
 msgstr ""
 
 msgid ""
@@ -1188,10 +1194,7 @@ msgstr ""
 msgid "Exit"
 msgstr ""
 
-msgid "Exit conference"
-msgstr ""
-
-msgid "Exit live conference and continue livestream"
+msgid "Exit conference room"
 msgstr ""
 
 msgid "Expand all"
@@ -1327,9 +1330,6 @@ msgid "Groups with write permissions"
 msgstr ""
 
 msgid "Guest"
-msgstr ""
-
-msgid "Hang up"
 msgstr ""
 
 msgid "Has amendments"
@@ -1603,13 +1603,7 @@ msgstr ""
 msgid "List view"
 msgstr ""
 
-msgid "Live conference"
-msgstr ""
-
 msgid "Live conference has to be active. Choose 0 to disable auto connect."
-msgstr ""
-
-msgid "Livestream"
 msgstr ""
 
 msgid "Livestream poster image url"
@@ -1748,9 +1742,6 @@ msgid "Move to agenda item"
 msgstr ""
 
 msgid "Multiselect"
-msgstr ""
-
-msgid "Mute / Unmute"
 msgstr ""
 
 msgid "Name"
@@ -2318,7 +2309,7 @@ msgstr ""
 msgid "Recommendation set to {arg1}"
 msgstr ""
 
-msgid "Reenter to live conference"
+msgid "Reenter to conference room"
 msgstr ""
 
 msgid "Refer to committee"
@@ -2597,6 +2588,9 @@ msgstr ""
 msgid "Show clock"
 msgstr ""
 
+msgid "Show conference room"
+msgstr ""
+
 msgid "Show correct entries"
 msgstr ""
 
@@ -2663,16 +2657,13 @@ msgstr ""
 msgid "Show title"
 msgstr ""
 
-msgid "Show/Hide video conference"
-msgstr ""
-
 msgid ""
 "Shows a button with help icon to connect to an extra Jitsi conference room "
 "for technical audio/video tests."
 msgstr ""
 
 msgid ""
-"Shows if livestream is not started. Recommended image format: 500x200px, "
+"Shows if livestream is not started. Recommended image format: 500x280px, "
 "PNG or JPG"
 msgstr ""
 
@@ -2877,9 +2868,6 @@ msgid "The list of speakers is closed."
 msgstr ""
 
 msgid "The list of speakers is open."
-msgstr ""
-
-msgid "The live conference is already running in your OpenSlides session."
 msgstr ""
 
 msgid ""
@@ -3253,6 +3241,9 @@ msgid "Yes/No/Abstain per candidate"
 msgstr ""
 
 msgid "You are not allowed to see all entitled users."
+msgstr ""
+
+msgid "You are not allowed to see the livestream"
 msgstr ""
 
 msgid "You are not authenticated."

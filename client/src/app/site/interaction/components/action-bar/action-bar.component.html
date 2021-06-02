@@ -39,7 +39,7 @@
             mat-mini-fab
             class="action-bar-shadow background-default"
             (click)="enterSupportRoom()"
-            matTooltip="{{ 'Access help desk' | translate }}"
+            matTooltip="{{ 'Help desk' | translate }}"
             *ngIf="isSupportEnabled | async"
             @fade
         >
@@ -51,7 +51,7 @@
     <button
         mat-mini-fab
         class="action-bar-shadow background-default"
-        matTooltip="{{ 'Send applause' | translate }}"
+        matTooltip="{{ 'Give applause' | translate }}"
         [disabled]="applauseDisabled"
         [matBadge]="applauseLevelObservable | async"
         [matBadgeHidden]="!(applauseLevelObservable | async)"

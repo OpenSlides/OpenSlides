@@ -1,10 +1,11 @@
 # 
 # Translators:
 # Alexandra Damm <damm@chiesaluterana.it>, 2021
+# Katharina <karmitt2@web.de>, 2021
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Alexandra Damm <damm@chiesaluterana.it>, 2021\n"
+"Last-Translator: Katharina <karmitt2@web.de>, 2021\n"
 "Language-Team: Italian (https://www.transifex.com/openslides/teams/14270/it/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -36,6 +37,9 @@ msgid ""
 msgstr ""
 "Un richiesta di modifica od una raccomandazione riguarda probabilmente una "
 "riga non esistente."
+
+msgid "A conference is already running in your OpenSlides session."
+msgstr ""
 
 msgid "A file with this title or filename already exists in this directory."
 msgstr ""
@@ -427,6 +431,9 @@ msgstr "Sicuro di voler inviare un invito a questo utente?"
 msgid "Are you sure you want to send emails to all selected participants?"
 msgstr "Sicuro di voler inviare e-mails a tutti i partecipanti selezionati?"
 
+msgid "Are you sure you want to stop this voting?"
+msgstr ""
+
 msgid "Are you sure you want to submit a point of order?"
 msgstr "Sicuro di voler fare una richiesta sul regolamento interno?"
 
@@ -771,6 +778,9 @@ msgstr "Comitati"
 msgid "Complex Workflow"
 msgstr "Ciclo di lavoro complesso"
 
+msgid "Conference room"
+msgstr ""
+
 msgid "Confirm new password"
 msgstr "Confermare la nuova password"
 
@@ -783,6 +793,9 @@ msgstr ""
 
 msgid "Content"
 msgstr "Contenuto"
+
+msgid "Continue livestream"
+msgstr ""
 
 msgid "Contribution"
 msgstr ""
@@ -818,7 +831,7 @@ msgid "Countdowns"
 msgstr "Countdown"
 
 msgid "Counter speech"
-msgstr ""
+msgstr "Contro-parola"
 
 msgid "Counting of votes is in progress ..."
 msgstr "E´ in corso il conteggio dei voti ..."
@@ -1158,7 +1171,7 @@ msgid "Empty text field"
 msgstr "Campo di testo vuoto"
 
 msgid "Enable forspeech / counter speech"
-msgstr ""
+msgstr "abilita intercessione / contro-parola"
 
 msgid "Enable numbering for agenda items"
 msgstr "Attivare numerazione dei punti dell'ordine del giorno"
@@ -1190,15 +1203,12 @@ msgstr "Terminare l´intervento"
 msgid "Enforce page breaks"
 msgstr "Forzare impaginazione prossima pagina"
 
-msgid "Enter conference"
-msgstr "Entrare in riunione"
+msgid "Enter conference room"
+msgstr ""
 
 msgid "Enter duration in seconds. Choose 0 to disable warning color."
 msgstr ""
 "Definire la durata in secondi. Per disattivare il colore d´avviso premere 0."
-
-msgid "Enter live conference"
-msgstr "Entrare nella conferenza in diretta"
 
 msgid ""
 "Enter number of the next shown speakers. Choose -1 to show all next "
@@ -1260,11 +1270,8 @@ msgstr ""
 msgid "Exit"
 msgstr "Terminare"
 
-msgid "Exit conference"
-msgstr "Lasciare conferenza"
-
-msgid "Exit live conference and continue livestream"
-msgstr "Lasciare conferenza in diretta e continuare livestreaming"
+msgid "Exit conference room"
+msgstr ""
 
 msgid "Expand all"
 msgstr "Estendere tutto"
@@ -1345,7 +1352,7 @@ msgid "Format"
 msgstr "Formato"
 
 msgid "Forspeech"
-msgstr ""
+msgstr "Intercessione"
 
 msgid "Front page text"
 msgstr "Testo prima pagina"
@@ -1400,9 +1407,6 @@ msgstr "Gruppi con diritto di scrivere"
 
 msgid "Guest"
 msgstr "Ospiti"
-
-msgid "Hang up"
-msgstr "Riattaccare"
 
 msgid "Has amendments"
 msgstr "Ha richieste di modifica mozione"
@@ -1683,16 +1687,10 @@ msgstr "Lista dei relatori in vista"
 msgid "List view"
 msgstr "Vista liste"
 
-msgid "Live conference"
-msgstr "Conferenza in diretta"
-
 msgid "Live conference has to be active. Choose 0 to disable auto connect."
 msgstr ""
 "La conferenza in diretta deve essere attivata. Selezionare \"0\" per deattivare la connessione \n"
 "automatica.  "
-
-msgid "Livestream"
-msgstr "Livestream"
 
 msgid "Livestream poster image url"
 msgstr "Livestream immagine poster URL"
@@ -1832,9 +1830,6 @@ msgstr "Spostare all'ordine del giorno"
 
 msgid "Multiselect"
 msgstr "Selezione multipla"
-
-msgid "Mute / Unmute"
-msgstr "Attivazione / Disattivazione audio"
 
 msgid "Name"
 msgstr "Nome"
@@ -2419,8 +2414,8 @@ msgstr "Raccomandazione"
 msgid "Recommendation set to {arg1}"
 msgstr "Raccomandazione impostata a {arg1}"
 
-msgid "Reenter to live conference"
-msgstr "Rientrare nuovamente nella conferenza in diretta"
+msgid "Reenter to conference room"
+msgstr ""
 
 msgid "Refer to committee"
 msgstr "Fare rifermento al comitato"
@@ -2707,6 +2702,9 @@ msgstr "Visualizzare finestra multiple-choice per documentare la decisione"
 msgid "Show clock"
 msgstr "Visualizzare orologio"
 
+msgid "Show conference room"
+msgstr ""
+
 msgid "Show correct entries"
 msgstr "Visualizzare inserti corretti "
 
@@ -2780,9 +2778,6 @@ msgstr "Visualizzare questo testo nella pagina login"
 
 msgid "Show title"
 msgstr "Visualizzare titolo"
-
-msgid "Show/Hide video conference"
-msgstr "Visualizzare/nascondere conferenza video"
 
 msgid ""
 "Shows a button with help icon to connect to an extra Jitsi conference room "
@@ -2895,6 +2890,12 @@ msgstr ""
 msgid "Statute paragraphs"
 msgstr "Paragrafi statuto"
 
+msgid "Stop"
+msgstr ""
+
+msgid "Stop & publish"
+msgstr ""
+
 msgid "Stop counting"
 msgstr "Stop contare"
 
@@ -2998,9 +2999,6 @@ msgstr "La lista dei relatori è chiusa."
 msgid "The list of speakers is open."
 msgstr "La lista dei realtori è aperta."
 
-msgid "The live conference is already running in your OpenSlides session."
-msgstr ""
-
 msgid ""
 "The maximum number of characters per line. Relevant when line numbering is "
 "enabled. Min: 40"
@@ -3055,6 +3053,9 @@ msgid "There are no items left to chose from"
 msgstr ""
 
 msgid "There is an error with this amendment. Please edit it manually."
+msgstr ""
+
+msgid "Thereof point of orders"
 msgstr ""
 
 msgid "This ballot contains deleted users."
@@ -3373,6 +3374,9 @@ msgid "Yes/No/Abstain per candidate"
 msgstr "Si/No/Astensione per candidato"
 
 msgid "You are not allowed to see all entitled users."
+msgstr ""
+
+msgid "You are not allowed to see the livestream"
 msgstr ""
 
 msgid "You are not authenticated."

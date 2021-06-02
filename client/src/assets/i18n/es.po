@@ -39,6 +39,9 @@ msgstr ""
 "Una recomendación de cambio o enmienda se refiere probablemente a un número "
 "de línea inexistente."
 
+msgid "A conference is already running in your OpenSlides session."
+msgstr ""
+
 msgid "A file with this title or filename already exists in this directory."
 msgstr "Ya existe un archivo con este título o nombre en este directorio."
 
@@ -799,6 +802,9 @@ msgstr "Comités"
 msgid "Complex Workflow"
 msgstr "Flujo de trabajo complejo"
 
+msgid "Conference room"
+msgstr ""
+
 msgid "Confirm new password"
 msgstr "Confirme contraseña nueva"
 
@@ -810,6 +816,9 @@ msgstr "Conecte a todos los usuarios a la conferencia en vivo automáticamente"
 
 msgid "Content"
 msgstr "Contenido"
+
+msgid "Continue livestream"
+msgstr ""
 
 msgid "Contribution"
 msgstr "Contribución"
@@ -1219,16 +1228,13 @@ msgstr "Terminar discurso"
 msgid "Enforce page breaks"
 msgstr "Aplicar saltos de página"
 
-msgid "Enter conference"
-msgstr "Entrar en la conferencia"
+msgid "Enter conference room"
+msgstr ""
 
 msgid "Enter duration in seconds. Choose 0 to disable warning color."
 msgstr ""
 "Introducir la duración en segundos. Seleccione 0 para desactivar el color de"
 " advertencia."
-
-msgid "Enter live conference"
-msgstr "Entrar en la conferencia en directo"
 
 msgid ""
 "Enter number of the next shown speakers. Choose -1 to show all next "
@@ -1294,11 +1300,8 @@ msgstr ""
 msgid "Exit"
 msgstr "Salir"
 
-msgid "Exit conference"
-msgstr "Salir de la conferencia"
-
-msgid "Exit live conference and continue livestream"
-msgstr "Salir de la conferencia en directo y continuar con el livestream"
+msgid "Exit conference room"
+msgstr ""
 
 msgid "Expand all"
 msgstr "Ampliar todo "
@@ -1434,9 +1437,6 @@ msgstr "Grupos con permisos de escritura"
 
 msgid "Guest"
 msgstr "Invitado"
-
-msgid "Hang up"
-msgstr "Cuelga"
 
 msgid "Has amendments"
 msgstr "Tiene enmiendas"
@@ -1715,16 +1715,10 @@ msgstr "Lista de oradores sobrepuesta"
 msgid "List view"
 msgstr "Vista de la lista"
 
-msgid "Live conference"
-msgstr "Conferencia en directo"
-
 msgid "Live conference has to be active. Choose 0 to disable auto connect."
 msgstr ""
 "La conferencia en directo tiene que estar activa. Elija 0 para desactivar la"
 " conexión automática."
-
-msgid "Livestream"
-msgstr "Livestream"
 
 msgid "Livestream poster image url"
 msgstr "Url de la imagen del poster de Livestream"
@@ -1863,9 +1857,6 @@ msgstr "Pasar al punto del orden del día"
 
 msgid "Multiselect"
 msgstr "Multiselección"
-
-msgid "Mute / Unmute"
-msgstr "Silenciar/ Desactivar"
 
 msgid "Name"
 msgstr "Nombre"
@@ -2446,8 +2437,8 @@ msgstr "Etiqueta de recomendación"
 msgid "Recommendation set to {arg1}"
 msgstr "Recomendación establecido en (arg1)"
 
-msgid "Reenter to live conference"
-msgstr "Volver a entrar a la conferencia en directo"
+msgid "Reenter to conference room"
+msgstr ""
 
 msgid "Refer to committee"
 msgstr "Remitir a comité"
@@ -2734,6 +2725,9 @@ msgstr "Mostrar la casilla para registrar la decisión"
 msgid "Show clock"
 msgstr "Mostrar reloj"
 
+msgid "Show conference room"
+msgstr ""
+
 msgid "Show correct entries"
 msgstr "Mostrar las entradas correctas"
 
@@ -2804,9 +2798,6 @@ msgstr "Mostrar este texto en la página de inicio de sesión."
 
 msgid "Show title"
 msgstr "Mostrar título"
-
-msgid "Show/Hide video conference"
-msgstr "Mostrar/Ocultar video conferencia"
 
 msgid ""
 "Shows a button with help icon to connect to an extra Jitsi conference room "
@@ -3033,10 +3024,6 @@ msgstr "La lista de oradores está cerrado."
 
 msgid "The list of speakers is open."
 msgstr "La lista de oradores está abierta."
-
-msgid "The live conference is already running in your OpenSlides session."
-msgstr ""
-"La conferencia en directo ya está en marcha en su sesión de OpenSlides."
 
 msgid ""
 "The maximum number of characters per line. Relevant when line numbering is "
@@ -3460,6 +3447,9 @@ msgstr "Sí/No/Abstenerse por candidato"
 
 msgid "You are not allowed to see all entitled users."
 msgstr "No se le permite ver a todos los usuarios con derecho."
+
+msgid "You are not allowed to see the livestream"
+msgstr ""
 
 msgid "You are not authenticated."
 msgstr "Usted no está autenticado."
