@@ -37,6 +37,9 @@ msgstr ""
 "Ein Änderungsantrag oder eine Änderungsempfehlung bezieht sich "
 "wahrscheinlich auf eine nicht vorhandene Zeilennummer."
 
+msgid "A conference is already running in your OpenSlides session."
+msgstr "Eine Konferenz läuft bereits in Ihrer OpenSlides-Sitzung."
+
 msgid "A file with this title or filename already exists in this directory."
 msgstr ""
 "Eine Datei mit diesem Titel oder Dateinamen existiert bereits in diesem "
@@ -779,6 +782,9 @@ msgstr "Gremien"
 msgid "Complex Workflow"
 msgstr "Komplexer Arbeitsablauf"
 
+msgid "Conference room"
+msgstr "Konferenzraum"
+
 msgid "Confirm new password"
 msgstr "Neues Passwort bestätigen"
 
@@ -790,6 +796,9 @@ msgstr "Alle Nutzer automatisch mit der Livekonferenz verbinden"
 
 msgid "Content"
 msgstr "Inhalt"
+
+msgid "Continue livestream"
+msgstr "Livestream fortsetzen"
 
 msgid "Contribution"
 msgstr "Einbringung"
@@ -1201,16 +1210,13 @@ msgstr "Rede beenden"
 msgid "Enforce page breaks"
 msgstr "Seitenumbrüche erzwingen"
 
-msgid "Enter conference"
-msgstr "Konferenz beitreten"
+msgid "Enter conference room"
+msgstr "Konferenzraum beitreten"
 
 msgid "Enter duration in seconds. Choose 0 to disable warning color."
 msgstr ""
 "Geben Sie die Dauer in Sekunden an. Zum Deaktivieren der Warn-Farbe 0 "
 "auswählen."
-
-msgid "Enter live conference"
-msgstr "Livekonferenz beitreten"
 
 msgid ""
 "Enter number of the next shown speakers. Choose -1 to show all next "
@@ -1276,11 +1282,8 @@ msgstr ""
 msgid "Exit"
 msgstr "Beenden"
 
-msgid "Exit conference"
-msgstr "Konferenz verlassen"
-
-msgid "Exit live conference and continue livestream"
-msgstr "Livekonferenz verlassen und Livestream fortsetzen"
+msgid "Exit conference room"
+msgstr "Konferenzraum verlassen"
 
 msgid "Expand all"
 msgstr "Alle ausklappen"
@@ -1416,9 +1419,6 @@ msgstr "Gruppen mit Schreibberechtigungen"
 
 msgid "Guest"
 msgstr "Gast"
-
-msgid "Hang up"
-msgstr "Auflegen"
 
 msgid "Has amendments"
 msgstr "Hat Änderungsanträge"
@@ -1696,16 +1696,10 @@ msgstr "Redelisten-Einblendung"
 msgid "List view"
 msgstr "Listenansicht"
 
-msgid "Live conference"
-msgstr "Livekonferenz"
-
 msgid "Live conference has to be active. Choose 0 to disable auto connect."
 msgstr ""
 "Die Livekonferenz muss aktiv sein. Wählen Sie 0 um den automatischen "
 "Verbindungsaufbau zu deaktivieren."
-
-msgid "Livestream"
-msgstr "Livestream"
 
 msgid "Livestream poster image url"
 msgstr "Livestream-Posterbild-URL"
@@ -1846,9 +1840,6 @@ msgstr "Zu TOP verschieben"
 
 msgid "Multiselect"
 msgstr "Mehrfachauswahl"
-
-msgid "Mute / Unmute"
-msgstr "Stummschaltung aktivieren / deaktivieren"
 
 msgid "Name"
 msgstr "Name"
@@ -2430,8 +2421,8 @@ msgstr "Empfehlung"
 msgid "Recommendation set to {arg1}"
 msgstr "Empfehlung gesetzt auf {arg1}"
 
-msgid "Reenter to live conference"
-msgstr "Livekonferenz erneut beitreten"
+msgid "Reenter to conference room"
+msgstr "Konferenzraum erneut beitreten"
 
 msgid "Refer to committee"
 msgstr "In Ausschuss verweisen"
@@ -2716,6 +2707,9 @@ msgstr "Ankreuzfelder zum Dokumentieren der Entscheidung anzeigen"
 msgid "Show clock"
 msgstr "Uhr anzeigen"
 
+msgid "Show conference room"
+msgstr "Konferenzraum anzeigen"
+
 msgid "Show correct entries"
 msgstr "Korrekte Einträge anzeigen"
 
@@ -2785,9 +2779,6 @@ msgstr "Diesen Text auf der Login-Seite anzeigen"
 msgid "Show title"
 msgstr "Veranstaltungstitel anzeigen"
 
-msgid "Show/Hide video conference"
-msgstr "Videokonferenz anzeigen/verstecken"
-
 msgid ""
 "Shows a button with help icon to connect to an extra Jitsi conference room "
 "for technical audio/video tests."
@@ -2796,11 +2787,11 @@ msgstr ""
 "Konferenzraum für technische Audio-/Video-Tests zu verbinden."
 
 msgid ""
-"Shows if livestream is not started. Recommended image format: 500x200px, PNG"
+"Shows if livestream is not started. Recommended image format: 500x280px, PNG"
 " or JPG"
 msgstr ""
 "Wird angezeigt, wenn der Livestream nicht gestartet werden kann. "
-"Bildformatempfehlung: 500x200px, PNG oder JPG"
+"Bildformatempfehlung: 500x280px, PNG oder JPG"
 
 msgid ""
 "Shows the given image as applause particle. Recommended image format: "
@@ -3012,9 +3003,6 @@ msgstr "Die Redeliste ist geschlossen."
 
 msgid "The list of speakers is open."
 msgstr "Die Redeliste ist geöffnet."
-
-msgid "The live conference is already running in your OpenSlides session."
-msgstr "Die Livekonferenz läuft bereits in Ihrer OpenSlides-Sitzung."
 
 msgid ""
 "The maximum number of characters per line. Relevant when line numbering is "
@@ -3434,6 +3422,9 @@ msgstr "Ja/Nein/Enthaltung pro Kandidat"
 
 msgid "You are not allowed to see all entitled users."
 msgstr "Sie sind nicht berechtigt alle Stimmberechtigte zu sehen."
+
+msgid "You are not allowed to see the livestream"
+msgstr "Sie sind nicht berechtigt den Livestream zu sehen."
 
 msgid "You are not authenticated."
 msgstr "Sie sind nicht authentifiziert."
