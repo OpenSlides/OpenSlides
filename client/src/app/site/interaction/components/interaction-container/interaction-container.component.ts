@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 
@@ -18,7 +18,7 @@ import { StreamService } from '../../services/stream.service';
     styleUrls: ['./interaction-container.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class InteractionContainerComponent extends BaseViewComponentDirective {
+export class InteractionContainerComponent extends BaseViewComponentDirective implements OnInit {
     public showBody = false;
 
     private streamRunning = false;
@@ -63,11 +63,6 @@ export class InteractionContainerComponent extends BaseViewComponentDirective {
     ) {
         super(titleService, translate, matSnackBar);
         this.subscriptions.push(
-            interactionService.conferenceStateObservable.pipe(distinctUntilChanged()).subscribe(state => {
-                if (state) {
-                    this.clearTitles();
-                }
-            }),
             rtcService.showCallDialogObservable.subscribe(show => {
                 if (show) {
                     this.showBody = false;
@@ -91,9 +86,20 @@ export class InteractionContainerComponent extends BaseViewComponentDirective {
         );
     }
 
+    public ngOnInit(): void {
+        this.subscriptions.push(
+            this.interactionService.conferenceStateObservable.pipe(distinctUntilChanged()).subscribe(state => {
+                if (state) {
+                    this.clearTitles();
+                }
+            })
+        );
+    }
+
     private clearTitles(): void {
         this.containerHeadTitle = '';
         this.containerHeadSubtitle = '';
+        this.cd.markForCheck();
         this.cd.detectChanges();
     }
 
@@ -104,14 +110,14 @@ export class InteractionContainerComponent extends BaseViewComponentDirective {
     public updateTitle(title: string): void {
         if (title !== this.containerHeadTitle) {
             this.containerHeadTitle = title ?? '';
-            this.cd.detectChanges();
+            this.cd.markForCheck();
         }
     }
 
     public updateSubtitle(title: string): void {
         if (title !== this.containerHeadSubtitle) {
             this.containerHeadSubtitle = title ?? '';
-            this.cd.detectChanges();
+            this.cd.markForCheck();
         }
     }
 }

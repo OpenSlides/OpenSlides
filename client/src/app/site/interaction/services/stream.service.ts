@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { StorageMap } from '@ngx-pwa/local-storage';
 import { Observable, Subject } from 'rxjs';
-import { distinctUntilChanged } from 'rxjs/operators';
+import { distinctUntilChanged, map } from 'rxjs/operators';
 
 import { OperatorService, Permission } from 'app/core/core-services/operator.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
@@ -13,7 +13,10 @@ const STREAM_RUNNING_STORAGE_KEY = 'streamIsRunning';
     providedIn: 'root'
 })
 export class StreamService {
-    public liveStreamUrlObservable: Observable<string>;
+    public liveStreamUrlObservable: Observable<string> = this.configService.get<string>('general_system_stream_url');
+    public hasLiveStreamUrlObvervable: Observable<boolean> = this.liveStreamUrlObservable.pipe(
+        map(url => !!url?.trim() || false)
+    );
 
     /**
      * undefined is controlled behavior, meaning, this property was not
@@ -28,9 +31,11 @@ export class StreamService {
     private canSeeLiveStreamSubject = new Subject<boolean>();
     public canSeeLiveStreamObservable = this.canSeeLiveStreamSubject.asObservable();
 
-    public constructor(private storageMap: StorageMap, operator: OperatorService, configService: ConfigService) {
-        this.liveStreamUrlObservable = configService.get<string>('general_system_stream_url');
-
+    public constructor(
+        private storageMap: StorageMap,
+        operator: OperatorService,
+        private configService: ConfigService
+    ) {
         this.streamLoadedOnceObservable = this.storageMap
             .watch(STREAM_RUNNING_STORAGE_KEY, { type: 'boolean' })
             .pipe(distinctUntilChanged());

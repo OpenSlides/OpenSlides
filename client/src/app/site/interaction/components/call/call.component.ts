@@ -38,6 +38,8 @@ export class CallComponent extends BaseViewComponentDirective implements OnInit,
     public isJitsiActiveInAnotherTab: Observable<boolean> = this.rtcService.inOtherTab;
     public canEnterCall: Observable<boolean> = this.callRestrictionService.canEnterCallObservable;
     public isJitsiDialogOpen: Observable<boolean> = this.rtcService.showCallDialogObservable;
+    public showParticles: Observable<boolean> = this.applauseService.showParticles;
+    public hasLiveStreamUrl: Observable<boolean> = this.streamService.hasLiveStreamUrlObvervable;
 
     public isJitsiActive: boolean;
     public isJoined: boolean;
@@ -62,18 +64,6 @@ export class CallComponent extends BaseViewComponentDirective implements OnInit,
 
     public get isConnected(): boolean {
         return this.isJitsiActive && this.isJoined;
-    }
-
-    public get showParticles(): Observable<boolean> {
-        return this.applauseService.showParticles;
-    }
-
-    public get canSeeLiveStream(): Observable<boolean> {
-        return this.streamService.canSeeLiveStreamObservable;
-    }
-
-    public get liveStreamUrl(): Observable<string> {
-        return this.streamService.liveStreamUrlObservable;
     }
 
     private autoConnect: boolean;

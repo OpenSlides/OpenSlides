@@ -88,7 +88,7 @@ export class CallRestrictionService {
             ) {
                 this.hasToEnterCallSubject.next();
             }
-        } else if (operatorClosIndex === UserListIndexType.NotOnList && this.restricted) {
+        } else if (operatorClosIndex === UserListIndexType.NotOnList && this.restricted && !this.canManageSpeaker) {
             this.hasToLeaveCallSubject.next();
         }
     }
