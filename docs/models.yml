@@ -115,7 +115,6 @@ user:
   last_email_send: timestamp
   is_demo_user:
     type: boolean
-    read_only: true
 
   # Organisation, meeting and committee
   organisation_management_level:
