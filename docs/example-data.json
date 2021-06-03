@@ -1,5 +1,5 @@
 {
-"organisation": [
+"organization": [
     {
         "id": 1,
         "legal_notice": "<a href=\"http://www.openslides.org\">OpenSlides</a> is a free web based presentation and assembly system for visualizing and controlling agenda, motions and elections of an assembly.",
@@ -9,12 +9,12 @@
         "custom_translations": [],
         "enable_electronic_voting": true,
         "reset_password_verbose_errors": true,
-        "name": "Test Organisation",
+        "name": "Test Organization",
         "description": "",
 
         "committee_ids": [1],
         "resource_ids": [1],
-        "organisation_tag_ids": [1]
+        "organization_tag_ids": [1]
     }],
 "user": [
     {
@@ -36,7 +36,7 @@
         "last_email_send": null,
         "is_demo_user": false,
 
-        "organisation_management_level": "superadmin",
+        "organization_management_level": "superadmin",
 
         "is_present_in_meeting_ids": [1],
         "committee_ids": [1],
@@ -99,7 +99,7 @@
         "last_email_send": null,
         "is_demo_user": false,
 
-        "organisation_management_level": "",
+        "organization_management_level": "",
 
         "is_present_in_meeting_ids": [],
         "committee_ids": [1],
@@ -156,7 +156,7 @@
         "last_email_send": null,
         "is_demo_user": false,
 
-        "organisation_management_level": "",
+        "organization_management_level": "",
 
         "is_present_in_meeting_ids": [],
         "committee_ids": [],
@@ -201,16 +201,16 @@
         "token": "web_header",
         "filesize": 1462,
         "mimetype": "image/png",
-        "organisation_id": 1
+        "organization_id": 1
     }
 ],
-"organisation_tag": [
+"organization_tag": [
     {
         "id": 1,
         "name": "Orga Tag 1",
         "color": "#317796",
         "tagged_ids": ["committee/1", "meeting/1"],
-        "organisation_id": 1
+        "organization_id": 1
     }
 ],
 "committee": [
@@ -225,8 +225,8 @@
         "user_ids": [1, 2],
         "forward_to_committee_ids": [],
         "receive_forwardings_from_committee_ids": [],
-        "organisation_tag_ids": [1],
-        "organisation_id": 1
+        "organization_tag_ids": [1],
+        "organization_id": 1
     }],
 "meeting": [
     {
@@ -397,7 +397,7 @@
 
         "committee_id": 1,
         "default_meeting_for_committee_id": 1,
-        "organisation_tag_ids": [1],
+        "organization_tag_ids": [1],
         "present_user_ids": [1],
         "user_ids": [1, 2, 3],
         "reference_projector_id": 2,

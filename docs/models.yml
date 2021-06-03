@@ -61,7 +61,7 @@
 #     - The property `equal_fields` describes fields that must have the same value in
 #       the instance and the related instance.
 
-organisation:
+organization:
   id: number
   name: string
   description: HTMLStrict
@@ -80,13 +80,13 @@ organisation:
 
   committee_ids:
     type: relation-list
-    to: committee/organisation_id
+    to: committee/organization_id
   resource_ids:
     type: relation-list
-    to: resource/organisation_id
-  organisation_tag_ids:
+    to: resource/organization_id
+  organization_tag_ids:
     type: relation-list
-    to: organisation_tag/organisation_id
+    to: organization_tag/organization_id
 
 user:
   id: number
@@ -116,13 +116,13 @@ user:
   is_demo_user:
     type: boolean
 
-  # Organisation, meeting and committee
-  organisation_management_level:
+  # Organization, meeting and committee
+  organization_management_level:
     type: string
-    description: Hierarchical permission level for the whole organisation.
+    description: Hierarchical permission level for the whole organization.
     enum:
     - superadmin
-    - can_manage_organisation
+    - can_manage_organization
     - can_manage_users
   is_present_in_meeting_ids:
     type: relation-list
@@ -135,7 +135,7 @@ user:
   committee_$_management_level:
     type: template
     replacement_collection: committee
-    description: Hierarchical permission level for the each committee organisation.
+    description: Hierarchical permission level for the each committee organization.
     fields:
       type: string
       enum:
@@ -256,7 +256,7 @@ user:
 
 # New: Resource
 # Resources are organsation wide "mediafiles", like logos for the organisatio or
-# organisation-wide fonts. Therefore, no permission checks are done and the user
+# organization-wide fonts. Therefore, no permission checks are done and the user
 # must not be logged in to retrieve files. A resource has a token, e.g. `web_header`
 # or `pdf_font_italic`, so the client knowns, where to put the resource.
 resource:
@@ -265,11 +265,11 @@ resource:
   filesize: number
   mimetype: string
 
-  organisation_id:
+  organization_id:
     type: relation
-    to: organisation/resource_ids
+    to: organization/resource_ids
 
-organisation_tag:
+organization_tag:
   id: number
   name:
     type: string
@@ -284,10 +284,10 @@ organisation_tag:
       collections:
         - committee
         - meeting
-      field: organisation_tag_ids
-  organisation_id:
+      field: organization_tag_ids
+  organization_id:
     type: relation
-    to: organisation/organisation_tag_ids
+    to: organization/organization_tag_ids
 
 committee:
   id: number
@@ -315,12 +315,12 @@ committee:
   receive_forwardings_from_committee_ids:
     type: relation-list
     to: committee/forward_to_committee_ids
-  organisation_tag_ids:
+  organization_tag_ids:
     type: relation-list
-    to: organisation_tag/tagged_ids
-  organisation_id:
+    to: organization_tag/tagged_ids
+  organization_id:
     type: relation
-    to: organisation/committee_ids
+    to: organization/committee_ids
     required: true
 
 meeting:
@@ -872,9 +872,9 @@ meeting:
   default_meeting_for_committee_id:
     type: relation
     to: committee/default_meeting_id
-  organisation_tag_ids:
+  organization_tag_ids:
     type: relation-list
-    to: organisation_tag/tagged_ids
+    to: organization_tag/tagged_ids
   present_user_ids:
     type: relation-list
     to: user/is_present_in_meeting_ids
