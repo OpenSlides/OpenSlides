@@ -26,6 +26,7 @@ import { ViewChatGroup } from '../../models/view-chat-group';
 export class ChatTabsComponent extends BaseViewComponentDirective implements OnInit {
     public chatGroupSubject: BehaviorSubject<ViewChatGroup[]>;
     public newMessageForm: FormGroup;
+    public messagePending = false;
     private messageControl: AbstractControl;
     public chatMessageMaxLength = 512;
     private selectedTabIndex = 0;
@@ -91,8 +92,12 @@ export class ChatTabsComponent extends BaseViewComponentDirective implements OnI
     }
 
     public send(): void {
+        if (this.messagePending) {
+            return;
+        }
         const message = this.messageControl.value?.trim();
         if (message) {
+            this.messagePending = true;
             const payload = {
                 text: message,
                 chatgroup_id: this.chatGroupFromIndex.id
@@ -101,6 +106,9 @@ export class ChatTabsComponent extends BaseViewComponentDirective implements OnI
                 .create(payload as ChatMessage)
                 .then(() => {
                     this.clearTextInput();
+                })
+                .finally(() => {
+                    this.messagePending = false;
                 })
                 .catch(this.raiseError);
         }
