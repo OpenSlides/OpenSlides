@@ -72,15 +72,17 @@
             </div>
             <div class="exit">
                 <!-- Exit jitsi, view stream -->
-                <button
-                    mat-icon-button
-                    color="primary"
-                    matTooltip="{{ 'Continue livestream' | translate }}"
-                    (click)="viewStream()"
-                    *ngIf="!!(liveStreamUrl | async)?.trim()"
-                >
-                    <mat-icon>live_tv</mat-icon>
-                </button>
+                <ng-container *osPerms="permission.coreCanSeeLiveStream">
+                    <button
+                        mat-icon-button
+                        color="primary"
+                        matTooltip="{{ 'Continue livestream' | translate }}"
+                        (click)="viewStream()"
+                        *ngIf="hasLiveStreamUrl | async"
+                    >
+                        <mat-icon>live_tv</mat-icon>
+                    </button>
+                </ng-container>
             </div>
         </div>
     </div>
