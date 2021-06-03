@@ -34,13 +34,15 @@
             </span>
         </mat-hint>
         <mat-label>{{ 'Message' | translate }}</mat-label>
+        <mat-spinner *ngIf="messagePending" matSuffix diameter="30"></mat-spinner>
         <button
             mat-icon-button
             matSuffix
             type="submit"
             color="accent"
             matTooltip=" {{ 'Send' | translate }}"
-            [disabled]="!chatinput.value?.trim()?.length || newMessageForm.invalid"
+            *ngIf="!messagePending"
+            [disabled]="!chatinput.value?.trim()?.length || newMessageForm.invalid || messagePending"
         >
             <mat-icon>send</mat-icon>
         </button>
