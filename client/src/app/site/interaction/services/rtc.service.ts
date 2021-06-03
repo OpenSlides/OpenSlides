@@ -63,11 +63,14 @@ const configOverwrite = {
     enableFeaturesBasedOnToken: false,
     disableThirdPartyRequests: true,
     enableNoAudioDetection: false,
-    enableNoisyMicDetection: false
+    enableNoisyMicDetection: false,
+    hideLobbyButton: true,
+    prejoinPageEnabled: false
 };
 
 const interfaceConfigOverwrite = {
     DISABLE_VIDEO_BACKGROUND: true,
+    DISABLE_FOCUS_INDICATOR: true,
     INVITATION_POWERED_BY: false,
     DISABLE_JOIN_LEAVE_NOTIFICATIONS: true,
     DISABLE_PRESENCE_STATUS: true,
