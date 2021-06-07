@@ -1,4 +1,5 @@
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { distinctUntilChanged } from 'rxjs/operators';
 
 import { BaseModel } from 'app/shared/models/base/base-model';
 import { BaseRepository } from '../repositories/base-repository';
@@ -182,10 +183,23 @@ export abstract class BaseFilterListService<V extends BaseViewModel> {
             this.inputDataSubscription.unsubscribe();
             this.inputDataSubscription = null;
         }
-        this.inputDataSubscription = inputData.subscribe(data => {
-            this.inputData = data;
-            this.updateFilteredData();
-        });
+        this.inputDataSubscription = inputData
+            /**
+             * Every autoupdate pushes data here.
+             * Not entirely sure why this happens.
+             * However, we are only concerned about changes to our
+             * current moddels, so compare the changes should
+             * limit the updating of filters
+             */
+            .pipe(
+                distinctUntilChanged((curr, prev) => {
+                    return curr.length === prev.length && curr.every((v, i) => v === prev[i]);
+                })
+            )
+            .subscribe(data => {
+                this.inputData = data;
+                this.updateFilteredData();
+            });
     }
 
     /**
