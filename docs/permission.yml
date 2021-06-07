@@ -16,6 +16,8 @@ assignment:
             can_see:
     can_nominate_self:
         can_see:
+chat:
+    can_manage:
 list_of_speakers:
     can_manage:
         can_see:
