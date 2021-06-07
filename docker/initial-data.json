@@ -10,8 +10,7 @@
         "theme": "openslides-theme",
         "custom_translations": "",
         "reset_password_verbose_errors": false,
-
-        "enable_electronic_voting": true,
+        "enable_electronic_voting": false,
 
         "committee_ids": [1],
         "resource_ids": [],
@@ -100,6 +99,7 @@
         "jitsi_domain": "",
         "jitsi_room_name": "",
         "jitsi_room_password": "",
+        "enable_chat": false,
 
         "url_name": "openslides_1",
         "template_for_committee_id": null,
@@ -247,6 +247,7 @@
         "assignment_ids": [],
         "assignment_candidate_ids": [],
         "personal_note_ids": [],
+        "chat_group_ids": [],
 
         "logo_$_id": [],
         "font_$_id": [],
@@ -319,6 +320,8 @@
         "mediafile_inherited_access_group_ids": [],
         "read_comment_section_ids": [],
         "write_comment_section_ids": [],
+        "read_chat_group_ids": [],
+        "write_chat_group_ids": [],
         "poll_ids": [],
         "used_as_motion_poll_default_id": null,
         "used_as_assignment_poll_default_id": null,
@@ -337,6 +340,8 @@
         "mediafile_inherited_access_group_ids": [],
         "read_comment_section_ids": [],
         "write_comment_section_ids": [],
+        "read_chat_group_ids": [],
+        "write_chat_group_ids": [],
         "poll_ids": [],
         "used_as_motion_poll_default_id": null,
         "used_as_assignment_poll_default_id": null,
@@ -369,6 +374,8 @@
         "mediafile_inherited_access_group_ids": [],
         "read_comment_section_ids": [],
         "write_comment_section_ids": [],
+        "read_chat_group_ids": [],
+        "write_chat_group_ids": [],
         "poll_ids": [],
         "used_as_motion_poll_default_id": null,
         "used_as_assignment_poll_default_id": null,
@@ -398,6 +405,8 @@
         "mediafile_inherited_access_group_ids": [],
         "read_comment_section_ids": [],
         "write_comment_section_ids": [],
+        "read_chat_group_ids": [],
+        "write_chat_group_ids": [],
         "poll_ids": [],
         "used_as_motion_poll_default_id": null,
         "used_as_assignment_poll_default_id": null,
@@ -429,6 +438,8 @@
         "mediafile_inherited_access_group_ids": [],
         "read_comment_section_ids": [],
         "write_comment_section_ids": [],
+        "read_chat_group_ids": [],
+        "write_chat_group_ids": [],
         "poll_ids": [],
         "used_as_motion_poll_default_id": 1,
         "used_as_assignment_poll_default_id": 1,
@@ -646,5 +657,6 @@
         "used_as_list_of_speaker_countdown_meeting_id": null,
         "used_as_poll_countdown_meeting_id": 1,
         "meeting_id": 1
-    }]
+    }],
+"chat_group": []
 }

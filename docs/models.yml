@@ -352,6 +352,8 @@ meeting:
     type: string
   jitsi_room_password:
     type: string
+  enable_chat:
+    type: boolean
 
   # System
   url_name:
@@ -847,6 +849,10 @@ meeting:
     type: relation-list
     to: personal_note/meeting_id
     on_delete: CASCADE
+  chat_group_ids:
+    type: relation-list
+    to: chat_group/meeting_id
+    on_delete: CASCADE
 
   # Logos and Fonts
   logo_$_id:
@@ -997,6 +1003,14 @@ group:
   write_comment_section_ids:
     type: relation-list
     to: motion_comment_section/write_group_ids
+    equal_fields: meeting_id
+  read_chat_group_ids:
+    type: relation-list
+    to: chat_group/read_group_ids
+    equal_fields: meeting_id
+  write_chat_group_ids:
+    type: relation-list
+    to: chat_group/write_group_ids
     equal_fields: meeting_id
   poll_ids:
     type: relation-list
@@ -2176,3 +2190,25 @@ projector_countdown:
   meeting_id:
     type: relation
     to: meeting/projector_countdown_ids
+
+chat_group:
+  id: number
+  name:
+    type: string
+    required: true
+  weight:
+    type: number
+    default: 10000
+
+  read_group_ids:
+    type: relation-list
+    to: group/read_chat_group_ids
+    equal_fields: meeting_id
+  write_group_ids:
+    type: relation-list
+    to: group/write_chat_group_ids
+    equal_fields: meeting_id
+  meeting_id:
+    type: relation
+    to: meeting/chat_group_ids
+    required: true
