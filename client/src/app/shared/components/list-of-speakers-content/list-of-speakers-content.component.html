@@ -160,7 +160,10 @@
                                     *ngIf="enableProContraSpeech && !speaker.point_of_order"
                                 >
                                     <mat-icon class="user-subtitle" *ngIf="speaker.pro_speech !== false">
-                                        remove_circle_outline speaker remove_circle
+                                        remove_circle_outline
+                                    </mat-icon>
+                                    <mat-icon class="red-warning-text" *ngIf="speaker.pro_speech === false">
+                                        remove_circle
                                     </mat-icon>
                                 </button>
 
