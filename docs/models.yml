@@ -128,8 +128,9 @@ user:
     type: relation-list
     to: meeting/present_user_ids
   committee_ids:
-    type: relation-list
-    to: committee/user_ids
+    type: number[]
+    description: Calculated. All ids from committee_$_management_level as integers.
+    read_only: true
 
   # committee specific permissions
   committee_$_management_level:
@@ -140,6 +141,7 @@ user:
       type: string
       enum:
       - can_manage
+      - can_see
 
   # Meeting specific personal data
   comment_$:
@@ -307,8 +309,9 @@ committee:
     type: relation
     to: meeting/default_meeting_for_committee_id
   user_ids:
-    type: relation-list
-    to: user/committee_ids
+    type: number[]
+    description: Calculated. All user ids from all users with existing commitee_$_management_level.
+    read_only: true
   forward_to_committee_ids:
     type: relation-list
     to: committee/receive_forwardings_from_committee_ids

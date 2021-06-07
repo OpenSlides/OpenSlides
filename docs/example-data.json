@@ -103,7 +103,8 @@
 
         "is_present_in_meeting_ids": [],
         "committee_ids": [1],
-        "committee_$_management_level": [],
+        "committee_$_management_level": ["1"],
+        "committee_$1_management_level": "can_see",
 
         "comment_$": ["1"],
         "comment_$1": "Test comment a",
