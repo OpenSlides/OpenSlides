@@ -948,6 +948,7 @@ group:
       - assignment.can_nominate_other
       - assignment.can_nominate_self
       - assignment.can_see
+      - chat.can_manage
       - list_of_speakers.can_be_speaker
       - list_of_speakers.can_manage
       - list_of_speakers.can_see
