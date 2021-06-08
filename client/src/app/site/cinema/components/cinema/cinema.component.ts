@@ -20,7 +20,7 @@ import { CurrentListOfSpeakersService } from 'app/site/projector/services/curren
     selector: 'os-cinema',
     templateUrl: './cinema.component.html',
     styleUrls: ['./cinema.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.Default
 })
 export class CinemaComponent extends BaseViewComponentDirective implements OnInit, AfterViewInit {
     public listOfSpeakers: ViewListOfSpeakers;
