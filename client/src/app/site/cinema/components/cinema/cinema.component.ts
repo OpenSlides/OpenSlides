@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 
@@ -19,10 +19,9 @@ import { CurrentListOfSpeakersService } from 'app/site/projector/services/curren
 @Component({
     selector: 'os-cinema',
     templateUrl: './cinema.component.html',
-    styleUrls: ['./cinema.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Default
+    styleUrls: ['./cinema.component.scss']
 })
-export class CinemaComponent extends BaseViewComponentDirective implements OnInit, AfterViewInit {
+export class CinemaComponent extends BaseViewComponentDirective implements OnInit {
     public listOfSpeakers: ViewListOfSpeakers;
     public projector: ViewProjector;
     private currentProjectorElement: ProjectorElement;
@@ -93,18 +92,14 @@ export class CinemaComponent extends BaseViewComponentDirective implements OnIni
         snackBar: MatSnackBar,
         private operator: OperatorService,
         private projectorService: ProjectorService,
-        private projectorRepo: ProjectorRepositoryService,
-        private closService: CurrentListOfSpeakersService,
-        private listOfSpeakersRepo: ListOfSpeakersRepositoryService,
-        private cd: ChangeDetectorRef
+        projectorRepo: ProjectorRepositoryService,
+        closService: CurrentListOfSpeakersService,
+        private listOfSpeakersRepo: ListOfSpeakersRepositoryService
     ) {
         super(title, translate, snackBar);
-    }
 
-    public ngOnInit(): void {
-        super.setTitle('Autopilot');
         this.subscriptions.push(
-            this.projectorRepo.getReferenceProjectorObservable().subscribe(refProjector => {
+            projectorRepo.getReferenceProjectorObservable().subscribe(refProjector => {
                 this.projector = refProjector;
                 this.currentProjectorElement = refProjector?.firstUnstableElement || null;
                 if (this.currentProjectorElement) {
@@ -114,17 +109,15 @@ export class CinemaComponent extends BaseViewComponentDirective implements OnIni
                 } else {
                     this.projectedViewModel = null;
                 }
-                this.delayedCheck();
             }),
-            this.closService.currentListOfSpeakersObservable.subscribe(clos => {
+            closService.currentListOfSpeakersObservable.subscribe(clos => {
                 this.listOfSpeakers = clos;
-                this.cd.markForCheck();
             })
         );
     }
 
-    public ngAfterViewInit(): void {
-        this.delayedCheck();
+    public ngOnInit(): void {
+        super.setTitle('Autopilot');
     }
 
     public async toggleListOfSpeakersOpen(): Promise<void> {
@@ -133,17 +126,5 @@ export class CinemaComponent extends BaseViewComponentDirective implements OnIni
 
     public async readdLastSpeaker(): Promise<void> {
         await this.listOfSpeakersRepo.readdLastSpeaker(this.listOfSpeakers).catch(this.raiseError);
-    }
-
-    /**
-     * Ref Projector Update fireing and Projector content updates
-     * are not in sync.
-     * This is a deep projector issue, OpenSlides has no chance
-     * to really know when the projector content is ready
-     */
-    private delayedCheck(): void {
-        setTimeout(() => {
-            this.cd.markForCheck();
-        }, 2000);
     }
 }
