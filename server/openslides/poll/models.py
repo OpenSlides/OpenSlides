@@ -253,6 +253,7 @@ class BasePoll(models.Model):
             option.reset()
 
         self.voted.clear()
+        self.entitled_users_at_stop = None
 
         # Reset state
         self.state = BasePoll.STATE_CREATED

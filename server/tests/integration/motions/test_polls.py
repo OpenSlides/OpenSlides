@@ -1394,6 +1394,7 @@ class ResetMotionPoll(TestCase):
             pollmethod="YNA",
             type=BasePoll.TYPE_ANALOG,
             state=MotionPoll.STATE_FINISHED,
+            entitled_users_at_stop=[[{"some": ["important", "data"]}]],
         )
         self.poll.create_options()
         self.option = self.poll.options.get()
@@ -1416,6 +1417,7 @@ class ResetMotionPoll(TestCase):
         self.assertEqual(poll.votesvalid, None)
         self.assertEqual(poll.votesinvalid, None)
         self.assertEqual(poll.votescast, None)
+        self.assertEqual(poll.entitled_users_at_stop, None)
         option = poll.options.get()
         self.assertEqual(option.yes, Decimal("0"))
         self.assertEqual(option.no, Decimal("0"))
@@ -1430,6 +1432,7 @@ class ResetMotionPoll(TestCase):
         self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
         poll = MotionPoll.objects.get()
         self.assertFalse(poll.is_pseudoanonymized)
+        self.assertEqual(poll.entitled_users_at_stop, None)
 
     def test_reset_pseudoanonymous(self):
         self.poll.type = BasePoll.TYPE_PSEUDOANONYMOUS
@@ -1439,6 +1442,7 @@ class ResetMotionPoll(TestCase):
         self.assertHttpStatusVerbose(response, status.HTTP_200_OK)
         poll = MotionPoll.objects.get()
         self.assertTrue(poll.is_pseudoanonymized)
+        self.assertEqual(poll.entitled_users_at_stop, None)
 
 
 class TestMotionPollWithVoteDelegationAutoupdate(TestCase):
