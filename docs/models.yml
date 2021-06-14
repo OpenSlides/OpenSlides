@@ -71,7 +71,6 @@ organization:
   privacy_policy: string
   login_text: string
   theme: string
-  custom_translations: JSON
   reset_password_verbose_errors: boolean
 
   # Configuration (only for the server owner)
@@ -365,6 +364,7 @@ meeting:
   enable_anonymous:
     type: boolean
     default: False
+  custom_translations: JSON
 
   # Jitsi/Livestream settings
   conference_show:
