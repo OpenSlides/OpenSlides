@@ -10,7 +10,7 @@ Enum EventType {
 Exception ModelDoesNotExist(model: Fqid);
 Exception ModelExist(model: Fqid);
 Exception ModelNotDeleted(model: Fqid);
-Exception ModelLocked(key: Fqid | Fqfield | CollectionField);
+Exception ModelLocked(key: (Fqid | Fqfield | CollectionField)[]);
 Exception InvalidFormat(msg: string);
 Exception InvalidRequest(msg: string);
 
@@ -45,7 +45,7 @@ Interface ModelNotDeletedData {
 }
 Interface ModelLockedData {
     type: 6;
-    key: string;
+    keys: string[];
 }
 
 ## Writer
