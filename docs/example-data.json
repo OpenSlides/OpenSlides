@@ -8,7 +8,6 @@
         "privacy_policy": "",
         "login_text": "Guten Morgen!",
         "theme": "openslides-theme",
-        "custom_translations": [],
         "enable_electronic_voting": true,
         "reset_password_verbose_errors": true,
 
@@ -234,6 +233,7 @@
         "url_name": "os3_test",
         "template_for_committee_id": null,
         "enable_anonymous": false,
+        "custom_translations": [],
 
         "name": "OpenSlides - Die Veranstaltung (Teil II)",
         "description": "Presentation and assembly system",
