@@ -8,7 +8,6 @@
         "privacy_policy": "",
         "login_text": "Welcome to OpenSlides. Please login.",
         "theme": "openslides-theme",
-        "custom_translations": "",
         "reset_password_verbose_errors": false,
         "enable_electronic_voting": false,
 
@@ -104,6 +103,7 @@
         "url_name": "openslides_1",
         "template_for_committee_id": null,
         "enable_anonymous": false,
+        "custom_translations": {},
 
         "conference_show": false,
         "conference_auto_connect": false,
