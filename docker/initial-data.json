@@ -103,7 +103,7 @@
         "url_name": "openslides_1",
         "template_for_committee_id": null,
         "enable_anonymous": false,
-        "custom_translations": "",
+        "custom_translations": {},
 
         "conference_show": false,
         "conference_auto_connect": false,

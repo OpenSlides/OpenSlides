@@ -233,7 +233,7 @@
         "url_name": "os3_test",
         "template_for_committee_id": null,
         "enable_anonymous": false,
-        "custom_translations": [],
+        "custom_translations": {},
 
         "name": "OpenSlides - Die Veranstaltung (Teil II)",
         "description": "Presentation and assembly system",
