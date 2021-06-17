@@ -157,6 +157,9 @@ def manage_config(**kwargs):
     from .config import config
 
     altered = config.save_default_values()
+    altered = (
+        config.overwrite_with_defaults("logos_available", "fonts_available") or altered
+    )
     altered = config.cleanup_old_config_values() or altered
     if altered:
         config.increment_version()
