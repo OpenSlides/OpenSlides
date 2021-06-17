@@ -48,7 +48,7 @@ func cmdConnect(cfg *config) *cobra.Command {
 
 			path := "/system/autoupdate"
 
-			c, err := client.New(cfg.domain, cfg.username, cfg.password)
+			c, err := client.New(cfg.addr(), cfg.username, cfg.password)
 			if err != nil {
 				return fmt.Errorf("creating client: %w", err)
 			}
@@ -62,7 +62,7 @@ func cmdConnect(cfg *config) *cobra.Command {
 
 			for i := 0; i < connectionCount; i++ {
 				go func() {
-					r, err := keepOpen(cfg.domain, c, path)
+					r, err := keepOpen(cfg.addr(), c, path)
 					if err != nil {
 						log.Println("Can not create connection: %w", err)
 						return
@@ -70,7 +70,8 @@ func cmdConnect(cfg *config) *cobra.Command {
 					defer r.Close()
 
 					scanner := bufio.NewScanner(r)
-					scanner.Buffer(make([]byte, 10), 1_000_000)
+					const MB = 1 << 20
+					scanner.Buffer(make([]byte, 10), 16*MB)
 					for scanner.Scan() {
 						msg, err := scannerAutoupdate(scanner.Text())
 						if err != nil {
@@ -86,7 +87,7 @@ func cmdConnect(cfg *config) *cobra.Command {
 						if errors.Is(err, context.Canceled) {
 							return
 						}
-						log.Println("Can not read body: %w", err)
+						log.Printf("Can not read body: %v", err)
 						return
 					}
 
@@ -115,8 +116,8 @@ func cmdConnect(cfg *config) *cobra.Command {
 	return cmd
 }
 
-func keepOpen(domain string, c *client.Client, path string) (io.ReadCloser, error) {
-	req, err := http.NewRequest("GET", "https://"+domain+path, nil)
+func keepOpen(url string, c *client.Client, path string) (io.ReadCloser, error) {
+	req, err := http.NewRequest("GET", url+path, nil)
 	if err != nil {
 		return nil, fmt.Errorf("creating request: %w", err)
 	}

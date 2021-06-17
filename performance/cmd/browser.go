@@ -47,7 +47,7 @@ func cmdBrowser(cfg *config) *cobra.Command {
 
 			clients := make([]*client.Client, clientCount)
 			for i := range clients {
-				c, err := client.New(cfg.domain, cfg.username, cfg.password)
+				c, err := client.New(cfg.addr(), cfg.username, cfg.password)
 				if err != nil {
 					return fmt.Errorf("creating client: %w", err)
 				}
@@ -60,7 +60,7 @@ func cmdBrowser(cfg *config) *cobra.Command {
 				wg.Add(1)
 				go func(c *client.Client) {
 					defer wg.Done()
-					if err := browser(cfg.domain, c, bar); err != nil {
+					if err := browser(cfg.addr(), c, bar); err != nil {
 						log.Printf("Client failed: %v", err)
 					}
 				}(c)
@@ -76,7 +76,7 @@ func cmdBrowser(cfg *config) *cobra.Command {
 	return cmd
 }
 
-func browser(domain string, c *client.Client, bar *mpb.Bar) error {
+func browser(url string, c *client.Client, bar *mpb.Bar) error {
 	if err := c.Login(); err != nil {
 		return fmt.Errorf("login client: %w", err)
 	}
@@ -94,7 +94,7 @@ func browser(domain string, c *client.Client, bar *mpb.Bar) error {
 		go func(path string) {
 			defer wg.Done()
 
-			req, err := http.NewRequest("GET", "https://"+domain+path, nil)
+			req, err := http.NewRequest("GET", url+path, nil)
 			if err != nil {
 				log.Printf("Error creating request: %v", err)
 				return

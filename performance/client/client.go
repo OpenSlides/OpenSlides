@@ -14,7 +14,7 @@ const pathLogin = "/apps/users/login/"
 
 // Client can send requests to the server.
 type Client struct {
-	domain             string
+	addr               string
 	hc                 *http.Client
 	username, password string
 
@@ -22,9 +22,9 @@ type Client struct {
 }
 
 // New creates a client object. No requests are sent.
-func New(domain, username, password string, options ...Option) (*Client, error) {
+func New(addr, username, password string, options ...Option) (*Client, error) {
 	c := &Client{
-		domain:     "https://" + domain,
+		addr:       addr,
 		username:   username,
 		password:   password,
 		loginRetry: 1,
@@ -51,7 +51,7 @@ func New(domain, username, password string, options ...Option) (*Client, error) 
 // Login uses the username and password to login the client. Sets the returned
 // cookie for later requests.
 func (c *Client) Login() error {
-	url := c.domain + pathLogin
+	url := c.addr + pathLogin
 	payload := fmt.Sprintf(`{"username": "%s", "password": "%s"}`, c.username, c.password)
 
 	var err error
@@ -70,7 +70,7 @@ func (c *Client) Login() error {
 }
 
 func (c *Client) get(ctx context.Context, path string) error {
-	req, err := http.NewRequestWithContext(ctx, "GET", c.domain+path, nil)
+	req, err := http.NewRequestWithContext(ctx, "GET", c.addr+path, nil)
 	if err != nil {
 		return fmt.Errorf("creating request: %w", err)
 
