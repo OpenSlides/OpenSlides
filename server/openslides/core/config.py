@@ -250,6 +250,18 @@ class ConfigHandler:
         queryset.delete()
         return altered_config
 
+    def overwrite_with_defaults(self, *keys: str) -> bool:
+        altered_config = False
+        for key in keys:
+            config_variable = self.config_variables[key]
+            # it must be present in the db -> ensure that save_default_values run beforehand
+            db_value = ConfigStore.objects.get(key=key)
+            if db_value.value != config_variable.default_value:
+                db_value.value = config_variable.default_value
+                db_value.save()
+                altered_config = True
+        return altered_config
+
     def get_collection_string(self) -> str:
         """
         Returns the collection_string from the CollectionStore.
