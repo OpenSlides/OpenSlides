@@ -41,7 +41,7 @@
         "committee_ids": [1],
         "committee_$_management_level": ["1"],
         "committee_$1_management_level": "can_manage",
-        
+
         "comment_$": ["1"],
         "comment_$1": "Test comment",
         "number_$": ["1"],
@@ -240,6 +240,7 @@
         "location": "",
         "start_time": 0,
         "end_time": 0,
+        "imported_at": null,
         "welcome_title": "Welcome to OpenSlides",
         "welcome_text": "[Space for your welcome text.]",
 
@@ -2638,7 +2639,7 @@
         "preview_projection_ids": [],
         "history_projection_ids": [],
         "used_as_reference_projector_meeting_id": 1,
-    
+
         "used_as_default_$_in_meeting_id": [
             "list_of_speakers",
             "current_list_of_speakers"
