@@ -343,6 +343,7 @@ meeting:
   location: string
   start_time: timestamp
   end_time: timestamp
+  imported_at: timestamp
 
   # Configuration (only for the server owner)
   jitsi_domain:
@@ -2067,13 +2068,13 @@ projector:
   show_header_footer:
     type: boolean
     default: true
-  show_title: 
+  show_title:
     type: boolean
     default: true
-  show_logo: 
+  show_logo:
     type: boolean
     default: true
-  show_clock: 
+  show_clock:
     type: boolean
     default: true
 
