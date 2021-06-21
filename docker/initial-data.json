@@ -60,7 +60,6 @@
         "vote_delegated_vote_$_ids": [],
         "assignment_candidate_$_ids": [],
         "projection_$_ids": [],
-        "current_projector_$_ids": [],
         "vote_delegated_$_to_id": [],
         "vote_delegations_$_from_ids": [],
 
