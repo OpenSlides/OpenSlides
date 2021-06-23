@@ -3,7 +3,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 
 import { BasePollDialogService } from 'app/core/ui-services/base-poll-dialog.service';
 import { ChoiceService } from 'app/core/ui-services/choice.service';
@@ -19,7 +19,8 @@ export abstract class BasePollComponent<
     V extends ViewBasePoll,
     S extends PollService
 > extends BaseViewComponentDirective {
-    public stateChangePending = false;
+    private stateChangePendingSubject = new Subject<boolean>();
+    public readonly stateChangePendingObservable = this.stateChangePendingSubject.asObservable();
 
     public chartDataSubject: BehaviorSubject<ChartData> = new BehaviorSubject([]);
 
@@ -74,12 +75,12 @@ export abstract class BasePollComponent<
     }
 
     private async changeState(targetState: PollState): Promise<void> {
-        this.stateChangePending = true;
+        this.stateChangePendingSubject.next(true);
         this.repo
             .changePollState(this._poll, targetState)
             .catch(this.raiseError)
             .finally(() => {
-                this.stateChangePending = false;
+                this.stateChangePendingSubject.next(false);
             });
     }
 
