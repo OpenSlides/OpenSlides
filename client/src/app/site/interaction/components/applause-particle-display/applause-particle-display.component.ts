@@ -7,6 +7,7 @@ import { Subject } from 'rxjs';
 import { auditTime } from 'rxjs/operators';
 import { Container } from 'tsparticles';
 
+import { OpenSlidesStatusService } from 'app/core/core-services/openslides-status.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { ElementSize } from 'app/shared/directives/resized.directive';
 import { BaseViewComponentDirective } from 'app/site/base/base-view';
@@ -20,6 +21,11 @@ import { particleConfig, particleOptions } from './particle-options';
     encapsulation: ViewEncapsulation.None
 })
 export class ApplauseParticleDisplayComponent extends BaseViewComponentDirective {
+    /**
+     * Firefox has an issue with ngParticles and stable state
+     */
+    public isStable = false;
+
     public options = particleOptions;
     public resizeSubject = new Subject<ElementSize>();
     private resizeAuditTime = 200;
@@ -38,6 +44,7 @@ export class ApplauseParticleDisplayComponent extends BaseViewComponentDirective
         translate: TranslateService,
         matSnackBar: MatSnackBar,
         configService: ConfigService,
+        osStatus: OpenSlidesStatusService,
         private applauseService: ApplauseService
     ) {
         super(title, translate, matSnackBar);
@@ -52,6 +59,10 @@ export class ApplauseParticleDisplayComponent extends BaseViewComponentDirective
                 this.particleImage = particleImage || undefined;
             })
         );
+
+        osStatus.stable.then(() => {
+            this.isStable = true;
+        });
     }
 
     private setParticleImage(particleImage: string): void {
