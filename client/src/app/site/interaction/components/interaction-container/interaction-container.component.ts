@@ -28,7 +28,7 @@ export class InteractionContainerComponent extends BaseViewComponentDirective im
     public containerHeadSubtitle = '';
 
     public get isApplausEnabled(): Observable<boolean> {
-        return this.applauseService.showApplause;
+        return this.applauseService.showApplauseObservable;
     }
 
     public get showApplauseBar(): Observable<boolean> {

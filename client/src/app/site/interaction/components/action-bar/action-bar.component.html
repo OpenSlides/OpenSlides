@@ -52,9 +52,9 @@
         mat-mini-fab
         class="action-bar-shadow background-default"
         matTooltip="{{ 'Give applause' | translate }}"
-        [disabled]="applauseDisabled"
-        [matBadge]="applauseLevelObservable | async"
-        [matBadgeHidden]="!(applauseLevelObservable | async)"
+        [disabled]="sendsApplause | async"
+        [matBadge]="applauseLevel | async"
+        [matBadgeHidden]="!(showApplauseLevel | async)"
         (click)="sendApplause()"
         *ngIf="showApplause | async"
         @fade

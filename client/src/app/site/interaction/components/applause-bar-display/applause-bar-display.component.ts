@@ -43,9 +43,6 @@ export class ApplauseBarDisplayComponent extends BaseViewComponentDirective {
             }),
             configService.get<ApplauseType>('general_system_applause_type').subscribe(() => {
                 cd.markForCheck();
-            }),
-            configService.get<boolean>('general_system_applause_show_level').subscribe(show => {
-                this.showLevel = show;
             })
         );
     }
