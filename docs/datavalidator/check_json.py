@@ -139,8 +139,42 @@ class Checker:
         self.generate_template_prefixes()
 
     def modify_models_for_import(self) -> None:
-        for collection in ("organization", "organization_tag", "resource", "committee"):
-            del self.models[collection]
+        collection_allowlist = (
+            "user",
+            "meeting",
+            "group",
+            "personal_note",
+            "tag",
+            "agenda_item",
+            "list_of_speakers",
+            "speaker",
+            "topic",
+            "motion",
+            "motion_submitter",
+            "motion_comment",
+            "motion_comment_section",
+            "motion_category",
+            "motion_block",
+            "motion_change_recommendation",
+            "motion_state",
+            "motion_workflow",
+            "motion_statute_paragraph",
+            "poll",
+            "option",
+            "vote",
+            "assignment",
+            "assignment_candidate",
+            "mediafile",
+            "projector",
+            "projection",
+            "projector_message",
+            "projector_countdown",
+            "chat_group",
+        )
+        for collection in list(self.models.keys()):
+            if collection not in collection_allowlist:
+                del self.models[collection]
+        self.models["mediafile"]["blob"] = "string"
 
     def generate_template_prefixes(self) -> None:
         for collection in self.models.keys():
