@@ -24,12 +24,12 @@ const cannotEnterTooltip = _('Add yourself to the current list of speakers to jo
     animations: [fadeInOut, fadeAnimation]
 })
 export class ActionBarComponent extends BaseViewComponentDirective {
-    public applauseLevel = 0;
-    public applauseDisabled = false;
+    public showApplause: Observable<boolean> = this.applauseService.showApplauseObservable;
 
-    public showApplause: Observable<boolean> = this.applauseService.showApplause;
-    public applauseLevelObservable: Observable<number> = this.applauseService.applauseLevelObservable;
-    public applauseTimeout = this.applauseService.applauseTimeout;
+    public showApplauseLevel = this.applauseService.showApplauseLevelObservable;
+    public applauseLevel: Observable<number> = this.applauseService.applauseLevelObservable;
+
+    public sendsApplause: Observable<boolean> = this.applauseService.sendsApplauseObservable;
     public isJoined: Observable<boolean> = this.rtcService.isJoinedObservable;
     public showCallDialog: Observable<boolean> = this.rtcService.showCallDialogObservable;
     public showLiveConf: Observable<boolean> = this.interactionService.showLiveConfObservable;
@@ -109,13 +109,7 @@ export class ActionBarComponent extends BaseViewComponentDirective {
     }
 
     public sendApplause(): void {
-        this.applauseDisabled = true;
         this.applauseService.sendApplause();
-        this.cd.markForCheck();
-        setTimeout(() => {
-            this.applauseDisabled = false;
-            this.cd.markForCheck();
-        }, this.applauseTimeout);
     }
 
     public triggerCallHiddenAnimation(): void {
