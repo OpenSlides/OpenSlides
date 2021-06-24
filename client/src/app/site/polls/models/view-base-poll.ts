@@ -112,6 +112,10 @@ export abstract class ViewBasePoll<
         }
     }
 
+    public get hasSpecialVoteValues(): boolean {
+        return this.poll.isAnalog && this.options.some(option => option.votes.some(vote => vote.weight < 0));
+    }
+
     public abstract get pollmethodVerbose(): string;
 
     public abstract get percentBaseVerbose(): string;

@@ -213,6 +213,9 @@ export abstract class BasePollDetailComponentDirective<V extends ViewBasePoll, S
         if (this.entitledUsersSubscription) {
             this.entitledUsersSubscription.unsubscribe();
         }
+        if (this.poll.isAnalog) {
+            return;
+        }
         const userIds = new Set<number>();
         for (const entry of this.poll.entitled_users_at_stop) {
             userIds.add(entry.user_id);

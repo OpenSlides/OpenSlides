@@ -43,7 +43,7 @@
         </table>
 
         <!-- Chart -->
-        <div class="doughnut-chart">
+        <div *ngIf="!poll.hasSpecialVoteValues" class="doughnut-chart">
             <os-charts type="doughnut" [data]="chartData"></os-charts>
         </div>
     </ng-container>
