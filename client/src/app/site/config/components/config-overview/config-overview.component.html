@@ -47,4 +47,8 @@
         <mat-icon>undo</mat-icon>
         <span>{{ 'Reset to factory defaults' | translate }}</span>
     </button>
+    <button *ngIf="isSuperAdmin" mat-menu-item (click)="exportToOS4()">
+        <mat-icon>archive</mat-icon>
+        <span>{{ 'Export to OpenSlides4' | translate }}</span>
+    </button>
 </mat-menu>

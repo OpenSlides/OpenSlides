@@ -2,9 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
+import { environment } from 'environments/environment.prod';
 
 import { BaseComponent } from 'app/base.component';
+import { HttpService } from 'app/core/core-services/http.service';
+import { OperatorService } from 'app/core/core-services/operator.service';
 import { ConfigRepositoryService } from 'app/core/repositories/config/config-repository.service';
+import { FileExportService } from 'app/core/ui-services/file-export.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 
 /**
@@ -22,9 +26,16 @@ export class ConfigOverviewComponent extends BaseComponent implements OnInit {
         protected titleService: Title,
         protected translate: TranslateService,
         public repo: ConfigRepositoryService,
-        private promptDialog: PromptService
+        private promptDialog: PromptService,
+        private http: HttpService,
+        private exporter: FileExportService,
+        private operator: OperatorService
     ) {
         super(titleService, translate);
+    }
+
+    public isSuperAdmin(): boolean {
+        return this.operator.isSuperAdmin;
     }
 
     /**
@@ -48,5 +59,11 @@ export class ConfigOverviewComponent extends BaseComponent implements OnInit {
         if (await this.promptDialog.open(title)) {
             await this.repo.resetGroups(this.groups);
         }
+    }
+
+    public async exportToOS4(): Promise<void> {
+        const data = await this.http.get<any>(environment.urlPrefix + '/core/os4-export/');
+        const json = JSON.stringify(data, null, 2);
+        this.exporter.saveFile(json, 'export.json', 'application/json');
     }
 }

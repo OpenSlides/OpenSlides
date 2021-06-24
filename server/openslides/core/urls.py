@@ -13,4 +13,5 @@ urlpatterns = [
         name="core_history_information",
     ),
     url(r"^history/data/$", views.HistoryDataView.as_view(), name="core_history_data"),
+    url(r"^os4-export/$", views.OS4ExportView.as_view(), name="core_os4_export"),
 ]

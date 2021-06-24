@@ -40,6 +40,7 @@ from ..utils.rest_api import (
 )
 from .config import config
 from .exceptions import ConfigError, ConfigNotFound
+from .export import OS4Exporter, OS4ExporterException
 from .models import (
     ConfigStore,
     Countdown,
@@ -720,3 +721,20 @@ class HistoryDataView(utils_views.APIView):
             collection: list(dataset[collection].values())
             for collection in dataset.keys()
         }
+
+
+class OS4ExportView(utils_views.APIView):
+    """
+    Returns the server time as UNIX timestamp.
+    """
+
+    http_method_names = ["get"]
+
+    def get_context_data(self, **context):
+        if not in_some_groups(self.request.user.pk or 0, [GROUP_ADMIN_PK]):
+            self.permission_denied(self.request)
+
+        try:
+            return OS4Exporter().get_data()
+        except OS4ExporterException as e:
+            raise ValidationError({"detail": str(e)})

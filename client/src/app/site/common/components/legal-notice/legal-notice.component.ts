@@ -3,6 +3,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
+import { environment } from 'environments/environment.prod';
 
 import { DataStoreService } from 'app/core/core-services/data-store.service';
 import { OpenSlidesService } from 'app/core/core-services/openslides.service';
