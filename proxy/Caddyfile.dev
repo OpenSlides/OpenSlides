@@ -6,6 +6,9 @@ https://:8000 {
     reverse_proxy /system/autoupdate* autoupdate:9012 {
         flush_interval -1
     }
+    reverse_proxy /system/icc* icc:9013 {
+        flush_interval -1
+    }
     reverse_proxy /system/auth* auth:9004
     reverse_proxy /system/media* media:9006
 

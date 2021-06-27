@@ -29,3 +29,6 @@
 	path = openslides-manage-service
 	url = https://github.com/OpenSlides/openslides-manage-service.git
 	branch = main
+[submodule "openslides-icc-service"]
+	path = openslides-icc-service
+	url = https://github.com/OpenSlides/openslides-icc-service.git
