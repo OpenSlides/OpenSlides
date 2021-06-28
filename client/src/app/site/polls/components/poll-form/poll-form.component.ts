@@ -172,7 +172,7 @@ export class PollFormComponent<T extends ViewBasePoll, S extends PollService>
             this.patchForm(this.contentForm);
         }
         this.updatePollValues(this.contentForm.value);
-        this.updatePercentBases(this.pollMethodControl.value);
+        this.updatePercentBases(this.pollMethodControl.value, this.pollTypeControl.value);
 
         this.subscriptions.push(
             // changes to whole form
@@ -183,13 +183,12 @@ export class PollFormComponent<T extends ViewBasePoll, S extends PollService>
             }),
             // poll method changes
             this.pollMethodControl.valueChanges.subscribe((method: AssignmentPollMethod) => {
-                if (method) {
-                    this.updatePercentBases(method);
-                    this.setWarning();
-                }
+                this.updatePercentBases(method, this.pollTypeControl.value);
+                this.setWarning();
             }),
             // poll type changes
-            this.pollTypeControl.valueChanges.subscribe(() => {
+            this.pollTypeControl.valueChanges.subscribe((type: PollType) => {
+                this.updatePercentBases(this.pollMethodControl.value, type);
                 this.setWarning();
             })
         );
@@ -226,11 +225,12 @@ export class PollFormComponent<T extends ViewBasePoll, S extends PollService>
     }
 
     /**
-     * updates the available percent bases according to the pollmethod
+     * updates the available percent bases according to the pollmethod and type
      * @param method the currently chosen pollmethod
+     * @param type the currently chosen type
      */
-    private updatePercentBases(method: AssignmentPollMethod): void {
-        if (method) {
+    private updatePercentBases(method: AssignmentPollMethod, type: PollType): void {
+        if (method || type) {
             let forbiddenBases = [];
             if (method === AssignmentPollMethod.YN) {
                 forbiddenBases = [PercentBase.YNA, AssignmentPollPercentBase.Y];
@@ -238,6 +238,9 @@ export class PollFormComponent<T extends ViewBasePoll, S extends PollService>
                 forbiddenBases = [AssignmentPollPercentBase.Y];
             } else if (method === AssignmentPollMethod.Y || AssignmentPollMethod.N) {
                 forbiddenBases = [PercentBase.YN, PercentBase.YNA];
+            }
+            if (type === PollType.Analog) {
+                forbiddenBases.push(PercentBase.Entitled);
             }
 
             const bases = {};
@@ -248,7 +251,7 @@ export class PollFormComponent<T extends ViewBasePoll, S extends PollService>
             }
             // update value in case that its no longer valid
             const percentBaseControl = this.contentForm.get('onehundred_percent_base');
-            percentBaseControl.setValue(this.getNormedPercentBase(percentBaseControl.value, method));
+            percentBaseControl.setValue(this.getNormedPercentBase(percentBaseControl.value, method, type));
 
             this.validPercentBases = bases;
         }
@@ -256,7 +259,8 @@ export class PollFormComponent<T extends ViewBasePoll, S extends PollService>
 
     private getNormedPercentBase(
         base: AssignmentPollPercentBase,
-        method: AssignmentPollMethod
+        method: AssignmentPollMethod,
+        type: PollType
     ): AssignmentPollPercentBase {
         if (
             method === AssignmentPollMethod.YN &&
@@ -270,6 +274,8 @@ export class PollFormComponent<T extends ViewBasePoll, S extends PollService>
             (base === AssignmentPollPercentBase.YN || base === AssignmentPollPercentBase.YNA)
         ) {
             return AssignmentPollPercentBase.Y;
+        } else if (type === PollType.Analog && base === AssignmentPollPercentBase.Entitled) {
+            return AssignmentPollPercentBase.Cast;
         }
         return base;
     }

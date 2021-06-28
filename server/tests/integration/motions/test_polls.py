@@ -322,6 +322,22 @@ class CreateMotionPoll(TestCase):
         self.assertFalse(MotionPoll.objects.exists())
         self.assertFalse(MotionVote.objects.exists())
 
+    def test_create_with_invalid_percent_base(self):
+        response = self.client.post(
+            reverse("motionpoll-list"),
+            {
+                "title": "test_title_PgvqRIvuKuVImEpQJAMZ",
+                "pollmethod": MotionPoll.POLLMETHOD_YN,
+                "type": MotionPoll.TYPE_ANALOG,
+                "motion_id": self.motion.id,
+                "onehundred_percent_base": MotionPoll.PERCENT_BASE_ENTITLED,
+                "majority_method": MotionPoll.MAJORITY_SIMPLE,
+            },
+        )
+        self.assertHttpStatusVerbose(response, status.HTTP_201_CREATED)
+        poll = MotionPoll.objects.get()
+        self.assertEqual(poll.onehundred_percent_base, MotionPoll.PERCENT_BASE_CAST)
+
 
 class UpdateMotionPoll(TestCase):
     """

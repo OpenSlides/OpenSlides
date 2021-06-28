@@ -109,7 +109,11 @@ export class MotionPollService extends PollService {
     }
 
     public showChart(poll: PollData): boolean {
-        return poll && poll.options && poll.options.some(option => option.yes >= 0 && option.no >= 0);
+        return (
+            poll &&
+            poll.options &&
+            poll.options.some(option => option.yes >= 0 && option.no >= 0 && option.abstain >= 0)
+        );
     }
 
     public getPercentBase(poll: PollData): number {

@@ -110,8 +110,8 @@ class AssignmentPollSerializer(BasePollSerializer):
         validated_data.pop("assignment", None)
         return super().update(instance, validated_data)
 
-    def norm_100_percent_base_to_pollmethod(
-        self, onehundred_percent_base, pollmethod, old_100_percent_base=None
+    def norm_100_percent_base(
+        self, onehundred_percent_base, pollmethod, polltype, old_100_percent_base=None
     ):
         """
         Returns None, if the 100-%-base must not be changed, otherwise the correct 100-%-base.
@@ -140,7 +140,9 @@ class AssignmentPollSerializer(BasePollSerializer):
             AssignmentPoll.PERCENT_BASE_YNA,
         ):
             return AssignmentPoll.PERCENT_BASE_Y
-        return None
+        return super().norm_100_percent_base(
+            onehundred_percent_base, pollmethod, polltype, old_100_percent_base
+        )
 
 
 class AssignmentSerializer(ModelSerializer):
