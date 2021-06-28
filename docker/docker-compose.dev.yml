@@ -12,6 +12,8 @@ services:
     volumes:
       - ../openslides-datastore-service/shared/shared:/app/shared
       - ../openslides-datastore-service/reader/reader:/app/reader
+    ports:
+      - 9010:9010
   datastore-writer:
     image: openslides-datastore-writer-dev
     depends_on:
