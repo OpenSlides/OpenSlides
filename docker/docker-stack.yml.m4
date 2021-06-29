@@ -31,6 +31,10 @@ define(`AUTOUPDATE_IMAGE',
 ifenvelse(`DEFAULT_DOCKER_REGISTRY', openslides)/dnl
 ifenvelse(`DOCKER_OPENSLIDES_AUTOUPDATE_NAME', openslides-autoupdate):dnl
 ifenvelse(`DOCKER_OPENSLIDES_AUTOUPDATE_TAG', latest-4))
+define(`ICC_IMAGE',
+ifenvelse(`DEFAULT_DOCKER_REGISTRY', openslides)/dnl
+ifenvelse(`DOCKER_OPENSLIDES_ICC_NAME', openslides-icc):dnl
+ifenvelse(`DOCKER_OPENSLIDES_ICC_TAG', latest-4))
 define(`DATASTORE_READER_IMAGE',
 ifenvelse(`DEFAULT_DOCKER_REGISTRY', openslides)/dnl
 ifenvelse(`DOCKER_OPENSLIDES_DATASTORE_READER_NAME', openslides-datastore-reader):dnl
@@ -161,6 +165,23 @@ services:
     secrets:
       - auth_token_key
       - auth_cookie_key
+
+  icc:
+    image: ICC_IMAGE
+    enc_file: services.env
+    networks:
+      - frontend
+      - backend
+      - message-bus
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+      replicas: ifenvelse(`OPENSLIDES_ICC_REPLICAS', 1)
+    secrets:
+      - auth_token_key
+      - auth_cookie_key
+
 
   auth:
     image: AUTH_IMAGE

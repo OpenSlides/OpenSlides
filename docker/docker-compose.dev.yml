@@ -14,6 +14,7 @@ services:
       - ../openslides-datastore-service/reader/reader:/app/reader
     ports:
       - 9010:9010
+      
   datastore-writer:
     image: openslides-datastore-writer-dev
     depends_on:
@@ -31,12 +32,14 @@ services:
       - OPENSLIDES_DEVELOPMENT=1
     ports:
       - 9011:9011
+
   postgres:
     image: postgres:11
     environment:
       - POSTGRES_USER=openslides
       - POSTGRES_PASSWORD=openslides
       - POSTGRES_DB=openslides
+
   client:
     image: openslides-client-dev
     depends_on:
@@ -47,6 +50,7 @@ services:
       - OPENSLIDES_DEVELOPMENT=1
     volumes:
       - ../openslides-client/client/src:/app/src
+
   backend:
     image: openslides-backend-dev
     depends_on:
@@ -59,6 +63,7 @@ services:
       - OPENSLIDES_DEVELOPMENT=1
     volumes:
       - ../openslides-backend/openslides_backend:/app/openslides_backend
+
   autoupdate:
     image: openslides-autoupdate-dev
     depends_on:
@@ -70,6 +75,21 @@ services:
     volumes:
       - ../openslides-autoupdate-service/cmd:/root/cmd
       - ../openslides-autoupdate-service/internal:/root/internal
+      - ../openslides-autoupdate-service/pkg:/root/pkg
+
+  icc:
+    image: openslides-icc-dev
+    depends_on:
+      - datastore-reader
+      - message-bus
+      - auth
+    env_file: services.env
+    environment:
+      - OPENSLIDES_DEVELOPMENT=1
+    volumes:
+      - ../openslides-icc-service/cmd:/root/cmd
+      - ../openslides-icc-service/internal:/root/internal
+
   permission:
     image: openslides-permission-dev
     depends_on:
@@ -81,6 +101,7 @@ services:
       - ../openslides-permission-service/cmd:/app/cmd
       - ../openslides-permission-service/internal:/app/internal
       - ../openslides-permission-service/pkg:/app/pkg
+    
   auth:
     image: openslides-auth-dev
     depends_on:
@@ -91,8 +112,10 @@ services:
       - OPENSLIDES_DEVELOPMENT=1
     volumes:
       - ../openslides-auth-service/auth/src:/app/src
+
   cache:
     image: redis:latest
+
   media:
     image: openslides-media-dev
     depends_on:
@@ -103,6 +126,7 @@ services:
       - OPENSLIDES_DEVELOPMENT=1
     volumes:
       - ../openslides-media-service/src:/app/src
+
   manage:
     image: openslides-manage-dev
     depends_on:
@@ -113,8 +137,10 @@ services:
       - OPENSLIDES_DEVELOPMENT=1
     ports:
     - "9008:9008"
+
   message-bus:
     image: redis:latest
+
   proxy:
     image: openslides-proxy-dev
     depends_on:
