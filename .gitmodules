@@ -32,3 +32,4 @@
 [submodule "openslides-icc-service"]
 	path = openslides-icc-service
 	url = https://github.com/OpenSlides/openslides-icc-service.git
+	branch = main
