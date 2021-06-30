@@ -37,6 +37,9 @@ jobs:
           - name: openslides-auth
             directory: openslides-auth-service
 
+          - name: openslides-icc
+            directory: openslides-icc-service
+
           - name: openslides-media
             directory: openslides-media-service
 
