@@ -112,7 +112,7 @@
         "conference_stream_poster_url": "",
         "conference_open_microphone": true,
         "conference_open_video": true,
-        "conference_auto_connect_next_speakers": true,
+        "conference_auto_connect_next_speakers": 0,
 
         "projector_countdown_default_time": 60,
         "projector_countdown_warning_time": 0,
