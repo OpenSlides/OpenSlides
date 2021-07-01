@@ -388,6 +388,9 @@ meeting:
   conference_auto_connect_next_speakers:
     type: number
     default: 0
+  conference_enable_helpdesk:
+    type: boolean
+    default: False
 
   # Projector countdown
   projector_countdown_default_time:

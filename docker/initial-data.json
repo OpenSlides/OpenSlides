@@ -113,6 +113,7 @@
         "conference_open_microphone": true,
         "conference_open_video": true,
         "conference_auto_connect_next_speakers": 0,
+        "conference_enable_helpdesk": false,
 
         "projector_countdown_default_time": 60,
         "projector_countdown_warning_time": 0,
