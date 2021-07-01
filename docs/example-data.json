@@ -249,6 +249,7 @@
         "conference_open_microphone": true,
         "conference_open_video": true,
         "conference_auto_connect_next_speakers": 0,
+        "conference_enable_helpdesk": false,
 
         "jitsi_room_name": "",
         "jitsi_domain": "",
