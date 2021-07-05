@@ -1309,7 +1309,8 @@ motion:
   derived_motion_ids:
     type: relation-list
     to: motion/origin_id  # Note: The related motions may not be in the same meeting
-  forwarding_tree_motion_ids: number[]  # Calculated: All children (derived_motion_ids), grand children, ... and all parents (origin_id).
+  all_origin_ids: number[]  # Calculated: All parents (origin_id), grandparents, etc. of this motion.
+  all_derived_motion_ids: number[]  # Calculated: All children (derived_motion_ids), grandchildren, etc. of this motion.
   state_id:
     type: relation
     to: motion_state/motion_ids
