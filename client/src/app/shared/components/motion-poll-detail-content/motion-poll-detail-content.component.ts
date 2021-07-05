@@ -72,6 +72,10 @@ export class MotionPollDetailContentComponent extends BaseComponent {
         super(titleService, translate);
     }
 
+    public showChart(): boolean {
+        return this.pollService.showChart(this.poll);
+    }
+
     private setTableData(): void {
         this.tableData = this.pollService.generateTableData(this.poll);
     }

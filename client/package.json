@@ -108,7 +108,7 @@
         "karma-jasmine": "~4.0.1",
         "karma-jasmine-html-reporter": "^1.4.0",
         "npm-license-crawler": "^0.2.1",
-        "prettier": "^2.1.1",
+        "prettier": "~2.1.1",
         "protractor": "^7.0.0",
         "resize-observer-polyfill": "^1.5.1",
         "ts-node": "~9.0.0",

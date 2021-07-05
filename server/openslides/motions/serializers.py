@@ -260,15 +260,17 @@ class MotionPollSerializer(BasePollSerializer):
         validated_data.pop("motion", None)
         return super().update(instance, validated_data)
 
-    def norm_100_percent_base_to_pollmethod(
-        self, onehundred_percent_base, pollmethod, old_100_percent_base=None
+    def norm_100_percent_base(
+        self, onehundred_percent_base, pollmethod, polltype, old_100_percent_base=None
     ):
         if (
             pollmethod == MotionPoll.POLLMETHOD_YN
             and onehundred_percent_base == MotionPoll.PERCENT_BASE_YNA
         ):
             return MotionPoll.PERCENT_BASE_YN
-        return None
+        return super().norm_100_percent_base(
+            onehundred_percent_base, pollmethod, polltype, old_100_percent_base
+        )
 
 
 class MotionChangeRecommendationSerializer(ModelSerializer):

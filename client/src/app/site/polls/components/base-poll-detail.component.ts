@@ -273,7 +273,9 @@ export abstract class BasePollDetailComponentDirective<V extends ViewBasePoll, S
 
     public ngOnDestroy(): void {
         super.ngOnDestroy();
-        this.entitledUsersSubscription.unsubscribe();
-        this.entitledUsersSubscription = null;
+        if (this.entitledUsersSubscription) {
+            this.entitledUsersSubscription.unsubscribe();
+            this.entitledUsersSubscription = null;
+        }
     }
 }

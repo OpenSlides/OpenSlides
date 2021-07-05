@@ -77,12 +77,14 @@ class BasePollSerializer(ModelSerializer):
 
     def create(self, validated_data):
         """
-        Match the 100 percent base to the pollmethod. Change the base, if it does not
-        fit to the pollmethod.
+        Match the 100 percent base to the pollmethod and type. Change the base, if it does not
+        fit to the pollmethod or type.
         Set is_pseudoanonymized if type is pseudoanonymous.
         """
-        new_100_percent_base = self.norm_100_percent_base_to_pollmethod(
-            validated_data["onehundred_percent_base"], validated_data["pollmethod"]
+        new_100_percent_base = self.norm_100_percent_base(
+            validated_data["onehundred_percent_base"],
+            validated_data["pollmethod"],
+            validated_data["type"],
         )
         if new_100_percent_base is not None:
             validated_data["onehundred_percent_base"] = new_100_percent_base
@@ -92,7 +94,7 @@ class BasePollSerializer(ModelSerializer):
 
     def update(self, instance, validated_data):
         """
-        Adjusts the 100%-base to the pollmethod. This might be needed,
+        Adjusts the 100%-base to the pollmethod and type. This might be needed,
         if at least one of them was changed. Wrong combinations should be
         also handled by the client, but here we make it sure aswell!
 
@@ -109,8 +111,11 @@ class BasePollSerializer(ModelSerializer):
                 validated_data["is_pseudoanonymized"] = False
         instance = super().update(instance, validated_data)
 
-        new_100_percent_base = self.norm_100_percent_base_to_pollmethod(
-            instance.onehundred_percent_base, instance.pollmethod, old_100_percent_base
+        new_100_percent_base = self.norm_100_percent_base(
+            instance.onehundred_percent_base,
+            instance.pollmethod,
+            instance.type,
+            old_100_percent_base,
         )
         if new_100_percent_base is not None:
             instance.onehundred_percent_base = new_100_percent_base
@@ -136,7 +141,17 @@ class BasePollSerializer(ModelSerializer):
             )
         return data
 
-    def norm_100_percent_base_to_pollmethod(
-        self, onehundred_percent_base, pollmethod, old_100_percent_base=None
+    def norm_100_percent_base(
+        self, onehundred_percent_base, pollmethod, polltype, old_100_percent_base=None
     ):
-        raise NotImplementedError()
+        if (
+            polltype == BasePoll.TYPE_ANALOG
+            and onehundred_percent_base == BasePoll.PERCENT_BASE_ENTITLED
+        ):
+            if (
+                old_100_percent_base
+                and old_100_percent_base != BasePoll.PERCENT_BASE_ENTITLED
+            ):
+                return old_100_percent_base
+            return BasePoll.PERCENT_BASE_CAST
+        return None

@@ -37,10 +37,6 @@ export class MotionPollSlideComponent extends BasePollSlideComponentDirective<Mo
         return MotionPoll.DECIMAL_FIELDS;
     }
 
-    public showChart(): boolean {
-        return this.pollService.showChart(this.pollData);
-    }
-
     public getTableData(): PollTableData[] {
         return this.pollService.generateTableData(this.pollData);
     }
