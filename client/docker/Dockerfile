@@ -6,7 +6,7 @@ RUN useradd -m openslides
 RUN chown -R openslides /build/app
 
 USER root
-RUN npm install -g @angular/cli@^10
+RUN npm install -g @angular/cli@^12
 RUN ng config -g cli.warnings.versionMismatch false
 
 USER openslides

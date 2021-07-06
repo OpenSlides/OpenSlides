@@ -1,4 +1,4 @@
-@import '~@angular/material/theming';
+@use '~@angular/material' as mat;
 
 /** Custom component theme. Only lives in a specific scope */
 @mixin os-progress-snack-bar-style($theme) {
@@ -6,7 +6,7 @@
 
     .progress-snack-bar {
         .mat-progress-bar-buffer {
-            background-color: mat-color($background, card) !important;
+            background-color: mat.get-color-from-palette($background, card) !important;
         }
     }
 }

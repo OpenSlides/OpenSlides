@@ -38,7 +38,8 @@ export interface MotionTitleInformation extends TitleInformationWithAgendaItem {
  */
 export class ViewMotion
     extends BaseViewModelWithAgendaItemAndListOfSpeakers<Motion>
-    implements MotionTitleInformation, Searchable {
+    implements MotionTitleInformation, Searchable
+{
     public get motion(): Motion {
         return this._model;
     }

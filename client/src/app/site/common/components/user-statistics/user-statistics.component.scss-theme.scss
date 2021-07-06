@@ -1,8 +1,8 @@
-@import '~@angular/material/theming';
+@use '~@angular/material' as mat;
 
 @mixin os-user-statistics-style($theme) {
     $foreground: map-get($theme, foreground);
-    $text: mat-color($foreground, secondary-text);
+    $text: mat.get-color-from-palette($foreground, secondary-text);
 
     .user-statistics-table {
         th {
@@ -13,7 +13,7 @@
         &,
         td,
         th {
-            border-color: mat-color($foreground, divider);
+            border-color: mat.get-color-from-palette($foreground, divider);
         }
     }
 }

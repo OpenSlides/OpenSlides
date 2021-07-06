@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ClockSlideComponent } from './clock-slide.component';
 import { E2EImportsModule } from '../../../../e2e-imports.module';
@@ -7,12 +7,14 @@ describe('ClockSlideComponent', () => {
     let component: ClockSlideComponent;
     let fixture: ComponentFixture<ClockSlideComponent>;
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            imports: [E2EImportsModule],
-            declarations: [ClockSlideComponent]
-        }).compileComponents();
-    }));
+    beforeEach(
+        waitForAsync(() => {
+            TestBed.configureTestingModule({
+                imports: [E2EImportsModule],
+                declarations: [ClockSlideComponent]
+            }).compileComponents();
+        })
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(ClockSlideComponent);

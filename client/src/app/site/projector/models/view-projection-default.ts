@@ -7,7 +7,8 @@ export interface ProjectionDefaultTitleInformation {
 
 export class ViewProjectionDefault
     extends BaseViewModel<ProjectionDefault>
-    implements ProjectionDefaultTitleInformation {
+    implements ProjectionDefaultTitleInformation
+{
     public static COLLECTIONSTRING = ProjectionDefault.COLLECTIONSTRING;
     protected _collectionString = ProjectionDefault.COLLECTIONSTRING;
 

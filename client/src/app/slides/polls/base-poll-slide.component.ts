@@ -17,6 +17,7 @@ export abstract class BasePollSlideComponentDirective<
     public chartDataSubject: BehaviorSubject<ChartData> = new BehaviorSubject([]);
 
     @Input()
+    // @ts-ignore:
     public set data(value: SlideData<T>) {
         this._data = value;
         this.getDecimalFields().forEach(field => {

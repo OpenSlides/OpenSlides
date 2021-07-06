@@ -1,11 +1,11 @@
 /** Imports the material-design-theming */
-@import '~@angular/material/theming';
-@include mat-core();
+@use '~@angular/material' as mat;
+@include mat.core();
 
 /** NGrid theme */
 @import '~@pebula/ngrid/theming';
 $narrow-spacing: (
-    spacing: $pbl-spacing-theme-narrow
+    spacing: $pbl-spacing-theme-default
 );
 
 /** Import brand theme */
@@ -75,49 +75,49 @@ $narrow-spacing: (
 }
 
 .openslides-default-light-theme {
-    @include angular-material-theme($openslides-default-light);
+    @include mat.all-component-themes($openslides-default-light);
     @include openslides-components-theme($openslides-default-light);
     $ngrid-material-theme: pbl-light-theme($openslides-default-light);
     @include pbl-ngrid-theme(map-merge($ngrid-material-theme, $narrow-spacing));
 }
 
 .openslides-default-dark-theme {
-    @include angular-material-theme($openslides-default-dark);
+    @include mat.all-component-themes($openslides-default-dark);
     @include openslides-components-theme($openslides-default-dark);
     $ngrid-material-theme: pbl-dark-theme($openslides-default-dark);
     @include pbl-ngrid-theme(map-merge($ngrid-material-theme, $narrow-spacing));
 }
 
 .openslides-red-light-theme {
-    @include angular-material-theme($openslides-red-light);
+    @include mat.all-component-themes($openslides-red-light);
     @include openslides-components-theme($openslides-red-light);
     $ngrid-material-theme: pbl-light-theme($openslides-red-light);
     @include pbl-ngrid-theme(map-merge($ngrid-material-theme, $narrow-spacing));
 }
 
 .openslides-red-dark-theme {
-    @include angular-material-theme($openslides-red-dark);
+    @include mat.all-component-themes($openslides-red-dark);
     @include openslides-components-theme($openslides-red-dark);
     $ngrid-material-theme: pbl-dark-theme($openslides-red-dark);
     @include pbl-ngrid-theme(map-merge($ngrid-material-theme, $narrow-spacing));
 }
 
 .openslides-green-light-theme {
-    @include angular-material-theme($openslides-green-light);
+    @include mat.all-component-themes($openslides-green-light);
     @include openslides-components-theme($openslides-green-light);
     $ngrid-material-theme: pbl-light-theme($openslides-green-light);
     @include pbl-ngrid-theme(map-merge($ngrid-material-theme, $narrow-spacing));
 }
 
 .openslides-green-dark-theme {
-    @include angular-material-theme($openslides-green-dark);
+    @include mat.all-component-themes($openslides-green-dark);
     @include openslides-components-theme($openslides-green-dark);
     $ngrid-material-theme: pbl-dark-theme($openslides-green-dark);
     @include pbl-ngrid-theme(map-merge($ngrid-material-theme, $narrow-spacing));
 }
 
 .openslides-solarized-dark-theme {
-    @include angular-material-theme($openslides-solarized-dark);
+    @include mat.all-component-themes($openslides-solarized-dark);
     @include openslides-components-theme($openslides-solarized-dark);
     $ngrid-material-theme: pbl-dark-theme($openslides-solarized-dark);
     @include pbl-ngrid-theme(map-merge($ngrid-material-theme, $narrow-spacing));

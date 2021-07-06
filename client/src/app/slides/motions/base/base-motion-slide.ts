@@ -1,7 +1,8 @@
-import { Directive } from '@angular/core';
+import { Directive, Input } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import { SlideData } from 'app/core/core-services/projector-data.service';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { MotionTitleInformation } from 'app/site/motions/models/view-motion';
 import { BaseSlideComponentDirective } from 'app/slides/base-slide-component';

@@ -121,7 +121,7 @@ export abstract class BaseSortListService<V extends BaseViewModel> extends BaseS
     /**
      * Enforce children to implement a method that returns the fault sorting
      */
-    protected abstract async getDefaultDefinition(): Promise<OsSortingDefinition<V>>;
+    protected abstract getDefaultDefinition(): Promise<OsSortingDefinition<V>>;
 
     /**
      * Defines the sorting properties, and returns an observable with sorted data

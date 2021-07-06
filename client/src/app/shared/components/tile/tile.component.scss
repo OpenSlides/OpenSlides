@@ -1,4 +1,4 @@
-@import '~@angular/material/theming';
+@use 'sass:math';
 @import '../../../../assets/styles/media-queries.scss';
 
 @mixin os-tile-style($theme) {
@@ -64,7 +64,7 @@
         @if $space == true {
             @return calc(#{$size} / 4 * 100% - 16px);
         } @else {
-            @return $size / 4 * 100%;
+            @return math.div($size, 4) * 100%;
         }
     }
 
@@ -72,7 +72,7 @@
         @if $space == true {
             @return calc(#{$size} / 8 * 100% - 16px);
         } @else {
-            @return $size / 8 * 100%;
+            @return math.div($size, 8) * 100%;
         }
     }
 
@@ -80,7 +80,7 @@
         @if $space == true {
             @return calc(#{$size} / 12 * 100% - 16px);
         } @else {
-            @return $size / 12 * 100%;
+            @return math.div($size, 12) * 100%;
         }
     }
 
@@ -88,7 +88,7 @@
         @if $space == true {
             @return calc(#{$size} / 16 * 100% - 16px);
         } @else {
-            @return $size / 16 * 100%;
+            @return math.div($size, 16) * 100%;
         }
     }
 }

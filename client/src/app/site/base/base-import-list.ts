@@ -16,7 +16,8 @@ import { BaseViewComponentDirective } from './base-view';
 @Directive()
 export abstract class BaseImportListComponentDirective<M extends BaseModel>
     extends BaseViewComponentDirective
-    implements OnInit {
+    implements OnInit
+{
     /**
      * The data source for a table. Requires to be initialised with a BaseViewModel
      */

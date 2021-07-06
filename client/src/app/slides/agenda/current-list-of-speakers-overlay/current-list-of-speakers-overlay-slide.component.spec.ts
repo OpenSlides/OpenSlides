@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { CommonListOfSpeakersSlideModule } from '../common/common-list-of-speakers-slide.module';
 import { CurrentListOfSpeakersOverlaySlideComponent } from './current-list-of-speakers-overlay-slide.component';
@@ -8,12 +8,14 @@ describe('CurrentListOfSpeakersOverlaySlideComponent', () => {
     let component: CurrentListOfSpeakersOverlaySlideComponent;
     let fixture: ComponentFixture<CurrentListOfSpeakersOverlaySlideComponent>;
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            imports: [E2EImportsModule, CommonListOfSpeakersSlideModule],
-            declarations: [CurrentListOfSpeakersOverlaySlideComponent]
-        }).compileComponents();
-    }));
+    beforeEach(
+        waitForAsync(() => {
+            TestBed.configureTestingModule({
+                imports: [E2EImportsModule, CommonListOfSpeakersSlideModule],
+                declarations: [CurrentListOfSpeakersOverlaySlideComponent]
+            }).compileComponents();
+        })
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(CurrentListOfSpeakersOverlaySlideComponent);

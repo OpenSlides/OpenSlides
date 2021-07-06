@@ -55,18 +55,17 @@ export class MotionBlockDetailComponent extends BaseListViewComponent<ViewMotion
     public tableColumnDefinition: PblColumnDefinition[] = [
         {
             prop: 'title',
-            width: 'auto'
+            width: '100%'
         },
         {
             prop: 'recommendation',
             label: this.translate.instant('Recommendation'),
-            width: '30%',
             minWidth: 60
         },
         {
             prop: 'remove',
             label: '',
-            width: '40px'
+            minWidth: 40
         }
     ];
     /**

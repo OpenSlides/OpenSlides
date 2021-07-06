@@ -43,7 +43,8 @@ export abstract class BaseIsAgendaItemContentObjectRepository<
         T extends TitleInformationWithAgendaItem
     >
     extends BaseRepository<V, M, T>
-    implements IBaseIsAgendaItemContentObjectRepository<V, M, T> {
+    implements IBaseIsAgendaItemContentObjectRepository<V, M, T>
+{
     public constructor(
         DS: DataStoreService,
         dataSend: DataSendService,

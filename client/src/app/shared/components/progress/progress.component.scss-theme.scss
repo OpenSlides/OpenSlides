@@ -1,26 +1,26 @@
-@import '~@angular/material/theming';
+@use '~@angular/material' as mat;
 
 @mixin os-progress-theme($theme) {
     $primary: map-get($theme, primary);
     $accent: map-get($theme, accent);
 
     .progress-wrapper {
-        background-color: mat-color($primary);
+        background-color: mat.get-color-from-palette($primary);
     }
 
     .end-icon {
-        color: mat-color($primary, default-contrast);
+        color: mat.get-color-from-palette($primary, default-contrast);
     }
 
     .slot {
-        color: mat-color($primary, default-contrast);
+        color: mat.get-color-from-palette($primary, default-contrast);
     }
 
     .buffer {
-        background-color: mat-color($primary, darker);
+        background-color: mat.get-color-from-palette($primary, darker);
     }
 
     .progress {
-        background-color: mat-color($accent);
+        background-color: mat.get-color-from-palette($accent);
     }
 }

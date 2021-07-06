@@ -33,7 +33,8 @@ type OptionsObject = { user_id: number; user: ViewUser }[];
 })
 export class AssignmentPollDialogComponent
     extends BasePollDialogComponent<ViewAssignmentPoll, AssignmentPollService>
-    implements OnInit {
+    implements OnInit
+{
     public unknownUserLabel = UnknownUserLabel;
     /**
      * The summary values that will have fields in the dialog

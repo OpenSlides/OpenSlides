@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
+import { SlideData } from 'app/core/core-services/projector-data.service';
 import { BaseSlideComponentDirective } from 'app/slides/base-slide-component';
 import { UserSlideData } from './user-slide-data';
 
@@ -8,6 +9,9 @@ import { UserSlideData } from './user-slide-data';
     templateUrl: './user-slide.component.html'
 })
 export class UserSlideComponent extends BaseSlideComponentDirective<UserSlideData> {
+    @Input()
+    public data: SlideData<UserSlideData>;
+
     public constructor() {
         super();
     }

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { E2EImportsModule } from '../../../../e2e-imports.module';
 import { MotionBlockSlideComponent } from './motion-block-slide.component';
@@ -7,12 +7,14 @@ describe('MotionBlockSlideComponent', () => {
     let component: MotionBlockSlideComponent;
     let fixture: ComponentFixture<MotionBlockSlideComponent>;
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            imports: [E2EImportsModule],
-            declarations: [MotionBlockSlideComponent]
-        }).compileComponents();
-    }));
+    beforeEach(
+        waitForAsync(() => {
+            TestBed.configureTestingModule({
+                imports: [E2EImportsModule],
+                declarations: [MotionBlockSlideComponent]
+            }).compileComponents();
+        })
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(MotionBlockSlideComponent);

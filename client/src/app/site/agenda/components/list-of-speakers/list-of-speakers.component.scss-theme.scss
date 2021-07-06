@@ -1,4 +1,4 @@
-@import '~@angular/material/theming';
+@use '~@angular/material' as mat;
 
 @mixin os-list-of-speakers-style($theme) {
     $primary: map-get($theme, primary);
@@ -8,20 +8,20 @@
     $foreground: map-get($theme, foreground);
 
     .current-speaker {
-        background-color: mat-color($accent) !important;
+        background-color: mat.get-color-from-palette($accent) !important;
 
         > span {
-            color: mat-color($accent, default-contrast);
+            color: mat.get-color-from-palette($accent, default-contrast);
         }
     }
 
     .finished-speaker-grid {
         > .number .name .controls {
-            color: mat-color($foreground, text);
+            color: mat.get-color-from-palette($foreground, text);
         }
 
         > .time {
-            color: mat-color($foreground, secondary-text);
+            color: mat.get-color-from-palette($foreground, secondary-text);
         }
     }
 }

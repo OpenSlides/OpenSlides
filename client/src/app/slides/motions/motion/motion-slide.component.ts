@@ -24,7 +24,8 @@ import { MotionSlideObjChangeReco } from './motion-slide-obj-change-reco';
 })
 export class MotionSlideComponent
     extends BaseMotionSlideComponentDirective<MotionSlideData>
-    implements IBaseScaleScrollSlideComponent<MotionSlideData> {
+    implements IBaseScaleScrollSlideComponent<MotionSlideData>
+{
     /**
      * Indicates the LineNumberingMode Mode.
      */
@@ -64,6 +65,7 @@ export class MotionSlideComponent
     private _data: SlideData<MotionSlideData>;
 
     @Input()
+    // @ts-ignore:
     public set data(value: SlideData<MotionSlideData>) {
         this._data = value;
         this.lnMode = value.data.line_numbering_mode;
@@ -181,28 +183,26 @@ export class MotionSlideComponent
         const baseParagraphs = this.lineNumbering.splitToParagraphs(baseHtml);
 
         return amendment.amendment_paragraphs
-            .map(
-                (newText: string, paraNo: number): MotionSlideObjAmendmentParagraph => {
-                    if (newText === null) {
-                        return null;
-                    }
-
-                    const origText = baseParagraphs[paraNo],
-                        diff = this.diff.diff(origText, newText),
-                        affectedLines = this.diff.detectAffectedLineRange(diff);
-
-                    if (affectedLines === null) {
-                        return null;
-                    }
-
-                    const affectedDiff = this.diff.formatDiff(
-                        this.diff.extractRangeByLineNumbers(diff, affectedLines.from, affectedLines.to)
-                    );
-                    const affectedConsolidated = this.diff.diffHtmlToFinalText(affectedDiff);
-
-                    return new MotionSlideObjAmendmentParagraph(amendment, paraNo, affectedConsolidated, affectedLines);
+            .map((newText: string, paraNo: number): MotionSlideObjAmendmentParagraph => {
+                if (newText === null) {
+                    return null;
                 }
-            )
+
+                const origText = baseParagraphs[paraNo],
+                    diff = this.diff.diff(origText, newText),
+                    affectedLines = this.diff.detectAffectedLineRange(diff);
+
+                if (affectedLines === null) {
+                    return null;
+                }
+
+                const affectedDiff = this.diff.formatDiff(
+                    this.diff.extractRangeByLineNumbers(diff, affectedLines.from, affectedLines.to)
+                );
+                const affectedConsolidated = this.diff.diffHtmlToFinalText(affectedDiff);
+
+                return new MotionSlideObjAmendmentParagraph(amendment, paraNo, affectedConsolidated, affectedLines);
+            })
             .filter((para: MotionSlideObjAmendmentParagraph) => para !== null);
     }
 
@@ -429,20 +429,18 @@ export class MotionSlideComponent
         const baseParagraphs = this.lineNumbering.splitToParagraphs(baseHtml);
 
         const amendmentParagraphs = motion.amendment_paragraphs
-            .map(
-                (amendmentText: string, paraNo: number): DiffLinesInParagraph => {
-                    if (amendmentText === null) {
-                        return null;
-                    }
-                    return this.diff.getAmendmentParagraphsLines(
-                        paraNo,
-                        baseParagraphs[paraNo],
-                        amendmentText,
-                        this.lineLength,
-                        this.crMode === ChangeRecoMode.Diff ? this.getAllTextChangingObjects() : undefined
-                    );
+            .map((amendmentText: string, paraNo: number): DiffLinesInParagraph => {
+                if (amendmentText === null) {
+                    return null;
                 }
-            )
+                return this.diff.getAmendmentParagraphsLines(
+                    paraNo,
+                    baseParagraphs[paraNo],
+                    amendmentText,
+                    this.lineLength,
+                    this.crMode === ChangeRecoMode.Diff ? this.getAllTextChangingObjects() : undefined
+                );
+            })
             .filter((para: DiffLinesInParagraph) => para !== null);
 
         return amendmentParagraphs;

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { E2EImportsModule } from 'e2e-imports.module';
 
@@ -16,22 +16,24 @@ describe('MotionDetailComponent', () => {
     let component: MotionDetailComponent;
     let fixture: ComponentFixture<MotionDetailComponent>;
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            imports: [E2EImportsModule],
-            declarations: [
-                MotionDetailComponent,
-                MotionCommentsComponent,
-                PersonalNoteComponent,
-                ManageSubmittersComponent,
-                MotionPollComponent,
-                MotionDetailOriginalChangeRecommendationsComponent,
-                MotionDetailDiffComponent,
-                MotionPollVoteComponent,
-                PollProgressComponent
-            ]
-        }).compileComponents();
-    }));
+    beforeEach(
+        waitForAsync(() => {
+            TestBed.configureTestingModule({
+                imports: [E2EImportsModule],
+                declarations: [
+                    MotionDetailComponent,
+                    MotionCommentsComponent,
+                    PersonalNoteComponent,
+                    ManageSubmittersComponent,
+                    MotionPollComponent,
+                    MotionDetailOriginalChangeRecommendationsComponent,
+                    MotionDetailDiffComponent,
+                    MotionPollVoteComponent,
+                    PollProgressComponent
+                ]
+            }).compileComponents();
+        })
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(MotionDetailComponent);

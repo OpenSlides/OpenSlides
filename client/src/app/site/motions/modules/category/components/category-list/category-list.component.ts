@@ -39,7 +39,7 @@ export class CategoryListComponent extends BaseListViewComponent<ViewCategory> i
     public tableColumnDefinition: PblColumnDefinition[] = [
         {
             prop: 'title',
-            width: 'auto'
+            width: '100%'
         },
         {
             prop: 'amount',

@@ -39,6 +39,7 @@ export class MotionBlockSlideComponent extends BaseMotionSlideComponentDirective
      * Sort the motions given.
      */
     @Input()
+    // @ts-ignore:
     public set data(data: SlideData<MotionBlockSlideData>) {
         if (data && data.data.motions) {
             data.data.motions = data.data.motions.sort((a, b) =>

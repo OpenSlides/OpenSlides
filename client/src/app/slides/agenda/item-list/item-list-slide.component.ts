@@ -14,6 +14,7 @@ import { ItemListSlideData, SlideItem } from './item-list-slide-data';
 })
 export class ItemListSlideComponent extends BaseSlideComponentDirective<ItemListSlideData> {
     @Input()
+    // @ts-ignore:
     public set data(value: SlideData<ItemListSlideData, ProjectorElement>) {
         value.data.items.forEach(
             item => (item.title_information.agenda_item_number = () => item.title_information._agenda_item_number)

@@ -233,7 +233,7 @@ export abstract class BaseImportService<M extends BaseModel> {
     /**
      * Trigger for executing the import.
      */
-    public abstract async doImport(): Promise<void>;
+    public abstract doImport(): Promise<void>;
 
     /**
      * counts the amount of duplicates that have no decision on the action to

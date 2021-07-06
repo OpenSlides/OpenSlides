@@ -3,7 +3,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
-import { PblColumnDefinition } from '@pebula/ngrid/lib/grid';
+import { PblColumnDefinition } from '@pebula/ngrid';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 import {
@@ -61,17 +61,14 @@ export class UserStatisticsComponent extends BaseViewComponentDirective {
     public readonly columnDefinition: PblColumnDefinition[] = [
         {
             prop: 'structureLevel',
-            width: 'auto',
             label: 'Structure level'
         },
         {
             prop: 'durationOfWordRequests',
-            width: 'auto',
             label: this.translate.instant('Duration of requests to speak')
         },
         {
             prop: 'numberOfWordRequests',
-            width: 'auto',
             label: this.translate.instant('Number of requests to speak')
         }
     ];

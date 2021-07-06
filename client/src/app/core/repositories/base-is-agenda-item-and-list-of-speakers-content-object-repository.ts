@@ -36,9 +36,8 @@ export abstract class BaseIsAgendaItemAndListOfSpeakersContentObjectRepository<
         T extends TitleInformationWithAgendaItem
     >
     extends BaseRepository<V, M, T>
-    implements
-        IBaseIsAgendaItemContentObjectRepository<V, M, T>,
-        IBaseIsListOfSpeakersContentObjectRepository<V, M, T> {
+    implements IBaseIsAgendaItemContentObjectRepository<V, M, T>, IBaseIsListOfSpeakersContentObjectRepository<V, M, T>
+{
     protected extendRelations(): void {
         this.relationDefinitions.push({
             type: 'M2O',

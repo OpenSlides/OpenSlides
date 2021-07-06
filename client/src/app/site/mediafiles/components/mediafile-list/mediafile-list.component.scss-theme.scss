@@ -1,13 +1,13 @@
-@import '~@angular/material/theming';
+@use '~@angular/material' as mat;
 
 @mixin os-mediafile-list-theme($theme) {
     $foreground: map-get($theme, foreground);
 
     .file-icon {
-        color: mat-color($foreground, icon);
+        color: mat.get-color-from-palette($foreground, icon);
     }
 
     .info-text {
-        color: mat-color($foreground, icon);
+        color: mat.get-color-from-palette($foreground, icon);
     }
 }

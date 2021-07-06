@@ -1,4 +1,4 @@
-@import '~@angular/material/theming';
+@use '~@angular/material' as mat;
 
 /** Custom component theme. Only lives in a specific scope */
 @mixin os-banner-style($theme) {
@@ -6,6 +6,6 @@
 
     /** style for the offline-banner */
     .banner {
-        background: mat-color($accent, 500);
+        background: mat.get-color-from-palette($accent, 500);
     }
 }

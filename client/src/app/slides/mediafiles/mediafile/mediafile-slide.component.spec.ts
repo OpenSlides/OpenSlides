@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { PdfViewerModule } from 'ng2-pdf-viewer';
 
@@ -9,12 +9,14 @@ describe('MediafileSlideComponent', () => {
     let component: MediafileSlideComponent;
     let fixture: ComponentFixture<MediafileSlideComponent>;
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            imports: [E2EImportsModule, PdfViewerModule],
-            declarations: [MediafileSlideComponent]
-        }).compileComponents();
-    }));
+    beforeEach(
+        waitForAsync(() => {
+            TestBed.configureTestingModule({
+                imports: [E2EImportsModule, PdfViewerModule],
+                declarations: [MediafileSlideComponent]
+            }).compileComponents();
+        })
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(MediafileSlideComponent);

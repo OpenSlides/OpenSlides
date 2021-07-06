@@ -1,4 +1,4 @@
-@import '~@angular/material/theming';
+@use '~@angular/material' as mat;
 
 /** Custom component theme. Only lives in a specific scope */
 @mixin os-site-theme($theme) {
@@ -12,15 +12,15 @@
     os-site {
         /* main background color */
         .main-container {
-            background-color: mat-color($background, background);
+            background-color: mat.get-color-from-palette($background, background);
         }
         .nav-toolbar {
-            background-color: mat-color($background, card); //TODO
+            background-color: mat.get-color-from-palette($background, card); //TODO
         }
 
         .nav-toggle-button {
-            background: mat-color($background, background);
-            color: mat-color($foreground, icon);
+            background: mat.get-color-from-palette($background, background);
+            color: mat.get-color-from-palette($foreground, icon);
         }
 
         /* seperator */
@@ -32,20 +32,20 @@
         /** style and align the nav icons the icons*/
         .main-nav {
             mat-icon {
-                color: mat-color($foreground, icon);
+                color: mat.get-color-from-palette($foreground, icon);
             }
             span {
-                color: mat-color($foreground, text);
+                color: mat.get-color-from-palette($foreground, text);
             }
         }
 
         /** style the active link */
         .active {
             mat-icon {
-                color: mat-color(if($is-dark-theme, $accent, $primary));
+                color: mat.get-color-from-palette(if($is-dark-theme, $accent, $primary));
             }
             span {
-                color: mat-color(if($is-dark-theme, $accent, $primary));
+                color: mat.get-color-from-palette(if($is-dark-theme, $accent, $primary));
             }
         }
     }

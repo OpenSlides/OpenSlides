@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 import { E2EImportsModule } from 'e2e-imports.module';
@@ -15,19 +15,21 @@ describe('ProjectorEditDialogComponent', () => {
      */
     const dialogData = null;
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            declarations: [ProjectorEditDialogComponent],
-            imports: [E2EImportsModule],
-            providers: [
-                { provide: MatDialogRef, useValue: {} },
-                {
-                    provide: MAT_DIALOG_DATA,
-                    useValue: dialogData
-                }
-            ]
-        }).compileComponents();
-    }));
+    beforeEach(
+        waitForAsync(() => {
+            TestBed.configureTestingModule({
+                declarations: [ProjectorEditDialogComponent],
+                imports: [E2EImportsModule],
+                providers: [
+                    { provide: MatDialogRef, useValue: {} },
+                    {
+                        provide: MAT_DIALOG_DATA,
+                        useValue: dialogData
+                    }
+                ]
+            }).compileComponents();
+        })
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(ProjectorEditDialogComponent);

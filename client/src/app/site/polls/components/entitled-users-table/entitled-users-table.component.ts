@@ -58,17 +58,16 @@ export class EntitledUsersTableComponent extends BaseComponent {
     public columnDefinitionEntitledUsersTable: PblColumnDefinition[] = [
         {
             prop: 'user_id',
-            width: 'auto',
+            width: '50%',
             label: 'Participant'
         },
         {
             prop: 'voted',
-            width: 'auto',
             label: 'Voted'
         },
         {
             prop: 'delegation',
-            width: 'auto',
+            width: '50%',
             label: 'Delegated to'
         }
     ];

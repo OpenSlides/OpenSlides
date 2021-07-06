@@ -1,4 +1,4 @@
-@import '~@angular/material/theming';
+@use '~@angular/material' as mat;
 
 @mixin os-assignment-poll-detail-style($theme) {
     $background: map-get($theme, background);
@@ -6,24 +6,24 @@
     .assignment-result-table {
         border-collapse: collapse;
         tr {
-            border-bottom: 1px solid mat-color($background, focused-button);
+            border-bottom: 1px solid mat.get-color-from-palette($background, focused-button);
         }
     }
 
     .openslides-theme .pbl-ngrid-row:hover {
-        background-color: mat-color($background, card);
+        background-color: mat.get-color-from-palette($background, card);
     }
 
     .openslides-theme os-list-view-table os-sort-filter-bar .custom-table-header {
         &,
         .action-buttons .input-container input {
-            background: mat-color($background, card);
+            background: mat.get-color-from-palette($background, card);
         }
     }
 
     .openslides-theme .pbl-ngrid-header-cell:first-child {
         &::after {
-            border-right: 1px solid mat-color($background, focused-button);
+            border-right: 1px solid mat.get-color-from-palette($background, focused-button);
         }
     }
 }

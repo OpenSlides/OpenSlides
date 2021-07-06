@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormBuilder } from '@angular/forms';
 
 import { E2EImportsModule } from 'e2e-imports.module';
@@ -9,11 +9,13 @@ describe('AgendaContentObjectFormComponent', () => {
     let component: AgendaContentObjectFormComponent;
     let fixture: ComponentFixture<AgendaContentObjectFormComponent>;
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            imports: [E2EImportsModule]
-        }).compileComponents();
-    }));
+    beforeEach(
+        waitForAsync(() => {
+            TestBed.configureTestingModule({
+                imports: [E2EImportsModule]
+            }).compileComponents();
+        })
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(AgendaContentObjectFormComponent);

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatDialogRef } from '@angular/material/dialog';
 
 import { E2EImportsModule } from 'e2e-imports.module';
@@ -9,13 +9,15 @@ describe('MotionExportDialogComponent', () => {
     let component: MotionExportDialogComponent;
     let fixture: ComponentFixture<MotionExportDialogComponent>;
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            imports: [E2EImportsModule],
-            declarations: [MotionExportDialogComponent],
-            providers: [{ provide: MatDialogRef, useValue: {} }]
-        }).compileComponents();
-    }));
+    beforeEach(
+        waitForAsync(() => {
+            TestBed.configureTestingModule({
+                imports: [E2EImportsModule],
+                declarations: [MotionExportDialogComponent],
+                providers: [{ provide: MatDialogRef, useValue: {} }]
+            }).compileComponents();
+        })
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(MotionExportDialogComponent);

@@ -136,13 +136,12 @@ export class MediafileListComponent extends BaseListViewComponent<ViewMediafile>
         },
         {
             prop: 'title',
-            width: 'auto',
+            width: '100%',
             minWidth: 60
         },
         {
             prop: 'info',
-            width: '20%',
-            minWidth: 60
+            width: '200px'
         },
         {
             prop: 'indicator',

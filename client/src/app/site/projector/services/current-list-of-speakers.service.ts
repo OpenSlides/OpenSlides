@@ -134,9 +134,8 @@ export class CurrentListOfSpeakersService {
         for (const nonStableElement of nonStableElements) {
             const identifiableNonStableElement = this.slideManager.getIdentifiableProjectorElement(nonStableElement);
             try {
-                const viewModel = this.projectorService.getViewModelFromIdentifiableProjectorElement(
-                    identifiableNonStableElement
-                );
+                const viewModel =
+                    this.projectorService.getViewModelFromIdentifiableProjectorElement(identifiableNonStableElement);
                 if (isBaseViewModelWithListOfSpeakers(viewModel)) {
                     return viewModel.listOfSpeakers;
                 }

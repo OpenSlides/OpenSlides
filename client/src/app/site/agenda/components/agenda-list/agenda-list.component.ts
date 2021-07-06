@@ -81,11 +81,11 @@ export class AgendaListComponent extends BaseListViewComponent<ViewItem> impleme
     public tableColumnDefinition: PblColumnDefinition[] = [
         {
             prop: 'title',
-            width: 'auto'
+            width: '100%'
         },
         {
             prop: 'info',
-            width: '15%'
+            width: '100px'
         }
     ];
 

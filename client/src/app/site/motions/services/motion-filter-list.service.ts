@@ -281,9 +281,9 @@ export class MotionFilterListService extends BaseFilterListService<ViewMotion> {
 
                         for (const state of workflow.states) {
                             // get the restriction array, but remove the is_submitter condition, if present
-                            const restrictions = (state.restriction.filter(
+                            const restrictions = state.restriction.filter(
                                 r => r !== Restriction.motionsIsSubmitter
-                            ) as unknown) as Permission[];
+                            ) as unknown as Permission[];
 
                             if (!restrictions.length || this.operator.hasPerms(...restrictions)) {
                                 // sort final and non final states

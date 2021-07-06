@@ -1,4 +1,4 @@
-@import '~@angular/material/theming';
+@use '~@angular/material' as mat;
 
 :host.full-width {
     width: 100%;
@@ -8,7 +8,7 @@
     $background: map-get($theme, background);
     $foreground: map-get($theme, foreground);
 
-    $foreground-color: mat-color($foreground, icon);
+    $foreground-color: mat.get-color-from-palette($foreground, icon);
 
     .input-container {
         position: relative;
@@ -39,7 +39,7 @@
             border-radius: 32px;
             font-size: 16px;
             border: 1px solid #ccc;
-            background: mat-color($background, background);
+            background: mat.get-color-from-palette($background, background);
             color: $foreground-color;
             transition: all 0.25s ease;
 

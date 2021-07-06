@@ -890,28 +890,19 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
         }
 
         return amendmentParagraphs
-            ?.map(
-                (newText: string, paraNo: number): DiffLinesInParagraph => {
-                    if (baseParagraphs[paraNo] === undefined) {
-                        throw new Error(
-                            this.translate.instant('Inconsistent data.') +
-                                ' ' +
-                                this.translate.instant(
-                                    'An amendment is probably referring to a non-existant line number.'
-                                )
-                        );
-                    } else if (newText !== null) {
-                        return this.diff.getAmendmentParagraphsLines(
-                            paraNo,
-                            baseParagraphs[paraNo],
-                            newText,
-                            lineLength
-                        );
-                    } else {
-                        return null; // Nothing has changed in this paragraph
-                    }
+            ?.map((newText: string, paraNo: number): DiffLinesInParagraph => {
+                if (baseParagraphs[paraNo] === undefined) {
+                    throw new Error(
+                        this.translate.instant('Inconsistent data.') +
+                            ' ' +
+                            this.translate.instant('An amendment is probably referring to a non-existant line number.')
+                    );
+                } else if (newText !== null) {
+                    return this.diff.getAmendmentParagraphsLines(paraNo, baseParagraphs[paraNo], newText, lineLength);
+                } else {
+                    return null; // Nothing has changed in this paragraph
                 }
-            )
+            })
             .map((diffLines: DiffLinesInParagraph, paraNo: number) => {
                 // If nothing has changed and we want to keep unchanged paragraphs for the context,
                 // return the original text in "textPre"
@@ -969,37 +960,33 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
         const changedAmendmentParagraphs = this.applyChangesToAmendment(amendment, lineLength, changeRecos, false);
 
         return changedAmendmentParagraphs
-            ?.map(
-                (newText: string, paraNo: number): ViewMotionAmendedParagraph => {
-                    if (newText === null) {
-                        return null;
-                    }
-                    if (baseParagraphs[paraNo] === undefined) {
-                        console.error(
-                            this.translate.instant('Inconsistent data.') +
-                                ' ' +
-                                this.translate.instant(
-                                    'An amendment is probably referring to a non-existant line number.'
-                                )
-                        );
-                        return null;
-                    }
-
-                    const origText = baseParagraphs[paraNo],
-                        diff = this.diff.diff(origText, newText),
-                        affectedLines = this.diff.detectAffectedLineRange(diff);
-
-                    if (affectedLines === null) {
-                        return null;
-                    }
-                    const affectedDiff = this.diff.formatDiff(
-                        this.diff.extractRangeByLineNumbers(diff, affectedLines.from, affectedLines.to)
-                    );
-                    const affectedConsolidated = this.diff.diffHtmlToFinalText(affectedDiff);
-
-                    return new ViewMotionAmendedParagraph(amendment, paraNo, affectedConsolidated, affectedLines);
+            ?.map((newText: string, paraNo: number): ViewMotionAmendedParagraph => {
+                if (newText === null) {
+                    return null;
                 }
-            )
+                if (baseParagraphs[paraNo] === undefined) {
+                    console.error(
+                        this.translate.instant('Inconsistent data.') +
+                            ' ' +
+                            this.translate.instant('An amendment is probably referring to a non-existant line number.')
+                    );
+                    return null;
+                }
+
+                const origText = baseParagraphs[paraNo],
+                    diff = this.diff.diff(origText, newText),
+                    affectedLines = this.diff.detectAffectedLineRange(diff);
+
+                if (affectedLines === null) {
+                    return null;
+                }
+                const affectedDiff = this.diff.formatDiff(
+                    this.diff.extractRangeByLineNumbers(diff, affectedLines.from, affectedLines.to)
+                );
+                const affectedConsolidated = this.diff.diffHtmlToFinalText(affectedDiff);
+
+                return new ViewMotionAmendedParagraph(amendment, paraNo, affectedConsolidated, affectedLines);
+            })
             .filter((para: ViewMotionAmendedParagraph) => para !== null);
     }
 
