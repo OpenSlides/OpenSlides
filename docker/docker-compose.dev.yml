@@ -10,8 +10,7 @@ services:
       - NUM_WORKERS=8
       - OPENSLIDES_DEVELOPMENT=1
     volumes:
-      - ../openslides-datastore-service/shared/shared:/app/shared
-      - ../openslides-datastore-service/reader/reader:/app/reader
+      - ../openslides-datastore-service/datastore:/app/datastore
     ports:
       - 9010:9010
       
@@ -22,8 +21,7 @@ services:
       - message-bus
     env_file: services.env
     volumes:
-      - ../openslides-datastore-service/shared/shared:/app/shared
-      - ../openslides-datastore-service/writer/writer:/app/writer
+      - ../openslides-datastore-service/datastore:/app/datastore
       - ../openslides-datastore-service/cli:/app/cli
     environment:
       - DATASTORE_ENABLE_DEV_ENVIRONMENT=1
