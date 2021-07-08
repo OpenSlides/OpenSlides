@@ -27,6 +27,7 @@ from .utils import bytes_to_human, get_pdf_information
 logger = logging.getLogger(__name__)
 
 use_mediafile_database = "mediafiles" in connections
+mediafile_database_tablename = None
 if use_mediafile_database:
     mediafile_database_tablename = (
         settings.MEDIAFILE_DATABASE_TABLENAME or "mediafile_data"
