@@ -9,7 +9,10 @@ from django.conf import settings
 from django.db import connections
 
 from openslides.mediafiles.models import Mediafile
-from openslides.mediafiles.views import use_mediafile_database
+from openslides.mediafiles.views import (
+    mediafile_database_tablename,
+    use_mediafile_database,
+)
 from openslides.motions.models import Motion
 from openslides.users.views import demo_mode_users, is_demo_mode
 from openslides.utils.cache import element_cache
@@ -204,6 +207,9 @@ class OS4Exporter:
 
     def get_model(self, collection, id):
         return self.data[collection][id]
+
+    def exists_model(self, collection, id):
+        return id in self.data[collection]
 
     def iter_collection(self, collection):
         return self.data[collection].values()
@@ -633,7 +639,8 @@ class OS4Exporter:
         if use_mediafile_database:
             with connections["mediafiles"].cursor() as cursor:
                 cursor.execute(
-                    "SELECT data FROM mediafile_data WHERE id = %s", [old["id"]]
+                    f"SELECT data FROM {mediafile_database_tablename} WHERE id = %s",
+                    [old["id"]],
                 )
                 row = cursor.fetchone()
                 if row is None:
@@ -698,7 +705,8 @@ class OS4Exporter:
             ]
             new["origin_id"] = None
             new["derived_motion_ids"] = []
-            new["forwarding_tree_motion_ids"] = []
+            new["all_origin_ids"] = []
+            new["all_derived_motion_ids"] = []
             new["block_id"] = old["motion_block_id"]
             new["submitter_ids"] = self.create_motion_submitters(old["submitters"])
             new["supporter_ids"] = old["supporters_id"]
@@ -993,6 +1001,9 @@ class OS4Exporter:
             notes = old.get("notes", {}).get("motions/motion", {})
             for motion_id, note in notes.items():
                 motion_id = int(motion_id)
+                if not self.exists_model("motion", motion_id):
+                    continue
+
                 new = {
                     "id": id_counter,
                     "user_id": old["user_id"],
