@@ -1,6 +1,7 @@
 import mimetypes
 from typing import cast
 
+from django.conf import settings
 from django.core.management.base import BaseCommand
 
 from openslides.mediafiles.models import Mediafile
@@ -19,6 +20,10 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         path = cast(str, options.get("path"))
 
+        mediafile_database_tablename = (
+            settings.MEDIAFILE_DATABASE_TABLENAME or "mediafile_data"
+        )
+
         mediafile_count = 0
         with open(path, "w") as f:
             f.write("-- Generated file to import into the media service db\n")
@@ -27,7 +32,9 @@ class Command(BaseCommand):
                 mediafile_count += 1
                 id = mediafile.id
                 mimetype = mimetypes.guess_type(mediafile.mediafile.name)[0]
-                f.write("\nINSERT INTO mediafile_data (id, mimetype, data) VALUES ")
+                f.write(
+                    f"\nINSERT INTO {mediafile_database_tablename} (id, mimetype, data) VALUES "
+                )
                 f.write(f"({id}, '{mimetype}', decode('")
 
                 file_handle = open(mediafile.mediafile.path, "rb")

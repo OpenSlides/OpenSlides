@@ -78,7 +78,7 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = 104857600
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "openslides",
+        "NAME": get_env("DATABASE_NAME", "openslides"),
         "USER": get_env("DATABASE_USER", "openslides"),
         "PASSWORD": get_env("DATABASE_PASSWORD", "openslides"),
         "HOST": get_env("DATABASE_HOST", "db"),
@@ -88,13 +88,14 @@ DATABASES = {
     },
     "mediafiles": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "mediafiledata",
-        "USER": get_env("DATABASE_USER", "openslides"),
-        "PASSWORD": get_env("DATABASE_PASSWORD", "openslides"),
-        "HOST": get_env("DATABASE_HOST", "db"),
-        "PORT": get_env("DATABASE_PORT", "5432"),
+        "NAME": get_env("MEDIAFILE_DATABASE_NAME", "mediafiledata"),
+        "USER": get_env("MEDIAFILE_DATABASE_USER", "openslides"),
+        "PASSWORD": get_env("MEDIAFILE_DATABASE_PASSWORD", "openslides"),
+        "HOST": get_env("MEDIAFILE_DATABASE_HOST", "db"),
+        "PORT": get_env("MEDIAFILE_DATABASE_PORT", "5432"),
     },
 }
+MEDIAFILE_DATABASE_TABLENAME = get_env("MEDIAFILE_DATABASE_TABLENAME", "mediafile_data")
 
 # Redis
 REDIS_HOST = get_env("REDIS_HOST", "redis")
