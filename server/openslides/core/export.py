@@ -286,16 +286,8 @@ class OS4Exporter:
             motion_vote["id"] += self.motion_vote_id_offset
             motion_vote["option_id"] += self.motion_option_id_offset
 
-        self.poll_id_counter = (
-            max_or_zero([x["id"] for x in self.get_collection("motions/motion-poll")])
-            + 1
-        )
         self.option_id_counter = (
             max_or_zero([x["id"] for x in self.get_collection("motions/motion-option")])
-            + 1
-        )
-        self.vote_id_counter = (
-            max_or_zero([x["id"] for x in self.get_collection("motions/motion-vote")])
             + 1
         )
 
@@ -462,8 +454,8 @@ class OS4Exporter:
             self.set_model("poll", new)
 
     def create_global_option(self, poll):
-        id = self.poll_id_counter
-        self.poll_id_counter += 1
+        id = self.option_id_counter
+        self.option_id_counter += 1
         option = {
             "id": id,
             "weight": 1,
