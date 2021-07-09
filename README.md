@@ -45,7 +45,7 @@ Setup initial-data:
 
     $ ./manage initial-data
 
-Now you can open http://localhost:8000 and use OpenSlides.
+Now you can open https://localhost:8000 and use OpenSlides.  # TODO: Enable HTTPS support
 
 To stop OpenSlides run:
 
