@@ -391,6 +391,32 @@ meeting:
   conference_enable_helpdesk:
     type: boolean
     default: False
+  applause_enable:
+    type: boolean
+    default: False
+  applause_type:
+    type: string
+    enum:
+      - applause-type-bar
+      - applause-type-particles
+    default: applause-type-bar
+  applause_show_level:
+    type: boolean
+    default: False
+  applause_min_amount:
+    type: number
+    default: 1
+    minimum: 0
+  applause_max_amount:
+    type: number
+    default: 0
+    minimum: 0
+  applause_timeout:
+    type: number
+    default: 5
+    minimum: 0
+  applause_particle_image_url:
+    type: string
 
   # Projector countdown
   projector_countdown_default_time:

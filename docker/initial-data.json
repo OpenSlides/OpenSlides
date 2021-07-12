@@ -114,6 +114,13 @@
         "conference_open_video": true,
         "conference_auto_connect_next_speakers": 0,
         "conference_enable_helpdesk": false,
+        "applause_enable": false,
+        "applause_type": "applause-type-bar",
+        "applause_show_level": false,
+        "applause_min_amount": 1,
+        "applause_max_amount": 0,
+        "applause_timeout": 5,
+        "applause_particle_image_url": "",
 
         "projector_countdown_default_time": 60,
         "projector_countdown_warning_time": 0,
