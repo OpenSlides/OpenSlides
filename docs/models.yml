@@ -661,7 +661,6 @@ meeting:
   motion_poll_default_100_percent_base:
     type: string
     default: YNA
-  motion_poll_default_majority_method: string
   motion_poll_default_group_ids:
     type: relation-list
     to: group/used_as_motion_poll_default_id
@@ -741,7 +740,6 @@ meeting:
   assignment_poll_default_100_percent_base:
     type: string
     default: YNA
-  assignment_poll_default_majority_method: string
   assignment_poll_default_group_ids:
     type: relation-list
     to: group/used_as_assignment_poll_default_id
@@ -762,7 +760,6 @@ meeting:
   poll_default_100_percent_base:
     type: string
     default: YNA
-  poll_default_majority_method: string
   poll_default_group_ids:
     type: relation-list
     to: group/used_as_poll_default_id
@@ -1794,15 +1791,6 @@ poll:
       - valid
       - cast
       - entitled
-      - disabled
-    default: disabled
-  majority_method:
-    type: string
-    required: true
-    enum:
-      - simple
-      - two_thirds
-      - three_quarters
       - disabled
     default: disabled
   votesvalid: decimal(6)

@@ -188,7 +188,6 @@
         "motion_poll_ballot_paper_number": 8,
         "motion_poll_default_type": "analog",
         "motion_poll_default_100_percent_base": "YNA",
-        "motion_poll_default_majority_method": "simple",
         "motion_poll_default_group_ids": [5],
 
         "users_sort_by": "first_name",
@@ -215,7 +214,6 @@
         "assignment_poll_default_type": "nominal",
         "assignment_poll_default_method": "votes",
         "assignment_poll_default_100_percent_base": "valid",
-        "assignment_poll_default_majority_method": "simple",
         "assignment_poll_default_group_ids": [5],
 
         "poll_ballot_paper_selection": "CUSTOM_NUMBER",
@@ -224,7 +222,6 @@
         "poll_default_type": "nominal",
         "poll_default_method": "votes",
         "poll_default_100_percent_base": "valid",
-        "poll_default_majority_method": "simple",
         "poll_default_group_ids": [5],
         "poll_couple_countdown": true,
 
