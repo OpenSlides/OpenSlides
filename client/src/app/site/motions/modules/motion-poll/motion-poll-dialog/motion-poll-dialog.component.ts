@@ -20,7 +20,8 @@ import { PercentBaseVerbose } from 'app/site/polls/models/view-base-poll';
 })
 export class MotionPollDialogComponent
     extends BasePollDialogComponent<ViewMotionPoll, MotionPollService>
-    implements OnInit {
+    implements OnInit
+{
     public PercentBaseVerbose = PercentBaseVerbose;
 
     @ViewChild('pollForm', { static: false })

@@ -11,7 +11,8 @@ import { BaseViewModel } from './base-view-model';
 
 export abstract class BaseListViewComponent<V extends BaseViewModel>
     extends BaseViewComponentDirective
-    implements OnDestroy {
+    implements OnDestroy
+{
     /**
      * The source of the table data, will be filled by an event emitter
      */

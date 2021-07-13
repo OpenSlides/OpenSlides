@@ -1,23 +1,33 @@
+/* To learn more about this file see: https://angular.io/config/tsconfig. */
 {
     "compileOnSave": false,
     "compilerOptions": {
         "baseUrl": "./src",
         "downlevelIteration": true,
         "outDir": "./dist/out-tsc",
+        "forceConsistentCasingInFileNames": true,
+        "strict": false,
+        "noImplicitReturns": false,
+        "noFallthroughCasesInSwitch": true,
         "sourceMap": true,
         "declaration": false,
-        "module": "esnext",
+        "module": "es2020",
         "moduleResolution": "node",
-        "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
         "importHelpers": true,
-        "target": "es2015",
-        "typeRoots": ["node_modules/@types"],
+        "target": "es2017",
         "lib": ["es2018", "dom"],
         "paths": {
             "exceljs": ["../node_modules/exceljs/dist/exceljs.min"],
             "core-js/es7/*": ["../node_modules/core-js/proposals/reflect-metadata"],
             "core-js/es6/*": ["../node_modules/core-js/es/*"]
         }
+    },
+    "angularCompilerOptions": {
+        "enableI18nLegacyMessageIdFormat": false,
+        "strictInjectionParameters": false,
+        "strictInputAccessModifiers": false,
+        "strictPropertyInitialization": false,
+        "strictTemplates": false
     }
 }

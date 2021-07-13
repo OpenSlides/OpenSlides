@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormBuilder } from '@angular/forms';
 
 import { BehaviorSubject } from 'rxjs';
@@ -22,12 +22,14 @@ describe('SearchValueSelectorComponent', () => {
     let hostComponent: TestHostComponent;
     let hostFixture: ComponentFixture<TestHostComponent>;
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            imports: [E2EImportsModule],
-            declarations: [TestHostComponent]
-        }).compileComponents();
-    }));
+    beforeEach(
+        waitForAsync(() => {
+            TestBed.configureTestingModule({
+                imports: [E2EImportsModule],
+                declarations: [TestHostComponent]
+            }).compileComponents();
+        })
+    );
 
     beforeEach(() => {
         hostFixture = TestBed.createComponent(TestHostComponent);

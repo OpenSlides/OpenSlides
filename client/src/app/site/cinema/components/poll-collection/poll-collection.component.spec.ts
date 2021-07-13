@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { E2EImportsModule } from 'e2e-imports.module';
 
@@ -8,12 +8,14 @@ describe('PollCollectionComponent', () => {
     let component: PollCollectionComponent;
     let fixture: ComponentFixture<PollCollectionComponent>;
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            imports: [E2EImportsModule],
-            declarations: [PollCollectionComponent]
-        }).compileComponents();
-    }));
+    beforeEach(
+        waitForAsync(() => {
+            TestBed.configureTestingModule({
+                imports: [E2EImportsModule],
+                declarations: [PollCollectionComponent]
+            }).compileComponents();
+        })
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(PollCollectionComponent);

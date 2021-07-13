@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ConfigFieldComponent } from '../config-field/config-field.component';
 import { ConfigListComponent } from './config-list.component';
@@ -9,12 +9,14 @@ describe('ConfigListComponent', () => {
     let component: ConfigListComponent;
     let fixture: ComponentFixture<ConfigListComponent>;
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            imports: [E2EImportsModule],
-            declarations: [ConfigListComponent, ConfigFieldComponent, CustomTranslationComponent]
-        }).compileComponents();
-    }));
+    beforeEach(
+        waitForAsync(() => {
+            TestBed.configureTestingModule({
+                imports: [E2EImportsModule],
+                declarations: [ConfigListComponent, ConfigFieldComponent, CustomTranslationComponent]
+            }).compileComponents();
+        })
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(ConfigListComponent);

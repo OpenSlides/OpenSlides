@@ -36,7 +36,8 @@ export const AssignmentPollPercentBaseVerbose = {
 
 export class ViewAssignmentPoll
     extends ViewBasePoll<AssignmentPoll, AssignmentPollMethod, AssignmentPollPercentBase>
-    implements AssignmentPollTitleInformation {
+    implements AssignmentPollTitleInformation
+{
     public static COLLECTIONSTRING = AssignmentPoll.COLLECTIONSTRING;
     protected _collectionString = AssignmentPoll.COLLECTIONSTRING;
 

@@ -40,7 +40,8 @@ export abstract class BaseIsListOfSpeakersContentObjectRepository<
         T extends TitleInformation
     >
     extends BaseRepository<V, M, T>
-    implements IBaseIsListOfSpeakersContentObjectRepository<V, M, T> {
+    implements IBaseIsListOfSpeakersContentObjectRepository<V, M, T>
+{
     public constructor(
         DS: DataStoreService,
         dataSend: DataSendService,

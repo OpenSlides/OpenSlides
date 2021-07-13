@@ -21,15 +21,14 @@ export class PollListComponent extends BaseListViewComponent<ViewBasePoll> {
     public tableColumnDefinition: PblColumnDefinition[] = [
         {
             prop: 'title',
-            width: 'auto'
+            width: '100%'
         },
         {
             prop: 'classType',
-            width: 'auto'
+            width: '100%'
         },
         {
-            prop: 'state',
-            width: 'auto'
+            prop: 'state'
         },
         {
             prop: 'votability',

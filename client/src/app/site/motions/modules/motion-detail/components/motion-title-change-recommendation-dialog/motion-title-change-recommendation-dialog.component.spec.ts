@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 import { E2EImportsModule } from 'e2e-imports.module';
@@ -28,19 +28,21 @@ describe('MotionTitleChangeRecommendationDialogComponent', () => {
         changeRecommendation: changeReco
     };
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            imports: [E2EImportsModule],
-            declarations: [MotionTitleChangeRecommendationDialogComponent],
-            providers: [
-                { provide: MatDialogRef, useValue: {} },
-                {
-                    provide: MAT_DIALOG_DATA,
-                    useValue: dialogData
-                }
-            ]
-        }).compileComponents();
-    }));
+    beforeEach(
+        waitForAsync(() => {
+            TestBed.configureTestingModule({
+                imports: [E2EImportsModule],
+                declarations: [MotionTitleChangeRecommendationDialogComponent],
+                providers: [
+                    { provide: MatDialogRef, useValue: {} },
+                    {
+                        provide: MAT_DIALOG_DATA,
+                        useValue: dialogData
+                    }
+                ]
+            }).compileComponents();
+        })
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(MotionTitleChangeRecommendationDialogComponent);

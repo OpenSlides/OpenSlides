@@ -7,7 +7,8 @@ export type ProjectorMessageTitleInformation = object;
 
 export class ViewProjectorMessage
     extends BaseProjectableViewModel<ProjectorMessage>
-    implements ProjectorMessageTitleInformation {
+    implements ProjectorMessageTitleInformation
+{
     public static COLLECTIONSTRING = ProjectorMessage.COLLECTIONSTRING;
     protected _collectionString = ProjectorMessage.COLLECTIONSTRING;
 

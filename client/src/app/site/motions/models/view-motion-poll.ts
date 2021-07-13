@@ -26,7 +26,8 @@ export const MotionPollPercentBaseVerbose = {
 
 export class ViewMotionPoll
     extends ViewBasePoll<MotionPoll, MotionPollMethod, PercentBase>
-    implements MotionPollTitleInformation {
+    implements MotionPollTitleInformation
+{
     public static COLLECTIONSTRING = MotionPoll.COLLECTIONSTRING;
     protected _collectionString = MotionPoll.COLLECTIONSTRING;
 

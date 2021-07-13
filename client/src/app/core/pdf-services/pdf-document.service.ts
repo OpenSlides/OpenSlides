@@ -442,7 +442,7 @@ export class PdfDocumentService {
 
         const isIE = /msie\s|trident\//i.test(window.navigator.userAgent);
         if (typeof Worker !== 'undefined' && !isIE) {
-            this.pdfWorker = new Worker('./pdf-worker.worker', {
+            this.pdfWorker = new Worker(new URL('./pdf-worker.worker', import.meta.url), {
                 type: 'module'
             });
 

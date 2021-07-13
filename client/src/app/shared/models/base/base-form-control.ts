@@ -23,8 +23,8 @@ import { Subject, Subscription } from 'rxjs';
  */
 @Directive()
 export abstract class BaseFormControlComponentDirective<T>
-    extends MatFormFieldControl<T>
-    implements OnDestroy, ControlValueAccessor {
+    implements MatFormFieldControl<T>, OnDestroy, ControlValueAccessor
+{
     public static nextId = 0;
 
     @HostBinding() public id = `base-form-control-${BaseFormControlComponentDirective.nextId++}`;
@@ -102,8 +102,6 @@ export abstract class BaseFormControlComponentDirective<T>
         protected element: ElementRef<HTMLElement>,
         @Optional() @Self() public ngControl: NgControl
     ) {
-        super();
-
         this.initializeForm();
 
         if (this.ngControl !== null) {

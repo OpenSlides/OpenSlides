@@ -21,16 +21,6 @@
 import 'core-js/es6/object';
 import 'core-js/es6/array';
 
-// forEach fix for IE11
-if ('NodeList' in window && !NodeList.prototype.forEach) {
-    NodeList.prototype.forEach = function(callback, thisArg) {
-        thisArg = thisArg || window;
-        for (var i = 0; i < this.length; i++) {
-            callback.call(thisArg, this[i], i, this);
-        }
-    };
-}
-
 /* IE10 and IE11 requires the following for NgClass support on SVG elements */
 // import 'classlist.js';  // Run `npm install --save classlist.js`.
 
@@ -66,7 +56,7 @@ import 'core-js/es7/reflect';
 /***************************************************************************************************
  * Zone JS and Hammer JS are required by default for Angular itself.
  */
-import 'zone.js/dist/zone';
+import 'zone.js';
 
 /***************************************************************************************************
  * APPLICATION IMPORTS

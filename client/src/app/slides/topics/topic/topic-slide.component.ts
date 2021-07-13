@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
+import { SlideData } from 'app/core/core-services/projector-data.service';
 import { BaseSlideComponentDirective } from 'app/slides/base-slide-component';
 import { TopicSlideData } from './topic-slide-data';
 

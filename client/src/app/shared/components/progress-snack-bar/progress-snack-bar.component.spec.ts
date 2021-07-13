@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatSnackBarRef } from '@angular/material/snack-bar';
 
 import { E2EImportsModule } from 'e2e-imports.module';
@@ -9,12 +9,14 @@ describe('ProgressSnackBarComponent', () => {
     let component: ProgressSnackBarComponent;
     let fixture: ComponentFixture<ProgressSnackBarComponent>;
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            imports: [E2EImportsModule],
-            providers: [{ provide: MatSnackBarRef, useValue: {} }]
-        }).compileComponents();
-    }));
+    beforeEach(
+        waitForAsync(() => {
+            TestBed.configureTestingModule({
+                imports: [E2EImportsModule],
+                providers: [{ provide: MatSnackBarRef, useValue: {} }]
+            }).compileComponents();
+        })
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(ProgressSnackBarComponent);

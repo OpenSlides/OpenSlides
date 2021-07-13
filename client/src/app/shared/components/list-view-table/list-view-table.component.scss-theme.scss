@@ -1,4 +1,4 @@
-@import '~@angular/material/theming';
+@use '~@angular/material' as mat;
 
 @mixin os-list-view-table-theme($theme) {
     $primary: map-get($theme, primary);
@@ -8,6 +8,6 @@
     $background: map-get($theme, background);
 
     .projected {
-        background-color: mat-color($background, hover) !important;
+        background-color: mat.get-color-from-palette($background, hover) !important;
     }
 }

@@ -36,7 +36,8 @@ import { PollService } from '../../services/poll.service';
 })
 export class PollFormComponent<T extends ViewBasePoll, S extends PollService>
     extends BaseViewComponentDirective
-    implements OnInit {
+    implements OnInit
+{
     /**
      * The form-group for the meta-info.
      */

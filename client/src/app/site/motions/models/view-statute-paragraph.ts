@@ -16,7 +16,8 @@ export interface StatuteParagraphTitleInformation {
  */
 export class ViewStatuteParagraph
     extends BaseViewModel<StatuteParagraph>
-    implements StatuteParagraphTitleInformation, Searchable {
+    implements StatuteParagraphTitleInformation, Searchable
+{
     public static COLLECTIONSTRING = StatuteParagraph.COLLECTIONSTRING;
     protected _collectionString = StatuteParagraph.COLLECTIONSTRING;
 

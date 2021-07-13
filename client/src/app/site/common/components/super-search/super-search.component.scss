@@ -1,4 +1,4 @@
-@import '~@angular/material/theming';
+@use '~@angular/material' as mat;
 
 @mixin os-super-search-style($theme) {
     $primary: map-get($theme, primary);
@@ -29,7 +29,7 @@
         .result-view {
             position: relative;
             display: flex;
-            background: mat-color($background, background);
+            background: mat.get-color-from-palette($background, background);
             max-height: calc(90vh - 96px);
 
             .filter-count {
@@ -67,12 +67,12 @@
                         mat-icon {
                             color: white;
                         }
-                        background: mat-color($primary);
+                        background: mat.get-color-from-palette($primary);
                     }
                 }
 
                 mat-icon {
-                    color: mat-color($foreground, icon);
+                    color: mat.get-color-from-palette($foreground, icon);
                 }
             }
 

@@ -48,7 +48,7 @@ export class TagListComponent extends BaseListViewComponent<ViewTag> implements 
     public tableColumnDefinition: PblColumnDefinition[] = [
         {
             prop: 'name',
-            width: 'auto'
+            width: '100%'
         },
         {
             prop: 'edit',

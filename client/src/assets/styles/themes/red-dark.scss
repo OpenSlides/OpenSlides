@@ -1,7 +1,8 @@
+@use '~@angular/material' as mat;
 @import '~assets/styles/color-palettes/os-red.scss';
 
-$openslides-primary: mat-palette($openslides-primary-red, 500, 300, 900);
-$openslides-accent: mat-palette($mat-amber);
-$openslides-warn: mat-palette($mat-orange, 700, 300, 900);
+$openslides-primary: mat.define-palette($openslides-primary-red, 500, 300, 900);
+$openslides-accent: mat.define-palette(mat.$amber-palette);
+$openslides-warn: mat.define-palette(mat.$orange-palette, 700, 300, 900);
 
-$openslides-red-dark: mat-dark-theme($openslides-primary, $openslides-accent, $openslides-warn);
+$openslides-red-dark: mat.define-dark-theme($openslides-primary, $openslides-accent, $openslides-warn);

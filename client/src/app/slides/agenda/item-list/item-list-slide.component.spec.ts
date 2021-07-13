@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { E2EImportsModule } from '../../../../e2e-imports.module';
 import { ItemListSlideComponent } from './item-list-slide.component';
@@ -7,12 +7,14 @@ describe('ItemListSlideComponent', () => {
     let component: ItemListSlideComponent;
     let fixture: ComponentFixture<ItemListSlideComponent>;
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            imports: [E2EImportsModule],
-            declarations: [ItemListSlideComponent]
-        }).compileComponents();
-    }));
+    beforeEach(
+        waitForAsync(() => {
+            TestBed.configureTestingModule({
+                imports: [E2EImportsModule],
+                declarations: [ItemListSlideComponent]
+            }).compileComponents();
+        })
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(ItemListSlideComponent);

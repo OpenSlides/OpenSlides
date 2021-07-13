@@ -69,7 +69,7 @@ export class MotionBlockListComponent extends BaseListViewComponent<ViewMotionBl
         {
             prop: 'title',
             label: this.translate.instant('Title'),
-            width: 'auto'
+            width: '100%'
         },
         {
             prop: 'amount',

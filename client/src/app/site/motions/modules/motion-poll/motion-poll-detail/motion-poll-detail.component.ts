@@ -31,13 +31,13 @@ export class MotionPollDetailComponent extends BasePollDetailComponentDirective<
     public columnDefinitionSingleVotesTable: PblColumnDefinition[] = [
         {
             prop: 'user',
-            width: 'auto',
-            label: 'Participant'
+            label: 'Participant',
+            width: '50%'
         },
         {
             prop: 'vote',
-            width: 'auto',
-            label: 'Vote'
+            label: 'Vote',
+            width: '50%'
         }
     ];
 

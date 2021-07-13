@@ -1,4 +1,4 @@
-@import '~@angular/material/theming';
+@use '~@angular/material' as mat;
 
 @mixin os-config-field-style($theme) {
     $foreground: map-get($theme, foreground);
@@ -8,14 +8,14 @@
     .config-field-wrapper {
         .mat-form-field {
             .mat-form-field-flex {
-                border-bottom: 1px solid mat-color($foreground, divider, if($is-dark-theme, 0.7, 0.42));
+                border-bottom: 1px solid mat.get-color-from-palette($foreground, divider, if($is-dark-theme, 0.7, 0.42));
             }
         }
 
         .datetimepicker-container {
             .ngx-material-timepicker-toggle {
                 mat-icon {
-                    color: mat-color($foreground, icon);
+                    color: mat.get-color-from-palette($foreground, icon);
                 }
             }
         }

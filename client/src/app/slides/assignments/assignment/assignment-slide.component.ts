@@ -15,6 +15,7 @@ export class AssignmentSlideComponent extends BaseSlideComponentDirective<Assign
     // data from the server
     private _data: SlideData<AssignmentSlideData>;
     @Input()
+    // @ts-ignore:
     public set data(data: SlideData<AssignmentSlideData>) {
         this._data = data;
     }

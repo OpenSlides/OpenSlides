@@ -1,5 +1,5 @@
+@use '~@angular/material' as mat;
 // Material theming import
-@import '~@angular/material/theming';
 
 /**
  *  Mixin-style to style global classes and tags with theme-related colors.
@@ -15,24 +15,24 @@
 
     h1,
     h3.accent {
-        color: mat-color(if($is-dark-theme, $accent, $primary));
+        color: mat.get-color-from-palette(if($is-dark-theme, $accent, $primary));
     }
 
     a {
-        color: mat-color(if($is-dark-theme, $accent, $primary));
+        color: mat.get-color-from-palette(if($is-dark-theme, $accent, $primary));
     }
 
     .anchor-button {
-        color: mat-color($foreground, text) !important;
+        color: mat.get-color-from-palette($foreground, text) !important;
     }
 
     .accent,
     .accent-text {
-        color: mat-color($accent);
+        color: mat.get-color-from-palette($accent);
     }
 
     .primary-accent-by-theme {
-        color: mat-color(if($is-dark-theme, $accent, $primary));
+        color: mat.get-color-from-palette(if($is-dark-theme, $accent, $primary));
     }
 
     /**
@@ -42,18 +42,18 @@
      */
     .custom-table-header,
     .background-default {
-        background: mat-color($background, background) !important;
+        background: mat.get-color-from-palette($background, background) !important;
     }
 
     .fake-disabled {
-        background: mat-color($background, unselected-chip) !important;
+        background: mat.get-color-from-palette($background, unselected-chip) !important;
         opacity: 1 !important;
 
         .mat-button-wrapper {
             .mat-icon {
-                color: mat-color($foreground, disabled-button) !important;
+                color: mat.get-color-from-palette($foreground, disabled-button) !important;
                 svg path {
-                    fill: mat-color($foreground, disabled-button) !important;
+                    fill: mat.get-color-from-palette($foreground, disabled-button) !important;
                 }
             }
         }
@@ -64,11 +64,11 @@
     }
 
     .underline {
-        border-bottom: 1px solid mat-color($foreground, divider, if($is-dark-theme, 0.7, 0.42));
+        border-bottom: 1px solid mat.get-color-from-palette($foreground, divider, if($is-dark-theme, 0.7, 0.42));
     }
 
     .hint {
-        color: mat-color($foreground, secondary-text);
+        color: mat.get-color-from-palette($foreground, secondary-text);
     }
 
     /* Custom hint and error classes. Same values as .mat-hint and -mat-error */
@@ -80,7 +80,7 @@
 
     .error,
     .warn {
-        color: mat-color($warn);
+        color: mat.get-color-from-palette($warn);
     }
 
     .outline-border-bottom {
@@ -89,37 +89,37 @@
 
     /* motion list/detail view */
     .mat-chip-list.user .mat-chip {
-        color: mat-color($foreground, text);
-        background: mat-color($background, card);
-        border-color: mat-color($background, selected-button);
+        color: mat.get-color-from-palette($foreground, text);
+        background: mat.get-color-from-palette($background, card);
+        border-color: mat.get-color-from-palette($background, selected-button);
     }
 
     .os-amount-chip {
-        background: mat-color($background, selected-button);
-        color: mat-color($foreground, text);
+        background: mat.get-color-from-palette($background, selected-button);
+        color: mat.get-color-from-palette($foreground, text);
     }
 
     .tile-text {
-        color: mat-color($foreground, text);
+        color: mat.get-color-from-palette($foreground, text);
     }
 
     .subtitle-text {
         font-size: 125%;
         margin-top: 0;
         margin-bottom: 15px;
-        color: mat-color(if($is-dark-theme, $accent, $primary));
+        color: mat.get-color-from-palette(if($is-dark-theme, $accent, $primary));
     }
 
     .tile-color {
-        background-color: mat-color($background, selected-button);
+        background-color: mat.get-color-from-palette($background, selected-button);
     }
 
     .main-nav-color {
-        color: mat-color($foreground, secondary-text);
+        color: mat.get-color-from-palette($foreground, secondary-text);
     }
 
     .submitters-line {
-        color: mat-color($foreground, secondary-text);
+        color: mat.get-color-from-palette($foreground, secondary-text);
     }
 
     .subtitle-nocolor {
@@ -129,36 +129,36 @@
 
     .subtitle {
         @extend .subtitle-nocolor;
-        color: mat-color($foreground, secondary-text);
+        color: mat.get-color-from-palette($foreground, secondary-text);
     }
 
     .user-subtitle {
-        color: mat-color($foreground, secondary-text);
+        color: mat.get-color-from-palette($foreground, secondary-text);
     }
 
     mat-card-header {
-        background-color: mat-color($background, app-bar);
+        background-color: mat.get-color-from-palette($background, app-bar);
     }
 
     /* drag & drop views */
     .node-content-wrapper {
-        background-color: mat-color($background, app-bar);
+        background-color: mat.get-color-from-palette($background, app-bar);
     }
 
     /* projector components */
     .backgroundColorAccent {
-        background-color: mat-color($accent);
-        color: mat-color($accent, default-contrast) !important;
+        background-color: mat.get-color-from-palette($accent);
+        color: mat.get-color-from-palette($accent, default-contrast) !important;
     }
 
     .backgroundColorSelected {
         background-color: rgba(0, 0, 0, 0.155);
-        color: mat-color($foreground, text) !important;
+        color: mat.get-color-from-palette($foreground, text) !important;
     }
 
     .backgroundColorLight {
-        background-color: mat-color($background, hover);
-        color: mat-color($foreground, text) !important;
+        background-color: mat.get-color-from-palette($background, hover);
+        color: mat.get-color-from-palette($foreground, text) !important;
     }
 
     input[readonly] {
@@ -174,7 +174,7 @@
     }
 
     .icon {
-        color: mat-color($foreground, icon);
+        color: mat.get-color-from-palette($foreground, icon);
     }
 
     .small-icon {
@@ -184,11 +184,11 @@
 
     /** Custom themes for NGrid. Could be an own file if it gets more */
     .pbl-ngrid-container {
-        background: mat-color($background, card);
+        background: mat.get-color-from-palette($background, card);
     }
 
     .pbl-ngrid-no-data {
-        color: mat-color($foreground, secondary-text);
+        color: mat.get-color-from-palette($foreground, secondary-text);
     }
 
     .pbl-ngrid-row:hover {
@@ -205,31 +205,31 @@
      * whole themes can be replaced using classes like this one
      */
     .background-primary {
-        background: mat-color($primary);
-        color: mat-color($primary, default-contrast) !important;
+        background: mat.get-color-from-palette($primary);
+        color: mat.get-color-from-palette($primary, default-contrast) !important;
     }
 
     .background-primary-darkest {
-        background: mat-color($primary, 900);
-        color: mat-color($primary, default-contrast) !important;
+        background: mat.get-color-from-palette($primary, 900);
+        color: mat.get-color-from-palette($primary, default-contrast) !important;
     }
 
     .background-card {
-        background: mat-color($background, card);
-        color: mat-color($foreground, text);
+        background: mat.get-color-from-palette($background, card);
+        color: mat.get-color-from-palette($foreground, text);
     }
 
     .primary-foreground {
-        color: mat-color($primary);
+        color: mat.get-color-from-palette($primary);
     }
 
     .accent-foreground {
-        color: mat-color($accent);
+        color: mat.get-color-from-palette($accent);
     }
 
     .svg-primary {
         svg path {
-            fill: mat-color($primary) !important;
+            fill: mat.get-color-from-palette($primary) !important;
         }
     }
 }

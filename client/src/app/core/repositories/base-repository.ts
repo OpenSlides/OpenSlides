@@ -31,7 +31,8 @@ export interface NestedModelDescriptors {
 }
 
 export abstract class BaseRepository<V extends BaseViewModel & T, M extends BaseModel, T extends TitleInformation>
-    implements OnAfterAppsLoaded, Collection, HasViewModelListObservable<V> {
+    implements OnAfterAppsLoaded, Collection, HasViewModelListObservable<V>
+{
     /**
      * Stores all the viewModel in an object
      */

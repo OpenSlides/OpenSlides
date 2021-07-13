@@ -22,7 +22,6 @@
                         "main": "src/main.ts",
                         "polyfills": "src/polyfills.ts",
                         "tsConfig": "tsconfig.app.json",
-                        "aot": true,
                         "assets": [
                             "src/assets",
                             "src/manifest.json",
@@ -43,7 +42,13 @@
                             "node_modules/video.js/dist/video.min.js",
                             "src/assets/jitsi/external_api.js"
                         ],
-                        "webWorkerTsConfig": "tsconfig.worker.json"
+                        "webWorkerTsConfig": "tsconfig.worker.json",
+                        "vendorChunk": true,
+                        "extractLicenses": false,
+                        "buildOptimizer": false,
+                        "sourceMap": true,
+                        "optimization": false,
+                        "namedChunks": true
                     },
                     "configurations": {
                         "production": {
@@ -56,9 +61,7 @@
                             "optimization": true,
                             "outputHashing": "all",
                             "sourceMap": false,
-                            "extractCss": true,
                             "namedChunks": false,
-                            "aot": true,
                             "extractLicenses": true,
                             "vendorChunk": false,
                             "buildOptimizer": true,
@@ -83,13 +86,14 @@
                                 }
                             ],
                             "tsConfig": "./tsconfig-es5.app.json"
-                        }
-                    }
+                        },
+                        "development": {}
+                    },
+                    "defaultConfiguration": "production"
                 },
                 "serve": {
                     "builder": "@angular-devkit/build-angular:dev-server",
                     "options": {
-                        "browserTarget": "client:build"
                     },
                     "configurations": {
                         "production": {
@@ -97,8 +101,12 @@
                         },
                         "es5": {
                             "browserTarget": "client:build:es5"
+                        },
+                        "development": {
+                            "browserTarget": "client:build:development"
                         }
-                    }
+                    },
+                    "defaultConfiguration": "development"
                 },
                 "extract-i18n": {
                     "builder": "@angular-devkit/build-angular:extract-i18n",
@@ -147,14 +155,17 @@
                 "e2e": {
                     "builder": "@angular-devkit/build-angular:protractor",
                     "options": {
-                        "protractorConfig": "e2e/protractor.conf.js",
-                        "devServerTarget": "client:serve"
+                        "protractorConfig": "e2e/protractor.conf.js"
                     },
                     "configurations": {
                         "production": {
                             "devServerTarget": "client:serve:production"
+                        },
+                        "development": {
+                            "devServerTarget": "client:serve:development"
                         }
-                    }
+                    },
+                    "defaultConfiguration": "development"
                 }
             }
         }

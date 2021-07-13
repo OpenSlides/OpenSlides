@@ -12,8 +12,15 @@ import {
 } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
 
-import { columnFactory, createDS, DataSourcePredicate, PblDataSource, PblNgridComponent } from '@pebula/ngrid';
-import { PblColumnDefinition, PblColumnFactory, PblNgridColumnSet, PblNgridRowContext } from '@pebula/ngrid/lib/grid';
+import {
+    columnFactory,
+    createDS,
+    DataSourcePredicate,
+    PblColumnDefinition,
+    PblDataSource,
+    PblNgridComponent
+} from '@pebula/ngrid';
+import { PblColumnFactory, PblNgridColumnSet, PblNgridRowContext } from '@pebula/ngrid/lib/grid';
 import { PblNgridDataMatrixRow } from '@pebula/ngrid/target-events';
 import { Observable, Subscription } from 'rxjs';
 import { distinctUntilChanged, filter } from 'rxjs/operators';
@@ -91,7 +98,8 @@ export interface ColumnRestriction {
     encapsulation: ViewEncapsulation.None
 })
 export class ListViewTableComponent<V extends BaseViewModel | BaseViewModelWithContentObject>
-    implements OnInit, OnDestroy {
+    implements OnInit, OnDestroy
+{
     /**
      * Declare the table
      */

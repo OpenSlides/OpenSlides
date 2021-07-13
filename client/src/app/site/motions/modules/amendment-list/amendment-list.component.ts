@@ -60,13 +60,12 @@ export class AmendmentListComponent extends BaseListViewComponent<ViewMotion> im
     public tableColumnDefinition: PblColumnDefinition[] = [
         {
             prop: 'meta',
-            minWidth: 250,
-            width: 'auto'
+            minWidth: 250
         },
         {
             prop: 'summary',
-            minWidth: 280,
-            width: 'auto'
+            width: '100%',
+            minWidth: 280
         },
         {
             prop: 'speakers',

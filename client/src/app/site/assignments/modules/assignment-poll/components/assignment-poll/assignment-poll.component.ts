@@ -29,7 +29,8 @@ import { AssignmentPollService } from '../../services/assignment-poll.service';
 })
 export class AssignmentPollComponent
     extends BasePollComponent<ViewAssignmentPoll, AssignmentPollService>
-    implements OnInit {
+    implements OnInit
+{
     @Input()
     public set poll(value: ViewAssignmentPoll) {
         this.initPoll(value);

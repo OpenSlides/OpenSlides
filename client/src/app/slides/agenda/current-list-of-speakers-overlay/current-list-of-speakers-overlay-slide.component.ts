@@ -18,6 +18,7 @@ export class CurrentListOfSpeakersOverlaySlideComponent extends BaseSlideCompone
      * @param data The passed data to this overlay.
      */
     @Input()
+    // @ts-ignore:
     public set data(data: any) {
         if (data.data.current) {
             this.currentSpeaker = data.data.current;

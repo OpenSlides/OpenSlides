@@ -142,11 +142,11 @@ export class UserListComponent extends BaseListViewComponent<ViewUser> implement
     public tableColumnDefinition: PblColumnDefinition[] = [
         {
             prop: 'short_name',
-            width: 'auto'
+            width: '100%'
         },
         {
             prop: 'group',
-            width: '15%'
+            minWidth: 200
         },
         {
             prop: 'infos',

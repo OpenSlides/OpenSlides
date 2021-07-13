@@ -625,9 +625,7 @@ export class MotionDetailComponent extends BaseViewComponentDirective implements
     private resetAmendmentChangeRecoListener(): void {
         this.amendments.forEach((amendment: ViewMotion) => {
             if (this.amendmentChangeRecoSubscriptions[amendment.id] === undefined) {
-                this.amendmentChangeRecoSubscriptions[
-                    amendment.id
-                ] = this.changeRecoRepo
+                this.amendmentChangeRecoSubscriptions[amendment.id] = this.changeRecoRepo
                     .getChangeRecosOfMotionObservable(amendment.id)
                     .subscribe((changeRecos: ViewMotionChangeRecommendation[]): void => {
                         this.amendmentChangeRecos[amendment.id] = changeRecos;

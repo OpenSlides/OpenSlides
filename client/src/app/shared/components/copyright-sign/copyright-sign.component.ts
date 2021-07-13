@@ -62,97 +62,8 @@ type StateMachine = { [state in State]?: { [event in StateEvent]?: SMAction } };
 
 @Component({
     selector: 'os-c4dialog',
-    template: `
-        <h2 mat-dialog-title>{{ caption | translate }}</h2>
-        <mat-dialog-content>
-            <ng-container *ngIf="partnerName">
-                <div class="space">
-                    <div class="coin info-coin thisPlayer"></div>
-                    <span>{{ getPlayerName() }}</span>
-                </div>
-                <div>
-                    <div class="coin info-coin partner"></div>
-                    <span>{{ partnerName }}</span>
-                </div>
-            </ng-container>
-            <table [class]="disableBoard ? 'disabled' : ''" id="c4">
-                <tr *ngFor="let row of [5, 4, 3, 2, 1, 0]">
-                    <td *ngFor="let col of [0, 1, 2, 3, 4, 5, 6]">
-                        <div [class]="getCoinClass(row, col)" (click)="clickField(row, col)"></div>
-                    </td>
-                </tr>
-            </table>
-
-            <div class="center">
-                <button
-                    (click)="handleEvent('searchClicked')"
-                    *ngIf="state === 'start'"
-                    mat-raised-button
-                    color="accent"
-                >
-                    {{ 'Search player' | translate }}
-                </button>
-            </div>
-        </mat-dialog-content>
-        <mat-dialog-actions>
-            <button mat-button mat-dialog-close>{{ 'Close' | translate }}</button>
-        </mat-dialog-actions>
-    `,
-    styles: [
-        `
-            span {
-                font-size: 20px;
-                padding-left: 10px;
-            }
-            .center {
-                text-align: center;
-            }
-            .space {
-                margin-bottom: 5px;
-            }
-            #c4 {
-                background-color: yellow;
-                padding: 10px;
-                margin: 15px auto;
-            }
-            #c4.disabled {
-                background-color: grey;
-            }
-            #c4 td {
-                width: 50px;
-                height: 50px;
-            }
-            #c4 .notSelected {
-                cursor: pointer;
-                background-color: white;
-            }
-            #c4.disabled .notSelected {
-                cursor: auto;
-            }
-            .thisPlayer {
-                background-color: blue;
-            }
-            #c4.disabled .thisPlayer {
-                background-color: #8888ff;
-            }
-            .partner {
-                background-color: red;
-            }
-            #c4.disabled .partner {
-                background-color: #ff8888;
-            }
-            .coin {
-                border-radius: 50%;
-                width: 100%;
-                height: 100%;
-            }
-            .coin.info-coin {
-                display: inline-block;
-                width: 20px;
-                height: 20px;
-            }
-        `
-    ]
+    templateUrl: './copyright-sign.component.html',
+    styleUrls: ['./copyright-sign.component.scss']
 })
 export class C4DialogComponent implements OnInit, OnDestroy {
     /**
@@ -577,8 +488,7 @@ export class C4DialogComponent implements OnInit, OnDestroy {
 
 @Component({
     selector: 'os-copyright-sign',
-    template: ` <span (click)="launchC4($event)">©</span> `,
-    styles: [``]
+    template: ` <span (click)="launchC4($event)">©</span> `
 })
 export class CopyrightSignComponent {
     private clickTimeout: number | null;

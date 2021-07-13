@@ -15,8 +15,10 @@ import { CommonListOfSpeakersSlideData } from './common-list-of-speakers-slide-d
 })
 export class CommonListOfSpeakersSlideComponent
     extends BaseSlideComponentDirective<CommonListOfSpeakersSlideData>
-    implements OnInit {
+    implements OnInit
+{
     @Input()
+    // @ts-ignore:
     public set data(value: SlideData<CommonListOfSpeakersSlideData, ProjectorElement>) {
         // In the case of projected references without ListOfSpeakers Slide
         if (Object.entries(value.data).length) {

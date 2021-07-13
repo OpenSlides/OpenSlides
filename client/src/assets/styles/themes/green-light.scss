@@ -1,7 +1,8 @@
+@use '~@angular/material' as mat;
 @import '~assets/styles/color-palettes/os-green.scss';
 
-$openslides-primary: mat-palette($openslides-green);
-$openslides-accent: mat-palette($mat-amber);
-$openslides-warn: mat-palette($mat-red);
+$openslides-primary: mat.define-palette($openslides-green);
+$openslides-accent: mat.define-palette(mat.$amber-palette);
+$openslides-warn: mat.define-palette(mat.$red-palette);
 
-$openslides-green-light: mat-light-theme($openslides-primary, $openslides-accent, $openslides-warn);
+$openslides-green-light: mat.define-light-theme($openslides-primary, $openslides-accent, $openslides-warn);

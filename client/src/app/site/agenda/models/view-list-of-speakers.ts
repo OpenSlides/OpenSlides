@@ -23,7 +23,8 @@ export enum UserListIndexType {
  */
 export class ViewListOfSpeakers
     extends BaseViewModelWithContentObject<ListOfSpeakers, BaseViewModelWithListOfSpeakers>
-    implements ListOfSpeakersTitleInformation, Projectable {
+    implements ListOfSpeakersTitleInformation, Projectable
+{
     public static COLLECTIONSTRING = ListOfSpeakers.COLLECTIONSTRING;
     protected _collectionString = ListOfSpeakers.COLLECTIONSTRING;
 
