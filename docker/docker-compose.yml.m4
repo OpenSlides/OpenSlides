@@ -72,6 +72,7 @@ x-osserver-env: &default-osserver-env
     DATABASE_PASSWORD: "ifenvelse(`DATABASE_PASSWORD', openslides)"
     DATABASE_PORT: ifenvelse(`DATABASE_PORT', 5432)
     DATABASE_USER: "ifenvelse(`DATABASE_USER', openslides)"
+    DATABASE_NAME: "ifenvelse(`DATABASE_NAME', openslides)"
     MEDIAFILE_DATABASE_NAME: "read_env(`MEDIAFILE_DATABASE_NAME')"
     MEDIAFILE_DATABASE_USER: "read_env(`MEDIAFILE_DATABASE_USER')"
     MEDIAFILE_DATABASE_PASSWORD: "read_env(`MEDIAFILE_DATABASE_PASSWORD')"
