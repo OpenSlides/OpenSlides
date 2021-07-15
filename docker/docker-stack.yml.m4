@@ -125,8 +125,8 @@ services:
       - front
       - back
     ports:
-      ifelse(EXTERNAL_HTTP_PORT,,,- "127.0.0.1:EXTERNAL_HTTP_PORT:8000")
-      ifelse(EXTERNAL_HTTPS_PORT,,,- "127.0.0.1:EXTERNAL_HTTPS_PORT:8001")
+      ifelse(EXTERNAL_HTTP_PORT,,,- "0.0.0.0:EXTERNAL_HTTP_PORT:8000")
+      ifelse(EXTERNAL_HTTPS_PORT,,,- "0.0.0.0:EXTERNAL_HTTPS_PORT:8001")
     deploy:
       restart_policy:
         condition: on-failure
