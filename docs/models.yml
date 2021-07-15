@@ -180,6 +180,7 @@ user:
     fields:
       type: relation-list
       to: speaker/user_id
+    on_delete: CASCADE
   personal_note_$_ids:
     type: template
     replacement_collection: meeting
