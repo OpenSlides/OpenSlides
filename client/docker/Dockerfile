@@ -1,4 +1,4 @@
-FROM node:14 AS nodejs
+FROM node:16 AS nodejs
 
 RUN mkdir -p /build/app
 WORKDIR /build/app
@@ -13,7 +13,7 @@ USER openslides
 COPY package.json package-lock.json ./
 RUN npm -v
 RUN npm ci
-COPY browserslist *.json ./
+COPY .browserslistrc *.json ./
 COPY src ./src
 RUN npm run build-to-dir /build/app/static
 
