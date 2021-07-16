@@ -499,10 +499,11 @@ meeting:
   # List of speakers
   list_of_speakers_amount_last_on_projector:
     type: number
-    minimum: 0
+    minimum: -1
     default: 0
   list_of_speakers_amount_next_on_projector:
     type: number
+    minimum: -1
     default: -1
   list_of_speakers_couple_countdown:
     type: boolean
