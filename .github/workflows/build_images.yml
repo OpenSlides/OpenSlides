@@ -1,6 +1,7 @@
 ---
 name: Build Docker images for all OpenSlides services
-on: push
+on: [push, workflow_dispatch]
+
 env:
   IMAGE_VERSION: 4.0.0-dev
 jobs:
@@ -50,33 +51,33 @@ jobs:
             directory: openslides-permission-service
 
     steps:
-    - name: Check out code
-      uses: actions/checkout@v2
-      with:
-        submodules: true
+      - name: Check out code
+        uses: actions/checkout@v2
+        with:
+          submodules: true
 
-    - name: Build image
-      working-directory: ${{ matrix.service.directory }}
-      env:
-        DOCKER_BUILDKIT: 1
-      run: |
-        if [ "${{ matrix.service.args }}" != "" ]
-        then
-          export BUILD_ARGS="--build-arg MODULE=${{ matrix.service.args.MODULE }}
-                             --build-arg PORT=${{ matrix.service.args.PORT }}"
-        fi
-        docker build . --tag ${{ matrix.service.name }} $BUILD_ARGS
+      - name: Build image
+        working-directory: ${{ matrix.service.directory }}
+        env:
+          DOCKER_BUILDKIT: 1
+        run: |
+          if [ "${{ matrix.service.args }}" != "" ]
+          then
+            export BUILD_ARGS="--build-arg MODULE=${{ matrix.service.args.MODULE }}
+                               --build-arg PORT=${{ matrix.service.args.PORT }}"
+          fi
+          docker build . --tag ${{ matrix.service.name }} $BUILD_ARGS
 
-    - name: Log into registry
-      run: echo "${{ secrets.GITHUB_TOKEN }}" |
-           docker login ghcr.io --username ${{ github.actor }} --password-stdin
+      - name: Log into registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" |
+          docker login ghcr.io --username ${{ github.actor }} --password-stdin
 
-    - name: Push image
-      run: |
-        IMAGE_ID=ghcr.io/${{ github.repository }}/${{ matrix.service.name }}
+      - name: Push image
+        run: |
+          IMAGE_ID=ghcr.io/${{ github.repository }}/${{ matrix.service.name }}
 
-        # Change all uppercase to lowercase
-        IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+          # Change all uppercase to lowercase
+          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
 
-        docker tag ${{ matrix.service.name }} $IMAGE_ID:$IMAGE_VERSION
-        docker push $IMAGE_ID:$IMAGE_VERSION
+          docker tag ${{ matrix.service.name }} $IMAGE_ID:$IMAGE_VERSION
+          docker push $IMAGE_ID:$IMAGE_VERSION
