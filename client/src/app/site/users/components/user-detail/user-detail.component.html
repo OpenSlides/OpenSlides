@@ -195,14 +195,7 @@
                     formControlName="default_password"
                 />
                 <mat-hint align="end">Generate</mat-hint>
-                <button
-                    type="button"
-                    mat-button
-                    matSuffix
-                    mat-icon-button
-                    [disabled]="!newUser"
-                    (click)="generatePassword()"
-                >
+                <button *ngIf="newUser" type="button" mat-button matSuffix mat-icon-button (click)="generatePassword()">
                     <mat-icon>sync_problem</mat-icon>
                 </button>
             </mat-form-field>
