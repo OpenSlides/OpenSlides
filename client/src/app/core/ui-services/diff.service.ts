@@ -561,7 +561,9 @@ export class DiffService {
             '&Ntilde;': 'Ñ',
             '&ntilde;': 'ñ',
             '&Euml;': 'Ë',
-            '&euml;': 'ë'
+            '&euml;': 'ë',
+            '&Prime;': '″',
+            '&rdquo;': '”'
         };
 
         html = html
