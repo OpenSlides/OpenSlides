@@ -147,7 +147,7 @@ export class MediafileRepositoryService extends BaseIsListOfSpeakersContentObjec
             }
         }
         const archive = await zip.generateAsync({ type: 'blob' });
-        saveAs(archive, archiveName);
+        saveAs(archive, `${archiveName}.zip`);
     }
 
     public getDirectoryBehaviorSubject(): BehaviorSubject<ViewMediafile[]> {

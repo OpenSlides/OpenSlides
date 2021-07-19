@@ -461,9 +461,6 @@ export class MediafileListComponent extends BaseListViewComponent<ViewMediafile>
     }
 
     public downloadMultiple(mediafiles: ViewMediafile[] = this.dataSource.source): void {
-        /**
-         * TODO: naming the files is discussable
-         */
         const eventName = this.configService.instant<string>('general_event_name');
         const dirName = this.directory?.filename ?? this.translate.instant('Files');
         const archiveName = `${eventName} - ${dirName}`.trim();
