@@ -25,20 +25,13 @@
                 *ngIf="showParticles | async"
                 class="room-list-applause-particles"
             ></os-applause-particle-display>
-            <div class="member-list">
-                <ol>
-                    <li
-                        *ngFor="let memberId of memberList; trackBy: trackByIndex"
-                        [ngClass]="{
-                            focused: members[memberId].focus
-                        }"
-                    >
-                        <div class="member-list-entry">
-                            {{ members[memberId].name }}
-                        </div>
-                    </li>
-                </ol>
-            </div>
+            <ol class="member-list">
+                <li *ngFor="let member of members | keyvalue: valueNameOrder; trackBy: trackByIndex">
+                    <div class="member-list-entry">
+                        {{ member.value.name }}
+                    </div>
+                </li>
+            </ol>
         </div>
     </div>
 
