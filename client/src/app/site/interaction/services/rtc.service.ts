@@ -83,10 +83,8 @@ const interfaceConfigOverwrite = {
         'fullscreen',
         'fodeviceselection',
         'profile',
-        'chat',
         'recording',
         'livestreaming',
-        'etherpad',
         'sharedvideo',
         'settings',
         'videoquality',
@@ -95,7 +93,6 @@ const interfaceConfigOverwrite = {
         'stats',
         'shortcuts',
         'tileview',
-        'download',
         'help',
         'mute-everyone',
         'hangup'
