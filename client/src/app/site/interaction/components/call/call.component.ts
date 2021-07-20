@@ -1,3 +1,4 @@
+import { KeyValue } from '@angular/common';
 import {
     AfterViewInit,
     ChangeDetectionStrategy,
@@ -20,7 +21,7 @@ import { BaseViewComponentDirective } from 'app/site/base/base-view';
 import { ApplauseService } from '../../services/applause.service';
 import { CallRestrictionService } from '../../services/call-restriction.service';
 import { InteractionService } from '../../services/interaction.service';
-import { RtcService } from '../../services/rtc.service';
+import { ConferenceMember, ConferenceMemberCollection, RtcService } from '../../services/rtc.service';
 import { StreamService } from '../../services/stream.service';
 
 const helpDeskTitle = _('Help desk');
@@ -35,23 +36,8 @@ const connectingTitle = _('connecting ...');
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CallComponent extends BaseViewComponentDirective implements OnInit, AfterViewInit, OnDestroy {
-    public isJitsiActiveInAnotherTab: Observable<boolean> = this.rtcService.inOtherTab;
-    public canEnterCall: Observable<boolean> = this.callRestrictionService.canEnterCallObservable;
-    public isJitsiDialogOpen: Observable<boolean> = this.rtcService.showCallDialogObservable;
-    public showParticles: Observable<boolean> = this.applauseService.showParticles;
-    public hasLiveStreamUrl: Observable<boolean> = this.streamService.hasLiveStreamUrlObvervable;
-
-    public isJitsiActive: boolean;
-    public isJoined: boolean;
-
     public get showHangUp(): boolean {
         return this.isJitsiActive && this.isJoined;
-    }
-
-    private dominantSpeaker: string;
-    private members = {};
-    public get memberList(): string[] {
-        return Object.keys(this.members);
     }
 
     public get isDisconnected(): boolean {
@@ -65,6 +51,17 @@ export class CallComponent extends BaseViewComponentDirective implements OnInit,
     public get isConnected(): boolean {
         return this.isJitsiActive && this.isJoined;
     }
+    public isJitsiActiveInAnotherTab: Observable<boolean> = this.rtcService.inOtherTab;
+    public canEnterCall: Observable<boolean> = this.callRestrictionService.canEnterCallObservable;
+    public isJitsiDialogOpen: Observable<boolean> = this.rtcService.showCallDialogObservable;
+    public showParticles: Observable<boolean> = this.applauseService.showParticles;
+    public hasLiveStreamUrl: Observable<boolean> = this.streamService.hasLiveStreamUrlObvervable;
+
+    public isJitsiActive: boolean;
+    public isJoined: boolean;
+
+    private dominantSpeaker: string;
+    public members: ConferenceMemberCollection = {};
 
     private autoConnect: boolean;
 
@@ -125,6 +122,10 @@ export class CallComponent extends BaseViewComponentDirective implements OnInit,
             })
         );
     }
+
+    public valueNameOrder = (a: KeyValue<number, ConferenceMember>, b: KeyValue<number, ConferenceMember>): number => {
+        return a.value.name.localeCompare(b.value.name);
+    };
 
     public ngOnInit(): void {
         this.updateSubtitle();
