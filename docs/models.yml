@@ -104,7 +104,12 @@ user:
   can_change_own_password:
     type: boolean
     default: true
-  gender: string
+  gender:
+    type: string
+    enum:
+    - male
+    - female
+    - diverse
   email: string
   default_number: string
   default_structure_level: string
