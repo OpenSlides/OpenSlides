@@ -8,7 +8,6 @@ TARGETS=(
   [server]="$(dirname "${BASH_SOURCE[0]}")/../server/docker/"
   [proxy]="$(dirname "${BASH_SOURCE[0]}")/../caddy/"
   [autoupdate]="$(dirname "${BASH_SOURCE[0]}")/../autoupdate/"
-  [prometheus]="$(dirname "${BASH_SOURCE[0]}")/../prometheus/"
   [media]="https://github.com/OpenSlides/openslides-media-service.git"
   [pgbouncer]="https://github.com/OpenSlides/openslides-docker-compose.git#:pgbouncer"
   [postfix]="https://github.com/OpenSlides/openslides-docker-compose.git#:postfix"

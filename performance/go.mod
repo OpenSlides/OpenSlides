@@ -1,4 +1,5 @@
 module github.com/OpenSlides/OpenSlides/performance
+
 go 1.16
 
 require (
