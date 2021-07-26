@@ -32,13 +32,6 @@ services:
       - ./postgresql.dev.conf:/etc/postgresql/postgresql.conf
     command: postgres -c 'config_file=/etc/postgresql/postgresql.conf'
 
-  prometheus:
-    image: prom/prometheus:v2.24.0
-    volumes:
-    - ../prometheus/prometheus.dev.yml:/etc/prometheus/prometheus.yml
-    ports:
-    - 9090:9090
-
   autoupdate:
     image: os3-autoupdate-dev
     environment:
