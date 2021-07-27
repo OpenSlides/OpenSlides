@@ -554,7 +554,7 @@ meeting:
     required: true
   motions_preamble:
     type: string
-    default: "The assembly may decide"
+    default: "The assembly may decide:"
   motions_default_line_numbering:
     type: string
     enum:
