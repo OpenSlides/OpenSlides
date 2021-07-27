@@ -49,6 +49,11 @@ export class MotionImportService extends BaseImportService<Motion> {
     public newSubmitters: CsvMapping[] = [];
 
     /**
+     * supporters that need to be created prior to importing
+     */
+    public newSupporters: CsvMapping[] = [];
+
+    /**
      * Categories that need to be created prior to importing
      */
     public newCategories: CsvMapping[] = [];
@@ -92,6 +97,7 @@ export class MotionImportService extends BaseImportService<Motion> {
      */
     public clearData(): void {
         this.newSubmitters = [];
+        this.newSupporters = [];
         this.newCategories = [];
         this.newMotionBlocks = [];
         this.newTags = [];
@@ -110,7 +116,10 @@ export class MotionImportService extends BaseImportService<Motion> {
         for (let idx = 0; idx < headerLength; idx++) {
             switch (this.expectedHeader[idx]) {
                 case 'submitters':
-                    newEntry.csvSubmitters = this.getSubmitters(line[idx]);
+                    newEntry.csvSubmitters = this.getUsers(line[idx], 'submitter');
+                    break;
+                case 'supporters':
+                    newEntry.csvSupporters = this.getUsers(line[idx], 'supporter');
                     break;
                 case 'category':
                     newEntry.csvCategory = this.getCategory(line[idx]);
@@ -150,7 +159,8 @@ export class MotionImportService extends BaseImportService<Motion> {
     public async doImport(): Promise<void> {
         this.newMotionBlocks = await this.createNewMotionBlocks();
         this.newCategories = await this.createNewCategories();
-        this.newSubmitters = await this.createNewUsers();
+        this.newSubmitters = await this.createNewUsers(this.newSubmitters);
+        this.newSupporters = await this.createNewUsers(this.newSupporters);
         this.newTags = await this.createNewTags();
 
         for (const entry of this.entries) {
@@ -169,9 +179,15 @@ export class MotionImportService extends BaseImportService<Motion> {
                 this.updatePreview();
                 continue;
             }
-            const openUsers = (entry.newEntry as ImportCreateMotion).solveSubmitters(this.newSubmitters);
-            if (openUsers) {
+            const openSubmitters = (entry.newEntry as ImportCreateMotion).solveSubmitters(this.newSubmitters);
+            if (openSubmitters) {
                 this.setError(entry, 'Submitters');
+                this.updatePreview();
+                continue;
+            }
+            const openSupporters = (entry.newEntry as ImportCreateMotion).solveSupporters(this.newSupporters);
+            if (openSupporters) {
+                this.setError(entry, 'Supporters');
                 this.updatePreview();
                 continue;
             }
@@ -191,39 +207,51 @@ export class MotionImportService extends BaseImportService<Motion> {
      * Checks the provided submitter(s) and returns an object with mapping of
      * existing users and of users that need to be created
      *
-     * @param submitterlist
+     * @param userList
      * @returns a list of submitters mapped with (if already existing) their id
      */
-    public getSubmitters(submitterlist: string): CsvMapping[] {
+    public getUsers(userList: string, kind: 'submitter' | 'supporter'): CsvMapping[] {
+        console.log('kind: ', kind);
         const result: CsvMapping[] = [];
-        if (!submitterlist) {
+        if (!userList) {
             return result;
         }
-        const submitterArray = submitterlist.split(','); // TODO fails with 'full name'
-        for (const submitter of submitterArray) {
-            const existingSubmitters = this.userRepo.getUsersByName(submitter.trim());
-            if (!existingSubmitters.length) {
-                if (!this.newSubmitters.find(listedSubmitter => listedSubmitter.name === submitter)) {
-                    this.newSubmitters.push({ name: submitter });
+        const userArray = userList.split(','); // TODO fails with 'full name'
+
+        console.log('userArray: ', userList);
+        for (const user of userArray) {
+            const existingUsers = this.userRepo.getUsersByName(user.trim());
+            if (!existingUsers.length) {
+                if (kind === 'submitter') {
+                    if (!this.newSubmitters.find(listedSubmitter => listedSubmitter.name === user)) {
+                        this.newSubmitters.push({ name: user });
+                    }
+                    result.push({ name: user });
+                } else if (kind === 'supporter') {
+                    if (!this.newSupporters.find(listedSupporter => listedSupporter.name === user)) {
+                        this.newSupporters.push({ name: user });
+                    }
+                    result.push({ name: user });
                 }
-                result.push({ name: submitter });
             }
-            if (existingSubmitters.length === 1) {
+            if (existingUsers.length === 1) {
                 result.push({
-                    name: existingSubmitters[0].short_name,
-                    id: existingSubmitters[0].id
+                    name: existingUsers[0].short_name,
+                    id: existingUsers[0].id
                 });
             }
-            if (existingSubmitters.length > 1) {
+            if (existingUsers.length > 1) {
                 result.push({
-                    name: submitter,
-                    multiId: existingSubmitters.map(ex => ex.id)
+                    name: user,
+                    multiId: existingUsers.map(ex => ex.id)
                 });
                 this.matSnackbar.open('TODO: multiple possible users found for this string', 'ok');
                 // TODO How to handle several submitters ? Is this possible?
                 // should have some kind of choice dialog there
             }
         }
+
+        console.log('res: ', result);
         return result;
     }
 
@@ -331,9 +359,9 @@ export class MotionImportService extends BaseImportService<Motion> {
      *
      * @returns a promise with list of new Submitters, updated with newly created ids
      */
-    private async createNewUsers(): Promise<CsvMapping[]> {
+    private async createNewUsers(list: CsvMapping[]): Promise<CsvMapping[]> {
         const promises: Promise<CsvMapping>[] = [];
-        for (const user of this.newSubmitters) {
+        for (const user of list) {
             promises.push(this.userRepo.createFromString(user.name));
         }
         return await Promise.all(promises);
