@@ -119,7 +119,7 @@
         </mat-select>
     </div>
     <div class="table-container">
-        <table mat-table [dataSource]="dataSource" matSort>
+        <mat-table [dataSource]="dataSource" matSort>
             <!-- Status column -->
             <ng-container matColumnDef="status" sticky>
                 <mat-header-cell *matHeaderCellDef class="first-column"></mat-header-cell>
@@ -289,6 +289,6 @@
 
             <mat-header-row *matHeaderRowDef="getColumnDefinition()"></mat-header-row>
             <mat-row [ngClass]="getStateClass(row)" *matRowDef="let row; columns: getColumnDefinition()"> </mat-row>
-        </table>
+        </mat-table>
     </div>
 </mat-card>
