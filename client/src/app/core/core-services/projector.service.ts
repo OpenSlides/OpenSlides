@@ -76,7 +76,7 @@ export class ProjectorService {
      */
     public isProjected(obj: Projectable | ProjectorElementBuildDeskriptor | IdentifiableProjectorElement): boolean {
         const element = this.getProjectorElement(obj);
-        if (element.getIdentifiers) {
+        if (element?.getIdentifiers) {
             return this.DS.getAll<Projector>('core/projector').some(projector => {
                 return projector.isElementShown(element);
             });
