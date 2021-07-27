@@ -175,6 +175,7 @@ export class MotionCsvExportService {
         const headerRow = [
             'Identifier',
             'Submitters',
+            'Supporters',
             'Title',
             'Text',
             'Reason',
@@ -187,6 +188,7 @@ export class MotionCsvExportService {
             [
                 'A1',
                 'Submitter A',
+                'Supporter A',
                 'Title 1',
                 'Text 1',
                 'Reason 1',
@@ -195,8 +197,19 @@ export class MotionCsvExportService {
                 'Block A',
                 'Last Year Conference A'
             ],
-            ['B1', 'Submitter B', 'Title 2', 'Text 2', 'Reason 2', 'Category B', null, 'Block A', 'Origin B'],
-            ['C2', null, 'Title 3', 'Text 3', null, null, null, null, null]
+            [
+                'B1',
+                'Submitter B',
+                'Supporter B',
+                'Title 2',
+                'Text 2',
+                'Reason 2',
+                'Category B',
+                null,
+                'Block A',
+                'Origin B'
+            ],
+            ['C2', null, null, 'Title 3', 'Text 3', null, null, null, null, null]
         ];
         this.csvExport.dummyCSVExport(headerRow, rows, `${this.translate.instant('motions-example')}.csv`);
     }

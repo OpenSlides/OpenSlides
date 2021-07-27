@@ -18,8 +18,7 @@
     <br />
     <div class="code red-warning-text">
         <span *ngFor="let header of this.expectedHeader; let last = last">
-            <span>{{ header | translate }}</span
-            ><span *ngIf="!last">,&nbsp;</span>
+            {{ header | translate }}<span *ngIf="!last">,&nbsp;</span>
         </span>
     </div>
     <ul>
@@ -41,11 +40,7 @@
     <div class="wrapper">
         <mat-form-field>
             <mat-label>{{ 'Encoding of the file' | translate }}</mat-label>
-            <mat-select
-                class="selection"
-                (selectionChange)="selectEncoding($event)"
-                [value]="encodings[0].value"
-            >
+            <mat-select class="selection" (selectionChange)="selectEncoding($event)" [value]="encodings[0].value">
                 <mat-option *ngFor="let option of encodings" [value]="option.value">
                     {{ option.label | translate }}
                 </mat-option>
@@ -214,6 +209,27 @@
                         <div *ngFor="let submitter of entry.newEntry.csvSubmitters">
                             {{ submitter.name }}
                             <mat-icon class="newBadge" color="accent" inline *ngIf="!submitter.id">add</mat-icon>
+                            &nbsp;
+                        </div>
+                    </div>
+                </mat-cell>
+            </ng-container>
+
+            <!-- supporters column -->
+            <ng-container matColumnDef="supporters">
+                <mat-header-cell *matHeaderCellDef>{{ 'Supporters' | translate }}</mat-header-cell>
+                <mat-cell *matCellDef="let entry">
+                    <div *ngIf="entry.newEntry?.csvSupporters?.length">
+                        <mat-icon
+                            color="warn"
+                            *ngIf="hasError(entry, 'Supporters')"
+                            matTooltip="{{ getVerboseError('Supporters') | translate }}"
+                        >
+                            warning
+                        </mat-icon>
+                        <div *ngFor="let supporters of entry.newEntry.csvSupporters">
+                            {{ supporters.name }}
+                            <mat-icon class="newBadge" color="accent" inline *ngIf="!supporters.id">add</mat-icon>
                             &nbsp;
                         </div>
                     </div>

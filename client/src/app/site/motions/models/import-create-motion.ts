@@ -33,6 +33,11 @@ export class ImportCreateMotion extends CreateMotion {
     public csvSubmitters: CsvMapping[];
 
     /**
+     * Mapping for new/existing supporters.
+     */
+    public csvSupporters: CsvMapping[];
+
+    /**
      * Mapping for new/existing tags.
      */
     public csvTags: CsvMapping[];
@@ -112,6 +117,30 @@ export class ImportCreateMotion extends CreateMotion {
             }
         });
         this.submitters_id = ids;
+        return open;
+    }
+
+    public solveSupporters(supporters: CsvMapping[]): number {
+        let open = 0;
+        const ids: number[] = [];
+        this.csvSupporters.forEach(csvSupporter => {
+            if (csvSupporter.id) {
+                ids.push(csvSupporter.id);
+                return;
+            }
+            if (!supporters.length) {
+                open += 1;
+                return;
+            }
+            const mapped = supporters.find(newSupporter => newSupporter.name === csvSupporter.name);
+            if (mapped) {
+                csvSupporter.id = mapped.id;
+                ids.push(mapped.id);
+            } else {
+                open += 1;
+            }
+        });
+        this.supporters_id = ids;
         return open;
     }
 
