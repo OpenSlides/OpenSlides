@@ -22,7 +22,7 @@
             <span>{{ getLevelDashes(category) }}</span>
             {{ category.prefixedName }}
         </h2>
-        <table class="os-headed-listview-table" mat-table [dataSource]="dataSources[category.id]">
+        <mat-table class="os-headed-listview-table" [dataSource]="dataSources[category.id]">
             <!-- title column -->
             <ng-container matColumnDef="title">
                 <mat-header-cell *matHeaderCellDef>
@@ -67,7 +67,7 @@
 
             <mat-header-row *matHeaderRowDef="getColumnDefinition()"></mat-header-row>
             <mat-row *matRowDef="let row; columns: getColumnDefinition()"> </mat-row>
-        </table>
+        </mat-table>
     </div>
 </mat-card>
 
