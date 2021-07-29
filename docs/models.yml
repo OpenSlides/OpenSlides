@@ -1436,10 +1436,7 @@ motion:
 
 motion_submitter:
   id: number
-  weight:
-    type: number
-    default: 10000
-
+  weight: number
   user_id:
     type: relation
     to: user/submitted_motion_$_ids
