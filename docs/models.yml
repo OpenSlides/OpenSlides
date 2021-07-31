@@ -62,63 +62,112 @@
 #       the instance and the related instance.
 
 organization:
-  id: number
-  name: string
-  description: HTMLStrict
+  id:
+    type: number
+    restriction_mode: A
+  name:
+    type: string
+    restriction_mode: A
+  description:
+    type: HTMLStrict
+    restriction_mode: A
 
   # Settings (configurable by the client)
-  legal_notice: string
-  privacy_policy: string
-  login_text: string
-  theme: string
-  reset_password_verbose_errors: boolean
+  legal_notice:
+    type: string
+    restriction_mode: A
+  privacy_policy:
+    type: string
+    restriction_mode: A
+  login_text:
+    type: string
+    restriction_mode: A
+  theme:
+    type: string
+    restriction_mode: A
+  reset_password_verbose_errors:
+    type: boolean
+    restriction_mode: B
+
 
   # Configuration (only for the server owner)
   enable_electronic_voting:
     type: boolean
+    restriction_mode: B
 
   committee_ids:
     type: relation-list
+    restriction_mode: B
     to: committee/organization_id
   resource_ids:
     type: relation-list
+    restriction_mode: A
     to: resource/organization_id
   organization_tag_ids:
     type: relation-list
+    restriction_mode: B
     to: organization_tag/organization_id
 
 user:
-  id: number
+  id:
+    type: number
+    restriction_mode: A
   username:
     type: string
     required: true
-  title: string
-  first_name: string
-  last_name: string
-  is_active: boolean
+    restriction_mode: A
+  title:
+    type: string
+    restriction_mode: A
+  first_name:
+    type: string
+    restriction_mode: A
+  last_name:
+    type: string
+    restriction_mode: A
+  is_active:
+    type: boolean
+    restriction_mode: D
   is_physical_person:
     type: boolean
     default: true
-  password: string
-  default_password: string
+    restriction_mode: A
+  password:
+    type: string
+    restriction_mode: G
+  default_password:
+    type: string
+    restriction_mode: D
   can_change_own_password:
     type: boolean
     default: true
+    restriction_mode: D
   gender:
     type: string
     enum:
     - male
     - female
     - diverse
-  email: string
-  default_number: string
-  default_structure_level: string
+    restriction_mode: A
+  email:
+    type: string
+    restriction_mode: C
+  default_number:
+    type: string
+    restriction_mode: A
+  default_structure_level:
+    type: string
+    restriction_mode: A
   default_vote_weight:
     type: decimal(6)
     default: "1.000000"
-  last_email_send: timestamp
+    restriction_mode: A
+  last_email_send:
+    type: timestamp
+    restriction_mode: D
   is_demo_user:
     type: boolean
+    restriction_mode: A
 
   # Organization, meeting and committee
   organization_management_level:
@@ -128,12 +177,15 @@ user:
     - superadmin
     - can_manage_organization
     - can_manage_users
+    restriction_mode: E
   is_present_in_meeting_ids:
     type: relation-list
     to: meeting/present_user_ids
+    restriction_mode: A
   committee_ids:
     type: relation-list
     to: committee/user_ids
+    restriction_mode: E
 
   # committee specific permissions
   committee_$_management_level:
@@ -144,28 +196,34 @@ user:
       type: string
       enum:
       - can_manage
+    restriction_mode: E
 
   # Meeting specific personal data
   comment_$:
     type: template
     replacement_collection: meeting
     fields: HTMLStrict
+    restriction_mode: D
   number_$:
     type: template
     replacement_collection: meeting
     fields: string
+    restriction_mode: A
   structure_level_$:
     type: template
     replacement_collection: meeting
     fields: string
+    restriction_mode: A
   about_me_$:
     type: template
     replacement_collection: meeting
     fields: HTMLStrict
+    restriction_mode: A
   vote_weight_$:
     type: template
     replacement_collection: meeting
     fields: decimal(6)
+    restriction_mode: A
 
   # All foreign keys are meeting-specific:
   # - Keys are smaller (Space is in O(n^2) for n keys
@@ -179,6 +237,7 @@ user:
     fields:
       type: relation-list
       to: group/user_ids
+    restriction_mode: C
   speaker_$_ids:
     type: template
     replacement_collection: meeting
@@ -186,6 +245,7 @@ user:
       type: relation-list
       to: speaker/user_id
       on_delete: CASCADE
+    restriction_mode: A
   personal_note_$_ids:
     type: template
     replacement_collection: meeting
@@ -193,71 +253,83 @@ user:
       type: relation-list
       to: personal_note/user_id
       on_delete: CASCADE
+    restriction_mode: B
   supported_motion_$_ids:
     type: template
     replacement_collection: meeting
     fields:
       type: relation-list
       to: motion/supporter_ids
+    restriction_mode: A
   submitted_motion_$_ids:
     type: template
     replacement_collection: meeting
     fields:
       type: relation-list
       to: motion_submitter/user_id
+    restriction_mode: A
   poll_voted_$_ids:
     type: template
     replacement_collection: meeting
     fields:
       type: relation-list
       to: poll/voted_ids
+    restriction_mode: A
   option_$_ids:
     type: template
     replacement_collection: meeting
     fields:
       type: relation-list
       to: option/content_object_id
+    restriction_mode: A
   vote_$_ids:
     type: template
     replacement_collection: meeting
     fields:
       type: relation-list
       to: vote/user_id
+    restriction_mode: A
   vote_delegated_vote_$_ids:
     type: template
     replacement_collection: meeting
     fields:
       type: relation-list
       to: vote/delegated_user_id
+    restriction_mode: A
   assignment_candidate_$_ids:
     type: template
     replacement_collection: meeting
     fields:
       type: relation-list
       to: assignment_candidate/user_id
+    restriction_mode: A
   projection_$_ids:
     type: template
     replacement_collection: meeting
     fields:
       type: relation-list
       to: projection/content_object_id
+    restriction_mode: A
   vote_delegated_$_to_id:
     type: template
     replacement_collection: meeting
     fields:
       type: relation
       to: user/vote_delegations_$_from_ids
+    restriction_mode: C
   vote_delegations_$_from_ids:
     type: template
     replacement_collection: meeting
     fields:
       type: relation-list
       to: user/vote_delegated_$_to_id
+    restriction_mode: C
 
   meeting_ids:
     type: number[]
     description: Calculated. All ids from group_$_ids as integers.
     read_only: true
+    restriction_mode: E
 
 # New: Resource
 # Resources are organsation wide "mediafiles", like logos for the organisatio or
@@ -265,23 +337,36 @@ user:
 # must not be logged in to retrieve files. A resource has a token, e.g. `web_header`
 # or `pdf_font_italic`, so the client knowns, where to put the resource.
 resource:
-  id: number
-  token: string
-  filesize: number
-  mimetype: string
+  id:
+    type: number
+    restriction_mode: A
+  token:
+    type: string
+    restriction_mode: A
+  filesize:
+    type: number
+    restriction_mode: A
+  mimetype:
+    type: string
+    restriction_mode: A
 
   organization_id:
     type: relation
     to: organization/resource_ids
+    restriction_mode: A
 
 organization_tag:
-  id: number
+  id:
+    type: number
+    restriction_mode: A
   name:
     type: string
     required: True
+    restriction_mode: A
   color:
     type: color
     required: True
+    restriction_mode: A
 
   tagged_ids:
     type: generic-relation-list
@@ -290,150 +375,207 @@ organization_tag:
         - committee
         - meeting
       field: organization_tag_ids
+    restriction_mode: A
   organization_id:
     type: relation
     to: organization/organization_tag_ids
+    restriction_mode: A
 
 committee:
-  id: number
+  id:
+    type: number
+    restriction_mode: A
   name:
     type: string
     required: true
-  description: HTMLStrict
+    restriction_mode: A
+  description:
+    type: HTMLStrict
+    restriction_mode: A
 
   meeting_ids:
     type: relation-list
     to: meeting/committee_id
     on_delete: PROTECT
+    restriction_mode: A
   template_meeting_id:
     type: relation
     to: meeting/template_for_committee_id
+    restriction_mode: A
   default_meeting_id:
     type: relation
     to: meeting/default_meeting_for_committee_id
+    restriction_mode: A
   user_ids:
     type: relation-list
     to: user/committee_ids
+    restriction_mode: A
   forward_to_committee_ids:
     type: relation-list
     to: committee/receive_forwardings_from_committee_ids
+    restriction_mode: B
   receive_forwardings_from_committee_ids:
     type: relation-list
     to: committee/forward_to_committee_ids
+    restriction_mode: B
   organization_tag_ids:
     type: relation-list
     to: organization_tag/tagged_ids
+    restriction_mode: A
   organization_id:
     type: relation
     to: organization/committee_ids
     required: true
+    restriction_mode: A
 
 meeting:
-  id: number
+  id:
+    type: number
+    restriction_mode: A
   welcome_title:
     type: string
     default: Welcome to OpenSlides
+    restriction_mode: C
   welcome_text:
     type: HTMLPermissive
     default: Space for your welcome text.
+    restriction_mode: C
 
   # General
   name:
     type: string
     maxLength: 100
     default: OpenSlides
+    restriction_mode: A
   description:
     type: string
     maxLength: 100
     default: Presentation and assembly system
-  location: string
-  start_time: timestamp
-  end_time: timestamp
-  imported_at: timestamp
+    restriction_mode: B
+  location:
+    type: string
+    restriction_mode: B
+  start_time:
+    type: timestamp
+    restriction_mode: B
+  end_time:
+    type: timestamp
+    restriction_mode: B
+  imported_at:
+    type: timestamp
 
   # Configuration (only for the server owner)
   jitsi_domain:
     type: string
+    restriction_mode: B
   jitsi_room_name:
     type: string
+    restriction_mode: B
   jitsi_room_password:
     type: string
+    restriction_mode: B
   enable_chat:
     type: boolean
+    restriction_mode: B
 
   # System
   url_name:
     type: string
     description: For unique urls.
+    restriction_mode: B
   template_for_committee_id:
     type: relation
     to: committee/template_meeting_id
+    restriction_mode: B
   enable_anonymous:
     type: boolean
     default: False
-  custom_translations: JSON
+    restriction_mode: A
+  custom_translations:
+    type: JSON
+    restriction_mode: B
 
   # Jitsi/Livestream settings
   conference_show:
     type: boolean
     default: False
+    restriction_mode: C
   conference_auto_connect:
     type: boolean
     default: False
+    restriction_mode: C
   conference_los_restriction:
     type: boolean
     default: False
-  conference_stream_url: string
-  conference_stream_poster_url: string
+    restriction_mode: C
+  conference_stream_url:
+    type: string
+    restriction_mode: C
+  conference_stream_poster_url:
+    type: string
+    restriction_mode: C
   conference_open_microphone:
     type: boolean
     default: False
+    restriction_mode: C
   conference_open_video:
     type: boolean
     default: False
+    restriction_mode: C
   conference_auto_connect_next_speakers:
     type: number
     default: 0
+    restriction_mode: C
   conference_enable_helpdesk:
     type: boolean
     default: False
+    restriction_mode: C
   applause_enable:
     type: boolean
     default: False
+    restriction_mode: C
   applause_type:
     type: string
     enum:
       - applause-type-bar
       - applause-type-particles
     default: applause-type-bar
+    restriction_mode: C
   applause_show_level:
     type: boolean
     default: False
+    restriction_mode: C
   applause_min_amount:
     type: number
     default: 1
     minimum: 0
+    restriction_mode: C
   applause_max_amount:
     type: number
     default: 0
     minimum: 0
+    restriction_mode: C
   applause_timeout:
     type: number
     default: 5
     minimum: 0
+    restriction_mode: C
   applause_particle_image_url:
     type: string
+    restriction_mode: C
 
   # Projector countdown
   projector_countdown_default_time:
     type: number
     default: 60
     required: true
+    restriction_mode: B
   projector_countdown_warning_time:
     type: number
     minimum: 0
     default: 0
     required: true
+    restriction_mode: B
 
   # Exports
   export_csv_encoding:
@@ -442,9 +584,11 @@ meeting:
     - utf-8
     - iso-8859-15
     default: utf-8
+    restriction_mode: B
   export_csv_separator:
     type: string
     default: ","
+    restriction_mode: B
   export_pdf_pagenumber_alignment:
     type: string
     enum:
@@ -452,6 +596,7 @@ meeting:
     - right
     - center
     default: center
+    restriction_mode: B
   export_pdf_fontsize:
     type: number
     enum:
@@ -459,29 +604,35 @@ meeting:
     - 11
     - 12
     default: 10
+    restriction_mode: B
   export_pdf_pagesize:
     type: string
     enum:
     - A4
     - A5
     default: A4
+    restriction_mode: B
 
   # Agenda
   agenda_show_subtitles:
     type: boolean
     default: False
+    restriction_mode: B
   agenda_enable_numbering:
      type: boolean
      default: True
+     restriction_mode: B
   agenda_number_prefix:
     type: string
     maxLength: 20
+    restriction_mode: B
   agenda_numeral_system:
     type: string
     enum:
     - arabic
     - roman
     default: arabic
+    restriction_mode: B
   agenda_item_creation:
     type: string
     enum:
@@ -490,6 +641,7 @@ meeting:
     - default_yes
     - default_no
     default: default_yes
+    restriction_mode: B
   agenda_new_items_default_visibility:
     type: string
     enum:
@@ -497,46 +649,59 @@ meeting:
     - internal
     - hidden
     default: internal
+    restriction_mode: B
   agenda_show_internal_items_on_projector:
     type: boolean
     default: True
+    restriction_mode: B
 
   # List of speakers
   list_of_speakers_amount_last_on_projector:
     type: number
     minimum: -1
     default: 0
+    restriction_mode: B
   list_of_speakers_amount_next_on_projector:
     type: number
     minimum: -1
     default: -1
+    restriction_mode: B
   list_of_speakers_couple_countdown:
     type: boolean
     default: True
+    restriction_mode: B
   list_of_speakers_show_amount_of_speakers_on_slide:
     type: boolean
     default: True
+    restriction_mode: B
   list_of_speakers_present_users_only:
     type: boolean
     default: False
+    restriction_mode: B
   list_of_speakers_show_first_contribution:
     type: boolean
     default: False
+    restriction_mode: B
   list_of_speakers_enable_point_of_order_speakers:
     type: boolean
     default: False
+    restriction_mode: B
   list_of_speakers_enable_pro_contra_speech:
     type: boolean
     default: False
+    restriction_mode: B
   list_of_speakers_can_set_contribution_self:
     type: boolean
     default: False
+    restriction_mode: B
   list_of_speakers_speaker_note_for_everyone:
     type: boolean
     default: False
+    restriction_mode: B
   list_of_speakers_initially_closed:
     type: boolean
     default: False
+    restriction_mode: B
 
 
   # Motions
@@ -544,17 +709,21 @@ meeting:
     type: relation
     to: motion_workflow/default_workflow_meeting_id
     required: true
+    restriction_mode: B
   motions_default_amendment_workflow_id:
     type: relation
     to: motion_workflow/default_amendment_workflow_meeting_id
     required: true
+    restriction_mode: B
   motions_default_statute_amendment_workflow_id:
     type: relation
     to: motion_workflow/default_statute_amendment_workflow_meeting_id
     required: true
+    restriction_mode: B
   motions_preamble:
     type: string
     default: "The assembly may decide:"
+    restriction_mode: B
   motions_default_line_numbering:
     type: string
     enum:
@@ -562,34 +731,46 @@ meeting:
     - inline
     - none
     default: outside
+    restriction_mode: B
   motions_line_length:
     type: number
     minimum: 40
     default: 85
+    restriction_mode: B
   motions_reason_required:
     type: boolean
     default: False
+    restriction_mode: B
   motions_enable_text_on_projector:
     type: boolean
     default: True
+    restriction_mode: B
   motions_enable_reason_on_projector:
     type: boolean
     default: True
+    restriction_mode: B
   motions_enable_sidebox_on_projector:
     type: boolean
     default: False
+    restriction_mode: B
   motions_enable_recommendation_on_projector:
     type: boolean
     default: True
+    restriction_mode: B
   motions_show_referring_motions:
     type: boolean
     default: True
+    restriction_mode: B
   motions_show_sequential_number:
     type: boolean
     default: True
+    restriction_mode: B
   motions_recommendations_by:
     type: string
-  motions_statute_recommendations_by: string
+    restriction_mode: B
+  motions_statute_recommendations_by:
+    type: string
+    restriction_mode: B
   motions_recommendation_text_mode:
     type: string
     enum:
@@ -598,9 +779,11 @@ meeting:
     - diff
     - agreed
     default: diff
+    restriction_mode: B
   motions_default_sorting:
     type: string
     default: identifier
+    restriction_mode: B
   motions_number_type:
     type: string
     enum:
@@ -608,26 +791,34 @@ meeting:
     - serially_numbered
     - manually
     default: per_category
+    restriction_mode: B
   motions_number_min_digits:
     type: number
     default: 1
+    restriction_mode: B
   motions_number_with_blank:
     type: boolean
     default: False
+    restriction_mode: B
   motions_statutes_enabled:
     type: boolean
     default: False
+    restriction_mode: B
   motions_amendments_enabled:
     type: boolean
     default: False
+    restriction_mode: B
   motions_amendments_in_main_list:
     type: boolean
     default: True
+    restriction_mode: B
   motions_amendments_of_amendments:
     type: boolean
     default: False
+    restriction_mode: B
   motions_amendments_prefix:
     type: string
+    restriction_mode: B
   motions_amendments_text_mode:
     type: string
     enum:
@@ -635,23 +826,31 @@ meeting:
     - fulltext
     - paragraph
     default: paragraph
+    restriction_mode: B
   motions_amendments_multiple_paragraphs:
     type: boolean
     default: True
+    restriction_mode: B
   motions_supporters_min_amount:
     type: number
     minimum: 0
     default: 0
+    restriction_mode: B
   motions_export_title:
     type: string
     default: Motions
-  motions_export_preamble: string
+    restriction_mode: B
+  motions_export_preamble:
+    type: string
+    restriction_mode: B
   motions_export_submitter_recommendation:
     type: boolean
     default: False
+    restriction_mode: B
   motions_export_follow_recommendation:
     type: boolean
     default: False
+    restriction_mode: B
 
   # Motion poll
   motion_poll_ballot_paper_selection:
@@ -661,16 +860,22 @@ meeting:
     - NUMBER_OF_ALL_PARTICIPANTS
     - CUSTOM_NUMBER
     default: CUSTOM_NUMBER
-  motion_poll_ballot_paper_number: number
+    restriction_mode: B
+  motion_poll_ballot_paper_number:
+    type: number
+    restriction_mode: B
   motion_poll_default_type:
     type: string
     default: analog
+    restriction_mode: B
   motion_poll_default_100_percent_base:
     type: string
     default: YNA
+    restriction_mode: B
   motion_poll_default_group_ids:
     type: relation-list
     to: group/used_as_motion_poll_default_id
+    restriction_mode: B
 
   # Users
   users_sort_by:
@@ -680,26 +885,37 @@ meeting:
     - last_name
     - number
     default: first_name
+    restriction_mode: B
   users_enable_presence_view:
     type: boolean
     default: False
+    restriction_mode: B
   users_enable_vote_weight:
     type: boolean
     default: False
+    restriction_mode: B
   users_allow_self_set_present:
     type: boolean
     default: False
+    restriction_mode: B
   users_pdf_welcometitle:
     type: string
     default: Welcome to OpenSlides
+    restriction_mode: B
   users_pdf_welcometext:
     type: string
-    default: [Place for your welcome and help text.]
+    default: "[Place for your welcome and help text.]"
+    restriction_mode: B
   users_pdf_url:
     type: string
     default: http://example.com:8000
-  users_pdf_wlan_ssid: string
-  users_pdf_wlan_password: string
+    restriction_mode: B
+  users_pdf_wlan_ssid:
+    type: string
+    restriction_mode: B
+  users_pdf_wlan_password:
+    type: string
+    restriction_mode: B
   users_pdf_wlan_encryption:
     type: string
     enum:
@@ -707,21 +923,30 @@ meeting:
     - WEP
     - WPA
     - nopass
+    restriction_mode: B
   users_email_sender:
     type: string
     default: OpenSlides
-  users_email_replyto: string
+    restriction_mode: B
+  users_email_replyto:
+    type: string
+    restriction_mode: B
   users_email_subject:
     type: string
     default: OpenSlides access data
-  users_email_body: string
+    restriction_mode: B
+  users_email_body:
+    type: string
+    restriction_mode: B
 
   # Assignments
   assignments_export_title:
     type: string
     default: Elections
+    restriction_mode: B
   assignments_export_preamble:
     type: string
+    restriction_mode: B
 
   # Assignment polls
   assignment_poll_ballot_paper_selection:
@@ -731,25 +956,34 @@ meeting:
     - NUMBER_OF_ALL_PARTICIPANTS
     - CUSTOM_NUMBER
     default: CUSTOM_NUMBER
+    restriction_mode: B
   assignment_poll_ballot_paper_number:
     type: number
     default: 8
+    restriction_mode: B
   assignment_poll_add_candidates_to_list_of_speakers:
     type: boolean
     default: True
+    restriction_mode: B
   assignment_poll_sort_poll_result_by_votes:
     type: boolean
     default: True
+    restriction_mode: B
   assignment_poll_default_type:
     type: string
     default: analog
-  assignment_poll_default_method: string
+    restriction_mode: B
+  assignment_poll_default_method:
+    type: string
+    restriction_mode: B
   assignment_poll_default_100_percent_base:
     type: string
     default: YNA
+    restriction_mode: B
   assignment_poll_default_group_ids:
     type: relation-list
     to: group/used_as_assignment_poll_default_id
+    restriction_mode: B
 
   # Polls
   poll_ballot_paper_selection:
@@ -758,135 +992,174 @@ meeting:
     - NUMBER_OF_DELEGATES
     - NUMBER_OF_ALL_PARTICIPANTS
     - CUSTOM_NUMBER
-  poll_ballot_paper_number: number
-  poll_sort_poll_result_by_votes: boolean
+    restriction_mode: B
+  poll_ballot_paper_number:
+    type: number
+    restriction_mode: B
+  poll_sort_poll_result_by_votes:
+    type: boolean
+    restriction_mode: B
   poll_default_type:
     type: string
     default: analog
-  poll_default_method: string
+    restriction_mode: B
+  poll_default_method:
+    type: string
+    restriction_mode: B
   poll_default_100_percent_base:
     type: string
     default: YNA
+    restriction_mode: B
   poll_default_group_ids:
     type: relation-list
     to: group/used_as_poll_default_id
+    restriction_mode: B
   poll_couple_countdown:
     type: boolean
     default: True
+    restriction_mode: B
 
   # Relations
   projector_ids:
     type: relation-list
     to: projector/meeting_id
     on_delete: CASCADE
+    restriction_mode: B
   all_projection_ids:
     type: relation-list
     to: projection/meeting_id
     on_delete: CASCADE
+    restriction_mode: B
   projector_message_ids:
     type: relation-list
     to: projector_message/meeting_id
     on_delete: CASCADE
+    restriction_mode: B
   projector_countdown_ids:
     type: relation-list
     to: projector_countdown/meeting_id
     on_delete: CASCADE
+    restriction_mode: B
   tag_ids:
     type: relation-list
     to: tag/meeting_id
     on_delete: CASCADE
+    restriction_mode: B
   agenda_item_ids:
     type: relation-list
     to: agenda_item/meeting_id
     on_delete: CASCADE
+    restriction_mode: B
   list_of_speakers_ids:
     type: relation-list
     to: list_of_speakers/meeting_id
     on_delete: CASCADE
+    restriction_mode: B
   speaker_ids:
     type: relation-list
     to: speaker/meeting_id
     on_delete: CASCADE
+    restriction_mode: B
   topic_ids:
     type: relation-list
     to: topic/meeting_id
     on_delete: CASCADE
+    restriction_mode: B
   group_ids:
     type: relation-list
     to: group/meeting_id
     on_delete: CASCADE
+    restriction_mode: B
   mediafile_ids:
     type: relation-list
     to: mediafile/meeting_id
     on_delete: CASCADE
+    restriction_mode: B
   motion_ids:
     type: relation-list
     to: motion/meeting_id
     on_delete: CASCADE
+    restriction_mode: B
   motion_comment_section_ids:
     type: relation-list
     to: motion_comment_section/meeting_id
     on_delete: CASCADE
+    restriction_mode: B
   motion_category_ids:
     type: relation-list
     to: motion_category/meeting_id
     on_delete: CASCADE
+    restriction_mode: B
   motion_block_ids:
     type: relation-list
     to: motion_block/meeting_id
     on_delete: CASCADE
+    restriction_mode: B
   motion_workflow_ids:
     type: relation-list
     to: motion_workflow/meeting_id
     on_delete: CASCADE
+    restriction_mode: B
   motion_statute_paragraph_ids:
     type: relation-list
     to: motion_statute_paragraph/meeting_id
     on_delete: CASCADE
+    restriction_mode: B
   motion_comment_ids:
     type: relation-list
     to: motion_comment/meeting_id
     on_delete: CASCADE
+    restriction_mode: B
   motion_submitter_ids:
     type: relation-list
     to: motion_submitter/meeting_id
     on_delete: CASCADE
+    restriction_mode: B
   motion_change_recommendation_ids:
     type: relation-list
     to: motion_change_recommendation/meeting_id
     on_delete: CASCADE
+    restriction_mode: B
   motion_state_ids:
     type: relation-list
     to: motion_state/meeting_id
     on_delete: CASCADE
+    restriction_mode: B
   poll_ids:
     type: relation-list
     to: poll/meeting_id
     on_delete: CASCADE
+    restriction_mode: B
   option_ids:
     type: relation-list
     to: option/meeting_id
     on_delete: CASCADE
+    restriction_mode: B
   vote_ids:
     type: relation-list
     to: vote/meeting_id
     on_delete: CASCADE
+    restriction_mode: B
   assignment_ids:
     type: relation-list
     to: assignment/meeting_id
     on_delete: CASCADE
+    restriction_mode: B
   assignment_candidate_ids:
     type: relation-list
     to: assignment_candidate/meeting_id
     on_delete: CASCADE
+    restriction_mode: B
   personal_note_ids:
     type: relation-list
     to: personal_note/meeting_id
     on_delete: CASCADE
+    restriction_mode: B
   chat_group_ids:
     type: relation-list
     to: chat_group/meeting_id
     on_delete: CASCADE
+    restriction_mode: B
 
   # Logos and Fonts
   logo_$_id:
@@ -894,11 +1167,13 @@ meeting:
     fields:
       type: relation
       to: mediafile/used_as_logo_$_in_meeting_id
+    restriction_mode: B
   font_$_id:
     type: template
     fields:
       type: relation
       to: mediafile/used_as_font_$_in_meeting_id
+    restriction_mode: B
   # The client can define these resources. There is no need
   # to have whitelist/blacklist on the server. The places must
   # be checked: They must match `[a-z]([a-z_]*[a-z])?` and must
@@ -909,35 +1184,44 @@ meeting:
     type: relation
     to: committee/meeting_ids
     required: true
+    restriction_mode: B
   default_meeting_for_committee_id:
     type: relation
     to: committee/default_meeting_id
+    restriction_mode: B
   organization_tag_ids:
     type: relation-list
     to: organization_tag/tagged_ids
+    restriction_mode: B
   present_user_ids:
     type: relation-list
     to: user/is_present_in_meeting_ids
+    restriction_mode: B
   user_ids:
     type: number[]
     description: Calculated. All user ids from all users assigned to groups of this meeting.
     read_only: true
+    restriction_mode: B
   reference_projector_id:
     type: relation
     to: projector/used_as_reference_projector_meeting_id
     required: true
+    restriction_mode: B
   list_of_speakers_countdown_id:
     type: relation
     to: projector_countdown/used_as_list_of_speaker_countdown_meeting_id
+    restriction_mode: B
   poll_countdown_id:
     type: relation
     to: projector_countdown/used_as_poll_countdown_meeting_id
+    restriction_mode: B
 
   default_projector_$_id:
     type: template
     fields:
       type: relation
       to: projector/used_as_default_$_in_meeting_id
+    restriction_mode: B
   # Available template field replacements:
   #  - agenda_all_items
   #  - topics
@@ -957,20 +1241,26 @@ meeting:
   projection_ids:
     type: relation-list
     to: projection/content_object_id
+    restriction_mode: B
 
   default_group_id:
     type: relation
     to: group/default_group_for_meeting_id
     required: true
+    restriction_mode: B
   admin_group_id:
     type: relation
     to: group/admin_group_for_meeting_id
+    restriction_mode: B
 
 group:
-  id: number
+  id:
+    type: number
+    restriction_mode: A
   name:
     type: string
     required: true
+    restriction_mode: A
   permissions:
     type: string[]
     items:
@@ -1009,70 +1299,92 @@ group:
       - user.can_manage
       - user.can_see
       - user.can_see_extra_data
+    restriction_mode: A
 
 
   user_ids:
     type: relation-list
     to: user/group_$_ids
+    restriction_mode: A
   default_group_for_meeting_id:
     type: relation
     to: meeting/default_group_id
     on_delete: PROTECT
+    restriction_mode: A
   admin_group_for_meeting_id:
     type: relation
     to: meeting/admin_group_id
     on_delete: PROTECT
+    restriction_mode: A
   mediafile_access_group_ids:
     type: relation-list
     to: mediafile/access_group_ids
     equal_fields: meeting_id
+    restriction_mode: A
   mediafile_inherited_access_group_ids:
     type: relation-list
     to: mediafile/inherited_access_group_ids
     description: Calculated field.
     read_only: true
+    restriction_mode: A
   read_comment_section_ids:
     type: relation-list
     to: motion_comment_section/read_group_ids
     equal_fields: meeting_id
+    restriction_mode: A
   write_comment_section_ids:
     type: relation-list
     to: motion_comment_section/write_group_ids
     equal_fields: meeting_id
+    restriction_mode: A
   read_chat_group_ids:
     type: relation-list
     to: chat_group/read_group_ids
     equal_fields: meeting_id
+    restriction_mode: A
   write_chat_group_ids:
     type: relation-list
     to: chat_group/write_group_ids
     equal_fields: meeting_id
+    restriction_mode: A
   poll_ids:
     type: relation-list
     to: poll/entitled_group_ids
     equal_fields: meeting_id
+    restriction_mode: A
   used_as_motion_poll_default_id:
     type: relation
     to: meeting/motion_poll_default_group_ids
+    restriction_mode: A
   used_as_assignment_poll_default_id:
     type: relation
     to: meeting/assignment_poll_default_group_ids
+    restriction_mode: A
   used_as_poll_default_id:
     type: relation
     to: meeting/poll_default_group_ids
+    restriction_mode: A
   meeting_id:
     type: relation
     to: meeting/group_ids
     required: true
+    restriction_mode: A
 
 personal_note:
-  id: number
-  note: HTMLStrict
-  star: boolean
+  id:
+    type: number
+    restriction_mode: A
+  note:
+    type: HTMLStrict
+    restriction_mode: A
+  star:
+    type: boolean
+    restriction_mode: A
 
   user_id:
     type: relation
     to: user/personal_note_$_ids
+    restriction_mode: A
   content_object_id:
     type: generic-relation
     to:
@@ -1080,16 +1392,21 @@ personal_note:
         - motion
       field: personal_note_ids
     equal_fields: meeting_id
+    restriction_mode: A
   meeting_id:
     type: relation
     to: meeting/personal_note_ids
     required: true
+    restriction_mode: A
 
 tag:
-  id: number
+  id:
+    type: number
+    restriction_mode: A
   name:
     type: string
     required: true
+    restriction_mode: A
 
   tagged_ids:
     type: generic-relation-list
@@ -1101,18 +1418,27 @@ tag:
         - topic
       field: tag_ids
     equal_fields: meeting_id
+    restriction_mode: A
   meeting_id:
     type: relation
     to: meeting/tag_ids
     required: true
+    restriction_mode: A
 
 agenda_item:
-  id: number
-  item_number: string
-  comment: string
+  id:
+    type: number
+    restriction_mode: A
+  item_number:
+    type: string
+    restriction_mode: A
+  comment:
+    type: string
+    restriction_mode: C
   closed:
       type: boolean
       default: false
+      restriction_mode: A
   type:
     type: string
     enum:
@@ -1120,25 +1446,31 @@ agenda_item:
     - internal
     - hidden
     default: common
+    restriction_mode: A
   duration:
     type: number
     description: Given in seconds
     minimum: 0
+    restriction_mode: B
   is_internal:
     type: boolean
     description: Calculated by the server
     read_only: true
+    restriction_mode: A
   is_hidden:
     type: boolean
     description: Calculated by the server
     read_only: true
+    restriction_mode: A
   level:
     type: number
     description: Calculated by the server
     read_only: true
+    restriction_mode: A
   weight:
     type: number
     default: 10000
+    restriction_mode: A
 
   content_object_id:
     type: generic-relation
@@ -1151,32 +1483,41 @@ agenda_item:
       field: agenda_item_id
     required: true
     equal_fields: meeting_id
+    restriction_mode: A
   parent_id:
     type: relation
     to: agenda_item/child_ids
     equal_fields: meeting_id
+    restriction_mode: A
   child_ids:
     type: relation-list
     to: agenda_item/parent_id
     equal_fields: meeting_id
+    restriction_mode: A
   tag_ids:
     type: relation-list
     to: tag/tagged_ids
     equal_fields: meeting_id
+    restriction_mode: A
   projection_ids:
     type: relation-list
     to: projection/content_object_id
     equal_fields: meeting_id
+    restriction_mode: A
   meeting_id:
     type: relation
     to: meeting/agenda_item_ids
     required: true
+    restriction_mode: A
 
 list_of_speakers:
-  id: number
+  id:
+    type: number
+    restriction_mode: A
   closed:
     type: boolean
     default: false
+    restriction_mode: A
 
   content_object_id:
     type: generic-relation
@@ -1190,166 +1531,228 @@ list_of_speakers:
       field: list_of_speakers_id
     required: true
     equal_fields: meeting_id
+    restriction_mode: A
   speaker_ids:
     type: relation-list
     to: speaker/list_of_speakers_id
     on_delete: CASCADE
     equal_fields: meeting_id
+    restriction_mode: A
   projection_ids:
     type: relation-list
     to: projection/content_object_id
     equal_fields: meeting_id
+    restriction_mode: A
   meeting_id:
     type: relation
     to: meeting/list_of_speakers_ids
     required: true
+    restriction_mode: A
 
 speaker:
-  id: number
+  id:
+    type: number
+    restriction_mode: A
   begin_time:
     type: timestamp
     read_only: true
+    restriction_mode: A
   end_time:
     type: timestamp
     read_only: true
+    restriction_mode: A
   weight:
     type: number
     default: 10000
+    restriction_mode: A
   speech_state:
     type: string
     enum:
       - contribution
       - pro
       - contra
+    restriction_mode: A
   note:
     type: string
     maxLength: 250
-  point_of_order: boolean
+    restriction_mode: A
+  point_of_order:
+    type: boolean
+    restriction_mode: A
 
   list_of_speakers_id:
     type: relation
     to: list_of_speakers/speaker_ids
     required: true
     equal_fields: meeting_id
+    restriction_mode: A
   user_id:
     type: relation
     to: user/speaker_$_ids
     required: true
     equal_fields: meeting_id
+    restriction_mode: A
   meeting_id:
     type: relation
     to: meeting/speaker_ids
     required: true
+    restriction_mode: A
 
 topic:
-  id: number
+  id:
+    type: number
+    restriction_mode: A
   title:
     type: string
     required: true
-  text: HTMLPermissive
+    restriction_mode: A
+  text:
+    type: HTMLPermissive
+    restriction_mode: B
 
   attachment_ids:
     type: relation-list
     to: mediafile/attachment_ids
     equal_fields: meeting_id
+    restriction_mode: B
   agenda_item_id:
     type: relation
     to: agenda_item/content_object_id
     required: true
     on_delete: CASCADE
     equal_fields: meeting_id
+    restriction_mode: B
   list_of_speakers_id:
     type: relation
     to: list_of_speakers/content_object_id
     required: true
     on_delete: CASCADE
     equal_fields: meeting_id
+    restriction_mode: B
   option_ids:
     type: relation-list
     to: option/content_object_id
     on_delete: CASCADE
     equal_fields: meeting_id
+    restriction_mode: B
   tag_ids:
     type: relation-list
     to: tag/tagged_ids
     equal_fields: meeting_id
+    restriction_mode: B
   projection_ids:
     type: relation-list
     to: projection/content_object_id
     equal_fields: meeting_id
+    restriction_mode: B
   meeting_id:
     type: relation
     to: meeting/topic_ids
     required: true
+    restriction_mode: B
 
 motion:
-  id: number
-  number: string
+  id:
+    type: number
+    restriction_mode: A
+  number:
+    type: string
+    restriction_mode: A
   number_value:
     type: number
     description: The number value of this motion. This number is auto-generated and read-only.
     read_only: true
+    restriction_mode: D
   sequential_number:
     type: number
     description: The (positive) serial number of this motion. This number is auto-generated and read-only.
     read_only: true
+    restriction_mode: C
   title:
     type: string
     required: true
-  text: HTMLStrict
+    restriction_mode: A
+  text:
+    type: HTMLStrict
+    restriction_mode: C
   amendment_paragraph_$:
     type: template
     fields: HTMLStrict
-  modified_final_version: HTMLStrict
-  reason: HTMLStrict
+    restriction_mode: C
+  modified_final_version:
+    type: HTMLStrict
+    restriction_mode: C
+  reason:
+    type: HTMLStrict
+    restriction_mode: C
   category_weight:
     type: number
     default: 10000
-  state_extension: string
-  recommendation_extension: string
+    restriction_mode: C
+  state_extension:
+    type: string
+    restriction_mode: C
+  recommendation_extension:
+    type: string
+    restriction_mode: C
   sort_weight:
     type: number
     default: 10000
+    restriction_mode: C
   created:
     type: timestamp
     read_only: true
+    restriction_mode: C
   last_modified:
     type: timestamp
     read_only: true
+    restriction_mode: C
 
   lead_motion_id:
     type: relation
     to: motion/amendment_ids
     equal_fields: meeting_id
+    restriction_mode: C
   amendment_ids:
     type: relation-list
     to: motion/lead_motion_id
     equal_fields: meeting_id
+    restriction_mode: C
   sort_parent_id:
     type: relation
     to: motion/sort_child_ids
     equal_fields: meeting_id
+    restriction_mode: C
   sort_child_ids:
     type: relation-list
     to: motion/sort_parent_id
     equal_fields: meeting_id
+    restriction_mode: C
   origin_id:
     type: relation
     to: motion/derived_motion_ids  # Note: The related motions may not be in the same meeting
+    restriction_mode: B
   derived_motion_ids:
     type: relation-list
     to: motion/origin_id  # Note: The related motions may not be in the same meeting
-  all_origin_ids: number[]  # Calculated: All parents (origin_id), grandparents, etc. of this motion.
-  all_derived_motion_ids: number[]  # Calculated: All children (derived_motion_ids), grandchildren, etc. of this motion.
+    restriction_mode: B
+  all_origin_ids:
+    type: number[]  # Calculated: All parents (origin_id), grandparents, etc. of this motion.
+    restriction_mode: B
+  all_derived_motion_ids:
+    type: number[]  # Calculated: All children (derived_motion_ids), grandchildren, etc. of this motion.
+    restriction_mode: B
   state_id:
     type: relation
     to: motion_state/motion_ids
     required: true
     equal_fields: meeting_id
+    restriction_mode: C
   recommendation_id:
     type: relation
     to: motion_state/motion_recommendation_ids
     equal_fields: meeting_id
+    restriction_mode: C
   recommendation_extension_reference_ids:
     type: generic-relation-list
     to:
@@ -1357,215 +1760,279 @@ motion:
         - motion
       field: referenced_in_motion_recommendation_extension_ids
     equal_fields: meeting_id
+    restriction_mode: C
   referenced_in_motion_recommendation_extension_ids:
     type: relation-list
     to: motion/recommendation_extension_reference_ids
     equal_fields: meeting_id
+    restriction_mode: C
   category_id:
     type: relation
     to: motion_category/motion_ids
     equal_fields: meeting_id
+    restriction_mode: C
   block_id:
     type: relation
     to: motion_block/motion_ids
     equal_fields: meeting_id
+    restriction_mode: C
   submitter_ids:
     type: relation-list
     to: motion_submitter/motion_id
     on_delete: CASCADE
     equal_fields: meeting_id
+    restriction_mode: C
   supporter_ids:
     type: relation-list
     to: user/supported_motion_$_ids
+    restriction_mode: C
   poll_ids:
     type: relation-list
     to: poll/content_object_id
     on_delete: CASCADE
     equal_fields: meeting_id
+    restriction_mode: C
   option_ids:
     type: relation-list
     to: option/content_object_id
     on_delete: CASCADE
     equal_fields: meeting_id
+    restriction_mode: C
   change_recommendation_ids:
     type: relation-list
     to: motion_change_recommendation/motion_id
     on_delete: CASCADE
     equal_fields: meeting_id
+    restriction_mode: C
   statute_paragraph_id:
     type: relation
     to: motion_statute_paragraph/motion_ids
     equal_fields: meeting_id
+    restriction_mode: C
   comment_ids:
     type: relation-list
     to: motion_comment/motion_id
     on_delete: CASCADE
     equal_fields: meeting_id
+    restriction_mode: C
   agenda_item_id:
     type: relation
     to: agenda_item/content_object_id
     on_delete: CASCADE
     equal_fields: meeting_id
+    restriction_mode: C
   list_of_speakers_id:
     type: relation
     to: list_of_speakers/content_object_id
     required: true
     on_delete: CASCADE
     equal_fields: meeting_id
+    restriction_mode: C
   tag_ids:
     type: relation-list
     to: tag/tagged_ids
     equal_fields: meeting_id
+    restriction_mode: C
   attachment_ids:
     type: relation-list
     to: mediafile/attachment_ids
     equal_fields: meeting_id
+    restriction_mode: C
   projection_ids:
     type: relation-list
     to: projection/content_object_id
     equal_fields: meeting_id
+    restriction_mode: C
   personal_note_ids:
     type: relation-list
     to: personal_note/content_object_id
     equal_fields: meeting_id
     on_delete: CASCADE
+    restriction_mode: C
   meeting_id:
     type: relation
     to: meeting/motion_ids
     required: true
+    restriction_mode: B
 
 motion_submitter:
-  id: number
-  weight: number
+  id:
+    type: number
+    restriction_mode: A
+  weight:
+    type: number
+    restriction_mode: A
   user_id:
     type: relation
     to: user/submitted_motion_$_ids
+    restriction_mode: A
   motion_id:
     type: relation
     to: motion/submitter_ids
     equal_fields: meeting_id
+    restriction_mode: A
   meeting_id:
     type: relation
     to: meeting/motion_submitter_ids
     required: true
+    restriction_mode: A
 
 motion_comment:
-  id: number
-  comment: HTMLStrict
+  id:
+    type: number
+    restriction_mode: A
+  comment:
+    type: HTMLStrict
+    restriction_mode: A
 
   motion_id:
     type: relation
     to: motion/comment_ids
     required: true
     equal_fields: meeting_id
+    restriction_mode: A
   section_id:
     type: relation
     to: motion_comment_section/comment_ids
     required: true
     equal_fields: meeting_id
+    restriction_mode: A
   meeting_id:
     type: relation
     to: meeting/motion_comment_ids
     required: true
+    restriction_mode: A
 
 motion_comment_section:
-  id: number
+  id:
+    type: number
+    restriction_mode: A
   name:
     type: string
     required: true
+    restriction_mode: A
   weight:
     type: number
     default: 10000
+    restriction_mode: A
 
   comment_ids:
     type: relation-list
     to: motion_comment/section_id
     on_delete: PROTECT
     equal_fields: meeting_id
+    restriction_mode: A
   read_group_ids:
     type: relation-list
     to: group/read_comment_section_ids
     equal_fields: meeting_id
+    restriction_mode: A
   write_group_ids:
     type: relation-list
     to: group/write_comment_section_ids
     equal_fields: meeting_id
+    restriction_mode: A
   meeting_id:
     type: relation
     to: meeting/motion_comment_section_ids
     required: true
+    restriction_mode: A
 
 motion_category:
-  id: number
+  id:
+    type: number
+    restriction_mode: A
   name:
     type: string
     required: true
+    restriction_mode: A
   prefix:
     type: string
+    restriction_mode: A
   weight:
     type: number
     default: 10000
+    restriction_mode: A
   level:
     type: number
     description: Calculated field.
     read_only: true
+    restriction_mode: A
 
   parent_id:
     type: relation
     to: motion_category/child_ids
     equal_fields: meeting_id
+    restriction_mode: A
   child_ids:
     type: relation-list
     to: motion_category/parent_id
     equal_fields: meeting_id
+    restriction_mode: A
   motion_ids:
     type: relation-list
     to: motion/category_id
     equal_fields: meeting_id
+    restriction_mode: A
   meeting_id:
     type: relation
     to: meeting/motion_category_ids
     required: true
+    restriction_mode: A
 
 motion_block:
-  id: number
+  id:
+    type: number
+    restriction_mode: A
   title:
     type: string
     required: true
-  internal: boolean
+    restriction_mode: A
+  internal:
+    type: boolean
+    restriction_mode: B
 
   motion_ids:
     type: relation-list
     to: motion/block_id
     equal_fields: meeting_id
+    restriction_mode: B
   agenda_item_id:
     type: relation
     to: agenda_item/content_object_id
     on_delete: CASCADE
     equal_fields: meeting_id
+    restriction_mode: B
   list_of_speakers_id:
     type: relation
     to: list_of_speakers/content_object_id
     required: true
     on_delete: CASCADE
     equal_fields: meeting_id
+    restriction_mode: B
   projection_ids:
     type: relation-list
     to: projection/content_object_id
     equal_fields: meeting_id
+    restriction_mode: B
   meeting_id:
     type: relation
     to: meeting/motion_block_ids
     required: true
+    restriction_mode: B
 
 motion_change_recommendation:
-  id: number
+  id:
+    type: number
+    restriction_mode: A
   rejected:
     type: boolean
     default: false
+    restriction_mode: A
   internal:
     type: boolean
     default: false
+    restriction_mode: A
   type:
     type: string
     enum:
@@ -1574,34 +2041,49 @@ motion_change_recommendation:
     - deletion
     - other
     default: replacement
-  other_description: string
+    restriction_mode: A
+  other_description:
+    type: string
+    restriction_mode: A
   line_from:
     type: number
     minimum: 0
+    restriction_mode: A
   line_to:
     type: number
     minimum: 0
-  text: HTMLStrict
+    restriction_mode: A
+  text:
+    type: HTMLStrict
+    restriction_mode: A
   creation_time:
     type: timestamp
     read_only: true
+    restriction_mode: A
 
   motion_id:
     type: relation
     to: motion/change_recommendation_ids
     required: true
     equal_fields: meeting_id
+    restriction_mode: A
   meeting_id:
     type: relation
     to: meeting/motion_change_recommendation_ids
     required: true
+    restriction_mode: A
 
 motion_state:
-  id: number
+  id:
+    type: number
+    restriction_mode: A
   name:
     type: string
     required: true
-  recommendation_label: string
+    restriction_mode: A
+  recommendation_label:
+    type: string
+    restriction_mode: A
   css_class:
     type: string
     enum:
@@ -1612,6 +2094,7 @@ motion_state:
     - yellow
     default: lightblue
     required: true
+    restriction_mode: A
   restrictions:
     type: string[]
     items:
@@ -1621,21 +2104,27 @@ motion_state:
       - motion.can_manage
       - is_submitter
     default: []
+    restriction_mode: A
   allow_support:
     type: boolean
     default: false
+    restriction_mode: A
   allow_create_poll:
     type: boolean
     default: false
+    restriction_mode: A
   allow_submitter_edit:
     type: boolean
     default: false
+    restriction_mode: A
   set_number:
     type: boolean
     default: true
+    restriction_mode: A
   show_state_extension_field:
     type: boolean
     default: false
+    restriction_mode: A
   merge_amendment_into_final:
     type: string
     enum:
@@ -1643,9 +2132,11 @@ motion_state:
     - undefined
     - do_merge
     default: undefined
+    restriction_mode: A
   show_recommendation_extension_field:
     type: boolean
     default: false
+    restriction_mode: A
 
   next_state_ids:
     type: relation-list
@@ -1653,91 +2144,120 @@ motion_state:
     equal_fields:
     - meeting_id
     - workflow_id
+    restriction_mode: A
   previous_state_ids:
     type: relation-list
     to: motion_state/next_state_ids
     equal_fields:
     - meeting_id
     - workflow_id
+    restriction_mode: A
   motion_ids:
     type: relation-list
     to: motion/state_id
     on_delete: PROTECT
     equal_fields: meeting_id
+    restriction_mode: A
   motion_recommendation_ids:
     type: relation-list
     to: motion/recommendation_id
     equal_fields: meeting_id
+    restriction_mode: A
   workflow_id:
     type: relation
     to: motion_workflow/state_ids
     required: true
     equal_fields: meeting_id
+    restriction_mode: A
   first_state_of_workflow_id:
     type: relation
     to: motion_workflow/first_state_id
     on_delete: PROTECT
     equal_fields: meeting_id
+    restriction_mode: A
   meeting_id:
     type: relation
     to: meeting/motion_state_ids
     required: true
+    restriction_mode: A
 
 motion_workflow:
-  id: number
+  id:
+    type: number
+    restriction_mode: A
   name:
     type: string
     required: true
+    restriction_mode: A
 
   state_ids:
     type: relation-list
     to: motion_state/workflow_id
     on_delete: CASCADE
     equal_fields: meeting_id
+    restriction_mode: A
   first_state_id:
     type: relation
     to: motion_state/first_state_of_workflow_id
     required: true
     equal_fields: meeting_id
+    restriction_mode: A
   default_workflow_meeting_id:
     type: relation
     to: meeting/motions_default_workflow_id
+    restriction_mode: A
   default_amendment_workflow_meeting_id:
     type: relation
     to: meeting/motions_default_amendment_workflow_id
+    restriction_mode: A
   default_statute_amendment_workflow_meeting_id:
     type: relation
     to: meeting/motions_default_statute_amendment_workflow_id
+    restriction_mode: A
   meeting_id:
     type: relation
     to: meeting/motion_workflow_ids
     required: true
+    restriction_mode: A
 
 motion_statute_paragraph:
-  id: number
+  id:
+    type: number
+    restriction_mode: A
   title:
     type: string
     required: true
-  text: HTMLStrict
+    restriction_mode: A
+  text:
+    type: HTMLStrict
+    restriction_mode: A
   weight:
     type: number
     default: 10000
+    restriction_mode: A
 
   motion_ids:
     type: relation-list
     to: motion/statute_paragraph_id
     equal_fields: meeting_id
+    restriction_mode: A
   meeting_id:
     type: relation
     to: meeting/motion_statute_paragraph_ids
     required: true
+    restriction_mode: A
 
 poll:
-  id: number
-  description: string
+  id:
+    type: number
+    restriction_mode: A
+  description:
+    type: string
+    restriction_mode: A
   title:
     type: string
     required: true
+    restriction_mode: A
   type:
     type: string
     required: true
@@ -1745,6 +2265,7 @@ poll:
       - analog
       - named
       - pseudoanonymous
+    restriction_mode: A
   backend:
     type: string
     required: True
@@ -1752,15 +2273,19 @@ poll:
     enum:
       - long
       - fast
-  is_pseudoanonymized: boolean
+    restriction_mode: A
+  is_pseudoanonymized:
+    type: boolean
+    restriction_mode: A
   pollmethod:
     type: string
     required: true
     enum:
-      - Y
-      - YN
-      - YNA
-      - N
+      - "Y"
+      - "YN"
+      - "YNA"
+      - "N"
+    restriction_mode: A
   state:
     type: string
     enum:
@@ -1769,40 +2294,55 @@ poll:
       - finished
       - published
     default: created
+    restriction_mode: A
   min_votes_amount:
     type: number
     default: 1
+    restriction_mode: A
   max_votes_amount:
     type: number
     default: 1
+    restriction_mode: A
   global_yes:
     type: boolean
     default: false
+    restriction_mode: A
   global_no:
     type: boolean
     default: false
+    restriction_mode: A
   global_abstain:
     type: boolean
     default: false
+    restriction_mode: A
   onehundred_percent_base:
     type: string
     required: true
     enum:
-      - Y
-      - YN
-      - YNA
-      - N
-      - valid
-      - cast
-      - entitled
-      - disabled
+      - "Y"
+      - "YN"
+      - "YNA"
+      - "N"
+      - "valid"
+      - "cast"
+      - "entitled"
+      - "disabled"
     default: disabled
-  votesvalid: decimal(6)
-  votesinvalid: decimal(6)
-  votescast: decimal(6)
-  entitled_users_at_stop: JSON
+    restriction_mode: A
+  votesvalid:
+    type: decimal(6)
+    restriction_mode: B
+  votesinvalid:
+    type: decimal(6)
+    restriction_mode: B
+  votescast:
+    type: decimal(6)
+    restriction_mode: D
+  entitled_users_at_stop:
+    type: JSON
+    restriction_mode: A
 
-  content_object_id:  # Note: must not be set - it is allowed to have standalone polls
+  content_object_id: # Note: must not be set - it is allowed to have standalone polls
     type: generic-relation
     to:
       collections:
@@ -1810,54 +2350,75 @@ poll:
         - assignment
       field: poll_ids
     equal_fields: meeting_id
+    restriction_mode: A
   option_ids:
     type: relation-list
     to: option/poll_id
     on_delete: CASCADE
     equal_fields: meeting_id
+    restriction_mode: A
   global_option_id:
     type: relation
     to: option/used_as_global_option_in_poll_id
     on_delete: CASCADE
     equal_fields: meeting_id
+    restriction_mode: A
   voted_ids:
     type: relation-list
     to: user/poll_voted_$_ids
+    restriction_mode: A
   entitled_group_ids:
     type: relation-list
     to: group/poll_ids
     equal_fields: meeting_id
+    restriction_mode: A
   projection_ids:
     type: relation-list
     to: projection/content_object_id
     equal_fields: meeting_id
+    restriction_mode: A
   meeting_id:
     type: relation
     to: meeting/poll_ids
+    restriction_mode: A
 
 option:
-  id: number
+  id:
+    type: number
+    restriction_mode: A
   weight:
     type: number
     default: 10000
-  text: HTMLStrict
-  yes: decimal(6)
-  no: decimal(6)
-  abstain: decimal(6)
+    restriction_mode: A
+  text:
+    type: HTMLStrict
+    restriction_mode: A
+  yes:
+    type: decimal(6)
+    restriction_mode: B
+  no:
+    type: decimal(6)
+    restriction_mode: B
+  abstain:
+    type: decimal(6)
+    restriction_mode: B
 
   poll_id:
     type: relation
     to: poll/option_ids
     equal_fields: meeting_id
+    restriction_mode: A
   used_as_global_option_in_poll_id:
     type: relation
     to: poll/global_option_id
     equal_fields: meeting_id
+    restriction_mode: A
   vote_ids:
     type: relation-list
     to: vote/option_id
     on_delete: CASCADE
     equal_fields: meeting_id
+    restriction_mode: A
   content_object_id:
     type: generic-relation
     to:
@@ -1865,45 +2426,64 @@ option:
       - topic/option_ids
       - user/option_$_ids
     equal_fields: meeting_id
+    restriction_mode: A
   meeting_id:
     type: relation
     to: meeting/option_ids
     required: true
+    restriction_mode: A
 
 vote:
-  id: number
-  weight: decimal(6)
-  value: string
+  id:
+    type: number
+    restriction_mode: A
+  weight:
+    type: decimal(6)
+    restriction_mode: A
+  value:
+    type: string
+    restriction_mode: A
   user_token:
     type: string
     required: true
+    restriction_mode: B
 
   option_id:
     type: relation
     to: option/vote_ids
     equal_fields: meeting_id
     required: true
+    restriction_mode: A
   user_id:
     type: relation
     to: user/vote_$_ids
+    restriction_mode: A
   delegated_user_id:
     type: relation
     to: user/vote_delegated_vote_$_ids
+    restriction_mode: A
   meeting_id:
     type: relation
     to: meeting/vote_ids
     required: true
+    restriction_mode: A
 
 assignment:
-  id: number
+  id:
+    type: number
+    restriction_mode: A
   title:
     type: string
     required: true
-  description: HTMLStrict
+    restriction_mode: A
+  description:
+    type: HTMLStrict
+    restriction_mode: B
   open_posts:
     type: number
     minimum: 0
     default: 0
+    restriction_mode: B
   phase:
     type: string
     enum:
@@ -1911,114 +2491,153 @@ assignment:
     - voting
     - finished
     default: search
-  default_poll_description: string
-  number_poll_candidates: boolean
+    restriction_mode: B
+  default_poll_description:
+    type: string
+    restriction_mode: B
+  number_poll_candidates:
+    type: boolean
+    restriction_mode: B
 
   candidate_ids:
     type: relation-list
     to: assignment_candidate/assignment_id
     on_delete: CASCADE
     equal_fields: meeting_id
+    restriction_mode: B
   poll_ids:
     type: relation-list
     to: poll/content_object_id
     on_delete: CASCADE
     equal_fields: meeting_id
+    restriction_mode: B
   agenda_item_id:
     type: relation
     to: agenda_item/content_object_id
     on_delete: CASCADE
     equal_fields: meeting_id
+    restriction_mode: B
   list_of_speakers_id:
     type: relation
     to: list_of_speakers/content_object_id
     required: true
     on_delete: CASCADE
     equal_fields: meeting_id
+    restriction_mode: B
   tag_ids:
     type: relation-list
     to: tag/tagged_ids
     equal_fields: meeting_id
+    restriction_mode: B
   attachment_ids:
     type: relation-list
     to: mediafile/attachment_ids
     equal_fields: meeting_id
+    restriction_mode: B
   projection_ids:
     type: relation-list
     to: projection/content_object_id
     equal_fields: meeting_id
+    restriction_mode: B
   meeting_id:
     type: relation
     to: meeting/assignment_ids
     required: true
+    restriction_mode: B
 
 assignment_candidate:
-  id: number
+  id:
+    type: number
+    restriction_mode: A
   weight:
     type: number
     default: 10000
+    restriction_mode: A
 
   assignment_id:
     type: relation
     to: assignment/candidate_ids
     equal_fields: meeting_id
+    restriction_mode: A
   user_id:
     type: relation
     to: user/assignment_candidate_$_ids
+    restriction_mode: A
   meeting_id:
     type: relation
     to: meeting/assignment_candidate_ids
     required: true
+    restriction_mode: A
 
 # Mediafiles are delivered by the mediafile server with the URL
 # `<media-prefix>/media/<meeting_id>/path`
 mediafile:
-  id: number
+  id:
+    type: number
+    restriction_mode: A
   title:
     type: string
     description: Title and parent_id must be unique.
-  is_directory: boolean
+    restriction_mode: A
+  is_directory:
+    type: boolean
+    restriction_mode: B
   filesize:
     type: number
     description: In bytes, not the human readable format anymore.
     read_only: true
+    restriction_mode: B
   filename:
     type: string
     descriptin: The uploaded filename. Will be used for downloading. Only writeable on create.
-  mimetype: string
-  pdf_information: JSON
-  create_timestamp: timestamp
+    restriction_mode: B
+  mimetype:
+    type: string
+    restriction_mode: B
+  pdf_information:
+    type: JSON
+    restriction_mode: B
+  create_timestamp:
+    type: timestamp
+    restriction_mode: B
   is_public:
     type: boolean
     description: "Calculated field. inherited_access_group_ids == [] can have two causes: cancelling access groups (=> is_public := false) or no access groups at all (=> is_public := true)"
     read_only: true
+    restriction_mode: B
 
   inherited_access_group_ids:
     type: relation-list
     to: group/mediafile_inherited_access_group_ids
     description: Calculated field.
     read_only: true
+    restriction_mode: B
   access_group_ids:
     type: relation-list
     to: group/mediafile_access_group_ids
     equal_fields: meeting_id
+    restriction_mode: B
   parent_id:
     type: relation
     to: mediafile/child_ids
     equal_fields: meeting_id
+    restriction_mode: B
   child_ids:
     type: relation-list
     to: mediafile/parent_id
     equal_fields: meeting_id
+    restriction_mode: B
   list_of_speakers_id:
     type: relation
     to: list_of_speakers/content_object_id
     on_delete: CASCADE
     equal_fields: meeting_id
+    restriction_mode: B
   projection_ids:
     type: relation-list
     to: projection/content_object_id
     equal_fields: meeting_id
+    restriction_mode: B
   attachment_ids:
     type: generic-relation-list
     to:
@@ -2028,10 +2647,12 @@ mediafile:
         - assignment
       field: attachment_ids
     equal_fields: meeting_id
+    restriction_mode: B
   meeting_id:
     type: relation
     to: meeting/mediafile_ids
     required: true
+    restriction_mode: B
 
   # Reverse relations for meetings, if a mediafile is used as a special resource
   used_as_logo_$_in_meeting_id:
@@ -2039,91 +2660,119 @@ mediafile:
     fields:
       type: relation
       to: meeting/logo_$_id
+    restriction_mode: B
   used_as_font_$_in_meeting_id:
     type: template
     fields:
       type: relation
       to: meeting/font_$_id
+    restriction_mode: B
 
 projector:
-  id: number
-  name: string
+  id:
+    type: number
+    restriction_mode: A
+  name:
+    type: string
+    restriction_mode: A
   scale:
     type: number
     default: 0
+    restriction_mode: A
   scroll:
     type: number
     default: 0
+    restriction_mode: A
   width:
     type: number
     minimum: 1
     default: 1200
+    restriction_mode: A
   aspect_ratio_numerator:
     type: number
     minimum: 1
     default: 16
+    restriction_mode: A
   aspect_ratio_denominator:
     type: number
     minimum: 1
     default: 9
+    restriction_mode: A
   color:
     type: color
     default: "#000000"
+    restriction_mode: A
   background_color:
     type: color
     default: "#ffffff"
+    restriction_mode: A
   header_background_color:
     type: color
     default: "#317796"
+    restriction_mode: A
   header_font_color:
     type: color
     default: "#f5f5f5"
+    restriction_mode: A
   header_h1_color:
     type: color
     default: "#317796"
+    restriction_mode: A
   chyron_background_color:
     type: color
     default: "#317796"
+    restriction_mode: A
   chyron_font_color:
     type: color
     default: "#ffffff"
+    restriction_mode: A
   show_header_footer:
     type: boolean
     default: true
+    restriction_mode: A
   show_title:
     type: boolean
     default: true
+    restriction_mode: A
   show_logo:
     type: boolean
     default: true
+    restriction_mode: A
   show_clock:
     type: boolean
     default: true
+    restriction_mode: A
 
   current_projection_ids:
     type: relation-list
     to: projection/current_projector_id
     on_delete: CASCADE
     equal_fields: meeting_id
+    restriction_mode: A
   preview_projection_ids:
     type: relation-list
     to: projection/preview_projector_id
     equal_fields: meeting_id
+    restriction_mode: A
   history_projection_ids:
     type: relation-list
     to: projection/history_projector_id
     equal_fields: meeting_id
+    restriction_mode: A
   used_as_reference_projector_meeting_id:
     type: relation
     to: meeting/reference_projector_id
+    restriction_mode: A
   used_as_default_$_in_meeting_id:
     type: template
     fields:
       type: relation
       to: meeting/default_projector_$_id
+    restriction_mode: A
   meeting_id:
     type: relation
     to: meeting/projector_ids
+    restriction_mode: A
 
 # A projection is a M2M model between an element that is assigned to a
 # projector. This element can either be the current one projected, in the
@@ -2131,26 +2780,38 @@ projector:
 # projector-specific, meaning that once a projection is created for a projector
 # and element, these references will not change.
 projection:
-  id: number
-  options: JSON
+  id:
+    type: number
+    restriction_mode: A
+  options:
+    type: JSON
+    restriction_mode: A
   stable:
     type: boolean
     default: false
-  weight: number
-  type: string
+    restriction_mode: A
+  weight:
+    type: number
+    restriction_mode: A
+  type:
+    type: string
+    restriction_mode: A
 
   current_projector_id:
     type: relation
     to: projector/current_projection_ids
     equal_fields: meeting_id
+    restriction_mode: A
   preview_projector_id:
     type: relation
     to: projector/preview_projection_ids
     equal_fields: meeting_id
+    restriction_mode: A
   history_projector_id:
     type: relation
     to: projector/history_projection_ids
     equal_fields: meeting_id
+    restriction_mode: A
   content_object_id:
     type: generic-relation
     to:
@@ -2167,72 +2828,102 @@ projection:
       - projector_countdown/projection_ids
       - user/projection_$_ids
     equal_fields: meeting_id
+    restriction_mode: A
   meeting_id:
     type: relation
     to: meeting/all_projection_ids
     required: true
+    restriction_mode: A
+  content:
+    type: JSON
+    calculated: true
+    restriction_mode: A
 
 projector_message:
-  id: number
-  message: HTMLStrict
+  id:
+    type: number
+    restriction_mode: A
+  message:
+    type: HTMLStrict
+    restriction_mode: A
 
   projection_ids:
     type: relation-list
     to: projection/content_object_id
     equal_fields: meeting_id
+    restriction_mode: A
   meeting_id:
     type: relation
     to: meeting/projector_message_ids
+    restriction_mode: A
 
 projector_countdown:
-  id: number
+  id:
+    type: number
+    restriction_mode: A
   title:
     type: string
     required: true
+    restriction_mode: A
   description:
     type: string
     default: ""
+    restriction_mode: A
   default_time:
     type: number
+    restriction_mode: A
   countdown_time:
     type: float
     default: 60
+    restriction_mode: A
   running:
     type: boolean
     default: false
+    restriction_mode: A
 
   projection_ids:
     type: relation-list
     to: projection/content_object_id
     equal_fields: meeting_id
+    restriction_mode: A
   used_as_list_of_speaker_countdown_meeting_id:
     type: relation
     to: meeting/list_of_speakers_countdown_id
+    restriction_mode: A
   used_as_poll_countdown_meeting_id:
     type: relation
     to: meeting/poll_countdown_id
+    restriction_mode: A
   meeting_id:
     type: relation
     to: meeting/projector_countdown_ids
+    restriction_mode: A
 
 chat_group:
-  id: number
+  id:
+    type: number
+    restriction_mode: A
   name:
     type: string
     required: true
+    restriction_mode: A
   weight:
     type: number
     default: 10000
+    restriction_mode: A
 
   read_group_ids:
     type: relation-list
     to: group/read_chat_group_ids
     equal_fields: meeting_id
+    restriction_mode: A
   write_group_ids:
     type: relation-list
     to: group/write_chat_group_ids
     equal_fields: meeting_id
+    restriction_mode: A
   meeting_id:
     type: relation
     to: meeting/chat_group_ids
     required: true
+    restriction_mode: A

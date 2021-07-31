@@ -202,6 +202,9 @@ class Checker:
 
     def is_normal_field(self, field: str) -> bool:
         return "$" not in field
+    
+    def is_calculated_field(self, field: str) -> bool:
+        return field == "content"
 
     def make_structured(self, field: str, replacement: Any) -> str:
         if type(replacement) not in (str, int):
@@ -274,9 +277,14 @@ class Checker:
             for x in self.models[collection].keys()
             if self.is_normal_field(x) or self.is_template_field(x)
         )
+        calculated_fields = set(
+            x
+            for x in self.models[collection].keys()
+            if self.is_calculated_field(x)
+        )
 
         errors = False
-        if collection_fields - model_fields:
+        if collection_fields - model_fields - calculated_fields:
             error = f"{collection}/{model['id']}: Missing fields {', '.join(collection_fields - model_fields)}"
             self.errors.append(error)
             errors = True
