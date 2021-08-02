@@ -62,7 +62,7 @@ export class ResetPasswordComponent extends BaseViewComponentDirective implement
                 email: this.resetPasswordForm.get('email').value
             });
             this.matSnackBar.open(
-                this.translate.instant('An email with a password reset link was send!'),
+                this.translate.instant('An email with a password reset link was sent!'),
                 this.translate.instant('OK'),
                 {
                     duration: 0
