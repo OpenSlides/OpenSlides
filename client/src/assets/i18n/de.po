@@ -12,7 +12,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "mime-version: 1.0\n"
 
-msgid "%num% emails were send sucessfully."
+msgid "%num% emails were sent successfully."
 msgstr "%num% E-Mails wurden erfolgreich versandt."
 
 msgid "100% base"
@@ -155,6 +155,11 @@ msgstr ""
 "Nach Prüfung der Vorschau klicken Sie bitte auf \"Importieren\" (oben "
 "rechts)."
 
+msgid "After verifying the preview click on \"import\" please (see top right)."
+msgstr ""
+"Nach Prüfung der Vorschau klicken Sie bitte auf \"Importieren\" (oben "
+"rechts)."
+
 msgid "Agenda"
 msgstr "Tagesordnung"
 
@@ -245,7 +250,7 @@ msgstr ""
 "Ein Änderungsantrag bezieht sich wahrscheinlich auf eine nicht vorhandene "
 "Zeilennummer."
 
-msgid "An email with a password reset link was send!"
+msgid "An email with a password reset link was sent!"
 msgstr "Es wurde eine E-Mail mit Link zum Passwort-Zurücksetzen gesendet."
 
 msgid "An error happened"
@@ -1312,6 +1317,9 @@ msgstr "Ausgewählte Wahlen exportieren"
 msgid "Export selected motions"
 msgstr "Ausgewählte Anträge exportieren"
 
+msgid "Export to OpenSlides4"
+msgstr "Export für OpenSlides4"
+
 msgid "Extension"
 msgstr "Erweiterung"
 
@@ -1955,7 +1963,7 @@ msgstr "Keine Stimmrechtsübertragungen"
 msgid "No email sent"
 msgstr "Keine E-Mail gesendet"
 
-msgid "No emails were send."
+msgid "No emails were sent."
 msgstr "Es wurden keine E-Mails versandt."
 
 msgid "No encryption"
@@ -2097,7 +2105,7 @@ msgstr "Offline-Modus"
 msgid "Old password"
 msgstr "Altes Passwort"
 
-msgid "One email was send sucessfully."
+msgid "One email was sent successfully."
 msgstr "Eine E-Mail wurde erfolgreich versandt."
 
 msgid ""

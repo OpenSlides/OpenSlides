@@ -360,11 +360,11 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User, UserTi
         const noEmailIds = response.no_email_ids;
         let msg;
         if (numEmails === 0) {
-            msg = this.translate.instant('No emails were send.');
+            msg = this.translate.instant('No emails were sent.');
         } else if (numEmails === 1) {
-            msg = this.translate.instant('One email was send sucessfully.');
+            msg = this.translate.instant('One email was sent successfully.');
         } else {
-            msg = this.translate.instant('%num% emails were send sucessfully.');
+            msg = this.translate.instant('%num% emails were sent successfully.');
             msg = msg.replace('%num%', numEmails);
         }
 
