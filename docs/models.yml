@@ -782,7 +782,10 @@ meeting:
     restriction_mode: B
   motions_default_sorting:
     type: string
-    default: identifier
+    enum:
+    - number
+    - weight
+    default: number
     restriction_mode: B
   motions_number_type:
     type: string
@@ -818,6 +821,7 @@ meeting:
     restriction_mode: B
   motions_amendments_prefix:
     type: string
+    default: "-"
     restriction_mode: B
   motions_amendments_text_mode:
     type: string
@@ -863,6 +867,7 @@ meeting:
     restriction_mode: B
   motion_poll_ballot_paper_number:
     type: number
+    default: 8
     restriction_mode: B
   motion_poll_default_type:
     type: string
@@ -937,6 +942,22 @@ meeting:
     restriction_mode: B
   users_email_body:
     type: string
+    default: >-
+      Dear {name},
+
+
+
+      this is your personal OpenSlides login:
+
+          {url}
+
+          username: {username}
+
+          password: {password}
+
+
+
+      This email was generated automatically.
     restriction_mode: B
 
   # Assignments
@@ -978,7 +999,7 @@ meeting:
     restriction_mode: B
   assignment_poll_default_100_percent_base:
     type: string
-    default: YNA
+    default: valid
     restriction_mode: B
   assignment_poll_default_group_ids:
     type: relation-list
