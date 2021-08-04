@@ -52,7 +52,7 @@
 #       for all the fields that come from the template field.
 # JSON Schema Properties:
 #     - You can add JSON Schema properties to the fields like `enum`, `description`,
-#       `maxLength` and `minimum`
+#       `items`, `maxLength` and `minimum`
 # Additional properties:
 #     - The property `read_only` describes a field that can not be changed by an action.
 #     - The property `default` describes the default value that is used for new objects.
@@ -60,6 +60,9 @@
 #       string. If this field is given it must have some content.
 #     - The property `equal_fields` describes fields that must have the same value in
 #       the instance and the related instance.
+# Restriction Mode:
+#   The field `restriction_mode` is required for every field. It puts the field into a
+#   restriction group. See https://github.com/OpenSlides/OpenSlides/wiki/Restrictions-Overview
 
 organization:
   id:
@@ -463,6 +466,7 @@ meeting:
     restriction_mode: B
   imported_at:
     type: timestamp
+    restriction_mode: B
 
   # Configuration (only for the server owner)
   jitsi_domain:
@@ -2393,10 +2397,10 @@ option:
   text:
     type: HTMLStrict
     restriction_mode: A
-  yes:
+  "yes":
     type: decimal(6)
     restriction_mode: B
-  no:
+  "no":
     type: decimal(6)
     restriction_mode: B
   abstain:
@@ -2589,7 +2593,7 @@ mediafile:
     restriction_mode: B
   filename:
     type: string
-    descriptin: The uploaded filename. Will be used for downloading. Only writeable on create.
+    description: The uploaded filename. Will be used for downloading. Only writeable on create.
     restriction_mode: B
   mimetype:
     type: string
@@ -2797,6 +2801,11 @@ projection:
     type: string
     restriction_mode: A
 
+  content:
+    type: JSON
+    calculated: true
+    restriction_mode: A
+
   current_projector_id:
     type: relation
     to: projector/current_projection_ids
@@ -2833,10 +2842,6 @@ projection:
     type: relation
     to: meeting/all_projection_ids
     required: true
-    restriction_mode: A
-  content:
-    type: JSON
-    calculated: true
     restriction_mode: A
 
 projector_message:
