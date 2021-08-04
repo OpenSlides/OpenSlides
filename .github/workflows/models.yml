@@ -32,6 +32,8 @@ jobs:
     steps:
     - name: Check out code
       uses: actions/checkout@v2
+      with:
+        submodules: recursive
 
     - name: Set up Python
       uses: actions/setup-python@v2
@@ -39,9 +41,8 @@ jobs:
         python-version: ${{ env.PYTHON_VERSION }}
 
     - name: Install requirements
-      working-directory: docs/datavalidator
-      run: pip install -U -r requirements.txt
+      working-directory: docs
+      run: pip install -U fastjsonschema bleach
 
     - name: Validate
-      working-directory: docs/datavalidator
-      run: python check_json.py
+      run: PYTHONPATH=openslides-backend python openslides-backend/cli/check_json.py docker/initial-data.json docs/example-data.json
