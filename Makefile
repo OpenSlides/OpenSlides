@@ -12,7 +12,7 @@ run-dev: | build-dev
 	docker-compose -f docker/docker-compose.dev.yml up
 
 stop-dev:
-	docker-compose -f docker/docker-compose.dev.yml down
+	docker-compose -f docker/docker-compose.dev.yml down --volumes --remove-orphans
 
 copy-node-modules:
 	docker-compose -f docker/docker-compose.dev.yml exec client bash -c "cp -r /app/node_modules/ /app/src/"
