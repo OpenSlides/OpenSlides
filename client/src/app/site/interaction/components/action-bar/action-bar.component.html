@@ -33,19 +33,19 @@
         >
             <mat-icon color="primary"> phone </mat-icon>
         </button>
-
-        <!-- Call support button -->
-        <button
-            mat-mini-fab
-            class="action-bar-shadow background-default"
-            (click)="enterSupportRoom()"
-            matTooltip="{{ 'Help desk' | translate }}"
-            *ngIf="isSupportEnabled | async"
-            @fade
-        >
-            <mat-icon color="primary">help_outline</mat-icon>
-        </button>
     </ng-container>
+
+    <!-- Call support button -->
+    <button
+        mat-mini-fab
+        class="action-bar-shadow background-default"
+        (click)="enterSupportRoom()"
+        matTooltip="{{ 'Help desk' | translate }}"
+        *ngIf="showHelpDesk | async"
+        @fade
+    >
+        <mat-icon color="primary">help_outline</mat-icon>
+    </button>
 
     <!-- applause button -->
     <button
