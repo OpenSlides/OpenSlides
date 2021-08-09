@@ -5,7 +5,8 @@ import { Router } from '@angular/router';
 
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker';
 import { TranslateService } from '@ngx-translate/core';
-import { Observable } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { fadeAnimation, fadeInOut } from 'app/shared/animations';
 import { BaseViewComponentDirective } from 'app/site/base/base-view';
@@ -34,8 +35,6 @@ export class ActionBarComponent extends BaseViewComponentDirective {
     public showCallDialog: Observable<boolean> = this.rtcService.showCallDialogObservable;
     public showLiveConf: Observable<boolean> = this.interactionService.showLiveConfObservable;
 
-    public isSupportEnabled: Observable<boolean> = this.rtcService.isSupportEnabled;
-
     private canEnterCallObservable: Observable<boolean> = this.callRestrictionService.canEnterCallObservable;
     public canEnterCall = false;
 
@@ -63,6 +62,14 @@ export class ActionBarComponent extends BaseViewComponentDirective {
         } else {
             return _(cannotEnterTooltip);
         }
+    }
+
+    public get showHelpDesk(): Observable<boolean> {
+        return combineLatest([this.rtcService.isSupportEnabled, this.isJoined]).pipe(
+            map(([isSupportEnabled, isJoined]) => {
+                return isSupportEnabled && !isJoined;
+            })
+        );
     }
 
     public constructor(

@@ -3,8 +3,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
-import { combineLatest, forkJoin, merge, Observable } from 'rxjs';
-import { distinctUntilChanged, filter, mergeAll, mergeMap, withLatestFrom } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { distinctUntilChanged } from 'rxjs/operators';
 
 import { BaseViewComponentDirective } from 'app/site/base/base-view';
 import { ApplauseService } from '../../services/applause.service';
