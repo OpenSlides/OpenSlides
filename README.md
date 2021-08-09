@@ -29,12 +29,12 @@ Go to a nice place in your filesystem, get the [OpenSlides manage
 tool](https://github.com/OpenSlides/openslides-manage-service/releases/tag/latest)
 from GitHub and make it executable. E. g. run:
 
-    $ wget https://github.com/OpenSlides/openslides-manage-service/releases/download/latest/manage
-    $ chmod +x manage
+    $ wget https://github.com/OpenSlides/openslides-manage-service/releases/download/latest/openslides
+    $ chmod +x openslides
 
 Create configuration files:
 
-    $ ./manage setup --cwd  # TODO: Provide instruction using XDG_DATA_PATH.
+    $ ./openslides .
 
 Build and start Docker containers. According to your Docker installation you may
 have to run this as root:
@@ -43,7 +43,7 @@ have to run this as root:
 
 Setup initial-data:
 
-    $ ./manage initial-data
+    $ ./openslides initial-data
 
 Now you can open https://localhost:8000 and use OpenSlides.  # TODO: Enable HTTPS support
 
