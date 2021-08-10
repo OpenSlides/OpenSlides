@@ -1,0 +1,30 @@
+---
+name: Prevent manual changes of initial-data.json without md5 hash
+# The file initial-data.json has a migration-index (MI) set to an active migration,
+# In consequence setting up a new system triggers migrations beginning at this MI.
+# That's the reason this file is protected against unwanted/unintended edits.
+#
+# If one is sure to change the initial-data.json file it is allowed!
+# 1. Change the file
+# 2. Get the md5sum for changed initial-dta.json
+# 3. Change the md5-check-literal in this workflow-file
+on:
+  push:
+    paths:
+      - "docker/initial-data.json"
+  pull_request:
+    paths:
+      - "docker/initial-data.json"
+jobs:
+  validate-data:
+    name: Validate example-data.json and initial-data.json
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Show hash for initial-data.json
+        run: md5sum docker/initial-data.json
+
+      - name: Validate and protect initial-data.json
+        run: echo "79e29bd433253fac11899059d59cebe3 docker/initial-data.json" | md5sum -c -

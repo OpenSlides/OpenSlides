@@ -1,5 +1,5 @@
 ---
-name: Validate models.yml and initial and example data
+name: Validate models.yml and example data
 on: [push, pull_request]
 env:
   PYTHON_VERSION: 3.9.6
@@ -8,44 +8,45 @@ jobs:
     name: Validate models.yml
     runs-on: ubuntu-latest
     steps:
-    - name: Check out code
-      uses: actions/checkout@v2
+      - name: Check out code
+        uses: actions/checkout@v2
 
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ env.PYTHON_VERSION }}
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
 
-    - name: Install requirements
-      run: pip install -U -r docs/modelsvalidator/requirements.txt
+      - name: Install requirements
+        run: pip install -U -r docs/modelsvalidator/requirements.txt
 
-    - name: Validate models.yml
-      working-directory: docs/modelsvalidator
-      run: python validate.py
+      - name: Validate models.yml
+        working-directory: docs/modelsvalidator
+        run: python validate.py
 
   validate-data:
-    name: Validate example-data.json and initial-data.json
+    name: Validate example-data.json
     runs-on: ubuntu-latest
     steps:
-    - name: Check out code
-      uses: actions/checkout@v2
+      - name: Check out code
+        uses: actions/checkout@v2
 
-    - name: Checkout backend submodule
-      run: git submodule update --init openslides-backend/
+      - name: Checkout backend submodule
+        run: git submodule update --init openslides-backend/
 
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ env.PYTHON_VERSION }}
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
 
-    - name: Install requirements
-      run: pip install -U -r openslides-backend/cli/requirements.txt
+      - name: Install requirements
+        run: pip install -U -r openslides-backend/cli/requirements.txt
 
-    - name: set pythonpath
-      run: echo "PYTHONPATH=openslides-backend" >> $GITHUB_ENV
+      - name: set pythonpath
+        run: echo "PYTHONPATH=openslides-backend" >> $GITHUB_ENV
 
-    - name: generate models.py for next step
-      run: python openslides-backend/cli/generate_models.py
+      - name: generate models.py for next step
+        run: python openslides-backend/cli/generate_models.py docs/models.yml
 
-    - name: Validate example-data.json
-      run: python openslides-backend/cli/check_json.py docs/example-data.json docker/initial-data.json
+      - name: Validate example-data.json
+        run: python openslides-backend/cli/check_json.py docs/example-data.json
+

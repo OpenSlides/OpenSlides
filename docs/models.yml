@@ -92,16 +92,25 @@ organization:
     type: boolean
     restriction_mode: B
 
-
   # Configuration (only for the server owner)
   enable_electronic_voting:
     type: boolean
     restriction_mode: B
+  limit_of_meetings:
+    type: number
+    description: Maximum of active meetings for the whole organization. 0 means no limitation at all
+    restriction_mode: B
+    default: 0
+    minimum: 0
 
   committee_ids:
     type: relation-list
     restriction_mode: B
     to: committee/organization_id
+  active_meeting_ids:
+    type: relation-list
+    restriction_mode: B
+    to: meeting/is_active_in_organization_id
   resource_ids:
     type: relation-list
     restriction_mode: A
@@ -148,9 +157,9 @@ user:
   gender:
     type: string
     enum:
-    - male
-    - female
-    - diverse
+      - male
+      - female
+      - diverse
     restriction_mode: A
   email:
     type: string
@@ -177,9 +186,9 @@ user:
     type: string
     description: Hierarchical permission level for the whole organization.
     enum:
-    - superadmin
-    - can_manage_organization
-    - can_manage_users
+      - superadmin
+      - can_manage_organization
+      - can_manage_users
     restriction_mode: E
   is_present_in_meeting_ids:
     type: relation-list
@@ -198,7 +207,7 @@ user:
     fields:
       type: string
       enum:
-      - can_manage
+        - can_manage
     restriction_mode: E
 
   # Meeting specific personal data
@@ -450,6 +459,11 @@ meeting:
     maxLength: 100
     default: OpenSlides
     restriction_mode: A
+  is_active_in_organization_id:
+    type: relation
+    to: organization/active_meeting_ids
+    restriction_mode: A
+    description: Backrelation and boolean flag at once
   description:
     type: string
     maxLength: 100
@@ -585,8 +599,8 @@ meeting:
   export_csv_encoding:
     type: string
     enum:
-    - utf-8
-    - iso-8859-15
+      - utf-8
+      - iso-8859-15
     default: utf-8
     restriction_mode: B
   export_csv_separator:
@@ -596,24 +610,24 @@ meeting:
   export_pdf_pagenumber_alignment:
     type: string
     enum:
-    - left
-    - right
-    - center
+      - left
+      - right
+      - center
     default: center
     restriction_mode: B
   export_pdf_fontsize:
     type: number
     enum:
-    - 10
-    - 11
-    - 12
+      - 10
+      - 11
+      - 12
     default: 10
     restriction_mode: B
   export_pdf_pagesize:
     type: string
     enum:
-    - A4
-    - A5
+      - A4
+      - A5
     default: A4
     restriction_mode: B
 
@@ -623,9 +637,9 @@ meeting:
     default: False
     restriction_mode: B
   agenda_enable_numbering:
-     type: boolean
-     default: True
-     restriction_mode: B
+    type: boolean
+    default: True
+    restriction_mode: B
   agenda_number_prefix:
     type: string
     maxLength: 20
@@ -633,25 +647,25 @@ meeting:
   agenda_numeral_system:
     type: string
     enum:
-    - arabic
-    - roman
+      - arabic
+      - roman
     default: arabic
     restriction_mode: B
   agenda_item_creation:
     type: string
     enum:
-    - always
-    - never
-    - default_yes
-    - default_no
+      - always
+      - never
+      - default_yes
+      - default_no
     default: default_yes
     restriction_mode: B
   agenda_new_items_default_visibility:
     type: string
     enum:
-    - common
-    - internal
-    - hidden
+      - common
+      - internal
+      - hidden
     default: internal
     restriction_mode: B
   agenda_show_internal_items_on_projector:
@@ -707,7 +721,6 @@ meeting:
     default: False
     restriction_mode: B
 
-
   # Motions
   motions_default_workflow_id:
     type: relation
@@ -731,9 +744,9 @@ meeting:
   motions_default_line_numbering:
     type: string
     enum:
-    - outside
-    - inline
-    - none
+      - outside
+      - inline
+      - none
     default: outside
     restriction_mode: B
   motions_line_length:
@@ -778,25 +791,25 @@ meeting:
   motions_recommendation_text_mode:
     type: string
     enum:
-    - original
-    - changed
-    - diff
-    - agreed
+      - original
+      - changed
+      - diff
+      - agreed
     default: diff
     restriction_mode: B
   motions_default_sorting:
     type: string
     enum:
-    - number
-    - weight
+      - number
+      - weight
     default: number
     restriction_mode: B
   motions_number_type:
     type: string
     enum:
-    - per_category
-    - serially_numbered
-    - manually
+      - per_category
+      - serially_numbered
+      - manually
     default: per_category
     restriction_mode: B
   motions_number_min_digits:
@@ -830,9 +843,9 @@ meeting:
   motions_amendments_text_mode:
     type: string
     enum:
-    - freestyle
-    - fulltext
-    - paragraph
+      - freestyle
+      - fulltext
+      - paragraph
     default: paragraph
     restriction_mode: B
   motions_amendments_multiple_paragraphs:
@@ -864,9 +877,9 @@ meeting:
   motion_poll_ballot_paper_selection:
     type: string
     enum:
-    - NUMBER_OF_DELEGATES
-    - NUMBER_OF_ALL_PARTICIPANTS
-    - CUSTOM_NUMBER
+      - NUMBER_OF_DELEGATES
+      - NUMBER_OF_ALL_PARTICIPANTS
+      - CUSTOM_NUMBER
     default: CUSTOM_NUMBER
     restriction_mode: B
   motion_poll_ballot_paper_number:
@@ -890,9 +903,9 @@ meeting:
   users_sort_by:
     type: string
     enum:
-    - first_name
-    - last_name
-    - number
+      - first_name
+      - last_name
+      - number
     default: first_name
     restriction_mode: B
   users_enable_presence_view:
@@ -928,10 +941,10 @@ meeting:
   users_pdf_wlan_encryption:
     type: string
     enum:
-    - ""
-    - WEP
-    - WPA
-    - nopass
+      - ""
+      - WEP
+      - WPA
+      - nopass
     restriction_mode: B
   users_email_sender:
     type: string
@@ -977,9 +990,9 @@ meeting:
   assignment_poll_ballot_paper_selection:
     type: string
     enum:
-    - NUMBER_OF_DELEGATES
-    - NUMBER_OF_ALL_PARTICIPANTS
-    - CUSTOM_NUMBER
+      - NUMBER_OF_DELEGATES
+      - NUMBER_OF_ALL_PARTICIPANTS
+      - CUSTOM_NUMBER
     default: CUSTOM_NUMBER
     restriction_mode: B
   assignment_poll_ballot_paper_number:
@@ -1014,9 +1027,9 @@ meeting:
   poll_ballot_paper_selection:
     type: string
     enum:
-    - NUMBER_OF_DELEGATES
-    - NUMBER_OF_ALL_PARTICIPANTS
-    - CUSTOM_NUMBER
+      - NUMBER_OF_DELEGATES
+      - NUMBER_OF_ALL_PARTICIPANTS
+      - CUSTOM_NUMBER
     restriction_mode: B
   poll_ballot_paper_number:
     type: number
@@ -1290,42 +1303,41 @@ group:
     type: string[]
     items:
       enum:
-      - agenda_item.can_manage
-      - agenda_item.can_see
-      - agenda_item.can_see_internal
-      - assignment.can_manage
-      - assignment.can_nominate_other
-      - assignment.can_nominate_self
-      - assignment.can_see
-      - chat.can_manage
-      - list_of_speakers.can_be_speaker
-      - list_of_speakers.can_manage
-      - list_of_speakers.can_see
-      - mediafile.can_manage
-      - mediafile.can_see
-      - meeting.can_manage_logos_and_fonts
-      - meeting.can_manage_settings
-      - meeting.can_see_autopilot
-      - meeting.can_see_frontpage
-      - meeting.can_see_history
-      - meeting.can_see_livestream
-      - motion.can_create
-      - motion.can_create_amendments
-      - motion.can_manage
-      - motion.can_manage_metadata
-      - motion.can_manage_polls
-      - motion.can_see
-      - motion.can_see_internal
-      - motion.can_support
-      - poll.can_manage
-      - projector.can_manage
-      - projector.can_see
-      - tag.can_manage
-      - user.can_manage
-      - user.can_see
-      - user.can_see_extra_data
+        - agenda_item.can_manage
+        - agenda_item.can_see
+        - agenda_item.can_see_internal
+        - assignment.can_manage
+        - assignment.can_nominate_other
+        - assignment.can_nominate_self
+        - assignment.can_see
+        - chat.can_manage
+        - list_of_speakers.can_be_speaker
+        - list_of_speakers.can_manage
+        - list_of_speakers.can_see
+        - mediafile.can_manage
+        - mediafile.can_see
+        - meeting.can_manage_logos_and_fonts
+        - meeting.can_manage_settings
+        - meeting.can_see_autopilot
+        - meeting.can_see_frontpage
+        - meeting.can_see_history
+        - meeting.can_see_livestream
+        - motion.can_create
+        - motion.can_create_amendments
+        - motion.can_manage
+        - motion.can_manage_metadata
+        - motion.can_manage_polls
+        - motion.can_see
+        - motion.can_see_internal
+        - motion.can_support
+        - poll.can_manage
+        - projector.can_manage
+        - projector.can_see
+        - tag.can_manage
+        - user.can_manage
+        - user.can_see
+        - user.can_see_extra_data
     restriction_mode: A
-
 
   user_ids:
     type: relation-list
@@ -1461,15 +1473,15 @@ agenda_item:
     type: string
     restriction_mode: C
   closed:
-      type: boolean
-      default: false
-      restriction_mode: A
+    type: boolean
+    default: false
+    restriction_mode: A
   type:
     type: string
     enum:
-    - common
-    - internal
-    - hidden
+      - common
+      - internal
+      - hidden
     default: common
     restriction_mode: A
   duration:
@@ -1755,17 +1767,17 @@ motion:
     restriction_mode: C
   origin_id:
     type: relation
-    to: motion/derived_motion_ids  # Note: The related motions may not be in the same meeting
+    to: motion/derived_motion_ids # Note: The related motions may not be in the same meeting
     restriction_mode: B
   derived_motion_ids:
     type: relation-list
-    to: motion/origin_id  # Note: The related motions may not be in the same meeting
+    to: motion/origin_id # Note: The related motions may not be in the same meeting
     restriction_mode: B
   all_origin_ids:
-    type: number[]  # Calculated: All parents (origin_id), grandparents, etc. of this motion.
+    type: number[] # Calculated: All parents (origin_id), grandparents, etc. of this motion.
     restriction_mode: B
   all_derived_motion_ids:
-    type: number[]  # Calculated: All children (derived_motion_ids), grandchildren, etc. of this motion.
+    type: number[] # Calculated: All children (derived_motion_ids), grandchildren, etc. of this motion.
     restriction_mode: B
   state_id:
     type: relation
@@ -2061,10 +2073,10 @@ motion_change_recommendation:
   type:
     type: string
     enum:
-    - replacement
-    - insertion
-    - deletion
-    - other
+      - replacement
+      - insertion
+      - deletion
+      - other
     default: replacement
     restriction_mode: A
   other_description:
@@ -2112,11 +2124,11 @@ motion_state:
   css_class:
     type: string
     enum:
-    - grey
-    - red
-    - green
-    - lightblue
-    - yellow
+      - grey
+      - red
+      - green
+      - lightblue
+      - yellow
     default: lightblue
     required: true
     restriction_mode: A
@@ -2124,10 +2136,10 @@ motion_state:
     type: string[]
     items:
       enum:
-      - motion.can_see_internal
-      - motion.can_manage_metadata
-      - motion.can_manage
-      - is_submitter
+        - motion.can_see_internal
+        - motion.can_manage_metadata
+        - motion.can_manage
+        - is_submitter
     default: []
     restriction_mode: A
   allow_support:
@@ -2153,9 +2165,9 @@ motion_state:
   merge_amendment_into_final:
     type: string
     enum:
-    - do_not_merge
-    - undefined
-    - do_merge
+      - do_not_merge
+      - undefined
+      - do_merge
     default: undefined
     restriction_mode: A
   show_recommendation_extension_field:
@@ -2167,15 +2179,15 @@ motion_state:
     type: relation-list
     to: motion_state/previous_state_ids
     equal_fields:
-    - meeting_id
-    - workflow_id
+      - meeting_id
+      - workflow_id
     restriction_mode: A
   previous_state_ids:
     type: relation-list
     to: motion_state/next_state_ids
     equal_fields:
-    - meeting_id
-    - workflow_id
+      - meeting_id
+      - workflow_id
     restriction_mode: A
   motion_ids:
     type: relation-list
@@ -2512,9 +2524,9 @@ assignment:
   phase:
     type: string
     enum:
-    - search
-    - voting
-    - finished
+      - search
+      - voting
+      - finished
     default: search
     restriction_mode: B
   default_poll_description:
