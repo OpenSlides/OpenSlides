@@ -44,5 +44,8 @@ jobs:
     - name: set pythonpath
       run: echo "PYTHONPATH=openslides-backend" >> $GITHUB_ENV
 
+    - name: generate models.py for next step
+      run: python openslides-backend/cli/generate_models.py
+
     - name: Validate example-data.json
       run: python openslides-backend/cli/check_json.py docs/example-data.json docker/initial-data.json
