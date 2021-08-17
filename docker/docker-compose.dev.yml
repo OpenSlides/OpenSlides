@@ -61,6 +61,7 @@ services:
       - OPENSLIDES_DEVELOPMENT=1
     volumes:
       - ../openslides-backend/openslides_backend:/app/openslides_backend
+      - ../openslides-backend/migrations:/app/migrations
 
   autoupdate:
     image: openslides-autoupdate-dev
