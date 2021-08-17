@@ -1,5 +1,5 @@
 {
-    "_migration_index": -1,
+    "_migration_index": 1,
     "organization": [
         {
             "id": 1,
@@ -11,9 +11,7 @@
             "theme": "openslides-default-light-theme",
             "reset_password_verbose_errors": false,
             "enable_electronic_voting": false,
-            "committee_ids": [
-                1
-            ],
+            "committee_ids": [1],
             "resource_ids": [],
             "organization_tag_ids": []
         }

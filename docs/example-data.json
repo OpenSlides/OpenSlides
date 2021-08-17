@@ -13,6 +13,8 @@
         "reset_password_verbose_errors": true,
 
         "committee_ids": [1],
+        "active_meeting_ids": [1],
+        "limit_of_meetings": 20,
         "resource_ids": [1],
         "organization_tag_ids": [1]
     }],
@@ -228,6 +230,7 @@
 "meeting": [
     {
         "id": 1,
+        "is_active_in_organization_id": 1,
         "url_name": "os3_test",
         "template_for_committee_id": null,
         "enable_anonymous": false,
