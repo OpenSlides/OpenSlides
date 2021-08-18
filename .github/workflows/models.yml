@@ -23,7 +23,7 @@ jobs:
         working-directory: docs/modelsvalidator
         run: python validate.py
 
-  validate-data:
+  validate-example-data:
     name: Validate example-data.json
     runs-on: ubuntu-latest
     steps:
@@ -50,3 +50,60 @@ jobs:
       - name: Validate example-data.json
         run: python openslides-backend/cli/check_json.py docs/example-data.json
 
+
+  validate-initial-data:
+    name: Validate initial-data.json
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Checkout backend and datastore
+        run: git submodule update --init openslides-backend/ openslides-datastore-service/
+
+      - name: set pythonpath
+        run: echo "PYTHONPATH=openslides-backend" >> $GITHUB_ENV
+
+      - name: Install requirements
+        run: pip install -U -r openslides-backend/cli/requirements.txt
+
+      - name: build backend
+        working-directory: openslides-backend/
+        run: make build-prod  # creates openslides-backend image
+
+      - name: build datastore
+        working-directory: openslides-datastore-service/
+        run: make build  # creates openslides-datatore-reader and openslides-datastore-writer images
+
+      - name: run setup
+        working-directory: .github/initial-data-migrations/
+        run: docker-compose up -d
+
+      - name: Wait for action service # The datastore is started, too
+        working-directory: .github/initial-data-migrations/
+        run: docker-compose exec -T backend ./wait.sh backend 9002
+    
+      - name: Inject initial data into the datastore
+        working-directory: .github/initial-data-migrations/
+        run: docker-compose exec -T writer bash -c "source export-database-variables.sh; echo '$(cat ../../docker/initial-data.json)' > /data.json; export DATASTORE_INITIAL_DATA_FILE=/data.json; python cli/create_initial_data.py"
+
+      - name: Export unmigrated data from the datastore
+        run: "curl --header 'Content-Type: application/json' -d '{}' http://localhost:9010/internal/datastore/reader/get_everything 2> /dev/null | python3 dev-commands/strip-meta-fields.py > export.json"
+
+      - name: Validate initial-data.json. It must fail since it is unmigrated
+        run: if python openslides-backend/cli/check_json.py --partial export.json > /dev/null; then false; else true; fi
+
+      - name: Migrate
+        working-directory: .github/initial-data-migrations/
+        run: docker-compose exec -T backend bash -c "source ./entrypoint.sh; cd migrations; python migrate.py finalize"
+
+      - name: Export migrated data from the datastore
+        run: "curl --header 'Content-Type: application/json' -d '{}' http://localhost:9010/internal/datastore/reader/get_everything 2> /dev/null | python3 dev-commands/strip-meta-fields.py > export.json"
+
+      - name: Validate initial-data.json
+        run: python openslides-backend/cli/check_json.py --partial export.json
