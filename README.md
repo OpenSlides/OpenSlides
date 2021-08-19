@@ -6,15 +6,14 @@ OpenSlides is a free, web based presentation and assembly system for
 managing and projecting agenda, motions and elections of an assembly. See
 https://openslides.com for more information.
 
-__Note: OpenSlides 4 is currently under development.__
+## Using OpenSlides productively
 
+__OpenSlides 4 (this) is currently under heavy development!__
 
-## Architecture of OpenSlides 4
+If you are just looking to use OpenSlides in a productive manner, please refer
+to the [OpenSlides 3.4 (stable)](https://github.com/OpenSlides/OpenSlides/tree/stable/3.4.x)
 
-![System architecture of OpenSlides 4](docs/OpenSlides4-systemarchitecture.png)
-
-Read more about our [concept of OpenSlides 4.0](https://github.com/OpenSlides/OpenSlides/wiki/DE%3A-Konzept-OpenSlides-4).
-
+__Everything else in this document is irrelevant for you__
 
 ## Installation
 
@@ -25,56 +24,19 @@ Compose](https://docs.docker.com/compose/install/).
 
 ### Setup OpenSlides
 
-Go to a nice place in your filesystem, get the [OpenSlides manage
-tool](https://github.com/OpenSlides/openslides-manage-service/releases/tag/latest)
-from GitHub and make it executable. E. g. run:
+For a productive setup of OpenSlides follow the instructions outlined in the [OpenSlides-manage-service](https://github.com/OpenSlides/openslides-manage-service)
 
-    $ wget https://github.com/OpenSlides/openslides-manage-service/releases/download/latest/manage
-    $ chmod +x manage
+## Development
 
-Create configuration files:
+For further information about developing OpenSlides, refer to [the development readme](DEVELOPMENT.md)
 
-    $ ./manage setup --cwd  # TODO: Provide instruction using XDG_DATA_PATH.
+### Architecture of OpenSlides 4
 
-Build and start Docker containers. According to your Docker installation you may
-have to run this as root:
+![System architecture of OpenSlides 4](https://raw.githubusercontent.com/wiki/OpenSlides/OpenSlides/OS4/img/OpenSlides4.svg)
 
-    $ docker-compose up --detach
+Read more about our [concept of OpenSlides 4.0](https://github.com/OpenSlides/OpenSlides/wiki/DE%3AKonzept-OpenSlides-4).
 
-Setup initial-data:
-
-    $ ./manage initial-data
-
-Now you can open https://localhost:8000 and use OpenSlides.  # TODO: Enable HTTPS support
-
-To stop OpenSlides run:
-
-    $ docker-compose stop
-
-To remove all containers including the complete database run:
-
-    $ docker-compose rm
-
-
-## Installation with ...
-
-TODO: Provide a short instruction for setup with Docker Swarm or Kubernetes or
-something else.
-
-
-## Development setup
-
-For a development setup, refer to [the development docs](DEVELOPMENT.md)
-
-
-## Used software
-
-OpenSlides uses the following projects or parts of them:
-
-* Several Python packages (see TODO)
-* Several JavaScript packages (see TODO)
-* TODO
-
+The technical documentation about the internals, requests and functionality can be found [in the wiki](https://github.com/OpenSlides/OpenSlides/wiki/DE%3AKonzept-OpenSlides-4).
 
 ## License and authors
 

@@ -10,16 +10,13 @@ Go is needed to install https://github.com/FiloSottile/mkcert. The development s
 
 Clone this repository:
 
-    $ git clone git@github.com:OpenSlides/OpenSlides.git
-    $ git checkout openslides4-dev
+    $ git clone --recurse-submodules git@github.com:OpenSlides/OpenSlides.git
 
-TODO: use `--recurse-submodules`, when master is OS4
-
-After checking out the os4-branch you need to initialize all submodules:
+After checking out you need to initialize all submodules:
 
     $ git submodule update --init
 
-Finally, start the dev server:
+Finally, start the development server:
 
     $ make run-dev
 
@@ -36,7 +33,7 @@ To run all tests of all services, execute `run-service-tests`. TODO: Systemtests
 
     $ git submodule add <git@myrepo.git>
 
-Append `branch = master` to the new entry in the `.gitmodules` file. Verify,
+Append `branch = master` (or `main`) to the new entry in the `.gitmodules` file. Verify,
 that it is there (the folder should have 160000 permissions: Submodule) with the
 current commit:
 
@@ -48,7 +45,7 @@ Then, commit changes and create a pull request.
 
 Create your own fork at github.
 
-Remove the upstream (main) repo as the origin in the submodule:
+Remove the upstream (master or main) repo as the origin in the submodule:
 
     $ cd <submodule>
     $ git remote remove origin
@@ -58,7 +55,18 @@ Add your fork and the main repo as origin and upstream
     $ git remote add origin `<your fork>`
     $ git remote add upstream `<main repo>`
     $ git fetch --all
-    $ git checkout master
+    $ git checkout origin master
+
+You can verify that your setup is correct using
+
+    $ git remote -v
+
+The output should be similar to
+
+    origin    git@github.com:<GithubUsername>/OpenSlides.git (fetch)
+    origin	  git@github.com:<GithubUsername>/OpenSlides.git (push)
+    upstream  git@github.com:OpenSlides/OpenSlides.git (fetch)
+    upstream  git@github.com:OpenSlides/OpenSlides.git (push)
 
 ## Requirements for services
 
@@ -107,7 +115,7 @@ After making some changes in my-service, create a commit and push to your fork
 
     $ git add -A
     $ git commit -m "A meaningful commit message here"
-    $ git push origin my-feature
+    $ git push origin -u my-feature
 
 As the last step, you can create a PR on Github. After merging, these steps are
 required to be executed in the main repo:
@@ -136,6 +144,10 @@ pulls master from upstream (This requres to have `upstream`set up as a remote
 in all submodules):
 
     $ git submodule foreach -q --recursive 'git checkout $(git config -f $toplevel/.gitmodules submodule.$name.branch || echo master); git pull upstream $(git config -f $toplevel/.gitmodules submodule.$name.branch || echo master)'
+
+This command has can also be called from the makefile using:
+
+    $ make services-to-master
 
 When changing the branch in the main repo (this one), the submodules do not
 automatically gets changed. THis ocmmand checks out all submodules to the given
