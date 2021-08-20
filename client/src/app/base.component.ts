@@ -67,12 +67,36 @@ export abstract class BaseComponent {
             plugins: ['autosave', 'lists', 'autolink']
         },
         relative_urls: false,
-        remove_script_host: true
+        remove_script_host: true,
+        paste_preprocess: this.pastePreprocess
     };
 
     public constructor(protected titleService: Title, protected translate: TranslateService) {
         this.tinyMceSettings.language_url = '/assets/tinymce/langs/' + this.translate.currentLang + '.js';
         this.tinyMceSettings.language = this.translate.currentLang;
+    }
+
+    /**
+     * Clean pasted HTML.
+     * If the user decides to copy-paste HTML (like from another OpenSlides motion detail)
+     * - remove all classes
+     * - remove data-line-number="X"
+     * - remove contenteditable="false"
+     *
+     * Not doing so would save control sequences from diff/linenumbering into the
+     * model which will open pandoras pox during PDF generation (and potentially web view)
+     * @param _
+     * @param args
+     */
+    private pastePreprocess(_: any, args: any): void {
+        const getClassesRe: RegExp = new RegExp(/\s*class\=\"[\w\W]*?\"/, 'gi');
+        const getDataLineNumberRe: RegExp = new RegExp(/\s*data-line-number\=\"\d+\"/, 'gi');
+        const getContentEditableRe: RegExp = new RegExp(/\s*contenteditable\=\"\w+\"/, 'gi');
+        const cleanedContent = (args.content as string)
+            .replace(getClassesRe, '')
+            .replace(getDataLineNumberRe, '')
+            .replace(getContentEditableRe, '');
+        args.content = cleanedContent;
     }
 
     /**
