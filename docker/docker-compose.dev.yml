@@ -13,7 +13,7 @@ services:
       - ../openslides-datastore-service/datastore:/app/datastore
     ports:
       - 9010:9010
-      
+
   datastore-writer:
     image: openslides-datastore-writer-dev
     depends_on:
@@ -26,7 +26,7 @@ services:
     environment:
       - DATASTORE_ENABLE_DEV_ENVIRONMENT=1
       - COMMAND=create_initial_data
-      - DATASTORE_INITIAL_DATA_FILE=https://raw.githubusercontent.com/OpenSlides/OpenSlides/openslides4-dev/docs/example-data.json
+      - DATASTORE_INITIAL_DATA_FILE=https://raw.githubusercontent.com/OpenSlides/OpenSlides/master/docs/example-data.json
       - OPENSLIDES_DEVELOPMENT=1
     ports:
       - 9011:9011
@@ -100,7 +100,7 @@ services:
       - ../openslides-permission-service/cmd:/app/cmd
       - ../openslides-permission-service/internal:/app/internal
       - ../openslides-permission-service/pkg:/app/pkg
-    
+
   auth:
     image: openslides-auth-dev
     depends_on:
@@ -129,13 +129,13 @@ services:
   manage:
     image: openslides-manage-dev
     depends_on:
-    - auth
-    - datastore-writer
+      - auth
+      - datastore-writer
     env_file: services.env
     environment:
       - OPENSLIDES_DEVELOPMENT=1
     ports:
-    - "9008:9008"
+      - "9008:9008"
 
   message-bus:
     image: redis:latest
