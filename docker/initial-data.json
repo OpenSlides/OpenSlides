@@ -1,7 +1,7 @@
 {
-    "_migration_index": 1,
-    "organization": [
-        {
+    "_migration_index": 3,
+    "organization": {
+        "1": {
             "id": 1,
             "name": "[Your organization]",
             "description": "",
@@ -11,13 +11,19 @@
             "theme": "openslides-default-light-theme",
             "reset_password_verbose_errors": false,
             "enable_electronic_voting": false,
-            "committee_ids": [1],
+            "limit_of_meetings": 0,
+            "committee_ids": [
+                1
+            ],
+            "active_meeting_ids": [
+                1
+            ],
             "resource_ids": [],
             "organization_tag_ids": []
         }
-    ],
-    "user": [
-        {
+    },
+    "user": {
+        "1": {
             "id": 1,
             "username": "superadmin",
             "title": "",
@@ -59,11 +65,11 @@
             "vote_delegations_$_from_ids": [],
             "meeting_ids": []
         }
-    ],
-    "resource": [],
-    "organization_tag": [],
-    "committee": [
-        {
+    },
+    "resource": {},
+    "organization_tag": {},
+    "committee": {
+        "1": {
             "id": 1,
             "name": "Default committee",
             "description": "",
@@ -78,13 +84,14 @@
             "organization_tag_ids": [],
             "organization_id": 1
         }
-    ],
-    "meeting": [
-        {
+    },
+    "meeting": {
+        "1": {
             "id": 1,
             "welcome_title": "Welcome to OpenSlides",
             "welcome_text": "[Space for your welcome text]",
             "name": "Default meeting",
+            "is_active_in_organization_id": 1,
             "description": "",
             "location": "",
             "start_time": 0,
@@ -305,9 +312,9 @@
             "default_group_id": 1,
             "admin_group_id": 2
         }
-    ],
-    "group": [
-        {
+    },
+    "group": {
+        "1": {
             "id": 1,
             "name": "Default",
             "permissions": [
@@ -337,7 +344,7 @@
             "used_as_poll_default_id": null,
             "meeting_id": 1
         },
-        {
+        "2": {
             "id": 2,
             "name": "Admin",
             "permissions": [],
@@ -356,7 +363,7 @@
             "used_as_poll_default_id": null,
             "meeting_id": 1
         },
-        {
+        "3": {
             "id": 3,
             "name": "Delegates",
             "permissions": [
@@ -392,7 +399,7 @@
             "used_as_poll_default_id": 1,
             "meeting_id": 1
         },
-        {
+        "4": {
             "id": 4,
             "name": "Staff",
             "permissions": [
@@ -440,22 +447,22 @@
             "used_as_poll_default_id": null,
             "meeting_id": 1
         }
-    ],
-    "personal_note": [],
-    "tag": [],
-    "agenda_item": [],
-    "list_of_speakers": [],
-    "speaker": [],
-    "topic": [],
-    "motion": [],
-    "motion_submitter": [],
-    "motion_comment": [],
-    "motion_comment_section": [],
-    "motion_category": [],
-    "motion_block": [],
-    "motion_change_recommendation": [],
-    "motion_state": [
-        {
+    },
+    "personal_note": {},
+    "tag": {},
+    "agenda_item": {},
+    "list_of_speakers": {},
+    "speaker": {},
+    "topic": {},
+    "motion": {},
+    "motion_submitter": {},
+    "motion_comment": {},
+    "motion_comment_section": {},
+    "motion_category": {},
+    "motion_block": {},
+    "motion_change_recommendation": {},
+    "motion_state": {
+        "1": {
             "id": 1,
             "name": "submitted",
             "recommendation_label": null,
@@ -480,7 +487,7 @@
             "first_state_of_workflow_id": 1,
             "meeting_id": 1
         },
-        {
+        "2": {
             "id": 2,
             "name": "accepted",
             "recommendation_label": "Acceptance",
@@ -503,7 +510,7 @@
             "first_state_of_workflow_id": null,
             "meeting_id": 1
         },
-        {
+        "3": {
             "id": 3,
             "name": "rejected",
             "recommendation_label": "Rejection",
@@ -526,7 +533,7 @@
             "first_state_of_workflow_id": null,
             "meeting_id": 1
         },
-        {
+        "4": {
             "id": 4,
             "name": "not decided",
             "recommendation_label": "No decision",
@@ -549,9 +556,9 @@
             "first_state_of_workflow_id": null,
             "meeting_id": 1
         }
-    ],
-    "motion_workflow": [
-        {
+    },
+    "motion_workflow": {
+        "1": {
             "id": 1,
             "name": "Simple Workflow",
             "state_ids": [
@@ -566,16 +573,16 @@
             "default_statute_amendment_workflow_meeting_id": 1,
             "meeting_id": 1
         }
-    ],
-    "motion_statute_paragraph": [],
-    "poll": [],
-    "option": [],
-    "vote": [],
-    "assignment": [],
-    "assignment_candidate": [],
-    "mediafile": [],
-    "projector": [
-        {
+    },
+    "motion_statute_paragraph": {},
+    "poll": {},
+    "option": {},
+    "vote": {},
+    "assignment": {},
+    "assignment_candidate": {},
+    "mediafile": {},
+    "projector": {
+        "1": {
             "id": 1,
             "name": "Default projector",
             "scale": 0,
@@ -632,11 +639,11 @@
             "used_as_default_$poll_in_meeting_id": 1,
             "meeting_id": 1
         }
-    ],
-    "projection": [],
-    "projector_message": [],
-    "projector_countdown": [
-        {
+    },
+    "projection": {},
+    "projector_message": {},
+    "projector_countdown": {
+        "1": {
             "id": 1,
             "title": "List of speaker countdown",
             "description": "",
@@ -648,7 +655,7 @@
             "used_as_poll_countdown_meeting_id": null,
             "meeting_id": 1
         },
-        {
+        "2": {
             "id": 2,
             "title": "Voting countdown",
             "description": "",
@@ -660,6 +667,6 @@
             "used_as_poll_countdown_meeting_id": 1,
             "meeting_id": 1
         }
-    ],
-    "chat_group": []
+    },
+    "chat_group": {}
 }

@@ -3,8 +3,7 @@ name: Announce model updates
 on:
   push:
     branches:
-      - openslides4-dev
-      # - master
+      - master
     paths:
       - 'docs/models.yml'
 

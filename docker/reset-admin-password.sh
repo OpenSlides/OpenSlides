@@ -1,9 +1,11 @@
 #!/bin/bash
 
+# This script sets password of user 1 (superadmin) to superadmin. You may also use the manage tool for this work.
+
 set -e
 
-# hash the new password
-response=$(docker-compose exec auth curl --header "Content-Type: application/json" -d '{"toHash": "admin"}' http://localhost:9004/internal/auth/hash)
+# Hash the new password
+response=$(docker-compose exec auth curl --header "Content-Type: application/json" -d '{"toHash": "superadmin"}' http://localhost:9004/internal/auth/hash)
 hash=$(jq .hash <<< $response)
 
 # Set user/1/password to $hash
