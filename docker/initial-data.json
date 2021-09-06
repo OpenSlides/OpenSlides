@@ -195,7 +195,7 @@
             "users_pdf_wlan_ssid": "",
             "users_pdf_wlan_password": "",
             "users_pdf_wlan_encryption": "",
-            "users_email_sender": "noreply@yourdomain.com",
+            "users_email_sender": "Openslides",
             "users_email_replyto": "",
             "users_email_subject": "Your login for {event_name}",
             "users_email_body": "Dear {name},\n\nthis is your OpenSlides login for the event {event_name}:\n\n    {url}\n    username: {username}\n    password: {password}\n\nThis email was generated automatically.",
