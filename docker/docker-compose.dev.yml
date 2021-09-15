@@ -55,7 +55,6 @@ services:
       - datastore-reader
       - datastore-writer
       - auth
-      - permission
     env_file: services.env
     environment:
       - OPENSLIDES_DEVELOPMENT=1
@@ -88,18 +87,6 @@ services:
     volumes:
       - ../openslides-icc-service/cmd:/root/cmd
       - ../openslides-icc-service/internal:/root/internal
-
-  permission:
-    image: openslides-permission-dev
-    depends_on:
-      - datastore-reader
-    env_file: services.env
-    environment:
-      - OPENSLIDES_DEVELOPMENT=1
-    volumes:
-      - ../openslides-permission-service/cmd:/app/cmd
-      - ../openslides-permission-service/internal:/app/internal
-      - ../openslides-permission-service/pkg:/app/pkg
 
   auth:
     image: openslides-auth-dev
