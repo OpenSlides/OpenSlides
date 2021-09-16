@@ -20,6 +20,13 @@ dev-commands/export.json
 /docker/secrets/auth_*_key
 docker/secrets/*.env
 
+# Integration testing
+/integration/results
+/integration/cypress/downloads
+/integration/cypress/screenshots
+/integration/cypress/videos
+/integration/node_modules
+
 # Old OS3 files and folders
 .coverage
 .mypy_cache
@@ -36,7 +43,7 @@ tests
 .venv/
 .virtualenv/
 .vscode/
-package-lock.json
+client/package-lock.json
 server/
 # OS3+-Submodules
 /autoupdate/

@@ -1,5 +1,11 @@
-run-system-tests:
-	echo "TODO: write complete system tests"
+run-integration-tests:
+	@echo "Start OpenSlides Dev"
+	make run-dev ARGS="-d"
+	@echo "Start integration tests"
+	make cypress-docker
+	docker-compose -f integration/docker-compose.yml up
+	@echo "Stop OpenSlides Dev"
+	make stop-dev
 
 run-service-tests:
 	git submodule foreach 'make run-tests'
@@ -9,7 +15,7 @@ build-dev:
 	make -C proxy build-dev
 
 run-dev: | build-dev
-	docker-compose -f docker/docker-compose.dev.yml up
+	docker-compose -f docker/docker-compose.dev.yml up $(ARGS)
 
 stop-dev:
 	docker-compose -f docker/docker-compose.dev.yml down --volumes --remove-orphans
@@ -27,3 +33,13 @@ services-to-master:
 	#
 	# [1] ...or main, or whatever branch the OS4 one is. See .gitmodules.
 	git submodule foreach -q --recursive 'git checkout $(git config -f $$toplevel/.gitmodules submodule.$$name.branch || echo master); git pull upstream $$(git config -f $$toplevel/.gitmodules submodule.$$name.branch || echo master)'
+
+cypress-open:
+	cd integration; npm run cypress:open
+
+cypress-run:
+	cd integration; npm run cypress:run
+
+cypress-docker:
+	docker-compose -f integration/docker-compose.yml build
+	docker-compose -f integration/docker-compose.yml up

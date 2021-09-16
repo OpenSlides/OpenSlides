@@ -1,0 +1,22 @@
+---
+name: Run integration tests (cypress)
+on: [push, pull_request]
+
+jobs:
+  run-cypress:
+    name: "Runs integration tests in cypress"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+
+      - name: Build and run OS4 Dev
+        run: make run-dev ARGS="-d"
+
+      - name: Run integration tests (cypress docker)
+        run: make cypress-docker
+
+      - name: Stop OS4
+        run: make stop-dev
