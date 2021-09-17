@@ -47,9 +47,6 @@ jobs:
           - name: openslides-manage
             directory: openslides-manage-service
 
-          - name: openslides-permission
-            directory: openslides-permission-service
-
     steps:
       - name: Check out code
         uses: actions/checkout@v2

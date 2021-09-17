@@ -10,7 +10,6 @@ TARGETS=(
   [backend]="$HOME/../openslides-backend/"
   [auth]="$HOME/../openslides-auth-service/"
   [autoupdate]="$HOME/../openslides-autoupdate-service/"
-  [permission]="$HOME/../openslides-permission-service/"
   [manage]="$HOME/../openslides-manage-service/"
   [datastore-reader]="$HOME/../openslides-datastore-service/reader"
   [datastore-writer]="$HOME/../openslides-datastore-service/writer"
