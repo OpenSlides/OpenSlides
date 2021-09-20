@@ -2155,6 +2155,10 @@ motion_state:
     type: boolean
     default: false
     restriction_mode: A
+  dont_set_identifier:
+    type: boolean
+    default: false
+    restriction_mode: A
   set_number:
     type: boolean
     default: true
