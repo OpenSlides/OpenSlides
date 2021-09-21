@@ -31,7 +31,8 @@ enum MimeType {
 
 enum Player {
     vjs,
-    youtube
+    youtube,
+    nanocosmos
 }
 
 @Component({
@@ -65,10 +66,14 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
             if (this.afterViewInitDone) {
                 this.initVjs();
             }
-        } else if (this.usingYouTube) {
+        } else {
             this.stopVJS();
             this.unloadVjs();
-            this.youTubeVideoId = this.getYouTubeVideoId(this.videoUrl);
+            if (this.usingYouTube) {
+                this.videoId = this.getYouTubeVideoId(this.videoUrl);
+            } else if (this.usingNanocosmos) {
+                this.videoId = this.getNanocosmosVideoId(this.videoUrl);
+            }
         }
         this.cd.markForCheck();
     }
@@ -79,7 +84,7 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
 
     public posterUrl: string;
     public vjsPlayer: videojs.Player;
-    public youTubeVideoId: string;
+    public videoId: string;
     public isUrlOnline: boolean;
     private playerType: Player;
     private mimeType: MimeType;
@@ -95,8 +100,16 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
         return this.playerType === Player.vjs;
     }
 
+    public get usingNanocosmos(): boolean {
+        return this.playerType === Player.nanocosmos;
+    }
+
     public get youTubeVideoUrl(): string {
-        return `https://www.youtube.com/embed/${this.youTubeVideoId}${this.youtubeQuerryParams}`;
+        return `https://www.youtube.com/embed/${this.videoId}${this.youtubeQuerryParams}`;
+    }
+
+    public get nanocosmosVideoUrl(): string {
+        return `https://demo.nanocosmos.de/nanoplayer/embed/1.0.0/nanoplayer.html?entry.rtmp.streamname=${this.videoId}`;
     }
 
     public constructor(
@@ -208,6 +221,8 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
     private determinePlayer(videoUrl: string): Player {
         if (videoUrl.includes('youtu.be') || videoUrl.includes('youtube.')) {
             return Player.youtube;
+        } else if (videoUrl.includes('nanocosmos.de')) {
+            return Player.nanocosmos;
         } else {
             return Player.vjs;
         }
@@ -219,6 +234,14 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
         if (match && match[2].length === 11) {
             return match[2];
         }
+    }
+
+    private getNanocosmosVideoId(url: string): string {
+        const urlParts: Array<String> = url.split('=');
+        if (urlParts?.length && typeof urlParts[1] === 'string') {
+            return urlParts[1];
+        }
+        return '';
     }
 
     private determineContentTypeByUrl(url: string): MimeType {

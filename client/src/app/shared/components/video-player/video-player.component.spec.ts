@@ -25,4 +25,19 @@ describe('VjsPlayerComponent', () => {
     it('should create', () => {
         expect(component).toBeTruthy();
     });
+
+    it('should have the nanocosmos video id as videoId', () => {
+        const url =
+            'https://demo.nanocosmos.de/nanoplayer/embed/1.0.0/nanoplayer.html?entry.rtmp.streamname=abcde-fghij';
+        const id = 'abcde-fghij';
+        component.videoUrl = url;
+        expect(component.videoId).toBe(id);
+    });
+
+    it('should have the nanocosmos as player', () => {
+        const url =
+            'https://demo.nanocosmos.de/nanoplayer/embed/1.0.0/nanoplayer.html?entry.rtmp.streamname=abcde-fghij';
+        component.videoUrl = url;
+        expect(component.usingNanocosmos).toBe(true);
+    });
 });
