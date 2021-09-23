@@ -67,6 +67,9 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit, OnDes
     @Input()
     public set config(value: ViewConfig) {
         if (value) {
+            if (Array.isArray(value.value)) {
+                this._firstValue = [...value.value];
+            }
             this.configItem = value;
 
             if (this.form) {
@@ -120,6 +123,12 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit, OnDes
 
     /** used by the groups config type */
     public groupObservable: Observable<ViewGroup[]> = null;
+
+    /**
+     * This contains only the first value of this config item. At the moment, it is only a copy of an array in case
+     * this config item's type is `groups`.
+     */
+    private _firstValue: any;
 
     /**
      * The usual component constructor. datetime pickers will set their locale
@@ -177,7 +186,14 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit, OnDes
         this.form.valueChanges
             // The editor fires changes whenever content was changed. Even by AutoUpdate.
             // This checks for discting content
-            .pipe(distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)))
+            .pipe(
+                distinctUntilChanged((previous, next) => {
+                    if (this.configItem.inputType === 'groups') {
+                        return JSON.stringify(this._firstValue) === JSON.stringify(next.value);
+                    }
+                    return JSON.stringify(previous) === JSON.stringify(next);
+                })
+            )
             .subscribe(form => {
                 this.onChange(form.value);
             });
@@ -242,7 +258,7 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit, OnDes
         if (this.configItem.inputType === 'groups') {
             // we have to check here explicitly if nothing changed because of the search value selector
             const newS = new Set(value);
-            const oldS = new Set(this.configItem.value);
+            const oldS = new Set(this._firstValue);
             if (newS.equals(oldS)) {
                 return;
             }
