@@ -3,15 +3,27 @@
         <div *ngIf="usingVjs">
             <video #vjs class="video-js" controls preload="none"></video>
         </div>
-        <div *ngIf="usingYouTube" class="youtube-player">
+        <div *ngIf="!usingVjs" class="iframe-player">
             <iframe
-                class="youtube-iFrame"
+                *ngIf="usingYouTube"
+                class="player"
                 type="text/html"
                 frameborder="0"
                 allow="autoplay; encrypted-media"
                 allowfullscreen
                 [src]="youTubeVideoUrl | trust: 'resourceUrl'"
             ></iframe>
+
+            <iframe
+                *ngIf="usingNanocosmos"
+                class="player"
+                type="text/html"
+                scrolling="no"
+                frameborder="0"
+                allowfullscreen="true"
+                [src]="nanocosmosVideoUrl | trust: 'resourceUrl'"
+            >
+            </iframe>
         </div>
     </div>
     <div *ngIf="usingVjs && !isUrlOnline" class="is-offline-wrapper">
