@@ -4,6 +4,7 @@ on: [push, workflow_dispatch]
 
 env:
   IMAGE_VERSION: 4.0.0-dev
+  TAG_SUFFIX: -$(date +%Y%m%d)-${GITHUB_SHA::7}
 jobs:
   build:
     name: Builds Docker images
@@ -61,6 +62,10 @@ jobs:
         env:
           DOCKER_BUILDKIT: 1
         run: |
+          if [ "${{ matrix.service.name }}" = "openslides-client" ]
+          then
+            eval echo ${IMAGE_VERSION}${TAG_SUFFIX} > src/assets/version.txt
+          fi
           if [ "${{ matrix.service.args }}" != "" ]
           then
             export BUILD_ARGS="--build-arg MODULE=${{ matrix.service.args.MODULE }}
@@ -79,5 +84,7 @@ jobs:
           # Change all uppercase to lowercase
           IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
 
-          docker tag ${{ matrix.service.name }} $IMAGE_ID:$IMAGE_VERSION
-          docker push $IMAGE_ID:$IMAGE_VERSION
+          docker tag ${{ matrix.service.name }} ${IMAGE_ID}:$(eval echo ${IMAGE_VERSION}${TAG_SUFFIX})
+          docker tag ${{ matrix.service.name }} ${IMAGE_ID}:latest
+          docker push ${IMAGE_ID}:$(eval echo ${IMAGE_VERSION}${TAG_SUFFIX})
+          docker push ${IMAGE_ID}:latest
