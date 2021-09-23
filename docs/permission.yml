@@ -43,6 +43,7 @@ motion:
             can_see:
         can_create:
             can_see:
+            can_forward_to_this:
         can_create_amendments:
             can_see:
     can_support:
