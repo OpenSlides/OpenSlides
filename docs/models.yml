@@ -1324,6 +1324,7 @@ group:
         - meeting.can_see_livestream
         - motion.can_create
         - motion.can_create_amendments
+        - motion.can_forward_to_this
         - motion.can_manage
         - motion.can_manage_metadata
         - motion.can_manage_polls
