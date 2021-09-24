@@ -61,7 +61,7 @@ jobs:
         run: |
           if [ "${{ matrix.service.name }}" = "openslides-client" ]
           then
-            eval echo ${IMAGE_VERSION}${TAG_SUFFIX} > src/assets/version.txt
+            eval echo ${IMAGE_VERSION}${TAG_SUFFIX} > client/src/assets/version.txt
           fi
           if [ "${{ matrix.service.args }}" != "" ]
           then
