@@ -42,8 +42,8 @@ motion:
         can_see_internal:
             can_see:
         can_create:
-            can_see:
-            can_forward_to_this:
+            can_forward_into_this_meeting:
+                can_see:
         can_create_amendments:
             can_see:
     can_support:
