@@ -135,5 +135,3 @@ services:
       - autoupdate
     ports:
       - "8000:8000"
-    volumes:
-      - ../proxy/Caddyfile.dev:/etc/caddy/Caddyfile
