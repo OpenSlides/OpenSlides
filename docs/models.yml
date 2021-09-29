@@ -85,9 +85,6 @@ organization:
   login_text:
     type: string
     restriction_mode: A
-  theme:
-    type: string
-    restriction_mode: A
   reset_password_verbose_errors:
     type: boolean
     restriction_mode: B
@@ -119,6 +116,10 @@ organization:
     type: relation-list
     restriction_mode: B
     to: organization_tag/organization_id
+  theme_id:
+    type: relation
+    restriction_mode: A
+    to: theme/organization_ids
 
 user:
   id:
@@ -392,6 +393,156 @@ organization_tag:
     type: relation
     to: organization/organization_tag_ids
     restriction_mode: A
+
+theme:
+  id:
+    restriction_mode: A
+    type: integer
+    required: true
+  value:
+    restriction_mode: A
+    type: string
+    required: true
+  accent-100:
+    restriction_mode: A
+    type: color
+  accent-200:
+    restriction_mode: A
+    type: color
+  accent-300:
+    restriction_mode: A
+    type: color
+  accent-400:
+    restriction_mode: A
+    type: color
+  accent-50:
+    restriction_mode: A
+    type: color
+  accent-500:
+    restriction_mode: A
+    type: color
+    required: true
+  accent-600:
+    restriction_mode: A
+    type: color
+  accent-700:
+    restriction_mode: A
+    type: color
+  accent-800:
+    restriction_mode: A
+    type: color
+  accent-900:
+    restriction_mode: A
+    type: color
+  accent-A100:
+    restriction_mode: A
+    type: color
+  accent-A200:
+    restriction_mode: A
+    type: color
+  accent-A400:
+    restriction_mode: A
+    type: color
+  accent-A700:
+    restriction_mode: A
+    type: color
+  background_color:
+    restriction_mode: A
+    type: color
+  is_dark_theme:
+    restriction_mode: A
+    type: boolean
+  primary-100:
+    restriction_mode: A
+    type: color
+  primary-200:
+    restriction_mode: A
+    type: color
+  primary-300:
+    restriction_mode: A
+    type: color
+  primary-400:
+    restriction_mode: A
+    type: color
+  primary-50:
+    restriction_mode: A
+    type: color
+  primary-500:
+    restriction_mode: A
+    type: color
+    required: true
+  primary-600:
+    restriction_mode: A
+    type: color
+  primary-700:
+    restriction_mode: A
+    type: color
+  primary-800:
+    restriction_mode: A
+    type: color
+  primary-900:
+    restriction_mode: A
+    type: color
+  primary-A100:
+    restriction_mode: A
+    type: color
+  primary-A200:
+    restriction_mode: A
+    type: color
+  primary-A400:
+    restriction_mode: A
+    type: color
+  primary-A700:
+    restriction_mode: A
+    type: color
+  warn-100:
+    restriction_mode: A
+    type: color
+  warn-200:
+    restriction_mode: A
+    type: color
+  warn-300:
+    restriction_mode: A
+    type: color
+  warn-400:
+    restriction_mode: A
+    type: color
+  warn-50:
+    restriction_mode: A
+    type: color
+  warn-500:
+    restriction_mode: A
+    type: color
+    required: true
+  warn-600:
+    restriction_mode: A
+    type: color
+  warn-700:
+    restriction_mode: A
+    type: color
+  warn-800:
+    restriction_mode: A
+    type: color
+  warn-900:
+    restriction_mode: A
+    type: color
+  warn-A100:
+    restriction_mode: A
+    type: color
+  warn-A200:
+    restriction_mode: A
+    type: color
+  warn-A400:
+    restriction_mode: A
+    type: color
+  warn-A700:
+    restriction_mode: A
+    type: color
+  # Link to organization
+  organization_ids:
+    restriction_mode: A
+    to: organization/theme_id
+    type: relation-list
 
 committee:
   id:
