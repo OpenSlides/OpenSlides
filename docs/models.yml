@@ -338,6 +338,11 @@ user:
       to: user/vote_delegated_$_to_id
     restriction_mode: C
 
+  theme_id:
+    type: relation
+    to: theme/user_ids
+    restriction_mode: A
+
   meeting_ids:
     type: number[]
     description: Calculated. All ids from group_$_ids as integers.
@@ -399,7 +404,7 @@ theme:
     restriction_mode: A
     type: number
     required: true
-  value:
+  name:
     restriction_mode: A
     type: string
     required: true
@@ -446,12 +451,6 @@ theme:
   accent_A700:
     restriction_mode: A
     type: color
-  background_color:
-    restriction_mode: A
-    type: color
-  is_dark_theme:
-    restriction_mode: A
-    type: boolean
   primary_100:
     restriction_mode: A
     type: color
@@ -538,11 +537,15 @@ theme:
   warn_A700:
     restriction_mode: A
     type: color
-  # Link to organization
   organization_ids:
     restriction_mode: A
     to: organization/theme_id
     type: relation-list
+  user_ids:
+    restriction_mode: A
+    to: user/theme_id
+    type: relation-list
+
 
 committee:
   id:
