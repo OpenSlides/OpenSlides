@@ -397,7 +397,7 @@ organization_tag:
 theme:
   id:
     restriction_mode: A
-    type: integer
+    type: number
     required: true
   value:
     restriction_mode: A
