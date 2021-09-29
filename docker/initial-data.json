@@ -8,7 +8,6 @@
             "legal_notice": "<a href=\"http://www.openslides.org\">OpenSlides</a> is a free web based presentation and assembly system for visualizing and controlling agenda, motions and elections of an assembly. The event organizer is resposible for the content.",
             "privacy_policy": "",
             "login_text": "Welcome to OpenSlides. Please login.",
-            "theme": "openslides-default-light-theme",
             "reset_password_verbose_errors": false,
             "enable_electronic_voting": false,
             "limit_of_meetings": 0,
@@ -19,7 +18,8 @@
                 1
             ],
             "resource_ids": [],
-            "organization_tag_ids": []
+            "organization_tag_ids": [],
+            "default_theme_id": null
         }
     },
     "user": {
@@ -63,11 +63,13 @@
             "projection_$_ids": [],
             "vote_delegated_$_to_id": [],
             "vote_delegations_$_from_ids": [],
+            "theme_id": null,
             "meeting_ids": []
         }
     },
     "resource": {},
     "organization_tag": {},
+    "theme": {},
     "committee": {
         "1": {
             "id": 1,
