@@ -116,7 +116,7 @@ organization:
     type: relation-list
     restriction_mode: B
     to: organization_tag/organization_id
-  theme_id:
+  default_theme_id:
     type: relation
     restriction_mode: A
     to: theme/organization_ids
@@ -539,7 +539,7 @@ theme:
     type: color
   organization_ids:
     restriction_mode: A
-    to: organization/theme_id
+    to: organization/default_theme_id
     type: relation-list
   user_ids:
     restriction_mode: A
