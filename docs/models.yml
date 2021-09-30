@@ -337,12 +337,6 @@ user:
       type: relation-list
       to: user/vote_delegated_$_to_id
     restriction_mode: C
-
-  theme_id:
-    type: relation
-    to: theme/user_ids
-    restriction_mode: A
-
   meeting_ids:
     type: number[]
     description: Calculated. All ids from group_$_ids as integers.
@@ -541,11 +535,6 @@ theme:
     restriction_mode: A
     to: organization/default_theme_id
     type: relation-list
-  user_ids:
-    restriction_mode: A
-    to: user/theme_id
-    type: relation-list
-
 
 committee:
   id:
