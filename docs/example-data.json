@@ -142,7 +142,6 @@
             ],
             "vote_delegated_$_to_id": [],
             "vote_delegations_$_from_ids": [],
-            "theme_id": null,
             "meeting_ids": [
                 1
             ]
@@ -231,7 +230,6 @@
             "vote_delegated_vote_$_ids": [],
             "vote_delegated_$_to_id": [],
             "vote_delegations_$_from_ids": [],
-            "theme_id": null,
             "meeting_ids": [
                 1
             ]
@@ -320,7 +318,6 @@
             "vote_delegated_vote_$_ids": [],
             "vote_delegated_$_to_id": [],
             "vote_delegations_$_from_ids": [],
-            "theme_id": null,
             "meeting_ids": [
                 1
             ]
