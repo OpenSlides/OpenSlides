@@ -19,7 +19,8 @@
             ],
             "resource_ids": [],
             "organization_tag_ids": [],
-            "default_theme_id": null
+            "default_theme_id": null,
+	    "theme_ids": []
         }
     },
     "user": {
@@ -63,7 +64,6 @@
             "projection_$_ids": [],
             "vote_delegated_$_to_id": [],
             "vote_delegations_$_from_ids": [],
-            "theme_id": null,
             "meeting_ids": []
         }
     },
