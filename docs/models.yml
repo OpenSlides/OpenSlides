@@ -119,7 +119,7 @@ organization:
   default_theme_id:
     type: relation
     restriction_mode: A
-    to: theme/organization_ids
+    to: theme/default_theme_for_organization_id
   theme_ids:
     type: relation-list
     restriction_mode: A
@@ -535,10 +535,10 @@ theme:
   warn_a700:
     restriction_mode: A
     type: color
-  organization_ids:
+  default_theme_for_organization_id:
     restriction_mode: A
     to: organization/default_theme_id
-    type: relation-list
+    type: relation
   organization_id:
     restriction_mode: A
     to: organization/theme_ids
