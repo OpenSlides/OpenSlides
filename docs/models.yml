@@ -120,6 +120,10 @@ organization:
     type: relation
     restriction_mode: A
     to: theme/organization_ids
+  theme_ids:
+    type: relation-list
+    restriction_mode: A
+    to: theme/organization_id
 
 user:
   id:
@@ -535,6 +539,10 @@ theme:
     restriction_mode: A
     to: organization/default_theme_id
     type: relation-list
+  organization_id:
+    restriction_mode: A
+    to: organization/theme_ids
+    type: relation
 
 committee:
   id:
