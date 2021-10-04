@@ -437,16 +437,16 @@ theme:
   accent_900:
     restriction_mode: A
     type: color
-  accent_A100:
+  accent_a100:
     restriction_mode: A
     type: color
-  accent_A200:
+  accent_a200:
     restriction_mode: A
     type: color
-  accent_A400:
+  accent_a400:
     restriction_mode: A
     type: color
-  accent_A700:
+  accent_a700:
     restriction_mode: A
     type: color
   primary_100:
@@ -480,16 +480,16 @@ theme:
   primary_900:
     restriction_mode: A
     type: color
-  primary_A100:
+  primary_a100:
     restriction_mode: A
     type: color
-  primary_A200:
+  primary_a200:
     restriction_mode: A
     type: color
-  primary_A400:
+  primary_a400:
     restriction_mode: A
     type: color
-  primary_A700:
+  primary_a700:
     restriction_mode: A
     type: color
   warn_100:
@@ -523,16 +523,16 @@ theme:
   warn_900:
     restriction_mode: A
     type: color
-  warn_A100:
+  warn_a100:
     restriction_mode: A
     type: color
-  warn_A200:
+  warn_a200:
     restriction_mode: A
     type: color
-  warn_A400:
+  warn_a400:
     restriction_mode: A
     type: color
-  warn_A700:
+  warn_a700:
     restriction_mode: A
     type: color
   organization_ids:
