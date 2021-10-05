@@ -131,5 +131,8 @@ jobs:
       - name: Export migrated data from the datastore
         run: "curl --header 'Content-Type: application/json' -d '{}' http://localhost:9010/internal/datastore/reader/get_everything 2> /dev/null | python3 dev-commands/strip-meta-fields.py > export.json"
 
+      - name: generate models.py for next step
+        run: python openslides-backend/cli/generate_models.py docs/models.yml
+
       - name: Validate exported initial-data.json
         run: python openslides-backend/cli/check_json.py --partial export.json
