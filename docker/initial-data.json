@@ -1,5 +1,5 @@
 {
-    "_migration_index": 4,
+    "_migration_index": 5,
     "organization": {
         "1": {
             "id": 1,
@@ -477,6 +477,7 @@
         "1": {
             "id": 1,
             "name": "submitted",
+            "weight": 1,
             "recommendation_label": null,
             "css_class": "lightblue",
             "restrictions": [],
@@ -503,6 +504,7 @@
         "2": {
             "id": 2,
             "name": "accepted",
+            "weight": 2,
             "recommendation_label": "Acceptance",
             "css_class": "green",
             "restrictions": [],
@@ -527,6 +529,7 @@
         "3": {
             "id": 3,
             "name": "rejected",
+            "weight": 3,
             "recommendation_label": "Rejection",
             "css_class": "red",
             "restrictions": [],
@@ -551,6 +554,7 @@
         "4": {
             "id": 4,
             "name": "not decided",
+            "weight": 4,
             "recommendation_label": "No decision",
             "css_class": "grey",
             "restrictions": [],
@@ -575,6 +579,7 @@
         "5": {
             "id": 5,
             "name": "in_progress",
+            "weight": 5,
             "recommendation_label": null,
             "css_class": "lightblue",
             "restrictions": [],
@@ -600,6 +605,7 @@
         "6": {
             "id": 6,
             "name": "submitted",
+            "weight": 6,
             "recommendation_label": null,
             "css_class": "lightblue",
             "restrictions": [],
@@ -628,6 +634,7 @@
         "7": {
             "id": 7,
             "name": "permitted",
+            "weight": 7,
             "recommendation_label": "Permission",
             "css_class": "lightblue",
             "restrictions": [],
@@ -660,6 +667,7 @@
         "8": {
             "id": 8,
             "name": "accepted",
+            "weight": 8,
             "recommendation_label": "Acceptance",
             "css_class": "green",
             "restrictions": [],
@@ -684,6 +692,7 @@
         "9": {
             "id": 9,
             "name": "rejected",
+            "weight": 9,
             "recommendation_label": "Rejection",
             "css_class": "red",
             "restrictions": [],
@@ -707,7 +716,8 @@
         },
         "10": {
             "id": 10,
-            "name": "withdrawed",
+            "name": "withdrawn",
+            "weight": 10,
             "recommendation_label": null,
             "css_class": "grey",
             "restrictions": [],
@@ -734,6 +744,7 @@
         "11": {
             "id": 11,
             "name": "adjourned",
+            "weight": 11,
             "recommendation_label": "Adjournment",
             "css_class": "grey",
             "restrictions": [],
@@ -758,6 +769,7 @@
         "12": {
             "id": 12,
             "name": "not concerned",
+            "weight": 12,
             "recommendation_label": "No concernment",
             "css_class": "grey",
             "restrictions": [],
@@ -781,7 +793,8 @@
         },
         "13": {
             "id": 13,
-            "name": "refered to committee",
+            "name": "referred to committee",
+            "weight": 13,
             "recommendation_label": "Referral to committee",
             "css_class": "grey",
             "restrictions": [],
@@ -806,6 +819,7 @@
         "14": {
             "id": 14,
             "name": "needs review",
+            "weight": 14,
             "recommendation_label": null,
             "css_class": "grey",
             "restrictions": [],
@@ -830,6 +844,7 @@
         "15": {
             "id": 15,
             "name": "rejected (not authorized)",
+            "weight": 15,
             "recommendation_label": "Rejection (not authorized)",
             "css_class": "grey",
             "restrictions": [],
