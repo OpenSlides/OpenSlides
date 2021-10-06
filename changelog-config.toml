@@ -1,0 +1,22 @@
+Owner = "OpenSlides"
+RepositoryName = "OpenSlides"
+
+OutputType = "file"
+FileName = "CHANGELOG.md"
+
+CurrentRef = "master"
+BaseBranch = "master"
+PreviousRef = "3.3"
+FutureCurrentRefName = "3.4"
+
+ThresholdPreviousRef = 10
+ThresholdCurrentRef = 10
+
+Debug = false
+DisplayLabel = false
+
+# ignore everything labeld as "meta"
+LabelExcludes = ["meta"]
+LabelEnhancement = "feature"
+LabelDocumentation = "documentation"
+LabelBug = "bug"

@@ -4,6 +4,105 @@
 
 https://openslides.com
 
+Version 3.4 (2021-MM-DD)
+========================
+`Milestone <https://github.com/OpenSlides/OpenSlides/milestones/3.4>`_
+
+General:
+ - New feature: group chat module [#5876 #5902 #5929 #6072 #6100]
+ - New external autoupdate service for better performance [#5533, #5817]
+ - Improved loading indicator (spinner) [#5847, #5897, #5981, #6129]
+ - Fixed persistent offline bar on successful reconnection [#5828]
+ - Added own session redis [#5850]
+ - Use caddy as new proxy [#5851]
+ - Removed pip support [#5852]
+ - Updated to Angular12 [#6146]
+ - Handled more timeout errors [#5936]
+ - Fixed umlauts using full text search [#6040]
+ - Added point-of-order amount in speaker statistics [#6078]
+ - Refined autopilot interaction [#6084]
+ - Write changes of logo and font definitions to configs [#6118]
+ - Fixes the usage of groups in the settings [#6222]
+ - Added export for OpenSlides4 [#6120]
+
+eVoting:
+ - Added history information for start/stop voting [#5857]
+ - Speed up stopping a poll [#6054]
+ - Added prompt dialog for stop voting [#6070]
+ - Allow list of speakers manager to see voting progress [#6037]
+ - Lock poll to prevent race conditions [#6006]
+ - Show "unpublished" for finished polls in autopilot [#6074]
+ - Clear all votes after poll reset [#6113]
+ - New 100% base: All entitled users
+ - Prevent multiple entries in entitled_users_at_stop [#5997]
+ - Removed voted_ids [#5918]
+ - Fixed vote pending state [#6127]
+ - Fixed vote delegation update error [#6024]
+ - Fixed entitled user calculation and display of voting banner in case of vote delegations [#6031]
+
+Jitsi/Livestream:
+ - New feature: virtual applause [#5811]
+ - New feature: helpdesk jitsi room [#5832]
+ - Added support for YouTube and Nanocosmos livestream player [#5770, #6228]
+ - Completely restructure Jitsi/livestream components [#5961]
+ - Updated Jitsi iFrame and API [#6103]
+ - Hide chat in Jitsi iFrame [#6177]
+
+Agenda:
+ - New feature: Mark speakers for pro/contra. New note for point of order. [#6023]
+ - New config option: List of speakers is initially closed [#5910]
+ - New multiselect action: open/close list of speakers in agenda [#6087]
+ - Added speaker information (pro/contra/point-of-order) also for active/finished speakers [#6073]
+ - Improved point-of-order dialog [#6075]
+ - Fixed point of order sorting/weighting [#5882, #5913]
+ - Fixed showSubtitle config. Reordered agenda config. [#5924]
+ - Fixed point of order creation permission (for agenda.can_be_speaker only) [#5927]
+
+Motions:
+ - Added warning when editing motion with existing amendments [#5957]
+ - Added additional special characters for better diff handling [#5987, #6173]
+ - Change recommendation extension can now be set with can_manage_metadata [#6001]
+ - Allow formatting-only-changes without breaking the inline diff [#5992]
+ - Fixed paragraph based amendments in iOS [#5888]
+ - Fixed handling of inconsistent states in amendments [#5920]
+ - Fixed wrong diff view for amendments in list items [#6047]
+ - Fixed top navigation between motions [#6086]
+ - Fixed an error where the workflow would break agenda [#6185]
+ - Clean HTML before pasting in tinymce [#6212]
+ - Added supporters to CSV import [#6186]
+ - Enhance amendments change recommendation list in motion detail view [#6009]
+ - Better hyphenation for motion detail [#6076]
+
+Elections:
+ - New feature: minimum amount of votes [#5719]
+ - Fixed user cannot see candidate names [#6049]
+ - Fixed order of assignment options by weight [#5928]
+ - Disabled general approval/rejection depending on poll method [#5979]
+ - Added general approval/rejection/abstain to analog polls [#6050]
+ - Number candidates in voting result table [#6051, #6081]
+ - Remove chart for analog polls with a majority [#6130]
+ - Fixed projection of analog polls & prevent percent base 'entitled' for analog polls [#6134]
+
+Users:
+ - Improve client-side password generation [#5791, #5822]
+ - Fix vote_delegated_from_user_ids on user update [#5800]
+ - Fix csv importing users with groups [#5823]
+ - Update users on can_see_extra_data permission change [#5935]
+ - Add login errors for inactive users [#5967]
+ - Adding attribute matchers for group assignments to SAML [#6017]
+ - Validate the from email for invalid characters [#6025]
+ - Hide pw generate button while editing a user [#6171]
+
+Mediafiles:
+ - New settings for the mediafile database tablename [#6026]
+ - Fixed updating logo and font configs when deleting a mediafile [#6123]
+ - Fixed missing zip extension when filename has a dot [#6172]
+
+Projector:
+ - Don't show diff view on motion slides if no change recommendations exist [#5940]
+ - Hide cursor in full screen projector [#6066]
+
+
 Version 3.3 (2020-12-18)
 ========================
 `Milestone <https://github.com/OpenSlides/OpenSlides/milestones/3.3>`_

@@ -62,6 +62,7 @@ client/out-tsc
 client/documentation
 Compodoc
 Compodocmodules
+CHANGELOG.md
 # build artifacts
 client/.sass-cache
 client/connect.lock
