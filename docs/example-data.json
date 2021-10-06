@@ -23,7 +23,7 @@
             "organization_tag_ids": [
                 1
             ],
-            "default_theme_id": 1,
+            "theme_id": 1,
             "theme_ids": [1]
         }
     },
@@ -340,7 +340,7 @@
             "primary_500": "#317796",
             "warn_500": "#f06400",
             "organization_id": 1,
-            "default_theme_for_organization_id": 1
+            "theme_for_organization_id": 1
         }
     },
     "organization_tag": {

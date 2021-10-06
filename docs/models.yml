@@ -116,11 +116,11 @@ organization:
     type: relation-list
     restriction_mode: B
     to: organization_tag/organization_id
-  default_theme_id:
+  theme_id:
     type: relation
     required: true
     restriction_mode: A
-    to: theme/default_theme_for_organization_id
+    to: theme/theme_for_organization_id
   theme_ids:
     type: relation-list
     restriction_mode: A
@@ -536,9 +536,9 @@ theme:
   warn_a700:
     restriction_mode: A
     type: color
-  default_theme_for_organization_id:
+  theme_for_organization_id:
     restriction_mode: A
-    to: organization/default_theme_id
+    to: organization/theme_id
     type: relation
   organization_id:
     required: true
