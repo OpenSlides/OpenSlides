@@ -19,8 +19,8 @@
             ],
             "resource_ids": [],
             "organization_tag_ids": [],
-            "default_theme_id": null,
-            "theme_ids": []
+            "default_theme_id": 1,
+            "theme_ids": [1]
         }
     },
     "user": {
@@ -69,7 +69,17 @@
     },
     "resource": {},
     "organization_tag": {},
-    "theme": {},
+    "theme": {
+        "1":{
+            "id": 1,
+            "name": "OpenSlides Blue",
+            "accent_500": "#2196f3",
+            "primary_500": "#317796",
+            "warn_500": "#f06400",
+            "organization_id": 1,
+            "default_theme_for_organization_id": 1
+        }
+    },
     "committee": {
         "1": {
             "id": 1,
