@@ -4,7 +4,7 @@
 
 https://openslides.com
 
-Version 3.4 (2021-MM-DD)
+Version 3.4 (2021-10-07)
 ========================
 `Milestone <https://github.com/OpenSlides/OpenSlides/milestones/3.4>`_
 
