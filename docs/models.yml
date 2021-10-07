@@ -2119,6 +2119,10 @@ motion_state:
     type: string
     required: true
     restriction_mode: A
+  weight:
+    type: number
+    required: true
+    restriction_mode: A
   recommendation_label:
     type: string
     restriction_mode: A

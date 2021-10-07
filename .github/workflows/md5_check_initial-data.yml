@@ -21,4 +21,4 @@ jobs:
         run: md5sum docker/initial-data.json
 
       - name: Validate and protect initial-data.json
-        run: echo "f6274a3f6f638f55a4c66f963d3abbca  docker/initial-data.json" | md5sum -c -
+        run: echo "6516e4a8d29c623d301c0c463e3d1db5  docker/initial-data.json" | md5sum -c -
