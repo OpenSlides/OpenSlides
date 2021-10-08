@@ -57,7 +57,8 @@
 #     - The property `read_only` describes a field that can not be changed by an action.
 #     - The property `default` describes the default value that is used for new objects.
 #     - The property `required` describes that this field can not be null or an empty
-#       string. If this field is given it must have some content.
+#       string. If this field is given it must have some content. On relation and generic-relation
+#       fields the value as to be an id of an existing object.
 #     - The property `equal_fields` describes fields that must have the same value in
 #       the instance and the related instance.
 # Restriction Mode:
@@ -328,6 +329,7 @@ user:
     fields:
       type: relation
       to: user/vote_delegations_$_from_ids
+      required: false
     restriction_mode: C
   vote_delegations_$_from_ids:
     type: template
@@ -366,6 +368,7 @@ resource:
     type: relation
     to: organization/resource_ids
     restriction_mode: A
+    required: true
 
 organization_tag:
   id:
@@ -392,6 +395,7 @@ organization_tag:
     type: relation
     to: organization/organization_tag_ids
     restriction_mode: A
+    required: true
 
 committee:
   id:
@@ -414,10 +418,12 @@ committee:
     type: relation
     to: meeting/template_for_committee_id
     restriction_mode: A
+    required: false
   default_meeting_id:
     type: relation
     to: meeting/default_meeting_for_committee_id
     restriction_mode: A
+    required: false
   user_ids:
     type: relation-list
     to: user/committee_ids
@@ -464,6 +470,7 @@ meeting:
     to: organization/active_meeting_ids
     restriction_mode: A
     description: Backrelation and boolean flag at once
+    required: false
   description:
     type: string
     maxLength: 100
@@ -505,6 +512,7 @@ meeting:
     type: relation
     to: committee/template_meeting_id
     restriction_mode: B
+    required: false
   enable_anonymous:
     type: boolean
     default: False
@@ -1205,12 +1213,14 @@ meeting:
     fields:
       type: relation
       to: mediafile/used_as_logo_$_in_meeting_id
+      required: false
     restriction_mode: B
   font_$_id:
     type: template
     fields:
       type: relation
       to: mediafile/used_as_font_$_in_meeting_id
+      required: false
     restriction_mode: B
   # The client can define these resources. There is no need
   # to have whitelist/blacklist on the server. The places must
@@ -1227,6 +1237,7 @@ meeting:
     type: relation
     to: committee/default_meeting_id
     restriction_mode: B
+    required: false
   organization_tag_ids:
     type: relation-list
     to: organization_tag/tagged_ids
@@ -1249,16 +1260,18 @@ meeting:
     type: relation
     to: projector_countdown/used_as_list_of_speaker_countdown_meeting_id
     restriction_mode: B
+    required: false
   poll_countdown_id:
     type: relation
     to: projector_countdown/used_as_poll_countdown_meeting_id
     restriction_mode: B
-
+    required: false
   default_projector_$_id:
     type: template
     fields:
       type: relation
       to: projector/used_as_default_$_in_meeting_id
+      required: false
     restriction_mode: B
   # Available template field replacements:
   #  - agenda_all_items
@@ -1290,6 +1303,7 @@ meeting:
     type: relation
     to: group/admin_group_for_meeting_id
     restriction_mode: B
+    required: false
 
 group:
   id:
@@ -1349,11 +1363,13 @@ group:
     to: meeting/default_group_id
     on_delete: PROTECT
     restriction_mode: A
+    required: false
   admin_group_for_meeting_id:
     type: relation
     to: meeting/admin_group_id
     on_delete: PROTECT
     restriction_mode: A
+    required: false
   mediafile_access_group_ids:
     type: relation-list
     to: mediafile/access_group_ids
@@ -1394,14 +1410,17 @@ group:
     type: relation
     to: meeting/motion_poll_default_group_ids
     restriction_mode: A
+    required: false
   used_as_assignment_poll_default_id:
     type: relation
     to: meeting/assignment_poll_default_group_ids
     restriction_mode: A
+    required: false
   used_as_poll_default_id:
     type: relation
     to: meeting/poll_default_group_ids
     restriction_mode: A
+    required: false
   meeting_id:
     type: relation
     to: meeting/group_ids
@@ -1423,6 +1442,7 @@ personal_note:
     type: relation
     to: user/personal_note_$_ids
     restriction_mode: A
+    required: true
   content_object_id:
     type: generic-relation
     to:
@@ -1431,6 +1451,7 @@ personal_note:
       field: personal_note_ids
     equal_fields: meeting_id
     restriction_mode: A
+    required: false
   meeting_id:
     type: relation
     to: meeting/personal_note_ids
@@ -1527,6 +1548,7 @@ agenda_item:
     to: agenda_item/child_ids
     equal_fields: meeting_id
     restriction_mode: A
+    required: false
   child_ids:
     type: relation-list
     to: agenda_item/parent_id
@@ -1751,6 +1773,7 @@ motion:
     to: motion/amendment_ids
     equal_fields: meeting_id
     restriction_mode: C
+    required: false
   amendment_ids:
     type: relation-list
     to: motion/lead_motion_id
@@ -1761,6 +1784,7 @@ motion:
     to: motion/sort_child_ids
     equal_fields: meeting_id
     restriction_mode: C
+    required: false
   sort_child_ids:
     type: relation-list
     to: motion/sort_parent_id
@@ -1770,6 +1794,7 @@ motion:
     type: relation
     to: motion/derived_motion_ids # Note: The related motions may not be in the same meeting
     restriction_mode: B
+    required: false
   derived_motion_ids:
     type: relation-list
     to: motion/origin_id # Note: The related motions may not be in the same meeting
@@ -1791,6 +1816,7 @@ motion:
     to: motion_state/motion_recommendation_ids
     equal_fields: meeting_id
     restriction_mode: C
+    required: false
   recommendation_extension_reference_ids:
     type: generic-relation-list
     to:
@@ -1809,11 +1835,13 @@ motion:
     to: motion_category/motion_ids
     equal_fields: meeting_id
     restriction_mode: C
+    required: false
   block_id:
     type: relation
     to: motion_block/motion_ids
     equal_fields: meeting_id
     restriction_mode: C
+    required: false
   submitter_ids:
     type: relation-list
     to: motion_submitter/motion_id
@@ -1847,6 +1875,7 @@ motion:
     to: motion_statute_paragraph/motion_ids
     equal_fields: meeting_id
     restriction_mode: C
+    required: false
   comment_ids:
     type: relation-list
     to: motion_comment/motion_id
@@ -1859,6 +1888,7 @@ motion:
     on_delete: CASCADE
     equal_fields: meeting_id
     restriction_mode: C
+    required: false
   list_of_speakers_id:
     type: relation
     to: list_of_speakers/content_object_id
@@ -1904,11 +1934,13 @@ motion_submitter:
     type: relation
     to: user/submitted_motion_$_ids
     restriction_mode: A
+    required: true
   motion_id:
     type: relation
     to: motion/submitter_ids
     equal_fields: meeting_id
     restriction_mode: A
+    required: true
   meeting_id:
     type: relation
     to: meeting/motion_submitter_ids
@@ -2002,6 +2034,7 @@ motion_category:
     to: motion_category/child_ids
     equal_fields: meeting_id
     restriction_mode: A
+    required: false
   child_ids:
     type: relation-list
     to: motion_category/parent_id
@@ -2041,6 +2074,7 @@ motion_block:
     on_delete: CASCADE
     equal_fields: meeting_id
     restriction_mode: B
+    required: false
   list_of_speakers_id:
     type: relation
     to: list_of_speakers/content_object_id
@@ -2221,6 +2255,7 @@ motion_state:
     on_delete: PROTECT
     equal_fields: meeting_id
     restriction_mode: A
+    required: false
   meeting_id:
     type: relation
     to: meeting/motion_state_ids
@@ -2252,14 +2287,17 @@ motion_workflow:
     type: relation
     to: meeting/motions_default_workflow_id
     restriction_mode: A
+    required: false
   default_amendment_workflow_meeting_id:
     type: relation
     to: meeting/motions_default_amendment_workflow_id
     restriction_mode: A
+    required: false
   default_statute_amendment_workflow_meeting_id:
     type: relation
     to: meeting/motions_default_statute_amendment_workflow_id
     restriction_mode: A
+    required: false
   meeting_id:
     type: relation
     to: meeting/motion_workflow_ids
@@ -2397,6 +2435,7 @@ poll:
       field: poll_ids
     equal_fields: meeting_id
     restriction_mode: A
+    required: false
   option_ids:
     type: relation-list
     to: option/poll_id
@@ -2409,6 +2448,7 @@ poll:
     on_delete: CASCADE
     equal_fields: meeting_id
     restriction_mode: A
+    required: false
   voted_ids:
     type: relation-list
     to: user/poll_voted_$_ids
@@ -2427,6 +2467,7 @@ poll:
     type: relation
     to: meeting/poll_ids
     restriction_mode: A
+    required: true
 
 option:
   id:
@@ -2454,11 +2495,13 @@ option:
     to: poll/option_ids
     equal_fields: meeting_id
     restriction_mode: A
+    required: false
   used_as_global_option_in_poll_id:
     type: relation
     to: poll/global_option_id
     equal_fields: meeting_id
     restriction_mode: A
+    required: false
   vote_ids:
     type: relation-list
     to: vote/option_id
@@ -2473,6 +2516,7 @@ option:
       - user/option_$_ids
     equal_fields: meeting_id
     restriction_mode: A
+    required: false
   meeting_id:
     type: relation
     to: meeting/option_ids
@@ -2504,10 +2548,12 @@ vote:
     type: relation
     to: user/vote_$_ids
     restriction_mode: A
+    required: false
   delegated_user_id:
     type: relation
     to: user/vote_delegated_vote_$_ids
     restriction_mode: A
+    required: false
   meeting_id:
     type: relation
     to: meeting/vote_ids
@@ -2563,6 +2609,7 @@ assignment:
     on_delete: CASCADE
     equal_fields: meeting_id
     restriction_mode: B
+    required: false
   list_of_speakers_id:
     type: relation
     to: list_of_speakers/content_object_id
@@ -2605,10 +2652,12 @@ assignment_candidate:
     to: assignment/candidate_ids
     equal_fields: meeting_id
     restriction_mode: A
+    required: true
   user_id:
     type: relation
     to: user/assignment_candidate_$_ids
     restriction_mode: A
+    required: true
   meeting_id:
     type: relation
     to: meeting/assignment_candidate_ids
@@ -2668,6 +2717,7 @@ mediafile:
     to: mediafile/child_ids
     equal_fields: meeting_id
     restriction_mode: B
+    required: false
   child_ids:
     type: relation-list
     to: mediafile/parent_id
@@ -2679,6 +2729,7 @@ mediafile:
     on_delete: CASCADE
     equal_fields: meeting_id
     restriction_mode: B
+    required: true
   projection_ids:
     type: relation-list
     to: projection/content_object_id
@@ -2706,12 +2757,14 @@ mediafile:
     fields:
       type: relation
       to: meeting/logo_$_id
+      required: false
     restriction_mode: B
   used_as_font_$_in_meeting_id:
     type: template
     fields:
       type: relation
       to: meeting/font_$_id
+      required: false
     restriction_mode: B
 
 projector:
@@ -2809,16 +2862,19 @@ projector:
     type: relation
     to: meeting/reference_projector_id
     restriction_mode: A
+    required: false
   used_as_default_$_in_meeting_id:
     type: template
     fields:
       type: relation
       to: meeting/default_projector_$_id
+      required: false
     restriction_mode: A
   meeting_id:
     type: relation
     to: meeting/projector_ids
     restriction_mode: A
+    required: true
 
 # A projection is a M2M model between an element that is assigned to a
 # projector. This element can either be the current one projected, in the
@@ -2853,16 +2909,19 @@ projection:
     to: projector/current_projection_ids
     equal_fields: meeting_id
     restriction_mode: A
+    required: false
   preview_projector_id:
     type: relation
     to: projector/preview_projection_ids
     equal_fields: meeting_id
     restriction_mode: A
+    required: false
   history_projector_id:
     type: relation
     to: projector/history_projection_ids
     equal_fields: meeting_id
     restriction_mode: A
+    required: false
   content_object_id:
     type: generic-relation
     to:
@@ -2880,6 +2939,7 @@ projection:
       - user/projection_$_ids
     equal_fields: meeting_id
     restriction_mode: A
+    required: false
   meeting_id:
     type: relation
     to: meeting/all_projection_ids
@@ -2903,6 +2963,7 @@ projector_message:
     type: relation
     to: meeting/projector_message_ids
     restriction_mode: A
+    required: true
 
 projector_countdown:
   id:
@@ -2937,14 +2998,17 @@ projector_countdown:
     type: relation
     to: meeting/list_of_speakers_countdown_id
     restriction_mode: A
+    required: false
   used_as_poll_countdown_meeting_id:
     type: relation
     to: meeting/poll_countdown_id
     restriction_mode: A
+    required: false
   meeting_id:
     type: relation
     to: meeting/projector_countdown_ids
     restriction_mode: A
+    required: true
 
 chat_group:
   id:
