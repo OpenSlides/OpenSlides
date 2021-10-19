@@ -2882,7 +2882,7 @@ mediafile:
     on_delete: CASCADE
     equal_fields: meeting_id
     restriction_mode: B
-    required: false
+    required: true
   projection_ids:
     type: relation-list
     to: projection/content_object_id
