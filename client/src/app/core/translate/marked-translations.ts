@@ -37,7 +37,7 @@ _('Server settings required to activate Jitsi Meet integration.');
 _('Livestream url');
 _('Remove URL to deactivate livestream. Check extra group permission to see livestream.');
 _('Livestream poster image url');
-_('Shows if livestream is not started. Recommended image format: 500x280px, PNG or JPG');
+_('Shows if livestream is not started. Recommended image format: 500x200px, PNG or JPG');
 _('Enable virtual help desk room');
 _('Shows a button with help icon to connect to an extra Jitsi conference room for technical audio/video tests.');
 _('Number of next speakers automatically connecting to the live conference');

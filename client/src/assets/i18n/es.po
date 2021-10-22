@@ -2815,11 +2815,11 @@ msgstr ""
 "conferencias Jitsi adicional para realizar pruebas técnicas de audio/vídeo."
 
 msgid ""
-"Shows if livestream is not started. Recommended image format: 500x280px, PNG"
+"Shows if livestream is not started. Recommended image format: 500x200px, PNG"
 " or JPG"
 msgstr ""
 "Aparece cuando no se puede iniciar el livestream. Recomendación de formato "
-"de imagen: 500x280px, PNG o JPG"
+"de imagen: 500x200px, PNG o JPG"
 
 msgid ""
 "Shows the given image as applause particle. Recommended image format: "
