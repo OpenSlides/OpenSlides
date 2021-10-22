@@ -58,6 +58,15 @@ services:
     env_file: services.env
     environment:
       - OPENSLIDES_DEVELOPMENT=1
+      - EMAIL_HOST=mailhog
+      - EMAIL_PORT=1025
+      # - EMAIL_HOST_USER username
+      # - EMAIL_HOST_PASSWORD secret
+      # EMAIL_CONNECTION_SECURITY use NONE, STARTTLS or SSL/TLS
+      - EMAIL_CONNECTION_SECURITY=NONE
+      - EMAIL_TIMEOUT=5
+      - EMAIL_ACCEPT_SELF_SIGNED_CERTIFICATE=false
+      - DEFAULT_FROM_EMAIL=noreply@example.com
     volumes:
       - ../openslides-backend/openslides_backend:/app/openslides_backend
       - ../openslides-backend/migrations:/app/migrations
@@ -135,3 +144,12 @@ services:
       - autoupdate
     ports:
       - "8000:8000"
+    volumes:
+      - ../proxy/Caddyfile.dev:/etc/caddy/Caddyfile
+
+  mailhog:
+    image: mailhog/mailhog
+    logging:
+      driver: 'none'  # disable saving logs
+    ports:
+      - "8025:8025" # web ui to check mails manually
