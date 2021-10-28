@@ -2289,7 +2289,7 @@
         },
         "5": {
             "id": 5,
-            "name": "in_progress",
+            "name": "in progress",
             "weight": 5,
             "recommendation_label": null,
             "css_class": "lightblue",
