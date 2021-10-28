@@ -17,6 +17,7 @@
                 1
             ],
             "limit_of_meetings": 20,
+            "limit_of_users": 40,
             "resource_ids": [
                 1
             ],

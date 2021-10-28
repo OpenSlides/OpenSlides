@@ -1,5 +1,5 @@
 {
-    "_migration_index": 7,
+    "_migration_index": 8,
     "organization": {
         "1": {
             "id": 1,
@@ -11,6 +11,7 @@
             "reset_password_verbose_errors": false,
             "enable_electronic_voting": false,
             "limit_of_meetings": 0,
+            "limit_of_users": 0,
             "committee_ids": [
                 1
             ],

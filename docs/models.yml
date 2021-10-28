@@ -100,6 +100,12 @@ organization:
     restriction_mode: B
     default: 0
     minimum: 0
+  limit_of_users:
+    type: number
+    description: Maximum of active users for the whole organization. 0 means no limitation at all
+    restriction_mode: B
+    default: 0
+    minimum: 0
 
   committee_ids:
     type: relation-list
