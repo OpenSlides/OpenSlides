@@ -39,6 +39,7 @@ from ..utils.autoupdate import AutoupdateElement, inform_changed_data, inform_el
 from ..utils.cache import element_cache
 from ..utils.rest_api import (
     ModelViewSet,
+    NotFound,
     Response,
     SimpleMetadata,
     ValidationError,
@@ -1168,3 +1169,61 @@ class PasswordResetConfirmView(APIView):
         except (TypeError, ValueError, OverflowError, User.DoesNotExist):
             user = None
         return user
+
+
+class GetUserView(APIView):
+    """
+    View to retrieve a single user.
+
+    Use query parameters "id", "username", "email" or "number" to look for
+    a user and retrieve its data.
+    """
+
+    http_method_names = ["get"]
+
+    def get(self, request, *args, **kwargs):
+        # Check permissions.
+        if not request.user.is_authenticated or not has_perm(
+            request.user, "users.can_manage"
+        ):
+            self.permission_denied(request)
+
+        # Parse parameters
+        params = request.GET
+        user_id = params.get("id", "0")
+        try:
+            user_id = int(user_id)
+        except ValueError:
+            raise ValidationError({"detail": "Invalid parameter user_id."})
+        email = params.get("email", "")
+        username = params.get("username", "")
+        number = params.get("number", "")
+
+        # Build queryset
+        query = User.objects.all()
+        if user_id:
+            query = query.filter(pk=user_id)
+        if username:
+            query = query.filter(username=username)
+        if email:
+            query = query.filter(email=email)
+        if number:
+            query = query.filter(number=number)
+
+        # Execute queryset
+        try:
+            self.user = query.get()
+        except User.DoesNotExist:
+            raise NotFound({"detail": "User does not exist."})
+        except User.MultipleObjectsReturned:
+            raise ValidationError({"detail": "Found more than one user."})
+
+        return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, **context):
+        user_full_data = async_to_sync(element_cache.get_element_data)(
+            self.user.get_collection_string(), self.user.pk
+        )
+        user_full_data.pop("session_auth_hash")
+        context.update({"user": user_full_data})
+        return context

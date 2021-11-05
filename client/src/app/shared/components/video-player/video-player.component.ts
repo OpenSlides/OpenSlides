@@ -109,7 +109,7 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
     }
 
     public get nanocosmosVideoUrl(): string {
-        return `https://demo.nanocosmos.de/nanoplayer/embed/1.0.0/nanoplayer.html?entry.rtmp.streamname=${this.videoId}`;
+        return `https://demo.nanocosmos.de/nanoplayer/embed/1.0.0/nanoplayer.html?entry.rtmp.streamname=${this.videoId}`; // tslint:disable
     }
 
     public constructor(
@@ -237,7 +237,7 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
     }
 
     private getNanocosmosVideoId(url: string): string {
-        const urlParts: Array<String> = url.split('=');
+        const urlParts: String[] = url.split('=');
         if (urlParts?.length && typeof urlParts[1] === 'string') {
             return urlParts[1];
         }

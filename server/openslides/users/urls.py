@@ -20,4 +20,9 @@ urlpatterns = [
         views.PasswordResetConfirmView.as_view(),
         name="password_reset_confirm",
     ),
+    url(
+        r"^get-user/$",
+        views.GetUserView.as_view(),
+        name="get_user",
+    ),
 ]
