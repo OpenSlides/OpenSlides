@@ -4,6 +4,8 @@ set -e
 
 config=/etc/caddy/config.json
 base=/caddy_base.json
+HTTPS_CERT_FILE="${HTTPS_CERT_FILE:-/certs/cert.pem}"
+HTTPS_KEY_FILE="${HTTPS_KEY_FILE:-/certs/key.pem}"
 
 # set defaults in base
 ACTION_HOST="${ACTION_HOST:-backend}" ACTION_PORT="${ACTION_PORT:-9002}" \
@@ -23,12 +25,12 @@ jq_write() {
 
 ### HTTPS ###
 if [ -n "$ENABLE_LOCAL_HTTPS" ]; then
-  [ -f /certs/cert.pem ] && [ -f /certs/key.pem ] || {
+  [ -f "$HTTPS_CERT_FILE" ] && [ -f "$HTTPS_KEY_FILE" ] || {
     echo "ERROR: no local cert-files provided. Did you run make-localhost-cert.sh?"
     exit 1
   }
   jq_write ".apps.http.servers.srv0.tls_connection_policies = [{ certificate_selection: { any_tag: [ \"cert0\" ] }}]"
-  jq_write ".apps.tls = { certificates: { load_files: [{ certificate: \"/certs/cert.pem\", key: \"/certs/key.pem\", tags: [ \"cert0\" ] }] }}"
+  jq_write ".apps.tls = { certificates: { load_files: [{ certificate: \"$HTTPS_CERT_FILE\", key: \"$HTTPS_KEY_FILE\", tags: [ \"cert0\" ] }] }}"
 else
   if [ -n "$ENABLE_AUTO_HTTPS" ]; then
     if [ -n "$EXTERNAL_ADDRESS" ]; then
