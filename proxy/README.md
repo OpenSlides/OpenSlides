@@ -18,8 +18,9 @@ be set to avoid hitting rate limits.
 Importantly, port 80 on the host must be forwarded to port 8001 on which caddy
 will answer the ACME-challenge during certificate retrieval.
 
-Alternatively a locally generated certificate can be used by executing
-`make-localhost-cert.sh` before building the docker image (!) and setting
-`ENABLE_LOCAL_HTTPS=1`. This is mostly for dev setup purposes and is not useful
-for a public domain as the cert is not issued by a trusted CA and therefore
-not trusted by browsers. If set, this overrules `ENABLE_AUTO_HTTPS`.
+Alternatively a locally generated certificate can be used by setting
+`ENABLE_LOCAL_HTTPS=1 HTTPS_CERT_FILE=path/to/crt HTTPS_CERT_FILE=path/to/key`
+and providing cert and key files at the specified location. This is mostly for
+dev and testing setups and is not useful for a public domain as the cert is not
+issued by a trusted CA and therefore not trusted by browsers. If set, this
+overrules `ENABLE_AUTO_HTTPS`.
