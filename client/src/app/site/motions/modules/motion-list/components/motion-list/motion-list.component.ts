@@ -129,7 +129,7 @@ export class MotionListComponent extends BaseListViewComponent<ViewMotion> imple
         },
         {
             prop: 'state',
-            minWidth: 160
+            minWidth: 240
         }
     ];
 

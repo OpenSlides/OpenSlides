@@ -146,7 +146,7 @@ export class UserListComponent extends BaseListViewComponent<ViewUser> implement
         },
         {
             prop: 'group',
-            minWidth: 200
+            minWidth: 240
         },
         {
             prop: 'infos',

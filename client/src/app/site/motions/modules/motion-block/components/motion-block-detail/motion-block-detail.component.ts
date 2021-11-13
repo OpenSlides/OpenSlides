@@ -60,7 +60,7 @@ export class MotionBlockDetailComponent extends BaseListViewComponent<ViewMotion
         {
             prop: 'recommendation',
             label: this.translate.instant('Recommendation'),
-            minWidth: 60
+            minWidth: 240
         },
         {
             prop: 'remove',

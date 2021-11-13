@@ -61,15 +61,18 @@ export class UserStatisticsComponent extends BaseViewComponentDirective {
     public readonly columnDefinition: PblColumnDefinition[] = [
         {
             prop: 'structureLevel',
-            label: 'Structure level'
+            label: 'Structure level',
+            width: '100%'
         },
         {
             prop: 'durationOfWordRequests',
-            label: this.translate.instant('Duration of requests to speak')
+            label: this.translate.instant('Duration of requests to speak'),
+            maxWidth: 100
         },
         {
             prop: 'numberOfWordRequests',
-            label: this.translate.instant('Number of requests to speak')
+            label: this.translate.instant('Number of requests to speak'),
+            maxWidth: 60
         }
     ];
 
