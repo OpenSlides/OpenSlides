@@ -121,7 +121,8 @@ export class MotionListComponent extends BaseListViewComponent<ViewMotion> imple
      */
     public tableColumnDefinition: PblColumnDefinition[] = [
         {
-            prop: 'identifier'
+            prop: 'identifier',
+            minWidth: 70
         },
         {
             prop: 'title',
