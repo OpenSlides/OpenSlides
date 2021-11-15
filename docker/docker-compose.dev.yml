@@ -26,7 +26,7 @@ services:
     environment:
       - DATASTORE_ENABLE_DEV_ENVIRONMENT=1
       - COMMAND=create_initial_data
-      - DATASTORE_INITIAL_DATA_FILE=https://raw.githubusercontent.com/OpenSlides/OpenSlides/master/docs/example-data.json
+      - DATASTORE_INITIAL_DATA_FILE=https://raw.githubusercontent.com/OpenSlides/openslides-backend/master/global/data/example-data.json
       - OPENSLIDES_DEVELOPMENT=1
     ports:
       - 9011:9011
@@ -148,6 +148,6 @@ services:
   mailhog:
     image: mailhog/mailhog
     logging:
-      driver: 'none'  # disable saving logs
+      driver: "none" # disable saving logs
     ports:
       - "8025:8025" # web ui to check mails manually
