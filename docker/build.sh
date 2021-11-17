@@ -14,6 +14,7 @@ TARGETS=(
   [datastore-reader]="$HOME/../openslides-datastore-service/reader"
   [datastore-writer]="$HOME/../openslides-datastore-service/writer"
   [media]="$HOME/../openslides-media-service/"
+  [vote]="$HOME/../openslides-vote-service/"
   #[pgbouncer]="https://github.com/OpenSlides/openslides-docker-compose.git#:pgbouncer"
   #[postfix]="https://github.com/OpenSlides/openslides-docker-compose.git#:postfix"
   #[repmgr]="https://github.com/OpenSlides/openslides-docker-compose.git#:repmgr"

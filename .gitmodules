@@ -30,3 +30,7 @@
 	path = openslides-icc-service
 	url = https://github.com/OpenSlides/openslides-icc-service.git
 	branch = main
+[submodule "openslides-vote-service"]
+	path = openslides-vote-service
+	url = https://github.com/OpenSlides/openslides-vote-service.git
+	branch = main
