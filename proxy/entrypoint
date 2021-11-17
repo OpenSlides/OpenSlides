@@ -7,6 +7,7 @@ base=/caddy_base.json
 HTTPS_CERT_FILE="${HTTPS_CERT_FILE:-/certs/cert.pem}"
 HTTPS_KEY_FILE="${HTTPS_KEY_FILE:-/certs/key.pem}"
 
+cp $base $config
 # set defaults in base
 ACTION_HOST="${ACTION_HOST:-backend}" ACTION_PORT="${ACTION_PORT:-9002}" \
 PRESENTER_HOST="${PRESENTER_HOST:-backend}" PRESENTER_PORT="${PRESENTER_PORT:-9003}" \
@@ -16,11 +17,11 @@ AUTH_HOST="${AUTH_HOST:-auth}" AUTH_PORT="${AUTH_PORT:-9004}" \
 MEDIA_HOST="${MEDIA_HOST:-media}" MEDIA_PORT="${MEDIA_PORT:-9006}" \
 MANAGE_HOST="${MANAGE_HOST:-manage}" MANAGE_PORT="${MANAGE_PORT:-9008}" \
 CLIENT_HOST="${CLIENT_HOST:-client}" CLIENT_PORT="${CLIENT_PORT:-9001}" \
-envsubst < "$base" > "$base.out" && mv -f "$base.out" "$base"
+envsubst < "$config" > "$config.out" && mv -f "$config.out" "$config"
 
 jq_write() {
   filter=$1
-  jq "$filter" "$base" > "$base.out" && mv -f "$base.out" "$base"
+  jq "$filter" "$config" > "$config.out" && mv -f "$config.out" "$config"
 }
 
 ### HTTPS ###
@@ -50,7 +51,5 @@ else
     fi
   fi
 fi
-
-mv "$base" "$config"
 
 exec "$@"
