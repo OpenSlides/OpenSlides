@@ -34,6 +34,11 @@ services-to-master:
 	# [1] ...or main, or whatever branch the OS4 one is. See .gitmodules.
 	git submodule foreach -q --recursive 'git checkout $(git config -f $$toplevel/.gitmodules submodule.$$name.branch || echo master); git pull upstream $$(git config -f $$toplevel/.gitmodules submodule.$$name.branch || echo master)'
 
+submodules-origin-to-upstream:
+	# You may only use this one time after cloning this repository.
+	# Will set the upstream remote to "origin"
+	git submodule foreach -q --recursive 'git remote rename origin upstream'
+
 cypress-open:
 	cd integration; npm run cypress:open
 

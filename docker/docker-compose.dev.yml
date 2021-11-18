@@ -151,3 +151,27 @@ services:
       driver: "none" # disable saving logs
     ports:
       - "8025:8025" # web ui to check mails manually
+
+  vote:
+    image: openslides-vote-dev
+    depends_on:
+      - auth
+      - message-bus
+      - datastore-reader
+      - postgres
+    environment:
+      - OPENSLIDES_DEVELOPMENT=true
+      - VOTE_HOST=vote
+      - VOTE_PORT=9013
+      - DATASTORE_READER_HOST=datastore-reader
+      - MESSAGING=redis
+      - MESSAGE_BUS_HOST=message-bus
+      - VOTE_REDIS_HOST=cache
+      - VOTE_DATABASE_HOST=postgres
+      - VOTE_DATABASE_USER=openslides
+      - VOTE_DATABASE_PASSWORD=openslides
+      - VOTE_DATABASE_NAME=openslides
+      - AUTH=ticket
+      - AUTH_HOST=auth
+    ports:
+      - "9013:9013"

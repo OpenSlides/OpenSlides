@@ -16,6 +16,7 @@ AUTH_HOST="${AUTH_HOST:-auth}" AUTH_PORT="${AUTH_PORT:-9004}" \
 MEDIA_HOST="${MEDIA_HOST:-media}" MEDIA_PORT="${MEDIA_PORT:-9006}" \
 MANAGE_HOST="${MANAGE_HOST:-manage}" MANAGE_PORT="${MANAGE_PORT:-9008}" \
 CLIENT_HOST="${CLIENT_HOST:-client}" CLIENT_PORT="${CLIENT_PORT:-9001}" \
+VOTE_HOST="${VOTE_HOST:-vote}" VOTE_PORT="${VOTE_PORT:-9013}" \
 envsubst < "$base" > "$base.out" && mv -f "$base.out" "$base"
 
 jq_write() {
