@@ -16,6 +16,7 @@ from openslides.mediafiles.views import (
 from openslides.motions.models import Motion
 from openslides.users.views import demo_mode_users, is_demo_mode
 from openslides.utils.cache import element_cache
+from openslides.utils import logging
 
 
 def copy(obj, *attrs):
@@ -869,15 +870,21 @@ class OS4Exporter:
                 new["css_class"] = old["css_class"]
             else:
                 new["css_class"] = "lightblue"
-            new["restrictions"] = [
-                {
-                    "motions.can_see_internal": "motion.can_see_internal",
-                    "motions.can_manage_metadata": "motion.can_manage_metadata",
-                    "motions.can_manage": "motion.can_manage",
-                    "is_submitter": "is_submitter",
-                }[restriction]
-                for restriction in old["restriction"]
-            ]
+            
+            new["restrictions"] = []
+            restrictions_map = {
+                "motions.can_see_internal": "motion.can_see_internal",
+                "motions.can_manage_metadata": "motion.can_manage_metadata",
+                "motions.can_manage": "motion.can_manage",
+                "managers_only": "motion.can_manage",  # Should not exist any more since migration 0026, but does anyway...
+                "is_submitter": "is_submitter",
+            }
+            for restriction in old["restriction"]:
+                if restriction in restrictions_map:
+                    new["restrictions"].append(restrictions_map[restriction])
+                else:
+                    logging.getLogger(__name__).warn(f"Invalid restriction '{restriction}' for motion {old['id']} is ignored.")
+
             new["set_number"] = not old["dont_set_identifier"]
             new["merge_amendment_into_final"] = {
                 -1: "do_not_merge",
