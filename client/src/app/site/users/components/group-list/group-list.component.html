@@ -18,7 +18,7 @@
             </mat-expansion-panel-header>
 
             <div class="scrollable-perm-matrix">
-                <mat-table [dataSource]="getTableDataSource(app.permissions)">
+                <table mat-table [dataSource]="getTableDataSource(app.permissions)">
                     <ng-container matColumnDef="perm" sticky>
                         <mat-header-cell *matHeaderCellDef>{{ 'Permissions' | translate }}</mat-header-cell>
                         <mat-cell *matCellDef="let perm">
@@ -48,7 +48,7 @@
 
                     <mat-header-row *matHeaderRowDef="headerRowDef"></mat-header-row>
                     <mat-row *matRowDef="let row; columns: headerRowDef"></mat-row>
-                </mat-table>
+                </table>
             </div>
         </mat-expansion-panel>
     </mat-accordion>
