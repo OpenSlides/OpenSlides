@@ -4,7 +4,7 @@ from typing import Any, Dict, Iterable, Type
 from django.db.models import Model
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.exceptions import APIException
+from rest_framework.exceptions import APIException, NotFound, ValidationError
 from rest_framework.metadata import SimpleMetadata
 from rest_framework.mixins import (
     CreateModelMixin as _CreateModelMixin,
@@ -33,7 +33,6 @@ from rest_framework.serializers import (
     Serializer,
     SerializerMetaclass,
     SerializerMethodField,
-    ValidationError,
 )
 from rest_framework.utils.serializer_helpers import ReturnDict
 from rest_framework.viewsets import GenericViewSet as _GenericViewSet
@@ -59,6 +58,7 @@ __all__ = [
     "RelatedField",
     "SerializerMethodField",
     "ValidationError",
+    "NotFound",
 ]
 
 

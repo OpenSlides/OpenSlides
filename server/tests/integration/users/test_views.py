@@ -162,3 +162,70 @@ class TestUserLoginView(TestCase):
         self.assertEqual(
             content.get("detail"), "Cookies have to be enabled to use OpenSlides."
         )
+
+
+class TestGetUserView(TestCase):
+    url = reverse("get_user")
+
+    def setUp(self):
+        pass
+
+    def test_get_anonymous(self):
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 403)
+        content = json.loads(response.content.decode())
+        self.assertEqual(
+            content.get("detail"), "Authentication credentials were not provided."
+        )
+
+    def test_get_authenticated_user(self):
+        self.client.login(username="admin", password="admin")
+
+        response = self.client.get(self.url, {"username": "admin"})
+
+        self.assertEqual(response.status_code, 200)
+        user = json.loads(response.content.decode()).get("user")
+        self.assertEqual(user["username"], "admin")
+        self.assertEqual(user["last_name"], "Administrator")
+
+    def test_post(self):
+        response = self.client.post(self.url)
+
+        self.assertEqual(response.status_code, 405)
+
+    def test_not_found(self):
+        self.client.login(username="admin", password="admin")
+
+        response = self.client.get(self.url, {"username": "not-existing-username"})
+
+        self.assertEqual(response.status_code, 404)
+        content = json.loads(response.content.decode())
+        self.assertEqual(content.get("detail"), "User does not exist.")
+
+    def test_multiple_objects(self):
+        self.client.login(username="admin", password="admin")
+        u1, p1 = self.create_user()
+        u1.number = "Number#1234567890"
+        u1.save()
+        u2, p2 = self.create_user()
+        u2.number = "Number#1234567890"
+        u2.save()
+
+        response = self.client.get(self.url, {"number": "Number#1234567890"})
+
+        self.assertEqual(response.status_code, 400)
+        content = json.loads(response.content.decode())
+        self.assertEqual(content.get("detail"), "Found more than one user.")
+
+    def test_delegate(self):
+        self.make_admin_delegate()
+        self.client.login(username="admin", password="admin")
+
+        response = self.client.get(self.url, {"username": "admin"})
+
+        self.assertEqual(response.status_code, 403)
+        content = json.loads(response.content.decode())
+        self.assertEqual(
+            content.get("detail"), "You do not have permission to perform this action."
+        )
