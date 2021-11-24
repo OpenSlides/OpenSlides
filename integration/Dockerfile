@@ -1,9 +1,12 @@
-FROM cypress/included:8.4.0
+FROM cypress/base:10
 
 WORKDIR /app
+COPY package.json package.json
+COPY package-lock.json package-lock.json
+RUN npm ci
 
-COPY ./cypress ./cypress/
 COPY ./cypress-docker.json ./cypress.json
+COPY ./resource-config-docker.js ./resource-config.js
+COPY ./cypress ./cypress/
 
-COPY entrypoint.sh /usr/local/bin/entrypoint
-ENTRYPOINT entrypoint
+CMD ["npm", "run", "cypress:run"]

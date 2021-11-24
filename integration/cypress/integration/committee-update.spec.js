@@ -1,4 +1,4 @@
-describe("Update a committee", () => {
+describe('Update a committee', () => {
   let committeeName;
   let committeeId;
 
@@ -10,16 +10,16 @@ describe("Update a committee", () => {
       name: committeeName,
       manager_ids: [1],
     };
-    cy.os4request("committee.create", committeeData).then((res) => {
+    cy.os4request('committee.create', committeeData).then((res) => {
       committeeId = res.id;
     });
-    cy.visit("/committees/");
+    cy.visit('/committees/');
   });
 
-  it("Has new Committee", () => {
+  it('Has new Committee', () => {
     cy.visit(`/committees/${committeeId}`);
-    cy.url().should("include", committeeId);
-    cy.get("h1").contains(committeeName);
+    cy.url().should('include', committeeId);
+    cy.get('h1').contains(committeeName);
   });
 
   /**
@@ -30,7 +30,7 @@ describe("Update a committee", () => {
   //   cy.url().should("include", `${committeeId}/edit-committee`);
   //   cy.get(".title-slot").contains("Edit committee");
   //   cy.get("#mat-input-0").type("edit");
-    
+
   //   // cy.intercept({
   //   //   method: "POST",
   //   //   url: "/system/action/handle_request",
