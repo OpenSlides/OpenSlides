@@ -1609,6 +1609,9 @@ msgstr ""
 msgid "List view"
 msgstr ""
 
+msgid "Live conference"
+msgstr ""
+
 msgid "Live conference has to be active. Choose 0 to disable auto connect."
 msgstr ""
 

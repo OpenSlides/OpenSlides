@@ -1704,6 +1704,9 @@ msgstr "Redelisten-Einblendung"
 msgid "List view"
 msgstr "Listenansicht"
 
+msgid "Live conference"
+msgstr "Livekonferenz"
+
 msgid "Live conference has to be active. Choose 0 to disable auto connect."
 msgstr ""
 "Die Livekonferenz muss aktiv sein. Wählen Sie 0 um den automatischen "
