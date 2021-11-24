@@ -173,5 +173,8 @@ services:
       - VOTE_DATABASE_NAME=openslides
       - AUTH=ticket
       - AUTH_HOST=auth
+    volumes:
+      - ../openslides-vote-service/cmd:/root/cmd
+      - ../openslides-vote-service/internal:/root/internal
     ports:
       - "9013:9013"
