@@ -94,7 +94,7 @@ export class GroupListComponent extends BaseViewComponentDirective implements On
         this.editGroup = editMode;
         this.newGroup = newGroup;
 
-        const name = this.selectedGroup ? this.selectedGroup.name : '';
+        const name = this.selectedGroup ? this.translate.instant(this.selectedGroup.name) : '';
 
         this.groupForm = this.fb.group({
             name: [name, Validators.required]

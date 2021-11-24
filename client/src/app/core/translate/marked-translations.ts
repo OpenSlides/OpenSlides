@@ -30,6 +30,7 @@ _('Front page text');
 _('[Space for your welcome text.]');
 _('System');
 _('Allow access for anonymous guest users');
+_('Live conference');
 _('Show live conference window');
 _('Connect all users to live conference automatically');
 _('Allow only current speakers and list of speakers managers to enter the live conference');
