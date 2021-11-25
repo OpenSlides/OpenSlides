@@ -222,7 +222,9 @@ class OS4Exporter:
         return data
 
     def fill_all_data_dict(self):
-        self._all_data_dict = {}
+        self._all_data_dict = {
+            "chat_message": {},  # not exported
+        }
         for collection, models in self.all_data.items():
             self._all_data_dict[collection] = {model["id"]: model for model in models}
 
@@ -446,7 +448,7 @@ class OS4Exporter:
             new["global_abstain"] = old.get("global_abstain", False)
 
             new["entitled_group_ids"] = old["groups_id"]
-            new["backend"] = "long"
+            new["backend"] = "fast"
             new["voted_ids"] = old["voted_id"]
             new["global_option_id"] = self.create_global_option(old)
             new["projection_ids"] = []
@@ -521,6 +523,7 @@ class OS4Exporter:
             new["read_group_ids"] = old["read_groups_id"]
             new["write_group_ids"] = old["write_groups_id"]
             new["meeting_id"] = 1
+            new["chat_message_ids"] = []
             self.set_model("chat_group", new)
 
     def migrate_assignments(self):
@@ -1157,6 +1160,7 @@ class OS4Exporter:
                 new, "vote_delegations_$_from_ids", old["vote_delegated_from_users_id"]
             )
             new["meeting_ids"] = [1]
+            new["chat_message_$_ids"] = []
 
             self.set_model("user", new)
 
@@ -1608,6 +1612,7 @@ class OS4Exporter:
         self.meeting["motion_poll_default_100_percent_base"] = configs[
             "motion_poll_default_100_percent_base"
         ]
+        self.meeting["motion_poll_default_backend"] = "fast"
 
         group_ids = configs["motion_poll_default_groups"]
         for group_id in group_ids:
@@ -1660,6 +1665,7 @@ class OS4Exporter:
         self.meeting["assignment_poll_default_100_percent_base"] = configs[
             "assignment_poll_default_100_percent_base"
         ]
+        self.meeting["assignment_poll_default_backend"] = "fast"
 
         group_ids = configs["assignment_poll_default_groups"]
         for group_id in group_ids:
@@ -1673,6 +1679,7 @@ class OS4Exporter:
         self.meeting["poll_default_type"] = "analog"
         self.meeting["poll_default_method"] = "Y"
         self.meeting["poll_default_100_percent_base"] = "YNA"
+        self.meeting["poll_default_backend"] = "fast"
         self.meeting["poll_default_group_ids"] = []
         self.meeting["poll_couple_countdown"] = True
 
@@ -1704,6 +1711,7 @@ class OS4Exporter:
             "assignment_candidate",
             "personal_note",
             "chat_group",
+            "chat_message",
         ):
             self.meeting[f"{collection}_ids"] = [
                 x["id"] for x in self.iter_collection(collection)
