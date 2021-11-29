@@ -185,9 +185,9 @@ class TestGetUserView(TestCase):
         response = self.client.get(self.url, {"username": "admin"})
 
         self.assertEqual(response.status_code, 200)
-        user = json.loads(response.content.decode()).get("user")
-        self.assertEqual(user["username"], "admin")
-        self.assertEqual(user["last_name"], "Administrator")
+        users = json.loads(response.content.decode()).get("users")
+        self.assertEqual(users[0]["username"], "admin")
+        self.assertEqual(users[0]["last_name"], "Administrator")
 
     def test_post(self):
         response = self.client.post(self.url)
@@ -199,9 +199,9 @@ class TestGetUserView(TestCase):
 
         response = self.client.get(self.url, {"username": "not-existing-username"})
 
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 200)
         content = json.loads(response.content.decode())
-        self.assertEqual(content.get("detail"), "User does not exist.")
+        self.assertEqual(content.get("users"), [])
 
     def test_multiple_objects(self):
         self.client.login(username="admin", password="admin")
@@ -214,9 +214,9 @@ class TestGetUserView(TestCase):
 
         response = self.client.get(self.url, {"number": "Number#1234567890"})
 
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 200)
         content = json.loads(response.content.decode())
-        self.assertEqual(content.get("detail"), "Found more than one user.")
+        self.assertEqual(len(content.get("users")), 2)
 
     def test_delegate(self):
         self.make_admin_delegate()
