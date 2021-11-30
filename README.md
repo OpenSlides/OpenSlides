@@ -9,7 +9,7 @@ https://openslides.com for more information.
 
 ## Using OpenSlides productively
 
-__OpenSlides 4 (this) is currently under heavy development!__
+__OpenSlides 4 (this) is currently in beta version!__
 
 If you are just looking to use OpenSlides in a productive manner, please refer
 to the [OpenSlides 3.4 (stable)](https://github.com/OpenSlides/OpenSlides/tree/stable/3.4.x)
