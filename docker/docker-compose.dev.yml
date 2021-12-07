@@ -96,6 +96,8 @@ services:
     volumes:
       - ../openslides-icc-service/cmd:/root/cmd
       - ../openslides-icc-service/internal:/root/internal
+    ports:
+      - "9007:9007"
 
   auth:
     image: openslides-auth-dev
