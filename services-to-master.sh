@@ -19,13 +19,11 @@ function get_upstream_branch {
 }
 
 function get_upstream_name {
-   { 
-      # try
-      git ls-remote --exit-code upstream 2>/dev/null && echo "upstream"
-   } || {
-      # catch
+   git ls-remote --exit-code upstream &>/dev/null || {
       echo "origin"
+      return
    }
+   echo "upstream"   
 }
 
 function pull_latest_commit {
@@ -43,6 +41,7 @@ function pull_latest_commit {
    git pull $REMOTE_NAME $BRANCH_NAME;
 
    echo "$SUBMODULE_NAME: Successfully pulled latest commit"
+   echo ""
 }
 
 export -f pull_latest_commit
