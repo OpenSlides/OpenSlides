@@ -1,0 +1,4 @@
+db-data/
+secrets/
+openslides*
+docker-compose.yml
