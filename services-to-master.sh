@@ -28,30 +28,25 @@ function get_upstream_name {
 
 function pull_latest_commit {
    local SUBMODULE_NAME=$0
-   echo "Pulling latest commit for: $SUBMODULE_NAME"
-   echo "$SUBMODULE_NAME: Checking which branch is the upstream branch"
+   echo ""
+   echo "$SUBMODULE_NAME"
 
    local BRANCH_NAME=$(get_upstream_branch)
-
-   echo "$SUBMODULE_NAME: Upstream branch is $BRANCH_NAME"
-
-   git checkout $BRANCH_NAME;
-
    local REMOTE_NAME=$(get_upstream_name)
-   git pull $REMOTE_NAME $BRANCH_NAME;
 
-   echo "$SUBMODULE_NAME: Successfully pulled latest commit"
-   echo ""
+   echo "git fetch $REMOTE_NAME && git checkout $REMOTE_NAME/$BRANCH_NAME ..."
+   git fetch $REMOTE_NAME;
+   git checkout $REMOTE_NAME/$BRANCH_NAME;
 }
 
 export -f pull_latest_commit
 export -f get_upstream_branch
 export -f get_upstream_name
 
-git submodule update --init
 git submodule foreach -q --recursive "bash -c pull_latest_commit \$name"
 
-echo "Successfully pulled latest commits for every submodule!"
+echo ""
+echo "Successfully updated all submodules to latest commit."
 
 # Old command, if we need to checkout another branch than master or main:
 # git submodule foreach -q --recursive
