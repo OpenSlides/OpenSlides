@@ -39,7 +39,6 @@ from ..utils.autoupdate import AutoupdateElement, inform_changed_data, inform_el
 from ..utils.cache import element_cache
 from ..utils.rest_api import (
     ModelViewSet,
-    NotFound,
     Response,
     SimpleMetadata,
     ValidationError,
@@ -1173,10 +1172,10 @@ class PasswordResetConfirmView(APIView):
 
 class GetUserView(APIView):
     """
-    View to retrieve a single user.
+    View to retrieve users.
 
     Use query parameters "id", "username", "email" or "number" to look for
-    a user and retrieve its data.
+    users and retrieve their data.
     """
 
     http_method_names = ["get"]
@@ -1211,19 +1210,17 @@ class GetUserView(APIView):
             query = query.filter(number=number)
 
         # Execute queryset
-        try:
-            self.user = query.get()
-        except User.DoesNotExist:
-            raise NotFound({"detail": "User does not exist."})
-        except User.MultipleObjectsReturned:
-            raise ValidationError({"detail": "Found more than one user."})
+        self.users = list(query)
 
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **context):
-        user_full_data = async_to_sync(element_cache.get_element_data)(
-            self.user.get_collection_string(), self.user.pk
-        )
-        user_full_data.pop("session_auth_hash")
-        context.update({"user": user_full_data})
+        users_full_data = []
+        for user in self.users:
+            user_full_data = async_to_sync(element_cache.get_element_data)(
+                user.get_collection_string(), user.pk
+            )
+            user_full_data.pop("session_auth_hash")
+            users_full_data.append(user_full_data)
+        context.update({"users": users_full_data})
         return context
