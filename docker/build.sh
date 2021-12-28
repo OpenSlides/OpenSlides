@@ -15,9 +15,7 @@ TARGETS=(
   [datastore-writer]="$HOME/../openslides-datastore-service/writer"
   [media]="$HOME/../openslides-media-service/"
   [vote]="$HOME/../openslides-vote-service/"
-  #[pgbouncer]="https://github.com/OpenSlides/openslides-docker-compose.git#:pgbouncer"
-  #[postfix]="https://github.com/OpenSlides/openslides-docker-compose.git#:postfix"
-  #[repmgr]="https://github.com/OpenSlides/openslides-docker-compose.git#:repmgr"
+  [icc]="$HOME/../openslides-icc-service/"
 )
 
 DOCKER_REPOSITORY="openslides"
@@ -25,7 +23,7 @@ DOCKER_TAG="latest-4"
 CONFIG="/etc/osinstancectl"
 OPTIONS=()
 BUILT_IMAGES=()
-DEFAULT_TARGETS=(proxy client backend auth autoupdate permission manage datastore-reader datastore-writer media)
+DEFAULT_TARGETS=(proxy client backend auth autoupdate permission manage datastore-reader datastore-writer media vote icc)
 
 usage() {
   cat << EOF
