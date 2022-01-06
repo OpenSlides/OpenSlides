@@ -41,7 +41,7 @@
                     <div class="single-result" [ngClass]="getVoteClass(vote)">
                         <span>
                             <span *ngIf="vote.showPercent">
-                                {{ getVoteAmount(vote, row) | pollPercentBase: poll:'assignment' }}
+                                {{ getVoteAmount(vote, row) | pollPercentBase: poll:row:'assignment' }}
                             </span>
                             <span *ngIf="row.class === 'user'">
                                 {{ getVoteAmount(vote, row) | parsePollNumber }}
@@ -59,7 +59,7 @@
                 <td class="result">
                     <div class="single-result">
                         <span>
-                            {{ poll.entitled_users_at_stop.length | pollPercentBase: poll:'assignment' }}
+                            {{ poll.entitled_users_at_stop.length | pollPercentBase: poll:row:'assignment' }}
                         </span>
                         <span>
                             {{ poll.entitled_users_at_stop.length }}

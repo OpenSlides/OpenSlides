@@ -161,6 +161,13 @@ export interface VotingResult {
 
 const PollChartBarThickness = 20;
 
+function isPollTableData(value: any): value is PollTableData {
+    if (!value) {
+        return false;
+    }
+    return !!value.votingOption && !!value.value;
+}
+
 /**
  * Shared service class for polls. Used by child classes {@link MotionPollService}
  * and {@link AssignmentPollService}
@@ -215,10 +222,14 @@ export abstract class PollService {
     /**
      * return the total number of votes depending on the selected percent base
      */
-    public abstract getPercentBase(poll: PollData): number;
+    public abstract getPercentBase(poll: PollData, row: PollDataOption): number;
 
-    public getVoteValueInPercent(value: number, poll: PollData): string | null {
-        const totalByBase = this.getPercentBase(poll);
+    public getVoteValueInPercent(
+        value: number,
+        { poll, row }: { poll: PollData; row: PollDataOption | PollTableData }
+    ): string | null {
+        const option = isPollTableData(row) ? this.transformToOptionData(row) : row;
+        const totalByBase = this.getPercentBase(poll, option);
         if (totalByBase && totalByBase > 0) {
             const percentNumber = (value / totalByBase) * 100;
             if (percentNumber >= 0) {
@@ -340,6 +351,17 @@ export abstract class PollService {
     protected getPollDataFields(poll: PollData | ViewBasePoll): CalculablePollKey[] {
         const isAssignment: boolean = (poll as ViewBasePoll).pollClassType === 'assignment';
         return isAssignment ? this.getPollDataFieldsByMethod(poll) : this.getPollDataFieldsByPercentBase(poll);
+    }
+
+    protected transformToOptionData(data: PollTableData): PollDataOption {
+        const yes = data.value.find(vote => vote.vote === `yes`);
+        const no = data.value.find(vote => vote.vote === `no`);
+        const abstain = data.value.find(vote => vote.vote === `abstain`);
+        return {
+            yes: yes?.amount,
+            no: no?.amount,
+            abstain: abstain?.amount
+        };
     }
 
     private getPollDataFieldsByMethod(poll: PollData | ViewBasePoll): CalculablePollKey[] {

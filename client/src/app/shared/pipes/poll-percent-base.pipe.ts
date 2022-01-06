@@ -3,6 +3,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { AssignmentPollService } from 'app/site/assignments/modules/assignment-poll/services/assignment-poll.service';
 import { MotionPollService } from 'app/site/motions/services/motion-poll.service';
 import { PollData } from 'app/site/polls/services/poll.service';
+import { PollDataOption, PollTableData } from '../../site/polls/services/poll.service';
 
 /**
  * Uses a number and a ViewPoll-object.
@@ -26,7 +27,12 @@ export class PollPercentBasePipe implements PipeTransform {
         private motionPollService: MotionPollService
     ) {}
 
-    public transform(value: number, poll: PollData, type: 'motion' | 'assignment'): string | null {
+    public transform(
+        value: number,
+        poll: PollData,
+        row: PollDataOption | PollTableData,
+        type: 'motion' | 'assignment'
+    ): string | null {
         // logic handles over the pollService to avoid circular dependencies
         let voteValueInPercent: string;
 
@@ -36,9 +42,9 @@ export class PollPercentBasePipe implements PipeTransform {
          * we cannot expect the projector to work with real types for now, we need to provice the type
          */
         if (type === 'assignment') {
-            voteValueInPercent = this.assignmentPollService.getVoteValueInPercent(value, poll);
+            voteValueInPercent = this.assignmentPollService.getVoteValueInPercent(value, { poll, row });
         } else {
-            voteValueInPercent = this.motionPollService.getVoteValueInPercent(value, poll);
+            voteValueInPercent = this.motionPollService.getVoteValueInPercent(value, { poll, row });
         }
 
         if (voteValueInPercent) {
