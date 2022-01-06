@@ -196,33 +196,26 @@ export class AssignmentPollService extends PollService {
             }));
     }
 
-    private sumOptionsYN(poll: PollData): number {
-        return poll.options.reduce((o, n) => {
-            o += n.yes > 0 ? n.yes : 0;
-            o += n.no > 0 ? n.no : 0;
-            return o;
-        }, 0);
+    private sumOptionsYN(option: PollDataOption): number {
+        return (option?.yes ?? 0) + (option?.no ?? 0);
     }
 
-    private sumOptionsYNA(poll: PollData): number {
-        return poll.options.reduce((o, n) => {
-            o += n.abstain > 0 ? n.abstain : 0;
-            return o;
-        }, this.sumOptionsYN(poll));
+    private sumOptionsYNA(option: PollDataOption): number {
+        return this.sumOptionsYN(option) + (option?.abstain ?? 0);
     }
 
-    public getPercentBase(poll: PollData): number {
+    public getPercentBase(poll: PollData, row: PollDataOption): number {
         const base: AssignmentPollPercentBase = poll.onehundred_percent_base as AssignmentPollPercentBase;
         let totalByBase: number;
         switch (base) {
             case AssignmentPollPercentBase.YN:
-                totalByBase = this.sumOptionsYN(poll);
+                totalByBase = this.sumOptionsYN(row);
                 break;
             case AssignmentPollPercentBase.YNA:
-                totalByBase = this.sumOptionsYNA(poll);
+                totalByBase = this.sumOptionsYNA(row);
                 break;
             case AssignmentPollPercentBase.Y:
-                totalByBase = this.sumOptionsYNA(poll);
+                totalByBase = this.sumOptionsYNA(row);
                 break;
             case AssignmentPollPercentBase.Valid:
                 totalByBase = poll.votesvalid;
@@ -246,7 +239,7 @@ export class AssignmentPollService extends PollService {
                 const voteValue = option[field];
                 const votingKey = this.translate.instant(this.pollKeyVerbose.transform(field));
                 const resultValue = this.parsePollNumber.transform(voteValue);
-                const resultInPercent = this.getVoteValueInPercent(voteValue, poll);
+                const resultInPercent = this.getVoteValueInPercent(voteValue, { poll, row: option });
                 let resultLabel = `${votingKey}: ${resultValue}`;
 
                 // 0 is a valid number in this case
