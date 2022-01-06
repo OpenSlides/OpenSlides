@@ -8,6 +8,7 @@ HTTPS_CERT_FILE="${HTTPS_CERT_FILE:-/certs/cert.pem}"
 HTTPS_KEY_FILE="${HTTPS_KEY_FILE:-/certs/key.pem}"
 
 cp $base $config
+
 # set defaults in base
 ACTION_HOST="${ACTION_HOST:-backend}" ACTION_PORT="${ACTION_PORT:-9002}" \
 PRESENTER_HOST="${PRESENTER_HOST:-backend}" PRESENTER_PORT="${PRESENTER_PORT:-9003}" \
@@ -51,6 +52,15 @@ else
       exit 1
     fi
   fi
+fi
+
+### ALLOWED HOSTS ###
+if [ -n "$ALLOWED_HOSTS" ]; then
+  for host in $ALLOWED_HOSTS; do
+    jq_write ".apps.http.servers.srv0.routes[0].match[0].not[0].header.Host += [\"$host\"]"
+  done
+else
+  jq_write "del(.apps.http.servers.srv0.routes[0])"
 fi
 
 exec "$@"

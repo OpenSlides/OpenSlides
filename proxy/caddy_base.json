@@ -27,6 +27,27 @@
             {
               "handle": [
                 {
+                  "body": "Misdirected Request",
+                  "close": true,
+                  "handler": "static_response",
+                  "status_code": 421
+                }
+              ],
+              "match": [
+                {
+                  "not": [
+                    {
+                      "header": {
+                        "Host": []
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "handle": [
+                {
                   "flush_interval": -1,
                   "handler": "reverse_proxy",
                   "upstreams": [
