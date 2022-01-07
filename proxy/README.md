@@ -1,4 +1,4 @@
-# OpenSlides proxy
+# OpenSlides Proxy
 
 The proxy is the entrypoint for traffic going into an OpenSlides instance and
 hides all the services needed for production behind a single port. On the
