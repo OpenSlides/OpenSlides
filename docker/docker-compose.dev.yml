@@ -175,8 +175,20 @@ services:
       - VOTE_DATABASE_NAME=openslides
       - AUTH=ticket
       - AUTH_HOST=auth
+      - VOTE_DISABLE_LOG=true
     volumes:
       - ../openslides-vote-service/cmd:/root/cmd
       - ../openslides-vote-service/internal:/root/internal
     ports:
       - "9013:9013"
+
+  collector:
+    image: otel/opentelemetry-collector:0.41.0
+    command: ["--config=/etc/otel-collector-config.yml"]
+    volumes:
+      - ./otel-collector-config.yml:/etc/otel-collector-config.yml
+
+  jaeger:
+    image: jaegertracing/all-in-one
+    ports:
+    - "16686:16686"
