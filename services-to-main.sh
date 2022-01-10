@@ -3,8 +3,7 @@
 function get_upstream_branch {
    local SUBMODULE_NAME=$0
    local MEDIA_SERVICE_NAME="openslides-media-service"
-   # We have to treat the media-service differently to the other services 
-   # until its "main" branch is neither master nor main
+   # We have to treat the media-service differently to the other services
    if [ "$SUBMODULE_NAME" == "$MEDIA_SERVICE_NAME" ]; then
       echo "openslides4-dev"
       return
@@ -23,7 +22,7 @@ function get_upstream_name {
       echo "origin"
       return
    }
-   echo "upstream"   
+   echo "upstream"
 }
 
 function pull_latest_commit {
@@ -51,6 +50,6 @@ echo "Successfully updated all submodules to latest commit."
 # Old command, if we need to checkout another branch than master or main:
 # git submodule foreach -q --recursive
 # '
-# git checkout $(git config -f $$toplevel/.gitmodules submodule.$$name.branch || echo master); 
-# git pull upstream $$(git config -f $$toplevel/.gitmodules submodule.$$name.branch || echo master)
+# git checkout $(git config -f $$toplevel/.gitmodules submodule.$$name.branch || echo main);
+# git pull upstream $$(git config -f $$toplevel/.gitmodules submodule.$$name.branch || echo main)
 # '
