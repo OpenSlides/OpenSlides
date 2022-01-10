@@ -33,7 +33,7 @@ To run all tests of all services, execute `run-service-tests`. TODO: Systemtests
 
     $ git submodule add <git@myrepo.git>
 
-Append `branch = master` (or `main`) to the new entry in the `.gitmodules` file. Verify,
+Append `branch = main` to the new entry in the `.gitmodules` file. Verify,
 that it is there (the folder should have 160000 permissions: Submodule) with the
 current commit:
 
@@ -45,7 +45,7 @@ Then, commit changes and create a pull request.
 
 Create your own fork at github.
 
-Remove the upstream (master or main) repo as the origin in the submodule:
+Remove the upstream repo as the origin in the submodule:
 
     $ cd <submodule>
     $ git remote remove origin
@@ -55,7 +55,7 @@ Add your fork and the main repo as origin and upstream
     $ git remote add origin `<your fork>`
     $ git remote add upstream `<main repo>`
     $ git fetch --all
-    $ git checkout origin master
+    $ git checkout origin main
 
 You can verify that your setup is correct using
 
@@ -101,10 +101,10 @@ Note that meaningful defaults should be provided in the Dockerfile.
 
 ## Developing on a single service
 
-Go to the serivce and create a new branch (from master):
+Go to the serivce and create a new branch (from main):
 
     $ cd my-service
-    $ git status  # -> on master?
+    $ git status  # -> on main?
     $ git checkout -b my-feature
 
 Run OpenSlides in development mode (e.g. in a new terminal):
@@ -121,7 +121,7 @@ As the last step, you can create a PR on Github. After merging, these steps are
 required to be executed in the main repo:
 
     $ cd my-service
-    $ git pull upstream master
+    $ git pull upstream main
     $ cd ..
     $ git diff  # -> commit hash changed for my-service
 
@@ -131,23 +131,23 @@ If the update commit should be a PR:
     $ git commit -am "Updated my-service"
     $ git push origin updated-my-service
 
-Or a direct push on master:
+Or a direct push on main:
 
     $ git commit -am "Updated my-service"
-    $ git push origin master
+    $ git push origin main
 
 ## Working with Submodules
 
 After working in many services with different branches, this command checks
-out `master` (or the given branch in the .gitmodules) in all submodules and
-pulls master from upstream (This requres to have `upstream`set up as a remote
+out `main` (or the given branch in the .gitmodules) in all submodules and
+pulls main from upstream (This requres to have `upstream`set up as a remote
 in all submodules):
 
-    $ git submodule foreach -q --recursive 'git checkout $(git config -f $toplevel/.gitmodules submodule.$name.branch || echo master); git pull upstream $(git config -f $toplevel/.gitmodules submodule.$name.branch || echo master)'
+    $ git submodule foreach -q --recursive 'git checkout $(git config -f $toplevel/.gitmodules submodule.$name.branch || echo main); git pull upstream $(git config -f $toplevel/.gitmodules submodule.$name.branch || echo main)'
 
 This command has can also be called from the makefile using:
 
-    $ make services-to-master
+    $ make services-to-main
 
 When changing the branch in the main repo (this one), the submodules do not
 automatically gets changed. THis ocmmand checks out all submodules to the given

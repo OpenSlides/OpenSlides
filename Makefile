@@ -27,8 +27,8 @@ copy-node-modules:
 reload-proxy:
 	docker-compose -f docker/docker-compose.dev.yml exec -w /etc/caddy proxy caddy reload
 
-services-to-master:
-	./services-to-master.sh
+services-to-main:
+	./services-to-main.sh
 
 submodules-origin-to-upstream:
 	# You may only use this one time after cloning this repository.
