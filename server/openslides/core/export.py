@@ -1005,7 +1005,7 @@ class OS4Exporter:
             notes = old.get("notes", {}).get("motions/motion", {})
             for motion_id, note in notes.items():
                 motion_id = int(motion_id)
-                if not self.exists_model("motion", motion_id):
+                if not self.exists_model("motion", motion_id) or not isinstance(note.get("note"), str):
                     continue
 
                 new = {
@@ -1013,7 +1013,7 @@ class OS4Exporter:
                     "user_id": old["user_id"],
                     "content_object_id": f"motion/{motion_id}",
                     "note": note["note"],
-                    "star": note["star"],
+                    "star": note.get("star", False),
                     "meeting_id": 1,
                 }
                 motion = self.get_model("motion", motion_id)
@@ -1281,22 +1281,25 @@ class OS4Exporter:
                 projection_id = self.create_projection_from_projector_element(
                     element, i + 1, "current", old["id"]
                 )
-                new["current_projection_ids"].append(projection_id)
+                if projection_id > 0:
+                    new["current_projection_ids"].append(projection_id)
 
             for i, element in enumerate(old["elements_preview"]):
                 projection_id = self.create_projection_from_projector_element(
                     element, i + 1, "preview", old["id"]
                 )
-                new["preview_projection_ids"].append(projection_id)
+                if projection_id > 0:
+                    new["preview_projection_ids"].append(projection_id)
 
             flat_history = [
                 item for sublist in old["elements_history"] for item in sublist
             ]
-            for i, elements in enumerate(flat_history):
+            for i, element in enumerate(flat_history):
                 projection_id = self.create_projection_from_projector_element(
                     element, i + 1, "history", old["id"]
                 )
-                new["history_projection_ids"].append(projection_id)
+                if projection_id > 0:
+                    new["history_projection_ids"].append(projection_id)
 
             if old["reference_projector_id"] == old["id"]:
                 self.meeting["reference_projector_id"] = old["id"]
@@ -1314,7 +1317,10 @@ class OS4Exporter:
     def create_projection_from_projector_element(
         self, element, weight, type, projector_id
     ):
-        """type can be "current", "preview" or "history" """
+        """
+        type can be "current", "preview" or "history"
+        registers the newly created projection and returns its id or returns -1 in case something went wrong
+        """
         projection = {
             "id": self.projection_id_counter,
             "stable": element.get("stable", True),
@@ -1354,18 +1360,22 @@ class OS4Exporter:
             id = 1
             projection["content_object_id"] = "meeting/1"
             projection["type"] = "current_speaker_chyron"
+        elif collection == "core/clock":
+            # somehow the clock got into the preview/history, just ignore
+            return -1
         else:
             raise OS4ExporterException(f"Unknown slide {collection}")
 
+        if not self.exists_model(collection, id):
+            return -1
+        content_object = self.get_model(collection, id)
         if collection != "user":
-            content_object = self.get_model(collection, id)
             content_object["projection_ids"].append(projection["id"])
         else:
-            user = self.get_model(collection, id)
-            if not user["projection_$_ids"]:
-                user["projection_$_ids"] = ["1"]
-                user["projection_$1_ids"] = []
-            user["projection_$1_ids"].append(projection["id"])
+            if not content_object["projection_$_ids"]:
+                content_object["projection_$_ids"] = ["1"]
+                content_object["projection_$1_ids"] = []
+            content_object["projection_$1_ids"].append(projection["id"])
 
         self.projection_id_counter += 1
         self.set_model("projection", projection)
