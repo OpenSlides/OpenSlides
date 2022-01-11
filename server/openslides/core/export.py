@@ -1005,7 +1005,9 @@ class OS4Exporter:
             notes = old.get("notes", {}).get("motions/motion", {})
             for motion_id, note in notes.items():
                 motion_id = int(motion_id)
-                if not self.exists_model("motion", motion_id) or not isinstance(note.get("note"), str):
+                if not self.exists_model("motion", motion_id) or not isinstance(
+                    note.get("note"), str
+                ):
                     continue
 
                 new = {
