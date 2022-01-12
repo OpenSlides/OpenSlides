@@ -27,27 +27,6 @@
             {
               "handle": [
                 {
-                  "body": "Misdirected Request",
-                  "close": true,
-                  "handler": "static_response",
-                  "status_code": 421
-                }
-              ],
-              "match": [
-                {
-                  "not": [
-                    {
-                      "header": {
-                        "Host": []
-                      }
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "handle": [
-                {
                   "flush_interval": -1,
                   "handler": "reverse_proxy",
                   "upstreams": [
@@ -153,6 +132,23 @@
               "handle": [
                 {
                   "handler": "reverse_proxy",
+                  "upstreams": [
+                    {
+                      "dial": "$VOTE_HOST:$VOTE_PORT"
+                    }
+                  ]
+                }
+              ],
+              "match": [
+                {
+                  "path": ["/system/vote*"]
+                }
+              ]
+            },
+            {
+              "handle": [
+                {
+                  "handler": "reverse_proxy",
                   "flush_interval": -1,
                   "transport": {
                     "protocol": "http",
@@ -176,17 +172,21 @@
             {
               "handle": [
                 {
-                  "handler": "reverse_proxy",
-                  "upstreams": [
-                    {
-                      "dial": "$VOTE_HOST:$VOTE_PORT"
-                    }
-                  ]
+                  "body": "Misdirected Request",
+                  "close": true,
+                  "handler": "static_response",
+                  "status_code": 421
                 }
               ],
               "match": [
                 {
-                  "path": ["/system/vote*"]
+                  "not": [
+                    {
+                      "header": {
+                        "Host": []
+                      }
+                    }
+                  ]
                 }
               ]
             },

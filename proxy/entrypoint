@@ -57,10 +57,10 @@ fi
 ### ALLOWED HOSTS ###
 if [ -n "$ALLOWED_HOSTS" ]; then
   for host in $ALLOWED_HOSTS; do
-    jq_write ".apps.http.servers.srv0.routes[0].match[0].not[0].header.Host += [\"$host\"]"
+    jq_write ".apps.http.servers.srv0.routes[-2].match[0].not[0].header.Host += [\"$host\"]"
   done
 else
-  jq_write "del(.apps.http.servers.srv0.routes[0])"
+  jq_write "del(.apps.http.servers.srv0.routes[-2])"
 fi
 
 exec "$@"
