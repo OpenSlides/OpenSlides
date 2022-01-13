@@ -9,7 +9,7 @@ function get_upstream_branch {
       return
    fi;
 
-   local BRANCH_NAME=master
+   local BRANCH_NAME=main
    local exists=`git show-ref refs/heads/$BRANCH_NAME`
    if [[ -z $exists ]]; then
       BRANCH_NAME=main
