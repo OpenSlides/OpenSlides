@@ -1,4 +1,6 @@
-# !/bin/bash
+#!/bin/bash
+
+set -e
 
 function get_upstream_branch {
    local BRANCH_NAME=main
@@ -18,10 +20,6 @@ function get_upstream_name {
 }
 
 function pull_latest_commit {
-   local SUBMODULE_NAME=$0
-   echo ""
-   echo "$SUBMODULE_NAME"
-
    local BRANCH_NAME=$(get_upstream_branch)
    local REMOTE_NAME=$(get_upstream_name)
 
@@ -34,7 +32,14 @@ export -f pull_latest_commit
 export -f get_upstream_branch
 export -f get_upstream_name
 
-git submodule foreach -q --recursive "bash -c pull_latest_commit \$name"
+for mod in $(git submodule status | awk '{print $2}'); do
+  (
+    echo ""
+    echo "$mod"
+    cd "$mod"
+    pull_latest_commit "$mod"
+  )
+done
 
 echo ""
 echo "Successfully updated all submodules to latest commit."
