@@ -1,14 +1,6 @@
 # !/bin/bash
 
 function get_upstream_branch {
-   local SUBMODULE_NAME=$0
-   local MEDIA_SERVICE_NAME="openslides-media-service"
-   # We have to treat the media-service differently to the other services
-   if [ "$SUBMODULE_NAME" == "$MEDIA_SERVICE_NAME" ]; then
-      echo "openslides4-dev"
-      return
-   fi;
-
    local BRANCH_NAME=main
    local exists=`git show-ref refs/heads/$BRANCH_NAME`
    if [[ -z $exists ]]; then
@@ -47,9 +39,3 @@ git submodule foreach -q --recursive "bash -c pull_latest_commit \$name"
 echo ""
 echo "Successfully updated all submodules to latest commit."
 
-# Old command, if we need to checkout another branch than master or main:
-# git submodule foreach -q --recursive
-# '
-# git checkout $(git config -f $$toplevel/.gitmodules submodule.$$name.branch || echo main);
-# git pull upstream $$(git config -f $$toplevel/.gitmodules submodule.$$name.branch || echo main)
-# '
