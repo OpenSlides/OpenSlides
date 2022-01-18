@@ -8,10 +8,10 @@ TARGETS=(
   [server]="$(dirname "${BASH_SOURCE[0]}")/../server/docker/"
   [proxy]="$(dirname "${BASH_SOURCE[0]}")/../caddy/"
   [autoupdate]="$(dirname "${BASH_SOURCE[0]}")/../autoupdate/"
-  [media]="https://github.com/OpenSlides/openslides-media-service.git"
-  [pgbouncer]="https://github.com/OpenSlides/openslides-docker-compose.git#:pgbouncer"
-  [postfix]="https://github.com/OpenSlides/openslides-docker-compose.git#:postfix"
-  [repmgr]="https://github.com/OpenSlides/openslides-docker-compose.git#:repmgr"
+  [media]="https://github.com/OpenSlides/openslides-media-service.git#stable/3.4.x"
+  [pgbouncer]="https://github.com/OpenSlides/openslides-docker-compose.git#main:pgbouncer"
+  [postfix]="https://github.com/OpenSlides/openslides-docker-compose.git#main:postfix"
+  [repmgr]="https://github.com/OpenSlides/openslides-docker-compose.git#main:repmgr"
 )
 
 DOCKER_REPOSITORY="openslides"
