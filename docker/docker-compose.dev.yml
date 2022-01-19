@@ -56,6 +56,10 @@ services:
       - datastore-writer
       - auth
     env_file: services.env
+    ports:
+        - "9002:9002"
+        - "9003:9003"
+        - "5678:5678"
     environment:
       - OPENSLIDES_DEVELOPMENT=1
       - EMAIL_HOST=mailhog
