@@ -8,7 +8,7 @@ describe("Get autoupdates for committees detail view", () => {
     const committeeData = {
       organization_id: 1,
       name: committeeName,
-      user_$can_manage_management_level: [1],
+      user_$_management_level: {"can_manage": [1]},
     };
     cy.os4request("committee.create", committeeData).then((res) => {
       committeeId = res.id;
