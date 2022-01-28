@@ -8,7 +8,7 @@ describe('Update a committee', () => {
     const committeeData = {
       organization_id: 1,
       name: committeeName,
-      manager_ids: [1],
+      user_$can_manage_management_level: [1],
     };
     cy.os4request('committee.create', committeeData).then((res) => {
       committeeId = res.id;
