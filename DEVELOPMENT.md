@@ -6,13 +6,13 @@ You need git, bash, docker, docker-compose, make and openssl installed.
 
 Go is needed to install https://github.com/FiloSottile/mkcert. The development setup uses HTTPS per default. OpenSlides does not work with HTTP anymore since features are required (like http2) that only works in a secure environment.
 
-## First time checkout
+## Before starting the development
 
 Clone this repository:
 
     $ git clone --recurse-submodules git@github.com:OpenSlides/OpenSlides.git
 
-After checking out you need to initialize all submodules:
+After cloning you need to initialize all submodules:
 
     $ git submodule update --init
 
