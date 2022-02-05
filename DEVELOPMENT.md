@@ -4,7 +4,7 @@
 
 You need git, bash, docker, docker-compose, make and openssl installed.
 
-Go is needed to install https://github.com/FiloSottile/mkcert. The development setup uses HTTPS per default. OpenSlides does not work with HTTP anymore since features are required (like http2) that only works in a secure environment.
+Go is needed to install https://github.com/FiloSottile/mkcert (but Go is not a requirement to start the development server). The development setup uses HTTPS per default. OpenSlides does not work with HTTP anymore since features are required (like http2) that only works in a secure environment.
 
 ## Before starting the development
 
@@ -19,6 +19,8 @@ After cloning you need to initialize all submodules:
 Finally, start the development server:
 
     $ make run-dev
+    
+(This command won't run without sudo, or without having set up Docker to run without studo - see their documentation)
 
 You can access the services independently using their corresponding ports
 or access the full stack on
