@@ -21,7 +21,7 @@ instructions <DEVELOPMENT.rst>`_.
 Get OpenSlides
 --------------
 
-First, you have to clone this repository, then move to the latest stable branch::
+First, you have to clone this repository, then checkout the latest stable branch::
 
     git clone https://github.com/OpenSlides/OpenSlides.git --recurse-submodules
     cd OpenSlides/
