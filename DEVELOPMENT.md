@@ -20,7 +20,7 @@ Finally, start the development server:
 
     $ make run-dev
     
-(This command won't run without sudo, or without having set up Docker to run without studo - see their documentation)
+(This command won't run without sudo, or without having set up Docker to run without sudo - see their documentation)
 
 You can access the services independently using their corresponding ports
 or access the full stack on
