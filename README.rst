@@ -21,10 +21,11 @@ instructions <DEVELOPMENT.rst>`_.
 Get OpenSlides
 --------------
 
-First, you have to clone this repository::
+First, you have to clone this repository, then checkout the latest stable branch::
 
     git clone https://github.com/OpenSlides/OpenSlides.git --recurse-submodules
     cd OpenSlides/
+    git checkout stable/3.4.x
 
 **Note about migrating from version 3.3 or earlier**: With OpenSlides 3.4 submodules
 and a Docker setup were introduced. If you ran into problems try to delete your
