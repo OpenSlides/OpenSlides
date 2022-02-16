@@ -11,7 +11,7 @@ run-service-tests:
 	git submodule foreach 'make run-tests'
 
 build-dev:
-	git submodule foreach 'make build-dev'
+	./dev-commands/submodules-do.sh 'make build-dev'
 	make -C proxy build-dev
 
 run-dev: | build-dev
