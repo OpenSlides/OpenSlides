@@ -23,9 +23,9 @@ function pull_latest_commit {
    local BRANCH_NAME=$(get_upstream_branch)
    local REMOTE_NAME=$(get_upstream_name)
 
-   echo "git fetch $REMOTE_NAME && git checkout $REMOTE_NAME/$BRANCH_NAME ..."
-   git fetch $REMOTE_NAME;
-   git checkout $REMOTE_NAME/$BRANCH_NAME;
+   echo "git checkout $BRANCH_NAME && git pull $REMOTE_NAME $BRANCH_NAME ..."
+   git checkout -B $BRANCH_NAME;
+   git pull $REMOTE_NAME $BRANCH_NAME;
 }
 
 export -f pull_latest_commit
