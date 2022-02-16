@@ -14,7 +14,7 @@ Installation
 ============
 
 The main deployment method is using Git, Docker and Docker Compose. You only need
-to have these tools installed and no further dependencies. If you want a simpler
+to have these tools installed and no further dependencies (m4 may not come preinstalled on your system). If you want a simpler
 setup or are interested in developing, please refer to `development
 instructions <DEVELOPMENT.rst>`_.
 
@@ -75,7 +75,7 @@ Finally, you can start the instance using ``docker-compose``::
 
 OpenSlides is accessible on https://localhost/ (or https, if configured).
 
-Use can also use daemonized instance::
+You can also use daemonized instance::
 
     docker-compose up -d
     docker-compose logs
