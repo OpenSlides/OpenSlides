@@ -2,42 +2,64 @@
 
 set -e
 
-function get_upstream_branch {
-   local BRANCH_NAME=main
-   local exists=`git show-ref refs/heads/$BRANCH_NAME`
-   if [[ -z $exists ]]; then
-      BRANCH_NAME=main
-   fi;
-   echo "$BRANCH_NAME"
+ME=$(basename "$0")
+
+BRANCH_NAME=main
+REMOTE_NAME=
+OPT_PULL=
+
+usage() {
+  echo "USAGE:"
+  echo "  $ME [ --pull | -p ]"
+  echo
+  echo "By default $ME will fetch the latest upstream changes for every"
+  echo "service/submodule and directly checkout the upstream's $BRANCH_NAME branch."
+  echo "This will leave them in detached HEAD state."
+  echo "Use --pull to instead forward the local $BRANCH_NAME branch."
 }
 
-function get_upstream_name {
-   git ls-remote --exit-code upstream &>/dev/null || {
-      echo "origin"
-      return
-   }
-   echo "upstream"
+set_remote() {
+  REMOTE_NAME=upstream
+  git ls-remote --exit-code "$REMOTE_NAME" &>/dev/null ||
+    REMOTE_NAME=origin
 }
 
-function pull_latest_commit {
-   local BRANCH_NAME=$(get_upstream_branch)
-   local REMOTE_NAME=$(get_upstream_name)
-
-   echo "git fetch $REMOTE_NAME && git checkout $REMOTE_NAME/$BRANCH_NAME ..."
-   git fetch $REMOTE_NAME;
-   git checkout $REMOTE_NAME/$BRANCH_NAME;
+pull_latest_commit() {
+  if [ -z "$OPT_PULL" ]; then
+    echo "git fetch $REMOTE_NAME && git checkout $REMOTE_NAME/$BRANCH_NAME ..."
+    git fetch "$REMOTE_NAME" &&
+    git checkout "$REMOTE_NAME/$BRANCH_NAME"
+  else
+    echo "git checkout $BRANCH_NAME && git pull --ff-only $REMOTE_NAME $BRANCH_NAME ..."
+    git checkout "$BRANCH_NAME" &&
+    git pull --ff-only "$REMOTE_NAME" "$BRANCH_NAME" || {
+      echo "ERROR: make sure a local branch $BRANCH_NAME exists and can be fast-forwarded to $REMOTE_NAME"
+      exit 1
+    }
+  fi
 }
 
-export -f pull_latest_commit
-export -f get_upstream_branch
-export -f get_upstream_name
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    -p | --pull)
+      OPT_PULL=1
+      shift
+      ;;
+    *)
+      usage
+      exit 0
+      ;;
+  esac
+done
 
 for mod in $(git submodule status | awk '{print $2}'); do
   (
     echo ""
     echo "$mod"
     cd "$mod"
-    pull_latest_commit "$mod"
+
+    set_remote
+    pull_latest_commit
   )
 done
 
