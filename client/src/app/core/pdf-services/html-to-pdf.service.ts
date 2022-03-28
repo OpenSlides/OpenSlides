@@ -181,7 +181,6 @@ export class HtmlToPdfService {
      * Converts a single HTML element to pdfmake, calls itself recursively for child html elements
      *
      * @param element can be an HTML element (<p>) or plain text ("Hello World")
-     * @param currentParagraph usually holds the parent element, to allow nested structures
      * @param styles holds the style attributes of HTML elements (`<div style="color: green">...`)
      * @returns the doc def to the given element in consideration to the given paragraph and styles
      */
@@ -237,9 +236,8 @@ export class HtmlToPdfService {
                 if (
                     this.lineNumberingMode === LineNumberingMode.Outside &&
                     !classes.includes('insert') &&
-                    !(nodeName === 'li' && directChildIsCrNode)
+                    nodeName !== `li`
                 ) {
-                    //
                     newParagraph = this.create('stack');
                     newParagraph.stack = children;
                 } else {
@@ -344,17 +342,10 @@ export class HtmlToPdfService {
                 break;
             }
             case 'br': {
-                if (
-                    (this.lineNumberingMode === LineNumberingMode.None && classes.includes('os-line-break')) ||
-                    (this.lineNumberingMode === LineNumberingMode.Outside && this.isInsideAList(element))
-                ) {
-                    break;
-                } else {
-                    newParagraph = this.create('text');
-                    // yep thats all
-                    newParagraph.text = '\n';
-                    newParagraph.lineHeight = this.LINE_HEIGHT;
-                }
+                newParagraph = this.create('text');
+                // yep thats all
+                newParagraph.text = '\n';
+                newParagraph.lineHeight = this.LINE_HEIGHT;
                 break;
             }
             case 'ul':
@@ -712,8 +703,7 @@ export class HtmlToPdfService {
     }
 
     /**
-     * Detect if the given element is a cr exclusive node
-     * @param child
+     * Detect if the given element is a change recommendation exclusive node
      */
     private isCrElement(element: Element): boolean {
         const nodeName = element.nodeName.toLowerCase();
