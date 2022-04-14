@@ -10,11 +10,12 @@ assignees: ""
 A clear and concise description of what the bug is.
 
 **How to Reproduce**
-Steps to reproduce the behavior: preferably on [nightly](https://nightly.demo.openslides.org)
+Steps to reproduce the behavior: preferably on [nightly](https://nightly.demo.openslides.org) (for
+3.4) or the [OS4 demo](https://demo.os4.openslides.com/).
 
 1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
+2. Click on '...'
+3. Scroll down to '...'
 4. See error
 
 **Expected behavior**
@@ -22,11 +23,11 @@ A clear and concise description of what you expected to happen.
 
 **System information**
 
-- OpenSlides-Version: [e.g. 2.1, 2.2, 2.3, 3,0]
-- Additional version information (if any): [e.g. commit hash or installation-month]
-- Python Version: [e.g. 3,5, 3.6, 3.7]
-- Device: [e.g. iPhone6, Notebook]
-- OS: [e.g. Andoird 7, iOS8.1, Windows 10]
+- OpenSlides-Version: [e.g. 3.4, 4.0-beta]
+- Additional version information (if any): [e.g. commit hash or installation month]
+- Python Version: [e.g. 3.6, 3.7, 3.8]
+- Device: [e.g. iPhone 6, Notebook]
+- OS: [e.g. Android 7, iOS 8.1, Windows 10]
 - Browser: [e.g. chrome, firefox, opera, edge, safari]
 - Browser-Version: [e.g. 22]
 
