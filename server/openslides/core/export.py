@@ -197,8 +197,7 @@ class OS4Exporter:
         self.migrate_projectors()
         self.migrate_meeting()
 
-        # Note: When returning self.all_data one has access to the original data to compare it to the export.
-        # return {"all": self.all_data, "export": self.to_list_format()}
+        self.data["_migration_index"] = 3
         return self.data
 
     def set_model(self, collection, model):
