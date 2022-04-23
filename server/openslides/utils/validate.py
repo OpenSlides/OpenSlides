@@ -123,7 +123,7 @@ def base_validate_html(html: str, allowed_tags: List[str]) -> str:
     """
     html = html.replace("\t", "")
     return bleach.clean(
-        html, tags=allowed_tags, attributes=allowed_attributes, styles=allowed_styles
+        html, tags=allowed_tags, attributes=allowed_attributes
     )
 
 

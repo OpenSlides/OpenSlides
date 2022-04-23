@@ -1,4 +1,4 @@
-FROM node:16 AS nodejs
+FROM node:14 AS nodejs
 
 RUN mkdir -p /build/app
 WORKDIR /build/app
