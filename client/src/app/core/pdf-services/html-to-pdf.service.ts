@@ -342,9 +342,7 @@ export class HtmlToPdfService {
                 break;
             }
             case 'br': {
-                if (
-                    this.lineNumberingMode === LineNumberingMode.None && classes.includes('os-line-break')
-                ) {
+                if (this.lineNumberingMode === LineNumberingMode.None && classes.includes('os-line-break')) {
                     break;
                 } else {
                     newParagraph = this.create('text');
