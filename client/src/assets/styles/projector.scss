@@ -15,9 +15,6 @@
     .slidetitle > h1 *,
     h1.projector_h1,
     h1.projector_h1 * {
-        font-size: 1.8em;
-        font-weight: 500;
-        line-height: 1.1em;
         font-family: $font-projectorH1;
     }
 
@@ -29,9 +26,7 @@
     .slidetitle > h2,
     .slidetitle > h2 *,
     h2.projector_h2,
-    h2.projector_h1 *  {
-        line-height: 40px;
-        font-weight: normal;
+    h2.projector_h2 *  {
         font-family: $font-projectorH2;
     }
 
