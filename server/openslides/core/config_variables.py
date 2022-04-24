@@ -573,7 +573,6 @@ def get_config_variables():
             "path": "",
         },
         input_type="static",
-        #weight=321,
         group="Font",
         hidden=True,
     )
@@ -586,7 +585,6 @@ def get_config_variables():
             "path": "",
         },
         input_type="static",
-        #weight=321,
         group="Font",
         hidden=True,
     )
