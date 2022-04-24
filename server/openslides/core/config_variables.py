@@ -479,6 +479,8 @@ def get_config_variables():
             "font_bold_italic",
             "font_monospace",
             "font_chyron_speaker_name",
+            "projector_h1",
+            "projector_h2",
         ],
         weight=320,
         group="Font",
@@ -559,6 +561,32 @@ def get_config_variables():
         },
         input_type="static",
         weight=321,
+        group="Font",
+        hidden=True,
+    )
+
+    yield ConfigVariable(
+        name="projector_h1",
+        default_value={
+            "display_name": "Projector h1",
+            "default": "assets/fonts/fira-sans-latin-400.woff",
+            "path": "",
+        },
+        input_type="static",
+        #weight=321,
+        group="Font",
+        hidden=True,
+    )
+
+    yield ConfigVariable(
+        name="projector_h2",
+        default_value={
+            "display_name": "Projector h2",
+            "default": "assets/fonts/fira-sans-latin-400.woff",
+            "path": "",
+        },
+        input_type="static",
+        #weight=321,
         group="Font",
         hidden=True,
     )

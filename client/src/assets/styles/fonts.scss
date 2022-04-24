@@ -62,3 +62,19 @@
     font-weight: $font-weight-chyronname;
     src: $font-chyronname-src;
 }
+
+/** projectorH1 */
+@font-face {
+    font-family: $font-projectorH1;
+    font-style: normal;
+    font-display: swap;
+    src: $font-projectorH1-src;
+}
+
+/** projectorH2 */
+@font-face {
+    font-family: $font-projectorH2;
+    font-style: normal;
+    font-display: swap;
+    src: $font-projectorH2-src;
+}

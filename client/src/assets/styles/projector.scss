@@ -11,13 +11,31 @@
         line-height: 1.1em;
     }
 
+    .slidetitle > h1,
+    .slidetitle > h1 *,
+    h1.projector_h1,
+    h1.projector_h1 * {
+        font-size: 1.8em;
+        font-weight: 500;
+        line-height: 1.1em;
+        font-family: $font-projectorH1;
+    }
+
     h2 {
         line-height: 40px;
         font-weight: normal;
     }
 
+    .slidetitle > h2,
+    .slidetitle > h2 *,
+    h2.projector_h2,
+    h2.projector_h1 *  {
+        line-height: 40px;
+        font-weight: normal;
+        font-family: $font-projectorH2;
+    }
+
     h3 {
-        color: #222;
         margin-bottom: 10px;
     }
 
