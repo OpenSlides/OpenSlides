@@ -342,11 +342,17 @@ export class HtmlToPdfService {
                 break;
             }
             case 'br': {
-                newParagraph = this.create('text');
-                // yep thats all
-                newParagraph.text = '\n';
-                newParagraph.lineHeight = this.LINE_HEIGHT;
-                break;
+                if (
+                    this.lineNumberingMode === LineNumberingMode.None && classes.includes('os-line-break')
+                ) {
+                    break;
+                } else {
+                    newParagraph = this.create('text');
+                    // yep thats all
+                    newParagraph.text = '\n';
+                    newParagraph.lineHeight = this.LINE_HEIGHT;
+                    break;
+                }
             }
             case 'ul':
             case 'ol': {
