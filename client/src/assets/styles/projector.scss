@@ -12,10 +12,10 @@
     }
 
     .slidetitle > h1,
-    .slidetitle > h1 *,
-    h1.projector_h1,
-    h1.projector_h1 * {
-        font-family: $font-projectorH1;
+    h1.projector_h1 {
+        &, * {
+            font-family: $font-projectorH1;
+        }
     }
 
     h2 {
@@ -24,10 +24,10 @@
     }
 
     .slidetitle > h2,
-    .slidetitle > h2 *,
-    h2.projector_h2,
-    h2.projector_h2 *  {
-        font-family: $font-projectorH2;
+    h2.projector_h2 {
+        &, * {
+            font-family: $font-projectorH2;
+        }
     }
 
     h3 {
