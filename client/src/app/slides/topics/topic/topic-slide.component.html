@@ -1,10 +1,11 @@
 <div *ngIf="data">
-    <h1>
-        <span *ngIf="data.data.item_number">
-            {{ data.data.item_number }} &middot;
-        </span>
-        {{ data.data.title }}
-    </h1>
+        <h1 class="projector_h1">
+            <span *ngIf="data.data.item_number">
+                {{ data.data.item_number }} &middot;
+            </span>
+            {{ data.data.title }}
+        </h1>
+    <div>
 
     <div [innerHTML]="data.data.text | trust: 'html'"></div>
 </div>

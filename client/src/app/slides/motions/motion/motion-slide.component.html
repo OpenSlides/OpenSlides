@@ -21,12 +21,12 @@
         <!-- Title -->
         <div class="spacer" [ngStyle]="{ height: projector.show_header_footer ? '50px' : '0' }"></div>
         <div [ngClass]="{ slidetitle: data.data.show_meta_box }">
-            <h1>
+            <h1 class="projector_h1">
                 <span *ngIf="data.data.identifier">{{ data.data.identifier }}:</span>
                 {{ getTitleWithChanges() }}
             </h1>
             <!-- recommendation referencing motions -->
-            <h2 *ngIf="data.data.show_meta_box && data.data.recommendation_referencing_motions">
+            <h2 *ngIf="data.data.show_meta_box && data.data.recommendation_referencing_motions" class="projector_h2">
                 <span>{{ 'Referring motions' | translate }}</span
                 >:
                 <span *ngFor="let titleInformation of referencingMotions; let last = last">
