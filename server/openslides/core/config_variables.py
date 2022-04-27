@@ -569,7 +569,7 @@ def get_config_variables():
         name="projector_h1",
         default_value={
             "display_name": "Projector h1",
-            "default": "assets/fonts/fira-sans-latin-400.woff",
+            "default": "assets/fonts/fira-sans-latin-500.woff",
             "path": "",
         },
         input_type="static",
