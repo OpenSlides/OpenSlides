@@ -326,7 +326,6 @@ class OS4Exporter:
                 old, "id", "title", "text", "agenda_item_id", "list_of_speakers_id"
             )
             new["attachment_ids"] = old["attachments_id"]
-            new["option_ids"] = []
             new["tag_ids"] = []
             new["projection_ids"] = []
             new["meeting_id"] = 1
