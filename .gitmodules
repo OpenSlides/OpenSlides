@@ -1,15 +1,15 @@
 [submodule "openslides-datastore-service"]
 	path = openslides-datastore-service
 	url = https://github.com/OpenSlides/openslides-datastore-service.git
-	branch = master
+	branch = main
 [submodule "openslides-client"]
 	path = openslides-client
 	url = https://github.com/OpenSlides/openslides-client.git
-	branch = master
+	branch = main
 [submodule "openslides-backend"]
 	path = openslides-backend
 	url = https://github.com/OpenSlides/openslides-backend.git
-	branch = master
+	branch = main
 [submodule "openslides-autoupdate-service"]
 	path = openslides-autoupdate-service
 	url = https://github.com/OpenSlides/openslides-autoupdate-service.git
@@ -17,11 +17,11 @@
 [submodule "openslides-auth-service"]
 	path = openslides-auth-service
 	url = https://github.com/OpenSlides/openslides-auth-service.git
-	branch = master
+	branch = main
 [submodule "openslides-media-service"]
 	path = openslides-media-service
 	url = https://github.com/OpenSlides/openslides-media-service.git
-	branch = openslides4-dev
+	branch = main
 [submodule "openslides-manage-service"]
 	path = openslides-manage-service
 	url = https://github.com/OpenSlides/openslides-manage-service.git
