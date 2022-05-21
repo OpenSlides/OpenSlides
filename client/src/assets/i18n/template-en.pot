@@ -2246,6 +2246,9 @@ msgstr ""
 msgid "Previous slides"
 msgstr ""
 
+msgid "Principal"
+msgstr ""
+
 msgid "Privacy Policy"
 msgstr ""
 
@@ -2274,6 +2277,9 @@ msgid "Projector logo"
 msgstr ""
 
 msgid "Projectors"
+msgstr ""
+
+msgid "Proxy"
 msgstr ""
 
 msgid "Public"
