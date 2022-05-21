@@ -1,10 +1,10 @@
 # 
 # Translators:
-# Emanuel Schütze <emanuel.schuetze@intevation.de>, 2021
+# Emanuel Schütze <emanuel.schuetze@intevation.de>, 2022
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Emanuel Schütze <emanuel.schuetze@intevation.de>, 2021\n"
+"Last-Translator: Emanuel Schütze <emanuel.schuetze@intevation.de>, 2022\n"
 "Language-Team: German (https://www.transifex.com/openslides/teams/14270/de/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -2358,6 +2358,9 @@ msgstr "Zurück"
 msgid "Previous slides"
 msgstr "Letzte Folien"
 
+msgid "Principal"
+msgstr "Vollmachtgeber"
+
 msgid "Privacy Policy"
 msgstr "Datenschutzerklärung"
 
@@ -2387,6 +2390,9 @@ msgstr "Projektor-Logo"
 
 msgid "Projectors"
 msgstr "Projektoren"
+
+msgid "Proxy"
+msgstr "Vollmachtnehmer"
 
 msgid "Public"
 msgstr "Öffentlich"
