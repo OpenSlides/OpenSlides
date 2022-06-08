@@ -17,8 +17,14 @@ build-dev:
 run-dev: | build-dev
 	docker-compose -f docker/docker-compose.dev.yml up $(ARGS)
 
+run-dev-otel: | build-dev
+	docker-compose -f docker/docker-compose.dev.yml -f docker/dc.otel.dev.yml up $(ARGS)
+
 stop-dev:
 	docker-compose -f docker/docker-compose.dev.yml down --volumes --remove-orphans
+
+stop-dev-otel:
+	docker-compose -f docker/docker-compose.dev.yml -f docker/dc.otel.dev.yml down --volumes --remove-orphans
 
 copy-node-modules:
 	docker-compose -f docker/docker-compose.dev.yml exec client bash -c "cp -r /app/node_modules/ /app/src/"
