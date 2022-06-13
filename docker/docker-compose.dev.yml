@@ -57,9 +57,9 @@ services:
       - auth
     env_file: services.env
     ports:
-        - "9002:9002"
-        - "9003:9003"
-        - "5678:5678"
+      - "9002:9002"
+      - "9003:9003"
+      - "5678:5678"
     environment:
       - OPENSLIDES_DEVELOPMENT=1
       - EMAIL_HOST=mailhog
@@ -185,3 +185,17 @@ services:
       - ../openslides-vote-service/internal:/root/internal
     ports:
       - "9013:9013"
+
+  search-service:
+    image: openslides-search-service-dev
+    depends_on:
+      - autoupdate
+      - postgres
+    env_file:
+      - services.env
+    environment:
+      - OPENSLIDES_DEVELOPMENT=1
+    volumes:
+      - ../openslides-search-service/search-service/src:/app/src
+    ports:
+      - "9022:9022"
