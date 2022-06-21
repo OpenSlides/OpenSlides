@@ -23,6 +23,7 @@ export interface MotionSlideDataBaseMotion {
     identifier: string;
     title: string;
     text: string;
+    start_line_number: number;
 }
 
 /**
@@ -79,4 +80,5 @@ export interface MotionSlideData {
     line_length: number;
     line_numbering_mode: LineNumberingMode;
     change_recommendation_mode: ChangeRecoMode;
+    start_line_number: number;
 }

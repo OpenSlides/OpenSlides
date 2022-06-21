@@ -39,6 +39,7 @@ export interface MotionWithoutNestedModels extends BaseModelWithAgendaItemAndLis
     change_recommendations_id: number[];
 
     sorted_submitter_ids: number[];
+    start_line_number: number;
 }
 
 /**
@@ -53,6 +54,7 @@ export class Motion extends BaseModelWithAgendaItemAndListOfSpeakers<Motion> {
 
     public id: number;
     public submitters: Submitter[];
+    public start_line_number: number;
 
     public constructor(input?: any) {
         super(Motion.COLLECTIONSTRING, input);

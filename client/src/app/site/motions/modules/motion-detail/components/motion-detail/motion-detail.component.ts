@@ -6,6 +6,7 @@ import {
     HostListener,
     OnDestroy,
     OnInit,
+    ViewChild,
     ViewEncapsulation
 } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
@@ -76,6 +77,7 @@ import {
     MotionTitleChangeRecommendationDialogComponent,
     MotionTitleChangeRecommendationDialogComponentData
 } from '../motion-title-change-recommendation-dialog/motion-title-change-recommendation-dialog.component';
+import { MatMenuTrigger } from '@angular/material/menu';
 
 /**
  * Component for the motion detail view
@@ -88,6 +90,9 @@ import {
     encapsulation: ViewEncapsulation.None
 })
 export class MotionDetailComponent extends BaseViewComponentDirective implements OnInit, OnDestroy {
+    @ViewChild(MatMenuTrigger)
+    private readonly _lineNumberMenuTrigger: MatMenuTrigger;
+
     /**
      * Motion content. Can be a new version
      */
@@ -119,6 +124,7 @@ export class MotionDetailComponent extends BaseViewComponentDirective implements
      */
     public set motion(value: ViewMotion) {
         this._motion = value;
+        this.onMotionChanged();
         this.setupRecommender();
     }
 
@@ -431,6 +437,8 @@ export class MotionDetailComponent extends BaseViewComponentDirective implements
     public recommendationReferencingMotions: ViewMotion[] = [];
 
     public amendmentErrorMessage: string = null;
+
+    public startLineNumber: number;
 
     /**
      * Constructs the detail view.
@@ -1027,7 +1035,8 @@ export class MotionDetailComponent extends BaseViewComponentDirective implements
             this.crMode,
             changes,
             this.lineLength,
-            this.highlightedLine
+            this.highlightedLine,
+            this.motion.start_line_number || 1
         );
         return formatedText;
     }
@@ -1135,6 +1144,16 @@ export class MotionDetailComponent extends BaseViewComponentDirective implements
         }
     }
 
+    public updateStartLineNumber(): void {
+        this.repo.update({ start_line_number: this.startLineNumber }, this.motion);
+        this._lineNumberMenuTrigger.closeMenu();
+    }
+
+    public resetStartLineNumber(): void {
+        this.startLineNumber = this.motion?.start_line_number || 1;
+        this._lineNumberMenuTrigger.closeMenu();
+    }
+
     /**
      * Sets the motions line numbering mode
      *
@@ -1234,7 +1253,8 @@ export class MotionDetailComponent extends BaseViewComponentDirective implements
             editChangeRecommendation: false,
             newChangeRecommendation: true,
             lineRange: lineRange,
-            changeRecommendation: null
+            changeRecommendation: null,
+            firstLine: this.motion.start_line_number
         };
         if (this.motion.isParagraphBasedAmendment()) {
             try {
@@ -1332,7 +1352,8 @@ export class MotionDetailComponent extends BaseViewComponentDirective implements
             ChangeRecoMode.Final,
             changes,
             this.lineLength,
-            this.highlightedLine
+            this.highlightedLine,
+            this.motion.start_line_number || 1
         );
         finalVersion = this.linenumberingService.stripLineNumbers(finalVersion);
 
@@ -1862,5 +1883,9 @@ export class MotionDetailComponent extends BaseViewComponentDirective implements
         };
 
         this.pollDialog.openDialog(dialogData);
+    }
+
+    private onMotionChanged(): void {
+        this.startLineNumber = this.motion.start_line_number || 1;
     }
 }

@@ -44,6 +44,10 @@ export class ViewMotion
         return this._model;
     }
 
+    public get start_line_number(): number {
+        return this._model.start_line_number || 1;
+    }
+
     public get submittersAsUsers(): ViewUser[] {
         return (this.submitters || []).map(submitter => submitter.user);
     }

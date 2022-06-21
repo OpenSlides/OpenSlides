@@ -21,6 +21,16 @@ import { DiffService, LineRange, ModificationType } from '../../ui-services/diff
 import { LinenumberingService } from '../../ui-services/linenumbering.service';
 import { ViewMotion } from '../../../site/motions/models/view-motion';
 import { ViewUnifiedChange } from '../../../shared/models/motions/view-unified-change';
+import { RelationDefinition } from '../../definitions/relations';
+
+const CHANGE_RECOMMENDATION_RELATIONS: RelationDefinition[] = [
+    {
+        type: `M2M`,
+        foreignIdKey: `change_recommendations_id`,
+        ownKey: `motions`,
+        foreignViewModel: ViewMotion
+    }
+];
 
 /**
  * Repository Services for change recommendations
@@ -72,7 +82,8 @@ export class ChangeRecommendationRepositoryService extends BaseRepository<
             viewModelStoreService,
             translate,
             relationManager,
-            MotionChangeRecommendation
+            MotionChangeRecommendation,
+            CHANGE_RECOMMENDATION_RELATIONS
         );
     }
 
@@ -180,7 +191,13 @@ export class ChangeRecommendationRepositoryService extends BaseRepository<
         lineRange: LineRange,
         lineLength: number
     ): ViewMotionChangeRecommendation {
-        const motionText = this.lineNumbering.insertLineNumbers(motion.text, lineLength);
+        const motionText = this.lineNumbering.insertLineNumbers(
+            motion.text,
+            lineLength,
+            null,
+            null,
+            motion.start_line_number
+        );
 
         const changeReco = new MotionChangeRecommendation();
         changeReco.line_from = lineRange.from;

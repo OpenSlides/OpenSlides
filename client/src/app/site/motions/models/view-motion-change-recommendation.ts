@@ -2,6 +2,7 @@ import { ModificationType } from 'app/core/ui-services/diff.service';
 import { MotionChangeRecommendation } from 'app/shared/models/motions/motion-change-reco';
 import { BaseViewModel } from '../../base/base-view-model';
 import { ViewUnifiedChange, ViewUnifiedChangeType } from '../../../shared/models/motions/view-unified-change';
+import { ViewMotion } from 'app/site/motions/models/view-motion';
 
 export type MotionChangeRecommendationTitleInformation = object;
 
@@ -18,6 +19,14 @@ export class ViewMotionChangeRecommendation
 {
     public static COLLECTIONSTRING = MotionChangeRecommendation.COLLECTIONSTRING;
     protected _collectionString = MotionChangeRecommendation.COLLECTIONSTRING;
+
+    private get firstLine(): number {
+        if (this.motions?.length) {
+            return this.motions[0].start_line_number;
+        } else {
+            return 1;
+        }
+    }
 
     public get changeRecommendation(): MotionChangeRecommendation {
         return this._model;
@@ -47,11 +56,11 @@ export class ViewMotionChangeRecommendation
     }
 
     public get line_from(): number {
-        return this.changeRecommendation.line_from;
+        return this.changeRecommendation.line_from + this.firstLine - 1;
     }
 
     public get line_to(): number {
-        return this.changeRecommendation.line_to;
+        return this.changeRecommendation.line_to + this.firstLine - 1;
     }
 
     public get text(): string {
@@ -102,3 +111,9 @@ export class ViewMotionChangeRecommendation
         return this.line_from === 0 && this.line_to === 0;
     }
 }
+
+interface MotionChangeRecommendationRelations {
+    motions: ViewMotion[];
+}
+
+export interface ViewMotionChangeRecommendation extends MotionChangeRecommendationRelations {}

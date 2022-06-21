@@ -1338,7 +1338,11 @@ export class DiffService {
      * @param {number} toLine
      * @returns {ExtractedContent}
      */
-    public extractRangeByLineNumbers(htmlIn: LineNumberedString, fromLine: number, toLine: number): ExtractedContent {
+    public extractRangeByLineNumbers(
+        htmlIn: LineNumberedString,
+        fromLine: number,
+        toLine: number | null
+    ): ExtractedContent {
         if (typeof htmlIn !== 'string') {
             throw new Error('Invalid call - extractRangeByLineNumbers expects a string as first argument');
         }

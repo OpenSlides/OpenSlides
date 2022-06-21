@@ -621,7 +621,14 @@ export class MotionPdfService {
                     changedTitle +
                     '</span><br>';
             }
-            const formattedText = this.motionRepo.formatMotion(motion.id, crMode, textChanges, lineLength);
+            const formattedText = this.motionRepo.formatMotion(
+                motion.id,
+                crMode,
+                textChanges,
+                lineLength,
+                null,
+                motion.start_line_number || 1
+            );
             // reformat motion text to split long HTML elements to easier convert into PDF
             motionText += this.linenumberingService.splitInlineElementsAtLineBreaks(formattedText);
         }

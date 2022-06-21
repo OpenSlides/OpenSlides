@@ -19,6 +19,7 @@ export interface MotionChangeRecommendationDialogComponentData {
     newChangeRecommendation: boolean;
     lineRange: LineRange;
     changeRecommendation: ViewMotionChangeRecommendation;
+    firstLine: number;
 }
 
 /**

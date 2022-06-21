@@ -615,14 +615,21 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
         crMode: ChangeRecoMode,
         changes: ViewUnifiedChange[],
         lineLength: number,
-        highlightLine?: number
+        highlightLine?: number,
+        firstLine?: number
     ): string {
         const targetMotion = this.getViewModel(id);
 
         if (targetMotion && targetMotion.text) {
             switch (crMode) {
                 case ChangeRecoMode.Original:
-                    return this.lineNumbering.insertLineNumbers(targetMotion.text, lineLength, highlightLine);
+                    return this.lineNumbering.insertLineNumbers(
+                        targetMotion.text,
+                        lineLength,
+                        highlightLine,
+                        () => {},
+                        firstLine
+                    );
                 case ChangeRecoMode.Changed:
                     const changeRecommendations = changes.filter(
                         change => change.getChangeType() === ViewUnifiedChangeType.TYPE_CHANGE_RECOMMENDATION
@@ -636,14 +643,20 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
                 case ChangeRecoMode.Diff:
                     const text = [];
                     const changesToShow = changes.filter(change => change.showInDiffView());
-                    const motionText = this.lineNumbering.insertLineNumbers(targetMotion.text, lineLength);
+                    const motionText = this.lineNumbering.insertLineNumbers(
+                        targetMotion.text,
+                        lineLength,
+                        null,
+                        null,
+                        firstLine
+                    );
 
                     for (let i = 0; i < changesToShow.length; i++) {
                         text.push(
                             this.diff.extractMotionLineRange(
                                 motionText,
                                 {
-                                    from: i === 0 ? 1 : changesToShow[i - 1].getLineTo(),
+                                    from: i === 0 ? firstLine : changesToShow[i - 1].getLineTo(),
                                     to: changesToShow[i].getLineFrom()
                                 },
                                 true,
@@ -669,11 +682,18 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
                             lineLength,
                             highlightLine,
                             null,
-                            1
+                            firstLine
                         );
                     } else {
                         // Use the final version as fallback, if the modified does not exist.
-                        return this.formatMotion(id, ChangeRecoMode.Final, changes, lineLength, highlightLine);
+                        return this.formatMotion(
+                            id,
+                            ChangeRecoMode.Final,
+                            changes,
+                            lineLength,
+                            highlightLine,
+                            firstLine
+                        );
                     }
                 default:
                     console.error('unrecognized ChangeRecoMode option (' + crMode + ')');
@@ -705,7 +725,13 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
      * @return {number}
      */
     public getLastLineNumber(motion: ViewMotion, lineLength: number): number {
-        const numberedHtml = this.lineNumbering.insertLineNumbers(motion.text, lineLength);
+        const numberedHtml = this.lineNumbering.insertLineNumbers(
+            motion.text,
+            lineLength,
+            null,
+            null,
+            motion.start_line_number
+        );
         const range = this.lineNumbering.getLineNumberRange(numberedHtml);
         return range.to;
     }
@@ -724,7 +750,7 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
         }
         let html = motion.text;
         if (lineBreaks) {
-            html = this.lineNumbering.insertLineNumbers(html, lineLength);
+            html = this.lineNumbering.insertLineNumbers(html, lineLength, null, null, motion.start_line_number);
         }
         return this.lineNumbering.splitToParagraphs(html);
     }

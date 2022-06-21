@@ -1,4 +1,13 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, ViewEncapsulation } from '@angular/core';
+import {
+    AfterViewInit,
+    ChangeDetectionStrategy,
+    Component,
+    ElementRef,
+    EventEmitter,
+    Input,
+    Output,
+    ViewEncapsulation
+} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
@@ -55,6 +64,7 @@ import { ViewMotionAmendedParagraph } from '../../../../models/view-motion-amend
     selector: 'os-motion-detail-diff',
     templateUrl: './motion-detail-diff.component.html',
     styleUrls: ['./motion-detail-diff.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None
 })
 export class MotionDetailDiffComponent extends BaseViewComponentDirective implements AfterViewInit {
@@ -128,9 +138,11 @@ export class MotionDetailDiffComponent extends BaseViewComponentDirective implem
      */
     public getTextBetweenChanges(change1: ViewUnifiedChange, change2: ViewUnifiedChange): string {
         // @TODO Highlighting
+        const motion = this.motion.parent || this.motion;
+        const firstLine = motion.start_line_number || 1;
         const lineRange: LineRange = {
-            from: change1 ? change1.getLineTo() : 1,
-            to: change2 ? change2.getLineFrom() : null
+            from: change1 ? change1.getLineTo() : firstLine,
+            to: change2 ? change2.getLineFrom() : firstLine
         };
 
         if (lineRange.from >= lineRange.to) {
@@ -149,7 +161,7 @@ export class MotionDetailDiffComponent extends BaseViewComponentDirective implem
                 return '';
             }
         } else {
-            baseText = this.lineNumbering.insertLineNumbers(this.motion.text, this.lineLength);
+            baseText = this.lineNumbering.insertLineNumbers(this.motion.text, this.lineLength, null, null, firstLine);
         }
 
         return this.diff.extractMotionLineRange(baseText, lineRange, true, this.lineLength, this.highlightedLine);
@@ -170,13 +182,15 @@ export class MotionDetailDiffComponent extends BaseViewComponentDirective implem
      */
     public getDiff(change: ViewUnifiedChange): string {
         let motionHtml: string;
+        const motion = this.motion.parent || this.motion;
+        const firstLine = motion.start_line_number || 1;
         if (this.motion.isParagraphBasedAmendment()) {
             const parentMotion = this.motionRepo.getViewModel(this.motion.parent_id);
             motionHtml = parentMotion.text;
         } else {
             motionHtml = this.motion.text;
         }
-        const baseHtml = this.lineNumbering.insertLineNumbers(motionHtml, this.lineLength);
+        const baseHtml = this.lineNumbering.insertLineNumbers(motionHtml, this.lineLength, null, null, firstLine);
         return this.diff.getChangeDiff(baseHtml, change, this.lineLength, this.highlightedLine);
     }
 
@@ -188,6 +202,8 @@ export class MotionDetailDiffComponent extends BaseViewComponentDirective implem
             return ''; // @TODO This happens in the test case when the lineLength-variable is not set
         }
         let baseText: LineNumberedString;
+        const motion = this.motion.parent || this.motion;
+        const firstLine = motion.start_line_number || 1;
         if (this.motion.isParagraphBasedAmendment()) {
             try {
                 baseText = this.motionRepo
@@ -198,7 +214,7 @@ export class MotionDetailDiffComponent extends BaseViewComponentDirective implem
                 return '';
             }
         } else {
-            baseText = this.lineNumbering.insertLineNumbers(this.motion.text, this.lineLength);
+            baseText = this.lineNumbering.insertLineNumbers(this.motion.text, this.lineLength, null, null, firstLine);
         }
         return this.diff.getTextRemainderAfterLastChange(baseText, this.changes, this.lineLength, this.highlightedLine);
     }
@@ -341,6 +357,9 @@ export class MotionDetailDiffComponent extends BaseViewComponentDirective implem
         $event.stopPropagation();
         $event.preventDefault();
 
+        const motion = this.motion.parent || this.motion;
+        const firstLine = motion.start_line_number || 1;
+
         const data: MotionChangeRecommendationDialogComponentData = {
             editChangeRecommendation: true,
             newChangeRecommendation: false,
@@ -348,7 +367,8 @@ export class MotionDetailDiffComponent extends BaseViewComponentDirective implem
                 from: reco.getLineFrom(),
                 to: reco.getLineTo()
             },
-            changeRecommendation: reco
+            changeRecommendation: reco,
+            firstLine
         };
         this.dialogService.open(MotionChangeRecommendationDialogComponent, {
             ...mediumDialogSettings,

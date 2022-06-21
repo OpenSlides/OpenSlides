@@ -241,6 +241,11 @@ class Motion(RESTModelMixin, AgendaItemWithListOfSpeakersMixin, models.Model):
     Timestamp when motion is modified.
     """
 
+    start_line_number = models.PositiveSmallIntegerField(default=1)
+    """
+    The first line number of a motion.
+    """
+
     class Meta:
         default_permissions = ()
         permissions = (

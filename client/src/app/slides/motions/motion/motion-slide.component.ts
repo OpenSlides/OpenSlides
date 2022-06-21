@@ -179,7 +179,13 @@ export class MotionSlideComponent
         }
 
         let baseHtml = this.data.data.text;
-        baseHtml = this.lineNumbering.insertLineNumbers(baseHtml, this.lineLength);
+        baseHtml = this.lineNumbering.insertLineNumbers(
+            baseHtml,
+            this.lineLength,
+            null,
+            null,
+            this.data.data.start_line_number
+        );
         const baseParagraphs = this.lineNumbering.splitToParagraphs(baseHtml);
 
         return amendment.amendment_paragraphs
@@ -189,7 +195,7 @@ export class MotionSlideComponent
                 }
 
                 const origText = baseParagraphs[paraNo],
-                    diff = this.diff.diff(origText, newText),
+                    diff = this.diff.diff(origText, newText, this.data.data.start_line_number),
                     affectedLines = this.diff.detectAffectedLineRange(diff);
 
                 if (affectedLines === null) {
@@ -343,13 +349,18 @@ export class MotionSlideComponent
         // Prevent this.allChangingObjects to be reordered from within formatMotion
         // const changes: ViewUnifiedChange[] = Object.assign([], this.allChangingObjects);
         const motion = this.data.data;
-
         if (!motion.text) {
             return null;
         }
         switch (this.crMode) {
             case ChangeRecoMode.Original:
-                return this.lineNumbering.insertLineNumbers(motion.text, this.lineLength, this.highlightedLine);
+                return this.lineNumbering.insertLineNumbers(
+                    motion.text,
+                    this.lineLength,
+                    this.highlightedLine,
+                    null,
+                    motion.start_line_number || 1
+                );
             case ChangeRecoMode.Changed:
                 const changeRecommendations = this.getAllTextChangingObjects().filter(
                     change => change.getChangeType() === ViewUnifiedChangeType.TYPE_CHANGE_RECOMMENDATION
@@ -365,10 +376,16 @@ export class MotionSlideComponent
                 const changes = this.getAllTextChangingObjects().filter(change => {
                     return change.showInDiffView();
                 });
-                const motionText = this.lineNumbering.insertLineNumbers(motion.text, this.lineLength);
+                const motionText = this.lineNumbering.insertLineNumbers(
+                    motion.text,
+                    this.lineLength,
+                    null,
+                    null,
+                    motion.start_line_number || 1
+                );
                 changes.forEach((change: ViewUnifiedChange, idx: number) => {
                     if (idx === 0) {
-                        const lineRange = { from: 1, to: change.getLineFrom() };
+                        const lineRange = { from: motion.start_line_number || 1, to: change.getLineFrom() };
                         text += this.extractMotionLineRange(motionText, lineRange, true, this.lineLength);
                     } else if (changes[idx - 1].getLineTo() < change.getLineFrom()) {
                         const lineRange = {
@@ -398,7 +415,7 @@ export class MotionSlideComponent
                         this.lineLength,
                         this.highlightedLine,
                         null,
-                        1
+                        motion.start_line_number || 1
                     );
                 } else {
                     // Use the final version as fallback, if the modified does not exist.
@@ -425,7 +442,13 @@ export class MotionSlideComponent
      */
     public getAmendedParagraphs(): DiffLinesInParagraph[] {
         const motion = this.data.data;
-        const baseHtml = this.lineNumbering.insertLineNumbers(motion.base_motion?.text, this.lineLength);
+        const baseHtml = this.lineNumbering.insertLineNumbers(
+            motion.base_motion?.text,
+            this.lineLength,
+            null,
+            null,
+            motion.base_motion.start_line_number || 1
+        );
         const baseParagraphs = this.lineNumbering.splitToParagraphs(baseHtml);
 
         const amendmentParagraphs = motion.amendment_paragraphs
@@ -489,7 +512,13 @@ export class MotionSlideComponent
      */
     public getAmendmentDiff(change: ViewUnifiedChange): string {
         const motion = this.data.data;
-        const baseHtml = this.lineNumbering.insertLineNumbers(motion.base_motion?.text, this.lineLength);
+        const baseHtml = this.lineNumbering.insertLineNumbers(
+            motion.base_motion?.text,
+            this.lineLength,
+            null,
+            null,
+            motion.start_line_number || 1
+        );
 
         return this.diff.getChangeDiff(baseHtml, change, this.lineLength, this.highlightedLine);
     }

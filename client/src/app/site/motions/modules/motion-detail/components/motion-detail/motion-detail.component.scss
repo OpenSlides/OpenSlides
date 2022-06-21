@@ -222,3 +222,11 @@ span {
     font-size: 70%;
     float: right;
 }
+
+#lineNumberItem {
+    padding: 0 16px;
+
+    mat-icon {
+        font-size: 18px;
+    }
+}

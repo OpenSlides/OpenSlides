@@ -418,6 +418,7 @@ class MotionSerializer(ModelSerializer):
             "last_modified",
             "change_recommendations",
             "amendments_id",
+            "start_line_number",
         )
         read_only_fields = (
             "state",
