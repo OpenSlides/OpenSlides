@@ -290,8 +290,8 @@ class OS4Exporter:
 
         self.option_id_counter = (
             max_or_zero([x["id"] for x in self.get_collection("motions/motion-option")])
-            + 1
-        )
+            or self.motion_option_id_offset  # in case there are no motion options
+        ) + 1
 
     def migrate_agenda_items(self):
         for old in self.get_collection("agenda/item"):
