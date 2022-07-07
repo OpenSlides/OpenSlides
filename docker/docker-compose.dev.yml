@@ -6,7 +6,6 @@ services:
       - postgres
     env_file: services.env
     environment:
-      - DATASTORE_ENABLE_DEV_ENVIRONMENT=1
       - NUM_WORKERS=8
       - OPENSLIDES_DEVELOPMENT=1
     volumes:
@@ -24,7 +23,6 @@ services:
       - ../openslides-datastore-service/datastore:/app/datastore
       - ../openslides-datastore-service/cli:/app/cli
     environment:
-      - DATASTORE_ENABLE_DEV_ENVIRONMENT=1
       - COMMAND=create_initial_data
       - DATASTORE_INITIAL_DATA_FILE=https://raw.githubusercontent.com/OpenSlides/openslides-backend/main/global/data/example-data.json
       - OPENSLIDES_DEVELOPMENT=1
