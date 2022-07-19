@@ -139,6 +139,8 @@ services:
 
   message-bus:
     image: redis:latest
+    ports:
+      - "6379:6379"
 
   proxy:
     image: openslides-proxy-dev
