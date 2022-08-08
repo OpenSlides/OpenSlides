@@ -678,8 +678,8 @@ class OS4Exporter:
             new["amendment_paragraph_$"] = []
             if old["amendment_paragraphs"]:
                 for i, content in enumerate(old["amendment_paragraphs"]):
-                    new["amendment_paragraph_$"].append(str(i + 1))
-                    new[f"amendment_paragraph_${i+1}"] = content
+                    new["amendment_paragraph_$"].append(str(i))
+                    new[f"amendment_paragraph_${i}"] = content
             new["sort_weight"] = old["weight"]
             new["created"] = to_unix_time(old["created"])
             new["last_modified"] = to_unix_time(old["last_modified"])
