@@ -28,6 +28,7 @@ services:
       - OPENSLIDES_DEVELOPMENT=1
     ports:
       - 9011:9011
+      - 5679:5678
 
   postgres:
     image: postgres:11
