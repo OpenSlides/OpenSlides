@@ -10,7 +10,13 @@ services:
   client:
     additionalContent:
       build: ../openslides-client/
-  backend:
+  backendAction:
+    additionalContent:
+      build: ../openslides-backend/
+  backendPresenter:
+    additionalContent:
+      build: ../openslides-backend/
+  backendManage:
     additionalContent:
       build: ../openslides-backend/
   datastoreReader:
