@@ -1,6 +1,0 @@
-{
-  "baseUrl": "https://localhost:8000",
-  "screenshotsFolder": "results/screenshots",
-  "videosFolder": "results/videos",
-  "downloadsFolder": "results/downloads"
-}

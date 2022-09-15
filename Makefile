@@ -1,12 +1,3 @@
-run-integration-tests:
-	@echo "Start OpenSlides Dev"
-	make run-dev ARGS="-d"
-	@echo "Start integration tests"
-	make cypress-docker
-	docker-compose -f integration/docker-compose.yml up
-	@echo "Stop OpenSlides Dev"
-	make stop-dev
-
 run-service-tests:
 	git submodule foreach 'make run-tests'
 
@@ -40,13 +31,3 @@ submodules-origin-to-upstream:
 	# You may only use this one time after cloning this repository.
 	# Will set the upstream remote to "origin"
 	git submodule foreach -q --recursive 'git remote rename origin upstream'
-
-cypress-open:
-	cd integration; npm run cypress:open
-
-cypress-run:
-	cd integration; npm run cypress:run
-
-cypress-docker:
-	docker-compose -f integration/docker-compose.yml build
-	docker-compose -f integration/docker-compose.yml up
