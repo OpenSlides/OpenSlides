@@ -73,7 +73,10 @@ services:
       - DEFAULT_FROM_EMAIL=noreply@example.com
     volumes:
       - ../openslides-backend/openslides_backend:/app/openslides_backend
-      - ../openslides-backend/migrations:/app/migrations
+      - ../openslides-backend/tests:/app/tests
+      - ../openslides-backend/cli:/app/cli
+      - ../openslides-backend/global:/app/global
+      - ../openslides-backend/scripts:/app/scripts
 
   autoupdate:
     image: openslides-autoupdate-dev
@@ -83,6 +86,7 @@ services:
     env_file: services.env
     environment:
       - OPENSLIDES_DEVELOPMENT=1
+      - DATASTORE_TIMEOUT=30
     volumes:
       - ../openslides-autoupdate-service/cmd:/root/cmd
       - ../openslides-autoupdate-service/internal:/root/internal

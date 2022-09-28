@@ -11,6 +11,10 @@ run-dev: | build-dev
 run-dev-otel: | build-dev
 	docker-compose -f docker/docker-compose.dev.yml -f docker/dc.otel.dev.yml up $(ARGS)
 
+run-backend: | build-dev
+	docker-compose -f docker/docker-compose.dev.yml -f docker/docker-compose.test.yml up -d
+	docker-compose -f docker/docker-compose.dev.yml exec backend ./entrypoint.sh bash --rcfile .bashrc
+
 stop-dev:
 	docker-compose -f docker/docker-compose.dev.yml down --volumes --remove-orphans
 
