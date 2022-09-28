@@ -18,7 +18,7 @@ jobs:
       - name: Run integration tests (cypress)
         uses: cypress-io/github-action@v2
         with:
-          working-directory: integration
+          working-directory: openslides-client/client/tests/integration
           wait-on: 'https://localhost:8000'
           wait-on-timeout: 300
         env:
