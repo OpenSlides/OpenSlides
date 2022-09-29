@@ -1783,7 +1783,7 @@ class OS4Exporter:
             if not mediafile_id:
                 continue
 
-            replacement = place.split("_", 2)[1]
+            replacement = place.split("_", 1)[1].lower()
             mediafile = self.get_model("mediafile", mediafile_id)
             mediafile[f"used_as_{type}_$_in_meeting_id"].append(replacement)
             mediafile[f"used_as_{type}_${replacement}_in_meeting_id"] = 1
