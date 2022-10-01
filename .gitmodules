@@ -34,3 +34,7 @@
 	path = openslides-vote-service
 	url = https://github.com/OpenSlides/openslides-vote-service.git
 	branch = main
+[submodule "vote-decrypt"]
+	path = vote-decrypt
+	url = https://github.com/OpenSlides/vote-decrypt.git
+	branch = main
