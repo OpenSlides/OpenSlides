@@ -166,6 +166,7 @@ services:
       - message-bus
       - datastore-reader
       - postgres
+      - vote-decrypt
     environment:
       - OPENSLIDES_DEVELOPMENT=true
       - VOTE_HOST=vote
@@ -178,6 +179,7 @@ services:
       - VOTE_DATABASE_USER=openslides
       - VOTE_DATABASE_PASSWORD=openslides
       - VOTE_DATABASE_NAME=openslides
+      - VOTE_DECRYPT_SERVICE=vote-decrypt:9014
       - AUTH=ticket
       - AUTH_HOST=auth
       - VOTE_DISABLE_LOG=true
@@ -186,3 +188,10 @@ services:
       - ../openslides-vote-service/internal:/root/internal
     ports:
       - "9013:9013"
+
+  vote-decrypt:
+    image: vote-decrypt-dev
+    volumes:
+      - ./secrets:/run/secrets
+    ports:
+      - "9014:9014"
