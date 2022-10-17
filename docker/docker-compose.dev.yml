@@ -86,6 +86,8 @@ services:
       - ../openslides-autoupdate-service/cmd:/root/cmd
       - ../openslides-autoupdate-service/internal:/root/internal
       - ../openslides-autoupdate-service/pkg:/root/pkg
+    ports:
+      - "9012:9012"
 
   icc:
     image: openslides-icc-dev
@@ -112,6 +114,8 @@ services:
       - OPENSLIDES_DEVELOPMENT=1
     volumes:
       - ../openslides-auth-service/auth/src:/app/src
+    ports:
+      - "9004:9004"
 
   cache:
     image: redis:latest
@@ -166,20 +170,9 @@ services:
       - message-bus
       - datastore-reader
       - postgres
+    env_file: services.env
     environment:
-      - OPENSLIDES_DEVELOPMENT=true
-      - VOTE_HOST=vote
-      - VOTE_PORT=9013
-      - DATASTORE_READER_HOST=datastore-reader
-      - MESSAGING=redis
-      - MESSAGE_BUS_HOST=message-bus
-      - VOTE_REDIS_HOST=cache
-      - VOTE_DATABASE_HOST=postgres
-      - VOTE_DATABASE_USER=openslides
-      - VOTE_DATABASE_PASSWORD=openslides
-      - VOTE_DATABASE_NAME=openslides
-      - AUTH=ticket
-      - AUTH_HOST=auth
+      - OPENSLIDES_DEVELOPMENT=1
       - VOTE_DISABLE_LOG=true
     volumes:
       - ../openslides-vote-service/cmd:/root/cmd
