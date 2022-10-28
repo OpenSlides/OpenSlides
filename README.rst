@@ -71,7 +71,7 @@ Finally, you can start the instance using ``docker-compose``::
 
     docker-compose up
 
-OpenSlides is accessible on https://localhost/ (or https, if configured).
+OpenSlides is accessible on http://localhost/ (or https, if configured).
 
 You can also use daemonized instance::
 
