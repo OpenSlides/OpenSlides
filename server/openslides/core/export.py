@@ -646,9 +646,7 @@ class OS4Exporter:
         return filename, len(data), blob
 
     def migrate_motions(self):
-        recommendation_reference_motion_ids_regex = re.compile(
-            r"\[motion:(?P<id>\d+)\]"
-        )
+        reference_motion_ids_regex = re.compile(r"\[motion:(?P<id>\d+)\]")
 
         db_number_values = {}
         for motion in Motion.objects.all():
@@ -723,29 +721,29 @@ class OS4Exporter:
             new["projection_ids"] = []
             new["meeting_id"] = 1
 
-            new["recommendation_extension_reference_ids"] = []
-            if new["recommendation_extension"]:
+            for prefix in ("recommendation", "state"):
+                field = f"{prefix}_extension"
+                relation_field = f"{field}_reference_ids"
+                new[relation_field] = []
+                if new[field]:
 
-                def replace_fn(matchobj):
-                    id = int(matchobj.group("id"))
-                    new["recommendation_extension_reference_ids"].append(f"motion/{id}")
-                    return f"[motion/{id}]"
+                    def replace_fn(matchobj):
+                        id = int(matchobj.group("id"))
+                        new[relation_field].append(f"motion/{id}")
+                        return f"[motion/{id}]"
 
-                new[
-                    "recommendation_extension"
-                ] = recommendation_reference_motion_ids_regex.sub(
-                    replace_fn, new["recommendation_extension"]
-                )
+                    new[field] = reference_motion_ids_regex.sub(replace_fn, new[field])
 
             self.set_model("motion", new)
 
         for motion in self.iter_collection("motion"):
-            motion["referenced_in_motion_recommendation_extension_ids"] = [
-                x["id"]
-                for x in self.iter_collection("motion")
-                if f"motion/{motion['id']}"
-                in x["recommendation_extension_reference_ids"]
-            ]
+            for prefix in ("recommendation", "state"):
+                motion[f"referenced_in_motion_{prefix}_extension_ids"] = [
+                    x["id"]
+                    for x in self.iter_collection("motion")
+                    if f"motion/{motion['id']}"
+                    in x[f"{prefix}_extension_reference_ids"]
+                ]
 
     def create_motion_submitters(self, submitters):
         ids = []
