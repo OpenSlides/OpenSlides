@@ -1040,7 +1040,7 @@ class OS4Exporter:
             new["is_physical_person"] = not old["is_committee"]
             new["password"] = ""
             new["default_number"] = old["number"]
-            new["default_structure_level"] = old["structure_level"]
+            new["default_structure_level"] = ""
             new["default_vote_weight"] = old["vote_weight"]
             new["last_email_send"] = to_unix_time(old["last_email_send"])
 
@@ -1053,7 +1053,8 @@ class OS4Exporter:
             new["committee_$_management_level"] = []
             new["comment_$"] = []
             new["number_$"] = []
-            new["structure_level_$"] = []
+            new["structure_level_$"] = ["1"]
+            new["structure_level_$1"] = old["structure_level"]
             new["about_me_$"] = []
             new["vote_weight_$"] = []
 
