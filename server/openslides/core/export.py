@@ -1041,7 +1041,7 @@ class OS4Exporter:
             new["password"] = ""
             new["default_number"] = ""
             new["default_structure_level"] = ""
-            new["default_vote_weight"] = ""
+            new["default_vote_weight"] = "1.000000"
             new["last_email_send"] = to_unix_time(old["last_email_send"])
 
             new["is_demo_user"] = is_demo_mode and old["id"] in demo_mode_users
