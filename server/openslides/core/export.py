@@ -1041,7 +1041,7 @@ class OS4Exporter:
             new["password"] = ""
             new["default_number"] = ""
             new["default_structure_level"] = ""
-            new["default_vote_weight"] = old["vote_weight"]
+            new["default_vote_weight"] = ""
             new["last_email_send"] = to_unix_time(old["last_email_send"])
 
             new["is_demo_user"] = is_demo_mode and old["id"] in demo_mode_users
@@ -1057,7 +1057,8 @@ class OS4Exporter:
             new["structure_level_$"] = ["1"]
             new["structure_level_$1"] = old["structure_level"]
             new["about_me_$"] = []
-            new["vote_weight_$"] = []
+            new["vote_weight_$"] = ["1"]
+            new["vote_weight_$1"] = old["vote_weight"]
 
             group_ids = old["groups_id"] or [
                 1
