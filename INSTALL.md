@@ -12,7 +12,10 @@ bigger setups, but this is not described here.
 So for now let's use Docker Compose. Be sure you have
 [Docker](https://docs.docker.com/engine/) and [Docker
 Compose](https://docs.docker.com/compose/) installed and the Docker daemon is
-running. Check if you have to run docker as local user or as root.
+running. If works at least with Docker version 20.10.x and Docker Compose
+version 2.13.x.
+
+Check if you have to run docker as local user or as root.
 
     $ docker info
 
@@ -70,7 +73,7 @@ Now open https://localhost:8000, login with superuser credentials (default
 username and password: `superadmin`) and have fun.
 
 
-### Reach OpenSlides from outside your local machin
+### Reach OpenSlides from outside your local machine
 
 Normally you want OpenSlides be reachable from outside your local machine. You
 have several options to achieve this:
@@ -93,9 +96,9 @@ To stop the server run:
 
     $ docker-compose stop
 
-To remove all containers run:
+To remove all containers and networks run:
 
-    $ docker-compose rm
+    $ docker-compose down
 
 To remove the database you have to remove the content of the `db-data`
 directory.
@@ -122,9 +125,9 @@ This way you get a Docker Compose YAML file which let OpenSlides listen on the
 configured custom port.
 
 You may also use  the `--force` flag in some cases which also resets secrets and
-much more. To rebuild the Docker Compose YAML file without resetting the whole
-directory (including secrets) use the `config` command instead of the `setup`
-command. E. g. run:
+all other generated files. To rebuild the Docker Compose YAML file without
+resetting the whole directory (including secrets) use the `config` command
+instead of the `setup` command. E. g. run:
 
     $ ./openslides config --config my-config.yml .
 
