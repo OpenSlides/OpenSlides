@@ -67,11 +67,11 @@ You can configure OpenSlides using the `.env` file. See `More settings`_. Anothe
 hint: If you choose to deploy the default configuration, a https certificate is
 needed, so make sure you have set it up beforehand.
 
-Finally, you can start the instance using ``docker-compose``::
+Finally, you can start the instance using `docker-compose`:
 
     docker-compose up
 
-OpenSlides is accessible on https://localhost/ (or https, if configured).
+OpenSlides is accessible on https://localhost/.
 
 You can also use daemonized instance::
 
