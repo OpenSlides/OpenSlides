@@ -28,7 +28,7 @@ manage tool `openslides`.
 
 You can also fetch it using `wget`. Don't forget to make the binary executable.
 
-    $ wget https://github.com/OpenSlides/openslides-manage-service/releases/download/latest/openslides
+    $ wget https://github.com/OpenSlides/openslides-manage-service/releases/download/4.0.0/openslides
     $ chmod +x openslides
 
 
