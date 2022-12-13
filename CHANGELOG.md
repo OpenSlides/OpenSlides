@@ -5,9 +5,9 @@ https://openslides.com
 
 ## Version 4.0 (2022-12-14)
 
-[Milestone](https://github.com/OpenSlides/OpenSlides/milestones/4.0.0)
+[Milestone](https://github.com/OpenSlides/OpenSlides/milestones/4.0)
 
-OpenSlides 4.0 based on a service-oriented architecture which consists of the following 9 services:
+OpenSlides 4.0 based on a service-oriented architecture which consists of the following services:
 - [openslides-auth-service](https://github.com/OpenSlides/openslides-auth-service)
 - [openslides-autoupdate-service](https://github.com/OpenSlides/openslides-autoupdate-service)
 - [openslides-backend](https://github.com/OpenSlides/openslides-backend)
@@ -57,6 +57,7 @@ OpenSlides 4.0 based on a service-oriented architecture which consists of the fo
 - Updated ICC integration
 - Swapped label<->value for choices map for translations support
 - Added a new resource component to get resources with access-token
+- New management and installation tool for production
 
 **Performance:**
 - Optimized autoupdate subscriptions
