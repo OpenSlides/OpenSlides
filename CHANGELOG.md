@@ -3,9 +3,377 @@
 https://openslides.com
 
 
+## Version 4.0 (2022-12-14)
+
+[Milestone](https://github.com/OpenSlides/OpenSlides/milestones/4.0.0)
+
+OpenSlides 4.0 based on a service-oriented architecture which consists of the following 9 services:
+- [openslides-auth-service](https://github.com/OpenSlides/openslides-auth-service)
+- [openslides-autoupdate-service](https://github.com/OpenSlides/openslides-autoupdate-service)
+- [openslides-backend](https://github.com/OpenSlides/openslides-backend)
+- [openslides-client](https://github.com/OpenSlides/openslides-client)
+- [openslides-datastore-service](https://github.com/OpenSlides/openslides-datastore-service)
+- [openslides-icc-service](https://github.com/OpenSlides/openslides-icc-service)
+- [openslides-manage-service](https://github.com/OpenSlides/openslides-manage-service)
+- [openslides-media-service](https://github.com/OpenSlides/openslides-media-service)
+- [openslides-vote-service](https://github.com/OpenSlides/openslides-vote-service)
+
+
+**General:**
+- Introduced Organization level
+- Introduced committees
+- Introduced meeting management in committees
+- Introduced organization wide accounts
+- Introduced Motion forwarding
+- Introduced lifecycle-handling
+- Added Servertime service
+- New syntax for structured fields
+- Show conflicts in final version
+- Added permissions on organization and committee level
+- Integrated conferences and applauses
+- Introduced the service account 'superadmin'
+- Introduced new permission and restriction handling
+- Added scripts to generate settings defaults & permissions from .yml files
+- Mediafiles will be directly requested from the media-service
+- Customizeable themes at runtime
+- Shows a warning dialog when deleting a user that is linked
+- Introduced long running action worker
+- Added 'reset cache', 'check database' and 'Thoroughly check database' buttons
+- Added karma tests
+- Updated translations
+- UI improvements on all devices (Desktop, Android and IOS)
+- Updated Third Party libraries
+- Updated the fira sans font files with charset latin-extended
+- Added clearing option to date pickers
+- Added spinner to login button
+- Save language changes in local storage
+- Enabled the entering of spaces in search selectors
+- Refactored list views
+- Added function to trim white space from username in login dialog
+- Improved the import of csv models
+- Better error handling of incoming data
+- Show warning if the user has no https
+- United the privacy-policy and legal-notice to one page
+- Updated ICC integration
+- Swapped label<->value for choices map for translations support
+- Added a new resource component to get resources with access-token
+
+**Performance:**
+- Optimized autoupdate subscriptions
+- Handle autoupdate via shared worker
+- Implemented a custom injector and handles http errors
+- Update of the service worker
+- Improved performance on the account-list
+- Adjusted notify service for icc
+- Do not subscribe to present state in participant list for delegates
+- Optimized projector list subscription
+
+**Autopilot:**
+- Added function to invite and kick users to a Jitsi call via list of speakers
+- Show nicer list of speakers title in autopilot for normal users
+
+**Agenda:**
+- Introduced topic polls
+- Added multiselect for agenda items to allow tag edit
+- Added motion submitters in the agenda subtitles
+
+**Motions:**
+- Implemented im- and export of motion-workflows
+- Implemented adjusting of start line numbers for motions
+- Added meeting selector to state extension field
+- Allow motion submitter to set the status "withdrawn"
+- Allow motion submitter to edit comments
+- A motion's origin links to the original motion in the original meeting
+- Implemented filter option in motion list for forwarding
+- Added hint for necessary fields in participant csv import
+- Motion poll "add" button moved below status
+- Improved motion detail navigation
+- Allowed only one majority selection for analog votes
+- Bullet points in ammendments can now be created without a corrupt line zero in diff version
+- Displays warning if a motion is already edited by someone else
+- Changed default view of motion list from tiles to list
+- Improved workflow detail view
+
+**PDF Export:**
+- Added flow text option
+- Improved table of content and flow text output
+- Added option to include the motion attachment
+- Added option to hide decision checkbox when the motion is in the last state
+- Export nested lists with multiple layers
+- Option to adjust PDF layout
+
+**Elections:**
+- Added a pie-chart to single-option elections
+
+**Participants:**
+- Added participant form hints
+- Reordered import and export columns
+- Disabling vote weight in settings hides corresponding filter and sort options
+- Improved import
+- Removed unused 'Sort name of participants by' option from participant settings
+
+**Projector:**
+- Made the style of the projector titles customizable
+- Added setting for motion block slide column count
+
+**History:**
+- Updated history to new format
+- Extended history to users and assignments
+
+**Settings:**
+- Created delegation of vote setting 
+- Generated new meeting setting defaults
+
+**eVoting:**
+- Added new voting option for multiple votes on one person
+- Added new vote service
+- Added short and long duration polls
+- Display message if min votes is larger than amount candidates
+
+**Jitsi Conference:**
+- Added "shorter-"name display in jitsi conference
+- Excluded non natural users from call restrictions
+- Updated jitsi iframe api
+
+
+## Version 3.4 (2021-10-07)
+
+[Milestone](https://github.com/OpenSlides/OpenSlides/milestones/3.4)
+
+**General:**
+ - New feature: group chat module [#5876 #5902 #5929 #6072 #6100]
+ - New external autoupdate service for better performance [#5533, #5817]
+ - Improved loading indicator (spinner) [#5847, #5897, #5981, #6129]
+ - Fixed persistent offline bar on successful reconnection [#5828]
+ - Added own session redis [#5850]
+ - Use caddy as new proxy [#5851]
+ - Removed pip support [#5852]
+ - Updated to Angular12 [#6146]
+ - Handled more timeout errors [#5936]
+ - Fixed umlauts using full text search [#6040]
+ - Added point-of-order amount in speaker statistics [#6078]
+ - Refined autopilot interaction [#6084]
+ - Write changes of logo and font definitions to configs [#6118]
+ - Fixes the usage of groups in the settings [#6222]
+ - Added export for OpenSlides4 [#6120]
+
+**eVoting:**
+ - Added history information for start/stop voting [#5857]
+ - Speed up stopping a poll [#6054]
+ - Added prompt dialog for stop voting [#6070]
+ - Allow list of speakers manager to see voting progress [#6037]
+ - Lock poll to prevent race conditions [#6006]
+ - Show "unpublished" for finished polls in autopilot [#6074]
+ - Clear all votes after poll reset [#6113]
+ - New 100% base: All entitled users
+ - Prevent multiple entries in entitled_users_at_stop [#5997]
+ - Removed voted_ids [#5918]
+ - Fixed vote pending state [#6127]
+ - Fixed vote delegation update error [#6024]
+ - Fixed entitled user calculation and display of voting banner in case of vote delegations [#6031]
+
+**Jitsi/Livestream:**
+ - New feature: virtual applause [#5811]
+ - New feature: helpdesk jitsi room [#5832]
+ - Added support for YouTube and Nanocosmos livestream player [#5770, #6228]
+ - Completely restructure Jitsi/livestream components [#5961]
+ - Updated Jitsi iFrame and API [#6103]
+ - Hide chat in Jitsi iFrame [#6177]
+
+**Agenda:**
+ - New feature: Mark speakers for pro/contra. New note for point of order. [#6023]
+ - New config option: List of speakers is initially closed [#5910]
+ - New multiselect action: open/close list of speakers in agenda [#6087]
+ - Added speaker information (pro/contra/point-of-order) also for active/finished speakers [#6073]
+ - Improved point-of-order dialog [#6075]
+ - Fixed point of order sorting/weighting [#5882, #5913]
+ - Fixed showSubtitle config. Reordered agenda config. [#5924]
+ - Fixed point of order creation permission (for agenda.can_be_speaker only) [#5927]
+
+**Motions:**
+ - Added warning when editing motion with existing amendments [#5957]
+ - Added additional special characters for better diff handling [#5987, #6173]
+ - Change recommendation extension can now be set with can_manage_metadata [#6001]
+ - Allow formatting-only-changes without breaking the inline diff [#5992]
+ - Fixed paragraph based amendments in iOS [#5888]
+ - Fixed handling of inconsistent states in amendments [#5920]
+ - Fixed wrong diff view for amendments in list items [#6047]
+ - Fixed top navigation between motions [#6086]
+ - Fixed an error where the workflow would break agenda [#6185]
+ - Clean HTML before pasting in tinymce [#6212]
+ - Added supporters to CSV import [#6186]
+ - Enhance amendments change recommendation list in motion detail view [#6009]
+ - Better hyphenation for motion detail [#6076]
+
+**Elections:**
+ - New feature: minimum amount of votes [#5719]
+ - Fixed user cannot see candidate names [#6049]
+ - Fixed order of assignment options by weight [#5928]
+ - Disabled general approval/rejection depending on poll method [#5979]
+ - Added general approval/rejection/abstain to analog polls [#6050]
+ - Number candidates in voting result table [#6051, #6081]
+ - Remove chart for analog polls with a majority [#6130]
+ - Fixed projection of analog polls & prevent percent base 'entitled' for analog polls [#6134]
+
+**Users:**
+ - Improve client-side password generation [#5791, #5822]
+ - Fix vote_delegated_from_user_ids on user update [#5800]
+ - Fix csv importing users with groups [#5823]
+ - Update users on can_see_extra_data permission change [#5935]
+ - Add login errors for inactive users [#5967]
+ - Adding attribute matchers for group assignments to SAML [#6017]
+ - Validate the from email for invalid characters [#6025]
+ - Hide pw generate button while editing a user [#6171]
+
+**Mediafiles:**
+ - New settings for the mediafile database tablename [#6026]
+ - Fixed updating logo and font configs when deleting a mediafile [#6123]
+ - Fixed missing zip extension when filename has a dot [#6172]
+
+**Projector:**
+ - Don't show diff view on motion slides if no change recommendations exist [#5940]
+ - Hide cursor in full screen projector [#6066]
+
+
+## Version 3.3 (2020-12-18)
+
+[Milestone](https://github.com/OpenSlides/OpenSlides/milestones/3.3)
+
+**General:**
+ - Fixed HTML attribute validation (XSS in all user-editable HTML fields) [#5714]
+ - Improved system libraries (u.g. updated to Angular 10 and TinyMCE editor 5.4)
+ - Improved repository structure (moved server code into subdirectory)
+ - Improved docker setup (config and build scripts)
+ - Improved search-value-selectors (e.g. virtual scrolling, multiselect)
+ - Improved management commands to use cache
+ - Improved reporting of SMTP exception
+ - Replaced travis with github actions
+ - Allowd demo mode in settings.py
+ - Fixed Firefox indexedDB state change issue [#5544]
+ - Fixed saml issues and improved saml config commands
+ - Various cleanups and improvements to usability, performance and translation.
+
+**eVoting:**
+ - New feature for delegation of vote
+ - New election method 'No per candidate'
+ - Show progress bar also in autopilot (for managers only)
+ - Show last voting result always in autopilot (keep current projection and list of speakers)
+ - Show information for candidates and election method for each created ballot
+ - Improved layout of create voting dialog
+ - Improved user export with username and vote weight
+ - Prevent empty ballot paper
+
+**Jitsi/Livestream:**
+ - New config option for livestream poster url (if livestream gets 404 error)
+ - New config option for auto conntecting next x speakers to Jitsi
+ - New config options to open microphone/camera by entering Jitsi
+ - Improved browser permission check for microphone/camera before entering Jitsi
+ - Improved switching between livestream and jitsi
+ - Added Picture-in-Picture (PIP) option to livestream player
+ - Updated jitsi-meet lib
+
+**Agenda:**
+ - New autopilot mode to show always current agenda item/motion/list-of-speakers/voting/projector
+ - New "point of order" button in list of speakers
+
+**Motions:**
+ - New config option for default workflow for amendments
+ - Improved performance for amendments (esp. for diff view in list and main motion view)
+ - Improved motion detail view and PDF to hide motion preamble in final state
+ - Improved motion export dialog to select supporters
+ - Improved navigation between amendments and main motions
+ - Show change recommendations of amendments also in main motion
+ - Fixed PDF issues
+
+**Elections:**
+ - Improved handling for new candidates (quick create of new candidates)
+
+**Users:**
+ - Improved user import preview by virtual srolling
+ - Show vote weight totals in user list
+ - Show vote delegations to users on ownPage
+
+**Mediafiles:**
+ - New possibility to download full directory as zip
+
+**Projector:**
+ - Always include change recommendations in motion slide
+ - Added amendments to projection defaults
+
+
+## Version 3.2 (2020-07-15)
+
+[Milestone](https://github.com/OpenSlides/OpenSlides/milestones/3.2)
+
+**General:**
+ - New electronic voting integrated for motions and elections [#5255].
+ - New WebRTC based voice and video conferences using Jitsi-Meet (requires external Jitsi-Meet Server) [#5309, #5371, #5394, #5430, #5437, #5442, #5452, #5453].
+ - Improved system libraries (upgraded to Angular 9 which uses the Ivy rendering engine) [#5234].
+ - Improved the load of autoupdate system [#5109, #5375].
+ - Improved relations (i.e discovery of Motion - User - Motions). [#5091, #5180, #5389].
+ - Improved server validation of HTML in the OpenSlides config [#5168].
+ - Improved UI, UX, stability and theming [#5228, #5238, #5262, #5270, #5272, #5274, #5278, #5410, #5429].
+ - Improved themes (new: default dark, red light, green dark and solarized) and better support for dark themes [#5416, #5431, #5451].
+ - Improved HTML validation for welcome page and agenda topics to allow more tags (e.g. div, video) and attributes/styles [#5314].
+ - Improved permission checking system in client [#5359].
+ - Improved browser support by catching unsuported browsers on login page [#5403, #5446].
+ - Improved SAML support [#5405, #5418, #5432].
+ - Fixed wrong relative urls in TinyMCE [#5349].
+ - Fixed PDF generation if a left footer image was set [#5443].
+ - Removed the "check update for other clients" button [#5277].
+ - Various cleanups and improvements to usability, performance and translation.
+
+**Agenda:**
+ - New tags for agenda items [#5370].
+ - New possibility to duplicate selected topic items [#5433].
+ - New 'create user' button in list of speakers if user was not found in the search box [#5307].
+ - New list of speakers statistic section on legal notice page [#5347].
+ - New "first contribution" hint for speakers [#5330].
+ - Improved showing comments in agenda list (as separate line) and projector queue [#5293].
+ - Improved line height of agenda slide [#5419].
+ - Fixed agenda PDF where the agenda item number was printed twice [#5417, #5454].
+ - Fixed negative speakers duration [#5447, #5448].
+
+**Motions:**
+ - New electronic voting feature for motions [#5255].
+ - New possibility to create paragraph based amendments of paragraph based amendments [#5173].
+ - New option for page breaks in motion PDF export [#5191].
+ - New option to show all changes of amendments in main motion (clientside) [#5348].
+ - New 'done' indicator for motion block if all motions reached their final state [#5246].
+ - Improved PDF table of content (hide the recommendation if state is final) [#5192].
+ - Improved creating "final print version" (modified final version) also for motions without change recommendations [#5193, #5209].
+ - Improved voting results with nice charts.
+ - Improved navigation between amendments (reflects sorting of amendment list if the option "show amendments together with motions" is disabled) [#5245].
+ - Improved workflow manager for small devices [#5280].
+ - Improved sorting motions by category (sorts the list by category weight instead of the identifier) [#5308, #5310].
+ - Improved preselection and fallback behavior for motions with various change recommendation settings [#5366]
+ - Improved CSV/XLSX export (moved motion id as last column) for easier import via CSV [#5425].
+ - Fixed error by removing recommendation string in workflow manager [#5271].
+ - Fixed bug where TinyMCE changes would not update a motions save button [#5402].
+
+**Elections:**
+ - New electronic voting feature for elections [#5255].
+ - Improved voting results with nice charts.
+ - Fixed some permission errors [#5194].
+
+**Users:**
+ - New option to activate vote weight [#5305].
+ - New option to allow users to set themselves as present [#5283, #5317, #5319].
+ - Improved the permission "can see extra data" (only the fields email, comment, is_active, last_email_send are allowed) [#5423].
+
+**Mediafiles:**
+ - External servers can be used to store media files [#5153, #5230].
+
+**Projector:**
+ - New projector indicator for the currently projected element in all list view tables (visible for users without projector manage permission) [#5321].
+ - Improved "current list of speakers" reference for new projectors [#5273].
+ - Improved motion slide to hide submitter box if empty [#5367].
+ - New (configurable) monospace font for the countdown [#5378, #5408].
+
+
 ## Version 3.1 (2019-12-13)
 
-[Milestone](https://github.com/OpenSlides/OpenSlides/milestones/3.0)
+[Milestone](https://github.com/OpenSlides/OpenSlides/milestones/3.1)
 
 **General:**
 - Improved loading time of OpenSlides [#5061, #5087, #5110, #5146 - Breaks IE11].
