@@ -1,5 +1,4 @@
-![OpenSlides](https://raw.githubusercontent.com/OpenSlides/OpenSlides/main/logo/svg/openslides-logo.svg)
-
+# OpenSlides
 
 ## What is OpenSlides?
 
