@@ -1,26 +1,12 @@
 version: "3"
 services:
-  datastore-reader:
-    image: openslides-datastore-reader-dev
-    env_file: test.datastore.env
-
-  datastore-writer:
-    image: openslides-datastore-writer-dev
-    env_file: test.datastore.env
-
   postgres-test:
     image: postgres:11
     environment:
       - POSTGRES_USER=openslides
       - POSTGRES_PASSWORD=openslides
-      - POSTGRES_DB=openslides-test
-
-  backend:
-    image: openslides-backend-dev
-    env_file: test.datastore.env
-
-  vote:
-    image: openslides-vote-dev
-    environment:
-      - VOTE_DATABASE_HOST=postgres-test
-      - VOTE_DATABASE_NAME=openslides-test
+      - POSTGRES_DB=openslides
+    networks:
+      default:
+        aliases:
+          - postgres

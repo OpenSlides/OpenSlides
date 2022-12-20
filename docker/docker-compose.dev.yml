@@ -18,7 +18,7 @@ services:
     image: openslides-datastore-writer-dev
     depends_on:
       - postgres
-      - message-bus
+      - redis
     env_file: services.env
     volumes:
       - ../openslides-datastore-service/datastore:/app/datastore
@@ -40,9 +40,6 @@ services:
 
   client:
     image: openslides-client-dev
-    depends_on:
-      - backend
-      - autoupdate
     env_file: services.env
     environment:
       - OPENSLIDES_DEVELOPMENT=1
@@ -82,7 +79,7 @@ services:
     image: openslides-autoupdate-dev
     depends_on:
       - datastore-reader
-      - message-bus
+      - redis
     env_file: services.env
     environment:
       - OPENSLIDES_DEVELOPMENT=1
@@ -98,7 +95,7 @@ services:
     image: openslides-icc-dev
     depends_on:
       - datastore-reader
-      - message-bus
+      - redis
       - auth
     env_file: services.env
     environment:
@@ -113,7 +110,7 @@ services:
     image: openslides-auth-dev
     depends_on:
       - datastore-reader
-      - cache
+      - redis
     env_file: services.env
     environment:
       - OPENSLIDES_DEVELOPMENT=1
@@ -121,9 +118,6 @@ services:
       - ../openslides-auth-service/auth/src:/app/src
     ports:
       - "9004:9004"
-
-  cache:
-    image: redis:latest
 
   media:
     image: openslides-media-dev
@@ -147,7 +141,7 @@ services:
     ports:
       - "9008:9008"
 
-  message-bus:
+  redis:
     image: redis:latest
     ports:
       - "6379:6379"
@@ -172,7 +166,7 @@ services:
     image: openslides-vote-dev
     depends_on:
       - auth
-      - message-bus
+      - redis
       - datastore-reader
       - postgres
     env_file: services.env

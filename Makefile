@@ -11,8 +11,17 @@ run-dev: | build-dev
 run-dev-otel: | build-dev
 	docker-compose -f docker/docker-compose.dev.yml -f docker/dc.otel.dev.yml up $(ARGS)
 
-run-backend: | build-dev
-	docker-compose -f docker/docker-compose.dev.yml -f docker/docker-compose.test.yml up -d
+switch-to-test:
+	docker-compose -f docker/docker-compose.dev.yml stop postgres
+	docker-compose -f docker/docker-compose.test.yml up postgres-test -d
+	docker-compose -f docker/docker-compose.dev.yml restart datastore-writer datastore-reader autoupdate vote backend
+
+switch-to-dev:
+	docker-compose -f docker/docker-compose.test.yml stop postgres-test
+	docker-compose -f docker/docker-compose.dev.yml up postgres -d
+	docker-compose -f docker/docker-compose.dev.yml restart datastore-writer datastore-reader autoupdate vote backend
+
+run-backend: | switch-to-test
 	docker-compose -f docker/docker-compose.dev.yml exec backend ./entrypoint.sh bash --rcfile .bashrc
 
 stop-dev:
