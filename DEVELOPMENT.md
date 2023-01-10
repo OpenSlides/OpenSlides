@@ -4,7 +4,7 @@
 
 You need git, bash, docker, docker-compose, make and openssl installed.
 
-Go is needed to install https://github.com/FiloSottile/mkcert (but Go is not a requirement to start the development server). The development setup uses HTTPS per default. OpenSlides does not work with HTTP anymore since features are required (like http2) that only works in a secure environment.
+Go is needed to install https://github.com/FiloSottile/mkcert (but Go is not a requirement to start the development server). The development setup uses HTTPS per default. OpenSlides does not work with HTTP anymore since features are required (like http2) that only work in a secure environment.
 
 ## Before starting the development
 
@@ -82,7 +82,7 @@ These environment variables are available:
 Required services can be `MESSAGE_BUS`, `DATASTORE_WRITER`, `PERMISSION`, `AUTOUPDATE`,
 etc. For private services (e.g. a database dedicated to exactly one service),
 use the following syntax: `<SERVICE>_<PRIV_SERVICE>_<ATTRIBUTE>`, e.g. the
-Postgresql user for the datastore: `DATASTORE_POSTGRESQL_USER`.
+database user for the datastore: `DATASTORE_DATABASE_USER`.
 
 ### Makefile
 
@@ -142,7 +142,7 @@ Or a direct push on main:
 
 After working in many services with different branches, this command checks
 out `main` (or the given branch in the .gitmodules) in all submodules and
-pulls main from upstream (This requres to have `upstream`set up as a remote
+pulls main from upstream (This requres to have `upstream` set up as a remote
 in all submodules):
 
     $ git submodule foreach -q --recursive 'git checkout $(git config -f $toplevel/.gitmodules submodule.$name.branch || echo main); git pull upstream $(git config -f $toplevel/.gitmodules submodule.$name.branch || echo main)'
@@ -152,8 +152,22 @@ This command has can also be called from the makefile using:
     $ make services-to-main
 
 When changing the branch in the main repo (this one), the submodules do not
-automatically gets changed. THis ocmmand checks out all submodules to the given
+automatically get changed. This command checks out all submodules to the given
 commits in the main repo:
 
     $ git submodule update
+
+## Working with the backend
+
+Sometimes it might be helpful to be able to run tests in the backend console and the frontend in
+parallel. To circumvent the need to restart the full stack everytime you switch contexts, there
+exist the `docker/docker-compose.test.yml` which introduces another database container to the stack.
+
+By default (meaning by running `make run-dev`), the setup uses the normal `postgres` container. We
+call this the `dev` context. By executing `make switch-to-test`, you can replace the database
+container and automatically restarting all dependent services, thus changing into the so-called
+`test` context. With `make switch-to-dev`, you can switch back. Finally, `make run-backend` provides
+a shortcut to switch to the `test` context and enter the backend shell to e.g. execute tests there.
+Be aware that all these commands need an OpenSlides instance to be already running, meaning you have
+to execute `make run-dev` first.
 
