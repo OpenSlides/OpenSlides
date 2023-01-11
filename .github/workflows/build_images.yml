@@ -3,7 +3,7 @@ name: Build Docker images for all OpenSlides services
 on: [push, workflow_dispatch]
 
 env:
-  IMAGE_VERSION: 4.1.0-main
+  IMAGE_VERSION: 4.0.1-main
   TAG_SUFFIX: -$(date +%Y%m%d)-${GITHUB_SHA::7}
 
 jobs:
