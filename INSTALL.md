@@ -59,13 +59,17 @@ but for most cases this is not recommended.
 Then run:
 
     $ docker-compose pull
-    $ docker-compose up
+    $ docker-compose up --detach
 
 
 ### Initialize database
 
-Wait until all services are available. Then run in a second terminal in the same
-directory:
+Now all services are starting. Wait until they are ready. Maybe you have to
+increase the `--timeout` flag.
+
+    $ ./openslides check-server
+
+Then initialize database.
 
     $ ./openslides initial-data
 
