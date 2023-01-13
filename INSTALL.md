@@ -94,9 +94,9 @@ have several options to achieve this:
 
 
 
-## Stop the server and remove the containers
+## Stop the instance and remove the containers
 
-To stop the server run:
+To stop the instance run:
 
     $ docker-compose stop
 
@@ -104,8 +104,9 @@ To remove all containers and networks run:
 
     $ docker-compose down
 
-To remove the database you have to remove the content of the `db-data`
-directory.
+To remove also the database run:
+
+    $ docker-compose down --volumes
 
 
 
@@ -218,7 +219,7 @@ To get a dump of your (PostgreSQL) database run:
 
     $ docker-compose exec --user postgres postgres pg_dump -U openslides --clean > dump.sql
 
-To restore your dump, first shut down your instance if it is running:
+To restore your dump first shut down your instance if it is running:
 
     $ docker-compose down
 
