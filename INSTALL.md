@@ -209,3 +209,24 @@ You have to customize all of these environment variables according to your mail
 server settings. You may omit some of them if the
 [defaults](https://github.com/OpenSlides/openslides-backend/blob/main/openslides_backend/action/mixins/send_email_mixin.py)
 are sufficient for you.
+
+
+
+## Database backup
+
+To get a dump of your (PostgreSQL) database run:
+
+    $ docker-compose exec --user postgres postgres pg_dump -U openslides --clean > dump.sql
+
+To restore your dump, first shut down your instance if it is running:
+
+    $ docker-compose down
+
+Then start only the postgres container and restore your dump:
+
+    $ docker-compose up --detach postgres
+    $ docker-compose exec --no-tty --user postgres postgres psql -U openslides < dump.sql
+
+Then restart your instance:
+
+    $ docker-compose up --detach
