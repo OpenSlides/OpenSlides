@@ -104,7 +104,7 @@ To remove all containers and networks run:
 
     $ docker-compose down
 
-To remove also the database run:
+To remove also the database (and loose all your data) run:
 
     $ docker-compose down --volumes
 
