@@ -227,7 +227,7 @@ postgres container and upload your dump:
 
     $ docker-compose down
     $ docker-compose up --detach postgres
-    $ docker-compose exec --no-tty --user postgres postgres psql -U openslides < dump.sql
+    $ docker-compose exec --no-TTY --user postgres postgres psql -U openslides < dump.sql
 
 Then restart your instance:
 
