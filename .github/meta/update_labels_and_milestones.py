@@ -80,6 +80,10 @@ labels = {
             "color": "006b75",
         },
         {
+            "name": "tests",
+            "color": "1d76db",
+        },
+        {
             "name": "waiting",
             "color": "cccccc",
             "description": "Waiting for some other PR/feature; more details in comments"
@@ -112,14 +116,6 @@ labels = {
             "name": "migration",
             "color": "a046d0",
         },
-        {
-            "name": "performance",
-            "color": "006b75",
-        },
-        {
-            "name": "tests",
-            "color": "1d76db",
-        },
     ],
     "openslides-client": [
         {
@@ -151,10 +147,6 @@ labels = {
             "color": "56ee0a",
         },
         {
-            "name": "tests",
-            "color": "56ee0a",
-        },
-        {
             "name": "translation",
             "color": "c5def5",
         },
@@ -167,6 +159,7 @@ g = Github(token)
 
 
 for repo_name in repos:
+    print(repo_name)
     repo = g.get_repo(f"OpenSlides/{repo_name}")
     existing_labels = repo.get_labels()
     target_labels = labels["general"] + labels.get(repo_name, [])
@@ -179,10 +172,15 @@ for repo_name in repos:
             else:
                 print(f"Label {label.name} in repo {repo_name} is in use!")
         else:
-            if "description" in duplicates[0]:
-                label.edit(duplicates[0]["name"], duplicates[0]["color"], duplicates[0]["description"])
-            else:
-                label.edit(duplicates[0]["name"], duplicates[0]["color"])
+            if (
+                duplicates[0]["color"] != label.color or
+                (isinstance(label.description, str) and duplicates[0].get("description") != label.description) or
+                (not isinstance(label.description, str) and duplicates[0].get("description"))
+            ):
+                if "description" in duplicates[0]:
+                    label.edit(duplicates[0]["name"], duplicates[0]["color"], duplicates[0]["description"])
+                else:
+                    label.edit(duplicates[0]["name"], duplicates[0]["color"])
     for label in target_labels:
         if label["name"] not in [l.name for l in existing_labels]:
             if "description" in label:
