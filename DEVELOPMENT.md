@@ -29,7 +29,7 @@ or access the full stack on
 
 ## Running tests
 
-To run all tests of all services, execute `run-service-tests`. TODO: Systemtests in this repo.
+To run all tests of all services, execute `run-service-tests`.
 
 ## Adding a new Service
 
@@ -171,3 +171,6 @@ a shortcut to switch to the `test` context and enter the backend shell to e.g. e
 Be aware that all these commands need an OpenSlides instance to be already running, meaning you have
 to execute `make run-dev` first.
 
+## Helper scripts
+
+See [README](dev/scripts/README.md) in the scripts folder.

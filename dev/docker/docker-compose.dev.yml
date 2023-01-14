@@ -9,7 +9,7 @@ services:
       - NUM_WORKERS=8
       - OPENSLIDES_DEVELOPMENT=1
     volumes:
-      - ../openslides-datastore-service/datastore:/app/datastore
+      - ../../openslides-datastore-service/datastore:/app/datastore
     ports:
       - 9010:9010
       - 5680:5678
@@ -21,8 +21,8 @@ services:
       - redis
     env_file: services.env
     volumes:
-      - ../openslides-datastore-service/datastore:/app/datastore
-      - ../openslides-datastore-service/cli:/app/cli
+      - ../../openslides-datastore-service/datastore:/app/datastore
+      - ../../openslides-datastore-service/cli:/app/cli
     environment:
       - COMMAND=create_initial_data
       - DATASTORE_INITIAL_DATA_FILE=https://raw.githubusercontent.com/OpenSlides/openslides-backend/main/global/data/example-data.json
@@ -44,7 +44,7 @@ services:
     environment:
       - OPENSLIDES_DEVELOPMENT=1
     volumes:
-      - ../openslides-client/client/src:/app/src
+      - ../../openslides-client/client/src:/app/src
 
   backend:
     image: openslides-backend-dev
@@ -69,11 +69,11 @@ services:
       - EMAIL_ACCEPT_SELF_SIGNED_CERTIFICATE=false
       - DEFAULT_FROM_EMAIL=noreply@example.com
     volumes:
-      - ../openslides-backend/openslides_backend:/app/openslides_backend
-      - ../openslides-backend/tests:/app/tests
-      - ../openslides-backend/cli:/app/cli
-      - ../openslides-backend/global:/app/global
-      - ../openslides-backend/scripts:/app/scripts
+      - ../../openslides-backend/openslides_backend:/app/openslides_backend
+      - ../../openslides-backend/tests:/app/tests
+      - ../../openslides-backend/cli:/app/cli
+      - ../../openslides-backend/global:/app/global
+      - ../../openslides-backend/scripts:/app/scripts
 
   autoupdate:
     image: openslides-autoupdate-dev
@@ -85,9 +85,9 @@ services:
       - OPENSLIDES_DEVELOPMENT=1
       - DATASTORE_TIMEOUT=30
     volumes:
-      - ../openslides-autoupdate-service/cmd:/root/cmd
-      - ../openslides-autoupdate-service/internal:/root/internal
-      - ../openslides-autoupdate-service/pkg:/root/pkg
+      - ../../openslides-autoupdate-service/cmd:/root/cmd
+      - ../../openslides-autoupdate-service/internal:/root/internal
+      - ../../openslides-autoupdate-service/pkg:/root/pkg
     ports:
       - "9012:9012"
 
@@ -101,8 +101,8 @@ services:
     environment:
       - OPENSLIDES_DEVELOPMENT=1
     volumes:
-      - ../openslides-icc-service/cmd:/root/cmd
-      - ../openslides-icc-service/internal:/root/internal
+      - ../../openslides-icc-service/cmd:/root/cmd
+      - ../../openslides-icc-service/internal:/root/internal
     ports:
       - "9007:9007"
 
@@ -115,7 +115,7 @@ services:
     environment:
       - OPENSLIDES_DEVELOPMENT=1
     volumes:
-      - ../openslides-auth-service/auth/src:/app/src
+      - ../../openslides-auth-service/auth/src:/app/src
     ports:
       - "9004:9004"
 
@@ -128,7 +128,7 @@ services:
     environment:
       - OPENSLIDES_DEVELOPMENT=1
     volumes:
-      - ../openslides-media-service/src:/app/src
+      - ../../openslides-media-service/src:/app/src
 
   manage:
     image: openslides-manage-dev
@@ -174,7 +174,7 @@ services:
       - OPENSLIDES_DEVELOPMENT=1
       - VOTE_DISABLE_LOG=true
     volumes:
-      - ../openslides-vote-service/cmd:/root/cmd
-      - ../openslides-vote-service/internal:/root/internal
+      - ../../openslides-vote-service/cmd:/root/cmd
+      - ../../openslides-vote-service/internal:/root/internal
     ports:
       - "9013:9013"
