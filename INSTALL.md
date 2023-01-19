@@ -12,10 +12,11 @@ bigger setups, but this is not described here.
 So for now let's use Docker Compose. Be sure you have
 [Docker](https://docs.docker.com/engine/) and [Docker
 Compose](https://docs.docker.com/compose/) installed and the Docker daemon is
-running. If works at least with Docker version 20.10.x and Docker Compose
+running. It works at least with Docker version 20.10.x and Docker Compose
 version 2.13.x.
 
-Check if you have to run docker as local user or as root.
+Check if you have to run docker as local user or as root. The info command
+should run without errors:
 
     $ docker info
 
@@ -34,7 +35,7 @@ You can also fetch it using `wget`. Don't forget to make the binary executable.
 
 ### Setup instance
 
-To setup the instance in this directory run:
+Setup the instance in this directory:
 
     $ ./openslides setup .
 
@@ -59,13 +60,17 @@ but for most cases this is not recommended.
 Then run:
 
     $ docker-compose pull
-    $ docker-compose up
+    $ docker-compose up --detach
 
 
 ### Initialize database
 
-Wait until all services are available. Then run in a second terminal in the same
-directory:
+Now all services are starting. Wait until they are ready. Maybe you have to
+increase the `--timeout` flag:
+
+    $ ./openslides check-server
+
+Then initialize database:
 
     $ ./openslides initial-data
 
@@ -78,7 +83,7 @@ username and password: `superadmin`) and have fun.
 Normally you want OpenSlides be reachable from outside your local machine. You
 have several options to achieve this:
 
-1. Use a [custom YAML configuration
+1. Use a [custom setup configuration YAML
    file](#Configuration-of-the-generated-Docker-Compose-YAML-file) to change
    `host` to a public device (e. g. `0.0.0.0`). If you also want to change the
    `port`, keep in mind that port numbers less than 1024 normally need root
@@ -90,18 +95,19 @@ have several options to achieve this:
 
 
 
-## Stop the server and remove the containers
+## Stop the instance and remove the containers
 
-To stop the server run:
+To stop the instance, run:
 
     $ docker-compose stop
 
-To remove all containers and networks run:
+To remove all containers and networks, run:
 
     $ docker-compose down
 
-To remove the database you have to remove the content of the `db-data`
-directory.
+To remove also the database (and lose all your data), run:
+
+    $ docker-compose down --volumes
 
 
 
@@ -133,7 +139,7 @@ instead of the `setup` command. E. g. run:
 
 This command will just rebuild your Docker Compose YAML file.
 
-To get the [default config](pkg/config/default-config.yml) run:
+To get the [defaults](pkg/config/default-config.yml) run:
 
     $ ./openslides config-create-default .
 
@@ -148,7 +154,7 @@ the correct URL in PDF or email templates.
 ## SSL encryption
 
 The manage tool provides settable options for using SSL encryption, which can be
-set in the [custom YAML configuration
+set in the [custom setup configuration YAML
 file](#Configuration-of-the-generated-Docker-Compose-YAML-file).
 
 If you do not use any customization, the `setup` command generates a self-signed
@@ -159,13 +165,14 @@ If you want to use any other certificate you posses, just replace `cert_crt` and
 
 If you want to disable SSL encryption, because you use OpenSlides behind your
 own proxy that provides SSL encryption, just add the following line to your
-YAML configuration file.
+setup configuration YAML file.
 
     enableLocalHTTPS: false
 
 If you run OpenSlides behind a publicly accessible domain, you can use caddys
-integrated certificate retrieval. Add the following lines to your YAML
-configuration file and of course use your own domain instead of the example:
+integrated certificate retrieval. Add the following lines to your setup
+configuration YAML file and of course use your own domain instead of the
+example:
 
     enableAutoHTTPS: true
     services:
@@ -185,9 +192,10 @@ details on provided methods for HTTPS activation.
 
 ## Email
 
-To enable email support add the respective settings to your [custom YAML
-configuration file](#Configuration-of-the-generated-Docker-Compose-YAML-file)
-and do not forget to regenerate yor Docker Compose YAML file.
+To enable email support, add the respective settings to your [custom setup
+configuration YAML
+file](#Configuration-of-the-generated-Docker-Compose-YAML-file) and do not
+forget to regenerate yor Docker Compose YAML file.
 
     services:
       backendAction:
@@ -205,3 +213,22 @@ You have to customize all of these environment variables according to your mail
 server settings. You may omit some of them if the
 [defaults](https://github.com/OpenSlides/openslides-backend/blob/main/openslides_backend/action/mixins/send_email_mixin.py)
 are sufficient for you.
+
+
+
+## Database backup
+
+To get a dump of your (PostgreSQL) database, run:
+
+    $ docker-compose exec --user postgres postgres pg_dump -U openslides --clean > dump.sql
+
+To restore your dump, shut down your instance if it is running, start only the
+postgres container and upload your dump:
+
+    $ docker-compose down
+    $ docker-compose up --detach postgres
+    $ docker-compose exec --no-TTY --user postgres postgres psql -U openslides < dump.sql
+
+Then restart your instance:
+
+    $ docker-compose up --detach
