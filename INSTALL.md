@@ -1,4 +1,4 @@
-# Installaion of OpenSlides
+# Installation of OpenSlides
 
 ## How to install and start the full system
 
