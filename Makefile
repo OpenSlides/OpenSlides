@@ -13,13 +13,14 @@ run-dev-otel: | build-dev
 
 switch-to-test:
 	docker-compose -f docker/docker-compose.dev.yml stop postgres
-	docker-compose -f docker/docker-compose.test.yml up postgres-test -d
-	docker-compose -f docker/docker-compose.dev.yml restart datastore-writer datastore-reader autoupdate vote backend
+	docker-compose -f docker/docker-compose.test.yml up -d postgres-test
+	docker-compose -f docker/docker-compose.dev.yml -f docker/docker-compose.backend.yml up -d backend
+	docker-compose -f docker/docker-compose.dev.yml restart datastore-writer datastore-reader autoupdate vote
 
 switch-to-dev:
 	docker-compose -f docker/docker-compose.test.yml stop postgres-test
-	docker-compose -f docker/docker-compose.dev.yml up postgres -d
-	docker-compose -f docker/docker-compose.dev.yml restart datastore-writer datastore-reader autoupdate vote backend
+	docker-compose -f docker/docker-compose.dev.yml up -d postgres backend
+	docker-compose -f docker/docker-compose.dev.yml restart datastore-writer datastore-reader autoupdate vote 
 
 run-backend: | switch-to-test
 	docker-compose -f docker/docker-compose.dev.yml exec backend ./entrypoint.sh bash --rcfile .bashrc
