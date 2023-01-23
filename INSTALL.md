@@ -169,6 +169,15 @@ setup configuration YAML file.
 
     enableLocalHTTPS: false
 
+Note, that some commands of the manage tool require the `--no-ssl` flag when SSL encryption is disbaled, e.g:
+
+    $ ./openslides initial-data --no-ssl
+    $ ./openslides create-user --no-ssl
+    
+To find out, which commands require the `--no-ssl` flag use the commands help:
+
+    $ ./openslides <COMMAND> -h
+
 If you run OpenSlides behind a publicly accessible domain, you can use caddys
 integrated certificate retrieval. Add the following lines to your setup
 configuration YAML file and of course use your own domain instead of the
