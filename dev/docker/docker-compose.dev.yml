@@ -45,6 +45,7 @@ services:
       - OPENSLIDES_DEVELOPMENT=1
     volumes:
       - ../../openslides-client/client/src:/app/src
+      - ../../openslides-client/client/cli:/app/cli
 
   backend:
     image: openslides-backend-dev
