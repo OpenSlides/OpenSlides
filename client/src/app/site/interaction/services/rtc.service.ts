@@ -58,18 +58,33 @@ declare var JitsiMeetExternalAPI: any;
 const configOverwrite = {
     startAudioOnly: false,
     // allows jitsi on mobile devices
-    disableDeepLinking: true,
+    deeplinking: { disabled: true },
     startWithAudioMuted: true,
     startWithVideoMuted: true,
-    useNicks: true,
-    enableWelcomePage: false,
-    enableUserRolesBasedOnToken: false,
-    enableFeaturesBasedOnToken: false,
+    welcomePage: { disabled: true },
     disableThirdPartyRequests: true,
     enableNoAudioDetection: false,
     enableNoisyMicDetection: false,
     hideLobbyButton: true,
-    prejoinPageEnabled: false
+    prejoinConfig: { enabled: false },
+    toolbarButtons: [
+        `microphone`,
+        `camera`,
+        `desktop`,
+        `livestreaming`,
+        `settings`,
+        `videoquality`,
+        `filmstrip`,
+        `stats`,
+        `shortcuts`,
+        `tileview`,
+        `help`,
+        `mute-everyone`,
+        `hangup`
+    ],
+    toolbarConfig: {
+        alwaysVisible: true
+    }
 };
 
 const interfaceConfigOverwrite = {
@@ -77,30 +92,7 @@ const interfaceConfigOverwrite = {
     DISABLE_FOCUS_INDICATOR: true,
     INVITATION_POWERED_BY: false,
     DISABLE_JOIN_LEAVE_NOTIFICATIONS: true,
-    DISABLE_PRESENCE_STATUS: true,
-    TOOLBAR_ALWAYS_VISIBLE: true,
-    TOOLBAR_TIMEOUT: 10000000,
-    TOOLBAR_BUTTONS: [
-        'microphone',
-        'camera',
-        'desktop',
-        'fullscreen',
-        'fodeviceselection',
-        'profile',
-        'recording',
-        'livestreaming',
-        'sharedvideo',
-        'settings',
-        'videoquality',
-        'filmstrip',
-        'feedback',
-        'stats',
-        'shortcuts',
-        'tileview',
-        'help',
-        'mute-everyone',
-        'hangup'
-    ]
+    DISABLE_PRESENCE_STATUS: true
 };
 
 export interface JitsiConfig {
