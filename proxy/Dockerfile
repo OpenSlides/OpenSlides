@@ -1,4 +1,4 @@
-FROM caddy:2.3.0-alpine
+FROM caddy:2.6.4-alpine
 
 LABEL org.opencontainers.image.title="OpenSlides Proxy"
 LABEL org.opencontainers.image.description="The proxy is the entrypoint for traffic going into an OpenSlides instance."
