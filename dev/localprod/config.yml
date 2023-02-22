@@ -6,23 +6,23 @@ defaults:
 services:
   proxy:
     additionalContent:
-      build: ../proxy/
+      build: ../../proxy/
   client:
     additionalContent:
-      build: ../openslides-client/
+      build: ../../openslides-client/
   backendAction:
     additionalContent:
-      build: ../openslides-backend/
+      build: ../../openslides-backend/
   backendPresenter:
     additionalContent:
-      build: ../openslides-backend/
+      build: ../../openslides-backend/
   backendManage:
     additionalContent:
-      build: ../openslides-backend/
+      build: ../../openslides-backend/
   datastoreReader:
     additionalContent: {
       build: {
-        context: ../openslides-datastore-service/,
+        context: ../../openslides-datastore-service/,
         args: {
           MODULE: reader,
           PORT: 9010
@@ -32,7 +32,7 @@ services:
   datastoreWriter:
     additionalContent: {
       build: {
-        context: ../openslides-datastore-service/,
+        context: ../../openslides-datastore-service/,
         args: {
           MODULE: writer,
           PORT: 9011
@@ -41,19 +41,19 @@ services:
     }
   autoupdate:
     additionalContent:
-      build: ../openslides-autoupdate-service/
+      build: ../../openslides-autoupdate-service/
   auth:
     additionalContent:
-      build: ../openslides-auth-service/
+      build: ../../openslides-auth-service/
   vote:
     additionalContent:
-      build: ../openslides-vote-service/
+      build: ../../openslides-vote-service/
   media:
     additionalContent:
-      build: ../openslides-media-service/
+      build: ../../openslides-media-service/
   icc:
     additionalContent:
-      build: ../openslides-icc-service/
+      build: ../../openslides-icc-service/
   manage:
     additionalContent:
-      build: ../openslides-manage-service/
+      build: ../../openslides-manage-service/
