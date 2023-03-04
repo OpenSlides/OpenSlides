@@ -21,7 +21,7 @@
     "http": {
       "servers": {
         "srv0": {
-          "listen": [":8000"],
+          "listen": [":443"],
           "routes": [
             {
               "handle": [

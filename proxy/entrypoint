@@ -38,10 +38,10 @@ else
   if [ -n "$ENABLE_AUTO_HTTPS" ]; then
     if [ -n "$EXTERNAL_ADDRESS" ]; then
       echo "INFO: For the automatic https to work ports 443 and 80 of the host must be
-  directed to 8000 and 8001 of this container"
+  directed to 80 and 443 of this container"
       jq_write "del(.apps.http.servers.srv0.automatic_https)" # disabled in base
-      jq_write ".apps.http.https_port = 8000"
-      jq_write ".apps.http.http_port = 8001"
+      jq_write ".apps.http.https_port = 443"
+      jq_write ".apps.http.http_port = 80"
       jq_write ".apps.http.servers.srv0.routes[-1].match = [{ host: [\"$EXTERNAL_ADDRESS\"]}]"
 
       if [ -n "$ACME_ENDPOINT" ]; then
