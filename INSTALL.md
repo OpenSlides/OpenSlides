@@ -183,6 +183,7 @@ integrated certificate retrieval. Add the following lines to your setup
 configuration YAML file and of course use your own domain instead of the
 example:
 
+    enableLocalHTTPS: false
     enableAutoHTTPS: true
     services:
       proxy:
