@@ -9,19 +9,20 @@ services:
       - NUM_WORKERS=8
       - OPENSLIDES_DEVELOPMENT=1
     volumes:
-      - ../openslides-datastore-service/datastore:/app/datastore
+      - ../../openslides-datastore-service/datastore:/app/datastore
     ports:
       - 9010:9010
+      - 5680:5678
 
   datastore-writer:
     image: openslides-datastore-writer-dev
     depends_on:
       - postgres
-      - message-bus
+      - redis
     env_file: services.env
     volumes:
-      - ../openslides-datastore-service/datastore:/app/datastore
-      - ../openslides-datastore-service/cli:/app/cli
+      - ../../openslides-datastore-service/datastore:/app/datastore
+      - ../../openslides-datastore-service/cli:/app/cli
     environment:
       - COMMAND=create_initial_data
       - DATASTORE_INITIAL_DATA_FILE=https://raw.githubusercontent.com/OpenSlides/openslides-backend/main/global/data/example-data.json
@@ -39,14 +40,12 @@ services:
 
   client:
     image: openslides-client-dev
-    depends_on:
-      - backend
-      - autoupdate
     env_file: services.env
     environment:
       - OPENSLIDES_DEVELOPMENT=1
     volumes:
-      - ../openslides-client/client/src:/app/src
+      - ../../openslides-client/client/src:/app/src
+      - ../../openslides-client/client/cli:/app/cli
 
   backend:
     image: openslides-backend-dev
@@ -71,34 +70,40 @@ services:
       - EMAIL_ACCEPT_SELF_SIGNED_CERTIFICATE=false
       - DEFAULT_FROM_EMAIL=noreply@example.com
     volumes:
-      - ../openslides-backend/openslides_backend:/app/openslides_backend
-      - ../openslides-backend/migrations:/app/migrations
+      - ../../openslides-backend/openslides_backend:/app/openslides_backend
+      - ../../openslides-backend/tests:/app/tests
+      - ../../openslides-backend/cli:/app/cli
+      - ../../openslides-backend/global:/app/global
+      - ../../openslides-backend/scripts:/app/scripts
 
   autoupdate:
     image: openslides-autoupdate-dev
     depends_on:
       - datastore-reader
-      - message-bus
+      - redis
     env_file: services.env
     environment:
       - OPENSLIDES_DEVELOPMENT=1
+      - DATASTORE_TIMEOUT=30
     volumes:
-      - ../openslides-autoupdate-service/cmd:/root/cmd
-      - ../openslides-autoupdate-service/internal:/root/internal
-      - ../openslides-autoupdate-service/pkg:/root/pkg
+      - ../../openslides-autoupdate-service/cmd:/root/cmd
+      - ../../openslides-autoupdate-service/internal:/root/internal
+      - ../../openslides-autoupdate-service/pkg:/root/pkg
+    ports:
+      - "9012:9012"
 
   icc:
     image: openslides-icc-dev
     depends_on:
       - datastore-reader
-      - message-bus
+      - redis
       - auth
     env_file: services.env
     environment:
       - OPENSLIDES_DEVELOPMENT=1
     volumes:
-      - ../openslides-icc-service/cmd:/root/cmd
-      - ../openslides-icc-service/internal:/root/internal
+      - ../../openslides-icc-service/cmd:/root/cmd
+      - ../../openslides-icc-service/internal:/root/internal
     ports:
       - "9007:9007"
 
@@ -106,15 +111,14 @@ services:
     image: openslides-auth-dev
     depends_on:
       - datastore-reader
-      - cache
+      - redis
     env_file: services.env
     environment:
       - OPENSLIDES_DEVELOPMENT=1
     volumes:
-      - ../openslides-auth-service/auth/src:/app/src
-
-  cache:
-    image: redis:latest
+      - ../../openslides-auth-service/auth/src:/app/src
+    ports:
+      - "9004:9004"
 
   media:
     image: openslides-media-dev
@@ -125,7 +129,7 @@ services:
     environment:
       - OPENSLIDES_DEVELOPMENT=1
     volumes:
-      - ../openslides-media-service/src:/app/src
+      - ../../openslides-media-service/src:/app/src
 
   manage:
     image: openslides-manage-dev
@@ -138,7 +142,7 @@ services:
     ports:
       - "9008:9008"
 
-  message-bus:
+  redis:
     image: redis:latest
     ports:
       - "6379:6379"
@@ -163,29 +167,20 @@ services:
     image: openslides-vote-dev
     depends_on:
       - auth
-      - message-bus
+      - redis
       - datastore-reader
       - postgres
       - vote-decrypt
+    env_file: services.env
     environment:
-      - OPENSLIDES_DEVELOPMENT=true
-      - VOTE_HOST=vote
-      - VOTE_PORT=9013
-      - DATASTORE_READER_HOST=datastore-reader
-      - MESSAGING=redis
-      - MESSAGE_BUS_HOST=message-bus
-      - VOTE_REDIS_HOST=cache
-      - VOTE_DATABASE_HOST=postgres
-      - VOTE_DATABASE_USER=openslides
-      - VOTE_DATABASE_PASSWORD=openslides
-      - VOTE_DATABASE_NAME=openslides
+      - OPENSLIDES_DEVELOPMENT=1
       - VOTE_DECRYPT_SERVICE=vote-decrypt:9014
       - AUTH=ticket
-      - AUTH_HOST=auth
+
       - VOTE_DISABLE_LOG=true
     volumes:
-      - ../openslides-vote-service/cmd:/root/cmd
-      - ../openslides-vote-service/internal:/root/internal
+      - ../../openslides-vote-service/cmd:/root/cmd
+      - ../../openslides-vote-service/internal:/root/internal
     ports:
       - "9013:9013"
 

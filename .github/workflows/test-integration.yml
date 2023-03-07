@@ -1,10 +1,10 @@
 ---
-name: Run integration tests (cypress)
+name: Run integration tests
 on: [push, pull_request]
 
 jobs:
-  run-cypress:
-    name: 'Runs integration tests in cypress'
+  run-tests:
+    name: 'Runs integration tests'
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
@@ -15,11 +15,23 @@ jobs:
       - name: Build and run OS4 Dev
         run: make run-dev ARGS="-d"
 
-      - name: Run integration tests (cypress)
-        uses: cypress-io/github-action@v2
+      - name: Wait for dev setup
+        uses: iFaxity/wait-on-action@v1
         with:
-          working-directory: openslides-client/client/tests/integration
-          wait-on: 'https://localhost:8000'
-          wait-on-timeout: 300
-        env:
-          NODE_TLS_REJECT_UNAUTHORIZED: 0
+          resource: https://localhost:8000
+          timeout: 300000
+
+      - name: Start tests
+        working-directory: "./openslides-client"
+        run: make run-playwright
+
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: playwright-report
+          path: "./openslides-client/client/tests/playwright-report/"
+          retention-days: 7
+
+      - name: Shut down dev setup
+        if: always()
+        run: make stop-dev

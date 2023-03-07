@@ -1,0 +1,12 @@
+version: "3"
+services:
+  postgres-test:
+    image: postgres:11
+    environment:
+      - POSTGRES_USER=openslides
+      - POSTGRES_PASSWORD=openslides
+      - POSTGRES_DB=openslides
+    networks:
+      default:
+        aliases:
+          - postgres

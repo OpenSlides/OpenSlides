@@ -2,20 +2,20 @@
 
 set -e
 
-HOME=$(dirname "$(realpath "${BASH_SOURCE[0]}")")
+HOME="$(dirname "$(realpath "${BASH_SOURCE[0]}")")/../../"
 declare -A TARGETS
 TARGETS=(
-  [proxy]="$HOME/../proxy/"
-  [client]="$HOME/../openslides-client/"
-  [backend]="$HOME/../openslides-backend/"
-  [auth]="$HOME/../openslides-auth-service/"
-  [autoupdate]="$HOME/../openslides-autoupdate-service/"
-  [manage]="$HOME/../openslides-manage-service/"
-  [datastore-reader]="$HOME/../openslides-datastore-service/reader"
-  [datastore-writer]="$HOME/../openslides-datastore-service/writer"
-  [media]="$HOME/../openslides-media-service/"
-  [vote]="$HOME/../openslides-vote-service/"
-  [icc]="$HOME/../openslides-icc-service/"
+  [proxy]="$HOME/proxy/"
+  [client]="$HOME/openslides-client/"
+  [backend]="$HOME/openslides-backend/"
+  [auth]="$HOME/openslides-auth-service/"
+  [autoupdate]="$HOME/openslides-autoupdate-service/"
+  [manage]="$HOME/openslides-manage-service/"
+  [datastore-reader]="$HOME/openslides-datastore-service/reader"
+  [datastore-writer]="$HOME/openslides-datastore-service/writer"
+  [media]="$HOME/openslides-media-service/"
+  [vote]="$HOME/openslides-vote-service/"
+  [icc]="$HOME/openslides-icc-service/"
 )
 
 DOCKER_REPOSITORY="openslides"
