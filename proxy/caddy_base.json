@@ -62,6 +62,24 @@
             {
               "handle": [
                 {
+                  "flush_interval": -1,
+                  "handler": "reverse_proxy",
+                  "upstreams": [
+                    {
+                      "dial": "$OPENSLIDES_SEARCH_HOST:$OPENSLIDES_SEARCH_PORT"
+                    }
+                  ]
+                }
+              ],
+              "match": [
+                {
+                  "path": ["/system/search*"]
+                }
+              ]
+            },
+            {
+              "handle": [
+                {
                   "handler": "reverse_proxy",
                   "upstreams": [
                     {
