@@ -205,7 +205,7 @@ details on provided methods for HTTPS activation.
 To enable email support, add the respective settings to your [custom setup
 configuration YAML
 file](#Configuration-of-the-generated-Docker-Compose-YAML-file) and do not
-forget to regenerate yor Docker Compose YAML file.
+forget to regenerate your Docker Compose YAML file.
 
     services:
       backendAction:
