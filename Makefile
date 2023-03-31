@@ -53,3 +53,17 @@ services-to-main:
 # Will set the upstream remote to "origin"
 submodules-origin-to-upstream:
 	git submodule foreach -q --recursive 'git remote rename origin upstream'
+
+
+# Translation helper targets
+
+extract-translations:
+	dev/scripts/extract-translations.sh
+
+push-translations:
+	tx push --source
+
+pull-translations:
+	tx pull --translations --languages $$(dev/scripts/dc-dev.sh exec client npm run get-available-languages | tail -n 1)
+	cp i18n/*.po openslides-client/client/src/assets/i18n/
+	cp i18n/*.po openslides-backend/openslides_backend/i18n/messages/
