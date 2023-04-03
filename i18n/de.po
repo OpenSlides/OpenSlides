@@ -1,12 +1,12 @@
 # 
 # Translators:
-# jsangmeister <joshua.sangmeister@gmail.com>, 2022
 # Emanuel Schütze <emanuel.schuetze@intevation.de>, 2023
+# jsangmeister <joshua.sangmeister@gmail.com>, 2023
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Emanuel Schütze <emanuel.schuetze@intevation.de>, 2023\n"
-"Language-Team: German (https://www.transifex.com/openslides/teams/14270/de/)\n"
+"Last-Translator: jsangmeister <joshua.sangmeister@gmail.com>, 2023\n"
+"Language-Team: German (https://app.transifex.com/openslides/teams/14270/de/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: de\n"
@@ -1187,6 +1187,9 @@ msgstr "Vorgegebene Gruppen"
 msgid "Default groups with voting rights"
 msgstr "Voreingestellte Gruppen mit Stimmrecht"
 
+msgid "Default language"
+msgstr ""
+
 msgid "Default line numbering"
 msgstr "Voreingestellte Zeilennummerierung"
 
@@ -2068,6 +2071,9 @@ msgstr "Verwenden Sie eine Zeile pro Eintrag."
 
 msgid "Label color"
 msgstr "Beschriftungsfarbe"
+
+msgid "Language"
+msgstr ""
 
 msgid "Last email sent"
 msgstr "Letzte gesendete E-Mail"
@@ -3233,6 +3239,9 @@ msgstr "Status zurücksetzen"
 msgid "Reset to factory defaults"
 msgstr "Auf Werkseinstellung zurücksetzen"
 
+msgid "Reset your OpenSlides password"
+msgstr "Zurücksetzen Ihres Openslides-Passworts"
+
 msgid "Resolution and size"
 msgstr "Auflösung und Größe"
 
@@ -3247,6 +3256,9 @@ msgstr "Ergebnis"
 
 msgid "Results"
 msgstr "Ergebnisse"
+
+msgid "Retrieving vote status... Please wait!"
+msgstr ""
 
 msgid "Right"
 msgstr "Rechts"
@@ -4337,6 +4349,21 @@ msgid "You are not supposed to be here..."
 msgstr "Sie sollten nicht hier sein ..."
 
 msgid ""
+"You are receiving this email because you have requested a new password for your OpenSlides-account.\n"
+"\n"
+"Please open the following link and choose a new password:\n"
+"{url}/login/forget-password-confirm?user_id={user_id}&token={token}\n"
+"\n"
+"For completeness your username: {username}"
+msgstr ""
+"Sie erhalten diese E-Mail, da Sie ein neues Passwort für Ihren OpenSlides-Account angefordert haben.\n"
+"\n"
+"Bitte öffnen Sie den folgenden Link und wählen Sie ein neues Passwort:\n"
+"{url}/login/forget-password-confirm?user_id={user_id}&token={token}\n"
+"\n"
+"Zur Vollständigkeit Ihr Nutzername: {username}"
+
+msgid ""
 "You are using the history mode of OpenSlides. Changes will not be saved."
 msgstr "Der Chronik-Modus ist aktiv. Änderungen werden nicht gespeichert."
 
@@ -4678,6 +4705,9 @@ msgstr "Anträge"
 
 msgid "move ..."
 msgstr "verschieben ..."
+
+msgid "name"
+msgstr ""
 
 msgid "natural person"
 msgstr "natürliche Person"

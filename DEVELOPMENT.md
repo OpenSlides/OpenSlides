@@ -37,7 +37,8 @@ Since multiple services (currently: client and backend) make use of translation 
 functionality for this is bundled in this repository. The following make commands are available:
 
 -   `make extract-translations`: Extracts all strings which need translations from all services and
-    merges them together into a single `template-en-pot`, which is placed under `i18n/`.
+    merges them together into a single `template-en-pot`, which is placed under `i18n/`. You must
+    run `make run-dev` in another terminal before you can execute this command.
 -   `make push-translations`: Push the current template file under `i18n/template-en.pot` to Transifex
     to allow translating it there.
 -   `make pull-translations`: Pull the translations in all languages available in the client from
