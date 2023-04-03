@@ -3,8 +3,8 @@
 cd "$(dirname $0)"
 
 # extract translations
-# ./dc-dev.sh exec client npm run extract
-# ./dc-dev.sh exec backend make extract-translations
+./dc-dev.sh exec client npm run extract
+./dc-dev.sh exec backend make extract-translations
 
 # merge translations
 echo "merging POT files..."
