@@ -5,10 +5,6 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
-env:
-  IMAGE_VERSION: 4.0.1-main
-  TAG_SUFFIX: -$(date +%Y%m%d)-${GITHUB_SHA::7}
-
 jobs:
   build:
     name: Builds Docker images
@@ -16,44 +12,17 @@ jobs:
     strategy:
       matrix:
         service:
-          - name: openslides-proxy
-            directory: proxy
-
-          - name: openslides-client
-            directory: openslides-client
-
-          - name: openslides-backend
-            directory: openslides-backend
-
-          - name: openslides-datastore-reader
-            directory: openslides-datastore-service
-            args:
-              MODULE: reader
-              PORT: 9010
-
-          - name: openslides-datastore-writer
-            directory: openslides-datastore-service
-            args:
-              MODULE: writer
-              PORT: 9011
-
-          - name: openslides-autoupdate
-            directory: openslides-autoupdate-service
-
-          - name: openslides-auth
-            directory: openslides-auth-service
-
-          - name: openslides-vote
-            directory: openslides-vote-service
-
-          - name: openslides-icc
-            directory: openslides-icc-service
-
-          - name: openslides-media
-            directory: openslides-media-service
-
-          - name: openslides-manage
-            directory: openslides-manage-service
+          - name: proxy
+          - name: client
+          - name: backend
+          - name: datastore-reader
+          - name: datastore-writer
+          - name: autoupdate
+          - name: auth
+          - name: vote
+          - name: icc
+          - name: media
+          - name: manage
 
     steps:
       - name: Check out code
@@ -61,34 +30,11 @@ jobs:
         with:
           submodules: true
 
-      - name: Build image
-        working-directory: ${{ matrix.service.directory }}
-        env:
-          DOCKER_BUILDKIT: 1
-        run: |
-          if [ "${{ matrix.service.name }}" = "openslides-client" ]
-          then
-            eval echo ${IMAGE_VERSION}${TAG_SUFFIX} > client/src/assets/version.txt
-          fi
-          if [ "${{ matrix.service.args }}" != "" ]
-          then
-            export BUILD_ARGS="--build-arg MODULE=${{ matrix.service.args.MODULE }}
-                               --build-arg PORT=${{ matrix.service.args.PORT }}"
-          fi
-          docker build . --tag ${{ matrix.service.name }} $BUILD_ARGS
-
       - name: Log into registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" |
           docker login ghcr.io --username ${{ github.actor }} --password-stdin
 
-      - name: Push image
+      - name: Build and push image
         run: |
-          IMAGE_ID=ghcr.io/${{ github.repository }}/${{ matrix.service.name }}
-
-          # Change all uppercase to lowercase
-          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
-
-          docker tag ${{ matrix.service.name }} ${IMAGE_ID}:$(eval echo ${IMAGE_VERSION}${TAG_SUFFIX})
-          docker tag ${{ matrix.service.name }} ${IMAGE_ID}:latest
-          docker push ${IMAGE_ID}:$(eval echo ${IMAGE_VERSION}${TAG_SUFFIX})
-          docker push ${IMAGE_ID}:latest
+          ./dev/docker/build.sh --ask-push --yes -D ghcr.io/openslides/openslides ${{ matrix.service.name }}
+          ./dev/docker/build.sh --ask-push --yes -D ghcr.io/openslides/openslides -t latest ${{ matrix.service.name }}
