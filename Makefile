@@ -45,15 +45,21 @@ stop-dev:
 stop-dev-otel:
 	$(DC) -f $(DC_PATH)/dc.otel.dev.yml down --volumes --remove-orphans
 
-# Shorthand to execute the services-to-staging script
+build:
+	$(DC_PATH)/build.sh
+
+# Shorthand to execute the make-release script
 services-to-staging:
-	$(SCRIPT_PATH)/make-release.sh fetch-all-changes
+	$(SCRIPT_PATH)/make-update.sh fetch-all-changes
 
-staging-release:
-	$(SCRIPT_PATH)/make-release.sh staging
+main-to-services:
+	$(SCRIPT_PATH)/make-update.sh update-main-branches
 
-main-release:
-	$(SCRIPT_PATH)/make-release.sh main
+staging-update:
+	$(SCRIPT_PATH)/make-update.sh staging
+
+main-update:
+	$(SCRIPT_PATH)/make-update.sh main
 
 # You may only use this one time after cloning this repository.
 # Will set the upstream remote to "origin"

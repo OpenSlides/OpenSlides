@@ -2,10 +2,6 @@
 
 set -e
 
-IMAGE_VERSION="4.0.1-$(git rev-parse --abbrev-ref HEAD)"
-TAG_SUFFIX="-$(date +%Y%m%d)-$(git rev-parse HEAD | cut -c -7)"
-CLIENT_VERSION_TXT=client/src/assets/version.txt
-
 HOME="$(dirname "$(realpath "${BASH_SOURCE[0]}")")/../../"
 declare -A TARGETS
 TARGETS=(
@@ -21,9 +17,12 @@ TARGETS=(
   [vote]="$HOME/openslides-vote-service/"
   [icc]="$HOME/openslides-icc-service/"
 )
+CLIENT_VERSION_TXT="${TARGETS[client]}/client/src/assets/version.txt"
 
 DOCKER_REPOSITORY="openslides"
-DOCKER_TAG="${IMAGE_VERSION}${TAG_SUFFIX}"
+DOCKER_TAG="$(cat VERSION)"
+[[ "$(git rev-parse --abbrev-ref HEAD)" != staging ]] ||
+  DOCKER_TAG="$DOCKER_TAG-staging-$(date +%Y%m%d)-$(git rev-parse HEAD | cut -c -7)"
 CONFIG="/etc/osinstancectl"
 OPTIONS=()
 BUILT_IMAGES=()
@@ -116,8 +115,8 @@ for i in "${SELECTED_TARGETS[@]}"; do
     printf '}\n'
   } > version.json
   if [[ -w "$CLIENT_VERSION_TXT" ]]; then
-    cp "$CLIENT_VERSION_TXT" "$CLIENT_VERSION_TXT.bak"
-    printf "${IMAGE_VERSION}${TAG_SUFFIX}" > "$CLIENT_VERSION_TXT"
+    client_dev_version="$(< "$CLIENT_VERSION_TXT")"
+    printf "$DOCKER_TAG (built $(date +%Y%m%d))" > "$CLIENT_VERSION_TXT"
   fi
 
   # Special instructions for local services
@@ -128,8 +127,8 @@ for i in "${SELECTED_TARGETS[@]}"; do
     docker build --tag "$img" --pull "${OPTIONS[@]}" "$loc"
   fi
   rm version.json
-  if [[ -w "$CLIENT_VERSION_TXT.bak" ]]; then
-    mv -f "$CLIENT_VERSION_TXT.bak" "$CLIENT_VERSION_TXT"
+  if [[ -w "$CLIENT_VERSION_TXT" ]]; then
+    echo "$client_dev_version" > "$CLIENT_VERSION_TXT"
   fi
 
   BUILT_IMAGES+=("$img ON")
