@@ -72,7 +72,10 @@
               ],
               "match": [
                 {
-                  "path": ["/system/action*"]
+                  "path": ["/system/action*"],
+                  "not": [
+                      { "path": ["/system/action/internal*"] }
+                  ]
                 }
               ]
             },
