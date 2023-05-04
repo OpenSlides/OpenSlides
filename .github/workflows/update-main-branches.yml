@@ -15,39 +15,14 @@ jobs:
         uses: actions/checkout@v3
         with:
           submodules: true
-          ssh-key: ${{ secrets.SSH_DEPLOY_KEY }}
+          ssh-key: ${{ secrets.SSH_DEPLOY_KEY_OPENSLIDES_CLIENT }}
           ref: main
           fetch-depth: 0
 
       - name: Prepare environment
         env:
           SSH_DEPLOY_KEYS: ${{ toJson(secrets) }}
-          #SSH_DEPLOY_KEY_OPENSLIDES_CLIENT: ${{ vars.SSH_DEPLOY_KEY_OPENSLIDES_CLIENT }}
-          #SSH_DEPLOY_KEY_OPENSLIDES_CLIENT_PUB: ${{ vars.SSH_DEPLOY_KEY_OPENSLIDES_CLIENT_PUB }}
         run: |
-          set -x
-          # Extract private keys from secrets and setup ssh config
-          mkdir -p "$HOME/.ssh"
-          touch "$HOME/.ssh/config"
-          while IFS=$'\t' read -r mod key; do
-            #git submodule status "$mod" >/dev/null || continue
-            [[ "$mod" == openslides-client ]] || continue
-            printf "Host $mod\nHostName github.com\nUser git\nIdentityFile $HOME/.ssh/id_$mod\n" >> "$HOME/.ssh/config"
-            touch "$HOME/.ssh/id_$mod" && chmod 600 "$HOME/.ssh/id_$mod"
-            printf -- "$key" > "$HOME/.ssh/id_$mod"
-          done < <(echo "$SSH_DEPLOY_KEYS" |  jq -r '. |
-            (keys[] | select(. | startswith("SSH_DEPLOY_KEY_"))) as $k |
-            [($k | ascii_downcase[15:] | gsub("_"; "-") ), (.[$k])] | @tsv')
-
-          #echo "$SSH_DEPLOY_KEY_OPENSLIDES_CLIENT"
-          #printf -- "$SSH_DEPLOY_KEY_OPENSLIDES_CLIENT" > "$HOME/.ssh/id_openslides-client"
-          #printf -- "$SSH_DEPLOY_KEY_OPENSLIDES_CLIENT_PUB" > "$HOME/.ssh/id_openslides-client.pub"
-          ls -l ~/.ssh/
-          hexdump -C ~/.ssh/id_*
-          #cat ~/.ssh/config
-
-          #exit 1
-
           # Providing ssh-key to actions/checkout will setup the local ssh
           # config and agent, also the main repo will have the origin remote
           # set up with ssh URL.
@@ -56,19 +31,32 @@ jobs:
           #sed 's/https:\/\/github.com/ssh:\/\/git@github/g' -i .gitmodules
           awk '$1 == "path" { s = $3 } $1 == "url" { sub(/https:\/\/github.com/, "ssh://" s, $0) } { print $0 }' \
             .gitmodules > .gitmodules.new && mv -f .gitmodules.new .gitmodules
-          cat .gitmodules
           git submodule sync
+          # Since each submodule uses it's own deploy key, they also have to be
+          # set up manually. In order to not interfere with the setup done by
+          # actions/checkout this is done by creating an ssh config with 'Host'
+          # matchers for each submodule.
+          mkdir -p "$HOME/.ssh"
+          touch "$HOME/.ssh/config"
+          while IFS=$'\t' read -r mod key; do
+            git submodule status "$mod" >/dev/null || continue
+            # Append to ssh config
+            printf "Host $mod\nHostName github.com\nUser git\nIdentityFile $HOME/.ssh/id_$mod\n" >> "$HOME/.ssh/config"
+            # Write key file
+            touch "$HOME/.ssh/id_$mod" && chmod 600 "$HOME/.ssh/id_$mod"
+            printf -- "$key" > "$HOME/.ssh/id_$mod"
+          done < <(echo "$SSH_DEPLOY_KEYS" |  jq -r '. |
+            (keys[] | select(. | startswith("SSH_DEPLOY_KEY_"))) as $k |
+            [($k | ascii_downcase[15:] | gsub("_"; "-") ), (.[$k])] | @tsv')
+
           # Similarly providing ref will fetch main for the main repo but
           # submodules have to be adjusted manually
-          git -C openslides-client fetch origin main:main
-          #git submodule foreach git fetch origin main:main
+          git submodule foreach git fetch origin main:main
 
-
-          # Set default identity of the actor to be associated with the new
-          # main commit
+          # Lastly set default identity of the actor to be associated with the
+          # new main commit.
           git config --global user.name "${{ github.actor }}"
           git config --global user.email "${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
-
 
       - name: Run update-main-branches
         run: |
