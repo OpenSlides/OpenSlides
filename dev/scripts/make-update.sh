@@ -7,7 +7,7 @@ ME=$(basename "$0")
 BRANCH_NAME=
 REMOTE_NAME=
 OPT_PULL=
-OPT_LOCAL_COMMIT=
+OPT_LOCAL=
 
 usage() {
 cat <<EOF
@@ -37,6 +37,24 @@ Helper script to integrate new changes.
 EOF
 }
 
+ask() {
+  local default_reply="$1" reply_opt="[y/N]" blank="y" REPLY=
+  shift; [[ "$default_reply" != y ]] || {
+    reply_opt="[Y/n]"; blank=""
+  }
+
+  read -rp "$@ $reply_opt: "
+  case "$REPLY" in
+    Y|y|Yes|yes|YES|"$blank") return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
+abort() {
+  echo "Aborting."
+  exit "$1"
+}
+
 set_remote() {
   REMOTE_NAME=upstream
   git ls-remote --exit-code "$REMOTE_NAME" &>/dev/null ||
@@ -46,11 +64,9 @@ set_remote() {
 check_current_branch() {
   [ "$(git rev-parse --abbrev-ref HEAD)" == "$BRANCH_NAME" ] || {
     echo "ERROR: $BRANCH_NAME branch not checked out ($(basename $(realpath .)))"
-    read -rp "Run \`git checkout $BRANCH_NAME\` now? [Y/n]: "
-    case "$REPLY" in
-      Y|y|Yes|yes|YES|"") git checkout $BRANCH_NAME ;;
-      *) echo "Aborting."; exit 0 ;;
-    esac
+    ask y "Run \`git checkout $BRANCH_NAME\` now?" &&
+      git checkout $BRANCH_NAME ||
+      abort 0
   }
 
   git fetch "$REMOTE_NAME" "$BRANCH_NAME"
@@ -58,15 +74,9 @@ check_current_branch() {
     echo "git merge --ff-only $REMOTE_NAME/$BRANCH_NAME"
     git merge --ff-only "$REMOTE_NAME"/$BRANCH_NAME
   else
-    read -rp "$BRANCH_NAME and $REMOTE_NAME/$BRANCH_NAME have diverged. Run \`git reset --hard $REMOTE_NAME/$BRANCH_NAME\` now? [y/N]: "
-    case "$REPLY" in
-      Y|y|Yes|yes|YES)
-          git reset --hard "$REMOTE_NAME/$BRANCH_NAME"
-        ;;
-      *)
-        echo "Aborting."
-        exit 0
-    esac
+    ask n "$BRANCH_NAME and $REMOTE_NAME/$BRANCH_NAME have diverged. Run \`git reset --hard $REMOTE_NAME/$BRANCH_NAME\` now?" &&
+      git reset --hard "$REMOTE_NAME/$BRANCH_NAME" ||
+      abort 0
   fi
 }
 
@@ -80,7 +90,7 @@ pull_latest_commit() {
     git checkout "$BRANCH_NAME" &&
     git pull --ff-only "$REMOTE_NAME" "$BRANCH_NAME" || {
       echo "ERROR: make sure a local branch $BRANCH_NAME exists and can be fast-forwarded to $REMOTE_NAME"
-      exit 1
+      abort 1
     }
   fi
 }
@@ -119,97 +129,72 @@ make_staging_update() {
   set_remote
   check_current_branch
 
-  read -rp 'Fetch all services staging changes now? [Y/n]: '
-  case "$REPLY" in
-    Y|y|Yes|yes|YES|"")
-      fetch_all_changes
-      ;;
-    *)
-  esac
+  ask y "Fetch all services staging changes now?" &&
+    fetch_all_changes || :
   diff_cmd="git --no-pager diff --color=always --submodule=log"
-  [[ "$($diff_cmd | grep -c .)" -gt 0 ]] || {
-    echo "No changes. Aborting"
-    exit 0
-  }
+  [[ "$($diff_cmd | grep -c .)" -gt 0 ]] ||
+    abort 0
   echo ''
   echo 'Current changes:'
   echo '--------------------------------------------------------------------------------'
   $diff_cmd
   echo '--------------------------------------------------------------------------------'
-  read -rp "Interactively add these for the update? [Y/n]: "
-  case "$REPLY" in
-    Y|y|Yes|yes|YES|"")
-      for mod in $(git submodule status | awk '$1 ~ "^+" {print $2}'); do
-        (
-          set_remote
-          local target_sha= mod_sha_old= mod_sha_new= log_cmd=
-          mod_sha_old="$(git diff --submodule=short "$mod" | awk '$1 ~ "^-Subproject" { print $3 }')"
-          mod_sha_new="$(git diff --submodule=short "$mod" | awk '$1 ~ "^+Subproject" { print $3 }')"
-          log_cmd="git -C $mod log --oneline --no-decorate $mod_sha_old..$mod_sha_new"
-          target_sha="$($log_cmd | awk 'NR==1 { print $1 }' )"
+  ask y "Interactively add these for the update?" &&
+    for mod in $(git submodule status | awk '$1 ~ "^+" {print $2}'); do
+      (
+        set_remote
+        local target_sha= mod_sha_old= mod_sha_new= log_cmd=
+        mod_sha_old="$(git diff --submodule=short "$mod" | awk '$1 ~ "^-Subproject" { print $3 }')"
+        mod_sha_new="$(git diff --submodule=short "$mod" | awk '$1 ~ "^+Subproject" { print $3 }')"
+        log_cmd="git -C $mod log --oneline --no-decorate $mod_sha_old..$mod_sha_new"
+        target_sha="$($log_cmd | awk 'NR==1 { print $1 }' )"
 
-          echo ""
-          echo "$mod changes:"
-          echo "--------------------------------------------------------------------------------"
-          $log_cmd
-          echo "--------------------------------------------------------------------------------"
-          read -rp "Please confirm the latest change to be included, '-' to skip [${target_sha}]: "
-          case "$REPLY" in
-            "") ;;
-            *) target_sha="$REPLY" ;;
-          esac
-          [[ "$target_sha" != '-' ]] ||
-            exit 0 # exit the subshell, acting like 'continue'
-          git -C "$mod" checkout "$target_sha"
-          git add "$mod"
-        )
-      done
-      ;;
-  esac
+        echo ""
+        echo "$mod changes:"
+        echo "--------------------------------------------------------------------------------"
+        $log_cmd
+        echo "--------------------------------------------------------------------------------"
+        read -rp "Please confirm the latest change to be included, '-' to skip [${target_sha}]: "
+        case "$REPLY" in
+          "") ;;
+          *) target_sha="$REPLY" ;;
+        esac
+        [[ "$target_sha" != '-' ]] ||
+          exit 0 # exit the subshell, acting like 'continue'
+        git -C "$mod" checkout "$target_sha"
+        git add "$mod"
+      )
+    done || :
 
   echo ''
   diff_cmd="git --no-pager diff --staged --submodule=log"
   [[ "$($diff_cmd | grep -c .)" -gt 0 ]] || {
-    echo "No changes added. Aborting"
-    exit 0
+    echo "No changes added."
+    abort 0
   }
   echo 'Changes to be included for the new staging update:'
   echo '--------------------------------------------------------------------------------'
   $diff_cmd
   echo '--------------------------------------------------------------------------------'
-  read -rp "Commit now? [Y/n]: "
-  case "$REPLY" in
-    Y|y|Yes|yes|YES|"")
-      increment_patch &&
-        git add VERSION
-      git commit --message "Staging update $(date +%Y%m%d)"
-      git show --no-patch
-      echo "Commit created. Push to desired remote and PR into main repo to bring it live."
-      ;;
-  esac
+  ask y "Commit now?" && {
+    increment_patch &&
+      git add VERSION
+    git commit --message "Staging update $(date +%Y%m%d)"
+    git show --no-patch
+    echo "Commit created. Push to desired remote and PR into main repo to bring it live."
+  } || :
 }
 
-update_main_branches() {
+merge_main_branches() {
   local target_sha="$1"
   local mod_target_sha=
   local diff_cmd=
 
-  echo -n "Creating merge commits in submodules"
-  [[ -n "$OPT_LOCAL_COMMIT" ]] || {
-    echo " and attempting to push into $REMOTE_NAME."
-    echo -n "Ensure you have proper access rights or use --local to skip pushing"
-  }
-  echo "."
-  read -rp "Continue? [Y/n]: "
-  case "$REPLY" in
-    Y|y|Yes|yes|YES|"") ;;
-    *)
-      echo "Aborting."
-      exit 0
-  esac
+  echo "Creating merge commits in submodules..."
+  ask y "Continue?" ||
+    abort 0
 
   for mod in $(git submodule status | awk '{print $2}'); do
-  #while read -r x mod y; do
     diff_cmd="git diff --submodule=short $BRANCH_NAME $target_sha $mod"
     [[ "$($diff_cmd | grep -c .)" -gt 0 ]] ||
       continue
@@ -224,12 +209,8 @@ update_main_branches() {
       git checkout "$BRANCH_NAME"
 
       git merge --no-ff "$mod_target_sha" --log --message "Merge staging into main. Update $(date +%Y%m%d)"
-      [[ -n "$OPT_LOCAL_COMMIT" ]] || {
-        git push "$REMOTE_NAME" "$BRANCH_NAME"
-      }
     )
   done
-  #done < <(git submodule status)
 
   echo ""
   echo "Updated submodules $BRANCH_NAME branches."
@@ -247,7 +228,7 @@ make_main_update() {
   log_cmd="git log --oneline --no-decorate main..$REMOTE_NAME/staging"
   [[ "$($log_cmd | grep -c . )" -gt 0 ]] || {
     echo "ERROR: No staging update ahead of the latest main update found."
-    exit 1
+    abort 1
   }
   target_sha="$($log_cmd | awk 'NR==1 { print $1 }')"
 
@@ -261,7 +242,7 @@ make_main_update() {
     *) target_sha="$REPLY" ;;
   esac
 
-  update_main_branches "$target_sha"
+  merge_main_branches "$target_sha"
 
   # Merge, but don't commit yet ...               
   # (also we expect conflicts in submodules so we hide that output)
@@ -272,6 +253,18 @@ make_main_update() {
   done
   # Now commit the merge with corrected submodule pointers
   git commit --message "Update $(date +%Y%m%d)"
+
+  [[ -z "$OPT_LOCAL" ]] ||
+    return 0
+
+  echo "Attempting to push new $BRANCH_NAME commits into $REMOTE_NAME."
+  echo "Ensure you have proper access rights or use --local to skip pushing."
+  ask y "Continue?" ||
+    abort 0
+  echo "Submodules first ..."
+  git submodule foreach git push "$REMOTE_NAME" "$BRANCH_NAME"
+  echo "Now main repository ..."
+  git push "$REMOTE_NAME" "$BRANCH_NAME"
 }
 
 shortopt='phl'
@@ -292,8 +285,8 @@ while true; do
       OPT_PULL=1
       shift
       ;;
-    -l | --local
-      OPT_LOCAL_COMMIT=1
+    -l | --local)
+      OPT_LOCAL=1
       shift
       ;;
     --) shift ; break ;;

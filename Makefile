@@ -52,9 +52,6 @@ build:
 services-to-staging:
 	$(SCRIPT_PATH)/make-update.sh fetch-all-changes
 
-main-to-services:
-	$(SCRIPT_PATH)/make-update.sh update-main-branches
-
 staging-update:
 	$(SCRIPT_PATH)/make-update.sh staging
 
