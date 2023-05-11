@@ -11,19 +11,20 @@ OPT_LOCAL=
 
 usage() {
 cat <<EOF
-USAGE:
-  $ME <MODE> [ --pull | -p ] [ -l | --local ]
 
 Helper script to integrate new changes.
 
-  MODES:
+USAGE:
+  $ME <MODE> [ --pull | -p ] [ -l | --local ]
+
+MODES:
 
   fetch-all-changes
     Fetch all submodules latest upstream changes and check them out. This will
-    leave them in detached HEAD state. Use --pull to instead forward the local
-    branches.
+    leave them in detached HEAD state.
+    Use --pull to instead forward the local branches.
 
-  staging 
+  staging
     Create an update containing new changes that can be deployed for testing.
     In order to do so first fetch-all-changes is called. Then desired changes
     can be picked interactively and a new commit with appropriately adjusted
@@ -244,7 +245,7 @@ make_main_update() {
 
   merge_main_branches "$target_sha"
 
-  # Merge, but don't commit yet ...               
+  # Merge, but don't commit yet ...
   # (also we expect conflicts in submodules so we hide that output)
   git merge --no-commit --no-ff "$target_sha" --log >/dev/null || :
   # ... because we want to change the submod pointers to main
