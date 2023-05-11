@@ -10,13 +10,31 @@ OPT_PULL=
 OPT_LOCAL_COMMIT=
 
 usage() {
-  echo "USAGE:"
-  echo "  $ME [ --pull | -p ]"
-  echo
-  echo "By default $ME will fetch the latest upstream changes for every"
-  echo "service/submodule and directly checkout the upstream's $BRANCH_NAME branch."
-  echo "This will leave them in detached HEAD state."
-  echo "Use --pull to instead forward the local $BRANCH_NAME branch."
+cat <<EOF
+USAGE:
+  $ME <MODE> [ --pull | -p ] [ -l | --local ]
+
+Helper script to integrate new changes.
+
+  MODES:
+
+  fetch-all-changes
+    Fetch all submodules latest upstream changes and check them out. This will
+    leave them in detached HEAD state. Use --pull to instead forward the local
+    branches.
+
+  staging 
+    Create an update containing new changes that can be deployed for testing.
+    In order to do so first fetch-all-changes is called. Then desired changes
+    can be picked interactively and a new commit with appropriately adjusted
+    submodule pointers is created on the staging branch.
+
+  main
+    Create an update based on a previous staging update. For this appropriate
+    merge commits are created in the main repository as well as every affected
+    submodule. These will then be attempted to be pushed directly into upstream.
+    Use --local to skip pushing.
+EOF
 }
 
 set_remote() {
@@ -92,49 +110,6 @@ fetch_all_changes() {
 
   echo ""
   echo "Successfully updated all submodules to latest commit."
-}
-
-update_main_branches() {
-  set_remote
-  check_current_branch
-
-  while [[ "$(git submodule status | grep -c '^+')" -gt 0 ]] ; do
-    read -rp "Submodules have changes. Run \`git submodule update\` now? [Y/n]: "
-    case "$REPLY" in
-      Y|y|Yes|yes|YES|"")
-        git submodule update
-        ;;
-      *)
-        echo "Aborting."
-        exit 0
-    esac
-  done
-
-  #for mod in $(git submodule status | awk '{print $2}'); do
-  while read -r target_sha mod x; do
-    (
-      echo ""
-      echo "$mod"
-      cd "$mod"
-
-      set_remote
-      git checkout "$BRANCH_NAME"
-
-      # continue if main already has all changes from target_sha
-      [[ "$(git diff "HEAD..$target_sha" | grep -c .)" -gt 0 ]] || {
-        echo "Already up to date."
-        exit 0
-      }
-
-      git merge --no-ff "$target_sha" --log --message "Update $(date +%Y%m%d)"
-      [[ -n "$OPT_LOCAL_COMMIT" ]] || {
-        git push "$REMOTE_NAME" "$BRANCH_NAME"
-      }
-    )
-  done < <(git submodule status)
-
-  echo ""
-  echo "Updated all submodules $BRANCH_NAME branches."
 }
 
 
@@ -214,6 +189,52 @@ make_staging_update() {
   esac
 }
 
+update_main_branches() {
+  local target_sha="$1"
+  local mod_target_sha=
+  local diff_cmd=
+
+  echo -n "Creating merge commits in submodules"
+  [[ -n "$OPT_LOCAL_COMMIT" ]] || {
+    echo " and attempting to push into $REMOTE_NAME."
+    echo -n "Ensure you have proper access rights or use --local to skip pushing"
+  }
+  echo "."
+  read -rp "Continue? [Y/n]: "
+  case "$REPLY" in
+    Y|y|Yes|yes|YES|"") ;;
+    *)
+      echo "Aborting."
+      exit 0
+  esac
+
+  for mod in $(git submodule status | awk '{print $2}'); do
+  #while read -r x mod y; do
+    diff_cmd="git diff --submodule=short $BRANCH_NAME $target_sha $mod"
+    [[ "$($diff_cmd | grep -c .)" -gt 0 ]] ||
+      continue
+
+    mod_target_sha="$($diff_cmd | awk '$1 ~ "^+Subproject" { print $3 }')"
+    (
+      echo ""
+      echo "$mod"
+      cd "$mod"
+
+      set_remote
+      git checkout "$BRANCH_NAME"
+
+      git merge --no-ff "$mod_target_sha" --log --message "Merge staging into main. Update $(date +%Y%m%d)"
+      [[ -n "$OPT_LOCAL_COMMIT" ]] || {
+        git push "$REMOTE_NAME" "$BRANCH_NAME"
+      }
+    )
+  done
+  #done < <(git submodule status)
+
+  echo ""
+  echo "Updated submodules $BRANCH_NAME branches."
+}
+
 make_main_update() {
   local target_sha= log_cmd= REPLY=
 
@@ -240,18 +261,21 @@ make_main_update() {
     *) target_sha="$REPLY" ;;
   esac
 
-  if [[ -n "$OPT_LOCAL_COMMIT" ]]; then
-    git merge --no-ff "$target_sha" --log --message "Update $(date +%Y%m%d)"
-    echo "Merge commit on local main for update was created."
-  else
-    git reset --hard "$target_sha"
-    echo "main was adjusted. Push to desired remote and PR into main repo to bring update live."
-    echo "IMPORTANT: Make sure to create a merge commit without squashing!"
-  fi
+  update_main_branches "$target_sha"
+
+  # Merge, but don't commit yet ...               
+  # (also we expect conflicts in submodules so we hide that output)
+  git merge --no-commit --no-ff "$target_sha" --log >/dev/null || :
+  # ... because we want to change the submod pointers to main
+  for mod in $(git submodule status | awk '{print $2}'); do
+    git add "$mod"
+  done
+  # Now commit the merge with corrected submodule pointers
+  git commit --message "Update $(date +%Y%m%d)"
 }
 
 shortopt='phl'
-longopt='pull,help,local-commit'
+longopt='pull,help,local'
 ARGS=$(getopt -o "$shortopt" -l "$longopt" -n "$ME" -- $@)
 # reset $@ to args array sorted and validated by getopt
 eval set -- "$ARGS"
@@ -268,7 +292,7 @@ while true; do
       OPT_PULL=1
       shift
       ;;
-    -l | --local-commit)
+    -l | --local
       OPT_LOCAL_COMMIT=1
       shift
       ;;
@@ -282,11 +306,6 @@ for arg; do
     fetch-all-changes)
       BRANCH_NAME=staging
       fetch_all_changes
-      shift 1
-      ;;
-    update-main-branches)
-      BRANCH_NAME=main
-      update_main_branches
       shift 1
       ;;
     staging)
