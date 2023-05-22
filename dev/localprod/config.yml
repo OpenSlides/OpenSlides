@@ -54,6 +54,9 @@ services:
   icc:
     additionalContent:
       build: ../../openslides-icc-service/
+  search:
+    additionalContent:
+      build: ../../openslides-search-service/
   manage:
     additionalContent:
       build: ../../openslides-manage-service/
