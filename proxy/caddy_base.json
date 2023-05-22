@@ -62,7 +62,6 @@
             {
               "handle": [
                 {
-                  "flush_interval": -1,
                   "handler": "reverse_proxy",
                   "upstreams": [
                     {
