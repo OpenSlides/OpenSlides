@@ -46,6 +46,9 @@ jobs:
           - name: openslides-vote
             directory: openslides-vote-service
 
+          - name: openslides-search
+            directory: openslides-search-service
+
           - name: openslides-icc
             directory: openslides-icc-service
 
