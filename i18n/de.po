@@ -1,0 +1,4848 @@
+# 
+# Translators:
+# Emanuel Schütze <emanuel.schuetze@intevation.de>, 2023
+# jsangmeister <joshua.sangmeister@gmail.com>, 2023
+# 
+msgid ""
+msgstr ""
+"Last-Translator: jsangmeister <joshua.sangmeister@gmail.com>, 2023\n"
+"Language-Team: German (https://app.transifex.com/openslides/teams/14270/de/)\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"mime-version: 1.0\n"
+
+msgid "\"0\" means an unlimited number of active accounts"
+msgstr "\"0\" bedeutet eine unbegrenzte Anzahl an aktiven Accounts"
+
+msgid "\"0\" means an unlimited number of active meetings"
+msgstr "\"0\" bedeutet eine unbegrenzte Anzahl an aktiven Veranstaltungen"
+
+msgid "%num% emails were send sucessfully."
+msgstr "%num% E-Mails wurden erfolgreich versandt."
+
+msgid "-Ä"
+msgstr "-Ä"
+
+msgid "100% base"
+msgstr "100-%-Basis"
+
+msgid ""
+"<a href=\"https://openslides.com\">OpenSlides</a> is a free web based "
+"presentation and assembly system for visualizing and controlling agenda, "
+"motions and elections of an assembly."
+msgstr ""
+"<a href=\"https://openslides.com\">OpenSlides</a> ist ein freies, "
+"webbasiertes Präsentations- und Versammlungssystem zur Darstellung und "
+"Steuerung von Tagesordnung, Anträgen und Wahlen einer Versammlung."
+
+msgid "<unknown motion>"
+msgstr "<unbekannter Antrag>"
+
+msgid "<unknown>"
+msgstr "<unbekannt>"
+
+msgid ""
+"A change recommendation or amendment is probably referring to a non-existant"
+" line number."
+msgstr ""
+"Ein Änderungsantrag oder eine Änderungsempfehlung bezieht sich "
+"wahrscheinlich auf eine nicht vorhandene Zeilennummer."
+
+msgid "A client error occurred. Please contact your system administrator."
+msgstr ""
+"Ein Client-Fehler ist aufgetreten. Bitte kontaktieren Sie den Administrator."
+
+msgid "A conference is already running in your OpenSlides session."
+msgstr "Eine Konferenz läuft bereits in Ihrer OpenSlides-Sitzung."
+
+msgid "A name is required"
+msgstr "Ein Name ist erforderlich"
+
+msgid "A new update is available!"
+msgstr "Ein neues Update ist verfügbar!"
+
+msgid "A password is required"
+msgstr "Ein Passwort ist erforderlich"
+
+msgid "A server error occured. Please contact your system administrator."
+msgstr ""
+"Ein Serverfehler ist aufgetreten. Bitte kontaktieren Sie den Administrator."
+
+msgid "A title is required"
+msgstr "Ein Titel ist erforderlich"
+
+msgid "A topic needs a title"
+msgstr "Ein Thema benötigt einen Titel."
+
+msgid "About me"
+msgstr "Über mich"
+
+msgid "Abstain"
+msgstr "Enthaltung"
+
+msgid "Accept"
+msgstr "Annehmen"
+
+msgid "Acceptance"
+msgstr "Annahme"
+
+msgid "Access data (PDF)"
+msgstr "Zugangsdaten (PDF)"
+
+msgid "Access groups"
+msgstr "Zugriffsgruppen"
+
+msgid "Access-data"
+msgstr "Zugangsdaten"
+
+msgid "Account admin"
+msgstr "Accountadmin"
+
+msgid "Account successfully assigned"
+msgstr "Account erfolgreich zugewiesen"
+
+msgid "Accounts"
+msgstr "Accounts"
+
+msgid "Activate"
+msgstr "Aktivieren"
+
+msgid "Activate amendments"
+msgstr "Änderungsanträge aktivieren"
+
+msgid "Activate statute amendments"
+msgstr "Satzungsänderungsanträge aktivieren"
+
+msgid "Activate vote delegations"
+msgstr "Stimmrechtsübertragung aktivieren"
+
+msgid "Activate vote weight"
+msgstr "Stimmgewichtung aktivieren"
+
+msgid "Active"
+msgstr "Aktiv"
+
+msgid "Active accounts"
+msgstr "Aktive Accounts"
+
+msgid "Active filters"
+msgstr "Aktive Filter"
+
+msgid "Active meetings"
+msgstr "Aktive Veranstaltungen"
+
+msgid "Active users"
+msgstr "Aktive Nutzer"
+
+msgid "Add"
+msgstr "Hinzufügen"
+
+msgid "Add countdown"
+msgstr "Countdown hinzufügen"
+
+msgid "Add me"
+msgstr "Füge mich hinzu"
+
+msgid "Add message"
+msgstr "Mitteilung hinzufügen"
+
+msgid "Add new custom translation"
+msgstr "Neue benutzerdefinierte Übersetzung hinzufügen"
+
+msgid "Add option"
+msgstr "Option hinzufügen"
+
+msgid "Add to agenda"
+msgstr "Zur Tagesordnung hinzufügen"
+
+msgid "Add to meetings"
+msgstr "Zu Veranstaltungen hinzufügen"
+
+msgid "Add to queue"
+msgstr "Zur Warteschlange hinzufügen"
+
+msgid "Add yourself to the current list of speakers to join the conference"
+msgstr ""
+"Setzen Sie sich auf die aktuelle Redeliste um der Konferenz hier beizutreten"
+
+msgid "Add/remove groups ..."
+msgstr "Gruppen hinzufügen/entfernen ..."
+
+msgid ""
+"Additional columns after the required ones may be present and will not "
+"affect the import."
+msgstr ""
+"Es könnten zusätzliche Spalten nach den erforderlichen Spalten vorhanden "
+"sein. Diese haben jedoch keinen Einfluss auf den Import."
+
+msgid "Adjourn"
+msgstr "Vertagen"
+
+msgid "Adjournment"
+msgstr "Vertagung"
+
+msgid "Admin"
+msgstr "Admin"
+
+msgid "Administration roles"
+msgstr "Administrationsrollen"
+
+msgid "Administration roles (at organization level)"
+msgstr "Administrationsrollen (auf Organisationsebene)"
+
+msgid "Administrator"
+msgstr "Administrator"
+
+msgid "Administrators"
+msgstr "Administratoren"
+
+msgid "After verifiy the preview click on \"import\" please (see top right)."
+msgstr ""
+"Nach Prüfung der Vorschau klicken Sie bitte auf \"Importieren\" (oben "
+"rechts)."
+
+msgid "Agenda"
+msgstr "Tagesordnung"
+
+msgid "Agenda items are in process. Please wait ..."
+msgstr "Tagesordnungspunkte werden bearbeitet. Bitte warten ..."
+
+msgid "Agenda visibility"
+msgstr "Sichtbarkeit in der Tagesordnung"
+
+msgid "All casted ballots"
+msgstr "Alle abgegebenen Stimmzettel"
+
+msgid "All entitled users"
+msgstr "Anzahl der Stimmberechtigten"
+
+msgid "All lists of speakers will be cleared."
+msgstr "Alle Redelisten werden bereinigt."
+
+msgid "All other fields are optional and may be empty."
+msgstr "Alle übrigen Felder sind optional und dürfen leer sein."
+
+msgid "All topics will be deleted and won't be accessible afterwards."
+msgstr "Alle Themen werden gelöscht und sind danach nicht mehr zugänglich."
+
+msgid "All valid ballots"
+msgstr "Alle gültigen Stimmzettel"
+
+msgid "All votes will be lost."
+msgstr "Alle Stimmen gehen verloren."
+
+msgid "Allow amendments of amendments"
+msgstr "Änderungsanträge zu Änderungsanträgen erlauben"
+
+msgid "Allow blank in number"
+msgstr "Leerzeichen im Bezeichner erlauben"
+
+msgid "Allow create poll"
+msgstr "Abstimmung möglich"
+
+msgid "Allow forwarding of motions"
+msgstr "Antragsweiterleitung möglich"
+
+msgid ""
+"Allow only current speakers and list of speakers managers to enter the live "
+"conference"
+msgstr ""
+"Nur aktuellen Redner*innen und der Redelistenverwaltung erlauben in eine "
+"Livekonferenz beizutreten"
+
+msgid "Allow submitter edit"
+msgstr "Antragsteller*in darf bearbeiten"
+
+msgid "Allow support"
+msgstr "Unterstützung möglich"
+
+msgid "Allow to accumulate several votes on one candidate (\"comulative voting\")"
+msgstr "Mehrere Stimmen auf einen Kandidaten erlauben (\"kumulieren\")"
+
+msgid "Allow users to set themselves as present"
+msgstr "Teilnehmende erlauben sich selbst auf anwesend zu setzen"
+
+msgid "Allow verbose error messages for reset password process"
+msgstr ""
+"Ausführliche Fehlermeldungen für das Zurücksetzen des Passworts zulassen"
+
+msgid "Allowed access groups for this directory"
+msgstr "Zulässige Zugriffsgruppen für dieses Verzeichnis"
+
+msgid "Always"
+msgstr "Immer"
+
+msgid "Amendment"
+msgstr "Änderungsantrag"
+
+msgid "Amendment list (PDF)"
+msgstr "Änderungsantragsliste (PDF)"
+
+msgid "Amendment text"
+msgstr "Änderungsantragstext"
+
+msgid "Amendment to"
+msgstr "Änderungsantrag zu"
+
+msgid "Amendments"
+msgstr "Änderungsanträge"
+
+msgid "Amendments can change multiple paragraphs"
+msgstr "Änderungsanträge können mehrere Absätze ändern"
+
+msgid "Amendments to"
+msgstr "Änderungsanträge zu"
+
+msgid "Amount of accounts"
+msgstr "Anzahl der Accounts"
+
+msgid "Amount of meetings"
+msgstr "Anzahl der Veranstaltungen"
+
+msgid "Amount of votes"
+msgstr "Anzahl der Stimmen"
+
+msgid "An email with a password reset link was send!"
+msgstr "Es wurde eine E-Mail mit Link zum Passwort-Zurücksetzen gesendet."
+
+msgid "An error occurred while voting."
+msgstr "Bei der Stimmabgabe ist ein Fehler aufgetreten."
+
+msgid "An unknown error occurred."
+msgstr "Ein unbekannter Fehler ist aufgetreten."
+
+msgid "Anonymize votes"
+msgstr "Stimmen anonymisieren"
+
+msgid "Anonymizing can only be done after finishing a poll."
+msgstr "Anonymisieren kann erst nach Beenden der Stimmabgabe erfolgen."
+
+msgid "Anonymous"
+msgstr "Anonym"
+
+msgid "Applause interval in seconds"
+msgstr "Applaus-Zeitintervall in Sekunden"
+
+msgid "Applause particle image URL"
+msgstr "Applaus-Partikelbild-URL"
+
+msgid "Applause visualization"
+msgstr "Applaus-Visualisierung"
+
+msgid "Apply"
+msgstr "Übernehmen"
+
+msgid "Arabic"
+msgstr "Arabisch"
+
+msgid "Archive"
+msgstr "Archivieren"
+
+msgid "Archived"
+msgstr "Archiviert"
+
+msgid "Archived meetings"
+msgstr "Archivierte Veranstaltungen"
+
+msgid "Are you sure you want to activate this meeting?"
+msgstr "Soll diese Veranstaltung wirklich aktiviert werden?"
+
+msgid "Are you sure you want to anonymize all votes? This cannot be undone."
+msgstr ""
+"Sollen alle Stimmen wirklich anonymisiert werden? Dies kann nicht rückgängig"
+" gemacht werden."
+
+msgid "Are you sure you want to archive this meeting?"
+msgstr "Soll diese Veranstaltung wirklich archiviert werden?"
+
+msgid "Are you sure you want to clear all messages in this chat?"
+msgstr "Sollen wirklich alle Nachrichten in diesem Chat gelöscht werden?"
+
+msgid "Are you sure you want to clear all speakers of all lists?"
+msgstr "Sollen wirklich alle Redner*innen von allen Listen entfernt werden?"
+
+msgid ""
+"Are you sure you want to delete all next speakers from this list of "
+"speakers?"
+msgstr ""
+"Sollen wirklich alle nächsten Redner*innen von dieser Liste entfernt werden?"
+
+msgid ""
+"Are you sure you want to delete all previous speakers from this list of "
+"speakers?"
+msgstr ""
+"Sollen wirklich alle letzten Redner*innen von dieser Liste entfernt werden?"
+
+msgid "Are you sure you want to delete all selected elections?"
+msgstr "Sollen alle ausgewählten Wahlen wirklich gelöscht werden?"
+
+msgid "Are you sure you want to delete all selected files and folders?"
+msgstr ""
+"Sollen alle ausgewählten Dateien und Verzeichnisse wirklich gelöscht werden?"
+
+msgid "Are you sure you want to delete all selected meetings?"
+msgstr "Sollen alle ausgewählten Veranstaltungen wirklich gelöscht werden?"
+
+msgid "Are you sure you want to delete all selected motions?"
+msgstr "Sollen alle ausgewählten Anträge wirklich gelöscht werden?"
+
+msgid "Are you sure you want to delete all selected tags?"
+msgstr "Sollen alle ausgewählten Schlagwörter wirklich gelöscht werden?"
+
+msgid ""
+"Are you sure you want to delete all speakers from this list of speakers?"
+msgstr "Sollen wirklich alle Redner*innen von dieser Liste entfernt werden?"
+
+msgid "Are you sure you want to delete the editorial final version?"
+msgstr "Soll die redaktionelle Beschlussfassung wirklich gelöscht werden?"
+
+msgid "Are you sure you want to delete these accounts?"
+msgstr "Sollen diese Accounts wirklich gelöscht werden?"
+
+msgid "Are you sure you want to delete this account?"
+msgstr "Soll dieser Account wirklich gelöscht werden?"
+
+msgid "Are you sure you want to delete this category and all subcategories?"
+msgstr ""
+"Soll dieses Sachgebiet und deren Untersachgebiete wirklich gelöscht werden?"
+
+msgid "Are you sure you want to delete this change recommendation?"
+msgstr "Soll diese Änderungsempfehlung wirklich gelöscht werden?"
+
+msgid "Are you sure you want to delete this chat group?"
+msgstr "Soll diese Chat-Gruppe wirklich gelöscht werden?"
+
+msgid "Are you sure you want to delete this comment field?"
+msgstr "Soll dieses Kommentarfeld wirklich gelöscht werden?"
+
+msgid "Are you sure you want to delete this committee?"
+msgstr "Soll dieses Gremium wirklich gelöscht werden?"
+
+msgid "Are you sure you want to delete this countdown?"
+msgstr "Soll dieser Countdown wirklich gelöscht werden?"
+
+msgid "Are you sure you want to delete this election?"
+msgstr "Soll diese Wahl wirklich gelöscht werden?"
+
+msgid "Are you sure you want to delete this entry?"
+msgstr "Soll dieser Eintrag wirklich gelöscht werden?"
+
+msgid "Are you sure you want to delete this file?"
+msgstr "Soll diese Datei wirklich gelöscht werden?"
+
+msgid "Are you sure you want to delete this group?"
+msgstr "Soll diese Gruppe wirklich gelöscht werden?"
+
+msgid "Are you sure you want to delete this meeting?"
+msgstr "Soll diese Veranstaltung wirklich gelöscht werden?"
+
+msgid "Are you sure you want to delete this message?"
+msgstr "Soll diese Mitteilung wirklich gelöscht werden?"
+
+msgid "Are you sure you want to delete this motion block?"
+msgstr "Soll dieser Antragsblock wirklich gelöscht werden?"
+
+msgid "Are you sure you want to delete this motion?"
+msgstr "Soll dieser Antrag wirklich gelöscht werden?"
+
+msgid "Are you sure you want to delete this projector?"
+msgstr "Soll dieser Projektor wirklich gelöscht werden?"
+
+msgid "Are you sure you want to delete this statute paragraph?"
+msgstr "Soll dieser Satzungsabschnitt wirklich gelöscht werden?"
+
+msgid "Are you sure you want to delete this tag?"
+msgstr "Soll dieses Schlagwort wirklich gelöscht werden?"
+
+msgid "Are you sure you want to delete this topic?"
+msgstr "Soll dieses Thema wirklich gelöscht werden?"
+
+msgid "Are you sure you want to delete this vote?"
+msgstr "Soll diese Abstimmung wirklich gelöscht werden?"
+
+msgid "Are you sure you want to delete this workflow?"
+msgstr "Soll dieser Arbeitsablauf wirklich gelöscht werden?"
+
+msgid "Are you sure you want to discard this amendment?"
+msgstr "Soll dieser Änderungsantrag wirklich verworfen werden?"
+
+msgid "Are you sure you want to duplicate this meeting?"
+msgstr "Soll diese Veranstaltung wirklich dupliziert werden?"
+
+msgid ""
+"Are you sure you want to generate new passwords for all selected "
+"participants?"
+msgstr ""
+"Sollen wirklich neue Passwörter für alle ausgewählte Teilnehmende generiert "
+"werden?"
+
+msgid "Are you sure you want to number all agenda items?"
+msgstr "Sollen alle Tagesordnungspunkte wirklich neu nummeriert werden?"
+
+msgid ""
+"Are you sure you want to override the state of all motions of this motion "
+"block?"
+msgstr ""
+"Soll der Status von allen Anträgen aus diesem Antragsblock wirklich "
+"überschrieben werden?"
+
+msgid "Are you sure you want to remove all selected items from the agenda?"
+msgstr ""
+"Sollen alle ausgewählten Einträge wirklich aus der Tagesordnung entfernt "
+"werden?"
+
+msgid "Are you sure you want to remove this entry from the agenda?"
+msgstr "Soll dieser Eintrag wirklich aus der Tagesordnung entfernt werden?"
+
+msgid "Are you sure you want to remove this motion from motion block?"
+msgstr "Soll dieser Antrag wirklich aus dem Antragsblock entfernt werden?"
+
+msgid ""
+"Are you sure you want to remove this speaker from the list of speakers?"
+msgstr "Soll diese*r Redner*in wirklich von der Redeliste entfernt werden?"
+
+msgid "Are you sure you want to remove yourself from this list of speakers?"
+msgstr "Wollen Sie sich wirklich von dieser Redeliste entfernen?"
+
+msgid "Are you sure you want to renumber all motions of this category?"
+msgstr ""
+"Sollen alle Anträge dieses Sachgebiets wirklich neu nummeriert werden?"
+
+msgid "Are you sure you want to reset all options to factory defaults?"
+msgstr ""
+"Sollen wirklich alle Optionen auf Werkseinstellung zurückgesetzt werden?"
+
+msgid ""
+"Are you sure you want to reset all options to factory defaults? All changes "
+"of this settings group will be lost!"
+msgstr ""
+"Sollen wirklich alle Optionen auf Werkseinstellung zurückgesetzt werden? "
+"Alle Änderungen auf dieser Einstellungsseite gehen verloren!"
+
+msgid "Are you sure you want to reset all passwords to the default ones?"
+msgstr ""
+"Sollen wirklich alle Passwörter auf die initialen Passwörter zurückgesetzt "
+"werden?"
+
+msgid "Are you sure you want to reset this vote?"
+msgstr "Soll diese Abstimmung wirklich zurückgesetzt werden?"
+
+msgid "Are you sure you want to send an invitation email to the user?"
+msgstr "Soll wirklich eine E-Mail den diesen Nutzer gesendet werden?"
+
+msgid "Are you sure you want to send emails to all selected participants?"
+msgstr ""
+"Sollen E-Mails wirklich an alle ausgewählten Teilnehmende gesendet werden?"
+
+msgid "Are you sure you want to stop this voting?"
+msgstr "Soll die Stimmabgabe wirklich beendet werden?"
+
+msgid "Are you sure you want to submit a point of order?"
+msgstr "Soll wirklich ein Geschäftsordnungsantrag gestellt werden?"
+
+msgid "As of"
+msgstr "Stand"
+
+msgid "As recommendation"
+msgstr "wie Empfehlung"
+
+msgid "Ask, default no"
+msgstr "Nachfragen, voreingestellt nein"
+
+msgid "Ask, default yes"
+msgstr "Nachfragen, voreingestellt ja"
+
+msgid "Assign"
+msgstr "Zuweisen"
+
+msgid "Assigned accounts"
+msgstr "Zugewiesene Accounts"
+
+msgid "At least"
+msgstr "Mindestens"
+
+msgid "At most"
+msgstr "Höchstens"
+
+msgid "Attachments"
+msgstr "Anhänge"
+
+msgid ""
+"Attention: Accounts will add to the default group of each meeting only. If "
+"another group is intended please use the 'Add to meetings' dialog in account"
+" detail view."
+msgstr ""
+"Achtung: Accounts werden nur der Standardgruppe einer jeden Veranstaltung "
+"zugewiesen. Wenn eine andere Gruppe vorgesehen ist, verwenden Sie bitte den "
+"Dialog „Zu Veranstaltungen hinzufügen“ in der Account-Detailansicht."
+
+msgid "Attention: This action cannot be undone!"
+msgstr "Achtung: Diese Aktion kann nicht rückgängig gemacht werden!"
+
+msgid "Automatically open the microphone for new conference speakers"
+msgstr "Mikrofon automatisch öffnen beim Eintreten in die Livekonferenz"
+
+msgid "Automatically open the web cam for new conference speakers"
+msgstr "Kamera automatisch öffnen beim Eintreten in die Livekonferenz"
+
+msgid "Autopilot"
+msgstr "Autopilot"
+
+msgid "Autoupdate unhealthy"
+msgstr "Autoupdate nicht in Ordnung"
+
+msgid "Available sizes are 10, 11 and 12"
+msgstr "Verfügbaren Größen sind 10, 11 und 12"
+
+msgid "Available votes"
+msgstr "Verfügbare Stimmen"
+
+msgid "Back"
+msgstr "Zurück"
+
+msgid "Back to OpenSlides"
+msgstr "Zurück zu OpenSlides"
+
+msgid "Back to login"
+msgstr "Zurück zur Anmeldung"
+
+msgid "Background color"
+msgstr "Hintergrundfarbe"
+
+msgid "Ballot"
+msgstr "Wahlgang"
+
+msgid "Ballot anonymized"
+msgstr "Wahlgang anonymisiert"
+
+msgid "Ballot created"
+msgstr "Wahlgang erstellt"
+
+msgid "Ballot deleted"
+msgstr "Wahlgang gelöscht"
+
+msgid "Ballot opened"
+msgstr "Wahlgang eröffnet"
+
+msgid "Ballot papers"
+msgstr "Stimmzettel"
+
+msgid "Ballot published"
+msgstr "Wahlgang veröffentlicht"
+
+msgid "Ballot reset"
+msgstr "Wahlgang zurückgesetzt"
+
+msgid "Ballot started"
+msgstr "Wahlgang gestarted"
+
+msgid "Ballot stopped"
+msgstr "Wahlgeang beendet"
+
+msgid "Ballot stopped/published"
+msgstr "Wahlgang beendet/veröffentlicht"
+
+msgid "Ballot updated"
+msgstr "Wahlgang aktualisiert"
+
+msgid "Ballots"
+msgstr "Wahlgänge"
+
+msgid "Base folder"
+msgstr "Basisverzeichnis"
+
+msgid "Begin speech"
+msgstr "Rede beginnen"
+
+msgid "Blank between prefix and number, e.g. 'A 001'."
+msgstr "Leerzeichen zwischen Präfix und Nummer, z. B. 'A 001'."
+
+msgid "CSV export options"
+msgstr "CSV-Exportoptionen"
+
+msgid "CSV import"
+msgstr "CSV-Import"
+
+msgid "Calendar"
+msgstr "Kalender"
+
+msgid "Call list"
+msgstr "Aufrufliste"
+
+msgid "Called"
+msgstr "Aufgerufen wird"
+
+msgid "Called with"
+msgstr "Mit aufgerufen werden"
+
+msgid "Can create amendments"
+msgstr "Darf Änderungsanträge stellen"
+
+msgid "Can create motions"
+msgstr "Darf Anträge erstellen"
+
+msgid "Can forward motions"
+msgstr "Darf Anträge weiterleiten"
+
+msgid "Can forward motions to committee"
+msgstr "Darf Anträge weiterleiten an Gremium"
+
+msgid "Can manage agenda"
+msgstr "Darf die Tagesordung verwalten"
+
+msgid "Can manage elections"
+msgstr "Darf Wahlen verwalten"
+
+msgid "Can manage files"
+msgstr "Darf Dateien verwalten"
+
+msgid "Can manage list of speakers"
+msgstr "Darf Redelisten verwalten"
+
+msgid "Can manage logos and fonts"
+msgstr "Darf Logos und Schriften verwalten"
+
+msgid "Can manage motion metadata"
+msgstr "Darf Antragsmetadaten verwalten"
+
+msgid "Can manage motion polls"
+msgstr "Darf Antragsabstimmungen verwalten"
+
+msgid "Can manage motions"
+msgstr "Darf Anträge verwalten"
+
+msgid "Can manage participants"
+msgstr "Darf Teilnehmende verwalten"
+
+msgid "Can manage polls"
+msgstr "Darf Umfragen verwalten"
+
+msgid "Can manage presence of others"
+msgstr "Darf die Anwesenheit anderer verwalten"
+
+msgid "Can manage settings"
+msgstr "Darf Einstellungen verwalten"
+
+msgid "Can manage tags"
+msgstr "Darf Schlagwörter verwalten"
+
+msgid "Can manage the chat"
+msgstr "Darf den Chat verwalten"
+
+msgid "Can manage the projector"
+msgstr "Darf den Projektor steuern"
+
+msgid "Can nominate another participant"
+msgstr "Darf andere Teilnehmende für Wahlen vorschlagen"
+
+msgid "Can nominate oneself"
+msgstr "Darf selbst für Wahlen kandidieren"
+
+msgid "Can put oneself on the list of speakers"
+msgstr "Darf sich selbst auf die Redeliste setzen"
+
+msgid "Can receive motions"
+msgstr "Darf Anträge erhalten"
+
+msgid "Can receive motions from committee"
+msgstr "Darf Anträge erhalten von Gremium"
+
+msgid "Can see agenda"
+msgstr "Darf die Tagesordnung sehen"
+
+msgid "Can see elections"
+msgstr "Darf Wahlen sehen"
+
+msgid "Can see history"
+msgstr "Darf die Chronik sehen"
+
+msgid "Can see internal items and time scheduling of agenda"
+msgstr "Darf interne Einträge und Zeitplan der Tagesordnung sehen"
+
+msgid "Can see list of speakers"
+msgstr "Darf Redelisten sehen"
+
+msgid "Can see motions"
+msgstr "Darf Anträge sehen"
+
+msgid "Can see motions in internal state"
+msgstr "Darf Anträge im internen Status sehen"
+
+msgid "Can see participants"
+msgstr "Darf Teilnehmende sehen"
+
+msgid "Can see the autopilot"
+msgstr "Darf den Autopilot sehen"
+
+msgid "Can see the front page"
+msgstr "Darf die Startseite sehen"
+
+msgid "Can see the list of files"
+msgstr "Darf die Dateiliste sehen"
+
+msgid "Can see the live stream"
+msgstr "Darf den Livestream sehen"
+
+msgid "Can see the projector"
+msgstr "Darf den Projektor sehen"
+
+msgid "Can support motions"
+msgstr "Darf Anträge unterstützen"
+
+msgid "Cancel"
+msgstr "Abbrechen"
+
+msgid "Cancel edit"
+msgstr "Bearbeitung abbrechen"
+
+msgid "Cancel editing without saving"
+msgstr "Bearbeitung ohne Speichern abbrechen"
+
+msgid "Candidate"
+msgstr "Kandidat*in"
+
+msgid "Candidate added"
+msgstr "Kandidat*in hinzugefügt"
+
+msgid "Candidate removed"
+msgstr "Kandidat*in entfernt"
+
+msgid "Candidates"
+msgstr "Kandidat*innen"
+
+msgid "Cannot do that in demo mode!"
+msgstr "Diese Aktion ist im Demo-Modus nicht möglich!"
+
+msgid "Cannot forward motions"
+msgstr "Darf keine Anträge weiterleiten"
+
+msgid "Cannot navigate to the selected history element."
+msgstr "Das ausgewählte Chronikelement kann nicht geöffnet werden."
+
+msgid "Cannot receive motions"
+msgstr "Darf keine Anträge erhalten"
+
+msgid "Categories"
+msgstr "Sachgebiete"
+
+msgid "Category"
+msgstr "Sachgebiet"
+
+msgid "Category changed"
+msgstr "Sachgebiet aktualisiert"
+
+msgid "Category removed"
+msgstr "Sachgebiet entfernt"
+
+msgid "Category set to {}"
+msgstr "Sachgebiet gesetzt auf {}"
+
+msgid "Center"
+msgstr "Mittig"
+
+msgid "Change paragraph"
+msgstr "Absatz ändern"
+
+msgid "Change password"
+msgstr "Passwort ändern"
+
+msgid "Change password for"
+msgstr "Passwort ändern für"
+
+msgid "Change presence"
+msgstr "Anwesenheit ändern"
+
+msgid "Change recommendation"
+msgstr "Änderungsempfehlung"
+
+msgid "Change recommendations"
+msgstr "Änderungsempfehlungen"
+
+msgid "Changed by"
+msgstr "Bearbeitet von"
+
+msgid "Changed title"
+msgstr "Geänderter Titel"
+
+msgid "Changed version"
+msgstr "Geänderte Fassung"
+
+msgid "Changed version in line"
+msgstr "Geänderte Fassung in Zeile"
+
+msgid "Changes"
+msgstr "Änderungen"
+
+msgid "Chat"
+msgstr "Chat"
+
+msgid "Chat groups"
+msgstr "Chatgruppen"
+
+msgid "Check datastore"
+msgstr "Datastore überprüfen"
+
+msgid "Check in or check out participants based on their participant numbers:"
+msgstr ""
+"An- oder Abmeldung von Teilnehmenden basierend auf ihren Teilnehmernummern:"
+
+msgid "Choice"
+msgstr "Auswahl"
+
+msgid "Choose 0 to disable the supporting system."
+msgstr "Zum Deaktivieren des Unterstützersystems '0' eingeben."
+
+msgid "Chyron"
+msgstr "Bauchbinde"
+
+msgid "Chyron background color"
+msgstr "Hintergrundfarbe Bauchbinde"
+
+msgid "Chyron font color"
+msgstr "Schriftfarbe Bauchbinde"
+
+msgid "Chyron speaker name"
+msgstr "Bauchbinden-Rednername"
+
+msgid "Clear"
+msgstr "Bereinigen"
+
+msgid "Clear all filters"
+msgstr "Alle Filter entfernen"
+
+msgid "Clear all list of speakers"
+msgstr "Alle Redelisten bereinigen"
+
+msgid "Clear list"
+msgstr "Liste leeren"
+
+msgid "Clear motion block"
+msgstr "Antragsblock entfernen"
+
+msgid "Clear recommendation"
+msgstr "Empfehlung entfernen"
+
+msgid "Clear tags"
+msgstr "Schlagwörter entfernen"
+
+msgid "Click here to vote!"
+msgstr "Zur Stimmabgabe hier klicken!"
+
+msgid "Close list of speakers"
+msgstr "Redeliste schließen"
+
+msgid "Closed items"
+msgstr "Erledigte Einträge"
+
+msgid "Collapse all"
+msgstr "Alle zusammenklappen"
+
+msgid "Color"
+msgstr "Farbe"
+
+msgid "Column separator"
+msgstr "Spaltentrenner"
+
+msgid "Comment"
+msgstr "Kommentar"
+
+msgid "Comment created"
+msgstr "Kommentar erstellt"
+
+msgid "Comment deleted"
+msgstr "Kommentar gelöscht"
+
+msgid "Comment fields"
+msgstr "Kommentarfelder"
+
+msgid "Comment section"
+msgstr "Kommentarabschnitt"
+
+msgid "Comment sections"
+msgstr "Kommentarabschnitte"
+
+msgid "Comment updated"
+msgstr "Kommentar aktualisiert"
+
+msgid "Comment {} created"
+msgstr "Kommentar {} erstellt"
+
+msgid "Comment {} deleted"
+msgstr "Kommentar {} gelöscht"
+
+msgid "Comment {} updated"
+msgstr "Kommentar {} aktualisiert"
+
+msgid "Comments"
+msgstr "Kommentare"
+
+msgid "Committee"
+msgstr "Gremium"
+
+msgid "Committee Management Level changed"
+msgstr "Committee-Management-Level aktualisiert"
+
+msgid "Committee admin"
+msgstr "Gremienadmin"
+
+msgid "Committee management"
+msgstr "Gremienverwaltung"
+
+msgid "Committee managers"
+msgstr "Gremienverwalter"
+
+msgid "Committees"
+msgstr "Gremien"
+
+msgid "Committees and meetings"
+msgstr "Gremien und Veranstaltungen"
+
+msgid "Complex Workflow"
+msgstr "Komplexer Arbeitsablauf"
+
+msgid "Conference room"
+msgstr "Konferenzraum"
+
+msgid "Confirm new password"
+msgstr "Neues Passwort bestätigen"
+
+msgid "Confirmation of the nomination list"
+msgstr "Bestätigung der Wahlvorschlagsliste"
+
+msgid "Congratuations! Your browser is supported by OpenSlides."
+msgstr "Glückwunsch! Ihr Browser wird von OpenSlides unterstützt. "
+
+msgid "Connect 4"
+msgstr "Vier gewinnt"
+
+msgid "Connect all users to live conference automatically."
+msgstr "Alle Nutzer automatisch mit der Livekonferenz verbinden"
+
+msgid "Content"
+msgstr "Inhalt"
+
+msgid "Continue livestream"
+msgstr "Livestream fortsetzen"
+
+msgid "Continuous text"
+msgstr "Fortlaufender Text"
+
+msgid "Contra speech"
+msgstr "Gegenrede"
+
+msgid "Contribution"
+msgstr "Einbringung"
+
+msgid "Copy report to clipboard"
+msgstr "Bericht in die Zwischenablage kopieren"
+
+msgid "Count active users"
+msgstr "Aktive Nutzer zählen"
+
+msgid "Count completed requests to speak"
+msgstr "Abgeschlossene Wortmeldungen zählen"
+
+msgid "Countdown"
+msgstr "Countdown"
+
+msgid "Countdown and traffic light"
+msgstr "Countdown und Ampel"
+
+msgid "Countdown description"
+msgstr "Countdown-Beschreibung"
+
+msgid "Countdown time"
+msgstr "Countdown-Zeit"
+
+msgid "Countdown title"
+msgstr "Countdown-Titel"
+
+msgid "Countdowns"
+msgstr "Countdowns"
+
+msgid "Counter speech"
+msgstr "Gegenrede"
+
+msgid "Counting of votes is in progress ..."
+msgstr "Die Auszählung der Stimmen läuft ..."
+
+msgid "Couple countdown with the list of speakers"
+msgstr "Countdown mit der Redeliste verkoppeln"
+
+msgid "Create"
+msgstr "Erstellen"
+
+msgid "Create editorial final version"
+msgstr "Redaktionelle Beschlussfassung erstellen"
+
+msgid "Create new chat group"
+msgstr "Neue Chat-Gruppe anlegen"
+
+msgid "Create new tag"
+msgstr "Neues Schlagwort erstellen"
+
+msgid "Create user"
+msgstr "Nutzer anlegen"
+
+msgid "Creating PDF file ..."
+msgstr "PDF-Datei wird erstellt ..."
+
+msgid "Creation"
+msgstr "Erstellung"
+
+msgid "Creation date"
+msgstr "Erstellungsdatum"
+
+msgid "Current date"
+msgstr "Aktuelles Datum"
+
+msgid "Current list of speakers"
+msgstr "Aktuelle Redeliste"
+
+msgid "Current list of speakers (as slide)"
+msgstr "Aktuelle Redeliste (Folie)"
+
+msgid "Current slide"
+msgstr "Aktuelle Folie"
+
+msgid "Current speaker chyron"
+msgstr "Bauchbinde aktuelle*r Redner*in"
+
+msgid "Currently no livestream available."
+msgstr "Derzeit kein Livestream verfügbar."
+
+msgid "Currently projected"
+msgstr "Aktuell projiziert"
+
+msgid "Custom aspect ratio"
+msgstr "Eigenes Seitenverhältnis"
+
+msgid "Custom number of ballot papers"
+msgstr "Benutzerdefinierte Anzahl von Stimmzetteln"
+
+msgid "Custom translations"
+msgstr "Benutzerdefinierte Übersetzungen"
+
+msgid "Customize design"
+msgstr "Design anpassen"
+
+msgid "Dark mode"
+msgstr "Dunkler Modus"
+
+msgid "Dashboard"
+msgstr "Dashboard"
+
+msgid "Datastore is corrupt! See the console for errors."
+msgstr "Der Datastore ist beschädigt! Mehr Details in der Konsole."
+
+msgid "Datastore is ok!"
+msgstr "Der Datastore ist ok!"
+
+msgid ""
+"Dear {name},\n"
+"\n"
+"this is your personal OpenSlides login:\n"
+"\n"
+"{url}\n"
+"Username: {username}\n"
+"Password: {password}\n"
+"\n"
+"\n"
+"This email was generated automatically."
+msgstr ""
+"Hallo {name},\n"
+"\n"
+"hier ist Ihr persönlicher OpenSlides-Zugang:\n"
+"\n"
+"{url}\n"
+"Benutzername: {username}\n"
+"Passwort: {password}\n"
+"\n"
+"\n"
+"Diese E-Mail wurde automatisch erstellt."
+
+msgid "Decision"
+msgstr "Entscheidung"
+
+msgid "Default"
+msgstr "Standard"
+
+msgid "Default 100 % base of a voting result"
+msgstr "Voreingestellte 100-%-Basis eines Abstimmungsergebnisses"
+
+msgid "Default 100 % base of an election result"
+msgstr "Voreingestellte 100-%-Basis eines Wahlergebnisses"
+
+msgid "Default election method"
+msgstr "Voreingestellte Wahlmethode"
+
+msgid "Default encoding for all CSV exports"
+msgstr "Voreingestelltes Encoding für alle CSV-Exporte"
+
+msgid "Default group"
+msgstr "Vorgegebene Gruppen"
+
+msgid "Default groups with voting rights"
+msgstr "Voreingestellte Gruppen mit Stimmrecht"
+
+msgid "Default language"
+msgstr ""
+
+msgid "Default line numbering"
+msgstr "Voreingestellte Zeilennummerierung"
+
+msgid "Default number"
+msgstr "Standard-Nummer"
+
+msgid "Default participant number"
+msgstr "Voreingestellte Teilnehmendennummer"
+
+msgid "Default projector"
+msgstr "Standardprojektor"
+
+msgid "Default structure level"
+msgstr "Standard-Gliederungsebene"
+
+msgid "Default text version for change recommendations"
+msgstr "Voreingestellte Fassung für Änderungsempfehlungen"
+
+msgid "Default visibility for new agenda items (except topics)"
+msgstr ""
+"Voreingestellte Sichtbarkeit für neue Tagesordnungspunkte (außer Themen)"
+
+msgid "Default vote weight"
+msgstr "Standard-Stimmgewicht"
+
+msgid "Default voting duration"
+msgstr "Voreingestellte Dauer der Stimmabgabe"
+
+msgid "Default voting type"
+msgstr "Voreingestellte Art der Stimmabgabe"
+
+msgid ""
+"Defines the maximum deflection. Entering zero will use the amount of present"
+" participants instead."
+msgstr ""
+"Definiert den maximalen Ausschlag. Bei Eingabe von 0 wird die Anzahl der "
+"anwesenden Teilnehmenden verwendet."
+
+msgid ""
+"Defines the minimum deflection which is required to recognize applause."
+msgstr ""
+"Definiert den minimalen Ausschlag, der erforderlich ist, um Applaus zu "
+"erkennen."
+
+msgid "Defines the time in which applause amounts are add up."
+msgstr "Definiert die Zeit in der Applauswerte aufsummiert werden."
+
+msgid "Delegates"
+msgstr "Delegierte"
+
+msgid "Delegation of vote"
+msgstr "Stimmrechtsübertragung"
+
+msgid "Delete"
+msgstr "Löschen"
+
+msgid "Delete editorial final version"
+msgstr "Redaktionelle Beschlussfassung löschen"
+
+msgid "Delete projector"
+msgstr "Projektor löschen"
+
+msgid "Deleted user"
+msgstr "Gelöschter Nutzer"
+
+msgid "Deletion"
+msgstr "Streichung"
+
+msgid "Delivering vote... Please wait!"
+msgstr "Stimmabgabe läuft ... Bitte etwas Geduld!"
+
+msgid "Description"
+msgstr "Beschreibung"
+
+msgid "Deselect all"
+msgstr "Alle abwählen"
+
+msgid "Design"
+msgstr "Design"
+
+msgid "Designates whether this user is in the room."
+msgstr "Bestimmt, ob dieser Benutzer vor Ort ist."
+
+msgid "Didn't get an email"
+msgstr "Bekam keine E-Mail"
+
+msgid "Diff version"
+msgstr "Änderungsdarstellung"
+
+msgid "Disabled (no percents)"
+msgstr "Deaktiviert (keine Prozente)"
+
+msgid "Display type"
+msgstr "Anzeigeformat"
+
+msgid "Divergent:"
+msgstr "abweichend:"
+
+msgid "Do not concern"
+msgstr "Nicht befassen"
+
+msgid "Do not decide"
+msgstr "Nicht entscheiden"
+
+msgid "Do not forget to save your changes!"
+msgstr "Vergessen Sie nicht Ihre Änderungen zu speichern!"
+
+msgid "Do you really want to discard all your changes?"
+msgstr "Wollen Sie wirklich alle Änderungen verwerfen?"
+
+msgid "Do you really want to exit this page?"
+msgstr "Wollen Sie diese Seite wirklich verlassen?"
+
+msgid "Do you really want to go ahead?"
+msgstr "Wollen Sie die Aktion wirklich fortsetzen?"
+
+msgid ""
+"Do you really want to make available this meeting as a public template?"
+msgstr ""
+"Wollen Sie wirklich diese Veranstaltung als öffentliche Vorlage verfügbar "
+"machen?"
+
+msgid "Do you really want to save your changes?"
+msgstr "Wollen Sie wirklich Ihre Änderungen speichern?"
+
+msgid "Do you really want to stop sharing this meeting as a public template?"
+msgstr ""
+"Wollen Sie wirklich aufhören diese Veranstaltung als öffentliche Vorlage zu "
+"nutzen?"
+
+msgid "Does not have notes"
+msgstr "Hat keine Notizen"
+
+msgid "Done"
+msgstr "erledigt"
+
+msgid "Download"
+msgstr "Herunterladen"
+
+msgid "Download CSV example file"
+msgstr "CSV-Beispiel-Datei herunterladen"
+
+msgid "Download folder"
+msgstr "Verzeichnis herunterladen"
+
+msgid "Drop files into this area OR click here to select files"
+msgstr ""
+"Dateien auf diesen Bereich ziehen ODER hier klicken um Dateien auszuwählen"
+
+msgid "Duplicate"
+msgstr "Duplizieren"
+
+msgid "Duplicate from"
+msgstr "Duplizieren von"
+
+msgid "Duplicates"
+msgstr "Duplikate"
+
+msgid "Duration"
+msgstr "Dauer"
+
+msgid "Duration of all requests to speak"
+msgstr "Dauer aller Wortmeldungen"
+
+msgid "Duration of requests to speak"
+msgstr "Dauer der Wortmeldungen"
+
+msgid ""
+"During non-nominal voting OpenSlides does NOT store the individual user ID "
+"of the voter. This in no way means that a non-nominal vote is completely "
+"anonymous and secure. The votes cannot track their individual votes after "
+"the data has been submitted. The validity of the data cannot always be "
+"guaranteed."
+msgstr ""
+"Während der nicht-namentlichen Stimmabgabe speichert OpenSlides NICHT die "
+"individuelle Nutzerkennung des Stimmberechtigen. Dies bedeutet jedoch "
+"keineswegs, dass eine nicht-namentliche Stimmabgabe völlig anonym und sicher"
+" ist. Der Stimmberechtigte kann nach Übermittlung der Daten die eigene "
+"Stimme nicht mehr nachverfolgen oder überprüfen. Die Gültigkeit der Daten "
+"kann daher nicht garantiert werden."
+
+msgid "Edit"
+msgstr "Bearbeiten"
+
+msgid "Edit comment field"
+msgstr "Kommentarfeld bearbeiten"
+
+msgid "Edit committee"
+msgstr "Gremium bearbeiten"
+
+msgid "Edit details"
+msgstr "Details bearbeiten"
+
+msgid "Edit details for"
+msgstr "Details bearbeiten für"
+
+msgid "Edit editorial final version"
+msgstr "Redaktionelle Beschlussfassung bearbeiten"
+
+msgid "Edit meeting"
+msgstr "Veranstaltung bearbeiten"
+
+msgid "Edit name"
+msgstr "Name bearbeiten"
+
+msgid "Edit projector"
+msgstr "Projektor bearbeiten"
+
+msgid "Edit statute paragraph"
+msgstr "Satzungsabschnitt bearbeiten"
+
+msgid "Edit tag"
+msgstr "Schlagwort bearbeiten"
+
+msgid "Edit the whole motion text"
+msgstr "Vollständigen Antragstext bearbeiten"
+
+msgid "Edit to enter votes."
+msgstr "Bearbeiten, um Stimmen einzugeben."
+
+msgid "Edit topic"
+msgstr "Thema bearbeiten"
+
+msgid "Editorial final version"
+msgstr "Redaktionelle Beschlussfassung"
+
+msgid "Election"
+msgstr "Wahl"
+
+msgid "Election documents"
+msgstr "Wahlunterlagen"
+
+msgid "Elections"
+msgstr "Wahlen"
+
+msgid "Email"
+msgstr "E-Mail"
+
+msgid "Email address"
+msgstr "E-Mail-Adresse"
+
+msgid "Email body"
+msgstr "Nachrichtentext"
+
+msgid "Email sent"
+msgstr "E-Mail gesendet"
+
+msgid "Email settings"
+msgstr "E-Mail-Einstellungen"
+
+msgid "Email subject"
+msgstr "Betreff"
+
+msgid "Empty text field"
+msgstr "Leeres Textfeld"
+
+msgid "Enable chat globally"
+msgstr "Chat global aktivieren"
+
+msgid "Enable electronic voting"
+msgstr "Elektronische Stimmabgabe aktivieren"
+
+msgid "Enable forspeech / counter speech"
+msgstr "Fürrede/Gegenrede aktivieren"
+
+msgid "Enable numbering for agenda items"
+msgstr "Nummerierung von Tagesordnungspunkten aktivieren"
+
+msgid "Enable participant presence view"
+msgstr "Ansicht zur Teilnehmeranwesenheit aktivieren"
+
+msgid "Enable point of order"
+msgstr "Geschäftsordnungsanträge aktivieren"
+
+msgid "Enable star icon to mark speaker (e.g. for contribution)"
+msgstr ""
+"Stern-Icon zum Markieren von Redner*innen aktivieren (z.B. zur Einbringung "
+"eines Antrags)"
+
+msgid "Enable virtual applause"
+msgstr "Virtuellen Applaus einschalten"
+
+msgid "Enable virtual help desk room"
+msgstr "Virtuellen Help-Desk-Raum einschalten"
+
+msgid "Enable/disable account ..."
+msgstr "Account ein-/ausschalten ..."
+
+msgid "Enable/disable accounts"
+msgstr "Accounts ein-/ausschalten"
+
+msgid "Encoding of the file"
+msgstr "Encoding der Datei"
+
+msgid "End date"
+msgstr "Enddatum"
+
+msgid "End speech"
+msgstr "Rede beenden"
+
+msgid "Enforce page breaks"
+msgstr "Seitenumbrüche erzwingen"
+
+msgid "Enter"
+msgstr "Eingabe"
+
+msgid "Enter conference room"
+msgstr "Konferenzraum beitreten"
+
+msgid "Enter duration in seconds. Choose 0 to disable warning color."
+msgstr ""
+"Geben Sie die Dauer in Sekunden an. Zum Deaktivieren der Warn-Farbe 0 "
+"auswählen."
+
+msgid ""
+"Enter number of the next shown speakers. Choose -1 to show all next "
+"speakers."
+msgstr ""
+"Geben Sie die Anzahl der nächsten anzuzeigenden Redner*innen ein. Wählen Sie"
+" -1 um alle anzuzeigen."
+
+msgid "Enter participant number"
+msgstr "Teilnehmernummer eingeben"
+
+msgid "Enter the developer mode"
+msgstr "Entwicklermodus aufrufen"
+
+msgid "Enter your email to send the password reset link"
+msgstr ""
+"Geben Sie Ihre E-Mail-Adresse ein, um einen Link zum Zurücksetzen des "
+"Passworts zu erhalten."
+
+msgid "Entitled to vote"
+msgstr "Stimmberechtigte"
+
+msgid "Entitled users"
+msgstr "Stimmberechtigte"
+
+msgid "Error"
+msgstr "Fehler"
+
+msgid "Error during PDF creation of election:"
+msgstr "Fehler bei der PDF-Erstellung der Wahl:"
+
+msgid "Error during PDF creation of motion:"
+msgstr "Fehler bei der PDF-Erstellung in Antrag"
+
+msgid "Error in form field."
+msgstr "Fehler im Formularfeld."
+
+msgid "Error talking to autoupdate service"
+msgstr "Fehler bei der Kommunikation mit dem Autoupdate-Service"
+
+msgid "Estimated end"
+msgstr "Voraussichtliches Ende"
+
+msgid "Event location"
+msgstr "Veranstaltungsort"
+
+msgid ""
+"Everyone can see the request of a point of order (instead of managers for "
+"list of speakers only)"
+msgstr ""
+"Jede*r darf das Anliegen eines GO-Antrags sehen (anstatt nur die "
+"Redelistenverwaltung)"
+
+msgid ""
+"Existing accounts can be reused by entering email (with given name and "
+"surname) OR by entering the username in the csv file."
+msgstr ""
+"Bestehende Accounts können durch Eingabe der E-Mail-Adresse (mit Vor- und "
+"Nachname) ODER durch Eingabe des Benutzernamens in der CSV-Datei "
+"wiederverwendet werden."
+
+msgid "Exit"
+msgstr "Beenden"
+
+msgid "Exit conference room"
+msgstr "Konferenzraum verlassen"
+
+msgid "Exit fullscreen"
+msgstr "Vollbild beenden"
+
+msgid "Expand all"
+msgstr "Alle ausklappen"
+
+msgid "Export"
+msgstr "Exportieren"
+
+msgid "Export as CSV"
+msgstr "Exportieren als CSV"
+
+msgid "Export as PDF"
+msgstr "Exportieren als PDF"
+
+msgid "Export comment"
+msgstr "Kommentar exportieren"
+
+msgid "Export motions"
+msgstr "Anträge exportieren"
+
+msgid "Export personal note only"
+msgstr "Nur persönliche Notiz exportieren"
+
+msgid "Export selected elections"
+msgstr "Ausgewählte Wahlen exportieren"
+
+msgid "Export selected motions"
+msgstr "Ausgewählte Anträge exportieren"
+
+msgid "Extension"
+msgstr "Erweiterung"
+
+msgid "Favorites"
+msgstr "Favoriten"
+
+msgid "File"
+msgstr "Datei"
+
+msgid "Filename"
+msgstr "Dateiname"
+
+msgid "Files"
+msgstr "Dateien"
+
+msgid "Filter"
+msgstr "Filter"
+
+msgid "Final version"
+msgstr "Beschlussfassung"
+
+msgid "Finished"
+msgstr "Abgeschlossen"
+
+msgid "First speech"
+msgstr "Erstredner*in"
+
+msgid "First state"
+msgstr "Erster Status"
+
+msgid "Follow recommendation"
+msgstr "Empfehlung folgen"
+
+msgid "Follow recommendations for all motions"
+msgstr "Empfehlungen für alle Anträge folgen"
+
+msgid "Following users are currently editing this motion:"
+msgstr "Folgende Nutzer bearbeiten aktuell diesen Antrag:"
+
+msgid "Font bold"
+msgstr "Schriftart fett"
+
+msgid "Font bold italic"
+msgstr "Schriftart fett kursiv"
+
+msgid "Font italic"
+msgstr "Schriftart kursiv"
+
+msgid "Font monospace"
+msgstr "Schriftart monospace"
+
+msgid "Font regular"
+msgstr "Schriftart normal"
+
+msgid "Font size in pt"
+msgstr "Schriftgröße in pt"
+
+msgid ""
+"For large instances this may block the server to the point of unusability"
+msgstr "Bei großen Instanzen kann dies den Server stark blockieren."
+
+msgid "Foreground color"
+msgstr "Vordergrundfarbe"
+
+msgid "Forgot Password?"
+msgstr "Passwort vergessen?"
+
+msgid "Format"
+msgstr "Format"
+
+msgid "Forspeech"
+msgstr "Fürrede"
+
+msgid "Forward"
+msgstr "Weiterleiten"
+
+msgid "Forward motions"
+msgstr "Anträge weiterleiten"
+
+msgid "Forward motions to"
+msgstr "Anträge weiterleiten an"
+
+msgid "Forwarded motion deleted"
+msgstr "Weitergeleiteter Antrag gelöscht"
+
+msgid "Forwarded to {}"
+msgstr "Weitergeleitet an: {}"
+
+msgid "Forwarding"
+msgstr "Weiterleitung"
+
+msgid "Forwarding created"
+msgstr "Weiterleitung erstellt"
+
+msgid "Forwarding of motion"
+msgstr "Weiterleitung von Antrag"
+
+msgid "Forwardings"
+msgstr "Weiterleitungen"
+
+msgid "Front page text"
+msgstr "Text der Startseite"
+
+msgid "Front page title"
+msgstr "Titel der Startseite"
+
+msgid "Full name"
+msgstr "Vollständiger Name"
+
+msgid "Fullscreen"
+msgstr "Vollbild"
+
+msgid "Game draw!"
+msgstr "Unentschieden!"
+
+msgid "Gender"
+msgstr "Geschlecht"
+
+msgid "General"
+msgstr "Allgemein"
+
+msgid "General abstain"
+msgstr "Generelle Enthaltung"
+
+msgid "General approval"
+msgstr "Generelle Zustimmung"
+
+msgid "General rejection"
+msgstr "Generelle Ablehnung"
+
+msgid "Generate new color"
+msgstr "Neue Farbe generieren"
+
+msgid "Generate new passwords"
+msgstr "Neue Passwörter generieren"
+
+msgid "Generate password"
+msgstr "Passwort generieren"
+
+msgid "Give applause"
+msgstr "Applaus geben"
+
+msgid "Given name"
+msgstr "Vorname"
+
+msgid "Go to line"
+msgstr "Springe zur Zeile"
+
+msgid "Got an email"
+msgstr "Bekam eine E-Mail"
+
+msgid "Group"
+msgstr "Gruppe"
+
+msgid "Group name"
+msgstr "Gruppenname"
+
+msgid "Group not found - account is already in meeting, nothing assigned"
+msgstr ""
+"Gruppe nicht gefunden - Account ist bereits in der Veranstaltung, nichts "
+"zugewiesen"
+
+msgid "Group not found - assigned to default group"
+msgstr "Gruppe nicht gefunden - an Standardgruppe zugewiesen"
+
+msgid "Groups"
+msgstr "Gruppen"
+
+msgid "Groups changed in meeting {}"
+msgstr "Gruppen in Veranstaltung {} geändert"
+
+msgid "Groups changed in multiple meetings"
+msgstr "Gruppen in mehreren Veranstaltungen geändert"
+
+msgid "Groups with read permissions"
+msgstr "Gruppen mit Leseberechtigungen"
+
+msgid "Groups with write permissions"
+msgstr "Gruppen mit Schreibberechtigungen"
+
+msgid "Guest"
+msgstr "Gast"
+
+msgid "Has amendments"
+msgstr "Hat Änderungsanträge"
+
+msgid "Has an email address"
+msgstr "Hat eine E-Mail-Adresse"
+
+msgid "Has changed vote weight"
+msgstr "Stimmgewicht verändert"
+
+msgid "Has forwardings"
+msgstr "Hat Weiterleitungen"
+
+msgid "Has logged in"
+msgstr "Hat sich angemeldet"
+
+msgid "Has no email address"
+msgstr "Hat keine E-Mail-Adresse"
+
+msgid "Has no speakers"
+msgstr "Keine Wortmeldungen vorhanden"
+
+msgid "Has not logged in yet"
+msgstr "Hat sich noch nicht angemeldet"
+
+msgid "Has notes"
+msgstr "Hat Notizen"
+
+msgid "Has speakers"
+msgstr "Wortmeldungen vorhanden"
+
+msgid "Has unchanged vote weight"
+msgstr "Stimmgewicht unverändert"
+
+msgid "Has voted"
+msgstr "Stimme abgegeben"
+
+msgid "Header"
+msgstr "Kopfzeile"
+
+msgid "Header background color"
+msgstr "Hintergrundfarbe Kopfbereich"
+
+msgid "Header font color"
+msgstr "Schriftfarbe Kopfbereich"
+
+msgid "Headline color"
+msgstr "Überschriftenfarbe"
+
+msgid "Help desk"
+msgstr "Help Desk"
+
+msgid "Help text for access data and welcome PDF"
+msgstr "Hilfetext für das Zugangsdaten- und Willkommens-PDF"
+
+msgid "Hidden item"
+msgstr "Versteckter Eintrag"
+
+msgid "Hide more text"
+msgstr "weniger anzeigen"
+
+msgid "Hide password"
+msgstr "Passwort verstecken"
+
+msgid "Highest applause amount"
+msgstr "Höchster Applauswert"
+
+msgid "Hint on voting"
+msgstr "Hinweis zur Stimmabgabe"
+
+msgid "History"
+msgstr "Chronik"
+
+msgid "Home"
+msgstr "Startseite"
+
+msgid "How to create new amendments"
+msgstr "Erstellung von Änderungsanträgen"
+
+msgid "I know the risk"
+msgstr "Ich kenne das Risiko"
+
+msgid "If deactivated it is displayed below the title"
+msgstr "Wenn deaktiviert erfolgt die Anzeige unterhalb des Antragstitels"
+
+msgid ""
+"If it is an amendment, you can back up its content when editing it and "
+"delete it afterwards."
+msgstr ""
+"Wenn es sich um einen Änderungsantrag handelt, können Sie den Inhalt beim "
+"Bearbeiten sichern und anschließend löschen."
+
+msgid "Import"
+msgstr "Importieren"
+
+msgid "Import accounts"
+msgstr "Accounts importieren"
+
+msgid "Import committees"
+msgstr "Gremien importieren"
+
+msgid "Import data needs to have the JSON format"
+msgstr "Importierte Daten müssen im JSON-Format vorliegen"
+
+msgid "Import meeting"
+msgstr "Veranstaltung importieren"
+
+msgid "Import motions"
+msgstr "Anträge importieren"
+
+msgid "Import participants"
+msgstr "Teilnehmende importieren"
+
+msgid "Import statute"
+msgstr "Satzung importieren"
+
+msgid "Import topics"
+msgstr "Themen importieren"
+
+msgid "Import workflows"
+msgstr "Arbeitsabläufe importieren"
+
+msgid "In motion list, motion detail and PDF."
+msgstr "In Antragsliste, Detailansicht und PDF."
+
+msgid "In progress, please wait..."
+msgstr "In Bearbeitung – bitte warten ..."
+
+msgid "In the election process"
+msgstr "Im Wahlvorgang"
+
+msgid "Inactive"
+msgstr "Inaktiv"
+
+msgid "Inconsistent data."
+msgstr "Inkonsistente Daten."
+
+msgid "Information"
+msgstr "Information"
+
+msgid "Initial password"
+msgstr "Initiales Passwort"
+
+msgid "Insert after"
+msgstr "Danach einfügen"
+
+msgid "Insert before"
+msgstr "Davor einfügen"
+
+msgid "Insert behind"
+msgstr "Dahinter einfügen"
+
+msgid "Insert topics here"
+msgstr "Themen hier importieren"
+
+msgid "Insertion"
+msgstr "Ergänzung"
+
+msgid "Internal"
+msgstr "Intern"
+
+msgid "Internal item"
+msgstr "Interner Eintrag"
+
+msgid "Invalid line number"
+msgstr "Ungültige Zeilennummer"
+
+msgid "Invalid votes"
+msgstr "Ungültige Stimmen"
+
+msgid "Invite to conference room"
+msgstr "In den Konferenzraum einladen"
+
+msgid "Is a committee"
+msgstr "Ist ein Gremium"
+
+msgid "Is a natural person"
+msgstr "Ist eine natürliche Person"
+
+msgid "Is a template"
+msgstr "Ist eine öffentliche Vorlage"
+
+msgid "Is active"
+msgstr "Ist aktiv"
+
+msgid "Is already projected"
+msgstr "ist bereits projiziert"
+
+msgid "Is amendment"
+msgstr "Ist ein Änderungsantrag"
+
+msgid "Is archived"
+msgstr "Ist archiviert"
+
+msgid "Is being projected"
+msgstr "wird projiziert"
+
+msgid "Is candidate"
+msgstr "ist Kandidat*in"
+
+msgid "Is committee admin"
+msgstr "Ist Gremienadmin"
+
+msgid "Is favorite"
+msgstr "Ist Favorit"
+
+msgid "Is in active meetings"
+msgstr "Ist in aktiven Veranstaltungen"
+
+msgid "Is in archived meetings"
+msgstr "Ist in archivierten Veranstaltungen"
+
+msgid "Is manager"
+msgstr "ist Verwalter*in"
+
+msgid "Is no amendment and has no amendments"
+msgstr "Ist kein Änderungsantrag und hat keine Änderungsanträge"
+
+msgid "Is no natural person"
+msgstr "Ist keine natürliche Person"
+
+msgid "Is not a committee"
+msgstr "Ist kein Gremium"
+
+msgid "Is not a template"
+msgstr "Ist keine öffentliche Vorlage"
+
+msgid "Is not active"
+msgstr "Ist nicht aktiv"
+
+msgid "Is not archived"
+msgstr "Ist nicht archiviert"
+
+msgid "Is not favorite"
+msgstr "Ist kein Favorit"
+
+msgid "Is not in active meetings"
+msgstr "Ist in keinen aktiven Veranstaltungen"
+
+msgid "Is not in archived meetings"
+msgstr "Ist in keinen archivierten Veranstaltungen"
+
+msgid "Is not present"
+msgstr "Ist nicht anwesend"
+
+msgid "Is present"
+msgstr "Ist anwesend"
+
+msgid "Is speaker"
+msgstr "ist Redner*in"
+
+msgid "Is submitter"
+msgstr "ist Antragsteller*in"
+
+msgid ""
+"It is not allowed to delete countdowns used for list of speakers or polls"
+msgstr ""
+"Countdowns, die für Redelisten oder elektronische Stimmabgaben verwendet "
+"werden, dürfen nicht gelöscht werden."
+
+msgid "It's your partners turn"
+msgstr "Dein Partner ist am Zug!"
+
+msgid "It's your turn!"
+msgstr "Du bist dran!"
+
+msgid "Item"
+msgstr "Eintrag"
+
+msgid "Item number"
+msgstr "Tagesordnungspunkt-Nummer"
+
+msgid "Items"
+msgstr "Einträge"
+
+msgid "Jitsi domain"
+msgstr "Jitsi-Domain"
+
+msgid "Jitsi room name"
+msgstr "Jitsi-Raumname"
+
+msgid "Jitsi room password"
+msgstr "Jitsi-Raumpasswort"
+
+msgid "Keep each item in a single line."
+msgstr "Verwenden Sie eine Zeile pro Eintrag."
+
+msgid "Label color"
+msgstr "Beschriftungsfarbe"
+
+msgid "Language"
+msgstr ""
+
+msgid "Last email sent"
+msgstr "Letzte gesendete E-Mail"
+
+msgid "Last login"
+msgstr "Letzte Anmeldung"
+
+msgid "Last modified"
+msgstr "Zuletzt geändert"
+
+msgid "Last speakers"
+msgstr "Letzte Redner*innen"
+
+msgid "Leave"
+msgstr "Verlassen"
+
+msgid "Leave blank to automatically generate the password."
+msgstr "Lassen Sie das Feld leer, um das Passwort automatisch zu generieren."
+
+msgid "Leave blank to automatically generate the username."
+msgstr ""
+"Lassen Sie das Feld leer, um den Benutzernamen automatisch zu generieren."
+
+msgid "Left"
+msgstr "Links"
+
+msgid "Legal notice"
+msgstr "Impressum"
+
+msgid "Less"
+msgstr "Weniger"
+
+msgid "Level indicator"
+msgstr "Pegelanzeige"
+
+msgid "Light mode"
+msgstr "Heller Modus"
+
+msgid "Limit of active accounts"
+msgstr "Anzahl der maximal aktiven Accounts"
+
+msgid "Limit of active meetings"
+msgstr "Anzahl der maximal aktiven Veranstaltungen"
+
+msgid "Line"
+msgstr "Zeile"
+
+msgid "Line length"
+msgstr "Zeilenlänge"
+
+msgid "Line numbering"
+msgstr "Zeilennummerierung"
+
+msgid "Line spacing"
+msgstr "Zeilenabstand"
+
+msgid "Linenumber"
+msgstr "Zeilennummer"
+
+msgid "List of electronic votes"
+msgstr "Elektronische Stimmabgaben"
+
+msgid "List of participants"
+msgstr "Teilnehmendenliste"
+
+msgid "List of participants (PDF)"
+msgstr "Teilnehmendenliste (PDF)"
+
+msgid "List of speakers"
+msgstr "Redeliste"
+
+msgid "List of speakers is initially closed"
+msgstr "Redelisten sind zunächst geschlossen"
+
+msgid "List view"
+msgstr "Listenansicht"
+
+msgid "Lists of speakers"
+msgstr "Redelisten"
+
+msgid "Live conference"
+msgstr "Livekonferenz"
+
+msgid "Live conference has to be active. Choose 0 to disable auto connect."
+msgstr ""
+"Die Livekonferenz muss aktiv sein. Wählen Sie 0 um den automatischen "
+"Verbindungsaufbau zu deaktivieren."
+
+msgid "Livestream"
+msgstr "Livestream"
+
+msgid "Livestream URL"
+msgstr "Livestream-URL"
+
+msgid "Livestream poster image url"
+msgstr "Livestream-Posterbild-URL"
+
+msgid "Loading data. Please wait ..."
+msgstr "Daten werden geladen. Bitte warten ..."
+
+msgid "Login"
+msgstr "Anmelden"
+
+msgid "Login anyway"
+msgstr "Trotzdem anmelden"
+
+msgid "Login as guest"
+msgstr "Als Gast anmelden"
+
+msgid "Logout"
+msgstr "Abmelden"
+
+msgid "Lowest applause amount"
+msgstr "Niedrigster Applauswert"
+
+msgid "Main motion and line number"
+msgstr "Hauptantrag und Zeilennummer"
+
+msgid "Mark as personal favorite"
+msgstr "Als persönlichen Favorit markieren"
+
+msgid "Maximum amount of votes"
+msgstr "Maximale Stimmenanzahl"
+
+msgid "Maximum amount of votes per option"
+msgstr "Max. Stimmenanzahl pro Option"
+
+msgid "Maximum number of columns on motion block slide"
+msgstr "Maximale Spaltenanzahl der Antragsblockprojektion"
+
+msgid "Media access is denied"
+msgstr "Medienzugriff verweigert"
+
+msgid "Media file"
+msgstr "Mediendatei"
+
+msgid "Meeting"
+msgstr "Veranstaltung"
+
+msgid "Meeting administrator"
+msgstr "Veranstaltungsadministrator"
+
+msgid "Meeting information"
+msgstr "Veranstaltungsinformationen"
+
+msgid "Meeting not found"
+msgstr "Veranstaltung nicht gefunden"
+
+msgid "Meeting specific information"
+msgstr "Veranstaltungsspezifische Informationen"
+
+msgid "Meeting template"
+msgstr "Veranstaltungsvorlage"
+
+msgid ""
+"Meeting templates and the data they contain are publicly viewable by all "
+"committee administrators."
+msgstr ""
+"Veranstaltungsvorlagen und die darin enthaltenen Daten sind für alle "
+"Gremienadmins öffentlich einsehbar."
+
+msgid "Meeting title"
+msgstr "Veranstaltungstitel"
+
+msgid "Meetings"
+msgstr "Veranstaltungen"
+
+msgid "Meetings selected"
+msgstr "Anzahl der ausgewählte Veranstaltungen"
+
+msgid "Message"
+msgstr "Mitteilung"
+
+msgid "Messages"
+msgstr "Mitteilungen"
+
+msgid "Meta information"
+msgstr "Metainformationen"
+
+msgid "Min votes cannot be greater than max votes."
+msgstr ""
+"Die minimale Stimmenanzahl darf nicht größer als die maximale Stimmenanzahl "
+"sein."
+
+msgid "Minimal required version"
+msgstr "Minimal erforderliche Version"
+
+msgid "Minimize"
+msgstr "Minimieren"
+
+msgid "Minimum amount of votes"
+msgstr "Minimale Stimmenanzahl"
+
+msgid "Minimum number of digits for motion number"
+msgstr "Minimale Anzahl an Ziffern in der Antragsnummer"
+
+msgid "Module"
+msgstr "Modul"
+
+msgid "More"
+msgstr "Mehr"
+
+msgid "Motion"
+msgstr "Antrag"
+
+msgid "Motion block"
+msgstr "Antragsblock"
+
+msgid "Motion block changed"
+msgstr "Antragsblock geändert"
+
+msgid "Motion block removed"
+msgstr "Antragsblock entfernt"
+
+msgid "Motion block set to {}"
+msgstr "Antragsblock gesetzt auf {}"
+
+msgid "Motion blocks"
+msgstr "Antragsblöcke"
+
+msgid "Motion change recommendation created"
+msgstr "Änderungsempfehlung erstellt"
+
+msgid "Motion change recommendation deleted"
+msgstr "Änderungsempfehlung gelöscht"
+
+msgid "Motion change recommendation updated"
+msgstr "Änderungsempfehlung aktualisiert"
+
+msgid "Motion created"
+msgstr "Antrag erstellt"
+
+msgid "Motion created (forwarded)"
+msgstr "Antrag erstellt (weitergeleitet)"
+
+msgid "Motion deleted"
+msgstr "Antrag gelöscht"
+
+msgid "Motion forwarded to"
+msgstr "Antrag weitergeleitet an"
+
+msgid "Motion forwarding"
+msgstr "Antragsweiterleitung"
+
+msgid "Motion number"
+msgstr "Antragsnummer"
+
+msgid "Motion preamble"
+msgstr "Antragseinleitung"
+
+msgid "Motion updated"
+msgstr "Antrag aktualisiert"
+
+msgid "Motion votes"
+msgstr "Antragsabstimmungen"
+
+msgid "Motions"
+msgstr "Anträge"
+
+msgid "Motions are in process. Please wait ..."
+msgstr "Anträge werden bearbeitet. Bitte warten ..."
+
+msgid "Move"
+msgstr "Verschieben"
+
+msgid "Move in call list"
+msgstr "In Aufrufliste verschieben"
+
+msgid "Move into directory"
+msgstr "In Verzeichnis verschieben"
+
+msgid "Move selected items ..."
+msgstr "Ausgewählte Einträge verschieben ..."
+
+msgid "Move to agenda item"
+msgstr "Zu TOP verschieben"
+
+msgid "Multiple users found for same username!"
+msgstr "Mehrere Benutzer für denselben Benutzernamen gefunden!"
+
+msgid "Multiple users with same credentials!"
+msgstr "Mehrere Benutzer mit denselben Anmeldedaten gefunden!"
+
+msgid "Multiselect"
+msgstr "Mehrfachauswahl"
+
+msgid "My account"
+msgstr "Mein Konto"
+
+msgid "My meetings"
+msgstr "Meine Veranstaltungen"
+
+msgid "My profile"
+msgstr "Mein Profil"
+
+msgid "Name"
+msgstr "Name"
+
+msgid "Name exceeds 256 characters"
+msgstr "Der Name überschreitet 256 Zeichen"
+
+msgid "Name of recommender"
+msgstr "Name des Empfehlungsgebers"
+
+msgid "Name of recommender for statute amendments"
+msgstr "Name des Empfehlungsgebers für Satzungsänderungsanträge"
+
+msgid "Name of the new category"
+msgstr "Name des neuen Sachgebiets"
+
+msgid "Natural person"
+msgstr "natürliche Person"
+
+msgid "Needs review"
+msgstr "Benötigt Review"
+
+msgid "Negative votes are not allowed."
+msgstr "Negative Stimmen sind nicht zulässig."
+
+msgid "Never"
+msgstr "Nie"
+
+msgid "New Projector"
+msgstr "Neuer Projektor"
+
+msgid "New account"
+msgstr "Neuer Account"
+
+msgid "New amendment"
+msgstr "Neuer Änderungsantrag"
+
+msgid "New ballot"
+msgstr "Neuer Wahlgang"
+
+msgid "New category"
+msgstr "Neues Sachgebiet"
+
+msgid "New change recommendation"
+msgstr "Neue Änderungsempfehlung"
+
+msgid "New comment field"
+msgstr "Neues Kommentarfeld"
+
+msgid "New committee"
+msgstr "Neues Gremium"
+
+msgid "New directory"
+msgstr "Neues Verzeichnis"
+
+msgid "New election"
+msgstr "Neue Wahl"
+
+msgid "New file name"
+msgstr "Neuer Dateiname"
+
+msgid "New group name"
+msgstr "Neuer Gruppenname"
+
+msgid "New meeting"
+msgstr "Neue Veranstaltung"
+
+msgid "New motion"
+msgstr "Neuer Antrag"
+
+msgid "New motion block"
+msgstr "Neuer Antragsblock"
+
+msgid "New option"
+msgstr "Neue Option"
+
+msgid "New participant"
+msgstr "Neue*r Teilnehmer*in"
+
+msgid "New password"
+msgstr "Neues Passwort"
+
+msgid "New poll"
+msgstr "Neue Umfrage"
+
+msgid "New state"
+msgstr "Neuer Status"
+
+msgid "New statute paragraph"
+msgstr "Neuer Satzungsabschnitt"
+
+msgid "New tag"
+msgstr "Neues Schlagwort"
+
+msgid "New topic"
+msgstr "Neues Thema"
+
+msgid "New vote"
+msgstr "Neue Abstimmung"
+
+msgid "New workflow"
+msgstr "Neuer Arbeitsablauf"
+
+msgid "Next"
+msgstr "Weiter"
+
+msgid "Next states"
+msgstr "Nächste Zustände"
+
+msgid "No"
+msgstr "Nein"
+
+msgid "No admin role"
+msgstr "Keine Adminrolle"
+
+msgid "No category"
+msgstr "Kein Sachgebiet"
+
+msgid "No category set"
+msgstr "kein Sachgebiet gesetzt"
+
+msgid "No change recommendations yet"
+msgstr "Bisher keine Änderungsempfehlungen"
+
+msgid "No changes at the text."
+msgstr "Keine Änderung am Text."
+
+msgid "No chat groups available"
+msgstr "Keine Chat-Gruppen vorhanden."
+
+msgid "No comment"
+msgstr "Kein Kommentar"
+
+msgid "No committee admin"
+msgstr "Kein Gremienadmin"
+
+msgid "No concernment"
+msgstr "Nichtbefassung"
+
+msgid "No data"
+msgstr "Keine Daten"
+
+msgid "No decision"
+msgstr "Keine Entscheidung"
+
+msgid "No delegation of vote"
+msgstr "Keine Stimmrechtsübertragungen"
+
+msgid "No emails were send."
+msgstr "Es wurden keine E-Mails versandt."
+
+msgid "No encryption"
+msgstr "Keine Verschlüsselung"
+
+msgid "No forwardings"
+msgstr "Keine Weiterleitungen"
+
+msgid "No group name has been entered."
+msgstr "Es wurde noch kein Gruppenname eingegeben."
+
+msgid "No groups selected"
+msgstr "Keine Gruppen ausgewählt"
+
+msgid "No items selected"
+msgstr "Keine Einträge ausgewählte"
+
+msgid "No meeting selected"
+msgstr "Keine Veranstaltung ausgewählt"
+
+msgid "No meetings available"
+msgstr "Keine Veranstaltungen vorhanden"
+
+msgid "No meetings have been selected."
+msgstr "Es wurde noch keine Veranstaltung ausgewählt."
+
+msgid "No motion block set"
+msgstr "kein Antragsblock gesetzt"
+
+msgid "No one has voted for this poll"
+msgstr "Niemand hat für diese Abstimmung gestimmt."
+
+msgid "No options found"
+msgstr "Keine Optionen gefunden"
+
+msgid "No per candidate"
+msgstr "Nein pro Kandidat"
+
+msgid "No personal note"
+msgstr "Keine persönliche Notiz"
+
+msgid "No recommendation"
+msgstr "keine Empfehlung gesetzt"
+
+msgid "No results yet."
+msgstr "Noch keine Ergebnisse."
+
+msgid "No statute paragraphs"
+msgstr "Keine Satzungsabschnitte vorhanden"
+
+msgid "No tags"
+msgstr "Keine Schlagwörter"
+
+msgid "No verbose name is defined"
+msgstr "Es ist kein ausführlicher Name definiert"
+
+msgid "No."
+msgstr "Nr."
+
+msgid "Nomination list"
+msgstr "Wahlvorschlagsliste"
+
+msgid "None"
+msgstr "aus"
+
+msgid "Not found"
+msgstr "Nicht gefunden"
+
+msgid ""
+"Note, that the default password will be changed to the new generated one."
+msgstr ""
+"Beachten Sie, dass das Passwort auf das neu generierte Passwort geändert "
+"wird."
+
+msgid ""
+"Note: Your own password was not changed. Please use the password change "
+"dialog instead."
+msgstr ""
+"Hinweis: Ihr eigenes Passwort wurde nicht geändert. Nutzen Sie stattdessen "
+"die Passwort-Ändern-Funktion."
+
+msgid "Notes"
+msgstr "Notizen"
+
+msgid "Number"
+msgstr "Bezeichner"
+
+msgid "Number candidates"
+msgstr "Kandidat*innen nummerieren"
+
+msgid "Number motions"
+msgstr "Anträge nummerieren"
+
+msgid "Number of (minimum) required supporters for a motion"
+msgstr "Mindestanzahl erforderlicher Unterstützer*innen für einen Antrag"
+
+msgid "Number of all delegates"
+msgstr "Anzahl aller Delegierten"
+
+msgid "Number of all participants"
+msgstr "Anzahl aller Teilnehmenden"
+
+msgid "Number of all requests to speak"
+msgstr "Anzahl aller Wortmeldungen"
+
+msgid "Number of ballot papers"
+msgstr "Stimmzettelanzahl"
+
+msgid "Number of candidates"
+msgstr "Kandidatenanzahl"
+
+msgid "Number of last speakers to be shown on the projector"
+msgstr "Anzahl der dargestellten letzten Redner*innen auf dem Projektor"
+
+msgid "Number of motions"
+msgstr "Anzahl von Anträgen"
+
+msgid ""
+"Number of next speakers automatically connecting to the live conference"
+msgstr ""
+"Anzahl der nächsten Redner*innen, die automatisch mit der Livekonferenz "
+"verbunden werden"
+
+msgid "Number of participants"
+msgstr "Anzahl von Teilnehmenden"
+
+msgid "Number of persons to be elected"
+msgstr "Anzahl der zu wählenden Personen"
+
+msgid "Number of requests to speak"
+msgstr "Anzahl der Wortmeldungen"
+
+msgid "Number of the next speakers to be shown on the projector"
+msgstr "Anzahl der dargestellten nächsten Render*innen auf dem Projektor"
+
+msgid "Number set"
+msgstr "Nummer gesetzt"
+
+msgid "Numbered per category"
+msgstr "pro Sachgebiet nummerieren"
+
+msgid "Numbering"
+msgstr "Nummerierung"
+
+msgid "Numbering prefix for agenda items"
+msgstr "Präfix für Nummerierung von Tagesordnungspunkten"
+
+msgid "Numeral system for agenda items"
+msgstr "Nummerierungssystem für Tagesordnungspunkte"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "Offline mode"
+msgstr "Offline-Modus"
+
+msgid "Ok"
+msgstr "Ok"
+
+msgid "Old password"
+msgstr "Altes Passwort"
+
+msgid "One email was send sucessfully."
+msgstr "Eine E-Mail wurde erfolgreich versandt."
+
+msgid "Only countdown"
+msgstr "Nur Countdown"
+
+msgid "Only for internal notes."
+msgstr "Nur für interne Notizen."
+
+msgid "Only main agenda items"
+msgstr "Nur Haupt-Tagesordnungspunkte"
+
+msgid "Only present participants can be added to the list of speakers"
+msgstr "Nur anwesende Teilnehmende können zur Redeliste hinzugefügt werden"
+
+msgid "Only traffic light"
+msgstr "Nur Ampel"
+
+msgid "Open Jitsi in new tab"
+msgstr "Jitsi im neuen Tab öffnen"
+
+msgid "Open a meeting to play \"Connect 4\""
+msgstr "Öffnen Sie eine Veranstaltung um \"Vier gewinnt\" zu spielen."
+
+msgid "Open items"
+msgstr "Offene Einträge"
+
+msgid "Open list of speakers"
+msgstr "Redeliste öffnen"
+
+msgid "Open meeting"
+msgstr "Veranstaltung öffnen"
+
+msgid "Open projection dialog"
+msgstr "Projektionsdialog öffnen"
+
+msgid "Open requests to speak"
+msgstr "Offene Wortmeldungen"
+
+msgid "OpenSlides URL"
+msgstr "OpenSlides-URL"
+
+msgid "OpenSlides access data"
+msgstr "OpenSlides-Zugangsdaten"
+
+msgid "OpenSlides help (FAQ)"
+msgstr "OpenSlides Hilfe (FAQ)"
+
+msgid "OpenSlides recommends"
+msgstr "OpenSlides empfiehlt"
+
+msgid "Option"
+msgstr "Wahlmöglichkeit"
+
+msgid "Options"
+msgstr "Optionen"
+
+msgid "Organization"
+msgstr "Organisation"
+
+msgid "Organization Management Level changed"
+msgstr "Administrationsrolle geändert"
+
+msgid "Organization admin"
+msgstr "Organisationsadmin"
+
+msgid "Organization specific information"
+msgstr "Organisationsspezifische Informationen"
+
+msgid "Organizations"
+msgstr "Organisationen"
+
+msgid "Origin"
+msgstr "Herkunft"
+
+msgid "Origin motion deleted"
+msgstr "Herkunftsantrag gelöscht"
+
+msgid "Original"
+msgstr "Original"
+
+msgid "Original version"
+msgstr "Originalfassung"
+
+msgid "Outside"
+msgstr "außerhalb"
+
+msgid "Overlay"
+msgstr "Einblendung"
+
+msgid "PDF"
+msgstr "PDF"
+
+msgid "PDF ballot paper logo"
+msgstr "PDF-Stimmzettel-Logo"
+
+msgid "PDF export"
+msgstr "PDF-Export"
+
+msgid "PDF export options"
+msgstr "PDF-Exportoptionen"
+
+msgid "PDF footer logo (left)"
+msgstr "PDF-Logo Fußzeile (links)"
+
+msgid "PDF footer logo (right)"
+msgstr "PDF-Logo Fußzeile (rechts)"
+
+msgid "PDF header logo (left)"
+msgstr "PDF-Logo Kopfzeile (links)"
+
+msgid "PDF header logo (right)"
+msgstr "PDF-Logo Kopfzeile (rechts)"
+
+msgid "PDF options"
+msgstr "PDF-Optionen"
+
+msgid "Page"
+msgstr "Seite"
+
+msgid "Page format"
+msgstr "Papierformat"
+
+msgid "Page margin bottom in mm"
+msgstr "Seitenrand unten in mm"
+
+msgid "Page margin left in mm"
+msgstr "Seitenrand links in mm"
+
+msgid "Page margin right in mm"
+msgstr "Seitenrand rechts in mm"
+
+msgid "Page margin top in mm"
+msgstr "Seitenrand oben in mm"
+
+msgid "Page number alignment in PDF"
+msgstr "Seitenzahl-Ausrichtung im PDF"
+
+msgid "Page numbers"
+msgstr "Seitenzahlen"
+
+msgid "Paragraph-based, Diff-enabled"
+msgstr "Absatzbasiert mit Änderungsdarstellung"
+
+msgid "Parallel upload"
+msgstr "Parallel hochladen"
+
+msgid "Parent agenda item"
+msgstr "Elternelement in der Tagesordnung"
+
+msgid "Participant"
+msgstr "Teilnehmer*in"
+
+msgid "Participant added to group {} in meeting {}"
+msgstr "Teilnehmer*in hinzugefügt zur Gruppe {} in Veranstaltung {}"
+
+msgid "Participant added to multiple groups in meeting {}"
+msgstr "Teilnehmer*in hinzugefügt zu mehreren Gruppen in Veranstaltung {}"
+
+msgid "Participant added to multiple groups in multiple meetings"
+msgstr ""
+"Teilnehmer*in hinzugefügt zu mehreren Gruppen in mehreren Veranstaltungen"
+
+msgid "Participant created"
+msgstr "Teilnehmer*in erstellt"
+
+msgid "Participant created in meeting {}"
+msgstr "Teilnehmer*in erstellt in Veranstaltung {}"
+
+msgid "Participant data updated in meeting {}"
+msgstr "Teilnehmendendaten aktualisiert in Veranstaltung {}"
+
+msgid "Participant data updated in multiple meetings"
+msgstr "Teilnehmendendaten aktualisiert in mehreren Veranstaltungen"
+
+msgid "Participant deleted"
+msgstr "Teilnehmer*in gelöscht"
+
+msgid "Participant deleted in meeting {}"
+msgstr "Teilnehmer*in gelöscht in Veranstaltung {}"
+
+msgid "Participant number"
+msgstr "Teilnehmernummer"
+
+msgid "Participant removed from group {} in meeting {}"
+msgstr "Teilnehmer*in entfernt aus der Gruppe {} in Veranstaltung {}"
+
+msgid "Participant removed from multiple groups in meeting {}"
+msgstr "Teilnehmer*in entfernt aus mehreren Gruppen in Veranstaltung {}"
+
+msgid "Participant removed from multiple groups in multiple meetings"
+msgstr ""
+"Teilnehmer*in entfernt aus mehreren Gruppen in mehreren Veranstaltungen"
+
+msgid "Participants"
+msgstr "Teilnehmende"
+
+msgid ""
+"Participants and administrators are copied completely and cannot be edited "
+"here."
+msgstr ""
+"Teilnehmende und Administratoren werden vollständig kopiert und lassen sich "
+"hier nicht bearbeitet."
+
+msgid "Particles"
+msgstr "Partikel"
+
+msgid "Password"
+msgstr "Passwort"
+
+msgid "Password changed"
+msgstr "Passwort geändert"
+
+msgid "Password changed successfully!"
+msgstr "Passwort erfolgreich geändert!"
+
+msgid "Passwords do not match"
+msgstr "Passwörter stimmen nicht überein"
+
+msgid "Paste/write your topics in this textbox."
+msgstr ""
+"Kopieren oder schreiben Sie die Titel Ihrer Themenpunkte in diese Textbox."
+
+msgid "Permission"
+msgstr "Zulassung"
+
+msgid "Permissions"
+msgstr "Berechtigungen"
+
+msgid "Permit"
+msgstr "Zulassen"
+
+msgid "Personal data changed"
+msgstr "Persönliche Stammdaten geändert"
+
+msgid "Personal information"
+msgstr "Persönliche Informationen"
+
+msgid "Personal note"
+msgstr "Persönliche Notiz"
+
+msgid "Personal notes"
+msgstr "Persönliche Notizen"
+
+msgid "Phase"
+msgstr "Phase"
+
+msgid "Please allow OpenSlides to access your microphone and/or camera"
+msgstr "Bitte erlauben Sie jetzt den Zugriff auf Mikrofon und Kamera."
+
+msgid "Please enter a name for the new directory:"
+msgstr "Bitte geben Sie einen Namen für das neue Verzeichnis ein:"
+
+msgid "Please enter a name for the new workflow:"
+msgstr "Bitte geben Sie einen Namen für den neuen Arbeitsablauf ein:"
+
+msgid "Please enter a new workflow name:"
+msgstr "Bitte geben Sie einen neuen Arbeitsablaufnamen ein:"
+
+msgid "Please enter a valid email address"
+msgstr "Bitte geben Sie einen neuen Namen ein für"
+
+msgid "Please enter a valid email address!"
+msgstr "Bitte geben Sie eine gültige E-Mail-Adresse ein!"
+
+msgid "Please enter your new password"
+msgstr "Bitte geben Sie Ihr neues Passwort ein"
+
+msgid "Please join the conference room now!"
+msgstr "Bitte kommen Sie jetzt in den Konferenzraum!"
+
+msgid "Please select the directory:"
+msgstr "Bitte wählen Sie das Verzeichnis aus:"
+
+msgid ""
+"Please select your target meetings and state the name of the group, which "
+"the user should be assigned to in each meeting."
+msgstr ""
+"Bitte wählen Sie die Zielveranstaltungen aus und geben Sie den Namen der "
+"Gruppe an, welche dem Account in jeder Veranstaltung zugeordnet werden soll."
+
+msgid "Please update your browser or contact your system administration."
+msgstr ""
+"Bitte aktualisieren Sie Ihren Browser oder kontaktieren Sie Ihre "
+"Systemadministration."
+
+msgid "Point of order"
+msgstr "GO-Antrag"
+
+msgid "Polls"
+msgstr "Umfragen"
+
+msgid "Preamble text for PDF document (all elections)"
+msgstr "Einleitungstext für PDF-Dokument (alle Wahlen) "
+
+msgid "Preamble text for PDF documents of motions"
+msgstr "Einleitungstext für PDF-Dokumente von Anträgen"
+
+msgid "Predefined seconds of new countdowns"
+msgstr "Vorgegebene Sekunden für neue Countdowns"
+
+msgid "Prefix"
+msgstr "Präfix"
+
+msgid "Prefix for the motion number for amendments"
+msgstr "Präfix für die Antragsnummer bei Änderungsanträgen"
+
+msgid "Presence"
+msgstr "Anwesenheit"
+
+msgid "Present"
+msgstr "Anwesend"
+
+msgid "Preview"
+msgstr "Vorschau"
+
+msgid "Previous"
+msgstr "Zurück"
+
+msgid "Previous slides"
+msgstr "Letzte Folien"
+
+msgid "Privacy Policy"
+msgstr "Datenschutzerklärung"
+
+msgid "Privacy policy"
+msgstr "Datenschutzerklärung"
+
+msgid "Project"
+msgstr "Projizieren"
+
+msgid "Project selection?"
+msgstr "Auswahl projizieren?"
+
+msgid "Projection"
+msgstr "Projektion"
+
+msgid "Projection defaults"
+msgstr "Projektionsvorgaben"
+
+msgid "Projections"
+msgstr "Projektionen"
+
+msgid "Projector"
+msgstr "Projektor"
+
+msgid "Projector and countdown"
+msgstr "Projektor und Countdown"
+
+msgid "Projector h1"
+msgstr "Projektor h1"
+
+msgid "Projector h2"
+msgstr "Projektor h2"
+
+msgid "Projector header image"
+msgstr "Projektor-Kopfgrafik"
+
+msgid "Projector logo"
+msgstr "Projektor-Logo"
+
+msgid "Projectors"
+msgstr "Projektoren"
+
+msgid "Pronoun"
+msgstr "Pronomen"
+
+msgid "Public"
+msgstr "Öffentlich"
+
+msgid "Public item"
+msgstr "Öffentlicher Eintrag"
+
+msgid "Public template"
+msgstr "Öffentliche Vorlage"
+
+msgid "Publish"
+msgstr "Veröffentlichen"
+
+msgid "Publish immediately"
+msgstr "Direkt veröffentlichen"
+
+msgid "Put all candidates on the list of speakers"
+msgstr "Alle Kandidaten auf die Redeliste setzen"
+
+msgid "Queue"
+msgstr "Warteliste"
+
+msgid "Re-add last speaker"
+msgstr "Letzte*n Redner*in zurückholen"
+
+msgid "Reason"
+msgstr "Begründung"
+
+msgid "Reason required for creating new motion"
+msgstr "Begründung erforderlich zur Erstellung neuer Anträge"
+
+msgid "Receive motions"
+msgstr "Anträge erhalten"
+
+msgid "Receive motions from"
+msgstr "Anträge erhalten von"
+
+msgid "Received votes"
+msgstr "Empfangene Stimmen"
+
+msgid "Recommendation"
+msgstr "Empfehlung"
+
+msgid "Recommendation changed"
+msgstr "Empfehlung geändert"
+
+msgid "Recommendation label"
+msgstr "Empfehlung"
+
+msgid "Recommendation reset"
+msgstr "Empfehlung zurückgesetzt"
+
+msgid "Recommendation set to {}"
+msgstr "Empfehlung gesetzt auf {}"
+
+msgid "Reenter to conference room"
+msgstr "Konferenzraum erneut beitreten"
+
+msgid "Refer to committee"
+msgstr "In Ausschuss verweisen"
+
+msgid "Referral to committee"
+msgstr "Verweisung in Ausschuss"
+
+msgid "Referring motions"
+msgstr "Auf diesen Antrag verweisende Anträge"
+
+msgid "Refresh"
+msgstr "Aktualisieren"
+
+msgid ""
+"Regardless of current language settings, the entered group name must be "
+"consistent with original group name (for the built-in groups it is the "
+"English group name)."
+msgstr ""
+"Unabhängig von den aktuellen Spracheinstellungen muss der eingegebene "
+"Gruppenname mit dem ursprünglichen Gruppennamen übereinstimmen. Für die "
+"integrierten Gruppen gelten hingegen die englischen Gruppennamen. Dies "
+"umfasst folgende Gruppen: Delegierte (Delegates), Mitarbeitende (Staff) und "
+"Gremien (Committees). Bitte verwenden Sie die englischen Bezeichnungen."
+
+msgid "Reject"
+msgstr "Ablehnen"
+
+msgid "Reject (not authorized)"
+msgstr "Verwerfen (nicht zulässig)"
+
+msgid "Rejected"
+msgstr "Abgelehnt"
+
+msgid "Rejection"
+msgstr "Ablehnung"
+
+msgid "Rejection (not authorized)"
+msgstr "Verwerfung (nicht berechtigt)"
+
+msgid "Relevant information could not be accessed"
+msgstr "Relevante Informationen konnten nicht abgerufen werden."
+
+msgid "Remove"
+msgstr "Entfernen"
+
+msgid ""
+"Remove URL to deactivate livestream. Check extra group permission to see "
+"livestream."
+msgstr ""
+"Um den Livestream zu deaktivieren entfernen Sie die URL. Prüfen Sie die "
+"extra Gruppenberechtigung um den Livestream zu sehen."
+
+msgid "Remove all next speakers"
+msgstr "Alle nächsten Redner*innen entfernen"
+
+msgid "Remove all previous speakers"
+msgstr "Alle letzten Redner*innen entfernen"
+
+msgid "Remove all speakers"
+msgstr "Alle Redner*innen entfernen"
+
+msgid "Remove candidate"
+msgstr "Kandidate/in entfernen"
+
+msgid "Remove file"
+msgstr "Datei entfernen"
+
+msgid "Remove forward"
+msgstr "Weiterleitung entfernen"
+
+msgid "Remove from agenda"
+msgstr "Aus Tagesordnung entfernen"
+
+msgid "Remove from motion block"
+msgstr "Vom Antragsblock entfernen "
+
+msgid "Remove me"
+msgstr "Entferne mich"
+
+msgid "Remove option"
+msgstr "Option entfernen"
+
+msgid "Rename state"
+msgstr "Status umbenennen"
+
+msgid "Reopen"
+msgstr "wieder öffnen"
+
+msgid "Replacement"
+msgstr "Ersetzung"
+
+msgid "Reply address"
+msgstr "Antwortadresse"
+
+msgid "Request"
+msgstr "Anliegen"
+
+msgid "Request \"WhoAmI\" failed"
+msgstr "Anfrage \"WhoAmI\" fehlgeschlagen"
+
+msgid "Requests to speak"
+msgstr "Wortmeldungen"
+
+msgid "Required"
+msgstr "Erforderlich"
+
+msgid ""
+"Required comma or semicolon separated values with these column header names "
+"in the first row:"
+msgstr ""
+"Erforderliche Komma- oder Semikolon-separierte Werte mit diesen Spaltennamen"
+" in der ersten Zeile:"
+
+msgid "Required permissions to view this page:"
+msgstr "Erforderliches Recht um diese Seite zu sehen:"
+
+msgid "Reset"
+msgstr "Zurücksetzen"
+
+msgid "Reset cache"
+msgstr "Cache leeren"
+
+msgid "Reset password"
+msgstr "Passwort zurücksetzen"
+
+msgid "Reset passwords to the default ones"
+msgstr "Passwörter zurücksetzen auf Initiales"
+
+msgid "Reset recommendation"
+msgstr "Empfehlung zurücksetzen"
+
+msgid "Reset state"
+msgstr "Status zurücksetzen"
+
+msgid "Reset to factory defaults"
+msgstr "Auf Werkseinstellung zurücksetzen"
+
+msgid "Reset your OpenSlides password"
+msgstr "Zurücksetzen Ihres Openslides-Passworts"
+
+msgid "Resolution and size"
+msgstr "Auflösung und Größe"
+
+msgid "Restart livestream"
+msgstr "Livestream neustarten"
+
+msgid "Restrictions"
+msgstr "Zugriffsbeschränkung"
+
+msgid "Result"
+msgstr "Ergebnis"
+
+msgid "Results"
+msgstr "Ergebnisse"
+
+msgid "Retrieving vote status... Please wait!"
+msgstr ""
+
+msgid "Right"
+msgstr "Rechts"
+
+msgid "Roman"
+msgstr "Römisch"
+
+msgid "Same email"
+msgstr "Gleiche E-Mail-Adresse"
+
+msgid "Same first/last name"
+msgstr "Gleicher Vor- und Nachname"
+
+msgid "Save"
+msgstr "Speichern"
+
+msgid "Save all changes"
+msgstr "Alle Änderungen speichern"
+
+msgid "Save editorial final version"
+msgstr "Redaktionelle Beschlussfassung speichern"
+
+msgid "Scan this QR code to connect to WLAN."
+msgstr "QR-Code scannen um sich mit dem WLAN zu verbinden."
+
+msgid "Scan this QR code to open URL."
+msgstr "QR-Code scannen um die URL zu öffnen."
+
+msgid "Scroll down"
+msgstr "Nach unten scrollen"
+
+msgid "Scroll down (big step)"
+msgstr "Nach unten scrollen (in großen Schritten)"
+
+msgid "Scroll up"
+msgstr "Nach oben scrollen"
+
+msgid "Scroll up (big step)"
+msgstr "Nach oben scrollen (in großen Schritten)"
+
+msgid "Search"
+msgstr "Suche"
+
+msgid "Search player"
+msgstr "Spieler suchen"
+
+msgid "Searching for candidates"
+msgstr "Auf Kandidatensuche"
+
+msgid "Searching for players ..."
+msgstr "Auf der Suche nach Spielern ..."
+
+msgid "Secret voting can not be guaranteed"
+msgstr "Geheime Stimmabgaben können nicht garantiert werden"
+
+msgid "Select"
+msgstr "Auswählen"
+
+msgid "Select all"
+msgstr "Alle auswählen"
+
+msgid "Select file"
+msgstr "Datei auswählen"
+
+msgid "Select meetings ..."
+msgstr "Veranstaltungen auswählen ..."
+
+msgid "Select or search new candidate ..."
+msgstr "Kandidat*in auswählen oder suchen ..."
+
+msgid "Select or search new speaker ..."
+msgstr "Redner*in auswählen oder suchen ..."
+
+msgid "Select or search new submitter ..."
+msgstr "Antragsteller*in auswählen oder suchen ..."
+
+msgid "Select paragraphs"
+msgstr "Absätze auswählen"
+
+msgid "Send"
+msgstr "Senden"
+
+msgid "Send invitation email"
+msgstr "Einladungs-E-Mail senden"
+
+msgid "Sender name"
+msgstr "Absendername"
+
+msgid "Sending an invitation email"
+msgstr "Einladungs-E-Mail senden"
+
+msgid "Separator used for all CSV exports and examples"
+msgstr "Feldtrenner für alle CSV-Exporte und -Beispiele"
+
+msgid "Sequential number"
+msgstr "Laufende Nummer"
+
+msgid "Serially numbered"
+msgstr "fortlaufend nummerieren"
+
+msgid "Server settings required to activate Jitsi Meet integration."
+msgstr ""
+"Servereinstellungen erforderlich zur Aktivierung der Jitsi-Meet-Integration."
+
+msgid "Set active"
+msgstr "Aktiv gesetzt"
+
+msgid "Set as favorite"
+msgstr "Als Favorit markieren"
+
+msgid "Set as not favorite"
+msgstr "Favorit löschen"
+
+msgid "Set as parent"
+msgstr "Als Eltern setzen"
+
+msgid "Set as reference projector"
+msgstr "Als Referenzprojektor setzen"
+
+msgid "Set category"
+msgstr "Sachgebiet setzen"
+
+msgid "Set favorite"
+msgstr "Favorit markieren"
+
+msgid "Set forward"
+msgstr "Weiterleitung setzen"
+
+msgid "Set hidden"
+msgstr "Versteckt setzen"
+
+msgid "Set inactive"
+msgstr "Inaktiv gesetzt"
+
+msgid "Set internal"
+msgstr "Intern setzen"
+
+msgid "Set it manually"
+msgstr "manuell setzen"
+
+msgid "Set motion block"
+msgstr "Antragsblock setzen"
+
+msgid "Set natural person ..."
+msgstr "Natürliche Person setzen ..."
+
+msgid "Set not present in meeting {}"
+msgstr "Abwesend gesetzt in Veranstaltung {}"
+
+msgid "Set number"
+msgstr "Bezeichner setzen"
+
+msgid "Set or remove motion forwarding from the selected committees to:"
+msgstr "Antragsweiterleitung für ausgewählte Gremien setzen oder entfernen"
+
+msgid "Set presence ..."
+msgstr "Anwesenheit setzen ..."
+
+msgid "Set present in meeting {}"
+msgstr "Anwesend gesetzt in Veranstaltung {}"
+
+msgid "Set public"
+msgstr "Öffentlich setzen"
+
+msgid "Set recommendation"
+msgstr "Empfehlung setzen"
+
+msgid "Set status"
+msgstr "Status setzen"
+
+msgid "Set status for selected accounts"
+msgstr "Status für ausgewählte Accounts setzen:"
+
+msgid "Set status for selected participants:"
+msgstr "Status für ausgewählte Teilnehmende setzen:"
+
+msgid "Set submitters"
+msgstr "Antragsteller/in setzen"
+
+msgid "Set tags"
+msgstr "Schlagwörter setzen"
+
+msgid "Set timestamp of creation"
+msgstr "Erstellungszeitstempel setzen"
+
+msgid "Set workflow"
+msgstr "Arbeitsablauf setzen"
+
+msgid "Set/remove meeting"
+msgstr "Veranstaltung setzen/entfernen"
+
+msgid "Sets this projector as the reference for the current list of speakers"
+msgstr "Diesen Projektor als Referenz für die aktuelle Redeliste setzen."
+
+msgid "Settings"
+msgstr "Einstellungen"
+
+msgid "Show all"
+msgstr "Alle anzeigen"
+
+msgid "Show all changes"
+msgstr "Alle Änderungen anzeigen"
+
+msgid "Show amendment"
+msgstr "Änderungsantrag anzeigen"
+
+msgid "Show amendment in parent motion"
+msgstr "Änderungsantrag im Hauptantrag anzeigen"
+
+msgid "Show amendments together with motions"
+msgstr "Änderungsanträge zusätzlich in der Hauptantragsübersicht anzeigen"
+
+msgid "Show applause amount"
+msgstr "Applauswert anzeigen"
+
+msgid "Show checkbox to record decision"
+msgstr "Ankreuzfelder zum Dokumentieren der Entscheidung anzeigen"
+
+msgid "Show clock"
+msgstr "Uhr anzeigen"
+
+msgid "Show committee"
+msgstr "Gremium anzeigen"
+
+msgid "Show conference room"
+msgstr "Konferenzraum anzeigen"
+
+msgid "Show correct entries only"
+msgstr "Nur korrekte Einträge anzeigen"
+
+msgid "Show entire motion text"
+msgstr "Vollständigen Antragstext anzeigen"
+
+msgid "Show errors only"
+msgstr "Nur fehlerhafte Einträge anzeigen"
+
+msgid "Show full text"
+msgstr "mehr anzeigen"
+
+msgid "Show header and footer"
+msgstr "Kopf- und Fußzeile anzeigen"
+
+msgid "Show hint »first speech« in the list of speakers management view"
+msgstr "Hinweis »Erstredner*in« in der Redelistenverwaltung anzeigen "
+
+msgid "Show internal items when projecting agenda"
+msgstr "Interne Einträge anzeigen bei der Projektion der Tagesordnung"
+
+msgid "Show live conference window"
+msgstr "Livekonferenz-Fenster anzeigen"
+
+msgid "Show logo"
+msgstr "Logo anzeigen"
+
+msgid "Show meta information box beside the title on projector"
+msgstr ""
+"Meta-Informations-Box auf dem Projektor neben dem Antragstitel anzeigen"
+
+msgid "Show motion submitters in the agenda"
+msgstr "Antragsteller in der Tagesordnung anzeigen"
+
+msgid "Show motion text on projector"
+msgstr "Antragstext auf dem Projektor anzeigen"
+
+msgid "Show orange countdown in the last x seconds of speaking time"
+msgstr "Countdown in den letzten x Sekunden der Redezeit orange darstellen"
+
+msgid "Show password"
+msgstr "Passwort anzeigen"
+
+msgid "Show reason on projector"
+msgstr "Begründung auf dem Projektor anzeigen"
+
+msgid "Show recommendation extension field"
+msgstr "Ergänzungsfeld für Empfehlung anzeigen"
+
+msgid "Show recommendation on projector"
+msgstr "Empfehlung auf dem Projektor anzeigen"
+
+msgid "Show referring motions"
+msgstr "Verweisende Anträge anzeigen"
+
+msgid "Show report"
+msgstr "Bericht anzeigen"
+
+msgid "Show state extension field"
+msgstr "Ergänzungsfeld für Status anzeigen"
+
+msgid "Show submitters and recommendation/state in table of contents"
+msgstr ""
+"Antragsteller*in und Beschlussempfehlung/Beschluss im PDF-Inhaltsverzeichnis"
+" anzeigen"
+
+msgid "Show the amount of speakers in subtitle of list of speakers slide"
+msgstr ""
+"Anzahl der Redner*innen im Untertitel der Redelistenprojektion anzeigen"
+
+msgid "Show the sequential number for a motion"
+msgstr "Laufende Nummer von Anträgen anzeigen"
+
+msgid "Show this text on the login page"
+msgstr "Diesen Text auf der Login-Seite anzeigen"
+
+msgid "Show title"
+msgstr "Veranstaltungstitel anzeigen"
+
+msgid ""
+"Shows a button with help icon to connect to an extra Jitsi conference room "
+"for technical audio/video tests."
+msgstr ""
+"Zeigt einen Fragezeichen-Button an, um sich mit einem extra Jitsi-"
+"Konferenzraum für technische Audio-/Video-Tests zu verbinden."
+
+msgid ""
+"Shows if livestream is not started. Recommended image format: 500x200px, PNG"
+" or JPG"
+msgstr ""
+"Wird angezeigt, wenn der Livestream nicht gestartet werden kann. "
+"Bildformatempfehlung: 500x200px, PNG oder JPG"
+
+msgid ""
+"Shows the given image as applause particle. Recommended image format: "
+"24x24px, PNG, JPG or SVG"
+msgstr ""
+"Zeigt das angegebene Bild als Applaus-Partikel. Bildformatempfehlung: "
+"24x24px, PNG, JPG oder SVG"
+
+msgid "Simple Workflow"
+msgstr "Einfacher Arbeitsablauf"
+
+msgid "Single votes"
+msgstr "Einzelstimmen"
+
+msgid "Size"
+msgstr "Größe"
+
+msgid "Slide"
+msgstr "Folie"
+
+msgid "Some csv values could not be read correctly."
+msgstr "Einige CSV-Werte konnten nicht korrekt gelesen werden."
+
+msgid "Sort"
+msgstr "Sortieren"
+
+msgid "Sort agenda"
+msgstr "Tagesordnung sortieren"
+
+msgid "Sort by number"
+msgstr "Nach Bezeichner sortieren"
+
+msgid "Sort categories"
+msgstr "Sachgebiete sortieren"
+
+msgid "Sort comments"
+msgstr "Kommentare sortieren"
+
+msgid "Sort election results by amount of votes"
+msgstr "Wahlergebnisse nach Stimmanzahl sortieren"
+
+msgid "Sort motions"
+msgstr "Anträge sortieren"
+
+msgid "Sort motions by"
+msgstr "Anträge sortieren nach"
+
+msgid "Sort workflow"
+msgstr "Arbeitsablauf sortieren"
+
+msgid "Speaker"
+msgstr "Redner*in"
+
+msgid "Speakers"
+msgstr "Redner*innen"
+
+msgid "Speaking time"
+msgstr "Redezeit"
+
+msgid "Staff"
+msgstr "Mitarbeitende"
+
+msgid "Start date"
+msgstr "Anfangsdatum"
+
+msgid "Start time"
+msgstr "Startzeit"
+
+msgid "Start voting"
+msgstr "Stimmabgabe starten"
+
+msgid "State"
+msgstr "Status"
+
+msgid "State changed"
+msgstr "Status geändert"
+
+msgid "State set to {}"
+msgstr "Status gesetzt auf {}"
+
+msgid "Statistics"
+msgstr "Statistiken"
+
+msgid "Statute"
+msgstr "Satzung"
+
+msgid "Statute amendment"
+msgstr "Satzungsänderungsantrag"
+
+msgid "Statute amendment for"
+msgstr "Satzungsänderungsantrag zu"
+
+msgid "Statute paragraph"
+msgstr "Satzungsabschnitt"
+
+msgid "Statute paragraphs"
+msgstr "Satzung"
+
+msgid "Stop"
+msgstr "Beenden"
+
+msgid "Stop & publish"
+msgstr "Beenden & veröffentlichen"
+
+msgid "Stop counting"
+msgstr "Zählen stoppen"
+
+msgid "Stop voting"
+msgstr "Stimmabgabe beenden"
+
+msgid "Stop waiting"
+msgstr "Nicht länger warten"
+
+msgid "Stopped waiting for process(es)"
+msgstr ""
+
+msgid "Structure level"
+msgstr "Gliederungsebene"
+
+msgid "Subcategory"
+msgstr "Untersachgebiet"
+
+msgid "Submit selection now?"
+msgstr "Auswahl jetzt senden?"
+
+msgid "Submit vote now"
+msgstr "Stimme(n) jetzt senden"
+
+msgid "Submitter"
+msgstr "Antragsteller*in"
+
+msgid "Submitter (in target meeting)"
+msgstr "Antragsteller*in (in der Zielveranstaltung)"
+
+msgid "Submitter may set state to"
+msgstr "Antragsteller*in darf Status setzen auf"
+
+msgid "Submitters"
+msgstr "Antragsteller*in"
+
+msgid "Submitters changed"
+msgstr "Antragsteller*in geändert"
+
+msgid "Suitable accounts found"
+msgstr "Passende Accounts gefunden"
+
+msgid "Sum of votes"
+msgstr "Summe der Einzelstimmen"
+
+msgid "Sum of votes without general options"
+msgstr "Summe der Stimmen ohne generelle Optionen"
+
+msgid "Summary"
+msgstr "Zusammenfassung"
+
+msgid "Summary of changes"
+msgstr "Zusammenfassung der Änderungen"
+
+msgid "Summary of changes:"
+msgstr "Zusammenfassung der Änderungen:"
+
+msgid "Superadmin"
+msgstr "Superadmin"
+
+msgid "Superadmin actions"
+msgstr "Superadmin-Aktionen"
+
+msgid "Superadmin settings"
+msgstr "Superadmin-Einstellungen"
+
+msgid "Support"
+msgstr "Unterstützen"
+
+msgid "Supporters"
+msgstr "Unterstützer*innen"
+
+msgid "Supporters changed"
+msgstr "Unterstützer*innen geändert"
+
+msgid "Surname"
+msgstr "Nachname"
+
+msgid "Table of contents"
+msgstr "Inhaltsverzeichnis"
+
+msgid "Tag"
+msgstr "Schlagwort"
+
+msgid "Tags"
+msgstr "Schlagwörter"
+
+msgid "Text"
+msgstr "Text"
+
+msgid "Text for this option couldn't load."
+msgstr "Der Text für diese Option konnte nicht geladen werden."
+
+msgid "Text import"
+msgstr "Textimport"
+
+msgid "Text separator"
+msgstr "Texttrenner"
+
+msgid "The account is deactivated."
+msgstr "Der Account ist inaktiv."
+
+msgid "The assembly may decide:"
+msgstr "Die Versammlung möge beschließen:"
+
+msgid "The event manager has not set up a legal notice yet."
+msgstr "Der Veranstalter hat noch kein Impressum hinterlegt."
+
+msgid "The event manager has not set up a privacy policy yet."
+msgstr "Der Veranstalter hat noch keine Datenschutzerklärung hinterlegt."
+
+msgid "The file has too few columns to be parsed properly."
+msgstr "Die Datei enthält zu wenige Spalten, um richtig erkannt zu werden."
+
+msgid "The file seems to have additional columns. They will be ignored."
+msgstr ""
+"Die Datei scheint zusätzliche Spalten zu haben. Diese werden ignoriert."
+
+msgid ""
+"The file seems to have some ommitted columns. They will be considered empty."
+msgstr ""
+"Die Datei scheint einige ausgelassene Spalten zu haben. Sie werden als leer "
+"betrachtet."
+
+msgid "The input data for voting is invalid."
+msgstr "Die Eingabedaten für die Stimmabgabe sind ungültig."
+
+msgid "The link is broken. Please contact your system administrator."
+msgstr ""
+"Der Link ist defekt. Bitte kontaktieren Sie den zuständigen Administrator."
+
+msgid "The list of speakers is closed."
+msgstr "Die Redeliste ist geschlossen."
+
+msgid "The list of speakers is open."
+msgstr "Die Redeliste ist geöffnet."
+
+msgid ""
+"The maximum number of characters per line. Relevant when line numbering is "
+"enabled. Min: 40"
+msgstr ""
+"Die maximale Zeichenanzahl pro Zeile. Relevant, wenn die Zeilennummerierung "
+"eingeschaltet ist. Minimum: 40."
+
+msgid "The number has to be greater than 0."
+msgstr "Die Anzahl muss größer als 0 sein."
+
+msgid "The parent motion was deleted."
+msgstr "Der Eltern-Antrag wurde gelöscht."
+
+msgid "The request could not be sent. Check your connection."
+msgstr ""
+"Die Anfrage konnte nicht gesendet werden. Überprüfen Sie Ihre Verbindung."
+
+msgid ""
+"The sender address is defined in the OpenSlides server settings and should "
+"modified by administrator only."
+msgstr ""
+"Die Absenderadresse ist in den OpenSlides-Servereinstellungen definiert und "
+"kann nur vom Administrator geändert werden."
+
+msgid "The server could not be reached."
+msgstr "Der Server konnte nicht erreicht werden."
+
+msgid "The server didn't respond."
+msgstr "Der Server antwortet nicht."
+
+msgid ""
+"The server may still be processing them, but you will probably not get a "
+"result."
+msgstr ""
+"Der Server verarbeitet sie zwar noch, aber Sie werden wahrscheinlich kein "
+"Ergebnis erhalten."
+
+msgid "The title is required"
+msgstr "Ein Titel ist erforderlich"
+
+msgid ""
+"The user %user% has no email, so the invitation email could not be send."
+msgstr ""
+"%user% besitzt keine E-Mail-Adresse; eine E-Mail konnte daher nicht gesendet"
+" werden."
+
+msgid ""
+"The users %user% have no email, so the invitation emails could not be send."
+msgstr ""
+"%user% besitzen keine E-Mail-Adressen; E-Mails konnte daher nicht gesendet "
+"werden."
+
+msgid "There are not enough options."
+msgstr "Es gibt nicht genug Optionen."
+
+msgid "There are some columns that do not match the template"
+msgstr "Es gibt einige Spalten, die nicht mit der Vorlage übereinstimmen"
+
+msgid "There is an error in your vote."
+msgstr "Es gibt ein Fehler in Ihrer Stimme."
+
+msgid "There is an error with this amendment. Please edit it manually."
+msgstr ""
+"In diesem Änderungsantrag ist ein Fehler. Bitte bearbeiten Sie den Text "
+"manuell."
+
+msgid "There is an unknown voting problem."
+msgstr "Es gibt ein unbekanntes Problem bei der elektronischen Stimmabgabe."
+
+msgid ""
+"There seems to be a problem connecting to our services. Check your "
+"connection or try again later."
+msgstr ""
+"Es scheint ein Problem bei der Verbindung zu unseren Diensten zu geben. "
+"Überprüfen Sie Ihre Verbindung oder versuchen Sie es später noch einmal."
+
+msgid "There should be at least 2 options."
+msgstr "Es müssen mindestens 2 Optionen vorhanden sein."
+
+msgid "Thereof point of orders"
+msgstr "davon Geschäftsordnungsanträge"
+
+msgid "These accounts will be deleted:"
+msgstr "Diese Accounts werden gelöscht:"
+
+msgid "These accounts will be removed from the meeting:"
+msgstr "Diese Accounts werden aus der Veranstaltung entfernt:"
+
+msgid "This account has relations to meetings or committees"
+msgstr "Dieser Account hat Verweise zu Veranstaltungen oder Gremien"
+
+msgid ""
+"This account is not linked as candidate, submitter or speaker in any meeting"
+" and is not manager of any committee"
+msgstr ""
+"Dieser Account ist nicht als Kandidat*in, Antragsteller*in oder Redner*in in"
+" einer Veranstaltung verlinkt und auch kein Verwalter*in eines Gremiums."
+
+msgid "This account will only be removed from this meeting"
+msgstr "Dieser Account wird aus der Veranstaltung entfernt"
+
+msgid "This ballot contains deleted users."
+msgstr "Der Wahlgang enthält gelöschte Nutzer."
+
+msgid "This change collides with another one."
+msgstr "Diese Änderung kollidiert mit einer anderen."
+
+msgid "This committee already exists"
+msgstr "Dieses Gremium existiert bereits"
+
+msgid "This committee has no managers!"
+msgstr "Dieses Gremium hat keine Gremiumverwalter!"
+
+msgid "This field is required."
+msgstr "Dieses Feld ist erforderlich."
+
+msgid "This is not a number."
+msgstr "Dies ist keine Zahl."
+
+msgid "This meeting is archived"
+msgstr "Diese Veranstaltung ist archiviert"
+
+msgid "This paragraph does not exist in the main motion anymore:"
+msgstr "Dieser Absatz existiert im Hauptantrag nicht mehr:"
+
+msgid "This prefix already exists"
+msgstr "Dieses Präfix existiert bereits."
+
+msgid "This prefix already exists."
+msgstr "Dieses Präfix existiert bereits."
+
+msgid "This prefix will be set if you run the automatic agenda numbering."
+msgstr ""
+"Dieses Präfix wird gesetzt, wenn die automatische Nummerierung der "
+"Tagesordnung durchgeführt wird."
+
+msgid ""
+"This will add or remove the following groups for all selected participants:"
+msgstr ""
+"Folgende Gruppen werden für die ausgewählten Teilnehmenden hinzugefügt oder "
+"entfernt:"
+
+msgid ""
+"This will add or remove the following submitters for all selected motions:"
+msgstr ""
+"Folgende Antragsteller werden für die ausgewählten Anträge hinzugefügt oder "
+"entfernt:"
+
+msgid ""
+"This will add or remove the following tags for all selected agenda items:"
+msgstr ""
+"Folgende Schlagwörter werden für die ausgewählten Einträge hinzugefügt oder "
+"entfernt:"
+
+msgid "This will add or remove the following tags for all selected motions:"
+msgstr ""
+"Folgende Schlagwörter werden für die ausgewählten Anträge hinzugefügt oder "
+"entfernt:"
+
+msgid "This will add or remove the selected accounts to following meetings:"
+msgstr ""
+"Die ausgewählten Accounts werden in folgende Veranstaltungen hinzugefügt "
+"oder entfernt:"
+
+msgid "This will move all selected motions as childs to:"
+msgstr ""
+"Alle ausgewählten Anträge werden unterhalb des folgenden "
+"Tagesordnungspunktes verschoben:"
+
+msgid ""
+"This will move all selected motions under or after the following motion in "
+"the call list:"
+msgstr ""
+"Alle ausgewählten Anträge unter oder nach dem folgenden Antrag in der "
+"Aufrufliste verschieben:"
+
+msgid "This will reset all made changes and sort the call list."
+msgstr ""
+"Alle noch nicht gespeicherten Änderungen werden zurückgesetzt und die "
+"Aufrufliste wird neu sortiert."
+
+msgid "This will set the favorite status for all selected motions:"
+msgstr "Favoriten-Markierung für alle ausgewählten Anträge setzen:"
+
+msgid "This will set the following category for all selected motions:"
+msgstr "Folgendes Sachgebiet wird für alle ausgewählten Anträge gesetzt:"
+
+msgid "This will set the following motion block for all selected motions:"
+msgstr "Folgender Antragsblock wird für alle ausgewählten Anträgen gesetzt:"
+
+msgid "This will set the following recommendation for all selected motions:"
+msgstr "Folgende Empfehlung wird für alle ausgewählten Anträge gesetzt:"
+
+msgid "This will set the following state for all selected motions:"
+msgstr "Folgender Status wird für alle ausgewählten Anträge gesetzt:"
+
+msgid "This will set the workflow for all selected motions:"
+msgstr "Folgender Arbeitsablauf wird für alle ausgewählten Anträge gesetzt:"
+
+msgid "Thoroughly check datastore (unsafe)"
+msgstr "Gründliche Überprüfung des Datastores (unsicher)"
+
+msgid "Tile view"
+msgstr "Kachelansicht"
+
+msgid "Time"
+msgstr "Zeitpunkt"
+
+msgid "Timestamp"
+msgstr "Zeitstempel"
+
+msgid "Title"
+msgstr "Titel"
+
+msgid "Title for PDF document (all elections)"
+msgstr "Titel für PDF-Dokument (alle Wahlen)"
+
+msgid "Title for PDF documents of motions"
+msgstr "Titel für PDF-Dokumente von Anträgen"
+
+msgid "Title for access data and welcome PDF"
+msgstr "Titel für das Zugangsdaten- und Begrüßungs-PDF"
+
+msgid "Toggle to list of speakers"
+msgstr "Zur Redeliste wechseln"
+
+msgid "Toggle to parent item"
+msgstr "Zum Elternelement wechseln"
+
+msgid "Too many votes on one option."
+msgstr "Zu viele Stimmen für eine Option."
+
+msgid "Topic"
+msgstr "Thema"
+
+msgid "Topics"
+msgstr "Themen"
+
+msgid "Total votes cast"
+msgstr "Abgegebene Stimmen"
+
+msgid "Touch the book icon to enter text"
+msgstr "Tippen Sie auf das Buch-Icon, um den Text zu bearbeiten."
+
+msgid "Translation"
+msgstr "Übersetzung"
+
+msgid "Troubleshooting"
+msgstr "Fehlerbehebung"
+
+msgid "Try reconnect"
+msgstr "Verbindung wiederherstellen"
+
+msgid "Type"
+msgstr "Typ"
+
+msgid "Undone"
+msgstr "unerledigt"
+
+msgid "Unique speakers"
+msgstr "Eindeutige Redner*innen"
+
+msgid "Unknown participant"
+msgstr "Unbekannte*r Teilnehmer*in"
+
+msgid "Unsaved changes will not be applied."
+msgstr "Nicht gespeicherte Änderungen werden nicht übernommen."
+
+msgid "Unsupport"
+msgstr "Unterstützung zurückziehen"
+
+msgid "Upload"
+msgstr "Hochladen"
+
+msgid "Upload files"
+msgstr "Dateien hochladen"
+
+msgid "Upload to"
+msgstr "Hochladen in"
+
+msgid "Use the following custom number"
+msgstr "Verwende die folgende benutzerdefinierte Anzahl"
+
+msgid ""
+"Use these placeholders: {name}, {event_name}, {url}, {username}, {password}."
+" The url referrs to the system url."
+msgstr ""
+"Verwendbare Platzhalter: {name}, {event_name}, {url}, {username}, "
+"{password}. Die URL bezieht sich auf die System-URL."
+
+msgid "Used for WLAN QRCode in PDF of access data."
+msgstr "Wird für WLAN-QR-Code im Zugangsdaten-PDF verwendet."
+
+msgid "Used for invitation emails and QRCode in PDF of access data."
+msgstr ""
+"Wird für Einladungs-E-Mails sowie WLAN-QR-Code im Zugangsdaten-PDF "
+"verwendet."
+
+msgid "User not found."
+msgstr "Benutzer nicht gefunden."
+
+msgid "Username"
+msgstr "Benutzername"
+
+msgid "Username or password is incorrect."
+msgstr "Benutzername oder Passwort war nicht korrekt."
+
+msgid "Uses leading zeros to sort motions correctly by number."
+msgstr ""
+"Es werden führende Nullen verwendet, um die Bezeichner korrekt zu sortieren."
+
+msgid ""
+"Using OpenSlides over HTTP 1.1 or lower is not supported. Make sure you can "
+"use HTTP 2 to continue."
+msgstr ""
+"Die Verwendung von OpenSlides über HTTP 1.1 oder niedriger wird nicht "
+"unterstützt. Stellen Sie sicher, dass Sie HTTP 2 verwenden können, um "
+"fortzufahren."
+
+msgid "Using OpenSlides over HTTP is not supported. Enable HTTPS to continue."
+msgstr ""
+"Die Verwendung von OpenSlides über HTTP wird nicht unterstützt. Aktivieren "
+"Sie HTTPS, um fortzufahren."
+
+msgid "Valid votes"
+msgstr "Gültige Stimmen"
+
+msgid "Virtual applause"
+msgstr "Virtueller Applaus"
+
+msgid "Visibility"
+msgstr "Sichtbarkeit"
+
+msgid "Vote"
+msgstr "Abstimmung"
+
+msgid "Vote weight"
+msgstr "Stimmgewicht"
+
+msgid "Voted"
+msgstr "Stimme abgegeben"
+
+msgid "Votes"
+msgstr "Stimmen"
+
+msgid "Voting"
+msgstr "Stimmabgabe"
+
+msgid "Voting and ballot papers"
+msgstr "Abstimmung und Stimmzettel"
+
+msgid "Voting anonymized"
+msgstr "Abstimmung anonymisiert"
+
+msgid "Voting created"
+msgstr "Abstimmung erstellt"
+
+msgid "Voting deleted"
+msgstr "Abstimmung gelöscht"
+
+msgid "Voting duration"
+msgstr "Dauer der Stimmabgabe"
+
+msgid ""
+"Voting ends after short (some seconds/minutes) or long (some days/weeks) "
+"time period."
+msgstr ""
+"Die Stimmabgabe endet nach kurzer (einige Sekunden/Minuten) oder langer "
+"(einige Tage/Wochen) Zeitspanne."
+
+msgid "Voting is currently in progress."
+msgstr "Stimmabgabe läuft aktuell "
+
+msgid "Voting method"
+msgstr "Wahlmethode"
+
+msgid "Voting opened"
+msgstr "Abstimmung eröffnet"
+
+msgid "Voting published"
+msgstr "Abstimmung veröffentlicht"
+
+msgid "Voting reset"
+msgstr "Abstimmung zurückgesetzt"
+
+msgid "Voting result"
+msgstr "Abstimmungsergebnis"
+
+msgid "Voting right delegated to (proxy)"
+msgstr "Stimmrecht übertragen an (Vollmachtnehmer)"
+
+msgid "Voting right for"
+msgstr "Stimmrecht für"
+
+msgid "Voting right received from (principals)"
+msgstr "Stimmrecht erhalten von (Vollmachtgeber)"
+
+msgid "Voting started"
+msgstr "Abstimmung gestartet"
+
+msgid "Voting stopped"
+msgstr "Abstimmung beendet"
+
+msgid "Voting stopped/published"
+msgstr "Abstimmung beendet/veröffentlicht"
+
+msgid "Voting successful."
+msgstr "Stimmabgabe erfolgreich."
+
+msgid "Voting type"
+msgstr "Art der Stimmabgabe"
+
+msgid "Votings"
+msgstr "Stimmabgaben"
+
+msgid "WLAN access data"
+msgstr "WLAN-Zugangsdaten"
+
+msgid "WLAN encryption"
+msgstr "WLAN-Verschlüsselung"
+
+msgid "WLAN name (SSID)"
+msgstr "WLAN-Name (SSID)"
+
+msgid "WLAN password"
+msgstr "WLAN-Passwort"
+
+msgid "Wait"
+msgstr "Warten"
+
+msgid "Wait for response ..."
+msgstr "Warten auf Antwort ..."
+
+msgid ""
+"Warning: Amendments exist for this motion. Editing this text will likely "
+"impact them negatively. Particularily, amendments might become unusable if "
+"the paragraph they affect is deleted."
+msgstr ""
+"Warnung: Zu diesem Antrag gibt es Änderungsanträge. Die Bearbeitung dieses "
+"Textes wird sich wahrscheinlich negativ auf diese auswirken. Insbesondere "
+"können Änderungsanträge unbrauchbar werden, wenn der Absatz, auf den sie "
+"referenzieren, gelöscht wird."
+
+msgid "Was forwarded to this meeting"
+msgstr "Wurde in diese Veranstaltung weitergeleitet"
+
+msgid "Web interface header logo"
+msgstr "Web-Interface-Kopfzeilen-Logo"
+
+msgid "Welcome to OpenSlides"
+msgstr "Willkommen bei OpenSlides"
+
+msgid "What is new?"
+msgstr "Was ist neu?"
+
+msgid "Which version?"
+msgstr "Welche Fassung?"
+
+msgid ""
+"Will be displayed as label before selected recommendation in statute "
+"amendments."
+msgstr ""
+"Wird als Beschriftung vor der Beschlussempfehlung in "
+"Satzungsänderungsanträgen angezeigt."
+
+msgid ""
+"Will be displayed as label before selected recommendation. Use an empty "
+"value to disable the recommendation system."
+msgstr ""
+"Wird als Beschriftung vor der Beschlussempfehlung angezeigt. Leere Eingabe "
+"deaktiviert das Empfehlungssystem."
+
+msgid "Withdraw point of order"
+msgstr "GO-Antrag zurückziehen"
+
+msgid "Workflow"
+msgstr "Arbeitsablauf"
+
+msgid "Workflow of new amendments"
+msgstr "Arbeitsablauf für neue Änderungsanträge"
+
+msgid "Workflow of new motions"
+msgstr "Arbeitsablauf für neue Anträge"
+
+msgid "Workflow of new statute amendments"
+msgstr "Arbeitsablauf für neue Satzungsänderungsanträge"
+
+msgid "Workflows"
+msgstr "Arbeitsabläufe"
+
+msgid "Yes"
+msgstr "Ja"
+
+msgid "Yes per candidate"
+msgstr "Ja pro Kandidat"
+
+msgid "Yes per option"
+msgstr "Ja pro Option"
+
+msgid "Yes, delete"
+msgstr "Ja, löschen"
+
+msgid "Yes, inclusive meetings"
+msgstr "Ja, inkl. Veranstaltungen"
+
+msgid "Yes/No"
+msgstr "Ja/Nein"
+
+msgid "Yes/No per candidate"
+msgstr "Ja/Nein pro Kandidat"
+
+msgid "Yes/No/Abstain"
+msgstr "Ja/Nein/Enthaltung"
+
+msgid "Yes/No/Abstain per candidate"
+msgstr "Ja/Nein/Enthaltung pro Kandidat"
+
+msgid "Yes/No/Abstain per list"
+msgstr "Ja/Nein/Enthaltung pro Liste"
+
+msgid "You are not allowed to see all entitled users."
+msgstr "Sie sind nicht berechtigt alle Stimmberechtigte zu sehen."
+
+msgid "You are not allowed to see the livestream"
+msgstr "Sie sind nicht berechtigt den Livestream zu sehen."
+
+msgid "You are not supposed to be here..."
+msgstr "Sie sollten nicht hier sein ..."
+
+msgid ""
+"You are receiving this email because you have requested a new password for your OpenSlides-account.\n"
+"\n"
+"Please open the following link and choose a new password:\n"
+"{url}/login/forget-password-confirm?user_id={user_id}&token={token}\n"
+"\n"
+"For completeness your username: {username}"
+msgstr ""
+"Sie erhalten diese E-Mail, da Sie ein neues Passwort für Ihren OpenSlides-Account angefordert haben.\n"
+"\n"
+"Bitte öffnen Sie den folgenden Link und wählen Sie ein neues Passwort:\n"
+"{url}/login/forget-password-confirm?user_id={user_id}&token={token}\n"
+"\n"
+"Zur Vollständigkeit Ihr Nutzername: {username}"
+
+msgid ""
+"You are using the history mode of OpenSlides. Changes will not be saved."
+msgstr "Der Chronik-Modus ist aktiv. Änderungen werden nicht gespeichert."
+
+msgid "You can change this option only in the forwarding section."
+msgstr "Sie können diese Option nur im Feld 'weiterleiten an' ändern."
+
+msgid "You can not vote because this is an analog voting."
+msgstr ""
+"Sie können Ihre Stimme nicht abgeben, da es sich um eine analoge Stimmabgabe"
+" handelt."
+
+msgid "You can not vote right now because the voting has not yet started."
+msgstr ""
+"Sie können gerade nicht Ihre Stimme abgeben, weil die Stimmabgabe noch nicht"
+" gestartet wurde."
+
+msgid "You can only anonymize named polls."
+msgstr "Sie können nur namentliche Stimmabgaben anonymisieren."
+
+msgid "You can use {event_name} and {username} as placeholder."
+msgstr "Sie können {event_name} und {username} als Platzhalter verwenden."
+
+msgid ""
+"You cannot change the recommendation of motions in different workflows!"
+msgstr ""
+"Das Ändern der Empfehlung von Anträgen in verschiedenen Arbeitsabläufen ist "
+"nicht möglich."
+
+msgid "You cannot delete the last workflow of a meeting."
+msgstr "Sie dürfen den letzten Arbeitsablauf nicht löschen."
+
+msgid ""
+"You cannot delete the workflow as long as it is selected as default workflow"
+" for new amendments in the settings. Please set another workflow as default "
+"in the settings and try to delete the workflow again."
+msgstr ""
+"Sie können den Arbeitsablauf nicht löschen, solange er in den Einstellungen "
+"voreingestellt für neue Änderungsanträge ist. Bitte legen Sie zunächst in "
+"den Einstellungen einen anderen Arbeitsablauf als Standard fest und "
+"versuchen Sie erneut, den Arbeitsablauf zu löschen."
+
+msgid ""
+"You cannot delete the workflow as long as it is selected as default workflow"
+" for new motions in the settings. Please set another workflow as default in "
+"the settings and try to delete the workflow again."
+msgstr ""
+"Sie können den Arbeitsablauf nicht löschen, solange er in den Einstellungen "
+"voreingestellt für neue Anträge ist. Bitte legen Sie zunächst in den "
+"Einstellungen einen anderen Arbeitsablauf als Standard fest und versuchen "
+"Sie erneut, den Arbeitsablauf zu löschen."
+
+msgid ""
+"You cannot delete the workflow as long as it is selected as default workflow"
+" for new statute amendments in the settings. Please set another workflow as "
+"default in the settings and try to delete the workflow again."
+msgstr ""
+"Sie können den Arbeitsablauf nicht löschen, solange er in den Einstellungen "
+"voreingestellt für neue Satzungsänderungsanträge ist. Bitte legen Sie "
+"zunächst in den Einstellungen einen anderen Arbeitsablauf als Standard fest "
+"und versuchen Sie erneut, den Arbeitsablauf zu löschen."
+
+msgid "You cannot delete yourself."
+msgstr "Sie dürfen sich nicht selbst löschen."
+
+msgid ""
+"You cannot enter this meeting because you are not assigned to any group."
+msgstr ""
+"Sie können diese Veranstaltung nicht öffnen, da Sie keiner Gruppe zugewiesen"
+" sind."
+
+msgid "You cannot vote since your vote right is delegated."
+msgstr "Sie können nicht abstimmen, solange Ihr Stimmrecht übertragen ist."
+
+msgid "You do not have the permission to vote."
+msgstr "Sie haben nicht die Berechtigung zur Stimmabgabe."
+
+msgid "You have already voted."
+msgstr "Sie haben bereits Ihre Stimme abgegeben."
+
+msgid "You have to be logged in to be able to vote."
+msgstr "Sie müssen sich anmelden um Ihre Stimme abgeben zu können."
+
+msgid "You have to be present to vote."
+msgstr "Sie müssen \"anwesend\" sein um Ihre Stimme abgeben zu können."
+
+msgid "You have to enter at least one character"
+msgstr "Sie müssen mindestens ein Zeichen eingeben"
+
+msgid "You have to enter six hexadecimal digits"
+msgstr "Sie müssen sechs Hexadezimalstellen eingeben"
+
+msgid "You have to fill this field."
+msgstr "Sie müssen diese Feld ausfüllen."
+
+msgid "You made changes."
+msgstr "Sie haben Änderungen vorgenommen."
+
+msgid "You override the personally set password!"
+msgstr "Sie überschreiben hiermit das persönlich gesetzte Passwort!"
+
+msgid "You reached the maximum amount of votes. Deselect one option first."
+msgstr ""
+"Sie haben die maximale Anzahl von Stimmen erreicht. Deselektieren Sie zuerst"
+" eine Auswahl."
+
+msgid "You reached the maximum amount of votes. Deselect somebody first."
+msgstr ""
+"Sie haben die maximale Anzahl von Stimmen erreicht. Deselektieren Sie zuerst"
+" eine Auswahl."
+
+msgid "You won!"
+msgstr "Du hast gewonnen!"
+
+msgid "Your browser"
+msgstr "Ihr Browser"
+
+msgid "Your browser is not supported by OpenSlides!"
+msgstr "Ihr Browser wird von OpenSlides nicht unterstützt!"
+
+msgid "Your decision cannot be changed afterwards."
+msgstr "Ihre Stimmabgabe kann anschließend nicht mehr geändert werden."
+
+msgid "Your device has no microphone"
+msgstr "Es wurde kein Mikrofon an ihrem Gerät gefunden."
+
+msgid "Your input does not match the following structure: \"hh:mm\""
+msgstr "Ihre Eingabe entspricht nicht der folgenden Struktur: \"hh:mm\""
+
+msgid "Your partner couldn't stand it anymore... You are the winner!"
+msgstr "Dein Partner konnte es nicht mehr aushalten... Du bist der Gewinner!"
+
+msgid "Your partner has won!"
+msgstr "Dein Partner hat gewonnen!"
+
+msgid "Your password was resetted successfully!"
+msgstr "Ihr Passwort wurde erfolgreich zurückgesetzt!"
+
+msgid "Your votes"
+msgstr "Ihre Stimmen"
+
+msgid "Your voting right was delegated to another person."
+msgstr "Ihr Stimmrecht wurde an eine andere Person übertragen."
+
+msgid "Zoom in"
+msgstr "Vergrößern"
+
+msgid "Zoom out"
+msgstr "Verkleinern"
+
+msgid "[Begin speech] starts the countdown, [End speech] stops the countdown."
+msgstr ""
+"[Rede beginnen] startet den Countdown, [Rede beenden] stoppt den Countdown."
+
+msgid "[Place for your welcome and help text.]"
+msgstr "[Platz für Ihren Begrüßungs- und Hilfetext.]"
+
+msgid "[Place for your welcome text.]"
+msgstr "[Platz für Ihren Begrüßungstext.]"
+
+msgid "absent"
+msgstr "abwesend"
+
+msgid "accepted"
+msgstr "angenommen"
+
+msgid "account-example"
+msgstr "Account-Beispiel"
+
+msgid "active"
+msgstr "aktiv"
+
+msgid "active users"
+msgstr "aktive Nutzer"
+
+msgid "add group(s)"
+msgstr "Gruppe(n) hinzufügen"
+
+msgid "adjourned"
+msgstr "vertagt"
+
+msgid "already exists"
+msgstr "existiert bereits"
+
+msgid "analog"
+msgstr "analog"
+
+msgid "and"
+msgstr "und"
+
+msgid "anonymized"
+msgstr "anonymisiert"
+
+msgid "are required"
+msgstr "sind erforderlich"
+
+msgid "ballot-paper"
+msgstr "stimmzettel"
+
+msgid "by"
+msgstr "von"
+
+msgid "committee-example"
+msgstr "gremien-beispiel"
+
+msgid "connecting ..."
+msgstr "Verbindungsaufbau ..."
+
+msgid "connections"
+msgstr "Verbindungen"
+
+msgid "contribution"
+msgstr "Wortmeldung"
+
+msgid "could not be created"
+msgstr "konnten nicht erstellt werden"
+
+msgid "could not be defined"
+msgstr "konnten nicht definiert werden"
+
+msgid "could not be referenced"
+msgstr "konnte nicht referenziert werden"
+
+msgid "created"
+msgstr "erstellt"
+
+msgid "custom"
+msgstr "benutzerdefiniert"
+
+msgid "dateless"
+msgstr "zeitlos"
+
+msgid "deleted"
+msgstr "gelöscht"
+
+msgid "disabled"
+msgstr "deaktiviert"
+
+msgid "disconnected"
+msgstr "getrennt"
+
+msgid "diverse"
+msgstr "divers"
+
+msgid "e.g. for online meetings"
+msgstr "z. B. für Online-Versammlungen"
+
+msgid "emails"
+msgstr "E-Mails"
+
+msgid "ended"
+msgstr "beendet"
+
+msgid "entries will be ommitted."
+msgstr "Einträge werden ausgelassen. "
+
+msgid "example"
+msgstr "Beispiel"
+
+msgid "female"
+msgstr "weiblich"
+
+msgid "finished (unpublished)"
+msgstr "abgeschlossen (unveröffentlicht)"
+
+msgid "fullscreen"
+msgstr "Vollbild"
+
+msgid "future"
+msgstr "künftig"
+
+msgid "green"
+msgstr "grün"
+
+msgid "grey"
+msgstr "grau"
+
+msgid "has been imported"
+msgstr "wurden importiert"
+
+msgid "has saved his work on this motion."
+msgstr "hat die Arbeit an diesem Antrag gespeichert."
+
+msgid "have been created"
+msgstr "wurden erstellt"
+
+msgid "have been referenced"
+msgstr "wurde referenziert"
+
+msgid "hidden"
+msgstr "versteckt"
+
+msgid "in progress"
+msgstr "in Bearbeitung"
+
+msgid "inactive"
+msgstr "inaktiv"
+
+msgid "inline"
+msgstr "innerhalb"
+
+msgid "internal"
+msgstr "intern"
+
+msgid "is assigned to the following committees, meetings and groups"
+msgstr "ist folgenden Gremien, Veranstaltungen und Gruppen zugeordnet"
+
+msgid "is not assigned to any committees or meetings yet"
+msgstr "ist noch keinen Gremien oder Veranstaltungen zugeordnet"
+
+msgid "is now"
+msgstr "ist jetzt"
+
+msgid "is required"
+msgstr "ist erforderlich"
+
+msgid "items"
+msgstr "Einträge"
+
+msgid "items selected"
+msgstr "Einträge ausgewählt"
+
+msgid "lightblue"
+msgstr "hellblau"
+
+msgid "long running"
+msgstr "langlaufend"
+
+msgid "majority"
+msgstr "Mehrheit"
+
+msgid "male"
+msgstr "männlich"
+
+msgid "modified"
+msgstr "geändert"
+
+msgid "motions"
+msgstr "Anträge"
+
+msgid "move ..."
+msgstr "verschieben ..."
+
+msgid "name"
+msgstr ""
+
+msgid "natural person"
+msgstr "natürliche Person"
+
+msgid "needs review"
+msgstr "benötigt Überprüfung"
+
+msgid "no natural person"
+msgstr "keine natürliche Person"
+
+msgid "nominal"
+msgstr "namentlich"
+
+msgid "non-nominal"
+msgstr "nicht-namentlich"
+
+msgid "none"
+msgstr "aus"
+
+msgid "not concerned"
+msgstr "nicht befasst"
+
+msgid "not decided"
+msgstr "nicht entschieden"
+
+msgid "of"
+msgstr "von"
+
+msgid "open votes"
+msgstr "offene Stimmabgaben"
+
+msgid "or"
+msgstr "oder"
+
+msgid "outside"
+msgstr "außerhalb"
+
+msgid "partially forwarded"
+msgstr "teilweise weitergeleitet"
+
+msgid "participants"
+msgstr "Teilnehmende"
+
+msgid "participants-example"
+msgstr "Teilnehmende-Beispiel"
+
+msgid "permitted"
+msgstr "zugelassen"
+
+msgid "present"
+msgstr "anwesend"
+
+msgid "public"
+msgstr "öffentlich"
+
+msgid "published"
+msgstr "veröffentlicht"
+
+msgid "red"
+msgstr "rot"
+
+msgid "referred to committee"
+msgstr "in Ausschuss verwiesen"
+
+msgid "rejected"
+msgstr "abgelehnt"
+
+msgid "rejected (not authorized)"
+msgstr "verworfen (nicht zulässig)"
+
+msgid "remove group(s)"
+msgstr "Gruppe(n) entfernen"
+
+msgid "represented by"
+msgstr "vertreten durch"
+
+msgid "reset"
+msgstr "zurückgesetzt"
+
+msgid "selected"
+msgstr "ausgewählt"
+
+msgid "short running"
+msgstr "kurzlaufend"
+
+msgid "started"
+msgstr "gestartet"
+
+msgid "stopped"
+msgstr "beendet"
+
+msgid "submitted"
+msgstr "eingereicht"
+
+msgid "successfully forwarded"
+msgstr "erfolgreich weitergeleitet"
+
+msgid "supporters"
+msgstr "Unterstützer*innen"
+
+msgid "to"
+msgstr "bis"
+
+msgid "today"
+msgstr "heute"
+
+msgid "undocumented"
+msgstr "nicht erfasst"
+
+msgid "unknown"
+msgstr "unbekannt"
+
+msgid "updated"
+msgstr "aktualisiert"
+
+msgid "version"
+msgstr "Version"
+
+msgid "votes per candidate"
+msgstr "Stimmen pro Kandidat*in"
+
+msgid "will be created"
+msgstr "werden erstellt"
+
+msgid "will be defined"
+msgstr "werden definiert"
+
+msgid "will be imported"
+msgstr "werden importiert"
+
+msgid "will be referenced"
+msgstr "werden referenziert"
+
+msgid "withdrawn"
+msgstr "zurückgezogen"
+
+msgid "yellow"
+msgstr "gelb"
