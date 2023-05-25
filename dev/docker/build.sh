@@ -21,7 +21,7 @@ CLIENT_VERSION_TXT="${TARGETS[client]}/client/src/assets/version.txt"
 
 DOCKER_REPOSITORY="openslides"
 DOCKER_TAG="$(cat VERSION)"
-[[ "$(git rev-parse --abbrev-ref HEAD)" != staging ]] ||
+[[ "$(git rev-parse --abbrev-ref HEAD)" != main ]] ||
   DOCKER_TAG="$DOCKER_TAG-staging-$(date +%Y%m%d)-$(git rev-parse HEAD | cut -c -7)"
 CONFIG="/etc/osinstancectl"
 OPTIONS=()

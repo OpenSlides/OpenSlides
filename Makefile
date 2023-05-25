@@ -49,14 +49,14 @@ build:
 	$(DC_PATH)/build.sh
 
 # Shorthand to execute the make-release script
-services-to-staging:
+services-to-main:
 	$(SCRIPT_PATH)/make-update.sh fetch-all-changes
 
 staging-update:
 	$(SCRIPT_PATH)/make-update.sh staging
 
-main-update:
-	$(SCRIPT_PATH)/make-update.sh main
+stable-update:
+	$(SCRIPT_PATH)/make-update.sh stable
 
 # You may only use this one time after cloning this repository.
 # Will set the upstream remote to "origin"

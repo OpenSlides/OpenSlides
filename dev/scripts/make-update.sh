@@ -28,9 +28,9 @@ MODES:
     Create an update containing new changes that can be deployed for testing.
     In order to do so first fetch-all-changes is called. Then desired changes
     can be picked interactively and a new commit with appropriately adjusted
-    submodule pointers is created on the staging branch.
+    submodule pointers is created on the main branch.
 
-  main
+  stable
     Create an update based on a previous staging update. For this appropriate
     merge commits are created in the main repository as well as every affected
     submodule. These will then be attempted to be pushed directly into upstream.
@@ -98,13 +98,13 @@ pull_latest_commit() {
 
 increment_patch() {
   set_remote
-  patch_main=$(git show $REMOTE_NAME/main:VERSION  | awk -F. '{print $3}')
+  patch_upstream=$(git show $REMOTE_NAME/stable:VERSION  | awk -F. '{print $3}')
   patch_local=$(git show HEAD:VERSION  | awk -F. '{print $3}')
 
-  [[ "$patch_local" -le "$patch_main" ]] ||
+  [[ "$patch_local" -le "$patch_upstream" ]] ||
     return 1
 
-  echo "$(awk -v FS=. -v OFS=. "{\$3=$patch_main+1 ; print \$0}" VERSION)" > VERSION
+  echo "$(awk -v FS=. -v OFS=. "{\$3=$patch_upstream+1 ; print \$0}" VERSION)" > VERSION
 }
 
 fetch_all_changes() {
@@ -130,7 +130,7 @@ make_staging_update() {
   set_remote
   check_current_branch
 
-  ask y "Fetch all services staging changes now?" &&
+  ask y "Fetch all submodules changes now?" &&
     fetch_all_changes || :
   diff_cmd="git --no-pager diff --color=always --submodule=log"
   [[ "$($diff_cmd | grep -c .)" -gt 0 ]] ||
@@ -182,11 +182,11 @@ make_staging_update() {
       git add VERSION
     git commit --message "Staging update $(date +%Y%m%d)"
     git show --no-patch
-    echo "Commit created. Push to desired remote and PR into main repo to bring it live."
+    echo "Commit created. Push to $REMOTE_NAME remote and PR into main repo to bring it live."
   } || :
 }
 
-merge_main_branches() {
+merge_stable_branches() {
   local target_sha="$1"
   local mod_target_sha=
   local diff_cmd=
@@ -209,7 +209,7 @@ merge_main_branches() {
       set_remote
       git checkout "$BRANCH_NAME"
 
-      git merge --no-ff "$mod_target_sha" --log --message "Merge staging into main. Update $(date +%Y%m%d)"
+      git merge --no-ff "$mod_target_sha" --log --message "Merge main into stable. Update $(date +%Y%m%d)"
     )
   done
 
@@ -217,43 +217,43 @@ merge_main_branches() {
   echo "Updated submodules $BRANCH_NAME branches."
 }
 
-make_main_update() {
+make_stable_update() {
   local target_sha= log_cmd= REPLY=
 
   set_remote
   check_current_branch
 
-  echo "git fetch $REMOTE_NAME staging"
-  git fetch $REMOTE_NAME staging
+  echo "git fetch $REMOTE_NAME main"
+  git fetch $REMOTE_NAME main
 
-  log_cmd="git log --oneline --no-decorate main..$REMOTE_NAME/staging"
+  log_cmd="git log --oneline --no-decorate stable..$REMOTE_NAME/main"
   [[ "$($log_cmd | grep -c . )" -gt 0 ]] || {
-    echo "ERROR: No staging update ahead of the latest main update found."
+    echo "ERROR: No staging update ahead of the latest stable update found."
     abort 1
   }
   target_sha="$($log_cmd | awk 'NR==1 { print $1 }')"
 
-  echo 'Staging updates since last main update:'
+  echo 'Staging updates since last stable update:'
   echo '--------------------------------------------------------------------------------'
   $log_cmd
   echo '--------------------------------------------------------------------------------'
-  read -rp "Please confirm the staging update to base this main update on [${target_sha}]: "
+  read -rp "Please confirm the staging update to base this stable update on [${target_sha}]: "
   case "$REPLY" in
     "") ;;
     *) target_sha="$REPLY" ;;
   esac
 
-  merge_main_branches "$target_sha"
+  merge_stable_branches "$target_sha"
 
   # Merge, but don't commit yet ...
   # (also we expect conflicts in submodules so we hide that output)
   git merge --no-commit --no-ff "$target_sha" --log >/dev/null || :
-  # ... because we want to change the submod pointers to main
+  # ... because we want to change the submod pointers to stable
   for mod in $(git submodule status | awk '{print $2}'); do
     git add "$mod"
   done
   # Now commit the merge with corrected submodule pointers
-  git commit --message "Update $(date +%Y%m%d)"
+  git commit --message "Update $(cat VERSION) ($(date +%Y%m%d))"
 
   [[ -z "$OPT_LOCAL" ]] ||
     return 0
@@ -298,18 +298,18 @@ done
 for arg; do
   case $arg in
     fetch-all-changes)
-      BRANCH_NAME=staging
+      BRANCH_NAME=main
       fetch_all_changes
       shift 1
       ;;
     staging)
-      BRANCH_NAME=staging
+      BRANCH_NAME=main
       make_staging_update
       shift 1
       ;;
-    main)
-      BRANCH_NAME=main
-      make_main_update
+    stable)
+      BRANCH_NAME=stable
+      make_stable_update
       shift 1
       ;;
   esac
