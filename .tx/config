@@ -1,0 +1,10 @@
+[main]
+host = https://www.transifex.com
+
+[o:openslides:p:openslides:r:openslides-4x-template-enpot]
+file_filter   = i18n/<lang>.po
+source_file   = i18n/template-en.pot
+type          = PO
+minimum_perc  = 0
+resource_name = OpenSlides 4.x (template-en.pot)
+
