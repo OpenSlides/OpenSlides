@@ -4,6 +4,7 @@ set -e
 
 ME=$(basename "$0")
 
+STABLE_BRANCH_NAME="stable/$(awk -v FS=. -v OFS=. '{$3="x" ; print $0}' VERSION)"
 BRANCH_NAME=
 REMOTE_NAME=
 OPT_PULL=
@@ -98,7 +99,7 @@ pull_latest_commit() {
 
 increment_patch() {
   set_remote
-  patch_upstream=$(git show $REMOTE_NAME/stable:VERSION  | awk -F. '{print $3}')
+  patch_upstream=$(git show $REMOTE_NAME/$STABLE_BRANCH_NAME:VERSION  | awk -F. '{print $3}')
   patch_local=$(git show HEAD:VERSION  | awk -F. '{print $3}')
 
   [[ "$patch_local" -le "$patch_upstream" ]] ||
@@ -209,7 +210,7 @@ merge_stable_branches() {
       set_remote
       git checkout "$BRANCH_NAME"
 
-      git merge --no-ff "$mod_target_sha" --log --message "Merge main into stable. Update $(date +%Y%m%d)"
+      git merge --no-ff "$mod_target_sha" --log --message "Merge main into $STABLE_BRANCH_NAME. Update $(date +%Y%m%d)"
     )
   done
 
@@ -226,7 +227,7 @@ make_stable_update() {
   echo "git fetch $REMOTE_NAME main"
   git fetch $REMOTE_NAME main
 
-  log_cmd="git log --oneline --no-decorate stable..$REMOTE_NAME/main"
+  log_cmd="git log --oneline --no-decorate $STABLE_BRANCH_NAME..$REMOTE_NAME/main"
   [[ "$($log_cmd | grep -c . )" -gt 0 ]] || {
     echo "ERROR: No staging update ahead of the latest stable update found."
     abort 1
@@ -308,7 +309,7 @@ for arg; do
       shift 1
       ;;
     stable)
-      BRANCH_NAME=stable
+      BRANCH_NAME=$STABLE_BRANCH_NAME
       make_stable_update
       shift 1
       ;;
