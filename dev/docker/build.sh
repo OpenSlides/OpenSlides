@@ -17,13 +17,18 @@ TARGETS=(
   [vote]="$HOME/openslides-vote-service/"
   [icc]="$HOME/openslides-icc-service/"
 )
+CLIENT_VERSION_TXT="${TARGETS[client]}/client/src/assets/version.txt"
 
 DOCKER_REPOSITORY="openslides"
-DOCKER_TAG="latest-4"
+DOCKER_TAG="$(cat VERSION)"
+[[ "$(git rev-parse --abbrev-ref HEAD)" != main ]] ||
+  DOCKER_TAG="$DOCKER_TAG-staging-$(date +%Y%m%d)-$(git rev-parse HEAD | cut -c -7)"
 CONFIG="/etc/osinstancectl"
 OPTIONS=()
 BUILT_IMAGES=()
 DEFAULT_TARGETS=(proxy client backend auth autoupdate permission manage datastore-reader datastore-writer media vote icc)
+ASK_PUSH=
+YES=
 
 usage() {
   cat << EOF
@@ -33,8 +38,9 @@ Options:
   -D, --docker-repo  Specify a Docker repository
                      (default: unspecified, i.e., system default)
   -t, --tag          Tag the Docker image (default: $DOCKER_TAG)
-  --ask-push         Offer to push newly built images to registry
   --no-cache         Pass --no-cache to docker-build
+  --ask-push         Offer to push newly built images to registry
+  --yes              Push without requiring interaction confirmation
 EOF
 }
 
@@ -45,7 +51,7 @@ if [[ -f "$CONFIG" ]]; then
 fi
 
 shortopt="hr:D:t:"
-longopt="help,docker-repo:,tag:,ask-push,no-cache"
+longopt="help,docker-repo:,tag:,no-cache,ask-push,yes"
 ARGS=$(getopt -o "$shortopt" -l "$longopt" -n "$ME" -- "$@")
 if [ $? -ne 0 ]; then usage; exit 1; fi
 eval set -- "$ARGS";
@@ -62,12 +68,16 @@ while true; do
       DOCKER_TAG="$2"
       shift 2
       ;;
+    --no-cache)
+      OPTIONS+="--no-cache"
+      shift 1
+      ;;
     --ask-push)
       ASK_PUSH=1
       shift 1
       ;;
-    --no-cache)
-      OPTIONS+="--no-cache"
+    --yes)
+      YES=1
       shift 1
       ;;
     -h|--help) usage; exit 0 ;;
@@ -104,6 +114,10 @@ for i in "${SELECTED_TARGETS[@]}"; do
     printf '\t"commit-abbrev": "%s",\n' "$(git rev-parse --abbrev-ref HEAD)"
     printf '}\n'
   } > version.json
+  if [[ -w "$CLIENT_VERSION_TXT" ]]; then
+    client_dev_version="$(< "$CLIENT_VERSION_TXT")"
+    printf "$DOCKER_TAG (built $(date +%Y%m%d))" > "$CLIENT_VERSION_TXT"
+  fi
 
   # Special instructions for local services
   build_script="${loc}/build.sh"
@@ -113,6 +127,9 @@ for i in "${SELECTED_TARGETS[@]}"; do
     docker build --tag "$img" --pull "${OPTIONS[@]}" "$loc"
   fi
   rm version.json
+  if [[ -w "$CLIENT_VERSION_TXT" ]]; then
+    echo "$client_dev_version" > "$CLIENT_VERSION_TXT"
+  fi
 
   BUILT_IMAGES+=("$img ON")
 done
@@ -128,9 +145,23 @@ else
   exit 3
 fi
 
-[[ "$ASK_PUSH" ]] || exit 0
+[[ -n "$ASK_PUSH" ]] || exit 0
 
-if hash whiptail > /dev/null 2>&1; then
+if [ -n $YES ] || ! hash whiptail > /dev/null 2>&1; then
+  echo
+  for i in "${BUILT_IMAGES[@]}"; do
+    read -r img x <<< "$i"
+    if [ -n $YES ]; then
+      REPL=y
+    else
+      read -p "Push image '$img' to repository? [Y/n] " REPL
+    fi
+    case "$REPL" in
+      N|n|No|no|NO) exit 0;;
+      *) docker push "$img" ;;
+    esac
+  done
+else
   while read img; do
     echo "Pushing ${img}."
     docker push "$img"
@@ -139,14 +170,4 @@ if hash whiptail > /dev/null 2>&1; then
     25 78 16 --separate-output --noitem --clear \
     ${BUILT_IMAGES[@]} \
     3>&2 2>&1 1>&3 )
-else
-  echo
-  for i in "${BUILT_IMAGES[@]}"; do
-    read -r img x <<< "$i"
-    read -p "Push image '$img' to repository? [Y/n] " REPL
-    case "$REPL" in
-      N|n|No|no|NO) exit 0;;
-      *) docker push "$img" ;;
-    esac
-  done
 fi
