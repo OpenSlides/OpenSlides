@@ -2,7 +2,9 @@
 name: Build Docker images for all OpenSlides services
 on:
   push:
-    branches: [ main, stable ]
+    branches:
+      - main
+      - stable/4*
   workflow_dispatch:
 
 jobs:
