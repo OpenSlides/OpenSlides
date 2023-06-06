@@ -26,9 +26,10 @@ DOCKER_TAG="$(cat VERSION)"
 CONFIG="/etc/osinstancectl"
 OPTIONS=()
 BUILT_IMAGES=()
-DEFAULT_TARGETS=(proxy client backend auth autoupdate permission manage datastore-reader datastore-writer media vote icc)
-ASK_PUSH=
-YES=
+DEFAULT_TARGETS=(proxy client backend auth autoupdate manage datastore-reader datastore-writer media vote icc)
+OPT_ASK_PUSH=
+OPT_YES=
+OPT_IMAGES=
 
 usage() {
   cat << EOF
@@ -41,6 +42,7 @@ Options:
   --no-cache         Pass --no-cache to docker-build
   --ask-push         Offer to push newly built images to registry
   --yes              Push without requiring interaction confirmation
+  --images           Only print out resulting images names without building
 EOF
 }
 
@@ -51,7 +53,7 @@ if [[ -f "$CONFIG" ]]; then
 fi
 
 shortopt="hr:D:t:"
-longopt="help,docker-repo:,tag:,no-cache,ask-push,yes"
+longopt="help,docker-repo:,tag:,no-cache,ask-push,yes,images"
 ARGS=$(getopt -o "$shortopt" -l "$longopt" -n "$ME" -- "$@")
 if [ $? -ne 0 ]; then usage; exit 1; fi
 eval set -- "$ARGS";
@@ -73,11 +75,15 @@ while true; do
       shift 1
       ;;
     --ask-push)
-      ASK_PUSH=1
+      OPT_ASK_PUSH=1
       shift 1
       ;;
     --yes)
-      YES=1
+      OPT_YES=1
+      shift 1
+      ;;
+    --images)
+      OPT_IMAGES=1
       shift 1
       ;;
     -h|--help) usage; exit 0 ;;
@@ -102,6 +108,11 @@ for i in "${SELECTED_TARGETS[@]}"; do
   img="${img_name}:${DOCKER_TAG}"
   if [[ -n "$DOCKER_REPOSITORY" ]]; then
     img="${DOCKER_REPOSITORY}/${img}"
+  fi
+
+  if [[ -n "$OPT_IMAGES" ]]; then
+    echo "$img"
+    continue
   fi
 
   echo "Building $img..."
@@ -134,6 +145,10 @@ for i in "${SELECTED_TARGETS[@]}"; do
   BUILT_IMAGES+=("$img ON")
 done
 
+if [[ -n "$OPT_IMAGES" ]]; then
+  exit 0
+fi
+
 if [[ "${#BUILT_IMAGES[@]}" -ge 1 ]]; then
   printf "\nSuccessfully built images:\n\n"
   for i in "${BUILT_IMAGES[@]}"; do
@@ -145,13 +160,13 @@ else
   exit 3
 fi
 
-[[ -n "$ASK_PUSH" ]] || exit 0
+[[ -n "$OPT_ASK_PUSH" ]] || exit 0
 
-if [ -n $YES ] || ! hash whiptail > /dev/null 2>&1; then
+if [ -n $OPT_YES ] || ! hash whiptail > /dev/null 2>&1; then
   echo
   for i in "${BUILT_IMAGES[@]}"; do
     read -r img x <<< "$i"
-    if [ -n $YES ]; then
+    if [ -n $OPT_YES ]; then
       REPL=y
     else
       read -p "Push image '$img' to repository? [Y/n] " REPL
