@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Last-Translator: Alexandra Damm <damm@chiesaluterana.it>, 2022\n"
-"Language-Team: Italian (https://www.transifex.com/openslides/teams/14270/it/)\n"
+"Language-Team: Italian (https://app.transifex.com/openslides/teams/14270/it/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: it\n"
@@ -81,6 +81,9 @@ msgstr "Su di me"
 
 msgid "Abstain"
 msgstr "Astensione"
+
+msgid "Accent color"
+msgstr ""
 
 msgid "Accept"
 msgstr "Accettare"
@@ -210,6 +213,9 @@ msgstr ""
 
 msgid "Agenda visibility"
 msgstr "Visibilità nell'Ordine del Giorno"
+
+msgid "Alignment"
+msgstr ""
 
 msgid "All casted ballots"
 msgstr "Tutte le schede di votazione consegnate"
@@ -344,6 +350,11 @@ msgid "Archived"
 msgstr "Archiviato"
 
 msgid "Archived meetings"
+msgstr ""
+
+msgid ""
+"Are you sure you want to activate this color set? This will change the "
+"colors in all meetings."
 msgstr ""
 
 msgid "Are you sure you want to activate this meeting?"
@@ -657,6 +668,12 @@ msgstr "Inizio relazione"
 msgid "Blank between prefix and number, e.g. 'A 001'."
 msgstr "Spazio tra prefisso e numero, p. e. ´A 001´."
 
+msgid "Blocks"
+msgstr ""
+
+msgid "Bold"
+msgstr ""
+
 msgid "CSV export options"
 msgstr "Opzioni di esportazione CSV"
 
@@ -841,6 +858,9 @@ msgstr "Categoria impostata su {}"
 msgid "Center"
 msgstr "Centro"
 
+msgid "Change color set"
+msgstr ""
+
 msgid "Change paragraph"
 msgstr "Cambiare paragrafo"
 
@@ -934,11 +954,17 @@ msgstr "Chiudere lista dei relatori"
 msgid "Closed items"
 msgstr "Mozioni deliberate"
 
+msgid "Code"
+msgstr ""
+
 msgid "Collapse all"
 msgstr "Chiudere tutto"
 
 msgid "Color"
 msgstr "Colore"
+
+msgid "Color set"
+msgstr ""
 
 msgid "Column separator"
 msgstr "Divisore colonne"
@@ -1082,6 +1108,9 @@ msgstr "Creare un nuovo gruppo chat"
 msgid "Create new tag"
 msgstr "Crea una nuova etichetta"
 
+msgid "Create subitem"
+msgstr ""
+
 msgid "Create user"
 msgstr "Creare utene"
 
@@ -1123,9 +1152,6 @@ msgstr "Numero personalizzato di schede elettorali"
 
 msgid "Custom translations"
 msgstr "Traduzioni personalizzate"
-
-msgid "Customize design"
-msgstr "Personalizzare il design"
 
 msgid "Dark mode"
 msgstr "Modalità scura"
@@ -1242,6 +1268,9 @@ msgstr "Trasferimento diritto di voto"
 msgid "Delete"
 msgstr "Cancellare"
 
+msgid "Delete color set"
+msgstr ""
+
 msgid "Delete editorial final version"
 msgstr ""
 
@@ -1281,6 +1310,9 @@ msgstr "Disabilitati (senza percentuali)"
 msgid "Display type"
 msgstr "Formato display"
 
+msgid "Div"
+msgstr ""
+
 msgid "Divergent:"
 msgstr "Divergente"
 
@@ -1293,11 +1325,11 @@ msgstr "Non da decidere"
 msgid "Do not forget to save your changes!"
 msgstr "Non dimenticare di salvare modifiche!"
 
+msgid "Do you really want to delete this color set?"
+msgstr ""
+
 msgid "Do you really want to discard all your changes?"
 msgstr "Volete davvero scartare tutte le vostre modifiche?"
-
-msgid "Do you really want to exit this page?"
-msgstr "Sicuro di voler lasciare la pagina?"
 
 msgid "Do you really want to go ahead?"
 msgstr "Sicuro di voler continuare?"
@@ -1458,10 +1490,8 @@ msgstr "Abilita la visualizzazione della presenza del partecipante"
 msgid "Enable point of order"
 msgstr "Abilitazione del punto d'ordine"
 
-msgid "Enable star icon to mark speaker (e.g. for contribution)"
+msgid "Enable star icon usage by speakers"
 msgstr ""
-"Abilita l'icona della stella per contrassegnare l'oratore (ad esempio per il"
-" contributo)"
 
 msgid "Enable virtual applause"
 msgstr "Attivare applauso virtuale"
@@ -1737,6 +1767,9 @@ msgstr "Applaudire"
 msgid "Given name"
 msgstr "Nome assegnato"
 
+msgid "Global headbar color"
+msgstr ""
+
 msgid "Go to line"
 msgstr "Vai alla riga"
 
@@ -1814,11 +1847,32 @@ msgstr ""
 msgid "Header"
 msgstr "Intestazione"
 
+msgid "Header 1"
+msgstr ""
+
+msgid "Header 2"
+msgstr ""
+
+msgid "Header 3"
+msgstr ""
+
+msgid "Header 4"
+msgstr ""
+
+msgid "Header 5"
+msgstr ""
+
+msgid "Header 6"
+msgstr ""
+
 msgid "Header background color"
 msgstr "Colore sfondo altezza testa"
 
 msgid "Header font color"
 msgstr "Coloro scrittura altezza testa"
+
+msgid "Headers"
+msgstr ""
 
 msgid "Headline color"
 msgstr "Colore titolo"
@@ -1916,6 +1970,9 @@ msgstr "Informazione"
 
 msgid "Initial password"
 msgstr "Password iniziale"
+
+msgid "Inline"
+msgstr ""
 
 msgid "Insert after"
 msgstr "Inserire dopo"
@@ -2040,6 +2097,9 @@ msgstr ""
 msgid "It's your turn!"
 msgstr ""
 
+msgid "Italic"
+msgstr ""
+
 msgid "Item"
 msgstr ""
 
@@ -2063,6 +2123,9 @@ msgstr "Utilizzare per ogni contributo una riga"
 
 msgid "Label color"
 msgstr "Colore etichetta "
+
+msgid "Language"
+msgstr ""
 
 msgid "Last email sent"
 msgstr "Ulitma e-mail inviata"
@@ -2731,6 +2794,9 @@ msgstr ""
 msgid "Organization admin"
 msgstr "Amministratore dell'organizzazione"
 
+msgid "Organization language"
+msgstr ""
+
 msgid "Organization specific information"
 msgstr "Informazioni specifiche sull'organizzazione"
 
@@ -2805,6 +2871,9 @@ msgstr "Impostazione numero di pagina nel PDF"
 
 msgid "Page numbers"
 msgstr "Numeri pagine"
+
+msgid "Paragraph"
+msgstr ""
 
 msgid "Paragraph-based, Diff-enabled"
 msgstr "Basato sul paragrafo con visualizzazione modifiche"
@@ -2956,6 +3025,9 @@ msgstr "Richiesta riguardante il regolamento"
 msgid "Polls"
 msgstr "Sondaggio"
 
+msgid "Pre"
+msgstr ""
+
 msgid "Preamble text for PDF document (all elections)"
 msgstr "Testo d'introduzione per documenti PDF (tutte le elezioni)"
 
@@ -2986,11 +3058,17 @@ msgstr "Indietro"
 msgid "Previous slides"
 msgstr "Ultime slides"
 
+msgid "Primary color"
+msgstr ""
+
 msgid "Privacy Policy"
 msgstr "Dichiarazione protezione dati"
 
 msgid "Privacy policy"
 msgstr "Dichiarazione protezione dati"
+
+msgid "Process handling"
+msgstr ""
 
 msgid "Project"
 msgstr "Proiettare"
@@ -3099,17 +3177,6 @@ msgstr "Mozioni con riferimento a questa mozione"
 
 msgid "Refresh"
 msgstr "Aggiornare"
-
-msgid ""
-"Regardless of current language settings, the entered group name must be "
-"consistent with original group name (for the built-in groups it is the "
-"English group name)."
-msgstr ""
-"Indipendentemente dalle impostazioni della lingua corrente, il nome del "
-"gruppo inserito deve essere coerente con il nome del gruppo originale. Per i"
-" gruppi inseriti vale il nome del gruppo inglese.  Questi includono i "
-"seguenti gruppi: Delegati (Delegates), Collaboratori (Staff) e Comitati "
-"(Commitees). Siete pregati di usare i nomi in inglese."
 
 msgid "Reject"
 msgstr "Respingere"
@@ -3224,6 +3291,9 @@ msgstr "Resettare stato"
 msgid "Reset to factory defaults"
 msgstr "Resettare allo stato di fabbrica"
 
+msgid "Reset your OpenSlides password"
+msgstr ""
+
 msgid "Resolution and size"
 msgstr "Risoluzione e grandezza"
 
@@ -3238,6 +3308,9 @@ msgstr ""
 
 msgid "Results"
 msgstr "Risultati"
+
+msgid "Retrieving vote status... Please wait!"
+msgstr ""
 
 msgid "Right"
 msgstr "Diritto"
@@ -3678,7 +3751,7 @@ msgstr "Stop votazione"
 msgid "Stop waiting"
 msgstr ""
 
-msgid "Stopped waiting for process(es)"
+msgid "Strikethrough"
 msgstr ""
 
 msgid "Structure level"
@@ -3708,6 +3781,9 @@ msgstr "Richiedenti"
 msgid "Submitters changed"
 msgstr "I richiedenti sono cambiati"
 
+msgid "Subscript"
+msgstr ""
+
 msgid "Suitable accounts found"
 msgstr "Trovati accounts idonei "
 
@@ -3734,6 +3810,9 @@ msgstr "Azioni del super amministratore"
 
 msgid "Superadmin settings"
 msgstr "Impostazioni super amministratore"
+
+msgid "Superscript"
+msgstr ""
 
 msgid "Support"
 msgstr "Supporto"
@@ -3814,8 +3893,17 @@ msgstr ""
 msgid "The number has to be greater than 0."
 msgstr "Il numero deve essere maggiore di 0."
 
-msgid "The parent motion was deleted."
-msgstr "La mozione madre è stata cancellata."
+msgid "The parent motion is not available."
+msgstr ""
+
+msgid "The process is still running. Please wait!"
+msgstr ""
+
+msgid "The process may have stopped running."
+msgstr ""
+
+msgid "The process will be started. Please wait!"
+msgstr ""
 
 msgid "The request could not be sent. Check your connection."
 msgstr ""
@@ -4056,6 +4144,9 @@ msgstr "Prova a ricollegare"
 msgid "Type"
 msgstr "Digita"
 
+msgid "Underline"
+msgstr ""
+
 msgid "Undone"
 msgstr "annullato"
 
@@ -4151,6 +4242,9 @@ msgstr "Voto e schede elettorali"
 msgid "Voting anonymized"
 msgstr "Voto reso anonimo"
 
+msgid "Voting colors"
+msgstr ""
+
 msgid "Voting created"
 msgstr ""
 
@@ -4228,6 +4322,9 @@ msgid "Wait"
 msgstr ""
 
 msgid "Wait for response ..."
+msgstr ""
+
+msgid "Warn color"
 msgstr ""
 
 msgid ""
@@ -4327,6 +4424,15 @@ msgid "You are not supposed to be here..."
 msgstr "Non dovresti essere qui..."
 
 msgid ""
+"You are receiving this email because you have requested a new password for your OpenSlides-account.\n"
+"\n"
+"Please open the following link and choose a new password:\n"
+"{url}/login/forget-password-confirm?user_id={user_id}&token={token}\n"
+"\n"
+"For completeness your username: {username}"
+msgstr ""
+
+msgid ""
 "You are using the history mode of OpenSlides. Changes will not be saved."
 msgstr ""
 "Stai usando la modalità storia di OpenSlides. Le modifiche non saranno "
@@ -4407,9 +4513,6 @@ msgstr "È necessario inserire sei cifre esadecimali"
 
 msgid "You have to fill this field."
 msgstr "Devi riempire questo campo."
-
-msgid "You made changes."
-msgstr "Hai fatto dei cambiamenti."
 
 msgid "You override the personally set password!"
 msgstr "Si sovrascrive la password impostata personalmente!"
@@ -4645,6 +4748,9 @@ msgstr "maggioranza"
 msgid "male"
 msgstr "maschile"
 
+msgid "max. 32 characters allowed"
+msgstr ""
+
 msgid "modified"
 msgstr ""
 
@@ -4653,6 +4759,9 @@ msgstr "mozioni"
 
 msgid "move ..."
 msgstr "spostare ..."
+
+msgid "name"
+msgstr ""
 
 msgid "natural person"
 msgstr "Persona naturale"
@@ -4665,6 +4774,9 @@ msgstr "Nessuna persona fisica"
 
 msgid "nominal"
 msgstr "nominale"
+
+msgid "non-binary"
+msgstr ""
 
 msgid "non-nominal"
 msgstr "non nominale"
