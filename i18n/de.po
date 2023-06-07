@@ -1,11 +1,11 @@
 # 
 # Translators:
-# Emanuel Schütze <emanuel.schuetze@intevation.de>, 2023
 # jsangmeister <joshua.sangmeister@gmail.com>, 2023
+# Emanuel Schütze <emanuel.schuetze@intevation.de>, 2023
 # 
 msgid ""
 msgstr ""
-"Last-Translator: jsangmeister <joshua.sangmeister@gmail.com>, 2023\n"
+"Last-Translator: Emanuel Schütze <emanuel.schuetze@intevation.de>, 2023\n"
 "Language-Team: German (https://app.transifex.com/openslides/teams/14270/de/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -81,6 +81,9 @@ msgstr "Über mich"
 
 msgid "Abstain"
 msgstr "Enthaltung"
+
+msgid "Accent color"
+msgstr "Akzentfarbe"
 
 msgid "Accept"
 msgstr "Annehmen"
@@ -211,6 +214,9 @@ msgstr "Tagesordnungspunkte werden bearbeitet. Bitte warten ..."
 
 msgid "Agenda visibility"
 msgstr "Sichtbarkeit in der Tagesordnung"
+
+msgid "Alignment"
+msgstr "Ausrichtung"
 
 msgid "All casted ballots"
 msgstr "Alle abgegebenen Stimmzettel"
@@ -345,6 +351,13 @@ msgstr "Archiviert"
 
 msgid "Archived meetings"
 msgstr "Archivierte Veranstaltungen"
+
+msgid ""
+"Are you sure you want to activate this color set? This will change the "
+"colors in all meetings."
+msgstr ""
+"Soll diese Farbauswahl wirklich aktiviert werden? Dadurch wird das "
+"Farbdesign in allen Veranstaltungen geändert."
 
 msgid "Are you sure you want to activate this meeting?"
 msgstr "Soll diese Veranstaltung wirklich aktiviert werden?"
@@ -659,6 +672,12 @@ msgstr "Rede beginnen"
 msgid "Blank between prefix and number, e.g. 'A 001'."
 msgstr "Leerzeichen zwischen Präfix und Nummer, z. B. 'A 001'."
 
+msgid "Blocks"
+msgstr "Blöcke"
+
+msgid "Bold"
+msgstr "Fett"
+
 msgid "CSV export options"
 msgstr "CSV-Exportoptionen"
 
@@ -842,6 +861,9 @@ msgstr "Sachgebiet gesetzt auf {}"
 msgid "Center"
 msgstr "Mittig"
 
+msgid "Change color set"
+msgstr "Farbauswahl ändern"
+
 msgid "Change paragraph"
 msgstr "Absatz ändern"
 
@@ -936,11 +958,17 @@ msgstr "Redeliste schließen"
 msgid "Closed items"
 msgstr "Erledigte Einträge"
 
+msgid "Code"
+msgstr "Code"
+
 msgid "Collapse all"
 msgstr "Alle zusammenklappen"
 
 msgid "Color"
 msgstr "Farbe"
+
+msgid "Color set"
+msgstr "Farbauswahl"
 
 msgid "Column separator"
 msgstr "Spaltentrenner"
@@ -1083,6 +1111,9 @@ msgstr "Neue Chat-Gruppe anlegen"
 msgid "Create new tag"
 msgstr "Neues Schlagwort erstellen"
 
+msgid "Create subitem"
+msgstr "Unterpunkt erstellen"
+
 msgid "Create user"
 msgstr "Nutzer anlegen"
 
@@ -1124,9 +1155,6 @@ msgstr "Benutzerdefinierte Anzahl von Stimmzetteln"
 
 msgid "Custom translations"
 msgstr "Benutzerdefinierte Übersetzungen"
-
-msgid "Customize design"
-msgstr "Design anpassen"
 
 msgid "Dark mode"
 msgstr "Dunkler Modus"
@@ -1187,9 +1215,6 @@ msgstr "Vorgegebene Gruppen"
 msgid "Default groups with voting rights"
 msgstr "Voreingestellte Gruppen mit Stimmrecht"
 
-msgid "Default language"
-msgstr ""
-
 msgid "Default line numbering"
 msgstr "Voreingestellte Zeilennummerierung"
 
@@ -1246,6 +1271,9 @@ msgstr "Stimmrechtsübertragung"
 msgid "Delete"
 msgstr "Löschen"
 
+msgid "Delete color set"
+msgstr "Farbauswahl löschen"
+
 msgid "Delete editorial final version"
 msgstr "Redaktionelle Beschlussfassung löschen"
 
@@ -1285,6 +1313,9 @@ msgstr "Deaktiviert (keine Prozente)"
 msgid "Display type"
 msgstr "Anzeigeformat"
 
+msgid "Div"
+msgstr "Div"
+
 msgid "Divergent:"
 msgstr "abweichend:"
 
@@ -1297,11 +1328,11 @@ msgstr "Nicht entscheiden"
 msgid "Do not forget to save your changes!"
 msgstr "Vergessen Sie nicht Ihre Änderungen zu speichern!"
 
+msgid "Do you really want to delete this color set?"
+msgstr "Soll diese Farbauswahl wirklich gelöscht werden?"
+
 msgid "Do you really want to discard all your changes?"
 msgstr "Wollen Sie wirklich alle Änderungen verwerfen?"
-
-msgid "Do you really want to exit this page?"
-msgstr "Wollen Sie diese Seite wirklich verlassen?"
 
 msgid "Do you really want to go ahead?"
 msgstr "Wollen Sie die Aktion wirklich fortsetzen?"
@@ -1464,10 +1495,8 @@ msgstr "Ansicht zur Teilnehmeranwesenheit aktivieren"
 msgid "Enable point of order"
 msgstr "Geschäftsordnungsanträge aktivieren"
 
-msgid "Enable star icon to mark speaker (e.g. for contribution)"
-msgstr ""
-"Stern-Icon zum Markieren von Redner*innen aktivieren (z.B. zur Einbringung "
-"eines Antrags)"
+msgid "Enable star icon usage by speakers"
+msgstr "Stern-Icon-Markierung darf auch von Redner*innen genutzt werden"
 
 msgid "Enable virtual applause"
 msgstr "Virtuellen Applaus einschalten"
@@ -1745,6 +1774,9 @@ msgstr "Applaus geben"
 msgid "Given name"
 msgstr "Vorname"
 
+msgid "Global headbar color"
+msgstr "Kopfzeilenfarbe"
+
 msgid "Go to line"
 msgstr "Springe zur Zeile"
 
@@ -1822,11 +1854,32 @@ msgstr "Stimme abgegeben"
 msgid "Header"
 msgstr "Kopfzeile"
 
+msgid "Header 1"
+msgstr "Überschrift 1"
+
+msgid "Header 2"
+msgstr "Überschrift 2"
+
+msgid "Header 3"
+msgstr "Überschrift 3"
+
+msgid "Header 4"
+msgstr "Überschrift 4"
+
+msgid "Header 5"
+msgstr "Überschrift 5"
+
+msgid "Header 6"
+msgstr "Überschrift 6"
+
 msgid "Header background color"
 msgstr "Hintergrundfarbe Kopfbereich"
 
 msgid "Header font color"
 msgstr "Schriftfarbe Kopfbereich"
+
+msgid "Headers"
+msgstr "Überschriften"
 
 msgid "Headline color"
 msgstr "Überschriftenfarbe"
@@ -1924,6 +1977,9 @@ msgstr "Information"
 
 msgid "Initial password"
 msgstr "Initiales Passwort"
+
+msgid "Inline"
+msgstr "Zeichenformate"
 
 msgid "Insert after"
 msgstr "Danach einfügen"
@@ -2048,6 +2104,9 @@ msgstr "Dein Partner ist am Zug!"
 msgid "It's your turn!"
 msgstr "Du bist dran!"
 
+msgid "Italic"
+msgstr "Kursiv"
+
 msgid "Item"
 msgstr "Eintrag"
 
@@ -2073,7 +2132,7 @@ msgid "Label color"
 msgstr "Beschriftungsfarbe"
 
 msgid "Language"
-msgstr ""
+msgstr "Sprache"
 
 msgid "Last email sent"
 msgstr "Letzte gesendete E-Mail"
@@ -2745,6 +2804,9 @@ msgstr "Administrationsrolle geändert"
 msgid "Organization admin"
 msgstr "Organisationsadmin"
 
+msgid "Organization language"
+msgstr "Organisationssprache"
+
 msgid "Organization specific information"
 msgstr "Organisationsspezifische Informationen"
 
@@ -2819,6 +2881,9 @@ msgstr "Seitenzahl-Ausrichtung im PDF"
 
 msgid "Page numbers"
 msgstr "Seitenzahlen"
+
+msgid "Paragraph"
+msgstr "Absatz"
 
 msgid "Paragraph-based, Diff-enabled"
 msgstr "Absatzbasiert mit Änderungsdarstellung"
@@ -2971,6 +3036,9 @@ msgstr "GO-Antrag"
 msgid "Polls"
 msgstr "Umfragen"
 
+msgid "Pre"
+msgstr "Pre"
+
 msgid "Preamble text for PDF document (all elections)"
 msgstr "Einleitungstext für PDF-Dokument (alle Wahlen) "
 
@@ -3001,11 +3069,17 @@ msgstr "Zurück"
 msgid "Previous slides"
 msgstr "Letzte Folien"
 
+msgid "Primary color"
+msgstr "Primärfarbe"
+
 msgid "Privacy Policy"
 msgstr "Datenschutzerklärung"
 
 msgid "Privacy policy"
 msgstr "Datenschutzerklärung"
+
+msgid "Process handling"
+msgstr "Prozessverarbeitung"
 
 msgid "Project"
 msgstr "Projizieren"
@@ -3114,17 +3188,6 @@ msgstr "Auf diesen Antrag verweisende Anträge"
 
 msgid "Refresh"
 msgstr "Aktualisieren"
-
-msgid ""
-"Regardless of current language settings, the entered group name must be "
-"consistent with original group name (for the built-in groups it is the "
-"English group name)."
-msgstr ""
-"Unabhängig von den aktuellen Spracheinstellungen muss der eingegebene "
-"Gruppenname mit dem ursprünglichen Gruppennamen übereinstimmen. Für die "
-"integrierten Gruppen gelten hingegen die englischen Gruppennamen. Dies "
-"umfasst folgende Gruppen: Delegierte (Delegates), Mitarbeitende (Staff) und "
-"Gremien (Committees). Bitte verwenden Sie die englischen Bezeichnungen."
 
 msgid "Reject"
 msgstr "Ablehnen"
@@ -3258,7 +3321,7 @@ msgid "Results"
 msgstr "Ergebnisse"
 
 msgid "Retrieving vote status... Please wait!"
-msgstr ""
+msgstr "Stimmabgabe wird vorbereitet... Bitte warten!"
 
 msgid "Right"
 msgstr "Rechts"
@@ -3691,8 +3754,8 @@ msgstr "Stimmabgabe beenden"
 msgid "Stop waiting"
 msgstr "Nicht länger warten"
 
-msgid "Stopped waiting for process(es)"
-msgstr ""
+msgid "Strikethrough"
+msgstr "Durchgestrichen"
 
 msgid "Structure level"
 msgstr "Gliederungsebene"
@@ -3721,6 +3784,9 @@ msgstr "Antragsteller*in"
 msgid "Submitters changed"
 msgstr "Antragsteller*in geändert"
 
+msgid "Subscript"
+msgstr "Tiefgestellt"
+
 msgid "Suitable accounts found"
 msgstr "Passende Accounts gefunden"
 
@@ -3747,6 +3813,9 @@ msgstr "Superadmin-Aktionen"
 
 msgid "Superadmin settings"
 msgstr "Superadmin-Einstellungen"
+
+msgid "Superscript"
+msgstr "Hochgestellt"
 
 msgid "Support"
 msgstr "Unterstützen"
@@ -3829,8 +3898,17 @@ msgstr ""
 msgid "The number has to be greater than 0."
 msgstr "Die Anzahl muss größer als 0 sein."
 
-msgid "The parent motion was deleted."
-msgstr "Der Eltern-Antrag wurde gelöscht."
+msgid "The parent motion is not available."
+msgstr "Der Eltern-Antrag ist nicht verfügbar."
+
+msgid "The process is still running. Please wait!"
+msgstr "Der Prozess ist noch nicht abgeschlossen. Bitte warten!"
+
+msgid "The process may have stopped running."
+msgstr "Der Prozess hat möglicherweise aufgehört zu laufen."
+
+msgid "The process will be started. Please wait!"
+msgstr "Der Prozess wird gestartet. Bitte warten!"
 
 msgid "The request could not be sent. Check your connection."
 msgstr ""
@@ -4075,6 +4153,9 @@ msgstr "Verbindung wiederherstellen"
 msgid "Type"
 msgstr "Typ"
 
+msgid "Underline"
+msgstr "Unterstrichen"
+
 msgid "Undone"
 msgstr "unerledigt"
 
@@ -4173,6 +4254,9 @@ msgstr "Abstimmung und Stimmzettel"
 msgid "Voting anonymized"
 msgstr "Abstimmung anonymisiert"
 
+msgid "Voting colors"
+msgstr "Farben zur Stimmabgabe"
+
 msgid "Voting created"
 msgstr "Abstimmung erstellt"
 
@@ -4251,6 +4335,9 @@ msgstr "Warten"
 
 msgid "Wait for response ..."
 msgstr "Warten auf Antwort ..."
+
+msgid "Warn color"
+msgstr "Warnfarbe"
 
 msgid ""
 "Warning: Amendments exist for this motion. Editing this text will likely "
@@ -4457,9 +4544,6 @@ msgstr "Sie müssen sechs Hexadezimalstellen eingeben"
 
 msgid "You have to fill this field."
 msgstr "Sie müssen diese Feld ausfüllen."
-
-msgid "You made changes."
-msgstr "Sie haben Änderungen vorgenommen."
 
 msgid "You override the personally set password!"
 msgstr "Sie überschreiben hiermit das persönlich gesetzte Passwort!"
@@ -4697,6 +4781,9 @@ msgstr "Mehrheit"
 msgid "male"
 msgstr "männlich"
 
+msgid "max. 32 characters allowed"
+msgstr "max. 32 Zeichen erlaubt"
+
 msgid "modified"
 msgstr "geändert"
 
@@ -4720,6 +4807,9 @@ msgstr "keine natürliche Person"
 
 msgid "nominal"
 msgstr "namentlich"
+
+msgid "non-binary"
+msgstr "nichtbinär"
 
 msgid "non-nominal"
 msgstr "nicht-namentlich"
