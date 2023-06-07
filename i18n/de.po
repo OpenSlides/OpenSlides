@@ -2275,6 +2275,9 @@ msgstr "Veranstaltung"
 msgid "Meeting administrator"
 msgstr "Veranstaltungsadministrator"
 
+msgid "Meeting date"
+msgstr "Veranstaltungsdatum"
+
 msgid "Meeting information"
 msgstr "Veranstaltungsinformationen"
 
@@ -2508,9 +2511,6 @@ msgstr "Neue*r Teilnehmer*in"
 
 msgid "New password"
 msgstr "Neues Passwort"
-
-msgid "New poll"
-msgstr "Neue Umfrage"
 
 msgid "New state"
 msgstr "Neuer Status"
@@ -4034,6 +4034,15 @@ msgstr ""
 "Tagesordnung durchgeführt wird."
 
 msgid ""
+"This projector is currently internal. Selecting such projectors as reference"
+" projectors will automatically set them to visible. Do you really want to do"
+" this?"
+msgstr ""
+"Dieser Projektor ist derzeit intern. Wenn Sie solche Projektoren als "
+"Referenzprojektoren auswählen, werden sie automatisch auf sichtbar gesetzt. "
+"Wollen Sie dies wirklich tun?"
+
+msgid ""
 "This will add or remove the following groups for all selected participants:"
 msgstr ""
 "Folgende Gruppen werden für die ausgewählten Teilnehmenden hinzugefügt oder "
@@ -4348,6 +4357,9 @@ msgstr ""
 "Textes wird sich wahrscheinlich negativ auf diese auswirken. Insbesondere "
 "können Änderungsanträge unbrauchbar werden, wenn der Absatz, auf den sie "
 "referenzieren, gelöscht wird."
+
+msgid "Warning: This projector will be set to visible"
+msgstr "Warnung: Dieser Projektor wird auf sichtbar gesetzt"
 
 msgid "Was forwarded to this meeting"
 msgstr "Wurde in diese Veranstaltung weitergeleitet"

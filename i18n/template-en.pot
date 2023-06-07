@@ -2176,6 +2176,9 @@ msgstr ""
 msgid "Meeting administrator"
 msgstr ""
 
+msgid "Meeting date"
+msgstr ""
+
 msgid "Meeting information"
 msgstr ""
 
@@ -2404,9 +2407,6 @@ msgid "New participant"
 msgstr ""
 
 msgid "New password"
-msgstr ""
-
-msgid "New poll"
 msgstr ""
 
 msgid "New state"
@@ -3877,6 +3877,12 @@ msgid "This prefix will be set if you run the automatic agenda numbering."
 msgstr ""
 
 msgid ""
+"This projector is currently internal. Selecting such projectors as reference "
+"projectors will automatically set them to visible. Do you really want to do "
+"this?"
+msgstr ""
+
+msgid ""
 "This will add or remove the following groups for all selected participants:"
 msgstr ""
 
@@ -4158,6 +4164,9 @@ msgid ""
 "Warning: Amendments exist for this motion. Editing this text will likely "
 "impact them negatively. Particularily, amendments might become unusable if "
 "the paragraph they affect is deleted."
+msgstr ""
+
+msgid "Warning: This projector will be set to visible"
 msgstr ""
 
 msgid "Was forwarded to this meeting"
