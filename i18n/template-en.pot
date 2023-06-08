@@ -66,6 +66,9 @@ msgstr ""
 msgid "Abstain"
 msgstr ""
 
+msgid "Accent color"
+msgstr ""
+
 msgid "Accept"
 msgstr ""
 
@@ -189,6 +192,9 @@ msgid "Agenda items are in process. Please wait ..."
 msgstr ""
 
 msgid "Agenda visibility"
+msgstr ""
+
+msgid "Alignment"
 msgstr ""
 
 msgid "All casted ballots"
@@ -321,6 +327,11 @@ msgid "Archived"
 msgstr ""
 
 msgid "Archived meetings"
+msgstr ""
+
+msgid ""
+"Are you sure you want to activate this color set? This will change the "
+"colors in all meetings."
 msgstr ""
 
 msgid "Are you sure you want to activate this meeting?"
@@ -612,6 +623,12 @@ msgstr ""
 msgid "Blank between prefix and number, e.g. 'A 001'."
 msgstr ""
 
+msgid "Blocks"
+msgstr ""
+
+msgid "Bold"
+msgstr ""
+
 msgid "CSV export options"
 msgstr ""
 
@@ -795,6 +812,9 @@ msgstr ""
 msgid "Center"
 msgstr ""
 
+msgid "Change color set"
+msgstr ""
+
 msgid "Change paragraph"
 msgstr ""
 
@@ -888,10 +908,16 @@ msgstr ""
 msgid "Closed items"
 msgstr ""
 
+msgid "Code"
+msgstr ""
+
 msgid "Collapse all"
 msgstr ""
 
 msgid "Color"
+msgstr ""
+
+msgid "Color set"
 msgstr ""
 
 msgid "Column separator"
@@ -1035,6 +1061,9 @@ msgstr ""
 msgid "Create new tag"
 msgstr ""
 
+msgid "Create subitem"
+msgstr ""
+
 msgid "Create user"
 msgstr ""
 
@@ -1075,9 +1104,6 @@ msgid "Custom number of ballot papers"
 msgstr ""
 
 msgid "Custom translations"
-msgstr ""
-
-msgid "Customize design"
 msgstr ""
 
 msgid "Dark mode"
@@ -1127,9 +1153,6 @@ msgid "Default group"
 msgstr ""
 
 msgid "Default groups with voting rights"
-msgstr ""
-
-msgid "Default language"
 msgstr ""
 
 msgid "Default line numbering"
@@ -1182,6 +1205,9 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
+msgid "Delete color set"
+msgstr ""
+
 msgid "Delete editorial final version"
 msgstr ""
 
@@ -1221,6 +1247,9 @@ msgstr ""
 msgid "Display type"
 msgstr ""
 
+msgid "Div"
+msgstr ""
+
 msgid "Divergent:"
 msgstr ""
 
@@ -1233,10 +1262,10 @@ msgstr ""
 msgid "Do not forget to save your changes!"
 msgstr ""
 
-msgid "Do you really want to discard all your changes?"
+msgid "Do you really want to delete this color set?"
 msgstr ""
 
-msgid "Do you really want to exit this page?"
+msgid "Do you really want to discard all your changes?"
 msgstr ""
 
 msgid "Do you really want to go ahead?"
@@ -1388,7 +1417,7 @@ msgstr ""
 msgid "Enable point of order"
 msgstr ""
 
-msgid "Enable star icon to mark speaker (e.g. for contribution)"
+msgid "Enable star icon usage by speakers"
 msgstr ""
 
 msgid "Enable virtual applause"
@@ -1655,6 +1684,9 @@ msgstr ""
 msgid "Given name"
 msgstr ""
 
+msgid "Global headbar color"
+msgstr ""
+
 msgid "Go to line"
 msgstr ""
 
@@ -1730,10 +1762,31 @@ msgstr ""
 msgid "Header"
 msgstr ""
 
+msgid "Header 1"
+msgstr ""
+
+msgid "Header 2"
+msgstr ""
+
+msgid "Header 3"
+msgstr ""
+
+msgid "Header 4"
+msgstr ""
+
+msgid "Header 5"
+msgstr ""
+
+msgid "Header 6"
+msgstr ""
+
 msgid "Header background color"
 msgstr ""
 
 msgid "Header font color"
+msgstr ""
+
+msgid "Headers"
 msgstr ""
 
 msgid "Headline color"
@@ -1829,6 +1882,9 @@ msgid "Information"
 msgstr ""
 
 msgid "Initial password"
+msgstr ""
+
+msgid "Inline"
 msgstr ""
 
 msgid "Insert after"
@@ -1950,6 +2006,9 @@ msgid "It's your partners turn"
 msgstr ""
 
 msgid "It's your turn!"
+msgstr ""
+
+msgid "Italic"
 msgstr ""
 
 msgid "Item"
@@ -2115,6 +2174,9 @@ msgid "Meeting"
 msgstr ""
 
 msgid "Meeting administrator"
+msgstr ""
+
+msgid "Meeting date"
 msgstr ""
 
 msgid "Meeting information"
@@ -2345,9 +2407,6 @@ msgid "New participant"
 msgstr ""
 
 msgid "New password"
-msgstr ""
-
-msgid "New poll"
 msgstr ""
 
 msgid "New state"
@@ -2635,6 +2694,9 @@ msgstr ""
 msgid "Organization admin"
 msgstr ""
 
+msgid "Organization language"
+msgstr ""
+
 msgid "Organization specific information"
 msgstr ""
 
@@ -2708,6 +2770,9 @@ msgid "Page number alignment in PDF"
 msgstr ""
 
 msgid "Page numbers"
+msgstr ""
+
+msgid "Paragraph"
 msgstr ""
 
 msgid "Paragraph-based, Diff-enabled"
@@ -2852,6 +2917,9 @@ msgstr ""
 msgid "Polls"
 msgstr ""
 
+msgid "Pre"
+msgstr ""
+
 msgid "Preamble text for PDF document (all elections)"
 msgstr ""
 
@@ -2882,10 +2950,16 @@ msgstr ""
 msgid "Previous slides"
 msgstr ""
 
+msgid "Primary color"
+msgstr ""
+
 msgid "Privacy Policy"
 msgstr ""
 
 msgid "Privacy policy"
+msgstr ""
+
+msgid "Process handling"
 msgstr ""
 
 msgid "Project"
@@ -2994,12 +3068,6 @@ msgid "Referring motions"
 msgstr ""
 
 msgid "Refresh"
-msgstr ""
-
-msgid ""
-"Regardless of current language settings, the entered group name must be "
-"consistent with original group name (for the built-in groups it is the "
-"English group name)."
 msgstr ""
 
 msgid "Reject"
@@ -3552,7 +3620,7 @@ msgstr ""
 msgid "Stop waiting"
 msgstr ""
 
-msgid "Stopped waiting for process(es)"
+msgid "Strikethrough"
 msgstr ""
 
 msgid "Structure level"
@@ -3582,6 +3650,9 @@ msgstr ""
 msgid "Submitters changed"
 msgstr ""
 
+msgid "Subscript"
+msgstr ""
+
 msgid "Suitable accounts found"
 msgstr ""
 
@@ -3607,6 +3678,9 @@ msgid "Superadmin actions"
 msgstr ""
 
 msgid "Superadmin settings"
+msgstr ""
+
+msgid "Superscript"
 msgstr ""
 
 msgid "Support"
@@ -3684,7 +3758,16 @@ msgstr ""
 msgid "The number has to be greater than 0."
 msgstr ""
 
-msgid "The parent motion was deleted."
+msgid "The parent motion is not available."
+msgstr ""
+
+msgid "The process is still running. Please wait!"
+msgstr ""
+
+msgid "The process may have stopped running."
+msgstr ""
+
+msgid "The process will be started. Please wait!"
 msgstr ""
 
 msgid "The request could not be sent. Check your connection."
@@ -3794,6 +3877,12 @@ msgid "This prefix will be set if you run the automatic agenda numbering."
 msgstr ""
 
 msgid ""
+"This projector is currently internal. Selecting such projectors as reference "
+"projectors will automatically set them to visible. Do you really want to do "
+"this?"
+msgstr ""
+
+msgid ""
 "This will add or remove the following groups for all selected participants:"
 msgstr ""
 
@@ -3897,6 +3986,9 @@ msgstr ""
 msgid "Type"
 msgstr ""
 
+msgid "Underline"
+msgstr ""
+
 msgid "Undone"
 msgstr ""
 
@@ -3985,6 +4077,9 @@ msgstr ""
 msgid "Voting anonymized"
 msgstr ""
 
+msgid "Voting colors"
+msgstr ""
+
 msgid "Voting created"
 msgstr ""
 
@@ -4062,10 +4157,16 @@ msgstr ""
 msgid "Wait for response ..."
 msgstr ""
 
+msgid "Warn color"
+msgstr ""
+
 msgid ""
 "Warning: Amendments exist for this motion. Editing this text will likely "
 "impact them negatively. Particularily, amendments might become unusable if "
 "the paragraph they affect is deleted."
+msgstr ""
+
+msgid "Warning: This projector will be set to visible"
 msgstr ""
 
 msgid "Was forwarded to this meeting"
@@ -4232,9 +4333,6 @@ msgid "You have to enter six hexadecimal digits"
 msgstr ""
 
 msgid "You have to fill this field."
-msgstr ""
-
-msgid "You made changes."
 msgstr ""
 
 msgid "You override the personally set password!"
@@ -4468,6 +4566,9 @@ msgstr ""
 msgid "male"
 msgstr ""
 
+msgid "max. 32 characters allowed"
+msgstr ""
+
 msgid "modified"
 msgstr ""
 
@@ -4490,6 +4591,9 @@ msgid "no natural person"
 msgstr ""
 
 msgid "nominal"
+msgstr ""
+
+msgid "non-binary"
 msgstr ""
 
 msgid "non-nominal"
