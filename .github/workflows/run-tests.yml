@@ -98,6 +98,8 @@ jobs:
             **/node_modules
           key: node_modules-${{ hashFiles('**/package-lock.json') }}
       - name: test client
+        env:
+          NODE_OPTIONS: "--openssl-legacy-provider"
         run: npm run test-silently
 
   build-client-debug:
@@ -114,6 +116,8 @@ jobs:
             **/node_modules
           key: node_modules-${{ hashFiles('**/package-lock.json') }}
       - name: build client debug
+        env:
+          NODE_OPTIONS: "--openssl-legacy-provider"
         run: npm run build-debug
 
   build-client-prod:
@@ -130,4 +134,6 @@ jobs:
             **/node_modules
           key: node_modules-${{ hashFiles('**/package-lock.json') }}
       - name: build client prod
+        env:
+          NODE_OPTIONS: "--openssl-legacy-provider"
         run: npm run build
