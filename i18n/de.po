@@ -124,6 +124,41 @@ msgstr "Stimmrechtsübertragung aktivieren"
 msgid "Activate vote weight"
 msgstr "Stimmgewichtung aktivieren"
 
+msgid ""
+"Activates the automatic logging of the date and time when this state was "
+"first reached. A set time stamp cannot be removed."
+msgstr ""
+"Aktiviert das automatische Erfassen des Datums und der Uhrzeit, zu dem "
+"dieser Status erstmalig erreicht wurde. Ein gesetzter Zeitstempel kann nicht"
+" entfernt werden. "
+
+msgid ""
+"Activates the automatic setting of a number for motions that reach this "
+"state. The scheme for numbering can be customized under > [Settings] > "
+"[Motions]."
+msgstr ""
+"Aktiviert für Anträge, die diesen Status erreichen, das automatische Setzen "
+"eines Bezeichners. Das Schema für die Nummerierung kann unter > "
+"[Einstellungen] > [Anträge] angepasst werden."
+
+msgid ""
+"Activates the extension field for the selected state, which can be filled with free text as desired.\n"
+"\n"
+"Example: When activated, the state \"in progress\" can be expanded to e.g. \"in progress by the motion committee\"."
+msgstr ""
+"Aktiviert das Ergänzungsfeld für den ausgewählten Status, das nach Belieben mit Freitext versehen werden kann.\n"
+"\n"
+"Beispiel: Bei Aktivierung kann der Status \"in Bearbeitung\" beliebig ergänzt werden zu bspw. \"in Bearbeitung von der Antragskommission\"."
+
+msgid ""
+"Activates the extension field of the recommendation in this state, which can"
+" be filled with free text or extended with references to other motions or "
+"committees as desired."
+msgstr ""
+"Aktiviert im ausgewählten Status das Ergänzungsfeld der Empfehlung, das nach"
+" Belieben mit Freitext versehen oder mit Verweisen auf andere Anträge oder "
+"Gremien erweitert werden kann."
+
 msgid "Active"
 msgstr "Aktiv"
 
@@ -153,6 +188,9 @@ msgstr "Mitteilung hinzufügen"
 
 msgid "Add new custom translation"
 msgstr "Neue benutzerdefinierte Übersetzung hinzufügen"
+
+msgid "Add new entry"
+msgstr "Neuen Eintrag hinzufügen"
 
 msgid "Add option"
 msgstr "Option hinzufügen"
@@ -570,9 +608,6 @@ msgstr "Nachfragen, voreingestellt ja"
 msgid "Assign"
 msgstr "Zuweisen"
 
-msgid "Assigned accounts"
-msgstr "Zugewiesene Accounts"
-
 msgid "At least"
 msgstr "Mindestens"
 
@@ -593,6 +628,9 @@ msgstr ""
 
 msgid "Attention: This action cannot be undone!"
 msgstr "Achtung: Diese Aktion kann nicht rückgängig gemacht werden!"
+
+msgid "Attribute mapping (JSON)"
+msgstr "Attribut-Zuordnung (JSON)"
 
 msgid "Automatically open the microphone for new conference speakers"
 msgstr "Mikrofon automatisch öffnen beim Eintreten in die Livekonferenz"
@@ -696,17 +734,130 @@ msgstr "Aufgerufen wird"
 msgid "Called with"
 msgstr "Mit aufgerufen werden"
 
+msgid "Can activate and deactivate logos and fonts under > [Files]."
+msgstr ""
+"Darf Logos und Schriften unter > [Dateien] aktivieren und deaktivieren."
+
+msgid ""
+"Can add or delete speakers to or from the list of speakers, mark, sort, "
+"start/stop and open/close the list of speakers."
+msgstr ""
+"Darf Redner*innen auf die Redeliste setzen, von Redeliste löschen, "
+"Redebeiträge markieren, sortieren, starten/stoppen und die Redeliste "
+"öffnen/schließen."
+
+msgid ""
+"Can add their name to the list of candidates in the [Search for candidates] "
+"phase."
+msgstr ""
+"Darf sich in der Phase [Auf Kandidatensuche] in die Liste der Kandidierenden"
+" eintragen."
+
+msgid "Can change the presence status of other participants."
+msgstr "Darf den Anwesenheitsstatus anderer Teilnehmenden ändern."
+
 msgid "Can create amendments"
 msgstr "Darf Änderungsanträge stellen"
 
+msgid ""
+"Can create amendments and modify them later, depending on the workflow, but "
+"cannot delete them."
+msgstr ""
+"Darf Änderungsanträge erstellen und je nach Arbeitsablauf nachträglich "
+"ändern, aber nicht löschen."
+
 msgid "Can create motions"
 msgstr "Darf Anträge erstellen"
+
+msgid ""
+"Can create motions and modify them later, depending on the workflow, but "
+"cannot delete them."
+msgstr ""
+"Darf Anträge erstellen und je nach Arbeitsablauf nachträglich ändern, aber "
+"nicht löschen."
+
+msgid "Can create, change, delete tags for the agenda and for motions."
+msgstr ""
+"Darf Schlagwörter für die Tagesordnung und für Anträge erstellen, ändern und"
+" löschen."
+
+msgid "Can create, change, start/stop and delete polls."
+msgstr "Darf Abstimmungen erstellen, ändern, starten/stoppen und löschen."
+
+msgid "Can create, configure, control and delete projectors."
+msgstr "Darf Projektoren erstellen, konfigurieren, steuern und löschen."
+
+msgid ""
+"Can create, modify and delete elections and candidate lists, as well as "
+"start/stop and reset ballots. "
+msgstr ""
+"Darf Wahlen und Kandidat*innen-Listen erstellen, ändern und löschen sowie "
+"Wahlgänge starten/stoppen und zurücksetzen. "
+
+msgid ""
+"Can create, modify and delete motions and votings, amendments and change "
+"recommendations, and edit the metadata of a motion. Including the management"
+" of categories, motion blocks, tags, workflows and comment fields."
+msgstr ""
+"Darf Anträge und Antragsabstimmungen, Änderungsanträge und "
+"Änderungsempfehlungen erstellen, ändern und löschen sowie die Metadaten "
+"eines Antrages bearbeiten. Inklusive der Verwaltung der Sachgebiete, "
+"Antragsblöcke, Schlagwörter, Arbeitsabläufe und Kommentarfelder."
+
+msgid ""
+"Can create, modify and delete topics, add motions and elections to the "
+"agenda, sort, number and tag agenda items."
+msgstr ""
+"Darf Themen erstellen, ändern und löschen, Anträge und Wahlen zur "
+"Tagesordnung hinzufügen, Tagesordnungspunkte sortieren, nummerieren und "
+"verschlagworten."
+
+msgid ""
+"Can create, modify, delete chat groups and define permissions.\n"
+"\n"
+"Note: The chat menu item becomes visible to all participants, except admins, as soon as a chat has been created."
+msgstr ""
+"Darf Chatgruppen erstellen, ändern, löschen und Berechtigungen definieren.\n"
+"\n"
+"Hinweis: Der Chat-Menüpunkt wird für alle Teilnehmenden, außer den Admins, erst dann sichtbar, wenn ein Chat erstellt wurde."
+
+msgid ""
+"Can create, modify, delete participant datasets and administrate group "
+"permissions."
+msgstr ""
+"Darf Teilnehmenden-Datensätze erstellen, ändern, löschen und die "
+"Gruppenberechtigungen verwalten."
+
+msgid "Can create, modify, start/stop and delete votings."
+msgstr "Darf Abstimmungen erstellen, ändern, starten/stoppen und löschen."
+
+msgid ""
+"Can edit and assign the following motion metadata: Submitter, state, "
+"recommendation, category, motion blocks and tags."
+msgstr ""
+"Darf folgende Antragsmetadaten bearbeiten und zuweisen: Antragsteller*in, "
+"Status, Empfehlung, Sachgebiet, Antragsblock und Schlagwörter."
 
 msgid "Can forward motions"
 msgstr "Darf Anträge weiterleiten"
 
 msgid "Can forward motions to committee"
 msgstr "Darf Anträge weiterleiten an Gremium"
+
+msgid ""
+"Can forward motions to other meetings within the OpenSlides instance. \n"
+"\n"
+"Further requirements:\n"
+"1. forwarding hierarchy must be set at the organizational level in the committee. \n"
+"2. target meeting must be created.\n"
+"3. forwarding must be activated in the workflow in the state."
+msgstr ""
+"Darf Anträge an andere Veranstaltungen innerhalb der OpenSlides-Instanz weiterleiten. \n"
+"\n"
+"Weitere Voraussetzungen:\n"
+"1. Weiterleitungshierarchie muss auf Organisationsebene im Gremium eingestellt sein. \n"
+"2. Zielveranstaltung muss erstellt sein.\n"
+"3. Weiterleitung muss im Arbeitsablauf im Status aktiviert sein."
 
 msgid "Can manage agenda"
 msgstr "Darf die Tagesordung verwalten"
@@ -736,7 +887,7 @@ msgid "Can manage participants"
 msgstr "Darf Teilnehmende verwalten"
 
 msgid "Can manage polls"
-msgstr "Darf Umfragen verwalten"
+msgstr "Darf Abstimmungen verwalten"
 
 msgid "Can manage presence of others"
 msgstr "Darf die Anwesenheit anderer verwalten"
@@ -759,6 +910,15 @@ msgstr "Darf andere Teilnehmende für Wahlen vorschlagen"
 msgid "Can nominate oneself"
 msgstr "Darf selbst für Wahlen kandidieren"
 
+msgid ""
+"Can nominate other participants as candidates. \n"
+"\n"
+"Requires group permission: [Can see participants]"
+msgstr ""
+"Darf andere Teilnehmende als Kandidat*in vorschlagen. \n"
+"\n"
+"Benötigt Gruppenrecht: [Darf Teilnehmende sehen]"
+
 msgid "Can put oneself on the list of speakers"
 msgstr "Darf sich selbst auf die Redeliste setzen"
 
@@ -770,6 +930,12 @@ msgstr "Darf Anträge erhalten von Gremium"
 
 msgid "Can see agenda"
 msgstr "Darf die Tagesordnung sehen"
+
+msgid "Can see all internal topics, schedules and comments."
+msgstr "Darf alle internen Themen, Zeitpläne und Kommentare sehen."
+
+msgid "Can see all lists of speakers"
+msgstr "Darf alle Redelisten sehen."
 
 msgid "Can see elections"
 msgstr "Darf Wahlen sehen"
@@ -789,8 +955,71 @@ msgstr "Darf Anträge sehen"
 msgid "Can see motions in internal state"
 msgstr "Darf Anträge im internen Status sehen"
 
+msgid ""
+"Can see motions in the internal state that are limited in the workflow under Restrictions with the same description.\n"
+"\n"
+"Tip: Cross-check desired visibility of motions with test delegate account. "
+msgstr ""
+"Darf Anträge im internen Status sehen, die im Arbeitsablauf unter Zugriffsbeschränkung mit gleichlautender Beschreibung limitiert sind.\n"
+"\n"
+"Tipp: Gewünschte Sichtbarkeit von Anträgen mit Testdelegierten-Account gegenprüfen. "
+
 msgid "Can see participants"
 msgstr "Darf Teilnehmende sehen"
+
+msgid "Can see the Agenda menu item and all public topics in the agenda."
+msgstr ""
+"Darf den Menüpunkt Tagesordnung sowie alle öffentlichen Themen in der "
+"Tagesordnung sehen."
+
+msgid ""
+"Can see the Autopilot menu item with all content for which appropriate "
+"permissions are set."
+msgstr ""
+"Darf den Menüpunkt Autopilot mit allen Inhalten, für die entsprechende "
+"Berechtigungen eingestellt sind, sehen."
+
+msgid ""
+"Can see the Files menu item and all shared folders and files.\n"
+"\n"
+"Note: Sharing of folders and files may be restricted by group assignment."
+msgstr ""
+"Darf den Menüpunkt Dateien und alle freigegebenen Ordner und Dateien sehen.\n"
+"\n"
+"Hinweis: Freigabe von Ordnern und Dateien kann durch Gruppenzuweisung eingeschränkt sein."
+
+msgid ""
+"Can see the History menu item with the history of processing timestamps for motions, elections and participants. \n"
+"\n"
+"Note: For privacy reasons, it is recommended to limit the rights to view the History significantly."
+msgstr ""
+"Darf den Menüpunkt Chronik mit Bearbeitungszeitstempeln für Anträge, Wahlen und Teilnehmende sehen.\n"
+"\n"
+"Hinweis: Aus Datenschutzgründen empfiehlt es sich die Rechte zur Chronik deutlich einzuschränken."
+
+msgid "Can see the Home menu item."
+msgstr "Darf den Menüpunkt Startseite sehen."
+
+msgid ""
+"Can see the Motions menu item and all motions unless they are limited by "
+"access restrictions in the workflow."
+msgstr ""
+"Darf den Menüpunkt Anträge und alle Anträge sehen, sofern diese nicht durch "
+"Zugriffsbeschränkungen im Arbeitsablauf limitiert sind."
+
+msgid ""
+"Can see the Projector menu item and all projectors (in the Autopilot as well"
+" as in the Projector menu item)"
+msgstr ""
+"Darf den Menüpunkt sowie alle Projektoren sehen (im Autopilot und Projektor-"
+"Menü)."
+
+msgid ""
+"Can see the Settings menu item and edit all settings as well as the start "
+"page of the meeting."
+msgstr ""
+"Darf den Menüpunkt Einstellungen sehen und alle Einstellungen sowie die "
+"Startseite der Veranstaltung bearbeiten."
 
 msgid "Can see the autopilot"
 msgstr "Darf den Autopilot sehen"
@@ -804,11 +1033,51 @@ msgstr "Darf die Dateiliste sehen"
 msgid "Can see the live stream"
 msgstr "Darf den Livestream sehen"
 
+msgid ""
+"Can see the livestream if there is a livestream URL entered in > [Settings] "
+"> [Livestream]."
+msgstr ""
+"Darf den Livestream sehen, sofern unter > [Einstellungen] > [Livestream] "
+"eine Livestream-URL eingetragen ist."
+
+msgid ""
+"Can see the menu item Elections, including the list of candidates and results. \n"
+"\n"
+"Note: The right to vote is defined directly in the ballot."
+msgstr ""
+"Darf Menüpunkt Wahlen sehen, inklusive der Liste der Kandidat*innen und Ergebnisse.\n"
+"\n"
+"Hinweis: Die Stimmberechtigung wird direkt im Wahlgang definiert."
+
+msgid ""
+"Can see the menu item Participants and therefore the following data from all participants: \n"
+"Personal data: Name, pronoun, gender. \n"
+"Meeting specific information: Structure level, Group, Participant number, About me, Presence status."
+msgstr ""
+"Darf Menüpunkt Teilnehmende und damit von allen Teilnehmenden folgende Daten sehen: \n"
+"Persönliche Daten: Name, Pronomen, Geschlecht\n"
+"Veranstaltungsspezifische Informationen: Gliederungsebene, Gruppe, Teilnehmendennummer, Über mich, Anwesenheitsstatus."
+
 msgid "Can see the projector"
 msgstr "Darf den Projektor sehen"
 
 msgid "Can support motions"
 msgstr "Darf Anträge unterstützen"
+
+msgid ""
+"Can support motions. The support function must be enabled in > [Settings] > "
+"[Motions] as well as for the corresponding state in > [Workflow]."
+msgstr ""
+"Darf Anträge unterstützen. Die Funktion für die Unterstützung muss sowohl "
+"unter > [Einstellungen] > [Anträge] sowie für den entsprechenden Status im >"
+" [Arbeitsablauf] aktiviert sein."
+
+msgid ""
+"Can upload, modify and delete files, administrate folders and change access "
+"restrictions."
+msgstr ""
+"Darf Dateien hochladen, ändern und löschen, Ordner verwalten und "
+"Zugriffsbeschränkungen ändern."
 
 msgid "Cancel"
 msgstr "Abbrechen"
@@ -1247,6 +1516,18 @@ msgid "Default voting type"
 msgstr "Voreingestellte Art der Stimmabgabe"
 
 msgid ""
+"Defines for the selected state which groups have access:\n"
+"- If no option is selected, the motions in the selected state are visible to all; The prerequisite for this is group permission: [Can see motions].\n"
+"- Selecting one or more options restricts access to those groups for which the selected authorization option is defined under > [Participants] > [Groups]."
+msgstr ""
+"Definiert für den ausgewählten Status, welche Gruppen Zugriff haben:\n"
+"- Wenn keine Option ausgewählt ist, sind die Anträge im ausgewählten Status für alle sichtbar; Voraussetzung hierfür ist Gruppenrecht: [Darf Anträge sehen].\n"
+"- Die Auswahl einer oder mehrerer Optionen schränkt den Zugriff auf diejenigen Gruppen ein, für die unter > [Teilnehmende] > [Gruppen] die ausgewählte Berechtigungsoption definiert ist."
+
+msgid "Defines the colour for the state button."
+msgstr "Definiert die Farbe für die Status-Schaltfläche."
+
+msgid ""
 "Defines the maximum deflection. Entering zero will use the amount of present"
 " participants instead."
 msgstr ""
@@ -1261,6 +1542,29 @@ msgstr ""
 
 msgid "Defines the time in which applause amounts are add up."
 msgstr "Definiert die Zeit in der Applauswerte aufsummiert werden."
+
+msgid ""
+"Defines the wording of the recommendation that belongs to this state.\n"
+"Example: State = Accepted / Recommendation = Acceptance. \n"
+"\n"
+"To activate the recommendation system, a recommender (for example, a motion committee) must be defined under > [Settings] > [Motions] > [Name of recommender].\n"
+"Example recommender: motion committee\n"
+"\n"
+"Additional information:\n"
+"In combination with motion blocks, the recommendation of multiple motions can be followed simultaneously."
+msgstr ""
+"Definiert den Wortlaut der Beschlussempfehlung, die zum ausgewählten Status gehört. Beispiel: Status = Angenommen / Empfehlung = Annahme.\n"
+"\n"
+"Zur Aktivierung des Empfehlungssystems muss ein Empfehlungsgeber unter > [Einstellungen] > [Anträge] > [Name des Empfehlungsgebers] festgelegt sein.\n"
+"Beispiel: \"Empfehlung der Antragskommission\"\n"
+"\n"
+"Weitere Information:\n"
+"In Kombination mit Antragsblöcken kann der Empfehlung von mehreren Anträgen gleichzeitig gefolgt werden."
+
+msgid "Defines which states can be selected next in the workflow."
+msgstr ""
+"Definiert welche Status im Arbeitsablauf als Nächstes ausgewählt werden "
+"können."
 
 msgid "Delegates"
 msgstr "Delegierte"
@@ -1477,6 +1781,9 @@ msgstr "Betreff"
 msgid "Empty text field"
 msgstr "Leeres Textfeld"
 
+msgid "Enable SSO via SAML"
+msgstr "SSO via SAML aktivieren"
+
 msgid "Enable chat globally"
 msgstr "Chat global aktivieren"
 
@@ -1495,6 +1802,9 @@ msgstr "Ansicht zur Teilnehmeranwesenheit aktivieren"
 msgid "Enable point of order"
 msgstr "Geschäftsordnungsanträge aktivieren"
 
+msgid "Enable specifications and ranking for possible motions"
+msgstr "Vorgaben und Reihung für mögliche GO-Anträge aktivieren"
+
 msgid "Enable star icon usage by speakers"
 msgstr "Stern-Icon-Markierung darf auch von Redner*innen genutzt werden"
 
@@ -1509,6 +1819,63 @@ msgstr "Account ein-/ausschalten ..."
 
 msgid "Enable/disable accounts"
 msgstr "Accounts ein-/ausschalten"
+
+msgid ""
+"Enables for the selected state the possibility for submitters to change the "
+"state of the motion. Other administrative functions are excluded."
+msgstr ""
+"Aktiviert für den ausgewählten Status die Möglichkeit, dass "
+"Antragsteller*innen den Status des Antrages verändern können. Weitere "
+"Verwaltungsfunktionen sind ausgeschlossen."
+
+msgid "Enables the ability to create votings for motions in this state."
+msgstr ""
+"Aktiviert für Anträge im ausgewählten Status die Möglichkeit, Abstimmungen "
+"zu erstellen."
+
+msgid ""
+"Enables the editing of the motion text and reason by submitters in the "
+"selected state after the motion has been created."
+msgstr ""
+"Ermöglicht den Antragsteller*innen nach Erstellung eines Antrags die "
+"nachträgliche Bearbeitung von Antragstext und Begründung im ausgewählten "
+"Status."
+
+msgid ""
+"Enables the forwarding of motions to other meetings within the OpenSlides instance in the selected state. \n"
+"\n"
+"Prerequisites:\n"
+"1. forwarding hierarchy must be set at the organizational level in the committee. \n"
+"2. target meeting must be created.\n"
+"3. user must have group permission for forwarding."
+msgstr ""
+"Aktiviert im ausgewählten Status die Möglichkeit zur Weiterleitung von Anträgen an andere Veranstaltungen innerhalb der OpenSlides-Instanz. \n"
+"\n"
+"Voraussetzungen:\n"
+"1. Weiterleitungshierarchie muss auf Organisationsebene im Gremium eingestellt sein. \n"
+"2. Zielveranstaltung muss erstellt sein.\n"
+"3. Nutzer muss Gruppenrecht zur Weiterleitung haben."
+
+msgid ""
+"Enables the support function for motions in the selected state. The support "
+"function must be activated under > [Settings] > [Motions] as well as the "
+"corresponding group permission in > [Participants] > [Groups] > [Motions] > "
+"[Can support motions]."
+msgstr ""
+"Aktiviert im ausgewählten Status die Möglichkeit zur Unterstützung von "
+"Anträgen. Die Unterstützungsfunktion muss unter > [Einstellungen] > "
+"[Anträge] sowie für die entsprechenden Gruppen das Recht unter > "
+"[Teilnehmende] > [Gruppen] > [Anträge] > [Darf Anträge unterstützen] "
+"aktiviert sein."
+
+msgid ""
+"Enables the visibility of amendments directly in the corresponding main motion. The text of amendments is embedded within the text of the motion.\n"
+"\n"
+"Note: Does not affect the visibility of change recommendations."
+msgstr ""
+"Aktiviert die Sichtbarkeit von Änderungen direkt im jeweiligen Hauptantrag. Der Text von Änderungsanträgen wird in den Fließtext eingebettet.\n"
+"\n"
+"Hinweis: Hat keine Auswirkung auf die Sichtbarkeit von Änderungsempfehlungen."
 
 msgid "Encoding of the file"
 msgstr "Encoding der Datei"
@@ -1631,6 +1998,9 @@ msgstr "Ausgewählte Anträge exportieren"
 
 msgid "Extension"
 msgstr "Erweiterung"
+
+msgid "External ID"
+msgstr "Externe ID"
 
 msgid "Favorites"
 msgstr "Favoriten"
@@ -1815,6 +2185,9 @@ msgstr "Gruppen mit Schreibberechtigungen"
 msgid "Guest"
 msgstr "Gast"
 
+msgid "Has SSO identification"
+msgstr "Hat SSO-Kennung"
+
 msgid "Has amendments"
 msgstr "Hat Änderungsanträge"
 
@@ -1829,6 +2202,9 @@ msgstr "Hat Weiterleitungen"
 
 msgid "Has logged in"
 msgstr "Hat sich angemeldet"
+
+msgid "Has no SSO identification"
+msgstr "Hat keine SSO-Kennung"
 
 msgid "Has no email address"
 msgstr "Hat keine E-Mail-Adresse"
@@ -1917,6 +2293,9 @@ msgstr "Erstellung von Änderungsanträgen"
 msgid "I know the risk"
 msgstr "Ich kenne das Risiko"
 
+msgid "Identifier"
+msgstr "Bezeichner"
+
 msgid "If deactivated it is displayed below the title"
 msgstr "Wenn deaktiviert erfolgt die Anzeige unterhalb des Antragstitels"
 
@@ -2002,6 +2381,9 @@ msgstr "Intern"
 msgid "Internal item"
 msgstr "Interner Eintrag"
 
+msgid "Internal login"
+msgstr "Interner Login"
+
 msgid "Invalid line number"
 msgstr "Ungültige Zeilennummer"
 
@@ -2022,6 +2404,17 @@ msgstr "Ist eine öffentliche Vorlage"
 
 msgid "Is active"
 msgstr "Ist aktiv"
+
+msgid ""
+"Is allowed to add himself/herself to the list of speakers. \n"
+"\n"
+"Note:\n"
+"Optional combination of requests to speak with presence status is possible. ( > [Settings] > [List of speakers] > [General] )"
+msgstr ""
+"Darf sich selbst zur Redeliste hinzufügen.\n"
+"\n"
+"Hinweis:\n"
+"Optionale Kopplung von Wortmeldungen an Anwesenheitsstatus ist möglich. ( > [Einstellungen] > [Redeliste] > [Allgemein] )"
 
 msgid "Is already projected"
 msgstr "ist bereits projiziert"
@@ -2242,6 +2635,9 @@ msgstr "Trotzdem anmelden"
 msgid "Login as guest"
 msgstr "Als Gast anmelden"
 
+msgid "Login button text"
+msgstr "Login-Button-Beschriftung"
+
 msgid "Logout"
 msgstr "Abmelden"
 
@@ -2315,6 +2711,12 @@ msgstr "Mitteilungen"
 msgid "Meta information"
 msgstr "Metainformationen"
 
+msgid "Metadata of Identity Provider (IdP)"
+msgstr "Metadaten des Identity Providers (IdP)"
+
+msgid "Metadata of Service Provider (SP)"
+msgstr "Metadaten des Service Providers (SP)"
+
 msgid "Min votes cannot be greater than max votes."
 msgstr ""
 "Die minimale Stimmenanzahl darf nicht größer als die maximale Stimmenanzahl "
@@ -2329,8 +2731,8 @@ msgstr "Minimieren"
 msgid "Minimum amount of votes"
 msgstr "Minimale Stimmenanzahl"
 
-msgid "Minimum number of digits for motion number"
-msgstr "Minimale Anzahl an Ziffern in der Antragsnummer"
+msgid "Minimum number of digits for motion identifier"
+msgstr "Minimale Anzahl an Ziffern im Antragsbezeichner"
 
 msgid "Module"
 msgstr "Modul"
@@ -2380,8 +2782,8 @@ msgstr "Antrag weitergeleitet an"
 msgid "Motion forwarding"
 msgstr "Antragsweiterleitung"
 
-msgid "Motion number"
-msgstr "Antragsnummer"
+msgid "Motion identifier"
+msgstr "Antragsbezeichner"
 
 msgid "Motion preamble"
 msgstr "Antragseinleitung"
@@ -2421,6 +2823,9 @@ msgstr "Mehrere Benutzer mit denselben Anmeldedaten gefunden!"
 
 msgid "Multiselect"
 msgstr "Mehrfachauswahl"
+
+msgid "Must be unique"
+msgstr "Name muss eindeutig sein"
 
 msgid "My account"
 msgstr "Mein Konto"
@@ -3036,6 +3441,9 @@ msgstr "GO-Antrag"
 msgid "Polls"
 msgstr "Umfragen"
 
+msgid "Possible points of order"
+msgstr "Mögliche GO-Anträge"
+
 msgid "Pre"
 msgstr "Pre"
 
@@ -3051,8 +3459,8 @@ msgstr "Vorgegebene Sekunden für neue Countdowns"
 msgid "Prefix"
 msgstr "Präfix"
 
-msgid "Prefix for the motion number for amendments"
-msgstr "Präfix für die Antragsnummer bei Änderungsanträgen"
+msgid "Prefix for the motion identifier of amendments"
+msgstr "Präfix für den Antragsbezeichner von Änderungsanträgen"
 
 msgid "Presence"
 msgstr "Anwesenheit"
@@ -3077,6 +3485,9 @@ msgstr "Datenschutzerklärung"
 
 msgid "Privacy policy"
 msgstr "Datenschutzerklärung"
+
+msgid "Private key of Service Provider (SP)"
+msgstr "Privater Schlüssel des Service Providers (SP)"
 
 msgid "Process handling"
 msgstr "Prozessverarbeitung"
@@ -3140,6 +3551,9 @@ msgstr "Alle Kandidaten auf die Redeliste setzen"
 
 msgid "Queue"
 msgstr "Warteliste"
+
+msgid "Rank"
+msgstr "Rang"
 
 msgid "Re-add last speaker"
 msgstr "Letzte*n Redner*in zurückholen"
@@ -3329,6 +3743,12 @@ msgstr "Rechts"
 msgid "Roman"
 msgstr "Römisch"
 
+msgid "SSO"
+msgstr "SSO"
+
+msgid "SSO Identification"
+msgstr "SSO-Kennung"
+
 msgid "Same email"
 msgstr "Gleiche E-Mail-Adresse"
 
@@ -3453,6 +3873,9 @@ msgstr "Weiterleitung setzen"
 msgid "Set hidden"
 msgstr "Versteckt setzen"
 
+msgid "Set identifier"
+msgstr "Bezeichner setzen"
+
 msgid "Set inactive"
 msgstr "Inaktiv gesetzt"
 
@@ -3470,9 +3893,6 @@ msgstr "Natürliche Person setzen ..."
 
 msgid "Set not present in meeting {}"
 msgstr "Abwesend gesetzt in Veranstaltung {}"
-
-msgid "Set number"
-msgstr "Bezeichner setzen"
 
 msgid "Set or remove motion forwarding from the selected committees to:"
 msgstr "Antragsweiterleitung für ausgewählte Gremien setzen oder entfernen"
@@ -3504,8 +3924,8 @@ msgstr "Antragsteller/in setzen"
 msgid "Set tags"
 msgstr "Schlagwörter setzen"
 
-msgid "Set timestamp of creation"
-msgstr "Erstellungszeitstempel setzen"
+msgid "Set timestamp"
+msgstr "Zeitstempel setzen"
 
 msgid "Set workflow"
 msgstr "Arbeitsablauf setzen"
@@ -3652,6 +4072,9 @@ msgstr ""
 msgid "Simple Workflow"
 msgstr "Einfacher Arbeitsablauf"
 
+msgid "Single Sign-On settings"
+msgstr "Single Sign-On-Einstellungen"
+
 msgid "Single votes"
 msgstr "Einzelstimmen"
 
@@ -3664,13 +4087,21 @@ msgstr "Folie"
 msgid "Some csv values could not be read correctly."
 msgstr "Einige CSV-Werte konnten nicht korrekt gelesen werden."
 
+msgid ""
+"Some mails could not be sent. There may be a problem communicating with the "
+"mail server, please contact your admin."
+msgstr ""
+"Einige Mails konnten nicht gesendet werden. Möglicherweise gibt es ein "
+"Problem bei der Kommunikation mit dem Mailserver. Bitte wenden Sie sich an "
+"Ihren Administrator."
+
 msgid "Sort"
 msgstr "Sortieren"
 
 msgid "Sort agenda"
 msgstr "Tagesordnung sortieren"
 
-msgid "Sort by number"
+msgid "Sort by identifier"
 msgstr "Nach Bezeichner sortieren"
 
 msgid "Sort categories"
@@ -3762,6 +4193,9 @@ msgstr "Gliederungsebene"
 
 msgid "Subcategory"
 msgstr "Untersachgebiet"
+
+msgid "Submission date"
+msgstr "Einreichungsdatum"
 
 msgid "Submit selection now?"
 msgstr "Auswahl jetzt senden?"
@@ -3938,13 +4372,13 @@ msgid "The title is required"
 msgstr "Ein Titel ist erforderlich"
 
 msgid ""
-"The user %user% has no email, so the invitation email could not be send."
+"The user %user% has no email, so the invitation email could not be sent."
 msgstr ""
 "%user% besitzt keine E-Mail-Adresse; eine E-Mail konnte daher nicht gesendet"
 " werden."
 
 msgid ""
-"The users %user% have no email, so the invitation emails could not be send."
+"The users %user% have no email, so the invitation emails could not be sent."
 msgstr ""
 "%user% besitzen keine E-Mail-Adressen; E-Mails konnte daher nicht gesendet "
 "werden."
@@ -4189,6 +4623,13 @@ msgstr "Dateien hochladen"
 msgid "Upload to"
 msgstr "Hochladen in"
 
+msgid ""
+"Use JSON key:value structure (key = OpenSlides attribute name, value = IdP "
+"attribute name)."
+msgstr ""
+"JSON-key:value-Struktur erforderlich (key = OpenSlides-Attributename, value "
+"= IdP-Attributename)"
+
 msgid "Use the following custom number"
 msgstr "Verwende die folgende benutzerdefinierte Anzahl"
 
@@ -4216,7 +4657,7 @@ msgstr "Benutzername"
 msgid "Username or password is incorrect."
 msgstr "Benutzername oder Passwort war nicht korrekt."
 
-msgid "Uses leading zeros to sort motions correctly by number."
+msgid "Uses leading zeros to sort motions correctly by identifier."
 msgstr ""
 "Es werden führende Nullen verwendet, um die Bezeichner korrekt zu sortieren."
 
@@ -4806,7 +5247,7 @@ msgid "move ..."
 msgstr "verschieben ..."
 
 msgid "name"
-msgstr ""
+msgstr "Name"
 
 msgid "natural person"
 msgstr "natürliche Person"
