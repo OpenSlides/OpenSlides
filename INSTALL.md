@@ -151,6 +151,44 @@ the correct URL in PDF or email templates.
 
 
 
+## Update to a new version
+
+The docker images of Every OpenSlides stable update are tagged as `latest`.
+So for many updates pulling the new ones and re-running `up` as described [above](#Pull images and start services).
+However this can be unreliable if `docker` fails to recognize a new image in the registry.
+On the other hand it can mean services will update "by themselves" due to silently using a new image.
+
+It is therefore recommended to pin the version explicitly in the `config.yml` like so
+
+    ---
+    defaults:
+      tag: 4.0.0
+
+To update to the new version set the new tag and regenerate the compose file and
+apply the changes to the containers:
+
+    $ ./openslides config --config my-config.yml .
+    $ docker-compose up --detach
+
+Regenerating the compose file is an important step that should be done for every
+update. This will ensure that all services will be provided with all necessary
+resources even when the structure is changing.
+
+Some updates include migrations that must be ran on the database.
+To check the current status and start migrations if necessary run
+
+    $ ./openslides migrations stats
+    $ ./openslides migrations finalize
+
+
+### Incompatibilities
+
+- 4.0.7
+  - The environment variables `DATASTORE_DATABASE_*` were renamed to
+    `DATABASE_*`. So if custom values were used this must be reflected in config
+    files.
+
+
 ## SSL encryption
 
 The manage tool provides settable options for using SSL encryption, which can be
