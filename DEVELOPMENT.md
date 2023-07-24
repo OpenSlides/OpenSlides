@@ -135,7 +135,7 @@ These environment variables are available:
 Required services can be `MESSAGE_BUS`, `DATASTORE_WRITER`, `PERMISSION`, `AUTOUPDATE`,
 etc. For private services (e.g. a database dedicated to exactly one service),
 use the following syntax: `<SERVICE>_<PRIV_SERVICE>_<ATTRIBUTE>`, e.g. the
-database user for the datastore: `DATASTORE_DATABASE_USER`.
+database user for the media-service: `MEDIA_DATABASE_USER`.
 
 ### Makefile
 
