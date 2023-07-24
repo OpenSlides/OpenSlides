@@ -153,7 +153,7 @@ the correct URL in PDF or email templates.
 
 ## Update to a new version
 
-The docker images of Every OpenSlides stable update are tagged as `latest`.
+The docker images of every OpenSlides stable update are tagged as `latest`.
 So for many updates pulling the new ones and re-running `up` as described [above](#Pull images and start services).
 However this can be unreliable if `docker` fails to recognize a new image in the registry.
 On the other hand it can mean services will update "by themselves" due to silently using a new image.
