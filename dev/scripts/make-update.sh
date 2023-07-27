@@ -211,7 +211,7 @@ merge_stable_branches() {
       git checkout "$BRANCH_NAME"
       check_current_branch
 
-      git merge --no-ff "$mod_target_sha" --log --message "Merge main into $STABLE_BRANCH_NAME. Update $(date +%Y%m%d)"
+      git merge --no-ff -Xtheirs "$mod_target_sha" --log --message "Merge main into $STABLE_BRANCH_NAME. Update $(date +%Y%m%d)"
     )
   done
 
