@@ -123,7 +123,7 @@
               ],
               "match": [
                 {
-                  "path": ["/system/auth*"]
+                  "path": ["/system/auth*", "/system/saml*"]
                 }
               ]
             },

@@ -45,11 +45,36 @@ stop-dev:
 stop-dev-otel:
 	$(DC) -f $(DC_PATH)/dc.otel.dev.yml down --volumes --remove-orphans
 
-# Shorthand to execute the services-to-main script
+build:
+	$(DC_PATH)/build.sh
+
+# Shorthand to execute the make-release script
 services-to-main:
-	$(SCRIPT_PATH)/services-to-main.sh
+	$(SCRIPT_PATH)/make-update.sh fetch-all-changes
+
+staging-update:
+	$(SCRIPT_PATH)/make-update.sh staging
+
+stable-update:
+	$(SCRIPT_PATH)/make-update.sh stable
 
 # You may only use this one time after cloning this repository.
 # Will set the upstream remote to "origin"
 submodules-origin-to-upstream:
 	git submodule foreach -q --recursive 'git remote rename origin upstream'
+
+
+# Translation helper targets
+
+extract-translations:
+	dev/scripts/extract-translations.sh
+
+push-translations:
+	tx push --source
+
+pull-translations:
+	tx pull --translations --languages $$(dev/scripts/dc-dev.sh exec client npm run get-available-languages | tail -n 1)
+
+copy-translations:
+	cp i18n/*.po openslides-client/client/src/assets/i18n/
+	cp i18n/*.po openslides-backend/openslides_backend/i18n/messages/

@@ -158,7 +158,7 @@ services:
       - "9008:9008"
 
   redis:
-    image: redis:latest
+    image: redis:alpine
     ports:
       - "6379:6379"
 
