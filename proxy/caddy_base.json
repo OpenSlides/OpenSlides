@@ -65,7 +65,7 @@
                   "handler": "reverse_proxy",
                   "upstreams": [
                     {
-                      "dial": "$SEARCH_SERVICE_HOST:$OPENSLIDES_SEARCH_PORT"
+                      "dial": "$SEARCH_HOST:$SEARCH_PORT"
                     }
                   ]
                 }
