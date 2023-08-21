@@ -15,16 +15,16 @@ jobs:
       matrix:
         service:
           - name: proxy
-          - name: client
-          - name: backend
-          - name: datastore-reader
-          - name: datastore-writer
-          - name: autoupdate
-          - name: auth
-          - name: vote
-          - name: icc
-          - name: media
-          - name: manage
+          #- name: client
+          #- name: backend
+          #- name: datastore-reader
+          #- name: datastore-writer
+          #- name: autoupdate
+          #- name: auth
+          #- name: vote
+          #- name: icc
+          #- name: media
+          #- name: manage
 
     steps:
       - name: Check out code
@@ -32,21 +32,22 @@ jobs:
         with:
           submodules: true
 
-      - name: Log into registry
-        run: echo "${{ secrets.GITHUB_TOKEN }}" |
-          docker login ghcr.io --username ${{ github.actor }} --password-stdin
-
-      - name: Build and push image
-        run: |
-          DOCKER_REPO=ghcr.io/${{ github.repository }}
-          # Change all uppercase to lowercase
-          DOCKER_REPO=$(echo $DOCKER_REPO | tr '[A-Z]' '[a-z]')
-
-          # Build and push with tag determined by build.sh
-          ./dev/docker/build.sh -D $DOCKER_REPO ${{ matrix.service.name }}
-          docker push $(./dev/docker/build.sh -D $DOCKER_REPO --images ${{ matrix.service.name }})
-          # Build and push with tag 'latest' (when on stable branch)
-          case "$(git rev-parse --abbrev-ref HEAD)" in stable/4*)
-            ./dev/docker/build.sh -D $DOCKER_REPO -t latest ${{ matrix.service.name }}
-            docker push $(./dev/docker/build.sh -D $DOCKER_REPO -t latest --images ${{ matrix.service.name }})
-          esac
+#
+#      - name: Log into registry
+#        run: echo "${{ secrets.GITHUB_TOKEN }}" |
+#          docker login ghcr.io --username ${{ github.actor }} --password-stdin
+#
+#      - name: Build and push image
+#        run: |
+#          DOCKER_REPO=ghcr.io/${{ github.repository }}
+#          # Change all uppercase to lowercase
+#          DOCKER_REPO=$(echo $DOCKER_REPO | tr '[A-Z]' '[a-z]')
+#
+#          # Build and push with tag determined by build.sh
+#          ./dev/docker/build.sh -D $DOCKER_REPO ${{ matrix.service.name }}
+#          docker push $(./dev/docker/build.sh -D $DOCKER_REPO --images ${{ matrix.service.name }})
+#          # Build and push with tag 'latest' (when on stable branch)
+#          case "$(git rev-parse --abbrev-ref HEAD)" in stable/4*)
+#            ./dev/docker/build.sh -D $DOCKER_REPO -t latest ${{ matrix.service.name }}
+#            docker push $(./dev/docker/build.sh -D $DOCKER_REPO -t latest --images ${{ matrix.service.name }})
+#          esac
