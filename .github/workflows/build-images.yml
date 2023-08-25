@@ -11,21 +11,21 @@ jobs:
   build:
     name: Builds Docker images
     outputs:
-      openslides-version: ${{ steps.read-version.outputs.version }}
+      openslides-version: ${{ steps.readversion.outputs.version }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
         service:
           - name: proxy
-          #- name: client
-          #- name: backend
-          #- name: datastore-reader
-          #- name: datastore-writer
-          #- name: autoupdate
-          #- name: auth
-          #- name: vote
-          #- name: icc
-          #- name: media
+          - name: client
+          - name: backend
+          - name: datastore-reader
+          - name: datastore-writer
+          - name: autoupdate
+          - name: auth
+          - name: vote
+          - name: icc
+          - name: media
           - name: manage
 
     steps:
@@ -35,7 +35,7 @@ jobs:
           submodules: true
 
       - name: Read version
-        id: read-version
+        id: readversion
         run: echo "version=$(cat VERSION)" >> "$GITHUB_OUTPUT"
 
       - name: Log into registry
@@ -71,7 +71,7 @@ jobs:
       - name: Send dispatch to openslides-manage
         uses: peter-evans/repository-dispatch@v2
         with:
-          event-type: new-update
+          event-type: stable-update
           repository: ${{ github.repository_owner }}/openslides-manage-service
           token: ${{ steps.generate-token.outputs.token }}
           client-payload: '{"branch": "${{ github.ref_name }}", "version": "${{ needs.build.outputs.openslides-version }}"}'
