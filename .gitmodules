@@ -34,3 +34,6 @@
 	path = openslides-vote-service
 	url = https://github.com/OpenSlides/openslides-vote-service.git
 	branch = main
+[submodule "openslides-proxy"]
+	path = openslides-proxy
+	url = https://github.com/OpenSlides/openslides-proxy.git
