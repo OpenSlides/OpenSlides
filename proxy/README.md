@@ -2,8 +2,8 @@
 
 The proxy is the entrypoint for traffic going into an OpenSlides instance and
 hides all the services needed for production behind a single port. On the
-docker container this will be port 8000. An arbitrary port from the host can
-then be forwarded to that (e.g. 443->8000).
+docker container this will be port 443. An arbitrary port from the host can
+then be forwarded to that (e.g. 443->443).
 
 ## HTTPS
 
@@ -15,7 +15,7 @@ domain.
 For testing a setup e.g.
 `ACME_ENDPOINT=https://acme-staging-v02.api.letsencrypt.org/directory` can also
 be set to avoid hitting rate limits.
-Importantly, port 80 on the host must be forwarded to port 8001 on which caddy
+Importantly, port 80 on the host must be forwarded to port 80 on which caddy
 will answer the ACME-challenge during certificate retrieval.
 
 Alternatively a locally generated certificate can be used by setting
