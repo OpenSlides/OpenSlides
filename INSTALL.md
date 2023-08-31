@@ -164,6 +164,12 @@ It is therefore recommended to pin the version explicitly in the `config.yml` li
     defaults:
       tag: 4.0.0
 
+Note that if changes to the configuration or structure of the docker stack were
+made the appropriate version of the `openslides` tool must also be refetched
+from the [releases](https://github.com/OpenSlides/openslides-manage-service/releases)
+of the openslides-manage-service repository to reflect these in the generated
+compose file.
+
 To update to the new version, set the new tag, regenerate the compose file and
 apply the changes to the containers:
 
@@ -183,7 +189,7 @@ To check the current status and start migrations if necessary, run:
 
 ### Incompatibilities
 
-- 4.0.7
+- 4.0.8
   - The environment variables `DATASTORE_DATABASE_*` were renamed to
     `DATABASE_*`. If custom values were used, this must be reflected in config
     files.
