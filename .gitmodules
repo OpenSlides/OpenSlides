@@ -37,3 +37,6 @@
 [submodule "openslides-proxy"]
 	path = openslides-proxy
 	url = https://github.com/OpenSlides/openslides-proxy.git
+[submodule "openslides-search-service"]
+	path = openslides-search-service
+	url = https://github.com/OpenSlides/openslides-search-service.git
