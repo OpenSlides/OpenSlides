@@ -65,23 +65,6 @@
                   "handler": "reverse_proxy",
                   "upstreams": [
                     {
-                      "dial": "$SEARCH_HOST:$SEARCH_PORT"
-                    }
-                  ]
-                }
-              ],
-              "match": [
-                {
-                  "path": ["/system/search*"]
-                }
-              ]
-            },
-            {
-              "handle": [
-                {
-                  "handler": "reverse_proxy",
-                  "upstreams": [
-                    {
                       "dial": "$ACTION_HOST:$ACTION_PORT"
                     }
                   ]
