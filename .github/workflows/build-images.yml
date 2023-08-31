@@ -23,6 +23,7 @@ jobs:
           - name: datastore-writer
           - name: autoupdate
           - name: auth
+          - name: search
           - name: vote
           - name: icc
           - name: media
