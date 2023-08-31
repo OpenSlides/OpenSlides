@@ -5,7 +5,7 @@ set -e
 HOME="$(dirname "$(realpath "${BASH_SOURCE[0]}")")/../../"
 declare -A TARGETS
 TARGETS=(
-  [proxy]="$HOME/proxy/"
+  [proxy]="$HOME/openslides-proxy/"
   [client]="$HOME/openslides-client/"
   [backend]="$HOME/openslides-backend/"
   [auth]="$HOME/openslides-auth-service/"

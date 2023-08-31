@@ -239,7 +239,7 @@ example:
 Do not forget to [rebuild your Docker Compose YAML
 file](#Configuration-of-the-generated-Docker-Compose-YAML-file).
 
-See [the proxy service](https://github.com/OpenSlides/OpenSlides/blob/main/proxy) for
+See [the proxy service](https://github.com/OpenSlides/openslides-proxy) for
 details on provided methods for HTTPS activation.
 
 
