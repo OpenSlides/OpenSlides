@@ -5,11 +5,12 @@ set -e
 HOME="$(dirname "$(realpath "${BASH_SOURCE[0]}")")/../../"
 declare -A TARGETS
 TARGETS=(
-  [proxy]="$HOME/proxy/"
+  [proxy]="$HOME/openslides-proxy/"
   [client]="$HOME/openslides-client/"
   [backend]="$HOME/openslides-backend/"
   [auth]="$HOME/openslides-auth-service/"
   [autoupdate]="$HOME/openslides-autoupdate-service/"
+  [search]="$HOME/openslides-search-service/"
   [manage]="$HOME/openslides-manage-service/"
   [datastore-reader]="$HOME/openslides-datastore-service/reader"
   [datastore-writer]="$HOME/openslides-datastore-service/writer"
@@ -26,7 +27,7 @@ DOCKER_TAG="$(cat VERSION)"
 CONFIG="/etc/osinstancectl"
 OPTIONS=()
 BUILT_IMAGES=()
-DEFAULT_TARGETS=(proxy client backend auth autoupdate manage datastore-reader datastore-writer media vote icc)
+DEFAULT_TARGETS=(proxy client backend auth autoupdate manage datastore-reader datastore-writer media vote icc search)
 ASK_PUSH=
 OPT_YES=
 OPT_IMAGES=

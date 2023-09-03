@@ -19,7 +19,7 @@ jobs:
         uses: iFaxity/wait-on-action@v1
         with:
           resource: https://localhost:8000
-          timeout: 300000
+          timeout: 900000
 
       - name: Start tests
         working-directory: "./openslides-client"

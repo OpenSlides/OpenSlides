@@ -10,6 +10,9 @@ REMOTE_NAME=
 OPT_PULL=
 OPT_LOCAL=
 
+# do not page diff and log outputs
+GIT_PAGER=
+
 usage() {
 cat <<EOF
 
@@ -133,7 +136,7 @@ make_staging_update() {
 
   ask y "Fetch all submodules changes now?" &&
     fetch_all_changes || :
-  diff_cmd="git --no-pager diff --color=always --submodule=log"
+  diff_cmd="git diff --color=always --submodule=log"
   [[ "$($diff_cmd | grep -c .)" -gt 0 ]] ||
     abort 0
   echo ''
@@ -169,7 +172,7 @@ make_staging_update() {
     done || :
 
   echo ''
-  diff_cmd="git --no-pager diff --staged --submodule=log"
+  diff_cmd="git diff --staged --submodule=log"
   [[ "$($diff_cmd | grep -c .)" -gt 0 ]] || {
     echo "No changes added."
     abort 0
@@ -249,7 +252,7 @@ make_stable_update() {
 
   # Merge, but don't commit yet ...
   # (also we expect conflicts in submodules so we hide that output)
-  git merge --no-commit --no-ff "$target_sha" --log >/dev/null || :
+  git merge -Xtheirs --no-commit --no-ff "$target_sha" --log >/dev/null || :
   # ... because we want to change the submod pointers to stable
   for mod in $(git submodule status | awk '{print $2}'); do
     git add "$mod"

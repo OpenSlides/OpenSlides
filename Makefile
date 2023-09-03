@@ -13,8 +13,7 @@ run-dev-otel: | build-dev
 # Build the docker dev images for all services in parallel
 build-dev:
 	$(SCRIPT_PATH)/submodules-do.sh 'make build-dev'
-	make -C proxy build-dev
-	
+
 # Run the tests of all services
 run-service-tests:
 	git submodule foreach 'make run-tests'
