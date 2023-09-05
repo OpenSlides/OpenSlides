@@ -1,0 +1,15 @@
+name: Project automation
+on:
+  pull_request_target:
+    types:
+      - opened
+      - reopened
+
+jobs:
+  pull_request_opened:
+    name: Pull request opened
+    uses: ./.github/workflows/project-automation.yml
+    secrets: inherit
+    with:
+      resource_node_id: ${{ github.event.pull_request.node_id }}
+      status_value: "Work in progress"
