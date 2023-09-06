@@ -13,8 +13,7 @@ run-dev-otel: | build-dev
 # Build the docker dev images for all services in parallel
 build-dev:
 	$(SCRIPT_PATH)/submodules-do.sh 'make build-dev'
-	make -C proxy build-dev
-	
+
 # Run the tests of all services
 run-service-tests:
 	git submodule foreach 'make run-tests'
@@ -48,15 +47,17 @@ stop-dev-otel:
 build:
 	$(DC_PATH)/build.sh
 
-# Shorthand to execute the make-release script
+# Shorthands to execute the make-release script
 services-to-main:
-	$(SCRIPT_PATH)/make-update.sh fetch-all-changes
+	$(SCRIPT_PATH)/make-update.sh fetch-all-changes $(ARGS)
+services-to-main-pull:
+	$(SCRIPT_PATH)/make-update.sh fetch-all-changes --pull $(ARGS)
 
 staging-update:
-	$(SCRIPT_PATH)/make-update.sh staging
+	$(SCRIPT_PATH)/make-update.sh staging $(ARGS)
 
 stable-update:
-	$(SCRIPT_PATH)/make-update.sh stable
+	$(SCRIPT_PATH)/make-update.sh stable $(ARGS)
 
 # You may only use this one time after cloning this repository.
 # Will set the upstream remote to "origin"

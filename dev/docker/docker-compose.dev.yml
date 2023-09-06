@@ -107,6 +107,21 @@ services:
     ports:
       - "9007:9007"
 
+  search:
+    image: openslides-search-dev
+    depends_on:
+      - autoupdate
+      - backend
+      - postgres
+    env_file: services.env
+    environment:
+      - OPENSLIDES_DEVELOPMENT=1
+    volumes:
+      - ../../openslides-search-service/cmd:/root/cmd
+      - ../../openslides-search-service/pkg:/root/pkg
+    ports:
+      - "9050:9050"
+
   auth:
     image: openslides-auth-dev
     depends_on:

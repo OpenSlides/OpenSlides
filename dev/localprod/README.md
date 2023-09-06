@@ -41,4 +41,4 @@ Access https://localhost:8000/ as you would expect.
 
 To clear the database run
 
-    rm -r db-data/*
+    docker-compose down --volumes

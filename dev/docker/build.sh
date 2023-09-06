@@ -5,11 +5,12 @@ set -e
 HOME="$(dirname "$(realpath "${BASH_SOURCE[0]}")")/../../"
 declare -A TARGETS
 TARGETS=(
-  [proxy]="$HOME/proxy/"
+  [proxy]="$HOME/openslides-proxy/"
   [client]="$HOME/openslides-client/"
   [backend]="$HOME/openslides-backend/"
   [auth]="$HOME/openslides-auth-service/"
   [autoupdate]="$HOME/openslides-autoupdate-service/"
+  [search]="$HOME/openslides-search-service/"
   [manage]="$HOME/openslides-manage-service/"
   [datastore-reader]="$HOME/openslides-datastore-service/reader"
   [datastore-writer]="$HOME/openslides-datastore-service/writer"
@@ -26,8 +27,8 @@ DOCKER_TAG="$(cat VERSION)"
 CONFIG="/etc/osinstancectl"
 OPTIONS=()
 BUILT_IMAGES=()
-DEFAULT_TARGETS=(proxy client backend auth autoupdate manage datastore-reader datastore-writer media vote icc)
-OPT_ASK_PUSH=
+DEFAULT_TARGETS=(proxy client backend auth autoupdate manage datastore-reader datastore-writer media vote icc search)
+ASK_PUSH=
 OPT_YES=
 OPT_IMAGES=
 
@@ -75,7 +76,7 @@ while true; do
       shift 1
       ;;
     --ask-push)
-      OPT_ASK_PUSH=1
+      ASK_PUSH=1
       shift 1
       ;;
     --yes)
@@ -160,7 +161,7 @@ else
   exit 3
 fi
 
-[[ -n "$OPT_ASK_PUSH" ]] || exit 0
+[[ -n "$ASK_PUSH" ]] || exit 0
 
 if [ -n $OPT_YES ] || ! hash whiptail > /dev/null 2>&1; then
   echo

@@ -11,14 +11,12 @@
 docs/modelsvalidator/modelsvalidator
 dev-commands/export.json
 
-# certs
-*.pem
-
 # Deployment
 /docker/docker-compose.yml
 /docker/docker-stack.yml
 /docker/secrets/auth_*_key
 docker/secrets/*.env
+.docker/
 
 # Integration testing
 /integration/results
