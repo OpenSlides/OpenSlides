@@ -33,7 +33,7 @@ jobs:
         working-directory: "./dev/localprod"
         run: docker-compose exec -T datastoreWriter python cli/create_initial_data.py
 
-      - name: Start tests 
+      - name: Start tests
         working-directory: "./openslides-client"
         run: make run-playwright
 
