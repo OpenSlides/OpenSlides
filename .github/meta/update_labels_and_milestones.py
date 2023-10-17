@@ -129,6 +129,10 @@ labels = {
             "color": "a046d0",
             "description": "Introduces a new migration",
         },
+        {
+            "name": "translation",
+            "color": "c5def5",
+        },
     ],
     "openslides-client": [
         {
