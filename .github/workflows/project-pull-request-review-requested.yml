@@ -1,0 +1,14 @@
+name: Project automation
+on:
+  pull_request_target:
+    types:
+      - review_requested
+
+jobs:
+  pull_request_review_requested:
+    name: Pull request review requested
+    uses: ./.github/workflows/project-automation.yml
+    secrets: inherit
+    with:
+      resource_node_id: ${{ github.event.pull_request.node_id }}
+      status_value: "Review in progress"

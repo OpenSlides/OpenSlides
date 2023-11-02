@@ -1,0 +1,14 @@
+name: Project automation
+on:
+  issues:
+    types:
+      - closed
+
+jobs:
+  issue_closed:
+    name: Issue closed
+    uses: ./.github/workflows/project-automation.yml
+    secrets: inherit
+    with:
+      resource_node_id: ${{ github.event.issue.node_id }}
+      status_value: "Done"
