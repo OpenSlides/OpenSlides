@@ -75,6 +75,7 @@ labels = {
         {
             "name": "needs investigation",
             "color": "e99695",
+            "description": "The cause for a bug is not clear enough, so it has to be investigated for some time",
         },
         {
             "name": "performance",
@@ -111,17 +112,37 @@ labels = {
             "name": "question",
             "color": "c5def5",
         },
+        {
+            "name": "staging update",
+            "color": "1dfdb6",
+        },
+    ],
+    "openslides-autoupdate-service": [
+        {
+            "name": "experiment",
+            "color": "ae268f",
+        },
     ],
     "openslides-backend": [
         {
             "name": "migration",
             "color": "a046d0",
+            "description": "Introduces a new migration",
+        },
+        {
+            "name": "translation",
+            "color": "c5def5",
         },
     ],
     "openslides-client": [
         {
             "name": "delete test instance",
             "color": "56ee0a",
+        },
+        {
+            "name": "desktop",
+            "color": "fc3b8f",
+            "description": "size > 960px",
         },
         {
             "name": "difficulty: easy",
@@ -140,8 +161,19 @@ labels = {
             "color": "56ee0a",
         },
         {
+            "name": "phone",
+            "color": "fc3b8f",
+            "description": "size <=700px",
+        },
+        {
             "name": "Safari/iOS",
             "color": "ffaaff",
+            "description": "This issue involves apple devices",
+        },
+        {
+            "name": "tablet", 
+            "color": "fc3b8f",
+            "description": "size <=960px; >700px",
         },
         {
             "name": "test instance active",
@@ -150,10 +182,15 @@ labels = {
         {
             "name": "translation",
             "color": "c5def5",
+            "description": "Collection of issues related to translation",
+        },
+        {
+            "name": "ui",
+            "color": "d943ae",
         },
     ],
 }
-milestones = ["4.1", "4.x"]
+milestones = ["4.1", "4.2", "4.x"]
 
 token = input("GitHub token: ")
 g = Github(token)
