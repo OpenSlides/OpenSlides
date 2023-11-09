@@ -1,0 +1,32 @@
+name: Project automation
+on:
+  workflow_call:
+    inputs:
+      resource_node_id:
+        required: true
+        type: string
+      status_value:
+        required: true
+        type: string
+    secrets:
+      AUTOMATION_APP_ID:
+        required: true
+      AUTOMATION_APP_INSTALLATION_ID:
+        required: true
+      AUTOMATION_APP_PRIVATE_KEY:
+        required: true
+
+jobs:
+  workflow_call:
+    name: Set status
+    runs-on: ubuntu-latest
+    steps:
+      - uses: leonsteinhaeuser/project-beta-automations@v2.1.0
+        with:
+          gh_app_ID: ${{ secrets.AUTOMATION_APP_ID }}
+          gh_app_installation_ID: ${{ secrets.AUTOMATION_APP_INSTALLATION_ID }}
+          gh_app_secret_key: ${{ secrets.AUTOMATION_APP_PRIVATE_KEY }}
+          organization: OpenSlides
+          project_id: 2
+          resource_node_id: ${{ inputs.resource_node_id }}
+          status_value: ${{ inputs.status_value }}
