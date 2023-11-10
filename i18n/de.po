@@ -100,6 +100,9 @@ msgstr "Zugriffsgruppen"
 msgid "Access-data"
 msgstr "Zugangsdaten"
 
+msgid "Account"
+msgstr "Account"
+
 msgid "Account admin"
 msgstr "Accountadmin"
 
@@ -108,6 +111,18 @@ msgstr "Account erfolgreich zugewiesen"
 
 msgid "Accounts"
 msgstr "Accounts"
+
+msgid "Accounts created"
+msgstr "Accounts erstellt"
+
+msgid "Accounts updated"
+msgstr "Accounts aktualisiert"
+
+msgid "Accounts with errors"
+msgstr "Accounts mit Fehlern"
+
+msgid "Accounts with warnings (will be skipped)"
+msgstr "Accounts mit Warnungen (werden übersprungen)"
 
 msgid "Activate"
 msgstr "Aktivieren"
@@ -246,6 +261,13 @@ msgstr ""
 "Nach Prüfung der Vorschau klicken Sie bitte auf \"Importieren\" (oben "
 "rechts)."
 
+msgid ""
+"Afterwards you may be unable to regain your status in this meeting on your "
+"own. Are you sure you want to do this?"
+msgstr ""
+"Danach können Sie Ihren Status in dieser Veranstaltung möglicherweise nicht "
+"mehr selbständig zurücksetzen. Sind Sie sicher, dass Sie das tun wollen?"
+
 msgid "Agenda"
 msgstr "Tagesordnung"
 
@@ -266,6 +288,9 @@ msgstr "Anzahl der Stimmberechtigten"
 
 msgid "All lists of speakers will be cleared."
 msgstr "Alle Redelisten werden bereinigt."
+
+msgid "All meetings"
+msgstr "alle Veranstaltungen"
 
 msgid "All other fields are optional and may be empty."
 msgstr "Alle übrigen Felder sind optional und dürfen leer sein."
@@ -350,7 +375,7 @@ msgstr "Anzahl der Veranstaltungen"
 msgid "Amount of votes"
 msgstr "Anzahl der Stimmen"
 
-msgid "An email with a password reset link was send!"
+msgid "An email with a password reset link has been sent."
 msgstr "Es wurde eine E-Mail mit Link zum Passwort-Zurücksetzen gesendet."
 
 msgid "An error occurred while voting."
@@ -554,6 +579,9 @@ msgstr ""
 "Sollen alle ausgewählten Einträge wirklich aus der Tagesordnung entfernt "
 "werden?"
 
+msgid "Are you sure you want to remove these participants?"
+msgstr "Sollen diese Teilnehmende wirklich entfernt werden?"
+
 msgid "Are you sure you want to remove this entry from the agenda?"
 msgstr "Soll dieser Eintrag wirklich aus der Tagesordnung entfernt werden?"
 
@@ -574,12 +602,12 @@ msgid "Are you sure you want to renumber all motions of this category?"
 msgstr ""
 "Sollen alle Anträge dieses Sachgebiets wirklich neu nummeriert werden?"
 
-msgid "Are you sure you want to reset all options to factory defaults?"
+msgid "Are you sure you want to reset all options to default settings?"
 msgstr ""
 "Sollen wirklich alle Optionen auf Werkseinstellung zurückgesetzt werden?"
 
 msgid ""
-"Are you sure you want to reset all options to factory defaults? All changes "
+"Are you sure you want to reset all options to default settings? All changes "
 "of this settings group will be lost!"
 msgstr ""
 "Sollen wirklich alle Optionen auf Werkseinstellung zurückgesetzt werden? "
@@ -961,6 +989,9 @@ msgstr "Darf alle Redelisten sehen."
 msgid "Can see elections"
 msgstr "Darf Wahlen sehen"
 
+msgid "Can see files"
+msgstr "Darf Dateien sehen"
+
 msgid "Can see history"
 msgstr "Darf die Chronik sehen"
 
@@ -1047,9 +1078,6 @@ msgstr "Darf den Autopilot sehen"
 
 msgid "Can see the front page"
 msgstr "Darf die Startseite sehen"
-
-msgid "Can see the list of files"
-msgstr "Darf die Dateiliste sehen"
 
 msgid "Can see the live stream"
 msgstr "Darf den Livestream sehen"
@@ -1199,6 +1227,15 @@ msgstr "Datastore überprüfen"
 msgid "Check in or check out participants based on their participant numbers:"
 msgstr ""
 "An- oder Abmeldung von Teilnehmenden basierend auf ihren Teilnehmernummern:"
+
+msgid "Checkmate! You lost!"
+msgstr "Schachmatt! Du hast verloren!"
+
+msgid "Checkmate! You won!"
+msgstr "Schachmatt! Du hast gewonnen!"
+
+msgid "Chess"
+msgstr "Schach"
 
 msgid "Choice"
 msgstr "Auswahl"
@@ -1523,8 +1560,10 @@ msgstr "Standardprojektor"
 msgid "Default structure level"
 msgstr "Standard-Gliederungsebene"
 
-msgid "Default text version for change recommendations"
-msgstr "Voreingestellte Fassung für Änderungsempfehlungen"
+msgid ""
+"Default text version for change recommendations and projection of motions"
+msgstr ""
+"Voreingestellte Fassung für Änderungsempfehlungen und Antragsprojektionen"
 
 msgid "Default visibility for new agenda items (except topics)"
 msgstr ""
@@ -1658,6 +1697,9 @@ msgstr "Nicht entscheiden"
 
 msgid "Do not forget to save your changes!"
 msgstr "Vergessen Sie nicht Ihre Änderungen zu speichern!"
+
+msgid "Do you accept?"
+msgstr "Bist Du einverstanden?"
 
 msgid "Do you really want to delete this color set?"
 msgstr "Soll diese Farbauswahl wirklich gelöscht werden?"
@@ -2038,6 +2080,9 @@ msgstr "Favoriten"
 msgid "File"
 msgstr "Datei"
 
+msgid "File is being used"
+msgstr "Die Datei wird verwendet"
+
 msgid "Filename"
 msgstr "Dateiname"
 
@@ -2372,6 +2417,9 @@ msgstr "Satzung importieren"
 msgid "Import successful"
 msgstr "Import erfolgreich"
 
+msgid "Import successful with some warnings"
+msgstr "Import erfolgreich mit einigen Warnungen"
+
 msgid "Import topics"
 msgstr "Themen importieren"
 
@@ -2416,6 +2464,9 @@ msgstr "Themen hier importieren"
 
 msgid "Insertion"
 msgstr "Ergänzung"
+
+msgid "Insufficient material! It's a draw!"
+msgstr "Zu wenig Material! Es ist ein Unentschieden!"
 
 msgid "Internal"
 msgstr "Intern"
@@ -2533,8 +2584,11 @@ msgstr ""
 "Countdowns, die für Redelisten oder elektronische Stimmabgaben verwendet "
 "werden, dürfen nicht gelöscht werden."
 
-msgid "It's your partners turn"
-msgstr "Dein Partner ist am Zug!"
+msgid "It's a draw!"
+msgstr "Es ist ein Unentschieden!"
+
+msgid "It's your opponent's turn"
+msgstr "Dein Gegner ist am Zug"
 
 msgid "It's your turn!"
 msgstr "Du bist dran!"
@@ -3070,6 +3124,9 @@ msgstr "Keine persönliche Notiz"
 msgid "No recommendation"
 msgstr "keine Empfehlung gesetzt"
 
+msgid "No results found"
+msgstr "Keine Ergebnisse gefunden."
+
 msgid "No results yet."
 msgstr "Noch keine Ergebnisse."
 
@@ -3212,6 +3269,9 @@ msgstr "Jitsi im neuen Tab öffnen"
 msgid "Open a meeting to play \"Connect 4\""
 msgstr "Öffnen Sie eine Veranstaltung um \"Vier gewinnt\" zu spielen."
 
+msgid "Open a meeting to play chess"
+msgstr "Öffnen Sie eine Veranstaltung um Schach zu spielen."
+
 msgid "Open items"
 msgstr "Offene Einträge"
 
@@ -3274,6 +3334,9 @@ msgstr "Original"
 
 msgid "Original version"
 msgstr "Originalfassung"
+
+msgid "Out of sync"
+msgstr "nicht synchronisiert"
 
 msgid "Outside"
 msgstr "außerhalb"
@@ -3441,6 +3504,9 @@ msgstr "Persönliche Notizen"
 msgid "Phase"
 msgstr "Phase"
 
+msgid "Playing against"
+msgstr "Spiel gegen"
+
 msgid "Please allow OpenSlides to access your microphone and/or camera"
 msgstr "Bitte erlauben Sie jetzt den Zugriff auf Mikrofon und Kamera."
 
@@ -3453,9 +3519,6 @@ msgstr "Bitte geben Sie einen Namen für den neuen Arbeitsablauf ein:"
 msgid "Please enter a new workflow name:"
 msgstr "Bitte geben Sie einen neuen Arbeitsablaufnamen ein:"
 
-msgid "Please enter a valid email address"
-msgstr "Bitte geben Sie einen neuen Namen ein für"
-
 msgid "Please enter a valid email address!"
 msgstr "Bitte geben Sie eine gültige E-Mail-Adresse ein!"
 
@@ -3464,6 +3527,9 @@ msgstr "Bitte geben Sie Ihr neues Passwort ein"
 
 msgid "Please join the conference room now!"
 msgstr "Bitte kommen Sie jetzt in den Konferenzraum!"
+
+msgid "Please select a vote weight bigger than zero."
+msgstr "Bitte wählen Sie ein Stimmgewicht größer als Null."
 
 msgid "Please select the directory:"
 msgstr "Bitte wählen Sie das Verzeichnis aus:"
@@ -3791,10 +3857,16 @@ msgstr "Rechts"
 msgid "Roman"
 msgstr "Römisch"
 
+msgid "Rows with warnings"
+msgstr "Zeilen mit Warnungen"
+
 msgid "SSO"
 msgstr "SSO"
 
 msgid "SSO Identification"
+msgstr "SSO-Kennung"
+
+msgid "SSO identification"
 msgstr "SSO-Kennung"
 
 msgid "Same email"
@@ -4123,9 +4195,6 @@ msgstr "Single Sign-On-Einstellungen"
 msgid "Single votes"
 msgstr "Einzelstimmen"
 
-msgid "Size"
-msgstr "Größe"
-
 msgid "Slide"
 msgstr "Folie"
 
@@ -4178,6 +4247,9 @@ msgstr "Redezeit"
 
 msgid "Staff"
 msgstr "Mitarbeitende"
+
+msgid "Stalemate! It's a draw!"
+msgstr "Unentschieden! Es ist ein Unentschieden!"
 
 msgid "Start and end time must either both be set or both be empty"
 msgstr "Start- und Endzeit müssen entweder beide gesetzt oder beide leer sein"
@@ -4367,16 +4439,20 @@ msgstr ""
 "Der Import kann nicht fortgesetzt werden. Wahrscheinlich gibt es ein Problem"
 " mit den Importdaten, bitte prüfen Sie die Vorschau auf Details."
 
-msgid ""
-"The import has failed due to recent changes on the server. Please check the "
-"updated preview before clicking on \"import\" again."
-msgstr ""
-"Der Import ist aufgrund von Änderungen auf dem Server fehlgeschlagen. Bitte "
-"prüfen Sie die aktualisierte Vorschau, bevor Sie erneut auf \"Importieren\" "
-"klicken."
-
 msgid "The import is in progress, please wait ..."
 msgstr "Der Import läuft, bitte warten ..."
+
+msgid ""
+"The import returned warnings. This does not mean that it failed, but some "
+"data may have been imported differently. Usually the warnings will be the "
+"same as during the preview, but as there is a possibility that new ones have"
+" arisen, the relevant rows will be displayed below."
+msgstr ""
+"Der Import hat Warnungen zurückgegeben. Dies bedeutet nicht, dass der "
+"Vorgang fehlgeschlagen ist, aber einige Daten wurden möglicherweise anders "
+"importiert. In der Regel  handelt es sich um dieselben Warnungen wie in der "
+"Vorschau. Aber da es möglich ist, dass neue Warnungen aufgetreten sind, "
+"werden die entsprechenden Zeilen unten angezeigt."
 
 msgid "The import was successful."
 msgstr "Der Import war erfolgreich."
@@ -4486,8 +4562,8 @@ msgstr "davon Geschäftsordnungsanträge"
 msgid "These accounts will be deleted:"
 msgstr "Diese Accounts werden gelöscht:"
 
-msgid "These accounts will be removed from the meeting:"
-msgstr "Diese Accounts werden aus der Veranstaltung entfernt:"
+msgid "These participants will be removed:"
+msgstr "Diese Teilnehmende werden entfernt:"
 
 msgid "This account has relations to meetings or committees"
 msgstr "Dieser Account hat Verweise zu Veranstaltungen oder Gremien"
@@ -4498,6 +4574,15 @@ msgid ""
 msgstr ""
 "Dieser Account ist nicht als Kandidat*in, Antragsteller*in oder Redner*in in"
 " einer Veranstaltung verlinkt und auch kein Verwalter*in eines Gremiums."
+
+msgid "This action will diminish your organization management level"
+msgstr "Diese Aktion wird Ihre Administrationsrolle beeinträchtigen"
+
+msgid "This action will remove you from one or more groups."
+msgstr "Diese Aktion entfernt Sie aus einer oder mehreren Gruppen."
+
+msgid "This action will remove you from one or more meetings."
+msgstr "Diese Aktion entfernt Sie aus einer oder mehreren Veranstaltungen."
 
 msgid "This ballot contains deleted users."
 msgstr "Der Wahlgang enthält gelöschte Nutzer."
@@ -4516,6 +4601,17 @@ msgstr "Dieses Feld ist erforderlich."
 
 msgid "This is not a number."
 msgstr "Dies ist keine Zahl."
+
+msgid ""
+"This may diminish your ability to do things in this meeting and you may not "
+"be able to revert it by youself. Are you sure you want to do this?"
+msgstr ""
+"Dies kann Ihre Berechtigungen für diese Veranstaltung beeinträchtigen. Sie "
+"sind möglicherweise nicht mehr in der Lage, es selbst rückgängig zu machen. "
+"Sind Sie sicher, dass Sie das tun wollen?"
+
+msgid "This meeting"
+msgstr "diese Veranstaltung"
 
 msgid "This meeting is archived"
 msgstr "Diese Veranstaltung ist archiviert"
@@ -4577,6 +4673,14 @@ msgstr ""
 "Die ausgewählten Accounts werden in folgende Veranstaltungen hinzugefügt "
 "oder entfernt:"
 
+msgid ""
+"This will diminish your ability to do things on the organization level and "
+"you will not be able to revert this yourself."
+msgstr ""
+"Dadurch wird Ihre Fähigkeit, Dinge auf der Organisationsebene zu tun, "
+"beeinträchtigt. Sie werden nicht in der Lage sein, dies selbst rückgängig zu"
+" machen."
+
 msgid "This will move all selected motions as childs to:"
 msgstr ""
 "Alle ausgewählten Anträge werden unterhalb des folgenden "
@@ -4615,6 +4719,9 @@ msgstr "Folgender Arbeitsablauf wird für alle ausgewählten Anträge gesetzt:"
 msgid "Thoroughly check datastore (unsafe)"
 msgstr "Gründliche Überprüfung des Datastores (unsicher)"
 
+msgid "Threefold repetition! It's a draw!"
+msgstr "Dreimalige Wiederholung! Es ist ein Unentschieden!"
+
 msgid "Tile view"
 msgstr "Kachelansicht"
 
@@ -4635,6 +4742,9 @@ msgstr "Titel für PDF-Dokumente von Anträgen"
 
 msgid "Title for access data and welcome PDF"
 msgstr "Titel für das Zugangsdaten- und Begrüßungs-PDF"
+
+msgid "To start your search press Enter or the search icon"
+msgstr "Zum Starten der Suche Enter oder das Suchsymbol drücken."
 
 msgid "Toggle to list of speakers"
 msgstr "Zur Redeliste wechseln"
@@ -4662,6 +4772,9 @@ msgstr "Themen aktualisiert"
 
 msgid "Topics with warnings (will be skipped)"
 msgstr "Themen mit Warnungen (werden übersprungen)"
+
+msgid "Total accounts"
+msgstr "Accounts insgesamt"
 
 msgid "Total topics"
 msgstr "Themen insgesamt"
@@ -4874,6 +4987,9 @@ msgstr "Warten"
 msgid "Wait for response ..."
 msgstr "Warten auf Antwort ..."
 
+msgid "Waiting for response ..."
+msgstr "Auf Antwort wartend ..."
+
 msgid "Warn color"
 msgstr "Warnfarbe"
 
@@ -4954,9 +5070,6 @@ msgstr "Ja pro Kandidat"
 
 msgid "Yes per option"
 msgstr "Ja pro Option"
-
-msgid "Yes, delete"
-msgstr "Ja, löschen"
 
 msgid "Yes, inclusive meetings"
 msgstr "Ja, inkl. Veranstaltungen"
@@ -5083,6 +5196,9 @@ msgstr "Sie haben bereits Ihre Stimme abgegeben."
 msgid "You have to be logged in to be able to vote."
 msgstr "Sie müssen sich anmelden um Ihre Stimme abgeben zu können."
 
+msgid "You have to be present to add yourself."
+msgstr "Sie müssen anwesend sein, um sich selbst hinzuzufügen."
+
 msgid "You have to be present to vote."
 msgstr "Sie müssen \"anwesend\" sein um Ihre Stimme abgeben zu können."
 
@@ -5126,13 +5242,13 @@ msgstr "Es wurde kein Mikrofon an ihrem Gerät gefunden."
 msgid "Your input does not match the following structure: \"hh:mm\""
 msgstr "Ihre Eingabe entspricht nicht der folgenden Struktur: \"hh:mm\""
 
-msgid "Your partner couldn't stand it anymore... You are the winner!"
+msgid "Your opponent couldn't stand it anymore... You are the winner!"
 msgstr "Dein Partner konnte es nicht mehr aushalten... Du bist der Gewinner!"
 
-msgid "Your partner has won!"
-msgstr "Dein Partner hat gewonnen!"
+msgid "Your opponent has won!"
+msgstr "Dein Gegner hat gewonnen!"
 
-msgid "Your password was resetted successfully!"
+msgid "Your password has been reset successfully!"
 msgstr "Ihr Passwort wurde erfolgreich zurückgesetzt!"
 
 msgid "Your votes"
@@ -5196,6 +5312,9 @@ msgstr "stimmzettel"
 msgid "by"
 msgstr "von"
 
+msgid "challenged you to a chess match!"
+msgstr "hat dich zu einem Schachspiel herausgefordert!"
+
 msgid "committee-example"
 msgstr "gremien-beispiel"
 
@@ -5225,6 +5344,9 @@ msgstr "benutzerdefiniert"
 
 msgid "dateless"
 msgstr "zeitlos"
+
+msgid "delete"
+msgstr "löschen"
 
 msgid "deleted"
 msgstr "gelöscht"
@@ -5421,6 +5543,9 @@ msgstr "abgelehnt"
 msgid "rejected (not authorized)"
 msgstr "verworfen (nicht zulässig)"
 
+msgid "remove"
+msgstr "entfernen"
+
 msgid "remove group(s)"
 msgstr "Gruppe(n) entfernen"
 
@@ -5483,6 +5608,9 @@ msgstr "werden importiert"
 
 msgid "will be referenced"
 msgstr "werden referenziert"
+
+msgid "will be updated"
+msgstr "werden aktualisiert"
 
 msgid "withdrawn"
 msgstr "zurückgezogen"
