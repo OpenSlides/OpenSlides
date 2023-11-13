@@ -84,6 +84,9 @@ msgstr ""
 msgid "Access-data"
 msgstr ""
 
+msgid "Account"
+msgstr ""
+
 msgid "Account admin"
 msgstr ""
 
@@ -91,6 +94,18 @@ msgid "Account successfully assigned"
 msgstr ""
 
 msgid "Accounts"
+msgstr ""
+
+msgid "Accounts created"
+msgstr ""
+
+msgid "Accounts updated"
+msgstr ""
+
+msgid "Accounts with errors"
+msgstr ""
+
+msgid "Accounts with warnings (will be skipped)"
 msgstr ""
 
 msgid "Activate"
@@ -213,6 +228,11 @@ msgstr ""
 msgid "After verifying the preview click on \"import\" please (see top right)."
 msgstr ""
 
+msgid ""
+"Afterwards you may be unable to regain your status in this meeting on your "
+"own. Are you sure you want to do this?"
+msgstr ""
+
 msgid "Agenda"
 msgstr ""
 
@@ -232,6 +252,9 @@ msgid "All entitled users"
 msgstr ""
 
 msgid "All lists of speakers will be cleared."
+msgstr ""
+
+msgid "All meetings"
 msgstr ""
 
 msgid "All other fields are optional and may be empty."
@@ -315,7 +338,7 @@ msgstr ""
 msgid "Amount of votes"
 msgstr ""
 
-msgid "An email with a password reset link was send!"
+msgid "An email with a password reset link has been sent."
 msgstr ""
 
 msgid "An error occurred while voting."
@@ -502,6 +525,9 @@ msgstr ""
 msgid "Are you sure you want to remove all selected items from the agenda?"
 msgstr ""
 
+msgid "Are you sure you want to remove these participants?"
+msgstr ""
+
 msgid "Are you sure you want to remove this entry from the agenda?"
 msgstr ""
 
@@ -520,11 +546,11 @@ msgstr ""
 msgid "Are you sure you want to renumber all motions of this category?"
 msgstr ""
 
-msgid "Are you sure you want to reset all options to factory defaults?"
+msgid "Are you sure you want to reset all options to default settings?"
 msgstr ""
 
 msgid ""
-"Are you sure you want to reset all options to factory defaults? All changes "
+"Are you sure you want to reset all options to default settings? All changes "
 "of this settings group will be lost!"
 msgstr ""
 
@@ -861,6 +887,9 @@ msgstr ""
 msgid "Can see elections"
 msgstr ""
 
+msgid "Can see files"
+msgstr ""
+
 msgid "Can see history"
 msgstr ""
 
@@ -930,9 +959,6 @@ msgid "Can see the autopilot"
 msgstr ""
 
 msgid "Can see the front page"
-msgstr ""
-
-msgid "Can see the list of files"
 msgstr ""
 
 msgid "Can see the live stream"
@@ -1071,6 +1097,15 @@ msgid "Check datastore"
 msgstr ""
 
 msgid "Check in or check out participants based on their participant numbers:"
+msgstr ""
+
+msgid "Checkmate! You lost!"
+msgstr ""
+
+msgid "Checkmate! You won!"
+msgstr ""
+
+msgid "Chess"
 msgstr ""
 
 msgid "Choice"
@@ -1386,7 +1421,8 @@ msgstr ""
 msgid "Default structure level"
 msgstr ""
 
-msgid "Default text version for change recommendations"
+msgid ""
+"Default text version for change recommendations and projection of motions"
 msgstr ""
 
 msgid "Default visibility for new agenda items (except topics)"
@@ -1508,6 +1544,9 @@ msgid "Do not decide"
 msgstr ""
 
 msgid "Do not forget to save your changes!"
+msgstr ""
+
+msgid "Do you accept?"
 msgstr ""
 
 msgid "Do you really want to delete this color set?"
@@ -1846,6 +1885,9 @@ msgstr ""
 msgid "File"
 msgstr ""
 
+msgid "File is being used"
+msgstr ""
+
 msgid "Filename"
 msgstr ""
 
@@ -2174,6 +2216,9 @@ msgstr ""
 msgid "Import successful"
 msgstr ""
 
+msgid "Import successful with some warnings"
+msgstr ""
+
 msgid "Import topics"
 msgstr ""
 
@@ -2217,6 +2262,9 @@ msgid "Insert topics here"
 msgstr ""
 
 msgid "Insertion"
+msgstr ""
+
+msgid "Insufficient material! It's a draw!"
 msgstr ""
 
 msgid "Internal"
@@ -2330,7 +2378,10 @@ msgid ""
 "It is not allowed to delete countdowns used for list of speakers or polls"
 msgstr ""
 
-msgid "It's your partners turn"
+msgid "It's a draw!"
+msgstr ""
+
+msgid "It's your opponent's turn"
 msgstr ""
 
 msgid "It's your turn!"
@@ -2860,6 +2911,9 @@ msgstr ""
 msgid "No recommendation"
 msgstr ""
 
+msgid "No results found"
+msgstr ""
+
 msgid "No results yet."
 msgstr ""
 
@@ -2995,6 +3049,9 @@ msgstr ""
 msgid "Open a meeting to play \"Connect 4\""
 msgstr ""
 
+msgid "Open a meeting to play chess"
+msgstr ""
+
 msgid "Open items"
 msgstr ""
 
@@ -3056,6 +3113,9 @@ msgid "Original"
 msgstr ""
 
 msgid "Original version"
+msgstr ""
+
+msgid "Out of sync"
 msgstr ""
 
 msgid "Outside"
@@ -3219,6 +3279,9 @@ msgstr ""
 msgid "Phase"
 msgstr ""
 
+msgid "Playing against"
+msgstr ""
+
 msgid "Please allow OpenSlides to access your microphone and/or camera"
 msgstr ""
 
@@ -3231,9 +3294,6 @@ msgstr ""
 msgid "Please enter a new workflow name:"
 msgstr ""
 
-msgid "Please enter a valid email address"
-msgstr ""
-
 msgid "Please enter a valid email address!"
 msgstr ""
 
@@ -3241,6 +3301,9 @@ msgid "Please enter your new password"
 msgstr ""
 
 msgid "Please join the conference room now!"
+msgstr ""
+
+msgid "Please select a vote weight bigger than zero."
 msgstr ""
 
 msgid "Please select the directory:"
@@ -3561,10 +3624,16 @@ msgstr ""
 msgid "Roman"
 msgstr ""
 
+msgid "Rows with warnings"
+msgstr ""
+
 msgid "SSO"
 msgstr ""
 
 msgid "SSO Identification"
+msgstr ""
+
+msgid "SSO identification"
 msgstr ""
 
 msgid "Same email"
@@ -3882,9 +3951,6 @@ msgstr ""
 msgid "Single votes"
 msgstr ""
 
-msgid "Size"
-msgstr ""
-
 msgid "Slide"
 msgstr ""
 
@@ -3933,6 +3999,9 @@ msgid "Speaking time"
 msgstr ""
 
 msgid "Staff"
+msgstr ""
+
+msgid "Stalemate! It's a draw!"
 msgstr ""
 
 msgid "Start and end time must either both be set or both be empty"
@@ -4118,12 +4187,14 @@ msgid ""
 "please check the preview for details."
 msgstr ""
 
-msgid ""
-"The import has failed due to recent changes on the server. Please check the "
-"updated preview before clicking on \"import\" again."
+msgid "The import is in progress, please wait ..."
 msgstr ""
 
-msgid "The import is in progress, please wait ..."
+msgid ""
+"The import returned warnings. This does not mean that it failed, but some "
+"data may have been imported differently. Usually the warnings will be the "
+"same as during the preview, but as there is a possibility that new ones have "
+"arisen, the relevant rows will be displayed below."
 msgstr ""
 
 msgid "The import was successful."
@@ -4218,7 +4289,7 @@ msgstr ""
 msgid "These accounts will be deleted:"
 msgstr ""
 
-msgid "These accounts will be removed from the meeting:"
+msgid "These participants will be removed:"
 msgstr ""
 
 msgid "This account has relations to meetings or committees"
@@ -4227,6 +4298,15 @@ msgstr ""
 msgid ""
 "This account is not linked as candidate, submitter or speaker in any meeting "
 "and is not manager of any committee"
+msgstr ""
+
+msgid "This action will diminish your organization management level"
+msgstr ""
+
+msgid "This action will remove you from one or more groups."
+msgstr ""
+
+msgid "This action will remove you from one or more meetings."
 msgstr ""
 
 msgid "This ballot contains deleted users."
@@ -4245,6 +4325,14 @@ msgid "This field is required."
 msgstr ""
 
 msgid "This is not a number."
+msgstr ""
+
+msgid ""
+"This may diminish your ability to do things in this meeting and you may not "
+"be able to revert it by youself. Are you sure you want to do this?"
+msgstr ""
+
+msgid "This meeting"
 msgstr ""
 
 msgid "This meeting is archived"
@@ -4292,6 +4380,11 @@ msgstr ""
 msgid "This will add or remove the selected accounts to following meetings:"
 msgstr ""
 
+msgid ""
+"This will diminish your ability to do things on the organization level and "
+"you will not be able to revert this yourself."
+msgstr ""
+
 msgid "This will move all selected motions as childs to:"
 msgstr ""
 
@@ -4324,6 +4417,9 @@ msgstr ""
 msgid "Thoroughly check datastore (unsafe)"
 msgstr ""
 
+msgid "Threefold repetition! It's a draw!"
+msgstr ""
+
 msgid "Tile view"
 msgstr ""
 
@@ -4343,6 +4439,9 @@ msgid "Title for PDF documents of motions"
 msgstr ""
 
 msgid "Title for access data and welcome PDF"
+msgstr ""
+
+msgid "To start your search press Enter or the search icon"
 msgstr ""
 
 msgid "Toggle to list of speakers"
@@ -4370,6 +4469,9 @@ msgid "Topics updated"
 msgstr ""
 
 msgid "Topics with warnings (will be skipped)"
+msgstr ""
+
+msgid "Total accounts"
 msgstr ""
 
 msgid "Total topics"
@@ -4569,6 +4671,9 @@ msgstr ""
 msgid "Wait for response ..."
 msgstr ""
 
+msgid "Waiting for response ..."
+msgstr ""
+
 msgid "Warn color"
 msgstr ""
 
@@ -4640,9 +4745,6 @@ msgid "Yes per candidate"
 msgstr ""
 
 msgid "Yes per option"
-msgstr ""
-
-msgid "Yes, delete"
 msgstr ""
 
 msgid "Yes, inclusive meetings"
@@ -4744,6 +4846,9 @@ msgstr ""
 msgid "You have to be logged in to be able to vote."
 msgstr ""
 
+msgid "You have to be present to add yourself."
+msgstr ""
+
 msgid "You have to be present to vote."
 msgstr ""
 
@@ -4783,13 +4888,13 @@ msgstr ""
 msgid "Your input does not match the following structure: \"hh:mm\""
 msgstr ""
 
-msgid "Your partner couldn't stand it anymore... You are the winner!"
+msgid "Your opponent couldn't stand it anymore... You are the winner!"
 msgstr ""
 
-msgid "Your partner has won!"
+msgid "Your opponent has won!"
 msgstr ""
 
-msgid "Your password was resetted successfully!"
+msgid "Your password has been reset successfully!"
 msgstr ""
 
 msgid "Your votes"
@@ -4852,6 +4957,9 @@ msgstr ""
 msgid "by"
 msgstr ""
 
+msgid "challenged you to a chess match!"
+msgstr ""
+
 msgid "committee-example"
 msgstr ""
 
@@ -4880,6 +4988,9 @@ msgid "custom"
 msgstr ""
 
 msgid "dateless"
+msgstr ""
+
+msgid "delete"
 msgstr ""
 
 msgid "deleted"
@@ -5077,6 +5188,9 @@ msgstr ""
 msgid "rejected (not authorized)"
 msgstr ""
 
+msgid "remove"
+msgstr ""
+
 msgid "remove group(s)"
 msgstr ""
 
@@ -5138,6 +5252,9 @@ msgid "will be imported"
 msgstr ""
 
 msgid "will be referenced"
+msgstr ""
+
+msgid "will be updated"
 msgstr ""
 
 msgid "withdrawn"
