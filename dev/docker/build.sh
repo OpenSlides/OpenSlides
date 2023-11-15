@@ -128,7 +128,7 @@ for i in "${SELECTED_TARGETS[@]}"; do
   } > version.json
   if [[ -w "$CLIENT_VERSION_TXT" ]]; then
     client_dev_version="$(< "$CLIENT_VERSION_TXT")"
-    printf "$DOCKER_TAG (built $(date +%Y%m%d))" > "$CLIENT_VERSION_TXT"
+    printf "$DOCKER_TAG ($(date +%Y-%m-%d))" > "$CLIENT_VERSION_TXT"
   fi
 
   # Special instructions for local services
