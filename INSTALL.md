@@ -146,10 +146,6 @@ To get the [defaults](pkg/config/default-config.yml) run:
 So you get a file where you can see syntax and defaults and might be able to
 customize the steps above.
 
-You may at least want to customize the `SYSTEM_URL`. The variable is used to get
-the correct URL in PDF or email templates.
-
-
 
 ## Update to a new version
 
