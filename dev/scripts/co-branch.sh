@@ -87,7 +87,7 @@ run_switch () {
 if [ $# -eq 0 ]; then 
     usage
     echo ""
-    echo "Do you want to want to proceed with branch main in remote origin? [y/n]"
+    echo "Do you want to want to proceed with branch main in remote ${REMOTE_NAME}? [y/n]"
     read sw
     if [ $sw == "y" ]; then
         run_switch
