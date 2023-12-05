@@ -105,7 +105,7 @@ msgstr ""
 msgid "Accounts with errors"
 msgstr ""
 
-msgid "Accounts with warnings (will be skipped)"
+msgid "Accounts with warnings: affected cells will be skipped"
 msgstr ""
 
 msgid "Activate"
@@ -3323,6 +3323,9 @@ msgstr ""
 msgid "Polls"
 msgstr ""
 
+msgid "Possible options"
+msgstr ""
+
 msgid "Possible points of order"
 msgstr ""
 
@@ -3595,9 +3598,6 @@ msgid "Reset state"
 msgstr ""
 
 msgid "Reset to default settings"
-msgstr ""
-
-msgid "Reset your OpenSlides password"
 msgstr ""
 
 msgid "Resolution and size"
@@ -4160,6 +4160,9 @@ msgstr ""
 msgid "The account is deactivated."
 msgstr ""
 
+msgid "The affected columns will not be imported."
+msgstr ""
+
 msgid "The assembly may decide:"
 msgstr ""
 
@@ -4357,9 +4360,6 @@ msgid ""
 "This projector is currently internal. Selecting such projectors as reference "
 "projectors will automatically set them to visible. Do you really want to do "
 "this?"
-msgstr ""
-
-msgid "This row will not be imported, due to an unknown reason."
 msgstr ""
 
 msgid ""
@@ -4775,16 +4775,6 @@ msgid "You are not supposed to be here..."
 msgstr ""
 
 msgid ""
-"You are receiving this email because you have requested a new password for "
-"your OpenSlides-account.\n"
-"\n"
-"Please open the following link and choose a new password:\n"
-"{url}/login/forget-password-confirm?user_id={user_id}&token={token}\n"
-"\n"
-"For completeness your username: {username}"
-msgstr ""
-
-msgid ""
 "You are using the history mode of OpenSlides. Changes will not be saved."
 msgstr ""
 
@@ -5113,9 +5103,6 @@ msgstr ""
 msgid "move ..."
 msgstr ""
 
-msgid "name"
-msgstr ""
-
 msgid "natural person"
 msgstr ""
 
@@ -5261,4 +5248,26 @@ msgid "withdrawn"
 msgstr ""
 
 msgid "yellow"
+msgstr ""
+
+msgid "Presentation and assembly system"
+msgstr ""
+
+msgid "Reset your OpenSlides password"
+msgstr ""
+
+msgid "Space for your welcome text."
+msgstr ""
+
+msgid ""
+"You are receiving this email because you have requested a new password for "
+"your OpenSlides-account.\n"
+"\n"
+"Please open the following link and choose a new password:\n"
+"{url}/login/forget-password-confirm?user_id={user_id}&token={token}\n"
+"\n"
+"For completeness your username: {username}"
+msgstr ""
+
+msgid "name"
 msgstr ""

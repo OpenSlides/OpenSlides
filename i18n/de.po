@@ -1,11 +1,11 @@
 # 
 # Translators:
-# Joshua Sangmeister <joshua.sangmeister@gmail.com>, 2023
 # Emanuel Schütze <emanuel.schuetze@intevation.de>, 2023
+# Joshua Sangmeister <joshua.sangmeister@gmail.com>, 2023
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Emanuel Schütze <emanuel.schuetze@intevation.de>, 2023\n"
+"Last-Translator: Joshua Sangmeister <joshua.sangmeister@gmail.com>, 2023\n"
 "Language-Team: German (https://app.transifex.com/openslides/teams/14270/de/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -121,8 +121,8 @@ msgstr "Accounts aktualisiert"
 msgid "Accounts with errors"
 msgstr "Accounts mit Fehlern"
 
-msgid "Accounts with warnings (will be skipped)"
-msgstr "Accounts mit Warnungen (werden übersprungen)"
+msgid "Accounts with warnings: affected cells will be skipped"
+msgstr ""
 
 msgid "Activate"
 msgstr "Aktivieren"
@@ -3552,6 +3552,9 @@ msgstr "GO-Antrag"
 msgid "Polls"
 msgstr "Umfragen"
 
+msgid "Possible options"
+msgstr ""
+
 msgid "Possible points of order"
 msgstr "Mögliche GO-Anträge"
 
@@ -3829,9 +3832,6 @@ msgstr "Status zurücksetzen"
 
 msgid "Reset to default settings"
 msgstr "Auf Werkseinstellungen zurücksetzen"
-
-msgid "Reset your OpenSlides password"
-msgstr "Zurücksetzen Ihres Openslides-Passworts"
 
 msgid "Resolution and size"
 msgstr "Auflösung und Größe"
@@ -4407,6 +4407,9 @@ msgstr "Texttrenner"
 msgid "The account is deactivated."
 msgstr "Der Account ist inaktiv."
 
+msgid "The affected columns will not be imported."
+msgstr ""
+
 msgid "The assembly may decide:"
 msgstr "Die Versammlung möge beschließen:"
 
@@ -4641,9 +4644,6 @@ msgstr ""
 "Dieser Projektor ist derzeit intern. Wenn Sie solche Projektoren als "
 "Referenzprojektoren auswählen, werden sie automatisch auf sichtbar gesetzt. "
 "Wollen Sie dies wirklich tun?"
-
-msgid "This row will not be imported, due to an unknown reason."
-msgstr "Diese Zeile wird aus einem unbekannten Grund nicht importiert."
 
 msgid ""
 "This will add or remove the following groups for all selected participants:"
@@ -5099,21 +5099,6 @@ msgid "You are not supposed to be here..."
 msgstr "Sie sollten nicht hier sein ..."
 
 msgid ""
-"You are receiving this email because you have requested a new password for your OpenSlides-account.\n"
-"\n"
-"Please open the following link and choose a new password:\n"
-"{url}/login/forget-password-confirm?user_id={user_id}&token={token}\n"
-"\n"
-"For completeness your username: {username}"
-msgstr ""
-"Sie erhalten diese E-Mail, da Sie ein neues Passwort für Ihren OpenSlides-Account angefordert haben.\n"
-"\n"
-"Bitte öffnen Sie den folgenden Link und wählen Sie ein neues Passwort:\n"
-"{url}/login/forget-password-confirm?user_id={user_id}&token={token}\n"
-"\n"
-"Zur Vollständigkeit Ihr Nutzername: {username}"
-
-msgid ""
 "You are using the history mode of OpenSlides. Changes will not be saved."
 msgstr "Der Chronik-Modus ist aktiv. Änderungen werden nicht gespeichert."
 
@@ -5468,9 +5453,6 @@ msgstr "Anträge"
 msgid "move ..."
 msgstr "verschieben ..."
 
-msgid "name"
-msgstr "Name"
-
 msgid "natural person"
 msgstr "natürliche Person"
 
@@ -5617,3 +5599,30 @@ msgstr "zurückgezogen"
 
 msgid "yellow"
 msgstr "gelb"
+
+msgid "Presentation and assembly system"
+msgstr "Präsentations- und Versammlungssystem"
+
+msgid "Reset your OpenSlides password"
+msgstr "Zurücksetzen Ihres Openslides-Passworts"
+
+msgid "Space for your welcome text."
+msgstr "Platz für Ihren Begrüßungstext."
+
+msgid ""
+"You are receiving this email because you have requested a new password for your OpenSlides-account.\n"
+"\n"
+"Please open the following link and choose a new password:\n"
+"{url}/login/forget-password-confirm?user_id={user_id}&token={token}\n"
+"\n"
+"For completeness your username: {username}"
+msgstr ""
+"Sie erhalten diese E-Mail, da Sie ein neues Passwort für Ihren OpenSlides-Account angefordert haben.\n"
+"\n"
+"Bitte öffnen Sie den folgenden Link und wählen Sie ein neues Passwort:\n"
+"{url}/login/forget-password-confirm?user_id={user_id}&token={token}\n"
+"\n"
+"Zur Vollständigkeit Ihr Nutzername: {username}"
+
+msgid "name"
+msgstr "Name"
