@@ -9,6 +9,6 @@ cd "$(dirname $0)"
 # merge translations
 echo "merging POT files..."
 cd ../..
-xgettext --sort-output --no-location --omit-header -o i18n/template-en.pot \
+xgettext --no-location --omit-header -o i18n/template-en.pot \
          openslides-client/client/src/assets/i18n/template-en.pot \
          openslides-backend/openslides_backend/i18n/messages/template-en.pot 
