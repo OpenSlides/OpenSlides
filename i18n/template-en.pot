@@ -2443,9 +2443,6 @@ msgstr ""
 msgid "Line spacing"
 msgstr ""
 
-msgid "Linenumber"
-msgstr ""
-
 msgid "List of electronic votes"
 msgstr ""
 
@@ -3284,7 +3281,10 @@ msgstr ""
 msgid "Please join the conference room now!"
 msgstr ""
 
-msgid "Please select a vote weight bigger than zero."
+msgid "Please select a vote weight greater than or equal to 0.000001"
+msgstr ""
+
+msgid "Please select a vote weight greater than zero."
 msgstr ""
 
 msgid "Please select the directory:"
@@ -3967,6 +3967,9 @@ msgstr ""
 msgid "Start date"
 msgstr ""
 
+msgid "Start line number"
+msgstr ""
+
 msgid "Start time"
 msgstr ""
 
@@ -4502,6 +4505,9 @@ msgid "User not found."
 msgstr ""
 
 msgid "Username"
+msgstr ""
+
+msgid "Username may not contain spaces"
 msgstr ""
 
 msgid "Username or password is incorrect."
