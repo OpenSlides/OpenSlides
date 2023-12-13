@@ -1,0 +1,3 @@
+# requirements for update_labels_and_milestones.py
+
+PyGithub
