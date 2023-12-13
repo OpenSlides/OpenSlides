@@ -32,7 +32,7 @@ services:
       - 5679:5678
 
   postgres:
-    image: postgres:11
+    image: postgres:15
     environment:
       - POSTGRES_USER=openslides
       - POSTGRES_PASSWORD=openslides
