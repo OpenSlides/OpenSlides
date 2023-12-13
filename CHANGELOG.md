@@ -2,6 +2,36 @@
 
 https://openslides.com
 
+## Version 4.1 (2023-12-14)
+
+[Milestone](https://github.com/OpenSlides/OpenSlides/milestones/4.1)
+
+OpenSlides 4.1 – the most important new features:
+-	New full-text search - organization-wide across all meetings and content
+-	Single sign-on - integration of an identity provider (IdP) based on SAML
+-	Electoral list - new voting method for a list of nominations (yes/no/vote per list)
+-	Extension of the functionality of points of order:
+    - Configuration of fixed point of order specifications
+    - Weighting of point of order specifications (for the prioritized ranking of requests to speak)
+-	internal projectors - only visible to users with administrative permission (e.g. as an internal preview monitor)
+-	Design improvements:
+    - New organization-wide color selection for displaying poll and election results (yes/no/vote) and for the organization headbar
+    -	Design improvements: Own logo can be set for all meetings
+-	New limitation on the visibility of lists of speakers can be configured: Users can "throw in" requests to speak, but they are not allowed to see the other requests to speak (they only see their own name on the list of speakers)
+-	Optimizations:
+    - Organization level: new menu item 'Meetings'
+    -	Account menu: various filter options added
+    -	Motions: referring motions are displayed in the motion pdf file
+    -	Motions: Conflict solution in editorial version (visually) optimized
+    -	New custom translation for English to English integrated
+    -	new language support: French
+    -	Various UI improvements
+    -	Extensive performance optimizations and stability improvements; especially for large meetings
+    -	Various bug fixes
+
+All changes can be found in detail in the changelog:
+https://support.openslides.com/help/en-gb/45-uber-openslides/80-versionshistorie
+
 
 ## Version 4.0 (2022-12-14)
 
