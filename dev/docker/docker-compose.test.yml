@@ -1,7 +1,7 @@
 version: "3"
 services:
   postgres-test:
-    image: postgres:11
+    image: postgres:15
     environment:
       - POSTGRES_USER=openslides
       - POSTGRES_PASSWORD=openslides

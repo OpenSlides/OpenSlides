@@ -189,6 +189,21 @@ To check the current status and start migrations if necessary, run:
   - The environment variables `DATASTORE_DATABASE_*` were renamed to
     `DATABASE_*`. If custom values were used, this must be reflected in config
     files.
+- 4.1.0
+  - PostgreSQL major is updated from 11 to 15. This means postgres will
+    complain about the data being incompatible
+  - The recommended way of porting your data is:
+    1. Dump the contents of your DB ([Database backup](#database-backup))
+    2. Do the update ([Update to a new version](#update-to-a-new-version))
+      - Be sure to do fetch the new binary of the `openslides` tool as described
+    3. Restore the dump into the DB, which should now be running on version 15 ([Database backup](#database-backup))
+  - If you updated without dumping beforehand and ran into postgres' error log
+    you can downgrade by using the old `openslides` tool to get PostgreSQL 11
+    again and then follow these steps
+  - More intricate proposals exist for upgrading PostgreSQL (such as
+    https://github.com/tianon/docker-postgres-upgrade) aiming at providing less
+    downtime but these are not production ready and should only be pursued if
+    you know specifically what you are doing.
 
 
 ## SSL encryption
