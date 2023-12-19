@@ -50,12 +50,15 @@ jobs:
           DOCKER_REPO=$(echo $DOCKER_REPO | tr '[A-Z]' '[a-z]')
 
           # Build and push with tag determined by build.sh
+          IMAGE_NAME_VERSIONED=$(./dev/docker/build.sh -D $DOCKER_REPO           --images ${{ matrix.service.name }})
+          IMAGE_NAME_LATEST=$(   ./dev/docker/build.sh -D $DOCKER_REPO -t latest --images ${{ matrix.service.name }})
+          # Build versioned image
           ./dev/docker/build.sh -D $DOCKER_REPO ${{ matrix.service.name }}
-          docker push $(./dev/docker/build.sh -D $DOCKER_REPO --images ${{ matrix.service.name }})
-          # Build and push with tag 'latest' (when on stable branch)
+          docker push "$IMAGE_NAME_VERSIONED"
+          # Tag versioned image 'latest' (when on stable branch)
           case "$(git rev-parse --abbrev-ref HEAD)" in stable/4*)
-            ./dev/docker/build.sh -D $DOCKER_REPO -t latest ${{ matrix.service.name }}
-            docker push $(./dev/docker/build.sh -D $DOCKER_REPO -t latest --images ${{ matrix.service.name }})
+            docker tag "$IMAGE_NAME_VERSIONED" "$IMAGE_NAME_LATEST"
+            docker push "$IMAGE_NAME_LATEST"
           esac
 
   dispatch-build-manage-tool:
