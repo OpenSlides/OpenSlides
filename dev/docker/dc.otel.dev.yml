@@ -23,3 +23,7 @@ services:
   datastore-writer:
     environment:
       - OPENTELEMETRY_ENABLED=1
+
+  auth:
+    environment:
+      - OPENTELEMETRY_ENABLED=1
