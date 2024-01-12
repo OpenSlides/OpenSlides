@@ -11,6 +11,7 @@ repos = [
     "openslides-icc-service",
     "openslides-manage-service",
     "openslides-media-service",
+    "openslides-proxy",
     "openslides-search-service",
     "openslides-vote-service",
     "vote-decrypt",
