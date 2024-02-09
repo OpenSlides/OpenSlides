@@ -39,6 +39,13 @@ MODES:
     merge commits are created in the main repository as well as every affected
     submodule. These will then be attempted to be pushed directly into upstream.
     Use --local to skip pushing.
+
+  hotfix
+    Create an update based on changes in submodules stable branches. Will
+    create a new commit in the main repositories stable analogous to the stable
+    workflow. These will then be attempted to be pushed directly into upstream.
+    Use --local to skip pushing.
+    Changes must manually be reflected into the main branch afterwards.
 EOF
 }
 
