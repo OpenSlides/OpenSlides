@@ -11,7 +11,7 @@ OPT_PULL=
 OPT_LOCAL=
 
 # do not page diff and log outputs
-GIT_PAGER=
+export GIT_PAGER=
 
 usage() {
 cat <<EOF
@@ -39,6 +39,13 @@ MODES:
     merge commits are created in the main repository as well as every affected
     submodule. These will then be attempted to be pushed directly into upstream.
     Use --local to skip pushing.
+
+  hotfix
+    Create an update based on changes in submodules stable branches. Will
+    create a new commit in the main repositories stable analogous to the stable
+    workflow. These will then be attempted to be pushed directly into upstream.
+    Use --local to skip pushing.
+    Changes must manually be reflected into the main branch afterwards.
 EOF
 }
 
@@ -128,7 +135,7 @@ fetch_all_changes() {
 }
 
 
-make_staging_update() {
+add_changes() {
   local REPLY= diff_cmd=
 
   set_remote
@@ -177,17 +184,47 @@ make_staging_update() {
     echo "No changes added."
     abort 0
   }
-  echo 'Changes to be included for the new staging update:'
+  echo 'Changes to be included for the new update:'
   echo '--------------------------------------------------------------------------------'
   $diff_cmd
   echo '--------------------------------------------------------------------------------'
-  ask y "Commit now?" && {
+}
+
+make_staging_update() {
+  local diff_cmd=
+
+  add_changes
+
+  ask y "Commit on branch $BRANCH_NAME for a new staging update now?" && {
     increment_patch &&
       git add VERSION
     git commit --message "Staging update $(date +%Y%m%d)"
     git show --no-patch
     echo "Commit created. Push to $REMOTE_NAME remote and PR into main repo to bring it live."
   } || :
+}
+
+make_hotfix_update() {
+  local diff_cmd=
+
+  add_changes
+
+  ask y "Commit on branch $BRANCH_NAME for a new stable (hotfix) update now?" && {
+    increment_patch &&
+      git add VERSION
+    git commit --message "Update $(cat VERSION) ($(date +%Y%m%d))"
+    git show --no-patch
+    echo "Commit created."
+  } || :
+
+  [[ -z "$OPT_LOCAL" ]] ||
+    return 0
+
+  echo "Attempting to push new $BRANCH_NAME commit into $REMOTE_NAME."
+  echo "Ensure you have proper access rights or use --local to skip pushing."
+  ask y "Continue?" ||
+    abort 0
+  git push "$REMOTE_NAME" "$BRANCH_NAME"
 }
 
 merge_stable_branches() {
@@ -315,6 +352,11 @@ for arg; do
     stable)
       BRANCH_NAME=$STABLE_BRANCH_NAME
       make_stable_update
+      shift 1
+      ;;
+    hotfix)
+      BRANCH_NAME=$STABLE_BRANCH_NAME
+      make_hotfix_update
       shift 1
       ;;
   esac
