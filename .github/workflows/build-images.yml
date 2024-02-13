@@ -33,7 +33,7 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v2
         with:
-          submodules: true
+          submodules: recursive
 
       - name: Read version
         id: readversion
