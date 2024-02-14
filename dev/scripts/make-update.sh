@@ -154,6 +154,7 @@ pull_latest_commit() {
 
 increment_patch() {
   set_remote
+  git fetch $REMOTE_NAME $STABLE_BRANCH_NAME
   patch_upstream=$(git show $REMOTE_NAME/$STABLE_BRANCH_NAME:VERSION  | awk -F. '{print $3}')
   patch_local=$(git show HEAD:VERSION  | awk -F. '{print $3}')
 
