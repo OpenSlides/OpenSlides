@@ -215,10 +215,10 @@ add_changes() {
           "") ;;
           *) target_sha="$REPLY" ;;
         esac
-        [[ "$target_sha" != '-' ]] || {
-          #exit 0 # exit the subshell, acting like 'continue'
+	# If $mod is skipped it must be reset (i.e. checked out below) to the current commit in HEAD
+        [[ "$target_sha" != '-' ]] ||
           target_sha="$(git rev-parse "HEAD:$mod")"
-        }
+
         git -C "$mod" checkout --recurse-submodules "$target_sha"
         git add "$mod"
       )
