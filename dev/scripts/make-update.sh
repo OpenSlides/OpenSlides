@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -ae
 
 ME=$(basename "$0")
 
@@ -11,7 +11,7 @@ OPT_PULL=
 OPT_LOCAL=
 
 # do not page diff and log outputs
-export GIT_PAGER=
+GIT_PAGER=
 
 usage() {
 cat <<EOF
@@ -76,8 +76,8 @@ set_remote() {
 check_current_branch() {
   [ "$(git rev-parse --abbrev-ref HEAD)" == "$BRANCH_NAME" ] || {
     echo "ERROR: $BRANCH_NAME branch not checked out ($(basename $(realpath .)))"
-    ask y "Run \`git checkout $BRANCH_NAME\` now?" &&
-      git checkout $BRANCH_NAME ||
+    ask y "Run \`git checkout --recurse-submodules $BRANCH_NAME\` now?" &&
+      git checkout --recurse-submodules $BRANCH_NAME ||
       abort 0
   }
 
@@ -92,14 +92,59 @@ check_current_branch() {
   fi
 }
 
+check_submodules_intialized() {
+  # From `man git-submodule`:
+  #   Each SHA-1 will possibly be prefixed with - if the submodule is not initialized
+  git submodule status --recursive | awk '$1 ~ "^-" {print "  " $2; x=1} END {exit x}' || {
+    echo "ERROR: Found the above uninitialized submodules. Please correct before rerunning $ME."
+    abort 1
+  }
+}
+
+check_meta_consistency() {
+  local target_rev="$1"
+  local meta_sha=
+  local meta_sha_last=
+  local ret_code=0
+
+  echo "Checking openslides-meta consistency ..."
+
+  # Doing a nested loop rather than foreach --recursive as it's easier to get
+  # both the path of service submod and the (potential) meta submod in one
+  # iteration
+  while read mod; do
+    while read meta_name meta_path; do
+      [[ "$meta_name" == 'openslides-meta' ]] ||
+        continue
+
+      # If target_rev is not specified we check the status of the currently
+      # checked out HEAD in the service submod.
+      # Note that this is different from target_rev being specified as 'HEAD'
+      # as the service submod can be in a different state than recorded in HEAD
+      # (e.g. changed commit pointer during staging-update)
+      mod_target_rev=HEAD
+      [[ "$target_rev" == "" ]] ||
+        mod_target_rev="$(git rev-parse "${target_rev}:${mod}")"
+
+      meta_sha="$(git -C "$mod" rev-parse "${mod_target_rev}:${meta_path}")"
+      echo "  $meta_sha $mod"
+      [[ -z "$meta_sha_last" ]] || [[ "$meta_sha" == "$meta_sha_last" ]] ||
+        ret_code=1
+      meta_sha_last="$meta_sha"
+    done <<< "$(git -C $mod submodule foreach -q 'echo "$name $sm_path"')"
+  done <<< "$(git submodule foreach -q 'echo "$sm_path"')"
+
+  return $ret_code
+}
+
 pull_latest_commit() {
   if [ -z "$OPT_PULL" ]; then
-    echo "git fetch $REMOTE_NAME && git checkout $REMOTE_NAME/$BRANCH_NAME ..."
+    echo "git fetch $REMOTE_NAME && git checkout --recurse-submodules $REMOTE_NAME/$BRANCH_NAME ..."
     git fetch "$REMOTE_NAME" &&
-    git checkout "$REMOTE_NAME/$BRANCH_NAME"
+    git checkout --recurse-submodules "$REMOTE_NAME/$BRANCH_NAME"
   else
-    echo "git checkout $BRANCH_NAME && git pull --ff-only $REMOTE_NAME $BRANCH_NAME ..."
-    git checkout "$BRANCH_NAME" &&
+    echo "git checkout --recurse-submodules $BRANCH_NAME && git pull --ff-only $REMOTE_NAME $BRANCH_NAME ..."
+    git checkout --recurse-submodules "$BRANCH_NAME" &&
     git pull --ff-only "$REMOTE_NAME" "$BRANCH_NAME" || {
       echo "ERROR: make sure a local branch $BRANCH_NAME exists and can be fast-forwarded to $REMOTE_NAME"
       abort 1
@@ -109,6 +154,7 @@ pull_latest_commit() {
 
 increment_patch() {
   set_remote
+  git fetch $REMOTE_NAME $STABLE_BRANCH_NAME
   patch_upstream=$(git show $REMOTE_NAME/$STABLE_BRANCH_NAME:VERSION  | awk -F. '{print $3}')
   patch_local=$(git show HEAD:VERSION  | awk -F. '{print $3}')
 
@@ -134,7 +180,6 @@ fetch_all_changes() {
   echo "Successfully updated all submodules to latest commit."
 }
 
-
 add_changes() {
   local REPLY= diff_cmd=
 
@@ -142,7 +187,7 @@ add_changes() {
   check_current_branch
 
   ask y "Fetch all submodules changes now?" &&
-    fetch_all_changes || :
+    fetch_all_changes
   diff_cmd="git diff --color=always --submodule=log"
   [[ "$($diff_cmd | grep -c .)" -gt 0 ]] ||
     abort 0
@@ -171,12 +216,14 @@ add_changes() {
           "") ;;
           *) target_sha="$REPLY" ;;
         esac
+	# If $mod is skipped it must be reset (i.e. checked out below) to the current commit in HEAD
         [[ "$target_sha" != '-' ]] ||
-          exit 0 # exit the subshell, acting like 'continue'
-        git -C "$mod" checkout "$target_sha"
+          target_sha="$(git rev-parse "HEAD:$mod")"
+
+        git -C "$mod" checkout --recurse-submodules "$target_sha"
         git add "$mod"
       )
-    done || :
+    done
 
   echo ''
   diff_cmd="git diff --staged --submodule=log"
@@ -195,13 +242,20 @@ make_staging_update() {
 
   add_changes
 
+  check_meta_consistency || {
+    echo "WARN: openslides-meta is not consistent. Continuing may imply services are incompatible."
+    echo "WARN: Be sure to fix this until the next stable update."
+    ask y "Continue?" ||
+      abort 1
+  }
+
   ask y "Commit on branch $BRANCH_NAME for a new staging update now?" && {
     increment_patch &&
       git add VERSION
     git commit --message "Staging update $(date +%Y%m%d)"
     git show --no-patch
     echo "Commit created. Push to $REMOTE_NAME remote and PR into main repo to bring it live."
-  } || :
+  }
 }
 
 make_hotfix_update() {
@@ -209,13 +263,20 @@ make_hotfix_update() {
 
   add_changes
 
+  check_meta_consistency || {
+    echo "WARN: openslides-meta is not consistent. This is not a good sign for stable update."
+    echo "WARN: Only continue if you are sure services will be compatible."
+    ask n "Continue?" ||
+      abort 1
+  }
+
   ask y "Commit on branch $BRANCH_NAME for a new stable (hotfix) update now?" && {
     increment_patch &&
       git add VERSION
     git commit --message "Update $(cat VERSION) ($(date +%Y%m%d))"
     git show --no-patch
     echo "Commit created."
-  } || :
+  }
 
   [[ -z "$OPT_LOCAL" ]] ||
     return 0
@@ -248,7 +309,7 @@ merge_stable_branches() {
       cd "$mod"
 
       set_remote
-      git checkout "$BRANCH_NAME"
+      git checkout --recurse-submodules "$BRANCH_NAME"
       check_current_branch
 
       git merge --no-ff -Xtheirs "$mod_target_sha" --log --message "Merge main into $STABLE_BRANCH_NAME. Update $(date +%Y%m%d)"
@@ -285,6 +346,12 @@ make_stable_update() {
     *) target_sha="$REPLY" ;;
   esac
 
+  check_meta_consistency "$target_sha" || {
+    echo "ERROR: openslides-meta is not consistent at $target_sha. This is not acceptable for a stable update."
+    echo "ERROR: Please fix this in a new staging update before trying again."
+    abort 1
+  }
+
   merge_stable_branches "$target_sha"
 
   # Merge, but don't commit yet ...
@@ -309,6 +376,7 @@ make_stable_update() {
   echo "Now main repository ..."
   git push "$REMOTE_NAME" "$BRANCH_NAME"
 }
+
 
 shortopt='phl'
 longopt='pull,help,local'
@@ -337,11 +405,16 @@ while true; do
   esac
 done
 
+# $ME assumes all submodules to be initialized, so check before doing anything else
+check_submodules_intialized
+
 for arg; do
   case $arg in
     fetch-all-changes)
       BRANCH_NAME=main
       fetch_all_changes
+      check_meta_consistency ||
+        echo "WARN: openslides-meta is not consistent."
       shift 1
       ;;
     staging)
