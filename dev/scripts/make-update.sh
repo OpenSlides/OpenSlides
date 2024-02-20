@@ -76,8 +76,8 @@ set_remote() {
 check_current_branch() {
   [ "$(git rev-parse --abbrev-ref HEAD)" == "$BRANCH_NAME" ] || {
     echo "ERROR: $BRANCH_NAME branch not checked out ($(basename $(realpath .)))"
-    ask y "Run \`git checkout --recurse-submodules $BRANCH_NAME\` now?" &&
-      git checkout --recurse-submodules $BRANCH_NAME ||
+    ask y "Run \`git checkout $BRANCH_NAME && git submodule update\` now?" &&
+      git checkout $BRANCH_NAME && git submodule update ||
       abort 0
   }
 
@@ -139,16 +139,18 @@ check_meta_consistency() {
 
 pull_latest_commit() {
   if [ -z "$OPT_PULL" ]; then
-    echo "git fetch $REMOTE_NAME && git checkout --recurse-submodules $REMOTE_NAME/$BRANCH_NAME ..."
+    echo "git fetch $REMOTE_NAME && git checkout $REMOTE_NAME/$BRANCH_NAME && git submodule update ..."
     git fetch "$REMOTE_NAME" &&
-    git checkout --recurse-submodules "$REMOTE_NAME/$BRANCH_NAME"
+    git checkout "$REMOTE_NAME/$BRANCH_NAME"
+    git submodule update
   else
-    echo "git checkout --recurse-submodules $BRANCH_NAME && git pull --ff-only $REMOTE_NAME $BRANCH_NAME ..."
-    git checkout --recurse-submodules "$BRANCH_NAME" &&
+    echo "git checkout $BRANCH_NAME && git pull --ff-only $REMOTE_NAME $BRANCH_NAME && git submodule update ..."
+    git checkout "$BRANCH_NAME" &&
     git pull --ff-only "$REMOTE_NAME" "$BRANCH_NAME" || {
       echo "ERROR: make sure a local branch $BRANCH_NAME exists and can be fast-forwarded to $REMOTE_NAME"
       abort 1
     }
+    git submodule update
   fi
 }
 
@@ -220,7 +222,8 @@ add_changes() {
         [[ "$target_sha" != '-' ]] ||
           target_sha="$(git rev-parse "HEAD:$mod")"
 
-        git -C "$mod" checkout --recurse-submodules "$target_sha"
+        git -C "$mod" checkout "$target_sha"
+        git -C "$mod" submodule update
         git add "$mod"
       )
     done
@@ -309,7 +312,8 @@ merge_stable_branches() {
       cd "$mod"
 
       set_remote
-      git checkout --recurse-submodules "$BRANCH_NAME"
+      git checkout "$BRANCH_NAME"
+      git submodule update
       check_current_branch
 
       git merge --no-ff -Xtheirs "$mod_target_sha" --log --message "Merge main into $STABLE_BRANCH_NAME. Update $(date +%Y%m%d)"
