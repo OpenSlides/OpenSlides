@@ -1,10 +1,10 @@
 # 
 # Translators:
-# fri, 2023
+# fri, 2024
 # 
 msgid ""
 msgstr ""
-"Last-Translator: fri, 2023\n"
+"Last-Translator: fri, 2024\n"
 "Language-Team: Czech (https://app.transifex.com/openslides/teams/14270/cs/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -73,6 +73,16 @@ msgstr "Je požadován název"
 msgid "A topic needs a title"
 msgstr "Námět potřebuje název"
 
+msgid "A total time is required and must be greater than 0."
+msgstr "Je vyžadován celkový čas, který musí být větší než 0."
+
+msgid ""
+"A user with the username '%username%' and the first name '%first_name%' was "
+"created."
+msgstr ""
+"Byl vytvořen uživatel s uživatelským jménem '%username%' a křestním jménem "
+"'%first_name%'."
+
 msgid "About me"
 msgstr "O mě"
 
@@ -85,9 +95,6 @@ msgstr "Barva účtu"
 msgid "Accept"
 msgstr "Přijmout"
 
-msgid "Acceptance"
-msgstr "Souhlas"
-
 msgid "Access data (PDF)"
 msgstr "Přístupová data (PDF)"
 
@@ -98,7 +105,7 @@ msgid "Access-data"
 msgstr "Přístupová data"
 
 msgid "Account"
-msgstr ""
+msgstr "Účet"
 
 msgid "Account admin"
 msgstr "Správa účtu"
@@ -110,16 +117,16 @@ msgid "Accounts"
 msgstr "Účty"
 
 msgid "Accounts created"
-msgstr ""
+msgstr "Účty vytvořeny"
 
 msgid "Accounts updated"
-msgstr ""
+msgstr "Účty aktualizovány"
 
 msgid "Accounts with errors"
-msgstr ""
+msgstr "Účty s chybami"
 
-msgid "Accounts with warnings (will be skipped)"
-msgstr ""
+msgid "Accounts with warnings: affected cells will be skipped"
+msgstr "Účty s varováním: dotčené buňky budou přeskočeny"
 
 msgid "Activate"
 msgstr "Zapnout"
@@ -127,8 +134,17 @@ msgstr "Zapnout"
 msgid "Activate amendments"
 msgstr "Zapnout pozměňovací návrhy"
 
+msgid "Activate design"
+msgstr "Zapnout vnější úpravu"
+
 msgid "Activate statute amendments"
 msgstr "Zapnout pozměňovací návrhy předpisu"
+
+msgid "Activate the selection field 'motion editor'"
+msgstr ""
+
+msgid "Activate the selection field 'spokesman'"
+msgstr ""
 
 msgid "Activate vote delegations"
 msgstr "Zapnout zplnomocnění hlasů"
@@ -183,9 +199,6 @@ msgstr "Činná setkání"
 msgid "Add"
 msgstr "Přidat"
 
-msgid "Add countdown"
-msgstr "Přidat odpočítávání"
-
 msgid "Add me"
 msgstr "Přidat mě"
 
@@ -200,6 +213,9 @@ msgstr "Přidat novou položku"
 
 msgid "Add option"
 msgstr "Přidat možnost"
+
+msgid "Add timer"
+msgstr ""
 
 msgid "Add to agenda"
 msgstr "Přidat do pořadu jednání"
@@ -216,6 +232,9 @@ msgstr "Přidejte se do nynějšího seznamu řečníků pro připojení se k je
 msgid "Add/remove groups ..."
 msgstr "Přidat/Odstranit skupiny..."
 
+msgid "Add/remove structure levels ..."
+msgstr "Přidat/Odstranit úrovně rozčlenění..."
+
 msgid ""
 "Additional columns after the required ones may be present and will not "
 "affect the import."
@@ -223,23 +242,11 @@ msgstr ""
 "Za požadovanými mohou být přítomny dodatečné sloupce. Zavedení tím nebude "
 "ovlivněno."
 
-msgid "Adjourn"
-msgstr "Odložit"
-
-msgid "Adjournment"
-msgstr "Odložení"
-
-msgid "Admin"
-msgstr "Správce"
-
 msgid "Administration roles"
 msgstr "Správcovská funkce"
 
 msgid "Administration roles (at organization level)"
 msgstr "Správcovské funkce (na úrovni organizace)"
-
-msgid "Administrator"
-msgstr "Správce"
 
 msgid "Administrators"
 msgstr "Správci"
@@ -248,12 +255,14 @@ msgid "After verifiy the preview click on \"import\" please (see top right)."
 msgstr "Po přezkoušení náhledu klepněte na Zavést (nahoře vpravo)."
 
 msgid "After verifying the preview click on \"import\" please (see top right)."
-msgstr ""
+msgstr "Po přezkoušení náhledu klepněte na Zavést (nahoře vpravo)."
 
 msgid ""
 "Afterwards you may be unable to regain your status in this meeting on your "
 "own. Are you sure you want to do this?"
 msgstr ""
+"Poté se může stát, že nebudete moci sami získat zpět svůj stav při tomto "
+"setkání. Jste si jist, že to chcete udělat?"
 
 msgid "Agenda"
 msgstr "Pořad jednání"
@@ -277,10 +286,16 @@ msgid "All lists of speakers will be cleared."
 msgstr "Všechny seznamy řečníků budou vyprázdněny."
 
 msgid "All meetings"
-msgstr ""
+msgstr "Všechna setkání"
 
 msgid "All other fields are optional and may be empty."
 msgstr "Všechna ostatní pole jsou nepovinná a mohou zůstat prázdná."
+
+msgid "All present entitled users"
+msgstr ""
+
+msgid "All structure levels"
+msgstr "Všechny úrovně rozčlenění"
 
 msgid "All topics will be deleted and won't be accessible afterwards."
 msgstr "Všechny náměty budou smazány, a potom k nim nebude možno přistupovat."
@@ -302,6 +317,9 @@ msgstr "Povolit vytvoření hlasování"
 
 msgid "Allow forwarding of motions"
 msgstr "Umožnit předávání návrhů"
+
+msgid "Allow one participant multiple times on the same list"
+msgstr ""
 
 msgid ""
 "Allow only current speakers and list of speakers managers to enter the live "
@@ -364,7 +382,7 @@ msgid "Amount of votes"
 msgstr "Množství hlasů"
 
 msgid "An email with a password reset link has been sent."
-msgstr ""
+msgstr "Byl poslán elektronický dopis s odkazem na obnovení hesla."
 
 msgid "An error occurred while voting."
 msgstr "Při hlasování došlo k chybě."
@@ -507,17 +525,20 @@ msgstr "Opravdu má být smazána tato zpráva?"
 msgid "Are you sure you want to delete this motion block?"
 msgstr "Opravdu má být smazán tento návrhový blok?"
 
-msgid "Are you sure you want to delete this motion?"
+msgid "Are you sure you want to delete this motion? "
 msgstr "Opravdu má být smazán tento návrh?"
 
 msgid "Are you sure you want to delete this projector?"
 msgstr "Opravdu má být smazán tento promítací přístroj?"
 
 msgid "Are you sure you want to delete this state?"
-msgstr ""
+msgstr "Opravdu chcete smazat tento stav?"
 
 msgid "Are you sure you want to delete this statute paragraph?"
 msgstr "Opravdu má být smazán tento odstavec předpisu?"
+
+msgid "Are you sure you want to delete this structure level?"
+msgstr ""
 
 msgid "Are you sure you want to delete this tag?"
 msgstr "Opravdu má být smazáno toto klíčové slovo?"
@@ -536,6 +557,11 @@ msgstr "Opravdu má být vyřazen tento pozměňovací návrh?"
 
 msgid "Are you sure you want to duplicate this meeting?"
 msgstr "Opravdu chcete tuto schůzku zdvojit?"
+
+msgid ""
+"Are you sure you want to end this contribution which still has interposed "
+"question(s)?"
+msgstr ""
 
 msgid ""
 "Are you sure you want to generate new passwords for all selected "
@@ -839,6 +865,9 @@ msgstr ""
 msgid "Can create, modify, start/stop and delete votings."
 msgstr "Může vytvářet, měnit, spouštět/zastavovat a odstraňovat hlasování."
 
+msgid "Can edit all moderation notes."
+msgstr ""
+
 msgid ""
 "Can edit and assign the following motion metadata: Submitter, state, "
 "recommendation, category, motion blocks and tags."
@@ -881,6 +910,9 @@ msgstr "Smí spravovat seznam řečníků"
 
 msgid "Can manage logos and fonts"
 msgstr "Smí spravovat emblémy a písma"
+
+msgid "Can manage moderation notes"
+msgstr ""
 
 msgid "Can manage motion metadata"
 msgstr "Může spravovat popisy návrhů"
@@ -948,6 +980,9 @@ msgstr "Může zobrazit všechny vnitřní náměty, rozvrhy a poznámky."
 msgid "Can see all lists of speakers"
 msgstr "Smí vidět seznamy řečníků"
 
+msgid "Can see all moderation notes in each list of speakers."
+msgstr ""
+
 msgid "Can see elections"
 msgstr "Smí vidět volby"
 
@@ -962,6 +997,9 @@ msgstr "Smí vidět vnitřní body a časový rozvrh pořadu dne"
 
 msgid "Can see list of speakers"
 msgstr "Smí vidět seznam řečníků"
+
+msgid "Can see moderation notes"
+msgstr ""
 
 msgid "Can see motions"
 msgstr "Smí vidět návrhy"
@@ -1201,8 +1239,16 @@ msgstr ""
 msgid "Choice"
 msgstr "Volba"
 
+msgid "Choose 0 to disable Intervention."
+msgstr ""
+
 msgid "Choose 0 to disable the supporting system."
 msgstr "Zadejte 0 pro vypnutí podpůrného systému."
+
+msgid ""
+"Choose a number greater than 0 to activate speaking times widget for "
+"structure level countdowns."
+msgstr ""
 
 msgid "Chyron"
 msgstr "Dolní třetina"
@@ -1225,6 +1271,9 @@ msgstr "Vyprázdnit všechny filtry"
 msgid "Clear all list of speakers"
 msgstr "Vyprázdnit seznam řečníků"
 
+msgid "Clear current projection"
+msgstr ""
+
 msgid "Clear list"
 msgstr "Vyprázdnit seznam"
 
@@ -1241,6 +1290,9 @@ msgid "Click here to vote!"
 msgstr "Klepněte sem a hlasujte!"
 
 msgid "Close"
+msgstr ""
+
+msgid "Close edit mode"
 msgstr ""
 
 msgid "Close list of speakers"
@@ -1318,8 +1370,17 @@ msgstr "Výbory"
 msgid "Committees and meetings"
 msgstr "Výbory a setkání"
 
-msgid "Complex Workflow"
-msgstr "Složitý pracovní postup"
+msgid "Committees created"
+msgstr ""
+
+msgid "Committees updated"
+msgstr ""
+
+msgid "Committees with errors"
+msgstr ""
+
+msgid "Committees with warnings: affected cells will be skipped"
+msgstr ""
 
 msgid "Conference room"
 msgstr "Jednací místnost"
@@ -1354,6 +1415,9 @@ msgstr "Protiřeč"
 msgid "Contribution"
 msgstr "Příspěvek"
 
+msgid "Contributions"
+msgstr ""
+
 msgid "Copy report to clipboard"
 msgstr "Kopírovat zprávu do schránky"
 
@@ -1365,18 +1429,6 @@ msgstr ""
 
 msgid "Countdown"
 msgstr "Odpočítávání"
-
-msgid "Countdown and traffic light"
-msgstr "Odpočítávání a dopravní světlo"
-
-msgid "Countdown description"
-msgstr "Popis odpočítávání"
-
-msgid "Countdown time"
-msgstr "Čas odpočítávání"
-
-msgid "Countdown title"
-msgstr "Název odpočítávání"
 
 msgid "Countdowns"
 msgstr "Odpočítávání"
@@ -1395,12 +1447,6 @@ msgstr "Vytvořit"
 
 msgid "Create editorial final version"
 msgstr "Vytvořit vydavatelské konečné znění"
-
-msgid "Create new chat group"
-msgstr "Vytvořit novou skupinu k vedení rozhovoru"
-
-msgid "Create new tag"
-msgstr "Vytvořit nové klíčové slovo"
 
 msgid "Create subitem"
 msgstr "Vytvořit podbod"
@@ -1428,6 +1474,9 @@ msgstr "Nynější seznam řečníků (jako průsvitka)"
 
 msgid "Current slide"
 msgstr "Nynější průsvitka"
+
+msgid "Current speaker"
+msgstr ""
 
 msgid "Current speaker chyron"
 msgstr "Nynější řečník v dolní třetině"
@@ -1459,29 +1508,6 @@ msgstr "Datové úložiště je poškozené! Chyby naleznete v konzoli."
 msgid "Datastore is ok!"
 msgstr "Datové úložiště je v pořádku!"
 
-msgid ""
-"Dear {name},\n"
-"\n"
-"this is your personal OpenSlides login:\n"
-"\n"
-"{url}\n"
-"Username: {username}\n"
-"Password: {password}\n"
-"\n"
-"\n"
-"This email was generated automatically."
-msgstr ""
-"Můj milý/Moje milá {jméno},\n"
-"\n"
-"toto je vaše osobní přihlášení do OpenSlides:\n"
-"\n"
-"{url}\n"
-"Uživatelské jméno: {username}\n"
-"Heslo: {heslo}\n"
-"\n"
-"\n"
-"Tento e-mail byl vytvořen automaticky."
-
 msgid "Decision"
 msgstr "Rozhodnutí"
 
@@ -1509,17 +1535,8 @@ msgstr "Výchozí skupiny s hlasovacím právem"
 msgid "Default line numbering"
 msgstr "Výchozí číslování řádků"
 
-msgid "Default number"
-msgstr "Výchozí číslo"
-
-msgid "Default participant number"
-msgstr "Výchozí číslo účastníka"
-
-msgid "Default projector"
-msgstr "Výchozí promítací přístroj"
-
-msgid "Default structure level"
-msgstr "Výchozí úroveň rozčlenění"
+msgid "Default speaking time for structure levels in seconds"
+msgstr ""
 
 msgid ""
 "Default text version for change recommendations and projection of motions"
@@ -1586,9 +1603,6 @@ msgstr ""
 msgid "Defines which states can be selected next in the workflow."
 msgstr "Určuje, které stavy lze v pracovním postupu vybrat jako další."
 
-msgid "Delegates"
-msgstr "Zástupci"
-
 msgid "Delegation of vote"
 msgstr "Přenesení hlasování"
 
@@ -1606,6 +1620,11 @@ msgstr "Smazat promítací přístroj"
 
 msgid "Deleted user"
 msgstr "Smazaný uživatel"
+
+msgid ""
+"Deleting this motion will likely impact it's amendments negatively and they "
+"could become unusable."
+msgstr ""
 
 msgid "Deletion"
 msgstr "Smazání"
@@ -1640,17 +1659,14 @@ msgstr ""
 msgid "Display type"
 msgstr "Typ zobrazení"
 
+msgid "Distribute overhang time"
+msgstr ""
+
 msgid "Div"
 msgstr "Roz"
 
 msgid "Divergent:"
 msgstr "Rozdílný"
-
-msgid "Do not concern"
-msgstr "Nezaobírat se"
-
-msgid "Do not decide"
-msgstr "Nerozhodovat"
 
 msgid "Do not forget to save your changes!"
 msgstr "Nezapoměňte uložit své změny!"
@@ -1731,6 +1747,9 @@ msgstr ""
 msgid "Edit"
 msgstr "Upravit"
 
+msgid "Edit account"
+msgstr ""
+
 msgid "Edit comment field"
 msgstr "Upravit poznámkové pole"
 
@@ -1746,14 +1765,26 @@ msgstr "Upravit podrobnosti pro"
 msgid "Edit editorial final version"
 msgstr "Upravit vydavatelské konečné znění"
 
+msgid "Edit group"
+msgstr ""
+
 msgid "Edit meeting"
 msgstr "Upravit setkání"
 
-msgid "Edit name"
-msgstr "Upravit název"
+msgid "Edit moderation note"
+msgstr ""
+
+msgid "Edit point of order ..."
+msgstr ""
 
 msgid "Edit projector"
 msgstr "Upravit promítací přístroj"
+
+msgid "Edit queue"
+msgstr ""
+
+msgid "Edit state"
+msgstr ""
 
 msgid "Edit statute paragraph"
 msgstr "Upravit odstavec předpisu"
@@ -1770,6 +1801,12 @@ msgstr "Upravit pro zadání hlasů."
 msgid "Edit topic"
 msgstr "Upravit námět"
 
+msgid "Edit total time"
+msgstr ""
+
+msgid "Edit workflow"
+msgstr ""
+
 msgid "Editorial final version"
 msgstr "Vydavatelské konečné znění"
 
@@ -1781,6 +1818,9 @@ msgstr "Volební dokumenty"
 
 msgid "Elections"
 msgstr "Volby"
+
+msgid "Element"
+msgstr ""
 
 msgid "Email"
 msgstr "E-mail"
@@ -1815,6 +1855,9 @@ msgstr "Povolit elektronické hlasování"
 msgid "Enable forspeech / counter speech"
 msgstr "Povolit obhajobu/protiřeč"
 
+msgid "Enable interposed questions"
+msgstr ""
+
 msgid "Enable numbering for agenda items"
 msgstr "Povolit číslování bodů pořadu jednání"
 
@@ -1823,6 +1866,9 @@ msgstr "Povolit pohled na přítomnost účastníka"
 
 msgid "Enable point of order"
 msgstr "Povolit návrh jednacího řádu"
+
+msgid "Enable point of orders for other participants"
+msgstr ""
 
 msgid "Enable specifications and ranking for possible motions"
 msgstr "Povolit popis a řazení možných návrhů"
@@ -1933,6 +1979,9 @@ msgid "Enter your email to send the password reset link"
 msgstr ""
 "Zadejte svoji adresu elektronické pošty, kam se má poslat odkaz na obnovení "
 "hesla"
+
+msgid "Entitled present users"
+msgstr ""
 
 msgid "Entitled to vote"
 msgstr "Oprávněn hlasovat"
@@ -2116,12 +2165,6 @@ msgstr "Přeposlání vytvořeno"
 msgid "Forwarding of motion"
 msgstr "Postoupení návrhu"
 
-msgid "Forwardings"
-msgstr "Postoupení"
-
-msgid "Front page text"
-msgstr "Text na první straně"
-
 msgid "Front page title"
 msgstr "Název první strany"
 
@@ -2233,6 +2276,9 @@ msgstr "Nemá žádné řečníky"
 msgid "Has not logged in yet"
 msgstr "Ještě se nepřihlásil"
 
+msgid "Has not voted"
+msgstr ""
+
 msgid "Has notes"
 msgstr "Má poznámky"
 
@@ -2287,6 +2333,9 @@ msgstr "Nápomocný text k přístupovým údajům a pozdravné PDF"
 msgid "Hidden item"
 msgstr "Skrytý bod"
 
+msgid "Hide main menu"
+msgstr ""
+
 msgid "Hide more text"
 msgstr "Skrýt více textu"
 
@@ -2312,8 +2361,11 @@ msgid "I know the risk"
 msgstr "Znám nebezpečí"
 
 msgid ""
-"IMPORTANT: The sender address (noreply@openslides.com) is defined in the OpenSlides server settings and cannot be changed here. \n"
+"IMPORTANT: The sender address (noreply@openslides.com) is defined in the OpenSlides server settings and cannot be changed here.\n"
 "                            To receive replies you have to enter a reply address in the next field. Please test the email dispatch in case of changes!"
+msgstr ""
+
+msgid "Identical with"
 msgstr ""
 
 msgid "Identifier"
@@ -2328,6 +2380,9 @@ msgid ""
 msgstr ""
 "Pokud se jedná o pozměňovací návrh, můžete jeho obsah při úpravách zálohovat"
 " a následně smazat."
+
+msgid "If the value is set to 0 the time counts up as stopwatch."
+msgstr ""
 
 msgid "Import"
 msgstr "Zavést"
@@ -2415,6 +2470,15 @@ msgstr "Vnitřní bod"
 
 msgid "Internal login"
 msgstr "Vnitřní přihlášení"
+
+msgid "Interposed question"
+msgstr ""
+
+msgid "Intervention"
+msgstr ""
+
+msgid "Intervention speaking time in seconds"
+msgstr ""
 
 msgid "Invalid line number"
 msgstr "Neplatné číslo řádku"
@@ -2616,8 +2680,8 @@ msgstr "Číslování řádků"
 msgid "Line spacing"
 msgstr "Rozestupy mezi řádky"
 
-msgid "Linenumber"
-msgstr "Číslo řádku"
+msgid "List of amendments: "
+msgstr ""
 
 msgid "List of electronic votes"
 msgstr "Elektronická hlasování"
@@ -2642,10 +2706,6 @@ msgstr "Seznamy řečníků"
 
 msgid "Live conference"
 msgstr "Živé jednání"
-
-msgid "Live conference has to be active. Choose 0 to disable auto connect."
-msgstr ""
-"Musí být zapnuto živé jednání. Zvolte 0 pro vypnutí automatického připojení."
 
 msgid "Livestream"
 msgstr "Přímý přenos"
@@ -2682,6 +2742,9 @@ msgstr "Nejnižší hodnota pro potlesk"
 
 msgid "Main motion and line number"
 msgstr "Hlavní návrh a číslo řádku"
+
+msgid "Mandates switched sucessfully!"
+msgstr ""
 
 msgid "Mark as personal favorite"
 msgstr "Označit jako osobní oblíbený"
@@ -2768,6 +2831,12 @@ msgstr "Nejnižší počet hlasů"
 msgid "Minimum number of digits for motion identifier"
 msgstr "Nejmenší počet číslic v označovači návrhu"
 
+msgid "Moderation note"
+msgstr ""
+
+msgid "Modify design"
+msgstr "Změnit vnější úpravu"
+
 msgid "Module"
 msgstr "Modul"
 
@@ -2809,6 +2878,12 @@ msgstr "Návrh vytvořen (postoupen)"
 
 msgid "Motion deleted"
 msgstr "Návrh smazán"
+
+msgid "Motion editor"
+msgstr ""
+
+msgid "Motion editors"
+msgstr ""
 
 msgid "Motion forwarded to"
 msgstr "Návrh postoupen"
@@ -2873,9 +2948,6 @@ msgstr "Můj profil"
 msgid "Name"
 msgstr "Název"
 
-msgid "Name exceeds 256 characters"
-msgstr "Název přesahuje 256 znaků"
-
 msgid "Name of recommender"
 msgstr "Jméno doporučujícího"
 
@@ -2888,17 +2960,11 @@ msgstr "Název nové skupiny"
 msgid "Natural person"
 msgstr "Skutečná osoba"
 
-msgid "Needs review"
-msgstr "Potřebuje posoudit"
-
 msgid "Negative votes are not allowed."
 msgstr "Záporné hlasy nejsou povoleny."
 
 msgid "Never"
 msgstr "Nikdy"
-
-msgid "New Projector"
-msgstr "Nový promítací přístroj"
 
 msgid "New account"
 msgstr "Nový účet"
@@ -2915,11 +2981,17 @@ msgstr "Nová skupina"
 msgid "New change recommendation"
 msgstr "Nové doporučení změny"
 
+msgid "New chat group"
+msgstr ""
+
 msgid "New comment field"
 msgstr "Nové poznámkové pole"
 
 msgid "New committee"
 msgstr "Nový výbor"
+
+msgid "New design"
+msgstr "Nová vnější úprava"
 
 msgid "New directory"
 msgstr "Nový adresář"
@@ -2927,11 +2999,17 @@ msgstr "Nový adresář"
 msgid "New election"
 msgstr "Nová volba"
 
+msgid "New file"
+msgstr ""
+
 msgid "New file name"
 msgstr "Nový název souboru"
 
-msgid "New group name"
-msgstr "Název nové skupiny"
+msgid "New folder"
+msgstr ""
+
+msgid "New group"
+msgstr ""
 
 msgid "New meeting"
 msgstr "Nové setkání"
@@ -2950,6 +3028,9 @@ msgstr "Nový účastník"
 
 msgid "New password"
 msgstr "Nové heslo"
+
+msgid "New projector"
+msgstr ""
 
 msgid "New state"
 msgstr "Nový stav"
@@ -3002,14 +3083,8 @@ msgstr "Bez poznámky"
 msgid "No committee admin"
 msgstr "Žádný správce výboru"
 
-msgid "No concernment"
-msgstr "Neprobíráno"
-
 msgid "No data"
 msgstr "Žádná data"
-
-msgid "No decision"
-msgstr "Žádné rozhodnutí"
 
 msgid "No delegation of vote"
 msgstr "Žádné přenesení hlasování"
@@ -3044,6 +3119,9 @@ msgstr "Nebylo vybráno žádné setkání."
 msgid "No motion block set"
 msgstr "Nestanoven žádný návrhový blok"
 
+msgid "No motion editors"
+msgstr ""
+
 msgid "No one has voted for this poll"
 msgstr "V tomto hlasování nikdo nehlasoval"
 
@@ -3065,8 +3143,14 @@ msgstr ""
 msgid "No results yet."
 msgstr "Zatím žádné výsledky."
 
+msgid "No spokesperson"
+msgstr ""
+
 msgid "No statute paragraphs"
 msgstr "Žádné odstavce předpisu"
+
+msgid "No structure level"
+msgstr ""
 
 msgid "No tags"
 msgstr "Žádná klíčová slova"
@@ -3082,6 +3166,9 @@ msgstr "Seznam navržení"
 
 msgid "None"
 msgstr "Žádné"
+
+msgid "None of the selected motions can be forwarded."
+msgstr ""
 
 msgid "Not found"
 msgstr "Nenalezeno"
@@ -3179,9 +3266,6 @@ msgstr "Staré heslo"
 msgid "One email was send sucessfully."
 msgstr "Byl úspěšně odeslán jeden elektronický dopis."
 
-msgid "Only countdown"
-msgstr "Jen odpočítávání"
-
 msgid "Only for internal notes."
 msgstr "Jen pro vnitřní poznámky."
 
@@ -3190,6 +3274,9 @@ msgstr "Pouze hlavní body pořadu jednání"
 
 msgid "Only present participants can be added to the list of speakers"
 msgstr "Jen přítomní účastníci mohou být přidáni do seznamu řečníků"
+
+msgid "Only time"
+msgstr ""
 
 msgid "Only traffic light"
 msgstr "Jen dopravní světlo"
@@ -3388,6 +3475,21 @@ msgid ""
 "here."
 msgstr "Účastníci a správci jsou zcela zkopírováni a nelze je zde upravovat."
 
+msgid "Participants created"
+msgstr ""
+
+msgid "Participants skipped"
+msgstr ""
+
+msgid "Participants updated"
+msgstr ""
+
+msgid "Participants with errors"
+msgstr ""
+
+msgid "Participants with warnings: affected cells will be skipped"
+msgstr ""
+
 msgid "Particles"
 msgstr "Částice"
 
@@ -3406,14 +3508,11 @@ msgstr "Hesla se neshodují"
 msgid "Paste/write your topics in this textbox."
 msgstr "Kopírujte nebo vložte názvy vašich námětů do tohoto textového pole."
 
-msgid "Permission"
-msgstr "Oprávnění"
+msgid "Pause speech"
+msgstr ""
 
 msgid "Permissions"
 msgstr "Oprávnění"
-
-msgid "Permit"
-msgstr "Schválit"
 
 msgid "Personal data changed"
 msgstr "Osobní údaje změněny"
@@ -3442,9 +3541,6 @@ msgstr "Zadejte, prosím, název pro nový adresář:"
 msgid "Please enter a name for the new workflow:"
 msgstr "Zadejte, prosím, jméno pro nový pracovní postup:"
 
-msgid "Please enter a new workflow name:"
-msgstr "Zadejte, prosím, nový název pracovního postupu:"
-
 msgid "Please enter a valid email address!"
 msgstr "Zadejte, prosím, platnou adresu elektronické pošty!"
 
@@ -3454,7 +3550,10 @@ msgstr "Zadejte, prosím, své nové heslo"
 msgid "Please join the conference room now!"
 msgstr "Připojte se nyní do jednací místnosti!"
 
-msgid "Please select a vote weight bigger than zero."
+msgid "Please select a vote weight greater than or equal to 0.000001"
+msgstr ""
+
+msgid "Please select a vote weight greater than zero."
 msgstr ""
 
 msgid "Please select the directory:"
@@ -3476,6 +3575,9 @@ msgstr "Návrh jednacího řádu"
 
 msgid "Polls"
 msgstr "Hlasování"
+
+msgid "Possible options"
+msgstr ""
 
 msgid "Possible points of order"
 msgstr "Možné body pořadu jednání"
@@ -3530,6 +3632,12 @@ msgstr "Zpracování postupu"
 
 msgid "Project"
 msgstr "Promítat"
+
+msgid "Project active structure level"
+msgstr ""
+
+msgid "Project all structure levels"
+msgstr ""
 
 msgid "Project selection?"
 msgstr "Promítnout výběr?"
@@ -3603,6 +3711,9 @@ msgstr "Zdůvodnění"
 msgid "Reason required for creating new motion"
 msgstr "Důvod požadovaný pro vytvoření nového návrhu"
 
+msgid "Receipt of contributions"
+msgstr ""
+
 msgid "Receive motions"
 msgstr "Přijímat návrhy"
 
@@ -3621,6 +3732,11 @@ msgstr "Doporučení změněno"
 msgid "Recommendation label"
 msgstr "Štítek s doporučením"
 
+msgid ""
+"Recommendation of motions in such a state can only be seen by motion "
+"managers."
+msgstr ""
+
 msgid "Recommendation reset"
 msgstr "Obnoveno výchozí doporučení"
 
@@ -3629,12 +3745,6 @@ msgstr "Doporučení nastaveno na {}"
 
 msgid "Reenter to conference room"
 msgstr "Vstoupit znovu do jednací místnosti"
-
-msgid "Refer to committee"
-msgstr "Předat do výboru"
-
-msgid "Referral to committee"
-msgstr "Postoupení do výboru"
 
 msgid "Referring motions"
 msgstr "Vztahující se návrhy"
@@ -3645,20 +3755,14 @@ msgstr "Obnovit"
 msgid "Reject"
 msgstr "Odmítnout"
 
-msgid "Reject (not authorized)"
-msgstr "Odmítnout (není schváleno)"
-
 msgid "Rejected"
 msgstr "Odmítnuto"
 
-msgid "Rejection"
-msgstr "Odmítnutí"
-
-msgid "Rejection (not authorized)"
-msgstr "Odmítnutí (není schváleno)"
-
 msgid "Relevant information could not be accessed"
 msgstr "K příslušným informacím nebylo možné získat přístup"
+
+msgid "Reload page"
+msgstr ""
 
 msgid "Remove"
 msgstr "Odstranit"
@@ -3700,9 +3804,6 @@ msgstr "Odstranit mě"
 msgid "Remove option"
 msgstr "Odstranit možnost"
 
-msgid "Rename state"
-msgstr "Přejmenovat stav"
-
 msgid "Reopen"
 msgstr "Otevřít znovu"
 
@@ -3734,6 +3835,9 @@ msgstr ""
 msgid "Required permissions to view this page:"
 msgstr "Požadované oprávnění pro zobrazení této stránky:"
 
+msgid "Requires permission to manage lists of speakers"
+msgstr ""
+
 msgid "Reset"
 msgstr "Obnovit výchozí"
 
@@ -3755,9 +3859,6 @@ msgstr "Vynulovat stav"
 msgid "Reset to default settings"
 msgstr ""
 
-msgid "Reset your OpenSlides password"
-msgstr "Obnovení hesla k aplikaci OpenSlides"
-
 msgid "Resolution and size"
 msgstr "Rozlišení a velikost"
 
@@ -3772,6 +3873,9 @@ msgstr "Výsledek"
 
 msgid "Results"
 msgstr "Výsledky"
+
+msgid "Resume speech"
+msgstr ""
 
 msgid "Retrieving vote status... Please wait!"
 msgstr "Získává se stav hlasování ... Počkejte, prosím!"
@@ -3845,23 +3949,23 @@ msgstr "Vybrat"
 msgid "Select all"
 msgstr "Vybrat vše"
 
+msgid "Select exactly two participants to swap mandates"
+msgstr ""
+
 msgid "Select file"
 msgstr "Vybrat soubor"
 
 msgid "Select meetings ..."
 msgstr "Vybrat setkání..."
 
-msgid "Select or search new candidate ..."
-msgstr "Vybrat nebo hledat nového uchazeče..."
-
-msgid "Select or search new speaker ..."
-msgstr "Vybrat nebo hledat nového řečníka..."
-
-msgid "Select or search new submitter ..."
-msgstr "Vybrat nebo hledat nového předkladatele..."
-
 msgid "Select paragraphs"
 msgstr "Vybrat odstavce"
+
+msgid "Select participant"
+msgstr ""
+
+msgid "Select speaker"
+msgstr ""
 
 msgid "Send"
 msgstr "Poslat"
@@ -4037,6 +4141,9 @@ msgstr "Ukázat okno s živým jednáním"
 msgid "Show logo"
 msgstr "Ukázat emblém"
 
+msgid "Show main menu"
+msgstr ""
+
 msgid "Show meta information box beside the title on projector"
 msgstr "Ukázat okno s popisem vedle názvu na promítačce"
 
@@ -4061,6 +4168,9 @@ msgstr "Ukázat rozšiřující pole doporučení"
 
 msgid "Show recommendation on projector"
 msgstr "Ukázat doporučení na promítačce"
+
+msgid "Show recommendations not public"
+msgstr ""
 
 msgid "Show referring motions"
 msgstr "Ukázat odkazující návrhy"
@@ -4107,9 +4217,6 @@ msgid ""
 msgstr ""
 "Ukazuje daný obrázek jako částici potlesku. Doporučený formát obrázku: 24x24"
 " obrazových bodů (px), PNG, JPG nebo SVG"
-
-msgid "Simple Workflow"
-msgstr "Jednoduchý pracovní postup"
 
 msgid "Single Sign-On settings"
 msgstr "Nastavení jednotného přihlášení"
@@ -4163,11 +4270,20 @@ msgstr "Řečník"
 msgid "Speakers"
 msgstr "Řečníci"
 
-msgid "Speaking time"
-msgstr "Čas na mluvení"
+msgid "Speaking times"
+msgstr ""
 
-msgid "Staff"
-msgstr "Zaměstnanci"
+msgid "Speech start time"
+msgstr ""
+
+msgid "Speech type"
+msgstr ""
+
+msgid "Spokesperson"
+msgstr ""
+
+msgid "Spokespersons"
+msgstr ""
 
 msgid "Stalemate! It's a draw!"
 msgstr ""
@@ -4177,6 +4293,9 @@ msgstr ""
 
 msgid "Start date"
 msgstr "Začáteční datum"
+
+msgid "Start line number"
+msgstr ""
 
 msgid "Start time"
 msgstr "Začáteční čas"
@@ -4231,6 +4350,9 @@ msgstr "Přeškrtnutí"
 
 msgid "Structure level"
 msgstr "Úroveň rozčlenění"
+
+msgid "Structure levels"
+msgstr ""
 
 msgid "Subcategory"
 msgstr "Podskupina"
@@ -4304,6 +4426,12 @@ msgstr "Podporovatelé změněni"
 msgid "Surname"
 msgstr "Příjmení"
 
+msgid "Swap mandates ..."
+msgstr ""
+
+msgid "Switch"
+msgstr ""
+
 msgid "Table of contents"
 msgstr "Obsah"
 
@@ -4327,6 +4455,9 @@ msgstr "Oddělovač textu"
 
 msgid "The account is deactivated."
 msgstr "Účet je vypnut."
+
+msgid "The affected columns will not be imported."
+msgstr ""
 
 msgid "The assembly may decide:"
 msgstr "Shromáždění se může usnést:"
@@ -4545,13 +4676,15 @@ msgstr ""
 "srovnávacích promítaček se automaticky nastaví na viditelné. Opravdu to "
 "chcete udělat?"
 
-msgid "This row will not be imported, due to an unknown reason."
-msgstr ""
-
 msgid ""
 "This will add or remove the following groups for all selected participants:"
 msgstr ""
 "Toto přidá nebo odstraní následující skupiny pro všechny vybrané účastníky:"
+
+msgid ""
+"This will add or remove the following structure levels for all selected "
+"participants:"
+msgstr ""
 
 msgid ""
 "This will add or remove the following submitters for all selected motions:"
@@ -4622,6 +4755,15 @@ msgstr "Dlaždicové zobrazení"
 msgid "Time"
 msgstr "Čas"
 
+msgid "Time and traffic light"
+msgstr ""
+
+msgid "Timer"
+msgstr ""
+
+msgid "Timers"
+msgstr ""
+
 msgid "Timestamp"
 msgstr "Časové razítko"
 
@@ -4670,6 +4812,15 @@ msgstr ""
 msgid "Total accounts"
 msgstr ""
 
+msgid "Total committees"
+msgstr ""
+
+msgid "Total participants"
+msgstr ""
+
+msgid "Total time"
+msgstr ""
+
 msgid "Total topics"
 msgstr ""
 
@@ -4687,9 +4838,6 @@ msgstr "Řešení potíží"
 
 msgid "Try reconnect"
 msgstr "Zkuste se znovu připojit"
-
-msgid "Type"
-msgstr "Typ"
 
 msgid "Underline"
 msgstr "Podtržení"
@@ -4712,9 +4860,6 @@ msgstr "Stáhnout podporu"
 msgid "Upload"
 msgstr "Nahrát"
 
-msgid "Upload files"
-msgstr "Nahrát soubory"
-
 msgid "Upload to"
 msgstr "Nahrát do"
 
@@ -4724,6 +4869,9 @@ msgid ""
 msgstr ""
 "Použijte strukturu JSON klíč:hodnota (klíč = název atributu OpenSlides, "
 "hodnota = název atributu IdP)."
+
+msgid "Use color"
+msgstr ""
 
 msgid "Use the following custom number"
 msgstr "Použít následující uživatelsky stanovený počet"
@@ -4748,6 +4896,9 @@ msgstr "Uživatel nenalezen."
 
 msgid "Username"
 msgstr "Uživatelské jméno"
+
+msgid "Username may not contain spaces"
+msgstr ""
 
 msgid "Username or password is incorrect."
 msgstr "Uživatelské jméno nebo heslo není správné."
@@ -4782,6 +4933,9 @@ msgstr ""
 msgid "Vote"
 msgstr "Hlasování"
 
+msgid "Vote submitted"
+msgstr ""
+
 msgid "Vote weight"
 msgstr "Vážení hlasů"
 
@@ -4790,9 +4944,6 @@ msgstr "Hlasováno"
 
 msgid "Votes"
 msgstr "Hlasy"
-
-msgid "Voting"
-msgstr "Hlasování"
 
 msgid "Voting and ballot papers"
 msgstr "Hlasování a hlasovací lístky"
@@ -4884,6 +5035,16 @@ msgstr ""
 
 msgid "Warn color"
 msgstr "Výstražná barva"
+
+msgid ""
+"Warning: Amendments exist for at least one of the selected motions. Are you "
+"sure you want to delete these motions regardless?"
+msgstr ""
+
+msgid ""
+"Warning: Amendments exist for this motion. Are you sure you want to delete "
+"this motion regardless?"
+msgstr ""
 
 msgid ""
 "Warning: Amendments exist for this motion. Editing this text will likely "
@@ -4989,20 +5150,8 @@ msgstr "Nemáte povoleno zobrazit přímý přenos."
 msgid "You are not supposed to be here..."
 msgstr "Nemáte tu být..."
 
-msgid ""
-"You are receiving this email because you have requested a new password for your OpenSlides-account.\n"
-"\n"
-"Please open the following link and choose a new password:\n"
-"{url}/login/forget-password-confirm?user_id={user_id}&token={token}\n"
-"\n"
-"For completeness your username: {username}"
+msgid "You are using an incompatible client version."
 msgstr ""
-"Tento elektronický dopis jste obdrželi, protože jste požádali o nové heslo pro svůj účet OpenSlides.\n"
-"\n"
-"Otevřete, prosím, následující odkaz a zvolte si nové heslo:\n"
-"{url}/login/forget-password-confirm?user_id={user_id}&token={token}\n"
-"\n"
-"Pro úplnost vaše uživatelské jméno: {username}"
 
 msgid ""
 "You are using the history mode of OpenSlides. Changes will not be saved."
@@ -5149,14 +5298,8 @@ msgstr "[Začít řeč] spustí odpočítávání, [Ukončit řeč] zastaví odp
 msgid "[Place for your welcome and help text.]"
 msgstr "[Místo pro váš uvítací a nápomocný text.]"
 
-msgid "[Place for your welcome text.]"
-msgstr "[Místo pro váš uvítací text.]"
-
 msgid "absent"
 msgstr "Nepřítomen"
-
-msgid "accepted"
-msgstr "přijato"
 
 msgid "account-example"
 msgstr "Příklad účtu"
@@ -5166,9 +5309,6 @@ msgstr "Činný"
 
 msgid "add group(s)"
 msgstr "Přidat skupinu(y)"
-
-msgid "adjourned"
-msgstr "odloženo"
 
 msgid "already exists"
 msgstr "již existuje"
@@ -5208,12 +5348,6 @@ msgstr "Žádost o slovo"
 
 msgid "could not be created"
 msgstr "se nepodařilo vytvořit"
-
-msgid "could not be defined"
-msgstr "se nepodařilo stanovit"
-
-msgid "could not be referenced"
-msgstr "se nepodařilo dkazovat"
 
 msgid "created"
 msgstr "vytvořeno"
@@ -5281,14 +5415,8 @@ msgstr "uložil svoji práci na tomto návrhu."
 msgid "have been created"
 msgstr "byl vytvořen"
 
-msgid "have been referenced"
-msgstr "byl odkazován"
-
 msgid "hidden"
 msgstr "skryto"
-
-msgid "in progress"
-msgstr "probíhá"
 
 msgid "inactive"
 msgstr "Nečinný"
@@ -5347,14 +5475,8 @@ msgstr "Návrhy"
 msgid "move ..."
 msgstr "přesunout ..."
 
-msgid "name"
-msgstr "název"
-
 msgid "natural person"
 msgstr "skutečná osoba"
-
-msgid "needs review"
-msgstr "potřeba posouzení"
 
 msgid "no natural person"
 msgstr "žádná skutečná osoba"
@@ -5371,11 +5493,8 @@ msgstr "nejmenovité"
 msgid "none"
 msgstr "žádné"
 
-msgid "not concerned"
-msgstr "neprobíráno"
-
-msgid "not decided"
-msgstr "nerozhodnuto"
+msgid "not specified"
+msgstr ""
 
 msgid "of"
 msgstr "z"
@@ -5398,9 +5517,6 @@ msgstr "účastníci"
 msgid "participants-example"
 msgstr "Příklad účastníků"
 
-msgid "permitted"
-msgstr "schváleno"
-
 msgid "present"
 msgstr "Přítomen"
 
@@ -5412,15 +5528,6 @@ msgstr "zveřejněno"
 
 msgid "red"
 msgstr "červená"
-
-msgid "referred to committee"
-msgstr "předáno do výboru"
-
-msgid "rejected"
-msgstr "odmítnuto"
-
-msgid "rejected (not authorized)"
-msgstr "odmítnuto (není schváleno)"
 
 msgid "remove"
 msgstr ""
@@ -5446,9 +5553,6 @@ msgstr "započato"
 msgid "stopped"
 msgstr "zastaveno"
 
-msgid "submitted"
-msgstr "podáno"
-
 msgid "successfully forwarded"
 msgstr "úspěšně postoupen"
 
@@ -5464,9 +5568,6 @@ msgstr "dnes"
 msgid "undocumented"
 msgstr "nedokumentováno"
 
-msgid "unknown"
-msgstr "neznámý"
-
 msgid "updated"
 msgstr "aktualizováno"
 
@@ -5479,20 +5580,139 @@ msgstr "hlasů na uchazeče"
 msgid "will be created"
 msgstr "bude vytvořen"
 
-msgid "will be defined"
-msgstr "bude stanoven"
-
 msgid "will be imported"
 msgstr "bude zaveden"
-
-msgid "will be referenced"
-msgstr "bude odkazován"
 
 msgid "will be updated"
 msgstr ""
 
-msgid "withdrawn"
-msgstr "stažen"
-
 msgid "yellow"
 msgstr "žlutá"
+
+msgid "{{amount}} interposed questions will be cleared"
+msgstr ""
+
+msgid "{{amount}} of them will be saved with 'unknown' speaker"
+msgstr ""
+
+msgid "{{amount}} will be saved"
+msgstr ""
+
+msgid "Acceptance"
+msgstr "Souhlas"
+
+msgid "Adjournment"
+msgstr "Odložení"
+
+msgid "Admin"
+msgstr "Správce"
+
+msgid "Complex Workflow"
+msgstr "Složitý pracovní postup"
+
+msgid ""
+"Dear {name},\n"
+"\n"
+"this is your personal OpenSlides login:\n"
+"\n"
+"{url}\n"
+"Username: {username}\n"
+"Password: {password}\n"
+"\n"
+"\n"
+"This email was generated automatically."
+msgstr ""
+"Můj milý/Moje milá {jméno},\n"
+"\n"
+"toto je vaše osobní přihlášení do OpenSlides:\n"
+"\n"
+"{url}\n"
+"Uživatelské jméno: {username}\n"
+"Heslo: {heslo}\n"
+"\n"
+"\n"
+"Tento e-mail byl vytvořen automaticky."
+
+msgid "Default projector"
+msgstr "Výchozí promítací přístroj"
+
+msgid "Delegates"
+msgstr "Zástupci"
+
+msgid "No concernment"
+msgstr "Neprobíráno"
+
+msgid "No decision"
+msgstr "Žádné rozhodnutí"
+
+msgid "Presentation and assembly system"
+msgstr ""
+
+msgid "Referral to"
+msgstr ""
+
+msgid "Rejection"
+msgstr "Odmítnutí"
+
+msgid "Reset your OpenSlides password"
+msgstr ""
+
+msgid "Simple Workflow"
+msgstr "Jednoduchý pracovní postup"
+
+msgid "Space for your welcome text."
+msgstr ""
+
+msgid "Speaking time"
+msgstr "Čas na mluvení"
+
+msgid "Staff"
+msgstr "Zaměstnanci"
+
+msgid "Voting"
+msgstr "Hlasování"
+
+msgid ""
+"You are receiving this email because you have requested a new password for your OpenSlides account.\n"
+"\n"
+"Please open the following link and choose a new password:\n"
+"{url}/login/forget-password-confirm?user_id={user_id}&token={token}\n"
+"\n"
+"The link will be valid for 10 minutes."
+msgstr ""
+
+msgid "accepted"
+msgstr "přijato"
+
+msgid "adjourned"
+msgstr "odloženo"
+
+msgid "in progress"
+msgstr "probíhá"
+
+msgid "name"
+msgstr ""
+
+msgid "not concerned"
+msgstr "neprobíráno"
+
+msgid "not decided"
+msgstr "nerozhodnuto"
+
+msgid "not permitted"
+msgstr ""
+
+msgid "permitted"
+msgstr "schváleno"
+
+msgid "referred to"
+msgstr ""
+
+msgid "rejected"
+msgstr "odmítnuto"
+
+msgid "submitted"
+msgstr "podáno"
+
+msgid "withdrawn"
+msgstr "stažen"
