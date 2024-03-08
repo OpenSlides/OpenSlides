@@ -39,9 +39,6 @@ msgstr ""
 msgid "A client error occurred. Please contact your system administrator."
 msgstr ""
 
-msgid "A color is required"
-msgstr ""
-
 msgid "A conference is already running in your OpenSlides session."
 msgstr ""
 
@@ -128,6 +125,12 @@ msgstr ""
 msgid "Activate statute amendments"
 msgstr ""
 
+msgid "Activate the selection field 'motion editor'"
+msgstr ""
+
+msgid "Activate the selection field 'spokesman'"
+msgstr ""
+
 msgid "Activate vote delegations"
 msgstr ""
 
@@ -174,9 +177,6 @@ msgstr ""
 msgid "Add"
 msgstr ""
 
-msgid "Add countdown"
-msgstr ""
-
 msgid "Add me"
 msgstr ""
 
@@ -190,6 +190,9 @@ msgid "Add new entry"
 msgstr ""
 
 msgid "Add option"
+msgstr ""
+
+msgid "Add timer"
 msgstr ""
 
 msgid "Add to agenda"
@@ -262,6 +265,9 @@ msgstr ""
 msgid "All other fields are optional and may be empty."
 msgstr ""
 
+msgid "All present entitled users"
+msgstr ""
+
 msgid "All structure levels"
 msgstr ""
 
@@ -284,6 +290,9 @@ msgid "Allow create poll"
 msgstr ""
 
 msgid "Allow forwarding of motions"
+msgstr ""
+
+msgid "Allow one participant multiple times on the same list"
 msgstr ""
 
 msgid ""
@@ -1327,18 +1336,6 @@ msgstr ""
 msgid "Countdown"
 msgstr ""
 
-msgid "Countdown and traffic light"
-msgstr ""
-
-msgid "Countdown description"
-msgstr ""
-
-msgid "Countdown time"
-msgstr ""
-
-msgid "Countdown title"
-msgstr ""
-
 msgid "Countdowns"
 msgstr ""
 
@@ -1445,9 +1442,6 @@ msgid "Default line numbering"
 msgstr ""
 
 msgid "Default speaking time for structure levels in seconds"
-msgstr ""
-
-msgid "Default structure level"
 msgstr ""
 
 msgid ""
@@ -1672,6 +1666,9 @@ msgstr ""
 msgid "Edit moderation note"
 msgstr ""
 
+msgid "Edit point of order ..."
+msgstr ""
+
 msgid "Edit projector"
 msgstr ""
 
@@ -1762,6 +1759,9 @@ msgstr ""
 msgid "Enable point of order"
 msgstr ""
 
+msgid "Enable point of orders for other participants"
+msgstr ""
+
 msgid "Enable specifications and ranking for possible motions"
 msgstr ""
 
@@ -1850,6 +1850,9 @@ msgid "Enter the developer mode"
 msgstr ""
 
 msgid "Enter your email to send the password reset link"
+msgstr ""
+
+msgid "Entitled present users"
 msgstr ""
 
 msgid "Entitled to vote"
@@ -2139,6 +2142,9 @@ msgstr ""
 msgid "Has not logged in yet"
 msgstr ""
 
+msgid "Has not voted"
+msgstr ""
+
 msgid "Has notes"
 msgstr ""
 
@@ -2227,6 +2233,9 @@ msgid ""
 "address in the next field. Please test the email dispatch in case of changes!"
 msgstr ""
 
+msgid "Identical with"
+msgstr ""
+
 msgid "Identifier"
 msgstr ""
 
@@ -2236,6 +2245,9 @@ msgstr ""
 msgid ""
 "If it is an amendment, you can back up its content when editing it and "
 "delete it afterwards."
+msgstr ""
+
+msgid "If the value is set to 0 the time counts up as stopwatch."
 msgstr ""
 
 msgid "Import"
@@ -2592,6 +2604,9 @@ msgstr ""
 msgid "Main motion and line number"
 msgstr ""
 
+msgid "Mandates switched sucessfully!"
+msgstr ""
+
 msgid "Mark as personal favorite"
 msgstr ""
 
@@ -2721,6 +2736,12 @@ msgid "Motion created (forwarded)"
 msgstr ""
 
 msgid "Motion deleted"
+msgstr ""
+
+msgid "Motion editor"
+msgstr ""
+
+msgid "Motion editors"
 msgstr ""
 
 msgid "Motion forwarded to"
@@ -2957,6 +2978,9 @@ msgstr ""
 msgid "No motion block set"
 msgstr ""
 
+msgid "No motion editors"
+msgstr ""
+
 msgid "No one has voted for this poll"
 msgstr ""
 
@@ -2978,7 +3002,13 @@ msgstr ""
 msgid "No results yet."
 msgstr ""
 
+msgid "No spokesperson"
+msgstr ""
+
 msgid "No statute paragraphs"
+msgstr ""
+
+msgid "No structure level"
 msgstr ""
 
 msgid "No tags"
@@ -3092,9 +3122,6 @@ msgstr ""
 msgid "One email was send sucessfully."
 msgstr ""
 
-msgid "Only countdown"
-msgstr ""
-
 msgid "Only for internal notes."
 msgstr ""
 
@@ -3102,6 +3129,9 @@ msgid "Only main agenda items"
 msgstr ""
 
 msgid "Only present participants can be added to the list of speakers"
+msgstr ""
+
+msgid "Only time"
 msgstr ""
 
 msgid "Only traffic light"
@@ -3555,6 +3585,11 @@ msgstr ""
 msgid "Recommendation label"
 msgstr ""
 
+msgid ""
+"Recommendation of motions in such a state can only be seen by motion "
+"managers."
+msgstr ""
+
 msgid "Recommendation reset"
 msgstr ""
 
@@ -3577,6 +3612,9 @@ msgid "Rejected"
 msgstr ""
 
 msgid "Relevant information could not be accessed"
+msgstr ""
+
+msgid "Reload page"
 msgstr ""
 
 msgid "Remove"
@@ -3644,6 +3682,9 @@ msgid ""
 msgstr ""
 
 msgid "Required permissions to view this page:"
+msgstr ""
+
+msgid "Requires permission to manage lists of speakers"
 msgstr ""
 
 msgid "Reset"
@@ -3757,22 +3798,19 @@ msgstr ""
 msgid "Select all"
 msgstr ""
 
+msgid "Select exactly two participants to swap mandates"
+msgstr ""
+
 msgid "Select file"
 msgstr ""
 
 msgid "Select meetings ..."
 msgstr ""
 
-msgid "Select or search new candidate ..."
-msgstr ""
-
-msgid "Select or search new speaker ..."
-msgstr ""
-
-msgid "Select or search new submitter ..."
-msgstr ""
-
 msgid "Select paragraphs"
+msgstr ""
+
+msgid "Select participant"
 msgstr ""
 
 msgid "Select speaker"
@@ -3979,6 +4017,9 @@ msgstr ""
 msgid "Show recommendation on projector"
 msgstr ""
 
+msgid "Show recommendations not public"
+msgstr ""
+
 msgid "Show referring motions"
 msgstr ""
 
@@ -4062,9 +4103,6 @@ msgstr ""
 msgid "Sort workflow"
 msgstr ""
 
-msgid "Speak end time"
-msgstr ""
-
 msgid "Speaker"
 msgstr ""
 
@@ -4074,7 +4112,16 @@ msgstr ""
 msgid "Speaking times"
 msgstr ""
 
+msgid "Speech start time"
+msgstr ""
+
 msgid "Speech type"
+msgstr ""
+
+msgid "Spokesperson"
+msgstr ""
+
+msgid "Spokespersons"
 msgstr ""
 
 msgid "Stalemate! It's a draw!"
@@ -4216,6 +4263,12 @@ msgid "Supporters changed"
 msgstr ""
 
 msgid "Surname"
+msgstr ""
+
+msgid "Swap mandates ..."
+msgstr ""
+
+msgid "Switch"
 msgstr ""
 
 msgid "Table of contents"
@@ -4511,6 +4564,15 @@ msgid "Tile view"
 msgstr ""
 
 msgid "Time"
+msgstr ""
+
+msgid "Time and traffic light"
+msgstr ""
+
+msgid "Timer"
+msgstr ""
+
+msgid "Timers"
 msgstr ""
 
 msgid "Timestamp"
@@ -4878,6 +4940,9 @@ msgid "You are not allowed to see the livestream"
 msgstr ""
 
 msgid "You are not supposed to be here..."
+msgstr ""
+
+msgid "You are using an incompatible client version."
 msgstr ""
 
 msgid ""
