@@ -128,7 +128,7 @@ msgstr ""
 msgid "Activate the selection field 'motion editor'"
 msgstr ""
 
-msgid "Activate the selection field 'spokesman'"
+msgid "Activate the selection field 'spokesperson'"
 msgstr ""
 
 msgid "Activate vote delegations"
@@ -377,6 +377,9 @@ msgid "Applause particle image URL"
 msgstr ""
 
 msgid "Applause visualization"
+msgstr ""
+
+msgid "Application update in progress."
 msgstr ""
 
 msgid "Apply"
@@ -1518,9 +1521,7 @@ msgstr ""
 msgid "Deleted user"
 msgstr ""
 
-msgid ""
-"Deleting this motion will likely impact it's amendments negatively and they "
-"could become unusable."
+msgid "Deleting this motion will also delete the amendments."
 msgstr ""
 
 msgid "Deletion"
@@ -4836,11 +4837,6 @@ msgid "Warn color"
 msgstr ""
 
 msgid ""
-"Warning: Amendments exist for at least one of the selected motions. Are you "
-"sure you want to delete these motions regardless?"
-msgstr ""
-
-msgid ""
 "Warning: Amendments exist for this motion. Are you sure you want to delete "
 "this motion regardless?"
 msgstr ""
@@ -4849,6 +4845,11 @@ msgid ""
 "Warning: Amendments exist for this motion. Editing this text will likely "
 "impact them negatively. Particularily, amendments might become unusable if "
 "the paragraph they affect is deleted."
+msgstr ""
+
+msgid ""
+"Warning: At least one of the selected motions has amendments, these will be "
+"deleted as well. Do you want to delete anyway?"
 msgstr ""
 
 msgid "Warning: This projector will be set to visible"
