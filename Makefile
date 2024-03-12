@@ -36,6 +36,14 @@ switch-to-dev:
 run-backend: | switch-to-test
 	$(DC) exec backend ./entrypoint.sh bash --rcfile .bashrc
 
+# Stop all backend-related services so that the backend dev setup can start
+stop-backend:
+	$(DC) stop backend datastore-reader datastore-writer auth vote postgres redis icc autoupdate search
+
+# Restart all backend-related services
+start-backend:
+	$(DC) up -d backend datastore-reader datastore-writer auth vote postgres redis icc autoupdate search
+
 # Stop the dev server
 stop-dev:
 	$(DC) down --volumes --remove-orphans
