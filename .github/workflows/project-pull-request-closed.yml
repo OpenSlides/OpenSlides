@@ -1,0 +1,14 @@
+name: Project automation
+on:
+  pull_request_target:
+    types:
+      - closed
+
+jobs:
+  pull_request_closed:
+    name: Pull request closed
+    uses: ./.github/workflows/project-automation.yml
+    secrets: inherit
+    with:
+      resource_node_id: ${{ github.event.pull_request.node_id }}
+      status_value: "Done"

@@ -23,16 +23,17 @@ services:
     volumes:
       - ../../openslides-datastore-service/datastore:/app/datastore
       - ../../openslides-datastore-service/cli:/app/cli
+      - ../../openslides-backend/global/data:/app/data
     environment:
       - COMMAND=create_initial_data
-      - DATASTORE_INITIAL_DATA_FILE=https://raw.githubusercontent.com/OpenSlides/openslides-backend/main/global/data/example-data.json
+      - DATASTORE_INITIAL_DATA_FILE=/app/data/example-data.json
       - OPENSLIDES_DEVELOPMENT=1
     ports:
       - 9011:9011
       - 5679:5678
 
   postgres:
-    image: postgres:11
+    image: postgres:15
     environment:
       - POSTGRES_USER=openslides
       - POSTGRES_PASSWORD=openslides
@@ -107,6 +108,21 @@ services:
     ports:
       - "9007:9007"
 
+  search:
+    image: openslides-search-dev
+    depends_on:
+      - autoupdate
+      - backend
+      - postgres
+    env_file: services.env
+    environment:
+      - OPENSLIDES_DEVELOPMENT=1
+    volumes:
+      - ../../openslides-search-service/cmd:/root/cmd
+      - ../../openslides-search-service/pkg:/root/pkg
+    ports:
+      - "9050:9050"
+
   auth:
     image: openslides-auth-dev
     depends_on:
@@ -143,7 +159,7 @@ services:
       - "9008:9008"
 
   redis:
-    image: redis:latest
+    image: redis:alpine
     ports:
       - "6379:6379"
 

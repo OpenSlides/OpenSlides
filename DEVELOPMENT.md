@@ -19,7 +19,7 @@ After cloning you need to initialize all submodules:
 Finally, start the development server:
 
     $ make run-dev
-    
+
 (This command won't run without sudo, or without having set up Docker to run without sudo - see their documentation)
 
 You can access the services independently using their corresponding ports
@@ -30,6 +30,59 @@ or access the full stack on
 ## Running tests
 
 To run all tests of all services, execute `run-service-tests`.
+
+## Translations
+
+Since multiple services (currently: client and backend) make use of translation files, the
+functionality for this is bundled in this repository. The following make commands are available:
+
+-   `make extract-translations`: Extracts all strings which need translations from all services and
+    merges them together into a single `template-en-pot`, which is placed under `i18n/`. You must
+    run `make run-dev` in another terminal before you can execute this command.
+-   `make push-translations`: Push the current template file under `i18n/template-en.pot` to Transifex
+    to allow translating it there.
+-   `make pull-translations`: Pull the translations in all languages available in the client from
+    Transifex and place them in `i18n/`. Copy them into the respective translation folders of all
+    required services.
+
+### Setting up Transifex
+
+The use of the latter two commands requires you to set up the [Transifex
+CLI](https://developers.transifex.com/docs/cli). Following is a short installation manual for
+version 1.6.6, which may or may not work for future versions. If in doubt, consult the Transifex
+docs.
+
+Execute the following command:
+
+```bash
+curl -o- https://raw.githubusercontent.com/transifex/cli/master/install.sh | bash -s -- v1.6.6
+```
+
+To identify to Transifex with the CLI, you have to provide a `.transifexrc` file in your home path:
+
+```
+[https://www.transifex.com]
+rest_hostname = https://rest.api.transifex.com
+token         = API_TOKEN_HERE
+```
+
+Replace `API_TOKEN_HERE` with your API token, which you can generate under
+https://app.transifex.com/user/settings/api/. Now you should be able to execute the commands above.
+
+### Translation workflow
+
+1. After you made some changes, run `make extract-translations` to update the template file.
+1. Run `make push-translations` to push your changes to Transifex.
+1. Translate the new strings on Transifex.
+1. When you are done, run `make pull-translations` to fetch the new translation files.
+1. Create a pull request in all affected repositories.
+
+### Adding new languages
+
+`make pull-translations` only pulls the translation files which are available in the client by
+calling `npm run get-available-translations` inside the client container. If you want to add a new
+language, you must also change the list of available languages in the client to make it available to
+pull via these scripts.
 
 ## Adding a new Service
 
@@ -76,28 +129,28 @@ The output should be similar to
 
 These environment variables are available:
 
-- `<SERVICE>_HOST`: The host from a required service
-- `<SERVICE>_PORT`: The port from a required service
+-   `<SERVICE>_HOST`: The host from a required service
+-   `<SERVICE>_PORT`: The port from a required service
 
 Required services can be `MESSAGE_BUS`, `DATASTORE_WRITER`, `PERMISSION`, `AUTOUPDATE`,
 etc. For private services (e.g. a database dedicated to exactly one service),
 use the following syntax: `<SERVICE>_<PRIV_SERVICE>_<ATTRIBUTE>`, e.g. the
-database user for the datastore: `DATASTORE_DATABASE_USER`.
+database user for the media-service: `MEDIA_DATABASE_USER`.
 
 ### Makefile
 
 A makefile must be provided at the root-level of the service. The currently
 required (phony) targets are:
 
-- `run-tests`: Execute all tests from the submodule
-- `build-dev`: Build an image with the tag `openslides-<service>-dev`
+-   `run-tests`: Execute all tests from the submodule
+-   `build-dev`: Build an image with the tag `openslides-<service>-dev`
 
 ### Build arguments in the Dockerfile
 
 These build arguments should be supported by every service:
 
-- `REPOSITORY_URL`: The git-url for the repository to use
-- `GIT_CHECKOUT`: A branch/tag/commit to check out during the build
+-   `REPOSITORY_URL`: The git-url for the repository to use
+-   `GIT_CHECKOUT`: A branch/tag/commit to check out during the build
 
 Note that meaningful defaults should be provided in the Dockerfile.
 

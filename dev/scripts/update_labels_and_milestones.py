@@ -11,6 +11,8 @@ repos = [
     "openslides-icc-service",
     "openslides-manage-service",
     "openslides-media-service",
+    "openslides-meta",
+    "openslides-proxy",
     "openslides-search-service",
     "openslides-vote-service",
     "vote-decrypt",
@@ -75,6 +77,7 @@ labels = {
         {
             "name": "needs investigation",
             "color": "e99695",
+            "description": "The cause for a bug is not clear enough, so it has to be investigated for some time",
         },
         {
             "name": "performance",
@@ -111,17 +114,37 @@ labels = {
             "name": "question",
             "color": "c5def5",
         },
+        {
+            "name": "staging update",
+            "color": "1dfdb6",
+        },
+    ],
+    "openslides-autoupdate-service": [
+        {
+            "name": "experiment",
+            "color": "ae268f",
+        },
     ],
     "openslides-backend": [
         {
             "name": "migration",
             "color": "a046d0",
+            "description": "Introduces a new migration",
+        },
+        {
+            "name": "translation",
+            "color": "c5def5",
         },
     ],
     "openslides-client": [
         {
             "name": "delete test instance",
             "color": "56ee0a",
+        },
+        {
+            "name": "desktop",
+            "color": "fc3b8f",
+            "description": "size > 960px",
         },
         {
             "name": "difficulty: easy",
@@ -140,8 +163,19 @@ labels = {
             "color": "56ee0a",
         },
         {
+            "name": "phone",
+            "color": "fc3b8f",
+            "description": "size <=700px",
+        },
+        {
             "name": "Safari/iOS",
             "color": "ffaaff",
+            "description": "This issue involves apple devices",
+        },
+        {
+            "name": "tablet", 
+            "color": "fc3b8f",
+            "description": "size <=960px; >700px",
         },
         {
             "name": "test instance active",
@@ -150,14 +184,18 @@ labels = {
         {
             "name": "translation",
             "color": "c5def5",
+            "description": "Collection of issues related to translation",
+        },
+        {
+            "name": "ui",
+            "color": "d943ae",
         },
     ],
 }
-milestones = ["4.1", "4.x"]
+milestones = ["4.2", "4.3", "4.x"]
 
 token = input("GitHub token: ")
 g = Github(token)
-
 
 for repo_name in repos:
     print(repo_name)
@@ -165,31 +203,23 @@ for repo_name in repos:
     existing_labels = repo.get_labels()
     target_labels = labels["general"] + labels.get(repo_name, [])
     for label in existing_labels:
-        issues = repo.get_issues(state="open", labels=[label])
         duplicates = [l for l in target_labels if l["name"] == label.name]
         if not duplicates:
-            if issues.totalCount == 0:
+            if repo.get_issues(state="open", labels=[label]).totalCount == 0:
                 label.delete()
             else:
                 print(f"Label {label.name} in repo {repo_name} is in use!")
         else:
+            target_label = duplicates[0]
             if (
-                duplicates[0]["color"] != label.color or
-                (isinstance(label.description, str) and duplicates[0].get("description") != label.description) or
-                (not isinstance(label.description, str) and duplicates[0].get("description"))
+                target_label["color"] != label.color or
+                (label.description or "") != target_label.get("description", "")
             ):
-                if "description" in duplicates[0]:
-                    label.edit(duplicates[0]["name"], duplicates[0]["color"], duplicates[0]["description"])
-                else:
-                    label.edit(duplicates[0]["name"], duplicates[0]["color"])
+                label.edit(**target_label)
     for label in target_labels:
         if label["name"] not in [l.name for l in existing_labels]:
-            if "description" in label:
-                repo.create_label(label["name"], label["color"], label["description"])
-            else:
-                repo.create_label(label["name"], label["color"])
+            repo.create_label(**label)
+    existing_milestones = {milestone.title for milestone in repo.get_milestones()}
     for milestone in milestones:
-        try:
+        if milestone not in existing_milestones:
             repo.create_milestone(milestone)
-        except:
-            print(f"Milestone {milestone} in repo {repo_name} already exists!")

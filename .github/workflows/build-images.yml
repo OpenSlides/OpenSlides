@@ -1,0 +1,81 @@
+---
+name: Build Docker images for all OpenSlides services
+on:
+  push:
+    branches:
+      - main
+      - stable/4*
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Builds Docker images
+    outputs:
+      openslides-version: ${{ steps.readversion.outputs.version }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service:
+          - name: proxy
+          - name: client
+          - name: backend
+          - name: datastore-reader
+          - name: datastore-writer
+          - name: autoupdate
+          - name: auth
+          - name: search
+          - name: vote
+          - name: icc
+          - name: media
+          - name: manage
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+
+      - name: Read version
+        id: readversion
+        run: echo "version=$(cat VERSION)" >> "$GITHUB_OUTPUT"
+
+      - name: Log into registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" |
+          docker login ghcr.io --username ${{ github.actor }} --password-stdin
+
+      - name: Build and push image
+        run: |
+          DOCKER_REPO=ghcr.io/${{ github.repository }}
+          # Change all uppercase to lowercase
+          DOCKER_REPO=$(echo $DOCKER_REPO | tr '[A-Z]' '[a-z]')
+
+          # Build and push with tag determined by build.sh
+          IMAGE_NAME_VERSIONED=$(./dev/docker/build.sh -D $DOCKER_REPO           --images ${{ matrix.service.name }})
+          IMAGE_NAME_LATEST=$(   ./dev/docker/build.sh -D $DOCKER_REPO -t latest --images ${{ matrix.service.name }})
+          # Build versioned image
+          ./dev/docker/build.sh -D $DOCKER_REPO ${{ matrix.service.name }}
+          docker push "$IMAGE_NAME_VERSIONED"
+          # Tag versioned image 'latest' (when on stable branch)
+          case "$(git rev-parse --abbrev-ref HEAD)" in stable/4*)
+            docker tag "$IMAGE_NAME_VERSIONED" "$IMAGE_NAME_LATEST"
+            docker push "$IMAGE_NAME_LATEST"
+          esac
+
+  dispatch-build-manage-tool:
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref_name, 'stable/4')
+    needs: build
+    steps:
+      - name: Generate access token
+        uses: tibdex/github-app-token@v1
+        id: generate-token
+        with:
+          app_id: ${{ secrets.AUTOMATION_APP_ID }}
+          private_key: ${{ secrets.AUTOMATION_APP_PRIVATE_KEY }}
+      - name: Send dispatch to openslides-manage
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          event-type: stable-update
+          repository: ${{ github.repository_owner }}/openslides-manage-service
+          token: ${{ steps.generate-token.outputs.token }}
+          client-payload: '{"branch": "${{ github.ref_name }}", "version": "${{ needs.build.outputs.openslides-version }}"}'

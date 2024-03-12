@@ -5,11 +5,12 @@ set -e
 HOME="$(dirname "$(realpath "${BASH_SOURCE[0]}")")/../../"
 declare -A TARGETS
 TARGETS=(
-  [proxy]="$HOME/proxy/"
+  [proxy]="$HOME/openslides-proxy/"
   [client]="$HOME/openslides-client/"
   [backend]="$HOME/openslides-backend/"
   [auth]="$HOME/openslides-auth-service/"
   [autoupdate]="$HOME/openslides-autoupdate-service/"
+  [search]="$HOME/openslides-search-service/"
   [manage]="$HOME/openslides-manage-service/"
   [datastore-reader]="$HOME/openslides-datastore-service/reader"
   [datastore-writer]="$HOME/openslides-datastore-service/writer"
@@ -17,13 +18,19 @@ TARGETS=(
   [vote]="$HOME/openslides-vote-service/"
   [icc]="$HOME/openslides-icc-service/"
 )
+CLIENT_VERSION_TXT="${TARGETS[client]}/client/src/assets/version.txt"
 
 DOCKER_REPOSITORY="openslides"
-DOCKER_TAG="latest-4"
+DOCKER_TAG="$(cat VERSION)"
+[[ "$(git rev-parse --abbrev-ref HEAD)" != main ]] ||
+  DOCKER_TAG="$DOCKER_TAG-staging-$(date +%Y%m%d)-$(git rev-parse HEAD | cut -c -7)"
 CONFIG="/etc/osinstancectl"
 OPTIONS=()
 BUILT_IMAGES=()
-DEFAULT_TARGETS=(proxy client backend auth autoupdate permission manage datastore-reader datastore-writer media vote icc)
+DEFAULT_TARGETS=(proxy client backend auth autoupdate manage datastore-reader datastore-writer media vote icc search)
+ASK_PUSH=
+OPT_YES=
+OPT_IMAGES=
 
 usage() {
   cat << EOF
@@ -33,8 +40,10 @@ Options:
   -D, --docker-repo  Specify a Docker repository
                      (default: unspecified, i.e., system default)
   -t, --tag          Tag the Docker image (default: $DOCKER_TAG)
-  --ask-push         Offer to push newly built images to registry
   --no-cache         Pass --no-cache to docker-build
+  --ask-push         Offer to push newly built images to registry
+  --yes              Push without requiring interaction confirmation
+  --images           Only print out resulting images names without building
 EOF
 }
 
@@ -45,7 +54,7 @@ if [[ -f "$CONFIG" ]]; then
 fi
 
 shortopt="hr:D:t:"
-longopt="help,docker-repo:,tag:,ask-push,no-cache"
+longopt="help,docker-repo:,tag:,no-cache,ask-push,yes,images"
 ARGS=$(getopt -o "$shortopt" -l "$longopt" -n "$ME" -- "$@")
 if [ $? -ne 0 ]; then usage; exit 1; fi
 eval set -- "$ARGS";
@@ -62,12 +71,20 @@ while true; do
       DOCKER_TAG="$2"
       shift 2
       ;;
+    --no-cache)
+      OPTIONS+="--no-cache"
+      shift 1
+      ;;
     --ask-push)
       ASK_PUSH=1
       shift 1
       ;;
-    --no-cache)
-      OPTIONS+="--no-cache"
+    --yes)
+      OPT_YES=1
+      shift 1
+      ;;
+    --images)
+      OPT_IMAGES=1
       shift 1
       ;;
     -h|--help) usage; exit 0 ;;
@@ -79,6 +96,8 @@ done
 SELECTED_TARGETS=($@)
 [[ "${#SELECTED_TARGETS[@]}" -ge 1 ]] || SELECTED_TARGETS=("${DEFAULT_TARGETS[@]}")
 [[ "${SELECTED_TARGETS[@]}" != "all" ]] || SELECTED_TARGETS=("${!TARGETS[@]}")
+
+OPTIONS+=(--build-arg "VERSION=$DOCKER_TAG")
 
 for i in "${SELECTED_TARGETS[@]}"; do
 
@@ -92,6 +111,11 @@ for i in "${SELECTED_TARGETS[@]}"; do
   img="${img_name}:${DOCKER_TAG}"
   if [[ -n "$DOCKER_REPOSITORY" ]]; then
     img="${DOCKER_REPOSITORY}/${img}"
+  fi
+
+  if [[ -n "$OPT_IMAGES" ]]; then
+    echo "$img"
+    continue
   fi
 
   echo "Building $img..."
@@ -117,6 +141,10 @@ for i in "${SELECTED_TARGETS[@]}"; do
   BUILT_IMAGES+=("$img ON")
 done
 
+if [[ -n "$OPT_IMAGES" ]]; then
+  exit 0
+fi
+
 if [[ "${#BUILT_IMAGES[@]}" -ge 1 ]]; then
   printf "\nSuccessfully built images:\n\n"
   for i in "${BUILT_IMAGES[@]}"; do
@@ -128,9 +156,23 @@ else
   exit 3
 fi
 
-[[ "$ASK_PUSH" ]] || exit 0
+[[ -n "$ASK_PUSH" ]] || exit 0
 
-if hash whiptail > /dev/null 2>&1; then
+if [ -n $OPT_YES ] || ! hash whiptail > /dev/null 2>&1; then
+  echo
+  for i in "${BUILT_IMAGES[@]}"; do
+    read -r img x <<< "$i"
+    if [ -n $OPT_YES ]; then
+      REPL=y
+    else
+      read -p "Push image '$img' to repository? [Y/n] " REPL
+    fi
+    case "$REPL" in
+      N|n|No|no|NO) exit 0;;
+      *) docker push "$img" ;;
+    esac
+  done
+else
   while read img; do
     echo "Pushing ${img}."
     docker push "$img"
@@ -139,14 +181,4 @@ if hash whiptail > /dev/null 2>&1; then
     25 78 16 --separate-output --noitem --clear \
     ${BUILT_IMAGES[@]} \
     3>&2 2>&1 1>&3 )
-else
-  echo
-  for i in "${BUILT_IMAGES[@]}"; do
-    read -r img x <<< "$i"
-    read -p "Push image '$img' to repository? [Y/n] " REPL
-    case "$REPL" in
-      N|n|No|no|NO) exit 0;;
-      *) docker push "$img" ;;
-    esac
-  done
 fi

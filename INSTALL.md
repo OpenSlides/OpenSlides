@@ -146,9 +146,64 @@ To get the [defaults](pkg/config/default-config.yml) run:
 So you get a file where you can see syntax and defaults and might be able to
 customize the steps above.
 
-You may at least want to customize the `SYSTEM_URL`. The variable is used to get
-the correct URL in PDF or email templates.
 
+## Update to a new version
+
+The docker images of every OpenSlides stable update are tagged as `latest`.
+So for most updates pulling the new ones and re-running `up` as described [above](#Pull images and start services) suffices.
+However, this can be unreliable if `docker` fails to recognize a new image in the registry.
+On the other hand, it can mean services will update "by themselves" due to silently using a new image.
+
+It is therefore recommended to pin the version explicitly in the `config.yml` like this:
+
+    ---
+    defaults:
+      tag: 4.0.0
+
+Note that if changes to the configuration or structure of the docker stack were
+made the appropriate version of the `openslides` tool must also be refetched
+from the [releases](https://github.com/OpenSlides/openslides-manage-service/releases)
+of the openslides-manage-service repository to reflect these in the generated
+compose file.
+
+To update to the new version, set the new tag, regenerate the compose file and
+apply the changes to the containers:
+
+    $ ./openslides config --config my-config.yml .
+    $ docker-compose up --detach
+
+Regenerating the compose file is an important step that should be done for every
+update. This will ensure that all services will be provided with all necessary
+resources even when the structure is changing.
+
+Some updates include migrations that must be run on the database.
+To check the current status and start migrations if necessary, run:
+
+    $ ./openslides migrations stats
+    $ ./openslides migrations finalize
+
+
+### Incompatibilities
+
+- 4.0.8
+  - The environment variables `DATASTORE_DATABASE_*` were renamed to
+    `DATABASE_*`. If custom values were used, this must be reflected in config
+    files.
+- 4.1.0
+  - PostgreSQL major is updated from 11 to 15. This means postgres will
+    complain about the data being incompatible
+  - The recommended way of porting your data is:
+    1. Dump the contents of your DB ([Database backup](#database-backup))
+    2. Do the update ([Update to a new version](#update-to-a-new-version))
+      - Be sure to do fetch the new binary of the `openslides` tool as described
+    3. Restore the dump into the DB, which should now be running on version 15 ([Database backup](#database-backup))
+  - If you updated without dumping beforehand and ran into postgres' error log
+    you can downgrade by using the old `openslides` tool to get PostgreSQL 11
+    again and then follow these steps
+  - More intricate proposals exist for upgrading PostgreSQL (such as
+    https://github.com/tianon/docker-postgres-upgrade) aiming at providing less
+    downtime but these are not production ready and should only be pursued if
+    you know specifically what you are doing.
 
 
 ## SSL encryption
@@ -183,6 +238,7 @@ integrated certificate retrieval. Add the following lines to your setup
 configuration YAML file and of course use your own domain instead of the
 example:
 
+    enableLocalHTTPS: false
     enableAutoHTTPS: true
     services:
       proxy:
@@ -194,7 +250,7 @@ example:
 Do not forget to [rebuild your Docker Compose YAML
 file](#Configuration-of-the-generated-Docker-Compose-YAML-file).
 
-See [the proxy service](https://github.com/OpenSlides/OpenSlides/blob/main/proxy) for
+See [the proxy service](https://github.com/OpenSlides/openslides-proxy) for
 details on provided methods for HTTPS activation.
 
 
@@ -204,7 +260,7 @@ details on provided methods for HTTPS activation.
 To enable email support, add the respective settings to your [custom setup
 configuration YAML
 file](#Configuration-of-the-generated-Docker-Compose-YAML-file) and do not
-forget to regenerate yor Docker Compose YAML file.
+forget to regenerate your Docker Compose YAML file.
 
     services:
       backendAction:

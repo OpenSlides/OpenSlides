@@ -13,8 +13,7 @@ run-dev-otel: | build-dev
 # Build the docker dev images for all services in parallel
 build-dev:
 	$(SCRIPT_PATH)/submodules-do.sh 'make build-dev'
-	make -C proxy build-dev
-	
+
 # Run the tests of all services
 run-service-tests:
 	git submodule foreach 'make run-tests'
@@ -37,6 +36,14 @@ switch-to-dev:
 run-backend: | switch-to-test
 	$(DC) exec backend ./entrypoint.sh bash --rcfile .bashrc
 
+# Stop all backend-related services so that the backend dev setup can start
+stop-backend:
+	$(DC) stop backend datastore-reader datastore-writer auth vote postgres redis icc autoupdate search
+
+# Restart all backend-related services
+start-backend:
+	$(DC) up -d backend datastore-reader datastore-writer auth vote postgres redis icc autoupdate search
+
 # Stop the dev server
 stop-dev:
 	$(DC) down --volumes --remove-orphans
@@ -45,11 +52,41 @@ stop-dev:
 stop-dev-otel:
 	$(DC) -f $(DC_PATH)/dc.otel.dev.yml down --volumes --remove-orphans
 
-# Shorthand to execute the services-to-main script
+build:
+	$(DC_PATH)/build.sh
+
+# Shorthands to execute the make-release script
 services-to-main:
-	$(SCRIPT_PATH)/services-to-main.sh
+	$(SCRIPT_PATH)/make-update.sh fetch-all-changes $(ARGS)
+services-to-main-pull:
+	$(SCRIPT_PATH)/make-update.sh fetch-all-changes --pull $(ARGS)
+
+staging-update:
+	$(SCRIPT_PATH)/make-update.sh staging $(ARGS)
+
+hotfix-update:
+	$(SCRIPT_PATH)/make-update.sh hotfix $(ARGS)
+
+stable-update:
+	$(SCRIPT_PATH)/make-update.sh stable $(ARGS)
 
 # You may only use this one time after cloning this repository.
 # Will set the upstream remote to "origin"
 submodules-origin-to-upstream:
 	git submodule foreach -q --recursive 'git remote rename origin upstream'
+
+
+# Translation helper targets
+
+extract-translations:
+	dev/scripts/extract-translations.sh
+
+push-translations:
+	tx push --source
+
+pull-translations:
+	tx pull --translations --languages $$(dev/scripts/dc-dev.sh exec client npm run get-available-languages | tail -n 1)
+
+copy-translations:
+	cp i18n/*.po openslides-client/client/src/assets/i18n/
+	cp i18n/*.po openslides-backend/openslides_backend/i18n/messages/

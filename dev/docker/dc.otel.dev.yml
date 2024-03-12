@@ -11,3 +11,19 @@ services:
     image: jaegertracing/all-in-one
     ports:
     - "16686:16686"
+
+  backend:
+    environment:
+      - OPENTELEMETRY_ENABLED=1
+
+  datastore-reader:
+    environment:
+      - OPENTELEMETRY_ENABLED=1
+
+  datastore-writer:
+    environment:
+      - OPENTELEMETRY_ENABLED=1
+
+  auth:
+    environment:
+      - OPENTELEMETRY_ENABLED=1
