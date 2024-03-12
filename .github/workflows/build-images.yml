@@ -3,7 +3,7 @@ name: Build Docker images for all OpenSlides services
 on:
   push:
     branches:
-      - main
+      - staging/4*
       - stable/4*
   workflow_dispatch:
 
@@ -33,7 +33,7 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v2
         with:
-          submodules: true
+          submodules: recursive
 
       - name: Read version
         id: readversion

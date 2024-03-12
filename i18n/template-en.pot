@@ -60,6 +60,14 @@ msgstr ""
 msgid "A topic needs a title"
 msgstr ""
 
+msgid "A total time is required and must be greater than 0."
+msgstr ""
+
+msgid ""
+"A user with the username '%username%' and the first name '%first_name%' was "
+"created."
+msgstr ""
+
 msgid "About me"
 msgstr ""
 
@@ -117,6 +125,12 @@ msgstr ""
 msgid "Activate statute amendments"
 msgstr ""
 
+msgid "Activate the selection field 'motion editor'"
+msgstr ""
+
+msgid "Activate the selection field 'spokesperson'"
+msgstr ""
+
 msgid "Activate vote delegations"
 msgstr ""
 
@@ -163,9 +177,6 @@ msgstr ""
 msgid "Add"
 msgstr ""
 
-msgid "Add countdown"
-msgstr ""
-
 msgid "Add me"
 msgstr ""
 
@@ -181,6 +192,9 @@ msgstr ""
 msgid "Add option"
 msgstr ""
 
+msgid "Add timer"
+msgstr ""
+
 msgid "Add to agenda"
 msgstr ""
 
@@ -194,6 +208,9 @@ msgid "Add yourself to the current list of speakers to join the conference"
 msgstr ""
 
 msgid "Add/remove groups ..."
+msgstr ""
+
+msgid "Add/remove structure levels ..."
 msgstr ""
 
 msgid ""
@@ -248,6 +265,12 @@ msgstr ""
 msgid "All other fields are optional and may be empty."
 msgstr ""
 
+msgid "All present entitled users"
+msgstr ""
+
+msgid "All structure levels"
+msgstr ""
+
 msgid "All topics will be deleted and won't be accessible afterwards."
 msgstr ""
 
@@ -267,6 +290,9 @@ msgid "Allow create poll"
 msgstr ""
 
 msgid "Allow forwarding of motions"
+msgstr ""
+
+msgid "Allow one participant multiple times on the same list"
 msgstr ""
 
 msgid ""
@@ -351,6 +377,9 @@ msgid "Applause particle image URL"
 msgstr ""
 
 msgid "Applause visualization"
+msgstr ""
+
+msgid "Application update in progress."
 msgstr ""
 
 msgid "Apply"
@@ -464,7 +493,7 @@ msgstr ""
 msgid "Are you sure you want to delete this motion block?"
 msgstr ""
 
-msgid "Are you sure you want to delete this motion?"
+msgid "Are you sure you want to delete this motion? "
 msgstr ""
 
 msgid "Are you sure you want to delete this projector?"
@@ -474,6 +503,9 @@ msgid "Are you sure you want to delete this state?"
 msgstr ""
 
 msgid "Are you sure you want to delete this statute paragraph?"
+msgstr ""
+
+msgid "Are you sure you want to delete this structure level?"
 msgstr ""
 
 msgid "Are you sure you want to delete this tag?"
@@ -492,6 +524,11 @@ msgid "Are you sure you want to discard this amendment?"
 msgstr ""
 
 msgid "Are you sure you want to duplicate this meeting?"
+msgstr ""
+
+msgid ""
+"Are you sure you want to end this contribution which still has interposed "
+"question(s)?"
 msgstr ""
 
 msgid ""
@@ -773,6 +810,9 @@ msgstr ""
 msgid "Can create, modify, start/stop and delete votings."
 msgstr ""
 
+msgid "Can edit all moderation notes."
+msgstr ""
+
 msgid ""
 "Can edit and assign the following motion metadata: Submitter, state, "
 "recommendation, category, motion blocks and tags."
@@ -807,6 +847,9 @@ msgid "Can manage list of speakers"
 msgstr ""
 
 msgid "Can manage logos and fonts"
+msgstr ""
+
+msgid "Can manage moderation notes"
 msgstr ""
 
 msgid "Can manage motion metadata"
@@ -872,6 +915,9 @@ msgstr ""
 msgid "Can see all lists of speakers"
 msgstr ""
 
+msgid "Can see all moderation notes in each list of speakers."
+msgstr ""
+
 msgid "Can see elections"
 msgstr ""
 
@@ -885,6 +931,9 @@ msgid "Can see internal items and time scheduling of agenda"
 msgstr ""
 
 msgid "Can see list of speakers"
+msgstr ""
+
+msgid "Can see moderation notes"
 msgstr ""
 
 msgid "Can see motions"
@@ -1099,7 +1148,15 @@ msgstr ""
 msgid "Choice"
 msgstr ""
 
+msgid "Choose 0 to disable Intervention."
+msgstr ""
+
 msgid "Choose 0 to disable the supporting system."
+msgstr ""
+
+msgid ""
+"Choose a number greater than 0 to activate speaking times widget for "
+"structure level countdowns."
 msgstr ""
 
 msgid "Chyron"
@@ -1222,6 +1279,18 @@ msgstr ""
 msgid "Committees and meetings"
 msgstr ""
 
+msgid "Committees created"
+msgstr ""
+
+msgid "Committees updated"
+msgstr ""
+
+msgid "Committees with errors"
+msgstr ""
+
+msgid "Committees with warnings: affected cells will be skipped"
+msgstr ""
+
 msgid "Conference room"
 msgstr ""
 
@@ -1255,6 +1324,9 @@ msgstr ""
 msgid "Contribution"
 msgstr ""
 
+msgid "Contributions"
+msgstr ""
+
 msgid "Copy report to clipboard"
 msgstr ""
 
@@ -1265,18 +1337,6 @@ msgid "Count logged-in users"
 msgstr ""
 
 msgid "Countdown"
-msgstr ""
-
-msgid "Countdown and traffic light"
-msgstr ""
-
-msgid "Countdown description"
-msgstr ""
-
-msgid "Countdown time"
-msgstr ""
-
-msgid "Countdown title"
 msgstr ""
 
 msgid "Countdowns"
@@ -1322,6 +1382,9 @@ msgid "Current list of speakers (as slide)"
 msgstr ""
 
 msgid "Current slide"
+msgstr ""
+
+msgid "Current speaker"
 msgstr ""
 
 msgid "Current speaker chyron"
@@ -1381,13 +1444,7 @@ msgstr ""
 msgid "Default line numbering"
 msgstr ""
 
-msgid "Default number"
-msgstr ""
-
-msgid "Default participant number"
-msgstr ""
-
-msgid "Default structure level"
+msgid "Default speaking time for structure levels in seconds"
 msgstr ""
 
 msgid ""
@@ -1464,6 +1521,9 @@ msgstr ""
 msgid "Deleted user"
 msgstr ""
 
+msgid "Deleting this motion will also delete the amendments."
+msgstr ""
+
 msgid "Deletion"
 msgstr ""
 
@@ -1495,6 +1555,9 @@ msgid "Disallow new point of order when list of speakers is closed"
 msgstr ""
 
 msgid "Display type"
+msgstr ""
+
+msgid "Distribute overhang time"
 msgstr ""
 
 msgid "Div"
@@ -1601,6 +1664,12 @@ msgstr ""
 msgid "Edit meeting"
 msgstr ""
 
+msgid "Edit moderation note"
+msgstr ""
+
+msgid "Edit point of order ..."
+msgstr ""
+
 msgid "Edit projector"
 msgstr ""
 
@@ -1625,6 +1694,9 @@ msgstr ""
 msgid "Edit topic"
 msgstr ""
 
+msgid "Edit total time"
+msgstr ""
+
 msgid "Edit workflow"
 msgstr ""
 
@@ -1638,6 +1710,9 @@ msgid "Election documents"
 msgstr ""
 
 msgid "Elections"
+msgstr ""
+
+msgid "Element"
 msgstr ""
 
 msgid "Email"
@@ -1673,6 +1748,9 @@ msgstr ""
 msgid "Enable forspeech / counter speech"
 msgstr ""
 
+msgid "Enable interposed questions"
+msgstr ""
+
 msgid "Enable numbering for agenda items"
 msgstr ""
 
@@ -1680,6 +1758,9 @@ msgid "Enable participant presence view"
 msgstr ""
 
 msgid "Enable point of order"
+msgstr ""
+
+msgid "Enable point of orders for other participants"
 msgstr ""
 
 msgid "Enable specifications and ranking for possible motions"
@@ -1770,6 +1851,9 @@ msgid "Enter the developer mode"
 msgstr ""
 
 msgid "Enter your email to send the password reset link"
+msgstr ""
+
+msgid "Entitled present users"
 msgstr ""
 
 msgid "Entitled to vote"
@@ -1948,9 +2032,6 @@ msgstr ""
 msgid "Forwarding of motion"
 msgstr ""
 
-msgid "Forwardings"
-msgstr ""
-
 msgid "Front page title"
 msgstr ""
 
@@ -2062,6 +2143,9 @@ msgstr ""
 msgid "Has not logged in yet"
 msgstr ""
 
+msgid "Has not voted"
+msgstr ""
+
 msgid "Has notes"
 msgstr ""
 
@@ -2145,9 +2229,12 @@ msgstr ""
 
 msgid ""
 "IMPORTANT: The sender address (noreply@openslides.com) is defined in the "
-"OpenSlides server settings and cannot be changed here. \n"
+"OpenSlides server settings and cannot be changed here.\n"
 "                            To receive replies you have to enter a reply "
 "address in the next field. Please test the email dispatch in case of changes!"
+msgstr ""
+
+msgid "Identical with"
 msgstr ""
 
 msgid "Identifier"
@@ -2159,6 +2246,9 @@ msgstr ""
 msgid ""
 "If it is an amendment, you can back up its content when editing it and "
 "delete it afterwards."
+msgstr ""
+
+msgid "If the value is set to 0 the time counts up as stopwatch."
 msgstr ""
 
 msgid "Import"
@@ -2246,6 +2336,15 @@ msgid "Internal item"
 msgstr ""
 
 msgid "Internal login"
+msgstr ""
+
+msgid "Interposed question"
+msgstr ""
+
+msgid "Intervention"
+msgstr ""
+
+msgid "Intervention speaking time in seconds"
 msgstr ""
 
 msgid "Invalid line number"
@@ -2443,6 +2542,9 @@ msgstr ""
 msgid "Line spacing"
 msgstr ""
 
+msgid "List of amendments: "
+msgstr ""
+
 msgid "List of electronic votes"
 msgstr ""
 
@@ -2501,6 +2603,9 @@ msgid "Lowest applause amount"
 msgstr ""
 
 msgid "Main motion and line number"
+msgstr ""
+
+msgid "Mandates switched sucessfully!"
 msgstr ""
 
 msgid "Mark as personal favorite"
@@ -2586,6 +2691,9 @@ msgstr ""
 msgid "Minimum number of digits for motion identifier"
 msgstr ""
 
+msgid "Moderation note"
+msgstr ""
+
 msgid "Modify design"
 msgstr ""
 
@@ -2629,6 +2737,12 @@ msgid "Motion created (forwarded)"
 msgstr ""
 
 msgid "Motion deleted"
+msgstr ""
+
+msgid "Motion editor"
+msgstr ""
+
+msgid "Motion editors"
 msgstr ""
 
 msgid "Motion forwarded to"
@@ -2692,9 +2806,6 @@ msgid "My profile"
 msgstr ""
 
 msgid "Name"
-msgstr ""
-
-msgid "Name exceeds 256 characters"
 msgstr ""
 
 msgid "Name of recommender"
@@ -2868,6 +2979,9 @@ msgstr ""
 msgid "No motion block set"
 msgstr ""
 
+msgid "No motion editors"
+msgstr ""
+
 msgid "No one has voted for this poll"
 msgstr ""
 
@@ -2889,7 +3003,13 @@ msgstr ""
 msgid "No results yet."
 msgstr ""
 
+msgid "No spokesperson"
+msgstr ""
+
 msgid "No statute paragraphs"
+msgstr ""
+
+msgid "No structure level"
 msgstr ""
 
 msgid "No tags"
@@ -2905,6 +3025,9 @@ msgid "Nomination list"
 msgstr ""
 
 msgid "None"
+msgstr ""
+
+msgid "None of the selected motions can be forwarded."
 msgstr ""
 
 msgid "Not found"
@@ -3000,9 +3123,6 @@ msgstr ""
 msgid "One email was send sucessfully."
 msgstr ""
 
-msgid "Only countdown"
-msgstr ""
-
 msgid "Only for internal notes."
 msgstr ""
 
@@ -3010,6 +3130,9 @@ msgid "Only main agenda items"
 msgstr ""
 
 msgid "Only present participants can be added to the list of speakers"
+msgstr ""
+
+msgid "Only time"
 msgstr ""
 
 msgid "Only traffic light"
@@ -3242,6 +3365,9 @@ msgstr ""
 msgid "Paste/write your topics in this textbox."
 msgstr ""
 
+msgid "Pause speech"
+msgstr ""
+
 msgid "Permissions"
 msgstr ""
 
@@ -3361,6 +3487,12 @@ msgstr ""
 msgid "Project"
 msgstr ""
 
+msgid "Project active structure level"
+msgstr ""
+
+msgid "Project all structure levels"
+msgstr ""
+
 msgid "Project selection?"
 msgstr ""
 
@@ -3433,6 +3565,9 @@ msgstr ""
 msgid "Reason required for creating new motion"
 msgstr ""
 
+msgid "Receipt of contributions"
+msgstr ""
+
 msgid "Receive motions"
 msgstr ""
 
@@ -3449,6 +3584,11 @@ msgid "Recommendation changed"
 msgstr ""
 
 msgid "Recommendation label"
+msgstr ""
+
+msgid ""
+"Recommendation of motions in such a state can only be seen by motion "
+"managers."
 msgstr ""
 
 msgid "Recommendation reset"
@@ -3473,6 +3613,9 @@ msgid "Rejected"
 msgstr ""
 
 msgid "Relevant information could not be accessed"
+msgstr ""
+
+msgid "Reload page"
 msgstr ""
 
 msgid "Remove"
@@ -3542,6 +3685,9 @@ msgstr ""
 msgid "Required permissions to view this page:"
 msgstr ""
 
+msgid "Requires permission to manage lists of speakers"
+msgstr ""
+
 msgid "Reset"
 msgstr ""
 
@@ -3576,6 +3722,9 @@ msgid "Result"
 msgstr ""
 
 msgid "Results"
+msgstr ""
+
+msgid "Resume speech"
 msgstr ""
 
 msgid "Retrieving vote status... Please wait!"
@@ -3650,22 +3799,22 @@ msgstr ""
 msgid "Select all"
 msgstr ""
 
+msgid "Select exactly two participants to swap mandates"
+msgstr ""
+
 msgid "Select file"
 msgstr ""
 
 msgid "Select meetings ..."
 msgstr ""
 
-msgid "Select or search new candidate ..."
-msgstr ""
-
-msgid "Select or search new speaker ..."
-msgstr ""
-
-msgid "Select or search new submitter ..."
-msgstr ""
-
 msgid "Select paragraphs"
+msgstr ""
+
+msgid "Select participant"
+msgstr ""
+
+msgid "Select speaker"
 msgstr ""
 
 msgid "Send"
@@ -3869,6 +4018,9 @@ msgstr ""
 msgid "Show recommendation on projector"
 msgstr ""
 
+msgid "Show recommendations not public"
+msgstr ""
+
 msgid "Show referring motions"
 msgstr ""
 
@@ -3958,6 +4110,21 @@ msgstr ""
 msgid "Speakers"
 msgstr ""
 
+msgid "Speaking times"
+msgstr ""
+
+msgid "Speech start time"
+msgstr ""
+
+msgid "Speech type"
+msgstr ""
+
+msgid "Spokesperson"
+msgstr ""
+
+msgid "Spokespersons"
+msgstr ""
+
 msgid "Stalemate! It's a draw!"
 msgstr ""
 
@@ -4022,6 +4189,9 @@ msgid "Strikethrough"
 msgstr ""
 
 msgid "Structure level"
+msgstr ""
+
+msgid "Structure levels"
 msgstr ""
 
 msgid "Subcategory"
@@ -4094,6 +4264,12 @@ msgid "Supporters changed"
 msgstr ""
 
 msgid "Surname"
+msgstr ""
+
+msgid "Swap mandates ..."
+msgstr ""
+
+msgid "Switch"
 msgstr ""
 
 msgid "Table of contents"
@@ -4327,6 +4503,11 @@ msgid ""
 msgstr ""
 
 msgid ""
+"This will add or remove the following structure levels for all selected "
+"participants:"
+msgstr ""
+
+msgid ""
 "This will add or remove the following submitters for all selected motions:"
 msgstr ""
 
@@ -4386,6 +4567,15 @@ msgstr ""
 msgid "Time"
 msgstr ""
 
+msgid "Time and traffic light"
+msgstr ""
+
+msgid "Timer"
+msgstr ""
+
+msgid "Timers"
+msgstr ""
+
 msgid "Timestamp"
 msgstr ""
 
@@ -4434,7 +4624,13 @@ msgstr ""
 msgid "Total accounts"
 msgstr ""
 
+msgid "Total committees"
+msgstr ""
+
 msgid "Total participants"
+msgstr ""
+
+msgid "Total time"
 msgstr ""
 
 msgid "Total topics"
@@ -4453,9 +4649,6 @@ msgid "Troubleshooting"
 msgstr ""
 
 msgid "Try reconnect"
-msgstr ""
-
-msgid "Type"
 msgstr ""
 
 msgid "Underline"
@@ -4485,6 +4678,9 @@ msgstr ""
 msgid ""
 "Use JSON key:value structure (key = OpenSlides attribute name, value = IdP "
 "attribute name)."
+msgstr ""
+
+msgid "Use color"
 msgstr ""
 
 msgid "Use the following custom number"
@@ -4641,9 +4837,19 @@ msgid "Warn color"
 msgstr ""
 
 msgid ""
+"Warning: Amendments exist for this motion. Are you sure you want to delete "
+"this motion regardless?"
+msgstr ""
+
+msgid ""
 "Warning: Amendments exist for this motion. Editing this text will likely "
 "impact them negatively. Particularily, amendments might become unusable if "
 "the paragraph they affect is deleted."
+msgstr ""
+
+msgid ""
+"Warning: At least one of the selected motions has amendments, these will be "
+"deleted as well. Do you want to delete anyway?"
 msgstr ""
 
 msgid "Warning: This projector will be set to visible"
@@ -4735,6 +4941,9 @@ msgid "You are not allowed to see the livestream"
 msgstr ""
 
 msgid "You are not supposed to be here..."
+msgstr ""
+
+msgid "You are using an incompatible client version."
 msgstr ""
 
 msgid ""
@@ -4919,9 +5128,6 @@ msgstr ""
 msgid "could not be created"
 msgstr ""
 
-msgid "could not be defined"
-msgstr ""
-
 msgid "created"
 msgstr ""
 
@@ -5066,6 +5272,9 @@ msgstr ""
 msgid "none"
 msgstr ""
 
+msgid "not specified"
+msgstr ""
+
 msgid "of"
 msgstr ""
 
@@ -5138,9 +5347,6 @@ msgstr ""
 msgid "undocumented"
 msgstr ""
 
-msgid "unknown"
-msgstr ""
-
 msgid "updated"
 msgstr ""
 
@@ -5153,19 +5359,22 @@ msgstr ""
 msgid "will be created"
 msgstr ""
 
-msgid "will be defined"
-msgstr ""
-
 msgid "will be imported"
-msgstr ""
-
-msgid "will be referenced"
 msgstr ""
 
 msgid "will be updated"
 msgstr ""
 
 msgid "yellow"
+msgstr ""
+
+msgid "{{amount}} interposed questions will be cleared"
+msgstr ""
+
+msgid "{{amount}} of them will be saved with 'unknown' speaker"
+msgstr ""
+
+msgid "{{amount}} will be saved"
 msgstr ""
 
 msgid "Acceptance"

@@ -18,12 +18,15 @@ TARGETS=(
   [vote]="$HOME/openslides-vote-service/"
   [icc]="$HOME/openslides-icc-service/"
 )
-CLIENT_VERSION_TXT="${TARGETS[client]}/client/src/assets/version.txt"
 
 DOCKER_REPOSITORY="openslides"
 DOCKER_TAG="$(cat VERSION)"
-[[ "$(git rev-parse --abbrev-ref HEAD)" != main ]] ||
+BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+if [[ "$BRANCH" == staging/* ]]; then
   DOCKER_TAG="$DOCKER_TAG-staging-$(date +%Y%m%d)-$(git rev-parse HEAD | cut -c -7)"
+elif [[ "$BRANCH" != stable/* ]]; then
+  DOCKER_TAG="$DOCKER_TAG-$BRANCH"
+fi
 CONFIG="/etc/osinstancectl"
 OPTIONS=()
 BUILT_IMAGES=()
@@ -97,6 +100,8 @@ SELECTED_TARGETS=($@)
 [[ "${#SELECTED_TARGETS[@]}" -ge 1 ]] || SELECTED_TARGETS=("${DEFAULT_TARGETS[@]}")
 [[ "${SELECTED_TARGETS[@]}" != "all" ]] || SELECTED_TARGETS=("${!TARGETS[@]}")
 
+OPTIONS+=(--build-arg "VERSION=$DOCKER_TAG")
+
 for i in "${SELECTED_TARGETS[@]}"; do
 
   loc="${TARGETS[$i]}"
@@ -126,10 +131,6 @@ for i in "${SELECTED_TARGETS[@]}"; do
     printf '\t"commit-abbrev": "%s",\n' "$(git rev-parse --abbrev-ref HEAD)"
     printf '}\n'
   } > version.json
-  if [[ -w "$CLIENT_VERSION_TXT" ]]; then
-    client_dev_version="$(< "$CLIENT_VERSION_TXT")"
-    printf "$DOCKER_TAG ($(date +%Y-%m-%d))" > "$CLIENT_VERSION_TXT"
-  fi
 
   # Special instructions for local services
   build_script="${loc}/build.sh"
@@ -139,9 +140,6 @@ for i in "${SELECTED_TARGETS[@]}"; do
     docker build --tag "$img" --pull "${OPTIONS[@]}" "$loc"
   fi
   rm version.json
-  if [[ -w "$CLIENT_VERSION_TXT" ]]; then
-    echo "$client_dev_version" > "$CLIENT_VERSION_TXT"
-  fi
 
   BUILT_IMAGES+=("$img ON")
 done
