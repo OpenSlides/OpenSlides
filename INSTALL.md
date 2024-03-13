@@ -62,17 +62,10 @@ Then run:
     $ docker-compose pull
     $ docker-compose up --detach
 
-
-### Initialize database
-
 Now all services are starting. Wait until they are ready. Maybe you have to
 increase the `--timeout` flag:
 
     $ ./openslides check-server
-
-Then initialize database:
-
-    $ ./openslides initial-data
 
 Now open https://localhost:8000, login with superuser credentials (default
 username and password: `superadmin`) and have fun.
@@ -224,16 +217,16 @@ setup configuration YAML file.
 
     enableLocalHTTPS: false
 
-Note, that some commands of the manage tool require the `--no-ssl` flag when SSL encryption is disbaled, e.g:
+Note, that some commands of the manage tool require the `--no-ssl` flag when SSL encryption is disabled, e.g:
 
     $ ./openslides initial-data --no-ssl
     $ ./openslides create-user --no-ssl
     
-To find out, which commands require the `--no-ssl` flag use the commands help:
+To find out which commands require the `--no-ssl` flag use the commands help:
 
     $ ./openslides <COMMAND> -h
 
-If you run OpenSlides behind a publicly accessible domain, you can use caddys
+If you run OpenSlides behind a publicly accessible domain, you can use caddy's
 integrated certificate retrieval. Add the following lines to your setup
 configuration YAML file and of course use your own domain instead of the
 example:
