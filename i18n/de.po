@@ -3517,7 +3517,7 @@ msgid ""
 "here."
 msgstr ""
 "Teilnehmende und Administratoren werden vollständig kopiert und lassen sich "
-"hier nicht bearbeitet."
+"hier nicht bearbeiten."
 
 msgid "Participants created"
 msgstr "Teilnehmende erstellt"
