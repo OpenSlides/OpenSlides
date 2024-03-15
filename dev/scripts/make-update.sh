@@ -217,19 +217,62 @@ fetch_all_changes() {
 }
 
 init_staging_update() {
-  ask y "Create local $BRANCH_NAME branches at $REMOTE_NAME/main and referenced HEADs in submodules?" ||
+  ask y "Create new branch $BRANCH_NAME at $REMOTE_NAME/main and referenced HEADs in submodules to fixate changes for a new staging update now?" ||
     abort 0
 
   set_remote
   echo "\$ git checkout --no-track -B $BRANCH_NAME $REMOTE_NAME/main"
   git checkout --no-track -B "$BRANCH_NAME" "$REMOTE_NAME/main"
   echo "Updating submodules and creating local $BRANCH_NAME branches"
-  echo "\$ git submodule update"
+  echo "\$ git submodule update --recursive"
   git submodule update --recursive
+
+
   for repo in $(git submodule status | awk '{print $2}'); do
     echo "\$ git -C $repo checkout --no-track -B $BRANCH_NAME"
     git -C "$repo" checkout --no-track -B "$BRANCH_NAME"
   done
+
+  # Update VERSION
+  echo "$STAGING_VERSION" > VERSION
+  git diff --quiet VERSION && {
+    echo "ERROR: $STAGING_VERSION does not seem to differ from version number present in VERSION."
+    abort 1
+  }
+  git add VERSION
+
+  git commit --message "Staging update $(date +%Y%m%d)"
+  git show --no-patch
+  echo "Commit on $BRANCH_NAME created. Push to $REMOTE_NAME remote and PR into main repo to bring it live."
+
+
+
+
+}
+
+update_main_branch() {
+
+  ask y "Update services and create a new commit on main branch now? Answer 'n' to create a staging branch." ||
+    return 1
+
+  ask y "Fetch all submodules changes now?" &&
+    fetch_all_changes
+
+  add_changes
+
+  check_meta_consistency || {
+    echo "WARN: openslides-meta is not consistent. Continuing may imply services are incompatible."
+    echo "WARN: Be sure to fix this until the next stable update."
+    ask y "Continue?" ||
+      abort 1
+  }
+
+  ask y "Commit on branch main now?" && {
+    git commit --message "Updated services (pre staging update)"
+    git show --no-patch
+    echo "Commit created. Push to a remote and PR into main repo to bring it live."
+    echo "After merging, rerun $ME and start creating a staging branch."
+  }
 }
 
 add_changes() {
@@ -289,50 +332,25 @@ add_changes() {
 make_staging_update() {
   local diff_cmd=
 
-  ask y "Fetch all submodules changes now?" &&
-    fetch_all_changes
+  if check_current_branch; then
+    echo "PICK COMMITS"
+    abort 0
+  else
+    if update_main_branch; then
+      return 0
+    else
+      init_staging_update
+    fi
+  fi
 
-  check_current_branch || :
+  # TODO: implement part2: cherry-picking from main
+
 #  check_current_branch ||
 #    ask y "The main branch must point to new submodule commits and new $BRANCH_NAME branches created.
 #Interactively select submodule commits now?" ||
 #      abort 0
 
-  add_changes
 
-  check_meta_consistency || {
-    echo "WARN: openslides-meta is not consistent. Continuing may imply services are incompatible."
-    echo "WARN: Be sure to fix this until the next stable update."
-    ask y "Continue?" ||
-      abort 1
-  }
-
-  ask y "[this should maybe be done through a gh PR ...] Commit on branch main now?" && {
-    git commit --message "Updated services (pre staging update)"
-    git show --no-patch
-    echo "Commit created. Push to $REMOTE_NAME remote and PR into main repo to bring it live."
-  }
-
-  ask y "Create new branch $BRANCH_NAME to fixate changes for a new staging update now?" && {
-    #ensure_branch_exists
-    #echo "Checking branch $BRANCH_NAME exists ..."
-    for repo in . $(git submodule status | awk '{print $2}'); do
-      echo "git -C $repo checkout -B $BRANCH_NAME"
-      git -C "$repo" checkout -B "$BRANCH_NAME"
-    done
-
-    # Update VERSION
-    echo "$STAGING_VERSION" > VERSION
-    git diff --quiet VERSION && {
-      echo "ERROR: $STAGING_VERSION does not seem to differ from version number present in VERSION."
-      abort 1
-    }
-    git add VERSION
-
-    git commit --message "Staging update $(date +%Y%m%d)"
-    git show --no-patch
-    echo "Commit on $BRANCH_NAME created. Push to $REMOTE_NAME remote and PR into main repo to bring it live."
-  }
 }
 
 make_hotfix_update() {
