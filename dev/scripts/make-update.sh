@@ -216,19 +216,21 @@ fetch_all_changes() {
   echo "Successfully updated all submodules to latest commit."
 }
 
-init_staging_update() {
-  ask y "Create new branch $BRANCH_NAME at $REMOTE_NAME/main and referenced HEADs in submodules to fixate changes for a new staging update now?" ||
+initial_staging_update() {
+  ask y "Create new branch $BRANCH_NAME at $REMOTE_NAME/main, referenced HEADs in submodules as well as openslides-meta
+to fixate changes for a new staging update now?" ||
     abort 0
 
   set_remote
+
+
   echo "\$ git checkout --no-track -B $BRANCH_NAME $REMOTE_NAME/main"
   git checkout --no-track -B "$BRANCH_NAME" "$REMOTE_NAME/main"
+
   echo "Updating submodules and creating local $BRANCH_NAME branches"
   echo "\$ git submodule update --recursive"
   git submodule update --recursive
-
-
-  for repo in $(git submodule status | awk '{print $2}'); do
+  for repo in $(git submodule status --recursive | awk '{print $2}'); do
     echo "\$ git -C $repo checkout --no-track -B $BRANCH_NAME"
     git -C "$repo" checkout --no-track -B "$BRANCH_NAME"
   done
@@ -241,19 +243,31 @@ init_staging_update() {
   }
   git add VERSION
 
+  echo "Committing \"Staging update\" on $BRANCH_NAME ..."
   git commit --message "Staging update $(date +%Y%m%d)"
   git show --no-patch
-  echo "Commit on $BRANCH_NAME created. Push to $REMOTE_NAME remote and PR into main repo to bring it live."
 
-
+  echo "Attempting to push new $BRANCH_NAME commits into $REMOTE_NAME."
+  echo "Ensure you have proper access rights or use --local to skip pushing."
+  ask y "Continue?" ||
+    abort 0
+  echo "Submodules first ..."
+  git submodule foreach --recursive git push "$REMOTE_NAME" "$BRANCH_NAME"
+  echo "Now main repository ..."
+  git push "$REMOTE_NAME" "$BRANCH_NAME"
 
 
 }
 
 update_main_branch() {
 
-  ask y "Update services and create a new commit on main branch now? Answer 'n' to create a staging branch." ||
+  ask y "Update services and create a new commit on main branch now? This should be your
+first step. If it was done before, or you are certain, $STAGING_BRANCH_NAME should branch
+out from $REMOTE_NAME/main as it is now, you may answer 'n' to create a staging branch." ||
     return 1
+
+  BRANCH_NAME=main
+  check_current_branch
 
   ask y "Fetch all submodules changes now?" &&
     fetch_all_changes
@@ -261,10 +275,10 @@ update_main_branch() {
   add_changes
 
   check_meta_consistency || {
-    echo "WARN: openslides-meta is not consistent. Continuing may imply services are incompatible."
-    echo "WARN: Be sure to fix this until the next stable update."
-    ask y "Continue?" ||
-      abort 1
+    echo "WARN: openslides-meta is not consistent across services.
+         "WARN: This means a $STAGING_BRANCH_NAME cannot be created in openslides-meta.
+    echo "WARN: Please rectify and rerun $ME"
+    abort 1
   }
 
   ask y "Commit on branch main now?" && {
@@ -339,7 +353,7 @@ make_staging_update() {
     if update_main_branch; then
       return 0
     else
-      init_staging_update
+      initial_staging_update
     fi
   fi
 
