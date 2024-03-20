@@ -54,13 +54,13 @@ msgstr ""
 msgid "A server error occured. Please contact your system administrator."
 msgstr ""
 
+msgid "A time is required and must be in min:secs format."
+msgstr ""
+
 msgid "A title is required"
 msgstr ""
 
 msgid "A topic needs a title"
-msgstr ""
-
-msgid "A total time is required and must be greater than 0."
 msgstr ""
 
 msgid ""
@@ -204,6 +204,9 @@ msgstr ""
 msgid "Add to queue"
 msgstr ""
 
+msgid "Add up"
+msgstr ""
+
 msgid "Add yourself to the current list of speakers to join the conference"
 msgstr ""
 
@@ -211,6 +214,9 @@ msgid "Add/remove groups ..."
 msgstr ""
 
 msgid "Add/remove structure levels ..."
+msgstr ""
+
+msgid "Add/subtract"
 msgstr ""
 
 msgid ""
@@ -405,6 +411,10 @@ msgstr ""
 msgid "Are you sure you want to activate this meeting?"
 msgstr ""
 
+msgid ""
+"Are you sure you want to add the following time onto every structure level?"
+msgstr ""
+
 msgid "Are you sure you want to anonymize all votes? This cannot be undone."
 msgstr ""
 
@@ -580,6 +590,11 @@ msgid ""
 msgstr ""
 
 msgid "Are you sure you want to reset all passwords to the default ones?"
+msgstr ""
+
+msgid ""
+"Are you sure you want to reset the time to the last set value? It will be "
+"reset to:"
 msgstr ""
 
 msgid "Are you sure you want to reset this vote?"
@@ -1159,9 +1174,6 @@ msgid ""
 "structure level countdowns."
 msgstr ""
 
-msgid "Chyron"
-msgstr ""
-
 msgid "Chyron background color"
 msgstr ""
 
@@ -1169,6 +1181,9 @@ msgid "Chyron font color"
 msgstr ""
 
 msgid "Chyron speaker name"
+msgstr ""
+
+msgid "Chyron – current contribution"
 msgstr ""
 
 msgid "Clear"
@@ -1692,9 +1707,6 @@ msgid "Edit to enter votes."
 msgstr ""
 
 msgid "Edit topic"
-msgstr ""
-
-msgid "Edit total time"
 msgstr ""
 
 msgid "Edit workflow"
@@ -2557,6 +2569,9 @@ msgstr ""
 msgid "List of speakers"
 msgstr ""
 
+msgid "List of speakers as overlay"
+msgstr ""
+
 msgid "List of speakers is initially closed"
 msgstr ""
 
@@ -2925,9 +2940,6 @@ msgstr ""
 msgid "No category"
 msgstr ""
 
-msgid "No category set"
-msgstr ""
-
 msgid "No change recommendations yet"
 msgstr ""
 
@@ -2976,12 +2988,6 @@ msgstr ""
 msgid "No meetings have been selected."
 msgstr ""
 
-msgid "No motion block set"
-msgstr ""
-
-msgid "No motion editors"
-msgstr ""
-
 msgid "No one has voted for this poll"
 msgstr ""
 
@@ -2992,9 +2998,6 @@ msgid "No per candidate"
 msgstr ""
 
 msgid "No personal note"
-msgstr ""
-
-msgid "No recommendation"
 msgstr ""
 
 msgid "No results found"
@@ -3010,9 +3013,6 @@ msgid "No statute paragraphs"
 msgstr ""
 
 msgid "No structure level"
-msgstr ""
-
-msgid "No tags"
 msgstr ""
 
 msgid "No verbose name is defined"
@@ -3214,9 +3214,6 @@ msgid "Out of sync"
 msgstr ""
 
 msgid "Outside"
-msgstr ""
-
-msgid "Overlay"
 msgstr ""
 
 msgid "PDF"
@@ -3656,6 +3653,9 @@ msgstr ""
 msgid "Remove option"
 msgstr ""
 
+msgid "Remove point of order"
+msgstr ""
+
 msgid "Reopen"
 msgstr ""
 
@@ -3704,6 +3704,9 @@ msgid "Reset recommendation"
 msgstr ""
 
 msgid "Reset state"
+msgstr ""
+
+msgid "Reset timer"
 msgstr ""
 
 msgid "Reset to default settings"
@@ -4066,9 +4069,6 @@ msgstr ""
 msgid "Single votes"
 msgstr ""
 
-msgid "Slide"
-msgstr ""
-
 msgid "Some csv values could not be read correctly."
 msgstr ""
 
@@ -4110,7 +4110,13 @@ msgstr ""
 msgid "Speakers"
 msgstr ""
 
+msgid "Speaking time – current contribution"
+msgstr ""
+
 msgid "Speaking times"
+msgstr ""
+
+msgid "Speaking times – overview structure levels"
 msgstr ""
 
 msgid "Speech start time"
@@ -4222,6 +4228,9 @@ msgid "Submitters changed"
 msgstr ""
 
 msgid "Subscript"
+msgstr ""
+
+msgid "Subtract"
 msgstr ""
 
 msgid "Suitable accounts found"
