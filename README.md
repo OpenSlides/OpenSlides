@@ -9,7 +9,7 @@ https://openslides.com for more information.
 
 ## Installation
 
-To setup an OpenSlides 4 instance, please follow our [install
+To set up an OpenSlides 4 instance, please follow our [install
 instructions](INSTALL.md).
 
 
