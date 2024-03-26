@@ -22,14 +22,14 @@ migration path.
 
 However, you have the possiblity to export your meeting from OpenSlides 3 and import it in
 OpenSlides 4:
-- In your __OpenSlides 3__ instance, go to "Settings", click on the three dots in the top right-hand
-  corner and click "Export to OpenSlides4". A JSON file will be downloaded which contains all your
+- In your __OpenSlides 3__ instance, go to *Settings*, click on the three dots in the top right-hand
+  corner and click *Export to OpenSlides4*. A JSON file will be downloaded which contains all your
   instance's data.
 - In your __OpenSlides 4__ instance, create a committee to hold your old meeting by selecting
-  "Committees" on the left side, clicking the "+" button, filling out the relevant form data and
-  clicking "Save" (or choose an existing meeting by selecting the respective list entry). In the
-  committee's detail view, click on the three dots in the top right-hand corner and then "Import
-  meeting". Select the previously downloaded file and click "Upload". You should now see your
+  *Committees* on the left side, clicking the *+* button, filling out the relevant form data and
+  clicking *Save* (or choose an existing meeting by selecting the respective list entry). In the
+  committee's detail view, click on the three dots in the top right-hand corner and then *Import
+  meeting*. Select the previously downloaded file and click *Upload*. You should now see your
   OpenSlides 3 instance as an entry in the meeting list.
 
 
