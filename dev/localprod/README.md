@@ -20,6 +20,9 @@ Now run
 
     docker-compose up --build
 
+This will add the superadmin account with the password provided from
+`secrets/superadmin`.
+
 If you run into problems, they may be related to a newer docker(-compose)
 version. Try running the following before running the build command again:
 
@@ -30,8 +33,8 @@ If this fixes the problem, consider adding it to your `.bashrc` or similar to
 not have to re-export it every time.
 
 Finally, access https://localhost:8000/ as you would expect and login with the
-default username and password (`superadmin:superadmin`).
+default username (`superadmin`) and your chosen password.
 
-To clear the database run
+To clear the database, run
 
     docker-compose down --volumes
