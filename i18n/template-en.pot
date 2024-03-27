@@ -3006,9 +3006,6 @@ msgstr ""
 msgid "No results yet."
 msgstr ""
 
-msgid "No spokesperson"
-msgstr ""
-
 msgid "No statute paragraphs"
 msgstr ""
 

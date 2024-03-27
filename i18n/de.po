@@ -3219,9 +3219,6 @@ msgstr "Keine Ergebnisse gefunden."
 msgid "No results yet."
 msgstr "Noch keine Ergebnisse."
 
-msgid "No spokesperson"
-msgstr "Kein Sprecher"
-
 msgid "No statute paragraphs"
 msgstr "Keine Satzungsabschnitte vorhanden"
 
@@ -4894,15 +4891,6 @@ msgstr "Timer"
 
 msgid "Timers"
 msgstr "Timer"
-
-msgid "Time and traffic light"
-msgstr "Zeit und Ampel"
-
-msgid "Timer"
-msgstr "Timer"
-
-msgid "Timers"
-msgstr "Timers"
 
 msgid "Timestamp"
 msgstr "Zeitstempel"
