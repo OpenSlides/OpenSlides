@@ -132,7 +132,7 @@ instead of the `setup` command. E. g. run:
 
 This command will just rebuild your Docker Compose YAML file.
 
-To get the [defaults](pkg/config/default-config.yml) run:
+To get the [defaults](https://github.com/OpenSlides/openslides-manage-service/blob/main/pkg/config/default-config.yml) run:
 
     $ ./openslides config-create-default .
 
