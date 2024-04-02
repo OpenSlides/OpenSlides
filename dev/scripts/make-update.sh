@@ -78,7 +78,7 @@ set_remote() {
 confirm_version() {
   set_remote
   STABLE_BRANCH_NAME="stable/$(awk -v FS=. -v OFS=. '{$3="x"  ; print $0}' VERSION)"  # 4.N.M -> 4.N.x
-  git fetch $REMOTE_NAME $STABLE_BRANCH_NAME
+  git fetch "$REMOTE_NAME" "$STABLE_BRANCH_NAME"
   STABLE_VERSION="$(git show "$REMOTE_NAME/$STABLE_BRANCH_NAME:VERSION")"
   STAGING_VERSION="$(echo $STABLE_VERSION | awk -v FS=. -v OFS=. '{$3=$3+1 ; print $0}')"  # 4.N.M -> 4.N.M+1
   # Give the user the opportunity to adjust the calculated staging version
@@ -105,7 +105,7 @@ check_current_branch() {
       abort 0
   }
 
-  git fetch "$REMOTE_NAME" "$BRANCH_NAME"  # TODO: probably obsoleted by ls-remote above
+  git fetch "$REMOTE_NAME" "$BRANCH_NAME"
   if git merge-base --is-ancestor "$BRANCH_NAME" "$REMOTE_NAME/$BRANCH_NAME"; then
     echo "git merge --ff-only $REMOTE_NAME/$BRANCH_NAME"
     git merge --ff-only "$REMOTE_NAME"/$BRANCH_NAME
@@ -119,9 +119,31 @@ check_current_branch() {
 check_submodules_intialized() {
   # From `man git-submodule`:
   #   Each SHA-1 will possibly be prefixed with - if the submodule is not initialized
-  git submodule status --recursive | awk '$1 ~ "^-" {print "  " $2; x=1} END {exit x}' || {
-    echo "ERROR: Found the above uninitialized submodules. Please correct before rerunning $ME."
-    abort 1
+  git submodule status --recursive |
+    awk '/^-/ {print "  " $2; x=1} END {exit x}' || {
+      echo "ERROR: Found the above uninitialized submodules. Please correct before rerunning $ME."
+      abort 1
+    }
+}
+
+check_ssh_remotes() {
+  local remote_cmd=
+
+  [[ -z "$OPT_LOCAL" ]] ||
+    return 0
+
+  set_remote
+  remote_cmd="git remote get-url --push $REMOTE_NAME"
+
+  {
+    $remote_cmd
+    git submodule foreach --quiet --recursive $remote_cmd 
+  } | awk '/^https?:\/\// {print "  " $1; x=1} END {exit x}' || {
+    echo "WARN: The above $REMOTE_NAME remotes seem not to use ssh."
+    echo "WARN: $ME will attempt to directly push to these."
+    echo "WARN: Be sure your remotes are setup with proper access permissions."
+    ask y "Continue?" ||
+      abort 0
   }
 }
 
@@ -230,9 +252,7 @@ add_changes() {
         local target_sha= mod_sha_old= mod_sha_new= log_cmd= merge_base=
         mod_sha_old="$(git diff --submodule=short "$mod" | awk '$1 ~ "^-Subproject" { print $3 }')"
         mod_sha_new="$(git diff --submodule=short "$mod" | awk '$1 ~ "^+Subproject" { print $3 }')"
-	#merge_base="$(git merge-base "$BRANCH_NAME" main)"
         log_cmd="git -C $mod log --oneline --no-decorate $mod_sha_old..$mod_sha_new"
-        #log_cmd="git -C $mod log --oneline --no-decorate $merge_base..$BRANCH_NAME $merge_base..$REMOTE_NAME/main"
         target_sha="$($log_cmd | awk 'NR==1 { print $1 }' )"
 
         echo ""
@@ -285,8 +305,8 @@ choose_changes() {
 commit_changes() {
   local commit_message="Updated services"
   [[ "$BRANCH_NAME" == main ]] &&
-    commit_message="Updated services (pre staging update)"
-  [[ "$BRANCH_NAME" == staging/* ]]
+    commit_message="Updated services"
+  [[ "$BRANCH_NAME" == staging/* ]] &&
     commit_message="Staging update $(date +%Y%m%d)"
   [[ "$BRANCH_NAME" == stable/* ]] &&
     commit_message="Update $(cat VERSION) ($(date +%Y%m%d))"
@@ -300,9 +320,9 @@ commit_changes() {
 }
 
 update_main_branch() {
-  ask y "Update services and create a new commit on main branch now? This should be your
-first step. If it was done before, or you are certain, $STAGING_BRANCH_NAME should branch
-out from $REMOTE_NAME/main as it is now, you may answer 'n' to create a staging branch." ||
+  ask y "Update services and create a new commit on main branch now? This should be your first step.
+If it was done before, or you are certain, $STAGING_BRANCH_NAME should branch out from $REMOTE_NAME/main
+as it is now, answer 'n' to create a staging branch." ||
     return 1
 
   BRANCH_NAME=main
@@ -315,11 +335,12 @@ out from $REMOTE_NAME/main as it is now, you may answer 'n' to create a staging 
 }
 
 initial_staging_update() {
+  set_remote
+  git fetch "$REMOTE_NAME" "main"
+
   ask y "Create new branch $BRANCH_NAME at $REMOTE_NAME/main, referenced HEADs in submodules as well as openslides-meta
 to fixate changes for a new staging update now?" ||
     abort 0
-
-  set_remote
 
   echo "\$ git checkout --no-track -B $BRANCH_NAME $REMOTE_NAME/main"
   git checkout --no-track -B "$BRANCH_NAME" "$REMOTE_NAME/main"
@@ -351,6 +372,7 @@ make_staging_update() {
     # A fitting staging/* branch exists and we can add new remote changes to
     # create a new staging update for the same version
     choose_changes
+    commit_changes
     push_changes
   else
     # No fitting staging/* branch exists yet. Offer to Update main branches
@@ -365,6 +387,8 @@ make_staging_update() {
 
 make_hotfix_update() {
   # TODO: Reconsider the hotfix workflow
+  echo "ERROR: $ME hotfix is currently not supported. Sorry ..."
+  abort 1
   local diff_cmd=
 
   add_changes
@@ -387,34 +411,70 @@ make_hotfix_update() {
   push_changes
 }
 
-merge_stable_branches() {
-  local target_sha="$1"
-  local mod_target_sha=
-  local diff_cmd=
+merge_stable_branch() {
+  local mod=
+  local dir="."
+  [[ $# == 0 ]] ||
+    dir="$1"
 
-  echo "Creating merge commits in submodules..."
+  # Merge, but don't commit yet ...
+  # (also we expect conflicts in submodules so we hide that output)
+  git -C "$dir" merge -Xtheirs --no-commit --no-ff "$REMOTE_NAME/$STAGING_BRANCH_NAME" --log >/dev/null || :
+  # ... because we want to change the submod pointers to stable
+  for mod in $(git -C "$dir" submodule status | awk '{print $2}'); do
+    git -C "$dir" add "$mod"
+  done
+}
+
+merge_stable_branch_meta() {
+  local forerunner_path=
+
+  echo "Merging $STABLE_BRANCH_NAME in meta repositories ..."
+  ask y "Continue?" ||
+    abort 0
+
+  # Doing a nested loop rather than foreach --recursive as it's easier to get
+  # both the path of service submod and the (potential) meta submod in one
+  # iteration
+  while read mod; do
+    while read meta_name meta_fullpath; do
+      [[ "$meta_name" == 'openslides-meta' ]] ||
+        continue
+
+      git -C "$meta_fullpath" checkout "$STABLE_BRANCH_NAME"
+      if [[ -z "$forerunner_path" ]]; then
+        merge_stable_branch "$meta_fullpath"
+        git -C "$meta_fullpath" commit \
+          --message "Merge $STAGING_BRANCH_NAME into $STABLE_BRANCH_NAME. Update $(date +%Y%m%d)"
+        forerunner_path="$meta_fullpath"
+      else
+        git -C "$meta_fullpath" pull --ff-only "$forerunner_path" "$STABLE_BRANCH_NAME"
+      fi
+    done <<< "$(git -C $mod submodule foreach -q 'echo "$name $toplevel/$sm_path"')"
+  done <<< "$(git submodule foreach -q 'echo "$sm_path"')"
+}
+
+merge_stable_branch_services() {
+  local target_sha="$1"
+  local diff_cmd=
+  local mod=
+
+  set -x
+  echo "Merging $STABLE_BRANCH_NAME in service repositories ..."
   ask y "Continue?" ||
     abort 0
 
   for mod in $(git submodule status --recursive | awk '{print $2}'); do
-    diff_cmd="git diff --submodule=short $BRANCH_NAME $target_sha $mod"
+    diff_cmd="git diff --submodule=short $BRANCH_NAME $REMOTE_NAME/$STAGING_BRANCH_NAME $mod"
     [[ "$($diff_cmd | grep -c .)" -gt 0 ]] ||
       continue
 
-    mod_target_sha="$($diff_cmd | awk '$1 ~ "^+Subproject" { print $3 }')"
-    (
-      echo ""
-      echo "$mod"
-      cd "$mod"
-
-      set_remote
-      git checkout "$BRANCH_NAME"
-      git submodule update
-      check_current_branch
-
-      git merge --no-ff -Xtheirs "$mod_target_sha" --log --message "Merge $STAGING_BRANCH_NAME into $STABLE_BRANCH_NAME. Update $(date +%Y%m%d)"
-    )
+    git -C "$mod" checkout "$BRANCH_NAME"
+    merge_stable_branch "$mod"
+    git -C "$mod" commit --no-edit \
+      --message "Merge $STAGING_BRANCH_NAME into $STABLE_BRANCH_NAME. Update $(date +%Y%m%d)"
   done
+  set +x
 
   echo ""
   echo "Updated submodules $BRANCH_NAME branches."
@@ -451,8 +511,9 @@ make_stable_update() {
     echo "ERROR: Please fix this in a new staging update before trying again."
     abort 1
   }
+  merge_stable_branch_meta
 
-  merge_stable_branches "$target_sha"
+  merge_stable_branch_services "$target_sha"
 
   # Merge, but don't commit yet ...
   # (also we expect conflicts in submodules so we hide that output)
@@ -463,6 +524,12 @@ make_stable_update() {
   done
   # Now commit the merge with corrected submodule pointers
   commit_changes
+
+  check_meta_consistency || {
+    echo "ERROR: Apparently merging $BRANCH_NAME went wrong and meta is not consistent anymore."
+    echo "ERROR: You probably need to investigate what did go wrong."
+    abort 1
+  }
 
   push_changes
 }
@@ -508,12 +575,14 @@ for arg; do
       shift 1
       ;;
     staging)
+      check_ssh_remotes
       confirm_version
       BRANCH_NAME=$STAGING_BRANCH_NAME
       make_staging_update
       shift 1
       ;;
     stable)
+      check_ssh_remotes
       confirm_version
       BRANCH_NAME=$STABLE_BRANCH_NAME
       make_stable_update
