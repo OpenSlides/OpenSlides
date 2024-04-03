@@ -329,6 +329,13 @@ as it is now, answer 'n' to create a staging branch." ||
   check_current_branch
 
   choose_changes
+  # Update VERSION
+  echo "$STAGING_VERSION-dev" > VERSION
+  git diff --quiet VERSION && {
+    echo "ERROR: $STAGING_VERSION does not seem to differ from version number present in VERSION."
+    abort 1
+  }
+  git add VERSION
   commit_changes
   echo "Commit created. Push to a remote and PR into main repo to bring it live."
   echo "After merging, rerun $ME and start creating a staging branch."
@@ -352,14 +359,6 @@ to fixate changes for a new staging update now?" ||
     echo "\$ git -C $repo checkout --no-track -B $BRANCH_NAME"
     git -C "$repo" checkout --no-track -B "$BRANCH_NAME"
   done
-
-  # Update VERSION
-  echo "$STAGING_VERSION" > VERSION
-  git diff --quiet VERSION && {
-    echo "ERROR: $STAGING_VERSION does not seem to differ from version number present in VERSION."
-    abort 1
-  }
-  git add VERSION
 
   commit_changes
   push_changes
