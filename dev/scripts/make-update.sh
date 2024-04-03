@@ -441,7 +441,7 @@ merge_stable_branch_meta() {
       [[ "$meta_name" == 'openslides-meta' ]] ||
         continue
 
-      git -C "$meta_fullpath" checkout "$STABLE_BRANCH_NAME"
+      git -C "$meta_fullpath" checkout "$BRANCH_NAME"
       if [[ -z "$forerunner_path" ]]; then
         merge_stable_branch "$meta_fullpath"
         git -C "$meta_fullpath" commit \
@@ -459,7 +459,6 @@ merge_stable_branch_services() {
   local diff_cmd=
   local mod=
 
-  set -x
   echo "Merging $STABLE_BRANCH_NAME in service repositories ..."
   ask y "Continue?" ||
     abort 0
@@ -474,14 +473,10 @@ merge_stable_branch_services() {
     git -C "$mod" commit --no-edit \
       --message "Merge $STAGING_BRANCH_NAME into $STABLE_BRANCH_NAME. Update $(date +%Y%m%d)"
   done
-  set +x
-
-  echo ""
-  echo "Updated submodules $BRANCH_NAME branches."
 }
 
 make_stable_update() {
-  local target_sha= log_cmd= REPLY=
+  local log_cmd=
 
   set_remote
   check_current_branch
@@ -494,35 +489,23 @@ make_stable_update() {
     echo "ERROR: No staging update ahead of the latest stable update found."
     abort 1
   }
-  target_sha="$($log_cmd | awk 'NR==1 { print $1 }')"
 
   echo 'Staging updates since last stable update:'
   echo '--------------------------------------------------------------------------------'
   $log_cmd
   echo '--------------------------------------------------------------------------------'
-  read -rp "Please confirm the staging update to base this stable update on [${target_sha}]: "
-  case "$REPLY" in
-    "") ;;
-    *) target_sha="$REPLY" ;;
-  esac
+  ask y "Including these staging updates for the new stable update. Continue?" ||
+    abort 0
 
-  check_meta_consistency "$target_sha" || {
+  check_meta_consistency "$REMOTE_NAME/$STAGING_BRANCH_NAME" || {
     echo "ERROR: openslides-meta is not consistent at $target_sha. This is not acceptable for a stable update."
     echo "ERROR: Please fix this in a new staging update before trying again."
     abort 1
   }
+
   merge_stable_branch_meta
-
-  merge_stable_branch_services "$target_sha"
-
-  # Merge, but don't commit yet ...
-  # (also we expect conflicts in submodules so we hide that output)
-  git merge -Xtheirs --no-commit --no-ff "$target_sha" --log >/dev/null || :
-  # ... because we want to change the submod pointers to stable
-  for mod in $(git submodule status | awk '{print $2}'); do
-    git add "$mod"
-  done
-  # Now commit the merge with corrected submodule pointers
+  merge_stable_branch_services
+  merge_stable_branch
   commit_changes
 
   check_meta_consistency || {
