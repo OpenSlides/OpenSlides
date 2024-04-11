@@ -4020,6 +4020,17 @@ msgstr "Auflösung und Größe"
 msgid "Restart livestream"
 msgstr "Livestream neustarten"
 
+msgid ""
+"Restrict delegation principals from adding themselves to the list of "
+"speakers"
+msgstr "Vollmachtgeber dürfen sich nicht selbst auf die Redeliste setzen"
+
+msgid "Restrict delegation principals from creating motions/amendments"
+msgstr "Vollmachtgeber dürfen keine Anträge/Änderungsanträge erstellen"
+
+msgid "Restrict delegation principals from supporting motions"
+msgstr "Vollmachtgeber dürfen keine Anträge unterstützen"
+
 msgid "Restrictions"
 msgstr "Zugriffsbeschränkung"
 
@@ -4683,9 +4694,6 @@ msgstr ""
 
 msgid "The list of speakers is closed."
 msgstr "Die Redeliste ist geschlossen."
-
-msgid "The list of speakers is open."
-msgstr "Die Redeliste ist geöffnet."
 
 msgid ""
 "The maximum number of characters per line. Relevant when line numbering is "
