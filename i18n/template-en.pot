@@ -3778,6 +3778,16 @@ msgstr ""
 msgid "Restart livestream"
 msgstr ""
 
+msgid ""
+"Restrict delegation principals from adding themselves to the list of speakers"
+msgstr ""
+
+msgid "Restrict delegation principals from creating motions/amendments"
+msgstr ""
+
+msgid "Restrict delegation principals from supporting motions"
+msgstr ""
+
 msgid "Restrictions"
 msgstr ""
 
@@ -4415,9 +4425,6 @@ msgid "The link is broken. Please contact your system administrator."
 msgstr ""
 
 msgid "The list of speakers is closed."
-msgstr ""
-
-msgid "The list of speakers is open."
 msgstr ""
 
 msgid ""
