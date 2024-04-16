@@ -18,7 +18,7 @@ the `config.yml`.
 
 Now run
 
-    docker-compose up --build
+    docker compose up --build
 
 If you run into problems, they may be related to a newer docker(-compose)
 version. Try running the following before running the build command again:
@@ -41,4 +41,4 @@ Access https://localhost:8000/ as you would expect.
 
 To clear the database run
 
-    docker-compose down --volumes
+    docker compose down --volumes
