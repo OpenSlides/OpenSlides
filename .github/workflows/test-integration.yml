@@ -20,8 +20,8 @@ jobs:
         run: |
           ./setup.sh
           sed -i '/x-default-environment/a \ \ DATASTORE_INITIAL_DATA_FILE: cli/example-data.json' docker-compose.yml
-          docker-compose build --parallel
-          docker-compose up -d
+          docker compose build --parallel
+          docker compose up -d
 
       - name: Wait for dev setup
         uses: iFaxity/wait-on-action@v1.1.0
@@ -31,7 +31,7 @@ jobs:
 
       - name: Setup initial data
         working-directory: "./dev/localprod"
-        run: docker-compose exec -T datastoreWriter python cli/create_initial_data.py
+        run: docker compose exec -T datastoreWriter python cli/create_initial_data.py
 
       - name: Start tests
         working-directory: "./openslides-client"
@@ -47,4 +47,4 @@ jobs:
       - name: Shut down setup
         if: always()
         working-directory: "./dev/localprod"
-        run: docker-compose down --volumes --remove-orphans
+        run: docker compose down --volumes --remove-orphans

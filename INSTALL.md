@@ -59,8 +59,8 @@ but for most cases this is not recommended.
 
 Then run:
 
-    $ docker-compose pull
-    $ docker-compose up --detach
+    $ docker compose pull
+    $ docker compose up --detach
 
 
 ### Initialize database
@@ -99,15 +99,15 @@ have several options to achieve this:
 
 To stop the instance, run:
 
-    $ docker-compose stop
+    $ docker compose stop
 
 To remove all containers and networks, run:
 
-    $ docker-compose down
+    $ docker compose down
 
 To remove also the database (and lose all your data), run:
 
-    $ docker-compose down --volumes
+    $ docker compose down --volumes
 
 
 
@@ -139,7 +139,7 @@ instead of the `setup` command. E. g. run:
 
 This command will just rebuild your Docker Compose YAML file.
 
-To get the [defaults](pkg/config/default-config.yml) run:
+To get the [defaults](https://github.com/OpenSlides/openslides-manage-service/blob/main/pkg/config/default-config.yml) run:
 
     $ ./openslides config-create-default .
 
@@ -170,7 +170,7 @@ To update to the new version, set the new tag, regenerate the compose file and
 apply the changes to the containers:
 
     $ ./openslides config --config my-config.yml .
-    $ docker-compose up --detach
+    $ docker compose up --detach
 
 Regenerating the compose file is an important step that should be done for every
 update. This will ensure that all services will be provided with all necessary
@@ -285,15 +285,15 @@ are sufficient for you.
 
 To get a dump of your (PostgreSQL) database, run:
 
-    $ docker-compose exec --user postgres postgres pg_dump -U openslides --clean > dump.sql
+    $ docker compose exec --user postgres postgres pg_dump -U openslides --clean > dump.sql
 
 To restore your dump, shut down your instance if it is running, start only the
 postgres container and upload your dump:
 
-    $ docker-compose down
-    $ docker-compose up --detach postgres
-    $ docker-compose exec --no-TTY --user postgres postgres psql -U openslides < dump.sql
+    $ docker compose down
+    $ docker compose up --detach postgres
+    $ docker compose exec --no-TTY --user postgres postgres psql -U openslides < dump.sql
 
 Then restart your instance:
 
-    $ docker-compose up --detach
+    $ docker compose up --detach

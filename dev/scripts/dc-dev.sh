@@ -1,3 +1,3 @@
 #!/bin/bash
 cd "$(dirname $0)"
-docker-compose -f ../docker/docker-compose.dev.yml $@
+docker compose -f ../docker/docker-compose.dev.yml $@
