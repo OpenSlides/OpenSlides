@@ -17,8 +17,8 @@ Shorthand to get to a psql shell inside the postgres container.
 ## `dc-dev.sh`
 
 Shorthand script to not have to type out the whole docker compose command every time one wants to
-access a container. Is not a standalone program - supply docker compose commmand and options as args
-as you would to `docker-compose`.
+access a container. It is not a standalone program - supply docker compose commmand and options as args
+as you would to `docker compose`.
 
 ## `export-ds.sh`
 
