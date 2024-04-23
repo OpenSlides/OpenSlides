@@ -18,7 +18,7 @@ the `config.yml`.
 
 Now run
 
-    docker-compose up --build
+    docker compose up --build
 
 This will add the superadmin account with the password provided from
 `secrets/superadmin`.
@@ -37,4 +37,4 @@ default username (`superadmin`) and your chosen password.
 
 To clear the database, run
 
-    docker-compose down --volumes
+    docker compose down --volumes
