@@ -360,6 +360,14 @@ to fixate changes for a new staging update now?" ||
     git -C "$repo" checkout --no-track -B "$BRANCH_NAME"
   done
 
+  # Update VERSION
+  echo "$STAGING_VERSION" > VERSION
+  git diff --quiet VERSION && {
+    echo "ERROR: $STAGING_VERSION does not seem to differ from version number present in VERSION."
+    abort 1
+  }
+  git add VERSION
+
   commit_changes
   push_changes
 }
