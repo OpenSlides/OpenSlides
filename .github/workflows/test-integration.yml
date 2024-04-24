@@ -18,6 +18,10 @@ jobs:
           go build ./cmd/openslides
           cp openslides ../dev/localprod/.
 
+      - name: Use example data instead of initial data
+        working-directory: "./openslides-backend/global/data/"
+        run: cp example-data.json initial-data.json
+
       - name: Start setup
         working-directory: "./dev/localprod"
         run: |
