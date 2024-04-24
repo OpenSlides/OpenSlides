@@ -12,6 +12,12 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Build local openslides tool
+        working-directory: "./openslides-manage-service"
+        run: |
+          go build ./cmd/openslides
+          cp openslides ../dev/localprod/.
+
       - name: Use example data instead of initial data
         working-directory: "./openslides-backend/global/data/"
         run: cp example-data.json initial-data.json
