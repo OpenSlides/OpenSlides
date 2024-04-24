@@ -26,6 +26,7 @@ jobs:
         working-directory: "./dev/localprod"
         run: |
           ./setup.sh
+          rm secrets/superadmin
           docker compose build --parallel
           docker compose up -d
 
