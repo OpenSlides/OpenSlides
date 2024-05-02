@@ -1,6 +1,6 @@
 DC_PATH=dev/docker
 SCRIPT_PATH=dev/scripts
-DC=docker-compose -f $(DC_PATH)/docker-compose.dev.yml
+DC=docker compose -f $(DC_PATH)/docker-compose.dev.yml
 
 # Main command: start the dev server
 run-dev: | build-dev 
@@ -22,19 +22,27 @@ run-service-tests:
 # interfering with your dev database
 switch-to-test:
 	$(DC) stop postgres
-	docker-compose -f $(DC_PATH)/docker-compose.test.yml up -d postgres-test
+	docker compose -f $(DC_PATH)/docker-compose.test.yml up -d postgres-test
 	$(DC) -f $(DC_PATH)/docker-compose.backend.yml up -d backend
 	$(DC) restart datastore-writer datastore-reader autoupdate vote
 
 # Execute while run-dev is running: Switch back to your dev database
 switch-to-dev:
-	docker-compose -f $(DC_PATH)/docker-compose.test.yml stop postgres-test
+	docker compose -f $(DC_PATH)/docker-compose.test.yml stop postgres-test
 	$(DC) up -d postgres backend
 	$(DC) restart datastore-writer datastore-reader autoupdate vote 
 
 # Shorthand to directly enter a shell in the backend after switching the databases
 run-backend: | switch-to-test
 	$(DC) exec backend ./entrypoint.sh bash --rcfile .bashrc
+
+# Stop all backend-related services so that the backend dev setup can start
+stop-backend:
+	$(DC) stop backend datastore-reader datastore-writer auth vote postgres redis icc autoupdate search
+
+# Restart all backend-related services
+start-backend:
+	$(DC) up -d backend datastore-reader datastore-writer auth vote postgres redis icc autoupdate search
 
 # Stop the dev server
 stop-dev:

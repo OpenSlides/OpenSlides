@@ -59,20 +59,13 @@ but for most cases this is not recommended.
 
 Then run:
 
-    $ docker-compose pull
-    $ docker-compose up --detach
-
-
-### Initialize database
+    $ docker compose pull
+    $ docker compose up --detach
 
 Now all services are starting. Wait until they are ready. Maybe you have to
 increase the `--timeout` flag:
 
     $ ./openslides check-server
-
-Then initialize database:
-
-    $ ./openslides initial-data
 
 Now open https://localhost:8000, login with superuser credentials (default
 username and password: `superadmin`) and have fun.
@@ -99,15 +92,15 @@ have several options to achieve this:
 
 To stop the instance, run:
 
-    $ docker-compose stop
+    $ docker compose stop
 
 To remove all containers and networks, run:
 
-    $ docker-compose down
+    $ docker compose down
 
 To remove also the database (and lose all your data), run:
 
-    $ docker-compose down --volumes
+    $ docker compose down --volumes
 
 
 
@@ -116,6 +109,7 @@ To remove also the database (and lose all your data), run:
 The `setup` command generates a Docker Compose YAML file (default filename:
 `docker-compose.yml`) with the container configuration for all services. This
 step can be configured with a (second) YAML formated setup configuration file.
+All options in the [defaults file](https://github.com/OpenSlides/openslides-manage-service/blob/main/pkg/config/default-config.yml) can be used to configure the setup.
 
 E. g. create a file `my-config.yml` with the following content:
 
@@ -139,7 +133,7 @@ instead of the `setup` command. E. g. run:
 
 This command will just rebuild your Docker Compose YAML file.
 
-To get the [defaults](pkg/config/default-config.yml) run:
+To get the [defaults](https://github.com/OpenSlides/openslides-manage-service/blob/main/pkg/config/default-config.yml) run:
 
     $ ./openslides config-create-default .
 
@@ -154,7 +148,7 @@ So for most updates pulling the new ones and re-running `up` as described [above
 However, this can be unreliable if `docker` fails to recognize a new image in the registry.
 On the other hand, it can mean services will update "by themselves" due to silently using a new image.
 
-It is therefore recommended to pin the version explicitly in the `config.yml` like this:
+It is therefore recommended to pin the version explicitly in the `my-config.yml` like this:
 
     ---
     defaults:
@@ -170,7 +164,7 @@ To update to the new version, set the new tag, regenerate the compose file and
 apply the changes to the containers:
 
     $ ./openslides config --config my-config.yml .
-    $ docker-compose up --detach
+    $ docker compose up --detach
 
 Regenerating the compose file is an important step that should be done for every
 update. This will ensure that all services will be provided with all necessary
@@ -240,16 +234,16 @@ setup configuration YAML file.
 
     enableLocalHTTPS: false
 
-Note, that some commands of the manage tool require the `--no-ssl` flag when SSL encryption is disbaled, e.g:
+Note, that some commands of the manage tool require the `--no-ssl` flag when SSL encryption is disabled, e.g:
 
     $ ./openslides initial-data --no-ssl
     $ ./openslides create-user --no-ssl
     
-To find out, which commands require the `--no-ssl` flag use the commands help:
+To find out which commands require the `--no-ssl` flag use the commands help:
 
     $ ./openslides <COMMAND> -h
 
-If you run OpenSlides behind a publicly accessible domain, you can use caddys
+If you run OpenSlides behind a publicly accessible domain, you can use caddy's
 integrated certificate retrieval. Add the following lines to your setup
 configuration YAML file and of course use your own domain instead of the
 example:
@@ -301,15 +295,15 @@ are sufficient for you.
 
 To get a dump of your (PostgreSQL) database, run:
 
-    $ docker-compose exec --user postgres postgres pg_dump -U openslides --clean > dump.sql
+    $ docker compose exec --user postgres postgres pg_dump -U openslides --clean > dump.sql
 
 To restore your dump, shut down your instance if it is running, start only the
 postgres container and upload your dump:
 
-    $ docker-compose down
-    $ docker-compose up --detach postgres
-    $ docker-compose exec --no-TTY --user postgres postgres psql -U openslides < dump.sql
+    $ docker compose down
+    $ docker compose up --detach postgres
+    $ docker compose exec --no-TTY --user postgres postgres psql -U openslides < dump.sql
 
 Then restart your instance:
 
-    $ docker-compose up --detach
+    $ docker compose up --detach

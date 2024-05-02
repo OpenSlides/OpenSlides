@@ -24,8 +24,6 @@ services:
       - ../../openslides-datastore-service/datastore:/app/datastore
       - ../../openslides-datastore-service/cli:/app/cli
     environment:
-      - COMMAND=create_initial_data
-      - DATASTORE_INITIAL_DATA_FILE=https://raw.githubusercontent.com/OpenSlides/openslides-backend/main/global/data/example-data.json
       - OPENSLIDES_DEVELOPMENT=1
     ports:
       - 9011:9011
@@ -69,6 +67,7 @@ services:
       - EMAIL_TIMEOUT=5
       - EMAIL_ACCEPT_SELF_SIGNED_CERTIFICATE=false
       - DEFAULT_FROM_EMAIL=noreply@example.com
+      - OPENSLIDES_BACKEND_CREATE_INITIAL_DATA=1
     volumes:
       - ../../openslides-backend/openslides_backend:/app/openslides_backend
       - ../../openslides-backend/tests:/app/tests
