@@ -19,6 +19,8 @@ services:
   backendManage:
     additionalContent:
       build: ../../openslides-backend/
+    environment:
+      OPENSLIDES_BACKEND_CREATE_INITIAL_DATA: 1
   datastoreReader:
     additionalContent: {
       build: {
