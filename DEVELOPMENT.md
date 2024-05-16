@@ -2,9 +2,9 @@
 
 ## Requirements
 
-You need git, bash, docker, docker-compose, make and openssl installed.
+You need `git`, `bash`, `docker`, `docker compose` (v2), `make` and `openssl` installed.
 
-Go is needed to install https://github.com/FiloSottile/mkcert (but Go is not a requirement to start the development server). The development setup uses HTTPS per default. OpenSlides does not work with HTTP anymore since features are required (like http2) that only work in a secure environment.
+`go` is needed to install https://github.com/FiloSottile/mkcert (but it is not a requirement to start the development server). The development setup uses HTTPS per default. OpenSlides does not work with HTTP anymore since features are required (like http2) that only work in a secure environment.
 
 ## Before starting the development
 
