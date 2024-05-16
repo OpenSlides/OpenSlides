@@ -290,7 +290,7 @@ add_changes() {
 
 choose_changes() {
   ask y "Fetch all submodules $BRANCH_NAME changes now?" &&
-    fetch_all_changes
+    OPT_PULL=1 fetch_all_changes
 
   add_changes
 
@@ -328,7 +328,6 @@ as it is now, answer 'n' to create a staging branch." ||
   BRANCH_NAME=main
   check_current_branch
 
-  choose_changes
   # Update VERSION
   echo "$STAGING_VERSION-dev" > VERSION
   git diff --quiet VERSION && {
@@ -336,6 +335,7 @@ as it is now, answer 'n' to create a staging branch." ||
     abort 1
   }
   git add VERSION
+  choose_changes
   commit_changes
   echo "Commit created. Push to a remote and PR into main repo to bring it live."
   echo "After merging, rerun $ME and start creating a staging branch."
@@ -477,7 +477,7 @@ merge_stable_branch_services() {
 
     git -C "$mod" checkout "$BRANCH_NAME"
     merge_stable_branch "$mod"
-    git -C "$mod" commit --no-edit \
+    git -C "$mod" commit --no-edit --allow-empty \
       --message "Merge $STAGING_BRANCH_NAME into $STABLE_BRANCH_NAME. Update $(date +%Y%m%d)"
   done
 }
