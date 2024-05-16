@@ -194,10 +194,13 @@ push_changes() {
   echo "Ensure you have proper access rights or use --local to skip pushing."
   ask y "Continue?" ||
     abort 0
+  echo ""
   echo "Submodules first ..."
   git submodule foreach --recursive git push "$REMOTE_NAME" "$BRANCH_NAME"
+  echo ""
   echo "Now main repository ..."
   git push "$REMOTE_NAME" "$BRANCH_NAME"
+  echo ""
 }
 
 check_meta_consistency() {
@@ -482,6 +485,26 @@ merge_stable_branch_services() {
   done
 }
 
+keep_stable_house() {
+  ask y "Performing house keeping tasks after stable update.
+- Removing local and remote $STAGING_BRANCH_NAME branches.
+- Creating $STAGING_VERSION tags at tips of $STABLE_BRANCH_NAME branches.
+Some of these commands may show errors as some refs are being pushed doubly.
+Continue?" ||
+    abort 0
+
+  for repo in $(git submodule status --recursive | awk '{print $2}') . ; do
+    echo "\$ git -C $repo branch -d $STAGING_BRANCH_NAME"
+    git -C "$repo" branch -D "$STAGING_BRANCH_NAME" || :
+    echo "\$ git -C $repo push -d $REMOTE_NAME $STAGING_BRANCH_NAME"
+    git -C "$repo" push -d "$REMOTE_NAME" "$STAGING_BRANCH_NAME" || :
+    echo "\$ git -C $repo tag $STAGING_VERSION $STABLE_BRANCH_NAME"
+    git -C "$repo" tag "$STAGING_VERSION" "$STABLE_BRANCH_NAME" || :
+    echo "\$ git -C $repo push $REMOTE_NAME $STAGING_VERSION"
+    git -C "$repo" push "$REMOTE_NAME" "$STAGING_VERSION" || :
+  done
+}
+
 make_stable_update() {
   local log_cmd=
 
@@ -522,6 +545,7 @@ make_stable_update() {
   }
 
   push_changes
+  keep_stable_house
 }
 
 
