@@ -64,6 +64,11 @@ ask() {
   esac
 }
 
+echocmd() {
+  echo "$ $@"
+  $@
+}
+
 abort() {
   echo "Aborting."
   exit "$1"
@@ -107,8 +112,7 @@ check_current_branch() {
 
   git fetch "$REMOTE_NAME" "$BRANCH_NAME"
   if git merge-base --is-ancestor "$BRANCH_NAME" "$REMOTE_NAME/$BRANCH_NAME"; then
-    echo "git merge --ff-only $REMOTE_NAME/$BRANCH_NAME"
-    git merge --ff-only "$REMOTE_NAME"/$BRANCH_NAME
+    echocmd git merge --ff-only "$REMOTE_NAME"/$BRANCH_NAME
   else
     ask n "$BRANCH_NAME and $REMOTE_NAME/$BRANCH_NAME have diverged. Run \`git reset --hard $REMOTE_NAME/$BRANCH_NAME\` now?" &&
       git reset --hard "$REMOTE_NAME/$BRANCH_NAME" ||
@@ -149,18 +153,16 @@ check_ssh_remotes() {
 
 pull_latest_commit() {
   if [ -z "$OPT_PULL" ]; then
-    echo "git fetch $REMOTE_NAME && git checkout $REMOTE_NAME/$BRANCH_NAME && git submodule update ..."
-    git fetch "$REMOTE_NAME" "$BRANCH_NAME" &&
-    git checkout "$REMOTE_NAME/$BRANCH_NAME"
-    git submodule update
+    echocmd git fetch "$REMOTE_NAME" "$BRANCH_NAME" &&
+    echocmd git checkout "$REMOTE_NAME/$BRANCH_NAME"
+    echocmd git submodule update
   else
-    echo "git checkout $BRANCH_NAME && git pull --ff-only $REMOTE_NAME $BRANCH_NAME && git submodule update ..."
-    git checkout "$BRANCH_NAME" &&
-    git pull --ff-only "$REMOTE_NAME" "$BRANCH_NAME" || {
+    echocmd git checkout "$BRANCH_NAME" &&
+    echocmd git pull --ff-only "$REMOTE_NAME" "$BRANCH_NAME" || {
       echo "ERROR: make sure a local branch $BRANCH_NAME exists and can be fast-forwarded to $REMOTE_NAME"
       abort 1
     }
-    git submodule update
+    echocmd git submodule update
   fi
 }
 
@@ -196,10 +198,10 @@ push_changes() {
     abort 0
   echo ""
   echo "Submodules first ..."
-  git submodule foreach --recursive git push "$REMOTE_NAME" "$BRANCH_NAME"
+  echocmd git submodule foreach --recursive git push "$REMOTE_NAME" "$BRANCH_NAME"
   echo ""
   echo "Now main repository ..."
-  git push "$REMOTE_NAME" "$BRANCH_NAME"
+  echocmd git push "$REMOTE_NAME" "$BRANCH_NAME"
   echo ""
 }
 
@@ -273,9 +275,9 @@ add_changes() {
           echo "Selecting ${target_sha:0:7} (currently referenced from HEAD) in order to skip ..."
         }
 
-        git -C "$mod" checkout "$target_sha"
-        git -C "$mod" submodule update
-        git add "$mod"
+        echocmd git -C "$mod" checkout "$target_sha"
+        echocmd git -C "$mod" submodule update
+        echocmd git add "$mod"
       )
     done
 
@@ -318,7 +320,7 @@ commit_changes() {
 
   ask y "Commit on branch $BRANCH_NAME now?" && {
     git commit --message "$commit_message"
-    git show --no-patch
+    echocmd git show --no-patch
   }
 }
 
@@ -337,7 +339,7 @@ as it is now, answer 'n' to create a staging branch." ||
     echo "ERROR: $STAGING_VERSION does not seem to differ from version number present in VERSION."
     abort 1
   }
-  git add VERSION
+  echocmd git add VERSION
   choose_changes
   commit_changes
   echo "Commit created. Push to a remote and PR into main repo to bring it live."
@@ -352,15 +354,12 @@ initial_staging_update() {
 to fixate changes for a new staging update now?" ||
     abort 0
 
-  echo "\$ git checkout --no-track -B $BRANCH_NAME $REMOTE_NAME/main"
-  git checkout --no-track -B "$BRANCH_NAME" "$REMOTE_NAME/main"
+  echocmd git checkout --no-track -B "$BRANCH_NAME" "$REMOTE_NAME/main"
 
   echo "Updating submodules and creating local $BRANCH_NAME branches"
-  echo "\$ git submodule update --recursive"
-  git submodule update --recursive
+  echocmd git submodule update --recursive
   for repo in $(git submodule status --recursive | awk '{print $2}'); do
-    echo "\$ git -C $repo checkout --no-track -B $BRANCH_NAME"
-    git -C "$repo" checkout --no-track -B "$BRANCH_NAME"
+    echocmd git -C "$repo" checkout --no-track -B "$BRANCH_NAME"
   done
 
   # Update VERSION
@@ -369,7 +368,7 @@ to fixate changes for a new staging update now?" ||
     echo "ERROR: $STAGING_VERSION does not seem to differ from version number present in VERSION."
     abort 1
   }
-  git add VERSION
+  echocmd git add VERSION
 
   commit_changes
   push_changes
@@ -494,14 +493,10 @@ Continue?" ||
     abort 0
 
   for repo in $(git submodule status --recursive | awk '{print $2}') . ; do
-    echo "\$ git -C $repo branch -d $STAGING_BRANCH_NAME"
-    git -C "$repo" branch -D "$STAGING_BRANCH_NAME" || :
-    echo "\$ git -C $repo push -d $REMOTE_NAME $STAGING_BRANCH_NAME"
-    git -C "$repo" push -d "$REMOTE_NAME" "$STAGING_BRANCH_NAME" || :
-    echo "\$ git -C $repo tag $STAGING_VERSION $STABLE_BRANCH_NAME"
-    git -C "$repo" tag "$STAGING_VERSION" "$STABLE_BRANCH_NAME" || :
-    echo "\$ git -C $repo push $REMOTE_NAME $STAGING_VERSION"
-    git -C "$repo" push "$REMOTE_NAME" "$STAGING_VERSION" || :
+    echocmd git -C "$repo" branch -D "$STAGING_BRANCH_NAME" || :
+    echocmd git -C "$repo" push -d "$REMOTE_NAME" "$STAGING_BRANCH_NAME" || :
+    echocmd git -C "$repo" tag "$STAGING_VERSION" "$STABLE_BRANCH_NAME" || :
+    echocmd git -C "$repo" push "$REMOTE_NAME" "$STAGING_VERSION" || :
   done
 }
 
@@ -511,8 +506,7 @@ make_stable_update() {
   set_remote
   check_current_branch
 
-  echo "git fetch $REMOTE_NAME $STAGING_BRANCH_NAME"
-  git fetch "$REMOTE_NAME" "$STAGING_BRANCH_NAME"
+  echocmd git fetch "$REMOTE_NAME" "$STAGING_BRANCH_NAME"
 
   log_cmd="git log --oneline --no-decorate $STABLE_BRANCH_NAME..$REMOTE_NAME/$STAGING_BRANCH_NAME"
   [[ "$($log_cmd | grep -c . )" -gt 0 ]] || {
