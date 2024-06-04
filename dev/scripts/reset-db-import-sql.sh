@@ -13,6 +13,6 @@ FILE="$1"
 $DC rm -svf postgres
 $DC up -d postgres
 # call cli script in the DS and pass local file via STDIN
-$DC exec -T datastore-writer 'cli/import-events.sh -' < "$FILE"
+$DC exec -T datastore-writer 'cli/import_events.sh -' < "$FILE"
 # recreate autoupdate and depending services for output consistency
 $DC up -d --force-recreate autoupdate
