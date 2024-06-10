@@ -186,11 +186,27 @@ To check the current status and start migrations if necessary, run:
 - 4.1.0
   - PostgreSQL major is updated from 11 to 15. This means postgres will
     complain about the data being incompatible
-  - The recommended way of porting your data is:
-    1. Dump the contents of your DB ([Database backup](#database-backup))
-    2. Do the update ([Update to a new version](#update-to-a-new-version))
+  - Before starting containers on the new version the `postgres-data` volume
+    must be removed in order to restore a dump into a fresh DB running the
+    new Postgres version.
+  - Thus, **first dump the contents of your DB** ([Database
+    backup](#database-backup))
+  - To avoid losing data, please stop all containers (`docker-compose down`)
+    and copy the instance directory using e.g. `cp -r OS_DIR OS_DIR-41`.\
+    The following steps should be tested in the copied location first.
+    1. Be sure you did dump the DB
+    2. Run `docker-compose down --volumes` to stop the containers and also
+       remove the `postgres-data` volume\
+       **If the dump did not work for any reason you will lose all your data**.
+    3. Update the tag and regenerate the compose file (see [Update to a new
+       version](#update-to-a-new-version))
       - Be sure to do fetch the new binary of the `openslides` tool as described
-    3. Restore the dump into the DB, which should now be running on version 15 ([Database backup](#database-backup))
+    4. Start only `postgres` and restore the dump into the DB, which should now
+       be running on version 15 (see [Database backup](#database-backup))
+    5. You can now start the remaining OpenSlides services by running
+       `docker-compose up --detach`
+  - After successful upgrade stop the containers and repeat the steps in the
+    original directory
   - If you updated without dumping beforehand and ran into postgres' error log
     you can downgrade by using the old `openslides` tool to get PostgreSQL 11
     again and then follow these steps
