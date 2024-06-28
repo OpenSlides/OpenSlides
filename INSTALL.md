@@ -62,17 +62,10 @@ Then run:
     $ docker compose pull
     $ docker compose up --detach
 
-
-### Initialize database
-
 Now all services are starting. Wait until they are ready. Maybe you have to
 increase the `--timeout` flag:
 
     $ ./openslides check-server
-
-Then initialize database:
-
-    $ ./openslides initial-data
 
 Now open https://localhost:8000, login with superuser credentials (default
 username and password: `superadmin`) and have fun.
@@ -193,11 +186,27 @@ To check the current status and start migrations if necessary, run:
 - 4.1.0
   - PostgreSQL major is updated from 11 to 15. This means postgres will
     complain about the data being incompatible
-  - The recommended way of porting your data is:
-    1. Dump the contents of your DB ([Database backup](#database-backup))
-    2. Do the update ([Update to a new version](#update-to-a-new-version))
+  - Before starting containers on the new version the `postgres-data` volume
+    must be removed in order to restore a dump into a fresh DB running the
+    new Postgres version.
+  - Thus, **first dump the contents of your DB** ([Database
+    backup](#database-backup))
+  - To avoid losing data, please stop all containers (`docker-compose down`)
+    and copy the instance directory using e.g. `cp -r OS_DIR OS_DIR-41`.\
+    The following steps should be tested in the copied location first.
+    1. Be sure you did dump the DB
+    2. Run `docker-compose down --volumes` to stop the containers and also
+       remove the `postgres-data` volume\
+       **If the dump did not work for any reason you will lose all your data**.
+    3. Update the tag and regenerate the compose file (see [Update to a new
+       version](#update-to-a-new-version))
       - Be sure to do fetch the new binary of the `openslides` tool as described
-    3. Restore the dump into the DB, which should now be running on version 15 ([Database backup](#database-backup))
+    4. Start only `postgres` and restore the dump into the DB, which should now
+       be running on version 15 (see [Database backup](#database-backup))
+    5. You can now start the remaining OpenSlides services by running
+       `docker-compose up --detach`
+  - After successful upgrade stop the containers and repeat the steps in the
+    original directory
   - If you updated without dumping beforehand and ran into postgres' error log
     you can downgrade by using the old `openslides` tool to get PostgreSQL 11
     again and then follow these steps
@@ -225,16 +234,16 @@ setup configuration YAML file.
 
     enableLocalHTTPS: false
 
-Note, that some commands of the manage tool require the `--no-ssl` flag when SSL encryption is disbaled, e.g:
+Note, that some commands of the manage tool require the `--no-ssl` flag when SSL encryption is disabled, e.g:
 
     $ ./openslides initial-data --no-ssl
     $ ./openslides create-user --no-ssl
     
-To find out, which commands require the `--no-ssl` flag use the commands help:
+To find out which commands require the `--no-ssl` flag use the commands help:
 
     $ ./openslides <COMMAND> -h
 
-If you run OpenSlides behind a publicly accessible domain, you can use caddys
+If you run OpenSlides behind a publicly accessible domain, you can use caddy's
 integrated certificate retrieval. Add the following lines to your setup
 configuration YAML file and of course use your own domain instead of the
 example:

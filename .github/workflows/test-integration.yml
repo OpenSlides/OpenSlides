@@ -12,14 +12,15 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Copy example data
-        run: cp openslides-backend/global/data/example-data.json openslides-datastore-service/cli/
+      - name: Use example data instead of initial data
+        working-directory: "./openslides-backend/global/data/"
+        run: cp example-data.json initial-data.json
 
       - name: Start setup
         working-directory: "./dev/localprod"
         run: |
           ./setup.sh
-          sed -i '/x-default-environment/a \ \ DATASTORE_INITIAL_DATA_FILE: cli/example-data.json' docker-compose.yml
+          echo -n "admin" > secrets/superadmin
           docker compose build --parallel
           docker compose up -d
 
@@ -28,10 +29,6 @@ jobs:
         with:
           resource: https://localhost:8000
           timeout: 30000
-
-      - name: Setup initial data
-        working-directory: "./dev/localprod"
-        run: docker compose exec -T datastoreWriter python cli/create_initial_data.py
 
       - name: Start tests
         working-directory: "./openslides-client"
