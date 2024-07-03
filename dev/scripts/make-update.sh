@@ -542,6 +542,22 @@ make_stable_update() {
   keep_stable_house
 }
 
+staging_log() {
+  git fetch -q $REMOTE_NAME $STAGING_BRANCH_NAME
+  git log --graph --oneline -U0 --submodule $REMOTE_NAME/$STABLE_BRANCH_NAME..$REMOTE_NAME/$STAGING_BRANCH_NAME | \
+    gawk -v version="$STAGING_VERSION" '
+      /^*.*Staging update [0-9]{8}/ { printf("\n# %s-staging-%s-%s\n", version, $NF, substr($2, 0, 7)) }
+      /^*/ { printf("  %s\n",$0) }
+      /^\| Submodule/ {printf("    %s %s\n", $3, $4)}
+      /^\|   >/ { $1=""; $2=""; printf("      %s\n", $0 )}
+   '
+}
+
+
+command -v gawk > /dev/null || {
+  echo "Error: 'gawk' not installed!"
+  exit 1
+}
 
 shortopt='phl'
 longopt='pull,help,local'
@@ -600,6 +616,11 @@ for arg; do
       confirm_version
       BRANCH_NAME=$STABLE_BRANCH_NAME
       make_hotfix_update
+      shift 1
+      ;;
+    staging-log)
+      confirm_version
+      staging_log
       shift 1
       ;;
   esac
