@@ -90,3 +90,8 @@ pull-translations:
 copy-translations:
 	cp i18n/*.po openslides-client/client/src/assets/i18n/
 	cp i18n/*.po openslides-backend/openslides_backend/i18n/messages/
+
+
+# Get the commit list of the current staging releases
+staging-log:
+	$(SCRIPT_PATH)/staging_log.sh
