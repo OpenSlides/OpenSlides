@@ -1,0 +1,66 @@
+name: Cherry pick staging PRs merged into main
+
+on:
+  pull_request_target:
+    types:
+      - closed
+    branches:
+      - 'main'
+
+
+jobs:
+  create-pr-for-staging:
+    if: |
+      github.event.pull_request.merged == true &&
+      contains(github.event.pull_request.labels.*.name, 'staging')
+    name: Create PR against staging branch
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 2
+
+      - name: Fetch and checkout latest staging branch
+        run: |
+          branch=$(git ls-remote --heads origin 'staging/*' | awk 'gsub(".*refs/heads/","")' | sort -V | tail -1)
+          git fetch origin $branch
+          git checkout $branch
+
+      - name: Set git credentials
+        run: |
+          git config --global user.name openslides-automation
+          git config --global user.email openslides-automation@users.noreply.github.com
+
+      - name: Cherry-pick new commit
+        id: cherry-pick
+        run: |
+          git fetch origin
+          # -m 1 to also be able to cherry-pick merge commits
+          git cherry-pick -m 1 ${{ github.sha }} || {
+            echo "error=1" >> $GITHUB_OUTPUT
+            git add .
+            git cherry-pick --continue
+          }
+
+      - name: Generate access token
+        uses: tibdex/github-app-token@v2
+        id: generate-token
+        with:
+          app_id: ${{ secrets.AUTOMATION_APP_ID }}
+          private_key: ${{ secrets.AUTOMATION_APP_PRIVATE_KEY }}
+
+      - name: Create or update PR
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ steps.generate-token.outputs.token }}
+          branch: apply/commit-${{ github.sha }}
+          delete-branch: true
+          title: "[Cherry-Pick] ${{ github.event.pull_request.title }}"
+          body: "Triggered by commit [${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }})\n\n${{ steps.cherry-pick.outputs.error && 'There were conflicts during the cherry-pick. These were commited without any resolving. Please resolve them manually and push the result to this branch before merging.' || 'The cherry-pick was successful without any conflicts. You should be able to simply merge this PR.' }}"
+          reviewers: ${{ github.event.pull_request.user.login }}
+          assignees: ${{ github.event.pull_request.user.login }}
+          labels: picked-to-staging
+          milestone: 4
