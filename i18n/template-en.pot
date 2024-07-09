@@ -218,6 +218,9 @@ msgid ""
 "affect the import."
 msgstr ""
 
+msgid "Administration roles"
+msgstr ""
+
 msgid "Administration roles (at organization level)"
 msgstr ""
 
@@ -392,6 +395,9 @@ msgid "Archive"
 msgstr ""
 
 msgid "Archived"
+msgstr ""
+
+msgid "Archived meetings"
 msgstr ""
 
 msgid ""
@@ -1564,6 +1570,9 @@ msgstr ""
 msgid "Designates whether this user is in the room."
 msgstr ""
 
+msgid "Didn't get an email"
+msgstr ""
+
 msgid "Diff version"
 msgstr ""
 
@@ -1637,6 +1646,9 @@ msgid "Duplicate"
 msgstr ""
 
 msgid "Duplicate from"
+msgstr ""
+
+msgid "Duplicates"
 msgstr ""
 
 msgid "Duration"
@@ -1735,6 +1747,9 @@ msgid "Element"
 msgstr ""
 
 msgid "Email"
+msgstr ""
+
+msgid "Email address"
 msgstr ""
 
 msgid "Email body"
@@ -2106,6 +2121,9 @@ msgstr ""
 msgid "Go to line"
 msgstr ""
 
+msgid "Got an email"
+msgstr ""
+
 msgid "Group"
 msgstr ""
 
@@ -2139,7 +2157,16 @@ msgstr ""
 msgid "Has SSO identification"
 msgstr ""
 
+msgid "Has a membership number"
+msgstr ""
+
 msgid "Has amendments"
+msgstr ""
+
+msgid "Has an email address"
+msgstr ""
+
+msgid "Has changed vote weight"
 msgstr ""
 
 msgid "Has email"
@@ -2151,13 +2178,25 @@ msgstr ""
 msgid "Has identical motions"
 msgstr ""
 
+msgid "Has logged in"
+msgstr ""
+
 msgid "Has no SSO identification"
+msgstr ""
+
+msgid "Has no email address"
 msgstr ""
 
 msgid "Has no identical motions"
 msgstr ""
 
+msgid "Has no membership number"
+msgstr ""
+
 msgid "Has no speakers"
+msgstr ""
+
+msgid "Has not logged in yet"
 msgstr ""
 
 msgid "Has not voted"
@@ -2167,6 +2206,9 @@ msgid "Has notes"
 msgstr ""
 
 msgid "Has speakers"
+msgstr ""
+
+msgid "Has unchanged vote weight"
 msgstr ""
 
 msgid "Has voted"
@@ -2376,6 +2418,9 @@ msgstr ""
 msgid "Invite to conference room"
 msgstr ""
 
+msgid "Is a committee"
+msgstr ""
+
 msgid "Is a natural person"
 msgstr ""
 
@@ -2408,7 +2453,16 @@ msgstr ""
 msgid "Is candidate"
 msgstr ""
 
+msgid "Is committee admin"
+msgstr ""
+
 msgid "Is favorite"
+msgstr ""
+
+msgid "Is in active meetings"
+msgstr ""
+
+msgid "Is in archived meetings"
 msgstr ""
 
 msgid "Is manager"
@@ -2420,13 +2474,25 @@ msgstr ""
 msgid "Is no natural person"
 msgstr ""
 
+msgid "Is not a committee"
+msgstr ""
+
 msgid "Is not a template"
+msgstr ""
+
+msgid "Is not active"
 msgstr ""
 
 msgid "Is not archived"
 msgstr ""
 
 msgid "Is not favorite"
+msgstr ""
+
+msgid "Is not in active meetings"
+msgstr ""
+
+msgid "Is not in archived meetings"
 msgstr ""
 
 msgid "Is not present"
@@ -2943,6 +3009,9 @@ msgid "No chat groups available"
 msgstr ""
 
 msgid "No comment"
+msgstr ""
+
+msgid "No committee admin"
 msgstr ""
 
 msgid "No data"
@@ -3762,10 +3831,19 @@ msgstr ""
 msgid "Rows with warnings"
 msgstr ""
 
+msgid "SSO"
+msgstr ""
+
 msgid "SSO Identification"
 msgstr ""
 
 msgid "SSO identification"
+msgstr ""
+
+msgid "Same email"
+msgstr ""
+
+msgid "Same given and surname"
 msgstr ""
 
 msgid "Save"
@@ -4245,6 +4323,9 @@ msgid "Summary of changes"
 msgstr ""
 
 msgid "Summary of changes:"
+msgstr ""
+
+msgid "Superadmin"
 msgstr ""
 
 msgid "Superadmin actions"

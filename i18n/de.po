@@ -251,6 +251,9 @@ msgstr ""
 "Es könnten zusätzliche Spalten nach den erforderlichen Spalten vorhanden "
 "sein. Diese haben jedoch keinen Einfluss auf den Import."
 
+msgid "Administration roles"
+msgstr "Administrationsrollen"
+
 msgid "Administration roles (at organization level)"
 msgstr "Administrationsrollen (auf Organisationsebene)"
 
@@ -434,6 +437,9 @@ msgstr "Archivieren"
 
 msgid "Archived"
 msgstr "Archiviert"
+
+msgid "Archived meetings"
+msgstr "Archivierte Veranstaltungen"
 
 msgid ""
 "Are you sure you want to activate this color set? This will change the "
@@ -1720,6 +1726,9 @@ msgstr "Design"
 msgid "Designates whether this user is in the room."
 msgstr "Bestimmt, ob dieser Benutzer vor Ort ist."
 
+msgid "Didn't get an email"
+msgstr "Bekam keine E-Mail"
+
 msgid "Diff version"
 msgstr "Änderungsdarstellung"
 
@@ -1800,6 +1809,9 @@ msgstr "Duplizieren"
 
 msgid "Duplicate from"
 msgstr "Duplizieren von"
+
+msgid "Duplicates"
+msgstr "Duplikate"
 
 msgid "Duration"
 msgstr "Dauer"
@@ -1904,6 +1916,9 @@ msgstr "Element"
 
 msgid "Email"
 msgstr "E-Mail"
+
+msgid "Email address"
+msgstr "E-Mail-Adresse"
 
 msgid "Email body"
 msgstr "Nachrichtentext"
@@ -2308,6 +2323,9 @@ msgstr "Kopfzeilenfarbe"
 msgid "Go to line"
 msgstr "Springe zur Zeile"
 
+msgid "Got an email"
+msgstr "Bekam eine E-Mail"
+
 msgid "Group"
 msgstr "Gruppe"
 
@@ -2343,8 +2361,17 @@ msgstr "Gast"
 msgid "Has SSO identification"
 msgstr "Hat SSO-Kennung"
 
+msgid "Has a membership number"
+msgstr "Hat eine Mitgliedsnummer"
+
 msgid "Has amendments"
 msgstr "Hat Änderungsanträge"
+
+msgid "Has an email address"
+msgstr "Hat eine E-Mail-Adresse"
+
+msgid "Has changed vote weight"
+msgstr "Stimmgewicht verändert"
 
 msgid "Has email"
 msgstr "Hat E-Mail"
@@ -2355,14 +2382,26 @@ msgstr "Hat Weiterleitungen"
 msgid "Has identical motions"
 msgstr "Hat wortgleiche Anträge"
 
+msgid "Has logged in"
+msgstr "Hat sich angemeldet"
+
 msgid "Has no SSO identification"
 msgstr "Hat keine SSO-Kennung"
+
+msgid "Has no email address"
+msgstr "Hat keine E-Mail-Adresse"
 
 msgid "Has no identical motions"
 msgstr "Hat keine wortgleichen Anträge"
 
+msgid "Has no membership number"
+msgstr "Hat keine Mitgliedsnummer"
+
 msgid "Has no speakers"
 msgstr "Keine Wortmeldungen vorhanden"
+
+msgid "Has not logged in yet"
+msgstr "Hat sich noch nicht angemeldet"
 
 msgid "Has not voted"
 msgstr "Stimme nicht abgegeben"
@@ -2372,6 +2411,9 @@ msgstr "Hat Notizen"
 
 msgid "Has speakers"
 msgstr "Wortmeldungen vorhanden"
+
+msgid "Has unchanged vote weight"
+msgstr "Stimmgewicht unverändert"
 
 msgid "Has voted"
 msgstr "Stimme abgegeben"
@@ -2584,6 +2626,9 @@ msgstr "Ungültige Stimmen"
 msgid "Invite to conference room"
 msgstr "In den Konferenzraum einladen"
 
+msgid "Is a committee"
+msgstr "Ist ein Gremium"
+
 msgid "Is a natural person"
 msgstr "Ist eine natürliche Person"
 
@@ -2619,8 +2664,17 @@ msgstr "wird projiziert"
 msgid "Is candidate"
 msgstr "ist Kandidat*in"
 
+msgid "Is committee admin"
+msgstr "Ist Gremienadmin"
+
 msgid "Is favorite"
 msgstr "Ist Favorit"
+
+msgid "Is in active meetings"
+msgstr "Ist in aktiven Veranstaltungen"
+
+msgid "Is in archived meetings"
+msgstr "Ist in archivierten Veranstaltungen"
 
 msgid "Is manager"
 msgstr "ist Verwalter*in"
@@ -2631,14 +2685,26 @@ msgstr "Ist kein Änderungsantrag und hat keine Änderungsanträge"
 msgid "Is no natural person"
 msgstr "Ist keine natürliche Person"
 
+msgid "Is not a committee"
+msgstr "Ist kein Gremium"
+
 msgid "Is not a template"
 msgstr "Ist keine öffentliche Vorlage"
+
+msgid "Is not active"
+msgstr "Ist nicht aktiv"
 
 msgid "Is not archived"
 msgstr "Ist nicht archiviert"
 
 msgid "Is not favorite"
 msgstr "Ist kein Favorit"
+
+msgid "Is not in active meetings"
+msgstr "Ist in keinen aktiven Veranstaltungen"
+
+msgid "Is not in archived meetings"
+msgstr "Ist in keinen archivierten Veranstaltungen"
 
 msgid "Is not present"
 msgstr "Ist nicht anwesend"
@@ -3162,6 +3228,9 @@ msgstr "Keine Chat-Gruppen vorhanden."
 
 msgid "No comment"
 msgstr "Kein Kommentar"
+
+msgid "No committee admin"
+msgstr "Kein Gremienadmin"
 
 msgid "No data"
 msgstr "Keine Daten"
@@ -4010,11 +4079,20 @@ msgstr "Römisch"
 msgid "Rows with warnings"
 msgstr "Zeilen mit Warnungen"
 
+msgid "SSO"
+msgstr "SSO"
+
 msgid "SSO Identification"
 msgstr "SSO-Kennung"
 
 msgid "SSO identification"
 msgstr "SSO-Kennung"
+
+msgid "Same email"
+msgstr "Gleiche E-Mail-Adresse"
+
+msgid "Same given and surname"
+msgstr "Gleicher Vor- und Nachname"
 
 msgid "Save"
 msgstr "Speichern"
@@ -4509,6 +4587,9 @@ msgstr "Zusammenfassung der Änderungen"
 
 msgid "Summary of changes:"
 msgstr "Zusammenfassung der Änderungen:"
+
+msgid "Superadmin"
+msgstr "Superadmin"
 
 msgid "Superadmin actions"
 msgstr "Superadmin-Aktionen"
