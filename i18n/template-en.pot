@@ -92,9 +92,6 @@ msgstr ""
 msgid "Account"
 msgstr ""
 
-msgid "Account admin"
-msgstr ""
-
 msgid "Account successfully assigned"
 msgstr ""
 
@@ -221,9 +218,6 @@ msgid ""
 "affect the import."
 msgstr ""
 
-msgid "Administration roles"
-msgstr ""
-
 msgid "Administration roles (at organization level)"
 msgstr ""
 
@@ -251,6 +245,9 @@ msgid "Agenda visibility"
 msgstr ""
 
 msgid "Alignment"
+msgstr ""
+
+msgid "All"
 msgstr ""
 
 msgid "All casted ballots"
@@ -397,9 +394,6 @@ msgstr ""
 msgid "Archived"
 msgstr ""
 
-msgid "Archived meetings"
-msgstr ""
-
 msgid ""
 "Are you sure you want to activate this color set? This will change the "
 "colors in all meetings."
@@ -507,9 +501,6 @@ msgid "Are you sure you want to delete this projector?"
 msgstr ""
 
 msgid "Are you sure you want to delete this state?"
-msgstr ""
-
-msgid "Are you sure you want to delete this statute paragraph?"
 msgstr ""
 
 msgid "Are you sure you want to delete this structure level?"
@@ -643,6 +634,9 @@ msgid ""
 msgstr ""
 
 msgid "Attention: First enter the wifi data in [Settings > General]"
+msgstr ""
+
+msgid "Attention: Not selected accounts will be merged and then deleted."
 msgstr ""
 
 msgid "Attention: This action cannot be undone!"
@@ -921,9 +915,6 @@ msgstr ""
 msgid "Can put oneself on the list of speakers"
 msgstr ""
 
-msgid "Can receive motions"
-msgstr ""
-
 msgid "Can receive motions from committee"
 msgstr ""
 
@@ -1091,15 +1082,6 @@ msgstr ""
 msgid "Cannot do that in demo mode!"
 msgstr ""
 
-msgid "Cannot forward motions"
-msgstr ""
-
-msgid "Cannot navigate to the selected history element."
-msgstr ""
-
-msgid "Cannot receive motions"
-msgstr ""
-
 msgid "Categories"
 msgstr ""
 
@@ -1188,16 +1170,25 @@ msgstr ""
 msgid "Choose 0 to disable the supporting system."
 msgstr ""
 
-msgid "Chyron background color"
+msgid "Chyron"
 msgstr ""
 
-msgid "Chyron font color"
+msgid "Chyron agenda item, background color"
+msgstr ""
+
+msgid "Chyron agenda item, font color"
 msgstr ""
 
 msgid "Chyron speaker name"
 msgstr ""
 
-msgid "Chyron – current contribution"
+msgid "Chyron speaker, background color"
+msgstr ""
+
+msgid "Chyron speaker, font color"
+msgstr ""
+
+msgid "Classic"
 msgstr ""
 
 msgid "Clear"
@@ -1234,9 +1225,6 @@ msgid "Close edit mode"
 msgstr ""
 
 msgid "Close list of speakers"
-msgstr ""
-
-msgid "Closed items"
 msgstr ""
 
 msgid "Code"
@@ -1399,6 +1387,9 @@ msgid "Creation"
 msgstr ""
 
 msgid "Creation date"
+msgstr ""
+
+msgid "Current agenda item"
 msgstr ""
 
 msgid "Current date"
@@ -1573,10 +1564,10 @@ msgstr ""
 msgid "Designates whether this user is in the room."
 msgstr ""
 
-msgid "Didn't get an email"
+msgid "Diff version"
 msgstr ""
 
-msgid "Diff version"
+msgid "Disable connection closing on inactivity"
 msgstr ""
 
 msgid "Disabled (no percents)"
@@ -1598,6 +1589,9 @@ msgid "Divergent:"
 msgstr ""
 
 msgid "Do not forget to save your changes!"
+msgstr ""
+
+msgid "Do not show recommendations publicly"
 msgstr ""
 
 msgid "Do you accept?"
@@ -1643,9 +1637,6 @@ msgid "Duplicate"
 msgstr ""
 
 msgid "Duplicate from"
-msgstr ""
-
-msgid "Duplicates"
 msgstr ""
 
 msgid "Duration"
@@ -1710,9 +1701,6 @@ msgstr ""
 msgid "Edit state"
 msgstr ""
 
-msgid "Edit statute paragraph"
-msgstr ""
-
 msgid "Edit tag"
 msgstr ""
 
@@ -1747,9 +1735,6 @@ msgid "Element"
 msgstr ""
 
 msgid "Email"
-msgstr ""
-
-msgid "Email address"
 msgstr ""
 
 msgid "Email body"
@@ -1920,11 +1905,9 @@ msgid ""
 msgstr ""
 
 msgid ""
-"Existing accounts can be reused by entering email (with given name and "
-"surname) OR by entering the username in the csv file."
-msgstr ""
-
-msgid "Exit"
+"Existing accounts can be reused or updated by using: <ul><li>Membership "
+"number <i>(recommended)</i><li>Username<li>Email address AND first name AND "
+"last name"
 msgstr ""
 
 msgid "Exit conference room"
@@ -1966,7 +1949,7 @@ msgstr ""
 msgid "External ID"
 msgstr ""
 
-msgid "Fallback mode"
+msgid "Fallback"
 msgstr ""
 
 msgid "Favorites"
@@ -2057,9 +2040,6 @@ msgstr ""
 msgid "Forward"
 msgstr ""
 
-msgid "Forward motions"
-msgstr ""
-
 msgid "Forward motions to"
 msgstr ""
 
@@ -2126,9 +2106,6 @@ msgstr ""
 msgid "Go to line"
 msgstr ""
 
-msgid "Got an email"
-msgstr ""
-
 msgid "Group"
 msgstr ""
 
@@ -2165,10 +2142,7 @@ msgstr ""
 msgid "Has amendments"
 msgstr ""
 
-msgid "Has an email address"
-msgstr ""
-
-msgid "Has changed vote weight"
+msgid "Has email"
 msgstr ""
 
 msgid "Has forwardings"
@@ -2177,25 +2151,13 @@ msgstr ""
 msgid "Has identical motions"
 msgstr ""
 
-msgid "Has logged in"
-msgstr ""
-
 msgid "Has no SSO identification"
-msgstr ""
-
-msgid "Has no email address"
 msgstr ""
 
 msgid "Has no identical motions"
 msgstr ""
 
 msgid "Has no speakers"
-msgstr ""
-
-msgid "Has not logged in yet"
-msgstr ""
-
-msgid "Has not spoken"
 msgstr ""
 
 msgid "Has not voted"
@@ -2205,12 +2167,6 @@ msgid "Has notes"
 msgstr ""
 
 msgid "Has speakers"
-msgstr ""
-
-msgid "Has spoken"
-msgstr ""
-
-msgid "Has unchanged vote weight"
 msgstr ""
 
 msgid "Has voted"
@@ -2256,6 +2212,9 @@ msgid "Help text for access data and welcome PDF"
 msgstr ""
 
 msgid "Hidden item"
+msgstr ""
+
+msgid "Hide"
 msgstr ""
 
 msgid "Hide main menu"
@@ -2334,9 +2293,6 @@ msgid "Import motions"
 msgstr ""
 
 msgid "Import participants"
-msgstr ""
-
-msgid "Import statute"
 msgstr ""
 
 msgid "Import successful"
@@ -2420,9 +2376,6 @@ msgstr ""
 msgid "Invite to conference room"
 msgstr ""
 
-msgid "Is a committee"
-msgstr ""
-
 msgid "Is a natural person"
 msgstr ""
 
@@ -2455,16 +2408,7 @@ msgstr ""
 msgid "Is candidate"
 msgstr ""
 
-msgid "Is committee admin"
-msgstr ""
-
 msgid "Is favorite"
-msgstr ""
-
-msgid "Is in active meetings"
-msgstr ""
-
-msgid "Is in archived meetings"
 msgstr ""
 
 msgid "Is manager"
@@ -2476,25 +2420,13 @@ msgstr ""
 msgid "Is no natural person"
 msgstr ""
 
-msgid "Is not a committee"
-msgstr ""
-
 msgid "Is not a template"
-msgstr ""
-
-msgid "Is not active"
 msgstr ""
 
 msgid "Is not archived"
 msgstr ""
 
 msgid "Is not favorite"
-msgstr ""
-
-msgid "Is not in active meetings"
-msgstr ""
-
-msgid "Is not in archived meetings"
 msgstr ""
 
 msgid "Is not present"
@@ -2725,7 +2657,19 @@ msgstr ""
 msgid "Meetings"
 msgstr ""
 
+msgid "Meetings effected:"
+msgstr ""
+
 msgid "Meetings selected"
+msgstr ""
+
+msgid "Membership number"
+msgstr ""
+
+msgid "Merge"
+msgstr ""
+
+msgid "Merge accounts"
 msgstr ""
 
 msgid "Message"
@@ -2759,6 +2703,9 @@ msgid "Minimum number of digits for motion identifier"
 msgstr ""
 
 msgid "Moderation note"
+msgstr ""
+
+msgid "Modern"
 msgstr ""
 
 msgid "Modify design"
@@ -2962,9 +2909,6 @@ msgstr ""
 msgid "New state"
 msgstr ""
 
-msgid "New statute paragraph"
-msgstr ""
-
 msgid "New tag"
 msgstr ""
 
@@ -2986,9 +2930,6 @@ msgstr ""
 msgid "No"
 msgstr ""
 
-msgid "No admin role"
-msgstr ""
-
 msgid "No category"
 msgstr ""
 
@@ -3002,9 +2943,6 @@ msgid "No chat groups available"
 msgstr ""
 
 msgid "No comment"
-msgstr ""
-
-msgid "No committee admin"
 msgstr ""
 
 msgid "No data"
@@ -3058,12 +2996,6 @@ msgstr ""
 msgid "No results yet."
 msgstr ""
 
-msgid "No statute paragraphs"
-msgstr ""
-
-msgid "No structure level"
-msgstr ""
-
 msgid "No verbose name is defined"
 msgstr ""
 
@@ -3077,6 +3009,9 @@ msgid "None"
 msgstr ""
 
 msgid "None of the selected motions can be forwarded."
+msgstr ""
+
+msgid "Normal (http/2)"
 msgstr ""
 
 msgid "Not found"
@@ -3163,13 +3098,25 @@ msgstr ""
 msgid "OK"
 msgstr ""
 
+msgid "OR"
+msgstr ""
+
+msgid "Off"
+msgstr ""
+
 msgid "Offline mode"
 msgstr ""
 
 msgid "Ok"
 msgstr ""
 
+msgid "Old account of"
+msgstr ""
+
 msgid "Old password"
+msgstr ""
+
+msgid "On"
 msgstr ""
 
 msgid "One email was send sucessfully."
@@ -3200,9 +3147,6 @@ msgid "Open a meeting to play \"Connect 4\""
 msgstr ""
 
 msgid "Open a meeting to play chess"
-msgstr ""
-
-msgid "Open items"
 msgstr ""
 
 msgid "Open list of speakers"
@@ -3247,9 +3191,6 @@ msgid "Organization"
 msgstr ""
 
 msgid "Organization Management Level changed"
-msgstr ""
-
-msgid "Organization admin"
 msgstr ""
 
 msgid "Organization language"
@@ -3467,6 +3408,9 @@ msgstr ""
 msgid "Please join the conference room now!"
 msgstr ""
 
+msgid "Please select a primary account."
+msgstr ""
+
 msgid "Please select a vote weight greater than or equal to 0.000001"
 msgstr ""
 
@@ -3532,6 +3476,9 @@ msgstr ""
 msgid "Primary color"
 msgstr ""
 
+msgid "Principals"
+msgstr ""
+
 msgid "Privacy Policy"
 msgstr ""
 
@@ -3586,6 +3533,9 @@ msgstr ""
 msgid "Pronoun"
 msgstr ""
 
+msgid "Proxy holders"
+msgstr ""
+
 msgid "Public"
 msgstr ""
 
@@ -3623,9 +3573,6 @@ msgid "Reason required for creating new motion"
 msgstr ""
 
 msgid "Receipt of contributions"
-msgstr ""
-
-msgid "Receive motions"
 msgstr ""
 
 msgid "Receive motions from"
@@ -3788,6 +3735,9 @@ msgstr ""
 msgid "Restrict delegation principals from supporting motions"
 msgstr ""
 
+msgid "Restrict delegation principals from voting"
+msgstr ""
+
 msgid "Restrictions"
 msgstr ""
 
@@ -3812,19 +3762,10 @@ msgstr ""
 msgid "Rows with warnings"
 msgstr ""
 
-msgid "SSO"
-msgstr ""
-
 msgid "SSO Identification"
 msgstr ""
 
 msgid "SSO identification"
-msgstr ""
-
-msgid "Same email"
-msgstr ""
-
-msgid "Same first/last name"
 msgstr ""
 
 msgid "Save"
@@ -4091,9 +4032,6 @@ msgstr ""
 msgid "Show recommendation on projector"
 msgstr ""
 
-msgid "Show recommendations not public"
-msgstr ""
-
 msgid "Show referring motions"
 msgstr ""
 
@@ -4116,6 +4054,9 @@ msgid "Show this text on the login page"
 msgstr ""
 
 msgid "Show title"
+msgstr ""
+
+msgid "Show topic navigation in detail view"
 msgstr ""
 
 msgid ""
@@ -4231,21 +4172,6 @@ msgstr ""
 msgid "Statistics"
 msgstr ""
 
-msgid "Statute"
-msgstr ""
-
-msgid "Statute amendment"
-msgstr ""
-
-msgid "Statute amendment for"
-msgstr ""
-
-msgid "Statute paragraph"
-msgstr ""
-
-msgid "Statute paragraphs"
-msgstr ""
-
 msgid "Stop"
 msgstr ""
 
@@ -4319,9 +4245,6 @@ msgid "Summary of changes"
 msgstr ""
 
 msgid "Summary of changes:"
-msgstr ""
-
-msgid "Superadmin"
 msgstr ""
 
 msgid "Superadmin actions"
@@ -4507,7 +4430,7 @@ msgstr ""
 msgid "These participants will be removed:"
 msgstr ""
 
-msgid "These settings are only applied locally on this device."
+msgid "These settings are only applied locally on this browser."
 msgstr ""
 
 msgid "This account has relations to meetings or committees"
@@ -4943,6 +4866,10 @@ msgid ""
 "deleted as well. Do you want to delete anyway?"
 msgstr ""
 
+msgid ""
+"Warning: Data loss is possible because accounts are in the same meeting."
+msgstr ""
+
 msgid "Warning: This projector will be set to visible"
 msgstr ""
 
@@ -5029,10 +4956,6 @@ msgstr ""
 msgid "You are using an incompatible client version."
 msgstr ""
 
-msgid ""
-"You are using the history mode of OpenSlides. Changes will not be saved."
-msgstr ""
-
 msgid "You can change this option only in the forwarding section."
 msgstr ""
 
@@ -5064,12 +4987,6 @@ msgid ""
 "You cannot delete the workflow as long as it is selected as default workflow "
 "for new motions in the settings. Please set another workflow as default in "
 "the settings and try to delete the workflow again."
-msgstr ""
-
-msgid ""
-"You cannot delete the workflow as long as it is selected as default workflow "
-"for new statute amendments in the settings. Please set another workflow as "
-"default in the settings and try to delete the workflow again."
 msgstr ""
 
 msgid "You cannot delete yourself."
@@ -5400,6 +5317,9 @@ msgstr ""
 msgid "represented by"
 msgstr ""
 
+msgid "represented by old account of"
+msgstr ""
+
 msgid "reset"
 msgstr ""
 
@@ -5437,6 +5357,9 @@ msgid "version"
 msgstr ""
 
 msgid "votes per candidate"
+msgstr ""
+
+msgid "votes per option"
 msgstr ""
 
 msgid "will be created"
