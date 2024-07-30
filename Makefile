@@ -64,6 +64,9 @@ services-to-main-pull:
 staging-update:
 	$(SCRIPT_PATH)/make-update.sh staging $(ARGS)
 
+staging-log:
+	$(SCRIPT_PATH)/make-update.sh staging-log
+
 hotfix-update:
 	$(SCRIPT_PATH)/make-update.sh hotfix $(ARGS)
 
@@ -90,8 +93,3 @@ pull-translations:
 copy-translations:
 	cp i18n/*.po openslides-client/client/src/assets/i18n/
 	cp i18n/*.po openslides-backend/openslides_backend/i18n/messages/
-
-
-# Get the commit list of the current staging releases
-staging-log:
-	$(SCRIPT_PATH)/staging_log.sh
