@@ -548,7 +548,9 @@ staging_log() {
     awk -v version="$STAGING_VERSION" '
       /^\*.*Staging update [0-9]{8}/ { printf("\n# %s-staging-%s-%s\n", version, $NF, substr($2, 0, 7)) }
       /^\*/ { printf("  %s\n",$0) }
+      /^  Submodule/ {printf("    %s %s\n", $2, $3)}
       /^\| Submodule/ {printf("    %s %s\n", $3, $4)}
+      /^    >/ { $1=""; printf("      %s\n", $0 )}
       /^\|   >/ { $1=""; $2=""; printf("      %s\n", $0 )}
    '
 }
