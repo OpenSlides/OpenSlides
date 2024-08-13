@@ -106,11 +106,23 @@ msgstr "Zugangsdaten (PDF)"
 msgid "Access groups"
 msgstr "Zugriffsgruppen"
 
+msgid ""
+"Access only possible for participants of this meeting. All other accounts "
+"(including organization and committee admins) may not open the closed "
+"meeting. It is locked from the inside."
+msgstr ""
+"Zugriff nur für Teilnehmende dieser Veranstaltung möglich. Alle anderen "
+"Accounts (inkl. Organsations- und Gremienadmins) dürfen die geschlossene "
+"Veranstaltung nicht öffnen. Sie ist von innen abgeschlossen."
+
 msgid "Access-data"
 msgstr "Zugangsdaten"
 
 msgid "Account"
 msgstr "Account"
+
+msgid "Account admin"
+msgstr "Accountadmin"
 
 msgid "Account successfully assigned"
 msgstr "Account erfolgreich zugewiesen"
@@ -135,6 +147,9 @@ msgstr "Aktivieren"
 
 msgid "Activate amendments"
 msgstr "Änderungsanträge aktivieren"
+
+msgid "Activate closed meeting"
+msgstr "Nichtöffentliche Veranstaltung aktivieren"
 
 msgid "Activate design"
 msgstr "Design aktivieren"
@@ -286,7 +301,7 @@ msgstr "Tagesordnungspunkte werden bearbeitet. Bitte warten ..."
 msgid "Agenda visibility"
 msgstr "Sichtbarkeit in der Tagesordnung"
 
-msgid "Alignment"
+msgid "Align"
 msgstr "Ausrichtung"
 
 msgid "All"
@@ -809,11 +824,14 @@ msgstr "Rede beginnen"
 msgid "Blank between prefix and number, e.g. 'A 001'."
 msgstr "Leerzeichen zwischen Präfix und Nummer, z. B. 'A 001'."
 
-msgid "Blocks"
-msgstr "Blöcke"
+msgid "Blockquote"
+msgstr "Zitat"
 
 msgid "Bold"
 msgstr "Fett"
+
+msgid "Bullet list"
+msgstr "Aufzählung"
 
 msgid "CSV import"
 msgstr "CSV-Import"
@@ -1033,6 +1051,9 @@ msgstr "Kann aufgrund von Fehlern nicht importieren werden"
 msgid "Can put oneself on the list of speakers"
 msgstr "Darf sich selbst auf die Redeliste setzen"
 
+msgid "Can receive motions"
+msgstr "Darf Anträge erhalten"
+
 msgid "Can receive motions from committee"
 msgstr "Darf Anträge erhalten von Gremium"
 
@@ -1226,6 +1247,12 @@ msgstr "Kandidat*innen"
 msgid "Cannot do that in demo mode!"
 msgstr "Diese Aktion ist im Demo-Modus nicht möglich!"
 
+msgid "Cannot forward motions"
+msgstr "Darf keine Anträge weiterleiten"
+
+msgid "Cannot receive motions"
+msgstr "Darf keine Anträge erhalten"
+
 msgid "Categories"
 msgstr "Sachgebiete"
 
@@ -1350,6 +1377,9 @@ msgstr "Alle Redelisten bereinigen"
 msgid "Clear current projection"
 msgstr "Aktuelle Projektion löschen"
 
+msgid "Clear formatting"
+msgstr "Formatierung entfernen"
+
 msgid "Clear list"
 msgstr "Liste leeren"
 
@@ -1374,8 +1404,11 @@ msgstr "Bearbeitungsmodus beenden"
 msgid "Close list of speakers"
 msgstr "Redeliste schließen"
 
-msgid "Code"
-msgstr "Code"
+msgid "Closed"
+msgstr "Nichtöffentlich"
+
+msgid "Closed items"
+msgstr "Erledigte Einträge"
 
 msgid "Collapse all"
 msgstr "Alle zusammenklappen"
@@ -1557,6 +1590,9 @@ msgstr "Aktuelle*r Redner*in"
 msgid "Current speaker chyron"
 msgstr "Bauchbinde aktuelle*r Redner*in"
 
+msgid "Current window"
+msgstr "Aktuelles Fenster"
+
 msgid "Currently no livestream available."
 msgstr "Derzeit kein Livestream verfügbar."
 
@@ -1666,7 +1702,7 @@ msgstr "Definiert die Zeit in der Applauswerte aufsummiert werden."
 
 msgid ""
 "Defines the wording of the recommendation that belongs to this state.\n"
-"Example: State = Accepted / Recommendation = Acceptance. \n"
+"Example: State = Accepted / Recommendation = Acceptance.\n"
 "\n"
 "To activate the recommendation system, a recommender (for example, a motion committee) must be defined under > [Settings] > [Motions] > [Name of recommender].\n"
 "Example recommender: motion committee\n"
@@ -1746,9 +1782,6 @@ msgstr "Anzeigeformat"
 
 msgid "Distribute overhang time"
 msgstr "Überhangzeit übertragen"
-
-msgid "Div"
-msgstr "Div"
 
 msgid "Divergent:"
 msgstr "abweichend:"
@@ -1841,6 +1874,9 @@ msgstr ""
 
 msgid "Edit"
 msgstr "Bearbeiten"
+
+msgid "Edit HTML content"
+msgstr "HTML-Inhalt bearbeiten"
 
 msgid "Edit account"
 msgstr "Account bearbeiten"
@@ -2002,10 +2038,10 @@ msgstr ""
 "Status."
 
 msgid ""
-"Enables the forwarding of motions to other meetings within the OpenSlides instance in the selected state. \n"
+"Enables the forwarding of motions to other meetings within the OpenSlides instance in the selected state.\n"
 "\n"
 "Prerequisites:\n"
-"1. forwarding hierarchy must be set at the organizational level in the committee. \n"
+"1. forwarding hierarchy must be set at the organizational level in the committee.\n"
 "2. target meeting must be created.\n"
 "3. user must have group permission for forwarding."
 msgstr ""
@@ -2257,6 +2293,9 @@ msgstr "Fürrede"
 msgid "Forward"
 msgstr "Weiterleiten"
 
+msgid "Forward motions"
+msgstr "Anträge weiterleiten"
+
 msgid "Forward motions to"
 msgstr "Anträge weiterleiten an"
 
@@ -2403,6 +2442,9 @@ msgstr "Keine Wortmeldungen vorhanden"
 msgid "Has not logged in yet"
 msgstr "Hat sich noch nicht angemeldet"
 
+msgid "Has not spoken"
+msgstr "Hat nicht geredet"
+
 msgid "Has not voted"
 msgstr "Stimme nicht abgegeben"
 
@@ -2411,6 +2453,9 @@ msgstr "Hat Notizen"
 
 msgid "Has speakers"
 msgstr "Wortmeldungen vorhanden"
+
+msgid "Has spoken"
+msgstr "Hat geredet"
 
 msgid "Has unchanged vote weight"
 msgstr "Stimmgewicht unverändert"
@@ -2421,31 +2466,16 @@ msgstr "Stimme abgegeben"
 msgid "Header"
 msgstr "Kopfzeile"
 
-msgid "Header 1"
-msgstr "Überschrift 1"
-
-msgid "Header 2"
-msgstr "Überschrift 2"
-
-msgid "Header 3"
-msgstr "Überschrift 3"
-
-msgid "Header 4"
-msgstr "Überschrift 4"
-
-msgid "Header 5"
-msgstr "Überschrift 5"
-
-msgid "Header 6"
-msgstr "Überschrift 6"
-
 msgid "Header background color"
 msgstr "Hintergrundfarbe Kopfbereich"
 
 msgid "Header font color"
 msgstr "Schriftfarbe Kopfbereich"
 
-msgid "Headers"
+msgid "Heading"
+msgstr "Überschrift"
+
+msgid "Headings"
 msgstr "Überschriften"
 
 msgid "Headline color"
@@ -2524,6 +2554,9 @@ msgid "If the value is set to 0 the time counts up as stopwatch."
 msgstr ""
 "Wenn der Wert auf 0 gesetzt wird, wird die Zeit als Stoppuhr hochgezählt."
 
+msgid "Image description"
+msgstr "Bildbeschreibung"
+
 msgid "Import"
 msgstr "Importieren"
 
@@ -2592,6 +2625,15 @@ msgstr "Dahinter einfügen"
 
 msgid "Insert topics here"
 msgstr "Themen hier importieren"
+
+msgid "Insert/Edit Link"
+msgstr "Link einfügen/bearbeiten"
+
+msgid "Insert/edit image"
+msgstr "Bild einfügen/bearbeiten"
+
+msgid "Insert/edit link"
+msgstr "Link einfügen/bearbeiten"
 
 msgid "Insertion"
 msgstr "Ergänzung"
@@ -2754,6 +2796,9 @@ msgstr "Jitsi-Raumname"
 msgid "Jitsi room password"
 msgstr "Jitsi-Raumpasswort"
 
+msgid "Justify"
+msgstr "Blocksatz"
+
 msgid "Keep each item in a single line."
 msgstr "Verwenden Sie eine Zeile pro Eintrag."
 
@@ -2854,6 +2899,9 @@ msgstr "Livestream"
 msgid "Livestream URL"
 msgstr "Livestream-URL"
 
+msgid "Livestream poster image"
+msgstr "Livestream-Posterbild"
+
 msgid "Livestream poster image url"
 msgstr "Livestream-Posterbild-URL"
 
@@ -2917,6 +2965,9 @@ msgstr "Veranstaltungsdatum"
 msgid "Meeting information"
 msgstr "Veranstaltungsinformationen"
 
+msgid "Meeting is closed"
+msgstr "Veranstaltung ist nichtöffentlich"
+
 msgid "Meeting not found"
 msgstr "Veranstaltung nicht gefunden"
 
@@ -2939,7 +2990,7 @@ msgstr "Veranstaltungstitel"
 msgid "Meetings"
 msgstr "Veranstaltungen"
 
-msgid "Meetings effected:"
+msgid "Meetings affected:"
 msgstr "Betroffene Veranstaltungen:"
 
 msgid "Meetings selected"
@@ -3202,6 +3253,9 @@ msgstr "Neues Thema"
 msgid "New vote"
 msgstr "Neue Abstimmung"
 
+msgid "New window"
+msgstr "Neues Fenster"
+
 msgid "New workflow"
 msgstr "Neuer Arbeitsablauf"
 
@@ -3213,6 +3267,9 @@ msgstr "Nächste Zustände"
 
 msgid "No"
 msgstr "Nein"
+
+msgid "No admin role"
+msgstr "Keine Adminrolle"
 
 msgid "No category"
 msgstr "Kein Sachgebiet"
@@ -3282,6 +3339,9 @@ msgstr "Keine Ergebnisse gefunden."
 
 msgid "No results yet."
 msgstr "Noch keine Ergebnisse."
+
+msgid "No structure level"
+msgstr "Keine Gliederungsebene"
 
 msgid "No verbose name is defined"
 msgstr "Es ist kein ausführlicher Name definiert"
@@ -3374,6 +3434,9 @@ msgstr "Anzahl der dargestellten nächsten Redner*innen auf dem Projektor"
 msgid "Number set"
 msgstr "Nummer gesetzt"
 
+msgid "Numbered list"
+msgstr "Nummerierung"
+
 msgid "Numbered per category"
 msgstr "pro Sachgebiet nummerieren"
 
@@ -3443,6 +3506,12 @@ msgstr "Öffnen Sie eine Veranstaltung um \"Vier gewinnt\" zu spielen."
 msgid "Open a meeting to play chess"
 msgstr "Öffnen Sie eine Veranstaltung um Schach zu spielen."
 
+msgid "Open items"
+msgstr "Offene Einträge"
+
+msgid "Open link in ..."
+msgstr "Link öffnen im ..."
+
 msgid "Open list of speakers"
 msgstr "Redeliste öffnen"
 
@@ -3491,6 +3560,9 @@ msgstr "Organisation"
 
 msgid "Organization Management Level changed"
 msgstr "Administrationsrolle geändert"
+
+msgid "Organization admin"
+msgstr "Organisationsadmin"
 
 msgid "Organization language"
 msgstr "Organisationssprache"
@@ -3749,9 +3821,6 @@ msgstr "Mögliche Optionen"
 msgid "Possible points of order"
 msgstr "Mögliche GO-Anträge"
 
-msgid "Pre"
-msgstr "Pre"
-
 msgid "Preamble text for PDF document (all elections)"
 msgstr "Einleitungstext für PDF-Dokument (alle Wahlen) "
 
@@ -3854,6 +3923,9 @@ msgstr "Öffentlicher Eintrag"
 msgid "Public template"
 msgstr "Öffentliche Vorlage"
 
+msgid "Public template required for creating new meeting"
+msgstr "Öffentliche Vorlage erforderlich zur Erstellung neuer Veranstaltungen"
+
 msgid "Publish"
 msgstr "Veröffentlichen"
 
@@ -3884,6 +3956,9 @@ msgstr "Begründung erforderlich zur Erstellung neuer Anträge"
 msgid "Receipt of contributions"
 msgstr "Eingang der Wortmeldungen"
 
+msgid "Receive motions"
+msgstr "Anträge erhalten"
+
 msgid "Receive motions from"
 msgstr "Anträge erhalten von"
 
@@ -3911,6 +3986,9 @@ msgstr "Empfehlung zurückgesetzt"
 
 msgid "Recommendation set to {}"
 msgstr "Empfehlung gesetzt auf {}"
+
+msgid "Redo"
+msgstr "Wiederherstellen"
 
 msgid "Reenter to conference room"
 msgstr "Konferenzraum erneut beitreten"
@@ -3966,6 +4044,9 @@ msgstr "Aus Tagesordnung entfernen"
 
 msgid "Remove from motion block"
 msgstr "Vom Antragsblock entfernen "
+
+msgid "Remove link"
+msgstr "Link entfernen"
 
 msgid "Remove me"
 msgstr "Entferne mich"
@@ -4456,6 +4537,12 @@ msgstr "Anträge sortieren nach"
 msgid "Sort workflow"
 msgstr "Arbeitsablauf sortieren"
 
+msgid "Source"
+msgstr "Quelle"
+
+msgid "Source code"
+msgstr "Quelltext"
+
 msgid "Speaker"
 msgstr "Redner*in"
 
@@ -4512,6 +4599,9 @@ msgstr "Status gesetzt auf {}"
 
 msgid "Statistics"
 msgstr "Statistiken"
+
+msgid "Status"
+msgstr "Status"
 
 msgid "Stop"
 msgstr "Beenden"
@@ -4630,6 +4720,9 @@ msgstr "Schlagwörter"
 msgid "Text"
 msgstr "Text"
 
+msgid "Text color"
+msgstr "Textfarbe"
+
 msgid "Text for this option couldn't load."
 msgstr "Der Text für diese Option konnte nicht geladen werden."
 
@@ -4638,6 +4731,9 @@ msgstr "Textimport"
 
 msgid "Text separator"
 msgstr "Texttrenner"
+
+msgid "Text to display"
+msgstr "Anzuzeigender Text"
 
 msgid "The account is deactivated."
 msgstr "Der Account ist inaktiv."
@@ -5054,8 +5150,14 @@ msgstr "Fehlerbehebung"
 msgid "Try reconnect"
 msgstr "Verbindung wiederherstellen"
 
+msgid "URL"
+msgstr "URL"
+
 msgid "Underline"
 msgstr "Unterstrichen"
+
+msgid "Undo"
+msgstr "Rückgängig"
 
 msgid "Undone"
 msgstr "unerledigt"

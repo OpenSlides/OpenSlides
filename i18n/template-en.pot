@@ -86,10 +86,19 @@ msgstr ""
 msgid "Access groups"
 msgstr ""
 
+msgid ""
+"Access only possible for participants of this meeting. All other accounts "
+"(including organization and committee admins) may not open the closed "
+"meeting. It is locked from the inside."
+msgstr ""
+
 msgid "Access-data"
 msgstr ""
 
 msgid "Account"
+msgstr ""
+
+msgid "Account admin"
 msgstr ""
 
 msgid "Account successfully assigned"
@@ -114,6 +123,9 @@ msgid "Activate"
 msgstr ""
 
 msgid "Activate amendments"
+msgstr ""
+
+msgid "Activate closed meeting"
 msgstr ""
 
 msgid "Activate design"
@@ -247,7 +259,7 @@ msgstr ""
 msgid "Agenda visibility"
 msgstr ""
 
-msgid "Alignment"
+msgid "Align"
 msgstr ""
 
 msgid "All"
@@ -732,10 +744,13 @@ msgstr ""
 msgid "Blank between prefix and number, e.g. 'A 001'."
 msgstr ""
 
-msgid "Blocks"
+msgid "Blockquote"
 msgstr ""
 
 msgid "Bold"
+msgstr ""
+
+msgid "Bullet list"
 msgstr ""
 
 msgid "CSV import"
@@ -921,6 +936,9 @@ msgstr ""
 msgid "Can put oneself on the list of speakers"
 msgstr ""
 
+msgid "Can receive motions"
+msgstr ""
+
 msgid "Can receive motions from committee"
 msgstr ""
 
@@ -1088,6 +1106,12 @@ msgstr ""
 msgid "Cannot do that in demo mode!"
 msgstr ""
 
+msgid "Cannot forward motions"
+msgstr ""
+
+msgid "Cannot receive motions"
+msgstr ""
+
 msgid "Categories"
 msgstr ""
 
@@ -1209,6 +1233,9 @@ msgstr ""
 msgid "Clear current projection"
 msgstr ""
 
+msgid "Clear formatting"
+msgstr ""
+
 msgid "Clear list"
 msgstr ""
 
@@ -1233,7 +1260,10 @@ msgstr ""
 msgid "Close list of speakers"
 msgstr ""
 
-msgid "Code"
+msgid "Closed"
+msgstr ""
+
+msgid "Closed items"
 msgstr ""
 
 msgid "Collapse all"
@@ -1416,6 +1446,9 @@ msgstr ""
 msgid "Current speaker chyron"
 msgstr ""
 
+msgid "Current window"
+msgstr ""
+
 msgid "Currently no livestream available."
 msgstr ""
 
@@ -1516,7 +1549,7 @@ msgstr ""
 
 msgid ""
 "Defines the wording of the recommendation that belongs to this state.\n"
-"Example: State = Accepted / Recommendation = Acceptance. \n"
+"Example: State = Accepted / Recommendation = Acceptance.\n"
 "\n"
 "To activate the recommendation system, a recommender (for example, a motion "
 "committee) must be defined under > [Settings] > [Motions] > [Name of "
@@ -1589,9 +1622,6 @@ msgid "Display type"
 msgstr ""
 
 msgid "Distribute overhang time"
-msgstr ""
-
-msgid "Div"
 msgstr ""
 
 msgid "Divergent:"
@@ -1672,6 +1702,9 @@ msgid ""
 msgstr ""
 
 msgid "Edit"
+msgstr ""
+
+msgid "Edit HTML content"
 msgstr ""
 
 msgid "Edit account"
@@ -1827,11 +1860,11 @@ msgstr ""
 
 msgid ""
 "Enables the forwarding of motions to other meetings within the OpenSlides "
-"instance in the selected state. \n"
+"instance in the selected state.\n"
 "\n"
 "Prerequisites:\n"
 "1. forwarding hierarchy must be set at the organizational level in the "
-"committee. \n"
+"committee.\n"
 "2. target meeting must be created.\n"
 "3. user must have group permission for forwarding."
 msgstr ""
@@ -2055,6 +2088,9 @@ msgstr ""
 msgid "Forward"
 msgstr ""
 
+msgid "Forward motions"
+msgstr ""
+
 msgid "Forward motions to"
 msgstr ""
 
@@ -2199,6 +2235,9 @@ msgstr ""
 msgid "Has not logged in yet"
 msgstr ""
 
+msgid "Has not spoken"
+msgstr ""
+
 msgid "Has not voted"
 msgstr ""
 
@@ -2206,6 +2245,9 @@ msgid "Has notes"
 msgstr ""
 
 msgid "Has speakers"
+msgstr ""
+
+msgid "Has spoken"
 msgstr ""
 
 msgid "Has unchanged vote weight"
@@ -2217,31 +2259,16 @@ msgstr ""
 msgid "Header"
 msgstr ""
 
-msgid "Header 1"
-msgstr ""
-
-msgid "Header 2"
-msgstr ""
-
-msgid "Header 3"
-msgstr ""
-
-msgid "Header 4"
-msgstr ""
-
-msgid "Header 5"
-msgstr ""
-
-msgid "Header 6"
-msgstr ""
-
 msgid "Header background color"
 msgstr ""
 
 msgid "Header font color"
 msgstr ""
 
-msgid "Headers"
+msgid "Heading"
+msgstr ""
+
+msgid "Headings"
 msgstr ""
 
 msgid "Headline color"
@@ -2316,6 +2343,9 @@ msgstr ""
 msgid "If the value is set to 0 the time counts up as stopwatch."
 msgstr ""
 
+msgid "Image description"
+msgstr ""
+
 msgid "Import"
 msgstr ""
 
@@ -2383,6 +2413,15 @@ msgid "Insert behind"
 msgstr ""
 
 msgid "Insert topics here"
+msgstr ""
+
+msgid "Insert/Edit Link"
+msgstr ""
+
+msgid "Insert/edit image"
+msgstr ""
+
+msgid "Insert/edit link"
 msgstr ""
 
 msgid "Insertion"
@@ -2541,6 +2580,9 @@ msgstr ""
 msgid "Jitsi room password"
 msgstr ""
 
+msgid "Justify"
+msgstr ""
+
 msgid "Keep each item in a single line."
 msgstr ""
 
@@ -2640,6 +2682,9 @@ msgstr ""
 msgid "Livestream URL"
 msgstr ""
 
+msgid "Livestream poster image"
+msgstr ""
+
 msgid "Livestream poster image url"
 msgstr ""
 
@@ -2703,6 +2748,9 @@ msgstr ""
 msgid "Meeting information"
 msgstr ""
 
+msgid "Meeting is closed"
+msgstr ""
+
 msgid "Meeting not found"
 msgstr ""
 
@@ -2723,7 +2771,7 @@ msgstr ""
 msgid "Meetings"
 msgstr ""
 
-msgid "Meetings effected:"
+msgid "Meetings affected:"
 msgstr ""
 
 msgid "Meetings selected"
@@ -2984,6 +3032,9 @@ msgstr ""
 msgid "New vote"
 msgstr ""
 
+msgid "New window"
+msgstr ""
+
 msgid "New workflow"
 msgstr ""
 
@@ -2994,6 +3045,9 @@ msgid "Next states"
 msgstr ""
 
 msgid "No"
+msgstr ""
+
+msgid "No admin role"
 msgstr ""
 
 msgid "No category"
@@ -3063,6 +3117,9 @@ msgid "No results found"
 msgstr ""
 
 msgid "No results yet."
+msgstr ""
+
+msgid "No structure level"
 msgstr ""
 
 msgid "No verbose name is defined"
@@ -3149,6 +3206,9 @@ msgstr ""
 msgid "Number set"
 msgstr ""
 
+msgid "Numbered list"
+msgstr ""
+
 msgid "Numbered per category"
 msgstr ""
 
@@ -3218,6 +3278,12 @@ msgstr ""
 msgid "Open a meeting to play chess"
 msgstr ""
 
+msgid "Open items"
+msgstr ""
+
+msgid "Open link in ..."
+msgstr ""
+
 msgid "Open list of speakers"
 msgstr ""
 
@@ -3260,6 +3326,9 @@ msgid "Organization"
 msgstr ""
 
 msgid "Organization Management Level changed"
+msgstr ""
+
+msgid "Organization admin"
 msgstr ""
 
 msgid "Organization language"
@@ -3509,9 +3578,6 @@ msgstr ""
 msgid "Possible points of order"
 msgstr ""
 
-msgid "Pre"
-msgstr ""
-
 msgid "Preamble text for PDF document (all elections)"
 msgstr ""
 
@@ -3614,6 +3680,9 @@ msgstr ""
 msgid "Public template"
 msgstr ""
 
+msgid "Public template required for creating new meeting"
+msgstr ""
+
 msgid "Publish"
 msgstr ""
 
@@ -3644,6 +3713,9 @@ msgstr ""
 msgid "Receipt of contributions"
 msgstr ""
 
+msgid "Receive motions"
+msgstr ""
+
 msgid "Receive motions from"
 msgstr ""
 
@@ -3668,6 +3740,9 @@ msgid "Recommendation reset"
 msgstr ""
 
 msgid "Recommendation set to {}"
+msgstr ""
+
+msgid "Redo"
 msgstr ""
 
 msgid "Reenter to conference room"
@@ -3721,6 +3796,9 @@ msgid "Remove from agenda"
 msgstr ""
 
 msgid "Remove from motion block"
+msgstr ""
+
+msgid "Remove link"
 msgstr ""
 
 msgid "Remove me"
@@ -4193,6 +4271,12 @@ msgstr ""
 msgid "Sort workflow"
 msgstr ""
 
+msgid "Source"
+msgstr ""
+
+msgid "Source code"
+msgstr ""
+
 msgid "Speaker"
 msgstr ""
 
@@ -4248,6 +4332,9 @@ msgid "State set to {}"
 msgstr ""
 
 msgid "Statistics"
+msgstr ""
+
+msgid "Status"
 msgstr ""
 
 msgid "Stop"
@@ -4367,6 +4454,9 @@ msgstr ""
 msgid "Text"
 msgstr ""
 
+msgid "Text color"
+msgstr ""
+
 msgid "Text for this option couldn't load."
 msgstr ""
 
@@ -4374,6 +4464,9 @@ msgid "Text import"
 msgstr ""
 
 msgid "Text separator"
+msgstr ""
+
+msgid "Text to display"
 msgstr ""
 
 msgid "The account is deactivated."
@@ -4734,7 +4827,13 @@ msgstr ""
 msgid "Try reconnect"
 msgstr ""
 
+msgid "URL"
+msgstr ""
+
 msgid "Underline"
+msgstr ""
+
+msgid "Undo"
 msgstr ""
 
 msgid "Undone"
