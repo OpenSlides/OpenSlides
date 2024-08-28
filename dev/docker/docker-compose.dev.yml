@@ -1,5 +1,30 @@
 version: "3"
 services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:23.0.5
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+      - PROXY_ADDRESS_FORWARDING=true
+      - KC_HOSTNAME_URL=https://localhost:8000/idp/
+      - KC_HOSTNAME_ADMIN_URL=https://localhost:8000/idp/
+#      - JAVA_OPTS=
+    command: ["start-dev", "-Dquarkus.http.root-path=/idp"]
+    ports:
+      - 18080:8080
+
+  keycloak-init:
+    image: abbcodingde/keycloak-py-config:1.0.1
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+      - KEYCLOAK_URL=http://keycloak:8080
+      - TIMEOUT=120
+    volumes:
+      - ./configure_keycloak.py:/app/config.py
+    depends_on:
+      - proxy
+
   datastore-reader:
     image: openslides-datastore-reader-dev
     depends_on:
@@ -50,7 +75,7 @@ services:
     depends_on:
       - datastore-reader
       - datastore-writer
-      - auth
+      - keycloak
     env_file: services.env
     ports:
         - "9002:9002"
@@ -68,7 +93,9 @@ services:
       - EMAIL_ACCEPT_SELF_SIGNED_CERTIFICATE=false
       - DEFAULT_FROM_EMAIL=noreply@example.com
       - OPENSLIDES_BACKEND_CREATE_INITIAL_DATA=1
+      - KEYCLOAK_URL=http://keycloak:8080
     volumes:
+      - ../../../libraries/pip-auth/os_authlib:/app/os_authlib
       - ../../openslides-backend/openslides_backend:/app/openslides_backend
       - ../../openslides-backend/tests:/app/tests
       - ../../openslides-backend/cli:/app/cli
@@ -84,6 +111,7 @@ services:
     environment:
       - OPENSLIDES_DEVELOPMENT=1
       - DATASTORE_TIMEOUT=30
+      - KEYCLOAK_URL=http://keycloak:8080
     volumes:
       - ../../openslides-autoupdate-service/cmd:/root/cmd
       - ../../openslides-autoupdate-service/internal:/root/internal
@@ -96,7 +124,7 @@ services:
     depends_on:
       - datastore-reader
       - redis
-      - auth
+      - keycloak
     env_file: services.env
     environment:
       - OPENSLIDES_DEVELOPMENT=1
@@ -121,19 +149,6 @@ services:
     ports:
       - "9050:9050"
 
-  auth:
-    image: openslides-auth-dev
-    depends_on:
-      - datastore-reader
-      - redis
-    env_file: services.env
-    environment:
-      - OPENSLIDES_DEVELOPMENT=1
-    volumes:
-      - ../../openslides-auth-service/auth/src:/app/src
-    ports:
-      - "9004:9004"
-
   media:
     image: openslides-media-dev
     depends_on:
@@ -148,7 +163,7 @@ services:
   manage:
     image: openslides-manage-dev
     depends_on:
-      - auth
+      - keycloak
       - datastore-writer
     env_file: services.env
     environment:
@@ -167,6 +182,7 @@ services:
       - client
       - backend
       - autoupdate
+      - keycloak
     ports:
       - "8000:8000"
 
@@ -180,7 +196,7 @@ services:
   vote:
     image: openslides-vote-dev
     depends_on:
-      - auth
+      - keycloak
       - redis
       - datastore-reader
       - postgres
