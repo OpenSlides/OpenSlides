@@ -71,14 +71,14 @@ msgstr ""
 "Une erreur de serveur s'est produite. Veuillez contacter votre "
 "administrateur système."
 
+msgid "A time is required and must be in min:secs format."
+msgstr ""
+
 msgid "A title is required"
 msgstr "Un titre est requis"
 
 msgid "A topic needs a title"
 msgstr "Un thème a besoin d'un titre"
-
-msgid "A total time is required and must be greater than 0."
-msgstr "Un temps total est requis et doit être supérieur à 0."
 
 msgid ""
 "A user with the username '%username%' and the first name '%first_name%' was "
@@ -105,6 +105,12 @@ msgstr "Données d'accès (PDF)"
 msgid "Access groups"
 msgstr "Groupes d'accès"
 
+msgid ""
+"Access only possible for participants of this meeting. All other accounts "
+"(including organization and committee admins) may not open the closed "
+"meeting. It is locked from the inside."
+msgstr ""
+
 msgid "Access-data"
 msgstr "Données d'accès"
 
@@ -112,7 +118,7 @@ msgid "Account"
 msgstr "Compte"
 
 msgid "Account admin"
-msgstr "Administrateur de compte"
+msgstr ""
 
 msgid "Account successfully assigned"
 msgstr "Compte attribué avec succès"
@@ -138,16 +144,16 @@ msgstr "Activer"
 msgid "Activate amendments"
 msgstr "Activer les amendements"
 
+msgid "Activate closed meeting"
+msgstr ""
+
 msgid "Activate design"
 msgstr "Activer le design"
-
-msgid "Activate statute amendments"
-msgstr "Activer les amendements au statut"
 
 msgid "Activate the selection field 'motion editor'"
 msgstr ""
 
-msgid "Activate the selection field 'spokesman'"
+msgid "Activate the selection field 'spokesperson'"
 msgstr ""
 
 msgid "Activate vote delegations"
@@ -233,6 +239,9 @@ msgstr "Ajouter aux réunions"
 msgid "Add to queue"
 msgstr "Ajouter à la file d'attente"
 
+msgid "Add up"
+msgstr ""
+
 msgid "Add yourself to the current list of speakers to join the conference"
 msgstr ""
 "Ajoutez vous à la liste actuelle des orateurs pour rejoindre la conférence"
@@ -243,6 +252,9 @@ msgstr "Ajouter/supprimer des groupes ...."
 msgid "Add/remove structure levels ..."
 msgstr "Ajouter/supprimer des niveaux de structure ..."
 
+msgid "Add/subtract"
+msgstr ""
+
 msgid ""
 "Additional columns after the required ones may be present and will not "
 "affect the import."
@@ -251,7 +263,7 @@ msgstr ""
 " n'affecteront pas l'importation."
 
 msgid "Administration roles"
-msgstr "Rôles administratifs"
+msgstr ""
 
 msgid "Administration roles (at organization level)"
 msgstr "Rôles d'administration (au niveau de l'organisation)"
@@ -287,8 +299,11 @@ msgstr ""
 msgid "Agenda visibility"
 msgstr "Visibilité de l'ordre du jour"
 
-msgid "Alignment"
-msgstr "Alignement"
+msgid "Align"
+msgstr ""
+
+msgid "All"
+msgstr ""
 
 msgid "All casted ballots"
 msgstr "Tous les bulletins de vote déposés"
@@ -427,6 +442,9 @@ msgstr "URL de l'image de la particule d'applaudissement"
 msgid "Applause visualization"
 msgstr "Visualisation d'applaudissements"
 
+msgid "Application update in progress."
+msgstr ""
+
 msgid "Apply"
 msgstr "Appliquer"
 
@@ -440,7 +458,7 @@ msgid "Archived"
 msgstr "Archivé"
 
 msgid "Archived meetings"
-msgstr "Réunions archivées"
+msgstr ""
 
 msgid ""
 "Are you sure you want to activate this color set? This will change the "
@@ -451,6 +469,10 @@ msgstr ""
 
 msgid "Are you sure you want to activate this meeting?"
 msgstr "Êtes-vous sûr de vouloir activer cette réunion ?"
+
+msgid ""
+"Are you sure you want to add the following time onto every structure level?"
+msgstr ""
 
 msgid "Are you sure you want to anonymize all votes? This cannot be undone."
 msgstr ""
@@ -565,9 +587,6 @@ msgstr "Êtes-vous sûr de vouloir supprimer ce projecteur ?"
 msgid "Are you sure you want to delete this state?"
 msgstr "Êtes-vous sûr de vouloir supprimer cet état ?"
 
-msgid "Are you sure you want to delete this statute paragraph?"
-msgstr "Êtes-vous sûr de vouloir supprimer ce paragraphe sur les statuts ?"
-
 msgid "Are you sure you want to delete this structure level?"
 msgstr "Êtes-vous sûr de vouloir supprimer ce niveau de structure ?"
 
@@ -665,12 +684,20 @@ msgstr ""
 msgid "Are you sure you want to reset all passwords to the default ones?"
 msgstr "Êtes-vous sûr de vouloir rétablir tous les mots de passe par défaut ?"
 
+msgid ""
+"Are you sure you want to reset the time to the last set value? It will be "
+"reset to:"
+msgstr ""
+
 msgid "Are you sure you want to reset this vote?"
 msgstr "Êtes-vous sûr de vouloir réinitialiser ce vote ?"
 
 msgid "Are you sure you want to send an invitation email to the user?"
 msgstr ""
 "Êtes-vous sûr de vouloir envoyer un courriel d'invitation à l'utilisateur ?"
+
+msgid "Are you sure you want to send an invitation email?"
+msgstr ""
 
 msgid "Are you sure you want to send emails to all selected participants?"
 msgstr ""
@@ -720,6 +747,9 @@ msgstr ""
 "Attention : Entrez d'abord les données du réseau sans fil dans [Réglages > "
 "Général]"
 
+msgid "Attention: Not selected accounts will be merged and then deleted."
+msgstr ""
+
 msgid "Attention: This action cannot be undone!"
 msgstr "Attention : Cette action ne peut être annulée !"
 
@@ -735,6 +765,9 @@ msgstr ""
 
 msgid "Autopilot"
 msgstr "Pilote automatique"
+
+msgid "Autopilot widgets"
+msgstr ""
 
 msgid "Autoupdate unhealthy"
 msgstr "Mise à jour automatique malsaine"
@@ -796,6 +829,9 @@ msgstr "Mise à jour du bulletin de vote"
 msgid "Ballots"
 msgstr "Bulletins de vote"
 
+msgid "Ballots cast"
+msgstr ""
+
 msgid "Base folder"
 msgstr "Dossier de base"
 
@@ -805,17 +841,20 @@ msgstr "Commencer discours"
 msgid "Blank between prefix and number, e.g. 'A 001'."
 msgstr "Espace blanc entre le préfixe et le numéro, par exemple \"A 001\"."
 
-msgid "Blocks"
-msgstr "Blocs"
+msgid "Blockquote"
+msgstr ""
 
 msgid "Bold"
 msgstr "En gras"
 
-msgid "CSV export options"
-msgstr "Options d'export CSV"
+msgid "Bullet list"
+msgstr ""
 
 msgid "CSV import"
 msgstr "Import CSV"
+
+msgid "CSV options"
+msgstr ""
 
 msgid "Calendar"
 msgstr "Calendrier"
@@ -1004,6 +1043,9 @@ msgstr "Peut gérer le chat"
 msgid "Can manage the projector"
 msgstr "Peut gérer le projecteur"
 
+msgid "Can modify existing participants, but cannot create or delete them."
+msgstr ""
+
 msgid "Can nominate another participant"
 msgstr "Peut nonimer un autre participant"
 
@@ -1026,7 +1068,7 @@ msgid "Can put oneself on the list of speakers"
 msgstr "Peut se mettre soi-même sur la liste des orateurs"
 
 msgid "Can receive motions"
-msgstr "Peut recevoir des motions"
+msgstr ""
 
 msgid "Can receive motions from committee"
 msgstr "Peut recevoir des motions de commissions"
@@ -1046,6 +1088,9 @@ msgstr ""
 
 msgid "Can see elections"
 msgstr "Peut voir les élections"
+
+msgid "Can see email, username and SSO identification of all participants."
+msgstr ""
 
 msgid "Can see files"
 msgstr "Peut voir les fichiers"
@@ -1079,6 +1124,9 @@ msgstr ""
 
 msgid "Can see participants"
 msgstr "Peut voir les participants"
+
+msgid "Can see sensitive data"
+msgstr ""
 
 msgid "Can see the Agenda menu item and all public topics in the agenda."
 msgstr ""
@@ -1181,6 +1229,9 @@ msgstr ""
 "[Réglages] > [Motions] ainsi que pour l'état correspondant dans > [Flux de "
 "travail]."
 
+msgid "Can update participants"
+msgstr ""
+
 msgid ""
 "Can upload, modify and delete files, administrate folders and change access "
 "restrictions."
@@ -1213,13 +1264,10 @@ msgid "Cannot do that in demo mode!"
 msgstr "Impossible de le faire en version démo !"
 
 msgid "Cannot forward motions"
-msgstr "Ne peut pas transmettre les motions"
-
-msgid "Cannot navigate to the selected history element."
-msgstr "Impossible de naviguer vers l'élément historique sélectionné."
+msgstr ""
 
 msgid "Cannot receive motions"
-msgstr "Ne peut pas recevoir des motions"
+msgstr ""
 
 msgid "Categories"
 msgstr "Catégories"
@@ -1304,27 +1352,33 @@ msgstr "Choix"
 msgid "Choose 0 to disable Intervention."
 msgstr "Choisissez 0 pour désactiver l'intervention."
 
+msgid ""
+"Choose 0 to disable speaking times widget for structure level countdowns."
+msgstr ""
+
 msgid "Choose 0 to disable the supporting system."
 msgstr "Choisissez 0 pour desactiver le système de soutien."
 
-msgid ""
-"Choose a number greater than 0 to activate speaking times widget for "
-"structure level countdowns."
-msgstr ""
-"Choisissez un nombre supérieur à 0 pour activer le widget des temps de "
-"parole pour les décomptes de niveau de structure."
-
 msgid "Chyron"
-msgstr "Chyron"
+msgstr ""
 
-msgid "Chyron background color"
-msgstr "Couleur de fond de Chyron"
+msgid "Chyron agenda item, background color"
+msgstr ""
 
-msgid "Chyron font color"
-msgstr "Couleur de la police Chyron"
+msgid "Chyron agenda item, font color"
+msgstr ""
 
 msgid "Chyron speaker name"
 msgstr "Nom du haut-parleur Chyron"
+
+msgid "Chyron speaker, background color"
+msgstr ""
+
+msgid "Chyron speaker, font color"
+msgstr ""
+
+msgid "Classic"
+msgstr ""
 
 msgid "Clear"
 msgstr "Effacer"
@@ -1337,6 +1391,9 @@ msgstr "Effacer toute les listes d'orateurs."
 
 msgid "Clear current projection"
 msgstr "Effacer la projection actuelle"
+
+msgid "Clear formatting"
+msgstr ""
 
 msgid "Clear list"
 msgstr "Effacer la liste"
@@ -1362,11 +1419,11 @@ msgstr "Fermer le mode édition"
 msgid "Close list of speakers"
 msgstr "Fermer la liste des orateurs"
 
-msgid "Closed items"
-msgstr "Elements terminés"
+msgid "Closed"
+msgstr ""
 
-msgid "Code"
-msgstr "Code"
+msgid "Closed items"
+msgstr ""
 
 msgid "Collapse all"
 msgstr "Réduire tout"
@@ -1528,6 +1585,9 @@ msgstr "Création"
 msgid "Creation date"
 msgstr "Date de création"
 
+msgid "Current agenda item"
+msgstr ""
+
 msgid "Current date"
 msgstr "Date du jour"
 
@@ -1546,6 +1606,9 @@ msgstr "L'orateur actuel"
 msgid "Current speaker chyron"
 msgstr "Chyron de l'orateur actuel"
 
+msgid "Current window"
+msgstr ""
+
 msgid "Currently no livestream available."
 msgstr "Actuellement, aucune émission en direct n'est disponible."
 
@@ -1560,6 +1623,9 @@ msgstr "Nombre personnalisé de bulletins de vote"
 
 msgid "Custom translations"
 msgstr " Traductions personnalisées"
+
+msgid "Customize autopilot"
+msgstr ""
 
 msgid "Dark mode"
 msgstr "Mode foncé"
@@ -1579,11 +1645,8 @@ msgstr "Décision"
 msgid "Default"
 msgstr "Par défaut"
 
-msgid "Default 100 % base of a voting result"
-msgstr "Base par défaut de 100 % d'un résultat de vote"
-
-msgid "Default 100 % base of an election result"
-msgstr "Base 100 % par défaut d'un résultat d'élection"
+msgid "Default 100 % base"
+msgstr ""
 
 msgid "Default election method"
 msgstr "Méthode d'élection par défaut"
@@ -1600,8 +1663,10 @@ msgstr "Groupes par défaut avec droit de vote"
 msgid "Default line numbering"
 msgstr "Numérotation par ligne par défaut"
 
-msgid "Default speaking time for structure levels in seconds"
-msgstr "Temps de parole par défaut pour les niveaux de structure en secondes"
+msgid ""
+"Default speaking time contingent for parliamentary groups (structure levels)"
+" in seconds"
+msgstr ""
 
 msgid ""
 "Default text version for change recommendations and projection of motions"
@@ -1654,7 +1719,7 @@ msgstr ""
 
 msgid ""
 "Defines the wording of the recommendation that belongs to this state.\n"
-"Example: State = Accepted / Recommendation = Acceptance. \n"
+"Example: State = Accepted / Recommendation = Acceptance.\n"
 "\n"
 "To activate the recommendation system, a recommender (for example, a motion committee) must be defined under > [Settings] > [Motions] > [Name of recommender].\n"
 "Example recommender: motion committee\n"
@@ -1662,14 +1727,6 @@ msgid ""
 "Additional information:\n"
 "In combination with motion blocks, the recommendation of multiple motions can be followed simultaneously."
 msgstr ""
-"Définit le libellé de la recommandation qui appartient à cet état.\n"
-"Exemple : Etat = Accepté / Recommandation = Acceptation. \n"
-"\n"
-"Pour activer le système de recommandation, un recommandeur (par exemple, une commission des motions) doit être défini sous > [Réglages] > [Motions] > [Nom du recommandeur].\n"
-"Exemple de recommandation : commission des motions\n"
-"\n"
-"Informations complémentaires :\n"
-"En combinaison avec les blocs de mouvement, la recommandation de plusieurs mouvements peut être suivie simultanément."
 
 msgid "Defines which states can be selected next in the workflow."
 msgstr ""
@@ -1677,7 +1734,7 @@ msgstr ""
 "travail."
 
 msgid "Delegation of vote"
-msgstr "Délégation de vote"
+msgstr ""
 
 msgid "Delete"
 msgstr "Supprimer"
@@ -1694,12 +1751,8 @@ msgstr "Supprimer le projecteur"
 msgid "Deleted user"
 msgstr "Utilisateur supprimé"
 
-msgid ""
-"Deleting this motion will likely impact it's amendments negatively and they "
-"could become unusable."
+msgid "Deleting this motion will also delete the amendments."
 msgstr ""
-"Supprimer cette motion aura probablement un impact négatif sur ses "
-"amendements et ils pourraient devenir inutilisables."
 
 msgid "Deletion"
 msgstr "Suppression"
@@ -1720,10 +1773,13 @@ msgid "Designates whether this user is in the room."
 msgstr "Indique si cet utilisateur est dans la salle."
 
 msgid "Didn't get an email"
-msgstr "Je n'ai pas reçu de courriel."
+msgstr ""
 
 msgid "Diff version"
 msgstr "Version Diff"
+
+msgid "Disable connection closing on inactivity"
+msgstr ""
 
 msgid "Disabled (no percents)"
 msgstr "Désactivé (pas de pourcentages)"
@@ -1739,14 +1795,14 @@ msgstr "Type d'écran"
 msgid "Distribute overhang time"
 msgstr "Distribuer le temps de surplomb"
 
-msgid "Div"
-msgstr "Div"
-
 msgid "Divergent:"
 msgstr "Divergente :"
 
 msgid "Do not forget to save your changes!"
 msgstr "N'oubliez pas d'enregistrer vos modifications !"
+
+msgid "Do not show recommendations publicly"
+msgstr ""
 
 msgid "Do you accept?"
 msgstr "Acceptez-vous ?"
@@ -1787,6 +1843,9 @@ msgstr "Télécharger fichier CSV d'exemple "
 msgid "Download folder"
 msgstr "Télécharger le dossier"
 
+msgid "Download the file"
+msgstr ""
+
 msgid "Drop files into this area OR click here to select files"
 msgstr ""
 "Déposez les fichiers dans cette zone OU cliquez ici pour sélectionner les "
@@ -1799,7 +1858,7 @@ msgid "Duplicate from"
 msgstr "Duplication de"
 
 msgid "Duplicates"
-msgstr "Duplications"
+msgstr ""
 
 msgid "Duration"
 msgstr "Durée"
@@ -1828,6 +1887,9 @@ msgstr ""
 
 msgid "Edit"
 msgstr "Modifier"
+
+msgid "Edit HTML content"
+msgstr ""
 
 msgid "Edit account"
 msgstr "Modifier le compte"
@@ -1868,9 +1930,6 @@ msgstr "Éditer la file d'attente"
 msgid "Edit state"
 msgstr "Modifier le status"
 
-msgid "Edit statute paragraph"
-msgstr "Modifier le paragraphe sur les statuts"
-
 msgid "Edit tag"
 msgstr "Modifier une balise"
 
@@ -1882,9 +1941,6 @@ msgstr "Modifier pour saisir les votes."
 
 msgid "Edit topic"
 msgstr "Modifier le sujet"
-
-msgid "Edit total time"
-msgstr "Modifier le temps total"
 
 msgid "Edit workflow"
 msgstr "Modifier le flux de travail"
@@ -1901,6 +1957,9 @@ msgstr "Documents relatifs aux élections"
 msgid "Elections"
 msgstr "Elections"
 
+msgid "Elections (PDF settings)"
+msgstr ""
+
 msgid "Element"
 msgstr "Élément"
 
@@ -1908,7 +1967,7 @@ msgid "Email"
 msgstr "Courriel"
 
 msgid "Email address"
-msgstr "Adresse courriel"
+msgstr ""
 
 msgid "Email body"
 msgstr "Corps du courriel"
@@ -1990,19 +2049,13 @@ msgstr ""
 "dans l'état sélectionné après la création du mouvement."
 
 msgid ""
-"Enables the forwarding of motions to other meetings within the OpenSlides instance in the selected state. \n"
+"Enables the forwarding of motions to other meetings within the OpenSlides instance in the selected state.\n"
 "\n"
 "Prerequisites:\n"
-"1. forwarding hierarchy must be set at the organizational level in the committee. \n"
+"1. forwarding hierarchy must be set at the organizational level in the committee.\n"
 "2. target meeting must be created.\n"
 "3. user must have group permission for forwarding."
 msgstr ""
-"Permet de transmettre les motions à d'autres réunions au sein de l'instance OpenSlides dans l'état sélectionné. \n"
-"\n"
-"Conditions préalables :\n"
-"1. la hiérarchie de transmission doit être définie au niveau organisationnel dans la commission. \n"
-"2. la réunion cible doit être créée\n"
-"3. l'utilisateur doit disposer d'une autorisation de groupe pour la transmission."
 
 msgid ""
 "Enables the support function for motions in the selected state. The support "
@@ -2103,15 +2156,10 @@ msgstr ""
 "gestionnaires pour la liste des orateurs seulement)"
 
 msgid ""
-"Existing accounts can be reused by entering email (with given name and "
-"surname) OR by entering the username in the csv file."
+"Existing accounts can be reused or updated by using: <ul><li>Membership "
+"number <i>(recommended)</i><li>Username<li>Email address AND first name AND "
+"last name"
 msgstr ""
-"Les comptes existants peuvent être réutilisés en saisissant l'adresse "
-"électronique (avec le prénom et le nom) OU en saisissant le nom "
-"d'utilisateur dans le fichier csv."
-
-msgid "Exit"
-msgstr "Sortir"
 
 msgid "Exit conference room"
 msgstr "Sortir de la salle de conférence"
@@ -2152,6 +2200,9 @@ msgstr "Extension"
 msgid "External ID"
 msgstr "ID externe"
 
+msgid "Fallback"
+msgstr ""
+
 msgid "Favorites"
 msgstr "Favoris"
 
@@ -2169,6 +2220,9 @@ msgstr "Fichiers"
 
 msgid "Filter"
 msgstr "Filtre"
+
+msgid "Filtered single votes"
+msgstr ""
 
 msgid "Final version"
 msgstr "Version finale"
@@ -2210,6 +2264,13 @@ msgid "Font size in pt"
 msgstr "Taille de la police en pt"
 
 msgid ""
+"For activation:<br>\n"
+"                        1. Assign group permission (define the group that can support motions)<br>\n"
+"                        2. Adjust workflow (define state in which motions can be supported)<br>\n"
+"                        3. Enter minimum number (see next field)"
+msgstr ""
+
+msgid ""
 "For large instances this may block the server to the point of unusability"
 msgstr ""
 "Pour les instances importantes, cela peut bloquer le serveur au point de le "
@@ -2221,6 +2282,9 @@ msgstr "Couleur d'avant-plan"
 msgid "Forgot Password?"
 msgstr "Mot de passe oublié ?"
 
+msgid "Formalities"
+msgstr ""
+
 msgid "Format"
 msgstr "Format"
 
@@ -2231,7 +2295,7 @@ msgid "Forward"
 msgstr "transmettre"
 
 msgid "Forward motions"
-msgstr "Transmettre des motions "
+msgstr ""
 
 msgid "Forward motions to"
 msgstr "Transmettre les motions à"
@@ -2300,7 +2364,7 @@ msgid "Go to line"
 msgstr "Aller à la ligne"
 
 msgid "Got an email"
-msgstr "J'ai reçu un courriel"
+msgstr ""
 
 msgid "Group"
 msgstr "Groupe"
@@ -2336,32 +2400,50 @@ msgstr "Invité"
 msgid "Has SSO identification"
 msgstr "A l'identification SSO"
 
+msgid "Has a membership number"
+msgstr ""
+
 msgid "Has amendments"
 msgstr "A des amendements"
 
 msgid "Has an email address"
-msgstr "dispose d'une adresse courriel"
+msgstr ""
 
 msgid "Has changed vote weight"
-msgstr "A modifié le poids du vote"
+msgstr ""
+
+msgid "Has email"
+msgstr ""
 
 msgid "Has forwardings"
 msgstr "A des transmissions"
 
+msgid "Has identical motions"
+msgstr ""
+
 msgid "Has logged in"
-msgstr "S'est connecté(e)"
+msgstr ""
 
 msgid "Has no SSO identification"
 msgstr "N'a pas d'identification SSO"
 
 msgid "Has no email address"
-msgstr "N'a pas d'adresse courriel"
+msgstr ""
+
+msgid "Has no identical motions"
+msgstr ""
+
+msgid "Has no membership number"
+msgstr ""
 
 msgid "Has no speakers"
 msgstr "N'a pas d'odrateurs"
 
 msgid "Has not logged in yet"
-msgstr "Ne s'est pas encore connecté"
+msgstr ""
+
+msgid "Has not spoken"
+msgstr ""
 
 msgid "Has not voted"
 msgstr ""
@@ -2372,8 +2454,11 @@ msgstr "A des notes"
 msgid "Has speakers"
 msgstr "A des oraterus"
 
+msgid "Has spoken"
+msgstr ""
+
 msgid "Has unchanged vote weight"
-msgstr "Poids des voix inchangé"
+msgstr ""
 
 msgid "Has voted"
 msgstr "A voté"
@@ -2381,32 +2466,17 @@ msgstr "A voté"
 msgid "Header"
 msgstr "En-tête"
 
-msgid "Header 1"
-msgstr "En-tête 1"
-
-msgid "Header 2"
-msgstr "En-tête 2"
-
-msgid "Header 3"
-msgstr "En-tête 3"
-
-msgid "Header 4"
-msgstr "En-tête 4"
-
-msgid "Header 5"
-msgstr "En-tête 5"
-
-msgid "Header 6"
-msgstr "En-tête 6"
-
 msgid "Header background color"
 msgstr "Couleur d'arrière-plan de l'en-tête"
 
 msgid "Header font color"
 msgstr "Couleur de la police de l'en-tête"
 
-msgid "Headers"
-msgstr "En-têtes"
+msgid "Heading"
+msgstr ""
+
+msgid "Headings"
+msgstr ""
 
 msgid "Headline color"
 msgstr "Couleur du titre"
@@ -2420,11 +2490,17 @@ msgstr "Le texte d'aide pour les données d'accès et PDF de bienvenue"
 msgid "Hidden item"
 msgstr "élément masqué"
 
+msgid "Hide"
+msgstr ""
+
 msgid "Hide main menu"
 msgstr "Masquer le menu principal"
 
 msgid "Hide more text"
 msgstr "Cacher plus de texte"
+
+msgid "Hide note on number of multiple contributions"
+msgstr ""
 
 msgid "Hide password"
 msgstr "Cacher le mot de passe"
@@ -2454,6 +2530,9 @@ msgstr ""
 "IMPORTANT : L'adresse de l'expéditeur (noreply@openslides.com) est définie dans les paramètres du serveur OpenSlides et ne peut pas être modifiée ici.\n"
 "Pour recevoir des réponses, vous devez saisir une adresse de réponse dans le champ suivant. Veuillez tester l'envoi du courriel en cas de changement !"
 
+msgid "Identical motions"
+msgstr ""
+
 msgid "Identical with"
 msgstr ""
 
@@ -2471,6 +2550,9 @@ msgstr ""
 "l'édition et le supprimer par la suite."
 
 msgid "If the value is set to 0 the time counts up as stopwatch."
+msgstr ""
+
+msgid "Image description"
 msgstr ""
 
 msgid "Import"
@@ -2493,9 +2575,6 @@ msgstr "Importer des motions"
 
 msgid "Import participants"
 msgstr "Importer des participants"
-
-msgid "Import statute"
-msgstr "Importer les statuts"
 
 msgid "Import successful"
 msgstr "Import réussi"
@@ -2546,6 +2625,15 @@ msgstr "Insérer derrière"
 msgid "Insert topics here"
 msgstr "Insérer les sujets ici"
 
+msgid "Insert/Edit Link"
+msgstr ""
+
+msgid "Insert/edit image"
+msgstr ""
+
+msgid "Insert/edit link"
+msgstr ""
+
 msgid "Insertion"
 msgstr "Insertion"
 
@@ -2580,7 +2668,7 @@ msgid "Invite to conference room"
 msgstr "Inviter à la salle de conférence"
 
 msgid "Is a committee"
-msgstr "Est un Comité"
+msgstr ""
 
 msgid "Is a natural person"
 msgstr "Est une personne physique"
@@ -2618,16 +2706,16 @@ msgid "Is candidate"
 msgstr "Est candidat"
 
 msgid "Is committee admin"
-msgstr "L'administration de la commission"
+msgstr ""
 
 msgid "Is favorite"
 msgstr "Est le favori"
 
 msgid "Is in active meetings"
-msgstr "Participe à des réunions actives"
+msgstr ""
 
 msgid "Is in archived meetings"
-msgstr "Est dans les réunions archivées"
+msgstr ""
 
 msgid "Is manager"
 msgstr "Est gestionnaire"
@@ -2639,13 +2727,13 @@ msgid "Is no natural person"
 msgstr "N'est pas une personne naturelle"
 
 msgid "Is not a committee"
-msgstr "N'est pas un Comité"
+msgstr ""
 
 msgid "Is not a template"
 msgstr "N'est pas un modèle"
 
 msgid "Is not active"
-msgstr "N'est pas actif"
+msgstr ""
 
 msgid "Is not archived"
 msgstr "N'est pas archivé"
@@ -2654,10 +2742,10 @@ msgid "Is not favorite"
 msgstr "N'est pas favori"
 
 msgid "Is not in active meetings"
-msgstr "Ne participe pas à des réunions actives"
+msgstr ""
 
 msgid "Is not in archived meetings"
-msgstr "N'est pas dans les réunions archivées"
+msgstr ""
 
 msgid "Is not present"
 msgstr "N'est pas présent"
@@ -2706,6 +2794,9 @@ msgstr "Nom de la chambre Jitsi"
 
 msgid "Jitsi room password"
 msgstr "Mot de passe de la chambre Jitsi"
+
+msgid "Justify"
+msgstr ""
 
 msgid "Keep each item in a single line."
 msgstr "Chaque élément doit figurer sur une seule ligne."
@@ -2785,6 +2876,9 @@ msgstr "La liste des participants (PDF)"
 msgid "List of speakers"
 msgstr "Liste des orateurs"
 
+msgid "List of speakers as overlay"
+msgstr ""
+
 msgid "List of speakers is initially closed"
 msgstr "La liste des orateurs est initialement close"
 
@@ -2802,6 +2896,9 @@ msgstr "Flux vidéo en direct"
 
 msgid "Livestream URL"
 msgstr "URL de la diffusion en direct"
+
+msgid "Livestream poster image"
+msgstr ""
 
 msgid "Livestream poster image url"
 msgstr "Url de l'image de l'affiche de la diffusion en direct"
@@ -2866,6 +2963,9 @@ msgstr "Date de réunion"
 msgid "Meeting information"
 msgstr "Information sur la réunion"
 
+msgid "Meeting is closed"
+msgstr ""
+
 msgid "Meeting not found"
 msgstr "Réunion introuvable"
 
@@ -2888,8 +2988,20 @@ msgstr "Titre de la réunion"
 msgid "Meetings"
 msgstr "Réunions"
 
+msgid "Meetings affected:"
+msgstr ""
+
 msgid "Meetings selected"
 msgstr "Réunions selectionnées"
+
+msgid "Membership number"
+msgstr ""
+
+msgid "Merge"
+msgstr ""
+
+msgid "Merge accounts"
+msgstr ""
 
 msgid "Message"
 msgstr "Message"
@@ -2925,6 +3037,9 @@ msgstr "Nombre minimum de chiffres pour l'identificateur de mouvement"
 
 msgid "Moderation note"
 msgstr "Note de modération"
+
+msgid "Modern"
+msgstr ""
 
 msgid "Modify design"
 msgstr "Modifier le design"
@@ -2998,6 +3113,9 @@ msgstr "Votes de la motion"
 msgid "Motions"
 msgstr "Motions"
 
+msgid "Motions (PDF settings)"
+msgstr ""
+
 msgid "Motions are in process. Please wait ..."
 msgstr "Votes de la motion"
 
@@ -3044,14 +3162,29 @@ msgstr "Nom"
 msgid "Name of recommender"
 msgstr "Nom du conseiller"
 
-msgid "Name of recommender for statute amendments"
-msgstr "Nom de la personne qui recommande la modification du statut"
-
 msgid "Name of the new category"
 msgstr "Nom de la nouvelle catégorie"
 
 msgid "Natural person"
 msgstr "Personne physique"
+
+msgid "Navigate to account page from "
+msgstr ""
+
+msgid "Navigate to committee detail view from "
+msgstr ""
+
+msgid "Navigate to meeting "
+msgstr ""
+
+msgid "Navigate to motion"
+msgstr ""
+
+msgid "Navigate to participant page from "
+msgstr ""
+
+msgid "Navigate to the folder"
+msgstr ""
 
 msgid "Negative votes are not allowed."
 msgstr "Negative votes are not allowed."
@@ -3128,9 +3261,6 @@ msgstr "Nouveau projecteur"
 msgid "New state"
 msgstr "Nouveau status"
 
-msgid "New statute paragraph"
-msgstr "Nouveau paragraphe du statut"
-
 msgid "New tag"
 msgstr "Nouvelle balise"
 
@@ -3139,6 +3269,9 @@ msgstr "Nouveau sujet"
 
 msgid "New vote"
 msgstr "Nouveau vote"
+
+msgid "New window"
+msgstr ""
 
 msgid "New workflow"
 msgstr "Nouveau flux de travail"
@@ -3153,13 +3286,10 @@ msgid "No"
 msgstr "Non"
 
 msgid "No admin role"
-msgstr "Pas de rôle d'administrateur"
+msgstr ""
 
 msgid "No category"
 msgstr "Aucune catégorie"
-
-msgid "No category set"
-msgstr "Aucune catégorie a été defini"
 
 msgid "No change recommendations yet"
 msgstr "Aucun changement de recommandation jusqu'à présent"
@@ -3174,13 +3304,13 @@ msgid "No comment"
 msgstr "Aucun commentaire"
 
 msgid "No committee admin"
-msgstr "Pas d'administration de commission"
+msgstr ""
 
 msgid "No data"
 msgstr "Pas de données"
 
 msgid "No delegation of vote"
-msgstr "Pas de délégation de vote"
+msgstr ""
 
 msgid "No emails were send."
 msgstr "Aucun courriel n'a été envoyé."
@@ -3209,12 +3339,6 @@ msgstr "Aucune réunion disponible."
 msgid "No meetings have been selected."
 msgstr "Pas de réunions a été selectionnées"
 
-msgid "No motion block set"
-msgstr "Pas de block de motions a été défini"
-
-msgid "No motion editors"
-msgstr ""
-
 msgid "No one has voted for this poll"
 msgstr "Personne n'a voté pour ce sondage"
 
@@ -3227,26 +3351,14 @@ msgstr "Non par candidat"
 msgid "No personal note"
 msgstr "Pas de notes personnelles"
 
-msgid "No recommendation"
-msgstr "Aucune recommandation"
-
 msgid "No results found"
 msgstr "Aucun résultat trouvé"
 
 msgid "No results yet."
 msgstr "Aucun résultat pour l'instant."
 
-msgid "No spokesperson"
-msgstr ""
-
-msgid "No statute paragraphs"
-msgstr "Aucun paragraphe du statut"
-
 msgid "No structure level"
 msgstr ""
-
-msgid "No tags"
-msgstr "Pas de balises"
 
 msgid "No verbose name is defined"
 msgstr "Aucun nom verbeux n'est défini"
@@ -3262,6 +3374,9 @@ msgstr "Aucun"
 
 msgid "None of the selected motions can be forwarded."
 msgstr "Aucun des mouvements sélectionnés ne peut être transmis."
+
+msgid "Normal (http/2)"
+msgstr ""
 
 msgid "Not found"
 msgstr "Introuvable"
@@ -3336,11 +3451,17 @@ msgstr "Numéro des prochains intervenants à afficher sur le projecteur"
 msgid "Number set"
 msgstr "Jeu de numéros"
 
+msgid "Numbered list"
+msgstr ""
+
 msgid "Numbered per category"
 msgstr "Numérotée par catégorie"
 
 msgid "Numbering"
 msgstr "Numérotage"
+
+msgid "Numbering and sorting"
+msgstr ""
 
 msgid "Numbering prefix for agenda items"
 msgstr "Numérotation préfixe pour points de l'ordre du jour"
@@ -3351,20 +3472,35 @@ msgstr "système de numération de points de l'ordre du jour"
 msgid "OK"
 msgstr "OK"
 
+msgid "OR"
+msgstr ""
+
+msgid "Off"
+msgstr ""
+
 msgid "Offline mode"
 msgstr "Mode hors ligne"
 
 msgid "Ok"
 msgstr "Ok"
 
+msgid "Old account of"
+msgstr ""
+
 msgid "Old password"
 msgstr "Ancien mot de passe"
+
+msgid "On"
+msgstr ""
 
 msgid "One email was send sucessfully."
 msgstr "Un courriel a été envoyé avec succès."
 
 msgid "Only for internal notes."
 msgstr "Seulement pour des notes internes."
+
+msgid "Only groups and participant number are switched."
+msgstr ""
 
 msgid "Only main agenda items"
 msgstr "Seulement les points principaux de l'ordre du jour"
@@ -3390,7 +3526,10 @@ msgid "Open a meeting to play chess"
 msgstr "Ouvrez une réunion pour jouer aux échecs"
 
 msgid "Open items"
-msgstr "Eléments ouverts"
+msgstr ""
+
+msgid "Open link in ..."
+msgstr ""
 
 msgid "Open list of speakers"
 msgstr "Ouvrir la liste des orateurs"
@@ -3413,6 +3552,14 @@ msgstr " Données d'accès OpenSlides"
 msgid "OpenSlides help (FAQ)"
 msgstr "Aide OpenSlides (FAQ)"
 
+msgid ""
+"OpenSlides offers various speaking list customizations for use in "
+"parliament. These include the configuration of speaking time quotas for "
+"parliamentary groups (e.g. fractions, coalitions) as well as extended types "
+"of speeches such as short interventions and (parliamentary) interposed "
+"questions."
+msgstr ""
+
 msgid "OpenSlides recommends"
 msgstr "OpenSlides recommande"
 
@@ -3429,7 +3576,7 @@ msgid "Organization Management Level changed"
 msgstr "Organisation Niveau de gestion modifié"
 
 msgid "Organization admin"
-msgstr "Administrateur de l'organisation"
+msgstr ""
 
 msgid "Organization language"
 msgstr "Langue de l'organisation"
@@ -3458,20 +3605,11 @@ msgstr "Désynchronisé"
 msgid "Outside"
 msgstr "À l'extérieur"
 
-msgid "Overlay"
-msgstr "Superpositions"
-
 msgid "PDF"
 msgstr "PDF"
 
 msgid "PDF ballot paper logo"
 msgstr "Logo pour le bulletin de vote en PDF"
-
-msgid "PDF export"
-msgstr "PDF exportation"
-
-msgid "PDF export options"
-msgstr "Options d'export PDF"
 
 msgid "PDF footer logo (left)"
 msgstr "Logo en PDF pour le pied de page (à gauche)"
@@ -3524,6 +3662,9 @@ msgstr "Chargement parallèle"
 msgid "Parent agenda item"
 msgstr "Point de l'ordre du jour superieur"
 
+msgid "Parliament options"
+msgstr ""
+
 msgid "Participant"
 msgstr "Participant"
 
@@ -3570,6 +3711,9 @@ msgstr "Participant retiré de plusieurs groupes lors de plusieurs réunions"
 
 msgid "Participants"
 msgstr "Participants"
+
+msgid "Participants (PDF settings)"
+msgstr ""
 
 msgid ""
 "Participants and administrators are copied completely and cannot be edited "
@@ -3656,6 +3800,9 @@ msgstr "Veuillez saisir votre nouveau mot de passe"
 msgid "Please join the conference room now!"
 msgstr "Rejoignez la salle de conférence dès maintenant !"
 
+msgid "Please select a primary account."
+msgstr ""
+
 msgid "Please select a vote weight greater than or equal to 0.000001"
 msgstr "Veuillez sélectionner un poids de vote supérieur ou égal à 0,000001"
 
@@ -3689,9 +3836,6 @@ msgstr "Options possibles"
 msgid "Possible points of order"
 msgstr "Motions de procédure possibles"
 
-msgid "Pre"
-msgstr "Pre"
-
 msgid "Preamble text for PDF document (all elections)"
 msgstr "Texte de préambule pour le fichier PDF (toutes les élections)"
 
@@ -3724,6 +3868,9 @@ msgstr "Pages précédentes"
 
 msgid "Primary color"
 msgstr "Couleur primaire"
+
+msgid "Principals"
+msgstr ""
 
 msgid "Privacy Policy"
 msgstr "Politique de confidentialité"
@@ -3761,9 +3908,6 @@ msgstr "Projections"
 msgid "Projector"
 msgstr "Projecteur"
 
-msgid "Projector and countdown"
-msgstr "Projetuer et compte à rebours "
-
 msgid "Projector h1"
 msgstr "Projecteur h1"
 
@@ -3782,6 +3926,9 @@ msgstr "Projecteurs"
 msgid "Pronoun"
 msgstr "Pronom"
 
+msgid "Proxy holders"
+msgstr ""
+
 msgid "Public"
 msgstr "Publique"
 
@@ -3790,6 +3937,9 @@ msgstr "Élément public"
 
 msgid "Public template"
 msgstr "Modèle public"
+
+msgid "Public template required for creating new meeting"
+msgstr ""
 
 msgid "Publish"
 msgstr "Publier"
@@ -3822,7 +3972,7 @@ msgid "Receipt of contributions"
 msgstr "Réception des contributions"
 
 msgid "Receive motions"
-msgstr "Recevoir des motions"
+msgstr ""
 
 msgid "Receive motions from"
 msgstr "Recevoir des motions de"
@@ -3849,6 +3999,9 @@ msgstr "Recommandation réinitialisation"
 
 msgid "Recommendation set to {}"
 msgstr "Recommandation définie sur {}"
+
+msgid "Redo"
+msgstr ""
 
 msgid "Reenter to conference room"
 msgstr "Revenir dans la salle de conférence"
@@ -3905,11 +4058,17 @@ msgstr "Supprimer de l'ordre du jour"
 msgid "Remove from motion block"
 msgstr "Retirer du bloc de motion"
 
+msgid "Remove link"
+msgstr ""
+
 msgid "Remove me"
 msgstr "Enlever moi-même"
 
 msgid "Remove option"
 msgstr "Supprimer l'option"
+
+msgid "Remove point of order"
+msgstr ""
 
 msgid "Reopen"
 msgstr "reouvrir"
@@ -3963,6 +4122,9 @@ msgstr "Réinitialiser la recommandation"
 msgid "Reset state"
 msgstr "Réinitialiser le status"
 
+msgid "Reset timer"
+msgstr ""
+
 msgid "Reset to default settings"
 msgstr "Réinitialiser les paramètres par défaut"
 
@@ -3971,6 +4133,20 @@ msgstr "Résolution et dimensions"
 
 msgid "Restart livestream"
 msgstr "Redémarrer la diffusion en direct"
+
+msgid ""
+"Restrict delegation principals from adding themselves to the list of "
+"speakers"
+msgstr ""
+
+msgid "Restrict delegation principals from creating motions/amendments"
+msgstr ""
+
+msgid "Restrict delegation principals from supporting motions"
+msgstr ""
+
+msgid "Restrict delegation principals from voting"
+msgstr ""
 
 msgid "Restrictions"
 msgstr "Restrictions"
@@ -3997,7 +4173,7 @@ msgid "Rows with warnings"
 msgstr "Lignes avec avertissements"
 
 msgid "SSO"
-msgstr "SSO"
+msgstr ""
 
 msgid "SSO Identification"
 msgstr "Identification SSO"
@@ -4006,10 +4182,10 @@ msgid "SSO identification"
 msgstr "Identification SSO"
 
 msgid "Same email"
-msgstr "Même courriel"
+msgstr ""
 
-msgid "Same first/last name"
-msgstr "Même prénom/nom"
+msgid "Same given and surname"
+msgstr ""
 
 msgid "Save"
 msgstr "Enregistrer"
@@ -4055,9 +4231,6 @@ msgstr "Selectionner"
 
 msgid "Select all"
 msgstr "Désélectionner tout"
-
-msgid "Select exactly two participants to swap mandates"
-msgstr ""
 
 msgid "Select file"
 msgstr "Sélectionner un fichier"
@@ -4194,6 +4367,9 @@ msgstr ""
 msgid "Settings"
 msgstr "Paramètres "
 
+msgid "Short form for amendments"
+msgstr ""
+
 msgid "Show all"
 msgstr "Afficher tout"
 
@@ -4283,9 +4459,6 @@ msgstr "Afficher le champ d'extension des recommandations"
 msgid "Show recommendation on projector"
 msgstr "Afficher des recommandations sur le projecteur"
 
-msgid "Show recommendations not public"
-msgstr ""
-
 msgid "Show referring motions"
 msgstr "Afficher les motions de référence"
 
@@ -4313,6 +4486,9 @@ msgstr "Afficher ce texte sur la page d'accueil"
 msgid "Show title"
 msgstr "Afficher le titre"
 
+msgid "Show topic navigation in detail view"
+msgstr ""
+
 msgid ""
 "Shows a button with help icon to connect to an extra Jitsi conference room "
 "for technical audio/video tests."
@@ -4339,9 +4515,6 @@ msgstr "Paramètres du Single Sign-On"
 
 msgid "Single votes"
 msgstr "Votes uniques"
-
-msgid "Slide"
-msgstr "Diapositive"
 
 msgid "Some csv values could not be read correctly."
 msgstr "Certaines valeurs csv n'ont pas pu être lues correctement."
@@ -4381,14 +4554,26 @@ msgstr "Trier les motions par"
 msgid "Sort workflow"
 msgstr "Trier les fluxs de travail"
 
+msgid "Source"
+msgstr ""
+
+msgid "Source code"
+msgstr ""
+
 msgid "Speaker"
 msgstr "Orateur"
 
 msgid "Speakers"
 msgstr "Orateurs"
 
+msgid "Speaking time – current contribution"
+msgstr ""
+
 msgid "Speaking times"
 msgstr "Temps de parole"
+
+msgid "Speaking times – overview structure levels"
+msgstr ""
 
 msgid "Speech start time"
 msgstr ""
@@ -4434,20 +4619,8 @@ msgstr "Statut défini sur {}"
 msgid "Statistics"
 msgstr "Statistiques"
 
-msgid "Statute"
-msgstr "Statuts"
-
-msgid "Statute amendment"
-msgstr "Changement de statut"
-
-msgid "Statute amendment for"
-msgstr "Changement des statuts pour"
-
-msgid "Statute paragraph"
-msgstr "Paragraphe des statuts"
-
-msgid "Statute paragraphs"
-msgstr "Paragraphes des statuts"
+msgid "Status"
+msgstr ""
 
 msgid "Stop"
 msgstr "Arreter"
@@ -4503,6 +4676,9 @@ msgstr "Changement de soumissionnaires"
 msgid "Subscript"
 msgstr "Indice"
 
+msgid "Subtract"
+msgstr ""
+
 msgid "Suitable accounts found"
 msgstr "Comptes appropriés trouvés"
 
@@ -4522,7 +4698,7 @@ msgid "Summary of changes:"
 msgstr " Résumé des modifications:"
 
 msgid "Superadmin"
-msgstr "Superadministrateur"
+msgstr ""
 
 msgid "Superadmin actions"
 msgstr "Actions du superadministrateur"
@@ -4545,7 +4721,7 @@ msgstr "Les partisans ont changé"
 msgid "Surname"
 msgstr "Nom"
 
-msgid "Swap mandates ..."
+msgid "Swap mandates"
 msgstr ""
 
 msgid "Switch"
@@ -4563,6 +4739,9 @@ msgstr "Balises"
 msgid "Text"
 msgstr "Texte"
 
+msgid "Text color"
+msgstr ""
+
 msgid "Text for this option couldn't load."
 msgstr "Le texte de cette option n'a pas pu être chargé."
 
@@ -4571,6 +4750,9 @@ msgstr "Importation de texte"
 
 msgid "Text separator"
 msgstr "Séparateur de texte"
+
+msgid "Text to display"
+msgstr ""
 
 msgid "The account is deactivated."
 msgstr "Le compte est désactivé."
@@ -4641,15 +4823,10 @@ msgstr "Le lien est cassé. Veuillez contacter votre administrateur système."
 msgid "The list of speakers is closed."
 msgstr "La liste des orateurs est fermée."
 
-msgid "The list of speakers is open."
-msgstr "La liste des orateurs est ouverte."
-
 msgid ""
 "The maximum number of characters per line. Relevant when line numbering is "
-"enabled. Min: 40"
+"enabled. Min: 40. Note: Check PDF export and font."
 msgstr ""
-"Nombre maximal de caractères par ligne. Relevant lorsque la numérotation des"
-" lignes est activée. Min : 40 caractères."
 
 msgid "The number has to be greater than 0."
 msgstr "Le nombre doit être supérieur à 0."
@@ -4736,6 +4913,9 @@ msgstr "Ces comptes seront supprimés :"
 
 msgid "These participants will be removed:"
 msgstr "Ces participants seront supprimés :"
+
+msgid "These settings are only applied locally on this browser."
+msgstr ""
 
 msgid "This account has relations to meetings or committees"
 msgstr "Ce compte a des relations avec des réunions ou des comités"
@@ -4999,8 +5179,14 @@ msgstr "Dépannage"
 msgid "Try reconnect"
 msgstr "Essayez de vous reconnecter."
 
+msgid "URL"
+msgstr ""
+
 msgid "Underline"
 msgstr "Souligner"
+
+msgid "Undo"
+msgstr ""
 
 msgid "Undone"
 msgstr "Défait"
@@ -5010,6 +5196,9 @@ msgstr "Orateurs uniques"
 
 msgid "Unknown participant"
 msgstr "Participant inconnu"
+
+msgid "Unknown user"
+msgstr ""
 
 msgid "Unsaved changes will not be applied."
 msgstr "Les modifications non enregistrées ne seront pas appliquées."
@@ -5051,6 +5240,9 @@ msgstr ""
 "Utilisé pour les courriels d'invitation et le QRCode dans le PDF des données"
 " d'accès."
 
+msgid "User"
+msgstr ""
+
 msgid "User not found."
 msgstr "Utilisateur non trouvé."
 
@@ -5083,6 +5275,9 @@ msgstr ""
 msgid "Valid votes"
 msgstr "Votes valides"
 
+msgid "View"
+msgstr ""
+
 msgid "Virtual applause"
 msgstr "Applaudissements virtuels"
 
@@ -5094,6 +5289,9 @@ msgstr "Visibilité à l'ordre du jour"
 
 msgid "Vote"
 msgstr "Vote"
+
+msgid "Vote delegation"
+msgstr ""
 
 msgid "Vote submitted"
 msgstr "Vote soumis"
@@ -5107,8 +5305,8 @@ msgstr "Voté"
 msgid "Votes"
 msgstr "Votes"
 
-msgid "Voting and ballot papers"
-msgstr "Bulletins de vote et d'élection"
+msgid "Voting"
+msgstr "Vote"
 
 msgid "Voting anonymized"
 msgstr "Voter anonymisé"
@@ -5199,13 +5397,6 @@ msgid "Warn color"
 msgstr "Couleur d'avertissement"
 
 msgid ""
-"Warning: Amendments exist for at least one of the selected motions. Are you "
-"sure you want to delete these motions regardless?"
-msgstr ""
-"Attention : Des amendements existent pour au moins une des motions "
-"sélectionnées. Êtes-vous sûr de vouloir supprimer ces motions malgré tout ?"
-
-msgid ""
 "Warning: Amendments exist for this motion. Are you sure you want to delete "
 "this motion regardless?"
 msgstr ""
@@ -5221,6 +5412,15 @@ msgstr ""
 " de ce texte risque d'avoir un impact négatif sur eux. En particulier, les "
 "amendements peuvent devenir inutilisables si le paragraphe qu'ils affectent "
 "est supprimé."
+
+msgid ""
+"Warning: At least one of the selected motions has amendments, these will be "
+"deleted as well. Do you want to delete anyway?"
+msgstr ""
+
+msgid ""
+"Warning: Data loss is possible because accounts are in the same meeting."
+msgstr ""
 
 msgid "Warning: This projector will be set to visible"
 msgstr "Avertissement : Ce projecteur sera réglé pour être visible"
@@ -5250,13 +5450,6 @@ msgid "Wifi name"
 msgstr "Nom du réseau sans fil"
 
 msgid ""
-"Will be displayed as label before selected recommendation in statute "
-"amendments."
-msgstr ""
-"Sera affichée comme étiquette avant la recommandation sélectionnée dans les "
-"amendements au statut."
-
-msgid ""
 "Will be displayed as label before selected recommendation. Use an empty "
 "value to disable the recommendation system."
 msgstr ""
@@ -5274,9 +5467,6 @@ msgstr "Workflow des nouvelles modifications"
 
 msgid "Workflow of new motions"
 msgstr "Flux de travail des nouvelles motions"
-
-msgid "Workflow of new statute amendments"
-msgstr "Flux de travail pour les nouvelles modifications de statuts"
 
 msgid "Workflows"
 msgstr "Flux de travail"
@@ -5319,12 +5509,6 @@ msgstr "Vous n'êtes pas censé être ici..."
 
 msgid "You are using an incompatible client version."
 msgstr ""
-
-msgid ""
-"You are using the history mode of OpenSlides. Changes will not be saved."
-msgstr ""
-"Vous utilisez le mode historique d'OpenSlides. Les modifications ne seront "
-"pas enregistrées."
 
 msgid "You can change this option only in the forwarding section."
 msgstr ""
@@ -5372,16 +5556,6 @@ msgstr ""
 "comme flux de travail par défaut pour les nouvelles motions dans les "
 "paramètres. Veuillez définir un autre flux de travail par défaut dans les "
 "paramètres et essayez à nouveau de supprimer le flux de travail."
-
-msgid ""
-"You cannot delete the workflow as long as it is selected as default workflow"
-" for new statute amendments in the settings. Please set another workflow as "
-"default in the settings and try to delete the workflow again."
-msgstr ""
-"Vous ne pouvez pas supprimer le flux de travail tant qu'il est sélectionné "
-"comme flux de travail par défaut pour les nouvelles modifications de statuts"
-" dans les paramètres. Veuillez définir un autre flux de travail par défaut "
-"dans les paramètres et essayez à nouveau de supprimer le flux de travail."
 
 msgid "You cannot delete yourself."
 msgstr "Vous ne pouvez pas vous supprimer vous-même."
@@ -5719,6 +5893,9 @@ msgstr "supprimer le(s) groupe(s)"
 msgid "represented by"
 msgstr "représenté par"
 
+msgid "represented by old account of"
+msgstr ""
+
 msgid "reset"
 msgstr "Réinitialiser"
 
@@ -5757,6 +5934,9 @@ msgstr "version"
 
 msgid "votes per candidate"
 msgstr "votes par candidat"
+
+msgid "votes per option"
+msgstr ""
 
 msgid "will be created"
 msgstr "sera créé"
@@ -5849,9 +6029,6 @@ msgstr "Temps de parole"
 
 msgid "Staff"
 msgstr "Personnel"
-
-msgid "Voting"
-msgstr "Vote"
 
 msgid ""
 "You are receiving this email because you have requested a new password for your OpenSlides account.\n"

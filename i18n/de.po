@@ -815,6 +815,9 @@ msgstr "Wahlgang aktualisiert"
 msgid "Ballots"
 msgstr "Wahlgänge"
 
+msgid "Ballots cast"
+msgstr "Abgegebene Stimmzettel"
+
 msgid "Base folder"
 msgstr "Basisverzeichnis"
 
@@ -1833,6 +1836,9 @@ msgstr "CSV-Beispiel-Datei herunterladen"
 msgid "Download folder"
 msgstr "Verzeichnis herunterladen"
 
+msgid "Download the file"
+msgstr "Datei herunterladen"
+
 msgid "Drop files into this area OR click here to select files"
 msgstr ""
 "Dateien auf diesen Bereich ziehen ODER hier klicken um Dateien auszuwählen"
@@ -2220,6 +2226,9 @@ msgstr "Dateien"
 
 msgid "Filter"
 msgstr "Filter"
+
+msgid "Filtered single votes"
+msgstr "Gefilterte Einzelstimmen"
 
 msgid "Final version"
 msgstr "Beschlussfassung"
@@ -3168,6 +3177,24 @@ msgstr "Name des neuen Sachgebiets"
 
 msgid "Natural person"
 msgstr "natürliche Person"
+
+msgid "Navigate to account page from "
+msgstr "Navigation zur Accountseite von"
+
+msgid "Navigate to committee detail view from "
+msgstr "Navigation zur Gremien-Detailansicht von"
+
+msgid "Navigate to meeting "
+msgstr "Navigation zur Veranstaltung"
+
+msgid "Navigate to motion"
+msgstr "Navigation zum Antrag"
+
+msgid "Navigate to participant page from "
+msgstr "Navigation zur Teilnehmenden-Seite von"
+
+msgid "Navigate to the folder"
+msgstr "Navigation zum Verzeichnis"
 
 msgid "Negative votes are not allowed."
 msgstr "Negative Stimmen sind nicht zulässig."
