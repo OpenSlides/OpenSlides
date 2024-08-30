@@ -189,6 +189,30 @@ if __name__ == '__main__':
     create_or_get_realm(realm_name)
     create_or_get_client_scope(realm_name, client_scope_name, protocol_mappers)
     create_or_get_client(realm_name, client_name, client_scope_name)
+    clients = keycloak_admin.get_clients()
+
+    client_scopes = keycloak_admin.get_client_scopes()
+
+    # Filter the client scopes by name
+    client_scope_id = None
+
+    for client in clients:
+        print(f"Client: {client.get('clientId')}")
+        if client.get('clientId') == client_name:
+            client_id = client['id']
+            client_default_client_scopes = client['defaultClientScopes']
+            print(f"Client default client scopes: {client_default_client_scopes}")
+            for scope in ["profile", "email", "offline_access"]:
+                if scope not in client_default_client_scopes:
+                    for scope_obj in client_scopes:
+                        if scope_obj['name'] == scope:
+                            client_scope_id = scope_obj['id']
+                            print(f"Adding client scope: {scope} to client: {client_name}")
+                            keycloak_admin.add_client_optional_client_scope(client_id, client_scope_id, {
+                                "realm": realm_name,
+                                "client": client_id,
+                                "clientScopeId": client_scope_id})
+                            break
     # TODO: ab--hardcoded user names, user ids must match with test data in database
     user_names = [("admin", 1, "admin"), ("user", 2, "password")]
     create_or_get_user(realm_name, user_names)
