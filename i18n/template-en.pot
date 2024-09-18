@@ -735,6 +735,9 @@ msgstr ""
 msgid "Ballots"
 msgstr ""
 
+msgid "Ballots cast"
+msgstr ""
+
 msgid "Base folder"
 msgstr ""
 
@@ -1669,6 +1672,9 @@ msgstr ""
 msgid "Download folder"
 msgstr ""
 
+msgid "Download the file"
+msgstr ""
+
 msgid "Drop files into this area OR click here to select files"
 msgstr ""
 
@@ -2016,6 +2022,9 @@ msgid "Files"
 msgstr ""
 
 msgid "Filter"
+msgstr ""
+
+msgid "Filtered single votes"
 msgstr ""
 
 msgid "Final version"
@@ -2946,6 +2955,24 @@ msgid "Name of the new category"
 msgstr ""
 
 msgid "Natural person"
+msgstr ""
+
+msgid "Navigate to account page from "
+msgstr ""
+
+msgid "Navigate to committee detail view from "
+msgstr ""
+
+msgid "Navigate to meeting "
+msgstr ""
+
+msgid "Navigate to motion"
+msgstr ""
+
+msgid "Navigate to participant page from "
+msgstr ""
+
+msgid "Navigate to the folder"
 msgstr ""
 
 msgid "Negative votes are not allowed."
