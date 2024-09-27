@@ -4,23 +4,23 @@
 	branch = main
 [submodule "openslides-client"]
 	path = openslides-client
-	url = https://github.com/OpenSlides/openslides-client.git
+	url = https://github.com/kryptance/openslides-client.git
 	branch = main
 [submodule "openslides-backend"]
 	path = openslides-backend
-	url = https://github.com/OpenSlides/openslides-backend.git
+	url = https://github.com/kryptance/openslides-backend.git
 	branch = main
 [submodule "openslides-autoupdate-service"]
 	path = openslides-autoupdate-service
-	url = https://github.com/OpenSlides/openslides-autoupdate-service.git
+	url = https://github.com/kryptance/openslides-autoupdate-service.git
 	branch = main
 [submodule "openslides-auth-service"]
 	path = openslides-auth-service
-	url = https://github.com/OpenSlides/openslides-auth-service.git
+	url = https://github.com/kryptance/openslides-auth-service.git
 	branch = main
 [submodule "openslides-media-service"]
 	path = openslides-media-service
-	url = https://github.com/OpenSlides/openslides-media-service.git
+	url = https://github.com/kryptance/openslides-media-service.git
 	branch = main
 [submodule "openslides-manage-service"]
 	path = openslides-manage-service
@@ -28,15 +28,15 @@
 	branch = main
 [submodule "openslides-icc-service"]
 	path = openslides-icc-service
-	url = https://github.com/OpenSlides/openslides-icc-service.git
+	url = https://github.com/kryptance/openslides-icc-service.git
 	branch = main
 [submodule "openslides-vote-service"]
 	path = openslides-vote-service
-	url = https://github.com/OpenSlides/openslides-vote-service.git
+	url = https://github.com/kryptance/openslides-vote-service.git
 	branch = main
 [submodule "openslides-proxy"]
 	path = openslides-proxy
-	url = https://github.com/OpenSlides/openslides-proxy.git
+	url = https://github.com/kryptance/openslides-proxy.git
 [submodule "openslides-search-service"]
 	path = openslides-search-service
-	url = https://github.com/OpenSlides/openslides-search-service.git
+	url = https://github.com/kryptance/openslides-search-service.git
