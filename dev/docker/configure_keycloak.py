@@ -28,7 +28,7 @@ def create_or_get_realm(realm_name):
 
 # Function to create or get client scope with protocol mappers
 def create_or_get_client_scope(realm_name, client_scope_name, protocol_mappers):
-    keycloak_admin.realm_name = realm_name
+    keycloak_admin.connection.realm_name = realm_name
     client_scopes = keycloak_admin.get_client_scopes()
     client_scope_id = None
 
@@ -58,22 +58,28 @@ def create_or_get_client_scope(realm_name, client_scope_name, protocol_mappers):
 
 # Function to create or get client
 def create_or_get_client(realm_name, client_name, client_scope_name):
-    keycloak_admin.realm_name = realm_name
+    keycloak_admin.connection.realm_name = realm_name
     clients = keycloak_admin.get_clients()
     if not any(client.get('clientId') == client_name for client in clients):
-        keycloak_admin.create_client(
+        result = keycloak_admin.create_client(
             payload={"clientId": client_name, "protocol": "openid-connect", "defaultClientScopes": [client_scope_name],
-                     "directAccessGrantsEnabled": True, "publicClient": True, "redirectUris":
+                     "directAccessGrantsEnabled": True, "publicClient": True,
+                     "baseUrl": "http://localhost:8000",
+                     "attributes": {
+                         "backchannel.logout.url": "http://localhost:8080/system/action/logout",
+                         "post.logout.redirect.uris": "http://localhost:8000"
+                     },
+                     "redirectUris":
                          ["http://localhost/*",
                           "https://localhost:8000/*"]})
-        print(f"Created client: {client_name}")
+        print(f"Created client: {client_name}: {result}")
     else:
         print(f"Client {client_name} already exists.")
 
 
 # Function to create or get user
 def create_or_get_user(realm_name, users: list[tuple[str, int, str]]):
-    keycloak_admin.realm_name = realm_name
+    keycloak_admin.connection.realm_name = realm_name
     for user_data in users:
         users = keycloak_admin.get_users(query={"username": user_data[0]})
         user_representation = {"username": user_data[0],
@@ -188,10 +194,19 @@ if __name__ == '__main__':
     # Execute functions
     create_or_get_realm(realm_name)
     create_or_get_client_scope(realm_name, client_scope_name, protocol_mappers)
+    print(f"Configuring Keycloak... in realm {realm_name}")
     create_or_get_client(realm_name, client_name, client_scope_name)
     clients = keycloak_admin.get_clients()
 
     client_scopes = keycloak_admin.get_client_scopes()
+
+    # set Web origins in account-console client to +
+    for client in clients:
+        if client.get('clientId') == "account-console":
+            client_id = client['id']
+            client_representation = keycloak_admin.get_client(client_id)
+            client_representation.update({"webOrigins": ["*"]})
+            keycloak_admin.update_client(client_id, client_representation)
 
     # Filter the client scopes by name
     client_scope_id = None
