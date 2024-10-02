@@ -23,6 +23,13 @@ msgstr "\"0\" bedeutet eine unbegrenzte Anzahl an aktiven Veranstaltungen"
 msgid "%num% emails were send sucessfully."
 msgstr "%num% E-Mails wurden erfolgreich versandt."
 
+msgid ""
+"%num% participants could not be locked out because they have administrative "
+"permissions."
+msgstr ""
+"%num% Teilnehmende konnten nicht ausgeschlossen werden, da sie  "
+"administrative Berechtigungen haben."
+
 msgid "-Ä"
 msgstr "-Ä"
 
@@ -112,8 +119,8 @@ msgid ""
 "meeting. It is locked from the inside."
 msgstr ""
 "Zugriff nur für Teilnehmende dieser Veranstaltung möglich. Alle anderen "
-"Accounts (inkl. Organsations- und Gremienadmins) dürfen die geschlossene "
-"Veranstaltung nicht öffnen. Sie ist von innen abgeschlossen."
+"Accounts (inkl. Organsations- und Gremienadmins) dürfen diese nicht-"
+"öffentliche Veranstaltung nicht öffnen. Sie ist von innen abgeschlossen."
 
 msgid "Access-data"
 msgstr "Zugangsdaten"
@@ -149,10 +156,13 @@ msgid "Activate amendments"
 msgstr "Änderungsanträge aktivieren"
 
 msgid "Activate closed meeting"
-msgstr "Nichtöffentliche Veranstaltung aktivieren"
+msgstr "Geschlossene Veranstaltung aktivieren"
 
 msgid "Activate design"
 msgstr "Design aktivieren"
+
+msgid "Activate public access"
+msgstr "Öffentlichen Zugang aktivieren"
 
 msgid "Activate the selection field 'motion editor'"
 msgstr "Auswahlfeld 'Antragsbearbeiter*in' aktivieren"
@@ -504,6 +514,9 @@ msgid "Are you sure you want to delete all selected files and folders?"
 msgstr ""
 "Sollen alle ausgewählten Dateien und Verzeichnisse wirklich gelöscht werden?"
 
+msgid "Are you sure you want to delete all selected genders?"
+msgstr "Sollen alle ausgewählten Geschlechter wirklich gelöscht werden?"
+
 msgid "Are you sure you want to delete all selected meetings?"
 msgstr "Sollen alle ausgewählten Veranstaltungen wirklich gelöscht werden?"
 
@@ -554,6 +567,9 @@ msgstr "Soll dieser Eintrag wirklich gelöscht werden?"
 msgid "Are you sure you want to delete this file?"
 msgstr "Soll diese Datei wirklich gelöscht werden?"
 
+msgid "Are you sure you want to delete this gender?"
+msgstr "Soll dieses Geschlecht wirklich gelöscht werden?"
+
 msgid "Are you sure you want to delete this group?"
 msgstr "Soll diese Gruppe wirklich gelöscht werden?"
 
@@ -590,6 +606,11 @@ msgstr "Soll diese Abstimmung wirklich gelöscht werden?"
 msgid "Are you sure you want to delete this workflow?"
 msgstr "Soll dieser Arbeitsablauf wirklich gelöscht werden?"
 
+msgid "Are you sure you want to discard all changes and update this form?"
+msgstr ""
+"Sollen alle Änderungen wirklich verworfen und dieses Formular aktualisiert "
+"werden?"
+
 msgid "Are you sure you want to discard this amendment?"
 msgstr "Soll dieser Änderungsantrag wirklich verworfen werden?"
 
@@ -613,6 +634,9 @@ msgid "Are you sure you want to irrevocably remove your point of order?"
 msgstr ""
 "Soll wirklich der Geschäftsordnungsantrag unwiderruflich zurückgezogen "
 "werden?"
+
+msgid "Are you sure you want to make this file/folder public?"
+msgstr "Soll diese Datei/Verzeichnis wirklich veröffentlicht werden?"
 
 msgid "Are you sure you want to number all agenda items?"
 msgstr "Sollen alle Tagesordnungspunkte wirklich neu nummeriert werden?"
@@ -693,6 +717,11 @@ msgstr "Soll die Stimmabgabe wirklich beendet werden?"
 
 msgid "Are you sure you want to submit a point of order?"
 msgstr "Soll wirklich ein Geschäftsordnungsantrag gestellt werden?"
+
+msgid "Are you sure you want to unpublish this file/folder?"
+msgstr ""
+"Soll diese Datei/Verzeichnis wieder auf nicht veröffentlicht gestellt "
+"werden?"
 
 msgid "As of"
 msgstr "Stand"
@@ -968,10 +997,10 @@ msgid "Can forward motions to committee"
 msgstr "Darf Anträge weiterleiten an Gremium"
 
 msgid ""
-"Can forward motions to other meetings within the OpenSlides instance. \n"
+"Can forward motions to other meetings within the OpenSlides instance.\n"
 "\n"
 "Further requirements:\n"
-"1. forwarding hierarchy must be set at the organizational level in the committee. \n"
+"1. forwarding hierarchy must be set at the organizational level in the committee.\n"
 "2. target meeting must be created.\n"
 "3. forwarding must be activated in the workflow in the state."
 msgstr ""
@@ -1040,7 +1069,7 @@ msgid "Can nominate oneself"
 msgstr "Darf selbst für Wahlen kandidieren"
 
 msgid ""
-"Can nominate other participants as candidates. \n"
+"Can nominate other participants as candidates.\n"
 "\n"
 "Requires group permission: [Can see participants]"
 msgstr ""
@@ -1075,8 +1104,12 @@ msgstr "Darf alle Sprechzettel in jeder Redeliste sehen."
 msgid "Can see elections"
 msgstr "Darf Wahlen sehen"
 
-msgid "Can see email, username and SSO identification of all participants."
-msgstr "Darf E-Mail, Benutzername und SSO-Kennung aller Teilnehmenden sehen."
+msgid ""
+"Can see email, username, membership number, SSO identification and locked "
+"out state of all participants."
+msgstr ""
+"Darf E-Mail, Benutzername, Mitgliedsnummer, SSO-Kennung und ausgeschlossen-"
+"Zustand aller Teilnehmenden sehen."
 
 msgid "Can see files"
 msgstr "Darf Dateien sehen"
@@ -1136,7 +1169,7 @@ msgstr ""
 "Hinweis: Freigabe von Ordnern und Dateien kann durch Gruppenzuweisung eingeschränkt sein."
 
 msgid ""
-"Can see the History menu item with the history of processing timestamps for motions, elections and participants. \n"
+"Can see the History menu item with the history of processing timestamps for motions, elections and participants.\n"
 "\n"
 "Note: For privacy reasons, it is recommended to limit the rights to view the History significantly."
 msgstr ""
@@ -1185,7 +1218,7 @@ msgstr ""
 "eine Livestream-URL eingetragen ist."
 
 msgid ""
-"Can see the menu item Elections, including the list of candidates and results. \n"
+"Can see the menu item Elections, including the list of candidates and results.\n"
 "\n"
 "Note: The right to vote is defined directly in the ballot."
 msgstr ""
@@ -1194,8 +1227,8 @@ msgstr ""
 "Hinweis: Die Stimmberechtigung wird direkt im Wahlgang definiert."
 
 msgid ""
-"Can see the menu item Participants and therefore the following data from all participants: \n"
-"Personal data: Name, pronoun, gender. \n"
+"Can see the menu item Participants and therefore the following data from all participants:\n"
+"Personal data: Name, pronoun, gender.\n"
 "Meeting specific information: Structure level, Group, Participant number, About me, Presence status."
 msgstr ""
 "Darf Menüpunkt Teilnehmende und damit von allen Teilnehmenden folgende Daten sehen: \n"
@@ -1247,11 +1280,17 @@ msgstr "Kandidat*in entfernt"
 msgid "Candidates"
 msgstr "Kandidat*innen"
 
+msgid "Cannot delete published files"
+msgstr "Veröffentlichte Dateien können nicht gelöscht werden"
+
 msgid "Cannot do that in demo mode!"
 msgstr "Diese Aktion ist im Demo-Modus nicht möglich!"
 
 msgid "Cannot forward motions"
 msgstr "Darf keine Anträge weiterleiten"
+
+msgid "Cannot move published files"
+msgstr "Veröffentlichte Dateien können nicht verschoben werden"
 
 msgid "Cannot receive motions"
 msgstr "Darf keine Anträge erhalten"
@@ -1408,7 +1447,7 @@ msgid "Close list of speakers"
 msgstr "Redeliste schließen"
 
 msgid "Closed"
-msgstr "Nichtöffentlich"
+msgstr "Geschlossen"
 
 msgid "Closed items"
 msgstr "Erledigte Einträge"
@@ -1666,6 +1705,9 @@ msgid "Default visibility for new agenda items (except topics)"
 msgstr ""
 "Voreingestellte Sichtbarkeit für neue Tagesordnungspunkte (außer Themen)"
 
+msgid "Default vote method"
+msgstr "Voreingestellte Abstimmungsmethode"
+
 msgid "Default vote weight"
 msgstr "Standard-Stimmgewicht"
 
@@ -1807,6 +1849,10 @@ msgstr "Wollen Sie wirklich alle Änderungen verwerfen?"
 msgid "Do you really want to go ahead?"
 msgstr "Wollen Sie die Aktion wirklich fortsetzen?"
 
+msgid "Do you really want to lock this participant out of the meeting?"
+msgstr ""
+"Wollen Sie diesen Teilnehmenden wirklich aus der Veranstaltung ausschließen?"
+
 msgid ""
 "Do you really want to make available this meeting as a public template?"
 msgstr ""
@@ -1820,6 +1866,15 @@ msgid "Do you really want to stop sharing this meeting as a public template?"
 msgstr ""
 "Wollen Sie wirklich aufhören diese Veranstaltung als öffentliche Vorlage zu "
 "nutzen?"
+
+msgid "Do you really want to undo the lock out of the participant?"
+msgstr ""
+"Wollen Sie das Ausschließen des Teilnehmenden wirklich rückgängig machen?"
+
+msgid "Do you want to update the amendment text? All changes will be lost."
+msgstr ""
+"Möchten Sie den Änderungsantragstext aktualisieren? Alle Änderungen gehen "
+"verloren."
 
 msgid "Does not have notes"
 msgstr "Hat keine Notizen"
@@ -2030,6 +2085,14 @@ msgstr ""
 "Antragsteller*innen den Status des Antrages verändern können. Weitere "
 "Verwaltungsfunktionen sind ausgeschlossen."
 
+msgid ""
+"Enables public access to this meeting without login data. Permissions can be"
+" set after activation in the new group 'Public'."
+msgstr ""
+"Ermöglicht öffentlichen Zugriff auf diese Veranstaltung ohne Logindaten. "
+"Berechtigungen können nach Aktivierung in der neuen Gruppe 'Öffentlich' "
+"eingestellt werden."
+
 msgid "Enables the ability to create votings for motions in this state."
 msgstr ""
 "Aktiviert für Anträge im ausgewählten Status die Möglichkeit, Abstimmungen "
@@ -2150,6 +2213,9 @@ msgstr "Voraussichtliches Ende"
 msgid "Event location"
 msgstr "Veranstaltungsort"
 
+msgid "Every admin in every meeting will be able to see this content."
+msgstr "Jeder Administrator in jeder Veranstaltung kann diese Inhalte sehen."
+
 msgid ""
 "Everyone can see the request of a point of order (instead of managers for "
 "list of speakers only)"
@@ -2217,6 +2283,9 @@ msgstr "Datei"
 
 msgid "File is being used"
 msgstr "Die Datei wird verwendet"
+
+msgid "File is used in:"
+msgstr "Datei wird verwendet in:"
 
 msgid "Filename"
 msgstr "Dateiname"
@@ -2338,6 +2407,9 @@ msgstr "Unentschieden!"
 msgid "Gender"
 msgstr "Geschlecht"
 
+msgid "Genders"
+msgstr "Geschlechter"
+
 msgid "General"
 msgstr "Allgemein"
 
@@ -2402,9 +2474,6 @@ msgstr "Gruppen mit Leseberechtigungen"
 
 msgid "Groups with write permissions"
 msgstr "Gruppen mit Schreibberechtigungen"
-
-msgid "Guest"
-msgstr "Gast"
 
 msgid "Has SSO identification"
 msgstr "Hat SSO-Kennung"
@@ -2690,7 +2759,7 @@ msgid "Is active"
 msgstr "Ist aktiv"
 
 msgid ""
-"Is allowed to add himself/herself to the list of speakers. \n"
+"Is allowed to add himself/herself to the list of speakers.\n"
 "\n"
 "Note:\n"
 "Optional combination of requests to speak with presence status is possible. ( > [Settings] > [List of speakers] > [General] )"
@@ -2727,6 +2796,9 @@ msgstr "Ist in aktiven Veranstaltungen"
 msgid "Is in archived meetings"
 msgstr "Ist in archivierten Veranstaltungen"
 
+msgid "Is locked out"
+msgstr "Ist ausgeschlossen"
+
 msgid "Is manager"
 msgstr "ist Verwalter*in"
 
@@ -2757,11 +2829,20 @@ msgstr "Ist in keinen aktiven Veranstaltungen"
 msgid "Is not in archived meetings"
 msgstr "Ist in keinen archivierten Veranstaltungen"
 
+msgid "Is not locked out"
+msgstr "Ist nicht ausgeschlossen"
+
 msgid "Is not present"
 msgstr "Ist nicht anwesend"
 
+msgid "Is not public"
+msgstr "Ist nicht öffentlich"
+
 msgid "Is present"
 msgstr "Ist anwesend"
+
+msgid "Is public"
+msgstr "Ist öffentlich"
 
 msgid "Is speaker"
 msgstr "ist Redner*in"
@@ -2774,6 +2855,16 @@ msgid ""
 msgstr ""
 "Countdowns, die für Redelisten oder elektronische Stimmabgaben verwendet "
 "werden, dürfen nicht gelöscht werden."
+
+msgid ""
+"It is not allowed to set the permisson 'Can manage participants' to a locked"
+" out user. Please unset the lockout state before adding a group with this "
+"permission."
+msgstr ""
+"Es ist nicht erlaubt, die Berechtigung 'Darf Teilnehmende verwalten' auf "
+"einen ausgeschlossenen Benutzer zu setzen. Bitte heben Sie den "
+"Ausgeschlossen-Status auf, bevor Sie eine Gruppe mit dieser Berechtigung "
+"hinzufügen."
 
 msgid "It's a draw!"
 msgstr "Es ist ein Unentschieden!"
@@ -2917,6 +3008,12 @@ msgstr "Livestream-Posterbild-URL"
 msgid "Loading data. Please wait ..."
 msgstr "Daten werden geladen. Bitte warten ..."
 
+msgid "Lock out user from this meeting."
+msgstr "Benutzer von dieser Veranstaltung ausschließen."
+
+msgid "Locked out"
+msgstr "Ausgeschlossen"
+
 msgid "Logged-in users"
 msgstr "Angemeldete Accounts"
 
@@ -2925,9 +3022,6 @@ msgstr "Anmelden"
 
 msgid "Login anyway"
 msgstr "Trotzdem anmelden"
-
-msgid "Login as guest"
-msgstr "Als Gast anmelden"
 
 msgid "Login button text"
 msgstr "Login-Button-Beschriftung"
@@ -2940,6 +3034,12 @@ msgstr "Niedrigster Applauswert"
 
 msgid "Main motion and line number"
 msgstr "Hauptantrag und Zeilennummer"
+
+msgid ""
+"Make background color from meta information box on the projector transparent"
+msgstr ""
+"Hintergrundfarbe der Meta-Informations-Box auf dem Projektor transparent "
+"anzeigen"
 
 msgid "Mandates switched sucessfully!"
 msgstr "Mandatswechsel erfolgreich."
@@ -2975,7 +3075,7 @@ msgid "Meeting information"
 msgstr "Veranstaltungsinformationen"
 
 msgid "Meeting is closed"
-msgstr "Veranstaltung ist nichtöffentlich"
+msgstr "Veranstaltung ist geschlossen"
 
 msgid "Meeting not found"
 msgstr "Veranstaltung nicht gefunden"
@@ -3087,6 +3187,9 @@ msgstr "Änderungsempfehlung gelöscht"
 
 msgid "Motion change recommendation updated"
 msgstr "Änderungsempfehlung aktualisiert"
+
+msgid "Motion changed"
+msgstr "Antrag geändert"
 
 msgid "Motion created"
 msgstr "Antrag erstellt"
@@ -3244,6 +3347,9 @@ msgstr "Neuer Dateiname"
 msgid "New folder"
 msgstr "Neues Verzeichnis"
 
+msgid "New gender"
+msgstr "Neues Geschlecht"
+
 msgid "New group"
 msgstr "Neue Gruppe"
 
@@ -3300,9 +3406,6 @@ msgstr "Keine Adminrolle"
 
 msgid "No category"
 msgstr "Kein Sachgebiet"
-
-msgid "No change recommendations yet"
-msgstr "Bisher keine Änderungsempfehlungen"
 
 msgid "No changes at the text."
 msgstr "Keine Änderung am Text."
@@ -3390,6 +3493,9 @@ msgstr "Normal (http/2)"
 
 msgid "Not found"
 msgstr "Nicht gefunden"
+
+msgid "Not locked out"
+msgstr "Nicht ausgeschlossen"
 
 msgid ""
 "Note, that the default password will be changed to the new generated one."
@@ -3675,6 +3781,9 @@ msgstr "Parallel hochladen"
 msgid "Parent agenda item"
 msgstr "Elternelement in der Tagesordnung"
 
+msgid "Parent motion text changed"
+msgstr "Antragstext des Hauptantrags geändert"
+
 msgid "Parliament options"
 msgstr "Parlamentsoptionen"
 
@@ -3842,9 +3951,6 @@ msgstr "GO-Antrag"
 msgid "Polls"
 msgstr "Umfragen"
 
-msgid "Possible options"
-msgstr "Mögliche Optionen"
-
 msgid "Possible points of order"
 msgstr "Mögliche GO-Anträge"
 
@@ -3943,6 +4049,9 @@ msgstr "Vollmachtnehmer*innen"
 
 msgid "Public"
 msgstr "Öffentlich"
+
+msgid "Public access"
+msgstr "Öffentlicher Zugang"
 
 msgid "Public item"
 msgstr "Öffentlicher Eintrag"
@@ -4325,6 +4434,9 @@ msgstr "Intern setzen"
 
 msgid "Set it manually"
 msgstr "manuell setzen"
+
+msgid "Set lock out ..."
+msgstr "Ausgeschlossen setzen ..."
 
 msgid "Set motion block"
 msgstr "Antragsblock setzen"
@@ -4735,6 +4847,9 @@ msgstr "Mandatswechsel"
 msgid "Switch"
 msgstr "Wechseln"
 
+msgid "System"
+msgstr "System"
+
 msgid "Table of contents"
 msgstr "Inhaltsverzeichnis"
 
@@ -4960,6 +5075,9 @@ msgstr "Dieses Gremium hat keine Gremiumverwalter!"
 msgid "This field is required."
 msgstr "Dieses Feld ist erforderlich."
 
+msgid "This file will also be deleted from all meetings."
+msgstr "Diese Datei wird auch aus allen Veranstaltungen gelöscht."
+
 msgid "This is not a number."
 msgstr "Dies ist keine Zahl."
 
@@ -4976,6 +5094,9 @@ msgstr "diese Veranstaltung"
 
 msgid "This meeting is archived"
 msgstr "Diese Veranstaltung ist archiviert"
+
+msgid "This meeting is public"
+msgstr "Diese Veranstaltung ist öffentlich"
 
 msgid "This paragraph does not exist in the main motion anymore:"
 msgstr "Dieser Absatz existiert im Hauptantrag nicht mehr:"
@@ -5197,6 +5318,9 @@ msgstr "Unbekannte*r Teilnehmer*in"
 
 msgid "Unknown user"
 msgstr "Unbekannter Nutzer"
+
+msgid "Unpublish"
+msgstr "Nicht veröffentlichen"
 
 msgid "Unsaved changes will not be applied."
 msgstr "Nicht gespeicherte Änderungen werden nicht übernommen."
@@ -5499,6 +5623,21 @@ msgstr "Ja/Nein/Enthaltung pro Kandidat"
 
 msgid "Yes/No/Abstain per list"
 msgstr "Ja/Nein/Enthaltung pro Liste"
+
+msgid ""
+"You are moving a file from a public folder into an not published folder. The"
+" file will not be accessible in meetings afterwards."
+msgstr ""
+"Sie verschieben eine Datei aus einem öffentlichen Verzeichnis in ein nicht-"
+"öffentliches Verzeichnis. Die Datei ist danach in Veranstaltungen nicht mehr"
+" zugänglich."
+
+msgid ""
+"You are moving an unpublished file to a public folder. The file will be "
+"accessible in ALL meetings afterwards."
+msgstr ""
+"Sie verschieben eine unveröffentlichte Datei in einen öffentlichen Ordner. "
+"Die Datei wird danach in ALLEN Veranstaltungen zugänglich sein."
 
 msgid "You are not allowed to see all entitled users."
 msgstr "Sie sind nicht berechtigt alle Stimmberechtigte zu sehen."
@@ -5808,6 +5947,9 @@ msgstr "zuletzt aktualisiert"
 msgid "lightblue"
 msgstr "hellblau"
 
+msgid "locked out"
+msgstr "ausgeschlossen"
+
 msgid "logged-in users"
 msgstr "angemeldete Accounts"
 
@@ -5891,6 +6033,9 @@ msgstr "entfernen"
 
 msgid "remove group(s)"
 msgstr "Gruppe(n) entfernen"
+
+msgid "removed user"
+msgstr "gelöschter Nutzer"
 
 msgid "represented by"
 msgstr "vertreten durch"
