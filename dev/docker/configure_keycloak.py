@@ -64,14 +64,14 @@ def create_or_get_client(realm_name, client_name, client_scope_name):
         result = keycloak_admin.create_client(
             payload={"clientId": client_name, "protocol": "openid-connect", "defaultClientScopes": [client_scope_name],
                      "directAccessGrantsEnabled": True, "publicClient": True,
-                     "baseUrl": "http://localhost:8000",
+                     "baseUrl": "https://localhost:8000",
                      "attributes": {
-                         "backchannel.logout.url": "http://localhost:8080/system/action/logout",
-                         "post.logout.redirect.uris": "http://localhost:8000"
+                         "backchannel.logout.url": "http://backend:9002/system/action/logout",
+                         "post.logout.redirect.uris": "https://localhost:8000/*",
+                         "backchannel.logout.session.required": "true"
                      },
                      "redirectUris":
-                         ["http://localhost/*",
-                          "https://localhost:8000/*"]})
+                         ["https://localhost:8000/*"]})
         print(f"Created client: {client_name}: {result}")
     else:
         print(f"Client {client_name} already exists.")
@@ -163,32 +163,6 @@ if __name__ == '__main__':
                 "jsonType.label": "String"
             }
         },
-        # {
-        #     "name": "roles-mapper",
-        #     "protocol": "openid-connect",
-        #     "protocolMapper": "user-roles-mapper",
-        #     "config": {
-        #         "multivalued": "true",
-        #         "userinfo.token.claim": "true",
-        #         "id.token.claim": "true",
-        #         "access.token.claim": "true",
-        #         "claim.name": "roles"
-        #     }
-        # },
-        {
-            "name": "Hardcoded Value",
-            "protocol": "openid-connect",
-            "protocolMapper": "oidc-hardcoded-claim-mapper",
-            "config": {
-                "claim.name": "is-active-mapper",
-                "claim.value": "1",
-                "claim.token": "id_token",
-                "jsonType.label": "String",
-                "id.token.claim": "true",
-                "access.token.claim": "true"
-            }
-        }
-
     ]
 
     # Execute functions
