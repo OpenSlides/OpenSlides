@@ -10,6 +10,8 @@ services:
       - KC_HOSTNAME_ADMIN_URL=https://localhost:8000/idp/
 #      - JAVA_OPTS=
     command: ["start-dev", "-Dquarkus.http.root-path=/idp"]
+    volumes:
+      - ../keycloak/themes/os:/opt/keycloak/themes/os
     ports:
       - 18080:8080
 
