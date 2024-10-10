@@ -66,6 +66,7 @@ def create_or_get_client(realm_name, client_name, client_scope_name):
                      "directAccessGrantsEnabled": True, "publicClient": True,
                      "baseUrl": "https://localhost:8000",
                      "attributes": {
+                         "login_theme": "os",
                          "backchannel.logout.url": "http://backend:9002/system/action/logout",
                          "post.logout.redirect.uris": "https://localhost:8000/*",
                          "backchannel.logout.session.required": "true"
