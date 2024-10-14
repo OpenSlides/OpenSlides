@@ -213,7 +213,7 @@ commits in the main repo:
 ## Working with the backend
 
 Sometimes it might be helpful to be able to run tests in the backend console and the frontend in
-parallel. To circumvent the need to restart the full stack everytime you switch contexts, there
+parallel. To circumvent the need to restart the full stack every time you switch contexts, there
 exist the `docker/docker-compose.test.yml` which introduces another database container to the stack.
 
 By default (meaning by running `make run-dev`), the setup uses the normal `postgres` container. We
