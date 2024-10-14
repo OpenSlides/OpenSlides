@@ -156,7 +156,7 @@ Note that meaningful defaults should be provided in the Dockerfile.
 
 ## Developing on a single service
 
-Go to the serivce and create a new branch (from main):
+Go to the service and create a new branch (from main):
 
     $ cd my-service
     $ git status  # -> on main?
@@ -195,12 +195,12 @@ Or a direct push on main:
 
 After working in many services with different branches, this command checks
 out `main` (or the given branch in the .gitmodules) in all submodules and
-pulls main from upstream (This requres to have `upstream` set up as a remote
+pulls main from upstream (This requires to have `upstream` set up as a remote
 in all submodules):
 
     $ git submodule foreach -q --recursive 'git checkout $(git config -f $toplevel/.gitmodules submodule.$name.branch || echo main); git pull upstream $(git config -f $toplevel/.gitmodules submodule.$name.branch || echo main)'
 
-This command has can also be called from the makefile using:
+This command can also be called from the makefile using:
 
     $ make services-to-main
 
