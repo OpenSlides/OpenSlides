@@ -200,7 +200,7 @@ in all submodules):
 
     $ git submodule foreach -q --recursive 'git checkout $(git config -f $toplevel/.gitmodules submodule.$name.branch || echo main); git pull upstream $(git config -f $toplevel/.gitmodules submodule.$name.branch || echo main)'
 
-This command has can also be called from the makefile using:
+This command can also be called from the makefile using:
 
     $ make services-to-main
 
