@@ -1,10 +1,15 @@
 DC_PATH=dev/docker
 SCRIPT_PATH=dev/scripts
-DC=docker compose -f $(DC_PATH)/docker-compose.dev.yml
+DC_BASE=docker compose
+DC=$(DC_BASE) -f $(DC_PATH)/docker-compose.dev.yml
 
 # Main command: start the dev server
-run-dev: | build-dev 
+run-dev: | build-dev
 	$(DC) up $(ARGS)
+
+# Same as run-dev, but with the fullstack setup (making auth library dependencies editable)
+run-dev-fullstack: | build-dev-fullstack
+	$(DC_BASE) -f $(DC_PATH)/docker-compose.dev.yml -f $(DC_PATH)/docker-compose.dev-fullstack.yml up $(ARGS)
 
 # Same as run-dev, but with OpenTelemetry
 run-dev-otel: | build-dev
@@ -13,6 +18,9 @@ run-dev-otel: | build-dev
 # Build the docker dev images for all services in parallel
 build-dev:
 	$(SCRIPT_PATH)/submodules-do.sh 'make build-dev'
+
+build-dev-fullstack:
+	$(SCRIPT_PATH)/submodules-do.sh 'make build-dev-fullstack'
 
 # Run the tests of all services
 run-service-tests:

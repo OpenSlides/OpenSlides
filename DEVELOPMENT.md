@@ -20,6 +20,10 @@ Finally, start the development server:
 
     $ make run-dev
 
+Or, if you would like local library changes (pip-auth and go auth module) to be reflected in the running services:
+
+    $ make run-dev-fullstack
+
 (This command won't run without sudo, or without having set up Docker to run without sudo - see their documentation)
 
 You can access the services independently using their corresponding ports
