@@ -99,7 +99,6 @@ services:
       - OPENSLIDES_AUTH_REALM=os
       - OPENSLIDES_AUTH_CLIENT_ID=os-ui
     volumes:
-      - ../../openslides-auth-service/libraries/pip-auth:/pip-auth
       - ../../openslides-backend/openslides_backend:/app/openslides_backend
       - ../../openslides-backend/tests:/app/tests
       - ../../openslides-backend/cli:/app/cli
@@ -135,7 +134,6 @@ services:
     volumes:
       - ../../openslides-icc-service/cmd:/root/cmd
       - ../../openslides-icc-service/internal:/root/internal
-      - ../../openslides-autoupdate-service:/openslides-autoupdate-service
     ports:
       - "9007:9007"
 
@@ -151,7 +149,6 @@ services:
     volumes:
       - ../../openslides-search-service/cmd:/root/cmd
       - ../../openslides-search-service/pkg:/root/pkg
-      - ../../openslides-autoupdate-service:/openslides-autoupdate-service
     ports:
       - "9050:9050"
 
@@ -164,7 +161,6 @@ services:
     environment:
       - OPENSLIDES_DEVELOPMENT=1
     volumes:
-      - ../../openslides-auth-service/libraries/pip-auth:/pip-auth
       - ../../openslides-media-service/src:/app/src
 
   manage:
@@ -214,6 +210,5 @@ services:
     volumes:
       - ../../openslides-vote-service/cmd:/root/cmd
       - ../../openslides-vote-service/internal:/root/internal
-      - ../../openslides-autoupdate-service:/openslides-autoupdate-service
     ports:
       - "9013:9013"

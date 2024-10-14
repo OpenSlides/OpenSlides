@@ -1,0 +1,28 @@
+version: "3"
+services:
+
+  backend:
+    image: openslides-backend-dev-fullstack
+    volumes:
+      - ../../openslides-auth-service/libraries/pip-auth:/pip-auth
+      - ../../openslides-datastore-service/libraries/pip-auth:/openslides-datastore-service
+
+  icc:
+    image: openslides-icc-dev-fullstack
+    volumes:
+      - ../../openslides-autoupdate-service:/openslides-autoupdate-service
+
+  search:
+    image: openslides-search-dev-fullstack
+    volumes:
+      - ../../openslides-autoupdate-service:/openslides-autoupdate-service
+
+  media:
+    image: openslides-media-dev-fullstack
+    volumes:
+      - ../../openslides-auth-service/libraries/pip-auth:/pip-auth
+
+  vote:
+    image: openslides-vote-dev-fullstack
+    volumes:
+      - ../../openslides-autoupdate-service:/openslides-autoupdate-service
