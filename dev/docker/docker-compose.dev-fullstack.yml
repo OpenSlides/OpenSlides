@@ -5,7 +5,7 @@ services:
     image: openslides-backend-dev-fullstack
     volumes:
       - ../../openslides-auth-service/libraries/pip-auth:/pip-auth
-      - ../../openslides-datastore-service/libraries/pip-auth:/openslides-datastore-service
+      - ../../openslides-datastore-service:/openslides-datastore-service
 
   icc:
     image: openslides-icc-dev-fullstack
