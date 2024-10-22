@@ -95,9 +95,6 @@ services:
       - EMAIL_ACCEPT_SELF_SIGNED_CERTIFICATE=false
       - DEFAULT_FROM_EMAIL=noreply@example.com
       - OPENSLIDES_BACKEND_CREATE_INITIAL_DATA=1
-      - OPENSLIDES_KEYCLOAK_URL=http://keycloak:8080
-      - OPENSLIDES_AUTH_REALM=os
-      - OPENSLIDES_AUTH_CLIENT_ID=os-ui
     volumes:
       - ../../openslides-backend/openslides_backend:/app/openslides_backend
       - ../../openslides-backend/tests:/app/tests
@@ -158,6 +155,9 @@ services:
       - backend
       - postgres
     env_file: services.env
+    ports:
+      - "15678:5678"
+      - "9006:9006"
     environment:
       - OPENSLIDES_DEVELOPMENT=1
     volumes:
