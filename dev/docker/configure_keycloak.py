@@ -104,6 +104,31 @@ if __name__ == '__main__':
     client_scope_name = "os"
     client_name = "os-ui"
     protocol_mappers = [
+        # client_id is required by RFC 9068
+        {
+            "name": "client-id-mapper",
+            "protocol": "openid-connect",
+            "protocolMapper": "oidc-hardcoded-claim-mapper",
+            "consentRequired": False,
+            "config": {
+                "claim.name": "client_id",
+                "claim.value": "os",
+                "id.token.claim": "true",
+                "access.token.claim": "true",
+                "userinfo.token.claim": "true"
+            }
+        },
+        # audience is required by RFC 9068
+        {
+            "name": "audience-mapper",
+            "protocol": "openid-connect",
+            "protocolMapper": "oidc-audience-mapper",
+            "config": {
+                "included.custom.audience": "os",
+                "id.token.claim": "true",
+                "access.token.claim": "true"
+            }
+        },
         {
             "name": "email-mapper",
             "protocol": "openid-connect",
