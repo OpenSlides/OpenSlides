@@ -1876,6 +1876,9 @@ msgstr ""
 msgid "Enable point of orders for other participants"
 msgstr ""
 
+msgid "Enable public meetings"
+msgstr ""
+
 msgid "Enable specifications and ranking for possible motions"
 msgstr ""
 
@@ -3687,6 +3690,12 @@ msgstr ""
 msgid "Polls"
 msgstr ""
 
+msgid ""
+"Possible placeholders for email subject and body: {title}, {first_name}, "
+"{last_name}, {groups}, {structure_levels}, {event_name}, {url}, {username} "
+"and {password}"
+msgstr ""
+
 msgid "Possible points of order"
 msgstr ""
 
@@ -5001,11 +5010,6 @@ msgstr ""
 msgid "Use the following custom number"
 msgstr ""
 
-msgid ""
-"Use these placeholders: {name}, {event_name}, {url}, {username}, {password}. "
-"The url referrs to the system url."
-msgstr ""
-
 msgid "Used for WLAN QRCode projection."
 msgstr ""
 
@@ -5119,6 +5123,9 @@ msgid "Voting right for"
 msgstr ""
 
 msgid "Voting right received from (principals)"
+msgstr ""
+
+msgid "Voting rights"
 msgstr ""
 
 msgid "Voting started"
@@ -5286,9 +5293,6 @@ msgid "You can not vote right now because the voting has not yet started."
 msgstr ""
 
 msgid "You can only anonymize named polls."
-msgstr ""
-
-msgid "You can use {event_name} and {username} as placeholder."
 msgstr ""
 
 msgid "You cannot change the recommendation of motions in different workflows!"
@@ -5491,6 +5495,9 @@ msgid "female"
 msgstr ""
 
 msgid "finished (unpublished)"
+msgstr ""
+
+msgid "from delegated votes"
 msgstr ""
 
 msgid "fullscreen"
