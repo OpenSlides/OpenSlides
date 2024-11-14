@@ -830,10 +830,10 @@ msgid "Ballot reset"
 msgstr "Wahlgang zurückgesetzt"
 
 msgid "Ballot started"
-msgstr "Wahlgang gestarted"
+msgstr "Wahlgang gestartet"
 
 msgid "Ballot stopped"
-msgstr "Wahlgeang beendet"
+msgstr "Wahlgang beendet"
 
 msgid "Ballot stopped/published"
 msgstr "Wahlgang beendet/veröffentlicht"
@@ -2058,6 +2058,9 @@ msgstr "Geschäftsordnungsanträge aktivieren"
 
 msgid "Enable point of orders for other participants"
 msgstr "Stellen eines GO-Antrags für andere Teilnehmende erlauben"
+
+msgid "Enable public meetings"
+msgstr "Öffentliche Veranstaltungen aktivieren"
 
 msgid "Enable specifications and ranking for possible motions"
 msgstr "Vorgaben und Reihung für mögliche GO-Anträge aktivieren"
@@ -3951,6 +3954,15 @@ msgstr "GO-Antrag"
 msgid "Polls"
 msgstr "Umfragen"
 
+msgid ""
+"Possible placeholders for email subject and body: {title}, {first_name}, "
+"{last_name}, {groups}, {structure_levels}, {event_name}, {url}, {username} "
+"and {password}"
+msgstr ""
+"Mögliche Platzhalter für E-Mail-Betreff und -Inhalt: {title}, {first_name}, "
+"{last_name}, {groups}, {structure_levels}, {event_name}, {url}, {username} "
+"und {password}"
+
 msgid "Possible points of order"
 msgstr "Mögliche GO-Anträge"
 
@@ -5347,13 +5359,6 @@ msgstr "Farbe verwenden"
 msgid "Use the following custom number"
 msgstr "Verwende die folgende benutzerdefinierte Anzahl"
 
-msgid ""
-"Use these placeholders: {name}, {event_name}, {url}, {username}, {password}."
-" The url referrs to the system url."
-msgstr ""
-"Verwendbare Platzhalter: {name}, {event_name}, {url}, {username}, "
-"{password}. Die URL bezieht sich auf die System-URL."
-
 msgid "Used for WLAN QRCode projection."
 msgstr "Wird für die Projektion des WLAN-QR-Codes verwendet."
 
@@ -5478,6 +5483,9 @@ msgstr "Stimmrecht für"
 
 msgid "Voting right received from (principals)"
 msgstr "Stimmrecht erhalten von (Vollmachtgeber*in)"
+
+msgid "Voting rights"
+msgstr "Stimmrechte"
 
 msgid "Voting started"
 msgstr "Abstimmung gestartet"
@@ -5666,9 +5674,6 @@ msgstr ""
 
 msgid "You can only anonymize named polls."
 msgstr "Sie können nur namentliche Stimmabgaben anonymisieren."
-
-msgid "You can use {event_name} and {username} as placeholder."
-msgstr "Sie können {event_name} und {username} als Platzhalter verwenden."
 
 msgid ""
 "You cannot change the recommendation of motions in different workflows!"
@@ -5889,6 +5894,9 @@ msgstr "weiblich"
 
 msgid "finished (unpublished)"
 msgstr "abgeschlossen (unveröffentlicht)"
+
+msgid "from delegated votes"
+msgstr "aus Stimmrechtsübertragungen"
 
 msgid "fullscreen"
 msgstr "Vollbild"
