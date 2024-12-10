@@ -14,11 +14,7 @@ jobs:
         with:
           ref: "${{ inputs.branch }}"
 
-      - name: Set release date
-        run: |
-          echo "RELEASE_DATE=$(date -I)" >> $GITHUB_ENV
-
-      - name: Set release body
+      - name: Prepare release body
         run: |
           {
             cat patchnotes/${{ github.ref_name }}.md
@@ -29,7 +25,6 @@ jobs:
       - name: Create release
         uses: ncipollo/release-action@v1
         with:
-          name: "OpenSlides version ${{ github.ref_name }} ($RELEASE_DATE)"
           bodyFile: patchnotes.tmp.md
           allowUpdates: true
 
