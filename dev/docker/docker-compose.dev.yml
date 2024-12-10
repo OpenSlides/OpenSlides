@@ -1,31 +1,16 @@
 version: "3"
 services:
   keycloak:
-    image: quay.io/keycloak/keycloak:23.0.5
+    image: openslides-keycloak-dev
     environment:
-      - KEYCLOAK_ADMIN=admin
-      - KEYCLOAK_ADMIN_PASSWORD=admin
-      - PROXY_ADDRESS_FORWARDING=true
-      - KC_HOSTNAME_URL=https://localhost:8000/idp/
-      - KC_HOSTNAME_ADMIN_URL=https://localhost:8000/idp/
-#      - JAVA_OPTS=
-    command: ["start-dev", "-Dquarkus.http.root-path=/idp"]
-    volumes:
-      - ../keycloak/themes/os:/opt/keycloak/themes/os
+      - KC_BOOTSTRAP_ADMIN_USERNAME=admin
+      - KC_BOOTSTRAP_ADMIN_PASSWORD=admin
+      - JAVA_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
+      - KEYCLOAK_HOSTNAME=https://localhost:8000/idp/
+      - KEYCLOAK_HTTP_RELATIVE_PATH=/idp/
     ports:
       - 18080:8080
-
-  keycloak-init:
-    image: abbcodingde/keycloak-py-config:1.0.1
-    environment:
-      - KEYCLOAK_ADMIN=admin
-      - KEYCLOAK_ADMIN_PASSWORD=admin
-      - KEYCLOAK_URL=http://keycloak:8080
-      - TIMEOUT=120
-    volumes:
-      - ./configure_keycloak.py:/app/config.py
-    depends_on:
-      - proxy
+      - 15005:5005
 
   datastore-reader:
     image: openslides-datastore-reader-dev
@@ -186,6 +171,27 @@ services:
       - backend
       - autoupdate
       - keycloak
+    environment:
+      - ACTION_HOST=backend
+      - ACTION_PORT=9002
+      - PRESENTER_HOST=backend
+      - PRESENTER_PORT=9003
+      - AUTOUPDATE_HOST=autoupdate
+      - AUTOUPDATE_PORT=9012
+      - ICC_HOST=icc
+      - ICC_PORT=9007
+      - SEARCH_HOST=search
+      - SEARCH_PORT=9050
+      - MEDIA_HOST=media
+      - MEDIA_PORT=9006
+      - MANAGE_HOST=manage
+      - MANAGE_PORT=9008
+      - CLIENT_HOST=client
+      - CLIENT_PORT=9001
+      - VOTE_HOST=vote
+      - VOTE_PORT=9013
+      - KEYCLOAK_HOST=keycloak
+      - KEYCLOAK_PORT=8080
     ports:
       - "8000:8000"
 
