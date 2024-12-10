@@ -1,0 +1,25 @@
+name: GitHub Release
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+        with:
+          ref: "${{ inputs.branch }}"
+
+      - name: Set release date
+        run: |
+          echo "RELEASE_DATE=$(date -I)" >> $GITHUB_ENV
+
+      - name: Create release
+        uses: ncipollo/release-action@latest
+        with:
+          title: "OpenSlides stable version ${{ github.ref_name }} ($RELEASE_DATE)"
+          bodyFile: "patchnotes/${{ github.ref_name }}.md"
