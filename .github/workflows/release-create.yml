@@ -1,4 +1,4 @@
-name: GitHub Release
+name: Make github release
 on:
   push:
     tags:
@@ -19,7 +19,7 @@ jobs:
           echo "RELEASE_DATE=$(date -I)" >> $GITHUB_ENV
 
       - name: Create release
-        uses: ncipollo/release-action@latest
+        uses: ncipollo/release-action@v1
         with:
           title: "OpenSlides stable version ${{ github.ref_name }} ($RELEASE_DATE)"
           bodyFile: "patchnotes/${{ github.ref_name }}.md"
