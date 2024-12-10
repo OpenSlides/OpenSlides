@@ -139,6 +139,9 @@ msgstr ""
 msgid "Activate public access"
 msgstr ""
 
+msgid "Activate submitter extension field in motion create form"
+msgstr ""
+
 msgid "Activate the selection field 'motion editor'"
 msgstr ""
 
@@ -1198,6 +1201,9 @@ msgid "Changed version in line"
 msgstr ""
 
 msgid "Changes"
+msgstr ""
+
+msgid "Changes of all settings group will be lost!"
 msgstr ""
 
 msgid "Chat"
@@ -2427,9 +2433,6 @@ msgstr ""
 msgid "Import meeting"
 msgstr ""
 
-msgid "Import motions"
-msgstr ""
-
 msgid "Import participants"
 msgstr ""
 
@@ -2601,9 +2604,6 @@ msgid "Is not in active meetings"
 msgstr ""
 
 msgid "Is not in archived meetings"
-msgstr ""
-
-msgid "Is not locked out"
 msgstr ""
 
 msgid "Is not present"
@@ -3260,6 +3260,11 @@ msgstr ""
 
 msgid ""
 "Note, that the default password will be changed to the new generated one."
+msgstr ""
+
+msgid ""
+"Note: The public access setting is deactivated for the organization. Please "
+"contact your admins or hosting providers to activate the setting."
 msgstr ""
 
 msgid ""
@@ -3966,6 +3971,9 @@ msgstr ""
 msgid "Requires permission to manage lists of speakers"
 msgstr ""
 
+msgid "Requires permission to manage motions"
+msgstr ""
+
 msgid "Reset"
 msgstr ""
 
@@ -4618,13 +4626,6 @@ msgid "The fields are defined as follows"
 msgstr ""
 
 msgid "The file has too few columns to be parsed properly."
-msgstr ""
-
-msgid "The file seems to have additional columns. They will be ignored."
-msgstr ""
-
-msgid ""
-"The file seems to have some ommitted columns. They will be considered empty."
 msgstr ""
 
 msgid ""
