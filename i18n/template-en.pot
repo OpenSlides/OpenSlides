@@ -139,7 +139,7 @@ msgstr ""
 msgid "Activate public access"
 msgstr ""
 
-msgid "Activate text-based submitter field in motion creation"
+msgid "Activate submitter extension field in motion create form"
 msgstr ""
 
 msgid "Activate the selection field 'motion editor'"

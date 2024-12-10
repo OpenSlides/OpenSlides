@@ -164,8 +164,9 @@ msgstr "Design aktivieren"
 msgid "Activate public access"
 msgstr "Öffentlichen Zugang aktivieren"
 
-msgid "Activate text-based submitter field in motion creation"
-msgstr "Textbasiertes Antragstellerfeld in der Antragstellung aktivieren"
+msgid "Activate submitter extension field in motion create form"
+msgstr ""
+"Antragsteller*in-Erweiterungsfeld im Antragserstellungsformular aktivieren"
 
 msgid "Activate the selection field 'motion editor'"
 msgstr "Auswahlfeld 'Antragsbearbeiter*in' aktivieren"
