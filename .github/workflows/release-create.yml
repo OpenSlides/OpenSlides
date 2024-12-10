@@ -20,18 +20,16 @@ jobs:
 
       - name: Set release body
         run: |
-          RELEASE_BODY=$(
+          {
             cat patchnotes/${{ github.ref_name }}.md
             echo ""
             echo "For instructions on how to use production ready docker images, see [INSTALL.md](https://github.com/OpenSlides/OpenSlides/blob/main/INSTALL.md)"
-          )
-          echo "RELEASE_BODY<<EOF" >> $GITHUB_ENV
-          echo "$RELEASE_BODY" >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
+          } > patchnotes.tmp.md
 
       - name: Create release
         uses: ncipollo/release-action@v1
         with:
           name: "OpenSlides version ${{ github.ref_name }} ($RELEASE_DATE)"
-          body: "$RELEASE_BODY"
+          bodyFile: patchnotes.tmp.md
+          allowUpdates: true
 
