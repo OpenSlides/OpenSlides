@@ -1,5 +1,10 @@
 # OpenSlides
 
+[![tests-stable](https://github.com/peb-adr/OpenSlides/actions/workflows/test-integration-stable.yml/badge.svg)](https://github.com/peb-adr/OpenSlides/actions/workflows/test-integration-stable.yml)
+[![build-stable](https://github.com/peb-adr/OpenSlides/actions/workflows/build-images-stable.yml/badge.svg)](https://github.com/peb-adr/OpenSlides/actions/workflows/build-images-stable.yml)
+[![tests-staging](https://github.com/peb-adr/OpenSlides/actions/workflows/test-integration-staging.yml/badge.svg)](https://github.com/peb-adr/OpenSlides/actions/workflows/test-integration-staging.yml)
+[![build-staging](https://github.com/peb-adr/OpenSlides/actions/workflows/build-images-staging.yml/badge.svg)](https://github.com/peb-adr/OpenSlides/actions/workflows/build-images-staging.yml)
+
 ## What is OpenSlides?
 
 OpenSlides is a free, web based presentation and assembly system for
