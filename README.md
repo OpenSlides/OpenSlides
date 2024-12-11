@@ -17,10 +17,6 @@ https://openslides.com for more information.
 To set up an OpenSlides 4 instance, please follow our [install
 instructions](INSTALL.md).
 
-Status of last Tests and docker image builds
-
-URLs
-
 ## Development
 
 For further information about developing OpenSlides, refer to [the development
