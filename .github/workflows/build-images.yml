@@ -1,5 +1,5 @@
 ---
-name: Build Docker images for all OpenSlides services
+name: Build Docker images for all OpenSlides services (reusable)
 on:
   workflow_call:
 
