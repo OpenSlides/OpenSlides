@@ -67,6 +67,11 @@ increase the `--timeout` flag:
 
     $ ./openslides check-server
 
+To be able to use OpenSlides create initial data. This includes the first
+account for the `superadmin`.
+
+    $ ./openslides initial-data
+
 Now open https://localhost:8000, login with superuser credentials (default
 username and password: `superadmin`) and have fun.
 
@@ -152,7 +157,7 @@ It is therefore recommended to pin the version explicitly in the `my-config.yml`
 
     ---
     defaults:
-      tag: 4.0.0
+      tag: 4.2.0
 
 Note that if changes to the configuration or structure of the docker stack were
 made the appropriate version of the `openslides` tool must also be refetched
@@ -291,7 +296,7 @@ are sufficient for you.
 
 
 
-## Database backup
+## Database dump
 
 To get a dump of your (PostgreSQL) database, run:
 
