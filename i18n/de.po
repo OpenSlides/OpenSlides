@@ -164,6 +164,10 @@ msgstr "Design aktivieren"
 msgid "Activate public access"
 msgstr "Öffentlichen Zugang aktivieren"
 
+msgid "Activate submitter extension field in motion create form"
+msgstr ""
+"Antragsteller*in-Erweiterungsfeld im Antragserstellungsformular aktivieren"
+
 msgid "Activate the selection field 'motion editor'"
 msgstr "Auswahlfeld 'Antragsbearbeiter*in' aktivieren"
 
@@ -1348,6 +1352,9 @@ msgstr "Geänderte Fassung in Zeile"
 
 msgid "Changes"
 msgstr "Änderungen"
+
+msgid "Changes of all settings group will be lost!"
+msgstr "Änderungen in allen Einstellungsseiten gehen verloren!"
 
 msgid "Chat"
 msgstr "Chat"
@@ -2653,9 +2660,6 @@ msgstr "Importierte Daten müssen im JSON-Format vorliegen"
 msgid "Import meeting"
 msgstr "Veranstaltung importieren"
 
-msgid "Import motions"
-msgstr "Anträge importieren"
-
 msgid "Import participants"
 msgstr "Teilnehmende importieren"
 
@@ -2831,9 +2835,6 @@ msgstr "Ist in keinen aktiven Veranstaltungen"
 
 msgid "Is not in archived meetings"
 msgstr "Ist in keinen archivierten Veranstaltungen"
-
-msgid "Is not locked out"
-msgstr "Ist nicht ausgeschlossen"
 
 msgid "Is not present"
 msgstr "Ist nicht anwesend"
@@ -3505,6 +3506,14 @@ msgid ""
 msgstr ""
 "Beachten Sie, dass das Passwort auf das neu generierte Passwort geändert "
 "wird."
+
+msgid ""
+"Note: The public access setting is deactivated for the organization. Please "
+"contact your admins or hosting providers to activate the setting."
+msgstr ""
+"Hinweis: Die Einstellung für den öffentlichen Zugang ist für diese "
+"Organisation deaktiviert. Bitte wenden Sie sich an Ihren Administrator oder "
+"Hosting-Provider, um die Einstellung zu aktivieren."
 
 msgid ""
 "Note: Your own password was not changed. Please use the password change "
@@ -4239,6 +4248,9 @@ msgstr "Erforderliches Recht um diese Seite zu sehen:"
 msgid "Requires permission to manage lists of speakers"
 msgstr "Benötigt Recht zum Verwalten von Redelisten"
 
+msgid "Requires permission to manage motions"
+msgstr "Benötigt Recht zum Verwalten von Anträgen"
+
 msgid "Reset"
 msgstr "Zurücksetzen"
 
@@ -4909,16 +4921,6 @@ msgstr "Die Felder sind wie folgt definiert"
 
 msgid "The file has too few columns to be parsed properly."
 msgstr "Die Datei enthält zu wenige Spalten, um richtig erkannt zu werden."
-
-msgid "The file seems to have additional columns. They will be ignored."
-msgstr ""
-"Die Datei scheint zusätzliche Spalten zu haben. Diese werden ignoriert."
-
-msgid ""
-"The file seems to have some ommitted columns. They will be considered empty."
-msgstr ""
-"Die Datei scheint einige ausgelassene Spalten zu haben. Sie werden als leer "
-"betrachtet."
 
 msgid ""
 "The import can not proceed. There is likely a problem with the import data, "
