@@ -1,11 +1,7 @@
 ---
 name: Build Docker images for all OpenSlides services
 on:
-  push:
-    branches:
-      - staging/4*
-      - stable/4*
-  workflow_dispatch:
+  workflow_call:
 
 jobs:
   build:
@@ -55,7 +51,7 @@ jobs:
           # Build versioned image
           ./dev/docker/build.sh -D $DOCKER_REPO ${{ matrix.service.name }}
           docker push "$IMAGE_NAME_VERSIONED"
-          # Tag versioned image 'latest' (when on stable branch)
+          # Tag versioned image 'latest' (if on stable branch)
           case "$(git rev-parse --abbrev-ref HEAD)" in stable/4*)
             docker tag "$IMAGE_NAME_VERSIONED" "$IMAGE_NAME_LATEST"
             docker push "$IMAGE_NAME_LATEST"
