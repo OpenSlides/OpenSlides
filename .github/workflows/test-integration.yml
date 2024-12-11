@@ -1,6 +1,11 @@
 ---
 name: Run integration tests
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - staging/4*
+      - stable/4*
+  pull_request:
 
 jobs:
   run-tests:
