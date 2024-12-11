@@ -1,0 +1,11 @@
+---
+name: tests-staging
+on:
+  push:
+    branches:
+      - staging/4*
+
+jobs:
+  run-tests:
+    name: 'Runs integration tests'
+    uses: ./.github/workflows/test-integration.yml

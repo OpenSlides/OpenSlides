@@ -1,0 +1,9 @@
+---
+name: tests-pr
+on:
+  pull_request:
+
+jobs:
+  run-tests:
+    name: 'Runs integration tests'
+    uses: ./.github/workflows/rest-integration.yml
