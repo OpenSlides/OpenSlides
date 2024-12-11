@@ -1,5 +1,5 @@
 ---
-name: Run integration tests
+name: Run integration tests (reusable)
 on:
   workflow_call:
 
