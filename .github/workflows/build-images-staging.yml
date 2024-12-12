@@ -1,0 +1,12 @@
+---
+name: build-staging
+on:
+  push:
+    branches:
+      - staging/4*
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: 'Call build-images'
+    uses: ./.github/workflows/build-images.yml
