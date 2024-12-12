@@ -2,6 +2,45 @@
 
 https://openslides.com
 
+## Version 4.2 (2024-12-13)
+
+[Milestone](https://github.com/OpenSlides/OpenSlides/milestones/4.2)
+
+OpenSlides 4.2 – most important new features
+
+- Complex speaking time management with time quotas and structure levels (e.g. for parliamentary fractions)
+- Overall speech list: Overview of all contributions to a meeting
+- Moderation notes for speech manuscripts and stage directions in Autopilot
+- Public access
+- Closed meeting
+- Account and participant management:
+    - New field Membership number
+    - Account merge
+    - Lock participants out from meetings
+    - Swap Mandates
+    - Improved vote delegation (new filters and settings)
+    - Meeting admins and committee admins can change account personal information data
+- New text editor TipTap replaces the previous TinyMCE incl. development of a new TipTap extension with which motion texts from Microsoft Word can be transferred without loss.
+    - https://github.com/ueberdosis/awesome-tiptap/pull/29
+    - https://www.npmjs.com/package/@intevation/tiptap-extension-office-paste
+- Organization-wide files
+- Motion management:
+    - Metadata extended with new fields: spokesperson, motion editor, free text submitter
+    - Check for word-for-word match integrated
+    - New voting method 'Yes/No' (without abstention)
+- Projectors:
+    - Chyron with new layout options for the current speech and the current agenda item
+    - Projection of motions including amendments and change recommendations improved.
+- SSO login via SAML: extended configuration options to assign accounts to meetings, groups and other attributes as required
+- Optimizations:
+    - fundamentally reworked structure level management
+    - customizable Autopilot widgets
+    - New placeholders for invitation e-mail added
+    - Performance optimizations and stability improvements
+    - Various UI improvements
+    - Various bug fixes
+
+
 ## Version 4.1 (2023-12-14)
 
 [Milestone](https://github.com/OpenSlides/OpenSlides/milestones/4.1)
