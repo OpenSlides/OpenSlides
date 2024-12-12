@@ -2,7 +2,7 @@
 
 https://openslides.com
 
-## Version 4.2 (2024-12-xx) TODO
+## Version 4.2 (2024-12-13)
 
 [Milestone](https://github.com/OpenSlides/OpenSlides/milestones/4.2)
 
