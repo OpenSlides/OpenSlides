@@ -1,4 +1,4 @@
-name: Project automation
+name: Project automation (WIP on PR opened)
 on:
   pull_request_target:
     types:
