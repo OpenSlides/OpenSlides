@@ -1,4 +1,4 @@
-name: Project automation
+name: Project automation (Done on issue closed)
 on:
   issues:
     types:

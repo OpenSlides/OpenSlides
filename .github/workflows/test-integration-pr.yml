@@ -1,0 +1,9 @@
+---
+name: tests-pr
+on:
+  pull_request:
+
+jobs:
+  run-tests:
+    name: 'Call test-integration'
+    uses: ./.github/workflows/test-integration.yml
