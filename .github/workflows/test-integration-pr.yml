@@ -6,4 +6,4 @@ on:
 jobs:
   run-tests:
     name: 'Call test-integration'
-    uses: ./.github/workflows/rest-integration.yml
+    uses: ./.github/workflows/test-integration.yml
