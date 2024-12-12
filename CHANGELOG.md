@@ -40,6 +40,7 @@ OpenSlides 4.2 – most important new features
     - Various UI improvements
     - Various bug fixes
 
+
 ## Version 4.1 (2023-12-14)
 
 [Milestone](https://github.com/OpenSlides/OpenSlides/milestones/4.1)

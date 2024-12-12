@@ -5,6 +5,7 @@
 [![build-stable](https://github.com/OpenSlides/OpenSlides/actions/workflows/build-images-stable.yml/badge.svg)](https://github.com/OpenSlides/OpenSlides/actions/workflows/build-images-stable.yml)
 [![build-staging](https://github.com/OpenSlides/OpenSlides/actions/workflows/build-images-staging.yml/badge.svg)](https://github.com/OpenSlides/OpenSlides/actions/workflows/build-images-staging.yml)
 
+
 ## What is OpenSlides?
 
 OpenSlides is a free, web based presentation and assembly system for
@@ -16,6 +17,7 @@ https://openslides.com for more information.
 
 To set up an OpenSlides 4 instance, please follow our [install
 instructions](INSTALL.md).
+
 
 ## Development
 
