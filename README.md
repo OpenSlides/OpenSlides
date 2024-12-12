@@ -20,7 +20,7 @@ structure supports multiple meetings, grouped into committees, in one organizati
 instance of OpenSlides 3 is now a single meeting in OpenSlides 4. This is why there is no automatic
 migration path.
 
-However, you have the possiblity to export your meeting from OpenSlides 3 and import it in
+However, you have the possibility to export your meeting from OpenSlides 3 and import it in
 OpenSlides 4:
 - In your __OpenSlides 3__ instance, go to *Settings*, click on the three dots in the top right-hand
   corner and click *Export to OpenSlides4*. A JSON file will be downloaded which contains all your
