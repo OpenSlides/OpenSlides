@@ -10,3 +10,4 @@ jobs:
   build:
     name: 'Call build-images'
     uses: ./.github/workflows/build-images.yml
+    secrets: inherit
