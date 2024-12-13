@@ -1,4 +1,4 @@
-name: Project automation
+name: Project automation (ReviewIP on PR review_requested)
 on:
   pull_request_target:
     types:

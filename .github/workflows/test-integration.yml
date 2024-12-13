@@ -1,6 +1,7 @@
 ---
-name: Run integration tests
-on: [push, pull_request]
+name: Run integration tests (reusable)
+on:
+  workflow_call:
 
 jobs:
   run-tests:

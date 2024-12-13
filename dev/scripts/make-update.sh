@@ -453,7 +453,7 @@ merge_stable_branch_meta() {
       git -C "$meta_fullpath" checkout "$BRANCH_NAME"
       if [[ -z "$forerunner_path" ]]; then
         merge_stable_branch "$meta_fullpath"
-        git -C "$meta_fullpath" commit \
+        git -C "$meta_fullpath" commit --no-edit --allow-empty \
           --message "Merge $STAGING_BRANCH_NAME into $STABLE_BRANCH_NAME. Update $(date +%Y%m%d)"
         forerunner_path="$meta_fullpath"
       else
