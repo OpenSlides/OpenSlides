@@ -72,7 +72,8 @@ services:
       - ../../openslides-backend/openslides_backend:/app/openslides_backend
       - ../../openslides-backend/tests:/app/tests
       - ../../openslides-backend/cli:/app/cli
-      - ../../openslides-backend/global:/app/global
+      - ../../openslides-backend/data:/app/data
+      - ../../openslides-backend/meta:/app/meta
       - ../../openslides-backend/scripts:/app/scripts
 
   autoupdate:
