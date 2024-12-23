@@ -47,6 +47,8 @@ services:
       - POSTGRES_USER=openslides
       - POSTGRES_PASSWORD=openslides
       - POSTGRES_DB=openslides
+    ports:
+      - 5432:5432
 
   client:
     image: openslides-client-dev
