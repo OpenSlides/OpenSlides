@@ -2,10 +2,11 @@
 # Translators:
 # Katharina <karmitt2@web.de>, 2022
 # Alexandra Damm <damm@chiesaluterana.it>, 2024
-# 
+# Albano Battistella <albanobattistella@gmail.com>, 2024
+#
 msgid ""
 msgstr ""
-"Last-Translator: Alexandra Damm <damm@chiesaluterana.it>, 2024\n"
+"Last-Translator: Albano Battistella <albanobattistella@gmail.com>, 2024\n"
 "Language-Team: Italian (https://app.transifex.com/openslides/teams/14270/it/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -109,6 +110,9 @@ msgid ""
 "(including organization and committee admins) may not open the closed "
 "meeting. It is locked from the inside."
 msgstr ""
+"Accesso possibile solo per i partecipanti a questa riunione. Tutti gli altri account "
+"(inclusi gli amministratori dell'organizzazione e del comitato) non possono aprire la riunione chiusa "
+"in quanto è bloccata dall'interno."
 
 msgid "Access-data"
 msgstr "Dati d'accesso"
@@ -117,7 +121,7 @@ msgid "Account"
 msgstr "Account"
 
 msgid "Account admin"
-msgstr ""
+msgstr "Account amministratore"
 
 msgid "Account successfully assigned"
 msgstr "Account assegnato con successo"
@@ -144,7 +148,7 @@ msgid "Activate amendments"
 msgstr "Attivare mozioni di modifica"
 
 msgid "Activate closed meeting"
-msgstr ""
+msgstr "Attiva riunione chiusa"
 
 msgid "Activate design"
 msgstr "Attivare design"
@@ -262,7 +266,7 @@ msgstr ""
 "all´importazione."
 
 msgid "Administration roles"
-msgstr ""
+msgstr "Ruoli dell'amministrazione"
 
 msgid "Administration roles (at organization level)"
 msgstr "Ruoli di amministrazione (a livello organizzativo)"
@@ -294,10 +298,10 @@ msgstr ""
 "attendere ..."
 
 msgid "Agenda visibility"
-msgstr "Visibilità nell'Ordine del Giorno"
+msgstr "Visibilità nell'Ordine del giorno"
 
 msgid "Align"
-msgstr ""
+msgstr "Allinea"
 
 msgid "All"
 msgstr "Tutto"
@@ -451,7 +455,7 @@ msgid "Archived"
 msgstr "Archiviato"
 
 msgid "Archived meetings"
-msgstr ""
+msgstr "Riunioni archiviate"
 
 msgid ""
 "Are you sure you want to activate this color set? This will change the "
@@ -726,7 +730,7 @@ msgid "Attention: First enter the wifi data in [Settings > General]"
 msgstr "Attenzione: Inserire prima i dati wifi in [Impostazioni > Generali]."
 
 msgid "Attention: Not selected accounts will be merged and then deleted."
-msgstr ""
+msgstr "Attenzione: gli account non selezionati verranno uniti e poi eliminati."
 
 msgid "Attention: This action cannot be undone!"
 msgstr "Attenzione: Questa azione non può essere annullata!"
@@ -811,7 +815,7 @@ msgid "Ballots"
 msgstr "Votazioni"
 
 msgid "Ballots cast"
-msgstr ""
+msgstr "Voti espressi"
 
 msgid "Base folder"
 msgstr "Cartella base"
@@ -1048,7 +1052,7 @@ msgid "Can put oneself on the list of speakers"
 msgstr "Può mettersi sulla lista dei relatori"
 
 msgid "Can receive motions"
-msgstr ""
+msgstr "Può ricevere mozioni"
 
 msgid "Can receive motions from committee"
 msgstr "Può ricevere mozioni dalla commissione"
@@ -1249,10 +1253,10 @@ msgid "Cannot do that in demo mode!"
 msgstr "Questa opzione non disponibile nel modus demo!"
 
 msgid "Cannot forward motions"
-msgstr ""
+msgstr "Impossibile inoltrare mozioni"
 
 msgid "Cannot receive motions"
-msgstr ""
+msgstr "Impossibile ricevere mozioni"
 
 msgid "Categories"
 msgstr "Categorie"
@@ -1378,7 +1382,7 @@ msgid "Clear current projection"
 msgstr "Cancella la proiezione corrente"
 
 msgid "Clear formatting"
-msgstr ""
+msgstr "Cancella formattazione"
 
 msgid "Clear list"
 msgstr "Cancellare la lista"
@@ -1405,10 +1409,10 @@ msgid "Close list of speakers"
 msgstr "Chiudere lista dei relatori"
 
 msgid "Closed"
-msgstr ""
+msgstr "Chiusa"
 
 msgid "Closed items"
-msgstr ""
+msgstr "Articoli chiusi"
 
 msgid "Collapse all"
 msgstr "Chiudere tutto"
@@ -1592,7 +1596,7 @@ msgid "Current speaker chyron"
 msgstr "Sottopancia dell'attuale relatore/relatrice"
 
 msgid "Current window"
-msgstr ""
+msgstr "Finestra corrente"
 
 msgid "Currently no livestream available."
 msgstr "Attualmente livestream non disponibile."
@@ -1716,6 +1720,14 @@ msgid ""
 "Additional information:\n"
 "In combination with motion blocks, the recommendation of multiple motions can be followed simultaneously."
 msgstr ""
+"Definisce la formulazione della raccomandazione che appartiene a questo stato.\n"
+"Esempio: Stato = Accettato / Raccomandazione = Accettazione.\n"
+"\n"
+"Per attivare il sistema di raccomandazione, è necessario definire un raccomandante (ad esempio, un comitato di mozione) in > [Impostazioni] > [Mozioni] > [Nome del raccomandante].\n"
+"Esempio di raccomandante: comitato di mozione\n"
+"\n"
+"Informazioni aggiuntive:\n"
+"In combinazione con blocchi di mozione, è possibile seguire contemporaneamente la raccomandazione di più mozioni."
 
 msgid "Defines which states can be selected next in the workflow."
 msgstr ""
@@ -1764,7 +1776,7 @@ msgid "Designates whether this user is in the room."
 msgstr "Decide se questo utente è presente in loco."
 
 msgid "Didn't get an email"
-msgstr ""
+msgstr "Non ha ricevuto un'e-mail"
 
 msgid "Diff version"
 msgstr "Versione di modifica"
@@ -1835,7 +1847,7 @@ msgid "Download folder"
 msgstr "Cartella Download"
 
 msgid "Download the file"
-msgstr ""
+msgstr "Scarica il file"
 
 msgid "Drop files into this area OR click here to select files"
 msgstr "Spostare files in questa sezione O premere qui per selezionare files"
@@ -1879,7 +1891,7 @@ msgid "Edit"
 msgstr "Modificare"
 
 msgid "Edit HTML content"
-msgstr ""
+msgstr "Modifica il contenuto HTML"
 
 msgid "Edit account"
 msgstr "Modifica account"
@@ -1957,7 +1969,7 @@ msgid "Email"
 msgstr "E-mail"
 
 msgid "Email address"
-msgstr ""
+msgstr "Indirizzo e-mail"
 
 msgid "Email body"
 msgstr "corpo della e-mail"
@@ -2046,6 +2058,12 @@ msgid ""
 "2. target meeting must be created.\n"
 "3. user must have group permission for forwarding."
 msgstr ""
+"Abilita l'inoltro di mozioni ad altre riunioni all'interno dell'istanza di OpenSlides nello stato selezionato.\n"
+"\n"
+"Prerequisiti:\n"
+"1. la gerarchia di inoltro deve essere impostata a livello organizzativo nel comitato.\n"
+"2. la riunione di destinazione deve essere creata.\n"
+"3. l'utente deve avere l'autorizzazione di gruppo per l'inoltro."
 
 msgid ""
 "Enables the support function for motions in the selected state. The support "
@@ -2215,7 +2233,7 @@ msgid "Filter"
 msgstr "Filtro"
 
 msgid "Filtered single votes"
-msgstr ""
+msgstr "Voti singoli filtrati"
 
 msgid "Final version"
 msgstr "Versione finale"
@@ -2292,7 +2310,7 @@ msgid "Forward"
 msgstr "Inoltrare"
 
 msgid "Forward motions"
-msgstr ""
+msgstr "Inoltra mozioni"
 
 msgid "Forward motions to"
 msgstr "Inoltrare mozioni a"
@@ -2361,7 +2379,7 @@ msgid "Go to line"
 msgstr "Vai alla riga"
 
 msgid "Got an email"
-msgstr ""
+msgstr "Ha ricevuto un'e-mail"
 
 msgid "Group"
 msgstr "Gruppo"
@@ -2399,16 +2417,16 @@ msgid "Has SSO identification"
 msgstr "Ha SSO identificazione"
 
 msgid "Has a membership number"
-msgstr ""
+msgstr "Ha un numero di iscrizione"
 
 msgid "Has amendments"
 msgstr "Ha richieste di modifica mozione"
 
 msgid "Has an email address"
-msgstr ""
+msgstr "Ha un indirizzo email"
 
 msgid "Has changed vote weight"
-msgstr ""
+msgstr "Ha cambiato il peso del voto"
 
 msgid "Has email"
 msgstr "Ha email"
@@ -2420,28 +2438,28 @@ msgid "Has identical motions"
 msgstr "Ha mozioni identiche"
 
 msgid "Has logged in"
-msgstr ""
+msgstr "Ha effettuato l'accesso"
 
 msgid "Has no SSO identification"
 msgstr "Non ha identificazione SSO"
 
 msgid "Has no email address"
-msgstr ""
+msgstr "Non ha indirizzo email"
 
 msgid "Has no identical motions"
 msgstr "Non ha mozioni identiche"
 
 msgid "Has no membership number"
-msgstr ""
+msgstr "Non ha numero di iscrizione"
 
 msgid "Has no speakers"
 msgstr "Nessuna richiesta di parola"
 
 msgid "Has not logged in yet"
-msgstr ""
+msgstr "Non ha ancora effettuato l'accesso"
 
 msgid "Has not spoken"
-msgstr ""
+msgstr "Non ha parlato"
 
 msgid "Has not voted"
 msgstr "Non ha votato"
@@ -2453,10 +2471,10 @@ msgid "Has speakers"
 msgstr "Presenti richieste di parola"
 
 msgid "Has spoken"
-msgstr ""
+msgstr "Ha parlato"
 
 msgid "Has unchanged vote weight"
-msgstr ""
+msgstr "Ha un peso di voto invariato"
 
 msgid "Has voted"
 msgstr "Ha votato"
@@ -2471,10 +2489,10 @@ msgid "Header font color"
 msgstr "Colore scrittura intestazione"
 
 msgid "Heading"
-msgstr ""
+msgstr "Intestazione"
 
 msgid "Headings"
-msgstr ""
+msgstr "Intestazioni"
 
 msgid "Headline color"
 msgstr "Colore titolo"
@@ -2555,7 +2573,7 @@ msgstr ""
 "Se il valore è impostato su 0, il tempo viene conteggiato come cronometro."
 
 msgid "Image description"
-msgstr ""
+msgstr "Descrizione dell'immagine"
 
 msgid "Import"
 msgstr "Importa"
@@ -2627,13 +2645,13 @@ msgid "Insert topics here"
 msgstr "Inserire temi qui"
 
 msgid "Insert/Edit Link"
-msgstr ""
+msgstr "Inserisci/Modifica link"
 
 msgid "Insert/edit image"
-msgstr ""
+msgstr "Inserisci/modifica immagine"
 
 msgid "Insert/edit link"
-msgstr ""
+msgstr "Inserisci/modifica link"
 
 msgid "Insertion"
 msgstr "Inserzione"
@@ -2706,16 +2724,16 @@ msgid "Is candidate"
 msgstr "E' un candidato / una candidata"
 
 msgid "Is committee admin"
-msgstr ""
+msgstr "È amministratore del comitato"
 
 msgid "Is favorite"
 msgstr "E' il preferito"
 
 msgid "Is in active meetings"
-msgstr ""
+msgstr "È in riunioni attive"
 
 msgid "Is in archived meetings"
-msgstr ""
+msgstr "È nelle riunioni archiviate"
 
 msgid "Is manager"
 msgstr "E' amministratore/amministratrice"
@@ -2727,13 +2745,13 @@ msgid "Is no natural person"
 msgstr "Non è una persona naturale"
 
 msgid "Is not a committee"
-msgstr ""
+msgstr "Non è un comitato"
 
 msgid "Is not a template"
 msgstr "Non è un modello"
 
 msgid "Is not active"
-msgstr ""
+msgstr "Non è attivo"
 
 msgid "Is not archived"
 msgstr "Non è archiviato"
@@ -2742,10 +2760,10 @@ msgid "Is not favorite"
 msgstr "Non è il preferito"
 
 msgid "Is not in active meetings"
-msgstr ""
+msgstr "Non è in riunioni attive"
 
 msgid "Is not in archived meetings"
-msgstr ""
+msgstr "Non è presente nelle riunioni archiviate"
 
 msgid "Is not present"
 msgstr "Non è presente"
@@ -2796,7 +2814,7 @@ msgid "Jitsi room password"
 msgstr "Password dell'aula Jitsi"
 
 msgid "Justify"
-msgstr ""
+msgstr "Giustificare"
 
 msgid "Keep each item in a single line."
 msgstr "Utilizzare per ogni contributo una riga"
@@ -2898,7 +2916,7 @@ msgid "Livestream URL"
 msgstr "Livestream URL"
 
 msgid "Livestream poster image"
-msgstr ""
+msgstr "Immagine del poster in live streaming"
 
 msgid "Livestream poster image url"
 msgstr "Livestream immagine poster URL"
@@ -2964,7 +2982,7 @@ msgid "Meeting information"
 msgstr "Informazioni della riunione"
 
 msgid "Meeting is closed"
-msgstr ""
+msgstr "La riunione è chiusa"
 
 msgid "Meeting not found"
 msgstr "Riunione non trovata"
@@ -2989,7 +3007,7 @@ msgid "Meetings"
 msgstr "Riunioni"
 
 msgid "Meetings affected:"
-msgstr ""
+msgstr "Riunioni interessate:"
 
 msgid "Meetings selected"
 msgstr "Riunioni selezionate"
@@ -2998,10 +3016,10 @@ msgid "Membership number"
 msgstr "Numero d'iscrizione"
 
 msgid "Merge"
-msgstr ""
+msgstr "Unire"
 
 msgid "Merge accounts"
-msgstr ""
+msgstr "Unire account"
 
 msgid "Message"
 msgstr "Messaggio"
@@ -3167,22 +3185,22 @@ msgid "Natural person"
 msgstr "Persona naturale"
 
 msgid "Navigate to account page from "
-msgstr ""
+msgstr "Vai alla pagina dell'account da "
 
 msgid "Navigate to committee detail view from "
-msgstr ""
+msgstr "Passare alla visualizzazione dettagliata del comitato da "
 
 msgid "Navigate to meeting "
-msgstr ""
+msgstr "Vai alla riunione "
 
 msgid "Navigate to motion"
-msgstr ""
+msgstr "Vai alla mozione "
 
 msgid "Navigate to participant page from "
-msgstr ""
+msgstr "Vai alla pagina dei partecipanti da "
 
 msgid "Navigate to the folder"
-msgstr ""
+msgstr "Vai alla cartella"
 
 msgid "Negative votes are not allowed."
 msgstr "Non sono ammessi voti negativi"
@@ -3269,7 +3287,7 @@ msgid "New vote"
 msgstr "Nuovo voto"
 
 msgid "New window"
-msgstr ""
+msgstr "Nuova finestra"
 
 msgid "New workflow"
 msgstr "Nuova lavorazione"
@@ -3284,7 +3302,7 @@ msgid "No"
 msgstr "No"
 
 msgid "No admin role"
-msgstr ""
+msgstr "Nessun ruolo di amministratore"
 
 msgid "No category"
 msgstr "Nessuna categoria"
@@ -3302,7 +3320,7 @@ msgid "No comment"
 msgstr "Nessun commento"
 
 msgid "No committee admin"
-msgstr ""
+msgstr "Nessun amminstratore del comitato"
 
 msgid "No data"
 msgstr "Nessun dato"
@@ -3356,13 +3374,13 @@ msgid "No results yet."
 msgstr "Finora nessun risultato"
 
 msgid "No structure level"
-msgstr ""
+msgstr "Nessun livello di struttura"
 
 msgid "No verbose name is defined"
 msgstr "Non è definito un nome dettagliato"
 
 msgid "No."
-msgstr "N."
+msgstr "No."
 
 msgid "Nomination list"
 msgstr "Elenco delle candidature"
@@ -3448,7 +3466,7 @@ msgid "Number set"
 msgstr "Numero assegnato"
 
 msgid "Numbered list"
-msgstr ""
+msgstr "Lista numerata"
 
 msgid "Numbered per category"
 msgstr "Numerare per categoria"
@@ -3469,7 +3487,7 @@ msgid "OK"
 msgstr "Ok"
 
 msgid "OR"
-msgstr ""
+msgstr "O"
 
 msgid "Off"
 msgstr "spento"
@@ -3481,7 +3499,7 @@ msgid "Ok"
 msgstr "Ok"
 
 msgid "Old account of"
-msgstr ""
+msgstr "Vecchio account di"
 
 msgid "Old password"
 msgstr "Vecchia password"
@@ -3521,10 +3539,10 @@ msgid "Open a meeting to play chess"
 msgstr "Apri una riunione per giocare a scacchi"
 
 msgid "Open items"
-msgstr ""
+msgstr "Apri elementi"
 
 msgid "Open link in ..."
-msgstr ""
+msgstr "Apri il link in ..."
 
 msgid "Open list of speakers"
 msgstr "Aprire la lista dei relatori"
@@ -3575,7 +3593,7 @@ msgid "Organization Management Level changed"
 msgstr "Livello di Gestione dell'Organizzazione modificato"
 
 msgid "Organization admin"
-msgstr ""
+msgstr "Amministratore dell'organizzazione"
 
 msgid "Organization language"
 msgstr "Lingua dell'organizzazione"
@@ -3797,7 +3815,7 @@ msgid "Please join the conference room now!"
 msgstr "Prego entra nell'aula conferenza ora!"
 
 msgid "Please select a primary account."
-msgstr ""
+msgstr "Seleziona un account principale."
 
 msgid "Please select a vote weight greater than or equal to 0.000001"
 msgstr "Selezionare un peso di voto maggiore o uguale a 0,000001."
@@ -3935,7 +3953,7 @@ msgid "Public template"
 msgstr "Modello pubblico"
 
 msgid "Public template required for creating new meeting"
-msgstr ""
+msgstr "Modello pubblico richiesto per la creazione di una nuova riunione"
 
 msgid "Publish"
 msgstr "Pubblicare"
@@ -3968,7 +3986,7 @@ msgid "Receipt of contributions"
 msgstr "Ricezione di contributi"
 
 msgid "Receive motions"
-msgstr ""
+msgstr "Ricevi mozioni"
 
 msgid "Receive motions from"
 msgstr "Ricevere mozioni da"
@@ -3999,7 +4017,7 @@ msgid "Recommendation set to {}"
 msgstr "Raccomandazione impostata su {}"
 
 msgid "Redo"
-msgstr ""
+msgstr "Rifare"
 
 msgid "Reenter to conference room"
 msgstr "Rientra nella stanza della conferenza"
@@ -4057,7 +4075,7 @@ msgid "Remove from motion block"
 msgstr "Cancellare dal gruppo mozioni"
 
 msgid "Remove link"
-msgstr ""
+msgstr "Rimuovi link"
 
 msgid "Remove me"
 msgstr "Cancellarmi"
@@ -4181,10 +4199,10 @@ msgid "SSO identification"
 msgstr "Identificazione SSO"
 
 msgid "Same email"
-msgstr ""
+msgstr "Stessa email"
 
 msgid "Same given and surname"
-msgstr ""
+msgstr "Stesso dato e cognome"
 
 msgid "Save"
 msgstr "Salvare"
@@ -4556,10 +4574,10 @@ msgid "Sort workflow"
 msgstr "Selezionario per flusso di lavoro"
 
 msgid "Source"
-msgstr ""
+msgstr "Sorgente"
 
 msgid "Source code"
-msgstr ""
+msgstr "Codice sorgente"
 
 msgid "Speaker"
 msgstr "Relatore"
@@ -4620,7 +4638,7 @@ msgid "Statistics"
 msgstr "Statistiche"
 
 msgid "Status"
-msgstr ""
+msgstr "Stato"
 
 msgid "Stop"
 msgstr "Stop"
@@ -4698,7 +4716,7 @@ msgid "Summary of changes:"
 msgstr "Sommario di cambiamenti:"
 
 msgid "Superadmin"
-msgstr ""
+msgstr "Super-amministratore"
 
 msgid "Superadmin actions"
 msgstr "Azioni del super amministratore"
@@ -4740,7 +4758,7 @@ msgid "Text"
 msgstr "Testo"
 
 msgid "Text color"
-msgstr ""
+msgstr "Colore del testo"
 
 msgid "Text for this option couldn't load."
 msgstr "Non è stato possibile caricare il testo per questa opzione."
@@ -4752,7 +4770,7 @@ msgid "Text separator"
 msgstr "Divisore testo"
 
 msgid "Text to display"
-msgstr ""
+msgstr "Testo da visualizzare"
 
 msgid "The account is deactivated."
 msgstr "L'account è disattivato"
@@ -5179,7 +5197,7 @@ msgid "Underline"
 msgstr "Sottolineato"
 
 msgid "Undo"
-msgstr ""
+msgstr "Annulla"
 
 msgid "Undone"
 msgstr "annullato"
@@ -5884,7 +5902,7 @@ msgid "represented by"
 msgstr "rappresentato da"
 
 msgid "represented by old account of"
-msgstr ""
+msgstr "rappresentato dal vecchio account di"
 
 msgid "reset"
 msgstr "Ripristinare"
@@ -5926,7 +5944,7 @@ msgid "votes per candidate"
 msgstr "Voti per candidato"
 
 msgid "votes per option"
-msgstr ""
+msgstr "voti per opzione"
 
 msgid "will be created"
 msgstr "Sarà creato"
