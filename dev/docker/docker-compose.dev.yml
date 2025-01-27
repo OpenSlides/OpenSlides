@@ -122,6 +122,22 @@ services:
     ports:
       - "9050:9050"
 
+  projector:
+    image: openslides-projector-dev
+    depends_on:
+      - datastore-reader
+      - redis
+    env_file: services.env
+    environment:
+      - OPENSLIDES_DEVELOPMENT=1
+    volumes:
+      - ../../openslides-projector-service/cmd:/root/cmd
+      - ../../openslides-projector-service/pkg:/root/pkg
+      - ../../openslides-projector-service/templates:/root/templates
+      - ../../openslides-projector-service/static:/root/static
+    ports:
+      - "9051:9051"
+
   auth:
     image: openslides-auth-dev
     depends_on:
