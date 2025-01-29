@@ -19,7 +19,6 @@ To set up an OpenSlides 4 instance, please follow our [install
 instructions](INSTALL.md).
 
 
-
 ## Development
 
 For further information about developing OpenSlides, refer to [the development
