@@ -1,4 +1,4 @@
-name: Project automation
+name: Project automation (Done on PR closed)
 on:
   pull_request_target:
     types:

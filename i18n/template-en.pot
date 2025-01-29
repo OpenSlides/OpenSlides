@@ -139,6 +139,9 @@ msgstr ""
 msgid "Activate public access"
 msgstr ""
 
+msgid "Activate submitter extension field in motion create form"
+msgstr ""
+
 msgid "Activate the selection field 'motion editor'"
 msgstr ""
 
@@ -1200,6 +1203,9 @@ msgstr ""
 msgid "Changes"
 msgstr ""
 
+msgid "Changes of all settings group will be lost!"
+msgstr ""
+
 msgid "Chat"
 msgstr ""
 
@@ -1876,6 +1882,9 @@ msgstr ""
 msgid "Enable point of orders for other participants"
 msgstr ""
 
+msgid "Enable public meetings"
+msgstr ""
+
 msgid "Enable specifications and ranking for possible motions"
 msgstr ""
 
@@ -2424,9 +2433,6 @@ msgstr ""
 msgid "Import meeting"
 msgstr ""
 
-msgid "Import motions"
-msgstr ""
-
 msgid "Import participants"
 msgstr ""
 
@@ -2598,9 +2604,6 @@ msgid "Is not in active meetings"
 msgstr ""
 
 msgid "Is not in archived meetings"
-msgstr ""
-
-msgid "Is not locked out"
 msgstr ""
 
 msgid "Is not present"
@@ -3260,6 +3263,11 @@ msgid ""
 msgstr ""
 
 msgid ""
+"Note: The public access setting is deactivated for the organization. Please "
+"contact your admins or hosting providers to activate the setting."
+msgstr ""
+
+msgid ""
 "Note: Your own password was not changed. Please use the password change "
 "dialog instead."
 msgstr ""
@@ -3687,6 +3695,12 @@ msgstr ""
 msgid "Polls"
 msgstr ""
 
+msgid ""
+"Possible placeholders for email subject and body: {title}, {first_name}, "
+"{last_name}, {groups}, {structure_levels}, {event_name}, {url}, {username} "
+"and {password}"
+msgstr ""
+
 msgid "Possible points of order"
 msgstr ""
 
@@ -3955,6 +3969,9 @@ msgid "Required permissions to view this page:"
 msgstr ""
 
 msgid "Requires permission to manage lists of speakers"
+msgstr ""
+
+msgid "Requires permission to manage motions"
 msgstr ""
 
 msgid "Reset"
@@ -4611,13 +4628,6 @@ msgstr ""
 msgid "The file has too few columns to be parsed properly."
 msgstr ""
 
-msgid "The file seems to have additional columns. They will be ignored."
-msgstr ""
-
-msgid ""
-"The file seems to have some ommitted columns. They will be considered empty."
-msgstr ""
-
 msgid ""
 "The import can not proceed. There is likely a problem with the import data, "
 "please check the preview for details."
@@ -5001,11 +5011,6 @@ msgstr ""
 msgid "Use the following custom number"
 msgstr ""
 
-msgid ""
-"Use these placeholders: {name}, {event_name}, {url}, {username}, {password}. "
-"The url referrs to the system url."
-msgstr ""
-
 msgid "Used for WLAN QRCode projection."
 msgstr ""
 
@@ -5119,6 +5124,9 @@ msgid "Voting right for"
 msgstr ""
 
 msgid "Voting right received from (principals)"
+msgstr ""
+
+msgid "Voting rights"
 msgstr ""
 
 msgid "Voting started"
@@ -5286,9 +5294,6 @@ msgid "You can not vote right now because the voting has not yet started."
 msgstr ""
 
 msgid "You can only anonymize named polls."
-msgstr ""
-
-msgid "You can use {event_name} and {username} as placeholder."
 msgstr ""
 
 msgid "You cannot change the recommendation of motions in different workflows!"
@@ -5491,6 +5496,9 @@ msgid "female"
 msgstr ""
 
 msgid "finished (unpublished)"
+msgstr ""
+
+msgid "from delegated votes"
 msgstr ""
 
 msgid "fullscreen"

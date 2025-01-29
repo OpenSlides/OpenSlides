@@ -164,6 +164,10 @@ msgstr "Design aktivieren"
 msgid "Activate public access"
 msgstr "Öffentlichen Zugang aktivieren"
 
+msgid "Activate submitter extension field in motion create form"
+msgstr ""
+"Antragsteller*in-Erweiterungsfeld im Antragserstellungsformular aktivieren"
+
 msgid "Activate the selection field 'motion editor'"
 msgstr "Auswahlfeld 'Antragsbearbeiter*in' aktivieren"
 
@@ -830,10 +834,10 @@ msgid "Ballot reset"
 msgstr "Wahlgang zurückgesetzt"
 
 msgid "Ballot started"
-msgstr "Wahlgang gestarted"
+msgstr "Wahlgang gestartet"
 
 msgid "Ballot stopped"
-msgstr "Wahlgeang beendet"
+msgstr "Wahlgang beendet"
 
 msgid "Ballot stopped/published"
 msgstr "Wahlgang beendet/veröffentlicht"
@@ -1348,6 +1352,9 @@ msgstr "Geänderte Fassung in Zeile"
 
 msgid "Changes"
 msgstr "Änderungen"
+
+msgid "Changes of all settings group will be lost!"
+msgstr "Änderungen in allen Einstellungsseiten gehen verloren!"
 
 msgid "Chat"
 msgstr "Chat"
@@ -2059,6 +2066,9 @@ msgstr "Geschäftsordnungsanträge aktivieren"
 msgid "Enable point of orders for other participants"
 msgstr "Stellen eines GO-Antrags für andere Teilnehmende erlauben"
 
+msgid "Enable public meetings"
+msgstr "Öffentliche Veranstaltungen aktivieren"
+
 msgid "Enable specifications and ranking for possible motions"
 msgstr "Vorgaben und Reihung für mögliche GO-Anträge aktivieren"
 
@@ -2650,9 +2660,6 @@ msgstr "Importierte Daten müssen im JSON-Format vorliegen"
 msgid "Import meeting"
 msgstr "Veranstaltung importieren"
 
-msgid "Import motions"
-msgstr "Anträge importieren"
-
 msgid "Import participants"
 msgstr "Teilnehmende importieren"
 
@@ -2828,9 +2835,6 @@ msgstr "Ist in keinen aktiven Veranstaltungen"
 
 msgid "Is not in archived meetings"
 msgstr "Ist in keinen archivierten Veranstaltungen"
-
-msgid "Is not locked out"
-msgstr "Ist nicht ausgeschlossen"
 
 msgid "Is not present"
 msgstr "Ist nicht anwesend"
@@ -3504,6 +3508,14 @@ msgstr ""
 "wird."
 
 msgid ""
+"Note: The public access setting is deactivated for the organization. Please "
+"contact your admins or hosting providers to activate the setting."
+msgstr ""
+"Hinweis: Die Einstellung für den öffentlichen Zugang ist für diese "
+"Organisation deaktiviert. Bitte wenden Sie sich an Ihren Administrator oder "
+"Hosting-Provider, um die Einstellung zu aktivieren."
+
+msgid ""
 "Note: Your own password was not changed. Please use the password change "
 "dialog instead."
 msgstr ""
@@ -3951,6 +3963,15 @@ msgstr "GO-Antrag"
 msgid "Polls"
 msgstr "Umfragen"
 
+msgid ""
+"Possible placeholders for email subject and body: {title}, {first_name}, "
+"{last_name}, {groups}, {structure_levels}, {event_name}, {url}, {username} "
+"and {password}"
+msgstr ""
+"Mögliche Platzhalter für E-Mail-Betreff und -Inhalt: {title}, {first_name}, "
+"{last_name}, {groups}, {structure_levels}, {event_name}, {url}, {username} "
+"und {password}"
+
 msgid "Possible points of order"
 msgstr "Mögliche GO-Anträge"
 
@@ -4226,6 +4247,9 @@ msgstr "Erforderliches Recht um diese Seite zu sehen:"
 
 msgid "Requires permission to manage lists of speakers"
 msgstr "Benötigt Recht zum Verwalten von Redelisten"
+
+msgid "Requires permission to manage motions"
+msgstr "Benötigt Recht zum Verwalten von Anträgen"
 
 msgid "Reset"
 msgstr "Zurücksetzen"
@@ -4898,16 +4922,6 @@ msgstr "Die Felder sind wie folgt definiert"
 msgid "The file has too few columns to be parsed properly."
 msgstr "Die Datei enthält zu wenige Spalten, um richtig erkannt zu werden."
 
-msgid "The file seems to have additional columns. They will be ignored."
-msgstr ""
-"Die Datei scheint zusätzliche Spalten zu haben. Diese werden ignoriert."
-
-msgid ""
-"The file seems to have some ommitted columns. They will be considered empty."
-msgstr ""
-"Die Datei scheint einige ausgelassene Spalten zu haben. Sie werden als leer "
-"betrachtet."
-
 msgid ""
 "The import can not proceed. There is likely a problem with the import data, "
 "please check the preview for details."
@@ -5347,13 +5361,6 @@ msgstr "Farbe verwenden"
 msgid "Use the following custom number"
 msgstr "Verwende die folgende benutzerdefinierte Anzahl"
 
-msgid ""
-"Use these placeholders: {name}, {event_name}, {url}, {username}, {password}."
-" The url referrs to the system url."
-msgstr ""
-"Verwendbare Platzhalter: {name}, {event_name}, {url}, {username}, "
-"{password}. Die URL bezieht sich auf die System-URL."
-
 msgid "Used for WLAN QRCode projection."
 msgstr "Wird für die Projektion des WLAN-QR-Codes verwendet."
 
@@ -5478,6 +5485,9 @@ msgstr "Stimmrecht für"
 
 msgid "Voting right received from (principals)"
 msgstr "Stimmrecht erhalten von (Vollmachtgeber*in)"
+
+msgid "Voting rights"
+msgstr "Stimmrechte"
 
 msgid "Voting started"
 msgstr "Abstimmung gestartet"
@@ -5666,9 +5676,6 @@ msgstr ""
 
 msgid "You can only anonymize named polls."
 msgstr "Sie können nur namentliche Stimmabgaben anonymisieren."
-
-msgid "You can use {event_name} and {username} as placeholder."
-msgstr "Sie können {event_name} und {username} als Platzhalter verwenden."
 
 msgid ""
 "You cannot change the recommendation of motions in different workflows!"
@@ -5889,6 +5896,9 @@ msgstr "weiblich"
 
 msgid "finished (unpublished)"
 msgstr "abgeschlossen (unveröffentlicht)"
+
+msgid "from delegated votes"
+msgstr "aus Stimmrechtsübertragungen"
 
 msgid "fullscreen"
 msgstr "Vollbild"

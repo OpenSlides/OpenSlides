@@ -1,0 +1,37 @@
+name: Make github release
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+        with:
+          ref: "${{ inputs.branch }}"
+
+      - name: Prepare release body
+        run: |
+          {
+            patchnotesfile="patchnotes/${{ github.ref_name }}.md"
+            if [ -f $patchnotesfile ]; then
+              cat $patchnotesfile
+            else
+              echo "No patchnotes found ..."
+            fi
+            echo ""
+            echo "## How to use"
+            echo ""
+            echo "For instructions on how to use production ready docker images, see [INSTALL.md](https://github.com/OpenSlides/OpenSlides/blob/main/INSTALL.md)"
+          } > patchnotes.tmp.md
+
+      - name: Create release
+        uses: ncipollo/release-action@v1
+        with:
+          bodyFile: patchnotes.tmp.md
+          allowUpdates: true
+
