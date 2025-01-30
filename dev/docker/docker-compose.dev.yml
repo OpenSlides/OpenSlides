@@ -12,6 +12,12 @@ services:
       - 18080:8080
       - 15005:5005
 
+  keycloak-init:
+    image: openslides-keycloak-init-dev
+    depends_on:
+      - keycloak
+    env_file: services.env
+
   datastore-reader:
     image: openslides-datastore-reader-dev
     depends_on:
