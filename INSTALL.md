@@ -113,7 +113,7 @@ To remove also the database (and lose all your data), run:
 
 The `setup` command generates a Docker Compose YAML file (default filename:
 `docker-compose.yml`) with the container configuration for all services. This
-step can be configured with a (second) YAML formated setup configuration file.
+step can be configured with a (second) YAML formatted setup configuration file.
 All options in the [defaults file](https://github.com/OpenSlides/openslides-manage-service/blob/main/pkg/config/default-config.yml) can be used to configure the setup.
 
 E. g. create a file `my-config.yml` with the following content:
