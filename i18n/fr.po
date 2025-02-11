@@ -21,6 +21,12 @@ msgstr "\"0\" signifie un nombre illimité de réunions actives"
 msgid "%num% emails were send sucessfully."
 msgstr "%num% des emails ont été envoyés avec succès."
 
+#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-list/components/participant-list/participant-list.component.ts
+msgid ""
+"%num% participants could not be locked out because they have administrative "
+"permissions."
+msgstr ""
+
 msgid "-Ä"
 msgstr "-Ä"
 
@@ -71,6 +77,7 @@ msgstr ""
 "Une erreur de serveur s'est produite. Veuillez contacter votre "
 "administrateur système."
 
+#: /app/src/app/site/pages/meetings/modules/list-of-speakers-content/components/speaking-times/speaking-times.component.html
 msgid "A time is required and must be in min:secs format."
 msgstr ""
 
@@ -80,6 +87,7 @@ msgstr "Un titre est requis"
 msgid "A topic needs a title"
 msgstr "Un thème a besoin d'un titre"
 
+#: /app/src/app/site/pages/meetings/modules/participant-search-selector/components/participant-search-selector/participant-search-selector.component.ts
 msgid ""
 "A user with the username '%username%' and the first name '%first_name%' was "
 "created."
@@ -105,6 +113,7 @@ msgstr "Données d'accès (PDF)"
 msgid "Access groups"
 msgstr "Groupes d'accès"
 
+#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid ""
 "Access only possible for participants of this meeting. All other accounts "
 "(including organization and committee admins) may not open the closed "
@@ -117,6 +126,7 @@ msgstr "Données d'accès"
 msgid "Account"
 msgstr "Compte"
 
+#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Account admin"
 msgstr ""
 
@@ -126,15 +136,19 @@ msgstr "Compte attribué avec succès"
 msgid "Accounts"
 msgstr "Comptes"
 
+#: /app/src/app/site/pages/organization/pages/accounts/pages/account-import/services/account-import.service/account-import.service.ts
 msgid "Accounts created"
 msgstr "Comptes créés"
 
+#: /app/src/app/site/pages/organization/pages/accounts/pages/account-import/services/account-import.service/account-import.service.ts
 msgid "Accounts updated"
 msgstr "Comptes actualisés"
 
+#: /app/src/app/site/pages/organization/pages/accounts/pages/account-import/services/account-import.service/account-import.service.ts
 msgid "Accounts with errors"
 msgstr "Comptes avec des erreurs"
 
+#: /app/src/app/site/pages/organization/pages/accounts/pages/account-import/services/account-import.service/account-import.service.ts
 msgid "Accounts with warnings: affected cells will be skipped"
 msgstr "Comptes avec avertissements : les cellules affectées seront ignorées"
 
@@ -144,15 +158,27 @@ msgstr "Activer"
 msgid "Activate amendments"
 msgstr "Activer les amendements"
 
+#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Activate closed meeting"
 msgstr ""
 
+#: /app/src/app/site/pages/organization/pages/designs/pages/theme-list/components/theme-list/theme-list.component.html
 msgid "Activate design"
 msgstr "Activer le design"
 
+#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
+msgid "Activate public access"
+msgstr ""
+
+#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
+msgid "Activate submitter extension field in motion create form"
+msgstr ""
+
+#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Activate the selection field 'motion editor'"
 msgstr ""
 
+#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Activate the selection field 'spokesperson'"
 msgstr ""
 
@@ -227,6 +253,7 @@ msgstr "Ajouter une nouvelle entrée"
 msgid "Add option"
 msgstr "Ajouter une option"
 
+#: /app/src/app/site/pages/meetings/pages/projectors/modules/projector-detail/components/projector-detail/projector-detail.component.html
 msgid "Add timer"
 msgstr ""
 
@@ -239,6 +266,7 @@ msgstr "Ajouter aux réunions"
 msgid "Add to queue"
 msgstr "Ajouter à la file d'attente"
 
+#: /app/src/app/site/pages/meetings/modules/list-of-speakers-content/components/speaking-times/speaking-times.component.html
 msgid "Add up"
 msgstr ""
 
@@ -249,9 +277,11 @@ msgstr ""
 msgid "Add/remove groups ..."
 msgstr "Ajouter/supprimer des groupes ...."
 
+#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-list/components/participant-list/participant-list.component.html
 msgid "Add/remove structure levels ..."
 msgstr "Ajouter/supprimer des niveaux de structure ..."
 
+#: /app/src/app/site/pages/meetings/modules/list-of-speakers-content/components/speaking-times/speaking-times.component.html
 msgid "Add/subtract"
 msgstr ""
 
@@ -262,6 +292,7 @@ msgstr ""
 "Des colonnes supplémentaires après celles requises peuvent être présentes et"
 " n'affecteront pas l'importation."
 
+#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Administration roles"
 msgstr ""
 
@@ -299,9 +330,11 @@ msgstr ""
 msgid "Agenda visibility"
 msgstr "Visibilité de l'ordre du jour"
 
+#: /app/src/app/ui/modules/editor/components/editor/editor.component.html
 msgid "Align"
 msgstr ""
 
+#: /app/src/app/site/pages/meetings/pages/home/pages/meeting-info/components/count-users/count-users.component.html
 msgid "All"
 msgstr ""
 
@@ -320,9 +353,11 @@ msgstr "Toutes les réunions"
 msgid "All other fields are optional and may be empty."
 msgstr "Tous les autres champs sont facultatifs et peuvent être vides."
 
+#: /app/src/app/site/pages/meetings/pages/assignments/modules/assignment-poll/definitions/index.ts
 msgid "All present entitled users"
 msgstr ""
 
+#: /app/src/app/gateways/repositories/meeting-repository.service.ts
 msgid "All structure levels"
 msgstr "Tous les niveaux de structure"
 
@@ -348,6 +383,7 @@ msgstr "Autoriser la création d'un sondage"
 msgid "Allow forwarding of motions"
 msgstr "Permettre la transmission de motions"
 
+#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Allow one participant multiple times on the same list"
 msgstr ""
 
@@ -413,6 +449,7 @@ msgstr "Nombre de réunions"
 msgid "Amount of votes"
 msgstr "Nombre de voix"
 
+#: /app/src/app/site/pages/login/pages/reset-password/components/reset-password/reset-password.component.ts
 msgid "An email with a password reset link has been sent."
 msgstr ""
 "Un courriel contenant un lien pour réinitialiser le mot de passe a été "
@@ -442,6 +479,7 @@ msgstr "URL de l'image de la particule d'applaudissement"
 msgid "Applause visualization"
 msgstr "Visualisation d'applaudissements"
 
+#: /app/src/app/site/modules/global-spinner/components/global-spinner/global-spinner.component.ts
 msgid "Application update in progress."
 msgstr ""
 
@@ -457,6 +495,7 @@ msgstr "Archiver"
 msgid "Archived"
 msgstr "Archivé"
 
+#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Archived meetings"
 msgstr ""
 
@@ -470,6 +509,7 @@ msgstr ""
 msgid "Are you sure you want to activate this meeting?"
 msgstr "Êtes-vous sûr de vouloir activer cette réunion ?"
 
+#: /app/src/app/site/pages/meetings/modules/list-of-speakers-content/components/speaking-times/speaking-times.component.ts
 msgid ""
 "Are you sure you want to add the following time onto every structure level?"
 msgstr ""
@@ -511,6 +551,10 @@ msgid "Are you sure you want to delete all selected files and folders?"
 msgstr ""
 "Êtes-vous sûr de vouloir supprimer tous les fichiers et dossiers "
 "sélectionnés ?"
+
+#: /app/src/app/site/pages/organization/pages/accounts/pages/gender/pages/gender-list/components/gender-list/gender-list.component.ts
+msgid "Are you sure you want to delete all selected genders?"
+msgstr ""
 
 msgid "Are you sure you want to delete all selected meetings?"
 msgstr ""
@@ -566,6 +610,10 @@ msgstr " Êtes-vous sûr de vouloir supprimer cette entrée ?"
 msgid "Are you sure you want to delete this file?"
 msgstr "Êtes-vous sûr de vouloir supprimer ce fichier ?"
 
+#: /app/src/app/site/pages/organization/pages/accounts/pages/gender/pages/gender-list/components/gender-list/gender-list.component.ts
+msgid "Are you sure you want to delete this gender?"
+msgstr ""
+
 msgid "Are you sure you want to delete this group?"
 msgstr "U"
 
@@ -578,6 +626,7 @@ msgstr "Êtes-vous sûr de vouloir supprimer ce message ?"
 msgid "Are you sure you want to delete this motion block?"
 msgstr "Êtes-vous sûr de vouloir supprimer ce bloc de motions ?"
 
+#: /app/src/app/site/pages/meetings/pages/motions/pages/motion-detail/components/motion-detail-view/motion-detail-view.component.ts
 msgid "Are you sure you want to delete this motion? "
 msgstr "Êtes-vous sûr de vouloir supprimer cette motion ?"
 
@@ -587,6 +636,7 @@ msgstr "Êtes-vous sûr de vouloir supprimer ce projecteur ?"
 msgid "Are you sure you want to delete this state?"
 msgstr "Êtes-vous sûr de vouloir supprimer cet état ?"
 
+#: /app/src/app/site/pages/meetings/pages/participants/pages/structure-levels/components/structure-level-list/structure-level-list.component.ts
 msgid "Are you sure you want to delete this structure level?"
 msgstr "Êtes-vous sûr de vouloir supprimer ce niveau de structure ?"
 
@@ -602,12 +652,17 @@ msgstr "Êtes-vous sûr de vouloir supprimer ce vote ?"
 msgid "Are you sure you want to delete this workflow?"
 msgstr "Êtes-vous sûr de vouloir supprimer ce flux de travail ?"
 
+#: /app/src/app/site/pages/meetings/pages/motions/pages/motion-detail/pages/motion-form/components/motion-form/motion-form.component.ts
+msgid "Are you sure you want to discard all changes and update this form?"
+msgstr ""
+
 msgid "Are you sure you want to discard this amendment?"
 msgstr "Êtes-vous sûr de vouloir rejeter cet amendement ?"
 
 msgid "Are you sure you want to duplicate this meeting?"
 msgstr "Êtes-vous sûr de vouloir dupliquer cette réunion ?"
 
+#: /app/src/app/site/pages/meetings/modules/list-of-speakers-content/components/list-of-speakers-content/list-of-speakers-content.component.ts
 msgid ""
 "Are you sure you want to end this contribution which still has interposed "
 "question(s)?"
@@ -626,6 +681,10 @@ msgid "Are you sure you want to irrevocably remove your point of order?"
 msgstr ""
 "Êtes-vous sûr de vouloir retirer irrévocablement votre demande de motion de "
 "procédure ?"
+
+#: /app/src/app/ui/modules/file-list/components/file-list/file-list.component.ts
+msgid "Are you sure you want to make this file/folder public?"
+msgstr ""
 
 msgid "Are you sure you want to number all agenda items?"
 msgstr ""
@@ -684,6 +743,7 @@ msgstr ""
 msgid "Are you sure you want to reset all passwords to the default ones?"
 msgstr "Êtes-vous sûr de vouloir rétablir tous les mots de passe par défaut ?"
 
+#: /app/src/app/site/pages/meetings/modules/list-of-speakers-content/components/speaking-times/speaking-times.component.ts
 msgid ""
 "Are you sure you want to reset the time to the last set value? It will be "
 "reset to:"
@@ -696,6 +756,7 @@ msgid "Are you sure you want to send an invitation email to the user?"
 msgstr ""
 "Êtes-vous sûr de vouloir envoyer un courriel d'invitation à l'utilisateur ?"
 
+#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-list/components/participant-list/participant-list.component.ts
 msgid "Are you sure you want to send an invitation email?"
 msgstr ""
 
@@ -708,6 +769,10 @@ msgstr "Êtes-vous sûr de vouloir arrêter ce vote ?"
 
 msgid "Are you sure you want to submit a point of order?"
 msgstr "Êtes-vous sûr de vouloir soumettre un point d'ordre ?"
+
+#: /app/src/app/ui/modules/file-list/components/file-list/file-list.component.ts
+msgid "Are you sure you want to unpublish this file/folder?"
+msgstr ""
 
 msgid "As of"
 msgstr "A partir de"
@@ -747,6 +812,7 @@ msgstr ""
 "Attention : Entrez d'abord les données du réseau sans fil dans [Réglages > "
 "Général]"
 
+#: /app/src/app/site/pages/organization/pages/accounts/pages/account-list/components/account-merge-dialog/account-merge-dialog.component.html
 msgid "Attention: Not selected accounts will be merged and then deleted."
 msgstr ""
 
@@ -766,6 +832,7 @@ msgstr ""
 msgid "Autopilot"
 msgstr "Pilote automatique"
 
+#: /app/src/app/site/pages/meetings/pages/autopilot/components/autopilot-settings/autopilot-settings.component.html
 msgid "Autopilot widgets"
 msgstr ""
 
@@ -829,6 +896,7 @@ msgstr "Mise à jour du bulletin de vote"
 msgid "Ballots"
 msgstr "Bulletins de vote"
 
+#: /app/src/app/site/pages/meetings/modules/poll/components/poll-filtered-votes-chart/poll-filtered-votes-chart.component.html
 msgid "Ballots cast"
 msgstr ""
 
@@ -841,18 +909,21 @@ msgstr "Commencer discours"
 msgid "Blank between prefix and number, e.g. 'A 001'."
 msgstr "Espace blanc entre le préfixe et le numéro, par exemple \"A 001\"."
 
+#: /app/src/app/ui/modules/editor/components/editor/editor.component.ts
 msgid "Blockquote"
 msgstr ""
 
 msgid "Bold"
 msgstr "En gras"
 
+#: /app/src/app/ui/modules/editor/components/editor/editor.component.html
 msgid "Bullet list"
 msgstr ""
 
 msgid "CSV import"
 msgstr "Import CSV"
 
+#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "CSV options"
 msgstr ""
 
@@ -964,6 +1035,7 @@ msgstr ""
 msgid "Can create, modify, start/stop and delete votings."
 msgstr "Peut créer, modifier, démarrer/arrêter et supprimer des votes."
 
+#: /app/src/app/domain/definitions/permission.config.ts
 msgid "Can edit all moderation notes."
 msgstr "Peut modifier toutes les notes de modération."
 
@@ -974,26 +1046,25 @@ msgstr ""
 "Peut éditer et attribuer les métadonnées de mouvement suivantes : Déposant, "
 "état, recommandation, catégorie, blocs de mouvement et balises."
 
+#: app/src/app/domain/definitions/permission.config.ts
+msgid "Can edit own delegation"
+msgstr ""
+
 msgid "Can forward motions"
 msgstr "Peut transmettre des motions "
 
 msgid "Can forward motions to committee"
 msgstr "Peut transmettre des motions à une commission"
 
+#: /app/src/app/domain/definitions/permission.config.ts
 msgid ""
-"Can forward motions to other meetings within the OpenSlides instance. \n"
+"Can forward motions to other meetings within the OpenSlides instance.\n"
 "\n"
 "Further requirements:\n"
-"1. forwarding hierarchy must be set at the organizational level in the committee. \n"
+"1. forwarding hierarchy must be set at the organizational level in the committee.\n"
 "2. target meeting must be created.\n"
 "3. forwarding must be activated in the workflow in the state."
 msgstr ""
-"Peut transmettre des motions à d'autres réunions au sein de l'instance OpenSlides. \n"
-"\n"
-"Autres exigences :\n"
-"1. la hiérarchie de transmission doit être définie au niveau organisationnel dans la commission. \n"
-"2. la réunion cible doit être créée\n"
-"3. la transmission doit être activée dans le flux de travail de l'état."
 
 msgid "Can manage agenda"
 msgstr "Peut gérer l'ordre du jour"
@@ -1010,6 +1081,7 @@ msgstr "U"
 msgid "Can manage logos and fonts"
 msgstr "Peut gérer les logos et les polices de caractères"
 
+#: /app/src/app/domain/definitions/permission.config.ts
 msgid "Can manage moderation notes"
 msgstr "Peut gérer les notes de modération"
 
@@ -1043,6 +1115,7 @@ msgstr "Peut gérer le chat"
 msgid "Can manage the projector"
 msgstr "Peut gérer le projecteur"
 
+#: /app/src/app/domain/definitions/permission.config.ts
 msgid "Can modify existing participants, but cannot create or delete them."
 msgstr ""
 
@@ -1052,14 +1125,12 @@ msgstr "Peut nonimer un autre participant"
 msgid "Can nominate oneself"
 msgstr "Peut se nommer soi même"
 
+#: /app/src/app/domain/definitions/permission.config.ts
 msgid ""
-"Can nominate other participants as candidates. \n"
+"Can nominate other participants as candidates.\n"
 "\n"
 "Requires group permission: [Can see participants]"
 msgstr ""
-"Peut désigner d'autres participants comme candidats. \n"
-"\n"
-"Nécessite l'autorisation du groupe : [Peut voir les participants]"
 
 msgid "Can not import because of errors"
 msgstr "Ne peut pas être importé en raison d'erreurs"
@@ -1067,6 +1138,7 @@ msgstr "Ne peut pas être importé en raison d'erreurs"
 msgid "Can put oneself on the list of speakers"
 msgstr "Peut se mettre soi-même sur la liste des orateurs"
 
+#: /app/src/app/site/pages/organization/pages/committees/pages/committee-list/services/committee-list-filter.service/committee-filter.service.ts
 msgid "Can receive motions"
 msgstr ""
 
@@ -1082,6 +1154,7 @@ msgstr "Peut voir tous les sujets internes, les horaires et les commentaires."
 msgid "Can see all lists of speakers"
 msgstr "Peut voir toutes les listes d'orateurs"
 
+#: /app/src/app/domain/definitions/permission.config.ts
 msgid "Can see all moderation notes in each list of speakers."
 msgstr ""
 "Peut voir toutes les notes de modération dans chaque liste de participants."
@@ -1089,9 +1162,13 @@ msgstr ""
 msgid "Can see elections"
 msgstr "Peut voir les élections"
 
-msgid "Can see email, username and SSO identification of all participants."
+#: /app/src/app/domain/definitions/permission.config.ts
+msgid ""
+"Can see email, username, membership number, SSO identification and locked "
+"out state of all participants."
 msgstr ""
 
+#: /app/src/app/domain/definitions/permission.config.ts
 msgid "Can see files"
 msgstr "Peut voir les fichiers"
 
@@ -1104,6 +1181,7 @@ msgstr "Peut voir les points internes et l'horaire de l'ordre du jour"
 msgid "Can see list of speakers"
 msgstr "Peut voir la liste des orateurs"
 
+#: /app/src/app/domain/definitions/permission.config.ts
 msgid "Can see moderation notes"
 msgstr "Peut voir les notes de modération"
 
@@ -1125,6 +1203,7 @@ msgstr ""
 msgid "Can see participants"
 msgstr "Peut voir les participants"
 
+#: /app/src/app/domain/definitions/permission.config.ts
 msgid "Can see sensitive data"
 msgstr ""
 
@@ -1148,14 +1227,12 @@ msgstr ""
 "\n"
 "Remarque : le partage des dossiers et des fichiers peut être limité par l'affectation d'un groupe."
 
+#: /app/src/app/domain/definitions/permission.config.ts
 msgid ""
-"Can see the History menu item with the history of processing timestamps for motions, elections and participants. \n"
+"Can see the History menu item with the history of processing timestamps for motions, elections and participants.\n"
 "\n"
 "Note: For privacy reasons, it is recommended to limit the rights to view the History significantly."
 msgstr ""
-"Peut voir l'élément de menu Historique avec l'historique des horodatages de traitement pour les motions, les élections et les participants. \n"
-"\n"
-"Remarque : pour des raisons de confidentialité, il est recommandé de limiter considérablement les droits d'accès à l'historique."
 
 msgid "Can see the Home menu item."
 msgstr "Peut voir l'élément de menu Accueil."
@@ -1197,26 +1274,26 @@ msgstr ""
 "Il est possible de voir la diffusion en direct si une URL de diffusion en "
 "direct a été saisie dans > [Réglages] > [Diffusion en direct]."
 
+#: /app/src/app/domain/definitions/permission.config.ts
 msgid ""
-"Can see the menu item Elections, including the list of candidates and results. \n"
+"Can see the menu item Elections, including the list of candidates and results.\n"
 "\n"
 "Note: The right to vote is defined directly in the ballot."
 msgstr ""
-"Peut voir l'élément de menu Élections, y compris la liste des candidats et les résultats. \n"
-"\n"
-"Remarque : le droit de vote est défini directement dans le bulletin de vote."
 
+#: /app/src/app/domain/definitions/permission.config.ts
 msgid ""
-"Can see the menu item Participants and therefore the following data from all participants: \n"
-"Personal data: Name, pronoun, gender. \n"
+"Can see the menu item Participants and therefore the following data from all participants:\n"
+"Personal data: Name, pronoun, gender.\n"
 "Meeting specific information: Structure level, Group, Participant number, About me, Presence status."
 msgstr ""
-"Vous pouvez consulter le point de menu Participants et donc les données suivantes de tous les participants : \n"
-"Données personnelles : Nom, pronom, sexe. \n"
-"Informations spécifiques à la réunion : Niveau de structure, Groupe, Numéro de participant, A propos de moi, Statut de présence."
 
 msgid "Can see the projector"
 msgstr "Peut voir le projecteur"
+
+#: app/src/app/domain/definitions/permission.config.ts
+msgid "Can set and remove own delegation."
+msgstr ""
 
 msgid "Can support motions"
 msgstr "Peut soutenir les motions"
@@ -1229,6 +1306,7 @@ msgstr ""
 "[Réglages] > [Motions] ainsi que pour l'état correspondant dans > [Flux de "
 "travail]."
 
+#: /app/src/app/domain/definitions/permission.config.ts
 msgid "Can update participants"
 msgstr ""
 
@@ -1260,12 +1338,24 @@ msgstr "Candidat supprimé"
 msgid "Candidates"
 msgstr "Candidats"
 
+#: /app/src/app/site/pages/meetings/pages/mediafiles/modules/mediafile-list/components/mediafile-list/mediafile-list.component.html
+#: /app/src/app/site/pages/meetings/pages/mediafiles/modules/mediafile-list/components/mediafile-list/mediafile-list.component.html
+msgid "Cannot delete published files"
+msgstr ""
+
 msgid "Cannot do that in demo mode!"
 msgstr "Impossible de le faire en version démo !"
 
+#: /app/src/app/site/pages/organization/pages/committees/pages/committee-list/services/committee-list-filter.service/committee-filter.service.ts
 msgid "Cannot forward motions"
 msgstr ""
 
+#: /app/src/app/site/pages/meetings/pages/mediafiles/modules/mediafile-list/components/mediafile-list/mediafile-list.component.html
+#: /app/src/app/site/pages/meetings/pages/mediafiles/modules/mediafile-list/components/mediafile-list/mediafile-list.component.html
+msgid "Cannot move published files"
+msgstr ""
+
+#: /app/src/app/site/pages/organization/pages/committees/pages/committee-list/services/committee-list-filter.service/committee-filter.service.ts
 msgid "Cannot receive motions"
 msgstr ""
 
@@ -1305,8 +1395,16 @@ msgstr "Changez la présence"
 msgid "Change recommendation"
 msgstr "Modifier la recommandation"
 
+#: app/src/app/site/pages/meetings/pages/motions/services/common/motion-format.service/motion-format.service.ts
+msgid "Change recommendation - rejected"
+msgstr ""
+
 msgid "Change recommendations"
 msgstr "Modifier les recommandations"
+
+#: app/src/app/site/pages/meetings/pages/participants/pages/participant-list/components/participant-list/participant-list.component.html
+msgid "Change your delegation"
+msgstr ""
 
 msgid "Changed by"
 msgstr "Modéfier par "
@@ -1323,6 +1421,10 @@ msgstr "Version modifiée dans la ligne"
 msgid "Changes"
 msgstr "Modifications"
 
+#: /app/src/app/site/pages/meetings/pages/meeting-settings/pages/meeting-settings-group-list/components/meeting-settings-group-list/meeting-settings-group-list.component.ts
+msgid "Changes of all settings group will be lost!"
+msgstr ""
+
 msgid "Chat"
 msgstr "Chat"
 
@@ -1337,21 +1439,26 @@ msgstr ""
 "Faites entrer ou sortir les participants en fonction de leur nombre de "
 "participants :"
 
+#: /app/src/app/ui/modules/sidenav/modules/easter-egg/modules/chess-dialog/components/chess-dialog/chess-dialog.component.ts
 msgid "Checkmate! You lost!"
 msgstr "Échec et mat ! Vous avez perdu !"
 
+#: /app/src/app/ui/modules/sidenav/modules/easter-egg/modules/chess-dialog/components/chess-dialog/chess-dialog.component.ts
 msgid "Checkmate! You won!"
 msgstr "Échec et mat ! Vous avez gagné !"
 
+#: /app/src/app/ui/modules/sidenav/modules/easter-egg/modules/chess-dialog/components/chess-dialog/chess-dialog.component.ts
 msgid "Chess"
 msgstr "Échecs"
 
 msgid "Choice"
 msgstr "Choix"
 
+#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Choose 0 to disable Intervention."
 msgstr "Choisissez 0 pour désactiver l'intervention."
 
+#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid ""
 "Choose 0 to disable speaking times widget for structure level countdowns."
 msgstr ""
@@ -1359,24 +1466,30 @@ msgstr ""
 msgid "Choose 0 to disable the supporting system."
 msgstr "Choisissez 0 pour desactiver le système de soutien."
 
+#: /app/src/app/site/pages/meetings/pages/projectors/modules/projector-detail/services/current-speaker-chyron-slide.service/current-speaker-chyron-slide.service.ts
 msgid "Chyron"
 msgstr ""
 
+#: /app/src/app/site/pages/meetings/pages/projectors/components/projector-edit-dialog/components/projector-edit-dialog/projector-edit-dialog.component.ts
 msgid "Chyron agenda item, background color"
 msgstr ""
 
+#: /app/src/app/site/pages/meetings/pages/projectors/components/projector-edit-dialog/components/projector-edit-dialog/projector-edit-dialog.component.ts
 msgid "Chyron agenda item, font color"
 msgstr ""
 
 msgid "Chyron speaker name"
 msgstr "Nom du haut-parleur Chyron"
 
+#: /app/src/app/site/pages/meetings/pages/projectors/components/projector-edit-dialog/components/projector-edit-dialog/projector-edit-dialog.component.ts
 msgid "Chyron speaker, background color"
 msgstr ""
 
+#: /app/src/app/site/pages/meetings/pages/projectors/components/projector-edit-dialog/components/projector-edit-dialog/projector-edit-dialog.component.ts
 msgid "Chyron speaker, font color"
 msgstr ""
 
+#: /app/src/app/site/pages/meetings/pages/projectors/modules/projector-detail/services/current-speaker-chyron-slide.service/current-speaker-chyron-slide.service.ts
 msgid "Classic"
 msgstr ""
 
@@ -1389,9 +1502,11 @@ msgstr "Supprimer tous les filtres"
 msgid "Clear all list of speakers"
 msgstr "Effacer toute les listes d'orateurs."
 
+#: /app/src/app/site/pages/meetings/pages/projectors/modules/projector-detail/components/projector-detail/projector-detail.component.html
 msgid "Clear current projection"
 msgstr "Effacer la projection actuelle"
 
+#: /app/src/app/ui/modules/editor/components/editor/editor.component.html
 msgid "Clear formatting"
 msgstr ""
 
@@ -1413,15 +1528,19 @@ msgstr "Cliquez ici pour voter !"
 msgid "Close"
 msgstr "Fermer"
 
+#: /app/src/app/site/pages/meetings/pages/projectors/modules/projector-detail/components/projector-detail/projector-detail.component.html
+#: /app/src/app/site/pages/meetings/pages/projectors/modules/projector-detail/components/projector-detail/projector-detail.component.html
 msgid "Close edit mode"
 msgstr "Fermer le mode édition"
 
 msgid "Close list of speakers"
 msgstr "Fermer la liste des orateurs"
 
+#: /app/src/app/site/pages/organization/pages/orga-meetings/pages/meeting-list/components/meeting-list/meeting-list.component.html
 msgid "Closed"
 msgstr ""
 
+#: /app/src/app/site/pages/meetings/pages/agenda/pages/agenda-item-list/services/agenda-item-filter.service/agenda-item-filter.service.ts
 msgid "Closed items"
 msgstr ""
 
@@ -1491,15 +1610,19 @@ msgstr "Comissions"
 msgid "Committees and meetings"
 msgstr "Comissions et réunions"
 
+#: /app/src/app/site/pages/organization/pages/committees/pages/committee-import/services/committee-import.service/committee-import.service.ts
 msgid "Committees created"
 msgstr "Comités créés"
 
+#: /app/src/app/site/pages/organization/pages/committees/pages/committee-import/services/committee-import.service/committee-import.service.ts
 msgid "Committees updated"
 msgstr "Comités mis à jour"
 
+#: /app/src/app/site/pages/organization/pages/committees/pages/committee-import/services/committee-import.service/committee-import.service.ts
 msgid "Committees with errors"
 msgstr "Comités avec des erreurs"
 
+#: /app/src/app/site/pages/organization/pages/committees/pages/committee-import/services/committee-import.service/committee-import.service.ts
 msgid "Committees with warnings: affected cells will be skipped"
 msgstr "Comités avec avertissements : les cellules affectées seront ignorées"
 
@@ -1537,6 +1660,7 @@ msgstr "Contre discours"
 msgid "Contribution"
 msgstr "Contribution"
 
+#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-speaker-list/components/participant-speaker-list/participant-speaker-list.component.html
 msgid "Contributions"
 msgstr "Contributions"
 
@@ -1585,6 +1709,7 @@ msgstr "Création"
 msgid "Creation date"
 msgstr "Date de création"
 
+#: /app/src/app/site/pages/meetings/pages/projectors/modules/projector-detail/services/current-speaker-chyron-slide.service/current-speaker-chyron-slide.service.ts
 msgid "Current agenda item"
 msgstr ""
 
@@ -1600,12 +1725,14 @@ msgstr "Liste actuelle des orateurs (sous forme de diapositive)"
 msgid "Current slide"
 msgstr "Diapositive actuelle"
 
+#: /app/src/app/site/pages/meetings/modules/projector/modules/slides/definitions/slides.ts
 msgid "Current speaker"
 msgstr "L'orateur actuel"
 
 msgid "Current speaker chyron"
 msgstr "Chyron de l'orateur actuel"
 
+#: /app/src/app/ui/modules/editor/components/editor-link-dialog/editor-link-dialog.component.html
 msgid "Current window"
 msgstr ""
 
@@ -1624,6 +1751,7 @@ msgstr "Nombre personnalisé de bulletins de vote"
 msgid "Custom translations"
 msgstr " Traductions personnalisées"
 
+#: /app/src/app/site/pages/meetings/pages/autopilot/components/autopilot/autopilot.component.html
 msgid "Customize autopilot"
 msgstr ""
 
@@ -1645,6 +1773,7 @@ msgstr "Décision"
 msgid "Default"
 msgstr "Par défaut"
 
+#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Default 100 % base"
 msgstr ""
 
@@ -1663,11 +1792,13 @@ msgstr "Groupes par défaut avec droit de vote"
 msgid "Default line numbering"
 msgstr "Numérotation par ligne par défaut"
 
+#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid ""
 "Default speaking time contingent for parliamentary groups (structure levels)"
 " in seconds"
 msgstr ""
 
+#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid ""
 "Default text version for change recommendations and projection of motions"
 msgstr ""
@@ -1678,6 +1809,10 @@ msgid "Default visibility for new agenda items (except topics)"
 msgstr ""
 "Visibilité par défaut des nouveaux points de l'ordre du jour (sauf les "
 "sujets)"
+
+#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
+msgid "Default vote method"
+msgstr ""
 
 msgid "Default vote weight"
 msgstr "Poids du vote par défaut"
@@ -1717,6 +1852,7 @@ msgstr ""
 "Définit le temps pendant lequel les montants des applaudissements sont "
 "additionnés."
 
+#: /app/src/app/site/pages/meetings/pages/motions/pages/workflows/components/workflow-detail/workflow-detail.component.ts
 msgid ""
 "Defines the wording of the recommendation that belongs to this state.\n"
 "Example: State = Accepted / Recommendation = Acceptance.\n"
@@ -1733,6 +1869,7 @@ msgstr ""
 "Définit les états qui peuvent être sélectionnés ensuite dans le flux de "
 "travail."
 
+#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-list/services/participant-list-filter/participant-list-filter.service.ts
 msgid "Delegation of vote"
 msgstr ""
 
@@ -1751,6 +1888,7 @@ msgstr "Supprimer le projecteur"
 msgid "Deleted user"
 msgstr "Utilisateur supprimé"
 
+#: /app/src/app/site/pages/meetings/pages/motions/pages/motion-detail/components/motion-detail-view/motion-detail-view.component.ts
 msgid "Deleting this motion will also delete the amendments."
 msgstr ""
 
@@ -1772,12 +1910,14 @@ msgstr "Design"
 msgid "Designates whether this user is in the room."
 msgstr "Indique si cet utilisateur est dans la salle."
 
+#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Didn't get an email"
 msgstr ""
 
 msgid "Diff version"
 msgstr "Version Diff"
 
+#: /app/src/app/site/modules/global-headbar/components/account-dialog/account-dialog.component.html
 msgid "Disable connection closing on inactivity"
 msgstr ""
 
@@ -1792,6 +1932,7 @@ msgstr ""
 msgid "Display type"
 msgstr "Type d'écran"
 
+#: /app/src/app/site/pages/meetings/modules/list-of-speakers-content/components/speaking-times/speaking-times.component.ts
 msgid "Distribute overhang time"
 msgstr "Distribuer le temps de surplomb"
 
@@ -1801,9 +1942,11 @@ msgstr "Divergente :"
 msgid "Do not forget to save your changes!"
 msgstr "N'oubliez pas d'enregistrer vos modifications !"
 
+#: /app/src/app/site/pages/meetings/pages/motions/pages/workflows/components/workflow-detail/workflow-detail.component.ts
 msgid "Do not show recommendations publicly"
 msgstr ""
 
+#: /app/src/app/ui/modules/sidenav/modules/easter-egg/modules/chess-dialog/services/chess-challenge.service.ts
 msgid "Do you accept?"
 msgstr "Acceptez-vous ?"
 
@@ -1816,6 +1959,10 @@ msgstr "Voulez-vous vraiment annuler toutes vos modifications ?"
 msgid "Do you really want to go ahead?"
 msgstr "Voulez-vous vraiment continuer ?"
 
+#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-list/components/participant-list/participant-list.component.ts
+msgid "Do you really want to lock this participant out of the meeting?"
+msgstr ""
+
 msgid ""
 "Do you really want to make available this meeting as a public template?"
 msgstr "Souhaitez-vous vraiment que cette réunion devienne un modèle public ?"
@@ -1827,6 +1974,14 @@ msgid "Do you really want to stop sharing this meeting as a public template?"
 msgstr ""
 "Voulez-vous vraiment arrêter de partager cette réunion en tant que modèle "
 "public ?"
+
+#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-list/components/participant-list/participant-list.component.ts
+msgid "Do you really want to undo the lock out of the participant?"
+msgstr ""
+
+#: /app/src/app/site/pages/meetings/pages/motions/pages/motion-detail/pages/motion-form/components/motion-form/motion-form.component.ts
+msgid "Do you want to update the amendment text? All changes will be lost."
+msgstr ""
 
 msgid "Does not have notes"
 msgstr "Ne contient pas de notes"
@@ -1843,6 +1998,7 @@ msgstr "Télécharger fichier CSV d'exemple "
 msgid "Download folder"
 msgstr "Télécharger le dossier"
 
+#: /app/src/app/ui/modules/file-list/components/file-list/file-list.component.ts
 msgid "Download the file"
 msgstr ""
 
@@ -1857,6 +2013,7 @@ msgstr "Double"
 msgid "Duplicate from"
 msgstr "Duplication de"
 
+#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Duplicates"
 msgstr ""
 
@@ -1888,9 +2045,11 @@ msgstr ""
 msgid "Edit"
 msgstr "Modifier"
 
+#: /app/src/app/ui/modules/editor/components/editor-html-dialog/editor-html-dialog.component.html
 msgid "Edit HTML content"
 msgstr ""
 
+#: /app/src/app/site/pages/organization/pages/accounts/pages/account-detail/components/account-detail/account-detail.component.html
 msgid "Edit account"
 msgstr "Modifier le compte"
 
@@ -1909,24 +2068,34 @@ msgstr "Editer les détails de"
 msgid "Edit editorial final version"
 msgstr "Editer la version finale de l'éditorial"
 
+#: /app/src/app/site/pages/meetings/pages/participants/modules/groups/components/group-list/group-list.component.html
 msgid "Edit group"
 msgstr "Modifier le groupe"
 
 msgid "Edit meeting"
 msgstr "Modifier la réunion"
 
+#: /app/src/app/site/pages/meetings/modules/list-of-speakers-content/components/moderation-note/moderation-note.component.html
 msgid "Edit moderation note"
 msgstr "Modifier la note de modération"
 
+#: app/src/app/site/pages/meetings/pages/participants/pages/participant-list/components/participant-list/participant-list.component.html
+msgid "Edit participant"
+msgstr ""
+
+#: /app/src/app/site/pages/meetings/modules/list-of-speakers-content/components/list-of-speakers-content/list-of-speakers-content.component.html
 msgid "Edit point of order ..."
 msgstr ""
 
 msgid "Edit projector"
 msgstr "Modifier le projecteur"
 
+#: /app/src/app/site/pages/meetings/pages/projectors/modules/projector-detail/components/projector-detail/projector-detail.component.html
+#: /app/src/app/site/pages/meetings/pages/projectors/modules/projector-detail/components/projector-detail/projector-detail.component.html
 msgid "Edit queue"
 msgstr "Éditer la file d'attente"
 
+#: /app/src/app/site/pages/meetings/pages/motions/pages/workflows/components/workflow-detail/workflow-detail.component.ts
 msgid "Edit state"
 msgstr "Modifier le status"
 
@@ -1942,6 +2111,7 @@ msgstr "Modifier pour saisir les votes."
 msgid "Edit topic"
 msgstr "Modifier le sujet"
 
+#: /app/src/app/site/pages/meetings/pages/motions/pages/workflows/components/workflow-detail/workflow-detail.component.ts
 msgid "Edit workflow"
 msgstr "Modifier le flux de travail"
 
@@ -1957,15 +2127,18 @@ msgstr "Documents relatifs aux élections"
 msgid "Elections"
 msgstr "Elections"
 
+#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Elections (PDF settings)"
 msgstr ""
 
+#: /app/src/app/site/pages/meetings/pages/participants/export/speaker-csv-export.service/speaker-csv-export.service.ts
 msgid "Element"
 msgstr "Élément"
 
 msgid "Email"
 msgstr "Courriel"
 
+#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Email address"
 msgstr ""
 
@@ -1996,6 +2169,7 @@ msgstr "Permettre le vote électronique"
 msgid "Enable forspeech / counter speech"
 msgstr "Permettre le discours / contre-discours"
 
+#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Enable interposed questions"
 msgstr "Activer les questions interposées"
 
@@ -2008,7 +2182,12 @@ msgstr "Activer la vue de présence des participants"
 msgid "Enable point of order"
 msgstr "Activer le point d'ordre"
 
+#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Enable point of orders for other participants"
+msgstr ""
+
+#: /app/src/app/site/pages/organization/pages/settings/modules/settings-detail/components/organization-settings/organization-settings.component.html
+msgid "Enable public meetings"
 msgstr ""
 
 msgid "Enable specifications and ranking for possible motions"
@@ -2038,6 +2217,12 @@ msgstr ""
 " modifier l'état de la motion. Les autres fonctions administratives sont "
 "exclues."
 
+#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
+msgid ""
+"Enables public access to this meeting without login data. Permissions can be"
+" set after activation in the new group 'Public'."
+msgstr ""
+
 msgid "Enables the ability to create votings for motions in this state."
 msgstr "Permet de créer des votes pour les motions dans cet état."
 
@@ -2048,6 +2233,7 @@ msgstr ""
 "Permet l'édition du texte et du motif du mouvement par les soumissionnaires "
 "dans l'état sélectionné après la création du mouvement."
 
+#: /app/src/app/site/pages/meetings/pages/motions/pages/workflows/components/workflow-detail/workflow-detail.component.ts
 msgid ""
 "Enables the forwarding of motions to other meetings within the OpenSlides instance in the selected state.\n"
 "\n"
@@ -2118,6 +2304,7 @@ msgstr ""
 "Saisissez votre e-mail pour envoyer le lien de réinitialisation du mot de "
 "passe"
 
+#: /app/src/app/site/pages/meetings/pages/assignments/modules/assignment-poll/components/assignment-poll-detail-content/assignment-poll-detail-content.component.html
 msgid "Entitled present users"
 msgstr ""
 
@@ -2148,6 +2335,10 @@ msgstr "Fin prévue"
 msgid "Event location"
 msgstr "Lieu de l'événement"
 
+#: /app/src/app/ui/modules/file-list/components/file-list/file-list.component.ts
+msgid "Every admin in every meeting will be able to see this content."
+msgstr ""
+
 msgid ""
 "Everyone can see the request of a point of order (instead of managers for "
 "list of speakers only)"
@@ -2155,6 +2346,7 @@ msgstr ""
 "Tout le monde peut voir la demande du point d'ordre (au lieu de "
 "gestionnaires pour la liste des orateurs seulement)"
 
+#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-import/components/participant-import-list/participant-import-list.component.html
 msgid ""
 "Existing accounts can be reused or updated by using: <ul><li>Membership "
 "number <i>(recommended)</i><li>Username<li>Email address AND first name AND "
@@ -2200,6 +2392,7 @@ msgstr "Extension"
 msgid "External ID"
 msgstr "ID externe"
 
+#: /app/src/app/site/pages/meetings/pages/home/pages/meeting-info/components/count-users/count-users.component.html
 msgid "Fallback"
 msgstr ""
 
@@ -2209,8 +2402,16 @@ msgstr "Favoris"
 msgid "File"
 msgstr "Fichier"
 
+#: /app/src/app/ui/modules/file-list/components/file-list/file-list.component.html
+#: /app/src/app/ui/modules/file-list/components/file-list/file-list.component.html
+#: /app/src/app/ui/modules/file-list/components/file-list/file-list.component.html
+#: /app/src/app/ui/modules/file-list/components/file-list/file-list.component.html
 msgid "File is being used"
 msgstr "Le fichier est en cours d'utilisation"
+
+#: /app/src/app/site/pages/meetings/pages/mediafiles/services/mediafile-common.service.ts
+msgid "File is used in:"
+msgstr ""
 
 msgid "Filename"
 msgstr "Nom de fichier"
@@ -2221,6 +2422,7 @@ msgstr "Fichiers"
 msgid "Filter"
 msgstr "Filtre"
 
+#: /app/src/app/site/pages/meetings/modules/poll/components/poll-filtered-votes-chart/poll-filtered-votes-chart.component.html
 msgid "Filtered single votes"
 msgstr ""
 
@@ -2263,6 +2465,7 @@ msgstr "Police régulière"
 msgid "Font size in pt"
 msgstr "Taille de la police en pt"
 
+#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid ""
 "For activation:<br>\n"
 "                        1. Assign group permission (define the group that can support motions)<br>\n"
@@ -2282,6 +2485,7 @@ msgstr "Couleur d'avant-plan"
 msgid "Forgot Password?"
 msgstr "Mot de passe oublié ?"
 
+#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Formalities"
 msgstr ""
 
@@ -2294,6 +2498,7 @@ msgstr "Forspeech"
 msgid "Forward"
 msgstr "transmettre"
 
+#: /app/src/app/site/pages/organization/pages/committees/pages/committee-list/services/committee-list-filter.service/committee-filter.service.ts
 msgid "Forward motions"
 msgstr ""
 
@@ -2330,6 +2535,10 @@ msgstr "Tirage au sort !"
 msgid "Gender"
 msgstr "Sexe"
 
+#: /app/src/app/site/pages/organization/pages/accounts/pages/account-list/components/account-list/account-list.component.html
+msgid "Genders"
+msgstr ""
+
 msgid "General"
 msgstr "Général"
 
@@ -2363,6 +2572,7 @@ msgstr "Couleur globale de la barre de tête"
 msgid "Go to line"
 msgstr "Aller à la ligne"
 
+#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Got an email"
 msgstr ""
 
@@ -2394,57 +2604,66 @@ msgstr "Groupes avec droits de lecture"
 msgid "Groups with write permissions"
 msgstr "Groupes avec droits d'écriture"
 
-msgid "Guest"
-msgstr "Invité"
-
 msgid "Has SSO identification"
 msgstr "A l'identification SSO"
 
+#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Has a membership number"
 msgstr ""
 
 msgid "Has amendments"
 msgstr "A des amendements"
 
+#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Has an email address"
 msgstr ""
 
+#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Has changed vote weight"
 msgstr ""
 
+#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-list/services/participant-list-sort/participant-list-sort.service.ts
 msgid "Has email"
 msgstr ""
 
 msgid "Has forwardings"
 msgstr "A des transmissions"
 
+#: /app/src/app/site/pages/meetings/pages/motions/services/list/motion-list-filter.service/motion-list-filter.service.ts
 msgid "Has identical motions"
 msgstr ""
 
+#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Has logged in"
 msgstr ""
 
 msgid "Has no SSO identification"
 msgstr "N'a pas d'identification SSO"
 
+#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Has no email address"
 msgstr ""
 
+#: /app/src/app/site/pages/meetings/pages/motions/services/list/motion-list-filter.service/motion-list-filter.service.ts
 msgid "Has no identical motions"
 msgstr ""
 
+#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Has no membership number"
 msgstr ""
 
 msgid "Has no speakers"
 msgstr "N'a pas d'odrateurs"
 
+#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Has not logged in yet"
 msgstr ""
 
+#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-speaker-list/services/participant-speaker-list-filter.service/participant-speaker-list-filter.service.ts
 msgid "Has not spoken"
 msgstr ""
 
+#: /app/src/app/site/pages/meetings/modules/poll/services/entitled-user-filter.service.ts
 msgid "Has not voted"
 msgstr ""
 
@@ -2454,9 +2673,11 @@ msgstr "A des notes"
 msgid "Has speakers"
 msgstr "A des oraterus"
 
+#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-speaker-list/services/participant-speaker-list-filter.service/participant-speaker-list-filter.service.ts
 msgid "Has spoken"
 msgstr ""
 
+#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Has unchanged vote weight"
 msgstr ""
 
@@ -2472,9 +2693,11 @@ msgstr "Couleur d'arrière-plan de l'en-tête"
 msgid "Header font color"
 msgstr "Couleur de la police de l'en-tête"
 
+#: /app/src/app/ui/modules/editor/components/editor/editor.component.ts
 msgid "Heading"
 msgstr ""
 
+#: /app/src/app/ui/modules/editor/components/editor/editor.component.html
 msgid "Headings"
 msgstr ""
 
@@ -2490,15 +2713,18 @@ msgstr "Le texte d'aide pour les données d'accès et PDF de bienvenue"
 msgid "Hidden item"
 msgstr "élément masqué"
 
+#: /app/src/app/site/pages/meetings/modules/meetings-component-collector/projection-dialog/components/projection-dialog/projection-dialog.component.html
 msgid "Hide"
 msgstr ""
 
+#: /app/src/app/ui/modules/sidenav/components/sidenav/sidenav.component.html
 msgid "Hide main menu"
 msgstr "Masquer le menu principal"
 
 msgid "Hide more text"
 msgstr "Cacher plus de texte"
 
+#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Hide note on number of multiple contributions"
 msgstr ""
 
@@ -2523,6 +2749,7 @@ msgstr "Comment créer de nouvelles modifications"
 msgid "I know the risk"
 msgstr "Je connais le risque"
 
+#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid ""
 "IMPORTANT: The sender address (noreply@openslides.com) is defined in the OpenSlides server settings and cannot be changed here.\n"
 "                            To receive replies you have to enter a reply address in the next field. Please test the email dispatch in case of changes!"
@@ -2530,9 +2757,11 @@ msgstr ""
 "IMPORTANT : L'adresse de l'expéditeur (noreply@openslides.com) est définie dans les paramètres du serveur OpenSlides et ne peut pas être modifiée ici.\n"
 "Pour recevoir des réponses, vous devez saisir une adresse de réponse dans le champ suivant. Veuillez tester l'envoi du courriel en cas de changement !"
 
+#: /app/src/app/site/pages/meetings/pages/motions/services/list/motion-list-filter.service/motion-list-filter.service.ts
 msgid "Identical motions"
 msgstr ""
 
+#: /app/src/app/site/pages/meetings/pages/motions/pages/motion-detail/components/motion-meta-data/motion-meta-data.component.html
 msgid "Identical with"
 msgstr ""
 
@@ -2549,9 +2778,11 @@ msgstr ""
 "S'il s'agit d'un amendement, vous pouvez sauvegarder son contenu lors de "
 "l'édition et le supprimer par la suite."
 
+#: /app/src/app/site/pages/meetings/pages/projectors/components/projector-countdown-dialog/components/projector-countdown-dialog/projector-countdown-dialog.component.html
 msgid "If the value is set to 0 the time counts up as stopwatch."
 msgstr ""
 
+#: /app/src/app/ui/modules/editor/components/editor-image-dialog/editor-image-dialog.component.html
 msgid "Image description"
 msgstr ""
 
@@ -2570,15 +2801,14 @@ msgstr "Les données importées doivent avoir le format JSON"
 msgid "Import meeting"
 msgstr "Importer une réunion"
 
-msgid "Import motions"
-msgstr "Importer des motions"
-
 msgid "Import participants"
 msgstr "Importer des participants"
 
 msgid "Import successful"
 msgstr "Import réussi"
 
+#: /app/src/app/site/pages/meetings/pages/agenda/modules/topics/pages/topic-import/components/topic-import/topic-import.component.html
+#: /app/src/app/site/pages/meetings/pages/agenda/modules/topics/pages/topic-import/components/topic-import/topic-import.component.html
 msgid "Import successful with some warnings"
 msgstr "Import réussi avec quelques avertissements"
 
@@ -2625,18 +2855,22 @@ msgstr "Insérer derrière"
 msgid "Insert topics here"
 msgstr "Insérer les sujets ici"
 
+#: /app/src/app/ui/modules/editor/components/editor-embed-dialog/editor-embed-dialog.component.html
 msgid "Insert/Edit Link"
 msgstr ""
 
+#: /app/src/app/ui/modules/editor/components/editor/editor.component.html
 msgid "Insert/edit image"
 msgstr ""
 
+#: /app/src/app/ui/modules/editor/components/editor/editor.component.html
 msgid "Insert/edit link"
 msgstr ""
 
 msgid "Insertion"
 msgstr "Insertion"
 
+#: /app/src/app/ui/modules/sidenav/modules/easter-egg/modules/chess-dialog/components/chess-dialog/chess-dialog.component.ts
 msgid "Insufficient material! It's a draw!"
 msgstr "Matériel insuffisant ! C'est un tirage au sort !"
 
@@ -2649,12 +2883,15 @@ msgstr "Element interne"
 msgid "Internal login"
 msgstr "Connexion interne"
 
+#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-speaker-list/services/participant-speaker-list-filter.service/participant-speaker-list-filter.service.ts
 msgid "Interposed question"
 msgstr "Question interposée"
 
+#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-speaker-list/services/participant-speaker-list-filter.service/participant-speaker-list-filter.service.ts
 msgid "Intervention"
 msgstr "Intervention"
 
+#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Intervention speaking time in seconds"
 msgstr "Temps de parole de l'intervention en secondes"
 
@@ -2667,6 +2904,7 @@ msgstr "Votes invalides"
 msgid "Invite to conference room"
 msgstr "Inviter à la salle de conférence"
 
+#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-list/services/participant-list-filter/participant-list-filter.service.ts
 msgid "Is a committee"
 msgstr ""
 
@@ -2679,16 +2917,13 @@ msgstr "Est un modèle"
 msgid "Is active"
 msgstr "C'est actif"
 
+#: /app/src/app/domain/definitions/permission.config.ts
 msgid ""
-"Is allowed to add himself/herself to the list of speakers. \n"
+"Is allowed to add himself/herself to the list of speakers.\n"
 "\n"
 "Note:\n"
 "Optional combination of requests to speak with presence status is possible. ( > [Settings] > [List of speakers] > [General] )"
 msgstr ""
-"est autorisé à s'inscrire sur la liste des orateurs. \n"
-"\n"
-"Remarque :\n"
-"Il est possible de combiner les demandes d'intervention avec l'état de présence. ( > [Réglages] > [Liste des orateurs] > [Général] )"
 
 msgid "Is already projected"
 msgstr "Est déjà projeté"
@@ -2705,16 +2940,27 @@ msgstr "Est projeté"
 msgid "Is candidate"
 msgstr "Est candidat"
 
+#: app/src/app/site/pages/organization/pages/orga-meetings/pages/meeting-list/services/meeting-list-filter/meeting-list-filter.service.ts
+msgid "Is closed"
+msgstr ""
+
+#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Is committee admin"
 msgstr ""
 
 msgid "Is favorite"
 msgstr "Est le favori"
 
+#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Is in active meetings"
 msgstr ""
 
+#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Is in archived meetings"
+msgstr ""
+
+#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-detail/components/participant-detail-view/participant-detail-view.component.html
+msgid "Is locked out"
 msgstr ""
 
 msgid "Is manager"
@@ -2726,12 +2972,14 @@ msgstr "N'est pas un amendement et n'a pas d'amendement"
 msgid "Is no natural person"
 msgstr "N'est pas une personne naturelle"
 
+#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-list/services/participant-list-filter/participant-list-filter.service.ts
 msgid "Is not a committee"
 msgstr ""
 
 msgid "Is not a template"
 msgstr "N'est pas un modèle"
 
+#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Is not active"
 msgstr ""
 
@@ -2741,17 +2989,27 @@ msgstr "N'est pas archivé"
 msgid "Is not favorite"
 msgstr "N'est pas favori"
 
+#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Is not in active meetings"
 msgstr ""
 
+#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Is not in archived meetings"
 msgstr ""
 
 msgid "Is not present"
 msgstr "N'est pas présent"
 
+#: /app/src/app/site/pages/organization/pages/orga-meetings/pages/meeting-list/services/meeting-list-filter/meeting-list-filter.service.ts
+msgid "Is not public"
+msgstr ""
+
 msgid "Is present"
 msgstr "Est présent"
+
+#: /app/src/app/site/pages/organization/pages/orga-meetings/pages/meeting-list/services/meeting-list-filter/meeting-list-filter.service.ts
+msgid "Is public"
+msgstr ""
 
 msgid "Is speaker"
 msgstr "Est orateur"
@@ -2765,9 +3023,18 @@ msgstr ""
 "Il n'est pas permis de supprimer les comptes à rebours utilisés pour la "
 "liste des orateurs ou les sondages."
 
+#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-detail/components/participant-detail-view/participant-detail-view.component.html
+msgid ""
+"It is not allowed to set the permisson 'Can manage participants' to a locked"
+" out user. Please unset the lockout state before adding a group with this "
+"permission."
+msgstr ""
+
+#: /app/src/app/ui/modules/sidenav/modules/easter-egg/modules/chess-dialog/components/chess-dialog/chess-dialog.component.ts
 msgid "It's a draw!"
 msgstr "C'est un tirage au sort !"
 
+#: /app/src/app/ui/modules/sidenav/modules/easter-egg/components/base-game-dialog/base-game-dialog.ts
 msgid "It's your opponent's turn"
 msgstr "C'est au tour de votre adversaire"
 
@@ -2795,6 +3062,7 @@ msgstr "Nom de la chambre Jitsi"
 msgid "Jitsi room password"
 msgstr "Mot de passe de la chambre Jitsi"
 
+#: /app/src/app/ui/modules/editor/components/editor/editor.component.html
 msgid "Justify"
 msgstr ""
 
@@ -2861,6 +3129,7 @@ msgstr "Numérotation par ligne"
 msgid "Line spacing"
 msgstr "Espacement des lignes"
 
+#: /app/src/app/site/pages/meetings/pages/motions/pages/motion-detail/components/motion-detail-view/motion-detail-view.component.ts
 msgid "List of amendments: "
 msgstr "Liste des amendements :"
 
@@ -2876,6 +3145,7 @@ msgstr "La liste des participants (PDF)"
 msgid "List of speakers"
 msgstr "Liste des orateurs"
 
+#: /app/src/app/site/pages/meetings/pages/projectors/modules/projector-detail/components/projector-detail/projector-detail.component.html
 msgid "List of speakers as overlay"
 msgstr ""
 
@@ -2897,6 +3167,7 @@ msgstr "Flux vidéo en direct"
 msgid "Livestream URL"
 msgstr "URL de la diffusion en direct"
 
+#: /app/src/app/site/pages/meetings/pages/interaction/modules/interaction-container/components/video-player/video-player.component.ts
 msgid "Livestream poster image"
 msgstr ""
 
@@ -2906,6 +3177,14 @@ msgstr "Url de l'image de l'affiche de la diffusion en direct"
 msgid "Loading data. Please wait ..."
 msgstr "Url de l'image de l'affiche de la diffusion en direct"
 
+#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-detail/components/participant-detail-view/participant-detail-view.component.html
+msgid "Lock out user from this meeting."
+msgstr ""
+
+#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-list/components/participant-list/participant-list.component.ts
+msgid "Locked out"
+msgstr ""
+
 msgid "Logged-in users"
 msgstr "Utilisateurs connectés"
 
@@ -2914,9 +3193,6 @@ msgstr "Connexion"
 
 msgid "Login anyway"
 msgstr "Se connecter quand même"
-
-msgid "Login as guest"
-msgstr "Connecter en tant qu'invité"
 
 msgid "Login button text"
 msgstr "Texte du bouton de connexion"
@@ -2930,11 +3206,21 @@ msgstr "Nombre d'applaudissements le plus faible"
 msgid "Main motion and line number"
 msgstr "Motion principale et numéro de ligne"
 
+#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
+msgid ""
+"Make background color from meta information box on the projector transparent"
+msgstr ""
+
+#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-list/components/participant-list/participant-list.component.ts
 msgid "Mandates switched sucessfully!"
 msgstr ""
 
 msgid "Mark as personal favorite"
 msgstr "Marquer comme favori personnel"
+
+#: app/src/app/site/pages/meetings/modules/poll/components/base-poll-form/base-poll-form.component.ts
+msgid "Max votes per option cannot be greater than max votes."
+msgstr ""
 
 msgid "Maximum amount of votes"
 msgstr "Nombre maximum de votes"
@@ -2963,6 +3249,7 @@ msgstr "Date de réunion"
 msgid "Meeting information"
 msgstr "Information sur la réunion"
 
+#: /app/src/app/site/modules/user-components/components/user-delete-dialog/user-delete-dialog.component.html
 msgid "Meeting is closed"
 msgstr ""
 
@@ -2988,18 +3275,23 @@ msgstr "Titre de la réunion"
 msgid "Meetings"
 msgstr "Réunions"
 
+#: /app/src/app/site/pages/organization/pages/accounts/pages/account-list/components/account-merge-dialog/account-merge-dialog.component.html
 msgid "Meetings affected:"
 msgstr ""
 
 msgid "Meetings selected"
 msgstr "Réunions selectionnées"
 
+#: /app/src/app/site/modules/user-components/components/user-detail-view/user-detail-view.component.html
+#: /app/src/app/site/modules/user-components/components/user-detail-view/user-detail-view.component.html
 msgid "Membership number"
 msgstr ""
 
+#: /app/src/app/site/pages/organization/pages/accounts/pages/account-list/components/account-merge-dialog/account-merge-dialog.component.html
 msgid "Merge"
 msgstr ""
 
+#: /app/src/app/site/pages/organization/pages/accounts/pages/account-list/components/account-merge-dialog/account-merge-dialog.component.html
 msgid "Merge accounts"
 msgstr ""
 
@@ -3035,12 +3327,15 @@ msgstr "Nombre minimum de votes"
 msgid "Minimum number of digits for motion identifier"
 msgstr "Nombre minimum de chiffres pour l'identificateur de mouvement"
 
+#: /app/src/app/site/pages/meetings/modules/list-of-speakers-content/components/moderation-note/moderation-note.component.html
 msgid "Moderation note"
 msgstr "Note de modération"
 
+#: /app/src/app/site/pages/meetings/pages/projectors/modules/projector-detail/services/current-speaker-chyron-slide.service/current-speaker-chyron-slide.service.ts
 msgid "Modern"
 msgstr ""
 
+#: /app/src/app/site/pages/organization/pages/designs/pages/theme-list/components/theme-list/theme-list.component.html
 msgid "Modify design"
 msgstr "Modifier le design"
 
@@ -3077,6 +3372,10 @@ msgstr "Modification de la motion recommandation supprimée"
 msgid "Motion change recommendation updated"
 msgstr "Recommandation de modification de la motion mise à jour"
 
+#: /app/src/app/site/pages/meetings/pages/motions/pages/motion-detail/pages/motion-form/components/motion-form/motion-form.component.ts
+msgid "Motion changed"
+msgstr ""
+
 msgid "Motion created"
 msgstr "Motion créé"
 
@@ -3086,9 +3385,11 @@ msgstr "Motion créée (transmise)"
 msgid "Motion deleted"
 msgstr "Motion suprimée"
 
+#: /app/src/app/gateways/repositories/motions/motion-editor-repository/motion-editor-repository.service.ts
 msgid "Motion editor"
 msgstr ""
 
+#: /app/src/app/site/pages/meetings/pages/motions/services/list/motion-list-filter.service/motion-list-filter.service.ts
 msgid "Motion editors"
 msgstr ""
 
@@ -3113,6 +3414,7 @@ msgstr "Votes de la motion"
 msgid "Motions"
 msgstr "Motions"
 
+#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Motions (PDF settings)"
 msgstr ""
 
@@ -3168,21 +3470,27 @@ msgstr "Nom de la nouvelle catégorie"
 msgid "Natural person"
 msgstr "Personne physique"
 
+#: /app/src/app/site/pages/organization/pages/accounts/pages/account-list/components/account-list/account-list.component.ts
 msgid "Navigate to account page from "
 msgstr ""
 
+#: /app/src/app/site/pages/organization/pages/committees/pages/committee-list/components/committee-list/committee-list.component.ts
 msgid "Navigate to committee detail view from "
 msgstr ""
 
+#: /app/src/app/site/pages/organization/pages/orga-meetings/pages/meeting-list/components/meeting-list/meeting-list.component.ts
 msgid "Navigate to meeting "
 msgstr ""
 
+#: /app/src/app/site/pages/meetings/pages/motions/pages/categories/components/category-detail/category-detail.component.ts
 msgid "Navigate to motion"
 msgstr ""
 
+#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-list/components/participant-list/participant-list.component.ts
 msgid "Navigate to participant page from "
 msgstr ""
 
+#: /app/src/app/ui/modules/file-list/components/file-list/file-list.component.ts
 msgid "Navigate to the folder"
 msgstr ""
 
@@ -3207,6 +3515,7 @@ msgstr "Nouvelle catégorie"
 msgid "New change recommendation"
 msgstr "Nouveau changement de recommandation"
 
+#: /app/src/app/site/pages/meetings/pages/chat/pages/chat-group-list/components/chat-group-list/chat-group-list.component.html
 msgid "New chat group"
 msgstr "Nouveau groupe de chat"
 
@@ -3216,6 +3525,7 @@ msgstr "Nouveau champ de commentaires"
 msgid "New committee"
 msgstr "Nouveau Comité"
 
+#: /app/src/app/site/pages/organization/pages/designs/pages/theme-list/components/theme-list/theme-list.component.html
 msgid "New design"
 msgstr "Nouveau design"
 
@@ -3225,15 +3535,24 @@ msgstr "Nouveau répertoire"
 msgid "New election"
 msgstr "Nouvelle élection"
 
+#: /app/src/app/site/pages/organization/pages/mediafiles/modules/organization-mediafile-upload/components/organization-mediafile-upload/organization-mediafile-upload.component.html
 msgid "New file"
 msgstr "Nouveau fichier"
 
 msgid "New file name"
 msgstr "Nouveau nom de fichier"
 
+#: /app/src/app/site/pages/organization/pages/mediafiles/modules/organization-mediafile-list/components/organization-mediafile-list/organization-mediafile-list.component.html
+#: /app/src/app/site/pages/organization/pages/mediafiles/modules/organization-mediafile-list/components/organization-mediafile-list/organization-mediafile-list.component.html
 msgid "New folder"
 msgstr "Nouveau dossier"
 
+#: /app/src/app/site/pages/organization/pages/accounts/pages/gender/pages/gender-list/components/gender-list/gender-list.component.html
+msgid "New gender"
+msgstr ""
+
+#: /app/src/app/site/pages/meetings/pages/participants/modules/groups/components/group-list/group-list.component.html
+#: /app/src/app/site/pages/meetings/pages/participants/modules/groups/components/group-list/group-list.component.html
 msgid "New group"
 msgstr "Nouveau groupe"
 
@@ -3255,6 +3574,8 @@ msgstr "Nouveau participant"
 msgid "New password"
 msgstr "Nouveau mot de passe"
 
+#: /app/src/app/site/pages/meetings/pages/projectors/modules/projector-list/components/projector-list/projector-list.component.html
+#: /app/src/app/site/pages/meetings/pages/projectors/modules/projector-list/components/projector-list/projector-list.component.html
 msgid "New projector"
 msgstr "Nouveau projecteur"
 
@@ -3270,6 +3591,7 @@ msgstr "Nouveau sujet"
 msgid "New vote"
 msgstr "Nouveau vote"
 
+#: /app/src/app/ui/modules/editor/components/editor-link-dialog/editor-link-dialog.component.html
 msgid "New window"
 msgstr ""
 
@@ -3285,14 +3607,12 @@ msgstr "Prochain status"
 msgid "No"
 msgstr "Non"
 
+#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "No admin role"
 msgstr ""
 
 msgid "No category"
 msgstr "Aucune catégorie"
-
-msgid "No change recommendations yet"
-msgstr "Aucun changement de recommandation jusqu'à présent"
 
 msgid "No changes at the text."
 msgstr "Aucun changement dans ce texte."
@@ -3303,12 +3623,14 @@ msgstr "Aucun groupe n'est de chat disponible"
 msgid "No comment"
 msgstr "Aucun commentaire"
 
+#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "No committee admin"
 msgstr ""
 
 msgid "No data"
 msgstr "Pas de données"
 
+#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-list/services/participant-list-filter/participant-list-filter.service.ts
 msgid "No delegation of vote"
 msgstr ""
 
@@ -3357,6 +3679,7 @@ msgstr "Aucun résultat trouvé"
 msgid "No results yet."
 msgstr "Aucun résultat pour l'instant."
 
+#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-speaker-list/services/participant-speaker-list-filter.service/participant-speaker-list-filter.service.ts
 msgid "No structure level"
 msgstr ""
 
@@ -3372,20 +3695,32 @@ msgstr "Liste des nominations"
 msgid "None"
 msgstr "Aucun"
 
+#: /app/src/app/site/pages/meetings/pages/motions/components/motion-forward-dialog/services/motion-forward-dialog.service.ts
 msgid "None of the selected motions can be forwarded."
 msgstr "Aucun des mouvements sélectionnés ne peut être transmis."
 
+#: /app/src/app/site/pages/meetings/pages/home/pages/meeting-info/components/count-users/count-users.component.html
 msgid "Normal (http/2)"
 msgstr ""
 
 msgid "Not found"
 msgstr "Introuvable"
 
+#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-list/components/participant-list/participant-list.component.ts
+msgid "Not locked out"
+msgstr ""
+
 msgid ""
 "Note, that the default password will be changed to the new generated one."
 msgstr ""
 "Notez que le mot de passe par défaut sera remplacé par le nouveau mot de "
 "passe généré."
+
+#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
+msgid ""
+"Note: The public access setting is deactivated for the organization. Please "
+"contact your admins or hosting providers to activate the setting."
+msgstr ""
 
 msgid ""
 "Note: Your own password was not changed. Please use the password change "
@@ -3451,6 +3786,7 @@ msgstr "Numéro des prochains intervenants à afficher sur le projecteur"
 msgid "Number set"
 msgstr "Jeu de numéros"
 
+#: /app/src/app/ui/modules/editor/components/editor/editor.component.html
 msgid "Numbered list"
 msgstr ""
 
@@ -3460,6 +3796,7 @@ msgstr "Numérotée par catégorie"
 msgid "Numbering"
 msgstr "Numérotage"
 
+#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Numbering and sorting"
 msgstr ""
 
@@ -3472,9 +3809,11 @@ msgstr "système de numération de points de l'ordre du jour"
 msgid "OK"
 msgstr "OK"
 
+#: /app/src/app/site/pages/meetings/modules/poll/components/base-poll-vote/base-poll-vote.component.html
 msgid "OR"
 msgstr ""
 
+#: /app/src/app/site/pages/meetings/pages/projectors/modules/projector-detail/services/current-speaker-chyron-slide.service/current-speaker-chyron-slide.service.ts
 msgid "Off"
 msgstr ""
 
@@ -3484,12 +3823,14 @@ msgstr "Mode hors ligne"
 msgid "Ok"
 msgstr "Ok"
 
+#: /app/src/app/site/pages/meetings/modules/poll/base/base-poll-pdf.service.ts
 msgid "Old account of"
 msgstr ""
 
 msgid "Old password"
 msgstr "Ancien mot de passe"
 
+#: /app/src/app/site/pages/meetings/pages/projectors/modules/projector-detail/services/current-speaker-chyron-slide.service/current-speaker-chyron-slide.service.ts
 msgid "On"
 msgstr ""
 
@@ -3499,6 +3840,7 @@ msgstr "Un courriel a été envoyé avec succès."
 msgid "Only for internal notes."
 msgstr "Seulement pour des notes internes."
 
+#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-list/components/participant-switch-dialog/participant-switch-dialog.component.html
 msgid "Only groups and participant number are switched."
 msgstr ""
 
@@ -3510,6 +3852,7 @@ msgstr ""
 "Seuls les participants présents peuvent être ajoutés à la liste des "
 "orateurs."
 
+#: /app/src/app/site/pages/meetings/pages/projectors/view-models/view-projector-countdown.ts
 msgid "Only time"
 msgstr ""
 
@@ -3522,12 +3865,15 @@ msgstr "Ouvrir Jitsi dans un nouvel onglet"
 msgid "Open a meeting to play \"Connect 4\""
 msgstr "Ouvrir une réunion pour jouer à \"Connect 4\""
 
+#: /app/src/app/ui/modules/sidenav/modules/easter-egg/modules/chess-dialog/components/chess-dialog/chess-dialog.component.html
 msgid "Open a meeting to play chess"
 msgstr "Ouvrez une réunion pour jouer aux échecs"
 
+#: /app/src/app/site/pages/meetings/pages/agenda/pages/agenda-item-list/services/agenda-item-filter.service/agenda-item-filter.service.ts
 msgid "Open items"
 msgstr ""
 
+#: /app/src/app/ui/modules/editor/components/editor-link-dialog/editor-link-dialog.component.html
 msgid "Open link in ..."
 msgstr ""
 
@@ -3552,6 +3898,7 @@ msgstr " Données d'accès OpenSlides"
 msgid "OpenSlides help (FAQ)"
 msgstr "Aide OpenSlides (FAQ)"
 
+#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid ""
 "OpenSlides offers various speaking list customizations for use in "
 "parliament. These include the configuration of speaking time quotas for "
@@ -3575,6 +3922,7 @@ msgstr "Organisation"
 msgid "Organization Management Level changed"
 msgstr "Organisation Niveau de gestion modifié"
 
+#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Organization admin"
 msgstr ""
 
@@ -3662,6 +4010,11 @@ msgstr "Chargement parallèle"
 msgid "Parent agenda item"
 msgstr "Point de l'ordre du jour superieur"
 
+#: /app/src/app/site/pages/meetings/pages/motions/pages/motion-detail/pages/motion-form/components/motion-form/motion-form.component.ts
+msgid "Parent motion text changed"
+msgstr ""
+
+#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Parliament options"
 msgstr ""
 
@@ -3712,6 +4065,7 @@ msgstr "Participant retiré de plusieurs groupes lors de plusieurs réunions"
 msgid "Participants"
 msgstr "Participants"
 
+#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Participants (PDF settings)"
 msgstr ""
 
@@ -3722,18 +4076,23 @@ msgstr ""
 "Les participants et les administrateurs sont copiés intégralement et ne "
 "peuvent pas être modifiés ici."
 
+#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-import/services/participant-import.service/participant-import.service.ts
 msgid "Participants created"
 msgstr "Participants créés"
 
+#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-import/services/participant-import.service/participant-import.service.ts
 msgid "Participants skipped"
 msgstr "Les participants ont sauté"
 
+#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-import/services/participant-import.service/participant-import.service.ts
 msgid "Participants updated"
 msgstr "Participants mis à jour"
 
+#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-import/services/participant-import.service/participant-import.service.ts
 msgid "Participants with errors"
 msgstr "Participants avec des erreurs"
 
+#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-import/services/participant-import.service/participant-import.service.ts
 msgid "Participants with warnings: affected cells will be skipped"
 msgstr ""
 "Participants avec avertissements : les cellules affectées seront ignorées"
@@ -3756,6 +4115,8 @@ msgstr "Les mots de passe ne correspondent pas."
 msgid "Paste/write your topics in this textbox."
 msgstr "Collez/écrivez vos sujets dans cette zone de texte."
 
+#: /app/src/app/site/pages/meetings/modules/list-of-speakers-content/components/list-of-speakers-content/list-of-speakers-content.component.html
+#: /app/src/app/site/pages/meetings/modules/list-of-speakers-content/components/list-of-speakers-content/list-of-speakers-content.component.html
 msgid "Pause speech"
 msgstr "Pause discours"
 
@@ -3777,6 +4138,7 @@ msgstr "Notes personnelles"
 msgid "Phase"
 msgstr "Phase"
 
+#: /app/src/app/ui/modules/sidenav/modules/easter-egg/modules/chess-dialog/components/chess-dialog/chess-dialog.component.html
 msgid "Playing against"
 msgstr "Jouer contre"
 
@@ -3800,12 +4162,15 @@ msgstr "Veuillez saisir votre nouveau mot de passe"
 msgid "Please join the conference room now!"
 msgstr "Rejoignez la salle de conférence dès maintenant !"
 
+#: /app/src/app/site/pages/organization/pages/accounts/pages/account-list/components/account-merge-dialog/account-merge-dialog.component.html
 msgid "Please select a primary account."
 msgstr ""
 
+#: /app/src/app/site/pages/organization/pages/accounts/pages/account-detail/components/account-detail/account-detail.component.html
 msgid "Please select a vote weight greater than or equal to 0.000001"
 msgstr "Veuillez sélectionner un poids de vote supérieur ou égal à 0,000001"
 
+#: /app/src/app/site/pages/organization/pages/accounts/pages/account-detail/components/account-detail/account-detail.component.html
 msgid "Please select a vote weight greater than zero."
 msgstr "Veuillez sélectionner un poids de vote supérieur à zéro."
 
@@ -3830,8 +4195,12 @@ msgstr "Rappel au règlement"
 msgid "Polls"
 msgstr "Sondages"
 
-msgid "Possible options"
-msgstr "Options possibles"
+#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
+msgid ""
+"Possible placeholders for email subject and body: {title}, {first_name}, "
+"{last_name}, {groups}, {structure_levels}, {event_name}, {url}, {username} "
+"and {password}"
+msgstr ""
 
 msgid "Possible points of order"
 msgstr "Motions de procédure possibles"
@@ -3869,6 +4238,7 @@ msgstr "Pages précédentes"
 msgid "Primary color"
 msgstr "Couleur primaire"
 
+#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-list/services/participant-list-filter/participant-list-filter.service.ts
 msgid "Principals"
 msgstr ""
 
@@ -3887,9 +4257,11 @@ msgstr "Traitement des processus"
 msgid "Project"
 msgstr "Projeter"
 
+#: /app/src/app/site/pages/meetings/modules/list-of-speakers-content/components/speaking-times/speaking-times.component.html
 msgid "Project active structure level"
 msgstr "Projet au niveau de la structure active"
 
+#: /app/src/app/site/pages/meetings/modules/list-of-speakers-content/components/speaking-times/speaking-times.component.html
 msgid "Project all structure levels"
 msgstr "Projet tous les niveaux de structure"
 
@@ -3926,11 +4298,17 @@ msgstr "Projecteurs"
 msgid "Pronoun"
 msgstr "Pronom"
 
+#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-list/services/participant-list-filter/participant-list-filter.service.ts
 msgid "Proxy holders"
 msgstr ""
 
 msgid "Public"
 msgstr "Publique"
+
+#: /app/src/app/site/pages/login/pages/login-mask/components/login-mask/login-mask.component.html
+#: /app/src/app/site/pages/login/pages/login-mask/components/login-mask/login-mask.component.html
+msgid "Public access"
+msgstr ""
 
 msgid "Public item"
 msgstr "Élément public"
@@ -3938,6 +4316,7 @@ msgstr "Élément public"
 msgid "Public template"
 msgstr "Modèle public"
 
+#: /app/src/app/site/pages/organization/pages/settings/modules/settings-detail/components/organization-settings/organization-settings.component.html
 msgid "Public template required for creating new meeting"
 msgstr ""
 
@@ -3968,9 +4347,11 @@ msgstr "Motivation"
 msgid "Reason required for creating new motion"
 msgstr "Raison requise pour la création d'une nouvelle motion"
 
+#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-speaker-list/services/participant-speaker-list-sort.service/participant-speaker-list-sort.service.ts
 msgid "Receipt of contributions"
 msgstr "Réception des contributions"
 
+#: /app/src/app/site/pages/organization/pages/committees/pages/committee-list/services/committee-list-filter.service/committee-filter.service.ts
 msgid "Receive motions"
 msgstr ""
 
@@ -3989,6 +4370,7 @@ msgstr "Recommandation modifiée"
 msgid "Recommendation label"
 msgstr "Etiquette de recommandation"
 
+#: /app/src/app/site/pages/meetings/pages/motions/pages/workflows/components/workflow-detail/workflow-detail.component.ts
 msgid ""
 "Recommendation of motions in such a state can only be seen by motion "
 "managers."
@@ -4000,6 +4382,7 @@ msgstr "Recommandation réinitialisation"
 msgid "Recommendation set to {}"
 msgstr "Recommandation définie sur {}"
 
+#: /app/src/app/ui/modules/editor/components/editor/editor.component.html
 msgid "Redo"
 msgstr ""
 
@@ -4021,6 +4404,7 @@ msgstr "Rejeté"
 msgid "Relevant information could not be accessed"
 msgstr "Les informations nécessaires n'ont pas pu être obtenues."
 
+#: /app/src/app/site/services/autoupdate/autoupdate-communication.service.ts
 msgid "Reload page"
 msgstr ""
 
@@ -4058,6 +4442,7 @@ msgstr "Supprimer de l'ordre du jour"
 msgid "Remove from motion block"
 msgstr "Retirer du bloc de motion"
 
+#: /app/src/app/ui/modules/editor/components/editor-link-dialog/editor-link-dialog.component.html
 msgid "Remove link"
 msgstr ""
 
@@ -4067,6 +4452,7 @@ msgstr "Enlever moi-même"
 msgid "Remove option"
 msgstr "Supprimer l'option"
 
+#: /app/src/app/site/pages/meetings/modules/list-of-speakers-content/components/list-of-speakers-content/list-of-speakers-content.component.html
 msgid "Remove point of order"
 msgstr ""
 
@@ -4101,7 +4487,12 @@ msgstr ""
 msgid "Required permissions to view this page:"
 msgstr "Permissions requises pour voir cette page :"
 
+#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Requires permission to manage lists of speakers"
+msgstr ""
+
+#: app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
+msgid "Requires permission to manage motion metadata"
 msgstr ""
 
 msgid "Reset"
@@ -4122,6 +4513,7 @@ msgstr "Réinitialiser la recommandation"
 msgid "Reset state"
 msgstr "Réinitialiser le status"
 
+#: /app/src/app/site/pages/meetings/modules/list-of-speakers-content/components/speaking-times/speaking-times.component.ts
 msgid "Reset timer"
 msgstr ""
 
@@ -4134,17 +4526,21 @@ msgstr "Résolution et dimensions"
 msgid "Restart livestream"
 msgstr "Redémarrer la diffusion en direct"
 
+#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid ""
 "Restrict delegation principals from adding themselves to the list of "
 "speakers"
 msgstr ""
 
+#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Restrict delegation principals from creating motions/amendments"
 msgstr ""
 
+#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Restrict delegation principals from supporting motions"
 msgstr ""
 
+#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Restrict delegation principals from voting"
 msgstr ""
 
@@ -4157,6 +4553,8 @@ msgstr "Résultat"
 msgid "Results"
 msgstr "Résultats"
 
+#: /app/src/app/site/pages/meetings/modules/list-of-speakers-content/components/list-of-speakers-content/list-of-speakers-content.component.html
+#: /app/src/app/site/pages/meetings/modules/list-of-speakers-content/components/list-of-speakers-content/list-of-speakers-content.component.html
 msgid "Resume speech"
 msgstr "Reprise du discours"
 
@@ -4169,21 +4567,26 @@ msgstr "Droit"
 msgid "Roman"
 msgstr "Romain"
 
+#: /app/src/app/ui/modules/import-list/components/via-backend-import-list/backend-import-list.component.html
 msgid "Rows with warnings"
 msgstr "Lignes avec avertissements"
 
+#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "SSO"
 msgstr ""
 
 msgid "SSO Identification"
 msgstr "Identification SSO"
 
+#: /app/src/app/site/pages/organization/pages/accounts/pages/account-import/definitions/index.ts
 msgid "SSO identification"
 msgstr "Identification SSO"
 
+#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Same email"
 msgstr ""
 
+#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Same given and surname"
 msgstr ""
 
@@ -4241,9 +4644,11 @@ msgstr "Sélectionner les réunions ..."
 msgid "Select paragraphs"
 msgstr "Sélectionner des paragraphes"
 
+#: /app/src/app/site/pages/meetings/pages/motions/pages/motion-detail/components/motion-manage-motion-meeting-users/motion-manage-motion-meeting-users.component.html
 msgid "Select participant"
 msgstr ""
 
+#: /app/src/app/site/pages/meetings/modules/list-of-speakers-content/components/list-of-speakers-content/list-of-speakers-content.component.html
 msgid "Select speaker"
 msgstr "Sélectionner l'orateur"
 
@@ -4311,6 +4716,10 @@ msgstr "Changer en interne"
 msgid "Set it manually"
 msgstr "Réglez-le manuellement"
 
+#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-list/components/participant-list/participant-list.component.html
+msgid "Set lock out ..."
+msgstr ""
+
 msgid "Set motion block"
 msgstr "Définir le block de motions"
 
@@ -4367,6 +4776,7 @@ msgstr ""
 msgid "Settings"
 msgstr "Paramètres "
 
+#: /app/src/app/site/pages/meetings/pages/motions/components/motion-export-dialog/components/motion-export-dialog/motion-export-dialog.component.html
 msgid "Short form for amendments"
 msgstr ""
 
@@ -4429,6 +4839,7 @@ msgstr "Afficher la fenêtre de la conférence en direct"
 msgid "Show logo"
 msgstr "Afficher le logo"
 
+#: /app/src/app/ui/modules/sidenav/components/sidenav/sidenav.component.html
 msgid "Show main menu"
 msgstr "Afficher le menu principal"
 
@@ -4486,6 +4897,7 @@ msgstr "Afficher ce texte sur la page d'accueil"
 msgid "Show title"
 msgstr "Afficher le titre"
 
+#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Show topic navigation in detail view"
 msgstr ""
 
@@ -4554,9 +4966,11 @@ msgstr "Trier les motions par"
 msgid "Sort workflow"
 msgstr "Trier les fluxs de travail"
 
+#: /app/src/app/ui/modules/editor/components/editor-embed-dialog/editor-embed-dialog.component.html
 msgid "Source"
 msgstr ""
 
+#: /app/src/app/ui/modules/editor/components/editor/editor.component.html
 msgid "Source code"
 msgstr ""
 
@@ -4566,27 +4980,35 @@ msgstr "Orateur"
 msgid "Speakers"
 msgstr "Orateurs"
 
+#: /app/src/app/site/pages/meetings/pages/projectors/modules/projector-detail/components/projector-detail/projector-detail.component.html
 msgid "Speaking time – current contribution"
 msgstr ""
 
+#: /app/src/app/site/pages/meetings/modules/projector/modules/slides/definitions/slides.ts
 msgid "Speaking times"
 msgstr "Temps de parole"
 
+#: /app/src/app/site/pages/meetings/pages/projectors/modules/projector-detail/components/projector-detail/projector-detail.component.html
 msgid "Speaking times – overview structure levels"
 msgstr ""
 
+#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-speaker-list/services/participant-speaker-list-sort.service/participant-speaker-list-sort.service.ts
 msgid "Speech start time"
 msgstr ""
 
+#: /app/src/app/site/pages/meetings/pages/participants/export/speaker-csv-export.service/speaker-csv-export.service.ts
 msgid "Speech type"
 msgstr "Type de discours"
 
+#: /app/src/app/site/pages/meetings/pages/motions/services/list/motion-list-filter.service/motion-list-filter.service.ts
 msgid "Spokesperson"
 msgstr ""
 
+#: /app/src/app/gateways/repositories/motions/motion-working-group-speaker-repository/motion-working-group-speaker-repository.service.ts
 msgid "Spokespersons"
 msgstr ""
 
+#: /app/src/app/ui/modules/sidenav/modules/easter-egg/modules/chess-dialog/components/chess-dialog/chess-dialog.component.ts
 msgid "Stalemate! It's a draw!"
 msgstr "Impasse ! Tirage au sort !"
 
@@ -4598,6 +5020,7 @@ msgstr ""
 msgid "Start date"
 msgstr "Date de début"
 
+#: /app/src/app/site/pages/meetings/pages/motions/pages/motion-detail/components/motion-highlight-form/motion-highlight-form.component.html
 msgid "Start line number"
 msgstr "Numéro de ligne de départ"
 
@@ -4619,6 +5042,7 @@ msgstr "Statut défini sur {}"
 msgid "Statistics"
 msgstr "Statistiques"
 
+#: /app/src/app/site/pages/meetings/pages/agenda/pages/agenda-item-list/services/agenda-item-filter.service/agenda-item-filter.service.ts
 msgid "Status"
 msgstr ""
 
@@ -4643,6 +5067,7 @@ msgstr "Biffure"
 msgid "Structure level"
 msgstr "Niveau structurel"
 
+#: /app/src/app/site/pages/meetings/pages/participants/pages/structure-levels/components/structure-level-list/structure-level-list.component.html
 msgid "Structure levels"
 msgstr "Niveaus de structure"
 
@@ -4676,6 +5101,7 @@ msgstr "Changement de soumissionnaires"
 msgid "Subscript"
 msgstr "Indice"
 
+#: /app/src/app/site/pages/meetings/modules/list-of-speakers-content/components/speaking-times/speaking-times.component.html
 msgid "Subtract"
 msgstr ""
 
@@ -4697,6 +5123,7 @@ msgstr " Résumé des modifications"
 msgid "Summary of changes:"
 msgstr " Résumé des modifications:"
 
+#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Superadmin"
 msgstr ""
 
@@ -4721,10 +5148,16 @@ msgstr "Les partisans ont changé"
 msgid "Surname"
 msgstr "Nom"
 
+#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-list/components/participant-switch-dialog/participant-switch-dialog.component.html
 msgid "Swap mandates"
 msgstr ""
 
+#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-list/components/participant-switch-dialog/participant-switch-dialog.component.html
 msgid "Switch"
+msgstr ""
+
+#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
+msgid "System"
 msgstr ""
 
 msgid "Table of contents"
@@ -4739,6 +5172,7 @@ msgstr "Balises"
 msgid "Text"
 msgstr "Texte"
 
+#: /app/src/app/ui/modules/editor/components/editor/editor.component.html
 msgid "Text color"
 msgstr ""
 
@@ -4751,12 +5185,14 @@ msgstr "Importation de texte"
 msgid "Text separator"
 msgstr "Séparateur de texte"
 
+#: /app/src/app/ui/modules/editor/components/editor-link-dialog/editor-link-dialog.component.html
 msgid "Text to display"
 msgstr ""
 
 msgid "The account is deactivated."
 msgstr "Le compte est désactivé."
 
+#: /app/src/app/ui/modules/import-list/components/via-backend-import-list/backend-import-list.component.ts
 msgid "The affected columns will not be imported."
 msgstr "Les colonnes concernées ne seront pas importées."
 
@@ -4778,17 +5214,6 @@ msgstr "Les champs sont définis comme suit"
 msgid "The file has too few columns to be parsed properly."
 msgstr "Le fichier a trop peu de colonnes pour être analysé correctement."
 
-msgid "The file seems to have additional columns. They will be ignored."
-msgstr ""
-"Le fichier semble contenir des colonnes supplémentaires. Elles seront "
-"ignorées."
-
-msgid ""
-"The file seems to have some ommitted columns. They will be considered empty."
-msgstr ""
-"Le fichier semble contenir des colonnes omises. Elles seront considérées "
-"comme vides."
-
 msgid ""
 "The import can not proceed. There is likely a problem with the import data, "
 "please check the preview for details."
@@ -4799,6 +5224,7 @@ msgstr ""
 msgid "The import is in progress, please wait ..."
 msgstr "L'importation est en cours, veuillez patienter ..."
 
+#: /app/src/app/ui/modules/import-list/components/via-backend-import-list/backend-import-list.component.html
 msgid ""
 "The import returned warnings. This does not mean that it failed, but some "
 "data may have been imported differently. Usually the warnings will be the "
@@ -4823,6 +5249,7 @@ msgstr "Le lien est cassé. Veuillez contacter votre administrateur système."
 msgid "The list of speakers is closed."
 msgstr "La liste des orateurs est fermée."
 
+#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid ""
 "The maximum number of characters per line. Relevant when line numbering is "
 "enabled. Min: 40. Note: Check PDF export and font."
@@ -4914,6 +5341,7 @@ msgstr "Ces comptes seront supprimés :"
 msgid "These participants will be removed:"
 msgstr "Ces participants seront supprimés :"
 
+#: /app/src/app/site/pages/meetings/pages/autopilot/components/autopilot-settings/autopilot-settings.component.html
 msgid "These settings are only applied locally on this browser."
 msgstr ""
 
@@ -4951,6 +5379,10 @@ msgstr "Ce comité n'a pas de gestionnaires !"
 msgid "This field is required."
 msgstr "Ce champ est obligatoire."
 
+#: /app/src/app/site/pages/meetings/pages/mediafiles/services/mediafile-common.service.ts
+msgid "This file will also be deleted from all meetings."
+msgstr ""
+
 msgid "This is not a number."
 msgstr "Ce n'est pas un nombre."
 
@@ -4967,6 +5399,10 @@ msgstr "Cette réunion"
 
 msgid "This meeting is archived"
 msgstr "Cette réunion est archivée"
+
+#: /app/src/app/site/pages/organization/pages/dashboard/pages/dashboard-detail/components/dashboard/dashboard.component.html
+msgid "This meeting is public"
+msgstr ""
 
 msgid "This paragraph does not exist in the main motion anymore:"
 msgstr "Ce paragraphe n'existe plus dans la motion principale."
@@ -5000,6 +5436,7 @@ msgstr ""
 "Cela ajoutera ou supprimera les groupes suivants pour tous les participants "
 "sélectionnés:"
 
+#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-list/components/participant-list/participant-list.component.ts
 msgid ""
 "This will add or remove the following structure levels for all selected "
 "participants:"
@@ -5084,6 +5521,7 @@ msgstr ""
 msgid "Thoroughly check datastore (unsafe)"
 msgstr "Vérification approfondie du datastore (non sécurisé)"
 
+#: /app/src/app/ui/modules/sidenav/modules/easter-egg/modules/chess-dialog/components/chess-dialog/chess-dialog.component.ts
 msgid "Threefold repetition! It's a draw!"
 msgstr "Triple répétition ! C'est un tirage au sort !"
 
@@ -5093,12 +5531,15 @@ msgstr "Vue en mosaïque"
 msgid "Time"
 msgstr "Heure"
 
+#: /app/src/app/site/pages/meetings/pages/projectors/view-models/view-projector-countdown.ts
 msgid "Time and traffic light"
 msgstr ""
 
+#: /app/src/app/site/pages/meetings/pages/projectors/components/projector-countdown-dialog/components/projector-countdown-dialog/projector-countdown-dialog.component.ts
 msgid "Timer"
 msgstr ""
 
+#: /app/src/app/site/pages/meetings/pages/projectors/modules/projector-detail/components/projector-detail/projector-detail.component.html
 msgid "Timers"
 msgstr ""
 
@@ -5149,15 +5590,19 @@ msgstr "Sujets mis à jour"
 msgid "Topics with warnings (will be skipped)"
 msgstr "Les sujets avec des avertissements (seront ignorés)"
 
+#: /app/src/app/site/pages/organization/pages/accounts/pages/account-import/services/account-import.service/account-import.service.ts
 msgid "Total accounts"
 msgstr "Comptes totaux"
 
+#: /app/src/app/site/pages/organization/pages/committees/pages/committee-import/services/committee-import.service/committee-import.service.ts
 msgid "Total committees"
 msgstr "Comités totaux"
 
+#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-import/services/participant-import.service/participant-import.service.ts
 msgid "Total participants"
 msgstr "Total participants"
 
+#: /app/src/app/site/pages/meetings/modules/list-of-speakers-content/components/speaking-times/speaking-times.component.html
 msgid "Total time"
 msgstr "Temps total"
 
@@ -5179,12 +5624,14 @@ msgstr "Dépannage"
 msgid "Try reconnect"
 msgstr "Essayez de vous reconnecter."
 
+#: /app/src/app/ui/modules/editor/components/editor-link-dialog/editor-link-dialog.component.html
 msgid "URL"
 msgstr ""
 
 msgid "Underline"
 msgstr "Souligner"
 
+#: /app/src/app/ui/modules/editor/components/editor/editor.component.html
 msgid "Undo"
 msgstr ""
 
@@ -5197,7 +5644,12 @@ msgstr "Orateurs uniques"
 msgid "Unknown participant"
 msgstr "Participant inconnu"
 
+#: /app/src/app/site/pages/meetings/modules/projector/modules/slides/components/list-of-speakers/modules/common-list-of-speakers-slide/components/common-list-of-speakers-slide.component.html
 msgid "Unknown user"
+msgstr ""
+
+#: /app/src/app/ui/modules/file-list/components/file-list/file-list.component.ts
+msgid "Unpublish"
 msgstr ""
 
 msgid "Unsaved changes will not be applied."
@@ -5219,18 +5671,12 @@ msgstr ""
 "Utilisez JSON key:value structure (key = OpenSlides attribute name, value = "
 "IdP attribute name)."
 
+#: /app/src/app/site/pages/meetings/pages/participants/pages/structure-levels/components/structure-level-list/structure-level-list.component.html
 msgid "Use color"
 msgstr "Utilisez la couleur"
 
 msgid "Use the following custom number"
 msgstr "Utilisez le nombre personnalisé suivant"
-
-msgid ""
-"Use these placeholders: {name}, {event_name}, {url}, {username}, {password}."
-" The url referrs to the system url."
-msgstr ""
-"Utilisez les caractères génériques suivants :   {name}, {event_name}, {url},"
-" {username}, {password}.  L'url fait référence à l'url du système."
 
 msgid "Used for WLAN QRCode projection."
 msgstr "Utilisé pour la projection du code QR WLAN."
@@ -5240,6 +5686,7 @@ msgstr ""
 "Utilisé pour les courriels d'invitation et le QRCode dans le PDF des données"
 " d'accès."
 
+#: /app/src/app/gateways/repositories/users/user-repository.service.ts
 msgid "User"
 msgstr ""
 
@@ -5249,6 +5696,7 @@ msgstr "Utilisateur non trouvé."
 msgid "Username"
 msgstr "Nom d'utilisateur"
 
+#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-detail/pages/participant-detail-manage/components/participant-create-wizard/participant-create-wizard.component.html
 msgid "Username may not contain spaces"
 msgstr "Le nom d'utilisateur ne peut pas contenir d'espaces"
 
@@ -5275,6 +5723,7 @@ msgstr ""
 msgid "Valid votes"
 msgstr "Votes valides"
 
+#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "View"
 msgstr ""
 
@@ -5290,9 +5739,16 @@ msgstr "Visibilité à l'ordre du jour"
 msgid "Vote"
 msgstr "Vote"
 
+#: app/src/app/site/pages/meetings/modules/poll/base/base-poll-pdf.service.ts
+msgid "Vote Weight"
+msgstr ""
+
+#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Vote delegation"
 msgstr ""
 
+#: /app/src/app/site/pages/meetings/modules/poll/components/entitled-users-table/entitled-users-table.component.html
+#: /app/src/app/site/pages/meetings/modules/poll/components/entitled-users-table/entitled-users-table.component.html
 msgid "Vote submitted"
 msgstr "Vote soumis"
 
@@ -5305,6 +5761,7 @@ msgstr "Voté"
 msgid "Votes"
 msgstr "Votes"
 
+#: /app/src/app/site/pages/meetings/pages/autopilot/components/autopilot-settings/autopilot-settings.component.ts
 msgid "Voting"
 msgstr "Vote"
 
@@ -5329,6 +5786,10 @@ msgid ""
 msgstr ""
 "Le vote se termine après une période courte (quelques secondes/minutes) ou "
 "longue (quelques jours/semaines)."
+
+#: app/src/app/site/pages/meetings/pages/assignments/modules/assignment-poll/components/assignment-poll/assignment-poll.component.html
+msgid "Voting in progress"
+msgstr ""
 
 msgid "Voting is currently in progress."
 msgstr "Le vote est en cours."
@@ -5356,6 +5817,11 @@ msgstr "Droit de vote pour"
 
 msgid "Voting right received from (principals)"
 msgstr "Droit de vote reçu de (principaux)"
+
+#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-list/components/participant-list/participant-list.component.html
+#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-list/components/participant-list/participant-list.component.html
+msgid "Voting rights"
+msgstr ""
 
 msgid "Voting started"
 msgstr "Le vote a commencé"
@@ -5390,12 +5856,14 @@ msgstr "Attendez"
 msgid "Wait for response ..."
 msgstr "Attendre la réponse ..."
 
+#: /app/src/app/ui/modules/sidenav/modules/easter-egg/modules/chess-dialog/components/chess-dialog/chess-dialog.component.ts
 msgid "Waiting for response ..."
 msgstr "Attendre la réponse ..."
 
 msgid "Warn color"
 msgstr "Couleur d'avertissement"
 
+#: /app/src/app/site/pages/meetings/pages/motions/pages/motion-detail/components/motion-detail-view/motion-detail-view.component.ts
 msgid ""
 "Warning: Amendments exist for this motion. Are you sure you want to delete "
 "this motion regardless?"
@@ -5413,11 +5881,13 @@ msgstr ""
 "amendements peuvent devenir inutilisables si le paragraphe qu'ils affectent "
 "est supprimé."
 
+#: /app/src/app/site/pages/meetings/pages/motions/components/motion-multiselect/services/motion-multiselect.service.ts
 msgid ""
 "Warning: At least one of the selected motions has amendments, these will be "
 "deleted as well. Do you want to delete anyway?"
 msgstr ""
 
+#: /app/src/app/site/pages/organization/pages/accounts/pages/account-list/components/account-merge-dialog/account-merge-dialog.component.html
 msgid ""
 "Warning: Data loss is possible because accounts are in the same meeting."
 msgstr ""
@@ -5480,6 +5950,10 @@ msgstr "Oui par candidat"
 msgid "Yes per option"
 msgstr "Oui par option"
 
+#: app/src/app/site/pages/organization/pages/committees/modules/committee-meeting-preview/committee-meeting-preview.component.ts
+msgid "Yes, delete"
+msgstr ""
+
 msgid "Yes, inclusive meetings"
 msgstr "Oui, réunions inclusives"
 
@@ -5498,6 +5972,18 @@ msgstr "Oui/Non/Abstention par candidat"
 msgid "Yes/No/Abstain per list"
 msgstr "Oui/Non/Abstention par liste"
 
+#: /app/src/app/ui/modules/file-list/components/file-list/file-list.component.html
+msgid ""
+"You are moving a file from a public folder into an not published folder. The"
+" file will not be accessible in meetings afterwards."
+msgstr ""
+
+#: /app/src/app/ui/modules/file-list/components/file-list/file-list.component.html
+msgid ""
+"You are moving an unpublished file to a public folder. The file will be "
+"accessible in ALL meetings afterwards."
+msgstr ""
+
 msgid "You are not allowed to see all entitled users."
 msgstr "Vous n'êtes pas autorisé à voir tous les utilisateurs autorisés."
 
@@ -5507,6 +5993,7 @@ msgstr "Vous n'êtes pas autorisé à voir la diffusion en direct"
 msgid "You are not supposed to be here..."
 msgstr "Vous n'êtes pas censé être ici..."
 
+#: /app/src/app/site/services/autoupdate/autoupdate-communication.service.ts
 msgid "You are using an incompatible client version."
 msgstr ""
 
@@ -5523,9 +6010,6 @@ msgstr ""
 
 msgid "You can only anonymize named polls."
 msgstr "Vous ne pouvez anonymiser que les sondages nommés."
-
-msgid "You can use {event_name} and {username} as placeholder."
-msgstr "Vous pouvez utiliser {event_name} et {username} comme espace réservé."
 
 msgid ""
 "You cannot change the recommendation of motions in different workflows!"
@@ -5578,6 +6062,7 @@ msgstr "Vous avez déjà voté."
 msgid "You have to be logged in to be able to vote."
 msgstr "Vous devez être connecté pour pouvoir voter."
 
+#: /app/src/app/site/pages/meetings/modules/list-of-speakers-content/components/list-of-speakers-content/list-of-speakers-content.component.html
 msgid "You have to be present to add yourself."
 msgstr "Vous devez être présent pour vous ajouter vous meme. "
 
@@ -5606,6 +6091,12 @@ msgstr ""
 "Vous avez atteint le nombre maximum de votes. Désélectionnez quelqu'un en "
 "premier."
 
+#: app/src/app/site/modules/user-components/components/password-form/password-form.component.html
+msgid ""
+"You will be logged out when you change your password. You must then log in "
+"with the new password."
+msgstr ""
+
 msgid "You won!"
 msgstr "Vous avez gagné!"
 
@@ -5624,12 +6115,15 @@ msgstr "Votre appareil n'a pas de microphone"
 msgid "Your input does not match the following structure: \"hh:mm\""
 msgstr "Votre saisie ne correspond pas à la structure suivante : \"hh:mm\""
 
+#: /app/src/app/ui/modules/sidenav/modules/easter-egg/components/base-game-dialog/base-game-dialog.ts
 msgid "Your opponent couldn't stand it anymore... You are the winner!"
 msgstr "Votre adversaire n'en pouvait plus... Vous êtes le gagnant !"
 
+#: /app/src/app/ui/modules/sidenav/modules/easter-egg/modules/c4-dialog/components/c4-dialog/c4-dialog.component.ts
 msgid "Your opponent has won!"
 msgstr "Votre adversaire a gagné!"
 
+#: /app/src/app/site/pages/login/pages/reset-password-confirm/components/reset-password-confirm/reset-password-confirm.component.ts
 msgid "Your password has been reset successfully!"
 msgstr "Votre mot de passe a été réinitialisé avec succès!"
 
@@ -5686,6 +6180,7 @@ msgstr "bulletin de vote"
 msgid "by"
 msgstr "par"
 
+#: /app/src/app/ui/modules/sidenav/modules/easter-egg/modules/chess-dialog/services/chess-challenge.service.ts
 msgid "challenged you to a chess match!"
 msgstr "Défié vous à un match d'échecs!"
 
@@ -5749,6 +6244,10 @@ msgstr "Féminin"
 msgid "finished (unpublished)"
 msgstr "terminé (non publié)"
 
+#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-list/components/participant-list/participant-list.component.html
+msgid "from delegated votes"
+msgstr ""
+
 msgid "fullscreen"
 msgstr "plein écran"
 
@@ -5806,6 +6305,10 @@ msgstr "dernière mise à jour"
 msgid "lightblue"
 msgstr "bleu clair"
 
+#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-detail/components/participant-detail-view/participant-detail-view.component.html
+msgid "locked out"
+msgstr ""
+
 msgid "logged-in users"
 msgstr "Utilisateurs connectés"
 
@@ -5839,6 +6342,10 @@ msgstr "N'est pas une personne naturelle"
 msgid "nominal"
 msgstr "nominal"
 
+#: app/src/app/site/pages/meetings/pages/polls/view-models/view-poll.ts
+msgid "nominal (anonymized)"
+msgstr ""
+
 msgid "non-binary"
 msgstr "non-binaire"
 
@@ -5848,6 +6355,7 @@ msgstr "non-nominal"
 msgid "none"
 msgstr "aucun"
 
+#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "not specified"
 msgstr "Non spécifié"
 
@@ -5890,9 +6398,14 @@ msgstr "Enlever"
 msgid "remove group(s)"
 msgstr "supprimer le(s) groupe(s)"
 
+#: /app/src/app/site/pages/meetings/pages/chat/pages/chat-group-list/components/chat-group-detail-message/chat-group-detail-message.component.ts
+msgid "removed user"
+msgstr ""
+
 msgid "represented by"
 msgstr "représenté par"
 
+#: /app/src/app/site/pages/meetings/modules/poll/base/base-poll-pdf.service.ts
 msgid "represented by old account of"
 msgstr ""
 
@@ -5935,6 +6448,7 @@ msgstr "version"
 msgid "votes per candidate"
 msgstr "votes par candidat"
 
+#: /app/src/app/site/pages/meetings/modules/poll/components/base-poll-vote/base-poll-vote.component.ts
 msgid "votes per option"
 msgstr ""
 
@@ -5944,139 +6458,21 @@ msgstr "sera créé"
 msgid "will be imported"
 msgstr "sera importé"
 
+#: /app/src/app/ui/modules/import-list/components/via-backend-import-list/backend-import-list.component.ts
 msgid "will be updated"
 msgstr "sera mis à jour"
 
 msgid "yellow"
 msgstr "jaune"
 
+#: /app/src/app/site/pages/meetings/modules/list-of-speakers-content/components/list-of-speakers-content/list-of-speakers-content.component.ts
 msgid "{{amount}} interposed questions will be cleared"
 msgstr "{{amount}} Les questions interposées seront effacées."
 
+#: /app/src/app/site/pages/meetings/modules/list-of-speakers-content/components/list-of-speakers-content/list-of-speakers-content.component.ts
 msgid "{{amount}} of them will be saved with 'unknown' speaker"
 msgstr "{{amount}} d'entre eux seront enregistrés avec un orateur 'inconnu'"
 
+#: /app/src/app/site/pages/meetings/modules/list-of-speakers-content/components/list-of-speakers-content/list-of-speakers-content.component.ts
 msgid "{{amount}} will be saved"
 msgstr "{{amount}} sera économisé."
-
-msgid "Acceptance"
-msgstr "Acceptation"
-
-msgid "Adjournment"
-msgstr "Ajournement"
-
-msgid "Admin"
-msgstr "Administrateur"
-
-msgid "Complex Workflow"
-msgstr "Flux de travail complexe"
-
-msgid ""
-"Dear {name},\n"
-"\n"
-"this is your personal OpenSlides login:\n"
-"\n"
-"{url}\n"
-"Username: {username}\n"
-"Password: {password}\n"
-"\n"
-"\n"
-"This email was generated automatically."
-msgstr ""
-"Cher {nom},\n"
-"\n"
-"voici votre login personnel OpenSlides :\n"
-"\n"
-"{url}\n"
-"Nom d'utilisateur : {nom d'utilisateur}\n"
-"Mot de passe : {mot de passe}\n"
-"\n"
-"\n"
-"Cet e-mail a été généré automatiquement."
-
-msgid "Default projector"
-msgstr "Projecteur par défaut"
-
-msgid "Delegates"
-msgstr "Délégués"
-
-msgid "No concernment"
-msgstr "Pas de concernment"
-
-msgid "No decision"
-msgstr "Pas de décision"
-
-msgid "Presentation and assembly system"
-msgstr "Système de présentation et d'assemblée"
-
-msgid "Referral to"
-msgstr "Référence à"
-
-msgid "Rejection"
-msgstr "Rejet"
-
-msgid "Reset your OpenSlides password"
-msgstr "Réinitialiser votre mot de passe OpenSlides"
-
-msgid "Simple Workflow"
-msgstr "Flux de travail simple"
-
-msgid "Space for your welcome text."
-msgstr "Espace pour votre texte de bienvenue ici."
-
-msgid "Speaking time"
-msgstr "Temps de parole"
-
-msgid "Staff"
-msgstr "Personnel"
-
-msgid ""
-"You are receiving this email because you have requested a new password for your OpenSlides account.\n"
-"\n"
-"Please open the following link and choose a new password:\n"
-"{url}/login/forget-password-confirm?user_id={user_id}&token={token}\n"
-"\n"
-"The link will be valid for 10 minutes."
-msgstr ""
-"Vous recevez cet courriel parce que vous avez demandé un nouveau mot de passe pour votre compte OpenSlides.\n"
-"\n"
-"Veuillez ouvrir le lien suivant et choisir un nouveau mot de passe :\n"
-"{url}/login/forget-password-confirm?user_id={user_id}&token={token}\n"
-"\n"
-"Le lien sera valide pendant 10 minutes."
-
-msgid "accepted"
-msgstr "accepté"
-
-msgid "adjourned"
-msgstr "ajourné"
-
-msgid "in progress"
-msgstr "en cours"
-
-msgid "name"
-msgstr "nom"
-
-msgid "not concerned"
-msgstr "non concerné"
-
-msgid "not decided"
-msgstr "ne pas decidé"
-
-msgid "not permitted"
-msgstr "non autorisé"
-
-msgid "permitted"
-msgstr "permis"
-
-msgid "referred to"
-msgstr "référencé"
-
-msgid "rejected"
-msgstr "rejeté"
-
-msgid "submitted"
-msgstr "présenté"
-
-msgid "withdrawn"
-msgstr "retiré"
