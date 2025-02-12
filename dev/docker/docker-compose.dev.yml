@@ -89,6 +89,11 @@ services:
       - ../../openslides-autoupdate-service/cmd:/root/cmd
       - ../../openslides-autoupdate-service/internal:/root/internal
       - ../../openslides-autoupdate-service/pkg:/root/pkg
+      - ../../go.work:/root/go.work
+      - ../../lib/openslides-go:/root/lib/openslides-go
+      - ../../openslides-icc-service:/root/openslides-icc-service
+      - ../../openslides-vote-service:/root/openslides-vote-service
+      - ../../openslides-search-service:/root/openslides-search-service
     ports:
       - "9012:9012"
 
@@ -104,6 +109,11 @@ services:
     volumes:
       - ../../openslides-icc-service/cmd:/root/cmd
       - ../../openslides-icc-service/internal:/root/internal
+      - ../../go.work:/root/go.work
+      - ../../lib/openslides-go:/root/lib/openslides-go
+      - ../../openslides-autoupdate-service:/root/openslides-autoupdate-service
+      - ../../openslides-vote-service:/root/openslides-vote-service
+      - ../../openslides-search-service:/root/openslides-search-service
     ports:
       - "9007:9007"
 
@@ -119,6 +129,11 @@ services:
     volumes:
       - ../../openslides-search-service/cmd:/root/cmd
       - ../../openslides-search-service/pkg:/root/pkg
+      - ../../go.work:/root/go.work
+      - ../../lib/openslides-go:/root/lib/openslides-go
+      - ../../openslides-icc-service:/root/openslides-icc-service
+      - ../../openslides-vote-service:/root/openslides-vote-service
+      - ../../openslides-autoupdate-service:/root/openslides-autoupdate-service
     ports:
       - "9050:9050"
 
@@ -192,5 +207,10 @@ services:
     volumes:
       - ../../openslides-vote-service/cmd:/root/cmd
       - ../../openslides-vote-service/internal:/root/internal
+      - ../../go.work:/root/go.work
+      - ../../lib/openslides-go:/root/lib/openslides-go
+      - ../../openslides-icc-service:/root/openslides-icc-service
+      - ../../openslides-autoupdate-service:/root/openslides-autoupdate-service
+      - ../../openslides-search-service:/root/openslides-search-service
     ports:
       - "9013:9013"

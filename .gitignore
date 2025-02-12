@@ -6,6 +6,7 @@
 .DS_Store
 .idea
 *.code-workspace
+go.work.sum
 
 # docs
 docs/modelsvalidator/modelsvalidator
