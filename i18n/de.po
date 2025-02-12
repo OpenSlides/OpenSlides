@@ -3,11 +3,11 @@
 # Joshua Sangmeister <joshua.sangmeister@gmail.com>, 2024
 # Katharina <karmitt2@web.de>, 2024
 # Emanuel Schütze <emanuel.schuetze@intevation.de>, 2024
-# Loki Elble, 2025
+# Elblinator, 2025
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Loki Elble, 2025\n"
+"Last-Translator: Elblinator, 2025\n"
 "Language-Team: German (https://app.transifex.com/openslides/teams/14270/de/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -1043,7 +1043,7 @@ msgstr ""
 
 #: app/src/app/domain/definitions/permission.config.ts
 msgid "Can edit own delegation"
-msgstr "Kann eigene Delegation verändern"
+msgstr "Darf eigene Stimmrechtsübertragung anpassen"
 
 msgid "Can forward motions"
 msgstr "Darf Anträge weiterleiten"
@@ -1308,7 +1308,7 @@ msgstr "Darf den Projektor sehen"
 
 #: app/src/app/domain/definitions/permission.config.ts
 msgid "Can set and remove own delegation."
-msgstr "Kann eigene Delegation setzen und entfernen."
+msgstr "Kann eigene Stimmrechtsübertragungen setzen und entfernen."
 
 msgid "Can support motions"
 msgstr "Darf Anträge unterstützen"
@@ -1419,7 +1419,7 @@ msgstr "Änderungsempfehlungen"
 
 #: app/src/app/site/pages/meetings/pages/participants/pages/participant-list/components/participant-list/participant-list.component.html
 msgid "Change your delegation"
-msgstr "Eigene Delegation bearbeiten"
+msgstr "Eigene Stimmrechtsübertragung bearbeiten"
 
 msgid "Changed by"
 msgstr "Bearbeitet von"
@@ -3276,7 +3276,8 @@ msgstr "Als persönlichen Favorit markieren"
 
 #: app/src/app/site/pages/meetings/modules/poll/components/base-poll-form/base-poll-form.component.ts
 msgid "Max votes per option cannot be greater than max votes."
-msgstr "Max. Stimmen pro Option kann nicht größer sein als max. Stimmanzahl"
+msgstr ""
+"Max. Stimmenanzahl pro Option kann nicht größer sein als max. Stimmenanzahl"
 
 msgid "Maximum amount of votes"
 msgstr "Maximale Stimmenanzahl"
@@ -4558,7 +4559,7 @@ msgstr "Benötigt Recht zum Verwalten von Redelisten"
 
 #: app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Requires permission to manage motion metadata"
-msgstr "Benötigt Berechtung um Antragsmetadaten zu verwalten"
+msgstr "Benötigt Berechtigung um Antragsmetadaten zu verwalten"
 
 msgid "Reset"
 msgstr "Zurücksetzen"
@@ -5839,7 +5840,7 @@ msgstr ""
 
 #: app/src/app/site/pages/meetings/pages/assignments/modules/assignment-poll/components/assignment-poll/assignment-poll.component.html
 msgid "Voting in progress"
-msgstr "im Wahlvorgang"
+msgstr "Stimmabgabe läuft"
 
 msgid "Voting is currently in progress."
 msgstr "Stimmabgabe läuft aktuell "
@@ -6156,8 +6157,8 @@ msgid ""
 "You will be logged out when you change your password. You must then log in "
 "with the new password."
 msgstr ""
-"Sie werden abgemeldet, wenn Sie Ihr Passwort ändern. Sie müssen sich mit dem"
-" neuen Passwort anmelden."
+"Sie werden abgemeldet, wenn Sie Ihr Passwort ändern. Sie müssen sich "
+"anschließend mit dem neuen Passwort anmelden."
 
 msgid "You won!"
 msgstr "Du hast gewonnen!"
