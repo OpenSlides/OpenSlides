@@ -17,7 +17,7 @@ Shorthand to get to a psql shell inside the postgres container.
 ## `dc-dev.sh`
 
 Shorthand script to not have to type out the whole docker compose command every time one wants to
-access a container. It is not a standalone program - supply docker compose commmand and options as args
+access a container. It is not a standalone program - supply docker compose command and options as args
 as you would to `docker compose`.
 
 ## `export-ds.sh`
@@ -30,7 +30,7 @@ Dumps the current content of the datastore as a JSON file into the file provided
 Script to clear postgres DB and afterwards run SQL queries from a file (e.g.
 created by `pg_dump`) using `import-events.sh` from the datastores cli scripts.
 Run this after starting the dev setup with `make run-dev`.
-To ensure consistend data output the autoupdate and depending services are
+To ensure consistent data output the autoupdate and depending services are
 recreated after the import.
 If migrations are necessary, please run \`./dc-dev.sh restart backend\` to
 apply them.
