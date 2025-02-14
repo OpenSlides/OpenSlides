@@ -40,3 +40,6 @@
 [submodule "openslides-search-service"]
 	path = openslides-search-service
 	url = https://github.com/OpenSlides/openslides-search-service.git
+[submodule "openslides-go"]
+	path = lib/openslides-go
+	url = https://github.com/OpenSlides/openslides-go.git
