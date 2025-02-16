@@ -145,6 +145,10 @@ To get the [defaults](https://github.com/OpenSlides/openslides-manage-service/bl
 So you get a file where you can see syntax and defaults and might be able to
 customize the steps above.
 
+After changeing the port you will need to run `./openslides` commands with the `-a` param
+
+    $ ./openslides create-user -a localhost:9000
+
 
 ## Update to a new version
 
