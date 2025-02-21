@@ -1,0 +1,9 @@
+go 1.23.6
+
+use (
+	./lib/openslides-go
+	./openslides-autoupdate-service
+	./openslides-icc-service
+	./openslides-search-service
+	./openslides-vote-service
+)
