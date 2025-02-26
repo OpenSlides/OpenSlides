@@ -544,16 +544,14 @@ make_stable_update() {
 
 staging_log() {
   if ! git ls-remote --exit-code --heads $REMOTE_NAME $STAGING_BRANCH_NAME; then
-    echo "staging Branch nicht gefunden, stattdessen wird mit main verglichen"
+    echo "Staging Branch not found, comparing with main instead"
     git fetch -q $REMOTE_NAME main
     git submodule -q foreach git fetch -q $REMOTE_NAME $STABLE_BRANCH_NAME
     git submodule -q foreach git fetch -q $REMOTE_NAME main
-    echo OpenSlides
     git log --graph --oneline $REMOTE_NAME/$STABLE_BRANCH_NAME..$REMOTE_NAME/main
     git submodule -q foreach 'echo $name; git --no-pager log --graph --oneline $REMOTE_NAME/$STABLE_BRANCH_NAME..$REMOTE_NAME/main'
   else
     git fetch -q $REMOTE_NAME $STAGING_BRANCH_NAME
-    echo $STAGING_BRANCH_NAME
     git log --graph --oneline -U0 --submodule $REMOTE_NAME/$STABLE_BRANCH_NAME..$REMOTE_NAME/$STAGING_BRANCH_NAME | \
       awk -v version="$STAGING_VERSION" '
         /^\*.*Staging update [0-9]{8}/ { printf("\n# %s-staging-%s-%s\n", version, $NF, substr($2, 0, 7)) }
