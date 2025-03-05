@@ -1,6 +1,7 @@
 DC_PATH=dev/docker
 SCRIPT_PATH=dev/scripts
 DC=docker compose -f $(DC_PATH)/docker-compose.dev.yml
+GO_VERSION=$(shell head -n 1 go.work)
 
 # Main command: start the dev server
 run-dev: | build-dev 
@@ -12,6 +13,7 @@ run-dev-otel: | build-dev
 
 # Build the docker dev images for all services in parallel
 build-dev:
+	sed -i "1s/.*/$(GO_VERSION)/" $(DC_PATH)/workspaces/*.work
 	$(SCRIPT_PATH)/submodules-do.sh 'make build-dev'
 
 # Run the tests of all services
