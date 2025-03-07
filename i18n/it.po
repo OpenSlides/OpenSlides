@@ -6,7 +6,7 @@
 #
 msgid ""
 msgstr ""
-"Last-Translator: Albano Battistella <albanobattistella@gmail.com>, 2024\n"
+"Last-Translator: Albano Battistella <albanobattistella@gmail.com>, 2025\n"
 "Language-Team: Italian (https://app.transifex.com/openslides/teams/14270/it/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -643,7 +643,7 @@ msgstr "Sicuro di voler cancellare questa programmazione di lavoro?"
 
 #: /app/src/app/site/pages/meetings/pages/motions/pages/motion-detail/pages/motion-form/components/motion-form/motion-form.component.ts
 msgid "Are you sure you want to discard all changes and update this form?"
-msgstr ""
+msgstr "Vuoi davvero annullare tutte le modifiche e aggiornare questo modulo?"
 
 msgid "Are you sure you want to discard this amendment?"
 msgstr "Sicuro di voler respingere la modifica della mozione?"
@@ -757,7 +757,7 @@ msgstr "Sicuro di voler fare una richiesta sul regolamento interno?"
 
 #: /app/src/app/ui/modules/file-list/components/file-list/file-list.component.ts
 msgid "Are you sure you want to unpublish this file/folder?"
-msgstr ""
+msgstr "Vuoi davvero annullare la pubblicazione di questo file/cartella?"
 
 msgid "As of"
 msgstr "Status"
@@ -1232,6 +1232,9 @@ msgid ""
 "\n"
 "Note: For privacy reasons, it is recommended to limit the rights to view the History significantly."
 msgstr ""
+"Puoi vedere la voce di menu Cronologia con la cronologia dell'elaborazione dei timestamp per mozioni, elezioni e partecipanti.\n"
+"\n"
+"Nota: per motivi di privacy, si consiglia di limitare significativamente i diritti di visualizzazione della cronologia."
 
 msgid "Can see the Home menu item."
 msgstr "Può vedere la voce di menù Home"
@@ -1289,6 +1292,9 @@ msgid ""
 "Personal data: Name, pronoun, gender.\n"
 "Meeting specific information: Structure level, Group, Participant number, About me, Presence status."
 msgstr ""
+"Puoi vedere la voce di menu Partecipanti e quindi i seguenti dati di tutti i partecipanti:\n"
+"Dati personali: Nome, pronome, genere.\n"
+"Informazioni specifiche della riunione: Livello della struttura, Gruppo, Numero del partecipante, Informazioni su di me, Stato di presenza."
 
 msgid "Can see the projector"
 msgstr "Può vedere il proiettore"
@@ -2958,6 +2964,10 @@ msgid ""
 "Note:\n"
 "Optional combination of requests to speak with presence status is possible. ( > [Settings] > [List of speakers] > [General] )"
 msgstr ""
+"È autorizzato ad aggiungersi all'elenco degli oratori.\n"
+"\n"
+"Nota:\n"
+"È possibile una combinazione facoltativa di richieste di intervento con stato di presenza. ( > [Impostazioni] > [Elenco degli oratori] > [Generale] )"
 
 msgid "Is already projected"
 msgstr "E' già proiettato"
@@ -5361,10 +5371,7 @@ msgid "There is an unknown voting problem."
 msgstr "C'è un problema di voto sconosciuto"
 
 msgid "There is an unspecified error in this line, which prevents the import."
-msgstr ""
-"ThIl server potrebbe ancora elaborarli, ma probabilmente non si otterrà "
-"alcun risultato.ere is an unspecified error in this line, which prevents the"
-" import."
+msgstr "In questa riga è presente un errore non specificato che impedisce l'importazione."
 
 msgid ""
 "There seems to be a problem connecting to our services. Check your "
@@ -5665,7 +5672,7 @@ msgstr "Prova a ricollegare"
 
 #: /app/src/app/ui/modules/editor/components/editor-link-dialog/editor-link-dialog.component.html
 msgid "URL"
-msgstr ""
+msgstr "URL"
 
 msgid "Underline"
 msgstr "Sottolineato"
@@ -5698,10 +5705,10 @@ msgid "Unsupport"
 msgstr "Non supportato"
 
 msgid "Upload"
-msgstr "Scaricare"
+msgstr "Caricare"
 
 msgid "Upload to"
-msgstr "Scaricare a"
+msgstr "Caricare su"
 
 msgid ""
 "Use JSON key:value structure (key = OpenSlides attribute name, value = IdP "
