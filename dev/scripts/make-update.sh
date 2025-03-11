@@ -16,10 +16,21 @@ OPT_LOCAL=
 GIT_PAGER=
 
 # Colors for echocmd, warn and error
-COL_NORMAL="$(tput sgr0)"
-COL_RED="$(tput setaf 1)"
-COL_YELLOW="$(tput setaf 3)"
-COL_BLUE="$(tput setaf 4)"
+# This if construct basically hardcodes a --color=auto option.
+# At some point we might want to add a configurable --color option.
+if [[ -t 1 ]]; then
+  COL_NORMAL="$(tput sgr0)"
+  COL_GRAY="$(tput bold; tput setaf 0)"
+  COL_RED="$(tput setaf 1)"
+  COL_YELLOW="$(tput setaf 3)"
+  COL_BLUE="$(tput setaf 4)"
+else
+  COL_NORMAL=""
+  COL_GRAY=""
+  COL_RED=""
+  COL_YELLOW=""
+  COL_BLUE=""
+fi
 
 usage() {
 cat <<EOF
@@ -71,8 +82,8 @@ ask() {
   esac
 }
 
-# echocmd first echos args in blue on stdout.
-# Then args are treated like a provided command and executed.
+# echocmd first echos args in blue on stderr. Then args are treated like a
+# provided command and executed.
 # This allows callers of echocmd to still handle their provided command's stdout
 # as if executed directly.
 echocmd() {
@@ -81,12 +92,16 @@ echocmd() {
   return $?
 }
 
+info() {
+  echo "${COL_GRAY}$@${COL_NORMAL}"
+}
+
 warn() {
-  echo "${COL_YELLOW}WARN${COL_NORMAL}: $@" >&2
+  echo "${COL_YELLOW}[WARN] ${COL_GRAY}$@${COL_NORMAL}" >&2
 }
 
 error() {
-  echo "${COL_RED}ERROR${COL_NORMAL}: $@" >&2
+  echo "${COL_RED}[ERROR] ${COL_GRAY}$@${COL_NORMAL}" >&2
 }
 
 abort() {
@@ -105,7 +120,7 @@ confirm_version() {
   STABLE_BRANCH_NAME="stable/$(awk -v FS=. -v OFS=. '{$3="x"  ; print $0}' VERSION)"  # 4.N.M -> 4.N.x
   echocmd git fetch "$REMOTE_NAME" "$STABLE_BRANCH_NAME"
   STABLE_VERSION="$(git show "$REMOTE_NAME/$STABLE_BRANCH_NAME:VERSION")"
-  echo "Guessing new staging version from stable version $STABLE_VERSION found in $REMOTE_NAME."
+  info "Guessing staging version from stable version $STABLE_VERSION found in $REMOTE_NAME."
   STAGING_VERSION="$(echo $STABLE_VERSION | awk -v FS=. -v OFS=. '{$3=$3+1 ; print $0}')"  # 4.N.M -> 4.N.M+1
   # Give the user the opportunity to adjust the calculated staging version
   read -rp "Please confirm the staging version to be used [${STAGING_VERSION}]: "
@@ -114,12 +129,13 @@ confirm_version() {
     *) STAGING_VERSION="$REPLY" ;;
   esac
   STAGING_BRANCH_NAME="staging/$STAGING_VERSION"
+  OLD_STAGING_BRANCH_NAME="staging/$STABLE_VERSION"
 }
 
 check_current_branch() {
   # Return 1 if remote branch does not exist
   git ls-remote --exit-code --heads "$REMOTE_NAME" "$BRANCH_NAME" &>/dev/null || {
-    echo "No remote branch $REMOTE_NAME/$BRANCH_NAME found."
+    info "No remote branch $REMOTE_NAME/$BRANCH_NAME found."
     return 1
   }
 
@@ -181,7 +197,7 @@ pull_latest_commit() {
   else
     echocmd git checkout "$BRANCH_NAME" &&
     echocmd git pull --ff-only "$REMOTE_NAME" "$BRANCH_NAME" || {
-      error "make sure a local branch $BRANCH_NAME exists and can be fast-forwarded to $REMOTE_NAME"
+      error "Make sure a local branch $BRANCH_NAME exists and can be fast-forwarded to $REMOTE_NAME"
       abort 1
     }
     echocmd git submodule update
@@ -191,8 +207,8 @@ pull_latest_commit() {
 fetch_all_changes() {
   for mod in $(git submodule status | awk '{print $2}'); do
     (
-      echo ""
-      echo "Entering $mod"
+      info ""
+      info "Entering $mod"
       cd "$mod"
 
       set_remote
@@ -200,8 +216,8 @@ fetch_all_changes() {
     )
   done
 
-  echo ""
-  echo "Successfully updated all submodules to latest commit."
+  info ""
+  info "Successfully updated all submodules to latest commit."
 }
 
 push_changes() {
@@ -214,17 +230,17 @@ push_changes() {
     abort 1
   }
 
-  echo "Attempting to push $BRANCH_NAME into $REMOTE_NAME."
-  echo "Ensure you have proper access rights or use --local to skip pushing."
+  info "Attempting to push $BRANCH_NAME into $REMOTE_NAME."
+  info "Ensure you have proper access rights or use --local to skip pushing."
   ask y "Continue?" ||
     abort 0
-  echo ""
-  echo "Submodules first ..."
+  info ""
+  info "Submodules first ..."
   echocmd git submodule foreach --recursive git push "$REMOTE_NAME" "$BRANCH_NAME"
-  echo ""
-  echo "Now main repository ..."
+  info ""
+  info "Now main repository ..."
   echocmd git push "$REMOTE_NAME" "$BRANCH_NAME"
-  echo ""
+  info ""
 }
 
 check_meta_consistency() {
@@ -233,7 +249,7 @@ check_meta_consistency() {
   local meta_sha_last=
   local ret_code=0
 
-  echo "Checking openslides-meta consistency ..."
+  info "Checking openslides-meta consistency ..."
 
   # Doing a nested loop rather than foreach --recursive as it's easier to get
   # both the path of service submod and the (potential) meta submod in one
@@ -269,7 +285,7 @@ check_go_consistency() {
   local osgo_version_last=
   local ret_code=0
 
-  echo "Checking openslides-go consistency ..."
+  info "Checking openslides-go consistency ..."
 
   while read mod_name mod_path; do
     grep -q openslides-go "$mod_path/go.mod" 2>/dev/null ||
@@ -306,11 +322,11 @@ add_changes() {
   diff_cmd="git diff --color=always --submodule=log"
   [[ "$($diff_cmd | grep -c .)" -gt 0 ]] ||
     abort 0
-  echo ''
-  echo "Current $BRANCH_NAME changes:"
-  echo '--------------------------------------------------------------------------------'
+  info ''
+  info "Current $BRANCH_NAME changes:"
+  info '--------------------------------------------------------------------------------'
   $diff_cmd
-  echo '--------------------------------------------------------------------------------'
+  info '--------------------------------------------------------------------------------'
   ask y "Interactively choose from these?" &&
     for mod in $(git submodule status | awk '$1 ~ "^\+" {print $2}'); do
       (
@@ -321,11 +337,11 @@ add_changes() {
         log_cmd="git -C $mod log --oneline --no-decorate $mod_sha_old..$mod_sha_new"
         target_sha="$($log_cmd | awk 'NR==1 { print $1 }' )"
 
-        echo ""
-        echo "$mod changes:"
-        echo "--------------------------------------------------------------------------------"
+        info ""
+        info "$mod changes:"
+        info "--------------------------------------------------------------------------------"
         $log_cmd
-        echo "--------------------------------------------------------------------------------"
+        info "--------------------------------------------------------------------------------"
         read -rp "Please select a commit, '-' to skip [${target_sha}]: "
         case "$REPLY" in
           "") ;;
@@ -333,7 +349,7 @@ add_changes() {
         esac
         [[ "$target_sha" != '-' ]] || {
           target_sha="$(git rev-parse "HEAD:$mod")"
-          echo "Selecting ${target_sha:0:7} (currently referenced from HEAD) in order to skip ..."
+          info "Selecting ${target_sha:0:7} (currently referenced from HEAD) in order to skip ..."
         }
 
         echocmd git -c advice.detachedHead=false -C "$mod" checkout "$target_sha"
@@ -342,16 +358,16 @@ add_changes() {
       )
     done
 
-  echo ''
+  info ''
   diff_cmd="git diff --staged --submodule=log"
   [[ "$($diff_cmd | grep -c .)" -gt 0 ]] || {
-    echo "No changes added."
+    info "No changes added."
     abort 0
   }
-  echo 'Changes to be included for the new update:'
-  echo '--------------------------------------------------------------------------------'
+  info 'Changes to be included for the new update:'
+  info '--------------------------------------------------------------------------------'
   $diff_cmd
-  echo '--------------------------------------------------------------------------------'
+  info '--------------------------------------------------------------------------------'
 }
 
 choose_changes() {
@@ -381,19 +397,19 @@ commit_staged_changes() {
   ask y "Commit on branch $BRANCH_NAME now?" && {
     echocmd git commit --message "$commit_message"
     echocmd git show --no-patch
-    echo ""
+    info ""
   }
 }
 
 update_version_file() {
   local version_str="$1"
 
-  echo "Writing $version_str to VERSION file"
+  info "Writing $version_str to VERSION file"
   echo "$version_str" > VERSION
   git diff --quiet VERSION && {
     error "$version_str does not seem to differ from version string present in VERSION."
-    echo "HINT: These indicates a previous aborted run of $ME. Before retrying you may want to"
-    echo "HINT:   git reset --hard HEAD"
+    info "HINT: These indicates a previous aborted run of $ME. Before retrying you may want to"
+    info "HINT:   git reset --hard HEAD"
     abort 1
   }
   echocmd git add VERSION
@@ -412,11 +428,11 @@ as it is now, answer 'n' to create a staging branch." ||
   update_version_file "$STAGING_VERSION-dev"
   commit_staged_changes
 
-  echo "Commit created. Push to your personal remote and create a PR to bring it into $REMOTE_NAME."
-  echo "HINT: For example you can"
-  echo "HINT:   git checkout -b update-main-pre-staging-$STAGING_VERSION"
-  echo "HINT:   git push <PERSONAL_REMOTE> update-main-pre-staging-$STAGING_VERSION"
-  echo "After merging, rerun $ME and start creating staging branches."
+  info "Commit created. Push to your personal remote and create a PR to bring it into $REMOTE_NAME."
+  info "HINT: For example you can"
+  info "HINT:   git checkout -b update-main-pre-staging-$STAGING_VERSION"
+  info "HINT:   git push <PERSONAL_REMOTE> update-main-pre-staging-$STAGING_VERSION"
+  info "After merging, rerun $ME and start creating staging branches."
 }
 
 initial_staging_update() {
@@ -429,7 +445,7 @@ as well as openslides-meta to fixate changes for a new staging update now?" ||
 
   echocmd git checkout --no-track -B "$BRANCH_NAME" "$REMOTE_NAME/main"
 
-  echo "Updating submodules and creating local $BRANCH_NAME branches"
+  info "Updating submodules and creating local $BRANCH_NAME branches"
   echocmd git submodule update --recursive
   for repo in $(git submodule status --recursive | awk '{print $2}'); do
     echocmd git -C "$repo" checkout --no-track -B "$BRANCH_NAME"
@@ -480,7 +496,7 @@ make_hotfix_update() {
       git add VERSION
     git commit --message "Update $(cat VERSION) ($(date +%Y%m%d))"
     git show --no-patch
-    echo "Commit created."
+    info "Commit created."
   }
 
   push_changes
@@ -501,10 +517,14 @@ merge_stable_branch() {
   done
 }
 
+merge_stable_branch_go() {
+  echo "GOOOOOOO"
+}
+
 merge_stable_branch_meta() {
   local forerunner_path=
 
-  echo "Merging $STABLE_BRANCH_NAME in meta repositories ..."
+  info "Merging $STABLE_BRANCH_NAME in meta repositories ..."
   ask y "Continue?" ||
     abort 0
 
@@ -534,7 +554,7 @@ merge_stable_branch_services() {
   local diff_cmd=
   local mod=
 
-  echo "Merging $STABLE_BRANCH_NAME in service repositories ..."
+  info "Merging $STABLE_BRANCH_NAME in service repositories ..."
   ask y "Continue?" ||
     abort 0
 
@@ -552,15 +572,16 @@ merge_stable_branch_services() {
 
 keep_stable_house() {
   ask y "Performing house keeping tasks after stable update.
-- Removing local and remote $STAGING_BRANCH_NAME branches.
+- Removing local and remote $OLD_STAGING_BRANCH_NAME branches.
 - Creating $STAGING_VERSION tags at tips of $STABLE_BRANCH_NAME branches.
-Some of these commands may show errors as some refs are being pushed doubly.
+Some of these commands may show errors as some tasks are performed doubly, may
+already have been fulfilled manually or are not applicable.
 Continue?" ||
     abort 0
 
   for repo in $(git submodule status --recursive | awk '{print $2}') . ; do
-    echocmd git -C "$repo" branch -D "$STAGING_BRANCH_NAME" || :
-    echocmd git -C "$repo" push -d "$REMOTE_NAME" "$STAGING_BRANCH_NAME" || :
+    echocmd git -C "$repo" branch -D "$OLD_STAGING_BRANCH_NAME" || :
+    echocmd git -C "$repo" push -d "$REMOTE_NAME" "$OLD_STAGING_BRANCH_NAME" || :
     echocmd git -C "$repo" tag "$STAGING_VERSION" "$STABLE_BRANCH_NAME" || :
     echocmd git -C "$repo" push "$REMOTE_NAME" "$STAGING_VERSION" || :
   done
@@ -580,19 +601,22 @@ make_stable_update() {
     abort 1
   }
 
-  echo 'Staging updates since last stable update:'
-  echo '--------------------------------------------------------------------------------'
+  info 'Staging updates since last stable update:'
+  info '--------------------------------------------------------------------------------'
   $log_cmd
-  echo '--------------------------------------------------------------------------------'
+  info '--------------------------------------------------------------------------------'
   ask y "Including these staging updates for the new stable update. Continue?" ||
     abort 0
 
-  check_meta_consistency "$REMOTE_NAME/$STAGING_BRANCH_NAME" || {
-    error "openslides-meta is not consistent at $target_sha. This is not acceptable for a stable update."
-    error "Please fix this in a new staging update before trying again."
-    abort 1
+  check_meta_consistency "$REMOTE_NAME/$STAGING_BRANCH_NAME" &&
+    check_go_consistency "$REMOTE_NAME/$STAGING_BRANCH_NAME" || {
+      error "openslides-meta OR openslides-go is not consistent at $target_sha."
+      error "This is not acceptable for a stable update."
+      error "Please fix this in a new staging update before trying again."
+      abort 1
   }
 
+  merge_stable_branch_go
   merge_stable_branch_meta
   merge_stable_branch_services
   merge_stable_branch
@@ -623,7 +647,7 @@ staging_log() {
 
 
 command -v awk > /dev/null || {
-  echo "Error: 'awk' not installed!"
+  error "'awk' not installed!"
   exit 1
 }
 
