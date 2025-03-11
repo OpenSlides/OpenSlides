@@ -8,19 +8,19 @@
 
 ### Intitial dev-setup
 
-# While working on make-update.sh it is helpful to have your own fork acting
+# While working on make-update.sh it is helpful to have your own forks acting
 # like the live repo.
-# These lines will setup origin as your fork and oorigin as the live repo for
+# These lines will setup origin as your forks and oorigin as the live repo for
 # reference (and resetting).
 # Possibly existing upstream remotes should be removed
 # If remotes exist change `add` to `set-url`
 
-#git submodule foreach 'git remote set-url origin git@github.com:<GITHUB_USERNAME>/$name.git'
+#git submodule foreach --recursive 'git remote set-url origin git@github.com:<GITHUB_USERNAME>/$name.git'
 #git remote set-url origin git@github.com:<GITHUB_USERNAME>/OpenSlides.git
-#git submodule foreach 'git remote add oorigin git@github.com:OpenSlides>/$name.git'
-#git remote add oorigin git@github.com:OpenSlides>/OpenSlides.git
-#git submodule foreach 'git remote rm upstream'
-#git remote rm upstream
+#git submodule foreach --recursive 'git remote add oorigin git@github.com:OpenSlides/$name.git'
+#git remote add oorigin git@github.com:OpenSlides/OpenSlides.git
+#git submodule foreach --recursive 'git remote rm upstream ||:'
+#git remote rm upstream ||:
 
 # As running make-update.sh will change your local repository state it likely
 # will discard development changes.
@@ -30,14 +30,17 @@
 #   `make staging-update`
 
 #cp -f dev/scripts/make-update.sh dev/scripts/make-update1.sh
+#chmod +x dev/scripts/make-update1.sh
+#cp -f dev/scripts/make-update-devprep.sh dev/scripts/make-update-devprep1.sh
+#chmod +x dev/scripts/make-update-devprep1.sh
 
 
 ### Regular resetting to live state
 
-# In order to reset local repo and your fork to the state of the live repo we
+# In order to reset local repo and your forks to the state of the live repo we
 # can fetch oorigin, reset to it and force-push to origin
 # Pay close attention that origin remote urls are set correctly (pointing to
-# your fork, see above) in order not to accidentially push into live repo.
+# your forks, see above) in order not to accidentially push into live repo.
 
 # main branch
 #git submodule foreach --recursive git fetch --no-recurse-submodules oorigin main
@@ -63,3 +66,8 @@
 #git checkout -B stable/4.2.x oorigin/stable/4.2.x
 #read -p 'confirm force-push to origin [ENTER] ' && git push -f origin stable/4.2.x
 
+
+### Verifying
+
+# Look at all submodules git graphs one by one.
+#git submodule foreach --recursive 'echo $name ; sleep 1 ; git log --date-order --all --oneline --graph ||:'

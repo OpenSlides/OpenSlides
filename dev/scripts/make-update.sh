@@ -184,22 +184,19 @@ check_ssh_remotes() {
     warn "The above $REMOTE_NAME remotes seem not to use ssh."
     warn "$ME will attempt to directly push to these."
     warn "Be sure your remotes are setup with proper access permissions."
-    ask y "Continue?" ||
+    ask n "Continue?" ||
       abort 0
   }
 }
 
 pull_latest_commit() {
+  echocmd git fetch "$REMOTE_NAME" "$BRANCH_NAME"
   if [ -z "$OPT_PULL" ]; then
-    echocmd git fetch "$REMOTE_NAME" "$BRANCH_NAME" &&
     echocmd git checkout "$REMOTE_NAME/$BRANCH_NAME"
     echocmd git submodule update
   else
-    echocmd git checkout "$BRANCH_NAME" &&
-    echocmd git pull --ff-only "$REMOTE_NAME" "$BRANCH_NAME" || {
-      error "Make sure a local branch $BRANCH_NAME exists and can be fast-forwarded to $REMOTE_NAME"
-      abort 1
-    }
+    echocmd git checkout "$BRANCH_NAME"
+    echocmd git pull --ff-only "$REMOTE_NAME" "$BRANCH_NAME"
     echocmd git submodule update
   fi
 }
@@ -221,6 +218,9 @@ fetch_all_changes() {
 }
 
 push_changes() {
+  local push_dir="$1"
+  local push_dir_in_str=
+
   [[ -z "$OPT_LOCAL" ]] ||
     return 0
 
@@ -230,26 +230,39 @@ push_changes() {
     abort 1
   }
 
-  info "Attempting to push $BRANCH_NAME into $REMOTE_NAME."
+  [[ -n "$push_dir" ]] &&
+    push_dir_in_str=" (in $push_dir)"
+  info "Attempting to push ${BRANCH_NAME} into ${REMOTE_NAME}${push_dir_in_str}."
   info "Ensure you have proper access rights or use --local to skip pushing."
   ask y "Continue?" ||
     abort 0
+
+  # IF push_dir was provided THEN push that specific repo
+  [[ -n "$push_dir" ]] && {
+    info ""
+    echocmd git -C "$push_dir" push "$REMOTE_NAME" "$BRANCH_NAME"
+    return 0
+  }
+  # ELSE push submods and main repo
   info ""
   info "Submodules first ..."
   echocmd git submodule foreach --recursive git push "$REMOTE_NAME" "$BRANCH_NAME"
   info ""
   info "Now main repository ..."
   echocmd git push "$REMOTE_NAME" "$BRANCH_NAME"
-  info ""
 }
 
 check_meta_consistency() {
   local target_rev="$1"
+  local target_rev_at_str=
+  local mod_target_rev=
   local meta_sha=
   local meta_sha_last=
   local ret_code=0
 
-  info "Checking openslides-meta consistency ..."
+  [[ -n "$target_rev" ]] &&
+    target_rev_at_str="(at $target_rev) "
+  info "Checking openslides-meta consistency $target_rev_at_str..."
 
   # Doing a nested loop rather than foreach --recursive as it's easier to get
   # both the path of service submod and the (potential) meta submod in one
@@ -281,19 +294,24 @@ check_meta_consistency() {
 
 check_go_consistency() {
   local target_rev="$1"
+  local target_rev_at_str=
+  local mod_target_rev=
   local osgo_version=
   local osgo_version_last=
   local ret_code=0
 
-  info "Checking openslides-go consistency ..."
+  [[ -n "$target_rev" ]] &&
+    target_rev_at_str="(at $target_rev) "
+  info "Checking openslides-go consistency $target_rev_at_str..."
 
   while read mod_name mod_path; do
     grep -q openslides-go "$mod_path/go.mod" 2>/dev/null ||
       continue
 
-    # In the repo itself use sha of HEAD rather than from go.mod file.
+    # In the repo itself use sha of $mod_target_rev rather than from go.mod file.
     if [[ "$mod_name" == 'openslides-go' ]]; then
-      osgo_version="$(git -C "$mod_path" rev-parse HEAD |cut -c1-7)"
+      mod_target_rev="${target_rev:-HEAD}"
+      osgo_version="$(git -C "$mod_path" rev-parse "$mod_target_rev" |cut -c1-7)"
       echo "  $osgo_version $mod_name (HEAD)"
     else
       # If target_rev is not specified we check the status of the currently
@@ -303,7 +321,7 @@ check_go_consistency() {
       # (e.g. changed commit pointer during staging-update)
       mod_target_rev=HEAD
       [[ "$target_rev" == "" ]] ||
-        mod_target_rev="$(git rev-parse "${target_rev}:${mod}")"
+        mod_target_rev="$(git rev-parse "${target_rev}:${mod_path}")"
 
       osgo_version="$(git -C "$mod_path" show "${mod_target_rev}:go.mod" |
         awk '$1 ~ "/openslides-go" {print $2}' | tail -1 | awk -F- '{print $3}' | cut -c1-7)"
@@ -408,7 +426,8 @@ update_version_file() {
   echo "$version_str" > VERSION
   git diff --quiet VERSION && {
     error "$version_str does not seem to differ from version string present in VERSION."
-    info "HINT: These indicates a previous aborted run of $ME. Before retrying you may want to"
+    info "HINT: These indicates a previous aborted run of $ME."
+    info "HINT: Before retrying you may want to"
     info "HINT:   git reset --hard HEAD"
     abort 1
   }
@@ -416,9 +435,7 @@ update_version_file() {
 }
 
 update_main_branch() {
-  ask y "Update services and create a new commit on main branch now? This should be your first step.
-If it was done before, or you are certain, $STAGING_BRANCH_NAME should branch out from $REMOTE_NAME/main
-as it is now, answer 'n' to create a staging branch." ||
+  ask y "Update main branches now?" ||
     return 1
 
   BRANCH_NAME=main
@@ -428,19 +445,23 @@ as it is now, answer 'n' to create a staging branch." ||
   update_version_file "$STAGING_VERSION-dev"
   commit_staged_changes
 
-  info "Commit created. Push to your personal remote and create a PR to bring it into $REMOTE_NAME."
-  info "HINT: For example you can"
+  info "Commit created."
+  info "Push to your personal remote and create a PR to bring it into $REMOTE_NAME/main."
+  info "HINT: For example you can run"
   info "HINT:   git checkout -b update-main-pre-staging-$STAGING_VERSION"
   info "HINT:   git push <PERSONAL_REMOTE> update-main-pre-staging-$STAGING_VERSION"
-  info "After merging, rerun $ME and start creating staging branches."
+  info "After merging, rerun $ME and begin creating staging branches."
 }
 
 initial_staging_update() {
   set_remote
   echocmd git fetch "$REMOTE_NAME" "main"
 
-  ask y "Create new branch $BRANCH_NAME at $REMOTE_NAME/main, referenced HEADs in submodules
-as well as openslides-meta to fixate changes for a new staging update now?" ||
+  info "Assuming services have been updated in main."
+  info "The next step is to fixate changes for a new staging update by creating a new"
+  info "$BRANCH_NAME branch at $REMOTE_NAME/main and referenced HEADs in submodules"
+  info "including openslides-meta and openslides-go."
+  ask y "Create $BRANCH_NAME branches now?" ||
     abort 0
 
   echocmd git checkout --no-track -B "$BRANCH_NAME" "$REMOTE_NAME/main"
@@ -464,10 +485,16 @@ make_staging_update() {
     # create a new staging update for the same version
     choose_changes
     commit_staged_changes
-    push_changes
+    push_changes .
   else
     # No fitting staging/* branch exists yet. Offer to Update main branches
     # first or create staging branches right away
+    info '--------------------------------------------------------------------------------'
+    info "It seems there was no staging update for $STAGING_VERSION yet."
+    info "For the initial staging update of any version the first step is to forward all"
+    info "main branches (and therefore include new changes) to the point that shall"
+    info "become the basis for the new staging update."
+    info "If this was already done, answer 'no' to begin creating $STABLE_BRANCH_NAME branches."
     if update_main_branch; then
       return 0
     else
@@ -499,7 +526,7 @@ make_hotfix_update() {
     info "Commit created."
   }
 
-  push_changes
+  push_changes .
 }
 
 merge_stable_branch() {
@@ -508,17 +535,16 @@ merge_stable_branch() {
   [[ $# == 0 ]] ||
     dir="$1"
 
+  info "Doing git merge in $dir"
   # Merge, but don't commit yet ...
   # (also we expect conflicts in submodules so we hide that output)
   echocmd git -C "$dir" merge -Xtheirs --no-commit --no-ff "$REMOTE_NAME/$STAGING_BRANCH_NAME" --log >/dev/null || :
-  # ... because we want to change the submod pointers to stable
+  # ... because we want to add previously stable-merged submod pointers.
+  # This assumes merge_stable_branch is called seperately for nested
+  # submodules from inner to outer.
   for mod in $(git -C "$dir" submodule status | awk '{print $2}'); do
-    echocmd git -C "$dir" add "$mod"
+    git -C "$dir" add "$mod"
   done
-}
-
-merge_stable_branch_go() {
-  echo "GOOOOOOO"
 }
 
 merge_stable_branch_meta() {
@@ -536,7 +562,7 @@ merge_stable_branch_meta() {
       [[ "$meta_name" == 'openslides-meta' ]] ||
         continue
 
-      git -C "$meta_fullpath" checkout "$BRANCH_NAME"
+      echocmd git -C "$meta_fullpath" checkout "$BRANCH_NAME"
       if [[ -z "$forerunner_path" ]]; then
         merge_stable_branch "$meta_fullpath"
         echocmd git -C "$meta_fullpath" commit --no-edit --allow-empty \
@@ -545,28 +571,70 @@ merge_stable_branch_meta() {
       else
         echocmd git -C "$meta_fullpath" pull --ff-only "$forerunner_path" "$STABLE_BRANCH_NAME"
       fi
+
+      info ""
     done <<< "$(git -C $mod submodule foreach -q 'echo "$name $toplevel/$sm_path"')"
   done <<< "$(git submodule foreach -q 'echo "$sm_path"')"
+}
+
+merge_stable_branch_go() {
+  info "Merging $STABLE_BRANCH_NAME in go repository ..."
+  ask y "Continue?" ||
+    abort 0
+
+  echocmd git -C lib/openslides-go checkout "$BRANCH_NAME"
+  merge_stable_branch lib/openslides-go
+  echocmd git -C lib/openslides-go commit --no-edit --allow-empty \
+    --message "Merge $STAGING_BRANCH_NAME into $STABLE_BRANCH_NAME. Update $(date +%Y%m%d)"
+
+  info ""
 }
 
 merge_stable_branch_services() {
   local target_sha="$1"
   local diff_cmd=
   local mod=
+  local go_sha=
 
   info "Merging $STABLE_BRANCH_NAME in service repositories ..."
   ask y "Continue?" ||
     abort 0
 
-  for mod in $(git submodule status --recursive | awk '{print $2}'); do
-    diff_cmd="git diff --submodule=short $BRANCH_NAME $REMOTE_NAME/$STAGING_BRANCH_NAME $mod"
+  for service_mod in $(git submodule status ./openslides* | awk '{print $2}'); do
+    diff_cmd="git diff --submodule=short $BRANCH_NAME $REMOTE_NAME/$STAGING_BRANCH_NAME $service_mod"
     [[ "$($diff_cmd | grep -c .)" -gt 0 ]] ||
       continue
 
-    echocmd git -C "$mod" checkout "$BRANCH_NAME"
-    merge_stable_branch "$mod"
-    echocmd git -C "$mod" commit --no-edit --allow-empty \
+    echocmd git -C "$service_mod" checkout "$BRANCH_NAME"
+    merge_stable_branch "$service_mod"
+
+    ## Add previously stable-merged meta
+    #while read meta_name meta_path; do
+    #  [[ "$meta_name" == 'openslides-meta' ]] ||
+    #    continue
+
+    #  info "Adding stable meta for $service_mod"
+    #  echocmd git -C $service_mod add "$meta_path"
+    #done <<< "$(git -C $service_mod submodule foreach -q 'echo "$name $sm_path"')"
+
+    # Add previously stable-merged go
+    if grep -q openslides-go "$service_mod/go.mod" 2>/dev/null; then
+      go_url="$(awk '$1 ~ "/openslides-go" {print $1}' "$service_mod/go.mod")"
+      go_sha="$(git -C lib/openslides-go rev-parse $BRANCH_NAME)"
+      (
+        info "Adding stable go for $service_mod"
+        cd "$service_mod"
+        echocmd go get "$go_url@$go_sha"
+        echocmd go mod tidy
+      )
+      echocmd git -C $service_mod add go.mod go.sum
+    fi
+
+    # Commit it all
+    echocmd git -C "$service_mod" commit --no-edit --allow-empty \
       --message "Merge $STAGING_BRANCH_NAME into $STABLE_BRANCH_NAME. Update $(date +%Y%m%d)"
+
+    info ""
   done
 }
 
@@ -601,6 +669,7 @@ make_stable_update() {
     abort 1
   }
 
+  info ''
   info 'Staging updates since last stable update:'
   info '--------------------------------------------------------------------------------'
   $log_cmd
@@ -616,14 +685,18 @@ make_stable_update() {
       abort 1
   }
 
-  merge_stable_branch_go
   merge_stable_branch_meta
+  # go needs to be pushed early ...
+  merge_stable_branch_go
+  push_changes lib/openslides-go
+  # ... in order to be able to use it now
   merge_stable_branch_services
   merge_stable_branch
   commit_staged_changes
 
-  check_meta_consistency || {
-    error "Apparently merging $BRANCH_NAME went wrong and meta is not consistent anymore."
+  check_meta_consistency && check_go_consistency || {
+    error "Apparently merging $BRANCH_NAME went wrong and eit openslides-meta OR"
+    error "openslides-go is not consistent anymore."
     error "You probably need to investigate what did go wrong."
     abort 1
   }
@@ -648,6 +721,10 @@ staging_log() {
 
 command -v awk > /dev/null || {
   error "'awk' not installed!"
+  exit 1
+}
+command -v go > /dev/null || {
+  error "'go' not installed!"
   exit 1
 }
 
