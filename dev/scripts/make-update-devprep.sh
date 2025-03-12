@@ -22,17 +22,19 @@
 #git submodule foreach --recursive 'git remote rm upstream ||:'
 #git remote rm upstream ||:
 
-# As running make-update.sh will change your local repository state it likely
-# will discard development changes.
-# Editing and executing an untracked file will avoid that.
-# When testing changes run
-#   `./dev/scripts/make-update1.sh staging` instead of
-#   `make staging-update`
+# As running make-update.sh will change your local repository state (including
+# running `git reset --hard`) it likely will discard development changes.
+# Therefore it is helpful to work on a copy of make-update.sh in order for git
+# to not track and therefore not reset it.
 
 #cp -f dev/scripts/make-update.sh dev/scripts/make-update1.sh
 #chmod +x dev/scripts/make-update1.sh
 #cp -f dev/scripts/make-update-devprep.sh dev/scripts/make-update-devprep1.sh
 #chmod +x dev/scripts/make-update-devprep1.sh
+
+# Now changes can be done in make-update1.sh. To execute them run
+#   `./dev/scripts/make-update1.sh staging` instead of
+#   `make staging-update`
 
 
 ### Regular resetting to live state
