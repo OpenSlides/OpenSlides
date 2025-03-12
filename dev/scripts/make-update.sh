@@ -14,8 +14,10 @@ OPT_LOCAL=
 
 # do not page diff and log outputs
 GIT_PAGER=
+# Make possible to provide go binary as $GO
+GO="${GO:-go}"
 
-# Colors for echocmd, warn and error
+# Colors for echocmd, info, warn and error
 # This if construct basically hardcodes a --color=auto option.
 # At some point we might want to add a configurable --color option.
 if [[ -t 1 ]]; then
@@ -608,24 +610,15 @@ merge_stable_branch_services() {
     echocmd git -C "$service_mod" checkout "$BRANCH_NAME"
     merge_stable_branch "$service_mod"
 
-    ## Add previously stable-merged meta
-    #while read meta_name meta_path; do
-    #  [[ "$meta_name" == 'openslides-meta' ]] ||
-    #    continue
-
-    #  info "Adding stable meta for $service_mod"
-    #  echocmd git -C $service_mod add "$meta_path"
-    #done <<< "$(git -C $service_mod submodule foreach -q 'echo "$name $sm_path"')"
-
-    # Add previously stable-merged go
+    # Add previously stable-merged and pushed go
     if grep -q openslides-go "$service_mod/go.mod" 2>/dev/null; then
       go_url="$(awk '$1 ~ "/openslides-go" {print $1}' "$service_mod/go.mod")"
       go_sha="$(git -C lib/openslides-go rev-parse $BRANCH_NAME)"
       (
         info "Adding stable go for $service_mod"
         cd "$service_mod"
-        echocmd go get "$go_url@$go_sha"
-        echocmd go mod tidy
+        echocmd $GO get "$go_url@$go_sha"
+        echocmd $GO mod tidy
       )
       echocmd git -C $service_mod add go.mod go.sum
     fi
@@ -689,7 +682,7 @@ make_stable_update() {
   # go needs to be pushed early ...
   merge_stable_branch_go
   push_changes lib/openslides-go
-  # ... in order to be able to use it now
+  # ... in order to be able to add it now in depending services
   merge_stable_branch_services
   merge_stable_branch
   commit_staged_changes
@@ -723,8 +716,8 @@ command -v awk > /dev/null || {
   error "'awk' not installed!"
   exit 1
 }
-command -v go > /dev/null || {
-  error "'go' not installed!"
+command -v $GO > /dev/null || {
+  error "'$GO' not installed!"
   exit 1
 }
 
