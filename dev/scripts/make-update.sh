@@ -496,7 +496,7 @@ make_staging_update() {
     info "For the initial staging update of any version the first step is to forward all"
     info "main branches (and therefore include new changes) to the point that shall"
     info "become the basis for the new staging update."
-    info "If this was already done, answer 'no' to begin creating $STABLE_BRANCH_NAME branches."
+    info "If this was already done, answer 'no' to begin creating $STAGING_BRANCH_NAME branches."
     if update_main_branch; then
       return 0
     else
