@@ -340,8 +340,10 @@ check_go_consistency() {
 
 add_changes() {
   diff_cmd="git diff --color=always --submodule=log"
-  [[ "$($diff_cmd | grep -c .)" -gt 0 ]] ||
+  [[ "$($diff_cmd | grep -c .)" -gt 0 ]] || {
+    info "No new changes found."
     abort 0
+  }
   info ''
   info "Current $BRANCH_NAME changes:"
   info '--------------------------------------------------------------------------------'
