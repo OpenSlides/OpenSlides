@@ -4,9 +4,6 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid " "
-msgstr ""
-
 msgid "\"0\" means an unlimited number of active accounts"
 msgstr ""
 
@@ -1660,9 +1657,6 @@ msgid "Didn't get an email"
 msgstr ""
 
 msgid "Diff version"
-msgstr ""
-
-msgid "Disable connection closing on inactivity"
 msgstr ""
 
 msgid "Disabled (no percents)"
