@@ -15,9 +15,6 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "mime-version: 1.0\n"
 
-msgid " "
-msgstr " "
-
 msgid "\"0\" means an unlimited number of active accounts"
 msgstr "\"0\" bedeutet eine unbegrenzte Anzahl an aktiven Accounts"
 
@@ -1826,9 +1823,6 @@ msgstr "Bekam keine E-Mail"
 
 msgid "Diff version"
 msgstr "Änderungsdarstellung"
-
-msgid "Disable connection closing on inactivity"
-msgstr "Schließen der Verbindung bei Inaktivität deaktivieren"
 
 msgid "Disabled (no percents)"
 msgstr "Deaktiviert (keine Prozente)"
