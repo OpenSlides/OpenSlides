@@ -159,6 +159,9 @@ msgstr "Aktivieren"
 msgid "Activate amendments"
 msgstr "Änderungsanträge aktivieren"
 
+msgid "Activate backtracking"
+msgstr "Rückverfolgung aktivieren"
+
 msgid "Activate closed meeting"
 msgstr "Geschlossene Veranstaltung aktivieren"
 
@@ -352,6 +355,9 @@ msgstr "Alle Stimmen gehen verloren."
 
 msgid "Allow amendments of amendments"
 msgstr "Änderungsanträge zu Änderungsanträgen erlauben"
+
+msgid "Allow backtracking of forwarded motions"
+msgstr "Rückverfolgung von weitergeleiteten Anträgen erlauben"
 
 msgid "Allow blank in number"
 msgstr "Leerzeichen im Bezeichner erlauben"
@@ -585,7 +591,7 @@ msgstr "Soll diese Mitteilung wirklich gelöscht werden?"
 msgid "Are you sure you want to delete this motion block?"
 msgstr "Soll dieser Antragsblock wirklich gelöscht werden?"
 
-msgid "Are you sure you want to delete this motion? "
+msgid "Are you sure you want to delete this motion?"
 msgstr "Soll dieser Antrag wirklich gelöscht werden?"
 
 msgid "Are you sure you want to delete this projector?"
@@ -1136,6 +1142,9 @@ msgstr ""
 "Darf Anträge im internen Status sehen, die im Arbeitsablauf unter Zugriffsbeschränkung mit gleichlautender Beschreibung limitiert sind.\n"
 "\n"
 "Tipp: Gewünschte Sichtbarkeit von Anträgen mit Testdelegierten-Account gegenprüfen. "
+
+msgid "Can see origin motion"
+msgstr "Darf Herkunftsantrag sehen"
 
 msgid "Can see participants"
 msgstr "Darf Teilnehmende sehen"
@@ -3250,6 +3259,9 @@ msgstr "Antragseinleitung"
 msgid "Motion updated"
 msgstr "Antrag aktualisiert"
 
+msgid "Motion version"
+msgstr "Antragsfassung"
+
 msgid "Motion votes"
 msgstr "Antragsabstimmungen"
 
@@ -3767,6 +3779,9 @@ msgstr "Original"
 msgid "Original version"
 msgstr "Originalfassung"
 
+msgid "Original version with all changes"
+msgstr "Originalfassung mit allen Änderungen"
+
 msgid "Out of sync"
 msgstr "nicht synchronisiert"
 
@@ -4027,6 +4042,9 @@ msgstr "Präfix"
 
 msgid "Prefix for the motion identifier of amendments"
 msgstr "Präfix für den Antragsbezeichner von Änderungsanträgen"
+
+msgid "Preload original motions"
+msgstr "Herkunftsanträge vorladen"
 
 msgid "Presence"
 msgstr "Anwesenheit"
@@ -4294,6 +4312,9 @@ msgstr "Benötigt Recht zum Verwalten von Redelisten"
 
 msgid "Requires permission to manage motion metadata"
 msgstr "Benötigt Berechtigung um Antragsmetadaten zu verwalten"
+
+msgid "Requires permission to see origin motions"
+msgstr "Benötigt Recht zum Sehen von Herkunftsanträgen"
 
 msgid "Reset"
 msgstr "Zurücksetzen"
@@ -4846,9 +4867,6 @@ msgstr "Stimme(n) jetzt senden"
 msgid "Submitter"
 msgstr "Antragsteller*in"
 
-msgid "Submitter (in target meeting)"
-msgstr "Antragsteller*in (in der Zielveranstaltung)"
-
 msgid "Submitter may set state to"
 msgstr "Antragsteller*in darf Status setzen auf"
 
@@ -4923,6 +4941,9 @@ msgstr "Schlagwort"
 
 msgid "Tags"
 msgstr "Schlagwörter"
+
+msgid "Target meeting"
+msgstr "Zielveranstaltung"
 
 msgid "Text"
 msgstr "Text"
@@ -5111,6 +5132,9 @@ msgstr "Diese Aktion entfernt Sie aus einer oder mehreren Gruppen."
 
 msgid "This action will remove you from one or more meetings."
 msgstr "Diese Aktion entfernt Sie aus einer oder mehreren Veranstaltungen."
+
+msgid "This amendment has change recommendations."
+msgstr "Dieser Änderungsantrag hat Änderungsempfehlungen."
 
 msgid "This ballot contains deleted users."
 msgstr "Der Wahlgang enthält gelöschte Nutzer."
@@ -5873,6 +5897,12 @@ msgstr "Gruppe(n) hinzufügen"
 msgid "already exists"
 msgstr "existiert bereits"
 
+msgid "amendment"
+msgstr "Änderungsantrag"
+
+msgid "amendments"
+msgstr "Änderungsanträge"
+
 msgid "analog"
 msgstr "analog"
 
@@ -5893,6 +5923,15 @@ msgstr "von"
 
 msgid "challenged you to a chess match!"
 msgstr "hat dich zu einem Schachspiel herausgefordert!"
+
+msgid "change recommendation"
+msgstr "Änderungsempfehlung"
+
+msgid "change recommendations"
+msgstr "Änderungsempfehlungen"
+
+msgid "committee name"
+msgstr "Gremiumname"
 
 msgid "committee-example"
 msgstr "gremien-beispiel"
@@ -6071,6 +6110,12 @@ msgstr "offene Stimmabgaben"
 msgid "or"
 msgstr "oder"
 
+msgid "original identifier"
+msgstr "Originalbezeichner"
+
+msgid "original submitter"
+msgstr "Originalantragsteller*in"
+
 msgid "outside"
 msgstr "außerhalb"
 
@@ -6160,6 +6205,9 @@ msgstr "werden importiert"
 
 msgid "will be updated"
 msgstr "werden aktualisiert"
+
+msgid "without identifier"
+msgstr "ohne Bezeichner"
 
 msgid "yellow"
 msgstr "gelb"
