@@ -3,6 +3,7 @@
 # Joshua Sangmeister <joshua.sangmeister@gmail.com>, 2024
 # Katharina <karmitt2@web.de>, 2024
 # Elblinator, 2025
+# Birte Spekker <birte.spekker@intevation.de>, 2025
 # Emanuel Schütze <emanuel.schuetze@intevation.de>, 2025
 # 
 msgid ""
@@ -148,7 +149,7 @@ msgid "Accounts with errors"
 msgstr "Accounts mit Fehlern"
 
 msgid "Accounts with warnings: affected cells will be skipped"
-msgstr "Accounts mit Warnungen: Die betroffenen Zellen werden übersprungen."
+msgstr "Accounts mit Warnungen: Die betroffenen Zellen werden übersprungen"
 
 msgid "Action not possible. You have to be part of the meeting."
 msgstr "Aktion nicht möglich. Sie müssen Teil der Veranstaltung sein."
@@ -365,8 +366,11 @@ msgstr "Leerzeichen im Bezeichner erlauben"
 msgid "Allow create poll"
 msgstr "Abstimmung möglich"
 
+msgid "Allow forwarding of amendments"
+msgstr "Weiterleitung von Änderungsanträgen möglich"
+
 msgid "Allow forwarding of motions"
-msgstr "Antragsweiterleitung möglich"
+msgstr "Weiterleitung von Anträgen möglich"
 
 msgid "Allow one participant multiple times on the same list"
 msgstr "Einen Teilnehmenden mehrfach auf derselben Liste zulassen"
@@ -429,9 +433,6 @@ msgstr "Anzahl der Veranstaltungen"
 
 msgid "Amount of votes"
 msgstr "Anzahl der Stimmen"
-
-msgid "An email with a password reset link has been sent."
-msgstr "Es wurde eine E-Mail mit Link zum Passwort-Zurücksetzen gesendet."
 
 msgid "An error occurred while voting."
 msgstr "Bei der Stimmabgabe ist ein Fehler aufgetreten."
@@ -2130,6 +2131,19 @@ msgstr ""
 "Status."
 
 msgid ""
+"Enables the forwarding of amendments in the selected state.\n"
+"\n"
+"Prerequisites:\n"
+"1. Motion forwarding is activated.\n"
+"2. 'Original version with changes' in forwarding dialog must be selected."
+msgstr ""
+"Aktiviert im ausgewählten Status die Weiterleitung von Änderungsanträgen. \n"
+"\n"
+"Voraussetzungen:\n"
+"1. Weiterleitung von Anträgen ist aktiviert. \n"
+"2. Im Weiterleitungsdialog muss 'Originalfassung mit Änderungen' ausgewählt werden."
+
+msgid ""
 "Enables the forwarding of motions to other meetings within the OpenSlides instance in the selected state.\n"
 "\n"
 "Prerequisites:\n"
@@ -2280,9 +2294,6 @@ msgstr "Kommentar exportieren"
 msgid "Export moderator note as PDF"
 msgstr "Sprechzettel als PDF exportieren"
 
-msgid "Export motions"
-msgstr "Anträge exportieren"
-
 msgid "Export personal note only"
 msgstr "Nur persönliche Notiz exportieren"
 
@@ -2387,9 +2398,6 @@ msgstr "Passwort vergessen?"
 
 msgid "Formalities"
 msgstr "Formalia"
-
-msgid "Format"
-msgstr "Format"
 
 msgid "Forspeech"
 msgstr "Fürrede"
@@ -2569,6 +2577,9 @@ msgstr "Stimme abgegeben"
 msgid "Header"
 msgstr "Kopfzeile"
 
+msgid "Header and footer"
+msgstr "Kopf- und Fußzeile"
+
 msgid "Header background color"
 msgstr "Hintergrundfarbe Kopfbereich"
 
@@ -2656,6 +2667,13 @@ msgstr ""
 msgid "If the value is set to 0 the time counts up as stopwatch."
 msgstr ""
 "Wenn der Wert auf 0 gesetzt wird, wird die Zeit als Stoppuhr hochgezählt."
+
+msgid ""
+"If your email address exists in our database, you will receive a password "
+"reset email."
+msgstr ""
+"Wenn Ihre E-Mail-Adresse in unserer Datenbank existiert, erhalten Sie eine "
+"Passwort-Zurücksetzen E-Mail."
 
 msgid "Image description"
 msgstr "Bildbeschreibung"
@@ -3074,6 +3092,11 @@ msgstr "Mandatswechsel erfolgreich."
 
 msgid "Mark as personal favorite"
 msgstr "Als persönlichen Favorit markieren"
+
+msgid "Max votes cannot be greater than options."
+msgstr ""
+"Die maximale Stimmenanzahl darf nicht größer als die Anzahl der Optionen "
+"sein."
 
 msgid "Max votes per option cannot be greater than max votes."
 msgstr ""
@@ -3553,6 +3576,14 @@ msgstr ""
 "Beachten Sie, dass das Passwort auf das neu generierte Passwort geändert "
 "wird."
 
+msgid "Note: Amendments cannot be forwarded without their parent motion."
+msgstr ""
+"Hinweis: Änderungsanträge können nicht ohne ihren zugehörigen Hauptantrag "
+"weitergeleitet werden."
+
+msgid "Note: Amendments will not be forwarded."
+msgstr "Hinweis: Änderungsanträge werden nicht weitergeleitet."
+
 msgid ""
 "Note: The public access setting is deactivated for the organization. Please "
 "contact your admins or hosting providers to activate the setting."
@@ -3570,6 +3601,9 @@ msgstr ""
 
 msgid "Notes"
 msgstr "Notizen"
+
+msgid "Notes and Comments"
+msgstr "Notizen und Kommentare"
 
 msgid "Number"
 msgstr "Bezeichner"
@@ -3609,6 +3643,9 @@ msgid ""
 msgstr ""
 "Anzahl der nächsten Redner*innen, die automatisch mit der Livekonferenz "
 "verbunden werden"
+
+msgid "Number of open requests to speak"
+msgstr "Anzahl offener Wortmeldungen"
 
 msgid "Number of participants"
 msgstr "Anzahl von Teilnehmenden"
@@ -3715,9 +3752,6 @@ msgstr "Veranstaltung öffnen"
 msgid "Open projection dialog"
 msgstr "Projektionsdialog öffnen"
 
-msgid "Open requests to speak"
-msgstr "Offene Wortmeldungen"
-
 msgid "OpenSlides URL"
 msgstr "OpenSlides-URL"
 
@@ -3779,8 +3813,8 @@ msgstr "Original"
 msgid "Original version"
 msgstr "Originalfassung"
 
-msgid "Original version with all changes"
-msgstr "Originalfassung mit allen Änderungen"
+msgid "Original version with changes"
+msgstr "Originalfassung mit Änderungen"
 
 msgid "Out of sync"
 msgstr "nicht synchronisiert"
@@ -3814,6 +3848,9 @@ msgstr "Seite"
 
 msgid "Page format"
 msgstr "Papierformat"
+
+msgid "Page layout"
+msgstr "Seitenlayout"
 
 msgid "Page margin bottom in mm"
 msgstr "Seitenrand unten in mm"
@@ -3948,6 +3985,9 @@ msgstr "Rede pausieren"
 
 msgid "Permissions"
 msgstr "Berechtigungen"
+
+msgid "Person-related fields"
+msgstr "Personenbezogene Felder"
 
 msgid "Personal data changed"
 msgstr "Persönliche Stammdaten geändert"
@@ -4852,6 +4892,9 @@ msgstr "Gliederungsebene"
 msgid "Structure levels"
 msgstr "Gliederungsebenen"
 
+msgid "Structure levels created"
+msgstr "Gliederungsebenen erstellt"
+
 msgid "Subcategory"
 msgstr "Untersachgebiet"
 
@@ -4962,6 +5005,9 @@ msgstr "Texttrenner"
 
 msgid "Text to display"
 msgstr "Anzuzeigender Text"
+
+msgid "Text version"
+msgstr "Textfassung"
 
 msgid "The account is deactivated."
 msgstr "Der Account ist inaktiv."
@@ -6104,6 +6150,9 @@ msgstr "nicht angegeben"
 msgid "of"
 msgstr "von"
 
+msgid "of which %num% not permissable"
+msgstr "davon %num% nicht zulässig"
+
 msgid "open votes"
 msgstr "offene Stimmabgaben"
 
@@ -6196,6 +6245,12 @@ msgstr "Stimmen pro Kandidat*in"
 
 msgid "votes per option"
 msgstr "Stimmen pro Option"
+
+msgid "was"
+msgstr "wurde"
+
+msgid "were"
+msgstr "wurden"
 
 msgid "will be created"
 msgstr "werden erstellt"
