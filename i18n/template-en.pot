@@ -321,6 +321,9 @@ msgstr ""
 msgid "Allow create poll"
 msgstr ""
 
+msgid "Allow forwarding of amendments"
+msgstr ""
+
 msgid "Allow forwarding of motions"
 msgstr ""
 
@@ -382,9 +385,6 @@ msgid "Amount of meetings"
 msgstr ""
 
 msgid "Amount of votes"
-msgstr ""
-
-msgid "An email with a password reset link has been sent."
 msgstr ""
 
 msgid "An error occurred while voting."
@@ -1938,6 +1938,14 @@ msgid ""
 msgstr ""
 
 msgid ""
+"Enables the forwarding of amendments in the selected state.\n"
+"\n"
+"Prerequisites:\n"
+"1. Motion forwarding is activated.\n"
+"2. 'Original version with changes' in forwarding dialog must be selected."
+msgstr ""
+
+msgid ""
 "Enables the forwarding of motions to other meetings within the OpenSlides "
 "instance in the selected state.\n"
 "\n"
@@ -2064,9 +2072,6 @@ msgstr ""
 msgid "Export moderator note as PDF"
 msgstr ""
 
-msgid "Export motions"
-msgstr ""
-
 msgid "Export personal note only"
 msgstr ""
 
@@ -2168,9 +2173,6 @@ msgid "Forgot Password?"
 msgstr ""
 
 msgid "Formalities"
-msgstr ""
-
-msgid "Format"
 msgstr ""
 
 msgid "Forspeech"
@@ -2350,6 +2352,9 @@ msgstr ""
 msgid "Header"
 msgstr ""
 
+msgid "Header and footer"
+msgstr ""
+
 msgid "Header background color"
 msgstr ""
 
@@ -2432,6 +2437,11 @@ msgid ""
 msgstr ""
 
 msgid "If the value is set to 0 the time counts up as stopwatch."
+msgstr ""
+
+msgid ""
+"If your email address exists in our database, you will receive a password "
+"reset email."
 msgstr ""
 
 msgid "Image description"
@@ -2838,6 +2848,9 @@ msgid "Mandates switched sucessfully!"
 msgstr ""
 
 msgid "Mark as personal favorite"
+msgstr ""
+
+msgid "Max votes cannot be greater than options."
 msgstr ""
 
 msgid "Max votes per option cannot be greater than max votes."
@@ -3311,6 +3324,12 @@ msgid ""
 "Note, that the default password will be changed to the new generated one."
 msgstr ""
 
+msgid "Note: Amendments cannot be forwarded without their parent motion."
+msgstr ""
+
+msgid "Note: Amendments will not be forwarded."
+msgstr ""
+
 msgid ""
 "Note: The public access setting is deactivated for the organization. Please "
 "contact your admins or hosting providers to activate the setting."
@@ -3322,6 +3341,9 @@ msgid ""
 msgstr ""
 
 msgid "Notes"
+msgstr ""
+
+msgid "Notes and Comments"
 msgstr ""
 
 msgid "Number"
@@ -3358,6 +3380,9 @@ msgid "Number of motions"
 msgstr ""
 
 msgid "Number of next speakers automatically connecting to the live conference"
+msgstr ""
+
+msgid "Number of open requests to speak"
 msgstr ""
 
 msgid "Number of participants"
@@ -3465,9 +3490,6 @@ msgstr ""
 msgid "Open projection dialog"
 msgstr ""
 
-msgid "Open requests to speak"
-msgstr ""
-
 msgid "OpenSlides URL"
 msgstr ""
 
@@ -3524,7 +3546,7 @@ msgstr ""
 msgid "Original version"
 msgstr ""
 
-msgid "Original version with all changes"
+msgid "Original version with changes"
 msgstr ""
 
 msgid "Out of sync"
@@ -3558,6 +3580,9 @@ msgid "Page"
 msgstr ""
 
 msgid "Page format"
+msgstr ""
+
+msgid "Page layout"
 msgstr ""
 
 msgid "Page margin bottom in mm"
@@ -3686,6 +3711,9 @@ msgid "Pause speech"
 msgstr ""
 
 msgid "Permissions"
+msgstr ""
+
+msgid "Person-related fields"
 msgstr ""
 
 msgid "Personal data changed"
@@ -4560,6 +4588,9 @@ msgstr ""
 msgid "Structure levels"
 msgstr ""
 
+msgid "Structure levels created"
+msgstr ""
+
 msgid "Subcategory"
 msgstr ""
 
@@ -4669,6 +4700,9 @@ msgid "Text separator"
 msgstr ""
 
 msgid "Text to display"
+msgstr ""
+
+msgid "Text version"
 msgstr ""
 
 msgid "The account is deactivated."
@@ -5705,6 +5739,9 @@ msgstr ""
 msgid "of"
 msgstr ""
 
+msgid "of which %num% not permissable"
+msgstr ""
+
 msgid "open votes"
 msgstr ""
 
@@ -5796,6 +5833,12 @@ msgid "votes per candidate"
 msgstr ""
 
 msgid "votes per option"
+msgstr ""
+
+msgid "was"
+msgstr ""
+
+msgid "were"
 msgstr ""
 
 msgid "will be created"
