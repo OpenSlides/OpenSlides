@@ -6,4 +6,5 @@ use (
 	./openslides-icc-service
 	./openslides-search-service
 	./openslides-vote-service
+	./openslides-projector-service
 )
