@@ -103,6 +103,7 @@ copy-translations:
 	cp i18n/*.po openslides-backend/openslides_backend/i18n/messages/
 
 clean-run-dev:
-	docker stop $(shell docker ps -q) || true
+	docker stop $(shell docker ps -aq) || true
+	docker rm $(shell docker ps -a -q) || true
 	docker rmi -f $(shell docker images -aq) || true
-	make run-dev-detached 
+	make run-dev
