@@ -24,7 +24,7 @@ build-dev:
 
 # Run the tests of all services
 run-service-tests:
-	git submodule foreach 'make run-tests'
+	$(SCRIPT_PATH)/submodules-do.sh 'make run-tests'
 
 # Execute while run-dev is running: Switch to the test database to execute backend tests without
 # interfering with your dev database
