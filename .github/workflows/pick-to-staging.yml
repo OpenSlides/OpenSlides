@@ -63,4 +63,3 @@ jobs:
           reviewers: ${{ github.event.pull_request.user.login }}
           assignees: ${{ github.event.pull_request.user.login }}
           labels: picked-to-staging
-          milestone: 4
