@@ -88,9 +88,6 @@ msgstr ""
 msgid "Access data (PDF)"
 msgstr ""
 
-msgid "Access groups"
-msgstr ""
-
 msgid ""
 "Access only possible for participants of this meeting. All other accounts "
 "(including organization and committee admins) may not open the closed "
@@ -1571,13 +1568,13 @@ msgstr ""
 msgid "Default visibility for new agenda items (except topics)"
 msgstr ""
 
-msgid "Default vote method"
-msgstr ""
-
 msgid "Default vote weight"
 msgstr ""
 
 msgid "Default voting duration"
+msgstr ""
+
+msgid "Default voting method"
 msgstr ""
 
 msgid "Default voting type"
@@ -1839,6 +1836,9 @@ msgid "Election"
 msgstr ""
 
 msgid "Election documents"
+msgstr ""
+
+msgid "Election method"
 msgstr ""
 
 msgid "Elections"
@@ -2429,6 +2429,9 @@ msgid "Identifier"
 msgstr ""
 
 msgid "If deactivated it is displayed below the title."
+msgstr ""
+
+msgid "If empty, everyone can access."
 msgstr ""
 
 msgid ""
