@@ -23,13 +23,12 @@ for DIR in $(git submodule foreach --recursive -q sh -c pwd); do
     export DIRNAME=${PWD##*/} && \
     export SUBMODULE=${DIRNAME//"openslides-"} && \
     if [ $SUBMODULE == 'meta' ]; then continue; fi && \
-    if [ $SUBMODULE == 'go' ]; then continue; fi && \
 
     # Check for single target
-    if [ -n $SINGLE_TARGET ]; then if [[ $SINGLE_TARGET != $SUBMODULE ]]; then continue; fi; fi && \
+    if [ $# -eq 1 ]; then if [[ $SINGLE_TARGET != $SUBMODULE ]]; then continue; fi; fi && \
 
     # Execute test
     printf '\n --- Building submodule %s for context %s --- \n' "${SUBMODULE}" "${CONTEXT}" && \
-    eval "make build-aio submodule=${SUBMODULE} context=${CONTEXT} > /dev/null"
+    eval "make build-aio submodule=${SUBMODULE} context=${CONTEXT}"
 done
 wait

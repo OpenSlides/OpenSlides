@@ -20,11 +20,13 @@ run-dev-otel: | build-dev
 # Build the docker dev images for all services in parallel
 build-dev:
 	sed -i "1s/.*/$(GO_VERSION)/" $(DOCKER_PATH)/workspaces/*.work
-	$(SCRIPT_PATH)/submodules-do.sh 'make build-dev'
+	chmod +x $(SCRIPT_PATH)/makefile/build-all-submodules.sh
+	$(SCRIPT_PATH)/makefile/build-all-submodules.sh
 
 # Run the tests of all services
 run-service-tests:
-	$(SCRIPT_PATH)/submodules-do.sh 'make run-tests'
+	chmod +x $(SCRIPT_PATH)/makefile/test-all-submodules.sh
+	$(SCRIPT_PATH)/makefile/test-all-submodules.sh
 
 run-tests:
 	bash dev/scripts/makefile/test-all-submodules.sh

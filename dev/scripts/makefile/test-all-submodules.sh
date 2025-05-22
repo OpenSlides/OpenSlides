@@ -18,7 +18,6 @@ for DIR in $(git submodule foreach --recursive -q sh -c pwd); do
     export DIRNAME=${PWD##*/} && \
     export SUBMODULE=${DIRNAME//"openslides-"} && \
     if [ $SUBMODULE == 'meta' ]; then continue; fi && \
-    if [ $SUBMODULE == 'go' ]; then continue; fi && \
 
     # Check for single target
     if [ $# -eq 1 ]; then if [[ $SINGLE_TARGET != $SUBMODULE ]]; then continue; fi; fi && \
