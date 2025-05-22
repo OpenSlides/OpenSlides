@@ -1,7 +1,7 @@
 version: "3"
 services:
   datastore-reader:
-    image: openslides-datastore-reader-dev
+    image: openslides-datastore-service-reader-dev
     depends_on:
       - postgres
     env_file: services.env
@@ -15,7 +15,7 @@ services:
       - 5680:5678
 
   datastore-writer:
-    image: openslides-datastore-writer-dev
+    image: openslides-datastore-service-writer-dev
     depends_on:
       - postgres
       - redis
@@ -77,7 +77,7 @@ services:
       - ../../openslides-backend/scripts:/app/scripts
 
   autoupdate:
-    image: openslides-autoupdate-dev
+    image: openslides-autoupdate-service-dev
     depends_on:
       - datastore-reader
       - redis
@@ -95,7 +95,7 @@ services:
       - "9012:9012"
 
   icc:
-    image: openslides-icc-dev
+    image: openslides-icc-service-dev
     depends_on:
       - datastore-reader
       - redis
@@ -112,7 +112,7 @@ services:
       - "9007:9007"
 
   search:
-    image: openslides-search-dev
+    image: openslides-search-service-dev
     depends_on:
       - autoupdate
       - backend
@@ -129,7 +129,7 @@ services:
       - "9050:9050"
 
   auth:
-    image: openslides-auth-dev
+    image: openslides-auth-service-dev
     depends_on:
       - datastore-reader
       - redis
@@ -142,7 +142,7 @@ services:
       - "9004:9004"
 
   media:
-    image: openslides-media-dev
+    image: openslides-media-service-dev
     depends_on:
       - backend
       - postgres
@@ -153,7 +153,7 @@ services:
       - ../../openslides-media-service/src:/app/src
 
   manage:
-    image: openslides-manage-dev
+    image: openslides-manage-service-dev
     depends_on:
       - auth
       - datastore-writer
@@ -185,7 +185,7 @@ services:
       - "8025:8025" # web ui to check mails manually
 
   vote:
-    image: openslides-vote-dev
+    image: openslides-vote-service-dev
     depends_on:
       - auth
       - redis
