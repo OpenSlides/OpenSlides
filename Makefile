@@ -26,6 +26,8 @@ build-dev:
 run-service-tests:
 	$(SCRIPT_PATH)/submodules-do.sh 'make run-tests'
 
+run-tests:
+	bash dev/scripts/makefile/test-all-submodules.sh
 # Execute while run-dev is running: Switch to the test database to execute backend tests without
 # interfering with your dev database
 switch-to-test:
