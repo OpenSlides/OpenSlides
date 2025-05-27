@@ -140,6 +140,7 @@ services:
     volumes:
       - ../../openslides-projector-service/cmd:/root/openslides-projector-service/cmd
       - ../../openslides-projector-service/pkg:/root/openslides-projector-service/pkg
+      - ../../openslides-projector-service/locale:/root/locale
       - ../../openslides-projector-service/templates:/root/templates
       - ../../openslides-projector-service/static:/root/static
       - ../../lib/openslides-go:/root/lib/openslides-go
