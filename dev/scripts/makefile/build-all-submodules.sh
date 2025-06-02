@@ -10,11 +10,11 @@
 export CONTEXT=$1
 
 if [ -z "$1" ]; then
-    echo "No build context specified. Building for dev per default." >&2
-    export CONTEXT="dev"
+    echo "No build context specified. Building for prod per default." >&2
+    export CONTEXT="prod"
 fi
 
-export SINGLE_TARGET=$1
+export SINGLE_TARGET=$2
 
 IFS=$'\n'
 for DIR in $(git submodule foreach --recursive -q sh -c pwd); do
