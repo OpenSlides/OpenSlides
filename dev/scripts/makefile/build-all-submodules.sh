@@ -9,7 +9,7 @@
 
 export CONTEXT=$1
 
-if [ -z "$1" ]; then
+if [ "${CONTEXT}" != "prod" -a "${CONTEXT}" != "dev" -a "${CONTEXT}" != "tests" ]; then
     echo "No build context specified. Building for prod per default." >&2
     export CONTEXT="prod"
 fi
@@ -22,13 +22,12 @@ for DIR in $(git submodule foreach --recursive -q sh -c pwd); do
     cd "$DIR" && \
     export DIRNAME=${PWD##*/} && \
     export SUBMODULE=${DIRNAME//"openslides-"} && \
-    #if [ $SUBMODULE == 'meta' ]; then continue; fi && \
 
     # Check for single target
-    if [ $# -eq 1 ]; then if [[ $SINGLE_TARGET != $SUBMODULE ]]; then continue; fi; fi && \
+    if [ $# -eq 2 ]; then if [[ $SINGLE_TARGET != $SUBMODULE ]]; then continue; fi; fi && \
 
     # Execute test
     printf '\n --- Building submodule %s for context %s --- \n' "${SUBMODULE}" "${CONTEXT}" && \
-    eval "make build-aio submodule=${SUBMODULE} context=${CONTEXT}"
+    eval "make build-dev"
 done
 wait

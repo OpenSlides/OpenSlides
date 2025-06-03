@@ -20,7 +20,7 @@ export OPT_ARGS=
 
 if [ -n "${MODULE}" ]; then
     export TAG=${TAG}${MODULE}-
-    export OPT_ARGS=--build-arg MODULE=${MODULE} --build-arg PORT=${PORT}
+    export OPT_ARGS="--build-arg MODULE=${MODULE} --build-arg PORT=${PORT}"
 fi
 
 export TAG=${TAG}${CONTEXT}
