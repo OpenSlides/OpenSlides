@@ -1,4 +1,8 @@
 #!/bin/bash
+
+# Import OpenSlides utils package
+. $( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )/../util.sh
+
 # Iterates all submodules and executes the make-target 'build-aio' using parameter context as build target
 # Ignores meta directory
 
@@ -10,7 +14,7 @@
 export CONTEXT=$1
 
 if [ "${CONTEXT}" != "prod" -a "${CONTEXT}" != "dev" -a "${CONTEXT}" != "tests" ]; then
-    echo "No build context specified. Building for prod per default." >&2
+    warn "No build context specified. Building for prod per default." >&2
     export CONTEXT="prod"
 fi
 
@@ -27,7 +31,7 @@ for DIR in $(git submodule foreach --recursive -q sh -c pwd); do
     if [ $# -eq 2 ]; then if [[ $SINGLE_TARGET != $SUBMODULE ]]; then continue; fi; fi && \
 
     # Execute test
-    printf '\n --- Building submodule %s for context %s --- \n' "${SUBMODULE}" "${CONTEXT}" && \
-    eval "make build-dev"
+    info " --- Building service ${SUBMODULE} for context ${CONTEXT} --- " && \
+    echocmd eval "make build-dev" 
 done
 wait

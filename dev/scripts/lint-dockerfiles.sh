@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Import OpenSlides utils package
+. $( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )/util.sh
+
 export SINGLE_TARGET=$1
 
 # This uses Hadolint (https://github.com/hadolint/hadolint) to lint all Service Dockerfiles
@@ -22,10 +25,8 @@ for DIR in $(git submodule foreach --recursive -q sh -c pwd); do
     if [ $# -eq 1 ]; then if [[ $SINGLE_TARGET != $SUBMODULE ]]; then continue; fi; fi && \
 
     # Execute test
-    printf '\n Linting Dockerfile for %s \n' "${SUBMODULE}" && \
-    export ERROR_FOUND="" &&\
-    (docker run --rm -i -v /${LOCAL_PWD}/.hadolint.yaml:/.config/hadolint.yaml ghcr.io/hadolint/hadolint < Dockerfile) || export ERROR_FOUND="1" && \
-    printf '\n Done linting Dockerfile for %s \n' "${SUBMODULE}"
+    info " Linting Dockerfile for ${SUBMODULE}:" && \
+    docker run --rm -i -v /${LOCAL_PWD}/.hadolint.yaml:/.config/hadolint.yaml ghcr.io/hadolint/hadolint < Dockerfile
 done
 
 wait
