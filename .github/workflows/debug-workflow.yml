@@ -7,7 +7,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Workspace
-        run: echo ${{ github.repository }}
-        run: echo ${{ github.sha }}
+        run: |
+          echo ${{ github.repository }}
+          echo ${{ github.sha }}
       - name: Test actions
         uses: Janmtbehrens/OpenSlides/actions/test-submodule@e53b9cbc59940edddf7e731a833e52f3b76b6db3S
