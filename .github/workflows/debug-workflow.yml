@@ -1,0 +1,10 @@
+on: push
+
+jobs:
+  test-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Test actions
+        uses: Janmtbehrens/OpenSlides/test-submodule@11bd71901bbe5b1630ceea73d27597364c9af683
