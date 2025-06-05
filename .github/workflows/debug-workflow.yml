@@ -5,4 +5,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Test actions
-        uses: Janmtbehrens/OpenSlides/test-submodule@SHA
+        uses: ./.github/actions/test-submodule
