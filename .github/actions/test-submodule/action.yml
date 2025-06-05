@@ -8,5 +8,7 @@ runs:
         shell: bash
         run: |
           echo "Test"
-          chmod +x workflow-run.sh
-          bash workflow-run.sh
+          ls -a
+          echo "$GITHUB_ACTION_PATH"
+          chmod +x $GITHUB_ACTION_PATH/workflow-run.sh
+          bash $GITHUB_ACTION_PATH/workflow-run.sh
