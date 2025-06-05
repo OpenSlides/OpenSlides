@@ -1,9 +1,0 @@
-name: 'Run submodule tests'
-description: 'Runs make run-test and supplies all necessary files.'
-
-runs:
-  using: "composite"
-  steps:
-      - name: "Test Build"
-        shell: bash
-        run: bash $GITHUB_ACTION_PATH/action-run.sh
