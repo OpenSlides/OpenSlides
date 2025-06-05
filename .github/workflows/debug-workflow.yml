@@ -9,4 +9,4 @@ jobs:
       - name: Test
         run: echo "Hey"
       - name: Test actions
-        uses: Janmtbehrens/OpenSlides/actions/test-submodule@main
+        uses: Janmtbehrens/OpenSlides/dev/actions/test-submodule@main

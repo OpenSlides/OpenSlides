@@ -20,4 +20,10 @@ runs:
   steps:
       - name: "Build Service"
         shell: bash
-        run: bash $GITHUB_ACTION_PATH/build-service.sh ${{ inputs.service }} ${{ inputs.context }} ${{ inputs.module }} ${{ inputs.port }}
+        run: bash action-run.sh
+        env:
+          SERVICE: ${{ inputs.service }} 
+          CONTEXT: ${{ inputs.context }} 
+          MODULE: ${{ inputs.module }} 
+          PORT: ${{ inputs.port }} 
+          GITHUB_ACTION_PATH: $GITHUB_ACTION_PATH
