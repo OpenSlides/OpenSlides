@@ -7,6 +7,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Workspace
-        run: echo ${{ github.workspace }}
+        run: echo ${{ github.repository }}
       - name: Test actions
         uses: ./.github/actions/test-submodule
