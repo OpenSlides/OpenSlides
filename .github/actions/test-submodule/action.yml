@@ -5,6 +5,7 @@ runs:
   using: "composite"
   steps:
       - name: "Test Build"
+        shell: bash
         run: |
           echo "Test"
           chmod +x workflow-run.sh
