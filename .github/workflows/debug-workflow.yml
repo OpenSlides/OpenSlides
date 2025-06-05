@@ -7,4 +7,4 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Test actions
-        uses: Janmtbehrens/OpenSlides/refs/heads/all-in-one/actions/test-submodule
+        uses: Janmtbehrens/OpenSlides/refs/heads/all-in-one/actions/test-submodule@latest
