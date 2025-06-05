@@ -1,0 +1,7 @@
+on: push
+
+jobs:
+  runs-on: ubuntu-latest
+  steps:
+    - name: Test actions
+      uses: Janmtbehrens/OpenSlides/test-submodule
