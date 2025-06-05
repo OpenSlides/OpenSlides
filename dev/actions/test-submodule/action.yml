@@ -6,4 +6,4 @@ runs:
   steps:
       - name: "Test Build"
         shell: bash
-        run: bash $GITHUB_ACTION_PATH/workflow-run.sh
+        run: bash $GITHUB_ACTION_PATH/action-run.sh

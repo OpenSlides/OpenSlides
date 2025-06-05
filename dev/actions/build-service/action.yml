@@ -20,7 +20,7 @@ runs:
   steps:
       - name: "Build Service"
         shell: bash
-        run: bash action-run.sh
+        run: bash $GITHUB_ACTION_PATH/action-run.sh
         env:
           SERVICE: ${{ inputs.service }} 
           CONTEXT: ${{ inputs.context }} 
