@@ -7,6 +7,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Test
-        runs: echo "Hey"
+        run: echo "Hey"
       - name: Test actions
-        uses: Janmtbehrens/OpenSlides/test-submodule@11bd71901bbe5b1630ceea73d27597364c9af683
+        uses: Janmtbehrens/OpenSlides/test-submodule@latest
