@@ -1,3 +1,5 @@
 #!/bin/bash
 
-ls -a
+echo "I know my path"
+echo $GITHUB_ACTION_PATH
+

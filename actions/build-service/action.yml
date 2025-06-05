@@ -1,0 +1,23 @@
+name: 'Build service'
+description: 'Builds service image for given context'
+inputs:
+  service:  
+    description: 'Name of the service. Examples: proxy, auth, datastore'
+    required: true
+  context:  
+    description: 'Build Context. Possible options: prod, dev, tests'
+    required: true
+  module:  
+    description: 'Optional module of the service. Examples: reader, writer'
+    required: false
+    default: ""
+  port:  
+    description: 'Optional port of the service'
+    required: false
+    default: ""
+runs:
+  using: "composite"
+  steps:
+      - name: "Build Service"
+        shell: bash
+        run: bash $GITHUB_ACTION_PATH/build-service.sh ${{ inputs.service }} ${{ inputs.context }} ${{ inputs.module }} ${{ inputs.port }}
