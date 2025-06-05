@@ -9,4 +9,4 @@ jobs:
       - name: Test
         run: echo "Hey"
       - name: Test actions
-        uses: Janmtbehrens/OpenSlides/dev/actions/build-and-test-service@main
+        uses: Janmtbehrens/OpenSlides/dev/actions/build-and-test-service@all-in-one
