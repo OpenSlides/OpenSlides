@@ -9,4 +9,4 @@ jobs:
       - name: Workspace
         run: echo ${{ github.repository }}
       - name: Test actions
-        uses: ./.github/actions/test-submodule
+        uses: Janmtbehrens/OpenSlides/test-submodule
