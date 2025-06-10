@@ -3,18 +3,9 @@
 # Import OpenSlides utils package
 . $( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )/util.sh
 
-# Commits and pushes all submodules to their respective repositories.
-# The same Commit Message is reused for all Commits
-# Use this for blanket changes to all submodules that are the same between all submodules, such as 
-# Dockerfile changes that need to be applied to all submodules
+# Fetches and merges all submodules with their respective upstream/main repositories.
 
-export OVERWRITE_MESSAGE=$1
-export MESSAGE="Merge Upstream"
-if [ ! -z "${OVERWRITE_MESSAGE}" ]; then
-    export MESSAGE=$OVERWRITE_MESSAGE
-fi
-
-export SINGLE_TARGET=$2
+export SINGLE_TARGET=$1
 
 IFS=$'\n'
 for DIR in $(git submodule foreach --recursive -q sh -c pwd); do

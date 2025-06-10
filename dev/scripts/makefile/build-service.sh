@@ -20,15 +20,15 @@ if [ "${CONTEXT}" != "prod" -a "${CONTEXT}" != "dev" -a "${CONTEXT}" != "tests" 
 	exit 1; \
 fi
 
-export TAG=openslides-${SERVICE}-
+export TAG=openslides-${SERVICE}
 export OPT_ARGS=
 
 if [ -n "${MODULE}" ]; then
-    export TAG=${TAG}${MODULE}-
+    export TAG=${TAG}-${MODULE}
     export OPT_ARGS="--build-arg MODULE=${MODULE} --build-arg PORT=${PORT}"
 fi
 
-export TAG=${TAG}${CONTEXT}
+if [ "${CONTEXT}" != "prod" ]; then export TAG="${TAG}-${CONTEXT}"; fi
 
 info "Building submodule '${SERVICE}' for ${CONTEXT} context"
 

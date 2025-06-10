@@ -21,7 +21,7 @@ run-dev-otel: | build-dev
 build-dev:
 	sed -i "1s/.*/$(GO_VERSION)/" $(DOCKER_PATH)/workspaces/*.work
 	chmod +x $(SCRIPT_PATH)/makefile/build-all-submodules.sh
-	$(SCRIPT_PATH)/makefile/build-all-submodules.sh
+	$(SCRIPT_PATH)/makefile/build-all-submodules.sh dev
 
 # Run the tests of all services
 run-service-tests:
