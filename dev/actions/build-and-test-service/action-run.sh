@@ -1,4 +1,4 @@
 #!/bin/bash
 
-bash dev/run-tests
+bash dev/run-tests.sh
 
