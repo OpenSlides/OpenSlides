@@ -112,9 +112,6 @@ msgstr "Annehmen"
 msgid "Access data (PDF)"
 msgstr "Zugangsdaten (PDF)"
 
-msgid "Access groups"
-msgstr "Zugriffsgruppen"
-
 msgid ""
 "Access only possible for participants of this meeting. All other accounts "
 "(including organization and committee admins) may not open the closed "
@@ -1726,14 +1723,14 @@ msgid "Default visibility for new agenda items (except topics)"
 msgstr ""
 "Voreingestellte Sichtbarkeit für neue Tagesordnungspunkte (außer Themen)"
 
-msgid "Default vote method"
-msgstr "Voreingestellte Abstimmungsmethode"
-
 msgid "Default vote weight"
 msgstr "Standard-Stimmgewicht"
 
 msgid "Default voting duration"
 msgstr "Voreingestellte Dauer der Stimmabgabe"
+
+msgid "Default voting method"
+msgstr "Voreingestellte Abstimmungsmethode"
 
 msgid "Default voting type"
 msgstr "Voreingestellte Art der Stimmabgabe"
@@ -2022,6 +2019,9 @@ msgstr "Wahl"
 
 msgid "Election documents"
 msgstr "Wahlunterlagen"
+
+msgid "Election method"
+msgstr "Wahlmethode"
 
 msgid "Elections"
 msgstr "Wahlen"
@@ -2656,6 +2656,9 @@ msgstr "Bezeichner"
 
 msgid "If deactivated it is displayed below the title."
 msgstr "Wenn deaktiviert erfolgt die Anzeige unterhalb des Antragstitels."
+
+msgid "If empty, everyone can access."
+msgstr "Voller Zugriff, wenn keine Gruppe eingetragen."
 
 msgid ""
 "If it is an amendment, you can back up its content when editing it and "
@@ -5577,7 +5580,7 @@ msgid "Voting is currently in progress."
 msgstr "Stimmabgabe läuft aktuell "
 
 msgid "Voting method"
-msgstr "Wahlmethode"
+msgstr "Abstimmungsmethode"
 
 msgid "Voting opened"
 msgstr "Abstimmung eröffnet"
