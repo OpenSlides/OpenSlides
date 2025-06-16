@@ -24,7 +24,6 @@ for DIR in $(git submodule foreach --recursive -q sh -c pwd); do
     info "Fetch & merge for ${SUBMODULE} " && \
     export GIT_UPDATE=$(git remote update upstream) && \
     export GIT_FETCH=$(git fetch upstream) && \
-    if [ -z $GIT_FETCH ]; then echo "Nothing new to fetch and merge" && continue; fi &&\
     export error=0 && \
     git merge upstream/main || export error=1 && \
     if [ $error -eq 1 ]; then (git commit && git push) ; fi && \
