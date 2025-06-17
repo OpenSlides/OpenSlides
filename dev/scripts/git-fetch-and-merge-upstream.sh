@@ -7,6 +7,32 @@
 
 export SINGLE_TARGET=$1
 
+fetch_merge_push() {
+    export SUBMODULE=$1
+    export SOURCE=$2
+
+    info "Fetch & merge for ${SUBMODULE} " 
+    export GIT_UPDATE=$(git remote update $SOURCE) 
+    export GIT_FETCH=$(git fetch $SOURCE)
+    export ERROR=0 && \
+    git merge $SOURCE/main || export ERROR=1 
+
+    if [ $SOURCE == 'origin' ]; then return; fi
+
+    if [ $ERROR == 1 ]; then (git commit && git push) ; fi 
+    if [ $ERROR == 0 ]; then (git push) ; fi 
+}
+
+update_meta(){
+    if [ -d "meta" ] 
+    then 
+        cd meta
+        (fetch_merge_push meta origin) 
+        cd ..
+    fi 
+}
+
+
 IFS=$'\n'
 for DIR in $(git submodule foreach --recursive -q sh -c pwd); do
     # Extract submodule name
@@ -20,13 +46,10 @@ for DIR in $(git submodule foreach --recursive -q sh -c pwd); do
     # Check for single target
     if [ $# -eq 2 ]; then if [[ $SINGLE_TARGET != $SUBMODULE ]]; then continue; fi; fi && \
 
+    # Recursively Update Meta too
+    update_meta && \
+
     # Git commit
-    info "Fetch & merge for ${SUBMODULE} " && \
-    export GIT_UPDATE=$(git remote update upstream) && \
-    export GIT_FETCH=$(git fetch upstream) && \
-    export error=0 && \
-    git merge upstream/main || export error=1 && \
-    if [ $error -eq 1 ]; then (git commit && git push) ; fi && \
-    if [ $error -eq 0 ]; then (git push) ; fi
+    fetch_merge_push ${SUBMODULE} upstream
 done
 wait
