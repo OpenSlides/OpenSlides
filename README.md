@@ -30,3 +30,4 @@ readme](DEVELOPMENT.md).
 OpenSlides is Free/Libre Open Source Software (FLOSS), and distributed under the
 MIT License, see [LICENSE file](LICENSE). The authors of OpenSlides are
 mentioned in the [AUTHORS file](AUTHORS).
+
