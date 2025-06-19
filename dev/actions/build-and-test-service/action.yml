@@ -1,0 +1,19 @@
+name: 'Build and run service tests'
+description: 'Build test context image and runs all tests of service.'
+
+inputs:
+  service:  
+    description: 'Name of the service. Examples: proxy, auth, datastore'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+      - name: "Build Test"
+        uses: Janmtbehrens/OpenSlides/dev/actions/build-service@all-in-one
+        with:
+          service: ${{ inputs.service }} 
+          context: tests
+      - name: "Test Service"
+        shell: bash
+        run: bash $GITHUB_ACTION_PATH/action-run.sh
