@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Import OpenSlides utils package
-. $( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )/../util.sh
+. "$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )/../util.sh"
 
 # Iterates all submodules and executes the make-target 'run-tests'
 # Ignores meta directory
@@ -18,13 +18,17 @@ declare -A outputs
 IFS=$'\n'
 for DIR in $(git submodule foreach --recursive -q sh -c pwd); do
     # Extract submodule name
-    cd "$DIR" && \
-    export DIRNAME=${PWD##*/} && \
-    export SUBMODULE=${DIRNAME//"openslides-"} && \
-    if [ $SUBMODULE == 'meta' ]; then continue; fi && \
+    cd "$DIR" || exit && \
+
+    DIRNAME=${PWD##*/} && \
+    export DIRNAME && \
+    SUBMODULE=${DIRNAME//"openslides-"} && \
+    export SUBMODULE && \
+
+    if [ "$SUBMODULE" == 'meta' ]; then continue; fi && \
 
     # Check for single target
-    if [ $# -eq 1 ]; then if [[ $SINGLE_TARGET != $SUBMODULE ]]; then continue; fi; fi && \
+    if [ $# -eq 1 ]; then if [[ "$SINGLE_TARGET" != "$SUBMODULE" ]]; then continue; fi; fi && \
 
     # Execute test
     info "Testing service ${SUBMODULE}" && \
@@ -34,9 +38,10 @@ for DIR in $(git submodule foreach --recursive -q sh -c pwd); do
 done
 
 for x in "${!outputs[@]}"; do
-    export VALUE=${outputs[${x}]} && \
-    if [ $VALUE != '0' ]; then error "Tests for service ${x} failed"; fi && \
-    if [ $VALUE == '0' ]; then success "Tests for service ${x} successful"; fi 
+    VALUE=${outputs[${x}]}
+    export VALUE && \
+    if [ "$VALUE" != '0' ]; then error "Tests for service ${x} failed"; fi && \
+    if [ "$VALUE" == '0' ]; then success "Tests for service ${x} successful"; fi 
 done
 
 wait

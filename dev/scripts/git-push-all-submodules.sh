@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Import OpenSlides utils package
-. $( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )/util.sh
+. "$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )/util.sh"
 
 # Commits and pushes all submodules to their respective repositories.
 # The same Commit Message is reused for all Commits
@@ -20,20 +20,23 @@ export SINGLE_TARGET=$2
 IFS=$'\n'
 for DIR in $(git submodule foreach --recursive -q sh -c pwd); do
     # Extract submodule name
-    cd "$DIR" && \
-    export DIRNAME=${PWD##*/} && \
-    export SUBMODULE=${DIRNAME//"openslides-"} && \
+    cd "$DIR" || exit && \
 
-    if [ $SUBMODULE == 'go' ]; then continue; fi && \
-    if [ $SUBMODULE == 'meta' ]; then continue; fi && \
+    DIRNAME=${PWD##*/} && \
+    export DIRNAME && \
+    SUBMODULE=${DIRNAME//"openslides-"} && \
+    export SUBMODULE && \
+
+    if [ "$SUBMODULE" == 'go' ]; then continue; fi && \
+    if [ "$SUBMODULE" == 'meta' ]; then continue; fi && \
 
     # Check for single target
-    if [ $# -eq 2 ]; then if [[ $SINGLE_TARGET != $SUBMODULE ]]; then continue; fi; fi && \
+    if [ $# -eq 2 ]; then if [[ "$SINGLE_TARGET" != "$SUBMODULE" ]]; then continue; fi; fi && \
 
     # Git commit
     info "Commit & push for ${SUBMODULE} " && \
     git add -u . && \
-    git commit -a -m $MESSAGE && \
+    git commit -a -m "$MESSAGE" && \
     git push 
 done
 wait
