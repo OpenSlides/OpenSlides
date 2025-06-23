@@ -33,7 +33,7 @@ for DIR in $(git submodule foreach --recursive -q sh -c pwd); do
     # Execute test
     info "Testing service ${SUBMODULE}" && \
     export ERROR_FOUND="" &&\
-    echocmd make "run-tests" || export ERROR_FOUND="1" && \
+    echocmd make run-tests || export ERROR_FOUND="1" && \
     outputs[$SUBMODULE]="${?}${ERROR_FOUND}" 
 done
 
