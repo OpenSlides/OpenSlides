@@ -1,9 +1,24 @@
 DEV_PATH=dev
 DOCKER_PATH=$(DEV_PATH)/docker
 SCRIPT_PATH=$(DEV_PATH)/scripts
+MAKEFILE_PATH=$(SCRIPT_PATH)/makefile
 DC_DEV=docker compose -f $(DOCKER_PATH)/docker-compose.dev.yml
 DC_TEST=docker compose -f $(DOCKER_PATH)/docker-compose.test.yml
 GO_VERSION=$(shell head -n 1 go.work)
+
+# Build images for different contexts
+
+build build-prod build-dev build-tests:
+	sed -i "1s/.*/$(GO_VERSION)/" $(DOCKER_PATH)/workspaces/*.work
+	bash $(MAKEFILE_PATH)/make-build $@ dev
+
+# Development
+
+run-dev run-dev-standalone run-dev-attached run-dev-detached: build-dev
+	$(SCRIPT_PATH)/make-run-dev $@ "" $(DC_DEV) $(ARGS)
+
+
+
 
 # Main command: start the dev server
 run-dev: | build-dev 
