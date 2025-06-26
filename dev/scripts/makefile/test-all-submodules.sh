@@ -34,14 +34,14 @@ for DIR in $(git submodule foreach --recursive -q sh -c pwd); do
     info "Testing service ${SUBMODULE}" && \
     export ERROR_FOUND="" &&\
     echocmd make run-tests || export ERROR_FOUND="1" && \
-    outputs[$SUBMODULE]="${?}${ERROR_FOUND}" 
+    outputs[$SUBMODULE]="${?}${ERROR_FOUND}"
 done
 
 for x in "${!outputs[@]}"; do
     VALUE=${outputs[${x}]}
     export VALUE && \
     if [ "$VALUE" != '0' ]; then error "Tests for service ${x} failed"; fi && \
-    if [ "$VALUE" == '0' ]; then success "Tests for service ${x} successful"; fi 
+    if [ "$VALUE" == '0' ]; then success "Tests for service ${x} successful"; fi
 done
 
 wait

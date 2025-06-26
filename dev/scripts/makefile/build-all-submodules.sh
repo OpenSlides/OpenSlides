@@ -31,7 +31,7 @@ for DIR in $(git submodule foreach --recursive -q sh -c pwd); do
     export SUBMODULE && \
 
     if [ "$SUBMODULE" == 'meta' ]; then continue; fi && \
-    
+
     # Check for single target
     if [ $# -eq 2 ]; then if [[ "$SINGLE_TARGET" != "$SUBMODULE" ]]; then continue; fi; fi && \
 

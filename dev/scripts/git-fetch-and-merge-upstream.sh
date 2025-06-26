@@ -11,7 +11,7 @@ fetch_merge_push() {
     export SUBMODULE=$1
     export SOURCE=$2
 
-    info "Fetch & merge for ${SUBMODULE} " 
+    info "Fetch & merge for ${SUBMODULE} "
 
     GIT_UPDATE=$(git remote update "$SOURCE")
     export GIT_UPDATE
@@ -19,22 +19,22 @@ fetch_merge_push() {
     export GIT_FETCH
 
     export ERROR=0
-    git merge "$SOURCE"/main || export ERROR=1 
+    git merge "$SOURCE"/main || export ERROR=1
 
     if [ "$SOURCE" == 'origin' ]; then return; fi
 
-    if [ "$ERROR" == 1 ]; then (git commit && git push) ; fi 
-    if [ "$ERROR" == 0 ]; then (git push) ; fi 
+    if [ "$ERROR" == 1 ]; then (git commit && git push) ; fi
+    if [ "$ERROR" == 0 ]; then (git push) ; fi
 }
 
 update_meta(){
-    if [ -d "meta" ] 
-    then 
+    if [ -d "meta" ]
+    then
         (
             cd meta || exit
             (fetch_merge_push meta origin) 
         )
-    fi 
+    fi
 }
 
 

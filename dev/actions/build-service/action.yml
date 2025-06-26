@@ -1,17 +1,17 @@
 name: 'Build service'
 description: 'Builds service image for given context'
 inputs:
-  service:  
+  service:
     description: 'Name of the service. Examples: proxy, auth, datastore'
     required: true
-  context:  
+  context:
     description: 'Build Context. Possible options: prod, dev, tests'
     required: true
-  module:  
+  module:
     description: 'Optional module of the service. Examples: reader, writer'
     required: false
     default: ""
-  port:  
+  port:
     description: 'Optional port of the service'
     required: false
     default: ""
@@ -22,8 +22,8 @@ runs:
         shell: bash
         run: bash $GITHUB_ACTION_PATH/action-run.sh
         env:
-          SERVICE: ${{ inputs.service }} 
-          CONTEXT: ${{ inputs.context }} 
-          MODULE: ${{ inputs.module }} 
-          PORT: ${{ inputs.port }} 
+          SERVICE: ${{ inputs.service }}
+          CONTEXT: ${{ inputs.context }}
+          MODULE: ${{ inputs.module }}
+          PORT: ${{ inputs.port }}
           GITHUB_ACTION_PATH: $GITHUB_ACTION_PATH

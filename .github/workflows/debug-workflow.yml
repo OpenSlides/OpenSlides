@@ -1,12 +1,12 @@
-on: deployment
+on: push
 
 jobs:
   test-job:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Test actions
-        uses: Janmtbehrens/OpenSlides/dev/actions/build-and-test-service@all-in-one
+      - uses: actions/checkout@v4
+      - name: Prettify code
+        uses: creyD/prettier_action@v4.6
         with:
-          service: auth
+          # This part is also where you can pass other options, for example:
+          prettier_options: --check

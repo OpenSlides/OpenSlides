@@ -37,6 +37,6 @@ for DIR in $(git submodule foreach --recursive -q sh -c pwd); do
     info "Commit & push for ${SUBMODULE} " && \
     git add -u . && \
     git commit -a -m "$MESSAGE" && \
-    git push 
+    git push
 done
 wait
