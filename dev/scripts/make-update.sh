@@ -702,10 +702,14 @@ make_stable_update() {
 
 staging_log() {
   if ! git ls-remote --exit-code --heads $REMOTE_NAME $STAGING_BRANCH_NAME; then
-    echo "Staging Branch not found, comparing with main instead"
+    info "Staging Branch not found, comparing with main instead"
+    printf "Fetches all relevant data"
     git fetch -q $REMOTE_NAME main
-    git submodule -q foreach git fetch -q $REMOTE_NAME $STABLE_BRANCH_NAME
-    git submodule -q foreach git fetch -q $REMOTE_NAME main
+    printf "."
+    git submodule --quiet foreach "git fetch --quiet $REMOTE_NAME $STABLE_BRANCH_NAME; printf '.'"
+    git submodule --quiet foreach "git fetch --quiet $REMOTE_NAME main; printf '.'"
+    info ""
+    info ""
     git log --graph --oneline $REMOTE_NAME/$STABLE_BRANCH_NAME..$REMOTE_NAME/main
     git submodule -q foreach 'echo $name; git --no-pager log --graph --oneline $REMOTE_NAME/$STABLE_BRANCH_NAME..$REMOTE_NAME/main'
   else
