@@ -6,38 +6,6 @@ DC_DEV=docker compose -f $(DOCKER_PATH)/docker-compose.dev.yml
 DC_TEST=docker compose -f $(DOCKER_PATH)/docker-compose.test.yml
 GO_VERSION=$(shell head -n 1 go.work)
 
-# Build images for different contexts
-
-build build-prod build-dev build-tests:
-	sed -i "1s/.*/$(GO_VERSION)/" $(DOCKER_PATH)/workspaces/*.work
-	bash $(MAKEFILE_PATH)/make-build $@ dev
-
-# Development
-
-run-dev run-dev-standalone run-dev-attached run-dev-detached: build-dev
-	$(SCRIPT_PATH)/make-run-dev $@ "" $(DC_DEV) $(ARGS)
-
-
-
-
-# Main command: start the dev server
-run-dev: | build-dev 
-	$(DC_DEV) up $(ARGS)
-
-# Main command: start the dev server in detached mode
-run-dev-detached: | build-dev 
-	$(DC_DEV) up $(ARGS) -d
-
-# Same as run-dev, but with OpenTelemetry
-run-dev-otel: | build-dev
-	$(DC_DEV) -f $(DOCKER_PATH)/dc.otel.dev.yml up $(ARGS)
-
-# Build the docker dev images for all services in parallel
-build-dev:
-	sed -i "1s/.*/$(GO_VERSION)/" $(DOCKER_PATH)/workspaces/*.work
-	chmod +x $(SCRIPT_PATH)/makefile/build-all-submodules.sh
-	$(SCRIPT_PATH)/makefile/build-all-submodules.sh dev
-
 # Run the tests of all services
 run-service-tests:
 	chmod +x $(SCRIPT_PATH)/makefile/test-all-submodules.sh
@@ -127,6 +95,9 @@ clean-run-dev:
 	docker rmi -f $(shell docker images -aq) || true
 	make run-dev
 
+
+
+
 # Build images for different contexts
 
 build build-prod build-dev build-tests:
@@ -135,6 +106,35 @@ build build-prod build-dev build-tests:
 
 # Development
 
-run-dev run-dev-standalone run-dev-attached run-dev-detached run-dev-help run-dev-stop:
+run-dev run-dev-standalone run-dev-attached run-dev-detached run-dev-help run-dev-stop run-dev-clean:
 	sed -i "1s/.*/$(GO_VERSION)/" $(DOCKER_PATH)/workspaces/*.work
-	bash $(SCRIPT_PATH)/make-run-dev.sh $@ "" "$(DOCKER_PATH)/docker-compose.dev.yml" $(ARGS)
+	bash $(SCRIPT_PATH)/makefile/make-run-dev.sh $@ "" "$(DOCKER_PATH)/docker-compose.dev.yml" $(ARGS)
+
+
+
+########################## Safe List ##########################
+
+
+
+########################## Deprecation List ##########################
+
+# Same as run-dev, but with OpenTelemetry
+run-dev-otel: | build-dev
+	$(DC_DEV) -f $(DOCKER_PATH)/dc.otel.dev.yml up $(ARGS)
+
+
+########################## Replacement List ##########################
+
+# Main command: start the dev server
+#run-dev: | build-dev 
+#	$(DC_DEV) up $(ARGS)
+
+# Main command: start the dev server in detached mode
+#run-dev-detached: | build-dev 
+#	$(DC_DEV) up $(ARGS) -d
+
+# Build the docker dev images for all services in parallel
+#build-dev:
+#	sed -i "1s/.*/$(GO_VERSION)/" $(DOCKER_PATH)/workspaces/*.work
+#	chmod +x $(SCRIPT_PATH)/makefile/build-all-submodules.sh
+#	$(SCRIPT_PATH)/makefile/build-all-submodules.sh dev

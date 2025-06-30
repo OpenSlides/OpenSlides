@@ -19,6 +19,7 @@ Parameters:
 
 Available run-dev functions:
     run-dev             : Builds and starts development images
+    run-dev-clean       : Stops ALL containers and deletes ALL images. Then builds and starts development images
     run-dev-help        : Print help
     run-dev-detach      : Builds and starts development images with detach flag
     run-dev-attach      : Builds and starts development images; enters shell of started image
@@ -66,15 +67,17 @@ then
 
     case "$FUNCTION" in
     "help")        help ;;
+    "clean")       { docker stop $(docker ps -aq) && docker rm $(docker ps -a -q) && docker rmi -f $(docker images -aq); } || \
+                    echocmd bash $LOCAL_PWD/build-all-submodules.sh dev "$SERVICE" && \
+                    echocmd eval "$DC up $ARGS" ;;
     "standalone")  echocmd eval "$DC up $ARGS" && echocmd eval "$DC down" ;;
     "detached")    echocmd eval "$DC up $ARGS" -d  && info "Containers started";;
     "attached")    { [ -z "$ARGS" ] && error "No container was specified (type: make dev-run-help)" && exit 1; } || \
                    echocmd eval "$DC up $ARGS" -d && \
                    echocmd eval "$DC exec $ARGS ./entrypoint.sh bash --rcfile .bashrc" && \
                    echocmd eval "$DC down" ;;
-    "stop")        echocmd eval "$DC down" ;;
+    "stop")        echocmd eval "$DC down" ;;    
     *)             echocmd eval "$DC up $ARGS" ;;
-
     esac
 elif [ -n "$SERVICE" ]
 then
@@ -88,6 +91,9 @@ then
 
     case "$FUNCTION" in
     "help")        help ;;
+    "clean")       { docker stop $(shell docker ps -aq) && docker rm $(shell docker ps -a -q) && docker rmi -f $(shell docker images -aq); } || \
+                    echocmd bash $LOCAL_PWD/build-all-submodules.sh dev "$SERVICE" && \
+                    echocmd docker run "$IMAGE_TAG" ;;
     "standalone")  echocmd docker run "$IMAGE_TAG" && echocmd docker stop $(docker ps -a -q --filter ancestor="$IMAGE_TAG" --format="{{.ID}}") ;;
     "detached")    echocmd docker run -d "$IMAGE_TAG" && info "Container started" ;;
     "attached")    echocmd docker run "$IMAGE_TAG" ;;
