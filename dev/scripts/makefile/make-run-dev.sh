@@ -4,7 +4,6 @@
 . "$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )/../util.sh"
 
 # Used in Makefile Targets to run development contex in various ways
-# Parameter #1: Makefile Target that called this script
 
 help ()
 {
@@ -23,9 +22,10 @@ Available run-dev functions:
     run-dev-help        : Print help
     run-dev-detach      : Builds and starts development images with detach flag
     run-dev-attach      : Builds and starts development images; enters shell of started image
-                          If a docker compose file is declared, the ARGS parameter determines the specific container id you will enter
+                          If a docker compose file is declared, the \$ARGS parameter determines the specific container id you will enter
     run-dev-standalone  : Builds and starts development images; closes them immediatly afterwards
     run-dev-stop        : Stops any currently running images associated with the service or docker compose file
+    run-dev-exec        : Executes command inside container. Use \$ARGS to declare command that should be used. Also declare which container the command should be used in, if using a docker compose setup.
     "
 }
 
@@ -42,7 +42,7 @@ FUNCTION=${TARGET#"$PREFIX"}
 
 # - Error Catching
 if [ -z "$SERVICE" ] && [ -z "$COMPOSE_FILE" ]
-then 
+then
     if [ "$FUNCTION" = "help" ]
     then
         help
@@ -52,8 +52,12 @@ then
     exit 1
 fi
 
+info "Building $SERVICE"
+
 # - Build Image
 echocmd bash $LOCAL_PWD/build-all-submodules.sh dev "$SERVICE"
+
+info "Running $FUNCTION"
 
 # - Run specific function
 if [ -n "$COMPOSE_FILE" ]
@@ -71,12 +75,13 @@ then
                     echocmd bash $LOCAL_PWD/build-all-submodules.sh dev "$SERVICE" && \
                     echocmd eval "$DC up $ARGS" ;;
     "standalone")  echocmd eval "$DC up $ARGS" && echocmd eval "$DC down" ;;
-    "detached")    echocmd eval "$DC up $ARGS" -d  && info "Containers started";;
+    "detached")    echocmd eval "$DC up $ARGS -d"  && info "Containers started" ;;
     "attached")    { [ -z "$ARGS" ] && error "No container was specified (type: make dev-run-help)" && exit 1; } || \
-                   echocmd eval "$DC up $ARGS" -d && \
+                   echocmd eval "$DC up $ARGS -d" && \
                    echocmd eval "$DC exec $ARGS ./entrypoint.sh bash --rcfile .bashrc" && \
                    echocmd eval "$DC down" ;;
-    "stop")        echocmd eval "$DC down" ;;    
+    "stop")        echocmd eval "$DC down" ;;
+    "exec")        echocmd eval "$DC exec $ARGS" ;;
     *)             echocmd eval "$DC up $ARGS" ;;
     esac
 elif [ -n "$SERVICE" ]
@@ -97,7 +102,7 @@ then
     "standalone")  echocmd docker run "$IMAGE_TAG" && echocmd docker stop $(docker ps -a -q --filter ancestor="$IMAGE_TAG" --format="{{.ID}}") ;;
     "detached")    echocmd docker run -d "$IMAGE_TAG" && info "Container started" ;;
     "attached")    echocmd docker run "$IMAGE_TAG" ;;
-    "stop")        echocmd docker stop $(docker ps -a -q --filter ancestor="$IMAGE_TAG" --format="{{.ID}}") ;;
+    "stop")        echocmd docker exec $(docker ps -a -q --filter ancestor="$IMAGE_TAG" --format="{{.ID}}") "$ARGS";;
     *)             echocmd docker run "$IMAGE_TAG" ;;
     esac
 fi

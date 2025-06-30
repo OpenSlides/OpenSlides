@@ -3,9 +3,7 @@
 # Import OpenSlides utils package
 . "$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )/../util.sh"
 
-# Used in Makefile Targets to build images for a specific context
-# Parameter #1: Makefile Target that called this script
-
+# Used in Makefile Targets of the main repository to build images for a specific context
 help ()
 {
     info "\
@@ -25,7 +23,7 @@ Available run-dev functions:
 # Setup
 TARGET=$1
 
-PREFIX="run-dev-"
+PREFIX="build-"
 FUNCTION=${TARGET#"$PREFIX"}
 
 # - Warnings
@@ -33,10 +31,12 @@ if [ -z "${TARGET}" ]; then
     warn "No makefile target specified. Building for prod per default." >&2
 fi
 
+info "Building $FUNCTION"
+
 # - Run specific function
 case "$FUNCTION" in
 "help")        help ;;
-"dev")         echocmd bash build-service.sh $(SERVICE) dev ;;
-"tests")       echocmd bash build-service.sh $(SERVICE) tests ;;
-*)             echocmd bash build-service.sh $(SERVICE) prod ;;
+"dev")         echocmd bash build-all-submodules dev ;;
+"tests")       echocmd bash build-all-submodules tests ;;
+*)             echocmd bash build-all-submodules prod ;;
 esac
