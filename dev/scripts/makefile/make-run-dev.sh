@@ -19,6 +19,7 @@ Parameters:
 
 Available run-dev functions:
     run-dev             : Builds and starts development images
+    run-dev-help        : Print help
     run-dev-detach      : Builds and starts development images with detach flag
     run-dev-attach      : Builds and starts development images; enters shell of started image
                           If a docker compose file is declared, the ARGS parameter determines the specific container id you will enter

@@ -126,3 +126,15 @@ clean-run-dev:
 	docker rm $(shell docker ps -a -q) || true
 	docker rmi -f $(shell docker images -aq) || true
 	make run-dev
+
+# Build images for different contexts
+
+build build-prod build-dev build-tests:
+	sed -i "1s/.*/$(GO_VERSION)/" $(DOCKER_PATH)/workspaces/*.work
+	bash $(MAKEFILE_PATH)/make-build.sh $@ dev
+
+# Development
+
+run-dev run-dev-standalone run-dev-attached run-dev-detached run-dev-help run-dev-stop:
+	sed -i "1s/.*/$(GO_VERSION)/" $(DOCKER_PATH)/workspaces/*.work
+	bash $(SCRIPT_PATH)/make-run-dev.sh $@ "" "$(DOCKER_PATH)/docker-compose.dev.yml" $(ARGS)
