@@ -701,16 +701,29 @@ make_stable_update() {
 }
 
 staging_log() {
-  echocmd git fetch -q $REMOTE_NAME $STAGING_BRANCH_NAME
-  git log --graph --oneline -U0 --submodule $REMOTE_NAME/$STABLE_BRANCH_NAME..$REMOTE_NAME/$STAGING_BRANCH_NAME | \
-    awk -v version="$STAGING_VERSION" '
-      /^\*.*Staging update [0-9]{8}/ { printf("\n# %s-staging-%s-%s\n", version, $NF, substr($2, 0, 7)) }
-      /^\*/ { printf("  %s\n",$0) }
-      /^  Submodule/ {printf("    %s %s\n", $2, $3)}
-      /^\| Submodule/ {printf("    %s %s\n", $3, $4)}
-      /^    >/ { $1=""; printf("      %s\n", $0 )}
-      /^\|   >/ { $1=""; $2=""; printf("      %s\n", $0 )}
-   '
+  if ! git ls-remote --exit-code --heads $REMOTE_NAME $STAGING_BRANCH_NAME; then
+    info "Staging Branch not found, comparing with main instead"
+    printf "Fetches all relevant data"
+    git fetch -q $REMOTE_NAME main
+    printf "."
+    git submodule --quiet foreach "git fetch --quiet $REMOTE_NAME $STABLE_BRANCH_NAME; printf '.'"
+    git submodule --quiet foreach "git fetch --quiet $REMOTE_NAME main; printf '.'"
+    info ""
+    info ""
+    git log --graph --oneline $REMOTE_NAME/$STABLE_BRANCH_NAME..$REMOTE_NAME/main
+    git submodule -q foreach 'echo $name; git --no-pager log --graph --oneline $REMOTE_NAME/$STABLE_BRANCH_NAME..$REMOTE_NAME/main'
+  else
+    git fetch -q $REMOTE_NAME $STAGING_BRANCH_NAME
+    git log --graph --oneline -U0 --submodule $REMOTE_NAME/$STABLE_BRANCH_NAME..$REMOTE_NAME/$STAGING_BRANCH_NAME | \
+      awk -v version="$STAGING_VERSION" '
+        /^\*.*Staging update [0-9]{8}/ { printf("\n# %s-staging-%s-%s\n", version, $NF, substr($2, 0, 7)) }
+        /^\*/ { printf("  %s\n",$0) }
+        /^  Submodule/ {printf("    %s %s\n", $2, $3)}
+        /^\| Submodule/ {printf("    %s %s\n", $3, $4)}
+        /^    >/ { $1=""; printf("      %s\n", $0 )}
+        /^\|   >/ { $1=""; $2=""; printf("      %s\n", $0 )}
+      '
+  fi
 }
 
 

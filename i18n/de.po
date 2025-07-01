@@ -54,8 +54,8 @@ msgid "<unknown>"
 msgstr "<unbekannt>"
 
 msgid ""
-"A change recommendation or amendment is probably referring to a non-existant"
-" line number."
+"A change recommendation or amendment is probably referring to a nonexistent "
+"line number."
 msgstr ""
 "Ein Änderungsantrag oder eine Änderungsempfehlung bezieht sich "
 "wahrscheinlich auf eine nicht vorhandene Zeilennummer."
@@ -129,6 +129,9 @@ msgstr "Account"
 
 msgid "Account admin"
 msgstr "Accountadmin"
+
+msgid "Account created"
+msgstr "Account erstellt"
 
 msgid "Account successfully added."
 msgstr "Account erfolgreich hinzugefügt."
@@ -752,6 +755,11 @@ msgstr ""
 "Achtung: Accounts werden nur der Standardgruppe einer jeden Veranstaltung "
 "zugewiesen. Wenn eine andere Gruppe vorgesehen ist, verwenden Sie bitte den "
 "Dialog „Zu Veranstaltungen hinzufügen“ in der Account-Detailansicht."
+
+msgid ""
+"Attention: Existing home committees and external status will be overwritten."
+msgstr ""
+"Achtung: Existierende Heimatgremien und Extern-Status werden überschrieben."
 
 msgid "Attention: First enter the wifi data in [Settings > General]"
 msgstr ""
@@ -2306,6 +2314,9 @@ msgstr "Ausgewählte Anträge exportieren"
 msgid "Extension"
 msgstr "Erweiterung"
 
+msgid "External"
+msgstr "Externe"
+
 msgid "External ID"
 msgstr "Externe ID"
 
@@ -2511,6 +2522,9 @@ msgstr "Gruppen mit Schreibberechtigungen"
 msgid "Has SSO identification"
 msgstr "Hat SSO-Kennung"
 
+msgid "Has a home committee"
+msgstr "Hat ein Heimatgremium"
+
 msgid "Has a membership number"
 msgstr "Hat eine Mitgliedsnummer"
 
@@ -2540,6 +2554,9 @@ msgstr "Hat keine SSO-Kennung"
 
 msgid "Has no email address"
 msgstr "Hat keine E-Mail-Adresse"
+
+msgid "Has no home committee"
+msgstr "Hat kein Heimatgremium"
 
 msgid "Has no identical motions"
 msgstr "Hat keine wortgleichen Anträge"
@@ -2630,6 +2647,9 @@ msgstr "Chronik"
 
 msgid "Home"
 msgstr "Startseite"
+
+msgid "Home committee"
+msgstr "Heimatgremium"
 
 msgid "How to create new amendments"
 msgstr "Erstellung von Änderungsanträgen"
@@ -2836,6 +2856,9 @@ msgstr "Ist geschlossen"
 msgid "Is committee admin"
 msgstr "Ist Gremienadmin"
 
+msgid "Is external"
+msgstr "Ist extern"
+
 msgid "Is favorite"
 msgstr "Ist Favorit"
 
@@ -2871,6 +2894,9 @@ msgstr "Ist kein Änderungsantrag"
 
 msgid "Is not archived"
 msgstr "Ist nicht archiviert"
+
+msgid "Is not external"
+msgstr "Ist nicht extern"
 
 msgid "Is not favorite"
 msgstr "Ist kein Favorit"
@@ -3885,6 +3911,12 @@ msgstr "Parallel hochladen"
 msgid "Parent agenda item"
 msgstr "Elternelement in der Tagesordnung"
 
+msgid "Parent committee"
+msgstr "Elterngremium"
+
+msgid "Parent committee name"
+msgstr "Elterngremiumname"
+
 msgid "Parent motion text changed"
 msgstr "Antragstext des Hauptantrags geändert"
 
@@ -3896,6 +3928,12 @@ msgstr "Teilnehmer*in"
 
 msgid "Participant added to group {} in meeting {}"
 msgstr "Teilnehmer*in hinzugefügt zur Gruppe {} in Veranstaltung {}"
+
+msgid "Participant added to group {} in meeting {}."
+msgstr "Teilnehmer*in hinzugefügt zur Gruppe {} in Veranstaltung {}."
+
+msgid "Participant added to meeting {}."
+msgstr "Teilnehmer*in hinzugefügt zur Veranstaltung {}."
 
 msgid "Participant added to multiple groups in meeting {}"
 msgstr "Teilnehmer*in hinzugefügt zu mehreren Gruppen in Veranstaltung {}"
@@ -3927,6 +3965,9 @@ msgstr "Teilnehmernummer"
 
 msgid "Participant removed from group {} in meeting {}"
 msgstr "Teilnehmer*in entfernt aus der Gruppe {} in Veranstaltung {}"
+
+msgid "Participant removed from meeting {}"
+msgstr "Teilnehmer*in entfernt aus Veranstaltung {}"
 
 msgid "Participant removed from multiple groups in meeting {}"
 msgstr "Teilnehmer*in entfernt aus mehreren Gruppen in Veranstaltung {}"
@@ -4549,6 +4590,12 @@ msgstr "Als öffentliche Vorlage setzen"
 msgid "Set category"
 msgstr "Sachgebiet setzen"
 
+msgid "Set external"
+msgstr "Extern-Status setzen"
+
+msgid "Set external status for selected accounts"
+msgstr "Extern-Status für ausgewählte Accounts setzen:"
+
 msgid "Set favorite"
 msgstr "Favorit markieren"
 
@@ -4617,6 +4664,9 @@ msgstr "Schlagwörter setzen"
 
 msgid "Set workflow"
 msgstr "Arbeitsablauf setzen"
+
+msgid "Set/remove home committee"
+msgstr "Heimatgremium setzen/entfernen"
 
 msgid "Set/remove meeting"
 msgstr "Veranstaltung setzen/entfernen"
@@ -4901,6 +4951,9 @@ msgstr "Gliederungsebenen erstellt"
 msgid "Subcategory"
 msgstr "Untersachgebiet"
 
+msgid "Subcommittees"
+msgstr "Untergremien"
+
 msgid "Submission date"
 msgstr "Einreichungsdatum"
 
@@ -5173,9 +5226,6 @@ msgstr ""
 "Dieser Account ist nicht als Kandidat*in, Antragsteller*in oder Redner*in in"
 " einer Veranstaltung verlinkt und auch kein Verwalter*in eines Gremiums."
 
-msgid "This action will diminish your organization management level"
-msgstr "Diese Aktion wird Ihre Administrationsrolle beeinträchtigen"
-
 msgid "This action will remove you from one or more groups."
 msgstr "Diese Aktion entfernt Sie aus einer oder mehreren Gruppen."
 
@@ -5285,12 +5335,11 @@ msgstr ""
 "oder entfernt:"
 
 msgid ""
-"This will diminish your ability to do things on the organization level and "
-"you will not be able to revert this yourself."
+"This will add or remove the selected accounts to the selected home "
+"committee:"
 msgstr ""
-"Dadurch wird Ihre Fähigkeit, Dinge auf der Organisationsebene zu tun, "
-"beeinträchtigt. Sie werden nicht in der Lage sein, dies selbst rückgängig zu"
-" machen."
+"Den ausgewählten Accounts wird folgendes Heimatgremium gesetzt oder "
+"entfernt:"
 
 msgid "This will move all selected motions as childs to:"
 msgstr ""
@@ -6033,6 +6082,9 @@ msgstr "beendet"
 msgid "example"
 msgstr "Beispiel"
 
+msgid "external"
+msgstr "extern"
+
 msgid "female"
 msgstr "weiblich"
 
@@ -6068,6 +6120,9 @@ msgstr "versteckt"
 
 msgid "inactive"
 msgstr "inaktiv"
+
+msgid "incl. subcommittees"
+msgstr "inkl. Untergremien"
 
 msgid "inline"
 msgstr "innerhalb"
@@ -6114,6 +6169,9 @@ msgstr "Mehrheit"
 msgid "male"
 msgstr "männlich"
 
+msgid "mark amendments as original"
+msgstr "Änderungsanträge als Original markieren"
+
 msgid "max. 32 characters allowed"
 msgstr "max. 32 Zeichen erlaubt"
 
@@ -6147,11 +6205,17 @@ msgstr "nicht-namentlich"
 msgid "none"
 msgstr "aus"
 
+msgid "not external"
+msgstr "nicht extern"
+
 msgid "not specified"
 msgstr "nicht angegeben"
 
 msgid "of"
 msgstr "von"
+
+msgid "of which"
+msgstr "davon"
 
 msgid "of which %num% not permissable"
 msgstr "davon %num% nicht zulässig"
@@ -6234,6 +6298,9 @@ msgstr "bis"
 msgid "today"
 msgstr "heute"
 
+msgid "total"
+msgstr "insgesamt"
+
 msgid "undocumented"
 msgstr "nicht erfasst"
 
@@ -6263,6 +6330,9 @@ msgstr "werden importiert"
 
 msgid "will be updated"
 msgstr "werden aktualisiert"
+
+msgid "with"
+msgstr "mit"
 
 msgid "without identifier"
 msgstr "ohne Bezeichner"
