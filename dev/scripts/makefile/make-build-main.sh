@@ -36,7 +36,7 @@ info "Building $FUNCTION"
 # - Run specific function
 case "$FUNCTION" in
 "help")        help ;;
-"dev")         echocmd bash build-all-submodules dev ;;
-"tests")       echocmd bash build-all-submodules tests ;;
-*)             echocmd bash build-all-submodules prod ;;
+"dev")         echocmd bash build-all-submodules.sh dev ;;
+"tests")       echocmd bash build-all-submodules.sh tests ;;
+*)             echocmd bash build-all-submodules.sh prod ;;
 esac

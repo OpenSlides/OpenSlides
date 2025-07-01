@@ -22,12 +22,15 @@ Available run-dev functions:
     run-dev-help        : Print help
     run-dev-detached    : Builds and starts development images with detach flag
     run-dev-attached    : Builds and starts development images; enters shell of started image
-                          If a docker compose file is declared, the \$ARGS parameter determines the specific container id you will enter
+                          If a docker compose file is declared, the \$ARGS parameter determines
+                          the specific container id you will enter (default value is equal the service name)
     run-dev-standalone  : Builds and starts development images; closes them immediatly afterwards
     run-dev-stop        : Stops any currently running images associated with the service or docker compose file
-    run-dev-exec        : Executes command inside container. Use \$ARGS to declare command that should be used. If using a docker compose setup, declare which container the command should be used in.
+    run-dev-exec        : Executes command inside container.
+                          Use \$ARGS to declare command that should be used. If using a docker compose setup, declare which container the command should be used in.
     run-dev-enter       : Enters bash of started container.
-                          If a docker compose file is declared, the \$ARGS parameter determines the specific container id you will enter
+                          If a docker compose file is declared, the \$ARGS parameter determines
+                          the specific container id you will enter (default value is equal the service name)
     "
 }
 
@@ -57,7 +60,7 @@ fi
 info "Building $SERVICE"
 
 # - Build Image
-echocmd make build-dev
+if [ "$FUNCTION" != "help" ]; then echocmd make build-dev; fi
 
 info "Running $FUNCTION"
 
@@ -74,7 +77,7 @@ then
     case "$FUNCTION" in
     "help")        help ;;
     "clean")       { docker stop $(docker ps -aq) && docker rm $(docker ps -a -q) && docker rmi -f $(docker images -aq); } || \
-                    echocmd bash $LOCAL_PWD/build-all-submodules.sh dev "$SERVICE" && \
+                    echocmd make build-dev && \
                     echocmd eval "$DC up $ARGS" ;;
     "standalone")  echocmd eval "$DC up $ARGS" && echocmd eval "$DC down" ;;
     "detached")    echocmd eval "$DC up $ARGS -d"  && info "Containers started" ;;
@@ -84,7 +87,8 @@ then
                    echocmd eval "$DC down" ;;
     "stop")        echocmd eval "$DC down" ;;
     "exec")        echocmd eval "$DC exec $ARGS" ;;
-    "enter")       echocmd eval "$DC exec $ARGS ./entrypoint.sh bash --rcfile .bashrc" ;;
+    "enter")       { [ -z "$ARGS" ] && \info "No container was specified; Service container will be taken as default" && ARGS="$SERVICE"; } && \
+                   echocmd eval "$DC exec $ARGS ./entrypoint.sh bash --rcfile .bashrc" ;;
     *)             echocmd eval "$DC up $ARGS" ;;
     esac
 elif [ -n "$SERVICE" ]
@@ -100,7 +104,7 @@ then
     case "$FUNCTION" in
     "help")        help ;;
     "clean")       { docker stop $(shell docker ps -aq) && docker rm $(shell docker ps -a -q) && docker rmi -f $(shell docker images -aq); } || \
-                    echocmd bash $LOCAL_PWD/build-all-submodules.sh dev "$SERVICE" && \
+                    echocmd make build-dev && \
                     echocmd docker run "$IMAGE_TAG" ;;
     "standalone")  echocmd docker run "$IMAGE_TAG" && echocmd docker stop $(docker ps -a -q --filter ancestor="$IMAGE_TAG" --format="{{.ID}}") ;;
     "detached")    echocmd docker run -d "$IMAGE_TAG" && info "Container started" ;;
