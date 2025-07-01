@@ -18,6 +18,7 @@ if [ "${CONTEXT}" != "prod" ] && [ "${CONTEXT}" != "dev" ] && [ "${CONTEXT}" != 
     export CONTEXT="prod"
 fi
 
+info "Building image(s) for context $CONTEXT"
 export SINGLE_TARGET=$2
 
 IFS=$'\n'

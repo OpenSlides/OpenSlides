@@ -20,12 +20,14 @@ Available run-dev functions:
     run-dev             : Builds and starts development images
     run-dev-clean       : Stops ALL containers and deletes ALL images. Then builds and starts development images
     run-dev-help        : Print help
-    run-dev-detach      : Builds and starts development images with detach flag
-    run-dev-attach      : Builds and starts development images; enters shell of started image
+    run-dev-detached    : Builds and starts development images with detach flag
+    run-dev-attached    : Builds and starts development images; enters shell of started image
                           If a docker compose file is declared, the \$ARGS parameter determines the specific container id you will enter
     run-dev-standalone  : Builds and starts development images; closes them immediatly afterwards
     run-dev-stop        : Stops any currently running images associated with the service or docker compose file
-    run-dev-exec        : Executes command inside container. Use \$ARGS to declare command that should be used. Also declare which container the command should be used in, if using a docker compose setup.
+    run-dev-exec        : Executes command inside container. Use \$ARGS to declare command that should be used. If using a docker compose setup, declare which container the command should be used in.
+    run-dev-enter       : Enters bash of started container.
+                          If a docker compose file is declared, the \$ARGS parameter determines the specific container id you will enter
     "
 }
 
@@ -55,7 +57,7 @@ fi
 info "Building $SERVICE"
 
 # - Build Image
-echocmd bash $LOCAL_PWD/build-all-submodules.sh dev "$SERVICE"
+echocmd make build-dev
 
 info "Running $FUNCTION"
 
@@ -76,12 +78,13 @@ then
                     echocmd eval "$DC up $ARGS" ;;
     "standalone")  echocmd eval "$DC up $ARGS" && echocmd eval "$DC down" ;;
     "detached")    echocmd eval "$DC up $ARGS -d"  && info "Containers started" ;;
-    "attached")    { [ -z "$ARGS" ] && error "No container was specified (type: make dev-run-help)" && exit 1; } || \
-                   echocmd eval "$DC up $ARGS -d" && \
+    "attached")    echocmd eval "$DC up -d" && \
+                   { [ -z "$ARGS" ] && \info "No container was specified; Service container will be taken as default" && ARGS="$SERVICE"; } && \
                    echocmd eval "$DC exec $ARGS ./entrypoint.sh bash --rcfile .bashrc" && \
                    echocmd eval "$DC down" ;;
     "stop")        echocmd eval "$DC down" ;;
     "exec")        echocmd eval "$DC exec $ARGS" ;;
+    "enter")       echocmd eval "$DC exec $ARGS ./entrypoint.sh bash --rcfile .bashrc" ;;
     *)             echocmd eval "$DC up $ARGS" ;;
     esac
 elif [ -n "$SERVICE" ]
@@ -103,6 +106,9 @@ then
     "detached")    echocmd docker run -d "$IMAGE_TAG" && info "Container started" ;;
     "attached")    echocmd docker run "$IMAGE_TAG" ;;
     "stop")        echocmd docker exec $(docker ps -a -q --filter ancestor="$IMAGE_TAG" --format="{{.ID}}") "$ARGS";;
+    "enter")       echocmd docker -it $(docker ps -a -q --filter ancestor="$IMAGE_TAG" --format="{{.ID}}") bash ;;
     *)             echocmd docker run "$IMAGE_TAG" ;;
     esac
 fi
+
+exit 0

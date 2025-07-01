@@ -1,11 +1,11 @@
-DEV_PATH=dev
-DOCKER_PATH=$(DEV_PATH)/docker
-SCRIPT_PATH=$(DEV_PATH)/scripts
-MAKEFILE_PATH=$(SCRIPT_PATH)/makefile
-DC_DEV=docker compose -f $(DOCKER_PATH)/docker-compose.dev.yml
-DC_TEST=docker compose -f $(DOCKER_PATH)/docker-compose.test.yml
-GO_VERSION=$(shell head -n 1 go.work)
-DOCKER_COMPOSE_FILE=$(DOCKER_PATH)/docker-compose.dev.yml
+override DEV_PATH=dev
+override DOCKER_PATH=$(DEV_PATH)/docker
+override SCRIPT_PATH=$(DEV_PATH)/scripts
+override MAKEFILE_PATH=$(SCRIPT_PATH)/makefile
+override DC_DEV=docker compose -f $(DOCKER_PATH)/docker-compose.dev.yml
+override DC_TEST=docker compose -f $(DOCKER_PATH)/docker-compose.test.yml
+override GO_VERSION=$(shell head -n 1 go.work)
+override DOCKER_COMPOSE_FILE=$(DOCKER_PATH)/docker-compose.dev.yml
 
 
 # Build images for different contexts
