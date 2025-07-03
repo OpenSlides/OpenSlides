@@ -15,6 +15,7 @@ Parameters:
     #2 SERVICE      : Name of the Service that called this script. If empty, the main repository assumed to be the caller
     #3 COMPOSE_FILE : Path to the docker compose file that should be used (Path relative to the services directory)
     #4 ARGS         : Additional parameters that will be appended to the called docker run or docker compose calls
+    #5 USED_SHELL   : Optional parameter to declare the type of shell that is supposed to entered when attaching / entering container. Default is 'sh'
 
 Available run-dev functions:
     run-dev             : Builds and starts development images
@@ -24,6 +25,7 @@ Available run-dev functions:
     run-dev-attached    : Builds and starts development images; enters shell of started image
                           If a docker compose file is declared, the \$ARGS parameter determines
                           the specific container id you will enter (default value is equal the service name)
+                          as well as the shell you want to enter (sh, bash, entrypoint etc.)
     run-dev-standalone  : Builds and starts development images; closes them immediatly afterwards
     run-dev-stop        : Stops any currently running images associated with the service or docker compose file
     run-dev-exec        : Executes command inside container.
@@ -39,11 +41,14 @@ TARGET=$1
 SERVICE=$2
 COMPOSE_FILE=$3
 ARGS=$4
+USED_SHELL=$5
 
 LOCAL_PWD=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 PREFIX="run-dev-"
 FUNCTION=${TARGET#"$PREFIX"}
+
+if [ -z "$USED_SHELL" ]; then USED_SHELL="sh"; fi
 
 # - Error Catching
 if [ -z "$SERVICE" ] && [ -z "$COMPOSE_FILE" ]
@@ -56,11 +61,6 @@ then
     error "Run-dev requires either a docker compose file or a specific service image to run (Missing Parameters #2 and/or #3)"
     exit 1
 fi
-
-info "Building $SERVICE"
-
-# - Build Image
-if [ "$FUNCTION" != "help" ]; then echocmd make build-dev; fi
 
 info "Running $FUNCTION"
 
@@ -79,17 +79,17 @@ then
     "clean")       { docker stop $(docker ps -aq) && docker rm $(docker ps -a -q) && docker rmi -f $(docker images -aq); } || \
                     echocmd make build-dev && \
                     echocmd eval "$DC up $ARGS" ;;
-    "standalone")  echocmd eval "$DC up $ARGS" && echocmd eval "$DC down" ;;
-    "detached")    echocmd eval "$DC up $ARGS -d"  && info "Containers started" ;;
-    "attached")    echocmd eval "$DC up -d" && \
+    "standalone")  echocmd make build-dev && echocmd eval "$DC up $ARGS" && echocmd eval "$DC down" ;;
+    "detached")    echocmd make build-dev && echocmd eval "$DC up $ARGS -d"  && info "Containers started" ;;
+    "attached")    echocmd make build-dev && echocmd eval "$DC up -d" && \
                    { [ -z "$ARGS" ] && \info "No container was specified; Service container will be taken as default" && ARGS="$SERVICE"; } && \
-                   echocmd eval "$DC exec $ARGS ./entrypoint.sh bash --rcfile .bashrc" && \
+                   echocmd eval "$DC exec $ARGS $USED_SHELL" && \
                    echocmd eval "$DC down" ;;
     "stop")        echocmd eval "$DC down" ;;
     "exec")        echocmd eval "$DC exec $ARGS" ;;
     "enter")       { [ -z "$ARGS" ] && \info "No container was specified; Service container will be taken as default" && ARGS="$SERVICE"; } && \
-                   echocmd eval "$DC exec $ARGS ./entrypoint.sh bash --rcfile .bashrc" ;;
-    *)             echocmd eval "$DC up $ARGS" ;;
+                   echocmd eval "$DC exec $ARGS" ;;
+    *)             echocmd make build-dev && echocmd eval "$DC up $ARGS $USED_SHELL" ;;
     esac
 elif [ -n "$SERVICE" ]
 then
@@ -106,12 +106,12 @@ then
     "clean")       { docker stop $(shell docker ps -aq) && docker rm $(shell docker ps -a -q) && docker rmi -f $(shell docker images -aq); } || \
                     echocmd make build-dev && \
                     echocmd docker run "$IMAGE_TAG" ;;
-    "standalone")  echocmd docker run "$IMAGE_TAG" && echocmd docker stop $(docker ps -a -q --filter ancestor="$IMAGE_TAG" --format="{{.ID}}") ;;
-    "detached")    echocmd docker run -d "$IMAGE_TAG" && info "Container started" ;;
-    "attached")    echocmd docker run "$IMAGE_TAG" ;;
+    "standalone")  echocmd make build-dev && echocmd docker run "$ARGS" "$IMAGE_TAG" && echocmd docker stop $(docker ps -a -q --filter ancestor="$IMAGE_TAG" --format="{{.ID}}") ;;
+    "detached")    echocmd make build-dev && echocmd docker run "$ARGS" -d "$IMAGE_TAG" && info "Container started" ;;
+    "attached")    echocmd make build-dev && echocmd docker run "$ARGS" "$IMAGE_TAG" "$USED_SHELL";;
     "stop")        echocmd docker exec $(docker ps -a -q --filter ancestor="$IMAGE_TAG" --format="{{.ID}}") "$ARGS";;
-    "enter")       echocmd docker -it $(docker ps -a -q --filter ancestor="$IMAGE_TAG" --format="{{.ID}}") bash ;;
-    *)             echocmd docker run "$IMAGE_TAG" ;;
+    "enter")       echocmd docker -it $(docker ps -a -q --filter ancestor="$IMAGE_TAG" --format="{{.ID}}") "$ARGS" "$USED_SHELL" ;;
+    *)             echocmd make build-dev && echocmd docker run "$ARGS" "$IMAGE_TAG" ;;
     esac
 fi
 
