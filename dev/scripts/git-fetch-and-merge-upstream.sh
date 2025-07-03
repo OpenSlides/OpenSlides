@@ -37,9 +37,6 @@ update_meta(){
     fi
 }
 
-# Main
-fetch_merge_push
-
 IFS=$'\n'
 for DIR in $(git submodule foreach --recursive -q sh -c pwd); do
     # Extract submodule name
