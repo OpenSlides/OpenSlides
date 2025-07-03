@@ -45,8 +45,10 @@ USED_SHELL=$5
 
 LOCAL_PWD=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
-PREFIX="run-dev-"
-FUNCTION=${TARGET#"$PREFIX"}
+# Strip 'run-dev' '-' and any '.o' or similar file endings that may have been automatically added from implicit rules by GNU
+FUNCTION=${TARGET#"run-dev"}
+FUNCTION=${FUNCTION#"-"}
+FUNCTION=${FUNCTION%.*}
 
 if [ -z "$USED_SHELL" ]; then USED_SHELL="sh"; fi
 
@@ -89,7 +91,8 @@ then
     "exec")        echocmd eval "$DC exec $ARGS" ;;
     "enter")       { [ -z "$ARGS" ] && \info "No container was specified; Service container will be taken as default" && ARGS="$SERVICE"; } && \
                    echocmd eval "$DC exec $ARGS" ;;
-    *)             echocmd make build-dev && echocmd eval "$DC up $ARGS $USED_SHELL" ;;
+    "")            echocmd make build-dev && echocmd eval "$DC up $ARGS $USED_SHELL" ;;
+    *)             warn "No command found matching $FUNCTION" ;;
     esac
 elif [ -n "$SERVICE" ]
 then
@@ -111,7 +114,8 @@ then
     "attached")    echocmd make build-dev && echocmd docker run "$ARGS" "$IMAGE_TAG" "$USED_SHELL";;
     "stop")        echocmd docker exec $(docker ps -a -q --filter ancestor="$IMAGE_TAG" --format="{{.ID}}") "$ARGS";;
     "enter")       echocmd docker -it $(docker ps -a -q --filter ancestor="$IMAGE_TAG" --format="{{.ID}}") "$ARGS" "$USED_SHELL" ;;
-    *)             echocmd make build-dev && echocmd docker run "$ARGS" "$IMAGE_TAG" ;;
+    "")             echocmd make build-dev && echocmd docker run "$ARGS" "$IMAGE_TAG" ;;
+    *)             warn "No command found matching $FUNCTION" ;;
     esac
 fi
 
