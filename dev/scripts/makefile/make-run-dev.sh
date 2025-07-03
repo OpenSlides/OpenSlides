@@ -17,6 +17,9 @@ Parameters:
     #4 ARGS         : Additional parameters that will be appended to the called docker run or docker compose calls
     #5 USED_SHELL   : Optional parameter to declare the type of shell that is supposed to entered when attaching / entering container. Default is 'sh'
 
+Flags:
+    -v              : Appends '--volumes' whenever a docker compose setup is closed
+
 Available run-dev functions:
     run-dev             : Builds and starts development images
     run-dev-clean       : Stops ALL containers and deletes ALL images. Then builds and starts development images
@@ -35,6 +38,15 @@ Available run-dev functions:
                           the specific container id you will enter (default value is equal the service name)
     "
 }
+
+# Flags
+while getopts "v" FLAG; do
+    case "${FLAG}" in
+    v) CLOSE_VOLUMES="--volumes" ;;
+    *) echo "Can't parse flag ${FLAG}" && break ;;
+    esac
+done
+shift $((OPTIND - 1))
 
 # Setup
 TARGET=$1
@@ -66,6 +78,7 @@ fi
 
 info "Running $FUNCTION"
 
+
 # - Run specific function
 if [ -n "$COMPOSE_FILE" ]
 then
@@ -81,13 +94,13 @@ then
     "clean")       { docker stop $(docker ps -aq) && docker rm $(docker ps -a -q) && docker rmi -f $(docker images -aq); } || \
                     echocmd make build-dev && \
                     echocmd eval "$DC up $ARGS" ;;
-    "standalone")  echocmd make build-dev && echocmd eval "$DC up $ARGS" && echocmd eval "$DC down" ;;
+    "standalone")  echocmd make build-dev && echocmd eval "$DC up $ARGS" && echocmd eval "$DC down $CLOSE_VOLUMES" ;;
     "detached")    echocmd make build-dev && echocmd eval "$DC up $ARGS -d"  && info "Containers started" ;;
     "attached")    echocmd make build-dev && echocmd eval "$DC up -d" && \
                    { [ -z "$ARGS" ] && \info "No container was specified; Service container will be taken as default" && ARGS="$SERVICE"; } && \
                    echocmd eval "$DC exec $ARGS $USED_SHELL" && \
-                   echocmd eval "$DC down" ;;
-    "stop")        echocmd eval "$DC down" ;;
+                   echocmd eval "$DC down $CLOSE_VOLUMES" ;;
+    "stop")        echocmd eval "$DC down $CLOSE_VOLUMES" ;;
     "exec")        echocmd eval "$DC exec $ARGS" ;;
     "enter")       { [ -z "$ARGS" ] && \info "No container was specified; Service container will be taken as default" && ARGS="$SERVICE"; } && \
                    echocmd eval "$DC exec $ARGS" ;;
