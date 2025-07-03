@@ -1,0 +1,4 @@
+ignored:
+  - DL3018 # Ignore unpinned install version rule
+  - DL3008 # Ignore unpinned install version rule
+  - SC2086 # Unfixable / buggy
