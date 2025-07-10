@@ -1,6 +1,13 @@
 version: "3"
 services:
   datastore-reader:
+    build:
+        context: ../../openslides-datastore-service
+        target: "dev"
+        args:
+            CONTEXT: "dev"
+            MODULE: "reader"
+            PORT: "9010"
     image: openslides-datastore-reader-dev
     depends_on:
       - postgres
@@ -15,6 +22,13 @@ services:
       - 5680:5678
 
   datastore-writer:
+    build:
+        context: ../../openslides-datastore-service
+        target: "dev"
+        args:
+            CONTEXT: "dev"
+            MODULE: "writer"
+            PORT: "9011"
     image: openslides-datastore-writer-dev
     depends_on:
       - postgres
@@ -37,6 +51,11 @@ services:
       - POSTGRES_DB=openslides
 
   client:
+    build:
+        context: ../../openslides-client
+        target: "dev"
+        args:
+            CONTEXT: "dev"
     image: openslides-client-dev
     env_file: services.env
     environment:
@@ -46,6 +65,11 @@ services:
       - ../../openslides-client/client/cli:/app/cli
 
   backend:
+    build:
+        context: ../../openslides-backend
+        target: "dev"
+        args:
+            CONTEXT: "dev"
     image: openslides-backend-dev
     depends_on:
       - datastore-reader
@@ -77,6 +101,11 @@ services:
       - ../../openslides-backend/scripts:/app/scripts
 
   autoupdate:
+    build:
+        context: ../../openslides-autoupdate-service
+        target: "dev"
+        args:
+            CONTEXT: "dev"
     image: openslides-autoupdate-dev
     depends_on:
       - datastore-reader
@@ -95,6 +124,11 @@ services:
       - "9012:9012"
 
   icc:
+    build:
+        context: ../../openslides-icc-service
+        target: "dev"
+        args:
+            CONTEXT: "dev"
     image: openslides-icc-dev
     depends_on:
       - datastore-reader
@@ -112,6 +146,11 @@ services:
       - "9007:9007"
 
   search:
+    build:
+        context: ../../openslides-search-service
+        target: "dev"
+        args:
+            CONTEXT: "dev"
     image: openslides-search-dev
     depends_on:
       - autoupdate
@@ -129,6 +168,11 @@ services:
       - "9050:9050"
 
   auth:
+    build:
+        context: ../../openslides-auth-service
+        target: "dev"
+        args:
+            CONTEXT: "dev"
     image: openslides-auth-dev
     depends_on:
       - datastore-reader
@@ -142,6 +186,11 @@ services:
       - "9004:9004"
 
   media:
+    build:
+        context: ../../openslides-media-service
+        target: "dev"
+        args:
+            CONTEXT: "dev"
     image: openslides-media-dev
     depends_on:
       - backend
@@ -153,6 +202,11 @@ services:
       - ../../openslides-media-service/src:/app/src
 
   manage:
+    build:
+        context: ../../openslides-manage-service
+        target: "dev"
+        args:
+            CONTEXT: "dev"
     image: openslides-manage-dev
     depends_on:
       - auth
@@ -169,6 +223,11 @@ services:
       - "6379:6379"
 
   proxy:
+    build:
+        context: ../../openslides-proxy
+        target: "dev"
+        args:
+            CONTEXT: "dev"
     image: openslides-proxy-dev
     depends_on:
       - client
@@ -185,6 +244,11 @@ services:
       - "8025:8025" # web ui to check mails manually
 
   vote:
+    build:
+        context: ../../openslides-vote-service
+        target: "dev"
+        args:
+            CONTEXT: "dev"
     image: openslides-vote-dev
     depends_on:
       - auth
