@@ -6,11 +6,11 @@ DC_TEST=docker compose -f $(DOCKER_PATH)/docker-compose.test.yml
 GO_VERSION=$(shell head -n 1 go.work)
 
 # Main command: start the dev server
-run-dev: | build-dev 
+run-dev: | build-dev
 	$(DC_DEV) up $(ARGS)
 
 # Main command: start the dev server in detached mode
-run-dev-detached: | build-dev 
+run-dev-detached: | build-dev
 	$(DC_DEV) up $(ARGS) -d
 
 # Same as run-dev, but with OpenTelemetry
@@ -42,7 +42,7 @@ switch-to-test:
 switch-to-dev:
 	$(DC_TEST) stop postgres-test
 	$(DC_DEV) up -d postgres backend
-	$(DC_DEV) restart datastore-writer datastore-reader autoupdate vote 
+	$(DC_DEV) restart datastore-writer datastore-reader autoupdate vote
 
 # Shorthand to directly enter a shell in the backend after switching the databases
 run-backend: | switch-to-test
@@ -111,3 +111,6 @@ clean-run-dev:
 	docker rm $(shell docker ps -a -q) || true
 	docker rmi -f $(shell docker images -aq) || true
 	make run-dev
+
+test-ci:
+	bash $(SCRIPT_PATH)/act/run-act.sh $(FOLDER) $(WORKFLOW_TRIGGER)
