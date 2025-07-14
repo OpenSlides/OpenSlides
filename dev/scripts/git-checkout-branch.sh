@@ -9,20 +9,16 @@ export BRANCH=$1
 export SINGLE_TARGET=$2
 
 checkout() {
-    export BRANCH=$2
+    export BRANCH=$1
 
-    if git ls-remote --exit-code --heads upstream "$BRANCH"
-    then
-        echocmd git switch -c "$BRANCH" --track upstream/"$BRANCH"
-    else
-        error "upstream/$BRANCH does not exist"
-        exit 1
-    fi
+    HEADS=$(git ls-remote --heads)
+    if ! $(echo "$HEADS" | grep -q "refs/heads/$BRANCH"); then error "$BRANCH does not exist" && exit 1; fi
+
+    echocmd git switch "$BRANCH"
 }
 
 checkout "${BRANCH}"
 
-exit 1
 IFS=$'\n'
 for DIR in $(git submodule foreach --recursive -q sh -c pwd); do
     # Extract submodule name
