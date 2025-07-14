@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 # Import OpenSlides utils package
 . "$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )/../util.sh"
 

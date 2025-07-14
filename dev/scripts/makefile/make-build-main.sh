@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 # Import OpenSlides utils package
 . "$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )/../util.sh"
 
@@ -12,7 +14,7 @@ Builds service images for given context. Intended to be called from Makefiles
 Parameters:
     #1 TARGET       : Name of the Makefile Target that called this script.
 
-Available run-dev functions:
+Available dev functions:
     build-help          : Print help
     build-dev           : Builds development images
     build-tests         : Builds test images

@@ -13,7 +13,7 @@ Parameters:
     #1 TARGET       : Name of the Makefile Target that called this script.
     #2 SERVICE      : Name of the Service that called this script. If empty, the main repository assumed to be the caller
 
-Available run-dev functions:
+Available dev functions:
     build-help          : Print help
     build-dev           : Builds development images
     build-tests         : Builds test images

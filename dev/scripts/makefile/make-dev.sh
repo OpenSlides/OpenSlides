@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 # Import OpenSlides utils package
 . "$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )/../util.sh"
 
@@ -20,20 +22,20 @@ Parameters:
 Flags:
     -v              : Appends '--volumes' whenever a docker compose setup is closed
 
-Available run-dev functions:
-    run-dev             : Builds and starts development images
-    run-dev-clean       : Stops ALL containers and deletes ALL images. Then builds and starts development images
-    run-dev-help        : Print help
-    run-dev-detached    : Builds and starts development images with detach flag
-    run-dev-attached    : Builds and starts development images; enters shell of started image
+Available dev functions:
+    dev             : Builds and starts development images
+    dev-clean       : Stops ALL containers and deletes ALL images. Then builds and starts development images
+    dev-help        : Print help
+    dev-detached    : Builds and starts development images with detach flag
+    dev-attached    : Builds and starts development images; enters shell of started image
                           If a docker compose file is declared, the \$ARGS parameter determines
                           the specific container id you will enter (default value is equal the service name)
                           as well as the shell you want to enter (sh, bash, entrypoint etc.)
-    run-dev-standalone  : Builds and starts development images; closes them immediatly afterwards
-    run-dev-stop        : Stops any currently running images associated with the service or docker compose file
-    run-dev-exec        : Executes command inside container.
+    dev-standalone  : Builds and starts development images; closes them immediatly afterwards
+    dev-stop        : Stops any currently running images associated with the service or docker compose file
+    dev-exec        : Executes command inside container.
                           Use \$ARGS to declare command that should be used. If using a docker compose setup, declare which container the command should be used in.
-    run-dev-enter       : Enters bash of started container.
+    dev-enter       : Enters bash of started container.
                           If a docker compose file is declared, the \$ARGS parameter determines
                           the specific container id you will enter (default value is equal the service name)
     "
@@ -57,8 +59,8 @@ USED_SHELL=$5
 
 LOCAL_PWD=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
-# Strip 'run-dev' '-' and any '.o' or similar file endings that may have been automatically added from implicit rules by GNU
-FUNCTION=${TARGET#"run-dev"}
+# Strip 'dev', '-' and any '.o' or similar file endings that may have been automatically added from implicit rules by GNU
+FUNCTION=${TARGET#"dev"}
 FUNCTION=${FUNCTION#"-"}
 FUNCTION=${FUNCTION%.*}
 
