@@ -41,7 +41,7 @@ trap 'cleanup' EXIT INT
 
     # Build dockerfile
     info "Building Image"
-    echocmd docker build -f "$LOCAL_PWD"/Dockerfile -t act-on --build-arg SUBDIRECTORY="$SERVICE_FOLDER"  .
+    echocmd docker build -f "$LOCAL_PWD"/Dockerfile -t act-on --build-arg SUBDIRECTORY="$SERVICE_FOLDER" .
 
     info "Setup Container Environment"
     echocmd docker run --name "$DIND_CONTAINER" -v /var/run/docker.sock:/var/run/docker.sock -d act-on
