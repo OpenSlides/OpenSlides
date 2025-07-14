@@ -26,6 +26,44 @@ run-dev%:
 
 run-tests:
 	bash dev/scripts/makefile/test-all-submodules.sh
+# Execute while run-dev is running: Switch to the test database to execute backend tests without
+# interfering with your dev database
+switch-to-test:
+	$(DC_DEV) stop postgres
+	$(DC_TEST) up -d postgres-test
+	$(DC_DEV) -f $(DOCKER_PATH)/docker-compose.backend.yml up -d backend
+	$(DC_DEV) restart datastore-writer datastore-reader autoupdate vote
+
+# Execute while run-dev is running: Switch back to your dev database
+switch-to-dev:
+	$(DC_TEST) stop postgres-test
+	$(DC_DEV) up -d postgres backend
+	$(DC_DEV) restart datastore-writer datastore-reader autoupdate vote
+
+# Shorthand to directly enter a shell in the backend after switching the databases
+run-backend: | switch-to-test
+	$(DC_DEV) exec backend ./entrypoint.sh bash --rcfile .bashrc
+
+# Stop all backend-related services so that the backend dev setup can start
+stop-backend:
+	$(DC_DEV) stop backend datastore-reader datastore-writer auth vote postgres redis icc autoupdate search
+
+# Restart all backend-related services
+start-backend:
+	$(DC_DEV) up -d backend datastore-reader datastore-writer auth vote postgres redis icc autoupdate search
+
+# Stop the dev server
+stop-dev:
+	$(DC_DEV) down --volumes --remove-orphans
+
+# Stop the dev server with OpenTelemetry
+stop-dev-otel:
+	$(DC_DEV) -f $(DOCKER_PATH)/dc.otel.dev.yml down --volumes --remove-orphans
+
+build:
+	$(DOCKER_PATH)/build.sh
+
+# Shorthands to execute the make-release script
 
 # Make-release commands
 

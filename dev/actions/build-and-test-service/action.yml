@@ -10,7 +10,7 @@ runs:
   using: "composite"
   steps:
       - name: "Build Test"
-        uses: Janmtbehrens/OpenSlides/dev/actions/build-service@all-in-one
+        uses: OpenSlides/OpenSlides/dev/actions/build-service@main
         with:
           service: ${{ inputs.service }}
           context: tests

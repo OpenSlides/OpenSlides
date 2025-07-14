@@ -37,7 +37,7 @@ msgid "<unknown>"
 msgstr ""
 
 msgid ""
-"A change recommendation or amendment is probably referring to a non-existant "
+"A change recommendation or amendment is probably referring to a nonexistent "
 "line number."
 msgstr ""
 
@@ -101,6 +101,9 @@ msgid "Account"
 msgstr ""
 
 msgid "Account admin"
+msgstr ""
+
+msgid "Account created"
 msgstr ""
 
 msgid "Account successfully added."
@@ -670,6 +673,10 @@ msgid ""
 "Attention: Accounts will add to the default group of each meeting only. If "
 "another group is intended please use the 'Add to meetings' dialog in account "
 "detail view."
+msgstr ""
+
+msgid ""
+"Attention: Existing home committees and external status will be overwritten."
 msgstr ""
 
 msgid "Attention: First enter the wifi data in [Settings > General]"
@@ -2084,6 +2091,9 @@ msgstr ""
 msgid "Extension"
 msgstr ""
 
+msgid "External"
+msgstr ""
+
 msgid "External ID"
 msgstr ""
 
@@ -2286,6 +2296,9 @@ msgstr ""
 msgid "Has SSO identification"
 msgstr ""
 
+msgid "Has a home committee"
+msgstr ""
+
 msgid "Has a membership number"
 msgstr ""
 
@@ -2314,6 +2327,9 @@ msgid "Has no SSO identification"
 msgstr ""
 
 msgid "Has no email address"
+msgstr ""
+
+msgid "Has no home committee"
 msgstr ""
 
 msgid "Has no identical motions"
@@ -2404,6 +2420,9 @@ msgid "History"
 msgstr ""
 
 msgid "Home"
+msgstr ""
+
+msgid "Home committee"
 msgstr ""
 
 msgid "How to create new amendments"
@@ -2602,6 +2621,9 @@ msgstr ""
 msgid "Is committee admin"
 msgstr ""
 
+msgid "Is external"
+msgstr ""
+
 msgid "Is favorite"
 msgstr ""
 
@@ -2636,6 +2658,9 @@ msgid "Is not an amendment"
 msgstr ""
 
 msgid "Is not archived"
+msgstr ""
+
+msgid "Is not external"
 msgstr ""
 
 msgid "Is not favorite"
@@ -3618,6 +3643,12 @@ msgstr ""
 msgid "Parent agenda item"
 msgstr ""
 
+msgid "Parent committee"
+msgstr ""
+
+msgid "Parent committee name"
+msgstr ""
+
 msgid "Parent motion text changed"
 msgstr ""
 
@@ -3628,6 +3659,12 @@ msgid "Participant"
 msgstr ""
 
 msgid "Participant added to group {} in meeting {}"
+msgstr ""
+
+msgid "Participant added to group {} in meeting {}."
+msgstr ""
+
+msgid "Participant added to meeting {}."
 msgstr ""
 
 msgid "Participant added to multiple groups in meeting {}"
@@ -3658,6 +3695,9 @@ msgid "Participant number"
 msgstr ""
 
 msgid "Participant removed from group {} in meeting {}"
+msgstr ""
+
+msgid "Participant removed from meeting {}"
 msgstr ""
 
 msgid "Participant removed from multiple groups in meeting {}"
@@ -4259,6 +4299,12 @@ msgstr ""
 msgid "Set category"
 msgstr ""
 
+msgid "Set external"
+msgstr ""
+
+msgid "Set external status for selected accounts"
+msgstr ""
+
 msgid "Set favorite"
 msgstr ""
 
@@ -4326,6 +4372,9 @@ msgid "Set tags"
 msgstr ""
 
 msgid "Set workflow"
+msgstr ""
+
+msgid "Set/remove home committee"
 msgstr ""
 
 msgid "Set/remove meeting"
@@ -4597,6 +4646,9 @@ msgstr ""
 msgid "Subcategory"
 msgstr ""
 
+msgid "Subcommittees"
+msgstr ""
+
 msgid "Submission date"
 msgstr ""
 
@@ -4844,9 +4896,6 @@ msgid ""
 "and is not manager of any committee"
 msgstr ""
 
-msgid "This action will diminish your organization management level"
-msgstr ""
-
 msgid "This action will remove you from one or more groups."
 msgstr ""
 
@@ -4936,8 +4985,7 @@ msgid "This will add or remove the selected accounts to following meetings:"
 msgstr ""
 
 msgid ""
-"This will diminish your ability to do things on the organization level and "
-"you will not be able to revert this yourself."
+"This will add or remove the selected accounts to the selected home committee:"
 msgstr ""
 
 msgid "This will move all selected motions as childs to:"
@@ -5622,6 +5670,9 @@ msgstr ""
 msgid "example"
 msgstr ""
 
+msgid "external"
+msgstr ""
+
 msgid "female"
 msgstr ""
 
@@ -5656,6 +5707,9 @@ msgid "hidden"
 msgstr ""
 
 msgid "inactive"
+msgstr ""
+
+msgid "incl. subcommittees"
 msgstr ""
 
 msgid "inline"
@@ -5703,6 +5757,9 @@ msgstr ""
 msgid "male"
 msgstr ""
 
+msgid "mark amendments as original"
+msgstr ""
+
 msgid "max. 32 characters allowed"
 msgstr ""
 
@@ -5736,10 +5793,16 @@ msgstr ""
 msgid "none"
 msgstr ""
 
+msgid "not external"
+msgstr ""
+
 msgid "not specified"
 msgstr ""
 
 msgid "of"
+msgstr ""
+
+msgid "of which"
 msgstr ""
 
 msgid "of which %num% not permissable"
@@ -5823,6 +5886,9 @@ msgstr ""
 msgid "today"
 msgstr ""
 
+msgid "total"
+msgstr ""
+
 msgid "undocumented"
 msgstr ""
 
@@ -5851,6 +5917,9 @@ msgid "will be imported"
 msgstr ""
 
 msgid "will be updated"
+msgstr ""
+
+msgid "with"
 msgstr ""
 
 msgid "without identifier"

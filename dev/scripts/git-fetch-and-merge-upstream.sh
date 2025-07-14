@@ -32,11 +32,10 @@ update_meta(){
     then
         (
             cd meta || exit
-            (fetch_merge_push meta origin) 
+            (fetch_merge_push meta origin)
         )
     fi
 }
-
 
 IFS=$'\n'
 for DIR in $(git submodule foreach --recursive -q sh -c pwd); do
