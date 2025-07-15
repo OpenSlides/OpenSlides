@@ -7,6 +7,7 @@ set -e
 
 # Used in Makefile Targets to run development contex in various ways
 
+# Functions
 help ()
 {
     info "\
@@ -18,13 +19,13 @@ Parameters:
     #3 COMPOSE_FILE : Path to the docker compose file that should be used (Path relative to the services directory)
     #4 ARGS         : Additional parameters that will be appended to the called docker run or docker compose calls
     #5 USED_SHELL   : Optional parameter to declare the type of shell that is supposed to entered when attaching / entering container. Default is 'sh'
+    #6 VOLUMES      : Optional paramter to declare Volumes and other run/compose up specific commands
 
 Flags:
     -v              : Appends '--volumes' whenever a docker compose setup is closed
 
 Available dev functions:
     dev             : Builds and starts development images
-    dev-clean       : Stops ALL containers and deletes ALL images. Then builds and starts development images
     dev-help        : Print help
     dev-detached    : Builds and starts development images with detach flag
     dev-attached    : Builds and starts development images; enters shell of started image
@@ -38,7 +39,81 @@ Available dev functions:
     dev-enter       : Enters bash of started container.
                           If a docker compose file is declared, the \$ARGS parameter determines
                           the specific container id you will enter (default value is equal the service name)
+    dev-clean       : Stops ALL containers and deletes ALL images. Then builds and starts development images
     "
+}
+
+build()
+{
+    echocmd make build-dev
+}
+
+clean()
+{
+    docker stop $(docker ps -aq) && docker rm $(docker ps -a -q) && docker rmi -f $(docker images -aq);
+}
+
+run()
+{
+    local FLAGS=$1
+    local SHELL=$2
+    if [ -n "$COMPOSE_FILE" ]
+    then
+        # Compose
+        echocmd eval "$DC up $FLAGS $VOLUMES $ARGS"
+    else
+        # Already active check
+        echo "$(docker ps -a --filter "name=$CONTAINER_NAME" --format "{{.Names}}")"
+        if [ "$(docker ps -a --filter "name=$CONTAINER_NAME" --format "{{.Names}}")" = "$CONTAINER_NAME" ]
+        then
+            { ask y "Container already running, restart it?" && stop; } || { echo "Continue with existing container" && return; }
+        fi
+
+        # Single Container
+        echocmd docker run --name "$CONTAINER_NAME"  "$FLAGS" "$VOLUMES" "$ARGS" "$IMAGE_TAG" "$SHELL"
+    fi
+}
+
+attach()
+{
+    if [ -n "$COMPOSE_FILE" ]
+    then
+        # Compose
+        local CONTAINER_TO_ENTER=$ARGS
+        { [ -z "$ARGS" ] && \info "No container was specified; Service container will be taken as default" && CONTAINER_TO_ENTER="$SERVICE"; }
+        echocmd eval "$DC exec $CONTAINER_TO_ENTER $USED_SHELL"
+    else
+        # Single Container
+        echocmd docker exec -it "$CONTAINER_NAME" "$USED_SHELL"
+    fi
+
+    local CONTAINER_STATUS="$?"
+    if [ "$CONTAINER_STATUS" != 0 ]; then warn "Container exit status: $CONTAINER_STATUS"; fi
+}
+
+exec()
+{
+    if [ -n "$COMPOSE_FILE" ]
+    then
+        # Compose
+        echocmd eval "$DC exec $ARGS"
+    else
+        # Single Container
+        echocmd docker exec "$CONTAINER_NAME" "$ARGS"
+    fi
+}
+
+stop()
+{
+    if [ -n "$COMPOSE_FILE" ]
+    then
+        # Compose
+        echocmd eval "$DC down $CLOSE_VOLUMES"
+    else
+        # Single Container
+        echocmd docker stop "$CONTAINER_NAME"
+        echocmd docker rm "$CONTAINER_NAME"
+    fi
 }
 
 # Flags
@@ -56,7 +131,9 @@ SERVICE=$2
 COMPOSE_FILE=$3
 ARGS=$4
 USED_SHELL=$5
+VOLUMES=$6
 
+CONTAINER_NAME="make-dev-$SERVICE"
 LOCAL_PWD=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 # Strip 'dev', '-' and any '.o' or similar file endings that may have been automatically added from implicit rules by GNU
@@ -80,59 +157,24 @@ fi
 
 info "Running $FUNCTION"
 
+# Helpers
+USER_ID=$(id -u)
+GROUP_ID=$(id -g)
+DC="CONTEXT=dev USER_ID=$USER_ID GROUP_ID=$GROUP_ID docker compose -f ${COMPOSE_FILE}"
+IMAGE_TAG=openslides-"$SERVICE"-dev
 
 # - Run specific function
-if [ -n "$COMPOSE_FILE" ]
-then
-    # Run-dev functions using docker compose
-
-    # Helpers
-    USER_ID=$(id -u)
-    GROUP_ID=$(id -g)
-    DC="CONTEXT=dev USER_ID=$USER_ID GROUP_ID=$GROUP_ID docker compose -f ${COMPOSE_FILE}"
-
-    case "$FUNCTION" in
+case "$FUNCTION" in
     "help")        help ;;
-    "clean")       { docker stop $(docker ps -aq) && docker rm $(docker ps -a -q) && docker rmi -f $(docker images -aq); } || \
-                    echocmd make build-dev && \
-                    echocmd eval "$DC up $ARGS" ;;
-    "standalone")  echocmd make build-dev && echocmd eval "$DC up $ARGS" && echocmd eval "$DC down $CLOSE_VOLUMES" ;;
-    "detached")    echocmd make build-dev && echocmd eval "$DC up $ARGS -d"  && info "Containers started" ;;
-    "attached")    echocmd make build-dev && echocmd eval "$DC up -d" && \
-                   { [ -z "$ARGS" ] && \info "No container was specified; Service container will be taken as default" && ARGS="$SERVICE"; } && \
-                   echocmd eval "$DC exec $ARGS $USED_SHELL" && \
-                   echocmd eval "$DC down $CLOSE_VOLUMES" ;;
-    "stop")        echocmd eval "$DC down $CLOSE_VOLUMES" ;;
-    "exec")        echocmd eval "$DC exec $ARGS" ;;
-    "enter")       { [ -z "$ARGS" ] && \info "No container was specified; Service container will be taken as default" && ARGS="$SERVICE"; } && \
-                   echocmd eval "$DC exec $ARGS" ;;
-    "")            echocmd make build-dev && echocmd eval "$DC up $ARGS $USED_SHELL" ;;
-    *)             warn "No command found matching $FUNCTION" ;;
-    esac
-elif [ -n "$SERVICE" ]
-then
-    # Run-dev functions with a single image
+    "clean")       clean || build && run ;;
+    "standalone")  build && run && stop ;;
+    "detached")    build && run "-d" && info "Containers started" ;;
+    "attached")    build && run "-d" && attach && stop ;;
+    "stop")        stop ;;
+    "exec")        exec ;;
+    "enter")       attach ;;
+    "")            build && run ;;
+    *)             warn "No command found matching $FUNCTION" && help ;;
+esac
 
-    # Helpers
-    IMAGE_TAG=openslides-"$SERVICE"-dev
-
-    echo $FUNCTION
-    echo $IMAGE_TAG
-
-    case "$FUNCTION" in
-    "help")        help ;;
-    "clean")       { docker stop $(shell docker ps -aq) && docker rm $(shell docker ps -a -q) && docker rmi -f $(shell docker images -aq); } || \
-                    echocmd make build-dev && \
-                    echocmd docker run "$IMAGE_TAG" ;;
-    "standalone")  echocmd make build-dev && echocmd docker run "$ARGS" "$IMAGE_TAG" && echocmd docker stop $(docker ps -a -q --filter ancestor="$IMAGE_TAG" --format="{{.ID}}") ;;
-    "detached")    echocmd make build-dev && echocmd docker run "$ARGS" -d "$IMAGE_TAG" && info "Container started" ;;
-    "attached")    echocmd make build-dev && echocmd docker run -ti "$ARGS" "$IMAGE_TAG" "$USED_SHELL";;
-    "stop")        echocmd docker exec $(docker ps -a -q --filter ancestor="$IMAGE_TAG" --format="{{.ID}}") "$ARGS";;
-    "exec")        echocmd docker exec $(docker ps -a -q --filter ancestor="$IMAGE_TAG" --format="{{.ID}}") "$ARGS" ;;
-    "enter")       echocmd docker -it $(docker ps -a -q --filter ancestor="$IMAGE_TAG" --format="{{.ID}}") "$ARGS" "$USED_SHELL" ;;
-    "")             echocmd make build-dev && echocmd docker run "$ARGS" "$IMAGE_TAG" ;;
-    *)             warn "No command found matching $FUNCTION" ;;
-    esac
-fi
-
-exit 0
+exit $?

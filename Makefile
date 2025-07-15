@@ -16,7 +16,7 @@ build-prod build-dev build-tests:
 
 # Development
 
-dev dev-help dev-standalone dev-detached dev-attached dev-stop dev-exec dev-enter:
+dev dev-help dev-standalone dev-detached dev-attached dev-stop dev-exec dev-enter dev-clean:
 	sed -i "1s/.*/$(GO_VERSION)/" $(DOCKER_PATH)/workspaces/*.work
 	bash $(MAKEFILE_PATH)/make-dev.sh $@ "" "$(DOCKER_COMPOSE_FILE)" $(ARGS) "$(USED_SHELL)"
 

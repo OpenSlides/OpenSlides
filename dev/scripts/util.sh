@@ -24,6 +24,7 @@ else
 fi
 
 ask() {
+  printf "\n"
   local default_reply="$1" reply_opt="[y/N]" blank="y" REPLY=
   shift; [[ "$default_reply" != y ]] || {
     reply_opt="[Y/n]"; blank=""

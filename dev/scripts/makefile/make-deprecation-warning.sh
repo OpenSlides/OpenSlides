@@ -11,5 +11,5 @@ set -e
 # Setup
 ALTERNATIVE=$1
 
-error "DEPRECATION WARNING: This make command is deprecated and will be removed soon!"
+warn "DEPRECATION WARNING: This make command is deprecated and will be removed soon!"
 if [ -n "$ALTERNATIVE" ]; then warn "Please use the following command instead:" && warn "$ALTERNATIVE"; fi
