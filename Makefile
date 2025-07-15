@@ -16,11 +16,9 @@ build-prod build-dev build-tests:
 
 # Development
 
-.PHONY: run-dev%
-
-run-dev%:
+dev dev-help dev-standalone dev-detached dev-attached dev-stop dev-exec dev-enter:
 	sed -i "1s/.*/$(GO_VERSION)/" $(DOCKER_PATH)/workspaces/*.work
-	bash $(MAKEFILE_PATH)/make-run-dev.sh $@ "" "$(DOCKER_COMPOSE_FILE)" $(ARGS) "$(USED_SHELL)"
+	bash $(MAKEFILE_PATH)/make-dev.sh $@ "" "$(DOCKER_COMPOSE_FILE)" $(ARGS) "$(USED_SHELL)"
 
 # Tests
 
@@ -75,7 +73,7 @@ build:
 	$(DOCKER_PATH)/build.sh
 
 stop-dev:
-	bash $(MAKEFILE_PATH)/make-deprecation-warning.sh "run-dev-stop"
+	bash $(MAKEFILE_PATH)/make-deprecation-warning.sh "dev-stop"
 	$(DC_DEV) down --volumes --remove-orphans
 
 # Run the tests of all services

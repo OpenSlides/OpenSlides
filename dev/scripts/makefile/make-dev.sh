@@ -126,8 +126,9 @@ then
                     echocmd docker run "$IMAGE_TAG" ;;
     "standalone")  echocmd make build-dev && echocmd docker run "$ARGS" "$IMAGE_TAG" && echocmd docker stop $(docker ps -a -q --filter ancestor="$IMAGE_TAG" --format="{{.ID}}") ;;
     "detached")    echocmd make build-dev && echocmd docker run "$ARGS" -d "$IMAGE_TAG" && info "Container started" ;;
-    "attached")    echocmd make build-dev && echocmd docker run "$ARGS" "$IMAGE_TAG" "$USED_SHELL";;
+    "attached")    echocmd make build-dev && echocmd docker run -ti "$ARGS" "$IMAGE_TAG" "$USED_SHELL";;
     "stop")        echocmd docker exec $(docker ps -a -q --filter ancestor="$IMAGE_TAG" --format="{{.ID}}") "$ARGS";;
+    "exec")        echocmd docker exec $(docker ps -a -q --filter ancestor="$IMAGE_TAG" --format="{{.ID}}") "$ARGS" ;;
     "enter")       echocmd docker -it $(docker ps -a -q --filter ancestor="$IMAGE_TAG" --format="{{.ID}}") "$ARGS" "$USED_SHELL" ;;
     "")             echocmd make build-dev && echocmd docker run "$ARGS" "$IMAGE_TAG" ;;
     *)             warn "No command found matching $FUNCTION" ;;
