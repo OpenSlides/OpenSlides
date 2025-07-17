@@ -15,12 +15,15 @@ build-prod build-dev build-tests:
 	bash $(MAKEFILE_PATH)/make-build-main.sh $@
 
 # Development
+.SERVICE_TARGETS := auth autoupdate backend client datastore icc manage media proxy search vote
+
+$(.SERVICE_TARGETS):
 
 .PHONY: dev
 
 dev dev-help dev-standalone dev-detached dev-attached dev-stop dev-exec dev-enter dev-clean:
 	sed -i "1s/.*/$(GO_VERSION)/" $(DOCKER_PATH)/workspaces/*.work
-	bash $(MAKEFILE_PATH)/make-dev.sh $@ "" "$(DOCKER_COMPOSE_FILE)" $(ARGS) "$(USED_SHELL)"
+	bash $(MAKEFILE_PATH)/make-dev.sh $@ "$(filter-out $@, $(MAKECMDGOALS))" "$(DOCKER_COMPOSE_FILE)" $(ARGS) "$(USED_SHELL)"
 
 # Tests
 
