@@ -39,22 +39,62 @@ Available dev functions:
     dev-enter       : Enters bash of started container.
                           If a docker compose file is declared, the \$ARGS parameter determines
                           the specific container id you will enter (default value is equal the service name)
-    dev-clean       : Stops ALL containers and deletes ALL images. Then builds and starts development images
+    dev-build       : Builds the development image
     "
 }
 
 build()
 {
-    echocmd make build-dev
+    # Record time
+    local PRE_TIMESTAMP=$(date +%s)
+
+    # Build Image
+    info "Building image"
+    capsule make build-dev
+    local RESPONSE=$?
+
+    local POST_TIMESTAMP=$(date +%s)
+    local BUILD_TIME=$(( $POST_TIMESTAMP - $PRE_TIMESTAMP ))
+    # Output
+    if [ "$RESPONSE" != 0 ]
+    then
+        error "Build image failed: $ERROR"
+    elif [ "$BUILD_TIME" -le 3 ]
+    then
+        success "Image cached"
+    else
+        success "Build image successfully"
+    fi
 }
 
 clean()
 {
-    docker stop $(docker ps -aq) && docker rm $(docker ps -a -q) && docker rmi -f $(docker images -aq);
+    ask y "Confirm deleting ALL images and containers?" || abort
+    if [ "$(docker ps -aq)" = "" ]
+    then
+        info "No containers to stop"
+    else
+        docker stop $(docker ps -aq)
+    fi
+
+    if [ "$(docker ps -a -q)" = "" ]
+    then
+        info "No containers to remove"
+    else
+        docker rm $(docker ps -a -q)
+    fi
+
+    if [ "$(docker images -aq)" = "" ]
+    then
+        info "No images to remove"
+    else
+        docker rmi -f $(docker images -aq)
+    fi
 }
 
 run()
 {
+    info "Running container"
     local FLAGS=$1
     local SHELL=$2
     if [ -n "$COMPOSE_FILE" ]
@@ -76,6 +116,7 @@ run()
 
 attach()
 {
+    info "Attaching to running container"
     if [ -n "$COMPOSE_FILE" ]
     then
         # Compose
@@ -105,6 +146,7 @@ exec()
 
 stop()
 {
+    info "Stop running container"
     if [ -n "$COMPOSE_FILE" ]
     then
         # Compose
@@ -166,13 +208,14 @@ IMAGE_TAG=openslides-"$SERVICE"-dev
 # - Run specific function
 case "$FUNCTION" in
     "help")        help ;;
-    "clean")       clean || build && run ;;
+    "clean")       clean ;;
     "standalone")  build && run && stop ;;
     "detached")    build && run "-d" && info "Containers started" ;;
     "attached")    build && run "-d" && attach && stop ;;
     "stop")        stop ;;
     "exec")        exec ;;
     "enter")       attach ;;
+    "build")       build ;;
     "")            build && run ;;
     *)             warn "No command found matching $FUNCTION" && help ;;
 esac

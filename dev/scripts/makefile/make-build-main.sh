@@ -25,6 +25,7 @@ Available dev functions:
 # Setup
 TARGET=$1
 
+LOCAL_PWD=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 PREFIX="build-"
 FUNCTION=${TARGET#"$PREFIX"}
 
@@ -38,7 +39,7 @@ info "Building $FUNCTION"
 # - Run specific function
 case "$FUNCTION" in
 "help")        help ;;
-"dev")         echocmd bash build-all-submodules.sh dev ;;
-"tests")       echocmd bash build-all-submodules.sh tests ;;
-*)             echocmd bash build-all-submodules.sh prod ;;
+"dev")         echocmd bash "$LOCAL_PWD"/build-all-submodules.sh dev ;;
+"tests")       echocmd bash "$LOCAL_PWD"/build-all-submodules.sh tests ;;
+*)             echocmd bash "$LOCAL_PWD"/build-all-submodules.sh prod ;;
 esac
