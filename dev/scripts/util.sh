@@ -112,6 +112,7 @@ capsule_error()
     fi
 
     rm -f "$LOG"
+    printf "\033[?25h" # Show Cursor
     exit 1
 }
 
@@ -122,9 +123,11 @@ capsule()
     IFS=$' '
     echo "${COL_BLUE}$ $*${COL_NORMAL}" >&2
   )
+
   # Setup
   LOG=$(mktemp)
   LINE_COUNT=15
+  printf "\033[?25l" # Hide Cursor
 
   # Safe Exit
   trap 'tput rc && capsule_clear_console "$LINE_COUNT" && capsule_error "$PROCESS_ID" "$LOG" "$LINE_COUNT"' INT TERM
@@ -160,7 +163,7 @@ capsule()
           fi
       done
 
-      sleep 1
+      sleep 0.25
   done
 
   # Wait for process to finish
@@ -180,6 +183,8 @@ capsule()
 
   # Delete log file
   rm -f "$LOG"
+
+  printf "\033[?25h" # Show Cursor
 
   return "$EXIT_CODE"
 }

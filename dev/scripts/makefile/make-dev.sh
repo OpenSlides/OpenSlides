@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -e
-
 # Import OpenSlides utils package
 . "$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )/../util.sh"
 
@@ -43,14 +41,16 @@ Available dev functions:
     "
 }
 
-build()
+build_capsuled()
 {
+    local FUNC=$1
+
     # Record time
     local PRE_TIMESTAMP=$(date +%s)
 
     # Build Image
     info "Building image"
-    capsule make build-dev
+    capsule "$FUNC"
     local RESPONSE=$?
 
     local POST_TIMESTAMP=$(date +%s)
@@ -58,13 +58,30 @@ build()
     # Output
     if [ "$RESPONSE" != 0 ]
     then
-        error "Build image failed: $ERROR"
+        error "Building image failed: $ERROR"
     elif [ "$BUILD_TIME" -le 3 ]
     then
         success "Image cached"
     else
         success "Build image successfully"
     fi
+}
+
+build()
+{
+    # Build all submodules
+    if [ "$SERVICE_FOLDER" = "" ]
+    then
+        build_capsuled "dev/scripts/makefile/build-all-submodules.sh dev"
+        return
+    fi
+
+    # Build specific submodule
+    (
+        cd "$SERVICE_FOLDER" || abort 1
+
+        build_capsuled "make build-dev"
+    )
 }
 
 clean()
@@ -115,13 +132,13 @@ run()
 
 attach()
 {
+    local TARGET_CONTAINER=$1
     info "Attaching to running container"
     if [ -n "$COMPOSE_FILE" ]
     then
         # Compose
-        local CONTAINER_TO_ENTER=$ARGS
-        { [ -z "$ARGS" ] && \info "No container was specified; Service container will be taken as default" && CONTAINER_TO_ENTER="$SERVICE"; }
-        echocmd eval "$DC exec $CONTAINER_TO_ENTER $USED_SHELL"
+        { [ -z "$TARGET_CONTAINER" ] && \info "No container was specified; Service container will be taken as default" && TARGET_CONTAINER="$SERVICE"; }
+        echocmd eval "$DC exec $TARGET_CONTAINER $USED_SHELL"
     else
         # Single Container
         echocmd docker exec -it "$CONTAINER_NAME" "$USED_SHELL"
@@ -133,13 +150,14 @@ attach()
 
 exec()
 {
+    local FUNC=$1
     if [ -n "$COMPOSE_FILE" ]
     then
         # Compose
-        echocmd eval "$DC exec $ARGS"
+        echocmd eval "$DC exec $FUNC"
     else
         # Single Container
-        echocmd docker exec "$CONTAINER_NAME" "$ARGS"
+        echocmd docker exec "$CONTAINER_NAME" "$FUNC"
     fi
 }
 
@@ -157,44 +175,47 @@ stop()
     fi
 }
 
-# Flags
-while getopts "v" FLAG; do
-    case "${FLAG}" in
-    v) CLOSE_VOLUMES="--volumes" ;;
-    *) echo "Can't parse flag ${FLAG}" && break ;;
-    esac
-done
-shift $((OPTIND - 1))
-
 # Setup
+## Parameters
 TARGET=$1
 SERVICE=$2
-COMPOSE_FILE=$3
-ARGS=$4
-USED_SHELL=$5
-VOLUMES=$6
+ARGS=$3
 
+# Variables
+SERVICE_FOLDER=""
 CONTAINER_NAME="make-dev-$SERVICE"
 LOCAL_PWD=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+USED_SHELL="sh"
 
 # Strip 'dev', '-' and any '.o' or similar file endings that may have been automatically added from implicit rules by GNU
 FUNCTION=${TARGET#"dev"}
 FUNCTION=${FUNCTION#"-"}
 FUNCTION=${FUNCTION%.*}
 
-if [ -z "$USED_SHELL" ]; then USED_SHELL="sh"; fi
-
-# - Error Catching
-if [ -z "$SERVICE" ] && [ -z "$COMPOSE_FILE" ]
-then
-    if [ "$FUNCTION" = "help" ]
-    then
-        help
-        exit 0
-    fi
-    error "Run-dev requires either a docker compose file or a specific service image to run (Missing Parameters #2 and/or #3)"
-    exit 1
-fi
+# - Extrapolate parameters depending on servicce
+case "$SERVICE" in
+    "auth")         SERVICE_FOLDER="./openslides-auth-service" &&
+                    COMPOSE_FILE="$SERVICE_FOLDER/docker-compose.dev.yml" ;;
+    "autoupdate")   SERVICE_FOLDER="./openslides-autoupdate-service" ;;
+    "backend")      SERVICE_FOLDER="./openslides-backend" &&
+                    COMPOSE_FILE="$SERVICE_FOLDER/dev/docker-compose.dev.yml" &&
+                    USED_SHELL="./entrypoint.sh bash --rcfile .bashrc" &&
+                    CLOSE_VOLUMES="--volumes" ;;
+    "client")       SERVICE_FOLDER="./openslides-client" &&
+                    VOLUMES="-v `pwd`/client/src:/app/src -v `pwd`/client/cli:/app/cli -p 127.0.0.1:9001:9001/tcp" ;;
+    "datastore")    SERVICE_FOLDER="./openslides-datastore-service" ;;
+    "icc")          SERVICE_FOLDER="./openslides-icc-service" ;;
+    "manage")       SERVICE_FOLDER="./openslides-manage-service" ;;
+    "media")        SERVICE_FOLDER="./openslides-media-service" &&
+                    COMPOSE_FILE="$SERVICE_FOLDER/docker-compose.test.yml" &&
+                    USED_SHELL="bash" &&
+                    if [ "$FUNCTION" = "attached" ]; then FUNCTION="media-attached"; fi ;;
+    "proxy")        SERVICE_FOLDER="./openslides-proxy" ;;
+    "search")       SERVICE_FOLDER="./openslides-search-service" ;;
+    "vote")         SERVICE_FOLDER="./openslides-vote-service" ;;
+    "")             COMPOSE_FILE="dev/docker/docker-compose.dev.yml" ;;
+    "*") ;;
+esac
 
 info "Running $FUNCTION"
 
@@ -202,7 +223,7 @@ info "Running $FUNCTION"
 USER_ID=$(id -u)
 GROUP_ID=$(id -g)
 DC="CONTEXT=dev USER_ID=$USER_ID GROUP_ID=$GROUP_ID docker compose -f ${COMPOSE_FILE}"
-IMAGE_TAG=openslides-"$SERVICE"-dev
+IMAGE_TAG="openslides-$SERVICE-dev"
 
 # - Run specific function
 case "$FUNCTION" in
@@ -210,11 +231,12 @@ case "$FUNCTION" in
     "clean")       clean ;;
     "standalone")  build && run && stop ;;
     "detached")    build && run "-d" && info "Containers started" ;;
-    "attached")    build && run "-d" && attach && stop ;;
+    "attached")    build && run "-d" && attach "$ARGS" && stop ;;
     "stop")        stop ;;
-    "exec")        exec ;;
-    "enter")       attach ;;
+    "exec")        exec "$ARGS" ;;
+    "enter")       attach "$ARGS" ;;
     "build")       build ;;
+    "media-attached") build && run "-d" && EXEC_COMMAND='-T tests wait-for-it "media:9006"' && exec "$EXEC_COMMAND" && attach "tests" && stop ;; # Special case for media (for now)
     "")            build && run ;;
     *)             warn "No command found matching $FUNCTION" && help ;;
 esac
