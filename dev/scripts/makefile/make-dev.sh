@@ -69,7 +69,7 @@ build()
 
 clean()
 {
-    ask y "Confirm deleting ALL images and containers?" || abort
+    ask y "Confirm deleting ALL images and containers?" || abort 0
     if [ "$(docker ps -aq)" = "" ]
     then
         info "No containers to stop"
@@ -103,7 +103,6 @@ run()
         echocmd eval "$DC up $FLAGS $VOLUMES $ARGS"
     else
         # Already active check
-        echo "$(docker ps -a --filter "name=$CONTAINER_NAME" --format "{{.Names}}")"
         if [ "$(docker ps -a --filter "name=$CONTAINER_NAME" --format "{{.Names}}")" = "$CONTAINER_NAME" ]
         then
             { ask y "Container already running, restart it?" && stop; } || { echo "Continue with existing container" && return; }

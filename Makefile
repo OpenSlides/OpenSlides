@@ -16,6 +16,8 @@ build-prod build-dev build-tests:
 
 # Development
 
+.PHONY: dev
+
 dev dev-help dev-standalone dev-detached dev-attached dev-stop dev-exec dev-enter dev-clean:
 	sed -i "1s/.*/$(GO_VERSION)/" $(DOCKER_PATH)/workspaces/*.work
 	bash $(MAKEFILE_PATH)/make-dev.sh $@ "" "$(DOCKER_COMPOSE_FILE)" $(ARGS) "$(USED_SHELL)"
@@ -71,6 +73,10 @@ deprecation-warning:
 build:
 	$(MAKEFILE_PATH)/make-deprecation-warning-sh
 	$(DOCKER_PATH)/build.sh
+
+run-dev:
+	bash $(MAKEFILE_PATH)/make-deprecation-warning.sh "dev"
+	make dev
 
 stop-dev:
 	bash $(MAKEFILE_PATH)/make-deprecation-warning.sh "dev-stop"
