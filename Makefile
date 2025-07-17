@@ -68,23 +68,25 @@ copy-translations:
 ########################## Deprecation List ##########################
 
 deprecation-warning:
-	bash $(MAKEFILE_PATH)/make-deprecation-warning.sh
+	@echo "\033[1;33m DEPRECATION WARNING: This make command is deprecated and will be removed soon! \033[0m"
 
-build:
-	$(MAKEFILE_PATH)/make-deprecation-warning-sh
+deprecation-warning-alternative: | deprecation-warning
+	@echo "\033[1;33m Please use the following command instead: $(ALTERNATIVE) \033[0m"
+
+build: | deprecation-warning
 	$(DOCKER_PATH)/build.sh
 
 run-dev:
-	bash $(MAKEFILE_PATH)/make-deprecation-warning.sh "dev"
+	@make deprecation-warning-alternative ALTERNATIVE="dev"
 	make dev
 
 stop-dev:
-	bash $(MAKEFILE_PATH)/make-deprecation-warning.sh "dev-stop"
+	@make deprecation-warning-alternative ALTERNATIVE="dev-stop"
 	$(DC_DEV) down --volumes --remove-orphans
 
 # Run the tests of all services
 run-service-tests:
-	bash $(MAKEFILE_PATH)/make-deprecation-warning.sh "run-tests"
+	@make deprecation-warning-alternative ALTERNATIVE="run-tests"
 	chmod +x $(SCRIPT_PATH)/makefile/test-all-submodules.sh
 	$(SCRIPT_PATH)/makefile/test-all-submodules.sh
 
@@ -98,7 +100,6 @@ switch-to-test: | deprecation-warning
 
 # Execute while run-dev is running: Switch back to your dev database
 switch-to-dev: | deprecation-warning
-	$(MAKEFILE_PATH)/make-deprecation-warning-sh
 	$(DC_TEST) stop postgres-test
 	$(DC_DEV) up -d postgres backend
 	$(DC_DEV) restart datastore-writer datastore-reader autoupdate vote
