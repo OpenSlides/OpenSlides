@@ -20,9 +20,14 @@ build-prod build-dev build-tests:
 $(.SERVICE_TARGETS):
 	@echo ""
 
+.FLAGS := no-cache
+
+$(.FLAGS):
+	@echo ""
+
 .PHONY: dev
 
-dev dev-help dev-standalone dev-detached dev-attached dev-stop dev-exec dev-enter dev-clean:
+dev dev-help dev-standalone dev-detached dev-attached dev-stop dev-exec dev-enter dev-clean dev-build:
 	@sed -i "1s/.*/$(GO_VERSION)/" $(DOCKER_PATH)/workspaces/*.work
 	@bash $(MAKEFILE_PATH)/make-dev.sh $@ "$(filter-out $@, $(MAKECMDGOALS))" "$(ARGS)"
 

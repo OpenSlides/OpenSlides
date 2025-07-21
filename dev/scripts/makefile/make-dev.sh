@@ -55,7 +55,7 @@ build_capsuled()
         error "Building image failed: $ERROR"
     elif [ "$BUILD_TIME" -le 3 ]
     then
-        success "Image cached"
+        success "Image found in cache"
     else
         success "Build image successfully"
     fi
@@ -63,10 +63,14 @@ build_capsuled()
 
 build()
 {
+    local BUILD_ARGS="";
+
+    if [ -n "$NO_CACHE" ]; then local BUILD_ARGS="--no-cache"; fi
+
     # Build all submodules
     if [ "$SERVICE_FOLDER" = "" ]
     then
-        build_capsuled "dev/scripts/makefile/build-all-submodules.sh dev"
+        build_capsuled "dev/scripts/makefile/build-all-submodules.sh dev $BUILD_ARGS"
         return
     fi
 
@@ -74,13 +78,13 @@ build()
     (
         cd "$SERVICE_FOLDER" || abort 1
 
-        build_capsuled "make build-dev"
+        build_capsuled "make build-dev ARGS=$BUILD_ARGS"
     )
 }
 
 clean()
 {
-    ask y "Confirm deleting ALL images and containers?" || abort 0
+    info "Stopping containers"
     if [ "$(docker ps -aq)" = "" ]
     then
         info "No containers to stop"
@@ -88,6 +92,7 @@ clean()
         docker stop $(docker ps -aq)
     fi
 
+    info "Removing containers"
     if [ "$(docker ps -a -q)" = "" ]
     then
         info "No containers to remove"
@@ -95,6 +100,8 @@ clean()
         docker rm $(docker ps -a -q)
     fi
 
+    ask n "Do you want to delete ALL images as well?" || abort 0
+    info "Removing images"
     if [ "$(docker images -aq)" = "" ]
     then
         info "No images to remove"
@@ -186,6 +193,16 @@ TARGET=$1
 SERVICE=$2
 ARGS=$3
 
+# SERVICE contains all additionally provided make targets. This may include flags
+# Extract flags here
+TEMP_SERVICE=$SERVICE
+for CMD in $TEMP_SERVICE; do
+    case "$CMD" in
+        "no-cache")     NO_CACHE=true ;;
+        *)              SERVICE="$CMD" ;;
+    esac
+done
+
 # Variables
 SERVICE_FOLDER=""
 CONTAINER_NAME="make-dev-$SERVICE"
@@ -219,10 +236,11 @@ case "$SERVICE" in
     "search")       SERVICE_FOLDER="./openslides-search-service" ;;
     "vote")         SERVICE_FOLDER="./openslides-vote-service" ;;
     "")             COMPOSE_FILE="dev/docker/docker-compose.dev.yml" ;;
-    "*") ;;
+    *)              ;;
 esac
 
-info "Running $FUNCTION"
+if [ -n "$SERVICE" ]; then info "Running $FUNCTION for $SERVICE"
+else info "Running $FUNCTION"; fi
 
 # Helpers
 USER_ID=$(id -u)

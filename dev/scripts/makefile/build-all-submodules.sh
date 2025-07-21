@@ -21,7 +21,7 @@ if [ "${CONTEXT}" != "prod" ] && [ "${CONTEXT}" != "dev" ] && [ "${CONTEXT}" != 
 fi
 
 info "Building image(s) for context $CONTEXT"
-export SINGLE_TARGET=$2
+export ARGS=$2
 
 IFS=$'\n'
 for DIR in $(git submodule foreach --recursive -q sh -c pwd); do
@@ -36,12 +36,8 @@ for DIR in $(git submodule foreach --recursive -q sh -c pwd); do
     if [ "$SUBMODULE" == 'meta' ]; then continue; fi && \
     if [ "$SUBMODULE" == 'go' ]; then continue; fi && \
 
-
-    # Check for single target
-    if [ $# -eq 2 ]; then if [[ "$SINGLE_TARGET" != "$SUBMODULE" ]]; then continue; fi; fi && \
-
     # Execute test
     info " --- Building service ${SUBMODULE} for context ${CONTEXT} --- " && \
-    echocmd make build-"${CONTEXT}"
+    echocmd make build-"${CONTEXT}" ARGS="$ARGS"
 done
 wait
