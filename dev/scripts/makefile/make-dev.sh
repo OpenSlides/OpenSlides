@@ -14,13 +14,7 @@ Builds and starts development related images. Intended to be called from Makefil
 Parameters:
     #1 TARGET       : Name of the Makefile Target that called this script.
     #2 SERVICE      : Name of the Service that called this script. If empty, the main repository assumed to be the caller
-    #3 COMPOSE_FILE : Path to the docker compose file that should be used (Path relative to the services directory)
-    #4 ARGS         : Additional parameters that will be appended to the called docker run or docker compose calls
-    #5 USED_SHELL   : Optional parameter to declare the type of shell that is supposed to entered when attaching / entering container. Default is 'sh'
-    #6 VOLUMES      : Optional paramter to declare Volumes and other run/compose up specific commands
-
-Flags:
-    -v              : Appends '--volumes' whenever a docker compose setup is closed
+    #3 ARGS         : Additional parameters that will be appended to the called docker run or docker compose calls
 
 Available dev functions:
     dev             : Builds and starts development images
@@ -137,7 +131,18 @@ attach()
     if [ -n "$COMPOSE_FILE" ]
     then
         # Compose
-        { [ -z "$TARGET_CONTAINER" ] && \info "No container was specified; Service container will be taken as default" && TARGET_CONTAINER="$SERVICE"; }
+
+        # Determine container to enter, in case no container was specified as a paramater
+        if [ -z "$SERVICE" ] && [ -z "$TARGET_CONTAINER" ]
+        then
+            # Main repository case
+            local TARGET_CONTAINER=$(input "Which service container should be entered?");
+            { [ -z "$TARGET_CONTAINER" ] && \info "No service container declared, exiting" && return; }
+        else
+            # Submodule case
+            { [ -z "$TARGET_CONTAINER" ] && \info "No container was specified; Service container will be taken as default" && local TARGET_CONTAINER="$SERVICE"; }
+        fi
+
         echocmd eval "$DC exec $TARGET_CONTAINER $USED_SHELL"
     else
         # Single Container
@@ -209,7 +214,7 @@ case "$SERVICE" in
     "media")        SERVICE_FOLDER="./openslides-media-service" &&
                     COMPOSE_FILE="$SERVICE_FOLDER/docker-compose.test.yml" &&
                     USED_SHELL="bash" &&
-                    if [ "$FUNCTION" = "attached" ]; then FUNCTION="media-attached"; fi ;;
+                    if [ "$FUNCTION" = "attached" ]; then FUNCTION="media-attached"; fi ;; # Temporary fix for wait-for-it situation
     "proxy")        SERVICE_FOLDER="./openslides-proxy" ;;
     "search")       SERVICE_FOLDER="./openslides-search-service" ;;
     "vote")         SERVICE_FOLDER="./openslides-vote-service" ;;
@@ -227,18 +232,18 @@ IMAGE_TAG="openslides-$SERVICE-dev"
 
 # - Run specific function
 case "$FUNCTION" in
-    "help")        help ;;
-    "clean")       clean ;;
-    "standalone")  build && run && stop ;;
-    "detached")    build && run "-d" && info "Containers started" ;;
-    "attached")    build && run "-d" && attach "$ARGS" && stop ;;
-    "stop")        stop ;;
-    "exec")        exec "$ARGS" ;;
-    "enter")       attach "$ARGS" ;;
-    "build")       build ;;
-    "media-attached") build && run "-d" && EXEC_COMMAND='-T tests wait-for-it "media:9006"' && exec "$EXEC_COMMAND" && attach "tests" && stop ;; # Special case for media (for now)
-    "")            build && run ;;
-    *)             warn "No command found matching $FUNCTION" && help ;;
+    "help")             help ;;
+    "clean")            clean ;;
+    "standalone")       build && run && stop ;;
+    "detached")         build && run "-d" && info "Containers started" ;;
+    "attached")         build && run "-d" && attach "$ARGS" && stop ;;
+    "stop")             stop ;;
+    "exec")             exec "$ARGS" ;;
+    "enter")            attach "$ARGS" ;;
+    "build")            build ;;
+    "media-attached")   build && run "-d" && EXEC_COMMAND='-T tests wait-for-it "media:9006"' && exec "$EXEC_COMMAND" && attach "tests" && stop ;; # Special case for media (for now)
+    "")                 build && run ;;
+    *)                  warn "No command found matching $FUNCTION" && help ;;
 esac
 
 exit $?

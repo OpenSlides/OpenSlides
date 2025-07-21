@@ -25,16 +25,21 @@ fi
 
 ask() {
   printf "\n"
-  local default_reply="$1" reply_opt="[y/N]" blank="y" REPLY=
-  shift; [[ "$default_reply" != y ]] || {
-    reply_opt="[Y/n]"; blank=""
+  local DEFAULT_REPLY="$1" REPLY_OPT="[y/N]" BLANK="y" REPLY=
+  shift; [[ "$DEFAULT_REPLY" != y ]] || {
+    REPLY_OPT="[Y/n]"; BLANK=""
   }
 
-  read -rp "$* $reply_opt: "
+  read -rp "$* $REPLY_OPT: "
   case "$REPLY" in
-    Y|y|Yes|yes|YES|"$blank") return 0 ;;
+    Y|y|Yes|yes|YES|"$BLANK") return 0 ;;
     *) return 1 ;;
   esac
+}
+
+input(){
+  read -rp "$*: "
+  echo "$REPLY"
 }
 
 # echocmd first echos args in blue on stderr. Then args are treated like a
