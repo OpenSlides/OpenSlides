@@ -5,7 +5,7 @@
 
 # Commits and pushes all submodules to their respective repositories.
 # The same Commit Message is reused for all Commits
-# Use this for blanket changes to all submodules that are the same between all submodules, such as 
+# Use this for blanket changes to all submodules that are the same between all submodules, such as
 # Dockerfile changes that need to be applied to all submodules
 
 export MESSAGE=$1
