@@ -70,7 +70,12 @@ build()
     # Build all submodules
     if [ "$SERVICE_FOLDER" = "" ]
     then
-        build_capsuled "dev/scripts/makefile/build-all-submodules.sh dev $BUILD_ARGS"
+        if [ -n "$NO_CAPSULE" ]
+        then
+            dev/scripts/makefile/build-all-submodules.sh dev $BUILD_ARGS
+        else
+            build_capsuled "dev/scripts/makefile/build-all-submodules.sh dev $BUILD_ARGS"
+        fi
         return
     fi
 
@@ -78,7 +83,12 @@ build()
     (
         cd "$SERVICE_FOLDER" || abort 1
 
-        build_capsuled "make build-dev ARGS=$BUILD_ARGS"
+        if [ -n "$NO_CAPSULE" ]
+        then
+            make build-dev ARGS=$BUILD_ARGS
+        else
+            build_capsuled "make build-dev ARGS=$BUILD_ARGS"
+        fi
     )
 }
 
@@ -199,6 +209,7 @@ TEMP_SERVICE=$SERVICE
 for CMD in $TEMP_SERVICE; do
     case "$CMD" in
         "no-cache")     NO_CACHE=true ;;
+        "no-capsule")   NO_CAPSULE=true ;;
         *)              SERVICE="$CMD" ;;
     esac
 done

@@ -101,7 +101,7 @@ capsule_clear_console()
     local LINE_COUNT=$1
     for _ in $(seq 1 "$LINE_COUNT"); do
         tput el
-        echo
+        echo ""
     done
     tput cuu "$LINE_COUNT"
 }
@@ -132,16 +132,18 @@ capsule()
   # Setup
   LOG=$(mktemp)
   LINE_COUNT=15
+  CLEAR_COUNT=$((LINE_COUNT + 10))
+
   printf "\033[?25l" # Hide Cursor
 
   # Safe Exit
-  trap 'tput rc && capsule_clear_console "$LINE_COUNT" && capsule_error "$PROCESS_ID" "$LOG" "$LINE_COUNT"' INT TERM
+  trap 'tput rc && capsule_clear_console "$CLEAR_COUNT" && capsule_error "$PROCESS_ID" "$LOG" "$CLEAR_COUNT"' INT TERM
 
   # Reserve Console lines
-  for _ in $(seq 1 "$LINE_COUNT"); do
+  for _ in $(seq 1 "$CLEAR_COUNT"); do
     echo ""
   done
-  tput cuu "$LINE_COUNT"
+  tput cuu "$CLEAR_COUNT"
   tput sc
 
   # Run build in background and log output
@@ -158,13 +160,16 @@ capsule()
       mapfile -t lines < <(tail -n "$LINE_COUNT" "$LOG")
 
       # Print empty or log lines
-      for ((i = 0; i < "$LINE_COUNT"; i++)); do
+      for ((i = 0; i < "$CLEAR_COUNT"; i++)); do
           tput el
+
+          if (( LINE_COUNT >= CLEAR_COUNT )); then echo "" && continue; fi
+
           if [ "$i" -lt ${#lines[@]} ]
           then
               echo "${lines[$i]}"
           else
-              echo
+              echo ""
           fi
       done
 
@@ -177,7 +182,7 @@ capsule()
 
   # Clear progress
   tput rc
-  capsule_clear_console "$LINE_COUNT"
+  capsule_clear_console "$CLEAR_COUNT"
 
   # Printe entire output on error
   if [ $EXIT_CODE != 0 ]

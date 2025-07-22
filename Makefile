@@ -20,7 +20,7 @@ build-prod build-dev build-tests:
 $(.SERVICE_TARGETS):
 	@echo ""
 
-.FLAGS := no-cache
+.FLAGS := no-cache no-capsule
 
 $(.FLAGS):
 	@echo ""
