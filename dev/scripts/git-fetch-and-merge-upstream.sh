@@ -37,10 +37,6 @@ update_meta(){
     fi
 }
 
-git remote update upstream
-git fetch upstream
-git merge upstream/main
-
 IFS=$'\n'
 for DIR in $(git submodule foreach --recursive -q sh -c pwd); do
     # Extract submodule name
@@ -64,3 +60,7 @@ for DIR in $(git submodule foreach --recursive -q sh -c pwd); do
     fetch_merge_push "${SUBMODULE}" upstream
 done
 wait
+
+git remote update upstream
+git fetch upstream
+git merge upstream/main
