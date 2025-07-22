@@ -29,7 +29,7 @@ ask() {
     reply_opt="[Y/n]"; blank=""
   }
 
-  read -rp "$@ $reply_opt: "
+  read -rp "$* $reply_opt: "
   case "$REPLY" in
     Y|y|Yes|yes|YES|"$blank") return 0 ;;
     *) return 1 ;;
@@ -41,21 +41,24 @@ ask() {
 # This allows callers of echocmd to still handle their provided command's stdout
 # as if executed directly.
 echocmd() {
-  echo "${COL_BLUE}$ $@${COL_NORMAL}" >&2
-  "$@"
+  (
+  IFS=$' '
+  echo "${COL_BLUE}$ $*${COL_NORMAL}" >&2
+  $*
   return $?
+  )
 }
 
 info() {
-  echo "${COL_GRAY}$@${COL_NORMAL}"
+  echo "${COL_GRAY}$*${COL_NORMAL}"
 }
 
 warn() {
-  echo "${COL_YELLOW}[WARN] ${COL_GRAY}$@${COL_NORMAL}" >&2
+  echo "${COL_YELLOW}[WARN] ${COL_GRAY}$*${COL_NORMAL}" >&2
 }
 
 error() {
-  echo "${COL_RED}[ERROR] ${COL_GRAY}$@${COL_NORMAL}" >&2
+  echo "${COL_RED}[ERROR] ${COL_GRAY}$*${COL_NORMAL}" >&2
 }
 
 abort() {
@@ -64,14 +67,14 @@ abort() {
 }
 
 success() {
-    echo "${COL_GREEN}$@${COL_NORMAL}"
+    echo "${COL_GREEN}$*${COL_NORMAL}"
 }
 
 fancy() {
     echo ""
     echo "        -*~=$§{}§$=~*-"
     echo ""
-    echo "  $@"
+    echo "  $*"
     echo ""
     echo "        -*~=$§{}§$=~*-"
     echo ""
@@ -81,7 +84,7 @@ shout() {
     echo ""
     echo "${COL_CYAN}========================================================${COL_NORMAL}"
     echo ""
-    echo "${COL_CYAN}$@${COL_NORMAL}"
+    echo "${COL_CYAN}$*${COL_NORMAL}"
     echo ""
     echo "${COL_CYAN}========================================================${COL_NORMAL}"
     echo ""
