@@ -426,7 +426,10 @@ msgstr ""
 msgid "Allowed access groups for this directory"
 msgstr "Zulässige Zugriffsgruppen für dieses Verzeichnis"
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/meetings/modules/poll/components/base-poll-form/base-poll-form.component.html
+=======
+>>>>>>> Stashed changes
 msgid "Allows single votes projection during voting process"
 msgstr "Ermöglicht die Projektion von Einzelstimmen während einer Abstimmung"
 
@@ -2866,7 +2869,10 @@ msgstr "Wenn deaktiviert erfolgt die Anzeige unterhalb des Antragstitels."
 msgid "If empty, everyone can access."
 msgstr "Voller Zugriff, wenn keine Gruppe eingetragen."
 
+<<<<<<< Updated upstream
 #: /app/src/app/site/pages/meetings/pages/projectors/components/projector-countdown-dialog/components/projector-countdown-dialog/projector-countdown-dialog.component.html
+=======
+>>>>>>> Stashed changes
 msgid "If the value is set to 0 the time counts up as stopwatch."
 msgstr ""
 "Wenn der Wert auf 0 gesetzt wird, wird die Zeit als Stoppuhr hochgezählt."
@@ -2934,7 +2940,10 @@ msgstr "Inaktiv"
 msgid "Inconsistent data."
 msgstr "Inkonsistente Daten."
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/meetings/pages/motions/pages/motion-detail/pages/motion-view/components/motion-detail-diff/motion-detail-diff.component.html
+=======
+>>>>>>> Stashed changes
 msgid "Inconsistent data. Please delete this change recommendation."
 msgstr "Inkonsistente Daten. Bitte löschen Sie diese Änderungsempfehlung."
 
@@ -3286,7 +3295,10 @@ msgstr "Redelisten"
 msgid "Live conference"
 msgstr "Livekonferenz"
 
+<<<<<<< Updated upstream
 #: app/src/app/domain/models/poll/poll-constants.ts
+=======
+>>>>>>> Stashed changes
 msgid "Live voting enabled"
 msgstr "Live Abstimmung aktivieren"
 
@@ -4020,7 +4032,10 @@ msgstr "An"
 msgid "One email was send sucessfully."
 msgstr "Eine E-Mail wurde erfolgreich versandt."
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
+=======
+>>>>>>> Stashed changes
 msgid "Only available for nominal voting"
 msgstr "Nur für namentliche Abstimmungen verfügbar"
 
@@ -4413,7 +4428,10 @@ msgstr ""
 "Bitte aktualisieren Sie Ihren Browser oder kontaktieren Sie Ihre "
 "Systemadministration."
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/meetings/modules/projector/modules/slides/components/poll-slide/components/poll-slide.component.html
+=======
+>>>>>>> Stashed changes
 msgid "Please vote now!"
 msgstr "Bitte stimmen Sie jetzt ab!"
 
@@ -4978,11 +4996,17 @@ msgstr "Intern setzen"
 msgid "Set it manually"
 msgstr "manuell setzen"
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Set live voting enabled by default"
 msgstr "Live Abstimmung als Voreinstellung aktivieren"
 
 #: /app/src/app/site/pages/meetings/pages/participants/pages/participant-list/components/participant-list/participant-list.component.html
+=======
+msgid "Set live voting enabled by default"
+msgstr "Live Abstimmung als Voreinstellung aktivieren"
+
+>>>>>>> Stashed changes
 msgid "Set lock out ..."
 msgstr "Ausgeschlossen setzen ..."
 
@@ -5319,7 +5343,10 @@ msgstr "Stimmabgabe beenden"
 msgid "Stop waiting"
 msgstr "Nicht länger warten"
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/meetings/modules/poll/base/base-poll.component.ts
+=======
+>>>>>>> Stashed changes
 msgid "Stop, publish & anonymize"
 msgstr "Beenden, veröffentlichen & anonymisieren"
 
@@ -6479,12 +6506,18 @@ msgstr "hat dich zu einem Schachspiel herausgefordert!"
 msgid "change recommendation"
 msgstr "Änderungsempfehlung"
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/meetings/pages/motions/services/common/motion-format.service/motion-format.service.ts
+=======
+>>>>>>> Stashed changes
 msgid "change recommendation(s) refer to a nonexistent line number."
 msgstr ""
 "Änderungsempfehlung(en) beziehen sich auf nicht-existierende Zeile(n)."
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/meetings/pages/motions/components/motion-forward-dialog/components/motion-forward-dialog/motion-forward-dialog.component.html
+=======
+>>>>>>> Stashed changes
 msgid "change recommendations"
 msgstr "Änderungsempfehlungen"
 

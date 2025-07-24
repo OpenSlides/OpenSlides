@@ -3,10 +3,11 @@
 # Katharina <karmitt2@web.de>, 2022
 # Alexandra Damm <damm@chiesaluterana.it>, 2024
 # albanobattistella <albanobattistella@gmail.com>, 2025
+# Birte Spekker <birte.spekker@intevation.de>, 2025
 # 
 msgid ""
 msgstr ""
-"Last-Translator: albanobattistella <albanobattistella@gmail.com>, 2025\n"
+"Last-Translator: Birte Spekker <birte.spekker@intevation.de>, 2025\n"
 "Language-Team: Italian (https://app.transifex.com/openslides/teams/14270/it/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -105,7 +106,10 @@ msgstr "Accettare"
 msgid "Access data (PDF)"
 msgstr "Dati d'accesso (pdf)"
 
+<<<<<<< Updated upstream
 #: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
+=======
+>>>>>>> Stashed changes
 msgid ""
 "Access only possible for participants of this meeting. All other accounts "
 "(including organization and committee admins) may not open the closed "
@@ -125,11 +129,17 @@ msgstr "Account"
 msgid "Account admin"
 msgstr "Account amministratore"
 
+<<<<<<< Updated upstream
 #: app/src/app/site/modules/translations/marked-translations.ts
 msgid "Account created"
 msgstr ""
 
 #: app/src/app/site/pages/organization/pages/accounts/pages/account-detail/components/account-add-to-meetings/account-add-to-meetings.component.html
+=======
+msgid "Account created"
+msgstr ""
+
+>>>>>>> Stashed changes
 msgid "Account successfully added."
 msgstr "Account aggiunto correttamente."
 
@@ -429,7 +439,10 @@ msgstr ""
 msgid "Allowed access groups for this directory"
 msgstr "Gruppi di accesso consentiti per questa directory"
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/meetings/modules/poll/components/base-poll-form/base-poll-form.component.html
+=======
+>>>>>>> Stashed changes
 msgid "Allows single votes projection during voting process"
 msgstr ""
 
@@ -794,7 +807,10 @@ msgstr ""
 "riunione. Se si desidera un altro gruppo, utilizzare la finestra di dialogo "
 "\"Aggiungi alle riunioni\" nella vista dei dettagli dell'account."
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/organization/pages/accounts/pages/account-list/components/account-list/account-list.component.ts
+=======
+>>>>>>> Stashed changes
 msgid ""
 "Attention: Existing home committees and external status will be overwritten."
 msgstr ""
@@ -1843,7 +1859,10 @@ msgstr "Peso del voto predefinito"
 msgid "Default voting duration"
 msgstr "Durata del voto predefinita"
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
+=======
+>>>>>>> Stashed changes
 msgid "Default voting method"
 msgstr ""
 
@@ -2160,9 +2179,14 @@ msgstr "Elezione"
 msgid "Election documents"
 msgstr "Documenti d´elezione"
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/meetings/pages/assignments/modules/assignment-poll/components/assignment-poll-form/assignment-poll-form.component.ts
 msgid "Election method"
 msgstr ""
+=======
+msgid "Election method"
+msgstr "Metodo di elezione"
+>>>>>>> Stashed changes
 
 msgid "Elections"
 msgstr "Elezioni"
@@ -2452,9 +2476,14 @@ msgstr "Esportasre mozioni selezionate"
 msgid "Extension"
 msgstr "Estensione"
 
+<<<<<<< Updated upstream
 #: app/src/app/domain/models/users/user.constants.ts
 msgid "External"
 msgstr ""
+=======
+msgid "External"
+msgstr "Esterno"
+>>>>>>> Stashed changes
 
 msgid "External ID"
 msgstr "ID esterno"
@@ -2676,11 +2705,17 @@ msgstr "Gruppi con diritto di scrivere"
 msgid "Has SSO identification"
 msgstr "Ha SSO identificazione"
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Has a home committee"
 msgstr ""
 
 #: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
+=======
+msgid "Has a home committee"
+msgstr ""
+
+>>>>>>> Stashed changes
 msgid "Has a membership number"
 msgstr "Ha un numero di iscrizione"
 
@@ -2717,11 +2752,17 @@ msgstr "Non ha identificazione SSO"
 msgid "Has no email address"
 msgstr "Non ha indirizzo email"
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Has no home committee"
 msgstr ""
 
 #: /app/src/app/site/pages/meetings/pages/motions/services/list/motion-list-filter.service/motion-list-filter.service.ts
+=======
+msgid "Has no home committee"
+msgstr ""
+
+>>>>>>> Stashed changes
 msgid "Has no identical motions"
 msgstr "Non ha mozioni identiche"
 
@@ -2824,7 +2865,10 @@ msgstr "Storia"
 msgid "Home"
 msgstr "Home"
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
+=======
+>>>>>>> Stashed changes
 msgid "Home committee"
 msgstr ""
 
@@ -2860,7 +2904,10 @@ msgstr "Identificatore"
 msgid "If deactivated it is displayed below the title."
 msgstr "Se disattivato, viene visualizzato sotto il titolo."
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/meetings/pages/mediafiles/modules/mediafile-list/components/mediafile-list/mediafile-list.component.html
+=======
+>>>>>>> Stashed changes
 msgid "If empty, everyone can access."
 msgstr ""
 
@@ -2930,7 +2977,10 @@ msgstr "Non attivo"
 msgid "Inconsistent data."
 msgstr "Dati incoerenti"
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/meetings/pages/motions/pages/motion-detail/pages/motion-view/components/motion-detail-diff/motion-detail-diff.component.html
+=======
+>>>>>>> Stashed changes
 msgid "Inconsistent data. Please delete this change recommendation."
 msgstr ""
 
@@ -3052,7 +3102,10 @@ msgstr "È chiuso"
 msgid "Is committee admin"
 msgstr "È amministratore di comitato"
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
+=======
+>>>>>>> Stashed changes
 msgid "Is external"
 msgstr ""
 
@@ -3098,7 +3151,10 @@ msgstr "Non è un emendamento"
 msgid "Is not archived"
 msgstr "Non è archiviato"
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
+=======
+>>>>>>> Stashed changes
 msgid "Is not external"
 msgstr ""
 
@@ -3280,7 +3336,10 @@ msgstr "Elenco degli oratori"
 msgid "Live conference"
 msgstr "Conferenza dal vivo."
 
+<<<<<<< Updated upstream
 #: app/src/app/domain/models/poll/poll-constants.ts
+=======
+>>>>>>> Stashed changes
 msgid "Live voting enabled"
 msgstr ""
 
@@ -4008,7 +4067,10 @@ msgstr "Acceso"
 msgid "One email was send sucessfully."
 msgstr "Una email è stata inviata con successo"
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
+=======
+>>>>>>> Stashed changes
 msgid "Only available for nominal voting"
 msgstr ""
 
@@ -4197,6 +4259,7 @@ msgstr "Caricare in parallelo"
 msgid "Parent agenda item"
 msgstr "Contributo madre nell'ordine del giorno"
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/organization/pages/committees/pages/committee-detail/modules/committee-detail-edit/components/committee-detail-edit/committee-detail-edit.component.html
 msgid "Parent committee"
 msgstr ""
@@ -4206,6 +4269,14 @@ msgid "Parent committee name"
 msgstr ""
 
 #: /app/src/app/site/pages/meetings/pages/motions/pages/motion-detail/pages/motion-form/components/motion-form/motion-form.component.ts
+=======
+msgid "Parent committee"
+msgstr ""
+
+msgid "Parent committee name"
+msgstr ""
+
+>>>>>>> Stashed changes
 msgid "Parent motion text changed"
 msgstr "Il testo del movimento genitore è cambiato"
 
@@ -4219,11 +4290,17 @@ msgstr "Partecipante"
 msgid "Participant added to group {} in meeting {}"
 msgstr "Partecipante aggiunto al gruppo {} nella riunione {}"
 
+<<<<<<< Updated upstream
 #: app/src/app/site/modules/translations/marked-translations.ts
 msgid "Participant added to group {} in meeting {}."
 msgstr ""
 
 #: app/src/app/site/modules/translations/marked-translations.ts
+=======
+msgid "Participant added to group {} in meeting {}."
+msgstr ""
+
+>>>>>>> Stashed changes
 msgid "Participant added to meeting {}."
 msgstr ""
 
@@ -4257,7 +4334,10 @@ msgstr "Numero partecipante"
 msgid "Participant removed from group {} in meeting {}"
 msgstr "Partecipante rimosso dal gruppo {} nella riunione {}"
 
+<<<<<<< Updated upstream
 #: app/src/app/site/modules/translations/marked-translations.ts
+=======
+>>>>>>> Stashed changes
 msgid "Participant removed from meeting {}"
 msgstr ""
 
@@ -4398,7 +4478,10 @@ msgstr ""
 "Prego, da aggiornare il proprio browser o da contattare la propria "
 "amministrazione del sistema."
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/meetings/modules/projector/modules/slides/components/poll-slide/components/poll-slide.component.html
+=======
+>>>>>>> Stashed changes
 msgid "Please vote now!"
 msgstr ""
 
@@ -4934,11 +5017,17 @@ msgstr "Imposta come modello"
 msgid "Set category"
 msgstr "Impostare categoria"
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/organization/pages/accounts/pages/account-list/components/account-list/account-list.component.html
 msgid "Set external"
 msgstr ""
 
 #: app/src/app/site/pages/organization/pages/accounts/pages/account-list/components/account-list/account-list.component.ts
+=======
+msgid "Set external"
+msgstr ""
+
+>>>>>>> Stashed changes
 msgid "Set external status for selected accounts"
 msgstr ""
 
@@ -4963,11 +5052,17 @@ msgstr "Impostare interno"
 msgid "Set it manually"
 msgstr "Impostazione manuale"
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Set live voting enabled by default"
 msgstr ""
 
 #: /app/src/app/site/pages/meetings/pages/participants/pages/participant-list/components/participant-list/participant-list.component.html
+=======
+msgid "Set live voting enabled by default"
+msgstr ""
+
+>>>>>>> Stashed changes
 msgid "Set lock out ..."
 msgstr "Imposta blocco ..."
 
@@ -5017,7 +5112,10 @@ msgstr "Imposta tags"
 msgid "Set workflow"
 msgstr "Imposta il flusso di lavoro"
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/organization/pages/accounts/pages/account-list/components/account-list/account-list.component.html
+=======
+>>>>>>> Stashed changes
 msgid "Set/remove home committee"
 msgstr ""
 
@@ -5312,7 +5410,10 @@ msgstr "Stop votazione"
 msgid "Stop waiting"
 msgstr "Smettere di aspettare"
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/meetings/modules/poll/base/base-poll.component.ts
+=======
+>>>>>>> Stashed changes
 msgid "Stop, publish & anonymize"
 msgstr ""
 
@@ -5333,7 +5434,10 @@ msgstr ""
 msgid "Subcategory"
 msgstr "Categoria secondaria"
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/organization/pages/committees/pages/committee-detail/modules/committee-detail-view/components/committee-detail-view/committee-detail-view.component.html
+=======
+>>>>>>> Stashed changes
 msgid "Subcommittees"
 msgstr ""
 
@@ -6464,11 +6568,17 @@ msgstr "Ti ha sfidato a giocare una partita di scacchi!"
 msgid "change recommendation"
 msgstr "modifica raccomandazione"
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/meetings/pages/motions/services/common/motion-format.service/motion-format.service.ts
 msgid "change recommendation(s) refer to a nonexistent line number."
 msgstr ""
 
 #: app/src/app/site/pages/meetings/pages/motions/components/motion-forward-dialog/components/motion-forward-dialog/motion-forward-dialog.component.html
+=======
+msgid "change recommendation(s) refer to a nonexistent line number."
+msgstr ""
+
+>>>>>>> Stashed changes
 msgid "change recommendations"
 msgstr "modifica raccomandazioni"
 
@@ -6527,9 +6637,14 @@ msgstr "Terminato"
 msgid "example"
 msgstr "esempio"
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/organization/pages/accounts/pages/account-detail/components/account-detail/account-detail.component.html
 msgid "external"
 msgstr ""
+=======
+msgid "external"
+msgstr "esterno"
+>>>>>>> Stashed changes
 
 msgid "female"
 msgstr "femminile"
@@ -6568,7 +6683,10 @@ msgstr "nascosto"
 msgid "inactive"
 msgstr "non attivo"
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/organization/pages/committees/pages/committee-detail/modules/committee-detail-view/components/committee-detail-view/committee-detail-view.component.html
+=======
+>>>>>>> Stashed changes
 msgid "incl. subcommittees"
 msgstr ""
 
@@ -6618,7 +6736,10 @@ msgstr "maggioranza"
 msgid "male"
 msgstr "maschile"
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/meetings/pages/motions/components/motion-forward-dialog/components/motion-forward-dialog/motion-forward-dialog.component.html
+=======
+>>>>>>> Stashed changes
 msgid "mark amendments as original"
 msgstr ""
 
@@ -6656,22 +6777,34 @@ msgstr "non nominale"
 msgid "none"
 msgstr "niente"
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/organization/pages/accounts/pages/account-list/components/account-list/account-list.component.ts
 msgid "not external"
 msgstr ""
 
 #: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
+=======
+msgid "not external"
+msgstr "non esterno"
+
+>>>>>>> Stashed changes
 msgid "not specified"
 msgstr "Non specificato"
 
 msgid "of"
 msgstr "di"
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/organization/pages/committees/pages/committee-detail/modules/committee-detail-view/components/committee-detail-view/committee-detail-view.component.html
 msgid "of which"
 msgstr ""
 
 #: app/src/app/site/pages/meetings/pages/motions/pages/motion-detail/pages/motion-view/components/motion-meta-data/motion-meta-data.component.ts
+=======
+msgid "of which"
+msgstr ""
+
+>>>>>>> Stashed changes
 msgid "of which %num% not permissable"
 msgstr ""
 
@@ -6757,7 +6890,10 @@ msgstr "a"
 msgid "today"
 msgstr "Oggi"
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/organization/pages/committees/pages/committee-detail/modules/committee-detail-view/components/committee-detail-view/committee-detail-view.component.html
+=======
+>>>>>>> Stashed changes
 msgid "total"
 msgstr ""
 
@@ -6795,11 +6931,17 @@ msgstr "Sarà importato"
 msgid "will be updated"
 msgstr "Sarà aggiornato"
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/organization/pages/committees/pages/committee-detail/modules/committee-detail-view/components/committee-detail-view/committee-detail-view.component.html
 msgid "with"
 msgstr ""
 
 #: app/src/app/site/pages/meetings/pages/motions/components/motion-forward-dialog/components/motion-forward-dialog/motion-forward-dialog.component.html
+=======
+msgid "with"
+msgstr "con"
+
+>>>>>>> Stashed changes
 msgid "without identifier"
 msgstr "senza identificativo"
 
@@ -6817,3 +6959,129 @@ msgstr "{{amount}} di essi saranno salvati con \"relatore sconosciuto\"."
 #: /app/src/app/site/pages/meetings/modules/list-of-speakers-content/components/list-of-speakers-content/list-of-speakers-content.component.ts
 msgid "{{amount}} will be saved"
 msgstr "{{amount}} saranno salvati"
+<<<<<<< Updated upstream
+=======
+
+msgid "Acceptance"
+msgstr "Accettazione"
+
+msgid "Adjournment"
+msgstr "Aggiornamento"
+
+msgid "Admin"
+msgstr "Amministratore"
+
+msgid "Complex Workflow"
+msgstr "Flusso di lavoro complesso"
+
+#, python-brace-format
+msgid ""
+"Dear {name},\n"
+"\n"
+"this is your personal OpenSlides login:\n"
+"\n"
+"{url}\n"
+"Username: {username}\n"
+"Password: {password}\n"
+"\n"
+"\n"
+"This email was generated automatically."
+msgstr ""
+"Gentile {name},\n"
+"\n"
+"questo è il tuo login personale di OpenSlides:\n"
+"\n"
+"{url}\n"
+"Nome utente: {username}\n"
+"Password: {password}\n"
+"\n"
+"Questa e-mail è stata generata automaticamente."
+
+msgid "Default projector"
+msgstr "Proiettore predefinito"
+
+msgid "Delegates"
+msgstr "Delegati"
+
+msgid "No concernment"
+msgstr "Nessun riferimento"
+
+msgid "No decision"
+msgstr "Nessuna decisione"
+
+msgid "Presentation and assembly system"
+msgstr "Sistema di presentazione e assemblaggio"
+
+msgid "Referral to"
+msgstr "Riferito a"
+
+msgid "Rejection"
+msgstr "Rifiuto"
+
+msgid "Reset your OpenSlides password"
+msgstr "Reimposta la tua password di OpenSlides"
+
+msgid "Simple Workflow"
+msgstr "Flusso di lavoro semplice"
+
+msgid "Space for your welcome text."
+msgstr "Spazio per il tuo testo di benvenuto."
+
+msgid "Speaking time"
+msgstr "Tempo di parola"
+
+msgid "Staff"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"You are receiving this email because you have requested a new password for your OpenSlides account.\n"
+"\n"
+"Please open the following link and choose a new password:\n"
+"{url}/login/forget-password-confirm?user_id={user_id}&token={token}\n"
+"\n"
+"The link will be valid for 10 minutes."
+msgstr ""
+"Stai ricevendo questa e-mail perché hai richiesto una nuova password per il tuo account di OpenSlides.\n"
+"\n"
+"Apri il seguente link e scegli una nuova password:\n"
+"{url}/login/forget-password-confirm?user_id={user_id}&token={token}\n"
+"\n"
+"Il link sarà valido per 10 minuti."
+
+msgid "accepted"
+msgstr "accettato"
+
+msgid "adjourned"
+msgstr "rinviato"
+
+msgid "in progress"
+msgstr "in corso"
+
+msgid "name"
+msgstr "nome"
+
+msgid "not concerned"
+msgstr "non interessato"
+
+msgid "not decided"
+msgstr "non deciso"
+
+msgid "not permitted"
+msgstr "non permesso"
+
+msgid "permitted"
+msgstr "permesso"
+
+msgid "referred to"
+msgstr "riferito a"
+
+msgid "rejected"
+msgstr "respinto"
+
+msgid "submitted"
+msgstr "inviato"
+
+msgid "withdrawn"
+msgstr "ritirato"
+>>>>>>> Stashed changes

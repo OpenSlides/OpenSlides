@@ -381,7 +381,10 @@ msgstr ""
 msgid "Allowed access groups for this directory"
 msgstr ""
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/meetings/modules/poll/components/base-poll-form/base-poll-form.component.html
+=======
+>>>>>>> Stashed changes
 msgid "Allows single votes projection during voting process"
 msgstr ""
 
@@ -2638,7 +2641,10 @@ msgstr ""
 msgid "If empty, everyone can access."
 msgstr ""
 
+<<<<<<< Updated upstream
 #: /app/src/app/site/pages/meetings/pages/projectors/components/projector-countdown-dialog/components/projector-countdown-dialog/projector-countdown-dialog.component.html
+=======
+>>>>>>> Stashed changes
 msgid "If the value is set to 0 the time counts up as stopwatch."
 msgstr ""
 
@@ -2703,7 +2709,10 @@ msgstr ""
 msgid "Inconsistent data."
 msgstr ""
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/meetings/pages/motions/pages/motion-detail/pages/motion-view/components/motion-detail-diff/motion-detail-diff.component.html
+=======
+>>>>>>> Stashed changes
 msgid "Inconsistent data. Please delete this change recommendation."
 msgstr ""
 
@@ -3044,7 +3053,10 @@ msgstr ""
 msgid "Live conference"
 msgstr ""
 
+<<<<<<< Updated upstream
 #: app/src/app/domain/models/poll/poll-constants.ts
+=======
+>>>>>>> Stashed changes
 msgid "Live voting enabled"
 msgstr ""
 
@@ -3755,7 +3767,10 @@ msgstr ""
 msgid "One email was send sucessfully."
 msgstr ""
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
+=======
+>>>>>>> Stashed changes
 msgid "Only available for nominal voting"
 msgstr ""
 
@@ -4132,7 +4147,10 @@ msgstr ""
 msgid "Please update your browser or contact your system administration."
 msgstr ""
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/meetings/modules/projector/modules/slides/components/poll-slide/components/poll-slide.component.html
+=======
+>>>>>>> Stashed changes
 msgid "Please vote now!"
 msgstr ""
 
@@ -4686,11 +4704,17 @@ msgstr ""
 msgid "Set it manually"
 msgstr ""
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Set live voting enabled by default"
 msgstr ""
 
 #: /app/src/app/site/pages/meetings/pages/participants/pages/participant-list/components/participant-list/participant-list.component.html
+=======
+msgid "Set live voting enabled by default"
+msgstr ""
+
+>>>>>>> Stashed changes
 msgid "Set lock out ..."
 msgstr ""
 
@@ -5013,7 +5037,10 @@ msgstr ""
 msgid "Stop waiting"
 msgstr ""
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/meetings/modules/poll/base/base-poll.component.ts
+=======
+>>>>>>> Stashed changes
 msgid "Stop, publish & anonymize"
 msgstr ""
 
@@ -5759,10 +5786,17 @@ msgstr ""
 
 #: app/src/app/site/pages/meetings/pages/motions/pages/motion-detail/pages/motion-form/components/motion-form/motion-form.component.ts
 msgid ""
+<<<<<<< Updated upstream
 "Warning: Amendments or change recommendations exist for this motion. "
 "Editing this text will likely impact them negatively. Particularily, "
 "amendments might become unusable if the paragraph they affect is deleted, "
 "or change recommendations might lose their reference line completely."
+=======
+"Warning: Amendments or change recommendations exist for this motion. Editing "
+"this text will likely impact them negatively. Particularily, amendments "
+"might become unusable if the paragraph they affect is deleted, or change "
+"recommendations might lose their reference line completely."
+>>>>>>> Stashed changes
 msgstr ""
 
 #: /app/src/app/site/pages/meetings/pages/motions/components/motion-multiselect/services/motion-multiselect.service.ts
@@ -6058,11 +6092,17 @@ msgstr ""
 msgid "change recommendation"
 msgstr ""
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/meetings/pages/motions/services/common/motion-format.service/motion-format.service.ts
 msgid "change recommendation(s) refer to a nonexistent line number."
 msgstr ""
 
 #: app/src/app/site/pages/meetings/pages/motions/components/motion-forward-dialog/components/motion-forward-dialog/motion-forward-dialog.component.html
+=======
+msgid "change recommendation(s) refer to a nonexistent line number."
+msgstr ""
+
+>>>>>>> Stashed changes
 msgid "change recommendations"
 msgstr ""
 

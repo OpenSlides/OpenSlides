@@ -1,10 +1,11 @@
 # 
 # Translators:
 # fri, 2024
+# Birte Spekker <birte.spekker@intevation.de>, 2025
 # 
 msgid ""
 msgstr ""
-"Last-Translator: fri, 2024\n"
+"Last-Translator: Birte Spekker <birte.spekker@intevation.de>, 2025\n"
 "Language-Team: Czech (https://app.transifex.com/openslides/teams/14270/cs/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -99,7 +100,10 @@ msgstr "Přijmout"
 msgid "Access data (PDF)"
 msgstr "Přístupová data (PDF)"
 
+<<<<<<< Updated upstream
 #: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
+=======
+>>>>>>> Stashed changes
 msgid ""
 "Access only possible for participants of this meeting. All other accounts "
 "(including organization and committee admins) may not open the closed "
@@ -119,11 +123,17 @@ msgstr "Účet"
 msgid "Account admin"
 msgstr "Správa účtu"
 
+<<<<<<< Updated upstream
 #: app/src/app/site/modules/translations/marked-translations.ts
 msgid "Account created"
 msgstr ""
 
 #: app/src/app/site/pages/organization/pages/accounts/pages/account-detail/components/account-add-to-meetings/account-add-to-meetings.component.html
+=======
+msgid "Account created"
+msgstr ""
+
+>>>>>>> Stashed changes
 msgid "Account successfully added."
 msgstr ""
 
@@ -411,7 +421,10 @@ msgstr "Povolit podrobné chybové zprávy pro obnovení hesla"
 msgid "Allowed access groups for this directory"
 msgstr "Povolené přístupové skupiny pro tento adresář"
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/meetings/modules/poll/components/base-poll-form/base-poll-form.component.html
+=======
+>>>>>>> Stashed changes
 msgid "Allows single votes projection during voting process"
 msgstr ""
 
@@ -763,7 +776,10 @@ msgstr ""
 "zamýšlena jiná skupina, použijte dialogové okno \"Přidat do setkání\" v "
 "zobrazení podrobností účtu."
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/organization/pages/accounts/pages/account-list/components/account-list/account-list.component.ts
+=======
+>>>>>>> Stashed changes
 msgid ""
 "Attention: Existing home committees and external status will be overwritten."
 msgstr ""
@@ -1769,7 +1785,10 @@ msgstr "Výchozí váha hlasu"
 msgid "Default voting duration"
 msgstr "Výchozí doba trvání hlasování"
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
+=======
+>>>>>>> Stashed changes
 msgid "Default voting method"
 msgstr ""
 
@@ -2062,7 +2081,10 @@ msgstr "Volba"
 msgid "Election documents"
 msgstr "Volební dokumenty"
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/meetings/pages/assignments/modules/assignment-poll/components/assignment-poll-form/assignment-poll-form.component.ts
+=======
+>>>>>>> Stashed changes
 msgid "Election method"
 msgstr ""
 
@@ -2338,7 +2360,10 @@ msgstr "Vyvést vybrané návrhy"
 msgid "Extension"
 msgstr "Rozšíření"
 
+<<<<<<< Updated upstream
 #: app/src/app/domain/models/users/user.constants.ts
+=======
+>>>>>>> Stashed changes
 msgid "External"
 msgstr ""
 
@@ -2558,11 +2583,17 @@ msgstr "Skupiny s oprávněním pro zápis"
 msgid "Has SSO identification"
 msgstr "Má poznávací znamení SSO"
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Has a home committee"
 msgstr ""
 
 #: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
+=======
+msgid "Has a home committee"
+msgstr ""
+
+>>>>>>> Stashed changes
 msgid "Has a membership number"
 msgstr ""
 
@@ -2599,11 +2630,17 @@ msgstr "Nemá poznávací znamení SSO"
 msgid "Has no email address"
 msgstr ""
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Has no home committee"
 msgstr ""
 
 #: /app/src/app/site/pages/meetings/pages/motions/services/list/motion-list-filter.service/motion-list-filter.service.ts
+=======
+msgid "Has no home committee"
+msgstr ""
+
+>>>>>>> Stashed changes
 msgid "Has no identical motions"
 msgstr ""
 
@@ -2706,7 +2743,10 @@ msgstr "Minulost"
 msgid "Home"
 msgstr "Úvodní stránka"
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
+=======
+>>>>>>> Stashed changes
 msgid "Home committee"
 msgstr ""
 
@@ -2737,7 +2777,10 @@ msgstr "Označovač"
 msgid "If deactivated it is displayed below the title."
 msgstr ""
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/meetings/pages/mediafiles/modules/mediafile-list/components/mediafile-list/mediafile-list.component.html
+=======
+>>>>>>> Stashed changes
 msgid "If empty, everyone can access."
 msgstr ""
 
@@ -2806,7 +2849,10 @@ msgstr "Nečinný"
 msgid "Inconsistent data."
 msgstr "Rozporuplné údaje."
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/meetings/pages/motions/pages/motion-detail/pages/motion-view/components/motion-detail-diff/motion-detail-diff.component.html
+=======
+>>>>>>> Stashed changes
 msgid "Inconsistent data. Please delete this change recommendation."
 msgstr ""
 
@@ -2924,7 +2970,10 @@ msgstr ""
 msgid "Is committee admin"
 msgstr ""
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
+=======
+>>>>>>> Stashed changes
 msgid "Is external"
 msgstr ""
 
@@ -2970,7 +3019,10 @@ msgstr ""
 msgid "Is not archived"
 msgstr "Není archivován"
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
+=======
+>>>>>>> Stashed changes
 msgid "Is not external"
 msgstr ""
 
@@ -3149,7 +3201,10 @@ msgstr "Seznamy řečníků"
 msgid "Live conference"
 msgstr "Živé jednání"
 
+<<<<<<< Updated upstream
 #: app/src/app/domain/models/poll/poll-constants.ts
+=======
+>>>>>>> Stashed changes
 msgid "Live voting enabled"
 msgstr ""
 
@@ -3867,7 +3922,10 @@ msgstr ""
 msgid "One email was send sucessfully."
 msgstr "Byl úspěšně odeslán jeden elektronický dopis."
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
+=======
+>>>>>>> Stashed changes
 msgid "Only available for nominal voting"
 msgstr ""
 
@@ -4051,6 +4109,7 @@ msgstr "Souběžné nahrání"
 msgid "Parent agenda item"
 msgstr "Nadřazený bod pořadu jednání"
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/organization/pages/committees/pages/committee-detail/modules/committee-detail-edit/components/committee-detail-edit/committee-detail-edit.component.html
 msgid "Parent committee"
 msgstr ""
@@ -4060,6 +4119,14 @@ msgid "Parent committee name"
 msgstr ""
 
 #: /app/src/app/site/pages/meetings/pages/motions/pages/motion-detail/pages/motion-form/components/motion-form/motion-form.component.ts
+=======
+msgid "Parent committee"
+msgstr ""
+
+msgid "Parent committee name"
+msgstr ""
+
+>>>>>>> Stashed changes
 msgid "Parent motion text changed"
 msgstr ""
 
@@ -4073,11 +4140,17 @@ msgstr "Účastník"
 msgid "Participant added to group {} in meeting {}"
 msgstr "Účastník přidaný do skupiny {} na setkání {}"
 
+<<<<<<< Updated upstream
 #: app/src/app/site/modules/translations/marked-translations.ts
 msgid "Participant added to group {} in meeting {}."
 msgstr ""
 
 #: app/src/app/site/modules/translations/marked-translations.ts
+=======
+msgid "Participant added to group {} in meeting {}."
+msgstr ""
+
+>>>>>>> Stashed changes
 msgid "Participant added to meeting {}."
 msgstr ""
 
@@ -4111,7 +4184,10 @@ msgstr "Číslo účastníka"
 msgid "Participant removed from group {} in meeting {}"
 msgstr "Účastník odstraněn ze skupiny {} na setkání {}"
 
+<<<<<<< Updated upstream
 #: app/src/app/site/modules/translations/marked-translations.ts
+=======
+>>>>>>> Stashed changes
 msgid "Participant removed from meeting {}"
 msgstr ""
 
@@ -4245,7 +4321,10 @@ msgid "Please update your browser or contact your system administration."
 msgstr ""
 "Aktualizujte, prosím, svůj prohlížeč nebo se spojte se správcem systému."
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/meetings/modules/projector/modules/slides/components/poll-slide/components/poll-slide.component.html
+=======
+>>>>>>> Stashed changes
 msgid "Please vote now!"
 msgstr ""
 
@@ -4774,11 +4853,17 @@ msgstr ""
 msgid "Set category"
 msgstr "Stanovit skupinu"
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/organization/pages/accounts/pages/account-list/components/account-list/account-list.component.html
 msgid "Set external"
 msgstr ""
 
 #: app/src/app/site/pages/organization/pages/accounts/pages/account-list/components/account-list/account-list.component.ts
+=======
+msgid "Set external"
+msgstr ""
+
+>>>>>>> Stashed changes
 msgid "Set external status for selected accounts"
 msgstr ""
 
@@ -4803,11 +4888,17 @@ msgstr "Nastavit vnitřní"
 msgid "Set it manually"
 msgstr "Nastavit ručně"
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Set live voting enabled by default"
 msgstr ""
 
 #: /app/src/app/site/pages/meetings/pages/participants/pages/participant-list/components/participant-list/participant-list.component.html
+=======
+msgid "Set live voting enabled by default"
+msgstr ""
+
+>>>>>>> Stashed changes
 msgid "Set lock out ..."
 msgstr ""
 
@@ -4856,7 +4947,10 @@ msgstr "Nastavit klíčová slova"
 msgid "Set workflow"
 msgstr "Stanovit pracovní postup"
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/organization/pages/accounts/pages/account-list/components/account-list/account-list.component.html
+=======
+>>>>>>> Stashed changes
 msgid "Set/remove home committee"
 msgstr ""
 
@@ -5140,7 +5234,10 @@ msgstr "Zastavit hlasování"
 msgid "Stop waiting"
 msgstr "Zastavit čekání"
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/meetings/modules/poll/base/base-poll.component.ts
+=======
+>>>>>>> Stashed changes
 msgid "Stop, publish & anonymize"
 msgstr ""
 
@@ -5161,7 +5258,10 @@ msgstr ""
 msgid "Subcategory"
 msgstr "Podskupina"
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/organization/pages/committees/pages/committee-detail/modules/committee-detail-view/components/committee-detail-view/committee-detail-view.component.html
+=======
+>>>>>>> Stashed changes
 msgid "Subcommittees"
 msgstr ""
 
@@ -6240,11 +6340,17 @@ msgstr ""
 msgid "change recommendation"
 msgstr ""
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/meetings/pages/motions/services/common/motion-format.service/motion-format.service.ts
 msgid "change recommendation(s) refer to a nonexistent line number."
 msgstr ""
 
 #: app/src/app/site/pages/meetings/pages/motions/components/motion-forward-dialog/components/motion-forward-dialog/motion-forward-dialog.component.html
+=======
+msgid "change recommendation(s) refer to a nonexistent line number."
+msgstr ""
+
+>>>>>>> Stashed changes
 msgid "change recommendations"
 msgstr ""
 
@@ -6303,7 +6409,10 @@ msgstr "skončeno"
 msgid "example"
 msgstr "Příklad"
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/organization/pages/accounts/pages/account-detail/components/account-detail/account-detail.component.html
+=======
+>>>>>>> Stashed changes
 msgid "external"
 msgstr ""
 
@@ -6344,7 +6453,10 @@ msgstr "skryto"
 msgid "inactive"
 msgstr "Nečinný"
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/organization/pages/committees/pages/committee-detail/modules/committee-detail-view/components/committee-detail-view/committee-detail-view.component.html
+=======
+>>>>>>> Stashed changes
 msgid "incl. subcommittees"
 msgstr ""
 
@@ -6394,7 +6506,10 @@ msgstr "Většina"
 msgid "male"
 msgstr "Muž"
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/meetings/pages/motions/components/motion-forward-dialog/components/motion-forward-dialog/motion-forward-dialog.component.html
+=======
+>>>>>>> Stashed changes
 msgid "mark amendments as original"
 msgstr ""
 
@@ -6432,22 +6547,34 @@ msgstr "nejmenovité"
 msgid "none"
 msgstr "žádné"
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/organization/pages/accounts/pages/account-list/components/account-list/account-list.component.ts
 msgid "not external"
 msgstr ""
 
 #: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
+=======
+msgid "not external"
+msgstr ""
+
+>>>>>>> Stashed changes
 msgid "not specified"
 msgstr ""
 
 msgid "of"
 msgstr "z"
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/organization/pages/committees/pages/committee-detail/modules/committee-detail-view/components/committee-detail-view/committee-detail-view.component.html
 msgid "of which"
 msgstr ""
 
 #: app/src/app/site/pages/meetings/pages/motions/pages/motion-detail/pages/motion-view/components/motion-meta-data/motion-meta-data.component.ts
+=======
+msgid "of which"
+msgstr ""
+
+>>>>>>> Stashed changes
 msgid "of which %num% not permissable"
 msgstr ""
 
@@ -6533,7 +6660,10 @@ msgstr "po"
 msgid "today"
 msgstr "dnes"
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/organization/pages/committees/pages/committee-detail/modules/committee-detail-view/components/committee-detail-view/committee-detail-view.component.html
+=======
+>>>>>>> Stashed changes
 msgid "total"
 msgstr ""
 
@@ -6571,11 +6701,17 @@ msgstr "bude zaveden"
 msgid "will be updated"
 msgstr ""
 
+<<<<<<< Updated upstream
 #: app/src/app/site/pages/organization/pages/committees/pages/committee-detail/modules/committee-detail-view/components/committee-detail-view/committee-detail-view.component.html
 msgid "with"
 msgstr ""
 
 #: app/src/app/site/pages/meetings/pages/motions/components/motion-forward-dialog/components/motion-forward-dialog/motion-forward-dialog.component.html
+=======
+msgid "with"
+msgstr ""
+
+>>>>>>> Stashed changes
 msgid "without identifier"
 msgstr ""
 
@@ -6593,3 +6729,124 @@ msgstr ""
 #: /app/src/app/site/pages/meetings/modules/list-of-speakers-content/components/list-of-speakers-content/list-of-speakers-content.component.ts
 msgid "{{amount}} will be saved"
 msgstr ""
+<<<<<<< Updated upstream
+=======
+
+msgid "Acceptance"
+msgstr "Souhlas"
+
+msgid "Adjournment"
+msgstr "Odložení"
+
+msgid "Admin"
+msgstr "Správce"
+
+msgid "Complex Workflow"
+msgstr "Složitý pracovní postup"
+
+#, python-brace-format
+msgid ""
+"Dear {name},\n"
+"\n"
+"this is your personal OpenSlides login:\n"
+"\n"
+"{url}\n"
+"Username: {username}\n"
+"Password: {password}\n"
+"\n"
+"\n"
+"This email was generated automatically."
+msgstr ""
+"Můj milý/Moje milá {jméno},\n"
+"\n"
+"toto je vaše osobní přihlášení do OpenSlides:\n"
+"\n"
+"{url}\n"
+"Uživatelské jméno: {username}\n"
+"Heslo: {heslo}\n"
+"\n"
+"\n"
+"Tento e-mail byl vytvořen automaticky."
+
+msgid "Default projector"
+msgstr "Výchozí promítací přístroj"
+
+msgid "Delegates"
+msgstr "Zástupci"
+
+msgid "No concernment"
+msgstr "Neprobíráno"
+
+msgid "No decision"
+msgstr "Žádné rozhodnutí"
+
+msgid "Presentation and assembly system"
+msgstr "Předváděcí a schůzovací systém"
+
+msgid "Referral to"
+msgstr ""
+
+msgid "Rejection"
+msgstr "Odmítnutí"
+
+msgid "Reset your OpenSlides password"
+msgstr "Obnovit heslo k aplikaci OpenSlides"
+
+msgid "Simple Workflow"
+msgstr "Jednoduchý pracovní postup"
+
+msgid "Space for your welcome text."
+msgstr "Místo pro váš uvítací text."
+
+msgid "Speaking time"
+msgstr "Čas na mluvení"
+
+msgid "Staff"
+msgstr "Zaměstnanci"
+
+#, python-brace-format
+msgid ""
+"You are receiving this email because you have requested a new password for your OpenSlides account.\n"
+"\n"
+"Please open the following link and choose a new password:\n"
+"{url}/login/forget-password-confirm?user_id={user_id}&token={token}\n"
+"\n"
+"The link will be valid for 10 minutes."
+msgstr ""
+
+msgid "accepted"
+msgstr "přijato"
+
+msgid "adjourned"
+msgstr "odloženo"
+
+msgid "in progress"
+msgstr "probíhá"
+
+msgid "name"
+msgstr "název"
+
+msgid "not concerned"
+msgstr "neprobíráno"
+
+msgid "not decided"
+msgstr "nerozhodnuto"
+
+msgid "not permitted"
+msgstr ""
+
+msgid "permitted"
+msgstr "schváleno"
+
+msgid "referred to"
+msgstr ""
+
+msgid "rejected"
+msgstr "odmítnuto"
+
+msgid "submitted"
+msgstr "podáno"
+
+msgid "withdrawn"
+msgstr "stažen"
+>>>>>>> Stashed changes
