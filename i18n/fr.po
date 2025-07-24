@@ -101,10 +101,6 @@ msgstr "Accepter"
 msgid "Access data (PDF)"
 msgstr "Données d'accès (PDF)"
 
-<<<<<<< Updated upstream
-#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
-=======
->>>>>>> Stashed changes
 msgid ""
 "Access only possible for participants of this meeting. All other accounts "
 "(including organization and committee admins) may not open the closed "
@@ -120,17 +116,9 @@ msgstr "Compte"
 msgid "Account admin"
 msgstr "Administrateur de compte"
 
-<<<<<<< Updated upstream
-#: app/src/app/site/modules/translations/marked-translations.ts
-msgid "Account created"
-msgstr ""
-
-#: app/src/app/site/pages/organization/pages/accounts/pages/account-detail/components/account-add-to-meetings/account-add-to-meetings.component.html
-=======
 msgid "Account created"
 msgstr "Comptes créés"
 
->>>>>>> Stashed changes
 msgid "Account successfully added."
 msgstr ""
 
@@ -149,10 +137,6 @@ msgstr "Comptes avec des erreurs"
 msgid "Accounts with warnings: affected cells will be skipped"
 msgstr "Comptes avec avertissements : les cellules affectées seront ignorées"
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/meetings/modules/list-of-speakers-content/components/list-of-speakers-content/list-of-speakers-content.component.ts
-=======
->>>>>>> Stashed changes
 msgid "Action not possible. You have to be part of the meeting."
 msgstr ""
 
@@ -162,18 +146,9 @@ msgstr "Activer"
 msgid "Activate amendments"
 msgstr "Activer les amendements"
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/meetings/pages/motions/pages/motion-detail/pages/motion-view/components/motion-meta-data/motion-meta-data.component.html
-#: app/src/app/site/pages/meetings/pages/motions/pages/motion-detail/pages/motion-view/components/motion-meta-data/motion-meta-data.component.html
 msgid "Activate backtracking"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
-=======
-msgid "Activate backtracking"
-msgstr ""
-
->>>>>>> Stashed changes
 msgid "Activate closed meeting"
 msgstr ""
 
@@ -339,10 +314,6 @@ msgstr "Tous"
 msgid "All casted ballots"
 msgstr "Tous les bulletins de vote déposés"
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/meetings/pages/meeting-settings/pages/meeting-settings-group-detail/components/meeting-settings-group-detail/meeting-settings-group-detail.component.ts
-=======
->>>>>>> Stashed changes
 msgid "All changes of this settings group will be lost!"
 msgstr ""
 
@@ -358,10 +329,6 @@ msgstr "Toutes les réunions"
 msgid "All other fields are optional and may be empty."
 msgstr "Tous les autres champs sont facultatifs et peuvent être vides."
 
-<<<<<<< Updated upstream
-#: /app/src/app/gateways/repositories/meeting-repository.service.ts
-=======
->>>>>>> Stashed changes
 msgid "All structure levels"
 msgstr "Tous les niveaux de structure"
 
@@ -378,10 +345,6 @@ msgstr "Tous les votes seront perdus."
 msgid "Allow amendments of amendments"
 msgstr "Permettre des amendements d'amendements"
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
-=======
->>>>>>> Stashed changes
 msgid "Allow backtracking of forwarded motions"
 msgstr ""
 
@@ -391,10 +354,6 @@ msgstr "Permettre un blanc dans l'identifiant"
 msgid "Allow create poll"
 msgstr "Autoriser la création d'un sondage"
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/meetings/pages/motions/pages/workflows/components/workflow-detail/workflow-detail.component.ts
-=======
->>>>>>> Stashed changes
 msgid "Allow forwarding of amendments"
 msgstr ""
 
@@ -433,10 +392,6 @@ msgstr ""
 msgid "Allowed access groups for this directory"
 msgstr "Groupes d'accès autorisés pour ce répertoire"
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/meetings/modules/poll/components/base-poll-form/base-poll-form.component.html
-=======
->>>>>>> Stashed changes
 msgid "Allows single votes projection during voting process"
 msgstr ""
 
@@ -639,14 +594,8 @@ msgstr "Êtes-vous sûr de vouloir supprimer ce message ?"
 msgid "Are you sure you want to delete this motion block?"
 msgstr "Êtes-vous sûr de vouloir supprimer ce bloc de motions ?"
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/meetings/pages/motions/pages/motion-detail/pages/motion-view/components/motion-delete-dialog/motion-delete-dialog.component.html
-msgid "Are you sure you want to delete this motion?"
-msgstr ""
-=======
 msgid "Are you sure you want to delete this motion?"
 msgstr "Êtes-vous sûr de vouloir supprimer cette motion ?"
->>>>>>> Stashed changes
 
 msgid "Are you sure you want to delete this projector?"
 msgstr "Êtes-vous sûr de vouloir supprimer ce projecteur ?"
@@ -807,10 +756,6 @@ msgstr ""
 "réunion. Si un autre groupe est souhaité, veuillez utiliser la boîte de "
 "dialogue \"Ajouter aux réunions\" dans la vue détaillée du compte."
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/organization/pages/accounts/pages/account-list/components/account-list/account-list.component.ts
-=======
->>>>>>> Stashed changes
 msgid ""
 "Attention: Existing home committees and external status will be overwritten."
 msgstr ""
@@ -1200,10 +1145,6 @@ msgstr ""
 "\n"
 "Conseil : Recouper la visibilité souhaitée des motions avec le compte du délégué test."
 
-<<<<<<< Updated upstream
-#: app/src/app/domain/definitions/permission.config.ts
-=======
->>>>>>> Stashed changes
 msgid "Can see origin motion"
 msgstr ""
 
@@ -1348,18 +1289,9 @@ msgstr "Candidat supprimé"
 msgid "Candidates"
 msgstr "Candidats"
 
-<<<<<<< Updated upstream
-#: app/src/app/gateways/error-mapping/error-map-utils.ts
 msgid "Cannot create meeting without administrator."
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/pages/mediafiles/modules/mediafile-list/components/mediafile-list/mediafile-list.component.html
-#: /app/src/app/site/pages/meetings/pages/mediafiles/modules/mediafile-list/components/mediafile-list/mediafile-list.component.html
-=======
-msgid "Cannot create meeting without administrator."
-msgstr ""
-
->>>>>>> Stashed changes
 msgid "Cannot delete published files"
 msgstr ""
 
@@ -1800,10 +1732,6 @@ msgstr "Poids du vote par défaut"
 msgid "Default voting duration"
 msgstr "Durée du vote par défaut"
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
-=======
->>>>>>> Stashed changes
 msgid "Default voting method"
 msgstr ""
 
@@ -2093,14 +2021,8 @@ msgstr "Election"
 msgid "Election documents"
 msgstr "Documents relatifs aux élections"
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/meetings/pages/assignments/modules/assignment-poll/components/assignment-poll-form/assignment-poll-form.component.ts
-msgid "Election method"
-msgstr ""
-=======
 msgid "Election method"
 msgstr "Méthode d'élection"
->>>>>>> Stashed changes
 
 msgid "Elections"
 msgstr "Elections"
@@ -2204,10 +2126,6 @@ msgstr ""
 "Permet l'édition du texte et du motif du mouvement par les soumissionnaires "
 "dans l'état sélectionné après la création du mouvement."
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/meetings/pages/motions/pages/workflows/components/workflow-detail/workflow-detail.component.ts
-=======
->>>>>>> Stashed changes
 msgid ""
 "Enables the forwarding of amendments in the selected state.\n"
 "\n"
@@ -2216,10 +2134,6 @@ msgid ""
 "2. 'Original version with changes' in forwarding dialog must be selected."
 msgstr ""
 
-<<<<<<< Updated upstream
-#: /app/src/app/site/pages/meetings/pages/motions/pages/workflows/components/workflow-detail/workflow-detail.component.ts
-=======
->>>>>>> Stashed changes
 msgid ""
 "Enables the forwarding of motions to other meetings within the OpenSlides instance in the selected state.\n"
 "\n"
@@ -2363,10 +2277,6 @@ msgstr "Exporter au format PDF"
 msgid "Export comment"
 msgstr "Commentaire d'exportation"
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/meetings/modules/list-of-speakers-content/components/moderation-note/moderation-note.component.html
-=======
->>>>>>> Stashed changes
 msgid "Export moderator note as PDF"
 msgstr ""
 
@@ -2382,10 +2292,6 @@ msgstr "Exporter les motions sélectionnés"
 msgid "Extension"
 msgstr "Extension"
 
-<<<<<<< Updated upstream
-#: app/src/app/domain/models/users/user.constants.ts
-=======
->>>>>>> Stashed changes
 msgid "External"
 msgstr ""
 
@@ -2567,17 +2473,9 @@ msgstr "Groupe"
 msgid "Group name"
 msgstr "Nom de groupe"
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/organization/pages/accounts/pages/account-detail/components/account-add-to-meetings/account-add-to-meetings.component.html
 msgid "Group not found. Account added to the group “Default”."
 msgstr ""
 
-#: app/src/app/site/pages/organization/pages/accounts/pages/account-detail/components/account-add-to-meetings/account-add-to-meetings.component.html
-=======
-msgid "Group not found. Account added to the group “Default”."
-msgstr ""
-
->>>>>>> Stashed changes
 msgid "Group not found. Account already belongs to another group."
 msgstr ""
 
@@ -2599,17 +2497,9 @@ msgstr "Groupes avec droits d'écriture"
 msgid "Has SSO identification"
 msgstr "A l'identification SSO"
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Has a home committee"
 msgstr ""
 
-#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
-=======
-msgid "Has a home committee"
-msgstr ""
-
->>>>>>> Stashed changes
 msgid "Has a membership number"
 msgstr ""
 
@@ -2643,14 +2533,6 @@ msgstr "N'a pas d'adresse courriel"
 msgid "Has no home committee"
 msgstr ""
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
-msgid "Has no home committee"
-msgstr ""
-
-#: /app/src/app/site/pages/meetings/pages/motions/services/list/motion-list-filter.service/motion-list-filter.service.ts
-=======
->>>>>>> Stashed changes
 msgid "Has no identical motions"
 msgstr ""
 
@@ -2687,10 +2569,6 @@ msgstr "A voté"
 msgid "Header"
 msgstr "En-tête"
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/meetings/pages/motions/pages/motion-export/components/motion-export/motion-export.component.html
-=======
->>>>>>> Stashed changes
 msgid "Header and footer"
 msgstr ""
 
@@ -2745,10 +2623,6 @@ msgstr "L'histoire"
 msgid "Home"
 msgstr "Accueil"
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
-=======
->>>>>>> Stashed changes
 msgid "Home committee"
 msgstr ""
 
@@ -2774,36 +2648,20 @@ msgstr ""
 msgid "Identifier"
 msgstr "Identificateur"
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "If deactivated it is displayed below the title."
 msgstr ""
 
-#: app/src/app/site/pages/meetings/pages/mediafiles/modules/mediafile-list/components/mediafile-list/mediafile-list.component.html
-=======
-msgid "If deactivated it is displayed below the title."
-msgstr ""
-
->>>>>>> Stashed changes
 msgid "If empty, everyone can access."
 msgstr ""
 
 msgid "If the value is set to 0 the time counts up as stopwatch."
 msgstr ""
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/login/pages/reset-password/components/reset-password/reset-password.component.ts
-=======
->>>>>>> Stashed changes
 msgid ""
 "If your email address exists in our database, you will receive a password "
 "reset email."
 msgstr ""
 
-<<<<<<< Updated upstream
-#: /app/src/app/ui/modules/editor/components/editor-image-dialog/editor-image-dialog.component.html
-=======
->>>>>>> Stashed changes
 msgid "Image description"
 msgstr ""
 
@@ -2837,10 +2695,6 @@ msgstr "Importer les sujets"
 msgid "Import workflows"
 msgstr "Importer des flux de travail"
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/organization/pages/accounts/pages/account-detail/components/account-add-to-meetings/account-add-to-meetings.component.html
-=======
->>>>>>> Stashed changes
 msgid "Important: New groups are not created."
 msgstr ""
 
@@ -2860,10 +2714,6 @@ msgstr "Inactif"
 msgid "Inconsistent data."
 msgstr "Données incohérentes."
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/meetings/pages/motions/pages/motion-detail/pages/motion-view/components/motion-detail-diff/motion-detail-diff.component.html
-=======
->>>>>>> Stashed changes
 msgid "Inconsistent data. Please delete this change recommendation."
 msgstr ""
 
@@ -2977,10 +2827,6 @@ msgstr "L'administration de la commission"
 msgid "Is external"
 msgstr ""
 
-#: app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
-msgid "Is external"
-msgstr ""
-
 msgid "Is favorite"
 msgstr "Est le favori"
 
@@ -3014,17 +2860,9 @@ msgstr "N'est pas actif"
 msgid "Is not an amendment"
 msgstr ""
 
-#: app/src/app/site/pages/meetings/pages/motions/services/list/motion-list-filter.service/motion-list-filter.service.ts
-msgid "Is not an amendment"
-msgstr ""
-
 msgid "Is not archived"
 msgstr "N'est pas archivé"
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
-=======
->>>>>>> Stashed changes
 msgid "Is not external"
 msgstr ""
 
@@ -3193,10 +3031,6 @@ msgstr "Listes des orateurs"
 msgid "Live conference"
 msgstr "Conférence en direct"
 
-<<<<<<< Updated upstream
-#: app/src/app/domain/models/poll/poll-constants.ts
-=======
->>>>>>> Stashed changes
 msgid "Live voting enabled"
 msgstr ""
 
@@ -3252,17 +3086,9 @@ msgstr ""
 msgid "Mark as personal favorite"
 msgstr "Marquer comme favori personnel"
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/meetings/modules/poll/components/base-poll-form/base-poll-form.component.ts
 msgid "Max votes cannot be greater than options."
 msgstr ""
 
-#: app/src/app/site/pages/meetings/modules/poll/components/base-poll-form/base-poll-form.component.ts
-=======
-msgid "Max votes cannot be greater than options."
-msgstr ""
-
->>>>>>> Stashed changes
 msgid "Max votes per option cannot be greater than max votes."
 msgstr ""
 
@@ -3272,17 +3098,9 @@ msgstr "Nombre maximum de votes"
 msgid "Maximum amount of votes per option"
 msgstr "Nombre maximum de votes par option"
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Maximum number of columns in motion block projection"
 msgstr ""
 
-#: app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
-=======
-msgid "Maximum number of columns in motion block projection"
-msgstr ""
-
->>>>>>> Stashed changes
 msgid "Maximum number of columns in single votes projection"
 msgstr ""
 
@@ -3379,17 +3197,9 @@ msgstr "Nombre minimum de chiffres pour l'identificateur de mouvement"
 msgid "Moderation note"
 msgstr "Note de modération"
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/meetings/modules/list-of-speakers-content/services/moderation-note-pdf.service/moderation-note-pdf.service.ts
 msgid "Moderation-Note"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/pages/projectors/modules/projector-detail/services/current-speaker-chyron-slide.service/current-speaker-chyron-slide.service.ts
-=======
-msgid "Moderation-Note"
-msgstr ""
-
->>>>>>> Stashed changes
 msgid "Modern"
 msgstr ""
 
@@ -3462,14 +3272,8 @@ msgstr "Préambule de la motion"
 msgid "Motion updated"
 msgstr "motion mise à jour"
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/meetings/pages/motions/components/motion-forward-dialog/components/motion-forward-dialog/motion-forward-dialog.component.html
-msgid "Motion version"
-msgstr ""
-=======
 msgid "Motion version"
 msgstr "Version de la motion"
->>>>>>> Stashed changes
 
 msgid "Motion votes"
 msgstr "Votes de la motion"
@@ -3646,14 +3450,8 @@ msgstr "Nouveau flux de travail"
 msgid "Next"
 msgstr "Prochain"
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/meetings/pages/projectors/modules/projector-detail/components/projector-detail/projector-detail.component.html
-msgid "Next page"
-msgstr ""
-=======
 msgid "Next page"
 msgstr "Page suivante"
->>>>>>> Stashed changes
 
 msgid "Next states"
 msgstr "Prochain status"
@@ -3682,16 +3480,7 @@ msgstr "Pas d'administration de commission"
 msgid "No data"
 msgstr "Pas de données"
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/meetings/pages/assignments/pages/assignment-polls/components/assignment-poll-detail/assignment-poll-detail.component.html
 msgid "No data available"
-msgstr ""
-
-#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-list/services/participant-list-filter/participant-list-filter.service.ts
-msgid "No delegation of vote"
-=======
-msgid "No data available"
->>>>>>> Stashed changes
 msgstr ""
 
 msgid "No delegation of vote"
@@ -3739,10 +3528,6 @@ msgstr "Pas de notes personnelles"
 msgid "No results found"
 msgstr "Aucun résultat trouvé"
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/meetings/pages/assignments/modules/assignment-poll/components/assignment-poll-detail-content/assignment-poll-detail-content.component.html
-=======
->>>>>>> Stashed changes
 msgid "No results yet"
 msgstr ""
 
@@ -3782,24 +3567,12 @@ msgstr ""
 "Notez que le mot de passe par défaut sera remplacé par le nouveau mot de "
 "passe généré."
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/meetings/pages/motions/components/motion-forward-dialog/components/motion-forward-dialog/motion-forward-dialog.component.html
-msgid "Note: Amendments cannot be forwarded without their parent motion."
-msgstr ""
-
-#: app/src/app/site/pages/meetings/pages/motions/components/motion-forward-dialog/components/motion-forward-dialog/motion-forward-dialog.component.html
-msgid "Note: Amendments will not be forwarded."
-msgstr ""
-
-#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
-=======
 msgid "Note: Amendments cannot be forwarded without their parent motion."
 msgstr ""
 
 msgid "Note: Amendments will not be forwarded."
 msgstr ""
 
->>>>>>> Stashed changes
 msgid ""
 "Note: The public access setting is deactivated for the organization. Please "
 "contact your admins or hosting providers to activate the setting."
@@ -3815,10 +3588,6 @@ msgstr ""
 msgid "Notes"
 msgstr "Notes"
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/meetings/pages/motions/pages/motion-export/components/motion-export/motion-export.component.html
-=======
->>>>>>> Stashed changes
 msgid "Notes and Comments"
 msgstr ""
 
@@ -3861,10 +3630,6 @@ msgstr ""
 "Nombre d'intervenants suivants se connectant automatiquement à la conférence"
 " en direct"
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/meetings/pages/motions/services/export/motion-xlsx-export.service/motion-xlsx-export.service.ts
-=======
->>>>>>> Stashed changes
 msgid "Number of open requests to speak"
 msgstr ""
 
@@ -3928,27 +3693,15 @@ msgstr ""
 msgid "One email was send sucessfully."
 msgstr "Un courriel a été envoyé avec succès."
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
-=======
->>>>>>> Stashed changes
 msgid "Only available for nominal voting"
 msgstr ""
 
 msgid "Only for internal notes."
 msgstr "Seulement pour des notes internes."
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Only for nominal votes."
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-list/components/participant-switch-dialog/participant-switch-dialog.component.html
-=======
-msgid "Only for nominal votes."
-msgstr ""
-
->>>>>>> Stashed changes
 msgid "Only groups and participant number are switched."
 msgstr ""
 
@@ -4046,10 +3799,6 @@ msgstr "Original"
 msgid "Original version"
 msgstr "Version originale"
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/meetings/pages/motions/components/motion-forward-dialog/components/motion-forward-dialog/motion-forward-dialog.component.html
-=======
->>>>>>> Stashed changes
 msgid "Original version with changes"
 msgstr ""
 
@@ -4086,10 +3835,6 @@ msgstr "Page"
 msgid "Page format"
 msgstr "Format de page"
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/meetings/pages/motions/pages/motion-export/components/motion-export/motion-export.component.html
-=======
->>>>>>> Stashed changes
 msgid "Page layout"
 msgstr ""
 
@@ -4123,24 +3868,12 @@ msgstr "Chargement parallèle"
 msgid "Parent agenda item"
 msgstr "Point de l'ordre du jour superieur"
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/organization/pages/committees/pages/committee-detail/modules/committee-detail-edit/components/committee-detail-edit/committee-detail-edit.component.html
-msgid "Parent committee"
-msgstr ""
-
-#: app/src/app/site/pages/organization/pages/committees/pages/committee-import/definitions/index.ts
-msgid "Parent committee name"
-msgstr ""
-
-#: /app/src/app/site/pages/meetings/pages/motions/pages/motion-detail/pages/motion-form/components/motion-form/motion-form.component.ts
-=======
 msgid "Parent committee"
 msgstr ""
 
 msgid "Parent committee name"
 msgstr ""
 
->>>>>>> Stashed changes
 msgid "Parent motion text changed"
 msgstr ""
 
@@ -4153,17 +3886,9 @@ msgstr "Participant"
 msgid "Participant added to group {} in meeting {}"
 msgstr "Participant ajouté au groupe {} dans la réunion {}"
 
-<<<<<<< Updated upstream
-#: app/src/app/site/modules/translations/marked-translations.ts
-msgid "Participant added to group {} in meeting {}."
-msgstr ""
-
-#: app/src/app/site/modules/translations/marked-translations.ts
-=======
 msgid "Participant added to group {} in meeting {}."
 msgstr "Participant ajouté au groupe {} dans la réunion {}"
 
->>>>>>> Stashed changes
 msgid "Participant added to meeting {}."
 msgstr ""
 
@@ -4199,10 +3924,6 @@ msgstr "Numéro de participants"
 msgid "Participant removed from group {} in meeting {}"
 msgstr "Participant retiré du groupe {} lors de la réunion {}"
 
-<<<<<<< Updated upstream
-#: app/src/app/site/modules/translations/marked-translations.ts
-=======
->>>>>>> Stashed changes
 msgid "Participant removed from meeting {}"
 msgstr ""
 
@@ -4265,10 +3986,6 @@ msgstr "Pause discours"
 msgid "Permissions"
 msgstr "Permissions"
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/meetings/pages/motions/pages/motion-export/components/motion-export/motion-export.component.html
-=======
->>>>>>> Stashed changes
 msgid "Person-related fields"
 msgstr ""
 
@@ -4322,7 +4039,6 @@ msgstr "Veuillez sélectionner un poids de vote supérieur à zéro."
 msgid "Please select the directory:"
 msgstr " Rejoignez la salle de conférence dès maintenant !"
 
-#: app/src/app/site/pages/organization/pages/accounts/pages/account-detail/components/account-add-to-meetings/account-add-to-meetings.component.html
 msgid ""
 "Please select your target meetings and enter the name of an existing group "
 "which should be assigned to the account in each meeting."
@@ -4333,10 +4049,6 @@ msgstr ""
 "Veuillez mettre à jour votre navigateur ou contacter l'administrateur de "
 "votre système."
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/meetings/modules/projector/modules/slides/components/poll-slide/components/poll-slide.component.html
-=======
->>>>>>> Stashed changes
 msgid "Please vote now!"
 msgstr ""
 
@@ -4370,10 +4082,6 @@ msgstr "Préfixe"
 msgid "Prefix for the motion identifier of amendments"
 msgstr "Préfixe pour l'identificateur de motion"
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
-=======
->>>>>>> Stashed changes
 msgid "Preload original motions"
 msgstr ""
 
@@ -4383,10 +4091,6 @@ msgstr "Présence"
 msgid "Present"
 msgstr "Présent"
 
-<<<<<<< Updated upstream
-#: app/src/app/domain/models/poll/poll-constants.ts
-=======
->>>>>>> Stashed changes
 msgid "Present entitled users"
 msgstr ""
 
@@ -4396,14 +4100,8 @@ msgstr "Aperçu"
 msgid "Previous"
 msgstr "Avant"
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/meetings/pages/projectors/modules/projector-detail/components/projector-detail/projector-detail.component.html
-msgid "Previous page"
-msgstr ""
-=======
 msgid "Previous page"
 msgstr "Page précédente"
->>>>>>> Stashed changes
 
 msgid "Previous slides"
 msgstr "Pages précédentes"
@@ -4652,10 +4350,6 @@ msgstr ""
 msgid "Requires permission to manage motion metadata"
 msgstr ""
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
-=======
->>>>>>> Stashed changes
 msgid "Requires permission to see origin motions"
 msgstr ""
 
@@ -4842,27 +4536,15 @@ msgstr "Définir comme parent"
 msgid "Set as reference projector"
 msgstr "Défini comme projecteur de référence"
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/organization/pages/committees/pages/committee-detail/modules/committee-detail-meeting/components/meeting-edit/meeting-edit.component.html
-=======
->>>>>>> Stashed changes
 msgid "Set as template"
 msgstr ""
 
 msgid "Set category"
 msgstr "Définir la catégorie"
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/organization/pages/accounts/pages/account-list/components/account-list/account-list.component.html
 msgid "Set external"
 msgstr ""
 
-#: app/src/app/site/pages/organization/pages/accounts/pages/account-list/components/account-list/account-list.component.ts
-=======
-msgid "Set external"
-msgstr ""
-
->>>>>>> Stashed changes
 msgid "Set external status for selected accounts"
 msgstr ""
 
@@ -4887,17 +4569,9 @@ msgstr "Changer en interne"
 msgid "Set it manually"
 msgstr "Réglez-le manuellement"
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Set live voting enabled by default"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-list/components/participant-list/participant-list.component.html
-=======
-msgid "Set live voting enabled by default"
-msgstr ""
-
->>>>>>> Stashed changes
 msgid "Set lock out ..."
 msgstr ""
 
@@ -4947,10 +4621,6 @@ msgstr "Défénir les belises"
 msgid "Set workflow"
 msgstr "Définir le flux de travail"
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/organization/pages/accounts/pages/account-list/components/account-list/account-list.component.html
-=======
->>>>>>> Stashed changes
 msgid "Set/remove home committee"
 msgstr ""
 
@@ -5139,10 +4809,6 @@ msgstr "Trier les motions"
 msgid "Sort motions by"
 msgstr "Trier les motions par"
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
-=======
->>>>>>> Stashed changes
 msgid "Sort participant names on single votes projection by"
 msgstr ""
 
@@ -5232,10 +4898,6 @@ msgstr "Arrêter le vote"
 msgid "Stop waiting"
 msgstr "Arrêter d'attendre"
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/meetings/modules/poll/base/base-poll.component.ts
-=======
->>>>>>> Stashed changes
 msgid "Stop, publish & anonymize"
 msgstr ""
 
@@ -5248,20 +4910,12 @@ msgstr "Niveau structurel"
 msgid "Structure levels"
 msgstr "Niveaus de structure"
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/meetings/pages/participants/pages/participant-import/services/participant-import.service/participant-import.service.ts
-=======
->>>>>>> Stashed changes
 msgid "Structure levels created"
 msgstr ""
 
 msgid "Subcategory"
 msgstr "Sous-catégorie"
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/organization/pages/committees/pages/committee-detail/modules/committee-detail-view/components/committee-detail-view/committee-detail-view.component.html
-=======
->>>>>>> Stashed changes
 msgid "Subcommittees"
 msgstr ""
 
@@ -5352,10 +5006,6 @@ msgstr "Balise"
 msgid "Tags"
 msgstr "Balises"
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/meetings/pages/motions/components/motion-forward-dialog/components/motion-forward-dialog/motion-forward-dialog.component.html
-=======
->>>>>>> Stashed changes
 msgid "Target meeting"
 msgstr ""
 
@@ -5377,10 +5027,6 @@ msgstr "Séparateur de texte"
 msgid "Text to display"
 msgstr ""
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/meetings/pages/motions/pages/motion-export/components/motion-export/motion-export.component.html
-=======
->>>>>>> Stashed changes
 msgid "Text version"
 msgstr ""
 
@@ -5549,10 +5195,6 @@ msgstr "Cette action vous retirera d'un ou plusieurs groupes."
 msgid "This action will remove you from one or more meetings."
 msgstr "Cette action vous retirera d'un ou plusieurs meetings."
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/meetings/pages/motions/pages/motion-detail/pages/motion-view/components/motion-detail-diff/motion-detail-diff.component.html
-=======
->>>>>>> Stashed changes
 msgid "This amendment has change recommendations."
 msgstr ""
 
@@ -5655,7 +5297,6 @@ msgstr ""
 "Cela ajoutera ou supprimera les comptes sélectionnés des réunions suivantes "
 ":"
 
-#: app/src/app/site/pages/organization/pages/accounts/pages/account-list/components/account-list/account-list.component.ts
 msgid ""
 "This will add or remove the selected accounts to the selected home "
 "committee:"
@@ -6033,7 +5674,6 @@ msgstr ""
 "Avertissement : Des amendements existent pour cette motion. Êtes-vous sûr de"
 " vouloir supprimer cette motion malgré tout ?"
 
-#: app/src/app/site/pages/meetings/pages/motions/pages/motion-detail/pages/motion-form/components/motion-form/motion-form.component.ts
 msgid ""
 "Warning: Amendments or change recommendations exist for this motion. Editing"
 " this text will likely impact them negatively. Particularily, amendments "
@@ -6068,10 +5708,6 @@ msgstr "Quoi de neuf ?"
 msgid "Which version?"
 msgstr "Quelle version ?"
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/meetings/pages/polls/view-models/view-poll.ts
-=======
->>>>>>> Stashed changes
 msgid "Which visualization?"
 msgstr ""
 
@@ -6318,21 +5954,11 @@ msgstr "ajouter groupe(s)"
 msgid "already exists"
 msgstr "Existe déjà."
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/meetings/pages/motions/components/motion-forward-dialog/components/motion-forward-dialog/motion-forward-dialog.component.html
-msgid "amendment"
-msgstr ""
-
-#: app/src/app/site/pages/meetings/pages/motions/components/motion-forward-dialog/components/motion-forward-dialog/motion-forward-dialog.component.html
-msgid "amendments"
-msgstr ""
-=======
 msgid "amendment"
 msgstr "amendement"
 
 msgid "amendments"
 msgstr "amendements"
->>>>>>> Stashed changes
 
 msgid "analog"
 msgstr "analog"
@@ -6355,21 +5981,6 @@ msgstr "par"
 msgid "challenged you to a chess match!"
 msgstr "Défié vous à un match d'échecs!"
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/meetings/pages/motions/components/motion-forward-dialog/components/motion-forward-dialog/motion-forward-dialog.component.html
-msgid "change recommendation"
-msgstr ""
-
-#: app/src/app/site/pages/meetings/pages/motions/services/common/motion-format.service/motion-format.service.ts
-msgid "change recommendation(s) refer to a nonexistent line number."
-msgstr ""
-
-#: app/src/app/site/pages/meetings/pages/motions/components/motion-forward-dialog/components/motion-forward-dialog/motion-forward-dialog.component.html
-msgid "change recommendations"
-msgstr ""
-
-#: app/src/app/site/pages/meetings/pages/motions/components/motion-forward-dialog/components/motion-forward-dialog/motion-forward-dialog.component.html
-=======
 msgid "change recommendation"
 msgstr "Modifier la recommandation"
 
@@ -6379,7 +5990,6 @@ msgstr ""
 msgid "change recommendations"
 msgstr "Modifier les recommandations"
 
->>>>>>> Stashed changes
 msgid "committee name"
 msgstr ""
 
@@ -6434,10 +6044,6 @@ msgstr "terminé"
 msgid "example"
 msgstr "exemple"
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/organization/pages/accounts/pages/account-detail/components/account-detail/account-detail.component.html
-=======
->>>>>>> Stashed changes
 msgid "external"
 msgstr ""
 
@@ -6477,10 +6083,6 @@ msgstr "Caché"
 msgid "inactive"
 msgstr "inactif"
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/organization/pages/committees/pages/committee-detail/modules/committee-detail-view/components/committee-detail-view/committee-detail-view.component.html
-=======
->>>>>>> Stashed changes
 msgid "incl. subcommittees"
 msgstr ""
 
@@ -6529,10 +6131,6 @@ msgstr "majorité"
 msgid "male"
 msgstr "masculin"
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/meetings/pages/motions/components/motion-forward-dialog/components/motion-forward-dialog/motion-forward-dialog.component.html
-=======
->>>>>>> Stashed changes
 msgid "mark amendments as original"
 msgstr ""
 
@@ -6569,34 +6167,18 @@ msgstr "non-nominal"
 msgid "none"
 msgstr "aucun"
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/organization/pages/accounts/pages/account-list/components/account-list/account-list.component.ts
 msgid "not external"
 msgstr ""
 
-#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
-=======
-msgid "not external"
-msgstr ""
-
->>>>>>> Stashed changes
 msgid "not specified"
 msgstr "Non spécifié"
 
 msgid "of"
 msgstr "de"
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/organization/pages/committees/pages/committee-detail/modules/committee-detail-view/components/committee-detail-view/committee-detail-view.component.html
 msgid "of which"
 msgstr ""
 
-#: app/src/app/site/pages/meetings/pages/motions/pages/motion-detail/pages/motion-view/components/motion-meta-data/motion-meta-data.component.ts
-=======
-msgid "of which"
-msgstr ""
-
->>>>>>> Stashed changes
 msgid "of which %num% not permissable"
 msgstr ""
 
@@ -6606,17 +6188,9 @@ msgstr "votes ouverts"
 msgid "or"
 msgstr "ou"
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/meetings/pages/motions/components/motion-forward-dialog/components/motion-forward-dialog/motion-forward-dialog.component.html
 msgid "original identifier"
 msgstr ""
 
-#: app/src/app/site/pages/meetings/pages/motions/components/motion-forward-dialog/components/motion-forward-dialog/motion-forward-dialog.component.html
-=======
-msgid "original identifier"
-msgstr ""
-
->>>>>>> Stashed changes
 msgid "original submitter"
 msgstr ""
 
@@ -6686,10 +6260,6 @@ msgstr "à"
 msgid "today"
 msgstr "aujourd'hui"
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/organization/pages/committees/pages/committee-detail/modules/committee-detail-view/components/committee-detail-view/committee-detail-view.component.html
-=======
->>>>>>> Stashed changes
 msgid "total"
 msgstr ""
 
@@ -6708,17 +6278,9 @@ msgstr "votes par candidat"
 msgid "votes per option"
 msgstr ""
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/meetings/pages/motions/components/motion-forward-dialog/services/motion-forward-dialog.service.ts
 msgid "was"
 msgstr ""
 
-#: app/src/app/site/pages/meetings/pages/motions/components/motion-forward-dialog/services/motion-forward-dialog.service.ts
-=======
-msgid "was"
-msgstr ""
-
->>>>>>> Stashed changes
 msgid "were"
 msgstr ""
 
@@ -6731,17 +6293,9 @@ msgstr "sera importé"
 msgid "will be updated"
 msgstr "sera mis à jour"
 
-<<<<<<< Updated upstream
-#: app/src/app/site/pages/organization/pages/committees/pages/committee-detail/modules/committee-detail-view/components/committee-detail-view/committee-detail-view.component.html
 msgid "with"
 msgstr ""
 
-#: app/src/app/site/pages/meetings/pages/motions/components/motion-forward-dialog/components/motion-forward-dialog/motion-forward-dialog.component.html
-=======
-msgid "with"
-msgstr ""
-
->>>>>>> Stashed changes
 msgid "without identifier"
 msgstr ""
 
