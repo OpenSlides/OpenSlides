@@ -36,6 +36,9 @@ dev dev-help dev-standalone dev-detached dev-attached dev-stop dev-exec dev-ente
 run-tests:
 	bash dev/scripts/makefile/test-all-submodules.sh
 
+test-ci:
+	bash $(SCRIPT_PATH)/act/run-act.sh $(FOLDER) $(WORKFLOW_TRIGGER)
+
 # Make-release commands
 
 services-to-main:
