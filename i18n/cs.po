@@ -1,10 +1,11 @@
 # 
 # Translators:
 # fri, 2024
+# Birte Spekker <birte.spekker@intevation.de>, 2025
 # 
 msgid ""
 msgstr ""
-"Last-Translator: fri, 2024\n"
+"Last-Translator: Birte Spekker <birte.spekker@intevation.de>, 2025\n"
 "Language-Team: Czech (https://app.transifex.com/openslides/teams/14270/cs/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -21,7 +22,6 @@ msgstr "\"0\" znamená neomezený počet setkání"
 msgid "%num% emails were send sucessfully."
 msgstr "%num% elektronických dopisů bylo úspěšně odesláno."
 
-#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-list/components/participant-list/participant-list.component.ts
 msgid ""
 "%num% participants could not be locked out because they have administrative "
 "permissions."
@@ -66,7 +66,6 @@ msgstr "Je požadováno heslo"
 msgid "A server error occured. Please contact your system administrator."
 msgstr "Došlo k chybě serveru. Spojte se, prosím, se správcem systému."
 
-#: /app/src/app/site/pages/meetings/modules/list-of-speakers-content/components/speaking-times/speaking-times.component.html
 msgid "A time is required and must be in min:secs format."
 msgstr "Je vyžadován čas, který musí být ve formátu min:s."
 
@@ -76,7 +75,6 @@ msgstr "Je požadován název"
 msgid "A topic needs a title"
 msgstr "Námět potřebuje název"
 
-#: /app/src/app/site/pages/meetings/modules/participant-search-selector/components/participant-search-selector/participant-search-selector.component.ts
 msgid ""
 "A user with the username '%username%' and the first name '%first_name%' was "
 "created."
@@ -99,7 +97,6 @@ msgstr "Přijmout"
 msgid "Access data (PDF)"
 msgstr "Přístupová data (PDF)"
 
-#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid ""
 "Access only possible for participants of this meeting. All other accounts "
 "(including organization and committee admins) may not open the closed "
@@ -115,38 +112,30 @@ msgstr "Přístupová data"
 msgid "Account"
 msgstr "Účet"
 
-#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Account admin"
 msgstr "Správa účtu"
 
-#: app/src/app/site/modules/translations/marked-translations.ts
 msgid "Account created"
 msgstr ""
 
-#: app/src/app/site/pages/organization/pages/accounts/pages/account-detail/components/account-add-to-meetings/account-add-to-meetings.component.html
 msgid "Account successfully added."
 msgstr ""
 
 msgid "Accounts"
 msgstr "Účty"
 
-#: /app/src/app/site/pages/organization/pages/accounts/pages/account-import/services/account-import.service/account-import.service.ts
 msgid "Accounts created"
 msgstr "Účty vytvořeny"
 
-#: /app/src/app/site/pages/organization/pages/accounts/pages/account-import/services/account-import.service/account-import.service.ts
 msgid "Accounts updated"
 msgstr "Účty aktualizovány"
 
-#: /app/src/app/site/pages/organization/pages/accounts/pages/account-import/services/account-import.service/account-import.service.ts
 msgid "Accounts with errors"
 msgstr "Účty s chybami"
 
-#: /app/src/app/site/pages/organization/pages/accounts/pages/account-import/services/account-import.service/account-import.service.ts
 msgid "Accounts with warnings: affected cells will be skipped"
 msgstr "Účty s varováním: dotčené buňky budou přeskočeny"
 
-#: app/src/app/site/pages/meetings/modules/list-of-speakers-content/components/list-of-speakers-content/list-of-speakers-content.component.ts
 msgid "Action not possible. You have to be part of the meeting."
 msgstr ""
 
@@ -156,32 +145,24 @@ msgstr "Zapnout"
 msgid "Activate amendments"
 msgstr "Zapnout pozměňovací návrhy"
 
-#: app/src/app/site/pages/meetings/pages/motions/pages/motion-detail/pages/motion-view/components/motion-meta-data/motion-meta-data.component.html
-#: app/src/app/site/pages/meetings/pages/motions/pages/motion-detail/pages/motion-view/components/motion-meta-data/motion-meta-data.component.html
 msgid "Activate backtracking"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Activate closed meeting"
 msgstr "Zapnout uzavřené setkání"
 
-#: /app/src/app/site/pages/organization/pages/designs/pages/theme-list/components/theme-list/theme-list.component.html
 msgid "Activate design"
 msgstr "Zapnout vnější úpravu"
 
-#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Activate public access"
 msgstr "Zapnout veřejný přístup"
 
-#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Activate submitter extension field in motion create form"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Activate the selection field 'motion editor'"
 msgstr "Zapnout výběrové pole editor návrhů"
 
-#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Activate the selection field 'spokesperson'"
 msgstr "Zapnout výběrové pole mluvčí"
 
@@ -253,7 +234,6 @@ msgstr "Přidat novou položku"
 msgid "Add option"
 msgstr "Přidat možnost"
 
-#: /app/src/app/site/pages/meetings/pages/projectors/modules/projector-detail/components/projector-detail/projector-detail.component.html
 msgid "Add timer"
 msgstr "Přidat časovač"
 
@@ -266,7 +246,6 @@ msgstr "Přidat k setkáním"
 msgid "Add to queue"
 msgstr "Přidat do řady"
 
-#: /app/src/app/site/pages/meetings/modules/list-of-speakers-content/components/speaking-times/speaking-times.component.html
 msgid "Add up"
 msgstr "Přidat nahoru"
 
@@ -276,11 +255,9 @@ msgstr "Přidejte se do nynějšího seznamu řečníků pro připojení se k je
 msgid "Add/remove groups ..."
 msgstr "Přidat/Odstranit skupiny..."
 
-#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-list/components/participant-list/participant-list.component.html
 msgid "Add/remove structure levels ..."
 msgstr "Přidat/Odstranit úrovně rozčlenění..."
 
-#: /app/src/app/site/pages/meetings/modules/list-of-speakers-content/components/speaking-times/speaking-times.component.html
 msgid "Add/subtract"
 msgstr "Přidat/Odebrat"
 
@@ -291,7 +268,6 @@ msgstr ""
 "Za požadovanými mohou být přítomny dodatečné sloupce. Zavedení tím nebude "
 "ovlivněno."
 
-#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Administration roles"
 msgstr "Správcovské funkce"
 
@@ -320,18 +296,15 @@ msgstr "Body pořadu jednání se zpracovávají. Počkejte, prosím..."
 msgid "Agenda visibility"
 msgstr "Viditelnost pořadu jednání"
 
-#: /app/src/app/ui/modules/editor/components/editor/editor.component.html
 msgid "Align"
 msgstr "Zarovnat"
 
-#: /app/src/app/site/pages/meetings/pages/home/pages/meeting-info/components/count-users/count-users.component.html
 msgid "All"
 msgstr "Vše"
 
 msgid "All casted ballots"
 msgstr "Všechny odevzdané hlasovací lístky"
 
-#: app/src/app/site/pages/meetings/pages/meeting-settings/pages/meeting-settings-group-detail/components/meeting-settings-group-detail/meeting-settings-group-detail.component.ts
 msgid "All changes of this settings group will be lost!"
 msgstr ""
 
@@ -347,7 +320,6 @@ msgstr "Všechna setkání"
 msgid "All other fields are optional and may be empty."
 msgstr "Všechna ostatní pole jsou nepovinná a mohou zůstat prázdná."
 
-#: /app/src/app/gateways/repositories/meeting-repository.service.ts
 msgid "All structure levels"
 msgstr "Všechny úrovně rozčlenění"
 
@@ -363,7 +335,6 @@ msgstr "Všechny hlasy budou ztraceny."
 msgid "Allow amendments of amendments"
 msgstr "Povolit pozměňovací návrhy k pozměňovacím návrhům"
 
-#: app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Allow backtracking of forwarded motions"
 msgstr ""
 
@@ -373,14 +344,12 @@ msgstr "Povolit prázdné číslo"
 msgid "Allow create poll"
 msgstr "Povolit vytvoření hlasování"
 
-#: app/src/app/site/pages/meetings/pages/motions/pages/workflows/components/workflow-detail/workflow-detail.component.ts
 msgid "Allow forwarding of amendments"
 msgstr ""
 
 msgid "Allow forwarding of motions"
 msgstr "Umožnit předávání návrhů"
 
-#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Allow one participant multiple times on the same list"
 msgstr "Povolit jednomu účastníkovi opakované zařazení do stejného seznamu"
 
@@ -411,7 +380,6 @@ msgstr "Povolit podrobné chybové zprávy pro obnovení hesla"
 msgid "Allowed access groups for this directory"
 msgstr "Povolené přístupové skupiny pro tento adresář"
 
-#: app/src/app/site/pages/meetings/modules/poll/components/base-poll-form/base-poll-form.component.html
 msgid "Allows single votes projection during voting process"
 msgstr ""
 
@@ -472,7 +440,6 @@ msgstr "Adresa (URL) částice obrázku potlesku"
 msgid "Applause visualization"
 msgstr "Znázornění potlesku"
 
-#: /app/src/app/site/modules/global-spinner/components/global-spinner/global-spinner.component.ts
 msgid "Application update in progress."
 msgstr "Probíhá aktualizace aplikace."
 
@@ -488,7 +455,6 @@ msgstr "Archivovat"
 msgid "Archived"
 msgstr "Archivováno"
 
-#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Archived meetings"
 msgstr "Archivovaná setkání"
 
@@ -502,7 +468,6 @@ msgstr ""
 msgid "Are you sure you want to activate this meeting?"
 msgstr "Opravdu chcete spustit toto setkání?"
 
-#: /app/src/app/site/pages/meetings/modules/list-of-speakers-content/components/speaking-times/speaking-times.component.ts
 msgid ""
 "Are you sure you want to add the following time onto every structure level?"
 msgstr "Opravdu chcete na každou úroveň struktury přidat následující čas?"
@@ -538,7 +503,6 @@ msgstr "Opravdu mají být smazány všechny vybrané volby?"
 msgid "Are you sure you want to delete all selected files and folders?"
 msgstr "Opravdu mají být smazány všechny vybrané soubory a složky?"
 
-#: /app/src/app/site/pages/organization/pages/accounts/pages/gender/pages/gender-list/components/gender-list/gender-list.component.ts
 msgid "Are you sure you want to delete all selected genders?"
 msgstr ""
 
@@ -591,7 +555,6 @@ msgstr "Opravdu má být smazána tato položka?"
 msgid "Are you sure you want to delete this file?"
 msgstr "Opravdu má být smazán tento soubor?"
 
-#: /app/src/app/site/pages/organization/pages/accounts/pages/gender/pages/gender-list/components/gender-list/gender-list.component.ts
 msgid "Are you sure you want to delete this gender?"
 msgstr ""
 
@@ -607,7 +570,6 @@ msgstr "Opravdu má být smazána tato zpráva?"
 msgid "Are you sure you want to delete this motion block?"
 msgstr "Opravdu má být smazán tento návrhový blok?"
 
-#: app/src/app/site/pages/meetings/pages/motions/pages/motion-detail/pages/motion-view/components/motion-delete-dialog/motion-delete-dialog.component.html
 msgid "Are you sure you want to delete this motion?"
 msgstr ""
 
@@ -617,7 +579,6 @@ msgstr "Opravdu má být smazán tento promítací přístroj?"
 msgid "Are you sure you want to delete this state?"
 msgstr "Opravdu chcete smazat tento stav?"
 
-#: /app/src/app/site/pages/meetings/pages/participants/pages/structure-levels/components/structure-level-list/structure-level-list.component.ts
 msgid "Are you sure you want to delete this structure level?"
 msgstr "Opravdu chcete smazat tuto úroveň struktury?"
 
@@ -633,7 +594,6 @@ msgstr "Opravdu chcete smazat toto hlasování?"
 msgid "Are you sure you want to delete this workflow?"
 msgstr "Opravdu má být smazáno tento pracovní postup?"
 
-#: /app/src/app/site/pages/meetings/pages/motions/pages/motion-detail/pages/motion-form/components/motion-form/motion-form.component.ts
 msgid "Are you sure you want to discard all changes and update this form?"
 msgstr ""
 
@@ -643,7 +603,6 @@ msgstr "Opravdu má být vyřazen tento pozměňovací návrh?"
 msgid "Are you sure you want to duplicate this meeting?"
 msgstr "Opravdu chcete tuto schůzku zdvojit?"
 
-#: /app/src/app/site/pages/meetings/modules/list-of-speakers-content/components/list-of-speakers-content/list-of-speakers-content.component.ts
 msgid ""
 "Are you sure you want to end this contribution which still has interposed "
 "question(s)?"
@@ -659,7 +618,6 @@ msgstr "Opravdu mají být vytvořena nová hesla všem vybraným účastníkům
 msgid "Are you sure you want to irrevocably remove your point of order?"
 msgstr "Opravdu chcete neodvolatelně odstranit svoji procedurální připomínku?"
 
-#: /app/src/app/ui/modules/file-list/components/file-list/file-list.component.ts
 msgid "Are you sure you want to make this file/folder public?"
 msgstr ""
 
@@ -702,7 +660,6 @@ msgstr "Opravdu chcete obnovit výchozí nastavení všech voleb?"
 msgid "Are you sure you want to reset all passwords to the default ones?"
 msgstr "Opravdu mají být obnovena všechna hesla na výchozí?"
 
-#: /app/src/app/site/pages/meetings/modules/list-of-speakers-content/components/speaking-times/speaking-times.component.ts
 msgid ""
 "Are you sure you want to reset the time to the last set value? It will be "
 "reset to:"
@@ -715,7 +672,6 @@ msgstr "Opravdu chcete obnovit toto hlasování?"
 msgid "Are you sure you want to send an invitation email to the user?"
 msgstr "Opravdu má být uživateli poslán elektronický dopis s pozváním?"
 
-#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-list/components/participant-list/participant-list.component.ts
 msgid "Are you sure you want to send an invitation email?"
 msgstr "Opravdu chcete poslat elektronický dopis s pozvánkou?"
 
@@ -729,7 +685,6 @@ msgstr "Opravdu chcete zastavit toto hlasování?"
 msgid "Are you sure you want to submit a point of order?"
 msgstr "Opravdu chcete odeslat návrh jednacího řádu?"
 
-#: /app/src/app/ui/modules/file-list/components/file-list/file-list.component.ts
 msgid "Are you sure you want to unpublish this file/folder?"
 msgstr ""
 
@@ -763,7 +718,6 @@ msgstr ""
 "zamýšlena jiná skupina, použijte dialogové okno \"Přidat do setkání\" v "
 "zobrazení podrobností účtu."
 
-#: app/src/app/site/pages/organization/pages/accounts/pages/account-list/components/account-list/account-list.component.ts
 msgid ""
 "Attention: Existing home committees and external status will be overwritten."
 msgstr ""
@@ -771,7 +725,6 @@ msgstr ""
 msgid "Attention: First enter the wifi data in [Settings > General]"
 msgstr "Pozor: Nejprve zadejte údaje o wifi v nabídce [Nastavení → Obecné]."
 
-#: /app/src/app/site/pages/organization/pages/accounts/pages/account-list/components/account-merge-dialog/account-merge-dialog.component.html
 msgid "Attention: Not selected accounts will be merged and then deleted."
 msgstr ""
 
@@ -790,7 +743,6 @@ msgstr "Automaticky otevřít webovou kameru pro nové řečníky jednání"
 msgid "Autopilot"
 msgstr "Samočinné řízení"
 
-#: /app/src/app/site/pages/meetings/pages/autopilot/components/autopilot-settings/autopilot-settings.component.html
 msgid "Autopilot widgets"
 msgstr ""
 
@@ -854,7 +806,6 @@ msgstr "Hlasování aktualizováno"
 msgid "Ballots"
 msgstr "Hlasování"
 
-#: /app/src/app/site/pages/meetings/modules/poll/components/poll-filtered-votes-chart/poll-filtered-votes-chart.component.html
 msgid "Ballots cast"
 msgstr ""
 
@@ -867,21 +818,18 @@ msgstr "Začít projev"
 msgid "Blank between prefix and number, e.g. 'A 001'."
 msgstr "Prázdné mezi předlohou a číslem, např. 'A 001'."
 
-#: /app/src/app/ui/modules/editor/components/editor/editor.component.ts
 msgid "Blockquote"
 msgstr ""
 
 msgid "Bold"
 msgstr "Tučné"
 
-#: /app/src/app/ui/modules/editor/components/editor/editor.component.html
 msgid "Bullet list"
 msgstr ""
 
 msgid "CSV import"
 msgstr "Zavedení CSV"
 
-#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "CSV options"
 msgstr ""
 
@@ -987,7 +935,6 @@ msgstr ""
 msgid "Can create, modify, start/stop and delete votings."
 msgstr "Může vytvářet, měnit, spouštět/zastavovat a odstraňovat hlasování."
 
-#: /app/src/app/domain/definitions/permission.config.ts
 msgid "Can edit all moderation notes."
 msgstr ""
 
@@ -998,7 +945,6 @@ msgstr ""
 "Může upravovat a přiřazovat následující popis návrhu: Předkladatel, stav, "
 "doporučení, skupina, bloky návrhů a značky."
 
-#: app/src/app/domain/definitions/permission.config.ts
 msgid "Can edit own delegation"
 msgstr ""
 
@@ -1008,7 +954,6 @@ msgstr "Smí postoupit návrhy"
 msgid "Can forward motions to committee"
 msgstr "Smí postoupit návrhy výboru"
 
-#: /app/src/app/domain/definitions/permission.config.ts
 msgid ""
 "Can forward motions to other meetings within the OpenSlides instance.\n"
 "\n"
@@ -1033,7 +978,6 @@ msgstr "Smí spravovat seznam řečníků"
 msgid "Can manage logos and fonts"
 msgstr "Smí spravovat emblémy a písma"
 
-#: /app/src/app/domain/definitions/permission.config.ts
 msgid "Can manage moderation notes"
 msgstr ""
 
@@ -1067,7 +1011,6 @@ msgstr "Smí spravovat vedení rozhovoru"
 msgid "Can manage the projector"
 msgstr "Smí spravovat promítací přístroj"
 
-#: /app/src/app/domain/definitions/permission.config.ts
 msgid "Can modify existing participants, but cannot create or delete them."
 msgstr ""
 
@@ -1077,7 +1020,6 @@ msgstr "Může navrhnout jiného účastníka"
 msgid "Can nominate oneself"
 msgstr "Smí se sám ucházet ve volbách"
 
-#: /app/src/app/domain/definitions/permission.config.ts
 msgid ""
 "Can nominate other participants as candidates.\n"
 "\n"
@@ -1090,7 +1032,6 @@ msgstr ""
 msgid "Can put oneself on the list of speakers"
 msgstr "Smí se sám umístit na seznamu řečníků"
 
-#: /app/src/app/site/pages/organization/pages/committees/pages/committee-list/services/committee-list-filter.service/committee-filter.service.ts
 msgid "Can receive motions"
 msgstr ""
 
@@ -1106,20 +1047,17 @@ msgstr "Může zobrazit všechny vnitřní náměty, rozvrhy a poznámky."
 msgid "Can see all lists of speakers"
 msgstr "Smí vidět seznamy řečníků"
 
-#: /app/src/app/domain/definitions/permission.config.ts
 msgid "Can see all moderation notes in each list of speakers."
 msgstr ""
 
 msgid "Can see elections"
 msgstr "Smí vidět volby"
 
-#: /app/src/app/domain/definitions/permission.config.ts
 msgid ""
 "Can see email, username, membership number, SSO identification and locked "
 "out state of all participants."
 msgstr ""
 
-#: /app/src/app/domain/definitions/permission.config.ts
 msgid "Can see files"
 msgstr ""
 
@@ -1132,7 +1070,6 @@ msgstr "Smí vidět vnitřní body a časový rozvrh pořadu dne"
 msgid "Can see list of speakers"
 msgstr "Smí vidět seznam řečníků"
 
-#: /app/src/app/domain/definitions/permission.config.ts
 msgid "Can see moderation notes"
 msgstr ""
 
@@ -1151,14 +1088,12 @@ msgstr ""
 "\n"
 "Rada: Ověřte požadovanou viditelnost návrhů pomocí účtu zkušebního delegáta."
 
-#: app/src/app/domain/definitions/permission.config.ts
 msgid "Can see origin motion"
 msgstr ""
 
 msgid "Can see participants"
 msgstr "Smí vidět účastníky"
 
-#: /app/src/app/domain/definitions/permission.config.ts
 msgid "Can see sensitive data"
 msgstr ""
 
@@ -1183,7 +1118,6 @@ msgstr ""
 "\n"
 "Poznámka: Sdílení složek a souborů může být omezeno přiřazením do skupiny."
 
-#: /app/src/app/domain/definitions/permission.config.ts
 msgid ""
 "Can see the History menu item with the history of processing timestamps for motions, elections and participants.\n"
 "\n"
@@ -1230,14 +1164,12 @@ msgstr ""
 "Může zobrazit živý přenos, pokud je v nabídce [Nastavení] → [Přímý přenos] "
 "zadána adresa (URL) přímého přenosu."
 
-#: /app/src/app/domain/definitions/permission.config.ts
 msgid ""
 "Can see the menu item Elections, including the list of candidates and results.\n"
 "\n"
 "Note: The right to vote is defined directly in the ballot."
 msgstr ""
 
-#: /app/src/app/domain/definitions/permission.config.ts
 msgid ""
 "Can see the menu item Participants and therefore the following data from all participants:\n"
 "Personal data: Name, pronoun, gender.\n"
@@ -1247,7 +1179,6 @@ msgstr ""
 msgid "Can see the projector"
 msgstr "Smí vidět promítací přístroj"
 
-#: app/src/app/domain/definitions/permission.config.ts
 msgid "Can set and remove own delegation."
 msgstr ""
 
@@ -1262,7 +1193,6 @@ msgstr ""
 "[Nastavení] → [Návrhy] a také pro příslušný stav v nabídce → [Pracovní "
 "postup]."
 
-#: /app/src/app/domain/definitions/permission.config.ts
 msgid "Can update participants"
 msgstr ""
 
@@ -1294,28 +1224,21 @@ msgstr "Uchazeč odstraněn"
 msgid "Candidates"
 msgstr "Uchazeči"
 
-#: app/src/app/gateways/error-mapping/error-map-utils.ts
 msgid "Cannot create meeting without administrator."
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/pages/mediafiles/modules/mediafile-list/components/mediafile-list/mediafile-list.component.html
-#: /app/src/app/site/pages/meetings/pages/mediafiles/modules/mediafile-list/components/mediafile-list/mediafile-list.component.html
 msgid "Cannot delete published files"
 msgstr ""
 
 msgid "Cannot do that in demo mode!"
 msgstr "Nelze udělat v ukázkovém režimu!"
 
-#: /app/src/app/site/pages/organization/pages/committees/pages/committee-list/services/committee-list-filter.service/committee-filter.service.ts
 msgid "Cannot forward motions"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/pages/mediafiles/modules/mediafile-list/components/mediafile-list/mediafile-list.component.html
-#: /app/src/app/site/pages/meetings/pages/mediafiles/modules/mediafile-list/components/mediafile-list/mediafile-list.component.html
 msgid "Cannot move published files"
 msgstr ""
 
-#: /app/src/app/site/pages/organization/pages/committees/pages/committee-list/services/committee-list-filter.service/committee-filter.service.ts
 msgid "Cannot receive motions"
 msgstr ""
 
@@ -1355,14 +1278,12 @@ msgstr "Změnit účast"
 msgid "Change recommendation"
 msgstr "Změnit doporučení"
 
-#: app/src/app/site/pages/meetings/pages/motions/services/common/motion-format.service/motion-format.service.ts
 msgid "Change recommendation - rejected"
 msgstr ""
 
 msgid "Change recommendations"
 msgstr "Změnit doporučení"
 
-#: app/src/app/site/pages/meetings/pages/participants/pages/participant-list/components/participant-list/participant-list.component.html
 msgid "Change your delegation"
 msgstr ""
 
@@ -1381,7 +1302,6 @@ msgstr "Změněná verze v řádku"
 msgid "Changes"
 msgstr "Změny"
 
-#: /app/src/app/site/pages/meetings/pages/meeting-settings/pages/meeting-settings-group-list/components/meeting-settings-group-list/meeting-settings-group-list.component.ts
 msgid "Changes of all settings group will be lost!"
 msgstr ""
 
@@ -1397,26 +1317,21 @@ msgstr "Zkontrolovat datové úložiště"
 msgid "Check in or check out participants based on their participant numbers:"
 msgstr "Přihlašte nebo odhlašte účastníky pomocí jejich účastnických čísel:"
 
-#: /app/src/app/ui/modules/sidenav/modules/easter-egg/modules/chess-dialog/components/chess-dialog/chess-dialog.component.ts
 msgid "Checkmate! You lost!"
 msgstr ""
 
-#: /app/src/app/ui/modules/sidenav/modules/easter-egg/modules/chess-dialog/components/chess-dialog/chess-dialog.component.ts
 msgid "Checkmate! You won!"
 msgstr ""
 
-#: /app/src/app/ui/modules/sidenav/modules/easter-egg/modules/chess-dialog/components/chess-dialog/chess-dialog.component.ts
 msgid "Chess"
 msgstr ""
 
 msgid "Choice"
 msgstr "Volba"
 
-#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Choose 0 to disable Intervention."
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid ""
 "Choose 0 to disable speaking times widget for structure level countdowns."
 msgstr ""
@@ -1424,30 +1339,24 @@ msgstr ""
 msgid "Choose 0 to disable the supporting system."
 msgstr "Zadejte 0 pro vypnutí podpůrného systému."
 
-#: /app/src/app/site/pages/meetings/pages/projectors/modules/projector-detail/services/current-speaker-chyron-slide.service/current-speaker-chyron-slide.service.ts
 msgid "Chyron"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/pages/projectors/components/projector-edit-dialog/components/projector-edit-dialog/projector-edit-dialog.component.ts
 msgid "Chyron agenda item, background color"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/pages/projectors/components/projector-edit-dialog/components/projector-edit-dialog/projector-edit-dialog.component.ts
 msgid "Chyron agenda item, font color"
 msgstr ""
 
 msgid "Chyron speaker name"
 msgstr "Jméno řečníka v dolní třetině"
 
-#: /app/src/app/site/pages/meetings/pages/projectors/components/projector-edit-dialog/components/projector-edit-dialog/projector-edit-dialog.component.ts
 msgid "Chyron speaker, background color"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/pages/projectors/components/projector-edit-dialog/components/projector-edit-dialog/projector-edit-dialog.component.ts
 msgid "Chyron speaker, font color"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/pages/projectors/modules/projector-detail/services/current-speaker-chyron-slide.service/current-speaker-chyron-slide.service.ts
 msgid "Classic"
 msgstr ""
 
@@ -1460,11 +1369,9 @@ msgstr "Vyprázdnit všechny filtry"
 msgid "Clear all list of speakers"
 msgstr "Vyprázdnit seznam řečníků"
 
-#: /app/src/app/site/pages/meetings/pages/projectors/modules/projector-detail/components/projector-detail/projector-detail.component.html
 msgid "Clear current projection"
 msgstr ""
 
-#: /app/src/app/ui/modules/editor/components/editor/editor.component.html
 msgid "Clear formatting"
 msgstr ""
 
@@ -1486,19 +1393,15 @@ msgstr "Klepněte sem a hlasujte!"
 msgid "Close"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/pages/projectors/modules/projector-detail/components/projector-detail/projector-detail.component.html
-#: /app/src/app/site/pages/meetings/pages/projectors/modules/projector-detail/components/projector-detail/projector-detail.component.html
 msgid "Close edit mode"
 msgstr ""
 
 msgid "Close list of speakers"
 msgstr "Zavřít seznam řečníků"
 
-#: /app/src/app/site/pages/organization/pages/orga-meetings/pages/meeting-list/components/meeting-list/meeting-list.component.html
 msgid "Closed"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/pages/agenda/pages/agenda-item-list/services/agenda-item-filter.service/agenda-item-filter.service.ts
 msgid "Closed items"
 msgstr ""
 
@@ -1568,19 +1471,15 @@ msgstr "Výbory"
 msgid "Committees and meetings"
 msgstr "Výbory a setkání"
 
-#: /app/src/app/site/pages/organization/pages/committees/pages/committee-import/services/committee-import.service/committee-import.service.ts
 msgid "Committees created"
 msgstr ""
 
-#: /app/src/app/site/pages/organization/pages/committees/pages/committee-import/services/committee-import.service/committee-import.service.ts
 msgid "Committees updated"
 msgstr ""
 
-#: /app/src/app/site/pages/organization/pages/committees/pages/committee-import/services/committee-import.service/committee-import.service.ts
 msgid "Committees with errors"
 msgstr ""
 
-#: /app/src/app/site/pages/organization/pages/committees/pages/committee-import/services/committee-import.service/committee-import.service.ts
 msgid "Committees with warnings: affected cells will be skipped"
 msgstr ""
 
@@ -1617,7 +1516,6 @@ msgstr "Protiřeč"
 msgid "Contribution"
 msgstr "Příspěvek"
 
-#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-speaker-list/components/participant-speaker-list/participant-speaker-list.component.html
 msgid "Contributions"
 msgstr ""
 
@@ -1666,7 +1564,6 @@ msgstr "Vytvoření"
 msgid "Creation date"
 msgstr "Doba vytvoření"
 
-#: /app/src/app/site/pages/meetings/pages/projectors/modules/projector-detail/services/current-speaker-chyron-slide.service/current-speaker-chyron-slide.service.ts
 msgid "Current agenda item"
 msgstr ""
 
@@ -1682,14 +1579,12 @@ msgstr "Nynější seznam řečníků (jako průsvitka)"
 msgid "Current slide"
 msgstr "Nynější průsvitka"
 
-#: /app/src/app/site/pages/meetings/modules/projector/modules/slides/definitions/slides.ts
 msgid "Current speaker"
 msgstr ""
 
 msgid "Current speaker chyron"
 msgstr "Nynější řečník v dolní třetině"
 
-#: /app/src/app/ui/modules/editor/components/editor-link-dialog/editor-link-dialog.component.html
 msgid "Current window"
 msgstr ""
 
@@ -1708,7 +1603,6 @@ msgstr "Uživatelsky stanovený počet hlasovacích lístků"
 msgid "Custom translations"
 msgstr "Vlastní překlady"
 
-#: /app/src/app/site/pages/meetings/pages/autopilot/components/autopilot/autopilot.component.html
 msgid "Customize autopilot"
 msgstr ""
 
@@ -1730,7 +1624,6 @@ msgstr "Rozhodnutí"
 msgid "Default"
 msgstr "Výchozí"
 
-#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Default 100 % base"
 msgstr ""
 
@@ -1749,13 +1642,11 @@ msgstr "Výchozí skupiny s hlasovacím právem"
 msgid "Default line numbering"
 msgstr "Výchozí číslování řádků"
 
-#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid ""
 "Default speaking time contingent for parliamentary groups (structure levels)"
 " in seconds"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid ""
 "Default text version for change recommendations and projection of motions"
 msgstr ""
@@ -1769,7 +1660,6 @@ msgstr "Výchozí váha hlasu"
 msgid "Default voting duration"
 msgstr "Výchozí doba trvání hlasování"
 
-#: app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Default voting method"
 msgstr ""
 
@@ -1803,7 +1693,6 @@ msgstr ""
 msgid "Defines the time in which applause amounts are add up."
 msgstr "Určuje čas, ve kterém se sečtou hodnoty potlesku."
 
-#: /app/src/app/site/pages/meetings/pages/motions/pages/workflows/components/workflow-detail/workflow-detail.component.ts
 msgid ""
 "Defines the wording of the recommendation that belongs to this state.\n"
 "Example: State = Accepted / Recommendation = Acceptance.\n"
@@ -1818,7 +1707,6 @@ msgstr ""
 msgid "Defines which states can be selected next in the workflow."
 msgstr "Určuje, které stavy lze v pracovním postupu vybrat jako další."
 
-#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-list/services/participant-list-filter/participant-list-filter.service.ts
 msgid "Delegation of vote"
 msgstr ""
 
@@ -1837,7 +1725,6 @@ msgstr "Smazat promítací přístroj"
 msgid "Deleted user"
 msgstr "Smazaný uživatel"
 
-#: /app/src/app/site/pages/meetings/pages/motions/pages/motion-detail/components/motion-detail-view/motion-detail-view.component.ts
 msgid "Deleting this motion will also delete the amendments."
 msgstr ""
 
@@ -1859,7 +1746,6 @@ msgstr "Vnější úprava"
 msgid "Designates whether this user is in the room."
 msgstr "Určuje, zda je tento uživatel v místnosti."
 
-#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Didn't get an email"
 msgstr ""
 
@@ -1875,7 +1761,6 @@ msgstr ""
 msgid "Display type"
 msgstr "Typ zobrazení"
 
-#: /app/src/app/site/pages/meetings/modules/list-of-speakers-content/components/speaking-times/speaking-times.component.ts
 msgid "Distribute overhang time"
 msgstr ""
 
@@ -1885,11 +1770,9 @@ msgstr "Rozdílný"
 msgid "Do not forget to save your changes!"
 msgstr "Nezapoměňte uložit své změny!"
 
-#: /app/src/app/site/pages/meetings/pages/motions/pages/workflows/components/workflow-detail/workflow-detail.component.ts
 msgid "Do not show recommendations publicly"
 msgstr ""
 
-#: /app/src/app/ui/modules/sidenav/modules/easter-egg/modules/chess-dialog/services/chess-challenge.service.ts
 msgid "Do you accept?"
 msgstr ""
 
@@ -1902,7 +1785,6 @@ msgstr "Opravdu chcete zahodit všechny změny?"
 msgid "Do you really want to go ahead?"
 msgstr "Opravdu chcete pokračovat?"
 
-#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-list/components/participant-list/participant-list.component.ts
 msgid "Do you really want to lock this participant out of the meeting?"
 msgstr ""
 
@@ -1916,11 +1798,9 @@ msgstr "Opravdu chcete uložit své změny?"
 msgid "Do you really want to stop sharing this meeting as a public template?"
 msgstr "Opravdu chcete přestat sdílet toto setkání jako veřejnou předlohu?"
 
-#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-list/components/participant-list/participant-list.component.ts
 msgid "Do you really want to undo the lock out of the participant?"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/pages/motions/pages/motion-detail/pages/motion-form/components/motion-form/motion-form.component.ts
 msgid "Do you want to update the amendment text? All changes will be lost."
 msgstr ""
 
@@ -1939,7 +1819,6 @@ msgstr "Stáhnout soubor s příkladem CSV"
 msgid "Download folder"
 msgstr "Stáhnout složku"
 
-#: /app/src/app/ui/modules/file-list/components/file-list/file-list.component.ts
 msgid "Download the file"
 msgstr ""
 
@@ -1952,7 +1831,6 @@ msgstr "Zdvojit"
 msgid "Duplicate from"
 msgstr "Zdvojit z"
 
-#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Duplicates"
 msgstr ""
 
@@ -1983,11 +1861,9 @@ msgstr ""
 msgid "Edit"
 msgstr "Upravit"
 
-#: /app/src/app/ui/modules/editor/components/editor-html-dialog/editor-html-dialog.component.html
 msgid "Edit HTML content"
 msgstr ""
 
-#: /app/src/app/site/pages/organization/pages/accounts/pages/account-detail/components/account-detail/account-detail.component.html
 msgid "Edit account"
 msgstr ""
 
@@ -2006,34 +1882,27 @@ msgstr "Upravit podrobnosti pro"
 msgid "Edit editorial final version"
 msgstr "Upravit vydavatelské konečné znění"
 
-#: /app/src/app/site/pages/meetings/pages/participants/modules/groups/components/group-list/group-list.component.html
 msgid "Edit group"
 msgstr ""
 
 msgid "Edit meeting"
 msgstr "Upravit setkání"
 
-#: /app/src/app/site/pages/meetings/modules/list-of-speakers-content/components/moderation-note/moderation-note.component.html
 msgid "Edit moderation note"
 msgstr ""
 
-#: app/src/app/site/pages/meetings/pages/participants/pages/participant-list/components/participant-list/participant-list.component.html
 msgid "Edit participant"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/modules/list-of-speakers-content/components/list-of-speakers-content/list-of-speakers-content.component.html
 msgid "Edit point of order ..."
 msgstr ""
 
 msgid "Edit projector"
 msgstr "Upravit promítací přístroj"
 
-#: /app/src/app/site/pages/meetings/pages/projectors/modules/projector-detail/components/projector-detail/projector-detail.component.html
-#: /app/src/app/site/pages/meetings/pages/projectors/modules/projector-detail/components/projector-detail/projector-detail.component.html
 msgid "Edit queue"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/pages/motions/pages/workflows/components/workflow-detail/workflow-detail.component.ts
 msgid "Edit state"
 msgstr ""
 
@@ -2049,7 +1918,6 @@ msgstr "Upravit pro zadání hlasů."
 msgid "Edit topic"
 msgstr "Upravit námět"
 
-#: /app/src/app/site/pages/meetings/pages/motions/pages/workflows/components/workflow-detail/workflow-detail.component.ts
 msgid "Edit workflow"
 msgstr ""
 
@@ -2062,25 +1930,21 @@ msgstr "Volba"
 msgid "Election documents"
 msgstr "Volební dokumenty"
 
-#: app/src/app/site/pages/meetings/pages/assignments/modules/assignment-poll/components/assignment-poll-form/assignment-poll-form.component.ts
 msgid "Election method"
 msgstr ""
 
 msgid "Elections"
 msgstr "Volby"
 
-#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Elections (PDF settings)"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/pages/participants/export/speaker-csv-export.service/speaker-csv-export.service.ts
 msgid "Element"
 msgstr ""
 
 msgid "Email"
 msgstr "E-mail"
 
-#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Email address"
 msgstr ""
 
@@ -2111,7 +1975,6 @@ msgstr "Povolit elektronické hlasování"
 msgid "Enable forspeech / counter speech"
 msgstr "Povolit obhajobu/protiřeč"
 
-#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Enable interposed questions"
 msgstr ""
 
@@ -2124,11 +1987,9 @@ msgstr "Povolit pohled na přítomnost účastníka"
 msgid "Enable point of order"
 msgstr "Povolit návrh jednacího řádu"
 
-#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Enable point of orders for other participants"
 msgstr ""
 
-#: /app/src/app/site/pages/organization/pages/settings/modules/settings-detail/components/organization-settings/organization-settings.component.html
 msgid "Enable public meetings"
 msgstr ""
 
@@ -2157,7 +2018,6 @@ msgstr ""
 "Povoluje pro vybraný stav možnost předkladatele změnit stav návrhu. Ostatní "
 "administrativní funkce jsou vyloučeny."
 
-#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid ""
 "Enables public access to this meeting without login data. Permissions can be"
 " set after activation in the new group 'Public'."
@@ -2173,7 +2033,6 @@ msgstr ""
 "Povoluje úpravy textu a důvodu návrhu předkladateli ve vybraném stavu po "
 "vytvoření návrhu."
 
-#: app/src/app/site/pages/meetings/pages/motions/pages/workflows/components/workflow-detail/workflow-detail.component.ts
 msgid ""
 "Enables the forwarding of amendments in the selected state.\n"
 "\n"
@@ -2182,7 +2041,6 @@ msgid ""
 "2. 'Original version with changes' in forwarding dialog must be selected."
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/pages/motions/pages/workflows/components/workflow-detail/workflow-detail.component.ts
 msgid ""
 "Enables the forwarding of motions to other meetings within the OpenSlides instance in the selected state.\n"
 "\n"
@@ -2252,7 +2110,6 @@ msgstr ""
 "Zadejte svoji adresu elektronické pošty, kam se má poslat odkaz na obnovení "
 "hesla"
 
-#: /app/src/app/site/pages/meetings/pages/assignments/modules/assignment-poll/components/assignment-poll-detail-content/assignment-poll-detail-content.component.html
 msgid "Entitled present users"
 msgstr ""
 
@@ -2283,7 +2140,6 @@ msgstr "Odhadovaný konec"
 msgid "Event location"
 msgstr "Místo události"
 
-#: /app/src/app/ui/modules/file-list/components/file-list/file-list.component.ts
 msgid "Every admin in every meeting will be able to see this content."
 msgstr ""
 
@@ -2294,7 +2150,6 @@ msgstr ""
 "Každý může vidět žádost o návrh jednacího řádu (místo pouze správců seznamu "
 "řečníků)"
 
-#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-import/components/participant-import-list/participant-import-list.component.html
 msgid ""
 "Existing accounts can be reused or updated by using: <ul><li>Membership "
 "number <i>(recommended)</i><li>Username<li>Email address AND first name AND "
@@ -2322,7 +2177,6 @@ msgstr "Vyvést jako PDF"
 msgid "Export comment"
 msgstr "Vyvést poznámku"
 
-#: app/src/app/site/pages/meetings/modules/list-of-speakers-content/components/moderation-note/moderation-note.component.html
 msgid "Export moderator note as PDF"
 msgstr ""
 
@@ -2338,14 +2192,12 @@ msgstr "Vyvést vybrané návrhy"
 msgid "Extension"
 msgstr "Rozšíření"
 
-#: app/src/app/domain/models/users/user.constants.ts
 msgid "External"
 msgstr ""
 
 msgid "External ID"
 msgstr "Vnější ID"
 
-#: /app/src/app/site/pages/meetings/pages/home/pages/meeting-info/components/count-users/count-users.component.html
 msgid "Fallback"
 msgstr ""
 
@@ -2355,14 +2207,9 @@ msgstr "Oblíbené"
 msgid "File"
 msgstr "Soubor"
 
-#: /app/src/app/ui/modules/file-list/components/file-list/file-list.component.html
-#: /app/src/app/ui/modules/file-list/components/file-list/file-list.component.html
-#: /app/src/app/ui/modules/file-list/components/file-list/file-list.component.html
-#: /app/src/app/ui/modules/file-list/components/file-list/file-list.component.html
 msgid "File is being used"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/pages/mediafiles/services/mediafile-common.service.ts
 msgid "File is used in:"
 msgstr ""
 
@@ -2375,7 +2222,6 @@ msgstr "Soubory"
 msgid "Filter"
 msgstr "Filtr"
 
-#: /app/src/app/site/pages/meetings/modules/poll/components/poll-filtered-votes-chart/poll-filtered-votes-chart.component.html
 msgid "Filtered single votes"
 msgstr ""
 
@@ -2418,7 +2264,6 @@ msgstr "Obyčejné písmo"
 msgid "Font size in pt"
 msgstr "Velikost písma v bodech (pt)"
 
-#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid ""
 "For activation:<br>\n"
 "                        1. Assign group permission (define the group that can support motions)<br>\n"
@@ -2438,7 +2283,6 @@ msgstr "Barva popředí"
 msgid "Forgot Password?"
 msgstr "Zapomněl jste heslo?"
 
-#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Formalities"
 msgstr ""
 
@@ -2448,7 +2292,6 @@ msgstr "Obhajoba"
 msgid "Forward"
 msgstr "Postoupit"
 
-#: /app/src/app/site/pages/organization/pages/committees/pages/committee-list/services/committee-list-filter.service/committee-filter.service.ts
 msgid "Forward motions"
 msgstr ""
 
@@ -2485,7 +2328,6 @@ msgstr "Nerozhodná hra!"
 msgid "Gender"
 msgstr "Pohlaví"
 
-#: /app/src/app/site/pages/organization/pages/accounts/pages/account-list/components/account-list/account-list.component.html
 msgid "Genders"
 msgstr ""
 
@@ -2522,7 +2364,6 @@ msgstr "Barva záhlaví"
 msgid "Go to line"
 msgstr "Jít na řádek"
 
-#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Got an email"
 msgstr ""
 
@@ -2532,11 +2373,9 @@ msgstr "Skupina"
 msgid "Group name"
 msgstr "Název skupiny"
 
-#: app/src/app/site/pages/organization/pages/accounts/pages/account-detail/components/account-add-to-meetings/account-add-to-meetings.component.html
 msgid "Group not found. Account added to the group “Default”."
 msgstr ""
 
-#: app/src/app/site/pages/organization/pages/accounts/pages/account-detail/components/account-add-to-meetings/account-add-to-meetings.component.html
 msgid "Group not found. Account already belongs to another group."
 msgstr ""
 
@@ -2558,71 +2397,57 @@ msgstr "Skupiny s oprávněním pro zápis"
 msgid "Has SSO identification"
 msgstr "Má poznávací znamení SSO"
 
-#: app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Has a home committee"
 msgstr ""
 
-#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Has a membership number"
 msgstr ""
 
 msgid "Has amendments"
 msgstr "Má pozměňovací návrhy"
 
-#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Has an email address"
 msgstr ""
 
-#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Has changed vote weight"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-list/services/participant-list-sort/participant-list-sort.service.ts
 msgid "Has email"
 msgstr ""
 
 msgid "Has forwardings"
 msgstr "Má postoupení"
 
-#: /app/src/app/site/pages/meetings/pages/motions/services/list/motion-list-filter.service/motion-list-filter.service.ts
 msgid "Has identical motions"
 msgstr ""
 
-#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Has logged in"
 msgstr ""
 
 msgid "Has no SSO identification"
 msgstr "Nemá poznávací znamení SSO"
 
-#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Has no email address"
 msgstr ""
 
-#: app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Has no home committee"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/pages/motions/services/list/motion-list-filter.service/motion-list-filter.service.ts
 msgid "Has no identical motions"
 msgstr ""
 
-#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Has no membership number"
 msgstr ""
 
 msgid "Has no speakers"
 msgstr "Nemá žádné řečníky"
 
-#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Has not logged in yet"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-speaker-list/services/participant-speaker-list-filter.service/participant-speaker-list-filter.service.ts
 msgid "Has not spoken"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/modules/poll/services/entitled-user-filter.service.ts
 msgid "Has not voted"
 msgstr ""
 
@@ -2632,11 +2457,9 @@ msgstr "Má poznámky"
 msgid "Has speakers"
 msgstr "Má řečníky"
 
-#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-speaker-list/services/participant-speaker-list-filter.service/participant-speaker-list-filter.service.ts
 msgid "Has spoken"
 msgstr ""
 
-#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Has unchanged vote weight"
 msgstr ""
 
@@ -2646,7 +2469,6 @@ msgstr "Hlasoval"
 msgid "Header"
 msgstr "Záhlaví"
 
-#: app/src/app/site/pages/meetings/pages/motions/pages/motion-export/components/motion-export/motion-export.component.html
 msgid "Header and footer"
 msgstr ""
 
@@ -2656,11 +2478,9 @@ msgstr "Barva pozadí záhlaví"
 msgid "Header font color"
 msgstr "Barva písma záhlaví"
 
-#: /app/src/app/ui/modules/editor/components/editor/editor.component.ts
 msgid "Heading"
 msgstr ""
 
-#: /app/src/app/ui/modules/editor/components/editor/editor.component.html
 msgid "Headings"
 msgstr ""
 
@@ -2676,18 +2496,15 @@ msgstr "Nápomocný text k přístupovým údajům a pozdravné PDF"
 msgid "Hidden item"
 msgstr "Skrytý bod"
 
-#: /app/src/app/site/pages/meetings/modules/meetings-component-collector/projection-dialog/components/projection-dialog/projection-dialog.component.html
 msgid "Hide"
 msgstr ""
 
-#: /app/src/app/ui/modules/sidenav/components/sidenav/sidenav.component.html
 msgid "Hide main menu"
 msgstr ""
 
 msgid "Hide more text"
 msgstr "Skrýt více textu"
 
-#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Hide note on number of multiple contributions"
 msgstr ""
 
@@ -2706,7 +2523,6 @@ msgstr "Minulost"
 msgid "Home"
 msgstr "Úvodní stránka"
 
-#: app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Home committee"
 msgstr ""
 
@@ -2716,42 +2532,34 @@ msgstr "Jak vytvořit nové pozměňovací návrhy"
 msgid "I know the risk"
 msgstr "Znám nebezpečí"
 
-#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid ""
 "IMPORTANT: The sender address (noreply@openslides.com) is defined in the OpenSlides server settings and cannot be changed here.\n"
 "                            To receive replies you have to enter a reply address in the next field. Please test the email dispatch in case of changes!"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/pages/motions/services/list/motion-list-filter.service/motion-list-filter.service.ts
 msgid "Identical motions"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/pages/motions/pages/motion-detail/components/motion-meta-data/motion-meta-data.component.html
 msgid "Identical with"
 msgstr ""
 
 msgid "Identifier"
 msgstr "Označovač"
 
-#: app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "If deactivated it is displayed below the title."
 msgstr ""
 
-#: app/src/app/site/pages/meetings/pages/mediafiles/modules/mediafile-list/components/mediafile-list/mediafile-list.component.html
 msgid "If empty, everyone can access."
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/pages/projectors/components/projector-countdown-dialog/components/projector-countdown-dialog/projector-countdown-dialog.component.html
 msgid "If the value is set to 0 the time counts up as stopwatch."
 msgstr ""
 
-#: app/src/app/site/pages/login/pages/reset-password/components/reset-password/reset-password.component.ts
 msgid ""
 "If your email address exists in our database, you will receive a password "
 "reset email."
 msgstr ""
 
-#: /app/src/app/ui/modules/editor/components/editor-image-dialog/editor-image-dialog.component.html
 msgid "Image description"
 msgstr ""
 
@@ -2776,8 +2584,6 @@ msgstr "Zavést účastníky"
 msgid "Import successful"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/pages/agenda/modules/topics/pages/topic-import/components/topic-import/topic-import.component.html
-#: /app/src/app/site/pages/meetings/pages/agenda/modules/topics/pages/topic-import/components/topic-import/topic-import.component.html
 msgid "Import successful with some warnings"
 msgstr ""
 
@@ -2787,7 +2593,6 @@ msgstr "Zavést náměty"
 msgid "Import workflows"
 msgstr "Zavést pracovní postupy"
 
-#: app/src/app/site/pages/organization/pages/accounts/pages/account-detail/components/account-add-to-meetings/account-add-to-meetings.component.html
 msgid "Important: New groups are not created."
 msgstr ""
 
@@ -2806,7 +2611,6 @@ msgstr "Nečinný"
 msgid "Inconsistent data."
 msgstr "Rozporuplné údaje."
 
-#: app/src/app/site/pages/meetings/pages/motions/pages/motion-detail/pages/motion-view/components/motion-detail-diff/motion-detail-diff.component.html
 msgid "Inconsistent data. Please delete this change recommendation."
 msgstr ""
 
@@ -2831,22 +2635,18 @@ msgstr "Vložit za"
 msgid "Insert topics here"
 msgstr "Vložit náměty zde"
 
-#: /app/src/app/ui/modules/editor/components/editor-embed-dialog/editor-embed-dialog.component.html
 msgid "Insert/Edit Link"
 msgstr ""
 
-#: /app/src/app/ui/modules/editor/components/editor/editor.component.html
 msgid "Insert/edit image"
 msgstr ""
 
-#: /app/src/app/ui/modules/editor/components/editor/editor.component.html
 msgid "Insert/edit link"
 msgstr ""
 
 msgid "Insertion"
 msgstr "Vložení"
 
-#: /app/src/app/ui/modules/sidenav/modules/easter-egg/modules/chess-dialog/components/chess-dialog/chess-dialog.component.ts
 msgid "Insufficient material! It's a draw!"
 msgstr ""
 
@@ -2859,15 +2659,12 @@ msgstr "Vnitřní bod"
 msgid "Internal login"
 msgstr "Vnitřní přihlášení"
 
-#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-speaker-list/services/participant-speaker-list-filter.service/participant-speaker-list-filter.service.ts
 msgid "Interposed question"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-speaker-list/services/participant-speaker-list-filter.service/participant-speaker-list-filter.service.ts
 msgid "Intervention"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Intervention speaking time in seconds"
 msgstr ""
 
@@ -2880,7 +2677,6 @@ msgstr "Neplatné hlasy"
 msgid "Invite to conference room"
 msgstr "Pozvat do jednací místnosti"
 
-#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-list/services/participant-list-filter/participant-list-filter.service.ts
 msgid "Is a committee"
 msgstr ""
 
@@ -2893,7 +2689,6 @@ msgstr "Je předloha"
 msgid "Is active"
 msgstr "Je činný"
 
-#: /app/src/app/domain/definitions/permission.config.ts
 msgid ""
 "Is allowed to add himself/herself to the list of speakers.\n"
 "\n"
@@ -2916,30 +2711,24 @@ msgstr "Je promítán"
 msgid "Is candidate"
 msgstr "Je uchazečem"
 
-#: app/src/app/site/pages/organization/pages/orga-meetings/pages/meeting-list/services/meeting-list-filter/meeting-list-filter.service.ts
 msgid "Is closed"
 msgstr ""
 
-#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Is committee admin"
 msgstr ""
 
-#: app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Is external"
 msgstr ""
 
 msgid "Is favorite"
 msgstr "Je oblíbené"
 
-#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Is in active meetings"
 msgstr ""
 
-#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Is in archived meetings"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-detail/components/participant-detail-view/participant-detail-view.component.html
 msgid "Is locked out"
 msgstr ""
 
@@ -2952,50 +2741,42 @@ msgstr "Není pozměňovací návrh a nemá řádné pozměňovací návrhy"
 msgid "Is no natural person"
 msgstr "Není žádná skutečná osoba"
 
-#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-list/services/participant-list-filter/participant-list-filter.service.ts
 msgid "Is not a committee"
 msgstr ""
 
 msgid "Is not a template"
 msgstr "Není předloha"
 
-#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Is not active"
 msgstr ""
 
-#: app/src/app/site/pages/meetings/pages/motions/services/list/motion-list-filter.service/motion-list-filter.service.ts
 msgid "Is not an amendment"
 msgstr ""
 
 msgid "Is not archived"
 msgstr "Není archivován"
 
-#: app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Is not external"
 msgstr ""
 
 msgid "Is not favorite"
 msgstr "Není oblíbené"
 
-#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Is not in active meetings"
 msgstr ""
 
-#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Is not in archived meetings"
 msgstr ""
 
 msgid "Is not present"
 msgstr "Není přítomen"
 
-#: /app/src/app/site/pages/organization/pages/orga-meetings/pages/meeting-list/services/meeting-list-filter/meeting-list-filter.service.ts
 msgid "Is not public"
 msgstr ""
 
 msgid "Is present"
 msgstr "Je přítomná"
 
-#: /app/src/app/site/pages/organization/pages/orga-meetings/pages/meeting-list/services/meeting-list-filter/meeting-list-filter.service.ts
 msgid "Is public"
 msgstr ""
 
@@ -3011,18 +2792,15 @@ msgstr ""
 "Není povoleno mazat odpočítávání používané pro seznam řečníků nebo "
 "hlasování."
 
-#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-detail/components/participant-detail-view/participant-detail-view.component.html
 msgid ""
 "It is not allowed to set the permisson 'Can manage participants' to a locked"
 " out user. Please unset the lockout state before adding a group with this "
 "permission."
 msgstr ""
 
-#: /app/src/app/ui/modules/sidenav/modules/easter-egg/modules/chess-dialog/components/chess-dialog/chess-dialog.component.ts
 msgid "It's a draw!"
 msgstr ""
 
-#: /app/src/app/ui/modules/sidenav/modules/easter-egg/components/base-game-dialog/base-game-dialog.ts
 msgid "It's your opponent's turn"
 msgstr ""
 
@@ -3050,7 +2828,6 @@ msgstr "Název místnosti Jitsi"
 msgid "Jitsi room password"
 msgstr "Heslo k místnosti Jitsi"
 
-#: /app/src/app/ui/modules/editor/components/editor/editor.component.html
 msgid "Justify"
 msgstr ""
 
@@ -3117,7 +2894,6 @@ msgstr "Číslování řádků"
 msgid "Line spacing"
 msgstr "Rozestupy mezi řádky"
 
-#: /app/src/app/site/pages/meetings/pages/motions/pages/motion-detail/components/motion-detail-view/motion-detail-view.component.ts
 msgid "List of amendments: "
 msgstr ""
 
@@ -3133,7 +2909,6 @@ msgstr "Seznam účastníků (PDF)"
 msgid "List of speakers"
 msgstr "Seznam řečníků"
 
-#: /app/src/app/site/pages/meetings/pages/projectors/modules/projector-detail/components/projector-detail/projector-detail.component.html
 msgid "List of speakers as overlay"
 msgstr ""
 
@@ -3149,7 +2924,6 @@ msgstr "Seznamy řečníků"
 msgid "Live conference"
 msgstr "Živé jednání"
 
-#: app/src/app/domain/models/poll/poll-constants.ts
 msgid "Live voting enabled"
 msgstr ""
 
@@ -3159,7 +2933,6 @@ msgstr "Přímý přenos"
 msgid "Livestream URL"
 msgstr "Adresa (URL) přímého přenosu"
 
-#: /app/src/app/site/pages/meetings/pages/interaction/modules/interaction-container/components/video-player/video-player.component.ts
 msgid "Livestream poster image"
 msgstr ""
 
@@ -3169,11 +2942,9 @@ msgstr "Adresa (URL) obrázku plakátu přímého přenosu"
 msgid "Loading data. Please wait ..."
 msgstr "Nahrávají se data. Počkejte, prosím..."
 
-#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-detail/components/participant-detail-view/participant-detail-view.component.html
 msgid "Lock out user from this meeting."
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-list/components/participant-list/participant-list.component.ts
 msgid "Locked out"
 msgstr ""
 
@@ -3198,23 +2969,19 @@ msgstr "Nejnižší hodnota pro potlesk"
 msgid "Main motion and line number"
 msgstr "Hlavní návrh a číslo řádku"
 
-#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid ""
 "Make background color from meta information box on the projector transparent"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-list/components/participant-list/participant-list.component.ts
 msgid "Mandates switched sucessfully!"
 msgstr ""
 
 msgid "Mark as personal favorite"
 msgstr "Označit jako osobní oblíbený"
 
-#: app/src/app/site/pages/meetings/modules/poll/components/base-poll-form/base-poll-form.component.ts
 msgid "Max votes cannot be greater than options."
 msgstr ""
 
-#: app/src/app/site/pages/meetings/modules/poll/components/base-poll-form/base-poll-form.component.ts
 msgid "Max votes per option cannot be greater than max votes."
 msgstr ""
 
@@ -3224,11 +2991,9 @@ msgstr "Nejvyšší počet hlasů"
 msgid "Maximum amount of votes per option"
 msgstr "Nejvyšší počet hlasů na možnost"
 
-#: app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Maximum number of columns in motion block projection"
 msgstr ""
 
-#: app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Maximum number of columns in single votes projection"
 msgstr ""
 
@@ -3250,7 +3015,6 @@ msgstr "Datum setkání"
 msgid "Meeting information"
 msgstr "Údaje o setkání"
 
-#: /app/src/app/site/modules/user-components/components/user-delete-dialog/user-delete-dialog.component.html
 msgid "Meeting is closed"
 msgstr ""
 
@@ -3276,23 +3040,18 @@ msgstr "Název setkání"
 msgid "Meetings"
 msgstr "Setkání"
 
-#: /app/src/app/site/pages/organization/pages/accounts/pages/account-list/components/account-merge-dialog/account-merge-dialog.component.html
 msgid "Meetings affected:"
 msgstr ""
 
 msgid "Meetings selected"
 msgstr "Vybraná setkání"
 
-#: /app/src/app/site/modules/user-components/components/user-detail-view/user-detail-view.component.html
-#: /app/src/app/site/modules/user-components/components/user-detail-view/user-detail-view.component.html
 msgid "Membership number"
 msgstr ""
 
-#: /app/src/app/site/pages/organization/pages/accounts/pages/account-list/components/account-merge-dialog/account-merge-dialog.component.html
 msgid "Merge"
 msgstr ""
 
-#: /app/src/app/site/pages/organization/pages/accounts/pages/account-list/components/account-merge-dialog/account-merge-dialog.component.html
 msgid "Merge accounts"
 msgstr ""
 
@@ -3326,19 +3085,15 @@ msgstr "Nejnižší počet hlasů"
 msgid "Minimum number of digits for motion identifier"
 msgstr "Nejmenší počet číslic v označovači návrhu"
 
-#: /app/src/app/site/pages/meetings/modules/list-of-speakers-content/components/moderation-note/moderation-note.component.html
 msgid "Moderation note"
 msgstr ""
 
-#: app/src/app/site/pages/meetings/modules/list-of-speakers-content/services/moderation-note-pdf.service/moderation-note-pdf.service.ts
 msgid "Moderation-Note"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/pages/projectors/modules/projector-detail/services/current-speaker-chyron-slide.service/current-speaker-chyron-slide.service.ts
 msgid "Modern"
 msgstr ""
 
-#: /app/src/app/site/pages/organization/pages/designs/pages/theme-list/components/theme-list/theme-list.component.html
 msgid "Modify design"
 msgstr "Změnit vnější úpravu"
 
@@ -3375,7 +3130,6 @@ msgstr "Doporučení změny návrhu smazáno"
 msgid "Motion change recommendation updated"
 msgstr "Doporučení změny návrhu aktualizováno"
 
-#: /app/src/app/site/pages/meetings/pages/motions/pages/motion-detail/pages/motion-form/components/motion-form/motion-form.component.ts
 msgid "Motion changed"
 msgstr ""
 
@@ -3388,11 +3142,9 @@ msgstr "Návrh vytvořen (postoupen)"
 msgid "Motion deleted"
 msgstr "Návrh smazán"
 
-#: /app/src/app/gateways/repositories/motions/motion-editor-repository/motion-editor-repository.service.ts
 msgid "Motion editor"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/pages/motions/services/list/motion-list-filter.service/motion-list-filter.service.ts
 msgid "Motion editors"
 msgstr ""
 
@@ -3411,7 +3163,6 @@ msgstr "Úvod návrhu"
 msgid "Motion updated"
 msgstr "Návrh aktualizován"
 
-#: app/src/app/site/pages/meetings/pages/motions/components/motion-forward-dialog/components/motion-forward-dialog/motion-forward-dialog.component.html
 msgid "Motion version"
 msgstr ""
 
@@ -3421,7 +3172,6 @@ msgstr "Hlasování o návrzích"
 msgid "Motions"
 msgstr "Návrhy"
 
-#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Motions (PDF settings)"
 msgstr ""
 
@@ -3476,27 +3226,21 @@ msgstr "Název nové skupiny"
 msgid "Natural person"
 msgstr "Skutečná osoba"
 
-#: /app/src/app/site/pages/organization/pages/accounts/pages/account-list/components/account-list/account-list.component.ts
 msgid "Navigate to account page from "
 msgstr ""
 
-#: /app/src/app/site/pages/organization/pages/committees/pages/committee-list/components/committee-list/committee-list.component.ts
 msgid "Navigate to committee detail view from "
 msgstr ""
 
-#: /app/src/app/site/pages/organization/pages/orga-meetings/pages/meeting-list/components/meeting-list/meeting-list.component.ts
 msgid "Navigate to meeting "
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/pages/motions/pages/categories/components/category-detail/category-detail.component.ts
 msgid "Navigate to motion"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-list/components/participant-list/participant-list.component.ts
 msgid "Navigate to participant page from "
 msgstr ""
 
-#: /app/src/app/ui/modules/file-list/components/file-list/file-list.component.ts
 msgid "Navigate to the folder"
 msgstr ""
 
@@ -3521,7 +3265,6 @@ msgstr "Nová skupina"
 msgid "New change recommendation"
 msgstr "Nové doporučení změny"
 
-#: /app/src/app/site/pages/meetings/pages/chat/pages/chat-group-list/components/chat-group-list/chat-group-list.component.html
 msgid "New chat group"
 msgstr ""
 
@@ -3531,7 +3274,6 @@ msgstr "Nové poznámkové pole"
 msgid "New committee"
 msgstr "Nový výbor"
 
-#: /app/src/app/site/pages/organization/pages/designs/pages/theme-list/components/theme-list/theme-list.component.html
 msgid "New design"
 msgstr "Nová vnější úprava"
 
@@ -3541,24 +3283,18 @@ msgstr "Nový adresář"
 msgid "New election"
 msgstr "Nová volba"
 
-#: /app/src/app/site/pages/organization/pages/mediafiles/modules/organization-mediafile-upload/components/organization-mediafile-upload/organization-mediafile-upload.component.html
 msgid "New file"
 msgstr ""
 
 msgid "New file name"
 msgstr "Nový název souboru"
 
-#: /app/src/app/site/pages/organization/pages/mediafiles/modules/organization-mediafile-list/components/organization-mediafile-list/organization-mediafile-list.component.html
-#: /app/src/app/site/pages/organization/pages/mediafiles/modules/organization-mediafile-list/components/organization-mediafile-list/organization-mediafile-list.component.html
 msgid "New folder"
 msgstr ""
 
-#: /app/src/app/site/pages/organization/pages/accounts/pages/gender/pages/gender-list/components/gender-list/gender-list.component.html
 msgid "New gender"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/pages/participants/modules/groups/components/group-list/group-list.component.html
-#: /app/src/app/site/pages/meetings/pages/participants/modules/groups/components/group-list/group-list.component.html
 msgid "New group"
 msgstr ""
 
@@ -3580,8 +3316,6 @@ msgstr "Nový účastník"
 msgid "New password"
 msgstr "Nové heslo"
 
-#: /app/src/app/site/pages/meetings/pages/projectors/modules/projector-list/components/projector-list/projector-list.component.html
-#: /app/src/app/site/pages/meetings/pages/projectors/modules/projector-list/components/projector-list/projector-list.component.html
 msgid "New projector"
 msgstr ""
 
@@ -3597,7 +3331,6 @@ msgstr "Nový námět"
 msgid "New vote"
 msgstr "Nové hlasování"
 
-#: /app/src/app/ui/modules/editor/components/editor-link-dialog/editor-link-dialog.component.html
 msgid "New window"
 msgstr ""
 
@@ -3607,7 +3340,6 @@ msgstr "Nový pracovní postup"
 msgid "Next"
 msgstr "Další"
 
-#: app/src/app/site/pages/meetings/pages/projectors/modules/projector-detail/components/projector-detail/projector-detail.component.html
 msgid "Next page"
 msgstr ""
 
@@ -3617,7 +3349,6 @@ msgstr "Další stavy"
 msgid "No"
 msgstr "Ne"
 
-#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "No admin role"
 msgstr ""
 
@@ -3633,18 +3364,15 @@ msgstr "Nejsou dostupné žádné skupiny k vedení rozhovoru"
 msgid "No comment"
 msgstr "Bez poznámky"
 
-#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "No committee admin"
 msgstr ""
 
 msgid "No data"
 msgstr "Žádná data"
 
-#: app/src/app/site/pages/meetings/pages/assignments/pages/assignment-polls/components/assignment-poll-detail/assignment-poll-detail.component.html
 msgid "No data available"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-list/services/participant-list-filter/participant-list-filter.service.ts
 msgid "No delegation of vote"
 msgstr ""
 
@@ -3690,14 +3418,12 @@ msgstr "Bez osobní poznámky"
 msgid "No results found"
 msgstr ""
 
-#: app/src/app/site/pages/meetings/pages/assignments/modules/assignment-poll/components/assignment-poll-detail-content/assignment-poll-detail-content.component.html
 msgid "No results yet"
 msgstr ""
 
 msgid "No results yet."
 msgstr "Zatím žádné výsledky."
 
-#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-speaker-list/services/participant-speaker-list-filter.service/participant-speaker-list-filter.service.ts
 msgid "No structure level"
 msgstr ""
 
@@ -3713,18 +3439,15 @@ msgstr "Seznam navržení"
 msgid "None"
 msgstr "Žádné"
 
-#: /app/src/app/site/pages/meetings/pages/motions/components/motion-forward-dialog/services/motion-forward-dialog.service.ts
 msgid "None of the selected motions can be forwarded."
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/pages/home/pages/meeting-info/components/count-users/count-users.component.html
 msgid "Normal (http/2)"
 msgstr ""
 
 msgid "Not found"
 msgstr "Nenalezeno"
 
-#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-list/components/participant-list/participant-list.component.ts
 msgid "Not locked out"
 msgstr ""
 
@@ -3732,15 +3455,12 @@ msgid ""
 "Note, that the default password will be changed to the new generated one."
 msgstr "Všimněte si, že výchozí heslo bude změněno na nově vytvořené."
 
-#: app/src/app/site/pages/meetings/pages/motions/components/motion-forward-dialog/components/motion-forward-dialog/motion-forward-dialog.component.html
 msgid "Note: Amendments cannot be forwarded without their parent motion."
 msgstr ""
 
-#: app/src/app/site/pages/meetings/pages/motions/components/motion-forward-dialog/components/motion-forward-dialog/motion-forward-dialog.component.html
 msgid "Note: Amendments will not be forwarded."
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid ""
 "Note: The public access setting is deactivated for the organization. Please "
 "contact your admins or hosting providers to activate the setting."
@@ -3756,7 +3476,6 @@ msgstr ""
 msgid "Notes"
 msgstr "Poznámky"
 
-#: app/src/app/site/pages/meetings/pages/motions/pages/motion-export/components/motion-export/motion-export.component.html
 msgid "Notes and Comments"
 msgstr ""
 
@@ -3797,7 +3516,6 @@ msgid ""
 "Number of next speakers automatically connecting to the live conference"
 msgstr "Počet dalších řečníků, kteří se automaticky připojí k živému jednání"
 
-#: app/src/app/site/pages/meetings/pages/motions/services/export/motion-xlsx-export.service/motion-xlsx-export.service.ts
 msgid "Number of open requests to speak"
 msgstr ""
 
@@ -3816,7 +3534,6 @@ msgstr "Počet dalších na promítacím přístroji zobrazených řečníků"
 msgid "Number set"
 msgstr "Číslo stanoveno"
 
-#: /app/src/app/ui/modules/editor/components/editor/editor.component.html
 msgid "Numbered list"
 msgstr ""
 
@@ -3826,7 +3543,6 @@ msgstr "Číslovat na základě skupin"
 msgid "Numbering"
 msgstr "Číslování"
 
-#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Numbering and sorting"
 msgstr ""
 
@@ -3839,11 +3555,9 @@ msgstr "Číselný systém pro body pořadu jednání"
 msgid "OK"
 msgstr "Ok"
 
-#: /app/src/app/site/pages/meetings/modules/poll/components/base-poll-vote/base-poll-vote.component.html
 msgid "OR"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/pages/projectors/modules/projector-detail/services/current-speaker-chyron-slide.service/current-speaker-chyron-slide.service.ts
 msgid "Off"
 msgstr ""
 
@@ -3853,32 +3567,27 @@ msgstr "Režim bez připojení k internetu"
 msgid "Ok"
 msgstr "OK"
 
-#: /app/src/app/site/pages/meetings/modules/poll/base/base-poll-pdf.service.ts
 msgid "Old account of"
 msgstr ""
 
 msgid "Old password"
 msgstr "Staré heslo"
 
-#: /app/src/app/site/pages/meetings/pages/projectors/modules/projector-detail/services/current-speaker-chyron-slide.service/current-speaker-chyron-slide.service.ts
 msgid "On"
 msgstr ""
 
 msgid "One email was send sucessfully."
 msgstr "Byl úspěšně odeslán jeden elektronický dopis."
 
-#: app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Only available for nominal voting"
 msgstr ""
 
 msgid "Only for internal notes."
 msgstr "Jen pro vnitřní poznámky."
 
-#: app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Only for nominal votes."
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-list/components/participant-switch-dialog/participant-switch-dialog.component.html
 msgid "Only groups and participant number are switched."
 msgstr ""
 
@@ -3888,7 +3597,6 @@ msgstr "Pouze hlavní body pořadu jednání"
 msgid "Only present participants can be added to the list of speakers"
 msgstr "Jen přítomní účastníci mohou být přidáni do seznamu řečníků"
 
-#: /app/src/app/site/pages/meetings/pages/projectors/view-models/view-projector-countdown.ts
 msgid "Only time"
 msgstr ""
 
@@ -3901,15 +3609,12 @@ msgstr "Otevřít Jitsi v nové kartě"
 msgid "Open a meeting to play \"Connect 4\""
 msgstr "Otevřít setkání a hrát \"Connect 4\""
 
-#: /app/src/app/ui/modules/sidenav/modules/easter-egg/modules/chess-dialog/components/chess-dialog/chess-dialog.component.html
 msgid "Open a meeting to play chess"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/pages/agenda/pages/agenda-item-list/services/agenda-item-filter.service/agenda-item-filter.service.ts
 msgid "Open items"
 msgstr ""
 
-#: /app/src/app/ui/modules/editor/components/editor-link-dialog/editor-link-dialog.component.html
 msgid "Open link in ..."
 msgstr ""
 
@@ -3931,7 +3636,6 @@ msgstr "Přístupová data k OpenSlides"
 msgid "OpenSlides help (FAQ)"
 msgstr "Nápověda k OpenSlides (FAQ)"
 
-#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid ""
 "OpenSlides offers various speaking list customizations for use in "
 "parliament. These include the configuration of speaking time quotas for "
@@ -3955,7 +3659,6 @@ msgstr "Organizace"
 msgid "Organization Management Level changed"
 msgstr "Úroveň řízení organizace změněna"
 
-#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Organization admin"
 msgstr ""
 
@@ -3980,7 +3683,6 @@ msgstr "Původní"
 msgid "Original version"
 msgstr "Původní verze"
 
-#: app/src/app/site/pages/meetings/pages/motions/components/motion-forward-dialog/components/motion-forward-dialog/motion-forward-dialog.component.html
 msgid "Original version with changes"
 msgstr ""
 
@@ -4017,7 +3719,6 @@ msgstr "Strana"
 msgid "Page format"
 msgstr "Formát strany"
 
-#: app/src/app/site/pages/meetings/pages/motions/pages/motion-export/components/motion-export/motion-export.component.html
 msgid "Page layout"
 msgstr ""
 
@@ -4051,19 +3752,15 @@ msgstr "Souběžné nahrání"
 msgid "Parent agenda item"
 msgstr "Nadřazený bod pořadu jednání"
 
-#: app/src/app/site/pages/organization/pages/committees/pages/committee-detail/modules/committee-detail-edit/components/committee-detail-edit/committee-detail-edit.component.html
 msgid "Parent committee"
 msgstr ""
 
-#: app/src/app/site/pages/organization/pages/committees/pages/committee-import/definitions/index.ts
 msgid "Parent committee name"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/pages/motions/pages/motion-detail/pages/motion-form/components/motion-form/motion-form.component.ts
 msgid "Parent motion text changed"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Parliament options"
 msgstr ""
 
@@ -4073,11 +3770,9 @@ msgstr "Účastník"
 msgid "Participant added to group {} in meeting {}"
 msgstr "Účastník přidaný do skupiny {} na setkání {}"
 
-#: app/src/app/site/modules/translations/marked-translations.ts
 msgid "Participant added to group {} in meeting {}."
 msgstr ""
 
-#: app/src/app/site/modules/translations/marked-translations.ts
 msgid "Participant added to meeting {}."
 msgstr ""
 
@@ -4111,7 +3806,6 @@ msgstr "Číslo účastníka"
 msgid "Participant removed from group {} in meeting {}"
 msgstr "Účastník odstraněn ze skupiny {} na setkání {}"
 
-#: app/src/app/site/modules/translations/marked-translations.ts
 msgid "Participant removed from meeting {}"
 msgstr ""
 
@@ -4124,7 +3818,6 @@ msgstr "Účastník  odstraněn z více skupin na více setkáních"
 msgid "Participants"
 msgstr "Účastníci"
 
-#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Participants (PDF settings)"
 msgstr ""
 
@@ -4133,23 +3826,18 @@ msgid ""
 "here."
 msgstr "Účastníci a správci jsou zcela zkopírováni a nelze je zde upravovat."
 
-#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-import/services/participant-import.service/participant-import.service.ts
 msgid "Participants created"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-import/services/participant-import.service/participant-import.service.ts
 msgid "Participants skipped"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-import/services/participant-import.service/participant-import.service.ts
 msgid "Participants updated"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-import/services/participant-import.service/participant-import.service.ts
 msgid "Participants with errors"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-import/services/participant-import.service/participant-import.service.ts
 msgid "Participants with warnings: affected cells will be skipped"
 msgstr ""
 
@@ -4171,15 +3859,12 @@ msgstr "Hesla se neshodují"
 msgid "Paste/write your topics in this textbox."
 msgstr "Kopírujte nebo vložte názvy vašich námětů do tohoto textového pole."
 
-#: /app/src/app/site/pages/meetings/modules/list-of-speakers-content/components/list-of-speakers-content/list-of-speakers-content.component.html
-#: /app/src/app/site/pages/meetings/modules/list-of-speakers-content/components/list-of-speakers-content/list-of-speakers-content.component.html
 msgid "Pause speech"
 msgstr ""
 
 msgid "Permissions"
 msgstr "Oprávnění"
 
-#: app/src/app/site/pages/meetings/pages/motions/pages/motion-export/components/motion-export/motion-export.component.html
 msgid "Person-related fields"
 msgstr ""
 
@@ -4198,7 +3883,6 @@ msgstr "Osobní poznámky"
 msgid "Phase"
 msgstr "Fáze"
 
-#: /app/src/app/ui/modules/sidenav/modules/easter-egg/modules/chess-dialog/components/chess-dialog/chess-dialog.component.html
 msgid "Playing against"
 msgstr ""
 
@@ -4220,22 +3904,18 @@ msgstr "Zadejte, prosím, své nové heslo"
 msgid "Please join the conference room now!"
 msgstr "Připojte se nyní do jednací místnosti!"
 
-#: /app/src/app/site/pages/organization/pages/accounts/pages/account-list/components/account-merge-dialog/account-merge-dialog.component.html
 msgid "Please select a primary account."
 msgstr ""
 
-#: /app/src/app/site/pages/organization/pages/accounts/pages/account-detail/components/account-detail/account-detail.component.html
 msgid "Please select a vote weight greater than or equal to 0.000001"
 msgstr ""
 
-#: /app/src/app/site/pages/organization/pages/accounts/pages/account-detail/components/account-detail/account-detail.component.html
 msgid "Please select a vote weight greater than zero."
 msgstr ""
 
 msgid "Please select the directory:"
 msgstr "Vyberte, prosím, adresář:"
 
-#: app/src/app/site/pages/organization/pages/accounts/pages/account-detail/components/account-add-to-meetings/account-add-to-meetings.component.html
 msgid ""
 "Please select your target meetings and enter the name of an existing group "
 "which should be assigned to the account in each meeting."
@@ -4245,7 +3925,6 @@ msgid "Please update your browser or contact your system administration."
 msgstr ""
 "Aktualizujte, prosím, svůj prohlížeč nebo se spojte se správcem systému."
 
-#: app/src/app/site/pages/meetings/modules/projector/modules/slides/components/poll-slide/components/poll-slide.component.html
 msgid "Please vote now!"
 msgstr ""
 
@@ -4255,7 +3934,6 @@ msgstr "Návrh jednacího řádu"
 msgid "Polls"
 msgstr "Hlasování"
 
-#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid ""
 "Possible placeholders for email subject and body: {title}, {first_name}, "
 "{last_name}, {groups}, {structure_levels}, {event_name}, {url}, {username} "
@@ -4280,7 +3958,6 @@ msgstr "Předpona"
 msgid "Prefix for the motion identifier of amendments"
 msgstr "Předpona pro označovač návrhu pozměňovacích návrhů"
 
-#: app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Preload original motions"
 msgstr ""
 
@@ -4290,7 +3967,6 @@ msgstr "Účast"
 msgid "Present"
 msgstr "Přítomen"
 
-#: app/src/app/domain/models/poll/poll-constants.ts
 msgid "Present entitled users"
 msgstr ""
 
@@ -4300,7 +3976,6 @@ msgstr "Náhled"
 msgid "Previous"
 msgstr "Předchozí"
 
-#: app/src/app/site/pages/meetings/pages/projectors/modules/projector-detail/components/projector-detail/projector-detail.component.html
 msgid "Previous page"
 msgstr ""
 
@@ -4310,7 +3985,6 @@ msgstr "Předchozí průsvitky"
 msgid "Primary color"
 msgstr "Základní barva"
 
-#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-list/services/participant-list-filter/participant-list-filter.service.ts
 msgid "Principals"
 msgstr ""
 
@@ -4329,11 +4003,9 @@ msgstr "Zpracování postupu"
 msgid "Project"
 msgstr "Promítat"
 
-#: /app/src/app/site/pages/meetings/modules/list-of-speakers-content/components/speaking-times/speaking-times.component.html
 msgid "Project active structure level"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/modules/list-of-speakers-content/components/speaking-times/speaking-times.component.html
 msgid "Project all structure levels"
 msgstr ""
 
@@ -4370,15 +4042,12 @@ msgstr "Promítačky"
 msgid "Pronoun"
 msgstr "Zájmeno"
 
-#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-list/services/participant-list-filter/participant-list-filter.service.ts
 msgid "Proxy holders"
 msgstr ""
 
 msgid "Public"
 msgstr "Veřejný"
 
-#: /app/src/app/site/pages/login/pages/login-mask/components/login-mask/login-mask.component.html
-#: /app/src/app/site/pages/login/pages/login-mask/components/login-mask/login-mask.component.html
 msgid "Public access"
 msgstr ""
 
@@ -4388,7 +4057,6 @@ msgstr "Veřejný bod"
 msgid "Public template"
 msgstr "Veřejná předloha"
 
-#: /app/src/app/site/pages/organization/pages/settings/modules/settings-detail/components/organization-settings/organization-settings.component.html
 msgid "Public template required for creating new meeting"
 msgstr ""
 
@@ -4419,11 +4087,9 @@ msgstr "Zdůvodnění"
 msgid "Reason required for creating new motion"
 msgstr "Důvod požadovaný pro vytvoření nového návrhu"
 
-#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-speaker-list/services/participant-speaker-list-sort.service/participant-speaker-list-sort.service.ts
 msgid "Receipt of contributions"
 msgstr ""
 
-#: /app/src/app/site/pages/organization/pages/committees/pages/committee-list/services/committee-list-filter.service/committee-filter.service.ts
 msgid "Receive motions"
 msgstr ""
 
@@ -4442,7 +4108,6 @@ msgstr "Doporučení změněno"
 msgid "Recommendation label"
 msgstr "Štítek s doporučením"
 
-#: /app/src/app/site/pages/meetings/pages/motions/pages/workflows/components/workflow-detail/workflow-detail.component.ts
 msgid ""
 "Recommendation of motions in such a state can only be seen by motion "
 "managers."
@@ -4454,7 +4119,6 @@ msgstr "Obnoveno výchozí doporučení"
 msgid "Recommendation set to {}"
 msgstr "Doporučení nastaveno na {}"
 
-#: /app/src/app/ui/modules/editor/components/editor/editor.component.html
 msgid "Redo"
 msgstr ""
 
@@ -4476,7 +4140,6 @@ msgstr "Odmítnuto"
 msgid "Relevant information could not be accessed"
 msgstr "K příslušným informacím nebylo možné získat přístup"
 
-#: /app/src/app/site/services/autoupdate/autoupdate-communication.service.ts
 msgid "Reload page"
 msgstr ""
 
@@ -4514,7 +4177,6 @@ msgstr "Odstranit z pořadu jednání"
 msgid "Remove from motion block"
 msgstr "Odstranit z návrhového bloku"
 
-#: /app/src/app/ui/modules/editor/components/editor-link-dialog/editor-link-dialog.component.html
 msgid "Remove link"
 msgstr ""
 
@@ -4524,7 +4186,6 @@ msgstr "Odstranit mě"
 msgid "Remove option"
 msgstr "Odstranit možnost"
 
-#: /app/src/app/site/pages/meetings/modules/list-of-speakers-content/components/list-of-speakers-content/list-of-speakers-content.component.html
 msgid "Remove point of order"
 msgstr ""
 
@@ -4559,15 +4220,12 @@ msgstr ""
 msgid "Required permissions to view this page:"
 msgstr "Požadované oprávnění pro zobrazení této stránky:"
 
-#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Requires permission to manage lists of speakers"
 msgstr ""
 
-#: app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Requires permission to manage motion metadata"
 msgstr ""
 
-#: app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Requires permission to see origin motions"
 msgstr ""
 
@@ -4589,7 +4247,6 @@ msgstr "Vynulovat doporučení"
 msgid "Reset state"
 msgstr "Vynulovat stav"
 
-#: /app/src/app/site/pages/meetings/modules/list-of-speakers-content/components/speaking-times/speaking-times.component.ts
 msgid "Reset timer"
 msgstr "Vynulovat časovač"
 
@@ -4602,21 +4259,17 @@ msgstr "Rozlišení a velikost"
 msgid "Restart livestream"
 msgstr "Spustit přímý přenos znovu"
 
-#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid ""
 "Restrict delegation principals from adding themselves to the list of "
 "speakers"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Restrict delegation principals from creating motions/amendments"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Restrict delegation principals from supporting motions"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Restrict delegation principals from voting"
 msgstr ""
 
@@ -4629,8 +4282,6 @@ msgstr "Výsledek"
 msgid "Results"
 msgstr "Výsledky"
 
-#: /app/src/app/site/pages/meetings/modules/list-of-speakers-content/components/list-of-speakers-content/list-of-speakers-content.component.html
-#: /app/src/app/site/pages/meetings/modules/list-of-speakers-content/components/list-of-speakers-content/list-of-speakers-content.component.html
 msgid "Resume speech"
 msgstr ""
 
@@ -4643,26 +4294,21 @@ msgstr "Vpravo"
 msgid "Roman"
 msgstr "Římský"
 
-#: /app/src/app/ui/modules/import-list/components/via-backend-import-list/backend-import-list.component.html
 msgid "Rows with warnings"
 msgstr ""
 
-#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "SSO"
 msgstr ""
 
 msgid "SSO Identification"
 msgstr "Poznávací znamení SSO"
 
-#: /app/src/app/site/pages/organization/pages/accounts/pages/account-import/definitions/index.ts
 msgid "SSO identification"
 msgstr ""
 
-#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Same email"
 msgstr ""
 
-#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Same given and surname"
 msgstr ""
 
@@ -4720,11 +4366,9 @@ msgstr "Vybrat setkání..."
 msgid "Select paragraphs"
 msgstr "Vybrat odstavce"
 
-#: /app/src/app/site/pages/meetings/pages/motions/pages/motion-detail/components/motion-manage-motion-meeting-users/motion-manage-motion-meeting-users.component.html
 msgid "Select participant"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/modules/list-of-speakers-content/components/list-of-speakers-content/list-of-speakers-content.component.html
 msgid "Select speaker"
 msgstr ""
 
@@ -4767,18 +4411,15 @@ msgstr "Nastavit jako nadřazený"
 msgid "Set as reference projector"
 msgstr "Nastavit jako srovnávací promítačku"
 
-#: app/src/app/site/pages/organization/pages/committees/pages/committee-detail/modules/committee-detail-meeting/components/meeting-edit/meeting-edit.component.html
 msgid "Set as template"
 msgstr ""
 
 msgid "Set category"
 msgstr "Stanovit skupinu"
 
-#: app/src/app/site/pages/organization/pages/accounts/pages/account-list/components/account-list/account-list.component.html
 msgid "Set external"
 msgstr ""
 
-#: app/src/app/site/pages/organization/pages/accounts/pages/account-list/components/account-list/account-list.component.ts
 msgid "Set external status for selected accounts"
 msgstr ""
 
@@ -4803,11 +4444,9 @@ msgstr "Nastavit vnitřní"
 msgid "Set it manually"
 msgstr "Nastavit ručně"
 
-#: app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Set live voting enabled by default"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-list/components/participant-list/participant-list.component.html
 msgid "Set lock out ..."
 msgstr ""
 
@@ -4856,7 +4495,6 @@ msgstr "Nastavit klíčová slova"
 msgid "Set workflow"
 msgstr "Stanovit pracovní postup"
 
-#: app/src/app/site/pages/organization/pages/accounts/pages/account-list/components/account-list/account-list.component.html
 msgid "Set/remove home committee"
 msgstr ""
 
@@ -4869,7 +4507,6 @@ msgstr "Nastavit tuto promítačku jako srovnávací pro nynější seznam řeč
 msgid "Settings"
 msgstr "Nastavení"
 
-#: /app/src/app/site/pages/meetings/pages/motions/components/motion-export-dialog/components/motion-export-dialog/motion-export-dialog.component.html
 msgid "Short form for amendments"
 msgstr ""
 
@@ -4921,7 +4558,6 @@ msgstr "Ukázat okno s živým jednáním"
 msgid "Show logo"
 msgstr "Ukázat emblém"
 
-#: /app/src/app/ui/modules/sidenav/components/sidenav/sidenav.component.html
 msgid "Show main menu"
 msgstr ""
 
@@ -4975,7 +4611,6 @@ msgstr "Ukázat tento text na přihlašovací stránce"
 msgid "Show title"
 msgstr "Ukázat název"
 
-#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Show topic navigation in detail view"
 msgstr ""
 
@@ -5040,18 +4675,15 @@ msgstr "Řadit návrhy"
 msgid "Sort motions by"
 msgstr "Řadit návrhy podle"
 
-#: app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Sort participant names on single votes projection by"
 msgstr ""
 
 msgid "Sort workflow"
 msgstr "Řadit pracovní postup"
 
-#: /app/src/app/ui/modules/editor/components/editor-embed-dialog/editor-embed-dialog.component.html
 msgid "Source"
 msgstr ""
 
-#: /app/src/app/ui/modules/editor/components/editor/editor.component.html
 msgid "Source code"
 msgstr ""
 
@@ -5061,35 +4693,27 @@ msgstr "Řečník"
 msgid "Speakers"
 msgstr "Řečníci"
 
-#: /app/src/app/site/pages/meetings/pages/projectors/modules/projector-detail/components/projector-detail/projector-detail.component.html
 msgid "Speaking time – current contribution"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/modules/projector/modules/slides/definitions/slides.ts
 msgid "Speaking times"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/pages/projectors/modules/projector-detail/components/projector-detail/projector-detail.component.html
 msgid "Speaking times – overview structure levels"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-speaker-list/services/participant-speaker-list-sort.service/participant-speaker-list-sort.service.ts
 msgid "Speech start time"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/pages/participants/export/speaker-csv-export.service/speaker-csv-export.service.ts
 msgid "Speech type"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/pages/motions/services/list/motion-list-filter.service/motion-list-filter.service.ts
 msgid "Spokesperson"
 msgstr "Mluvčí"
 
-#: /app/src/app/gateways/repositories/motions/motion-working-group-speaker-repository/motion-working-group-speaker-repository.service.ts
 msgid "Spokespersons"
 msgstr "Mluvčí"
 
-#: /app/src/app/ui/modules/sidenav/modules/easter-egg/modules/chess-dialog/components/chess-dialog/chess-dialog.component.ts
 msgid "Stalemate! It's a draw!"
 msgstr ""
 
@@ -5099,7 +4723,6 @@ msgstr ""
 msgid "Start date"
 msgstr "Začáteční datum"
 
-#: /app/src/app/site/pages/meetings/pages/motions/pages/motion-detail/components/motion-highlight-form/motion-highlight-form.component.html
 msgid "Start line number"
 msgstr ""
 
@@ -5121,7 +4744,6 @@ msgstr "Stav nastaven na {}"
 msgid "Statistics"
 msgstr "Statistika"
 
-#: /app/src/app/site/pages/meetings/pages/agenda/pages/agenda-item-list/services/agenda-item-filter.service/agenda-item-filter.service.ts
 msgid "Status"
 msgstr ""
 
@@ -5140,7 +4762,6 @@ msgstr "Zastavit hlasování"
 msgid "Stop waiting"
 msgstr "Zastavit čekání"
 
-#: app/src/app/site/pages/meetings/modules/poll/base/base-poll.component.ts
 msgid "Stop, publish & anonymize"
 msgstr ""
 
@@ -5150,18 +4771,15 @@ msgstr "Přeškrtnutí"
 msgid "Structure level"
 msgstr "Úroveň rozčlenění"
 
-#: /app/src/app/site/pages/meetings/pages/participants/pages/structure-levels/components/structure-level-list/structure-level-list.component.html
 msgid "Structure levels"
 msgstr ""
 
-#: app/src/app/site/pages/meetings/pages/participants/pages/participant-import/services/participant-import.service/participant-import.service.ts
 msgid "Structure levels created"
 msgstr ""
 
 msgid "Subcategory"
 msgstr "Podskupina"
 
-#: app/src/app/site/pages/organization/pages/committees/pages/committee-detail/modules/committee-detail-view/components/committee-detail-view/committee-detail-view.component.html
 msgid "Subcommittees"
 msgstr ""
 
@@ -5189,7 +4807,6 @@ msgstr "Předkladatelé změněni"
 msgid "Subscript"
 msgstr "Dolní index"
 
-#: /app/src/app/site/pages/meetings/modules/list-of-speakers-content/components/speaking-times/speaking-times.component.html
 msgid "Subtract"
 msgstr ""
 
@@ -5211,7 +4828,6 @@ msgstr "Přehled změn"
 msgid "Summary of changes:"
 msgstr "Přehled změn:"
 
-#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "Superadmin"
 msgstr ""
 
@@ -5236,15 +4852,12 @@ msgstr "Podporovatelé změněni"
 msgid "Surname"
 msgstr "Příjmení"
 
-#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-list/components/participant-switch-dialog/participant-switch-dialog.component.html
 msgid "Swap mandates"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-list/components/participant-switch-dialog/participant-switch-dialog.component.html
 msgid "Switch"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "System"
 msgstr ""
 
@@ -5257,14 +4870,12 @@ msgstr "Klíčové slovo"
 msgid "Tags"
 msgstr "Klíčová slova"
 
-#: app/src/app/site/pages/meetings/pages/motions/components/motion-forward-dialog/components/motion-forward-dialog/motion-forward-dialog.component.html
 msgid "Target meeting"
 msgstr ""
 
 msgid "Text"
 msgstr "Text"
 
-#: /app/src/app/ui/modules/editor/components/editor/editor.component.html
 msgid "Text color"
 msgstr ""
 
@@ -5277,18 +4888,15 @@ msgstr "Zavedení textu"
 msgid "Text separator"
 msgstr "Oddělovač textu"
 
-#: /app/src/app/ui/modules/editor/components/editor-link-dialog/editor-link-dialog.component.html
 msgid "Text to display"
 msgstr ""
 
-#: app/src/app/site/pages/meetings/pages/motions/pages/motion-export/components/motion-export/motion-export.component.html
 msgid "Text version"
 msgstr ""
 
 msgid "The account is deactivated."
 msgstr "Účet je vypnut."
 
-#: /app/src/app/ui/modules/import-list/components/via-backend-import-list/backend-import-list.component.ts
 msgid "The affected columns will not be imported."
 msgstr ""
 
@@ -5315,7 +4923,6 @@ msgstr ""
 msgid "The import is in progress, please wait ..."
 msgstr ""
 
-#: /app/src/app/ui/modules/import-list/components/via-backend-import-list/backend-import-list.component.html
 msgid ""
 "The import returned warnings. This does not mean that it failed, but some "
 "data may have been imported differently. Usually the warnings will be the "
@@ -5335,7 +4942,6 @@ msgstr "Odkaz je poškozen. Spojte se, prosím, se správcem systému."
 msgid "The list of speakers is closed."
 msgstr "Seznam řečníků je uzavřen."
 
-#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid ""
 "The maximum number of characters per line. Relevant when line numbering is "
 "enabled. Min: 40. Note: Check PDF export and font."
@@ -5422,7 +5028,6 @@ msgstr "Tyto účty budou smazány:"
 msgid "These participants will be removed:"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/pages/autopilot/components/autopilot-settings/autopilot-settings.component.html
 msgid "These settings are only applied locally on this browser."
 msgstr ""
 
@@ -5442,7 +5047,6 @@ msgstr ""
 msgid "This action will remove you from one or more meetings."
 msgstr ""
 
-#: app/src/app/site/pages/meetings/pages/motions/pages/motion-detail/pages/motion-view/components/motion-detail-diff/motion-detail-diff.component.html
 msgid "This amendment has change recommendations."
 msgstr ""
 
@@ -5461,7 +5065,6 @@ msgstr "Tento výbor nemá správce!"
 msgid "This field is required."
 msgstr "Toto pole je požadováno."
 
-#: /app/src/app/site/pages/meetings/pages/mediafiles/services/mediafile-common.service.ts
 msgid "This file will also be deleted from all meetings."
 msgstr ""
 
@@ -5479,7 +5082,6 @@ msgstr ""
 msgid "This meeting is archived"
 msgstr "Toto setkání je archivováno"
 
-#: /app/src/app/site/pages/organization/pages/dashboard/pages/dashboard-detail/components/dashboard/dashboard.component.html
 msgid "This meeting is public"
 msgstr ""
 
@@ -5514,7 +5116,6 @@ msgid ""
 msgstr ""
 "Toto přidá nebo odstraní následující skupiny pro všechny vybrané účastníky:"
 
-#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-list/components/participant-list/participant-list.component.ts
 msgid ""
 "This will add or remove the following structure levels for all selected "
 "participants:"
@@ -5540,7 +5141,6 @@ msgstr ""
 msgid "This will add or remove the selected accounts to following meetings:"
 msgstr "Vybrané účty budou přidány nebo odstraněny z následujících setkání:"
 
-#: app/src/app/site/pages/organization/pages/accounts/pages/account-list/components/account-list/account-list.component.ts
 msgid ""
 "This will add or remove the selected accounts to the selected home "
 "committee:"
@@ -5581,7 +5181,6 @@ msgstr "Toto nastaví pracovní postup pro všechny vybrané návrhy:"
 msgid "Thoroughly check datastore (unsafe)"
 msgstr "Důkladná kontrola datového úložiště (nebezpečné)"
 
-#: /app/src/app/ui/modules/sidenav/modules/easter-egg/modules/chess-dialog/components/chess-dialog/chess-dialog.component.ts
 msgid "Threefold repetition! It's a draw!"
 msgstr ""
 
@@ -5591,15 +5190,12 @@ msgstr "Dlaždicové zobrazení"
 msgid "Time"
 msgstr "Čas"
 
-#: /app/src/app/site/pages/meetings/pages/projectors/view-models/view-projector-countdown.ts
 msgid "Time and traffic light"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/pages/projectors/components/projector-countdown-dialog/components/projector-countdown-dialog/projector-countdown-dialog.component.ts
 msgid "Timer"
 msgstr "Časovač"
 
-#: /app/src/app/site/pages/meetings/pages/projectors/modules/projector-detail/components/projector-detail/projector-detail.component.html
 msgid "Timers"
 msgstr "Časovač"
 
@@ -5648,19 +5244,15 @@ msgstr ""
 msgid "Topics with warnings (will be skipped)"
 msgstr ""
 
-#: /app/src/app/site/pages/organization/pages/accounts/pages/account-import/services/account-import.service/account-import.service.ts
 msgid "Total accounts"
 msgstr ""
 
-#: /app/src/app/site/pages/organization/pages/committees/pages/committee-import/services/committee-import.service/committee-import.service.ts
 msgid "Total committees"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-import/services/participant-import.service/participant-import.service.ts
 msgid "Total participants"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/modules/list-of-speakers-content/components/speaking-times/speaking-times.component.html
 msgid "Total time"
 msgstr ""
 
@@ -5682,14 +5274,12 @@ msgstr "Řešení potíží"
 msgid "Try reconnect"
 msgstr "Zkuste se znovu připojit"
 
-#: /app/src/app/ui/modules/editor/components/editor-link-dialog/editor-link-dialog.component.html
 msgid "URL"
 msgstr ""
 
 msgid "Underline"
 msgstr "Podtržení"
 
-#: /app/src/app/ui/modules/editor/components/editor/editor.component.html
 msgid "Undo"
 msgstr ""
 
@@ -5702,11 +5292,9 @@ msgstr "Jedineční řečníci"
 msgid "Unknown participant"
 msgstr "Neznámý účastník"
 
-#: /app/src/app/site/pages/meetings/modules/projector/modules/slides/components/list-of-speakers/modules/common-list-of-speakers-slide/components/common-list-of-speakers-slide.component.html
 msgid "Unknown user"
 msgstr ""
 
-#: /app/src/app/ui/modules/file-list/components/file-list/file-list.component.ts
 msgid "Unpublish"
 msgstr ""
 
@@ -5729,7 +5317,6 @@ msgstr ""
 "Použijte strukturu JSON klíč:hodnota (klíč = název atributu OpenSlides, "
 "hodnota = název atributu IdP)."
 
-#: /app/src/app/site/pages/meetings/pages/participants/pages/structure-levels/components/structure-level-list/structure-level-list.component.html
 msgid "Use color"
 msgstr ""
 
@@ -5744,7 +5331,6 @@ msgstr ""
 "Používá se pro zvací elektronické dopisy a QRCode v PDF s přístupovými "
 "údaji."
 
-#: /app/src/app/gateways/repositories/users/user-repository.service.ts
 msgid "User"
 msgstr ""
 
@@ -5754,7 +5340,6 @@ msgstr "Uživatel nenalezen."
 msgid "Username"
 msgstr "Uživatelské jméno"
 
-#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-detail/pages/participant-detail-manage/components/participant-create-wizard/participant-create-wizard.component.html
 msgid "Username may not contain spaces"
 msgstr ""
 
@@ -5779,7 +5364,6 @@ msgstr ""
 msgid "Valid votes"
 msgstr "Platné hlasy"
 
-#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "View"
 msgstr ""
 
@@ -5795,16 +5379,12 @@ msgstr ""
 msgid "Vote"
 msgstr "Hlasování"
 
-#: app/src/app/site/pages/meetings/modules/poll/base/base-poll-pdf.service.ts
 msgid "Vote Weight"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/services/meeting-settings-definition.service/meeting-settings-definitions.ts
 msgid "Vote delegation"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/modules/poll/components/entitled-users-table/entitled-users-table.component.html
-#: /app/src/app/site/pages/meetings/modules/poll/components/entitled-users-table/entitled-users-table.component.html
 msgid "Vote submitted"
 msgstr ""
 
@@ -5817,7 +5397,6 @@ msgstr "Hlasováno"
 msgid "Votes"
 msgstr "Hlasy"
 
-#: /app/src/app/site/pages/meetings/pages/autopilot/components/autopilot-settings/autopilot-settings.component.ts
 msgid "Voting"
 msgstr "Hlasování"
 
@@ -5843,7 +5422,6 @@ msgstr ""
 "Hlasování končí po krátkém (několik sekund/minut) nebo dlouhém (několik "
 "dní/týdnů) časovém období."
 
-#: app/src/app/site/pages/meetings/pages/assignments/modules/assignment-poll/components/assignment-poll/assignment-poll.component.html
 msgid "Voting in progress"
 msgstr ""
 
@@ -5874,8 +5452,6 @@ msgstr "Hlasovací právo pro"
 msgid "Voting right received from (principals)"
 msgstr "Hlasovací právo obdržené od (příkazců)"
 
-#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-list/components/participant-list/participant-list.component.html
-#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-list/components/participant-list/participant-list.component.html
 msgid "Voting rights"
 msgstr ""
 
@@ -5912,20 +5488,17 @@ msgstr "Počkat"
 msgid "Wait for response ..."
 msgstr "Počkat na odpověď..."
 
-#: /app/src/app/ui/modules/sidenav/modules/easter-egg/modules/chess-dialog/components/chess-dialog/chess-dialog.component.ts
 msgid "Waiting for response ..."
 msgstr ""
 
 msgid "Warn color"
 msgstr "Výstražná barva"
 
-#: /app/src/app/site/pages/meetings/pages/motions/pages/motion-detail/components/motion-detail-view/motion-detail-view.component.ts
 msgid ""
 "Warning: Amendments exist for this motion. Are you sure you want to delete "
 "this motion regardless?"
 msgstr ""
 
-#: app/src/app/site/pages/meetings/pages/motions/pages/motion-detail/pages/motion-form/components/motion-form/motion-form.component.ts
 msgid ""
 "Warning: Amendments or change recommendations exist for this motion. Editing"
 " this text will likely impact them negatively. Particularily, amendments "
@@ -5933,13 +5506,11 @@ msgid ""
 "recommendations might lose their reference line completely."
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/pages/motions/components/motion-multiselect/services/motion-multiselect.service.ts
 msgid ""
 "Warning: At least one of the selected motions has amendments, these will be "
 "deleted as well. Do you want to delete anyway?"
 msgstr ""
 
-#: /app/src/app/site/pages/organization/pages/accounts/pages/account-list/components/account-merge-dialog/account-merge-dialog.component.html
 msgid ""
 "Warning: Data loss is possible because accounts are in the same meeting."
 msgstr ""
@@ -5962,7 +5533,6 @@ msgstr "Co je nového?"
 msgid "Which version?"
 msgstr "Kterou verzi?"
 
-#: app/src/app/site/pages/meetings/pages/polls/view-models/view-poll.ts
 msgid "Which visualization?"
 msgstr ""
 
@@ -6006,7 +5576,6 @@ msgstr "Ano pro uchazeče"
 msgid "Yes per option"
 msgstr "Ano pro každou možnost"
 
-#: app/src/app/site/pages/organization/pages/committees/modules/committee-meeting-preview/committee-meeting-preview.component.ts
 msgid "Yes, delete"
 msgstr ""
 
@@ -6028,13 +5597,11 @@ msgstr "Ano/Ne/Zdržení se pro uchazeče"
 msgid "Yes/No/Abstain per list"
 msgstr "Ano/Ne/Zdržel se podle seznamu"
 
-#: /app/src/app/ui/modules/file-list/components/file-list/file-list.component.html
 msgid ""
 "You are moving a file from a public folder into an not published folder. The"
 " file will not be accessible in meetings afterwards."
 msgstr ""
 
-#: /app/src/app/ui/modules/file-list/components/file-list/file-list.component.html
 msgid ""
 "You are moving an unpublished file to a public folder. The file will be "
 "accessible in ALL meetings afterwards."
@@ -6049,7 +5616,6 @@ msgstr "Nemáte povoleno zobrazit přímý přenos."
 msgid "You are not supposed to be here..."
 msgstr "Nemáte tu být..."
 
-#: /app/src/app/site/services/autoupdate/autoupdate-communication.service.ts
 msgid "You are using an incompatible client version."
 msgstr ""
 
@@ -6111,7 +5677,6 @@ msgstr "Už jste volil."
 msgid "You have to be logged in to be able to vote."
 msgstr "Abyste mohl hlasovat, musíte být přihlášen."
 
-#: /app/src/app/site/pages/meetings/modules/list-of-speakers-content/components/list-of-speakers-content/list-of-speakers-content.component.html
 msgid "You have to be present to add yourself."
 msgstr ""
 
@@ -6137,7 +5702,6 @@ msgstr ""
 msgid "You reached the maximum amount of votes. Deselect somebody first."
 msgstr "Dosáhl jste nejvyššího počtu hlasů. Nejprve u někoho zrušte výběr."
 
-#: app/src/app/site/modules/user-components/components/password-form/password-form.component.html
 msgid ""
 "You will be logged out when you change your password. You must then log in "
 "with the new password."
@@ -6161,15 +5725,12 @@ msgstr "Vaše zařízení nemá mikrofon"
 msgid "Your input does not match the following structure: \"hh:mm\""
 msgstr "Váš vstup neodpovídá následující struktuře: \"hh:mm\""
 
-#: /app/src/app/ui/modules/sidenav/modules/easter-egg/components/base-game-dialog/base-game-dialog.ts
 msgid "Your opponent couldn't stand it anymore... You are the winner!"
 msgstr ""
 
-#: /app/src/app/ui/modules/sidenav/modules/easter-egg/modules/c4-dialog/components/c4-dialog/c4-dialog.component.ts
 msgid "Your opponent has won!"
 msgstr ""
 
-#: /app/src/app/site/pages/login/pages/reset-password-confirm/components/reset-password-confirm/reset-password-confirm.component.ts
 msgid "Your password has been reset successfully!"
 msgstr ""
 
@@ -6206,11 +5767,9 @@ msgstr "Přidat skupinu(y)"
 msgid "already exists"
 msgstr "již existuje"
 
-#: app/src/app/site/pages/meetings/pages/motions/components/motion-forward-dialog/components/motion-forward-dialog/motion-forward-dialog.component.html
 msgid "amendment"
 msgstr ""
 
-#: app/src/app/site/pages/meetings/pages/motions/components/motion-forward-dialog/components/motion-forward-dialog/motion-forward-dialog.component.html
 msgid "amendments"
 msgstr ""
 
@@ -6232,23 +5791,18 @@ msgstr "Hlasovací lístek"
 msgid "by"
 msgstr "od"
 
-#: /app/src/app/ui/modules/sidenav/modules/easter-egg/modules/chess-dialog/services/chess-challenge.service.ts
 msgid "challenged you to a chess match!"
 msgstr ""
 
-#: app/src/app/site/pages/meetings/pages/motions/components/motion-forward-dialog/components/motion-forward-dialog/motion-forward-dialog.component.html
 msgid "change recommendation"
 msgstr ""
 
-#: app/src/app/site/pages/meetings/pages/motions/services/common/motion-format.service/motion-format.service.ts
 msgid "change recommendation(s) refer to a nonexistent line number."
 msgstr ""
 
-#: app/src/app/site/pages/meetings/pages/motions/components/motion-forward-dialog/components/motion-forward-dialog/motion-forward-dialog.component.html
 msgid "change recommendations"
 msgstr ""
 
-#: app/src/app/site/pages/meetings/pages/motions/components/motion-forward-dialog/components/motion-forward-dialog/motion-forward-dialog.component.html
 msgid "committee name"
 msgstr ""
 
@@ -6303,7 +5857,6 @@ msgstr "skončeno"
 msgid "example"
 msgstr "Příklad"
 
-#: app/src/app/site/pages/organization/pages/accounts/pages/account-detail/components/account-detail/account-detail.component.html
 msgid "external"
 msgstr ""
 
@@ -6313,7 +5866,6 @@ msgstr "Žena"
 msgid "finished (unpublished)"
 msgstr "dokončeno (nezveřejněno)"
 
-#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-list/components/participant-list/participant-list.component.html
 msgid "from delegated votes"
 msgstr ""
 
@@ -6344,7 +5896,6 @@ msgstr "skryto"
 msgid "inactive"
 msgstr "Nečinný"
 
-#: app/src/app/site/pages/organization/pages/committees/pages/committee-detail/modules/committee-detail-view/components/committee-detail-view/committee-detail-view.component.html
 msgid "incl. subcommittees"
 msgstr ""
 
@@ -6378,7 +5929,6 @@ msgstr ""
 msgid "lightblue"
 msgstr "světle modrá"
 
-#: /app/src/app/site/pages/meetings/pages/participants/pages/participant-detail/components/participant-detail-view/participant-detail-view.component.html
 msgid "locked out"
 msgstr ""
 
@@ -6394,7 +5944,6 @@ msgstr "Většina"
 msgid "male"
 msgstr "Muž"
 
-#: app/src/app/site/pages/meetings/pages/motions/components/motion-forward-dialog/components/motion-forward-dialog/motion-forward-dialog.component.html
 msgid "mark amendments as original"
 msgstr ""
 
@@ -6419,7 +5968,6 @@ msgstr "žádná skutečná osoba"
 msgid "nominal"
 msgstr "jmenovité"
 
-#: app/src/app/site/pages/meetings/pages/polls/view-models/view-poll.ts
 msgid "nominal (anonymized)"
 msgstr ""
 
@@ -6432,22 +5980,18 @@ msgstr "nejmenovité"
 msgid "none"
 msgstr "žádné"
 
-#: app/src/app/site/pages/organization/pages/accounts/pages/account-list/components/account-list/account-list.component.ts
 msgid "not external"
 msgstr ""
 
-#: /app/src/app/site/pages/organization/pages/accounts/services/common/account-filter.service.ts
 msgid "not specified"
 msgstr ""
 
 msgid "of"
 msgstr "z"
 
-#: app/src/app/site/pages/organization/pages/committees/pages/committee-detail/modules/committee-detail-view/components/committee-detail-view/committee-detail-view.component.html
 msgid "of which"
 msgstr ""
 
-#: app/src/app/site/pages/meetings/pages/motions/pages/motion-detail/pages/motion-view/components/motion-meta-data/motion-meta-data.component.ts
 msgid "of which %num% not permissable"
 msgstr ""
 
@@ -6457,11 +6001,9 @@ msgstr "otevřená hlasování"
 msgid "or"
 msgstr "nebo"
 
-#: app/src/app/site/pages/meetings/pages/motions/components/motion-forward-dialog/components/motion-forward-dialog/motion-forward-dialog.component.html
 msgid "original identifier"
 msgstr ""
 
-#: app/src/app/site/pages/meetings/pages/motions/components/motion-forward-dialog/components/motion-forward-dialog/motion-forward-dialog.component.html
 msgid "original submitter"
 msgstr ""
 
@@ -6495,14 +6037,12 @@ msgstr ""
 msgid "remove group(s)"
 msgstr "Odstranit skupinu(y)"
 
-#: /app/src/app/site/pages/meetings/pages/chat/pages/chat-group-list/components/chat-group-detail-message/chat-group-detail-message.component.ts
 msgid "removed user"
 msgstr ""
 
 msgid "represented by"
 msgstr "představováno"
 
-#: /app/src/app/site/pages/meetings/modules/poll/base/base-poll-pdf.service.ts
 msgid "represented by old account of"
 msgstr ""
 
@@ -6533,7 +6073,6 @@ msgstr "po"
 msgid "today"
 msgstr "dnes"
 
-#: app/src/app/site/pages/organization/pages/committees/pages/committee-detail/modules/committee-detail-view/components/committee-detail-view/committee-detail-view.component.html
 msgid "total"
 msgstr ""
 
@@ -6549,15 +6088,12 @@ msgstr "verze"
 msgid "votes per candidate"
 msgstr "hlasů na uchazeče"
 
-#: /app/src/app/site/pages/meetings/modules/poll/components/base-poll-vote/base-poll-vote.component.ts
 msgid "votes per option"
 msgstr ""
 
-#: app/src/app/site/pages/meetings/pages/motions/components/motion-forward-dialog/services/motion-forward-dialog.service.ts
 msgid "was"
 msgstr ""
 
-#: app/src/app/site/pages/meetings/pages/motions/components/motion-forward-dialog/services/motion-forward-dialog.service.ts
 msgid "were"
 msgstr ""
 
@@ -6567,29 +6103,141 @@ msgstr "bude vytvořen"
 msgid "will be imported"
 msgstr "bude zaveden"
 
-#: /app/src/app/ui/modules/import-list/components/via-backend-import-list/backend-import-list.component.ts
 msgid "will be updated"
 msgstr ""
 
-#: app/src/app/site/pages/organization/pages/committees/pages/committee-detail/modules/committee-detail-view/components/committee-detail-view/committee-detail-view.component.html
 msgid "with"
 msgstr ""
 
-#: app/src/app/site/pages/meetings/pages/motions/components/motion-forward-dialog/components/motion-forward-dialog/motion-forward-dialog.component.html
 msgid "without identifier"
 msgstr ""
 
 msgid "yellow"
 msgstr "žlutá"
 
-#: /app/src/app/site/pages/meetings/modules/list-of-speakers-content/components/list-of-speakers-content/list-of-speakers-content.component.ts
 msgid "{{amount}} interposed questions will be cleared"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/modules/list-of-speakers-content/components/list-of-speakers-content/list-of-speakers-content.component.ts
 msgid "{{amount}} of them will be saved with 'unknown' speaker"
 msgstr ""
 
-#: /app/src/app/site/pages/meetings/modules/list-of-speakers-content/components/list-of-speakers-content/list-of-speakers-content.component.ts
 msgid "{{amount}} will be saved"
 msgstr ""
+
+msgid "Acceptance"
+msgstr "Souhlas"
+
+msgid "Adjournment"
+msgstr "Odložení"
+
+msgid "Admin"
+msgstr "Správce"
+
+msgid "Complex Workflow"
+msgstr "Složitý pracovní postup"
+
+#, python-brace-format
+msgid ""
+"Dear {name},\n"
+"\n"
+"this is your personal OpenSlides login:\n"
+"\n"
+"{url}\n"
+"Username: {username}\n"
+"Password: {password}\n"
+"\n"
+"\n"
+"This email was generated automatically."
+msgstr ""
+"Můj milý/Moje milá {jméno},\n"
+"\n"
+"toto je vaše osobní přihlášení do OpenSlides:\n"
+"\n"
+"{url}\n"
+"Uživatelské jméno: {username}\n"
+"Heslo: {heslo}\n"
+"\n"
+"\n"
+"Tento e-mail byl vytvořen automaticky."
+
+msgid "Default projector"
+msgstr "Výchozí promítací přístroj"
+
+msgid "Delegates"
+msgstr "Zástupci"
+
+msgid "No concernment"
+msgstr "Neprobíráno"
+
+msgid "No decision"
+msgstr "Žádné rozhodnutí"
+
+msgid "Presentation and assembly system"
+msgstr "Předváděcí a schůzovací systém"
+
+msgid "Referral to"
+msgstr ""
+
+msgid "Rejection"
+msgstr "Odmítnutí"
+
+msgid "Reset your OpenSlides password"
+msgstr "Obnovit heslo k aplikaci OpenSlides"
+
+msgid "Simple Workflow"
+msgstr "Jednoduchý pracovní postup"
+
+msgid "Space for your welcome text."
+msgstr "Místo pro váš uvítací text."
+
+msgid "Speaking time"
+msgstr "Čas na mluvení"
+
+msgid "Staff"
+msgstr "Zaměstnanci"
+
+#, python-brace-format
+msgid ""
+"You are receiving this email because you have requested a new password for your OpenSlides account.\n"
+"\n"
+"Please open the following link and choose a new password:\n"
+"{url}/login/forget-password-confirm?user_id={user_id}&token={token}\n"
+"\n"
+"The link will be valid for 10 minutes."
+msgstr ""
+
+msgid "accepted"
+msgstr "přijato"
+
+msgid "adjourned"
+msgstr "odloženo"
+
+msgid "in progress"
+msgstr "probíhá"
+
+msgid "name"
+msgstr "název"
+
+msgid "not concerned"
+msgstr "neprobíráno"
+
+msgid "not decided"
+msgstr "nerozhodnuto"
+
+msgid "not permitted"
+msgstr ""
+
+msgid "permitted"
+msgstr "schváleno"
+
+msgid "referred to"
+msgstr ""
+
+msgid "rejected"
+msgstr "odmítnuto"
+
+msgid "submitted"
+msgstr "podáno"
+
+msgid "withdrawn"
+msgstr "stažen"
