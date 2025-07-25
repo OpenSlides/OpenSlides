@@ -1,10 +1,11 @@
 # 
 # Translators:
 # fri, 2024
+# Birte Spekker <birte.spekker@intevation.de>, 2025
 # 
 msgid ""
 msgstr ""
-"Last-Translator: fri, 2024\n"
+"Last-Translator: Birte Spekker <birte.spekker@intevation.de>, 2025\n"
 "Language-Team: Czech (https://app.transifex.com/openslides/teams/14270/cs/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -46,13 +47,6 @@ msgstr "<unknown motion>"
 
 msgid "<unknown>"
 msgstr "<unknown>"
-
-msgid ""
-"A change recommendation or amendment is probably referring to a non-existant"
-" line number."
-msgstr ""
-"Doporučení změny nebo pozměňovací návrh pravděpodobně odkazuje na "
-"neexistující číslo řádku."
 
 msgid "A client error occurred. Please contact your system administrator."
 msgstr "Došlo k chybě klienta. Spojte se, prosím, se správcem systému."
@@ -103,9 +97,6 @@ msgstr "Přijmout"
 msgid "Access data (PDF)"
 msgstr "Přístupová data (PDF)"
 
-msgid "Access groups"
-msgstr "Přístupové skupiny"
-
 msgid ""
 "Access only possible for participants of this meeting. All other accounts "
 "(including organization and committee admins) may not open the closed "
@@ -123,6 +114,9 @@ msgstr "Účet"
 
 msgid "Account admin"
 msgstr "Správa účtu"
+
+msgid "Account created"
+msgstr ""
 
 msgid "Account successfully added."
 msgstr ""
@@ -385,6 +379,9 @@ msgstr "Povolit podrobné chybové zprávy pro obnovení hesla"
 
 msgid "Allowed access groups for this directory"
 msgstr "Povolené přístupové skupiny pro tento adresář"
+
+msgid "Allows single votes projection during voting process"
+msgstr ""
 
 msgid "Always"
 msgstr "Vždy"
@@ -720,6 +717,10 @@ msgstr ""
 "Pozor: Účty se přidávají pouze do výchozí skupiny každého setkání. Pokud je "
 "zamýšlena jiná skupina, použijte dialogové okno \"Přidat do setkání\" v "
 "zobrazení podrobností účtu."
+
+msgid ""
+"Attention: Existing home committees and external status will be overwritten."
+msgstr ""
 
 msgid "Attention: First enter the wifi data in [Settings > General]"
 msgstr "Pozor: Nejprve zadejte údaje o wifi v nabídce [Nastavení → Obecné]."
@@ -1653,14 +1654,14 @@ msgstr ""
 msgid "Default visibility for new agenda items (except topics)"
 msgstr "Výchozí viditelnost pro nové body pořadu jednání (vyjma námětů)"
 
-msgid "Default vote method"
-msgstr ""
-
 msgid "Default vote weight"
 msgstr "Výchozí váha hlasu"
 
 msgid "Default voting duration"
 msgstr "Výchozí doba trvání hlasování"
+
+msgid "Default voting method"
+msgstr ""
 
 msgid "Default voting type"
 msgstr "Výchozí typ hlasování"
@@ -1929,6 +1930,9 @@ msgstr "Volba"
 msgid "Election documents"
 msgstr "Volební dokumenty"
 
+msgid "Election method"
+msgstr ""
+
 msgid "Elections"
 msgstr "Volby"
 
@@ -2188,6 +2192,9 @@ msgstr "Vyvést vybrané návrhy"
 msgid "Extension"
 msgstr "Rozšíření"
 
+msgid "External"
+msgstr ""
+
 msgid "External ID"
 msgstr "Vnější ID"
 
@@ -2390,6 +2397,9 @@ msgstr "Skupiny s oprávněním pro zápis"
 msgid "Has SSO identification"
 msgstr "Má poznávací znamení SSO"
 
+msgid "Has a home committee"
+msgstr ""
+
 msgid "Has a membership number"
 msgstr ""
 
@@ -2418,6 +2428,9 @@ msgid "Has no SSO identification"
 msgstr "Nemá poznávací znamení SSO"
 
 msgid "Has no email address"
+msgstr ""
+
+msgid "Has no home committee"
 msgstr ""
 
 msgid "Has no identical motions"
@@ -2510,6 +2523,9 @@ msgstr "Minulost"
 msgid "Home"
 msgstr "Úvodní stránka"
 
+msgid "Home committee"
+msgstr ""
+
 msgid "How to create new amendments"
 msgstr "Jak vytvořit nové pozměňovací návrhy"
 
@@ -2533,12 +2549,8 @@ msgstr "Označovač"
 msgid "If deactivated it is displayed below the title."
 msgstr ""
 
-msgid ""
-"If it is an amendment, you can back up its content when editing it and "
-"delete it afterwards."
+msgid "If empty, everyone can access."
 msgstr ""
-"Pokud se jedná o pozměňovací návrh, můžete jeho obsah při úpravách zálohovat"
-" a následně smazat."
 
 msgid "If the value is set to 0 the time counts up as stopwatch."
 msgstr ""
@@ -2598,6 +2610,9 @@ msgstr "Nečinný"
 
 msgid "Inconsistent data."
 msgstr "Rozporuplné údaje."
+
+msgid "Inconsistent data. Please delete this change recommendation."
+msgstr ""
 
 msgid "Information"
 msgstr "Informace"
@@ -2702,6 +2717,9 @@ msgstr ""
 msgid "Is committee admin"
 msgstr ""
 
+msgid "Is external"
+msgstr ""
+
 msgid "Is favorite"
 msgstr "Je oblíbené"
 
@@ -2737,6 +2755,9 @@ msgstr ""
 
 msgid "Is not archived"
 msgstr "Není archivován"
+
+msgid "Is not external"
+msgstr ""
 
 msgid "Is not favorite"
 msgstr "Není oblíbené"
@@ -2902,6 +2923,9 @@ msgstr "Seznamy řečníků"
 
 msgid "Live conference"
 msgstr "Živé jednání"
+
+msgid "Live voting enabled"
+msgstr ""
 
 msgid "Livestream"
 msgstr "Přímý přenos"
@@ -3555,6 +3579,9 @@ msgstr ""
 msgid "One email was send sucessfully."
 msgstr "Byl úspěšně odeslán jeden elektronický dopis."
 
+msgid "Only available for nominal voting"
+msgstr ""
+
 msgid "Only for internal notes."
 msgstr "Jen pro vnitřní poznámky."
 
@@ -3725,6 +3752,12 @@ msgstr "Souběžné nahrání"
 msgid "Parent agenda item"
 msgstr "Nadřazený bod pořadu jednání"
 
+msgid "Parent committee"
+msgstr ""
+
+msgid "Parent committee name"
+msgstr ""
+
 msgid "Parent motion text changed"
 msgstr ""
 
@@ -3736,6 +3769,12 @@ msgstr "Účastník"
 
 msgid "Participant added to group {} in meeting {}"
 msgstr "Účastník přidaný do skupiny {} na setkání {}"
+
+msgid "Participant added to group {} in meeting {}."
+msgstr ""
+
+msgid "Participant added to meeting {}."
+msgstr ""
 
 msgid "Participant added to multiple groups in meeting {}"
 msgstr "Účastník přidán do více skupin na setkání {}"
@@ -3766,6 +3805,9 @@ msgstr "Číslo účastníka"
 
 msgid "Participant removed from group {} in meeting {}"
 msgstr "Účastník odstraněn ze skupiny {} na setkání {}"
+
+msgid "Participant removed from meeting {}"
+msgstr ""
 
 msgid "Participant removed from multiple groups in meeting {}"
 msgstr "Účastník odstraněn z více skupin na setkání {}"
@@ -3882,6 +3924,9 @@ msgstr ""
 msgid "Please update your browser or contact your system administration."
 msgstr ""
 "Aktualizujte, prosím, svůj prohlížeč nebo se spojte se správcem systému."
+
+msgid "Please vote now!"
+msgstr ""
 
 msgid "Point of order"
 msgstr "Návrh jednacího řádu"
@@ -4372,6 +4417,12 @@ msgstr ""
 msgid "Set category"
 msgstr "Stanovit skupinu"
 
+msgid "Set external"
+msgstr ""
+
+msgid "Set external status for selected accounts"
+msgstr ""
+
 msgid "Set favorite"
 msgstr "Nastavit oblíbené"
 
@@ -4392,6 +4443,9 @@ msgstr "Nastavit vnitřní"
 
 msgid "Set it manually"
 msgstr "Nastavit ručně"
+
+msgid "Set live voting enabled by default"
+msgstr ""
 
 msgid "Set lock out ..."
 msgstr ""
@@ -4440,6 +4494,9 @@ msgstr "Nastavit klíčová slova"
 
 msgid "Set workflow"
 msgstr "Stanovit pracovní postup"
+
+msgid "Set/remove home committee"
+msgstr ""
 
 msgid "Set/remove meeting"
 msgstr "Nastavit/Odstranit setkání"
@@ -4705,6 +4762,9 @@ msgstr "Zastavit hlasování"
 msgid "Stop waiting"
 msgstr "Zastavit čekání"
 
+msgid "Stop, publish & anonymize"
+msgstr ""
+
 msgid "Strikethrough"
 msgstr "Přeškrtnutí"
 
@@ -4719,6 +4779,9 @@ msgstr ""
 
 msgid "Subcategory"
 msgstr "Podskupina"
+
+msgid "Subcommittees"
+msgstr ""
 
 msgid "Submission date"
 msgstr "Datum předložení"
@@ -4978,9 +5041,6 @@ msgstr ""
 "Tento účet není propojen jako uchazeč, předkladatel nebo řečník na žádném "
 "setkání a není správcem žádného výboru"
 
-msgid "This action will diminish your organization management level"
-msgstr ""
-
 msgid "This action will remove you from one or more groups."
 msgstr ""
 
@@ -5082,8 +5142,8 @@ msgid "This will add or remove the selected accounts to following meetings:"
 msgstr "Vybrané účty budou přidány nebo odstraněny z následujících setkání:"
 
 msgid ""
-"This will diminish your ability to do things on the organization level and "
-"you will not be able to revert this yourself."
+"This will add or remove the selected accounts to the selected home "
+"committee:"
 msgstr ""
 
 msgid "This will move all selected motions as childs to:"
@@ -5440,13 +5500,11 @@ msgid ""
 msgstr ""
 
 msgid ""
-"Warning: Amendments exist for this motion. Editing this text will likely "
-"impact them negatively. Particularily, amendments might become unusable if "
-"the paragraph they affect is deleted."
+"Warning: Amendments or change recommendations exist for this motion. Editing"
+" this text will likely impact them negatively. Particularily, amendments "
+"might become unusable if the paragraph they affect is deleted, or change "
+"recommendations might lose their reference line completely."
 msgstr ""
-"Upozornění: K tomuto návrhu jsou pozměňovací návrhy. Úprava tohoto textu je "
-"pravděpodobně záporně ovlivní. Zejména by se pozměňovací návrhy mohly stát "
-"nepoužitelnými, pokud by byl vypuštěn odstavec, kterého se týkají."
 
 msgid ""
 "Warning: At least one of the selected motions has amendments, these will be "
@@ -5739,6 +5797,9 @@ msgstr ""
 msgid "change recommendation"
 msgstr ""
 
+msgid "change recommendation(s) refer to a nonexistent line number."
+msgstr ""
+
 msgid "change recommendations"
 msgstr ""
 
@@ -5796,6 +5857,9 @@ msgstr "skončeno"
 msgid "example"
 msgstr "Příklad"
 
+msgid "external"
+msgstr ""
+
 msgid "female"
 msgstr "Žena"
 
@@ -5831,6 +5895,9 @@ msgstr "skryto"
 
 msgid "inactive"
 msgstr "Nečinný"
+
+msgid "incl. subcommittees"
+msgstr ""
 
 msgid "inline"
 msgstr "uvnitř"
@@ -5877,6 +5944,9 @@ msgstr "Většina"
 msgid "male"
 msgstr "Muž"
 
+msgid "mark amendments as original"
+msgstr ""
+
 msgid "max. 32 characters allowed"
 msgstr "nejvíce 32 povolených znaků"
 
@@ -5910,11 +5980,17 @@ msgstr "nejmenovité"
 msgid "none"
 msgstr "žádné"
 
+msgid "not external"
+msgstr ""
+
 msgid "not specified"
 msgstr ""
 
 msgid "of"
 msgstr "z"
+
+msgid "of which"
+msgstr ""
 
 msgid "of which %num% not permissable"
 msgstr ""
@@ -5997,6 +6073,9 @@ msgstr "po"
 msgid "today"
 msgstr "dnes"
 
+msgid "total"
+msgstr ""
+
 msgid "undocumented"
 msgstr "nedokumentováno"
 
@@ -6027,6 +6106,9 @@ msgstr "bude zaveden"
 msgid "will be updated"
 msgstr ""
 
+msgid "with"
+msgstr ""
+
 msgid "without identifier"
 msgstr ""
 
@@ -6043,16 +6125,16 @@ msgid "{{amount}} will be saved"
 msgstr ""
 
 msgid "Acceptance"
-msgstr ""
+msgstr "Souhlas"
 
 msgid "Adjournment"
-msgstr ""
+msgstr "Odložení"
 
 msgid "Admin"
-msgstr ""
+msgstr "Správce"
 
 msgid "Complex Workflow"
-msgstr ""
+msgstr "Složitý pracovní postup"
 
 #, python-brace-format
 msgid ""
@@ -6067,42 +6149,52 @@ msgid ""
 "\n"
 "This email was generated automatically."
 msgstr ""
+"Můj milý/Moje milá {jméno},\n"
+"\n"
+"toto je vaše osobní přihlášení do OpenSlides:\n"
+"\n"
+"{url}\n"
+"Uživatelské jméno: {username}\n"
+"Heslo: {heslo}\n"
+"\n"
+"\n"
+"Tento e-mail byl vytvořen automaticky."
 
 msgid "Default projector"
-msgstr ""
+msgstr "Výchozí promítací přístroj"
 
 msgid "Delegates"
-msgstr ""
+msgstr "Zástupci"
 
 msgid "No concernment"
-msgstr ""
+msgstr "Neprobíráno"
 
 msgid "No decision"
-msgstr ""
+msgstr "Žádné rozhodnutí"
 
 msgid "Presentation and assembly system"
-msgstr ""
+msgstr "Předváděcí a schůzovací systém"
 
 msgid "Referral to"
 msgstr ""
 
 msgid "Rejection"
-msgstr ""
+msgstr "Odmítnutí"
 
 msgid "Reset your OpenSlides password"
-msgstr ""
+msgstr "Obnovit heslo k aplikaci OpenSlides"
 
 msgid "Simple Workflow"
-msgstr ""
+msgstr "Jednoduchý pracovní postup"
 
 msgid "Space for your welcome text."
-msgstr ""
+msgstr "Místo pro váš uvítací text."
 
 msgid "Speaking time"
-msgstr ""
+msgstr "Čas na mluvení"
 
 msgid "Staff"
-msgstr ""
+msgstr "Zaměstnanci"
 
 #, python-brace-format
 msgid ""
@@ -6115,37 +6207,37 @@ msgid ""
 msgstr ""
 
 msgid "accepted"
-msgstr ""
+msgstr "přijato"
 
 msgid "adjourned"
-msgstr ""
+msgstr "odloženo"
 
 msgid "in progress"
-msgstr ""
+msgstr "probíhá"
 
 msgid "name"
-msgstr ""
+msgstr "název"
 
 msgid "not concerned"
-msgstr ""
+msgstr "neprobíráno"
 
 msgid "not decided"
-msgstr ""
+msgstr "nerozhodnuto"
 
 msgid "not permitted"
 msgstr ""
 
 msgid "permitted"
-msgstr ""
+msgstr "schváleno"
 
 msgid "referred to"
 msgstr ""
 
 msgid "rejected"
-msgstr ""
+msgstr "odmítnuto"
 
 msgid "submitted"
-msgstr ""
+msgstr "podáno"
 
 msgid "withdrawn"
-msgstr ""
+msgstr "stažen"

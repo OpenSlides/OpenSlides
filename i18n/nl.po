@@ -1,10 +1,11 @@
 # 
 # Translators:
 # Michael Schulze, 2025
+# Birte Spekker <birte.spekker@intevation.de>, 2025
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Michael Schulze, 2025\n"
+"Last-Translator: Birte Spekker <birte.spekker@intevation.de>, 2025\n"
 "Language-Team: Dutch (https://app.transifex.com/openslides/teams/14270/nl/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -48,13 +49,6 @@ msgstr "<unknown motion>"
 
 msgid "<unknown>"
 msgstr "<unknown>"
-
-msgid ""
-"A change recommendation or amendment is probably referring to a nonexistent "
-"line number."
-msgstr ""
-"Een wijzigingsaanbeveling of wijziging verwijst waarschijnlijk naar een "
-"niet-bestaand regelnummer."
 
 msgid "A client error occurred. Please contact your system administrator."
 msgstr ""
@@ -126,7 +120,7 @@ msgid "Account admin"
 msgstr "Accountbeheerder"
 
 msgid "Account created"
-msgstr ""
+msgstr "Account aangemaakt"
 
 msgid "Account successfully added."
 msgstr "Account succesvol toegevoegd."
@@ -400,6 +394,9 @@ msgstr "Verbose foutmeldingen toestaan voor reset wachtwoord"
 
 msgid "Allowed access groups for this directory"
 msgstr "Toegestane toegangsgroepen voor deze map"
+
+msgid "Allows single votes projection during voting process"
+msgstr ""
 
 msgid "Always"
 msgstr "Altijd"
@@ -762,6 +759,7 @@ msgstr ""
 msgid ""
 "Attention: Existing home committees and external status will be overwritten."
 msgstr ""
+"Let op: Bestaande thuiscommissies en externe status worden overschreven."
 
 msgid "Attention: First enter the wifi data in [Settings > General]"
 msgstr "Let op: Voer eerst de wifi-gegevens in [Instellingen > Algemeen]"
@@ -2661,13 +2659,6 @@ msgstr "Als het gedeactiveerd is, wordt het onder de titel weergegeven."
 msgid "If empty, everyone can access."
 msgstr "Indien leeg, heeft iedereen toegang."
 
-msgid ""
-"If it is an amendment, you can back up its content when editing it and "
-"delete it afterwards."
-msgstr ""
-"Indien het een wijziging is, kunt u tijdens het bewerken een back-up maken "
-"van de inhoud en deze achteraf verwijderen."
-
 msgid "If the value is set to 0 the time counts up as stopwatch."
 msgstr "Indien de waarde is ingesteld op 0 telt de tijd op als stopwatch."
 
@@ -2728,6 +2719,9 @@ msgstr "Inactief"
 
 msgid "Inconsistent data."
 msgstr "Inconsistente gegevens."
+
+msgid "Inconsistent data. Please delete this change recommendation."
+msgstr ""
 
 msgid "Information"
 msgstr "Informatie"
@@ -3045,6 +3039,9 @@ msgstr "Lijsten van sprekers"
 
 msgid "Live conference"
 msgstr "Live conferentie"
+
+msgid "Live voting enabled"
+msgstr ""
 
 msgid "Livestream"
 msgstr "Livestream"
@@ -3710,6 +3707,9 @@ msgstr "Op"
 msgid "One email was send sucessfully."
 msgstr "Eén e-mail was succesvol verzonden."
 
+msgid "Only available for nominal voting"
+msgstr ""
+
 msgid "Only for internal notes."
 msgstr "Alleen voor interne notities."
 
@@ -3904,10 +3904,10 @@ msgid "Participant added to group {} in meeting {}"
 msgstr "Deelnemer toegevoegd aan groep {} in vergadering {}"
 
 msgid "Participant added to group {} in meeting {}."
-msgstr ""
+msgstr "Deelnemer toegevoegd aan groep {} in vergadering {}."
 
 msgid "Participant added to meeting {}."
-msgstr ""
+msgstr "Deelnemer toegevoegd aan vergadering {}."
 
 msgid "Participant added to multiple groups in meeting {}"
 msgstr "Deelnemer toegevoegd aan meerdere groepen in vergadering {}"
@@ -3940,7 +3940,7 @@ msgid "Participant removed from group {} in meeting {}"
 msgstr "Deelnemer verwijderd uit groep {} in vergadering {}"
 
 msgid "Participant removed from meeting {}"
-msgstr ""
+msgstr "Deelnemer verwijderd uit vergadering {}"
 
 msgid "Participant removed from multiple groups in meeting {}"
 msgstr "Deelnemer verwijderd uit meerdere groepen in vergadering {}"
@@ -4060,6 +4060,9 @@ msgstr ""
 
 msgid "Please update your browser or contact your system administration."
 msgstr "Update uw browser of neem contact op met uw systeembeheerder."
+
+msgid "Please vote now!"
+msgstr ""
 
 msgid "Point of order"
 msgstr "Punt van orde"
@@ -4558,10 +4561,10 @@ msgid "Set category"
 msgstr "Zet categorie"
 
 msgid "Set external"
-msgstr ""
+msgstr "Zet extern"
 
 msgid "Set external status for selected accounts"
-msgstr ""
+msgstr "Zet externe status voor geselecteerde accounts"
 
 msgid "Set favorite"
 msgstr "Zet favoriet"
@@ -4583,6 +4586,9 @@ msgstr "Zet intern"
 
 msgid "Set it manually"
 msgstr "Zet het handmatig"
+
+msgid "Set live voting enabled by default"
+msgstr ""
 
 msgid "Set lock out ..."
 msgstr "Zet lock out ..."
@@ -4635,7 +4641,7 @@ msgid "Set workflow"
 msgstr "Zet workflow"
 
 msgid "Set/remove home committee"
-msgstr ""
+msgstr "Thuiscommissie instellen/verwijderen"
 
 msgid "Set/remove meeting"
 msgstr "Zet/verwijder vergadering"
@@ -4899,6 +4905,9 @@ msgstr "Stoppen met stemmen"
 
 msgid "Stop waiting"
 msgstr "Stoppen met wachten"
+
+msgid "Stop, publish & anonymize"
+msgstr ""
 
 msgid "Strikethrough"
 msgstr "Doorhalen"
@@ -5297,6 +5306,8 @@ msgid ""
 "This will add or remove the selected accounts to the selected home "
 "committee:"
 msgstr ""
+"Hiermee worden de geselecteerde accounts toegevoegd of verwijderd aan de "
+"geselecteerde thuiscommissie:"
 
 msgid "This will move all selected motions as childs to:"
 msgstr "Hiermee verplaatst u alle selecteerde moties als kinderen naar:"
@@ -5664,14 +5675,11 @@ msgstr ""
 "motie hoe dan ook wilt verwijderen?"
 
 msgid ""
-"Warning: Amendments exist for this motion. Editing this text will likely "
-"impact them negatively. Particularily, amendments might become unusable if "
-"the paragraph they affect is deleted."
+"Warning: Amendments or change recommendations exist for this motion. Editing"
+" this text will likely impact them negatively. Particularily, amendments "
+"might become unusable if the paragraph they affect is deleted, or change "
+"recommendations might lose their reference line completely."
 msgstr ""
-"Waarschuwing: Er zijn wijzigingen voor deze motie. Het bewerken van deze "
-"tekst zal deze waarschijnlijk negatief beïnvloeden. In het bijzonder kunnen "
-"wijzigingen onbruikbaar worden als de paragraaf waar ze betrekking op hebben"
-" wordt verwijderd."
 
 msgid ""
 "Warning: At least one of the selected motions has amendments, these will be "
@@ -5978,6 +5986,9 @@ msgstr "uitgedaagd voor een schaakwedstrijd!"
 msgid "change recommendation"
 msgstr "wijzigingsaanbeveling"
 
+msgid "change recommendation(s) refer to a nonexistent line number."
+msgstr ""
+
 msgid "change recommendations"
 msgstr "wijzigingsaanbevelingen"
 
@@ -6123,7 +6134,7 @@ msgid "male"
 msgstr "mannelijk"
 
 msgid "mark amendments as original"
-msgstr ""
+msgstr "markeer wijzigingen als origineel"
 
 msgid "max. 32 characters allowed"
 msgstr "max. 32 tekens toegestaan"
@@ -6159,7 +6170,7 @@ msgid "none"
 msgstr "geen"
 
 msgid "not external"
-msgstr ""
+msgstr "niet extern"
 
 msgid "not specified"
 msgstr "niet gespecificeerd"

@@ -3,12 +3,12 @@
 # Joshua Sangmeister <joshua.sangmeister@gmail.com>, 2024
 # Katharina <karmitt2@web.de>, 2024
 # Elblinator, 2025
-# Birte Spekker <birte.spekker@intevation.de>, 2025
 # Emanuel Schütze <emanuel.schuetze@intevation.de>, 2025
+# Birte Spekker <birte.spekker@intevation.de>, 2025
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Emanuel Schütze <emanuel.schuetze@intevation.de>, 2025\n"
+"Last-Translator: Birte Spekker <birte.spekker@intevation.de>, 2025\n"
 "Language-Team: German (https://app.transifex.com/openslides/teams/14270/de/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -52,13 +52,6 @@ msgstr "<unbekannter Antrag>"
 
 msgid "<unknown>"
 msgstr "<unbekannt>"
-
-msgid ""
-"A change recommendation or amendment is probably referring to a nonexistent "
-"line number."
-msgstr ""
-"Ein Änderungsantrag oder eine Änderungsempfehlung bezieht sich "
-"wahrscheinlich auf eine nicht vorhandene Zeilennummer."
 
 msgid "A client error occurred. Please contact your system administrator."
 msgstr ""
@@ -400,6 +393,9 @@ msgstr ""
 
 msgid "Allowed access groups for this directory"
 msgstr "Zulässige Zugriffsgruppen für dieses Verzeichnis"
+
+msgid "Allows single votes projection during voting process"
+msgstr "Ermöglicht die Projektion von Einzelstimmen während einer Abstimmung"
 
 msgid "Always"
 msgstr "Immer"
@@ -2680,13 +2676,6 @@ msgstr "Wenn deaktiviert erfolgt die Anzeige unterhalb des Antragstitels."
 msgid "If empty, everyone can access."
 msgstr "Voller Zugriff, wenn keine Gruppe eingetragen."
 
-msgid ""
-"If it is an amendment, you can back up its content when editing it and "
-"delete it afterwards."
-msgstr ""
-"Wenn es sich um einen Änderungsantrag handelt, können Sie den Inhalt beim "
-"Bearbeiten sichern und anschließend löschen."
-
 msgid "If the value is set to 0 the time counts up as stopwatch."
 msgstr ""
 "Wenn der Wert auf 0 gesetzt wird, wird die Zeit als Stoppuhr hochgezählt."
@@ -2748,6 +2737,9 @@ msgstr "Inaktiv"
 
 msgid "Inconsistent data."
 msgstr "Inkonsistente Daten."
+
+msgid "Inconsistent data. Please delete this change recommendation."
+msgstr "Inkonsistente Daten. Bitte löschen Sie diese Änderungsempfehlung."
 
 msgid "Information"
 msgstr "Information"
@@ -3067,6 +3059,9 @@ msgstr "Redelisten"
 
 msgid "Live conference"
 msgstr "Livekonferenz"
+
+msgid "Live voting enabled"
+msgstr "Live Abstimmung aktivieren"
 
 msgid "Livestream"
 msgstr "Livestream"
@@ -3736,6 +3731,9 @@ msgstr "An"
 msgid "One email was send sucessfully."
 msgstr "Eine E-Mail wurde erfolgreich versandt."
 
+msgid "Only available for nominal voting"
+msgstr "Nur für namentliche Abstimmungen verfügbar"
+
 msgid "Only for internal notes."
 msgstr "Nur für interne Notizen."
 
@@ -4093,6 +4091,9 @@ msgid "Please update your browser or contact your system administration."
 msgstr ""
 "Bitte aktualisieren Sie Ihren Browser oder kontaktieren Sie Ihre "
 "Systemadministration."
+
+msgid "Please vote now!"
+msgstr "Bitte stimmen Sie jetzt ab!"
 
 msgid "Point of order"
 msgstr "GO-Antrag"
@@ -4617,6 +4618,9 @@ msgstr "Intern setzen"
 msgid "Set it manually"
 msgstr "manuell setzen"
 
+msgid "Set live voting enabled by default"
+msgstr "Live Abstimmung als Voreinstellung aktivieren"
+
 msgid "Set lock out ..."
 msgstr "Ausgeschlossen setzen ..."
 
@@ -4935,6 +4939,9 @@ msgstr "Stimmabgabe beenden"
 
 msgid "Stop waiting"
 msgstr "Nicht länger warten"
+
+msgid "Stop, publish & anonymize"
+msgstr "Beenden, veröffentlichen & anonymisieren"
 
 msgid "Strikethrough"
 msgstr "Durchgestrichen"
@@ -5702,14 +5709,17 @@ msgstr ""
 "Sie diesen Antrag trotzdem löschen wollen?"
 
 msgid ""
-"Warning: Amendments exist for this motion. Editing this text will likely "
-"impact them negatively. Particularily, amendments might become unusable if "
-"the paragraph they affect is deleted."
+"Warning: Amendments or change recommendations exist for this motion. Editing"
+" this text will likely impact them negatively. Particularily, amendments "
+"might become unusable if the paragraph they affect is deleted, or change "
+"recommendations might lose their reference line completely."
 msgstr ""
-"Warnung: Zu diesem Antrag gibt es Änderungsanträge. Die Bearbeitung dieses "
-"Textes wird sich wahrscheinlich negativ auf diese auswirken. Insbesondere "
-"können Änderungsanträge unbrauchbar werden, wenn der Absatz, auf den sie "
-"referenzieren, gelöscht wird."
+"Warnung: Zu diesem Antrag gibt es Änderungsanträge oder "
+"Änderungsempfehlungen. Die Bearbeitung dieses Textes wird sich "
+"wahrscheinlich negativ auf diese auswirken. Insbesondere können "
+"Änderungsanträge unbrauchbar werden, wenn der Absatz, auf den sie "
+"referenzieren, gelöscht wird, oder Änderungsempfehlungen können den Bezug "
+"auf die geänderten Zeilen verlieren."
 
 msgid ""
 "Warning: At least one of the selected motions has amendments, these will be "
@@ -6024,6 +6034,10 @@ msgstr "hat dich zu einem Schachspiel herausgefordert!"
 
 msgid "change recommendation"
 msgstr "Änderungsempfehlung"
+
+msgid "change recommendation(s) refer to a nonexistent line number."
+msgstr ""
+"Änderungsempfehlung(en) beziehen sich auf nicht-existierende Zeile(n)."
 
 msgid "change recommendations"
 msgstr "Änderungsempfehlungen"

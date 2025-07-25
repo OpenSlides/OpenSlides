@@ -36,11 +36,6 @@ msgstr ""
 msgid "<unknown>"
 msgstr ""
 
-msgid ""
-"A change recommendation or amendment is probably referring to a nonexistent "
-"line number."
-msgstr ""
-
 msgid "A client error occurred. Please contact your system administrator."
 msgstr ""
 
@@ -352,6 +347,9 @@ msgid "Allow verbose error messages for reset password process"
 msgstr ""
 
 msgid "Allowed access groups for this directory"
+msgstr ""
+
+msgid "Allows single votes projection during voting process"
 msgstr ""
 
 msgid "Always"
@@ -2453,11 +2451,6 @@ msgstr ""
 msgid "If empty, everyone can access."
 msgstr ""
 
-msgid ""
-"If it is an amendment, you can back up its content when editing it and "
-"delete it afterwards."
-msgstr ""
-
 msgid "If the value is set to 0 the time counts up as stopwatch."
 msgstr ""
 
@@ -2515,6 +2508,9 @@ msgid "Inactive"
 msgstr ""
 
 msgid "Inconsistent data."
+msgstr ""
+
+msgid "Inconsistent data. Please delete this change recommendation."
 msgstr ""
 
 msgid "Information"
@@ -2824,6 +2820,9 @@ msgid "Lists of speakers"
 msgstr ""
 
 msgid "Live conference"
+msgstr ""
+
+msgid "Live voting enabled"
 msgstr ""
 
 msgid "Livestream"
@@ -3473,6 +3472,9 @@ msgstr ""
 msgid "One email was send sucessfully."
 msgstr ""
 
+msgid "Only available for nominal voting"
+msgstr ""
+
 msgid "Only for internal notes."
 msgstr ""
 
@@ -3813,6 +3815,9 @@ msgid ""
 msgstr ""
 
 msgid "Please update your browser or contact your system administration."
+msgstr ""
+
+msgid "Please vote now!"
 msgstr ""
 
 msgid "Point of order"
@@ -4326,6 +4331,9 @@ msgstr ""
 msgid "Set it manually"
 msgstr ""
 
+msgid "Set live voting enabled by default"
+msgstr ""
+
 msgid "Set lock out ..."
 msgstr ""
 
@@ -4629,6 +4637,9 @@ msgid "Stop voting"
 msgstr ""
 
 msgid "Stop waiting"
+msgstr ""
+
+msgid "Stop, publish & anonymize"
 msgstr ""
 
 msgid "Strikethrough"
@@ -5329,9 +5340,10 @@ msgid ""
 msgstr ""
 
 msgid ""
-"Warning: Amendments exist for this motion. Editing this text will likely "
-"impact them negatively. Particularily, amendments might become unusable if "
-"the paragraph they affect is deleted."
+"Warning: Amendments or change recommendations exist for this motion. Editing "
+"this text will likely impact them negatively. Particularily, amendments "
+"might become unusable if the paragraph they affect is deleted, or change "
+"recommendations might lose their reference line completely."
 msgstr ""
 
 msgid ""
@@ -5611,6 +5623,9 @@ msgid "challenged you to a chess match!"
 msgstr ""
 
 msgid "change recommendation"
+msgstr ""
+
+msgid "change recommendation(s) refer to a nonexistent line number."
 msgstr ""
 
 msgid "change recommendations"
