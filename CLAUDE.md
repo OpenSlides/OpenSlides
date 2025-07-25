@@ -19,7 +19,7 @@ The system consists of multiple specialized microservices:
 - **ICC**: Go inter-component communication - `openslides-icc-service/`
 - **Media**: Python file handling - `openslides-media-service/`
 - **Manage**: Go system management - `openslides-manage-service/`
-- **Proxy**: Caddy reverse proxy - `openslides-proxy/`
+- **Proxy**: Traefik reverse proxy - `openslides-traefik-proxy/`
 
 Services communicate via Redis and share a PostgreSQL 15 database.
 
@@ -142,7 +142,7 @@ Key patterns:
 - HTTP REST APIs between services
 - Redis for pub/sub messaging
 - Autoupdate service provides real-time WebSocket/SSE updates
-- All external requests go through Caddy proxy on port 8000
+- All external requests go through Traefik proxy on port 8000
 
 ### Common Development Tasks
 

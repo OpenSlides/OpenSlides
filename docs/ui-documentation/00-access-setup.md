@@ -11,7 +11,7 @@ The OpenSlides development environment is running successfully with all services
 - ✅ Datastore: Running on ports 9010-9011
 - ✅ PostgreSQL: Running on port 5432
 - ✅ Redis: Running on port 6379
-- ✅ Caddy Proxy: Running on port 8000 (HTTPS)
+- ✅ Traefik Proxy: Running on port 8000 (HTTPS)
 - ✅ All other services: Running
 
 ## Access Methods

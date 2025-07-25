@@ -50,6 +50,126 @@ async function takeScreenshot(page: Page, name: string): Promise<string> {
   return filename;
 }
 
+async function robustLogin(page: Page, username: string, password: string): Promise<void> {
+  // Navigate to login page
+  await page.goto(`${baseUrl}/login`);
+  await page.waitForLoadState('domcontentloaded');
+  
+  // Check if we're already logged in (redirected away from login)
+  const currentUrl = page.url();
+  if (!currentUrl.includes('/login')) {
+    console.log('  → Already logged in, skipping login process');
+    return;
+  }
+  
+  // Wait for Angular to initialize
+  await page.waitForFunction(() => {
+    return window.hasOwnProperty('ng') || document.querySelector('os-root') || document.querySelector('app-root');
+  }, { timeout: 10000 }).catch(() => {});
+  
+  // Additional stabilization wait
+  await page.waitForTimeout(2000);
+  
+  // Try multiple strategies to find and fill the form
+  let loginSuccess = false;
+  
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      // Find elements using multiple selectors
+      const usernameSelectors = [
+        'input[formcontrolname="username"]',
+        'input[name="username"]',
+        'input[type="text"][placeholder*="user"]',
+        'input#username'
+      ];
+      
+      const passwordSelectors = [
+        'input[formcontrolname="password"]',
+        'input[name="password"]',
+        'input[type="password"]',
+        'input#password'
+      ];
+      
+      const buttonSelectors = [
+        'button[type="submit"]',
+        'button[data-cy="loginButton"]',
+        'button:has-text("Login")',
+        'button:has-text("Sign in")'
+      ];
+      
+      // Find username input
+      let usernameInput = null;
+      for (const selector of usernameSelectors) {
+        const el = page.locator(selector).first();
+        if (await el.isVisible({ timeout: 2000 }).catch(() => false)) {
+          usernameInput = el;
+          break;
+        }
+      }
+      
+      // Find password input
+      let passwordInput = null;
+      for (const selector of passwordSelectors) {
+        const el = page.locator(selector).first();
+        if (await el.isVisible({ timeout: 2000 }).catch(() => false)) {
+          passwordInput = el;
+          break;
+        }
+      }
+      
+      // Find submit button
+      let submitButton = null;
+      for (const selector of buttonSelectors) {
+        const el = page.locator(selector).first();
+        if (await el.isVisible({ timeout: 2000 }).catch(() => false)) {
+          submitButton = el;
+          break;
+        }
+      }
+      
+      if (!usernameInput || !passwordInput || !submitButton) {
+        throw new Error('Could not find login form elements');
+      }
+      
+      // Clear and fill inputs
+      await usernameInput.clear();
+      await usernameInput.fill(username);
+      
+      await passwordInput.clear();
+      await passwordInput.fill(password);
+      
+      // Small wait to ensure form is ready
+      await page.waitForTimeout(500);
+      
+      // Click submit with force if needed
+      await submitButton.click({ force: attempt > 0 });
+      
+      // Wait for navigation away from login
+      await page.waitForFunction(
+        (loginUrl) => !window.location.href.includes(loginUrl),
+        '/login',
+        { timeout: 10000 }
+      );
+      
+      loginSuccess = true;
+      break;
+      
+    } catch (e: any) {
+      console.log(`  → Login attempt ${attempt + 1} failed: ${e.message || e}`);
+      if (attempt < 2) {
+        await page.waitForTimeout(2000);
+      }
+    }
+  }
+  
+  if (!loginSuccess) {
+    throw new Error('Could not complete login after 3 attempts');
+  }
+  
+  // Final stabilization wait
+  await page.waitForTimeout(1000);
+}
+
 async function runTest(
   name: string, 
   testFn: (page: Page) => Promise<void>, 
@@ -86,17 +206,13 @@ async function runTest(
 
 // Test functions
 async function testSuccessfulLogin(page: Page): Promise<void> {
-  await page.goto(`${baseUrl}/login`);
-  await page.waitForLoadState('domcontentloaded');
-  
   const test = testReport.tests[testReport.tests.length - 1];
+  
+  await page.goto(`${baseUrl}/login`);
   test.screenshots.push(await takeScreenshot(page, 'login-page'));
   
-  await page.fill('input[formcontrolname="username"]', 'admin');
-  await page.fill('input[formcontrolname="password"]', 'admin');
-  await page.click('button[type="submit"]');
-  
-  await page.waitForTimeout(3000);
+  // Use robust login helper
+  await robustLogin(page, 'admin', 'admin');
   
   const url = page.url();
   if (!url.includes('/login')) {
@@ -128,38 +244,39 @@ async function testInvalidLogin(page: Page): Promise<void> {
 }
 
 async function testNavigationMenu(page: Page): Promise<void> {
-  // Login first
-  await page.goto(`${baseUrl}/login`);
-  await page.fill('input[formcontrolname="username"]', 'admin');
-  await page.fill('input[formcontrolname="password"]', 'admin');
-  await page.click('button[type="submit"]');
-  await page.waitForTimeout(3000);
+  // Use robust login helper
+  await robustLogin(page, 'admin', 'admin');
   
   const test = testReport.tests[testReport.tests.length - 1];
   
-  // Navigate to meetings
+  // Navigate to meetings with element-based wait conditions
   await page.goto(`${baseUrl}/meetings`);
-  await page.waitForTimeout(2000);
+  await page.waitForLoadState('domcontentloaded');
+  // Wait for specific meeting page elements
+  await page.waitForSelector('h1, h2, .page-title, [class*="meetings"], [class*="toolbar"]', { timeout: 10000 }).catch(() => {});
+  await page.waitForTimeout(1000);
   test.screenshots.push(await takeScreenshot(page, 'meetings-page'));
   
   // Navigate to committees
   await page.goto(`${baseUrl}/committees`);
-  await page.waitForTimeout(2000);
+  await page.waitForLoadState('domcontentloaded');
+  // Wait for specific committee page elements
+  await page.waitForSelector('h1, h2, .page-title, [class*="committee"], [class*="toolbar"]', { timeout: 10000 }).catch(() => {});
+  await page.waitForTimeout(1000);
   test.screenshots.push(await takeScreenshot(page, 'committees-page'));
   
   // Navigate to accounts
   await page.goto(`${baseUrl}/accounts`);
-  await page.waitForTimeout(2000);
+  await page.waitForLoadState('domcontentloaded');
+  // Wait for specific account page elements
+  await page.waitForSelector('h1, h2, .page-title, [class*="account"], [class*="user"], [class*="toolbar"]', { timeout: 10000 }).catch(() => {});
+  await page.waitForTimeout(1000);
   test.screenshots.push(await takeScreenshot(page, 'accounts-page'));
 }
 
 async function testMeetingAccess(page: Page): Promise<void> {
-  // Login first
-  await page.goto(`${baseUrl}/login`);
-  await page.fill('input[formcontrolname="username"]', 'admin');
-  await page.fill('input[formcontrolname="password"]', 'admin');
-  await page.click('button[type="submit"]');
-  await page.waitForTimeout(3000);
+  // Use robust login helper
+  await robustLogin(page, 'admin', 'admin');
   
   const test = testReport.tests[testReport.tests.length - 1];
   
@@ -258,12 +375,8 @@ async function testPageLoadPerformance(page: Page): Promise<void> {
 }
 
 async function testFileUpload(page: Page): Promise<void> {
-  // Login first
-  await page.goto(`${baseUrl}/login`);
-  await page.fill('input[formcontrolname="username"]', 'admin');
-  await page.fill('input[formcontrolname="password"]', 'admin');
-  await page.click('button[type="submit"]');
-  await page.waitForTimeout(3000);
+  // Use robust login helper
+  await robustLogin(page, 'admin', 'admin');
   
   const test = testReport.tests[testReport.tests.length - 1];
   
@@ -367,20 +480,28 @@ async function runTests(): Promise<void> {
     args: ['--ignore-certificate-errors']
   });
   
-  const context = await browser.newContext({
-    ignoreHTTPSErrors: true
-  });
+  // Create a fresh context for each test to ensure isolation
+  const runTestWithNewContext = async (name: string, testFn: (page: Page) => Promise<void>) => {
+    const context = await browser.newContext({
+      ignoreHTTPSErrors: true
+    });
+    const page = await context.newPage();
+    
+    try {
+      await runTest(name, testFn, page);
+    } finally {
+      await context.close();
+    }
+  };
   
-  const page = await context.newPage();
-  
-  // Run all tests
-  await runTest('testSuccessfulLogin', testSuccessfulLogin, page);
-  await runTest('testInvalidLogin', testInvalidLogin, page);
-  await runTest('testNavigationMenu', testNavigationMenu, page);
-  await runTest('testMeetingAccess', testMeetingAccess, page);
-  await runTest('testMobileResponsiveness', testMobileResponsiveness, page);
-  await runTest('testPageLoadPerformance', testPageLoadPerformance, page);
-  await runTest('testFileUpload', testFileUpload, page);
+  // Run all tests with fresh contexts
+  await runTestWithNewContext('testSuccessfulLogin', testSuccessfulLogin);
+  await runTestWithNewContext('testInvalidLogin', testInvalidLogin);
+  await runTestWithNewContext('testNavigationMenu', testNavigationMenu);
+  await runTestWithNewContext('testMeetingAccess', testMeetingAccess);
+  await runTestWithNewContext('testMobileResponsiveness', testMobileResponsiveness);
+  await runTestWithNewContext('testPageLoadPerformance', testPageLoadPerformance);
+  await runTestWithNewContext('testFileUpload', testFileUpload);
   
   await browser.close();
   

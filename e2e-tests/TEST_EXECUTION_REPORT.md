@@ -91,7 +91,7 @@ The E2E test suite was executed against the OpenSlides development environment w
 - ✅ Backend (Python): Running on port 9002
 - ✅ Auth Service: Running on port 9004
 - ✅ Database (PostgreSQL): Running on port 5432
-- ✅ Proxy (Caddy): Running on port 8000
+- ✅ Proxy (Traefik): Running on port 8000
 
 ### Browser Configuration
 - Browser: Chromium (Playwright)

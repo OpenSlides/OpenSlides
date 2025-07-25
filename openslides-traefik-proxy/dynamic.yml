@@ -1,0 +1,157 @@
+# Dynamic configuration for OpenSlides services
+http:
+  routers:
+    # Autoupdate service (WebSocket/SSE)
+    autoupdate:
+      rule: "PathPrefix(`/system/autoupdate`)"
+      service: autoupdate
+      entryPoints:
+        - websecure
+      
+    # Presenter service
+    presenter:
+      rule: "PathPrefix(`/system/presenter`)"
+      service: presenter
+      entryPoints:
+        - websecure
+        
+    # Search service
+    search:
+      rule: "PathPrefix(`/system/search`)"
+      service: search
+      entryPoints:
+        - websecure
+        
+    # Action service
+    action:
+      rule: "PathPrefix(`/system/action`)"
+      service: action
+      entryPoints:
+        - websecure
+        
+    # Media service
+    media:
+      rule: "PathPrefix(`/system/media`)"
+      service: media
+      entryPoints:
+        - websecure
+        
+    # Auth service
+    auth:
+      rule: "PathPrefix(`/system/auth`) || PathPrefix(`/system/saml`)"
+      service: auth
+      entryPoints:
+        - websecure
+        
+    # ICC service (WebSocket)
+    icc:
+      rule: "PathPrefix(`/system/icc`)"
+      service: icc
+      entryPoints:
+        - websecure
+        
+    # Vote service
+    vote:
+      rule: "PathPrefix(`/system/vote`)"
+      service: vote
+      entryPoints:
+        - websecure
+        
+    # Manage service (gRPC)
+    manage:
+      rule: "Headers(`Content-Type`, `application/grpc`)"
+      service: manage
+      entryPoints:
+        - websecure
+        
+    # Client (default/fallback)
+    client:
+      rule: "PathPrefix(`/`)"
+      service: client
+      entryPoints:
+        - websecure
+      priority: 1
+        
+  services:
+    # Autoupdate service
+    autoupdate:
+      loadBalancer:
+        servers:
+          - url: "http://autoupdate:9012"
+        passHostHeader: true
+        
+    # Presenter service  
+    presenter:
+      loadBalancer:
+        servers:
+          - url: "http://backend:9003"
+        passHostHeader: true
+        
+    # Search service
+    search:
+      loadBalancer:
+        servers:
+          - url: "http://search:9050"
+        passHostHeader: true
+        
+    # Action service
+    action:
+      loadBalancer:
+        servers:
+          - url: "http://backend:9002"
+        passHostHeader: true
+        
+    # Media service
+    media:
+      loadBalancer:
+        servers:
+          - url: "http://media:9006"
+        passHostHeader: true
+        
+    # Auth service
+    auth:
+      loadBalancer:
+        servers:
+          - url: "http://auth:9004"
+        passHostHeader: true
+        
+    # ICC service
+    icc:
+      loadBalancer:
+        servers:
+          - url: "http://icc:9007"
+        passHostHeader: true
+        
+    # Vote service
+    vote:
+      loadBalancer:
+        servers:
+          - url: "http://vote:9013"
+        passHostHeader: true
+        
+    # Manage service (gRPC with h2c)
+    manage:
+      loadBalancer:
+        servers:
+          - url: "h2c://manage:9008"
+        passHostHeader: true
+        
+    # Client service
+    client:
+      loadBalancer:
+        servers:
+          - url: "http://client:9001"
+        passHostHeader: true
+
+# TLS configuration for local development
+tls:
+  certificates:
+    - certFile: /certs/cert.pem
+      keyFile: /certs/key.pem
+      stores:
+        - default
+  stores:
+    default:
+      defaultCertificate:
+        certFile: /certs/cert.pem
+        keyFile: /certs/key.pem

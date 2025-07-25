@@ -98,7 +98,7 @@ The login form requires connection to the backend authentication service:
 ### Port Configuration
 - Client runs on port 9001 internally
 - Backend runs on ports 9002-9003
-- Caddy proxy exposes everything on port 8000 (HTTPS)
+- Traefik proxy exposes everything on port 8000 (HTTPS)
 - The nginx workaround on port 8080 doesn't properly proxy backend requests
 
 ### Console Errors
@@ -109,7 +109,7 @@ Common console errors in development:
 ## Next Steps
 To properly document the login functionality:
 1. Fix the backend proxy configuration
-2. Access the application through the proper Caddy proxy (port 8000)
+2. Access the application through the proper Traefik proxy (port 8000)
 3. Document the actual rendered login form
 4. Test login flow with default credentials
 5. Document post-login navigation

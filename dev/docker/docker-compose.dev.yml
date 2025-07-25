@@ -224,7 +224,7 @@ services:
 
   proxy:
     build:
-        context: ../../openslides-proxy
+        context: ../../openslides-traefik-proxy
         target: "dev"
         args:
             CONTEXT: "dev"
@@ -235,6 +235,13 @@ services:
       - autoupdate
     ports:
       - "8000:8000"
+    env_file: services.env
+    environment:
+      - ENABLE_LOCAL_HTTPS=1
+      - TRAEFIK_LOG_LEVEL=INFO
+    volumes:
+      - ../../openslides-traefik-proxy/traefik.yml:/etc/traefik/traefik.yml
+      - ../../openslides-traefik-proxy/dynamic.yml:/etc/traefik/dynamic/dynamic.yml
 
   mailhog:
     image: mailhog/mailhog
