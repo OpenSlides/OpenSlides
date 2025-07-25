@@ -1,10 +1,10 @@
-CONTEXT = prod
-
-build:
-	docker build -t openslides-proxy-dev --build-arg CONTEXT=dev .
+SERVICE=traefik-proxy
 
 build-prod:
-	docker build -t openslides-proxy --build-arg CONTEXT=prod .
+	docker build ./ --tag "openslides-$(SERVICE)" --build-arg CONTEXT="prod" --target "prod"
+
+build-dev:
+	docker build ./ --tag "openslides-$(SERVICE)-dev" --build-arg CONTEXT="dev" --target "dev"
 
 run-tests:
 	@echo "No tests for proxy service"
