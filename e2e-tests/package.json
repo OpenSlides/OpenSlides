@@ -1,0 +1,46 @@
+{
+  "name": "openslides-e2e-tests",
+  "version": "1.0.0",
+  "description": "End-to-end tests for OpenSlides using Playwright and Cucumber",
+  "main": "index.js",
+  "scripts": {
+    "test": "cucumber-js",
+    "test:dev": "cucumber-js --tags '@dev'",
+    "test:smoke": "cucumber-js --tags '@smoke'",
+    "test:full": "cucumber-js --tags 'not @skip'",
+    "test:parallel": "cucumber-js --parallel 4",
+    "test:single": "cucumber-js --tags",
+    "docker:up": "docker-compose -f ../dev/docker/docker-compose.dev.yml up -d",
+    "docker:down": "docker-compose -f ../dev/docker/docker-compose.dev.yml down",
+    "docker:logs": "docker-compose -f ../dev/docker/docker-compose.dev.yml logs -f",
+    "wait-for-services": "node scripts/wait-for-services.js",
+    "test:docker": "npm run docker:up && npm run wait-for-services && npm test; npm run docker:down",
+    "report": "node scripts/generate-report.js",
+    "clean": "rm -rf reports dist node_modules",
+    "lint": "eslint . --ext .ts",
+    "compile": "tsc --noEmit",
+    "test:comprehensive": "npx ts-node comprehensive-test.ts",
+    "test:standalone": "node comprehensive-test.js",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@cucumber/cucumber": "^10.0.0",
+    "@playwright/test": "^1.40.0",
+    "@types/glob": "^8.1.0",
+    "allure-js-commons": "^2.8.1",
+    "allure-playwright": "^2.8.1",
+    "dotenv": "^16.3.1",
+    "glob": "^11.0.3",
+    "wait-on": "^7.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "cucumber-html-reporter": "^7.1.1",
+    "eslint": "^8.0.0",
+    "multiple-cucumber-html-reporter": "^3.4.0",
+    "ts-node": "^10.9.0",
+    "typescript": "^5.0.0"
+  }
+}

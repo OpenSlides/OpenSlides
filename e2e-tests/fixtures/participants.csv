@@ -1,0 +1,6 @@
+Username,First Name,Last Name,Email,Structure Level,Group
+john.doe,John,Doe,john.doe@example.com,Department A,Delegates
+jane.smith,Jane,Smith,jane.smith@example.com,Department B,Delegates
+bob.johnson,Bob,Johnson,bob.johnson@example.com,Department A,Staff
+alice.brown,Alice,Brown,alice.brown@example.com,Department C,Observers
+charlie.wilson,Charlie,Wilson,charlie.wilson@example.com,Department B,Delegates
