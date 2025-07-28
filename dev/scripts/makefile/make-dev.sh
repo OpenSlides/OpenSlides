@@ -3,7 +3,7 @@
 # Import OpenSlides utils package
 . "$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )/../util.sh"
 
-# Used in Makefile Targets to run development contex in various ways
+# Processes various development operations
 
 # Functions
 help ()
@@ -135,6 +135,7 @@ run()
         echocmd eval "$DC up $FLAGS $VOLUMES $ARGS"
     else
         # Already active check
+        # Either stop existing containers and continue with run() or use existing containers from now on and exit run() early
         if [ "$(docker ps -a --filter "name=$CONTAINER_NAME" --format "{{.Names}}")" = "$CONTAINER_NAME" ]
         then
             { ask y "Container already running, restart it?" && stop; } || { echo "Continue with existing container" && return; }
@@ -156,7 +157,7 @@ attach()
         # Determine container to enter, in case no container was specified as a paramater
         if [ -z "$SERVICE" ] && [ -z "$TARGET_CONTAINER" ]
         then
-            # Main repository case
+            # Main repository case, use input prompt to determine container
             local TARGET_CONTAINER=$(input "Which service container should be entered?");
             { [ -z "$TARGET_CONTAINER" ] && \info "No service container declared, exiting" && return; }
         else
@@ -233,7 +234,7 @@ FUNCTION=${TARGET#"dev"}
 FUNCTION=${FUNCTION#"-"}
 FUNCTION=${FUNCTION%.*}
 
-# - Extrapolate parameters depending on servicce
+# - Extrapolate parameters depending on service
 case "$SERVICE" in
     "auth")         SERVICE_FOLDER="./openslides-auth-service" &&
                     COMPOSE_FILE="$SERVICE_FOLDER/docker-compose.dev.yml" ;;
