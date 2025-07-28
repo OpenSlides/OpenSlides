@@ -9,26 +9,30 @@
 help ()
 {
     info "\
-Builds and starts development related images. Intended to be called from Makefiles
+Builds and starts development related images. Intended to be called from main repository makefile
 
 Parameters:
-    #1 TARGET       : Name of the Makefile Target that called this script.
-    #2 SERVICE      : Name of the Service that called this script. If empty, the main repository assumed to be the caller
+    #1 TARGET       : Name of the makefile target that called this script
+    #2 SERVICE      : Name of the service to be operated on. If empty, the main repository assumed to be operated on
     #3 ARGS         : Additional parameters that will be appended to the called docker run or docker compose calls
+
+Flags:
+    no-cache        : Prevents use of cache when building docker images
+    no-capsule      : Prevents encapsulation of docker build output
 
 Available dev functions:
     dev             : Builds and starts development images
     dev-help        : Print help
-    dev-detached    : Builds and starts development images with detach flag
-    dev-attached    : Builds and starts development images; enters shell of started image
+    dev-detached    : Builds and starts development images with detach flag. This causes started container to run in the background
+    dev-attached    : Builds and starts development images; enters shell of started image.
                           If a docker compose file is declared, the \$ARGS parameter determines
                           the specific container id you will enter (default value is equal the service name)
-                          as well as the shell you want to enter (sh, bash, entrypoint etc.)
-    dev-standalone  : Builds and starts development images; closes them immediatly afterwards
+    dev-standalone  : Builds and starts development images; closes them immediately afterwards
     dev-stop        : Stops any currently running images associated with the service or docker compose file
     dev-exec        : Executes command inside container.
-                          Use \$ARGS to declare command that should be used. If using a docker compose setup, declare which container the command should be used in.
-    dev-enter       : Enters bash of started container.
+                          Use \$ARGS to declare command that should be used.
+                          If using a docker compose setup, also declare which container the command should be used in.
+    dev-enter       : Enters shell of started container.
                           If a docker compose file is declared, the \$ARGS parameter determines
                           the specific container id you will enter (default value is equal the service name)
     dev-build       : Builds the development image
@@ -186,7 +190,11 @@ exec()
 stop()
 {
     info "Stop running container"
-    if [ -n "$COMPOSE_FILE" ]
+    if [ "$SERVICE_FOLDER" = "" ]
+    then
+        # Compose
+        echocmd eval "$DC down --volumes --remove-orphans"
+    elif [ -n "$COMPOSE_FILE" ]
     then
         # Compose
         echocmd eval "$DC down $CLOSE_VOLUMES"
