@@ -17,6 +17,26 @@ BeforeAll(async function() {
 Before({ timeout: 30000 }, async function(this: CustomWorld) {
   try {
     await this.initBrowser();
+    
+    // Set default timeouts for better stability
+    if (this.page) {
+      this.page.setDefaultTimeout(10000); // Reduced from 30s to 10s as per analysis
+      this.page.setDefaultNavigationTimeout(30000);
+      
+      // Add response interceptor for API monitoring
+      this.page.on('response', response => {
+        if (response.url().includes('/api/') && response.status() >= 400) {
+          console.warn(`API Error: ${response.status()} ${response.url()}`);
+        }
+      });
+      
+      // Monitor console errors
+      this.page.on('console', msg => {
+        if (msg.type() === 'error') {
+          console.warn('Browser console error:', msg.text());
+        }
+      });
+    }
   } catch (error) {
     console.error('Failed to initialize browser:', error);
     throw error;
@@ -102,14 +122,14 @@ After({ tags: '@delete' }, async function(this: CustomWorld) {
   // This could involve API calls to delete test entities
 });
 
-// Performance tracking
-Before(async function(this: CustomWorld) {
-  if (this.page) {
-    // Start performance tracking
-    await this.page.coverage.startJSCoverage();
-    await this.page.coverage.startCSSCoverage();
-  }
-});
+// Performance tracking - Commented out to avoid duplicate Before hook
+// Before(async function(this: CustomWorld) {
+//   if (this.page) {
+//     // Start performance tracking
+//     await this.page.coverage.startJSCoverage();
+//     await this.page.coverage.startCSSCoverage();
+//   }
+// });
 
 After(async function(this: CustomWorld) {
   if (this.page) {
