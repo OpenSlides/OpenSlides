@@ -90,7 +90,15 @@ build: | deprecation-warning
 
 run-dev:
 	@make deprecation-warning-alternative ALTERNATIVE="dev"
-	make dev
+	sed -i "1s/.*/$(GO_VERSION)/" $(DOCKER_PATH)/workspaces/*.work
+	chmod +x $(SCRIPT_PATH)/makefile/build-all-submodules.sh
+	$(DC_DEV) up $(ARGS)
+
+run-dev-detached:
+	@make deprecation-warning-alternative ALTERNATIVE="dev"
+	sed -i "1s/.*/$(GO_VERSION)/" $(DOCKER_PATH)/workspaces/*.work
+	chmod +x $(SCRIPT_PATH)/makefile/build-all-submodules.sh
+	$(DC_DEV) up $(ARGS) -d
 
 stop-dev:
 	@make deprecation-warning-alternative ALTERNATIVE="dev-stop"
