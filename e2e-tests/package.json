@@ -21,7 +21,8 @@
     "compile": "tsc --noEmit",
     "test:comprehensive": "npx ts-node comprehensive-test.ts",
     "test:standalone": "node comprehensive-test.js",
-    "build": "tsc"
+    "build": "tsc",
+    "test:ts": "cucumber-js features/ --require-module ts-node/register --require 'step_definitions/**/*.ts' --require 'support/**/*.ts' --format progress"
   },
   "dependencies": {
     "@cucumber/cucumber": "^10.0.0",

@@ -1,7 +1,7 @@
 import { Page } from '@playwright/test';
-import { BasePage } from './BasePage';
+import { EnhancedBasePage } from './EnhancedBasePage';
 
-export class LoginPage extends BasePage {
+export class LoginPage extends EnhancedBasePage {
   private usernameInput = 'input[formcontrolname="username"]';
   private passwordInput = 'input[formcontrolname="password"]';
   private loginButton = 'button[type="submit"]';
@@ -13,21 +13,19 @@ export class LoginPage extends BasePage {
   }
 
   async navigateToLogin() {
-    await this.goto('/login');
-    // Wait for Angular app to load
-    await this.page.waitForSelector('os-root, app-root', { timeout: 10000 }).catch(() => {
-      console.log('App root not found');
+    await this.goto('/login', {
+      waitForLoadState: true,
+      waitForSelector: this.usernameInput
     });
-    // Additional wait for form to render
-    await this.page.waitForTimeout(2000);
-    // Wait for the login form to be ready
-    await this.waitForElement(this.usernameInput, 10000);
   }
 
   async login(username: string, password: string) {
-    await this.fillInput(this.usernameInput, username);
-    await this.fillInput(this.passwordInput, password);
-    await this.clickElement(this.loginButton);
+    await this.fill(this.usernameInput, username);
+    await this.fill(this.passwordInput, password);
+    await this.click(this.loginButton, {
+      waitForNetworkIdle: true,
+      waitForResponse: (response) => response.url().includes('/system/auth/login') && response.status() === 200
+    });
     
     // Wait for navigation away from login page
     await this.page.waitForFunction(
@@ -35,13 +33,13 @@ export class LoginPage extends BasePage {
       { timeout: 10000 }
     ).catch(() => {
       // If still on login page, check for error
-      return this.waitForElement(this.errorMessage, 2000);
+      return this.waitForElementStable(this.errorMessage, 2000);
     });
   }
 
   async getErrorMessage(): Promise<string> {
-    if (await this.isElementVisible(this.errorMessage)) {
-      return await this.getElementText(this.errorMessage);
+    if (await this.isVisible(this.errorMessage, { timeout: 2000 })) {
+      return await this.getText(this.errorMessage);
     }
     return '';
   }
@@ -62,12 +60,18 @@ export class LoginPage extends BasePage {
   }
 
   async logout() {
-    await this.page.locator('[data-cy="userMenuButton"]').click();
-    await this.page.locator('[data-cy="logoutButton"]').click();
+    await this.click('[data-cy="userMenuButton"]', {
+      waitForLoadState: true
+    });
+    await this.click('[data-cy="logoutButton"]', {
+      waitForNetworkIdle: true
+    });
     await this.page.waitForURL('**/login');
   }
 
   async clickForgotPassword() {
-    await this.clickElement(this.forgotPasswordLink);
+    await this.click(this.forgotPasswordLink, {
+      waitForLoadState: true
+    });
   }
 }

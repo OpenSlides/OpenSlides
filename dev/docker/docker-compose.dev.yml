@@ -228,7 +228,7 @@ services:
         target: "dev"
         args:
             CONTEXT: "dev"
-    image: openslides-proxy-dev
+    image: openslides-traefik-proxy-dev
     depends_on:
       - client
       - backend
