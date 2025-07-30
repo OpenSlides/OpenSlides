@@ -1,6 +1,0 @@
-This is a test document for OpenSlides e2e file upload testing.
-Created on: 2025-01-25
-Purpose: Verify file upload functionality
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.

@@ -1,57 +1,62 @@
-import { Page, Locator } from '@playwright/test';
+import { Page } from '@playwright/test';
+import { EnhancedBasePage } from './EnhancedBasePage';
 
-export class ChatPage {
-  readonly page: Page;
-  readonly chatButton: Locator;
-  readonly messageInput: Locator;
-  readonly sendButton: Locator;
-  readonly messageList: Locator;
-  readonly participantList: Locator;
-  readonly createGroupButton: Locator;
-  readonly attachmentButton: Locator;
-  readonly searchButton: Locator;
-  readonly settingsButton: Locator;
-  readonly mentionsList: Locator;
-  readonly emojiButton: Locator;
-  readonly typingIndicator: Locator;
+export class ChatPage extends EnhancedBasePage {
+  readonly chatButton: string;
+  readonly messageInput: string;
+  readonly sendButton: string;
+  readonly messageList: string;
+  readonly participantList: string;
+  readonly createGroupButton: string;
+  readonly attachmentButton: string;
+  readonly searchButton: string;
+  readonly settingsButton: string;
+  readonly mentionsList: string;
+  readonly emojiButton: string;
+  readonly typingIndicator: string;
 
   constructor(page: Page) {
-    this.page = page;
-    this.chatButton = page.locator('a[href*="/chat"], mat-nav-list a:has-text("Chat")');
-    this.messageInput = page.locator('input[placeholder*="Type a message"], textarea[formcontrolname="message"]');
-    this.sendButton = page.locator('button:has-text("Send"), button[type="submit"][mat-icon="send"]');
-    this.messageList = page.locator('.message-list, .chat-messages, [data-cy="message-container"]');
-    this.participantList = page.locator('.participant-list, [data-cy="chat-participants"]');
-    this.createGroupButton = page.locator('button:has-text("Create group"), [data-cy="create-group-chat"]');
-    this.attachmentButton = page.locator('button[mat-icon="attach_file"], [data-cy="attach-file"]');
-    this.searchButton = page.locator('button[mat-icon="search"], [data-cy="search-chat"]');
-    this.settingsButton = page.locator('button[mat-icon="settings"], [data-cy="chat-settings"]');
-    this.mentionsList = page.locator('.mentions-autocomplete, [data-cy="mentions-list"]');
-    this.emojiButton = page.locator('button[mat-icon="mood"], [data-cy="emoji-picker"]');
-    this.typingIndicator = page.locator('.typing-indicator, [data-cy="typing-status"]');
+    super(page);
+    this.chatButton = 'a[href*="/chat"], mat-nav-list a:has-text("Chat")';
+    this.messageInput = 'input[placeholder*="Type a message"], textarea[formcontrolname="message"]';
+    this.sendButton = 'button:has-text("Send"), button[type="submit"][mat-icon="send"]';
+    this.messageList = '.message-list, .chat-messages, [data-cy="message-container"]';
+    this.participantList = '.participant-list, [data-cy="chat-participants"]';
+    this.createGroupButton = 'button:has-text("Create group"), [data-cy="create-group-chat"]';
+    this.attachmentButton = 'button[mat-icon="attach_file"], [data-cy="attach-file"]';
+    this.searchButton = 'button[mat-icon="search"], [data-cy="search-chat"]';
+    this.settingsButton = 'button[mat-icon="settings"], [data-cy="chat-settings"]';
+    this.mentionsList = '.mentions-autocomplete, [data-cy="mentions-list"]';
+    this.emojiButton = 'button[mat-icon="mood"], [data-cy="emoji-picker"]';
+    this.typingIndicator = '.typing-indicator, [data-cy="typing-status"]';
   }
 
   async navigate(): Promise<void> {
-    await this.chatButton.click();
-    await this.page.waitForLoadState('networkidle');
+    await this.click(this.chatButton, {
+      waitForNetworkIdle: true
+    });
   }
 
   async sendMessage(message: string): Promise<void> {
-    await this.messageInput.fill(message);
-    await this.sendButton.click();
-    await this.page.waitForTimeout(500);
+    await this.fill(this.messageInput, message);
+    await this.click(this.sendButton, {
+      waitForNetworkIdle: true
+    });
   }
 
   async sendPrivateMessage(recipientName: string, message: string): Promise<void> {
-    await this.participantList.locator(`text="${recipientName}"`).click();
-    await this.page.locator('button:has-text("Send private message")').click();
-    await this.messageInput.fill(message);
-    await this.sendButton.click();
-    await this.page.waitForTimeout(500);
+    await this.click(`${this.participantList} >> text="${recipientName}"`);
+    await this.click('button:has-text("Send private message")', {
+      waitForLoadState: true
+    });
+    await this.fill(this.messageInput, message);
+    await this.click(this.sendButton, {
+      waitForNetworkIdle: true
+    });
   }
 
   async createGroupChat(groupName: string, participants: string[]): Promise<void> {
-    await this.createGroupButton.click();
+    await this.click(this.createGroupButton);
     await this.page.waitForTimeout(500);
     
     await this.page.fill('input[formcontrolname="group_name"]', groupName);
@@ -65,29 +70,29 @@ export class ChatPage {
   }
 
   async mentionUser(username: string, message: string): Promise<void> {
-    await this.messageInput.fill(`@${username.substring(0, 3)}`);
-    await this.mentionsList.waitFor({ state: 'visible' });
+    await this.fill(this.messageInput, `@${username.substring(0, 3)}`);
+    await this.waitForSelector(this.mentionsList, { state: 'visible' });
     await this.page.locator(`mat-option:has-text("${username}")`).click();
-    await this.messageInput.fill(`@${username} ${message}`);
-    await this.sendButton.click();
+    await this.fill(this.messageInput, `@${username} ${message}`);
+    await this.click(this.sendButton);
     await this.page.waitForTimeout(500);
   }
 
   async attachFile(filePath: string, message?: string): Promise<void> {
-    await this.attachmentButton.click();
+    await this.click(this.attachmentButton);
     const fileInput = this.page.locator('input[type="file"]');
     await fileInput.setInputFiles(filePath);
     
     if (message) {
-      await this.messageInput.fill(message);
+      await this.fill(this.messageInput, message);
     }
     
-    await this.sendButton.click();
+    await this.click(this.sendButton);
     await this.page.waitForTimeout(2000);
   }
 
   async searchMessages(searchTerm: string): Promise<void> {
-    await this.searchButton.click();
+    await this.click(this.searchButton);
     await this.page.fill('input[placeholder*="Search"]', searchTerm);
     await this.page.keyboard.press('Enter');
     await this.page.waitForTimeout(1000);
@@ -121,7 +126,7 @@ export class ChatPage {
     privateMessages: boolean;
     keywords?: string[];
   }): Promise<void> {
-    await this.settingsButton.click();
+    await this.click(this.settingsButton);
     await this.page.waitForTimeout(500);
     
     const allMessagesCheckbox = this.page.locator('mat-checkbox[formcontrolname="all_messages"]');
@@ -151,13 +156,13 @@ export class ChatPage {
     const message = this.messageList.locator(`text="${originalMessage}"`).first();
     await message.hover();
     await message.locator('button:has-text("Reply in thread")').click();
-    await this.messageInput.fill(reply);
-    await this.sendButton.click();
+    await this.fill(this.messageInput, reply);
+    await this.click(this.sendButton);
     await this.page.waitForTimeout(500);
   }
 
   async createPoll(question: string, options: string[]): Promise<void> {
-    await this.messageInput.fill(`/poll ${question}`);
+    await this.fill(this.messageInput, `/poll ${question}`);
     await this.page.keyboard.press('Enter');
     await this.page.waitForTimeout(500);
     
@@ -175,15 +180,16 @@ export class ChatPage {
   }
 
   async isTypingIndicatorVisible(): Promise<boolean> {
-    return await this.typingIndicator.isVisible();
+    return await this.isVisible(this.typingIndicator);
   }
 
   async getTypingText(): Promise<string> {
-    return await this.typingIndicator.textContent() || '';
+    const element = await this.page.locator(this.typingIndicator);
+    return await element.textContent() || '';
   }
 
   async exportChatTranscript(dateRange?: { start: string; end: string }, format: string = 'PDF'): Promise<void> {
-    await this.settingsButton.click();
+    await this.click(this.settingsButton);
     await this.page.locator('button:has-text("Export chat")').click();
     
     if (dateRange) {

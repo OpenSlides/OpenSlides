@@ -48,7 +48,7 @@ Feature: Agenda Management
   Scenario: Change item visibility
     Given an agenda item "Internal Discussion" exists
     When I open the menu for "Internal Discussion"
-    And I select "Set as internal"
+    And I select "Set as internal" from the agenda menu
     Then the item should be marked as internal
     And it should not be visible to regular participants
 
@@ -69,7 +69,7 @@ Feature: Agenda Management
   Scenario: Delete agenda item
     Given an agenda item "Old Item" exists
     When I open the menu for "Old Item"
-    And I select "Delete"
-    And I confirm the deletion
+    And I select "Delete" from the agenda menu
+    And I confirm the agenda item deletion
     Then I should see a success notification "Agenda item deleted"
     And "Old Item" should not appear in the agenda

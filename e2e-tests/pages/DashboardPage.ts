@@ -1,7 +1,7 @@
 import { Page } from '@playwright/test';
-import { BasePage } from './BasePage';
+import { EnhancedBasePage } from './EnhancedBasePage';
 
-export class DashboardPage extends BasePage {
+export class DashboardPage extends EnhancedBasePage {
   private welcomeMessage = 'h1:has-text("Welcome")';
   private activeUsersWidget = '[data-cy="activeUsersWidget"]';
   private activeMeetingsWidget = '[data-cy="activeMeetingsWidget"]';
@@ -18,8 +18,9 @@ export class DashboardPage extends BasePage {
   }
 
   async navigateToDashboard() {
-    await this.goto('/dashboard');
-    await this.waitForElement(this.welcomeMessage);
+    await this.goto('/dashboard', {
+      waitForSelector: this.welcomeMessage
+    });
   }
 
   async isOnDashboard(): Promise<boolean> {
@@ -30,48 +31,60 @@ export class DashboardPage extends BasePage {
     }
     
     // Also check for dashboard elements
-    const hasCalendar = await this.isElementVisible('text=Calendar', 2000);
-    const hasMeetings = await this.isElementVisible('text=Meetings', 2000);
+    const hasCalendar = await this.isVisible('text=Calendar', { timeout: 2000 });
+    const hasMeetings = await this.isVisible('text=Meetings', { timeout: 2000 });
     
     return hasCalendar || hasMeetings;
   }
 
   async getActiveUserCount(): Promise<number> {
-    const widget = await this.waitForElement(this.activeUsersWidget);
-    const text = await widget.textContent() || '0';
+    await this.waitForElementStable(this.activeUsersWidget);
+    const text = await this.getText(this.activeUsersWidget);
     return parseInt(text.match(/\d+/)?.[0] || '0');
   }
 
   async getActiveMeetingCount(): Promise<number> {
-    const widget = await this.waitForElement(this.activeMeetingsWidget);
-    const text = await widget.textContent() || '0';
+    await this.waitForElementStable(this.activeMeetingsWidget);
+    const text = await this.getText(this.activeMeetingsWidget);
     return parseInt(text.match(/\d+/)?.[0] || '0');
   }
 
   async navigateToMeetings() {
-    await this.clickElement(this.navigationLinks.meetings);
+    await this.click(this.navigationLinks.meetings, {
+      waitForNetworkIdle: true
+    });
     await this.page.waitForURL('**/meetings');
   }
 
   async navigateToCommittees() {
-    await this.clickElement(this.navigationLinks.committees);
+    await this.click(this.navigationLinks.committees, {
+      waitForNetworkIdle: true
+    });
     await this.page.waitForURL('**/committees');
   }
 
   async navigateToAccounts() {
-    await this.clickElement(this.navigationLinks.accounts);
+    await this.click(this.navigationLinks.accounts, {
+      waitForNetworkIdle: true
+    });
     await this.page.waitForURL('**/accounts');
   }
 
   async navigateToOrganization() {
-    await this.clickElement(this.navigationLinks.organization);
+    await this.click(this.navigationLinks.organization, {
+      waitForNetworkIdle: true
+    });
     await this.page.waitForURL('**/organization');
   }
 
   async quickCreateMeeting(meetingName: string) {
-    await this.clickElement('.quick-action-create-meeting');
-    await this.page.fill('input[formcontrolname="name"]', meetingName);
-    await this.page.click('button:has-text("Create")');
+    await this.click('.quick-action-create-meeting', {
+      waitForLoadState: true
+    });
+    await this.fill('input[formcontrolname="name"]', meetingName);
+    await this.click('button:has-text("Create")', {
+      waitForNetworkIdle: true
+    });
     await this.waitForNotification('Meeting created successfully');
   }
 }

@@ -37,7 +37,7 @@ Feature: Committee Management
     Given a committee "Temporary Committee" exists
     When I click on the committee "Temporary Committee"
     And I click the "Delete" button
-    And I confirm the deletion
+    And I confirm the committee deletion
     Then I should see a success message
     And the committee "Temporary Committee" should not appear in the list
 

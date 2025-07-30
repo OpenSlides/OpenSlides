@@ -35,6 +35,19 @@ export interface CustomWorld extends World {
   currentMeetingId?: string;
   baseUrl: string;
   
+  // Real-time test data
+  expectedNewItem?: string;
+  expectedMotionState?: string;
+  concurrentEditor?: string;
+  initialVoteCount?: string;
+  myUsername?: string;
+  initialParticipantCount?: number;
+  expectedNotification?: string;
+  concurrentUpdates?: Array<{[key: string]: string}>;
+  updateStartTime?: number;
+  offlineActions?: Array<{[key: string]: string}>;
+  steps?: any; // For reusing step definitions
+  
   // Helper methods
   initBrowser(): Promise<void>;
   initSecondBrowser(): Promise<void>;
@@ -57,6 +70,19 @@ class OpenSlidesWorld extends World implements CustomWorld {
   participantsPage?: ParticipantsPage;
   apiHelper?: APIHelper;
   currentMeetingId?: string;
+  
+  // Real-time test data
+  expectedNewItem?: string;
+  expectedMotionState?: string;
+  concurrentEditor?: string;
+  initialVoteCount?: string;
+  myUsername?: string;
+  initialParticipantCount?: number;
+  expectedNotification?: string;
+  concurrentUpdates?: Array<{[key: string]: string}>;
+  updateStartTime?: number;
+  offlineActions?: Array<{[key: string]: string}>;
+  steps?: any;
   
   testData: Map<string, any> = new Map();
   baseUrl: string = 'https://localhost:8000';

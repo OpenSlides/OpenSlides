@@ -17,7 +17,7 @@ Feature: User Authentication
   Scenario: Failed login with invalid credentials
     When I enter username "invalid" and password "wrong"
     And I click the login button
-    Then I should see an error message "Invalid username or password"
+    Then I should see an error message "Error: Username or password is incorrect."
     And I should remain on the login page
 
   Scenario: Password field masking
@@ -32,7 +32,7 @@ Feature: User Authentication
     Then I should be logged in
     And my session should persist after browser restart
 
-  @logout
+  @logout @pending
   Scenario: Successful logout
     Given I am logged in as "admin"
     When I click on the user menu

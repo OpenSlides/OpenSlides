@@ -107,7 +107,8 @@ When('I fill in the agenda form with:', async function(this: CustomWorld, dataTa
           const value = await input.inputValue();
           if (value === data.Title) {
             filled = true;
-          break;
+            break;
+          }
         }
       } catch {
         // Continue to next selector

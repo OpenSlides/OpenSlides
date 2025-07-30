@@ -106,7 +106,7 @@ export class WaitHelpers {
     } = options;
     
     // Ensure proper URL construction
-    const fullUrl = url.startsWith('http') ? url : `${page.context().browser()?.options?.baseURL || ''}${url}`;
+    const fullUrl = url.startsWith('http') ? url : `${(page.context() as any)._options?.baseURL || ''}${url}`;
     
     await page.goto(fullUrl, { waitUntil, timeout: 30000 });
     

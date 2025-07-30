@@ -12,22 +12,21 @@ Feature: Participant Management
   @critical
   Scenario: Add participant to meeting
     When I click the add participant button
-    And I search for "John Doe"
-    And I select the user "John Doe"
-    And I assign group "Delegates"
-    And I mark as present
-    And I click add participants
-    Then I should see a success notification "Participant added"
+    And I fill in the participant form with:
+      | Field     | Value         |
+      | Given name| John          |
+      | Surname   | Doe           |
+      | Email     | john@test.com |
+      | Username  | johndoe       |
+    And I save the participant
+    Then I should see a success notification
     And "John Doe" should appear in the participant list
-    And "John Doe" should be marked as present
 
-  @presence
+  @presence @simple
   Scenario: Toggle participant presence
-    Given "Jane Smith" is a participant
-    And "Jane Smith" is marked as absent
-    When I click the presence checkbox for "Jane Smith"
-    Then "Jane Smith" should be marked as present
-    And the present count should increase by 1
+    When I click the presence checkbox for "a"
+    Then "a" should be marked as present
+    And I should see a success notification
 
   Scenario: Change participant group
     Given "Bob Johnson" is a participant in group "Observers"

@@ -1,70 +1,63 @@
-import { Page, Locator } from '@playwright/test';
+import { Page } from '@playwright/test';
+import { EnhancedBasePage, WaitOptions } from './EnhancedBasePage';
 
-export class AutopilotPage {
-  readonly page: Page;
-  readonly startButton: Locator;
-  readonly pauseButton: Locator;
-  readonly stopButton: Locator;
-  readonly profileSelect: Locator;
-  readonly controlPanel: Locator;
-  readonly currentItemDisplay: Locator;
-  readonly timerDisplay: Locator;
-  readonly speakerQueue: Locator;
-  readonly nextActionDisplay: Locator;
-  readonly createProfileButton: Locator;
-  readonly settingsButton: Locator;
-  readonly emergencyStopButton: Locator;
+export class AutopilotPage extends EnhancedBasePage {
+  // Selectors
+  readonly startButton = 'button:has-text("Start Autopilot"), [data-cy="start-autopilot"]';
+  readonly pauseButton = 'button:has-text("Pause"), [data-cy="pause-autopilot"]';
+  readonly stopButton = 'button:has-text("Stop Autopilot"), [data-cy="stop-autopilot"]';
+  readonly profileSelect = 'mat-select[formcontrolname="autopilot_profile"], select[name="profile"]';
+  readonly controlPanel = '.autopilot-control-panel, [data-cy="autopilot-controls"]';
+  readonly currentItemDisplay = '.current-agenda-item, [data-cy="current-item"]';
+  readonly timerDisplay = '.autopilot-timer, [data-cy="timer-display"]';
+  readonly speakerQueue = '.speaker-queue, [data-cy="speaker-list"]';
+  readonly nextActionDisplay = '.next-action, [data-cy="next-action"]';
+  readonly createProfileButton = 'button:has-text("Create profile"), [data-cy="create-profile"]';
+  readonly settingsButton = 'button:has-text("Autopilot settings"), [mat-icon="settings"]';
+  readonly emergencyStopButton = '.emergency-stop, button[color="warn"]:has-text("STOP")';
 
   constructor(page: Page) {
-    this.page = page;
-    this.startButton = page.locator('button:has-text("Start Autopilot"), [data-cy="start-autopilot"]');
-    this.pauseButton = page.locator('button:has-text("Pause"), [data-cy="pause-autopilot"]');
-    this.stopButton = page.locator('button:has-text("Stop Autopilot"), [data-cy="stop-autopilot"]');
-    this.profileSelect = page.locator('mat-select[formcontrolname="autopilot_profile"], select[name="profile"]');
-    this.controlPanel = page.locator('.autopilot-control-panel, [data-cy="autopilot-controls"]');
-    this.currentItemDisplay = page.locator('.current-agenda-item, [data-cy="current-item"]');
-    this.timerDisplay = page.locator('.autopilot-timer, [data-cy="timer-display"]');
-    this.speakerQueue = page.locator('.speaker-queue, [data-cy="speaker-list"]');
-    this.nextActionDisplay = page.locator('.next-action, [data-cy="next-action"]');
-    this.createProfileButton = page.locator('button:has-text("Create profile"), [data-cy="create-profile"]');
-    this.settingsButton = page.locator('button:has-text("Autopilot settings"), [mat-icon="settings"]');
-    this.emergencyStopButton = page.locator('.emergency-stop, button[color="warn"]:has-text("STOP")');
+    super(page);
   }
 
-  async navigate(): Promise<void> {
-    await this.page.goto('/autopilot');
-    await this.page.waitForLoadState('networkidle');
+  async navigate(options?: WaitOptions): Promise<void> {
+    await this.goto('/autopilot', {
+      waitForNetworkIdle: true,
+      waitForSelector: this.controlPanel,
+      ...options
+    });
   }
 
-  async startAutopilot(profileName?: string): Promise<void> {
+  async startAutopilot(profileName?: string, options?: WaitOptions): Promise<void> {
     if (profileName) {
-      await this.profileSelect.click();
-      await this.page.locator(`mat-option:has-text("${profileName}")`).click();
+      await this.click(this.profileSelect, options);
+      await this.click(`mat-option:has-text("${profileName}")`, options);
     }
     
-    await this.startButton.click();
-    await this.page.waitForTimeout(1000);
+    await this.click(this.startButton, {
+      waitForSelector: this.pauseButton,
+      ...options
+    });
   }
 
-  async pauseAutopilot(): Promise<void> {
-    await this.pauseButton.click();
-    await this.page.waitForTimeout(500);
+  async pauseAutopilot(options?: WaitOptions): Promise<void> {
+    await this.click(this.pauseButton, options);
   }
 
-  async resumeAutopilot(): Promise<void> {
-    await this.page.locator('button:has-text("Resume")').click();
-    await this.page.waitForTimeout(500);
+  async resumeAutopilot(options?: WaitOptions): Promise<void> {
+    await this.click('button:has-text("Resume")', options);
   }
 
-  async stopAutopilot(): Promise<void> {
-    await this.stopButton.click();
-    await this.page.locator('button:has-text("Confirm stop")').click();
-    await this.page.waitForTimeout(1000);
+  async stopAutopilot(options?: WaitOptions): Promise<void> {
+    await this.click(this.stopButton, options);
+    await this.click('button:has-text("Confirm stop")', {
+      waitForSelector: this.startButton,
+      ...options
+    });
   }
 
-  async emergencyStop(): Promise<void> {
-    await this.emergencyStopButton.click();
-    await this.page.waitForTimeout(500);
+  async emergencyStop(options?: WaitOptions): Promise<void> {
+    await this.click(this.emergencyStopButton, options);
   }
 
   async createCustomProfile(profileData: {
@@ -73,100 +66,105 @@ export class AutopilotPage {
     speakerWarnings: string[];
     votingDuration: number;
     breakFrequency: string;
-  }): Promise<void> {
-    await this.createProfileButton.click();
-    await this.page.waitForTimeout(1000);
+  }, options?: WaitOptions): Promise<void> {
+    await this.click(this.createProfileButton, {
+      waitForSelector: 'input[formcontrolname="profile_name"]',
+      ...options
+    });
     
-    await this.page.fill('input[formcontrolname="profile_name"]', profileData.name);
+    await this.fill('input[formcontrolname="profile_name"]', profileData.name, options);
     
-    await this.page.locator('mat-select[formcontrolname="agenda_timing"]').click();
-    await this.page.locator(`mat-option:has-text("${profileData.agendaTiming}")`).click();
+    await this.click('mat-select[formcontrolname="agenda_timing"]', options);
+    await this.click(`mat-option:has-text("${profileData.agendaTiming}")`, options);
     
     // Add speaker warnings
     for (const warning of profileData.speakerWarnings) {
-      await this.page.locator('button:has-text("Add warning")').click();
-      await this.page.fill('input[formcontrolname="warning_time"]', warning);
+      await this.click('button:has-text("Add warning")', options);
+      await this.fill('input[formcontrolname="warning_time"]', warning, options);
     }
     
-    await this.page.fill('input[formcontrolname="voting_duration"]', profileData.votingDuration.toString());
-    await this.page.fill('input[formcontrolname="break_frequency"]', profileData.breakFrequency);
+    await this.fill('input[formcontrolname="voting_duration"]', profileData.votingDuration.toString(), options);
+    await this.fill('input[formcontrolname="break_frequency"]', profileData.breakFrequency, options);
     
-    await this.page.locator('button:has-text("Save profile")').click();
-    await this.page.waitForTimeout(2000);
+    await this.click('button:has-text("Save profile")', {
+      waitForNetworkIdle: true,
+      ...options
+    });
   }
 
-  async getCurrentAgendaItem(): Promise<string> {
-    return await this.currentItemDisplay.textContent() || '';
+  async getCurrentAgendaItem(options?: WaitOptions): Promise<string> {
+    return await this.getText(this.currentItemDisplay, options);
   }
 
-  async getTimerValue(): Promise<string> {
-    return await this.timerDisplay.textContent() || '00:00';
+  async getTimerValue(options?: WaitOptions): Promise<string> {
+    const text = await this.getText(this.timerDisplay, options);
+    return text || '00:00';
   }
 
-  async getNextAction(): Promise<string> {
-    return await this.nextActionDisplay.textContent() || '';
+  async getNextAction(options?: WaitOptions): Promise<string> {
+    return await this.getText(this.nextActionDisplay, options);
   }
 
-  async getSpeakerQueueCount(): Promise<number> {
-    const speakers = await this.speakerQueue.locator('.speaker-item').count();
+  async getSpeakerQueueCount(options?: WaitOptions): Promise<number> {
+    await this.waitForElementStable(this.speakerQueue, options?.timeout);
+    const speakers = await this.page.locator(this.speakerQueue).locator('.speaker-item').count();
     return speakers;
   }
 
-  async isAutopilotRunning(): Promise<boolean> {
-    return await this.pauseButton.isVisible();
+  async isAutopilotRunning(options?: WaitOptions): Promise<boolean> {
+    return await this.isVisible(this.pauseButton, { timeout: 1000, ...options });
   }
 
-  async handlePointOfOrder(): Promise<void> {
-    const pointOfOrderButton = this.page.locator('button:has-text("Handle point of order")');
-    if (await pointOfOrderButton.isVisible()) {
-      await pointOfOrderButton.click();
-      await this.page.waitForTimeout(1000);
+  async handlePointOfOrder(options?: WaitOptions): Promise<void> {
+    const pointOfOrderButton = 'button:has-text("Handle point of order")';
+    if (await this.isVisible(pointOfOrderButton, { timeout: 1000 })) {
+      await this.click(pointOfOrderButton, options);
     }
   }
 
-  async skipToNextItem(): Promise<void> {
-    await this.page.locator('button:has-text("Skip to next")').click();
-    await this.page.locator('button:has-text("Confirm skip")').click();
-    await this.page.waitForTimeout(1000);
+  async skipToNextItem(options?: WaitOptions): Promise<void> {
+    await this.click('button:has-text("Skip to next")', options);
+    await this.click('button:has-text("Confirm skip")', options);
   }
 
-  async extendCurrentTime(minutes: number): Promise<void> {
-    await this.page.locator('button:has-text("Extend time")').click();
-    await this.page.fill('input[type="number"]', minutes.toString());
-    await this.page.locator('button:has-text("Apply")').click();
-    await this.page.waitForTimeout(500);
+  async extendCurrentTime(minutes: number, options?: WaitOptions): Promise<void> {
+    await this.click('button:has-text("Extend time")', options);
+    await this.fill('input[type="number"]', minutes.toString(), options);
+    await this.click('button:has-text("Apply")', options);
   }
 
-  async viewAutopilotReport(): Promise<void> {
-    await this.page.locator('button:has-text("View report")').click();
-    await this.page.waitForTimeout(1000);
+  async viewAutopilotReport(options?: WaitOptions): Promise<void> {
+    await this.click('button:has-text("View report")', {
+      waitForLoadState: true,
+      ...options
+    });
   }
 
-  async configureBreaks(breaks: Array<{time: string, duration: number}>): Promise<void> {
-    await this.settingsButton.click();
-    await this.page.locator('mat-tab:has-text("Breaks")').click();
+  async configureBreaks(breaks: Array<{time: string, duration: number}>, options?: WaitOptions): Promise<void> {
+    await this.click(this.settingsButton, options);
+    await this.click('mat-tab:has-text("Breaks")', options);
     
     for (const breakConfig of breaks) {
-      await this.page.locator('button:has-text("Add break")').click();
-      await this.page.fill('input[formcontrolname="break_time"]', breakConfig.time);
-      await this.page.fill('input[formcontrolname="break_duration"]', breakConfig.duration.toString());
+      await this.click('button:has-text("Add break")', options);
+      await this.fill('input[formcontrolname="break_time"]', breakConfig.time, options);
+      await this.fill('input[formcontrolname="break_duration"]', breakConfig.duration.toString(), options);
     }
     
-    await this.page.locator('button:has-text("Save")').click();
-    await this.page.waitForTimeout(1000);
+    await this.click('button:has-text("Save")', options);
   }
 
-  async getAutopilotStatus(): Promise<{
+  async getAutopilotStatus(options?: WaitOptions): Promise<{
     state: string;
     currentItem: string;
     timeRemaining: string;
     upcomingAction: string;
   }> {
+    const state = await this.getText('.autopilot-state', options);
     return {
-      state: await this.page.locator('.autopilot-state').textContent() || 'stopped',
-      currentItem: await this.getCurrentAgendaItem(),
-      timeRemaining: await this.getTimerValue(),
-      upcomingAction: await this.getNextAction()
+      state: state || 'stopped',
+      currentItem: await this.getCurrentAgendaItem(options),
+      timeRemaining: await this.getTimerValue(options),
+      upcomingAction: await this.getNextAction(options)
     };
   }
 }

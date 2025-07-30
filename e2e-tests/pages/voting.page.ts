@@ -1,87 +1,91 @@
-import { Page, Locator } from '@playwright/test';
+import { Page } from '@playwright/test';
+import { EnhancedBasePage } from './EnhancedBasePage';
 
-export class VotingPage {
-  readonly page: Page;
-  readonly voteYesButton: Locator;
-  readonly voteNoButton: Locator;
-  readonly voteAbstainButton: Locator;
-  readonly submitVoteButton: Locator;
-  readonly votingInterface: Locator;
-  readonly candidateList: Locator;
-  readonly voteResults: Locator;
-  readonly changeVoteButton: Locator;
-  readonly delegationSelect: Locator;
-  readonly votingTimer: Locator;
-  readonly turnoutIndicator: Locator;
-  readonly generateReportButton: Locator;
+export class VotingPage extends EnhancedBasePage {
+  readonly voteYesButton: string;
+  readonly voteNoButton: string;
+  readonly voteAbstainButton: string;
+  readonly submitVoteButton: string;
+  readonly votingInterface: string;
+  readonly candidateList: string;
+  readonly voteResults: string;
+  readonly changeVoteButton: string;
+  readonly delegationSelect: string;
+  readonly votingTimer: string;
+  readonly turnoutIndicator: string;
+  readonly generateReportButton: string;
 
   constructor(page: Page) {
-    this.page = page;
-    this.voteYesButton = page.locator('button:has-text("Yes"), [data-cy="vote-yes"]');
-    this.voteNoButton = page.locator('button:has-text("No"), [data-cy="vote-no"]');
-    this.voteAbstainButton = page.locator('button:has-text("Abstain"), [data-cy="vote-abstain"]');
-    this.submitVoteButton = page.locator('button:has-text("Submit vote"), button:has-text("Cast vote")');
-    this.votingInterface = page.locator('.voting-interface, [class*="voting-panel"]');
-    this.candidateList = page.locator('.candidate-list, mat-selection-list');
-    this.voteResults = page.locator('.vote-results, [class*="results-panel"]');
-    this.changeVoteButton = page.locator('button:has-text("Change vote")');
-    this.delegationSelect = page.locator('mat-select[formcontrolname="vote_for"], select[name="delegation"]');
-    this.votingTimer = page.locator('.voting-timer, [class*="countdown"]');
-    this.turnoutIndicator = page.locator('.turnout, [class*="participation"]');
-    this.generateReportButton = page.locator('button:has-text("Generate report")');
+    super(page);
+    this.voteYesButton = 'button:has-text("Yes"), [data-cy="vote-yes"]';
+    this.voteNoButton = 'button:has-text("No"), [data-cy="vote-no"]';
+    this.voteAbstainButton = 'button:has-text("Abstain"), [data-cy="vote-abstain"]';
+    this.submitVoteButton = 'button:has-text("Submit vote"), button:has-text("Cast vote")';
+    this.votingInterface = '.voting-interface, [class*="voting-panel"]';
+    this.candidateList = '.candidate-list, mat-selection-list';
+    this.voteResults = '.vote-results, [class*="results-panel"]';
+    this.changeVoteButton = 'button:has-text("Change vote")';
+    this.delegationSelect = 'mat-select[formcontrolname="vote_for"], select[name="delegation"]';
+    this.votingTimer = '.voting-timer, [class*="countdown"]';
+    this.turnoutIndicator = '.turnout, [class*="participation"]';
+    this.generateReportButton = 'button:has-text("Generate report")';
   }
 
   async voteOnMotion(vote: 'yes' | 'no' | 'abstain'): Promise<void> {
     switch (vote) {
       case 'yes':
-        await this.voteYesButton.click();
+        await this.click(this.voteYesButton);
         break;
       case 'no':
-        await this.voteNoButton.click();
+        await this.click(this.voteNoButton);
         break;
       case 'abstain':
-        await this.voteAbstainButton.click();
+        await this.click(this.voteAbstainButton);
         break;
     }
     
-    await this.submitVoteButton.click();
-    await this.page.waitForTimeout(2000);
+    await this.click(this.submitVoteButton, {
+      waitForNetworkIdle: true,
+      waitForResponse: (response) => response.url().includes('/api/') && response.status() === 200
+    });
   }
 
   async voteOnElection(candidateNames: string[]): Promise<void> {
     for (const name of candidateNames) {
-      await this.page.locator(`mat-list-option:has-text("${name}"), input[value="${name}"]`).click();
+      await this.click(`mat-list-option:has-text("${name}"), input[value="${name}"]`);
     }
     
-    await this.submitVoteButton.click();
-    await this.page.waitForTimeout(2000);
+    await this.click(this.submitVoteButton, {
+      waitForNetworkIdle: true
+    });
   }
 
   async changeVote(newVote: 'yes' | 'no' | 'abstain'): Promise<void> {
-    await this.changeVoteButton.click();
-    await this.page.waitForTimeout(500);
+    await this.click(this.changeVoteButton, {
+      waitForLoadState: true
+    });
     
     await this.voteOnMotion(newVote);
   }
 
   async voteAsProxy(principalName: string, vote: 'yes' | 'no' | 'abstain'): Promise<void> {
-    await this.delegationSelect.click();
-    await this.page.locator(`mat-option:has-text("${principalName}")`).click();
+    await this.click(this.delegationSelect);
+    await this.click(`mat-option:has-text("${principalName}")`);
     
     await this.voteOnMotion(vote);
   }
 
   async waitForVotingToOpen(): Promise<void> {
-    await this.votingInterface.waitFor({ state: 'visible', timeout: 30000 });
+    await this.waitForElementStable(this.votingInterface, 30000);
   }
 
   async isVotingOpen(): Promise<boolean> {
-    return await this.votingInterface.isVisible();
+    return await this.isVisible(this.votingInterface, { timeout: 5000 });
   }
 
   async hasAlreadyVoted(): Promise<boolean> {
-    const confirmationMessage = await this.page.locator('text="You have already voted"').isVisible();
-    const changeVoteVisible = await this.changeVoteButton.isVisible();
+    const confirmationMessage = await this.isVisible('text="You have already voted"', { timeout: 2000 });
+    const changeVoteVisible = await this.isVisible(this.changeVoteButton, { timeout: 2000 });
     
     return confirmationMessage || changeVoteVisible;
   }
@@ -92,11 +96,11 @@ export class VotingPage {
     abstain: number;
     total: number;
   }> {
-    await this.voteResults.waitFor({ state: 'visible' });
+    await this.waitForElementStable(this.voteResults);
     
-    const yesText = await this.page.locator('.yes-votes, [data-cy="yes-count"]').textContent() || '0';
-    const noText = await this.page.locator('.no-votes, [data-cy="no-count"]').textContent() || '0';
-    const abstainText = await this.page.locator('.abstain-votes, [data-cy="abstain-count"]').textContent() || '0';
+    const yesText = await this.getText('.yes-votes, [data-cy="yes-count"]');
+    const noText = await this.getText('.no-votes, [data-cy="no-count"]');
+    const abstainText = await this.getText('.abstain-votes, [data-cy="abstain-count"]');
     
     const yes = parseInt(yesText.replace(/\D/g, ''));
     const no = parseInt(noText.replace(/\D/g, ''));
@@ -115,7 +119,7 @@ export class VotingPage {
     eligible: number;
     percentage: number;
   }> {
-    const turnoutText = await this.turnoutIndicator.textContent() || '';
+    const turnoutText = await this.getText(this.turnoutIndicator);
     
     // Parse "45/100 (45%)" format
     const match = turnoutText.match(/(\d+)\/(\d+)\s*\((\d+)%\)/);
@@ -132,23 +136,27 @@ export class VotingPage {
   }
 
   async getRemainingTime(): Promise<string> {
-    return await this.votingTimer.textContent() || '00:00';
+    const time = await this.getText(this.votingTimer);
+    return time || '00:00';
   }
 
   async isVotingClosed(): Promise<boolean> {
-    const closedMessage = await this.page.locator('text="Voting has closed"').isVisible();
-    const expiredTimer = await this.page.locator('.timer-expired').isVisible();
+    const closedMessage = await this.isVisible('text="Voting has closed"', { timeout: 2000 });
+    const expiredTimer = await this.isVisible('.timer-expired', { timeout: 2000 });
     
     return closedMessage || expiredTimer;
   }
 
   async generateVotingReport(): Promise<void> {
-    await this.generateReportButton.click();
-    await this.page.waitForTimeout(1000);
+    await this.click(this.generateReportButton, {
+      waitForLoadState: true
+    });
     
     // Wait for download to start
     const downloadPromise = this.page.waitForEvent('download');
-    await this.page.locator('button:has-text("Download")').click();
+    await this.click('button:has-text("Download")', {
+      waitForNetworkIdle: true
+    });
     const download = await downloadPromise;
     
     // Save the file
@@ -156,11 +164,11 @@ export class VotingPage {
   }
 
   async canSeeVoterNames(): Promise<boolean> {
-    return await this.page.locator('.voter-list, [class*="voter-names"]').isVisible();
+    return await this.isVisible('.voter-list, [class*="voter-names"]', { timeout: 5000 });
   }
 
   async getWeightedVoteDisplay(): Promise<string> {
-    const weightElement = await this.page.locator('.vote-weight, [data-cy="vote-weight"]');
-    return await weightElement.textContent() || '1';
+    const weight = await this.getText('.vote-weight, [data-cy="vote-weight"]');
+    return weight || '1';
   }
 }

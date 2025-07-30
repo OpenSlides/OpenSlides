@@ -1,67 +1,73 @@
-import { Page, Locator } from '@playwright/test';
+import { Page } from '@playwright/test';
+import { EnhancedBasePage } from './EnhancedBasePage';
 
-export class HistoryPage {
-  readonly page: Page;
-  readonly historyButton: Locator;
-  readonly historyList: Locator;
-  readonly filterButton: Locator;
-  readonly searchInput: Locator;
-  readonly dateRangeStart: Locator;
-  readonly dateRangeEnd: Locator;
-  readonly userFilter: Locator;
-  readonly actionFilter: Locator;
-  readonly exportButton: Locator;
-  readonly refreshButton: Locator;
-  readonly detailsPanel: Locator;
-  readonly liveMonitorToggle: Locator;
+export class HistoryPage extends EnhancedBasePage {
+  readonly historyButton: string;
+  readonly historyList: string;
+  readonly filterButton: string;
+  readonly searchInput: string;
+  readonly dateRangeStart: string;
+  readonly dateRangeEnd: string;
+  readonly userFilter: string;
+  readonly actionFilter: string;
+  readonly exportButton: string;
+  readonly refreshButton: string;
+  readonly detailsPanel: string;
+  readonly liveMonitorToggle: string;
 
   constructor(page: Page) {
-    this.page = page;
-    this.historyButton = page.locator('a[href*="/history"], mat-nav-list a:has-text("History")');
-    this.historyList = page.locator('.history-list, [data-cy="history-entries"]');
-    this.filterButton = page.locator('button:has-text("Filter"), [data-cy="filter-history"]');
-    this.searchInput = page.locator('input[placeholder*="Search history"]');
-    this.dateRangeStart = page.locator('input[formcontrolname="start_date"]');
-    this.dateRangeEnd = page.locator('input[formcontrolname="end_date"]');
-    this.userFilter = page.locator('mat-select[formcontrolname="user"]');
-    this.actionFilter = page.locator('mat-select[formcontrolname="action_type"]');
-    this.exportButton = page.locator('button:has-text("Export"), [data-cy="export-history"]');
-    this.refreshButton = page.locator('button[mat-icon="refresh"]');
-    this.detailsPanel = page.locator('.history-details, [data-cy="history-detail-panel"]');
-    this.liveMonitorToggle = page.locator('mat-slide-toggle[formcontrolname="live_monitoring"]');
+    super(page);
+    this.historyButton = 'a[href*="/history"], mat-nav-list a:has-text("History")';
+    this.historyList = '.history-list, [data-cy="history-entries"]';
+    this.filterButton = 'button:has-text("Filter"), [data-cy="filter-history"]';
+    this.searchInput = 'input[placeholder*="Search history"]';
+    this.dateRangeStart = 'input[formcontrolname="start_date"]';
+    this.dateRangeEnd = 'input[formcontrolname="end_date"]';
+    this.userFilter = 'mat-select[formcontrolname="user"]';
+    this.actionFilter = 'mat-select[formcontrolname="action_type"]';
+    this.exportButton = 'button:has-text("Export"), [data-cy="export-history"]';
+    this.refreshButton = 'button[mat-icon="refresh"]';
+    this.detailsPanel = '.history-details, [data-cy="history-detail-panel"]';
+    this.liveMonitorToggle = 'mat-slide-toggle[formcontrolname="live_monitoring"]';
   }
 
   async navigate(): Promise<void> {
-    await this.historyButton.click();
-    await this.page.waitForLoadState('networkidle');
+    await this.click(this.historyButton, {
+      waitForNetworkIdle: true
+    });
   }
 
   async filterByDateRange(startDate: string, endDate: string): Promise<void> {
-    await this.filterButton.click();
-    await this.dateRangeStart.fill(startDate);
-    await this.dateRangeEnd.fill(endDate);
-    await this.page.locator('button:has-text("Apply")').click();
-    await this.page.waitForTimeout(1000);
+    await this.click(this.filterButton, {
+      waitForLoadState: true
+    });
+    await this.fill(this.dateRangeStart, startDate);
+    await this.fill(this.dateRangeEnd, endDate);
+    await this.click('button:has-text("Apply")', {
+      waitForNetworkIdle: true
+    });
   }
 
   async filterByUser(username: string): Promise<void> {
-    await this.filterButton.click();
-    await this.userFilter.click();
-    await this.page.locator(`mat-option:has-text("${username}")`).click();
+    await this.click(this.filterButton, {
+      waitForLoadState: true
+    });
+    await this.click(this.userFilter);
+    await this.click(`mat-option:has-text("${username}")`);
     await this.page.locator('button:has-text("Apply")').click();
     await this.page.waitForTimeout(1000);
   }
 
   async filterByActionType(actionType: string): Promise<void> {
-    await this.filterButton.click();
-    await this.actionFilter.click();
+    await this.click(this.filterButton);
+    await this.click(this.actionFilter);
     await this.page.locator(`mat-option:has-text("${actionType}")`).click();
     await this.page.locator('button:has-text("Apply")').click();
     await this.page.waitForTimeout(1000);
   }
 
   async searchHistory(searchTerm: string): Promise<void> {
-    await this.searchInput.fill(searchTerm);
+    await this.fill(this.searchInput, searchTerm);
     await this.page.keyboard.press('Enter');
     await this.page.waitForTimeout(1000);
   }
@@ -69,7 +75,7 @@ export class HistoryPage {
   async viewEntryDetails(entryText: string): Promise<void> {
     const entry = this.historyList.locator(`text="${entryText}"`).first();
     await entry.click();
-    await this.detailsPanel.waitFor({ state: 'visible' });
+    await this.waitForSelector(this.detailsPanel, { state: 'visible' });
   }
 
   async exportHistory(options: {
@@ -78,7 +84,7 @@ export class HistoryPage {
     includeAll?: boolean;
     anonymize?: boolean;
   }): Promise<void> {
-    await this.exportButton.click();
+    await this.click(this.exportButton);
     await this.page.waitForTimeout(500);
     
     await this.page.locator(`mat-radio-button:has-text("${options.format}")`).click();
@@ -99,7 +105,7 @@ export class HistoryPage {
   async enableLiveMonitoring(): Promise<void> {
     const isEnabled = await this.liveMonitorToggle.getAttribute('aria-checked') === 'true';
     if (!isEnabled) {
-      await this.liveMonitorToggle.click();
+      await this.click(this.liveMonitorToggle);
       await this.page.waitForTimeout(500);
     }
   }
@@ -114,7 +120,7 @@ export class HistoryPage {
     added: string[];
     deleted: string[];
   }> {
-    await this.detailsPanel.waitFor({ state: 'visible' });
+    await this.waitForSelector(this.detailsPanel, { state: 'visible' });
     
     return {
       original: await this.detailsPanel.locator('.diff-original').textContent() || '',
@@ -125,7 +131,7 @@ export class HistoryPage {
   }
 
   async filterSecurityEvents(): Promise<void> {
-    await this.filterButton.click();
+    await this.click(this.filterButton);
     await this.page.locator('mat-checkbox:has-text("Security events only")').click();
     await this.page.locator('button:has-text("Apply")').click();
     await this.page.waitForTimeout(1000);
