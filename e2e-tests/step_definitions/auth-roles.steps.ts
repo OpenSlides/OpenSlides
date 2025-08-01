@@ -33,6 +33,22 @@ Given('I am logged in as {string}', async function(this: CustomWorld, role: stri
     password = role;
   }
   
+  // Use API-based authentication for stability
+  if (this.authHelper) {
+    try {
+      await this.authHelper.authenticatePage(this.page!, username, password);
+      console.log(`Authenticated as ${role} via API`);
+      
+      // Store the current user role for later use
+      this.testData.set('currentUserRole', role);
+      this.testData.set('currentUsername', username);
+      return;
+    } catch (error) {
+      console.warn('API authentication failed, falling back to UI login:', error);
+    }
+  }
+  
+  // Fallback to UI login if API auth fails
   const loginPage = new LoginPage(this.page!);
   await loginPage.navigateToLogin();
   await loginPage.login(username, password);

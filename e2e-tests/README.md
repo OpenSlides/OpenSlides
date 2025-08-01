@@ -1,183 +1,86 @@
-# OpenSlides E2E Test Suite
+# OpenSlides E2E Tests
 
-This is a comprehensive end-to-end test suite for OpenSlides using Playwright and Cucumber BDD.
-
-## Architecture
-
-- **Playwright**: Browser automation framework
-- **Cucumber**: BDD test framework
-- **TypeScript**: Type-safe test code
-- **Page Object Model**: Maintainable test structure
-- **Docker Integration**: Automated service orchestration
-
-## Structure
-
-```
-e2e-tests/
-├── features/              # BDD feature files
-├── step_definitions/      # Step implementations
-├── pages/                 # Page Object Model classes
-├── support/              # Test framework setup
-├── fixtures/             # Test data files
-├── reports/              # Test reports and screenshots
-└── scripts/              # Utility scripts
-```
+End-to-end tests for OpenSlides using Cucumber and Playwright.
 
 ## Setup
 
-1. Install dependencies:
 ```bash
 npm install
 ```
 
-2. Start OpenSlides services:
-```bash
-npm run docker:up
-npm run wait-for-services
-```
+## Running Tests
 
-3. Run tests:
+All test commands automatically run system health checks before executing tests:
+
 ```bash
+# Run all tests (with health check)
 npm test
-```
 
-## Test Execution
-
-### Run all tests
-```bash
-npm test
-```
-
-### Run smoke tests only
-```bash
+# Run smoke tests
 npm run test:smoke
-```
 
-### Run tests in development mode (headed browser)
-```bash
+# Run development tests
 npm run test:dev
-```
 
-### Run tests in parallel
-```bash
+# Run all tests except those marked @skip
+npm run test:full
+
+# Run tests in parallel (4 workers)
 npm run test:parallel
+
+# Run tests without health check (not recommended)
+npm run test:nocheck
+
+# Run system health check only
+npm run system-check
 ```
 
-### Run with Docker orchestration
-```bash
-npm run test:docker
+## npm Scripts
+
+- `pretest` - Automatically runs system health check before tests
+- `test` - Run all feature tests
+- `test:smoke` - Run only @smoke tagged tests
+- `test:dev` - Run only @dev tagged tests
+- `test:full` - Run all tests except @skip
+- `test:parallel` - Run tests in parallel
+- `test:nocheck` - Run tests without health check
+- `system-check` - Run system health check only
+- `clean` - Clean up reports and temporary files
+
+## System Health Check
+
+The `system-health-check.ts` script verifies:
+- OpenSlides is accessible
+- Authentication service works
+- Meeting access is functional
+- Autoupdate service is healthy
+
+Tests will not run if the system health check fails.
+
+## Project Structure
+
+```
+e2e-tests/
+├── features/           # Cucumber feature files
+├── step_definitions/   # Step implementation files
+├── support/           # Test helpers and hooks
+├── pages/             # Page object models
+├── fixtures/          # Test data files
+└── system-health-check.ts  # Pre-test health check
 ```
 
-## Writing Tests
+## Environment Variables
 
-### Feature Files
-
-Features are written in Gherkin syntax:
-
-```gherkin
-Feature: User Authentication
-  As a user
-  I want to log in to OpenSlides
-  So that I can access the system
-
-  Scenario: Successful login
-    Given I am on the login page
-    When I enter username "admin" and password "admin"
-    And I click the login button
-    Then I should be redirected to the dashboard
+Create a `.env` file with:
 ```
-
-### Page Objects
-
-Page objects encapsulate page-specific logic:
-
-```typescript
-export class LoginPage extends BasePage {
-  async login(username: string, password: string) {
-    await this.fillInput(this.usernameInput, username);
-    await this.fillInput(this.passwordInput, password);
-    await this.clickElement(this.loginButton);
-  }
-}
+BASE_URL=https://localhost:8000
+HEADLESS=true
 ```
-
-### Step Definitions
-
-Steps connect features to page objects:
-
-```typescript
-When('I enter username {string} and password {string}', 
-  async function(username: string, password: string) {
-    await this.loginPage.login(username, password);
-  }
-);
-```
-
-## Tags
-
-- `@smoke` - Critical path tests
-- `@critical` - Must-pass scenarios
-- `@realtime` - WebSocket/real-time tests
-- `@meeting` - Meeting-specific tests
-- `@admin` - Admin-only features
-- `@skip` - Skip in CI
-- `@wip` - Work in progress
-
-## Reports
-
-After test execution, reports are available in:
-- HTML Report: `reports/cucumber-report.html`
-- JSON Report: `reports/cucumber-report.json`
-- Screenshots: `reports/screenshots/`
-- Videos: `reports/videos/`
-
-## Debugging
-
-1. Run in headed mode:
-```bash
-HEADLESS=false npm test
-```
-
-2. Add breakpoints in VS Code
-3. Use Playwright Inspector:
-```bash
-PWDEBUG=1 npm test
-```
-
-## CI/CD Integration
-
-The test suite is designed for CI/CD pipelines:
-
-```yaml
-# Example GitHub Actions
-- name: Run E2E Tests
-  run: |
-    npm run docker:up
-    npm run wait-for-services
-    npm test
-    npm run docker:down
-```
-
-## Best Practices
-
-1. **Page Objects**: Keep selectors and page logic in page objects
-2. **Reusable Steps**: Write generic, reusable step definitions
-3. **Test Data**: Use fixtures for test data
-4. **Cleanup**: Always clean up test data
-5. **Stability**: Use proper waits and assertions
-6. **Naming**: Use descriptive scenario and step names
 
 ## Troubleshooting
 
-### SSL Certificate Errors
-The test suite is configured to ignore SSL errors for local development.
-
-### Flaky Tests
-- Increase timeouts in `.env`
-- Add explicit waits
-- Check for race conditions
-
-### Docker Issues
-- Ensure all services are running: `docker-compose ps`
-- Check logs: `npm run docker:logs`
-- Restart services: `npm run docker:down && npm run docker:up`
+If tests fail to run:
+1. Ensure OpenSlides is running: `make run-dev` (from parent directory)
+2. Wait for services to initialize (60-90 seconds)
+3. Run `npm run system-check` to verify services are healthy
+4. Check browser compatibility (Chromium is used by default)

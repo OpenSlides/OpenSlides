@@ -250,6 +250,33 @@ services:
     ports:
       - "8025:8025" # web ui to check mails manually
 
+  caddy-test:
+    build:
+        context: ../../openslides-proxy
+        target: "dev"
+        args:
+            CONTEXT: "dev"
+    image: openslides-caddy-proxy-dev
+    container_name: openslides-caddy-test
+    depends_on:
+      - client
+      - backend
+      - autoupdate
+      - auth
+      - media
+      - search
+      - vote
+      - icc
+      - manage
+    ports:
+      - "8001:8000"  # Maps container port 8000 to host port 8001
+    env_file: services.env
+    environment:
+      - ENABLE_LOCAL_HTTPS=1
+      # Override ports to prevent conflicts with Traefik
+      - CADDY_PORT=8000
+    restart: unless-stopped
+
   vote:
     build:
         context: ../../openslides-vote-service

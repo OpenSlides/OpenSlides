@@ -1,0 +1,171 @@
+{
+    # Global options
+    admin off
+    auto_https off
+}
+
+:8001 {
+    # Enable logging
+    log {
+        output stdout
+        format console
+    }
+
+    # Autoupdate service (WebSocket/SSE)
+    handle_path /system/autoupdate* {
+        reverse_proxy autoupdate:9012 {
+            # WebSocket support
+            header_up Upgrade {http.request.header.Upgrade}
+            header_up Connection {http.request.header.Connection}
+            # SSE support
+            flush_interval -1
+            # Longer timeout for streaming connections
+            transport http {
+                read_timeout 0
+                write_timeout 0
+            }
+        }
+    }
+
+    # Presenter service
+    handle_path /system/presenter* {
+        reverse_proxy backend:9003
+    }
+
+    # Search service
+    handle_path /system/search* {
+        reverse_proxy search:9050
+    }
+
+    # Action service
+    handle_path /system/action* {
+        reverse_proxy backend:9002
+    }
+
+    # Media service
+    handle_path /system/media* {
+        reverse_proxy media:9006
+    }
+
+    # Auth service
+    handle_path /system/auth* {
+        reverse_proxy auth:9004
+    }
+    
+    handle_path /system/saml* {
+        reverse_proxy auth:9004
+    }
+
+    # ICC service (WebSocket)
+    handle_path /system/icc* {
+        reverse_proxy icc:9007 {
+            # WebSocket support
+            header_up Upgrade {http.request.header.Upgrade}
+            header_up Connection {http.request.header.Connection}
+        }
+    }
+
+    # Vote service
+    handle_path /system/vote* {
+        reverse_proxy vote:9013
+    }
+
+    # Manage service (gRPC)
+    handle {
+        @grpc {
+            header Content-Type application/grpc*
+        }
+        reverse_proxy @grpc manage:9008 {
+            transport http {
+                versions h2c
+            }
+        }
+    }
+
+    # Health check endpoint
+    handle_path /health {
+        respond "OK" 200
+    }
+
+    # Client (default/fallback) - must be last
+    handle {
+        reverse_proxy client:9001
+    }
+}
+
+# HTTPS version on port 8443
+:8443 {
+    tls internal
+    
+    # Copy all the same routes as above
+    log {
+        output stdout
+        format console
+    }
+
+    handle_path /system/autoupdate* {
+        reverse_proxy autoupdate:9012 {
+            header_up Upgrade {http.request.header.Upgrade}
+            header_up Connection {http.request.header.Connection}
+            flush_interval -1
+            transport http {
+                read_timeout 0
+                write_timeout 0
+            }
+        }
+    }
+
+    handle_path /system/presenter* {
+        reverse_proxy backend:9003
+    }
+
+    handle_path /system/search* {
+        reverse_proxy search:9050
+    }
+
+    handle_path /system/action* {
+        reverse_proxy backend:9002
+    }
+
+    handle_path /system/media* {
+        reverse_proxy media:9006
+    }
+
+    handle_path /system/auth* {
+        reverse_proxy auth:9004
+    }
+    
+    handle_path /system/saml* {
+        reverse_proxy auth:9004
+    }
+
+    handle_path /system/icc* {
+        reverse_proxy icc:9007 {
+            header_up Upgrade {http.request.header.Upgrade}
+            header_up Connection {http.request.header.Connection}
+        }
+    }
+
+    handle_path /system/vote* {
+        reverse_proxy vote:9013
+    }
+
+    handle {
+        @grpc {
+            header Content-Type application/grpc*
+        }
+        reverse_proxy @grpc manage:9008 {
+            transport http {
+                versions h2c
+            }
+        }
+    }
+
+    handle_path /health {
+        respond "OK" 200
+    }
+
+    handle {
+        reverse_proxy client:9001
+    }
+}

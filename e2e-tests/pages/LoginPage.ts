@@ -20,21 +20,76 @@ export class LoginPage extends EnhancedBasePage {
   }
 
   async login(username: string, password: string) {
-    await this.fill(this.usernameInput, username);
-    await this.fill(this.passwordInput, password);
-    await this.click(this.loginButton, {
-      waitForNetworkIdle: true,
-      waitForResponse: (response) => response.url().includes('/system/auth/login') && response.status() === 200
-    });
+    console.log(`Attempting login for user: ${username}`);
     
-    // Wait for navigation away from login page
-    await this.page.waitForFunction(
-      () => !window.location.href.includes('/login'),
-      { timeout: 10000 }
-    ).catch(() => {
-      // If still on login page, check for error
-      return this.waitForElementStable(this.errorMessage, 2000);
-    });
+    try {
+      // Clear any existing values first
+      await this.clear(this.usernameInput);
+      await this.clear(this.passwordInput);
+      
+      // Fill credentials
+      await this.fill(this.usernameInput, username);
+      await this.fill(this.passwordInput, password);
+      
+      // Set up response listener before clicking
+      const responsePromise = this.page.waitForResponse(
+        response => {
+          const isAuthEndpoint = response.url().includes('/system/auth/login');
+          if (isAuthEndpoint) {
+            console.log(`Auth response: ${response.status()} - ${response.url()}`);
+          }
+          return isAuthEndpoint;
+        },
+        { timeout: 30000 }
+      );
+      
+      // Click login button
+      await this.click(this.loginButton);
+      
+      // Wait for auth response
+      const authResponse = await responsePromise;
+      console.log(`Login response status: ${authResponse.status()}`);
+      
+      if (authResponse.status() === 403) {
+        const errorText = await authResponse.text().catch(() => 'No error details');
+        console.error('Login failed with 403:', errorText);
+        throw new Error(`Authentication failed: 403 Forbidden - ${errorText}`);
+      }
+      
+      if (authResponse.status() >= 400) {
+        throw new Error(`Login failed with status ${authResponse.status()}`);
+      }
+      
+      // Wait for navigation away from login page
+      try {
+        await this.page.waitForFunction(
+          () => !window.location.href.includes('/login'),
+          { timeout: 20000 }
+        );
+        console.log('Successfully navigated away from login page');
+      } catch (navError) {
+        // Check if we have an error message
+        const errorMsg = await this.getErrorMessage();
+        if (errorMsg) {
+          throw new Error(`Login failed: ${errorMsg}`);
+        }
+        
+        // Check if we're still on login page
+        if (this.page.url().includes('/login')) {
+          throw new Error('Login failed: Still on login page after 20 seconds');
+        }
+      }
+      
+      // Give the page a moment to stabilize
+      await this.page.waitForLoadState('networkidle', { timeout: 10000 });
+      console.log('Login completed successfully');
+      
+    } catch (error) {
+      console.error('Login error:', error);
+      // Take a screenshot for debugging
+      await this.screenshot(`login-error-${username}`);
+      throw error;
+    }
   }
 
   async getErrorMessage(): Promise<string> {

@@ -1,0 +1,24 @@
+version: "3.8"
+
+services:
+  caddy-test:
+    image: caddy:2-alpine
+    container_name: openslides-caddy-test
+    ports:
+      - "8001:8001"  # HTTP
+      - "8443:8443"  # HTTPS
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+    networks:
+      - openslides-dev
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  openslides-dev:
+    external: true
+    name: docker_openslides-dev

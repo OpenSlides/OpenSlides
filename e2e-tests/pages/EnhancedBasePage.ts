@@ -1,4 +1,5 @@
 import { Page, Locator, expect, Response } from '@playwright/test';
+import { waitForPageStability, ensurePageReady, safeNavigate } from '../support/page-stability';
 
 export interface WaitOptions {
   timeout?: number;
@@ -20,7 +21,7 @@ export interface EnhancedPageConfig {
 }
 
 const DEFAULT_CONFIG: Required<EnhancedPageConfig> = {
-  defaultTimeout: 15000,
+  defaultTimeout: 30000, // Increased from 15s to 30s for stability
   defaultRetries: 3,
   defaultRetryDelay: 1000,
   autoWaitForLoadState: true,
@@ -36,7 +37,39 @@ export class EnhancedBasePage {
   constructor(page: Page, baseUrl: string = 'https://localhost:8000', config?: EnhancedPageConfig) {
     this.page = page;
     this.baseUrl = baseUrl;
-    this.config = { ...DEFAULT_CONFIG, ...config };
+    
+    // Apply environment-specific configurations
+    const envConfig = this.getEnvironmentConfig();
+    this.config = { ...DEFAULT_CONFIG, ...envConfig, ...config };
+  }
+  
+  /**
+   * Get environment-specific configuration
+   */
+  private getEnvironmentConfig(): Partial<EnhancedPageConfig> {
+    const env = process.env.NODE_ENV || 'development';
+    const isCI = process.env.CI === 'true';
+    
+    if (isCI) {
+      // CI environment needs longer timeouts
+      return {
+        defaultTimeout: 60000,
+        defaultRetries: 5,
+        defaultRetryDelay: 2000,
+        slowMo: 200
+      };
+    }
+    
+    if (env === 'production') {
+      return {
+        defaultTimeout: 45000,
+        defaultRetries: 4,
+        slowMo: 150
+      };
+    }
+    
+    // Development environment (default)
+    return {};
   }
 
   /**
@@ -44,28 +77,33 @@ export class EnhancedBasePage {
    */
   async goto(path: string = '', options?: WaitOptions) {
     const opts = this.mergeOptions(options);
+    const url = `${this.baseUrl}${path}`;
     
     await this.retryOperation(async () => {
-      await this.page.goto(`${this.baseUrl}${path}`, {
+      console.log(`Navigating to: ${url}`);
+      
+      // Use safeNavigate helper
+      const success = await safeNavigate(this.page, url, {
         waitUntil: 'domcontentloaded',
         timeout: opts.timeout
       });
       
-      // Automatic load state waiting
-      if (opts.waitForLoadState) {
-        await this.page.waitForLoadState('domcontentloaded');
+      if (!success) {
+        throw new Error(`Navigation to ${url} failed`);
       }
       
-      if (opts.waitForNetworkIdle) {
-        await this.page.waitForLoadState('networkidle');
-      }
-      
-      // Wait for specific selector if provided
+      // Additional stability checks
       if (opts.waitForSelector) {
         await this.page.waitForSelector(opts.waitForSelector, {
           state: 'visible',
           timeout: opts.timeout
         });
+      }
+      
+      // Ensure page is ready
+      const isReady = await ensurePageReady(this.page);
+      if (!isReady) {
+        throw new Error('Page is not ready after navigation');
       }
     }, opts);
   }

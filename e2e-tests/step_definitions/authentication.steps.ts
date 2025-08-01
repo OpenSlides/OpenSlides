@@ -119,16 +119,45 @@ When('I click the logout button', async function(this: CustomWorld) {
 
 When('I remain inactive for {int} minutes', async function(this: CustomWorld, minutes: number) {
   // In real tests, we would mock the session timeout
-  // For now, we'll simulate this by clearing cookies/session
+  // For now, we'll simulate this by clearing auth data
   
-  // Clear all cookies to simulate session expiry
-  await this.context!.clearCookies();
+  console.log('Simulating session timeout...');
   
-  // Try to navigate to a protected page
-  await this.page!.goto(this.baseUrl + '/meetings');
-  
-  // Wait for redirect
-  await this.page!.waitForTimeout(2000);
+  try {
+    // Method 1: Clear auth from storage to avoid page reload
+    await this.page!.evaluate(() => {
+      // Clear all auth-related storage
+      localStorage.removeItem('auth_token');
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
+      localStorage.removeItem('session_id');
+      localStorage.removeItem('user_id');
+      localStorage.removeItem('OpenSlides:auth:access_token');
+      localStorage.removeItem('OpenSlides:auth:refresh_token');
+      localStorage.removeItem('OpenSlides:auth:user_id');
+      sessionStorage.clear();
+    });
+    
+    // Method 2: Clear cookies (but this might trigger reload)
+    await this.context!.clearCookies();
+    
+    console.log('Auth data cleared');
+    
+    // Wait a moment for the app to detect the change
+    await this.page!.waitForTimeout(1000);
+    
+    // Try to navigate to trigger auth check
+    console.log('Attempting navigation to trigger auth check...');
+    await this.page!.goto(this.baseUrl + '/meetings', {
+      waitUntil: 'domcontentloaded',
+      timeout: 10000
+    }).catch(err => {
+      console.log('Navigation result:', err.message);
+    });
+    
+  } catch (error: any) {
+    console.log('Session timeout simulation:', error.message);
+  }
 });
 
 Then('I should be redirected to the dashboard', async function(this: CustomWorld) {

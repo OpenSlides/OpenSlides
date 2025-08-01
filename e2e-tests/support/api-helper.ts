@@ -10,19 +10,42 @@ export class APIHelper {
   }
 
   async login(username: string = 'admin', password: string = 'admin'): Promise<string> {
-    const response = await this.page.request.post(`${this.baseUrl}/auth/login`, {
-      data: {
-        username,
-        password
-      },
-      ignoreHTTPSErrors: true
-    });
+    console.log(`Attempting API login for user: ${username}`);
+    
+    try {
+      const response = await this.page.request.post(`${this.baseUrl}/system/auth/login`, {
+        data: {
+          username,
+          password
+        },
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        ignoreHTTPSErrors: true,
+        timeout: 30000
+      });
 
-    if (response.ok()) {
-      const body = await response.json();
-      return body.access_token || '';
+      console.log(`Login response status: ${response.status()}`);
+      
+      if (response.ok()) {
+        const body = await response.json();
+        console.log('Login successful, response:', JSON.stringify(body).substring(0, 100));
+        
+        // Store cookies for subsequent requests
+        const cookies = await this.page.context().cookies();
+        console.log(`Stored ${cookies.length} cookies after login`);
+        
+        return body.access_token || body.sessionId || '';
+      }
+      
+      const errorBody = await response.text().catch(() => 'No error body');
+      console.error(`Login failed: ${response.status()} - ${errorBody}`);
+      throw new Error(`Login failed: ${response.status()} - ${errorBody}`);
+    } catch (error) {
+      console.error('Login error:', error);
+      throw error;
     }
-    throw new Error(`Login failed: ${response.status()}`);
   }
 
   async createMeeting(data: {
@@ -30,25 +53,41 @@ export class APIHelper {
     committee_id?: number;
     description?: string;
     start_time?: number;
+    language?: string;
   }): Promise<number> {
     try {
-      const response = await this.page.request.post(`${this.baseUrl}/system/action`, {
-        data: {
-          action: 'meeting.create',
-          data: [{
-            name: data.name,
-            committee_id: data.committee_id || 1,
-            description: data.description || '',
-            start_time: data.start_time || Math.floor(Date.now() / 1000)
-          }]
+      const response = await this.page.request.post(`${this.baseUrl}/system/action/handle_request`, {
+        data: [
+          {
+            action: 'meeting.create',
+            data: [{
+              name: data.name,
+              committee_id: data.committee_id || 1,
+              description: data.description || '',
+              start_time: data.start_time || Math.floor(Date.now() / 1000),
+              language: data.language || 'en'  // Add required language field
+            }]
+          }
+        ],
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
         },
-        ignoreHTTPSErrors: true
+        ignoreHTTPSErrors: true,
+        timeout: 15000
       });
 
+      console.log(`Create meeting response status: ${response.status()}`);
+      
       if (response.ok()) {
         const body = await response.json();
-        return body.results?.[0]?.id || 1;
+        const meetingId = body.results?.[0]?.[0]?.id || body[0]?.id || 1;
+        console.log(`Meeting created successfully with ID: ${meetingId}`);
+        return meetingId;
       }
+      
+      const errorBody = await response.text().catch(() => 'No error body');
+      console.error(`Failed to create meeting: ${response.status()} - ${errorBody}`);
       console.warn('Failed to create meeting via API, using fallback');
       return 1; // Fallback meeting ID
     } catch (error: any) {
@@ -87,6 +126,27 @@ export class APIHelper {
     }
   }
 
+  async ensureMeetingExists(meetingId: number): Promise<boolean> {
+    try {
+      // Try to get meeting info
+      const response = await this.page.request.get(`${this.baseUrl}/system/presenter/handle_request`, {
+        params: {
+          presenter: 'get_meeting',
+          data: JSON.stringify({ meeting_id: meetingId })
+        },
+        headers: {
+          'Accept': 'application/json'
+        },
+        ignoreHTTPSErrors: true
+      });
+      
+      return response.ok();
+    } catch (error) {
+      console.warn('Failed to check meeting existence:', error);
+      return false;
+    }
+  }
+
   async createMotion(meetingId: number, data: {
     title: string;
     text: string;
@@ -118,86 +178,6 @@ export class APIHelper {
     }
   }
 
-  async ensureMeetingExists(meetingId: number = 1): Promise<boolean> {
-    try {
-      // Try to access meeting data
-      const response = await this.page.request.get(
-        `${this.baseUrl}/system/presenter`, 
-        {
-          data: {
-            presenter: 'get_meeting',
-            data: { meeting_id: meetingId }
-          },
-          ignoreHTTPSErrors: true
-        }
-      );
-
-      return response.ok();
-    } catch (error) {
-      // If we can't check via API, try UI method
-      return await this.ensureMeetingExistsViaUI();
-    }
-  }
-
-  private async ensureMeetingExistsViaUI(): Promise<boolean> {
-    try {
-      // Login first
-      await this.page.goto(`${this.baseUrl}/login`, { waitUntil: 'domcontentloaded' });
-      await this.page.fill('input[formcontrolname="username"]', 'admin');
-      await this.page.fill('input[formcontrolname="password"]', 'admin');
-      await this.page.click('button[type="submit"]');
-      await this.page.waitForTimeout(3000);
-
-      // Go to meetings page
-      await this.page.goto(`${this.baseUrl}/meetings`);
-      await this.page.waitForTimeout(2000);
-
-      // Check if any meetings exist
-      const meetingExists = await this.page.locator('.meeting-tile').count() > 0;
-      
-      if (!meetingExists) {
-        // Create a test meeting via UI
-        await this.createTestMeetingViaUI();
-      }
-
-      return true;
-    } catch (error: any) {
-      console.warn('Failed to ensure meeting exists:', error?.message || error);
-      return false;
-    }
-  }
-
-  private async createTestMeetingViaUI(): Promise<void> {
-    try {
-      // Click create meeting button
-      await this.page.click('[data-cy="headbarMainButton"]');
-      await this.page.waitForTimeout(1000);
-
-      // Fill meeting form
-      await this.page.fill('input[formcontrolname="name"]', 'Test Meeting');
-      
-      // Try to find and select a committee
-      const committeeSelect = this.page.locator('mat-select[formcontrolname="committee_id"]');
-      if (await committeeSelect.isVisible()) {
-        await committeeSelect.click();
-        await this.page.waitForTimeout(500);
-        
-        // Select first available committee
-        const firstOption = this.page.locator('mat-option').first();
-        if (await firstOption.isVisible()) {
-          await firstOption.click();
-        }
-      }
-
-      // Submit
-      await this.page.click('button:has-text("Create")');
-      await this.page.waitForTimeout(3000);
-
-      console.log('Created test meeting via UI');
-    } catch (error: any) {
-      console.warn('Failed to create test meeting via UI:', error?.message || error);
-    }
-  }
 
   async cleanup(): Promise<void> {
     // This would ideally clean up test data
