@@ -45,7 +45,7 @@ fingerprint of the
 certificate](https://en.wikipedia.org/wiki/Self-signed_certificate).
 
 [Below](#SSL-encryption) you find for more information and how to use
-[caddys](proxy) integrated certificate retrieval or how to disable the proxy
+the proxy's integrated certificate retrieval or how to disable the proxy
 expecting SSL. Disabling SSL is only feasible if you use an extra proxy in front
 of OpenSlides. Keep in mind that the browser client requires a HTTPS connection
 to the server. It is NOT possible to use OpenSlides without any SSL encryption
@@ -253,10 +253,9 @@ To find out which commands require the `--no-ssl` flag use the commands help:
 
     $ ./openslides <COMMAND> -h
 
-If you run OpenSlides behind a publicly accessible domain, you can use caddy's
-integrated certificate retrieval. Add the following lines to your setup
-configuration YAML file and of course use your own domain instead of the
-example:
+If you run OpenSlides behind a publicly accessible domain, you can use automatic
+certificate retrieval. Add the following lines to your setup configuration YAML
+file and of course use your own domain instead of the example:
 
     enableLocalHTTPS: false
     enableAutoHTTPS: true
@@ -270,7 +269,7 @@ example:
 Do not forget to [rebuild your Docker Compose YAML
 file](#Configuration-of-the-generated-Docker-Compose-YAML-file).
 
-See [the proxy service](https://github.com/OpenSlides/openslides-proxy) for
+See [the proxy service](https://github.com/OpenSlides/openslides-traefik-proxy) for
 details on provided methods for HTTPS activation.
 
 
