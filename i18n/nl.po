@@ -1,0 +1,6438 @@
+# 
+# Translators:
+# Michael Schulze, 2025
+# Birte Spekker <birte.spekker@intevation.de>, 2025
+# 
+msgid ""
+msgstr ""
+"Last-Translator: Birte Spekker <birte.spekker@intevation.de>, 2025\n"
+"Language-Team: Dutch (https://app.transifex.com/openslides/teams/14270/nl/)\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: nl\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"mime-version: 1.0\n"
+
+msgid "\"0\" means an unlimited number of active accounts"
+msgstr "\"0\" betekent een onbeperkt aantal actieve accounts"
+
+msgid "\"0\" means an unlimited number of active meetings"
+msgstr "\"0\" betekent een onbeperkt aantal actieve vergaderingen"
+
+msgid "%num% emails were send sucessfully."
+msgstr "%num% e-mails zijn succesvol verzonden."
+
+msgid ""
+"%num% participants could not be locked out because they have administrative "
+"permissions."
+msgstr ""
+"%num% deelnemers konden niet worden geblokkeerd omdat ze administratieve "
+"rechten hebben."
+
+msgid "-Ä"
+msgstr ""
+
+msgid "100% base"
+msgstr "100% basis"
+
+msgid ""
+"<a href=\"https://openslides.com\">OpenSlides</a> is a free web based "
+"presentation and assembly system for visualizing and controlling agenda, "
+"motions and elections of an assembly."
+msgstr ""
+"<a href=\"https://openslides.com\">OpenSlides</a> is een gratis webgebaseerd"
+" presentatie- en vergadersysteem voor het visualiseren en controleren van "
+"agenda, moties en verkiezingen van een vergadering."
+
+msgid "<unknown motion>"
+msgstr "<unknown motion>"
+
+msgid "<unknown>"
+msgstr "<unknown>"
+
+msgid "A client error occurred. Please contact your system administrator."
+msgstr ""
+"Er is een clientfout opgetreden. Neem contact op met uw systeembeheerder."
+
+msgid "A conference is already running in your OpenSlides session."
+msgstr "Er loopt al een conferentie in uw OpenSlides sessie."
+
+msgid "A name is required"
+msgstr "Een naam is vereist"
+
+msgid "A new update is available!"
+msgstr "Er is een nieuwe update beschikbaar!"
+
+msgid "A password is required"
+msgstr "Een wachtwoord is vereist"
+
+msgid "A server error occured. Please contact your system administrator."
+msgstr ""
+"Er is een serverfout opgetreden. Neem contact op met uw systeembeheerder."
+
+msgid "A time is required and must be in min:secs format."
+msgstr "Een tijd is vereist en moet in min:sec formaat zijn."
+
+msgid "A title is required"
+msgstr "Een titel is vereist"
+
+msgid "A topic needs a title"
+msgstr "Een onderwerp heeft een titel nodig"
+
+msgid ""
+"A user with the username '%username%' and the first name '%first_name%' was "
+"created."
+msgstr ""
+"Er is een gebruiker aangemaakt met de gebruikersnaam '%username%' en de "
+"voornaam '%first_name%'."
+
+msgid "About me"
+msgstr "Over mij"
+
+msgid "Abstain"
+msgstr "Onthouden"
+
+msgid "Accent color"
+msgstr "Accentkleur"
+
+msgid "Accept"
+msgstr "Accepteer"
+
+msgid "Access data (PDF)"
+msgstr "Toegangsgegevens (PDF)"
+
+msgid ""
+"Access only possible for participants of this meeting. All other accounts "
+"(including organization and committee admins) may not open the closed "
+"meeting. It is locked from the inside."
+msgstr ""
+"Toegang is alleen mogelijk voor deelnemers van deze vergadering. Alle andere"
+" accounts (inclusief organisatie- en commissiebeheerders) mogen de besloten "
+"vergadering niet openen. Deze is van binnenuit vergrendeld."
+
+msgid "Access-data"
+msgstr "Toegangsgegevens"
+
+msgid "Account"
+msgstr "Account"
+
+msgid "Account admin"
+msgstr "Accountbeheerder"
+
+msgid "Account created"
+msgstr "Account aangemaakt"
+
+msgid "Account successfully added."
+msgstr "Account succesvol toegevoegd."
+
+msgid "Accounts"
+msgstr "Accounts"
+
+msgid "Accounts created"
+msgstr "Accounts aangemaakt"
+
+msgid "Accounts updated"
+msgstr "Accounts geactualiseerd"
+
+msgid "Accounts with errors"
+msgstr "Accounts met fouten"
+
+msgid "Accounts with warnings: affected cells will be skipped"
+msgstr "Accounts met warningen: betreffende cellen worden overgeslagen"
+
+msgid "Action not possible. You have to be part of the meeting."
+msgstr "Actie niet mogelijk. U moet deelnemen aan de vergadering."
+
+msgid "Activate"
+msgstr "Activeer"
+
+msgid "Activate amendments"
+msgstr "Activeer wijzigingen"
+
+msgid "Activate backtracking"
+msgstr "Backtracking activeren"
+
+msgid "Activate closed meeting"
+msgstr "Gesloten vergadering activeren"
+
+msgid "Activate design"
+msgstr "Design activeren"
+
+msgid "Activate public access"
+msgstr "Openbare toegang activeren"
+
+msgid "Activate submitter extension field in motion create form"
+msgstr ""
+"Activeer het invoegtoepassingveld in het formulier voor het maken van een "
+"motie"
+
+msgid "Activate the selection field 'motion editor'"
+msgstr "Activeer het selectieveld 'motieeditor'"
+
+msgid "Activate the selection field 'spokesperson'"
+msgstr "Activeer het selectieveld 'woordvoerder'"
+
+msgid "Activate vote delegations"
+msgstr "Stemmingsdelegaties activeren"
+
+msgid "Activate vote weight"
+msgstr "Stemgewicht activeren"
+
+msgid ""
+"Activates the automatic logging of the date and time when this state was "
+"first reached. A set time stamp cannot be removed."
+msgstr ""
+"Activeert het automatisch loggen van de datum en tijd waarop deze status "
+"voor het eerst werd bereikt. Een ingestelde tijdstempel kan niet worden "
+"verwijderd."
+
+msgid ""
+"Activates the automatic setting of a number for motions that reach this "
+"state. The scheme for numbering can be customized under > [Settings] > "
+"[Motions]."
+msgstr ""
+"Activeert de automatische instelling van een nummer voor moties die deze "
+"status bereiken. Het schema voor nummering kan worden aangepast onder > "
+"[Instellingen] > [Moties]."
+
+msgid ""
+"Activates the extension field for the selected state, which can be filled with free text as desired.\n"
+"\n"
+"Example: When activated, the state \"in progress\" can be expanded to e.g. \"in progress by the motion committee\"."
+msgstr ""
+"Activeert het extensivatieveld voor de geselecteerde status, die naar wens "
+"kan worden gevuld met vrije tekst. Voorbeeld: Indien geactiveerd, kan de "
+"status “in uitvoering” worden uitgebreid tot bijvoorbeeld “in uitvoering "
+"door het motiecomité”."
+
+msgid ""
+"Activates the extension field of the recommendation in this state, which can"
+" be filled with free text or extended with references to other motions or "
+"committees as desired."
+msgstr ""
+"Activeert het extensieveld van de aanbeveling in deze status, die naar wens "
+"gevuld kan worden met vrije tekst of uitgebreid met verwijzingen naar andere"
+" moties of commissies."
+
+msgid "Active"
+msgstr "Actief"
+
+msgid "Active accounts"
+msgstr "Actieve accounts"
+
+msgid "Active filters"
+msgstr "Actieve filters"
+
+msgid "Active meetings"
+msgstr "Actieve vergaderingen"
+
+msgid "Add"
+msgstr "Toevoegen"
+
+msgid "Add me"
+msgstr "Mij toevoegen"
+
+msgid "Add message"
+msgstr "Bericht toevoegen"
+
+msgid "Add new custom translation"
+msgstr "Nieuwe aangepaste vertaling toevoegen"
+
+msgid "Add new entry"
+msgstr "Nieuw punt toevoegen"
+
+msgid "Add option"
+msgstr "Optie toevoegen"
+
+msgid "Add timer"
+msgstr "Timer toevoegen"
+
+msgid "Add to agenda"
+msgstr "Toevoegen aan agenda"
+
+msgid "Add to meetings"
+msgstr "Toevoegen aan vergaderingen"
+
+msgid "Add to queue"
+msgstr "Toevoegen aan wachtlijst"
+
+msgid "Add up"
+msgstr "Optellen"
+
+msgid "Add yourself to the current list of speakers to join the conference"
+msgstr ""
+"Voeg uzelf toe aan de huidige sprekerslijst om deel te nemen aan de "
+"vergadering"
+
+msgid "Add/remove groups ..."
+msgstr "Groepen toevoegen/verwijderen ..."
+
+msgid "Add/remove structure levels ..."
+msgstr "Structuurniveaus toevoegen/verwijderen ..."
+
+msgid "Add/subtract"
+msgstr "Optellen/aftrekken"
+
+msgid ""
+"Additional columns after the required ones may be present and will not "
+"affect the import."
+msgstr ""
+"Extra kolommen na de verplichte kolommen kunnen aanwezig zijn en hebben geen"
+" invloed op het importeren."
+
+msgid "Administration roles"
+msgstr "Beheerdersrollen"
+
+msgid "Administration roles (at organization level)"
+msgstr "Beheerdersrollen (op organisatieniveau)"
+
+msgid "Administrators"
+msgstr "Beheerders"
+
+msgid "After verifying the preview click on \"import\" please (see top right)."
+msgstr ""
+"Nadat u het voorbeeld hebt gecontroleerd, klik op “importeren” (zie "
+"rechtsboven)."
+
+msgid ""
+"Afterwards you may be unable to regain your status in this meeting on your "
+"own. Are you sure you want to do this?"
+msgstr ""
+"Daarna is het mogelijk dat u uw status in deze vergadering niet op eigen "
+"kracht kunt terugkrijgen. Weet u zeker dat u dit wilt doen?"
+
+msgid "Agenda"
+msgstr "Agenda"
+
+msgid "Agenda items are in process. Please wait ..."
+msgstr "Agendapunten zijn in behandeling. Even geduld ..."
+
+msgid "Agenda visibility"
+msgstr "Zichtbaarheid op de agenda"
+
+msgid "Align"
+msgstr "Uitlijnen"
+
+msgid "All"
+msgstr "Alle"
+
+msgid "All casted ballots"
+msgstr "Alle uitgebrachte stembiljetten"
+
+msgid "All changes of this settings group will be lost!"
+msgstr "Alle wijzigingen van deze instellingengroep gaan verloren!"
+
+msgid "All entitled users"
+msgstr "Alle gerechtigde gebruikers"
+
+msgid "All lists of speakers will be cleared."
+msgstr "Alle sprekerslijsten worden gewist."
+
+msgid "All meetings"
+msgstr "Alle vergaderingen"
+
+msgid "All other fields are optional and may be empty."
+msgstr "Alle andere velden zijn optioneel en mogen leeg zijn."
+
+msgid "All structure levels"
+msgstr "Alle structuurniveaus"
+
+msgid "All topics will be deleted and won't be accessible afterwards."
+msgstr ""
+"Alle onderwerpen worden verwijderd en zijn daarna niet meer toegankelijk."
+
+msgid "All valid ballots"
+msgstr "Alle geldige stembiljetten"
+
+msgid "All votes will be lost."
+msgstr "Alle stemmen gaan verloren."
+
+msgid "Allow amendments of amendments"
+msgstr "Wijzigingen van wijzigingen toestaan"
+
+msgid "Allow backtracking of forwarded motions"
+msgstr "Backtracking van doorgestuurde moties toestaan"
+
+msgid "Allow blank in number"
+msgstr "Blanco in nummer toestaan"
+
+msgid "Allow create poll"
+msgstr "Peiling aanmaken toestaan"
+
+msgid "Allow forwarding of amendments"
+msgstr "Doorsturen van wijzigingen toestaan"
+
+msgid "Allow forwarding of motions"
+msgstr "Doorsturen van moties toestaan"
+
+msgid "Allow one participant multiple times on the same list"
+msgstr "Een deelnemer meerdere keren op dezelfde lijst toestaan"
+
+msgid ""
+"Allow only current speakers and list of speakers managers to enter the live "
+"conference"
+msgstr ""
+"Alleen actuele sprekers en sprekerslijstbeheerders toegang geven tot de live"
+" vergadering"
+
+msgid "Allow submitter edit"
+msgstr "Bewerking door indiener toestaan"
+
+msgid "Allow support"
+msgstr "Ondersteuning toestaan"
+
+msgid "Allow to accumulate several votes on one candidate (\"comulative voting\")"
+msgstr ""
+"Toestaan om meerdere stemmen op één kandidaat te verzamelen (“comulatief "
+"stemmen”)"
+
+msgid "Allow users to set themselves as present"
+msgstr "Gebruikers toestaan om zichzelf als aanwezig in te stellen"
+
+msgid "Allow verbose error messages for reset password process"
+msgstr "Verbose foutmeldingen toestaan voor reset wachtwoord"
+
+msgid "Allowed access groups for this directory"
+msgstr "Toegestane toegangsgroepen voor deze map"
+
+msgid "Allows single votes projection during voting process"
+msgstr ""
+
+msgid "Always"
+msgstr "Altijd"
+
+msgid "Amendment"
+msgstr "Wijziging"
+
+msgid "Amendment list (PDF)"
+msgstr "Wijzigingslijst (PDF)"
+
+msgid "Amendment text"
+msgstr "Wijziging tekst"
+
+msgid "Amendment to"
+msgstr "Wijziging in"
+
+msgid "Amendments"
+msgstr "Wijzigingen"
+
+msgid "Amendments can change multiple paragraphs"
+msgstr "Wijzigingen kunnen meerdere alinea's veranderen"
+
+msgid "Amendments to"
+msgstr "Wijzigingen in"
+
+msgid "Amount of accounts"
+msgstr "Aantal accounts"
+
+msgid "Amount of meetings"
+msgstr "Aantal vergaderingen"
+
+msgid "Amount of votes"
+msgstr "Aantal stemmen"
+
+msgid "An error occurred while voting."
+msgstr "Er is een fout opgetreden tijdens het stemmen."
+
+msgid "An unknown error occurred."
+msgstr "Er is een onbekende fout opgetreden."
+
+msgid "Anonymize votes"
+msgstr "Stemmen anonimiseren"
+
+msgid "Anonymizing can only be done after finishing a poll."
+msgstr "Anonimiseren kan alleen na het voltooien van een peiling."
+
+msgid "Anonymous"
+msgstr "Anonieme"
+
+msgid "Applause interval in seconds"
+msgstr "Applaus interval in seconden"
+
+msgid "Applause particle image URL"
+msgstr "URL voor afbeelding van applausdeeltje"
+
+msgid "Applause visualization"
+msgstr "Applaus visualisatie"
+
+msgid "Application update in progress."
+msgstr "Applicatie-update wordt uitgevoerd."
+
+msgid "Apply"
+msgstr "Toepassen"
+
+msgid "Arabic"
+msgstr "Arabisch"
+
+msgid "Archive"
+msgstr "Archief"
+
+msgid "Archived"
+msgstr "Gearchiveerd"
+
+msgid "Archived meetings"
+msgstr "Gearchiveerde vergaderingen"
+
+msgid ""
+"Are you sure you want to activate this color set? This will change the "
+"colors in all meetings."
+msgstr ""
+"Weet u zeker dat u deze kleurset wilt activeren? Dit verandert de kleuren in"
+" alle vergaderingen."
+
+msgid "Are you sure you want to activate this meeting?"
+msgstr "Weet u zeker dat u deze vergadering wilt activeren?"
+
+msgid ""
+"Are you sure you want to add the following time onto every structure level?"
+msgstr ""
+"Weet u zeker dat u de volgende tijd wilt toevoegen aan elk structuurniveau?"
+
+msgid "Are you sure you want to anonymize all votes? This cannot be undone."
+msgstr ""
+"Weet u zeker dat u alle stemmen anoniem wilt maken? Dit kan niet ongedaan "
+"worden gemaakt."
+
+msgid "Are you sure you want to archive this meeting?"
+msgstr "Weet u zeker dat u deze vergadering wilt archiveren?"
+
+msgid "Are you sure you want to clear all messages in this chat?"
+msgstr "Weet u zeker dat u alle berichten in deze chat wilt wissen?"
+
+msgid "Are you sure you want to clear all speakers of all lists?"
+msgstr "Weet u zeker dat u alle sprekers van alle lijsten wilt wissen?"
+
+msgid ""
+"Are you sure you want to delete all next speakers from this list of "
+"speakers?"
+msgstr ""
+"Weet u zeker dat u alle volgende sprekers uit deze lijst met sprekers wilt "
+"verwijderen?"
+
+msgid ""
+"Are you sure you want to delete all previous speakers from this list of "
+"speakers?"
+msgstr ""
+"Weet u zeker dat u alle vorige sprekers uit deze lijst met sprekers wilt "
+"verwijderen?"
+
+msgid "Are you sure you want to delete all selected elections?"
+msgstr "Weet u zeker dat u alle geselecteerde verkiezingen wilt verwijderen?"
+
+msgid "Are you sure you want to delete all selected files and folders?"
+msgstr ""
+"Weet u zeker dat u alle geselecteerde bestanden en mappen wilt verwijderen?"
+
+msgid "Are you sure you want to delete all selected genders?"
+msgstr "Weet u zeker dat u alle geselecteerde geslachten wilt verwijderen?"
+
+msgid "Are you sure you want to delete all selected meetings?"
+msgstr "Weet u zeker dat u alle geselecteerde vergaderingen wilt verwijderen?"
+
+msgid "Are you sure you want to delete all selected motions?"
+msgstr "Weet u zeker dat u alle geselecteerde moties wilt verwijderen?"
+
+msgid "Are you sure you want to delete all selected tags?"
+msgstr "Weet u zeker dat u alle geselecteerde tags wilt verwijderen?"
+
+msgid ""
+"Are you sure you want to delete all speakers from this list of speakers?"
+msgstr ""
+"Weet u zeker dat u alle sprekers uit deze lijst met sprekers wilt "
+"verwijderen?"
+
+msgid "Are you sure you want to delete the editorial final version?"
+msgstr ""
+"Weet u zeker dat u de redactionele definitieve versie wilt verwijderen?"
+
+msgid "Are you sure you want to delete these accounts?"
+msgstr "Weet u zeker dat u deze accounts wilt verwijderen?"
+
+msgid "Are you sure you want to delete this account?"
+msgstr "Weet u zeker dat u deze account wilt verwijderen?"
+
+msgid "Are you sure you want to delete this category and all subcategories?"
+msgstr ""
+"Weet u zeker dat u deze categorie en alle subcategorieën wilt verwijderen?"
+
+msgid "Are you sure you want to delete this change recommendation?"
+msgstr "Weet u zeker dat u deze wijzigingsaanbeveling wilt verwijderen?"
+
+msgid "Are you sure you want to delete this chat group?"
+msgstr "Weet u zeker dat u deze chatgroep wilt verwijderen?"
+
+msgid "Are you sure you want to delete this comment field?"
+msgstr "Weet u zeker dat u dit commentaarveld wilt verwijderen?"
+
+msgid "Are you sure you want to delete this committee?"
+msgstr "Weet u zeker dat u deze commissie wilt verwijderen?"
+
+msgid "Are you sure you want to delete this countdown?"
+msgstr "Weet u zeker dat u deze countdown wilt verwijderen?"
+
+msgid "Are you sure you want to delete this election?"
+msgstr "Weet u zeker dat u deze verkiezing wilt verwijderen?"
+
+msgid "Are you sure you want to delete this entry?"
+msgstr "Weet u zeker dat u dit punt wilt verwijderen?"
+
+msgid "Are you sure you want to delete this file?"
+msgstr "Weet u zeker dat u dit bestand wilt verwijderen?"
+
+msgid "Are you sure you want to delete this gender?"
+msgstr "Weet u zeker dat u dit geslacht wilt verwijderen?"
+
+msgid "Are you sure you want to delete this group?"
+msgstr "Weet u zeker dat u deze groep wilt verwijderen?"
+
+msgid "Are you sure you want to delete this meeting?"
+msgstr "Weet u zeker dat u deze vergadering wilt verwijderen?"
+
+msgid "Are you sure you want to delete this message?"
+msgstr "Weet u zeker dat u dit bericht wilt verwijderen?"
+
+msgid "Are you sure you want to delete this motion block?"
+msgstr "Weet u zeker dat u dit motieblok wilt verwijderen?"
+
+msgid "Are you sure you want to delete this motion?"
+msgstr " Weet u zeker dat u deze motie wilt verwijderen?"
+
+msgid "Are you sure you want to delete this projector?"
+msgstr "Weet u zeker dat u deze projector wilt verwijderen?"
+
+msgid "Are you sure you want to delete this state?"
+msgstr "Weet u zeker dat u deze status wilt verwijderen?"
+
+msgid "Are you sure you want to delete this structure level?"
+msgstr "Weet u zeker dat u dit structuurniveau wilt verwijderen?"
+
+msgid "Are you sure you want to delete this tag?"
+msgstr "Weet u zeker dat u deze tag wilt verwijderen?"
+
+msgid "Are you sure you want to delete this topic?"
+msgstr "Weet u zeker dat u dit onderwerp wilt verwijderen?"
+
+msgid "Are you sure you want to delete this vote?"
+msgstr "Weet u zeker dat u deze stemming wilt verwijderen?"
+
+msgid "Are you sure you want to delete this workflow?"
+msgstr "Weet u zeker dat u deze workflow wilt verwijderen?"
+
+msgid "Are you sure you want to discard all changes and update this form?"
+msgstr ""
+"Weet u zeker dat u alle wijzigingen ongedaan wilt maken en dit formulier "
+"wilt bijwerken?"
+
+msgid "Are you sure you want to discard this amendment?"
+msgstr "Weet u zeker dat u dit wijzigingsvoorstel wilt verwerpen?"
+
+msgid "Are you sure you want to duplicate this meeting?"
+msgstr "Weet u zeker dat u deze vergadering wilt dupliceren?"
+
+msgid ""
+"Are you sure you want to end this contribution which still has interposed "
+"question(s)?"
+msgstr ""
+"Weet u zeker dat u deze discussie, die nog steeds vragen oproept, wilt "
+"beëindigen?"
+
+msgid ""
+"Are you sure you want to generate new passwords for all selected "
+"participants?"
+msgstr ""
+"Weet u zeker dat u nieuwe wachtwoorden wilt genereren voor alle "
+"geselecteerde deelnemers?"
+
+msgid "Are you sure you want to irrevocably remove your point of order?"
+msgstr "Weet u zeker dat u uw punt van orde onherroepelijk wilt verwijderen?"
+
+msgid "Are you sure you want to make this file/folder public?"
+msgstr "Weet u zeker dat u dit bestand/deze map wilt publiceren?"
+
+msgid "Are you sure you want to number all agenda items?"
+msgstr "Weet u zeker dat u alle agendapunten wilt nummeren?"
+
+msgid ""
+"Are you sure you want to override the state of all motions of this motion "
+"block?"
+msgstr ""
+"Weet u zeker dat u de status van alle moties van dit motieblock wilt "
+"overschrijven?"
+
+msgid "Are you sure you want to remove all selected items from the agenda?"
+msgstr ""
+"Weet u zeker dat u alle geselecteerde punten uit de agenda wilt verwijderen?"
+
+msgid "Are you sure you want to remove these participants?"
+msgstr "Weet u zeker dat u deze deelnemers wilt verwijderen?"
+
+msgid "Are you sure you want to remove this entry from the agenda?"
+msgstr "Weet u zeker dat u dit punt uit de agenda wilt verwijderen?"
+
+msgid "Are you sure you want to remove this motion from motion block?"
+msgstr "Weet u zeker dat u deze motie uit het motieblok wilt verwijderen?"
+
+msgid "Are you sure you want to remove this participant?"
+msgstr "Weet u zeker dat u deze deelnemer wilt verwijderen?"
+
+msgid ""
+"Are you sure you want to remove this speaker from the list of speakers?"
+msgstr ""
+"Weet u zeker dat u deze spreker wilt verwijderen uit de sprekerslijst?"
+
+msgid "Are you sure you want to remove yourself from this list of speakers?"
+msgstr "Weet u zeker dat u uzelf van deze sprekerslijst wilt verwijderen?"
+
+msgid "Are you sure you want to renumber all motions of this category?"
+msgstr "Weet u zeker dat u alle moties van deze categorie wilt hernummeren?"
+
+msgid "Are you sure you want to reset all options to default settings?"
+msgstr ""
+"Weet u zeker dat u alle opties wilt terugzetten naar de "
+"standaardinstellingen?"
+
+msgid "Are you sure you want to reset all passwords to the default ones?"
+msgstr ""
+"Weet u zeker dat u alle wachtwoorden wilt resetten naar de "
+"standaardwachtwoorden?"
+
+msgid ""
+"Are you sure you want to reset the time to the last set value? It will be "
+"reset to:"
+msgstr ""
+"Weet u zeker dat u de tijd wilt terugzetten naar de laatst ingestelde "
+"waarde? Het zal worden gereset naar:"
+
+msgid "Are you sure you want to reset this vote?"
+msgstr "Weet u zeker dat u deze stemming wilt resetten?"
+
+msgid "Are you sure you want to send an invitation email to the user?"
+msgstr ""
+"Weet u zeker dat u een uitnodigingsmail naar de gebruiker wilt sturen?"
+
+msgid "Are you sure you want to send an invitation email?"
+msgstr "Weet u zeker dat u een uitnodigingsmail wilt sturen?"
+
+msgid "Are you sure you want to send emails to all selected participants?"
+msgstr ""
+"Weet u zeker dat u e-mails wilt sturen naar alle geselecteerde deelnemers?"
+
+msgid "Are you sure you want to stop this voting?"
+msgstr "Weet u zeker dat u dit stemmen wilt stoppen?"
+
+msgid "Are you sure you want to submit a point of order?"
+msgstr "Weet u zeker dat u een motie van orde wilt indienen?"
+
+msgid "Are you sure you want to unpublish this file/folder?"
+msgstr "Weet u zeker dat u dit bestand/deze map wilt unpubliceren?"
+
+msgid "As of"
+msgstr "Vanaf"
+
+msgid "As recommendation"
+msgstr "Als aanbeveling"
+
+msgid "Ask, default no"
+msgstr "Vraag, standaard nee"
+
+msgid "Ask, default yes"
+msgstr "Vraag, standaard ja"
+
+msgid "At least"
+msgstr "Ten minste"
+
+msgid "At most"
+msgstr "Hoogstens"
+
+msgid "Attachments"
+msgstr "Bijlagen"
+
+msgid ""
+"Attention: Accounts will add to the default group of each meeting only. If "
+"another group is intended please use the 'Add to meetings' dialog in account"
+" detail view."
+msgstr ""
+"Let op: Accounts worden alleen toegevoegd aan de standaardgroep van elke "
+"vergadering. Als u een andere groep wilt, gebruik dan het dialoogvenster "
+"'Toevoegen aan vergaderingen' in de accountgegevensweergave."
+
+msgid ""
+"Attention: Existing home committees and external status will be overwritten."
+msgstr ""
+"Let op: Bestaande thuiscommissies en externe status worden overschreven."
+
+msgid "Attention: First enter the wifi data in [Settings > General]"
+msgstr "Let op: Voer eerst de wifi-gegevens in [Instellingen > Algemeen]"
+
+msgid "Attention: Not selected accounts will be merged and then deleted."
+msgstr ""
+"Let op: Niet geselecteerde accounts worden samengevoegd en vervolgens "
+"verwijderd."
+
+msgid "Attention: This action cannot be undone!"
+msgstr "Let op: Deze actie kan niet ongedaan worden gemaakt!"
+
+msgid "Attribute mapping (JSON)"
+msgstr "Attribuut toewijzing (JSON)"
+
+msgid "Automatically open the microphone for new conference speakers"
+msgstr "Automatisch de microfoon openen voor nieuwe conferentiesprekers"
+
+msgid "Automatically open the web cam for new conference speakers"
+msgstr "Automatisch de webcam openen voor nieuwe conferentiesprekers"
+
+msgid "Autopilot"
+msgstr "Autopiloot"
+
+msgid "Autopilot widgets"
+msgstr "Autopiloot widgets"
+
+msgid "Autoupdate unhealthy"
+msgstr "Autoupdate niet goed"
+
+msgid "Available sizes are 10, 11 and 12"
+msgstr "Beschikbare maten zijn 10, 11 en 12"
+
+msgid "Available votes"
+msgstr "Beschikbare stemmen"
+
+msgid "Back"
+msgstr "Terug"
+
+msgid "Back to OpenSlides"
+msgstr "Terug naar OpenSlides"
+
+msgid "Back to login"
+msgstr "Terug naar aanmelden"
+
+msgid "Background color"
+msgstr "Achtergrondkleur"
+
+msgid "Ballot"
+msgstr "Stembiljet"
+
+msgid "Ballot anonymized"
+msgstr "Stembiljet geanonimiseerd"
+
+msgid "Ballot created"
+msgstr "Stembiljet aangemaakt"
+
+msgid "Ballot deleted"
+msgstr "Stembiljet verwijderd"
+
+msgid "Ballot opened"
+msgstr "Stembiljet geopend"
+
+msgid "Ballot papers"
+msgstr "Stembiljetten"
+
+msgid "Ballot published"
+msgstr "Stembiljet gepubliceerd"
+
+msgid "Ballot reset"
+msgstr "Stembiljet resetten"
+
+msgid "Ballot started"
+msgstr "Stembiljet gestart"
+
+msgid "Ballot stopped"
+msgstr "Stembiljet gestopt"
+
+msgid "Ballot stopped/published"
+msgstr "Stembiljet gestopt/gepubliceerd"
+
+msgid "Ballot updated"
+msgstr "Stembiljet aangepast"
+
+msgid "Ballots"
+msgstr "Stembiljetten"
+
+msgid "Ballots cast"
+msgstr "Uitgebrachte stembiljetten"
+
+msgid "Base folder"
+msgstr "Basismap"
+
+msgid "Begin speech"
+msgstr "Begin toespraak"
+
+msgid "Blank between prefix and number, e.g. 'A 001'."
+msgstr "Spatie tussen voorvoegsel en nummer, bijv. 'A 001'."
+
+msgid "Blockquote"
+msgstr "Blokquote"
+
+msgid "Bold"
+msgstr "Vet"
+
+msgid "Bullet list"
+msgstr "Bulletlist"
+
+msgid "CSV import"
+msgstr "CSV importeren"
+
+msgid "CSV options"
+msgstr "CSV-opties"
+
+msgid "Calendar"
+msgstr "Kalender"
+
+msgid "Call list"
+msgstr "Oproeplijst"
+
+msgid "Called"
+msgstr "Opgeroepen"
+
+msgid "Called with"
+msgstr "Opgeroepen met"
+
+msgid "Can activate and deactivate logos and fonts under > [Files]."
+msgstr ""
+"Kan logo's en lettertypen activeren en deactiveren onder > [Bestanden]."
+
+msgid ""
+"Can add or delete speakers to or from the list of speakers, mark, sort, "
+"start/stop and open/close the list of speakers."
+msgstr ""
+"Kan sprekers toevoegen aan of verwijderen uit de lijst met sprekers, "
+"markeren, sorteren, starten/stoppen en de lijst met sprekers openen/sluiten."
+
+msgid ""
+"Can add their name to the list of candidates in the [Search for candidates] "
+"phase."
+msgstr ""
+"Kunnen hun naam toevoegen aan de lijst met kandidaten in de fase [Kandidaten"
+" zoeken]."
+
+msgid "Can change the presence status of other participants."
+msgstr "Kan de aanwezigheidsstatus van andere deelnemers wijzigen."
+
+msgid "Can create amendments"
+msgstr "Kan wijzigingen maken"
+
+msgid ""
+"Can create amendments and modify them later, depending on the workflow, but "
+"cannot delete them."
+msgstr ""
+"Kan wijzigingen maken en ze later wijzigen, afhankelijk van de workflow, "
+"maar kan ze niet verwijderen."
+
+msgid "Can create motions"
+msgstr "Kan moties maken"
+
+msgid ""
+"Can create motions and modify them later, depending on the workflow, but "
+"cannot delete them."
+msgstr ""
+"Kan moties maken en ze later wijzigen, afhankelijk van de workflow, maar kan"
+" ze niet verwijderen."
+
+msgid "Can create, change, delete tags for the agenda and for motions."
+msgstr "Kan tags voor de agenda en voor moties maken, wijzigen, verwijderen."
+
+msgid "Can create, change, start/stop and delete polls."
+msgstr "Kan enquêtes aanmaken, wijzigen, starten/stoppen en verwijderen."
+
+msgid "Can create, configure, control and delete projectors."
+msgstr "Kan projectors aanmaken, configureren, beheren en verwijderen."
+
+msgid ""
+"Can create, modify and delete elections and candidate lists, as well as "
+"start/stop and reset ballots. "
+msgstr ""
+"Kan verkiezingen en kandidatenlijsten maken, wijzigen en verwijderen, en "
+"stembiljetten starten/stoppen en resetten."
+
+msgid ""
+"Can create, modify and delete motions and votings, amendments and change "
+"recommendations, and edit the metadata of a motion. Including the management"
+" of categories, motion blocks, tags, workflows and comment fields."
+msgstr ""
+"Kan moties en stemmingen, wijzigingen en wijzigingsaanbevelingen maken, "
+"wijzigen en verwijderen, en de metagegevens van een motie bewerken. "
+"Inclusief het beheer van categorieën, motieblokken, tags, workflows en "
+"commentaarvelden."
+
+msgid ""
+"Can create, modify and delete topics, add motions and elections to the "
+"agenda, sort, number and tag agenda items."
+msgstr ""
+"Kan onderwerpen aanmaken, wijzigen en verwijderen, moties en verkiezingen "
+"aan de agenda toevoegen, agendapunten sorteren, nummeren en labelen."
+
+msgid ""
+"Can create, modify, delete chat groups and define permissions.\n"
+"\n"
+"Note: The chat menu item becomes visible to all participants, except admins, as soon as a chat has been created."
+msgstr ""
+"Kan chatgroepen maken, wijzigen, verwijderen en machtigingen definiëren. \n"
+"\n"
+"Opmerking: Het chatmenu-punt wordt zichtbaar voor alle deelnemers, behalve de beheerders, zodra een chat is gemaakt."
+
+msgid ""
+"Can create, modify, delete participant datasets and administrate group "
+"permissions."
+msgstr ""
+"Kan datasets van deelnemers maken, wijzigen, verwijderen en groepsrechten "
+"beheren."
+
+msgid "Can create, modify, start/stop and delete votings."
+msgstr "Kan stemmingen maken, wijzigen, starten/stoppen en verwijderen."
+
+msgid "Can edit all moderation notes."
+msgstr "Kan alle moderatienotities bewerken."
+
+msgid ""
+"Can edit and assign the following motion metadata: Submitter, state, "
+"recommendation, category, motion blocks and tags."
+msgstr ""
+"Kan de volgende metagegevens over de beweging bewerken en toewijzen: "
+"Indiener, status, aanbeveling, categorie, motieblokken en tags."
+
+msgid "Can edit own delegation"
+msgstr "Kan eigen delegatie bewerken"
+
+msgid "Can forward motions"
+msgstr "Kan moties doorsturen"
+
+msgid "Can forward motions to committee"
+msgstr "Kan moties doorsturen naar commissie"
+
+msgid ""
+"Can forward motions to other meetings within the OpenSlides instance.\n"
+"\n"
+"Further requirements:\n"
+"1. forwarding hierarchy must be set at the organizational level in the committee.\n"
+"2. target meeting must be created.\n"
+"3. forwarding must be activated in the workflow in the state."
+msgstr ""
+"Kan moties doorsturen naar andere vergaderingen binnen de OpenSlides instance. \n"
+"\n"
+"Verdere vereisten:\n"
+"1. doorstuurhiërarchie moet zijn ingesteld op organisatieniveau in de commissie.\n"
+"2. doelvergadering moet zijn aangemaakt.\n"
+"3. doorsturen moet zijn geactiveerd in de workflow in de status."
+
+msgid "Can manage agenda"
+msgstr "Kan agenda beheren"
+
+msgid "Can manage elections"
+msgstr "Kan verkiezingen beheren"
+
+msgid "Can manage files"
+msgstr "Kan bestanden beheren"
+
+msgid "Can manage list of speakers"
+msgstr "Kan sprekerslijst beheren"
+
+msgid "Can manage logos and fonts"
+msgstr "Kan logo's en lettertypen beheren"
+
+msgid "Can manage moderation notes"
+msgstr "Kan moderatienotities beheren"
+
+msgid "Can manage motion metadata"
+msgstr "Kan metagegevens van moties beheren"
+
+msgid "Can manage motion polls"
+msgstr "Kan motion enquêtes beheren"
+
+msgid "Can manage motions"
+msgstr "Kan moties beheren"
+
+msgid "Can manage participants"
+msgstr "Kan deelnemers beheren"
+
+msgid "Can manage polls"
+msgstr "Kan enquêtes beheren"
+
+msgid "Can manage presence of others"
+msgstr "Kan aanwezigheid van anderen beheren"
+
+msgid "Can manage settings"
+msgstr "Kan instellingen beheren"
+
+msgid "Can manage tags"
+msgstr "Kan tags beheren"
+
+msgid "Can manage the chat"
+msgstr "Kan de chat beheren"
+
+msgid "Can manage the projector"
+msgstr "Kan de projector beheren"
+
+msgid "Can modify existing participants, but cannot create or delete them."
+msgstr "Kan bestaande deelnemers wijzigen, maar niet aanmaken of verwijderen."
+
+msgid "Can nominate another participant"
+msgstr "Kan een andere deelnemer nomineren"
+
+msgid "Can nominate oneself"
+msgstr "Kan zichzelf nomineren"
+
+msgid ""
+"Can nominate other participants as candidates.\n"
+"\n"
+"Requires group permission: [Can see participants]"
+msgstr ""
+"Kan andere deelnemers als kandidaat nomineren. \n"
+"\n"
+"Vereist groepstoestemming: [Kan deelnemers zien]"
+
+msgid "Can not import because of errors"
+msgstr "Kan niet importeren vanwege fouten"
+
+msgid "Can put oneself on the list of speakers"
+msgstr "Kan zichzelf op de sprekerslijst zetten"
+
+msgid "Can receive motions"
+msgstr "Kan moties ontvangen"
+
+msgid "Can receive motions from committee"
+msgstr "Kan moties van commissie ontvangen"
+
+msgid "Can see agenda"
+msgstr "Kan agenda zien"
+
+msgid "Can see all internal topics, schedules and comments."
+msgstr "Kan alle interne onderwerpen, schema's en commentaren zien."
+
+msgid "Can see all lists of speakers"
+msgstr "Kan alle sprekerslijsten zien"
+
+msgid "Can see all moderation notes in each list of speakers."
+msgstr "Kan alle moderatienotities zien in elke sprekerslijst."
+
+msgid "Can see elections"
+msgstr "Kan verkiezingen zien"
+
+msgid ""
+"Can see email, username, membership number, SSO identification and locked "
+"out state of all participants."
+msgstr ""
+"Kan e-mail, gebruikersnaam, lidmaatschapnummer, SSO-identificatie en "
+"geblokkeerde status van alle deelnemers zien."
+
+msgid "Can see files"
+msgstr "Kan bestanden zien"
+
+msgid "Can see history"
+msgstr "Kan historie zien"
+
+msgid "Can see internal items and time scheduling of agenda"
+msgstr "Kan interne agendapunten en tijdschema's zien"
+
+msgid "Can see list of speakers"
+msgstr "Kan lijst met sprekers zien"
+
+msgid "Can see moderation notes"
+msgstr "Kan moderatienotities zien"
+
+msgid "Can see motions"
+msgstr "Kan moties zien"
+
+msgid "Can see motions in internal state"
+msgstr "Kan moties in interne status zien"
+
+msgid ""
+"Can see motions in the internal state that are limited in the workflow under Restrictions with the same description.\n"
+"\n"
+"Tip: Cross-check desired visibility of motions with test delegate account. "
+msgstr ""
+"Kan moties zien in de interne status die beperkt zijn in de workflow onder Beperkingen met dezelfde beschrijving.\n"
+"\n"
+"Tip: Controleer de gewenste zichtbaarheid van moties met het account van de testgedelegeerde. "
+
+msgid "Can see origin motion"
+msgstr "Kan oorspronkelijke motie zien"
+
+msgid "Can see participants"
+msgstr "Kan deelnemers zien"
+
+msgid "Can see sensitive data"
+msgstr "Kan gevoelige gegevens zien"
+
+msgid "Can see the Agenda menu item and all public topics in the agenda."
+msgstr ""
+"Kan het menuoptie Agenda en alle openbare onderwerpen in de agenda zien."
+
+msgid ""
+"Can see the Autopilot menu item with all content for which appropriate "
+"permissions are set."
+msgstr ""
+"Kan het menuoptie Autopiloot zien met alle inhoud waarvoor de juiste "
+"machtigingen zijn ingesteld."
+
+msgid ""
+"Can see the Files menu item and all shared folders and files.\n"
+"\n"
+"Note: Sharing of folders and files may be restricted by group assignment."
+msgstr ""
+"Kan de menuoptie Bestanden en alle gedeelde mappen en bestanden zien.\n"
+"\n"
+"Opmerking: Het delen van mappen en bestanden kan beperkt zijn door de toewijzing van een groep."
+
+msgid ""
+"Can see the History menu item with the history of processing timestamps for motions, elections and participants.\n"
+"\n"
+"Note: For privacy reasons, it is recommended to limit the rights to view the History significantly."
+msgstr ""
+"Kan het menuoptie Geschiedenis zien met de geschiedenis van de verwerkingstijden voor moties, verkiezingen en deelnemers. \n"
+"\n"
+"Opmerking: Om privacyredenen is het aan te raden om de rechten om de Geschiedenis te bekijken aanzienlijk te beperken."
+
+msgid "Can see the Home menu item."
+msgstr "Kan het menuoptie Home zien."
+
+msgid ""
+"Can see the Motions menu item and all motions unless they are limited by "
+"access restrictions in the workflow."
+msgstr ""
+"Kan het menuoptie Moties en alle moties zien, tenzij ze worden beperkt door "
+"toegangsbeperkingen in de workflow."
+
+msgid ""
+"Can see the Projector menu item and all projectors (in the Autopilot as well"
+" as in the Projector menu item)"
+msgstr ""
+"Kan het menuoptie Projector en alle projectors zien (zowel in de Autopiloot "
+"als in het menuoptie Projector)"
+
+msgid ""
+"Can see the Settings menu item and edit all settings as well as the start "
+"page of the meeting."
+msgstr ""
+"Kan het menuoptie Instellingen zien en alle instellingen en de startpagina "
+"van de vergadering bewerken."
+
+msgid "Can see the autopilot"
+msgstr "Kan de autopiloot zien"
+
+msgid "Can see the front page"
+msgstr "Kan de startpagina zien"
+
+msgid "Can see the live stream"
+msgstr "Kan de live stream zien"
+
+msgid ""
+"Can see the livestream if there is a livestream URL entered in > [Settings] "
+"> [Livestream]."
+msgstr ""
+"Kan de livestream zien als er een livestream URL is ingevoerd in > "
+"[Instellingen] > [Livestream]."
+
+msgid ""
+"Can see the menu item Elections, including the list of candidates and results.\n"
+"\n"
+"Note: The right to vote is defined directly in the ballot."
+msgstr ""
+"Kan het menuoptie Verkiezingen zien, inclusief de lijst met kandidaten en resultaten. \n"
+"\n"
+"Opmerking: Het stemrecht wordt direct in het stembiljet gedefinieerd."
+
+msgid ""
+"Can see the menu item Participants and therefore the following data from all participants:\n"
+"Personal data: Name, pronoun, gender.\n"
+"Meeting specific information: Structure level, Group, Participant number, About me, Presence status."
+msgstr ""
+"Kan het menuoptie Deelnemers zien en daarmee de volgende gegevens van alle deelnemers:\n"
+"Persoonlijke gegevens: Naam, Voornaam, Geslacht.\n"
+"Specifieke informatie: Structuurniveau, Groep, Deelnemersnummer, Over mij, Aanwezigheidsstatus."
+
+msgid "Can see the projector"
+msgstr "Kan de projector zien"
+
+msgid "Can set and remove own delegation."
+msgstr "Kan eigen delegatie instellen en verwijderen."
+
+msgid "Can support motions"
+msgstr "Kan moties ondersteunen"
+
+msgid ""
+"Can support motions. The support function must be enabled in > [Settings] > "
+"[Motions] as well as for the corresponding state in > [Workflow]."
+msgstr ""
+"Kan moties ondersteunen. De ondersteuningsfunctie moet zijn ingeschakeld in "
+"> [Instellingen] > [Moties] en voor de bijbehorende status in > [ Workflow]."
+
+msgid "Can update participants"
+msgstr "Kan deelnemers updaten"
+
+msgid ""
+"Can upload, modify and delete files, administrate folders and change access "
+"restrictions."
+msgstr ""
+"Kan bestanden uploaden, wijzigen en verwijderen, mappen beheren en "
+"toegangsbeperkingen wijzigen."
+
+msgid "Cancel"
+msgstr "Annuleren"
+
+msgid "Cancel edit"
+msgstr "Bewerken annuleren"
+
+msgid "Cancel editing without saving"
+msgstr "Bewerken annuleren zonder op te slaan"
+
+msgid "Candidate"
+msgstr "Kandidaat"
+
+msgid "Candidate added"
+msgstr "Kandidaat toegevoegd"
+
+msgid "Candidate removed"
+msgstr "Kandidaat verwijderd"
+
+msgid "Candidates"
+msgstr "Kandidaten"
+
+msgid "Cannot create meeting without administrator."
+msgstr "Kan geen vergadering aanmaken zonder beheerder."
+
+msgid "Cannot delete published files"
+msgstr "Kan gepubliceerde bestanden niet verwijderen"
+
+msgid "Cannot do that in demo mode!"
+msgstr "Dat kan niet in de demomodus!"
+
+msgid "Cannot forward motions"
+msgstr "Kan geen moties forward"
+
+msgid "Cannot move published files"
+msgstr "Kan gepubliceerde bestanden niet verplaatsen"
+
+msgid "Cannot receive motions"
+msgstr "Kan geen moties ontvangen"
+
+msgid "Categories"
+msgstr "Categorieën"
+
+msgid "Category"
+msgstr "Categorie"
+
+msgid "Category changed"
+msgstr "Categorie gewijzigd"
+
+msgid "Category removed"
+msgstr "Categorie verwijderd"
+
+msgid "Category set to {}"
+msgstr "Categorie ingesteld op {}"
+
+msgid "Center"
+msgstr "Centrum"
+
+msgid "Change color set"
+msgstr "Kleurset wijzigen"
+
+msgid "Change paragraph"
+msgstr "Paragraaf wijzigen"
+
+msgid "Change password"
+msgstr "Wachtwoord wijzigen"
+
+msgid "Change password for"
+msgstr "Wachtwoord wijzigen voor"
+
+msgid "Change presence"
+msgstr "Aanwezigheid wijzigen"
+
+msgid "Change recommendation"
+msgstr "Aanbeveling wijzigen"
+
+msgid "Change recommendation - rejected"
+msgstr "Wijzigingsaanbeveling - afgewezen"
+
+msgid "Change recommendations"
+msgstr "Aanbevelingen wijzigen"
+
+msgid "Change your delegation"
+msgstr "Wijzig uw delegatie"
+
+msgid "Changed by"
+msgstr "Gewijzigd door"
+
+msgid "Changed title"
+msgstr "Gewijzigde titel"
+
+msgid "Changed version"
+msgstr "Gewijzigde versie"
+
+msgid "Changed version in line"
+msgstr "Gewijzigde versie in lijn"
+
+msgid "Changes"
+msgstr "Veranderingen"
+
+msgid "Changes of all settings group will be lost!"
+msgstr "Wijzigingen van alle instellingsgroepen gaan verloren!"
+
+msgid "Chat"
+msgstr "Chat"
+
+msgid "Chat groups"
+msgstr "Chatgroepen"
+
+msgid "Check datastore"
+msgstr "Controleer datastore"
+
+msgid "Check in or check out participants based on their participant numbers:"
+msgstr "Deelnemers inchecken of uitchecken op basis van hun deelnemernummers:"
+
+msgid "Checkmate! You lost!"
+msgstr "Schaakmat! U hebt verloren!"
+
+msgid "Checkmate! You won!"
+msgstr "Schaakmat! U hebt gewonnen!"
+
+msgid "Chess"
+msgstr "Schaak"
+
+msgid "Choice"
+msgstr "Keuze"
+
+msgid "Choose 0 to disable Intervention."
+msgstr "Kies 0 om Interventie uit te schakelen."
+
+msgid ""
+"Choose 0 to disable speaking times widget for structure level countdowns."
+msgstr ""
+"Kies 0 om de widget voor spreektijden uit te schakelen voor countdowns op "
+"structuurniveau."
+
+msgid "Choose 0 to disable the supporting system."
+msgstr "Kies 0 om het ondersteunende systeem uit te schakelen."
+
+msgid "Chyron"
+msgstr "Chyron"
+
+msgid "Chyron agenda item, background color"
+msgstr "Chyron agendapunt, achtergrondkleur"
+
+msgid "Chyron agenda item, font color"
+msgstr "Chyron agendapunt, letterkleur"
+
+msgid "Chyron speaker name"
+msgstr "Chyron sprekers naam"
+
+msgid "Chyron speaker, background color"
+msgstr "Chyron spreker, achtergrondkleur"
+
+msgid "Chyron speaker, font color"
+msgstr "Chyron spreker, letterkleur"
+
+msgid "Classic"
+msgstr "Klassiek"
+
+msgid "Clear"
+msgstr "Verwijder"
+
+msgid "Clear all filters"
+msgstr "Verwijder alle filters"
+
+msgid "Clear all list of speakers"
+msgstr "Verwijder alle sprekerslijsten"
+
+msgid "Clear current projection"
+msgstr "Verwijder actuele projectie"
+
+msgid "Clear formatting"
+msgstr "Verwijder opmaak"
+
+msgid "Clear list"
+msgstr "Verwijder lijst"
+
+msgid "Clear motion block"
+msgstr "Verwijder motieblok"
+
+msgid "Clear recommendation"
+msgstr "Verwijder aanbeveling"
+
+msgid "Clear tags"
+msgstr "Verwijder tags"
+
+msgid "Click here to vote!"
+msgstr "Klik hier om te stemmen!"
+
+msgid "Close"
+msgstr "Sluit"
+
+msgid "Close edit mode"
+msgstr "Sluit de bewerkingsmodus"
+
+msgid "Close list of speakers"
+msgstr "Sluit lijst van sprekers"
+
+msgid "Closed"
+msgstr "Gesloten"
+
+msgid "Closed items"
+msgstr "Gesloten punten"
+
+msgid "Collapse all"
+msgstr "Alles samenvouwen"
+
+msgid "Color"
+msgstr "Kleur"
+
+msgid "Color set"
+msgstr "Kleurenset"
+
+msgid "Column separator"
+msgstr "Kolomscheider"
+
+msgid "Comment"
+msgstr "Commentaar"
+
+msgid "Comment created"
+msgstr "Commentaar aangemaakt"
+
+msgid "Comment deleted"
+msgstr "Commentaar verwijderd"
+
+msgid "Comment fields"
+msgstr "Commentaarvelden"
+
+msgid "Comment section"
+msgstr "Commentaar sectie"
+
+msgid "Comment sections"
+msgstr "Commentaarsecties"
+
+msgid "Comment updated"
+msgstr "Commentaar bijgewerkt"
+
+msgid "Comment {} created"
+msgstr "Commentaar {} aangemaakt"
+
+msgid "Comment {} deleted"
+msgstr "Commentaar {} verwijderd"
+
+msgid "Comment {} updated"
+msgstr "Commentaar {} bijgewerkt"
+
+msgid "Comments"
+msgstr "Reacties"
+
+msgid "Committee"
+msgstr "Commissie"
+
+msgid "Committee Management Level changed"
+msgstr "Commissie Beheersniveau gewijzigd"
+
+msgid "Committee admin"
+msgstr "Commissie admin"
+
+msgid "Committee management"
+msgstr "Commissie Beheer"
+
+msgid "Committee managers"
+msgstr "Commissie beheerders"
+
+msgid "Committees"
+msgstr "Commissies"
+
+msgid "Committees and meetings"
+msgstr "Commissies en vergaderingen"
+
+msgid "Committees created"
+msgstr "Commissies aangemaakt"
+
+msgid "Committees updated"
+msgstr "Commissies bijgewerkt"
+
+msgid "Committees with errors"
+msgstr "Commissies met fouten"
+
+msgid "Committees with warnings: affected cells will be skipped"
+msgstr "Commissies met warningen: betreffende cellen worden overgeslagen"
+
+msgid "Conference room"
+msgstr "Conferentieruimte"
+
+msgid "Confirm new password"
+msgstr "Bevestig nieuw wachtwoord"
+
+msgid "Confirmation of the nomination list"
+msgstr "Bevestiging van de nominatielijst"
+
+msgid "Congratuations! Your browser is supported by OpenSlides."
+msgstr "Gefeliciteerd! Uw browser wordt ondersteund door OpenSlides."
+
+msgid "Connect 4"
+msgstr "Verbind 4"
+
+msgid "Connect all users to live conference automatically."
+msgstr "Verbind alle gebruikers automatisch met de live conferentie."
+
+msgid "Content"
+msgstr "Inhoud"
+
+msgid "Continue livestream"
+msgstr "Livestream voortzetten"
+
+msgid "Continuous text"
+msgstr "Doorlopende tekst"
+
+msgid "Contra speech"
+msgstr "Tegenspraak"
+
+msgid "Contribution"
+msgstr "Contributie"
+
+msgid "Contributions"
+msgstr "Contributies"
+
+msgid "Copy report to clipboard"
+msgstr "Kopieer rapport naar klembord"
+
+msgid "Count completed requests to speak"
+msgstr "Afgehandelde Spreekverzoeken tellen"
+
+msgid "Count logged-in users"
+msgstr "Ingelogde gebruikers tellen"
+
+msgid "Countdown"
+msgstr "Countdown"
+
+msgid "Countdowns"
+msgstr "Countdowns"
+
+msgid "Counter speech"
+msgstr "Tegenspraak"
+
+msgid "Counting of votes is in progress ..."
+msgstr "Stemmen worden geteld ..."
+
+msgid "Couple countdown with the list of speakers"
+msgstr "Koppel countdown met de sprekerslijst"
+
+msgid "Create"
+msgstr "Aanmaken"
+
+msgid "Create editorial final version"
+msgstr "Redactionele eindversie aanmaken"
+
+msgid "Create subitem"
+msgstr "onderpunt aanmaken"
+
+msgid "Create user"
+msgstr "Gebruiker aanmaken"
+
+msgid "Creating PDF file ..."
+msgstr "PDF-bestand aanmaken ..."
+
+msgid "Creation"
+msgstr "Aanmaak"
+
+msgid "Creation date"
+msgstr "Aanmaakdatum"
+
+msgid "Current agenda item"
+msgstr "Actuele agendapunt"
+
+msgid "Current date"
+msgstr "Actuele datum"
+
+msgid "Current list of speakers"
+msgstr "Actuele sprekerslijst"
+
+msgid "Current list of speakers (as slide)"
+msgstr "Actuele sprekerslijst (als slide)"
+
+msgid "Current slide"
+msgstr "Actuele slide"
+
+msgid "Current speaker"
+msgstr "Actuele spreker"
+
+msgid "Current speaker chyron"
+msgstr "Actuele spreker chyron"
+
+msgid "Current window"
+msgstr "Actueel scherm"
+
+msgid "Currently no livestream available."
+msgstr "Momenteel geen livestream beschikbaar."
+
+msgid "Currently projected"
+msgstr "Momenteel geprojecteerd"
+
+msgid "Custom aspect ratio"
+msgstr "Aangepaste beeldverhouding"
+
+msgid "Custom number of ballot papers"
+msgstr "Aangepast aantal stembiljetten"
+
+msgid "Custom translations"
+msgstr "Aangepaste vertalingen"
+
+msgid "Customize autopilot"
+msgstr "Autopiloot aanpassen"
+
+msgid "Dark mode"
+msgstr "Dark mode"
+
+msgid "Dashboard"
+msgstr "Dashboard"
+
+msgid "Datastore is corrupt! See the console for errors."
+msgstr "Datastore is corrupt! Bekijk de console voor fouten."
+
+msgid "Datastore is ok!"
+msgstr "Datastore is ok!"
+
+msgid "Decision"
+msgstr "Besluit"
+
+msgid "Default"
+msgstr "Standaard"
+
+msgid "Default 100 % base"
+msgstr "Standaard 100 % basis"
+
+msgid "Default election method"
+msgstr "Standaard verkiezingsmethode"
+
+msgid "Default encoding for all CSV exports"
+msgstr "Standaardcodering voor alle CSV-exports"
+
+msgid "Default group"
+msgstr "Standaardgroep"
+
+msgid "Default groups with voting rights"
+msgstr "Standaardgroepen met stemrecht"
+
+msgid "Default line numbering"
+msgstr "Standaard regelnummering"
+
+msgid ""
+"Default speaking time contingent for parliamentary groups (structure levels)"
+" in seconds"
+msgstr ""
+"Standaard voorwaardelijke spreektijd voor parlementaire groepen "
+"(structuurniveaus) in seconden"
+
+msgid ""
+"Default text version for change recommendations and projection of motions"
+msgstr ""
+"Standaardtekstversie voor wijzigingsaanbevelingen en projectie van moties"
+
+msgid "Default visibility for new agenda items (except topics)"
+msgstr ""
+"Standaard zichtbaarheid voor nieuwe agendapunten (behalve onderwerpen)"
+
+msgid "Default vote weight"
+msgstr "Standaard stemgewicht"
+
+msgid "Default voting duration"
+msgstr "Standaard stemduur"
+
+msgid "Default voting method"
+msgstr "Standaard stemmethode"
+
+msgid "Default voting type"
+msgstr "Standaard stemtype"
+
+msgid ""
+"Defines for the selected state which groups have access:\n"
+"- If no option is selected, the motions in the selected state are visible to all; The prerequisite for this is group permission: [Can see motions].\n"
+"- Selecting one or more options restricts access to those groups for which the selected authorization option is defined under > [Participants] > [Groups]."
+msgstr ""
+"Bepaalt voor de geselecteerde status welke groepen toegang hebben:\n"
+"- Als er geen optie is geselecteerd, zijn de moties in de geselecteerde status zichtbaar voor iedereen; voorwaarde hiervoor is groepstoestemming: [Kan moties zien].\n"
+"- Door een of meer opties te selecteren, wordt de toegang beperkt tot die groepen waarvoor de geselecteerde machtigingsoptie is gedefinieerd onder > [Deelnemers] > [Groepen]."
+
+msgid "Defines the colour for the state button."
+msgstr "Definieert de kleur voor de statusknop."
+
+msgid ""
+"Defines the maximum deflection. Entering zero will use the amount of present"
+" participants instead."
+msgstr ""
+"Definieert de maximale uitslag. Als u nul invoert, wordt in plaats daarvan "
+"de waarde van de aanwezige deelnemers gebruikt."
+
+msgid ""
+"Defines the minimum deflection which is required to recognize applause."
+msgstr "Definieert de minimale uitslag die nodig is om applaus te herkennen."
+
+msgid "Defines the time in which applause amounts are add up."
+msgstr "Definieert de tijd waarin applausbedragen worden opgeteld."
+
+msgid ""
+"Defines the wording of the recommendation that belongs to this state.\n"
+"Example: State = Accepted / Recommendation = Acceptance.\n"
+"\n"
+"To activate the recommendation system, a recommender (for example, a motion committee) must be defined under > [Settings] > [Motions] > [Name of recommender].\n"
+"Example recommender: motion committee\n"
+"\n"
+"Additional information:\n"
+"In combination with motion blocks, the recommendation of multiple motions can be followed simultaneously."
+msgstr ""
+"Definieert de bewoording van de aanbeveling die bij deze status hoort.\n"
+"Voorbeeld: Status = Aanvaard / Aanbeveling = Aanvaard.\n"
+"\n"
+"Om het aanbevelingssysteem te activeren, moet een aanbeveler (bijvoorbeeld een motiecomité) worden gedefinieerd onder > [Instellingen] > [Moties] > [Naam aanbeveler].\n"
+"Voorbeeld aanbeveler: motiecomité\n"
+"\n"
+"Toegevoegde informatie:\n"
+"In combinatie met motieblokken kan de aanbeveling van meerdere moties tegelijkertijd worden gevolgd."
+
+msgid "Defines which states can be selected next in the workflow."
+msgstr ""
+"Definieert welke status als volgende kan worden geselecteerd in de workflow."
+
+msgid "Delegation of vote"
+msgstr "Delegatie van stemrecht"
+
+msgid "Delete"
+msgstr "Verwijder"
+
+msgid "Delete color set"
+msgstr "Verwijder kleurenset"
+
+msgid "Delete editorial final version"
+msgstr "Verwijder redactionele definitieve versie"
+
+msgid "Delete projector"
+msgstr "Verwijder projector"
+
+msgid "Deleted user"
+msgstr "Verwijderde gebruiker"
+
+msgid "Deleting this motion will also delete the amendments."
+msgstr ""
+"Door het verwijderen van deze motie worden ook de amendementen verwijderd."
+
+msgid "Deletion"
+msgstr "Verwijdering"
+
+msgid "Delivering vote... Please wait!"
+msgstr "Stem uitbrengen... Even geduld!"
+
+msgid "Description"
+msgstr "Beschrijving"
+
+msgid "Deselect all"
+msgstr "Deselecteer alles"
+
+msgid "Design"
+msgstr "Design"
+
+msgid "Designates whether this user is in the room."
+msgstr "Geeft aan of deze gebruiker in de ruimte is."
+
+msgid "Didn't get an email"
+msgstr "Geen e-mail ontvangen"
+
+msgid "Diff version"
+msgstr "Verschil versie"
+
+msgid "Disabled (no percents)"
+msgstr "Uitgeschakeld (geen percentages)"
+
+msgid "Disallow new point of order when list of speakers is closed"
+msgstr "Nieuw punt van orde niet toestaan als sprekerslijst is gesloten"
+
+msgid "Display type"
+msgstr "Schermtype"
+
+msgid "Distribute overhang time"
+msgstr "Verdeel overhangtijd"
+
+msgid "Divergent:"
+msgstr "Divergent:"
+
+msgid "Do not forget to save your changes!"
+msgstr "Vergeet niet uw wijzigingen op te slaan!"
+
+msgid "Do not show recommendations publicly"
+msgstr "Toon aanbevelingen niet openbaar"
+
+msgid "Do you accept?"
+msgstr "Accepteert u dit?"
+
+msgid "Do you really want to delete this color set?"
+msgstr "Wilt u deze kleurenset echt verwijderen?"
+
+msgid "Do you really want to discard all your changes?"
+msgstr "Wilt u echt al uw wijzigingen ongedaan maken?"
+
+msgid "Do you really want to go ahead?"
+msgstr "Wilt u echt doorgaan?"
+
+msgid "Do you really want to lock this participant out of the meeting?"
+msgstr "Wilt u echt deze deelnemer uitsluiten van de vergadering?"
+
+msgid ""
+"Do you really want to make available this meeting as a public template?"
+msgstr ""
+"Wilt u deze vergadering echt beschikbaar stellen als een openbaar sjabloon?"
+
+msgid "Do you really want to save your changes?"
+msgstr "Wilt u uw wijzigingen echt opslaan?"
+
+msgid "Do you really want to stop sharing this meeting as a public template?"
+msgstr ""
+"Wilt u echt stoppen met het delen van deze vergadering als een openbaar "
+"sjabloon?"
+
+msgid "Do you really want to undo the lock out of the participant?"
+msgstr "Wilt u echt de blokkering van de deelnemer ongedaan maken?"
+
+msgid "Do you want to update the amendment text? All changes will be lost."
+msgstr "Wilt u de wijzigingstekst bijwerken? Alle wijzigingen gaan verloren."
+
+msgid "Does not have notes"
+msgstr "Heeft geen notities"
+
+msgid "Done"
+msgstr "Gedaan"
+
+msgid "Download"
+msgstr "Download"
+
+msgid "Download CSV example file"
+msgstr "Download CSV-voorbeeldbestand"
+
+msgid "Download folder"
+msgstr "Download map"
+
+msgid "Download the file"
+msgstr "Download het bestand"
+
+msgid "Drop files into this area OR click here to select files"
+msgstr "Drop bestanden in dit vak OF klik hier om bestanden te selecteren"
+
+msgid "Duplicate"
+msgstr "Duplicaat"
+
+msgid "Duplicate from"
+msgstr "Duplicaat van"
+
+msgid "Duplicates"
+msgstr "Duplicaten"
+
+msgid "Duration"
+msgstr "Duur"
+
+msgid "Duration in minutes"
+msgstr "Duur in minuten"
+
+msgid "Duration of all requests to speak"
+msgstr "Duur van alle spreekverzoeken"
+
+msgid "Duration of requests to speak"
+msgstr "Duur van spreekverzoeken"
+
+msgid ""
+"During non-nominal voting OpenSlides does NOT store the individual user ID "
+"of the voter. This in no way means that a non-nominal vote is completely "
+"anonymous and secure. The votes cannot track their individual votes after "
+"the data has been submitted. The validity of the data cannot always be "
+"guaranteed."
+msgstr ""
+"Tijdens het niet-nominaal stemmen slaat OpenSlides de individuele "
+"gebruikers-ID van de stemmer NIET op. Dit betekent op geen enkele manier dat"
+" een niet-nominale stem volledig anoniem en veilig is. De stemmen kunnen hun"
+" individuele stemmen niet traceren nadat de gegevens zijn ingediend. De "
+"geldigheid van de gegevens kan niet altijd worden gegarandeerd."
+
+msgid "Edit"
+msgstr "Bewerken"
+
+msgid "Edit HTML content"
+msgstr "Bewerk HTML-inhoud"
+
+msgid "Edit account"
+msgstr "Bewerk account"
+
+msgid "Edit comment field"
+msgstr "Bewerk commentaarveld"
+
+msgid "Edit committee"
+msgstr "Bewerk commissie"
+
+msgid "Edit details"
+msgstr "Bewerk details"
+
+msgid "Edit details for"
+msgstr "Bewerk details voor"
+
+msgid "Edit editorial final version"
+msgstr "Bewerk redactionele eindversie"
+
+msgid "Edit group"
+msgstr "Bewerk groep"
+
+msgid "Edit meeting"
+msgstr "Bewerk vergadering"
+
+msgid "Edit moderation note"
+msgstr "Bewerk moderatie-opmerking"
+
+msgid "Edit participant"
+msgstr "Bewerk deelnemer"
+
+msgid "Edit point of order ..."
+msgstr "Bewerk punt van orde ..."
+
+msgid "Edit projector"
+msgstr "Bewerk projector"
+
+msgid "Edit queue"
+msgstr "Bewerk wachtrij"
+
+msgid "Edit state"
+msgstr "Bewerk staat"
+
+msgid "Edit tag"
+msgstr "Bewerk tag"
+
+msgid "Edit the whole motion text"
+msgstr "Bewerk de hele motietekst"
+
+msgid "Edit to enter votes."
+msgstr "Bewerk om stemmen in te voeren."
+
+msgid "Edit topic"
+msgstr "Bewerk onderwerp"
+
+msgid "Edit workflow"
+msgstr "Bewerk workflow"
+
+msgid "Editorial final version"
+msgstr "Redactionele eindversie"
+
+msgid "Election"
+msgstr "Verkiezing"
+
+msgid "Election documents"
+msgstr "Verkiezingsdocumenten"
+
+msgid "Election method"
+msgstr "Verkiezingsmethode"
+
+msgid "Elections"
+msgstr "Verkiezingen"
+
+msgid "Elections (PDF settings)"
+msgstr "Verkiezingen (PDF-instellingen)"
+
+msgid "Element"
+msgstr "Element"
+
+msgid "Email"
+msgstr "E-mail"
+
+msgid "Email address"
+msgstr "E-mail adres"
+
+msgid "Email body"
+msgstr "E-mail inhoud"
+
+msgid "Email sent"
+msgstr "E-mail verzonden"
+
+msgid "Email settings"
+msgstr "E-mail instellingen"
+
+msgid "Email subject"
+msgstr "E-mail onderwerp"
+
+msgid "Empty text field"
+msgstr "Leeg tekstveld"
+
+msgid "Enable SSO via SAML"
+msgstr "Activeer SSO via SAML"
+
+msgid "Enable chat globally"
+msgstr "Activeer chat globaal"
+
+msgid "Enable electronic voting"
+msgstr "Activeer elektronisch stemmen"
+
+msgid "Enable forspeech / counter speech"
+msgstr "Activeer voorspraak / tegenspraak"
+
+msgid "Enable interposed questions"
+msgstr "Activeer tussengevoegde vragen"
+
+msgid "Enable numbering for agenda items"
+msgstr "Activeer nummering van agendapunten"
+
+msgid "Enable participant presence view"
+msgstr "Activeer aanwezigheidsweergave van deelnemer"
+
+msgid "Enable point of order"
+msgstr "Activeer punt van orde"
+
+msgid "Enable point of orders for other participants"
+msgstr "Activeer punt van orde voor andere deelnemers"
+
+msgid "Enable public meetings"
+msgstr "Activeer openbare vergaderingen"
+
+msgid "Enable specifications and ranking for possible motions"
+msgstr "Activeer specificaties en rangorde voor mogelijke moties"
+
+msgid "Enable star icon usage by speakers"
+msgstr "Activeer gebruik van sterpictogrammen door sprekers"
+
+msgid "Enable virtual applause"
+msgstr "Activeer virtueel applaus"
+
+msgid "Enable virtual help desk room"
+msgstr "Activeer virtuele helpdesk ruimte"
+
+msgid "Enable/disable account ..."
+msgstr "Activeer/deactiveer account ..."
+
+msgid "Enable/disable accounts"
+msgstr "Activeer/deactiveer accounts"
+
+msgid ""
+"Enables for the selected state the possibility for submitters to change the "
+"state of the motion. Other administrative functions are excluded."
+msgstr ""
+"Activeert voor de geselecteerde status de mogelijkheid voor indieners om de "
+"status van de motie te wijzigen. Andere administratieve functies zijn "
+"uitgesloten."
+
+msgid ""
+"Enables public access to this meeting without login data. Permissions can be"
+" set after activation in the new group 'Public'."
+msgstr ""
+"Activeert publieke toegang tot deze vergadering zonder inloggegevens. "
+"Rechten kunnen worden ingesteld na activering in de nieuwe groep 'Publiek'."
+
+msgid "Enables the ability to create votings for motions in this state."
+msgstr ""
+"Activeert de mogelijkheid om stemmingen te maken voor moties in deze status."
+
+msgid ""
+"Enables the editing of the motion text and reason by submitters in the "
+"selected state after the motion has been created."
+msgstr ""
+"Activeert het bewerken van de motietekst en -reden door indieners in de "
+"geselecteerde status nadat de motie is aangemaakt."
+
+msgid ""
+"Enables the forwarding of amendments in the selected state.\n"
+"\n"
+"Prerequisites:\n"
+"1. Motion forwarding is activated.\n"
+"2. 'Original version with changes' in forwarding dialog must be selected."
+msgstr ""
+"Activeert het doorsturen van amendementen in de geselecteerde status.\n"
+"\n"
+"Eisen:\n"
+"1. Het doorsturen van wijzigingen is geactiveerd.\n"
+"2. Originele versie met wijzigingen' in het doorstuurdialoogvenster moet zijn geselecteerd."
+
+msgid ""
+"Enables the forwarding of motions to other meetings within the OpenSlides instance in the selected state.\n"
+"\n"
+"Prerequisites:\n"
+"1. forwarding hierarchy must be set at the organizational level in the committee.\n"
+"2. target meeting must be created.\n"
+"3. user must have group permission for forwarding."
+msgstr ""
+"Activeert het doorsturen van moties naar andere vergaderingen binnen de OpenSlides-instantie in de geselecteerde status.\n"
+"\n"
+"Voorwaarden:\n"
+"1. Hiërarchie voor doorsturen moet zijn ingesteld op organisatieniveau in de commissie.\n"
+"2. Doelvergadering moet zijn aangemaakt.\n"
+"3. Gebruiker moet groepstoestemming hebben voor doorsturen."
+
+msgid ""
+"Enables the support function for motions in the selected state. The support "
+"function must be activated under > [Settings] > [Motions] as well as the "
+"corresponding group permission in > [Participants] > [Groups] > [Motions] > "
+"[Can support motions]."
+msgstr ""
+"Activeert de ondersteuningsfunctie voor moties in de geselecteerde status. "
+"De ondersteuningsfunctie moet worden geactiveerd onder > [Instellingen] > "
+"[Moties] en de bijbehorende groepstoestemming in > [Deelnemers] > [Groepen] "
+"> [Moties] > [Kan moties ondersteunen]."
+
+msgid ""
+"Enables the visibility of amendments directly in the corresponding main motion. The text of amendments is embedded within the text of the motion.\n"
+"\n"
+"Note: Does not affect the visibility of change recommendations."
+msgstr ""
+"Activeert de zichtbaarheid van amendementen direct in de corresponderende hoofdmotie. De tekst van de amendementen is ingebed in de tekst van de motie. \n"
+"\n"
+"Opmerking: Heeft geen invloed op de zichtbaarheid van wijzigingsaanbevelingen."
+
+msgid "Encoding of the file"
+msgstr "Codering van het bestand"
+
+msgid "End date"
+msgstr "Einddatum"
+
+msgid "End speech"
+msgstr "Einde toespraak"
+
+msgid "Enforce page breaks"
+msgstr "Pagina-einden forceren"
+
+msgid "Enter"
+msgstr "Enter"
+
+msgid "Enter conference room"
+msgstr "Ga de conferentieruimte binnen"
+
+msgid "Enter duration in seconds. Choose 0 to disable warning color."
+msgstr ""
+"Voer de looptijd in seconden in. Kies 0 om de waarschuwingskleur uit te "
+"schakelen."
+
+msgid ""
+"Enter number of the next shown speakers. Choose -1 to show all next "
+"speakers."
+msgstr ""
+"Voer het nummer van de volgende getoonde luidsprekers in. Kies -1 om alle "
+"volgende sprekers te tonen."
+
+msgid "Enter participant number"
+msgstr "Voer deelnemersnummer in"
+
+msgid "Enter the developer mode"
+msgstr "Activeer de ontwikkelmodus"
+
+msgid "Enter your email to send the password reset link"
+msgstr ""
+"Voer uw e-mailadres in om de link voor het resetten van het wachtwoord te "
+"verzenden"
+
+msgid "Entitled present users"
+msgstr "Bevoegde aanwezige gebruikers"
+
+msgid "Entitled to vote"
+msgstr "Bevoegd om te stemmen"
+
+msgid "Entitled users"
+msgstr "Bevoegde gebruikers"
+
+msgid "Error"
+msgstr "Fout"
+
+msgid "Error during PDF creation of election:"
+msgstr "Fout bij het maken van PDF van verkiezing:"
+
+msgid "Error during PDF creation of motion:"
+msgstr "Fout tijdens het maken van PDF van de motie:"
+
+msgid "Error in form field."
+msgstr "Fout in formulierveld."
+
+msgid "Error talking to autoupdate service"
+msgstr "Fout bij het communiceren met de autoupdatingservice"
+
+msgid "Estimated end"
+msgstr "Verwacht einde"
+
+msgid "Event location"
+msgstr "Event locatie"
+
+msgid "Every admin in every meeting will be able to see this content."
+msgstr "Elke beheerder in elke vergadering kan deze inhoud zien."
+
+msgid ""
+"Everyone can see the request of a point of order (instead of managers for "
+"list of speakers only)"
+msgstr ""
+"Iedereen kan het verzoek om een motie van orde zien (in plaats van "
+"beheerders voor alleen de sprekerslijst)"
+
+msgid ""
+"Existing accounts can be reused or updated by using: <ul><li>Membership "
+"number <i>(recommended)</i><li>Username<li>Email address AND first name AND "
+"last name"
+msgstr ""
+"Bestaande accounts kunnen worden hergebruikt of bijgewerkt met behulp van: "
+"<ul><li>Lidmaatschapsnummer "
+"<i>(aanbevolen)</i><li>Gebruikersnaam<li>Emailadres EN voornaam EN "
+"achternaam"
+
+msgid "Exit conference room"
+msgstr "Verlaat de conferentieruimte"
+
+msgid "Exit fullscreen"
+msgstr "Volledig scherm sluiten"
+
+msgid "Expand all"
+msgstr "Alles uitbreiden"
+
+msgid "Export"
+msgstr "Exporteren"
+
+msgid "Export as CSV"
+msgstr "Exporteren als CSV"
+
+msgid "Export as PDF"
+msgstr "Exporteren als PDF"
+
+msgid "Export comment"
+msgstr "Exporteren commentaar"
+
+msgid "Export moderator note as PDF"
+msgstr "Exporteer moderator notitie als PDF"
+
+msgid "Export personal note only"
+msgstr "Exporteer alleen persoonlijke notitie"
+
+msgid "Export selected elections"
+msgstr "Exporteer geselecteerde verkiezingen"
+
+msgid "Export selected motions"
+msgstr "Exporteer geselecteerde moties"
+
+msgid "Extension"
+msgstr "Uitbreiding"
+
+msgid "External"
+msgstr "Extern"
+
+msgid "External ID"
+msgstr "Externe ID"
+
+msgid "Fallback"
+msgstr "Fallback"
+
+msgid "Favorites"
+msgstr "Favorieten"
+
+msgid "File"
+msgstr "Bestand"
+
+msgid "File is being used"
+msgstr "Bestand wordt gebruikt"
+
+msgid "File is used in:"
+msgstr "Bestand wordt gebruikt in:"
+
+msgid "Filename"
+msgstr "Bestandsnaam"
+
+msgid "Files"
+msgstr "Bestanden"
+
+msgid "Filter"
+msgstr "Filters"
+
+msgid "Filtered single votes"
+msgstr "Gefilterde afzonderlijke stemmen"
+
+msgid "Final version"
+msgstr "Finale versie"
+
+msgid "Finished"
+msgstr "Afgewerkt"
+
+msgid "First speech"
+msgstr "Eerste toespraak"
+
+msgid "First state"
+msgstr "Eerste status"
+
+msgid "Follow recommendation"
+msgstr "Volg aanbeveling"
+
+msgid "Follow recommendations for all motions"
+msgstr "Volg aanbevelingen voor alle moties"
+
+msgid "Following users are currently editing this motion:"
+msgstr "Volgende gebruikers bewerken deze motie:"
+
+msgid "Font bold"
+msgstr "Lettertype vet"
+
+msgid "Font bold italic"
+msgstr "Lettertype vet cursief"
+
+msgid "Font italic"
+msgstr "Lettertype cursief"
+
+msgid "Font monospace"
+msgstr "Lettertype monospace"
+
+msgid "Font regular"
+msgstr "Lettertype regular"
+
+msgid "Font size in pt"
+msgstr "Lettergrootte in pt"
+
+msgid ""
+"For activation:<br>\n"
+"                        1. Assign group permission (define the group that can support motions)<br>\n"
+"                        2. Adjust workflow (define state in which motions can be supported)<br>\n"
+"                        3. Enter minimum number (see next field)"
+msgstr ""
+"Voor activering: <br>\n"
+"1. Wijs groepstoestemming toe (definieer de groep die moties kan ondersteunen)<br>\n"
+"2. Pas de workflow aan (definieer de status waarin moties kunnen worden ondersteund)<br>\n"
+"3. Voer het minimumaantal in (zie volgende veld)."
+
+msgid ""
+"For large instances this may block the server to the point of unusability"
+msgstr ""
+"Voor grote instanties kan dit de server blokkeren tot het punt van "
+"onbruikbaarheid"
+
+msgid "Foreground color"
+msgstr "Voorgrondkleur"
+
+msgid "Forgot Password?"
+msgstr "Wachtwoord vergeten?"
+
+msgid "Formalities"
+msgstr "Formaliteiten"
+
+msgid "Forspeech"
+msgstr "Voorspraak"
+
+msgid "Forward"
+msgstr "Doorsturen"
+
+msgid "Forward motions"
+msgstr "Moties doorsturen"
+
+msgid "Forward motions to"
+msgstr "Moties doorsturen naar"
+
+msgid "Forwarded motion deleted"
+msgstr "Doorgestuurde motie verwijderd"
+
+msgid "Forwarded to {}"
+msgstr "Doorgestuurd naar {}"
+
+msgid "Forwarding"
+msgstr "Doorsturen"
+
+msgid "Forwarding created"
+msgstr "Doorsturen gecreëerd"
+
+msgid "Forwarding of motion"
+msgstr "Motie doorsturen"
+
+msgid "Front page title"
+msgstr "Voorpagina titel"
+
+msgid "Full name"
+msgstr "Volledige naam"
+
+msgid "Fullscreen"
+msgstr "Volledig scherm"
+
+msgid "Game draw!"
+msgstr "Spel zwevend!"
+
+msgid "Gender"
+msgstr "Geslacht"
+
+msgid "Genders"
+msgstr "Geslachten"
+
+msgid "General"
+msgstr "Algemeen"
+
+msgid "General abstain"
+msgstr "Algemeen onthouding"
+
+msgid "General approval"
+msgstr "Algemene goedkeuring"
+
+msgid "General rejection"
+msgstr "Algemene afwijzing"
+
+msgid "Generate new color"
+msgstr "Genereer nieuwe kleur"
+
+msgid "Generate new passwords"
+msgstr "Genereer nieuwe wachtwoorden"
+
+msgid "Generate password"
+msgstr "Genereer wachtwoord"
+
+msgid "Give applause"
+msgstr "Geef applaus"
+
+msgid "Given name"
+msgstr "Voornaam"
+
+msgid "Global headbar color"
+msgstr "Globale hoofdstangkleur "
+
+msgid "Go to line"
+msgstr "Ga naar regel"
+
+msgid "Got an email"
+msgstr "Kreeg een e-mail"
+
+msgid "Group"
+msgstr "Groep"
+
+msgid "Group name"
+msgstr "Groep naam"
+
+msgid "Group not found. Account added to the group “Default”."
+msgstr "Groep niet gevonden. Account toegevoegd aan de groep “Standaard”."
+
+msgid "Group not found. Account already belongs to another group."
+msgstr "Groep niet gevonden. Account maakt al deel uit van een andere groep."
+
+msgid "Groups"
+msgstr "Groepen"
+
+msgid "Groups changed in meeting {}"
+msgstr "Groepen gewijzigd in vergadering {}"
+
+msgid "Groups changed in multiple meetings"
+msgstr "Groepen gewijzigd in meerdere vergaderingen"
+
+msgid "Groups with read permissions"
+msgstr "Groepen met leesrechten"
+
+msgid "Groups with write permissions"
+msgstr "Groepen met schrijfrechten"
+
+msgid "Has SSO identification"
+msgstr "Heeft SSO identificatie"
+
+msgid "Has a home committee"
+msgstr "Heeft een thuiscommissie"
+
+msgid "Has a membership number"
+msgstr "Heeft een lidmaatschapsnummer"
+
+msgid "Has amendments"
+msgstr "Heeft wijzigingen"
+
+msgid "Has an email address"
+msgstr "Heeft een e-mailadres"
+
+msgid "Has changed vote weight"
+msgstr "Heeft gewijzigd stemgewicht"
+
+msgid "Has email"
+msgstr "Heeft e-mail"
+
+msgid "Has forwardings"
+msgstr "Heeft doorsturingen"
+
+msgid "Has identical motions"
+msgstr "Heeft identieke moties"
+
+msgid "Has logged in"
+msgstr "Heeft ingelogd"
+
+msgid "Has no SSO identification"
+msgstr "Heeft geen SSO identificatie"
+
+msgid "Has no email address"
+msgstr "Heeft geen e-mailadres"
+
+msgid "Has no home committee"
+msgstr "Heeft geen thuiscommissie"
+
+msgid "Has no identical motions"
+msgstr "Heeft geen identieke moties"
+
+msgid "Has no membership number"
+msgstr "Heeft geen lidmaatschapsnummer"
+
+msgid "Has no speakers"
+msgstr "Heeft geen sprekers"
+
+msgid "Has not logged in yet"
+msgstr "Heeft nog niet ingelogd"
+
+msgid "Has not spoken"
+msgstr "Heeft niet gesproken"
+
+msgid "Has not voted"
+msgstr "Heeft niet gestemd"
+
+msgid "Has notes"
+msgstr "Heeft notities"
+
+msgid "Has speakers"
+msgstr "Heeft sprekers"
+
+msgid "Has spoken"
+msgstr "Heeft gesproken"
+
+msgid "Has unchanged vote weight"
+msgstr "Heeft ongewijzigd stemgewicht"
+
+msgid "Has voted"
+msgstr "Heeft gestemd"
+
+msgid "Header"
+msgstr "Header"
+
+msgid "Header and footer"
+msgstr "Kop- en voettekst"
+
+msgid "Header background color"
+msgstr "Header achtergrondkleur"
+
+msgid "Header font color"
+msgstr "Header letterkleur"
+
+msgid "Heading"
+msgstr "Rubriek"
+
+msgid "Headings"
+msgstr "Rubrieken"
+
+msgid "Headline color"
+msgstr "Titelkleur"
+
+msgid "Help desk"
+msgstr "Helpdesk"
+
+msgid "Help text for access data and welcome PDF"
+msgstr "Helptekst voor toegangsgegevens en welkom PDF"
+
+msgid "Hidden item"
+msgstr "Verborgen item"
+
+msgid "Hide"
+msgstr "Verberg"
+
+msgid "Hide main menu"
+msgstr "Verberg hoofdmenu"
+
+msgid "Hide more text"
+msgstr "Verberg meer tekst"
+
+msgid "Hide note on number of multiple contributions"
+msgstr "Verberg opmerking over aantal meervoudige bijdragen"
+
+msgid "Hide password"
+msgstr "Verberg wachtwoord"
+
+msgid "Highest applause amount"
+msgstr "Hoogste applaus"
+
+msgid "Hint on voting"
+msgstr "Opmerking over stemmen"
+
+msgid "History"
+msgstr "Geschiedenis"
+
+msgid "Home"
+msgstr "Home"
+
+msgid "Home committee"
+msgstr "Thuiscommissie"
+
+msgid "How to create new amendments"
+msgstr "Hoe nieuwe wijzigingen maken"
+
+msgid "I know the risk"
+msgstr "Ik ken het risico"
+
+msgid ""
+"IMPORTANT: The sender address (noreply@openslides.com) is defined in the OpenSlides server settings and cannot be changed here.\n"
+"                            To receive replies you have to enter a reply address in the next field. Please test the email dispatch in case of changes!"
+msgstr ""
+"BELANGRIJK: Het afzenderadres (noreply@openslides.com) is gedefinieerd in de OpenSlides server instellingen en kan hier niet worden gewijzigd. \n"
+"Om antwoorden te ontvangen moet u een antwoordadres invoeren in het volgende veld. Test de e-mailverzending in geval van wijzigingen!"
+
+msgid "Identical motions"
+msgstr "Identieke moties"
+
+msgid "Identical with"
+msgstr "Identiek met"
+
+msgid "Identifier"
+msgstr "Identificatiecode"
+
+msgid "If deactivated it is displayed below the title."
+msgstr "Als het gedeactiveerd is, wordt het onder de titel weergegeven."
+
+msgid "If empty, everyone can access."
+msgstr "Indien leeg, heeft iedereen toegang."
+
+msgid "If the value is set to 0 the time counts up as stopwatch."
+msgstr "Indien de waarde is ingesteld op 0 telt de tijd op als stopwatch."
+
+msgid ""
+"If your email address exists in our database, you will receive a password "
+"reset email."
+msgstr ""
+"Als uw e-mailadres in onze database voorkomt, ontvangt u een e-mail om uw "
+"wachtwoord opnieuw in te stellen."
+
+msgid "Image description"
+msgstr "Afbeelding beschrijving"
+
+msgid "Import"
+msgstr "Import"
+
+msgid "Import accounts"
+msgstr "Import accounts"
+
+msgid "Import committees"
+msgstr "Import commissies"
+
+msgid "Import data needs to have the JSON format"
+msgstr "Importdata moet JSON-formaat hebben"
+
+msgid "Import meeting"
+msgstr "Import vergadering"
+
+msgid "Import participants"
+msgstr "Import deelnemers"
+
+msgid "Import successful"
+msgstr "Import succesvol"
+
+msgid "Import successful with some warnings"
+msgstr "Import succesvol met enkele warningen"
+
+msgid "Import topics"
+msgstr "Import onderwerpen"
+
+msgid "Import workflows"
+msgstr "Import workflows"
+
+msgid "Important: New groups are not created."
+msgstr "Belangrijk: Er worden geen nieuwe groepen aangemaakt."
+
+msgid "In motion list, motion detail and PDF."
+msgstr "In motielijst, motiedetail en PDF."
+
+msgid "In progress, please wait ..."
+msgstr "In verwerking, even geduld ..."
+
+msgid "In the election process"
+msgstr "In het verkiezingsproces"
+
+msgid "Inactive"
+msgstr "Inactief"
+
+msgid "Inconsistent data."
+msgstr "Inconsistente gegevens."
+
+msgid "Inconsistent data. Please delete this change recommendation."
+msgstr ""
+
+msgid "Information"
+msgstr "Informatie"
+
+msgid "Initial password"
+msgstr "Initieel wachtwoord"
+
+msgid "Inline"
+msgstr "Inline"
+
+msgid "Insert after"
+msgstr "Plaats na"
+
+msgid "Insert before"
+msgstr "Plaats voor"
+
+msgid "Insert behind"
+msgstr "Plaats achter"
+
+msgid "Insert topics here"
+msgstr "Plaats onderwerpen hier "
+
+msgid "Insert/Edit Link"
+msgstr "Plaats/bewerk link"
+
+msgid "Insert/edit image"
+msgstr "Plaats/bewerk afbeelding"
+
+msgid "Insert/edit link"
+msgstr "Plaats/bewerk link"
+
+msgid "Insertion"
+msgstr "Plaatsing"
+
+msgid "Insufficient material! It's a draw!"
+msgstr "Onvoldoende materiaal! Het is gelijkspel!"
+
+msgid "Internal"
+msgstr "Intern"
+
+msgid "Internal item"
+msgstr "Intern item"
+
+msgid "Internal login"
+msgstr "Intern login"
+
+msgid "Interposed question"
+msgstr "Tussenvraag"
+
+msgid "Intervention"
+msgstr "Interventie"
+
+msgid "Intervention speaking time in seconds"
+msgstr "Interventie spreektijd in seconden"
+
+msgid "Invalid line number"
+msgstr "Ongeldige regelnummer"
+
+msgid "Invalid votes"
+msgstr "Ongeldige stemmen"
+
+msgid "Invite to conference room"
+msgstr "Uitnodigen voor vergaderruimte"
+
+msgid "Is a committee"
+msgstr "Is een commissie"
+
+msgid "Is a natural person"
+msgstr "Is een natuurlijk persoon"
+
+msgid "Is a template"
+msgstr "Is een sjabloon"
+
+msgid "Is active"
+msgstr "Is actief"
+
+msgid ""
+"Is allowed to add himself/herself to the list of speakers.\n"
+"\n"
+"Note:\n"
+"Optional combination of requests to speak with presence status is possible. ( > [Settings] > [List of speakers] > [General] )"
+msgstr ""
+"Mag zichzelf toevoegen aan de sprekerslijst. \n"
+"\n"
+"Opmerking:\n"
+"Optionele combinatie van spreekverzoeken met aanwezigheidsstatus is mogelijk. ( > [Instellingen] > [Sprekerslijst] > [Algemeen] )"
+
+msgid "Is already projected"
+msgstr "Is al geprojecteerd"
+
+msgid "Is amendment"
+msgstr "Is wijziging"
+
+msgid "Is archived"
+msgstr "Is gearchiveerd"
+
+msgid "Is being projected"
+msgstr "Is geprojecteerd"
+
+msgid "Is candidate"
+msgstr "Is kandidaat"
+
+msgid "Is closed"
+msgstr "Is gesloten"
+
+msgid "Is committee admin"
+msgstr "Is commissie beheerder"
+
+msgid "Is external"
+msgstr "Is extern"
+
+msgid "Is favorite"
+msgstr "Is favoriet"
+
+msgid "Is in active meetings"
+msgstr "Is in actieve vergaderingen"
+
+msgid "Is in archived meetings"
+msgstr "Is in gearchiveerde vergaderingen"
+
+msgid "Is locked out"
+msgstr "Is uitgesloten"
+
+msgid "Is manager"
+msgstr "Is beheerder"
+
+msgid "Is no amendment and has no amendments"
+msgstr "Is geen wijziging en heeft geen wijzigingen"
+
+msgid "Is no natural person"
+msgstr "Is geen natuurlijk persoon"
+
+msgid "Is not a committee"
+msgstr "Is geen commissie"
+
+msgid "Is not a template"
+msgstr "Is geen sjabloon"
+
+msgid "Is not active"
+msgstr "Is niet actief"
+
+msgid "Is not an amendment"
+msgstr "Is geen wijziging"
+
+msgid "Is not archived"
+msgstr "Is not active"
+
+msgid "Is not external"
+msgstr "Is niet extern"
+
+msgid "Is not favorite"
+msgstr "Is niet actief"
+
+msgid "Is not in active meetings"
+msgstr "Is niet in actieve vergaderingen"
+
+msgid "Is not in archived meetings"
+msgstr "Is niet in gearchiveerde vergaderingen"
+
+msgid "Is not present"
+msgstr "Is niet aanwezig"
+
+msgid "Is not public"
+msgstr "Is niet publiek"
+
+msgid "Is present"
+msgstr "Is aanwezig"
+
+msgid "Is public"
+msgstr "Is publiek"
+
+msgid "Is speaker"
+msgstr "Is spreker"
+
+msgid "Is submitter"
+msgstr "Is indiener"
+
+msgid ""
+"It is not allowed to delete countdowns used for list of speakers or polls"
+msgstr ""
+"Het is niet toegestaan om countdowns te verwijderen die worden gebruikt voor"
+" sprekerslijsten of polls"
+
+msgid ""
+"It is not allowed to set the permisson 'Can manage participants' to a locked"
+" out user. Please unset the lockout state before adding a group with this "
+"permission."
+msgstr ""
+"Het is niet toegestaan om de permissie 'Kan deelnemers beheren' in te "
+"stellen op een geblokkeerde gebruiker. Schakel de uitsluitingsstatus uit "
+"voordat je een groep toevoegt met deze machtiging."
+
+msgid "It's a draw!"
+msgstr "Het is gelijkspel!"
+
+msgid "It's your opponent's turn"
+msgstr "Uw tegenstander is aan de beurt"
+
+msgid "It's your turn!"
+msgstr "Het is uw beurt!"
+
+msgid "Italic"
+msgstr "Cursief"
+
+msgid "Item"
+msgstr "Item"
+
+msgid "Item number"
+msgstr "Item nummer"
+
+msgid "Items"
+msgstr "Items"
+
+msgid "Jitsi domain"
+msgstr "Jitsi domain"
+
+msgid "Jitsi room name"
+msgstr "Jitsi ruimtenaam"
+
+msgid "Jitsi room password"
+msgstr "Jitsi ruimte wachtwoord"
+
+msgid "Justify"
+msgstr "Rechtvaardig"
+
+msgid "Keep each item in a single line."
+msgstr "Houd elk item op één regel."
+
+msgid "Label color"
+msgstr "Labelkleur"
+
+msgid "Language"
+msgstr "Taal"
+
+msgid "Last email sent"
+msgstr "Laatste e-mail verstuurd"
+
+msgid "Last login"
+msgstr "Laatste login"
+
+msgid "Last modified"
+msgstr "Laatste wijziging"
+
+msgid "Last speakers"
+msgstr "Laatste sprekers"
+
+msgid "Leave"
+msgstr "Verlaat"
+
+msgid "Leave blank to automatically generate the password."
+msgstr "Laat leeg om het wachtwoord automatisch te genereren."
+
+msgid "Leave blank to automatically generate the username."
+msgstr "Laat leeg om de gebruikersnaam automatisch te genereren."
+
+msgid "Left"
+msgstr "Links"
+
+msgid "Legal notice"
+msgstr "Wettelijke opmerking"
+
+msgid "Less"
+msgstr "Minder"
+
+msgid "Level indicator"
+msgstr "Niveau-indicator"
+
+msgid "Light mode"
+msgstr "Lichte modus"
+
+msgid "Limit of active accounts"
+msgstr "Limiet van actieve accounts"
+
+msgid "Limit of active meetings"
+msgstr "Limiet van actieve vergaderingen"
+
+msgid "Line"
+msgstr "Regel"
+
+msgid "Line length"
+msgstr "Regellengte"
+
+msgid "Line numbering"
+msgstr "Regelnummering"
+
+msgid "Line spacing"
+msgstr "Regelafstand"
+
+msgid "List of amendments: "
+msgstr "Lijst van wijzigingen:"
+
+msgid "List of electronic votes"
+msgstr "Lijst van elektronische stemmen"
+
+msgid "List of participants"
+msgstr "Lijst van deelnemers"
+
+msgid "List of participants (PDF)"
+msgstr "Lijst van deelnemers (PDF)"
+
+msgid "List of speakers"
+msgstr "Lijst van sprekers"
+
+msgid "List of speakers as overlay"
+msgstr "Lijst met sprekers als overlay"
+
+msgid "List of speakers is initially closed"
+msgstr "Lijst met sprekers is in eerste instantie gesloten"
+
+msgid "List view"
+msgstr "Lijst weergave"
+
+msgid "Lists of speakers"
+msgstr "Lijsten van sprekers"
+
+msgid "Live conference"
+msgstr "Live conferentie"
+
+msgid "Live voting enabled"
+msgstr ""
+
+msgid "Livestream"
+msgstr "Livestream"
+
+msgid "Livestream URL"
+msgstr "Livestream URL"
+
+msgid "Livestream poster image"
+msgstr "Livestream posterbeeld"
+
+msgid "Livestream poster image url"
+msgstr "Livestream posterbeeld URL"
+
+msgid "Loading data. Please wait ..."
+msgstr "Gegevens worden geladen. Even geduld ..."
+
+msgid "Lock out user from this meeting."
+msgstr "Blokkeer de gebruiker van deze vergadering."
+
+msgid "Locked out"
+msgstr "Uitgelogd"
+
+msgid "Logged-in users"
+msgstr "Ingelogde gebruikers"
+
+msgid "Login"
+msgstr "Inloggen"
+
+msgid "Login anyway"
+msgstr "Inloggen toch"
+
+msgid "Login button text"
+msgstr "Inlogknop tekst"
+
+msgid "Logout"
+msgstr "Uitloggen"
+
+msgid "Lowest applause amount"
+msgstr " Laagste aantal applaus"
+
+msgid "Main motion and line number"
+msgstr "Hoofdmotie en regelnummer"
+
+msgid ""
+"Make background color from meta information box on the projector transparent"
+msgstr ""
+"Achtergrondkleur van meta-informatievak op de projector transparant maken"
+
+msgid "Mandates switched sucessfully!"
+msgstr "Mandaten succesvol omgewisseld!"
+
+msgid "Mark as personal favorite"
+msgstr "Markeren als persoonlijke favoriet"
+
+msgid "Max votes cannot be greater than options."
+msgstr "Max aantal stemmen kan niet groter zijn dan opties."
+
+msgid "Max votes per option cannot be greater than max votes."
+msgstr ""
+"Het maximum aantal stemmen per optie kan niet hoger zijn dan het maximum "
+"aantal stemmen."
+
+msgid "Maximum amount of votes"
+msgstr "Maximum aantal stemmen"
+
+msgid "Maximum amount of votes per option"
+msgstr "Maximum aantal stemmen per optie"
+
+msgid "Maximum number of columns in motion block projection"
+msgstr "Maximum aantal kolommen in motion block projectie "
+
+msgid "Maximum number of columns in single votes projection"
+msgstr "Maximum aantal kolommen in projectie met één stem"
+
+msgid "Media access is denied"
+msgstr "Mediatoegang is geweigerd"
+
+msgid "Media file"
+msgstr "Media bestand"
+
+msgid "Meeting"
+msgstr "Vergadering"
+
+msgid "Meeting administrator"
+msgstr "Vergadering beheerder "
+
+msgid "Meeting date"
+msgstr "Vergaderdatum"
+
+msgid "Meeting information"
+msgstr "Vergadering informatie"
+
+msgid "Meeting is closed"
+msgstr "Vergadering is gesloten"
+
+msgid "Meeting not found"
+msgstr "Vergadering niet gevonden"
+
+msgid "Meeting specific information"
+msgstr "Vergadering specifieke informatie"
+
+msgid "Meeting template"
+msgstr "Vergaderingssjabloon"
+
+msgid ""
+"Meeting templates and the data they contain are publicly viewable by all "
+"committee administrators."
+msgstr ""
+"Vergaderingssjablonen en de gegevens die ze bevatten zijn openbaar "
+"toegankelijk voor alle beheerders van commissies."
+
+msgid "Meeting title"
+msgstr "Vergaderingtitel"
+
+msgid "Meetings"
+msgstr "Vergaderingen"
+
+msgid "Meetings affected:"
+msgstr "Betrokken vergaderingen:"
+
+msgid "Meetings selected"
+msgstr "Geselecteerde bijeenkomsten"
+
+msgid "Membership number"
+msgstr "Lidmaatschapsnummer"
+
+msgid "Merge"
+msgstr "Samenvoegen"
+
+msgid "Merge accounts"
+msgstr "Accounts samenvoegen"
+
+msgid "Message"
+msgstr "Bericht"
+
+msgid "Messages"
+msgstr "Berichten"
+
+msgid "Meta information"
+msgstr "Meta-informatie"
+
+msgid "Metadata of Identity Provider (IdP)"
+msgstr "Metagegevens van Identity Provider (IdP)"
+
+msgid "Metadata of Service Provider (SP)"
+msgstr "Metagegevens van service provider (SP)"
+
+msgid "Min votes cannot be greater than max votes."
+msgstr "Min stemmen kunnen niet groter zijn dan max stemmen."
+
+msgid "Minimal required version"
+msgstr "Minimaal vereiste versie"
+
+msgid "Minimize"
+msgstr "Minimaliseren"
+
+msgid "Minimum amount of votes"
+msgstr "Minimum aantal stemmen"
+
+msgid "Minimum number of digits for motion identifier"
+msgstr "Minimum aantal cijfers voor motieidentificaties"
+
+msgid "Moderation note"
+msgstr "Moderatie opmerking"
+
+msgid "Moderation-Note"
+msgstr "Moderatie-Notitie"
+
+msgid "Modern"
+msgstr "Modern"
+
+msgid "Modify design"
+msgstr "Wijzig design"
+
+msgid "Module"
+msgstr "Module"
+
+msgid "More"
+msgstr "Meer"
+
+msgid "Motion"
+msgstr "Motie"
+
+msgid "Motion block"
+msgstr "Motie blok"
+
+msgid "Motion block changed"
+msgstr "Motie blok gewijzigd"
+
+msgid "Motion block removed"
+msgstr "Motie blok verwijderd"
+
+msgid "Motion block set to {}"
+msgstr "Motie blok ingesteld op {}"
+
+msgid "Motion blocks"
+msgstr "Motie blokken"
+
+msgid "Motion change recommendation created"
+msgstr "Motie wijzigingsaanbeveling gemaakt"
+
+msgid "Motion change recommendation deleted"
+msgstr "Motie wijzigingsaanbeveling verwijderd"
+
+msgid "Motion change recommendation updated"
+msgstr "Motie wijzigingsaanbeveling geactualiseerd"
+
+msgid "Motion changed"
+msgstr "Motie gewijzigd"
+
+msgid "Motion created"
+msgstr "Motie aangemaakt"
+
+msgid "Motion created (forwarded)"
+msgstr "Motie gecreëerd (doorgestuurd)"
+
+msgid "Motion deleted"
+msgstr "Motie verwijderd"
+
+msgid "Motion editor"
+msgstr "Motiesredacteur"
+
+msgid "Motion editors"
+msgstr "Motiesredacteuren"
+
+msgid "Motion forwarded to"
+msgstr "Motie doorgestuurd naar"
+
+msgid "Motion forwarding"
+msgstr "Motie doorgestuurd"
+
+msgid "Motion identifier"
+msgstr "Motie identificator"
+
+msgid "Motion preamble"
+msgstr "Motie preambule"
+
+msgid "Motion updated"
+msgstr "Motie geactualiseerd"
+
+msgid "Motion version"
+msgstr "Motion versie"
+
+msgid "Motion votes"
+msgstr "Motie stemmen"
+
+msgid "Motions"
+msgstr "Moties"
+
+msgid "Motions (PDF settings)"
+msgstr "Moties (PDF-instellingen)"
+
+msgid "Motions are in process. Please wait ..."
+msgstr "Moties zijn in behandeling. Even geduld ..."
+
+msgid "Move"
+msgstr "Verplaatsen"
+
+msgid "Move in call list"
+msgstr "Verplaatsen in oproeplijst"
+
+msgid "Move into directory"
+msgstr "Verplaatsen naar directory"
+
+msgid "Move selected items ..."
+msgstr "Geselecteerde items verplaatsen ..."
+
+msgid "Move to agenda item"
+msgstr "Verplaatsen naar agendapunt"
+
+msgid "Multiple users found for same username!"
+msgstr "Meerdere gebruikers gevonden voor dezelfde gebruikersnaam!"
+
+msgid "Multiple users with same credentials!"
+msgstr "Meerdere gebruikers met dezelfde credentials!"
+
+msgid "Multiselect"
+msgstr "Multiselect"
+
+msgid "Must be unique"
+msgstr "Moet uniek zijn"
+
+msgid "My account"
+msgstr "Mijn account"
+
+msgid "My meetings"
+msgstr "Mijn vergaderingen"
+
+msgid "My profile"
+msgstr "Mijn profiel"
+
+msgid "Name"
+msgstr "Naam"
+
+msgid "Name of recommender"
+msgstr "Naam aanbeveler"
+
+msgid "Name of the new category"
+msgstr "Naam van de nieuwe categorie"
+
+msgid "Natural person"
+msgstr "Natuurlijk persoon"
+
+msgid "Navigate to account page from "
+msgstr "Navigeer naar de accountpagina van"
+
+msgid "Navigate to committee detail view from "
+msgstr "Navigeer naar de commissiedetails van"
+
+msgid "Navigate to meeting "
+msgstr "Navigeer naar vergadering"
+
+msgid "Navigate to motion"
+msgstr "Navigeer naar motie"
+
+msgid "Navigate to participant page from "
+msgstr "Navigeer naar de deelnemerspagina van"
+
+msgid "Navigate to the folder"
+msgstr "Navigeer naar de map"
+
+msgid "Negative votes are not allowed."
+msgstr "Negatieve stemmen zijn niet toegestaan."
+
+msgid "Never"
+msgstr "Nooit"
+
+msgid "New account"
+msgstr "Nieuw account"
+
+msgid "New amendment"
+msgstr "Nieuwe wijziging"
+
+msgid "New ballot"
+msgstr "Nieuw stembiljet"
+
+msgid "New category"
+msgstr "Nieuwe categorie"
+
+msgid "New change recommendation"
+msgstr "Nieuwe wijzigingsaanbeveling"
+
+msgid "New chat group"
+msgstr "Nieuwe chatgroep"
+
+msgid "New comment field"
+msgstr "Nieuw commentaarveld"
+
+msgid "New committee"
+msgstr "Nieuwe commissie"
+
+msgid "New design"
+msgstr "Nieuw design"
+
+msgid "New directory"
+msgstr "Nieuwe map"
+
+msgid "New election"
+msgstr "Nieuwe verkiezing"
+
+msgid "New file"
+msgstr "Nieuw bestand"
+
+msgid "New file name"
+msgstr "Nieuwe bestandsnaam"
+
+msgid "New folder"
+msgstr "Nieuwe map"
+
+msgid "New gender"
+msgstr "Nieuw geslacht"
+
+msgid "New group"
+msgstr "Nieuwe groep"
+
+msgid "New meeting"
+msgstr "Nieuwe vergadering"
+
+msgid "New motion"
+msgstr "Nieuwe motie"
+
+msgid "New motion block"
+msgstr "Nieuw motieblok"
+
+msgid "New option"
+msgstr "Nieuwe optie"
+
+msgid "New participant"
+msgstr "Nieuwe deelnemer"
+
+msgid "New password"
+msgstr "Nieuw wachtwoord"
+
+msgid "New projector"
+msgstr "Nieuwe projector"
+
+msgid "New state"
+msgstr "Nieuwe staat"
+
+msgid "New tag"
+msgstr "Nieuw label"
+
+msgid "New topic"
+msgstr "Nieuw onderwerp"
+
+msgid "New vote"
+msgstr "Nieuwe stemming"
+
+msgid "New window"
+msgstr "Nieuw venster"
+
+msgid "New workflow"
+msgstr "Nieuwe workflow"
+
+msgid "Next"
+msgstr "Volgende"
+
+msgid "Next page"
+msgstr "Volgende pagina"
+
+msgid "Next states"
+msgstr "Volgende staten"
+
+msgid "No"
+msgstr "Geen"
+
+msgid "No admin role"
+msgstr "Geen beheerdersrol"
+
+msgid "No category"
+msgstr "Geen categorie"
+
+msgid "No changes at the text."
+msgstr "Geen wijzigingen in de tekst."
+
+msgid "No chat groups available"
+msgstr "Geen chatgroepen beschikbaar"
+
+msgid "No comment"
+msgstr "Geen commentaar"
+
+msgid "No committee admin"
+msgstr "Geen commissiebeheer"
+
+msgid "No data"
+msgstr "Geen gegevens"
+
+msgid "No data available"
+msgstr "Geen gegevens beschikbaar"
+
+msgid "No delegation of vote"
+msgstr "Geen stemdelegatie"
+
+msgid "No emails were send."
+msgstr "Geen e-mails verzonden."
+
+msgid "No encryption"
+msgstr "Geen encryptie"
+
+msgid "No forwardings"
+msgstr "Geen doorsturingen"
+
+msgid "No group name has been entered."
+msgstr "Geen groepsnaam ingevoerd."
+
+msgid "No groups selected"
+msgstr "Geen groepen geselecteerd"
+
+msgid "No items selected"
+msgstr "Geen items geselecteerd"
+
+msgid "No meeting selected"
+msgstr "Geen vergadering geselecteerd"
+
+msgid "No meetings available"
+msgstr "Geen vergaderingen beschikbaar"
+
+msgid "No meetings have been selected."
+msgstr "Geen vergaderingen geselecteerd."
+
+msgid "No one has voted for this poll"
+msgstr "Niemand heeft gestemd voor deze poll"
+
+msgid "No options found"
+msgstr "Geen opties gevonden"
+
+msgid "No per candidate"
+msgstr "Geen per kandidaat"
+
+msgid "No personal note"
+msgstr "Geen persoonlijke notitie"
+
+msgid "No results found"
+msgstr "Geen resultaten gevonden"
+
+msgid "No results yet"
+msgstr "Geen resultaten nog"
+
+msgid "No results yet."
+msgstr "Geen resultaten."
+
+msgid "No structure level"
+msgstr "Geen structuurniveau"
+
+msgid "No verbose name is defined"
+msgstr "Geen verbose naam is gedefinieerd"
+
+msgid "No."
+msgstr "Nee."
+
+msgid "Nomination list"
+msgstr "Nominatielijst"
+
+msgid "None"
+msgstr "Geen"
+
+msgid "None of the selected motions can be forwarded."
+msgstr "Geen van de geselecteerde moties kan worden doorgestuurd."
+
+msgid "Normal (http/2)"
+msgstr "Normaal (http/2)"
+
+msgid "Not found"
+msgstr "Niet gevonden"
+
+msgid "Not locked out"
+msgstr "Niet uitgelogd"
+
+msgid ""
+"Note, that the default password will be changed to the new generated one."
+msgstr ""
+"Let op, het standaardwachtwoord wordt gewijzigd in het nieuwe gegenereerde "
+"wachtwoord."
+
+msgid "Note: Amendments cannot be forwarded without their parent motion."
+msgstr ""
+"Opmerking: Wijzigingen kunnen niet worden doorgestuurd zonder hun motie."
+
+msgid "Note: Amendments will not be forwarded."
+msgstr "Opmerking: Wijzigingen worden niet doorgestuurd."
+
+msgid ""
+"Note: The public access setting is deactivated for the organization. Please "
+"contact your admins or hosting providers to activate the setting."
+msgstr ""
+"Let op: De instelling voor publieke toegang is uitgeschakeld voor de "
+"organisatie. Neem contact op met uw beheerders of hostingproviders om de "
+"instelling te activeren."
+
+msgid ""
+"Note: Your own password was not changed. Please use the password change "
+"dialog instead."
+msgstr ""
+"Let op: Uw eigen wachtwoord is niet gewijzigd. Gebruik in plaats daarvan het"
+" dialoogvenster voor het wijzigen van het wachtwoord."
+
+msgid "Notes"
+msgstr "Opmerkingen"
+
+msgid "Notes and Comments"
+msgstr "Opmerkingen en commentaren"
+
+msgid "Number"
+msgstr "Aantal"
+
+msgid "Number candidates"
+msgstr "Aantal kandidaten"
+
+msgid "Number motions"
+msgstr "Aantal moties"
+
+msgid "Number of (minimum) required supporters for a motion"
+msgstr "Aantal (minimaal) vereiste ondersteuners voor een motie"
+
+msgid "Number of all delegates"
+msgstr "Aantal alle afgevaardigden"
+
+msgid "Number of all participants"
+msgstr "Aantal alle deelnemers"
+
+msgid "Number of all requests to speak"
+msgstr "Aantal van alle spreekverzoeken"
+
+msgid "Number of ballot papers"
+msgstr "Aantal stembiljetten"
+
+msgid "Number of candidates"
+msgstr "Aantal kandidaten"
+
+msgid "Number of last speakers to be shown on the projector"
+msgstr "Aantal laatste sprekers dat op de projector moet worden getoond"
+
+msgid "Number of motions"
+msgstr "Aantal moties"
+
+msgid ""
+"Number of next speakers automatically connecting to the live conference"
+msgstr ""
+"Aantal volgende sprekers die automatisch verbinding maken met de live "
+"conferentie"
+
+msgid "Number of open requests to speak"
+msgstr "Aantal openstaande spreekverzoeken"
+
+msgid "Number of participants"
+msgstr "Aantal deelnemers"
+
+msgid "Number of persons to be elected"
+msgstr "Aantal personen dat moet worden gekozen"
+
+msgid "Number of requests to speak"
+msgstr "Aantal spreekverzoeken"
+
+msgid "Number of the next speakers to be shown on the projector"
+msgstr ""
+"Nummer van de volgende sprekers die op de projector moeten worden getoond"
+
+msgid "Number set"
+msgstr "Aantal ingesteld"
+
+msgid "Numbered list"
+msgstr "Genummerde lijst"
+
+msgid "Numbered per category"
+msgstr "Genummerd per categorie"
+
+msgid "Numbering"
+msgstr "Nummering"
+
+msgid "Numbering and sorting"
+msgstr "Nummering en sortering"
+
+msgid "Numbering prefix for agenda items"
+msgstr "Nummering prefix voor agendapunten"
+
+msgid "Numeral system for agenda items"
+msgstr "Nummersysteem voor agendapunten"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "OR"
+msgstr "OF"
+
+msgid "Off"
+msgstr "Uit"
+
+msgid "Offline mode"
+msgstr "Offline modus"
+
+msgid "Ok"
+msgstr "Ok"
+
+msgid "Old account of"
+msgstr "Oud account van"
+
+msgid "Old password"
+msgstr "Oud wachtwoord"
+
+msgid "On"
+msgstr "Op"
+
+msgid "One email was send sucessfully."
+msgstr "Eén e-mail was succesvol verzonden."
+
+msgid "Only available for nominal voting"
+msgstr ""
+
+msgid "Only for internal notes."
+msgstr "Alleen voor interne notities."
+
+msgid "Only for nominal votes."
+msgstr "Alleen voor nominale stemmen."
+
+msgid "Only groups and participant number are switched."
+msgstr "Alleen groepen en deelnemernummers worden gewisseld."
+
+msgid "Only main agenda items"
+msgstr "Alleen belangrijke agendapunten"
+
+msgid "Only present participants can be added to the list of speakers"
+msgstr ""
+"Alleen aanwezige deelnemers kunnen worden toegevoegd aan de sprekerslijst"
+
+msgid "Only time"
+msgstr "Alleen tijd"
+
+msgid "Only traffic light"
+msgstr "Alleen stoplicht"
+
+msgid "Open Jitsi in new tab"
+msgstr "Open Jitsi in nieuw tabblad"
+
+msgid "Open a meeting to play \"Connect 4\""
+msgstr "Open een vergadering om “Connect 4” te spelen"
+
+msgid "Open a meeting to play chess"
+msgstr "Open een vergadering om te schaken"
+
+msgid "Open items"
+msgstr "Open items"
+
+msgid "Open link in ..."
+msgstr "Open link in ..."
+
+msgid "Open list of speakers"
+msgstr "Open lijst van sprekers"
+
+msgid "Open meeting"
+msgstr "Open vergadering"
+
+msgid "Open projection dialog"
+msgstr "Open het projectiedialoogvenster"
+
+msgid "OpenSlides URL"
+msgstr "OpenSlides URL"
+
+msgid "OpenSlides access data"
+msgstr "OpenSlides toegangsgegevens"
+
+msgid "OpenSlides help (FAQ)"
+msgstr "OpenSlides hulp (FAQ)"
+
+msgid ""
+"OpenSlides offers various speaking list customizations for use in "
+"parliament. These include the configuration of speaking time quotas for "
+"parliamentary groups (e.g. fractions, coalitions) as well as extended types "
+"of speeches such as short interventions and (parliamentary) interposed "
+"questions."
+msgstr ""
+"OpenSlides biedt verschillende aangepaste sprekerslijsten voor gebruik in "
+"het parlement. Deze omvatten de configuratie van spreektijdquota's voor "
+"parlementaire fracties (bijv. fracties, coalities) evenals uitgebreide "
+"soorten toespraken zoals korte interventies en (parlementaire) tussenvragen."
+
+msgid "OpenSlides recommends"
+msgstr "OpenSlides adviseert"
+
+msgid "Option"
+msgstr "Optie"
+
+msgid "Options"
+msgstr "Opties"
+
+msgid "Organization"
+msgstr "Organisatie"
+
+msgid "Organization Management Level changed"
+msgstr "Organisatie Beheersniveau gewijzigd"
+
+msgid "Organization admin"
+msgstr "Organisatiebeheerder"
+
+msgid "Organization language"
+msgstr "Organisatietaal"
+
+msgid "Organization specific information"
+msgstr "Organisatiespecifieke informatie"
+
+msgid "Organizations"
+msgstr "Organisaties"
+
+msgid "Origin"
+msgstr "Oorsprong"
+
+msgid "Origin motion deleted"
+msgstr "Oorsprong motie verwijderd"
+
+msgid "Original"
+msgstr "Origineel"
+
+msgid "Original version"
+msgstr "Originele versie"
+
+msgid "Original version with changes"
+msgstr "Originele versie met wijzigingen"
+
+msgid "Out of sync"
+msgstr "Niet gesynchroniseerd"
+
+msgid "Outside"
+msgstr "Buiten"
+
+msgid "PDF"
+msgstr "PDF"
+
+msgid "PDF ballot paper logo"
+msgstr "PDF logo stembiljet"
+
+msgid "PDF footer logo (left)"
+msgstr "PDF voettekst logo (links)"
+
+msgid "PDF footer logo (right)"
+msgstr "PDF voettekst logo (rechts)"
+
+msgid "PDF header logo (left)"
+msgstr "PDF koptekst logo (links)"
+
+msgid "PDF header logo (right)"
+msgstr "PDF koptekst logo (rechts)"
+
+msgid "PDF options"
+msgstr "PDF opties"
+
+msgid "Page"
+msgstr "Pagina"
+
+msgid "Page format"
+msgstr "Pagina formaat"
+
+msgid "Page layout"
+msgstr "Pagina-opmaak"
+
+msgid "Page margin bottom in mm"
+msgstr "Pagina marge onder in mm"
+
+msgid "Page margin left in mm"
+msgstr "Pagina marge links in mm"
+
+msgid "Page margin right in mm"
+msgstr "Pagina marge rechts in mm"
+
+msgid "Page margin top in mm"
+msgstr "Pagina marge boven in mm"
+
+msgid "Page number alignment in PDF"
+msgstr "Paginanummer uitlijning in PDF"
+
+msgid "Page numbers"
+msgstr "Paginanummers"
+
+msgid "Paragraph"
+msgstr "Paragraaf"
+
+msgid "Paragraph-based, Diff-enabled"
+msgstr "Paragraafgebaseerd, geschikt voor verschillen"
+
+msgid "Parallel upload"
+msgstr "Parallel upload"
+
+msgid "Parent agenda item"
+msgstr "Ouder agendapunt"
+
+msgid "Parent committee"
+msgstr "Oudercommissie"
+
+msgid "Parent committee name"
+msgstr "Oudercommissienaam"
+
+msgid "Parent motion text changed"
+msgstr "Ouder motie tekst gewijzigd"
+
+msgid "Parliament options"
+msgstr "Opties voor het Parlement"
+
+msgid "Participant"
+msgstr "Deelnemer"
+
+msgid "Participant added to group {} in meeting {}"
+msgstr "Deelnemer toegevoegd aan groep {} in vergadering {}"
+
+msgid "Participant added to group {} in meeting {}."
+msgstr "Deelnemer toegevoegd aan groep {} in vergadering {}."
+
+msgid "Participant added to meeting {}."
+msgstr "Deelnemer toegevoegd aan vergadering {}."
+
+msgid "Participant added to multiple groups in meeting {}"
+msgstr "Deelnemer toegevoegd aan meerdere groepen in vergadering {}"
+
+msgid "Participant added to multiple groups in multiple meetings"
+msgstr "Deelnemer toegevoegd aan meerdere groepen in meerdere vergaderingen"
+
+msgid "Participant created"
+msgstr "Deelnemer aangemaakt"
+
+msgid "Participant created in meeting {}"
+msgstr "Deelnemer aangemaakt in vergadering {}"
+
+msgid "Participant data updated in meeting {}"
+msgstr "Deelnemersgegevens bijgewerkt in vergadering {}"
+
+msgid "Participant data updated in multiple meetings"
+msgstr "Deelnemersgegevens bijgewerkt in meerdere vergaderingen"
+
+msgid "Participant deleted"
+msgstr "Deelnemer verwijderd"
+
+msgid "Participant deleted in meeting {}"
+msgstr "Deelnemer verwijderd in vergadering {}"
+
+msgid "Participant number"
+msgstr "Deelnemersnummer"
+
+msgid "Participant removed from group {} in meeting {}"
+msgstr "Deelnemer verwijderd uit groep {} in vergadering {}"
+
+msgid "Participant removed from meeting {}"
+msgstr "Deelnemer verwijderd uit vergadering {}"
+
+msgid "Participant removed from multiple groups in meeting {}"
+msgstr "Deelnemer verwijderd uit meerdere groepen in vergadering {}"
+
+msgid "Participant removed from multiple groups in multiple meetings"
+msgstr "Deelnemer verwijderd uit meerdere groepen in meerdere vergaderingen"
+
+msgid "Participants"
+msgstr "Deelnemers"
+
+msgid "Participants (PDF settings)"
+msgstr "Deelnemers (PDF instellingen)"
+
+msgid ""
+"Participants and administrators are copied completely and cannot be edited "
+"here."
+msgstr ""
+"Deelnemers en beheerders worden volledig gekopieerd en kunnen hier niet "
+"worden bewerkt."
+
+msgid "Participants created"
+msgstr "Deelnemers aangemaakt"
+
+msgid "Participants skipped"
+msgstr "Deelnemers overgeslagen"
+
+msgid "Participants updated"
+msgstr "Deelnemers geüpdatet"
+
+msgid "Participants with errors"
+msgstr "Deelnemers met fouten"
+
+msgid "Participants with warnings: affected cells will be skipped"
+msgstr "Deelnemers met warningen: betreffende cellen worden overgeslagen"
+
+msgid "Particles"
+msgstr "Deeltjes"
+
+msgid "Password"
+msgstr "Wachtwoord"
+
+msgid "Password changed"
+msgstr "Wachtwoord gewijzigd"
+
+msgid "Password changed successfully!"
+msgstr "Wachtwoord succesvol gewijzigd!"
+
+msgid "Passwords do not match"
+msgstr "Wachtwoorden kloppen niet"
+
+msgid "Paste/write your topics in this textbox."
+msgstr "Plak/schrijf uw onderwerpen in dit tekstvak."
+
+msgid "Pause speech"
+msgstr "Pauze spraak"
+
+msgid "Permissions"
+msgstr "Rechten"
+
+msgid "Person-related fields"
+msgstr "Persoonsgerelateerde velden"
+
+msgid "Personal data changed"
+msgstr "Persoonlijke gegevens gewijzigd"
+
+msgid "Personal information"
+msgstr "Persoonlijke informatie"
+
+msgid "Personal note"
+msgstr "Persoonlijke notitie"
+
+msgid "Personal notes"
+msgstr "Persoonlijke notities"
+
+msgid "Phase"
+msgstr "Fase"
+
+msgid "Playing against"
+msgstr "Spelen tegen"
+
+msgid "Please allow OpenSlides to access your microphone and/or camera"
+msgstr "Geef OpenSlides toegang tot uw microfoon en/of camera"
+
+msgid "Please enter a name for the new directory:"
+msgstr "Voer een naam in voor de nieuwe map:"
+
+msgid "Please enter a name for the new workflow:"
+msgstr "Voer een naam in voor de nieuwe workflow:"
+
+msgid "Please enter a valid email address!"
+msgstr "Voer een geldig e-mailadres in!"
+
+msgid "Please enter your new password"
+msgstr "Voer uw nieuwe wachtwoord in"
+
+msgid "Please join the conference room now!"
+msgstr "Ga nu naar de vergaderzaal!"
+
+msgid "Please select a primary account."
+msgstr "Kies een primair account."
+
+msgid "Please select a vote weight greater than or equal to 0.000001"
+msgstr "Kies een stemgewicht groter dan of gelijk aan 0,000001"
+
+msgid "Please select a vote weight greater than zero."
+msgstr "Kies een stemgewicht groter dan nul."
+
+msgid "Please select the directory:"
+msgstr "Kies de map:"
+
+msgid ""
+"Please select your target meetings and enter the name of an existing group "
+"which should be assigned to the account in each meeting."
+msgstr ""
+"Selecteer uw doelvergaderingen en voer de naam in van een bestaande groep "
+"die moet worden toegewezen aan de account in elke vergadering."
+
+msgid "Please update your browser or contact your system administration."
+msgstr "Update uw browser of neem contact op met uw systeembeheerder."
+
+msgid "Please vote now!"
+msgstr ""
+
+msgid "Point of order"
+msgstr "Punt van orde"
+
+msgid "Polls"
+msgstr "Polls"
+
+msgid ""
+"Possible placeholders for email subject and body: {title}, {first_name}, "
+"{last_name}, {groups}, {structure_levels}, {event_name}, {url}, {username} "
+"and {password}"
+msgstr ""
+"Mogelijke plaatshouders voor e-mailonderwerp en -tekst: {title}, "
+"{first_name}, {last_name}, {groups}, {structure_levels}, {event_name}, "
+"{url}, {username} en {password}."
+
+msgid "Possible points of order"
+msgstr "Mogelijke punten van orde"
+
+msgid "Preamble text for PDF document (all elections)"
+msgstr "Preambule tekst voor PDF-document (alle verkiezingen)"
+
+msgid "Preamble text for PDF documents of motions"
+msgstr "Preambule tekst voor PDF-documenten van moties"
+
+msgid "Predefined seconds of new countdowns"
+msgstr "Voorgedefinieerde seconden van nieuwe countdowns"
+
+msgid "Prefix"
+msgstr "Voorvoegsel"
+
+msgid "Prefix for the motion identifier of amendments"
+msgstr "Voorvoegsel voor de motie-identificatie van wijzigingen"
+
+msgid "Preload original motions"
+msgstr "Oorspronkelijke bewegingen vooraf laden"
+
+msgid "Presence"
+msgstr "Aanwezigheid"
+
+msgid "Present"
+msgstr "Aanwezig"
+
+msgid "Present entitled users"
+msgstr "Aanwezige gerechtigde gebruikers"
+
+msgid "Preview"
+msgstr "Voorbeeld"
+
+msgid "Previous"
+msgstr "Vorige"
+
+msgid "Previous page"
+msgstr "Vorige pagina"
+
+msgid "Previous slides"
+msgstr "Vorige slides"
+
+msgid "Primary color"
+msgstr "Primaire kleur"
+
+msgid "Principals"
+msgstr "Directeuren"
+
+msgid "Privacy Policy"
+msgstr "Privacybeleid"
+
+msgid "Privacy policy"
+msgstr "Privacybeleid"
+
+msgid "Private key of Service Provider (SP)"
+msgstr "Privésleutel van serviceprovider (SP)"
+
+msgid "Process handling"
+msgstr "Procesverwerking"
+
+msgid "Project"
+msgstr "Project"
+
+msgid "Project active structure level"
+msgstr "Project actief structuurniveau"
+
+msgid "Project all structure levels"
+msgstr "Project alle structuurniveaus"
+
+msgid "Project selection?"
+msgstr "Projectselectie?"
+
+msgid "Projection"
+msgstr "Projectie"
+
+msgid "Projection defaults"
+msgstr "Projectie standaardinstellingen "
+
+msgid "Projections"
+msgstr "Projecties"
+
+msgid "Projector"
+msgstr "Projector"
+
+msgid "Projector h1"
+msgstr "Projector h1"
+
+msgid "Projector h2"
+msgstr "Projector h2"
+
+msgid "Projector header image"
+msgstr "Projector header-afbeelding"
+
+msgid "Projector logo"
+msgstr "Projector logo"
+
+msgid "Projectors"
+msgstr "Projectoren"
+
+msgid "Pronoun"
+msgstr "Voorzetsel"
+
+msgid "Proxy holders"
+msgstr "Volmacht houders"
+
+msgid "Public"
+msgstr "Publiek"
+
+msgid "Public access"
+msgstr "Publieke toegang"
+
+msgid "Public item"
+msgstr "Publiek item"
+
+msgid "Public template"
+msgstr "Publiek sjabloon"
+
+msgid "Public template required for creating new meeting"
+msgstr "Publiek sjabloon vereist voor het maken van een nieuwe vergadering"
+
+msgid "Publish"
+msgstr "Publiceer"
+
+msgid "Publish immediately"
+msgstr "Onmiddellijk publiceren"
+
+msgid "Put all candidates on the list of speakers"
+msgstr "Zet alle kandidaten op de sprekerslijst"
+
+msgid "Queue"
+msgstr "Wachtrij"
+
+msgid "Rank"
+msgstr "Rang"
+
+msgid "Re-add last speaker"
+msgstr "Laatste spreker opnieuw toevoegen"
+
+msgid "Re-count logged-in users"
+msgstr "Opnieuw ingelogde gebruikers tellen"
+
+msgid "Reason"
+msgstr "Reden"
+
+msgid "Reason required for creating new motion"
+msgstr "Reden vereist voor het aanmaken van een nieuwe motie"
+
+msgid "Receipt of contributions"
+msgstr "Ontvangst van bijdragen"
+
+msgid "Receive motions"
+msgstr "Ontvangen moties"
+
+msgid "Receive motions from"
+msgstr "Ontvangen moties van"
+
+msgid "Received votes"
+msgstr "Ontvangen stemmen"
+
+msgid "Recommendation"
+msgstr "Aanbeveling"
+
+msgid "Recommendation changed"
+msgstr "Aanbeveling gewijzigd"
+
+msgid "Recommendation label"
+msgstr "Aanbevelingslabel"
+
+msgid ""
+"Recommendation of motions in such a state can only be seen by motion "
+"managers."
+msgstr ""
+"Aanbevelingen van moties in een dergelijke staat kunnen alleen worden gezien"
+" door motiemanagers."
+
+msgid "Recommendation reset"
+msgstr "Aanbeveling reset"
+
+msgid "Recommendation set to {}"
+msgstr "Aanbeveling ingesteld op {}"
+
+msgid "Redo"
+msgstr "Opnieuw doen"
+
+msgid "Reenter to conference room"
+msgstr "Ga terug naar de vergaderruimte"
+
+msgid "Referring motions"
+msgstr "Verwijzende moties"
+
+msgid "Refresh"
+msgstr "Vernieuw"
+
+msgid "Reject"
+msgstr "Afwijzen"
+
+msgid "Rejected"
+msgstr "Afgewezen"
+
+msgid "Relevant information could not be accessed"
+msgstr "Relevante informatie kon niet worden opgevraagd"
+
+msgid "Reload page"
+msgstr "Herlaad pagina"
+
+msgid "Remove"
+msgstr "Verwijder"
+
+msgid ""
+"Remove URL to deactivate livestream. Check extra group permission to see "
+"livestream."
+msgstr ""
+"Verwijder URL om livestream te deactiveren. Vink extra groepstoestemming aan"
+" om livestream te zien."
+
+msgid "Remove all next speakers"
+msgstr "Verwijder alle volgende sprekers"
+
+msgid "Remove all previous speakers"
+msgstr "Verwijder alle vorige sprekers"
+
+msgid "Remove all speakers"
+msgstr "Verwijder alle sprekers"
+
+msgid "Remove candidate"
+msgstr "Verwijder kandidaat"
+
+msgid "Remove file"
+msgstr "Verwijder bestand"
+
+msgid "Remove forward"
+msgstr "Verwijder forward"
+
+msgid "Remove from agenda"
+msgstr "Verwijderen van de agenda"
+
+msgid "Remove from motion block"
+msgstr "Verwijderen uit motion block"
+
+msgid "Remove link"
+msgstr "Verwijder link"
+
+msgid "Remove me"
+msgstr "Verwijder mij"
+
+msgid "Remove option"
+msgstr "Verwijder optie"
+
+msgid "Remove point of order"
+msgstr "Verwijder punt van orde"
+
+msgid "Reopen"
+msgstr "Heropenen"
+
+msgid "Replacement"
+msgstr "Vervanging"
+
+msgid "Reply address"
+msgstr "Antwoordadres"
+
+msgid "Request"
+msgstr "Aanvraag"
+
+msgid "Request \"WhoAmI\" failed"
+msgstr "Aanvraag “WhoAmI” mislukt"
+
+msgid "Requests to speak"
+msgstr "Aanvragen om te spreken"
+
+msgid "Required"
+msgstr "Vereist"
+
+msgid ""
+"Required comma or semicolon separated values with these column header names "
+"in the first row:"
+msgstr ""
+"Vereiste door komma's of puntkomma's gescheiden waarden met deze "
+"kolomkopnamen in de eerste rij:"
+
+msgid "Required permissions to view this page:"
+msgstr "Vereiste rechten om deze pagina te bekijken:"
+
+msgid "Requires permission to manage lists of speakers"
+msgstr "Vereist rechten om sprekerslijsten te beheren"
+
+msgid "Requires permission to manage motion metadata"
+msgstr "Vereist rechten om metagegevens over motie te beheren"
+
+msgid "Requires permission to see origin motions"
+msgstr "Vereist toestemming om de oorspronkelijke moties te zien"
+
+msgid "Reset"
+msgstr "Reset"
+
+msgid "Reset cache"
+msgstr "Reset cache"
+
+msgid "Reset password"
+msgstr "Reset wachtwoord"
+
+msgid "Reset passwords to the default ones"
+msgstr "Reset wachtwoorden naar de standaard wachtwoorden"
+
+msgid "Reset recommendation"
+msgstr "Reset aanbeveling"
+
+msgid "Reset state"
+msgstr "Reset status"
+
+msgid "Reset timer"
+msgstr "Reset timer"
+
+msgid "Reset to default settings"
+msgstr "Reset naar standaardinstellingen"
+
+msgid "Resolution and size"
+msgstr "Resolutie en formaat"
+
+msgid "Restart livestream"
+msgstr "Herstart livestream"
+
+msgid ""
+"Restrict delegation principals from adding themselves to the list of "
+"speakers"
+msgstr ""
+"Beperk delegatiehoofden om zichzelf toe te voegen aan de sprekerslijst"
+
+msgid "Restrict delegation principals from creating motions/amendments"
+msgstr "Beperk delegatiehoofden in het maken van moties/amendementen"
+
+msgid "Restrict delegation principals from supporting motions"
+msgstr "Beperk delegatiehoofden in het ondersteunen van moties"
+
+msgid "Restrict delegation principals from voting"
+msgstr "Beperk delegatiehoofden in het stemmen"
+
+msgid "Restrictions"
+msgstr "Beperkingen"
+
+msgid "Result"
+msgstr "Resultaat"
+
+msgid "Results"
+msgstr "Resultaten"
+
+msgid "Resume speech"
+msgstr "Resume toespraak"
+
+msgid "Retrieving vote status... Please wait!"
+msgstr "Stemstatus ophalen... Even geduld!"
+
+msgid "Right"
+msgstr "Rechts"
+
+msgid "Roman"
+msgstr "Roman"
+
+msgid "Rows with warnings"
+msgstr "Rijen met waarschuwingen"
+
+msgid "SSO"
+msgstr "SSO"
+
+msgid "SSO Identification"
+msgstr "SSO Identificatie"
+
+msgid "SSO identification"
+msgstr "SSO identificatie"
+
+msgid "Same email"
+msgstr "Zelfde e-mail"
+
+msgid "Same given and surname"
+msgstr "Zelfde voor- en achternaam"
+
+msgid "Save"
+msgstr "Opslaan"
+
+msgid "Save all changes"
+msgstr "Alle wijzigingen opslaan"
+
+msgid "Save editorial final version"
+msgstr "Redactionele definitieve versie opslaan"
+
+msgid "Scan this QR code to open URL."
+msgstr "Scan deze QR-code om de URL te openen."
+
+msgid "Scroll down"
+msgstr "Scroll omlaag"
+
+msgid "Scroll down (big step)"
+msgstr "Scroll omlaag (grote stap)"
+
+msgid "Scroll up"
+msgstr "Scroll omhoog"
+
+msgid "Scroll up (big step)"
+msgstr "Scroll omhoog (grote stap)"
+
+msgid "Search"
+msgstr "Zoeken"
+
+msgid "Search player"
+msgstr "Zoek speler"
+
+msgid "Searching for candidates"
+msgstr "Zoeken naar kandidaten"
+
+msgid "Searching for players ..."
+msgstr "Zoeken naar spelers ..."
+
+msgid "Secret voting can not be guaranteed"
+msgstr "Geheim stemmen kan niet worden gegarandeerd"
+
+msgid "Select"
+msgstr "Selecteer"
+
+msgid "Select all"
+msgstr "Selecteer alle"
+
+msgid "Select file"
+msgstr "Selecteer bestand"
+
+msgid "Select meetings ..."
+msgstr "Selecteer vergaderingen ..."
+
+msgid "Select paragraphs"
+msgstr "Selecteer paragrafen"
+
+msgid "Select participant"
+msgstr "Selecteer deelnemer"
+
+msgid "Select speaker"
+msgstr "Selecteer spreker"
+
+msgid "Send"
+msgstr "Stuur"
+
+msgid "Send invitation email"
+msgstr "Stuur uitnodigingsmail"
+
+msgid "Sender name"
+msgstr "Afzendernaam"
+
+msgid "Sending an invitation email"
+msgstr "Stuur een uitnodigingsmail"
+
+msgid "Separator used for all CSV exports and examples"
+msgstr "Separator gebruikt voor alle CSV-exports en voorbeelden"
+
+msgid "Sequential number"
+msgstr "Opvolgend nummer"
+
+msgid "Serially numbered"
+msgstr "Serieel genummerd"
+
+msgid "Server settings required to activate Jitsi Meet integration."
+msgstr ""
+"Serverinstellingen die nodig zijn om Jitsi Meet integratie te activeren."
+
+msgid "Set active"
+msgstr "Zet actief"
+
+msgid "Set as favorite"
+msgstr "Zet als favoriet"
+
+msgid "Set as not favorite"
+msgstr "Zet als niet favoriet"
+
+msgid "Set as parent"
+msgstr "Zet als ouder"
+
+msgid "Set as reference projector"
+msgstr "Zet als referentieprojector"
+
+msgid "Set as template"
+msgstr "Zet als sjabloon"
+
+msgid "Set category"
+msgstr "Zet categorie"
+
+msgid "Set external"
+msgstr "Zet extern"
+
+msgid "Set external status for selected accounts"
+msgstr "Zet externe status voor geselecteerde accounts"
+
+msgid "Set favorite"
+msgstr "Zet favoriet"
+
+msgid "Set forward"
+msgstr "Zet vooruit"
+
+msgid "Set hidden"
+msgstr "Zet verborgen"
+
+msgid "Set identifier"
+msgstr "Zet identificator"
+
+msgid "Set inactive"
+msgstr "Zet inactief"
+
+msgid "Set internal"
+msgstr "Zet intern"
+
+msgid "Set it manually"
+msgstr "Zet het handmatig"
+
+msgid "Set live voting enabled by default"
+msgstr ""
+
+msgid "Set lock out ..."
+msgstr "Zet lock out ..."
+
+msgid "Set motion block"
+msgstr "Zet motieblok"
+
+msgid "Set natural person ..."
+msgstr "Zet natuurlijk persoon ..."
+
+msgid "Set not present in meeting {}"
+msgstr "Zet niet aanwezig in vergadering {}"
+
+msgid "Set or remove motion forwarding from the selected committees to:"
+msgstr ""
+"Zet motie-doorsturing in of verwijder deze van de geselecteerde comités "
+"naar:"
+
+msgid "Set presence ..."
+msgstr "Zet aanwezigheid ..."
+
+msgid "Set present in meeting {}"
+msgstr "Zet aanwezig in vergadering {}"
+
+msgid "Set public"
+msgstr "Zet publiek"
+
+msgid "Set recommendation"
+msgstr "Zet aanbeveling"
+
+msgid "Set status"
+msgstr "Zet status"
+
+msgid "Set status for selected accounts"
+msgstr "Zet status voor geselecteerde accounts"
+
+msgid "Set status for selected participants:"
+msgstr "Zet status voor geselecteerde deelnemers:"
+
+msgid "Set submission timestamp"
+msgstr "Zet het tijdstempel voor indiening"
+
+msgid "Set submitters"
+msgstr "Zet indieners"
+
+msgid "Set tags"
+msgstr "Zet tags"
+
+msgid "Set workflow"
+msgstr "Zet workflow"
+
+msgid "Set/remove home committee"
+msgstr "Thuiscommissie instellen/verwijderen"
+
+msgid "Set/remove meeting"
+msgstr "Zet/verwijder vergadering"
+
+msgid "Sets this projector as the reference for the current list of speakers"
+msgstr "Zet deze projector als referentie voor de huidige lijst met sprekers"
+
+msgid "Settings"
+msgstr "Instellingen"
+
+msgid "Short form for amendments"
+msgstr "Verkort wijzigingsformulier"
+
+msgid "Show all changes"
+msgstr "Toon alle wijzigingen"
+
+msgid "Show amendment"
+msgstr "Toon wijziging"
+
+msgid "Show amendment in parent motion"
+msgstr "Toon wijziging in ouder motie"
+
+msgid "Show amendments together with motions"
+msgstr "Toon wijzigingen samen met moties"
+
+msgid "Show applause amount"
+msgstr "Toon aantal applaus "
+
+msgid "Show checkbox to record decision"
+msgstr "Toon selectievakje om beslissing op te nemen"
+
+msgid "Show clock"
+msgstr "Toon klok"
+
+msgid "Show committee"
+msgstr "Toon commissie"
+
+msgid "Show conference room"
+msgstr "Toon conferentieruimte"
+
+msgid "Show entire motion text"
+msgstr "Toon volledige motietekst"
+
+msgid "Show full text"
+msgstr "Toon volledige tekst"
+
+msgid "Show header and footer"
+msgstr "Toon kop- en voettekst"
+
+msgid "Show hint »first speech« in the list of speakers management view"
+msgstr ""
+"Toon hint “eerste toespraak” in de lijst met sprekers management weergave"
+
+msgid "Show internal items when projecting agenda"
+msgstr "Toon interne items bij het projecteren van de agenda"
+
+msgid "Show live conference window"
+msgstr "Toon live conferentie venster"
+
+msgid "Show logo"
+msgstr "Toon logo"
+
+msgid "Show main menu"
+msgstr "Toon hoofdmenu"
+
+msgid "Show meta information box beside the title on projector"
+msgstr "Toon meta-informatievak naast de titel op de projector"
+
+msgid "Show motion submitters in the agenda"
+msgstr "Toon indieners van moties in de agenda"
+
+msgid "Show motion text on projector"
+msgstr "Toon motietekst op projector"
+
+msgid "Show orange countdown in the last x seconds of speaking time"
+msgstr "Toon oranje countdown in de laatste x seconden spreektijd"
+
+msgid "Show password"
+msgstr "Toon wachtwoord"
+
+msgid "Show reason on projector"
+msgstr "Toon reden op projector"
+
+msgid "Show recommendation extension field"
+msgstr "Toon het aanbevelingsuitbreidingsveld"
+
+msgid "Show recommendation on projector"
+msgstr "Toon aanbeveling op projector"
+
+msgid "Show referring motions"
+msgstr "Toon verwijzende moties"
+
+msgid "Show report"
+msgstr "Toon verslag"
+
+msgid "Show state extension field"
+msgstr "Toon het uitbreidingsveld van de staat"
+
+msgid "Show submitters and recommendation/state in table of contents"
+msgstr "Toon indieners en aanbeveling/staat in inhoudsopgave"
+
+msgid "Show the amount of speakers in subtitle of list of speakers slide"
+msgstr "Toon het aantal sprekers in de ondertitel van de sprekerslijst"
+
+msgid "Show the sequential number for a motion"
+msgstr "Toon het volgnummer voor een motie"
+
+msgid "Show this text on the login page"
+msgstr "Toon deze tekst op de inlogpagina"
+
+msgid "Show title"
+msgstr "Toon titel"
+
+msgid "Show topic navigation in detail view"
+msgstr "Toon onderwerpnavigatie in detailweergave"
+
+msgid ""
+"Shows a button with help icon to connect to an extra Jitsi conference room "
+"for technical audio/video tests."
+msgstr ""
+"Toont een knop met hulppictogram om verbinding te maken met een extra Jitsi-"
+"vergaderzaal voor technische audio/video-tests."
+
+msgid ""
+"Shows if livestream is not started. Recommended image format: 500x200px, PNG"
+" or JPG"
+msgstr ""
+"Toont als livestream niet gestart is. Aanbevolen afbeeldingsformaat: "
+"500x200px, PNG of JPG"
+
+msgid ""
+"Shows the given image as applause particle. Recommended image format: "
+"24x24px, PNG, JPG or SVG"
+msgstr ""
+"Toont de gegeven afbeelding als applausdeeltje. Aanbevolen "
+"afbeeldingsformaat: 24x24px, PNG, JPG of SVG"
+
+msgid "Single Sign-On settings"
+msgstr "Single Sign-On instellingen"
+
+msgid "Single votes"
+msgstr "Enkele stemmen"
+
+msgid "Some csv values could not be read correctly."
+msgstr "Sommige csv-waarden konden niet correct worden ingelezen."
+
+msgid ""
+"Some mails could not be sent. There may be a problem communicating with the "
+"mail server, please contact your admin."
+msgstr ""
+"Sommige mails konden niet worden verzonden. Er kan een probleem zijn met de "
+"communicatie met de mailserver, neem contact op met uw beheerder."
+
+msgid "Sort"
+msgstr "Sorteer"
+
+msgid "Sort agenda"
+msgstr "Sorteer agenda"
+
+msgid "Sort by identifier"
+msgstr "Sorteer op identificatie"
+
+msgid "Sort categories"
+msgstr "Sorteer categorieën"
+
+msgid "Sort comments"
+msgstr "Sorteer opmerkingen"
+
+msgid "Sort election results by amount of votes"
+msgstr "Sorteer verkiezingsresultaten op aantal stemmen"
+
+msgid "Sort motions"
+msgstr "Sorteer moties"
+
+msgid "Sort motions by"
+msgstr "Sorteer moties op"
+
+msgid "Sort participant names on single votes projection by"
+msgstr "Sorteer namen van deelnemers op projectie van enkele stemmen op"
+
+msgid "Sort workflow"
+msgstr "Sorteer workflow"
+
+msgid "Source"
+msgstr "Bron"
+
+msgid "Source code"
+msgstr "Broncode"
+
+msgid "Speaker"
+msgstr "Spreker"
+
+msgid "Speakers"
+msgstr "Sprekers"
+
+msgid "Speaking time – current contribution"
+msgstr "Spreektijd - huidige bijdrage"
+
+msgid "Speaking times"
+msgstr "Spreektijden"
+
+msgid "Speaking times – overview structure levels"
+msgstr "Spreektijden - overzicht structuurniveaus"
+
+msgid "Speech start time"
+msgstr "Spreek starttijd"
+
+msgid "Speech type"
+msgstr "Spreektype"
+
+msgid "Spokesperson"
+msgstr "Woordvoerder"
+
+msgid "Spokespersons"
+msgstr "Woordvoerders"
+
+msgid "Stalemate! It's a draw!"
+msgstr "Patstelling! Het is gelijk!"
+
+msgid "Start and end time must either both be set or both be empty"
+msgstr "Begin- en eindtijd moeten beide zijn ingesteld of beide leeg zijn"
+
+msgid "Start date"
+msgstr "Startdatum"
+
+msgid "Start line number"
+msgstr "Startlijnnummer"
+
+msgid "Start time"
+msgstr "Starttijd"
+
+msgid "Start voting"
+msgstr "Start met stemmen"
+
+msgid "State"
+msgstr "Status"
+
+msgid "State changed"
+msgstr "Status gewijzigd"
+
+msgid "State set to {}"
+msgstr "Status ingesteld op {}"
+
+msgid "Statistics"
+msgstr "Statistik"
+
+msgid "Status"
+msgstr "Status"
+
+msgid "Stop"
+msgstr "Stop"
+
+msgid "Stop & publish"
+msgstr "Stoppen & publiceren"
+
+msgid "Stop counting"
+msgstr "Stoppen met tellen"
+
+msgid "Stop voting"
+msgstr "Stoppen met stemmen"
+
+msgid "Stop waiting"
+msgstr "Stoppen met wachten"
+
+msgid "Stop, publish & anonymize"
+msgstr ""
+
+msgid "Strikethrough"
+msgstr "Doorhalen"
+
+msgid "Structure level"
+msgstr "Structuurniveau"
+
+msgid "Structure levels"
+msgstr "Structuurniveaus"
+
+msgid "Structure levels created"
+msgstr "Structuurniveaus aangemaakt"
+
+msgid "Subcategory"
+msgstr "Subcategorie"
+
+msgid "Subcommittees"
+msgstr "Subcommissies"
+
+msgid "Submission date"
+msgstr "Indieningsdatum"
+
+msgid "Submit selection now?"
+msgstr "Selectie nu indienen?"
+
+msgid "Submit vote now"
+msgstr "Stem nu indienen"
+
+msgid "Submitter"
+msgstr "Indiener"
+
+msgid "Submitter may set state to"
+msgstr "Indiener mag status instellen op"
+
+msgid "Submitters"
+msgstr "Indieners"
+
+msgid "Submitters changed"
+msgstr "Indieners gewijzigd"
+
+msgid "Subscript"
+msgstr "Subscript"
+
+msgid "Subtract"
+msgstr "Aftrekken"
+
+msgid "Suitable accounts found"
+msgstr "Passende accounts gevonden"
+
+msgid "Sum of votes"
+msgstr "Som van stemmen"
+
+msgid "Sum of votes without general options"
+msgstr "Som van stemmen zonder algemene opties"
+
+msgid "Summary"
+msgstr "Overzicht"
+
+msgid "Summary of changes"
+msgstr "Overzicht van wijzigingen"
+
+msgid "Summary of changes:"
+msgstr "Overzicht van wijzigingen:"
+
+msgid "Superadmin"
+msgstr "Superadmin"
+
+msgid "Superadmin actions"
+msgstr "Superadmin acties"
+
+msgid "Superadmin settings"
+msgstr "Superadmin-instellingen"
+
+msgid "Superscript"
+msgstr "Superscript"
+
+msgid "Support"
+msgstr "Support"
+
+msgid "Supporters"
+msgstr "Supporters"
+
+msgid "Supporters changed"
+msgstr "Supporters gewijzigd"
+
+msgid "Surname"
+msgstr "Achternaam"
+
+msgid "Swap mandates"
+msgstr "Ruilmandaten"
+
+msgid "Switch"
+msgstr "Wissel"
+
+msgid "System"
+msgstr "Systeem"
+
+msgid "Table of contents"
+msgstr "Inhoudsopgave"
+
+msgid "Tag"
+msgstr "Tag"
+
+msgid "Tags"
+msgstr "Tags"
+
+msgid "Target meeting"
+msgstr "Doelvergadering"
+
+msgid "Text"
+msgstr "Tekst"
+
+msgid "Text color"
+msgstr "Tekstkleur"
+
+msgid "Text for this option couldn't load."
+msgstr "Tekst voor deze optie kon niet worden geladen."
+
+msgid "Text import"
+msgstr "Tekst importeren"
+
+msgid "Text separator"
+msgstr "Tekstscheider"
+
+msgid "Text to display"
+msgstr "Tekst om weer te geven"
+
+msgid "Text version"
+msgstr "Tekstversie"
+
+msgid "The account is deactivated."
+msgstr "De account is gedeactiveerd."
+
+msgid "The affected columns will not be imported."
+msgstr "De betreffende kolommen worden niet geïmporteerd."
+
+msgid "The assembly may decide:"
+msgstr "De vergadering mag beslissen:"
+
+msgid "The event manager has not set up a legal notice yet."
+msgstr "De evenementmanager heeft nog geen wettelijke kennisgeving opgesteld."
+
+msgid "The event manager has not set up a privacy policy yet."
+msgstr "De evenementmanager heeft nog geen privacybeleid ingesteld."
+
+msgid "The fields are defined as follows"
+msgstr "De velden zijn als volgt gedefinieerd"
+
+msgid "The file has too few columns to be parsed properly."
+msgstr ""
+"Het bestand heeft te weinig kolommen om goed te kunnen worden verwerkt."
+
+msgid ""
+"The import can not proceed. There is likely a problem with the import data, "
+"please check the preview for details."
+msgstr ""
+"Het importeren kan niet doorgaan. Er is waarschijnlijk een probleem met de "
+"importgegevens. Controleer het voorbeeld voor meer informatie."
+
+msgid "The import is in progress, please wait ..."
+msgstr "De import is bezig, een ogenblik geduld alstublieft..."
+
+msgid ""
+"The import returned warnings. This does not mean that it failed, but some "
+"data may have been imported differently. Usually the warnings will be the "
+"same as during the preview, but as there is a possibility that new ones have"
+" arisen, the relevant rows will be displayed below."
+msgstr ""
+"Het importeren heeft waarschuwingen opgeleverd. Dit betekent niet dat het "
+"mislukt is, maar sommige gegevens kunnen anders geïmporteerd zijn. Meestal "
+"zijn de waarschuwingen dezelfde als tijdens de preview, maar omdat er "
+"mogelijk nieuwe waarschuwingen zijn, worden de relevante rijen hieronder "
+"weergegeven."
+
+msgid "The import was successful."
+msgstr "De import was succesvol."
+
+msgid "The input data for voting is invalid."
+msgstr "De invoergegevens voor de stemming zijn ongeldig."
+
+msgid "The link is broken. Please contact your system administrator."
+msgstr "De link is verbroken. Neem contact op met uw systeembeheerder."
+
+msgid "The list of speakers is closed."
+msgstr "De sprekerslijst is gesloten."
+
+msgid ""
+"The maximum number of characters per line. Relevant when line numbering is "
+"enabled. Min: 40. Note: Check PDF export and font."
+msgstr ""
+"Het maximum aantal tekens per regel. Relevant als regelnummering is "
+"ingeschakeld. Min: 40. Opmerking: Controleer PDF-export en lettertype."
+
+msgid "The number has to be greater than 0."
+msgstr "Het nummer moet groter zijn dan 0."
+
+msgid "The parent motion is not available."
+msgstr "De oudermotie is niet beschikbaar."
+
+msgid "The process is still running. Please wait!"
+msgstr "Het proces loopt nog. Even geduld!"
+
+msgid "The process may have stopped running."
+msgstr "Het proces is mogelijk gestopt."
+
+msgid "The process will be started. Please wait!"
+msgstr "Het proces wordt gestart. Even geduld!"
+
+msgid "The request could not be sent. Check your connection."
+msgstr "Het verzoek kon niet worden verzonden. Controleer uw verbinding."
+
+msgid "The server could not be reached."
+msgstr "De server kon niet worden bereikt."
+
+msgid "The server didn't respond."
+msgstr "De server reageerde niet."
+
+msgid ""
+"The server may still be processing them, but you will probably not get a "
+"result."
+msgstr ""
+"De server kan ze nog steeds verwerken, maar u krijgt waarschijnlijk geen "
+"resultaat."
+
+msgid "The title is required"
+msgstr "De titel is vereist"
+
+msgid ""
+"The user %user% has no email, so the invitation email could not be sent."
+msgstr ""
+"De gebruiker %user% heeft geen e-mail, dus de uitnodigingsmail kon niet "
+"worden verzonden."
+
+msgid ""
+"The users %user% have no email, so the invitation emails could not be sent."
+msgstr ""
+"De gebruikers %user% hebben geen e-mail, dus de uitnodigingsmails konden "
+"niet worden verzonden."
+
+msgid "There are not enough options."
+msgstr "Er zijn niet genoeg opties."
+
+msgid "There is an error in your vote."
+msgstr "Er zit een fout in uw stem."
+
+msgid "There is an error with this amendment. Please edit it manually."
+msgstr "Er is een fout opgetreden in deze wijziging. Bewerk het handmatig."
+
+msgid "There is an unknown voting problem."
+msgstr "Er is een onbekend stemmingsprobleem."
+
+msgid "There is an unspecified error in this line, which prevents the import."
+msgstr ""
+"Er zit een niet-gespecificeerde fout in deze regel, waardoor het importeren "
+"niet lukt."
+
+msgid ""
+"There seems to be a problem connecting to our services. Check your "
+"connection or try again later."
+msgstr ""
+"Er lijkt een probleem te zijn met de verbinding met onze services. "
+"Controleer uw verbinding of probeer het later nog eens."
+
+msgid "There should be at least 2 options."
+msgstr "Er moeten ten minste 2 opties zijn."
+
+msgid "Thereof point of orders"
+msgstr "Daarvan punt van orders"
+
+msgid "These accounts will be deleted:"
+msgstr "Deze accounts worden verwijderd:"
+
+msgid "These participants will be removed:"
+msgstr "Deze deelnemers worden verwijderd:"
+
+msgid "These settings are only applied locally on this browser."
+msgstr "Deze instellingen worden alleen lokaal toegepast op deze browser."
+
+msgid "This account has relations to meetings or committees"
+msgstr "Deze account heeft relaties met vergaderingen of commissies"
+
+msgid ""
+"This account is not linked as candidate, submitter or speaker in any meeting"
+" and is not manager of any committee"
+msgstr ""
+"Dit account is niet gekoppeld als kandidaat, indiener of spreker in een "
+"vergadering en is geen beheerder van een commissie."
+
+msgid "This action will remove you from one or more groups."
+msgstr "Deze actie verwijdert u uit een of meer groepen."
+
+msgid "This action will remove you from one or more meetings."
+msgstr "Deze actie verwijdert u uit een of meer vergaderingen."
+
+msgid "This amendment has change recommendations."
+msgstr "Dit wijzigingsvoorstel bevat aanbevelingen voor veranderingen."
+
+msgid "This ballot contains deleted users."
+msgstr "Deze ballot bevat verwijderde gebruikers."
+
+msgid "This change collides with another one."
+msgstr "Deze verandering botst met een andere."
+
+msgid "This committee already exists"
+msgstr "Deze commissie bestaat al"
+
+msgid "This committee has no managers!"
+msgstr "Deze commissie heeft geen leiders!"
+
+msgid "This field is required."
+msgstr "Dit veld is vereist."
+
+msgid "This file will also be deleted from all meetings."
+msgstr "Dit bestand wordt ook verwijderd uit alle vergaderingen."
+
+msgid "This is not a number."
+msgstr "Dit is geen getal."
+
+msgid ""
+"This may diminish your ability to do things in this meeting and you may not "
+"be able to revert it by youself. Are you sure you want to do this?"
+msgstr ""
+"Dit kan uw vermogen om dingen te doen in deze vergadering verminderen en u "
+"kunt het misschien niet zelf terugdraaien. Weet u zeker dat u dit wilt doen?"
+
+msgid "This meeting"
+msgstr "Deze vergadering"
+
+msgid "This meeting is archived"
+msgstr "Deze vergadering is gearchiveerd"
+
+msgid "This meeting is public"
+msgstr "Deze vergadering is openbaar"
+
+msgid "This paragraph does not exist in the main motion anymore:"
+msgstr "Deze paragraaf bestaat niet meer in de hoofdmotie:"
+
+msgid "This participant will only be removed from this meeting"
+msgstr "Deze deelnemer wordt alleen verwijderd uit deze vergadering"
+
+msgid "This prefix already exists"
+msgstr "Deze prefix bestaat al"
+
+msgid "This prefix already exists."
+msgstr "Deze prefix bestaat al."
+
+msgid "This prefix will be set if you run the automatic agenda numbering."
+msgstr ""
+"Dit prefix wordt ingesteld als u de automatische agendanummering uitvoert."
+
+msgid ""
+"This projector is currently internal. Selecting such projectors as reference"
+" projectors will automatically set them to visible. Do you really want to do"
+" this?"
+msgstr ""
+"Deze projector is momenteel intern. Als u dergelijke projectoren als "
+"referentieprojectoren selecteert, worden ze automatisch ingesteld op "
+"zichtbaar. Wil u dit echt doen?"
+
+msgid ""
+"This will add or remove the following groups for all selected participants:"
+msgstr ""
+"Hiermee worden de volgende groepen toegevoegd of verwijderd voor alle "
+"geselecteerde deelnemers:"
+
+msgid ""
+"This will add or remove the following structure levels for all selected "
+"participants:"
+msgstr ""
+"Hiermee worden de volgende structuurniveaus toegevoegd of verwijderd voor "
+"alle geselecteerde deelnemers:"
+
+msgid ""
+"This will add or remove the following submitters for all selected motions:"
+msgstr ""
+"Hiermee worden de volgende indieners voor alle geselecteerde moties "
+"toegevoegd of verwijderd:"
+
+msgid ""
+"This will add or remove the following tags for all selected agenda items:"
+msgstr ""
+"Hiermee worden de volgende tags toegevoegd of verwijderd voor alle "
+"geselecteerde agendapunten:"
+
+msgid "This will add or remove the following tags for all selected motions:"
+msgstr ""
+"Hiermee worden de volgende tags toegevoegd of verwijderd voor alle "
+"geselecteerde moties:"
+
+msgid "This will add or remove the selected accounts to following meetings:"
+msgstr ""
+"Hiermee worden de selecteerde accounts toegevoegd aan of verwijderd uit de "
+"volgende vergaderingen:"
+
+msgid ""
+"This will add or remove the selected accounts to the selected home "
+"committee:"
+msgstr ""
+"Hiermee worden de geselecteerde accounts toegevoegd of verwijderd aan de "
+"geselecteerde thuiscommissie:"
+
+msgid "This will move all selected motions as childs to:"
+msgstr "Hiermee verplaatst u alle selecteerde moties als kinderen naar:"
+
+msgid ""
+"This will move all selected motions under or after the following motion in "
+"the call list:"
+msgstr ""
+"Hiermee worden alle geselecteerde moties onder of na de volgende motie in de"
+" oproeplijst verplaatst:"
+
+msgid "This will reset all made changes and sort the call list."
+msgstr ""
+"Hiermee worden alle gemaakte wijzigingen gereset en wordt de oproeplijst "
+"gesorteerd."
+
+msgid "This will set the favorite status for all selected motions:"
+msgstr ""
+"Hiermee wordt de favoriete status ingesteld voor alle geselecteerde moties:"
+
+msgid "This will set the following category for all selected motions:"
+msgstr ""
+"Hiermee wordt de volgende categorie ingesteld voor alle geselecteerde "
+"moties:"
+
+msgid "This will set the following motion block for all selected motions:"
+msgstr ""
+"Hiermee wordt het volgende motieblok ingesteld voor alle geselecteerde "
+"moties:"
+
+msgid "This will set the following recommendation for all selected motions:"
+msgstr ""
+"Hiermee wordt de volgende aanbeveling ingesteld voor alle geselecteerde "
+"moties:"
+
+msgid "This will set the following state for all selected motions:"
+msgstr ""
+"Hiermee wordt de volgende status ingesteld voor alle geselecteerde moties:"
+
+msgid "This will set the workflow for all selected motions:"
+msgstr "Hiermee wordt de workflow voor alle geselecteerde moties ingesteld:"
+
+msgid "Thoroughly check datastore (unsafe)"
+msgstr "Grondige controle van datastore (onveilig)"
+
+msgid "Threefold repetition! It's a draw!"
+msgstr "Drievoudige herhaling! Het is remise!"
+
+msgid "Tile view"
+msgstr "Tegelaanzicht"
+
+msgid "Time"
+msgstr "Tijd"
+
+msgid "Time and traffic light"
+msgstr "Tijd en stoplicht"
+
+msgid "Timer"
+msgstr "Timer"
+
+msgid "Timers"
+msgstr "Timers"
+
+msgid "Timestamp"
+msgstr "Tijdstempel"
+
+msgid "Title"
+msgstr "Titel"
+
+msgid "Title for PDF document (all elections)"
+msgstr "Titel voor PDF-document (alle verkiezingen)"
+
+msgid "Title for PDF documents of motions"
+msgstr "Titel voor PDF-documenten van moties"
+
+msgid "Title for access data and welcome PDF"
+msgstr "Titel voor toegangsgegevens en welkom PDF"
+
+msgid "To start your search press Enter or the search icon"
+msgstr ""
+"Om uw zoekopdracht te starten drukt u op Enter of op het zoekpictogram"
+
+msgid "Toggle to list of speakers"
+msgstr "Naar sprekerslijst"
+
+msgid "Toggle to parent item"
+msgstr "Naar bovenliggend item gaan"
+
+msgid "Too many votes on one option."
+msgstr "Te veel stemmen op één optie."
+
+msgid "Topic"
+msgstr "Onderwerp"
+
+msgid "Topics"
+msgstr "Onderwerpen"
+
+msgid "Topics created"
+msgstr "Onderwerpen aangemaakt"
+
+msgid "Topics skipped"
+msgstr "Onderwerpen overgeslagen"
+
+msgid "Topics updated"
+msgstr "Onderwerpen geactualiseerd"
+
+msgid "Topics with warnings (will be skipped)"
+msgstr "Onderwerpen met waarschuwingen (worden overgeslagen)"
+
+msgid "Total accounts"
+msgstr "Totaal accounts"
+
+msgid "Total committees"
+msgstr "Totaal commissies"
+
+msgid "Total participants"
+msgstr "Totaal deelnemers"
+
+msgid "Total time"
+msgstr "Totale tijd"
+
+msgid "Total topics"
+msgstr "Totaal onderwerpen"
+
+msgid "Total votes cast"
+msgstr "Totaal aantal uitgebrachte stemmen"
+
+msgid "Touch the book icon to enter text"
+msgstr "Druk op het boekpictogram om tekst in te voeren"
+
+msgid "Translation"
+msgstr "Vertaling"
+
+msgid "Troubleshooting"
+msgstr "Problemen oplossen"
+
+msgid "Try reconnect"
+msgstr "Probeer opnieuw te verbinden"
+
+msgid "URL"
+msgstr "URL"
+
+msgid "Underline"
+msgstr "Onderstrepen"
+
+msgid "Undo"
+msgstr "Ongedaan maken"
+
+msgid "Undone"
+msgstr "Ongedaan gemaakt"
+
+msgid "Unique speakers"
+msgstr "Unieke sprekers"
+
+msgid "Unknown participant"
+msgstr "Onbekende deelnemer"
+
+msgid "Unknown user"
+msgstr "Onbekende gebruiker"
+
+msgid "Unpublish"
+msgstr "Depubliceer"
+
+msgid "Unsaved changes will not be applied."
+msgstr "Niet-opgeslagen wijzigingen worden niet verwerkt."
+
+msgid "Unsupport"
+msgstr "Geen ondersteuning"
+
+msgid "Upload"
+msgstr "Uploaden"
+
+msgid "Upload to"
+msgstr "Uploaden naar"
+
+msgid ""
+"Use JSON key:value structure (key = OpenSlides attribute name, value = IdP "
+"attribute name)."
+msgstr ""
+"Gebruik JSON key:value structuur (key = OpenSlides attribuut naam, value = "
+"IdP attribuut naam)."
+
+msgid "Use color"
+msgstr "Gebruik kleur"
+
+msgid "Use the following custom number"
+msgstr "Gebruik het volgende speciale nummer"
+
+msgid "Used for WLAN QRCode projection."
+msgstr "Gebruikt voor WLAN QRCode projectie."
+
+msgid "Used for invitation emails and QRCode in PDF of access data."
+msgstr ""
+"Gebruikt voor uitnodigingsmails en QRCode in PDF van toegangsgegevens."
+
+msgid "User"
+msgstr "Gebruiker"
+
+msgid "User not found."
+msgstr "Gebruiker niet gevonden."
+
+msgid "Username"
+msgstr "Gebruikersnaam"
+
+msgid "Username may not contain spaces"
+msgstr "Gebruikersnaam mag geen spaties bevatten"
+
+msgid "Username or password is incorrect."
+msgstr "Gebruikersnaam of wachtwoord is onjuist."
+
+msgid "Uses leading zeros to sort motions correctly by identifier."
+msgstr ""
+"Gebruikt voorloopnullen om moties correct te sorteren op identificatie."
+
+msgid ""
+"Using OpenSlides over HTTP 1.1 or lower is not supported. Make sure you can "
+"use HTTP 2 to continue."
+msgstr ""
+"OpenSlides gebruiken via HTTP 1.1 of lager wordt niet ondersteund. Zorg "
+"ervoor dat u HTTP 2 kunt gebruiken om door te gaan."
+
+msgid "Using OpenSlides over HTTP is not supported. Enable HTTPS to continue."
+msgstr ""
+"Het gebruik van OpenSlides via HTTP wordt niet ondersteund. Schakel HTTPS in"
+" om door te gaan."
+
+msgid "Valid votes"
+msgstr "Geldige stemmen"
+
+msgid "View"
+msgstr "Weergave"
+
+msgid "Virtual applause"
+msgstr "Virtueel applaus"
+
+msgid "Visibility"
+msgstr "Zichtbaarheid"
+
+msgid "Visibility on agenda"
+msgstr "Zichtbaarheid op de agenda"
+
+msgid "Vote"
+msgstr "Stem"
+
+msgid "Vote Weight"
+msgstr "Stem Gewicht"
+
+msgid "Vote delegation"
+msgstr "Stem delegatie"
+
+msgid "Vote submitted"
+msgstr "Stem ingediend"
+
+msgid "Vote weight"
+msgstr "Stemgewicht"
+
+msgid "Voted"
+msgstr "Gestemd"
+
+msgid "Votes"
+msgstr "Stemmen"
+
+msgid "Voting"
+msgstr "Stemming"
+
+msgid "Voting anonymized"
+msgstr "Stemming geanonimiseerd"
+
+msgid "Voting colors"
+msgstr "Stemkleuren"
+
+msgid "Voting created"
+msgstr "Stemming gecreëerd"
+
+msgid "Voting deleted"
+msgstr "Stemming verwijderd"
+
+msgid "Voting duration"
+msgstr "Stemduur"
+
+msgid ""
+"Voting ends after short (some seconds/minutes) or long (some days/weeks) "
+"time period."
+msgstr ""
+"Het stemmen eindigt na een korte (enkele seconden/minuten) of lange (enkele "
+"dagen/weken) periode."
+
+msgid "Voting in progress"
+msgstr "Stemming in volle gang"
+
+msgid "Voting is currently in progress."
+msgstr "Stemming is momenteel aan de gang."
+
+msgid "Voting method"
+msgstr "Stemmethode"
+
+msgid "Voting opened"
+msgstr "Stemming geopend"
+
+msgid "Voting published"
+msgstr "Stemming gepubliceerd"
+
+msgid "Voting reset"
+msgstr "Stemming resetten"
+
+msgid "Voting result"
+msgstr "Stemresultaat"
+
+msgid "Voting right delegated to (proxy)"
+msgstr "Stemrecht gedelegeerd aan (gevolmachtigde)"
+
+msgid "Voting right for"
+msgstr "Stemrecht voor"
+
+msgid "Voting right received from (principals)"
+msgstr "Stemrecht ontvangen van (opdrachtgevers)"
+
+msgid "Voting rights"
+msgstr "Stemrecht"
+
+msgid "Voting started"
+msgstr "Stemming begonnen"
+
+msgid "Voting stopped"
+msgstr "Stemming gestopt"
+
+msgid "Voting stopped/published"
+msgstr "Stemming gestopt/gepubliceerd"
+
+msgid "Voting successful."
+msgstr "Stemming geslaagd."
+
+msgid "Voting type"
+msgstr "Stemming type"
+
+msgid "Votings"
+msgstr "Stemming"
+
+msgid "WLAN encryption"
+msgstr "WLAN-codering"
+
+msgid "WLAN name (SSID)"
+msgstr "WLAN-naam (SSID)"
+
+msgid "WLAN password"
+msgstr "WLAN wachtwoord"
+
+msgid "Wait"
+msgstr "Wacht"
+
+msgid "Wait for response ..."
+msgstr "Wacht op antwoord ..."
+
+msgid "Waiting for response ..."
+msgstr "Wachten op antwoord ..."
+
+msgid "Warn color"
+msgstr "Waarschuw kleur"
+
+msgid ""
+"Warning: Amendments exist for this motion. Are you sure you want to delete "
+"this motion regardless?"
+msgstr ""
+"Waarschuwing: Er zijn wijzigingen voor deze motie. Weet u zeker dat u deze "
+"motie hoe dan ook wilt verwijderen?"
+
+msgid ""
+"Warning: Amendments or change recommendations exist for this motion. Editing"
+" this text will likely impact them negatively. Particularily, amendments "
+"might become unusable if the paragraph they affect is deleted, or change "
+"recommendations might lose their reference line completely."
+msgstr ""
+
+msgid ""
+"Warning: At least one of the selected motions has amendments, these will be "
+"deleted as well. Do you want to delete anyway?"
+msgstr ""
+"Waarschuwing: Ten minste één van de geselecteerde moties heeft wijzigingen, "
+"deze worden ook verwijderd. Wil u toch verwijderen?"
+
+msgid ""
+"Warning: Data loss is possible because accounts are in the same meeting."
+msgstr ""
+"Waarschuwing: Gegevensverlies is mogelijk omdat accounts in dezelfde "
+"vergadering staan."
+
+msgid "Warning: This projector will be set to visible"
+msgstr "Waarschuwing: Deze projector wordt ingesteld op zichtbaar"
+
+msgid "Was forwarded to this meeting"
+msgstr "Was doorgestuurd naar deze vergadering"
+
+msgid "Web interface header logo"
+msgstr "Webinterface header-logo"
+
+msgid "Welcome to OpenSlides"
+msgstr "Welkom bij OpenSlides"
+
+msgid "What is new?"
+msgstr "Wat is er nieuw?"
+
+msgid "Which version?"
+msgstr "Welke versie?"
+
+msgid "Which visualization?"
+msgstr "Welke visualisatie?"
+
+msgid "Wifi"
+msgstr "Wifi"
+
+msgid "Wifi access data"
+msgstr "Wifi toegangsgegevens"
+
+msgid "Wifi name"
+msgstr "Wifi-naam"
+
+msgid ""
+"Will be displayed as label before selected recommendation. Use an empty "
+"value to disable the recommendation system."
+msgstr ""
+"Wordt weergegeven als label voor de aanbeveling die u selecteert. Gebruik "
+"een lege waarde om het aanbevelingssysteem uit te schakelen."
+
+msgid "Withdraw point of order"
+msgstr "Punt van orde intrekken"
+
+msgid "Workflow"
+msgstr "Workflow"
+
+msgid "Workflow of new amendments"
+msgstr "Workflow van nieuwe wijzigingen"
+
+msgid "Workflow of new motions"
+msgstr "Workflow van nieuwe moties"
+
+msgid "Workflows"
+msgstr "Workflows"
+
+msgid "Yes"
+msgstr "Ja"
+
+msgid "Yes per candidate"
+msgstr "Ja per kandidaat"
+
+msgid "Yes per option"
+msgstr "Ja per optie"
+
+msgid "Yes, delete"
+msgstr "Ja, verwijderen"
+
+msgid "Yes, inclusive meetings"
+msgstr "Ja, inclusieve vergaderingen"
+
+msgid "Yes/No"
+msgstr "Ja/Nee"
+
+msgid "Yes/No per candidate"
+msgstr "Ja/Nee per kandidaat"
+
+msgid "Yes/No/Abstain"
+msgstr "Ja/Nee/Onthouding"
+
+msgid "Yes/No/Abstain per candidate"
+msgstr "Ja/Nee/ Onthouding per kandidaat"
+
+msgid "Yes/No/Abstain per list"
+msgstr "Ja/Nee/ Onthouding per lijst"
+
+msgid ""
+"You are moving a file from a public folder into an not published folder. The"
+" file will not be accessible in meetings afterwards."
+msgstr ""
+"U verplaatst een bestand van een openbare map naar een niet gepubliceerde "
+"map. Het bestand is daarna niet meer toegankelijk in vergaderingen."
+
+msgid ""
+"You are moving an unpublished file to a public folder. The file will be "
+"accessible in ALL meetings afterwards."
+msgstr ""
+"U verplaatst een ongepubliceerd bestand naar een openbare map. Het bestand "
+"is daarna toegankelijk in ALLE vergaderingen."
+
+msgid "You are not allowed to see all entitled users."
+msgstr "U mag niet alle gerechtigde gebruikers zien."
+
+msgid "You are not allowed to see the livestream"
+msgstr "U mag de livestream niet zien"
+
+msgid "You are not supposed to be here..."
+msgstr "U hoort hier niet te zijn..."
+
+msgid "You are using an incompatible client version."
+msgstr "U gebruikt een incompatibele clientversie."
+
+msgid "You can change this option only in the forwarding section."
+msgstr "U kunt deze optie alleen wijzigen in het gedeelte Doorsturen."
+
+msgid "You can not vote because this is an analog voting."
+msgstr "U kunt niet stemmen omdat dit een analoge stemming is."
+
+msgid "You can not vote right now because the voting has not yet started."
+msgstr "U kunt nu niet stemmen, want het stemmen is nog niet begonnen."
+
+msgid "You can only anonymize named polls."
+msgstr "U kunt alleen polls met naam anonimiseren."
+
+msgid ""
+"You cannot change the recommendation of motions in different workflows!"
+msgstr ""
+"U kunt de aanbeveling van moties in verschillende workflows niet wijzigen!"
+
+msgid "You cannot delete the last workflow of a meeting."
+msgstr "U kunt de laatste workflow van een vergadering niet verwijderen."
+
+msgid ""
+"You cannot delete the workflow as long as it is selected as default workflow"
+" for new amendments in the settings. Please set another workflow as default "
+"in the settings and try to delete the workflow again."
+msgstr ""
+"U kunt de workflow niet verwijderen zolang deze is geselecteerd als "
+"standaardworkflow voor nieuwe wijzigingen in de instellingen. Stel een "
+"andere workflow in als standaard in de instellingen en probeer de workflow "
+"opnieuw te verwijderen."
+
+msgid ""
+"You cannot delete the workflow as long as it is selected as default workflow"
+" for new motions in the settings. Please set another workflow as default in "
+"the settings and try to delete the workflow again."
+msgstr ""
+"U kunt de workflow niet verwijderen zolang deze is geselecteerd als "
+"standaardworkflow voor nieuwe moties in de instellingen. Stel een andere "
+"workflow in als standaard in de instellingen en probeer de workflow opnieuw "
+"te verwijderen."
+
+msgid "You cannot delete yourself."
+msgstr "U kunt uzelf niet verwijderen."
+
+msgid ""
+"You cannot enter this meeting because you are not assigned to any group."
+msgstr ""
+"U kunt deze vergadering niet bijwonen omdat u aan geen enkele groep bent "
+"toegewezen."
+
+msgid "You cannot vote since your vote right is delegated."
+msgstr "U kunt niet stemmen omdat uw stemrecht is gedelegeerd."
+
+msgid "You do not have the permission to vote."
+msgstr "U hebt geen toestemming om te stemmen."
+
+msgid "You have already voted."
+msgstr "U hebt al gestemd."
+
+msgid "You have to be logged in to be able to vote."
+msgstr "U moet ingelogd zijn om te kunnen stemmen."
+
+msgid "You have to be present to add yourself."
+msgstr "U moet aanwezig zijn om uzelf toe te voegen."
+
+msgid "You have to be present to vote."
+msgstr "U moet aanwezig zijn om te stemmen."
+
+msgid "You have to enter at least one character"
+msgstr "U moet ten minste één teken invoeren"
+
+msgid "You have to enter six hexadecimal digits"
+msgstr "U moet zes hexadecimale cijfers invoeren"
+
+msgid "You have to fill this field."
+msgstr "U moet dit veld invullen."
+
+msgid "You override the personally set password!"
+msgstr "U overschrijft het persoonlijk ingestelde wachtwoord!"
+
+msgid "You reached the maximum amount of votes. Deselect one option first."
+msgstr ""
+"U hebt het maximum aantal stemmen bereikt. Deselecteer eerst één optie."
+
+msgid "You reached the maximum amount of votes. Deselect somebody first."
+msgstr "U hebt het maximum aantal stemmen bereikt. Deselecteer eerst iemand."
+
+msgid ""
+"You will be logged out when you change your password. You must then log in "
+"with the new password."
+msgstr ""
+"U zult worden uitgelogd wanneer u uw wachtwoord wijzigt. U moet dan inloggen"
+" met het nieuwe wachtwoord."
+
+msgid "You won!"
+msgstr "U hebt gewonnen!"
+
+msgid "Your browser"
+msgstr "Uw browser"
+
+msgid "Your browser is not supported by OpenSlides!"
+msgstr "Uw browser wordt niet ondersteund door OpenSlides!"
+
+msgid "Your decision cannot be changed afterwards."
+msgstr "Uw keuze kan achteraf niet worden gewijzigd."
+
+msgid "Your device has no microphone"
+msgstr "Uw apparaat heeft geen microfoon"
+
+msgid "Your input does not match the following structure: \"hh:mm\""
+msgstr "Uw invoer komt niet overeen met de volgende structuur: “hh:mm”"
+
+msgid "Your opponent couldn't stand it anymore... You are the winner!"
+msgstr "Uw tegenstander kon er niet meer tegen... U bent de winnaar!"
+
+msgid "Your opponent has won!"
+msgstr "Uw tegenstander heeft gewonnen!"
+
+msgid "Your password has been reset successfully!"
+msgstr "Uw wachtwoord is succesvol gereset!"
+
+msgid "Your votes"
+msgstr "Uw stemmen"
+
+msgid "Your voting right was delegated to another person."
+msgstr "Uw stemrecht werd gedelegeerd aan een andere persoon."
+
+msgid "Zoom in"
+msgstr "Zoom in"
+
+msgid "Zoom out"
+msgstr "Zoom uit"
+
+msgid "[Begin speech] starts the countdown, [End speech] stops the countdown."
+msgstr ""
+"[Begin toespraak] start het aftellen, [Eind toespraak] stopt het aftellen."
+
+msgid "[Place for your welcome and help text.]"
+msgstr "[Plaats voor uw welkomst- en helptekst.]"
+
+msgid "absent"
+msgstr "afwezig"
+
+msgid "account-example"
+msgstr "account-voorbeeld"
+
+msgid "active"
+msgstr "actief"
+
+msgid "add group(s)"
+msgstr "groep(en) toevoegen"
+
+msgid "already exists"
+msgstr "bestaat al"
+
+msgid "amendment"
+msgstr "wijziging"
+
+msgid "amendments"
+msgstr "wijzigingen"
+
+msgid "analog"
+msgstr "analoog"
+
+msgid "and"
+msgstr "en"
+
+msgid "anonymized"
+msgstr "geanonimiseerd"
+
+msgid "are required"
+msgstr "zijn vereist"
+
+msgid "ballot-paper"
+msgstr "stembiljet"
+
+msgid "by"
+msgstr "door"
+
+msgid "challenged you to a chess match!"
+msgstr "uitgedaagd voor een schaakwedstrijd!"
+
+msgid "change recommendation"
+msgstr "wijzigingsaanbeveling"
+
+msgid "change recommendation(s) refer to a nonexistent line number."
+msgstr ""
+
+msgid "change recommendations"
+msgstr "wijzigingsaanbevelingen"
+
+msgid "committee name"
+msgstr "commissienaam"
+
+msgid "committee-example"
+msgstr "commissie-voorbeeld"
+
+msgid "connecting ..."
+msgstr "verbinden ..."
+
+msgid "connections"
+msgstr "verbindingen"
+
+msgid "contribution"
+msgstr "contributie"
+
+msgid "could not be created"
+msgstr "kon niet worden aangemaakt"
+
+msgid "created"
+msgstr "aangemaakt"
+
+msgid "custom"
+msgstr "aangepast"
+
+msgid "dateless"
+msgstr "datumloos"
+
+msgid "delete"
+msgstr "verwijderen"
+
+msgid "deleted"
+msgstr "verwijderd"
+
+msgid "disabled"
+msgstr "uitgeschakeld"
+
+msgid "disconnected"
+msgstr "losgekoppeld"
+
+msgid "diverse"
+msgstr "diverse"
+
+msgid "e.g. for online meetings"
+msgstr "bijv. voor online vergaderingen"
+
+msgid "emails"
+msgstr "e-mails"
+
+msgid "ended"
+msgstr "beëindigd"
+
+msgid "example"
+msgstr "voorbeeld"
+
+msgid "external"
+msgstr "extern"
+
+msgid "female"
+msgstr "vrouwelijk"
+
+msgid "finished (unpublished)"
+msgstr "afgerond (ongepubliceerd)"
+
+msgid "from delegated votes"
+msgstr "van gedelegeerde stemmen"
+
+msgid "fullscreen"
+msgstr "volledig scherm"
+
+msgid "future"
+msgstr "toekomst"
+
+msgid "green"
+msgstr "groen"
+
+msgid "grey"
+msgstr "grijs"
+
+msgid "has been imported"
+msgstr "is geïmporteerd"
+
+msgid "has saved his work on this motion."
+msgstr "heeft zijn werk voor deze motie bewaard."
+
+msgid "have been created"
+msgstr "zijn aangemaakt"
+
+msgid "hidden"
+msgstr "verborgen"
+
+msgid "inactive"
+msgstr "inactief"
+
+msgid "incl. subcommittees"
+msgstr "incl. subcommissies"
+
+msgid "inline"
+msgstr "inline"
+
+msgid "internal"
+msgstr "intern"
+
+msgid "is assigned to the following committees, meetings and groups"
+msgstr "is toegewezen aan de volgende commissies, vergaderingen en groepen"
+
+msgid "is not assigned to any committees or meetings yet"
+msgstr "is nog niet toegewezen aan commissies of vergaderingen"
+
+msgid "is now"
+msgstr "is nu"
+
+msgid "is required"
+msgstr "is vereist"
+
+msgid "items"
+msgstr "items"
+
+msgid "items selected"
+msgstr "items geselecteerd"
+
+msgid "last updated"
+msgstr "laatst bijgewerkt"
+
+msgid "lightblue"
+msgstr "lichtblauw"
+
+msgid "locked out"
+msgstr "uitgelogd"
+
+msgid "logged-in users"
+msgstr "ingelogde gebruikers"
+
+msgid "long running"
+msgstr "lange duur"
+
+msgid "majority"
+msgstr "meerderheid"
+
+msgid "male"
+msgstr "mannelijk"
+
+msgid "mark amendments as original"
+msgstr "markeer wijzigingen als origineel"
+
+msgid "max. 32 characters allowed"
+msgstr "max. 32 tekens toegestaan"
+
+msgid "modified"
+msgstr "gemodificeerd"
+
+msgid "motions"
+msgstr "moties"
+
+msgid "move ..."
+msgstr "bewegen ..."
+
+msgid "natural person"
+msgstr "natuurlijke persoon"
+
+msgid "no natural person"
+msgstr "geen natuurlijke persoon"
+
+msgid "nominal"
+msgstr "nominaal"
+
+msgid "nominal (anonymized)"
+msgstr "nominaal (geanonimiseerd)"
+
+msgid "non-binary"
+msgstr "niet-binaire"
+
+msgid "non-nominal"
+msgstr "niet-nominaal"
+
+msgid "none"
+msgstr "geen"
+
+msgid "not external"
+msgstr "niet extern"
+
+msgid "not specified"
+msgstr "niet gespecificeerd"
+
+msgid "of"
+msgstr "van"
+
+msgid "of which"
+msgstr "waarvan"
+
+msgid "of which %num% not permissable"
+msgstr "waarvan %num% niet toegestaan"
+
+msgid "open votes"
+msgstr "open stemmen"
+
+msgid "or"
+msgstr "of"
+
+msgid "original identifier"
+msgstr "oorspronkelijke identificator"
+
+msgid "original submitter"
+msgstr "oorspronkelijke indiener"
+
+msgid "outside"
+msgstr "buiten"
+
+msgid "partially forwarded"
+msgstr "gedeeltelijk doorgestuurd"
+
+msgid "participants"
+msgstr "deelnemers"
+
+msgid "participants-example"
+msgstr "deelnemers-voorbeeld"
+
+msgid "present"
+msgstr "aanwezig"
+
+msgid "public"
+msgstr "publiek"
+
+msgid "published"
+msgstr "gepubliceerd"
+
+msgid "red"
+msgstr "rood"
+
+msgid "remove"
+msgstr "verwijderen"
+
+msgid "remove group(s)"
+msgstr "verwijder groep(en)"
+
+msgid "removed user"
+msgstr "verwijderde gebruiker"
+
+msgid "represented by"
+msgstr "vertegenwoordigd door"
+
+msgid "represented by old account of"
+msgstr "vertegenwoordigd door oude account van"
+
+msgid "reset"
+msgstr "reset"
+
+msgid "selected"
+msgstr "geselecteerd"
+
+msgid "short running"
+msgstr "korte duur"
+
+msgid "started"
+msgstr "begonnen"
+
+msgid "stopped"
+msgstr "gestopt"
+
+msgid "successfully forwarded"
+msgstr "succesvol doorgestuurd"
+
+msgid "supporters"
+msgstr "supporters"
+
+msgid "to"
+msgstr "naar"
+
+msgid "today"
+msgstr "vandaag"
+
+msgid "total"
+msgstr "totaal"
+
+msgid "undocumented"
+msgstr "ongedocumenteerd"
+
+msgid "updated"
+msgstr "bijgewerkt"
+
+msgid "version"
+msgstr "versie"
+
+msgid "votes per candidate"
+msgstr "stemmen per kandidaat"
+
+msgid "votes per option"
+msgstr "stemmen per optie"
+
+msgid "was"
+msgstr "was"
+
+msgid "were"
+msgstr "waren"
+
+msgid "will be created"
+msgstr "wordt aangemaakt"
+
+msgid "will be imported"
+msgstr "wordt geïmporteerd"
+
+msgid "will be updated"
+msgstr "wordt bijgewerkt"
+
+msgid "with"
+msgstr "met"
+
+msgid "without identifier"
+msgstr "zonder identificator"
+
+msgid "yellow"
+msgstr "geel"
+
+msgid "{{amount}} interposed questions will be cleared"
+msgstr "{{aantal}} tussenliggende vragen worden opgelost"
+
+msgid "{{amount}} of them will be saved with 'unknown' speaker"
+msgstr "{{amount}} van hen zal worden opgeslagen met 'onbekend' luidspreker"
+
+msgid "{{amount}} will be saved"
+msgstr "{{bedrag}} wordt opgeslagen"
+
+msgid "Acceptance"
+msgstr "Acceptatie"
+
+msgid "Adjournment"
+msgstr "Verdaging"
+
+msgid "Admin"
+msgstr "Admin"
+
+msgid "Complex Workflow"
+msgstr "Complexe workflow"
+
+#, python-brace-format
+msgid ""
+"Dear {name},\n"
+"\n"
+"this is your personal OpenSlides login:\n"
+"\n"
+"{url}\n"
+"Username: {username}\n"
+"Password: {password}\n"
+"\n"
+"\n"
+"This email was generated automatically."
+msgstr ""
+"Beste {naam},\n"
+"\n"
+"dit is uw persoonlijke OpenSlides login:\n"
+"\n"
+"{url}\n"
+"Gebruikersnaam: {gebruikersnaam}\n"
+"Wachtwoord: {wachtwoord}\n"
+"\n"
+"\n"
+"Deze e-mail is automatisch gegenereerd."
+
+msgid "Default projector"
+msgstr "Standaardprojector"
+
+msgid "Delegates"
+msgstr "Afgevaardigden"
+
+msgid "No concernment"
+msgstr "Geen zorgen"
+
+msgid "No decision"
+msgstr "Geen besluit"
+
+msgid "Presentation and assembly system"
+msgstr "Presentatie- en verzamelsysteem"
+
+msgid "Referral to"
+msgstr "Verwijzing naar"
+
+msgid "Rejection"
+msgstr "Afwijzing"
+
+msgid "Reset your OpenSlides password"
+msgstr "Reset uw OpenSlides wachtwoord"
+
+msgid "Simple Workflow"
+msgstr "Simpele workflow"
+
+msgid "Space for your welcome text."
+msgstr "Ruimte voor uw welkomsttekst."
+
+msgid "Speaking time"
+msgstr "Spreektijd"
+
+msgid "Staff"
+msgstr "Medewerkers"
+
+#, python-brace-format
+msgid ""
+"You are receiving this email because you have requested a new password for your OpenSlides account.\n"
+"\n"
+"Please open the following link and choose a new password:\n"
+"{url}/login/forget-password-confirm?user_id={user_id}&token={token}\n"
+"\n"
+"The link will be valid for 10 minutes."
+msgstr ""
+"U ontvangt deze e-mail omdat u een nieuw wachtwoord heeft aangevraagd voor uw OpenSlides account.\n"
+"\n"
+"Open de volgende link en kies een nieuw wachtwoord:\n"
+"{url}/login/forget-password-confirm?user_id={user_id}&token={token}\n"
+"\n"
+"De link is 10 minuten geldig."
+
+msgid "accepted"
+msgstr "geaccepteerd"
+
+msgid "adjourned"
+msgstr "verdaagd"
+
+msgid "in progress"
+msgstr "in uitvoering"
+
+msgid "name"
+msgstr "naam"
+
+msgid "not concerned"
+msgstr "niet betrokken"
+
+msgid "not decided"
+msgstr "niet besloten"
+
+msgid "not permitted"
+msgstr "niet toegelaten"
+
+msgid "permitted"
+msgstr "toegelaten"
+
+msgid "referred to"
+msgstr "verwezen naar"
+
+msgid "rejected"
+msgstr "afgewezen"
+
+msgid "submitted"
+msgstr "ingezonden"
+
+msgid "withdrawn"
+msgstr "geschrapt"

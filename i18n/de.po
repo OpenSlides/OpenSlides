@@ -3,12 +3,12 @@
 # Joshua Sangmeister <joshua.sangmeister@gmail.com>, 2024
 # Katharina <karmitt2@web.de>, 2024
 # Elblinator, 2025
-# Birte Spekker <birte.spekker@intevation.de>, 2025
 # Emanuel Schütze <emanuel.schuetze@intevation.de>, 2025
+# Birte Spekker <birte.spekker@intevation.de>, 2025
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Emanuel Schütze <emanuel.schuetze@intevation.de>, 2025\n"
+"Last-Translator: Birte Spekker <birte.spekker@intevation.de>, 2025\n"
 "Language-Team: German (https://app.transifex.com/openslides/teams/14270/de/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -52,13 +52,6 @@ msgstr "<unbekannter Antrag>"
 
 msgid "<unknown>"
 msgstr "<unbekannt>"
-
-msgid ""
-"A change recommendation or amendment is probably referring to a non-existant"
-" line number."
-msgstr ""
-"Ein Änderungsantrag oder eine Änderungsempfehlung bezieht sich "
-"wahrscheinlich auf eine nicht vorhandene Zeilennummer."
 
 msgid "A client error occurred. Please contact your system administrator."
 msgstr ""
@@ -112,9 +105,6 @@ msgstr "Annehmen"
 msgid "Access data (PDF)"
 msgstr "Zugangsdaten (PDF)"
 
-msgid "Access groups"
-msgstr "Zugriffsgruppen"
-
 msgid ""
 "Access only possible for participants of this meeting. All other accounts "
 "(including organization and committee admins) may not open the closed "
@@ -132,6 +122,9 @@ msgstr "Account"
 
 msgid "Account admin"
 msgstr "Accountadmin"
+
+msgid "Account created"
+msgstr "Account erstellt"
 
 msgid "Account successfully added."
 msgstr "Account erfolgreich hinzugefügt."
@@ -400,6 +393,9 @@ msgstr ""
 
 msgid "Allowed access groups for this directory"
 msgstr "Zulässige Zugriffsgruppen für dieses Verzeichnis"
+
+msgid "Allows single votes projection during voting process"
+msgstr "Ermöglicht die Projektion von Einzelstimmen während einer Abstimmung"
 
 msgid "Always"
 msgstr "Immer"
@@ -755,6 +751,11 @@ msgstr ""
 "Achtung: Accounts werden nur der Standardgruppe einer jeden Veranstaltung "
 "zugewiesen. Wenn eine andere Gruppe vorgesehen ist, verwenden Sie bitte den "
 "Dialog „Zu Veranstaltungen hinzufügen“ in der Account-Detailansicht."
+
+msgid ""
+"Attention: Existing home committees and external status will be overwritten."
+msgstr ""
+"Achtung: Existierende Heimatgremien und Extern-Status werden überschrieben."
 
 msgid "Attention: First enter the wifi data in [Settings > General]"
 msgstr ""
@@ -1726,14 +1727,14 @@ msgid "Default visibility for new agenda items (except topics)"
 msgstr ""
 "Voreingestellte Sichtbarkeit für neue Tagesordnungspunkte (außer Themen)"
 
-msgid "Default vote method"
-msgstr "Voreingestellte Abstimmungsmethode"
-
 msgid "Default vote weight"
 msgstr "Standard-Stimmgewicht"
 
 msgid "Default voting duration"
 msgstr "Voreingestellte Dauer der Stimmabgabe"
+
+msgid "Default voting method"
+msgstr "Voreingestellte Abstimmungsmethode"
 
 msgid "Default voting type"
 msgstr "Voreingestellte Art der Stimmabgabe"
@@ -2023,6 +2024,9 @@ msgstr "Wahl"
 msgid "Election documents"
 msgstr "Wahlunterlagen"
 
+msgid "Election method"
+msgstr "Wahlmethode"
+
 msgid "Elections"
 msgstr "Wahlen"
 
@@ -2306,6 +2310,9 @@ msgstr "Ausgewählte Anträge exportieren"
 msgid "Extension"
 msgstr "Erweiterung"
 
+msgid "External"
+msgstr "Externe"
+
 msgid "External ID"
 msgstr "Externe ID"
 
@@ -2511,6 +2518,9 @@ msgstr "Gruppen mit Schreibberechtigungen"
 msgid "Has SSO identification"
 msgstr "Hat SSO-Kennung"
 
+msgid "Has a home committee"
+msgstr "Hat ein Heimatgremium"
+
 msgid "Has a membership number"
 msgstr "Hat eine Mitgliedsnummer"
 
@@ -2540,6 +2550,9 @@ msgstr "Hat keine SSO-Kennung"
 
 msgid "Has no email address"
 msgstr "Hat keine E-Mail-Adresse"
+
+msgid "Has no home committee"
+msgstr "Hat kein Heimatgremium"
 
 msgid "Has no identical motions"
 msgstr "Hat keine wortgleichen Anträge"
@@ -2631,6 +2644,9 @@ msgstr "Chronik"
 msgid "Home"
 msgstr "Startseite"
 
+msgid "Home committee"
+msgstr "Heimatgremium"
+
 msgid "How to create new amendments"
 msgstr "Erstellung von Änderungsanträgen"
 
@@ -2657,12 +2673,8 @@ msgstr "Bezeichner"
 msgid "If deactivated it is displayed below the title."
 msgstr "Wenn deaktiviert erfolgt die Anzeige unterhalb des Antragstitels."
 
-msgid ""
-"If it is an amendment, you can back up its content when editing it and "
-"delete it afterwards."
-msgstr ""
-"Wenn es sich um einen Änderungsantrag handelt, können Sie den Inhalt beim "
-"Bearbeiten sichern und anschließend löschen."
+msgid "If empty, everyone can access."
+msgstr "Voller Zugriff, wenn keine Gruppe eingetragen."
 
 msgid "If the value is set to 0 the time counts up as stopwatch."
 msgstr ""
@@ -2725,6 +2737,9 @@ msgstr "Inaktiv"
 
 msgid "Inconsistent data."
 msgstr "Inkonsistente Daten."
+
+msgid "Inconsistent data. Please delete this change recommendation."
+msgstr "Inkonsistente Daten. Bitte löschen Sie diese Änderungsempfehlung."
 
 msgid "Information"
 msgstr "Information"
@@ -2833,6 +2848,9 @@ msgstr "Ist geschlossen"
 msgid "Is committee admin"
 msgstr "Ist Gremienadmin"
 
+msgid "Is external"
+msgstr "Ist extern"
+
 msgid "Is favorite"
 msgstr "Ist Favorit"
 
@@ -2868,6 +2886,9 @@ msgstr "Ist kein Änderungsantrag"
 
 msgid "Is not archived"
 msgstr "Ist nicht archiviert"
+
+msgid "Is not external"
+msgstr "Ist nicht extern"
 
 msgid "Is not favorite"
 msgstr "Ist kein Favorit"
@@ -3038,6 +3059,9 @@ msgstr "Redelisten"
 
 msgid "Live conference"
 msgstr "Livekonferenz"
+
+msgid "Live voting enabled"
+msgstr "Live Abstimmung aktivieren"
 
 msgid "Livestream"
 msgstr "Livestream"
@@ -3707,6 +3731,9 @@ msgstr "An"
 msgid "One email was send sucessfully."
 msgstr "Eine E-Mail wurde erfolgreich versandt."
 
+msgid "Only available for nominal voting"
+msgstr "Nur für namentliche Abstimmungen verfügbar"
+
 msgid "Only for internal notes."
 msgstr "Nur für interne Notizen."
 
@@ -3882,6 +3909,12 @@ msgstr "Parallel hochladen"
 msgid "Parent agenda item"
 msgstr "Elternelement in der Tagesordnung"
 
+msgid "Parent committee"
+msgstr "Elterngremium"
+
+msgid "Parent committee name"
+msgstr "Elterngremiumname"
+
 msgid "Parent motion text changed"
 msgstr "Antragstext des Hauptantrags geändert"
 
@@ -3893,6 +3926,12 @@ msgstr "Teilnehmer*in"
 
 msgid "Participant added to group {} in meeting {}"
 msgstr "Teilnehmer*in hinzugefügt zur Gruppe {} in Veranstaltung {}"
+
+msgid "Participant added to group {} in meeting {}."
+msgstr "Teilnehmer*in hinzugefügt zur Gruppe {} in Veranstaltung {}."
+
+msgid "Participant added to meeting {}."
+msgstr "Teilnehmer*in hinzugefügt zur Veranstaltung {}."
 
 msgid "Participant added to multiple groups in meeting {}"
 msgstr "Teilnehmer*in hinzugefügt zu mehreren Gruppen in Veranstaltung {}"
@@ -3924,6 +3963,9 @@ msgstr "Teilnehmernummer"
 
 msgid "Participant removed from group {} in meeting {}"
 msgstr "Teilnehmer*in entfernt aus der Gruppe {} in Veranstaltung {}"
+
+msgid "Participant removed from meeting {}"
+msgstr "Teilnehmer*in entfernt aus Veranstaltung {}"
 
 msgid "Participant removed from multiple groups in meeting {}"
 msgstr "Teilnehmer*in entfernt aus mehreren Gruppen in Veranstaltung {}"
@@ -4049,6 +4091,9 @@ msgid "Please update your browser or contact your system administration."
 msgstr ""
 "Bitte aktualisieren Sie Ihren Browser oder kontaktieren Sie Ihre "
 "Systemadministration."
+
+msgid "Please vote now!"
+msgstr "Bitte stimmen Sie jetzt ab!"
 
 msgid "Point of order"
 msgstr "GO-Antrag"
@@ -4546,6 +4591,12 @@ msgstr "Als öffentliche Vorlage setzen"
 msgid "Set category"
 msgstr "Sachgebiet setzen"
 
+msgid "Set external"
+msgstr "Extern-Status setzen"
+
+msgid "Set external status for selected accounts"
+msgstr "Extern-Status für ausgewählte Accounts setzen:"
+
 msgid "Set favorite"
 msgstr "Favorit markieren"
 
@@ -4566,6 +4617,9 @@ msgstr "Intern setzen"
 
 msgid "Set it manually"
 msgstr "manuell setzen"
+
+msgid "Set live voting enabled by default"
+msgstr "Live Abstimmung als Voreinstellung aktivieren"
 
 msgid "Set lock out ..."
 msgstr "Ausgeschlossen setzen ..."
@@ -4614,6 +4668,9 @@ msgstr "Schlagwörter setzen"
 
 msgid "Set workflow"
 msgstr "Arbeitsablauf setzen"
+
+msgid "Set/remove home committee"
+msgstr "Heimatgremium setzen/entfernen"
 
 msgid "Set/remove meeting"
 msgstr "Veranstaltung setzen/entfernen"
@@ -4883,6 +4940,9 @@ msgstr "Stimmabgabe beenden"
 msgid "Stop waiting"
 msgstr "Nicht länger warten"
 
+msgid "Stop, publish & anonymize"
+msgstr "Beenden, veröffentlichen & anonymisieren"
+
 msgid "Strikethrough"
 msgstr "Durchgestrichen"
 
@@ -4897,6 +4957,9 @@ msgstr "Gliederungsebenen erstellt"
 
 msgid "Subcategory"
 msgstr "Untersachgebiet"
+
+msgid "Subcommittees"
+msgstr "Untergremien"
 
 msgid "Submission date"
 msgstr "Einreichungsdatum"
@@ -5170,9 +5233,6 @@ msgstr ""
 "Dieser Account ist nicht als Kandidat*in, Antragsteller*in oder Redner*in in"
 " einer Veranstaltung verlinkt und auch kein Verwalter*in eines Gremiums."
 
-msgid "This action will diminish your organization management level"
-msgstr "Diese Aktion wird Ihre Administrationsrolle beeinträchtigen"
-
 msgid "This action will remove you from one or more groups."
 msgstr "Diese Aktion entfernt Sie aus einer oder mehreren Gruppen."
 
@@ -5282,12 +5342,11 @@ msgstr ""
 "oder entfernt:"
 
 msgid ""
-"This will diminish your ability to do things on the organization level and "
-"you will not be able to revert this yourself."
+"This will add or remove the selected accounts to the selected home "
+"committee:"
 msgstr ""
-"Dadurch wird Ihre Fähigkeit, Dinge auf der Organisationsebene zu tun, "
-"beeinträchtigt. Sie werden nicht in der Lage sein, dies selbst rückgängig zu"
-" machen."
+"Den ausgewählten Accounts wird folgendes Heimatgremium gesetzt oder "
+"entfernt:"
 
 msgid "This will move all selected motions as childs to:"
 msgstr ""
@@ -5577,7 +5636,7 @@ msgid "Voting is currently in progress."
 msgstr "Stimmabgabe läuft aktuell "
 
 msgid "Voting method"
-msgstr "Wahlmethode"
+msgstr "Abstimmungsmethode"
 
 msgid "Voting opened"
 msgstr "Abstimmung eröffnet"
@@ -5650,14 +5709,17 @@ msgstr ""
 "Sie diesen Antrag trotzdem löschen wollen?"
 
 msgid ""
-"Warning: Amendments exist for this motion. Editing this text will likely "
-"impact them negatively. Particularily, amendments might become unusable if "
-"the paragraph they affect is deleted."
+"Warning: Amendments or change recommendations exist for this motion. Editing"
+" this text will likely impact them negatively. Particularily, amendments "
+"might become unusable if the paragraph they affect is deleted, or change "
+"recommendations might lose their reference line completely."
 msgstr ""
-"Warnung: Zu diesem Antrag gibt es Änderungsanträge. Die Bearbeitung dieses "
-"Textes wird sich wahrscheinlich negativ auf diese auswirken. Insbesondere "
-"können Änderungsanträge unbrauchbar werden, wenn der Absatz, auf den sie "
-"referenzieren, gelöscht wird."
+"Warnung: Zu diesem Antrag gibt es Änderungsanträge oder "
+"Änderungsempfehlungen. Die Bearbeitung dieses Textes wird sich "
+"wahrscheinlich negativ auf diese auswirken. Insbesondere können "
+"Änderungsanträge unbrauchbar werden, wenn der Absatz, auf den sie "
+"referenzieren, gelöscht wird, oder Änderungsempfehlungen können den Bezug "
+"auf die geänderten Zeilen verlieren."
 
 msgid ""
 "Warning: At least one of the selected motions has amendments, these will be "
@@ -5973,6 +6035,10 @@ msgstr "hat dich zu einem Schachspiel herausgefordert!"
 msgid "change recommendation"
 msgstr "Änderungsempfehlung"
 
+msgid "change recommendation(s) refer to a nonexistent line number."
+msgstr ""
+"Änderungsempfehlung(en) beziehen sich auf nicht-existierende Zeile(n)."
+
 msgid "change recommendations"
 msgstr "Änderungsempfehlungen"
 
@@ -6030,6 +6096,9 @@ msgstr "beendet"
 msgid "example"
 msgstr "Beispiel"
 
+msgid "external"
+msgstr "extern"
+
 msgid "female"
 msgstr "weiblich"
 
@@ -6065,6 +6134,9 @@ msgstr "versteckt"
 
 msgid "inactive"
 msgstr "inaktiv"
+
+msgid "incl. subcommittees"
+msgstr "inkl. Untergremien"
 
 msgid "inline"
 msgstr "innerhalb"
@@ -6111,6 +6183,9 @@ msgstr "Mehrheit"
 msgid "male"
 msgstr "männlich"
 
+msgid "mark amendments as original"
+msgstr "Änderungsanträge als Original markieren"
+
 msgid "max. 32 characters allowed"
 msgstr "max. 32 Zeichen erlaubt"
 
@@ -6144,11 +6219,17 @@ msgstr "nicht-namentlich"
 msgid "none"
 msgstr "aus"
 
+msgid "not external"
+msgstr "nicht extern"
+
 msgid "not specified"
 msgstr "nicht angegeben"
 
 msgid "of"
 msgstr "von"
+
+msgid "of which"
+msgstr "davon"
 
 msgid "of which %num% not permissable"
 msgstr "davon %num% nicht zulässig"
@@ -6231,6 +6312,9 @@ msgstr "bis"
 msgid "today"
 msgstr "heute"
 
+msgid "total"
+msgstr "insgesamt"
+
 msgid "undocumented"
 msgstr "nicht erfasst"
 
@@ -6260,6 +6344,9 @@ msgstr "werden importiert"
 
 msgid "will be updated"
 msgstr "werden aktualisiert"
+
+msgid "with"
+msgstr "mit"
 
 msgid "without identifier"
 msgstr "ohne Bezeichner"

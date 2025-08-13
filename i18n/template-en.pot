@@ -36,11 +36,6 @@ msgstr ""
 msgid "<unknown>"
 msgstr ""
 
-msgid ""
-"A change recommendation or amendment is probably referring to a non-existant "
-"line number."
-msgstr ""
-
 msgid "A client error occurred. Please contact your system administrator."
 msgstr ""
 
@@ -88,9 +83,6 @@ msgstr ""
 msgid "Access data (PDF)"
 msgstr ""
 
-msgid "Access groups"
-msgstr ""
-
 msgid ""
 "Access only possible for participants of this meeting. All other accounts "
 "(including organization and committee admins) may not open the closed "
@@ -104,6 +96,9 @@ msgid "Account"
 msgstr ""
 
 msgid "Account admin"
+msgstr ""
+
+msgid "Account created"
 msgstr ""
 
 msgid "Account successfully added."
@@ -352,6 +347,9 @@ msgid "Allow verbose error messages for reset password process"
 msgstr ""
 
 msgid "Allowed access groups for this directory"
+msgstr ""
+
+msgid "Allows single votes projection during voting process"
 msgstr ""
 
 msgid "Always"
@@ -673,6 +671,10 @@ msgid ""
 "Attention: Accounts will add to the default group of each meeting only. If "
 "another group is intended please use the 'Add to meetings' dialog in account "
 "detail view."
+msgstr ""
+
+msgid ""
+"Attention: Existing home committees and external status will be overwritten."
 msgstr ""
 
 msgid "Attention: First enter the wifi data in [Settings > General]"
@@ -1571,13 +1573,13 @@ msgstr ""
 msgid "Default visibility for new agenda items (except topics)"
 msgstr ""
 
-msgid "Default vote method"
-msgstr ""
-
 msgid "Default vote weight"
 msgstr ""
 
 msgid "Default voting duration"
+msgstr ""
+
+msgid "Default voting method"
 msgstr ""
 
 msgid "Default voting type"
@@ -1841,6 +1843,9 @@ msgstr ""
 msgid "Election documents"
 msgstr ""
 
+msgid "Election method"
+msgstr ""
+
 msgid "Elections"
 msgstr ""
 
@@ -2084,6 +2089,9 @@ msgstr ""
 msgid "Extension"
 msgstr ""
 
+msgid "External"
+msgstr ""
+
 msgid "External ID"
 msgstr ""
 
@@ -2286,6 +2294,9 @@ msgstr ""
 msgid "Has SSO identification"
 msgstr ""
 
+msgid "Has a home committee"
+msgstr ""
+
 msgid "Has a membership number"
 msgstr ""
 
@@ -2314,6 +2325,9 @@ msgid "Has no SSO identification"
 msgstr ""
 
 msgid "Has no email address"
+msgstr ""
+
+msgid "Has no home committee"
 msgstr ""
 
 msgid "Has no identical motions"
@@ -2406,6 +2420,9 @@ msgstr ""
 msgid "Home"
 msgstr ""
 
+msgid "Home committee"
+msgstr ""
+
 msgid "How to create new amendments"
 msgstr ""
 
@@ -2431,9 +2448,7 @@ msgstr ""
 msgid "If deactivated it is displayed below the title."
 msgstr ""
 
-msgid ""
-"If it is an amendment, you can back up its content when editing it and "
-"delete it afterwards."
+msgid "If empty, everyone can access."
 msgstr ""
 
 msgid "If the value is set to 0 the time counts up as stopwatch."
@@ -2493,6 +2508,9 @@ msgid "Inactive"
 msgstr ""
 
 msgid "Inconsistent data."
+msgstr ""
+
+msgid "Inconsistent data. Please delete this change recommendation."
 msgstr ""
 
 msgid "Information"
@@ -2599,6 +2617,9 @@ msgstr ""
 msgid "Is committee admin"
 msgstr ""
 
+msgid "Is external"
+msgstr ""
+
 msgid "Is favorite"
 msgstr ""
 
@@ -2633,6 +2654,9 @@ msgid "Is not an amendment"
 msgstr ""
 
 msgid "Is not archived"
+msgstr ""
+
+msgid "Is not external"
 msgstr ""
 
 msgid "Is not favorite"
@@ -2796,6 +2820,9 @@ msgid "Lists of speakers"
 msgstr ""
 
 msgid "Live conference"
+msgstr ""
+
+msgid "Live voting enabled"
 msgstr ""
 
 msgid "Livestream"
@@ -3445,6 +3472,9 @@ msgstr ""
 msgid "One email was send sucessfully."
 msgstr ""
 
+msgid "Only available for nominal voting"
+msgstr ""
+
 msgid "Only for internal notes."
 msgstr ""
 
@@ -3615,6 +3645,12 @@ msgstr ""
 msgid "Parent agenda item"
 msgstr ""
 
+msgid "Parent committee"
+msgstr ""
+
+msgid "Parent committee name"
+msgstr ""
+
 msgid "Parent motion text changed"
 msgstr ""
 
@@ -3625,6 +3661,12 @@ msgid "Participant"
 msgstr ""
 
 msgid "Participant added to group {} in meeting {}"
+msgstr ""
+
+msgid "Participant added to group {} in meeting {}."
+msgstr ""
+
+msgid "Participant added to meeting {}."
 msgstr ""
 
 msgid "Participant added to multiple groups in meeting {}"
@@ -3655,6 +3697,9 @@ msgid "Participant number"
 msgstr ""
 
 msgid "Participant removed from group {} in meeting {}"
+msgstr ""
+
+msgid "Participant removed from meeting {}"
 msgstr ""
 
 msgid "Participant removed from multiple groups in meeting {}"
@@ -3770,6 +3815,9 @@ msgid ""
 msgstr ""
 
 msgid "Please update your browser or contact your system administration."
+msgstr ""
+
+msgid "Please vote now!"
 msgstr ""
 
 msgid "Point of order"
@@ -4256,6 +4304,12 @@ msgstr ""
 msgid "Set category"
 msgstr ""
 
+msgid "Set external"
+msgstr ""
+
+msgid "Set external status for selected accounts"
+msgstr ""
+
 msgid "Set favorite"
 msgstr ""
 
@@ -4275,6 +4329,9 @@ msgid "Set internal"
 msgstr ""
 
 msgid "Set it manually"
+msgstr ""
+
+msgid "Set live voting enabled by default"
 msgstr ""
 
 msgid "Set lock out ..."
@@ -4323,6 +4380,9 @@ msgid "Set tags"
 msgstr ""
 
 msgid "Set workflow"
+msgstr ""
+
+msgid "Set/remove home committee"
 msgstr ""
 
 msgid "Set/remove meeting"
@@ -4579,6 +4639,9 @@ msgstr ""
 msgid "Stop waiting"
 msgstr ""
 
+msgid "Stop, publish & anonymize"
+msgstr ""
+
 msgid "Strikethrough"
 msgstr ""
 
@@ -4592,6 +4655,9 @@ msgid "Structure levels created"
 msgstr ""
 
 msgid "Subcategory"
+msgstr ""
+
+msgid "Subcommittees"
 msgstr ""
 
 msgid "Submission date"
@@ -4841,9 +4907,6 @@ msgid ""
 "and is not manager of any committee"
 msgstr ""
 
-msgid "This action will diminish your organization management level"
-msgstr ""
-
 msgid "This action will remove you from one or more groups."
 msgstr ""
 
@@ -4933,8 +4996,7 @@ msgid "This will add or remove the selected accounts to following meetings:"
 msgstr ""
 
 msgid ""
-"This will diminish your ability to do things on the organization level and "
-"you will not be able to revert this yourself."
+"This will add or remove the selected accounts to the selected home committee:"
 msgstr ""
 
 msgid "This will move all selected motions as childs to:"
@@ -5278,9 +5340,10 @@ msgid ""
 msgstr ""
 
 msgid ""
-"Warning: Amendments exist for this motion. Editing this text will likely "
-"impact them negatively. Particularily, amendments might become unusable if "
-"the paragraph they affect is deleted."
+"Warning: Amendments or change recommendations exist for this motion. Editing "
+"this text will likely impact them negatively. Particularily, amendments "
+"might become unusable if the paragraph they affect is deleted, or change "
+"recommendations might lose their reference line completely."
 msgstr ""
 
 msgid ""
@@ -5562,6 +5625,9 @@ msgstr ""
 msgid "change recommendation"
 msgstr ""
 
+msgid "change recommendation(s) refer to a nonexistent line number."
+msgstr ""
+
 msgid "change recommendations"
 msgstr ""
 
@@ -5619,6 +5685,9 @@ msgstr ""
 msgid "example"
 msgstr ""
 
+msgid "external"
+msgstr ""
+
 msgid "female"
 msgstr ""
 
@@ -5653,6 +5722,9 @@ msgid "hidden"
 msgstr ""
 
 msgid "inactive"
+msgstr ""
+
+msgid "incl. subcommittees"
 msgstr ""
 
 msgid "inline"
@@ -5700,6 +5772,9 @@ msgstr ""
 msgid "male"
 msgstr ""
 
+msgid "mark amendments as original"
+msgstr ""
+
 msgid "max. 32 characters allowed"
 msgstr ""
 
@@ -5733,10 +5808,16 @@ msgstr ""
 msgid "none"
 msgstr ""
 
+msgid "not external"
+msgstr ""
+
 msgid "not specified"
 msgstr ""
 
 msgid "of"
+msgstr ""
+
+msgid "of which"
 msgstr ""
 
 msgid "of which %num% not permissable"
@@ -5820,6 +5901,9 @@ msgstr ""
 msgid "today"
 msgstr ""
 
+msgid "total"
+msgstr ""
+
 msgid "undocumented"
 msgstr ""
 
@@ -5848,6 +5932,9 @@ msgid "will be imported"
 msgstr ""
 
 msgid "will be updated"
+msgstr ""
+
+msgid "with"
 msgstr ""
 
 msgid "without identifier"
