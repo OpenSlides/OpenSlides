@@ -27,6 +27,8 @@ or access the full stack on
 
     $ https://localhost:8000
 
+Login as admin with ´admin´ as both username and password.
+
 ## Running tests
 
 To run all tests of all services, execute `run-service-tests`.
