@@ -18,7 +18,7 @@ Parameters:
 
 Flags:
     no-cache        : Prevents use of cache when building docker images
-    no-capsule      : Prevents encapsulation of docker build output
+    capsule         : Enables encapsulation of docker build output
 
 Available dev functions:
     dev             : Builds and starts development images
@@ -74,11 +74,11 @@ build()
     # Build all submodules
     if [ "$SERVICE_FOLDER" = "" ]
     then
-        if [ -n "$NO_CAPSULE" ]
+        if [ -n "$CAPSULE" ]
         then
-            dev/scripts/makefile/build-all-submodules.sh dev $BUILD_ARGS
-        else
             build_capsuled "dev/scripts/makefile/build-all-submodules.sh dev $BUILD_ARGS"
+        else
+            dev/scripts/makefile/build-all-submodules.sh dev $BUILD_ARGS
         fi
         return
     fi
@@ -87,11 +87,11 @@ build()
     (
         cd "$SERVICE_FOLDER" || abort 1
 
-        if [ -n "$NO_CAPSULE" ]
+        if [ -n "$CAPSULE" ]
         then
-            make build-dev ARGS=$BUILD_ARGS
-        else
             build_capsuled "make build-dev ARGS=$BUILD_ARGS"
+        else
+            make build-dev ARGS=$BUILD_ARGS
         fi
     )
 }
@@ -218,7 +218,7 @@ TEMP_SERVICE=$SERVICE
 for CMD in $TEMP_SERVICE; do
     case "$CMD" in
         "no-cache")     NO_CACHE=true ;;
-        "no-capsule")   NO_CAPSULE=true ;;
+        "capsule")      CAPSULE=true ;;
         *)              SERVICE="$CMD" ;;
     esac
 done
