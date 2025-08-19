@@ -215,6 +215,7 @@ ARGS=$3
 # SERVICE contains all additionally provided make targets. This may include flags
 # Extract flags here
 TEMP_SERVICE=$SERVICE
+SERVICE=""
 for CMD in $TEMP_SERVICE; do
     case "$CMD" in
         "no-cache")     NO_CACHE=true ;;
