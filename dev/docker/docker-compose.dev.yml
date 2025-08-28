@@ -179,9 +179,9 @@ services:
     volumes:
       - ../../openslides-projector-service/cmd:/root/openslides-projector-service/cmd
       - ../../openslides-projector-service/pkg:/root/openslides-projector-service/pkg
-      - ../../openslides-projector-service/locale:/root/locale
-      - ../../openslides-projector-service/templates:/root/templates
-      - ../../openslides-projector-service/static:/root/static
+      - ../../openslides-projector-service/locale:/root/openslides-projector-service/locale
+      - ../../openslides-projector-service/templates:/root/openslides-projector-service/templates
+      - ../../openslides-projector-service/web:/root/openslides-projector-service/web
       - ../../lib/openslides-go:/root/lib/openslides-go
       - ./workspaces/projector.work:/root/go.work
     ports:
