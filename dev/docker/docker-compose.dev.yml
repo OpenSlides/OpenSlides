@@ -63,6 +63,7 @@ services:
     volumes:
       - ../../openslides-client/client/src:/app/src
       - ../../openslides-client/client/cli:/app/cli
+      - ../../openslides-client/packages/openslides-motion-diff/src:/packages/openslides-motion-diff/src
 
   backend:
     build:
@@ -115,11 +116,11 @@ services:
       - OPENSLIDES_DEVELOPMENT=1
       - DATASTORE_TIMEOUT=30
     volumes:
-      - ../../openslides-autoupdate-service/cmd:/root/openslides-autoupdate-service/cmd
-      - ../../openslides-autoupdate-service/internal:/root/openslides-autoupdate-service/internal
-      - ../../openslides-autoupdate-service/pkg:/root/openslides-autoupdate-service/pkg
-      - ../../lib/openslides-go:/root/lib/openslides-go
-      - ./workspaces/autoupdate.work:/root/go.work
+      - ../../openslides-autoupdate-service/cmd:/app/openslides-autoupdate-service/cmd
+      - ../../openslides-autoupdate-service/internal:/app/openslides-autoupdate-service/internal
+      - ../../openslides-autoupdate-service/pkg:/app/openslides-autoupdate-service/pkg
+      - ../../lib/openslides-go:/app/lib/openslides-go
+      - ./workspaces/autoupdate.work:/app/go.work
     ports:
       - "9012:9012"
 
@@ -138,10 +139,10 @@ services:
     environment:
       - OPENSLIDES_DEVELOPMENT=1
     volumes:
-      - ../../openslides-icc-service/cmd:/root/openslides-icc-service/cmd
-      - ../../openslides-icc-service/internal:/root/openslides-icc-service/internal
-      - ../../lib/openslides-go:/root/lib/openslides-go
-      - ./workspaces/icc.work:/root/go.work
+      - ../../openslides-icc-service/cmd:/app/openslides-icc-service/cmd
+      - ../../openslides-icc-service/internal:/app/openslides-icc-service/internal
+      - ../../lib/openslides-go:/app/lib/openslides-go
+      - ./workspaces/icc.work:/app/go.work
     ports:
       - "9007:9007"
 
@@ -160,10 +161,10 @@ services:
     environment:
       - OPENSLIDES_DEVELOPMENT=1
     volumes:
-      - ../../openslides-search-service/cmd:/root/openslides-search-service/cmd
-      - ../../openslides-search-service/pkg:/root/openslides-search-service/pkg
-      - ../../lib/openslides-go:/root/lib/openslides-go
-      - ./workspaces/search.work:/root/go.work
+      - ../../openslides-search-service/cmd:/app/openslides-search-service/cmd
+      - ../../openslides-search-service/pkg:/app/openslides-search-service/pkg
+      - ../../lib/openslides-go:/app/lib/openslides-go
+      - ./workspaces/search.work:/app/go.work
     ports:
       - "9050:9050"
 
@@ -260,9 +261,9 @@ services:
       - OPENSLIDES_DEVELOPMENT=1
       - VOTE_DISABLE_LOG=true
     volumes:
-      - ../../openslides-vote-service/cmd:/root/openslides-vote-service/cmd
-      - ../../openslides-vote-service/internal:/root/openslides-vote-service/internal
-      - ../../lib/openslides-go:/root/lib/openslides-go
-      - ./workspaces/vote.work:/root/go.work
+      - ../../openslides-vote-service/cmd:/app/openslides-vote-service/cmd
+      - ../../openslides-vote-service/internal:/app/openslides-vote-service/internal
+      - ../../lib/openslides-go:/app/lib/openslides-go
+      - ./workspaces/vote.work:/app/go.work
     ports:
       - "9013:9013"

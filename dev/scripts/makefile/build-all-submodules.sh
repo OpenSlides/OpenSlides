@@ -38,6 +38,7 @@ for DIR in $(git submodule foreach --recursive -q sh -c pwd); do
 
     # Execute test
     info " --- Building service ${SUBMODULE} for context ${CONTEXT} --- " && \
-    echocmd make build-"${CONTEXT}" ARGS="$ARGS"
+    echocmd make build-"${CONTEXT}" ARGS="$ARGS" \
+    &
 done
 wait
