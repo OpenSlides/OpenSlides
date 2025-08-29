@@ -24,16 +24,22 @@ else
 fi
 
 ask() {
-  local default_reply="$1" reply_opt="[y/N]" blank="y" REPLY=
-  shift; [[ "$default_reply" != y ]] || {
-    reply_opt="[Y/n]"; blank=""
+  printf "\n"
+  local DEFAULT_REPLY="$1" REPLY_OPT="[y/N]" BLANK="y" REPLY=
+  shift; [[ "$DEFAULT_REPLY" != y ]] || {
+    REPLY_OPT="[Y/n]"; BLANK=""
   }
 
-  read -rp "$* $reply_opt: "
+  read -rp "$* $REPLY_OPT: "
   case "$REPLY" in
-    Y|y|Yes|yes|YES|"$blank") return 0 ;;
+    Y|y|Yes|yes|YES|"$BLANK") return 0 ;;
     *) return 1 ;;
   esac
+}
+
+input(){
+  read -rp "$*: "
+  echo "$REPLY"
 }
 
 # echocmd first echos args in blue on stderr. Then args are treated like a
@@ -88,4 +94,107 @@ shout() {
     echo ""
     echo "${COL_CYAN}========================================================${COL_NORMAL}"
     echo ""
+}
+
+capsule_clear_console()
+{
+    local LINE_COUNT=$1
+    for _ in $(seq 1 "$LINE_COUNT"); do
+        tput el
+        echo ""
+    done
+    tput cuu "$LINE_COUNT"
+}
+
+capsule_error()
+{
+    local PROCESS_ID=$1
+    local LOG=$2
+    local LINE_COUNT=$3
+    if [ -n "$PROCESS_ID" ] && kill -0 "$PROCESS_ID" 2>/dev/null; then
+        kill "$PROCESS_ID" 2>/dev/null
+        wait "$PROCESS_ID"
+    fi
+
+    rm -f "$LOG"
+    printf "\033[?25h" # Show Cursor
+    exit 1
+}
+
+capsule()
+{
+  # Print command
+  (
+    IFS=$' '
+    echo "${COL_BLUE}$ $*${COL_NORMAL}" >&2
+  )
+
+  # Setup
+  LOG=$(mktemp)
+  LINE_COUNT=15
+  CLEAR_COUNT=$((LINE_COUNT + 10))
+
+  printf "\033[?25l" # Hide Cursor
+
+  # Safe Exit
+  trap 'tput rc && capsule_clear_console "$CLEAR_COUNT" && capsule_error "$PROCESS_ID" "$LOG" "$CLEAR_COUNT"' INT TERM
+
+  # Reserve Console lines
+  for _ in $(seq 1 "$CLEAR_COUNT"); do
+    echo ""
+  done
+  tput cuu "$CLEAR_COUNT"
+  tput sc
+
+  # Run build in background and log output
+  $* > "$LOG" 2>&1 &
+
+  PROCESS_ID=$!
+
+  # Pipe output of process to user console continuously
+  while ps -p "$PROCESS_ID" >/dev/null; do
+      # Return cursor
+      tput rc
+
+      # Get outpute lines
+      mapfile -t lines < <(tail -n "$LINE_COUNT" "$LOG")
+
+      # Print empty or log lines
+      for ((i = 0; i < "$CLEAR_COUNT"; i++)); do
+          tput el
+
+          if (( LINE_COUNT >= CLEAR_COUNT )); then echo "" && continue; fi
+
+          if [ "$i" -lt ${#lines[@]} ]
+          then
+              echo "${lines[$i]}"
+          else
+              echo ""
+          fi
+      done
+
+      sleep 0.25
+  done
+
+  # Wait for process to finish
+  wait "$PROCESS_ID"
+  EXIT_CODE="$?"
+
+  # Clear progress
+  tput rc
+  capsule_clear_console "$CLEAR_COUNT"
+
+  # Printe entire output on error
+  if [ $EXIT_CODE != 0 ]
+  then
+      error "Command '$*' failed!"
+      cat "$LOG"
+  fi
+
+  # Delete log file
+  rm -f "$LOG"
+
+  printf "\033[?25h" # Show Cursor
+
+  return "$EXIT_CODE"
 }

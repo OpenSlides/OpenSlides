@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 # Import OpenSlides utils package
 . "$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )/../util.sh"
 
@@ -18,7 +20,8 @@ if [ "${CONTEXT}" != "prod" ] && [ "${CONTEXT}" != "dev" ] && [ "${CONTEXT}" != 
     export CONTEXT="prod"
 fi
 
-export SINGLE_TARGET=$2
+info "Building image(s) for context $CONTEXT"
+export ARGS=$2
 
 IFS=$'\n'
 for DIR in $(git submodule foreach --recursive -q sh -c pwd); do
@@ -31,13 +34,11 @@ for DIR in $(git submodule foreach --recursive -q sh -c pwd); do
     export SUBMODULE && \
 
     if [ "$SUBMODULE" == 'meta' ]; then continue; fi && \
-
-    # Check for single target
-    if [ $# -eq 2 ]; then if [[ "$SINGLE_TARGET" != "$SUBMODULE" ]]; then continue; fi; fi && \
+    if [ "$SUBMODULE" == 'go' ]; then continue; fi && \
 
     # Execute test
     info " --- Building service ${SUBMODULE} for context ${CONTEXT} --- " && \
-    echocmd make build-"${CONTEXT}" \
+    echocmd make build-"${CONTEXT}" ARGS="$ARGS" \
     &
 done
 wait
