@@ -25,7 +25,7 @@ fetch_merge_push() {
     local GIT_FETCH
 
     local ERROR=0
-    git merge "$SOURCE"/"$BRANCH" || local ERROR=1
+    git merge --no-edit "$SOURCE"/"$BRANCH" || local ERROR=1
 
     if [ "$SOURCE" == 'origin' ]; then return; fi
 
@@ -37,7 +37,7 @@ update_meta(){
     if [ -d "meta" ]
     then
         (
-            cd meta || exit
+            cd meta || exit 1
             (fetch_merge_push meta origin)
         )
     fi
@@ -46,19 +46,19 @@ update_meta(){
 IFS=$'\n'
 for DIR in $(git submodule foreach --recursive -q sh -c pwd); do
     # Extract submodule name
-    cd "$DIR" || exit && \
+    cd "$DIR" || exit 1
 
-    DIRNAME=${PWD##*/} && \
-    SUBMODULE=${DIRNAME//"openslides-"} && \
+    DIRNAME=${PWD##*/}
+    SUBMODULE=${DIRNAME//"openslides-"}
 
-    if [ "$SUBMODULE" == 'go' ]; then continue; fi && \
-    if [ "$SUBMODULE" == 'meta' ]; then continue; fi && \
+    if [ "$SUBMODULE" == 'go' ]; then continue; fi
+    if [ "$SUBMODULE" == 'meta' ]; then continue; fi
 
     # Check for single target
-    if [ -n "$SINGLE_TARGET" ] && [ "$SINGLE_TARGET" != "$SUBMODULE" ]; then continue; fi && \
+    if [ -n "$SINGLE_TARGET" ] && [ "$SINGLE_TARGET" != "$SUBMODULE" ]; then continue; fi
 
     # Recursively Update Meta too
-    update_meta && \
+    update_meta
 
     # Git commit
     fetch_merge_push "${SUBMODULE}" "${SOURCE_REPOSITORY}" "${SOURCE_BRANCH}"
