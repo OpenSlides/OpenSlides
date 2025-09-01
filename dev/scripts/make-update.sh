@@ -680,13 +680,22 @@ make_stable_update() {
       abort 1
   }
 
+  info 'First, the main repo is merged (but not yet committed) to ensure that all tools and'
+  info 'configurations for the releases in the submodules are up to date.'
+  merge_stable_branch
+
   merge_stable_branch_meta
   # go needs to be pushed early ...
   merge_stable_branch_go
   push_changes lib/openslides-go
   # ... in order to be able to add it now in depending services
   merge_stable_branch_services
-  merge_stable_branch
+
+  info 'Add the new stable commits of the submodules to the open merge in the main repo.'
+  for mod in $(git -C . submodule status | awk '{print $2}'); do
+    echocmd git -C . add "$mod"
+  done
+
   commit_staged_changes
 
   check_meta_consistency && check_go_consistency || {
