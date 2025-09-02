@@ -22,18 +22,18 @@ checkout "${BRANCH}"
 IFS=$'\n'
 for DIR in $(git submodule foreach --recursive -q sh -c pwd); do
     # Extract submodule name
-    cd "$DIR" || exit && \
+    cd "$DIR" || exit 1
 
-    DIRNAME=${PWD##*/} && \
-    export DIRNAME && \
-    SUBMODULE=${DIRNAME//"openslides-"} && \
-    export SUBMODULE && \
+    DIRNAME=${PWD##*/}
+    export DIRNAME
+    SUBMODULE=${DIRNAME//"openslides-"}
+    export SUBMODULE
 
-    if [ "$SUBMODULE" == 'go' ]; then continue; fi && \
-    if [ "$SUBMODULE" == 'meta' ]; then continue; fi && \
+    if [ "$SUBMODULE" == 'go' ]; then continue; fi
+    if [ "$SUBMODULE" == 'meta' ]; then continue; fi
 
     # Check for single target
-    if [ $# -eq 2 ]; then if [[ "$SINGLE_TARGET" != "$SUBMODULE" ]]; then continue; fi; fi && \
+    if [ $# -eq 2 ]; then if [[ "$SINGLE_TARGET" != "$SUBMODULE" ]]; then continue; fi; fi
 
     # Git checkout
     checkout "${BRANCH}"

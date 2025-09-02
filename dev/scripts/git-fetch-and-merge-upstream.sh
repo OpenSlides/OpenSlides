@@ -3,23 +3,29 @@
 # Import OpenSlides utils package
 . "$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )/util.sh"
 
-# Fetches and merges all submodules with their respective upstream/main repositories.
+# Fetches and merges all submodules with their respective SOURCE_REPOSITORY/SOURCE_BRANCH repositories. Default is upstream/main
 
-export SINGLE_TARGET=$1
+SOURCE_REPOSITORY=$1
+SOURCE_BRANCH=$2
+SINGLE_TARGET=$3
+
+if [ -z "$SOURCE_REPOSITORY" ]; then SOURCE_REPOSITORY="upstream"; fi
+if [ -z "$SOURCE_BRANCH" ]; then SOURCE_BRANCH="main"; fi
 
 fetch_merge_push() {
-    export SUBMODULE=$1
-    export SOURCE=$2
+    local SUBMODULE=$1
+    local SOURCE=$2
+    local BRANCH=$3
 
     info "Fetch & merge for ${SUBMODULE} "
 
     GIT_UPDATE=$(git remote update "$SOURCE")
-    export GIT_UPDATE
+    local GIT_UPDATE
     GIT_FETCH=$(git fetch "$SOURCE")
-    export GIT_FETCH
+    local GIT_FETCH
 
-    export ERROR=0
-    git merge "$SOURCE"/main || export ERROR=1
+    local ERROR=0
+    git merge --no-edit "$SOURCE"/"$BRANCH" || local ERROR=1
 
     if [ "$SOURCE" == 'origin' ]; then return; fi
 
@@ -31,7 +37,7 @@ update_meta(){
     if [ -d "meta" ]
     then
         (
-            cd meta || exit
+            cd meta || exit 1
             (fetch_merge_push meta origin)
         )
     fi
@@ -40,27 +46,21 @@ update_meta(){
 IFS=$'\n'
 for DIR in $(git submodule foreach --recursive -q sh -c pwd); do
     # Extract submodule name
-    cd "$DIR" || exit && \
+    cd "$DIR" || exit 1
 
-    DIRNAME=${PWD##*/} && \
-    export DIRNAME && \
-    SUBMODULE=${DIRNAME//"openslides-"} && \
-    export SUBMODULE && \
+    DIRNAME=${PWD##*/}
+    SUBMODULE=${DIRNAME//"openslides-"}
 
-    if [ "$SUBMODULE" == 'go' ]; then continue; fi && \
-    if [ "$SUBMODULE" == 'meta' ]; then continue; fi && \
+    if [ "$SUBMODULE" == 'go' ]; then continue; fi
+    if [ "$SUBMODULE" == 'meta' ]; then continue; fi
 
     # Check for single target
-    if [ $# -eq 2 ]; then if [[ "$SINGLE_TARGET" != "$SUBMODULE" ]]; then continue; fi; fi && \
+    if [ -n "$SINGLE_TARGET" ] && [ "$SINGLE_TARGET" != "$SUBMODULE" ]; then continue; fi
 
     # Recursively Update Meta too
-    update_meta && \
+    update_meta
 
     # Git commit
-    fetch_merge_push "${SUBMODULE}" upstream
+    fetch_merge_push "${SUBMODULE}" "${SOURCE_REPOSITORY}" "${SOURCE_BRANCH}"
 done
 wait
-
-git remote update upstream
-git fetch upstream
-git merge upstream/main
