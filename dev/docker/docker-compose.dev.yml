@@ -1,34 +1,5 @@
 version: "3"
 services:
-  datastore-reader:
-    image: openslides-datastore-reader-dev
-    depends_on:
-      - postgres
-    env_file: services.env
-    environment:
-      - NUM_WORKERS=8
-      - OPENSLIDES_DEVELOPMENT=1
-    volumes:
-      - ../../openslides-datastore-service/datastore:/app/datastore
-    ports:
-      - 9010:9010
-      - 5680:5678
-
-  datastore-writer:
-    image: openslides-datastore-writer-dev
-    depends_on:
-      - postgres
-      - redis
-    env_file: services.env
-    volumes:
-      - ../../openslides-datastore-service/datastore:/app/datastore
-      - ../../openslides-datastore-service/cli:/app/cli
-    environment:
-      - OPENSLIDES_DEVELOPMENT=1
-    ports:
-      - 9011:9011
-      - 5679:5678
-
   postgres:
     image: postgres:15
     environment:
@@ -48,8 +19,6 @@ services:
   backend:
     image: openslides-backend-dev
     depends_on:
-      - datastore-reader
-      - datastore-writer
       - auth
     env_file: services.env
     ports:
@@ -79,7 +48,6 @@ services:
   autoupdate:
     image: openslides-autoupdate-dev
     depends_on:
-      - datastore-reader
       - redis
     env_file: services.env
     environment:
@@ -97,7 +65,6 @@ services:
   icc:
     image: openslides-icc-dev
     depends_on:
-      - datastore-reader
       - redis
       - auth
     env_file: services.env
@@ -131,7 +98,6 @@ services:
   auth:
     image: openslides-auth-dev
     depends_on:
-      - datastore-reader
       - redis
     env_file: services.env
     environment:
@@ -156,7 +122,6 @@ services:
     image: openslides-manage-dev
     depends_on:
       - auth
-      - datastore-writer
     env_file: services.env
     environment:
       - OPENSLIDES_DEVELOPMENT=1
@@ -189,7 +154,6 @@ services:
     depends_on:
       - auth
       - redis
-      - datastore-reader
       - postgres
     env_file: services.env
     environment:
