@@ -8,6 +8,13 @@
 export BRANCH=$1
 export SINGLE_TARGET=$2
 
+checkout_main() {
+    cd meta || exit 1
+
+    git checkout main
+    git pull
+}
+
 checkout() {
     export BRANCH=$1
 
@@ -15,6 +22,8 @@ checkout() {
     if ! $(echo "$HEADS" | grep -q "refs/heads/$BRANCH"); then error "$BRANCH does not exist" && exit 1; fi
 
     echocmd git switch "$BRANCH"
+
+    if [ -d "meta" ]; then checkout_main; fi
 }
 
 checkout "${BRANCH}"
