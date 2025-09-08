@@ -193,11 +193,11 @@ stop()
     info "Stop running container"
     if [ "$SERVICE_FOLDER" = "" ]
     then
-        # Compose
+        # Compose in particular service folder with docker compose file
         echocmd eval "$DC down --volumes --remove-orphans"
     elif [ -n "$COMPOSE_FILE" ]
     then
-        # Compose
+        # Compose main
         echocmd eval "$DC down $CLOSE_VOLUMES"
     else
         # Single Container
