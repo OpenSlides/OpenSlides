@@ -6,39 +6,35 @@ set -e
 . "$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )/../util.sh"
 
 # Iterates all submodules and executes the make-target 'build-aio' using parameter context as build target
-# Ignores meta directory
+# Ignores meta and openslides-go directory
 
-# Parameter #1: Name of a submodule. If given, this function will exclusively build the given submodule and ignore all others
-
-# This script runs a command in every registered submodule parallel
-# Credits go to https://stackoverflow.com/a/70418086
 
 export CONTEXT=$1
+shift 1
+export ARGS="${@}"
 
 if [ "${CONTEXT}" != "prod" ] && [ "${CONTEXT}" != "dev" ] && [ "${CONTEXT}" != "tests" ]; then
-    warn "No build context specified. Building for prod per default." >&2
+    warn "No build context specified. Building for prod per default."
     export CONTEXT="prod"
 fi
 
 info "Building image(s) for context $CONTEXT"
-export ARGS=$2
 
-IFS=$'\n'
-for DIR in $(git submodule foreach --recursive -q sh -c pwd); do
-   # Extract submodule name
-    cd "$DIR" || exit && \
 
-    DIRNAME=${PWD##*/} && \
-    export DIRNAME && \
-    SUBMODULE=${DIRNAME//"openslides-"} && \
-    export SUBMODULE && \
+# Andere art des loops
+while read -r toplevel sm_path name; do
+# Extract submodule name
+  {
+    DIR="$toplevel/$sm_path"
 
-    if [ "$SUBMODULE" == 'meta' ]; then continue; fi && \
-    if [ "$SUBMODULE" == 'go' ]; then continue; fi && \
+    [[ "$name" == 'openslides-go' ]] && continue
+    [[ "$name" == 'openslides-meta' ]] && continue
 
     # Execute test
-    info " --- Building service ${SUBMODULE} for context ${CONTEXT} --- " && \
-    echocmd make build-"${CONTEXT}" ARGS="$ARGS" \
-    &
-done
+    echo " --- Building service ${SUBMODULE} for context ${CONTEXT} --- "
+
+    echo "end sleep"
+    echocmd make -C $DIR build-"${CONTEXT}" ARGS="$ARGS"
+  } &
+done <<< "$(git submodule foreach --recursive -q 'echo "$toplevel $sm_path $name"')"
 wait

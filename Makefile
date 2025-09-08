@@ -12,7 +12,7 @@ override DOCKER_COMPOSE_FILE=$(DOCKER_PATH)/docker-compose.dev.yml
 
 build-prod build-dev build-tests:
 	sed -i "1s/.*/$(GO_VERSION)/" $(DOCKER_PATH)/workspaces/*.work
-	bash $(MAKEFILE_PATH)/make-build-main.sh $@
+	bash $(MAKEFILE_PATH)/make-build-main.sh "$(ARGS)"
 
 # Development
 .SERVICE_TARGETS := auth autoupdate backend client datastore icc manage media proxy search vote
