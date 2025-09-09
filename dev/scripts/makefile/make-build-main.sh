@@ -3,7 +3,7 @@
 set -e
 
 # Import OpenSlides utils package
-. "$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )/../util.sh"
+. "$(dirname "$0")/../util.sh"
 
 # Used in Makefile Targets of the main repository to build images for a specific context
 help ()
@@ -25,7 +25,7 @@ Available dev functions:
 # Setup
 TARGET=$1
 
-LOCAL_PWD=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+LOCAL_PWD=$(dirname "$0")
 PREFIX="build-"
 FUNCTION=${TARGET#"$PREFIX"}
 

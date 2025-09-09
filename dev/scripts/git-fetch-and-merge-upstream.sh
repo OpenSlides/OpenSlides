@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Import OpenSlides utils package
-. "$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )/util.sh"
+. "$(dirname "$0")/util.sh"
 
 # Fetches and merges all submodules with their respective SOURCE_REPOSITORY/SOURCE_BRANCH repositories. Default is upstream/main
 
@@ -43,24 +43,26 @@ update_meta(){
     fi
 }
 
-IFS=$'\n'
-for DIR in $(git submodule foreach --recursive -q sh -c pwd); do
+while read -r toplevel sm_path name; do
+# Extract submodule name
+  {
     # Extract submodule name
-    cd "$DIR" || exit 1
+    DIR="$toplevel/$sm_path"
 
-    DIRNAME=${PWD##*/}
-    SUBMODULE=${DIRNAME//"openslides-"}
-
-    if [ "$SUBMODULE" == 'go' ]; then continue; fi
-    if [ "$SUBMODULE" == 'meta' ]; then continue; fi
+    [[ "$name" == 'openslides-meta' ]] && continue
+    [[ "$name" == 'openslides-go' ]] && continue
 
     # Check for single target
-    if [ -n "$SINGLE_TARGET" ] && [ "$SINGLE_TARGET" != "$SUBMODULE" ]; then continue; fi
+    [[ "$SINGLE_TARGET" != "" ]] && [[ "openslides-$SINGLE_TARGET" != "$name" ]] && continue
 
-    # Recursively Update Meta too
-    update_meta
+    (
+        cd "./$name" || exit 1
+        # Recursively Update Meta too
+        update_meta
 
-    # Git commit
-    fetch_merge_push "${SUBMODULE}" "${SOURCE_REPOSITORY}" "${SOURCE_BRANCH}"
-done
+        # Git commit
+        fetch_merge_push "${name}" "${SOURCE_REPOSITORY}" "${SOURCE_BRANCH}"
+    )
+  }
+done <<< "$(git submodule foreach --recursive -q 'echo "$toplevel $sm_path $name"')"
 wait

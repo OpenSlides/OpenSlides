@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Import OpenSlides utils package
-. "$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )/../util.sh"
+. "$(dirname "$0")/../util.sh"
 
 # Builds a single Submodule Service. This expects to be in the directory/subdirectory of the respective service
 

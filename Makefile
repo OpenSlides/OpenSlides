@@ -12,7 +12,7 @@ override DOCKER_COMPOSE_FILE=$(DOCKER_PATH)/docker-compose.dev.yml
 
 build-prod build-dev build-tests:
 	sed -i "1s/.*/$(GO_VERSION)/" $(DOCKER_PATH)/workspaces/*.work
-	bash $(MAKEFILE_PATH)/make-build-main.sh "$(ARGS)"
+	bash $(MAKEFILE_PATH)/make-build-main.sh $@
 
 # Development
 .SERVICE_TARGETS := auth autoupdate backend client datastore icc manage media proxy search vote
@@ -34,7 +34,7 @@ dev dev-help dev-standalone dev-detached dev-attached dev-stop dev-exec dev-ente
 # Tests
 
 run-tests:
-	bash dev/scripts/makefile/test-all-submodules.sh
+	bash dev/scripts/makefile/test-all-submodules.sh "$(ARGS)"
 
 test-ci:
 	bash $(SCRIPT_PATH)/act/run-act.sh $(FOLDER) $(WORKFLOW_TRIGGER)

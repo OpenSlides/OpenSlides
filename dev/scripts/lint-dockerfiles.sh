@@ -1,36 +1,37 @@
 #!/bin/bash
 
 # Import OpenSlides utils package
-. "$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )/util.sh"
+. "$(dirname "$0")/util.sh"
 
-export SINGLE_TARGET=$1
+SINGLE_TARGET=$1
 
 # This uses Hadolint (https://github.com/hadolint/hadolint) to lint all Service Dockerfiles
 # Pull Hadolint
 docker pull ghcr.io/hadolint/hadolint
 
 # Call Hadolint on each Submodule dockerfile
-LOCAL_PWD=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+LOCAL_PWD=$(dirname "$0")
 
-IFS=$'\n'
-for DIR in $(git submodule foreach --recursive -q sh -c pwd); do
-     # Extract submodule name
-    cd "$DIR" || exit && \
 
-    DIRNAME=${PWD##*/} && \
-    export DIRNAME && \
-    SUBMODULE=${DIRNAME//"openslides-"} && \
-    export SUBMODULE && \
+while read -r toplevel sm_path name; do
+# Extract submodule name
+  {
+    # Extract submodule name
+    DIR="$toplevel/$sm_path"
 
-    if [ "$SUBMODULE" == 'go' ]; then continue; fi && \
-    if [ "$SUBMODULE" == 'meta' ]; then continue; fi && \
+    [[ "$name" == 'openslides-meta' ]] && continue
+    [[ "$name" == 'openslides-go' ]] && continue
 
     # Check for single target
-    if [ $# -eq 1 ]; then if [[ "$SINGLE_TARGET" != "$SUBMODULE" ]]; then continue; fi; fi && \
+    [[ "$SINGLE_TARGET" != "" ]] && [[ "openslides-$SINGLE_TARGET" != "$name" ]] && continue
 
-    # Execute test
-    info " Linting Dockerfile for ${SUBMODULE}:" && \
-    docker run --rm -i -v /"${LOCAL_PWD}"/.hadolint.yaml:/.config/hadolint.yaml ghcr.io/hadolint/hadolint < Dockerfile
-done
+    (
+        cd "./$name" || exit 1
 
+        # Execute test
+        info " Linting Dockerfile for ${name}:"
+        docker run --rm -i -v /"${LOCAL_PWD}"/.hadolint.yaml:/.config/hadolint.yaml ghcr.io/hadolint/hadolint < Dockerfile
+    )
+  }
+done <<< "$(git submodule foreach --recursive -q 'echo "$toplevel $sm_path $name"')"
 wait

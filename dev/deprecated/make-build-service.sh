@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Import OpenSlides utils package
-. "$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )/../util.sh"
+. "$(dirname "$0")/../util.sh"
 
 # Used in Makefile Targets of Services to build images for a specific context
 help ()
@@ -25,7 +25,7 @@ Available dev functions:
 TARGET=$1
 SERVICE=$2
 
-LOCAL_PWD=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+LOCAL_PWD=$(dirname "$0")
 
 PREFIX="build-"
 FUNCTION=${TARGET#"$PREFIX"}

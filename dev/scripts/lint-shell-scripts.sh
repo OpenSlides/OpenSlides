@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Import OpenSlides utils package
-. "$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )/util.sh"
+. "$(dirname "$0")/util.sh"
 
-export SINGLE_TARGET=$1
+SINGLE_TARGET=$1
 
 lint_all_files() {
     # Finds all files with a valid shebang at the beginning. Grep outputs the filename as well as the shebang itself.
@@ -15,31 +15,31 @@ lint_all_files() {
 
 # Call Shellcheck on each Submodule shell-scripts
 (
-    LOCAL_PWD=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+    LOCAL_PWD=$(dirname "$0")
     cd "$LOCAL_PWD"/.. || exit
-    info " Linting shell-scripts for dev:" && \
+    info " Linting shell-scripts for dev:"
     lint_all_files
 )
 
-IFS=$'\n'
-for DIR in $(git submodule foreach --recursive -q sh -c pwd); do
+while read -r toplevel sm_path name; do
+# Extract submodule name
+  {
     # Extract submodule name
-    cd "$DIR" || exit && \
+    DIR="$toplevel/$sm_path"
 
-    DIRNAME=${PWD##*/} && \
-    export DIRNAME && \
-    SUBMODULE=${DIRNAME//"openslides-"} && \
-    export SUBMODULE && \
-
-    if [ "$SUBMODULE" == 'go' ]; then continue; fi && \
-    if [ "$SUBMODULE" == 'meta' ]; then continue; fi && \
+    [[ "$name" == 'openslides-meta' ]] && continue
+    [[ "$name" == 'openslides-go' ]] && continue
 
     # Check for single target
-    if [ $# -eq 1 ]; then if [[ "$SINGLE_TARGET" != "$SUBMODULE" ]]; then continue; fi; fi && \
+    [[ "$SINGLE_TARGET" != "" ]] && [[ "openslides-$SINGLE_TARGET" != "$name" ]] && continue
 
-    # Execute test
-    info " Linting shell-scripts for ${SUBMODULE}:" && \
-    lint_all_files
-done
+    (
+        cd "./$name" || exit 1
 
+        # Execute test
+        info " Linting shell-scripts for ${name}:"
+        lint_all_files
+    )
+  }
+done <<< "$(git submodule foreach --recursive -q 'echo "$toplevel $sm_path $name"')"
 wait

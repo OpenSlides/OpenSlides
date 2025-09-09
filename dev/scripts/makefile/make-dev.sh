@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Import OpenSlides utils package
-. "$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )/../util.sh"
+. "$(dirname "$0")/../util.sh"
 
 # Processes various development operations
 
@@ -14,7 +14,7 @@ Builds and starts development related images. Intended to be called from main re
 Parameters:
     #1 TARGET       : Name of the makefile target that called this script
     #2 SERVICE      : Name of the service to be operated on. If empty, the main repository assumed to be operated on
-    #3 ARGS         : Additional parameters that will be appended to the called docker run or docker compose calls
+    #3 DEV_ARGS         : Additional parameters that will be appended to the called docker run or docker compose calls
 
 Flags:
     no-cache        : Prevents use of cache when building docker images
@@ -25,15 +25,15 @@ Available dev functions:
     dev-help        : Print help
     dev-detached    : Builds and starts development images with detach flag. This causes started container to run in the background
     dev-attached    : Builds and starts development images; enters shell of started image.
-                          If a docker compose file is declared, the \$ARGS parameter determines
+                          If a docker compose file is declared, the \$DEV_ARGS parameter determines
                           the specific container id you will enter (default value is equal the service name)
     dev-standalone  : Builds and starts development images; closes them immediately afterwards
     dev-stop        : Stops any currently running images associated with the service or docker compose file
     dev-exec        : Executes command inside container.
-                          Use \$ARGS to declare command that should be used.
+                          Use \$DEV_ARGS to declare command that should be used.
                           If using a docker compose setup, also declare which container the command should be used in.
     dev-enter       : Enters shell of started container.
-                          If a docker compose file is declared, the \$ARGS parameter determines
+                          If a docker compose file is declared, the \$DEV_ARGS parameter determines
                           the specific container id you will enter (default value is equal the service name)
     dev-build       : Builds the development image
     "
@@ -132,7 +132,7 @@ run()
     if [ -n "$COMPOSE_FILE" ]
     then
         # Compose
-        echocmd eval "$DC up $FLAGS $VOLUMES $ARGS"
+        echocmd eval "$DC up $FLAGS $VOLUMES $DEV_ARGS"
     else
         # Already active check
         # Either stop existing containers and continue with run() or use existing containers from now on and exit run() early
@@ -142,7 +142,7 @@ run()
         fi
 
         # Single Container
-        echocmd docker run --name "$CONTAINER_NAME"  "$FLAGS" "$VOLUMES" "$ARGS" "$IMAGE_TAG" "$SHELL"
+        echocmd docker run --name "$CONTAINER_NAME"  "$FLAGS" "$VOLUMES" "$DEV_ARGS" "$IMAGE_TAG" "$SHELL"
     fi
 }
 
@@ -210,7 +210,7 @@ stop()
 ## Parameters
 TARGET=$1
 SERVICE=$2
-ARGS=$3
+DEV_ARGS=$3
 
 # SERVICE contains all additionally provided make targets. This may include flags
 # Extract flags here
@@ -227,8 +227,12 @@ done
 # Variables
 SERVICE_FOLDER=""
 CONTAINER_NAME="make-dev-$SERVICE"
-LOCAL_PWD=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+LOCAL_PWD=$(dirname "$0")
 USED_SHELL="sh"
+
+# Remove ARGS flag from calling maketarget
+MAKEFLAGS=
+unset ARGS
 
 # Strip 'dev', '-' and any '.o' or similar file endings that may have been automatically added from implicit rules by GNU
 FUNCTION=${TARGET#"dev"}
@@ -275,10 +279,10 @@ case "$FUNCTION" in
     "clean")            clean ;;
     "standalone")       build && run && stop ;;
     "detached")         build && run "-d" && info "Containers started" ;;
-    "attached")         build && run "-d" && attach "$ARGS" && stop ;;
+    "attached")         build && run "-d" && attach "$DEV_ARGS" && stop ;;
     "stop")             stop ;;
-    "exec")             exec "$ARGS" ;;
-    "enter")            attach "$ARGS" ;;
+    "exec")             exec "$DEV_ARGS" ;;
+    "enter")            attach "$DEV_ARGS" ;;
     "build")            build ;;
     "media-attached")   build && run "-d" && EXEC_COMMAND='-T tests wait-for-it "media:9006"' && exec "$EXEC_COMMAND" && attach "tests" && stop ;; # Special case for media (for now)
     "")                 build && run ;;
