@@ -141,10 +141,10 @@ run()
     then
         local BUILD_ARGS="";
 
-        if [ -n "$NO_CACHE" ]; then local BUILD_ARGS="--force-recreate"; fi
+        if [ -n "$NO_CACHE" ]; then local BUILD_ARGS="--build --force-recreate"; fi
 
         # Compose
-        echocmd eval "$DC up --build ${BUILD_ARGS} ${FLAGS} ${VOLUMES} ${RUN_ARGS}"
+        echocmd eval "$DC up ${BUILD_ARGS} ${FLAGS} ${VOLUMES} ${RUN_ARGS}"
     else
         # Already active check
         # Either stop existing containers and continue with run() or use existing containers from now on and exit run() early
@@ -291,7 +291,7 @@ if [ -n "$USE_LOCAL_BRANCH_FOR_COMPOSE" ]; then COMPOSE_REFERENCE_BRANCH=$(git -
 # Helpers
 USER_ID=$(id -u)
 GROUP_ID=$(id -g)
-DC="COMPOSE_REFERENCE_BRANCH=$COMPOSE_REFERENCE_BRANCH CONTEXT=dev USER_ID=$USER_ID GROUP_ID=$GROUP_ID docker compose -f ${COMPOSE_FILE}"
+DC="CONTEXT=dev USER_ID=$USER_ID GROUP_ID=$GROUP_ID COMPOSE_REFERENCE_BRANCH=$COMPOSE_REFERENCE_BRANCH docker compose -f ${COMPOSE_FILE}"
 IMAGE_TAG="openslides-$SERVICE-dev"
 
 # - Run specific function
