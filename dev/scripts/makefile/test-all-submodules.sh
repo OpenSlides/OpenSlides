@@ -31,11 +31,14 @@ while read -r toplevel sm_path name; do
     # Execute test
     info "Testing service ${name}"
 
-    ERROR_FOUND=""
-    #echocmd make -C "$DIR" run-tests || ERROR_FOUND="1"
-    outputs[$name]="${?}${ERROR_FOUND}"
+    (
+      ERROR_FOUND=""
+      echocmd make -C "$DIR" run-tests || ERROR_FOUND="1"
+      outputs[$name]="${?}${ERROR_FOUND}"
+    )
   }
 done <<< "$(git submodule foreach --recursive -q 'echo "$toplevel $sm_path $name"')"
+wait
 
 echo "Done"
 for x in "${!outputs[@]}"; do

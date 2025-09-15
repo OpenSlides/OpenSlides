@@ -20,7 +20,7 @@ build-prod build-dev build-tests:
 $(.SERVICE_TARGETS):
 	@echo ""
 
-.FLAGS := no-cache capsule
+.FLAGS := no-cache capsule compose-local-branch
 
 $(.FLAGS):
 	@echo ""
@@ -29,12 +29,12 @@ $(.FLAGS):
 
 dev dev-help dev-standalone dev-detached dev-attached dev-stop dev-exec dev-enter dev-clean dev-build:
 	@sed -i "1s/.*/$(GO_VERSION)/" $(DOCKER_PATH)/workspaces/*.work
-	@bash $(MAKEFILE_PATH)/make-dev.sh $@ "$(filter-out $@, $(MAKECMDGOALS))" "$(ARGS)"
+	@bash $(MAKEFILE_PATH)/make-dev.sh $@ "$(filter-out $@, $(MAKECMDGOALS))" "$(DEV_ARGS)" "$(ATTACH_TARGET_CONTAINER)" "$(EXEC_COMMAND)"
 
 # Tests
 
 run-tests:
-	bash dev/scripts/makefile/test-all-submodules.sh "$(ARGS)"
+	bash dev/scripts/makefile/test-all-submodules.sh "$(DEV_ARGS)" "$(ATTACH_TARGET_CONTAINER)" "$(EXEC_COMMAND)"
 
 test-ci:
 	bash $(SCRIPT_PATH)/act/run-act.sh $(FOLDER) $(WORKFLOW_TRIGGER)

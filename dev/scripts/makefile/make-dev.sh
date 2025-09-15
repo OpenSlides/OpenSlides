@@ -12,28 +12,36 @@ help ()
 Builds and starts development related images. Intended to be called from main repository makefile
 
 Parameters:
-    #1 TARGET       : Name of the makefile target that called this script
-    #2 SERVICE      : Name of the service to be operated on. If empty, the main repository assumed to be operated on
-    #3 DEV_ARGS         : Additional parameters that will be appended to the called docker run or docker compose calls
+    #1 TARGET                   : Name of the makefile target that called this script
+    #2 SERVICE                  : Name of the service to be operated on. If empty, the main repository assumed to be operated on
+    #3 RUN_ARGS                 : Additional parameters that will be appended dev-run calls
+
+    #4 ATTACH_TARGET_CONTAINER  : Determine target container to enter for dev-attached
+    #3 EXEC_COMMAND             : Determine command to be called for dev-exec
 
 Flags:
-    no-cache        : Prevents use of cache when building docker images
-    capsule         : Enables encapsulation of docker build output
+    no-cache             : Prevents use of cache when building docker images
+    capsule              : Enables encapsulation of docker build output
+    compose-local-branch : Compose setups pull service images from the main branch by default. When 'compose-local-branch' is set to true, the checked-out local branch
+                           of the service will be pulled instead.
+                           Example: Backend-Service is locally checked-out to 'feature/xyz'. Its dev compose setup usually pulls other services like 'auth' from
+                           'openslides-auth-service.git#main'. If 'compose-local-branch' is set to true, the path 'openslides-auth-service.git#feature/xyz' will be pulled
+                           instead.
 
 Available dev functions:
     dev             : Builds and starts development images
     dev-help        : Print help
     dev-detached    : Builds and starts development images with detach flag. This causes started container to run in the background
     dev-attached    : Builds and starts development images; enters shell of started image.
-                          If a docker compose file is declared, the \$DEV_ARGS parameter determines
+                          If a docker compose file is declared, the \$ATTACH_ARGS parameter determines
                           the specific container id you will enter (default value is equal the service name)
     dev-standalone  : Builds and starts development images; closes them immediately afterwards
     dev-stop        : Stops any currently running images associated with the service or docker compose file
     dev-exec        : Executes command inside container.
-                          Use \$DEV_ARGS to declare command that should be used.
+                          Use \$EXEC_ARGS to declare command that should be used.
                           If using a docker compose setup, also declare which container the command should be used in.
     dev-enter       : Enters shell of started container.
-                          If a docker compose file is declared, the \$DEV_ARGS parameter determines
+                          If a docker compose file is declared, the \$ENTER_ARGS parameter determines
                           the specific container id you will enter (default value is equal the service name)
     dev-build       : Builds the development image
     "
@@ -131,8 +139,12 @@ run()
     local SHELL=$2
     if [ -n "$COMPOSE_FILE" ]
     then
+        local BUILD_ARGS="";
+
+        if [ -n "$NO_CACHE" ]; then local BUILD_ARGS="--force-recreate"; fi
+
         # Compose
-        echocmd eval "$DC up $FLAGS $VOLUMES $DEV_ARGS"
+        echocmd eval "$DC up --build ${BUILD_ARGS} ${FLAGS} ${VOLUMES} ${RUN_ARGS}"
     else
         # Already active check
         # Either stop existing containers and continue with run() or use existing containers from now on and exit run() early
@@ -142,13 +154,13 @@ run()
         fi
 
         # Single Container
-        echocmd docker run --name "$CONTAINER_NAME"  "$FLAGS" "$VOLUMES" "$DEV_ARGS" "$IMAGE_TAG" "$SHELL"
+        echocmd docker run --name "$CONTAINER_NAME"  "$FLAGS" "$VOLUMES" "$RUN_ARGS" "$IMAGE_TAG" "$SHELL"
     fi
 }
 
 attach()
 {
-    local TARGET_CONTAINER=$1
+    local TARGET_CONTAINER=$ATTACH_TARGET_CONTAINER
     info "Attaching to running container"
     if [ -n "$COMPOSE_FILE" ]
     then
@@ -177,7 +189,7 @@ attach()
 
 exec()
 {
-    local FUNC=$1
+    local FUNC=$EXEC_COMMAND
     if [ -n "$COMPOSE_FILE" ]
     then
         # Compose
@@ -210,7 +222,9 @@ stop()
 ## Parameters
 TARGET=$1
 SERVICE=$2
-DEV_ARGS=$3
+RUN_ARGS=$3
+ATTACH_TARGET_CONTAINER=$4
+EXEC_COMMAND=$5
 
 # SERVICE contains all additionally provided make targets. This may include flags
 # Extract flags here
@@ -220,6 +234,7 @@ for CMD in $TEMP_SERVICE; do
     case "$CMD" in
         "no-cache")     NO_CACHE=true ;;
         "capsule")      CAPSULE=true ;;
+        "compose-local-branch") USE_LOCAL_BRANCH_FOR_COMPOSE=true ;;
         *)              SERVICE="$CMD" ;;
     esac
 done
@@ -258,7 +273,8 @@ case "$SERVICE" in
                     USED_SHELL="bash" &&
                     if [ "$FUNCTION" = "attached" ]; then FUNCTION="media-attached"; fi ;; # Temporary fix for wait-for-it situation
     "proxy")        SERVICE_FOLDER="./openslides-proxy" ;;
-    "search")       SERVICE_FOLDER="./openslides-search-service" ;;
+    "search")       SERVICE_FOLDER="./openslides-search-service" &&
+                    COMPOSE_FILE="$SERVICE_FOLDER/dev/docker-compose.dev.yml" ;;
     "vote")         SERVICE_FOLDER="./openslides-vote-service" ;;
     "")             COMPOSE_FILE="dev/docker/docker-compose.dev.yml" ;;
     *)              ;;
@@ -267,10 +283,15 @@ esac
 if [ -n "$SERVICE" ]; then info "Running $FUNCTION for $SERVICE"
 else info "Running $FUNCTION"; fi
 
+# Compose dev branch checkout
+COMPOSE_REFERENCE_BRANCH="main"
+
+if [ -n "$USE_LOCAL_BRANCH_FOR_COMPOSE" ]; then COMPOSE_REFERENCE_BRANCH=$(git -C "$SERVICE_FOLDER" branch --show-current) && info "Ditching 'main' for '$COMPOSE_REFERENCE_BRANCH' used to fetch external services in dev compose setup"; fi
+
 # Helpers
 USER_ID=$(id -u)
 GROUP_ID=$(id -g)
-DC="CONTEXT=dev USER_ID=$USER_ID GROUP_ID=$GROUP_ID docker compose -f ${COMPOSE_FILE}"
+DC="COMPOSE_REFERENCE_BRANCH=$COMPOSE_REFERENCE_BRANCH CONTEXT=dev USER_ID=$USER_ID GROUP_ID=$GROUP_ID docker compose -f ${COMPOSE_FILE}"
 IMAGE_TAG="openslides-$SERVICE-dev"
 
 # - Run specific function
@@ -279,10 +300,10 @@ case "$FUNCTION" in
     "clean")            clean ;;
     "standalone")       build && run && stop ;;
     "detached")         build && run "-d" && info "Containers started" ;;
-    "attached")         build && run "-d" && attach "$DEV_ARGS" && stop ;;
+    "attached")         build && run "-d" && attach && stop ;;
     "stop")             stop ;;
-    "exec")             exec "$DEV_ARGS" ;;
-    "enter")            attach "$DEV_ARGS" ;;
+    "exec")             exec ;;
+    "enter")            attach ;;
     "build")            build ;;
     "media-attached")   build && run "-d" && EXEC_COMMAND='-T tests wait-for-it "media:9006"' && exec "$EXEC_COMMAND" && attach "tests" && stop ;; # Special case for media (for now)
     "")                 build && run ;;
