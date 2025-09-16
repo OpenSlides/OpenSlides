@@ -44,6 +44,7 @@ Available dev functions:
                           If a docker compose file is declared, the \$ENTER_ARGS parameter determines
                           the specific container id you will enter (default value is equal the service name)
     dev-build       : Builds the development image
+    dev-log         : Prints log output of given container.
     "
 }
 
@@ -218,6 +219,24 @@ stop()
     fi
 }
 
+log()
+{
+    local TARGET_CONTAINER=$ATTACH_TARGET_CONTAINER
+    if [ -n "$COMPOSE_FILE" ]
+    then
+        if [ -z "$TARGET_CONTAINER" ]
+        then
+            info "No container was specified; Service container will be taken as default" && local TARGET_CONTAINER="$SERVICE"
+        fi
+
+        echocmd eval "docker compose -f $COMPOSE_FILE logs $TARGET_CONTAINER"
+    else
+        # Single Container
+        echocmd eval "docker logs $CONTAINER_NAME"
+    fi
+
+}
+
 # Setup
 ## Parameters
 TARGET=$1
@@ -304,6 +323,7 @@ case "$FUNCTION" in
     "exec")             exec ;;
     "enter")            attach ;;
     "build")            build ;;
+    "log")              log ;;
     "media-attached")   build && run "-d" && EXEC_COMMAND='-T tests wait-for-it "media:9006"' && exec "$EXEC_COMMAND" && attach "tests" && stop ;; # Special case for media (for now)
     "")                 build && run ;;
     *)                  warn "No command found matching $FUNCTION" && help ;;

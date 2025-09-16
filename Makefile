@@ -27,7 +27,7 @@ $(.FLAGS):
 
 .PHONY: dev
 
-dev dev-help dev-standalone dev-detached dev-attached dev-stop dev-exec dev-enter dev-clean dev-build:
+dev dev-help dev-standalone dev-detached dev-attached dev-stop dev-exec dev-enter dev-clean dev-build dev-log:
 	@sed -i "1s/.*/$(GO_VERSION)/" $(DOCKER_PATH)/workspaces/*.work
 	@bash $(MAKEFILE_PATH)/make-dev.sh $@ "$(filter-out $@, $(MAKECMDGOALS))" "$(DEV_ARGS)" "$(ATTACH_TARGET_CONTAINER)" "$(EXEC_COMMAND)"
 
