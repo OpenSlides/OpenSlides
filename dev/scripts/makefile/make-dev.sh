@@ -13,8 +13,8 @@ Builds and starts development related images. Intended to be called from main re
 
 Parameters:
     #1 TARGET                   : Name of the makefile target that called this script
-    #2 SERVICE                  : Name of the service to be operated on. If empty, the main repository assumed to be operated on
-    #3 RUN_ARGS                 : Additional parameters that will be appended dev-run calls
+    #2 SERVICE                  : Name of the service to be operated on. If empty, the main repository is assumed to be operated on
+    #3 RUN_ARGS                 : Additional parameters that will be appended to dev-run calls
 
     #4 ATTACH_TARGET_CONTAINER  : Determine target container to enter for dev-attached
     #3 EXEC_COMMAND             : Determine command to be called for dev-exec
@@ -22,24 +22,24 @@ Parameters:
 Flags:
     no-cache             : Prevents use of cache when building docker images
     capsule              : Enables encapsulation of docker build output
-    compose-local-branch : Compose setups pull service images from the main branch by default. When 'compose-local-branch' is set to true, the checked-out local branch
-                           of the service will be pulled instead.
-                           Example: Backend-Service is locally checked-out to 'feature/xyz'. Its dev compose setup usually pulls other services like 'auth' from
-                           'openslides-auth-service.git#main'. If 'compose-local-branch' is set to true, the path 'openslides-auth-service.git#feature/xyz' will be pulled
+    compose-local-branch : Compose setups pull service images from the main branch by default. When 'compose-local-branch' is set to true, the checked out branch of the service will be pulled instead.
+                           Example: Backend-Service is locally checked-out to 'feature/xyz'. Its dev compose setup pulls 'vote' from github by referencing
+                           'openslides-vote-service.git#main'. If 'compose-local-branch' is set to true, the path 'openslides-vote-service.git#feature/xyz' will be used
                            instead.
 
 Available dev functions:
     dev             : Builds and starts development images
     dev-help        : Print help
-    dev-detached    : Builds and starts development images with detach flag. This causes started container to run in the background
+    dev-detached    : Builds and starts development images with detach flag. This causes started containers to run in the background
     dev-attached    : Builds and starts development images; enters shell of started image.
                           If a docker compose file is declared, the \$ATTACH_ARGS parameter determines
                           the specific container id you will enter (default value is equal the service name)
     dev-standalone  : Builds and starts development images; closes them immediately afterwards
-    dev-stop        : Stops any currently running images associated with the service or docker compose file
+    dev-stop        : Stops any currently running images or docker compose file associated with the service
     dev-exec        : Executes command inside container.
-                          Use \$EXEC_ARGS to declare command that should be used.
-                          If using a docker compose setup, also declare which container the command should be used in.
+                          Use \$EXEC_ARGS to declare command that should be executed.
+                          If using a docker compose setup, also declare which container the command should be executed in.
+                          Example: 'dev-exec RUN_ARGS=\"service-name echo hello\"' will run \"echo hello\" inside the container named \"service-name\"
     dev-enter       : Enters shell of started container.
                           If a docker compose file is declared, the \$ENTER_ARGS parameter determines
                           the specific container id you will enter (default value is equal the service name)
@@ -224,8 +224,13 @@ log()
     local TARGET_CONTAINER=$ATTACH_TARGET_CONTAINER
     if [ -n "$COMPOSE_FILE" ]
     then
-        if [ -z "$TARGET_CONTAINER" ]
+        if [ -z "$SERVICE" ] && [ -z "$TARGET_CONTAINER" ]
         then
+            # Main repository case, use input prompt to determine container
+            local TARGET_CONTAINER=$(input "Which service container should be logged?");
+            { [ -z "$TARGET_CONTAINER" ] && \info "No service container declared, exiting" && return; }
+        else
+            # Submodule case
             info "No container was specified; Service container will be taken as default" && local TARGET_CONTAINER="$SERVICE"
         fi
 
