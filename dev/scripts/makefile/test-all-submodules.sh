@@ -16,6 +16,14 @@ unset ARGS
 
 declare -A outputs
 
+# For some bizarre reason, the wait-for-it call in auth-service causes the loop below to break
+# Therefore it is tested seperately
+(
+  ERROR_FOUND=""
+  echocmd make -C "openslides-auth-service" run-tests || ERROR_FOUND="1"
+  outputs[$name]="${?}${ERROR_FOUND}"
+)
+
 while read -r toplevel sm_path name; do
 # Extract submodule name
   {
@@ -24,6 +32,7 @@ while read -r toplevel sm_path name; do
     # Skip Meta
     [[ "$name" == 'openslides-meta' ]] && continue
     [[ "$name" == 'openslides-go' ]] && continue
+    [[ "$name" == 'openslides-auth-service' ]] && continue
 
     # Check for single target
     [[ "$SINGLE_TARGET" != "" ]] && [[ "openslides-$SINGLE_TARGET" != "$name" ]] && continue
@@ -38,7 +47,6 @@ while read -r toplevel sm_path name; do
     )
   }
 done <<< "$(git submodule foreach --recursive -q 'echo "$toplevel $sm_path $name"')"
-wait
 
 echo "Done"
 for x in "${!outputs[@]}"; do
