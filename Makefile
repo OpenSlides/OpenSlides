@@ -19,7 +19,7 @@ run-dev-otel: | build-dev
 
 # Build the docker dev images for all services in parallel
 build-dev:
-	sed -i "1s/.*/$(GO_VERSION)/" $(DOCKER_PATH)/workspaces/*.work
+	sed -i -e "1s/.*/$(GO_VERSION)/" $(DOCKER_PATH)/workspaces/*.work
 	chmod +x $(SCRIPT_PATH)/makefile/build-all-submodules.sh
 	$(SCRIPT_PATH)/makefile/build-all-submodules.sh dev
 
