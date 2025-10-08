@@ -222,6 +222,9 @@ msgstr "Aktive Veranstaltungen"
 msgid "Add"
 msgstr "Hinzufügen"
 
+msgid "Add answer"
+msgstr "Antwort hinzufügen"
+
 msgid "Add me"
 msgstr "Füge mich hinzu"
 
@@ -295,6 +298,9 @@ msgstr ""
 
 msgid "Agenda"
 msgstr "Tagesordnung"
+
+msgid "Agenda export"
+msgstr "Tagesordnungsexport"
 
 msgid "Agenda items are in process. Please wait ..."
 msgstr "Tagesordnungspunkte werden bearbeitet. Bitte warten ..."
@@ -438,6 +444,12 @@ msgstr "Anonymisieren kann erst nach Beenden der Stimmabgabe erfolgen."
 
 msgid "Anonymous"
 msgstr "Anonym"
+
+msgid "Answer to interposed question"
+msgstr "Antwort auf Zwischenfrage"
+
+msgid "Answer to intervention"
+msgstr "Antwort auf Kurzintervention"
 
 msgid "Applause interval in seconds"
 msgstr "Applaus-Zeitintervall in Sekunden"
@@ -1344,9 +1356,6 @@ msgstr "Anwesenheit ändern"
 msgid "Change recommendation"
 msgstr "Änderungsempfehlung"
 
-msgid "Change recommendation - rejected"
-msgstr "Änderungsempfehlung - Abgelehnt"
-
 msgid "Change recommendations"
 msgstr "Änderungsempfehlungen"
 
@@ -1579,6 +1588,9 @@ msgstr "Livestream fortsetzen"
 msgid "Continuous text"
 msgstr "Fortlaufender Text"
 
+msgid "Contra"
+msgstr "Contra"
+
 msgid "Contra speech"
 msgstr "Gegenrede"
 
@@ -1745,11 +1757,15 @@ msgstr "Voreingestellte Art der Stimmabgabe"
 msgid ""
 "Defines for the selected state which groups have access:\n"
 "- If no option is selected, the motions in the selected state are visible to all; The prerequisite for this is group permission: [Can see motions].\n"
-"- Selecting one or more options restricts access to those groups for which the selected authorization option is defined under > [Participants] > [Groups]."
+"- Selecting one or more options restricts access to those groups for which the selected authorization option is defined under > [Participants] > [Groups].\n"
+"\n"
+"Hint: Administrators always have full access."
 msgstr ""
 "Definiert für den ausgewählten Status, welche Gruppen Zugriff haben:\n"
 "- Wenn keine Option ausgewählt ist, sind die Anträge im ausgewählten Status für alle sichtbar; Voraussetzung hierfür ist Gruppenrecht: [Darf Anträge sehen].\n"
-"- Die Auswahl einer oder mehrerer Optionen schränkt den Zugriff auf diejenigen Gruppen ein, für die unter > [Teilnehmende] > [Gruppen] die ausgewählte Berechtigungsoption definiert ist."
+"- Die Auswahl einer oder mehrerer Optionen schränkt den Zugriff auf diejenigen Gruppen ein, für die unter > [Teilnehmende] > [Gruppen] die ausgewählte Berechtigungsoption definiert ist.\n"
+"\n"
+"Hinweis: Administratoren haben immer vollen Zugriff."
 
 msgid "Defines the colour for the state button."
 msgstr "Definiert die Farbe für die Status-Schaltfläche."
@@ -2235,6 +2251,9 @@ msgstr "Stimmberechtigte"
 msgid "Error"
 msgstr "Fehler"
 
+msgid "Error during PDF creation of agenda item:"
+msgstr "Fehler bei der PDF-Erstellung des TOPs:"
+
 msgid "Error during PDF creation of election:"
 msgstr "Fehler bei der PDF-Erstellung der Wahl:"
 
@@ -2380,6 +2399,9 @@ msgstr "Schriftart normal"
 
 msgid "Font size in pt"
 msgstr "Schriftgröße in pt"
+
+msgid "Footer"
+msgstr "Fußzeile"
 
 msgid ""
 "For activation:<br>\n"
@@ -2916,6 +2938,9 @@ msgstr "Ist öffentlich"
 msgid "Is speaker"
 msgstr "ist Redner*in"
 
+msgid "Is speaking"
+msgstr "Redet gerade"
+
 msgid "Is submitter"
 msgstr "ist Antragsteller*in"
 
@@ -3106,6 +3131,9 @@ msgstr "Niedrigster Applauswert"
 
 msgid "Main motion and line number"
 msgstr "Hauptantrag und Zeilennummer"
+
+msgid "Main speaker"
+msgstr "Hauptredner*in"
 
 msgid ""
 "Make background color from meta information box on the projector transparent"
@@ -4184,6 +4212,9 @@ msgstr "Datenschutzerklärung"
 msgid "Private key of Service Provider (SP)"
 msgstr "Privater Schlüssel des Service Providers (SP)"
 
+msgid "Pro"
+msgstr "Pro"
+
 msgid "Process handling"
 msgstr "Prozessverarbeitung"
 
@@ -5148,6 +5179,9 @@ msgstr ""
 
 msgid "The number has to be greater than 0."
 msgstr "Die Anzahl muss größer als 0 sein."
+
+msgid "The organizer is responsible for the content under press law."
+msgstr "Presserechtlich verantwortlich für den Inhalt ist der Veranstalter."
 
 msgid "The parent motion is not available."
 msgstr "Der Eltern-Antrag ist nicht verfügbar."

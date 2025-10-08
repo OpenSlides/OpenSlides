@@ -189,6 +189,9 @@ msgstr ""
 msgid "Add"
 msgstr ""
 
+msgid "Add answer"
+msgstr ""
+
 msgid "Add me"
 msgstr ""
 
@@ -254,6 +257,9 @@ msgid ""
 msgstr ""
 
 msgid "Agenda"
+msgstr ""
+
+msgid "Agenda export"
 msgstr ""
 
 msgid "Agenda items are in process. Please wait ..."
@@ -395,6 +401,12 @@ msgid "Anonymizing can only be done after finishing a poll."
 msgstr ""
 
 msgid "Anonymous"
+msgstr ""
+
+msgid "Answer to interposed question"
+msgstr ""
+
+msgid "Answer to intervention"
 msgstr ""
 
 msgid "Applause interval in seconds"
@@ -1200,9 +1212,6 @@ msgstr ""
 msgid "Change recommendation"
 msgstr ""
 
-msgid "Change recommendation - rejected"
-msgstr ""
-
 msgid "Change recommendations"
 msgstr ""
 
@@ -1432,6 +1441,9 @@ msgstr ""
 msgid "Continuous text"
 msgstr ""
 
+msgid "Contra"
+msgstr ""
+
 msgid "Contra speech"
 msgstr ""
 
@@ -1597,7 +1609,9 @@ msgid ""
 "all; The prerequisite for this is group permission: [Can see motions].\n"
 "- Selecting one or more options restricts access to those groups for which "
 "the selected authorization option is defined under > [Participants] > "
-"[Groups]."
+"[Groups].\n"
+"\n"
+"Hint: Administrators always have full access."
 msgstr ""
 
 msgid "Defines the colour for the state button."
@@ -2025,6 +2039,9 @@ msgstr ""
 msgid "Error"
 msgstr ""
 
+msgid "Error during PDF creation of agenda item:"
+msgstr ""
+
 msgid "Error during PDF creation of election:"
 msgstr ""
 
@@ -2163,6 +2180,9 @@ msgid "Font regular"
 msgstr ""
 
 msgid "Font size in pt"
+msgstr ""
+
+msgid "Footer"
 msgstr ""
 
 msgid ""
@@ -2690,6 +2710,9 @@ msgstr ""
 msgid "Is speaker"
 msgstr ""
 
+msgid "Is speaking"
+msgstr ""
+
 msgid "Is submitter"
 msgstr ""
 
@@ -2872,6 +2895,9 @@ msgid "Lowest applause amount"
 msgstr ""
 
 msgid "Main motion and line number"
+msgstr ""
+
+msgid "Main speaker"
 msgstr ""
 
 msgid ""
@@ -3911,6 +3937,9 @@ msgstr ""
 msgid "Private key of Service Provider (SP)"
 msgstr ""
 
+msgid "Pro"
+msgstr ""
+
 msgid "Process handling"
 msgstr ""
 
@@ -4841,6 +4870,9 @@ msgid ""
 msgstr ""
 
 msgid "The number has to be greater than 0."
+msgstr ""
+
+msgid "The organizer is responsible for the content under press law."
 msgstr ""
 
 msgid "The parent motion is not available."
