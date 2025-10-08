@@ -24,12 +24,6 @@ msgstr ""
 msgid "100% base"
 msgstr ""
 
-msgid ""
-"<a href=\"https://openslides.com\">OpenSlides</a> is a free web based "
-"presentation and assembly system for visualizing and controlling agenda, "
-"motions and elections of an assembly."
-msgstr ""
-
 msgid "<unknown motion>"
 msgstr ""
 
@@ -195,6 +189,9 @@ msgstr ""
 msgid "Add"
 msgstr ""
 
+msgid "Add answer"
+msgstr ""
+
 msgid "Add me"
 msgstr ""
 
@@ -260,6 +257,9 @@ msgid ""
 msgstr ""
 
 msgid "Agenda"
+msgstr ""
+
+msgid "Agenda export"
 msgstr ""
 
 msgid "Agenda items are in process. Please wait ..."
@@ -382,6 +382,9 @@ msgstr ""
 msgid "Amount of meetings"
 msgstr ""
 
+msgid "Amount of motions"
+msgstr ""
+
 msgid "Amount of votes"
 msgstr ""
 
@@ -398,6 +401,12 @@ msgid "Anonymizing can only be done after finishing a poll."
 msgstr ""
 
 msgid "Anonymous"
+msgstr ""
+
+msgid "Answer to interposed question"
+msgstr ""
+
+msgid "Answer to intervention"
 msgstr ""
 
 msgid "Applause interval in seconds"
@@ -869,6 +878,9 @@ msgid ""
 "permissions."
 msgstr ""
 
+msgid "Can create, modify, start/stop and delete ballots."
+msgstr ""
+
 msgid "Can create, modify, start/stop and delete votings."
 msgstr ""
 
@@ -900,6 +912,9 @@ msgid ""
 msgstr ""
 
 msgid "Can manage agenda"
+msgstr ""
+
+msgid "Can manage ballots"
 msgstr ""
 
 msgid "Can manage elections"
@@ -1197,9 +1212,6 @@ msgstr ""
 msgid "Change recommendation"
 msgstr ""
 
-msgid "Change recommendation - rejected"
-msgstr ""
-
 msgid "Change recommendations"
 msgstr ""
 
@@ -1274,9 +1286,6 @@ msgid "Chyron speaker, background color"
 msgstr ""
 
 msgid "Chyron speaker, font color"
-msgstr ""
-
-msgid "Classic"
 msgstr ""
 
 msgid "Clear"
@@ -1384,6 +1393,9 @@ msgstr ""
 msgid "Committee managers"
 msgstr ""
 
+msgid "Committee name"
+msgstr ""
+
 msgid "Committees"
 msgstr ""
 
@@ -1427,6 +1439,9 @@ msgid "Continue livestream"
 msgstr ""
 
 msgid "Continuous text"
+msgstr ""
+
+msgid "Contra"
 msgstr ""
 
 msgid "Contra speech"
@@ -1499,6 +1514,9 @@ msgid "Current slide"
 msgstr ""
 
 msgid "Current speaker"
+msgstr ""
+
+msgid "Current speaker / structure level"
 msgstr ""
 
 msgid "Current speaker chyron"
@@ -1591,7 +1609,9 @@ msgid ""
 "all; The prerequisite for this is group permission: [Can see motions].\n"
 "- Selecting one or more options restricts access to those groups for which "
 "the selected authorization option is defined under > [Participants] > "
-"[Groups]."
+"[Groups].\n"
+"\n"
+"Hint: Administrators always have full access."
 msgstr ""
 
 msgid "Defines the colour for the state button."
@@ -1764,11 +1784,9 @@ msgid "Duration of requests to speak"
 msgstr ""
 
 msgid ""
-"During non-nominal voting OpenSlides does NOT store the individual user ID "
-"of the voter. This in no way means that a non-nominal vote is completely "
-"anonymous and secure. The votes cannot track their individual votes after "
-"the data has been submitted. The validity of the data cannot always be "
-"guaranteed."
+"During non-nominal voting, OpenSlides does NOT store the individual user IDs "
+"of voters in connection with the votes cast. Once the data has been "
+"transmitted, voters can no longer track or check their own votes."
 msgstr ""
 
 msgid "Edit"
@@ -2021,6 +2039,9 @@ msgstr ""
 msgid "Error"
 msgstr ""
 
+msgid "Error during PDF creation of agenda item:"
+msgstr ""
+
 msgid "Error during PDF creation of election:"
 msgstr ""
 
@@ -2161,6 +2182,9 @@ msgstr ""
 msgid "Font size in pt"
 msgstr ""
 
+msgid "Footer"
+msgstr ""
+
 msgid ""
 "For activation:<br>\n"
 "                        1. Assign group permission (define the group that "
@@ -2187,6 +2211,9 @@ msgid "Forspeech"
 msgstr ""
 
 msgid "Forward"
+msgstr ""
+
+msgid "Forward attachments"
 msgstr ""
 
 msgid "Forward motions"
@@ -2683,6 +2710,9 @@ msgstr ""
 msgid "Is speaker"
 msgstr ""
 
+msgid "Is speaking"
+msgstr ""
+
 msgid "Is submitter"
 msgstr ""
 
@@ -2867,6 +2897,9 @@ msgstr ""
 msgid "Main motion and line number"
 msgstr ""
 
+msgid "Main speaker"
+msgstr ""
+
 msgid ""
 "Make background color from meta information box on the projector transparent"
 msgstr ""
@@ -2985,9 +3018,6 @@ msgid "Moderation note"
 msgstr ""
 
 msgid "Moderation-Note"
-msgstr ""
-
-msgid "Modern"
 msgstr ""
 
 msgid "Modify design"
@@ -3212,6 +3242,9 @@ msgstr ""
 msgid "New password"
 msgstr ""
 
+msgid "New poll"
+msgstr ""
+
 msgid "New projector"
 msgstr ""
 
@@ -3347,6 +3380,9 @@ msgstr ""
 msgid "Not locked out"
 msgstr ""
 
+msgid "Note on secret voting"
+msgstr ""
+
 msgid ""
 "Note, that the default password will be changed to the new generated one."
 msgstr ""
@@ -3475,6 +3511,9 @@ msgstr ""
 msgid "Only available for nominal voting"
 msgstr ""
 
+msgid "Only for committee admins"
+msgstr ""
+
 msgid "Only for internal notes."
 msgstr ""
 
@@ -3494,6 +3533,9 @@ msgid "Only time"
 msgstr ""
 
 msgid "Only traffic light"
+msgstr ""
+
+msgid "Open"
 msgstr ""
 
 msgid "Open Jitsi in new tab"
@@ -3571,6 +3613,12 @@ msgid "Origin motion deleted"
 msgstr ""
 
 msgid "Original"
+msgstr ""
+
+msgid "Original identifier"
+msgstr ""
+
+msgid "Original submitter"
 msgstr ""
 
 msgid "Original version"
@@ -3887,6 +3935,9 @@ msgid "Privacy policy"
 msgstr ""
 
 msgid "Private key of Service Provider (SP)"
+msgstr ""
+
+msgid "Pro"
 msgstr ""
 
 msgid "Process handling"
@@ -4229,13 +4280,7 @@ msgstr ""
 msgid "Search player"
 msgstr ""
 
-msgid "Searching for candidates"
-msgstr ""
-
 msgid "Searching for players ..."
-msgstr ""
-
-msgid "Secret voting can not be guaranteed"
 msgstr ""
 
 msgid "Select"
@@ -4827,6 +4872,9 @@ msgstr ""
 msgid "The number has to be greater than 0."
 msgstr ""
 
+msgid "The organizer is responsible for the content under press law."
+msgstr ""
+
 msgid "The parent motion is not available."
 msgstr ""
 
@@ -5370,6 +5418,17 @@ msgstr ""
 msgid "What is new?"
 msgstr ""
 
+msgid ""
+"When hosted by Intevation GmbH, secret, legally compliant voting is ensured "
+"by organizational measures (see legal opinion)."
+msgstr ""
+
+msgid ""
+"When self-hosted, OpenSlides cannot guarantee that the requirements for "
+"legally compliant, secret voting are met. Responsibility for this lies with "
+"the server operator."
+msgstr ""
+
 msgid "Which version?"
 msgstr ""
 
@@ -5391,6 +5450,9 @@ msgid ""
 msgstr ""
 
 msgid "Withdraw point of order"
+msgstr ""
+
+msgid "Without identifier"
 msgstr ""
 
 msgid "Workflow"
@@ -5631,9 +5693,6 @@ msgstr ""
 msgid "change recommendations"
 msgstr ""
 
-msgid "committee name"
-msgstr ""
-
 msgid "committee-example"
 msgstr ""
 
@@ -5829,12 +5888,6 @@ msgstr ""
 msgid "or"
 msgstr ""
 
-msgid "original identifier"
-msgstr ""
-
-msgid "original submitter"
-msgstr ""
-
 msgid "outside"
 msgstr ""
 
@@ -5883,6 +5936,9 @@ msgstr ""
 msgid "short running"
 msgstr ""
 
+msgid "single-line"
+msgstr ""
+
 msgid "started"
 msgstr ""
 
@@ -5901,7 +5957,7 @@ msgstr ""
 msgid "today"
 msgstr ""
 
-msgid "total"
+msgid "two-line"
 msgstr ""
 
 msgid "undocumented"
@@ -5937,7 +5993,7 @@ msgstr ""
 msgid "with"
 msgstr ""
 
-msgid "without identifier"
+msgid "without structure level"
 msgstr ""
 
 msgid "yellow"
