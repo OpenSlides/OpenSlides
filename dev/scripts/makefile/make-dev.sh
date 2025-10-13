@@ -14,10 +14,17 @@ Builds and starts development related images. Intended to be called from main re
 Parameters:
     #1 TARGET                   : Name of the makefile target that called this script
     #2 SERVICE                  : Name of the service to be operated on. If empty, the main repository is assumed to be operated on
-    #3 RUN_ARGS                 : Additional parameters that will be appended to dev-run calls
 
-    #4 ATTACH_TARGET_CONTAINER  : Determine target container to enter for dev-attached
-    #3 EXEC_COMMAND             : Determine command to be called for dev-exec
+Environment Variables (can be set when invoking make target):
+    RUN_ARGS                 : Additional parameters that will be appended to dev-run calls
+    ATTACH_CONTAINER         : Determine target container to enter for dev-attached and dev-enter
+    EXEC_COMMAND             : Determine command to be called for dev-exec
+    LOG_CONTAINER            : Determine target container to log for dev-log
+
+Example: make   dev-exec   backend   EXEC_COMMAND='vote ls'
+                   ^          ^               ^
+                Param #1   Param #2      Env Variable
+    ( This executes 'ls' in a vote-container created and maintained by a running backend compose setup )
 
 Flags:
     no-cache             : Prevents use of cache when building docker images
@@ -161,7 +168,7 @@ run()
 
 attach()
 {
-    local TARGET_CONTAINER=$ATTACH_TARGET_CONTAINER
+    local TARGET_CONTAINER=$ATTACH_CONTAINER
     info "Attaching to running container"
     if [ -n "$COMPOSE_FILE" ]
     then
@@ -171,7 +178,7 @@ attach()
         if [ -z "$SERVICE" ] && [ -z "$TARGET_CONTAINER" ]
         then
             # Main repository case, use input prompt to determine container
-            local TARGET_CONTAINER=$(input "Which service container should be entered?");
+            local TARGET_CONTAINER=$(input "Which service container should be entered?")
             { [ -z "$TARGET_CONTAINER" ] && \info "No service container declared, exiting" && return; }
         else
             # Submodule case
@@ -221,15 +228,16 @@ stop()
 
 log()
 {
-    local TARGET_CONTAINER=$ATTACH_TARGET_CONTAINER
+    local TARGET_CONTAINER=$LOG_CONTAINER
     if [ -n "$COMPOSE_FILE" ]
     then
         if [ -z "$SERVICE" ] && [ -z "$TARGET_CONTAINER" ]
         then
             # Main repository case, use input prompt to determine container
-            local TARGET_CONTAINER=$(input "Which service container should be logged?");
+            local TARGET_CONTAINER=$(input "Which service container should be logged?")
             { [ -z "$TARGET_CONTAINER" ] && \info "No service container declared, exiting" && return; }
-        else
+        elif [ -n "$SERVICE" ] && [ -z "$TARGET_CONTAINER" ]
+        then
             # Submodule case
             info "No container was specified; Service container will be taken as default" && local TARGET_CONTAINER="$SERVICE"
         fi
@@ -237,7 +245,7 @@ log()
         echocmd eval "docker compose -f $COMPOSE_FILE logs $TARGET_CONTAINER"
     else
         # Single Container
-        echocmd eval "docker logs $CONTAINER_NAME"
+        echocmd docker container logs "$CONTAINER_NAME"
     fi
 
 }
@@ -246,9 +254,8 @@ log()
 ## Parameters
 TARGET=$1
 SERVICE=$2
-RUN_ARGS=$3
-ATTACH_TARGET_CONTAINER=$4
-EXEC_COMMAND=$5
+
+## Parameters RUN_ARGS, ATTACH_CONTAINER, EXEC_COMMAND, LOG_CONTAINER are fetched from environment
 
 # SERVICE contains all additionally provided make targets. This may include flags
 # Extract flags here

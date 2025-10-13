@@ -29,12 +29,12 @@ $(.FLAGS):
 
 dev dev-help dev-standalone dev-detached dev-attached dev-stop dev-exec dev-enter dev-clean dev-build dev-log:
 	@sed -i "1s/.*/$(GO_VERSION)/" $(DOCKER_PATH)/workspaces/*.work
-	@bash $(MAKEFILE_PATH)/make-dev.sh $@ "$(filter-out $@, $(MAKECMDGOALS))" "$(DEV_ARGS)" "$(ATTACH_TARGET_CONTAINER)" "$(EXEC_COMMAND)"
+	@bash $(MAKEFILE_PATH)/make-dev.sh $@ "$(filter-out $@, $(MAKECMDGOALS))"
 
 # Tests
 
 run-tests:
-	bash dev/scripts/makefile/test-all-submodules.sh "$(DEV_ARGS)" "$(ATTACH_TARGET_CONTAINER)" "$(EXEC_COMMAND)"
+	bash dev/scripts/makefile/test-all-submodules.sh "$(filter-out $@, $(MAKECMDGOALS))"
 
 test-ci:
 	bash $(SCRIPT_PATH)/act/run-act.sh $(FOLDER) $(WORKFLOW_TRIGGER)

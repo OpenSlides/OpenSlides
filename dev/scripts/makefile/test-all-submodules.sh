@@ -19,11 +19,13 @@ declare -A outputs
 # For some bizarre reason, the wait-for-it call in auth-service causes the loop below to break
 # Therefore it is tested seperately
 (
+  [[ "$SINGLE_TARGET" != "" ]] && [[ "openslides-$SINGLE_TARGET" != "openslides-auth-service" ]] && exit 0
   ERROR_FOUND=""
   echocmd make -C "openslides-auth-service" run-tests || ERROR_FOUND="1"
-  outputs[$name]="${?}${ERROR_FOUND}"
+  outputs["auth-service"]="${?}${ERROR_FOUND}"
 )
 
+echo ${outputs["auth-service"]}
 while read -r toplevel sm_path name; do
 # Extract submodule name
   {
@@ -38,8 +40,6 @@ while read -r toplevel sm_path name; do
     [[ "$SINGLE_TARGET" != "" ]] && [[ "openslides-$SINGLE_TARGET" != "$name" ]] && continue
 
     # Execute test
-    info "Testing service ${name}"
-
     (
       ERROR_FOUND=""
       echocmd make -C "$DIR" run-tests || ERROR_FOUND="1"
@@ -49,6 +49,7 @@ while read -r toplevel sm_path name; do
 done <<< "$(git submodule foreach --recursive -q 'echo "$toplevel $sm_path $name"')"
 
 echo "Done"
+# This part needs to be reworked. Since tests now run in subshells, outputs remains empty / only changes within the subshell
 for x in "${!outputs[@]}"; do
     VALUE=${outputs[${x}]}
     if [ "$VALUE" != '0' ]; then error "Tests for service ${x} failed"; fi
