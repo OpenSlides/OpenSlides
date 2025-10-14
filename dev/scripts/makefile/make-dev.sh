@@ -68,7 +68,7 @@ build_capsuled()
     local RESPONSE=$?
 
     local POST_TIMESTAMP=$(date +%s)
-    local BUILD_TIME=$(( $POST_TIMESTAMP - $PRE_TIMESTAMP ))
+    local BUILD_TIME=$(( POST_TIMESTAMP - PRE_TIMESTAMP ))
     # Output
     if [ "$RESPONSE" != 0 ]
     then
@@ -273,10 +273,9 @@ done
 # Variables
 SERVICE_FOLDER=""
 CONTAINER_NAME="make-dev-$SERVICE"
-LOCAL_PWD=$(dirname "$0")
 USED_SHELL="sh"
 
-# Remove ARGS flag from calling maketarget
+# Remove ARGS flag from maketarget that's calling this script
 MAKEFLAGS=
 unset ARGS
 
