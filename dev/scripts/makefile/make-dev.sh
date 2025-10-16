@@ -39,7 +39,7 @@ Available dev functions:
     dev-help        : Print help
     dev-detached    : Builds and starts development images with detach flag. This causes started containers to run in the background
     dev-attached    : Builds and starts development images; enters shell of started image.
-                          If a docker compose file is declared, the \$ATTACH_ARGS parameter determines
+                          If a docker compose file is declared, the \$ATTACH_CONTAINER parameter determines
                           the specific container id you will enter (default value is equal the service name)
     dev-standalone  : Builds and starts development images; closes them immediately afterwards
     dev-stop        : Stops any currently running images or docker compose file associated with the service
@@ -48,7 +48,7 @@ Available dev functions:
                           If using a docker compose setup, also declare which container the command should be executed in.
                           Example: 'dev-exec RUN_ARGS=\"service-name echo hello\"' will run \"echo hello\" inside the container named \"service-name\"
     dev-enter       : Enters shell of started container.
-                          If a docker compose file is declared, the \$ENTER_ARGS parameter determines
+                          If a docker compose file is declared, the \$ATTACH_CONTAINER parameter determines
                           the specific container id you will enter (default value is equal the service name)
     dev-build       : Builds the development image
     dev-log         : Prints log output of given container.
@@ -315,7 +315,7 @@ else info "Running $FUNCTION"; fi
 # Compose dev branch checkout
 COMPOSE_REFERENCE_BRANCH="main"
 
-if [ -n "$USE_LOCAL_BRANCH_FOR_COMPOSE" ]; then COMPOSE_REFERENCE_BRANCH=$(git -C "$SERVICE_FOLDER" branch --show-current) && info "Ditching 'main' for '$COMPOSE_REFERENCE_BRANCH' used to fetch external services in dev compose setup"; fi
+if [ -n "$USE_LOCAL_BRANCH_FOR_COMPOSE" ]; then COMPOSE_REFERENCE_BRANCH=$(git -C "$SERVICE_FOLDER" branch --show-current) && info "Ditching 'main' for '$COMPOSE_REFERENCE_BRANCH' in compose setup to fetch external services"; fi
 
 # Helpers
 USER_ID=$(id -u)
