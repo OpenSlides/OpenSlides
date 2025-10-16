@@ -1,17 +1,17 @@
 #!/bin/bash
 
 # Import OpenSlides utils package
-. "$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )/../util.sh"
+. "$(dirname "$0")/../util.sh"
 
 # Runs act on given submodule directory
 
 DIND_CONTAINER="dind-act-container"
 SERVICE_FOLDER=$1
 WORKFLOW_TRIGGER=$2
-LOCAL_PWD=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+LOCAL_PWD=$(dirname "$0")
 
 if [ -z "${SERVICE_FOLDER}" ] ; then \
-    error "Please provide the directory of the service to analyse"; \
+    error "Please provide the directory of the service to analyse. Example: make test-ci FOLDER=openslides-backend"; \
 	exit 1; \
 fi
 

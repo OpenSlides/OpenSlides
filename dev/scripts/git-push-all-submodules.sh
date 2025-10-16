@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # Import OpenSlides utils package
-. "$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )/util.sh"
+. "$(dirname "$0")/util.sh"
 
 # Commits and pushes all submodules to their respective repositories.
 # The same Commit Message is reused for all Commits
-# Use this for blanket changes to all submodules that are the same between all submodules, such as 
+# Use this for blanket changes to all submodules that are the same between all submodules, such as
 # Dockerfile changes that need to be applied to all submodules
 
 export MESSAGE=$1
@@ -17,26 +17,27 @@ fi
 
 export SINGLE_TARGET=$2
 
-IFS=$'\n'
-for DIR in $(git submodule foreach --recursive -q sh -c pwd); do
+while read -r toplevel sm_path name; do
+# Extract submodule name
+  {
     # Extract submodule name
-    cd "$DIR" || exit && \
+    DIR="$toplevel/$sm_path"
 
-    DIRNAME=${PWD##*/} && \
-    export DIRNAME && \
-    SUBMODULE=${DIRNAME//"openslides-"} && \
-    export SUBMODULE && \
-
-    if [ "$SUBMODULE" == 'go' ]; then continue; fi && \
-    if [ "$SUBMODULE" == 'meta' ]; then continue; fi && \
+    [[ "$name" == 'openslides-meta' ]] && continue
+    [[ "$name" == 'openslides-go' ]] && continue
 
     # Check for single target
-    if [ $# -eq 2 ]; then if [[ "$SINGLE_TARGET" != "$SUBMODULE" ]]; then continue; fi; fi && \
+    [[ "$SINGLE_TARGET" != "" ]] && [[ "openslides-$SINGLE_TARGET" != "$name" ]] && continue
 
-    # Git commit
-    info "Commit & push for ${SUBMODULE} " && \
-    git add -u . && \
-    git commit -a -m "$MESSAGE" && \
-    git push
-done
+    (
+        cd "./$name" || exit 1
+
+        # Git commit
+        info "Commit & push for ${name} "
+        git add -u .
+        git commit -a -m "$MESSAGE"
+        git push
+    )
+  }
+done <<< "$(git submodule foreach --recursive -q 'echo "$toplevel $sm_path $name"')"
 wait

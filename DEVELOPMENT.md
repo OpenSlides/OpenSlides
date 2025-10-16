@@ -18,7 +18,7 @@ After cloning you need to initialize all submodules:
 
 Finally, start the development server:
 
-    $ make run-dev
+    $ make dev
 
 (This command won't run without sudo, or without having set up Docker to run without sudo - see their documentation)
 
@@ -31,7 +31,7 @@ Login as admin with ´admin´ as both username and password.
 
 ## Running tests
 
-To run all tests of all services, execute `run-service-tests`.
+To run all tests of all services, execute `run-tests`.
 
 ## Translations
 
@@ -40,7 +40,7 @@ functionality for this is bundled in this repository. The following make command
 
 -   `make extract-translations`: Extracts all strings which need translations from all services and
     merges them together into a single `template-en-pot`, which is placed under `i18n/`. You must
-    run `make run-dev` in another terminal before you can execute this command.
+    run `make dev` in another terminal before you can execute this command.
 -   `make push-translations`: Push the current template file under `i18n/template-en.pot` to Transifex
     to allow translating it there.
 -   `make pull-translations`: Pull the translations in all languages available in the client from
@@ -166,7 +166,7 @@ Go to the service and create a new branch (from main):
 
 Run OpenSlides in development mode (e.g. in a new terminal):
 
-    $ make run-dev
+    $ make dev
 
 After making some changes in my-service, create a commit and push to your fork
 
@@ -218,13 +218,13 @@ Sometimes it might be helpful to be able to run tests in the backend console and
 parallel. To circumvent the need to restart the full stack every time you switch contexts, there
 exist the `docker/docker-compose.test.yml` which introduces another database container to the stack.
 
-By default (meaning by running `make run-dev`), the setup uses the normal `postgres` container. We
+By default (meaning by running `make dev`), the setup uses the normal `postgres` container. We
 call this the `dev` context. By executing `make switch-to-test`, you can replace the database
 container and automatically restarting all dependent services, thus changing into the so-called
 `test` context. With `make switch-to-dev`, you can switch back. Finally, `make run-backend` provides
 a shortcut to switch to the `test` context and enter the backend shell to e.g. execute tests there.
 Be aware that all these commands need an OpenSlides instance to be already running, meaning you have
-to execute `make run-dev` first.
+to execute `make dev` first.
 
 ## Helper scripts
 
