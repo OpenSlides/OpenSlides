@@ -11,8 +11,11 @@ override DOCKER_COMPOSE_FILE=$(DOCKER_PATH)/docker-compose.dev.yml
 # Build images for different contexts
 
 build-prod build-dev build-tests:
-	sed -i "1s/.*/$(GO_VERSION)/" $(DOCKER_PATH)/workspaces/*.work
+	sed -i -e "1s/.*/$(GO_VERSION)/" $(DOCKER_PATH)/workspaces/*.work
 	bash $(MAKEFILE_PATH)/make-build-main.sh $@
+
+build:
+	$(DOCKER_PATH)/build.sh
 
 # Development
 .SERVICE_TARGETS := auth autoupdate backend client datastore icc manage media proxy search vote
@@ -84,9 +87,6 @@ deprecation-warning:
 
 deprecation-warning-alternative: | deprecation-warning
 	@echo "\033[1;33m Please use the following command instead: $(ALTERNATIVE) \033[0m"
-
-build: | deprecation-warning
-	$(DOCKER_PATH)/build.sh
 
 run-dev:
 	@make deprecation-warning-alternative ALTERNATIVE="dev"

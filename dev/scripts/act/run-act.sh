@@ -11,7 +11,7 @@ WORKFLOW_TRIGGER=$2
 LOCAL_PWD=$(dirname "$0")
 
 if [ -z "${SERVICE_FOLDER}" ] ; then \
-    error "Please provide the directory of the service to analyse"; \
+    error "Please provide the directory of the service to analyse. Example: make test-ci FOLDER=openslides-backend"; \
 	exit 1; \
 fi
 

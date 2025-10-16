@@ -272,7 +272,7 @@ done
 
 # Variables
 SERVICE_FOLDER=""
-CONTAINER_NAME="make-dev-$SERVICE"
+CONTAINER_NAME="make-os-dev-$SERVICE"
 USED_SHELL="sh"
 
 # Remove ARGS flag from maketarget that's calling this script
@@ -315,7 +315,11 @@ else info "Running $FUNCTION"; fi
 # Compose dev branch checkout
 COMPOSE_REFERENCE_BRANCH="main"
 
-if [ -n "$USE_LOCAL_BRANCH_FOR_COMPOSE" ]; then COMPOSE_REFERENCE_BRANCH=$(git -C "$SERVICE_FOLDER" branch --show-current) && info "Ditching 'main' for '$COMPOSE_REFERENCE_BRANCH' in compose setup to fetch external services"; fi
+if [ -n "$USE_LOCAL_BRANCH_FOR_COMPOSE" ]
+then
+    COMPOSE_REFERENCE_BRANCH=$(git -C "$SERVICE_FOLDER" branch --show-current) && \
+    info "Ditching 'main' for '$COMPOSE_REFERENCE_BRANCH' in compose setup to fetch external services"
+fi
 
 # Helpers
 USER_ID=$(id -u)
