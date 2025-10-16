@@ -38,7 +38,12 @@ update_meta(){
     then
         (
             cd meta || exit 1
-            (fetch_merge_push meta origin)
+            git checkout main
+            git pull
+            cd .. || exit 1
+            git add meta
+            git commit -m "Update meta"
+            git push
         )
     fi
 }
