@@ -791,6 +791,9 @@ msgstr ""
 msgid "Bullet list"
 msgstr ""
 
+msgid "Button text for next state"
+msgstr ""
+
 msgid "CSV import"
 msgstr ""
 
@@ -1943,6 +1946,11 @@ msgid "Enable/disable accounts"
 msgstr ""
 
 msgid ""
+"Enables a button with defined text that sets the motion to next state. The "
+"next state is defined via \"Submitter may set state to\"."
+msgstr ""
+
+msgid ""
 "Enables for the selected state the possibility for submitters to change the "
 "state of the motion. Other administrative functions are excluded."
 msgstr ""
@@ -2180,9 +2188,6 @@ msgid "Font regular"
 msgstr ""
 
 msgid "Font size in pt"
-msgstr ""
-
-msgid "Footer"
 msgstr ""
 
 msgid ""
@@ -2804,6 +2809,13 @@ msgstr ""
 msgid "Light mode"
 msgstr ""
 
+msgid "Limit editor formatting options for users WITH motion manage permission"
+msgstr ""
+
+msgid ""
+"Limit editor formatting options for users WITHOUT motion manage permission"
+msgstr ""
+
 msgid "Limit of active accounts"
 msgstr ""
 
@@ -3180,6 +3192,9 @@ msgid "New account"
 msgstr ""
 
 msgid "New amendment"
+msgstr ""
+
+msgid "New and old passwords are identical!"
 msgstr ""
 
 msgid "New ballot"
