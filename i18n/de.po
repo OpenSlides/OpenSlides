@@ -872,6 +872,9 @@ msgstr "Fett"
 msgid "Bullet list"
 msgstr "Aufzählung"
 
+msgid "Button text for next state"
+msgstr "Button-Text für nächsten Zustand"
+
 msgid "CSV import"
 msgstr "CSV-Import"
 
@@ -2121,6 +2124,14 @@ msgid "Enable/disable accounts"
 msgstr "Accounts ein-/ausschalten"
 
 msgid ""
+"Enables a button with defined text that sets the motion to next state. The "
+"next state is defined via \"Submitter may set state to\"."
+msgstr ""
+"Aktiviert einen Button mit angegebenen Text, der den Antrag in den nächsten "
+"Status setzt. Der nächste Status ist definiert durch das Feld "
+"\"Antragsteller*in darf Status setzen auf\"."
+
+msgid ""
 "Enables for the selected state the possibility for submitters to change the "
 "state of the motion. Other administrative functions are excluded."
 msgstr ""
@@ -2399,9 +2410,6 @@ msgstr "Schriftart normal"
 
 msgid "Font size in pt"
 msgstr "Schriftgröße in pt"
-
-msgid "Footer"
-msgstr "Fußzeile"
 
 msgid ""
 "For activation:<br>\n"
@@ -3039,6 +3047,18 @@ msgstr "Pegelanzeige"
 msgid "Light mode"
 msgstr "Heller Modus"
 
+msgid ""
+"Limit editor formatting options for users WITH motion manage permission"
+msgstr ""
+"Editor-Formatierungsmöglichkeit einschränken für Nutzer MIT "
+"Antragsverwaltungsrecht"
+
+msgid ""
+"Limit editor formatting options for users WITHOUT motion manage permission"
+msgstr ""
+"Editor-Formatierungsmöglichkeit einschränken für Nutzer OHNE "
+"Antragsverwaltungsrecht"
+
 msgid "Limit of active accounts"
 msgstr "Anzahl der maximal aktiven Accounts"
 
@@ -3425,6 +3445,9 @@ msgstr "Neuer Account"
 
 msgid "New amendment"
 msgstr "Neuer Änderungsantrag"
+
+msgid "New and old passwords are identical!"
+msgstr "Neues und altes Passwort sind identisch!"
 
 msgid "New ballot"
 msgstr "Neuer Wahlgang"
