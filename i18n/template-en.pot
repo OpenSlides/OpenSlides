@@ -791,7 +791,7 @@ msgstr ""
 msgid "Bullet list"
 msgstr ""
 
-msgid "Button text for next state"
+msgid "Button text"
 msgstr ""
 
 msgid "CSV import"
@@ -1632,6 +1632,16 @@ msgid "Defines the time in which applause amounts are add up."
 msgstr ""
 
 msgid ""
+"Defines the wording of the button to change the state. Button is visible if "
+"the corresponding state is defined in \"Submitter may set state to\".\n"
+"\n"
+"Example: \n"
+"1. State \"in progress\": \"Submitter may set state to\" = \"submitted\"\n"
+"2. State \"submitted\": \"Button text\" = \"Submit motion\"\n"
+"=> This enables a submit button in state \"in progress\"."
+msgstr ""
+
+msgid ""
 "Defines the wording of the recommendation that belongs to this state.\n"
 "Example: State = Accepted / Recommendation = Acceptance.\n"
 "\n"
@@ -1943,11 +1953,6 @@ msgid "Enable/disable account ..."
 msgstr ""
 
 msgid "Enable/disable accounts"
-msgstr ""
-
-msgid ""
-"Enables a button with defined text that sets the motion to next state. The "
-"next state is defined via \"Submitter may set state to\"."
 msgstr ""
 
 msgid ""
