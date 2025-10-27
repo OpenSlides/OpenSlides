@@ -791,6 +791,9 @@ msgstr ""
 msgid "Bullet list"
 msgstr ""
 
+msgid "Button text"
+msgstr ""
+
 msgid "CSV import"
 msgstr ""
 
@@ -1626,6 +1629,16 @@ msgid "Defines the minimum deflection which is required to recognize applause."
 msgstr ""
 
 msgid "Defines the time in which applause amounts are add up."
+msgstr ""
+
+msgid ""
+"Defines the wording of the button to change the state. Button is visible if "
+"the corresponding state is defined in \"Submitter may set state to\".\n"
+"\n"
+"Example: \n"
+"1. State \"in progress\": \"Submitter may set state to\" = \"submitted\"\n"
+"2. State \"submitted\": \"Button text\" = \"Submit motion\"\n"
+"=> This enables a submit button in state \"in progress\"."
 msgstr ""
 
 msgid ""
@@ -2804,6 +2817,13 @@ msgstr ""
 msgid "Light mode"
 msgstr ""
 
+msgid "Limit editor formatting options for users WITH motion manage permission"
+msgstr ""
+
+msgid ""
+"Limit editor formatting options for users WITHOUT motion manage permission"
+msgstr ""
+
 msgid "Limit of active accounts"
 msgstr ""
 
@@ -3180,6 +3200,9 @@ msgid "New account"
 msgstr ""
 
 msgid "New amendment"
+msgstr ""
+
+msgid "New and old passwords are identical!"
 msgstr ""
 
 msgid "New ballot"
