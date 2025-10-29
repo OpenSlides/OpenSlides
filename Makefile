@@ -74,8 +74,7 @@ pull-translations:
 	tx pull --translations --languages $$(dev/scripts/dc-dev.sh exec client npm run get-available-languages | tail -n 1)
 
 copy-translations:
-	cp i18n/*.po openslides-client/client/src/assets/i18n/
-	cp i18n/*.po openslides-backend/openslides_backend/i18n/messages/
+	dev/scripts/copy-translations.sh
 
 
 ########################## Deprecation List ##########################
