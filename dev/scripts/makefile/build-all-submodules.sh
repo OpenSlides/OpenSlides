@@ -1,43 +1,38 @@
 #!/bin/bash
 
+set -e
+
 # Import OpenSlides utils package
-. "$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )/../util.sh"
+. "$(dirname "$0")"/../util.sh
 
 # Iterates all submodules and executes the make-target 'build-aio' using parameter context as build target
-# Ignores meta directory
+# Ignores meta and openslides-go directory
 
-# Parameter #1: Name of a submodule. If given, this function will exclusively build the given submodule and ignore all others
 
-# This script runs a command in every registered submodule parallel
-# Credits go to https://stackoverflow.com/a/70418086
-
-export CONTEXT=$1
+CONTEXT=$1
+shift 1
+ARGS="${*}"
 
 if [ "${CONTEXT}" != "prod" ] && [ "${CONTEXT}" != "dev" ] && [ "${CONTEXT}" != "tests" ]; then
-    warn "No build context specified. Building for prod per default." >&2
-    export CONTEXT="prod"
+    warn "No build context specified. Building for prod per default."
+    CONTEXT="prod"
 fi
 
-export SINGLE_TARGET=$2
+info "Building image(s) for context $CONTEXT"
 
-IFS=$'\n'
-for DIR in $(git submodule foreach --recursive -q sh -c pwd); do
-   # Extract submodule name
-    cd "$DIR" || exit && \
+while read -r toplevel sm_path name; do
+# Extract submodule name
+  {
+    DIR="$toplevel/$sm_path"
 
-    DIRNAME=${PWD##*/} && \
-    export DIRNAME && \
-    SUBMODULE=${DIRNAME//"openslides-"} && \
-    export SUBMODULE && \
-
-    if [ "$SUBMODULE" == 'meta' ]; then continue; fi && \
-
-    # Check for single target
-    if [ $# -eq 2 ]; then if [[ "$SINGLE_TARGET" != "$SUBMODULE" ]]; then continue; fi; fi && \
+    [[ "$name" == 'openslides-go' ]] && exit 0
+    [[ "$name" == 'openslides-meta' ]] && exit 0
 
     # Execute test
-    info " --- Building service ${SUBMODULE} for context ${CONTEXT} --- " && \
-    echocmd make build-"${CONTEXT}" \
-    &
-done
+    echo " --- Building service ${name} for context ${CONTEXT} --- "
+
+    echo "end sleep"
+    echocmd make -C "$DIR" build-"${CONTEXT}" ARGS="$ARGS"
+  } &
+done <<< "$(git submodule foreach --recursive -q 'echo "$toplevel $sm_path $name"')"
 wait

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Import OpenSlides utils package
-. "$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )/util.sh"
+. "$(dirname "$0")/util.sh"
 
 # Creates a remote to given submodule.
 # Call this from project root path
@@ -13,9 +13,9 @@ if [ -z "$2" ]; then echo "Parameter #2 missing"; exit; fi
 info  "Forking $2/openslides-$1"
 
 (
-cd ./openslides-"$1" || exit
-git remote rename origin upstream
-git remote add origin git@github.com:"$2"/openslides-"$1".git
-git fetch upstream
-git remote -v
+    cd ./openslides-"$1" || exit
+    git remote rename origin upstream
+    git remote add origin git@github.com:"$2"/openslides-"$1".git
+    git fetch upstream
+    git remote -v
 )

@@ -1,25 +1,31 @@
 #!/bin/bash
 
 # Import OpenSlides utils package
-. "$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )/util.sh"
+. "$(dirname "$0")/util.sh"
 
-# Fetches and merges all submodules with their respective upstream/main repositories.
+# Fetches and merges all submodules with their respective SOURCE_REPOSITORY/SOURCE_BRANCH repositories. Default is upstream/main
 
-export SINGLE_TARGET=$1
+SOURCE_REPOSITORY=$1
+SOURCE_BRANCH=$2
+SINGLE_TARGET=$3
+
+if [ -z "$SOURCE_REPOSITORY" ]; then SOURCE_REPOSITORY="upstream"; fi
+if [ -z "$SOURCE_BRANCH" ]; then SOURCE_BRANCH="main"; fi
 
 fetch_merge_push() {
-    export SUBMODULE=$1
-    export SOURCE=$2
+    local SUBMODULE=$1
+    local SOURCE=$2
+    local BRANCH=$3
 
     info "Fetch & merge for ${SUBMODULE} "
 
     GIT_UPDATE=$(git remote update "$SOURCE")
-    export GIT_UPDATE
+    local GIT_UPDATE
     GIT_FETCH=$(git fetch "$SOURCE")
-    export GIT_FETCH
+    local GIT_FETCH
 
-    export ERROR=0
-    git merge "$SOURCE"/main || export ERROR=1
+    local ERROR=0
+    git merge --no-edit "$SOURCE"/"$BRANCH" || local ERROR=1
 
     if [ "$SOURCE" == 'origin' ]; then return; fi
 
@@ -31,36 +37,37 @@ update_meta(){
     if [ -d "meta" ]
     then
         (
-            cd meta || exit
-            (fetch_merge_push meta origin)
+            cd meta || exit 1
+            git checkout main
+            git pull
+            cd .. || exit 1
+            git add meta
+            git commit -m "Update meta"
+            git push
         )
     fi
 }
 
-IFS=$'\n'
-for DIR in $(git submodule foreach --recursive -q sh -c pwd); do
+while read -r toplevel sm_path name; do
+# Extract submodule name
+  {
     # Extract submodule name
-    cd "$DIR" || exit && \
+    DIR="$toplevel/$sm_path"
 
-    DIRNAME=${PWD##*/} && \
-    export DIRNAME && \
-    SUBMODULE=${DIRNAME//"openslides-"} && \
-    export SUBMODULE && \
-
-    if [ "$SUBMODULE" == 'go' ]; then continue; fi && \
-    if [ "$SUBMODULE" == 'meta' ]; then continue; fi && \
+    [[ "$name" == 'openslides-meta' ]] && continue
+    [[ "$name" == 'openslides-go' ]] && continue
 
     # Check for single target
-    if [ $# -eq 2 ]; then if [[ "$SINGLE_TARGET" != "$SUBMODULE" ]]; then continue; fi; fi && \
+    [[ "$SINGLE_TARGET" != "" ]] && [[ "openslides-$SINGLE_TARGET" != "$name" ]] && continue
 
-    # Recursively Update Meta too
-    update_meta && \
+    (
+        cd "./$name" || exit 1
+        # Recursively Update Meta too
+        update_meta
 
-    # Git commit
-    fetch_merge_push "${SUBMODULE}" upstream
-done
+        # Git commit
+        fetch_merge_push "${name}" "${SOURCE_REPOSITORY}" "${SOURCE_BRANCH}"
+    )
+  }
+done <<< "$(git submodule foreach --recursive -q 'echo "$toplevel $sm_path $name"')"
 wait
-
-git remote update upstream
-git fetch upstream
-git merge upstream/main

@@ -3,12 +3,12 @@
 # Joshua Sangmeister <joshua.sangmeister@gmail.com>, 2024
 # Katharina <karmitt2@web.de>, 2024
 # Elblinator, 2025
-# Emanuel Schütze <emanuel.schuetze@intevation.de>, 2025
 # Birte Spekker <birte.spekker@intevation.de>, 2025
+# Emanuel Schütze <emanuel.schuetze@intevation.de>, 2025
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Birte Spekker <birte.spekker@intevation.de>, 2025\n"
+"Last-Translator: Emanuel Schütze <emanuel.schuetze@intevation.de>, 2025\n"
 "Language-Team: German (https://app.transifex.com/openslides/teams/14270/de/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -37,15 +37,6 @@ msgstr "-Ä"
 
 msgid "100% base"
 msgstr "100-%-Basis"
-
-msgid ""
-"<a href=\"https://openslides.com\">OpenSlides</a> is a free web based "
-"presentation and assembly system for visualizing and controlling agenda, "
-"motions and elections of an assembly."
-msgstr ""
-"<a href=\"https://openslides.com\">OpenSlides</a> ist ein freies, "
-"webbasiertes Präsentations- und Versammlungssystem zur Darstellung und "
-"Steuerung von Tagesordnung, Anträgen und Wahlen einer Versammlung."
 
 msgid "<unknown motion>"
 msgstr "<unbekannter Antrag>"
@@ -231,6 +222,9 @@ msgstr "Aktive Veranstaltungen"
 msgid "Add"
 msgstr "Hinzufügen"
 
+msgid "Add answer"
+msgstr "Antwort hinzufügen"
+
 msgid "Add me"
 msgstr "Füge mich hinzu"
 
@@ -304,6 +298,9 @@ msgstr ""
 
 msgid "Agenda"
 msgstr "Tagesordnung"
+
+msgid "Agenda export"
+msgstr "Tagesordnungsexport"
 
 msgid "Agenda items are in process. Please wait ..."
 msgstr "Tagesordnungspunkte werden bearbeitet. Bitte warten ..."
@@ -427,6 +424,9 @@ msgstr "Anzahl der Accounts"
 msgid "Amount of meetings"
 msgstr "Anzahl der Veranstaltungen"
 
+msgid "Amount of motions"
+msgstr "Anzahl der Anträge"
+
 msgid "Amount of votes"
 msgstr "Anzahl der Stimmen"
 
@@ -444,6 +444,12 @@ msgstr "Anonymisieren kann erst nach Beenden der Stimmabgabe erfolgen."
 
 msgid "Anonymous"
 msgstr "Anonym"
+
+msgid "Answer to interposed question"
+msgstr "Antwort auf Zwischenfrage"
+
+msgid "Answer to intervention"
+msgstr "Antwort auf Kurzintervention"
 
 msgid "Applause interval in seconds"
 msgstr "Applaus-Zeitintervall in Sekunden"
@@ -866,6 +872,9 @@ msgstr "Fett"
 msgid "Bullet list"
 msgstr "Aufzählung"
 
+msgid "Button text"
+msgstr "Button-Text"
+
 msgid "CSV import"
 msgstr "CSV-Import"
 
@@ -978,6 +987,9 @@ msgstr ""
 "Darf Teilnehmenden-Datensätze erstellen, ändern, löschen und die "
 "Gruppenberechtigungen verwalten."
 
+msgid "Can create, modify, start/stop and delete ballots."
+msgstr "Darf Wahlgänge erstellen, ändern, starten/stoppen und löschen."
+
 msgid "Can create, modify, start/stop and delete votings."
 msgstr "Darf Abstimmungen erstellen, ändern, starten/stoppen und löschen."
 
@@ -1017,6 +1029,9 @@ msgstr ""
 
 msgid "Can manage agenda"
 msgstr "Darf die Tagesordung verwalten"
+
+msgid "Can manage ballots"
+msgstr "Darf Wahlgänge verwalten"
 
 msgid "Can manage elections"
 msgstr "Darf Wahlen verwalten"
@@ -1344,9 +1359,6 @@ msgstr "Anwesenheit ändern"
 msgid "Change recommendation"
 msgstr "Änderungsempfehlung"
 
-msgid "Change recommendation - rejected"
-msgstr "Änderungsempfehlung - Abgelehnt"
-
 msgid "Change recommendations"
 msgstr "Änderungsempfehlungen"
 
@@ -1425,9 +1437,6 @@ msgstr "Bauchbinde Rednername, Hintergrundfarbe"
 
 msgid "Chyron speaker, font color"
 msgstr "Bauchbinde Rednername, Schriftfarbe"
-
-msgid "Classic"
-msgstr "Klassisch"
 
 msgid "Clear"
 msgstr "Bereinigen"
@@ -1534,6 +1543,9 @@ msgstr "Gremienverwaltung"
 msgid "Committee managers"
 msgstr "Gremienverwalter"
 
+msgid "Committee name"
+msgstr "Gremiumname"
+
 msgid "Committees"
 msgstr "Gremien"
 
@@ -1578,6 +1590,9 @@ msgstr "Livestream fortsetzen"
 
 msgid "Continuous text"
 msgstr "Fortlaufender Text"
+
+msgid "Contra"
+msgstr "Contra"
 
 msgid "Contra speech"
 msgstr "Gegenrede"
@@ -1650,6 +1665,9 @@ msgstr "Aktuelle Folie"
 
 msgid "Current speaker"
 msgstr "Aktuelle*r Redner*in"
+
+msgid "Current speaker / structure level"
+msgstr "Aktuelle*r Redner*in / Gliederungsebene"
 
 msgid "Current speaker chyron"
 msgstr "Bauchbinde aktuelle*r Redner*in"
@@ -1742,11 +1760,15 @@ msgstr "Voreingestellte Art der Stimmabgabe"
 msgid ""
 "Defines for the selected state which groups have access:\n"
 "- If no option is selected, the motions in the selected state are visible to all; The prerequisite for this is group permission: [Can see motions].\n"
-"- Selecting one or more options restricts access to those groups for which the selected authorization option is defined under > [Participants] > [Groups]."
+"- Selecting one or more options restricts access to those groups for which the selected authorization option is defined under > [Participants] > [Groups].\n"
+"\n"
+"Hint: Administrators always have full access."
 msgstr ""
 "Definiert für den ausgewählten Status, welche Gruppen Zugriff haben:\n"
 "- Wenn keine Option ausgewählt ist, sind die Anträge im ausgewählten Status für alle sichtbar; Voraussetzung hierfür ist Gruppenrecht: [Darf Anträge sehen].\n"
-"- Die Auswahl einer oder mehrerer Optionen schränkt den Zugriff auf diejenigen Gruppen ein, für die unter > [Teilnehmende] > [Gruppen] die ausgewählte Berechtigungsoption definiert ist."
+"- Die Auswahl einer oder mehrerer Optionen schränkt den Zugriff auf diejenigen Gruppen ein, für die unter > [Teilnehmende] > [Gruppen] die ausgewählte Berechtigungsoption definiert ist.\n"
+"\n"
+"Hinweis: Administratoren haben immer vollen Zugriff."
 
 msgid "Defines the colour for the state button."
 msgstr "Definiert die Farbe für die Status-Schaltfläche."
@@ -1766,6 +1788,21 @@ msgstr ""
 
 msgid "Defines the time in which applause amounts are add up."
 msgstr "Definiert die Zeit in der Applauswerte aufsummiert werden."
+
+msgid ""
+"Defines the wording of the button to change the state. Button is visible if the corresponding state is defined in \"Submitter may set state to\".\n"
+"\n"
+"Example: \n"
+"1. State \"in progress\": \"Submitter may set state to\" = \"submitted\"\n"
+"2. State \"submitted\": \"Button text\" = \"Submit motion\"\n"
+"=> This enables a submit button in state \"in progress\"."
+msgstr ""
+"Legt den Wortlaut des Buttons zum Statusändern fest. Der Button ist nur dann sichtbar, wenn der entsprechende Status unter „Antragsteller*in darf Status setzen auf“ definiert ist.\n"
+"\n"
+"Beispiel: \n"
+"1. Status „in Bearbeitung“: „Antragsteller*in darf Status setzen auf“ = „eingereicht“\n"
+"2. Status „eingereicht“: „Button-Text“ = „Antrag einreichen“\n"
+"=> Dadurch wird ein Antrag-Einreichen-Button im Status „in Bearbeitung“ aktiviert."
 
 msgid ""
 "Defines the wording of the recommendation that belongs to this state.\n"
@@ -1939,18 +1976,14 @@ msgid "Duration of requests to speak"
 msgstr "Dauer der Wortmeldungen"
 
 msgid ""
-"During non-nominal voting OpenSlides does NOT store the individual user ID "
-"of the voter. This in no way means that a non-nominal vote is completely "
-"anonymous and secure. The votes cannot track their individual votes after "
-"the data has been submitted. The validity of the data cannot always be "
-"guaranteed."
+"During non-nominal voting, OpenSlides does NOT store the individual user IDs"
+" of voters in connection with the votes cast. Once the data has been "
+"transmitted, voters can no longer track or check their own votes."
 msgstr ""
-"Während der nicht-namentlichen Stimmabgabe speichert OpenSlides NICHT die "
-"individuelle Nutzerkennung des Stimmberechtigen. Dies bedeutet jedoch "
-"keineswegs, dass eine nicht-namentliche Stimmabgabe völlig anonym und sicher"
-" ist. Der Stimmberechtigte kann nach Übermittlung der Daten die eigene "
-"Stimme nicht mehr nachverfolgen oder überprüfen. Die Gültigkeit der Daten "
-"kann daher nicht garantiert werden."
+"Während der nicht-namentlichen Stimmabgabe speichert OpenSlides die "
+"individuelle Nutzerkennung der Stimmberechtigen NICHT in Zusammenhang mit "
+"den abgegebenen Stimmen. Die Stimmberechtigten können nach Übermittlung der "
+"Daten die eigene Stimme nicht mehr nachverfolgen oder überprüfen."
 
 msgid "Edit"
 msgstr "Bearbeiten"
@@ -2236,6 +2269,9 @@ msgstr "Stimmberechtigte"
 msgid "Error"
 msgstr "Fehler"
 
+msgid "Error during PDF creation of agenda item:"
+msgstr "Fehler bei der PDF-Erstellung des TOPs:"
+
 msgid "Error during PDF creation of election:"
 msgstr "Fehler bei der PDF-Erstellung der Wahl:"
 
@@ -2411,6 +2447,9 @@ msgstr "Fürrede"
 
 msgid "Forward"
 msgstr "Weiterleiten"
+
+msgid "Forward attachments"
+msgstr "Anhänge weiterleiten"
 
 msgid "Forward motions"
 msgstr "Anträge weiterleiten"
@@ -2914,6 +2953,9 @@ msgstr "Ist öffentlich"
 msgid "Is speaker"
 msgstr "ist Redner*in"
 
+msgid "Is speaking"
+msgstr "Redet gerade"
+
 msgid "Is submitter"
 msgstr "ist Antragsteller*in"
 
@@ -3012,6 +3054,18 @@ msgstr "Pegelanzeige"
 msgid "Light mode"
 msgstr "Heller Modus"
 
+msgid ""
+"Limit editor formatting options for users WITH motion manage permission"
+msgstr ""
+"Editor-Formatierungsmöglichkeit einschränken für Nutzer MIT "
+"Antragsverwaltungsrecht"
+
+msgid ""
+"Limit editor formatting options for users WITHOUT motion manage permission"
+msgstr ""
+"Editor-Formatierungsmöglichkeit einschränken für Nutzer OHNE "
+"Antragsverwaltungsrecht"
+
 msgid "Limit of active accounts"
 msgstr "Anzahl der maximal aktiven Accounts"
 
@@ -3104,6 +3158,9 @@ msgstr "Niedrigster Applauswert"
 
 msgid "Main motion and line number"
 msgstr "Hauptantrag und Zeilennummer"
+
+msgid "Main speaker"
+msgstr "Hauptredner*in"
 
 msgid ""
 "Make background color from meta information box on the projector transparent"
@@ -3233,9 +3290,6 @@ msgstr "Sprechzettel"
 
 msgid "Moderation-Note"
 msgstr "Sprechzettel"
-
-msgid "Modern"
-msgstr "Modern"
 
 msgid "Modify design"
 msgstr "Design ändern"
@@ -3399,6 +3453,9 @@ msgstr "Neuer Account"
 msgid "New amendment"
 msgstr "Neuer Änderungsantrag"
 
+msgid "New and old passwords are identical!"
+msgstr "Neues und altes Passwort sind identisch!"
+
 msgid "New ballot"
 msgstr "Neuer Wahlgang"
 
@@ -3458,6 +3515,9 @@ msgstr "Neue*r Teilnehmer*in"
 
 msgid "New password"
 msgstr "Neues Passwort"
+
+msgid "New poll"
+msgstr "Neue Umfrage"
 
 msgid "New projector"
 msgstr "Neuer Projektor"
@@ -3593,6 +3653,9 @@ msgstr "Nicht gefunden"
 
 msgid "Not locked out"
 msgstr "Nicht ausgeschlossen"
+
+msgid "Note on secret voting"
+msgstr "Hinweis zu geheimen Stimmabgaben"
 
 msgid ""
 "Note, that the default password will be changed to the new generated one."
@@ -3734,6 +3797,9 @@ msgstr "Eine E-Mail wurde erfolgreich versandt."
 msgid "Only available for nominal voting"
 msgstr "Nur für namentliche Abstimmungen verfügbar"
 
+msgid "Only for committee admins"
+msgstr "Nur für Gremienadmins"
+
 msgid "Only for internal notes."
 msgstr "Nur für interne Notizen."
 
@@ -3754,6 +3820,9 @@ msgstr "Nur Zeit"
 
 msgid "Only traffic light"
 msgstr "Nur Ampel"
+
+msgid "Open"
+msgstr "Offen"
 
 msgid "Open Jitsi in new tab"
 msgstr "Jitsi im neuen Tab öffnen"
@@ -3836,6 +3905,12 @@ msgstr "Herkunftsantrag gelöscht"
 
 msgid "Original"
 msgstr "Original"
+
+msgid "Original identifier"
+msgstr "Originalbezeichner"
+
+msgid "Original submitter"
+msgstr "Originalantragsteller*in"
 
 msgid "Original version"
 msgstr "Originalfassung"
@@ -4166,6 +4241,9 @@ msgstr "Datenschutzerklärung"
 
 msgid "Private key of Service Provider (SP)"
 msgstr "Privater Schlüssel des Service Providers (SP)"
+
+msgid "Pro"
+msgstr "Pro"
 
 msgid "Process handling"
 msgstr "Prozessverarbeitung"
@@ -4515,14 +4593,8 @@ msgstr "Suche"
 msgid "Search player"
 msgstr "Spieler suchen"
 
-msgid "Searching for candidates"
-msgstr "Auf Kandidatensuche"
-
 msgid "Searching for players ..."
 msgstr "Auf der Suche nach Spielern ..."
-
-msgid "Secret voting can not be guaranteed"
-msgstr "Geheime Stimmabgaben können nicht garantiert werden"
 
 msgid "Select"
 msgstr "Auswählen"
@@ -5138,6 +5210,9 @@ msgstr ""
 msgid "The number has to be greater than 0."
 msgstr "Die Anzahl muss größer als 0 sein."
 
+msgid "The organizer is responsible for the content under press law."
+msgstr "Presserechtlich verantwortlich für den Inhalt ist der Veranstalter."
+
 msgid "The parent motion is not available."
 msgstr "Der Eltern-Antrag ist nicht verfügbar."
 
@@ -5749,6 +5824,22 @@ msgstr "Willkommen bei OpenSlides"
 msgid "What is new?"
 msgstr "Was ist neu?"
 
+msgid ""
+"When hosted by Intevation GmbH, secret, legally compliant voting is ensured "
+"by organizational measures (see legal opinion)."
+msgstr ""
+"Beim Hosting durch Intevation GmbH werden geheime, rechtssichere "
+"Stimmabgaben organisatorisch sichergestellt (siehe Rechtsgutachten)."
+
+msgid ""
+"When self-hosted, OpenSlides cannot guarantee that the requirements for "
+"legally compliant, secret voting are met. Responsibility for this lies with "
+"the server operator."
+msgstr ""
+"Beim Selbst-Hosting kann OpenSlides nicht garantieren, dass die "
+"Anforderungen einer rechtssicheren, geheimen Stimmgabgabe erfüllt werden. "
+"Die Verantwortung dafür liegt beim Serverbetreiber."
+
 msgid "Which version?"
 msgstr "Welche Fassung?"
 
@@ -5773,6 +5864,9 @@ msgstr ""
 
 msgid "Withdraw point of order"
 msgstr "GO-Antrag zurückziehen"
+
+msgid "Without identifier"
+msgstr "Ohne Bezeichner"
 
 msgid "Workflow"
 msgstr "Arbeitsablauf"
@@ -6042,9 +6136,6 @@ msgstr ""
 msgid "change recommendations"
 msgstr "Änderungsempfehlungen"
 
-msgid "committee name"
-msgstr "Gremiumname"
-
 msgid "committee-example"
 msgstr "gremien-beispiel"
 
@@ -6240,12 +6331,6 @@ msgstr "offene Stimmabgaben"
 msgid "or"
 msgstr "oder"
 
-msgid "original identifier"
-msgstr "Originalbezeichner"
-
-msgid "original submitter"
-msgstr "Originalantragsteller*in"
-
 msgid "outside"
 msgstr "außerhalb"
 
@@ -6294,6 +6379,9 @@ msgstr "ausgewählt"
 msgid "short running"
 msgstr "kurzlaufend"
 
+msgid "single-line"
+msgstr "einzeilig"
+
 msgid "started"
 msgstr "gestartet"
 
@@ -6312,8 +6400,8 @@ msgstr "bis"
 msgid "today"
 msgstr "heute"
 
-msgid "total"
-msgstr "insgesamt"
+msgid "two-line"
+msgstr "zweizweilig"
 
 msgid "undocumented"
 msgstr "nicht erfasst"
@@ -6348,8 +6436,8 @@ msgstr "werden aktualisiert"
 msgid "with"
 msgstr "mit"
 
-msgid "without identifier"
-msgstr "ohne Bezeichner"
+msgid "without structure level"
+msgstr "ohne Gliederungsebene"
 
 msgid "yellow"
 msgstr "gelb"
