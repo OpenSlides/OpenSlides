@@ -99,6 +99,7 @@ services:
       - ../../openslides-backend/cli:/app/cli
       - ../../openslides-backend/data:/app/data
       - ../../openslides-backend/meta:/app/meta
+      - ../../openslides-backend/requirements:/app/requirements
       - ../../openslides-backend/scripts:/app/scripts
 
   autoupdate:
@@ -183,6 +184,8 @@ services:
       - OPENSLIDES_DEVELOPMENT=1
     volumes:
       - ../../openslides-auth-service/auth/src:/app/src
+      - ./../openslides-auth-service/auth/libraries:/app/libraries
+      - ./../openslides-auth-service/auth/test:/app/test
     ports:
       - "9004:9004"
 
