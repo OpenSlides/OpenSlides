@@ -92,9 +92,17 @@ build()
     then
         if [ -n "$CAPSULE" ]
         then
-            build_capsuled "dev/scripts/makefile/build-all-submodules.sh dev $BUILD_ARGS"
+            build_capsuled "dev/scripts/makefile/build-all-submodules.sh dev $IGNORE_FAILED_BUILDS $BUILD_ARGS"
+            if [ "$?" == 2 ]
+            then
+                { ask y "Build of at least one image failed, continue anyway?" && stop; } || { echo "Continueing with partly cached or non-existent images" && return; }
+            fi
         else
-            dev/scripts/makefile/build-all-submodules.sh dev $BUILD_ARGS
+            dev/scripts/makefile/build-all-submodules.sh dev "$IGNORE_FAILED_BUILDS" "$BUILD_ARGS"
+            if [ "$?" == 2 ]
+            then
+                { ask y "Build of at least one image failed, continue anyway?" && stop; } || { echo "Continueing with partly cached or non-existent images" && return; }
+            fi
         fi
         return
     fi
@@ -266,6 +274,7 @@ for CMD in $TEMP_SERVICE; do
         "no-cache")     NO_CACHE=true ;;
         "capsule")      CAPSULE=true ;;
         "compose-local-branch") USE_LOCAL_BRANCH_FOR_COMPOSE=true ;;
+        "ignore-failed-builds") IGNORE_FAILED_BUILDS=true ;;
         *)              SERVICE="$CMD" ;;
     esac
 done
