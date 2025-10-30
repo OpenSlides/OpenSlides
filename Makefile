@@ -23,7 +23,7 @@ build:
 $(.SERVICE_TARGETS):
 	@echo ""
 
-.FLAGS := no-cache capsule compose-local-branch
+.FLAGS := no-cache capsule compose-local-branch ignore-failed-builds
 
 $(.FLAGS):
 	@echo ""
