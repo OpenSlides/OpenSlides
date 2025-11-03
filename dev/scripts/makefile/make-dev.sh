@@ -35,23 +35,25 @@ Flags:
                            instead.
 
 Available dev functions:
-    dev             : Builds and starts development images
-    dev-help        : Print help
-    dev-detached    : Builds and starts development images with detach flag. This causes started containers to run in the background
-    dev-attached    : Builds and starts development images; enters shell of started image.
+    dev              : Builds and starts development images
+    dev-help         : Print help
+    dev-detached     : Builds and starts development images with detach flag. This causes started containers to run in the background
+    dev-attached     : Builds and starts development images; enters shell of started image.
                           If a docker compose file is declared, the \$ATTACH_CONTAINER parameter determines
                           the specific container id you will enter (default value is equal the service name)
-    dev-standalone  : Builds and starts development images; closes them immediately afterwards
-    dev-stop        : Stops any currently running images or docker compose file associated with the service
-    dev-exec        : Executes command inside container.
+    dev-standalone   : Builds and starts development images; closes them immediately afterwards
+    dev-stop         : Stops any currently running images or docker compose file associated with the service
+    dev-clean        : Stops any currently running images or docker compose file associated with the service. Also removes (orphaned) volumes
+    dev-exec         : Executes command inside container.
                           Use \$EXEC_ARGS to declare command that should be executed.
                           If using a docker compose setup, also declare which container the command should be executed in.
                           Example: 'dev-exec RUN_ARGS=\"service-name echo hello\"' will run \"echo hello\" inside the container named \"service-name\"
-    dev-enter       : Enters shell of started container.
+    dev-enter        : Enters shell of started container.
                           If a docker compose file is declared, the \$ATTACH_CONTAINER parameter determines
                           the specific container id you will enter (default value is equal the service name)
-    dev-build       : Builds the development image
-    dev-log         : Prints log output of given container.
+    dev-build        : Builds the development image
+    dev-log          : Prints log output of given container.
+    dev-reset-docker : Debugging function. Closes and removes ALL containers. Optionally deletes ALL images as well.
     "
 }
 
@@ -95,13 +97,13 @@ build()
             build_capsuled "dev/scripts/makefile/build-all-submodules.sh dev $IGNORE_FAILED_BUILDS $BUILD_ARGS"
             if [ "$?" == 2 ]
             then
-                { ask y "Build of at least one image failed, continue anyway?" && stop; } || { echo "Continueing with partly cached or non-existent images" && return; }
+                { ask y "Build of at least one image failed, continue anyway?" || { abort 1; }; } || { echo "Continueing with partly cached or non-existent images" && return; }
             fi
         else
             dev/scripts/makefile/build-all-submodules.sh dev "$IGNORE_FAILED_BUILDS" "$BUILD_ARGS"
             if [ "$?" == 2 ]
             then
-                { ask y "Build of at least one image failed, continue anyway?" && stop; } || { echo "Continueing with partly cached or non-existent images" && return; }
+                { ask y "Build of at least one image failed, continue anyway?" || { abort 1; }; } || { echo "Continueing with partly cached or non-existent images" && return; }
             fi
         fi
         return
@@ -120,7 +122,7 @@ build()
     )
 }
 
-clean()
+reset_docker()
 {
     info "Stopping containers"
     if [ "$(docker ps -aq)" = "" ]
@@ -166,7 +168,7 @@ run()
         # Either stop existing containers and continue with run() or use existing containers from now on and exit run() early
         if [ "$(docker ps -a --filter "name=$CONTAINER_NAME" --format "{{.Names}}")" = "$CONTAINER_NAME" ]
         then
-            { ask y "Container already running, restart it?" && stop; } || { echo "Continue with existing container" && return; }
+            { ask y "Container already running, restart it?" || { stop && abort 1; }; } || { echo "Continue with existing container" && return; }
         fi
 
         # Single Container
@@ -218,15 +220,14 @@ exec()
 
 stop()
 {
+    local CLEAN=$1
+    local STOP_ARGS="$CLOSE_VOLUMES"
+    if [ -n "$CLEAN" ]; then local STOP_ARGS=" --volumes --remove-orphans"; fi
+
     info "Stop running container"
-    if [ "$SERVICE_FOLDER" = "" ]
+    if [ -n "$COMPOSE_FILE" ]
     then
-        # Compose in particular service folder with docker compose file
-        echocmd eval "$DC down --volumes --remove-orphans"
-    elif [ -n "$COMPOSE_FILE" ]
-    then
-        # Compose main
-        echocmd eval "$DC down $CLOSE_VOLUMES"
+        echocmd eval "$DC down $STOP_ARGS"
     else
         # Single Container
         echocmd docker stop "$CONTAINER_NAME"
@@ -338,19 +339,20 @@ IMAGE_TAG="openslides-$SERVICE-dev"
 
 # - Run specific function
 case "$FUNCTION" in
-    "help")             help ;;
-    "clean")            clean ;;
-    "standalone")       build && run && stop ;;
-    "detached")         build && run "-d" && info "Containers started" ;;
-    "attached")         build && run "-d" && attach && stop ;;
-    "stop")             stop ;;
-    "exec")             exec ;;
-    "enter")            attach ;;
-    "build")            build ;;
-    "log")              log ;;
-    "media-attached")   build && run "-d" && EXEC_COMMAND='-T tests wait-for-it "media:9006"' && exec "$EXEC_COMMAND" && attach "tests" && stop ;; # Special case for media (for now)
-    "")                 build && run ;;
-    *)                  warn "No command found matching $FUNCTION" && help ;;
+    "help")                 help ;;
+    "standalone")           build && run && stop ;;
+    "detached")             build && run "-d" && info "Containers started" ;;
+    "attached")             build && run "-d" && attach ;;
+    "stop")                 stop ;;
+    "clean")                stop true ;;
+    "exec")                 exec ;;
+    "enter")                attach ;;
+    "build")                build ;;
+    "log")                  log ;;
+    "reset-docker")         reset_docker ;;
+    "media-attached")       build && run "-d" && EXEC_COMMAND='-T tests wait-for-it "media:9006"' && exec "$EXEC_COMMAND" && attach "tests" && stop ;; # Special case for media (for now)
+    "")                     build && run ;;
+    *)                      warn "No command found matching $FUNCTION" && help ;;
 esac
 
 exit $?

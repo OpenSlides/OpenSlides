@@ -91,18 +91,12 @@ build_image() {
 while read -r toplevel sm_path name; do
 # Extract submodule name
   {
-    if [[ -s "$BUILD_FAIL" ]]
-    then
-      sleep 100
-    fi
-
     DIR="$toplevel/$sm_path"
 
     [[ "$name" == 'openslides-go' ]] && exit 0
     [[ "$name" == 'openslides-meta' ]] && exit 0
 
     # Execute test
-    # echo " --- Building service ${name} for context ${CONTEXT} --- "
     if [ "$name" == 'openslides-datastore-service' ]
     then
       build_image $DIR $name "reader" "9010"

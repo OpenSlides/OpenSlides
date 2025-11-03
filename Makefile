@@ -30,7 +30,7 @@ $(.FLAGS):
 
 .PHONY: dev
 
-dev dev-help dev-standalone dev-detached dev-attached dev-stop dev-exec dev-enter dev-clean dev-build dev-log:
+dev dev-help dev-standalone dev-detached dev-attached dev-stop dev-exec dev-enter dev-clean dev-build dev-log dev-reset-docker:
 	@sed -i "1s/.*/$(GO_VERSION)/" $(DOCKER_PATH)/workspaces/*.work
 	@bash $(MAKEFILE_PATH)/make-dev.sh $@ "$(filter-out $@, $(MAKECMDGOALS))"
 
