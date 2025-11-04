@@ -31,8 +31,11 @@ checkout() {
         local SUBMODULE=$1
         local SOURCE=$2
         local BRANCH=$3
+        local ISMAIN=$4
 
         cd $SUBMODULE || exit 1
+
+        if [ -n "$ISMAIN" ]; then SUBMODULE="OpenSlides"; fi
 
         info "Fetch & checkout for ${SUBMODULE} "
         if [[ ! "$SOURCE" == "upstream" && ! "$SOURCE" == "origin" ]]
@@ -77,6 +80,9 @@ META_LOCAL_BRANCH_NAME=feature/relational-db
     checkout openslides-go origin feature/relational-db
 )
 
+# Main
+ask y "Would you like to checkout main repository as well? WARNING: You may not be able to call this script again after switching branches, as it may not exist in target branch" && checkout . upstream feature/relational-db true
+
 # Services
 checkout openslides-auth-service        luisa-beerboom  rel-db
 checkout openslides-autoupdate-service  upstream        feature/relational-db
@@ -103,7 +109,4 @@ checkout openslides-vote-service        upstream        feature/relational-db
     ./openslides setup .
     ./openslides config --config config.yml .
 )
-
-# Main
-ask y "Would you like to checkout main repository as well? WARNING: You may not be able to call this script again after switching branches, as it may not exist in target branch" && checkout . upstream feature/relational-db
 
