@@ -90,9 +90,11 @@ checkout openslides-proxy               upstream        main
 checkout openslides-search-service      Janmtbehrens    feature/relational-db
 checkout openslides-vote-service        upstream        feature/relational-db
 
-
 # Create localprod
 (
+    ask y "Create localprod as well?" || exit 0
+    echo "TODO"
+    exit 0
     cd "$(dirname "$0")"/../../localprod || exit 1
 
     ls -a
@@ -100,5 +102,8 @@ checkout openslides-vote-service        upstream        feature/relational-db
     exit 0
     ./openslides setup .
     ./openslides config --config config.yml .
-
 )
+
+# Main
+ask y "Would you like to checkout main repository as well? WARNING: You may not be able to call this script again after switching branches, as it may not exist in target branch" && checkout . upstream feature/relational-db
+
