@@ -66,6 +66,26 @@ checkout() {
     )
 }
 
+setup_localprod()
+{
+    (
+        ask y "Setup localprod as well? WARNING: This will overwrite current localprod setup" || exit 0
+        echo "TODO"
+        exit 0
+
+        cd "$(dirname "$0")"/../../../openslides-manage-service || exit 1
+
+        echocmd go build -o ../dev/localprod/openslides ./cmd/openslides
+
+        cd ../dev/localprod || exit 1
+
+        ls -a
+
+        ./openslides setup .
+        ./openslides config --config config.yml .
+    )
+}
+
 
 # Checkout latest branches
 
@@ -80,9 +100,6 @@ META_LOCAL_BRANCH_NAME=feature/relational-db
     checkout openslides-go origin feature/relational-db
 )
 
-# Main
-ask y "Would you like to checkout main repository as well? WARNING: You may not be able to call this script again after switching branches, as it may not exist in target branch" && checkout . upstream feature/relational-db true
-
 # Services
 checkout openslides-auth-service        luisa-beerboom  rel-db
 checkout openslides-autoupdate-service  upstream        feature/relational-db
@@ -96,17 +113,9 @@ checkout openslides-proxy               upstream        main
 checkout openslides-search-service      Janmtbehrens    feature/relational-db
 checkout openslides-vote-service        upstream        feature/relational-db
 
-# Create localprod
-(
-    ask y "Create localprod as well?" || exit 0
-    echo "TODO"
-    exit 0
-    cd "$(dirname "$0")"/../../localprod || exit 1
+# Setup localprod
+setup_localprod
 
-    ls -a
-
-    exit 0
-    ./openslides setup .
-    ./openslides config --config config.yml .
-)
+# Main
+ask y "Would you like to checkout main repository as well? WARNING: You may not be able to call this script again after switching branches, as it may not exist in target branch" && checkout . upstream feature/relational-db true
 
