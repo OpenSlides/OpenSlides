@@ -80,14 +80,15 @@ setup_localprod()
     (
         ask y "Setup localprod as well? WARNING: This will overwrite current localprod setup" || exit 0
 
+        # Switching to manage and building openslides exe
         cd "$(dirname "$0")"/../../../openslides-manage-service || exit 1
+        make openslides
 
-        echocmd go build -o ../dev/localprod/openslides ./cmd/openslides
-
+        # Moving openslides to localprod directory
+        mv ./openslides ../dev/localprod/openslides
         cd ../dev/localprod || exit 1
 
-        ls -a
-
+        # Setup and generate localprod docker compose
         ./openslides setup .
         ./openslides config --config config.yml .
     )
