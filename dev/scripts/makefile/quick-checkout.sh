@@ -66,12 +66,19 @@ checkout() {
     )
 }
 
+checkout_main()
+{
+    (
+        ask y "Would you like to checkout main repository as well? WARNING: You may not be able to call this script again after switching branches, as it may not exist in target branch" || exit 0
+
+        checkout . upstream feature/relational-db true
+    )
+}
+
 setup_localprod()
 {
     (
         ask y "Setup localprod as well? WARNING: This will overwrite current localprod setup" || exit 0
-        echo "TODO"
-        exit 0
 
         cd "$(dirname "$0")"/../../../openslides-manage-service || exit 1
 
@@ -117,5 +124,5 @@ checkout openslides-vote-service        upstream        feature/relational-db
 setup_localprod
 
 # Main
-ask y "Would you like to checkout main repository as well? WARNING: You may not be able to call this script again after switching branches, as it may not exist in target branch" && checkout . upstream feature/relational-db true
+checkout_main
 
