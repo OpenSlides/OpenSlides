@@ -115,7 +115,7 @@ checkout openslides-backend             rrenkert        readd-script-call
 checkout openslides-client              bastianjoel     new-vote-service
 checkout openslides-datastore-service   upstream        main
 checkout openslides-icc-service         upstream        feature/relational-db
-checkout openslides-manage-service      upstream        main
+checkout openslides-manage-service      Janmtbehrens    feature/relational-db
 checkout openslides-media-service       upstream        main
 checkout openslides-proxy               upstream        main
 checkout openslides-search-service      Janmtbehrens    feature/relational-db
