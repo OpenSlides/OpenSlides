@@ -1486,6 +1486,9 @@ msgstr "Erledigte Einträge"
 msgid "Collapse all"
 msgstr "Alle zusammenklappen"
 
+msgid "Collision with existing change recommendation"
+msgstr "Kollision mit anderer Änderungsempfehlung"
+
 msgid "Color"
 msgstr "Farbe"
 
@@ -2391,6 +2394,9 @@ msgstr "Erstredner*in"
 msgid "First state"
 msgstr "Erster Status"
 
+msgid "First value must be less or equal than second value."
+msgstr "Erster Wert muss kleiner oder gleich dem zweiten Wert sein."
+
 msgid "Follow recommendation"
 msgstr "Empfehlung folgen"
 
@@ -2471,6 +2477,9 @@ msgstr "Weiterleitung erstellt"
 
 msgid "Forwarding of motion"
 msgstr "Weiterleitung von Antrag"
+
+msgid "From"
+msgstr "Von"
 
 msgid "Front page title"
 msgstr "Titel der Startseite"
@@ -3653,6 +3662,9 @@ msgstr "Nicht gefunden"
 
 msgid "Not locked out"
 msgstr "Nicht ausgeschlossen"
+
+msgid "Not present"
+msgstr "Nicht anwesend"
 
 msgid "Note on secret voting"
 msgstr "Hinweis zu geheimen Stimmabgaben"
@@ -5494,6 +5506,9 @@ msgstr "Titel für PDF-Dokumente von Anträgen"
 msgid "Title for access data and welcome PDF"
 msgstr "Titel für das Zugangsdaten- und Begrüßungs-PDF"
 
+msgid "To"
+msgstr "Bis"
+
 msgid "To start your search press Enter or the search icon"
 msgstr "Zum Starten der Suche Enter oder das Suchsymbol drücken."
 
@@ -5569,9 +5584,6 @@ msgstr "unerledigt"
 msgid "Unique speakers"
 msgstr "Eindeutige Redner*innen"
 
-msgid "Unknown participant"
-msgstr "Unbekannte*r Teilnehmer*in"
-
 msgid "Unknown user"
 msgstr "Unbekannter Nutzer"
 
@@ -5645,6 +5657,9 @@ msgstr ""
 
 msgid "Valid votes"
 msgstr "Gültige Stimmen"
+
+msgid "Value must be positive."
+msgstr "Wert muss positiv sein."
 
 msgid "View"
 msgstr "Ansicht"
