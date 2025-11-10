@@ -5,6 +5,8 @@ set -e
 # Import OpenSlides utils package
 . "$(dirname "$0")"/../util.sh
 
+CHECKOUT_LATEST=$1
+
 checkout_meta() {
     (
         local SUBMODULE=$1
@@ -13,11 +15,25 @@ checkout_meta() {
 
         cd meta || exit 1
 
+        if [[ ! "$META_SOURCE" == "upstream" && ! "$META_SOURCE" == "origin" ]]
+        then
+            info "Source is a non origin or upstream remote, likely a fork"
+            if ! git remote get-url "$META_SOURCE" >/dev/null 2>&1
+            then
+                echocmd git remote add "$META_SOURCE" git@github.com:"$META_SOURCE"/openslides-meta.git
+            else
+                echocmd git remote set-url "$META_SOURCE" git@github.com:"$META_SOURCE"/openslides-meta.git
+                success "Remote $META_SOURCE already exists"
+            fi
+        else
+            echocmd git remote set-url "$META_SOURCE" git@github.com:OpenSlides/openslides-meta.git
+        fi
+
         echocmd git fetch
 
         if ! git branch --list | grep -v "HEAD" | grep -q "$META_LOCAL_BRANCH_NAME"
         then
-            echocmd git switch -c "$META_LOCAL_BRANCH_NAME" "$META_BRANCH"
+            echocmd git switch -t "$META_SOURCE"/"$META_LOCAL_BRANCH_NAME"
         else
             success "Branch $META_LOCAL_BRANCH_NAME already exists"
             echocmd git checkout "$META_LOCAL_BRANCH_NAME"
@@ -31,7 +47,11 @@ checkout() {
         local SUBMODULE=$1
         local SOURCE=$2
         local BRANCH=$3
-        local ISMAIN=$4
+        local HASH=$4
+        local ISMAIN=$5
+
+        # Ignore specific hash, if latest should be pulled
+        if [ -n "$CHECKOUT_LATEST" ]; then local HASH=""; fi
 
         cd $SUBMODULE || exit 1
 
@@ -73,7 +93,7 @@ checkout_main()
     (
         ask y "Would you like to checkout main repository as well? WARNING: You may not be able to call this script again after switching branches, as it may not exist in target branch" || exit 0
 
-        checkout . upstream feature/relational-db true
+        checkout . upstream feature/relational-db "" true
     )
 }
 
@@ -101,27 +121,27 @@ setup_localprod()
 
 echo "Checking out rel DB"
 
-META_BRANCH=origin/feature/relational-db
-META_LOCAL_BRANCH_NAME=feature/relational-db
+META_SOURCE=ostcar
+META_LOCAL_BRANCH_NAME=remove-vote
 
 # Go
 (
     cd lib || exit 1
-    checkout openslides-go origin feature/relational-db
+    checkout openslides-go ostcar remove-vote ""
 )
 
 # Services
-checkout openslides-auth-service        luisa-beerboom  rel-db
-checkout openslides-autoupdate-service  upstream        feature/relational-db
-checkout openslides-backend             rrenkert        readd-script-call
-checkout openslides-client              bastianjoel     new-vote-service
-checkout openslides-datastore-service   upstream        main
-checkout openslides-icc-service         upstream        feature/relational-db
-checkout openslides-manage-service      Janmtbehrens    feature/relational-db
-checkout openslides-media-service       upstream        main
-checkout openslides-proxy               upstream        main
-checkout openslides-search-service      Janmtbehrens    feature/relational-db
-checkout openslides-vote-service        upstream        feature/relational-db
+checkout openslides-auth-service        luisa-beerboom  rel-db                 ""
+checkout openslides-autoupdate-service  upstream        feature/relational-db  ""
+checkout openslides-backend             rrenkert        readd-script-call      ""
+checkout openslides-client              bastianjoel     new-vote-service       ""
+checkout openslides-datastore-service   upstream        main                   ""
+checkout openslides-icc-service         upstream        feature/relational-db  ""
+checkout openslides-manage-service      Janmtbehrens    feature/relational-db  ""
+checkout openslides-media-service       upstream        main                   ""
+checkout openslides-proxy               upstream        main                   ""
+checkout openslides-search-service      Janmtbehrens    feature/relational-db  ""
+checkout openslides-vote-service        upstream        feature/relational-db  ""
 
 # Setup localprod
 setup_localprod
