@@ -10,6 +10,7 @@ CHECKOUT_LATEST=$1
 checkout_meta() {
     (
         local SUBMODULE=$1
+        local HASH=$2
 
         info "Checking out meta in $SUBMODULE"
 
@@ -38,7 +39,17 @@ checkout_meta() {
             success "Branch $META_LOCAL_BRANCH_NAME already exists"
             echocmd git checkout "$META_LOCAL_BRANCH_NAME"
         fi
+
         echocmd git pull
+
+        # Force reset to a hash, if one has been provided
+        # Ignore specific hash, if latest should be pulled
+        if [ -n "$CHECKOUT_LATEST" ]; then local META_HASH=""; fi
+
+        if [ -n "$META_HASH" ]
+        then
+            git reset --hard "$META_HASH"
+        fi;
     )
 }
 
@@ -49,9 +60,6 @@ checkout() {
         local BRANCH=$3
         local HASH=$4
         local ISMAIN=$5
-
-        # Ignore specific hash, if latest should be pulled
-        if [ -n "$CHECKOUT_LATEST" ]; then local HASH=""; fi
 
         cd $SUBMODULE || exit 1
 
@@ -83,6 +91,15 @@ checkout() {
         fi
 
         echocmd git pull
+
+        # Force reset to a hash, if one has been provided
+        # Ignore specific hash, if latest should be pulled
+        if [ -n "$CHECKOUT_LATEST" ]; then local HASH=""; fi
+
+        if [ -n "$HASH" ]
+        then
+            git reset --hard "$HASH"
+        fi;
 
         if [ -d "meta" ]; then checkout_meta "$SUBMODULE"; fi
     )
@@ -121,18 +138,19 @@ setup_localprod()
 
 echo "Checking out rel DB"
 
-META_SOURCE=ostcar
-META_LOCAL_BRANCH_NAME=remove-vote
+META_SOURCE=origin
+META_LOCAL_BRANCH_NAME=feature/relational-db
+META_HASH=acdf857af241fa6bc65bf51092b59dfcb22243bf
 
 # Go
 (
     cd lib || exit 1
-    checkout openslides-go ostcar remove-vote ""
+    checkout openslides-go origin feature/relational-db "8aca57c8dc2c5b36a6101921d500d0b832a0e4fc"
 )
 
 # Services
 checkout openslides-auth-service        luisa-beerboom  rel-db                 ""
-checkout openslides-autoupdate-service  upstream        feature/relational-db  ""
+checkout openslides-autoupdate-service  upstream        feature/relational-db  "9f276f8047b4826b1b3053a187105fdd70de659a"
 checkout openslides-backend             rrenkert        readd-script-call      ""
 checkout openslides-client              bastianjoel     new-vote-service       ""
 checkout openslides-datastore-service   upstream        main                   ""
