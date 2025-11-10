@@ -13,7 +13,7 @@ checkout_meta() {
 
         cd meta || exit 1
 
-        echocmd git fetch origin
+        echocmd git fetch
 
         if ! git branch --list | grep -v "HEAD" | grep -q "$META_LOCAL_BRANCH_NAME"
         then
@@ -40,6 +40,7 @@ checkout() {
         info "Fetch & checkout for ${SUBMODULE} "
         if [[ ! "$SOURCE" == "upstream" && ! "$SOURCE" == "origin" ]]
         then
+            info "Source is a non origin or upstream remote, likely a fork"
             if ! git remote get-url "$SOURCE" >/dev/null 2>&1
             then
                 echocmd git remote add "$SOURCE" git@github.com:"$SOURCE"/"$SUBMODULE".git
@@ -50,11 +51,12 @@ checkout() {
         else
             echocmd git remote set-url "$SOURCE" git@github.com:OpenSlides/"$SUBMODULE".git
         fi
-        echocmd git fetch "$SOURCE"
+
+        echocmd git fetch
 
         if ! git branch --list | grep -v "HEAD" | grep -q "$BRANCH"
         then
-            echocmd git switch -c "$BRANCH" "$SOURCE"/"$BRANCH"
+            echocmd git switch -t "$SOURCE"/"$BRANCH"
         else
             success "Branch $BRANCH already exists"
             echocmd git checkout "$BRANCH"
