@@ -29,7 +29,7 @@ checkout_meta() {
             echocmd git remote set-url "$META_SOURCE" git@github.com:OpenSlides/openslides-meta.git
         fi
 
-        echocmd git fetch
+        echocmd git fetch "$META_SOURCE"
 
         if ! git branch --list | grep -v "HEAD" | grep -q "$META_LOCAL_BRANCH_NAME"
         then
@@ -72,7 +72,7 @@ checkout() {
             echocmd git remote set-url "$SOURCE" git@github.com:OpenSlides/"$SUBMODULE".git
         fi
 
-        echocmd git fetch
+        echocmd git fetch "$SOURCE"
 
         if ! git branch --list | grep -v "HEAD" | grep -q "$BRANCH"
         then
