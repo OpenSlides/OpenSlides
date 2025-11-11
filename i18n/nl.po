@@ -1,11 +1,11 @@
 # 
 # Translators:
-# Michael Schulze, 2025
 # Birte Spekker <birte.spekker@intevation.de>, 2025
+# Michael Schulze, 2025
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Birte Spekker <birte.spekker@intevation.de>, 2025\n"
+"Last-Translator: Michael Schulze, 2025\n"
 "Language-Team: Dutch (https://app.transifex.com/openslides/teams/14270/nl/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -30,19 +30,10 @@ msgstr ""
 "rechten hebben."
 
 msgid "-Ä"
-msgstr ""
+msgstr "-Ä"
 
 msgid "100% base"
 msgstr "100% basis"
-
-msgid ""
-"<a href=\"https://openslides.com\">OpenSlides</a> is a free web based "
-"presentation and assembly system for visualizing and controlling agenda, "
-"motions and elections of an assembly."
-msgstr ""
-"<a href=\"https://openslides.com\">OpenSlides</a> is een gratis webgebaseerd"
-" presentatie- en vergadersysteem voor het visualiseren en controleren van "
-"agenda, moties en verkiezingen van een vergadering."
 
 msgid "<unknown motion>"
 msgstr "<unknown motion>"
@@ -229,6 +220,9 @@ msgstr "Actieve vergaderingen"
 msgid "Add"
 msgstr "Toevoegen"
 
+msgid "Add answer"
+msgstr "Antwoord toevoegen"
+
 msgid "Add me"
 msgstr "Mij toevoegen"
 
@@ -303,6 +297,9 @@ msgstr ""
 
 msgid "Agenda"
 msgstr "Agenda"
+
+msgid "Agenda export"
+msgstr "Agenda export"
 
 msgid "Agenda items are in process. Please wait ..."
 msgstr "Agendapunten zijn in behandeling. Even geduld ..."
@@ -397,6 +394,8 @@ msgstr "Toegestane toegangsgroepen voor deze map"
 
 msgid "Allows single votes projection during voting process"
 msgstr ""
+"Maakt het mogelijk om tijdens het stemproces een prognose van de individuele"
+" stemmen te geven."
 
 msgid "Always"
 msgstr "Altijd"
@@ -428,6 +427,9 @@ msgstr "Aantal accounts"
 msgid "Amount of meetings"
 msgstr "Aantal vergaderingen"
 
+msgid "Amount of motions"
+msgstr "Aantal moties"
+
 msgid "Amount of votes"
 msgstr "Aantal stemmen"
 
@@ -445,6 +447,12 @@ msgstr "Anonimiseren kan alleen na het voltooien van een peiling."
 
 msgid "Anonymous"
 msgstr "Anonieme"
+
+msgid "Answer to interposed question"
+msgstr "Antwoord op tussengevoegde vraag"
+
+msgid "Answer to intervention"
+msgstr "Antwoord op interventie"
 
 msgid "Applause interval in seconds"
 msgstr "Applaus interval in seconden"
@@ -868,6 +876,9 @@ msgstr "Vet"
 msgid "Bullet list"
 msgstr "Bulletlist"
 
+msgid "Button text"
+msgstr "Knoptekst"
+
 msgid "CSV import"
 msgstr "CSV importeren"
 
@@ -976,6 +987,9 @@ msgstr ""
 "Kan datasets van deelnemers maken, wijzigen, verwijderen en groepsrechten "
 "beheren."
 
+msgid "Can create, modify, start/stop and delete ballots."
+msgstr "Kan stembiljetten aanmaken, wijzigen, starten/stoppen en verwijderen."
+
 msgid "Can create, modify, start/stop and delete votings."
 msgstr "Kan stemmingen maken, wijzigen, starten/stoppen en verwijderen."
 
@@ -1015,6 +1029,9 @@ msgstr ""
 
 msgid "Can manage agenda"
 msgstr "Kan agenda beheren"
+
+msgid "Can manage ballots"
+msgstr "Kan stembiljetten beheren"
 
 msgid "Can manage elections"
 msgstr "Kan verkiezingen beheren"
@@ -1340,9 +1357,6 @@ msgstr "Aanwezigheid wijzigen"
 msgid "Change recommendation"
 msgstr "Aanbeveling wijzigen"
 
-msgid "Change recommendation - rejected"
-msgstr "Wijzigingsaanbeveling - afgewezen"
-
 msgid "Change recommendations"
 msgstr "Aanbevelingen wijzigen"
 
@@ -1421,9 +1435,6 @@ msgstr "Chyron spreker, achtergrondkleur"
 msgid "Chyron speaker, font color"
 msgstr "Chyron spreker, letterkleur"
 
-msgid "Classic"
-msgstr "Klassiek"
-
 msgid "Clear"
 msgstr "Verwijder"
 
@@ -1471,6 +1482,9 @@ msgstr "Gesloten punten"
 
 msgid "Collapse all"
 msgstr "Alles samenvouwen"
+
+msgid "Collision with existing change recommendation"
+msgstr "Conflict met bestaande wijzigingsaanbeveling"
 
 msgid "Color"
 msgstr "Kleur"
@@ -1529,6 +1543,9 @@ msgstr "Commissie Beheer"
 msgid "Committee managers"
 msgstr "Commissie beheerders"
 
+msgid "Committee name"
+msgstr "Commissienaam"
+
 msgid "Committees"
 msgstr "Commissies"
 
@@ -1573,6 +1590,9 @@ msgstr "Livestream voortzetten"
 
 msgid "Continuous text"
 msgstr "Doorlopende tekst"
+
+msgid "Contra"
+msgstr "Contra"
 
 msgid "Contra speech"
 msgstr "Tegenspraak"
@@ -1645,6 +1665,9 @@ msgstr "Actuele slide"
 
 msgid "Current speaker"
 msgstr "Actuele spreker"
+
+msgid "Current speaker / structure level"
+msgstr "Actueel spreker / structuurniveau"
 
 msgid "Current speaker chyron"
 msgstr "Actuele spreker chyron"
@@ -1737,11 +1760,15 @@ msgstr "Standaard stemtype"
 msgid ""
 "Defines for the selected state which groups have access:\n"
 "- If no option is selected, the motions in the selected state are visible to all; The prerequisite for this is group permission: [Can see motions].\n"
-"- Selecting one or more options restricts access to those groups for which the selected authorization option is defined under > [Participants] > [Groups]."
+"- Selecting one or more options restricts access to those groups for which the selected authorization option is defined under > [Participants] > [Groups].\n"
+"\n"
+"Hint: Administrators always have full access."
 msgstr ""
 "Bepaalt voor de geselecteerde status welke groepen toegang hebben:\n"
-"- Als er geen optie is geselecteerd, zijn de moties in de geselecteerde status zichtbaar voor iedereen; voorwaarde hiervoor is groepstoestemming: [Kan moties zien].\n"
-"- Door een of meer opties te selecteren, wordt de toegang beperkt tot die groepen waarvoor de geselecteerde machtigingsoptie is gedefinieerd onder > [Deelnemers] > [Groepen]."
+"- Als er geen optie is geselecteerd, zijn de moties in de geselecteerde status voor iedereen zichtbaar; Voorwaarde hiervoor is de groepsrechten: [Kan moties zien].\n"
+"- Door een of meer opties te selecteren, wordt de toegang beperkt tot die groepen waarvoor de geselecteerde autorisatieoptie is gedefinieerd onder > [Deelnemers] > [Groepen]. \n"
+"\n"
+"Tip: Beheerders hebben altijd volledige toegang."
 
 msgid "Defines the colour for the state button."
 msgstr "Definieert de kleur voor de statusknop."
@@ -1759,6 +1786,21 @@ msgstr "Definieert de minimale uitslag die nodig is om applaus te herkennen."
 
 msgid "Defines the time in which applause amounts are add up."
 msgstr "Definieert de tijd waarin applausbedragen worden opgeteld."
+
+msgid ""
+"Defines the wording of the button to change the state. Button is visible if the corresponding state is defined in \"Submitter may set state to\".\n"
+"\n"
+"Example: \n"
+"1. State \"in progress\": \"Submitter may set state to\" = \"submitted\"\n"
+"2. State \"submitted\": \"Button text\" = \"Submit motion\"\n"
+"=> This enables a submit button in state \"in progress\"."
+msgstr ""
+"Definieert de tekst van de knop om de status te wijzigen. De knop is zichtbaar als de bijbehorende status is gedefinieerd in “Indiener kan status instellen op”.\n"
+"\n"
+"Voorbeeld: \n"
+"1. Status “in behandeling”: “Indiener kan status instellen op” = “ingediend”\n"
+"2. Status ‘ingediend’: “Tekst knop” = “Motie indienen”\n"
+"=> Hierdoor wordt een knop voor indienen geactiveerd in de status “in behandeling”."
 
 msgid ""
 "Defines the wording of the recommendation that belongs to this state.\n"
@@ -1927,17 +1969,14 @@ msgid "Duration of requests to speak"
 msgstr "Duur van spreekverzoeken"
 
 msgid ""
-"During non-nominal voting OpenSlides does NOT store the individual user ID "
-"of the voter. This in no way means that a non-nominal vote is completely "
-"anonymous and secure. The votes cannot track their individual votes after "
-"the data has been submitted. The validity of the data cannot always be "
-"guaranteed."
+"During non-nominal voting, OpenSlides does NOT store the individual user IDs"
+" of voters in connection with the votes cast. Once the data has been "
+"transmitted, voters can no longer track or check their own votes."
 msgstr ""
-"Tijdens het niet-nominaal stemmen slaat OpenSlides de individuele "
-"gebruikers-ID van de stemmer NIET op. Dit betekent op geen enkele manier dat"
-" een niet-nominale stem volledig anoniem en veilig is. De stemmen kunnen hun"
-" individuele stemmen niet traceren nadat de gegevens zijn ingediend. De "
-"geldigheid van de gegevens kan niet altijd worden gegarandeerd."
+"Bij niet-nominale stemming slaat OpenSlides de individuele gebruikers-ID's "
+"van stemmers NIET op in verband met de uitgebrachte stemmen. Zodra de "
+"gegevens zijn verzonden, kunnen stemmers hun eigen stemmen niet meer volgen "
+"of controleren."
 
 msgid "Edit"
 msgstr "Bewerken"
@@ -2219,6 +2258,9 @@ msgstr "Bevoegde gebruikers"
 msgid "Error"
 msgstr "Fout"
 
+msgid "Error during PDF creation of agenda item:"
+msgstr "Fout tijdens het aanmaken van een PDF van een agendapunt:"
+
 msgid "Error during PDF creation of election:"
 msgstr "Fout bij het maken van PDF van verkiezing:"
 
@@ -2338,6 +2380,10 @@ msgstr "Eerste toespraak"
 msgid "First state"
 msgstr "Eerste status"
 
+msgid "First value must be less or equal than second value."
+msgstr ""
+"De eerste waarde moet kleiner zijn dan of gelijk zijn aan de tweede waarde."
+
 msgid "Follow recommendation"
 msgstr "Volg aanbeveling"
 
@@ -2397,6 +2443,9 @@ msgstr "Voorspraak"
 msgid "Forward"
 msgstr "Doorsturen"
 
+msgid "Forward attachments"
+msgstr "Bijlagen doorsturen"
+
 msgid "Forward motions"
 msgstr "Moties doorsturen"
 
@@ -2417,6 +2466,9 @@ msgstr "Doorsturen gecreëerd"
 
 msgid "Forwarding of motion"
 msgstr "Motie doorsturen"
+
+msgid "From"
+msgstr "Van"
 
 msgid "Front page title"
 msgstr "Voorpagina titel"
@@ -2721,7 +2773,7 @@ msgid "Inconsistent data."
 msgstr "Inconsistente gegevens."
 
 msgid "Inconsistent data. Please delete this change recommendation."
-msgstr ""
+msgstr "Inconsistente gegevens. Verwijder deze wijzigingsaanbeveling."
 
 msgid "Information"
 msgstr "Informatie"
@@ -2896,6 +2948,9 @@ msgstr "Is publiek"
 msgid "Is speaker"
 msgstr "Is spreker"
 
+msgid "Is speaking"
+msgstr "Spreekt"
+
 msgid "Is submitter"
 msgstr "Is indiener"
 
@@ -2992,6 +3047,16 @@ msgstr "Niveau-indicator"
 msgid "Light mode"
 msgstr "Lichte modus"
 
+msgid ""
+"Limit editor formatting options for users WITH motion manage permission"
+msgstr "Beperk opmaakopties voor gebruikers MET toestemming voor motiebeheer"
+
+msgid ""
+"Limit editor formatting options for users WITHOUT motion manage permission"
+msgstr ""
+"Beperk de opmaakopties van de editor voor gebruikers ZONDER toestemming voor"
+" motiebeheer"
+
 msgid "Limit of active accounts"
 msgstr "Limiet van actieve accounts"
 
@@ -3041,7 +3106,7 @@ msgid "Live conference"
 msgstr "Live conferentie"
 
 msgid "Live voting enabled"
-msgstr ""
+msgstr "Live stemmen mogelijk"
 
 msgid "Livestream"
 msgstr "Livestream"
@@ -3084,6 +3149,9 @@ msgstr " Laagste aantal applaus"
 
 msgid "Main motion and line number"
 msgstr "Hoofdmotie en regelnummer"
+
+msgid "Main speaker"
+msgstr "Hoofdspreker"
 
 msgid ""
 "Make background color from meta information box on the projector transparent"
@@ -3209,9 +3277,6 @@ msgstr "Moderatie opmerking"
 
 msgid "Moderation-Note"
 msgstr "Moderatie-Notitie"
-
-msgid "Modern"
-msgstr "Modern"
 
 msgid "Modify design"
 msgstr "Wijzig design"
@@ -3375,6 +3440,9 @@ msgstr "Nieuw account"
 msgid "New amendment"
 msgstr "Nieuwe wijziging"
 
+msgid "New and old passwords are identical!"
+msgstr "Het nieuwe en oude wachtwoord zijn identiek!"
+
 msgid "New ballot"
 msgstr "Nieuw stembiljet"
 
@@ -3434,6 +3502,9 @@ msgstr "Nieuwe deelnemer"
 
 msgid "New password"
 msgstr "Nieuw wachtwoord"
+
+msgid "New poll"
+msgstr "Nieuwe verkiezing"
 
 msgid "New projector"
 msgstr "Nieuwe projector"
@@ -3569,6 +3640,12 @@ msgstr "Niet gevonden"
 
 msgid "Not locked out"
 msgstr "Niet uitgelogd"
+
+msgid "Not present"
+msgstr "Niet aanwezig"
+
+msgid "Note on secret voting"
+msgstr "Opmerking over geheime stemming"
 
 msgid ""
 "Note, that the default password will be changed to the new generated one."
@@ -3708,7 +3785,10 @@ msgid "One email was send sucessfully."
 msgstr "Eén e-mail was succesvol verzonden."
 
 msgid "Only available for nominal voting"
-msgstr ""
+msgstr "Alleen beschikbaar voor nominale stemming"
+
+msgid "Only for committee admins"
+msgstr "Alleen voor commissiebeheerders"
 
 msgid "Only for internal notes."
 msgstr "Alleen voor interne notities."
@@ -3731,6 +3811,9 @@ msgstr "Alleen tijd"
 
 msgid "Only traffic light"
 msgstr "Alleen stoplicht"
+
+msgid "Open"
+msgstr "Open"
 
 msgid "Open Jitsi in new tab"
 msgstr "Open Jitsi in nieuw tabblad"
@@ -3812,6 +3895,12 @@ msgstr "Oorsprong motie verwijderd"
 
 msgid "Original"
 msgstr "Origineel"
+
+msgid "Original identifier"
+msgstr "Oorspronkelijke identificator"
+
+msgid "Original submitter"
+msgstr "Oorspronkelijke indiener"
 
 msgid "Original version"
 msgstr "Originele versie"
@@ -4062,7 +4151,7 @@ msgid "Please update your browser or contact your system administration."
 msgstr "Update uw browser of neem contact op met uw systeembeheerder."
 
 msgid "Please vote now!"
-msgstr ""
+msgstr "Alsjeblieft, stem nu!"
 
 msgid "Point of order"
 msgstr "Punt van orde"
@@ -4135,6 +4224,9 @@ msgstr "Privacybeleid"
 
 msgid "Private key of Service Provider (SP)"
 msgstr "Privésleutel van serviceprovider (SP)"
+
+msgid "Pro"
+msgstr "Pro"
 
 msgid "Process handling"
 msgstr "Procesverwerking"
@@ -4484,14 +4576,8 @@ msgstr "Zoeken"
 msgid "Search player"
 msgstr "Zoek speler"
 
-msgid "Searching for candidates"
-msgstr "Zoeken naar kandidaten"
-
 msgid "Searching for players ..."
 msgstr "Zoeken naar spelers ..."
-
-msgid "Secret voting can not be guaranteed"
-msgstr "Geheim stemmen kan niet worden gegarandeerd"
 
 msgid "Select"
 msgstr "Selecteer"
@@ -4588,7 +4674,7 @@ msgid "Set it manually"
 msgstr "Zet het handmatig"
 
 msgid "Set live voting enabled by default"
-msgstr ""
+msgstr "Zet live stemmen actief als standaard"
 
 msgid "Set lock out ..."
 msgstr "Zet lock out ..."
@@ -4907,7 +4993,7 @@ msgid "Stop waiting"
 msgstr "Stoppen met wachten"
 
 msgid "Stop, publish & anonymize"
-msgstr ""
+msgstr "Stop, publiceer en anonimiseren"
 
 msgid "Strikethrough"
 msgstr "Doorhalen"
@@ -5103,6 +5189,10 @@ msgstr ""
 
 msgid "The number has to be greater than 0."
 msgstr "Het nummer moet groter zijn dan 0."
+
+msgid "The organizer is responsible for the content under press law."
+msgstr ""
+"De organisator is verantwoordelijk voor de inhoud volgens de perswetgeving."
 
 msgid "The parent motion is not available."
 msgstr "De oudermotie is niet beschikbaar."
@@ -5386,6 +5476,9 @@ msgstr "Titel voor PDF-documenten van moties"
 msgid "Title for access data and welcome PDF"
 msgstr "Titel voor toegangsgegevens en welkom PDF"
 
+msgid "To"
+msgstr "Naar"
+
 msgid "To start your search press Enter or the search icon"
 msgstr ""
 "Om uw zoekopdracht te starten drukt u op Enter of op het zoekpictogram"
@@ -5462,9 +5555,6 @@ msgstr "Ongedaan gemaakt"
 msgid "Unique speakers"
 msgstr "Unieke sprekers"
 
-msgid "Unknown participant"
-msgstr "Onbekende deelnemer"
-
 msgid "Unknown user"
 msgstr "Onbekende gebruiker"
 
@@ -5536,6 +5626,9 @@ msgstr ""
 
 msgid "Valid votes"
 msgstr "Geldige stemmen"
+
+msgid "Value must be positive."
+msgstr "Waarde moet positief zijn."
 
 msgid "View"
 msgstr "Weergave"
@@ -5680,6 +5773,11 @@ msgid ""
 "might become unusable if the paragraph they affect is deleted, or change "
 "recommendations might lose their reference line completely."
 msgstr ""
+"Waarschuwing: Er zijn wijzigingen of aanbevelingen voor deze motie. Het "
+"bewerken van deze tekst zal waarschijnlijk een negatieve invloed hebben op "
+"deze wijzigingen of aanbevelingen. Met name kunnen wijzigingen onbruikbaar "
+"worden als de alinea waarop ze betrekking hebben wordt verwijderd, of kunnen"
+" aanbevelingen hun referentielijn volledig verliezen."
 
 msgid ""
 "Warning: At least one of the selected motions has amendments, these will be "
@@ -5709,6 +5807,23 @@ msgstr "Welkom bij OpenSlides"
 msgid "What is new?"
 msgstr "Wat is er nieuw?"
 
+msgid ""
+"When hosted by Intevation GmbH, secret, legally compliant voting is ensured "
+"by organizational measures (see legal opinion)."
+msgstr ""
+"Wanneer de hosting wordt verzorgd door Intevation GmbH, wordt een geheime, "
+"wettelijk conforme stemming gewaarborgd door organisatorische maatregelen "
+"(zie juridisch advies)."
+
+msgid ""
+"When self-hosted, OpenSlides cannot guarantee that the requirements for "
+"legally compliant, secret voting are met. Responsibility for this lies with "
+"the server operator."
+msgstr ""
+"Wanneer OpenSlides zelf wordt gehost, kan OpenSlides niet garanderen dat aan"
+" de vereisten voor wettelijk conforme, geheime stemming wordt voldaan. De "
+"verantwoordelijkheid hiervoor ligt bij de serverbeheerder."
+
 msgid "Which version?"
 msgstr "Welke versie?"
 
@@ -5733,6 +5848,9 @@ msgstr ""
 
 msgid "Withdraw point of order"
 msgstr "Punt van orde intrekken"
+
+msgid "Without identifier"
+msgstr "Zonder identificator"
 
 msgid "Workflow"
 msgstr "Workflow"
@@ -5988,12 +6106,10 @@ msgstr "wijzigingsaanbeveling"
 
 msgid "change recommendation(s) refer to a nonexistent line number."
 msgstr ""
+"Wijzigingsaanbeveling(en) verwijzen naar een niet-bestaand regelnummer."
 
 msgid "change recommendations"
 msgstr "wijzigingsaanbevelingen"
-
-msgid "committee name"
-msgstr "commissienaam"
 
 msgid "committee-example"
 msgstr "commissie-voorbeeld"
@@ -6190,12 +6306,6 @@ msgstr "open stemmen"
 msgid "or"
 msgstr "of"
 
-msgid "original identifier"
-msgstr "oorspronkelijke identificator"
-
-msgid "original submitter"
-msgstr "oorspronkelijke indiener"
-
 msgid "outside"
 msgstr "buiten"
 
@@ -6244,6 +6354,9 @@ msgstr "geselecteerd"
 msgid "short running"
 msgstr "korte duur"
 
+msgid "single-line"
+msgstr "eenregelig"
+
 msgid "started"
 msgstr "begonnen"
 
@@ -6262,8 +6375,8 @@ msgstr "naar"
 msgid "today"
 msgstr "vandaag"
 
-msgid "total"
-msgstr "totaal"
+msgid "two-line"
+msgstr "tweeregelig"
 
 msgid "undocumented"
 msgstr "ongedocumenteerd"
@@ -6298,8 +6411,8 @@ msgstr "wordt bijgewerkt"
 msgid "with"
 msgstr "met"
 
-msgid "without identifier"
-msgstr "zonder identificator"
+msgid "without structure level"
+msgstr "zonder structuurniveau"
 
 msgid "yellow"
 msgstr "geel"
