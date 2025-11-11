@@ -1339,6 +1339,9 @@ msgstr ""
 msgid "Collapse all"
 msgstr ""
 
+msgid "Collision with existing change recommendation"
+msgstr ""
+
 msgid "Color"
 msgstr ""
 
@@ -2168,6 +2171,9 @@ msgstr ""
 msgid "First state"
 msgstr ""
 
+msgid "First value must be less or equal than second value."
+msgstr ""
+
 msgid "Follow recommendation"
 msgstr ""
 
@@ -2193,9 +2199,6 @@ msgid "Font regular"
 msgstr ""
 
 msgid "Font size in pt"
-msgstr ""
-
-msgid "Footer"
 msgstr ""
 
 msgid ""
@@ -2248,6 +2251,9 @@ msgid "Forwarding created"
 msgstr ""
 
 msgid "Forwarding of motion"
+msgstr ""
+
+msgid "From"
 msgstr ""
 
 msgid "Front page title"
@@ -3401,6 +3407,9 @@ msgid "Not found"
 msgstr ""
 
 msgid "Not locked out"
+msgstr ""
+
+msgid "Not present"
 msgstr ""
 
 msgid "Note on secret voting"
@@ -5135,6 +5144,9 @@ msgstr ""
 msgid "Title for access data and welcome PDF"
 msgstr ""
 
+msgid "To"
+msgstr ""
+
 msgid "To start your search press Enter or the search icon"
 msgstr ""
 
@@ -5210,9 +5222,6 @@ msgstr ""
 msgid "Unique speakers"
 msgstr ""
 
-msgid "Unknown participant"
-msgstr ""
-
 msgid "Unknown user"
 msgstr ""
 
@@ -5275,6 +5284,9 @@ msgid "Using OpenSlides over HTTP is not supported. Enable HTTPS to continue."
 msgstr ""
 
 msgid "Valid votes"
+msgstr ""
+
+msgid "Value must be positive."
 msgstr ""
 
 msgid "View"
