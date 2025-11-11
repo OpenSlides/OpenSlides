@@ -791,7 +791,7 @@ msgstr ""
 msgid "Bullet list"
 msgstr ""
 
-msgid "Button text for next state"
+msgid "Button text"
 msgstr ""
 
 msgid "CSV import"
@@ -1339,6 +1339,9 @@ msgstr ""
 msgid "Collapse all"
 msgstr ""
 
+msgid "Collision with existing change recommendation"
+msgstr ""
+
 msgid "Color"
 msgstr ""
 
@@ -1629,6 +1632,16 @@ msgid "Defines the minimum deflection which is required to recognize applause."
 msgstr ""
 
 msgid "Defines the time in which applause amounts are add up."
+msgstr ""
+
+msgid ""
+"Defines the wording of the button to change the state. Button is visible if "
+"the corresponding state is defined in \"Submitter may set state to\".\n"
+"\n"
+"Example: \n"
+"1. State \"in progress\": \"Submitter may set state to\" = \"submitted\"\n"
+"2. State \"submitted\": \"Button text\" = \"Submit motion\"\n"
+"=> This enables a submit button in state \"in progress\"."
 msgstr ""
 
 msgid ""
@@ -1946,11 +1959,6 @@ msgid "Enable/disable accounts"
 msgstr ""
 
 msgid ""
-"Enables a button with defined text that sets the motion to next state. The "
-"next state is defined via \"Submitter may set state to\"."
-msgstr ""
-
-msgid ""
 "Enables for the selected state the possibility for submitters to change the "
 "state of the motion. Other administrative functions are excluded."
 msgstr ""
@@ -2163,6 +2171,9 @@ msgstr ""
 msgid "First state"
 msgstr ""
 
+msgid "First value must be less or equal than second value."
+msgstr ""
+
 msgid "Follow recommendation"
 msgstr ""
 
@@ -2240,6 +2251,9 @@ msgid "Forwarding created"
 msgstr ""
 
 msgid "Forwarding of motion"
+msgstr ""
+
+msgid "From"
 msgstr ""
 
 msgid "Front page title"
@@ -3393,6 +3407,9 @@ msgid "Not found"
 msgstr ""
 
 msgid "Not locked out"
+msgstr ""
+
+msgid "Not present"
 msgstr ""
 
 msgid "Note on secret voting"
@@ -5127,6 +5144,9 @@ msgstr ""
 msgid "Title for access data and welcome PDF"
 msgstr ""
 
+msgid "To"
+msgstr ""
+
 msgid "To start your search press Enter or the search icon"
 msgstr ""
 
@@ -5202,9 +5222,6 @@ msgstr ""
 msgid "Unique speakers"
 msgstr ""
 
-msgid "Unknown participant"
-msgstr ""
-
 msgid "Unknown user"
 msgstr ""
 
@@ -5267,6 +5284,9 @@ msgid "Using OpenSlides over HTTP is not supported. Enable HTTPS to continue."
 msgstr ""
 
 msgid "Valid votes"
+msgstr ""
+
+msgid "Value must be positive."
 msgstr ""
 
 msgid "View"
