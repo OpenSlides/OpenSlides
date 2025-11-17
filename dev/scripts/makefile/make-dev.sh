@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -euo pipefail
+set -eo pipefail
 
 # Import OpenSlides utils package
 . "$(dirname "$0")/../util.sh"
