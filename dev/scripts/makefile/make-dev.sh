@@ -20,6 +20,7 @@ Environment Variables (can be set when invoking make target):
     ATTACH_CONTAINER         : Determine target container to enter for dev-attached and dev-enter
     EXEC_COMMAND             : Determine command to be called for dev-exec
     LOG_CONTAINER            : Determine target container to log for dev-log
+    DEBUG_DRY_RUN            : Prints all commands that would run but prevents their actual execution
 
 Example: make   dev-exec   backend   EXEC_COMMAND='vote ls'
                    ^          ^               ^
@@ -88,12 +89,12 @@ build()
 {
     local BUILD_ARGS="";
 
-    if [ -n "$NO_CACHE" ]; then local BUILD_ARGS="--no-cache"; fi
+    if [ "$NO_CACHE" ]; then local BUILD_ARGS="--no-cache"; fi
 
     # Build all submodules
     if [ "$SERVICE_FOLDER" = "" ]
     then
-        if [ -n "$CAPSULE" ]
+        if [ "$CAPSULE" ]
         then
             build_capsuled "dev/scripts/makefile/build-all-submodules.sh dev $BUILD_ARGS"
         else
@@ -106,7 +107,7 @@ build()
     (
         cd "$SERVICE_FOLDER" || abort 1
 
-        if [ -n "$CAPSULE" ]
+        if [ "$CAPSULE" ]
         then
             build_capsuled "make build-dev ARGS=$BUILD_ARGS"
         else
@@ -140,7 +141,7 @@ docker_reset()
         then
             info "No images to remove"
         else
-            docker rmi -f $(docker images -aq)
+            echocmd docker rmi -f $(docker images -aq)
         fi
     ) || true
     ask n "Do you want a full docker system prune as well?" &&
@@ -155,20 +156,26 @@ run()
     info "Running container"
     local FLAGS=$1
     local SHELL=$2
-    if [ -n "$COMPOSE_FILE" ]
+    if [ "$COMPOSE_FILE" ]
     then
         local BUILD_ARGS="";
 
-        if [ -n "$NO_CACHE" ]; then local BUILD_ARGS="--build --force-recreate"; fi
+        if [ "$NO_CACHE" ]; then local BUILD_ARGS="--build --force-recreate"; fi
 
         # Compose
-        echocmd eval "$DC up ${BUILD_ARGS} ${FLAGS} ${VOLUMES} ${RUN_ARGS}"
+        echocmd "${DC_CMD[@]}" up ${BUILD_ARGS} ${FLAGS} ${VOLUMES} ${RUN_ARGS}
     else
         # Already active check
         # Either stop existing containers and continue with run() or use existing containers from now on and exit run() early
         if [ "$(docker ps -a --filter "name=$CONTAINER_NAME" --format "{{.Names}}")" = "$CONTAINER_NAME" ]
         then
-            { ask y "Container already running, restart it?" || { stop && abort 1; }; } || { echo "Continue with existing container" && return; }
+            if [ ask y "Container already running, restart it?" ]
+            then
+                stop
+            else
+                echo "Continue with existing container"
+                return
+            fi
         fi
 
         # Single Container
@@ -180,7 +187,7 @@ attach()
 {
     local TARGET_CONTAINER=$ATTACH_CONTAINER
     info "Attaching to running container"
-    if [ -n "$COMPOSE_FILE" ]
+    if [ "$COMPOSE_FILE" ]
     then
         # Compose
 
@@ -195,7 +202,7 @@ attach()
             { [ -z "$TARGET_CONTAINER" ] && \info "No container was specified; Service container will be taken as default" && local TARGET_CONTAINER="$SERVICE"; }
         fi
 
-        echocmd eval "$DC exec $TARGET_CONTAINER $USED_SHELL"
+        echocmd "${DC_CMD[@]}" exec $TARGET_CONTAINER $USED_SHELL
     else
         # Single Container
         echocmd docker exec -it "$CONTAINER_NAME" "$USED_SHELL"
@@ -208,10 +215,10 @@ attach()
 exec()
 {
     local FUNC=$EXEC_COMMAND
-    if [ -n "$COMPOSE_FILE" ]
+    if [ "$COMPOSE_FILE" ]
     then
         # Compose
-        echocmd eval "$DC exec $FUNC"
+        echocmd "${DC_CMD[@]}" exec $FUNC
     else
         # Single Container
         echocmd docker exec "$CONTAINER_NAME" "$FUNC"
@@ -222,12 +229,12 @@ stop()
 {
     local CLEAN=$1
     local STOP_ARGS="$CLOSE_VOLUMES"
-    if [ -n "$CLEAN" ]; then local STOP_ARGS=" --volumes --remove-orphans"; fi
+    if [ "$CLEAN" ]; then local STOP_ARGS=" --volumes --remove-orphans"; fi
 
     info "Stop running container"
-    if [ -n "$COMPOSE_FILE" ]
+    if [ "$COMPOSE_FILE" ]
     then
-        echocmd eval "$DC down $STOP_ARGS"
+        echocmd "${DC_CMD[@]}" down $STOP_ARGS
     else
         # Single Container
         echocmd docker stop "$CONTAINER_NAME"
@@ -238,20 +245,20 @@ stop()
 log()
 {
     local TARGET_CONTAINER=$LOG_CONTAINER
-    if [ -n "$COMPOSE_FILE" ]
+    if [ "$COMPOSE_FILE" ]
     then
         if [ -z "$SERVICE" ] && [ -z "$TARGET_CONTAINER" ]
         then
             # Main repository case, use input prompt to determine container
             local TARGET_CONTAINER=$(input "Which service container should be logged?")
             { [ -z "$TARGET_CONTAINER" ] && \info "No service container declared, exiting" && return; }
-        elif [ -n "$SERVICE" ] && [ -z "$TARGET_CONTAINER" ]
+        elif [ "$SERVICE" ] && [ -z "$TARGET_CONTAINER" ]
         then
             # Submodule case
             info "No container was specified; Service container will be taken as default" && local TARGET_CONTAINER="$SERVICE"
         fi
 
-        echocmd eval "docker compose -f $COMPOSE_FILE logs $TARGET_CONTAINER"
+        echocmd docker compose -f "$COMPOSE_FILE" logs "$TARGET_CONTAINER"
     else
         # Single Container
         echocmd docker container logs "$CONTAINER_NAME"
@@ -318,13 +325,13 @@ case "$SERVICE" in
     *)              ;;
 esac
 
-if [ -n "$SERVICE" ]; then info "Running $FUNCTION for $SERVICE"
+if [ "$SERVICE" ]; then info "Running $FUNCTION for $SERVICE"
 else info "Running $FUNCTION"; fi
 
 # Compose dev branch checkout
 COMPOSE_REFERENCE_BRANCH="main"
 
-if [ -n "$USE_LOCAL_BRANCH_FOR_COMPOSE" ]
+if [ "$USE_LOCAL_BRANCH_FOR_COMPOSE" ]
 then
     COMPOSE_REFERENCE_BRANCH=$(git -C "$SERVICE_FOLDER" branch --show-current) && \
     info "Ditching 'main' for '$COMPOSE_REFERENCE_BRANCH' in compose setup to fetch external services"
@@ -333,7 +340,9 @@ fi
 # Helpers
 USER_ID=$(id -u)
 GROUP_ID=$(id -g)
-DC="CONTEXT=dev USER_ID=$USER_ID GROUP_ID=$GROUP_ID COMPOSE_REFERENCE_BRANCH=$COMPOSE_REFERENCE_BRANCH docker compose -f ${COMPOSE_FILE}"
+DC_CMD=(CONTEXT=dev USER_ID="$USER_ID" GROUP_ID="$GROUP_ID" \
+        COMPOSE_REFERENCE_BRANCH="$COMPOSE_REFERENCE_BRANCH" \
+        docker compose -f "$COMPOSE_FILE")
 IMAGE_TAG="openslides-$SERVICE-dev"
 
 # - Run specific function
@@ -341,7 +350,7 @@ case "$FUNCTION" in
     "help")             help ;;
     "standalone")       build && run && stop ;;
     "detached")         build && run "-d" && info "Containers started" ;;
-    "attached")         build && run "-d" && attach && stop ;;
+    "attached")         build && run "-d" && attach ;;
     "restart")          stop && build && run ;;
     "stop")             stop ;;
     "clean")            stop true ;;
