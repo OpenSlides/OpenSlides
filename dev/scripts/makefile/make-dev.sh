@@ -16,6 +16,7 @@ Builds and starts development related images. Intended to be called from main re
 Parameters:
     #1 TARGET                   : Name of the makefile target that called this script
     #2 SERVICE                  : Name of the service to be operated on. If empty, the main repository is assumed to be operated on
+                                  This should be the only non-flag and non-environment variable parameter provided when calling this script
 
 Environment Variables (can be set when invoking make target):
     RUN_ARGS                 : Additional parameters that will be appended to dev-run calls
@@ -78,7 +79,7 @@ build_capsuled()
     # Output
     if [ "$RESPONSE" != 0 ]
     then
-        error "Building image failed: $ERROR"
+        error "Building image failed: $RESPONSE"
     elif [ "$BUILD_TIME" -le 3 ]
     then
         success "Image found in cache"
@@ -94,7 +95,7 @@ build()
     if [ -n "$NO_CACHE" ]; then BUILD_ARGS="--no-cache"; fi
 
     # Build all submodules
-    if [ -n "$SERVICE_FOLDER" = "" ]
+    if [ -n "$SERVICE_FOLDER" ]
     then
         if [ -n "$CAPSULE" ]
         then
@@ -165,7 +166,7 @@ run()
         if [ -n "$NO_CACHE" ]; then BUILD_ARGS="--build --force-recreate"; fi
 
         # Compose
-        echocmd "${DC_CMD[@]}" up "${BUILD_ARGS}" "${FLAGS}" "${VOLUMES}" "${RUN_ARGS}"
+        echocmd eval "$DC up ${BUILD_ARGS} ${FLAGS} ${VOLUMES} ${RUN_ARGS}"
     else
         # Already active check
         # Either stop existing containers and continue with run() or use existing containers from now on and exit run() early
@@ -205,7 +206,7 @@ attach()
             { [ -z "$TARGET_CONTAINER" ] && \info "No container was specified; Service container will be taken as default" && TARGET_CONTAINER="$SERVICE"; }
         fi
 
-        echocmd "${DC_CMD[@]}" exec "$TARGET_CONTAINER $USED_SHELL"
+        echocmd eval "$DC exec $TARGET_CONTAINER $USED_SHELL"
     else
         # Single Container
         echocmd docker exec -it "$CONTAINER_NAME" "$USED_SHELL"
@@ -221,7 +222,7 @@ exec_func()
     if [ -n "$COMPOSE_FILE" ]
     then
         # Compose
-        echocmd "${DC_CMD[@]}" exec "$FUNC"
+        echocmd eval "$DC exec $FUNC"
     else
         # Single Container
         echocmd docker exec "$CONTAINER_NAME" "$FUNC"
@@ -232,12 +233,12 @@ stop()
 {
     local CLEAN=$1
     local STOP_ARGS="$CLOSE_VOLUMES"
-    if [ -n "$CLEAN" ]; then STOP_ARGS=" --volumes --remove-orphans"; fi
+    if [ -n "$CLEAN" ]; then STOP_ARGS="--volumes --remove-orphans"; fi
 
     info "Stop running container"
     if [ -n "$COMPOSE_FILE" ]
     then
-        echocmd "${DC_CMD[@]}" down "$STOP_ARGS"
+        echocmd eval "$DC down $STOP_ARGS"
     else
         # Single Container
         echocmd docker stop "$CONTAINER_NAME"
@@ -336,22 +337,20 @@ COMPOSE_REFERENCE_BRANCH="main"
 
 if [ -n "$USE_LOCAL_BRANCH_FOR_COMPOSE" ]
 then
-    if [ -z "$SERVICE_FOLDER"]
+    if [ -z "$SERVICE_FOLDER" ]
     then
         error "No folder found for service '$SERVICE'. Please check if the \$SERVICE parameter has been properly set and refers to an existing service."
         warn "'compose-local-branch' only works for submodule services, not for main!"
         exit 1
     fi
-    COMPOSE_REFERENCE_BRANCH=$(git -C "$SERVICE_FOLDER" branch --show-current) && \
+    COMPOSE_REFERENCE_BRANCH=$(git -C "$SERVICE_FOLDER" branch --show-current)
     info "Ditching 'main' for '$COMPOSE_REFERENCE_BRANCH' in compose setup to fetch external services"
 fi
 
 # Helpers
 USER_ID=$(id -u)
 GROUP_ID=$(id -g)
-DC_CMD=(CONTEXT=dev USER_ID="$USER_ID" GROUP_ID="$GROUP_ID" \
-        COMPOSE_REFERENCE_BRANCH="$COMPOSE_REFERENCE_BRANCH" \
-        docker compose -f "$COMPOSE_FILE")
+DC="CONTEXT=dev USER_ID=$USER_ID GROUP_ID=$GROUP_ID COMPOSE_REFERENCE_BRANCH=$COMPOSE_REFERENCE_BRANCH docker compose -f ${COMPOSE_FILE}"
 IMAGE_TAG="openslides-$SERVICE-dev"
 
 # - Run specific function
