@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -euo pipefail
+
 # Import OpenSlides utils package
 . "$(dirname "$0")/../util.sh"
 
@@ -89,12 +91,12 @@ build()
 {
     local BUILD_ARGS="";
 
-    if [ "$NO_CACHE" ]; then local BUILD_ARGS="--no-cache"; fi
+    if [ -n "$NO_CACHE" ]; then BUILD_ARGS="--no-cache"; fi
 
     # Build all submodules
-    if [ "$SERVICE_FOLDER" = "" ]
+    if [ -n "$SERVICE_FOLDER" = "" ]
     then
-        if [ "$CAPSULE" ]
+        if [ -n "$CAPSULE" ]
         then
             build_capsuled "dev/scripts/makefile/build-all-submodules.sh dev $BUILD_ARGS"
         else
@@ -107,11 +109,11 @@ build()
     (
         cd "$SERVICE_FOLDER" || abort 1
 
-        if [ "$CAPSULE" ]
+        if [ -n "$CAPSULE" ]
         then
             build_capsuled "make build-dev ARGS=$BUILD_ARGS"
         else
-            make build-dev ARGS=$BUILD_ARGS
+            make build-dev ARGS="$BUILD_ARGS"
         fi
     )
 }
@@ -156,20 +158,21 @@ run()
     info "Running container"
     local FLAGS=$1
     local SHELL=$2
-    if [ "$COMPOSE_FILE" ]
+    if [ -n "$COMPOSE_FILE" ]
     then
         local BUILD_ARGS="";
 
-        if [ "$NO_CACHE" ]; then local BUILD_ARGS="--build --force-recreate"; fi
+        if [ -n "$NO_CACHE" ]; then BUILD_ARGS="--build --force-recreate"; fi
 
         # Compose
-        echocmd "${DC_CMD[@]}" up ${BUILD_ARGS} ${FLAGS} ${VOLUMES} ${RUN_ARGS}
+        echocmd "${DC_CMD[@]}" up "${BUILD_ARGS}" "${FLAGS}" "${VOLUMES}" "${RUN_ARGS}"
     else
         # Already active check
         # Either stop existing containers and continue with run() or use existing containers from now on and exit run() early
         if [ "$(docker ps -a --filter "name=$CONTAINER_NAME" --format "{{.Names}}")" = "$CONTAINER_NAME" ]
         then
-            if [ ask y "Container already running, restart it?" ]
+            local RUNNING_RESPONSE=$(ask y "Container already running, restart it?")
+            if [ -n "$RUNNING_RESPONSE" ]
             then
                 stop
             else
@@ -187,7 +190,7 @@ attach()
 {
     local TARGET_CONTAINER=$ATTACH_CONTAINER
     info "Attaching to running container"
-    if [ "$COMPOSE_FILE" ]
+    if [ -n "$COMPOSE_FILE" ]
     then
         # Compose
 
@@ -195,14 +198,14 @@ attach()
         if [ -z "$SERVICE" ] && [ -z "$TARGET_CONTAINER" ]
         then
             # Main repository case, use input prompt to determine container
-            local TARGET_CONTAINER=$(input "Which service container should be entered?")
+            TARGET_CONTAINER=$(input "Which service container should be entered?")
             { [ -z "$TARGET_CONTAINER" ] && \info "No service container declared, exiting" && return; }
         else
             # Submodule case
-            { [ -z "$TARGET_CONTAINER" ] && \info "No container was specified; Service container will be taken as default" && local TARGET_CONTAINER="$SERVICE"; }
+            { [ -z "$TARGET_CONTAINER" ] && \info "No container was specified; Service container will be taken as default" && TARGET_CONTAINER="$SERVICE"; }
         fi
 
-        echocmd "${DC_CMD[@]}" exec $TARGET_CONTAINER $USED_SHELL
+        echocmd "${DC_CMD[@]}" exec "$TARGET_CONTAINER $USED_SHELL"
     else
         # Single Container
         echocmd docker exec -it "$CONTAINER_NAME" "$USED_SHELL"
@@ -212,13 +215,13 @@ attach()
     if [ "$CONTAINER_STATUS" != 0 ]; then warn "Container exit status: $CONTAINER_STATUS"; fi
 }
 
-exec()
+exec_func()
 {
     local FUNC=$EXEC_COMMAND
-    if [ "$COMPOSE_FILE" ]
+    if [ -n "$COMPOSE_FILE" ]
     then
         # Compose
-        echocmd "${DC_CMD[@]}" exec $FUNC
+        echocmd "${DC_CMD[@]}" exec "$FUNC"
     else
         # Single Container
         echocmd docker exec "$CONTAINER_NAME" "$FUNC"
@@ -229,12 +232,12 @@ stop()
 {
     local CLEAN=$1
     local STOP_ARGS="$CLOSE_VOLUMES"
-    if [ "$CLEAN" ]; then local STOP_ARGS=" --volumes --remove-orphans"; fi
+    if [ -n "$CLEAN" ]; then STOP_ARGS=" --volumes --remove-orphans"; fi
 
     info "Stop running container"
-    if [ "$COMPOSE_FILE" ]
+    if [ -n "$COMPOSE_FILE" ]
     then
-        echocmd "${DC_CMD[@]}" down $STOP_ARGS
+        echocmd "${DC_CMD[@]}" down "$STOP_ARGS"
     else
         # Single Container
         echocmd docker stop "$CONTAINER_NAME"
@@ -245,17 +248,17 @@ stop()
 log()
 {
     local TARGET_CONTAINER=$LOG_CONTAINER
-    if [ "$COMPOSE_FILE" ]
+    if [ -n "$COMPOSE_FILE" ]
     then
         if [ -z "$SERVICE" ] && [ -z "$TARGET_CONTAINER" ]
         then
             # Main repository case, use input prompt to determine container
-            local TARGET_CONTAINER=$(input "Which service container should be logged?")
+            TARGET_CONTAINER=$(input "Which service container should be logged?")
             { [ -z "$TARGET_CONTAINER" ] && \info "No service container declared, exiting" && return; }
-        elif [ "$SERVICE" ] && [ -z "$TARGET_CONTAINER" ]
+        elif [ -n "$SERVICE" ] && [ -z "$TARGET_CONTAINER" ]
         then
             # Submodule case
-            info "No container was specified; Service container will be taken as default" && local TARGET_CONTAINER="$SERVICE"
+            info "No container was specified; Service container will be taken as default" && TARGET_CONTAINER="$SERVICE"
         fi
 
         echocmd docker compose -f "$COMPOSE_FILE" logs "$TARGET_CONTAINER"
@@ -310,7 +313,7 @@ case "$SERVICE" in
                     USED_SHELL="./entrypoint.sh bash --rcfile .bashrc" &&
                     CLOSE_VOLUMES="--volumes" ;;
     "client")       SERVICE_FOLDER="./openslides-client" &&
-                    VOLUMES="-v `pwd`/client/src:/app/src -v `pwd`/client/cli:/app/cli -p 127.0.0.1:9001:9001/tcp" ;;
+                    VOLUMES="-v $(pwd)/client/src:/app/src -v $(pwd)/client/cli:/app/cli -p 127.0.0.1:9001:9001/tcp" ;;
     "datastore")    SERVICE_FOLDER="./openslides-datastore-service" ;;
     "icc")          SERVICE_FOLDER="./openslides-icc-service" ;;
     "manage")       SERVICE_FOLDER="./openslides-manage-service" ;;
@@ -325,14 +328,20 @@ case "$SERVICE" in
     *)              ;;
 esac
 
-if [ "$SERVICE" ]; then info "Running $FUNCTION for $SERVICE"
+if [ -n "$SERVICE" ]; then info "Running $FUNCTION for $SERVICE"
 else info "Running $FUNCTION"; fi
 
 # Compose dev branch checkout
 COMPOSE_REFERENCE_BRANCH="main"
 
-if [ "$USE_LOCAL_BRANCH_FOR_COMPOSE" ]
+if [ -n "$USE_LOCAL_BRANCH_FOR_COMPOSE" ]
 then
+    if [ -z "$SERVICE_FOLDER"]
+    then
+        error "No folder found for service '$SERVICE'. Please check if the \$SERVICE parameter has been properly set and refers to an existing service."
+        warn "'compose-local-branch' only works for submodule services, not for main!"
+        exit 1
+    fi
     COMPOSE_REFERENCE_BRANCH=$(git -C "$SERVICE_FOLDER" branch --show-current) && \
     info "Ditching 'main' for '$COMPOSE_REFERENCE_BRANCH' in compose setup to fetch external services"
 fi
@@ -354,12 +363,12 @@ case "$FUNCTION" in
     "restart")          stop && build && run ;;
     "stop")             stop ;;
     "clean")            stop true ;;
-    "exec")             exec ;;
+    "exec")             exec_func ;;
     "enter")            attach ;;
     "build")            build ;;
     "log")              log ;;
     "docker-reset")     docker_reset ;;
-    "media-attached")   build && run "-d" && EXEC_COMMAND='-T tests wait-for-it "media:9006"' && exec "$EXEC_COMMAND" && attach "tests" && stop ;; # Special case for media (for now)
+    "media-attached")   build && run "-d" && EXEC_COMMAND='-T tests wait-for-it "media:9006"' && exec_func "$EXEC_COMMAND" && attach "tests" && stop ;; # Special case for media (for now)
     "")                 build && run ;;
     *)                  warn "No command found matching $FUNCTION" && help ;;
 esac
