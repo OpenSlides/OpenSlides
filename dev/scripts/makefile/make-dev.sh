@@ -46,7 +46,7 @@ Available dev functions:
                           If a docker compose file is declared, the \$ATTACH_CONTAINER parameter determines
                           the specific container id you will enter (default value is equal the service name)
     dev-standalone   : Builds and starts development images; closes them immediately afterwards
-    dev-restart      : Stops any currently running images or docker compose setup; restarts it immediately afterwards.
+    dev-restart      : Stops any currently running images or docker compose setup; restarts it immediately afterwards in detached mode.
     dev-stop         : Stops any currently running images or docker compose setup associated with the service
     dev-clean        : Stops any currently running images or docker compose setup associated with the service. Also removes (orphaned) volumes
     dev-exec         : Executes command inside container.
@@ -359,7 +359,7 @@ case "$FUNCTION" in
     "standalone")       build && run && stop ;;
     "detached")         build && run "-d" && info "Containers started" ;;
     "attached")         build && run "-d" && attach ;;
-    "restart")          stop && build && run ;;
+    "restart")          stop && build && run "-d" ;;
     "stop")             stop ;;
     "clean")            stop true ;;
     "exec")             exec_func ;;
