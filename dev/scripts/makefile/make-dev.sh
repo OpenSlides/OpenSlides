@@ -367,7 +367,7 @@ case "$FUNCTION" in
     "build")            build ;;
     "log")              log ;;
     "docker-reset")     docker_reset ;;
-    "media-attached")   build && run "-d" && EXEC_COMMAND='-T tests wait-for-it "media:9006"' && exec_func "$EXEC_COMMAND" && attach "tests" && stop ;; # Special case for media (for now)
+    "media-attached")   build && run "-d" && EXEC_COMMAND='-T tests wait-for-it "media:9006"' && exec_func && attach "tests" && stop ;; # Special case for media (for now)
     "")                 build && run ;;
     *)                  warn "No command found matching $FUNCTION" && help ;;
 esac
