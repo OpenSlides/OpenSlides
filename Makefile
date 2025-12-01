@@ -55,7 +55,10 @@ log-localprod:
 # Checkout
 
 checkout:
-	@bash $(MAKEFILE_PATH)/checkout.sh "$(BRANCH)" "$(FILE)"
+	@bash $(MAKEFILE_PATH)/checkout.sh "$(BRANCH)" "$(FILE)" "$(PULL)" "$(LATEST)"
+
+checkout-help:
+	@bash $(MAKEFILE_PATH)/checkout.sh -h
 
 # Make-release commands
 

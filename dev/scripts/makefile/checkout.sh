@@ -8,10 +8,35 @@ set -e
 REMOTE_NAME=origin
 BRANCH_NAME=${1:-"main"}
 BRANCH_FILE=${2:""}
+OPT_PULL=${3:-0}
+CHECKOUT_LATEST=${4:-0}
 
 BRANCH_FILE_PATH="/home/jmbehrens/OpenSlides/$(dirname "$0")"
 
 if [ -f  "$BRANCH_FILE_PATH/$BRANCH_FILE" ]; then success "Reading commit info from $BRANCH_FILE"; fi
+
+usage() {
+  info "\
+
+   USAGE BASH: $(basename "$0") [BRANCH_NAME:main] [BRANCH_FILE] {-p -l}
+
+   By default $(basename "$0") will fetch the latest changes for every
+   submodule and directly checkout the $REMOTE_NAME's $BRANCH_NAME branch.
+   This will leave them in detached HEAD state.
+   Specify a branch layout file using BRANCH_FILE. Submodules will use values
+   from this file to derive branch, remote and commit hash information
+   The lines in this file have must have the following structure:
+            [  module             remote     branch      commit_hash ]
+   Example: [openslides-backend  upstream  feature/xyz        ""     ]
+   Use -p or --pull to instead forward the local $BRANCH_NAME branch.
+   Use -l or --latest to ignore specific commit hashes and instead pull the latest commit.
+
+   USAGE MAKE: checkout BRANCH= FILE= PULL= LATEST=
+
+   BRANCH is a shorthand for BRANCH_NAME, FILE for BRANCH_FILE, PULL for -p Flag and LATEST for -l
+   All variables are optional
+   "
+}
 
 checkout() {
     (
@@ -79,17 +104,24 @@ checkout() {
         # Fetch
         echocmd git fetch "$SOURCE"
 
-        # Switch Branch
-        if ! git branch --list | grep -v "HEAD" | grep -q "$BRANCH"
+        if [ "$OPT_PULL" == 0 ]
         then
-            echocmd git switch -t "$SOURCE"/"$BRANCH"
+            # Only checkout in a detached head state
+            echocmd git checkout "$SOURCE"/"$BRANCH"
         else
-            success "Branch $BRANCH already exists"
-            echocmd git checkout "$BRANCH"
-        fi
+            # Pull and forward local branch
+            # Switch Branch
+            if ! git branch --list | grep -v "HEAD" | grep -q "$BRANCH"
+            then
+                echocmd git switch -t "$SOURCE"/"$BRANCH"
+            else
+                success "Branch $BRANCH already exists"
+                echocmd git checkout "$BRANCH"
+            fi
 
-        # Pull
-        echocmd git pull --ff-only
+            # Pull
+            echocmd git pull --ff-only
+        fi
 
         # Force reset to a hash, if one hasc "meta" "met been provided
         # Ignore specific hash, if latest should be pulled
@@ -97,7 +129,7 @@ checkout() {
 
         if [ -n "$HASH" ]
         then
-            git reset --hard "$HASH"
+           git reset --hard "$HASH"
         fi;
 
         # Switch meta too, if present
@@ -133,6 +165,25 @@ setup_localprod()
     )
 }
 
+while getopts ":h:help:l:latest:p:pull" o; do
+    case "${o}" in
+        h | help)
+            usage
+            exit 0
+            ;;
+        l | latest)
+            CHECKOUT_LATEST=true
+            ;;
+        p | pull )
+            OPT_PULL=1
+            ;;
+        *)
+            usage
+            exit 0
+            ;;
+    esac
+done
+
 
 # Checkout latest branches
 
@@ -155,22 +206,6 @@ while read -r toplevel sm_path name; do
   }
 done <<< "$(git submodule foreach --recursive -q 'echo "$toplevel $sm_path $name"')"
 wait
-
-while getopts ":h:help:c" o; do
-    case "${o}" in
-        h | help)
-            usage
-            exit 0
-            ;;
-        c)
-            CHECKOUT_LATEST=true
-            ;;
-        *)
-            usage
-            exit 0
-            ;;
-    esac
-done
 
 # Setup localprod
 #setup_localprod
