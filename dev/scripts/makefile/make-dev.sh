@@ -294,7 +294,7 @@ case "$SERVICE" in
                     USED_SHELL="./entrypoint.sh bash --rcfile .bashrc" &&
                     CLOSE_VOLUMES="--volumes" ;;
     "client")       SERVICE_FOLDER="./openslides-client" &&
-                    VOLUMES="-v `pwd`/client/src:/app/src -v `pwd`/client/cli:/app/cli -p 127.0.0.1:9001:9001/tcp" ;;
+                    VOLUMES="-v $(pwd)/openslides-client/client/src:/app/src -v $(pwd)/openslides-client/client/cli:/app/cli -p 127.0.0.1:9001:9001/tcp" ;;
     "datastore")    SERVICE_FOLDER="./openslides-datastore-service" ;;
     "icc")          SERVICE_FOLDER="./openslides-icc-service" ;;
     "manage")       SERVICE_FOLDER="./openslides-manage-service" ;;
