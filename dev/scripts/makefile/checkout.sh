@@ -148,7 +148,7 @@ checkout_main()
     (
         ask y "Would you like to checkout main repository as well? WARNING: You may not be able to call this script again after switching branches, as it may not exist in target branch" || exit 0
 
-        checkout "" "OpenSlides" "$RENAME_NAME" "$BRANCH_NAME" ""
+        checkout "." "OpenSlides" "$RENAME_NAME" "$BRANCH_NAME" ""
     )
 }
 
@@ -214,8 +214,8 @@ done <<< "$(git submodule foreach --recursive -q 'echo "$toplevel $sm_path $name
 wait
 
 # Setup localprod
-#setup_localprod
+setup_localprod
 
 # Main
-#checkout_main
+checkout_main
 
