@@ -52,6 +52,11 @@ log-localprod:
 	@if [ ! -f "dev/localprod/docker-compose.yml" ]; then echo "No docker-compose.yml exists in dev/localprod. Have you run setup.sh yet?" && exit 1; fi
 	docker compose -f dev/localprod/docker-compose.yml logs $(ARGS)
 
+# Checkout
+
+checkout:
+	@bash $(MAKEFILE_PATH)/checkout.sh "$(BRANCH)" "$(FILE)"
+
 # Make-release commands
 
 services-to-main:
