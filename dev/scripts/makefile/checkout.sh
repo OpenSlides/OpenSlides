@@ -50,8 +50,16 @@ checkout() {
 
         if [ "$(git status --porcelain --ignore-submodules --untracked-files=no)" != "" ]
         then
+            info "The repository has changes"
             success "$(git status --porcelain --ignore-submodules --untracked-files=no)"
-            ask y "The repository $mod has changes. Stash them?" && git stash
+            RESULT=$(ask y "Stash them?" </dev/tty || echo 1)
+            if [ "$RESULT" == 0 ]
+            then
+                git stash
+            else
+                warn "$SUBMODULE was not stashed. Skipped instead"
+                exit 0
+            fi
         fi
 
         if [[ ! "$SOURCE" == "upstream" && ! "$SOURCE" == "origin" ]]
