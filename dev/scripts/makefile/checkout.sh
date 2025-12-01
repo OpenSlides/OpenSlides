@@ -77,7 +77,9 @@ checkout() {
         then
             info "The repository has changes"
             success "$(git status --porcelain --ignore-submodules --untracked-files=no)"
-            RESULT=$(ask y "Stash them?" </dev/tty || echo 1)
+
+            ask y "Stash them?" </dev/tty && RESULT=$? || true
+
             if [ "$RESULT" == 0 ]
             then
                 git stash
@@ -103,6 +105,9 @@ checkout() {
 
         # Fetch
         echocmd git fetch "$SOURCE"
+
+        # Verify or set to main
+        git rev-parse --verify remotes/"$SOURCE"/"$BRANCH" &>/dev/null || BRANCH=main
 
         if [ "$OPT_PULL" == 0 ]
         then
