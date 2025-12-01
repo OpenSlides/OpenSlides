@@ -21,18 +21,10 @@ checkout() {
         local BRANCH=${4:-main}
         local HASH=$5
 
-        # Check for changes and stash them if wanted.
-        info "Check for changes..."
-
-        if [ "$(git status --porcelain --ignore-submodules --untracked-files=no)" != "" ]
-        then
-            success "$(git status --porcelain --ignore-submodules --untracked-files=no)"
-            ask y "The repository $mod has changes. Stash them?" && git stash
-        fi
-
         # Read from Branch File, if it exists
-        if [ -e "$BRANCH_FILE_PATH/$BRANCH_FILE" ]
+        if [[ -e "$BRANCH_FILE_PATH/$BRANCH_FILE" && ! -d "$BRANCH_FILE_PATH/$BRANCH_FILE" ]]
         then
+            echo "$BRANCH_FILE_PATH/$BRANCH_FILE"
             while read -r MOD SRC BRCH HSH; do
                 if [ "$MOD" == "$SUBMODULE" ]
                 then
@@ -52,6 +44,16 @@ checkout() {
         if [ -z "$SUBMODULE" ]; then SUBMODULE="OpenSlides"; fi
 
         info "Fetch & checkout for ${SUBMODULE} "
+
+        # Check for changes and stash them if wanted.
+        info "Check for changes..."
+
+        if [ "$(git status --porcelain --ignore-submodules --untracked-files=no)" != "" ]
+        then
+            success "$(git status --porcelain --ignore-submodules --untracked-files=no)"
+            ask y "The repository $mod has changes. Stash them?" && git stash
+        fi
+
         if [[ ! "$SOURCE" == "upstream" && ! "$SOURCE" == "origin" ]]
         then
             info "Source is a non origin or upstream remote, likely a fork"
@@ -66,7 +68,6 @@ checkout() {
             echocmd git remote set-url "$SOURCE" git@github.com:OpenSlides/"$SUBMODULE".git
         fi
 
-        exit 0
         # Fetch
         echocmd git fetch "$SOURCE"
 
@@ -80,7 +81,7 @@ checkout() {
         fi
 
         # Pull
-        echocmd git pull
+        echocmd git pull --ff-only
 
         # Force reset to a hash, if one hasc "meta" "met been provided
         # Ignore specific hash, if latest should be pulled
