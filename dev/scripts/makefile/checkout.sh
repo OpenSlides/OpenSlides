@@ -28,6 +28,7 @@ usage() {
    The lines in this file have must have the following structure:
             [  module             remote     branch      commit_hash ]
    Example: [openslides-backend  upstream  feature/xyz        ""     ]
+            (see dev/scripts/makefile/checkout_example_file for more)
    Use -p or --pull to instead forward the local $BRANCH_NAME branch.
    Use -l or --latest to ignore specific commit hashes and instead pull the latest commit.
 
