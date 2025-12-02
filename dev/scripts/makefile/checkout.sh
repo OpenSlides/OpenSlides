@@ -50,7 +50,6 @@ checkout() {
         # Read from Branch File, if it exists
         if [[ -e "$BRANCH_FILE_PATH/$BRANCH_FILE" && ! -d "$BRANCH_FILE_PATH/$BRANCH_FILE" ]]
         then
-            echo "$BRANCH_FILE_PATH/$BRANCH_FILE"
             while read -r MOD SRC BRCH HSH; do
                 if [ "$MOD" == "$SUBMODULE" ]
                 then
@@ -241,3 +240,6 @@ setup_localprod
 
 # Main
 checkout_main
+
+echo ""
+success Done
