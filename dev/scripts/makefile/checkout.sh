@@ -179,23 +179,36 @@ setup_localprod()
         ./openslides config --config config.yml .
     )
 }
-while [[ $# -gt 0 ]]; do
+
+# Parse flags
+if ! parsed=$(getopt -o plh --long pull,latest,help -n "$(basename "$0")" -- "$@"); then
+    usage
+    exit 1
+fi
+
+eval set -- "$parsed"
+
+while true; do
     case "$1" in
-        h | help)
-            usage
-            exit 0
-            ;;
-        l | latest)
-            CHECKOUT_LATEST=true
-            shift
-            ;;
-        p | pull )
+        -p|--pull)
             OPT_PULL=1
             shift
             ;;
-        *)
+        -l|--latest)
+            CHECKOUT_LATEST=1
+            shift
+            ;;
+        -h|--help)
             usage
             exit 0
+            ;;
+        --)
+            shift
+            break
+            ;;
+        *)
+            usage
+            exit 1
             ;;
     esac
 done
