@@ -61,6 +61,9 @@ log-localprod:
 checkout:
 	@bash $(MAKEFILE_PATH)/checkout.sh "$(BRANCH)" "$(FILE)" "$(PULL)" "$(LATEST)"
 
+checkout-pull:
+	@bash $(MAKEFILE_PATH)/checkout.sh "$(BRANCH)" "$(FILE)" "true" "$(LATEST)"
+
 checkout-help:
 	@bash $(MAKEFILE_PATH)/checkout.sh -h
 

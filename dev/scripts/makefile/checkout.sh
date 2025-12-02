@@ -73,11 +73,11 @@ checkout() {
 
         # Check for changes and stash them if wanted.
         info "Check for changes..."
-
-        if [ "$(git status --porcelain --ignore-submodules --untracked-files=no)" != "" ]
+        GIT_CHANGES=$(git status --porcelain --ignore-submodules --untracked-files=no)
+        if [ "$GIT_CHANGES" != "" ]
         then
             info "The repository has changes"
-            success "$(git status --porcelain --ignore-submodules --untracked-files=no)"
+            success "$GIT_CHANGES"
 
             ask y "Stash them?" </dev/tty && RESULT=$? || true
 
@@ -92,7 +92,7 @@ checkout() {
 
         if [[ ! "$SOURCE" == "upstream" && ! "$SOURCE" == "origin" ]]
         then
-            info "Source is a non origin or upstream remote, likely a fork"
+            info "$SOURCE is a non origin or upstream remote"
             if ! git remote get-url "$SOURCE" >/dev/null 2>&1
             then
                 echocmd git remote add "$SOURCE" git@github.com:"$SOURCE"/"$SUBMODULE".git
@@ -139,7 +139,12 @@ checkout() {
         fi;
 
         # Switch meta too, if present
-        if [ -d "meta" ]; then checkout "meta" "openslides-meta" "$REMOTE_NAME" "$BRANCH_NAME" ""; fi
+        if [ -d "meta" ]
+        then
+            checkout "meta" "openslides-meta" "$REMOTE_NAME" "$BRANCH_NAME" ""
+
+            echocmd git submodule update
+        fi
     )
 }
 
