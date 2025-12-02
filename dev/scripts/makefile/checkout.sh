@@ -130,7 +130,7 @@ checkout() {
             fi
 
             # Pull
-            echocmd git pull --ff-only
+            echocmd git pull --ff-only "$SOURCE" "$BRANCH"
         fi
 
         # Force reset to a hash, if one has been provided
