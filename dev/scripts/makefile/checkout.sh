@@ -1,17 +1,17 @@
 #!/bin/bash
 
-set -e
+set -eo pipefail
 
 # Import OpenSlides utils package
 . "$(dirname "$0")"/../util.sh
 
 REMOTE_NAME=origin
 BRANCH_NAME=${1:-"main"}
-BRANCH_FILE=${2:""}
+BRANCH_FILE=${2:-""}
 OPT_PULL=${3:-0}
 CHECKOUT_LATEST=${4:-0}
 
-BRANCH_FILE_PATH="/home/jmbehrens/OpenSlides/$(dirname "$0")"
+BRANCH_FILE_PATH="./"
 
 if [ -f  "$BRANCH_FILE_PATH/$BRANCH_FILE" ]; then success "Reading commit info from $BRANCH_FILE"; fi
 
@@ -65,7 +65,7 @@ checkout() {
             warn "$BRANCH_FILE_PATH/$BRANCH_FILE not found"
         fi
 
-        cd $DIRECTORY || exit 1
+        cd "$DIRECTORY" || exit 1
 
         if [ -z "$SUBMODULE" ]; then SUBMODULE="OpenSlides"; fi
 
@@ -133,9 +133,9 @@ checkout() {
             echocmd git pull --ff-only
         fi
 
-        # Force reset to a hash, if one hasc "meta" "met been provided
+        # Force reset to a hash, if one has been provided
         # Ignore specific hash, if latest should be pulled
-        if [ -n "$CHECKOUT_LATEST" ]; then local HASH=""; fi
+        if [ ! "$CHECKOUT_LATEST" = 0 ]; then local HASH=""; fi
 
         if [ -n "$HASH" ]
         then
@@ -157,7 +157,7 @@ checkout_main()
     (
         ask y "Would you like to checkout main repository as well? WARNING: You may not be able to call this script again after switching branches, as it may not exist in target branch" || exit 0
 
-        checkout "." "OpenSlides" "$RENAME_NAME" "$BRANCH_NAME" ""
+        checkout "." "OpenSlides" "$REMOTE_NAME" "$BRANCH_NAME" ""
     )
 }
 
@@ -179,18 +179,19 @@ setup_localprod()
         ./openslides config --config config.yml .
     )
 }
-
-while getopts ":h:help:l:latest:p:pull" o; do
-    case "${o}" in
+while [[ $# -gt 0 ]]; do
+    case "$1" in
         h | help)
             usage
             exit 0
             ;;
         l | latest)
             CHECKOUT_LATEST=true
+            shift
             ;;
         p | pull )
             OPT_PULL=1
+            shift
             ;;
         *)
             usage
