@@ -5,11 +5,11 @@ set -eo pipefail
 # Import OpenSlides utils package
 . "$(dirname "$0")"/../util.sh
 
-REMOTE_NAME=origin
-BRANCH_NAME=${1:-"main"}
-BRANCH_FILE=${2:-""}
-OPT_PULL=${3:-0}
-CHECKOUT_LATEST=${4:-0}
+REMOTE_NAME=${1:-"upstream"}
+BRANCH_NAME=${2:-"main"}
+BRANCH_FILE=${3:-""}
+OPT_PULL=${4:-0}
+CHECKOUT_LATEST=${5:-0}
 
 BRANCH_FILE_PATH="./"
 
@@ -18,23 +18,28 @@ if [ -f  "$BRANCH_FILE_PATH/$BRANCH_FILE" ]; then success "Reading commit info f
 usage() {
   info "\
 
-   USAGE BASH: $(basename "$0") [BRANCH_NAME:main] [BRANCH_FILE] {-p -l}
+   USAGE BASH: $(basename "$0") [REMOTE_NAME:upstream] [BRANCH_NAME:main] [BRANCH_FILE] {-p -l}
 
    By default $(basename "$0") will fetch the latest changes for every
    submodule and directly checkout the $REMOTE_NAME's $BRANCH_NAME branch.
    This will leave them in detached HEAD state.
+
    Specify a branch layout file using BRANCH_FILE. Submodules will use values
    from this file to derive branch, remote and commit hash information
    The lines in this file have must have the following structure:
+
             [  module             remote     branch      commit_hash ]
+
    Example: [openslides-backend  upstream  feature/xyz        ""     ]
             (see dev/scripts/makefile/checkout_example_file for more)
+
    Use -p or --pull to instead forward the local $BRANCH_NAME branch.
    Use -l or --latest to ignore specific commit hashes and instead pull the latest commit.
 
-   USAGE MAKE: checkout BRANCH= FILE= PULL= LATEST=
+   USAGE MAKE: make checkout REMOTE= BRANCH= FILE= PULL= LATEST=
 
-   BRANCH is a shorthand for BRANCH_NAME, FILE for BRANCH_FILE, PULL for -p Flag and LATEST for -l
+   REMOTE is a shorthand for REMOTE_NAME, BRANCH is for BRANCH_NAME, FILE for BRANCH_FILE, PULL for -p Flag and LATEST for -l
+
    All variables are optional
    "
 }
