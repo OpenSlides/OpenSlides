@@ -299,7 +299,7 @@ USED_SHELL="sh"
 MAKEFLAGS=
 unset ARGS
 
-# Strip 'dev', '-' and any '.o' or similar file endings that may have been automatically added from implicit rules by GNU
+# Strip 'dev', '-' and any '.o' or similar file endings that may have been automatically added from implicit rules by GNU and make targets
 FUNCTION=${TARGET#"dev"}
 FUNCTION=${FUNCTION#"-"}
 FUNCTION=${FUNCTION%.*}
