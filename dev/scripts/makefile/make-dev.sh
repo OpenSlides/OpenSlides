@@ -95,7 +95,7 @@ build()
     if [ -n "$NO_CACHE" ]; then BUILD_ARGS="--no-cache"; fi
 
     # Build all submodules
-    if [ -n "$SERVICE_FOLDER" ]
+    if [ -z "$SERVICE_FOLDER" ]
     then
         if [ -n "$CAPSULE" ]
         then
