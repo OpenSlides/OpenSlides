@@ -50,9 +50,9 @@ Available dev functions:
     dev-stop         : Stops any currently running images or docker compose setup associated with the service
     dev-clean        : Stops any currently running images or docker compose setup associated with the service. Also removes (orphaned) volumes
     dev-exec         : Executes command inside container.
-                          Use \$EXEC_ARGS to declare command that should be executed.
+                          Use \$EXEC_COMMAND to declare command that should be executed.
                           If using a docker compose setup, also declare which container the command should be executed in.
-                          Example: 'dev-exec RUN_ARGS=\"service-name echo hello\"' will run \"echo hello\" inside the container named \"service-name\"
+                          Example: 'dev-exec EXEC_COMMAND=\"service-name echo hello\"' will run \"echo hello\" inside the container named \"service-name\"
     dev-enter        : Enters shell of started container.
                           If a docker compose file is declared, the \$ATTACH_CONTAINER parameter determines
                           the specific container id you will enter (default value is equal the service name)
