@@ -45,9 +45,9 @@ ask() {
 
   if [ "$USE_ECHO_OUTPUT" == "-o" ]
   then
-    return "$OUTPUT"
-  else
     echo "$OUTPUT"
+  else
+    return "$OUTPUT"
   fi
 }
 
