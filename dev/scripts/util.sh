@@ -24,17 +24,31 @@ else
 fi
 
 ask() {
-  printf "\n"
-  local DEFAULT_REPLY="$1" REPLY_OPT="[y/N]" BLANK="y" REPLY=
-  shift; [[ "$DEFAULT_REPLY" != y ]] || {
-    REPLY_OPT="[Y/n]"; BLANK=""
-  }
+  local DEFAULT_REPLY="$1" USE_ECHO_OUTPUT="$2" REPLY_OPT="[y/N]" BLANK="y" REPLY= OUTPUT=
 
-  read -rp "$* $REPLY_OPT: "
+  if [ "$DEFAULT_REPLY" == "y" ]
+  then
+    REPLY_OPT="[Y/n]"; BLANK=""
+  fi
+  
+  shift
+
+  # Shift once more in case -r flag exists
+  if [ "$USE_ECHO_OUTPUT" == "-o" ]; then shift; fi
+
+  read -rp $'\n'"$* $REPLY_OPT: "
+  
   case "$REPLY" in
-    Y|y|Yes|yes|YES|"$BLANK") return 0 ;;
-    *) return 1 ;;
+    Y|y|Yes|yes|YES|"$BLANK") OUTPUT=0 ;;
+    *) OUTPUT=1 ;;
   esac
+
+  if [ "$USE_ECHO_OUTPUT" == "-o" ]
+  then
+    return "$OUTPUT"
+  else
+    echo "$OUTPUT"
+  fi
 }
 
 input(){
