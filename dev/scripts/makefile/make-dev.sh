@@ -172,8 +172,8 @@ run()
         # Either stop existing containers and continue with run() or use existing containers from now on and exit run() early
         if [ "$(docker ps -a --filter "name=$CONTAINER_NAME" --format "{{.Names}}")" = "$CONTAINER_NAME" ]
         then
-            local RUNNING_RESPONSE=$(ask y "Container already running, restart it?")
-            if [ -n "$RUNNING_RESPONSE" ]
+            ask y "Container already running, restart it?" || local DECLINE_ASK=1
+            if [ -z "$DECLINE_ASK" ]
             then
                 stop
             else
