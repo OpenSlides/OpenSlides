@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -eo pipefail
+
 # Import OpenSlides utils package
 . "$(dirname "$0")/../util.sh"
 
@@ -14,12 +16,14 @@ Builds and starts development related images. Intended to be called from main re
 Parameters:
     #1 TARGET                   : Name of the makefile target that called this script
     #2 SERVICE                  : Name of the service to be operated on. If empty, the main repository is assumed to be operated on
+                                  This should be the only non-flag and non-environment variable parameter provided when calling this script
 
 Environment Variables (can be set when invoking make target):
     RUN_ARGS                 : Additional parameters that will be appended to dev-run calls
     ATTACH_CONTAINER         : Determine target container to enter for dev-attached and dev-enter
     EXEC_COMMAND             : Determine command to be called for dev-exec
     LOG_CONTAINER            : Determine target container to log for dev-log
+    DEBUG_DRY_RUN            : Prints all commands that would run but prevents their actual execution
 
 Example: make   dev-exec   backend   EXEC_COMMAND='vote ls'
                    ^          ^               ^
@@ -42,8 +46,9 @@ Available dev functions:
                           If a docker compose file is declared, the \$ATTACH_CONTAINER parameter determines
                           the specific container id you will enter (default value is equal the service name)
     dev-standalone   : Builds and starts development images; closes them immediately afterwards
-    dev-stop         : Stops any currently running images or docker compose file associated with the service
-    dev-clean        : Stops any currently running images or docker compose file associated with the service. Also removes (orphaned) volumes
+    dev-restart      : Stops any currently running images or docker compose setup; restarts it immediately afterwards in detached mode.
+    dev-stop         : Stops any currently running images or docker compose setup associated with the service
+    dev-clean        : Stops any currently running images or docker compose setup associated with the service. Also removes (orphaned) volumes
     dev-exec         : Executes command inside container.
                           Use \$EXEC_ARGS to declare command that should be executed.
                           If using a docker compose setup, also declare which container the command should be executed in.
@@ -53,7 +58,7 @@ Available dev functions:
                           the specific container id you will enter (default value is equal the service name)
     dev-build        : Builds the development image
     dev-log          : Prints log output of given container.
-    dev-reset-docker : Debugging function. Closes and removes ALL containers. Optionally deletes ALL images as well.
+    dev-docker-reset : Debugging function. Closes and removes ALL containers. Optionally deletes ALL images as well. Optionally prunes your docker system.
     "
 }
 
@@ -74,7 +79,7 @@ build_capsuled()
     # Output
     if [ "$RESPONSE" != 0 ]
     then
-        error "Building image failed: $ERROR"
+        error "Building image failed: $RESPONSE"
     elif [ "$BUILD_TIME" -le 3 ]
     then
         success "Image found in cache"
@@ -87,10 +92,10 @@ build()
 {
     local BUILD_ARGS="";
 
-    if [ -n "$NO_CACHE" ]; then local BUILD_ARGS="--no-cache"; fi
+    if [ -n "$NO_CACHE" ]; then BUILD_ARGS="--no-cache"; fi
 
     # Build all submodules
-    if [ "$SERVICE_FOLDER" = "" ]
+    if [ -z "$SERVICE_FOLDER" ]
     then
         if [ -n "$CAPSULE" ]
         then
@@ -117,12 +122,12 @@ build()
         then
             build_capsuled "make build-dev ARGS=$BUILD_ARGS"
         else
-            make build-dev ARGS=$BUILD_ARGS
+            make build-dev ARGS="$BUILD_ARGS"
         fi
     )
 }
 
-reset_docker()
+docker_reset()
 {
     info "Stopping containers"
     if [ "$(docker ps -aq)" = "" ]
@@ -140,14 +145,21 @@ reset_docker()
         docker rm $(docker ps -a -q)
     fi
 
-    ask n "Do you want to delete ALL images as well?" || abort 0
-    info "Removing images"
-    if [ "$(docker images -aq)" = "" ]
-    then
-        info "No images to remove"
-    else
-        docker rmi -f $(docker images -aq)
-    fi
+    ask n "Do you want to delete ALL images as well?" &&
+    (
+        info "Removing images"
+        if [ "$(docker images -aq)" = "" ]
+        then
+            info "No images to remove"
+        else
+            echocmd docker rmi -f $(docker images -aq)
+        fi
+    ) || true
+    ask n "Do you want a full docker system prune as well?" &&
+    (
+    info "Running docker system prune"
+    echocmd docker system prune --volumes
+    ) || true
 }
 
 run()
@@ -159,7 +171,7 @@ run()
     then
         local BUILD_ARGS="";
 
-        if [ -n "$NO_CACHE" ]; then local BUILD_ARGS="--build --force-recreate"; fi
+        if [ -n "$NO_CACHE" ]; then BUILD_ARGS="--build --force-recreate"; fi
 
         # Compose
         echocmd eval "$DC up ${BUILD_ARGS} ${FLAGS} ${VOLUMES} ${RUN_ARGS}"
@@ -168,7 +180,14 @@ run()
         # Either stop existing containers and continue with run() or use existing containers from now on and exit run() early
         if [ "$(docker ps -a --filter "name=$CONTAINER_NAME" --format "{{.Names}}")" = "$CONTAINER_NAME" ]
         then
-            { ask y "Container already running, restart it?" || { stop && abort 1; }; } || { echo "Continue with existing container" && return; }
+            local RUNNING_RESPONSE=$(ask y "Container already running, restart it?")
+            if [ -n "$RUNNING_RESPONSE" ]
+            then
+                stop
+            else
+                echo "Continue with existing container"
+                return
+            fi
         fi
 
         # Single Container
@@ -188,11 +207,11 @@ attach()
         if [ -z "$SERVICE" ] && [ -z "$TARGET_CONTAINER" ]
         then
             # Main repository case, use input prompt to determine container
-            local TARGET_CONTAINER=$(input "Which service container should be entered?")
+            TARGET_CONTAINER=$(input "Which service container should be entered?")
             { [ -z "$TARGET_CONTAINER" ] && \info "No service container declared, exiting" && return; }
         else
             # Submodule case
-            { [ -z "$TARGET_CONTAINER" ] && \info "No container was specified; Service container will be taken as default" && local TARGET_CONTAINER="$SERVICE"; }
+            { [ -z "$TARGET_CONTAINER" ] && \info "No container was specified; Service container will be taken as default" && TARGET_CONTAINER="$SERVICE"; }
         fi
 
         echocmd eval "$DC exec $TARGET_CONTAINER $USED_SHELL"
@@ -205,7 +224,7 @@ attach()
     if [ "$CONTAINER_STATUS" != 0 ]; then warn "Container exit status: $CONTAINER_STATUS"; fi
 }
 
-exec()
+exec_func()
 {
     local FUNC=$EXEC_COMMAND
     if [ -n "$COMPOSE_FILE" ]
@@ -222,7 +241,7 @@ stop()
 {
     local CLEAN=$1
     local STOP_ARGS="$CLOSE_VOLUMES"
-    if [ -n "$CLEAN" ]; then local STOP_ARGS=" --volumes --remove-orphans"; fi
+    if [ -n "$CLEAN" ]; then STOP_ARGS="--volumes --remove-orphans"; fi
 
     info "Stop running container"
     if [ -n "$COMPOSE_FILE" ]
@@ -243,15 +262,15 @@ log()
         if [ -z "$SERVICE" ] && [ -z "$TARGET_CONTAINER" ]
         then
             # Main repository case, use input prompt to determine container
-            local TARGET_CONTAINER=$(input "Which service container should be logged?")
+            TARGET_CONTAINER=$(input "Which service container should be logged?")
             { [ -z "$TARGET_CONTAINER" ] && \info "No service container declared, exiting" && return; }
         elif [ -n "$SERVICE" ] && [ -z "$TARGET_CONTAINER" ]
         then
             # Submodule case
-            info "No container was specified; Service container will be taken as default" && local TARGET_CONTAINER="$SERVICE"
+            info "No container was specified; Service container will be taken as default" && TARGET_CONTAINER="$SERVICE"
         fi
 
-        echocmd eval "docker compose -f $COMPOSE_FILE logs $TARGET_CONTAINER"
+        echocmd docker compose -f "$COMPOSE_FILE" logs "$TARGET_CONTAINER"
     else
         # Single Container
         echocmd docker container logs "$CONTAINER_NAME"
@@ -289,7 +308,7 @@ USED_SHELL="sh"
 MAKEFLAGS=
 unset ARGS
 
-# Strip 'dev', '-' and any '.o' or similar file endings that may have been automatically added from implicit rules by GNU
+# Strip 'dev', '-' and any '.o' or similar file endings that may have been automatically added from implicit rules by GNU and make targets
 FUNCTION=${TARGET#"dev"}
 FUNCTION=${FUNCTION#"-"}
 FUNCTION=${FUNCTION%.*}
@@ -304,7 +323,7 @@ case "$SERVICE" in
                     USED_SHELL="./entrypoint.sh bash --rcfile .bashrc" &&
                     CLOSE_VOLUMES="--volumes" ;;
     "client")       SERVICE_FOLDER="./openslides-client" &&
-                    VOLUMES="-v `pwd`/client/src:/app/src -v `pwd`/client/cli:/app/cli -p 127.0.0.1:9001:9001/tcp" ;;
+                    VOLUMES="-v $(pwd)/openslides-client/client/src:/app/src -v $(pwd)/openslides-client/client/cli:/app/cli -p 127.0.0.1:9001:9001/tcp" ;;
     "datastore")    SERVICE_FOLDER="./openslides-datastore-service" ;;
     "icc")          SERVICE_FOLDER="./openslides-icc-service" ;;
     "manage")       SERVICE_FOLDER="./openslides-manage-service" ;;
@@ -327,7 +346,13 @@ COMPOSE_REFERENCE_BRANCH="main"
 
 if [ -n "$USE_LOCAL_BRANCH_FOR_COMPOSE" ]
 then
-    COMPOSE_REFERENCE_BRANCH=$(git -C "$SERVICE_FOLDER" branch --show-current) && \
+    if [ -z "$SERVICE_FOLDER" ]
+    then
+        error "No folder found for service '$SERVICE'. Please check if the \$SERVICE parameter has been properly set and refers to an existing service."
+        warn "'compose-local-branch' only works for submodule services, not for main!"
+        exit 1
+    fi
+    COMPOSE_REFERENCE_BRANCH=$(git -C "$SERVICE_FOLDER" branch --show-current)
     info "Ditching 'main' for '$COMPOSE_REFERENCE_BRANCH' in compose setup to fetch external services"
 fi
 
@@ -339,20 +364,21 @@ IMAGE_TAG="openslides-$SERVICE-dev"
 
 # - Run specific function
 case "$FUNCTION" in
-    "help")                 help ;;
-    "standalone")           build && run && stop ;;
-    "detached")             build && run "-d" && info "Containers started" ;;
-    "attached")             build && run "-d" && attach ;;
-    "stop")                 stop ;;
-    "clean")                stop true ;;
-    "exec")                 exec ;;
-    "enter")                attach ;;
-    "build")                build ;;
-    "log")                  log ;;
-    "reset-docker")         reset_docker ;;
-    "media-attached")       build && run "-d" && EXEC_COMMAND='-T tests wait-for-it "media:9006"' && exec "$EXEC_COMMAND" && attach "tests" && stop ;; # Special case for media (for now)
-    "")                     build && run ;;
-    *)                      warn "No command found matching $FUNCTION" && help ;;
+    "help")             help ;;
+    "standalone")       build && run && stop ;;
+    "detached")         build && run "-d" && info "Containers started" ;;
+    "attached")         build && run "-d" && attach ;;
+    "restart")          stop && build && run "-d" ;;
+    "stop")             stop ;;
+    "clean")            stop true ;;
+    "exec")             exec_func ;;
+    "enter")            attach ;;
+    "build")            build ;;
+    "log")              log ;;
+    "docker-reset")     docker_reset ;;
+    "media-attached")   build && run "-d" && EXEC_COMMAND='-T tests wait-for-it "media:9006"' && exec_func && attach "tests" && stop ;; # Special case for media (for now)
+    "")                 build && run ;;
+    *)                  warn "No command found matching $FUNCTION" && help ;;
 esac
 
 exit $?
