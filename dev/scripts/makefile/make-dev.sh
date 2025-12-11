@@ -99,16 +99,31 @@ build()
     then
         if [ -n "$CAPSULE" ]
         then
-            build_capsuled "dev/scripts/makefile/build-all-submodules.sh dev $IGNORE_FAILED_BUILDS $BUILD_ARGS"
-            if [ "$?" == 2 ]
+            build_capsuled "dev/scripts/makefile/build-all-submodules.sh dev $IGNORE_FAILED_BUILDS $BUILD_ARGS" || local BUILD_ERROR_CAUGHT=1
+            if [ "$BUILD_ERROR_CAUGHT" == 1 ]
             then
-                { ask y "Build of at least one image failed, continue anyway?" || { abort 1; }; } || { echo "Continueing with partly cached or non-existent images" && return; }
+                ask y "Build of at least one image failed, continue anyway?" || local BUILD_ERROR_CAUGHT=1
+            if [ "$BUILD_ERROR_CAUGHT" == 1 ]
+                then
+                    echo "Continueing with partly cached or non-existent images"
+                    return
+                else
+                    abort 1
+                fi
             fi
         else
-            dev/scripts/makefile/build-all-submodules.sh dev "$IGNORE_FAILED_BUILDS" "$BUILD_ARGS"
-            if [ "$?" == 2 ]
+            dev/scripts/makefile/build-all-submodules.sh dev "$IGNORE_FAILED_BUILDS" "$BUILD_ARGS" || local BUILD_ERROR_CAUGHT=1
+            if [ "$BUILD_ERROR_CAUGHT" == 1 ]
             then
-                { ask y "Build of at least one image failed, continue anyway?" || { abort 1; }; } || { echo "Continueing with partly cached or non-existent images" && return; }
+                ask y "Build of at least one image failed, continue anyway?" || local ASK_DECLINE=1
+
+                if [ -z "$ASK_DECLINE" ]
+                then
+                    echo "Continueing with partly cached or non-existent images"
+                    return
+                else
+                    abort 1
+                fi
             fi
         fi
         return
