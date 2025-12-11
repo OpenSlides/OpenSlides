@@ -65,6 +65,9 @@ msgstr ""
 msgid "About me"
 msgstr ""
 
+msgid "Absent"
+msgstr ""
+
 msgid "Abstain"
 msgstr ""
 
@@ -105,6 +108,9 @@ msgid "Accounts created"
 msgstr ""
 
 msgid "Accounts updated"
+msgstr ""
+
+msgid "Accounts were set to inactive, except for your own account."
 msgstr ""
 
 msgid "Accounts with errors"
@@ -239,6 +245,9 @@ msgid ""
 "affect the import."
 msgstr ""
 
+msgid "Adds participants, structure levels and groups to target meeting."
+msgstr ""
+
 msgid "Administration roles"
 msgstr ""
 
@@ -284,6 +293,9 @@ msgid "All entitled users"
 msgstr ""
 
 msgid "All lists of speakers will be cleared."
+msgstr ""
+
+msgid "All mandates"
 msgstr ""
 
 msgid "All meetings"
@@ -676,6 +688,15 @@ msgstr ""
 msgid "Attachments"
 msgstr ""
 
+msgid "Attachments (PDF embedded)"
+msgstr ""
+
+msgid "Attachments (URL)"
+msgstr ""
+
+msgid "Attachments to motions cannot be forwarded"
+msgstr ""
+
 msgid ""
 "Attention: Accounts will add to the default group of each meeting only. If "
 "another group is intended please use the 'Add to meetings' dialog in account "
@@ -1009,7 +1030,7 @@ msgstr ""
 
 msgid ""
 "Can see email, username, membership number, SSO identification and locked "
-"out state of all participants."
+"out state of all participants and can see mandate check."
 msgstr ""
 
 msgid "Can see files"
@@ -1459,7 +1480,19 @@ msgstr ""
 msgid "Contributions"
 msgstr ""
 
+msgid "Copy"
+msgstr ""
+
+msgid "Copy agenda item"
+msgstr ""
+
+msgid "Copy agenda items"
+msgstr ""
+
 msgid "Copy report to clipboard"
+msgstr ""
+
+msgid "Copy to"
 msgstr ""
 
 msgid "Count completed requests to speak"
@@ -1496,6 +1529,9 @@ msgid "Create user"
 msgstr ""
 
 msgid "Creating PDF file ..."
+msgstr ""
+
+msgid "Creating motion exports"
 msgstr ""
 
 msgid "Creation"
@@ -1773,6 +1809,9 @@ msgid "Download folder"
 msgstr ""
 
 msgid "Download the file"
+msgstr ""
+
+msgid "Downloading attachments"
 msgstr ""
 
 msgid "Drop files into this area OR click here to select files"
@@ -2766,6 +2805,10 @@ msgstr ""
 msgid "Items"
 msgstr ""
 
+msgid ""
+"Items of the type motions, motion blocks and elections cannot be forwarded."
+msgstr ""
+
 msgid "Jitsi domain"
 msgstr ""
 
@@ -2834,6 +2877,9 @@ msgid "Limit of active accounts"
 msgstr ""
 
 msgid "Limit of active meetings"
+msgstr ""
+
+msgid "Limited to 100 motions"
 msgstr ""
 
 msgid "Line"
@@ -2928,6 +2974,9 @@ msgstr ""
 
 msgid ""
 "Make background color from meta information box on the projector transparent"
+msgstr ""
+
+msgid "Mandate check"
 msgstr ""
 
 msgid "Mandates switched sucessfully!"
@@ -3110,6 +3159,12 @@ msgid "Motion identifier"
 msgstr ""
 
 msgid "Motion preamble"
+msgstr ""
+
+msgid "Motion supporter"
+msgstr ""
+
+msgid "Motion supporters"
 msgstr ""
 
 msgid "Motion updated"
@@ -3397,7 +3452,7 @@ msgstr ""
 msgid "None"
 msgstr ""
 
-msgid "None of the selected motions can be forwarded."
+msgid "None of the selected agenda items can be copied."
 msgstr ""
 
 msgid "Normal (http/2)"
@@ -3423,6 +3478,9 @@ msgid "Note: Amendments cannot be forwarded without their parent motion."
 msgstr ""
 
 msgid "Note: Amendments will not be forwarded."
+msgstr ""
+
+msgid "Note: Motions and elections will not be copied."
 msgstr ""
 
 msgid ""
@@ -4854,6 +4912,9 @@ msgstr ""
 msgid "The affected columns will not be imported."
 msgstr ""
 
+msgid "The agenda item was successfully copied to {} meeting(s)"
+msgstr ""
+
 msgid "The assembly may decide:"
 msgstr ""
 
@@ -5142,6 +5203,9 @@ msgid "Title for PDF documents of motions"
 msgstr ""
 
 msgid "Title for access data and welcome PDF"
+msgstr ""
+
+msgid "Title, text, visibility and comment are copied by default."
 msgstr ""
 
 msgid "To"
@@ -5438,6 +5502,11 @@ msgid ""
 "Warning: Data loss is possible because accounts are in the same meeting."
 msgstr ""
 
+msgid ""
+"Warning: List of speakers cannot be copied because person is speaking, has "
+"an open point of order or intervention."
+msgstr ""
+
 msgid "Warning: This projector will be set to visible"
 msgstr ""
 
@@ -5591,6 +5660,9 @@ msgid ""
 "You cannot enter this meeting because you are not assigned to any group."
 msgstr ""
 
+msgid "You cannot set yourself as inactive."
+msgstr ""
+
 msgid "You cannot vote since your vote right is delegated."
 msgstr ""
 
@@ -5616,6 +5688,9 @@ msgid "You have to enter six hexadecimal digits"
 msgstr ""
 
 msgid "You have to fill this field."
+msgstr ""
+
+msgid "You must be admin in target meeting."
 msgstr ""
 
 msgid "You override the personally set password!"
@@ -5659,6 +5734,11 @@ msgstr ""
 msgid "Your password has been reset successfully!"
 msgstr ""
 
+msgid ""
+"Your vote was rejected because your IP address is not in the allowed IP "
+"range."
+msgstr ""
+
 msgid "Your votes"
 msgstr ""
 
@@ -5687,6 +5767,9 @@ msgid "active"
 msgstr ""
 
 msgid "add group(s)"
+msgstr ""
+
+msgid "agenda items were successfully copied to {} meeting(s)"
 msgstr ""
 
 msgid "already exists"
@@ -5911,6 +5994,9 @@ msgstr ""
 msgid "of"
 msgstr ""
 
+msgid "of this"
+msgstr ""
+
 msgid "of which"
 msgstr ""
 
@@ -5974,6 +6060,9 @@ msgstr ""
 msgid "single-line"
 msgstr ""
 
+msgid "speakers"
+msgstr ""
+
 msgid "started"
 msgstr ""
 
@@ -5990,6 +6079,9 @@ msgid "to"
 msgstr ""
 
 msgid "today"
+msgstr ""
+
+msgid "total"
 msgstr ""
 
 msgid "two-line"
