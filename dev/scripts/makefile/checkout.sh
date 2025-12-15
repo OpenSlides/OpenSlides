@@ -44,6 +44,12 @@ usage() {
    "
 }
 
+go_update() {
+    # Set openslides-go in go.mod and go.sum of services to the current openslides-go hash
+    # go get github.com/OpenSlides/openslides-go@${GO_BRANCH_HASH}
+    # go mod tidy
+}
+
 checkout() {
     (
         local DIRECTORY=$1
@@ -153,6 +159,12 @@ checkout() {
 
             echocmd git submodule update
         fi
+
+        # Update go mod
+        if [ -f "go.mod" ]
+        then
+            go_update
+        fi
     )
 }
 
@@ -245,6 +257,12 @@ setup_localprod
 
 # Main
 checkout_main
+
+# Consistency Check
+info "Checking meta consistency"
+check_meta_consistency
+info "Checking go consistency"
+check_go_consistency
 
 echo ""
 success Done

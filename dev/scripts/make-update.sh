@@ -2,6 +2,9 @@
 
 set -ae
 
+# Import OpenSlides utils package
+. "$(dirname "$0")"/util.sh
+
 ME=$(basename "$0")
 
 STABLE_VERSION=
@@ -181,7 +184,7 @@ check_ssh_remotes() {
 
   {
     $remote_cmd
-    git submodule foreach --quiet --recursive $remote_cmd 
+    git submodule foreach --quiet --recursive $remote_cmd
   } | awk '/^https?:\/\// {print "  " $1; x=1} END {exit x}' || {
     warn "The above $REMOTE_NAME remotes seem not to use ssh."
     warn "$ME will attempt to directly push to these."
@@ -252,90 +255,6 @@ push_changes() {
   info ""
   info "Now main repository ..."
   echocmd git push "$REMOTE_NAME" "$BRANCH_NAME"
-}
-
-check_meta_consistency() {
-  local target_rev="$1"
-  local target_rev_at_str=
-  local mod_target_rev=
-  local meta_sha=
-  local meta_sha_last=
-  local ret_code=0
-
-  [[ -n "$target_rev" ]] &&
-    target_rev_at_str="(at $target_rev) "
-  info "Checking openslides-meta consistency $target_rev_at_str..."
-
-  # Doing a nested loop rather than foreach --recursive as it's easier to get
-  # both the path of service submod and the (potential) meta submod in one
-  # iteration
-  while read mod; do
-    while read meta_name meta_path; do
-      [[ "$meta_name" == 'openslides-meta' ]] ||
-        continue
-
-      # If target_rev is not specified we check the status of the currently
-      # checked out HEAD in the service submod.
-      # Note that this is different from target_rev being specified as 'HEAD'
-      # as the service submod can be in a different state than recorded in HEAD
-      # (e.g. changed commit pointer during staging-update)
-      mod_target_rev=HEAD
-      [[ "$target_rev" == "" ]] ||
-        mod_target_rev="$(git rev-parse "${target_rev}:${mod}")"
-
-      meta_sha="$(git -C "$mod" rev-parse "${mod_target_rev}:${meta_path}" | cut -c1-7)"
-      echo "  $meta_sha $mod"
-      [[ -z "$meta_sha_last" ]] || [[ "$meta_sha" == "$meta_sha_last" ]] ||
-        ret_code=1
-      meta_sha_last="$meta_sha"
-    done <<< "$(git -C $mod submodule foreach -q 'echo "$name $sm_path"')"
-  done <<< "$(git submodule foreach -q 'echo "$sm_path"')"
-
-  return $ret_code
-}
-
-check_go_consistency() {
-  local target_rev="$1"
-  local target_rev_at_str=
-  local mod_target_rev=
-  local osgo_version=
-  local osgo_version_last=
-  local ret_code=0
-
-  [[ -n "$target_rev" ]] &&
-    target_rev_at_str="(at $target_rev) "
-  info "Checking openslides-go consistency $target_rev_at_str..."
-
-  while read mod_name mod_path; do
-    grep -q openslides-go "$mod_path/go.mod" 2>/dev/null ||
-      continue
-
-    # In the repo itself use sha of $mod_target_rev rather than from go.mod file.
-    if [[ "$mod_name" == 'openslides-go' ]]; then
-      mod_target_rev="${target_rev:-HEAD}"
-      osgo_version="$(git -C "$mod_path" rev-parse "$mod_target_rev" |cut -c1-7)"
-      echo "  $osgo_version $mod_name (HEAD)"
-    else
-      # If target_rev is not specified we check the status of the currently
-      # checked out HEAD in the service submod.
-      # Note that this is different from target_rev being specified as 'HEAD'
-      # as the service submod can be in a different state than recorded in HEAD
-      # (e.g. changed commit pointer during staging-update)
-      mod_target_rev=HEAD
-      [[ "$target_rev" == "" ]] ||
-        mod_target_rev="$(git rev-parse "${target_rev}:${mod_path}")"
-
-      osgo_version="$(git -C "$mod_path" show "${mod_target_rev}:go.mod" |
-        awk '$1 ~ "/openslides-go" {print $2}' | tail -1 | awk -F- '{print $3}' | cut -c1-7)"
-      echo "  $osgo_version $mod_path (go.mod)"
-    fi
-
-    [[ -z "$osgo_version_last" ]] || [[ "$osgo_version" == "$osgo_version_last" ]] ||
-      ret_code=1
-    osgo_version_last="$osgo_version"
-  done <<< "$(git submodule foreach -q 'echo "$name $sm_path"')"
-
-  return $ret_code
 }
 
 add_changes() {
