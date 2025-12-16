@@ -91,6 +91,16 @@ success() {
     echo "${COL_GREEN}$*${COL_NORMAL}"
 }
 
+check_submodules_intialized() {
+  # From `man git-submodule`:
+  #   Each SHA-1 will possibly be prefixed with - if the submodule is not initialized
+  git submodule status --recursive |
+    awk '/^-/ {print "  " $2; x=1} END {exit x}' || {
+      error "Found the above uninitialized submodules. Please correct before rerunning $(basename "$0")."
+      abort 1
+    }
+}
+
 check_meta_consistency() {
   local target_rev="$1"
   local target_rev_at_str=

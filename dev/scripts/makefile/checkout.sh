@@ -263,6 +263,8 @@ info "Checking meta consistency"
 check_meta_consistency
 info "Checking go consistency"
 check_go_consistency
+info "Checking submodule initialization"
+check_submodules_intialized
 
 echo ""
 success Done

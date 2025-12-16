@@ -163,16 +163,6 @@ check_current_branch() {
   fi
 }
 
-check_submodules_intialized() {
-  # From `man git-submodule`:
-  #   Each SHA-1 will possibly be prefixed with - if the submodule is not initialized
-  git submodule status --recursive |
-    awk '/^-/ {print "  " $2; x=1} END {exit x}' || {
-      error "Found the above uninitialized submodules. Please correct before rerunning $ME."
-      abort 1
-    }
-}
-
 check_ssh_remotes() {
   local remote_cmd=
 
