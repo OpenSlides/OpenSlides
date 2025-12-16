@@ -22,6 +22,10 @@ Finally, start the development server:
 
 (This command won't run without sudo, or without having set up Docker to run without sudo - see their documentation)
 
+For a full overview of development functions call:
+
+    $ make dev-help
+
 You can access the services independently using their corresponding ports
 or access the full stack on
 
