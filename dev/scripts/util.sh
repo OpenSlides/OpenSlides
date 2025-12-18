@@ -24,26 +24,30 @@ else
 fi
 
 ask() {
-  local DEFAULT_REPLY="$1" USE_ECHO_OUTPUT="$2" REPLY_OPT="[y/N]" BLANK="y" REPLY= OUTPUT=
+  # n - Set 'n' as default answer. Default is 'y'
+  # o - Echo output instead. Default is returning output as exit code
+  if [ "$#" -eq 1 ]; then error "ask requires two parameters" && exit 1; fi
 
-  if [ "$DEFAULT_REPLY" == "y" ]
-  then
-    REPLY_OPT="[Y/n]"; BLANK=""
-  fi
+  local CONTROL_STR="$1" DEFAULT_REPLY="0" REPLY_OPT="[Y/n]" REPLY= OUTPUT=
 
-  shift
+  # Read control string
+  case "$CONTROL_STR" in
+    *n*) DEFAULT_REPLY="1" && \
+         REPLY_OPT="[y/N]" ;;
+    *o*) local OPT_ECHO=1 ;;
+  esac
 
-  # Shift once more in case -r flag exists
-  if [ "$USE_ECHO_OUTPUT" == "-o" ]; then shift; fi
+  shift 1
+  local QUERY="$*"
 
-  read -rp $'\n'"$* $REPLY_OPT: "
-
+  read -rp $'\n'"$QUERY $REPLY_OPT: "
   case "$REPLY" in
-    Y|y|Yes|yes|YES|"$BLANK") OUTPUT=0 ;;
+    Y|y|Yes|yes|YES) OUTPUT=0;;
+    "") OUTPUT="$DEFAULT_REPLY" ;;
     *) OUTPUT=1 ;;
   esac
 
-  if [ "$USE_ECHO_OUTPUT" == "-o" ]
+  if [ -n "$OPT_ECHO" ]
   then
     echo "$OUTPUT"
   else
@@ -52,8 +56,11 @@ ask() {
 }
 
 input(){
-  read -rp "$*: "
-  echo "$REPLY"
+  read -rp $'\n'"$* $REPLY_OPT: "
+  case "$REPLY" in
+    "") shift ;;
+    *) echo "$REPLY" ;;
+  esac
 }
 
 # echocmd first echos args in blue on stderr. Then args are treated like a
@@ -89,6 +96,59 @@ abort() {
 
 success() {
     echo "${COL_GREEN}$*${COL_NORMAL}"
+}
+
+
+submodule_do_inner_func() {
+  (
+      # Go repository
+      if [[ "$sm_path" == 'lib/openslides-go' ]] && [[ -z "$OPT_GO" ]]
+      then
+        exit 0
+      fi
+
+      # Meta repository
+      if [[ "$sm_path" == 'meta' ]] && [[ -z "$OPT_META" ]]
+      then
+        exit 0
+      fi
+
+      echo ""
+      info "Command started: ${sm_path}: ${COMMAND}"
+
+      cd "${toplevel}/${sm_path}" || exit 1
+      echocmd eval "$COMMAND"
+    )
+}
+
+submodules_do() {
+  # p - Activates parallel execution. Default is linear
+  # m - Take meta repository into account. Per default meta will be ignored
+  # g - Take go repository into account. Per default go will be ignored
+
+  if [ "$#" -eq 1 ]; then error "submodules_do requires two parameters" && exit 1; fi
+
+  local CONTROL_STR="$1"
+
+   # Read control string
+  case "$CONTROL_STR" in
+    *p*) local OPT_PARALLEL="&" ;;
+    *m*) local OPT_META="1" ;;
+    *g*) local OPT_GO="1" ;;
+  esac
+
+  shift 1
+  COMMAND="$*"
+
+  while read -r toplevel sm_path; do
+    if [ -z "$OPT_PARALLEL" ]
+    then
+      submodule_do_inner_func
+    else
+      submodule_do_inner_func &
+    fi
+  done <<< "$(git submodule foreach --recursive -q 'echo "$toplevel $sm_path"')"
+  wait
 }
 
 check_submodules_intialized() {

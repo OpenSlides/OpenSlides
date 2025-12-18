@@ -47,7 +47,3 @@ by default).
 ## `strip-meta-fieds.py`
 
 Helper script used by `export-ds.sh` to remove all meta fields from the output.
-
-## `submodules-do.sh`
-
-Run commands for all submodules in the repo (like `git submodule foreach`), but in parallel.
