@@ -10,7 +10,7 @@ set -eo pipefail
 # Functions
 help ()
 {
-    info "\
+    echo "\
 Builds and starts development related images. Intended to be called from main repository makefile
 
 Parameters:
