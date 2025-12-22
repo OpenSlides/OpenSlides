@@ -63,6 +63,17 @@ input(){
   esac
 }
 
+set_remote() {
+  local DEFAULT_NAME=${1:-upstream}
+  local OPTION=${2:-origin}
+  if git ls-remote --exit-code "$DEFAULT_NAME" &>/dev/null
+  then
+    echo "$DEFAULT_NAME"
+  else
+    echo "$OPTION"
+  fi
+}
+
 # echocmd first echos args in blue on stderr. Then args are treated like a
 # provided command and executed.
 # This allows callers of echocmd to still handle their provided command's stdout

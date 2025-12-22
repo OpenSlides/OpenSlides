@@ -114,14 +114,9 @@ abort() {
   exit "$1"
 }
 
-set_remote() {
-  REMOTE_NAME=upstream
-  git ls-remote --exit-code "$REMOTE_NAME" &>/dev/null ||
-    REMOTE_NAME=origin
-}
 
 confirm_version() {
-  set_remote
+  REMOTE_NAME=$(set_remote "upstream" "origin")
   STABLE_BRANCH_NAME="stable/$(awk -v FS=. -v OFS=. '{$3="x"  ; print $0}' VERSION)"  # 4.N.M -> 4.N.x
   echocmd git fetch "$REMOTE_NAME" "$STABLE_BRANCH_NAME"
   STABLE_VERSION="$(git show "$REMOTE_NAME/$STABLE_BRANCH_NAME:VERSION")"
@@ -169,7 +164,7 @@ check_ssh_remotes() {
   [[ -z "$OPT_LOCAL" ]] ||
     return 0
 
-  set_remote
+  REMOTE_NAME=$(set_remote "upstream" "origin")
   remote_cmd="git remote get-url --push $REMOTE_NAME"
 
   {
@@ -203,7 +198,7 @@ fetch_all_changes() {
       info "Entering $mod"
       cd "$mod"
 
-      set_remote
+      REMOTE_NAME=$(set_remote "upstream" "origin")
       pull_latest_commit
     )
   done
@@ -261,7 +256,7 @@ add_changes() {
   ask y "Interactively choose from these?" &&
     for mod in $(git submodule status | awk '$1 ~ "^\+" {print $2}'); do
       (
-        set_remote
+        REMOTE_NAME=$(set_remote "upstream" "origin")
         local target_sha= mod_sha_old= mod_sha_new= log_cmd= merge_base=
         mod_sha_old="$(git diff --submodule=short "$mod" | awk '$1 ~ "^-Subproject" { print $3 }')"
         mod_sha_new="$(git diff --submodule=short "$mod" | awk '$1 ~ "^\+Subproject" { print $3 }')"
@@ -367,7 +362,7 @@ update_main_branch() {
 }
 
 initial_staging_update() {
-  set_remote
+  REMOTE_NAME=$(set_remote "upstream" "origin")
   echocmd git fetch "$REMOTE_NAME" "main"
 
   info "Assuming services have been updated in main."
@@ -562,7 +557,7 @@ Continue?" ||
 make_stable_update() {
   local log_cmd=
 
-  set_remote
+  REMOTE_NAME=$(set_remote "upstream" "origin")
   check_current_branch
 
   echocmd git fetch "$REMOTE_NAME" "$STAGING_BRANCH_NAME"

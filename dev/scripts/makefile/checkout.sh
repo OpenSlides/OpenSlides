@@ -46,6 +46,18 @@ usage() {
 }
 
 go_update() {
+    # only checkout when flag is set
+    if [ -z "$GO_AUTO_CHECKOUT" ]
+    then
+        exit 0
+    fi
+
+    # Check if openslides-go is even part of the go.mod file
+    if ! grep -q openslides-go "./go.mod" 2>/dev/null
+    then
+        exit 0
+    fi
+
     # Set openslides-go in go.mod and go.sum of services to the current openslides-go hash
     local CUR_GO_SUBMODULE_VERSION="$(git -C . show "HEAD:go.mod" |
         awk '$1 ~ "/openslides-go" {print $2}' | tail -1 | awk -F- '{print $3}')"
@@ -53,12 +65,7 @@ go_update() {
     local GO_BRANCH_HASH_SHORT="$(git -C "../lib/openslides-go" rev-parse "HEAD" | cut -c1-12)"
 
     if [[ "$CUR_GO_SUBMODULE_VERSION" != "$GO_BRANCH_HASH_SHORT" ]]
-    then 
-        if [ -z "$GO_AUTO_CHECKOUT" ]
-        then
-            exit 0
-        fi
-        
+    then
         warn "Cur: $CUR_GO_SUBMODULE_VERSION Go: $GO_BRANCH_HASH_SHORT"
         info "Updating go mod to $GO_BRANCH_HASH"
         go get github.com/OpenSlides/openslides-go@${GO_BRANCH_HASH}
@@ -118,9 +125,6 @@ checkout() {
             fi
         fi
 
-        # Set remote to origin, if upstream does not exist
-        git ls-remote --exit-code "$SOURCE" &>/dev/null || SOURCE=origin
-
         # Add non-origin/upstream remotes if necessary
         if [[ ! "$SOURCE" == "upstream" && ! "$SOURCE" == "origin" ]]
         then
@@ -133,6 +137,7 @@ checkout() {
                 success "Remote $SOURCE already exists"
             fi
         else
+            SOURCE=$(set_remote "upstream" "origin")
             echocmd git remote set-url "$SOURCE" git@github.com:OpenSlides/"$SUBMODULE".git
         fi
 
@@ -268,7 +273,7 @@ while read -r toplevel sm_path name; do
         info "Checking out $name"
 
         if [ "$name" == 'openslides-go' ]
-        then 
+        then
             cd lib || abort 1
         fi
 

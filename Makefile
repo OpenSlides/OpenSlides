@@ -59,10 +59,10 @@ log-localprod:
 # Checkout
 
 checkout:
-	@bash $(MAKEFILE_PATH)/checkout.sh "$(FLAGS)" "${REMOTE}" "$(BRANCH)" "$(FILE)" "$(PULL)" "$(LATEST)"
+	@bash $(MAKEFILE_PATH)/checkout.sh "${REMOTE}" "$(BRANCH)" "$(FILE)" "$(PULL)" "$(LATEST)"
 
 checkout-pull:
-	@bash $(MAKEFILE_PATH)/checkout.sh "$(FLAGS)" "${REMOTE}" "$(BRANCH)" "$(FILE)" "true" "$(LATEST)"
+	@bash $(MAKEFILE_PATH)/checkout.sh "${REMOTE}" "$(BRANCH)" "$(FILE)" "true" "$(LATEST)"
 
 checkout-help:
 	@bash $(MAKEFILE_PATH)/checkout.sh -h
