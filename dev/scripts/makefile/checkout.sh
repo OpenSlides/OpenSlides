@@ -35,6 +35,7 @@ usage() {
 
    Use -p or --pull to instead forward the local $BRANCH_NAME branch.
    Use -l or --latest to ignore specific commit hashes and instead pull the latest commit.
+   Use -g or --go_update to automatically update go.mod of all submodules to match the checked out openslides-go version
 
    USAGE MAKE: make checkout REMOTE= BRANCH= FILE= PULL= LATEST=
 
@@ -44,11 +45,28 @@ usage() {
    "
 }
 
-#go_update() {
+go_update() {
     # Set openslides-go in go.mod and go.sum of services to the current openslides-go hash
-    # go get github.com/OpenSlides/openslides-go@${GO_BRANCH_HASH}
-    # go mod tidy
-#}
+    local CUR_GO_SUBMODULE_VERSION="$(git -C . show "HEAD:go.mod" |
+        awk '$1 ~ "/openslides-go" {print $2}' | tail -1 | awk -F- '{print $3}')"
+    local GO_BRANCH_HASH="$(git -C "../lib/openslides-go" rev-parse "HEAD")"
+    local GO_BRANCH_HASH_SHORT="$(git -C "../lib/openslides-go" rev-parse "HEAD" | cut -c1-12)"
+
+    if [[ "$CUR_GO_SUBMODULE_VERSION" != "$GO_BRANCH_HASH_SHORT" ]]
+    then 
+        if [ -z "$GO_AUTO_CHECKOUT" ]
+        then
+            exit 0
+        fi
+        
+        warn "Cur: $CUR_GO_SUBMODULE_VERSION Go: $GO_BRANCH_HASH_SHORT"
+        info "Updating go mod to $GO_BRANCH_HASH"
+        go get github.com/OpenSlides/openslides-go@${GO_BRANCH_HASH}
+        go mod tidy
+    else
+        exit 0
+    fi
+}
 
 checkout() {
     (
@@ -163,8 +181,11 @@ checkout() {
         # Update go mod
         if [ -f "go.mod" ]
         then
-            #go_update
-            echo ""
+            if [ "$SUBMODULE" != "openslides-go" ]
+            then
+                # Set go branch to openslides-go branch hash
+                go_update
+            fi
         fi
     )
 }
@@ -198,7 +219,7 @@ setup_localprod()
 }
 
 # Parse flags
-if ! parsed=$(getopt -o plh --long pull,latest,help -n "$(basename "$0")" -- "$@"); then
+if ! parsed=$(getopt -o plgh --long pull,latest,go_update,help -n "$(basename "$0")" -- "$@"); then
     usage
     exit 1
 fi
@@ -213,6 +234,10 @@ while true; do
             ;;
         -l|--latest)
             CHECKOUT_LATEST=1
+            shift
+            ;;
+        -g|--go_update)
+            GO_AUTO_CHECKOUT=1
             shift
             ;;
         -h|--help)
@@ -230,7 +255,6 @@ while true; do
     esac
 done
 
-
 # Checkout latest branches
 
 while read -r toplevel sm_path name; do
@@ -243,7 +267,10 @@ while read -r toplevel sm_path name; do
     (
         info "Checking out $name"
 
-        if [ "$name" == 'openslides-go' ]; then cd lib || abort 1; fi
+        if [ "$name" == 'openslides-go' ]
+        then 
+            cd lib || abort 1
+        fi
 
         cd "./$name" || exit 1
 
@@ -260,8 +287,8 @@ setup_localprod
 checkout_main
 
 # Consistency Check
-check_meta_consistency || error "Consistency check failed"
-check_go_consistency || error "Consistency check failed"
+check_meta_consistency || warn "Consistency check failed"
+check_go_consistency || warn "Consistency check failed"
 info "Checking submodule initialization"
 check_submodules_intialized || error "Submodules not initialized"
 
