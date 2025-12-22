@@ -11,7 +11,7 @@ BRANCH_FILE=${3:-""}
 OPT_PULL=${4:-0}
 CHECKOUT_LATEST=${5:-0}
 
-BRANCH_FILE_PATH="./"
+BRANCH_FILE_PATH=$(realpath ".")
 
 if [ -f  "$BRANCH_FILE_PATH/$BRANCH_FILE" ]; then success "Reading commit info from $BRANCH_FILE"; fi
 
@@ -124,6 +124,9 @@ checkout() {
                 exit 0
             fi
         fi
+
+        # Set remote to origin, if upstream does not exist
+        git ls-remote --exit-code "$SOURCE" &>/dev/null || SOURCE=origin
 
         # Add non-origin/upstream remotes if necessary
         if [[ ! "$SOURCE" == "upstream" && ! "$SOURCE" == "origin" ]]
