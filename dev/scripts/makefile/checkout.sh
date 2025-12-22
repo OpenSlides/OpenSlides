@@ -125,9 +125,6 @@ checkout() {
             fi
         fi
 
-        # Set remote to origin, if upstream does not exist
-        git ls-remote --exit-code "$SOURCE" &>/dev/null || SOURCE=origin
-
         # Add non-origin/upstream remotes if necessary
         if [[ ! "$SOURCE" == "upstream" && ! "$SOURCE" == "origin" ]]
         then
