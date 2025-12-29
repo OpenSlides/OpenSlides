@@ -99,9 +99,9 @@ build()
     then
         if [ -n "$CAPSULE" ]
         then
-            build_capsuled "dev/scripts/makefile/build-all-submodules.sh dev $BUILD_ARGS"
+            build_capsuled "docker compose  -f "$(dirname "$0")/../../docker/docker-compose.dev.yml" build $BUILD_ARGS"
         else
-            dev/scripts/makefile/build-all-submodules.sh dev $BUILD_ARGS
+            docker compose  -f "$(dirname "$0")/../../docker/docker-compose.dev.yml" build $BUILD_ARGS
         fi
         return
     fi
