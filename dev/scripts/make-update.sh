@@ -20,23 +20,6 @@ GIT_PAGER=
 # Make possible to provide go binary as $GO
 GO="${GO:-go}"
 
-# Colors for echocmd, info, warn and error
-# This if construct basically hardcodes a --color=auto option.
-# At some point we might want to add a configurable --color option.
-if [[ -t 1 ]]; then
-  COL_NORMAL="$(tput sgr0)"
-  COL_GRAY="$(tput bold; tput setaf 0)"
-  COL_RED="$(tput setaf 1)"
-  COL_YELLOW="$(tput setaf 3)"
-  COL_BLUE="$(tput setaf 4)"
-else
-  COL_NORMAL=""
-  COL_GRAY=""
-  COL_RED=""
-  COL_YELLOW=""
-  COL_BLUE=""
-fi
-
 usage() {
 cat <<EOF
 
@@ -74,49 +57,8 @@ MODES:
 EOF
 }
 
-ask() {
-  local default_reply="$1" reply_opt="[y/N]" blank="y" REPLY=
-  shift; [[ "$default_reply" != y ]] || {
-    reply_opt="[Y/n]"; blank=""
-  }
-
-  read -rp "$@ $reply_opt: "
-  case "$REPLY" in
-    Y|y|Yes|yes|YES|"$blank") return 0 ;;
-    *) return 1 ;;
-  esac
-}
-
-# echocmd first echos args in blue on stderr. Then args are treated like a
-# provided command and executed.
-# This allows callers of echocmd to still handle their provided command's stdout
-# as if executed directly.
-echocmd() {
-  echo "${COL_BLUE}$ $@${COL_NORMAL}" >&2
-  "$@"
-  return $?
-}
-
-info() {
-  echo "${COL_GRAY}$@${COL_NORMAL}"
-}
-
-warn() {
-  echo "${COL_YELLOW}[WARN] ${COL_GRAY}$@${COL_NORMAL}" >&2
-}
-
-error() {
-  echo "${COL_RED}[ERROR] ${COL_GRAY}$@${COL_NORMAL}" >&2
-}
-
-abort() {
-  echo "Aborting."
-  exit "$1"
-}
-
-
 confirm_version() {
-  REMOTE_NAME=$(set_remote "upstream" "origin")
+  REMOTE_NAME=$(set_remote)
   STABLE_BRANCH_NAME="stable/$(awk -v FS=. -v OFS=. '{$3="x"  ; print $0}' VERSION)"  # 4.N.M -> 4.N.x
   echocmd git fetch "$REMOTE_NAME" "$STABLE_BRANCH_NAME"
   STABLE_VERSION="$(git show "$REMOTE_NAME/$STABLE_BRANCH_NAME:VERSION")"
@@ -164,7 +106,7 @@ check_ssh_remotes() {
   [[ -z "$OPT_LOCAL" ]] ||
     return 0
 
-  REMOTE_NAME=$(set_remote "upstream" "origin")
+  REMOTE_NAME=$(set_remote)
   remote_cmd="git remote get-url --push $REMOTE_NAME"
 
   {
@@ -198,7 +140,7 @@ fetch_all_changes() {
       info "Entering $mod"
       cd "$mod"
 
-      REMOTE_NAME=$(set_remote "upstream" "origin")
+      REMOTE_NAME=$(set_remote)
       pull_latest_commit
     )
   done
@@ -256,7 +198,7 @@ add_changes() {
   ask y "Interactively choose from these?" &&
     for mod in $(git submodule status | awk '$1 ~ "^\+" {print $2}'); do
       (
-        REMOTE_NAME=$(set_remote "upstream" "origin")
+        REMOTE_NAME=$(set_remote)
         local target_sha= mod_sha_old= mod_sha_new= log_cmd= merge_base=
         mod_sha_old="$(git diff --submodule=short "$mod" | awk '$1 ~ "^-Subproject" { print $3 }')"
         mod_sha_new="$(git diff --submodule=short "$mod" | awk '$1 ~ "^\+Subproject" { print $3 }')"
@@ -362,7 +304,7 @@ update_main_branch() {
 }
 
 initial_staging_update() {
-  REMOTE_NAME=$(set_remote "upstream" "origin")
+  REMOTE_NAME=$(set_remote)
   echocmd git fetch "$REMOTE_NAME" "main"
 
   info "Assuming services have been updated in main."
@@ -557,7 +499,7 @@ Continue?" ||
 make_stable_update() {
   local log_cmd=
 
-  REMOTE_NAME=$(set_remote "upstream" "origin")
+  REMOTE_NAME=$(set_remote)
   check_current_branch
 
   echocmd git fetch "$REMOTE_NAME" "$STAGING_BRANCH_NAME"
