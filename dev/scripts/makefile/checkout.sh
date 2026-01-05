@@ -179,8 +179,6 @@ checkout() {
         if [ -d "meta" ]
         then
             checkout "meta" "openslides-meta" "$REMOTE_NAME" "$BRANCH_NAME" ""
-
-            echocmd git submodule update
         fi
 
         # Update go mod
