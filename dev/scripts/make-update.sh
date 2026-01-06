@@ -8,7 +8,9 @@ set -ae
 ME=$(basename "$0")
 
 STABLE_VERSION=
+STABLE_BRANCH_PREFIX=${STABLE_BRANCH_PREFIX:-stable}
 STABLE_BRANCH_NAME=
+STAGING_BRANCH_PREFIX=${STAGING_BRANCH_PREFIX:-staging}
 STAGING_BRANCH_NAME=
 BRANCH_NAME=
 REMOTE_NAME=
@@ -59,19 +61,19 @@ EOF
 
 confirm_version() {
   REMOTE_NAME=$(set_remote)
-  STABLE_BRANCH_NAME="stable/$(awk -v FS=. -v OFS=. '{$3="x"  ; print $0}' VERSION)"  # 4.N.M -> 4.N.x
+  STABLE_BRANCH_NAME="$STABLE_BRANCH_PREFIX/$(awk -v FS=. -v OFS=. '{$3="x"  ; print $0}' VERSION)"  # 4.N.M -> 4.N.x
   echocmd git fetch "$REMOTE_NAME" "$STABLE_BRANCH_NAME"
   STABLE_VERSION="$(git show "$REMOTE_NAME/$STABLE_BRANCH_NAME:VERSION")"
-  info "Guessing staging version from stable version $STABLE_VERSION found in $REMOTE_NAME."
+  info "Guessing $STAGING_BRANCH_PREFIX version from $STABLE_BRANCH_PREFIX version $STABLE_VERSION found in $REMOTE_NAME."
   STAGING_VERSION="$(echo $STABLE_VERSION | awk -v FS=. -v OFS=. '{$3=$3+1 ; print $0}')"  # 4.N.M -> 4.N.M+1
   # Give the user the opportunity to adjust the calculated staging version
-  read -rp "Please confirm the staging version to be used [${STAGING_VERSION}]: "
+  read -rp "Please confirm the $STAGING_BRANCH_PREFIX version to be used [${STAGING_VERSION}]: "
   case "$REPLY" in
     "") ;;
     *) STAGING_VERSION="$REPLY" ;;
   esac
-  STAGING_BRANCH_NAME="staging/$STAGING_VERSION"
-  OLD_STAGING_BRANCH_NAME="staging/$STABLE_VERSION"
+  STAGING_BRANCH_NAME="$STAGING_BRANCH_PREFIX/$STAGING_VERSION"
+  OLD_STAGING_BRANCH_NAME="$STAGING_BRANCH_PREFIX/$STABLE_VERSION"
 }
 
 check_current_branch() {
@@ -156,9 +158,9 @@ push_changes() {
   [[ -z "$OPT_LOCAL" ]] ||
     return 0
 
-  [[ "$BRANCH_NAME" == staging/* ]] || [[ "$BRANCH_NAME" == stable/* ]] || {
+  [[ "$BRANCH_NAME" == $STAGING_BRANCH_PREFIX/* ]] || [[ "$BRANCH_NAME" == $STABLE_BRANCH_PREFIX/* ]] || {
     error "Refusing to push to branch $BRANCH_NAME."
-    error "Only staging/* or stable/* branches should be pushed to directly."
+    error "Only $STAGING_BRANCH_PREFIX/* or $STABLE_BRANCH_PREFIX/* branches should be pushed to directly."
     abort 1
   }
 
@@ -255,9 +257,9 @@ commit_staged_changes() {
   local commit_message="Updated services"
   [[ "$BRANCH_NAME" == main ]] &&
     commit_message="Updated services"
-  [[ "$BRANCH_NAME" == staging/* ]] &&
+  [[ "$BRANCH_NAME" == $STAGING_BRANCH_PREFIX/* ]] &&
     commit_message="Staging update $(date +%Y%m%d)"
-  [[ "$BRANCH_NAME" == stable/* ]] &&
+  [[ "$BRANCH_NAME" == $STABLE_BRANCH_PREFIX/* ]] &&
     commit_message="Update $(cat VERSION) ($(date +%Y%m%d))"
   [[ $# == 0 ]] ||
     commit_message="$@"
@@ -300,7 +302,7 @@ update_main_branch() {
   info "HINT: For example you can run"
   info "HINT:   git checkout -b update-main-pre-staging-$STAGING_VERSION"
   info "HINT:   git push <PERSONAL_REMOTE> update-main-pre-staging-$STAGING_VERSION"
-  info "After merging, rerun $ME and begin creating staging branches."
+  info "After merging, rerun $ME and begin creating $STAGING_BRANCH_PREFIX branches."
 }
 
 initial_staging_update() {
@@ -308,7 +310,7 @@ initial_staging_update() {
   echocmd git fetch "$REMOTE_NAME" "main"
 
   info "Assuming services have been updated in main."
-  info "The next step is to fixate changes for a new staging update by creating a new"
+  info "The next step is to fixate changes for a new $STAGING_BRANCH_PREFIX update by creating a new"
   info "$BRANCH_NAME branch at $REMOTE_NAME/main and referenced HEADs in submodules"
   info "including openslides-meta and openslides-go."
   ask y "Create $BRANCH_NAME branches now?" ||
@@ -340,10 +342,10 @@ make_staging_update() {
     # No fitting staging/* branch exists yet. Offer to Update main branches
     # first or create staging branches right away
     info '--------------------------------------------------------------------------------'
-    info "It seems there was no staging update for $STAGING_VERSION yet."
-    info "For the initial staging update of any version the first step is to forward all"
+    info "It seems there was no $STAGING_BRANCH_PREFIX update for $STAGING_VERSION yet."
+    info "For the initial $STAGING_BRANCH_PREFIX update of any version the first step is to forward all"
     info "main branches (and therefore include new changes) to the point that shall"
-    info "become the basis for the new staging update."
+    info "become the basis for the new $STAGING_BRANCH_PREFIX update."
     info "If this was already done, answer 'no' to begin creating $STAGING_BRANCH_NAME branches."
     if update_main_branch; then
       return 0
@@ -506,23 +508,23 @@ make_stable_update() {
 
   log_cmd="git log --oneline --no-decorate $STABLE_BRANCH_NAME..$REMOTE_NAME/$STAGING_BRANCH_NAME"
   [[ "$($log_cmd | grep -c . )" -gt 0 ]] || {
-    error "No staging update ahead of the latest stable update found."
+    error "No $STAGING_BRANCH_PREFIX update ahead of the latest $STABLE_BRANCH_PREFIX update found."
     abort 1
   }
 
   info ''
-  info 'Staging updates since last stable update:'
+  info "$STAGING_BRANCH_PREFIX updates since last $STABLE_BRANCH_PREFIX update:"
   info '--------------------------------------------------------------------------------'
   $log_cmd
   info '--------------------------------------------------------------------------------'
-  ask y "Including these staging updates for the new stable update. Continue?" ||
+  ask y "Including these $STAGING_BRANCH_PREFIX updates for the new $STABLE_BRANCH_PREFIX update. Continue?" ||
     abort 0
 
   check_meta_consistency "$REMOTE_NAME/$STAGING_BRANCH_NAME" &&
     check_go_consistency "$REMOTE_NAME/$STAGING_BRANCH_NAME" || {
       error "openslides-meta OR openslides-go is not consistent at $target_sha."
-      error "This is not acceptable for a stable update."
-      error "Please fix this in a new staging update before trying again."
+      error "This is not acceptable for a $STABLE_BRANCH_PREFIX update."
+      error "Please fix this in a new $STAGING_BRANCH_PREFIX update before trying again."
       abort 1
   }
 
@@ -557,7 +559,7 @@ make_stable_update() {
 
 staging_log() {
   if ! git ls-remote --exit-code --heads $REMOTE_NAME $STAGING_BRANCH_NAME; then
-    info "Staging Branch not found, comparing with main instead"
+    info "$STAGING_BRANCH_PREFIX Branch not found, comparing with main instead"
     printf "Fetches all relevant data"
     git fetch -q $REMOTE_NAME main
     printf "."
