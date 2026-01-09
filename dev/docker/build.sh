@@ -11,6 +11,7 @@ TARGETS=(
   [auth]="$HOME/openslides-auth-service/"
   [autoupdate]="$HOME/openslides-autoupdate-service/"
   [search]="$HOME/openslides-search-service/"
+  [projector]="$HOME/openslides-projector-service/"
   [manage]="$HOME/openslides-manage-service/"
   [datastore-reader]="$HOME/openslides-datastore-service/reader"
   [datastore-writer]="$HOME/openslides-datastore-service/writer"
@@ -30,7 +31,7 @@ fi
 CONFIG="/etc/osinstancectl"
 OPTIONS=()
 BUILT_IMAGES=()
-DEFAULT_TARGETS=(proxy client backend auth autoupdate manage datastore-reader datastore-writer media vote icc search)
+DEFAULT_TARGETS=(proxy client backend auth autoupdate manage datastore-reader datastore-writer media projector vote icc search)
 ASK_PUSH=
 OPT_YES=
 OPT_IMAGES=
