@@ -22,9 +22,10 @@ TARGETS=(
 DOCKER_REPOSITORY="openslides"
 DOCKER_TAG="$(cat VERSION)"
 BRANCH="$(git rev-parse --abbrev-ref HEAD)"
-if [[ "$BRANCH" == staging/* ]]; then
-  DOCKER_TAG="$DOCKER_TAG-staging-$(date +%Y%m%d)-$(git rev-parse HEAD | cut -c -7)"
-elif [[ "$BRANCH" != stable/* ]]; then
+BRANCH_PREFIX="$(echo "$BRANCH" | awk -F/ '{print $1}')"
+if [[ "$BRANCH" == staging* ]]; then
+  DOCKER_TAG="$DOCKER_TAG-$BRANCH_PREFIX-$(date +%Y%m%d)-$(git rev-parse HEAD | cut -c -7)"
+elif [[ "$BRANCH" != stable* ]]; then
   DOCKER_TAG="$DOCKER_TAG-$BRANCH"
 fi
 CONFIG="/etc/osinstancectl"
