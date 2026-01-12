@@ -20,6 +20,7 @@ jobs:
           - name: autoupdate
           - name: auth
           - name: search
+          - name: projector
           - name: vote
           - name: icc
           - name: media

@@ -56,6 +56,9 @@ services:
   icc:
     additionalContent:
       build: ../../openslides-icc-service/
+  projector:
+    additionalContent:
+      build: ../../openslides-projector-service/
   search:
     additionalContent:
       build: ../../openslides-search-service/
