@@ -53,14 +53,14 @@ jobs:
           ./dev/docker/build.sh -D $DOCKER_REPO ${{ matrix.service.name }}
           docker push "$IMAGE_NAME_VERSIONED"
           # Tag versioned image 'latest' (if on stable branch)
-          case "$(git rev-parse --abbrev-ref HEAD)" in stable/4*)
+          case "$(git rev-parse --abbrev-ref HEAD)" in stable*)
             docker tag "$IMAGE_NAME_VERSIONED" "$IMAGE_NAME_LATEST"
             docker push "$IMAGE_NAME_LATEST"
           esac
 
   dispatch-build-manage-tool:
     runs-on: ubuntu-latest
-    if: startsWith(github.ref_name, 'stable/4')
+    if: startsWith(github.ref_name, 'stable')
     needs: build
     steps:
       - name: Generate access token
