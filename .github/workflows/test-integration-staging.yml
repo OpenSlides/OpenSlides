@@ -3,7 +3,7 @@ name: tests-staging
 on:
   push:
     branches:
-      - staging*
+      - staging**
 
 jobs:
   run-tests:
