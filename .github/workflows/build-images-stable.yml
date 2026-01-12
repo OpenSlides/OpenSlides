@@ -3,7 +3,7 @@ name: build-stable
 on:
   push:
     branches:
-      - stable/4*
+      - stable*
   workflow_dispatch:
 
 jobs:

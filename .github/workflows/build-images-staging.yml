@@ -3,7 +3,7 @@ name: build-staging
 on:
   push:
     branches:
-      - staging/4*
+      - staging*
   workflow_dispatch:
 
 jobs:

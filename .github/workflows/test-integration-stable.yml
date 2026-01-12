@@ -3,7 +3,7 @@ name: tests-stable
 on:
   push:
     branches:
-      - stable/4*
+      - stable*
 
 jobs:
   run-tests:
