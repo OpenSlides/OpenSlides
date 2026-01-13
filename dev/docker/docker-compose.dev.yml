@@ -117,9 +117,7 @@ services:
       - OPENSLIDES_DEVELOPMENT=1
       - DATASTORE_TIMEOUT=30
     volumes:
-      - ../../openslides-autoupdate-service/cmd:/app/openslides-autoupdate-service/cmd
       - ../../openslides-autoupdate-service/internal:/app/openslides-autoupdate-service/internal
-      - ../../openslides-autoupdate-service/pkg:/app/openslides-autoupdate-service/pkg
       - ../../lib/openslides-go:/app/lib/openslides-go
       - ./workspaces/autoupdate.work:/app/go.work
     ports:
@@ -140,7 +138,6 @@ services:
     environment:
       - OPENSLIDES_DEVELOPMENT=1
     volumes:
-      - ../../openslides-icc-service/cmd:/app/openslides-icc-service/cmd
       - ../../openslides-icc-service/internal:/app/openslides-icc-service/internal
       - ../../lib/openslides-go:/app/lib/openslides-go
       - ./workspaces/icc.work:/app/go.work
@@ -284,8 +281,7 @@ services:
       - OPENSLIDES_DEVELOPMENT=1
       - VOTE_DISABLE_LOG=true
     volumes:
-      - ../../openslides-vote-service/cmd:/app/openslides-vote-service/cmd
-      - ../../openslides-vote-service/internal:/app/openslides-vote-service/internal
+      - ../../openslides-vote-service/vote:/app/openslides-vote-service/vote
       - ../../lib/openslides-go:/app/lib/openslides-go
       - ./workspaces/vote.work:/app/go.work
     ports:
