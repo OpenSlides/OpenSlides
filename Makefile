@@ -10,11 +10,7 @@ override DOCKER_COMPOSE_FILE=$(DOCKER_PATH)/docker-compose.dev.yml
 
 # Build images for different contexts
 
-build-prod build-dev build-tests:
-	sed -i -e "1s/.*/$(GO_VERSION)/" $(DOCKER_PATH)/workspaces/*.work
-	bash $(MAKEFILE_PATH)/make-build-main.sh $@
-
-build:
+build build-prod:
 	$(DOCKER_PATH)/build.sh
 
 # Development
@@ -110,16 +106,21 @@ warning-deprecation:
 warning-deprecation-alternative: | warning-deprecation
 	@echo "\033[1;33m Please use the following command instead: $(ALTERNATIVE) \033[0m"
 
+build-dev:
+	@make warning-deprecation-alternative ALTERNATIVE="dev-build"
+	sed -i "1s/.*/$(GO_VERSION)/" $(DOCKER_PATH)/workspaces/*.work
+	@bash $(MAKEFILE_PATH)/make-dev.sh "dev-build" "$(filter-out $@, $(MAKECMDGOALS))"
+
 run-dev:
 	@make warning-deprecation-alternative ALTERNATIVE="dev"
 	sed -i "1s/.*/$(GO_VERSION)/" $(DOCKER_PATH)/workspaces/*.work
-	chmod +x $(SCRIPT_PATH)/makefile/build-all-submodules.sh
+	@bash $(MAKEFILE_PATH)/make-dev.sh "dev-build" "$(filter-out $@, $(MAKECMDGOALS))"
 	$(DC_DEV) up $(ARGS)
 
 run-dev-detached:
 	@make warning-deprecation-alternative ALTERNATIVE="dev"
 	sed -i "1s/.*/$(GO_VERSION)/" $(DOCKER_PATH)/workspaces/*.work
-	chmod +x $(SCRIPT_PATH)/makefile/build-all-submodules.sh
+	@bash $(MAKEFILE_PATH)/make-dev.sh "dev-build" "$(filter-out $@, $(MAKECMDGOALS))"
 	$(DC_DEV) up $(ARGS) -d
 
 stop-dev:
