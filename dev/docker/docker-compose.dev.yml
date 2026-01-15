@@ -167,6 +167,11 @@ services:
       - "9050:9050"
 
   projector:
+    build:
+        context: ../../openslides-projector-service
+        target: "dev"
+        args:
+            CONTEXT: "dev"
     image: openslides-projector-dev
     depends_on:
       - autoupdate
