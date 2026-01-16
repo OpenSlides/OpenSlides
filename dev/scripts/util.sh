@@ -116,11 +116,6 @@ abort() {
   exit "$1"
 }
 
-success() {
-    echo "${COL_GREEN}$*${COL_NORMAL}"
-}
-
-
 submodule_do_inner_func() {
   (
       # Go repository
