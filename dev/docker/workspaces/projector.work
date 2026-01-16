@@ -1,0 +1,6 @@
+go 1.25.0
+
+use (
+	./lib/openslides-go
+	./openslides-projector-service
+)
