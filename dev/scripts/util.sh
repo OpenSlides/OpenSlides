@@ -100,15 +100,15 @@ timestamp() {
 }
 
 info() {
-  echo "$(timestamp) ${COL_GREEN}INFO ${COL_NORMAL} ${COL_BOLD}$*${COL_NORMAL}"
+  echo "$(timestamp) ${COL_INFO}INFO ${COL_NORMAL} ${COL_BOLD}$*${COL_NORMAL}"
 }
 
 warn() {
-  echo "$(timestamp) ${COL_YELLOW}WARN ${COL_NORMAL} ${COL_BOLD}$*${COL_NORMAL}" >&2
+  echo "$(timestamp) ${COL_WARN}WARN ${COL_NORMAL} ${COL_BOLD}$*${COL_NORMAL}" >&2
 }
 
 error() {
-  echo "$(timestamp) ${COL_RED}ERROR${COL_NORMAL} ${COL_BOLD}$*${COL_NORMAL}" >&2
+  echo "$(timestamp) ${COL_ERR}ERROR${COL_NORMAL} ${COL_BOLD}$*${COL_NORMAL}" >&2
 }
 
 abort() {
