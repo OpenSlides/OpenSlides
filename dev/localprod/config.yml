@@ -21,26 +21,6 @@ services:
       build: ../../openslides-backend/
     environment:
       OPENSLIDES_BACKEND_CREATE_INITIAL_DATA: 1
-  datastoreReader:
-    additionalContent: {
-      build: {
-        context: ../../openslides-datastore-service/,
-        args: {
-          MODULE: reader,
-          PORT: 9010
-        }
-      }
-    }
-  datastoreWriter:
-    additionalContent: {
-      build: {
-        context: ../../openslides-datastore-service/,
-        args: {
-          MODULE: writer,
-          PORT: 9011
-        }
-      }
-    }
   autoupdate:
     additionalContent:
       build: ../../openslides-autoupdate-service/
