@@ -24,10 +24,14 @@ else
   COL_WARN=
   COL_ERR=
   COL_GRAY=""
+  # shellcheck disable=SC2034
   COL_RED=""
+  # shellcheck disable=SC2034
   COL_YELLOW=""
   COL_BLUE=""
+  # shellcheck disable=SC2034
   COL_GREEN=""
+  # shellcheck disable=SC2034
   COL_CYAN=""
 fi
 
@@ -36,7 +40,7 @@ ask() {
   # o - Echo output instead. Default is returning output as exit code
   if [ "$#" -eq 1 ]; then error "ask requires two parameters" && exit 1; fi
 
-  local CONTROL_STR="$1" DEFAULT_REPLY="0" REPLY_OPT="[Y/n]" REPLY= OUTPUT=
+  local CONTROL_STR="$1" DEFAULT_REPLY="0" REPLY_OPT="[Y/n]" REPLY="" OUTPUT=""
 
   # Read control string
   case "$CONTROL_STR" in
@@ -88,7 +92,7 @@ set_remote() {
 # as if executed directly.
 echocmd() {
   (
-  echo "${COL_BLUE}$ $@${COL_NORMAL}" >&2
+  echo "${COL_BLUE}$ $*${COL_NORMAL}" >&2
   if [ -n "$DEBUG_DRY_RUN" ]; then return 0; fi
   "$@"
   return $?
@@ -313,7 +317,7 @@ capsule()
   tput sc
 
   # Run build in background and log output
-  $* > "$LOG" 2>&1 &
+  "$@" > "$LOG" 2>&1 &
 
   PROCESS_ID=$!
 

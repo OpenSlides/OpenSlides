@@ -59,10 +59,13 @@ go_update() {
     fi
 
     # Set openslides-go in go.mod and go.sum of services to the current openslides-go hash
-    local CUR_GO_SUBMODULE_VERSION="$(git -C . show "HEAD:go.mod" |
+    local CUR_GO_SUBMODULE_VERSION
+    CUR_GO_SUBMODULE_VERSION="$(git -C . show "HEAD:go.mod" |
         awk '$1 ~ "/openslides-go" {print $2}' | tail -1 | awk -F- '{print $3}')"
-    local GO_BRANCH_HASH="$(git -C "../lib/openslides-go" rev-parse "HEAD")"
-    local GO_BRANCH_HASH_SHORT="$(git -C "../lib/openslides-go" rev-parse "HEAD" | cut -c1-12)"
+    local GO_BRANCH_HASH
+    GO_BRANCH_HASH="$(git -C "../lib/openslides-go" rev-parse "HEAD")"
+    local GO_BRANCH_HASH_SHORT
+    GO_BRANCH_HASH_SHORT="$(git -C "../lib/openslides-go" rev-parse "HEAD" | cut -c1-12)"
 
     if [[ "$CUR_GO_SUBMODULE_VERSION" != "$GO_BRANCH_HASH_SHORT" ]]
     then

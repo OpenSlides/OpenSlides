@@ -11,6 +11,7 @@
 SINGLE_TARGET=$1
 
 # Remove ARGS flag from calling maketarget
+# shellcheck disable=SC2034
 MAKEFLAGS=
 unset ARGS
 
@@ -22,7 +23,7 @@ declare -A outputs
   [[ "$SINGLE_TARGET" != "" ]] && [[ "openslides-$SINGLE_TARGET" != "openslides-auth-service" ]] && exit 0
   ERROR_FOUND=""
   echocmd make -C "openslides-auth-service" run-tests || ERROR_FOUND="1"
-  outputs["auth-service"]="${?}${ERROR_FOUND}"
+  outputs["auth-service"]="$?${ERROR_FOUND}"
 )
 
 echo ${outputs["auth-service"]}

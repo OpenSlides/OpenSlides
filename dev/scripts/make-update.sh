@@ -253,6 +253,7 @@ choose_changes() {
   }
 }
 
+# shellcheck disable=SC2120
 commit_staged_changes() {
   local commit_message="Updated services"
   [[ "$BRANCH_NAME" == main ]] &&
@@ -442,6 +443,7 @@ merge_stable_branch_go() {
   info ""
 }
 
+# shellcheck disable=SC2120
 merge_stable_branch_services() {
   local target_sha="$1"
   local diff_cmd=
