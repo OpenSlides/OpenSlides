@@ -67,14 +67,16 @@ build_capsuled()
     local FUNC=$1
 
     # Record time
-    local PRE_TIMESTAMP=$(date +%s)
+    local PRE_TIMESTAMP
+    PRE_TIMESTAMP=$(date +%s)
 
     # Build Image
     info "Building image"
     capsule "$FUNC"
     local RESPONSE=$?
 
-    local POST_TIMESTAMP=$(date +%s)
+    local POST_TIMESTAMP
+    POST_TIMESTAMP=$(date +%s)
     local BUILD_TIME=$(( POST_TIMESTAMP - PRE_TIMESTAMP ))
     # Output
     if [ "$RESPONSE" != 0 ]
@@ -82,9 +84,9 @@ build_capsuled()
         error "Building image failed: $RESPONSE"
     elif [ "$BUILD_TIME" -le 3 ]
     then
-        success "Image found in cache"
+        info "Image found in cache"
     else
-        success "Build image successfully"
+        info "Build image successfully"
     fi
 }
 
@@ -99,6 +101,7 @@ build()
     then
         if [ -n "$CAPSULE" ]
         then
+            # shellcheck disable=SC2046
             build_capsuled "docker compose  -f "$(dirname "$0")/../../docker/docker-compose.dev.yml" build $BUILD_ARGS"
         else
             docker compose  -f "$(dirname "$0")/../../docker/docker-compose.dev.yml" build $BUILD_ARGS
@@ -126,6 +129,7 @@ docker_reset()
     then
         info "No containers to stop"
     else
+        # shellcheck disable=SC2046
         docker stop $(docker ps -aq)
     fi
 
@@ -134,24 +138,27 @@ docker_reset()
     then
         info "No containers to remove"
     else
+        # shellcheck disable=SC2046
         docker rm $(docker ps -a -q)
     fi
 
-    ask n "Do you want to delete ALL images as well?" &&
-    (
+    if ask n "Do you want to delete ALL images as well?"
+    then
         info "Removing images"
         if [ "$(docker images -aq)" = "" ]
         then
             info "No images to remove"
         else
+            # shellcheck disable=SC2046
             echocmd docker rmi -f $(docker images -aq)
         fi
-    ) || true
-    ask n "Do you want a full docker system prune as well?" &&
-    (
-    info "Running docker system prune"
-    echocmd docker system prune --volumes
-    ) || true
+    fi
+
+    if ask n "Do you want a full docker system prune as well?"
+    then
+        info "Running docker system prune"
+        echocmd docker system prune --volumes
+    fi
 }
 
 run()
@@ -296,6 +303,7 @@ CONTAINER_NAME="make-os-dev-$SERVICE"
 USED_SHELL="sh"
 
 # Remove ARGS flag from maketarget that's calling this script
+# shellcheck disable=SC2034
 MAKEFLAGS=
 unset ARGS
 

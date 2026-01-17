@@ -13,7 +13,7 @@ CHECKOUT_LATEST=${5:-0}
 
 BRANCH_FILE_PATH=$(realpath ".")
 
-if [ -f  "$BRANCH_FILE_PATH/$BRANCH_FILE" ]; then success "Reading commit info from $BRANCH_FILE"; fi
+if [ -f  "$BRANCH_FILE_PATH/$BRANCH_FILE" ]; then info "Reading commit info from $BRANCH_FILE"; fi
 
 usage() {
   info "\
@@ -59,16 +59,19 @@ go_update() {
     fi
 
     # Set openslides-go in go.mod and go.sum of services to the current openslides-go hash
-    local CUR_GO_SUBMODULE_VERSION="$(git -C . show "HEAD:go.mod" |
+    local CUR_GO_SUBMODULE_VERSION
+    CUR_GO_SUBMODULE_VERSION="$(git -C . show "HEAD:go.mod" |
         awk '$1 ~ "/openslides-go" {print $2}' | tail -1 | awk -F- '{print $3}')"
-    local GO_BRANCH_HASH="$(git -C "../lib/openslides-go" rev-parse "HEAD")"
-    local GO_BRANCH_HASH_SHORT="$(git -C "../lib/openslides-go" rev-parse "HEAD" | cut -c1-12)"
+    local GO_BRANCH_HASH
+    GO_BRANCH_HASH="$(git -C "../lib/openslides-go" rev-parse "HEAD")"
+    local GO_BRANCH_HASH_SHORT
+    GO_BRANCH_HASH_SHORT="$(git -C "../lib/openslides-go" rev-parse "HEAD" | cut -c1-12)"
 
     if [[ "$CUR_GO_SUBMODULE_VERSION" != "$GO_BRANCH_HASH_SHORT" ]]
     then
         warn "Cur: $CUR_GO_SUBMODULE_VERSION Go: $GO_BRANCH_HASH_SHORT"
         info "Updating go mod to $GO_BRANCH_HASH"
-        go get github.com/OpenSlides/openslides-go@${GO_BRANCH_HASH}
+        go get github.com/OpenSlides/openslides-go@"${GO_BRANCH_HASH}"
         go mod tidy
     else
         exit 0
@@ -112,9 +115,12 @@ checkout() {
         if [ "$GIT_CHANGES" != "" ]
         then
             info "The repository has changes"
-            success "$GIT_CHANGES"
+            info "$GIT_CHANGES"
 
-            ask y "Stash them?" </dev/tty && RESULT=$? || true
+            if ask y "Stash them?" </dev/tty
+            then 
+                RESULT=$?
+            fi
 
             if [ "$RESULT" == 0 ]
             then
@@ -134,7 +140,7 @@ checkout() {
                 echocmd git remote add "$SOURCE" git@github.com:"$SOURCE"/"$SUBMODULE".git
             else
                 echocmd git remote set-url "$SOURCE" git@github.com:"$SOURCE"/"$SUBMODULE".git
-                success "Remote $SOURCE already exists"
+                info "Remote $SOURCE already exists"
             fi
         else
             SOURCE=$(set_remote "upstream" "origin")
@@ -158,7 +164,7 @@ checkout() {
             then
                 echocmd git switch -t "$SOURCE"/"$BRANCH"
             else
-                success "Branch $BRANCH already exists"
+                info "Branch $BRANCH already exists"
                 echocmd git checkout "$BRANCH"
             fi
 
@@ -260,6 +266,7 @@ done
 
 # Checkout latest branches
 
+# shellcheck disable=SC2016
 while read -r toplevel sm_path name; do
   {
     # Extract submodule name
@@ -290,10 +297,12 @@ setup_localprod
 checkout_main
 
 # Consistency Check
+# shellcheck disable=SC2119
 check_meta_consistency || warn "Consistency check failed"
+# shellcheck disable=SC2119
 check_go_consistency || warn "Consistency check failed"
 info "Checking submodule initialization"
 check_submodules_intialized || error "Submodules not initialized"
 
 echo ""
-success Done
+info Done
