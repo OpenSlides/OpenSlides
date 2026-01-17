@@ -10,7 +10,7 @@ set -eo pipefail
 # Functions
 help ()
 {
-    info "\
+    echo "\
 Builds and starts development related images. Intended to be called from main repository makefile
 
 Parameters:
@@ -50,9 +50,9 @@ Available dev functions:
     dev-stop         : Stops any currently running images or docker compose setup associated with the service
     dev-clean        : Stops any currently running images or docker compose setup associated with the service. Also removes (orphaned) volumes
     dev-exec         : Executes command inside container.
-                          Use \$EXEC_ARGS to declare command that should be executed.
+                          Use \$EXEC_COMMAND to declare command that should be executed.
                           If using a docker compose setup, also declare which container the command should be executed in.
-                          Example: 'dev-exec RUN_ARGS=\"service-name echo hello\"' will run \"echo hello\" inside the container named \"service-name\"
+                          Example: 'dev-exec EXEC_COMMAND=\"service-name echo hello\"' will run \"echo hello\" inside the container named \"service-name\"
     dev-enter        : Enters shell of started container.
                           If a docker compose file is declared, the \$ATTACH_CONTAINER parameter determines
                           the specific container id you will enter (default value is equal the service name)
@@ -95,7 +95,7 @@ build()
     if [ -n "$NO_CACHE" ]; then BUILD_ARGS="--no-cache"; fi
 
     # Build all submodules
-    if [ -n "$SERVICE_FOLDER" ]
+    if [ -z "$SERVICE_FOLDER" ]
     then
         if [ -n "$CAPSULE" ]
         then
@@ -172,8 +172,8 @@ run()
         # Either stop existing containers and continue with run() or use existing containers from now on and exit run() early
         if [ "$(docker ps -a --filter "name=$CONTAINER_NAME" --format "{{.Names}}")" = "$CONTAINER_NAME" ]
         then
-            local RUNNING_RESPONSE=$(ask y "Container already running, restart it?")
-            if [ -n "$RUNNING_RESPONSE" ]
+            ask y "Container already running, restart it?" || local DECLINE_ASK=1
+            if [ -z "$DECLINE_ASK" ]
             then
                 stop
             else

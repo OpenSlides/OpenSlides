@@ -15,6 +15,9 @@ jobs:
       contains(github.event.pull_request.labels.*.name, 'staging')
     name: Create PR against staging branch
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        label: ${{ github.event.pull_request.labels.*.name }}
 
     steps:
       - name: Checkout main
@@ -23,18 +26,33 @@ jobs:
           ref: main
           fetch-depth: 2
 
-      - name: Fetch and checkout latest staging branch
+      - name: Skip if not staging or no matching branch
         run: |
-          branch=$(git ls-remote --heads origin 'staging/*' | awk 'gsub(".*refs/heads/","")' | sort -V | tail -1)
+          if ! echo "${{ matrix.label }}" | grep -q '^staging' ; then
+            echo 'Not a staging label. Skipping remaining steps for label ${{ matrix.label }} ...'
+            echo "skip_pick=true" >> $GITHUB_ENV  # Set env var
+          elif ! git ls-remote --heads origin '${{ matrix.label }}/*' | grep -qc . ; then
+            echo 'No matching branch found. Skipping remaining steps for label ${{ matrix.label }} ...'
+            echo "skip_pick=true" >> $GITHUB_ENV  # Set env var
+          else
+            echo 'Matching branch for label ${{ matrix.label }} exists. Continuing ...'
+          fi
+
+      - name: Fetch and checkout latest staging branch
+        if: env.skip_pick != 'true'  # Conditional execution
+        run: |
+          branch=$(git ls-remote --heads origin '${{ matrix.label }}/*' | awk 'gsub(".*refs/heads/","")' | sort -V | tail -1)
           git fetch origin $branch
           git checkout $branch
 
       - name: Set git credentials
+        if: env.skip_pick != 'true'  # Conditional execution
         run: |
           git config --global user.name openslides-automation
           git config --global user.email openslides-automation@users.noreply.github.com
 
       - name: Cherry-pick new commit
+        if: env.skip_pick != 'true'  # Conditional execution
         id: cherry-pick
         run: |
           git fetch origin
@@ -46,6 +64,7 @@ jobs:
           }
 
       - name: Generate access token
+        if: env.skip_pick != 'true'  # Conditional execution
         uses: tibdex/github-app-token@v2
         id: generate-token
         with:
@@ -53,6 +72,7 @@ jobs:
           private_key: ${{ secrets.AUTOMATION_APP_PRIVATE_KEY }}
 
       - name: Create or update PR
+        if: env.skip_pick != 'true'  # Conditional execution
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ steps.generate-token.outputs.token }}
