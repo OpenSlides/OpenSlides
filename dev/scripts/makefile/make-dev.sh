@@ -142,8 +142,8 @@ docker_reset()
         docker rm $(docker ps -a -q)
     fi
 
-    ask n "Do you want to delete ALL images as well?" &&
-    (
+    if ask n "Do you want to delete ALL images as well?"
+    then
         info "Removing images"
         if [ "$(docker images -aq)" = "" ]
         then
@@ -152,12 +152,13 @@ docker_reset()
             # shellcheck disable=SC2046
             echocmd docker rmi -f $(docker images -aq)
         fi
-    ) || true
-    ask n "Do you want a full docker system prune as well?" &&
-    (
-    info "Running docker system prune"
-    echocmd docker system prune --volumes
-    ) || true
+    fi
+
+    if ask n "Do you want a full docker system prune as well?"
+    then
+        info "Running docker system prune"
+        echocmd docker system prune --volumes
+    fi
 }
 
 run()

@@ -71,7 +71,7 @@ go_update() {
     then
         warn "Cur: $CUR_GO_SUBMODULE_VERSION Go: $GO_BRANCH_HASH_SHORT"
         info "Updating go mod to $GO_BRANCH_HASH"
-        go get github.com/OpenSlides/openslides-go@${GO_BRANCH_HASH}
+        go get github.com/OpenSlides/openslides-go@"${GO_BRANCH_HASH}"
         go mod tidy
     else
         exit 0
@@ -117,7 +117,10 @@ checkout() {
             info "The repository has changes"
             info "$GIT_CHANGES"
 
-            ask y "Stash them?" </dev/tty && RESULT=$? || true
+            if ask y "Stash them?" </dev/tty
+            then 
+                RESULT=$?
+            fi
 
             if [ "$RESULT" == 0 ]
             then
@@ -263,6 +266,7 @@ done
 
 # Checkout latest branches
 
+# shellcheck disable=SC2016
 while read -r toplevel sm_path name; do
   {
     # Extract submodule name
@@ -293,7 +297,9 @@ setup_localprod
 checkout_main
 
 # Consistency Check
+# shellcheck disable=SC2119
 check_meta_consistency || warn "Consistency check failed"
+# shellcheck disable=SC2119
 check_go_consistency || warn "Consistency check failed"
 info "Checking submodule initialization"
 check_submodules_intialized || error "Submodules not initialized"
