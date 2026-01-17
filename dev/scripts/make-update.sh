@@ -575,7 +575,7 @@ make_stable_update() {
 
   if ! check_meta_consistency || ! check_go_consistency 
   then
-    error "Apparently merging $BRANCH_NAME went wrong and eit openslides-meta OR"
+    error "Apparently merging $BRANCH_NAME went wrong and either openslides-meta OR"
     error "openslides-go is not consistent anymore."
     error "You probably need to investigate what did go wrong."
     abort 1

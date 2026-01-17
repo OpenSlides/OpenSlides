@@ -142,6 +142,7 @@ submodule_do_inner_func() {
     )
 }
 
+# shellcheck disable=SC2016
 submodules_do() {
   # p - Activates parallel execution. Default is linear
   # m - Take meta repository into account. Per default meta will be ignored
@@ -182,6 +183,7 @@ check_submodules_intialized() {
     }
 }
 
+# shellcheck disable=SC2016
 check_meta_consistency() {
   local target_rev="$1"
   local target_rev_at_str=
@@ -197,8 +199,8 @@ check_meta_consistency() {
   # Doing a nested loop rather than foreach --recursive as it's easier to get
   # both the path of service submod and the (potential) meta submod in one
   # iteration
-  while read mod; do
-    while read meta_name meta_path; do
+  while read -r mod; do
+    while read -r meta_name meta_path; do
       [[ "$meta_name" == 'openslides-meta' ]] ||
         continue
 
@@ -216,12 +218,13 @@ check_meta_consistency() {
       [[ -z "$meta_sha_last" ]] || [[ "$meta_sha" == "$meta_sha_last" ]] ||
         ret_code=1
       meta_sha_last="$meta_sha"
-    done <<< "$(git -C $mod submodule foreach -q 'echo "$name $sm_path"')"
+    done <<< "$(git -C "$mod" submodule foreach -q 'echo "$name $sm_path"')"
   done <<< "$(git submodule foreach -q 'echo "$sm_path"')"
 
   return $ret_code
 }
 
+# shellcheck disable=SC2016
 check_go_consistency() {
   local target_rev="$1"
   local target_rev_at_str=
@@ -234,7 +237,7 @@ check_go_consistency() {
     target_rev_at_str="(at $target_rev) "
   info "Checking openslides-go consistency $target_rev_at_str..."
 
-  while read mod_name mod_path; do
+  while read -r mod_name mod_path; do
     grep -q openslides-go "$mod_path/go.mod" 2>/dev/null ||
       continue
 
