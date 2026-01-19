@@ -7,6 +7,7 @@
 # At some point we might want to add a configurable --color option.
 if [[ -t 1 ]]; then
   COL_NORMAL="$(tput sgr0)"
+  COL_BOLD="$(tput bold)"
   COL_GRAY="$(tput bold; tput setaf 0)"
   COL_RED="$(tput setaf 1)"
   COL_GREEN="$(tput setaf 2)"
@@ -15,6 +16,7 @@ if [[ -t 1 ]]; then
   COL_CYAN="$(tput setaf 6)"
 else
   COL_NORMAL=""
+  COL_BOLD=
   COL_GRAY=""
   COL_RED=""
   COL_YELLOW=""
@@ -87,27 +89,26 @@ echocmd() {
   )
 }
 
+timestamp() {
+   echo "${COL_GRAY}$(date +%Y-%m-%d)${COL_NORMAL}"
+}
+
 info() {
-  echo "${COL_GRAY}$*${COL_NORMAL}"
+  echo "$(timestamp) ${COL_GREEN}${COL_BOLD}INFO ${COL_NORMAL} ${COL_BOLD}$*${COL_NORMAL}"
 }
 
 warn() {
-  echo "${COL_YELLOW}[WARN] ${COL_GRAY}$*${COL_NORMAL}" >&2
+  echo "$(timestamp) ${COL_YELLOW}${COL_BOLD}WARN ${COL_NORMAL} ${COL_BOLD}$*${COL_NORMAL}" >&2
 }
 
 error() {
-  echo "${COL_RED}[ERROR] ${COL_GRAY}$*${COL_NORMAL}" >&2
+  echo "$(timestamp) ${COL_RED}${COL_BOLD}ERROR${COL_NORMAL} ${COL_BOLD}$*${COL_NORMAL}" >&2
 }
 
 abort() {
   echo "Aborting."
   exit "$1"
 }
-
-success() {
-    echo "${COL_GREEN}$*${COL_NORMAL}"
-}
-
 
 submodule_do_inner_func() {
   (
