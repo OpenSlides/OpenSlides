@@ -1,54 +1,23 @@
-version: "3"
+
+x-default-environment: &default-environment
+  MESSAGE_BUS_HOST: redis
+  CACHE_HOST: redis
+  CACHE_PORT: 6379
+  DATABASE_HOST: postgres
+  DATABASE_PORT: 5432
+  DATABASE_NAME: openslides
+  DATABASE_USER: openslides
+  PGPASSWORD: openslides
+  OPENSLIDES_DEVELOPMENT: 1
+
 services:
-  datastore-reader:
-    build:
-        context: ../../openslides-datastore-service
-        target: "dev"
-        args:
-            CONTEXT: "dev"
-            MODULE: "reader"
-            PORT: "9010"
-    image: openslides-datastore-reader-dev
-    depends_on:
-      - postgres
-    env_file: services.env
-    environment:
-      - NUM_WORKERS=8
-      - OPENSLIDES_DEVELOPMENT=1
-    volumes:
-      - ../../openslides-datastore-service/datastore:/app/datastore
-    ports:
-      - 9010:9010
-      - 5680:5678
-
-  datastore-writer:
-    build:
-        context: ../../openslides-datastore-service
-        target: "dev"
-        args:
-            CONTEXT: "dev"
-            MODULE: "writer"
-            PORT: "9011"
-    image: openslides-datastore-writer-dev
-    depends_on:
-      - postgres
-      - redis
-    env_file: services.env
-    volumes:
-      - ../../openslides-datastore-service/datastore:/app/datastore
-      - ../../openslides-datastore-service/cli:/app/cli
-    environment:
-      - OPENSLIDES_DEVELOPMENT=1
-    ports:
-      - 9011:9011
-      - 5679:5678
-
   postgres:
     image: postgres:15
     environment:
-      - POSTGRES_USER=openslides
-      - POSTGRES_PASSWORD=openslides
-      - POSTGRES_DB=openslides
+      << : *default-environment
+      POSTGRES_USER: openslides
+      POSTGRES_PASSWORD: openslides
+      POSTGRES_DB: openslides
 
   client:
     build:
@@ -59,7 +28,7 @@ services:
     image: openslides-client-dev
     env_file: services.env
     environment:
-      - OPENSLIDES_DEVELOPMENT=1
+      << : *default-environment
     volumes:
       - ../../openslides-client/client/src:/app/src
       - ../../openslides-client/client/cli:/app/cli
@@ -73,26 +42,24 @@ services:
             CONTEXT: "dev"
     image: openslides-backend-dev
     depends_on:
-      - datastore-reader
-      - datastore-writer
       - auth
     env_file: services.env
     ports:
-        - "9002:9002"
-        - "9003:9003"
-        - "5678:5678"
+      - "9002:9002"
+      - "9003:9003"
+      - "5678:5678"
     environment:
-      - OPENSLIDES_DEVELOPMENT=1
-      - EMAIL_HOST=mailhog
-      - EMAIL_PORT=1025
+      << : *default-environment
+      EMAIL_HOST: mailhog
+      EMAIL_PORT: 1025
       # - EMAIL_HOST_USER username
       # - EMAIL_HOST_PASSWORD secret
       # EMAIL_CONNECTION_SECURITY use NONE, STARTTLS or SSL/TLS
-      - EMAIL_CONNECTION_SECURITY=NONE
-      - EMAIL_TIMEOUT=5
-      - EMAIL_ACCEPT_SELF_SIGNED_CERTIFICATE=false
-      - DEFAULT_FROM_EMAIL=noreply@example.com
-      - OPENSLIDES_BACKEND_CREATE_INITIAL_DATA=1
+      EMAIL_CONNECTION_SECURITY: NONE
+      EMAIL_TIMEOUT: 5
+      EMAIL_ACCEPT_SELF_SIGNED_CERTIFICATE: false
+      DEFAULT_FROM_EMAIL: noreply@example.com
+      OPENSLIDES_BACKEND_CREATE_INITIAL_DATA: 1
     volumes:
       - ../../openslides-backend/openslides_backend:/app/openslides_backend
       - ../../openslides-backend/tests:/app/tests
@@ -110,12 +77,11 @@ services:
             CONTEXT: "dev"
     image: openslides-autoupdate-dev
     depends_on:
-      - datastore-reader
       - redis
     env_file: services.env
     environment:
-      - OPENSLIDES_DEVELOPMENT=1
-      - DATASTORE_TIMEOUT=30
+      << : *default-environment
+      DATASTORE_TIMEOUT: 30
     volumes:
       - ../../openslides-autoupdate-service/internal:/app/openslides-autoupdate-service/internal
       - ../../lib/openslides-go:/app/lib/openslides-go
@@ -131,12 +97,11 @@ services:
             CONTEXT: "dev"
     image: openslides-icc-dev
     depends_on:
-      - datastore-reader
       - redis
       - auth
     env_file: services.env
     environment:
-      - OPENSLIDES_DEVELOPMENT=1
+      << : *default-environment
     volumes:
       - ../../openslides-icc-service/internal:/app/openslides-icc-service/internal
       - ../../lib/openslides-go:/app/lib/openslides-go
@@ -157,7 +122,7 @@ services:
       - postgres
     env_file: services.env
     environment:
-      - OPENSLIDES_DEVELOPMENT=1
+      << : *default-environment
     volumes:
       - ../../openslides-search-service/cmd:/app/openslides-search-service/cmd
       - ../../openslides-search-service/pkg:/app/openslides-search-service/pkg
@@ -199,11 +164,10 @@ services:
             CONTEXT: "dev"
     image: openslides-auth-dev
     depends_on:
-      - datastore-reader
       - redis
     env_file: services.env
     environment:
-      - OPENSLIDES_DEVELOPMENT=1
+      << : *default-environment
     volumes:
       - ../../openslides-auth-service/auth/src:/app/src
       - ../../openslides-auth-service/auth/libraries:/app/libraries
@@ -223,7 +187,7 @@ services:
       - postgres
     env_file: services.env
     environment:
-      - OPENSLIDES_DEVELOPMENT=1
+      << : *default-environment
     volumes:
       - ../../openslides-media-service/src:/app/src
 
@@ -236,10 +200,9 @@ services:
     image: openslides-manage-dev
     depends_on:
       - auth
-      - datastore-writer
     env_file: services.env
     environment:
-      - OPENSLIDES_DEVELOPMENT=1
+      << : *default-environment
     ports:
       - "9008:9008"
 
@@ -247,6 +210,8 @@ services:
     image: redis:alpine
     ports:
       - "6379:6379"
+    environment:
+      << : *default-environment
 
   proxy:
     build:
@@ -255,6 +220,8 @@ services:
         args:
             CONTEXT: "dev"
     image: openslides-proxy-dev
+    environment:
+      << : *default-environment
     depends_on:
       - client
       - backend
@@ -264,6 +231,8 @@ services:
 
   mailhog:
     image: mailhog/mailhog
+    environment:
+      << : *default-environment
     logging:
       driver: "none" # disable saving logs
     ports:
@@ -279,12 +248,11 @@ services:
     depends_on:
       - auth
       - redis
-      - datastore-reader
       - postgres
     env_file: services.env
     environment:
-      - OPENSLIDES_DEVELOPMENT=1
-      - VOTE_DISABLE_LOG=true
+      << : *default-environment
+      VOTE_DISABLE_LOG: true
     volumes:
       - ../../openslides-vote-service/vote:/app/openslides-vote-service/vote
       - ../../lib/openslides-go:/app/lib/openslides-go
