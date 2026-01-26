@@ -65,7 +65,8 @@ services:
       - ../../openslides-backend/tests:/app/tests
       - ../../openslides-backend/cli:/app/cli
       - ../../openslides-backend/data:/app/data
-      - ../../openslides-backend/meta:/app/meta
+      - ../../openslides-backend/meta:/app/meta      
+      - ../../openslides-backend/requirements:/app/requirements
       - ../../openslides-backend/scripts:/app/scripts
 
   autoupdate:
@@ -82,9 +83,7 @@ services:
       << : *default-environment
       DATASTORE_TIMEOUT: 30
     volumes:
-      - ../../openslides-autoupdate-service/cmd:/app/openslides-autoupdate-service/cmd
       - ../../openslides-autoupdate-service/internal:/app/openslides-autoupdate-service/internal
-      - ../../openslides-autoupdate-service/pkg:/app/openslides-autoupdate-service/pkg
       - ../../lib/openslides-go:/app/lib/openslides-go
       - ./workspaces/autoupdate.work:/app/go.work
     ports:
@@ -104,7 +103,6 @@ services:
     environment:
       << : *default-environment
     volumes:
-      - ../../openslides-icc-service/cmd:/app/openslides-icc-service/cmd
       - ../../openslides-icc-service/internal:/app/openslides-icc-service/internal
       - ../../lib/openslides-go:/app/lib/openslides-go
       - ./workspaces/icc.work:/app/go.work
@@ -133,6 +131,31 @@ services:
     ports:
       - "9050:9050"
 
+  projector:
+    build:
+        context: ../../openslides-projector-service
+        target: "dev"
+        args:
+            CONTEXT: "dev"
+    image: openslides-projector-dev
+    depends_on:
+      - autoupdate
+      - backend
+      - postgres
+    env_file: services.env
+    environment:
+      - OPENSLIDES_DEVELOPMENT=1
+    volumes:
+      - ../../openslides-projector-service/cmd:/root/openslides-projector-service/cmd
+      - ../../openslides-projector-service/pkg:/root/openslides-projector-service/pkg
+      - ../../openslides-projector-service/locale:/root/openslides-projector-service/locale
+      - ../../openslides-projector-service/templates:/root/openslides-projector-service/templates
+      - ../../openslides-projector-service/web:/root/openslides-projector-service/web
+      - ../../lib/openslides-go:/root/lib/openslides-go
+      - ./workspaces/projector.work:/root/go.work
+    ports:
+      - "9051:9051"
+
   auth:
     build:
         context: ../../openslides-auth-service
@@ -147,6 +170,8 @@ services:
       << : *default-environment
     volumes:
       - ../../openslides-auth-service/auth/src:/app/src
+      - ../../openslides-auth-service/auth/libraries:/app/libraries
+      - ../../openslides-auth-service/auth/test:/app/test
     ports:
       - "9004:9004"
 
@@ -229,8 +254,7 @@ services:
       << : *default-environment
       VOTE_DISABLE_LOG: true
     volumes:
-      - ../../openslides-vote-service/cmd:/app/openslides-vote-service/cmd
-      - ../../openslides-vote-service/internal:/app/openslides-vote-service/internal
+      - ../../openslides-vote-service/vote:/app/openslides-vote-service/vote
       - ../../lib/openslides-go:/app/lib/openslides-go
       - ./workspaces/vote.work:/app/go.work
     ports:
