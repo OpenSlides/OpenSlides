@@ -46,9 +46,10 @@ Available dev functions:
                           If a docker compose file is declared, the \$ATTACH_CONTAINER parameter determines
                           the specific container id you will enter (default value is equal the service name)
     dev-standalone   : Builds and starts development images; closes them immediately afterwards
-    dev-restart      : Stops any currently running images or docker compose setup; restarts it immediately afterwards in detached mode.
-    dev-stop         : Stops any currently running images or docker compose setup associated with the service
-    dev-clean        : Stops any currently running images or docker compose setup associated with the service. Also removes (orphaned) volumes
+    dev-restart      : Restarts docker compose setup containers
+    dev-full-restart : Stops any currently running containers or docker compose setup; restarts it immediately afterwards
+    dev-stop         : Stops any currently running containers or docker compose setup associated with the service
+    dev-clean        : Stops any currently running containers or docker compose setup associated with the service. Also removes (orphaned) volumes
     dev-exec         : Executes command inside container.
                           Use \$EXEC_COMMAND to declare command that should be executed.
                           If using a docker compose setup, also declare which container the command should be executed in.
@@ -184,6 +185,20 @@ run()
 
         # Single Container
         echocmd docker run --name "$CONTAINER_NAME"  "$FLAGS" "$VOLUMES" "$RUN_ARGS" "$IMAGE_TAG" "$SHELL"
+    fi
+}
+
+restart()
+{
+    info "Restarting container(s)"
+
+    if [ -n "$COMPOSE_FILE" ]
+    then
+        # Compose
+        echocmd eval "$DC restart ${FLAGS} ${VOLUMES} ${RUN_ARGS}"
+    else
+        # Single Container
+        echocmd docker restart --name "$CONTAINER_NAME"  "$FLAGS" "$VOLUMES" "$RUN_ARGS" "$IMAGE_TAG" "$SHELL"
     fi
 }
 
@@ -359,7 +374,8 @@ case "$FUNCTION" in
     "standalone")       build && run && stop ;;
     "detached")         build && run "-d" && info "Containers started" ;;
     "attached")         build && run "-d" && attach ;;
-    "restart")          stop && build && run "-d" ;;
+    "full-restart")     stop && build && run ;;
+    "restart")          restart ;;
     "stop")             stop ;;
     "clean")            stop true ;;
     "exec")             exec_func ;;
