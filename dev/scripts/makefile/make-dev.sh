@@ -187,6 +187,20 @@ run()
     fi
 }
 
+restart()
+{
+    info "Restarting container(s)"
+
+    if [ -n "$COMPOSE_FILE" ]
+    then
+        # Compose
+        echocmd eval "$DC restart ${FLAGS} ${VOLUMES} ${RUN_ARGS}"
+    else
+        # Single Container
+        echocmd docker restart --name "$CONTAINER_NAME"  "$FLAGS" "$VOLUMES" "$RUN_ARGS" "$IMAGE_TAG" "$SHELL"
+    fi
+}
+
 attach()
 {
     local TARGET_CONTAINER=$ATTACH_CONTAINER
@@ -359,7 +373,8 @@ case "$FUNCTION" in
     "standalone")       build && run && stop ;;
     "detached")         build && run "-d" && info "Containers started" ;;
     "attached")         build && run "-d" && attach ;;
-    "restart")          stop && build && run "-d" ;;
+    "full-restart")    stop && build && run ;;
+    "restart")          restart ;;
     "stop")             stop ;;
     "clean")            stop true ;;
     "exec")             exec_func ;;
