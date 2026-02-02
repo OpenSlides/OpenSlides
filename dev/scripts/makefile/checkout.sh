@@ -151,14 +151,14 @@ checkout() {
         if [ -n "$BRANCH_NOT_FOUND" ]
         then
             local CHECKOUT_MAIN
-            CHECKOUT_MAIN=$(ask yo "$SOURCE does not have a branch named $BRANCH. Type y to checkout main instead. Type n to remain in current branch.")
+            CHECKOUT_MAIN=$(ask yo "$SUBMODULE does not have a branch named $SOURCE/$BRANCH. Type y to checkout main instead. Type n to remain in current branch." </dev/tty)
 
-            if [ "$CHECKOUT_MAIN" == 1 ]
+            if [ "$CHECKOUT_MAIN" == 0 ]
             then
                 info "Checking out main branch instead"
                 BRANCH=main
             else
-                info "Skipping checkout for $SOURCE"
+                info "Skipping checkout for $SUBMODULE"
                 exit 0
             fi
         fi
