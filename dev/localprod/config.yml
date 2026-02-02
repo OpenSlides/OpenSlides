@@ -4,6 +4,12 @@ defaults:
   tag: prod
 
 services:
+  datastoreReader:
+    containerRegistry: ghcr.io/openslides
+    tag: latest
+  datastoreWriter:
+    containerRegistry: ghcr.io/openslides
+    tag: latest
   proxy:
     additionalContent:
       build: ../../openslides-proxy/
