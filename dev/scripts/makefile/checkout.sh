@@ -145,7 +145,23 @@ checkout() {
         echocmd git fetch "$SOURCE"
 
         # Verify or set to main
-        git rev-parse --verify remotes/"$SOURCE"/"$BRANCH" &>/dev/null || BRANCH=main
+        git rev-parse --verify remotes/"$SOURCE"/"$BRANCH" &>/dev/null || local BRANCH_NOT_FOUND=1
+
+        # If branch couldn't be found, user has the option to either checkout main branch instead or skip checkout for this service
+        if [ -n "$BRANCH_NOT_FOUND" ]
+        then
+            local CHECKOUT_MAIN
+            CHECKOUT_MAIN=$(ask yo "$SOURCE does not have a branch named $BRANCH. Type y to checkout main instead. Type n to remain in current branch.")
+
+            if [ "$CHECKOUT_MAIN" == 1 ]
+            then
+                info "Checking out main branch instead"
+                BRANCH=main
+            else
+                info "Skipping checkout for $SOURCE"
+                exit 0
+            fi
+        fi
 
         if [ "$OPT_PULL" == 0 ]
         then
@@ -172,11 +188,11 @@ checkout() {
 
         if [ -n "$HASH" ]
         then
-           git reset --hard "$HASH"
+            git reset --hard "$HASH"
         fi;
 
-        # Switch meta too, if present
-        if [ -d "meta" ]
+        # Checkout meta too, if directory and submodule is present
+        if [ -d "meta" ] && [ "$(basename "$(git -C ./meta rev-parse --show-toplevel)")" == "meta" ]
         then
             checkout "meta" "openslides-meta" "$REMOTE_NAME" "$BRANCH_NAME" ""
         fi
@@ -190,6 +206,7 @@ checkout() {
                 go_update
             fi
         fi
+
     )
 }
 
