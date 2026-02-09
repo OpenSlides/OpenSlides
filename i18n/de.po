@@ -5724,7 +5724,7 @@ msgstr ""
 "Sie HTTPS, um fortzufahren."
 
 msgid "Valid votes"
-msgstr "Gültige Stimmen"
+msgstr "Abgegebene Stimmen"
 
 msgid "Value must be positive."
 msgstr "Wert muss positiv sein."
