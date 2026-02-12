@@ -145,7 +145,7 @@ checkout() {
         echocmd git fetch "$SOURCE"
 
         # Verify or set to main
-        git rev-parse --verify remotes/"$SOURCE"/"$BRANCH" &>/dev/null || local BRANCH_NOT_FOUND=1
+        echocmd git rev-parse --verify remotes/"$SOURCE"/"$BRANCH" &>/dev/null || local BRANCH_NOT_FOUND=1
 
         # If branch couldn't be found, user has the option to either checkout main branch instead or skip checkout for this service
         if [ -n "$BRANCH_NOT_FOUND" ]
@@ -161,6 +161,7 @@ checkout() {
                 info "Skipping checkout for $SUBMODULE"
                 exit 0
             fi
+            unset BRANCH_NOT_FOUND
         fi
 
         if [ "$OPT_PULL" == 0 ]
