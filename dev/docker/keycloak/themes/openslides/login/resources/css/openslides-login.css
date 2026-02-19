@@ -1,0 +1,349 @@
+/* OpenSlides Keycloak Login Theme
+ * Matches the OpenSlides client login page styling.
+ * CSS custom properties are updated dynamically by openslides-theme.js
+ */
+
+:root {
+  /* Default primary palette (#317796) */
+  --theme-primary-50: #e6eef2;
+  --theme-primary-100: #c0d5de;
+  --theme-primary-200: #98bbc8;
+  --theme-primary-300: #6fa0b3;
+  --theme-primary-400: #508ca4;
+  --theme-primary-500: #317796;
+  --theme-primary-600: #2a6175;
+  --theme-primary-700: #224a58;
+  --theme-primary-800: #173441;
+  --theme-primary-900: #0a1a22;
+  --theme-primary-a100: #b3e5fc;
+  --theme-primary-a200: #81d4fa;
+  --theme-primary-a400: #4fc3f7;
+  --theme-primary-a700: #29b6f6;
+
+  /* Default accent palette (#2196f3) */
+  --theme-accent-50: #e4f2fd;
+  --theme-accent-100: #bbdefb;
+  --theme-accent-200: #90caf9;
+  --theme-accent-300: #64b5f6;
+  --theme-accent-400: #42a5f5;
+  --theme-accent-500: #2196f3;
+  --theme-accent-600: #1565c0;
+  --theme-accent-700: #0d47a1;
+  --theme-accent-800: #082e6a;
+  --theme-accent-900: #041536;
+  --theme-accent-a100: #b3e5fc;
+  --theme-accent-a200: #81d4fa;
+  --theme-accent-a400: #4fc3f7;
+  --theme-accent-a700: #29b6f6;
+
+  /* Default warn palette (#f06400) */
+  --theme-warn-50: #fdeee4;
+  --theme-warn-100: #fbd4bb;
+  --theme-warn-200: #f8b890;
+  --theme-warn-300: #f49c64;
+  --theme-warn-400: #f28042;
+  --theme-warn-500: #f06400;
+  --theme-warn-600: #b94e00;
+  --theme-warn-700: #893a00;
+  --theme-warn-800: #582600;
+  --theme-warn-900: #2c1300;
+  --theme-warn-a100: #ffd180;
+  --theme-warn-a200: #ffab40;
+  --theme-warn-a400: #ff9100;
+  --theme-warn-a700: #ff6d00;
+
+  /* Headbar color */
+  --theme-headbar: #193c4b;
+
+  /* Contrast colors */
+  --theme-primary-500-contrast: #ffffff;
+  --theme-accent-500-contrast: #ffffff;
+  --theme-warn-500-contrast: #ffffff;
+}
+
+/* ========================================
+ * Hide the default Keycloak v2 chrome
+ * ======================================== */
+
+/* Hide the default Keycloak header/footer */
+#kc-header-wrapper,
+#kc-header {
+  display: none !important;
+}
+
+/* ========================================
+ * Page layout - replicates login-wrapper
+ * ======================================== */
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  background-color: #fafafa;
+}
+
+/* Main wrapper: full-height flex column */
+.os-login-wrapper {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  background-color: #fafafa;
+}
+
+/* Logo bar */
+.os-logo-bar {
+  min-height: 80px;
+  max-height: 200px;
+  height: 20vh;
+  background-color: var(--theme-primary-500);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.os-logo-bar img {
+  width: 100%;
+  max-width: 400px;
+  display: block;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+/* Content area */
+.os-content {
+  flex: 1 0 auto;
+  display: flex;
+  justify-content: center;
+}
+
+.os-login-container {
+  padding-top: 50px;
+  margin: 0 auto;
+  max-width: 400px;
+  width: 100%;
+  box-sizing: border-box;
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
+/* Footer */
+.os-footer {
+  flex-shrink: 0;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 12px;
+  text-align: center;
+  padding: 16px 0;
+}
+
+.os-footer a {
+  color: rgba(0, 0, 0, 0.6);
+  text-decoration: none;
+}
+
+.os-footer a:hover {
+  text-decoration: underline;
+}
+
+/* ========================================
+ * Form styling - replicates login-mask
+ * ======================================== */
+
+.os-login-container h1,
+.os-login-container #kc-page-title {
+  font-size: 20px;
+  font-weight: 500;
+  text-align: center;
+  margin-bottom: 24px;
+  color: rgba(0, 0, 0, 0.87);
+}
+
+/* Form group layout */
+.os-login-container .pf-v5-c-form__group,
+.os-login-container .pf-c-form__group {
+  margin-bottom: 16px;
+}
+
+/* Labels */
+.os-login-container label {
+  display: block;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.6);
+  margin-bottom: 4px;
+  font-weight: 400;
+}
+
+/* Text inputs */
+.os-login-container input[type="text"],
+.os-login-container input[type="password"],
+.os-login-container input[type="email"] {
+  width: 100%;
+  padding: 8px 0;
+  border: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.42);
+  background: transparent;
+  font-size: 16px;
+  font-family: inherit;
+  color: rgba(0, 0, 0, 0.87);
+  outline: none;
+  box-sizing: border-box;
+  border-radius: 0;
+  -webkit-appearance: none;
+}
+
+.os-login-container input[type="text"]:focus,
+.os-login-container input[type="password"]:focus,
+.os-login-container input[type="email"]:focus {
+  border-bottom: 2px solid var(--theme-primary-500);
+  padding-bottom: 7px;
+}
+
+/* Login button */
+.os-login-container #kc-login,
+.os-login-container input[type="submit"],
+.os-login-container button[type="submit"] {
+  margin-top: 30px;
+  height: 37px;
+  width: 100%;
+  background-color: var(--theme-primary-500);
+  color: var(--theme-primary-500-contrast, #fff);
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  text-transform: uppercase;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  font-family: inherit;
+}
+
+.os-login-container #kc-login:hover,
+.os-login-container input[type="submit"]:hover,
+.os-login-container button[type="submit"]:hover {
+  background-color: var(--theme-primary-600);
+}
+
+.os-login-container #kc-login:active,
+.os-login-container input[type="submit"]:active,
+.os-login-container button[type="submit"]:active {
+  background-color: var(--theme-primary-700);
+}
+
+/* Links */
+.os-login-container a {
+  color: var(--theme-primary-500);
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.os-login-container a:hover {
+  text-decoration: underline;
+}
+
+/* Forgot password link */
+#kc-form-options {
+  text-align: right;
+  margin-top: 8px;
+}
+
+/* Error / info messages */
+.os-alert {
+  padding: 12px 16px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+
+.os-alert-error {
+  background-color: #fdecea;
+  color: #611a15;
+  border: 1px solid #f5c6cb;
+}
+
+.os-alert-warning {
+  background-color: #fff3e0;
+  color: #663c00;
+  border: 1px solid #ffe0b2;
+}
+
+.os-alert-info {
+  background-color: #e3f2fd;
+  color: #0d47a1;
+  border: 1px solid #bbdefb;
+}
+
+.os-alert-success {
+  background-color: #e8f5e9;
+  color: #1b5e20;
+  border: 1px solid #c8e6c9;
+}
+
+/* Back link */
+.os-back-link {
+  display: block;
+  margin-top: 16px;
+  text-align: center;
+}
+
+/* Checkbox styling */
+.os-login-container input[type="checkbox"] {
+  margin-right: 8px;
+}
+
+/* Hide PatternFly / Keycloak default elements that we replace */
+.pf-v5-c-login,
+.pf-c-login,
+#kc-locale {
+  display: none !important;
+}
+
+/* ========================================
+ * Dark mode
+ * ======================================== */
+
+@media (prefers-color-scheme: dark) {
+  body,
+  .os-login-wrapper {
+    background-color: #303030;
+  }
+
+  .os-login-container h1,
+  .os-login-container #kc-page-title {
+    color: rgba(255, 255, 255, 0.87);
+  }
+
+  .os-login-container label {
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  .os-login-container input[type="text"],
+  .os-login-container input[type="password"],
+  .os-login-container input[type="email"] {
+    color: rgba(255, 255, 255, 0.87);
+    border-bottom-color: rgba(255, 255, 255, 0.42);
+  }
+
+  .os-footer a {
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  .os-alert-error {
+    background-color: #4e1a15;
+    color: #f5c6cb;
+  }
+
+  .os-alert-info {
+    background-color: #0d2744;
+    color: #bbdefb;
+  }
+}

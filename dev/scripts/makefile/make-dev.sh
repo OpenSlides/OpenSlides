@@ -37,6 +37,7 @@ Flags:
                            Example: Backend-Service is locally checked-out to 'feature/xyz'. Its dev compose setup pulls 'vote' from github by referencing
                            'openslides-vote-service.git#main'. If 'compose-local-branch' is set to true, the path 'openslides-vote-service.git#feature/xyz' will be used
                            instead.
+    oidc                 : Enables OIDC authentication via Keycloak by appending the OIDC docker-compose overlay. Only works for main repository (not individual services).
 
 Available dev functions:
     dev              : Builds and starts development images
@@ -99,9 +100,9 @@ build()
     then
         if [ -n "$CAPSULE" ]
         then
-            build_capsuled "docker compose  -f "$(dirname "$0")/../../docker/docker-compose.dev.yml" build $BUILD_ARGS"
+            build_capsuled "eval $DC build $BUILD_ARGS"
         else
-            docker compose  -f "$(dirname "$0")/../../docker/docker-compose.dev.yml" build $BUILD_ARGS
+            eval $DC build $BUILD_ARGS
         fi
         return
     fi
@@ -262,7 +263,7 @@ log()
             info "No container was specified; Service container will be taken as default" && TARGET_CONTAINER="$SERVICE"
         fi
 
-        echocmd docker compose -f "$COMPOSE_FILE" logs "$TARGET_CONTAINER"
+        echocmd eval "$DC logs $TARGET_CONTAINER"
     else
         # Single Container
         echocmd docker container logs "$CONTAINER_NAME"
@@ -286,6 +287,7 @@ for CMD in $TEMP_SERVICE; do
         "no-cache")     NO_CACHE=true ;;
         "capsule")      CAPSULE=true ;;
         "compose-local-branch") USE_LOCAL_BRANCH_FOR_COMPOSE=true ;;
+        "oidc")         OIDC=true ;;
         *)              SERVICE="$CMD" ;;
     esac
 done
@@ -311,7 +313,7 @@ case "$SERVICE" in
     "autoupdate")   SERVICE_FOLDER="./openslides-autoupdate-service" ;;
     "backend")      SERVICE_FOLDER="./openslides-backend" &&
                     COMPOSE_FILE="$SERVICE_FOLDER/dev/docker-compose.dev.yml" &&
-                    USED_SHELL="bash --rcfile .bashrc" &&
+                    USED_SHELL="./entrypoint.sh bash --rcfile .bashrc" &&
                     CLOSE_VOLUMES="--volumes" ;;
     "client")       SERVICE_FOLDER="./openslides-client" &&
                     VOLUMES="-v $(pwd)/openslides-client/client/src:/app/src -v $(pwd)/openslides-client/client/cli:/app/cli -p 127.0.0.1:9001:9001/tcp" ;;
@@ -328,6 +330,11 @@ case "$SERVICE" in
     "")             COMPOSE_FILE="dev/docker/docker-compose.dev.yml" ;;
     *)              ;;
 esac
+
+# Append OIDC overlay when flag is set and running from main repo
+if [ -n "$OIDC" ] && [ -z "$SERVICE" ]; then
+    COMPOSE_FILE="$COMPOSE_FILE -f dev/docker/docker-compose.oidc.yml"
+fi
 
 if [ -n "$SERVICE" ]; then info "Running $FUNCTION for $SERVICE"
 else info "Running $FUNCTION"; fi
