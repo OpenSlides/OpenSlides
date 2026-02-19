@@ -1,0 +1,194 @@
+{
+  "realm": "openslides",
+  "enabled": true,
+  "displayName": "OpenSlides",
+  "loginTheme": "openslides",
+  "sslRequired": "none",
+  "registrationAllowed": false,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": true,
+  "editUsernameAllowed": true,
+  "bruteForceProtected": true,
+  "accessTokenLifespan": 300,
+  "ssoSessionIdleTimeout": 1800,
+  "ssoSessionMaxLifespan": 36000,
+  "offlineSessionIdleTimeout": 2592000,
+  "accessCodeLifespan": 60,
+  "accessCodeLifespanUserAction": 300,
+  "accessCodeLifespanLogin": 1800,
+  "roles": {
+    "realm": [
+      {
+        "name": "default-roles-openslides",
+        "description": "Composite role for default realm roles",
+        "composite": true,
+        "composites": {
+          "realm": ["offline_access", "uma_authorization"]
+        }
+      },
+      {
+        "name": "offline_access",
+        "description": "Offline access"
+      },
+      {
+        "name": "uma_authorization",
+        "description": "UMA authorization"
+      },
+      {
+        "name": "user",
+        "description": "Regular OpenSlides user"
+      },
+      {
+        "name": "admin",
+        "description": "OpenSlides administrator"
+      }
+    ]
+  },
+  "defaultRole": {
+    "name": "default-roles-openslides",
+    "description": "Composite role for default realm roles",
+    "composite": true
+  },
+  "clients": [
+    {
+      "clientId": "openslides-client",
+      "name": "OpenSlides Client",
+      "description": "OpenSlides web application",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "openslides-secret",
+      "redirectUris": [
+        "https://localhost:8000/*",
+        "http://localhost:8000/*",
+        "https://localhost/*",
+        "http://localhost/*",
+        "https://*/oauth2/callback",
+        "http://*/oauth2/callback"
+      ],
+      "webOrigins": [
+        "https://localhost:8000",
+        "http://localhost:8000",
+        "https://localhost",
+        "http://localhost",
+        "+"
+      ],
+      "publicClient": false,
+      "protocol": "openid-connect",
+      "bearerOnly": false,
+      "consentRequired": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": false,
+      "fullScopeAllowed": true,
+      "attributes": {
+        "backchannel.logout.url": "http://backend:9002/system/auth/oidc-backchannel-logout",
+        "backchannel.logout.session.required": "true",
+        "post.logout.redirect.uris": "+"
+      },
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "basic",
+        "profile",
+        "roles",
+        "email"
+      ],
+      "optionalClientScopes": [
+        "address",
+        "phone",
+        "offline_access",
+        "microprofile-jwt"
+      ],
+      "protocolMappers": [
+        {
+          "name": "session-id-mapper",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usersessionmodel-note-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.session.note": "sid",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "sid",
+            "jsonType.label": "String"
+          }
+        },
+        {
+          "name": "openslides-user-id-mapper",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.attribute": "openslides_user_id",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "openslides_user_id",
+            "jsonType.label": "int"
+          }
+        }
+      ]
+    },
+    {
+      "clientId": "openslides-admin",
+      "name": "OpenSlides Admin Service",
+      "description": "Service account for OpenSlides backend Admin API operations",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "openslides-admin-secret",
+      "publicClient": false,
+      "protocol": "openid-connect",
+      "bearerOnly": false,
+      "consentRequired": false,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": true,
+      "authorizationServicesEnabled": false,
+      "fullScopeAllowed": true,
+      "defaultClientScopes": ["roles"],
+      "optionalClientScopes": []
+    }
+  ],
+  "users": [
+    {
+      "username": "service-account-openslides-admin",
+      "enabled": true,
+      "serviceAccountClientId": "openslides-admin",
+      "clientRoles": {
+        "realm-management": ["manage-users", "view-users", "query-users", "query-groups"]
+      }
+    }
+  ],
+  "components": {
+    "org.keycloak.userprofile.UserProfileProvider": [
+      {
+        "providerId": "declarative-user-profile",
+        "config": {
+          "kc.user.profile.config": ["{\"attributes\":[{\"name\":\"username\",\"validations\":{\"length\":{\"min\":1,\"max\":255}}},{\"name\":\"email\",\"validations\":{\"email\":{}}},{\"name\":\"firstName\"},{\"name\":\"lastName\"},{\"name\":\"openslides_user_id\"}]}"]
+        }
+      }
+    ]
+  },
+  "browserSecurityHeaders": {
+    "contentSecurityPolicyReportOnly": "",
+    "xContentTypeOptions": "nosniff",
+    "referrerPolicy": "no-referrer",
+    "xRobotsTag": "none",
+    "xFrameOptions": "SAMEORIGIN",
+    "contentSecurityPolicy": "frame-src 'self'; frame-ancestors 'self'; object-src 'none'; script-src 'self'; connect-src 'self' /system/autoupdate;",
+    "xXSSProtection": "1; mode=block",
+    "strictTransportSecurity": "max-age=31536000; includeSubDomains"
+  },
+  "requiredActions": [
+    {
+      "alias": "VERIFY_PROFILE",
+      "name": "Verify Profile",
+      "providerId": "VERIFY_PROFILE",
+      "enabled": false,
+      "defaultAction": false,
+      "priority": 90
+    }
+  ]
+}
