@@ -96,11 +96,6 @@ services:
       start_period: 60s
 
   proxy:
-    # Override command to load the OIDC plugin
-    command:
-      - "./command.sh"
-      - "--experimental.plugins.traefik-oidc-auth.modulename=github.com/sevensolutions/traefik-oidc-auth"
-      - "--experimental.plugins.traefik-oidc-auth.version=v0.17.0"
     environment:
       # Enable OIDC middleware generation in entrypoint script
       OIDC_ENABLED: "true"
