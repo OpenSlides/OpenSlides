@@ -1,7 +1,7 @@
 /**
  * OpenSlides Keycloak Theme - Dynamic Color Loader
  *
- * Fetches the organization's active theme from /system/autoupdate/theme
+ * Fetches the organization's active theme from /system/presenter/theme
  * and applies colors as CSS custom properties.
  *
  * Palette generation algorithm ported from:
@@ -244,7 +244,7 @@
       fetchOptions.signal = controller.signal;
     }
 
-    fetch("/system/autoupdate/theme", fetchOptions)
+    fetch("/system/presenter/theme", fetchOptions)
       .then(function (response) {
         if (timeoutId) clearTimeout(timeoutId);
         if (!response.ok) {
