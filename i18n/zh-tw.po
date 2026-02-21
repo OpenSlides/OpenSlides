@@ -1,5 +1,6 @@
 # 
 # Translators:
+# Undefined Chang <undefinedc@duck.com>, 2026
 # Antigravity AI Agents
 # Claude Sonnet 4.6, 2026
 # Gemini 3 Pro, 2026
@@ -103,28 +104,28 @@ msgid "Account"
 msgstr "帳戶"
 
 msgid "Account admin"
-msgstr "帳戶 admin"
+msgstr "帳戶管理員"
 
 msgid "Account created"
-msgstr "帳戶 created"
+msgstr "已建立帳戶"
 
 msgid "Account successfully added."
-msgstr "帳戶 successfully added."
+msgstr "已成功新增帳戶。"
 
 msgid "Accounts"
 msgstr "帳戶"
 
 msgid "Accounts created"
-msgstr "帳戶 created"
+msgstr "已建立帳戶"
 
 msgid "Accounts updated"
-msgstr "帳戶 updated"
+msgstr "已更新帳戶"
 
 msgid "Accounts were set to inactive, except for your own account."
 msgstr "帳戶已設為停用，除了您自己的帳戶以外。"
 
 msgid "Accounts with errors"
-msgstr "帳戶 with errors"
+msgstr "有錯誤的帳戶"
 
 msgid "Accounts with warnings: affected cells will be skipped"
 msgstr "有警告的帳戶：受影響的欄位將被略過"
@@ -136,13 +137,13 @@ msgid "Activate"
 msgstr "啟用"
 
 msgid "Activate amendments"
-msgstr "Activate 修正案"
+msgstr "啟用修正動議"
 
 msgid "Activate backtracking"
 msgstr "啟用回溯"
 
 msgid "Activate closed meeting"
-msgstr "Activate closed 會議"
+msgstr "啟用閉門會議"
 
 msgid "Activate design"
 msgstr "啟用設計"
@@ -160,10 +161,10 @@ msgid "Activate the selection field 'spokesperson'"
 msgstr "啟用 '發言人' 選取欄位"
 
 msgid "Activate vote delegations"
-msgstr "Activate 表決 delegations"
+msgstr "啟用代理人投票"
 
 msgid "Activate vote weight"
-msgstr "Activate 表決 weight"
+msgstr "啟用加權投票"
 
 msgid ""
 "Activates the automatic logging of the date and time when this state was "
@@ -195,13 +196,13 @@ msgid "Active"
 msgstr "啟用中"
 
 msgid "Active accounts"
-msgstr "Active 帳戶"
+msgstr "啟用中的帳戶"
 
 msgid "Active filters"
 msgstr "啟用中的篩選器"
 
 msgid "Active meetings"
-msgstr "Active 會議"
+msgstr "啟用中的會議"
 
 msgid "Add"
 msgstr "新增"
@@ -228,13 +229,13 @@ msgid "Add timer"
 msgstr "新增計時器"
 
 msgid "Add to agenda"
-msgstr "Add to 議程"
+msgstr "加入至議程"
 
 msgid "Add to meetings"
-msgstr "Add to 會議"
+msgstr "加入至會議"
 
 msgid "Add to queue"
-msgstr "加入佇列"
+msgstr "加入至佇列"
 
 msgid "Add up"
 msgstr "加總"
@@ -243,7 +244,7 @@ msgid "Add yourself to the current list of speakers to join the conference"
 msgstr "將您自己加入目前的發言名單以加入會議"
 
 msgid "Add/remove groups ..."
-msgstr "Add/remove 群組 ..."
+msgstr "新增/移除群組..."
 
 msgid "Add/remove structure levels ..."
 msgstr "新增/移除結構層級 ..."
@@ -280,13 +281,13 @@ msgid "Agenda"
 msgstr "議程"
 
 msgid "Agenda export"
-msgstr "議程 export"
+msgstr "匯出議程"
 
 msgid "Agenda items are in process. Please wait ..."
 msgstr "議程項目處理中。請稍候 ..."
 
 msgid "Agenda visibility"
-msgstr "議程 visibility"
+msgstr "議程可見性"
 
 msgid "Align"
 msgstr "對齊"
@@ -295,7 +296,7 @@ msgid "All"
 msgstr "全部"
 
 msgid "All casted ballots"
-msgstr "All casted 選票"
+msgstr "所有已投選票"
 
 msgid "All changes of this settings group will be lost!"
 msgstr "此設定群組的所有變更將會遺失！"
@@ -310,7 +311,7 @@ msgid "All mandates"
 msgstr "所有授權"
 
 msgid "All meetings"
-msgstr "All 會議"
+msgstr "所有會議"
 
 msgid "All other fields are optional and may be empty."
 msgstr "所有其他欄位皆為選填，可留空。"
@@ -322,13 +323,13 @@ msgid "All topics will be deleted and won't be accessible afterwards."
 msgstr "所有議題將被刪除，之後將無法存取。"
 
 msgid "All valid ballots"
-msgstr "All valid 選票"
+msgstr "所有有效票"
 
 msgid "All votes will be lost."
-msgstr "所有表決將會遺失。"
+msgstr "將會失去所有表決紀錄。"
 
 msgid "Allow amendments of amendments"
-msgstr "允許修正案的修正案"
+msgstr "允許再修正動議"
 
 msgid "Allow backtracking of forwarded motions"
 msgstr "允許已轉發動議的回溯"
@@ -340,7 +341,7 @@ msgid "Allow create poll"
 msgstr "允許建立投票"
 
 msgid "Allow forwarding of amendments"
-msgstr "允許轉發修正案"
+msgstr "允許轉發修正動議"
 
 msgid "Allow forwarding of motions"
 msgstr "允許轉發動議"
@@ -354,12 +355,13 @@ msgid ""
 msgstr "僅允許目前發言人和發言名單管理員進入直播會議"
 
 msgid "Allow submitter edit"
-msgstr "Allow 提案人 edit"
+msgstr "允許提案人編輯"
 
 msgid "Allow support"
 msgstr "允許附議"
 
-msgid "Allow to accumulate several votes on one candidate (\"comulative voting\")"
+msgid ""
+"Allow to accumulate several votes on one candidate (\"comulative voting\")"
 msgstr "允許對同一位候選人累積多次投票（\"累積投票\"）"
 
 msgid "Allow users to set themselves as present"
@@ -378,37 +380,37 @@ msgid "Always"
 msgstr "總是"
 
 msgid "Amendment"
-msgstr "修正案"
+msgstr "修正動議"
 
 msgid "Amendment list (PDF)"
-msgstr "修正案 list (PDF)"
+msgstr "修正動議清單 (PDF)"
 
 msgid "Amendment text"
-msgstr "修正案 text"
+msgstr "修正動議內容"
 
 msgid "Amendment to"
-msgstr "修正案 to"
+msgstr "修正於"
 
 msgid "Amendments"
-msgstr "修正案"
+msgstr "修正動議"
 
 msgid "Amendments can change multiple paragraphs"
-msgstr "修正案可變更多個段落"
+msgstr "修正動議可變更多個段落"
 
 msgid "Amendments to"
-msgstr "修正案 to"
+msgstr "修正於"
 
 msgid "Amount of accounts"
-msgstr "Amount of 帳戶"
+msgstr "帳戶數量"
 
 msgid "Amount of meetings"
-msgstr "Amount of 會議"
+msgstr "會議數量"
 
 msgid "Amount of motions"
-msgstr "Amount of 動議"
+msgstr "動議數量"
 
 msgid "Amount of votes"
-msgstr "Amount of 表決"
+msgstr "票數"
 
 msgid "An error occurred while voting."
 msgstr "表決時發生錯誤。"
@@ -417,7 +419,7 @@ msgid "An unknown error occurred."
 msgstr "發生未知錯誤。"
 
 msgid "Anonymize votes"
-msgstr "Anonymize 表決"
+msgstr "匿名表決"
 
 msgid "Anonymizing can only be done after finishing a poll."
 msgstr "僅在結束投票後才能進行匿名化。"
@@ -429,7 +431,7 @@ msgid "Answer to interposed question"
 msgstr "回答會議詢問"
 
 msgid "Answer to intervention"
-msgstr "Answer to 插話"
+msgstr "回答插話"
 
 msgid "Applause interval in seconds"
 msgstr "鼓掌間隔（秒）"
@@ -456,7 +458,7 @@ msgid "Archived"
 msgstr "已封存"
 
 msgid "Archived meetings"
-msgstr "Archived 會議"
+msgstr "已封存的會議"
 
 msgid ""
 "Are you sure you want to activate this color set? This will change the "
@@ -593,7 +595,7 @@ msgid "Are you sure you want to discard all changes and update this form?"
 msgstr "您確定要捨棄所有變更並更新此表單嗎？"
 
 msgid "Are you sure you want to discard this amendment?"
-msgstr "您確定要捨棄此修正案嗎？"
+msgstr "您確定要捨棄此修正動議嗎？"
 
 msgid "Are you sure you want to duplicate this meeting?"
 msgstr "您確定要複製此會議嗎？"
@@ -637,8 +639,7 @@ msgstr "您確定要從動議模組移除此動議嗎？"
 msgid "Are you sure you want to remove this participant?"
 msgstr "您確定要移除此出席人嗎？"
 
-msgid ""
-"Are you sure you want to remove this speaker from the list of speakers?"
+msgid "Are you sure you want to remove this speaker from the list of speakers?"
 msgstr "您確定要從發言名單移除此發言人嗎？"
 
 msgid "Are you sure you want to remove yourself from this list of speakers?"
@@ -686,10 +687,10 @@ msgid "As recommendation"
 msgstr "作為建議"
 
 msgid "Ask, default no"
-msgstr "Ask, default 反對"
+msgstr "詢問，預設為否"
 
 msgid "Ask, default yes"
-msgstr "Ask, default 贊成"
+msgstr "詢問，預設為是"
 
 msgid "At least"
 msgstr "至少"
@@ -711,8 +712,8 @@ msgstr "動議的附件無法轉發"
 
 msgid ""
 "Attention: Accounts will add to the default group of each meeting only. If "
-"another group is intended please use the 'Add to meetings' dialog in account"
-" detail view."
+"another group is intended please use the 'Add to meetings' dialog in account "
+"detail view."
 msgstr "注意：帳戶僅會加入每個會議的預設群組。若要加入其他群組，請在帳戶詳細資料檢視中使用 '加入至會議' 對話方塊。"
 
 msgid ""
@@ -750,7 +751,7 @@ msgid "Available sizes are 10, 11 and 12"
 msgstr "可用大小為 10, 11 和 12"
 
 msgid "Available votes"
-msgstr "Available 表決"
+msgstr "有效表決"
 
 msgid "Back"
 msgstr "返回"
@@ -768,43 +769,43 @@ msgid "Ballot"
 msgstr "選票"
 
 msgid "Ballot anonymized"
-msgstr "選票 anonymized"
+msgstr "已匿名化選票"
 
 msgid "Ballot created"
-msgstr "選票 created"
+msgstr "已建立選票"
 
 msgid "Ballot deleted"
-msgstr "選票 deleted"
+msgstr "已刪除選票"
 
 msgid "Ballot opened"
-msgstr "選票 opened"
+msgstr "已開啟選票"
 
 msgid "Ballot papers"
-msgstr "選票 papers"
+msgstr "選票"
 
 msgid "Ballot published"
-msgstr "選票 published"
+msgstr "已公佈選票"
 
 msgid "Ballot reset"
-msgstr "選票 reset"
+msgstr "已重設選票"
 
 msgid "Ballot started"
-msgstr "選票 started"
+msgstr "已開始選票"
 
 msgid "Ballot stopped"
-msgstr "選票 stopped"
+msgstr "已停止選票"
 
 msgid "Ballot stopped/published"
-msgstr "選票 stopped/published"
+msgstr "已停止/公佈選票"
 
 msgid "Ballot updated"
-msgstr "選票 updated"
+msgstr "已更新選票"
 
 msgid "Ballots"
 msgstr "選票"
 
 msgid "Ballots cast"
-msgstr "選票 cast"
+msgstr "已投選票"
 
 msgid "Base folder"
 msgstr "基礎資料夾"
@@ -862,15 +863,15 @@ msgid "Can change the presence status of other participants."
 msgstr "可變更其他出席人的出席狀態。"
 
 msgid "Can create amendments"
-msgstr "Can create 修正案"
+msgstr "可建立修正動議"
 
 msgid ""
 "Can create amendments and modify them later, depending on the workflow, but "
 "cannot delete them."
-msgstr "可建立修正案並在稍後修改（視工作流程而定），但無法刪除。"
+msgstr "可建立修正動議並在稍後修改（視工作流程而定），但無法刪除。"
 
 msgid "Can create motions"
-msgstr "Can create 動議"
+msgstr "可建立動議"
 
 msgid ""
 "Can create motions and modify them later, depending on the workflow, but "
@@ -893,9 +894,9 @@ msgstr "可建立、修改及刪除選舉和候選人名單，以及開始/停�
 
 msgid ""
 "Can create, modify and delete motions and votings, amendments and change "
-"recommendations, and edit the metadata of a motion. Including the management"
-" of categories, motion blocks, tags, workflows and comment fields."
-msgstr "可建立、修改及刪除動議和表決、修正案及變更建議，並編輯動議的中繼資料。包含類別、動議模組、標籤、工作流程和註釋欄位的管理。"
+"recommendations, and edit the metadata of a motion. Including the management "
+"of categories, motion blocks, tags, workflows and comment fields."
+msgstr "可建立、修改及刪除動議和表決、修正動議及變更建議，並編輯動議的中繼資料。包含類別、動議模組、標籤、工作流程和註釋欄位的管理。"
 
 msgid ""
 "Can create, modify and delete topics, add motions and elections to the "
@@ -934,7 +935,7 @@ msgid "Can edit own delegation"
 msgstr "可編輯自己的代理"
 
 msgid "Can forward motions"
-msgstr "Can forward 動議"
+msgstr "可轉發動議"
 
 msgid "Can forward motions to committee"
 msgstr "可轉發動議至委員會"
@@ -955,13 +956,13 @@ msgstr ""
 "3. 必須在狀態的工作流程中啟用轉發。"
 
 msgid "Can manage agenda"
-msgstr "Can manage 議程"
+msgstr "可管理議程"
 
 msgid "Can manage ballots"
-msgstr "Can manage 選票"
+msgstr "可管理選票"
 
 msgid "Can manage elections"
-msgstr "Can manage 選舉"
+msgstr "可管理選舉"
 
 msgid "Can manage files"
 msgstr "可管理檔案"
@@ -982,10 +983,10 @@ msgid "Can manage motion polls"
 msgstr "可管理動議投票"
 
 msgid "Can manage motions"
-msgstr "Can manage 動議"
+msgstr "可管理動議"
 
 msgid "Can manage participants"
-msgstr "Can manage 出席人"
+msgstr "可管理出席人"
 
 msgid "Can manage polls"
 msgstr "可管理投票"
@@ -1030,13 +1031,13 @@ msgid "Can put oneself on the list of speakers"
 msgstr "可將自己加入發言名單"
 
 msgid "Can receive motions"
-msgstr "Can receive 動議"
+msgstr "可接收動議"
 
 msgid "Can receive motions from committee"
 msgstr "可接收來自委員會的動議"
 
 msgid "Can see agenda"
-msgstr "Can see 議程"
+msgstr "可檢視議程"
 
 msgid "Can see all internal topics, schedules and comments."
 msgstr "可檢視所有內部議題、時程和註釋。"
@@ -1048,7 +1049,7 @@ msgid "Can see all moderation notes in each list of speakers."
 msgstr "可檢視每個發言名單的所有主持筆記。"
 
 msgid "Can see elections"
-msgstr "Can see 選舉"
+msgstr "可檢視選舉"
 
 msgid ""
 "Can see email, username, membership number, SSO identification and locked "
@@ -1071,7 +1072,7 @@ msgid "Can see moderation notes"
 msgstr "可檢視主持筆記"
 
 msgid "Can see motions"
-msgstr "Can see 動議"
+msgstr "可檢視動議"
 
 msgid "Can see motions in internal state"
 msgstr "可檢視內部狀態的動議"
@@ -1089,7 +1090,7 @@ msgid "Can see origin motion"
 msgstr "可檢視原始動議"
 
 msgid "Can see participants"
-msgstr "Can see 出席人"
+msgstr "可檢視出席人"
 
 msgid "Can see sensitive data"
 msgstr "可檢視敏感資料"
@@ -1177,7 +1178,7 @@ msgid "Can set and remove own delegation."
 msgstr "可設定及移除自己的代理。"
 
 msgid "Can support motions"
-msgstr "Can support 動議"
+msgstr "可附議動議"
 
 msgid ""
 "Can support motions. The support function must be enabled in > [Settings] > "
@@ -1185,7 +1186,7 @@ msgid ""
 msgstr "可附議動議。必須在 > [設定] > [動議] 以及 > [工作流程] 中的對應狀態啟用附議功能。"
 
 msgid "Can update participants"
-msgstr "Can update 出席人"
+msgstr "可更新出席人"
 
 msgid ""
 "Can upload, modify and delete files, administrate folders and change access "
@@ -1223,13 +1224,13 @@ msgid "Cannot do that in demo mode!"
 msgstr "無法在示範模式中執行此動作！"
 
 msgid "Cannot forward motions"
-msgstr "Cannot forward 動議"
+msgstr "無法轉發動議"
 
 msgid "Cannot move published files"
 msgstr "無法移動已發佈的檔案"
 
 msgid "Cannot receive motions"
-msgstr "Cannot receive 動議"
+msgstr "無法接收動議"
 
 msgid "Categories"
 msgstr "類別"
@@ -1295,7 +1296,7 @@ msgid "Chat"
 msgstr "聊天室"
 
 msgid "Chat groups"
-msgstr "Chat 群組"
+msgstr "聊天群組"
 
 msgid "Check datastore"
 msgstr "檢查資料存放區"
@@ -1362,7 +1363,7 @@ msgid "Clear list"
 msgstr "清除名單"
 
 msgid "Clear motion block"
-msgstr "Clear 動議 block"
+msgstr "清除動議模組"
 
 msgid "Clear recommendation"
 msgstr "清除建議"
@@ -1443,31 +1444,31 @@ msgid "Committee Management Level changed"
 msgstr "委員會管理層級已變更"
 
 msgid "Committee admin"
-msgstr "委員會 admin"
+msgstr "委員會管理員"
 
 msgid "Committee management"
-msgstr "委員會 management"
+msgstr "委員會管理"
 
 msgid "Committee managers"
-msgstr "委員會 managers"
+msgstr "委員會管理員"
 
 msgid "Committee name"
-msgstr "委員會 name"
+msgstr "委員會名稱"
 
 msgid "Committees"
 msgstr "委員會"
 
 msgid "Committees and meetings"
-msgstr "委員會 and 會議"
+msgstr "委員會和會議"
 
 msgid "Committees created"
-msgstr "委員會 created"
+msgstr "已建立委員會"
 
 msgid "Committees updated"
-msgstr "委員會 updated"
+msgstr "已更新委員會"
 
 msgid "Committees with errors"
-msgstr "委員會 with errors"
+msgstr "有錯誤的委員會"
 
 msgid "Committees with warnings: affected cells will be skipped"
 msgstr "有警告的委員會：受影響的欄位將被略過"
@@ -1515,10 +1516,10 @@ msgid "Copy"
 msgstr "複製"
 
 msgid "Copy agenda item"
-msgstr "Copy 議程 item"
+msgstr "複製議程項目"
 
 msgid "Copy agenda items"
-msgstr "Copy 議程 items"
+msgstr "複製議程項目"
 
 msgid "Copy report to clipboard"
 msgstr "複製報告至剪貼簿"
@@ -1638,13 +1639,13 @@ msgid "Default 100 % base"
 msgstr "預設 100% 基數"
 
 msgid "Default election method"
-msgstr "Default 選舉 method"
+msgstr "預設選舉方式"
 
 msgid "Default encoding for all CSV exports"
 msgstr "所有 CSV 匯出的預設編碼"
 
 msgid "Default group"
-msgstr "Default 群組"
+msgstr "預設群組"
 
 msgid "Default groups with voting rights"
 msgstr "具表決權的預設群組"
@@ -1665,7 +1666,7 @@ msgid "Default visibility for new agenda items (except topics)"
 msgstr "新議程項目（議題除外）的預設能見度"
 
 msgid "Default vote weight"
-msgstr "Default 表決 weight"
+msgstr "預設投票權重"
 
 msgid "Default voting duration"
 msgstr "預設表決持續時間"
@@ -1742,7 +1743,7 @@ msgid "Defines which states can be selected next in the workflow."
 msgstr "定義工作流程中下一個可選取的狀態。"
 
 msgid "Delegation of vote"
-msgstr "Delegation of 表決"
+msgstr "投票委託"
 
 msgid "Delete"
 msgstr "刪除"
@@ -1760,13 +1761,13 @@ msgid "Deleted user"
 msgstr "已刪除的使用者"
 
 msgid "Deleting this motion will also delete the amendments."
-msgstr "刪除此動議也將刪除修正案。"
+msgstr "刪除此動議也將刪除修正動議。"
 
 msgid "Deletion"
 msgstr "刪除"
 
 msgid "Delivering vote... Please wait!"
-msgstr "傳送表決中... 請稍候！"
+msgstr "遞送投票中...... 請稍候！"
 
 msgid "Description"
 msgstr "描述"
@@ -1787,7 +1788,7 @@ msgid "Diff version"
 msgstr "差異版本"
 
 msgid "Disabled (no percents)"
-msgstr "Disabled (反對 percents)"
+msgstr "停用（無百分比）"
 
 msgid "Disallow new point of order when list of speakers is closed"
 msgstr "當發言名單關閉時不允許新的秩序問題"
@@ -1836,7 +1837,7 @@ msgid "Do you really want to undo the lock out of the participant?"
 msgstr "您確定要解除對此出席人的鎖定嗎？"
 
 msgid "Do you want to update the amendment text? All changes will be lost."
-msgstr "您要更新修正案文字嗎？所有變更將會遺失。"
+msgstr "您要更新修正動議文字嗎？所有變更將會遺失。"
 
 msgid "Does not have notes"
 msgstr "沒有筆記"
@@ -1896,13 +1897,13 @@ msgid "Edit HTML content"
 msgstr "編輯 HTML 內容"
 
 msgid "Edit account"
-msgstr "Edit 帳戶"
+msgstr "編輯帳戶"
 
 msgid "Edit comment field"
 msgstr "編輯註釋欄位"
 
 msgid "Edit committee"
-msgstr "Edit 委員會"
+msgstr "編輯委員會"
 
 msgid "Edit details"
 msgstr "編輯詳細資料"
@@ -1914,16 +1915,16 @@ msgid "Edit editorial final version"
 msgstr "編輯編輯定稿"
 
 msgid "Edit group"
-msgstr "Edit 群組"
+msgstr "編輯群組"
 
 msgid "Edit meeting"
-msgstr "Edit 會議"
+msgstr "編輯會議"
 
 msgid "Edit moderation note"
 msgstr "編輯主持筆記"
 
 msgid "Edit participant"
-msgstr "Edit 出席人"
+msgstr "編輯出席人"
 
 msgid "Edit point of order ..."
 msgstr "編輯秩序問題 ..."
@@ -1959,16 +1960,16 @@ msgid "Election"
 msgstr "選舉"
 
 msgid "Election documents"
-msgstr "選舉 documents"
+msgstr "選舉文件"
 
 msgid "Election method"
-msgstr "選舉 method"
+msgstr "選舉方式"
 
 msgid "Elections"
 msgstr "選舉"
 
 msgid "Elections (PDF settings)"
-msgstr "選舉 (PDF settings)"
+msgstr "選舉 (PDF 設定)"
 
 msgid "Element"
 msgstr "元素"
@@ -2022,7 +2023,7 @@ msgid "Enable point of orders for other participants"
 msgstr "為其他出席人啟用秩序問題"
 
 msgid "Enable public meetings"
-msgstr "Enable public 會議"
+msgstr "啟用公開會議"
 
 msgid "Enable specifications and ranking for possible motions"
 msgstr "啟用可能動議的規格和排名"
@@ -2037,10 +2038,10 @@ msgid "Enable virtual help desk room"
 msgstr "啟用虛擬服務台會議室"
 
 msgid "Enable/disable account ..."
-msgstr "Enable/disable 帳戶 ..."
+msgstr "啟用/停用帳戶..."
 
 msgid "Enable/disable accounts"
-msgstr "Enable/disable 帳戶"
+msgstr "啟用/停用帳戶"
 
 msgid ""
 "Enables for the selected state the possibility for submitters to change the "
@@ -2067,7 +2068,7 @@ msgid ""
 "1. Motion forwarding is activated.\n"
 "2. 'Original version with changes' in forwarding dialog must be selected."
 msgstr ""
-"啟用在選定狀態下轉發修正案。\n"
+"啟用在選定狀態下轉發修正動議。\n"
 "\n"
 "先決條件：\n"
 "1. 動議轉發已啟用。\n"
@@ -2102,7 +2103,7 @@ msgid ""
 "\n"
 "Note: Does not affect the visibility of change recommendations."
 msgstr ""
-"啟用直接在對應主要動議中顯示修正案。修正案文字將嵌入動議文字中。\n"
+"啟用直接在對應主要動議中顯示修正動議。修正動議文字將嵌入動議文字中。\n"
 "\n"
 "注意：不影響變更建議的能見度。"
 
@@ -2133,7 +2134,7 @@ msgid ""
 msgstr "輸入顯示的下一位發言人數量。選擇 -1 以顯示所有下一位發言人。"
 
 msgid "Enter participant number"
-msgstr "Enter 出席人 number"
+msgstr "輸入出席人編號"
 
 msgid "Enter the developer mode"
 msgstr "進入開發者模式"
@@ -2145,7 +2146,7 @@ msgid "Entitled present users"
 msgstr "有權限的出席使用者"
 
 msgid "Entitled to vote"
-msgstr "Entitled to 表決"
+msgstr "有投票權"
 
 msgid "Entitled users"
 msgstr "有權限的使用者"
@@ -2216,10 +2217,10 @@ msgid "Export personal note only"
 msgstr "僅匯出個人筆記"
 
 msgid "Export selected elections"
-msgstr "Export selected 選舉"
+msgstr "匯出選取的選舉"
 
 msgid "Export selected motions"
-msgstr "Export selected 動議"
+msgstr "匯出選取的動議"
 
 msgid "Extension"
 msgstr "擴充"
@@ -2255,7 +2256,7 @@ msgid "Filter"
 msgstr "篩選"
 
 msgid "Filtered single votes"
-msgstr "Filtered single 表決"
+msgstr "篩選後的單一投票"
 
 msgid "Final version"
 msgstr "定稿"
@@ -2333,13 +2334,13 @@ msgid "Forward attachments"
 msgstr "轉發附件"
 
 msgid "Forward motions"
-msgstr "Forward 動議"
+msgstr "轉發動議"
 
 msgid "Forward motions to"
-msgstr "Forward 動議 to"
+msgstr "轉發動議至"
 
 msgid "Forwarded motion deleted"
-msgstr "Forwarded 動議 deleted"
+msgstr "已刪除轉發的動議"
 
 msgid "Forwarded to {}"
 msgstr "已轉發至 {}"
@@ -2351,7 +2352,7 @@ msgid "Forwarding created"
 msgstr "轉發已建立"
 
 msgid "Forwarding of motion"
-msgstr "Forwarding of 動議"
+msgstr "轉發動議"
 
 msgid "From"
 msgstr "來自"
@@ -2378,7 +2379,7 @@ msgid "General"
 msgstr "一般"
 
 msgid "General abstain"
-msgstr "General 棄權"
+msgstr "一般棄權"
 
 msgid "General approval"
 msgstr "一般核准"
@@ -2414,7 +2415,7 @@ msgid "Group"
 msgstr "群組"
 
 msgid "Group name"
-msgstr "群組 name"
+msgstr "群組名稱"
 
 msgid "Group not found. Account added to the group “Default”."
 msgstr "找不到群組。帳戶已加入 “Default” 群組。"
@@ -2447,13 +2448,13 @@ msgid "Has a membership number"
 msgstr "有會員編號"
 
 msgid "Has amendments"
-msgstr "Has 修正案"
+msgstr "有修正動議"
 
 msgid "Has an email address"
 msgstr "有電子郵件地址"
 
 msgid "Has changed vote weight"
-msgstr "已變更表決權重"
+msgstr "已變更投票權重"
 
 msgid "Has email"
 msgstr "有電子郵件"
@@ -2462,7 +2463,7 @@ msgid "Has forwardings"
 msgstr "有轉發"
 
 msgid "Has identical motions"
-msgstr "Has identical 動議"
+msgstr "有相同動議"
 
 msgid "Has logged in"
 msgstr "已登入"
@@ -2474,16 +2475,16 @@ msgid "Has no email address"
 msgstr "無電子郵件地址"
 
 msgid "Has no home committee"
-msgstr "Has 反對 home 委員會"
+msgstr "無主委員會"
 
 msgid "Has no identical motions"
-msgstr "Has 反對 identical 動議"
+msgstr "無相同動議"
 
 msgid "Has no membership number"
 msgstr "無會員編號"
 
 msgid "Has no speakers"
-msgstr "Has 反對 speakers"
+msgstr "無發言人"
 
 msgid "Has not logged in yet"
 msgstr "尚未登入"
@@ -2504,7 +2505,7 @@ msgid "Has spoken"
 msgstr "已發言"
 
 msgid "Has unchanged vote weight"
-msgstr "表決權重未變"
+msgstr "已復原投票權重"
 
 msgid "Has voted"
 msgstr "已表決"
@@ -2567,10 +2568,10 @@ msgid "Home"
 msgstr "首頁"
 
 msgid "Home committee"
-msgstr "Home 委員會"
+msgstr "主委員會"
 
 msgid "How to create new amendments"
-msgstr "如何建立新修正案"
+msgstr "如何建立新修正動議"
 
 msgid "I know the risk"
 msgstr "我知道風險"
@@ -2583,7 +2584,7 @@ msgstr ""
 "                            若要接收回覆，您必須在下一個欄位輸入回覆地址。若有變更，請測試郵件發送！"
 
 msgid "Identical motions"
-msgstr "Identical 動議"
+msgstr "相同動議"
 
 msgid "Identical with"
 msgstr "相同於"
@@ -2612,19 +2613,19 @@ msgid "Import"
 msgstr "匯入"
 
 msgid "Import accounts"
-msgstr "Import 帳戶"
+msgstr "匯入帳戶"
 
 msgid "Import committees"
-msgstr "Import 委員會"
+msgstr "匯入委員會"
 
 msgid "Import data needs to have the JSON format"
 msgstr "匯入資料必須為 JSON 格式"
 
 msgid "Import meeting"
-msgstr "Import 會議"
+msgstr "匯入會議"
 
 msgid "Import participants"
-msgstr "Import 出席人"
+msgstr "匯入出席人"
 
 msgid "Import successful"
 msgstr "匯入成功"
@@ -2717,13 +2718,13 @@ msgid "Invalid line number"
 msgstr "無效行號"
 
 msgid "Invalid votes"
-msgstr "Invalid 表決"
+msgstr "無效票"
 
 msgid "Invite to conference room"
 msgstr "邀請至會議室"
 
 msgid "Is a committee"
-msgstr "Is a 委員會"
+msgstr "是委員會"
 
 msgid "Is a natural person"
 msgstr "是自然人"
@@ -2749,7 +2750,7 @@ msgid "Is already projected"
 msgstr "已在投影中"
 
 msgid "Is amendment"
-msgstr "Is 修正案"
+msgstr "是修正動議"
 
 msgid "Is archived"
 msgstr "已封存"
@@ -2764,7 +2765,7 @@ msgid "Is closed"
 msgstr "已關閉"
 
 msgid "Is committee admin"
-msgstr "Is 委員會 admin"
+msgstr "是委員會管理員"
 
 msgid "Is external"
 msgstr "是外部"
@@ -2785,7 +2786,7 @@ msgid "Is manager"
 msgstr "是管理員"
 
 msgid "Is no amendment and has no amendments"
-msgstr "非修正案且無修正案"
+msgstr "非修正動議且無修正動議"
 
 msgid "Is no natural person"
 msgstr "非自然人"
@@ -2800,7 +2801,7 @@ msgid "Is not active"
 msgstr "未啟用"
 
 msgid "Is not an amendment"
-msgstr "非修正案"
+msgstr "非修正動議"
 
 msgid "Is not archived"
 msgstr "未封存"
@@ -2836,7 +2837,7 @@ msgid "Is speaking"
 msgstr "正在發言"
 
 msgid "Is submitter"
-msgstr "Is 提案人"
+msgstr "是提案人"
 
 msgid ""
 "It is not allowed to delete countdowns used for list of speakers or polls"
@@ -2960,13 +2961,13 @@ msgid "Line spacing"
 msgstr "行距"
 
 msgid "List of amendments: "
-msgstr "List of 修正案: "
+msgstr "修正動議清單："
 
 msgid "List of electronic votes"
 msgstr "電子表決清單"
 
 msgid "List of participants"
-msgstr "List of 出席人"
+msgstr "出席人名單"
 
 msgid "List of participants (PDF)"
 msgstr "出席人名單 (PDF)"
@@ -3078,25 +3079,25 @@ msgid "Meeting"
 msgstr "會議"
 
 msgid "Meeting administrator"
-msgstr "會議 administrator"
+msgstr "會議管理員"
 
 msgid "Meeting date"
-msgstr "會議 date"
+msgstr "會議日期"
 
 msgid "Meeting information"
-msgstr "會議 information"
+msgstr "會議資訊"
 
 msgid "Meeting is closed"
-msgstr "會議 is closed"
+msgstr "會議已關閉"
 
 msgid "Meeting not found"
-msgstr "會議 not found"
+msgstr "找不到會議"
 
 msgid "Meeting specific information"
-msgstr "會議 specific information"
+msgstr "會議特定資訊"
 
 msgid "Meeting template"
-msgstr "會議 template"
+msgstr "會議範本"
 
 msgid ""
 "Meeting templates and the data they contain are publicly viewable by all "
@@ -3104,16 +3105,16 @@ msgid ""
 msgstr "會議範本及其包含的資料可供所有委員會管理員公開檢視。"
 
 msgid "Meeting title"
-msgstr "會議 title"
+msgstr "會議標題"
 
 msgid "Meetings"
 msgstr "會議"
 
 msgid "Meetings affected:"
-msgstr "會議 affected:"
+msgstr "受影響的會議："
 
 msgid "Meetings selected"
-msgstr "會議 selected"
+msgstr "已選取會議"
 
 msgid "Membership number"
 msgstr "會員編號"
@@ -3122,7 +3123,7 @@ msgid "Merge"
 msgstr "合併"
 
 msgid "Merge accounts"
-msgstr "Merge 帳戶"
+msgstr "合併帳戶"
 
 msgid "Message"
 msgstr "訊息"
@@ -3173,19 +3174,19 @@ msgid "Motion"
 msgstr "動議"
 
 msgid "Motion block"
-msgstr "動議 block"
+msgstr "動議模組"
 
 msgid "Motion block changed"
-msgstr "動議 block changed"
+msgstr "動議模組已變更"
 
 msgid "Motion block removed"
-msgstr "動議 block removed"
+msgstr "已移除動議模組"
 
 msgid "Motion block set to {}"
 msgstr "動議模組設為 {}"
 
 msgid "Motion blocks"
-msgstr "動議 blocks"
+msgstr "動議模組"
 
 msgid "Motion change recommendation created"
 msgstr "動議變更建議已建立"
@@ -3197,55 +3198,55 @@ msgid "Motion change recommendation updated"
 msgstr "動議變更建議已更新"
 
 msgid "Motion changed"
-msgstr "動議 changed"
+msgstr "動議已變更"
 
 msgid "Motion created"
-msgstr "動議 created"
+msgstr "已建立動議"
 
 msgid "Motion created (forwarded)"
-msgstr "動議 created (forwarded)"
+msgstr "已建立動議（轉發）"
 
 msgid "Motion deleted"
-msgstr "動議 deleted"
+msgstr "已刪除動議"
 
 msgid "Motion editor"
-msgstr "動議 editor"
+msgstr "動議編輯者"
 
 msgid "Motion editors"
-msgstr "動議 editors"
+msgstr "動議編輯者"
 
 msgid "Motion forwarded to"
-msgstr "動議 forwarded to"
+msgstr "動議已轉發至"
 
 msgid "Motion forwarding"
-msgstr "動議 forwarding"
+msgstr "轉發動議"
 
 msgid "Motion identifier"
-msgstr "動議 identifier"
+msgstr "動議識別碼"
 
 msgid "Motion preamble"
-msgstr "動議 preamble"
+msgstr "動議前言"
 
 msgid "Motion supporter"
-msgstr "動議 supporter"
+msgstr "動議附議員"
 
 msgid "Motion supporters"
-msgstr "動議 supporters"
+msgstr "動議附議員"
 
 msgid "Motion updated"
-msgstr "動議 updated"
+msgstr "已更新動議"
 
 msgid "Motion version"
-msgstr "動議 version"
+msgstr "動議版本"
 
 msgid "Motion votes"
-msgstr "動議 表決"
+msgstr "動議投票"
 
 msgid "Motions"
 msgstr "動議"
 
 msgid "Motions (PDF settings)"
-msgstr "動議 (PDF settings)"
+msgstr "動議 (PDF 設定)"
 
 msgid "Motions are in process. Please wait ..."
 msgstr "動議處理中。請稍候 ..."
@@ -3278,10 +3279,10 @@ msgid "Must be unique"
 msgstr "必須唯一"
 
 msgid "My account"
-msgstr "My 帳戶"
+msgstr "我的帳戶"
 
 msgid "My meetings"
-msgstr "My 會議"
+msgstr "我的會議"
 
 msgid "My profile"
 msgstr "我的設定檔"
@@ -3305,10 +3306,10 @@ msgid "Navigate to committee detail view from "
 msgstr "導覽至委員會詳細資料檢視，來自 "
 
 msgid "Navigate to meeting "
-msgstr "Navigate to 會議 "
+msgstr "導覽至會議 "
 
 msgid "Navigate to motion"
-msgstr "Navigate to 動議"
+msgstr "導覽至動議"
 
 msgid "Navigate to participant page from "
 msgstr "導覽至出席人頁面，來自 "
@@ -3323,16 +3324,16 @@ msgid "Never"
 msgstr "永不"
 
 msgid "New account"
-msgstr "New 帳戶"
+msgstr "新帳戶"
 
 msgid "New amendment"
-msgstr "New 修正案"
+msgstr "新修正動議"
 
 msgid "New and old passwords are identical!"
 msgstr "新舊密碼相同！"
 
 msgid "New ballot"
-msgstr "New 選票"
+msgstr "新選票"
 
 msgid "New category"
 msgstr "新類別"
@@ -3341,13 +3342,13 @@ msgid "New change recommendation"
 msgstr "新變更建議"
 
 msgid "New chat group"
-msgstr "New chat 群組"
+msgstr "新聊天群組"
 
 msgid "New comment field"
 msgstr "新註釋欄位"
 
 msgid "New committee"
-msgstr "New 委員會"
+msgstr "新委員會"
 
 msgid "New design"
 msgstr "新設計"
@@ -3356,7 +3357,7 @@ msgid "New directory"
 msgstr "新目錄"
 
 msgid "New election"
-msgstr "New 選舉"
+msgstr "新選舉"
 
 msgid "New file"
 msgstr "新檔案"
@@ -3371,22 +3372,22 @@ msgid "New gender"
 msgstr "新性別"
 
 msgid "New group"
-msgstr "New 群組"
+msgstr "新群組"
 
 msgid "New meeting"
-msgstr "New 會議"
+msgstr "新會議"
 
 msgid "New motion"
-msgstr "New 動議"
+msgstr "新動議"
 
 msgid "New motion block"
-msgstr "New 動議 block"
+msgstr "新動議模組"
 
 msgid "New option"
 msgstr "新選項"
 
 msgid "New participant"
-msgstr "New 出席人"
+msgstr "新出席人"
 
 msgid "New password"
 msgstr "新密碼"
@@ -3407,7 +3408,7 @@ msgid "New topic"
 msgstr "新議題"
 
 msgid "New vote"
-msgstr "New 表決"
+msgstr "新投票"
 
 msgid "New window"
 msgstr "新視窗"
@@ -3540,10 +3541,10 @@ msgid ""
 msgstr "注意，預設密碼將變更為新產生的密碼。"
 
 msgid "Note: Amendments cannot be forwarded without their parent motion."
-msgstr "注意：修正案無法在沒有父動議的情況下轉發。"
+msgstr "注意：修正動議無法在沒有父動議的情況下轉發。"
 
 msgid "Note: Amendments will not be forwarded."
-msgstr "注意：修正案將不會被轉發。"
+msgstr "注意：修正動議將不會被轉發。"
 
 msgid "Note: Motions and elections will not be copied."
 msgstr "注意：動議和選舉將不會被複製。"
@@ -3571,7 +3572,7 @@ msgid "Number candidates"
 msgstr "為候選人編號"
 
 msgid "Number motions"
-msgstr "Number 動議"
+msgstr "為動議編號"
 
 msgid "Number of (minimum) required supporters for a motion"
 msgstr "動議所需（最少）附議員人數"
@@ -3595,7 +3596,7 @@ msgid "Number of last speakers to be shown on the projector"
 msgstr "投影機上顯示的最後發言人數量"
 
 msgid "Number of motions"
-msgstr "Number of 動議"
+msgstr "動議數量"
 
 msgid ""
 "Number of next speakers automatically connecting to the live conference"
@@ -3605,7 +3606,7 @@ msgid "Number of open requests to speak"
 msgstr "未處理發言請求數量"
 
 msgid "Number of participants"
-msgstr "Number of 出席人"
+msgstr "出席人數量"
 
 msgid "Number of persons to be elected"
 msgstr "應選人數"
@@ -3653,7 +3654,7 @@ msgid "Ok"
 msgstr "確定"
 
 msgid "Old account of"
-msgstr "Old 帳戶 of"
+msgstr "舊帳戶屬於"
 
 msgid "Old password"
 msgstr "舊密碼"
@@ -3713,7 +3714,7 @@ msgid "Open list of speakers"
 msgstr "開啟發言名單"
 
 msgid "Open meeting"
-msgstr "Open 會議"
+msgstr "開啟會議"
 
 msgid "Open projection dialog"
 msgstr "開啟投影對話方塊"
@@ -3768,7 +3769,7 @@ msgid "Origin"
 msgstr "來源"
 
 msgid "Origin motion deleted"
-msgstr "Origin 動議 deleted"
+msgstr "已刪除來源動議"
 
 msgid "Original"
 msgstr "原始"
@@ -3777,7 +3778,7 @@ msgid "Original identifier"
 msgstr "原始識別碼"
 
 msgid "Original submitter"
-msgstr "Original 提案人"
+msgstr "原始提案人"
 
 msgid "Original version"
 msgstr "原始版本"
@@ -3849,13 +3850,13 @@ msgid "Parallel upload"
 msgstr "平行上傳"
 
 msgid "Parent agenda item"
-msgstr "Parent 議程 item"
+msgstr "父議程項目"
 
 msgid "Parent committee"
-msgstr "Parent 委員會"
+msgstr "父委員會"
 
 msgid "Parent committee name"
-msgstr "Parent 委員會 name"
+msgstr "父委員會名稱"
 
 msgid "Parent motion text changed"
 msgstr "父動議文字已變更"
@@ -3882,7 +3883,7 @@ msgid "Participant added to multiple groups in multiple meetings"
 msgstr "出席人已加入多個會議中的多個群組"
 
 msgid "Participant created"
-msgstr "出席人 created"
+msgstr "已建立出席人"
 
 msgid "Participant created in meeting {}"
 msgstr "出席人已於會議 {} 中建立"
@@ -3894,13 +3895,13 @@ msgid "Participant data updated in multiple meetings"
 msgstr "多個會議中的出席人資料已更新"
 
 msgid "Participant deleted"
-msgstr "出席人 deleted"
+msgstr "已刪除出席人"
 
 msgid "Participant deleted in meeting {}"
 msgstr "會議 {} 中的出席人已刪除"
 
 msgid "Participant number"
-msgstr "出席人 number"
+msgstr "出席人編號"
 
 msgid "Participant removed from group {} in meeting {}"
 msgstr "出席人已從會議 {} 中的群組 {} 移除"
@@ -3918,7 +3919,7 @@ msgid "Participants"
 msgstr "出席人"
 
 msgid "Participants (PDF settings)"
-msgstr "出席人 (PDF settings)"
+msgstr "出席人 (PDF 設定)"
 
 msgid ""
 "Participants and administrators are copied completely and cannot be edited "
@@ -3926,16 +3927,16 @@ msgid ""
 msgstr "出席人和管理員將被完整複製，無法在此編輯。"
 
 msgid "Participants created"
-msgstr "出席人 created"
+msgstr "已建立出席人"
 
 msgid "Participants skipped"
-msgstr "出席人 skipped"
+msgstr "已略過出席人"
 
 msgid "Participants updated"
-msgstr "出席人 updated"
+msgstr "已更新出席人"
 
 msgid "Participants with errors"
-msgstr "出席人 with errors"
+msgstr "有錯誤的出席人"
 
 msgid "Participants with warnings: affected cells will be skipped"
 msgstr "有警告的出席人：受影響的欄位將被略過"
@@ -4024,7 +4025,7 @@ msgid "Please update your browser or contact your system administration."
 msgstr "請更新您的瀏覽器或聯絡您的系統管理員。"
 
 msgid "Please vote now!"
-msgstr "Please 表決 now!"
+msgstr "請立即投票！"
 
 msgid "Point of order"
 msgstr "秩序問題"
@@ -4056,10 +4057,10 @@ msgid "Prefix"
 msgstr "前綴"
 
 msgid "Prefix for the motion identifier of amendments"
-msgstr "修正案動議識別碼的前綴"
+msgstr "修正動議動議識別碼的前綴"
 
 msgid "Preload original motions"
-msgstr "Preload original 動議"
+msgstr "預先載入原始動議"
 
 msgid "Presence"
 msgstr "出席"
@@ -4194,13 +4195,13 @@ msgid "Receipt of contributions"
 msgstr "發言記錄"
 
 msgid "Receive motions"
-msgstr "Receive 動議"
+msgstr "接收動議"
 
 msgid "Receive motions from"
-msgstr "Receive 動議 from"
+msgstr "接收動議自"
 
 msgid "Received votes"
-msgstr "Received 表決"
+msgstr "已收到的投票"
 
 msgid "Recommendation"
 msgstr "建議"
@@ -4229,7 +4230,7 @@ msgid "Reenter to conference room"
 msgstr "重新進入會議室"
 
 msgid "Referring motions"
-msgstr "Referring 動議"
+msgstr "相關動議"
 
 msgid "Refresh"
 msgstr "重新整理"
@@ -4273,7 +4274,7 @@ msgid "Remove forward"
 msgstr "移除轉發"
 
 msgid "Remove from agenda"
-msgstr "Remove from 議程"
+msgstr "從議程移除"
 
 msgid "Remove from motion block"
 msgstr "從動議模組移除"
@@ -4361,16 +4362,16 @@ msgstr "重新開始直播"
 msgid ""
 "Restrict delegation principals from adding themselves to the list of "
 "speakers"
-msgstr "限制代理本人將自己加入發言名單"
+msgstr "限制代理人將自己加入發言名單"
 
 msgid "Restrict delegation principals from creating motions/amendments"
-msgstr "限制代理本人建立動議/修正案"
+msgstr "限制代理人建立動議/修正動議"
 
 msgid "Restrict delegation principals from supporting motions"
-msgstr "限制代理本人附議動議"
+msgstr "限制代理人附議動議"
 
 msgid "Restrict delegation principals from voting"
-msgstr "限制代理本人表決"
+msgstr "限制代理人表決"
 
 msgid "Restrictions"
 msgstr "限制"
@@ -4454,13 +4455,13 @@ msgid "Select file"
 msgstr "選取檔案"
 
 msgid "Select meetings ..."
-msgstr "Select 會議 ..."
+msgstr "選取會議..."
 
 msgid "Select paragraphs"
 msgstr "選取段落"
 
 msgid "Select participant"
-msgstr "Select 出席人"
+msgstr "選取出席人"
 
 msgid "Select speaker"
 msgstr "選取發言人"
@@ -4544,7 +4545,7 @@ msgid "Set lock out ..."
 msgstr "設定鎖定 ..."
 
 msgid "Set motion block"
-msgstr "Set 動議 block"
+msgstr "設定動議模組"
 
 msgid "Set natural person ..."
 msgstr "設定自然人 ..."
@@ -4580,7 +4581,7 @@ msgid "Set submission timestamp"
 msgstr "設定提交時間戳記"
 
 msgid "Set submitters"
-msgstr "Set 提案人"
+msgstr "設定提案人"
 
 msgid "Set tags"
 msgstr "設定標籤"
@@ -4589,10 +4590,10 @@ msgid "Set workflow"
 msgstr "設定工作流程"
 
 msgid "Set/remove home committee"
-msgstr "Set/remove home 委員會"
+msgstr "設定/移除主委員會"
 
 msgid "Set/remove meeting"
-msgstr "Set/remove 會議"
+msgstr "設定/移除會議"
 
 msgid "Sets this projector as the reference for the current list of speakers"
 msgstr "將此投影機設為目前發言名單的參考"
@@ -4601,19 +4602,19 @@ msgid "Settings"
 msgstr "設定"
 
 msgid "Short form for amendments"
-msgstr "修正案簡短形式"
+msgstr "簡短修正動議"
 
 msgid "Show all changes"
 msgstr "顯示所有變更"
 
 msgid "Show amendment"
-msgstr "Show 修正案"
+msgstr "顯示修正動議"
 
 msgid "Show amendment in parent motion"
-msgstr "在父動議中顯示修正案"
+msgstr "在父動議中顯示修正動議"
 
 msgid "Show amendments together with motions"
-msgstr "顯示修正案與動議"
+msgstr "同時顯示動議與修正動議"
 
 msgid "Show applause amount"
 msgstr "顯示鼓掌量"
@@ -4625,7 +4626,7 @@ msgid "Show clock"
 msgstr "顯示時鐘"
 
 msgid "Show committee"
-msgstr "Show 委員會"
+msgstr "顯示委員會"
 
 msgid "Show conference room"
 msgstr "顯示會議室"
@@ -4658,7 +4659,7 @@ msgid "Show meta information box beside the title on projector"
 msgstr "在投影機標題旁顯示元資訊方塊"
 
 msgid "Show motion submitters in the agenda"
-msgstr "Show 動議 提案人 in the 議程"
+msgstr "在議程中顯示動議提案人"
 
 msgid "Show motion text on projector"
 msgstr "在投影機顯示動議文字"
@@ -4679,7 +4680,7 @@ msgid "Show recommendation on projector"
 msgstr "在投影機顯示建議"
 
 msgid "Show referring motions"
-msgstr "Show referring 動議"
+msgstr "顯示相關動議"
 
 msgid "Show report"
 msgstr "顯示報告"
@@ -4724,7 +4725,7 @@ msgid "Single Sign-On settings"
 msgstr "單一登入設定"
 
 msgid "Single votes"
-msgstr "Single 表決"
+msgstr "單一表決"
 
 msgid "Some csv values could not be read correctly."
 msgstr "部分 CSV 值無法正確讀取。"
@@ -4738,7 +4739,7 @@ msgid "Sort"
 msgstr "排序"
 
 msgid "Sort agenda"
-msgstr "Sort 議程"
+msgstr "排序議程"
 
 msgid "Sort by identifier"
 msgstr "依識別碼排序"
@@ -4753,10 +4754,10 @@ msgid "Sort election results by amount of votes"
 msgstr "依票數排序選舉結果"
 
 msgid "Sort motions"
-msgstr "Sort 動議"
+msgstr "排序動議"
 
 msgid "Sort motions by"
-msgstr "Sort 動議 by"
+msgstr "排序動議依據"
 
 msgid "Sort participant names on single votes projection by"
 msgstr "單一表決投影的出席人姓名排序依據"
@@ -4873,7 +4874,7 @@ msgid "Submit selection now?"
 msgstr "立即提交選取項目？"
 
 msgid "Submit vote now"
-msgstr "Submit 表決 now"
+msgstr "立即提交投票"
 
 msgid "Submitter"
 msgstr "提案人"
@@ -5083,7 +5084,7 @@ msgid "There is an error in your vote."
 msgstr "您的表決有誤。"
 
 msgid "There is an error with this amendment. Please edit it manually."
-msgstr "此修正案有誤。請手動編輯。"
+msgstr "此修正動議有誤。請手動編輯。"
 
 msgid "There is an unknown voting problem."
 msgstr "發生未知的表決問題。"
@@ -5126,7 +5127,7 @@ msgid "This action will remove you from one or more meetings."
 msgstr "此動作將把您從一個或多個會議移除。"
 
 msgid "This amendment has change recommendations."
-msgstr "此修正案有變更建議。"
+msgstr "此修正動議有變更建議。"
 
 msgid "This ballot contains deleted users."
 msgstr "此選票包含已刪除的使用者。"
@@ -5278,7 +5279,7 @@ msgid "Title for access data and welcome PDF"
 msgstr "存取資料和歡迎 PDF 的標題"
 
 msgid "Title, text, visibility and comment are copied by default."
-msgstr "標題、文字、能見度和註釋預設會被複製。"
+msgstr "標題、文字、可見性和註釋預設會被複製。"
 
 msgid "To"
 msgstr "至"
@@ -5314,13 +5315,13 @@ msgid "Topics with warnings (will be skipped)"
 msgstr "有警告的議題（將被略過）"
 
 msgid "Total accounts"
-msgstr "Total 帳戶"
+msgstr "總帳戶數"
 
 msgid "Total committees"
-msgstr "Total 委員會"
+msgstr "總委員會數"
 
 msgid "Total participants"
-msgstr "Total 出席人"
+msgstr "總出席人數"
 
 msgid "Total time"
 msgstr "總時間"
@@ -5329,7 +5330,7 @@ msgid "Total topics"
 msgstr "總議題數"
 
 msgid "Total votes cast"
-msgstr "Total 表決 cast"
+msgstr "總投票數"
 
 msgid "Touch the book icon to enter text"
 msgstr "觸碰書本圖示以輸入文字"
@@ -5420,7 +5421,7 @@ msgid "Using OpenSlides over HTTP is not supported. Enable HTTPS to continue."
 msgstr "不支援透過 HTTP 使用 OpenSlides。請啟用 HTTPS 以繼續。"
 
 msgid "Valid votes"
-msgstr "Valid 表決"
+msgstr "有效票"
 
 msgid "Value must be positive."
 msgstr "數值必須為正數。"
@@ -5432,25 +5433,25 @@ msgid "Virtual applause"
 msgstr "虛擬鼓掌"
 
 msgid "Visibility"
-msgstr "能見度"
+msgstr "可見性"
 
 msgid "Visibility on agenda"
-msgstr "Visibility on 議程"
+msgstr "議程中的可見性"
 
 msgid "Vote"
 msgstr "表決"
 
 msgid "Vote Weight"
-msgstr "表決 Weight"
+msgstr "加權投票"
 
 msgid "Vote delegation"
-msgstr "表決 delegation"
+msgstr "代理人投票"
 
 msgid "Vote submitted"
-msgstr "表決 submitted"
+msgstr "已提交投票"
 
 msgid "Vote weight"
-msgstr "表決 weight"
+msgstr "投票權重"
 
 msgid "Voted"
 msgstr "已表決"
@@ -5556,7 +5557,7 @@ msgstr "警告顏色"
 msgid ""
 "Warning: Amendments exist for this motion. Are you sure you want to delete "
 "this motion regardless?"
-msgstr "警告：此動議已有修正案。您確定仍要刪除此動議嗎？"
+msgstr "警告：此動議已有修正動議。您確定仍要刪除此動議嗎？"
 
 msgid ""
 "Warning: Amendments or change recommendations exist for this motion. Editing"
@@ -5564,12 +5565,12 @@ msgid ""
 "might become unusable if the paragraph they affect is deleted, or change "
 "recommendations might lose their reference line completely."
 msgstr ""
-"警告：此動議已有修正案或變更建議。編輯此文字可能會造成負面影響。特別是若刪除了修正案影響的段落，修正案可能無法使用，或變更建議可能完全失去參照行。"
+"警告：此動議已有修正動議或變更建議。編輯此文字可能會造成負面影響。特別是若刪除了修正動議影響的段落，修正動議可能無法使用，或變更建議可能完全失去參照行。"
 
 msgid ""
 "Warning: At least one of the selected motions has amendments, these will be "
 "deleted as well. Do you want to delete anyway?"
-msgstr "警告：至少有一個選取的動議已有修正案，這些修正案也將被刪除。您確定要刪除嗎？"
+msgstr "警告：至少有一個選取的動議已有修正動議，這些修正動議也將被刪除。您確定要刪除嗎？"
 
 msgid ""
 "Warning: Data loss is possible because accounts are in the same meeting."
@@ -5636,7 +5637,7 @@ msgid "Workflow"
 msgstr "工作流程"
 
 msgid "Workflow of new amendments"
-msgstr "新修正案的工作流程"
+msgstr "新修正動議的工作流程"
 
 msgid "Workflow of new motions"
 msgstr "新動議的工作流程"
@@ -5648,31 +5649,31 @@ msgid "Yes"
 msgstr "贊成"
 
 msgid "Yes per candidate"
-msgstr "贊成 per candidate"
+msgstr "贊成（每位候選人）"
 
 msgid "Yes per option"
-msgstr "贊成 per option"
+msgstr "贊成（每個選項）"
 
 msgid "Yes, delete"
-msgstr "贊成, delete"
+msgstr "是，刪除"
 
 msgid "Yes, inclusive meetings"
-msgstr "贊成, inclusive 會議"
+msgstr "是，包含會議"
 
 msgid "Yes/No"
 msgstr "贊成/反對"
 
 msgid "Yes/No per candidate"
-msgstr "贊成/反對 per candidate"
+msgstr "贊成/反對（每位候選人）"
 
 msgid "Yes/No/Abstain"
 msgstr "贊成/反對/棄權"
 
 msgid "Yes/No/Abstain per candidate"
-msgstr "贊成/反對/棄權 per candidate"
+msgstr "贊成/反對/棄權（每位候選人）"
 
 msgid "Yes/No/Abstain per list"
-msgstr "贊成/反對/棄權 per list"
+msgstr "贊成/反對/棄權（每份名單）"
 
 msgid ""
 "You are moving a file from a public folder into an not published folder. The"
@@ -5719,7 +5720,7 @@ msgid ""
 "You cannot delete the workflow as long as it is selected as default workflow"
 " for new amendments in the settings. Please set another workflow as default "
 "in the settings and try to delete the workflow again."
-msgstr "您無法刪除此工作流程，因為它在設定中被選為新修正案的預設工作流程。請在設定中將另一個工作流程設為預設值，然後再試著刪除此工作流程。"
+msgstr "您無法刪除此工作流程，因為它在設定中被選為新修正動議的預設工作流程。請在設定中將另一個工作流程設為預設值，然後再試著刪除此工作流程。"
 
 msgid ""
 "You cannot delete the workflow as long as it is selected as default workflow"
@@ -5814,7 +5815,7 @@ msgid ""
 msgstr "您的投票被拒絕，因為您的 IP 位址不在允許的 IP 範圍內。"
 
 msgid "Your votes"
-msgstr "Your 表決"
+msgstr "您的投票"
 
 msgid "Your voting right was delegated to another person."
 msgstr "您的投票權已委託給其他人。"
@@ -5835,13 +5836,13 @@ msgid "absent"
 msgstr "缺席"
 
 msgid "account-example"
-msgstr "帳戶-example"
+msgstr "帳戶範例"
 
 msgid "active"
 msgstr "啟用"
 
 msgid "add group(s)"
-msgstr "add 群組(s)"
+msgstr "新增群組"
 
 msgid "agenda items were successfully copied to {} meeting(s)"
 msgstr "個議程項目已成功複製到 {} 個會議"
@@ -5850,10 +5851,10 @@ msgid "already exists"
 msgstr "已存在"
 
 msgid "amendment"
-msgstr "修正案"
+msgstr "修正動議"
 
 msgid "amendments"
-msgstr "修正案"
+msgstr "修正動議"
 
 msgid "analog"
 msgstr "舉手"
@@ -5868,7 +5869,7 @@ msgid "are required"
 msgstr "為必填"
 
 msgid "ballot-paper"
-msgstr "選票-paper"
+msgstr "選票"
 
 msgid "by"
 msgstr "由"
@@ -5886,7 +5887,7 @@ msgid "change recommendations"
 msgstr "變更建議"
 
 msgid "committee-example"
-msgstr "委員會-example"
+msgstr "委員會範例"
 
 msgid "connecting ..."
 msgstr "連線中 ..."
@@ -5946,7 +5947,7 @@ msgid "finished (unpublished)"
 msgstr "已完成（未發佈）"
 
 msgid "from delegated votes"
-msgstr "from delegated 表決"
+msgstr "來自代理人投票"
 
 msgid "fullscreen"
 msgstr "全螢幕"
@@ -6024,7 +6025,7 @@ msgid "male"
 msgstr "男性"
 
 msgid "mark amendments as original"
-msgstr "將修正案標記為原始"
+msgstr "將修正動議標記為原始"
 
 msgid "max. 32 characters allowed"
 msgstr "最多允許 32 個字元"
@@ -6042,7 +6043,7 @@ msgid "natural person"
 msgstr "自然人"
 
 msgid "no natural person"
-msgstr "反對 natural person"
+msgstr "無自然人"
 
 msgid "nominal"
 msgstr "記名"
@@ -6078,7 +6079,7 @@ msgid "of which %num% not permissable"
 msgstr "其中 %num% 個不允許"
 
 msgid "open votes"
-msgstr "open 表決"
+msgstr "進行中的表決"
 
 msgid "or"
 msgstr "或"
@@ -6093,7 +6094,7 @@ msgid "participants"
 msgstr "出席人"
 
 msgid "participants-example"
-msgstr "出席人-example"
+msgstr "出席人範例"
 
 msgid "present"
 msgstr "出席"
@@ -6111,7 +6112,7 @@ msgid "remove"
 msgstr "移除"
 
 msgid "remove group(s)"
-msgstr "remove 群組(s)"
+msgstr "移除群組"
 
 msgid "removed user"
 msgstr "已移除使用者"
@@ -6171,10 +6172,10 @@ msgid "version"
 msgstr "版本"
 
 msgid "votes per candidate"
-msgstr "表決 per candidate"
+msgstr "每位候選人的票數"
 
 msgid "votes per option"
-msgstr "表決 per option"
+msgstr "每個選項的票數"
 
 msgid "was"
 msgstr "是"
@@ -6252,10 +6253,10 @@ msgid "Delegates"
 msgstr "代表"
 
 msgid "No concernment"
-msgstr "反對 concernment"
+msgstr "不相關"
 
 msgid "No decision"
-msgstr "反對 decision"
+msgstr "未決定"
 
 msgid "Presentation and assembly system"
 msgstr "簡報與議事系統"
