@@ -37,6 +37,7 @@ Flags:
                            Example: Backend-Service is locally checked-out to 'feature/xyz'. Its dev compose setup pulls 'vote' from github by referencing
                            'openslides-vote-service.git#main'. If 'compose-local-branch' is set to true, the path 'openslides-vote-service.git#feature/xyz' will be used
                            instead.
+    no-log-prefix        : When printing container logs, the associated container name is omitted
 
 Available dev functions:
     dev              : Builds and starts development images.
@@ -168,7 +169,7 @@ run()
         if [ -n "$NO_CACHE" ]; then BUILD_ARGS="--build --force-recreate"; fi
 
         # Compose
-        echocmd eval "$DC up ${BUILD_ARGS} ${FLAGS} ${VOLUMES} ${RUN_ARGS}"
+        echocmd eval "$DC up ${LOG_PREFIX} ${BUILD_ARGS} ${FLAGS} ${VOLUMES} ${RUN_ARGS}"
     else
         # Already active check
         # Either stop existing containers and continue with run() or use existing containers from now on and exit run() early
@@ -191,15 +192,16 @@ run()
 
 restart()
 {
+    local SHELL=$1
     info "Restarting container(s)"
 
     if [ -n "$COMPOSE_FILE" ]
     then
         # Compose
-        echocmd eval "$DC restart ${FLAGS} ${VOLUMES} ${RUN_ARGS}"
+        echocmd eval "$DC restart ${VOLUMES} ${RUN_ARGS}"
     else
         # Single Container
-        echocmd docker restart --name "$CONTAINER_NAME"  "$FLAGS" "$VOLUMES" "$RUN_ARGS" "$IMAGE_TAG" "$SHELL"
+        echocmd docker restart --name "$CONTAINER_NAME" "$VOLUMES" "$RUN_ARGS" "$IMAGE_TAG" "$SHELL"
     fi
 }
 
@@ -267,26 +269,30 @@ log()
     local CONNECT=$1
     if [ -n "$CONNECT" ]; then CONNECT_FLAG="-f"; fi
 
-    if [ -z "$USE_LOG_PREFIX" ]; then LOG_PREFIX="--no-log-prefix"; fi
-
     local TARGET_CONTAINER=$LOG_CONTAINER
     if [ -n "$COMPOSE_FILE" ]
     then
         if [ -z "$SERVICE" ] && [ -z "$TARGET_CONTAINER" ]
         then
             # Main repository case, use input prompt to determine container
-            TARGET_CONTAINER=$(input "Which service container should be logged?")
-            { [ -z "$TARGET_CONTAINER" ] && \info "No service container declared, exiting" && return; }
+            TARGET_CONTAINER=$(input "Enter container name if you want logs of a specific container. Leave empty to receive logs from every container")
+
+            if [ -z "$TARGET_CONTAINER" ]
+            then
+                # No container specified. Log whole compose file
+                echocmd docker compose -f "$COMPOSE_FILE" logs ${LOG_PREFIX} ${CONNECT_FLAG}
+                exit 0
+            fi
         elif [ -n "$SERVICE" ] && [ -z "$TARGET_CONTAINER" ]
         then
             # Submodule case
             info "No container was specified; Service container will be taken as default" && TARGET_CONTAINER="$SERVICE"
         fi
 
-        echocmd docker compose -f "$COMPOSE_FILE" logs "${TARGET_CONTAINER}" ${LOG_PREFIX} ${CONNECT_FLAG}
+        echocmd docker compose -f "$COMPOSE_FILE" logs "${TARGET_CONTAINER}" --no-log-prefix ${CONNECT_FLAG}
     else
         # Single Container
-        echocmd docker container logs "${TARGET_CONTAINER}" ${LOG_PREFIX} ${CONNECT_FLAG}
+        echocmd docker container logs "${TARGET_CONTAINER}" --no-log-prefix ${CONNECT_FLAG}
     fi
 
 }
@@ -304,11 +310,11 @@ TEMP_SERVICE=$SERVICE
 SERVICE=""
 for CMD in $TEMP_SERVICE; do
     case "$CMD" in
-        "no-cache")     NO_CACHE=true ;;
-        "capsule")      CAPSULE=true ;;
+        "no-cache")      NO_CACHE=true ;;
+        "capsule")       CAPSULE=true ;;
         "compose-local-branch") USE_LOCAL_BRANCH_FOR_COMPOSE=true ;;
-        "log-prefix")   USE_LOG_PREFIX=true ;;
-        *)              SERVICE="$CMD" ;;
+        "no-log-prefix") LOG_PREFIX="--no-log-prefix" ;;
+        *)               SERVICE="$CMD" ;;
     esac
 done
 

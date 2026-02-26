@@ -19,7 +19,7 @@ build build-prod:
 $(.SERVICE_TARGETS):
 	@echo ""
 
-.FLAGS := no-cache capsule compose-local-branch log-prefix
+.FLAGS := no-cache capsule compose-local-branch no-log-prefix
 
 $(.FLAGS):
 	@echo ""
@@ -44,7 +44,7 @@ test-ci:
 
 # Localprod
 
-localprod:
+localprod run-localprod:
 	@if [ ! -f "dev/localprod/docker-compose.yml" ]; then echo "No docker-compose.yml exists in dev/localprod. Have you run setup.sh yet?" && exit 1; fi
 	docker compose -f dev/localprod/docker-compose.yml up --build
 
