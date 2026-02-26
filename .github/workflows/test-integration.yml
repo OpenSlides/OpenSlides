@@ -13,6 +13,11 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Build openslides binary
+        run: |
+          make -C openslides-manage-service openslides
+          mv -f openslides-manage-service/openslides dev/localprod/openslides
+
       - name: Use example data instead of initial data
         working-directory: "./openslides-backend/data/"
         run: cp example-data.json initial-data.json
