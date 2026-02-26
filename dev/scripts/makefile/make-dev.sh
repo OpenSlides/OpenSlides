@@ -311,7 +311,7 @@ case "$SERVICE" in
     "autoupdate")   SERVICE_FOLDER="./openslides-autoupdate-service" ;;
     "backend")      SERVICE_FOLDER="./openslides-backend" &&
                     COMPOSE_FILE="$SERVICE_FOLDER/dev/docker-compose.dev.yml" &&
-                    USED_SHELL="./entrypoint.sh bash --rcfile .bashrc" &&
+                    USED_SHELL="bash --rcfile .bashrc" &&
                     CLOSE_VOLUMES="--volumes" ;;
     "client")       SERVICE_FOLDER="./openslides-client" &&
                     VOLUMES="-v $(pwd)/openslides-client/client/src:/app/src -v $(pwd)/openslides-client/client/cli:/app/cli -p 127.0.0.1:9001:9001/tcp" ;;
