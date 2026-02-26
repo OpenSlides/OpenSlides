@@ -19,7 +19,7 @@ build build-prod:
 $(.SERVICE_TARGETS):
 	@echo ""
 
-.FLAGS := no-cache capsule compose-local-branch
+.FLAGS := no-cache capsule compose-local-branch log-prefix
 
 $(.FLAGS):
 	@echo ""
@@ -30,7 +30,7 @@ devstop:
 	@sed -i "1s/.*/$(GO_VERSION)/" $(DOCKER_PATH)/workspaces/*.work
 	@bash $(MAKEFILE_PATH)/make-dev.sh "dev-stop" "$(filter-out $@, $(MAKECMDGOALS))"
 
-dev dev-help dev-standalone dev-detached dev-attached dev-stop dev-exec dev-enter dev-clean dev-build dev-log dev-restart dev-docker-reset:
+dev dev-help dev-standalone dev-detached dev-attached dev-stop dev-exec dev-enter dev-clean dev-build dev-log dev-log-attach dev-restart dev-full-restart dev-docker-reset:
 	@sed -i "1s/.*/$(GO_VERSION)/" $(DOCKER_PATH)/workspaces/*.work
 	@bash $(MAKEFILE_PATH)/make-dev.sh $@ "$(filter-out $@, $(MAKECMDGOALS))"
 
@@ -44,11 +44,18 @@ test-ci:
 
 # Localprod
 
-run-localprod:
+localprod:
 	@if [ ! -f "dev/localprod/docker-compose.yml" ]; then echo "No docker-compose.yml exists in dev/localprod. Have you run setup.sh yet?" && exit 1; fi
 	docker compose -f dev/localprod/docker-compose.yml up --build
 
-log-localprod:
+localprod-delete:
+	rm ./dev/localprod/openslides
+	rm ./dev/localprod/docker-compose.yml
+
+localprod-build:
+	./dev/localprod/setup.sh
+
+localprod-log:
 	@if [ ! -f "dev/localprod/docker-compose.yml" ]; then echo "No docker-compose.yml exists in dev/localprod. Have you run setup.sh yet?" && exit 1; fi
 	docker compose -f dev/localprod/docker-compose.yml logs $(ARGS)
 
