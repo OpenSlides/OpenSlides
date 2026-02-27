@@ -22,6 +22,11 @@ jobs:
         working-directory: "./openslides-backend/data/"
         run: cp example-data.json initial-data.json
 
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          version: latest
+
       - name: Start setup
         working-directory: "./dev/localprod"
         run: |
