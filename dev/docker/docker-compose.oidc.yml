@@ -1,0 +1,135 @@
+# Docker Compose overlay for OIDC authentication via Traefik plugin
+# Usage: docker compose -f docker-compose.dev.yml -f docker-compose.oidc.yml up
+#
+# This overlay configures the traefik-oidc-auth plugin to handle OIDC authentication
+# at the proxy level, forwarding the Access Token to the backend via the Authorization header.
+# The backend validates tokens directly via JWKS (no session tokens needed).
+#
+# Environment variables (can be set in .env or exported):
+#   OIDC_SESSION_SECRET  - 32-char encryption key for Traefik OIDC plugin sessions
+#   OIDC_PROVIDER_URL    - Keycloak realm URL (default: http://keycloak:8080/auth/realms/openslides)
+#   OIDC_CLIENT_ID       - OIDC client ID (default: openslides-client)
+#   OIDC_CLIENT_SECRET   - OIDC client secret (default: openslides-secret)
+
+# Shared OIDC environment variables for Go services
+x-go-oidc-env: &go-oidc-env
+  OIDC_ENABLED: "true"
+  # External URL for token issuer validation (must match token's iss claim)
+  OIDC_ISSUER_URL: "${OIDC_PROVIDER_URL:-https://localhost:8000/auth/realms/openslides}"
+  # Internal URL for JWKS fetching (Docker network access)
+  OIDC_INTERNAL_ISSUER_URL: "${OIDC_INTERNAL_PROVIDER_URL:-http://keycloak:8080/auth/realms/openslides}"
+  OIDC_CLIENT_ID: "${OIDC_CLIENT_ID:-openslides-client}"
+
+services:
+  # Disable auth service in OIDC mode - won't start unless 'no-oidc' profile is activated
+  auth:
+    profiles:
+      - no-oidc
+
+  # Remove auth dependency from icc and add OIDC config
+  icc:
+    depends_on: !reset
+      - redis
+    environment:
+      <<: *go-oidc-env
+
+  # Remove auth dependency from manage
+  manage:
+    depends_on: !reset []
+
+  # Remove auth dependency from vote and add OIDC config
+  vote:
+    depends_on: !reset
+      - redis
+      - postgres
+    environment:
+      <<: *go-oidc-env
+
+  # Add OIDC config to media service (os_authlib uses different env var names)
+  media:
+    environment:
+      OPENSLIDES_TOKEN_ISSUER: "${OIDC_PROVIDER_URL:-https://localhost:8000/auth/realms/openslides}"
+      OPENSLIDES_KEYCLOAK_URL: "${OIDC_INTERNAL_PROVIDER_URL:-http://keycloak:8080/auth}"
+      OPENSLIDES_AUTH_REALM: "openslides"
+      OPENSLIDES_AUTH_CLIENT_ID: "${OIDC_CLIENT_ID:-openslides-client}"
+
+  # Add OIDC config to autoupdate
+  autoupdate:
+    environment:
+      <<: *go-oidc-env
+
+  # Add OIDC config to projector
+  projector:
+    environment:
+      <<: *go-oidc-env
+
+  # Add OIDC config to search
+  search:
+    environment:
+      <<: *go-oidc-env
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.5
+    command: start-dev --import-realm
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+      - KC_HTTP_RELATIVE_PATH=/auth
+      - KC_HOSTNAME_STRICT=false
+      - KC_PROXY_HEADERS=xforwarded
+      - KC_HEALTH_ENABLED=true
+      - KC_METRICS_ENABLED=true
+      # KC_HOSTNAME as full URL for frontend (browser redirects)
+      # KC_HOSTNAME_BACKCHANNEL_DYNAMIC allows backend requests to use request hostname
+      - KC_HOSTNAME=https://localhost:8000/auth
+      - KC_HOSTNAME_BACKCHANNEL_DYNAMIC=true
+    volumes:
+      - ./keycloak/realm-openslides.json:/opt/keycloak/data/import/realm-openslides.json:ro
+      - ./keycloak/themes/openslides:/opt/keycloak/themes/openslides:ro
+    ports:
+      - "8180:8080"
+    healthcheck:
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/8080;echo -e 'GET /auth/health/ready HTTP/1.1\\r\\nhost: localhost\\r\\nConnection: close\\r\\n\\r\\n' >&3;if [ $? -eq 0 ]; then echo 'Healthcheck Successful';exit 0;else echo 'Healthcheck Failed';exit 1;fi;"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  proxy:
+    environment:
+      # Enable OIDC middleware generation in entrypoint script
+      OIDC_ENABLED: "true"
+      # Enable debug logging for Traefik
+      TRAEFIK_LOG_LEVEL: "DEBUG"
+      # OIDC Plugin Configuration
+      OIDC_SESSION_SECRET: "${OIDC_SESSION_SECRET:-your-32-char-secret-key-here!!!!}"
+      # Use internal Docker hostname - Keycloak reports external URL (localhost:8000) in discovery
+      OIDC_PROVIDER_URL: "${OIDC_PROVIDER_URL:-http://keycloak:8080/auth/realms/openslides}"
+      OIDC_CLIENT_ID: "${OIDC_CLIENT_ID:-openslides-client}"
+      OIDC_CLIENT_SECRET: "${OIDC_CLIENT_SECRET:-openslides-secret}"
+    depends_on:
+      - keycloak
+
+  # Remove auth dependency from backend and add OIDC config
+  backend:
+    depends_on: !reset
+      - postgres
+      - redis
+    environment:
+      # Redis config for backchannel logout
+      MESSAGE_BUS_HOST: redis
+      MESSAGE_BUS_PORT: "6379"
+      # OIDC Configuration via environment variables
+      OIDC_ENABLED: "true"
+      # OIDC_PROVIDER_URL must match the issuer in tokens (Keycloak's external URL)
+      OIDC_PROVIDER_URL: "${OIDC_PROVIDER_URL:-https://localhost:8000/auth/realms/openslides}"
+      OIDC_INTERNAL_PROVIDER_URL: "${OIDC_INTERNAL_PROVIDER_URL:-http://keycloak:8080/auth/realms/openslides}"
+      OIDC_CLIENT_ID: "${OIDC_CLIENT_ID:-openslides-client}"
+      OIDC_CLIENT_SECRET: "${OIDC_CLIENT_SECRET:-openslides-secret}"
+      OIDC_LOGIN_BUTTON_TEXT: "${OIDC_LOGIN_BUTTON_TEXT:-OIDC login}"
+      OIDC_ATTR_MAPPING: "${OIDC_ATTR_MAPPING:-{}}"
+      KEYCLOAK_ADMIN_API_ENABLED: "${KEYCLOAK_ADMIN_API_ENABLED:-true}"
+      KEYCLOAK_ADMIN_API_URL: "${KEYCLOAK_ADMIN_API_URL:-http://keycloak:8080/auth/admin/realms/openslides}"
+      # Admin client credentials for Keycloak Admin API (service account)
+      KEYCLOAK_ADMIN_CLIENT_ID: "${KEYCLOAK_ADMIN_CLIENT_ID:-openslides-admin}"
+      KEYCLOAK_ADMIN_CLIENT_SECRET: "${KEYCLOAK_ADMIN_CLIENT_SECRET:-openslides-admin-secret}"
