@@ -69,7 +69,8 @@ services:
       <<: *go-oidc-env
 
   keycloak:
-    image: quay.io/keycloak/keycloak:26.5
+    build:
+      context: ../../openslides-auth-service/keycloak
     command: start-dev --import-realm
     environment:
       - KEYCLOAK_ADMIN=admin
@@ -85,7 +86,6 @@ services:
       - KC_HOSTNAME_BACKCHANNEL_DYNAMIC=true
     volumes:
       - ./keycloak/realm-openslides.json:/opt/keycloak/data/import/realm-openslides.json:ro
-      - ./keycloak/themes/openslides:/opt/keycloak/themes/openslides:ro
     ports:
       - "8180:8080"
     healthcheck:
