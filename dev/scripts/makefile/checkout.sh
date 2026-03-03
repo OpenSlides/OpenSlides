@@ -13,7 +13,7 @@ CHECKOUT_LATEST=${5:-0}
 
 BRANCH_FILE_PATH=$(realpath ".")
 
-if [ -f  "$BRANCH_FILE_PATH/$BRANCH_FILE" ]; then success "Reading commit info from $BRANCH_FILE"; fi
+if [ -f  "$BRANCH_FILE_PATH/$BRANCH_FILE" ]; then info "Reading commit info from $BRANCH_FILE"; fi
 
 usage() {
   info "\
@@ -112,7 +112,7 @@ checkout() {
         if [ "$GIT_CHANGES" != "" ]
         then
             info "The repository has changes"
-            success "$GIT_CHANGES"
+            info "$GIT_CHANGES"
 
             ask y "Stash them?" </dev/tty && RESULT=$? || true
 
@@ -134,7 +134,7 @@ checkout() {
                 echocmd git remote add "$SOURCE" git@github.com:"$SOURCE"/"$SUBMODULE".git
             else
                 echocmd git remote set-url "$SOURCE" git@github.com:"$SOURCE"/"$SUBMODULE".git
-                success "Remote $SOURCE already exists"
+                info "Remote $SOURCE already exists"
             fi
         else
             SOURCE=$(set_remote "upstream" "origin")
@@ -158,7 +158,7 @@ checkout() {
             then
                 echocmd git switch -t "$SOURCE"/"$BRANCH"
             else
-                success "Branch $BRANCH already exists"
+                info "Branch $BRANCH already exists"
                 echocmd git checkout "$BRANCH"
             fi
 
@@ -296,4 +296,4 @@ info "Checking submodule initialization"
 check_submodules_intialized || error "Submodules not initialized"
 
 echo ""
-success Done
+info Done
