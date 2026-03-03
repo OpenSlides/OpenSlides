@@ -7,6 +7,10 @@
 # At some point we might want to add a configurable --color option.
 if [[ -t 1 ]]; then
   COL_NORMAL="$(tput sgr0)"
+  COL_BOLD="$(tput bold)"
+  COL_INFO="$(tput bold; tput setaf 2)"
+  COL_WARN="$(tput bold; tput setaf 3)"
+  COL_ERR="$(tput bold; tput setaf 1)"
   COL_GRAY="$(tput bold; tput setaf 0)"
   COL_RED="$(tput setaf 1)"
   COL_GREEN="$(tput setaf 2)"
@@ -15,11 +19,19 @@ if [[ -t 1 ]]; then
   COL_CYAN="$(tput setaf 6)"
 else
   COL_NORMAL=""
+  COL_BOLD=
+  COL_INFO=
+  COL_WARN=
+  COL_ERR=
   COL_GRAY=""
+  # shellcheck disable=SC2034
   COL_RED=""
+  # shellcheck disable=SC2034
   COL_YELLOW=""
   COL_BLUE=""
+  # shellcheck disable=SC2034
   COL_GREEN=""
+  # shellcheck disable=SC2034
   COL_CYAN=""
 fi
 
@@ -28,7 +40,7 @@ ask() {
   # o - Echo output instead. Default is returning output as exit code
   if [ "$#" -eq 1 ]; then error "ask requires two parameters" && exit 1; fi
 
-  local CONTROL_STR="$1" DEFAULT_REPLY="0" REPLY_OPT="[Y/n]" REPLY= OUTPUT=
+  local CONTROL_STR="$1" DEFAULT_REPLY="0" REPLY_OPT="[Y/n]" REPLY="" OUTPUT=""
 
   # Read control string
   case "$CONTROL_STR" in
@@ -80,34 +92,33 @@ set_remote() {
 # as if executed directly.
 echocmd() {
   (
-  echo "${COL_BLUE}$ $@${COL_NORMAL}" >&2
+  echo "${COL_BLUE}$ $*${COL_NORMAL}" >&2
   if [ -n "$DEBUG_DRY_RUN" ]; then return 0; fi
   "$@"
   return $?
   )
 }
 
+timestamp() {
+   echo "${COL_GRAY}$(date +%Y-%m-%d)${COL_NORMAL}"
+}
+
 info() {
-  echo "${COL_GRAY}$*${COL_NORMAL}"
+  echo "$(timestamp) ${COL_INFO}INFO ${COL_NORMAL} ${COL_BOLD}$*${COL_NORMAL}"
 }
 
 warn() {
-  echo "${COL_YELLOW}[WARN] ${COL_GRAY}$*${COL_NORMAL}" >&2
+  echo "$(timestamp) ${COL_WARN}WARN ${COL_NORMAL} ${COL_BOLD}$*${COL_NORMAL}" >&2
 }
 
 error() {
-  echo "${COL_RED}[ERROR] ${COL_GRAY}$*${COL_NORMAL}" >&2
+  echo "$(timestamp) ${COL_ERR}ERROR${COL_NORMAL} ${COL_BOLD}$*${COL_NORMAL}" >&2
 }
 
 abort() {
   echo "Aborting."
   exit "$1"
 }
-
-success() {
-    echo "${COL_GREEN}$*${COL_NORMAL}"
-}
-
 
 submodule_do_inner_func() {
   (
@@ -131,6 +142,7 @@ submodule_do_inner_func() {
     )
 }
 
+# shellcheck disable=SC2016
 submodules_do() {
   # p - Activates parallel execution. Default is linear
   # m - Take meta repository into account. Per default meta will be ignored
@@ -171,6 +183,7 @@ check_submodules_intialized() {
     }
 }
 
+# shellcheck disable=SC2016
 check_meta_consistency() {
   local target_rev="$1"
   local target_rev_at_str=
@@ -186,8 +199,8 @@ check_meta_consistency() {
   # Doing a nested loop rather than foreach --recursive as it's easier to get
   # both the path of service submod and the (potential) meta submod in one
   # iteration
-  while read mod; do
-    while read meta_name meta_path; do
+  while read -r mod; do
+    while read -r meta_name meta_path; do
       [[ "$meta_name" == 'openslides-meta' ]] ||
         continue
 
@@ -205,12 +218,13 @@ check_meta_consistency() {
       [[ -z "$meta_sha_last" ]] || [[ "$meta_sha" == "$meta_sha_last" ]] ||
         ret_code=1
       meta_sha_last="$meta_sha"
-    done <<< "$(git -C $mod submodule foreach -q 'echo "$name $sm_path"')"
+    done <<< "$(git -C "$mod" submodule foreach -q 'echo "$name $sm_path"')"
   done <<< "$(git submodule foreach -q 'echo "$sm_path"')"
 
   return $ret_code
 }
 
+# shellcheck disable=SC2016
 check_go_consistency() {
   local target_rev="$1"
   local target_rev_at_str=
@@ -223,7 +237,7 @@ check_go_consistency() {
     target_rev_at_str="(at $target_rev) "
   info "Checking openslides-go consistency $target_rev_at_str..."
 
-  while read mod_name mod_path; do
+  while read -r mod_name mod_path; do
     grep -q openslides-go "$mod_path/go.mod" 2>/dev/null ||
       continue
 
@@ -306,7 +320,7 @@ capsule()
   tput sc
 
   # Run build in background and log output
-  $* > "$LOG" 2>&1 &
+  "$@" > "$LOG" 2>&1 &
 
   PROCESS_ID=$!
 

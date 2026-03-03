@@ -18,7 +18,8 @@ OPT_PULL=
 OPT_LOCAL=
 
 # do not page diff and log outputs
-GIT_PAGER=
+# shellcheck disable=SC2034
+GIT_PAGER=""
 # Make possible to provide go binary as $GO
 GO="${GO:-go}"
 
@@ -60,12 +61,13 @@ EOF
 }
 
 confirm_version() {
+  # shellcheck disable=SC2119
   REMOTE_NAME=$(set_remote)
   STABLE_BRANCH_NAME="$STABLE_BRANCH_PREFIX/$(awk -v FS=. -v OFS=. '{$3="x"  ; print $0}' VERSION)"  # 4.N.M -> 4.N.x
   echocmd git fetch "$REMOTE_NAME" "$STABLE_BRANCH_NAME"
   STABLE_VERSION="$(git show "$REMOTE_NAME/$STABLE_BRANCH_NAME:VERSION")"
   info "Guessing $STAGING_BRANCH_PREFIX version from $STABLE_BRANCH_PREFIX version $STABLE_VERSION found in $REMOTE_NAME."
-  STAGING_VERSION="$(echo $STABLE_VERSION | awk -v FS=. -v OFS=. '{$3=$3+1 ; print $0}')"  # 4.N.M -> 4.N.M+1
+  STAGING_VERSION="$(echo "$STABLE_VERSION" | awk -v FS=. -v OFS=. '{$3=$3+1 ; print $0}')"  # 4.N.M -> 4.N.M+1
   # Give the user the opportunity to adjust the calculated staging version
   read -rp "Please confirm the $STAGING_BRANCH_PREFIX version to be used [${STAGING_VERSION}]: "
   case "$REPLY" in
@@ -85,20 +87,27 @@ check_current_branch() {
 
   # If remote branch exists ensure we are up-to-date with it
   [[ "$(git rev-parse --abbrev-ref HEAD)" == "$BRANCH_NAME" ]] || {
-    warn "$BRANCH_NAME branch not checked out ($(basename $(realpath .)))"
-    ask y "Run \`git checkout $BRANCH_NAME && git submodule update --recursive\` now?" &&
-      echocmd git checkout $BRANCH_NAME && echocmd git submodule update --recursive ||
+    warn "$BRANCH_NAME branch not checked out ($(basename "$(realpath .)"))"
+    
+    if ask y "Run \`git checkout $BRANCH_NAME && git submodule update --recursive\` now?"
+    then
+      echocmd git checkout "$BRANCH_NAME" && echocmd git submodule update --recursive
+    else
       abort 0
+    fi
   }
 
   echocmd git fetch "$REMOTE_NAME" "$BRANCH_NAME"
   if git merge-base --is-ancestor "$BRANCH_NAME" "$REMOTE_NAME/$BRANCH_NAME"; then
-    echocmd git merge --ff-only "$REMOTE_NAME"/$BRANCH_NAME
+    echocmd git merge --ff-only "$REMOTE_NAME"/"$BRANCH_NAME"
   else
     warn "$BRANCH_NAME and $REMOTE_NAME/$BRANCH_NAME have diverged."
-    ask n "Run \`git reset --hard $REMOTE_NAME/$BRANCH_NAME\` now?" &&
-      echocmd git reset --hard "$REMOTE_NAME/$BRANCH_NAME" ||
+    if ask n "Run \`git reset --hard $REMOTE_NAME/$BRANCH_NAME\` now?"
+    then
+      echocmd git reset --hard "$REMOTE_NAME/$BRANCH_NAME"
+    else
       abort 0
+    fi
   fi
 }
 
@@ -108,11 +117,13 @@ check_ssh_remotes() {
   [[ -z "$OPT_LOCAL" ]] ||
     return 0
 
+  # shellcheck disable=SC2119
   REMOTE_NAME=$(set_remote)
   remote_cmd="git remote get-url --push $REMOTE_NAME"
 
   {
     $remote_cmd
+    # shellcheck disable=SC2086
     git submodule foreach --quiet --recursive $remote_cmd
   } | awk '/^https?:\/\// {print "  " $1; x=1} END {exit x}' || {
     warn "The above $REMOTE_NAME remotes seem not to use ssh."
@@ -142,6 +153,7 @@ fetch_all_changes() {
       info "Entering $mod"
       cd "$mod"
 
+      # shellcheck disable=SC2119,2030
       REMOTE_NAME=$(set_remote)
       pull_latest_commit
     )
@@ -166,6 +178,7 @@ push_changes() {
 
   [[ -n "$push_dir" ]] &&
     push_dir_in_str=" (in $push_dir)"
+  # shellcheck disable=SC2031
   info "Attempting to push ${BRANCH_NAME} into ${REMOTE_NAME}${push_dir_in_str}."
   info "Ensure you have proper access rights or use --local to skip pushing."
   ask y "Continue?" ||
@@ -174,18 +187,21 @@ push_changes() {
   # IF push_dir was provided THEN push that specific repo
   [[ -n "$push_dir" ]] && {
     info ""
+    # shellcheck disable=SC2031
     echocmd git -C "$push_dir" push "$REMOTE_NAME" "$BRANCH_NAME"
     return 0
   }
   # ELSE push submods and main repo
   info ""
   info "Submodules first ..."
+  # shellcheck disable=SC2031
   echocmd git submodule foreach --recursive git push "$REMOTE_NAME" "$BRANCH_NAME"
   info ""
   info "Now main repository ..."
+  # shellcheck disable=SC2031
   echocmd git push "$REMOTE_NAME" "$BRANCH_NAME"
 }
-
+  
 add_changes() {
   diff_cmd="git diff --color=always --submodule=log"
   [[ "$($diff_cmd | grep -c .)" -gt 0 ]] || {
@@ -200,8 +216,9 @@ add_changes() {
   ask y "Interactively choose from these?" &&
     for mod in $(git submodule status | awk '$1 ~ "^\+" {print $2}'); do
       (
+        # shellcheck disable=SC2119,2030
         REMOTE_NAME=$(set_remote)
-        local target_sha= mod_sha_old= mod_sha_new= log_cmd= merge_base=
+        local target_sha="" mod_sha_old="" mod_sha_new="" log_cmd=""
         mod_sha_old="$(git diff --submodule=short "$mod" | awk '$1 ~ "^-Subproject" { print $3 }')"
         mod_sha_new="$(git diff --submodule=short "$mod" | awk '$1 ~ "^\+Subproject" { print $3 }')"
         log_cmd="git -C $mod log --oneline --no-decorate $mod_sha_old..$mod_sha_new"
@@ -246,13 +263,15 @@ choose_changes() {
 
   add_changes
 
-  check_meta_consistency && check_go_consistency || {
+  if ! check_meta_consistency || ! check_go_consistency
+  then 
     warn "openslides-meta AND openslides-go have to be consistent across services."
     warn "Please rectify and rerun $ME"
     abort 1
-  }
+  fi
 }
 
+# shellcheck disable=SC2120
 commit_staged_changes() {
   local commit_message="Updated services"
   [[ "$BRANCH_NAME" == main ]] &&
@@ -262,7 +281,7 @@ commit_staged_changes() {
   [[ "$BRANCH_NAME" == $STABLE_BRANCH_PREFIX/* ]] &&
     commit_message="Update $(cat VERSION) ($(date +%Y%m%d))"
   [[ $# == 0 ]] ||
-    commit_message="$@"
+    commit_message="$*"
 
   ask y "Commit on branch $BRANCH_NAME now?" && {
     echocmd git commit --message "$commit_message"
@@ -298,6 +317,7 @@ update_main_branch() {
   commit_staged_changes
 
   info "Commit created."
+  # shellcheck disable=SC2031
   info "Push to your personal remote and create a PR to bring it into $REMOTE_NAME/main."
   info "HINT: For example you can run"
   info "HINT:   git checkout -b update-main-pre-staging-$STAGING_VERSION"
@@ -306,6 +326,7 @@ update_main_branch() {
 }
 
 initial_staging_update() {
+  # shellcheck disable=SC2119,2031
   REMOTE_NAME=$(set_remote)
   echocmd git fetch "$REMOTE_NAME" "main"
 
@@ -355,6 +376,7 @@ make_staging_update() {
   fi
 }
 
+# shellcheck disable=SC2317
 make_hotfix_update() {
   # TODO: Reconsider the hotfix workflow
   error "$ME hotfix is currently not supported. Sorry ..."
@@ -399,6 +421,7 @@ merge_stable_branch() {
   done
 }
 
+# shellcheck disable=SC2016
 merge_stable_branch_meta() {
   local forerunner_path=
 
@@ -409,8 +432,8 @@ merge_stable_branch_meta() {
   # Doing a nested loop rather than foreach --recursive as it's easier to get
   # both the path of service submod and the (potential) meta submod in one
   # iteration
-  while read mod; do
-    while read meta_name meta_fullpath; do
+  while read -r mod; do
+    while read -r meta_name meta_fullpath; do
       [[ "$meta_name" == 'openslides-meta' ]] ||
         continue
 
@@ -425,7 +448,7 @@ merge_stable_branch_meta() {
       fi
 
       info ""
-    done <<< "$(git -C $mod submodule foreach -q 'echo "$name $toplevel/$sm_path"')"
+    done <<< "$(git -C "$mod" submodule foreach -q 'echo "$name $toplevel/$sm_path"')"
   done <<< "$(git submodule foreach -q 'echo "$sm_path"')"
 }
 
@@ -442,6 +465,7 @@ merge_stable_branch_go() {
   info ""
 }
 
+# shellcheck disable=SC2120
 merge_stable_branch_services() {
   local target_sha="$1"
   local diff_cmd=
@@ -463,14 +487,16 @@ merge_stable_branch_services() {
     # Add previously stable-merged and pushed go
     if grep -q openslides-go "$service_mod/go.mod" 2>/dev/null; then
       go_url="$(awk '$1 ~ "/openslides-go" {print $1}' "$service_mod/go.mod")"
-      go_sha="$(git -C lib/openslides-go rev-parse $BRANCH_NAME)"
+      go_sha="$(git -C lib/openslides-go rev-parse "$BRANCH_NAME")"
       (
         info "Adding stable go for $service_mod"
         cd "$service_mod"
+        # shellcheck disable=SC2086
         echocmd $GO get "$go_url@$go_sha"
+        # shellcheck disable=SC2086
         echocmd $GO mod tidy
       )
-      echocmd git -C $service_mod add go.mod go.sum
+      echocmd git -C "$service_mod" add go.mod go.sum
     fi
 
     # Commit it all
@@ -501,6 +527,7 @@ Continue?" ||
 make_stable_update() {
   local log_cmd=
 
+  # shellcheck disable=SC2119
   REMOTE_NAME=$(set_remote)
   check_current_branch
 
@@ -520,13 +547,13 @@ make_stable_update() {
   ask y "Including these $STAGING_BRANCH_PREFIX updates for the new $STABLE_BRANCH_PREFIX update. Continue?" ||
     abort 0
 
-  check_meta_consistency "$REMOTE_NAME/$STAGING_BRANCH_NAME" &&
-    check_go_consistency "$REMOTE_NAME/$STAGING_BRANCH_NAME" || {
+  if ! check_meta_consistency "$REMOTE_NAME/$STAGING_BRANCH_NAME" || ! check_go_consistency "$REMOTE_NAME/$STAGING_BRANCH_NAME"
+  then
       error "openslides-meta OR openslides-go is not consistent at $target_sha."
       error "This is not acceptable for a $STABLE_BRANCH_PREFIX update."
       error "Please fix this in a new $STAGING_BRANCH_PREFIX update before trying again."
       abort 1
-  }
+  fi
 
   info 'First, the main repo is merged (but not yet committed) to ensure that all tools and'
   info 'configurations for the releases in the submodules are up to date.'
@@ -546,32 +573,34 @@ make_stable_update() {
 
   commit_staged_changes
 
-  check_meta_consistency && check_go_consistency || {
-    error "Apparently merging $BRANCH_NAME went wrong and eit openslides-meta OR"
+  if ! check_meta_consistency || ! check_go_consistency 
+  then
+    error "Apparently merging $BRANCH_NAME went wrong and either openslides-meta OR"
     error "openslides-go is not consistent anymore."
     error "You probably need to investigate what did go wrong."
     abort 1
-  }
+  fi
 
   push_changes
   keep_stable_house
 }
 
+# shellcheck disable=SC2016
 staging_log() {
-  if ! git ls-remote --exit-code --heads $REMOTE_NAME $STAGING_BRANCH_NAME; then
+  if ! git ls-remote --exit-code --heads "$REMOTE_NAME" "$STAGING_BRANCH_NAME"; then
     info "$STAGING_BRANCH_PREFIX Branch not found, comparing with main instead"
     printf "Fetches all relevant data"
-    git fetch -q $REMOTE_NAME main
+    git fetch -q "$REMOTE_NAME" main
     printf "."
     git submodule --quiet foreach "git fetch --quiet $REMOTE_NAME $STABLE_BRANCH_NAME; printf '.'"
     git submodule --quiet foreach "git fetch --quiet $REMOTE_NAME main; printf '.'"
     info ""
     info ""
-    git log --graph --oneline $REMOTE_NAME/$STABLE_BRANCH_NAME..$REMOTE_NAME/main
+    git log --graph --oneline "${REMOTE_NAME}/${STABLE_BRANCH_NAME}..${REMOTE_NAME}"/main
     git submodule -q foreach 'echo $name; git --no-pager log --graph --oneline $REMOTE_NAME/$STABLE_BRANCH_NAME..$REMOTE_NAME/main'
   else
-    git fetch -q $REMOTE_NAME $STAGING_BRANCH_NAME
-    git log --graph --oneline -U0 --submodule $REMOTE_NAME/$STABLE_BRANCH_NAME..$REMOTE_NAME/$STAGING_BRANCH_NAME | \
+    git fetch -q "$REMOTE_NAME" "$STAGING_BRANCH_NAME"
+    git log --graph --oneline -U0 --submodule "${REMOTE_NAME}/${STABLE_BRANCH_NAME}..${REMOTE_NAME}/${STAGING_BRANCH_NAME}" | \
       awk -v version="$STAGING_VERSION" '
         /^\*.*Staging update [0-9]{8}/ { printf("\n# %s-staging-%s-%s\n", version, $NF, substr($2, 0, 7)) }
         /^\*/ { printf("  %s\n",$0) }
@@ -588,6 +617,7 @@ command -v awk > /dev/null || {
   error "'awk' not installed!"
   exit 1
 }
+# shellcheck disable=SC2086
 command -v $GO > /dev/null || {
   error "'$GO' not installed!"
   exit 1
@@ -595,7 +625,7 @@ command -v $GO > /dev/null || {
 
 shortopt='phl'
 longopt='pull,help,local'
-ARGS=$(getopt -o "$shortopt" -l "$longopt" -n "$ME" -- $@)
+ARGS=$(getopt -o "$shortopt" -l "$longopt" -n "$ME" -- "$@")
 # reset $@ to args array sorted and validated by getopt
 eval set -- "$ARGS"
 unset ARGS
@@ -652,6 +682,7 @@ for arg; do
       confirm_version
       BRANCH_NAME=$STABLE_BRANCH_NAME
       make_hotfix_update
+      # shellcheck disable=SC2317
       shift 1
       ;;
     staging-log)
