@@ -37,27 +37,30 @@ Flags:
                            Example: Backend-Service is locally checked-out to 'feature/xyz'. Its dev compose setup pulls 'vote' from github by referencing
                            'openslides-vote-service.git#main'. If 'compose-local-branch' is set to true, the path 'openslides-vote-service.git#feature/xyz' will be used
                            instead.
+    no-log-prefix        : When printing container logs, the associated container name is omitted
 
 Available dev functions:
-    dev              : Builds and starts development images
-    dev-help         : Print help
-    dev-detached     : Builds and starts development images with detach flag. This causes started containers to run in the background
+    dev              : Builds and starts development images.
+    dev-help         : Print help.
+    dev-detached     : Builds and starts development images with detach flag. This causes started containers to run in the background.
     dev-attached     : Builds and starts development images; enters shell of started image.
                           If a docker compose file is declared, the \$ATTACH_CONTAINER parameter determines
                           the specific container id you will enter (default value is equal the service name)
-    dev-standalone   : Builds and starts development images; closes them immediately afterwards
-    dev-restart      : Stops any currently running images or docker compose setup; restarts it immediately afterwards in detached mode.
-    dev-stop         : Stops any currently running images or docker compose setup associated with the service
-    dev-clean        : Stops any currently running images or docker compose setup associated with the service. Also removes (orphaned) volumes
+    dev-standalone   : Builds and starts development images; closes them immediately afterwards.
+    dev-restart      : Restarts docker compose setup containers.
+    dev-full-restart : Stops any currently running containers or docker compose setup; restarts it immediately afterwards.
+    dev-stop         : Stops any currently running containers or docker compose setup associated with the service.
+    dev-clean        : Stops any currently running containers or docker compose setup associated with the service. Also removes (orphaned) volumes.
     dev-exec         : Executes command inside container.
                           Use \$EXEC_COMMAND to declare command that should be executed.
                           If using a docker compose setup, also declare which container the command should be executed in.
                           Example: 'dev-exec EXEC_COMMAND=\"service-name echo hello\"' will run \"echo hello\" inside the container named \"service-name\"
     dev-enter        : Enters shell of started container.
                           If a docker compose file is declared, the \$ATTACH_CONTAINER parameter determines
-                          the specific container id you will enter (default value is equal the service name)
-    dev-build        : Builds the development image
+                          the specific container id you will enter (default value is equal the service name).
+    dev-build        : Builds the development image.
     dev-log          : Prints log output of given container.
+    dev-log-attach   : Prints log output of given container and attaches console to the containers log output feed.
     dev-docker-reset : Debugging function. Closes and removes ALL containers. Optionally deletes ALL images as well. Optionally prunes your docker system.
     "
 }
@@ -166,7 +169,7 @@ run()
         if [ -n "$NO_CACHE" ]; then BUILD_ARGS="--build --force-recreate"; fi
 
         # Compose
-        echocmd eval "$DC up ${BUILD_ARGS} ${FLAGS} ${VOLUMES} ${RUN_ARGS}"
+        echocmd eval "$DC up ${LOG_PREFIX} ${BUILD_ARGS} ${FLAGS} ${VOLUMES} ${RUN_ARGS}"
     else
         # Already active check
         # Either stop existing containers and continue with run() or use existing containers from now on and exit run() early
@@ -184,6 +187,21 @@ run()
 
         # Single Container
         echocmd docker run --name "$CONTAINER_NAME"  "$FLAGS" "$VOLUMES" "$RUN_ARGS" "$IMAGE_TAG" "$SHELL"
+    fi
+}
+
+restart()
+{
+    local SHELL=$1
+    info "Restarting container(s)"
+
+    if [ -n "$COMPOSE_FILE" ]
+    then
+        # Compose
+        echocmd eval "$DC restart ${VOLUMES} ${RUN_ARGS}"
+    else
+        # Single Container
+        echocmd docker restart --name "$CONTAINER_NAME" "$VOLUMES" "$RUN_ARGS" "$IMAGE_TAG" "$SHELL"
     fi
 }
 
@@ -248,24 +266,33 @@ stop()
 
 log()
 {
+    local CONNECT=$1
+    if [ -n "$CONNECT" ]; then CONNECT_FLAG="-f"; fi
+
     local TARGET_CONTAINER=$LOG_CONTAINER
     if [ -n "$COMPOSE_FILE" ]
     then
         if [ -z "$SERVICE" ] && [ -z "$TARGET_CONTAINER" ]
         then
             # Main repository case, use input prompt to determine container
-            TARGET_CONTAINER=$(input "Which service container should be logged?")
-            { [ -z "$TARGET_CONTAINER" ] && \info "No service container declared, exiting" && return; }
+            TARGET_CONTAINER=$(input "Enter container name if you want logs of a specific container. Leave empty to receive logs from every container")
+
+            if [ -z "$TARGET_CONTAINER" ]
+            then
+                # No container specified. Log whole compose file
+                echocmd docker compose -f "$COMPOSE_FILE" logs ${LOG_PREFIX} ${CONNECT_FLAG}
+                exit 0
+            fi
         elif [ -n "$SERVICE" ] && [ -z "$TARGET_CONTAINER" ]
         then
             # Submodule case
             info "No container was specified; Service container will be taken as default" && TARGET_CONTAINER="$SERVICE"
         fi
 
-        echocmd docker compose -f "$COMPOSE_FILE" logs "$TARGET_CONTAINER"
+        echocmd docker compose -f "$COMPOSE_FILE" logs "${TARGET_CONTAINER}" --no-log-prefix ${CONNECT_FLAG}
     else
         # Single Container
-        echocmd docker container logs "$CONTAINER_NAME"
+        echocmd docker container logs "${TARGET_CONTAINER}" --no-log-prefix ${CONNECT_FLAG}
     fi
 
 }
@@ -283,10 +310,11 @@ TEMP_SERVICE=$SERVICE
 SERVICE=""
 for CMD in $TEMP_SERVICE; do
     case "$CMD" in
-        "no-cache")     NO_CACHE=true ;;
-        "capsule")      CAPSULE=true ;;
+        "no-cache")      NO_CACHE=true ;;
+        "capsule")       CAPSULE=true ;;
         "compose-local-branch") USE_LOCAL_BRANCH_FOR_COMPOSE=true ;;
-        *)              SERVICE="$CMD" ;;
+        "no-log-prefix") LOG_PREFIX="--no-log-prefix" ;;
+        *)               SERVICE="$CMD" ;;
     esac
 done
 
@@ -323,7 +351,8 @@ case "$SERVICE" in
                     USED_SHELL="bash" &&
                     if [ "$FUNCTION" = "attached" ]; then FUNCTION="media-attached"; fi ;; # Temporary fix for wait-for-it situation
     "proxy")        SERVICE_FOLDER="./openslides-proxy" ;;
-    "search")       SERVICE_FOLDER="./openslides-search-service" ;;
+    "search")       SERVICE_FOLDER="./openslides-search-service" &&
+                    COMPOSE_FILE="$SERVICE_FOLDER/dev/docker-compose.dev.yml";;
     "vote")         SERVICE_FOLDER="./openslides-vote-service" ;;
     "")             COMPOSE_FILE="dev/docker/docker-compose.dev.yml" ;;
     *)              ;;
@@ -359,13 +388,15 @@ case "$FUNCTION" in
     "standalone")       build && run && stop ;;
     "detached")         build && run "-d" && info "Containers started" ;;
     "attached")         build && run "-d" && attach ;;
-    "restart")          stop && build && run "-d" ;;
+    "full-restart")     stop && build && run ;;
+    "restart")          restart ;;
     "stop")             stop ;;
     "clean")            stop true ;;
     "exec")             exec_func ;;
     "enter")            attach ;;
     "build")            build ;;
     "log")              log ;;
+    "log-attach")       log 1 ;;
     "docker-reset")     docker_reset ;;
     "media-attached")   build && run "-d" && EXEC_COMMAND='-T tests wait-for-it "media:9006"' && exec_func && attach "tests" && stop ;; # Special case for media (for now)
     "")                 build && run ;;
