@@ -77,12 +77,6 @@ checkout-help:
 
 # Make-release commands
 
-services-to-main:
-	$(SCRIPT_PATH)/make-update.sh fetch-all-changes $(ARGS)
-
-services-to-main-pull:
-	$(SCRIPT_PATH)/make-update.sh fetch-all-changes --pull $(ARGS)
-
 staging-update:
 	$(SCRIPT_PATH)/make-update.sh staging $(ARGS)
 
@@ -138,6 +132,16 @@ run-dev-detached:
 stop-dev:
 	@make warning-deprecation-alternative ALTERNATIVE="dev-stop"
 	$(DC_DEV) down --volumes --remove-orphans
+
+# Make-release commands
+
+services-to-main:
+	@make warning-deprecation-alternative ALTERNATIVE="checkout"
+	@make checkout
+
+services-to-main-pull:
+	@make warning-deprecation-alternative ALTERNATIVE="checkout-pull"
+	@make checkout-pull
 
 # Run the tests of all services
 run-service-tests:
