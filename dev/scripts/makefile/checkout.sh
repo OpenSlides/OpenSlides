@@ -10,6 +10,7 @@ BRANCH_NAME=${2:-"main"}
 BRANCH_FILE=${3:-""}
 OPT_PULL=${4:-0}
 CHECKOUT_LATEST=${5:-0}
+ASK_AUTO_DO_DEFAULT=${6:-0}
 
 BRANCH_FILE_PATH=$(realpath ".")
 
@@ -251,6 +252,10 @@ while true; do
             ;;
         -g|--go_update)
             GO_AUTO_CHECKOUT=1
+            shift
+            ;;
+        -d|--dont_ask)
+            ASK_AUTO_DO_DEFAULT=1
             shift
             ;;
         -h|--help)
