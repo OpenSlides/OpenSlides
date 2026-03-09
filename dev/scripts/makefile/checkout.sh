@@ -297,7 +297,7 @@ while read -r toplevel sm_path name; do
 done <<< "$(git submodule foreach --recursive -q 'echo "$toplevel $sm_path $name"')"
 wait
 
-# Setup localprod
+# Localprod
 inform_about_localprod
 
 # Main
