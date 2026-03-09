@@ -64,24 +64,21 @@ localprod-log:
 	@if [ ! -f "dev/localprod/docker-compose.yml" ]; then echo "No docker-compose.yml exists in dev/localprod. Have you run setup.sh yet?" && exit 1; fi
 	docker compose -f dev/localprod/docker-compose.yml logs $(ARGS)
 
+localprod-build-local-manage:
+	@bash $(MAKEFILE_PATH)/localprod-with-local-manage.sh
+
 # Checkout
 
-checkout:
-	@bash $(MAKEFILE_PATH)/checkout.sh "${REMOTE}" "$(BRANCH)" "$(FILE)" "$(PULL)" "$(LATEST)"
+checkout services-to-main:
+	@bash $(MAKEFILE_PATH)/checkout.sh "${REMOTE}" "$(BRANCH)" "$(FILE)" "$(PULL)" "$(LATEST)" "$(FALLBACK)"
 
-checkout-pull:
-	@bash $(MAKEFILE_PATH)/checkout.sh "${REMOTE}" "$(BRANCH)" "$(FILE)" "true" "$(LATEST)"
+checkout-pull services-to-main-pull:
+	@bash $(MAKEFILE_PATH)/checkout.sh "${REMOTE}" "$(BRANCH)" "$(FILE)" "true" "$(LATEST)" "$(FALLBACK)"
 
 checkout-help:
 	@bash $(MAKEFILE_PATH)/checkout.sh -h
 
 # Make-release commands
-
-services-to-main:
-	$(SCRIPT_PATH)/make-update.sh fetch-all-changes $(ARGS)
-
-services-to-main-pull:
-	$(SCRIPT_PATH)/make-update.sh fetch-all-changes --pull $(ARGS)
 
 staging-update:
 	$(SCRIPT_PATH)/make-update.sh staging $(ARGS)
