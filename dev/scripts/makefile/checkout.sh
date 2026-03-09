@@ -269,6 +269,7 @@ while true; do
 done
 
 # Submodule init check
+info "Checking submodule initialization"
 check_submodules_intialized || error "Submodules not initialized"
 
 # Checkout latest branches
