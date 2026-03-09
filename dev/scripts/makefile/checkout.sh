@@ -104,6 +104,7 @@ checkout() {
 
         if [ -z "$SUBMODULE" ]; then SUBMODULE="OpenSlides"; fi
 
+        info ""
         info "Fetch & checkout for ${SUBMODULE} "
 
         # Check for changes and stash them if wanted.
@@ -220,22 +221,13 @@ checkout_main()
     )
 }
 
-setup_localprod()
+inform_about_localprod()
 {
     (
-        ask y "Setup localprod as well? WARNING: This will overwrite current localprod setup" || exit 0
-
-        # Switching to manage and building openslides exe
-        cd "$(dirname "$0")"/../../../openslides-manage-service || exit 1
-        make openslides
-
-        # Moving openslides to localprod directory
-        mv ./openslides ../dev/localprod/openslides
-        cd ../dev/localprod || exit 1
-
-        # Setup and generate localprod docker compose
-        ./openslides setup .
-        ./openslides config --config config.yml .
+        info "Localprod may be out of sync with the checked out commits. Consider rebuilding it:"
+        info "make localprod-build"
+        info "If you want to build localprod using the locally checked out openslides-manage service instead of main, use:"
+        info "make localprod-build-local-manage"
     )
 }
 
@@ -276,6 +268,9 @@ while true; do
     esac
 done
 
+# Submodule init check
+check_submodules_intialized || error "Submodules not initialized"
+
 # Checkout latest branches
 
 while read -r toplevel sm_path name; do
@@ -302,7 +297,7 @@ done <<< "$(git submodule foreach --recursive -q 'echo "$toplevel $sm_path $name
 wait
 
 # Setup localprod
-setup_localprod
+inform_about_localprod
 
 # Main
 checkout_main

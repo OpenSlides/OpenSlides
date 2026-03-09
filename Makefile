@@ -64,12 +64,15 @@ localprod-log:
 	@if [ ! -f "dev/localprod/docker-compose.yml" ]; then echo "No docker-compose.yml exists in dev/localprod. Have you run setup.sh yet?" && exit 1; fi
 	docker compose -f dev/localprod/docker-compose.yml logs $(ARGS)
 
+localprod-build-local-manage:
+	@bash $(MAKEFILE_PATH)/localprod-with-local-manage.sh
+
 # Checkout
 
-checkout:
+checkout services-to-main:
 	@bash $(MAKEFILE_PATH)/checkout.sh "${REMOTE}" "$(BRANCH)" "$(FILE)" "$(PULL)" "$(LATEST)"
 
-checkout-pull:
+checkout-pull services-to-main-pull:
 	@bash $(MAKEFILE_PATH)/checkout.sh "${REMOTE}" "$(BRANCH)" "$(FILE)" "true" "$(LATEST)"
 
 checkout-help:
@@ -132,16 +135,6 @@ run-dev-detached:
 stop-dev:
 	@make warning-deprecation-alternative ALTERNATIVE="dev-stop"
 	$(DC_DEV) down --volumes --remove-orphans
-
-# Make-release commands
-
-services-to-main:
-	@make warning-deprecation-alternative ALTERNATIVE="checkout"
-	@make checkout
-
-services-to-main-pull:
-	@make warning-deprecation-alternative ALTERNATIVE="checkout-pull"
-	@make checkout-pull
 
 # Run the tests of all services
 run-service-tests:
