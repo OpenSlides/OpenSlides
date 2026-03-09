@@ -10,7 +10,7 @@ BRANCH_NAME=${2:-"main"}
 BRANCH_FILE=${3:-""}
 OPT_PULL=${4:-0}
 CHECKOUT_LATEST=${5:-0}
-ASK_AUTO_DO_DEFAULT=${6:-0}
+AUTO_MAIN_FALLBACK=${6:-0}
 
 BRANCH_FILE_PATH=$(realpath ".")
 
@@ -152,6 +152,11 @@ checkout() {
         # If branch couldn't be found, user has the option to either checkout main branch instead or skip checkout for this service
         if [ -n "$BRANCH_NOT_FOUND" ]
         then
+            if [ "$AUTO_MAIN_FALLBACK" == 1 ]
+            then
+                info "Automatically skipping checkout for $SUBMODULE, because no branch found named $SOURCE/$BRANCH and automatic main fallback is active"
+                eixt 0
+            fi
             local CHECKOUT_MAIN
             CHECKOUT_MAIN=$(ask yo "$SUBMODULE does not have a branch named $SOURCE/$BRANCH. Type y to checkout main instead. Type n to remain in current branch." </dev/tty)
 
@@ -254,8 +259,8 @@ while true; do
             GO_AUTO_CHECKOUT=1
             shift
             ;;
-        -d|--dont_ask)
-            ASK_AUTO_DO_DEFAULT=1
+        -d|--auto_fallback)
+            AUTO_MAIN_FALLBACK=1
             shift
             ;;
         -h|--help)
