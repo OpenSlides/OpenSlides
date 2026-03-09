@@ -3,8 +3,6 @@ x-oidc-environment: &oidc-environment
   OIDC_ENABLED: "true"
   OIDC_PROVIDER_URL: https://localhost:8000/auth/realms/openslides
   OIDC_INTERNAL_PROVIDER_URL: http://keycloak:8080/auth/realms/openslides
-  OIDC_ISSUER_URL: https://localhost:8000/auth/realms/openslides
-  OIDC_INTERNAL_ISSUER_URL: http://keycloak:8080/auth/realms/openslides
   OIDC_CLIENT_ID: openslides-client
   OIDC_CLIENT_SECRET: openslides-secret
 
@@ -68,5 +66,4 @@ services:
 
   media:
     environment:
-      OPENID_CONNECT_ISSUER: http://keycloak:8080/auth/realms/openslides
-      OPENID_CONNECT_CLIENT_ID: openslides-client
+      <<: *oidc-environment
