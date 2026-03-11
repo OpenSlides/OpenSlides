@@ -19,7 +19,7 @@ build build-prod:
 $(.SERVICE_TARGETS):
 	@echo ""
 
-.FLAGS := no-cache capsule compose-local-branch no-log-prefix
+.FLAGS := no-cache capsule compose-local-branch oidc no-log-prefix
 
 $(.FLAGS):
 	@echo ""
