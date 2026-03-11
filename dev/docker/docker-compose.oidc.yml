@@ -103,8 +103,10 @@ services:
       TRAEFIK_LOG_LEVEL: "DEBUG"
       # OIDC Plugin Configuration
       OIDC_SESSION_SECRET: "${OIDC_SESSION_SECRET:-your-32-char-secret-key-here!!!!}"
-      # Use internal Docker hostname - Keycloak reports external URL (localhost:8000) in discovery
-      OIDC_PROVIDER_URL: "${OIDC_PROVIDER_URL:-http://keycloak:8080/auth/realms/openslides}"
+      # External URL for issuer validation (must match token's iss claim)
+      OIDC_PROVIDER_URL: "${OIDC_PROVIDER_URL:-https://localhost:8000/auth/realms/openslides}"
+      # Internal URL for OIDC discovery (Docker network access)
+      OIDC_INTERNAL_PROVIDER_URL: "${OIDC_INTERNAL_PROVIDER_URL:-http://keycloak:8080/auth/realms/openslides}"
       OIDC_CLIENT_ID: "${OIDC_CLIENT_ID:-openslides-client}"
       OIDC_CLIENT_SECRET: "${OIDC_CLIENT_SECRET:-openslides-secret}"
     depends_on:
