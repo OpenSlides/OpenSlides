@@ -225,7 +225,8 @@ add_changes() {
 }
 
 choose_changes() {
-  ask y "Fetch all submodules $BRANCH_NAME changes now?" && bash ./dev/scripts/makefile/checkout.sh "" "" "" "true" ""
+  ask y "Fetch all submodules $BRANCH_NAME changes now?" && 
+    bash ./dev/scripts/makefile/checkout.sh "" "" "" "true" ""
 
   add_changes
 

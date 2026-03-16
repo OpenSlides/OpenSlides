@@ -155,7 +155,7 @@ checkout() {
             if [ "$AUTO_MAIN_FALLBACK" == 1 ]
             then
                 info "Automatically skipping checkout for $SUBMODULE, because no branch found named $SOURCE/$BRANCH and automatic main fallback is active"
-                eixt 0
+                exit 0
             fi
             local CHECKOUT_MAIN
             CHECKOUT_MAIN=$(ask yo "$SUBMODULE does not have a branch named $SOURCE/$BRANCH. Type y to checkout main instead. Type n to remain in current branch." </dev/tty)
