@@ -189,10 +189,13 @@ To check the current status and start migrations if necessary, run:
 
 ### Incompatibilities
 
-- 4.0.8
-  - The environment variables `DATASTORE_DATABASE_*` were renamed to
-    `DATABASE_*`. If custom values were used, this must be reflected in config
-    files.
+- 4.3.0
+  - Underlying data storing mechanism is changed fundamentally.
+    - Data migration performs significant irreversible changes.
+    - Manual intervention is required. See [info document](UPDATE_TO_4.3.md).
+  - PostgreSQL major is updated from 15 to 17. Appropriate steps to fulfill the
+    implicit requirements (same as for 4.1.0) are included in [info
+    document](UPDATE_TO_4.3.md).
 - 4.1.0
   - PostgreSQL major is updated from 11 to 15. This means postgres will
     complain about the data being incompatible
@@ -224,6 +227,10 @@ To check the current status and start migrations if necessary, run:
     https://github.com/tianon/docker-postgres-upgrade) aiming at providing less
     downtime but these are not production ready and should only be pursued if
     you know specifically what you are doing.
+- 4.0.8
+  - The environment variables `DATASTORE_DATABASE_*` were renamed to
+    `DATABASE_*`. If custom values were used, this must be reflected in config
+    files.
 
 
 ## SSL encryption
