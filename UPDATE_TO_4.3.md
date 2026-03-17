@@ -37,9 +37,10 @@ the same.
 
 When upgrading to OpenSlides 4.3.0 all data contained in the `models` table
 used by the obsolete _datastore_ is migrated into the new tables defined by
-[`schema_relational.sql`](dev/sql/schema_relational.sql) (which is generated
-from the [`collections`](collections/)) definitions. This is done by migration
-`100`.
+[`schema_relational.sql`](https://github.com/OpenSlides/openslides-meta/blob/main/dev/sql/schema_relational.sql)
+(which is generated from the
+[`collections`](https://github.com/OpenSlides/openslides-meta/tree/main/collections))
+definitions. This is done by migration `100`.
 
 
 ## How to upgrade safely
