@@ -12,7 +12,7 @@ x-default-environment: &default-environment
 
 services:
   postgres:
-    image: postgres:15
+    image: postgres:17
     environment:
       << : *default-environment
       POSTGRES_USER: openslides
@@ -65,7 +65,7 @@ services:
       - ../../openslides-backend/tests:/app/tests
       - ../../openslides-backend/cli:/app/cli
       - ../../openslides-backend/data:/app/data
-      - ../../openslides-backend/meta:/app/meta      
+      - ../../openslides-backend/meta:/app/meta
       - ../../openslides-backend/requirements:/app/requirements
       - ../../openslides-backend/scripts:/app/scripts
 
