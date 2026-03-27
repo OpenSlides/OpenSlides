@@ -40,7 +40,7 @@ ask() {
   shift 1
   local QUERY="$*"
 
-  if [ "$ASK_AUTO_DO_DEFAULT" == 0 ]
+  if [ -z "$ASK_AUTO_DO_DEFAULT" ]
   then
     read -rp $'\n'"$QUERY $REPLY_OPT: "
   fi
