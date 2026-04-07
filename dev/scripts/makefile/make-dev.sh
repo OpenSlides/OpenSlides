@@ -85,9 +85,9 @@ build_capsuled()
         error "Building image failed: $RESPONSE"
     elif [ "$BUILD_TIME" -le 3 ]
     then
-        success "Image found in cache"
+        info "Image found in cache"
     else
-        success "Build image successfully"
+        info "Build image successfully"
     fi
 }
 
