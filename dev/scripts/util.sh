@@ -42,7 +42,11 @@ ask() {
   shift 1
   local QUERY="$*"
 
-  read -rp $'\n'"$QUERY $REPLY_OPT: "
+  if [ -z "$ASK_AUTO_DO_DEFAULT" ]
+  then
+    read -rp $'\n'"$QUERY $REPLY_OPT: "
+  fi
+
   case "$REPLY" in
     Y|y|Yes|yes|YES) OUTPUT=0;;
     "") OUTPUT="$DEFAULT_REPLY" ;;
