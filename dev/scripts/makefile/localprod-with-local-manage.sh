@@ -21,4 +21,4 @@ info  "Executing openslides setup"
 "$OS_LOCALPROD_PATH"/openslides setup "$OS_LOCALPROD_PATH"
 "$OS_LOCALPROD_PATH"/openslides config --config "$OS_LOCALPROD_PATH/config.yml" "$OS_LOCALPROD_PATH"
 
-success "Done"
+info "Done"
