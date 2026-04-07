@@ -88,7 +88,7 @@ check_current_branch() {
   # If remote branch exists ensure we are up-to-date with it
   [[ "$(git rev-parse --abbrev-ref HEAD)" == "$BRANCH_NAME" ]] || {
     warn "$BRANCH_NAME branch not checked out ($(basename "$(realpath .)"))"
-    
+
     if ask y "Run \`git checkout $BRANCH_NAME && git submodule update --recursive\` now?"
     then
       echocmd git checkout "$BRANCH_NAME" && echocmd git submodule update --recursive
@@ -146,23 +146,6 @@ pull_latest_commit() {
   fi
 }
 
-fetch_all_changes() {
-  for mod in $(git submodule status | awk '{print $2}'); do
-    (
-      info ""
-      info "Entering $mod"
-      cd "$mod"
-
-      # shellcheck disable=SC2119,2030
-      REMOTE_NAME=$(set_remote)
-      pull_latest_commit
-    )
-  done
-
-  info ""
-  info "Successfully updated all submodules to latest commit."
-}
-
 push_changes() {
   local push_dir="$1"
   local push_dir_in_str=
@@ -201,7 +184,7 @@ push_changes() {
   # shellcheck disable=SC2031
   echocmd git push "$REMOTE_NAME" "$BRANCH_NAME"
 }
-  
+
 add_changes() {
   diff_cmd="git diff --color=always --submodule=log"
   [[ "$($diff_cmd | grep -c .)" -gt 0 ]] || {
@@ -214,13 +197,13 @@ add_changes() {
   $diff_cmd
   info '--------------------------------------------------------------------------------'
   ask y "Interactively choose from these?" &&
-    for mod in $(git submodule status | awk '$1 ~ "^\+" {print $2}'); do
+    for mod in $(git submodule status | awk '$1 ~ "^\\+" {print $2}'); do
       (
         # shellcheck disable=SC2119,2030
         REMOTE_NAME=$(set_remote)
         local target_sha="" mod_sha_old="" mod_sha_new="" log_cmd=""
         mod_sha_old="$(git diff --submodule=short "$mod" | awk '$1 ~ "^-Subproject" { print $3 }')"
-        mod_sha_new="$(git diff --submodule=short "$mod" | awk '$1 ~ "^\+Subproject" { print $3 }')"
+        mod_sha_new="$(git diff --submodule=short "$mod" | awk '$1 ~ "^\\+Subproject" { print $3 }')"
         log_cmd="git -C $mod log --oneline --no-decorate $mod_sha_old..$mod_sha_new"
         target_sha="$($log_cmd | awk 'NR==1 { print $1 }' )"
 
@@ -259,12 +242,12 @@ add_changes() {
 
 choose_changes() {
   ask y "Fetch all submodules $BRANCH_NAME changes now?" &&
-    OPT_PULL=1 fetch_all_changes
+    bash ./dev/scripts/makefile/checkout.sh "" "" "" "true" ""
 
   add_changes
 
   if ! check_meta_consistency || ! check_go_consistency
-  then 
+  then
     warn "openslides-meta AND openslides-go have to be consistent across services."
     warn "Please rectify and rerun $ME"
     abort 1
@@ -573,7 +556,7 @@ make_stable_update() {
 
   commit_staged_changes
 
-  if ! check_meta_consistency || ! check_go_consistency 
+  if ! check_meta_consistency || ! check_go_consistency
   then
     error "Apparently merging $BRANCH_NAME went wrong and either openslides-meta OR"
     error "openslides-go is not consistent anymore."
@@ -655,15 +638,6 @@ check_submodules_intialized
 
 for arg; do
   case $arg in
-    fetch-all-changes)
-      BRANCH_NAME=main
-      fetch_all_changes
-      check_meta_consistency ||
-        warn "openslides-meta is not consistent."
-      check_go_consistency ||
-        warn "openslides-go is not consistent."
-      shift 1
-      ;;
     staging)
       check_ssh_remotes
       confirm_version

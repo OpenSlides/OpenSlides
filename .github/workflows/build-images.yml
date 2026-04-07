@@ -15,8 +15,6 @@ jobs:
           - name: proxy
           - name: client
           - name: backend
-          - name: datastore-reader
-          - name: datastore-writer
           - name: autoupdate
           - name: auth
           - name: search

@@ -208,13 +208,17 @@ in all submodules):
 
 This command can also be called from the makefile using:
 
-    $ make services-to-main
+    $ make checkout
 
 When changing the branch in the main repo (this one), the submodules do not
 automatically get changed. This command checks out all submodules to the given
 commits in the main repo:
 
     $ git submodule update
+
+The checkout maketarget also has various optional steps such as building localprod and checking out the newest main version. For a full list of features and options, call:
+
+$ make checkout-help
 
 ## Working with the backend
 

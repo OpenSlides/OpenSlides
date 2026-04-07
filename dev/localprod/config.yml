@@ -4,6 +4,14 @@ defaults:
   tag: prod
 
 services:
+  # Datastore entries are a dirty fix, because manage tool still has it in compose template.
+  # Please remove as soon as openslides-manage-service is removed 
+  datastoreReader:
+    containerRegistry: ghcr.io/openslides/openslides
+    tag: latest
+  datastoreWriter:
+    containerRegistry: ghcr.io/openslides/openslides
+    tag: latest
   proxy:
     additionalContent:
       build: ../../openslides-proxy/
@@ -21,26 +29,6 @@ services:
       build: ../../openslides-backend/
     environment:
       OPENSLIDES_BACKEND_CREATE_INITIAL_DATA: 1
-  datastoreReader:
-    additionalContent: {
-      build: {
-        context: ../../openslides-datastore-service/,
-        args: {
-          MODULE: reader,
-          PORT: 9010
-        }
-      }
-    }
-  datastoreWriter:
-    additionalContent: {
-      build: {
-        context: ../../openslides-datastore-service/,
-        args: {
-          MODULE: writer,
-          PORT: 9011
-        }
-      }
-    }
   autoupdate:
     additionalContent:
       build: ../../openslides-autoupdate-service/
