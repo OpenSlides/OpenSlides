@@ -94,7 +94,7 @@ echocmd() {
 }
 
 timestamp() {
-   echo "${COL_GRAY}$(date +%Y-%m-%d)${COL_NORMAL}"
+   echo "${COL_GRAY}$(date +%H:%M:%S)${COL_NORMAL}"
 }
 
 info() {
