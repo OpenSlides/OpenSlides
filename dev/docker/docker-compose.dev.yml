@@ -265,9 +265,8 @@ services:
     command: start-dev --import-realm
     environment:
       << : *default-environment
-      KC_HOSTNAME_URL: https://localhost:8000/
-      KC_HOSTNAME: localhost
-      KC_HOSTNAME_PORT: 8080
+      KC_HOSTNAME: http://localhost:8080/
+      KC_HOSTNAME_BACKCHANNEL_DYNAMIC: true
     volumes:
       - ../../openslides-keycloak-service/conf/keycloak.conf:/opt/keycloak/conf/keycloak.conf
       - ../../openslides-keycloak-service/conf/realm-export.json:/opt/keycloak/data/import/realm-export.json
