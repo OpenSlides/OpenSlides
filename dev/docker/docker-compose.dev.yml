@@ -65,7 +65,7 @@ services:
       - ../../openslides-backend/tests:/app/tests
       - ../../openslides-backend/cli:/app/cli
       - ../../openslides-backend/data:/app/data
-      - ../../openslides-backend/meta:/app/meta      
+      - ../../openslides-backend/meta:/app/meta
       - ../../openslides-backend/requirements:/app/requirements
       - ../../openslides-backend/scripts:/app/scripts
 
@@ -259,3 +259,32 @@ services:
       - ./workspaces/vote.work:/app/go.work
     ports:
       - "9013:9013"
+
+  keycloak-server:
+    image: quay.io/keycloak/keycloak:26.6.0
+    command: start-dev --import-realm
+    environment:
+      << : *default-environment
+      KC_HOSTNAME_URL: https://localhost:8000/
+      KC_HOSTNAME: localhost
+      KC_HOSTNAME_PORT: 8080
+    volumes:
+      - ../../openslides-keycloak-service/conf/keycloak.conf:/opt/keycloak/conf/keycloak.conf
+      - ../../openslides-keycloak-service/conf/realm-export.json:/opt/keycloak/data/import/realm-export.json
+    depends_on:
+      - postgres
+    ports:
+      - "8080:8080"
+
+  keycloak-service:
+    build:
+        context: ../../openslides-keycloak-service
+        target: "dev"
+        args:
+            CONTEXT: "dev"
+    environment:
+      << : *default-environment
+    depends_on:
+      - keycloak-server
+    ports:
+      - "8081:8081"
