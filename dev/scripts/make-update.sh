@@ -135,22 +135,6 @@ pull_latest_commit() {
   fi
 }
 
-fetch_all_changes() {
-  for mod in $(git submodule status | awk '{print $2}'); do
-    (
-      info ""
-      info "Entering $mod"
-      cd "$mod"
-
-      REMOTE_NAME=$(set_remote)
-      pull_latest_commit
-    )
-  done
-
-  info ""
-  info "Successfully updated all submodules to latest commit."
-}
-
 push_changes() {
   local push_dir="$1"
   local push_dir_in_str=
@@ -198,12 +182,12 @@ add_changes() {
   $diff_cmd
   info '--------------------------------------------------------------------------------'
   ask y "Interactively choose from these?" &&
-    for mod in $(git submodule status | awk '$1 ~ "^\+" {print $2}'); do
+    for mod in $(git submodule status | awk '$1 ~ "^\\+" {print $2}'); do
       (
         REMOTE_NAME=$(set_remote)
         local target_sha= mod_sha_old= mod_sha_new= log_cmd= merge_base=
         mod_sha_old="$(git diff --submodule=short "$mod" | awk '$1 ~ "^-Subproject" { print $3 }')"
-        mod_sha_new="$(git diff --submodule=short "$mod" | awk '$1 ~ "^\+Subproject" { print $3 }')"
+        mod_sha_new="$(git diff --submodule=short "$mod" | awk '$1 ~ "^\\+Subproject" { print $3 }')"
         log_cmd="git -C $mod log --oneline --no-decorate $mod_sha_old..$mod_sha_new"
         target_sha="$($log_cmd | awk 'NR==1 { print $1 }' )"
 
@@ -242,7 +226,7 @@ add_changes() {
 
 choose_changes() {
   ask y "Fetch all submodules $BRANCH_NAME changes now?" &&
-    OPT_PULL=1 fetch_all_changes
+    bash ./dev/scripts/makefile/checkout.sh "" "" "" "true" ""
 
   add_changes
 
@@ -625,15 +609,6 @@ check_submodules_intialized
 
 for arg; do
   case $arg in
-    fetch-all-changes)
-      BRANCH_NAME=main
-      fetch_all_changes
-      check_meta_consistency ||
-        warn "openslides-meta is not consistent."
-      check_go_consistency ||
-        warn "openslides-go is not consistent."
-      shift 1
-      ;;
     staging)
       check_ssh_remotes
       confirm_version

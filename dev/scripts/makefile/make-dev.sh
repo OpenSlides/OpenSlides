@@ -85,10 +85,22 @@ build_capsuled()
         error "Building image failed: $RESPONSE"
     elif [ "$BUILD_TIME" -le 3 ]
     then
-        success "Image found in cache"
+        info "Image found in cache"
     else
-        success "Build image successfully"
+        info "Build image successfully"
     fi
+}
+
+proxy_setup()
+{
+    (
+        if [ -d "./openslides-proxy" ]
+        then
+            cd "./openslides-proxy" || exit 1
+
+            echocmd ./make-localhost-cert.sh &>/dev/null
+        fi
+    )
 }
 
 build()
@@ -100,6 +112,9 @@ build()
     # Build all submodules
     if [ -z "$SERVICE_FOLDER" ]
     then
+        # Ensure localhost-cert has been called at least once
+        proxy_setup
+
         if [ -n "$CAPSULE" ]
         then
             build_capsuled "docker compose  -f "$(dirname "$0")/../../docker/docker-compose.dev.yml" build $BUILD_ARGS"

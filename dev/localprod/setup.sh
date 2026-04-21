@@ -1,7 +1,7 @@
 #!/bin/bash
 
 [[ -f ./openslides ]] ||
-  wget https://github.com/OpenSlides/openslides-manage-service/releases/download/latest/openslides
+  wget https://github.com/OpenSlides/openslides-manage-service/releases/download/dev/openslides
 
 [[ -x ./openslides ]] ||
   chmod +x ./openslides
