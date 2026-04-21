@@ -188,7 +188,7 @@ checkout() {
         else
             # Pull and forward local branch
             # Switch Branch
-            if ! git branch --list | grep -v "HEAD" | grep -q "$BRANCH"
+            if [ -z "$(git branch --list "$BRANCH")" ]
             then
                 echocmd git switch -t "$SOURCE"/"$BRANCH"
             else
