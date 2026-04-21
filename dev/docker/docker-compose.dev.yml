@@ -267,6 +267,7 @@ services:
       << : *default-environment
       KC_HOSTNAME: http://localhost:8080/
       KC_HOSTNAME_BACKCHANNEL_DYNAMIC: true
+      KC_PROXY_HEADERS: xforwarded
     volumes:
       - ../../openslides-keycloak-service/conf/keycloak.conf:/opt/keycloak/conf/keycloak.conf
       - ../../openslides-keycloak-service/conf/realm-export.json:/opt/keycloak/data/import/realm-export.json
