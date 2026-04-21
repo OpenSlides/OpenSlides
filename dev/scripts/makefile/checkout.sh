@@ -117,10 +117,11 @@ checkout() {
             info "$GIT_CHANGES"
 
             read -rp $'\n'"Stash them (Y) delete them (d) or skip this submodule (s): " </dev/tty
-            local STASH_OUTPUT=2
+            local STASH_OUTPUT=0
             case "$REPLY" in
             Y|y|Yes|yes|YES) STASH_OUTPUT=0;;
             D|d) STASH_OUTPUT=1 ;;
+            "") STASH_OUTPUT=0 ;;
             *) STASH_OUTPUT=2 ;;
             esac
 
