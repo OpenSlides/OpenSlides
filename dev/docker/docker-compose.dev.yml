@@ -43,6 +43,7 @@ services:
     image: openslides-backend-dev
     depends_on:
       - auth
+      - keycloak-server
     env_file: services.env
     ports:
       - "9002:9002"
@@ -284,6 +285,13 @@ services:
             CONTEXT: "dev"
     environment:
       << : *default-environment
+      KEYCLOAK_DATABASE_HOST: postgres
+      KEYCLOAK_DATABASE_PORT: 5432
+      KEYCLOAK_DATABASE_NAME: openslides
+      KEYCLOAK_DATABASE_USER: openslides
+      KEYCLOAK_DATABASE_PASSWORD_FILE: /run/secrets/postgres_password
+    volumes:
+      - ./../openslides-keycloak-service/src:/app/src
     depends_on:
       - keycloak-server
     ports:

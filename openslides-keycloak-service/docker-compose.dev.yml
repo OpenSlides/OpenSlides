@@ -34,6 +34,8 @@ services:
         - KEYCLOAK_DATABASE_NAME=openslides
         - KEYCLOAK_DATABASE_USER=openslides
         - KEYCLOAK_DATABASE_PASSWORD_FILE=/run/secrets/postgres_password
+    volumes:
+      - ./src:/app/src
     depends_on:
       - keycloak-server
     ports:
