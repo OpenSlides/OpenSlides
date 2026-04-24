@@ -1,4 +1,9 @@
 
+The goal of this document is to provide a basic technical understanding what
+changes are included in OpenSlides 4.3.0 as well as provide steps to perform
+the upgrade.
+
+
 ## Collections, Fields, Models, Datastore ... what exactly?
 
 Since the implementation of OpenSlides 4 the structure of the application data
@@ -55,7 +60,7 @@ for help with that.
 
 In addition to the SQL dump (which can be used to restore the DB to the
 captured state) we also recommend to dump all _models_ in JSON form using the
-`get_everything.sh` script. After the upgrade procedure is complete we can get
+`get_everything.py` script. After the upgrade procedure is complete we can get
 a new _models_ dump of the same format and use a script to systematically
 compare them and verify all data is still there and intact.
 
@@ -71,7 +76,7 @@ Now we can run migration `100`
 
     TODO: more datail / instructions
 
-Run `get_everything.sh` again and verify using `models_diff.py`.
+Run `get_everything.py` again and verify using `models_diff.py`.
 
     TODO: more datail / instructions
 
