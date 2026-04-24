@@ -186,6 +186,9 @@ To check the current status and start migrations if necessary, run:
     $ ./openslides migrations stats
     $ ./openslides migrations finalize
 
+For more details about the migration route, see [documentation in the
+backend](https://github.com/OpenSlides/openslides-backend/blob/main/docs/migration_route.md)
+
 
 ### Incompatibilities
 
