@@ -19,3 +19,6 @@ restart: | build
 
 psql:
 	docker compose -f docker-compose.dev.yml exec postgres psql -U openslides -d openslides
+
+migrate-users:
+	bash ./src/bash-approach/migrate-users.sh "" ""

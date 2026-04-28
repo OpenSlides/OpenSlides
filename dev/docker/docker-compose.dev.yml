@@ -290,8 +290,10 @@ services:
       KEYCLOAK_DATABASE_NAME: openslides
       KEYCLOAK_DATABASE_USER: openslides
       KEYCLOAK_DATABASE_PASSWORD_FILE: /run/secrets/postgres_password
+      KEYCLOAK_URL_INTERNAL: http://keycloak-server:8080
+      KEYCLOAK_OS_REALM: openslides
     volumes:
-      - ./../openslides-keycloak-service/src:/app/src
+      - ../../openslides-keycloak-service/src:/app/src
     depends_on:
       - keycloak-server
     ports:

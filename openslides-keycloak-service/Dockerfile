@@ -11,6 +11,8 @@ ENV APP_CONTEXT=${CONTEXT}
 COPY . .
 
 RUN apt-get -y update &&  apt-get -y upgrade && apt-get install --no-install-recommends -y \
+    curl \
+    jq \
     libpq-dev \
     postgresql-client \
     python3-dev && \
