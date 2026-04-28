@@ -1,0 +1,79 @@
+{
+  "realm": "openslides",
+  "enabled": true,
+  "sslRequired": "none",
+  "registrationAllowed": false,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": true,
+  "editUsernameAllowed": false,
+  "bruteForceProtected": false,
+  "roles": {
+    "realm": [
+      {
+        "name": "user",
+        "composite": false,
+        "clientRole": false
+      }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "openslides-client",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "openslides-secret",
+      "redirectUris": [
+        "https://localhost:8000/*"
+      ],
+      "webOrigins": [
+        "https://localhost:8000"
+      ],
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": true,
+      "attributes": {
+        "backchannel.logout.url": "https://proxy:8000/system/auth/oidc-backchannel-logout",
+        "backchannel.logout.session.required": "true"
+      },
+      "protocolMappers": [
+        {
+          "name": "openslides_user_id",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "consentRequired": false,
+          "config": {
+            "claim.name": "openslides_user_id",
+            "user.attribute": "openslides_user_id",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "jsonType.label": "int",
+            "userinfo.token.claim": "true"
+          }
+        }
+      ]
+    }
+  ],
+  "users": [
+    {
+      "username": "admin",
+      "email": "admin@example.com",
+      "enabled": true,
+      "firstName": "Admin",
+      "lastName": "User",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "admin",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["user"],
+      "attributes": {
+        "openslides_user_id": ["1"]
+      }
+    }
+  ]
+}

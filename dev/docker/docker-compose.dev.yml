@@ -50,6 +50,8 @@ services:
       - "5678:5678"
     environment:
       << : *default-environment
+      # Add local pip-auth to PYTHONPATH for dev mode
+      PYTHONPATH: "/app/osauthlib-dev:/app"
       EMAIL_HOST: mailhog
       EMAIL_PORT: 1025
       # - EMAIL_HOST_USER username
@@ -65,9 +67,10 @@ services:
       - ../../openslides-backend/tests:/app/tests
       - ../../openslides-backend/cli:/app/cli
       - ../../openslides-backend/data:/app/data
-      - ../../openslides-backend/meta:/app/meta      
+      - ../../openslides-backend/meta:/app/meta
       - ../../openslides-backend/requirements:/app/requirements
       - ../../openslides-backend/scripts:/app/scripts
+      - ../../openslides-auth-service/auth/libraries/pip-auth:/app/osauthlib-dev
 
   autoupdate:
     build:
