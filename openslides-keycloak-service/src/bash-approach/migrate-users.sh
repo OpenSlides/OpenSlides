@@ -3,19 +3,12 @@
 ADMIN_USERNAME=${1-admin}
 ADMIN_PASSWORD=${2-admin}
 
-migrate_user()
+upload_user()
 {
     local ADMIN_KEY=$1
     local USERNAME=$2
-    local PASSWORD=$3
-    local EMAIL=$4
+    local EMAIL=$3
 
-    if [ -z "$EMAIL" ]
-    then
-        EMAIL="$USERNAME@missing-email.com"
-    fi
-
-    # Uploading user $USERNAME with Email $EMAIL to Keycloak
     KEYCLOAK_RESPONSE="$(curl -s -i \
         -X POST "${KEYCLOAK_URL_INTERNAL}/admin/realms/${KEYCLOAK_OS_REALM}/users" \
         -H "Authorization: Bearer ${ADMIN_KEY}" \
@@ -25,6 +18,25 @@ migrate_user()
         \"email\": \"${EMAIL}\",
         \"enabled\": true
         }")"
+
+    echo "$KEYCLOAK_RESPONSE"
+}
+
+migrate_user()
+{
+    local ADMIN_KEY=$1
+    local USERNAME=$2
+    local PASSWORD=$3
+    local EMAIL=$4
+    local KEYCLOAK_ID=$5
+
+    if [ -z "$EMAIL" ]
+    then
+        EMAIL="$USERNAME@missing-email.com"
+    fi
+
+    # Uploading user $USERNAME with Email $EMAIL to Keycloak
+    KEYCLOAK_RESPONSE=$(upload_user "$ADMIN_KEY" "$USERNAME" "$PASSWORD")
 
     # Get ID from response
     STATUS_CODE=$(awk 'NR==1 {print $2}' <<< "$KEYCLOAK_RESPONSE")
@@ -46,17 +58,24 @@ migrate_user()
         # Some error occured
         echo "Error trying to create or find user in keycloak database:"
         echo "$KEYCLOAK_RESPONSE"
-        exit 0
+        exit 1
     fi
 
     if [ -n "$KEYCLOAK_USER_ID" ]
     then
+        local ALGORITHM="argon2"
+        if [[ ${#PASSWORD} == 152 ]]
+        then
+            ALGORITHM="sha512"
+        fi
+
         curl -s \
         -X PUT "${KEYCLOAK_URL_INTERNAL}/admin/realms/${KEYCLOAK_OS_REALM}/users/${KEYCLOAK_USER_ID}/reset-password" \
         -H "Authorization: Bearer ${ADMIN_KEY}" \
         -H "Content-Type: application/json" \
         -d "{
             \"type\": \"password\",
+            \"algorithm\": \"${ALGORITHM}\",
             \"temporary\": false,
             \"value\": \"${PASSWORD}\"
         }"
@@ -98,16 +117,16 @@ until psql -h ${KEYCLOAK_DATABASE_HOST} -p ${KEYCLOAK_DATABASE_PORT} -U ${KEYCLO
     echo "Waiting for DB $POSTGRES_DB to be ready - communications check"
 done
 
-psql -h ${KEYCLOAK_DATABASE_HOST} -p ${KEYCLOAK_DATABASE_PORT} -U ${KEYCLOAK_DATABASE_USER} -d ${KEYCLOAK_DATABASE_NAME} -AtF $'\t' -c "SELECT username, password, email FROM user_t;" |
-while IFS=$'\t' read -r username password email; do
+psql -h ${KEYCLOAK_DATABASE_HOST} -p ${KEYCLOAK_DATABASE_PORT} -U ${KEYCLOAK_DATABASE_USER} -d ${KEYCLOAK_DATABASE_NAME} -AtF $'\t' -c "SELECT username, password, email, keycloak_id FROM user_t;" |
+while IFS=$'\t' read -r username password email keycloak_id; do
     if [ "$username" == "admin" ]
     then
         continue
     fi
 
-    KEYCLOAK_ID=$(migrate_user "$ADMIN_KEY" "$username" "$password" "$email")
-
-    update_os_user "$username" "$email" "$KEYCLOAK_ID"
+    KEYCLOAK_ID=$(migrate_user "$ADMIN_KEY" "$username" "$password" "$email" "$keycloak_id")
+    echo $KEYCLOAK_ID
+    #update_os_user "$username" "$email" "$KEYCLOAK_ID"
 done
 
 echo "Done!"
