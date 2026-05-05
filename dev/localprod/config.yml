@@ -4,6 +4,14 @@ defaults:
   tag: prod
 
 services:
+  # Datastore entries are a dirty fix, because manage tool still has it in compose template.
+  # Please remove as soon as openslides-manage-service is removed 
+  datastoreReader:
+    containerRegistry: ghcr.io/openslides/openslides
+    tag: latest
+  datastoreWriter:
+    containerRegistry: ghcr.io/openslides/openslides
+    tag: latest
   proxy:
     additionalContent:
       build: ../../openslides-proxy/

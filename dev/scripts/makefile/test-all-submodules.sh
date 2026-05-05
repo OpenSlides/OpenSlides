@@ -53,7 +53,7 @@ echo "Done"
 for x in "${!outputs[@]}"; do
     VALUE=${outputs[${x}]}
     if [ "$VALUE" != '0' ]; then error "Tests for service ${x} failed"; fi
-    if [ "$VALUE" == '0' ]; then success "Tests for service ${x} successful"; fi
+    if [ "$VALUE" == '0' ]; then info "Tests for service ${x} successful"; fi
 done
 
 
