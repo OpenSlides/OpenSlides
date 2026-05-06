@@ -99,9 +99,9 @@ build()
     then
         if [ -n "$CAPSULE" ]
         then
-            build_capsuled "dev/scripts/makefile/build-all-submodules.sh dev $BUILD_ARGS"
+            build_capsuled "docker compose  -f "$(dirname "$0")/../../docker/docker-compose.dev.yml" build $BUILD_ARGS"
         else
-            dev/scripts/makefile/build-all-submodules.sh dev $BUILD_ARGS
+            docker compose  -f "$(dirname "$0")/../../docker/docker-compose.dev.yml" build $BUILD_ARGS
         fi
         return
     fi
@@ -311,7 +311,7 @@ case "$SERVICE" in
     "autoupdate")   SERVICE_FOLDER="./openslides-autoupdate-service" ;;
     "backend")      SERVICE_FOLDER="./openslides-backend" &&
                     COMPOSE_FILE="$SERVICE_FOLDER/dev/docker-compose.dev.yml" &&
-                    USED_SHELL="./entrypoint.sh bash --rcfile .bashrc" &&
+                    USED_SHELL="bash --rcfile .bashrc" &&
                     CLOSE_VOLUMES="--volumes" ;;
     "client")       SERVICE_FOLDER="./openslides-client" &&
                     VOLUMES="-v $(pwd)/openslides-client/client/src:/app/src -v $(pwd)/openslides-client/client/cli:/app/cli -p 127.0.0.1:9001:9001/tcp" ;;
