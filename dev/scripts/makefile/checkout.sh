@@ -14,7 +14,7 @@ AUTO_MAIN_FALLBACK=${6:-0}
 
 BRANCH_FILE_PATH=$(realpath ".")
 
-if [ -f  "$BRANCH_FILE_PATH/$BRANCH_FILE" ]; then success "Reading commit info from $BRANCH_FILE"; fi
+if [ -f  "$BRANCH_FILE_PATH/$BRANCH_FILE" ]; then info "Reading commit info from $BRANCH_FILE"; fi
 
 usage() {
   info "\
@@ -114,15 +114,31 @@ checkout() {
         if [ "$GIT_CHANGES" != "" ]
         then
             info "The repository has changes"
-            success "$GIT_CHANGES"
+            info "$GIT_CHANGES"
 
-            ask y "Stash them?" </dev/tty && RESULT=$? || true
+            read -rp $'\n'"Stash them (Y) soft reset them (d) hard reset them (D) or skip this submodule (s): " </dev/tty
+            local STASH_OUTPUT=0
+            case "$REPLY" in
+            Y|y|Yes|yes|YES) STASH_OUTPUT=0;;
+            d) STASH_OUTPUT=1 ;;
+            D) STASH_OUTPUT=2 ;;
+            "") STASH_OUTPUT=0 ;;
+            *) STASH_OUTPUT=3 ;;
+            esac
 
-            if [ "$RESULT" == 0 ]
+            if [ "$STASH_OUTPUT" == 0 ]
             then
                 git stash
+            elif [ "$STASH_OUTPUT" == 1 ]
+            then
+                warn "Soft resetting changes to $SUBMODULE"
+                git reset --soft
+            elif [ "$STASH_OUTPUT" == 2 ]
+            then
+                warn "Hard resetting changes to $SUBMODULE"
+                git reset --hard
             else
-                warn "$SUBMODULE was not stashed. Skipped instead"
+                warn "$SUBMODULE was skipped"
                 exit 0
             fi
         fi
@@ -136,7 +152,7 @@ checkout() {
                 echocmd git remote add "$SOURCE" git@github.com:"$SOURCE"/"$SUBMODULE".git
             else
                 echocmd git remote set-url "$SOURCE" git@github.com:"$SOURCE"/"$SUBMODULE".git
-                success "Remote $SOURCE already exists"
+                info "Remote $SOURCE already exists"
             fi
         else
             SOURCE=$(set_remote "upstream" "origin")
@@ -178,11 +194,11 @@ checkout() {
         else
             # Pull and forward local branch
             # Switch Branch
-            if ! git branch --list | grep -v "HEAD" | grep -q "$BRANCH"
+            if [ -z "$(git branch --list "$BRANCH")" ]
             then
                 echocmd git switch -t "$SOURCE"/"$BRANCH"
             else
-                success "Branch $BRANCH already exists"
+                info "Branch $BRANCH already exists"
                 echocmd git checkout "$BRANCH"
             fi
 
@@ -320,4 +336,4 @@ info "Checking submodule initialization"
 check_submodules_intialized || error "Submodules not initialized"
 
 echo ""
-success Done
+info Done
