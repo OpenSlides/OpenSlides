@@ -12,8 +12,6 @@ TARGETS=(
   [autoupdate]="$HOME/openslides-autoupdate-service/"
   [search]="$HOME/openslides-search-service/"
   [manage]="$HOME/openslides-manage-service/"
-  [datastore-reader]="$HOME/openslides-datastore-service/reader"
-  [datastore-writer]="$HOME/openslides-datastore-service/writer"
   [media]="$HOME/openslides-media-service/"
   [vote]="$HOME/openslides-vote-service/"
   [icc]="$HOME/openslides-icc-service/"
@@ -31,7 +29,11 @@ fi
 CONFIG="/etc/osinstancectl"
 OPTIONS=()
 BUILT_IMAGES=()
+<<<<<<< HEAD
 DEFAULT_TARGETS=(proxy client backend auth autoupdate manage datastore-reader datastore-writer media vote icc search)
+=======
+DEFAULT_TARGETS=(proxy client backend auth autoupdate manage media projector vote icc search)
+>>>>>>> 82c3284e2 (build.sh: remove datastore (#7108))
 ASK_PUSH=
 OPT_YES=
 OPT_IMAGES=
