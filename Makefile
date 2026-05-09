@@ -27,11 +27,11 @@ $(.FLAGS):
 .PHONY: dev
 
 devstop:
-	@sed -i "1s/.*/$(GO_VERSION)/" $(DOCKER_PATH)/workspaces/*.work
+	@sed -i '' "1s/.*/$(GO_VERSION)/" $(DOCKER_PATH)/workspaces/*.work
 	@bash $(MAKEFILE_PATH)/make-dev.sh "dev-stop" "$(filter-out $@, $(MAKECMDGOALS))"
 
 dev dev-help dev-standalone dev-detached dev-attached dev-stop dev-exec dev-enter dev-clean dev-build dev-log dev-log-attach dev-restart dev-full-restart dev-docker-reset:
-	@sed -i "1s/.*/$(GO_VERSION)/" $(DOCKER_PATH)/workspaces/*.work
+	@sed -i '' "1s/.*/$(GO_VERSION)/" $(DOCKER_PATH)/workspaces/*.work
 	@bash $(MAKEFILE_PATH)/make-dev.sh $@ "$(filter-out $@, $(MAKECMDGOALS))"
 
 # Tests
@@ -117,18 +117,18 @@ warning-deprecation-alternative: | warning-deprecation
 
 build-dev:
 	@make warning-deprecation-alternative ALTERNATIVE="dev-build"
-	sed -i "1s/.*/$(GO_VERSION)/" $(DOCKER_PATH)/workspaces/*.work
+	sed -i '' "1s/.*/$(GO_VERSION)/" $(DOCKER_PATH)/workspaces/*.work
 	@bash $(MAKEFILE_PATH)/make-dev.sh "dev-build" "$(filter-out $@, $(MAKECMDGOALS))"
 
 run-dev:
 	@make warning-deprecation-alternative ALTERNATIVE="dev"
-	sed -i "1s/.*/$(GO_VERSION)/" $(DOCKER_PATH)/workspaces/*.work
+	sed -i '' "1s/.*/$(GO_VERSION)/" $(DOCKER_PATH)/workspaces/*.work
 	@bash $(MAKEFILE_PATH)/make-dev.sh "dev-build" "$(filter-out $@, $(MAKECMDGOALS))"
 	$(DC_DEV) up $(ARGS)
 
 run-dev-detached:
 	@make warning-deprecation-alternative ALTERNATIVE="dev"
-	sed -i "1s/.*/$(GO_VERSION)/" $(DOCKER_PATH)/workspaces/*.work
+	sed -i '' "1s/.*/$(GO_VERSION)/" $(DOCKER_PATH)/workspaces/*.work
 	@bash $(MAKEFILE_PATH)/make-dev.sh "dev-build" "$(filter-out $@, $(MAKECMDGOALS))"
 	$(DC_DEV) up $(ARGS) -d
 
