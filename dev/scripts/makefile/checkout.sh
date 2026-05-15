@@ -116,13 +116,29 @@ checkout() {
             info "The repository has changes"
             info "$GIT_CHANGES"
 
-            ask y "Stash them?" </dev/tty && RESULT=$? || true
+            read -rp $'\n'"Stash them (Y) soft reset them (d) hard reset them (D) or skip this submodule (s): " </dev/tty
+            local STASH_OUTPUT=0
+            case "$REPLY" in
+            Y|y|Yes|yes|YES) STASH_OUTPUT=0;;
+            d) STASH_OUTPUT=1 ;;
+            D) STASH_OUTPUT=2 ;;
+            "") STASH_OUTPUT=0 ;;
+            *) STASH_OUTPUT=3 ;;
+            esac
 
-            if [ "$RESULT" == 0 ]
+            if [ "$STASH_OUTPUT" == 0 ]
             then
                 git stash
+            elif [ "$STASH_OUTPUT" == 1 ]
+            then
+                warn "Soft resetting changes to $SUBMODULE"
+                git reset --soft
+            elif [ "$STASH_OUTPUT" == 2 ]
+            then
+                warn "Hard resetting changes to $SUBMODULE"
+                git reset --hard
             else
-                warn "$SUBMODULE was not stashed. Skipped instead"
+                warn "$SUBMODULE was skipped"
                 exit 0
             fi
         fi
