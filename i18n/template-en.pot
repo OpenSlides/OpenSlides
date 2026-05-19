@@ -1,7 +1,20 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
 msgid ""
 msgstr ""
-"mime-version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-19 18:02+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "\"0\" means an unlimited number of active accounts"
@@ -96,6 +109,9 @@ msgid "Account admin"
 msgstr ""
 
 msgid "Account created"
+msgstr ""
+
+msgid "Account is public."
 msgstr ""
 
 msgid "Account successfully added."
@@ -403,6 +419,9 @@ msgstr ""
 msgid "An error occurred while voting."
 msgstr ""
 
+msgid "An undefined class was called. Please add the class: {}"
+msgstr ""
+
 msgid "An unknown error occurred."
 msgstr ""
 
@@ -607,8 +626,8 @@ msgid "Are you sure you want to number all agenda items?"
 msgstr ""
 
 msgid ""
-"Are you sure you want to override the state of all motions of this motion "
-"block?"
+"Are you sure you want to overwrite the state of all motions with "
+"recommendations?"
 msgstr ""
 
 msgid "Are you sure you want to remove all selected items from the agenda?"
@@ -1176,10 +1195,29 @@ msgstr ""
 msgid "Candidate added"
 msgstr ""
 
+msgid "Candidate name"
+msgstr ""
+
+msgid "Candidate placement"
+msgstr ""
+
 msgid "Candidate removed"
 msgstr ""
 
 msgid "Candidates"
+msgstr ""
+
+msgid "Cannot archive meeting with active polls."
+msgstr ""
+
+msgid ""
+"Cannot archive meeting with active speakers and polls. Check who is speaking "
+"in > [Participants] > [Contributions]."
+msgstr ""
+
+msgid ""
+"Cannot archive meeting with active speakers. Check who is speaking in > "
+"[Participants] > [Contributions]."
 msgstr ""
 
 msgid "Cannot create meeting without administrator."
@@ -1260,13 +1298,13 @@ msgstr ""
 msgid "Changes of all settings group will be lost!"
 msgstr ""
 
+msgid "Changing admins on same level is not possible"
+msgstr ""
+
 msgid "Chat"
 msgstr ""
 
 msgid "Chat groups"
-msgstr ""
-
-msgid "Check datastore"
 msgstr ""
 
 msgid "Check in or check out participants based on their participant numbers:"
@@ -1414,10 +1452,11 @@ msgstr ""
 msgid "Committee admin"
 msgstr ""
 
-msgid "Committee management"
+msgid ""
+"Committee admins may only set the committee admins of their subcommittees"
 msgstr ""
 
-msgid "Committee managers"
+msgid "Committee management"
 msgstr ""
 
 msgid "Committee name"
@@ -1589,12 +1628,6 @@ msgid "Dark mode"
 msgstr ""
 
 msgid "Dashboard"
-msgstr ""
-
-msgid "Datastore is corrupt! See the console for errors."
-msgstr ""
-
-msgid "Datastore is ok!"
 msgstr ""
 
 msgid "Decision"
@@ -1940,9 +1973,6 @@ msgstr ""
 msgid "Email sent"
 msgstr ""
 
-msgid "Email settings"
-msgstr ""
-
 msgid "Email subject"
 msgstr ""
 
@@ -2247,10 +2277,6 @@ msgid ""
 "                        2. Adjust workflow (define state in which motions "
 "can be supported)<br>\n"
 "                        3. Enter minimum number (see next field)"
-msgstr ""
-
-msgid ""
-"For large instances this may block the server to the point of unusability"
 msgstr ""
 
 msgid "Foreground color"
@@ -3185,6 +3211,9 @@ msgstr ""
 msgid "Motions are in process. Please wait ..."
 msgstr ""
 
+msgid "Motions in final state will not be changed."
+msgstr ""
+
 msgid "Move"
 msgstr ""
 
@@ -3353,9 +3382,6 @@ msgstr ""
 msgid "Next"
 msgstr ""
 
-msgid "Next page"
-msgstr ""
-
 msgid "Next states"
 msgstr ""
 
@@ -3462,6 +3488,9 @@ msgid "Not found"
 msgstr ""
 
 msgid "Not locked out"
+msgstr ""
+
+msgid "Not part of meeting"
 msgstr ""
 
 msgid "Not present"
@@ -3650,6 +3679,9 @@ msgid "Open meeting"
 msgstr ""
 
 msgid "Open projection dialog"
+msgstr ""
+
+msgid "Open projector"
 msgstr ""
 
 msgid "OpenSlides URL"
@@ -3955,9 +3987,6 @@ msgstr ""
 msgid "Please update your browser or contact your system administration."
 msgstr ""
 
-msgid "Please vote now!"
-msgstr ""
-
 msgid "Point of order"
 msgstr ""
 
@@ -4006,9 +4035,6 @@ msgstr ""
 msgid "Previous"
 msgstr ""
 
-msgid "Previous page"
-msgstr ""
-
 msgid "Previous slides"
 msgstr ""
 
@@ -4042,9 +4068,6 @@ msgstr ""
 msgid "Project all structure levels"
 msgstr ""
 
-msgid "Project selection?"
-msgstr ""
-
 msgid "Projection"
 msgstr ""
 
@@ -4067,6 +4090,9 @@ msgid "Projector header image"
 msgstr ""
 
 msgid "Projector logo"
+msgstr ""
+
+msgid "Projector selection"
 msgstr ""
 
 msgid "Projectors"
@@ -4286,6 +4312,9 @@ msgid "Resolution and size"
 msgstr ""
 
 msgid "Restart livestream"
+msgstr ""
+
+msgid "Restrict definition of motion forwarding to organization admins"
 msgstr ""
 
 msgid ""
@@ -4843,9 +4872,6 @@ msgstr ""
 msgid "Superadmin"
 msgstr ""
 
-msgid "Superadmin actions"
-msgstr ""
-
 msgid "Superadmin settings"
 msgstr ""
 
@@ -4978,6 +5004,9 @@ msgid "The process may have stopped running."
 msgstr ""
 
 msgid "The process will be started. Please wait!"
+msgstr ""
+
+msgid "The projected title is"
 msgstr ""
 
 msgid "The request could not be sent. Check your connection."
@@ -5169,9 +5198,6 @@ msgstr ""
 msgid "This will set the workflow for all selected motions:"
 msgstr ""
 
-msgid "Thoroughly check datastore (unsafe)"
-msgstr ""
-
 msgid "Threefold repetition! It's a draw!"
 msgstr ""
 
@@ -5181,7 +5207,13 @@ msgstr ""
 msgid "Time"
 msgstr ""
 
+msgid "Time (mm:ss)"
+msgstr ""
+
 msgid "Time and traffic light"
+msgstr ""
+
+msgid "Time zone"
 msgstr ""
 
 msgid "Timer"
@@ -5284,9 +5316,6 @@ msgid "Undone"
 msgstr ""
 
 msgid "Unique speakers"
-msgstr ""
-
-msgid "Unknown user"
 msgstr ""
 
 msgid "Unpublish"
@@ -5545,9 +5574,6 @@ msgstr ""
 msgid "Wifi access data"
 msgstr ""
 
-msgid "Wifi name"
-msgstr ""
-
 msgid ""
 "Will be displayed as label before selected recommendation. Use an empty "
 "value to disable the recommendation system."
@@ -5617,6 +5643,9 @@ msgstr ""
 msgid "You are not allowed to see the livestream"
 msgstr ""
 
+msgid "You are not part of this meeting."
+msgstr ""
+
 msgid "You are not supposed to be here..."
 msgstr ""
 
@@ -5675,6 +5704,9 @@ msgstr ""
 msgid "You have to be logged in to be able to vote."
 msgstr ""
 
+msgid "You have to be part of this meeting to write messages."
+msgstr ""
+
 msgid "You have to be present to add yourself."
 msgstr ""
 
@@ -5708,6 +5740,22 @@ msgid ""
 msgstr ""
 
 msgid "You won!"
+msgstr ""
+
+msgid "Your account is not in meeting."
+msgstr ""
+
+msgid "Your account is not in this meeting."
+msgstr ""
+
+msgid ""
+"Your account is present. If status just changed focus this element again to "
+"get accurate present status."
+msgstr ""
+
+msgid ""
+"Your account of is not present. If status just changed focus this element "
+"again to get accurate present status."
 msgstr ""
 
 msgid "Your browser"
@@ -5919,6 +5967,9 @@ msgstr ""
 msgid "is now"
 msgstr ""
 
+msgid "is personal favorite"
+msgstr ""
+
 msgid "is required"
 msgstr ""
 
@@ -5992,9 +6043,6 @@ msgid "not specified"
 msgstr ""
 
 msgid "of"
-msgstr ""
-
-msgid "of this"
 msgstr ""
 
 msgid "of which"
@@ -6242,4 +6290,13 @@ msgid "submitted"
 msgstr ""
 
 msgid "withdrawn"
+msgstr ""
+
+msgid "Please vote now!"
+msgstr ""
+
+msgid "Unknown user"
+msgstr ""
+
+msgid "Wifi name"
 msgstr ""

@@ -1,20 +1,29 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
 # Joshua Sangmeister <joshua.sangmeister@gmail.com>, 2024
 # Katharina <karmitt2@web.de>, 2024
 # Elblinator, 2025
 # Birte Spekker <birte.spekker@intevation.de>, 2025
-# Emanuel Schütze <emanuel.schuetze@intevation.de>, 2025
+# Emanuel Schütze <emanuel.schuetze@intevation.de>, 2026
 # 
+#, fuzzy
 msgid ""
 msgstr ""
-"Last-Translator: Emanuel Schütze <emanuel.schuetze@intevation.de>, 2025\n"
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-19 18:02+0200\n"
+"PO-Revision-Date: 2021-05-09 20:21+0000\n"
+"Last-Translator: Emanuel Schütze <emanuel.schuetze@intevation.de>, 2026\n"
 "Language-Team: German (https://app.transifex.com/openslides/teams/14270/de/)\n"
+"MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"mime-version: 1.0\n"
 
 msgid "\"0\" means an unlimited number of active accounts"
 msgstr "\"0\" bedeutet eine unbegrenzte Anzahl an aktiven Accounts"
@@ -119,6 +128,9 @@ msgstr "Accountadmin"
 
 msgid "Account created"
 msgstr "Account erstellt"
+
+msgid "Account is public."
+msgstr "Account ist öffentlich."
 
 msgid "Account successfully added."
 msgstr "Account erfolgreich hinzugefügt."
@@ -448,6 +460,9 @@ msgstr "Anzahl der Stimmen"
 msgid "An error occurred while voting."
 msgstr "Bei der Stimmabgabe ist ein Fehler aufgetreten."
 
+msgid "An undefined class was called. Please add the class: {}"
+msgstr ""
+
 msgid "An unknown error occurred."
 msgstr "Ein unbekannter Fehler ist aufgetreten."
 
@@ -669,10 +684,10 @@ msgid "Are you sure you want to number all agenda items?"
 msgstr "Sollen alle Tagesordnungspunkte wirklich neu nummeriert werden?"
 
 msgid ""
-"Are you sure you want to override the state of all motions of this motion "
-"block?"
+"Are you sure you want to overwrite the state of all motions with "
+"recommendations?"
 msgstr ""
-"Soll der Status von allen Anträgen aus diesem Antragsblock wirklich "
+"Soll der Status von allen Anträgen wirklich mit der jeweiligen Empfehlung "
 "überschrieben werden?"
 
 msgid "Are you sure you want to remove all selected items from the agenda?"
@@ -1323,11 +1338,36 @@ msgstr "Kandidat*in"
 msgid "Candidate added"
 msgstr "Kandidat*in hinzugefügt"
 
+msgid "Candidate name"
+msgstr "Name der Person"
+
+msgid "Candidate placement"
+msgstr "Platzierung"
+
 msgid "Candidate removed"
 msgstr "Kandidat*in entfernt"
 
 msgid "Candidates"
 msgstr "Kandidat*innen"
+
+msgid "Cannot archive meeting with active polls."
+msgstr ""
+"Eine Veranstaltung mit aktiver Stimmabgabe kann nicht archiviert werden."
+
+msgid ""
+"Cannot archive meeting with active speakers and polls. Check who is speaking"
+" in > [Participants] > [Contributions]."
+msgstr ""
+"Veranstaltung mit laufenden Wortmeldungen und Stimmabgaben kann nicht "
+"archiviert werden. Hier prüfen, wer noch spricht: > [Teilnehmende] > "
+"[Wortmeldungen]."
+
+msgid ""
+"Cannot archive meeting with active speakers. Check who is speaking in > "
+"[Participants] > [Contributions]."
+msgstr ""
+"Veranstaltung mit laufenden Wortmeldungen kann nicht archiviert werden. Hier"
+" prüfen, wer noch spricht: > [Teilnehmende] > [Wortmeldungen]."
 
 msgid "Cannot create meeting without administrator."
 msgstr "Veranstaltung kann ohne Administrator nicht erstellt werden."
@@ -1407,14 +1447,14 @@ msgstr "Änderungen"
 msgid "Changes of all settings group will be lost!"
 msgstr "Änderungen in allen Einstellungsseiten gehen verloren!"
 
+msgid "Changing admins on same level is not possible"
+msgstr "Admins auf der gleichen Ebene ändern ist nicht möglich"
+
 msgid "Chat"
 msgstr "Chat"
 
 msgid "Chat groups"
 msgstr "Chatgruppen"
-
-msgid "Check datastore"
-msgstr "Datastore überprüfen"
 
 msgid "Check in or check out participants based on their participant numbers:"
 msgstr ""
@@ -1564,11 +1604,13 @@ msgstr "Committee-Management-Level aktualisiert"
 msgid "Committee admin"
 msgstr "Gremienadmin"
 
+msgid ""
+"Committee admins may only set the committee admins of their subcommittees"
+msgstr ""
+"Gremienadmins dürfen andere Gremienadmins nur in ihren Untergremien setzen."
+
 msgid "Committee management"
 msgstr "Gremienverwaltung"
-
-msgid "Committee managers"
-msgstr "Gremienverwalter"
 
 msgid "Committee name"
 msgstr "Gremiumname"
@@ -1740,12 +1782,6 @@ msgstr "Dunkler Modus"
 
 msgid "Dashboard"
 msgstr "Dashboard"
-
-msgid "Datastore is corrupt! See the console for errors."
-msgstr "Der Datastore ist beschädigt! Mehr Details in der Konsole."
-
-msgid "Datastore is ok!"
-msgstr "Der Datastore ist ok!"
 
 msgid "Decision"
 msgstr "Entscheidung"
@@ -2126,9 +2162,6 @@ msgstr "Nachrichtentext"
 msgid "Email sent"
 msgstr "E-Mail gesendet"
 
-msgid "Email settings"
-msgstr "E-Mail-Einstellungen"
-
 msgid "Email subject"
 msgstr "Betreff"
 
@@ -2476,10 +2509,6 @@ msgstr ""
 "1. Gruppenrecht vergeben (Gruppe festlegen, die Anträge unterstützen darf)<br>\n"
 "2. Arbeitsablauf anpassen (Status festlegen, in dem Anträge unterstützt werden dürfen)<br>\n"
 "3. Mindestanzahl eintragen (siehe nächstes Feld)"
-
-msgid ""
-"For large instances this may block the server to the point of unusability"
-msgstr "Bei großen Instanzen kann dies den Server stark blockieren."
 
 msgid "Foreground color"
 msgstr "Vordergrundfarbe"
@@ -3442,6 +3471,9 @@ msgstr "Anträge (PDF-Einstellungen)"
 msgid "Motions are in process. Please wait ..."
 msgstr "Anträge werden bearbeitet. Bitte warten ..."
 
+msgid "Motions in final state will not be changed."
+msgstr "Anträge im finalen Status werden nicht geändert."
+
 msgid "Move"
 msgstr "Verschieben"
 
@@ -3610,9 +3642,6 @@ msgstr "Neuer Arbeitsablauf"
 msgid "Next"
 msgstr "Weiter"
 
-msgid "Next page"
-msgstr "Nächste Seite"
-
 msgid "Next states"
 msgstr "Nächste Zustände"
 
@@ -3720,6 +3749,9 @@ msgstr "Nicht gefunden"
 
 msgid "Not locked out"
 msgstr "Nicht ausgeschlossen"
+
+msgid "Not part of meeting"
+msgstr "Nicht Teil der Veranstaltung"
 
 msgid "Not present"
 msgstr "Nicht anwesend"
@@ -3920,6 +3952,9 @@ msgstr "Veranstaltung öffnen"
 
 msgid "Open projection dialog"
 msgstr "Projektionsdialog öffnen"
+
+msgid "Open projector"
+msgstr "Projektor öffnen"
 
 msgid "OpenSlides URL"
 msgstr "OpenSlides-URL"
@@ -4240,9 +4275,6 @@ msgstr ""
 "Bitte aktualisieren Sie Ihren Browser oder kontaktieren Sie Ihre "
 "Systemadministration."
 
-msgid "Please vote now!"
-msgstr "Bitte stimmen Sie jetzt ab!"
-
 msgid "Point of order"
 msgstr "GO-Antrag"
 
@@ -4294,9 +4326,6 @@ msgstr "Vorschau"
 msgid "Previous"
 msgstr "Zurück"
 
-msgid "Previous page"
-msgstr "Vorherige Seite"
-
 msgid "Previous slides"
 msgstr "Letzte Folien"
 
@@ -4330,9 +4359,6 @@ msgstr "Aktuelle Wortmeldung projizieren"
 msgid "Project all structure levels"
 msgstr "Alle Gliederungsebenen projizieren"
 
-msgid "Project selection?"
-msgstr "Auswahl projizieren?"
-
 msgid "Projection"
 msgstr "Projektion"
 
@@ -4356,6 +4382,9 @@ msgstr "Projektor-Kopfgrafik"
 
 msgid "Projector logo"
 msgstr "Projektor-Logo"
+
+msgid "Projector selection"
+msgstr "Projektorauswahl"
 
 msgid "Projectors"
 msgstr "Projektoren"
@@ -4581,6 +4610,10 @@ msgstr "Auflösung und Größe"
 
 msgid "Restart livestream"
 msgstr "Livestream neustarten"
+
+msgid "Restrict definition of motion forwarding to organization admins"
+msgstr ""
+"Definition von Antragsweiterleitungen auf Organisationsadmins beschränken"
 
 msgid ""
 "Restrict delegation principals from adding themselves to the list of "
@@ -5154,9 +5187,6 @@ msgstr "Zusammenfassung der Änderungen:"
 msgid "Superadmin"
 msgstr "Superadmin"
 
-msgid "Superadmin actions"
-msgstr "Superadmin-Aktionen"
-
 msgid "Superadmin settings"
 msgstr "Superadmin-Einstellungen"
 
@@ -5301,6 +5331,9 @@ msgstr "Der Prozess hat möglicherweise aufgehört zu laufen."
 
 msgid "The process will be started. Please wait!"
 msgstr "Der Prozess wird gestartet. Bitte warten!"
+
+msgid "The projected title is"
+msgstr "Der projizierte Titel lautet"
 
 msgid "The request could not be sent. Check your connection."
 msgstr ""
@@ -5535,9 +5568,6 @@ msgstr "Folgender Status wird für alle ausgewählten Anträge gesetzt:"
 msgid "This will set the workflow for all selected motions:"
 msgstr "Folgender Arbeitsablauf wird für alle ausgewählten Anträge gesetzt:"
 
-msgid "Thoroughly check datastore (unsafe)"
-msgstr "Gründliche Überprüfung des Datastores (unsicher)"
-
 msgid "Threefold repetition! It's a draw!"
 msgstr "Dreimalige Wiederholung! Es ist ein Unentschieden!"
 
@@ -5547,8 +5577,14 @@ msgstr "Kachelansicht"
 msgid "Time"
 msgstr "Zeit"
 
+msgid "Time (mm:ss)"
+msgstr "Zeit (mm:ss)"
+
 msgid "Time and traffic light"
 msgstr "Zeit und Ampel"
+
+msgid "Time zone"
+msgstr "Zeitzone"
 
 msgid "Timer"
 msgstr "Timer"
@@ -5651,9 +5687,6 @@ msgstr "unerledigt"
 
 msgid "Unique speakers"
 msgstr "Eindeutige Redner*innen"
-
-msgid "Unknown user"
-msgstr "Unbekannter Nutzer"
 
 msgid "Unpublish"
 msgstr "Nicht veröffentlichen"
@@ -5942,9 +5975,6 @@ msgstr "WLAN"
 msgid "Wifi access data"
 msgstr "WLAN-Zugangsdaten"
 
-msgid "Wifi name"
-msgstr "WLAN-Name"
-
 msgid ""
 "Will be displayed as label before selected recommendation. Use an empty "
 "value to disable the recommendation system."
@@ -6021,6 +6051,9 @@ msgstr "Sie sind nicht berechtigt alle Stimmberechtigte zu sehen."
 msgid "You are not allowed to see the livestream"
 msgstr "Sie sind nicht berechtigt den Livestream zu sehen."
 
+msgid "You are not part of this meeting."
+msgstr "Sie sind nicht Teil dieser Veranstaltung."
+
 msgid "You are not supposed to be here..."
 msgstr "Sie sollten nicht hier sein ..."
 
@@ -6096,6 +6129,10 @@ msgstr "Sie haben bereits Ihre Stimme abgegeben."
 msgid "You have to be logged in to be able to vote."
 msgstr "Sie müssen sich anmelden um Ihre Stimme abgeben zu können."
 
+msgid "You have to be part of this meeting to write messages."
+msgstr ""
+"Sie müssen Teil dieser Veranstaltung sind um Nachrichten zu schreiben."
+
 msgid "You have to be present to add yourself."
 msgstr "Sie müssen anwesend sein, um sich selbst hinzuzufügen."
 
@@ -6136,6 +6173,28 @@ msgstr ""
 
 msgid "You won!"
 msgstr "Du hast gewonnen!"
+
+msgid "Your account is not in meeting."
+msgstr "Ihr Account ist kein Teil einer Veranstaltung."
+
+msgid "Your account is not in this meeting."
+msgstr "Ihr Account ist kein Teil dieser Veranstaltung."
+
+msgid ""
+"Your account is present. If status just changed focus this element again to "
+"get accurate present status."
+msgstr ""
+"Ihr Account ist anwesend. Sollte sich der Status gerade geändert haben, "
+"fokussieren Sie dieses Element erneut, um den genauen Anwesenheitsstatus zu "
+"erhalten."
+
+msgid ""
+"Your account of is not present. If status just changed focus this element "
+"again to get accurate present status."
+msgstr ""
+"Ihr Account ist nicht anwesend. Sollte sich der Status gerade geändert "
+"haben, fokussieren Sie dieses Element erneut, um den genauen "
+"Anwesenheitsstatus zu erhalten."
 
 msgid "Your browser"
 msgstr "Ihr Browser"
@@ -6351,6 +6410,9 @@ msgstr "ist noch keinen Gremien oder Veranstaltungen zugeordnet"
 msgid "is now"
 msgstr "ist jetzt"
 
+msgid "is personal favorite"
+msgstr "ist persönlicher Favorit"
+
 msgid "is required"
 msgstr "ist erforderlich"
 
@@ -6425,9 +6487,6 @@ msgstr "nicht angegeben"
 
 msgid "of"
 msgstr "von"
-
-msgid "of this"
-msgstr "davon"
 
 msgid "of which"
 msgstr "davon"
@@ -6690,3 +6749,12 @@ msgstr "eingereicht"
 
 msgid "withdrawn"
 msgstr "zurückgezogen"
+
+msgid "Please vote now!"
+msgstr "Bitte stimmen Sie jetzt ab!"
+
+msgid "Unknown user"
+msgstr "Unbekannter Nutzer"
+
+msgid "Wifi name"
+msgstr "WLAN-Name"
