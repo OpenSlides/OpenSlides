@@ -12,6 +12,9 @@ COPY ./entrypoint.sh ./entrypoint.sh
 COPY conf/keycloak.conf /opt/keycloak/conf/keycloak.conf
 COPY conf/realm-export.json /opt/keycloak/data/import/realm-export.json
 
+## Allow changing of real-export.json
+USER root
+
 ENTRYPOINT ["./entrypoint.sh"]
 
 ## Command

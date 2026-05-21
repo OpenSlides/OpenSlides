@@ -271,6 +271,8 @@ services:
             CONTEXT: "dev"
     environment:
       << : *default-environment
+      KCS_INSTANCE_URL: localhost
+      KCS_HOST_EMAIL: noreply@openslides.com
       KC_HOSTNAME: http://localhost:8080/
       KC_HOSTNAME_BACKCHANNEL_DYNAMIC: true
       KC_PROXY_HEADERS: xforwarded
