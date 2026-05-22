@@ -1,10 +1,13 @@
 #!/bin/bash
 
-[[ -f ./openslides ]] ||
-  wget https://github.com/OpenSlides/openslides-manage-service/releases/download/dev/openslides
+[[ -f ./osmanage ]] ||
+  wget https://github.com/OpenSlides/openslides-cli/releases/download/dev/osmanage
 
-[[ -x ./openslides ]] ||
-  chmod +x ./openslides
+[[ -f ./docker-compose.yml.tmpl ]] ||
+  wget https://raw.githubusercontent.com/OpenSlides/openslides-cli/refs/heads/main/contrib/docker-compose.yml.tmpl
 
-./openslides setup .
-./openslides config --config config.yml .
+[[ -x ./osmanage ]] ||
+  chmod +x ./osmanage
+
+./osmanage setup .
+./osmanage config --config config.yml --template docker-compose.yml.tmpl .
