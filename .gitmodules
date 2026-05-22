@@ -18,10 +18,6 @@
 	path = openslides-media-service
 	url = https://github.com/OpenSlides/openslides-media-service.git
 	branch = main
-[submodule "openslides-manage-service"]
-	path = openslides-manage-service
-	url = https://github.com/OpenSlides/openslides-manage-service.git
-	branch = main
 [submodule "openslides-icc-service"]
 	path = openslides-icc-service
 	url = https://github.com/OpenSlides/openslides-icc-service.git
@@ -42,3 +38,6 @@
 [submodule "openslides-go"]
 	path = lib/openslides-go
 	url = https://github.com/OpenSlides/openslides-go.git
+[submodule "openslides-cli"]
+	path = openslides-cli
+	url = https://github.com/OpenSlides/openslides-cli.git
