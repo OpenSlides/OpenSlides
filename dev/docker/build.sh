@@ -34,6 +34,7 @@ DEFAULT_TARGETS=(proxy client backend auth autoupdate manage media projector vot
 ASK_PUSH=
 OPT_YES=
 OPT_IMAGES=
+LOCAL_GO=
 
 usage() {
   cat << EOF
@@ -47,6 +48,7 @@ Options:
   --ask-push         Offer to push newly built images to registry
   --yes              Push without requiring interaction confirmation
   --images           Only print out resulting images names without building
+  --local-go         build with local openslides-go
 EOF
 }
 
@@ -57,7 +59,7 @@ if [[ -f "$CONFIG" ]]; then
 fi
 
 shortopt="hr:D:t:"
-longopt="help,docker-repo:,tag:,no-cache,ask-push,yes,images"
+longopt="help,docker-repo:,tag:,no-cache,ask-push,yes,images,local-go"
 ARGS=$(getopt -o "$shortopt" -l "$longopt" -n "$ME" -- "$@")
 if [ $? -ne 0 ]; then usage; exit 1; fi
 eval set -- "$ARGS";
@@ -88,6 +90,10 @@ while true; do
       ;;
     --images)
       OPT_IMAGES=1
+      shift 1
+      ;;
+    --local-go)
+      LOCAL_GO=1
       shift 1
       ;;
     -h|--help) usage; exit 0 ;;
@@ -137,7 +143,12 @@ for i in "${SELECTED_TARGETS[@]}"; do
   if [[ -f "$build_script" ]]; then
     ( . "$build_script" )
   else
-    docker build --tag "$img" --pull "${OPTIONS[@]}" "$loc"
+    if [[ "$LOCAL_GO" == "1" && $(grep -c openslides-go ./go.mod) ]]; then
+      echo "Building with local openslides-go"
+      tar -c . -C ../ ./lib -C ./dev/docker/workspaces . | docker build --tag "$img" --pull "${OPTIONS[@]}" --target prod-gowork -
+    else
+      docker build --tag "$img" --pull "${OPTIONS[@]}" "$loc"
+    fi
   fi
   rm version.json
 
