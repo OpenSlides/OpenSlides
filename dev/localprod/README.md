@@ -1,10 +1,12 @@
+
 # Local production setup
 
 This folder allows you to use the
-[manage-tool](https://github.com/OpenSlides/openslides-manage-service) to launch
-the local repository state as a production setup.
+[manage-tool](https://github.com/OpenSlides/openslides-cli) to launch the local
+repository state as a production setup.
 The `config.yml` instructs the manage-tool to include build tags for all service
 images.
+
 
 ## Usage
 
@@ -12,7 +14,7 @@ Run
 
     ./setup.sh
 
-It will download the latest manage-tool (the `openslides`-executable) - if not
+It will download the latest manage-tool (the `osmanage`-executable) - if not
 present already - and setup this directory like a production environment using
 the `config.yml`.
 
@@ -38,3 +40,4 @@ default username (`superadmin`) and your chosen password.
 To clear the database, run
 
     docker compose down --volumes
+
