@@ -1,4 +1,5 @@
 db-data/
 secrets/
-openslides*
+osmanage*
 docker-compose.yml
+docker-compose.yml.tmpl

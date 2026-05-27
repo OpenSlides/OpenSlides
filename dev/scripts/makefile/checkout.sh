@@ -248,7 +248,7 @@ inform_about_localprod()
     (
         info "Localprod may be out of sync with the checked out commits. Consider rebuilding it:"
         info "make localprod-build"
-        info "If you want to build localprod using the locally checked out openslides-manage service instead of main, use:"
+        info "If you want to build localprod using the locally checked out openslides-cli instead of main, use:"
         info "make localprod-build-local-manage"
     )
 }

@@ -22,7 +22,6 @@ jobs:
           - name: vote
           - name: icc
           - name: media
-          - name: manage
 
     steps:
       - name: Check out code
@@ -67,10 +66,10 @@ jobs:
         with:
           app_id: ${{ secrets.AUTOMATION_APP_ID }}
           private_key: ${{ secrets.AUTOMATION_APP_PRIVATE_KEY }}
-      - name: Send dispatch to openslides-manage
+      - name: Send dispatch to openslides-cli
         uses: peter-evans/repository-dispatch@v2
         with:
           event-type: stable-update
-          repository: ${{ github.repository_owner }}/openslides-manage-service
+          repository: ${{ github.repository_owner }}/openslides-cli
           token: ${{ steps.generate-token.outputs.token }}
           client-payload: '{"branch": "${{ github.ref_name }}", "version": "${{ needs.build.outputs.openslides-version }}"}'
