@@ -10,4 +10,5 @@
   chmod +x ./osmanage
 
 ./osmanage setup --config config.yml --template docker-compose.yml.tmpl .
-./osmanage config --config config.yml --template docker-compose.yml.tmpl .
+# --force overwrites existing files (i.e. docker-compose.yml)
+./osmanage config --force --config config.yml --template docker-compose.yml.tmpl .

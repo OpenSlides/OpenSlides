@@ -25,7 +25,7 @@ Go to a nice place in your filesystem and build or
 [download](https://github.com/OpenSlides/openslides-cli/releases) the manage
 tool `osmanage` as well as the templates for the config and compose file
 provided in the [contrib
-folder](https://github.com/peb-adr/openslides-cli/tree/main/contrib).
+folder](https://github.com/OpenSlides/openslides-cli/tree/main/contrib).
 
 You can also fetch them using `wget`. Don't forget to make the binary executable.
 
