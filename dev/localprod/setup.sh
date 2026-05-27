@@ -9,5 +9,5 @@
 [[ -x ./osmanage ]] ||
   chmod +x ./osmanage
 
-./osmanage setup .
+./osmanage setup --config config.yml --template docker-compose.yml.tmpl .
 ./osmanage config --config config.yml --template docker-compose.yml.tmpl .
