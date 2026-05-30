@@ -9,11 +9,9 @@ bigger setups, but this is not described here.
 
 ### Docker and Docker Compose
 
-So for now let's use Docker Compose. Be sure you have
-[Docker](https://docs.docker.com/engine/) and [Docker
+Be sure you have [Docker](https://docs.docker.com/engine/) and [Docker
 Compose](https://docs.docker.com/compose/) installed and the Docker daemon is
-running. It works at least with Docker version 20.10.x and Docker Compose
-version 2.13.x.
+running.
 
 Check if you have to run docker as local user or as root. The info command
 should run without errors:
@@ -24,32 +22,36 @@ should run without errors:
 ### Get manage tool
 
 Go to a nice place in your filesystem and build or
-[download](https://github.com/OpenSlides/openslides-manage-service/releases) the
-manage tool `openslides`.
+[download](https://github.com/OpenSlides/openslides-cli/releases) the manage
+tool `osmanage` as well as the templates for the config and compose file
+provided in the [contrib
+folder](https://github.com/OpenSlides/openslides-cli/tree/main/contrib).
 
-You can also fetch it using `wget`. Don't forget to make the binary executable.
+You can also fetch them using `wget`. Don't forget to make the binary executable.
 
-    $ wget https://github.com/OpenSlides/openslides-manage-service/releases/download/latest/openslides
-    $ chmod +x openslides
+    $ wget https://github.com/OpenSlides/openslides-cli/releases/download/latest/osmanage
+    $ wget https://raw.githubusercontent.com/OpenSlides/openslides-cli/refs/heads/main/contrib/example-config.yml
+    $ wget https://raw.githubusercontent.com/OpenSlides/openslides-cli/refs/heads/main/contrib/docker-compose.yml.tmpl
+    $ chmod +x osmanage
 
 
 ### Setup instance
 
-Setup the instance in this directory:
+Setup the instance in the current directory (`.`):
 
-    $ ./openslides setup .
+    $ ./osmanage setup -c example-config.yml -t docker-compose.yml.tmpl .
 
-This will give you a default setup with local self-signed SSL certificates. You
-will get [a browser warning and have to care yourself about checking the
-fingerprint of the
+This will give you a default setup with locally generated self-signed SSL
+certificates. You will get [a browser warning and have to care yourself about
+checking the fingerprint of the
 certificate](https://en.wikipedia.org/wiki/Self-signed_certificate).
 
-[Below](#SSL-encryption) you find for more information and how to use
-[caddys](proxy) integrated certificate retrieval or how to disable the proxy
-expecting SSL. Disabling SSL is only feasible if you use an extra proxy in front
-of OpenSlides. Keep in mind that the browser client requires a HTTPS connection
-to the server. It is NOT possible to use OpenSlides without any SSL encryption
-at all.
+[Below](#SSL-encryption) you can find for more information and how to use
+[traefiks](https://github.com/OpenSlides/openslides-proxy) integrated
+certificate retrieval or how to disable the proxy expecting SSL. Disabling SSL
+is only feasible if you use an extra proxy in front of OpenSlides. Keep in mind
+that the browser client requires a HTTPS connection to the server. It is NOT
+possible to use OpenSlides without any SSL encryption at all.
 
 Now have a look at the `docker-compose.yml`. You can customize it if you want
 but for most cases this is not recommended.
@@ -62,15 +64,14 @@ Then run:
     $ docker compose pull
     $ docker compose up --detach
 
-Now all services are starting. Wait until they are ready. Maybe you have to
-increase the `--timeout` flag:
-
-    $ ./openslides check-server
+Now all services are starting. Wait until they are ready.
 
 To be able to use OpenSlides create initial data. This includes the first
-account for the `superadmin`.
+account for the `superadmin` (Alternatively
+`OPENSLIDES_BACKEND_CREATE_INITIAL_DATA` can be set in the environment of the
+`backendManage`).
 
-    $ ./openslides initial-data
+    $ ./osmanage initial-data
 
 Now open https://localhost:8000, login with superuser credentials (default
 username and password: `superadmin`) and have fun.
@@ -242,8 +243,8 @@ The manage tool provides settable options for using SSL encryption, which can be
 set in the [custom setup configuration YAML
 file](#Configuration-of-the-generated-Docker-Compose-YAML-file).
 
-If you do not use any customization, the `setup` command generates a self-signed
-certificate by default.
+If you set `enableLocalHTTPS: true` (as done in the `example-config.yml`), the
+`setup` command generates a self-signed certificate.
 
 If you want to use any other certificate you posses, just replace `cert_crt` and
 `cert_key` files in the `secrets` directory before starting Docker.
@@ -254,28 +255,21 @@ setup configuration YAML file.
 
     enableLocalHTTPS: false
 
-Note, that some commands of the manage tool require the `--no-ssl` flag when SSL encryption is disabled, e.g:
-
-    $ ./openslides initial-data --no-ssl
-    $ ./openslides create-user --no-ssl
-    
-To find out which commands require the `--no-ssl` flag use the commands help:
-
-    $ ./openslides <COMMAND> -h
-
-If you run OpenSlides behind a publicly accessible domain, you can use caddy's
+If you run OpenSlides behind a publicly accessible domain, you can use traefik's
 integrated certificate retrieval. Add the following lines to your setup
 configuration YAML file and of course use your own domain instead of the
 example:
 
     enableLocalHTTPS: false
     enableAutoHTTPS: true
+
     services:
       proxy:
         environment:
           EXTERNAL_ADDRESS: openslides.example.com
           # Use letsencrypt staging environment for testing
           # ACME_ENDPOINT: https://acme-staging-v02.api.letsencrypt.org/directory
+          # ACME_EMAIL: Email Address sent to acme endpoint during cert retrieval
 
 Do not forget to [rebuild your Docker Compose YAML
 file](#Configuration-of-the-generated-Docker-Compose-YAML-file).

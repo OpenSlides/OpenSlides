@@ -13,10 +13,11 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Build openslides binary
+      - name: Build osmanage binary and copy compose template
         run: |
-          make -C openslides-manage-service openslides
-          mv -f openslides-manage-service/openslides dev/localprod/openslides
+          make -C openslides-cli osmanage
+          mv -f openslides-cli/osmanage dev/localprod/osmanage
+          cp -f openslides-cli/contrib/docker-compose.yml.tmpl dev/localprod/docker-compose.yml.tmpl
 
       - name: Use example data instead of initial data
         working-directory: "./openslides-backend/data/"
