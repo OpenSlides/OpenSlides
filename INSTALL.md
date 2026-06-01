@@ -125,7 +125,7 @@ E. g. create a file `my-config.yml` with the following content:
 After you have such a file remove your Docker Compose YAML file and rerun the
 `setup` command:
 
-    $ ./openslides setup --config my-config.yml .
+    $ ./osmanage setup --config my-config.yml --template docker-compose.yml.tmpl .
 
 This way you get a Docker Compose YAML file which let OpenSlides listen on the
 configured custom port.
@@ -133,23 +133,19 @@ configured custom port.
 You may also use  the `--force` flag in some cases which also resets secrets and
 all other generated files. To rebuild the Docker Compose YAML file without
 resetting the whole directory (including secrets) use the `config` command
-instead of the `setup` command. E. g. run:
+instead of the `setup` command (also with `--force` in order to overwrite
+existing files). E. g. run:
 
-    $ ./openslides config --config my-config.yml .
+    $ ./osmanage config --force --config my-config.yml --template docker-compose.yml.tmpl .
 
 This command will just rebuild your Docker Compose YAML file.
 
-To get the [defaults](https://github.com/OpenSlides/openslides-manage-service/blob/main/pkg/config/default-config.yml) run:
+Note that `osmanage` tries to connect to the `backendManage` service which has
+it's port `9002` forwarded to `localhost` in the default template. If this is
+different in your environment for any reason, some commands will require the
+`--address` in order to reach that endpoint.
 
-    $ ./openslides config-create-default .
-
-So you get a file where you can see syntax and defaults and might be able to
-customize the steps above.
-
-Note that if you changed the port you will need to run some `./openslides`
-commands with the `-a` flag (run with `--help` for details).
-
-    $ ./openslides create-user -a localhost:9000
+    $ ./osmanage create-user --address localhost:9000
 
 
 ## Update to a new version
@@ -163,18 +159,18 @@ It is therefore recommended to pin the version explicitly in the `my-config.yml`
 
     ---
     defaults:
-      tag: 4.2.0
+      tag: 4.3.0
 
 Note that if changes to the configuration or structure of the docker stack were
-made the appropriate version of the `openslides` tool must also be refetched
-from the [releases](https://github.com/OpenSlides/openslides-manage-service/releases)
-of the openslides-manage-service repository to reflect these in the generated
-compose file.
+made the `docker-compose.yml.tmpl` provided in the [contrib
+folder](https://github.com/OpenSlides/openslides-cli/tree/main/contrib). Will
+include those changes and they must be incorperated (f.e. by overwriting the
+local template file with the new version)
 
 To update to the new version, set the new tag, regenerate the compose file and
 apply the changes to the containers:
 
-    $ ./openslides config --config my-config.yml .
+    $ ./osmanage config --force --config my-config.yml --template docker-compose.yml.tmpl .
     $ docker compose up --detach
 
 Regenerating the compose file is an important step that should be done for every
@@ -184,8 +180,9 @@ resources even when the structure is changing.
 Some updates include migrations that must be run on the database.
 To check the current status and start migrations if necessary, run:
 
-    $ ./openslides migrations stats
-    $ ./openslides migrations finalize
+    $ ./osmanage migrations stats
+    $ ./osmanage migrations migrate
+    $ ./osmanage migrations finalize
 
 For more details about the migration route, see [documentation in the
 backend](https://github.com/OpenSlides/openslides-backend/blob/main/docs/migration_route.md)
@@ -194,12 +191,15 @@ backend](https://github.com/OpenSlides/openslides-backend/blob/main/docs/migrati
 ### Incompatibilities
 
 - 4.3.0
+  - Details about all changes in [info
+    document](https://github.com/peb-adr/OpenSlides/blob/main/UPDATE_TO_4.3.md)
   - Underlying data storing mechanism is changed fundamentally.
     - Data migration performs significant irreversible changes.
-    - Manual intervention is required. See [info document](UPDATE_TO_4.3.md).
+    - Manual intervention is required.
+  - Manage tool (`openslides`) was reworked (now `osmanage`). Usage changed
+    slightly, feature set is mostly unchanged.
   - PostgreSQL major is updated from 15 to 17. Appropriate steps to fulfill the
-    implicit requirements (same as for 4.1.0) are included in [info
-    document](UPDATE_TO_4.3.md).
+    implicit requirements (same as for 4.1.0) are included in info document
 - 4.1.0
   - PostgreSQL major is updated from 11 to 15. This means postgres will
     complain about the data being incompatible
