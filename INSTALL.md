@@ -71,7 +71,7 @@ account for the `superadmin` (Alternatively
 `OPENSLIDES_BACKEND_CREATE_INITIAL_DATA` can be set in the environment of the
 `backendManage`).
 
-    $ ./osmanage initial-data
+    $ ./osmanage initial-data --superadmin-password-file secrets/superadmin
 
 Now open https://localhost:8000, login with superuser credentials (default
 username and password: `superadmin`) and have fun.
@@ -107,7 +107,6 @@ To remove all containers and networks, run:
 To remove also the database (and lose all your data), run:
 
     $ docker compose down --volumes
-
 
 
 ## Configuration of the generated Docker Compose YAML file
