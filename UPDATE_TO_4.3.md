@@ -1,7 +1,8 @@
 
 The goal of this document is to provide a basic technical understanding what
 changes are included in OpenSlides 4.3.0 as well as provide a guide to
-performing the upgrade.
+performing the upgrade. Skip to [How to upgrade safely](how-to-upgrade-safely)
+if you're only looking for steps to follow.
 
 
 ## Collections, Fields, Models, Datastore ... what exactly?
@@ -59,10 +60,10 @@ Until now we have provided the `openslides` binary (developed in the
 built-in template as well as call actions on the backend such as migrations.
 
 This tool has been rewritten (in the `openslides-cli` repository) and renamed
-to `osmanage` aiming to provide the same features (and more) while simplifying
+to `osmanage`, aiming to provide the same features (and more) while simplifying
 the architecture and the templating functionality.
 
-Most noticably the provided and recommended template for docker compose is no
+Most notably the provided and recommended template for docker compose is no
 longer embedded in the binary but instead now resides in the [contrib
 folder](https://github.com/OpenSlides/openslides-cli/tree/main/contrib). A new
 example config can also be found there. As the templating mechanism now
@@ -84,11 +85,16 @@ or the `--help` messages for details.
 
 The migration `100` will move **all** data into new tables and finally delete
 the table that originally held it. We have done a lot of testing and prepared
-steps to follow and tools to use to help guide through this process. Still,
-before starting the upgrade it is more than advisable (!) to have a recent
-backup of the database. See
-[INSTALL.md](https://github.com/OpenSlides/OpenSlides/blob/main/INSTALL.md#database-dump)
-for help with that.
+steps to follow and tools to use to help guide through this process.
+Most steps will be consistent with what is described in
+[INSTALL.md](https://github.com/OpenSlides/OpenSlides/blob/main/INSTALL.md)
+For comparison the old version can be found on the [`stable/4.2.x`
+branch](https://github.com/OpenSlides/OpenSlides/blob/stable/4.2.x/INSTALL.md)
+
+Since the major version of the PostgresQL database is upgraded to 17, a
+database dump is not only advisable but mandatory. As updating to 4.3.0
+requires upgrading to an intermediate version, the guide will create two dumps
+in order to be able to revert to either version.
 
 In addition to the SQL dump (which can be used to restore the DB to the
 captured state) we also recommend to dump all _models_ in JSON form using the
@@ -96,24 +102,152 @@ captured state) we also recommend to dump all _models_ in JSON form using the
 a new _models_ dump of the same format and use a script to systematically
 compare them and verify all data is still there and intact.
 
-    TODO: more datail / instructions
 
-Before starting the big migration `100` all previous migrations must be
-executed in order to prepare the data and solving known issues that would cause
-migration `100` to fail.
+### Backup 4.2.29 (sql dump)
 
-    TODO: more datail / instructions
+First we create a DB dump to be able to revert to this in case anything goes
+wrong.
 
-Now we can run migration `100`
+    # docker compose exec --user postgres postgres pg_dump -U openslides > /safe-place/dump-4.2.29.sql
 
-    TODO: more datail / instructions
+### Update to 4.2.30 -> Pre-Migrations
 
-Run `get_everything.py` again and verify using `models_diff.py`.
+Now we have to upgrade to the intermediate version `4.2.30` which should not be
+used in production and only includes some migrations we need to run before
+upgrading to `4.3.0`.
 
-    TODO: more datail / instructions
+So we adjust our `config.yml` file.
+
+    defaults:
+      tag: 4.2.30
+
+And deploy the new version.
+
+    ./openslides config -c config.yml .
+    docker compose up -d
+
+Run the migrations.
+
+    ./openslides migrations stats
+    ./openslides migrations finalize
+
+### Backup 4.2.30 (sql dump, json dump)
+
+Now the database is prepared and ready for migration to `4.3.0`.
+In order to verify the data afterwards we will now export all data in JSON
+format.
+
+    docker compose exec backendManage bash
+    # Now we are in backend container
+    python cli/get_everything.py > data/d1.json
+    exit
+    # Now we are back on the host
+    docker compose cp backendManage:/app/data/d1.json /safe-place/d1.json
+
+We also need a DB dump to insert after upgrading to new PostgreSQL version
+`17`.
+
+    # docker compose exec --user postgres postgres pg_dump -U openslides > /safe-place/dump-4.2.30.sql
+
+### Prepare Update to 4.3.0 (osmanage, env vars)
+
+Next we will prepare for the actual update.
+
+For compatibility we edit our `config.yml` to set two values explicitly.
+
+    ---
+    defaults:
+      containerRegistry: ghcr.io/openslides/openslides
+      tag: 4.3.0
+
+Also the we will execute migration `100` soon. It will require two environment
+variables to be set. So we prepare that by adding to `config.yml`. Part of the
+migration is setting the new `time_zone` field for existing meetings. Please
+set as is appropriate for your instance.
+
+    ---
+    services:
+      backendManage:
+        environment:
+          MIG0100_I_READ_DOCS: '1'
+          MIG0100_TIMEZONE: 'Europe/Berlin'
+
+Since the old manage tool (`openslides`) was replaced by a new one
+(`osmanage`), we will now that together with accompanying template file 
+regenerating our compose file with it.
+
+    wget https://github.com/OpenSlides/openslides-cli/releases/download/latest/osmanage
+    wget https://raw.githubusercontent.com/OpenSlides/openslides-cli/refs/heads/main/contrib/docker-compose.yml.tmpl
+    chmod +x osmanage
+
+### Update to 4.3.0
+
+Now we need to shutdown the instance and also remove the volumes.
+
+> [!WARNING]
+> If the dump during [backup-4.2.30] did not work for any reason you will lose all your data!
+
+Be sure you did the dump.
+Take a deep breath and shutdown your instance with also removing volumes.
+
+    docker compose down --volumes
+
+For deploying the new version, we start with only starting postgres.
+
+    # For comparison we can keep the old compose file
+    mv docker-compose.yml docker-compose.yml.old
+    # --force is needed when overwriting
+    ./osmanage config -c configsmall.yml -t docker-compose.yml.tmpl .
+    # Start PostgreSQL
+    docker compose up -d postgres
+
+Insert the data
+
+    docker compose exec --no-TTY --user postgres postgres psql -U openslides < /safe-place/dump-4.2.30.sql
+
+Start the remaining services
+
+    docker compose up -d
+
+Run migration `100`
+
+    ./osmanage migrations stats
+    ./osmanage migrations migrate
+    ./osmanage migrations finalize
+
+### Verify Data (json dump, models diff)
+
+    # Copy D1
+    docker compose cp /safe-place/d1.json backendManage:/app/data/d1.json
+    docker compose exec backendManage bash
+    # Now we are in backend container
+    source scripts/export_database_variables.sh
+    python cli/get_everything.py > data/d2.json
+    # Do models diff
+    cd meta
+    python dev/scripts/models_diff.py -v /app/data/d1.json /app/data/d2.json
 
 
 ## Good to know
+
+### defaults for containerRegistry and tag
+
+Since the new manage tool (`osmanage`) no longer contains compiled in defaults
+for executing templates `defaults.containerRegistry` and `defaults.tag` must
+now be set explicitly in `config.yml`. Like so:
+
+    ---
+    defaults:
+      containerRegistry: ghcr.io/openslides/openslides
+      tag: 4.3.X
+
+Depending on how TLS is setup it may be necessary now to set options explictly
+in `config.yml`. Like so:
+
+    ---
+    enableLocalHTTPS: true
+
+For most other values the provided template contains reasonable defaults.
 
 ### MI -1 caveat
 
