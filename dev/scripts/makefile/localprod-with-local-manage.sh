@@ -22,8 +22,11 @@ cp "$OS_CLI_PATH"/contrib/docker-compose.yml.tmpl "$OS_LOCALPROD_PATH"/docker-co
 
 # Setup and generate localprod docker compose
 info  "Executing osmanage setup"
-"$OS_LOCALPROD_PATH"/osmanage setup "$OS_LOCALPROD_PATH"
-"$OS_LOCALPROD_PATH"/osmanage config \
+"$OS_LOCALPROD_PATH"/osmanage setup \
+  --config "$OS_LOCALPROD_PATH/config.yml" \
+  --template "$OS_LOCALPROD_PATH/docker-compose.yml.tmpl" \
+  "$OS_LOCALPROD_PATH"
+"$OS_LOCALPROD_PATH"/osmanage config --force \
   --config "$OS_LOCALPROD_PATH/config.yml" \
   --template "$OS_LOCALPROD_PATH/docker-compose.yml.tmpl" \
   "$OS_LOCALPROD_PATH"
