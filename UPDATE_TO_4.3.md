@@ -1,7 +1,7 @@
 
 The goal of this document is to provide a basic technical understanding what
-changes are included in OpenSlides 4.3.0 as well as provide steps to perform
-the upgrade.
+changes are included in OpenSlides 4.3.0 as well as provide a guide to
+performing the upgrade.
 
 
 ## Collections, Fields, Models, Datastore ... what exactly?
@@ -20,8 +20,9 @@ referred to as a _model_.
 The technical definition of this is kept in the
 [openslides-meta](https://github.com/OpenSlides/openslides-meta) repository.
 The complete structure with all _collections_ and their _fields_ can be found
-in the `collections` folder. See the `README.md` for more details on the
-format.
+in the `collections` folder. See the
+[README.md](https://github.com/OpenSlides/openslides-meta/blob/main/README.md)
+for more details on the format.
 
 The initial implementation to store the application data following this
 structure was the _datastore_. Written in python it used a PostgreSQL DB as
@@ -31,6 +32,9 @@ SQL schema definition being rather simple.
 
 
 ## Changes in 4.3.0
+
+
+### Datastore removed
 
 With OpenSlides `4.3.0` the datastore is removed and the data structure defined
 in [openslides-meta](https://github.com/OpenSlides/openslides-meta) is
@@ -46,6 +50,34 @@ used by the obsolete _datastore_ is migrated into the new tables defined by
 (which is generated from the
 [`collections`](https://github.com/OpenSlides/openslides-meta/tree/main/collections))
 definitions. This is done by migration `100`.
+
+
+### manage-tool replaced
+
+Until now we have provided the `openslides` binary (developed in the
+`openslides-manage-service` repository) to create a compose file from a
+built-in template as well as call actions on the backend such as migrations.
+
+This tool has been rewritten (in the `openslides-cli` repository) and renamed
+to `osmanage` aiming to provide the same features (and more) while simplifying
+the architecture and the templating functionality.
+
+Most noticably the provided and recommended template for docker compose is no
+longer embedded in the binary but instead now resides in the [contrib
+folder](https://github.com/OpenSlides/openslides-cli/tree/main/contrib). A new
+example config can also be found there. As the templating mechanism now
+interpretes templates and config completely generically, there are also no more
+compiled-in defaults and all values must be set either in the provided config
+or template file.
+
+> [!IMPORTANT]
+> If you built scipts or other automations on top of the old manage tool, they
+> are now very likely to break.
+
+Please refer to the updated
+[INSTALL.md](https://github.com/OpenSlides/OpenSlides/blob/main/INSTALL.md),
+[openslides-cli/README.md](https://github.com/OpenSlides/openslides-cli/blob/main/README.md)
+or the `--help` messages for details.
 
 
 ## How to upgrade safely
