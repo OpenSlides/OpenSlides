@@ -115,9 +115,10 @@ wrong.
 
 ### Update to 4.2.30
 
-Now we have to upgrade to the intermediate version `4.2.30` which should not be
-used in production and only includes some migrations we need to run before
-upgrading to `4.3.0`.
+Now we have to upgrade to the intermediate version `4.2.30` (find patchnotes
+[here](https://github.com/OpenSlides/OpenSlides/blob/stable/4.2.x/patchnotes/4.2.30.md))
+which should not be used in production and only includes some migrations we
+need to run before upgrading to `4.3.0`.
 
 So we adjust our `config.yml` file.
 
@@ -163,9 +164,12 @@ For compatibility we edit our `config.yml` to set two values explicitly.
       tag: 4.3.0
 
 Also the we will execute migration `100` soon. It will require two environment
-variables to be set. Part of the migration is setting the new `time_zone` field
-for existing meetings. Please set as is appropriate for your instance. We
-prepare this by adding to our `config.yml`:
+variables to be set. By setting `MIG0100_I_READ_DOCS` we confirm we are
+following this guide. Part of the migration is setting the new `time_zone`
+field for existing meetings. Please set `MIG0100_TIMEZONE` as is appropriate
+for your instance.
+
+We prepare this by adding to our `config.yml`:
 
     services:
       backendManage:
@@ -183,10 +187,14 @@ for regenerating our compose file with it later.
 
 ### Update to 4.3.0
 
-Now we need to shutdown the instance and also remove the volumes.
+Now we need to shutdown the instance and also remove the volumes. Removing the
+volumes is necessary because PostgreSQL will start in the new version `17`
+which would not be compatible with the old data. Therefore we must reimport the
+data into a fresh DB in the new container.
 
 > [!WARNING]
-> If the SQL dump during [Backup 4.2.30](#backup-4230-json-export-sql-dump) did not work for any reason you will lose all your data!
+> If the SQL dump during [Backup 4.2.30](#backup-4230-json-export-sql-dump) did
+> not work for any reason you will lose all your data!
 
 Be sure you did the SQL dump.
 
@@ -245,7 +253,8 @@ be reported.
 
 Please investigate the output carefully. For varying degree of detail you can
 provide zero to five verbose flags (`-vvvvv`). If some of the output concerns
-you, we are prepared to discuss that publicly in a GitHub issue.
+you, we are prepared to discuss that publicly in a [GitHub
+issue](https://github.com/OpenSlides/OpenSlides/issues/7125).
 
 Congratulations, the database is now migrated to the new schema, the data
 verified and OpenSlides ready to use.
@@ -270,7 +279,7 @@ in `config.yml`. Like so:
 
 For most values the provided template contains reasonable defaults.
 
-### MI -1 caveat
+### Migration Index -1 caveat
 
 Before running migration `100` current MI will be shown to be one lower than we
 previously migrated to.
