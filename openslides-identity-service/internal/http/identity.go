@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log"
 	"math/big"
 	"net/http"
 	"os"
@@ -48,7 +49,6 @@ func NewIdentifier() *Identity {
 func (id *Identity) Identify(w http.ResponseWriter, r *http.Request) (int, error) {
 	p := new(payloadKeycloak)
 	if err := id.loadTokenKeycloak(w, r, p); err != nil {
-		fmt.Println("reading token: %v", err)
 		return 0, fmt.Errorf("reading token: %w", err)
 	}
 
@@ -59,6 +59,7 @@ func (id *Identity) Identify(w http.ResponseWriter, r *http.Request) (int, error
 	// Get OS User Id linked to Keycloak ID
 	userID, err := strconv.Atoi(p.OSUserID)
 	if err != nil {
+		log.Printf("user id is not an integer %v", p.OSUserID)
 		return 0, fmt.Errorf("user id is not an integer %v", p.OSUserID)
 	}
 

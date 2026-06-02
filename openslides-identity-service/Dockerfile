@@ -9,18 +9,21 @@ WORKDIR /app/openslides-identity-service
 ENV APP_CONTEXT=${CONTEXT}
 
 ## Install
-RUN apk add git --no-cache
+RUN apk add --no-cache \
+    curl \
+    git
 
 COPY go.mod go.sum ./
 RUN go mod download
 
-COPY . .
+COPY main.go main.go
+COPY internal internal
 
 ## External Information
-EXPOSE 9012
+EXPOSE 9014
 
 ## Healthcheck
-HEALTHCHECK curl --fail http://localhost:8083/system/identity/health/
+HEALTHCHECK CMD curl --fail http://localhost:9014/system/identity/health/
 
 ## Command
 COPY ./dev/command.sh ./
@@ -35,14 +38,10 @@ RUN ["go", "install", "github.com/githubnemo/CompileDaemon@latest"]
 # Test Image
 FROM base AS tests
 
-COPY dev/container-tests.sh ./dev/container-tests.sh
-
 RUN apk add --no-cache \
-    build-base \
-    docker && \
-    go get -u github.com/ory/dockertest/v3 && \
-    go install golang.org/x/lint/golint@latest && \
-    chmod +x dev/container-tests.sh
+    build-base
+
+CMD go vet ./... && go test -test.short ./...
 
 ## Command
 STOPSIGNAL SIGKILL
@@ -58,15 +57,15 @@ FROM scratch AS prod
 ARG CONTEXT
 ENV APP_CONTEXT=prod
 
-LABEL org.opencontainers.image.title="OpenSlides Autoupdate Service"
-LABEL org.opencontainers.image.description="The Autoupdate Service is a http endpoint where the clients can connect to get the current data and also updates."
+LABEL org.opencontainers.image.title="OpenSlides Identity Service"
+LABEL org.opencontainers.image.description="The Identity Service is a http endpoint where the clients can connect to get OpenSlides User IDs."
 LABEL org.opencontainers.image.licenses="MIT"
-LABEL org.opencontainers.image.source="https://github.com/OpenSlides/openslides-autoupdate-service"
+LABEL org.opencontainers.image.source="https://github.com/OpenSlides/openslides-identity-service"
 
-COPY --from=builder /app/openslides-autoupdate-service/openslides-autoupdate-service /
+COPY --from=builder /app/openslides-identity-service/openslides-identity-service /
 
 EXPOSE 9012
-ENTRYPOINT ["/openslides-autoupdate-service"]
+ENTRYPOINT ["/openslides-identity-service"]
 
 
-HEALTHCHECK CMD ["/openslides-autoupdate-service", "health"]
+HEALTHCHECK CMD curl --fail http://localhost:9014/system/identity/health/

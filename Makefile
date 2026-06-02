@@ -14,7 +14,7 @@ build build-prod:
 	$(DOCKER_PATH)/build.sh
 
 # Development
-.SERVICE_TARGETS := auth autoupdate backend client icc manage media proxy search vote
+.SERVICE_TARGETS := auth autoupdate backend client icc identity manage media proxy search vote
 
 $(.SERVICE_TARGETS):
 	@echo ""
@@ -108,7 +108,7 @@ copy-translations:
 
 # Keycloak
 
-migrate-users:
+migrate-users-to-keycloak:
 	make dev-exec EXEC_COMMAND="backend make migrate-users-to-keycloak"
 
 ########################## Deprecation List ##########################

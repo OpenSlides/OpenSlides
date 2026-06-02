@@ -263,7 +263,7 @@ services:
     ports:
       - "9013:9013"
 
-  identity-service:
+  identity:
     build:
         context: ../../openslides-identity-service
         target: "dev"

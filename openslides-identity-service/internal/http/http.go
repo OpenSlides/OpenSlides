@@ -59,7 +59,7 @@ func HandleHealth(mux *http.ServeMux) {
 
 // HandleIdentity returns the OS user ID extracted from the Bearer token.
 func HandleIdentity(mux *http.ServeMux, id *Identity) {
-	mux.HandleFunc(prefixPublic+"/get_id", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc(prefixPublic+"/identify", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 
 		osID, err := id.Identify(w, r)
