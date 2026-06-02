@@ -6,34 +6,33 @@ import (
 	"fmt"
 	"net"
 	"net/http"
-
-	"github.com/OpenSlides/openslides-go/environment"
+	"os"
 )
 
 const (
-	prefixPublic   = "/system/identity"
-	prefixInternal = "/internal/identity"
+	prefixPublic = "/system/identity"
 )
 
-// Run starts the http server.
-func RunHTTP(
-	ctx context.Context,
-) error {
-	lookup := new(environment.ForProduction)
+// RunHTTP starts the http server.
+func RunHTTP(ctx context.Context) error {
+	port := os.Getenv("IDENTITY_PORT")
+	if port == "" {
+		port = "9014"
+	}
+
 	mux := http.NewServeMux()
-	id := NewIdentifier(lookup)
+	id := NewIdentifier()
 
 	HandleHealth(mux)
 	HandleIdentity(mux, id)
 
 	srv := &http.Server{
-		Addr:        ":9014",
+		Addr:        ":" + port,
 		Handler:     mux,
 		BaseContext: func(net.Listener) context.Context { return ctx },
 	}
 
-	// Shutdown logic in separate goroutine.
-	wait := make(chan error)
+	wait := make(chan error, 1)
 	go func() {
 		<-ctx.Done()
 		if err := srv.Shutdown(context.WithoutCancel(ctx)); err != nil {
@@ -44,37 +43,31 @@ func RunHTTP(
 	}()
 
 	if err := srv.ListenAndServe(); err != http.ErrServerClosed {
-		return fmt.Errorf("HTTP Server failed: %v", err)
+		return fmt.Errorf("HTTP server failed: %v", err)
 	}
 
 	return <-wait
 }
 
-// HandleHealth checks if the service is running
+// HandleHealth returns a simple health-check response.
 func HandleHealth(mux *http.ServeMux) {
-	url := prefixPublic + "/health"
-	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc(prefixPublic+"/health", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		fmt.Fprintln(w, `{"healthy": true, "service":"identity"}`)
 	})
-
-	mux.Handle(url, handler)
 }
 
-// HandleHealth returns the OS User ID from the auth header
+// HandleIdentity returns the OS user ID extracted from the Bearer token.
 func HandleIdentity(mux *http.ServeMux, id *Identity) {
-	url := prefixPublic + "/get_id"
-	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc(prefixPublic+"/get_id", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 
-		os_id, err := id.Identify(w, r)
+		osID, err := id.Identify(w, r)
 		if err != nil {
 			fmt.Fprintf(w, `{"error": %q}`, err.Error())
 			return
 		}
 
-		fmt.Fprintf(w, `{"user_id": %d}`, os_id)
+		fmt.Fprintf(w, `{"user_id": %d}`, osID)
 	})
-
-	mux.Handle(url, handler)
 }

@@ -10,20 +10,12 @@ import (
 	"fmt"
 	"math/big"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 	"time"
 
-	"github.com/OpenSlides/openslides-go/environment"
 	"github.com/golang-jwt/jwt/v4"
-)
-
-var (
-	envIssuerURL       = environment.NewVariable("OIDC_ISSUER_URL", "http://localhost:8080/realms/openslides", "URL of keycloak server")
-	envIssuerURLDocker = environment.NewVariable("OIDC_ISSUER_URL_DOCKER", "http://keycloak-server:8080/realms/openslides", "Dockerized URL of keycloak server")
-	envClientID        = environment.NewVariable("OIDC_CLIENT_ID", "proxy-client", "Keycloak client name")
-	envClientSecret    = environment.NewVariable("OIDC_CLIENT_SECRET", "proxy-secret", "Keycloak client secret")
-	envSecret          = environment.NewVariable("OIDC_SECRET", "qvAcTGWBIGg7aWKCKRyUsTf33jK3lsmK", "Keycloak secret")
 )
 
 // Identity validates OIDC JWT tokens and extracts the OS User ID
@@ -37,18 +29,19 @@ type Identity struct {
 // New initializes the Identity object.
 //
 // Returns the initialized Identity object
-func NewIdentifier(lookup environment.Environmenter) *Identity {
-	issuerURLDocker := envIssuerURLDocker.Value(lookup)
+func NewIdentifier() *Identity {
+	issuerURLDocker := os.Getenv("OIDC_ISSUER_URL_DOCKER")
 	if issuerURLDocker == "" {
-		issuerURLDocker = envIssuerURL.Value(lookup)
+		issuerURLDocker = os.Getenv("OIDC_ISSUER_URL")
+	}
+	if issuerURLDocker == "" {
+		issuerURLDocker = "http://keycloak-server:8080/realms/openslides"
 	}
 
-	a := &Identity{
+	return &Identity{
 		issuerURLDocker: issuerURLDocker,
 		keys:            make(map[string]*rsa.PublicKey),
 	}
-
-	return a
 }
 
 // Identity uses the headers from the given request to get the user id.
