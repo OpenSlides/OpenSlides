@@ -48,7 +48,7 @@ func NewIdentifier() *Identity {
 func (id *Identity) Identify(w http.ResponseWriter, r *http.Request) (int, error) {
 	p := new(payloadKeycloak)
 	if err := id.loadTokenKeycloak(w, r, p); err != nil {
-		fmt.Println("reading token: %w", err)
+		fmt.Println("reading token: %v", err)
 		return 0, fmt.Errorf("reading token: %w", err)
 	}
 
