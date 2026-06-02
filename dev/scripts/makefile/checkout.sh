@@ -10,10 +10,11 @@ BRANCH_NAME=${2:-"main"}
 BRANCH_FILE=${3:-""}
 OPT_PULL=${4:-0}
 CHECKOUT_LATEST=${5:-0}
+AUTO_MAIN_FALLBACK=${6:-0}
 
 BRANCH_FILE_PATH=$(realpath ".")
 
-if [ -f  "$BRANCH_FILE_PATH/$BRANCH_FILE" ]; then success "Reading commit info from $BRANCH_FILE"; fi
+if [ -f  "$BRANCH_FILE_PATH/$BRANCH_FILE" ]; then info "Reading commit info from $BRANCH_FILE"; fi
 
 usage() {
   info "\
@@ -104,6 +105,7 @@ checkout() {
 
         if [ -z "$SUBMODULE" ]; then SUBMODULE="OpenSlides"; fi
 
+        info ""
         info "Fetch & checkout for ${SUBMODULE} "
 
         # Check for changes and stash them if wanted.
@@ -112,15 +114,31 @@ checkout() {
         if [ "$GIT_CHANGES" != "" ]
         then
             info "The repository has changes"
-            success "$GIT_CHANGES"
+            info "$GIT_CHANGES"
 
-            ask y "Stash them?" </dev/tty && RESULT=$? || true
+            read -rp $'\n'"Stash them (Y) soft reset them (d) hard reset them (D) or skip this submodule (s): " </dev/tty
+            local STASH_OUTPUT=0
+            case "$REPLY" in
+            Y|y|Yes|yes|YES) STASH_OUTPUT=0;;
+            d) STASH_OUTPUT=1 ;;
+            D) STASH_OUTPUT=2 ;;
+            "") STASH_OUTPUT=0 ;;
+            *) STASH_OUTPUT=3 ;;
+            esac
 
-            if [ "$RESULT" == 0 ]
+            if [ "$STASH_OUTPUT" == 0 ]
             then
                 git stash
+            elif [ "$STASH_OUTPUT" == 1 ]
+            then
+                warn "Soft resetting changes to $SUBMODULE"
+                git reset --soft
+            elif [ "$STASH_OUTPUT" == 2 ]
+            then
+                warn "Hard resetting changes to $SUBMODULE"
+                git reset --hard
             else
-                warn "$SUBMODULE was not stashed. Skipped instead"
+                warn "$SUBMODULE was skipped"
                 exit 0
             fi
         fi
@@ -134,7 +152,7 @@ checkout() {
                 echocmd git remote add "$SOURCE" git@github.com:"$SOURCE"/"$SUBMODULE".git
             else
                 echocmd git remote set-url "$SOURCE" git@github.com:"$SOURCE"/"$SUBMODULE".git
-                success "Remote $SOURCE already exists"
+                info "Remote $SOURCE already exists"
             fi
         else
             SOURCE=$(set_remote "upstream" "origin")
@@ -145,7 +163,29 @@ checkout() {
         echocmd git fetch "$SOURCE"
 
         # Verify or set to main
-        git rev-parse --verify remotes/"$SOURCE"/"$BRANCH" &>/dev/null || BRANCH=main
+        echocmd git rev-parse --verify remotes/"$SOURCE"/"$BRANCH" &>/dev/null || local BRANCH_NOT_FOUND=1
+
+        # If branch couldn't be found, user has the option to either checkout main branch instead or skip checkout for this service
+        if [ -n "$BRANCH_NOT_FOUND" ]
+        then
+            if [ "$AUTO_MAIN_FALLBACK" == 1 ]
+            then
+                info "Automatically skipping checkout for $SUBMODULE, because no branch found named $SOURCE/$BRANCH and automatic main fallback is active"
+                exit 0
+            fi
+            local CHECKOUT_MAIN
+            CHECKOUT_MAIN=$(ask yo "$SUBMODULE does not have a branch named $SOURCE/$BRANCH. Type y to checkout main instead. Type n to remain in current branch." </dev/tty)
+
+            if [ "$CHECKOUT_MAIN" == 0 ]
+            then
+                info "Checking out main branch instead"
+                BRANCH=main
+            else
+                info "Skipping checkout for $SUBMODULE"
+                exit 0
+            fi
+            unset BRANCH_NOT_FOUND
+        fi
 
         if [ "$OPT_PULL" == 0 ]
         then
@@ -154,11 +194,11 @@ checkout() {
         else
             # Pull and forward local branch
             # Switch Branch
-            if ! git branch --list | grep -v "HEAD" | grep -q "$BRANCH"
+            if [ -z "$(git branch --list "$BRANCH")" ]
             then
                 echocmd git switch -t "$SOURCE"/"$BRANCH"
             else
-                success "Branch $BRANCH already exists"
+                info "Branch $BRANCH already exists"
                 echocmd git checkout "$BRANCH"
             fi
 
@@ -172,11 +212,11 @@ checkout() {
 
         if [ -n "$HASH" ]
         then
-           git reset --hard "$HASH"
+            git reset --hard "$HASH"
         fi;
 
-        # Switch meta too, if present
-        if [ -d "meta" ]
+        # Checkout meta too, if directory and submodule is present
+        if [ -d "meta" ] && [ "$(basename "$(git -C ./meta rev-parse --show-toplevel)")" == "meta" ]
         then
             checkout "meta" "openslides-meta" "$REMOTE_NAME" "$BRANCH_NAME" ""
         fi
@@ -190,6 +230,7 @@ checkout() {
                 go_update
             fi
         fi
+
     )
 }
 
@@ -202,22 +243,13 @@ checkout_main()
     )
 }
 
-setup_localprod()
+inform_about_localprod()
 {
     (
-        ask y "Setup localprod as well? WARNING: This will overwrite current localprod setup" || exit 0
-
-        # Switching to manage and building openslides exe
-        cd "$(dirname "$0")"/../../../openslides-manage-service || exit 1
-        make openslides
-
-        # Moving openslides to localprod directory
-        mv ./openslides ../dev/localprod/openslides
-        cd ../dev/localprod || exit 1
-
-        # Setup and generate localprod docker compose
-        ./openslides setup .
-        ./openslides config --config config.yml .
+        info "Localprod may be out of sync with the checked out commits. Consider rebuilding it:"
+        info "make localprod-build"
+        info "If you want to build localprod using the locally checked out openslides-cli instead of main, use:"
+        info "make localprod-build-local-manage"
     )
 }
 
@@ -243,6 +275,10 @@ while true; do
             GO_AUTO_CHECKOUT=1
             shift
             ;;
+        -d|--auto_fallback)
+            AUTO_MAIN_FALLBACK=1
+            shift
+            ;;
         -h|--help)
             usage
             exit 0
@@ -257,6 +293,10 @@ while true; do
             ;;
     esac
 done
+
+# Submodule init check
+info "Checking submodule initialization"
+check_submodules_intialized || error "Submodules not initialized"
 
 # Checkout latest branches
 
@@ -283,8 +323,8 @@ while read -r toplevel sm_path name; do
 done <<< "$(git submodule foreach --recursive -q 'echo "$toplevel $sm_path $name"')"
 wait
 
-# Setup localprod
-setup_localprod
+# Localprod
+inform_about_localprod
 
 # Main
 checkout_main
@@ -296,4 +336,4 @@ info "Checking submodule initialization"
 check_submodules_intialized || error "Submodules not initialized"
 
 echo ""
-success Done
+info Done

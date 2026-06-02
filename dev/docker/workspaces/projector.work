@@ -2,5 +2,5 @@ go 1.26.0
 
 use (
 	./lib/openslides-go
-	./openslides-vote-service
+	./openslides-projector-service
 )

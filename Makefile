@@ -10,20 +10,16 @@ override DOCKER_COMPOSE_FILE=$(DOCKER_PATH)/docker-compose.dev.yml
 
 # Build images for different contexts
 
-build-prod build-dev build-tests:
-	sed -i -e "1s/.*/$(GO_VERSION)/" $(DOCKER_PATH)/workspaces/*.work
-	bash $(MAKEFILE_PATH)/make-build-main.sh $@
-
-build:
+build build-prod:
 	$(DOCKER_PATH)/build.sh
 
 # Development
-.SERVICE_TARGETS := auth autoupdate backend client icc manage media proxy search vote
+.SERVICE_TARGETS := auth autoupdate backend client icc media projector proxy search vote
 
 $(.SERVICE_TARGETS):
 	@echo ""
 
-.FLAGS := no-cache capsule compose-local-branch
+.FLAGS := no-cache capsule compose-local-branch no-log-prefix
 
 $(.FLAGS):
 	@echo ""
@@ -34,7 +30,7 @@ devstop:
 	@sed -i "1s/.*/$(GO_VERSION)/" $(DOCKER_PATH)/workspaces/*.work
 	@bash $(MAKEFILE_PATH)/make-dev.sh "dev-stop" "$(filter-out $@, $(MAKECMDGOALS))"
 
-dev dev-help dev-standalone dev-detached dev-attached dev-stop dev-exec dev-enter dev-clean dev-build dev-log dev-restart dev-docker-reset:
+dev dev-help dev-standalone dev-detached dev-attached dev-stop dev-exec dev-enter dev-clean dev-build dev-log dev-log-attach dev-restart dev-full-restart dev-docker-reset:
 	@sed -i "1s/.*/$(GO_VERSION)/" $(DOCKER_PATH)/workspaces/*.work
 	@bash $(MAKEFILE_PATH)/make-dev.sh $@ "$(filter-out $@, $(MAKECMDGOALS))"
 
@@ -48,32 +44,42 @@ test-ci:
 
 # Localprod
 
-run-localprod:
+localprod run-localprod:
 	@if [ ! -f "dev/localprod/docker-compose.yml" ]; then echo "No docker-compose.yml exists in dev/localprod. Have you run setup.sh yet?" && exit 1; fi
 	docker compose -f dev/localprod/docker-compose.yml up --build
 
-log-localprod:
+localprod-stop:
+	@if [ ! -f "dev/localprod/docker-compose.yml" ]; then echo "No docker-compose.yml exists in dev/localprod. Have you run setup.sh yet?" && exit 1; fi
+	docker compose -f dev/localprod/docker-compose.yml down
+
+localprod-delete:
+	rm ./dev/localprod/osmanage
+	rm ./dev/localprod/docker-compose.yml
+	rm ./dev/localprod/docker-compose.yml.tmpl
+
+localprod-build:
+	@if [ ! -d "dev/localprod/" ]; then echo "Directory dev/localprod not found." && exit 1; fi
+	cd ./dev/localprod && ./setup.sh
+
+localprod-log:
 	@if [ ! -f "dev/localprod/docker-compose.yml" ]; then echo "No docker-compose.yml exists in dev/localprod. Have you run setup.sh yet?" && exit 1; fi
 	docker compose -f dev/localprod/docker-compose.yml logs $(ARGS)
 
+localprod-build-local-manage:
+	@bash $(MAKEFILE_PATH)/localprod-with-local-manage.sh
+
 # Checkout
 
-checkout:
-	@bash $(MAKEFILE_PATH)/checkout.sh "${REMOTE}" "$(BRANCH)" "$(FILE)" "$(PULL)" "$(LATEST)"
+checkout services-to-main:
+	@bash $(MAKEFILE_PATH)/checkout.sh "${REMOTE}" "$(BRANCH)" "$(FILE)" "$(PULL)" "$(LATEST)" "$(FALLBACK)"
 
-checkout-pull:
-	@bash $(MAKEFILE_PATH)/checkout.sh "${REMOTE}" "$(BRANCH)" "$(FILE)" "true" "$(LATEST)"
+checkout-pull services-to-main-pull:
+	@bash $(MAKEFILE_PATH)/checkout.sh "${REMOTE}" "$(BRANCH)" "$(FILE)" "true" "$(LATEST)" "$(FALLBACK)"
 
 checkout-help:
 	@bash $(MAKEFILE_PATH)/checkout.sh -h
 
 # Make-release commands
-
-services-to-main:
-	$(SCRIPT_PATH)/make-update.sh fetch-all-changes $(ARGS)
-
-services-to-main-pull:
-	$(SCRIPT_PATH)/make-update.sh fetch-all-changes --pull $(ARGS)
 
 staging-update:
 	$(SCRIPT_PATH)/make-update.sh staging $(ARGS)
@@ -99,8 +105,7 @@ pull-translations:
 	tx pull --translations --languages $$(dev/scripts/dc-dev.sh exec client npm run get-available-languages | tail -n 1)
 
 copy-translations:
-	cp i18n/*.po openslides-client/client/src/assets/i18n/
-	cp i18n/*.po openslides-backend/openslides_backend/i18n/messages/
+	dev/scripts/copy-translations.sh
 
 
 ########################## Deprecation List ##########################
@@ -111,16 +116,21 @@ warning-deprecation:
 warning-deprecation-alternative: | warning-deprecation
 	@echo "\033[1;33m Please use the following command instead: $(ALTERNATIVE) \033[0m"
 
+build-dev:
+	@make warning-deprecation-alternative ALTERNATIVE="dev-build"
+	sed -i "1s/.*/$(GO_VERSION)/" $(DOCKER_PATH)/workspaces/*.work
+	@bash $(MAKEFILE_PATH)/make-dev.sh "dev-build" "$(filter-out $@, $(MAKECMDGOALS))"
+
 run-dev:
 	@make warning-deprecation-alternative ALTERNATIVE="dev"
 	sed -i "1s/.*/$(GO_VERSION)/" $(DOCKER_PATH)/workspaces/*.work
-	chmod +x $(SCRIPT_PATH)/makefile/build-all-submodules.sh
+	@bash $(MAKEFILE_PATH)/make-dev.sh "dev-build" "$(filter-out $@, $(MAKECMDGOALS))"
 	$(DC_DEV) up $(ARGS)
 
 run-dev-detached:
 	@make warning-deprecation-alternative ALTERNATIVE="dev"
 	sed -i "1s/.*/$(GO_VERSION)/" $(DOCKER_PATH)/workspaces/*.work
-	chmod +x $(SCRIPT_PATH)/makefile/build-all-submodules.sh
+	@bash $(MAKEFILE_PATH)/make-dev.sh "dev-build" "$(filter-out $@, $(MAKECMDGOALS))"
 	$(DC_DEV) up $(ARGS) -d
 
 stop-dev:
