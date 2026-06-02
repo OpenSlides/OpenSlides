@@ -1,7 +1,8 @@
 
 The goal of this document is to provide a basic technical understanding what
 changes are included in OpenSlides 4.3.0 as well as provide a guide to
-performing the upgrade. Skip to [How to upgrade safely](how-to-upgrade-safely)
+performing the upgrade. It is recommended to read the whole document before
+starting the procedure. Skip to [How to upgrade safely](#how-to-upgrade-safely)
 if you're only looking for steps to follow.
 
 
@@ -88,18 +89,18 @@ the table that originally held it. We have done a lot of testing and prepared
 steps to follow and tools to use to help guide through this process.
 Most steps will be consistent with what is described in
 [INSTALL.md](https://github.com/OpenSlides/OpenSlides/blob/main/INSTALL.md)
-For comparison the old version can be found on the [`stable/4.2.x`
+For reference the old version can be found on the [`stable/4.2.x`
 branch](https://github.com/OpenSlides/OpenSlides/blob/stable/4.2.x/INSTALL.md)
 
-Since the major version of the PostgresQL database is upgraded to 17, a
+Since the major version of the PostgreSQL database is upgraded to `17`, a
 database dump is not only advisable but mandatory. As updating to 4.3.0
 requires upgrading to an intermediate version, the guide will create two dumps
 in order to be able to revert to either version.
 
 In addition to the SQL dump (which can be used to restore the DB to the
-captured state) we also recommend to dump all _models_ in JSON form using the
+captured state) we also recommend to export all _models_ in JSON form using the
 `get_everything.py` script. After the upgrade procedure is complete we can get
-a new _models_ dump of the same format and use a script to systematically
+a new _models_ export of the same format and use a script to systematically
 compare them and verify all data is still there and intact.
 
 
@@ -112,7 +113,7 @@ wrong.
     mkdir /some/safe/place
     docker compose exec --user postgres postgres pg_dump -U openslides > /some/safe/place/dump-4.2.29.sql
 
-### Update to 4.2.30 -> Pre-Migrations
+### Update to 4.2.30
 
 Now we have to upgrade to the intermediate version `4.2.30` which should not be
 used in production and only includes some migrations we need to run before
@@ -128,7 +129,7 @@ And deploy the new version.
     ./openslides config -c config.yml .
     docker compose up -d
 
-Run the migrations.
+Now run the migrations.
 
     ./openslides migrations stats
     ./openslides migrations finalize
@@ -146,7 +147,7 @@ format.
     # Now we are back on the host
     docker compose cp backendManage:/app/data/d1.json /some/safe/place/d1.json
 
-We also need a DB dump to insert after upgrading to new PostgreSQL version
+We also need a new DB dump to insert after upgrading to new PostgreSQL version
 `17`.
 
     docker compose exec --user postgres postgres pg_dump -U openslides > /some/safe/place/dump-4.2.30.sql
@@ -162,9 +163,9 @@ For compatibility we edit our `config.yml` to set two values explicitly.
       tag: 4.3.0
 
 Also the we will execute migration `100` soon. It will require two environment
-variables to be set. So we prepare that by adding to `config.yml`. Part of the
-migration is setting the new `time_zone` field for existing meetings. Please
-set as is appropriate for your instance.
+variables to be set. Part of the migration is setting the new `time_zone` field
+for existing meetings. Please set as is appropriate for your instance. We
+prepare this by adding to our `config.yml`:
 
     services:
       backendManage:
@@ -185,7 +186,7 @@ for regenerating our compose file with it later.
 Now we need to shutdown the instance and also remove the volumes.
 
 > [!WARNING]
-> If the SQL dump during [Backup 4.2.30](backup-4.2.30) did not work for any reason you will lose all your data!
+> If the SQL dump during [Backup 4.2.30](#backup-4230-json-export-sql-dump) did not work for any reason you will lose all your data!
 
 Be sure you did the SQL dump.
 
@@ -222,18 +223,18 @@ Finally we can compare the application data, we exported as JSON earlier, to
 the data present after the migration using a python script included in the
 backend.
 
-We start by copying the earlier export (D1) into the new backend container.
+We start by copying the earlier export (`d1.json`) into the new backend container.
 
-    # Copy D1
+    # Copy `d1.json`
     docker compose cp /some/safe/place/d1.json backendManage:/app/data/d1.json
 
-Next we do a new JSON export (D2) in much the same way
+Next we do a new JSON export (`d2.json`) in much the same way
 
     docker compose exec backendManage bash
     # Now we are inside the backend container
     source scripts/export_database_variables.sh
     python cli/get_everything.py > data/d2.json
-    # The /app/data/ folder now contains D1 and D2
+    # The /app/data/ folder now contains d1.json and d2.json
 
 Lastly we call the script to automatically compare all data.  Differences will
 be reported.
