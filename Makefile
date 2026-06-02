@@ -106,6 +106,10 @@ pull-translations:
 copy-translations:
 	dev/scripts/copy-translations.sh
 
+# Keycloak
+
+migrate-users:
+	make dev-exec EXEC_COMMAND="backend make migrate-users-to-keycloak"
 
 ########################## Deprecation List ##########################
 
