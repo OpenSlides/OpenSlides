@@ -103,12 +103,14 @@ a new _models_ dump of the same format and use a script to systematically
 compare them and verify all data is still there and intact.
 
 
-### Backup 4.2.29 (sql dump)
+### Backup 4.2.29 (SQL dump)
 
 First we create a DB dump to be able to revert to this in case anything goes
 wrong.
 
-    # docker compose exec --user postgres postgres pg_dump -U openslides > /safe-place/dump-4.2.29.sql
+    # Create a directory for storing backup data
+    mkdir /some/safe/place
+    docker compose exec --user postgres postgres pg_dump -U openslides > /some/safe/place/dump-4.2.29.sql
 
 ### Update to 4.2.30 -> Pre-Migrations
 
@@ -131,31 +133,30 @@ Run the migrations.
     ./openslides migrations stats
     ./openslides migrations finalize
 
-### Backup 4.2.30 (sql dump, json dump)
+### Backup 4.2.30 (JSON export, SQL dump)
 
 Now the database is prepared and ready for migration to `4.3.0`.
 In order to verify the data afterwards we will now export all data in JSON
 format.
 
     docker compose exec backendManage bash
-    # Now we are in backend container
+    # Now we are inside the backend container
     python cli/get_everything.py > data/d1.json
     exit
     # Now we are back on the host
-    docker compose cp backendManage:/app/data/d1.json /safe-place/d1.json
+    docker compose cp backendManage:/app/data/d1.json /some/safe/place/d1.json
 
 We also need a DB dump to insert after upgrading to new PostgreSQL version
 `17`.
 
-    # docker compose exec --user postgres postgres pg_dump -U openslides > /safe-place/dump-4.2.30.sql
+    docker compose exec --user postgres postgres pg_dump -U openslides > /some/safe/place/dump-4.2.30.sql
 
-### Prepare Update to 4.3.0 (osmanage, env vars)
+### Prepare Update to 4.3.0 (install osmanage, set env vars)
 
 Next we will prepare for the actual update.
 
 For compatibility we edit our `config.yml` to set two values explicitly.
 
-    ---
     defaults:
       containerRegistry: ghcr.io/openslides/openslides
       tag: 4.3.0
@@ -165,7 +166,6 @@ variables to be set. So we prepare that by adding to `config.yml`. Part of the
 migration is setting the new `time_zone` field for existing meetings. Please
 set as is appropriate for your instance.
 
-    ---
     services:
       backendManage:
         environment:
@@ -173,8 +173,8 @@ set as is appropriate for your instance.
           MIG0100_TIMEZONE: 'Europe/Berlin'
 
 Since the old manage tool (`openslides`) was replaced by a new one
-(`osmanage`), we will now that together with accompanying template file 
-regenerating our compose file with it.
+(`osmanage`), we will now fetch that together with accompanying template file
+for regenerating our compose file with it later.
 
     wget https://github.com/OpenSlides/openslides-cli/releases/download/latest/osmanage
     wget https://raw.githubusercontent.com/OpenSlides/openslides-cli/refs/heads/main/contrib/docker-compose.yml.tmpl
@@ -185,9 +185,10 @@ regenerating our compose file with it.
 Now we need to shutdown the instance and also remove the volumes.
 
 > [!WARNING]
-> If the dump during [backup-4.2.30] did not work for any reason you will lose all your data!
+> If the SQL dump during [Backup 4.2.30](backup-4.2.30) did not work for any reason you will lose all your data!
 
-Be sure you did the dump.
+Be sure you did the SQL dump.
+
 Take a deep breath and shutdown your instance with also removing volumes.
 
     docker compose down --volumes
@@ -197,13 +198,13 @@ For deploying the new version, we start with only starting postgres.
     # For comparison we can keep the old compose file
     mv docker-compose.yml docker-compose.yml.old
     # --force is needed when overwriting
-    ./osmanage config -c configsmall.yml -t docker-compose.yml.tmpl .
+    ./osmanage config -c config.yml -t docker-compose.yml.tmpl .
     # Start PostgreSQL
     docker compose up -d postgres
 
 Insert the data
 
-    docker compose exec --no-TTY --user postgres postgres psql -U openslides < /safe-place/dump-4.2.30.sql
+    docker compose exec --no-TTY --user postgres postgres psql -U openslides < /some/safe/place/dump-4.2.30.sql
 
 Start the remaining services
 
@@ -215,17 +216,38 @@ Run migration `100`
     ./osmanage migrations migrate
     ./osmanage migrations finalize
 
-### Verify Data (json dump, models diff)
+### Verify Data (JSON export, models diff)
+
+Finally we can compare the application data, we exported as JSON earlier, to
+the data present after the migration using a python script included in the
+backend.
+
+We start by copying the earlier export (D1) into the new backend container.
 
     # Copy D1
-    docker compose cp /safe-place/d1.json backendManage:/app/data/d1.json
+    docker compose cp /some/safe/place/d1.json backendManage:/app/data/d1.json
+
+Next we do a new JSON export (D2) in much the same way
+
     docker compose exec backendManage bash
-    # Now we are in backend container
+    # Now we are inside the backend container
     source scripts/export_database_variables.sh
     python cli/get_everything.py > data/d2.json
-    # Do models diff
+    # The /app/data/ folder now contains D1 and D2
+
+Lastly we call the script to automatically compare all data.  Differences will
+be reported.
+
+    # Still inside the backend container
     cd meta
     python dev/scripts/models_diff.py -v /app/data/d1.json /app/data/d2.json
+
+Please investigate the output carefully. For varying degree of detail you can
+provide zero to five verbose flags (`-vvvvv`). If some of the output concerns
+you, we are prepared to discuss that publicly in a GitHub issue.
+
+Congratulations, the database is now migrated to the new schema, the data
+verified and OpenSlides ready to use.
 
 
 ## Good to know
@@ -236,7 +258,6 @@ Since the new manage tool (`osmanage`) no longer contains compiled in defaults
 for executing templates `defaults.containerRegistry` and `defaults.tag` must
 now be set explicitly in `config.yml`. Like so:
 
-    ---
     defaults:
       containerRegistry: ghcr.io/openslides/openslides
       tag: 4.3.X
@@ -244,10 +265,9 @@ now be set explicitly in `config.yml`. Like so:
 Depending on how TLS is setup it may be necessary now to set options explictly
 in `config.yml`. Like so:
 
-    ---
     enableLocalHTTPS: true
 
-For most other values the provided template contains reasonable defaults.
+For most values the provided template contains reasonable defaults.
 
 ### MI -1 caveat
 
