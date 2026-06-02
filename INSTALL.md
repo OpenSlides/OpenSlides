@@ -74,7 +74,7 @@ account for the `superadmin` (Alternatively
     $ ./osmanage initial-data --superadmin-password-file secrets/superadmin
 
 Now open https://localhost:8000, login with superuser credentials (default
-username and password: `superadmin`) and have fun.
+username `superadmin`, password in secret file) and have fun.
 
 
 ### Reach OpenSlides from outside your local machine
@@ -118,7 +118,6 @@ All options in the [defaults file](https://github.com/OpenSlides/openslides-mana
 
 E. g. create a file `my-config.yml` with the following content:
 
-    ---
     port: 9000
 
 After you have such a file remove your Docker Compose YAML file and rerun the
@@ -156,7 +155,6 @@ On the other hand, it can mean services will update "by themselves" due to silen
 
 It is therefore recommended to pin the version explicitly in the `my-config.yml` like this:
 
-    ---
     defaults:
       tag: 4.3.0
 
