@@ -18,6 +18,9 @@ https://openslides.com for more information.
 To set up an OpenSlides 4 instance, please follow our [install
 instructions](INSTALL.md).
 
+:warning: Updating to OpenSlides 4.3.0 introduces breaking changes. See [info
+document](UPDATE_TO_4.3.md).
+
 
 ## Development
 
