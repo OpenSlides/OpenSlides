@@ -142,7 +142,7 @@ for i in "${SELECTED_TARGETS[@]}"; do
   if [[ -f "$build_script" ]]; then
     ( . "$build_script" )
   else
-    if [[ "$LOCAL_GO" == "1" && $(grep -c openslides-go ./go.mod) ]]; then
+    if [[ "$LOCAL_GO" == "1" && $(grep -c openslides-go ./go.mod) -gt 0 ]]; then
       echo "Building with local openslides-go"
       tar -c . -C ../ ./lib -C ./dev/docker/workspaces . | docker build --tag "$img" --pull "${OPTIONS[@]}" --target prod-gowork -
     else
