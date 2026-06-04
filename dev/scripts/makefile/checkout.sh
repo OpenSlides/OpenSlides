@@ -36,11 +36,14 @@ usage() {
 
    Use -p or --pull to instead forward the local $BRANCH_NAME branch.
    Use -l or --latest to ignore specific commit hashes and instead pull the latest commit.
-   Use -g or --go_update to automatically update go.mod of all submodules to match the checked out openslides-go version
+   Use -g or --go_update to automatically update go.mod of all submodules to match the checked out openslides-go version.
+   Use -d or --auto_fallback to automatically fallback to main if a branch can not be found, skipping the
+      input prompt that would otherwise be called
 
-   USAGE MAKE: make checkout REMOTE= BRANCH= FILE= PULL= LATEST=
+   USAGE MAKE: make checkout REMOTE= BRANCH= FILE= PULL= LATEST= AUTO_FALLBACK=
 
-   REMOTE is a shorthand for REMOTE_NAME, BRANCH is for BRANCH_NAME, FILE for BRANCH_FILE, PULL for -p Flag and LATEST for -l
+   REMOTE is a shorthand for REMOTE_NAME, BRANCH is for BRANCH_NAME, FILE for BRANCH_FILE, PULL for -p Flag, LATEST for -l
+      and AUTO_FALLBACK for -d
 
    All variables are optional
    "
@@ -168,18 +171,23 @@ checkout() {
         # If branch couldn't be found, user has the option to either checkout main branch instead or skip checkout for this service
         if [ -n "$BRANCH_NOT_FOUND" ]
         then
-            if [ "$AUTO_MAIN_FALLBACK" == 1 ]
-            then
-                info "Automatically skipping checkout for $SUBMODULE, because no branch found named $SOURCE/$BRANCH and automatic main fallback is active"
-                exit 0
-            fi
             local CHECKOUT_MAIN
-            CHECKOUT_MAIN=$(ask yo "$SUBMODULE does not have a branch named $SOURCE/$BRANCH. Type y to checkout main instead. Type n to remain in current branch." </dev/tty)
+            if [ "$AUTO_MAIN_FALLBACK" == 0 ]
+            then
+                CHECKOUT_MAIN=$(ask yo "$SUBMODULE does not have a branch named $SOURCE/$BRANCH. Type y to checkout main instead. Type n to remain in current branch." </dev/tty)
+            elif
+                CHECKOUT_MAIN=0
+            fi
 
             if [ "$CHECKOUT_MAIN" == 0 ]
             then
-                info "Checking out main branch instead"
                 BRANCH=main
+                SOURCE=$(set_remote "upstream" "origin")
+
+                info "Checking out ${SOURCE}/${BRANCH} branch instead"
+
+                # Fetch again (since source might have changed)
+                echocmd git fetch "$SOURCE"
             else
                 info "Skipping checkout for $SUBMODULE"
                 exit 0
@@ -293,6 +301,10 @@ while true; do
             ;;
     esac
 done
+
+echo $AUTO_MAIN_FALLBACK
+
+exit
 
 # Submodule init check
 info "Checking submodule initialization"

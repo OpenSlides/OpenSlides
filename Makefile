@@ -71,10 +71,10 @@ localprod-build-local-manage:
 # Checkout
 
 checkout services-to-main:
-	@bash $(MAKEFILE_PATH)/checkout.sh "${REMOTE}" "$(BRANCH)" "$(FILE)" "$(PULL)" "$(LATEST)" "$(FALLBACK)"
+	@bash $(MAKEFILE_PATH)/checkout.sh "${REMOTE}" "$(BRANCH)" "$(FILE)" "$(PULL)" "$(LATEST)" "$(AUTO_FALLBACK)"
 
 checkout-pull services-to-main-pull:
-	@bash $(MAKEFILE_PATH)/checkout.sh "${REMOTE}" "$(BRANCH)" "$(FILE)" "true" "$(LATEST)" "$(FALLBACK)"
+	@bash $(MAKEFILE_PATH)/checkout.sh "${REMOTE}" "$(BRANCH)" "$(FILE)" "true" "$(LATEST)" "$(AUTO_FALLBACK)"
 
 checkout-help:
 	@bash $(MAKEFILE_PATH)/checkout.sh -h
