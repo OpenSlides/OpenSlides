@@ -175,7 +175,7 @@ checkout() {
             if [ "$AUTO_MAIN_FALLBACK" == 0 ]
             then
                 CHECKOUT_MAIN=$(ask yo "$SUBMODULE does not have a branch named $SOURCE/$BRANCH. Type y to checkout main instead. Type n to remain in current branch." </dev/tty)
-            elif
+            else
                 CHECKOUT_MAIN=0
             fi
 
@@ -301,10 +301,6 @@ while true; do
             ;;
     esac
 done
-
-echo $AUTO_MAIN_FALLBACK
-
-exit
 
 # Submodule init check
 info "Checking submodule initialization"
