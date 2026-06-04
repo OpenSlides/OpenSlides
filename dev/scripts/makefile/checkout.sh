@@ -174,7 +174,7 @@ checkout() {
             local CHECKOUT_MAIN
             if [ "$AUTO_MAIN_FALLBACK" == 0 ]
             then
-                CHECKOUT_MAIN=$(ask yo "$SUBMODULE does not have a branch named $SOURCE/$BRANCH. Type y to checkout main instead. Type n to remain in current branch." </dev/tty)
+                CHECKOUT_MAIN=$(ask yo "$SUBMODULE does not have a branch named $SOURCE/$BRANCH. Type y to checkout upstream/main instead. Type n to remain in current branch." </dev/tty)
             else
                 CHECKOUT_MAIN=0
             fi
