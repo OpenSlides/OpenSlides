@@ -13,6 +13,7 @@ CHECKOUT_LATEST=${5:-0}
 AUTO_MAIN_FALLBACK=${6:-0}
 
 BRANCH_FILE_PATH=$(realpath ".")
+CLONE_BASE="git@github.com:"
 
 if [ -f  "$BRANCH_FILE_PATH/$BRANCH_FILE" ]; then info "Reading commit info from $BRANCH_FILE"; fi
 
@@ -36,14 +37,16 @@ usage() {
 
    Use -p or --pull to instead forward the local $BRANCH_NAME branch.
    Use -l or --latest to ignore specific commit hashes and instead pull the latest commit.
-   Use -g or --go_update to automatically update go.mod of all submodules to match the checked out openslides-go version.
-   Use -d or --auto_fallback to automatically fallback to main if a branch can not be found, skipping the
+   Use -a or --auto_fallback to automatically fallback to main if a branch can not be found, skipping the
       input prompt that would otherwise be called
+   Use -m to automatically checkout the main repository, skipping the input prompt that would otherwise be called
+   Use -u to use the HTTPS adress of OpenSlides repository instead of SSH
+   Use -g or --go_update to automatically update go.mod of all submodules to match the checked out openslides-go version.
 
    USAGE MAKE: make checkout REMOTE= BRANCH= FILE= PULL= LATEST= AUTO_FALLBACK=
 
    REMOTE is a shorthand for REMOTE_NAME, BRANCH is for BRANCH_NAME, FILE for BRANCH_FILE, PULL for -p Flag, LATEST for -l
-      and AUTO_FALLBACK for -d
+      and AUTO_FALLBACK for -a
 
    All variables are optional
    "
@@ -152,14 +155,14 @@ checkout() {
             info "$SOURCE is a non origin or upstream remote"
             if ! git remote get-url "$SOURCE" >/dev/null 2>&1
             then
-                echocmd git remote add "$SOURCE" git@github.com:"$SOURCE"/"$SUBMODULE".git
+                echocmd git remote add "$SOURCE" "${CLONE_BASE}${SOURC}/${SUBMODULE}".git
             else
-                echocmd git remote set-url "$SOURCE" git@github.com:"$SOURCE"/"$SUBMODULE".git
+                echocmd git remote set-url "$SOURCE" "${CLONE_BASE}${SOURC}/${SUBMODULE}".git
                 info "Remote $SOURCE already exists"
             fi
         else
             SOURCE=$(set_remote "upstream" "origin")
-            echocmd git remote set-url "$SOURCE" git@github.com:OpenSlides/"$SUBMODULE".git
+            echocmd git remote set-url "$SOURCE" "${CLONE_BASE}${SOURC}/${SUBMODULE}".git
         fi
 
         # Fetch
@@ -245,8 +248,10 @@ checkout() {
 checkout_main()
 {
     (
-        ask y "Would you like to checkout main repository as well? WARNING: You may not be able to call this script again after switching branches, as it may not exist in target branch" || exit 0
-
+        if [ "$ALWAYS_CHECKOUT_MAIN" == 1 ]
+        then
+            ask y "Would you like to checkout main repository as well? WARNING: You may not be able to call this script again after switching branches, as it may not exist in target branch" || exit 0
+        fi
         checkout "." "OpenSlides" "$REMOTE_NAME" "$BRANCH_NAME" ""
     )
 }
@@ -283,8 +288,16 @@ while true; do
             GO_AUTO_CHECKOUT=1
             shift
             ;;
-        -d|--auto_fallback)
+        -a|--auto_fallback)
             AUTO_MAIN_FALLBACK=1
+            shift
+            ;;
+        -m|-always_checkout_main)
+            ALWAYS_CHECKOUT_MAIN=1
+            shift
+            ;;
+        -u|--use_https)
+            CLONE_BASE="https://github.com/"
             shift
             ;;
         -h|--help)
