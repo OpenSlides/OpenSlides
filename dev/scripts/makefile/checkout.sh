@@ -43,10 +43,11 @@ usage() {
    Use -u or --use_https to use the HTTPS address of OpenSlides repository instead of SSH
    Use -g or --go_update to automatically update go.mod of all submodules to match the checked out openslides-go version.
 
-   USAGE MAKE: make checkout REMOTE= BRANCH= FILE= PULL= LATEST= AUTO_FALLBACK=
+   USAGE MAKE: make checkout REMOTE= BRANCH= FILE= PULL= LATEST= AUTO_FALLBACK= ALWAYS_MAIN= USE_HTTPS= GO_UPDATE=
 
-   REMOTE is a shorthand for REMOTE_NAME, BRANCH is for BRANCH_NAME, FILE for BRANCH_FILE, PULL for -p Flag, LATEST for -l
-      and AUTO_FALLBACK for -a
+   REMOTE is a shorthand for REMOTE_NAME, BRANCH is for BRANCH_NAME, FILE for BRANCH_FILE, PULL for -p Flag, LATEST for -l,
+       AUTO_FALLBACK for -a, ALWAYS_MAIN for -m, USE_HTTPS for -u and GO_UPDATE for -g
+   For parameters representing flags, set their value to anything other than 0 to 'set' the flag
 
    For batch / cli operations the following environment variables may also be set to the default answer for interactive asks
    Set BATCH_MODE=1 to accept defaults non-interactively
