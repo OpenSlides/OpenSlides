@@ -36,6 +36,9 @@ ask() {
   case "$CONTROL_STR" in
     *n*) DEFAULT_REPLY="1" && \
          REPLY_OPT="[y/N]" ;;
+  esac
+
+  case "$CONTROL_STR" in
     *o*) local OPT_ECHO=1 ;;
   esac
 

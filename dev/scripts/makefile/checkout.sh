@@ -118,7 +118,8 @@ checkout() {
 
         if [ -z "$SUBMODULE" ]; then SUBMODULE="OpenSlides"; fi
 
-        info ""
+        echo ""
+        echo ""
         info "Fetch & checkout for ${SUBMODULE} "
 
         # Check for changes and stash them if wanted.
@@ -176,7 +177,7 @@ checkout() {
         echocmd git fetch "$SOURCE"
 
         # Verify or set to main
-        echocmd git rev-parse --verify remotes/"$SOURCE"/"$BRANCH" &>/dev/null || local BRANCH_NOT_FOUND=1
+        git rev-parse --verify remotes/"$SOURCE"/"$BRANCH" &>/dev/null || local BRANCH_NOT_FOUND=1
 
         # If branch couldn't be found, user has the option to either checkout main branch instead or skip checkout for this service
         if [ -n "$BRANCH_NOT_FOUND" ]
