@@ -254,8 +254,10 @@ checkout() {
 checkout_main()
 {
     (
-        ask ${CHECKOUT_MAIN_REPO_DEFAULT:-y} "Would you like to checkout main repository as well? WARNING: You may not be able to call this script again after switching branches, as it may not exist in target branch" || exit 0
-
+        if [ "$ALWAYS_CHECKOUT_MAIN" != 1 ]
+        then
+            ask ${CHECKOUT_MAIN_REPO_DEFAULT:-y} "Would you like to checkout main repository as well? WARNING: You may not be able to call this script again after switching branches, as it may not exist in target branch" || exit 0
+        fi
         checkout "." "OpenSlides" "$REMOTE_NAME" "$BRANCH_NAME" ""
     )
 }
