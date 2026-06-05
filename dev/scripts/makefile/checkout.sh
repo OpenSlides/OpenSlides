@@ -48,6 +48,12 @@ usage() {
    REMOTE is a shorthand for REMOTE_NAME, BRANCH is for BRANCH_NAME, FILE for BRANCH_FILE, PULL for -p Flag, LATEST for -l
       and AUTO_FALLBACK for -a
 
+   For batch / cli operations the following environment variables may also be set to the default answer for interactive asks
+   Set BATCH_MODE=1 to accept defaults non-interactively
+
+      FALLBACK_MAIN_BRANCH_DEFAULT: (y/n) Whether to use upstream/main as a fallback branch or skip the submodule (default y)
+      CHECKOUT_MAIN_REPO_DEFAULT: (y/n) Whether to checkout the main repository (default y)
+
    All variables are optional
    "
 }
@@ -177,7 +183,7 @@ checkout() {
             local CHECKOUT_MAIN
             if [ "$AUTO_MAIN_FALLBACK" == 0 ]
             then
-                CHECKOUT_MAIN=$(ask yo "$SUBMODULE does not have a branch named $SOURCE/$BRANCH. Type y to checkout upstream/main instead. Type n to remain in current branch." </dev/tty)
+                CHECKOUT_MAIN=$(ask ${FALLBACK_MAIN_BRANCH_DEFAULT:-y}o "$SUBMODULE does not have a branch named $SOURCE/$BRANCH. Type y to checkout upstream/main instead. Type n to remain in current branch." </dev/tty)
             else
                 CHECKOUT_MAIN=0
             fi
@@ -219,7 +225,7 @@ checkout() {
 
         # Force reset to a hash, if one has been provided
         # Ignore specific hash, if latest should be pulled
-        if [ ! "$CHECKOUT_LATEST" = 0 ]; then local HASH=""; fi
+        if [ ! "$CHECKOUT_LATEST" == 0 ]; then local HASH=""; fi
 
         if [ -n "$HASH" ]
         then
@@ -248,10 +254,8 @@ checkout() {
 checkout_main()
 {
     (
-        if [ "$ALWAYS_CHECKOUT_MAIN" == 1 ]
-        then
-            ask y "Would you like to checkout main repository as well? WARNING: You may not be able to call this script again after switching branches, as it may not exist in target branch" || exit 0
-        fi
+        ask ${CHECKOUT_MAIN_REPO_DEFAULT:-y} "Would you like to checkout main repository as well? WARNING: You may not be able to call this script again after switching branches, as it may not exist in target branch" || exit 0
+
         checkout "." "OpenSlides" "$REMOTE_NAME" "$BRANCH_NAME" ""
     )
 }

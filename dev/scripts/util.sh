@@ -42,7 +42,7 @@ ask() {
   shift 1
   local QUERY="$*"
 
-  if [ -z "$ASK_AUTO_DO_DEFAULT" ]
+  if [ -z "$BATCH_MODE" ]
   then
     read -rp $'\n'"$QUERY $REPLY_OPT: "
   fi
