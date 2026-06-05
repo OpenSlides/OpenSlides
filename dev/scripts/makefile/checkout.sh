@@ -12,13 +12,13 @@ OPT_PULL=${4:-0}
 CHECKOUT_LATEST=${5:-0}
 AUTO_MAIN_FALLBACK=${6:-0}
 ALWAYS_CHECKOUT_MAIN_REPO=${7:-0}
-CLONE_BASE=${8:-0}
+USE_HTTPS=${8:-0}
 GO_AUTO_CHECKOUT=${9:-0}
 
 BRANCH_FILE_PATH=$(realpath ".")
 CLONE_BASE="git@github.com:"
 
-if [ "$CLONE_BASE" != 0 ]
+if [ "$USE_HTTPS" != 0 ]
 then
     CLONE_BASE="https://github.com/"
 fi
