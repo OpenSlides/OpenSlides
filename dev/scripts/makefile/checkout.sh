@@ -40,7 +40,7 @@ usage() {
    Use -a or --auto_fallback to automatically fallback to main if a branch can not be found, skipping the
       input prompt that would otherwise be called
    Use -m or --always_checkout_main_repo to automatically checkout the main repository, skipping the input prompt that would otherwise be called
-   Use -u to --use_https use the HTTPS address of OpenSlides repository instead of SSH
+   Use -u or --use_https to use the HTTPS address of OpenSlides repository instead of SSH
    Use -g or --go_update to automatically update go.mod of all submodules to match the checked out openslides-go version.
 
    USAGE MAKE: make checkout REMOTE= BRANCH= FILE= PULL= LATEST= AUTO_FALLBACK=
