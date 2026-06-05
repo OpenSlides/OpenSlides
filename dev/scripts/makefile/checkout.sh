@@ -39,8 +39,8 @@ usage() {
    Use -l or --latest to ignore specific commit hashes and instead pull the latest commit.
    Use -a or --auto_fallback to automatically fallback to main if a branch can not be found, skipping the
       input prompt that would otherwise be called
-   Use -m to automatically checkout the main repository, skipping the input prompt that would otherwise be called
-   Use -u to use the HTTPS adress of OpenSlides repository instead of SSH
+   Use -m or --always_checkout_main_repo to automatically checkout the main repository, skipping the input prompt that would otherwise be called
+   Use -u to --use_https use the HTTPS address of OpenSlides repository instead of SSH
    Use -g or --go_update to automatically update go.mod of all submodules to match the checked out openslides-go version.
 
    USAGE MAKE: make checkout REMOTE= BRANCH= FILE= PULL= LATEST= AUTO_FALLBACK=
@@ -161,14 +161,14 @@ checkout() {
             info "$SOURCE is a non origin or upstream remote"
             if ! git remote get-url "$SOURCE" >/dev/null 2>&1
             then
-                echocmd git remote add "$SOURCE" "${CLONE_BASE}${SOURC}/${SUBMODULE}".git
+                echocmd git remote add "$SOURCE" "${CLONE_BASE}${SOURCE}/${SUBMODULE}".git
             else
-                echocmd git remote set-url "$SOURCE" "${CLONE_BASE}${SOURC}/${SUBMODULE}".git
+                echocmd git remote set-url "$SOURCE" "${CLONE_BASE}${SOURCE}/${SUBMODULE}".git
                 info "Remote $SOURCE already exists"
             fi
         else
             SOURCE=$(set_remote "upstream" "origin")
-            echocmd git remote set-url "$SOURCE" "${CLONE_BASE}${SOURC}/${SUBMODULE}".git
+            echocmd git remote set-url "$SOURCE" "${CLONE_BASE}OpenSlides/${SUBMODULE}".git
         fi
 
         # Fetch
@@ -254,7 +254,7 @@ checkout() {
 checkout_main()
 {
     (
-        if [ "$ALWAYS_CHECKOUT_MAIN" != 1 ]
+        if [ "$ALWAYS_CHECKOUT_MAIN_REPO" != 1 ]
         then
             ask ${CHECKOUT_MAIN_REPO_DEFAULT:-y} "Would you like to checkout main repository as well? WARNING: You may not be able to call this script again after switching branches, as it may not exist in target branch" || exit 0
         fi
@@ -273,7 +273,7 @@ inform_about_localprod()
 }
 
 # Parse flags
-if ! parsed=$(getopt -o plgh --long pull,latest,go_update,help -n "$(basename "$0")" -- "$@"); then
+if ! parsed=$(getopt -o plgamuh --long pull,latest,go_update,auto_fallback,always_checkout_main_repo,use_https,help -n "$(basename "$0")" -- "$@"); then
     usage
     exit 1
 fi
@@ -298,8 +298,8 @@ while true; do
             AUTO_MAIN_FALLBACK=1
             shift
             ;;
-        -m|-always_checkout_main)
-            ALWAYS_CHECKOUT_MAIN=1
+        -m|--always_checkout_main_repo)
+            ALWAYS_CHECKOUT_MAIN_REPO=1
             shift
             ;;
         -u|--use_https)
