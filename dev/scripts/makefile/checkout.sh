@@ -18,6 +18,11 @@ GO_AUTO_CHECKOUT=${9:-0}
 BRANCH_FILE_PATH=$(realpath ".")
 CLONE_BASE="git@github.com:"
 
+if [ "$CLONE_BASE" != 0 ]
+then
+    CLONE_BASE="https://github.com/"
+fi
+
 if [ -f  "$BRANCH_FILE_PATH/$BRANCH_FILE" ]; then info "Reading commit info from $BRANCH_FILE"; fi
 
 usage() {
@@ -64,7 +69,7 @@ usage() {
 
 go_update() {
     # only checkout when flag is set
-    if [ -z "$GO_AUTO_CHECKOUT" ]
+    if [ "$GO_AUTO_CHECKOUT" == 0 ]
     then
         exit 0
     fi
@@ -259,7 +264,7 @@ checkout() {
 checkout_main()
 {
     (
-        if [ "$ALWAYS_CHECKOUT_MAIN_REPO" != 1 ]
+        if [ "$ALWAYS_CHECKOUT_MAIN_REPO" == 0 ]
         then
             ask ${CHECKOUT_MAIN_REPO_DEFAULT:-y} "Would you like to checkout main repository as well? WARNING: You may not be able to call this script again after switching branches, as it may not exist in target branch" || exit 0
         fi
