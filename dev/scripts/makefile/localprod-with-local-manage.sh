@@ -5,20 +5,26 @@ set -eo pipefail
 # Import OpenSlides utils package
 . "$(dirname "$0")"/../util.sh
 
-OS_MANAGE_PATH="$(dirname "$0")/../../../openslides-manage-service"
+OS_CLI_PATH="$(dirname "$0")/../../../openslides-cli"
 OS_LOCALPROD_PATH="$(dirname "$0")/../../localprod"
 
-# Switching to manage and building openslides exe
-info  "Building openslides executable"
-make -C "$OS_MANAGE_PATH" openslides
+# Switching to manage and building osmanage binary
+info  "Building osmanage executable"
+make -C "$OS_CLI_PATH" osmanage
 
-# Moving openslides to localprod directory
-info  "Moving openslides executable"
-mv "$OS_MANAGE_PATH"/openslides "$OS_LOCALPROD_PATH"/openslides
+# Moving osmanage to localprod directory
+info  "Moving osmanage executable"
+mv "$OS_CLI_PATH"/osmanage "$OS_LOCALPROD_PATH"/osmanage
+
+# Copying compose template to localprod directory
+info  "Copying compose template"
+cp "$OS_CLI_PATH"/contrib/docker-compose.yml.tmpl "$OS_LOCALPROD_PATH"/docker-compose.yml.tmpl
 
 # Setup and generate localprod docker compose
-info  "Executing openslides setup"
-"$OS_LOCALPROD_PATH"/openslides setup "$OS_LOCALPROD_PATH"
-"$OS_LOCALPROD_PATH"/openslides config --config "$OS_LOCALPROD_PATH/config.yml" "$OS_LOCALPROD_PATH"
+info "Entering $OS_LOCALPROD_PATH and executing setup.sh"
+(
+  cd "$OS_LOCALPROD_PATH"
+  ./setup.sh
+)
 
 info "Done"

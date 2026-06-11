@@ -14,7 +14,7 @@ build build-prod:
 	$(DOCKER_PATH)/build.sh
 
 # Development
-.SERVICE_TARGETS := auth autoupdate backend client icc manage media proxy search vote
+.SERVICE_TARGETS := auth autoupdate backend client icc media projector proxy search vote
 
 $(.SERVICE_TARGETS):
 	@echo ""
@@ -53,8 +53,9 @@ localprod-stop:
 	docker compose -f dev/localprod/docker-compose.yml down
 
 localprod-delete:
-	rm ./dev/localprod/openslides
+	rm ./dev/localprod/osmanage
 	rm ./dev/localprod/docker-compose.yml
+	rm ./dev/localprod/docker-compose.yml.tmpl
 
 localprod-build:
 	@if [ ! -d "dev/localprod/" ]; then echo "Directory dev/localprod not found." && exit 1; fi

@@ -1,17 +1,26 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
 # Birte Spekker <birte.spekker@intevation.de>, 2025
-# Michael Schulze, 2025
+# Michael Schulze, 2026
 # 
+#, fuzzy
 msgid ""
 msgstr ""
-"Last-Translator: Michael Schulze, 2025\n"
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-19 18:02+0200\n"
+"PO-Revision-Date: 2021-05-09 20:21+0000\n"
+"Last-Translator: Michael Schulze, 2026\n"
 "Language-Team: Dutch (https://app.transifex.com/openslides/teams/14270/nl/)\n"
+"MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: nl\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"mime-version: 1.0\n"
 
 msgid "\"0\" means an unlimited number of active accounts"
 msgstr "\"0\" betekent een onbeperkt aantal actieve accounts"
@@ -80,6 +89,9 @@ msgstr ""
 msgid "About me"
 msgstr "Over mij"
 
+msgid "Absent"
+msgstr "Afwezig"
+
 msgid "Abstain"
 msgstr "Onthouden"
 
@@ -113,6 +125,9 @@ msgstr "Accountbeheerder"
 msgid "Account created"
 msgstr "Account aangemaakt"
 
+msgid "Account is public."
+msgstr ""
+
 msgid "Account successfully added."
 msgstr "Account succesvol toegevoegd."
 
@@ -124,6 +139,9 @@ msgstr "Accounts aangemaakt"
 
 msgid "Accounts updated"
 msgstr "Accounts geactualiseerd"
+
+msgid "Accounts were set to inactive, except for your own account."
+msgstr "Alle accounts werden op inactief gezet, behalve uw eigen account."
 
 msgid "Accounts with errors"
 msgstr "Accounts met fouten"
@@ -274,6 +292,10 @@ msgstr ""
 "Extra kolommen na de verplichte kolommen kunnen aanwezig zijn en hebben geen"
 " invloed op het importeren."
 
+msgid "Adds participants, structure levels and groups to target meeting."
+msgstr ""
+"Voegt deelnemers, structuurniveaus en groepen toe aan de doelvergadering."
+
 msgid "Administration roles"
 msgstr "Beheerdersrollen"
 
@@ -324,6 +346,9 @@ msgstr "Alle gerechtigde gebruikers"
 
 msgid "All lists of speakers will be cleared."
 msgstr "Alle sprekerslijsten worden gewist."
+
+msgid "All mandates"
+msgstr "Alle mandaten"
 
 msgid "All meetings"
 msgstr "Alle vergaderingen"
@@ -435,6 +460,9 @@ msgstr "Aantal stemmen"
 
 msgid "An error occurred while voting."
 msgstr "Er is een fout opgetreden tijdens het stemmen."
+
+msgid "An undefined class was called. Please add the class: {}"
+msgstr ""
 
 msgid "An unknown error occurred."
 msgstr "Er is een onbekende fout opgetreden."
@@ -661,11 +689,11 @@ msgid "Are you sure you want to number all agenda items?"
 msgstr "Weet u zeker dat u alle agendapunten wilt nummeren?"
 
 msgid ""
-"Are you sure you want to override the state of all motions of this motion "
-"block?"
+"Are you sure you want to overwrite the state of all motions with "
+"recommendations?"
 msgstr ""
-"Weet u zeker dat u de status van alle moties van dit motieblock wilt "
-"overschrijven?"
+"Weet u zeker dat u de status van alle moties wilt overschrijven met "
+"aanbevelingen?"
 
 msgid "Are you sure you want to remove all selected items from the agenda?"
 msgstr ""
@@ -754,6 +782,15 @@ msgstr "Hoogstens"
 
 msgid "Attachments"
 msgstr "Bijlagen"
+
+msgid "Attachments (PDF embedded)"
+msgstr "Bijlagen (PDF ingesloten)"
+
+msgid "Attachments (URL)"
+msgstr "Bijlagen (URL)"
+
+msgid "Attachments to motions cannot be forwarded"
+msgstr "Bijlagen bij moties kunnen niet worden doorgestuurd."
 
 msgid ""
 "Attention: Accounts will add to the default group of each meeting only. If "
@@ -1125,10 +1162,10 @@ msgstr "Kan verkiezingen zien"
 
 msgid ""
 "Can see email, username, membership number, SSO identification and locked "
-"out state of all participants."
+"out state of all participants and can see mandate check."
 msgstr ""
-"Kan e-mail, gebruikersnaam, lidmaatschapnummer, SSO-identificatie en "
-"geblokkeerde status van alle deelnemers zien."
+"Kan e-mail, gebruikersnaam, lidmaatschapsnummer, SSO-identificatie en lock-"
+"outstatus van alle deelnemers zien en kan mandaatcontrole zien."
 
 msgid "Can see files"
 msgstr "Kan bestanden zien"
@@ -1297,11 +1334,30 @@ msgstr "Kandidaat"
 msgid "Candidate added"
 msgstr "Kandidaat toegevoegd"
 
+msgid "Candidate name"
+msgstr "Kandidaatnaam"
+
+msgid "Candidate placement"
+msgstr "Kandidateplaatsing"
+
 msgid "Candidate removed"
 msgstr "Kandidaat verwijderd"
 
 msgid "Candidates"
 msgstr "Kandidaten"
+
+msgid "Cannot archive meeting with active polls."
+msgstr "Een vergadering met actieve stemmingen kan niet worden gearchiveerd."
+
+msgid ""
+"Cannot archive meeting with active speakers and polls. Check who is speaking"
+" in > [Participants] > [Contributions]."
+msgstr ""
+
+msgid ""
+"Cannot archive meeting with active speakers. Check who is speaking in > "
+"[Participants] > [Contributions]."
+msgstr ""
 
 msgid "Cannot create meeting without administrator."
 msgstr "Kan geen vergadering aanmaken zonder beheerder."
@@ -1381,14 +1437,14 @@ msgstr "Veranderingen"
 msgid "Changes of all settings group will be lost!"
 msgstr "Wijzigingen van alle instellingsgroepen gaan verloren!"
 
+msgid "Changing admins on same level is not possible"
+msgstr ""
+
 msgid "Chat"
 msgstr "Chat"
 
 msgid "Chat groups"
 msgstr "Chatgroepen"
-
-msgid "Check datastore"
-msgstr "Controleer datastore"
 
 msgid "Check in or check out participants based on their participant numbers:"
 msgstr "Deelnemers inchecken of uitchecken op basis van hun deelnemernummers:"
@@ -1537,11 +1593,12 @@ msgstr "Commissie Beheersniveau gewijzigd"
 msgid "Committee admin"
 msgstr "Commissie admin"
 
+msgid ""
+"Committee admins may only set the committee admins of their subcommittees"
+msgstr ""
+
 msgid "Committee management"
 msgstr "Commissie Beheer"
-
-msgid "Committee managers"
-msgstr "Commissie beheerders"
 
 msgid "Committee name"
 msgstr "Commissienaam"
@@ -1603,8 +1660,20 @@ msgstr "Contributie"
 msgid "Contributions"
 msgstr "Contributies"
 
+msgid "Copy"
+msgstr "Kopiëren"
+
+msgid "Copy agenda item"
+msgstr "Agendapunt kopiëren"
+
+msgid "Copy agenda items"
+msgstr "Agendapunten kopiëren"
+
 msgid "Copy report to clipboard"
 msgstr "Kopieer rapport naar klembord"
+
+msgid "Copy to"
+msgstr "Kopiëren naar"
 
 msgid "Count completed requests to speak"
 msgstr "Afgehandelde Spreekverzoeken tellen"
@@ -1641,6 +1710,9 @@ msgstr "Gebruiker aanmaken"
 
 msgid "Creating PDF file ..."
 msgstr "PDF-bestand aanmaken ..."
+
+msgid "Creating motion exports"
+msgstr "Motie-exports maken"
 
 msgid "Creation"
 msgstr "Aanmaak"
@@ -1698,12 +1770,6 @@ msgstr "Dark mode"
 
 msgid "Dashboard"
 msgstr "Dashboard"
-
-msgid "Datastore is corrupt! See the console for errors."
-msgstr "Datastore is corrupt! Bekijk de console voor fouten."
-
-msgid "Datastore is ok!"
-msgstr "Datastore is ok!"
 
 msgid "Decision"
 msgstr "Besluit"
@@ -1944,6 +2010,9 @@ msgstr "Download map"
 msgid "Download the file"
 msgstr "Download het bestand"
 
+msgid "Downloading attachments"
+msgstr "Bijlagen downloaden"
+
 msgid "Drop files into this area OR click here to select files"
 msgstr "Drop bestanden in dit vak OF klik hier om bestanden te selecteren"
 
@@ -2073,9 +2142,6 @@ msgstr "E-mail inhoud"
 
 msgid "Email sent"
 msgstr "E-mail verzonden"
-
-msgid "Email settings"
-msgstr "E-mail instellingen"
 
 msgid "Email subject"
 msgstr "E-mail onderwerp"
@@ -2421,12 +2487,6 @@ msgstr ""
 "1. Wijs groepstoestemming toe (definieer de groep die moties kan ondersteunen)<br>\n"
 "2. Pas de workflow aan (definieer de status waarin moties kunnen worden ondersteund)<br>\n"
 "3. Voer het minimumaantal in (zie volgende veld)."
-
-msgid ""
-"For large instances this may block the server to the point of unusability"
-msgstr ""
-"Voor grote instanties kan dit de server blokkeren tot het punt van "
-"onbruikbaarheid"
 
 msgid "Foreground color"
 msgstr "Voorgrondkleur"
@@ -2990,6 +3050,12 @@ msgstr "Item nummer"
 msgid "Items"
 msgstr "Items"
 
+msgid ""
+"Items of the type motions, motion blocks and elections cannot be forwarded."
+msgstr ""
+"Items van het type moties, motieblokken en verkiezingen kunnen niet worden "
+"doorgestuurd."
+
 msgid "Jitsi domain"
 msgstr "Jitsi domain"
 
@@ -3062,6 +3128,9 @@ msgstr "Limiet van actieve accounts"
 
 msgid "Limit of active meetings"
 msgstr "Limiet van actieve vergaderingen"
+
+msgid "Limited to 100 motions"
+msgstr "Beperkt tot 100 moties"
 
 msgid "Line"
 msgstr "Regel"
@@ -3157,6 +3226,9 @@ msgid ""
 "Make background color from meta information box on the projector transparent"
 msgstr ""
 "Achtergrondkleur van meta-informatievak op de projector transparant maken"
+
+msgid "Mandate check"
+msgstr "Mandaatcontrole"
 
 msgid "Mandates switched sucessfully!"
 msgstr "Mandaten succesvol omgewisseld!"
@@ -3344,6 +3416,12 @@ msgstr "Motie identificator"
 msgid "Motion preamble"
 msgstr "Motie preambule"
 
+msgid "Motion supporter"
+msgstr "Supporter van de motie"
+
+msgid "Motion supporters"
+msgstr "Supporters van de motie"
+
 msgid "Motion updated"
 msgstr "Motie geactualiseerd"
 
@@ -3361,6 +3439,9 @@ msgstr "Moties (PDF-instellingen)"
 
 msgid "Motions are in process. Please wait ..."
 msgstr "Moties zijn in behandeling. Even geduld ..."
+
+msgid "Motions in final state will not be changed."
+msgstr ""
 
 msgid "Move"
 msgstr "Verplaatsen"
@@ -3530,9 +3611,6 @@ msgstr "Nieuwe workflow"
 msgid "Next"
 msgstr "Volgende"
 
-msgid "Next page"
-msgstr "Volgende pagina"
-
 msgid "Next states"
 msgstr "Volgende staten"
 
@@ -3621,7 +3699,7 @@ msgid "No verbose name is defined"
 msgstr "Geen verbose naam is gedefinieerd"
 
 msgid "No."
-msgstr "Nee."
+msgstr "Nr."
 
 msgid "Nomination list"
 msgstr "Nominatielijst"
@@ -3629,8 +3707,8 @@ msgstr "Nominatielijst"
 msgid "None"
 msgstr "Geen"
 
-msgid "None of the selected motions can be forwarded."
-msgstr "Geen van de geselecteerde moties kan worden doorgestuurd."
+msgid "None of the selected agenda items can be copied."
+msgstr "Geen van de geselecteerde agendapunten kan worden gekopieerd."
 
 msgid "Normal (http/2)"
 msgstr "Normaal (http/2)"
@@ -3640,6 +3718,9 @@ msgstr "Niet gevonden"
 
 msgid "Not locked out"
 msgstr "Niet uitgelogd"
+
+msgid "Not part of meeting"
+msgstr "Geen deel van de vergadering"
 
 msgid "Not present"
 msgstr "Niet aanwezig"
@@ -3659,6 +3740,9 @@ msgstr ""
 
 msgid "Note: Amendments will not be forwarded."
 msgstr "Opmerking: Wijzigingen worden niet doorgestuurd."
+
+msgid "Note: Motions and elections will not be copied."
+msgstr "Opmerking: Moties en verkiezingen worden niet gekopieerd."
 
 msgid ""
 "Note: The public access setting is deactivated for the organization. Please "
@@ -3838,6 +3922,9 @@ msgstr "Open vergadering"
 
 msgid "Open projection dialog"
 msgstr "Open het projectiedialoogvenster"
+
+msgid "Open projector"
+msgstr ""
 
 msgid "OpenSlides URL"
 msgstr "OpenSlides URL"
@@ -4150,9 +4237,6 @@ msgstr ""
 msgid "Please update your browser or contact your system administration."
 msgstr "Update uw browser of neem contact op met uw systeembeheerder."
 
-msgid "Please vote now!"
-msgstr "Alsjeblieft, stem nu!"
-
 msgid "Point of order"
 msgstr "Punt van orde"
 
@@ -4204,9 +4288,6 @@ msgstr "Voorbeeld"
 msgid "Previous"
 msgstr "Vorige"
 
-msgid "Previous page"
-msgstr "Vorige pagina"
-
 msgid "Previous slides"
 msgstr "Vorige slides"
 
@@ -4240,9 +4321,6 @@ msgstr "Project actief structuurniveau"
 msgid "Project all structure levels"
 msgstr "Project alle structuurniveaus"
 
-msgid "Project selection?"
-msgstr "Projectselectie?"
-
 msgid "Projection"
 msgstr "Projectie"
 
@@ -4266,6 +4344,9 @@ msgstr "Projector header-afbeelding"
 
 msgid "Projector logo"
 msgstr "Projector logo"
+
+msgid "Projector selection"
+msgstr ""
 
 msgid "Projectors"
 msgstr "Projectoren"
@@ -4491,6 +4572,10 @@ msgstr "Resolutie en formaat"
 
 msgid "Restart livestream"
 msgstr "Herstart livestream"
+
+msgid "Restrict definition of motion forwarding to organization admins"
+msgstr ""
+"Beperk de bevoegdheid om berichten door te sturen tot organisatiebeheerders"
 
 msgid ""
 "Restrict delegation principals from adding themselves to the list of "
@@ -5061,9 +5146,6 @@ msgstr "Overzicht van wijzigingen:"
 msgid "Superadmin"
 msgstr "Superadmin"
 
-msgid "Superadmin actions"
-msgstr "Superadmin acties"
-
 msgid "Superadmin settings"
 msgstr "Superadmin-instellingen"
 
@@ -5129,6 +5211,9 @@ msgstr "De account is gedeactiveerd."
 
 msgid "The affected columns will not be imported."
 msgstr "De betreffende kolommen worden niet geïmporteerd."
+
+msgid "The agenda item was successfully copied to {} meeting(s)"
+msgstr "Het agendapunt is succesvol gekopieerd naar {} vergadering(en)"
 
 msgid "The assembly may decide:"
 msgstr "De vergadering mag beslissen:"
@@ -5205,6 +5290,9 @@ msgstr "Het proces is mogelijk gestopt."
 
 msgid "The process will be started. Please wait!"
 msgstr "Het proces wordt gestart. Even geduld!"
+
+msgid "The projected title is"
+msgstr ""
 
 msgid "The request could not be sent. Check your connection."
 msgstr "Het verzoek kon niet worden verzonden. Controleer uw verbinding."
@@ -5440,9 +5528,6 @@ msgstr ""
 msgid "This will set the workflow for all selected motions:"
 msgstr "Hiermee wordt de workflow voor alle geselecteerde moties ingesteld:"
 
-msgid "Thoroughly check datastore (unsafe)"
-msgstr "Grondige controle van datastore (onveilig)"
-
 msgid "Threefold repetition! It's a draw!"
 msgstr "Drievoudige herhaling! Het is remise!"
 
@@ -5452,8 +5537,14 @@ msgstr "Tegelaanzicht"
 msgid "Time"
 msgstr "Tijd"
 
+msgid "Time (mm:ss)"
+msgstr "Tijd (mm:ss)"
+
 msgid "Time and traffic light"
 msgstr "Tijd en stoplicht"
+
+msgid "Time zone"
+msgstr ""
 
 msgid "Timer"
 msgstr "Timer"
@@ -5475,6 +5566,10 @@ msgstr "Titel voor PDF-documenten van moties"
 
 msgid "Title for access data and welcome PDF"
 msgstr "Titel voor toegangsgegevens en welkom PDF"
+
+msgid "Title, text, visibility and comment are copied by default."
+msgstr ""
+"Titel, tekst, zichtbaarheid en opmerking worden gestandaard gekopieerd."
 
 msgid "To"
 msgstr "Naar"
@@ -5554,9 +5649,6 @@ msgstr "Ongedaan gemaakt"
 
 msgid "Unique speakers"
 msgstr "Unieke sprekers"
-
-msgid "Unknown user"
-msgstr "Onbekende gebruiker"
 
 msgid "Unpublish"
 msgstr "Depubliceer"
@@ -5792,6 +5884,13 @@ msgstr ""
 "Waarschuwing: Gegevensverlies is mogelijk omdat accounts in dezelfde "
 "vergadering staan."
 
+msgid ""
+"Warning: List of speakers cannot be copied because person is speaking, has "
+"an open point of order or intervention."
+msgstr ""
+"Let op: De lijst met sprekers kan niet worden gekopieerd omdat er iemand aan"
+" het woord is, een motie van orde heeft of een interventie doet."
+
 msgid "Warning: This projector will be set to visible"
 msgstr "Waarschuwing: Deze projector wordt ingesteld op zichtbaar"
 
@@ -5835,9 +5934,6 @@ msgstr "Wifi"
 
 msgid "Wifi access data"
 msgstr "Wifi toegangsgegevens"
-
-msgid "Wifi name"
-msgstr "Wifi-naam"
 
 msgid ""
 "Will be displayed as label before selected recommendation. Use an empty "
@@ -5914,6 +6010,9 @@ msgstr "U mag niet alle gerechtigde gebruikers zien."
 msgid "You are not allowed to see the livestream"
 msgstr "U mag de livestream niet zien"
 
+msgid "You are not part of this meeting."
+msgstr ""
+
 msgid "You are not supposed to be here..."
 msgstr "U hoort hier niet te zijn..."
 
@@ -5969,6 +6068,9 @@ msgstr ""
 "U kunt deze vergadering niet bijwonen omdat u aan geen enkele groep bent "
 "toegewezen."
 
+msgid "You cannot set yourself as inactive."
+msgstr "U kunt uzelf niet als inactief instellen."
+
 msgid "You cannot vote since your vote right is delegated."
 msgstr "U kunt niet stemmen omdat uw stemrecht is gedelegeerd."
 
@@ -5980,6 +6082,9 @@ msgstr "U hebt al gestemd."
 
 msgid "You have to be logged in to be able to vote."
 msgstr "U moet ingelogd zijn om te kunnen stemmen."
+
+msgid "You have to be part of this meeting to write messages."
+msgstr ""
 
 msgid "You have to be present to add yourself."
 msgstr "U moet aanwezig zijn om uzelf toe te voegen."
@@ -5995,6 +6100,9 @@ msgstr "U moet zes hexadecimale cijfers invoeren"
 
 msgid "You have to fill this field."
 msgstr "U moet dit veld invullen."
+
+msgid "You must be admin in target meeting."
+msgstr "U moet beheerder zijn in de doelvergadering."
 
 msgid "You override the personally set password!"
 msgstr "U overschrijft het persoonlijk ingestelde wachtwoord!"
@@ -6015,6 +6123,22 @@ msgstr ""
 
 msgid "You won!"
 msgstr "U hebt gewonnen!"
+
+msgid "Your account is not in meeting."
+msgstr ""
+
+msgid "Your account is not in this meeting."
+msgstr ""
+
+msgid ""
+"Your account is present. If status just changed focus this element again to "
+"get accurate present status."
+msgstr ""
+
+msgid ""
+"Your account of is not present. If status just changed focus this element "
+"again to get accurate present status."
+msgstr ""
 
 msgid "Your browser"
 msgstr "Uw browser"
@@ -6039,6 +6163,13 @@ msgstr "Uw tegenstander heeft gewonnen!"
 
 msgid "Your password has been reset successfully!"
 msgstr "Uw wachtwoord is succesvol gereset!"
+
+msgid ""
+"Your vote was rejected because your IP address is not in the allowed IP "
+"range."
+msgstr ""
+"Uw stem is afgewezen omdat uw IP-adres niet binnen het toegestane IP-bereik "
+"valt."
 
 msgid "Your votes"
 msgstr "Uw stemmen"
@@ -6070,6 +6201,9 @@ msgstr "actief"
 
 msgid "add group(s)"
 msgstr "groep(en) toevoegen"
+
+msgid "agenda items were successfully copied to {} meeting(s)"
+msgstr "Agendapunten zijn succesvol gekopieerd naar {} vergadering(en)"
 
 msgid "already exists"
 msgstr "bestaat al"
@@ -6219,6 +6353,9 @@ msgstr "is nog niet toegewezen aan commissies of vergaderingen"
 msgid "is now"
 msgstr "is nu"
 
+msgid "is personal favorite"
+msgstr "is persoonlijke favoriet"
+
 msgid "is required"
 msgstr "is vereist"
 
@@ -6357,6 +6494,9 @@ msgstr "korte duur"
 msgid "single-line"
 msgstr "eenregelig"
 
+msgid "speakers"
+msgstr "sprekers"
+
 msgid "started"
 msgstr "begonnen"
 
@@ -6374,6 +6514,9 @@ msgstr "naar"
 
 msgid "today"
 msgstr "vandaag"
+
+msgid "total"
+msgstr "totaal"
 
 msgid "two-line"
 msgstr "tweeregelig"
@@ -6549,3 +6692,12 @@ msgstr "ingezonden"
 
 msgid "withdrawn"
 msgstr "geschrapt"
+
+msgid "Please vote now!"
+msgstr "Alsjeblieft, stem nu!"
+
+msgid "Unknown user"
+msgstr "Onbekende gebruiker"
+
+msgid "Wifi name"
+msgstr "Wifi-naam"

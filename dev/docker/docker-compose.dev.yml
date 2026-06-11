@@ -12,7 +12,7 @@ x-default-environment: &default-environment
 
 services:
   postgres:
-    image: postgres:15
+    image: postgres:17
     environment:
       << : *default-environment
       POSTGRES_USER: openslides
@@ -193,21 +193,6 @@ services:
       << : *default-environment
     volumes:
       - ../../openslides-media-service/src:/app/src
-
-  manage:
-    build:
-        context: ../../openslides-manage-service
-        target: "dev"
-        args:
-            CONTEXT: "dev"
-    image: openslides-manage-dev
-    depends_on:
-      - auth
-    env_file: services.env
-    environment:
-      << : *default-environment
-    ports:
-      - "9008:9008"
 
   redis:
     image: redis:alpine
