@@ -271,6 +271,8 @@ services:
             CONTEXT: "dev"
     environment:
       << : *default-environment
+      KC_DB_URL: jdbc:postgresql://postgres:5432/openslides
+      KC_DB_SCHEMA: keycloak
       KCS_INSTANCE_URL: localhost
       KCS_HOST_EMAIL: noreply@openslides.com
       KC_HOSTNAME: http://localhost:8080/

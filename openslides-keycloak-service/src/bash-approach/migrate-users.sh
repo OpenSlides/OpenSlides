@@ -80,12 +80,6 @@ migrate_user()
             \"value\": \"${PASSWORD}\"
         }"
     fi
-
-def main() -> None:
-    migrate_to_keycloak()
-
-    return 0
-    echo "$KEYCLOAK_USER_ID"
 }
 
 update_os_user()

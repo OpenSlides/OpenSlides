@@ -4,6 +4,17 @@ set -e
 
 echo "Enter entrypoint.sh"
 
+# Ensure Keycloak Database
+until pg_isready -h ${KEYCLOAK_DATABASE_HOST} -p ${KEYCLOAK_DATABASE_PORT} -U ${KEYCLOAK_DATABASE_USER} -d ${KEYCLOAK_DATABASE_NAME} >/dev/null 2>&1; do
+    sleep 2
+    echo "Waiting for DB $KEYCLOAK_DATABASE_HOST to be ready - pg_isready check"
+done
+
+if ! psql -h "$DATABASE_HOST" -p "$DATABASE_PORT" -U "$DATABASE_USER" -d "$DATABASE_NAME" -tc "SELECT 1 FROM information_schema.schemata WHERE schema_name = 'keycloak'" | grep -q 1; then
+  psql -h "$DATABASE_HOST" -p "$DATABASE_PORT" -U "$DATABASE_USER" -d "$DATABASE_NAME" -c "CREATE SCHEMA keycloak"
+fi
+
+
 # Config realm-export.json
 
 edit_realm_export()
