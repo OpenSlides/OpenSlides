@@ -360,7 +360,6 @@ case "$SERVICE" in
                     VOLUMES="-v $(pwd)/openslides-client/client/src:/app/src -v $(pwd)/openslides-client/client/cli:/app/cli -p 127.0.0.1:9001:9001/tcp" ;;
     "datastore")    SERVICE_FOLDER="./openslides-datastore-service" ;;
     "icc")          SERVICE_FOLDER="./openslides-icc-service" ;;
-    "identity")     SERVICE_FOLDER="./openslides-identity-service" ;;
     "manage")       SERVICE_FOLDER="./openslides-manage-service" ;;
     "media")        SERVICE_FOLDER="./openslides-media-service" &&
                     COMPOSE_FILE="$SERVICE_FOLDER/docker-compose.test.yml" &&

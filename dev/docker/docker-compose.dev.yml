@@ -263,21 +263,6 @@ services:
     ports:
       - "9013:9013"
 
-  identity:
-    build:
-        context: ../../openslides-identity-service
-        target: "dev"
-        args:
-            CONTEXT: "dev"
-    environment:
-      << : *default-environment
-      KEYCLOAK_URL: http://localhost:8080/
-      KEYCLOAK_URL_INTERNAL: http://keycloak-server:8080
-    depends_on:
-      - keycloak-server
-    ports:
-      - "9014:9014"
-
   keycloak-server:
     build:
         context: ../../openslides-keycloak-service
