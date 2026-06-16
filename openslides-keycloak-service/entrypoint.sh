@@ -31,6 +31,7 @@ edit_realm_export "noreply@openslides.com" "$KCS_HOST_EMAIL"
 
 
 # Start Keycloak
+echo "Starting Keycloak Server"
 /opt/keycloak/bin/kc.sh start-dev --import-realm &
 
 # Wait for Keycloak to be ready
@@ -39,8 +40,7 @@ until /opt/keycloak/bin/kcadm.sh config credentials \
   --realm master \
   --user "$KC_BOOTSTRAP_ADMIN_USERNAME" \
   --password "$KC_BOOTSTRAP_ADMIN_PASSWORD" 2>/dev/null; do
-  echo "Waiting for keycloak server to setup"
-  sleep 3
+  sleep 1
 done
 
 echo "Keycloak is ready"

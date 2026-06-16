@@ -365,6 +365,7 @@ case "$SERVICE" in
                     if [ "$FUNCTION" = "attached" ]; then FUNCTION="media-attached"; fi ;; # Temporary fix for wait-for-it situation
     "projector")    SERVICE_FOLDER="./openslides-projector-service" ;;
     "proxy")        SERVICE_FOLDER="./openslides-proxy" ;;
+    "keycloak")     SERVICE_FOLDER="./openslides-keycloak-service" ;;
     "search")       SERVICE_FOLDER="./openslides-search-service" &&
                     COMPOSE_FILE="$SERVICE_FOLDER/dev/docker-compose.dev.yml";;
     "vote")         SERVICE_FOLDER="./openslides-vote-service" ;;
