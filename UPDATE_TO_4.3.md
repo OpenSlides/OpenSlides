@@ -168,12 +168,16 @@ variables to be set. By setting `MIG0100_I_READ_DOCS` we confirm we are
 following this guide. Part of the migration is setting the new `time_zone`
 field for existing meetings. Please set `MIG0100_TIMEZONE` as is appropriate
 for your instance.
+Furthermore the backend must not try to initialize the DB before we run the
+migration. If `OPENSLIDES_BACKEND_CREATE_INITIAL_DATA` was enabled before, it
+needs to be disabled now.
 
 We prepare this by adding to our `config.yml`:
 
     services:
       backendManage:
         environment:
+          OPENSLIDES_BACKEND_CREATE_INITIAL_DATA: '0'
           MIG0100_I_READ_DOCS: '1'
           MIG0100_TIMEZONE: 'Europe/Berlin'
 
