@@ -128,14 +128,11 @@ for i in "${SELECTED_TARGETS[@]}"; do
 
   echo "Building $img..."
   cd $loc
-  {
-    printf '{\n'
-    printf '\t"service": "%s,\n' "${i}"
-    printf '\t"date": "%s",\n' "$(date)"
-    printf '\t"commit": "%s",\n' "$(git rev-parse HEAD)"
-    printf '\t"commit-abbrev": "%s",\n' "$(git rev-parse --abbrev-ref HEAD)"
-    printf '}\n'
-  } > version.json
+  OPTIONS+=(--label version="$(git tag | sort -V | tail -1)")
+  OPTIONS+=(--label build_time="$(date)")
+  OPTIONS+=(--label commit="$(git rev-parse HEAD)")
+  OPTIONS+=(--label branch="$(git rev-parse --abbrev-ref HEAD)")
+  if [ -d "./meta" ]; then OPTIONS+=(--label meta-commit="$(git -C ./meta rev-parse HEAD)"); fi
 
   # Special instructions for local services
   build_script="${loc}/build.sh"
@@ -143,13 +140,17 @@ for i in "${SELECTED_TARGETS[@]}"; do
     ( . "$build_script" )
   else
     if [[ "$LOCAL_GO" == "1" && $(grep -c openslides-go ./go.mod) -gt 0 ]]; then
+      OPTIONS+=(--label go-commit="$(git -C ../lib/ rev-parse HEAD)")
+      OPTIONS+=(--label meta-commit="$(git -C ../lib/openslides-go/meta rev-parse HEAD)")
       echo "Building with local openslides-go"
       tar -c . -C ../ ./lib -C ./dev/docker/workspaces . | docker build --tag "$img" --pull "${OPTIONS[@]}" --target prod-gowork -
     else
+      if [[ $(grep -c openslides-go ./go.mod) -gt 0 ]]; then
+          OPTIONS+=(--label go-commit="$(grep "openslides-go" ./go.mod)")
+      fi
       docker build --tag "$img" --pull "${OPTIONS[@]}" "$loc"
     fi
   fi
-  rm version.json
 
   BUILT_IMAGES+=("$img ON")
 done
