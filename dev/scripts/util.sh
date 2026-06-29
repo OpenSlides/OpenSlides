@@ -89,10 +89,10 @@ set_remote() {
 # as if executed directly.
 echocmd() {
   (
-  echo "${COL_BLUE}$ $@${COL_NORMAL}" >&2
-  if [ -n "$DEBUG_DRY_RUN" ]; then return 0; fi
-  "$@"
-  return $?
+    echo "${COL_BLUE}$ $@${COL_NORMAL}" >&2
+    if [ -n "$DEBUG_DRY_RUN" ]; then return 0; fi
+    "$@"
+    return $?
   )
 }
 

@@ -177,7 +177,7 @@ run()
         fi
 
         # Single Container
-        echocmd docker run --name "$CONTAINER_TAG"  "$FLAGS" "$VOLUMES" "$RUN_ARGS" "$IMAGE_TAG"
+        echocmd docker run --name "$CONTAINER_TAG" "$FLAGS" "$VOLUMES" "$RUN_ARGS" "$IMAGE_TAG"
     fi
 }
 
@@ -190,13 +190,13 @@ restart()
         # Compose
         if [ -n "$CONTAINER" ]
         then
-            echocmd eval "$DC restart ${CONTAINER} ${VOLUMES} ${RUN_ARGS}"
+            echocmd eval "$DC restart ${CONTAINER}"
         else
-            echocmd eval "$DC restart ${VOLUMES} ${RUN_ARGS}"
+            echocmd eval "$DC restart"
         fi
     else
         # Single Container
-        echocmd docker restart --name "$CONTAINER_TAG" "$VOLUMES" "$RUN_ARGS" "$IMAGE_TAG"
+        echocmd docker restart "$CONTAINER_TAG"
     fi
 }
 
@@ -310,6 +310,7 @@ for CMD in $TEMP_SERVICE; do
         "no-cache")      NO_CACHE=true ;;
         "compose-local-branch") USE_LOCAL_BRANCH_FOR_COMPOSE=true ;;
         "no-log-prefix") LOG_PREFIX="--no-log-prefix" ;;
+        "debug-dry-run") DEBUG_DRY_RUN=1 ;;
         *)               CONTAINER="$CMD" ;;
     esac
 done
@@ -350,8 +351,7 @@ case "$SERVICE_COMPOSE_SETUP" in
     "backend")  USED_SHELL="bash --rcfile .bashrc" &&
                 CLOSE_VOLUMES="--volumes" &&
                 COMPOSE_FILE="$SERVICE_FOLDER/dev/docker-compose.dev.yml" ;;
-    "client")   VOLUMES="-v $(pwd)/openslides-client/client/src:/app/src -v $(pwd)/openslides-client/client/cli:/app/cli -p 127.0.0.1:9001:9001/tcp" &&
-                COMPOSE_FILE="./dev/docker/docker-compose.dev.yml" ;;
+    "client")   VOLUMES="-v $(pwd)/openslides-client/client/src:/app/src -v $(pwd)/openslides-client/client/cli:/app/cli -p 127.0.0.1:9001:9001/tcp" ;;
     "media")    USED_SHELL="bash" &&
                 if [ "$FUNCTION" = "attached" ]; then FUNCTION="media-attached"; fi && # Temporary fix for wait-for-it situation
                 COMPOSE_FILE="$SERVICE_FOLDER/docker-compose.test.yml" ;;
@@ -365,7 +365,6 @@ else info "Running $FUNCTION"; fi
 
 # Compose dev branch checkout
 COMPOSE_REFERENCE_BRANCH="main"
-
 if [ -n "$USE_LOCAL_BRANCH_FOR_COMPOSE" ]
 then
     if [ -n "$SERVICE_COMPOSE_SETUP" ]
@@ -387,6 +386,7 @@ fi
 USER_ID=$(id -u)
 GROUP_ID=$(id -g)
 DC="CONTEXT=dev USER_ID=$USER_ID GROUP_ID=$GROUP_ID COMPOSE_REFERENCE_BRANCH=$COMPOSE_REFERENCE_BRANCH docker compose -f ${COMPOSE_FILE}"
+
 IMAGE_TAG="openslides-$CONTAINER-dev"
 
 # - Run specific function
