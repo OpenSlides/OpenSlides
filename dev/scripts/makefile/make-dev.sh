@@ -351,13 +351,13 @@ case "$SERVICE_COMPOSE_SETUP" in
                 CLOSE_VOLUMES="--volumes" &&
                 COMPOSE_FILE="$SERVICE_FOLDER/dev/docker-compose.dev.yml" ;;
     "client")   VOLUMES="-v $(pwd)/openslides-client/client/src:/app/src -v $(pwd)/openslides-client/client/cli:/app/cli -p 127.0.0.1:9001:9001/tcp" &&
-                COMPOSE_FILE="/dev/docker/docker-compose.dev.yml" ;;
+                COMPOSE_FILE="./dev/docker/docker-compose.dev.yml" ;;
     "media")    USED_SHELL="bash" &&
                 if [ "$FUNCTION" = "attached" ]; then FUNCTION="media-attached"; fi && # Temporary fix for wait-for-it situation
                 COMPOSE_FILE="$SERVICE_FOLDER/docker-compose.test.yml" ;;
     "search")   COMPOSE_FILE="$SERVICE_FOLDER/dev/docker-compose.dev.yml" ;;
-    "")         COMPOSE_FILE="/dev/docker/docker-compose.dev.yml" ;;
-    *)          COMPOSE_FILE="/dev/docker/docker-compose.dev.yml" ;;
+    "")         COMPOSE_FILE="./dev/docker/docker-compose.dev.yml" ;;
+    *)          COMPOSE_FILE="./dev/docker/docker-compose.dev.yml" ;;
 esac
 
 if [ -n "$CONTAINER" ]; then info "Running $FUNCTION in container $CONTAINER"
