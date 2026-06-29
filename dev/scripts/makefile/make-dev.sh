@@ -216,7 +216,7 @@ attach()
             { [ -z "$TARGET_CONTAINER" ] && \info "No service container declared, exiting" && return; }
         else
             # Submodule case
-            { [ -z "$TARGET_CONTAINER" ] && \info "No container was specified; Service container will be taken as default" && TARGET_CONTAINER="$CONTAINER"; }
+            info "No container was specified; Service container will be taken as default"
         fi
 
         echocmd eval "$DC exec $TARGET_CONTAINER $USED_SHELL"
@@ -251,12 +251,7 @@ stop()
     info "Stop running container"
     if [ -n "$COMPOSE_FILE" ]
     then
-        if [ -n "$CONTAINER" ]
-        then
-            echocmd eval "$DC down $CONTAINER $STOP_ARGS"
-        else
-            echocmd eval "$DC down $STOP_ARGS"
-        fi
+        echocmd eval "$DC down $STOP_ARGS"
     else
         # Single Container
         echocmd docker stop "$CONTAINER_TAG"
@@ -284,10 +279,9 @@ log()
                 echocmd docker compose -f "$COMPOSE_FILE" logs "${LOG_PREFIX}" ${CONNECT_FLAG}
                 exit 0
             fi
-        elif [ -n "$CONTAINER" ] && [ -z "$TARGET_CONTAINER" ]
-        then
+        else
             # Submodule case
-            info "No container was specified; Service container will be taken as default" && TARGET_CONTAINER="$CONTAINER"
+            info "No container was specified; Service container will be taken as default"
         fi
 
         # shellcheck disable=SC2086
@@ -352,16 +346,16 @@ case "$CONTAINER" in
 esac
 
 case "$SERVICE_COMPOSE_SETUP" in
-    "auth")     COMPOSE_FILE="/$SERVICE_FOLDER/docker-compose.dev.yml" ;;
+    "auth")     COMPOSE_FILE="$SERVICE_FOLDER/docker-compose.dev.yml" ;;
     "backend")  USED_SHELL="bash --rcfile .bashrc" &&
                 CLOSE_VOLUMES="--volumes" &&
-                COMPOSE_FILE="/$SERVICE_FOLDER/dev/docker-compose.dev.yml" ;;
+                COMPOSE_FILE="$SERVICE_FOLDER/dev/docker-compose.dev.yml" ;;
     "client")   VOLUMES="-v $(pwd)/openslides-client/client/src:/app/src -v $(pwd)/openslides-client/client/cli:/app/cli -p 127.0.0.1:9001:9001/tcp" &&
                 COMPOSE_FILE="/dev/docker/docker-compose.dev.yml" ;;
     "media")    USED_SHELL="bash" &&
                 if [ "$FUNCTION" = "attached" ]; then FUNCTION="media-attached"; fi && # Temporary fix for wait-for-it situation
-                COMPOSE_FILE="/$SERVICE_FOLDER/docker-compose.test.yml" ;;
-    "search")   COMPOSE_FILE="/$SERVICE_FOLDER/dev/docker-compose.dev.yml" ;;
+                COMPOSE_FILE="$SERVICE_FOLDER/docker-compose.test.yml" ;;
+    "search")   COMPOSE_FILE="$SERVICE_FOLDER/dev/docker-compose.dev.yml" ;;
     "")         COMPOSE_FILE="/dev/docker/docker-compose.dev.yml" ;;
     *)          COMPOSE_FILE="/dev/docker/docker-compose.dev.yml" ;;
 esac
