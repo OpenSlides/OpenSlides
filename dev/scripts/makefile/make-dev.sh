@@ -3,6 +3,7 @@
 set -eo pipefail
 
 # Import OpenSlides utils package
+# shellcheck disable=SC1091
 . "$(dirname "$0")/../util.sh"
 
 # Processes various development operations
@@ -94,6 +95,7 @@ build()
         # Ensure localhost-cert has been called at least once
         proxy_setup
 
+        # shellcheck disable=SC2086
         docker compose  -f "$(dirname "$0")/../../docker/docker-compose.dev.yml" build $BUILD_ARGS
 
         return
@@ -114,6 +116,7 @@ docker_reset()
     then
         info "No containers to stop"
     else
+        # shellcheck disable=SC2046
         docker stop $(docker ps -aq)
     fi
 
@@ -122,9 +125,11 @@ docker_reset()
     then
         info "No containers to remove"
     else
+        # shellcheck disable=SC2046
         docker rm $(docker ps -a -q)
     fi
 
+    # shellcheck disable=SC2015
     ask n "Do you want to delete ALL images as well?" &&
     (
         info "Removing images"
@@ -132,13 +137,15 @@ docker_reset()
         then
             info "No images to remove"
         else
+            # shellcheck disable=SC2046
             echocmd docker rmi -f $(docker images -aq)
         fi
     ) || true
+    # shellcheck disable=SC2015
     ask n "Do you want a full docker system prune as well?" &&
     (
-    info "Running docker system prune"
-    echocmd docker system prune --volumes
+        info "Running docker system prune"
+        echocmd docker system prune -f -a --volumes
     ) || true
 }
 
@@ -146,7 +153,6 @@ run()
 {
     info "Running container"
     local FLAGS=$1
-    local SHELL=$2
     if [ -n "$COMPOSE_FILE" ]
     then
         local BUILD_ARGS="";
@@ -171,19 +177,18 @@ run()
         fi
 
         # Single Container
-        echocmd docker run --name "$CONTAINER_TAG"  "$FLAGS" "$VOLUMES" "$RUN_ARGS" "$IMAGE_TAG" "$SHELL"
+        echocmd docker run --name "$CONTAINER_TAG"  "$FLAGS" "$VOLUMES" "$RUN_ARGS" "$IMAGE_TAG"
     fi
 }
 
 restart()
 {
-    local SHELL=$1
     info "Restarting container(s)"
 
     if [ -n "$COMPOSE_FILE" ]
     then
         # Compose
-        if [ -n "$CONTAINER"]
+        if [ -n "$CONTAINER" ]
         then
             echocmd eval "$DC restart ${CONTAINER} ${VOLUMES} ${RUN_ARGS}"
         else
@@ -191,7 +196,7 @@ restart()
         fi
     else
         # Single Container
-        echocmd docker restart --name "$CONTAINER_TAG" "$VOLUMES" "$RUN_ARGS" "$IMAGE_TAG" "$SHELL"
+        echocmd docker restart --name "$CONTAINER_TAG" "$VOLUMES" "$RUN_ARGS" "$IMAGE_TAG"
     fi
 }
 
@@ -275,7 +280,8 @@ log()
             if [ -z "$TARGET_CONTAINER" ]
             then
                 # No container specified. Log whole compose file
-                echocmd docker compose -f "$COMPOSE_FILE" logs ${LOG_PREFIX} ${CONNECT_FLAG}
+                # shellcheck disable=SC2086
+                echocmd docker compose -f "$COMPOSE_FILE" logs "${LOG_PREFIX}" ${CONNECT_FLAG}
                 exit 0
             fi
         elif [ -n "$CONTAINER" ] && [ -z "$TARGET_CONTAINER" ]
@@ -284,9 +290,11 @@ log()
             info "No container was specified; Service container will be taken as default" && TARGET_CONTAINER="$CONTAINER"
         fi
 
+        # shellcheck disable=SC2086
         echocmd docker compose -f "$COMPOSE_FILE" logs "${TARGET_CONTAINER}" --no-log-prefix ${CONNECT_FLAG}
     else
         # Single Container
+        # shellcheck disable=SC2086
         echocmd docker container logs "${TARGET_CONTAINER}" --no-log-prefix ${CONNECT_FLAG}
     fi
 
@@ -294,7 +302,7 @@ log()
 
 # Setup
 ## Parameters
-TARGET=$1
+OPERATION=$1
 CONTAINER=$2
 
 ## Parameters RUN_ARGS, EXEC_COMMAND and SERVICE_COMPOSE_SETUP are fetched from environment
@@ -318,6 +326,7 @@ CONTAINER_TAG="make-os-dev-$CONTAINER"
 USED_SHELL="sh"
 
 # Remove ARGS flag from maketarget that's calling this script
+# shellcheck disable=SC2034
 MAKEFLAGS=
 unset ARGS
 
