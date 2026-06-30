@@ -142,7 +142,7 @@ for i in "${SELECTED_TARGETS[@]}"; do
   else
     if [[ $(grep -c openslides-go ./go.mod) -gt 0 ]]; then
       git -C ../lib/openslides-go fetch origin
-      GO_COMMIT=$(grep "openslides-go" ./go.mod | awk --field-separator - ' {print $NF} ')
+      GO_COMMIT=$(grep "openslides-go" ./go.mod | awk -F - ' {print $NF} ')
       META_COMMIT=$(git -C ../lib/openslides-go rev-parse $GO_COMMIT:meta)
       OPTIONS+=(--label go-commit="$GO_COMMIT")
       OPTIONS+=(--label meta-commit="$META_COMMIT")
