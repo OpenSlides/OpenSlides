@@ -134,9 +134,9 @@ for i in "${SELECTED_TARGETS[@]}"; do
   OPTIONS+=(--label branch="$(git rev-parse --abbrev-ref HEAD)")
   if [ -d "./meta" ]; then OPTIONS+=(--label meta-commit="$(git -C ./meta rev-parse HEAD)"); fi
 
+  # Special instructions for local services
+  build_script="${loc}/build.sh"
   if [[ -f "$build_script" ]]; then
-    # Special instructions for local services
-    build_script="${loc}/build.sh"
     ( . "$build_script" )
   else
     if [[ "$LOCAL_GO" == "1" && $(grep -c openslides-go ./go.mod) -gt 0 ]]; then
