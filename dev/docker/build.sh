@@ -134,26 +134,20 @@ for i in "${SELECTED_TARGETS[@]}"; do
   OPTIONS+=(--label branch="$(git rev-parse --abbrev-ref HEAD)")
   if [ -d "./meta" ]; then OPTIONS+=(--label meta-commit="$(git -C ./meta rev-parse HEAD)"); fi
 
-  # Special instructions for local services
-  build_script="${loc}/build.sh"
-  if [[ -f "$build_script" ]]; then
-    ( . "$build_script" )
+  if [[ "$LOCAL_GO" == "1" && $(grep -c openslides-go ./go.mod) -gt 0 ]]; then
+    OPTIONS+=(--label go-commit="$(git -C ../lib/ rev-parse HEAD)")
+    OPTIONS+=(--label meta-commit="$(git -C ../lib/openslides-go/meta rev-parse HEAD)")
+    echo "Building with local openslides-go"
+    tar -c . -C ../ ./lib -C ./dev/docker/workspaces . | docker build --tag "$img" --pull "${OPTIONS[@]}" --target prod-gowork -
   else
-    if [[ "$LOCAL_GO" == "1" && $(grep -c openslides-go ./go.mod) -gt 0 ]]; then
-      OPTIONS+=(--label go-commit="$(git -C ../lib/ rev-parse HEAD)")
-      OPTIONS+=(--label meta-commit="$(git -C ../lib/openslides-go/meta rev-parse HEAD)")
-      echo "Building with local openslides-go"
-      tar -c . -C ../ ./lib -C ./dev/docker/workspaces . | docker build --tag "$img" --pull "${OPTIONS[@]}" --target prod-gowork -
-    else
-      if [[ $(grep -c openslides-go ./go.mod) -gt 0 ]]; then
-        git -C ../lib/openslides-go fetch origin
-        GO_COMMIT=$(grep "openslides-go" ./go.mod | awk --field-separator - ' {print $NF} ')
-        META_COMMIT=$(git -C ../lib/openslides-go rev-parse $GO_COMMIT:meta)
-        OPTIONS+=(--label go-commit="$GO_COMMIT")
-        OPTIONS+=(--label meta-commit="$META_COMMIT")
-      fi
-      docker build --tag "$img" --pull "${OPTIONS[@]}" "$loc"
+    if [[ $(grep -c openslides-go ./go.mod) -gt 0 ]]; then
+      git -C ../lib/openslides-go fetch origin
+      GO_COMMIT=$(grep "openslides-go" ./go.mod | awk --field-separator - ' {print $NF} ')
+      META_COMMIT=$(git -C ../lib/openslides-go rev-parse $GO_COMMIT:meta)
+      OPTIONS+=(--label go-commit="$GO_COMMIT")
+      OPTIONS+=(--label meta-commit="$META_COMMIT")
     fi
+    docker build --tag "$img" --pull "${OPTIONS[@]}" "$loc"
   fi
   BUILT_IMAGES+=("$img ON")
 done
