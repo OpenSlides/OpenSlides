@@ -128,7 +128,7 @@ for i in "${SELECTED_TARGETS[@]}"; do
 
   echo "Building $img..."
   cd $loc
-  OPTIONS+=(--label version="$(git tag | sort -V | tail -1)")
+  OPTIONS+=(--label version="$(cat ../VERSION)")
   OPTIONS+=(--label build-time="$(date -Is)")
   OPTIONS+=(--label commit="$(git rev-parse HEAD)")
   OPTIONS+=(--label service-branch="$(git describe --all --exact-match --dirty)")
