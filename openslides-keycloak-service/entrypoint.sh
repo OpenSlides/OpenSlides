@@ -32,7 +32,8 @@ edit_realm_export "noreply@openslides.com" "$KCS_HOST_EMAIL"
 
 # Start Keycloak
 echo "Starting Keycloak Server"
-/opt/keycloak/bin/kc.sh start-dev --import-realm &
+# exec is necessary as per keycloak documentation
+exec /opt/keycloak/bin/kc.sh start-dev --import-realm &
 
 # Wait for Keycloak to be ready
 until /opt/keycloak/bin/kcadm.sh config credentials \

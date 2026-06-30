@@ -1,42 +1,60 @@
+
+x-default-environment: &default-environment
+  MESSAGE_BUS_HOST: redis
+  CACHE_HOST: redis
+  CACHE_PORT: 6379
+  DATABASE_HOST: postgres
+  DATABASE_PORT: 5432
+  DATABASE_NAME: openslides
+  DATABASE_USER: openslides
+  PGPASSWORD: openslides
+  OPENSLIDES_DEVELOPMENT: 1
+
+
 services:
   postgres:
-    image: postgres:15
+    image: postgres:17
     environment:
-      DATABASE_HOST: postgres
-      DATABASE_PORT: 5432
-      DATABASE_NAME: openslides
-      DATABASE_USER: openslides
-      PGPASSWORD: openslides
+      << : *default-environment
       POSTGRES_USER: openslides
       POSTGRES_PASSWORD: openslides
       POSTGRES_DB: openslides
-      OPENSLIDES_DEVELOPMENT: 1
 
   keycloak-server:
-    image: quay.io/keycloak/keycloak:26.6.0
-    command: start-dev --import-realm
-    volumes:
-      - ./conf/keycloak.conf:/opt/keycloak/conf/keycloak.conf
-      - ./conf/realm-export.json:/opt/keycloak/data/import/realm-export.json
-    depends_on:
-      - postgres
-    ports:
-      - "8080:8080"
-
-  keycloak-service:
     build:
+        context: ./
         target: "dev"
         args:
             CONTEXT: "dev"
     environment:
-        - KEYCLOAK_DATABASE_HOST=postgres
-        - KEYCLOAK_DATABASE_PORT=5432
-        - KEYCLOAK_DATABASE_NAME=openslides
-        - KEYCLOAK_DATABASE_USER=openslides
-        - KEYCLOAK_DATABASE_PASSWORD_FILE=/run/secrets/postgres_password
-    volumes:
-      - ./src:/app/src
+      << : *default-environment
+      KC_DB_URL: jdbc:postgresql://postgres:5432/openslides
+      KC_DB_SCHEMA: keycloak
+      KCS_INSTANCE_URL: localhost
+      KCS_HOST_EMAIL: noreply@openslides.com
+      KC_HOSTNAME: http://localhost:8080/
+      KC_HOSTNAME_BACKCHANNEL_DYNAMIC: true
+      KC_PROXY_HEADERS: xforwarded
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+      KEYCLOAK_DATABASE_HOST: postgres
+      KEYCLOAK_DATABASE_PORT: 5432
+      KEYCLOAK_DATABASE_NAME: openslides
+      KEYCLOAK_DATABASE_USER: openslides
+      KEYCLOAK_DATABASE_PASSWORD_FILE: /run/secrets/postgres_password
+      KEYCLOAK_URL_INTERNAL: http://keycloak-server:8080
+      KEYCLOAK_OS_REALM: openslides
+      EMAIL_HOST: mailhog
+      EMAIL_PORT: 1025
+      EMAIL_CONNECTION_SECURITY: NONE
+      EMAIL_TIMEOUT: 5
+      EMAIL_ACCEPT_SELF_SIGNED_CERTIFICATE: false
     depends_on:
-      - keycloak-server
+      - postgres
+    deploy:
+      resources:
+        limits:
+          memory: ${MEMORY_LIMIT:-1500m}
     ports:
-      - "8081:8081"
+      - "8080:8080"
+
