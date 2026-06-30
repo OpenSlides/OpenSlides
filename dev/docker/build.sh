@@ -129,7 +129,7 @@ for i in "${SELECTED_TARGETS[@]}"; do
   echo "Building $img..."
   cd $loc
   OPTIONS+=(--label version="$(git tag | sort -V | tail -1)")
-  OPTIONS+=(--label build_time="$(date)")
+  OPTIONS+=(--label build_time="$(date -Ia)")
   OPTIONS+=(--label commit="$(git rev-parse HEAD)")
   OPTIONS+=(--label branch="$(git rev-parse --abbrev-ref HEAD)")
   if [ -d "./meta" ]; then OPTIONS+=(--label meta-commit="$(git -C ./meta rev-parse HEAD)"); fi
