@@ -2,19 +2,19 @@
 
 set -e
 
-HOME="$(dirname "$(realpath "${BASH_SOURCE[0]}")")/../../"
+REPO_ROOT="$(dirname "$(realpath "${BASH_SOURCE[0]}")")/../../"
 declare -A TARGETS
 TARGETS=(
-  [proxy]="$HOME/openslides-proxy/"
-  [client]="$HOME/openslides-client/"
-  [backend]="$HOME/openslides-backend/"
-  [auth]="$HOME/openslides-auth-service/"
-  [autoupdate]="$HOME/openslides-autoupdate-service/"
-  [search]="$HOME/openslides-search-service/"
-  [projector]="$HOME/openslides-projector-service/"
-  [media]="$HOME/openslides-media-service/"
-  [vote]="$HOME/openslides-vote-service/"
-  [icc]="$HOME/openslides-icc-service/"
+  [proxy]="$REPO_ROOT/openslides-proxy/"
+  [client]="$REPO_ROOT/openslides-client/"
+  [backend]="$REPO_ROOT/openslides-backend/"
+  [auth]="$REPO_ROOT/openslides-auth-service/"
+  [autoupdate]="$REPO_ROOT/openslides-autoupdate-service/"
+  [search]="$REPO_ROOT/openslides-search-service/"
+  [projector]="$REPO_ROOT/openslides-projector-service/"
+  [media]="$REPO_ROOT/openslides-media-service/"
+  [vote]="$REPO_ROOT/openslides-vote-service/"
+  [icc]="$REPO_ROOT/openslides-icc-service/"
 )
 
 DOCKER_REPOSITORY="openslides"
@@ -128,24 +128,24 @@ for i in "${SELECTED_TARGETS[@]}"; do
 
   echo "Building $img..."
   cd $loc
-  OPTIONS+=(--label version="$(cat ../VERSION)")
+  OPTIONS+=(--label version="$(cat "$REPO_ROOT/VERSION")")
   OPTIONS+=(--label build-time="$(date -Is)")
   OPTIONS+=(--label commit="$(git rev-parse HEAD)")
-  OPTIONS+=(--label mainrepo-commit="$(git -C ../ rev-parse HEAD)")
-  OPTIONS+=(--label service-branch="$(git rev-parse --abbrev-ref HEAD)")
-  OPTIONS+=(--label mainrepo-branch="$(git -C ../ rev-parse --abbrev-ref HEAD)")
+  OPTIONS+=(--label mainrepo-commit="$(git -C "$REPO_ROOT" rev-parse HEAD)")
+  OPTIONS+=(--label branch="$(git rev-parse --abbrev-ref HEAD)")
+  OPTIONS+=(--label mainrepo-branch="$(git -C "$REPO_ROOT" rev-parse --abbrev-ref HEAD)")
   if [ -d "./meta" ]; then OPTIONS+=(--label meta-commit="$(git -C ./meta rev-parse HEAD)"); fi
 
   if [[ "$LOCAL_GO" == "1" && $(grep -c openslides-go ./go.mod) -gt 0 ]]; then
-    OPTIONS+=(--label go-commit="$(git -C ../lib/ rev-parse HEAD)")
-    OPTIONS+=(--label meta-commit="$(git -C ../lib/openslides-go/meta rev-parse HEAD)")
+    OPTIONS+=(--label go-commit="$(git -C "$REPO_ROOT/lib/" rev-parse HEAD)")
+    OPTIONS+=(--label meta-commit="$(git -C "$REPO_ROOT/lib/openslides-go/meta" rev-parse HEAD)")
     echo "Building with local openslides-go"
-    tar -c . -C ../ ./lib -C ./dev/docker/workspaces . | docker build --tag "$img" --pull "${OPTIONS[@]}" --target prod-gowork -
+    tar -c . -C "$REPO_ROOT" ./lib -C ./dev/docker/workspaces . | docker build --tag "$img" --pull "${OPTIONS[@]}" --target prod-gowork -
   else
     if [[ $(grep -c openslides-go ./go.mod) -gt 0 ]]; then
-      git -C ../lib/openslides-go fetch origin
+      git -C "$REPO_ROOT/lib/openslides-go" fetch origin
       GO_COMMIT=$(grep "openslides-go" ./go.mod | awk -F - ' {print $NF} ')
-      META_COMMIT=$(git -C ../lib/openslides-go rev-parse $GO_COMMIT:meta)
+      META_COMMIT=$(git -C "$REPO_ROOT/lib/openslides-go" rev-parse $GO_COMMIT:meta)
       OPTIONS+=(--label go-commit="$GO_COMMIT")
       OPTIONS+=(--label meta-commit="$META_COMMIT")
     fi
