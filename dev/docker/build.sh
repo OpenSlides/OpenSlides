@@ -129,9 +129,10 @@ for i in "${SELECTED_TARGETS[@]}"; do
   echo "Building $img..."
   cd $loc
   OPTIONS+=(--label version="$(git tag | sort -V | tail -1)")
-  OPTIONS+=(--label build_time="$(date -Is)")
+  OPTIONS+=(--label build-time="$(date -Is)")
   OPTIONS+=(--label commit="$(git rev-parse HEAD)")
-  OPTIONS+=(--label branch="$(git rev-parse --abbrev-ref HEAD)")
+  OPTIONS+=(--label service-branch="$(git describe --all --exact-match --dirty)")
+  OPTIONS+=(--label mainrepo-branch="$(git -C ../ describe --all --exact-match --dirty)")
   if [ -d "./meta" ]; then OPTIONS+=(--label meta-commit="$(git -C ./meta rev-parse HEAD)"); fi
 
   if [[ "$LOCAL_GO" == "1" && $(grep -c openslides-go ./go.mod) -gt 0 ]]; then
