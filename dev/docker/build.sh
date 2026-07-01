@@ -131,7 +131,7 @@ for i in "${SELECTED_TARGETS[@]}"; do
   OPTIONS+=(--label version="$(cat ../VERSION)")
   OPTIONS+=(--label build-time="$(date -Is)")
   OPTIONS+=(--label commit="$(git rev-parse HEAD)")
-  OPTIONS+=(--label mainrepo-commit="$(git -C rev-parse HEAD)")
+  OPTIONS+=(--label mainrepo-commit="$(git -C ../ rev-parse HEAD)")
   OPTIONS+=(--label service-branch="$(git rev-parse --abbrev-ref HEAD)")
   OPTIONS+=(--label mainrepo-branch="$(git -C ../ rev-parse --abbrev-ref HEAD)")
   if [ -d "./meta" ]; then OPTIONS+=(--label meta-commit="$(git -C ./meta rev-parse HEAD)"); fi
