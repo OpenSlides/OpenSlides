@@ -11,8 +11,17 @@ BRANCH_FILE=${3:-""}
 OPT_PULL=${4:-0}
 CHECKOUT_LATEST=${5:-0}
 AUTO_MAIN_FALLBACK=${6:-0}
+ALWAYS_CHECKOUT_MAIN_REPO=${7:-0}
+USE_HTTPS=${8:-0}
+GO_AUTO_CHECKOUT=${9:-0}
 
 BRANCH_FILE_PATH=$(realpath ".")
+CLONE_BASE="git@github.com:"
+
+if [ "$USE_HTTPS" != 0 ]
+then
+    CLONE_BASE="https://github.com/"
+fi
 
 if [ -f  "$BRANCH_FILE_PATH/$BRANCH_FILE" ]; then info "Reading commit info from $BRANCH_FILE"; fi
 
@@ -36,11 +45,23 @@ usage() {
 
    Use -p or --pull to instead forward the local $BRANCH_NAME branch.
    Use -l or --latest to ignore specific commit hashes and instead pull the latest commit.
-   Use -g or --go_update to automatically update go.mod of all submodules to match the checked out openslides-go version
+   Use -a or --auto_fallback to automatically fallback to main if a branch can not be found, skipping the
+      input prompt that would otherwise be called
+   Use -m or --always_checkout_main_repo to automatically checkout the main repository, skipping the input prompt that would otherwise be called
+   Use -u or --use_https to use the HTTPS address of OpenSlides repository instead of SSH
+   Use -g or --go_update to automatically update go.mod of all submodules to match the checked out openslides-go version.
 
-   USAGE MAKE: make checkout REMOTE= BRANCH= FILE= PULL= LATEST=
+   USAGE MAKE: make checkout REMOTE= BRANCH= FILE= PULL= LATEST= AUTO_FALLBACK= ALWAYS_MAIN= USE_HTTPS= GO_UPDATE=
 
-   REMOTE is a shorthand for REMOTE_NAME, BRANCH is for BRANCH_NAME, FILE for BRANCH_FILE, PULL for -p Flag and LATEST for -l
+   REMOTE is a shorthand for REMOTE_NAME, BRANCH is for BRANCH_NAME, FILE for BRANCH_FILE, PULL for -p Flag, LATEST for -l,
+       AUTO_FALLBACK for -a, ALWAYS_MAIN for -m, USE_HTTPS for -u and GO_UPDATE for -g
+   For parameters representing flags, set their value to anything other than 0 to 'set' the flag
+
+   For batch / cli operations the following environment variables may also be set to the default answer for interactive asks
+   Set BATCH_MODE=1 to accept defaults non-interactively
+
+      FALLBACK_MAIN_BRANCH_DEFAULT: (y/n) Whether to use upstream/main as a fallback branch or skip the submodule (default y)
+      CHECKOUT_MAIN_REPO_DEFAULT: (y/n) Whether to checkout the main repository (default y)
 
    All variables are optional
    "
@@ -48,7 +69,7 @@ usage() {
 
 go_update() {
     # only checkout when flag is set
-    if [ -z "$GO_AUTO_CHECKOUT" ]
+    if [ "$GO_AUTO_CHECKOUT" == 0 ]
     then
         exit 0
     fi
@@ -105,7 +126,8 @@ checkout() {
 
         if [ -z "$SUBMODULE" ]; then SUBMODULE="OpenSlides"; fi
 
-        info ""
+        echo ""
+        echo ""
         info "Fetch & checkout for ${SUBMODULE} "
 
         # Check for changes and stash them if wanted.
@@ -149,37 +171,42 @@ checkout() {
             info "$SOURCE is a non origin or upstream remote"
             if ! git remote get-url "$SOURCE" >/dev/null 2>&1
             then
-                echocmd git remote add "$SOURCE" git@github.com:"$SOURCE"/"$SUBMODULE".git
+                echocmd git remote add "$SOURCE" "${CLONE_BASE}${SOURCE}/${SUBMODULE}".git
             else
-                echocmd git remote set-url "$SOURCE" git@github.com:"$SOURCE"/"$SUBMODULE".git
+                echocmd git remote set-url "$SOURCE" "${CLONE_BASE}${SOURCE}/${SUBMODULE}".git
                 info "Remote $SOURCE already exists"
             fi
         else
             SOURCE=$(set_remote "upstream" "origin")
-            echocmd git remote set-url "$SOURCE" git@github.com:OpenSlides/"$SUBMODULE".git
+            echocmd git remote set-url "$SOURCE" "${CLONE_BASE}OpenSlides/${SUBMODULE}".git
         fi
 
         # Fetch
         echocmd git fetch "$SOURCE"
 
         # Verify or set to main
-        echocmd git rev-parse --verify remotes/"$SOURCE"/"$BRANCH" &>/dev/null || local BRANCH_NOT_FOUND=1
+        git rev-parse --verify remotes/"$SOURCE"/"$BRANCH" &>/dev/null || local BRANCH_NOT_FOUND=1
 
         # If branch couldn't be found, user has the option to either checkout main branch instead or skip checkout for this service
         if [ -n "$BRANCH_NOT_FOUND" ]
         then
-            if [ "$AUTO_MAIN_FALLBACK" == 1 ]
-            then
-                info "Automatically skipping checkout for $SUBMODULE, because no branch found named $SOURCE/$BRANCH and automatic main fallback is active"
-                exit 0
-            fi
             local CHECKOUT_MAIN
-            CHECKOUT_MAIN=$(ask yo "$SUBMODULE does not have a branch named $SOURCE/$BRANCH. Type y to checkout main instead. Type n to remain in current branch." </dev/tty)
+            if [ "$AUTO_MAIN_FALLBACK" == 0 ]
+            then
+                CHECKOUT_MAIN=$(ask ${FALLBACK_MAIN_BRANCH_DEFAULT:-y}o "$SUBMODULE does not have a branch named $SOURCE/$BRANCH. Type y to checkout upstream/main instead. Type n to remain in current branch." </dev/tty)
+            else
+                CHECKOUT_MAIN=0
+            fi
 
             if [ "$CHECKOUT_MAIN" == 0 ]
             then
-                info "Checking out main branch instead"
                 BRANCH=main
+                SOURCE=$(set_remote "upstream" "origin")
+
+                info "Checking out ${SOURCE}/${BRANCH} branch instead"
+
+                # Fetch again (since source might have changed)
+                echocmd git fetch "$SOURCE"
             else
                 info "Skipping checkout for $SUBMODULE"
                 exit 0
@@ -208,7 +235,7 @@ checkout() {
 
         # Force reset to a hash, if one has been provided
         # Ignore specific hash, if latest should be pulled
-        if [ ! "$CHECKOUT_LATEST" = 0 ]; then local HASH=""; fi
+        if [ ! "$CHECKOUT_LATEST" == 0 ]; then local HASH=""; fi
 
         if [ -n "$HASH" ]
         then
@@ -237,8 +264,10 @@ checkout() {
 checkout_main()
 {
     (
-        ask y "Would you like to checkout main repository as well? WARNING: You may not be able to call this script again after switching branches, as it may not exist in target branch" || exit 0
-
+        if [ "$ALWAYS_CHECKOUT_MAIN_REPO" == 0 ]
+        then
+            ask ${CHECKOUT_MAIN_REPO_DEFAULT:-y} "Would you like to checkout main repository as well? WARNING: You may not be able to call this script again after switching branches, as it may not exist in target branch" || exit 0
+        fi
         checkout "." "OpenSlides" "$REMOTE_NAME" "$BRANCH_NAME" ""
     )
 }
@@ -254,7 +283,7 @@ inform_about_localprod()
 }
 
 # Parse flags
-if ! parsed=$(getopt -o plgh --long pull,latest,go_update,help -n "$(basename "$0")" -- "$@"); then
+if ! parsed=$(getopt -o plgamuh --long pull,latest,go_update,auto_fallback,always_checkout_main_repo,use_https,help -n "$(basename "$0")" -- "$@"); then
     usage
     exit 1
 fi
@@ -275,8 +304,16 @@ while true; do
             GO_AUTO_CHECKOUT=1
             shift
             ;;
-        -d|--auto_fallback)
+        -a|--auto_fallback)
             AUTO_MAIN_FALLBACK=1
+            shift
+            ;;
+        -m|--always_checkout_main_repo)
+            ALWAYS_CHECKOUT_MAIN_REPO=1
+            shift
+            ;;
+        -u|--use_https)
+            CLONE_BASE="https://github.com/"
             shift
             ;;
         -h|--help)
