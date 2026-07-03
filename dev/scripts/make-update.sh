@@ -373,13 +373,7 @@ merge_stable_branch() {
   [[ $# == 0 ]] ||
     dir="$1"
 
-  # TODO: Cleanup function
-
   info "Doing git merge in $dir"
-  ### Merge, but don't commit yet ...
-  ### (also we expect conflicts in submodules so we hide that output)
-  ##echocmd git -C "$dir" merge -Xtheirs --no-commit --no-ff "$REMOTE_NAME/$STAGING_BRANCH_NAME" --log >/dev/null || :
-
   diff_args=(-R --binary)
   # If exactly one submodule named meta is present ignore it
   git -C "$dir" submodule status | awk 'NR>1 {x=1} $2!="meta" {x=1} END {exit x}' &&
@@ -394,7 +388,6 @@ merge_stable_branch() {
   # and finally applying that.
   echocmd git -C "$dir" apply --whitespace nowarn --index "$tmp_patch_file"
   rm "$tmp_patch_file"
-  ###echo "${COL_GRAY}$*${COL_NORMAL}" git apply bla
 
   # Now we add previously stable-merged submod pointers.
   # This assumes merge_stable_branch is called seperately for nested
@@ -457,7 +450,7 @@ merge_stable_branch_services() {
   ask y "Continue?" ||
     abort 0
 
-  # TODO: ./openslides* breaks if submod was removed
+  # HINT: ./openslides* breaks if submod was removed
   for service_mod in $(git submodule status ./openslides* | awk '{print $2}'); do
     diff_cmd="git diff --submodule=short $BRANCH_NAME $REMOTE_NAME/$STAGING_BRANCH_NAME $service_mod"
     [[ "$($diff_cmd | grep -c .)" -gt 0 ]] ||
@@ -537,12 +530,6 @@ make_stable_update() {
   info 'First, the main repo is merged (but not yet committed) to ensure that all tools and'
   info 'configurations for the releases in the submodules are up to date.'
   merge_stable_branch
-
-  # TODO: Warning probably obsolete
-  warn "When applying changes from staging submodules are ignored."
-  warn "If submodules have been added or removed ensure that "
-  warn "  git submodule status"
-  warn "runs without errors before continuing."
 
   merge_stable_branch_meta
   # go needs to be pushed early ...
