@@ -1,0 +1,15 @@
+name: Project automation (Backlog on issue opened)
+on:
+  issues:
+    types:
+      - opened
+      - reopened
+
+jobs:
+  issue_opened:
+    name: Issue opened
+    uses: ./.github/workflows/project-automation.yml
+    secrets: inherit
+    with:
+      resource_node_id: ${{ github.event.issue.node_id }}
+      status_value: "Backlog"
