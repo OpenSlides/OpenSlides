@@ -367,15 +367,29 @@ make_hotfix_update() {
 
 merge_stable_branch() {
   local mod=
+  local tmp_patch_file=
+  local diff_args=
   local dir="."
   [[ $# == 0 ]] ||
     dir="$1"
 
   info "Doing git merge in $dir"
-  # Merge, but don't commit yet ...
-  # (also we expect conflicts in submodules so we hide that output)
-  echocmd git -C "$dir" merge -Xtheirs --no-commit --no-ff "$REMOTE_NAME/$STAGING_BRANCH_NAME" --log >/dev/null || :
-  # ... because we want to add previously stable-merged submod pointers.
+  diff_args=(-R --binary)
+  # If exactly one submodule named meta is present ignore it
+  git -C "$dir" submodule status | awk 'NR>1 {x=1} $2!="meta" {x=1} END {exit x}' &&
+    diff_args+=(--ignore-submodules)
+
+  # Merge, but don't commit. Commit must be executed outside this function.
+  # Since strategy -s theirs doesn't exist, we emulate it by first using -s ours ...
+  echocmd git -C "$dir" merge -s ours --no-commit --no-ff "$REMOTE_NAME/$STAGING_BRANCH_NAME" --log
+  # then taking the diff toward staging ...
+  tmp_patch_file=$(mktemp --suffix .patch)
+  echocmd git -C "$dir" diff ${diff_args[@]} "$REMOTE_NAME/$STAGING_BRANCH_NAME" > "$tmp_patch_file"
+  # and finally applying that.
+  echocmd git -C "$dir" apply --whitespace nowarn --index "$tmp_patch_file"
+  rm "$tmp_patch_file"
+
+  # Now we add previously stable-merged submod pointers.
   # This assumes merge_stable_branch is called seperately for nested
   # submodules from inner to outer.
   for mod in $(git -C "$dir" submodule status | awk '{print $2}'); do
@@ -436,6 +450,7 @@ merge_stable_branch_services() {
   ask y "Continue?" ||
     abort 0
 
+  # HINT: ./openslides* breaks if submod was removed
   for service_mod in $(git submodule status ./openslides* | awk '{print $2}'); do
     diff_cmd="git diff --submodule=short $BRANCH_NAME $REMOTE_NAME/$STAGING_BRANCH_NAME $service_mod"
     [[ "$($diff_cmd | grep -c .)" -gt 0 ]] ||
