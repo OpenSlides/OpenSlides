@@ -9,6 +9,9 @@
 go.work.sum
 dev/docker/postgres-data
 
+# IDP
+openslides-idp-service/zitadel-bootstrap/login-client.pat
+
 # docs
 docs/modelsvalidator/modelsvalidator
 dev-commands/export.json

@@ -7,8 +7,27 @@ x-default-environment: &default-environment
   DATABASE_PORT: 5432
   DATABASE_NAME: openslides
   DATABASE_USER: openslides
+  DATABASE_IDP_DB: zitadel
   PGPASSWORD: openslides
   OPENSLIDES_DEVELOPMENT: 1
+
+x-zitadel-environment: &zitadel-environment
+  POSTGRES_USER: openslides
+  POSTGRES_PASSWORD: openslides
+  POSTGRES_DB: openslides
+
+  ZITADEL_MASTERKEY: MasterkeyNeedsToHave32Characters
+
+  ZITADEL_DEFAULT_EXTERNAL_URL: localhost
+  ZITADEL_DEFAULT_PORT: 8080
+  ZITADEL_DEFAULT_EXTERNAL_PORT: 443
+  ZITADEL_DEFAULT_SSL: http
+
+  ZITADEL_FIRSTINSTANCE_ORG_HUMAN_PASSWORDCHANGEREQUIRED: false
+  ZITADEL_FIRSTINSTANCE_LOGINCLIENTPATPATH: /zitadel/bootstrap/login-client.pat
+  ZITADEL_FIRSTINSTANCE_ORG_LOGINCLIENT_MACHINE_USERNAME: login-client
+  ZITADEL_FIRSTINSTANCE_ORG_LOGINCLIENT_MACHINE_NAME: Automatically Initialized IAM_LOGIN_CLIENT
+  ZITADEL_FIRSTINSTANCE_ORG_LOGINCLIENT_PAT_EXPIRATIONDATE: "2099-01-01T00:00:00Z"
 
 services:
   postgres:
@@ -18,6 +37,14 @@ services:
       POSTGRES_USER: openslides
       POSTGRES_PASSWORD: openslides
       POSTGRES_DB: openslides
+    volumes:
+      - ./idp_setup.sql:/docker-entrypoint-initdb.d/idp_setup.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U openslides -d openslides"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
 
   client:
     build:
@@ -43,7 +70,7 @@ services:
     image: openslides-backend-dev
     depends_on:
       - auth
-      - keycloak-server
+      - zitadel-api
     env_file: services.env
     ports:
       - "9002:9002"
@@ -214,6 +241,12 @@ services:
       - client
       - backend
       - autoupdate
+      - zitadel-api
+    volumes:
+      - ../../openslides-proxy/services:/services
+      - ../../openslides-proxy/templates:/templates
+      - ../../openslides-proxy/plugins-local:/app/plugins-local
+      - ../../openslides-idp-service/zitadel-bootstrap:/zitadel/bootstrap:ro
     ports:
       - "8000:8000"
 
@@ -248,36 +281,72 @@ services:
     ports:
       - "9013:9013"
 
-  keycloak-server:
-    build:
-        context: ../../openslides-keycloak-service
-        target: "dev"
-        args:
-            CONTEXT: "dev"
+  zitadel-init:
+    image: ghcr.io/zitadel/zitadel:v4.13.0
+    command: ["init", "schema", "--config", "/app/defaults.yml"]
+    environment:
+      << : [*default-environment, *zitadel-environment]
+    volumes:
+      - ../../openslides-idp-service/zitadel/defaults.yml:/app/defaults.yml
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  zitadel-setup:
+    image: ghcr.io/zitadel/zitadel:v4.13.0
+    command: ["setup", "--config", "/app/defaults.yml", "--masterkey", "MasterkeyNeedsToHave32Characters"]
+    environment:
+      << : [*default-environment, *zitadel-environment]
+    volumes:
+      - ../../openslides-idp-service/zitadel-bootstrap:/zitadel/bootstrap:rw
+      - ../../openslides-idp-service/zitadel/defaults.yml:/app/defaults.yml
+    depends_on:
+      zitadel-init:
+        condition: service_completed_successfully
+
+  zitadel-api:
+    image: ghcr.io/zitadel/zitadel:v4.13.0
+    command: ["start", "--config", "/app/defaults.yml", "--masterkey", "MasterkeyNeedsToHave32Characters"]
+    environment:
+      << : [*default-environment, *zitadel-environment]
+    healthcheck:
+      test:
+        - CMD
+        - /app/zitadel
+        - ready
+      interval: 10s
+      timeout: 30s
+      retries: 12
+      start_period: 20s
+    volumes:
+      - ../../openslides-idp-service/zitadel-bootstrap:/zitadel/bootstrap:ro
+      - ../../openslides-idp-service/zitadel/defaults.yml:/app/defaults.yml
+    depends_on:
+      zitadel-setup:
+        condition: service_completed_successfully
+
+  zitadel-login:
+    image: ghcr.io/zitadel/zitadel-login:v4.13.0
+    restart: unless-stopped
+    user: "0"
     environment:
       << : *default-environment
-      KC_DB_URL: jdbc:postgresql://postgres:5432/openslides
-      KC_DB_SCHEMA: keycloak
-      KCS_INSTANCE_URL: localhost
-      KCS_HOST_EMAIL: noreply@openslides.com
-      KC_HOSTNAME: http://localhost:8080/
-      KC_HOSTNAME_BACKCHANNEL_DYNAMIC: true
-      KC_PROXY_HEADERS: xforwarded
-      KC_BOOTSTRAP_ADMIN_USERNAME: admin
-      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
-      KEYCLOAK_DATABASE_HOST: postgres
-      KEYCLOAK_DATABASE_PORT: 5432
-      KEYCLOAK_DATABASE_NAME: openslides
-      KEYCLOAK_DATABASE_USER: openslides
-      KEYCLOAK_DATABASE_PASSWORD_FILE: /run/secrets/postgres_password
-      KEYCLOAK_URL_INTERNAL: http://keycloak-server:8080
-      KEYCLOAK_OS_REALM: openslides
-      EMAIL_HOST: mailhog
-      EMAIL_PORT: 1025
-      EMAIL_CONNECTION_SECURITY: NONE
-      EMAIL_TIMEOUT: 5
-      EMAIL_ACCEPT_SELF_SIGNED_CERTIFICATE: false
+
+      ZITADEL_API_URL: http://zitadel-api:8080
+      NEXT_PUBLIC_BASE_PATH: /ui/v2/login
+      ZITADEL_SERVICE_USER_TOKEN_FILE: /zitadel/bootstrap/login-client.pat
+      CUSTOM_REQUEST_HEADERS: Host:localhost,X-Forwarded-Proto:http
+    healthcheck:
+      test:
+        - CMD
+        - /bin/sh
+        - -c
+        - node /app/healthcheck.mjs http://localhost:3000/ui/v2/login/healthy
+      interval: 10s
+      timeout: 30s
+      retries: 12
+      start_period: 20s
+    volumes:
+      - ../../openslides-idp-service/zitadel-bootstrap:/zitadel/bootstrap:ro
     depends_on:
-      - postgres
-    ports:
-      - "8080:8080"
+      - zitadel-api
