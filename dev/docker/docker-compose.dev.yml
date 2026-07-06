@@ -147,9 +147,12 @@ services:
             CONTEXT: "dev"
     image: openslides-search-dev
     depends_on:
-      - autoupdate
-      - backend
-      - postgres
+      autoupdate:
+        condition: service_started
+      backend:
+        condition: service_started
+      postgres:
+        condition: service_healthy
     env_file: services.env
     environment:
       << : *default-environment
@@ -169,9 +172,12 @@ services:
             CONTEXT: "dev"
     image: openslides-projector-dev
     depends_on:
-      - autoupdate
-      - backend
-      - postgres
+      autoupdate:
+        condition: service_started
+      backend:
+        condition: service_started
+      postgres:
+        condition: service_healthy
     env_file: services.env
     environment:
       - OPENSLIDES_DEVELOPMENT=1
@@ -213,8 +219,10 @@ services:
             CONTEXT: "dev"
     image: openslides-media-dev
     depends_on:
-      - backend
-      - postgres
+      backend:
+        condition: service_started
+      postgres:
+        condition: service_healthy
     env_file: services.env
     environment:
       << : *default-environment
@@ -267,9 +275,12 @@ services:
             CONTEXT: "dev"
     image: openslides-vote-dev
     depends_on:
-      - auth
-      - redis
-      - postgres
+      auth:
+        condition: service_started
+      redis:
+        condition: service_started
+      postgres:
+        condition: service_healthy
     env_file: services.env
     environment:
       << : *default-environment
