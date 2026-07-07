@@ -239,7 +239,7 @@ APP_RESP=$(curl -f \
     -H "Connect-Protocol-Version: 1" \
     -d "{
         \"applicationId\": \"OpenSlides\",
-        \"projectIdd\": \"${PROJECT_ID}\",
+        \"projectId\": \"${PROJECT_ID}\",
         \"name\": \"app\",
         \"oidcConfiguration\": {
             \"redirectUris\": [\"${REDIRECT_URI}\"],

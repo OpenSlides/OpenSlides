@@ -105,6 +105,7 @@ services:
       - ../../openslides-backend/meta:/app/meta
       - ../../openslides-backend/requirements:/app/requirements
       - ../../openslides-backend/scripts:/app/scripts
+      - ../../openslides-idp-service/zitadel-bootstrap:/zitadel/bootstrap:ro
 
   autoupdate:
     build:

@@ -107,10 +107,10 @@ pull-translations:
 copy-translations:
 	dev/scripts/copy-translations.sh
 
-# Keycloak
+# IDP
 
-migrate-users-to-keycloak:
-	make dev-exec EXEC_COMMAND="backend make migrate-users-to-keycloak"
+migrate-users-to-idp:
+	make dev-exec EXEC_COMMAND="backend make migrate-users-to-idp"
 
 ########################## Deprecation List ##########################
 
