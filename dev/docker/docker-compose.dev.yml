@@ -29,6 +29,11 @@ x-zitadel-environment: &zitadel-environment
   ZITADEL_FIRSTINSTANCE_ORG_LOGINCLIENT_MACHINE_NAME: Automatically Initialized IAM_LOGIN_CLIENT
   ZITADEL_FIRSTINSTANCE_ORG_LOGINCLIENT_PAT_EXPIRATIONDATE: "2099-01-01T00:00:00Z"
 
+  ZITADEL_FIRSTINSTANCE_ORG_MACHINE_MACHINE_USERNAME: app-setup
+  ZITADEL_FIRSTINSTANCE_ORG_MACHINE_MACHINE_NAME: Bootstrap Service Account
+  ZITADEL_FIRSTINSTANCE_ORG_MACHINE_PAT_EXPIRATIONDATE: ${SETUP_PAT_EXPIRATION:-2099-01-01T00:00:00Z}
+  ZITADEL_FIRSTINSTANCE_PATPATH: /zitadel/bootstrap/admin.pat
+
 services:
   postgres:
     image: postgres:17
@@ -69,8 +74,10 @@ services:
             CONTEXT: "dev"
     image: openslides-backend-dev
     depends_on:
-      - auth
-      - zitadel-api
+      auth:
+        condition: service_started
+      idp-setup:
+        condition: service_completed_successfully
     env_file: services.env
     ports:
       - "9002:9002"
@@ -88,8 +95,8 @@ services:
       EMAIL_ACCEPT_SELF_SIGNED_CERTIFICATE: false
       DEFAULT_FROM_EMAIL: noreply@example.com
       OPENSLIDES_BACKEND_CREATE_INITIAL_DATA: 1
-      KEYCLOAK_URL_INTERNAL: http://keycloak-server:8080
-      KEYCLOAK_OS_REALM: openslides
+      IDP_URL_INTERNAL: http://zitadel-api:8080
+      IDP_OS_REALM: openslides
     volumes:
       - ../../openslides-backend/openslides_backend:/app/openslides_backend
       - ../../openslides-backend/tests:/app/tests
@@ -292,6 +299,28 @@ services:
     ports:
       - "9013:9013"
 
+  idp-setup:
+    build:
+        context: ../../openslides-idp-service
+        target: "dev"
+        args:
+            CONTEXT: "dev"
+    environment:
+      << : [*default-environment, *zitadel-environment]
+
+      ZITADEL_INTERNAL_URL: http://zitadel-api:8080
+      # Must match ZITADEL_EXTERNALDOMAIN:ZITADEL_EXTERNALPORT so that Zitadel
+      # can resolve the instance from the Host header on every API call.
+      ZITADEL_EXTERNAL_HOST: ${ZITADEL_EXTERNAL_HOST:-localhost:8080}
+      ZITADEL_REDIRECT_URI: ${ZITADEL_REDIRECT_URI:-http://localhost:8089/api/auth/callback}
+      APP_REDIRECT_URL: ${APP_REDIRECT_URL:-http://localhost}
+    volumes:
+      - ../../openslides-idp-service/zitadel-bootstrap:/zitadel/bootstrap:rw
+    depends_on:
+      zitadel-api:
+        condition: service_started
+    restart: "no"
+
   zitadel-init:
     image: ghcr.io/zitadel/zitadel:v4.13.0
     command: ["init", "schema", "--config", "/app/defaults.yml"]
@@ -335,13 +364,51 @@ services:
     depends_on:
       zitadel-setup:
         condition: service_completed_successfully
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=zitadel
+
+      - traefik.http.services.zitadel-api.loadbalancer.server.port=8080
+      - traefik.http.services.zitadel-api.loadbalancer.server.scheme=h2c
+
+      - traefik.http.middlewares.zitadel-strip-api.stripprefix.prefixes=/api
+      - traefik.http.middlewares.zitadel-strip-api.stripprefix.forceSlash=false
+
+      # Note: no dedicated gRPC router needed. All gRPC and Connect-RPC traffic
+      # is handled by the catch-all router below since the backend already uses h2c.
+
+      - traefik.http.routers.zitadel-api-alias-web.rule=Host(`localhost`) && PathPrefix(`/api`)
+      - traefik.http.routers.zitadel-api-alias-web.entrypoints=web
+      - traefik.http.routers.zitadel-api-alias-web.middlewares=zitadel-strip-api
+      - traefik.http.routers.zitadel-api-alias-web.service=zitadel-api
+      - traefik.http.routers.zitadel-api-alias-web.priority=200
+
+      - traefik.http.routers.zitadel-api-alias-websecure.rule=Host(`localhost`) && PathPrefix(`/api`)
+      - traefik.http.routers.zitadel-api-alias-websecure.entrypoints=websecure
+      - traefik.http.routers.zitadel-api-alias-websecure.tls=true
+      - traefik.http.routers.zitadel-api-alias-websecure.middlewares=zitadel-strip-api
+      - traefik.http.routers.zitadel-api-alias-websecure.service=zitadel-api
+      - traefik.http.routers.zitadel-api-alias-websecure.priority=200
+
+      - traefik.http.routers.zitadel-canonical-web.rule=Host(`localhost`) && !PathPrefix(`/ui/v2/login`) && !PathPrefix(`/api`) && !Path(`/`)
+      - traefik.http.routers.zitadel-canonical-web.entrypoints=web
+      - traefik.http.routers.zitadel-canonical-web.service=zitadel-api
+      - traefik.http.routers.zitadel-canonical-web.priority=100
+
+      - traefik.http.routers.zitadel-canonical-websecure.rule=Host(`localhost`) && !PathPrefix(`/ui/v2/login`) && !PathPrefix(`/api`) && !Path(`/`)
+      - traefik.http.routers.zitadel-canonical-websecure.entrypoints=websecure
+      - traefik.http.routers.zitadel-canonical-websecure.tls=true
+      - traefik.http.routers.zitadel-canonical-websecure.service=zitadel-api
+      - traefik.http.routers.zitadel-canonical-websecure.priority=100
+    ports:
+      - "8080:8080"
 
   zitadel-login:
     image: ghcr.io/zitadel/zitadel-login:v4.13.0
     restart: unless-stopped
     user: "0"
     environment:
-      << : *default-environment
+      << : [*default-environment, *zitadel-environment]
 
       ZITADEL_API_URL: http://zitadel-api:8080
       NEXT_PUBLIC_BASE_PATH: /ui/v2/login
@@ -361,3 +428,36 @@ services:
       - ../../openslides-idp-service/zitadel-bootstrap:/zitadel/bootstrap:ro
     depends_on:
       - zitadel-api
+
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=zitadel
+      - traefik.http.services.zitadel-login.loadbalancer.server.port=3000
+
+      - traefik.http.middlewares.zitadel-root-rewrite.replacepath.path=/ui/v2/login/
+
+      - traefik.http.routers.zitadel-root-web.rule=Host(`localhost`) && Path(`/`)
+      - traefik.http.routers.zitadel-root-web.entrypoints=web
+      - traefik.http.routers.zitadel-root-web.middlewares=zitadel-root-rewrite
+      - traefik.http.routers.zitadel-root-web.service=zitadel-login
+      - traefik.http.routers.zitadel-root-web.priority=400
+
+      - traefik.http.routers.zitadel-root-websecure.rule=Host(`localhost`) && Path(`/`)
+      - traefik.http.routers.zitadel-root-websecure.entrypoints=websecure
+      - traefik.http.routers.zitadel-root-websecure.tls=true
+      - traefik.http.routers.zitadel-root-websecure.middlewares=zitadel-root-rewrite
+      - traefik.http.routers.zitadel-root-websecure.service=zitadel-login
+      - traefik.http.routers.zitadel-root-websecure.priority=400
+
+      - traefik.http.routers.zitadel-login-web.rule=Host(`localhost`) && PathPrefix(`/ui/v2/login`)
+      - traefik.http.routers.zitadel-login-web.entrypoints=web
+      - traefik.http.routers.zitadel-login-web.service=zitadel-login
+      - traefik.http.routers.zitadel-login-web.priority=250
+
+      - traefik.http.routers.zitadel-login-websecure.rule=Host(`localhost`) && PathPrefix(`/ui/v2/login`)
+      - traefik.http.routers.zitadel-login-websecure.entrypoints=websecure
+      - traefik.http.routers.zitadel-login-websecure.tls=true
+      - traefik.http.routers.zitadel-login-websecure.service=zitadel-login
+      - traefik.http.routers.zitadel-login-websecure.priority=250
+    ports:
+      - "3000:3000"
