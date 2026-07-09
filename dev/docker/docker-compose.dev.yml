@@ -74,8 +74,6 @@ services:
             CONTEXT: "dev"
     image: openslides-backend-dev
     depends_on:
-      auth:
-        condition: service_started
       idp-setup:
         condition: service_completed_successfully
     env_file: services.env
@@ -136,7 +134,6 @@ services:
     image: openslides-icc-dev
     depends_on:
       - redis
-      - auth
     env_file: services.env
     environment:
       << : *default-environment
@@ -199,25 +196,6 @@ services:
       - ./workspaces/projector.work:/root/go.work
     ports:
       - "9051:9051"
-
-  auth:
-    build:
-        context: ../../openslides-auth-service
-        target: "dev"
-        args:
-            CONTEXT: "dev"
-    image: openslides-auth-dev
-    depends_on:
-      - redis
-    env_file: services.env
-    environment:
-      << : *default-environment
-    volumes:
-      - ../../openslides-auth-service/auth/src:/app/src
-      - ../../openslides-auth-service/auth/libraries:/app/libraries
-      - ../../openslides-auth-service/auth/test:/app/test
-    ports:
-      - "9004:9004"
 
   media:
     build:
@@ -283,8 +261,6 @@ services:
             CONTEXT: "dev"
     image: openslides-vote-dev
     depends_on:
-      auth:
-        condition: service_started
       redis:
         condition: service_started
       postgres:
