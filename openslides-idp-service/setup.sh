@@ -12,6 +12,7 @@ ZITADEL_EXTERNAL_HOST="${ZITADEL_EXTERNAL_HOST:-localhost:8080}"
 PAT_FILE="/zitadel/bootstrap/admin.pat"
 CLIENT_ID_FILE="/zitadel/bootstrap/client-id"
 CLIENT_SECRET_FILE="/zitadel/bootstrap/client-secret"
+ORG_ID_FILE="/zitadel/bootstrap/org-id"
 PROJECT_ID_FILE="/zitadel/bootstrap/project-id"
 APP_ID_FILE="/zitadel/bootstrap/app-id"
 LOGO_FILE="/logos/logo-192.png"
@@ -52,12 +53,18 @@ sleep 5
 if [ -s "$PROJECT_ID_FILE" ] && [ -s "$APP_ID_FILE" ] && [ -s "$CLIENT_ID_FILE" ]; then
     SAVED_PROJECT_ID="$(cat "$PROJECT_ID_FILE")"
     SAVED_APP_ID="$(cat "$APP_ID_FILE")"
-    LIVE_RESP=$(curl -sf \
+    LIVE_RESP=$(curl -sf -X POST "${ZITADEL_URL}/zitadel.application.v2.ApplicationService/GetApplication" \
+            -H "Connect-Protocol-Version: 1" \
             -H "Authorization: Bearer $PAT" \
             -H "Host: ${ZITADEL_EXTERNAL_HOST}" \
-            "${ZITADEL_URL}/management/v1/projects/${SAVED_PROJECT_ID}/apps/${SAVED_APP_ID}/oidc" \
-            2>/dev/null || true)
-    LIVE_CLIENT_ID=$(printf '%s' "$LIVE_RESP" | jq -r '.app.oidcConfig.clientId // empty' 2>/dev/null || true)
+            -H "Content-Type: application/json" \
+            -d "{
+                \"applicationId\": \"${SAVED_APP_ID}\"
+            }" 2>/dev/null || true)
+
+    echo "$LIVE_RESP"
+    LIVE_CLIENT_ID=$(printf '%s' "$LIVE_RESP" | jq -r '.application.oidcConfiguration.clientId // empty' 2>/dev/null || true)
+
     if [ -n "$LIVE_CLIENT_ID" ]; then
         # App verified – refresh the client_id file from the live API value.
         printf '%s' "$LIVE_CLIENT_ID" > "$CLIENT_ID_FILE"
@@ -185,6 +192,21 @@ else
     echo "WARN: logo file not found at $LOGO_FILE, skipping logo upload."
 fi
 
+# ---------------------------------------------------------------------------
+# Request the organization id generated during setup.
+# ---------------------------------------------------------------------------
+#
+ORG_ID=""
+SAVED_ORG_ID="$(cat "$ORG_ID_FILE")"
+ORG_RESP=$(curl -f -X POST \
+    -H "Authorization: Bearer $PAT" \
+    -H "Host: ${ZITADEL_EXTERNAL_HOST}" \
+    "${ZITADEL_URL}/v2/organizations/_search" \
+    -d "{}")
+
+ORG_ID=$(printf '%s' "$ORG_RESP" | jq -r '.result[0].id // empty')
+echo "$ORG_ID"
+
 
 # ---------------------------------------------------------------------------
 # Create (or reuse) the project
@@ -214,10 +236,13 @@ if [ -z "$PROJECT_ID" ]; then
         -H "Host: ${ZITADEL_EXTERNAL_HOST}" \
         -H "Content-Type: application/json" \
         -H "Connect-Protocol-Version: 1" \
-        -d '{
-            "organizationId": "OpenSlides",
-            "name": "app"
-        }')
+        -d "{
+            \"organizationId\": \"${ORG_ID}\",
+            \"name\": \"openslides\"
+        }")
+
+    echo "-------------------------------"
+    echo $PROJECT_RESP
 
     PROJECT_ID=$(printf '%s' "$PROJECT_RESP" | jq -r '.projectId // empty')
     if [ -z "$PROJECT_ID" ]; then
@@ -241,7 +266,7 @@ APP_RESP=$(curl -f \
     -d "{
         \"applicationId\": \"OpenSlides\",
         \"projectId\": \"${PROJECT_ID}\",
-        \"name\": \"app\",
+        \"name\": \"OpenSlides\",
         \"oidcConfiguration\": {
             \"redirectUris\": [\"${REDIRECT_URI}\"],
             \"responseTypes\": [\"OIDC_RESPONSE_TYPE_CODE\"],
@@ -257,9 +282,13 @@ APP_RESP=$(curl -f \
             \"idTokenUserinfoAssertion\": true,
             \"clockSkew\": \"0s\",
             \"skipNativeAppSuccessPage\": true,
-            \"backChannelLogoutUri\": \"http://:localhost:8000/system/action/logout\"
+            \"backChannelLogoutUrl\": \"http://:localhost:8000/system/action/logout\"
         }
     }")
+
+echo "-------------------------------------------------------------"
+echo ""
+echo "$APP_RESP"
 
 CLIENT_ID=$(printf '%s' "$APP_RESP" | jq -r '.oidcConfiguration.clientId // empty')
 CLIENT_SECRET=$(printf '%s' "$APP_RESP" | jq -r '.oidcConfiguration.clientSecret // empty')

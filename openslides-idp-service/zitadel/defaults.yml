@@ -3,14 +3,15 @@ Port: 8080 # ZITADEL_PORT
 # ExternalPort is the port on which end users access ZITADEL.
 # It can differ from Port e.g. if a reverse proxy forwards the traffic to ZITADEL
 # Read more about external access: https://zitadel.com/docs/self-hosting/manage/custom-domain
-ExternalPort: 8080 # ZITADEL_EXTERNALPORT
+ExternalPort: 8000 # ZITADEL_EXTERNALPORT
 # ExternalDomain is the domain on which end users access ZITADEL.
 # Read more about external access: https://zitadel.com/docs/self-hosting/manage/custom-domain
 ExternalDomain: localhost # ZITADEL_EXTERNALDOMAIN
 # ExternalSecure specifies if ZITADEL is exposed externally using HTTPS or HTTP.
 # Read more about external access: https://zitadel.com/docs/self-hosting/manage/custom-domain
-ExternalSecure: false # ZITADEL_EXTERNALSECURE
+ExternalSecure: true # ZITADEL_EXTERNALSECURE
 TLS:
+  Mode: "external"
   # If enabled, ZITADEL will serve all traffic over TLS (HTTPS and gRPC)
   # you must then also provide a private key and certificate to be used for the connection
   # either directly or by a path to the corresponding file
@@ -42,10 +43,10 @@ Database:
     # a separate target database/user. The DB and user from the DSN must already
     # exist and have sufficient privileges, or the DSN must directly point to
     # the final ZITADEL database.
-    DSN: postgresql://openslides:openslides@postgres:5432/openslides?sslmode=disable # ZITADEL_DATABASE_POSTGRES_DSN
+#    DSN: postgresql://openslides:openslides@postgres:5432/zitadel?sslmode=disable # ZITADEL_DATABASE_POSTGRES_DSN
     Host: postgres # ZITADEL_DATABASE_POSTGRES_HOST
     Port: 5432 # ZITADEL_DATABASE_POSTGRES_PORT
-    Database: openslides # ZITADEL_DATABASE_POSTGRES_DATABASE
+    Database: zitadel # ZITADEL_DATABASE_POSTGRES_DATABASE
     AwaitInitialConn: 0m # ZITADEL_DATABASE_POSTGRES_AWAITINITIALCONN
     MaxOpenConns: 10 # ZITADEL_DATABASE_POSTGRES_MAXOPENCONNS
     MaxIdleConns: 5 # ZITADEL_DATABASE_POSTGRES_MAXIDLECONNS
@@ -53,8 +54,8 @@ Database:
     MaxConnIdleTime: 5m # ZITADEL_DATABASE_POSTGRES_MAXCONNIDLETIME
     Options: "" # ZITADEL_DATABASE_POSTGRES_OPTIONS
     User:
-      Username: openslides # ZITADEL_DATABASE_POSTGRES_USER_USERNAME
-      Password: "openslides" # ZITADEL_DATABASE_POSTGRES_USER_PASSWORD
+      Username: zitadel # ZITADEL_DATABASE_POSTGRES_USER_USERNAME
+      Password: zitadel # ZITADEL_DATABASE_POSTGRES_USER_PASSWORD
       SSL:
         Mode: disable # ZITADEL_DATABASE_POSTGRES_USER_SSL_MODE
         RootCert: "" # ZITADEL_DATABASE_POSTGRES_USER_SSL_ROOTCERT
@@ -64,7 +65,7 @@ Database:
       # By default, ExistingDatabase is not specified in the connection string
       # If the connection resolves to a database that is not existing in your system, configure an existing one here
       # It is used in zitadel init to connect to postgres and create a dedicated database for ZITADEL.
-      ExistingDatabase: "openslides" # ZITADEL_DATABASE_POSTGRES_ADMIN_EXISTINGDATABASE
+      # ExistingDatabase: "openslides" # ZITADEL_DATABASE_POSTGRES_ADMIN_EXISTINGDATABASE
       Username: openslides # ZITADEL_DATABASE_POSTGRES_ADMIN_USERNAME
       Password: openslides # ZITADEL_DATABASE_POSTGRES_ADMIN_PASSWORD
       SSL:
@@ -150,8 +151,8 @@ OIDC:
       CharSet: "BCDFGHJKLMNPQRSTVWXZ" # ZITADEL_OIDC_DEVICEAUTH_USERCODE_CHARSET
       CharAmount: 8 # ZITADEL_OIDC_DEVICEAUTH_USERCODE_CHARAMOUNT
       DashInterval: 4 # ZITADEL_OIDC_DEVICEAUTH_USERCODE_DASHINTERVAL
-  DefaultLoginURLV2: "http://localhost:8080/ui/v2/login/login?authRequest=" # ZITADEL_OIDC_DEFAULTLOGINURLV2
-  DefaultLogoutURLV2: "http://localhost:8080/ui/v2/login/logout?post_logout_redirect=" # ZITADEL_OIDC_DEFAULTLOGOUTURLV2
+  DefaultLoginURLV2: "https://localhost:8000/ui/v2/login/login?authRequest=" # ZITADEL_OIDC_DEFAULTLOGINURLV2
+  DefaultLogoutURLV2: "https://localhost:8000/ui/v2/login/logout?post_logout_redirect=" # ZITADEL_OIDC_DEFAULTLOGOUTURLV2
   # Internal cache age for public keys to speed up validations (e.g. id_token_hints) on the authorization endpoint.
   PublicKeyCacheMaxAge: 24h # ZITADEL_OIDC_PUBLICKEYCACHEMAXAGE
   # Lifetime of the token used to notify clients through OIDC back-channel logout.
@@ -172,7 +173,7 @@ OIDC:
     TokenLifetime: 15m # ZITADEL_OIDC_BACKCHANNELLOGOUT_TOKENLIFETIME
 
 SAML:
-  DefaultLoginURLV2: "http://localhost:8080/ui/v2/login/login?samlRequest=" # ZITADEL_SAML_DEFAULTLOGINURLV2
+  DefaultLoginURLV2: "https://localhost:8000/ui/v2/login/login?samlRequest=" # ZITADEL_SAML_DEFAULTLOGINURLV2
   ProviderConfig:
     MetadataConfig:
       Path: "/metadata" # ZITADEL_SAML_PROVIDERCONFIG_METADATACONFIG_PATH
@@ -441,7 +442,7 @@ DefaultInstance:
       Phone:
         Number: # ZITADEL_DEFAULTINSTANCE_ORG_HUMAN_PHONE_NUMBER
         Verified: # ZITADEL_DEFAULTINSTANCE_ORG_HUMAN_PHONE_VERIFIED
-      Password: # ZITADEL_DEFAULTINSTANCE_ORG_HUMAN_PASSWORD
+      Password: Password1! # ZITADEL_DEFAULTINSTANCE_ORG_HUMAN_PASSWORD
     # In the DefaultInstance.Org.Machine section, the initial organization's admin user with the role IAM_OWNER is defined.
     # If DefaultInstance.Org.Machine.Machine is defined, a service account is created with the IAM_OWNER role.
     Machine:
@@ -745,7 +746,7 @@ DefaultInstance:
     OIDCSingleV1SessionTermination: # ZITADEL_DEFAULTINSTANCE_FEATURES_OIDCSINGLEV1SESSIONTERMINATION
     LoginV2:
       Required: true # ZITADEL_DEFAULTINSTANCE_FEATURES_LOGINV2_REQUIRED
-      BaseURI: http://localhost:8080/ui/v2/login/ # ZITADEL_DEFAULTINSTANCE_FEATURES_LOGINV2_BASEURI
+      BaseURI: https://localhost:8000/ui/v2/login/ # ZITADEL_DEFAULTINSTANCE_FEATURES_LOGINV2_BASEURI
     PermissionCheckV2: # ZITADEL_DEFAULTINSTANCE_FEATURES_PERMISSIONCHECKV2
     ConsoleUseV2UserApi: true # ZITADEL_DEFAULTINSTANCE_FEATURES_CONSOLEUSEV2USERAPI
     EnableRelationalTables: # ZITADEL_DEFAULTINSTANCE_FEATURES_ENABLERELATIONALTABLES
