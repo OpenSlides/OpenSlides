@@ -366,8 +366,9 @@ services:
       zitadel-setup:
         condition: service_completed_successfully
     labels:
-      - traefik.enable=true
-      - traefik.docker.network=zitadel
+      - "traefik.enable=true"
+      - "traefik.http.routers.zitadel.entrypoints=zitadel"
+      - "traefik.http.routers.zitadel.rule=Host(`${ZITADEL_EXTERNALDOMAIN:-localhost}`)"
 
       - traefik.http.services.zitadel-api.loadbalancer.server.port=8080
       - traefik.http.services.zitadel-api.loadbalancer.server.scheme=h2c
@@ -401,6 +402,7 @@ services:
       - traefik.http.routers.zitadel-canonical-websecure.tls=true
       - traefik.http.routers.zitadel-canonical-websecure.service=zitadel-api
       - traefik.http.routers.zitadel-canonical-websecure.priority=100
+
     ports:
       - "8080:8080"
 
@@ -431,9 +433,17 @@ services:
       - zitadel-api
 
     labels:
-      - traefik.enable=true
-      - traefik.docker.network=zitadel
-      - traefik.http.services.zitadel-login.loadbalancer.server.port=3000
+      - "traefik.enable=true"
+      - "traefik.http.routers.zitadel-login.entrypoints=zitadel"
+      # More specific than the catch-all Host() rule on the zitadel router
+      - "traefik.http.routers.zitadel-login.rule=Host(`${ZITADEL_EXTERNALDOMAIN:-localhost}`) && PathPrefix(`/ui/v2/login`)"
+      - "traefik.http.services.zitadel-login.loadbalancer.server.port=3000"
+      # Inject x-zitadel-forward-host so that zitadel-login populates instanceHost in
+      # getServiceConfig. Without it the JWKS fetch for logout token verification carries
+      # only x-zitadel-public-host; Zitadel then falls back to the HTTP Host header
+      # (zitadel:8080) which is not a registered instance domain and returns 404.
+      - "traefik.http.middlewares.zitadel-login-forward-host.headers.customrequestheaders.x-zitadel-forward-host=${ZITADEL_EXTERNAL_HOST:-localhost:8080}"
+      - "traefik.http.routers.zitadel-login.middlewares=zitadel-login-forward-host"
 
       - traefik.http.middlewares.zitadel-root-rewrite.replacepath.path=/ui/v2/login/
 

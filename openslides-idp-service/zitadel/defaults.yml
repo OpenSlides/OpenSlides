@@ -42,10 +42,10 @@ Database:
     # a separate target database/user. The DB and user from the DSN must already
     # exist and have sufficient privileges, or the DSN must directly point to
     # the final ZITADEL database.
-    DSN: postgresql://openslides:openslides@postgres:5432/zitadel?sslmode=disable # ZITADEL_DATABASE_POSTGRES_DSN
+    DSN: postgresql://openslides:openslides@postgres:5432/openslides?sslmode=disable # ZITADEL_DATABASE_POSTGRES_DSN
     Host: postgres # ZITADEL_DATABASE_POSTGRES_HOST
     Port: 5432 # ZITADEL_DATABASE_POSTGRES_PORT
-    Database: zitadel # ZITADEL_DATABASE_POSTGRES_DATABASE
+    Database: openslides # ZITADEL_DATABASE_POSTGRES_DATABASE
     AwaitInitialConn: 0m # ZITADEL_DATABASE_POSTGRES_AWAITINITIALCONN
     MaxOpenConns: 10 # ZITADEL_DATABASE_POSTGRES_MAXOPENCONNS
     MaxIdleConns: 5 # ZITADEL_DATABASE_POSTGRES_MAXIDLECONNS

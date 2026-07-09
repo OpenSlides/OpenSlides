@@ -11,6 +11,7 @@ ZITADEL_URL="${ZITADEL_INTERNAL_URL:-http://zitadel-api:8080}"
 ZITADEL_EXTERNAL_HOST="${ZITADEL_EXTERNAL_HOST:-localhost:8080}"
 PAT_FILE="/zitadel/bootstrap/admin.pat"
 CLIENT_ID_FILE="/zitadel/bootstrap/client-id"
+CLIENT_SECRET_FILE="/zitadel/bootstrap/client-secret"
 PROJECT_ID_FILE="/zitadel/bootstrap/project-id"
 APP_ID_FILE="/zitadel/bootstrap/app-id"
 LOGO_FILE="/logos/logo-192.png"
@@ -230,7 +231,7 @@ fi
 # ---------------------------------------------------------------------------
 # Create the OIDC application (Authorization Code + PKCE, no secret)
 # ---------------------------------------------------------------------------
-echo "Creating OIDC application ... $PROJECT_ID"
+echo "Creating OIDC application ..."
 APP_RESP=$(curl -f \
     -X POST "${ZITADEL_URL}/zitadel.application.v2.ApplicationService/CreateApplication" \
     -H "Authorization: Bearer $PAT" \
@@ -245,8 +246,8 @@ APP_RESP=$(curl -f \
             \"redirectUris\": [\"${REDIRECT_URI}\"],
             \"responseTypes\": [\"OIDC_RESPONSE_TYPE_CODE\"],
             \"grantTypes\": [\"OIDC_GRANT_TYPE_AUTHORIZATION_CODE\"],
-            \"appType\": \"OIDC_APP_TYPE_WEB\",
-            \"authMethodType\": \"OIDC_AUTH_METHOD_TYPE_NONE\",
+            \"applicationType\": \"OIDC_APP_TYPE_WEB\",
+            \"authMethodType\": \"OIDC_AUTH_METHOD_TYPE_PRIVATE_KEY_JWT\",
             \"postLogoutRedirectUris\": [\"${POST_LOGOUT_URI}\"],
             \"version\": \"OIDC_VERSION_1_0\",
             \"devMode\": true,
@@ -254,14 +255,17 @@ APP_RESP=$(curl -f \
             \"accessTokenRoleAssertion\": false,
             \"idTokenRoleAssertion\": false,
             \"idTokenUserinfoAssertion\": true,
-            \"clockSkew\": \"0s\"
+            \"clockSkew\": \"0s\",
+            \"skipNativeAppSuccessPage\": true,
+            \"backChannelLogoutUri\": \"http://:localhost:8000/system/action/logout\"
         }
     }")
 
-CLIENT_ID=$(printf '%s' "$APP_RESP" | jq -r '.clientId // empty')
-APP_ID=$(printf '%s' "$APP_RESP" | jq -r '.appId // empty')
+CLIENT_ID=$(printf '%s' "$APP_RESP" | jq -r '.oidcConfiguration.clientId // empty')
+CLIENT_SECRET=$(printf '%s' "$APP_RESP" | jq -r '.oidcConfiguration.clientSecret // empty')
+APP_ID=$(printf '%s' "$APP_RESP" | jq -r '.applicationId // empty')
 if [ -z "$CLIENT_ID" ] || [ -z "$APP_ID" ]; then
-    echo "ERROR: could not parse clientId/appId from response: $APP_RESP" >&2
+    echo "ERROR: could not parse clientId/applicationId from response: $APP_RESP" >&2
     exit 1
 fi
 echo "OIDC application created (App ID: $APP_ID, Client ID: $CLIENT_ID)."
@@ -271,6 +275,7 @@ echo "OIDC application created (App ID: $APP_ID, Client ID: $CLIENT_ID)."
 # ---------------------------------------------------------------------------
 printf '%s' "$APP_ID" > "$APP_ID_FILE"
 printf '%s' "$CLIENT_ID" > "$CLIENT_ID_FILE"
+printf '%s' "$CLIENT_SECRET" > "$CLIENT_SECRET_FILE"
 echo "Client ID written to $CLIENT_ID_FILE."
 echo "Zitadel bootstrap complete."
 

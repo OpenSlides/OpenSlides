@@ -112,6 +112,9 @@ copy-translations:
 migrate-users-to-idp:
 	make dev-exec EXEC_COMMAND="backend make migrate-users-to-idp"
 
+run-psql:
+	@make dev-exec EXEC_COMMAND="backend make run-psql"
+
 ########################## Deprecation List ##########################
 
 warning-deprecation:
