@@ -1,1 +1,1 @@
-CREATE DATABASE zitadel
+CREATE USER zitadel WITH PASSWORD 'zitadel'
