@@ -10,6 +10,10 @@ x-default-environment: &default-environment
   DATABASE_IDP_DB: zitadel
   PGPASSWORD: openslides
   OPENSLIDES_DEVELOPMENT: 1
+  IDP_HOST_HEADER: localhost:8080
+  IDP_URL_EXTERNAL: localhost:8080
+  IDP_URL_INTERNAL: http://zitadel-api:8080
+  IDP_OS_REALM: openslides
 
 services:
   postgres:
