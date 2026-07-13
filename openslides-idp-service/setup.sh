@@ -305,6 +305,7 @@ echo "OIDC application created (App ID: $APP_ID, Client ID: $CLIENT_ID)."
 printf '%s' "$APP_ID" > "$APP_ID_FILE"
 printf '%s' "$CLIENT_ID" > "$CLIENT_ID_FILE"
 printf '%s' "$CLIENT_SECRET" > "$CLIENT_SECRET_FILE"
+printf '%s' "$ORG_ID" > "$ORG_ID_FILE"
 echo "Client ID written to $CLIENT_ID_FILE."
 echo "Zitadel bootstrap complete."
 
