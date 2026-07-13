@@ -226,7 +226,7 @@ add_changes() {
 
 choose_changes() {
   ask y "Fetch all submodules $BRANCH_NAME changes now?" &&
-    bash ./dev/scripts/makefile/checkout.sh $REMOTE_NAME $BRANCH_NAME "" "true" ""
+    bash ./dev/scripts/makefile/checkout.sh "$REMOTE_NAME" "$BRANCH_NAME" "" "true" ""
 
   add_changes
 
@@ -386,7 +386,7 @@ merge_stable_branch() {
   tmp_patch_file=$(mktemp --suffix .patch)
   echocmd git -C "$dir" diff ${diff_args[@]} "$REMOTE_NAME/$STAGING_BRANCH_NAME" > "$tmp_patch_file"
   # and finally applying that.
-  echocmd git -C "$dir" apply --whitespace nowarn --index "$tmp_patch_file"
+  echocmd git -C "$dir" apply --allow-empty --whitespace nowarn --index "$tmp_patch_file"
   rm "$tmp_patch_file"
 
   # Now we add previously stable-merged submod pointers.
