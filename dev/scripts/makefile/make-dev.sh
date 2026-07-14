@@ -359,13 +359,13 @@ case "$SERVICE" in
     "client")       SERVICE_FOLDER="./openslides-client" &&
                     VOLUMES="-v $(pwd)/openslides-client/client/src:/app/src -v $(pwd)/openslides-client/client/cli:/app/cli -p 127.0.0.1:9001:9001/tcp" ;;
     "icc")          SERVICE_FOLDER="./openslides-icc-service" ;;
+    "idp")          SERVICE_FOLDER="./openslides-idp-service" ;;
     "media")        SERVICE_FOLDER="./openslides-media-service" &&
                     COMPOSE_FILE="$SERVICE_FOLDER/docker-compose.test.yml" &&
                     USED_SHELL="bash" &&
                     if [ "$FUNCTION" = "attached" ]; then FUNCTION="media-attached"; fi ;; # Temporary fix for wait-for-it situation
     "projector")    SERVICE_FOLDER="./openslides-projector-service" ;;
     "proxy")        SERVICE_FOLDER="./openslides-proxy" ;;
-    "idp")     SERVICE_FOLDER="./openslides-idp-service" ;;
     "search")       SERVICE_FOLDER="./openslides-search-service" &&
                     COMPOSE_FILE="$SERVICE_FOLDER/dev/docker-compose.dev.yml";;
     "vote")         SERVICE_FOLDER="./openslides-vote-service" ;;
