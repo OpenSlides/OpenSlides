@@ -368,23 +368,17 @@ make_hotfix_update() {
 merge_stable_branch() {
   local mod=
   local tmp_patch_file=
-  local diff_args=
   local dir="."
   [[ $# == 0 ]] ||
     dir="$1"
 
   info "Doing git merge in $dir"
-  diff_args=(-R --binary)
-  # If exactly one submodule named meta is present ignore it
-  git -C "$dir" submodule status | awk 'NR>1 {x=1} $2!="meta" {x=1} END {exit x}' &&
-    diff_args+=(--ignore-submodules)
-
   # Merge, but don't commit. Commit must be executed outside this function.
   # Since strategy -s theirs doesn't exist, we emulate it by first using -s ours ...
   echocmd git -C "$dir" merge -s ours --no-commit --no-ff "$REMOTE_NAME/$STAGING_BRANCH_NAME" --log
   # then taking the diff toward staging ...
   tmp_patch_file=$(mktemp --suffix .patch)
-  echocmd git -C "$dir" diff ${diff_args[@]} "$REMOTE_NAME/$STAGING_BRANCH_NAME" > "$tmp_patch_file"
+  echocmd git -C "$dir" diff -R --binary --ignore-submodules "$REMOTE_NAME/$STAGING_BRANCH_NAME" > "$tmp_patch_file"
   # and finally applying that.
   echocmd git -C "$dir" apply --allow-empty --whitespace nowarn --index "$tmp_patch_file"
   rm "$tmp_patch_file"
