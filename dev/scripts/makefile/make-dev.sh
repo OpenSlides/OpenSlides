@@ -16,7 +16,7 @@ Builds and starts development related images. Intended to be called from main re
 
 Parameters:
     #1 OPERATION                : Operation to execute. Equal to the name of the makefile target that called this script
-    #2 SERVICE                  : Optional name of the operation's target container
+    #2 CONTAINER                : Optional name of the operation's target container
                                   This is the only non-flag and non-environment variable parameter provided when calling this script
 
 Environment Variables (can be set when invoking make target):
@@ -31,10 +31,11 @@ Example: make   dev-exec    vote     SERVICE_COMPOSE_SETUP=backend   EXEC_COMMAN
 
 Long Flags:
     no-cache             : Prevents use of cache when building docker images
-    compose-local-branch : Compose setups pull service images from the main branch by default. When 'compose-local-branch' is set to true, the checked out branch of the service will be pulled instead.
-                           Example: Backend-Service is locally checked-out to 'feature/xyz'. Its dev compose setup pulls 'vote' from github by referencing
-                           'openslides-vote-service.git#main'. If 'compose-local-branch' is set to true, the path 'openslides-vote-service.git#feature/xyz' will be used
-                           instead.
+    compose-local-branch : Compose setups pull service images from the main branch by default.
+                           When 'compose-local-branch' is set to true, the checked out branch of the service will be pulled instead.
+                           Example: Backend-Service is locally checked-out to 'feature/xyz'.
+                           Its dev compose setup pulls 'vote' from github by referencing 'openslides-vote-service.git#main'.
+                           If 'compose-local-branch' is set to true, the path 'openslides-vote-service.git#feature/xyz' will be used instead.
     no-log-prefix        : When printing container logs, the associated container name is omitted
     debug-dry-run        : Prints all commands that would run but prevents their actual execution
 
@@ -57,8 +58,10 @@ Available dev operations:
                           the specific container id you will enter (default value is equal the service name).
     dev-build        : Builds all images. If CONTAINER is set, only the image for the specified container will be build
     dev-log          : Prints docker compose log output. If CONTAINER is set, only the specified container will be logged
-    dev-log-attach   : Prints docker compose log output and attaches console to the containers log output feed. If CONTAINER is set, only the specified container will be logged
-    dev-docker-reset : Debugging function. Closes and removes ALL containers. Optionally deletes ALL images as well. Optionally prunes your docker system.
+    dev-log-attach   : Prints docker compose log output and attaches console to the containers log output feed.
+                       If CONTAINER is set, only the specified container will be logged
+    dev-docker-reset : Debugging function. Closes and removes ALL containers. Optionally deletes ALL images as well.
+                       Optionally prunes your docker system.
     "
 }
 
@@ -96,17 +99,15 @@ build()
         proxy_setup
 
         # shellcheck disable=SC2086
-        docker compose  -f "$(dirname "$0")/../../docker/docker-compose.dev.yml" build $BUILD_ARGS
+        echocmd docker compose  -f "$(dirname "$0")/../../docker/docker-compose.dev.yml" build $BUILD_ARGS
+    else
+        # Build specific submodule
+        (
+            cd "$SERVICE_FOLDER" || abort 1
 
-        return
+            make build-dev ARGS="$BUILD_ARGS"
+        )
     fi
-
-    # Build specific submodule
-    (
-        cd "$SERVICE_FOLDER" || abort 1
-
-        make build-dev ARGS="$BUILD_ARGS"
-    )
 }
 
 docker_reset()
@@ -203,6 +204,15 @@ restart()
 attach()
 {
     local TARGET_CONTAINER="$CONTAINER"
+
+    # Special case: A submodules docker compose setup is used and no specific container has been declared.
+    # Example: "Calling 'make dev-enter' while in ./openslides-backend"
+    # In this case, the default container should be assumed to be 'backend' even if user hasn't specifically stated it
+    if [ -n "$SERVICE_COMPOSE_SETUP" ] && [ "$CONTAINER" = "" ]
+    then
+        TARGET_CONTAINER="$DEFAULT_CONTAINER"
+    fi
+
     info "Attaching to running container"
     if [ -n "$COMPOSE_FILE" ]
     then
@@ -231,11 +241,28 @@ attach()
 
 exec_func()
 {
+    local TARGET_CONTAINER="$CONTAINER"
     local FUNC=$EXEC_COMMAND
+
+    # Special case: A submodules docker compose setup is used and no specific container has been declared.
+    # Example: "Calling 'make dev-exec' while in ./openslides-backend"
+    # In this case, the default container should be assumed to be 'backend' even if user hasn't specifically stated it
+    if [ -n "$SERVICE_COMPOSE_SETUP" ] && [ "$CONTAINER" = "" ]
+    then
+        TARGET_CONTAINER="$DEFAULT_CONTAINER"
+    fi
+
+    if [ "$TARGET_CONTAINER" = "" ]
+    then
+        error "Missing target. Please specifiy the target like so: 'make dev-exec <service_name> EXEC_COMMAND=ls'"
+        error "Where <service_name> is equal to the abbreviated name of the service you want to execute in (eg. backend, search, autoupdate)"
+        exit 1
+    fi
+
     if [ -n "$COMPOSE_FILE" ]
     then
         # Compose
-        echocmd eval "$DC exec $CONTAINER $FUNC"
+        echocmd eval "$DC exec $TARGET_CONTAINER $FUNC"
     else
         # Single Container
         echocmd docker exec "$CONTAINER_TAG" "$FUNC"
@@ -330,37 +357,38 @@ FUNCTION=${OPERATION#"dev"}
 FUNCTION=${FUNCTION#"-"}
 FUNCTION=${FUNCTION%.*}
 
-# - Extrapolate parameters depending on service
-case "$CONTAINER" in
-    "auth")         SERVICE_FOLDER="./openslides-auth-service" ;;
+DEFAULT_CONTAINER=
+
+# - Extrapolate parameters depending on service compose setup
+case "$SERVICE_COMPOSE_SETUP" in
+    "auth")         SERVICE_FOLDER="./openslides-auth-service" &&
+                    COMPOSE_FILE="$SERVICE_FOLDER/docker-compose.dev.yml" &&
+                    DEFAULT_CONTAINER="auth" ;;
     "autoupdate")   SERVICE_FOLDER="./openslides-autoupdate-service" ;;
-    "backend")      SERVICE_FOLDER="./openslides-backend" ;;
-    "client")       SERVICE_FOLDER="./openslides-client" ;;
+    "backend")      USED_SHELL="bash --rcfile .bashrc" &&
+                    CLOSE_VOLUMES="--volumes" &&
+                    SERVICE_FOLDER="./openslides-backend" &&
+                    COMPOSE_FILE="$SERVICE_FOLDER/dev/docker-compose.dev.yml" &&
+                    DEFAULT_CONTAINER="backend" ;;
+    "client")       VOLUMES="-v $(pwd)/openslides-client/client/src:/app/src -v $(pwd)/openslides-client/client/cli:/app/cli -p 127.0.0.1:9001:9001/tcp" &&
+                    SERVICE_FOLDER="./openslides-client" ;;
     "icc")          SERVICE_FOLDER="./openslides-icc-service" ;;
-    "media")        SERVICE_FOLDER="./openslides-media-service" ;;
+    "media")        USED_SHELL="bash" &&
+                    if [ "$FUNCTION" = "attached" ]; then FUNCTION="media-attached"; fi && # Temporary fix for wait-for-it situation
+                    SERVICE_FOLDER="./openslides-media-service" &&
+                    COMPOSE_FILE="$SERVICE_FOLDER/docker-compose.test.yml" &&
+                    DEFAULT_CONTAINER="media" ;;
     "projector")    SERVICE_FOLDER="./openslides-projector-service" ;;
     "proxy")        SERVICE_FOLDER="./openslides-proxy" ;;
-    "search")       SERVICE_FOLDER="./openslides-search-service" ;;
+    "search")       SERVICE_FOLDER="./openslides-search-service" &&
+                    COMPOSE_FILE="$SERVICE_FOLDER/dev/docker-compose.dev.yml" &&
+                    DEFAULT_CONTAINER="search" ;;
     "vote")         SERVICE_FOLDER="./openslides-vote-service" ;;
-    "")             ;;
-    *)              ;;
+    "")             COMPOSE_FILE="./dev/docker/docker-compose.dev.yml" ;;
+    *)              COMPOSE_FILE="./dev/docker/docker-compose.dev.yml" ;;
 esac
 
-case "$SERVICE_COMPOSE_SETUP" in
-    "auth")     COMPOSE_FILE="$SERVICE_FOLDER/docker-compose.dev.yml" ;;
-    "backend")  USED_SHELL="bash --rcfile .bashrc" &&
-                CLOSE_VOLUMES="--volumes" &&
-                COMPOSE_FILE="$SERVICE_FOLDER/dev/docker-compose.dev.yml" ;;
-    "client")   VOLUMES="-v $(pwd)/openslides-client/client/src:/app/src -v $(pwd)/openslides-client/client/cli:/app/cli -p 127.0.0.1:9001:9001/tcp" ;;
-    "media")    USED_SHELL="bash" &&
-                if [ "$FUNCTION" = "attached" ]; then FUNCTION="media-attached"; fi && # Temporary fix for wait-for-it situation
-                COMPOSE_FILE="$SERVICE_FOLDER/docker-compose.test.yml" ;;
-    "search")   COMPOSE_FILE="$SERVICE_FOLDER/dev/docker-compose.dev.yml" ;;
-    "")         COMPOSE_FILE="./dev/docker/docker-compose.dev.yml" ;;
-    *)          COMPOSE_FILE="./dev/docker/docker-compose.dev.yml" ;;
-esac
-
-if [ -n "$CONTAINER" ]; then info "Running $FUNCTION in container $CONTAINER"
+if [ -n "$CONTAINER" ]; then info "Running $FUNCTION in docker compose setup for $CONTAINER"
 else info "Running $FUNCTION"; fi
 
 # Compose dev branch checkout
