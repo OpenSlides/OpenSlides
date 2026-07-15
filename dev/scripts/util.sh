@@ -36,13 +36,16 @@ ask() {
   case "$CONTROL_STR" in
     *n*) DEFAULT_REPLY="1" && \
          REPLY_OPT="[y/N]" ;;
+  esac
+
+  case "$CONTROL_STR" in
     *o*) local OPT_ECHO=1 ;;
   esac
 
   shift 1
   local QUERY="$*"
 
-  if [ -z "$ASK_AUTO_DO_DEFAULT" ]
+  if [ -z "$BATCH_MODE" ]
   then
     read -rp $'\n'"$QUERY $REPLY_OPT: "
   fi
