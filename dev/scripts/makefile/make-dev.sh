@@ -185,9 +185,15 @@ run()
             fi
         fi
 
+        SERVICE_NAME="${CONTAINER}"
+        if [ -z "$SERVICE_NAME" ]
+        then
+            SERVICE_NAME="${SERVICE_COMPOSE_SETUP}"
+        fi
+
         # Single Container
         # shellcheck disable=SC2086
-        echocmd docker run --name "$CONTAINER_TAG" $FLAGS $VOLUMES $RUN_ARGS $IMAGE_TAG
+        echocmd docker run --name "$CONTAINER_TAG" $FLAGS $VOLUMES $RUN_ARGS "openslides-${SERVICE_NAME}-dev"
     fi
 }
 
@@ -219,7 +225,7 @@ attach()
     # In this case, the default container should be assumed to be 'backend' even if user hasn't specifically stated it
     if [ -n "$SERVICE_COMPOSE_SETUP" ] && [ "$CONTAINER" = "" ]
     then
-        TARGET_CONTAINER="$DEFAULT_CONTAINER"
+        TARGET_CONTAINER="$SERVICE_COMPOSE_SETUP"
     fi
 
     info "Attaching to running container"
@@ -260,7 +266,7 @@ exec_func()
     # In this case, the default container should be assumed to be 'backend' even if user hasn't specifically stated it
     if [ -n "$SERVICE_COMPOSE_SETUP" ] && [ "$CONTAINER" = "" ]
     then
-        TARGET_CONTAINER="$DEFAULT_CONTAINER"
+        TARGET_CONTAINER="$SERVICE_COMPOSE_SETUP"
     fi
 
     if [ "$TARGET_CONTAINER" = "" ]
@@ -340,8 +346,9 @@ log()
         echocmd docker compose -f "$COMPOSE_FILE" logs ${TARGET_CONTAINER} ${LOG_PREFIX} ${CONNECT_FLAG}
     else
         # Single Container
+
         # shellcheck disable=SC2086
-        echocmd docker container logs "${TARGET_CONTAINER}" ${LOG_PREFIX} ${CONNECT_FLAG}
+        echocmd docker container logs "${CONTAINER_TAG}" ${LOG_PREFIX} ${CONNECT_FLAG}
     fi
 
 }
@@ -357,6 +364,7 @@ CONTAINER=$2
 # Extract flags here
 TEMP_SERVICE=$CONTAINER
 CONTAINER=""
+# shellcheck disable=SC2034
 for CMD in $TEMP_SERVICE; do
     case "$CMD" in
         "no-cache")      NO_CACHE=true ;;
@@ -369,7 +377,7 @@ done
 
 # Variables
 SERVICE_FOLDER=""
-CONTAINER_TAG="make-os-dev-$CONTAINER"
+CONTAINER_TAG="make-os-dev-$SERVICE_COMPOSE_SETUP"
 USED_SHELL="sh"
 
 # Remove ARGS flag from maketarget that's calling this script
@@ -382,32 +390,26 @@ FUNCTION=${OPERATION#"dev"}
 FUNCTION=${FUNCTION#"-"}
 FUNCTION=${FUNCTION%.*}
 
-DEFAULT_CONTAINER=
-
 # - Extrapolate parameters depending on service compose setup
 case "$SERVICE_COMPOSE_SETUP" in
     "auth")         SERVICE_FOLDER="./openslides-auth-service" &&
-                    COMPOSE_FILE="$SERVICE_FOLDER/docker-compose.dev.yml" &&
-                    DEFAULT_CONTAINER="auth" ;;
+                    COMPOSE_FILE="$SERVICE_FOLDER/docker-compose.dev.yml" ;;
     "autoupdate")   SERVICE_FOLDER="./openslides-autoupdate-service" ;;
     "backend")      if [ -z "$CONTAINER" ] || [ "$CONTAINER" == "backend" ]; then USED_SHELL="bash --rcfile .bashrc"; fi &&
                     CLOSE_VOLUMES="--volumes" &&
                     SERVICE_FOLDER="./openslides-backend" &&
-                    COMPOSE_FILE="$SERVICE_FOLDER/dev/docker-compose.dev.yml" &&
-                    DEFAULT_CONTAINER="backend" ;;
+                    COMPOSE_FILE="$SERVICE_FOLDER/dev/docker-compose.dev.yml" ;;
     "client")       VOLUMES="-v $(pwd)/openslides-client/client/src:/app/src -v $(pwd)/openslides-client/client/cli:/app/cli -p 127.0.0.1:9001:9001/tcp" &&
                     SERVICE_FOLDER="./openslides-client" ;;
     "icc")          SERVICE_FOLDER="./openslides-icc-service" ;;
     "media")        USED_SHELL="bash" &&
                     if [ "$FUNCTION" = "attached" ]; then FUNCTION="media-attached"; fi && # Temporary fix for wait-for-it situation
                     SERVICE_FOLDER="./openslides-media-service" &&
-                    COMPOSE_FILE="$SERVICE_FOLDER/docker-compose.test.yml" &&
-                    DEFAULT_CONTAINER="media" ;;
+                    COMPOSE_FILE="$SERVICE_FOLDER/docker-compose.test.yml" ;;
     "projector")    SERVICE_FOLDER="./openslides-projector-service" ;;
     "proxy")        SERVICE_FOLDER="./openslides-proxy" ;;
     "search")       SERVICE_FOLDER="./openslides-search-service" &&
-                    COMPOSE_FILE="$SERVICE_FOLDER/dev/docker-compose.dev.yml" &&
-                    DEFAULT_CONTAINER="search" ;;
+                    COMPOSE_FILE="$SERVICE_FOLDER/dev/docker-compose.dev.yml" ;;
     "vote")         SERVICE_FOLDER="./openslides-vote-service" ;;
     "")             COMPOSE_FILE="./dev/docker/docker-compose.dev.yml" ;;
     *)              COMPOSE_FILE="./dev/docker/docker-compose.dev.yml" ;;
@@ -436,11 +438,11 @@ then
 fi
 
 # Helpers
-export USER_ID=$(id -u)
-export GROUP_ID=$(id -g)
+export USER_ID
+USER_ID=$(id -u)
+export GROUP_ID
+GROUP_ID=$(id -g)
 export CONTEXT=dev
-
-IMAGE_TAG="openslides-$CONTAINER-dev"
 
 # - Run specific function
 case "$FUNCTION" in
