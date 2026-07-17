@@ -77,39 +77,6 @@ proxy_setup()
     )
 }
 
-build()
-{
-    local BUILD_ARGS="";
-
-    if [ -n "$CONTAINER" ]; then BUILD_ARGS="$CONTAINER"; fi
-    if [ -n "$NO_CACHE" ]
-    then
-        if [ "$BUILD_ARGS" == "" ]
-        then
-            BUILD_ARGS="--no-cache"
-        else
-            BUILD_ARGS="$BUILD_ARGS --no-cache"
-        fi
-    fi
-
-    # Build all submodules
-    if [ -z "$SERVICE_COMPOSE_SETUP" ]
-    then
-        # Ensure localhost-cert has been called at least once
-        proxy_setup
-
-        # shellcheck disable=SC2086
-        echocmd docker compose  -f "$(dirname "$0")/../../docker/docker-compose.dev.yml" build $BUILD_ARGS
-    else
-        # Build specific submodule
-        (
-            cd "$SERVICE_FOLDER" || abort 1
-
-            make build-dev ARGS="$BUILD_ARGS"
-        )
-    fi
-}
-
 docker_reset()
 {
     info "Stopping containers"
@@ -150,6 +117,46 @@ docker_reset()
     ) || true
 }
 
+build()
+{
+    local BUILD_ARGS="";
+
+    if [ -n "$CONTAINER" ]; then BUILD_ARGS="$CONTAINER"; fi
+    if [ -n "$NO_CACHE" ]
+    then
+        if [ "$BUILD_ARGS" == "" ]
+        then
+            BUILD_ARGS="--no-cache"
+        else
+            BUILD_ARGS="$BUILD_ARGS --no-cache"
+        fi
+    fi
+
+    # Build all submodules
+    if [ -n "$SERVICE_COMPOSE_SETUP" ]
+    then
+        if [ -n "$COMPOSE_FILE" ]
+        then
+            # Build compose setup of other service
+            # shellcheck disable=SC2086
+            echocmd docker compose -f "$(dirname "$0")/../../../$COMPOSE_FILE" build $BUILD_ARGS
+        else
+            # Build specific image
+            (
+                cd "$SERVICE_FOLDER" || abort 1
+
+                make build-dev ARGS="$BUILD_ARGS"
+            )
+        fi
+    else
+        # Ensure localhost-cert has been called at least once
+        proxy_setup
+
+        # shellcheck disable=SC2086
+        echocmd docker compose -f "$(dirname "$0")/../../docker/docker-compose.dev.yml" build $BUILD_ARGS
+    fi
+}
+
 run()
 {
     info "Running container"
@@ -161,7 +168,8 @@ run()
         if [ -n "$NO_CACHE" ]; then BUILD_ARGS="--build --force-recreate"; fi
 
         # Compose
-        echocmd eval "$DC up ${LOG_PREFIX} ${BUILD_ARGS} ${FLAGS} ${VOLUMES} ${RUN_ARGS}"
+        # shellcheck disable=SC2086
+        echocmd docker compose -f "${COMPOSE_FILE}" up ${LOG_PREFIX} ${BUILD_ARGS} ${FLAGS} ${VOLUMES} ${RUN_ARGS}
     else
         # Already active check
         # Either stop existing containers and continue with run() or use existing containers from now on and exit run() early
@@ -178,7 +186,8 @@ run()
         fi
 
         # Single Container
-        echocmd docker run --name "$CONTAINER_TAG" "$FLAGS" "$VOLUMES" "$RUN_ARGS" "$IMAGE_TAG"
+        # shellcheck disable=SC2086
+        echocmd docker run --name "$CONTAINER_TAG" $FLAGS $VOLUMES $RUN_ARGS $IMAGE_TAG
     fi
 }
 
@@ -191,9 +200,9 @@ restart()
         # Compose
         if [ -n "$CONTAINER" ]
         then
-            echocmd eval "$DC restart ${CONTAINER}"
+            echocmd docker compose -f "${COMPOSE_FILE}" restart "${CONTAINER}"
         else
-            echocmd eval "$DC restart"
+            echocmd docker compose -f "${COMPOSE_FILE}" restart
         fi
     else
         # Single Container
@@ -229,10 +238,12 @@ attach()
             info "No container was specified; Service container will be taken as default"
         fi
 
-        echocmd eval "$DC exec $TARGET_CONTAINER $USED_SHELL"
+        # shellcheck disable=SC2086
+        echocmd docker compose -f "${COMPOSE_FILE}" exec "${TARGET_CONTAINER}" ${USED_SHELL}
     else
         # Single Container
-        echocmd docker exec -it "$CONTAINER_TAG" "$USED_SHELL"
+        # shellcheck disable=SC2086
+        echocmd docker exec -it "$CONTAINER_TAG" $USED_SHELL
     fi
 
     local CONTAINER_STATUS="$?"
@@ -259,13 +270,21 @@ exec_func()
         exit 1
     fi
 
+    if [ "$FUNC" = "" ]
+    then
+        error "Missing exec command. Please specifiy the command to execute like so: 'make dev-exec <service_name> EXEC_COMMAND=ls'"
+        exit 1
+    fi
+
     if [ -n "$COMPOSE_FILE" ]
     then
         # Compose
-        echocmd eval "$DC exec $TARGET_CONTAINER $FUNC"
+        # shellcheck disable=SC2086
+        echocmd docker compose -f "${COMPOSE_FILE}" exec "${TARGET_CONTAINER}" ${FUNC}
     else
         # Single Container
-        echocmd docker exec "$CONTAINER_TAG" "$FUNC"
+        # shellcheck disable=SC2086
+        echocmd docker exec "$CONTAINER_TAG" $FUNC
     fi
 }
 
@@ -273,12 +292,17 @@ stop()
 {
     local CLEAN=$1
     local STOP_ARGS="$CLOSE_VOLUMES"
-    if [ -n "$CLEAN" ]; then STOP_ARGS="--volumes --remove-orphans"; fi
 
     info "Stop running container"
     if [ -n "$COMPOSE_FILE" ]
     then
-        echocmd eval "$DC down $STOP_ARGS"
+        if [ -n "$CLEAN" ]
+        then
+            echocmd docker compose -f "${COMPOSE_FILE}" down --volumes --remove-orphans
+        else
+            # shellcheck disable=SC2086
+            echocmd docker compose -f "${COMPOSE_FILE}" down ${STOP_ARGS}
+        fi
     else
         # Single Container
         echocmd docker stop "$CONTAINER_TAG"
@@ -292,6 +316,7 @@ log()
     if [ -n "$CONNECT" ]; then CONNECT_FLAG="-f"; fi
 
     local TARGET_CONTAINER="$CONTAINER"
+
     if [ -n "$COMPOSE_FILE" ]
     then
         if [ -z "$TARGET_CONTAINER" ]
@@ -303,7 +328,7 @@ log()
             then
                 # No container specified. Log whole compose file
                 # shellcheck disable=SC2086
-                echocmd docker compose -f "$COMPOSE_FILE" logs "${LOG_PREFIX}" ${CONNECT_FLAG}
+                echocmd docker compose -f "$COMPOSE_FILE" logs ${LOG_PREFIX} ${CONNECT_FLAG}
                 exit 0
             fi
         else
@@ -312,11 +337,11 @@ log()
         fi
 
         # shellcheck disable=SC2086
-        echocmd docker compose -f "$COMPOSE_FILE" logs "${TARGET_CONTAINER}" --no-log-prefix ${CONNECT_FLAG}
+        echocmd docker compose -f "$COMPOSE_FILE" logs ${TARGET_CONTAINER} ${LOG_PREFIX} ${CONNECT_FLAG}
     else
         # Single Container
         # shellcheck disable=SC2086
-        echocmd docker container logs "${TARGET_CONTAINER}" --no-log-prefix ${CONNECT_FLAG}
+        echocmd docker container logs "${TARGET_CONTAINER}" ${LOG_PREFIX} ${CONNECT_FLAG}
     fi
 
 }
@@ -365,7 +390,7 @@ case "$SERVICE_COMPOSE_SETUP" in
                     COMPOSE_FILE="$SERVICE_FOLDER/docker-compose.dev.yml" &&
                     DEFAULT_CONTAINER="auth" ;;
     "autoupdate")   SERVICE_FOLDER="./openslides-autoupdate-service" ;;
-    "backend")      USED_SHELL="bash --rcfile .bashrc" &&
+    "backend")      if [ -z "$CONTAINER" ] || [ "$CONTAINER" == "backend" ]; then USED_SHELL="bash --rcfile .bashrc"; fi &&
                     CLOSE_VOLUMES="--volumes" &&
                     SERVICE_FOLDER="./openslides-backend" &&
                     COMPOSE_FILE="$SERVICE_FOLDER/dev/docker-compose.dev.yml" &&
@@ -392,7 +417,7 @@ if [ -n "$CONTAINER" ]; then info "Running $FUNCTION in docker compose setup for
 else info "Running $FUNCTION"; fi
 
 # Compose dev branch checkout
-COMPOSE_REFERENCE_BRANCH="main"
+export COMPOSE_REFERENCE_BRANCH="main"
 if [ -n "$USE_LOCAL_BRANCH_FOR_COMPOSE" ]
 then
     if [ -n "$SERVICE_COMPOSE_SETUP" ]
@@ -411,9 +436,9 @@ then
 fi
 
 # Helpers
-USER_ID=$(id -u)
-GROUP_ID=$(id -g)
-DC="CONTEXT=dev USER_ID=$USER_ID GROUP_ID=$GROUP_ID COMPOSE_REFERENCE_BRANCH=$COMPOSE_REFERENCE_BRANCH docker compose -f ${COMPOSE_FILE}"
+export USER_ID=$(id -u)
+export GROUP_ID=$(id -g)
+export CONTEXT=dev
 
 IMAGE_TAG="openslides-$CONTAINER-dev"
 
