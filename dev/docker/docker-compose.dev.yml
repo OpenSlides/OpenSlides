@@ -10,8 +10,8 @@ x-default-environment: &default-environment
   DATABASE_IDP_DB: zitadel
   PGPASSWORD: openslides
   OPENSLIDES_DEVELOPMENT: 1
-  IDP_HOST_HEADER: localhost:8080
-  IDP_URL_EXTERNAL: localhost:8080
+  IDP_HOST_HEADER: localhost:8800
+  IDP_URL_EXTERNAL: localhost:8800
   IDP_URL_INTERNAL: http://zitadel-api:8080
   IDP_OS_REALM: openslides
 
@@ -224,6 +224,7 @@ services:
       - ../../openslides-idp-service/zitadel-bootstrap:/zitadel/bootstrap:ro
     ports:
       - "8000:8000"
+      - "8800:8800"
 
   mailhog:
     image: mailhog/mailhog
@@ -268,8 +269,8 @@ services:
       ZITADEL_INTERNAL_URL: http://zitadel-api:8080
       # Must match ZITADEL_EXTERNALDOMAIN:ZITADEL_EXTERNALPORT so that Zitadel
       # can resolve the instance from the Host header on every API call.
-      ZITADEL_REDIRECT_URI: ${ZITADEL_REDIRECT_URI:-https://localhost:8000/api/auth/callback}
-      APP_REDIRECT_URL: ${APP_REDIRECT_URL:-https://localhost:8000}
+      # ZITADEL_REDIRECT_URI: ${ZITADEL_REDIRECT_URI:-https://localhost:8800/api/auth/callback}
+      # APP_REDIRECT_URL: ${APP_REDIRECT_URL:-https://localhost:8000}
     volumes:
       - ../../openslides-idp-service/zitadel-bootstrap:/zitadel/bootstrap:rw
     depends_on:
@@ -332,7 +333,7 @@ services:
       ZITADEL_API_URL: http://zitadel-api:8080
       NEXT_PUBLIC_BASE_PATH: /ui/v2/login
       ZITADEL_SERVICE_USER_TOKEN_FILE: /zitadel/bootstrap/login-client.pat
-      CUSTOM_REQUEST_HEADERS: Host:localhost,X-Forwarded-Proto:http
+      CUSTOM_REQUEST_HEADERS: Host:localhost:8800,X-Forwarded-Proto:https
     healthcheck:
       test:
         - CMD
