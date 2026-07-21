@@ -3,6 +3,7 @@
 set -eo pipefail
 
 # Import OpenSlides utils package
+# shellcheck disable=SC1091
 . "$(dirname "$0")"/../util.sh
 
 REMOTE_NAME=${1:-"upstream"}
@@ -81,16 +82,19 @@ go_update() {
     fi
 
     # Set openslides-go in go.mod and go.sum of services to the current openslides-go hash
-    local CUR_GO_SUBMODULE_VERSION="$(git -C . show "HEAD:go.mod" |
+    local CUR_GO_SUBMODULE_VERSION
+    CUR_GO_SUBMODULE_VERSION="$(git -C . show "HEAD:go.mod" |
         awk '$1 ~ "/openslides-go" {print $2}' | tail -1 | awk -F- '{print $3}')"
-    local GO_BRANCH_HASH="$(git -C "../lib/openslides-go" rev-parse "HEAD")"
-    local GO_BRANCH_HASH_SHORT="$(git -C "../lib/openslides-go" rev-parse "HEAD" | cut -c1-12)"
+    local GO_BRANCH_HASH
+    GO_BRANCH_HASH="$(git -C "../lib/openslides-go" rev-parse "HEAD")"
+    local GO_BRANCH_HASH_SHORT
+    GO_BRANCH_HASH_SHORT="$(git -C "../lib/openslides-go" rev-parse "HEAD" | cut -c1-12)"
 
     if [[ "$CUR_GO_SUBMODULE_VERSION" != "$GO_BRANCH_HASH_SHORT" ]]
     then
         warn "Cur: $CUR_GO_SUBMODULE_VERSION Go: $GO_BRANCH_HASH_SHORT"
         info "Updating go mod to $GO_BRANCH_HASH"
-        go get github.com/OpenSlides/openslides-go@${GO_BRANCH_HASH}
+        go get github.com/OpenSlides/openslides-go@"${GO_BRANCH_HASH}"
         go mod tidy
     else
         exit 0
@@ -138,7 +142,13 @@ checkout() {
             info "The repository has changes"
             info "$GIT_CHANGES"
 
-            read -rp $'\n'"Stash them (Y) soft reset them (d) hard reset them (D) or skip this submodule (s): " </dev/tty
+            if [ -n "$BATCH_MODE" ]
+            then
+                REPLY="Y"
+            else
+                read -rp $'\n'"Stash them (Y) soft reset them (d) hard reset them (D) or skip this submodule (s): " </dev/tty
+            fi
+
             local STASH_OUTPUT=0
             case "$REPLY" in
             Y|y|Yes|yes|YES) STASH_OUTPUT=0;;
@@ -193,6 +203,7 @@ checkout() {
             local CHECKOUT_MAIN
             if [ "$AUTO_MAIN_FALLBACK" == 0 ]
             then
+                # shellcheck disable=SC2086
                 CHECKOUT_MAIN=$(ask ${FALLBACK_MAIN_BRANCH_DEFAULT:-y}o "$SUBMODULE does not have a branch named $SOURCE/$BRANCH. Type y to checkout upstream/main instead. Type n to remain in current branch." </dev/tty)
             else
                 CHECKOUT_MAIN=0
@@ -266,6 +277,7 @@ checkout_main()
     (
         if [ "$ALWAYS_CHECKOUT_MAIN_REPO" == 0 ]
         then
+            # shellcheck disable=SC2086
             ask ${CHECKOUT_MAIN_REPO_DEFAULT:-y} "Would you like to checkout main repository as well? WARNING: You may not be able to call this script again after switching branches, as it may not exist in target branch" || exit 0
         fi
         checkout "." "OpenSlides" "$REMOTE_NAME" "$BRANCH_NAME" ""
