@@ -10,8 +10,8 @@ x-default-environment: &default-environment
   DATABASE_IDP_DB: zitadel
   PGPASSWORD: openslides
   OPENSLIDES_DEVELOPMENT: 1
-  IDP_HOST_HEADER: localhost:8800
-  IDP_URL_EXTERNAL: localhost:8800
+  IDP_EXTERNAL_HOST: localhost:8800
+  IDP_URL_EXTERNAL: https://localhost:8800
   IDP_URL_INTERNAL: http://zitadel-api:8080
   IDP_OS_REALM: openslides
 
@@ -57,6 +57,8 @@ services:
     depends_on:
       idp-setup:
         condition: service_completed_successfully
+      auth:
+        condition: service_started
     env_file: services.env
     ports:
       - "9002:9002"
@@ -115,6 +117,7 @@ services:
     image: openslides-icc-dev
     depends_on:
       - redis
+      - auth
     env_file: services.env
     environment:
       << : *default-environment
@@ -247,6 +250,8 @@ services:
         condition: service_started
       postgres:
         condition: service_healthy
+      auth:
+        condition: service_started
     env_file: services.env
     environment:
       << : *default-environment
@@ -279,7 +284,7 @@ services:
     restart: "no"
 
   zitadel-init:
-    image: ghcr.io/zitadel/zitadel:v4.15.3
+    image: ghcr.io/zitadel/zitadel:v4.16.1
     command: ["init", "schema"]
     env_file: ../../openslides-idp-service/zitadel/default.env
     depends_on:
@@ -287,7 +292,7 @@ services:
         condition: service_healthy
 
   zitadel-setup:
-    image: ghcr.io/zitadel/zitadel:v4.15.3
+    image: ghcr.io/zitadel/zitadel:v4.16.1
     command: ["setup", "--masterkeyFromEnv"]
     user: "0"
     environment:
@@ -302,7 +307,7 @@ services:
         condition: service_completed_successfully
 
   zitadel-api:
-    image: ghcr.io/zitadel/zitadel:v4.15.3
+    image: ghcr.io/zitadel/zitadel:v4.16.1
     command: ["start", "--masterkeyFromEnv"]
     environment:
       << : [*default-environment]
@@ -325,7 +330,7 @@ services:
       - "8080:8080"
 
   zitadel-login:
-    image: ghcr.io/zitadel/zitadel-login:v4.15.3
+    image: ghcr.io/zitadel/zitadel-login:v4.16.1
     restart: unless-stopped
     user: "0"
     environment:
@@ -350,3 +355,22 @@ services:
       - zitadel-api
     ports:
       - "3000:3000"
+
+  auth:
+    build:
+        context: ../../openslides-auth-service
+        target: "dev"
+        args:
+            CONTEXT: "dev"
+    image: openslides-auth-dev
+    depends_on:
+      - redis
+    env_file: services.env
+    environment:
+      << : *default-environment
+    volumes:
+      - ../../openslides-auth-service/auth/src:/app/src
+      - ../../openslides-auth-service/auth/libraries:/app/libraries
+      - ../../openslides-auth-service/auth/test:/app/test
+    ports:
+      - "9004:9004"
