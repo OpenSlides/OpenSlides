@@ -24,18 +24,18 @@ Environment Variables (can be set when invoking make target):
     SERVICE_COMPOSE_SETUP    : Specifies a service whose docker compose setup should be used instead of the main repositories docker compose setup
     EXEC_COMMAND             : Specifies the command which is executed with the dev-exec operation
 
-Example: make   dev-exec    vote     SERVICE_COMPOSE_SETUP=backend   EXEC_COMMAND='ls'
+Example: make   dev-exec    auth     SERVICE_COMPOSE_SETUP=backend   EXEC_COMMAND='ls'
                    ^          ^               ^                              ^
                 Param #1   Param #2      Env Variable                   Env Variable
-    ( This executes 'ls' in a vote-container created and maintained by a running backend compose setup )
+    ( This executes 'ls' in a auth-container created and maintained by a running backend compose setup )
 
 Long Flags:
     no-cache             : Prevents use of cache when building docker images
     compose-local-branch : Compose setups pull service images from the main branch by default.
                            When 'compose-local-branch' is set to true, the checked out branch of the service will be pulled instead.
                            Example: Backend-Service is locally checked-out to 'feature/xyz'.
-                           Its dev compose setup pulls 'vote' from github by referencing 'openslides-vote-service.git#main'.
-                           If 'compose-local-branch' is set to true, the path 'openslides-vote-service.git#feature/xyz' will be used instead.
+                           Its dev compose setup pulls 'auth' from github by referencing 'openslides-auth-service.git#main'.
+                           If 'compose-local-branch' is set to true, the path 'openslides-auth-service.git#feature/xyz' will be used instead.
     no-log-prefix        : When printing container logs, the associated container name is omitted
     debug-dry-run        : Prints all commands that would run but prevents their actual execution
 
