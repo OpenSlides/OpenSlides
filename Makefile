@@ -71,10 +71,10 @@ localprod-build-local-manage:
 # Checkout
 
 checkout services-to-main:
-	@bash $(MAKEFILE_PATH)/checkout.sh "${REMOTE}" "$(BRANCH)" "$(FILE)" "$(PULL)" "$(LATEST)" "$(FALLBACK)"
+	@bash $(MAKEFILE_PATH)/checkout.sh "${REMOTE}" "$(BRANCH)" "$(FILE)" "$(PULL)" "$(LATEST)" "$(AUTO_FALLBACK)" "$(ALWAYS_MAIN)" "$(USE_HTTPS)" "$(GO_UPDATE)"
 
 checkout-pull services-to-main-pull:
-	@bash $(MAKEFILE_PATH)/checkout.sh "${REMOTE}" "$(BRANCH)" "$(FILE)" "true" "$(LATEST)" "$(FALLBACK)"
+	@bash $(MAKEFILE_PATH)/checkout.sh "${REMOTE}" "$(BRANCH)" "$(FILE)" "true" "$(LATEST)" "$(AUTO_FALLBACK)" "$(ALWAYS_MAIN)" "$(USE_HTTPS)" "$(GO_UPDATE)"
 
 checkout-help:
 	@bash $(MAKEFILE_PATH)/checkout.sh -h
@@ -107,6 +107,13 @@ pull-translations:
 copy-translations:
 	dev/scripts/copy-translations.sh
 
+# IDP
+
+migrate-users-to-idp:
+	make dev-exec EXEC_COMMAND="backend make migrate-users-to-idp"
+
+run-psql:
+	@make dev-exec EXEC_COMMAND="backend make run-psql"
 
 ########################## Deprecation List ##########################
 

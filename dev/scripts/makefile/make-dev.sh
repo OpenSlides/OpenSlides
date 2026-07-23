@@ -359,6 +359,7 @@ case "$SERVICE" in
     "client")       SERVICE_FOLDER="./openslides-client" &&
                     VOLUMES="-v $(pwd)/openslides-client/client/src:/app/src -v $(pwd)/openslides-client/client/cli:/app/cli -p 127.0.0.1:9001:9001/tcp" ;;
     "icc")          SERVICE_FOLDER="./openslides-icc-service" ;;
+    "idp")          SERVICE_FOLDER="./openslides-idp-service" ;;
     "media")        SERVICE_FOLDER="./openslides-media-service" &&
                     COMPOSE_FILE="$SERVICE_FOLDER/docker-compose.test.yml" &&
                     USED_SHELL="bash" &&

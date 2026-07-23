@@ -7,8 +7,13 @@ x-default-environment: &default-environment
   DATABASE_PORT: 5432
   DATABASE_NAME: openslides
   DATABASE_USER: openslides
+  DATABASE_IDP_DB: zitadel
   PGPASSWORD: openslides
   OPENSLIDES_DEVELOPMENT: 1
+  IDP_EXTERNAL_HOST: localhost:8800
+  IDP_URL_EXTERNAL: https://localhost:8800
+  IDP_URL_INTERNAL: http://zitadel-api:8080
+  IDP_OS_REALM: openslides
 
 services:
   postgres:
@@ -18,6 +23,14 @@ services:
       POSTGRES_USER: openslides
       POSTGRES_PASSWORD: openslides
       POSTGRES_DB: openslides
+    volumes:
+      - ./idp_setup.sql:/docker-entrypoint-initdb.d/idp_setup.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U openslides -d openslides"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
 
   client:
     build:
@@ -42,7 +55,10 @@ services:
             CONTEXT: "dev"
     image: openslides-backend-dev
     depends_on:
-      - auth
+      idp-setup:
+        condition: service_completed_successfully
+      auth:
+        condition: service_started
     env_file: services.env
     ports:
       - "9002:9002"
@@ -60,6 +76,8 @@ services:
       EMAIL_ACCEPT_SELF_SIGNED_CERTIFICATE: false
       DEFAULT_FROM_EMAIL: noreply@example.com
       OPENSLIDES_BACKEND_CREATE_INITIAL_DATA: 1
+      IDP_URL_INTERNAL: http://zitadel-api:8080
+      IDP_OS_REALM: openslides
     volumes:
       - ../../openslides-backend/openslides_backend:/app/openslides_backend
       - ../../openslides-backend/tests:/app/tests
@@ -68,6 +86,7 @@ services:
       - ../../openslides-backend/meta:/app/meta
       - ../../openslides-backend/requirements:/app/requirements
       - ../../openslides-backend/scripts:/app/scripts
+      - ../../openslides-idp-service/zitadel-bootstrap:/zitadel/bootstrap:ro
 
   autoupdate:
     build:
@@ -117,9 +136,12 @@ services:
             CONTEXT: "dev"
     image: openslides-search-dev
     depends_on:
-      - autoupdate
-      - backend
-      - postgres
+      autoupdate:
+        condition: service_started
+      backend:
+        condition: service_started
+      postgres:
+        condition: service_healthy
     env_file: services.env
     environment:
       << : *default-environment
@@ -139,9 +161,12 @@ services:
             CONTEXT: "dev"
     image: openslides-projector-dev
     depends_on:
-      - autoupdate
-      - backend
-      - postgres
+      autoupdate:
+        condition: service_started
+      backend:
+        condition: service_started
+      postgres:
+        condition: service_healthy
     env_file: services.env
     environment:
       - OPENSLIDES_DEVELOPMENT=1
@@ -156,25 +181,6 @@ services:
     ports:
       - "9051:9051"
 
-  auth:
-    build:
-        context: ../../openslides-auth-service
-        target: "dev"
-        args:
-            CONTEXT: "dev"
-    image: openslides-auth-dev
-    depends_on:
-      - redis
-    env_file: services.env
-    environment:
-      << : *default-environment
-    volumes:
-      - ../../openslides-auth-service/auth/src:/app/src
-      - ../../openslides-auth-service/auth/libraries:/app/libraries
-      - ../../openslides-auth-service/auth/test:/app/test
-    ports:
-      - "9004:9004"
-
   media:
     build:
         context: ../../openslides-media-service
@@ -183,8 +189,10 @@ services:
             CONTEXT: "dev"
     image: openslides-media-dev
     depends_on:
-      - backend
-      - postgres
+      backend:
+        condition: service_started
+      postgres:
+        condition: service_healthy
     env_file: services.env
     environment:
       << : *default-environment
@@ -211,8 +219,15 @@ services:
       - client
       - backend
       - autoupdate
+      - zitadel-api
+    volumes:
+      - ../../openslides-proxy/services:/services
+      - ../../openslides-proxy/templates:/templates
+      - ../../openslides-proxy/plugins-local:/app/plugins-local
+      - ../../openslides-idp-service/zitadel-bootstrap:/zitadel/bootstrap:ro
     ports:
       - "8000:8000"
+      - "8800:8800"
 
   mailhog:
     image: mailhog/mailhog
@@ -231,9 +246,12 @@ services:
             CONTEXT: "dev"
     image: openslides-vote-dev
     depends_on:
-      - auth
-      - redis
-      - postgres
+      redis:
+        condition: service_started
+      postgres:
+        condition: service_healthy
+      auth:
+        condition: service_started
     env_file: services.env
     environment:
       << : *default-environment
@@ -244,3 +262,115 @@ services:
       - ./workspaces/vote.work:/app/go.work
     ports:
       - "9013:9013"
+
+  idp-setup:
+    build:
+        context: ../../openslides-idp-service
+        target: "dev"
+        args:
+            CONTEXT: "dev"
+    environment:
+      << : [*default-environment]
+      ZITADEL_INTERNAL_URL: http://zitadel-api:8080
+      # Must match ZITADEL_EXTERNALDOMAIN:ZITADEL_EXTERNALPORT so that Zitadel
+      # can resolve the instance from the Host header on every API call.
+      # ZITADEL_REDIRECT_URI: ${ZITADEL_REDIRECT_URI:-https://localhost:8800/api/auth/callback}
+      # APP_REDIRECT_URL: ${APP_REDIRECT_URL:-https://localhost:8000}
+    volumes:
+      - ../../openslides-idp-service/zitadel-bootstrap:/zitadel/bootstrap:rw
+    depends_on:
+      zitadel-api:
+        condition: service_started
+    restart: "no"
+
+  zitadel-init:
+    image: ghcr.io/zitadel/zitadel:v4.16.1
+    command: ["init", "schema"]
+    env_file: ../../openslides-idp-service/zitadel/default.env
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  zitadel-setup:
+    image: ghcr.io/zitadel/zitadel:v4.16.1
+    command: ["setup", "--masterkeyFromEnv"]
+    user: "0"
+    environment:
+      << : [*default-environment]
+    volumes:
+      - ../../openslides-idp-service/zitadel-bootstrap:/zitadel/bootstrap:rw
+    env_file:
+      - path: ../../openslides-idp-service/zitadel/default.env
+      - path: ../../openslides-idp-service/zitadel/steps.env
+    depends_on:
+      zitadel-init:
+        condition: service_completed_successfully
+
+  zitadel-api:
+    image: ghcr.io/zitadel/zitadel:v4.16.1
+    command: ["start", "--masterkeyFromEnv"]
+    environment:
+      << : [*default-environment]
+    env_file: ../../openslides-idp-service/zitadel/default.env
+    healthcheck:
+      test:
+        - CMD
+        - /app/zitadel
+        - ready
+      interval: 10s
+      timeout: 30s
+      retries: 12
+      start_period: 20s
+    volumes:
+      - ../../openslides-idp-service/zitadel-bootstrap:/zitadel/bootstrap:ro
+    depends_on:
+      zitadel-setup:
+        condition: service_completed_successfully
+    ports:
+      - "8080:8080"
+
+  zitadel-login:
+    image: ghcr.io/zitadel/zitadel-login:v4.16.1
+    restart: unless-stopped
+    user: "0"
+    environment:
+      << : [*default-environment]
+      ZITADEL_API_URL: http://zitadel-api:8080
+      NEXT_PUBLIC_BASE_PATH: /ui/v2/login
+      ZITADEL_SERVICE_USER_TOKEN_FILE: /zitadel/bootstrap/login-client.pat
+      CUSTOM_REQUEST_HEADERS: Host:localhost:8800,X-Forwarded-Proto:https
+    healthcheck:
+      test:
+        - CMD
+        - /bin/sh
+        - -c
+        - node /app/healthcheck.mjs http://localhost:3000/ui/v2/login/healthy
+      interval: 10s
+      timeout: 30s
+      retries: 12
+      start_period: 20s
+    volumes:
+      - ../../openslides-idp-service/zitadel-bootstrap:/zitadel/bootstrap:ro
+    depends_on:
+      - zitadel-api
+    ports:
+      - "3000:3000"
+
+  auth:
+    build:
+        context: ../../openslides-auth-service
+        target: "dev"
+        args:
+            CONTEXT: "dev"
+    image: openslides-auth-dev
+    depends_on:
+      - redis
+    env_file: services.env
+    environment:
+      << : *default-environment
+    volumes:
+      - ../../openslides-auth-service/auth/src:/app/src
+      - ../../openslides-auth-service/auth/libraries:/app/libraries
+      - ../../openslides-auth-service/auth/test:/app/test
+    ports:
+      - "9004:9004"
