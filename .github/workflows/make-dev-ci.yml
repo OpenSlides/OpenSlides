@@ -30,21 +30,21 @@ jobs:
           make dev-detached
 
       - name: Wait for client to be ready
-          run: |
-            echo "Waiting for client logs..."
-            for i in $(seq 1 20); do
-              LOG_OUTPUT="$(make dev-log client)"
-              if [ ${#LOG_OUTPUT} -gt 500 ]; then
-                echo "Client is ready!"
-                exit 0
-              fi
-              echo "Attempt $i/20 - waiting 5s..."
-              sleep 5
-            done
-            make dev-log
-            docker compose ps
-            echo "Couldn't verify if client is ready."
-            echo "Possible erroneous state will be uncovered in the next step."
+        run: |
+          echo "Waiting for client logs..."
+          for i in $(seq 1 20); do
+            LOG_OUTPUT="$(make dev-log client)"
+            if [ ${#LOG_OUTPUT} -gt 500 ]; then
+              echo "Client is ready!"
+              exit 0
+            fi
+            echo "Attempt $i/20 - waiting 5s..."
+            sleep 5
+          done
+          make dev-log
+          docker compose ps
+          echo "Couldn't verify if client is ready."
+          echo "Possible erroneous state will be uncovered in the next step."
 
       - name: Make Dev Exec Client
         env:
