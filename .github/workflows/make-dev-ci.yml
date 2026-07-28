@@ -1,0 +1,76 @@
+name: Runs and tests various make dev targets
+on: [pull_request]
+
+jobs:
+  run-tests:
+    name: 'Runs make dev targets'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v7
+        with:
+          submodules: recursive
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          version: latest
+
+      - name: Make Dev Build
+        env:
+          BATCH_MODE: 1
+        run: |
+          make dev-build no-cache
+
+      - name: Make Dev Detached
+        env:
+          BATCH_MODE: 1
+        run: |
+          make dev-detached
+
+      - name: Wait for client to be ready
+          run: |
+            echo "Waiting for client logs..."
+            for i in $(seq 1 60); do
+              LOG_OUTPUT="$(make dev-log client)"
+              if [ ${#LOG_OUTPUT} -gt 500 ]; then
+                echo "Client is ready!"
+                exit 0
+              fi
+              echo "Attempt $i/60 - waiting 5s..."
+              sleep 5
+            done
+            echo "Client failed to become ready"
+            make dev-log
+            docker compose ps
+            exit 1
+
+      - name: Make Dev Exec Backend
+        env:
+          BATCH_MODE: 1
+        run: |
+          make dev-exec backend EXEC_COMMAND="ls -a"
+
+      - name: Make Dev Log
+        env:
+          BATCH_MODE: 1
+        run: |
+          make dev-log
+
+      - name: Make Dev Log Backend
+        env:
+          BATCH_MODE: 1
+        run: |
+          make dev-log backend
+
+      - name: Make Full Reset
+        env:
+          BATCH_MODE: 1
+        run: |
+          make dev-full-reset
+
+      - name: Make Dev Stop
+        env:
+          BATCH_MODE: 1
+        run: |
+          make dev-stop
