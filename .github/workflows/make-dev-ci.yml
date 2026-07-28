@@ -68,7 +68,8 @@ jobs:
         env:
           BATCH_MODE: 1
         run: |
-          make dev-full-restart
+          make dev-full-restart &
+          sleep 30
 
       - name: Make Dev Stop
         env:
