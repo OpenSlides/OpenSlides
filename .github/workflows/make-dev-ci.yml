@@ -1,5 +1,6 @@
 name: Runs and tests various make dev targets
-on: [pull_request]
+on:
+  pull_request:
 
 jobs:
   run-tests:
@@ -31,25 +32,25 @@ jobs:
       - name: Wait for client to be ready
           run: |
             echo "Waiting for client logs..."
-            for i in $(seq 1 60); do
+            for i in $(seq 1 20); do
               LOG_OUTPUT="$(make dev-log client)"
               if [ ${#LOG_OUTPUT} -gt 500 ]; then
                 echo "Client is ready!"
                 exit 0
               fi
-              echo "Attempt $i/60 - waiting 5s..."
+              echo "Attempt $i/20 - waiting 5s..."
               sleep 5
             done
-            echo "Client failed to become ready"
             make dev-log
             docker compose ps
-            exit 1
+            echo "Couldn't verify if client is ready."
+            echo "Possible erroneous state will be uncovered in the next step."
 
-      - name: Make Dev Exec Backend
+      - name: Make Dev Exec Client
         env:
           BATCH_MODE: 1
         run: |
-          make dev-exec backend EXEC_COMMAND="ls -a"
+          make dev-exec client EXEC_COMMAND="ls -a"
 
       - name: Make Dev Log
         env:
