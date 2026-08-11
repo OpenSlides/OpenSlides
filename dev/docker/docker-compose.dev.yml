@@ -284,7 +284,7 @@ services:
     restart: "no"
 
   zitadel-init:
-    image: ghcr.io/zitadel/zitadel:v4.16.1
+    image: ghcr.io/zitadel/zitadel:v4.16.3
     command: ["init", "schema"]
     env_file: ../../openslides-idp-service/zitadel/default.env
     depends_on:
@@ -292,7 +292,7 @@ services:
         condition: service_healthy
 
   zitadel-setup:
-    image: ghcr.io/zitadel/zitadel:v4.16.1
+    image: ghcr.io/zitadel/zitadel:v4.16.3
     command: ["setup", "--masterkeyFromEnv"]
     user: "0"
     environment:
@@ -307,7 +307,7 @@ services:
         condition: service_completed_successfully
 
   zitadel-api:
-    image: ghcr.io/zitadel/zitadel:v4.16.1
+    image: ghcr.io/zitadel/zitadel:v4.16.3
     command: ["start", "--masterkeyFromEnv"]
     environment:
       << : [*default-environment]
@@ -321,8 +321,6 @@ services:
       timeout: 30s
       retries: 12
       start_period: 20s
-    volumes:
-      - ../../openslides-idp-service/zitadel-bootstrap:/zitadel/bootstrap:ro
     depends_on:
       zitadel-setup:
         condition: service_completed_successfully
@@ -330,7 +328,7 @@ services:
       - "8080:8080"
 
   zitadel-login:
-    image: ghcr.io/zitadel/zitadel-login:v4.16.1
+    image: ghcr.io/zitadel/zitadel-login:v4.16.3
     restart: unless-stopped
     user: "0"
     environment:
