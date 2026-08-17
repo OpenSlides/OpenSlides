@@ -110,10 +110,10 @@ copy-translations:
 # IDP
 
 migrate-users-to-idp:
-	make dev-exec EXEC_COMMAND="backend make migrate-users-to-idp"
+	make dev-exec backend EXEC_COMMAND="make migrate-users-to-idp"
 
 run-psql:
-	@make dev-exec EXEC_COMMAND="backend make run-psql"
+	@make dev-exec backend EXEC_COMMAND="make run-psql"
 
 ########################## Deprecation List ##########################
 
