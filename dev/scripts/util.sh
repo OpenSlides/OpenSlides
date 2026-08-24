@@ -89,10 +89,10 @@ set_remote() {
 # as if executed directly.
 echocmd() {
   (
-  echo "${COL_BLUE}$ $@${COL_NORMAL}" >&2
-  if [ -n "$DEBUG_DRY_RUN" ]; then return 0; fi
-  "$@"
-  return $?
+    echo "${COL_BLUE}$ $@${COL_NORMAL}" >&2
+    if [ -n "$DEBUG_DRY_RUN" ]; then return 0; fi
+    "$@"
+    return $?
   )
 }
 
@@ -261,107 +261,4 @@ check_go_consistency() {
   done <<< "$(git submodule foreach -q 'echo "$name $sm_path"')"
 
   return $ret_code
-}
-
-capsule_clear_console()
-{
-    local LINE_COUNT=$1
-    for _ in $(seq 1 "$LINE_COUNT"); do
-        tput el
-        echo ""
-    done
-    tput cuu "$LINE_COUNT"
-}
-
-capsule_error()
-{
-    local PROCESS_ID=$1
-    local LOG=$2
-    local LINE_COUNT=$3
-    if [ -n "$PROCESS_ID" ] && kill -0 "$PROCESS_ID" 2>/dev/null; then
-        kill "$PROCESS_ID" 2>/dev/null
-        wait "$PROCESS_ID"
-    fi
-
-    rm -f "$LOG"
-    printf "\033[?25h" # Show Cursor
-    exit 1
-}
-
-capsule()
-{
-  # Print command
-  (
-    IFS=$' '
-    echo "${COL_BLUE}$ $*${COL_NORMAL}" >&2
-  )
-
-  # Setup
-  LOG=$(mktemp)
-  LINE_COUNT=15
-  CLEAR_COUNT=$((LINE_COUNT + 10))
-
-  printf "\033[?25l" # Hide Cursor
-
-  # Safe Exit
-  trap 'tput rc && capsule_clear_console "$CLEAR_COUNT" && capsule_error "$PROCESS_ID" "$LOG" "$CLEAR_COUNT"' INT TERM
-
-  # Reserve Console lines
-  for _ in $(seq 1 "$CLEAR_COUNT"); do
-    echo ""
-  done
-  tput cuu "$CLEAR_COUNT"
-  tput sc
-
-  # Run build in background and log output
-  $* > "$LOG" 2>&1 &
-
-  PROCESS_ID=$!
-
-  # Pipe output of process to user console continuously
-  while ps -p "$PROCESS_ID" >/dev/null; do
-      # Return cursor
-      tput rc
-
-      # Get outpute lines
-      mapfile -t lines < <(tail -n "$LINE_COUNT" "$LOG")
-
-      # Print empty or log lines
-      for ((i = 0; i < "$CLEAR_COUNT"; i++)); do
-          tput el
-
-          if (( LINE_COUNT >= CLEAR_COUNT )); then echo "" && continue; fi
-
-          if [ "$i" -lt ${#lines[@]} ]
-          then
-              echo "${lines[$i]}"
-          else
-              echo ""
-          fi
-      done
-
-      sleep 0.25
-  done
-
-  # Wait for process to finish
-  wait "$PROCESS_ID"
-  EXIT_CODE="$?"
-
-  # Clear progress
-  tput rc
-  capsule_clear_console "$CLEAR_COUNT"
-
-  # Printe entire output on error
-  if [ $EXIT_CODE != 0 ]
-  then
-      error "Command '$*' failed!"
-      cat "$LOG"
-  fi
-
-  # Delete log file
-  rm -f "$LOG"
-
-  printf "\033[?25h" # Show Cursor
-
-  return "$EXIT_CODE"
 }
