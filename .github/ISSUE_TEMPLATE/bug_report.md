@@ -1,9 +1,10 @@
 ---
 name: Bug report
 about: Create a report to help us improve OpenSlides
-title: ""
-labels: bug
-assignees: ""
+title: ''
+labels: bug, feature
+assignees: ''
+
 ---
 
 **Describe the bug**
