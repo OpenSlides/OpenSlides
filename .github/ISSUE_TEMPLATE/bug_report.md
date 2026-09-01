@@ -38,7 +38,7 @@ A clear and concise description of what you expected to happen.
 - Browser: [e.g. Chrome, Firefox, Opera, Ege, Safari]
 - Browser version: [e.g. 22]
 
-**Additional contex (optional, remove if empty)**
+**Additional context (optional, remove if empty)**
 Add any other information to comprehend your problem.
 
 **Screenshots (optional, remove if empty)**
