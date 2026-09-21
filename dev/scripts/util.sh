@@ -65,7 +65,11 @@ ask() {
 }
 
 input(){
-  read -rp $'\n'"$* $REPLY_OPT: "
+  if [ -z "$BATCH_MODE" ]
+  then
+    read -rp $'\n'"$* $REPLY_OPT: "
+  fi
+
   case "$REPLY" in
     "") shift ;;
     *) echo "$REPLY" ;;
