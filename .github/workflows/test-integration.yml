@@ -13,28 +13,20 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Build osmanage binary and copy compose template
-        run: |
-          make -C openslides-cli osmanage
-          mv -f openslides-cli/osmanage dev/localprod/osmanage
-          cp -f openslides-cli/contrib/docker-compose.yml.tmpl dev/localprod/docker-compose.yml.tmpl
-
-      - name: Use example data instead of initial data
-        working-directory: "./openslides-backend/data/"
-        run: cp example-data.json initial-data.json
-
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v3
         with:
           version: latest
 
+      - name: Build osmanage binary and copy compose template
+        run: make localprod-build-local-manage
+
+      - name: Use example data instead of initial data
+        working-directory: "./openslides-backend/data/"
+        run: cp example-data.json initial-data.json
+
       - name: Start setup
-        working-directory: "./dev/localprod"
-        run: |
-          ./setup.sh
-          echo -n "admin" > secrets/superadmin
-          docker compose build --parallel
-          docker compose up -d
+        run: make localprod-detached
 
       - name: Wait for dev setup
         uses: iFaxity/wait-on-action@v1.1.0
@@ -74,5 +66,4 @@ jobs:
 
       - name: Shut down setup
         if: always()
-        working-directory: "./dev/localprod"
-        run: docker compose down --volumes --remove-orphans
+        run: make localprod-stop

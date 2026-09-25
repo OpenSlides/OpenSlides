@@ -25,6 +25,7 @@ info "Entering $OS_LOCALPROD_PATH and executing setup.sh"
 (
   cd "$OS_LOCALPROD_PATH"
   ./setup.sh
+  echo -n "admin" > secrets/superadmin
 )
 
 info "Done"
