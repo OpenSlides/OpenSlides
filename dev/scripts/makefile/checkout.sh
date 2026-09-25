@@ -207,7 +207,7 @@ checkout() {
             if [ "$AUTO_MAIN_FALLBACK" == 0 ]
             then
                 # shellcheck disable=SC2086
-                CHECKOUT_MAIN=$(ask ${FALLBACK_MAIN_BRANCH_DEFAULT:-y}o "$SUBMODULE does not have a branch named $SOURCE/$BRANCH. Type y to checkout upstream/main instead. Type n to remain in current branch." </dev/tty)
+                CHECKOUT_MAIN=$(ask ${FALLBACK_MAIN_BRANCH_DEFAULT:-y}o "$SUBMODULE does not have a branch named $SOURCE/$BRANCH. Type y to checkout $SOURCE/main instead. Type n to remain in current branch." </dev/tty)
             else
                 CHECKOUT_MAIN=0
             fi
