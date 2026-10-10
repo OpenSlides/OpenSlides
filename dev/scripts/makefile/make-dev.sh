@@ -24,18 +24,19 @@ Environment Variables (can be set when invoking make target):
     SERVICE_COMPOSE_SETUP    : Specifies a service whose docker compose setup should be used instead of the main repositories docker compose setup
     EXEC_COMMAND             : Specifies the command which is executed with the dev-exec operation
 
-Example: make   dev-exec    auth     SERVICE_COMPOSE_SETUP=backend   EXEC_COMMAND='ls'
-                   ^          ^               ^                              ^
-                Param #1   Param #2      Env Variable                   Env Variable
-    ( This executes 'ls' in a auth-container created and maintained by a running backend compose setup )
+Example: make   dev-exec    auth     SERVICE_COMPOSE_SETUP=backend   EXEC_COMMAND='ls'   debug-dry-run
+                   ^          ^               ^                              ^                ^
+                Param #1   Param #2      Env Variable                   Env Variable      Long Flag
+    ( This executes 'ls' in a auth-container created and maintained by a running backend compose setup.
+      Because of the 'debug-dry-run' long flag, a dry run is executed. )
 
 Long Flags:
     no-cache             : Prevents use of cache when building docker images
-    compose-local-branch : Compose setups pull service images from the main branch by default.
-                           When 'compose-local-branch' is set to true, the checked out branch of the service will be pulled instead.
+    compose-adapt-branch : Compose setups pull service images from the main branch by default.
+                           When 'compose-adapt-branch' is set to true, the checked out branch of the service will be pulled instead.
                            Example: Backend-Service is locally checked-out to 'feature/xyz'.
                            Its dev compose setup pulls 'auth' from github by referencing 'openslides-auth-service.git#main'.
-                           If 'compose-local-branch' is set to true, the path 'openslides-auth-service.git#feature/xyz' will be used instead.
+                           If 'compose-adapt-branch' is set to true, the path 'openslides-auth-service.git#feature/xyz' will be used instead.
     no-log-prefix        : When printing container logs, the associated container name is omitted
     debug-dry-run        : Prints all commands that would run but prevents their actual execution
 
@@ -43,7 +44,10 @@ Available dev operations:
     dev              : Builds and starts development images.
     dev-help         : Print help.
     dev-detached     : Builds and starts development images with detach flag. This causes started containers to run in the background.
-    dev-attached     : Builds and starts development images; enters shell of started image.
+    dev-attached     : Builds and starts development images; enters shell of started container.
+                          If a docker compose file is declared, the CONTAINER parameter determines
+                          the specific container id you will enter (default value is equal the service name)
+    dev-transient   : Builds and starts development images; enters shell of started container. Stops any currently runnign containers after exiting shell
                           If a docker compose file is declared, the CONTAINER parameter determines
                           the specific container id you will enter (default value is equal the service name)
     dev-restart      : Restarts all containers. If CONTAINER is set, only the specified service will be restarted
@@ -57,6 +61,7 @@ Available dev operations:
                           If a docker compose file is declared, the CONTAINER parameter determines
                           the specific container id you will enter (default value is equal the service name).
     dev-build        : Builds all images. If CONTAINER is set, only the image for the specified container will be build
+    dev-db           : Special exec command that starts an interactive postgres session
     dev-log          : Prints docker compose log output. If CONTAINER is set, only the specified container will be logged
     dev-log-attach   : Prints docker compose log output and attaches console to the containers log output feed.
                        If CONTAINER is set, only the specified container will be logged
@@ -260,6 +265,7 @@ exec_func()
 {
     local TARGET_CONTAINER="$CONTAINER"
     local FUNC=$EXEC_COMMAND
+    local PAGER_VALUE="$1"
 
     # Special case: A submodules docker compose setup is used and no specific container has been declared.
     # Example: "Calling 'make dev-exec' while in ./openslides-backend"
@@ -286,11 +292,11 @@ exec_func()
     then
         # Compose
         # shellcheck disable=SC2086
-        echocmd docker compose -f "${COMPOSE_FILE}" exec "${TARGET_CONTAINER}" ${FUNC}
+        echocmd docker compose -f "${COMPOSE_FILE}" exec -e PAGER="$PAGER_VALUE" "${TARGET_CONTAINER}" ${FUNC}
     else
         # Single Container
         # shellcheck disable=SC2086
-        echocmd docker exec "$CONTAINER_TAG" $FUNC
+        echocmd docker exec -e PAGER="$PAGER_VALUE" "$CONTAINER_TAG" $FUNC
     fi
 }
 
@@ -336,6 +342,8 @@ log()
                 # shellcheck disable=SC2086
                 echocmd docker compose -f "$COMPOSE_FILE" logs ${LOG_PREFIX} ${CONNECT_FLAG}
                 exit 0
+            else
+                CONTAINER_LIST+=("$TARGET_CONTAINER")
             fi
         else
             # Submodule case
@@ -343,7 +351,7 @@ log()
         fi
 
         # shellcheck disable=SC2086
-        echocmd docker compose -f "$COMPOSE_FILE" logs ${TARGET_CONTAINER} ${LOG_PREFIX} ${CONNECT_FLAG}
+        echocmd docker compose -f "$COMPOSE_FILE" logs ${CONTAINER_LIST[@]} ${LOG_PREFIX} ${CONNECT_FLAG}
     else
         # Single Container
 
@@ -364,14 +372,15 @@ CONTAINER=$2
 # Extract flags here
 TEMP_SERVICE=$CONTAINER
 CONTAINER=""
+CONTAINER_LIST=()
 # shellcheck disable=SC2034
 for CMD in $TEMP_SERVICE; do
     case "$CMD" in
         "no-cache")      NO_CACHE=true ;;
-        "compose-local-branch") USE_LOCAL_BRANCH_FOR_COMPOSE=true ;;
+        "compose-adapt-branch") ADAPT_BRANCH_FOR_COMPOSE=true ;;
         "no-log-prefix") LOG_PREFIX="--no-log-prefix" ;;
         "debug-dry-run") DEBUG_DRY_RUN=1 ;;
-        *)               CONTAINER="$CMD" ;;
+        *)               CONTAINER="$CMD" && CONTAINER_LIST+=("$CMD");;
     esac
 done
 
@@ -420,14 +429,14 @@ else info "Running $FUNCTION"; fi
 
 # Compose dev branch checkout
 export COMPOSE_REFERENCE_BRANCH="main"
-if [ -n "$USE_LOCAL_BRANCH_FOR_COMPOSE" ]
+if [ -n "$ADAPT_BRANCH_FOR_COMPOSE" ]
 then
     if [ -n "$SERVICE_COMPOSE_SETUP" ]
     then
         if [ -z "$SERVICE_FOLDER" ]
         then
             error "No folder found for service '$CONTAINER'. Please check if the \$CONTAINER parameter has been properly set and refers to an existing service."
-            warn "'compose-local-branch' only works for submodule services, not for main!"
+            warn "'compose-adapt-branch' only works for submodule services, not for main!"
             exit 1
         fi
         COMPOSE_REFERENCE_BRANCH=$(git -C "$SERVICE_FOLDER" branch --show-current)
@@ -449,6 +458,7 @@ case "$FUNCTION" in
     "help")             help ;;
     "detached")         build && run "-d" && info "Containers started" ;;
     "attached")         build && run "-d" && attach ;;
+    "transient")       build && run "-d" && attach && stop ;;
     "full-restart")     stop && build && run ;;
     "restart")          restart ;;
     "stop")             stop ;;
@@ -456,6 +466,7 @@ case "$FUNCTION" in
     "exec")             exec_func ;;
     "enter")            attach ;;
     "build")            build ;;
+    "db")               CONTAINER="postgres" && EXEC_COMMAND="psql -U openslides" && exec_func "less -S";;
     "log")              log ;;
     "log-attach")       log 1 ;;
     "docker-reset")     docker_reset ;;

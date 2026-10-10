@@ -29,7 +29,20 @@ if [ -f  "$BRANCH_FILE_PATH/$BRANCH_FILE" ]; then info "Reading commit info from
 usage() {
   echo "\
 
-   ** Bash command structure: $(basename "$0") [REMOTE_NAME:upstream] [BRANCH_NAME:main] [BRANCH_FILE] {-p -l -a -m -u -g}
+   Calling checkout as a make target has a different parameter structure than calling it as a bash file
+
+
+   --> Bash command structure: $(basename "$0") [REMOTE_NAME:upstream] [BRANCH_NAME:main] [BRANCH_FILE:''] {-p -l -a -m -u -g}
+
+   --> Make target structure: make checkout REMOTE= BRANCH= FILE= PULL= LATEST= AUTO_FALLBACK= ALWAYS_MAIN= USE_HTTPS= GO_UPDATE=
+
+   All bash parameters and flags have a respective environment variable for the make target. They map as follows:
+   REMOTE is a shorthand for REMOTE_NAME, BRANCH for BRANCH_NAME, FILE for BRANCH_FILE, PULL for the -p flag, LATEST for -l,
+       AUTO_FALLBACK for -a, ALWAYS_MAIN for -m, USE_HTTPS for -u and GO_UPDATE for -g
+   For parameters representing flags, set their value to anything other than 0 to 'set' the flag
+
+
+   ### Parameters:
 
    By default $(basename "$0") will fetch the latest changes for every submodule and directly check out
    the REMOTE_NAME's BRANCH_NAME branch. This will leave them in a detached HEAD state.
@@ -59,15 +72,6 @@ usage() {
       CHECKOUT_MAIN_REPO_DEFAULT: (y/n) Whether to check out the main repository (default y)
 
    # All variables are optional! #
-
-
-   ** Make target structure: make checkout REMOTE= BRANCH= FILE= PULL= LATEST= AUTO_FALLBACK= ALWAYS_MAIN= USE_HTTPS= GO_UPDATE=
-
-   REMOTE is a shorthand for REMOTE_NAME, BRANCH for BRANCH_NAME, FILE for BRANCH_FILE, PULL for the -p flag, LATEST for -l,
-       AUTO_FALLBACK for -a, ALWAYS_MAIN for -m, USE_HTTPS for -u and GO_UPDATE for -g
-   For parameters representing flags, set their value to anything other than 0 to 'activate' the flag
-
-   The rest is identical to the bash-section
    "
 }
 
@@ -111,6 +115,8 @@ checkout() {
         local SOURCE=${3:-upstream}
         local BRANCH=${4:-main}
         local HASH=$5
+
+        local GIT_REMOTE_NOT_FOUND_ERR=0
 
         # Read from Branch File, if it exists
         if [[ -e "$BRANCH_FILE_PATH/$BRANCH_FILE" && ! -d "$BRANCH_FILE_PATH/$BRANCH_FILE" ]]
@@ -192,6 +198,16 @@ checkout() {
         else
             SOURCE=$(set_remote "upstream" "origin")
             echocmd git remote set-url "$SOURCE" "${CLONE_BASE}OpenSlides/${SUBMODULE}".git
+        fi
+
+        # Check if remote exists
+        GIT_REMOTE_NOT_FOUND_ERR=0
+        git ls-remote "$SOURCE" &>/dev/null || GIT_REMOTE_NOT_FOUND_ERR=1
+        if [ "$GIT_REMOTE_NOT_FOUND_ERR" == 1 ]
+        then
+            error "Remote $SOURCE does not exist"
+            git remote remove "$SOURCE"
+            exit 0
         fi
 
         # Fetch
