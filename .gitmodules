@@ -43,5 +43,5 @@
 	url = https://github.com/OpenSlides/openslides-cli.git
 [submodule "openslides-idp-service"]
 	path = openslides-idp-service
-	url = git@github.com:OpenSlides/openslides-idp-service.git
+	url = https://github.com/OpenSlides/openslides-idp-service.git
 	branch = main
