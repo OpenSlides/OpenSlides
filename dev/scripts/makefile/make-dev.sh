@@ -327,7 +327,7 @@ log()
     then
         if [ -z "$TARGET_CONTAINER" ]
         then
-            # Main repository case, use input prompt to determine container
+            # No container specified; ask instead
             TARGET_CONTAINER=$(input "Enter container name if you want logs of a specific container. Leave empty to receive logs from every container")
 
             if [ -z "$TARGET_CONTAINER" ]
@@ -338,8 +338,8 @@ log()
                 exit 0
             fi
         else
-            # Submodule case
-            info "No container was specified; Service container will be taken as default"
+            # Container specified
+            info "Logging container $TARGET_CONTAINER"
         fi
 
         # shellcheck disable=SC2086
