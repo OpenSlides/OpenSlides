@@ -27,44 +27,47 @@ fi
 if [ -f  "$BRANCH_FILE_PATH/$BRANCH_FILE" ]; then info "Reading commit info from $BRANCH_FILE"; fi
 
 usage() {
-  info "\
+  echo "\
 
-   USAGE BASH: $(basename "$0") [REMOTE_NAME:upstream] [BRANCH_NAME:main] [BRANCH_FILE] {-p -l}
+   ** Bash command structure: $(basename "$0") [REMOTE_NAME:upstream] [BRANCH_NAME:main] [BRANCH_FILE] {-p -l -a -m -u -g}
 
-   By default $(basename "$0") will fetch the latest changes for every
-   submodule and directly checkout the $REMOTE_NAME's $BRANCH_NAME branch.
-   This will leave them in detached HEAD state.
+   By default $(basename "$0") will fetch the latest changes for every submodule and directly check out
+   the REMOTE_NAME's BRANCH_NAME branch. This will leave them in a detached HEAD state.
 
-   Specify a branch layout file using BRANCH_FILE. Submodules will use values
-   from this file to derive branch, remote and commit hash information
-   The lines in this file have must have the following structure:
+   Specify a branch layout file using BRANCH_FILE. Submodules will use values from this file to derive branch,
+   remote and commit hash information. The lines in this file must have the following structure:
 
             [  module             remote     branch      commit_hash ]
 
-   Example: [openslides-backend  upstream  feature/xyz        ""     ]
-            (see dev/scripts/makefile/checkout_example_file for more)
+   Example: [openslides-backend  upstream  feature/xyz        ''     ]
+            (see dev/scripts/makefile/checkout_example_file for an example)
 
-   Use -p or --pull to instead forward the local $BRANCH_NAME branch.
+   Use -p or --pull to forward the local BRANCH_NAME branch. This will switch to the actual branch and not cause
+      a detached HEAD state
    Use -l or --latest to ignore specific commit hashes and instead pull the latest commit.
-   Use -a or --auto_fallback to automatically fallback to main if a branch can not be found, skipping the
-      input prompt that would otherwise be called
-   Use -m or --always_checkout_main_repo to automatically checkout the main repository, skipping the input prompt that would otherwise be called
+   Use -a or --auto_fallback to automatically fall back to main if a branch can not be found, skipping the
+      input prompt that would otherwise be initiated
+   Use -m or --always_checkout_main_repo to automatically check out the main repository, skipping the input prompt that would
+      otherwise be initiated
    Use -u or --use_https to use the HTTPS address of OpenSlides repository instead of SSH
-   Use -g or --go_update to automatically update go.mod of all submodules to match the checked out openslides-go version.
-
-   USAGE MAKE: make checkout REMOTE= BRANCH= FILE= PULL= LATEST= AUTO_FALLBACK= ALWAYS_MAIN= USE_HTTPS= GO_UPDATE=
-
-   REMOTE is a shorthand for REMOTE_NAME, BRANCH is for BRANCH_NAME, FILE for BRANCH_FILE, PULL for -p Flag, LATEST for -l,
-       AUTO_FALLBACK for -a, ALWAYS_MAIN for -m, USE_HTTPS for -u and GO_UPDATE for -g
-   For parameters representing flags, set their value to anything other than 0 to 'set' the flag
+   Use -g or --go_update to automatically update go.mod in all submodules to match the checked out openslides-go version.
 
    For batch / cli operations the following environment variables may also be set to the default answer for interactive asks
    Set BATCH_MODE=1 to accept defaults non-interactively
 
-      FALLBACK_MAIN_BRANCH_DEFAULT: (y/n) Whether to use upstream/main as a fallback branch or skip the submodule (default y)
-      CHECKOUT_MAIN_REPO_DEFAULT: (y/n) Whether to checkout the main repository (default y)
+      FALLBACK_MAIN_BRANCH_DEFAULT: (y/n) Whether to use upstream/main as a fall back branch or skip the submodule (default y)
+      CHECKOUT_MAIN_REPO_DEFAULT: (y/n) Whether to check out the main repository (default y)
 
-   All variables are optional
+   # All variables are optional! #
+
+
+   ** Make target structure: make checkout REMOTE= BRANCH= FILE= PULL= LATEST= AUTO_FALLBACK= ALWAYS_MAIN= USE_HTTPS= GO_UPDATE=
+
+   REMOTE is a shorthand for REMOTE_NAME, BRANCH for BRANCH_NAME, FILE for BRANCH_FILE, PULL for the -p flag, LATEST for -l,
+       AUTO_FALLBACK for -a, ALWAYS_MAIN for -m, USE_HTTPS for -u and GO_UPDATE for -g
+   For parameters representing flags, set their value to anything other than 0 to 'activate' the flag
+
+   The rest is identical to the bash-section
    "
 }
 
