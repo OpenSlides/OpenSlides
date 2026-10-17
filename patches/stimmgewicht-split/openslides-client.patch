@@ -1,5 +1,118 @@
+diff --git a/client/src/app/site/pages/meetings/modules/poll/components/base-poll-vote/base-poll-vote-split.spec.ts b/client/src/app/site/pages/meetings/modules/poll/components/base-poll-vote/base-poll-vote-split.spec.ts
+new file mode 100644
+index 000000000..b10ced4b3
+--- /dev/null
++++ b/client/src/app/site/pages/meetings/modules/poll/components/base-poll-vote/base-poll-vote-split.spec.ts
+@@ -0,0 +1,107 @@
++// Loads the repositories first to avoid an import cycle when this spec runs alone.
++import '@app/site/modules/wait-for-action-dialog/services/wait-for-action-dialog.service';
++
++import { PollType } from '@app/domain/models/poll';
++
++import { BasePollVoteComponent, SplitBallot } from './base-poll-vote.component';
++
++/**
++ * Tests the split vote logic without rendering the component.
++ */
++describe(`BasePollVoteComponent split votes`, () => {
++    const proto = BasePollVoteComponent.prototype as any;
++    let ctx: any;
++    let sent: any;
++    const user = { id: 7, default_vote_weight: 4, getMeetingUser: (): any => ({ vote_weight: 4 }) };
++
++    beforeEach(() => {
++        sent = undefined;
++        ctx = Object.create(proto);
++        Object.assign(ctx, {
++            _poll: {
++                isAssignmentPoll: true,
++                isMethodY: true,
++                isMethodN: false,
++                type: PollType.Named,
++                max_votes_amount: 2,
++                max_votes_per_option: 1,
++                min_votes_amount: 1,
++                option_ids: [1, 2, 3],
++                meeting_id: 1
++            },
++            voteWeightEnabled: true,
++            splitBallots: {},
++            deliveringVote: {},
++            user,
++            cd: { markForCheck: (): void => {} },
++            translate: { instant: (s: string): string => s },
++            raiseError: jasmine.createSpy(`raiseError`),
++            splitVotePrompt: { open: async (): Promise<boolean> => true },
++            sendVote: async (_id: number, payload: any): Promise<void> => {
++                sent = payload;
++            }
++        });
++    });
++
++    it(`is only offered in elections`, () => {
++        expect(ctx.canSplitVote(user)).toBeTrue();
++        ctx.poll.isAssignmentPoll = false;
++        expect(ctx.canSplitVote(user)).toBeFalse();
++    });
++
++    it(`is not offered with a single vote`, () => {
++        const single = { ...user, getMeetingUser: (): any => ({ vote_weight: 1 }) };
++        expect(ctx.canSplitVote(single)).toBeFalse();
++    });
++
++    it(`creates one ballot per vote`, () => {
++        ctx.toggleSplitVote(user);
++        expect(ctx.getSplitBallots(user).length).toBe(4);
++    });
++
++    it(`respects the maximum votes per ballot`, () => {
++        ctx.toggleSplitVote(user);
++        const ballot: SplitBallot = ctx.getSplitBallots(user)[0];
++        ctx.toggleBallotOption(ballot, 1, `Y`);
++        ctx.toggleBallotOption(ballot, 2, `Y`);
++        ctx.toggleBallotOption(ballot, 3, `Y`);
++        expect(ballot.options).toEqual({ 1: 1, 2: 1 });
++        expect(ctx.raiseError).toHaveBeenCalled();
++    });
++
++    it(`replaces candidates with a general abstention and back`, () => {
++        ctx.toggleSplitVote(user);
++        const ballot: SplitBallot = ctx.getSplitBallots(user)[0];
++        ctx.toggleBallotOption(ballot, 1, `Y`);
++        ctx.toggleBallotGlobal(ballot, `A`);
++        expect(ballot).toEqual({ options: {}, global: `A` });
++        ctx.toggleBallotOption(ballot, 2, `Y`);
++        expect(ballot.global).toBeUndefined();
++        expect(ballot.options).toEqual({ 2: 1 });
++    });
++
++    it(`sends only when every ballot is filled out and merges equal ballots`, async () => {
++        ctx.toggleSplitVote(user);
++        const [b1, b2, b3, b4] = ctx.getSplitBallots(user) as SplitBallot[];
++        ctx.toggleBallotOption(b1, 1, `Y`);
++        ctx.toggleBallotOption(b1, 2, `Y`);
++        ctx.toggleBallotOption(b2, 2, `Y`);
++        ctx.toggleBallotOption(b2, 1, `Y`);
++        ctx.toggleBallotGlobal(b3, `A`);
++        expect(ctx.isSplitVoteComplete(user)).toBeFalse();
++        await ctx.submitSplitVote(user);
++        expect(sent).toBeUndefined();
++
++        ctx.toggleBallotOption(b4, 3, `Y`);
++        expect(ctx.isSplitVoteComplete(user)).toBeTrue();
++        await ctx.submitSplitVote(user);
++        expect(sent).toEqual({
++            user_id: 7,
++            split: [
++                { weight: `2.000000`, value: { 1: 1, 2: 1 } },
++                { weight: `1.000000`, value: `A` },
++                { weight: `1.000000`, value: { 3: 1 } }
++            ]
++        });
++    });
++});
 diff --git a/client/src/app/site/pages/meetings/modules/poll/components/base-poll-vote/base-poll-vote.component.html b/client/src/app/site/pages/meetings/modules/poll/components/base-poll-vote/base-poll-vote.component.html
-index 596aeef03..aafb76d53 100644
+index 596aeef03..6182ba2ee 100644
 --- a/client/src/app/site/pages/meetings/modules/poll/components/base-poll-vote/base-poll-vote.component.html
 +++ b/client/src/app/site/pages/meetings/modules/poll/components/base-poll-vote/base-poll-vote.component.html
 @@ -41,334 +41,357 @@
@@ -275,7 +388,7 @@ index 596aeef03..aafb76d53 100644
 -                                        }
 -                                        @if (!option.content_object && !option.text) {
 -                                            <i>{{ noDataLabel | translate }}</i>
--                                        }
+                                         }
 -                                    </div>
 -                                }
 -                                @if (!settings.isSplitSingleOption && option.isListOption && !isMobile) {
@@ -284,7 +397,7 @@ index 596aeef03..aafb76d53 100644
 -                                            <span>
 -                                                <span>{{ option.content_object.getTitle() | translate }}</span>
 -                                            </span>
-                                         }
+-                                        }
 -                                    </div>
 -                                }
 -                                @if (!poll.max_votes_per_option || poll.max_votes_per_option <= 1) {
@@ -640,35 +753,74 @@ index 596aeef03..aafb76d53 100644
              }
          }
          <os-poll-cannot-vote-message
-@@ -396,3 +419,43 @@
+@@ -396,3 +419,82 @@
          </button>
      </div>
  </ng-template>
 +
 +<ng-template #splitVote let-delegation="delegation">
-+    <div class="split-vote">
-+        <p>
-+            {{ 'Distribute your vote weight between the options, like separate ballots.' | translate }}
-+        </p>
-+        @for (action of voteActions; track action.vote) {
-+            <mat-form-field class="split-vote-field">
-+                <mat-label>{{ action.label | translate }}</mat-label>
-+                <input
-+                    matInput
-+                    min="0"
-+                    step="1"
-+                    type="number"
-+                    [attr.aria-label]="action.label | translate"
-+                    [disabled]="isDeliveringVote(delegation)"
-+                    [value]="splitVoteAmounts[(delegation ?? user).id][action.vote] ?? 0"
-+                    (input)="setSplitVoteAmount(action.vote, $event, delegation)"
-+                />
-+            </mat-form-field>
++    <p class="split-vote-hint">
++        {{ 'You have one ballot per vote. Fill out each ballot.' | translate }}
++    </p>
++    <div class="split-ballots">
++        @for (ballot of getSplitBallots(delegation); track $index; let i = $index) {
++            <div class="split-ballot" [class.split-ballot-complete]="isBallotComplete(ballot)">
++                <div class="split-ballot-title">
++                    <b>{{ 'Ballot paper' | translate }} {{ i + 1 }}</b>
++                    @if (isBallotComplete(ballot)) {
++                        <mat-icon>check</mat-icon>
++                    }
++                </div>
++                @for (option of poll.options; track option.id) {
++                    <div class="split-ballot-option">
++                        <span>{{ getOptionLabel(option) }}</span>
++                        <span class="split-ballot-actions">
++                            @for (action of voteActions; track action.vote) {
++                                <button
++                                    mat-stroked-button
++                                    role="checkbox"
++                                    type="button"
++                                    [attr.aria-checked]="isBallotOptionSelected(ballot, option.id, action.vote!)"
++                                    [disabled]="isDeliveringVote(delegation)"
++                                    [ngClass]="
++                                        isBallotOptionSelected(ballot, option.id, action.vote!) ? action.css! : ''
++                                    "
++                                    (click)="toggleBallotOption(ballot, option.id, action.vote!)"
++                                >
++                                    @if (isBallotOptionSelected(ballot, option.id, action.vote!)) {
++                                        <mat-icon>check</mat-icon>
++                                    }
++                                    {{ action.label | translate }}
++                                </button>
++                            }
++                        </span>
++                    </div>
++                }
++                @for (action of globalVoteActions; track action.vote) {
++                    @if (!poll.isMethodN || action.vote !== 'Y') {
++                        <div class="split-ballot-option">
++                            <span>{{ getGlobalOptionName(action) | translate }}</span>
++                            <span class="split-ballot-actions">
++                                <button
++                                    mat-stroked-button
++                                    role="checkbox"
++                                    type="button"
++                                    [attr.aria-checked]="ballot.global === action.vote"
++                                    [disabled]="isDeliveringVote(delegation)"
++                                    [ngClass]="ballot.global === action.vote ? action.css! : ''"
++                                    (click)="toggleBallotGlobal(ballot, $any(action.vote))"
++                                >
++                                    @if (ballot.global === action.vote) {
++                                        <mat-icon>check</mat-icon>
++                                    }
++                                    {{ action.label | translate }}
++                                </button>
++                            </span>
++                        </div>
++                    }
++                }
++            </div>
 +        }
-+        <p class="split-vote-sum" [class.split-vote-sum-complete]="isSplitVoteComplete(delegation)">
-+            {{ 'Distributed' | translate }}:
-+            <b>{{ getSplitVoteSum(delegation) }} / {{ getVoteWeight(delegation) }}</b>
-+        </p>
 +    </div>
 +    <div class="centered-button-wrapper">
 +        <button
@@ -685,35 +837,61 @@ index 596aeef03..aafb76d53 100644
 +    </div>
 +</ng-template>
 diff --git a/client/src/app/site/pages/meetings/modules/poll/components/base-poll-vote/base-poll-vote.component.scss b/client/src/app/site/pages/meetings/modules/poll/components/base-poll-vote/base-poll-vote.component.scss
-index 29ea1d52f..4977fbe35 100644
+index 29ea1d52f..01b412b8f 100644
 --- a/client/src/app/site/pages/meetings/modules/poll/components/base-poll-vote/base-poll-vote.component.scss
 +++ b/client/src/app/site/pages/meetings/modules/poll/components/base-poll-vote/base-poll-vote.component.scss
-@@ -269,3 +269,23 @@
+@@ -269,3 +269,49 @@
  .text-right {
      text-align: right;
  }
 +
-+.split-vote {
-+    display: flex;
-+    flex-wrap: wrap;
-+    gap: 0 16px;
-+    justify-content: center;
++.split-vote-hint {
++    text-align: center;
++}
 +
-+    p {
-+        flex-basis: 100%;
-+        text-align: center;
++.split-ballots {
++    display: grid;
++    gap: 16px;
++    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
++    margin-bottom: 16px;
++}
++
++.split-ballot {
++    border: 1px solid var(--theme-border, rgba(0, 0, 0, 0.2));
++    border-radius: 8px;
++    padding: 12px;
++
++    &.split-ballot-complete {
++        border-color: var(--theme-green-500, green);
 +    }
 +
-+    .split-vote-field {
-+        width: 120px;
++    .split-ballot-title {
++        align-items: center;
++        display: flex;
++        justify-content: space-between;
++        margin-bottom: 8px;
 +    }
 +
-+    .split-vote-sum-complete b {
-+        color: var(--theme-green-500, green);
++    .split-ballot-option {
++        align-items: center;
++        display: flex;
++        gap: 8px;
++        justify-content: space-between;
++        padding: 4px 0;
++    }
++
++    .split-ballot-actions {
++        display: flex;
++        gap: 4px;
++
++        button[aria-checked='true'] {
++            border-color: currentColor;
++            font-weight: bold;
++        }
 +    }
 +}
 diff --git a/client/src/app/site/pages/meetings/modules/poll/components/base-poll-vote/base-poll-vote.component.ts b/client/src/app/site/pages/meetings/modules/poll/components/base-poll-vote/base-poll-vote.component.ts
-index 4f449d869..59431a4f8 100644
+index 4f449d869..fc04b6ca0 100644
 --- a/client/src/app/site/pages/meetings/modules/poll/components/base-poll-vote/base-poll-vote.component.ts
 +++ b/client/src/app/site/pages/meetings/modules/poll/components/base-poll-vote/base-poll-vote.component.ts
 @@ -17,6 +17,7 @@ import { ViewUser } from '@app/site/pages/meetings/view-models/view-user';
@@ -724,22 +902,43 @@ index 4f449d869..59431a4f8 100644
  import { _ } from '@ngx-translate/core';
  import { BehaviorSubject, combineLatest, debounceTime, distinctUntilChanged, Observable, Subscription } from 'rxjs';
  
-@@ -138,6 +139,14 @@ export abstract class BasePollVoteComponent<C extends PollContentObject = any> e
+@@ -30,6 +31,20 @@ export interface VoteOption {
+     label: string;
+ }
+ 
++/**
++ * One ballot of a user that splits their vote weight. Either some options are
++ * selected or a global vote is given.
++ */
++export interface SplitBallot {
++    options: Record<Id, VoteValue | 1>;
++    global?: GlobalVote;
++}
++
++/**
++ * The maximum amount of ballots a user can split their vote weight into.
++ */
++const MAX_SPLIT_BALLOTS = 10;
++
+ export interface PollVoteViewSettings {
+     hideLeftoverVotes?: boolean;
+     hideGlobalOptions?: boolean;
+@@ -138,6 +153,14 @@ export abstract class BasePollVoteComponent<C extends PollContentObject = any> e
      public forbidDelegationToVote: Observable<boolean> =
          this.meetingSettingsService.get(`users_forbid_delegator_to_vote`);
  
 +    /**
-+     * Amount of the vote weight that is given to each vote action, if the user
-+     * splits their vote weight.
++     * The ballots of each user, that splits their vote weight. Like on paper,
++     * a user gets one ballot per vote.
 +     */
-+    public splitVoteAmounts: Record<Id, Partial<Record<VoteValue, number>>> = {};
++    public splitBallots: Record<Id, SplitBallot[]> = {};
 +
 +    protected voteWeightEnabled = false;
 +
      protected voteRequestData: IdentifiedVotingData = {};
  
      protected alreadyVoted: Record<number, boolean> = {};
-@@ -152,6 +161,7 @@ export abstract class BasePollVoteComponent<C extends PollContentObject = any> e
+@@ -152,6 +175,7 @@ export abstract class BasePollVoteComponent<C extends PollContentObject = any> e
      private _canVoteForSubjectMap: Record<number, BehaviorSubject<boolean>> = {};
  
      private voteRepo = inject(VoteControllerService);
@@ -747,7 +946,7 @@ index 4f449d869..59431a4f8 100644
  
      protected votingService = inject(VotingService);
      protected cd = inject(ChangeDetectorRef);
-@@ -198,6 +208,10 @@ export abstract class BasePollVoteComponent<C extends PollContentObject = any> e
+@@ -198,6 +222,10 @@ export abstract class BasePollVoteComponent<C extends PollContentObject = any> e
              }),
              this.viewport.isMobileSubject.subscribe(() => {
                  this.cd.markForCheck();
@@ -758,7 +957,7 @@ index 4f449d869..59431a4f8 100644
              })
          );
      }
-@@ -364,6 +378,93 @@ export abstract class BasePollVoteComponent<C extends PollContentObject = any> e
+@@ -364,6 +392,137 @@ export abstract class BasePollVoteComponent<C extends PollContentObject = any> e
          }
      }
  
@@ -774,47 +973,89 @@ index 4f449d869..59431a4f8 100644
 +    }
 +
 +    /**
-+     * A user can split their vote weight between yes, no and abstain like they
-+     * could split their paper ballots. This is possible for polls with a single
-+     * option, if the user has more than one vote.
++     * In elections, a user with a vote weight of more than one gets one ballot
++     * per vote, like on paper, and can fill out each ballot differently.
 +     */
 +    public canSplitVote(user: ViewUser = this.user): boolean {
++        const weight = this.getVoteWeight(user);
 +        return (
++            this.poll.isAssignmentPoll &&
 +            this.poll.type !== PollType.Analog &&
-+            (this.poll.isMethodYN || this.poll.isMethodYNA) &&
-+            this.poll.option_ids?.length === 1 &&
-+            this.getVoteWeight(user) > 1
++            !(this.poll.max_votes_per_option > 1) &&
++            Number.isInteger(weight) &&
++            weight > 1 &&
++            weight <= MAX_SPLIT_BALLOTS
 +        );
 +    }
 +
 +    public isSplitVoteActive(user: ViewUser = this.user): boolean {
-+        return !!this.splitVoteAmounts[user?.id];
++        return !!this.splitBallots[user?.id];
 +    }
 +
 +    public toggleSplitVote(user: ViewUser = this.user): void {
 +        if (this.isSplitVoteActive(user)) {
-+            delete this.splitVoteAmounts[user.id];
++            delete this.splitBallots[user.id];
 +        } else {
-+            this.splitVoteAmounts[user.id] = {};
++            this.splitBallots[user.id] = Array.from({ length: this.getVoteWeight(user) }, () => ({ options: {} }));
 +        }
 +        this.cd.markForCheck();
 +    }
 +
-+    public setSplitVoteAmount(vote: VoteValue, event: any, user: ViewUser = this.user): void {
-+        const amount = Number(event.target.value);
-+        this.splitVoteAmounts[user.id][vote] = isNaN(amount) || amount < 0 ? 0 : amount;
++    public getSplitBallots(user: ViewUser = this.user): SplitBallot[] {
++        return this.splitBallots[user?.id] ?? [];
++    }
++
++    public getOptionLabel(option: ViewOption): string {
++        const contentObject = option.content_object as any;
++        return contentObject?.short_name ?? contentObject?.getTitle?.() ?? option.text ?? this.noDataLabel;
++    }
++
++    public isBallotOptionSelected(ballot: SplitBallot, optionId: Id, vote: VoteValue): boolean {
++        if (this.poll.isMethodY || this.poll.isMethodN) {
++            return !!ballot.options[optionId];
++        }
++        return ballot.options[optionId] === vote;
++    }
++
++    public toggleBallotOption(ballot: SplitBallot, optionId: Id, vote: VoteValue): void {
++        delete ballot.global;
++        const selected = this.isBallotOptionSelected(ballot, optionId, vote);
++        if (this.poll.isMethodY || this.poll.isMethodN) {
++            if (this.poll.max_votes_amount === 1) {
++                ballot.options = {};
++            } else if (!selected && this.getBallotVotesCount(ballot) >= this.poll.max_votes_amount) {
++                this.raiseError(
++                    this.translate.instant(`You reached the maximum amount of votes. Deselect somebody first.`)
++                );
++                return;
++            }
++        }
++        if (selected) {
++            delete ballot.options[optionId];
++        } else {
++            ballot.options[optionId] = this.poll.isMethodY || this.poll.isMethodN ? 1 : vote;
++        }
 +        this.cd.markForCheck();
 +    }
 +
-+    public getSplitVoteSum(user: ViewUser = this.user): number {
-+        return this.toMicroVotes(Object.values(this.splitVoteAmounts[user?.id] ?? {})) / 1e6;
++    public toggleBallotGlobal(ballot: SplitBallot, vote: GlobalVote): void {
++        ballot.options = {};
++        ballot.global = ballot.global === vote ? undefined : vote;
++        this.cd.markForCheck();
++    }
++
++    public isBallotComplete(ballot: SplitBallot): boolean {
++        if (ballot.global) {
++            return true;
++        }
++        const count = this.getBallotVotesCount(ballot);
++        const maxVotes = this.poll.max_votes_amount || this.poll.option_ids.length;
++        return count >= Math.max(this.minVotes, 1) && count <= maxVotes;
 +    }
 +
 +    public isSplitVoteComplete(user: ViewUser = this.user): boolean {
-+        return (
-+            this.toMicroVotes(Object.values(this.splitVoteAmounts[user?.id] ?? {})) ===
-+            this.toMicroVotes([this.getVoteWeight(user)])
-+        );
++        const ballots = this.getSplitBallots(user);
++        return !!ballots.length && ballots.every(ballot => this.isBallotComplete(ballot));
 +    }
 +
 +    public async submitSplitVote(user: ViewUser = this.user): Promise<void> {
@@ -822,13 +1063,19 @@ index 4f449d869..59431a4f8 100644
 +            return;
 +        }
 +
-+        const optionId = this.poll.option_ids[0];
-+        const split = Object.entries(this.splitVoteAmounts[user.id])
-+            .filter(([, amount]) => amount > 0)
-+            .map(([vote, amount]) => ({
-+                weight: (this.toMicroVotes([amount]) / 1e6).toFixed(6),
-+                value: { [optionId]: vote }
-+            }));
++        // Equal ballots are sent as one part with the summed up weight.
++        const parts = new Map<string, { weight: number; value: GlobalVote | Record<Id, VoteValue | 1> }>();
++        for (const ballot of this.getSplitBallots(user)) {
++            const value = ballot.global ?? ballot.options;
++            const key = JSON.stringify(ballot.global ?? Object.entries(ballot.options).sort());
++            const part = parts.get(key) ?? { weight: 0, value };
++            part.weight += 1;
++            parts.set(key, part);
++        }
++        const split = Array.from(parts.values()).map(part => ({
++            weight: part.weight.toFixed(6),
++            value: part.value
++        }));
 +
 +        const title = this.translate.instant(`Submit selection now?`);
 +        const content = this.translate.instant(`Your decision cannot be changed afterwards.`);
@@ -841,12 +1088,8 @@ index 4f449d869..59431a4f8 100644
 +        await this.sendVote(user.id, { user_id: user.id, split });
 +    }
 +
-+    /**
-+     * Sums up vote amounts as integers with six decimal places, like the vote
-+     * service does, to avoid floating point errors.
-+     */
-+    private toMicroVotes(amounts: number[]): number {
-+        return amounts.reduce((sum, amount) => sum + Math.round((amount || 0) * 1e6), 0);
++    private getBallotVotesCount(ballot: SplitBallot): number {
++        return Object.keys(ballot.options).length;
 +    }
 +
      public abstract saveSingleVote(optionId: number, vote: VoteValue, user: ViewUser): void;
@@ -866,7 +1109,7 @@ index 397cf9fac..1aec947f1 100644
                                      {
                                          idField: `user_id`,
 diff --git a/client/src/assets/i18n/de.po b/client/src/assets/i18n/de.po
-index 5636ddfed..4508e7d2d 100644
+index 5636ddfed..443db6592 100644
 --- a/client/src/assets/i18n/de.po
 +++ b/client/src/assets/i18n/de.po
 @@ -6758,3 +6758,15 @@ msgstr "Unbekannter Nutzer"
@@ -877,16 +1120,16 @@ index 5636ddfed..4508e7d2d 100644
 +msgid "Cancel splitting"
 +msgstr "Aufteilen abbrechen"
 +
-+msgid "Distribute your vote weight between the options, like separate ballots."
-+msgstr "Verteilen Sie Ihr Stimmgewicht auf die Optionen – wie mit einzelnen Stimmzetteln."
-+
-+msgid "Distributed"
-+msgstr "Verteilt"
-+
 +msgid "Split votes"
 +msgstr "Stimmen aufteilen"
++
++msgid "You have one ballot per vote. Fill out each ballot."
++msgstr "Sie haben einen Stimmzettel pro Stimme. Bitte füllen Sie jeden Stimmzettel aus."
++
++msgid "Ballot paper"
++msgstr "Stimmzettel"
 diff --git a/client/src/assets/i18n/template-en.pot b/client/src/assets/i18n/template-en.pot
-index d833274e9..c739c91eb 100644
+index d833274e9..01385a18c 100644
 --- a/client/src/assets/i18n/template-en.pot
 +++ b/client/src/assets/i18n/template-en.pot
 @@ -6252,3 +6252,15 @@ msgstr ""
@@ -897,11 +1140,11 @@ index d833274e9..c739c91eb 100644
 +msgid "Cancel splitting"
 +msgstr ""
 +
-+msgid "Distribute your vote weight between the options, like separate ballots."
-+msgstr ""
-+
-+msgid "Distributed"
-+msgstr ""
-+
 +msgid "Split votes"
++msgstr ""
++
++msgid "You have one ballot per vote. Fill out each ballot."
++msgstr ""
++
++msgid "Ballot paper"
 +msgstr ""

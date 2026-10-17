@@ -81,35 +81,42 @@ index fb6a9df1..b1f35b51 100644
          vote_amount = len(action_data)
          for start in range(0, vote_amount, steps):
 diff --git a/tests/system/action/poll/test_stop.py b/tests/system/action/poll/test_stop.py
-index 3404092d..b9143eff 100644
+index 3404092d..120b51ca 100644
 --- a/tests/system/action/poll/test_stop.py
 +++ b/tests/system/action/poll/test_stop.py
-@@ -143,6 +143,80 @@ class PollStopActionTest(PollTestMixin, BasePollTestCase):
+@@ -143,6 +143,85 @@ class PollStopActionTest(PollTestMixin, BasePollTestCase):
          self.assert_status_code(response, 200)
          self.assert_history_information("assignment/1", ["Ballot stopped"])
  
 +    @patch("openslides_backend.services.vote.adapter.VoteAdapter.stop")
 +    def test_stop_split_vote(self, stop: Mock) -> None:
 +        self.create_meeting()
-+        self.create_motion(1, 1)
++        self.create_assignment(1, 1)
 +        user1 = self.create_user_for_meeting(1)
 +        user2 = self.create_user_for_meeting(1)
 +        self.set_models(
 +            {
 +                "poll/1": {
 +                    **self.poll_data,
-+                    "content_object_id": "motion/1",
-+                    "pollmethod": "YNA",
++                    "content_object_id": "assignment/1",
++                    "pollmethod": "Y",
++                    "global_abstain": True,
++                    "global_option_id": 3,
++                    "max_votes_amount": 2,
 +                    "entitled_group_ids": [1],
 +                },
 +                "group/1": {"poll_ids": [1]},
 +                "option/1": {"meeting_id": 1, "poll_id": 1},
++                "option/2": {"meeting_id": 1, "poll_id": 1},
++                "option/3": {"meeting_id": 1, "used_as_global_option_in_poll_id": 1},
 +                "meeting/1": {
 +                    "users_enable_vote_weight": True,
 +                    "present_user_ids": [user1, user2],
 +                },
 +            }
 +        )
++        # user1 has four ballots: two for both candidates, one for candidate 1
++        # and one general abstention.
 +        stop.return_value = {
 +            "votes": [
 +                {
@@ -118,15 +125,15 @@ index 3404092d..b9143eff 100644
 +                    "value": None,
 +                    "weight": "4.000000",
 +                    "split": [
-+                        {"value": {"1": "Y"}, "weight": "2.000000"},
-+                        {"value": {"1": "N"}, "weight": "1.000000"},
-+                        {"value": {"1": "A"}, "weight": "1.000000"},
++                        {"value": {"1": 1, "2": 1}, "weight": "2.000000"},
++                        {"value": {"1": 1, "2": 0}, "weight": "1.000000"},
++                        {"value": "A", "weight": "1.000000"},
 +                    ],
 +                },
 +                {
 +                    "vote_user_id": user2,
 +                    "request_user_id": user2,
-+                    "value": {"1": "Y"},
++                    "value": {"2": 1},
 +                    "weight": "1.000000",
 +                },
 +            ],
@@ -143,24 +150,22 @@ index 3404092d..b9143eff 100644
 +                "voted_ids": [user1, user2],
 +            },
 +        )
-+        self.assert_model_exists(
-+            "option/1",
-+            {
-+                "yes": Decimal("3.000000"),
-+                "no": Decimal("1.000000"),
-+                "abstain": Decimal("1.000000"),
-+            },
-+        )
-+        votes = [self.get_model(f"vote/{i}") for i in range(1, 5)]
++        self.assert_model_exists("option/1", {"yes": Decimal("3.000000")})
++        self.assert_model_exists("option/2", {"yes": Decimal("3.000000")})
++        self.assert_model_exists("option/3", {"abstain": Decimal("1.000000")})
++        votes = [self.get_model(f"vote/{i}") for i in range(1, 6)]
 +        split_votes = [vote for vote in votes if vote["user_id"] == user1]
-+        assert sorted((vote["value"], vote["weight"]) for vote in split_votes) == [
-+            ("A", Decimal("1.000000")),
-+            ("N", Decimal("1.000000")),
-+            ("Y", Decimal("2.000000")),
++        assert sorted(
++            (vote["option_id"], vote["value"], vote["weight"]) for vote in split_votes
++        ) == [
++            (1, "Y", Decimal("1.000000")),
++            (1, "Y", Decimal("2.000000")),
++            (2, "Y", Decimal("2.000000")),
++            (3, "A", Decimal("1.000000")),
 +        ]
 +        # All parts of a split vote belong to the same ballot.
 +        assert len({vote["user_token"] for vote in split_votes}) == 1
-+        self.assert_model_not_exists("vote/5")
++        self.assert_model_not_exists("vote/6")
 +
      def test_stop_entitled_users_at_stop_user_only_once(self) -> None:
          self.create_meeting()

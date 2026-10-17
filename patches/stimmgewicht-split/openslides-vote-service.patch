@@ -1,8 +1,16 @@
 diff --git a/vote/vote.go b/vote/vote.go
-index e09b2f7..5576bcd 100644
+index e09b2f7..4f8f005 100644
 --- a/vote/vote.go
 +++ b/vote/vote.go
-@@ -228,8 +228,11 @@ func (v *Vote) Vote(ctx context.Context, pollID, requestUser int, r io.Reader) e
+@@ -7,6 +7,7 @@ import (
+ 	"fmt"
+ 	"io"
+ 	"maps"
++	"strings"
+ 	"sync"
+ 	"time"
+ 
+@@ -228,8 +229,11 @@ func (v *Vote) Vote(ctx context.Context, pollID, requestUser int, r io.Reader) e
  		return err
  	}
  
@@ -16,12 +24,16 @@ index e09b2f7..5576bcd 100644
  	}
  
  	// voteData.Weight is a DecimalField with 6 zeros.
-@@ -258,16 +261,41 @@ func (v *Vote) Vote(ctx context.Context, pollID, requestUser int, r io.Reader) e
+@@ -258,16 +262,45 @@ func (v *Vote) Vote(ctx context.Context, pollID, requestUser int, r io.Reader) e
  
  	log.Debug("Using voteWeight %s", voteWeight.String())
  
 +	var split []splitVoteData
 +	if isSplit {
++		if !strings.HasPrefix(poll.ContentObjectID, "assignment/") {
++			return MessageError(ErrInvalid, "Split votes are only allowed in elections")
++		}
++
 +		if !voteWeightEnabled {
 +			return MessageError(ErrInvalid, "Split votes are only allowed if vote weight is enabled")
 +		}
@@ -58,7 +70,7 @@ index e09b2f7..5576bcd 100644
  	}
  
  	if poll.Type != "named" {
-@@ -687,6 +715,61 @@ func (m *maybeInt) Value() (int, bool) {
+@@ -687,6 +720,61 @@ func (m *maybeInt) Value() (int, bool) {
  type ballot struct {
  	UserID maybeInt    `json:"user_id"`
  	Value  ballotValue `json:"value"`
@@ -121,7 +133,7 @@ index e09b2f7..5576bcd 100644
  
  func (v ballot) String() string {
 diff --git a/vote/vote_test.go b/vote/vote_test.go
-index 328d418..12e1485 100644
+index 328d418..fe33367 100644
 --- a/vote/vote_test.go
 +++ b/vote/vote_test.go
 @@ -4,6 +4,7 @@ import (
@@ -132,7 +144,7 @@ index 328d418..12e1485 100644
  	"reflect"
  	"strings"
  	"testing"
-@@ -1642,3 +1643,180 @@ func TestAllLiveVotesIDs_LiveVote_disabled_or_type_is_not_named(t *testing.T) {
+@@ -1642,3 +1643,212 @@ func TestAllLiveVotesIDs_LiveVote_disabled_or_type_is_not_named(t *testing.T) {
  		t.Errorf("Got %v, expected %v", liveVotes, expect)
  	}
  }
@@ -142,16 +154,20 @@ index 328d418..12e1485 100644
 +	poll/1:
 +		meeting_id: 1
 +		entitled_group_ids: [1]
-+		pollmethod: YNA
-+		option_ids: [1]
++		pollmethod: Y
++		option_ids: [1, 2, 3]
++		max_votes_amount: 2
++		global_abstain: true
 +		backend: fast
 +		type: named
-+		content_object_id: some_field/1
++		content_object_id: %s
 +		sequential_number: 1
 +		onehundred_percent_base: base
 +		title: myPoll
 +
 +	option/1/meeting_id: 1
++	option/2/meeting_id: 1
++	option/3/meeting_id: 1
 +
 +	user/1:
 +		is_present_in_meeting_ids: [1]
@@ -164,6 +180,7 @@ index 328d418..12e1485 100644
 +
 +	for _, tt := range []struct {
 +		name          string
++		contentObject string
 +		weightEnabled bool
 +		vote          string
 +
@@ -172,69 +189,95 @@ index 328d418..12e1485 100644
 +	}{
 +		{
 +			"Valid split",
++			"assignment/1",
 +			true,
-+			`{"split":[{"weight":"2","value":{"1":"Y"}},{"weight":"1","value":{"1":"N"}},{"weight":"1","value":{"1":"A"}}]}`,
++			`{"split":[{"weight":"2","value":{"1":1,"2":1}},{"weight":"1","value":{"3":1}},{"weight":"1","value":"A"}]}`,
 +			"",
 +			[]string{"2.000000", "1.000000", "1.000000"},
 +		},
 +		{
 +			"Weight as number",
++			"assignment/1",
 +			true,
-+			`{"split":[{"weight":3.5,"value":{"1":"Y"}},{"weight":0.5,"value":{"1":"N"}}]}`,
++			`{"split":[{"weight":3.5,"value":{"1":1}},{"weight":0.5,"value":"A"}]}`,
 +			"",
 +			[]string{"3.500000", "0.500000"},
 +		},
 +		{
++			"Motion",
++			"motion/1",
++			true,
++			`{"split":[{"weight":"2","value":{"1":1}},{"weight":"2","value":"A"}]}`,
++			"Split votes are only allowed in elections",
++			nil,
++		},
++		{
++			"Too many votes on one ballot",
++			"assignment/1",
++			true,
++			`{"split":[{"weight":"2","value":{"1":1,"2":1,"3":1}},{"weight":"2","value":"A"}]}`,
++			"Part 1: The sum of your answers has to be between 1 and 2",
++			nil,
++		},
++		{
 +			"Weight disabled",
++			"assignment/1",
 +			false,
-+			`{"split":[{"weight":"1","value":{"1":"Y"}}]}`,
++			`{"split":[{"weight":"1","value":{"1":1}}]}`,
 +			"Split votes are only allowed if vote weight is enabled",
 +			nil,
 +		},
 +		{
 +			"Sum too small",
++			"assignment/1",
 +			true,
-+			`{"split":[{"weight":"2","value":{"1":"Y"}},{"weight":"1","value":{"1":"N"}}]}`,
++			`{"split":[{"weight":"2","value":{"1":1}},{"weight":"1","value":{"1":1}}]}`,
 +			"The weights of the split vote sum up to 3.000000, but your vote weight is 4.000000",
 +			nil,
 +		},
 +		{
 +			"Sum too big",
++			"assignment/1",
 +			true,
-+			`{"split":[{"weight":"4","value":{"1":"Y"}},{"weight":"1","value":{"1":"N"}}]}`,
++			`{"split":[{"weight":"4","value":{"1":1}},{"weight":"1","value":{"1":1}}]}`,
 +			"The weights of the split vote sum up to 5.000000, but your vote weight is 4.000000",
 +			nil,
 +		},
 +		{
 +			"Zero weight",
++			"assignment/1",
 +			true,
-+			`{"split":[{"weight":"4","value":{"1":"Y"}},{"weight":"0","value":{"1":"N"}}]}`,
++			`{"split":[{"weight":"4","value":{"1":1}},{"weight":"0","value":{"1":1}}]}`,
 +			"The weight of part 2 has to be greater than 0",
 +			nil,
 +		},
 +		{
 +			"Negative weight",
++			"assignment/1",
 +			true,
-+			`{"split":[{"weight":"5","value":{"1":"Y"}},{"weight":"-1","value":{"1":"N"}}]}`,
++			`{"split":[{"weight":"5","value":{"1":1}},{"weight":"-1","value":{"1":1}}]}`,
 +			"The weight of part 2 has to be greater than 0",
 +			nil,
 +		},
 +		{
 +			"Too many decimals",
++			"assignment/1",
 +			true,
-+			`{"split":[{"weight":"3.9999995","value":{"1":"Y"}},{"weight":"0.0000005","value":{"1":"N"}}]}`,
++			`{"split":[{"weight":"3.9999995","value":{"1":1}},{"weight":"0.0000005","value":{"1":1}}]}`,
 +			"The weight of part 1 can have at most 6 decimal places",
 +			nil,
 +		},
 +		{
 +			"Invalid part",
++			"assignment/1",
 +			true,
-+			`{"split":[{"weight":"2","value":{"1":"Y"}},{"weight":"2","value":{"2":"N"}}]}`,
-+			"Part 2: Option_id 2 does not belong to the poll",
++			`{"split":[{"weight":"2","value":{"1":1}},{"weight":"2","value":{"4":1}}]}`,
++			"Part 2: Option_id 4 does not belong to the poll",
 +			nil,
 +		},
 +		{
 +			"Empty split",
++			"assignment/1",
 +			true,
 +			`{"split":[]}`,
 +			"A split vote needs at least one part",
@@ -242,8 +285,9 @@ index 328d418..12e1485 100644
 +		},
 +		{
 +			"Split and value",
++			"assignment/1",
 +			true,
-+			`{"value":{"1":"Y"},"split":[{"weight":"4","value":{"1":"Y"}}]}`,
++			`{"value":{"1":1},"split":[{"weight":"4","value":{"1":1}}]}`,
 +			"A split vote can not have a value",
 +			nil,
 +		},
@@ -251,7 +295,7 @@ index 328d418..12e1485 100644
 +		t.Run(tt.name, func(t *testing.T) {
 +			ctx := context.Background()
 +			backend := memory.New()
-+			data := pollData + fmt.Sprintf("\n\tmeeting/1/users_enable_vote_weight: %t\n", tt.weightEnabled)
++			data := fmt.Sprintf(pollData, tt.contentObject) + fmt.Sprintf("\n\tmeeting/1/users_enable_vote_weight: %t\n", tt.weightEnabled)
 +			ds := &StubGetter{data: dsmock.YAMLData(data)}
 +			v, _, _ := vote.New(ctx, backend, backend, ds, true)
 +
