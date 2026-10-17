@@ -1,0 +1,167 @@
+diff --git a/openslides_backend/action/actions/poll/mixins.py b/openslides_backend/action/actions/poll/mixins.py
+index fb6a9df1..b1f35b51 100644
+--- a/openslides_backend/action/actions/poll/mixins.py
++++ b/openslides_backend/action/actions/poll/mixins.py
+@@ -119,43 +119,50 @@ class StopControl(CountdownControl, Action):
+             if "request_user_id" in ballot:
+                 vote_template["delegated_user_id"] = ballot["request_user_id"]
+ 
+-            if isinstance(ballot["value"], dict):
+-                for option_id_str, value in ballot["value"].items():
+-                    option_id = int(option_id_str)
++            # A split vote divides the vote weight of the user into parts with
++            # different values. Each part is counted like a separate ballot.
++            parts = ballot.get("split") or [
++                {"value": ballot["value"], "weight": ballot["weight"]}
++            ]
++            for part in parts:
++                part_weight = Decimal(part["weight"])
++                if isinstance(part["value"], dict):
++                    for option_id_str, value in part["value"].items():
++                        option_id = int(option_id_str)
+ 
+-                    vote_value = value
+-                    vote_weighted = vote_weight  # use new variable vote_weighted because pollmethod=Y/N does not imply anymore that only one loop is done (see max_votes_per_option)
+-                    if poll["pollmethod"] in ("Y", "N"):
+-                        if value == 0:
+-                            continue
+-                        vote_value = poll["pollmethod"]
+-                        vote_weighted *= value
++                        vote_value = value
++                        vote_weighted = part_weight  # use new variable vote_weighted because pollmethod=Y/N does not imply anymore that only one loop is done (see max_votes_per_option)
++                        if poll["pollmethod"] in ("Y", "N"):
++                            if value == 0:
++                                continue
++                            vote_value = poll["pollmethod"]
++                            vote_weighted *= value
+ 
+-                    option_results[option_id][vote_value] += vote_weighted
++                        option_results[option_id][vote_value] += vote_weighted
++                        action_data.append(
++                            {
++                                "value": vote_value,
++                                "option_id": option_id,
++                                "weight": str(vote_weighted),
++                                "meeting_id": poll["meeting_id"],
++                                **vote_template,
++                            }
++                        )
++                elif isinstance(part["value"], str):
++                    vote_value = part["value"]
++                    option_id = poll["global_option_id"]
++                    option_results[option_id][vote_value] += part_weight
+                     action_data.append(
+                         {
+                             "value": vote_value,
+                             "option_id": option_id,
+-                            "weight": str(vote_weighted),
++                            "weight": str(part_weight),
+                             "meeting_id": poll["meeting_id"],
+                             **vote_template,
+                         }
+                     )
+-            elif isinstance(ballot["value"], str):
+-                vote_value = ballot["value"]
+-                option_id = poll["global_option_id"]
+-                option_results[option_id][vote_value] += vote_weight
+-                action_data.append(
+-                    {
+-                        "value": vote_value,
+-                        "option_id": option_id,
+-                        "weight": str(vote_weight),
+-                        "meeting_id": poll["meeting_id"],
+-                        **vote_template,
+-                    }
+-                )
+-            else:
+-                raise VoteServiceException("Invalid response from vote service")
++                else:
++                    raise VoteServiceException("Invalid response from vote service")
+         steps = 1000
+         vote_amount = len(action_data)
+         for start in range(0, vote_amount, steps):
+diff --git a/tests/system/action/poll/test_stop.py b/tests/system/action/poll/test_stop.py
+index 3404092d..b9143eff 100644
+--- a/tests/system/action/poll/test_stop.py
++++ b/tests/system/action/poll/test_stop.py
+@@ -143,6 +143,80 @@ class PollStopActionTest(PollTestMixin, BasePollTestCase):
+         self.assert_status_code(response, 200)
+         self.assert_history_information("assignment/1", ["Ballot stopped"])
+ 
++    @patch("openslides_backend.services.vote.adapter.VoteAdapter.stop")
++    def test_stop_split_vote(self, stop: Mock) -> None:
++        self.create_meeting()
++        self.create_motion(1, 1)
++        user1 = self.create_user_for_meeting(1)
++        user2 = self.create_user_for_meeting(1)
++        self.set_models(
++            {
++                "poll/1": {
++                    **self.poll_data,
++                    "content_object_id": "motion/1",
++                    "pollmethod": "YNA",
++                    "entitled_group_ids": [1],
++                },
++                "group/1": {"poll_ids": [1]},
++                "option/1": {"meeting_id": 1, "poll_id": 1},
++                "meeting/1": {
++                    "users_enable_vote_weight": True,
++                    "present_user_ids": [user1, user2],
++                },
++            }
++        )
++        stop.return_value = {
++            "votes": [
++                {
++                    "vote_user_id": user1,
++                    "request_user_id": user1,
++                    "value": None,
++                    "weight": "4.000000",
++                    "split": [
++                        {"value": {"1": "Y"}, "weight": "2.000000"},
++                        {"value": {"1": "N"}, "weight": "1.000000"},
++                        {"value": {"1": "A"}, "weight": "1.000000"},
++                    ],
++                },
++                {
++                    "vote_user_id": user2,
++                    "request_user_id": user2,
++                    "value": {"1": "Y"},
++                    "weight": "1.000000",
++                },
++            ],
++            "user_ids": [user1, user2],
++        }
++        response = self.request("poll.stop", {"id": 1})
++        self.assert_status_code(response, 200)
++        self.assert_model_exists(
++            "poll/1",
++            {
++                "state": Poll.STATE_FINISHED,
++                "votesvalid": Decimal("5.000000"),
++                "votescast": Decimal("2.000000"),
++                "voted_ids": [user1, user2],
++            },
++        )
++        self.assert_model_exists(
++            "option/1",
++            {
++                "yes": Decimal("3.000000"),
++                "no": Decimal("1.000000"),
++                "abstain": Decimal("1.000000"),
++            },
++        )
++        votes = [self.get_model(f"vote/{i}") for i in range(1, 5)]
++        split_votes = [vote for vote in votes if vote["user_id"] == user1]
++        assert sorted((vote["value"], vote["weight"]) for vote in split_votes) == [
++            ("A", Decimal("1.000000")),
++            ("N", Decimal("1.000000")),
++            ("Y", Decimal("2.000000")),
++        ]
++        # All parts of a split vote belong to the same ballot.
++        assert len({vote["user_token"] for vote in split_votes}) == 1
++        self.assert_model_not_exists("vote/5")
++
+     def test_stop_entitled_users_at_stop_user_only_once(self) -> None:
+         self.create_meeting()
+         self.create_motion(1, 1)

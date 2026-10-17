@@ -1,0 +1,66 @@
+diff --git a/pkg/projector/slide/poll_single_votes.go b/pkg/projector/slide/poll_single_votes.go
+index 38947df..77a4b12 100644
+--- a/pkg/projector/slide/poll_single_votes.go
++++ b/pkg/projector/slide/poll_single_votes.go
+@@ -323,6 +323,10 @@ func pollSingleVotesVoteEntry(
+ 	return vote
+ }
+ 
++// splitVoteValue is the vote value of a user, that split their vote weight
++// between different values.
++const splitVoteValue = "split"
++
+ func mapUsersToVote(poll *dsmodels.Poll) (map[int]string, error) {
+ 	voteMap := map[int]string{}
+ 	if poll.EntitledUsersAtStop != nil {
+@@ -340,6 +344,9 @@ func mapUsersToVote(poll *dsmodels.Poll) (map[int]string, error) {
+ 				if val, ok := entry.UserID.Value(); ok {
+ 					if len(poll.OptionList) > 1 {
+ 						voteMap[val] = strconv.Itoa(pollOption.ID)
++					} else if old, ok := voteMap[val]; ok && old != entry.Value {
++						// The user split their vote weight between different values.
++						voteMap[val] = splitVoteValue
+ 					} else {
+ 						voteMap[val] = entry.Value
+ 					}
+@@ -363,11 +370,17 @@ func mapUsersToVote(poll *dsmodels.Poll) (map[int]string, error) {
+ 				VoteUserID    int             `json:"vote_user_id"`
+ 				Value         any             `json:"value"`
+ 				Weight        decimal.Decimal `json:"weight"`
++				Split         []any           `json:"split"`
+ 			}
+ 			if err := json.Unmarshal([]byte(voteJson), &liveVoteEntry); err != nil {
+ 				return nil, fmt.Errorf("parse live vote entry: %w", err)
+ 			}
+ 
++			if len(liveVoteEntry.Split) > 0 {
++				voteMap[uid] = splitVoteValue
++				continue
++			}
++
+ 			if voteValue, ok := liveVoteEntry.Value.(map[string]any); ok {
+ 				if len(voteValue) > 1 {
+ 					for optionID, valRaw := range voteValue {
+diff --git a/templates/slides/poll_single_vote.html b/templates/slides/poll_single_vote.html
+index cf31c5b..3ed4a6b 100644
+--- a/templates/slides/poll_single_vote.html
++++ b/templates/slides/poll_single_vote.html
+@@ -233,6 +233,9 @@
+               {{ else if eq .Value "A" }}
+                 {{ $iconName = "circle" }}
+                 {{ $iconClass = "abstain" }}
++              {{ else if eq .Value "split" }}
++                {{ $iconName = "call_split" }}
++                {{ $iconClass = "split" }}
+               {{ end }}
+               <projector-icon-container icon="{{ $iconName }}" iconClass="{{ $iconClass }}">
+                 {{ if .Delegated }}
+@@ -251,6 +254,8 @@
+                   <span class="vote-value material-icons no">cancel</span>
+                 {{ else if eq .Value "A" }}
+                   <span class="vote-value material-icons abstain">circle</span>
++                {{ else if eq .Value "split" }}
++                  <span class="vote-value material-icons split">call_split</span>
+                 {{ else }}
+                   <span class="vote-value">{{ .Value }}</span>
+                 {{ end }}

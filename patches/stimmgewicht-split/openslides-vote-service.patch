@@ -1,0 +1,315 @@
+diff --git a/vote/vote.go b/vote/vote.go
+index e09b2f7..5576bcd 100644
+--- a/vote/vote.go
++++ b/vote/vote.go
+@@ -228,8 +228,11 @@ func (v *Vote) Vote(ctx context.Context, pollID, requestUser int, r io.Reader) e
+ 		return err
+ 	}
+ 
+-	if validation := validate(poll, vote.Value); validation != "" {
+-		return MessageError(ErrInvalid, validation)
++	isSplit := vote.Split != nil
++	if !isSplit {
++		if validation := validate(poll, vote.Value); validation != "" {
++			return MessageError(ErrInvalid, validation)
++		}
+ 	}
+ 
+ 	// voteData.Weight is a DecimalField with 6 zeros.
+@@ -258,16 +261,41 @@ func (v *Vote) Vote(ctx context.Context, pollID, requestUser int, r io.Reader) e
+ 
+ 	log.Debug("Using voteWeight %s", voteWeight.String())
+ 
++	var split []splitVoteData
++	if isSplit {
++		if !voteWeightEnabled {
++			return MessageError(ErrInvalid, "Split votes are only allowed if vote weight is enabled")
++		}
++
++		if vote.Value.original != nil {
++			return MessageError(ErrInvalid, "A split vote can not have a value")
++		}
++
++		if validation := validateSplit(poll, vote.Split, voteWeight); validation != "" {
++			return MessageError(ErrInvalid, validation)
++		}
++
++		split = make([]splitVoteData, len(vote.Split))
++		for i, part := range vote.Split {
++			split[i] = splitVoteData{
++				Value:  part.Value.original,
++				Weight: part.Weight.StringFixed(6),
++			}
++		}
++	}
++
+ 	voteData := struct {
+ 		RequestUser int             `json:"request_user_id,omitempty"`
+ 		VoteUser    int             `json:"vote_user_id,omitempty"`
+ 		Value       json.RawMessage `json:"value"`
+ 		Weight      string          `json:"weight"`
++		Split       []splitVoteData `json:"split,omitempty"`
+ 	}{
+ 		requestUser,
+ 		voteUser,
+ 		vote.Value.original,
+ 		voteWeight.StringFixed(6),
++		split,
+ 	}
+ 
+ 	if poll.Type != "named" {
+@@ -687,6 +715,61 @@ func (m *maybeInt) Value() (int, bool) {
+ type ballot struct {
+ 	UserID maybeInt    `json:"user_id"`
+ 	Value  ballotValue `json:"value"`
++
++	// Split divides the vote weight of the user into parts with different
++	// values. It is the electronic version of handing out one paper ballot
++	// for each vote of the vote weight.
++	Split []splitPart `json:"split"`
++}
++
++// splitPart is one part of a split vote.
++type splitPart struct {
++	Weight decimal.Decimal `json:"weight"`
++	Value  ballotValue     `json:"value"`
++}
++
++// splitVoteData is one part of a split vote, how it is saved in the backend.
++type splitVoteData struct {
++	Value  json.RawMessage `json:"value"`
++	Weight string          `json:"weight"`
++}
++
++// maxSplitParts is the maximum amount of parts a split vote can have.
++const maxSplitParts = 100
++
++// validateSplit validates a split vote. Each part has to be a valid vote and
++// the weights of all parts have to sum up to the vote weight of the user.
++func validateSplit(poll dsmodels.Poll, split []splitPart, voteWeight decimal.Decimal) string {
++	if len(split) == 0 {
++		return "A split vote needs at least one part"
++	}
++
++	if len(split) > maxSplitParts {
++		return fmt.Sprintf("A split vote can have at most %d parts", maxSplitParts)
++	}
++
++	sum := decimal.Zero
++	for i, part := range split {
++		if !part.Weight.IsPositive() {
++			return fmt.Sprintf("The weight of part %d has to be greater than 0", i+1)
++		}
++
++		if !part.Weight.Equal(part.Weight.Truncate(6)) {
++			return fmt.Sprintf("The weight of part %d can have at most 6 decimal places", i+1)
++		}
++
++		if validation := validate(poll, part.Value); validation != "" {
++			return fmt.Sprintf("Part %d: %s", i+1, validation)
++		}
++
++		sum = sum.Add(part.Weight)
++	}
++
++	if !sum.Equal(voteWeight) {
++		return fmt.Sprintf("The weights of the split vote sum up to %s, but your vote weight is %s", sum.StringFixed(6), voteWeight.StringFixed(6))
++	}
++
++	return ""
+ }
+ 
+ func (v ballot) String() string {
+diff --git a/vote/vote_test.go b/vote/vote_test.go
+index 328d418..12e1485 100644
+--- a/vote/vote_test.go
++++ b/vote/vote_test.go
+@@ -4,6 +4,7 @@ import (
+ 	"context"
+ 	"encoding/json"
+ 	"errors"
++	"fmt"
+ 	"reflect"
+ 	"strings"
+ 	"testing"
+@@ -1642,3 +1643,180 @@ func TestAllLiveVotesIDs_LiveVote_disabled_or_type_is_not_named(t *testing.T) {
+ 		t.Errorf("Got %v, expected %v", liveVotes, expect)
+ 	}
+ }
++
++func TestVoteSplit(t *testing.T) {
++	pollData := `
++	poll/1:
++		meeting_id: 1
++		entitled_group_ids: [1]
++		pollmethod: YNA
++		option_ids: [1]
++		backend: fast
++		type: named
++		content_object_id: some_field/1
++		sequential_number: 1
++		onehundred_percent_base: base
++		title: myPoll
++
++	option/1/meeting_id: 1
++
++	user/1:
++		is_present_in_meeting_ids: [1]
++		meeting_user_ids: [10]
++		default_vote_weight: "4.000000"
++	meeting_user/10:
++		group_ids: [1]
++		meeting_id: 1
++	`
++
++	for _, tt := range []struct {
++		name          string
++		weightEnabled bool
++		vote          string
++
++		expectErr   string
++		expectSplit []string
++	}{
++		{
++			"Valid split",
++			true,
++			`{"split":[{"weight":"2","value":{"1":"Y"}},{"weight":"1","value":{"1":"N"}},{"weight":"1","value":{"1":"A"}}]}`,
++			"",
++			[]string{"2.000000", "1.000000", "1.000000"},
++		},
++		{
++			"Weight as number",
++			true,
++			`{"split":[{"weight":3.5,"value":{"1":"Y"}},{"weight":0.5,"value":{"1":"N"}}]}`,
++			"",
++			[]string{"3.500000", "0.500000"},
++		},
++		{
++			"Weight disabled",
++			false,
++			`{"split":[{"weight":"1","value":{"1":"Y"}}]}`,
++			"Split votes are only allowed if vote weight is enabled",
++			nil,
++		},
++		{
++			"Sum too small",
++			true,
++			`{"split":[{"weight":"2","value":{"1":"Y"}},{"weight":"1","value":{"1":"N"}}]}`,
++			"The weights of the split vote sum up to 3.000000, but your vote weight is 4.000000",
++			nil,
++		},
++		{
++			"Sum too big",
++			true,
++			`{"split":[{"weight":"4","value":{"1":"Y"}},{"weight":"1","value":{"1":"N"}}]}`,
++			"The weights of the split vote sum up to 5.000000, but your vote weight is 4.000000",
++			nil,
++		},
++		{
++			"Zero weight",
++			true,
++			`{"split":[{"weight":"4","value":{"1":"Y"}},{"weight":"0","value":{"1":"N"}}]}`,
++			"The weight of part 2 has to be greater than 0",
++			nil,
++		},
++		{
++			"Negative weight",
++			true,
++			`{"split":[{"weight":"5","value":{"1":"Y"}},{"weight":"-1","value":{"1":"N"}}]}`,
++			"The weight of part 2 has to be greater than 0",
++			nil,
++		},
++		{
++			"Too many decimals",
++			true,
++			`{"split":[{"weight":"3.9999995","value":{"1":"Y"}},{"weight":"0.0000005","value":{"1":"N"}}]}`,
++			"The weight of part 1 can have at most 6 decimal places",
++			nil,
++		},
++		{
++			"Invalid part",
++			true,
++			`{"split":[{"weight":"2","value":{"1":"Y"}},{"weight":"2","value":{"2":"N"}}]}`,
++			"Part 2: Option_id 2 does not belong to the poll",
++			nil,
++		},
++		{
++			"Empty split",
++			true,
++			`{"split":[]}`,
++			"A split vote needs at least one part",
++			nil,
++		},
++		{
++			"Split and value",
++			true,
++			`{"value":{"1":"Y"},"split":[{"weight":"4","value":{"1":"Y"}}]}`,
++			"A split vote can not have a value",
++			nil,
++		},
++	} {
++		t.Run(tt.name, func(t *testing.T) {
++			ctx := context.Background()
++			backend := memory.New()
++			data := pollData + fmt.Sprintf("\n\tmeeting/1/users_enable_vote_weight: %t\n", tt.weightEnabled)
++			ds := &StubGetter{data: dsmock.YAMLData(data)}
++			v, _, _ := vote.New(ctx, backend, backend, ds, true)
++
++			if err := backend.Start(ctx, 1); err != nil {
++				t.Fatalf("bakckend.Start: %v", err)
++			}
++
++			err := v.Vote(ctx, 1, 1, strings.NewReader(tt.vote))
++
++			if tt.expectErr != "" {
++				if !errors.Is(err, vote.ErrInvalid) {
++					t.Fatalf("expected ErrInvalid, got: %v", err)
++				}
++
++				if !strings.Contains(err.Error(), tt.expectErr) {
++					t.Errorf("got error %q, expected %q", err.Error(), tt.expectErr)
++				}
++				return
++			}
++
++			if err != nil {
++				t.Fatalf("vote returned unexpected error: %v", err)
++			}
++
++			stored, _, _ := backend.Stop(ctx, 1)
++			if len(stored) != 1 {
++				t.Fatalf("got %d vote objects, expected one", len(stored))
++			}
++
++			var decoded struct {
++				Value  json.RawMessage `json:"value"`
++				Weight string          `json:"weight"`
++				Split  []struct {
++					Value  json.RawMessage `json:"value"`
++					Weight string          `json:"weight"`
++				} `json:"split"`
++			}
++			if err := json.Unmarshal(stored[0], &decoded); err != nil {
++				t.Fatalf("decoding voteobject returned unexpected error: %v", err)
++			}
++
++			if decoded.Weight != "4.000000" {
++				t.Errorf("got total weight %q, expected 4.000000", decoded.Weight)
++			}
++
++			if string(decoded.Value) != "null" {
++				t.Errorf("got value %s, expected null", decoded.Value)
++			}
++
++			if len(decoded.Split) != len(tt.expectSplit) {
++				t.Fatalf("got %d split parts, expected %d", len(decoded.Split), len(tt.expectSplit))
++			}
++
++			for i, w := range tt.expectSplit {
++				if decoded.Split[i].Weight != w {
++					t.Errorf("part %d: got weight %q, expected %q", i+1, decoded.Split[i].Weight, w)
++				}
++			}
++		})
++	}
++}
