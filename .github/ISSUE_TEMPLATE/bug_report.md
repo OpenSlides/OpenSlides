@@ -1,21 +1,30 @@
 ---
 name: Bug report
 about: Create a report to help us improve OpenSlides
-title: ""
+title: ''
 labels: bug
-assignees: ""
+assignees: ''
+
 ---
 
 **Describe the bug**
 A clear and concise description of what the bug is.
 
 **How to Reproduce**
-Steps to reproduce the behavior: preferably on the [demo](https://demo.os4.openslides.com/)
+Steps to reproduce the behavior: preferably on the [demo](https://demo.openslides.org/)
 
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
+1. Go to ...
+2. Click on ...
+3. Scroll down to ...
 4. See error
+
+**Payload + Response (optional, remove if empty)**
+```
+If a payload is sent by the Client, enter it here.
+```
+
+**Error Message (optional, remove if empty)**
+If applicable, add error string.
 
 **Expected behavior**
 A clear and concise description of what you expected to happen.
@@ -29,8 +38,8 @@ A clear and concise description of what you expected to happen.
 - Browser: [e.g. Chrome, Firefox, Opera, Ege, Safari]
 - Browser version: [e.g. 22]
 
-**Additional context**
+**Additional context (optional, remove if empty)**
 Add any other information to comprehend your problem.
 
-**Screenshots**
+**Screenshots (optional, remove if empty)**
 If applicable, add screenshots to help explain your problem.
