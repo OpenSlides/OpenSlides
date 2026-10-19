@@ -47,13 +47,13 @@ Available dev operations:
     dev-attached     : Builds and starts development images; enters shell of started container.
                           If a docker compose file is declared, the CONTAINER parameter determines
                           the specific container id you will enter (default value is equal the service name)
-    dev-transient   : Builds and starts development images; enters shell of started container. Stops any currently runnign containers after exiting shell
+    dev-transient   : Builds and starts development images; enters shell of started container. Stops any currently running OpenSlides containers after exiting shell
                           If a docker compose file is declared, the CONTAINER parameter determines
                           the specific container id you will enter (default value is equal the service name)
     dev-restart      : Restarts all containers. If CONTAINER is set, only the specified service will be restarted
-    dev-full-restart : Stops any currently running containers or docker compose setup; restarts it immediately afterwards.
-    dev-stop         : Stops any currently running containers or docker compose setup associated with the service.
-    dev-clean        : Stops any currently running containers or docker compose setup associated with the service. Also removes (orphaned) volumes.
+    dev-full-restart : Stops any currently running OpenSlides containers or docker compose setup; restarts it immediately afterwards.
+    dev-stop         : Stops any currently running OpenSlides containers or docker compose setup associated with the service.
+    dev-clean        : Stops any currently running OpenSlides containers or docker compose setup associated with the service. Also removes (orphaned) volumes.
     dev-exec         : Executes command inside container.
                           Use \$EXEC_COMMAND to declare command that should be executed.
                           Example: 'dev-exec service-name EXEC_COMMAND=\"echo hello\"' will run \"echo hello\" inside the container named \"service-name\"
@@ -351,7 +351,7 @@ log()
         fi
 
         # shellcheck disable=SC2086
-        echocmd docker compose -f "$COMPOSE_FILE" logs ${CONTAINER_LIST[@]} ${LOG_PREFIX} ${CONNECT_FLAG}
+        echocmd docker compose -f "$COMPOSE_FILE" logs "${CONTAINER_LIST[@]}" ${LOG_PREFIX} ${CONNECT_FLAG}
     else
         # Single Container
 

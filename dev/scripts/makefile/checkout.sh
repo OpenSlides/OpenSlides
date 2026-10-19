@@ -202,7 +202,7 @@ checkout() {
 
         # Check if remote exists
         GIT_REMOTE_NOT_FOUND_ERR=0
-        git ls-remote "$SOURCE" &>/dev/null || GIT_REMOTE_NOT_FOUND_ERR=1
+        git ls-remote -q "$SOURCE" >/dev/null || GIT_REMOTE_NOT_FOUND_ERR=1
         if [ "$GIT_REMOTE_NOT_FOUND_ERR" == 1 ]
         then
             error "Remote $SOURCE does not exist"
@@ -214,7 +214,7 @@ checkout() {
         echocmd git fetch "$SOURCE"
 
         # Verify or set to main
-        git rev-parse --verify remotes/"$SOURCE"/"$BRANCH" &>/dev/null || local BRANCH_NOT_FOUND=1
+        git rev-parse --verify -q remotes/"$SOURCE"/"$BRANCH" >/dev/null || local BRANCH_NOT_FOUND=1
 
         # If branch couldn't be found, user has the option to either checkout main branch instead or skip checkout for this service
         if [ -n "$BRANCH_NOT_FOUND" ]
@@ -297,7 +297,7 @@ checkout_main()
         if [ "$ALWAYS_CHECKOUT_MAIN_REPO" == 0 ]
         then
             # shellcheck disable=SC2086
-            ask ${CHECKOUT_MAIN_REPO_DEFAULT:-y} "Would you like to checkout main repository as well? WARNING: You may not be able to call this script again after switching branches, as it may not exist in target branch" || exit 0
+            ask ${CHECKOUT_MAIN_REPO_DEFAULT:-y} "Would you like to checkout main repository as well?" || exit 0
         fi
         checkout "." "OpenSlides" "$REMOTE_NAME" "$BRANCH_NAME" ""
     )
@@ -368,6 +368,7 @@ check_submodules_intialized || error "Submodules not initialized"
 
 # Checkout latest branches
 
+# shellcheck disable=SC2016
 while read -r toplevel sm_path name; do
   {
     # Extract submodule name
