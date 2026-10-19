@@ -19,7 +19,7 @@ build build-prod:
 $(.SERVICE_TARGETS):
 	@echo ""
 
-.FLAGS := no-cache compose-local-branch no-log-prefix debug-dry-run
+.FLAGS := no-cache compose-adapt-branch no-log-prefix debug-dry-run
 
 $(.FLAGS):
 	@echo ""
@@ -30,7 +30,7 @@ devstop:
 	@sed -i "1s/.*/$(GO_VERSION)/" $(DOCKER_PATH)/workspaces/*.work
 	@bash $(MAKEFILE_PATH)/make-dev.sh "dev-stop" "$(filter-out $@, $(MAKECMDGOALS))"
 
-dev dev-help dev-detached dev-attached dev-stop dev-exec dev-enter dev-clean dev-build dev-log dev-log-attach dev-restart dev-full-restart dev-docker-reset:
+dev dev-help dev-detached dev-attached dev-stop dev-exec dev-transient dev-enter dev-clean dev-build dev-db dev-log dev-log-attach dev-restart dev-full-restart dev-docker-reset:
 	@sed -i "1s/.*/$(GO_VERSION)/" $(DOCKER_PATH)/workspaces/*.work
 	@bash $(MAKEFILE_PATH)/make-dev.sh $@ "$(filter-out $@, $(MAKECMDGOALS))"
 
@@ -48,9 +48,13 @@ localprod run-localprod:
 	@if [ ! -f "dev/localprod/docker-compose.yml" ]; then echo "No docker-compose.yml exists in dev/localprod. Have you run setup.sh yet?" && exit 1; fi
 	docker compose -f dev/localprod/docker-compose.yml up --build
 
+localprod-detached:
+	@if [ ! -f "dev/localprod/docker-compose.yml" ]; then echo "No docker-compose.yml exists in dev/localprod. Have you run setup.sh yet?" && exit 1; fi
+	docker compose -f dev/localprod/docker-compose.yml up --build -d
+
 localprod-stop:
 	@if [ ! -f "dev/localprod/docker-compose.yml" ]; then echo "No docker-compose.yml exists in dev/localprod. Have you run setup.sh yet?" && exit 1; fi
-	docker compose -f dev/localprod/docker-compose.yml down
+	docker compose -f dev/localprod/docker-compose.yml down --volumes --remove-orphans
 
 localprod-delete:
 	rm ./dev/localprod/osmanage
