@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-20 08:43+0200\n"
+"POT-Creation-Date: 2026-11-19 11:54+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,18 +26,7 @@ msgstr ""
 msgid "%num% emails were send sucessfully."
 msgstr ""
 
-msgid ""
-"%num% participants could not be locked out because they have administrative "
-"permissions."
-msgstr ""
-
-msgid "-Ä"
-msgstr ""
-
 msgid "100% base"
-msgstr ""
-
-msgid "<unknown motion>"
 msgstr ""
 
 msgid "<unknown>"
@@ -148,6 +137,9 @@ msgid "Activate backtracking"
 msgstr ""
 
 msgid "Activate closed meeting"
+msgstr ""
+
+msgid "Activate consultation sequence"
 msgstr ""
 
 msgid "Activate design"
@@ -311,9 +303,6 @@ msgstr ""
 msgid "All lists of speakers will be cleared."
 msgstr ""
 
-msgid "All mandates"
-msgstr ""
-
 msgid "All meetings"
 msgstr ""
 
@@ -407,19 +396,40 @@ msgstr ""
 msgid "Amount of accounts"
 msgstr ""
 
+msgid "Amount of active filters"
+msgstr ""
+
+msgid "Amount of applause"
+msgstr ""
+
+msgid "Amount of changes"
+msgstr ""
+
+msgid "Amount of disabled elements"
+msgstr ""
+
+msgid "Amount of filtered categories"
+msgstr ""
+
+msgid "Amount of filtered tags"
+msgstr ""
+
 msgid "Amount of meetings"
 msgstr ""
 
 msgid "Amount of motions"
 msgstr ""
 
+msgid "Amount of motions in category"
+msgstr ""
+
+msgid "Amount of persons waiting on this list of speakers"
+msgstr ""
+
 msgid "Amount of votes"
 msgstr ""
 
 msgid "An error occurred while voting."
-msgstr ""
-
-msgid "An undefined class was called. Please add the class: {}"
 msgstr ""
 
 msgid "An unknown error occurred."
@@ -549,9 +559,6 @@ msgstr ""
 msgid "Are you sure you want to delete this countdown?"
 msgstr ""
 
-msgid "Are you sure you want to delete this election?"
-msgstr ""
-
 msgid "Are you sure you want to delete this entry?"
 msgstr ""
 
@@ -568,9 +575,6 @@ msgid "Are you sure you want to delete this meeting?"
 msgstr ""
 
 msgid "Are you sure you want to delete this message?"
-msgstr ""
-
-msgid "Are you sure you want to delete this motion block?"
 msgstr ""
 
 msgid "Are you sure you want to delete this motion?"
@@ -597,9 +601,6 @@ msgstr ""
 msgid "Are you sure you want to delete this workflow?"
 msgstr ""
 
-msgid "Are you sure you want to discard all changes and update this form?"
-msgstr ""
-
 msgid "Are you sure you want to discard this amendment?"
 msgstr ""
 
@@ -611,11 +612,6 @@ msgid ""
 "question(s)?"
 msgstr ""
 
-msgid ""
-"Are you sure you want to generate new passwords for all selected "
-"participants?"
-msgstr ""
-
 msgid "Are you sure you want to irrevocably remove your point of order?"
 msgstr ""
 
@@ -625,11 +621,6 @@ msgstr ""
 msgid "Are you sure you want to number all agenda items?"
 msgstr ""
 
-msgid ""
-"Are you sure you want to overwrite the state of all motions with "
-"recommendations?"
-msgstr ""
-
 msgid "Are you sure you want to remove all selected items from the agenda?"
 msgstr ""
 
@@ -637,9 +628,6 @@ msgid "Are you sure you want to remove these participants?"
 msgstr ""
 
 msgid "Are you sure you want to remove this entry from the agenda?"
-msgstr ""
-
-msgid "Are you sure you want to remove this motion from motion block?"
 msgstr ""
 
 msgid "Are you sure you want to remove this participant?"
@@ -657,9 +645,6 @@ msgstr ""
 msgid "Are you sure you want to reset all options to default settings?"
 msgstr ""
 
-msgid "Are you sure you want to reset all passwords to the default ones?"
-msgstr ""
-
 msgid ""
 "Are you sure you want to reset the time to the last set value? It will be "
 "reset to:"
@@ -669,12 +654,6 @@ msgid "Are you sure you want to reset this vote?"
 msgstr ""
 
 msgid "Are you sure you want to send an invitation email to the user?"
-msgstr ""
-
-msgid "Are you sure you want to send an invitation email?"
-msgstr ""
-
-msgid "Are you sure you want to send emails to all selected participants?"
 msgstr ""
 
 msgid "Are you sure you want to stop this voting?"
@@ -1026,6 +1005,9 @@ msgstr ""
 msgid "Can put oneself on the list of speakers"
 msgstr ""
 
+msgid "Can read"
+msgstr ""
+
 msgid "Can receive motions"
 msgstr ""
 
@@ -1178,6 +1160,9 @@ msgstr ""
 msgid ""
 "Can upload, modify and delete files, administrate folders and change access "
 "restrictions."
+msgstr ""
+
+msgid "Can write"
 msgstr ""
 
 msgid "Cancel"
@@ -1498,6 +1483,9 @@ msgstr ""
 msgid "Connect all users to live conference automatically."
 msgstr ""
 
+msgid "Consultation sequence"
+msgstr ""
+
 msgid "Content"
 msgstr ""
 
@@ -1808,9 +1796,6 @@ msgstr ""
 msgid "Do you really want to go ahead?"
 msgstr ""
 
-msgid "Do you really want to lock this participant out of the meeting?"
-msgstr ""
-
 msgid "Do you really want to make available this meeting as a public template?"
 msgstr ""
 
@@ -1818,12 +1803,6 @@ msgid "Do you really want to save your changes?"
 msgstr ""
 
 msgid "Do you really want to stop sharing this meeting as a public template?"
-msgstr ""
-
-msgid "Do you really want to undo the lock out of the participant?"
-msgstr ""
-
-msgid "Do you want to update the amendment text? All changes will be lost."
 msgstr ""
 
 msgid "Does not have notes"
@@ -2204,6 +2183,9 @@ msgstr ""
 msgid "Fallback"
 msgstr ""
 
+msgid "Fallback mode"
+msgstr ""
+
 msgid "Favorites"
 msgstr ""
 
@@ -2247,9 +2229,6 @@ msgid "Follow recommendation"
 msgstr ""
 
 msgid "Follow recommendations for all motions"
-msgstr ""
-
-msgid "Following users are currently editing this motion:"
 msgstr ""
 
 msgid "Font bold"
@@ -2367,6 +2346,12 @@ msgid "Given name"
 msgstr ""
 
 msgid "Global headbar color"
+msgstr ""
+
+msgid "Global search"
+msgstr ""
+
+msgid "Go to committee"
 msgstr ""
 
 msgid "Go to line"
@@ -2779,6 +2764,9 @@ msgstr ""
 msgid "Is not in archived meetings"
 msgstr ""
 
+msgid "Is not locked out"
+msgstr ""
+
 msgid "Is not present"
 msgstr ""
 
@@ -2802,12 +2790,6 @@ msgstr ""
 
 msgid ""
 "It is not allowed to delete countdowns used for list of speakers or polls"
-msgstr ""
-
-msgid ""
-"It is not allowed to set the permisson 'Can manage participants' to a locked "
-"out user. Please unset the lockout state before adding a group with this "
-"permission."
 msgstr ""
 
 msgid "It's a draw!"
@@ -2992,9 +2974,6 @@ msgstr ""
 msgid "Lowest applause amount"
 msgstr ""
 
-msgid "Main motion and line number"
-msgstr ""
-
 msgid "Main speaker"
 msgstr ""
 
@@ -3005,16 +2984,7 @@ msgstr ""
 msgid "Mandate check"
 msgstr ""
 
-msgid "Mandates switched sucessfully!"
-msgstr ""
-
 msgid "Mark as personal favorite"
-msgstr ""
-
-msgid "Max votes cannot be greater than options."
-msgstr ""
-
-msgid "Max votes per option cannot be greater than max votes."
 msgstr ""
 
 msgid "Maximum amount of votes"
@@ -3100,9 +3070,6 @@ msgstr ""
 msgid "Metadata of Service Provider (SP)"
 msgstr ""
 
-msgid "Min votes cannot be greater than max votes."
-msgstr ""
-
 msgid "Minimal required version"
 msgstr ""
 
@@ -3157,9 +3124,6 @@ msgstr ""
 msgid "Motion change recommendation updated"
 msgstr ""
 
-msgid "Motion changed"
-msgstr ""
-
 msgid "Motion created"
 msgstr ""
 
@@ -3193,6 +3157,9 @@ msgstr ""
 msgid "Motion supporters"
 msgstr ""
 
+msgid "Motion text"
+msgstr ""
+
 msgid "Motion updated"
 msgstr ""
 
@@ -3209,9 +3176,6 @@ msgid "Motions (PDF settings)"
 msgstr ""
 
 msgid "Motions are in process. Please wait ..."
-msgstr ""
-
-msgid "Motions in final state will not be changed."
 msgstr ""
 
 msgid "Move"
@@ -3274,13 +3238,7 @@ msgstr ""
 msgid "Navigate to motion"
 msgstr ""
 
-msgid "Navigate to participant page from "
-msgstr ""
-
 msgid "Navigate to the folder"
-msgstr ""
-
-msgid "Negative votes are not allowed."
 msgstr ""
 
 msgid "Never"
@@ -3340,6 +3298,9 @@ msgstr ""
 msgid "New meeting"
 msgstr ""
 
+msgid "New messages"
+msgstr ""
+
 msgid "New motion"
 msgstr ""
 
@@ -3362,6 +3323,9 @@ msgid "New projector"
 msgstr ""
 
 msgid "New state"
+msgstr ""
+
+msgid "New structure level"
 msgstr ""
 
 msgid "New tag"
@@ -3499,10 +3463,6 @@ msgstr ""
 msgid "Note on secret voting"
 msgstr ""
 
-msgid ""
-"Note, that the default password will be changed to the new generated one."
-msgstr ""
-
 msgid "Note: Amendments cannot be forwarded without their parent motion."
 msgstr ""
 
@@ -3515,11 +3475,6 @@ msgstr ""
 msgid ""
 "Note: The public access setting is deactivated for the organization. Please "
 "contact your admins or hosting providers to activate the setting."
-msgstr ""
-
-msgid ""
-"Note: Your own password was not changed. Please use the password change "
-"dialog instead."
 msgstr ""
 
 msgid "Notes"
@@ -3681,7 +3636,7 @@ msgstr ""
 msgid "Open projection dialog"
 msgstr ""
 
-msgid "Open projector"
+msgid "Open projector in new tab"
 msgstr ""
 
 msgid "OpenSlides URL"
@@ -3819,9 +3774,6 @@ msgid "Parent committee"
 msgstr ""
 
 msgid "Parent committee name"
-msgstr ""
-
-msgid "Parent motion text changed"
 msgstr ""
 
 msgid "Parliament options"
@@ -3977,11 +3929,6 @@ msgid "Please select a vote weight greater than zero."
 msgstr ""
 
 msgid "Please select the directory:"
-msgstr ""
-
-msgid ""
-"Please select your target meetings and enter the name of an existing group "
-"which should be assigned to the account in each meeting."
 msgstr ""
 
 msgid "Please update your browser or contact your system administration."
@@ -4552,7 +4499,9 @@ msgstr ""
 msgid "Set/remove meeting"
 msgstr ""
 
-msgid "Sets this projector as the reference for the current list of speakers"
+msgid ""
+"Sets this projector as the reference for the autopilot and the current list "
+"of speakers"
 msgstr ""
 
 msgid "Settings"
@@ -4827,9 +4776,6 @@ msgstr ""
 msgid "Submission date"
 msgstr ""
 
-msgid "Submit selection now?"
-msgstr ""
-
 msgid "Submit vote now"
 msgstr ""
 
@@ -4941,9 +4887,6 @@ msgstr ""
 msgid "The agenda item was successfully copied to {} meeting(s)"
 msgstr ""
 
-msgid "The assembly may decide:"
-msgstr ""
-
 msgid "The event manager has not set up a legal notice yet."
 msgstr ""
 
@@ -5034,12 +4977,6 @@ msgid ""
 "The users %user% have no email, so the invitation emails could not be sent."
 msgstr ""
 
-msgid "There are not enough options."
-msgstr ""
-
-msgid "There is an error in your vote."
-msgstr ""
-
 msgid "There is an error with this amendment. Please edit it manually."
 msgstr ""
 
@@ -5102,9 +5039,6 @@ msgid "This field is required."
 msgstr ""
 
 msgid "This file will also be deleted from all meetings."
-msgstr ""
-
-msgid "This is not a number."
 msgstr ""
 
 msgid ""
@@ -5252,9 +5186,6 @@ msgstr ""
 msgid "Toggle to parent item"
 msgstr ""
 
-msgid "Too many votes on one option."
-msgstr ""
-
 msgid "Topic"
 msgstr ""
 
@@ -5271,6 +5202,9 @@ msgid "Topics updated"
 msgstr ""
 
 msgid "Topics with warnings (will be skipped)"
+msgstr ""
+
+msgid "Total"
 msgstr ""
 
 msgid "Total accounts"
@@ -5348,9 +5282,6 @@ msgid "Used for WLAN QRCode projection."
 msgstr ""
 
 msgid "Used for invitation emails and QRCode in PDF of access data."
-msgstr ""
-
-msgid "User"
 msgstr ""
 
 msgid "User not found."
@@ -5516,13 +5447,6 @@ msgid ""
 msgstr ""
 
 msgid ""
-"Warning: Amendments or change recommendations exist for this motion. Editing "
-"this text will likely impact them negatively. Particularily, amendments "
-"might become unusable if the paragraph they affect is deleted, or change "
-"recommendations might lose their reference line completely."
-msgstr ""
-
-msgid ""
 "Warning: At least one of the selected motions has amendments, these will be "
 "deleted as well. Do you want to delete anyway?"
 msgstr ""
@@ -5543,9 +5467,6 @@ msgid "Was forwarded to this meeting"
 msgstr ""
 
 msgid "Web interface header logo"
-msgstr ""
-
-msgid "Welcome to OpenSlides"
 msgstr ""
 
 msgid "What is new?"
@@ -5728,12 +5649,6 @@ msgstr ""
 msgid "You override the personally set password!"
 msgstr ""
 
-msgid "You reached the maximum amount of votes. Deselect one option first."
-msgstr ""
-
-msgid "You reached the maximum amount of votes. Deselect somebody first."
-msgstr ""
-
 msgid ""
 "You will be logged out when you change your password. You must then log in "
 "with the new password."
@@ -5764,9 +5679,6 @@ msgstr ""
 msgid "Your browser is not supported by OpenSlides!"
 msgstr ""
 
-msgid "Your decision cannot be changed afterwards."
-msgstr ""
-
 msgid "Your device has no microphone"
 msgstr ""
 
@@ -5787,9 +5699,6 @@ msgid ""
 "range."
 msgstr ""
 
-msgid "Your votes"
-msgstr ""
-
 msgid "Your voting right was delegated to another person."
 msgstr ""
 
@@ -5800,9 +5709,6 @@ msgid "Zoom out"
 msgstr ""
 
 msgid "[Begin speech] starts the countdown, [End speech] stops the countdown."
-msgstr ""
-
-msgid "[Place for your welcome and help text.]"
 msgstr ""
 
 msgid "absent"
@@ -5859,9 +5765,6 @@ msgstr ""
 msgid "change recommendations"
 msgstr ""
 
-msgid "committee-example"
-msgstr ""
-
 msgid "connecting ..."
 msgstr ""
 
@@ -5880,7 +5783,13 @@ msgstr ""
 msgid "custom"
 msgstr ""
 
+msgid "custom sort"
+msgstr ""
+
 msgid "dateless"
+msgstr ""
+
+msgid "default sort"
 msgstr ""
 
 msgid "delete"
@@ -5899,9 +5808,6 @@ msgid "diverse"
 msgstr ""
 
 msgid "e.g. for online meetings"
-msgstr ""
-
-msgid "emails"
 msgstr ""
 
 msgid "ended"
@@ -5937,9 +5843,6 @@ msgstr ""
 msgid "has been imported"
 msgstr ""
 
-msgid "has saved his work on this motion."
-msgstr ""
-
 msgid "have been created"
 msgstr ""
 
@@ -5965,9 +5868,6 @@ msgid "is not assigned to any committees or meetings yet"
 msgstr ""
 
 msgid "is now"
-msgstr ""
-
-msgid "is personal favorite"
 msgstr ""
 
 msgid "is required"
@@ -6048,9 +5948,6 @@ msgstr ""
 msgid "of which"
 msgstr ""
 
-msgid "of which %num% not permissable"
-msgstr ""
-
 msgid "open votes"
 msgstr ""
 
@@ -6129,9 +6026,6 @@ msgstr ""
 msgid "today"
 msgstr ""
 
-msgid "total"
-msgstr ""
-
 msgid "two-line"
 msgstr ""
 
@@ -6166,9 +6060,6 @@ msgid "will be updated"
 msgstr ""
 
 msgid "with"
-msgstr ""
-
-msgid "without structure level"
 msgstr ""
 
 msgid "yellow"
@@ -6215,6 +6106,26 @@ msgstr ""
 msgid "Delegates"
 msgstr ""
 
+msgid ""
+"Invalid date for column {{field}}: Got {{content}}; expected format YYYY-MM-"
+"DD"
+msgstr ""
+
+msgid ""
+"Invalid format for column {{field}}: Got {{content}}; expected boolean (e.g. "
+"'1' for yes, '0' for no)"
+msgstr ""
+
+msgid ""
+"Invalid format for column {{field}}: Got {{content}}; expected decimal "
+"number with point separation (e.g. 1.234567)"
+msgstr ""
+
+msgid ""
+"Invalid format for column {{field}}: Got {{content}}; expected integer (i.e. "
+"a natural number)"
+msgstr ""
+
 msgid "No concernment"
 msgstr ""
 
@@ -6245,6 +6156,12 @@ msgstr ""
 msgid "Staff"
 msgstr ""
 
+msgid "The assembly may decide:"
+msgstr ""
+
+msgid "Welcome to OpenSlides"
+msgstr ""
+
 #, python-brace-format
 msgid ""
 "You are receiving this email because you have requested a new password for "
@@ -6254,6 +6171,9 @@ msgid ""
 "{url}/login/forget-password-confirm?user_id={user_id}&token={token}\n"
 "\n"
 "The link will be valid for 10 minutes."
+msgstr ""
+
+msgid "[Place for your welcome and help text.]"
 msgstr ""
 
 msgid "accepted"
