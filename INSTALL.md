@@ -65,16 +65,19 @@ Then run:
     $ docker compose up --detach
 
 Now all services are starting. Wait until they are ready.
-
-To be able to use OpenSlides create initial data. This includes the first
-account for the `superadmin` (Alternatively
-`OPENSLIDES_BACKEND_CREATE_INITIAL_DATA` can be set in the environment of the
-`backendManage`).
+This starts OpenSlides using default initial-data. You can change that by
+setting `OPENSLIDES_BACKEND_CREATE_INITIAL_DATA= 0` in the definition of your
+backendManage service in `docker-compose.yml`.
+If you do so, you can generate initial-data using:
 
     $ ./osmanage initial-data --superadmin-password-file secrets/superadmin
 
+For further information about initial-data see:
+
+    $ ./osmanage initial-data --help
+
 Now open https://localhost:8000, login with superuser credentials (default
-username `superadmin`, password in secret file) and have fun.
+username `superadmin`, password in `./secrets/superadmin`) and have fun.
 
 
 ### Reach OpenSlides from outside your local machine
