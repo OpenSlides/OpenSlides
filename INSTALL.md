@@ -79,7 +79,7 @@ Now all services are starting. Wait until they are ready.
 This starts OpenSlides using default initial-data. You can change that by
 setting `OPENSLIDES_BACKEND_CREATE_INITIAL_DATA= 0` in the definition of your
 backendManage service in `docker-compose.yml`.
-If you do so, you can generate initial-data using:
+If you do so, you can set the initial-data using:
 
     ./osmanage initial-data --superadmin-password-file secrets/superadmin
 
