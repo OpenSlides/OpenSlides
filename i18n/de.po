@@ -5,9 +5,9 @@
 # 
 # Translators:
 # Joshua Sangmeister <joshua.sangmeister@gmail.com>, 2024
-# Katharina <karmitt2@web.de>, 2024
 # Elblinator, 2025
 # Birte Spekker <birte.spekker@intevation.de>, 2025
+# Katharina <karmitt2@web.de>, 2026
 # Emanuel Schütze <emanuel.schuetze@intevation.de>, 2026
 # 
 #, fuzzy
@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-20 08:43+0200\n"
+"POT-Creation-Date: 2026-11-19 11:54+0100\n"
 "PO-Revision-Date: 2021-05-09 20:21+0000\n"
 "Last-Translator: Emanuel Schütze <emanuel.schuetze@intevation.de>, 2026\n"
 "Language-Team: German (https://app.transifex.com/openslides/teams/14270/de/)\n"
@@ -34,21 +34,8 @@ msgstr "\"0\" bedeutet eine unbegrenzte Anzahl an aktiven Veranstaltungen"
 msgid "%num% emails were send sucessfully."
 msgstr "%num% E-Mails wurden erfolgreich versandt."
 
-msgid ""
-"%num% participants could not be locked out because they have administrative "
-"permissions."
-msgstr ""
-"%num% Teilnehmende konnten nicht ausgeschlossen werden, da sie  "
-"administrative Berechtigungen haben."
-
-msgid "-Ä"
-msgstr "-Ä"
-
 msgid "100% base"
 msgstr "100-%-Basis"
-
-msgid "<unknown motion>"
-msgstr "<unbekannter Antrag>"
 
 msgid "<unknown>"
 msgstr "<unbekannt>"
@@ -168,6 +155,9 @@ msgstr "Rückverfolgung aktivieren"
 
 msgid "Activate closed meeting"
 msgstr "Geschlossene Veranstaltung aktivieren"
+
+msgid "Activate consultation sequence"
+msgstr "Beratungsfolge aktivieren"
 
 msgid "Activate design"
 msgstr "Design aktivieren"
@@ -350,9 +340,6 @@ msgstr "Alle Stimmberechtigte"
 msgid "All lists of speakers will be cleared."
 msgstr "Alle Redelisten werden bereinigt."
 
-msgid "All mandates"
-msgstr "Alle Mandate"
-
 msgid "All meetings"
 msgstr "alle Veranstaltungen"
 
@@ -448,20 +435,41 @@ msgstr "Änderungsanträge zu"
 msgid "Amount of accounts"
 msgstr "Anzahl der Accounts"
 
+msgid "Amount of active filters"
+msgstr "Anzahl der aktiven Filter"
+
+msgid "Amount of applause"
+msgstr "Applausstärke"
+
+msgid "Amount of changes"
+msgstr "Anzahl der Änderungen"
+
+msgid "Amount of disabled elements"
+msgstr "Anzahl der deaktivierten Elemente"
+
+msgid "Amount of filtered categories"
+msgstr "Anzahl der gefilterten Sachgebiete"
+
+msgid "Amount of filtered tags"
+msgstr "Anzahl der gefilterten Schlagwörter"
+
 msgid "Amount of meetings"
 msgstr "Anzahl der Veranstaltungen"
 
 msgid "Amount of motions"
 msgstr "Anzahl der Anträge"
 
+msgid "Amount of motions in category"
+msgstr "Anzahl der Anträge im Sachgebiet"
+
+msgid "Amount of persons waiting on this list of speakers"
+msgstr "Anzahl der Personen, die auf dieser Rednerliste auf wartend stehen"
+
 msgid "Amount of votes"
 msgstr "Anzahl der Stimmen"
 
 msgid "An error occurred while voting."
 msgstr "Bei der Stimmabgabe ist ein Fehler aufgetreten."
-
-msgid "An undefined class was called. Please add the class: {}"
-msgstr ""
 
 msgid "An unknown error occurred."
 msgstr "Ein unbekannter Fehler ist aufgetreten."
@@ -600,9 +608,6 @@ msgstr "Soll dieses Gremium wirklich gelöscht werden?"
 msgid "Are you sure you want to delete this countdown?"
 msgstr "Soll dieser Countdown wirklich gelöscht werden?"
 
-msgid "Are you sure you want to delete this election?"
-msgstr "Soll diese Wahl wirklich gelöscht werden?"
-
 msgid "Are you sure you want to delete this entry?"
 msgstr "Soll dieser Eintrag wirklich gelöscht werden?"
 
@@ -620,9 +625,6 @@ msgstr "Soll diese Veranstaltung wirklich gelöscht werden?"
 
 msgid "Are you sure you want to delete this message?"
 msgstr "Soll diese Mitteilung wirklich gelöscht werden?"
-
-msgid "Are you sure you want to delete this motion block?"
-msgstr "Soll dieser Antragsblock wirklich gelöscht werden?"
 
 msgid "Are you sure you want to delete this motion?"
 msgstr "Soll dieser Antrag wirklich gelöscht werden?"
@@ -648,11 +650,6 @@ msgstr "Soll diese Abstimmung wirklich gelöscht werden?"
 msgid "Are you sure you want to delete this workflow?"
 msgstr "Soll dieser Arbeitsablauf wirklich gelöscht werden?"
 
-msgid "Are you sure you want to discard all changes and update this form?"
-msgstr ""
-"Sollen alle Änderungen wirklich verworfen und dieses Formular aktualisiert "
-"werden?"
-
 msgid "Are you sure you want to discard this amendment?"
 msgstr "Soll dieser Änderungsantrag wirklich verworfen werden?"
 
@@ -665,13 +662,6 @@ msgid ""
 msgstr ""
 "Soll diese Wortmeldung inkl. aller Zwischenfragen wirklich beendet werden?"
 
-msgid ""
-"Are you sure you want to generate new passwords for all selected "
-"participants?"
-msgstr ""
-"Sollen wirklich neue Passwörter für alle ausgewählte Teilnehmende generiert "
-"werden?"
-
 msgid "Are you sure you want to irrevocably remove your point of order?"
 msgstr ""
 "Soll wirklich der Geschäftsordnungsantrag unwiderruflich zurückgezogen "
@@ -683,13 +673,6 @@ msgstr "Soll diese Datei/Verzeichnis wirklich veröffentlicht werden?"
 msgid "Are you sure you want to number all agenda items?"
 msgstr "Sollen alle Tagesordnungspunkte wirklich neu nummeriert werden?"
 
-msgid ""
-"Are you sure you want to overwrite the state of all motions with "
-"recommendations?"
-msgstr ""
-"Soll der Status von allen Anträgen wirklich mit der jeweiligen Empfehlung "
-"überschrieben werden?"
-
 msgid "Are you sure you want to remove all selected items from the agenda?"
 msgstr ""
 "Sollen alle ausgewählten Einträge wirklich aus der Tagesordnung entfernt "
@@ -700,9 +683,6 @@ msgstr "Sollen diese Teilnehmende wirklich entfernt werden?"
 
 msgid "Are you sure you want to remove this entry from the agenda?"
 msgstr "Soll dieser Eintrag wirklich aus der Tagesordnung entfernt werden?"
-
-msgid "Are you sure you want to remove this motion from motion block?"
-msgstr "Soll dieser Antrag wirklich aus dem Antragsblock entfernt werden?"
 
 msgid "Are you sure you want to remove this participant?"
 msgstr "Soll diese/r Teilnehmende wirklich entfernt werden?"
@@ -722,11 +702,6 @@ msgid "Are you sure you want to reset all options to default settings?"
 msgstr ""
 "Sollen wirklich alle Optionen auf Werkseinstellung zurückgesetzt werden?"
 
-msgid "Are you sure you want to reset all passwords to the default ones?"
-msgstr ""
-"Sollen wirklich alle Passwörter auf die initialen Passwörter zurückgesetzt "
-"werden?"
-
 msgid ""
 "Are you sure you want to reset the time to the last set value? It will be "
 "reset to:"
@@ -739,13 +714,6 @@ msgstr "Soll diese Abstimmung wirklich zurückgesetzt werden?"
 
 msgid "Are you sure you want to send an invitation email to the user?"
 msgstr "Soll wirklich eine E-Mail den diesen Nutzer gesendet werden?"
-
-msgid "Are you sure you want to send an invitation email?"
-msgstr "Soll wirklich eine Einladungs-E-Mail gesendet werden?"
-
-msgid "Are you sure you want to send emails to all selected participants?"
-msgstr ""
-"Sollen E-Mails wirklich an alle ausgewählten Teilnehmende gesendet werden?"
 
 msgid "Are you sure you want to stop this voting?"
 msgstr "Soll die Stimmabgabe wirklich beendet werden?"
@@ -1141,6 +1109,9 @@ msgstr "Kann aufgrund von Fehlern nicht importieren werden"
 msgid "Can put oneself on the list of speakers"
 msgstr "Darf sich selbst auf die Redeliste setzen"
 
+msgid "Can read"
+msgstr "Darf lesen"
+
 msgid "Can receive motions"
 msgstr "Darf Anträge erhalten"
 
@@ -1322,6 +1293,9 @@ msgid ""
 msgstr ""
 "Darf Dateien hochladen, ändern und löschen, Ordner verwalten und "
 "Zugriffsbeschränkungen ändern."
+
+msgid "Can write"
+msgstr "Darf schreiben"
 
 msgid "Cancel"
 msgstr "Abbrechen"
@@ -1650,6 +1624,9 @@ msgstr "Vier gewinnt"
 
 msgid "Connect all users to live conference automatically."
 msgstr "Alle Nutzer automatisch mit der Livekonferenz verbinden"
+
+msgid "Consultation sequence"
+msgstr "Beratungsfolge"
 
 msgid "Content"
 msgstr "Inhalt"
@@ -1983,10 +1960,6 @@ msgstr "Wollen Sie wirklich alle Änderungen verwerfen?"
 msgid "Do you really want to go ahead?"
 msgstr "Wollen Sie die Aktion wirklich fortsetzen?"
 
-msgid "Do you really want to lock this participant out of the meeting?"
-msgstr ""
-"Wollen Sie diesen Teilnehmenden wirklich aus der Veranstaltung ausschließen?"
-
 msgid ""
 "Do you really want to make available this meeting as a public template?"
 msgstr ""
@@ -2000,15 +1973,6 @@ msgid "Do you really want to stop sharing this meeting as a public template?"
 msgstr ""
 "Wollen Sie wirklich aufhören diese Veranstaltung als öffentliche Vorlage zu "
 "nutzen?"
-
-msgid "Do you really want to undo the lock out of the participant?"
-msgstr ""
-"Wollen Sie das Ausschließen des Teilnehmenden wirklich rückgängig machen?"
-
-msgid "Do you want to update the amendment text? All changes will be lost."
-msgstr ""
-"Möchten Sie den Änderungsantragstext aktualisieren? Alle Änderungen gehen "
-"verloren."
 
 msgid "Does not have notes"
 msgstr "Hat keine Notizen"
@@ -2433,6 +2397,9 @@ msgstr "Externe ID"
 msgid "Fallback"
 msgstr "Fallback"
 
+msgid "Fallback mode"
+msgstr "Fallback-Modus"
+
 msgid "Favorites"
 msgstr "Favoriten"
 
@@ -2477,9 +2444,6 @@ msgstr "Empfehlung folgen"
 
 msgid "Follow recommendations for all motions"
 msgstr "Empfehlungen für alle Anträge folgen"
-
-msgid "Following users are currently editing this motion:"
-msgstr "Folgende Nutzer bearbeiten aktuell diesen Antrag:"
 
 msgid "Font bold"
 msgstr "Schriftart fett"
@@ -2599,6 +2563,12 @@ msgstr "Vorname"
 
 msgid "Global headbar color"
 msgstr "Kopfzeilenfarbe"
+
+msgid "Global search"
+msgstr "Globale Suche"
+
+msgid "Go to committee"
+msgstr "Zum Gremium"
 
 msgid "Go to line"
 msgstr "Springe zur Zeile"
@@ -3018,6 +2988,9 @@ msgstr "Ist in keinen aktiven Veranstaltungen"
 msgid "Is not in archived meetings"
 msgstr "Ist in keinen archivierten Veranstaltungen"
 
+msgid "Is not locked out"
+msgstr "Ist nicht ausgeschlossen"
+
 msgid "Is not present"
 msgstr "Ist nicht anwesend"
 
@@ -3044,16 +3017,6 @@ msgid ""
 msgstr ""
 "Countdowns, die für Redelisten oder elektronische Stimmabgaben verwendet "
 "werden, dürfen nicht gelöscht werden."
-
-msgid ""
-"It is not allowed to set the permisson 'Can manage participants' to a locked"
-" out user. Please unset the lockout state before adding a group with this "
-"permission."
-msgstr ""
-"Es ist nicht erlaubt, die Berechtigung 'Darf Teilnehmende verwalten' auf "
-"einen ausgeschlossenen Benutzer zu setzen. Bitte heben Sie den "
-"Ausgeschlossen-Status auf, bevor Sie eine Gruppe mit dieser Berechtigung "
-"hinzufügen."
 
 msgid "It's a draw!"
 msgstr "Es ist ein Unentschieden!"
@@ -3243,9 +3206,6 @@ msgstr "Abmelden"
 msgid "Lowest applause amount"
 msgstr "Niedrigster Applauswert"
 
-msgid "Main motion and line number"
-msgstr "Hauptantrag und Zeilennummer"
-
 msgid "Main speaker"
 msgstr "Hauptredner*in"
 
@@ -3258,20 +3218,8 @@ msgstr ""
 msgid "Mandate check"
 msgstr "Mandatsprüfung"
 
-msgid "Mandates switched sucessfully!"
-msgstr "Mandatswechsel erfolgreich."
-
 msgid "Mark as personal favorite"
 msgstr "Als persönlichen Favorit markieren"
-
-msgid "Max votes cannot be greater than options."
-msgstr ""
-"Die maximale Stimmenanzahl darf nicht größer als die Anzahl der Optionen "
-"sein."
-
-msgid "Max votes per option cannot be greater than max votes."
-msgstr ""
-"Max. Stimmenanzahl pro Option kann nicht größer sein als max. Stimmenanzahl"
 
 msgid "Maximum amount of votes"
 msgstr "Maximale Stimmenanzahl"
@@ -3358,11 +3306,6 @@ msgstr "Metadaten des Identity Providers (IdP)"
 msgid "Metadata of Service Provider (SP)"
 msgstr "Metadaten des Service Providers (SP)"
 
-msgid "Min votes cannot be greater than max votes."
-msgstr ""
-"Die minimale Stimmenanzahl darf nicht größer als die maximale Stimmenanzahl "
-"sein."
-
 msgid "Minimal required version"
 msgstr "Minimal erforderliche Version"
 
@@ -3417,9 +3360,6 @@ msgstr "Änderungsempfehlung gelöscht"
 msgid "Motion change recommendation updated"
 msgstr "Änderungsempfehlung aktualisiert"
 
-msgid "Motion changed"
-msgstr "Antrag geändert"
-
 msgid "Motion created"
 msgstr "Antrag erstellt"
 
@@ -3453,6 +3393,9 @@ msgstr "Unterstützer*in"
 msgid "Motion supporters"
 msgstr "Unterstützer*innen"
 
+msgid "Motion text"
+msgstr "Antragstext"
+
 msgid "Motion updated"
 msgstr "Antrag aktualisiert"
 
@@ -3470,9 +3413,6 @@ msgstr "Anträge (PDF-Einstellungen)"
 
 msgid "Motions are in process. Please wait ..."
 msgstr "Anträge werden bearbeitet. Bitte warten ..."
-
-msgid "Motions in final state will not be changed."
-msgstr "Anträge im finalen Status werden nicht geändert."
 
 msgid "Move"
 msgstr "Verschieben"
@@ -3534,14 +3474,8 @@ msgstr "Navigation zur Veranstaltung"
 msgid "Navigate to motion"
 msgstr "Navigation zum Antrag"
 
-msgid "Navigate to participant page from "
-msgstr "Navigation zur Teilnehmenden-Seite von"
-
 msgid "Navigate to the folder"
 msgstr "Navigation zum Verzeichnis"
-
-msgid "Negative votes are not allowed."
-msgstr "Negative Stimmen sind nicht zulässig."
 
 msgid "Never"
 msgstr "Nie"
@@ -3600,6 +3534,9 @@ msgstr "Neue Gruppe"
 msgid "New meeting"
 msgstr "Neue Veranstaltung"
 
+msgid "New messages"
+msgstr "Neue Nachrichten"
+
 msgid "New motion"
 msgstr "Neuer Antrag"
 
@@ -3623,6 +3560,9 @@ msgstr "Neuer Projektor"
 
 msgid "New state"
 msgstr "Neuer Status"
+
+msgid "New structure level"
+msgstr "Neue Gliederungsebene"
 
 msgid "New tag"
 msgstr "Neues Schlagwort"
@@ -3759,12 +3699,6 @@ msgstr "Nicht anwesend"
 msgid "Note on secret voting"
 msgstr "Hinweis zu geheimen Stimmabgaben"
 
-msgid ""
-"Note, that the default password will be changed to the new generated one."
-msgstr ""
-"Beachten Sie, dass das Passwort auf das neu generierte Passwort geändert "
-"wird."
-
 msgid "Note: Amendments cannot be forwarded without their parent motion."
 msgstr ""
 "Hinweis: Änderungsanträge können nicht ohne ihren zugehörigen Hauptantrag "
@@ -3783,13 +3717,6 @@ msgstr ""
 "Hinweis: Die Einstellung für den öffentlichen Zugang ist für diese "
 "Organisation deaktiviert. Bitte wenden Sie sich an Ihren Administrator oder "
 "Hosting-Provider, um die Einstellung zu aktivieren."
-
-msgid ""
-"Note: Your own password was not changed. Please use the password change "
-"dialog instead."
-msgstr ""
-"Hinweis: Ihr eigenes Passwort wurde nicht geändert. Nutzen Sie stattdessen "
-"die Passwort-Ändern-Funktion."
 
 msgid "Notes"
 msgstr "Notizen"
@@ -3953,8 +3880,8 @@ msgstr "Veranstaltung öffnen"
 msgid "Open projection dialog"
 msgstr "Projektionsdialog öffnen"
 
-msgid "Open projector"
-msgstr "Projektor öffnen"
+msgid "Open projector in new tab"
+msgstr "Projektor im neuen Tab öffnen"
 
 msgid "OpenSlides URL"
 msgstr "OpenSlides-URL"
@@ -4097,9 +4024,6 @@ msgstr "Elterngremium"
 
 msgid "Parent committee name"
 msgstr "Elterngremiumname"
-
-msgid "Parent motion text changed"
-msgstr "Antragstext des Hauptantrags geändert"
 
 msgid "Parliament options"
 msgstr "Parlamentsoptionen"
@@ -4261,14 +4185,6 @@ msgstr "Bitte wählen Sie ein Stimmgewicht größer 0."
 
 msgid "Please select the directory:"
 msgstr "Bitte wählen Sie das Verzeichnis aus:"
-
-msgid ""
-"Please select your target meetings and enter the name of an existing group "
-"which should be assigned to the account in each meeting."
-msgstr ""
-"Bitte wählen Sie die gewünschten Zielveranstaltungen aus und geben Sie den "
-"Namen einer bestehenden Gruppe an, die dem Account in jeder Veranstaltung "
-"zugewiesen werden soll."
 
 msgid "Please update your browser or contact your system administration."
 msgstr ""
@@ -4463,7 +4379,7 @@ msgid ""
 "managers."
 msgstr ""
 "Empfehlungen von Anträgen in einem solchen Zustand können nur von "
-"Antragsverwaltern gesehen werden."
+"Antragsverwaltenden gesehen werden."
 
 msgid "Recommendation reset"
 msgstr "Empfehlung zurückgesetzt"
@@ -4853,8 +4769,11 @@ msgstr "Heimatgremium setzen/entfernen"
 msgid "Set/remove meeting"
 msgstr "Veranstaltung setzen/entfernen"
 
-msgid "Sets this projector as the reference for the current list of speakers"
-msgstr "Diesen Projektor als Referenz für die aktuelle Redeliste setzen."
+msgid ""
+"Sets this projector as the reference for the autopilot and the current list "
+"of speakers"
+msgstr ""
+"Diesen Projektor als Referenz für Autopilot und aktuelle Redeliste setzen"
 
 msgid "Settings"
 msgstr "Einstellungen"
@@ -5142,9 +5061,6 @@ msgstr "Untergremien"
 msgid "Submission date"
 msgstr "Einreichungsdatum"
 
-msgid "Submit selection now?"
-msgstr "Auswahl jetzt senden?"
-
 msgid "Submit vote now"
 msgstr "Stimme(n) jetzt senden"
 
@@ -5257,9 +5173,6 @@ msgid "The agenda item was successfully copied to {} meeting(s)"
 msgstr ""
 "Die Tagesordnungspunkte wurden erfolgreich in {} Veranstaltung(en) kopiert."
 
-msgid "The assembly may decide:"
-msgstr "Die Versammlung möge beschließen:"
-
 msgid "The event manager has not set up a legal notice yet."
 msgstr "Der Veranstalter hat noch kein Impressum hinterlegt."
 
@@ -5367,12 +5280,6 @@ msgstr ""
 "%user% besitzen keine E-Mail-Adressen; E-Mails konnte daher nicht gesendet "
 "werden."
 
-msgid "There are not enough options."
-msgstr "Es gibt nicht genug Optionen."
-
-msgid "There is an error in your vote."
-msgstr "Es gibt ein Fehler in Ihrer Stimme."
-
 msgid "There is an error with this amendment. Please edit it manually."
 msgstr ""
 "In diesem Änderungsantrag ist ein Fehler. Bitte bearbeiten Sie den Text "
@@ -5444,9 +5351,6 @@ msgstr "Dieses Feld ist erforderlich."
 
 msgid "This file will also be deleted from all meetings."
 msgstr "Diese Datei wird auch aus allen Veranstaltungen gelöscht."
-
-msgid "This is not a number."
-msgstr "Dies ist keine Zahl."
 
 msgid ""
 "This may diminish your ability to do things in this meeting and you may not "
@@ -5622,9 +5526,6 @@ msgstr "Zur Redeliste wechseln"
 msgid "Toggle to parent item"
 msgstr "Zum Elternelement wechseln"
 
-msgid "Too many votes on one option."
-msgstr "Zu viele Stimmen für eine Option."
-
 msgid "Topic"
 msgstr "Thema"
 
@@ -5642,6 +5543,9 @@ msgstr "Themen aktualisiert"
 
 msgid "Topics with warnings (will be skipped)"
 msgstr "Themen mit Warnungen (werden übersprungen)"
+
+msgid "Total"
+msgstr "Gesamt"
 
 msgid "Total accounts"
 msgstr "Accounts insgesamt"
@@ -5723,9 +5627,6 @@ msgid "Used for invitation emails and QRCode in PDF of access data."
 msgstr ""
 "Wird für Einladungs-E-Mails sowie WLAN-QR-Code im Zugangsdaten-PDF "
 "verwendet."
-
-msgid "User"
-msgstr "Benutzer"
 
 msgid "User not found."
 msgstr "Benutzer nicht gefunden."
@@ -5900,19 +5801,6 @@ msgstr ""
 "Sie diesen Antrag trotzdem löschen wollen?"
 
 msgid ""
-"Warning: Amendments or change recommendations exist for this motion. Editing"
-" this text will likely impact them negatively. Particularily, amendments "
-"might become unusable if the paragraph they affect is deleted, or change "
-"recommendations might lose their reference line completely."
-msgstr ""
-"Warnung: Zu diesem Antrag gibt es Änderungsanträge oder "
-"Änderungsempfehlungen. Die Bearbeitung dieses Textes wird sich "
-"wahrscheinlich negativ auf diese auswirken. Insbesondere können "
-"Änderungsanträge unbrauchbar werden, wenn der Absatz, auf den sie "
-"referenzieren, gelöscht wird, oder Änderungsempfehlungen können den Bezug "
-"auf die geänderten Zeilen verlieren."
-
-msgid ""
 "Warning: At least one of the selected motions has amendments, these will be "
 "deleted as well. Do you want to delete anyway?"
 msgstr ""
@@ -5940,9 +5828,6 @@ msgstr "Wurde in diese Veranstaltung weitergeleitet"
 
 msgid "Web interface header logo"
 msgstr "Web-Interface-Kopfzeilen-Logo"
-
-msgid "Welcome to OpenSlides"
-msgstr "Willkommen bei OpenSlides"
 
 msgid "What is new?"
 msgstr "Was ist neu?"
@@ -6154,16 +6039,6 @@ msgstr "Sie müssen Admin in der Zielveranstaltung sein."
 msgid "You override the personally set password!"
 msgstr "Sie überschreiben hiermit das persönlich gesetzte Passwort!"
 
-msgid "You reached the maximum amount of votes. Deselect one option first."
-msgstr ""
-"Sie haben die maximale Anzahl von Stimmen erreicht. Deselektieren Sie zuerst"
-" eine Auswahl."
-
-msgid "You reached the maximum amount of votes. Deselect somebody first."
-msgstr ""
-"Sie haben die maximale Anzahl von Stimmen erreicht. Deselektieren Sie zuerst"
-" eine Auswahl."
-
 msgid ""
 "You will be logged out when you change your password. You must then log in "
 "with the new password."
@@ -6202,9 +6077,6 @@ msgstr "Ihr Browser"
 msgid "Your browser is not supported by OpenSlides!"
 msgstr "Ihr Browser wird von OpenSlides nicht unterstützt!"
 
-msgid "Your decision cannot be changed afterwards."
-msgstr "Ihre Stimmabgabe kann anschließend nicht mehr geändert werden."
-
 msgid "Your device has no microphone"
 msgstr "Es wurde kein Mikrofon an ihrem Gerät gefunden."
 
@@ -6227,9 +6099,6 @@ msgstr ""
 "Ihre Stimme wurde abgelehnt, da Ihre IP-Adresse nicht im zulässigen IP-"
 "Bereich liegt."
 
-msgid "Your votes"
-msgstr "Ihre Stimmen"
-
 msgid "Your voting right was delegated to another person."
 msgstr "Ihr Stimmrecht wurde an eine andere Person übertragen."
 
@@ -6242,9 +6111,6 @@ msgstr "Verkleinern"
 msgid "[Begin speech] starts the countdown, [End speech] stops the countdown."
 msgstr ""
 "[Rede beginnen] startet den Countdown, [Rede beenden] stoppt den Countdown."
-
-msgid "[Place for your welcome and help text.]"
-msgstr "[Platz für Ihren Begrüßungs- und Hilfetext.]"
 
 msgid "absent"
 msgstr "abwesend"
@@ -6302,9 +6168,6 @@ msgstr ""
 msgid "change recommendations"
 msgstr "Änderungsempfehlungen"
 
-msgid "committee-example"
-msgstr "gremien-beispiel"
-
 msgid "connecting ..."
 msgstr "Verbindungsaufbau ..."
 
@@ -6323,8 +6186,14 @@ msgstr "erstellt"
 msgid "custom"
 msgstr "benutzerdefiniert"
 
+msgid "custom sort"
+msgstr "benutzerdefinierte Sortierung"
+
 msgid "dateless"
 msgstr "zeitlos"
+
+msgid "default sort"
+msgstr "voreingestellte Sortierung"
 
 msgid "delete"
 msgstr "löschen"
@@ -6343,9 +6212,6 @@ msgstr "divers"
 
 msgid "e.g. for online meetings"
 msgstr "z. B. für Online-Versammlungen"
-
-msgid "emails"
-msgstr "E-Mails"
 
 msgid "ended"
 msgstr "beendet"
@@ -6380,9 +6246,6 @@ msgstr "grau"
 msgid "has been imported"
 msgstr "wurden importiert"
 
-msgid "has saved his work on this motion."
-msgstr "hat die Arbeit an diesem Antrag gespeichert."
-
 msgid "have been created"
 msgstr "wurden erstellt"
 
@@ -6409,9 +6272,6 @@ msgstr "ist noch keinen Gremien oder Veranstaltungen zugeordnet"
 
 msgid "is now"
 msgstr "ist jetzt"
-
-msgid "is personal favorite"
-msgstr "ist persönlicher Favorit"
 
 msgid "is required"
 msgstr "ist erforderlich"
@@ -6491,9 +6351,6 @@ msgstr "von"
 msgid "of which"
 msgstr "davon"
 
-msgid "of which %num% not permissable"
-msgstr "davon %num% nicht zulässig"
-
 msgid "open votes"
 msgstr "offene Stimmabgaben"
 
@@ -6572,9 +6429,6 @@ msgstr "bis"
 msgid "today"
 msgstr "heute"
 
-msgid "total"
-msgstr "gesamt"
-
 msgid "two-line"
 msgstr "zweizweilig"
 
@@ -6610,9 +6464,6 @@ msgstr "werden aktualisiert"
 
 msgid "with"
 msgstr "mit"
-
-msgid "without structure level"
-msgstr "ohne Gliederungsebene"
 
 msgid "yellow"
 msgstr "gelb"
@@ -6668,6 +6519,34 @@ msgstr "Standardprojektor"
 msgid "Delegates"
 msgstr "Delegierte"
 
+msgid ""
+"Invalid date for column {{field}}: Got {{content}}; expected format YYYY-MM-"
+"DD"
+msgstr ""
+"Ungültiges Datum für die Spalte {{field}}: Es wurde {{content}} gefunden; "
+"erwartetes Format JJJJ-MM-TT"
+
+msgid ""
+"Invalid format for column {{field}}: Got {{content}}; expected boolean (e.g."
+" '1' for yes, '0' for no)"
+msgstr ""
+"Ungültiges Format für die Spalte {{field}}: Es wurde {{content}} erhalten; "
+"erwartet wurde ein boolescher Wert (z. B. „1“ für „Ja“, „0“ für „Nein“)"
+
+msgid ""
+"Invalid format for column {{field}}: Got {{content}}; expected decimal "
+"number with point separation (e.g. 1.234567)"
+msgstr ""
+"Ungültiges Format für die Spalte {{field}}: Es wurde {{content}} erhalten; "
+"erwartet wurde eine Dezimalzahl mit Punkt als Trennzeichen (z. B. 1.234567)"
+
+msgid ""
+"Invalid format for column {{field}}: Got {{content}}; expected integer (i.e."
+" a natural number)"
+msgstr ""
+"Ungültiges Format für die Spalte {{field}}: Es wurde {{content}} erhalten; "
+"erwartet wurde eine ganze (natürliche) Zahl"
+
 msgid "No concernment"
 msgstr "Nichtbefassung"
 
@@ -6698,6 +6577,12 @@ msgstr "Redezeit"
 msgid "Staff"
 msgstr "Mitarbeitende"
 
+msgid "The assembly may decide:"
+msgstr "Die Versammlung möge beschließen:"
+
+msgid "Welcome to OpenSlides"
+msgstr "Willkommen bei OpenSlides"
+
 #, python-brace-format
 msgid ""
 "You are receiving this email because you have requested a new password for your OpenSlides account.\n"
@@ -6713,6 +6598,9 @@ msgstr ""
 "{url}/login/forget-password-confirm?user_id={user_id}&token={token}\n"
 "\n"
 "Der Link wird 10 Minuten lang gültig sein."
+
+msgid "[Place for your welcome and help text.]"
+msgstr "[Platz für Ihren Begrüßungs- und Hilfetext.]"
 
 msgid "accepted"
 msgstr "angenommen"
