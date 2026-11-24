@@ -16,7 +16,7 @@ running.
 Check if you have to run docker as local user or as root. The info command
 should run without errors:
 
-    $ docker info
+    docker info
 
 
 ### Get manage tool
@@ -29,17 +29,28 @@ folder](https://github.com/OpenSlides/openslides-cli/tree/main/contrib).
 
 You can also fetch them using `wget`. Don't forget to make the binary executable.
 
-    $ wget https://github.com/OpenSlides/openslides-cli/releases/download/latest/osmanage
-    $ wget https://raw.githubusercontent.com/OpenSlides/openslides-cli/refs/heads/main/contrib/example-config.yml
-    $ wget https://raw.githubusercontent.com/OpenSlides/openslides-cli/refs/heads/main/contrib/docker-compose.yml.tmpl
-    $ chmod +x osmanage
+    wget https://github.com/OpenSlides/openslides-cli/releases/download/latest/osmanage
+    wget https://raw.githubusercontent.com/OpenSlides/openslides-cli/refs/heads/stable/4.3.x/contrib/example-config.yml
+    wget https://raw.githubusercontent.com/OpenSlides/openslides-cli/refs/heads/stable/4.3.x/contrib/docker-compose.yml.tmpl
+    chmod +x osmanage
 
 
 ### Setup instance
 
+Create a file `my-config.yml` with the following content:
+
+    enableLocalHTTPS: true # you need this because OpenSlides needs HTTPS
+    # Defaults for all OpenSlides services.
+    # tag can be set to 'latest' but is not recommended
+    defaults:
+      containerRegistry: ghcr.io/openslides/openslides
+      tag: 4.3.7 # it is hightly recommended to pin a version here
+
+For more information about the configuration-file, see [below](#Configuration-of-the-generated-Docker-Compose-YAML-file)
+
 Setup the instance in the current directory (`.`):
 
-    $ ./osmanage setup -c example-config.yml -t docker-compose.yml.tmpl .
+    ./osmanage setup -c example-config.yml -t docker-compose.yml.tmpl .
 
 This will give you a default setup with locally generated self-signed SSL
 certificates. You will get [a browser warning and have to care yourself about
@@ -61,8 +72,8 @@ but for most cases this is not recommended.
 
 Then run:
 
-    $ docker compose pull
-    $ docker compose up --detach
+    docker compose pull
+    docker compose up --detach
 
 Now all services are starting. Wait until they are ready.
 This starts OpenSlides using default initial-data. You can change that by
@@ -70,11 +81,11 @@ setting `OPENSLIDES_BACKEND_CREATE_INITIAL_DATA= 0` in the definition of your
 backendManage service in `docker-compose.yml`.
 If you do so, you can generate initial-data using:
 
-    $ ./osmanage initial-data --superadmin-password-file secrets/superadmin
+    ./osmanage initial-data --superadmin-password-file secrets/superadmin
 
 For further information about initial-data see:
 
-    $ ./osmanage initial-data --help
+    ./osmanage initial-data --help
 
 Now open https://localhost:8000, login with superuser credentials (default
 username `superadmin`, password in `./secrets/superadmin`) and have fun.
@@ -101,43 +112,42 @@ have several options to achieve this:
 
 To stop the instance, run:
 
-    $ docker compose stop
+    docker compose stop
 
 To remove all containers and networks, run:
 
-    $ docker compose down
+    docker compose down
 
 To remove also the database (and lose all your data), run:
 
-    $ docker compose down --volumes
+    docker compose down --volumes
 
-
-## Configuration of the generated Docker Compose YAML file
+#### Configuration of the generated Docker Compose YAML file
 
 The `setup` command generates a Docker Compose YAML file (default filename:
 `docker-compose.yml`) with the container configuration for all services. This
 step can be configured with a (second) YAML formatted setup configuration file.
 All options in the [defaults file](https://github.com/OpenSlides/openslides-manage-service/blob/main/pkg/config/default-config.yml) can be used to configure the setup.
 
-E. g. create a file `my-config.yml` with the following content:
+E. g. add the following to your `my-config.yml`:
 
     port: 9000
 
 After you have such a file remove your Docker Compose YAML file and rerun the
 `setup` command:
 
-    $ ./osmanage setup --config my-config.yml --template docker-compose.yml.tmpl .
+    ./osmanage setup --config my-config.yml --template docker-compose.yml.tmpl .
 
 This way you get a Docker Compose YAML file which let OpenSlides listen on the
 configured custom port.
 
-You may also use  the `--force` flag in some cases which also resets secrets and
+You may also use  the `--force` flag in some cases (i.e. when updating) which also resets secrets and
 all other generated files. To rebuild the Docker Compose YAML file without
 resetting the whole directory (including secrets) use the `config` command
 instead of the `setup` command (also with `--force` in order to overwrite
 existing files). E. g. run:
 
-    $ ./osmanage config --force --config my-config.yml --template docker-compose.yml.tmpl .
+    ./osmanage config --force --config my-config.yml --template docker-compose.yml.tmpl .
 
 This command will just rebuild your Docker Compose YAML file.
 
@@ -146,8 +156,7 @@ it's port `9002` forwarded to `localhost` in the default template. If this is
 different in your environment for any reason, some commands will require the
 `--address` in order to reach that endpoint.
 
-    $ ./osmanage create-user --address localhost:9000
-
+    ./osmanage create-user --address localhost:9000
 
 ## Update to a new version
 
@@ -159,7 +168,8 @@ On the other hand, it can mean services will update "by themselves" due to silen
 It is therefore recommended to pin the version explicitly in the `my-config.yml` like this:
 
     defaults:
-      tag: 4.3.0
+      containerRegistry: ghcr.io/openslides/openslides
+      tag: 4.3.8 # or the image you wish to update to
 
 Note that if changes to the configuration or structure of the docker stack were
 made the `docker-compose.yml.tmpl` provided in the [contrib
@@ -170,8 +180,8 @@ local template file with the new version)
 To update to the new version, set the new tag, regenerate the compose file and
 apply the changes to the containers:
 
-    $ ./osmanage config --force --config my-config.yml --template docker-compose.yml.tmpl .
-    $ docker compose up --detach
+    ./osmanage config --force --config my-config.yml --template docker-compose.yml.tmpl .
+    docker compose up --detach
 
 Regenerating the compose file is an important step that should be done for every
 update. This will ensure that all services will be provided with all necessary
@@ -180,9 +190,9 @@ resources even when the structure is changing.
 Some updates include migrations that must be run on the database.
 To check the current status and start migrations if necessary, run:
 
-    $ ./osmanage migrations stats
-    $ ./osmanage migrations migrate
-    $ ./osmanage migrations finalize
+    ./osmanage migrations stats
+    ./osmanage migrations migrate
+    ./osmanage migrations finalize # Not available from 4.3.8
 
 For more details about the migration route, see [documentation in the
 backend](https://github.com/OpenSlides/openslides-backend/blob/main/docs/migration_route.md)
